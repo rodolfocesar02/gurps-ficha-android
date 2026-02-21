@@ -1347,8 +1347,7 @@ fun ConfigurarMagiaDialog(
                 Divider()
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Preview do Nível:", style = MaterialTheme.typography.labelMedium)
-                        Text("Nível: $nivelPreview (IQ+$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Text("NH: $nivelPreview (IQ+$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -1520,8 +1519,7 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
                 Divider()
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Preview do Nível:", style = MaterialTheme.typography.labelMedium)
-                        Text("Nível: $nivelPreview (${atributoEscolhido.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Text("NH: $nivelPreview (${atributoEscolhido.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -1618,6 +1616,7 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
 
     val previewPericia = pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)
     val nivelPreview = previewPericia.calcularNivel(personagem)
+    val nivelRelativo = previewPericia.getNivelRelativo(personagem)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1645,7 +1644,7 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
                     }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                 }
 
-                Text("Nível previsto: $nivelPreview", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text("NH: $nivelPreview (${pericia.atributoBase.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
         },
         confirmButton = { TextButton(onClick = { onSave(pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)) }) { Text("Salvar") } },
@@ -1677,7 +1676,7 @@ fun EditarMagiaDialog(
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
 
                 Divider()
-                Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
+                Text("Pontos Gastos:")
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = {
                         if (pontosGastos > 4) pontosGastos -= 4
@@ -1714,8 +1713,7 @@ fun EditarMagiaDialog(
                 Divider()
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("Preview do Nível:", style = MaterialTheme.typography.labelMedium)
-                        Text("Nível: $nivelPreview (IQ+$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Text("NH: $nivelPreview (IQ+$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     }
                 }
             }
