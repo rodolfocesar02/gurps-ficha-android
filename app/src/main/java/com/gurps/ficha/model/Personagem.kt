@@ -237,21 +237,27 @@ data class VantagemDefinicao(
 data class VantagemSelecionada(
     val definicaoId: String = "",
     val nome: String = "",
-    var custoBase: Int = 0,
+    var custoBase: Int = 0, // Custo unitario (por nivel) ou custo fixo
     var nivel: Int = 1,
-    var custoEscolhido: Int = 0,
+    var custoEscolhido: Int = 0, // Custo total escolhido (para VARIAVEL/ESCOLHA)
     var descricao: String = "",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0
 ) {
     val custoFinal: Int get() {
-        val valor = when (tipoCusto) {
-            TipoCusto.FIXO -> custoBase
-            TipoCusto.ESCOLHA -> custoEscolhido
-            TipoCusto.VARIAVEL -> custoEscolhido
-            TipoCusto.POR_NIVEL -> custoBase * nivel
+        // Regra Especial: Aptidão Mágica (Magery)
+        // Nível 1 (Magery 0) = 5 pts
+        // Nível 2 (Magery 1) = 15 pts (5 + 10)
+        // Nível 3 (Magery 2) = 25 pts (5 + 20)...
+        if (definicaoId.equals("aptidao_magica", ignoreCase = true)) {
+            return 5 + (nivel - 1) * 10
         }
-        return if (valor < 0) 0 else valor // Vantagens DEVEM ser positivas
+
+        val valor = when (tipoCusto) {
+            TipoCusto.POR_NIVEL -> custoBase * nivel
+            else -> custoEscolhido
+        }
+        return if (valor < 0) 0 else valor
     }
 }
 
@@ -311,10 +317,8 @@ data class DesvantagemSelecionada(
 ) {
     val custoFinal: Int get() {
         val custoSemAutocontrole = when (tipoCusto) {
-            TipoCusto.FIXO -> custoBase
-            TipoCusto.ESCOLHA -> custoEscolhido
-            TipoCusto.VARIAVEL -> custoEscolhido
             TipoCusto.POR_NIVEL -> custoBase * nivel
+            else -> custoEscolhido
         }
         // Modificador de autocontrole GURPS 4Ed pag. 120
         val custoComAutocontrole = autocontrole?.let { ac ->

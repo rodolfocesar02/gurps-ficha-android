@@ -136,12 +136,20 @@ class DataRepository(private val context: Context) {
         custoEscolhido: Int = 0,
         descricao: String = ""
     ): VantagemSelecionada {
+        // custoBase é sempre o custo unitário (por nível) ou o custo fixo inicial
+        val custoBase = if (definicao.tipoCusto == TipoCusto.POR_NIVEL) {
+            definicao.getCustoPorNivel()
+        } else {
+            definicao.getCustoBase()
+        }
+
         return VantagemSelecionada(
             definicaoId = definicao.id,
             nome = definicao.nome,
-            custoBase = definicao.getCustoBase(),
+            custoBase = custoBase,
             nivel = nivel,
-            custoEscolhido = custoEscolhido.takeIf { it != 0 } ?: definicao.getCustoBase(),
+            // custoEscolhido só é relevante para ESCOLHA ou VARIAVEL
+            custoEscolhido = if (custoEscolhido != 0) custoEscolhido else custoBase,
             descricao = descricao,
             tipoCusto = definicao.tipoCusto,
             pagina = definicao.pagina
@@ -155,12 +163,18 @@ class DataRepository(private val context: Context) {
         descricao: String = "",
         autocontrole: Int? = null
     ): DesvantagemSelecionada {
+        val custoBase = if (definicao.tipoCusto == TipoCusto.POR_NIVEL) {
+            definicao.getCustoPorNivel()
+        } else {
+            definicao.getCustoBase()
+        }
+
         return DesvantagemSelecionada(
             definicaoId = definicao.id,
             nome = definicao.nome,
-            custoBase = definicao.getCustoBase(),
+            custoBase = custoBase,
             nivel = nivel,
-            custoEscolhido = custoEscolhido.takeIf { it != 0 } ?: definicao.getCustoBase(),
+            custoEscolhido = if (custoEscolhido != 0) custoEscolhido else custoBase,
             descricao = descricao,
             autocontrole = autocontrole,
             tipoCusto = definicao.tipoCusto,
