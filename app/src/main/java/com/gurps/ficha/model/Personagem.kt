@@ -51,10 +51,39 @@ data class Personagem(
     val pontosFadiga: Int get() = vitalidade + modPontosFadiga
     val velocidadeBasica: Float get() = (vitalidade + destreza) / 4f + modVelocidadeBasica
     val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico
-    val esquiva: Int get() = (velocidadeBasica + 3).toInt()
+    val esquiva: Int get() = (velocidadeBasica + 3).toInt() // Esquiva Básica (sem carga)
     val baseCarga: Float get() = (forca * forca) / 10f
     val danoGdP: String get() = calcularDanoGdP(forca)
     val danoGeB: String get() = calcularDanoGeB(forca)
+
+    val pesoTotal: Float get() = equipamentos.sumOf {
+        (it.peso * it.quantidade).toDouble()
+    }.toFloat()
+
+    val nivelCarga: Int get() {
+        val bc = baseCarga
+        val peso = pesoTotal
+        return when {
+            peso <= bc -> 0           // Sem carga
+            peso <= bc * 2 -> 1       // Leve
+            peso <= bc * 3 -> 2       // Media
+            peso <= bc * 6 -> 3       // Pesada
+            peso <= bc * 10 -> 4      // Muito Pesada
+            else -> 5                 // Extra Pesada
+        }
+    }
+
+    val deslocamentoAtual: Int get() {
+        val desloc = deslocamentoBasico
+        return when (nivelCarga) {
+            0 -> desloc
+            1 -> (desloc * 0.8).toInt()
+            2 -> (desloc * 0.6).toInt()
+            3 -> (desloc * 0.4).toInt()
+            4 -> (desloc * 0.2).toInt()
+            else -> 1
+        }
+    }
 
     // === CALCULO DE PONTOS ===
     val pontosAtributos: Int get() {
@@ -488,17 +517,16 @@ data class DefesasAtivas(
     var bonusManualBloqueio: Int = 0
 ) {
     /**
-     * Calcula Esquiva = Movimentacao + 3 + Bonus Manual
-     * GURPS 4Ed: Esquiva basica = Velocidade Basica + 3 (arredondado para baixo)
+     * Calcula Esquiva = Esquiva Básica - Penalidade de Carga + Bonus Manual
+     * GURPS 4Ed: Esquiva básica = floor(Velocidade Básica + 3)
      */
     fun calcularEsquiva(personagem: Personagem): Int {
-        val movimentacao = personagem.deslocamentoBasico
-        val esquivaBase = movimentacao + 3
-        return esquivaBase + bonusManualEsquiva
+        val esquivaBase = personagem.esquiva
+        return (esquivaBase - personagem.nivelCarga + bonusManualEsquiva).coerceAtLeast(1)
     }
 
     fun getEsquivaBase(personagem: Personagem): Int {
-        return personagem.deslocamentoBasico + 3
+        return (personagem.esquiva - personagem.nivelCarga).coerceAtLeast(1)
     }
 
     /**

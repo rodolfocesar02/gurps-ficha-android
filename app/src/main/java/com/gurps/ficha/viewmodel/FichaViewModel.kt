@@ -386,42 +386,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // === UTILITARIOS ===
 
-    val pesoTotal: Float get() = personagem.equipamentos.sumOf {
-        (it.peso * it.quantidade).toDouble()
-    }.toFloat()
+    val pesoTotal: Float get() = personagem.pesoTotal
 
     val custoTotalEquipamentos: Float get() = personagem.equipamentos.sumOf {
         (it.custo * it.quantidade).toDouble()
     }.toFloat()
 
-    val nivelCarga: Int get() {
-        val bc = personagem.baseCarga
-        return when {
-            pesoTotal <= bc -> 0           // Sem carga
-            pesoTotal <= bc * 2 -> 1       // Leve
-            pesoTotal <= bc * 3 -> 2       // Media
-            pesoTotal <= bc * 6 -> 3       // Pesada
-            pesoTotal <= bc * 10 -> 4      // Muito Pesada
-            else -> 5                       // Extra Pesada
-        }
-    }
+    val nivelCarga: Int get() = personagem.nivelCarga
 
-    val deslocamentoAtual: Int get() {
-        val desloc = personagem.deslocamentoBasico
-        return when (nivelCarga) {
-            0 -> desloc
-            1 -> (desloc * 0.8).toInt()
-            2 -> (desloc * 0.6).toInt()
-            3 -> (desloc * 0.4).toInt()
-            4 -> (desloc * 0.2).toInt()
-            else -> 1
-        }
-    }
+    val deslocamentoAtual: Int get() = personagem.deslocamentoAtual
 
-    val esquivaAtual: Int get() {
-        val esq = personagem.esquiva
-        return (esq - nivelCarga).coerceAtLeast(1)
-    }
+    val esquivaAtual: Int get() = (personagem.esquiva - personagem.nivelCarga).coerceAtLeast(1)
 
     // === VALIDACAO ===
 
