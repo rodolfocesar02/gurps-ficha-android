@@ -1,0 +1,1598 @@
+[
+  {
+    "id": "acima_do_peso",
+    "nome": "Acima do Peso",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 19
+  },
+  {
+    "id": "acomodado",
+    "nome": "Acomodado",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "alcoolismo",
+    "nome": "Alcoolismo",
+    "custo": "-15 ou -20",
+    "tipoCusto": "escolha",
+    "pagina": 122
+  },
+  {
+    "id": "altruísmo",
+    "nome": "Altruísmo",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 122
+  },
+  {
+    "id": "amigável",
+    "nome": "Amigável",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 122
+  },
+  {
+    "id": "amnésia",
+    "nome": "Amnésia",
+    "custo": "-10 ou -25",
+    "tipoCusto": "escolha",
+    "pagina": 122
+  },
+  {
+    "id": "antecedentes_mundanos",
+    "nome": "Antecedentes Mundanos",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 122
+  },
+  {
+    "id": "antipático",
+    "nome": "Antipático",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "aparência",
+    "nome": "Aparência",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 20
+  },
+  {
+    "id": "apetite_incontrolável",
+    "nome": "Apetite Incontrolável",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 122
+  },
+  {
+    "id": "assexuado",
+    "nome": "Assexuado",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "assustar_animais",
+    "nome": "Assustar Animais",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 123
+  },
+  {
+    "id": "ataque_infeccioso",
+    "nome": "Ataque Infeccioso",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 123
+  },
+  {
+    "id": "atavismo_por_estresse",
+    "nome": "Atavismo por Estresse",
+    "custo": "Variável*",
+    "tipoCusto": "variavel",
+    "pagina": 123
+  },
+  {
+    "id": "atento",
+    "nome": "Atento",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "atrapalhado",
+    "nome": "Atrapalhado",
+    "custo": "-5 ou -10",
+    "tipoCusto": "escolha",
+    "pagina": 123
+  },
+  {
+    "id": "autodestruição",
+    "nome": "Autodestruição",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 123
+  },
+  {
+    "id": "avareza",
+    "nome": "Avareza",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 123
+  },
+  {
+    "id": "aversão",
+    "nome": "Aversão",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 123
+  },
+  {
+    "id": "aversões",
+    "nome": "Aversões",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "azar",
+    "nome": "Azar",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 124
+  },
+  {
+    "id": "baixa_autoestima",
+    "nome": "Baixa Autoestima",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 124
+  },
+  {
+    "id": "barulhento",
+    "nome": "Barulhento",
+    "custo": "-2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 124
+  },
+  {
+    "id": "bestial",
+    "nome": "Bestial",
+    "custo": "-10 ou -15",
+    "tipoCusto": "escolha",
+    "pagina": 124
+  },
+  {
+    "id": "bioquímica_incomum",
+    "nome": "Bioquímica Incomum",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 125
+  },
+  {
+    "id": "briquento",
+    "nome": "Briquento",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 125
+  },
+  {
+    "id": "características_distintas",
+    "nome": "Características Distintas",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "características_sobrenaturais",
+    "nome": "Características Sobrenaturais",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 125
+  },
+  {
+    "id": "castrado",
+    "nome": "Castrado",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "cegueira",
+    "nome": "Cegueira",
+    "custo": "-50",
+    "tipoCusto": "fixo",
+    "pagina": 125
+  },
+  {
+    "id": "cegueira_noturna",
+    "nome": "Cegueira Noturna",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 126
+  },
+  {
+    "id": "chauvinista",
+    "nome": "Chauvinista",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "circunspecção",
+    "nome": "Circunspecção",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 126
+  },
+  {
+    "id": "cleptomania",
+    "nome": "Cleptomania",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 126
+  },
+  {
+    "id": "cobiça",
+    "nome": "Cobiça",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 126
+  },
+  {
+    "id": "código_de_honra",
+    "nome": "Código de Honra",
+    "custo": "-1 ou -5 a -15",
+    "tipoCusto": "escolha",
+    "pagina": 126
+  },
+  {
+    "id": "completamente_desastrado",
+    "nome": "Completamente Desastrado",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 132
+  },
+  {
+    "id": "complexo_de_culpa",
+    "nome": "Complexo de Culpa",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 127
+  },
+  {
+    "id": "comprensivo",
+    "nome": "Comprensivo",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "compulsão",
+    "nome": "Compulsão",
+    "custo": "-5 a -15*",
+    "tipoCusto": "fixo",
+    "pagina": 127
+  },
+  {
+    "id": "confuso",
+    "nome": "Confuso",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 128
+  },
+  {
+    "id": "consumo_ampliado",
+    "nome": "Consumo Ampliado",
+    "custo": "-10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 128
+  },
+  {
+    "id": "convulsões_póscombate",
+    "nome": "Convulsões Pós-combate",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 129
+  },
+  {
+    "id": "corcunda",
+    "nome": "Corcunda",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 129
+  },
+  {
+    "id": "covardia",
+    "nome": "Covardia",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 129
+  },
+  {
+    "id": "credulidade",
+    "nome": "Credulidade",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 129
+  },
+  {
+    "id": "criativo",
+    "nome": "Criativo",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 163
+  },
+  {
+    "id": "cuidadoso",
+    "nome": "Cuidadoso",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "curiosidade",
+    "nome": "Curiosidade",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 129
+  },
+  {
+    "id": "daltonismo",
+    "nome": "Daltonismo",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 129
+  },
+  {
+    "id": "deficiência_física",
+    "nome": "Deficiência Física",
+    "custo": "-10 a -30",
+    "tipoCusto": "fixo",
+    "pagina": 130
+  },
+  {
+    "id": "deficiências_menores",
+    "nome": "Deficiências Menores",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "dependência",
+    "nome": "Dependência",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 130
+  },
+  {
+    "id": "dependentes",
+    "nome": "Dependentes",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 130
+  },
+  {
+    "id": "depressão_crônica",
+    "nome": "Depressão Crônica",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 131
+  },
+  {
+    "id": "desastrado",
+    "nome": "Desastrado",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 132
+  },
+  {
+    "id": "desatento",
+    "nome": "Desatento",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 132
+  },
+  {
+    "id": "desdobramento_de_pers",
+    "nome": "Desdobramento de Pers.",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 132
+  },
+  {
+    "id": "despretensioso",
+    "nome": "Despretensioso",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "destino",
+    "nome": "Destino",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 132
+  },
+  {
+    "id": "destruidor_da_vida",
+    "nome": "Destruidor da Vida",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 132
+  },
+  {
+    "id": "dever",
+    "nome": "Dever",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 133
+  },
+  {
+    "id": "dieta_restrita",
+    "nome": "Dieta Restrita",
+    "custo": "-10 a -40",
+    "tipoCusto": "fixo",
+    "pagina": 134
+  },
+  {
+    "id": "dificuldade_com_números",
+    "nome": "Dificuldade com Números",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 134
+  },
+  {
+    "id": "dislexia",
+    "nome": "Dislexia",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 134
+  },
+  {
+    "id": "disopia",
+    "nome": "Disopia",
+    "custo": "-25",
+    "tipoCusto": "fixo",
+    "pagina": 135
+  },
+  {
+    "id": "disosmia",
+    "nome": "Disosmia",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 135
+  },
+  {
+    "id": "distração",
+    "nome": "Distração",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 135
+  },
+  {
+    "id": "distraído",
+    "nome": "Distraído",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "distúrbio_neurológico",
+    "nome": "Distúrbio Neurológico",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 135
+  },
+  {
+    "id": "dívidas",
+    "nome": "Dívidas",
+    "custo": "-1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 26
+  },
+  {
+    "id": "doença_contagiosa",
+    "nome": "Doença Contagiosa",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 135
+  },
+  {
+    "id": "doente_terminal",
+    "nome": "Doente Terminal",
+    "custo": "-50, -75 ou -100",
+    "tipoCusto": "escolha",
+    "pagina": 135
+  },
+  {
+    "id": "dor_crônica",
+    "nome": "Dor Crônica",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 135
+  },
+  {
+    "id": "dorminhoco",
+    "nome": "Dorminhoco",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 136
+  },
+  {
+    "id": "doutrinas_religiosas",
+    "nome": "Doutrinas Religiosas",
+    "custo": "-5 a -15",
+    "tipoCusto": "fixo",
+    "pagina": 136
+  },
+  {
+    "id": "drenagem",
+    "nome": "Drenagem",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 136
+  },
+  {
+    "id": "duro_de_ouvido",
+    "nome": "Duro de Ouvido",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 136
+  },
+  {
+    "id": "egoísmo",
+    "nome": "Egoísmo",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 136
+  },
+  {
+    "id": "elétrico",
+    "nome": "Elétrico",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 0
+  },
+  {
+    "id": "embotado",
+    "nome": "Embotado",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "enjoação",
+    "nome": "Enjoação",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 137
+  },
+  {
+    "id": "enjoo",
+    "nome": "Enjoo",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 137
+  },
+  {
+    "id": "enjoo_espacial",
+    "nome": "Enjoo Espacial",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 137
+  },
+  {
+    "id": "enjoo_temporal",
+    "nome": "Enjoo Temporal",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 137
+  },
+  {
+    "id": "entorpecido",
+    "nome": "Entorpecido",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 137
+  },
+  {
+    "id": "enxerido",
+    "nome": "Enxerido",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "epilepsia",
+    "nome": "Epilepsia",
+    "custo": "-30",
+    "tipoCusto": "fixo",
+    "pagina": 138
+  },
+  {
+    "id": "estigma_social",
+    "nome": "Estigma Social",
+    "custo": "-5 a -20",
+    "tipoCusto": "fixo",
+    "pagina": 138
+  },
+  {
+    "id": "estômago_sensível",
+    "nome": "Estômago Sensível",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "excesso_de_confiança",
+    "nome": "Excesso de Confiança",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 139
+  },
+  {
+    "id": "expectativa_de_vida_reduzida",
+    "nome": "Expectativa de Vida Reduzida",
+    "custo": "-10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 139
+  },
+  {
+    "id": "fácil_de_decifrar",
+    "nome": "Fácil de Decifrar",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 139
+  },
+  {
+    "id": "fácil_de_matar",
+    "nome": "Fácil de Matar",
+    "custo": "-2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 139
+  },
+  {
+    "id": "fanatismo",
+    "nome": "Fanatismo",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 139
+  },
+  {
+    "id": "fantasias",
+    "nome": "Fantasias",
+    "custo": "-1 ou -5 a -15",
+    "tipoCusto": "escolha",
+    "pagina": 139
+  },
+  {
+    "id": "feições_estranhas",
+    "nome": "Feições Estranhas",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 22
+  },
+  {
+    "id": "ferido",
+    "nome": "Ferido",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 140
+  },
+  {
+    "id": "flashbacks",
+    "nome": "Flashbacks",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 140
+  },
+  {
+    "id": "fobias",
+    "nome": "Fobias",
+    "custo": "Variável*",
+    "tipoCusto": "variavel",
+    "pagina": 140
+  },
+  {
+    "id": "fora_de_forma",
+    "nome": "Fora de Forma",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 142
+  },
+  {
+    "id": "forma_de_sombras",
+    "nome": "Forma de Sombras",
+    "custo": "-142? (verificar)",
+    "tipoCusto": "fixo",
+    "pagina": 142
+  },
+  {
+    "id": "fragilidade",
+    "nome": "Fragilidade",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 142
+  },
+  {
+    "id": "fragilidade_em_aceleração",
+    "nome": "Fragilidade em Aceleração",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "fraqueza",
+    "nome": "Fraqueza",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 143
+  },
+  {
+    "id": "fúria",
+    "nome": "Fúria",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 143
+  },
+  {
+    "id": "gagueira",
+    "nome": "Gagueira",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 143
+  },
+  {
+    "id": "gigantismo",
+    "nome": "Gigantismo",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 144
+  },
+  {
+    "id": "gordo",
+    "nome": "Gordo",
+    "custo": "-3",
+    "tipoCusto": "fixo",
+    "pagina": 144
+  },
+  {
+    "id": "gregário",
+    "nome": "Gregário",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 144
+  },
+  {
+    "id": "gula",
+    "nome": "Gula",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 143
+  },
+  {
+    "id": "hábitos_detestáveis",
+    "nome": "Hábitos Detestáveis",
+    "custo": "-5, -10, ou -15",
+    "tipoCusto": "escolha",
+    "pagina": 22
+  },
+  {
+    "id": "hábitos_ou_expressões",
+    "nome": "Hábitos ou Expressões",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "hemofilia",
+    "nome": "Hemofilia",
+    "custo": "-30",
+    "tipoCusto": "fixo",
+    "pagina": 144
+  },
+  {
+    "id": "hiperalgia",
+    "nome": "Hiperalgia",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 144
+  },
+  {
+    "id": "honestidade",
+    "nome": "Honestidade",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 144
+  },
+  {
+    "id": "horizontal",
+    "nome": "Horizontal",
+    "custo": "-145? (verificar)",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "identidade_secreta",
+    "nome": "Identidade Secreta",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 145
+  },
+  {
+    "id": "identidade_trocada",
+    "nome": "Identidade Trocada",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 21
+  },
+  {
+    "id": "impulsividade",
+    "nome": "Impulsividade",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "incapaz_de_aprender",
+    "nome": "Incapaz de Aprender",
+    "custo": "-30",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "incapaz_de_falar",
+    "nome": "Incapaz de Falar",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "incapaz_de_flutuar",
+    "nome": "Incapaz de Flutuar",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "incapaz_de_sentir_prazer",
+    "nome": "Incapaz de Sentir Prazer",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "incompetente",
+    "nome": "Incompetente",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "indeciso",
+    "nome": "Indeciso",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "indiferente",
+    "nome": "Indiferente",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 146
+  },
+  {
+    "id": "indulgente",
+    "nome": "Indulgente",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 146
+  },
+  {
+    "id": "impiedoso",
+    "nome": "Impiedoso",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 146
+  },
+  {
+    "id": "ingênuo",
+    "nome": "Ingênuo",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 146
+  },
+  {
+    "id": "inimigos",
+    "nome": "Inimigos",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 146
+  },
+  {
+    "id": "insensível",
+    "nome": "Insensível",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 147
+  },
+  {
+    "id": "insono",
+    "nome": "Insono",
+    "custo": "-10 ou -15",
+    "tipoCusto": "escolha",
+    "pagina": 147
+  },
+  {
+    "id": "intolerância",
+    "nome": "Intolerância",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 147
+  },
+  {
+    "id": "intolerância_ao_álcool",
+    "nome": "Intolerância ao Álcool",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "intolerânciag",
+    "nome": "Intolerância-G",
+    "custo": "-10 ou -20",
+    "tipoCusto": "escolha",
+    "pagina": 147
+  },
+  {
+    "id": "inveja",
+    "nome": "Inveja",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 147
+  },
+  {
+    "id": "invertebrado",
+    "nome": "Invertebrado",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 147
+  },
+  {
+    "id": "irritabilidade",
+    "nome": "Irritabilidade",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 147
+  },
+  {
+    "id": "lunático",
+    "nome": "Lunático",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 148
+  },
+  {
+    "id": "luxúria",
+    "nome": "Luxúria",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 148
+  },
+  {
+    "id": "magnetismo_sobrenatural",
+    "nome": "Magnetismo Sobrenatural",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 148
+  },
+  {
+    "id": "magro",
+    "nome": "Magro",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 18
+  },
+  {
+    "id": "maldição",
+    "nome": "Maldição",
+    "custo": "-75",
+    "tipoCusto": "fixo",
+    "pagina": 148
+  },
+  {
+    "id": "maldição_divina",
+    "nome": "Maldição Divina",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 148
+  },
+  {
+    "id": "maneta_um_braço",
+    "nome": "Maneta (Um Braço)",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 148
+  },
+  {
+    "id": "maneta_uma_mão",
+    "nome": "Maneta (Uma Mão)",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 148
+  },
+  {
+    "id": "maníacodepressivo",
+    "nome": "Maníaco-depressivo",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 149
+  },
+  {
+    "id": "manuseadores_precários",
+    "nome": "Manuseadores Precários",
+    "custo": "-30",
+    "tipoCusto": "fixo",
+    "pagina": 149
+  },
+  {
+    "id": "manutenção",
+    "nome": "Manutenção",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 149
+  },
+  {
+    "id": "mão_fraca",
+    "nome": "Mão Fraca",
+    "custo": "-5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 150
+  },
+  {
+    "id": "marca_registrada",
+    "nome": "Marca Registrada",
+    "custo": "-1 ou -5 a -15",
+    "tipoCusto": "escolha",
+    "pagina": 150
+  },
+  {
+    "id": "mau_cheiro",
+    "nome": "Mau Cheiro",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 150
+  },
+  {
+    "id": "megalomania",
+    "nome": "Megalomania",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 150
+  },
+  {
+    "id": "mentalidade_de_escravo",
+    "nome": "Mentalidade de Escravo",
+    "custo": "-40",
+    "tipoCusto": "fixo",
+    "pagina": 151
+  },
+  {
+    "id": "mente_aberta",
+    "nome": "Mente Aberta",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "mordida_fraca",
+    "nome": "Mordida Fraca",
+    "custo": "-2",
+    "tipoCusto": "fixo",
+    "pagina": 151
+  },
+  {
+    "id": "mudança_de_personalidade",
+    "nome": "Mudança de Personalidade",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "mudez",
+    "nome": "Mudez",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 145
+  },
+  {
+    "id": "muito_fora_de_forma",
+    "nome": "Muito Fora de Forma",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 142
+  },
+  {
+    "id": "muito_gordo",
+    "nome": "Muito Gordo",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 19
+  },
+  {
+    "id": "nanismo",
+    "nome": "Nanismo",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 19
+  },
+  {
+    "id": "nãoiconográfico",
+    "nome": "Não-iconográfico",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 151
+  },
+  {
+    "id": "no_limite",
+    "nome": "No Limite",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 151
+  },
+  {
+    "id": "noturno",
+    "nome": "Noturno",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 151
+  },
+  {
+    "id": "nt_baixo",
+    "nome": "NT Baixo",
+    "custo": "-5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 22
+  },
+  {
+    "id": "oblívio",
+    "nome": "Oblívio",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 151
+  },
+  {
+    "id": "obsessão",
+    "nome": "Obsessão",
+    "custo": "-1, -5, ou -10*",
+    "tipoCusto": "escolha",
+    "pagina": 151
+  },
+  {
+    "id": "orgulhoso",
+    "nome": "Orgulhoso",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "pacifismo",
+    "nome": "Pacifismo",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 152
+  },
+  {
+    "id": "padrão_de_tempo_reduzido",
+    "nome": "Padrão de Tempo Reduzido",
+    "custo": "-100",
+    "tipoCusto": "fixo",
+    "pagina": 152
+  },
+  {
+    "id": "paralisia_frente_ao_combate",
+    "nome": "Paralisia Frente ao Combate",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 152
+  },
+  {
+    "id": "paranoia",
+    "nome": "Paranoia",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 152
+  },
+  {
+    "id": "pernas_tortas",
+    "nome": "Pernas Tortas",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "pesadelos",
+    "nome": "Pesadelos",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 152
+  },
+  {
+    "id": "piromania",
+    "nome": "Piromania",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 153
+  },
+  {
+    "id": "pouca_empatia",
+    "nome": "Pouca Empatia",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 153
+  },
+  {
+    "id": "preferências",
+    "nome": "Preferências",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "preguiça",
+    "nome": "Preguiça",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 153
+  },
+  {
+    "id": "problemas_na_coluna",
+    "nome": "Problemas na Coluna",
+    "custo": "-15 ou -25",
+    "tipoCusto": "escolha",
+    "pagina": 153
+  },
+  {
+    "id": "recuperação_lenta",
+    "nome": "Recuperação Lenta",
+    "custo": "-5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 153
+  },
+  {
+    "id": "refeição_demorada",
+    "nome": "Refeição Demorada",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 153
+  },
+  {
+    "id": "reprogramável",
+    "nome": "Reprogramável",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 153
+  },
+  {
+    "id": "repugnância",
+    "nome": "Repugnância",
+    "custo": "-5 a -15",
+    "tipoCusto": "fixo",
+    "pagina": 154
+  },
+  {
+    "id": "reputação",
+    "nome": "Reputação",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 26
+  },
+  {
+    "id": "ressacas_terríveis",
+    "nome": "Ressacas Terríveis",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 165
+  },
+  {
+    "id": "riqueza",
+    "nome": "Riqueza",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 25
+  },
+  {
+    "id": "sadismo",
+    "nome": "Sadismo",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 154
+  },
+  {
+    "id": "sangue_frio",
+    "nome": "Sangue Frio",
+    "custo": "-5 ou -10",
+    "tipoCusto": "escolha",
+    "pagina": 154
+  },
+  {
+    "id": "sanguinolência",
+    "nome": "Sanguinolência",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 154
+  },
+  {
+    "id": "segredo",
+    "nome": "Segredo",
+    "custo": "-5 a -30",
+    "tipoCusto": "fixo",
+    "pagina": 155
+  },
+  {
+    "id": "sem_imaginação",
+    "nome": "Sem Imaginação",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 155
+  },
+  {
+    "id": "sem_manuseadores",
+    "nome": "Sem Manuseadores",
+    "custo": "-50",
+    "tipoCusto": "fixo",
+    "pagina": 149
+  },
+  {
+    "id": "sem_noção_de_profundidade",
+    "nome": "Sem Noção de Profundidade",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 155
+  },
+  {
+    "id": "sem_pernas",
+    "nome": "Sem Pernas",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 156
+  },
+  {
+    "id": "sem_recuperação",
+    "nome": "Sem Recuperação",
+    "custo": "-20 ou -30",
+    "tipoCusto": "escolha",
+    "pagina": 156
+  },
+  {
+    "id": "sem_um_dedo",
+    "nome": "Sem um Dedo",
+    "custo": "-2 ou -5",
+    "tipoCusto": "escolha",
+    "pagina": 156
+  },
+  {
+    "id": "semiereito",
+    "nome": "Semiereito",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 156
+  },
+  {
+    "id": "senso_do_dever",
+    "nome": "Senso do Dever",
+    "custo": "-2 a -20",
+    "tipoCusto": "fixo",
+    "pagina": 156
+  },
+  {
+    "id": "simpático",
+    "nome": "Simpático",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "solitário",
+    "nome": "Solitário",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 157
+  },
+  {
+    "id": "sonambulismo",
+    "nome": "Sonambulismo",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 157
+  },
+  {
+    "id": "sonhador",
+    "nome": "Sonhador",
+    "custo": "-1",
+    "tipoCusto": "fixo",
+    "pagina": 164
+  },
+  {
+    "id": "sono_complementar",
+    "nome": "Sono Complementar",
+    "custo": "-2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 157
+  },
+  {
+    "id": "sono_leve",
+    "nome": "Sono Leve",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 157
+  },
+  {
+    "id": "sonolento",
+    "nome": "Sonolento",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 157
+  },
+  {
+    "id": "status",
+    "nome": "Status",
+    "custo": "-5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 28
+  },
+  {
+    "id": "supersensitivismo",
+    "nome": "Supersensitivismo",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 157
+  },
+  {
+    "id": "suporte_de_vida_ampliado",
+    "nome": "Suporte de Vida Ampliado",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 158
+  },
+  {
+    "id": "surdez",
+    "nome": "Surdez",
+    "custo": "-20",
+    "tipoCusto": "fixo",
+    "pagina": 158
+  },
+  {
+    "id": "susceptibilidade_à_magia",
+    "nome": "Susceptibilidade à Magia",
+    "custo": "-3/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 158
+  },
+  {
+    "id": "suscetível",
+    "nome": "Suscetível",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 158
+  },
+  {
+    "id": "teimosia",
+    "nome": "Teimosia",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 158
+  },
+  {
+    "id": "temor",
+    "nome": "Temor",
+    "custo": "-2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 158
+  },
+  {
+    "id": "tetrapélégico",
+    "nome": "Tetrapélégico",
+    "custo": "-80",
+    "tipoCusto": "fixo",
+    "pagina": 159
+  },
+  {
+    "id": "timidez",
+    "nome": "Timidez",
+    "custo": "-5, -10, ou -20",
+    "tipoCusto": "escolha",
+    "pagina": 159
+  },
+  {
+    "id": "trapaceiro",
+    "nome": "Trapaceiro",
+    "custo": "-15*",
+    "tipoCusto": "fixo",
+    "pagina": 159
+  },
+  {
+    "id": "único",
+    "nome": "Único",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 159
+  },
+  {
+    "id": "veracidade",
+    "nome": "Veracidade",
+    "custo": "-5*",
+    "tipoCusto": "fixo",
+    "pagina": 159
+  },
+  {
+    "id": "viciado_em_trabalho",
+    "nome": "Viciado em Trabalho",
+    "custo": "-5",
+    "tipoCusto": "fixo",
+    "pagina": 159
+  },
+  {
+    "id": "vício",
+    "nome": "Vício",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 159
+  },
+  {
+    "id": "visão_restrita",
+    "nome": "Visão Restrita",
+    "custo": "-15 ou -30",
+    "tipoCusto": "escolha",
+    "pagina": 160
+  },
+  {
+    "id": "voto",
+    "nome": "Voto",
+    "custo": "-1 ou -5 a -15",
+    "tipoCusto": "escolha",
+    "pagina": 160
+  },
+  {
+    "id": "voz_irritante",
+    "nome": "Voz Irritante",
+    "custo": "-10",
+    "tipoCusto": "fixo",
+    "pagina": 161
+  },
+  {
+    "id": "vozes_fantasmagóricas",
+    "nome": "Vozes Fantasmagóricas",
+    "custo": "-5 a -15",
+    "tipoCusto": "fixo",
+    "pagina": 161
+  },
+  {
+    "id": "vulnerabilidade",
+    "nome": "Vulnerabilidade",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 161
+  },
+  {
+    "id": "xenofilia",
+    "nome": "Xenofilia",
+    "custo": "-10*",
+    "tipoCusto": "fixo",
+    "pagina": 161
+  },
+  {
+    "id": "zarolho",
+    "nome": "Zarolho",
+    "custo": "-15",
+    "tipoCusto": "fixo",
+    "pagina": 162
+  }
+]

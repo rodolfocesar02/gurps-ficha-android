@@ -1,0 +1,1815 @@
+[
+  {
+    "id": "abafador_de_mana",
+    "nome": "Abafador de Mana",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 34
+  },
+  {
+    "id": "abascanto",
+    "nome": "Abascanto",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 34
+  },
+  {
+    "id": "abençoado",
+    "nome": "Abençoado",
+    "custo": "10+",
+    "tipoCusto": "variavel",
+    "pagina": 35
+  },
+  {
+    "id": "acessórios",
+    "nome": "Acessórios",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 100
+  },
+  {
+    "id": "adaptabilidade_cultural",
+    "nome": "Adaptabilidade Cultural",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 35
+  },
+  {
+    "id": "adaptação_ao_terreno",
+    "nome": "Adaptação ao Terreno",
+    "custo": "0 ou 5",
+    "tipoCusto": "escolha",
+    "pagina": 35
+  },
+  {
+    "id": "aderência",
+    "nome": "Aderência",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 35
+  },
+  {
+    "id": "agente_cativante",
+    "nome": "Agente Cativante",
+    "custo": "15/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "aliados",
+    "nome": "Aliados",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 35
+  },
+  {
+    "id": "ambidestria",
+    "nome": "Ambidestria",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 38
+  },
+  {
+    "id": "ampliador_de_mana",
+    "nome": "Ampliador de Mana",
+    "custo": "50/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 38
+  },
+  {
+    "id": "anfíbio",
+    "nome": "Anfíbio",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 38
+  },
+  {
+    "id": "antecedentes_incomuns",
+    "nome": "Antecedentes Incomuns",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 39
+  },
+  {
+    "id": "apagado",
+    "nome": "Apagado",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 39
+  },
+  {
+    "id": "aparência",
+    "nome": "Aparência",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 21
+  },
+  {
+    "id": "apetrechos",
+    "nome": "Apetrechos",
+    "custo": "5/apetrecho",
+    "tipoCusto": "fixo",
+    "pagina": 39
+  },
+  {
+    "id": "aptidao_magica",
+    "nome": "Aptidão Mágica",
+    "custo": "5 + 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 40
+  },
+  {
+    "id": "arrebatador",
+    "nome": "Arrebatador",
+    "custo": "80",
+    "tipoCusto": "fixo",
+    "pagina": 40
+  },
+  {
+    "id": "arremedo",
+    "nome": "Arremedo",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 41
+  },
+  {
+    "id": "artífico",
+    "nome": "Artífico",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "artista_talentoso",
+    "nome": "Artista Talentoso",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "ataque_adicional",
+    "nome": "Ataque Adicional",
+    "custo": "25/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 42
+  },
+  {
+    "id": "ataque_constitutivo",
+    "nome": "Ataque Constitutivo",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 42
+  },
+  {
+    "id": "ataque_inato",
+    "nome": "Ataque Inato",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 42
+  },
+  {
+    "id": "atirador",
+    "nome": "Atirador",
+    "custo": "25",
+    "tipoCusto": "fixo",
+    "pagina": 43
+  },
+  {
+    "id": "atribulação",
+    "nome": "Atribulação",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 43
+  },
+  {
+    "id": "audição_aguçada",
+    "nome": "Audição Aguçada",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 88
+  },
+  {
+    "id": "audição_discriminatória",
+    "nome": "Audição Discriminatória",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 44
+  },
+  {
+    "id": "audição_parabólica",
+    "nome": "Audição Parabólica",
+    "custo": "4/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 44
+  },
+  {
+    "id": "audição_subsônica",
+    "nome": "Audição Subsônica",
+    "custo": "0 ou 5",
+    "tipoCusto": "escolha",
+    "pagina": 44
+  },
+  {
+    "id": "autotrans",
+    "nome": "Autotrans",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 100
+  },
+  {
+    "id": "boa_forma",
+    "nome": "Boa Forma",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 45
+  },
+  {
+    "id": "boca_adicional",
+    "nome": "Boca Adicional",
+    "custo": "5/boca",
+    "tipoCusto": "fixo",
+    "pagina": 45
+  },
+  {
+    "id": "bom_de_sono",
+    "nome": "Bom de Sono",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 100
+  },
+  {
+    "id": "bom_senso",
+    "nome": "Bom Senso",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 45
+  },
+  {
+    "id": "braços_adicionais",
+    "nome": "Braços Adicionais",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 45
+  },
+  {
+    "id": "cabeça_adicional",
+    "nome": "Cabeça Adicional",
+    "custo": "15/cabeça",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "cálculos_instantâneos",
+    "nome": "Cálculos Instantâneos",
+    "custo": "2",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "camaleão",
+    "nome": "Camaleão",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 46
+  },
+  {
+    "id": "camaleão_social",
+    "nome": "Camaleão Social",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "caminhar_no_ar",
+    "nome": "Caminhar no Ar",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "caminhar_sobre_líquidos",
+    "nome": "Caminhar sobre Líquidos",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "canalização",
+    "nome": "Canalização",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "carga_útil",
+    "nome": "Carga Útil",
+    "custo": "1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 47
+  },
+  {
+    "id": "carisma",
+    "nome": "Carisma",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 47
+  },
+  {
+    "id": "cibernética",
+    "nome": "Cibernética",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 47
+  },
+  {
+    "id": "clarissenciência",
+    "nome": "Clarissenciência",
+    "custo": "50",
+    "tipoCusto": "fixo",
+    "pagina": 47
+  },
+  {
+    "id": "clericato",
+    "nome": "Clericato",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 47
+  },
+  {
+    "id": "companheiro_animal",
+    "nome": "Companheiro Animal",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "consumo_reduzido",
+    "nome": "Consumo Reduzido",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 48
+  },
+  {
+    "id": "contatos",
+    "nome": "Contatos",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 48
+  },
+  {
+    "id": "controle_da_mente",
+    "nome": "Controle da Mente",
+    "custo": "50",
+    "tipoCusto": "fixo",
+    "pagina": 49
+  },
+  {
+    "id": "controle_do_metabolismo",
+    "nome": "Controle do Metabolismo",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 50
+  },
+  {
+    "id": "controle_térmico",
+    "nome": "Controle Térmico",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 50
+  },
+  {
+    "id": "crescimento",
+    "nome": "Crescimento",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 50
+  },
+  {
+    "id": "cronolocalização",
+    "nome": "Cronolocalização",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 74
+  },
+  {
+    "id": "curandeiro",
+    "nome": "Curandeiro",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "dedos_verdes",
+    "nome": "Dedos Verdes",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "defesas_ampliadas",
+    "nome": "Defesas Ampliadas",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 51
+  },
+  {
+    "id": "dentes",
+    "nome": "Dentes",
+    "custo": "0, 1, ou 2",
+    "tipoCusto": "escolha",
+    "pagina": 52
+  },
+  {
+    "id": "desenvolvedor",
+    "nome": "Desenvolvedor",
+    "custo": "25 ou 50",
+    "tipoCusto": "escolha",
+    "pagina": 52
+  },
+  {
+    "id": "deslocamento_ampliado",
+    "nome": "Deslocamento Ampliado",
+    "custo": "20/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 52
+  },
+  {
+    "id": "destemor",
+    "nome": "Destemor",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 53
+  },
+  {
+    "id": "destino",
+    "nome": "Destino",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 53
+  },
+  {
+    "id": "destreza_manual_elevada",
+    "nome": "Destreza Manual Elevada",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 53
+  },
+  {
+    "id": "detectar",
+    "nome": "Detectar",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 53
+  },
+  {
+    "id": "difícil_de_subjugar",
+    "nome": "Difícil de Subjugar",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 53
+  },
+  {
+    "id": "digestão_universal",
+    "nome": "Digestão Universal",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 54
+  },
+  {
+    "id": "dobra",
+    "nome": "Dobra",
+    "custo": "100",
+    "tipoCusto": "fixo",
+    "pagina": 54
+  },
+  {
+    "id": "dominação",
+    "nome": "Dominação",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 55
+  },
+  {
+    "id": "duplicação",
+    "nome": "Duplicação",
+    "custo": "35/cópia",
+    "tipoCusto": "fixo",
+    "pagina": 55
+  },
+  {
+    "id": "durabilidade_sobrenatural",
+    "nome": "Durabilidade Sobrenatural",
+    "custo": "150",
+    "tipoCusto": "fixo",
+    "pagina": 56
+  },
+  {
+    "id": "duro_de_matar",
+    "nome": "Duro de Matar",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 56
+  },
+  {
+    "id": "dx_braçal",
+    "nome": "DX Braçal",
+    "custo": "12 ou 16/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 56
+  },
+  {
+    "id": "elasticidade",
+    "nome": "Elasticidade",
+    "custo": "6/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 56
+  },
+  {
+    "id": "elo_mental",
+    "nome": "Elo Mental",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 57
+  },
+  {
+    "id": "empatia",
+    "nome": "Empatia",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 57
+  },
+  {
+    "id": "empatia_com_animais",
+    "nome": "Empatia com Animais",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 57
+  },
+  {
+    "id": "empatia_com_espíritos",
+    "nome": "Empatia com Espíritos",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 57
+  },
+  {
+    "id": "empatia_com_plantas",
+    "nome": "Empatia com Plantas",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 57
+  },
+  {
+    "id": "encolhimento",
+    "nome": "Encolhimento",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 57
+  },
+  {
+    "id": "equilíbrio_perfeito",
+    "nome": "Equilíbrio Perfeito",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 58
+  },
+  {
+    "id": "equipamento_característico",
+    "nome": "Equipamento Característico",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 58
+  },
+  {
+    "id": "escavação",
+    "nome": "Escavação",
+    "custo": "30 + 5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 58
+  },
+  {
+    "id": "escorregadio",
+    "nome": "Escorregadio",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 58
+  },
+  {
+    "id": "escudo_mental",
+    "nome": "Escudo Mental",
+    "custo": "4/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 58
+  },
+  {
+    "id": "espinhos",
+    "nome": "Espinhos",
+    "custo": "1 a 3",
+    "tipoCusto": "fixo",
+    "pagina": 58
+  },
+  {
+    "id": "estabilidade_no_emprego",
+    "nome": "Estabilidade no Emprego",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 59
+  },
+  {
+    "id": "estática_psíquica",
+    "nome": "Estática Psíquica",
+    "custo": "30",
+    "tipoCusto": "fixo",
+    "pagina": 59
+  },
+  {
+    "id": "estilo",
+    "nome": "Estilo",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "expectativa_de_vida_ampliada",
+    "nome": "Expectativa de Vida Ampliada",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 59
+  },
+  {
+    "id": "experiênciag",
+    "nome": "Experiência-G",
+    "custo": "1 a 10",
+    "tipoCusto": "fixo",
+    "pagina": 59
+  },
+  {
+    "id": "explorador",
+    "nome": "Explorador",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 91
+  },
+  {
+    "id": "facilidade_para_idiomas",
+    "nome": "Facilidade para Idiomas",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 59
+  },
+  {
+    "id": "fala_subaquática",
+    "nome": "Fala Subaquática",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 59
+  },
+  {
+    "id": "fala_subsônica",
+    "nome": "Fala Subsônica",
+    "custo": "0 ou 10",
+    "tipoCusto": "escolha",
+    "pagina": 59
+  },
+  {
+    "id": "fala_ultrassônica",
+    "nome": "Fala Ultrassônica",
+    "custo": "0 ou 10",
+    "tipoCusto": "escolha",
+    "pagina": 59
+  },
+  {
+    "id": "falar_com_animais",
+    "nome": "Falar com Animais",
+    "custo": "25",
+    "tipoCusto": "fixo",
+    "pagina": 60
+  },
+  {
+    "id": "falar_com_plantas",
+    "nome": "Falar com Plantas",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 60
+  },
+  {
+    "id": "familiaridade_cultural",
+    "nome": "Familiaridade Cultural",
+    "custo": "1 ou 2/cultura",
+    "tipoCusto": "escolha",
+    "pagina": 23
+  },
+  {
+    "id": "favor",
+    "nome": "Favor",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 60
+  },
+  {
+    "id": "fé_verdadeira",
+    "nome": "Fé Verdadeira",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 60
+  },
+  {
+    "id": "fleuma",
+    "nome": "Fleuma",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 60
+  },
+  {
+    "id": "flexibilidade",
+    "nome": "Flexibilidade",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 60
+  },
+  {
+    "id": "forma_alternativa",
+    "nome": "Forma Alternativa",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 71
+  },
+  {
+    "id": "forma_de_sombras",
+    "nome": "Forma de Sombras",
+    "custo": "50",
+    "tipoCusto": "fixo",
+    "pagina": 61
+  },
+  {
+    "id": "garras",
+    "nome": "Garras",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 61
+  },
+  {
+    "id": "golpeadores",
+    "nome": "Golpeadores",
+    "custo": "5–8",
+    "tipoCusto": "fixo",
+    "pagina": 62
+  },
+  {
+    "id": "grupo_de_contato",
+    "nome": "Grupo de Contato",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 62
+  },
+  {
+    "id": "habilidade_matemática",
+    "nome": "Habilidade Matemática",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 91
+  },
+  {
+    "id": "habilidade_musical",
+    "nome": "Habilidade Musical",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 91
+  },
+  {
+    "id": "habilidades_modulares",
+    "nome": "Habilidades Modulares",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 63
+  },
+  {
+    "id": "hermafromorfo",
+    "nome": "Hermafromorfo",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 63
+  },
+  {
+    "id": "hierarquia",
+    "nome": "Hierarquia",
+    "custo": "5 ou 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 29
+  },
+  {
+    "id": "hierarquia_administrativa",
+    "nome": "Hierarquia Administrativa",
+    "custo": "5 ou 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 30
+  },
+  {
+    "id": "hierarquia_comercial",
+    "nome": "Hierarquia Comercial",
+    "custo": "5 ou 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 30
+  },
+  {
+    "id": "hierarquia_honorária",
+    "nome": "Hierarquia Honorária",
+    "custo": "1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 29
+  },
+  {
+    "id": "hierarquia_militar",
+    "nome": "Hierarquia Militar",
+    "custo": "5 ou 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 30
+  },
+  {
+    "id": "hierarquia_policial",
+    "nome": "Hierarquia Policial",
+    "custo": "5 ou 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 30
+  },
+  {
+    "id": "hierarquia_religiosa",
+    "nome": "Hierarquia Religiosa",
+    "custo": "5 ou 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 30
+  },
+  {
+    "id": "hipoalga_alto_limiar_de_dor",
+    "nome": "Hipoalga (Alto Limiar de Dor)",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 63
+  },
+  {
+    "id": "idade_imutável",
+    "nome": "Idade Imutável",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 63
+  },
+  {
+    "id": "identidade_alternativa",
+    "nome": "Identidade Alternativa",
+    "custo": "5 ou 15",
+    "tipoCusto": "escolha",
+    "pagina": 63
+  },
+  {
+    "id": "iluminado",
+    "nome": "Iluminado",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 64
+  },
+  {
+    "id": "impossível_de_matar",
+    "nome": "Impossível de Matar",
+    "custo": "50 a 150",
+    "tipoCusto": "fixo",
+    "pagina": 64
+  },
+  {
+    "id": "imunidade_legal",
+    "nome": "Imunidade Legal",
+    "custo": "5 a 20",
+    "tipoCusto": "fixo",
+    "pagina": 64
+  },
+  {
+    "id": "indomável",
+    "nome": "Indomável",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 65
+  },
+  {
+    "id": "inércia_temporal",
+    "nome": "Inércia Temporal",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 65
+  },
+  {
+    "id": "infravisão",
+    "nome": "Infravisão",
+    "custo": "0 ou 10",
+    "tipoCusto": "escolha",
+    "pagina": 65
+  },
+  {
+    "id": "insubstancialidade",
+    "nome": "Insubstancialidade",
+    "custo": "80",
+    "tipoCusto": "fixo",
+    "pagina": 65
+  },
+  {
+    "id": "interposição",
+    "nome": "Interposição",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 66
+  },
+  {
+    "id": "intuição",
+    "nome": "Intuição",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 67
+  },
+  {
+    "id": "investidura_de_poder",
+    "nome": "Investidura de Poder",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 67
+  },
+  {
+    "id": "invisibilidade",
+    "nome": "Invisibilidade",
+    "custo": "40",
+    "tipoCusto": "fixo",
+    "pagina": 67
+  },
+  {
+    "id": "lacrado",
+    "nome": "Lacrado",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 68
+  },
+  {
+    "id": "lamentável",
+    "nome": "Lamentável",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 22
+  },
+  {
+    "id": "leitura_da_mente",
+    "nome": "Leitura da Mente",
+    "custo": "30",
+    "tipoCusto": "fixo",
+    "pagina": 68
+  },
+  {
+    "id": "língua_ferina",
+    "nome": "Língua Ferina",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 68
+  },
+  {
+    "id": "longevidade",
+    "nome": "Longevidade",
+    "custo": "2",
+    "tipoCusto": "fixo",
+    "pagina": 69
+  },
+  {
+    "id": "matemático_intuitivo",
+    "nome": "Matemático Intuitivo",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 46
+  },
+  {
+    "id": "médium",
+    "nome": "Médium",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 69
+  },
+  {
+    "id": "membrana_nictitante",
+    "nome": "Membrana Nictitante",
+    "custo": "1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 69
+  },
+  {
+    "id": "memória_eidética",
+    "nome": "Memória Eidética",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 69
+  },
+  {
+    "id": "memória_fotográfica",
+    "nome": "Memória Fotográfica",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 69
+  },
+  {
+    "id": "memória_racial",
+    "nome": "Memória Racial",
+    "custo": "15 ou 40",
+    "tipoCusto": "escolha",
+    "pagina": 69
+  },
+  {
+    "id": "mente_digital",
+    "nome": "Mente Digital",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 69
+  },
+  {
+    "id": "mente_segmentada",
+    "nome": "Mente Segmentada",
+    "custo": "50/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 70
+  },
+  {
+    "id": "mestre_de_armas",
+    "nome": "Mestre de Armas",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 70
+  },
+  {
+    "id": "metabolismo_impoluto",
+    "nome": "Metabolismo Impoluto",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "metamorfose",
+    "nome": "Metamorfose",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 70
+  },
+  {
+    "id": "mordida_de_vampiro",
+    "nome": "Mordida de Vampiro",
+    "custo": "30 + 5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 72
+  },
+  {
+    "id": "morfose",
+    "nome": "Morfose",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 72
+  },
+  {
+    "id": "não_come_nem_bebe",
+    "nome": "Não Come nem Bebe",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 72
+  },
+  {
+    "id": "não_dorme",
+    "nome": "Não Dorme",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 72
+  },
+  {
+    "id": "não_respira",
+    "nome": "Não Respira",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 73
+  },
+  {
+    "id": "neutralizar",
+    "nome": "Neutralizar",
+    "custo": "50",
+    "tipoCusto": "fixo",
+    "pagina": 73
+  },
+  {
+    "id": "noção_do_perigo",
+    "nome": "Noção do Perigo",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 73
+  },
+  {
+    "id": "noção_do_tempo_ampliada",
+    "nome": "Noção do Tempo Ampliada",
+    "custo": "45",
+    "tipoCusto": "fixo",
+    "pagina": 73
+  },
+  {
+    "id": "noção_exata_do_tempo",
+    "nome": "Noção Exata do Tempo",
+    "custo": "2",
+    "tipoCusto": "fixo",
+    "pagina": 74
+  },
+  {
+    "id": "noção_tridim_do_espaço",
+    "nome": "Noção Tridim. do Espaço",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 87
+  },
+  {
+    "id": "nt_alto",
+    "nome": "NT Alto",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 23
+  },
+  {
+    "id": "obscurecer",
+    "nome": "Obscurecer",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 74
+  },
+  {
+    "id": "obstinado",
+    "nome": "Obstinado",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 74
+  },
+  {
+    "id": "oflato_discriminatório",
+    "nome": "Oflato Discriminatório",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 74
+  },
+  {
+    "id": "oráculo",
+    "nome": "Oráculo",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 74
+  },
+  {
+    "id": "ótima_forma",
+    "nome": "Ótima Forma",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 75
+  },
+  {
+    "id": "padrão_de_tempo_alterado",
+    "nome": "Padrão de Tempo Alterado",
+    "custo": "100/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 75
+  },
+  {
+    "id": "paladar_discriminatório",
+    "nome": "Paladar Discriminatório",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 75
+  },
+  {
+    "id": "paladarolfato_apurado",
+    "nome": "Paladar/Olfato Apurado",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 88
+  },
+  {
+    "id": "patronos",
+    "nome": "Patronos",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 75
+  },
+  {
+    "id": "pelagem",
+    "nome": "Pelagem",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "pele_elástica",
+    "nome": "Pele Elástica",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 77
+  },
+  {
+    "id": "pendulear",
+    "nome": "Pendulear",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 77
+  },
+  {
+    "id": "permissão_de_segurança",
+    "nome": "Permissão de Segurança",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 77
+  },
+  {
+    "id": "pernas_adicionais",
+    "nome": "Pernas Adicionais",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 77
+  },
+  {
+    "id": "perspicácia_comercial",
+    "nome": "Perspicácia Comercial",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 91
+  },
+  {
+    "id": "poderes_legais",
+    "nome": "Poderes Legais",
+    "custo": "5, 10, ou 15",
+    "tipoCusto": "escolha",
+    "pagina": 78
+  },
+  {
+    "id": "por_dentro_da_moda",
+    "nome": "Por Dentro da Moda",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 21
+  },
+  {
+    "id": "possessão",
+    "nome": "Possessão",
+    "custo": "100",
+    "tipoCusto": "fixo",
+    "pagina": 78
+  },
+  {
+    "id": "pouco_sono",
+    "nome": "Pouco Sono",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 80
+  },
+  {
+    "id": "precognição",
+    "nome": "Precognição",
+    "custo": "25",
+    "tipoCusto": "fixo",
+    "pagina": 80
+  },
+  {
+    "id": "prender_a_respiração",
+    "nome": "Prender a Respiração",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 80
+  },
+  {
+    "id": "propósito_maior",
+    "nome": "Propósito Maior",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 80
+  },
+  {
+    "id": "psicometria",
+    "nome": "Psicometria",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 81
+  },
+  {
+    "id": "pulmões_com_filtro",
+    "nome": "Pulmões com Filtro",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 81
+  },
+  {
+    "id": "queda_de_gato",
+    "nome": "Queda de Gato",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 81
+  },
+  {
+    "id": "rastreamento_ampliado",
+    "nome": "Rastreamento Ampliado",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 81
+  },
+  {
+    "id": "reconhecimento_social",
+    "nome": "Reconhecimento Social",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 81
+  },
+  {
+    "id": "recuperação_acelerada",
+    "nome": "Recuperação Acelerada",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 82
+  },
+  {
+    "id": "recuperação_da_consciência",
+    "nome": "Recuperação da Consciência",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 82
+  },
+  {
+    "id": "recuperação_muita_acelerada",
+    "nome": "Recuperação Muita Acelerada",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 82
+  },
+  {
+    "id": "redespertar",
+    "nome": "Redespertar",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 82
+  },
+  {
+    "id": "reflexos_em_combate",
+    "nome": "Reflexos em Combate",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 82
+  },
+  {
+    "id": "regeneração",
+    "nome": "Regeneração",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 82
+  },
+  {
+    "id": "reivindicar_hospitalidade",
+    "nome": "Reivindicar Hospitalidade",
+    "custo": "1 a 10",
+    "tipoCusto": "fixo",
+    "pagina": 82
+  },
+  {
+    "id": "renda_própria",
+    "nome": "Renda Própria",
+    "custo": "1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 26
+  },
+  {
+    "id": "reputação",
+    "nome": "Reputação",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 26
+  },
+  {
+    "id": "resistência_a_dano",
+    "nome": "Resistência a Dano",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 83
+  },
+  {
+    "id": "resistência_à_pressão",
+    "nome": "Resistência à Pressão",
+    "custo": "5 a 15",
+    "tipoCusto": "fixo",
+    "pagina": 84
+  },
+  {
+    "id": "resistência_ao_vácuo",
+    "nome": "Resistência ao Vácuo",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 84
+  },
+  {
+    "id": "resistente",
+    "nome": "Resistente",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 84
+  },
+  {
+    "id": "restaurar_membros",
+    "nome": "Restaurar Membros",
+    "custo": "40",
+    "tipoCusto": "fixo",
+    "pagina": 85
+  },
+  {
+    "id": "retenção",
+    "nome": "Retenção",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 85
+  },
+  {
+    "id": "riqueza",
+    "nome": "Riqueza",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 25
+  },
+  {
+    "id": "rosto_sincero",
+    "nome": "Rosto Sincero",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "saltador",
+    "nome": "Saltador",
+    "custo": "100",
+    "tipoCusto": "fixo",
+    "pagina": 86
+  },
+  {
+    "id": "sem_ressaca",
+    "nome": "Sem Ressaca",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "sensível",
+    "nome": "Sensível",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 57
+  },
+  {
+    "id": "senso_de_direção",
+    "nome": "Senso de Direção",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 87
+  },
+  {
+    "id": "sentido_de_monitoramento",
+    "nome": "Sentido de Monitoramento",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 87
+  },
+  {
+    "id": "sentido_de_vibração",
+    "nome": "Sentido de Vibração",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 88
+  },
+  {
+    "id": "sentido_protegido",
+    "nome": "Sentido Protegido",
+    "custo": "5/sentido",
+    "tipoCusto": "fixo",
+    "pagina": 88
+  },
+  {
+    "id": "serendipidade",
+    "nome": "Serendipidade",
+    "custo": "15/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 88
+  },
+  {
+    "id": "silêncio",
+    "nome": "Silêncio",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 89
+  },
+  {
+    "id": "sonda_mental",
+    "nome": "Sonda Mental",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 89
+  },
+  {
+    "id": "sorte",
+    "nome": "Sorte",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 89
+  },
+  {
+    "id": "st_braçal",
+    "nome": "ST Braçal",
+    "custo": "3, 5, ou 8/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 89
+  },
+  {
+    "id": "st_de_golpe",
+    "nome": "ST de Golpe",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 89
+  },
+  {
+    "id": "st_de_levantamento",
+    "nome": "ST de Levantamento",
+    "custo": "3/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 89
+  },
+  {
+    "id": "status",
+    "nome": "Status",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 28
+  },
+  {
+    "id": "super_escalada",
+    "nome": "Super Escalada",
+    "custo": "3/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "super_salto",
+    "nome": "Super Salto",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 90
+  },
+  {
+    "id": "super_sorte",
+    "nome": "Super Sorte",
+    "custo": "100",
+    "tipoCusto": "fixo",
+    "pagina": 90
+  },
+  {
+    "id": "superaudição",
+    "nome": "Superaudição",
+    "custo": "0 ou 5",
+    "tipoCusto": "escolha",
+    "pagina": 90
+  },
+  {
+    "id": "talento",
+    "nome": "Talento",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 90
+  },
+  {
+    "id": "talento_instintivo",
+    "nome": "Talento Instintivo",
+    "custo": "20/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 91
+  },
+  {
+    "id": "tato_apurado",
+    "nome": "Tato Apurado",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 88
+  },
+  {
+    "id": "telecinese",
+    "nome": "Telecinese",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 92
+  },
+  {
+    "id": "telecomunicação",
+    "nome": "Telecomunicação",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 93
+  },
+  {
+    "id": "terror",
+    "nome": "Terror",
+    "custo": "30 + 10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 94
+  },
+  {
+    "id": "títere",
+    "nome": "Títere",
+    "custo": "5 a 10",
+    "tipoCusto": "fixo",
+    "pagina": 94
+  },
+  {
+    "id": "tolerância_a_ferimentos",
+    "nome": "Tolerância a Ferimentos",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 94
+  },
+  {
+    "id": "tolerância_à_radiação",
+    "nome": "Tolerância à Radiação",
+    "custo": "Variável",
+    "tipoCusto": "variavel",
+    "pagina": 95
+  },
+  {
+    "id": "tolerância_à_temperatura",
+    "nome": "Tolerância à Temperatura",
+    "custo": "1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 95
+  },
+  {
+    "id": "tolerância_ao_álcool",
+    "nome": "Tolerância ao Álcool",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "tolerânciag_ampliada",
+    "nome": "Tolerância-G Ampliada",
+    "custo": "5 a 25",
+    "tipoCusto": "fixo",
+    "pagina": 95
+  },
+  {
+    "id": "toque_sensível",
+    "nome": "Toque Sensível",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "treinado_por_um_mestre",
+    "nome": "Treinado por um Mestre",
+    "custo": "30",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "ultraflexibilidade_das_juntas",
+    "nome": "Ultraflexibilidade das Juntas",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 61
+  },
+  {
+    "id": "ultravisão",
+    "nome": "Ultravisão",
+    "custo": "0 a 10",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "venturoso",
+    "nome": "Venturoso",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "ver_o_invisível",
+    "nome": "Ver o Invisível",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "versátil",
+    "nome": "Versátil",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "vida_extra",
+    "nome": "Vida Extra",
+    "custo": "25/vida",
+    "tipoCusto": "fixo",
+    "pagina": 96
+  },
+  {
+    "id": "vínculo_especial",
+    "nome": "Vínculo Especial",
+    "custo": "5",
+    "tipoCusto": "fixo",
+    "pagina": 97
+  },
+  {
+    "id": "visão_360_graus",
+    "nome": "Visão 360 graus",
+    "custo": "25",
+    "tipoCusto": "fixo",
+    "pagina": 97
+  },
+  {
+    "id": "visão_aguçada",
+    "nome": "Visão Aguçada",
+    "custo": "2/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 88
+  },
+  {
+    "id": "visão_hiperespectral",
+    "nome": "Visão Hiperespectral",
+    "custo": "25",
+    "tipoCusto": "fixo",
+    "pagina": 97
+  },
+  {
+    "id": "visão_microscópica",
+    "nome": "Visão Microscópica",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 97
+  },
+  {
+    "id": "visão_no_escuro",
+    "nome": "Visão no Escuro",
+    "custo": "25",
+    "tipoCusto": "fixo",
+    "pagina": 97
+  },
+  {
+    "id": "visão_noturna",
+    "nome": "Visão Noturna",
+    "custo": "1/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 97
+  },
+  {
+    "id": "visão_penetrante",
+    "nome": "Visão Penetrante",
+    "custo": "10/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 97
+  },
+  {
+    "id": "visão_periférica",
+    "nome": "Visão Periférica",
+    "custo": "15",
+    "tipoCusto": "fixo",
+    "pagina": 98
+  },
+  {
+    "id": "visão_telescópica",
+    "nome": "Visão Telescópica",
+    "custo": "5/nível",
+    "tipoCusto": "por_nivel",
+    "pagina": 98
+  },
+  {
+    "id": "visualização",
+    "nome": "Visualização",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 98
+  },
+  {
+    "id": "voo",
+    "nome": "Voo",
+    "custo": "40",
+    "tipoCusto": "fixo",
+    "pagina": 98
+  },
+  {
+    "id": "voz_melodiosa",
+    "nome": "Voz Melodiosa",
+    "custo": "10",
+    "tipoCusto": "fixo",
+    "pagina": 100
+  },
+  {
+    "id": "voz_penetrante",
+    "nome": "Voz Penetrante",
+    "custo": "1",
+    "tipoCusto": "fixo",
+    "pagina": 101
+  },
+  {
+    "id": "xenoadaptabilidade",
+    "nome": "Xeno-adaptabilidade",
+    "custo": "20",
+    "tipoCusto": "fixo",
+    "pagina": 35
+  }
+]
