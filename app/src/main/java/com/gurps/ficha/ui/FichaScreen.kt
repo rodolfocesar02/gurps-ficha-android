@@ -725,6 +725,7 @@ fun TabCombate(viewModel: FichaViewModel) {
             // Configuração de Apara
             Text("Configurar Apara:", style = MaterialTheme.typography.labelMedium)
             val periciasCombate = viewModel.periciasCombate
+                .filter { !it.definicaoId.contains("escudo", ignoreCase = true) }
             if (periciasCombate.isEmpty()) {
                 Text("Adicione perícias de combate para calcular a Apara.", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             } else {
@@ -733,9 +734,11 @@ fun TabCombate(viewModel: FichaViewModel) {
                     expanded = expandedApara,
                     onExpandedChange = { expandedApara = !expandedApara }
                 ) {
-                    val currentPericia = periciasCombate.find { it.definicaoId == p.defesasAtivas.periciaAparaId }
+                    val currentPericia =
+                        periciasCombate.find { it.definicaoId == p.defesasAtivas.periciaAparaId }
                     OutlinedTextField(
-                        value = currentPericia?.let { "${it.nome} (${it.calcularNivel(p)})" } ?: "Selecionar Perícia",
+                        value = currentPericia?.let { "${it.nome} (${it.calcularNivel(p)})" }
+                            ?: "Selecionar Perícia",
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedApara) },
@@ -747,33 +750,73 @@ fun TabCombate(viewModel: FichaViewModel) {
                     ) {
                         DropdownMenuItem(
                             text = { Text("Nenhuma") },
-                            onClick = { viewModel.atualizarPericiaApara(null); expandedApara = false }
+                            onClick = {
+                                viewModel.atualizarPericiaApara(null); expandedApara = false
+                            }
                         )
+
                         periciasCombate.forEach { pericia ->
                             DropdownMenuItem(
                                 text = { Text("${pericia.nome} (${pericia.calcularNivel(p)})") },
-                                onClick = { viewModel.atualizarPericiaApara(pericia.definicaoId); expandedApara = false }
+                                onClick = {
+                                    viewModel.atualizarPericiaApara(pericia.definicaoId); expandedApara =
+                                    false
+                                }
                             )
+                        }
+                    }
+                } // Configuração de Bloqueio
+
+                        Text("Configurar Bloqueio:", style = MaterialTheme.typography.labelMedium)
+
+// Filtra perícias que contenham "escudo" no ID ou Nome
+                        val periciasEscudo = viewModel.periciasCombate.filter {
+                            it.definicaoId.contains("escudo", ignoreCase = true) ||
+                                    it.nome.contains("escudo", ignoreCase = true)
+                        }
+
+                        if (periciasEscudo.isEmpty()) {
+                            Text("Adicione uma perícia de Escudo para calcular Bloqueio.",
+                                style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                        } else {
+                            // Dropdown de Perícia de Escudo
+                            var expandedBloqueioPericia by remember { mutableStateOf(false) }
+                            ExposedDropdownMenuBox(
+                                expanded = expandedBloqueioPericia,
+                                onExpandedChange = { expandedBloqueioPericia = !expandedBloqueioPericia }
+                            ) {
+                                val currentPericia = periciasEscudo.find { it.definicaoId == p.defesasAtivas.periciaBloqueioId }
+                                OutlinedTextField(
+                                    value = currentPericia?.let { "${it.nome} (${it.calcularNivel(p)})" } ?: "Selecionar Perícia",
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Perícia de Escudo") },
+                                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedBloqueioPericia) },
+                                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                                )
+                                ExposedDropdownMenu(
+                                    expanded = expandedBloqueioPericia,
+                                    onDismissRequest = { expandedBloqueioPericia = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Nenhuma") },
+                                        onClick = { viewModel.atualizarPericiaBloqueio(null); expandedBloqueioPericia = false }
+                                    )
+                                    periciasEscudo.forEach { pericia ->
+                                        DropdownMenuItem(
+                                            text = { Text("${pericia.nome} (${pericia.calcularNivel(p)})") },
+                                            onClick = { viewModel.atualizarPericiaBloqueio(pericia.definicaoId); expandedBloqueioPericia = false }
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        SectionCard(title = "Dano") {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Golpe (GdP)", style = MaterialTheme.typography.labelSmall)
-                    Text(p.danoGdP, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("Balanço (GeB)", style = MaterialTheme.typography.labelSmall)
-                    Text(p.danoGeB, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                }
-            }
-        }
-    }
-}
+
 
 @Composable
 fun DefesaDisplay(nome: String, valor: Int) {
