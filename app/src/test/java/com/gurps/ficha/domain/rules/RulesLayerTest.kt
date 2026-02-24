@@ -47,6 +47,41 @@ class RulesLayerTest {
     }
 
     @Test
+    fun `respeita tabela completa de bonus de pericia por pontos`() {
+        // Facil: Atr, Atr+1, Atr+1, Atr+2, Atr+3, Atr+4
+        assertEquals(0, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 1))
+        assertEquals(1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 2))
+        assertEquals(1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 3))
+        assertEquals(2, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 4))
+        assertEquals(3, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 8))
+        assertEquals(4, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 12))
+
+        // Media: Atr-1, Atr, Atr, Atr+1, Atr+2, Atr+3
+        assertEquals(-1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MEDIA, 1))
+        assertEquals(0, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MEDIA, 2))
+        assertEquals(0, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MEDIA, 3))
+        assertEquals(1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MEDIA, 4))
+        assertEquals(2, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MEDIA, 8))
+        assertEquals(3, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MEDIA, 12))
+
+        // Dificil: Atr-2, Atr-1, Atr-1, Atr, Atr+1, Atr+2
+        assertEquals(-2, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 1))
+        assertEquals(-1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 2))
+        assertEquals(-1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 3))
+        assertEquals(0, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 4))
+        assertEquals(1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 8))
+        assertEquals(2, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 12))
+
+        // Muito dificil: Atr-3, Atr-2, Atr-2, Atr-1, Atr, Atr+1
+        assertEquals(-3, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MUITO_DIFICIL, 1))
+        assertEquals(-2, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MUITO_DIFICIL, 2))
+        assertEquals(-2, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MUITO_DIFICIL, 3))
+        assertEquals(-1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MUITO_DIFICIL, 4))
+        assertEquals(0, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MUITO_DIFICIL, 8))
+        assertEquals(1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.MUITO_DIFICIL, 12))
+    }
+
+    @Test
     fun `normaliza custo de velocidade basica por passos de 0_25`() {
         assertEquals(1, CharacterRules.calcularPassosVelocidadeBasica(0.24f))
         assertEquals(2, CharacterRules.calcularPassosVelocidadeBasica(0.49f))

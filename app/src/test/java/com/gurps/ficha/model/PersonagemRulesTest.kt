@@ -106,6 +106,20 @@ class PersonagemRulesTest {
     }
 
     @Test
+    fun `normaliza custo minimo de pontos para magias no total da ficha`() {
+        val personagem = Personagem(
+            magias = listOf(
+                MagiaSelecionada(definicaoId = "m1", nome = "Magia 1", pontosGastos = 0),
+                MagiaSelecionada(definicaoId = "m2", nome = "Magia 2", pontosGastos = -3),
+                MagiaSelecionada(definicaoId = "m3", nome = "Magia 3", pontosGastos = 4)
+            )
+        )
+
+        // Cada magia custa no mínimo 1 ponto: 1 + 1 + 4 = 6
+        assertEquals(6, personagem.pontosMagias)
+    }
+
+    @Test
     fun `calcula defesas ativas com carga bonus e escudo`() {
         val personagem = Personagem(
             destreza = 10,

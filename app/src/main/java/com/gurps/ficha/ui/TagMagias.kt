@@ -129,7 +129,7 @@ fun MagiaItem(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
-            val difNome = if (magia.dificuldade == Dificuldade.MUITO_DIFICIL) "MD" else "D"
+            val difNome = magia.dificuldade.sigla
             
             // Formatando Classe e Escola
             val classeEscola = listOfNotNull(

@@ -58,6 +58,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
     val listaFiltrada = viewModel.magiasFiltradas
     val escolas = viewModel.todasEscolasMagia
+    val classes = viewModel.todasClassesMagia
 
     Dialog(onDismissRequest = onDismiss) {
         Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
@@ -76,6 +77,29 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
                 
+                // Filtro por Classe
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    item {
+                        FilterChip(
+                            selected = viewModel.filtroClasseMagia == null,
+                            onClick = { viewModel.atualizarFiltroClasseMagia(null) },
+                            label = { Text("Todas classes") }
+                        )
+                    }
+                    items(classes) { classe ->
+                        FilterChip(
+                            selected = viewModel.filtroClasseMagia == classe,
+                            onClick = { viewModel.atualizarFiltroClasseMagia(classe) },
+                            label = { Text(classe) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 // Filtro por Escola
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -207,7 +231,11 @@ fun ConfigurarMagiaDialog(
                 Divider()
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("NH: $nivelPreview (IQ+$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Text(
+                            "NH: $nivelPreview (IQ+AM$nivelRelativo)",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -242,7 +270,7 @@ fun EditarMagiaDialog(
         title = { Text("Editar: ${magia.nome}") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
-                val difNome = if (magia.dificuldade == Dificuldade.MUITO_DIFICIL) "MD" else "D"
+                val difNome = magia.dificuldade.sigla
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
 
                 Divider()
@@ -283,7 +311,11 @@ fun EditarMagiaDialog(
                 Divider()
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
-                        Text("NH: $nivelPreview (IQ+$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                        Text(
+                            "NH: $nivelPreview (IQ+AM$nivelRelativo)",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }

@@ -30,4 +30,42 @@ class PericiaJsonParsingTest {
         assertTrue(pericia.atributosPossiveis != null)
         assertEquals(listOf("DX", "IQ"), pericia.atributosPossiveis)
     }
+
+    @Test
+    fun `parseia preDefinicoes com grafia acentuada e legada`() {
+        val jsonComAcento = """
+            {
+              "id": "pericia_teste_predef",
+              "nome": "Pericia Teste Predef",
+              "atributoBase": "DX",
+              "dificuldadeFixa": "M",
+              "preDefinições": [
+                { "atributo": "DX", "modificador": -4 },
+                { "atributo": "IQ", "modificador": -5 }
+              ]
+            }
+        """.trimIndent()
+
+        val periciaAcento = gson.fromJson(jsonComAcento, PericiaDefinicao::class.java)
+        assertEquals(2, periciaAcento.preDefinicoes.size)
+        assertEquals("DX", periciaAcento.preDefinicoes[0].atributo)
+        assertEquals(-4, periciaAcento.preDefinicoes[0].modificador)
+
+        val jsonLegado = """
+            {
+              "id": "pericia_teste_predef_legacy",
+              "nome": "Pericia Teste Predef Legacy",
+              "atributoBase": "DX",
+              "dificuldadeFixa": "M",
+              "preDefiniÃ§Ãµes": [
+                { "atributo": "HT", "modificador": -6 }
+              ]
+            }
+        """.trimIndent()
+
+        val periciaLegado = gson.fromJson(jsonLegado, PericiaDefinicao::class.java)
+        assertEquals(1, periciaLegado.preDefinicoes.size)
+        assertEquals("HT", periciaLegado.preDefinicoes[0].atributo)
+        assertEquals(-6, periciaLegado.preDefinicoes[0].modificador)
+    }
 }

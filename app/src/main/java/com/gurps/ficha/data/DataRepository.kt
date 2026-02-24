@@ -8,6 +8,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.gurps.ficha.model.*
+import java.text.Normalizer
 
 /**
  * Repositorio para carregar dados de Vantagens, Desvantagens, Pericias e Magias
@@ -141,13 +142,44 @@ class DataRepository(private val context: Context) {
 
     fun filtrarMagias(
         busca: String = "",
-        escola: String? = null
+        escola: String? = null,
+        classe: String? = null
     ): List<MagiaDefinicao> {
         return magias.filter { m ->
             val matchBusca = busca.isBlank() || m.nome.contains(busca, ignoreCase = true)
-            val matchEscola = escola == null || m.escola?.contains(escola) == true
-            matchBusca && matchEscola
+            val matchEscola = escola.isNullOrBlank() ||
+                m.escola?.any { it.equals(escola, ignoreCase = true) } == true
+            val matchClasse = classe.isNullOrBlank() ||
+                agruparClasseMagia(m.classe)?.equals(classe, ignoreCase = true) == true
+            matchBusca && matchEscola && matchClasse
         }
+    }
+
+    fun agruparClasseMagia(classe: String?): String? {
+        val normalizada = classe
+            ?.trim()
+            ?.replace(Regex("\\s+"), " ")
+            ?.ifBlank { null }
+            ?: return null
+
+        val chave = normalizarChaveClasse(normalizada)
+        if (chave.startsWith("bloq.") || chave.startsWith("bloqueio")) return "Bloqueio"
+        if (chave.startsWith("com.") || chave.startsWith("comm") || chave.startsWith("comum")) return "Comum"
+        if (chave.startsWith("encant")) return "Encantamento"
+        if (chave.startsWith("especial")) return "Especial"
+        if (chave.startsWith("informacao")) return "Informação"
+        if (chave.startsWith("projetil")) return "Projétil"
+        if (chave.startsWith("toque")) return "Toque"
+        if (chave.startsWith("area")) return "Área"
+        if (chave in CHAVES_BLOQUEIO) return "Bloqueio"
+        if (chave in CHAVES_COMUM) return "Comum"
+        if (chave in CHAVES_ENCANTAMENTO) return "Encantamento"
+        if (chave in CHAVES_ESPECIAL) return "Especial"
+        if (chave in CHAVES_INFORMACAO) return "Informação"
+        if (chave in CHAVES_PROJETIL) return "Projétil"
+        if (chave in CHAVES_TOQUE) return "Toque"
+        if (chave in CHAVES_AREA) return "Área"
+        return normalizada
     }
 
     // === CONVERSORES PARA SELECAO ===
@@ -231,11 +263,12 @@ class DataRepository(private val context: Context) {
         definicao: MagiaDefinicao,
         pontosGastos: Int = 1
     ): MagiaSelecionada {
+        val pontosNormalizados = pontosGastos.coerceAtLeast(1)
         return MagiaSelecionada(
             definicaoId = definicao.id,
             nome = definicao.nome,
             dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa),
-            pontosGastos = pontosGastos,
+            pontosGastos = pontosNormalizados,
             pagina = definicao.pagina,
             texto = definicao.texto ?: "",
             classe = definicao.classe,
@@ -262,6 +295,101 @@ class DataRepository(private val context: Context) {
     }
 
     companion object {
+        private val CLASSES_BLOQUEIO = setOf(
+            "Bloq./R-Mágica",
+            "Bloqueio",
+            "Bloqueio/R-DX",
+            "Bloqueio/R-Espec.",
+            "Bloqueio/R-Vont"
+        )
+
+        private val CLASSES_COMUM = setOf(
+            "Com./R-Vont+AM",
+            "Comm",
+            "Comm/R-HT",
+            "Comm/R-Mágica",
+            "Comm/R-Portal",
+            "Comm/R-Vont",
+            "Comum",
+            "Comum ou Bloqueio",
+            "Comum ou Bloqueio/R-Vont",
+            "Comum/ R-Especial",
+            "Comum/ R-HT ou IQ",
+            "Comum/ R-Vont+AM",
+            "Comum/Bloqueio/R-IQ",
+            "Comum/R-#",
+            "Comum/R-DX",
+            "Comum/R-Espec.",
+            "Comum/R-Especial",
+            "Comum/R-HT",
+            "Comum/R-HT#",
+            "Comum/R-HT+2",
+            "Comum/R-Mágica",
+            "Comum/R-Ocultar Rastros",
+            "Comum/R-ST",
+            "Comum/R-ST ou Vont",
+            "Comum/R-Tranca Mágica",
+            "Comum/R-Vont",
+            "Comum/R-Vont ou perícia",
+            "Comum/R-Vont#",
+            "Comum/R-Vont+1",
+            "Comum/R-Vont+AM",
+            "Comum/R-Vont-2",
+            "Comum/R/HT",
+            "Comum/Área/R-IØ#"
+        )
+
+        private val CLASSES_ENCANTAMENTO = setOf(
+            "Encant./R-Especial",
+            "Encantamento",
+            "Encantamento/ R-HT"
+        )
+        private val CLASSES_ESPECIAL = setOf(
+            "Especial",
+            "Especial/R-Vont",
+            "Especial/Área"
+        )
+        private val CLASSES_INFORMACAO = setOf(
+            "Informação",
+            "Informação/ R-Mágica",
+            "Informação/R-Espec.",
+            "Informação/R-Mágica",
+            "Informação/R-Vont",
+            "Informação/Área"
+        )
+        private val CLASSES_PROJETIL = setOf(
+            "Projetil",
+            "Projetil/Especial",
+            "Projetil/R-HT",
+            "Projétil"
+        )
+        private val CLASSES_TOQUE = setOf(
+            "Toque",
+            "Toque/R-HT"
+        )
+        private val CLASSES_AREA = setOf(
+            "Área",
+            "Área/Informação",
+            "Área/R-(ST+Vont)/2",
+            "Área/R-Espacial",
+            "Área/R-Espec.",
+            "Área/R-Especial",
+            "Área/R-HT",
+            "Área/R-HT ou DX",
+            "Área/R-Mágica",
+            "Área/R-Vont",
+            "Área/R-Vont-1"
+        )
+
+        private val CHAVES_BLOQUEIO = CLASSES_BLOQUEIO.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_COMUM = CLASSES_COMUM.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_ENCANTAMENTO = CLASSES_ENCANTAMENTO.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_ESPECIAL = CLASSES_ESPECIAL.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_INFORMACAO = CLASSES_INFORMACAO.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_PROJETIL = CLASSES_PROJETIL.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_TOQUE = CLASSES_TOQUE.map(::normalizarChaveClasse).toSet()
+        private val CHAVES_AREA = CLASSES_AREA.map(::normalizarChaveClasse).toSet()
+
         @Volatile
         private var INSTANCE: DataRepository? = null
 
@@ -269,6 +397,15 @@ class DataRepository(private val context: Context) {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: DataRepository(context.applicationContext).also { INSTANCE = it }
             }
+        }
+
+        private fun normalizarChaveClasse(valor: String): String {
+            val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+                .replace(Regex("\\p{M}+"), "")
+            return semAcento
+                .lowercase()
+                .replace(Regex("\\s+"), " ")
+                .trim()
         }
     }
 }

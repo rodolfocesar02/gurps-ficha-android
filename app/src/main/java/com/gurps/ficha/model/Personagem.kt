@@ -90,7 +90,7 @@ data class Personagem(
     val pontosDesvantagens: Int get() = desvantagens.sumOf { it.custoFinal }
     val pontosPeculiaridades: Int get() = peculiaridades.size * -1
     val pontosPericias: Int get() = pericias.sumOf { it.pontosGastos }
-    val pontosMagias: Int get() = magias.sumOf { it.pontosGastos }
+    val pontosMagias: Int get() = magias.sumOf { it.pontosGastos.coerceAtLeast(1) }
 
     val pontosGastos: Int get() =
         pontosAtributos + pontosSecundarios + pontosVantagens +
@@ -308,6 +308,10 @@ data class PericiaDefinicao(
     val dificuldadeFixa: String? = "M",
     val dificuldadeVariavel: Boolean = false,
     val exigeEspecializacao: Boolean = false,
+    @SerializedName(
+        value = "preDefinicoes",
+        alternate = ["preDefinições", "preDefiniÃ§Ãµes"]
+    )
     val preDefinicoes: List<PreDefinicao> = emptyList()
 )
 

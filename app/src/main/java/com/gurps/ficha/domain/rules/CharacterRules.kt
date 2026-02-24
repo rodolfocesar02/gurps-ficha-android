@@ -175,29 +175,25 @@ object CharacterRules {
         return when (dificuldade) {
             Dificuldade.FACIL -> when {
                 pts == 1 -> 0
-                pts == 2 -> 1
-                pts == 4 -> 2
+                pts in 2..3 -> 1
                 else -> 2 + (pts - 4) / 4
             }
 
             Dificuldade.MEDIA -> when {
                 pts == 1 -> -1
-                pts == 2 -> 0
-                pts == 4 -> 1
+                pts in 2..3 -> 0
                 else -> 1 + (pts - 4) / 4
             }
 
             Dificuldade.DIFICIL -> when {
                 pts == 1 -> -2
-                pts == 2 -> -1
-                pts == 4 -> 0
+                pts in 2..3 -> -1
                 else -> (pts - 4) / 4
             }
 
             Dificuldade.MUITO_DIFICIL -> when {
                 pts == 1 -> -3
-                pts == 2 -> -2
-                pts == 4 -> -1
+                pts in 2..3 -> -2
                 else -> -1 + (pts - 4) / 4
             }
         }

@@ -55,6 +55,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var filtroEscolaMagia by mutableStateOf<String?>(null)
         private set
+    var filtroClasseMagia by mutableStateOf<String?>(null)
+        private set
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
@@ -71,11 +73,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = dataRepository.filtrarPericias(buscaPericia, filtroAtributoPericia, filtroDificuldadePericia)
 
     val magiasFiltradas: List<MagiaDefinicao>
-        get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia)
+        get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
 
     val todasEscolasMagia: List<String>
         get() = dataRepository.magias
             .flatMap { it.escola ?: emptyList() }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+
+    val todasClassesMagia: List<String>
+        get() = dataRepository.magias
+            .mapNotNull { dataRepository.agruparClasseMagia(it.classe) }
             .filter { it.isNotBlank() }
             .distinct()
             .sorted()
@@ -123,6 +132,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarFiltroEscolaMagia(escola: String?) {
         filtroEscolaMagia = escola
+    }
+
+    fun atualizarFiltroClasseMagia(classe: String?) {
+        filtroClasseMagia = classe
     }
 
     // === INFORMACOES BASICAS ===
@@ -325,7 +338,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (personagem.magias.any { it.definicaoId == definicao.id }) {
             return
         }
-        val magia = dataRepository.criarMagiaSelecionada(definicao, pontosGastos)
+        val magia = dataRepository.criarMagiaSelecionada(definicao, pontosGastos.coerceAtLeast(1))
         val lista = personagem.magias.toMutableList()
         lista.add(magia)
         personagem = personagem.copy(magias = lista)
@@ -342,7 +355,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarMagia(index: Int, magia: MagiaSelecionada) {
         val lista = personagem.magias.toMutableList()
         if (index in lista.indices) {
-            lista[index] = magia
+            lista[index] = magia.copy(pontosGastos = magia.pontosGastos.coerceAtLeast(1))
             personagem = personagem.copy(magias = lista)
         }
     }

@@ -84,6 +84,7 @@ fun TabPericias(viewModel: FichaViewModel) {
                     PericiaItem(
                         pericia = pericia,
                         nivel = pericia.calcularNivel(p),
+                        nivelRelativo = pericia.getNivelRelativo(p),
                         onEdit = { editingPericiaIndex = index },
                         onDelete = { viewModel.removerPericia(index) }
                     )
@@ -136,6 +137,7 @@ fun TabPericias(viewModel: FichaViewModel) {
 fun PericiaItem(
     pericia: PericiaSelecionada,
     nivel: Int,
+    nivelRelativo: String,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -165,7 +167,7 @@ fun PericiaItem(
         }
 
         Text(
-            "Nível $nivel",
+            "Nível $nivel (${pericia.atributoBase.sigla}$nivelRelativo)",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary

@@ -45,6 +45,17 @@ Status atual do projeto para retomada rápida e execução em lotes pequenos.
   - tags mínimas úteis aplicadas por heurística no pipeline: `combate`, `social`, `fisica`, `mental`, `magica`.
   - política para custos híbridos definida no conversor:
     - casos como `X ou Y/nível` ficam em `costKind = special`, preservando `options` e metadado de nível para tratamento explícito no código.
+- Pipeline de desvantagens v2 (estruturado, baseado na planilha atualizada):
+  - conversor criado: `scripts/convert_desvantagens_v2.py`.
+  - schema criado: `app/src/main/assets/desvantagens.v2.schema.json`.
+  - arquivo gerado: `app/src/main/assets/desvantagens.v2.json` (227 itens).
+  - custos convertidos para tipos estruturados:
+    - `fixed`: 157
+    - `choice`: 38
+    - `range`: 1
+    - `perLevel`: 12
+    - `special`: 19
+  - normalização aplicada: todos os custos numéricos ficam negativos para desvantagens.
 - Integração de leitura de vantagens v3 no app:
   - `DataRepository` agora carrega `app/src/main/assets/vantagens.v3.json` e converte para o modelo legado em memória.
   - fallback legado removido: vantagens agora vêm somente de `app/src/main/assets/vantagens.v3.json`.
@@ -60,6 +71,38 @@ Status atual do projeto para retomada rápida e execução em lotes pequenos.
   - conversor (`scripts/convert_vantagens_v3.py`) atualizado para tratar opções por nível com 2+ opções (ex.: `3, 5, ou 8/nível`) como `special`.
   - override canônico aplicado para `apetrechos` (`5/apetrecho`).
   - arquivo `app/src/main/assets/vantagens.v3.json` regenerado da planilha `vantagens_extraidas_fiel_v2.xlsx` (264 itens).
+- Lote 3 (Perícias) - pacote 1 iniciado:
+  - correção da tabela de bônus por pontos para pontos intermediários (especialmente `3 pontos`) em `CharacterRules.calcularBonusPorDificuldade`.
+  - cobertura de testes ampliada em `RulesLayerTest` para os degraus `1, 2, 3, 4, 8, 12` nas quatro dificuldades.
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Lote 3 (Perícias) - pacote 2 iniciado:
+  - `PericiaDefinicao` atualizado para aceitar variações de chave de `preDefinicoes` (`preDefinições` e forma legada com encoding incorreto).
+  - testes de parsing ampliados em `PericiaJsonParsingTest` cobrindo `preDefinicoes` com chaves acentuada/legada.
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Lote 3 (Perícias) - pacote 3 iniciado:
+  - exibição de NH relativo adicionada na lista da aba Perícias (`Nível X (ATR+Y)`), alinhando com os diálogos de criação/edição.
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Lote 3 (Perícias) - fechado nesta etapa.
+- Lote 4 (Magia) - pacote 1 iniciado:
+  - filtro de magias ampliado para combinar `escola` + `classe` no repositório.
+  - UI de seleção de magias passou a ter chips de filtro por `classe`.
+  - exibição de NH nos diálogos de magia ajustada para base `IQ+AM` e relativo consistente.
+  - exibição da dificuldade de magia ajustada para usar a sigla real (`F/M/D/MD`) em vez de simplificação `D/MD`.
+  - pré-requisitos de magia mantidos sem alteração (decisão explícita do usuário).
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Lote 4 (Magia) - pacote 2 iniciado:
+  - regra de custo mínimo de magia reforçada (mínimo `1 ponto`) no repositório/viewmodel e no total da ficha.
+  - teste adicionado cobrindo normalização de custo mínimo em `PersonagemRulesTest`.
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Lote 4 (Magia) - pacote 3 iniciado:
+  - classes de magia agrupadas para filtro por tags de domínio:
+    - `Bloqueio` (família `Bloq./Bloqueio...`)
+    - `Comum` (família `Com./Comm/Comum...`)
+    - `Encantamento` (família `Encant...`)
+    - `Especial`, `Informação`, `Projétil`, `Toque`, `Área` (demais famílias definidas pelo usuário)
+  - robustez de agrupamento reforçada para variações de OCR/acentuação.
+  - total de classes no filtro reduzido para 8 categorias agrupadas.
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
 
 ## Em andamento
 - Nenhum item ativo no momento.
@@ -70,6 +113,11 @@ Status atual do projeto para retomada rápida e execução em lotes pequenos.
 - [x] Correção de parse runtime do `v3` (lista não fica vazia).
 - [x] Ajustes de custo híbrido: `aptidao_magica`, `elo_mental`, `dx_bracal`, `st_bracal`, `apetrechos`.
 - [x] APK debug atualizado gerado para teste manual.
+
+## Ponto de salvamento
+- Data: 2026-02-24
+- Marco: Lote 4 (Magia) com filtros de classe agrupados em 8 categorias e custo mínimo de magia reforçado.
+- Status de validação: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon` executado com sucesso.
 
 ## Backlog de aderência ao livro (priorizado)
 
@@ -114,8 +162,9 @@ Status atual do projeto para retomada rápida e execução em lotes pequenos.
 - Entregável: roteiro de teste de campanha longa.
 
 ## Pendências priorizadas (próximos passos)
-- Lote 2 (Vantagens/Desvantagens): tratar `costKind = special` com regra explícita no diálogo de configuração.
-- Lote 2 (Vantagens/Desvantagens): decidir se o app passa a exibir tags/filtros por domínio (`combate`, `social`, `fisica`, `mental`, `magica`).
+- Lote 4 (Magia): rodar checklist funcional de magia em cenários reais (com e sem Aptidão Mágica).
+- Lote 5 (Combate): validar Esquiva, Apara e Bloqueio contra fórmulas e modificadores do livro.
+- Lote 2 (Vantagens/Desvantagens): pausado temporariamente até recebimento das tags finais de desvantagens.
 
 ## Regra de execução
 - Não alterar visual/textos sem necessidade de regra.
