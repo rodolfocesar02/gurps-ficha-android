@@ -1,7 +1,9 @@
-package com.gurps.ficha.model
+﻿package com.gurps.ficha.model
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import com.gurps.ficha.domain.rules.CharacterRules
+import com.gurps.ficha.domain.rules.CombatRules
 
 /**
  * Modelo de dados para a Ficha de Personagem GURPS 4a Edicao
@@ -29,12 +31,12 @@ data class Personagem(
     var modDeslocamentoBasico: Int = 0,
 
     // Listas
-    var vantagens: MutableList<VantagemSelecionada> = mutableListOf(),
-    var desvantagens: MutableList<DesvantagemSelecionada> = mutableListOf(),
-    var peculiaridades: MutableList<String> = mutableListOf(),
-    var pericias: MutableList<PericiaSelecionada> = mutableListOf(),
-    var magias: MutableList<MagiaSelecionada> = mutableListOf(),
-    var equipamentos: MutableList<Equipamento> = mutableListOf(),
+    var vantagens: List<VantagemSelecionada> = emptyList(),
+    var desvantagens: List<DesvantagemSelecionada> = emptyList(),
+    var peculiaridades: List<String> = emptyList(),
+    var pericias: List<PericiaSelecionada> = emptyList(),
+    var magias: List<MagiaSelecionada> = emptyList(),
+    var equipamentos: List<Equipamento> = emptyList(),
 
     // Descricao
     var aparencia: String = "",
@@ -53,49 +55,36 @@ data class Personagem(
     val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico
     val esquiva: Int get() = (velocidadeBasica + 3).toInt() // Esquiva Básica (sem carga)
     val baseCarga: Float get() = (forca * forca) / 10f
-    val danoGdP: String get() = calcularDanoGdP(forca)
-    val danoGeB: String get() = calcularDanoGeB(forca)
+    val danoGdP: String get() = CharacterRules.calcularDanoGdP(forca)
+    val danoGeB: String get() = CharacterRules.calcularDanoGeB(forca)
 
     val pesoTotal: Float get() = equipamentos.sumOf {
         (it.peso * it.quantidade).toDouble()
     }.toFloat()
 
-    val nivelCarga: Int get() {
-        val bc = baseCarga
-        val peso = pesoTotal
-        return when {
-            peso <= bc -> 0           // Sem carga
-            peso <= bc * 2 -> 1       // Leve
-            peso <= bc * 3 -> 2       // Media
-            peso <= bc * 6 -> 3       // Pesada
-            peso <= bc * 10 -> 4      // Muito Pesada
-            else -> 5                 // Extra Pesada
-        }
-    }
+    val nivelCarga: Int get() = CharacterRules.calcularNivelCarga(baseCarga, pesoTotal)
 
-    val deslocamentoAtual: Int get() {
-        val desloc = deslocamentoBasico
-        return when (nivelCarga) {
-            0 -> desloc
-            1 -> (desloc * 0.8).toInt()
-            2 -> (desloc * 0.6).toInt()
-            3 -> (desloc * 0.4).toInt()
-            4 -> (desloc * 0.2).toInt()
-            else -> 1
-        }
-    }
+    val deslocamentoAtual: Int get() = CharacterRules.calcularDeslocamentoAtual(
+        deslocamentoBasico = deslocamentoBasico,
+        nivelCarga = nivelCarga
+    )
 
     // === CALCULO DE PONTOS ===
-    val pontosAtributos: Int get() {
-        return (forca - 10) * 10 + (destreza - 10) * 20 +
-               (inteligencia - 10) * 20 + (vitalidade - 10) * 10
-    }
+    val pontosAtributos: Int get() = CharacterRules.calcularPontosAtributos(
+        forca = forca,
+        destreza = destreza,
+        inteligencia = inteligencia,
+        vitalidade = vitalidade
+    )
 
-    val pontosSecundarios: Int get() {
-        return modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 +
-               modPontosFadiga * 3 + (modVelocidadeBasica / 0.25f).toInt() * 5 +
-               modDeslocamentoBasico * 5
-    }
+    val pontosSecundarios: Int get() = CharacterRules.calcularPontosSecundarios(
+        modPontosVida = modPontosVida,
+        modVontade = modVontade,
+        modPercepcao = modPercepcao,
+        modPontosFadiga = modPontosFadiga,
+        modVelocidadeBasica = modVelocidadeBasica,
+        modDeslocamentoBasico = modDeslocamentoBasico
+    )
 
     val pontosVantagens: Int get() = vantagens.sumOf { it.custoFinal }
     val pontosDesvantagens: Int get() = desvantagens.sumOf { it.custoFinal }
@@ -109,53 +98,6 @@ data class Personagem(
 
     val pontosRestantes: Int get() = pontosIniciais - pontosGastos
     val desvantagensExcedemLimite: Boolean get() = pontosDesvantagens < limiteDesvantagens
-
-    // === TABELA DE DANO GURPS 4Ed ===
-    private fun calcularDanoGdP(st: Int): String {
-        return when {
-            st <= 0 -> "0"
-            st in 1..2 -> "1d-6"
-            st in 3..4 -> "1d-5"
-            st in 5..6 -> "1d-4"
-            st in 7..8 -> "1d-3"
-            st in 9..10 -> "1d-2"
-            st in 11..12 -> "1d-1"
-            st in 13..14 -> "1d"
-            st in 15..16 -> "1d+1"
-            st in 17..18 -> "1d+2"
-            st in 19..20 -> "2d-1"
-            else -> {
-                val extra = (st - 20) / 2
-                "${2 + extra}d${if ((st - 20) % 2 == 0) "" else "+1"}"
-            }
-        }
-    }
-
-    private fun calcularDanoGeB(st: Int): String {
-        return when {
-            st <= 0 -> "0"
-            st in 1..2 -> "1d-5"
-            st in 3..4 -> "1d-4"
-            st in 5..6 -> "1d-3"
-            st in 7..8 -> "1d-2"
-            st == 9 -> "1d-1"
-            st == 10 -> "1d"
-            st == 11 -> "1d+1"
-            st == 12 -> "1d+2"
-            st == 13 -> "2d-1"
-            st == 14 -> "2d"
-            st == 15 -> "2d+1"
-            st == 16 -> "2d+2"
-            st == 17 -> "3d-1"
-            st == 18 -> "3d"
-            st == 19 -> "3d+1"
-            st == 20 -> "3d+2"
-            else -> {
-                val extra = (st - 20) / 2
-                "${3 + extra}d${if ((st - 20) % 2 == 0) "+2" else "+1"}"
-            }
-        }
-    }
 
     fun getAtributo(sigla: String): Int {
         return when (sigla.uppercase()) {
@@ -249,15 +191,13 @@ data class VantagemSelecionada(
         // Nível 1 (Magery 0) = 5 pts
         // Nível 2 (Magery 1) = 15 pts (5 + 10)
         // Nível 3 (Magery 2) = 25 pts (5 + 20)...
-        if (definicaoId.equals("aptidao_magica", ignoreCase = true)) {
-            return 5 + (nivel - 1) * 10
-        }
-
-        val valor = when (tipoCusto) {
-            TipoCusto.POR_NIVEL -> custoBase * nivel
-            else -> custoEscolhido
-        }
-        return if (valor < 0) 0 else valor
+        return CharacterRules.calcularCustoVantagem(
+            definicaoId = definicaoId,
+            tipoCusto = tipoCusto,
+            custoBase = custoBase,
+            custoEscolhido = custoEscolhido,
+            nivel = nivel
+        )
     }
 }
 
@@ -316,18 +256,13 @@ data class DesvantagemSelecionada(
     val pagina: Int = 0
 ) {
     val custoFinal: Int get() {
-        val custoSemAutocontrole = when (tipoCusto) {
-            TipoCusto.POR_NIVEL -> custoBase * nivel
-            else -> custoEscolhido
-        }
-        // Modificador de autocontrole GURPS 4Ed pag. 120
-        val custoComAutocontrole = autocontrole?.let { ac ->
-            val mult = when (ac) {
-                6 -> 2.0; 9 -> 1.5; 12 -> 1.0; 15 -> 0.5; else -> 1.0
-            }
-            (custoSemAutocontrole * mult).toInt()
-        } ?: custoSemAutocontrole
-        return if (custoComAutocontrole > 0) -custoComAutocontrole else custoComAutocontrole
+        return CharacterRules.calcularCustoDesvantagem(
+            tipoCusto = tipoCusto,
+            custoBase = custoBase,
+            custoEscolhido = custoEscolhido,
+            nivel = nivel,
+            autocontrole = autocontrole
+        )
     }
 }
 
@@ -363,6 +298,10 @@ data class PericiaDefinicao(
     val id: String = "",
     val nome: String = "",
     val atributoBase: String = "IQ",
+    @SerializedName(
+        value = "atributosPossiveis",
+        alternate = ["atributosPossíveis", "atributosPossÃ­veis"]
+    )
     val atributosPossiveis: List<String>? = null,
     val atributoEscolhaObrigatoria: Boolean = false,
     val dificuldadeFixa: String? = "M",
@@ -393,26 +332,7 @@ data class PericiaSelecionada(
      */
     fun calcularNivel(personagem: Personagem): Int {
         val valorAtributo = personagem.getAtributo(atributoBase.sigla)
-        val pts = pontosGastos.coerceAtLeast(1)
-
-        val bonus = when (dificuldade) {
-            Dificuldade.FACIL -> when {
-                pts == 1 -> 0; pts == 2 -> 1; pts == 4 -> 2
-                else -> 2 + (pts - 4) / 4
-            }
-            Dificuldade.MEDIA -> when {
-                pts == 1 -> -1; pts == 2 -> 0; pts == 4 -> 1
-                else -> 1 + (pts - 4) / 4
-            }
-            Dificuldade.DIFICIL -> when {
-                pts == 1 -> -2; pts == 2 -> -1; pts == 4 -> 0
-                else -> (pts - 4) / 4
-            }
-            Dificuldade.MUITO_DIFICIL -> when {
-                pts == 1 -> -3; pts == 2 -> -2; pts == 4 -> -1
-                else -> -1 + (pts - 4) / 4
-            }
-        }
+        val bonus = CharacterRules.calcularBonusPorDificuldade(dificuldade, pontosGastos)
         return valorAtributo + bonus
     }
 
@@ -429,24 +349,30 @@ data class PericiaSelecionada(
 data class MagiaDefinicao(
     val id: String = "",
     val nome: String = "",
-    val atributoBase: String = "IQ",
-    val atributosPossiveis: List<String>? = null,
-    val atributoEscolhaObrigatoria: Boolean = false,
-    val dificuldadeFixa: String? = "D",
-    val dificuldadeVariavel: Boolean = false,
-    val exigeEspecializacao: Boolean = false,
-    val preDefinicoes: List<PreDefinicao> = emptyList(),
-    val pagina: Int = 0,
-    val texto: String = ""
-)
+    @SerializedName("dificuldade") val dificuldadeFixa: String? = "D",
+    val pagina: Int? = 0,
+    val texto: String? = "",
+    // Campos novos
+    val classe: String? = null,
+    val escola: List<String>? = null,
+    val duracao: String? = null,
+    val energia: String? = null,
+    val tempoOperacao: String? = null,
+    val preRequisitos: String? = null
+) {
+    // Mantendo atributo base IQ fixo para magias
+    val atributoBase: String get() = "IQ"
+}
 
 data class MagiaSelecionada(
     val definicaoId: String = "",
     var nome: String = "",
     var dificuldade: Dificuldade = Dificuldade.DIFICIL,
     var pontosGastos: Int = 1,
-    val pagina: Int = 0,
-    val texto: String = ""
+    val pagina: Int? = 0,
+    val texto: String? = "",
+    val classe: String? = null,
+    val escola: List<String>? = null
 ) {
     /**
      * Calcula o nivel da magia seguindo a mesma logica das pericias (IQ + Aptidao Magica).
@@ -454,23 +380,7 @@ data class MagiaSelecionada(
      */
     fun calcularNivel(personagem: Personagem, nivelAptidaoMagica: Int): Int {
         val valorAtributo = personagem.inteligencia + nivelAptidaoMagica
-        val pts = pontosGastos.coerceAtLeast(1)
-
-        val bonus = when (dificuldade) {
-            Dificuldade.DIFICIL -> when {
-                pts == 1 -> -2; pts == 2 -> -1; pts == 4 -> 0
-                else -> (pts - 4) / 4
-            }
-            Dificuldade.MUITO_DIFICIL -> when {
-                pts == 1 -> -3; pts == 2 -> -2; pts == 4 -> -1
-                else -> -1 + (pts - 4) / 4
-            }
-            else -> when { // Fallback para F/M se necessario
-                dificuldade == Dificuldade.FACIL -> if (pts == 1) 0 else if (pts == 2) 1 else if (pts == 4) 2 else 2 + (pts-4)/4
-                dificuldade == Dificuldade.MEDIA -> if (pts == 1) -1 else if (pts == 2) 0 else if (pts == 4) 1 else 1 + (pts-4)/4
-                else -> -2 // Padrao Dificil
-            }
-        }
+        val bonus = CharacterRules.calcularBonusPorDificuldade(dificuldade, pontosGastos)
         return valorAtributo + bonus
     }
 
@@ -525,12 +435,18 @@ data class DefesasAtivas(
      * GURPS 4Ed: Esquiva básica = floor(Velocidade Básica + 3)
      */
     fun calcularEsquiva(personagem: Personagem): Int {
-        val esquivaBase = personagem.esquiva
-        return (esquivaBase - personagem.nivelCarga + bonusManualEsquiva).coerceAtLeast(1)
+        return CombatRules.calcularEsquiva(
+            esquivaBase = personagem.esquiva,
+            nivelCarga = personagem.nivelCarga,
+            bonusManual = bonusManualEsquiva
+        )
     }
 
     fun getEsquivaBase(personagem: Personagem): Int {
-        return (personagem.esquiva - personagem.nivelCarga).coerceAtLeast(1)
+        return CombatRules.calcularEsquivaBase(
+            esquivaBase = personagem.esquiva,
+            nivelCarga = personagem.nivelCarga
+        )
     }
 
     /**
@@ -543,8 +459,7 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        val aparaBase = (nh / 2) + 3 // Arredondamento padrao (trunca)
-        return aparaBase + bonusManualApara
+        return CombatRules.calcularApara(nh, bonusManualApara)
     }
 
     fun getAparaBase(personagem: Personagem): Int? {
@@ -553,7 +468,7 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        return (nh / 2) + 3
+        return CombatRules.calcularAparaBase(nh)
     }
 
     fun getPericiaApara(personagem: Personagem): PericiaSelecionada? {
@@ -573,9 +488,8 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        val bloqueioBase = (nh / 2) + 3
         val bonusEscudo = getBonusEscudo(personagem)
-        return bloqueioBase + bonusEscudo + bonusManualBloqueio
+        return CombatRules.calcularBloqueio(nh, bonusEscudo, bonusManualBloqueio)
     }
 
     fun getBloqueioBase(personagem: Personagem): Int? {
@@ -584,7 +498,7 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        return (nh / 2) + 3
+        return CombatRules.calcularBloqueioBase(nh)
     }
 
     fun getBonusEscudo(personagem: Personagem): Int {
@@ -603,11 +517,49 @@ data class DefesasAtivas(
 
 // Lista de pericias que sao consideradas "pericias de combate" para Apara/Bloqueio
 val PERICIAS_COMBATE = setOf(
-    "espada_curta", "espada_larga", "espada_bastarda", "espada_de_duas_maos",
-    "faca", "adaga", "machado_ou_machadinha", "machado_de_duas_maos",
-    "maca", "mangual", "lanca", "bastao", "cajado", "alabarda",
-    "escudo", "briga", "karate", "boxe", "judo", "wrestling",
-    "armas_de_haste", "armas_de_duas_maos", "rapieira", "sabre",
-    "florete", "armas_de_corrente", "chicote", "nunchaku",
-    "tonfa", "sai", "kama", "kusarigama"
+    // IDs atuais do dataset
+    "adaga_de_esgrima",
+    "armas_de_haste",
+    "bastao",
+    "boxe",
+    "briga",
+    "capa",
+    "carate",
+    "chicote",
+    "escudo",
+    "espada_curta",
+    "espada_de_duas_maos",
+    "espada_de_energia",
+    "espada_de_lamina_larga",
+    "faca",
+    "jittesai",
+    "judo",
+    "kusari",
+    "lanca",
+    "lanca_de_justa",
+    "luta_grecoromana",
+    "macamachado",
+    "macamachado_de_duas_maos",
+    "mangual",
+    "mangual_de_duas_maos",
+    // Aliases legados para fichas antigas
+    "adaga",
+    "alabarda",
+    "armas_de_corrente",
+    "armas_de_duas_maos",
+    "cajado",
+    "espada_larga",
+    "kama",
+    "karate",
+    "kusarigama",
+    "maca",
+    "machado_de_duas_maos",
+    "machado_ou_machadinha",
+    "nunchaku",
+    "rapieira",
+    "sabre",
+    "sai",
+    "tonfa",
+    "wrestling"
 )
+

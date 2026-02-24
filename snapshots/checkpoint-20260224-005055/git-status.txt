@@ -1,0 +1,32 @@
+﻿ M app/build.gradle.kts
+ M app/src/main/assets/vantagens.json
+ M app/src/main/java/com/gurps/ficha/data/DataRepository.kt
+ M app/src/main/java/com/gurps/ficha/model/Personagem.kt
+ M app/src/main/java/com/gurps/ficha/ui/DiceRoller.kt
+ M app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt
+AM app/src/main/java/com/gurps/ficha/ui/TabCombate.kt
+ M app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt
+ M build.gradle.kts
+ M gradle.properties
+ M gradle/wrapper/gradle-wrapper.properties
+?? .gitignore
+?? PROGRESS.md
+?? app/proguard-rules.pro
+?? app/src/main/assets/magias2versao.json
+?? app/src/main/assets/vantagens.v2.json
+?? app/src/main/java/com/gurps/ficha/data/storage/
+?? app/src/main/java/com/gurps/ficha/domain/
+?? app/src/main/java/com/gurps/ficha/ui/DialogsCommon.kt
+?? app/src/main/java/com/gurps/ficha/ui/DialogsMagias.kt
+?? app/src/main/java/com/gurps/ficha/ui/DialogsPericias.kt
+?? app/src/main/java/com/gurps/ficha/ui/DialogsTracos.kt
+?? app/src/main/java/com/gurps/ficha/ui/SectionCard.kt
+?? app/src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt
+?? app/src/main/java/com/gurps/ficha/ui/TabGeral.kt
+?? app/src/main/java/com/gurps/ficha/ui/TabNotas.kt
+?? app/src/main/java/com/gurps/ficha/ui/TabPericias.kt
+?? app/src/main/java/com/gurps/ficha/ui/TabTracos.kt
+?? app/src/main/java/com/gurps/ficha/ui/TagMagias.kt
+?? app/src/test/
+?? gradle/gradle-daemon-jvm.properties
+?? snapshots/

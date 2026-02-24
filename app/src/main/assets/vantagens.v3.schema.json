@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gurps-ficha.local/schemas/vantagens.v3.schema.json",
+  "title": "VantagensV3",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "nome",
+      "pagina",
+      "costKind",
+      "fixed",
+      "perLevel",
+      "options",
+      "min",
+      "max",
+      "rawCost",
+      "specialRule",
+      "tags"
+    ],
+    "properties": {
+      "id": {
+        "type": "string",
+        "pattern": "^[a-z0-9_]+$",
+        "minLength": 1
+      },
+      "nome": {
+        "type": "string",
+        "minLength": 1
+      },
+      "pagina": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "costKind": {
+        "type": "string",
+        "enum": ["fixed", "perLevel", "choice", "range", "special"]
+      },
+      "fixed": {
+        "type": ["integer", "null"]
+      },
+      "perLevel": {
+        "type": ["integer", "null"]
+      },
+      "options": {
+        "type": ["array", "null"],
+        "items": { "type": "integer" },
+        "minItems": 2,
+        "uniqueItems": true
+      },
+      "min": {
+        "type": ["integer", "null"]
+      },
+      "max": {
+        "type": ["integer", "null"]
+      },
+      "rawCost": {
+        "type": "string"
+      },
+      "specialRule": {
+        "type": ["string", "null"],
+        "pattern": "^[a-z0-9_]+$"
+      },
+      "tags": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]+$"
+        },
+        "uniqueItems": true
+      }
+    },
+    "allOf": [
+      {
+        "if": { "properties": { "costKind": { "const": "fixed" } } },
+        "then": { "properties": { "fixed": { "type": "integer" } } }
+      },
+      {
+        "if": { "properties": { "costKind": { "const": "perLevel" } } },
+        "then": { "properties": { "perLevel": { "type": "integer" } } }
+      },
+      {
+        "if": { "properties": { "costKind": { "const": "choice" } } },
+        "then": { "properties": { "options": { "type": "array", "minItems": 2 } } }
+      },
+      {
+        "if": { "properties": { "costKind": { "const": "range" } } },
+        "then": {
+          "required": ["min", "max"],
+          "properties": {
+            "min": { "type": "integer" },
+            "max": { "type": "integer" }
+          }
+        }
+      },
+      {
+        "if": { "properties": { "costKind": { "const": "special" } } },
+        "then": { "properties": { "specialRule": { "type": "string", "minLength": 1 } } }
+      }
+    ]
+  }
+}

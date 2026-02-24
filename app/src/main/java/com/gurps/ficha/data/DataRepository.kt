@@ -1,4 +1,4 @@
-package com.gurps.ficha.data
+﻿package com.gurps.ficha.data
 
 import android.content.Context
 import com.google.gson.Gson
@@ -34,7 +34,7 @@ class DataRepository(private val context: Context) {
         return try {
             val json = context.assets.open("vantagens.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<VantagemDefinicao>>() {}.type
-            gson.fromJson(json, type)
+            (gson.fromJson<List<VantagemDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -45,7 +45,7 @@ class DataRepository(private val context: Context) {
         return try {
             val json = context.assets.open("desvantagens.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<DesvantagemDefinicao>>() {}.type
-            gson.fromJson(json, type)
+            (gson.fromJson<List<DesvantagemDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -56,7 +56,7 @@ class DataRepository(private val context: Context) {
         return try {
             val json = context.assets.open("pericias.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<PericiaDefinicao>>() {}.type
-            gson.fromJson(json, type)
+            (gson.fromJson<List<PericiaDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -65,9 +65,9 @@ class DataRepository(private val context: Context) {
 
     private fun carregarMagias(): List<MagiaDefinicao> {
         return try {
-            val json = context.assets.open("magias.json").bufferedReader().use { it.readText() }
+            val json = context.assets.open("magias2versao.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<MagiaDefinicao>>() {}.type
-            gson.fromJson(json, type)
+            (gson.fromJson<List<MagiaDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -121,10 +121,13 @@ class DataRepository(private val context: Context) {
     // === FILTROS DE MAGIAS ===
 
     fun filtrarMagias(
-        busca: String = ""
+        busca: String = "",
+        escola: String? = null
     ): List<MagiaDefinicao> {
         return magias.filter { m ->
-            busca.isBlank() || m.nome.contains(busca, ignoreCase = true)
+            val matchBusca = busca.isBlank() || m.nome.contains(busca, ignoreCase = true)
+            val matchEscola = escola == null || m.escola?.contains(escola) == true
+            matchBusca && matchEscola
         }
     }
 
@@ -212,9 +215,12 @@ class DataRepository(private val context: Context) {
         return MagiaSelecionada(
             definicaoId = definicao.id,
             nome = definicao.nome,
+            dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa),
             pontosGastos = pontosGastos,
             pagina = definicao.pagina,
-            texto = definicao.texto
+            texto = definicao.texto ?: "",
+            classe = definicao.classe,
+            escola = definicao.escola
         )
     }
 
@@ -247,3 +253,42 @@ class DataRepository(private val context: Context) {
         }
     }
 }
+
+private fun VantagemDefinicao.normalizada(): VantagemDefinicao = copy(
+    id = (id as String?).sanitized(),
+    nome = (nome as String?).sanitized(),
+    custo = (custo as String?).sanitized()
+)
+
+private fun DesvantagemDefinicao.normalizada(): DesvantagemDefinicao = copy(
+    id = (id as String?).sanitized(),
+    nome = (nome as String?).sanitized(),
+    custo = (custo as String?).sanitized()
+)
+
+private fun PericiaDefinicao.normalizada(): PericiaDefinicao = copy(
+    id = (id as String?).sanitized(),
+    nome = (nome as String?).sanitized(),
+    atributoBase = (atributoBase as String?).sanitized(default = "IQ"),
+    atributosPossiveis = atributosPossiveis
+        ?.map { (it as String?).sanitized() }
+        ?.filter { it.isNotBlank() },
+    dificuldadeFixa = (dificuldadeFixa as String?)?.sanitized()
+)
+
+private fun MagiaDefinicao.normalizada(): MagiaDefinicao = copy(
+    id = (id as String?).sanitized(),
+    nome = (nome as String?).sanitized(),
+    dificuldadeFixa = (dificuldadeFixa as String?)?.sanitized(),
+    classe = (classe as String?)?.sanitized(),
+    escola = escola?.map { (it as String?).sanitized() }?.filter { it.isNotBlank() },
+    duracao = (duracao as String?)?.sanitized(),
+    energia = (energia as String?)?.sanitized(),
+    tempoOperacao = (tempoOperacao as String?)?.sanitized(),
+    preRequisitos = (preRequisitos as String?)?.sanitized()
+)
+
+private fun String?.sanitized(default: String = ""): String {
+    return this?.trim().orEmpty().ifBlank { default }
+}
+

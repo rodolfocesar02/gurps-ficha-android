@@ -1,15 +1,26 @@
-package com.gurps.ficha.viewmodel
+﻿package com.gurps.ficha.viewmodel
 
 import android.app.Application
-import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurps.ficha.data.DataRepository
+import com.gurps.ficha.data.storage.FichaStorageRepository
+import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
 import kotlinx.coroutines.launch
+
+enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
+
+data class ActiveDefense(
+    val type: DefenseType,
+    val name: String,
+    val baseValue: Int,
+    val bonus: Int,
+    val finalValue: Int
+)
 
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -17,6 +28,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     var fichasSalvas by mutableStateOf<List<String>>(emptyList())
+        private set
+
+    var mostrarConfirmacaoLimpezaMagias by mutableStateOf(false)
         private set
 
     // Estado de busca e filtros
@@ -37,8 +51,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     var filtroDificuldadePericia by mutableStateOf<String?>(null)
         private set
 
-    private val prefs = application.getSharedPreferences("gurps_fichas", Context.MODE_PRIVATE)
+    var buscaMagia by mutableStateOf("")
+        private set
+    var filtroEscolaMagia by mutableStateOf<String?>(null)
+        private set
+
+    private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
+    private var personagemPendenteLimpezaMagias: Personagem? = null
 
     // Listas filtradas
     val vantagensFiltradas: List<VantagemDefinicao>
@@ -51,10 +71,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = dataRepository.filtrarPericias(buscaPericia, filtroAtributoPericia, filtroDificuldadePericia)
 
     val magiasFiltradas: List<MagiaDefinicao>
-        get() = dataRepository.filtrarMagias()
+        get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia)
+
+    val todasEscolasMagia: List<String>
+        get() = dataRepository.magias
+            .flatMap { it.escola ?: emptyList() }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
 
     init {
-        carregarListaFichas()
+        viewModelScope.launch {
+            fichaStorage.migrarDeSharedPreferencesSeNecessario()
+            carregarListaFichas()
+        }
     }
 
     // === FILTROS ===
@@ -85,6 +115,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarFiltroDificuldadePericia(dificuldade: String?) {
         filtroDificuldadePericia = dificuldade
+    }
+
+    fun atualizarBuscaMagia(busca: String) {
+        buscaMagia = busca
+    }
+
+    fun atualizarFiltroEscolaMagia(escola: String?) {
+        filtroEscolaMagia = escola
     }
 
     // === INFORMACOES BASICAS ===
@@ -146,7 +184,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun atualizarModVelocidadeBasica(valor: Float) {
-        personagem = personagem.copy(modVelocidadeBasica = valor.coerceIn(-5f, 5f))
+        val valorNormalizado = CharacterRules
+            .calcularPassosVelocidadeBasica(valor.coerceIn(-5f, 5f)) * 0.25f
+        personagem = personagem.copy(modVelocidadeBasica = valorNormalizado)
     }
 
     fun atualizarModDeslocamentoBasico(valor: Int) {
@@ -163,16 +203,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val vantagem = dataRepository.criarVantagemSelecionada(definicao, nivel, custoEscolhido, descricao)
         val lista = personagem.vantagens.toMutableList()
         lista.add(vantagem)
-        personagem = personagem.copy(vantagens = lista)
-        limparMagiasSeSemAptidaoMagica()
+        atualizarVantagensComConfirmacao(lista)
     }
 
     fun removerVantagem(index: Int) {
         val lista = personagem.vantagens.toMutableList()
         if (index in lista.indices) {
             lista.removeAt(index)
-            personagem = personagem.copy(vantagens = lista)
-            limparMagiasSeSemAptidaoMagica()
+            atualizarVantagensComConfirmacao(lista)
         }
     }
 
@@ -180,8 +218,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val lista = personagem.vantagens.toMutableList()
         if (index in lista.indices) {
             lista[index] = vantagem
-            personagem = personagem.copy(vantagens = lista)
-            limparMagiasSeSemAptidaoMagica()
+            atualizarVantagensComConfirmacao(lista)
         }
     }
 
@@ -352,15 +389,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun salvarFicha(nomeArquivo: String = personagem.nome.ifBlank { "Sem_Nome" }) {
         viewModelScope.launch {
-            val nome = nomeArquivo.replace(" ", "_")
-            prefs.edit().putString("ficha_$nome", personagem.toJson()).apply()
+            fichaStorage.salvarFicha(nomeArquivo, personagem.toJson())
             carregarListaFichas()
         }
     }
 
     fun carregarFicha(nomeArquivo: String) {
         viewModelScope.launch {
-            val json = prefs.getString("ficha_$nomeArquivo", null)
+            val json = fichaStorage.carregarFicha(nomeArquivo)
             if (json != null) {
                 personagem = Personagem.fromJson(json)
             }
@@ -369,19 +405,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun excluirFicha(nomeArquivo: String) {
         viewModelScope.launch {
-            prefs.edit().remove("ficha_$nomeArquivo").apply()
+            fichaStorage.excluirFicha(nomeArquivo)
             carregarListaFichas()
         }
     }
 
     fun novaFicha() {
         personagem = Personagem()
+        personagemPendenteLimpezaMagias = null
+        mostrarConfirmacaoLimpezaMagias = false
     }
 
-    private fun carregarListaFichas() {
-        fichasSalvas = prefs.all.keys
-            .filter { it.startsWith("ficha_") }
-            .map { it.removePrefix("ficha_") }
+    private suspend fun carregarListaFichas() {
+        fichasSalvas = fichaStorage.listarFichas()
     }
 
     // === UTILITARIOS ===
@@ -468,37 +504,102 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // Valores calculados de defesas
     val esquivaCalculada: Int get() = personagem.defesasAtivas.calcularEsquiva(personagem)
-    val esquivaBase: Int get() = personagem.defesasAtivas.getEsquivaBase(personagem)
     val aparaCalculada: Int? get() = personagem.defesasAtivas.calcularApara(personagem)
-    val aparaBase: Int? get() = personagem.defesasAtivas.getAparaBase(personagem)
     val bloqueioCalculado: Int? get() = personagem.defesasAtivas.calcularBloqueio(personagem)
-    val bloqueioBase: Int? get() = personagem.defesasAtivas.getBloqueioBase(personagem)
-    val bonusEscudo: Int get() = personagem.defesasAtivas.getBonusEscudo(personagem)
 
-    // Lista de pericias de combate do personagem
-    val periciasCombate: List<PericiaSelecionada> get() {
+    // Estado derivado para a UI
+    val defesasAtivasVisiveis: List<ActiveDefense> get() {
+        val lista = mutableListOf<ActiveDefense>()
+        
+        // Esquiva
+        lista.add(ActiveDefense(
+            type = DefenseType.ESQUIVA,
+            name = "Esquiva",
+            baseValue = personagem.defesasAtivas.getEsquivaBase(personagem),
+            bonus = personagem.defesasAtivas.bonusManualEsquiva,
+            finalValue = esquivaCalculada
+        ))
+        
+        // Apara
+        aparaCalculada?.let { finalVal ->
+            personagem.defesasAtivas.getAparaBase(personagem)?.let { baseVal ->
+                lista.add(ActiveDefense(
+                    type = DefenseType.APARA,
+                    name = "Apara",
+                    baseValue = baseVal,
+                    bonus = personagem.defesasAtivas.bonusManualApara,
+                    finalValue = finalVal
+                ))
+            }
+        }
+        
+        // Bloqueio
+        bloqueioCalculado?.let { finalVal ->
+            personagem.defesasAtivas.getBloqueioBase(personagem)?.let { baseVal ->
+                val db = personagem.defesasAtivas.getBonusEscudo(personagem)
+                lista.add(ActiveDefense(
+                    type = DefenseType.BLOQUEIO,
+                    name = "Bloqueio",
+                    baseValue = baseVal + db,
+                    bonus = personagem.defesasAtivas.bonusManualBloqueio,
+                    finalValue = finalVal
+                ))
+            }
+        }
+        return lista
+    }
+
+    fun atualizarBonusDefesa(type: DefenseType, bonus: Int) {
+        when(type) {
+            DefenseType.ESQUIVA -> atualizarBonusManualEsquiva(bonus)
+            DefenseType.APARA -> atualizarBonusManualApara(bonus)
+            DefenseType.BLOQUEIO -> atualizarBonusManualBloqueio(bonus)
+        }
+    }
+
+    // Perícias para o dropdown de Apara (Combate exceto Escudo)
+    val periciasParaApara: List<PericiaSelecionada> get() {
         return personagem.pericias.filter { pericia ->
-            PERICIAS_COMBATE.contains(pericia.definicaoId) ||
-            pericia.nome.lowercase().contains("espada") ||
-            pericia.nome.lowercase().contains("machado") ||
-            pericia.nome.lowercase().contains("lanca") ||
-            pericia.nome.lowercase().contains("faca") ||
-            pericia.nome.lowercase().contains("briga") ||
-            pericia.nome.lowercase().contains("karate") ||
-            pericia.nome.lowercase().contains("escudo") ||
-            pericia.nome.lowercase().contains("armas") ||
-            pericia.atributoBase == AtributoBase.DX // Pericias DX geralmente sao de combate
+            val idNormalizado = pericia.definicaoId.trim().lowercase()
+            PERICIAS_COMBATE.contains(idNormalizado) && idNormalizado != "escudo"
         }
     }
 
-    // Lista de escudos equipados
-    val escudosEquipados: List<Equipamento> get() {
-        return personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO }
+    // Perícias para o dropdown de Bloqueio (Somente Escudo)
+    val periciasParaBloqueio: List<PericiaSelecionada> get() {
+        return personagem.pericias.filter { pericia ->
+            pericia.definicaoId.trim().equals("escudo", ignoreCase = true)
+        }
+    }
+    fun confirmarLimpezaMagiasAoPerderAptidao() {
+        val pendente = personagemPendenteLimpezaMagias ?: return
+        personagem = pendente.copy(magias = emptyList())
+        personagemPendenteLimpezaMagias = null
+        mostrarConfirmacaoLimpezaMagias = false
     }
 
-    private fun limparMagiasSeSemAptidaoMagica() {
-        if (!temAptidaoMagica && personagem.magias.isNotEmpty()) {
-            personagem = personagem.copy(magias = mutableListOf())
+    fun cancelarLimpezaMagiasAoPerderAptidao() {
+        personagemPendenteLimpezaMagias = null
+        mostrarConfirmacaoLimpezaMagias = false
+    }
+
+    private fun atualizarVantagensComConfirmacao(vantagensAtualizadas: List<VantagemSelecionada>) {
+        if (deveConfirmarLimpezaMagias(vantagensAtualizadas)) {
+            personagemPendenteLimpezaMagias = personagem.copy(vantagens = vantagensAtualizadas)
+            mostrarConfirmacaoLimpezaMagias = true
+            return
         }
+        personagem = personagem.copy(vantagens = vantagensAtualizadas)
+    }
+
+    private fun deveConfirmarLimpezaMagias(vantagensAtualizadas: List<VantagemSelecionada>): Boolean {
+        if (personagem.magias.isEmpty()) return false
+        val nivelAptidaoAposMudanca = vantagensAtualizadas
+            .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+            .maxOfOrNull { it.nivel }
+            ?: 0
+        return nivelAptidaoAposMudanca <= 0
     }
 }
+
+
