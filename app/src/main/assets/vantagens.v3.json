@@ -217,18 +217,14 @@
     "id": "apetrechos",
     "nome": "Apetrechos",
     "pagina": 39,
-    "costKind": "choice",
-    "fixed": null,
+    "costKind": "special",
+    "fixed": 5,
     "perLevel": null,
-    "options": [
-      5,
-      10,
-      15
-    ],
+    "options": null,
     "min": null,
     "max": null,
-    "rawCost": "5, 10 ou 15",
-    "specialRule": null,
+    "rawCost": "5/apetrecho",
+    "specialRule": "apetrechos",
     "tags": []
   },
   {
@@ -3217,9 +3213,9 @@
     "id": "st_bracal",
     "nome": "ST Braçal",
     "pagina": 89,
-    "costKind": "choice",
+    "costKind": "special",
     "fixed": null,
-    "perLevel": null,
+    "perLevel": 1,
     "options": [
       3,
       5,
@@ -3228,7 +3224,7 @@
     "min": null,
     "max": null,
     "rawCost": "3, 5, ou 8/nível",
-    "specialRule": null,
+    "specialRule": "st_bracal",
     "tags": []
   },
   {

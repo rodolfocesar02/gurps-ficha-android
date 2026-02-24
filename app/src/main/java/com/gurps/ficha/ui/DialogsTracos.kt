@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -55,9 +56,11 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     var busca by remember { mutableStateOf("") }
     var filtroTipo by remember { mutableStateOf<TipoCusto?>(null) }
+    var filtroTag by remember { mutableStateOf<String?>(null) }
     var vantagemSelecionada by remember { mutableStateOf<VantagemDefinicao?>(null) }
 
-    val listaFiltrada = viewModel.dataRepository.filtrarVantagens(busca, filtroTipo)
+    val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
+    val listaFiltrada = viewModel.dataRepository.filtrarVantagens(busca, filtroTipo, filtroTag)
 
     Dialog(onDismissRequest = onDismiss) {
         Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
@@ -68,6 +71,28 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar...") },
                     modifier = Modifier.fillMaxWidth(), singleLine = true,
                     leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) })
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = filtroTag == null,
+                        onClick = { filtroTag = null },
+                        label = { Text("Todas") }
+                    )
+                    tagsDisponiveis.forEach { tag ->
+                        FilterChip(
+                            selected = filtroTag == tag,
+                            onClick = { filtroTag = tag },
+                            label = { Text(tag) }
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 

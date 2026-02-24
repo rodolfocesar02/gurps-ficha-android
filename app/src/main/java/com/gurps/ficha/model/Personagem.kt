@@ -145,7 +145,8 @@ data class VantagemDefinicao(
     val nome: String = "",
     val custo: String = "0",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
-    val pagina: Int = 0
+    val pagina: Int = 0,
+    val tags: List<String> = emptyList()
 ) {
     fun getCustoBase(): Int {
         val cleaned = custo.replace(Regex("[^0-9-]"), " ").trim()

@@ -10,6 +10,20 @@ from openpyxl import load_workbook
 
 ALLOWED_COST_KINDS = {"fixed", "perLevel", "choice", "range", "special"}
 
+CANONICAL_OVERRIDES = {
+    # OCR recorrente: "Apetrechos" vem como "5, 10 ou 15"; no livro é por apetrecho.
+    "apetrechos": {
+        "costKind": "special",
+        "fixed": 5,
+        "perLevel": None,
+        "options": None,
+        "min": None,
+        "max": None,
+        "rawCost": "5/apetrecho",
+        "specialRule": "apetrechos",
+    },
+}
+
 
 def slugify(value: str) -> str:
     normalized = unicodedata.normalize("NFKD", value)
@@ -98,6 +112,19 @@ def parse_cost(raw_cost, name_slug: str):
             }
         )
         return result
+
+    # Híbrido com múltiplas opções por nível: "3, 5, ou 8/nível"
+    if ("/n" in lower) and ("ou" in lower):
+        nums = [int(x) for x in re.findall(r"-?\d+", lower)]
+        if len(nums) >= 2:
+            result.update(
+                {
+                    "costKind": "special",
+                    "options": sorted(set(nums)),
+                    "perLevel": 1,
+                }
+            )
+            return result
 
     if " ou " in lower:
         nums = [int(x) for x in re.findall(r"-?\d+", lower)]
@@ -242,6 +269,8 @@ def convert(input_xlsx: Path, output_json: Path):
         used_ids.add(final_id)
 
         parsed = parse_cost(cost, final_id)
+        if final_id in CANONICAL_OVERRIDES:
+            parsed.update(CANONICAL_OVERRIDES[final_id])
         item = {
             "id": final_id,
             "nome": name,

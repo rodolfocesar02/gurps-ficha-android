@@ -133,7 +133,10 @@ object CharacterRules {
         custoEscolhido: Int,
         nivel: Int
     ): Int {
-        if (definicaoId.equals("aptidao_magica", ignoreCase = true)) {
+        if (
+            definicaoId.equals("aptidao_magica", ignoreCase = true) ||
+            definicaoId.equals("elo_mental", ignoreCase = true)
+        ) {
             return 5 + (nivel - 1) * 10
         }
         val valor = when (tipoCusto) {

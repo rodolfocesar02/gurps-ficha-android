@@ -45,9 +45,31 @@ Status atual do projeto para retomada rápida e execução em lotes pequenos.
   - tags mínimas úteis aplicadas por heurística no pipeline: `combate`, `social`, `fisica`, `mental`, `magica`.
   - política para custos híbridos definida no conversor:
     - casos como `X ou Y/nível` ficam em `costKind = special`, preservando `options` e metadado de nível para tratamento explícito no código.
+- Integração de leitura de vantagens v3 no app:
+  - `DataRepository` agora carrega `app/src/main/assets/vantagens.v3.json` e converte para o modelo legado em memória.
+  - fallback legado removido: vantagens agora vêm somente de `app/src/main/assets/vantagens.v3.json`.
+  - parser de `vantagens.v3.json` reforçado (leitura por `JsonParser` item a item) para evitar lista vazia em runtime por incompatibilidade de parse tipado.
+  - `aptidao_magica` e `elo_mental` passam como `POR_NIVEL` no app (configuração por nível), mantendo custo híbrido no domínio (`5 + 10/nível`).
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Busca de vantagens por tags (v3):
+  - `VantagemDefinicao` passou a carregar `tags`.
+  - filtro de vantagens passou a aceitar tag opcional.
+  - diálogo `Selecionar Vantagem` recebeu chips: `Todas`, `combate`, `social`, `fisica`, `mental`, `magica`.
+  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+- Varredura e normalização de custos híbridos em `vantagens.v3.json`:
+  - conversor (`scripts/convert_vantagens_v3.py`) atualizado para tratar opções por nível com 2+ opções (ex.: `3, 5, ou 8/nível`) como `special`.
+  - override canônico aplicado para `apetrechos` (`5/apetrecho`).
+  - arquivo `app/src/main/assets/vantagens.v3.json` regenerado da planilha `vantagens_extraidas_fiel_v2.xlsx` (264 itens).
 
 ## Em andamento
 - Nenhum item ativo no momento.
+
+## Checklist do ponto salvo
+- [x] Fonte de vantagens forçada para `app/src/main/assets/vantagens.v3.json`.
+- [x] Busca por tags em vantagens (`combate`, `social`, `fisica`, `mental`, `magica`).
+- [x] Correção de parse runtime do `v3` (lista não fica vazia).
+- [x] Ajustes de custo híbrido: `aptidao_magica`, `elo_mental`, `dx_bracal`, `st_bracal`, `apetrechos`.
+- [x] APK debug atualizado gerado para teste manual.
 
 ## Backlog de aderência ao livro (priorizado)
 
@@ -92,9 +114,8 @@ Status atual do projeto para retomada rápida e execução em lotes pequenos.
 - Entregável: roteiro de teste de campanha longa.
 
 ## Pendências priorizadas (próximos passos)
-- Planejar Lote 2 (Vantagens/Desvantagens) em modo seguro:
-  - não alterar `app/src/main/assets/vantagens.json` e demais `*.json` sem autorização explícita.
-  - priorizar ajustes em regras/código/testes primeiro.
+- Lote 2 (Vantagens/Desvantagens): tratar `costKind = special` com regra explícita no diálogo de configuração.
+- Lote 2 (Vantagens/Desvantagens): decidir se o app passa a exibir tags/filtros por domínio (`combate`, `social`, `fisica`, `mental`, `magica`).
 
 ## Regra de execução
 - Não alterar visual/textos sem necessidade de regra.

@@ -62,7 +62,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // Listas filtradas
     val vantagensFiltradas: List<VantagemDefinicao>
-        get() = dataRepository.filtrarVantagens(buscaVantagem, filtroTipoCustoVantagem)
+        get() = dataRepository.filtrarVantagens(buscaVantagem, filtroTipoCustoVantagem, null)
 
     val desvantagensFiltradas: List<DesvantagemDefinicao>
         get() = dataRepository.filtrarDesvantagens(buscaDesvantagem, filtroTipoCustoDesvantagem)

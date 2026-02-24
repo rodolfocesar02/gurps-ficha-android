@@ -2,6 +2,10 @@
 
 import android.content.Context
 import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.gurps.ficha.model.*
 
@@ -32,9 +36,22 @@ class DataRepository(private val context: Context) {
 
     private fun carregarVantagens(): List<VantagemDefinicao> {
         return try {
-            val json = context.assets.open("vantagens.json").bufferedReader().use { it.readText() }
-            val type = object : TypeToken<List<VantagemDefinicao>>() {}.type
-            (gson.fromJson<List<VantagemDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
+            carregarVantagensV3()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarVantagensV3(): List<VantagemDefinicao> {
+        return try {
+            val json = context.assets.open("vantagens.v3.json").bufferedReader().use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonArray) return emptyList()
+            root.asJsonArray
+                .mapNotNull { it.asVantagemV3OrNull() }
+                .map { it.toLegacy() }
+                .map { it.normalizada() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -78,12 +95,14 @@ class DataRepository(private val context: Context) {
 
     fun filtrarVantagens(
         busca: String = "",
-        tipoCusto: TipoCusto? = null
+        tipoCusto: TipoCusto? = null,
+        tag: String? = null
     ): List<VantagemDefinicao> {
         return vantagens.filter { v ->
             val matchBusca = busca.isBlank() || v.nome.contains(busca, ignoreCase = true)
             val matchTipo = tipoCusto == null || v.tipoCusto == tipoCusto
-            matchBusca && matchTipo
+            val matchTag = tag.isNullOrBlank() || v.tags.any { it.equals(tag, ignoreCase = true) }
+            matchBusca && matchTipo && matchTag
         }
     }
 
@@ -254,10 +273,127 @@ class DataRepository(private val context: Context) {
     }
 }
 
+private data class VantagemV3(
+    val id: String? = null,
+    val nome: String? = null,
+    val pagina: Int? = null,
+    val costKind: String? = null,
+    val fixed: Int? = null,
+    val perLevel: Int? = null,
+    val options: JsonArray? = null,
+    val min: Int? = null,
+    val max: Int? = null,
+    val rawCost: String? = null,
+    val specialRule: String? = null,
+    val tags: List<String>? = null
+) {
+    fun toLegacy(): VantagemDefinicao {
+        val tipo = when {
+            id.equals("aptidao_magica", ignoreCase = true) -> TipoCusto.POR_NIVEL
+            id.equals("elo_mental", ignoreCase = true) -> TipoCusto.POR_NIVEL
+            costKind == "fixed" -> TipoCusto.FIXO
+            costKind == "perLevel" -> TipoCusto.POR_NIVEL
+            costKind == "choice" -> TipoCusto.ESCOLHA
+            costKind == "range" || costKind == "special" -> TipoCusto.VARIAVEL
+            else -> TipoCusto.FIXO
+        }
+
+        val optionsList = options?.mapNotNull { it.asIntOrNull() }.orEmpty()
+
+        val custoLegacy = when {
+            id.equals("aptidao_magica", ignoreCase = true) || id.equals("elo_mental", ignoreCase = true) ->
+                rawCost ?: "5 + 10/nível"
+            costKind == "fixed" -> fixed?.toString().orEmpty()
+            costKind == "perLevel" -> {
+                val base = perLevel ?: fixed ?: extractFirstInt(rawCost)
+                if (base != null) "$base/nível" else (rawCost ?: "0")
+            }
+            costKind == "choice" -> {
+                if (optionsList.isNotEmpty()) optionsList.joinToString(" ou ")
+                else rawCost ?: "0"
+            }
+            costKind == "range" -> {
+                when {
+                    min != null && max != null -> "$min a $max"
+                    min != null -> "$min+"
+                    else -> rawCost ?: "0"
+                }
+            }
+            else -> rawCost ?: fixed?.toString() ?: "0"
+        }
+
+        return VantagemDefinicao(
+            id = id.orEmpty(),
+            nome = nome.orEmpty(),
+            custo = custoLegacy,
+            tipoCusto = tipo,
+            pagina = pagina ?: 0,
+            tags = tags.orEmpty()
+        )
+    }
+}
+
+private fun extractFirstInt(raw: String?): Int? {
+    if (raw.isNullOrBlank()) return null
+    return Regex("-?\\d+").find(raw)?.value?.toIntOrNull()
+}
+
+private fun com.google.gson.JsonElement.asIntOrNull(): Int? {
+    return runCatching {
+        when {
+            isJsonPrimitive && asJsonPrimitive.isNumber -> asInt
+            isJsonPrimitive && asJsonPrimitive.isString -> asString.toInt()
+            else -> null
+        }
+    }.getOrNull()
+}
+
+private fun JsonElement.asVantagemV3OrNull(): VantagemV3? {
+    if (!isJsonObject) return null
+    val obj = asJsonObject
+    return VantagemV3(
+        id = obj.string("id"),
+        nome = obj.string("nome"),
+        pagina = obj.int("pagina"),
+        costKind = obj.string("costKind"),
+        fixed = obj.int("fixed"),
+        perLevel = obj.int("perLevel"),
+        options = obj.array("options"),
+        min = obj.int("min"),
+        max = obj.int("max"),
+        rawCost = obj.string("rawCost"),
+        specialRule = obj.string("specialRule"),
+        tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() }
+    )
+}
+
+private fun JsonObject.string(key: String): String? {
+    val el = get(key) ?: return null
+    return if (el.isJsonNull) null else el.asStringOrNull()
+}
+
+private fun JsonObject.int(key: String): Int? {
+    val el = get(key) ?: return null
+    if (el.isJsonNull) return null
+    return el.asIntOrNull()
+}
+
+private fun JsonObject.array(key: String): JsonArray? {
+    val el = get(key) ?: return null
+    return if (el.isJsonArray) el.asJsonArray else null
+}
+
+private fun JsonElement.asStringOrNull(): String? {
+    return runCatching {
+        if (isJsonPrimitive && asJsonPrimitive.isString) asString else null
+    }.getOrNull()
+}
+
 private fun VantagemDefinicao.normalizada(): VantagemDefinicao = copy(
     id = (id as String?).sanitized(),
     nome = (nome as String?).sanitized(),
-    custo = (custo as String?).sanitized()
+    custo = (custo as String?).sanitized(),
+    tags = tags.map { (it as String?).sanitized() }.filter { it.isNotBlank() }
 )
 
 private fun DesvantagemDefinicao.normalizada(): DesvantagemDefinicao = copy(
