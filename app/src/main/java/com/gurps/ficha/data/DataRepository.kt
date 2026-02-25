@@ -212,7 +212,7 @@ class DataRepository(private val context: Context) {
                     custoBase = custoObj?.float("valor"),
                     pesoBaseKg = pesoObj?.float("armaKg"),
                     aparar = null,
-                    observacoes = obj.string("observacoes").orEmpty().sanitized()
+                    observacoes = ""
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError(nomeArquivo)
