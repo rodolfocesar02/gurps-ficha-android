@@ -8,6 +8,8 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
+MOJIBAKE_MARKERS = ("Ã", "Â", "�")
+
 
 LOW_NOTES = {
     1: "Pode ser ocultado como ou sob uma peça de roupa.",
@@ -53,7 +55,22 @@ def as_text(value) -> str:
         return value.isoformat()
     if isinstance(value, float) and value.is_integer():
         return str(int(value))
-    return str(value).strip()
+    return repair_mojibake(str(value).strip())
+
+
+def repair_mojibake(text: str) -> str:
+    current = text
+    for _ in range(2):
+        if not any(marker in current for marker in MOJIBAKE_MARKERS):
+            break
+        try:
+            repaired = current.encode("latin-1").decode("utf-8")
+        except UnicodeError:
+            break
+        if repaired == current:
+            break
+        current = repaired
+    return current
 
 
 def parse_int(s: str):
@@ -167,14 +184,14 @@ def parse_rd(raw: str):
 def note_texts(note_refs, nt):
     if nt is not None and nt >= 6:
         note_map = HIGH_NOTES
-        texts = [HIGH_GLOBAL] if note_refs else []
+        texts = [repair_mojibake(HIGH_GLOBAL)] if note_refs else []
     else:
         note_map = LOW_NOTES
         texts = []
     for ref in note_refs:
         txt = note_map.get(ref)
         if txt:
-            texts.append(txt)
+            texts.append(repair_mojibake(txt))
     return texts
 
 

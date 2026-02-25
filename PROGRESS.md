@@ -4,7 +4,7 @@ Atualizado em: 2026-02-25
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Executar `Lote 1 - passo 3`: revisar consolidacao final do catalogo de armaduras (normalizacao de nomes/locais duplicados) e registrar checklist de manutencao.
+- Executar `Lote 1 - passo 4`: revisar UX final do seletor de armaduras (ordem de filtros e texto de ajuda) e fechar lote.
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -28,6 +28,18 @@ Andamento:
 - Passo 1 concluido (2026-02-25): novo arquivo `armaduras.v2.json` gerado a partir de `tabelas_de_Armaduras2.xlsx`, com 72 itens base, componentes/add-ons estruturados, `notes` completas (NT baixo/alto), tags e metadados de RD (dividida/flexivel/frontal).
 - Passo 1 concluido (2026-02-25): app passou a carregar `armaduras.v2.json` com fallback para `armaduras.v1.json`, incluindo busca por `tags` e `observacoesDetalhadas`.
 - Passo 2 concluido (2026-02-25): UI de armaduras atualizada com filtro dedicado por `tag` (alem de NT/local), contador de resultados e exibicao de tags na lista para selecao mais previsivel.
+- Passo 3 concluido (2026-02-25): consolidacao final do catalogo de armaduras com validacao automatica (sem duplicidade de `id`, sem duplicidade de nome normalizado, sem locais fora do canonico e sem texto quebrado/mojibake).
+- Passo 3 concluido (2026-02-25): `scripts/convert_armaduras_v2.py` reforcado para reparar texto quebrado na conversao e `scripts/validate_armaduras_v2.py` criado para checagem de consistencia do JSON antes de commit.
+
+Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
+1. Regenerar JSON:
+   - `python scripts/convert_armaduras_v2.py --input "<xlsx>" --output "app/src/main/assets/armaduras.v2.json"`
+2. Validar consistencia:
+   - `python scripts/validate_armaduras_v2.py --input "app/src/main/assets/armaduras.v2.json"`
+3. Validacao Android:
+   - `./gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`
+   - `./gradlew.bat :app:assembleDebug --no-daemon`
+4. Commit com mensagem clara citando o passo do lote.
 
 ### Lote 2 - Ficha clicavel na aba Rolagem (ex-Lote 8)
 Escopo:
