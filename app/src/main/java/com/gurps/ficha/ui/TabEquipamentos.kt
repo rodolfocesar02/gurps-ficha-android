@@ -47,6 +47,11 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 import java.text.Normalizer
 
 @Composable
+private fun BotaoAdicionarPadrao(texto: String, onClick: () -> Unit) {
+    Button(onClick = onClick) { Text(texto) }
+}
+
+@Composable
 fun TabEquipamentos(viewModel: FichaViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     var showArmaDialog by remember { mutableStateOf(false) }
@@ -87,7 +92,9 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
-        SectionCard(title = "Equipamentos Manuais", onAdd = { showDialog = true }) {
+        BotaoAdicionarPadrao(texto = "Adicionar Itens", onClick = { showDialog = true })
+
+        SectionCard(title = "Equipamentos Manuais") {
             if (equipamentosManuais.isEmpty()) {
                 Text("Nenhum item manual adicionado", color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
@@ -103,15 +110,14 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        BotaoAdicionarPadrao(texto = "Adicionar Arma", onClick = { showArmaDialog = true })
+
         SectionCard(title = "Armas") {
             Text(
                 "Itens equipados: ${armasEquipadas.size}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { showArmaDialog = true }) { Text("Adicionar Arma") }
-            Spacer(modifier = Modifier.height(8.dp))
             if (armasEquipadas.isEmpty()) {
                 Text("Nenhuma arma selecionada", color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
@@ -127,15 +133,14 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        BotaoAdicionarPadrao(texto = "Adicionar Escudo", onClick = { showEscudoDialog = true })
+
         SectionCard(title = "Escudos") {
             Text(
                 "Itens equipados: ${escudosEquipados.size}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { showEscudoDialog = true }) { Text("Adicionar Escudo") }
-            Spacer(modifier = Modifier.height(8.dp))
             if (escudosEquipados.isEmpty()) {
                 Text("Nenhum escudo selecionado", color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
@@ -151,14 +156,14 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        BotaoAdicionarPadrao(texto = "Adicionar Armadura", onClick = { showArmaduraDialog = true })
+
         SectionCard(title = "Armaduras") {
             Text(
                 "Itens selecionados: ${armadurasEquipadas.size}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = { showArmaduraDialog = true }) { Text("Adicionar Armadura") }
             Text(
                 "Selecao por NT e Local (regra do livro).",
                 style = MaterialTheme.typography.bodySmall,
