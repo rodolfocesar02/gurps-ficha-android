@@ -138,7 +138,7 @@ Escopo:
 - Cobrir fluxo crítico com testes (unidade + integração onde viável).
 Critério de pronto:
 - Integração estável em cenário real de mesa (uso contínuo sem travas/falhas silenciosas).
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 Andamento:
 - Passo 1 concluído (2026-02-25): backend lista canais de voz em `/api/channels` e app permite selecionar/salvar canal de envio na aba Rolagem.
 - Passo 2 concluído (2026-02-25): backend publicado no Railway, app configurado para URL pública HTTPS e funcionamento validado em celular fora do backend local em PC.
