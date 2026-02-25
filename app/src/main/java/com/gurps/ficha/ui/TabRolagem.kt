@@ -35,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.time.LocalTime
@@ -130,12 +129,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
             Text(
                 "Aba jogavel inicial. Testes locais 3d6 com modificador e historico.",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                "Servidor: ${BuildConfig.DISCORD_ROLL_API_BASE_URL}",
-                style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(8.dp))
