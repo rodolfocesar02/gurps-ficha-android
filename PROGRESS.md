@@ -128,6 +128,7 @@ Observação:
 - Pré-requisito local para validar backend: Node.js + npm instalados no ambiente.
 Andamento:
 - Passo 1 concluído (2026-02-25): backend `discord-roll-api` criado e healthcheck validado localmente.
+- Passo 2 concluído (2026-02-25): `POST /api/rolls` validado com envio real para Discord (HTTP 200 e `discordMessageId` retornado).
 
 ### Lote 10 - Polimento e segurança da integração
 Escopo:
