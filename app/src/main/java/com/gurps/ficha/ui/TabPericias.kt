@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -17,6 +16,11 @@ import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 // === TAB PERICIAS ===
+
+@Composable
+private fun BotaoAdicionarPericiaPadrao(texto: String, onClick: () -> Unit) {
+    Button(onClick = onClick) { Text(texto) }
+}
 
 @Composable
 fun TabPericias(viewModel: FichaViewModel) {
@@ -35,44 +39,27 @@ fun TabPericias(viewModel: FichaViewModel) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        // Header separado (igual Magias)
-        SectionCard(
-            title = "Perícias [${p.pontosPericias} pts]",
-            onAdd = { showSelecionarPericia = true }
-        ) {}
+        BotaoAdicionarPericiaPadrao(
+            texto = "Adicionar Perícia",
+            onClick = { showSelecionarPericia = true }
+        )
 
-        // Lista fora do SectionCard
-        // Card do botão
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors()
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+        BotaoAdicionarPericiaPadrao(
+            texto = "Criar Perícia",
+            onClick = { showCustomDialog = true }
+        )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { showCustomDialog = true }) {
-                        Icon(Icons.Default.Add, contentDescription = null)
-                        Spacer(Modifier.width(4.dp))
-                        Text("Criar Própria Perícia")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                if (p.pericias.isEmpty()) {
-                    Text(
-                        "Nenhuma perícia adicionada",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+        SectionCard(title = "Perícias [${p.pontosPericias} pts]") {
+            if (p.pericias.isEmpty()) {
+                Text(
+                    "Nenhuma perícia adicionada",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
 
-// Cards individuais para cada perícia
+        // Cards individuais para cada perícia
         p.pericias.forEachIndexed { index, pericia ->
 
             Card(
