@@ -44,6 +44,7 @@ import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.EscudoCatalogoItem
 import com.gurps.ficha.model.TipoEquipamento
 import com.gurps.ficha.viewmodel.FichaViewModel
+import java.text.Normalizer
 
 @Composable
 fun TabEquipamentos(viewModel: FichaViewModel) {
@@ -248,6 +249,23 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     }
 }
 
+private fun corrigirTextoQuebrado(texto: String): String {
+    if (texto.isBlank()) return texto
+    val reparado = texto
+        .replace("cr?nio", "cranio", ignoreCase = true)
+        .replace("cr�nio", "cranio", ignoreCase = true)
+        .replace("crÃ¢nio", "cranio", ignoreCase = true)
+        .replace("pesco?o", "pescoco", ignoreCase = true)
+        .replace("pesco�o", "pescoco", ignoreCase = true)
+        .replace("bra?os", "bracos", ignoreCase = true)
+        .replace("bra�os", "bracos", ignoreCase = true)
+        .replace("m?os", "maos", ignoreCase = true)
+        .replace("m�os", "maos", ignoreCase = true)
+        .replace("p?s", "pes", ignoreCase = true)
+        .replace("p�s", "pes", ignoreCase = true)
+    return Normalizer.normalize(reparado, Normalizer.Form.NFC)
+}
+
 @Composable
 private fun ArmaduraSelecionadaItem(
     equipamento: Equipamento,
@@ -262,7 +280,7 @@ private fun ArmaduraSelecionadaItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            Text(equipamento.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            Text(corrigirTextoQuebrado(equipamento.nome), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
             Text(
                 if (rd.isNotBlank()) "RD: $rd" else "RD: -",
                 style = MaterialTheme.typography.bodySmall,
@@ -270,7 +288,7 @@ private fun ArmaduraSelecionadaItem(
             )
             if (equipamento.notas.isNotBlank()) {
                 Text(
-                    equipamento.notas,
+                    corrigirTextoQuebrado(equipamento.notas),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -700,14 +718,14 @@ private fun SelecionarArmaduraEquipamentoDialog(
                                     .clickable { onSelect(armadura) }
                                     .padding(vertical = 4.dp)
                             ) {
-                                Text(armadura.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                                Text(corrigirTextoQuebrado(armadura.nome), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
                                 Text(
                                     "NT ${armadura.nt ?: "-"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.primary
                                 )
                                 Text(
-                                    "Local: ${armadura.local}",
+                                    "Local: ${corrigirTextoQuebrado(armadura.local)}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
