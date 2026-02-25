@@ -90,6 +90,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var filtroLocalArmaduraEquipamento by mutableStateOf<String?>(null)
         private set
+    var filtroTagArmaduraEquipamento by mutableStateOf<String?>(null)
+        private set
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
@@ -139,8 +141,22 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = dataRepository.filtrarArmadurasCatalogo(
             busca = buscaArmaduraEquipamento,
             nt = filtroNtArmaduraEquipamento,
-            localFiltro = filtroLocalArmaduraEquipamento
+            localFiltro = filtroLocalArmaduraEquipamento,
+            tagFiltro = filtroTagArmaduraEquipamento
         )
+
+    val tagsArmadurasEquipamentos: List<String>
+        get() = dataRepository.armadurasCatalogo
+            .asSequence()
+            .flatMap { armadura ->
+                sequenceOf(armadura.tags) + armadura.componentes.map { it.tags }
+            }
+            .flatMap { it.asSequence() }
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+            .toList()
 
     val errosCargaCatalogos: Map<String, String>
         get() = dataRepository.getCatalogLoadErrors()
@@ -248,6 +264,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarFiltroLocalArmaduraEquipamento(local: String?) {
         filtroLocalArmaduraEquipamento = local
+    }
+
+    fun atualizarFiltroTagArmaduraEquipamento(tag: String?) {
+        filtroTagArmaduraEquipamento = tag?.trim()?.takeIf { it.isNotBlank() }
     }
 
     // === INFORMACOES BASICAS ===

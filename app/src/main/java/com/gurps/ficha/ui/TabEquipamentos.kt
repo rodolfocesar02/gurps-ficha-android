@@ -574,6 +574,7 @@ private fun SelecionarArmaduraEquipamentoDialog(
     onSelect: (ArmaduraCatalogoItem) -> Unit
 ) {
     val armaduras = viewModel.armadurasEquipamentosFiltradas
+    val tags = viewModel.tagsArmadurasEquipamentos
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecionar Armadura") },
@@ -626,6 +627,31 @@ private fun SelecionarArmaduraEquipamentoDialog(
                         )
                     }
                 }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TipoArmaFiltroChip(
+                        label = "Tag: Todas",
+                        selected = viewModel.filtroTagArmaduraEquipamento == null,
+                        onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(null) }
+                    )
+                    tags.forEach { tag ->
+                        TipoArmaFiltroChip(
+                            label = tag,
+                            selected = viewModel.filtroTagArmaduraEquipamento == tag,
+                            onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(tag) }
+                        )
+                    }
+                }
+                Text(
+                    "Resultados: ${armaduras.size}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
                 if (armaduras.isEmpty()) {
                     Text(
@@ -658,6 +684,13 @@ private fun SelecionarArmaduraEquipamentoDialog(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+                                if (armadura.tags.isNotEmpty()) {
+                                    Text(
+                                        "Tags: ${armadura.tags.take(4).joinToString(", ")}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.tertiary
+                                    )
+                                }
                                 Divider(modifier = Modifier.padding(top = 4.dp))
                             }
                         }

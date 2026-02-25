@@ -412,9 +412,11 @@ class DataRepository(private val context: Context) {
     fun filtrarArmadurasCatalogo(
         busca: String = "",
         nt: Int? = null,
-        localFiltro: String? = null
+        localFiltro: String? = null,
+        tagFiltro: String? = null
     ): List<ArmaduraCatalogoItem> {
         val b = busca.trim()
+        val tag = tagFiltro?.trim().orEmpty()
         return armadurasCatalogo.filter { a ->
             val matchBusca = b.isBlank() ||
                 a.nome.contains(b, ignoreCase = true) ||
@@ -428,8 +430,15 @@ class DataRepository(private val context: Context) {
                 }
             val matchNt = nt == null || a.nt == nt
             val matchLocal = localFiltro.isNullOrBlank() || armaduraCobreLocal(a, localFiltro)
-            matchBusca && matchNt && matchLocal
+            val matchTag = tag.isBlank() || armaduraTemTag(a, tag)
+            matchBusca && matchNt && matchLocal && matchTag
         }.sortedBy { it.nome.lowercase() }
+    }
+
+    private fun armaduraTemTag(armadura: ArmaduraCatalogoItem, tagFiltro: String): Boolean {
+        if (tagFiltro.isBlank()) return true
+        return armadura.tags.any { it.equals(tagFiltro, ignoreCase = true) } ||
+            armadura.componentes.any { c -> c.tags.any { it.equals(tagFiltro, ignoreCase = true) } }
     }
 
     private fun armaduraCobreLocal(armadura: ArmaduraCatalogoItem, localFiltro: String): Boolean {

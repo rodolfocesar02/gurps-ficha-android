@@ -4,7 +4,7 @@ Atualizado em: 2026-02-25
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Executar `Lote 1 - passo 2`: revisar regras de busca/local/tags na UI de armaduras com base no novo `armaduras.v2.json`.
+- Executar `Lote 1 - passo 3`: revisar consolidacao final do catalogo de armaduras (normalizacao de nomes/locais duplicados) e registrar checklist de manutencao.
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -27,6 +27,7 @@ Status: `PENDENTE`
 Andamento:
 - Passo 1 concluido (2026-02-25): novo arquivo `armaduras.v2.json` gerado a partir de `tabelas_de_Armaduras2.xlsx`, com 72 itens base, componentes/add-ons estruturados, `notes` completas (NT baixo/alto), tags e metadados de RD (dividida/flexivel/frontal).
 - Passo 1 concluido (2026-02-25): app passou a carregar `armaduras.v2.json` com fallback para `armaduras.v1.json`, incluindo busca por `tags` e `observacoesDetalhadas`.
+- Passo 2 concluido (2026-02-25): UI de armaduras atualizada com filtro dedicado por `tag` (alem de NT/local), contador de resultados e exibicao de tags na lista para selecao mais previsivel.
 
 ### Lote 2 - Ficha clicavel na aba Rolagem (ex-Lote 8)
 Escopo:
