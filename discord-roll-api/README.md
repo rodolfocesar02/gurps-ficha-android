@@ -1,35 +1,41 @@
-﻿# GURPS Discord Roll API
+# GURPS Discord Roll API
 
-API simples para receber rolagens da ficha e publicar no Discord usando bot.
+API para receber rolagens do app e publicar no Discord via bot.
 
-## 1) Instalar dependencias
+## Endpoints
+
+- `GET /health`
+- `GET /api/channels` (lista canais de voz)
+- `POST /api/rolls` (envia rolagem)
+
+## Configuracao local
+
+1. Instalar dependencias:
 
 ```bash
 npm install
 ```
 
-## 2) Configurar ambiente
+2. Copiar `.env.example` para `.env` e preencher:
 
-Copie `.env.example` para `.env` e preencha:
-
-- `PORT`
-- `API_KEY` (chave usada pelo app Android no header `x-api-key`)
+- `PORT` (ex.: `8787`)
+- `API_KEY` (chave usada pelo app no header `x-api-key`)
 - `DISCORD_BOT_TOKEN`
-- `DISCORD_CHANNEL_ID`
+- `DISCORD_CHANNEL_ID` (opcional, canal padrao)
 
-## 3) Executar
+3. Rodar:
 
 ```bash
 npm start
 ```
 
-Healthcheck:
+4. Healthcheck:
 
 ```bash
-GET http://localhost:8787/health
+http://localhost:8787/health
 ```
 
-## 4) Enviar rolagem (teste)
+## Teste rapido de rolagem
 
 ```bash
 curl -X POST http://localhost:8787/api/rolls \
@@ -44,20 +50,22 @@ curl -X POST http://localhost:8787/api/rolls \
     "dice": [3, 4, 2],
     "total": 11,
     "outcome": "SUCESSO",
-    "margin": 3
+    "margin": 3,
+    "channelId": "1412954766983565315"
   }'
 ```
 
-## Payload esperado
+## Deploy no Railway (resumo)
 
-Campos recomendados para `POST /api/rolls`:
-
-- `character` (string)
-- `testType` (string)
-- `context` (string opcional)
-- `target` (number)
-- `modifier` (number)
-- `dice` (array de number)
-- `total` (number)
-- `outcome` (string)
-- `margin` (number)
+1. Crie um projeto no Railway e conecte este repositorio.
+2. No servico, use a pasta raiz `discord-roll-api`.
+3. Configure variaveis:
+   - `PORT=8787`
+   - `API_KEY=...`
+   - `DISCORD_BOT_TOKEN=...`
+   - `DISCORD_CHANNEL_ID=...` (opcional)
+4. Deploy.
+5. Copie a URL publica gerada (ex.: `https://seu-app.up.railway.app`).
+6. No app Android, defina:
+   - `DISCORD_ROLL_API_BASE_URL=<URL_PUBLICA>`
+   - `DISCORD_ROLL_API_KEY=<API_KEY>`
