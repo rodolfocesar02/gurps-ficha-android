@@ -160,6 +160,27 @@ Status: `PENDENTE`
 
 ## Decisão de Escopo Mantida
 - Situações de jogabilidade de combate (manobra/postura/múltiplas defesas por turno etc.) permanecem fora da criação/manutenção da ficha nesta fase.
-## lembra-me desse item posteriormente
-o campo de resumo de Equipamento esta acima das Armaduras, esta errado, tem que ficar abaixo de tudo com uma nota de rodapé, pode diminuir o card dele e o tamanho das letras! 
- os cards de Armas tbm pode diminuir as iformações depois de adicionado, apenas o nome do item, dano que ele causa!
+## Nota Histórica
+- Ajustes de layout da aba Equipamentos (resumo no rodapé e cards de armas compactos) já foram implementados no `Lote 4`.
+## Modo Ultra Seguro (Obrigatório)
+- Trabalhar em micro-passos (uma mudança pequena por vez).
+- Antes de cada alteração: descrever em linguagem simples o que será feito.
+- Após cada micro-passo: rodar validação padrão e gerar APK debug.
+- Fechar cada micro-passo com commit e mensagem clara.
+- Nunca executar ações destrutivas em Git.
+
+## Estado Atual da Integração Discord (Lote 9)
+- Backend `discord-roll-api` criado e versionado no repositório principal.
+- `healthcheck` local validado com sucesso.
+- Diagnóstico importante já confirmado:
+  - o `DISCORD_CHANNEL_ID` deve ser o ID do canal (não ID do servidor/guild);
+  - link de canal tem formato `.../channels/<guild_id>/<channel_id>`.
+- Teste direto na API do Discord já validou envio com sucesso ao canal correto (HTTP 200).
+- Próximos passos imediatos do Lote 9:
+  1. validar `POST /api/rolls` usando o `DISCORD_CHANNEL_ID` correto no `.env`;
+  2. integrar app Android para enviar rolagens para `discord-roll-api`;
+  3. exibir status de envio no app (`enviado`/`erro`).
+- Segurança:
+  - sempre rotacionar token do bot se ele aparecer em print/conversa;
+  - nunca commitar `.env` no Git.
+
