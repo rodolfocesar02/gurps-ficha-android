@@ -122,6 +122,8 @@ Escopo:
 Critério de pronto:
 - Rolagem feita no app aparece no canal Discord via bot com confirmação de envio no app.
 Status: `PENDENTE`
+Observação:
+- Pré-requisito local para validar backend: Node.js + npm instalados no ambiente.
 
 ### Lote 10 - Polimento e segurança da integração
 Escopo:
