@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,17 +7,29 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        localFile.inputStream().use { load(it) }
+    }
+}
+
 android {
     namespace = "com.gurps.ficha"
     compileSdk = 34
 
     defaultConfig {
-        val discordApiBaseUrl = (project.findProperty("DISCORD_ROLL_API_BASE_URL") as String?
+        val discordApiBaseUrl = (
+            project.findProperty("DISCORD_ROLL_API_BASE_URL") as? String
+                ?: localProperties.getProperty("DISCORD_ROLL_API_BASE_URL")
             ?: "http://10.0.2.2:8787")
             .trim()
             .trimEnd('/')
             .replace("\"", "\\\"")
-        val discordApiKey = (project.findProperty("DISCORD_ROLL_API_KEY") as String? ?: "")
+        val discordApiKey = (
+            project.findProperty("DISCORD_ROLL_API_KEY") as? String
+                ?: localProperties.getProperty("DISCORD_ROLL_API_KEY")
+                ?: "")
             .trim()
             .replace("\"", "\\\"")
 
