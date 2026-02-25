@@ -50,6 +50,7 @@ private enum class TipoTeste(val label: String) {
 
 private data class HistoricoRolagemItem(
     val texto: String,
+    val payload: DiscordRollPayload,
     val statusEnvio: String?,
     val detalheErro: String?
 )
@@ -98,6 +99,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     fun registrarResultado(
         resultado: RolagemResultado,
+        payload: DiscordRollPayload,
         statusEnvio: String?,
         detalheErro: String?
     ) {
@@ -109,6 +111,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             0,
             HistoricoRolagemItem(
                 texto = linha,
+                payload = payload,
                 statusEnvio = statusEnvio,
                 detalheErro = detalheErro
             )
@@ -364,23 +367,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
             Button(
                 onClick = {
                     val resultado = rolarDados(3, modificador, alvoBase)
+                    val payload = DiscordRollPayload(
+                        character = p.nome.ifBlank { "Personagem" },
+                        testType = tipoTeste.label,
+                        context = contexto,
+                        target = alvoBase,
+                        modifier = modificador,
+                        dice = resultado.dadosIndividuais,
+                        total = resultado.total,
+                        outcome = resultado.tipoResultado.name,
+                        margin = if (resultado.alvo != null) resultado.margem else null,
+                        channelId = canalSelecionadoId
+                    )
                     coroutineScope.launch {
-                        val envio = viewModel.enviarRolagemDiscord(
-                            DiscordRollPayload(
-                                character = p.nome.ifBlank { "Personagem" },
-                                testType = tipoTeste.label,
-                                context = contexto,
-                                target = alvoBase,
-                                modifier = modificador,
-                                dice = resultado.dadosIndividuais,
-                                total = resultado.total,
-                                outcome = resultado.tipoResultado.name,
-                                margin = if (resultado.alvo != null) resultado.margem else null,
-                                channelId = canalSelecionadoId
-                            )
-                        )
+                        val envio = viewModel.enviarRolagemDiscord(payload)
                         registrarResultado(
                             resultado = resultado,
+                            payload = payload,
                             statusEnvio = if (envio.enviado) "enviado" else "erro",
                             detalheErro = envio.detalhe
                         )
@@ -402,7 +405,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             } else {
-                historico.forEach { item ->
+                historico.forEachIndexed { index, item ->
                     val statusLabel = item.statusEnvio?.let { status ->
                         " | envio: $status"
                     }.orEmpty()
@@ -421,6 +424,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.error
                         )
+                        OutlinedButton(
+                            onClick = {
+                                coroutineScope.launch {
+                                    val envio = viewModel.enviarRolagemDiscord(item.payload)
+                                    val atualizado = item.copy(
+                                        statusEnvio = if (envio.enviado) "enviado" else "erro",
+                                        detalheErro = envio.detalhe
+                                    )
+                                    if (index in historico.indices) {
+                                        historico[index] = atualizado
+                                    }
+                                }
+                            }
+                        ) {
+                            Text("Reenviar")
+                        }
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                 }

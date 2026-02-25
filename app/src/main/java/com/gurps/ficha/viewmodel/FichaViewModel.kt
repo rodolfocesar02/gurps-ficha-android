@@ -666,19 +666,49 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     suspend fun enviarRolagemDiscord(payload: DiscordRollPayload): RollDispatchStatus {
         return withContext(Dispatchers.IO) {
-            val resultado = DiscordRollApiClient.postRoll(
+            val primeiraTentativa = DiscordRollApiClient.postRoll(
                 baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
                 apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
                 payload = payload
             )
-            if (resultado.ok) {
+            if (primeiraTentativa.ok) {
                 RollDispatchStatus(enviado = true)
             } else {
-                RollDispatchStatus(
-                    enviado = false,
-                    detalhe = resultado.error ?: "erro_no_envio"
-                )
+                // Retentativa unica somente para falha de rede/timeout (sem resposta HTTP)
+                val precisaRetentativaRede = primeiraTentativa.statusCode == null
+                val resultadoFinal = if (precisaRetentativaRede) {
+                    DiscordRollApiClient.postRoll(
+                        baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                        apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
+                        payload = payload
+                    )
+                } else {
+                    primeiraTentativa
+                }
+
+                if (resultadoFinal.ok) {
+                    RollDispatchStatus(enviado = true)
+                } else {
+                    RollDispatchStatus(
+                        enviado = false,
+                        detalhe = mensagemErroEnvio(
+                            statusCode = resultadoFinal.statusCode,
+                            erroBruto = resultadoFinal.error
+                        )
+                    )
+                }
             }
+        }
+    }
+
+    private fun mensagemErroEnvio(statusCode: Int?, erroBruto: String?): String {
+        return when {
+            statusCode == 401 -> "chave de acesso inválida (401)"
+            statusCode == 400 -> "canal de envio não definido (400)"
+            statusCode == 500 -> "servidor não configurado corretamente (500)"
+            statusCode == 502 -> "falha ao publicar no Discord (502)"
+            statusCode != null -> "erro HTTP $statusCode"
+            else -> "falha de internet/timeout ao conectar no servidor"
         }
     }
 
