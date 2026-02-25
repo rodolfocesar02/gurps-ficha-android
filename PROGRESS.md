@@ -25,25 +25,18 @@ Criterio de pronto:
 - Busca por tags mais previsivel e util para uso real.
 Status: `CONCLUIDO`
 Andamento:
-- Passo 1 concluido (2026-02-25): novo arquivo `armaduras.v2.json` gerado a partir de `tabelas_de_Armaduras2.xlsx`, com 72 itens base, componentes/add-ons estruturados, `notes` completas (NT baixo/alto), tags e metadados de RD (dividida/flexivel/frontal).
-- Passo 1 concluido (2026-02-25): app passou a carregar `armaduras.v2.json`, incluindo busca por `tags` e `observacoesDetalhadas`.
-- Passo 2 concluido (2026-02-25): UI de armaduras atualizada com filtro dedicado por `tag` (alem de NT/local), contador de resultados e exibicao de tags na lista para selecao mais previsivel.
-- Passo 3 concluido (2026-02-25): consolidacao final do catalogo de armaduras com validacao automatica (sem duplicidade de `id`, sem duplicidade de nome normalizado, sem locais fora do canonico e sem texto quebrado/mojibake).
-- Passo 3 concluido (2026-02-25): `scripts/convert_armaduras_v2.py` reforcado para reparar texto quebrado na conversao e `scripts/validate_armaduras_v2.py` criado para checagem de consistencia do JSON antes de commit.
-- Passo 4 concluido (2026-02-25): UX final do seletor de armaduras ajustada (ordem de filtros Local -> NT -> Tag, texto de orientacao de uso e acao "Limpar filtros"), fechando o lote de catalogo.
-- Ajuste rapido (2026-02-25): removidas tags redundantes de `local/local_exp/nt/tipo` na linha de tags e no filtro de Tag da armadura, evitando repeticao visual.
-- Ajuste tecnico (2026-02-25): limpeza de assets legados de armas (`raw` e `review_flags`), mantendo apenas os arquivos `normalized` usados pelo app em runtime.
-- Ajuste funcional (2026-02-25): armas corpo a corpo passam a carregar/exibir `Aparar` e observacoes da tabela, inclusive na arma ja selecionada/equipada.
-- Ajuste tecnico (2026-02-25): removido fallback de `armaduras.v1.json` e removido asset legado `armaduras.v1.json`; runtime usa somente `armaduras.v2.json`.
-- Ajuste funcional (2026-02-25): observacoes de armadura passam a aparecer tambem na lista de armaduras equipadas.
-- Ajuste funcional (2026-02-25): observacoes de armas de fogo revisadas por categoria de tabela (Pistolas/MM, Rifles/Espingardas, Ultra-Tech e Pesadas), com subfiltro dedicado quando `Armas de Fogo` esta selecionado.
-- Ajuste funcional (2026-02-25): em selecao de arma, observacoes de armas de fogo ficam ocultas por padrao e aparecem no contexto correto de filtro.
-- Ajuste corretivo (2026-02-25): leitura de referencias de observacao de arma corrigida para aceitar formatos `[1]` e `[1, 2, 3]`.
-- Ajuste corretivo (2026-02-25): fallback por nome/tipo/dano da arma para preencher observacoes em itens antigos ja equipados (quando o ID de catalogo nao estiver confiavel).
-- Ajuste de layout (2026-02-25): botoes de acao `Adicionar ...` da aba Equipamentos foram separados dos cards (Armas/Escudos/Armaduras) e o bloco manual passou a usar `Adicionar Itens` sem icone `+` no titulo.
-- Padrao visual de botao (registrado para reutilizacao): usar `Button` Material 3 com texto `Adicionar ...`, sem icone no cabecalho do card, como elemento separado do card e respeitando o espacamento vertical padrao da tela (`Arrangement.spacedBy(16.dp)`).
-- Ajuste de visibilidade (2026-02-25): cards de Equipamentos Manuais, Armas, Escudos e Armaduras ficam ocultos quando vazios e so aparecem apos existir ao menos 1 item do tipo.
-- Ajuste de layout (2026-02-25): aba Pericias alinhada ao padrao da aba Equipamentos, com botoes separados (`Adicionar Pericia` e `Criar Pericia`) e card de lista separado dos botoes, sem icone `+` no cabecalho.
+- Catalogo de armaduras consolidado em `armaduras.v2.json` (72 itens), com conversao/validacao automatica via scripts `convert_armaduras_v2.py` e `validate_armaduras_v2.py`.
+- Runtime simplificado: removido asset legado `armaduras.v1.json` e removidos assets legados de armas `raw/review_flags` (app usa apenas arquivos `normalized`).
+- Observacoes integradas por tipo:
+  - Armaduras: observacoes vinculadas ao item e exibidas tambem no card equipado.
+  - Armas corpo a corpo: suporte a `Aparar` + observacoes [1..12].
+  - Armas distancia: observacoes [1..8].
+  - Armas de fogo: observacoes por categoria de tabela (Pistolas/MM, Rifles/Espingardas, Ultra-Tech, Pesadas), com subfiltro quando `Armas de Fogo` estiver ativo.
+- Robustez de observacoes de armas: suporte aos formatos `[1]` e `[1, 2, 3]` e fallback por nome/tipo/dano para itens antigos equipados.
+- Padrao de layout adotado:
+  - Botoes `Adicionar ...` separados dos cards.
+  - Sem icone `+` em cabecalho de card.
+  - Cards de itens ocultos quando vazios e exibidos somente apos existir ao menos 1 item.
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:
