@@ -251,7 +251,11 @@ class DataRepository(private val context: Context) {
 
     private fun carregarArmadurasCatalogo(): List<ArmaduraCatalogoItem> {
         return try {
-            val json = context.assets.open("armaduras.v1.json").bufferedReader().use { it.readText() }
+            val json = runCatching {
+                context.assets.open("armaduras.v2.json").bufferedReader().use { it.readText() }
+            }.getOrElse {
+                context.assets.open("armaduras.v1.json").bufferedReader().use { it.readText() }
+            }
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyList()
             val items = root.asJsonObject.array("items") ?: return emptyList()
@@ -266,7 +270,15 @@ class DataRepository(private val context: Context) {
                             local = co.string("localRaw").orEmpty().sanitized(),
                             rd = co.string("rdRaw").orEmpty().sanitized(),
                             custoBase = co.float("custoBase"),
-                            pesoKg = co.float("pesoKg")
+                            pesoKg = co.float("pesoKg"),
+                            tags = co.array("tags")
+                                ?.mapNotNull { it.asStringOrNull()?.sanitized() }
+                                ?.filter { it.isNotBlank() }
+                                .orEmpty(),
+                            observacoesDetalhadas = co.array("observacoesDetalhadas")
+                                ?.mapNotNull { it.asStringOrNull()?.sanitized() }
+                                ?.filter { it.isNotBlank() }
+                                .orEmpty()
                         )
                     }
                     .orEmpty()
@@ -278,8 +290,19 @@ class DataRepository(private val context: Context) {
                     rd = obj.string("rdRaw").orEmpty().sanitized(),
                     custoBase = obj.float("custoBase"),
                     pesoBaseKg = obj.float("pesoBaseKg"),
-                    observacoes = obj.string("observacoes").orEmpty().sanitized(),
-                    componentes = comps
+                    observacoes = (
+                        obj.string("observacoes")
+                            ?: obj.string("observacoesRaw")
+                    ).orEmpty().sanitized(),
+                    componentes = comps,
+                    tags = obj.array("tags")
+                        ?.mapNotNull { it.asStringOrNull()?.sanitized() }
+                        ?.filter { it.isNotBlank() }
+                        .orEmpty(),
+                    observacoesDetalhadas = obj.array("observacoesDetalhadas")
+                        ?.mapNotNull { it.asStringOrNull()?.sanitized() }
+                        ?.filter { it.isNotBlank() }
+                        .orEmpty()
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
                 .sortedBy { it.nome.lowercase() }
@@ -396,7 +419,13 @@ class DataRepository(private val context: Context) {
             val matchBusca = b.isBlank() ||
                 a.nome.contains(b, ignoreCase = true) ||
                 a.local.contains(b, ignoreCase = true) ||
-                a.rd.contains(b, ignoreCase = true)
+                a.rd.contains(b, ignoreCase = true) ||
+                a.tags.any { it.contains(b, ignoreCase = true) } ||
+                a.observacoesDetalhadas.any { it.contains(b, ignoreCase = true) } ||
+                a.componentes.any { c ->
+                    c.tags.any { it.contains(b, ignoreCase = true) } ||
+                        c.observacoesDetalhadas.any { it.contains(b, ignoreCase = true) }
+                }
             val matchNt = nt == null || a.nt == nt
             val matchLocal = localFiltro.isNullOrBlank() || armaduraCobreLocal(a, localFiltro)
             matchBusca && matchNt && matchLocal

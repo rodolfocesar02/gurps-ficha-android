@@ -4,7 +4,9 @@ data class ArmaduraComponenteCatalogo(
     val local: String,
     val rd: String,
     val custoBase: Float?,
-    val pesoKg: Float?
+    val pesoKg: Float?,
+    val tags: List<String> = emptyList(),
+    val observacoesDetalhadas: List<String> = emptyList()
 )
 
 data class ArmaduraCatalogoItem(
@@ -16,5 +18,7 @@ data class ArmaduraCatalogoItem(
     val custoBase: Float?,
     val pesoBaseKg: Float?,
     val observacoes: String,
-    val componentes: List<ArmaduraComponenteCatalogo> = emptyList()
+    val componentes: List<ArmaduraComponenteCatalogo> = emptyList(),
+    val tags: List<String> = emptyList(),
+    val observacoesDetalhadas: List<String> = emptyList()
 )

@@ -1,0 +1,3448 @@
+{
+  "version": 2,
+  "kind": "armaduras_v2",
+  "sourceFile": "C:\\Users\\Rodolfo\\Downloads\\arquivos para ficha de gurpsNÃO APAGUE ESTA PASTA\\OCR do modulo basico\\tabelas_de_Armaduras2.xlsx",
+  "generatedAtUtc": "2026-02-25T18:51:21.840803+00:00",
+  "totalItems": 72,
+  "notes": {
+    "baixoNt": {
+      "1": "Pode ser ocultado como ou sob uma peça de roupa.",
+      "2": "Cobertura parcial: sandálias concedem RD 1 para as solas dos pés, enquanto as placas de peito protegem apenas contra ataques frontais.",
+      "3": "RD dividida: utilize a menor RD contra ataques por contusão.",
+      "4": "O elmo impõe a desvantagem Sem Visão Periférica (pág. 160)."
+    },
+    "altoNtGlobal": "Todos os aparelhos eletrônicos e sistemas elétricos (incluindo os trajes de combate) das armaduras de NT7+ funcionam durante (NT - 6) × 6 horas, antes de precisarem ser recarregados ou reabastecidos.",
+    "altoNt": {
+      "1": "RD dividida: use a primeira RD, mais alta, contra ataques perfurantes e de corte; utilize a segunda RD, mais baixa, contra todos os outros tipos de dano.",
+      "2": "Pode ser considerada uma roupa ou ocultada com ou sob as roupas.",
+      "3": "A RD aumenta junto com o NT. Após o NT inicial: Inicial×1; Inicial+1×1,5; Inicial+2×2; Inicial+3×3; superior×4.",
+      "4": "Sensores biomédicos permitem monitoramento remoto dos sinais vitais, concedendo +1 em Diagnose ao examinar o usuário. O traje é climatizado.",
+      "5": "Exige a perícia Traje NBQ; em NT9+, não limita DX. Com máscara/capacete [7], concede a vantagem Lacrado.",
+      "6": "RD dividida: use a RD mais alta somente se o ataque atingir tronco (blindagem pessoal), crânio (capacete) ou sola do pé (calçado).",
+      "7": "Inclui Pulmões com Filtro, Olfato Protegido e Visão Protegida; antes do NT9 também impõe Sem Visão Periférica.",
+      "8": "Concede Visão Protegida.",
+      "9": "A RD do traje funciona apenas contra dano por queimadura ou corrosão.",
+      "10": "Exige perícia Traje Pressurizado. Com capacete, concede Não Respira (12h), Olfato Protegido, Lacrado e Resistência ao Vácuo.",
+      "11": "Concede Audição Protegida, Visão Protegida e Rádio. Em NT9+, concede Senso de Direção (Requer Sinal), Infravisão, Visão Noturna 9 e (NT-8) níveis de Visão Telescópica.",
+      "12": "Exige perícia Traje de Combate. Concede ST de Levantamento/ST de Golpe +10 e Super Salto 1; melhora com NT. Com elmo, concede Não Respira (12h), Olfato Protegido, Lacrado e Resistência ao Vácuo."
+    }
+  },
+  "items": [
+    {
+      "id": "tanga_de_pele",
+      "nome": "Tanga de Pele",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "0",
+      "nt": 0,
+      "localRaw": "virilha",
+      "locaisNorm": [
+        "virilha"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$10",
+      "custoBase": 10.0,
+      "pesoRaw": "desp.",
+      "pesoBaseKg": null,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:virilha",
+        "local_exp:virilha",
+        "nt:0",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "tunica_de_pele",
+      "nome": "Túnica de Pele",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "0",
+      "nt": 0,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$25",
+      "custoBase": 25.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:0",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "peitoral_de_bronze",
+      "nome": "Peitoral de Bronze",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "4D",
+      "rd": {
+        "raw": "4D",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": true,
+        "dividida": false
+      },
+      "custoRaw": "$400",
+      "custoBase": 400.0,
+      "pesoRaw": "10",
+      "pesoBaseKg": 10.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[2]",
+      "observacoesRefs": [
+        2
+      ],
+      "observacoesDetalhadas": [
+        "Cobertura parcial: sandálias concedem RD 1 para as solas dos pés, enquanto as placas de peito protegem apenas contra ataques frontais."
+      ],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:1",
+        "nt:baixo",
+        "obs:2",
+        "rd:frontal",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 4
+    },
+    {
+      "id": "corselete_de_bronze",
+      "nome": "Corselete de Bronze",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "5",
+      "rd": {
+        "raw": "5",
+        "principal": 5,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$1.300",
+      "custoBase": 1300.0,
+      "pesoRaw": "20",
+      "pesoBaseKg": 20.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 5
+    },
+    {
+      "id": "tunica",
+      "nome": "Túnica",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$30",
+      "custoBase": 30.0,
+      "pesoRaw": "3",
+      "pesoBaseKg": 3.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 6
+    },
+    {
+      "id": "armadura_de_couro",
+      "nome": "Armadura de Couro",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "2",
+      "rd": {
+        "raw": "2",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$100",
+      "custoBase": 100.0,
+      "pesoRaw": "5",
+      "pesoBaseKg": 5.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 7
+    },
+    {
+      "id": "jaqueta_de_couro",
+      "nome": "Jaqueta de Couro",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "braços, tronco",
+      "locaisNorm": [
+        "bracos",
+        "tronco"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$50",
+      "custoBase": 50.0,
+      "pesoRaw": "2",
+      "pesoBaseKg": 2.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:bracos",
+        "local:tronco",
+        "local_exp:bracos",
+        "local_exp:tronco",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 8
+    },
+    {
+      "id": "armadura_de_escamas_leve",
+      "nome": "Armadura de Escamas Leve",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "3",
+      "rd": {
+        "raw": "3",
+        "principal": 3,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$150",
+      "custoBase": 150.0,
+      "pesoRaw": "7,5",
+      "pesoBaseKg": 7.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 9
+    },
+    {
+      "id": "loriga_segmentada",
+      "nome": "Loriga Segmentada",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "5",
+      "rd": {
+        "raw": "5",
+        "principal": 5,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$680",
+      "custoBase": 680.0,
+      "pesoRaw": "13",
+      "pesoBaseKg": 13.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 10
+    },
+    {
+      "id": "cota_de_malha_longa",
+      "nome": "Cota de Malha Longa",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "4/2*",
+      "rd": {
+        "raw": "4/2*",
+        "principal": 4,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$230",
+      "custoBase": 230.0,
+      "pesoRaw": "12,5",
+      "pesoBaseKg": 12.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "RD dividida: utilize a menor RD contra ataques por contusão."
+      ],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:2",
+        "nt:baixo",
+        "obs:3",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 11
+    },
+    {
+      "id": "camisa_de_cota_de_malha",
+      "nome": "Camisa de Cota de Malha",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "4/2*",
+      "rd": {
+        "raw": "4/2*",
+        "principal": 4,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$150",
+      "custoBase": 150.0,
+      "pesoRaw": "8",
+      "pesoBaseKg": 8.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[1,3]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:2",
+        "nt:baixo",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 12
+    },
+    {
+      "id": "armadura_de_escamas",
+      "nome": "Armadura de Escamas",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$420",
+      "custoBase": 420.0,
+      "pesoRaw": "17,5",
+      "pesoBaseKg": 17.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 13
+    },
+    {
+      "id": "cota_de_malha_longa_dupla",
+      "nome": "Cota de Malha Longa Dupla",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "5/3*",
+      "rd": {
+        "raw": "5/3*",
+        "principal": 5,
+        "secundario": 3,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$520",
+      "custoBase": 520.0,
+      "pesoRaw": "22",
+      "pesoBaseKg": 22.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "RD dividida: utilize a menor RD contra ataques por contusão."
+      ],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:3",
+        "nt:baixo",
+        "obs:3",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 14
+    },
+    {
+      "id": "corselete_de_aco_reforcado",
+      "nome": "Corselete de Aço Reforçado",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "7",
+      "rd": {
+        "raw": "7",
+        "principal": 7,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$2.300",
+      "custoBase": 2300.0,
+      "pesoRaw": "22,5",
+      "pesoBaseKg": 22.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 15
+    },
+    {
+      "id": "peitoral_de_aco",
+      "nome": "Peitoral de Aço",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "5D",
+      "rd": {
+        "raw": "5D",
+        "principal": 5,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": true,
+        "dividida": false
+      },
+      "custoRaw": "$500",
+      "custoBase": 500.0,
+      "pesoRaw": "9",
+      "pesoBaseKg": 9.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[2]",
+      "observacoesRefs": [
+        2
+      ],
+      "observacoesDetalhadas": [
+        "Cobertura parcial: sandálias concedem RD 1 para as solas dos pés, enquanto as placas de peito protegem apenas contra ataques frontais."
+      ],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:3",
+        "nt:baixo",
+        "obs:2",
+        "rd:frontal",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 16
+    },
+    {
+      "id": "corselete_de_aco",
+      "nome": "Corselete de Aço",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "6",
+      "rd": {
+        "raw": "6",
+        "principal": 6,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$1.300",
+      "custoBase": 1300.0,
+      "pesoRaw": "17,5",
+      "pesoBaseKg": 17.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 17
+    },
+    {
+      "id": "armadura_de_placas_laminadas_de_aco",
+      "nome": "Armadura de Placas Laminadas de Aço",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "5",
+      "rd": {
+        "raw": "5",
+        "principal": 5,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$900",
+      "custoBase": 900.0,
+      "pesoRaw": "15",
+      "pesoBaseKg": 15.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 18
+    },
+    {
+      "id": "casaco_de_couro_de_bufalo",
+      "nome": "Casaco de Couro de Búfalo",
+      "secao": "NT_Baixo_Corporal",
+      "ntRaw": "4",
+      "nt": 4,
+      "localRaw": "corpo, membros",
+      "locaisNorm": [
+        "bracos",
+        "pernas",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "2*",
+      "rd": {
+        "raw": "2*",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$210",
+      "custoBase": 210.0,
+      "pesoRaw": "8",
+      "pesoBaseKg": 8.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:corpo",
+        "local:membros",
+        "local_exp:bracos",
+        "local_exp:pernas",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:4",
+        "nt:baixo",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 19
+    },
+    {
+      "id": "bracadeiras_de_bronze",
+      "nome": "Braçadeiras de Bronze",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "3",
+      "rd": {
+        "raw": "3",
+        "principal": 3,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$180",
+      "custoBase": 180.0,
+      "pesoRaw": "4,5",
+      "pesoBaseKg": 4.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "grevas_de_bronze",
+      "nome": "Grevas de Bronze",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "3",
+      "rd": {
+        "raw": "3",
+        "principal": 3,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$270",
+      "custoBase": 270.0,
+      "pesoRaw": "8,5",
+      "pesoBaseKg": 8.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "mangas_de_tecido",
+      "nome": "Mangas de Tecido",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$20",
+      "custoBase": 20.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 4
+    },
+    {
+      "id": "perneiras_de_couro_reforcado",
+      "nome": "Perneiras de Couro Reforçado",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "2",
+      "rd": {
+        "raw": "2",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$60",
+      "custoBase": 60.0,
+      "pesoRaw": "2",
+      "pesoBaseKg": 2.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 5
+    },
+    {
+      "id": "mangas_de_couro_reforcado",
+      "nome": "Mangas de Couro Reforçado",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "2",
+      "rd": {
+        "raw": "2",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$50",
+      "custoBase": 50.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 6
+    },
+    {
+      "id": "perneiras_de_couro",
+      "nome": "Perneiras de Couro",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$40",
+      "custoBase": 40.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 7
+    },
+    {
+      "id": "calcas_de_couro",
+      "nome": "Calças de Couro",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "pernas, virilha",
+      "locaisNorm": [
+        "pernas",
+        "virilha"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$40",
+      "custoBase": 40.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:pernas",
+        "local:virilha",
+        "local_exp:pernas",
+        "local_exp:virilha",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 8
+    },
+    {
+      "id": "saiote_de_couro_batido",
+      "nome": "Saiote de Couro Batido",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "virilha, pernas",
+      "locaisNorm": [
+        "pernas",
+        "virilha"
+      ],
+      "rdRaw": "3/2*",
+      "rd": {
+        "raw": "3/2*",
+        "principal": 3,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$60",
+      "custoBase": 60.0,
+      "pesoRaw": "2",
+      "pesoBaseKg": 2.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "RD dividida: utilize a menor RD contra ataques por contusão."
+      ],
+      "tags": [
+        "local:pernas",
+        "local:virilha",
+        "local_exp:pernas",
+        "local_exp:virilha",
+        "nt:1",
+        "nt:baixo",
+        "obs:3",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 9
+    },
+    {
+      "id": "perneiras_de_cota_de_malha",
+      "nome": "Perneiras de Cota de Malha",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "4/2*",
+      "rd": {
+        "raw": "4/2*",
+        "principal": 4,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$110",
+      "custoBase": 110.0,
+      "pesoRaw": "7,5",
+      "pesoBaseKg": 7.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "RD dividida: utilize a menor RD contra ataques por contusão."
+      ],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:2",
+        "nt:baixo",
+        "obs:3",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 10
+    },
+    {
+      "id": "mangas_de_cota_de_malha",
+      "nome": "Mangas de Cota de Malha",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "4/2*",
+      "rd": {
+        "raw": "4/2*",
+        "principal": 4,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$70",
+      "custoBase": 70.0,
+      "pesoRaw": "4,5",
+      "pesoBaseKg": 4.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "RD dividida: utilize a menor RD contra ataques por contusão."
+      ],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:2",
+        "nt:baixo",
+        "obs:3",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 11
+    },
+    {
+      "id": "perneiras_de_escamas",
+      "nome": "Perneiras de Escamas",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$250",
+      "custoBase": 250.0,
+      "pesoRaw": "10,5",
+      "pesoBaseKg": 10.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 12
+    },
+    {
+      "id": "mangas_de_escamas",
+      "nome": "Mangas de Escamas",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$210",
+      "custoBase": 210.0,
+      "pesoRaw": "7",
+      "pesoBaseKg": 7.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 13
+    },
+    {
+      "id": "bracadeiras_de_placas_reforcadas",
+      "nome": "Braçadeiras de Placas Reforçadas",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "7",
+      "rd": {
+        "raw": "7",
+        "principal": 7,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$1.500",
+      "custoBase": 1500.0,
+      "pesoRaw": "10",
+      "pesoBaseKg": 10.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 14
+    },
+    {
+      "id": "perneiras_de_placas_reforcadas",
+      "nome": "Perneiras de Placas Reforçadas",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "7",
+      "rd": {
+        "raw": "7",
+        "principal": 7,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$1.600",
+      "custoBase": 1600.0,
+      "pesoRaw": "12,5",
+      "pesoBaseKg": 12.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 15
+    },
+    {
+      "id": "bracadeira_de_placas",
+      "nome": "Braçadeira de Placas",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "braços",
+      "locaisNorm": [
+        "bracos"
+      ],
+      "rdRaw": "6",
+      "rd": {
+        "raw": "6",
+        "principal": 6,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$1.000",
+      "custoBase": 1000.0,
+      "pesoRaw": "7,5",
+      "pesoBaseKg": 7.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:bracos",
+        "local_exp:bracos",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 16
+    },
+    {
+      "id": "perneiras_de_placas",
+      "nome": "Perneiras de Placas",
+      "secao": "NT_Baixo_Membros",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "pernas",
+      "locaisNorm": [
+        "pernas"
+      ],
+      "rdRaw": "6",
+      "rd": {
+        "raw": "6",
+        "principal": 6,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$1.100",
+      "custoBase": 1100.0,
+      "pesoRaw": "10",
+      "pesoBaseKg": 10.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pernas",
+        "local_exp:pernas",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 17
+    },
+    {
+      "id": "elmo_de_bronze",
+      "nome": "Elmo de Bronze",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "crânio, rosto",
+      "locaisNorm": [
+        "cranio",
+        "rosto"
+      ],
+      "rdRaw": "3",
+      "rd": {
+        "raw": "3",
+        "principal": 3,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$160",
+      "custoBase": 160.0,
+      "pesoRaw": "3,7",
+      "pesoBaseKg": 3.7,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local:rosto",
+        "local_exp:cranio",
+        "local_exp:rosto",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "celada_de_bronze",
+      "nome": "Celada de Bronze",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "3",
+      "rd": {
+        "raw": "3",
+        "principal": 3,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$60",
+      "custoBase": 60.0,
+      "pesoRaw": "2,5",
+      "pesoBaseKg": 2.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "barrete_de_tecido",
+      "nome": "Barrete de Tecido",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$5",
+      "custoBase": 5.0,
+      "pesoRaw": "desp.",
+      "pesoBaseKg": null,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 4
+    },
+    {
+      "id": "barrete_de_couro",
+      "nome": "Barrete de Couro",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$32",
+      "custoBase": 32.0,
+      "pesoRaw": "desp.",
+      "pesoBaseKg": null,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:1",
+        "nt:baixo",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 5
+    },
+    {
+      "id": "elmo_de_couro",
+      "nome": "Elmo de Couro",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "crânio, rosto",
+      "locaisNorm": [
+        "cranio",
+        "rosto"
+      ],
+      "rdRaw": "2",
+      "rd": {
+        "raw": "2",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$20",
+      "custoBase": 20.0,
+      "pesoRaw": "0,25",
+      "pesoBaseKg": 0.25,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local:rosto",
+        "local_exp:cranio",
+        "local_exp:rosto",
+        "nt:1",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 6
+    },
+    {
+      "id": "elmo_de_legionario",
+      "nome": "Elmo de Legionário",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "crânio, rosto",
+      "locaisNorm": [
+        "cranio",
+        "rosto"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$150",
+      "custoBase": 150.0,
+      "pesoRaw": "3",
+      "pesoBaseKg": 3.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local:rosto",
+        "local_exp:cranio",
+        "local_exp:rosto",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 7
+    },
+    {
+      "id": "coifa_de_cota_de_malha",
+      "nome": "Coifa de Cota de Malha",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "crânio, pescoço",
+      "locaisNorm": [
+        "cranio",
+        "pescoco"
+      ],
+      "rdRaw": "4/2*",
+      "rd": {
+        "raw": "4/2*",
+        "principal": 4,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$55",
+      "custoBase": 55.0,
+      "pesoRaw": "2",
+      "pesoBaseKg": 2.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "RD dividida: utilize a menor RD contra ataques por contusão."
+      ],
+      "tags": [
+        "local:cranio",
+        "local:pescoco",
+        "local_exp:cranio",
+        "local_exp:pescoco",
+        "nt:2",
+        "nt:baixo",
+        "obs:3",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 8
+    },
+    {
+      "id": "elmo_circular",
+      "nome": "Elmo Circular",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "crânio, rosto",
+      "locaisNorm": [
+        "cranio",
+        "rosto"
+      ],
+      "rdRaw": "6",
+      "rd": {
+        "raw": "6",
+        "principal": 6,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$240",
+      "custoBase": 240.0,
+      "pesoRaw": "5",
+      "pesoBaseKg": 5.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[4]",
+      "observacoesRefs": [
+        4
+      ],
+      "observacoesDetalhadas": [
+        "O elmo impõe a desvantagem Sem Visão Periférica (pág. 160)."
+      ],
+      "tags": [
+        "local:cranio",
+        "local:rosto",
+        "local_exp:cranio",
+        "local_exp:rosto",
+        "nt:3",
+        "nt:baixo",
+        "obs:4",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 9
+    },
+    {
+      "id": "mascara",
+      "nome": "Máscara",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "rosto",
+      "locaisNorm": [
+        "rosto"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$100",
+      "custoBase": 100.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:rosto",
+        "local_exp:rosto",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 10
+    },
+    {
+      "id": "elmo_grande",
+      "nome": "Elmo Grande",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "crânio, rosto, pescoço",
+      "locaisNorm": [
+        "cranio",
+        "pescoco",
+        "rosto"
+      ],
+      "rdRaw": "7",
+      "rd": {
+        "raw": "7",
+        "principal": 7,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$340",
+      "custoBase": 340.0,
+      "pesoRaw": "5",
+      "pesoBaseKg": 5.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[4]",
+      "observacoesRefs": [
+        4
+      ],
+      "observacoesDetalhadas": [
+        "O elmo impõe a desvantagem Sem Visão Periférica (pág. 160)."
+      ],
+      "tags": [
+        "local:cranio",
+        "local:pescoco",
+        "local:rosto",
+        "local_exp:cranio",
+        "local_exp:pescoco",
+        "local_exp:rosto",
+        "nt:3",
+        "nt:baixo",
+        "obs:4",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 11
+    },
+    {
+      "id": "celada",
+      "nome": "Celada",
+      "secao": "NT_Baixo_Proteção para Cabeca",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$100",
+      "custoBase": 100.0,
+      "pesoRaw": "2,5",
+      "pesoBaseKg": 2.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 12
+    },
+    {
+      "id": "luvas_de_tecido",
+      "nome": "Luvas de Tecido",
+      "secao": "NT_Baixo_Luvas",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "mãos",
+      "locaisNorm": [
+        "maos"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$15",
+      "custoBase": 15.0,
+      "pesoRaw": "desp.",
+      "pesoBaseKg": null,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:maos",
+        "local_exp:maos",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "luvas_de_couro",
+      "nome": "Luvas de Couro",
+      "secao": "NT_Baixo_Luvas",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "mãos",
+      "locaisNorm": [
+        "maos"
+      ],
+      "rdRaw": "2*",
+      "rd": {
+        "raw": "2*",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$30",
+      "custoBase": 30.0,
+      "pesoRaw": "desp.",
+      "pesoBaseKg": null,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:maos",
+        "local_exp:maos",
+        "nt:1",
+        "nt:baixo",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "manoplas",
+      "nome": "Manoplas",
+      "secao": "NT_Baixo_Luvas",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "mãos",
+      "locaisNorm": [
+        "maos"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$100",
+      "custoBase": 100.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:maos",
+        "local_exp:maos",
+        "nt:2",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 4
+    },
+    {
+      "id": "manoplas_reforcadas",
+      "nome": "Manoplas Reforçadas",
+      "secao": "NT_Baixo_Luvas",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "mãos",
+      "locaisNorm": [
+        "maos"
+      ],
+      "rdRaw": "5",
+      "rd": {
+        "raw": "5",
+        "principal": 5,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$250",
+      "custoBase": 250.0,
+      "pesoRaw": "1,2",
+      "pesoBaseKg": 1.2,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:maos",
+        "local_exp:maos",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 5
+    },
+    {
+      "id": "sandalias",
+      "nome": "Sandálias",
+      "secao": "NT_Baixo_Calcados",
+      "ntRaw": "0",
+      "nt": 0,
+      "localRaw": "pés",
+      "locaisNorm": [
+        "pes"
+      ],
+      "rdRaw": "0",
+      "rd": {
+        "raw": "0",
+        "principal": 0,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$25",
+      "custoBase": 25.0,
+      "pesoRaw": "0,25",
+      "pesoBaseKg": 0.25,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1,2]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pes",
+        "local_exp:pes",
+        "nt:0",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "sapatos",
+      "nome": "Sapatos",
+      "secao": "NT_Baixo_Calcados",
+      "ntRaw": "1",
+      "nt": 1,
+      "localRaw": "pés",
+      "locaisNorm": [
+        "pes"
+      ],
+      "rdRaw": "1*",
+      "rd": {
+        "raw": "1*",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$40",
+      "custoBase": 40.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:pes",
+        "local_exp:pes",
+        "nt:1",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "botas",
+      "nome": "Botas",
+      "secao": "NT_Baixo_Calcados",
+      "ntRaw": "2",
+      "nt": 2,
+      "localRaw": "pés",
+      "locaisNorm": [
+        "pes"
+      ],
+      "rdRaw": "2*",
+      "rd": {
+        "raw": "2*",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$80",
+      "custoBase": 80.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Pode ser ocultado como ou sob uma peça de roupa."
+      ],
+      "tags": [
+        "local:pes",
+        "local_exp:pes",
+        "nt:2",
+        "nt:baixo",
+        "obs:1",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 4
+    },
+    {
+      "id": "sollerets",
+      "nome": "Sollerets",
+      "secao": "NT_Baixo_Calcados",
+      "ntRaw": "3",
+      "nt": 3,
+      "localRaw": "pés",
+      "locaisNorm": [
+        "pes"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$150",
+      "custoBase": 150.0,
+      "pesoRaw": "3,5",
+      "pesoBaseKg": 3.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pes",
+        "local_exp:pes",
+        "nt:3",
+        "nt:baixo",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 5
+    },
+    {
+      "id": "colete_de_campanha",
+      "nome": "Colete de Campanha",
+      "secao": "NT_Alto_Armadura Corporal",
+      "ntRaw": "6",
+      "nt": 6,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "7",
+      "rd": {
+        "raw": "7",
+        "principal": 7,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$500",
+      "custoBase": 500.0,
+      "pesoRaw": "10",
+      "pesoBaseKg": 10.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:6",
+        "nt:alto",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "colete_fragmentado",
+      "nome": "Colete Fragmentado",
+      "secao": "NT_Alto_Armadura Corporal",
+      "ntRaw": "7",
+      "nt": 7,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "5/2*",
+      "rd": {
+        "raw": "5/2*",
+        "principal": 5,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$350",
+      "custoBase": 350.0,
+      "pesoRaw": "4,5",
+      "pesoBaseKg": 4.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[1]",
+      "observacoesRefs": [
+        1
+      ],
+      "observacoesDetalhadas": [
+        "Todos os aparelhos eletrônicos e sistemas elétricos (incluindo os trajes de combate) das armaduras de NT7+ funcionam durante (NT - 6) × 6 horas, antes de precisarem ser recarregados ou reabastecidos.",
+        "RD dividida: use a primeira RD, mais alta, contra ataques perfurantes e de corte; utilize a segunda RD, mais baixa, contra todos os outros tipos de dano."
+      ],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:7",
+        "nt:alto",
+        "obs:1",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Encartes de Placas",
+          "localRaw": "tronco",
+          "locaisNorm": [
+            "tronco"
+          ],
+          "rdRaw": "+20",
+          "rd": {
+            "raw": "+20",
+            "principal": null,
+            "secundario": null,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": false
+          },
+          "custoRaw": "+$300",
+          "custoBase": 300.0,
+          "pesoRaw": "+7,5",
+          "pesoKg": 7.5,
+          "clRaw": "3",
+          "cl": 3,
+          "observacoesRaw": "",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:tronco",
+            "local_exp:tronco",
+            "nt:7",
+            "nt:alto",
+            "tipo:addon"
+          ],
+          "rowNumber": 4
+        }
+      ],
+      "rowNumber": 3
+    },
+    {
+      "id": "colete_balistico",
+      "nome": "Colete Balístico",
+      "secao": "NT_Alto_Armadura Corporal",
+      "ntRaw": "8",
+      "nt": 8,
+      "localRaw": "tronco",
+      "locaisNorm": [
+        "tronco"
+      ],
+      "rdRaw": "8/2*",
+      "rd": {
+        "raw": "8/2*",
+        "principal": 8,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$400",
+      "custoBase": 400.0,
+      "pesoRaw": "1",
+      "pesoBaseKg": 1.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[1,2,3]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local_exp:tronco",
+        "nt:8",
+        "nt:alto",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 5
+    },
+    {
+      "id": "colete_tatico",
+      "nome": "Colete Tático",
+      "secao": "NT_Alto_Armadura Corporal",
+      "ntRaw": "8",
+      "nt": 8,
+      "localRaw": "tronco, virilha",
+      "locaisNorm": [
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "12/5*",
+      "rd": {
+        "raw": "12/5*",
+        "principal": 12,
+        "secundario": 5,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$900",
+      "custoBase": 900.0,
+      "pesoRaw": "4,5",
+      "pesoBaseKg": 4.5,
+      "clRaw": "2",
+      "cl": 2,
+      "observacoesRaw": "[1,3]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:tronco",
+        "local:virilha",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:8",
+        "nt:alto",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Placas Antitrauma",
+          "localRaw": "tronco",
+          "locaisNorm": [
+            "tronco"
+          ],
+          "rdRaw": "+23",
+          "rd": {
+            "raw": "+23",
+            "principal": null,
+            "secundario": null,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": false
+          },
+          "custoRaw": "+$600",
+          "custoBase": 600.0,
+          "pesoRaw": "+4,5",
+          "pesoKg": 4.5,
+          "clRaw": "2",
+          "cl": 2,
+          "observacoesRaw": "",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:tronco",
+            "local_exp:tronco",
+            "nt:8",
+            "nt:alto",
+            "tipo:addon"
+          ],
+          "rowNumber": 7
+        }
+      ],
+      "rowNumber": 6
+    },
+    {
+      "id": "traje_balistico",
+      "nome": "Traje Balístico",
+      "secao": "NT_Alto_Armadura Corporal",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "corpo, membros",
+      "locaisNorm": [
+        "bracos",
+        "pernas",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "12/4*",
+      "rd": {
+        "raw": "12/4*",
+        "principal": 12,
+        "secundario": 4,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$1K",
+      "custoBase": 1000.0,
+      "pesoRaw": "3",
+      "pesoBaseKg": 3.0,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[1,2,3]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:corpo",
+        "local:membros",
+        "local_exp:bracos",
+        "local_exp:pernas",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 8
+    },
+    {
+      "id": "traje_tatico",
+      "nome": "Traje Tático",
+      "secao": "NT_Alto_Armadura Corporal",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "20/10*",
+      "rd": {
+        "raw": "20/10*",
+        "principal": 20,
+        "secundario": 10,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$3K",
+      "custoBase": 3000.0,
+      "pesoRaw": "7,5",
+      "pesoBaseKg": 7.5,
+      "clRaw": "2",
+      "cl": 2,
+      "observacoesRaw": "[1,3,4,5]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 9
+    },
+    {
+      "id": "botas_reforcadas",
+      "nome": "Botas Reforçadas",
+      "secao": "NT_Alto_Membros",
+      "ntRaw": "7",
+      "nt": 7,
+      "localRaw": "pés",
+      "locaisNorm": [
+        "pes"
+      ],
+      "rdRaw": "5/2",
+      "rd": {
+        "raw": "5/2",
+        "principal": 5,
+        "secundario": 2,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$75",
+      "custoBase": 75.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "—",
+      "cl": null,
+      "observacoesRaw": "[2,6]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pes",
+        "local_exp:pes",
+        "nt:7",
+        "nt:alto",
+        "rd:dividida",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "botas_de_assalto",
+      "nome": "Botas de Assalto",
+      "secao": "NT_Alto_Membros",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "pés",
+      "locaisNorm": [
+        "pes"
+      ],
+      "rdRaw": "12/6",
+      "rd": {
+        "raw": "12/6",
+        "principal": 12,
+        "secundario": 6,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$150",
+      "custoBase": 150.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[3,6]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:pes",
+        "local_exp:pes",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "luvas_balisticas",
+      "nome": "Luvas Balísticas",
+      "secao": "NT_Alto_Membros",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "mãos",
+      "locaisNorm": [
+        "maos"
+      ],
+      "rdRaw": "8/2*",
+      "rd": {
+        "raw": "8/2*",
+        "principal": 8,
+        "secundario": 2,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$30",
+      "custoBase": 30.0,
+      "pesoRaw": "desp.",
+      "pesoBaseKg": null,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[1,2,3]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:maos",
+        "local_exp:maos",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 4
+    },
+    {
+      "id": "mascara_de_oxigenio",
+      "nome": "Máscara de Oxigênio",
+      "secao": "NT_Alto_Capacetes",
+      "ntRaw": "6",
+      "nt": 6,
+      "localRaw": "olhos, rosto",
+      "locaisNorm": [
+        "olhos",
+        "rosto"
+      ],
+      "rdRaw": "2",
+      "rd": {
+        "raw": "2",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$100",
+      "custoBase": 100.0,
+      "pesoRaw": "2",
+      "pesoBaseKg": 2.0,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[7]",
+      "observacoesRefs": [
+        7
+      ],
+      "observacoesDetalhadas": [
+        "Todos os aparelhos eletrônicos e sistemas elétricos (incluindo os trajes de combate) das armaduras de NT7+ funcionam durante (NT - 6) × 6 horas, antes de precisarem ser recarregados ou reabastecidos.",
+        "Inclui Pulmões com Filtro, Olfato Protegido e Visão Protegida; antes do NT9 também impõe Sem Visão Periférica."
+      ],
+      "tags": [
+        "local:olhos",
+        "local:rosto",
+        "local_exp:olhos",
+        "local_exp:rosto",
+        "nt:6",
+        "nt:alto",
+        "obs:7",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "celada_de_aco",
+      "nome": "Celada de Aço",
+      "secao": "NT_Alto_Capacetes",
+      "ntRaw": "6",
+      "nt": 6,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "4",
+      "rd": {
+        "raw": "4",
+        "principal": 4,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$60",
+      "custoBase": 60.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:6",
+        "nt:alto",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 3
+    },
+    {
+      "id": "capacete_antifragmentos",
+      "nome": "Capacete Antifragmentos",
+      "secao": "NT_Alto_Capacetes",
+      "ntRaw": "7",
+      "nt": 7,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "5",
+      "rd": {
+        "raw": "5",
+        "principal": 5,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$125",
+      "custoBase": 125.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:7",
+        "nt:alto",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Visor",
+          "localRaw": "olhos, rosto",
+          "locaisNorm": [
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "1",
+          "rd": {
+            "raw": "1",
+            "principal": 1,
+            "secundario": null,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": false
+          },
+          "custoRaw": "+$25",
+          "custoBase": 25.0,
+          "pesoRaw": "+0,75",
+          "pesoKg": 0.75,
+          "clRaw": "4",
+          "cl": 4,
+          "observacoesRaw": "[8]",
+          "observacoesRefs": [
+            8
+          ],
+          "observacoesDetalhadas": [
+            "Todos os aparelhos eletrônicos e sistemas elétricos (incluindo os trajes de combate) das armaduras de NT7+ funcionam durante (NT - 6) × 6 horas, antes de precisarem ser recarregados ou reabastecidos.",
+            "Concede Visão Protegida."
+          ],
+          "tags": [
+            "local:olhos",
+            "local:rosto",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:7",
+            "nt:alto",
+            "obs:8",
+            "tipo:addon"
+          ],
+          "rowNumber": 5
+        }
+      ],
+      "rowNumber": 4
+    },
+    {
+      "id": "capacete_balistico",
+      "nome": "Capacete Balístico",
+      "secao": "NT_Alto_Capacetes",
+      "ntRaw": "8",
+      "nt": 8,
+      "localRaw": "crânio",
+      "locaisNorm": [
+        "cranio"
+      ],
+      "rdRaw": "12",
+      "rd": {
+        "raw": "12",
+        "principal": 12,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$250",
+      "custoBase": 250.0,
+      "pesoRaw": "1,5",
+      "pesoBaseKg": 1.5,
+      "clRaw": "3",
+      "cl": 3,
+      "observacoesRaw": "[3]",
+      "observacoesRefs": [
+        3
+      ],
+      "observacoesDetalhadas": [
+        "Todos os aparelhos eletrônicos e sistemas elétricos (incluindo os trajes de combate) das armaduras de NT7+ funcionam durante (NT - 6) × 6 horas, antes de precisarem ser recarregados ou reabastecidos.",
+        "A RD aumenta junto com o NT. Após o NT inicial: Inicial×1; Inicial+1×1,5; Inicial+2×2; Inicial+3×3; superior×4."
+      ],
+      "tags": [
+        "local:cranio",
+        "local_exp:cranio",
+        "nt:8",
+        "nt:alto",
+        "obs:3",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Visor",
+          "localRaw": "olhos, rosto",
+          "locaisNorm": [
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "10",
+          "rd": {
+            "raw": "10",
+            "principal": 10,
+            "secundario": null,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": false
+          },
+          "custoRaw": "+$100",
+          "custoBase": 100.0,
+          "pesoRaw": "+1,5",
+          "pesoKg": 1.5,
+          "clRaw": "3",
+          "cl": 3,
+          "observacoesRaw": "[3,8]",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:olhos",
+            "local:rosto",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:8",
+            "nt:alto",
+            "tipo:addon"
+          ],
+          "rowNumber": 7
+        }
+      ],
+      "rowNumber": 6
+    },
+    {
+      "id": "traje_nbo",
+      "nome": "Traje NBO",
+      "secao": "NT_Alto_Trajes para Ambientes",
+      "ntRaw": "7",
+      "nt": 7,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "1",
+      "rd": {
+        "raw": "1",
+        "principal": 1,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$150",
+      "custoBase": 150.0,
+      "pesoRaw": "1,7",
+      "pesoBaseKg": 1.7,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[5,9]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:7",
+        "nt:alto",
+        "tipo:base"
+      ],
+      "componentes": [],
+      "rowNumber": 2
+    },
+    {
+      "id": "traje_espacial",
+      "nome": "Traje Espacial",
+      "secao": "NT_Alto_Trajes para Ambientes",
+      "ntRaw": "7",
+      "nt": 7,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "2",
+      "rd": {
+        "raw": "2",
+        "principal": 2,
+        "secundario": null,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$2M",
+      "custoBase": 2000000.0,
+      "pesoRaw": "112,5",
+      "pesoBaseKg": 112.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[4,9,10]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:7",
+        "nt:alto",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Capacete Espacial",
+          "localRaw": "cabeça",
+          "locaisNorm": [
+            "cranio",
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "3",
+          "rd": {
+            "raw": "3",
+            "principal": 3,
+            "secundario": null,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": false
+          },
+          "custoRaw": "+$25K",
+          "custoBase": 25000.0,
+          "pesoRaw": "5",
+          "pesoKg": 5.0,
+          "clRaw": "4",
+          "cl": 4,
+          "observacoesRaw": "[7,11]",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:cabeca",
+            "local_exp:cranio",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:7",
+            "nt:alto",
+            "tipo:addon"
+          ],
+          "rowNumber": 4
+        }
+      ],
+      "rowNumber": 3
+    },
+    {
+      "id": "traje_de_combate",
+      "nome": "Traje de Combate",
+      "secao": "NT_Alto_Trajes para Ambientes",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "70/50",
+      "rd": {
+        "raw": "70/50",
+        "principal": 70,
+        "secundario": 50,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$80K",
+      "custoBase": 80000.0,
+      "pesoRaw": "75",
+      "pesoBaseKg": 75.0,
+      "clRaw": "1",
+      "cl": 1,
+      "observacoesRaw": "[3,4,6,12]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Capacete",
+          "localRaw": "cabeça",
+          "locaisNorm": [
+            "cranio",
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "70/50",
+          "rd": {
+            "raw": "70/50",
+            "principal": 70,
+            "secundario": 50,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": true
+          },
+          "custoRaw": "+$10K",
+          "custoBase": 10000.0,
+          "pesoRaw": "7,5",
+          "pesoKg": 7.5,
+          "clRaw": "1",
+          "cl": 1,
+          "observacoesRaw": "[3,6,7,11]",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:cabeca",
+            "local_exp:cranio",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:9",
+            "nt:alto",
+            "rd:dividida",
+            "tipo:addon"
+          ],
+          "rowNumber": 6
+        }
+      ],
+      "rowNumber": 5
+    },
+    {
+      "id": "armadura_de_combate",
+      "nome": "Armadura de Combate",
+      "secao": "NT_Alto_Trajes para Ambientes",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "50/30",
+      "rd": {
+        "raw": "50/30",
+        "principal": 50,
+        "secundario": 30,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$10K",
+      "custoBase": 10000.0,
+      "pesoRaw": "15",
+      "pesoBaseKg": 15.0,
+      "clRaw": "2",
+      "cl": 2,
+      "observacoesRaw": "[3,4,5,6]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Capacete",
+          "localRaw": "cabeça",
+          "locaisNorm": [
+            "cranio",
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "18/12",
+          "rd": {
+            "raw": "18/12",
+            "principal": 18,
+            "secundario": 12,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": true
+          },
+          "custoRaw": "+$2K",
+          "custoBase": 2000.0,
+          "pesoRaw": "2,5",
+          "pesoKg": 2.5,
+          "clRaw": "2",
+          "cl": 2,
+          "observacoesRaw": "[3,6,7,11]",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:cabeca",
+            "local_exp:cranio",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:9",
+            "nt:alto",
+            "rd:dividida",
+            "tipo:addon"
+          ],
+          "rowNumber": 8
+        }
+      ],
+      "rowNumber": 7
+    },
+    {
+      "id": "armadura_espacial",
+      "nome": "Armadura Espacial",
+      "secao": "NT_Alto_Trajes para Ambientes",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "50/30",
+      "rd": {
+        "raw": "50/30",
+        "principal": 50,
+        "secundario": 30,
+        "flexivel": false,
+        "frontalSomente": false,
+        "dividida": true
+      },
+      "custoRaw": "$20K",
+      "custoBase": 20000.0,
+      "pesoRaw": "22,5",
+      "pesoBaseKg": 22.5,
+      "clRaw": "2",
+      "cl": 2,
+      "observacoesRaw": "[3,4,6,10]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:9",
+        "nt:alto",
+        "rd:dividida",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Capacete",
+          "localRaw": "cabeça",
+          "locaisNorm": [
+            "cranio",
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "40/30",
+          "rd": {
+            "raw": "40/30",
+            "principal": 40,
+            "secundario": 30,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": true
+          },
+          "custoRaw": "+$3K",
+          "custoBase": 3000.0,
+          "pesoRaw": "3,5",
+          "pesoKg": 3.5,
+          "clRaw": "2",
+          "cl": 2,
+          "observacoesRaw": "[3,6,7,11]",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:cabeca",
+            "local_exp:cranio",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:9",
+            "nt:alto",
+            "rd:dividida",
+            "tipo:addon"
+          ],
+          "rowNumber": 10
+        }
+      ],
+      "rowNumber": 9
+    },
+    {
+      "id": "traje_pressurizado",
+      "nome": "Traje Pressurizado",
+      "secao": "NT_Alto_Trajes para Ambientes",
+      "ntRaw": "9",
+      "nt": 9,
+      "localRaw": "traje completo",
+      "locaisNorm": [
+        "bracos",
+        "maos",
+        "pernas",
+        "pes",
+        "pescoco",
+        "tronco",
+        "virilha"
+      ],
+      "rdRaw": "6*",
+      "rd": {
+        "raw": "6*",
+        "principal": 6,
+        "secundario": null,
+        "flexivel": true,
+        "frontalSomente": false,
+        "dividida": false
+      },
+      "custoRaw": "$10K",
+      "custoBase": 10000.0,
+      "pesoRaw": "12,5",
+      "pesoBaseKg": 12.5,
+      "clRaw": "4",
+      "cl": 4,
+      "observacoesRaw": "[3,4,10]",
+      "observacoesRefs": [],
+      "observacoesDetalhadas": [],
+      "tags": [
+        "local:traje_completo",
+        "local_exp:bracos",
+        "local_exp:maos",
+        "local_exp:pernas",
+        "local_exp:pes",
+        "local_exp:pescoco",
+        "local_exp:tronco",
+        "local_exp:virilha",
+        "nt:9",
+        "nt:alto",
+        "rd:flexivel",
+        "tipo:base"
+      ],
+      "componentes": [
+        {
+          "nomeRaw": "+ Capacete Pressurizado",
+          "localRaw": "cabeça",
+          "locaisNorm": [
+            "cranio",
+            "olhos",
+            "rosto"
+          ],
+          "rdRaw": "6",
+          "rd": {
+            "raw": "6",
+            "principal": 6,
+            "secundario": null,
+            "flexivel": false,
+            "frontalSomente": false,
+            "dividida": false
+          },
+          "custoRaw": "+$2K",
+          "custoBase": 2000.0,
+          "pesoRaw": "2,5",
+          "pesoKg": 2.5,
+          "clRaw": "4",
+          "cl": 4,
+          "observacoesRaw": "[3,11]",
+          "observacoesRefs": [],
+          "observacoesDetalhadas": [],
+          "tags": [
+            "local:cabeca",
+            "local_exp:cranio",
+            "local_exp:olhos",
+            "local_exp:rosto",
+            "nt:9",
+            "nt:alto",
+            "tipo:addon"
+          ],
+          "rowNumber": 12
+        }
+      ],
+      "rowNumber": 11
+    }
+  ]
+}
