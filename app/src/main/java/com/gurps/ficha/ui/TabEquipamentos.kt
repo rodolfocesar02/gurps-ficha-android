@@ -462,6 +462,18 @@ private fun TipoArmaFiltroChip(label: String, selected: Boolean, onClick: () -> 
     )
 }
 
+private fun formatarTagArmadura(tag: String): String {
+    val limpa = tag.trim()
+    if (limpa.isBlank()) return limpa
+    return when {
+        limpa.startsWith("rd:", ignoreCase = true) ->
+            "RD ${limpa.substringAfter(":").replace('_', ' ')}"
+        limpa.startsWith("obs:", ignoreCase = true) ->
+            "Obs ${limpa.substringAfter(":")}"
+        else -> limpa.replace('_', ' ')
+    }
+}
+
 @Composable
 private fun ArmaItemSelecao(arma: ArmaCatalogoItem, danoCalculado: String, onClick: () -> Unit) {
     val tipoLabel = when (arma.tipoCombate) {
@@ -650,7 +662,7 @@ private fun SelecionarArmaduraEquipamentoDialog(
                     )
                     tags.forEach { tag ->
                         TipoArmaFiltroChip(
-                            label = tag,
+                            label = formatarTagArmadura(tag),
                             selected = viewModel.filtroTagArmaduraEquipamento == tag,
                             onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(tag) }
                         )
@@ -699,9 +711,15 @@ private fun SelecionarArmaduraEquipamentoDialog(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                if (armadura.tags.isNotEmpty()) {
+                                val tagsVisiveis = armadura.tags
+                                    .filterNot { it.startsWith("local:", ignoreCase = true) }
+                                    .filterNot { it.startsWith("local_exp:", ignoreCase = true) }
+                                    .filterNot { it.startsWith("nt:", ignoreCase = true) }
+                                    .filterNot { it.startsWith("tipo:", ignoreCase = true) }
+                                    .take(4)
+                                if (tagsVisiveis.isNotEmpty()) {
                                     Text(
-                                        "Tags: ${armadura.tags.take(4).joinToString(", ")}",
+                                        "Tags: ${tagsVisiveis.joinToString(", ") { formatarTagArmadura(it) }}",
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.tertiary
                                     )

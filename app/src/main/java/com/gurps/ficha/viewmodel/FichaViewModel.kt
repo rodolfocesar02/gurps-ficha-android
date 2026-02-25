@@ -154,6 +154,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .flatMap { it.asSequence() }
             .map { it.trim() }
             .filter { it.isNotBlank() }
+            .filterNot { it.startsWith("local:", ignoreCase = true) }
+            .filterNot { it.startsWith("local_exp:", ignoreCase = true) }
+            .filterNot { it.startsWith("nt:", ignoreCase = true) }
+            .filterNot { it.startsWith("tipo:", ignoreCase = true) }
             .distinct()
             .sorted()
             .toList()
