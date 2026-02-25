@@ -414,6 +414,7 @@ fun SelecionarArmaEquipamentoDialog(
 ) {
     val stAtual = viewModel.personagem.forca
     val armas = viewModel.armasEquipamentosFiltradas
+    val mostrarObsArmaFogo = viewModel.filtroTipoArmaEquipamento == "armas_de_fogo"
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -471,6 +472,7 @@ fun SelecionarArmaEquipamentoDialog(
                             ArmaItemSelecao(
                                 arma = arma,
                                 danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw),
+                                mostrarObsArmaFogo = mostrarObsArmaFogo,
                                 onClick = { onSelect(arma) }
                             )
                         }
@@ -525,7 +527,12 @@ private fun observacoesFormatadas(armadura: ArmaduraCatalogoItem): List<String> 
 }
 
 @Composable
-private fun ArmaItemSelecao(arma: ArmaCatalogoItem, danoCalculado: String, onClick: () -> Unit) {
+private fun ArmaItemSelecao(
+    arma: ArmaCatalogoItem,
+    danoCalculado: String,
+    mostrarObsArmaFogo: Boolean,
+    onClick: () -> Unit
+) {
     val tipoLabel = when (arma.tipoCombate) {
         "corpo_a_corpo" -> "Corpo a corpo"
         "armas_de_fogo" -> "Armas de Fogo"
@@ -557,7 +564,12 @@ private fun ArmaItemSelecao(arma: ArmaCatalogoItem, danoCalculado: String, onCli
                 color = MaterialTheme.colorScheme.primary
             )
         }
-        if ((arma.tipoCombate == "corpo_a_corpo" || arma.tipoCombate == "distancia" || arma.tipoCombate == "armas_de_fogo") && arma.observacoes.isNotBlank()) {
+        val podeMostrarObs = when (arma.tipoCombate) {
+            "armas_de_fogo" -> mostrarObsArmaFogo
+            "corpo_a_corpo", "distancia" -> true
+            else -> false
+        }
+        if (podeMostrarObs && arma.observacoes.isNotBlank()) {
             Text(
                 "Obs: ${arma.observacoes}",
                 style = MaterialTheme.typography.bodySmall,
