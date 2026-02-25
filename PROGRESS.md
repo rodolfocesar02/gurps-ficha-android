@@ -68,6 +68,52 @@ Criterio de pronto:
 - Build release com configuracao segura e previsivel.
 Status: `PENDENTE`
 
+### Lote 7 - Reforma visual da aba Geral (planejado)
+Escopo:
+- Reduzir em ~20% a area de "Informacoes Basicas" para abrir espaco para os blocos abaixo.
+- Unificar em um unico card:
+  - "Atributos Primarios"
+  - "Atributos Secundarios"
+  - "Caracteristicas Derivadas"
+  com separadores visuais suaves.
+- Em "Atributos Secundarios", remover textos explicativos entre parenteses (somente rotulo limpo).
+- Reestruturar "Resumo de Pontos" para:
+  - "Atributos" (primarios + secundarios juntos),
+  - "Vantagens",
+  - "Desvantagens",
+  - "Qualidades e Peculiaridades",
+  - "Pericias",
+  - "Magias",
+  - "Total Gastos".
+- Trazer conteudo da antiga aba Notas para a aba Geral:
+  - "Nota Geral"
+  - "Historia" (max 200 caracteres)
+  - "Aparencia" (max 200 caracteres)
+
+Plano de implementacao (micro-passos):
+1. Ajustar estrutura de layout da aba Geral (sem mexer em logica de calculo).
+2. Unificar os 3 blocos de atributos em um card com divisorias.
+3. Limpar rotulos de atributos secundarios (remover textos em parenteses).
+4. Refatorar visual do "Resumo de Pontos" com nova composicao.
+5. Mover "Notas" para "Nota Geral" na aba Geral.
+6. Aplicar limite de 200 caracteres em Historia/Aparencia.
+7. Validar compatibilidade com fichas salvas antigas (sem perda silenciosa de dados).
+8. Rodar validacao padrao + teste manual em tela pequena/grande.
+
+Riscos e mitigacao:
+- Risco medio de regressao visual em telas pequenas:
+  - mitigar com teste manual em pelo menos 2 tamanhos de tela.
+- Risco medio em resumo de pontos:
+  - mitigar conferindo totais antes/depois em ficha de teste.
+- Risco medio de truncamento de texto antigo >200:
+  - mitigar definindo comportamento explicito (bloquear novas edicoes acima do limite, sem apagar automaticamente conteudo salvo).
+
+Criterio de pronto:
+- Aba Geral reorganizada conforme escopo, sem quebra de calculos.
+- Historico e persistencia funcionando.
+- Layout validado em uso real (scroll, campos, resumo).
+Status: `PENDENTE`
+
 ## Referencia Rapida de Erros (Discord)
 - `unauthorized` (401): chave de acesso invalida ou ausente.
 - `service_not_configured` (500): backend sem variavel obrigatoria.
