@@ -123,7 +123,7 @@ Escopo:
 - Conectar app ao backend para publicar resultado no canal configurado.
 Critério de pronto:
 - Rolagem feita no app aparece no canal Discord via bot com confirmação de envio no app.
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 Observação:
 - Pré-requisito local para validar backend: Node.js + npm instalados no ambiente.
 Andamento:
@@ -141,6 +141,7 @@ Critério de pronto:
 Status: `PENDENTE`
 Andamento:
 - Passo 1 concluído (2026-02-25): backend lista canais de voz em `/api/channels` e app permite selecionar/salvar canal de envio na aba Rolagem.
+- Passo 2 concluído (2026-02-25): backend publicado no Railway, app configurado para URL pública HTTPS e funcionamento validado em celular fora do backend local em PC.
 
 ## Itens Fechados (Não Mexer Agora)
 - Lote 3 (Perícias) fechado e validado.
@@ -176,14 +177,15 @@ Andamento:
 ## Estado Atual da Integração Discord (Lote 9)
 - Backend `discord-roll-api` criado e versionado no repositório principal.
 - `healthcheck` local validado com sucesso.
+- Deploy remoto realizado no Railway com URL pública HTTPS.
 - Diagnóstico importante já confirmado:
   - o `DISCORD_CHANNEL_ID` deve ser o ID do canal (não ID do servidor/guild);
   - link de canal tem formato `.../channels/<guild_id>/<channel_id>`.
 - Teste direto na API do Discord já validou envio com sucesso ao canal correto (HTTP 200).
-- Próximos passos imediatos do Lote 9:
-  1. validar `POST /api/rolls` usando o `DISCORD_CHANNEL_ID` correto no `.env`;
-  2. integrar app Android para enviar rolagens para `discord-roll-api`;
-  3. exibir status de envio no app (`enviado`/`erro`).
+- Status funcional atual:
+  1. app envia rolagens para backend remoto via HTTPS;
+  2. app lista canais de voz via backend e mantém seleção de canal no dispositivo;
+  3. histórico da aba Rolagem exibe status de envio (`enviado`/`erro`) e detalhe de falha.
 - Segurança:
   - sempre rotacionar token do bot se ele aparecer em print/conversa;
   - nunca commitar `.env` no Git.
