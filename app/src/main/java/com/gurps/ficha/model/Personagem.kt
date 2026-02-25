@@ -420,12 +420,26 @@ data class Equipamento(
     var armaCatalogoId: String? = null,
     var armaTipoCombate: String? = null,
     var armaDanoRaw: String? = null,
-    var armaStMinimo: Int? = null
+    var armaStMinimo: Int? = null,
+    var armaduraLocal: String? = null,
+    var armaduraRd: String? = null
 ){
     fun danoCalculadoComSt(personagem: Personagem): String? {
         val raw = armaDanoRaw?.trim().orEmpty()
         if (raw.isBlank()) return null
         return CharacterRules.resolverDanoPorSt(raw, personagem.forca)
+    }
+
+    fun rdArmaduraExibicao(): String? {
+        val estruturado = armaduraRd?.trim().orEmpty()
+        if (estruturado.isNotBlank()) return estruturado
+        val legado = Regex("RD:\\s*([^;]+)", RegexOption.IGNORE_CASE)
+            .find(notas)
+            ?.groupValues
+            ?.getOrNull(1)
+            ?.trim()
+            .orEmpty()
+        return legado.ifBlank { null }
     }
 }
 

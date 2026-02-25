@@ -55,6 +55,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
     var editingEquipamento by remember { mutableStateOf<Pair<Int, Equipamento>?>(null) }
 
     val p = viewModel.personagem
+    val errosCarga = viewModel.errosCargaCatalogos
     val equipamentosComIndice = p.equipamentos.withIndex().toList()
     val equipamentosManuais = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.GERAL }
     val armasEquipadas = equipamentosComIndice.filter { it.value.tipo == TipoEquipamento.ARMA }
@@ -68,6 +69,23 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        if (errosCarga.isNotEmpty()) {
+            SectionCard(title = "Aviso de Catálogo") {
+                Text(
+                    "Alguns catálogos não foram carregados corretamente.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+                errosCarga.forEach { (catalogo, mensagem) ->
+                    Text(
+                        "- $catalogo: $mensagem",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
         SectionCard(title = "Equipamentos Manuais", onAdd = { showDialog = true }) {
             if (equipamentosManuais.isEmpty()) {
                 Text("Nenhum item manual adicionado", color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -236,12 +254,7 @@ private fun ArmaduraSelecionadaItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
-    val rd = Regex("RD:\\s*([^;]+)", RegexOption.IGNORE_CASE)
-        .find(equipamento.notas)
-        ?.groupValues
-        ?.getOrNull(1)
-        ?.trim()
-        .orEmpty()
+    val rd = equipamento.rdArmaduraExibicao().orEmpty()
 
     Row(
         modifier = Modifier.fillMaxWidth(),

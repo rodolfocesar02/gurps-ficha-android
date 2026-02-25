@@ -78,7 +78,7 @@ Escopo:
 - Adicionar testes focados em equipamentos (armas/escudos/armaduras).
 Critério de pronto:
 - Regressões principais cobertas por testes.
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 
 ## Plano Posterior (Depois dos Lotes Pendentes Acima)
 

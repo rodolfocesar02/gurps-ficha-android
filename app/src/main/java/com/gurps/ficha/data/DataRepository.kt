@@ -25,6 +25,7 @@ class DataRepository(private val context: Context) {
     private var _armasCatalogo: List<ArmaCatalogoItem>? = null
     private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
+    private val loadErrors = mutableMapOf<String, String>()
 
     val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
@@ -46,6 +47,18 @@ class DataRepository(private val context: Context) {
 
     val armadurasCatalogo: List<ArmaduraCatalogoItem>
         get() = _armadurasCatalogo ?: carregarArmadurasCatalogo().also { _armadurasCatalogo = it }
+
+    fun getCatalogLoadErrors(): Map<String, String> = synchronized(loadErrors) { loadErrors.toMap() }
+
+    private fun clearLoadError(catalog: String) {
+        synchronized(loadErrors) { loadErrors.remove(catalog) }
+    }
+
+    private fun registerLoadError(catalog: String, throwable: Throwable) {
+        synchronized(loadErrors) {
+            loadErrors[catalog] = throwable.message ?: throwable::class.java.simpleName
+        }
+    }
 
     private fun carregarVantagens(): List<VantagemDefinicao> {
         return try {
@@ -131,7 +144,7 @@ class DataRepository(private val context: Context) {
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyList()
             val items = root.asJsonObject.array("items") ?: return emptyList()
-            items.mapNotNull { el ->
+            val parsed = items.mapNotNull { el ->
                 if (!el.isJsonObject) return@mapNotNull null
                 val obj = el.asJsonObject
                 val stObj = obj.obj("stMinimo")
@@ -152,7 +165,10 @@ class DataRepository(private val context: Context) {
                     pesoBaseKg = pesoObj?.float("kg")
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+            clearLoadError("armas_corpo_a_corpo")
+            parsed
         } catch (e: Exception) {
+            registerLoadError("armas_corpo_a_corpo", e)
             e.printStackTrace()
             emptyList()
         }
@@ -175,7 +191,7 @@ class DataRepository(private val context: Context) {
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyList()
             val items = root.asJsonObject.array("items") ?: return emptyList()
-            items.mapNotNull { el ->
+            val parsed = items.mapNotNull { el ->
                 if (!el.isJsonObject) return@mapNotNull null
                 val obj = el.asJsonObject
                 val stObj = obj.obj("stMinimo")
@@ -194,7 +210,10 @@ class DataRepository(private val context: Context) {
                     pesoBaseKg = pesoObj?.float("armaKg")
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
-        } catch (_: Exception) {
+            clearLoadError(nomeArquivo)
+            parsed
+        } catch (e: Exception) {
+            registerLoadError(nomeArquivo, e)
             emptyList()
         }
     }
@@ -205,7 +224,7 @@ class DataRepository(private val context: Context) {
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyList()
             val items = root.asJsonObject.array("items") ?: return emptyList()
-            items.mapNotNull { el ->
+            val parsed = items.mapNotNull { el ->
                 if (!el.isJsonObject) return@mapNotNull null
                 val obj = el.asJsonObject
                 val db = obj.int("db") ?: return@mapNotNull null
@@ -221,7 +240,10 @@ class DataRepository(private val context: Context) {
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
                 .sortedBy { it.nome.lowercase() }
+            clearLoadError("escudos")
+            parsed
         } catch (e: Exception) {
+            registerLoadError("escudos", e)
             e.printStackTrace()
             emptyList()
         }
@@ -233,7 +255,7 @@ class DataRepository(private val context: Context) {
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyList()
             val items = root.asJsonObject.array("items") ?: return emptyList()
-            items.mapNotNull { el ->
+            val parsed = items.mapNotNull { el ->
                 if (!el.isJsonObject) return@mapNotNull null
                 val obj = el.asJsonObject
                 val comps = obj.array("componentes")
@@ -261,7 +283,10 @@ class DataRepository(private val context: Context) {
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
                 .sortedBy { it.nome.lowercase() }
+            clearLoadError("armaduras")
+            parsed
         } catch (e: Exception) {
+            registerLoadError("armaduras", e)
             e.printStackTrace()
             emptyList()
         }

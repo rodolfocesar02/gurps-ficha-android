@@ -115,6 +115,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             localFiltro = filtroLocalArmaduraEquipamento
         )
 
+    val errosCargaCatalogos: Map<String, String>
+        get() = dataRepository.getCatalogLoadErrors()
+
     val escudosEquipados: List<Equipamento>
         get() = personagem.equipamentos
             .filter { it.tipo == TipoEquipamento.ESCUDO }
@@ -499,7 +502,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             custo = armadura.custoBase ?: 0f,
             quantidade = 1,
             notas = notas,
-            tipo = TipoEquipamento.ARMADURA
+            tipo = TipoEquipamento.ARMADURA,
+            armaduraLocal = armadura.local,
+            armaduraRd = armadura.rd
         )
         adicionarEquipamento(equipamento)
     }
@@ -532,7 +537,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 custo = custoLocal,
                 quantidade = 1,
                 notas = notas,
-                tipo = TipoEquipamento.ARMADURA
+                tipo = TipoEquipamento.ARMADURA,
+                armaduraLocal = localSel,
+                armaduraRd = rdLocal
             )
             adicionarEquipamento(equipamento)
         }

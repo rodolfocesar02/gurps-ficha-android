@@ -453,6 +453,30 @@ class PersonagemRulesTest {
     }
 
     @Test
+    fun `equipamento de armadura usa RD estruturado quando disponivel`() {
+        val armadura = Equipamento(
+            nome = "Colete",
+            tipo = TipoEquipamento.ARMADURA,
+            notas = "Local: tronco; RD: 8/2*",
+            armaduraRd = "12/4*"
+        )
+
+        assertEquals("12/4*", armadura.rdArmaduraExibicao())
+    }
+
+    @Test
+    fun `equipamento de armadura faz fallback para RD em notas legado`() {
+        val armadura = Equipamento(
+            nome = "Colete legado",
+            tipo = TipoEquipamento.ARMADURA,
+            notas = "Local: tronco; RD: 8/2*; Obs: teste",
+            armaduraRd = null
+        )
+
+        assertEquals("8/2*", armadura.rdArmaduraExibicao())
+    }
+
+    @Test
     fun `bloqueio usa melhor DB de escudo quando nenhum escudo foi selecionado explicitamente`() {
         val personagem = Personagem(
             destreza = 10,
