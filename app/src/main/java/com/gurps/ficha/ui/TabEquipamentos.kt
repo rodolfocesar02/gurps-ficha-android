@@ -462,16 +462,22 @@ private fun TipoArmaFiltroChip(label: String, selected: Boolean, onClick: () -> 
     )
 }
 
-private fun formatarTagArmadura(tag: String): String {
-    val limpa = tag.trim()
-    if (limpa.isBlank()) return limpa
-    return when {
-        limpa.startsWith("rd:", ignoreCase = true) ->
-            "RD ${limpa.substringAfter(":").replace('_', ' ')}"
-        limpa.startsWith("obs:", ignoreCase = true) ->
-            "Obs ${limpa.substringAfter(":")}"
-        else -> limpa.replace('_', ' ')
+private fun observacoesFormatadas(armadura: ArmaduraCatalogoItem): List<String> {
+    val refs = Regex("\\[(\\d+)]")
+        .findAll(armadura.observacoes)
+        .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
+        .toList()
+    val detalhes = armadura.observacoesDetalhadas
+        .map { it.trim() }
+        .filter { it.isNotBlank() }
+
+    if (refs.isEmpty() || detalhes.isEmpty()) return emptyList()
+
+    val pareadas = refs.zip(detalhes).map { (ref, texto) -> "[$ref] $texto" }.toMutableList()
+    if (detalhes.size > refs.size) {
+        detalhes.drop(refs.size).forEach { extra -> pareadas.add(extra) }
     }
+    return pareadas
 }
 
 @Composable
@@ -583,18 +589,16 @@ private fun SelecionarArmaduraEquipamentoDialog(
     onSelect: (ArmaduraCatalogoItem) -> Unit
 ) {
     val armaduras = viewModel.armadurasEquipamentosFiltradas
-    val tags = viewModel.tagsArmadurasEquipamentos
     val filtrosAtivos = viewModel.buscaArmaduraEquipamento.isNotBlank() ||
         viewModel.filtroLocalArmaduraEquipamento != null ||
-        viewModel.filtroNtArmaduraEquipamento != null ||
-        viewModel.filtroTagArmaduraEquipamento != null
+        viewModel.filtroNtArmaduraEquipamento != null
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecionar Armadura") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(
-                    "Use Local, depois NT e Tag para refinar mais rapido.",
+                    "Use Local e NT para refinar mais rapido.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -645,26 +649,6 @@ private fun SelecionarArmaduraEquipamentoDialog(
                         )
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TipoArmaFiltroChip(
-                        label = "Tag: Todas",
-                        selected = viewModel.filtroTagArmaduraEquipamento == null,
-                        onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(null) }
-                    )
-                    tags.forEach { tag ->
-                        TipoArmaFiltroChip(
-                            label = formatarTagArmadura(tag),
-                            selected = viewModel.filtroTagArmaduraEquipamento == tag,
-                            onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(tag) }
-                        )
-                    }
-                }
                 if (filtrosAtivos) {
                     TextButton(
                         onClick = { viewModel.limparFiltrosArmaduraEquipamento() },
@@ -708,18 +692,15 @@ private fun SelecionarArmaduraEquipamentoDialog(
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                val tagsVisiveis = armadura.tags
-                                    .filterNot { it.startsWith("local:", ignoreCase = true) }
-                                    .filterNot { it.startsWith("local_exp:", ignoreCase = true) }
-                                    .filterNot { it.startsWith("nt:", ignoreCase = true) }
-                                    .filterNot { it.startsWith("tipo:", ignoreCase = true) }
-                                    .take(4)
-                                if (tagsVisiveis.isNotEmpty()) {
-                                    Text(
-                                        "Tags: ${tagsVisiveis.joinToString(", ") { formatarTagArmadura(it) }}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.tertiary
-                                    )
+                                val observacoes = observacoesFormatadas(armadura)
+                                if (observacoes.isNotEmpty()) {
+                                    observacoes.forEach { linha ->
+                                        Text(
+                                            linha,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.tertiary
+                                        )
+                                    }
                                 }
                                 Divider(modifier = Modifier.padding(top = 4.dp))
                             }
