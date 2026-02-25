@@ -357,13 +357,20 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            val observacoesCatalogo = viewModel.observacoesArmaPorCatalogoId(equipamento.armaCatalogoId)
-            val precisaExibirObservacoesCatalogo =
-                observacoesCatalogo.isNotBlank() &&
-                    !equipamento.notas.contains(observacoesCatalogo.substringBefore('\n'))
-            if (precisaExibirObservacoesCatalogo) {
+            val observacoesCatalogo = viewModel.observacoesArmaPorCatalogoId(equipamento.armaCatalogoId).trim()
+            val observacoesFaltantes = if (observacoesCatalogo.isBlank()) {
+                emptyList()
+            } else {
+                observacoesCatalogo
+                    .lineSequence()
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+                    .filterNot { linha -> equipamento.notas.contains(linha) }
+                    .toList()
+            }
+            if (observacoesFaltantes.isNotEmpty()) {
                 Text(
-                    observacoesCatalogo,
+                    observacoesFaltantes.joinToString("\n"),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.tertiary
                 )
