@@ -145,6 +145,7 @@ Andamento:
 - Passo 3 concluído (2026-02-25): cache de canais de voz no backend com TTL de 30 minutos para reduzir latência e risco de rate limit na API do Discord.
 - Passo 4 concluído (2026-02-25): removida linha de diagnóstico de servidor na aba Rolagem após validação de produção.
 - Passo 5 concluído (2026-02-25): retentativa automática única em falha de rede, botão `Reenviar` no histórico quando envio falha e mensagens de erro mais claras para internet/autenticação/configuração.
+- Passo 6 concluído (2026-02-25): testes unitários adicionados para política de retentativa e mapeamento de mensagens de erro da integração Discord.
 
 ### Backlog Pós-Lote 10 (Planejado)
 - Implementar autenticação/login de usuário no app e no backend (escopo futuro), mantendo o uso atual simplificado enquanto o grupo é pequeno.
@@ -195,4 +196,16 @@ Andamento:
 - Segurança:
   - sempre rotacionar token do bot se ele aparecer em print/conversa;
   - nunca commitar `.env` no Git.
+
+## Catálogo de Erros (Integração Discord)
+- `unauthorized` (backend, HTTP 401): chave `x-api-key` ausente ou inválida.
+- `service_not_configured` (backend, HTTP 500): variável obrigatória do serviço ausente.
+- `channel_id_missing` (backend, HTTP 400): envio sem canal definido (nem no payload nem no padrão).
+- `discord_send_failed` (backend, HTTP 502): Discord recusou/indisponível na hora de enviar mensagem.
+- `discord_channels_failed` (backend, HTTP 502): falha ao consultar lista de canais no Discord.
+- `chave de acesso inválida (401)` (app): API key rejeitada pelo backend.
+- `canal de envio não definido (400)` (app): nenhum canal ativo para envio.
+- `servidor não configurado corretamente (500)` (app): backend sem configuração obrigatória.
+- `falha ao publicar no Discord (502)` (app): backend não conseguiu enviar para Discord.
+- `falha de internet/timeout ao conectar no servidor` (app): indisponibilidade de rede/servidor sem resposta HTTP.
 

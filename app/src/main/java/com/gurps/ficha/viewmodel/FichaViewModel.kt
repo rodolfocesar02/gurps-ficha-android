@@ -14,6 +14,7 @@ import com.gurps.ficha.data.network.DiscordRollApiClient
 import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.data.storage.FichaStorageRepository
+import com.gurps.ficha.domain.roll.RollDispatchPolicy
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
 import kotlinx.coroutines.Dispatchers
@@ -675,7 +676,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 RollDispatchStatus(enviado = true)
             } else {
                 // Retentativa unica somente para falha de rede/timeout (sem resposta HTTP)
-                val precisaRetentativaRede = primeiraTentativa.statusCode == null
+                val precisaRetentativaRede = RollDispatchPolicy.deveRetentar(primeiraTentativa.statusCode)
                 val resultadoFinal = if (precisaRetentativaRede) {
                     DiscordRollApiClient.postRoll(
                         baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
@@ -691,24 +692,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 } else {
                     RollDispatchStatus(
                         enviado = false,
-                        detalhe = mensagemErroEnvio(
+                        detalhe = RollDispatchPolicy.mensagemErro(
                             statusCode = resultadoFinal.statusCode,
                             erroBruto = resultadoFinal.error
                         )
                     )
                 }
             }
-        }
-    }
-
-    private fun mensagemErroEnvio(statusCode: Int?, erroBruto: String?): String {
-        return when {
-            statusCode == 401 -> "chave de acesso inválida (401)"
-            statusCode == 400 -> "canal de envio não definido (400)"
-            statusCode == 500 -> "servidor não configurado corretamente (500)"
-            statusCode == 502 -> "falha ao publicar no Discord (502)"
-            statusCode != null -> "erro HTTP $statusCode"
-            else -> "falha de internet/timeout ao conectar no servidor"
         }
     }
 
