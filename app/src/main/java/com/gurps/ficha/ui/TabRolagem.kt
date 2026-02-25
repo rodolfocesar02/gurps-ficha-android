@@ -29,13 +29,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.launch
 
 private enum class TipoTeste(val label: String) {
     ATRIBUTO("Atributo"),
@@ -44,11 +47,18 @@ private enum class TipoTeste(val label: String) {
     LIVRE("Livre")
 }
 
+private data class HistoricoRolagemItem(
+    val texto: String,
+    val statusEnvio: String?,
+    val detalheErro: String?
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabRolagem(viewModel: FichaViewModel) {
     val p = viewModel.personagem
-    val historico = remember { mutableStateListOf<String>() }
+    val historico = remember { mutableStateListOf<HistoricoRolagemItem>() }
+    val coroutineScope = rememberCoroutineScope()
 
     var tipoTeste by remember { mutableStateOf(TipoTeste.ATRIBUTO) }
     var modificador by remember { mutableIntStateOf(0) }
@@ -74,12 +84,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
         TipoTeste.LIVRE -> "Livre"
     }
 
-    fun registrarResultado(resultado: RolagemResultado) {
+    fun registrarResultado(
+        resultado: RolagemResultado,
+        statusEnvio: String?,
+        detalheErro: String?
+    ) {
         val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         val alvoTexto = alvoBase?.toString() ?: "-"
         val margemTexto = if (resultado.alvo != null) resultado.margem.toString() else "-"
         val linha = "$hora | ${tipoTeste.label} ($contexto) | alvo $alvoTexto | mod $modificador | total ${resultado.total} | ${resultado.tipoResultado} | margem $margemTexto"
-        historico.add(0, linha)
+        historico.add(
+            0,
+            HistoricoRolagemItem(
+                texto = linha,
+                statusEnvio = statusEnvio,
+                detalheErro = detalheErro
+            )
+        )
         if (historico.size > 20) {
             historico.removeLast()
         }
@@ -265,7 +286,26 @@ fun TabRolagem(viewModel: FichaViewModel) {
             Button(
                 onClick = {
                     val resultado = rolarDados(3, modificador, alvoBase)
-                    registrarResultado(resultado)
+                    coroutineScope.launch {
+                        val envio = viewModel.enviarRolagemDiscord(
+                            DiscordRollPayload(
+                                character = p.nome.ifBlank { "Personagem" },
+                                testType = tipoTeste.label,
+                                context = contexto,
+                                target = alvoBase,
+                                modifier = modificador,
+                                dice = resultado.dadosIndividuais,
+                                total = resultado.total,
+                                outcome = resultado.tipoResultado.name,
+                                margin = if (resultado.alvo != null) resultado.margem else null
+                            )
+                        )
+                        registrarResultado(
+                            resultado = resultado,
+                            statusEnvio = if (envio.enviado) "enviado" else "erro",
+                            detalheErro = envio.detalhe
+                        )
+                    }
                 },
                 enabled = podeRolar,
                 modifier = Modifier.fillMaxWidth(),
@@ -284,7 +324,25 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 )
             } else {
                 historico.forEach { item ->
-                    Text(item, style = MaterialTheme.typography.labelSmall)
+                    val statusLabel = item.statusEnvio?.let { status ->
+                        " | envio: $status"
+                    }.orEmpty()
+                    Text(
+                        "${item.texto}$statusLabel",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (item.statusEnvio == "erro") {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
+                    )
+                    if (item.statusEnvio == "erro" && !item.detalheErro.isNullOrBlank()) {
+                        Text(
+                            "detalhe: ${item.detalheErro}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                     Spacer(modifier = Modifier.height(4.dp))
                 }
             }
