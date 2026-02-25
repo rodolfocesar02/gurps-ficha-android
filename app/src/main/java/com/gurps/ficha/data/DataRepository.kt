@@ -251,11 +251,7 @@ class DataRepository(private val context: Context) {
 
     private fun carregarArmadurasCatalogo(): List<ArmaduraCatalogoItem> {
         return try {
-            val json = runCatching {
-                context.assets.open("armaduras.v2.json").bufferedReader().use { it.readText() }
-            }.getOrElse {
-                context.assets.open("armaduras.v1.json").bufferedReader().use { it.readText() }
-            }
+            val json = context.assets.open("armaduras.v2.json").bufferedReader().use { it.readText() }
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyList()
             val items = root.asJsonObject.array("items") ?: return emptyList()
