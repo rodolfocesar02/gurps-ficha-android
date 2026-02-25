@@ -23,6 +23,14 @@ Objetivo: consolidar implementação atual, reduzir riscos e seguir em lotes cur
   2. ponto de salvamento no Git (commit/checkpoint) com mensagem clara do lote;
   3. atualização deste `PROGRESS.md`.
 
+## Cuidado de Codificação (UTF-8)
+- Problema já observado em produção: textos com mojibake (`MÃ¡scara`, `CalÃ§as`, `OxigÃªnio`).
+- Regra preventiva:
+  1. manter scripts e JSONs sempre em UTF-8;
+  2. evitar salvar arquivos de dados em ANSI/Windows-1252;
+  3. antes de fechar lote de dados, revisar ocorrências suspeitas (`Ã`, `Â`, `â`, `�`);
+  4. manter normalização defensiva no carregamento de catálogo (`DataRepository.sanitized`).
+
 ## Plano de Lotes (Próximos Passos)
 
 ### Lote 1 - Correção crítica de armaduras compostas

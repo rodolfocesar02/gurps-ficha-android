@@ -918,6 +918,24 @@ private fun MagiaDefinicao.normalizada(): MagiaDefinicao = copy(
 )
 
 private fun String?.sanitized(default: String = ""): String {
-    return this?.trim().orEmpty().ifBlank { default }
+    return this
+        ?.fixMojibakeIfNeeded()
+        ?.trim()
+        .orEmpty()
+        .ifBlank { default }
+}
+
+private fun String.fixMojibakeIfNeeded(): String {
+    val markers = listOf("Ã", "Â", "â", "�")
+    var current = this
+    repeat(2) {
+        if (!markers.any { current.contains(it) }) return current
+        val repaired = runCatching {
+            String(current.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
+        }.getOrElse { current }
+        if (repaired == current) return@repeat
+        current = repaired
+    }
+    return current
 }
 
