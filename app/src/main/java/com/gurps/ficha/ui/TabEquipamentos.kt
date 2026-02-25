@@ -357,7 +357,7 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            val observacoesCatalogo = viewModel.observacoesArmaPorCatalogoId(equipamento.armaCatalogoId).trim()
+            val observacoesCatalogo = viewModel.observacoesArmaPorEquipamento(equipamento).trim()
             val observacoesFaltantes = if (observacoesCatalogo.isBlank()) {
                 emptyList()
             } else {

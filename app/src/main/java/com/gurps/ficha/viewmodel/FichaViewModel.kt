@@ -639,10 +639,26 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun observacoesArmaPorCatalogoId(armaCatalogoId: String?): String {
-        if (armaCatalogoId.isNullOrBlank()) return ""
-        val arma = dataRepository.armasCatalogo.firstOrNull { it.id == armaCatalogoId } ?: return ""
-        return observacoesArmaFormatadas(arma)
+    fun observacoesArmaPorEquipamento(equipamento: Equipamento): String {
+        val porId = equipamento.armaCatalogoId
+            ?.takeIf { it.isNotBlank() }
+            ?.let { id -> dataRepository.armasCatalogo.firstOrNull { it.id == id } }
+        if (porId != null) return observacoesArmaFormatadas(porId)
+
+        val nomeBase = equipamento.nome.substringBefore(" (").trim()
+        if (nomeBase.isBlank()) return ""
+
+        val porNome = dataRepository.armasCatalogo.firstOrNull { arma ->
+            val tipoOk = equipamento.armaTipoCombate.isNullOrBlank() ||
+                arma.tipoCombate.equals(equipamento.armaTipoCombate, ignoreCase = true)
+            val danoOk = equipamento.armaDanoRaw.isNullOrBlank() ||
+                arma.danoRaw.equals(equipamento.armaDanoRaw, ignoreCase = true)
+            tipoOk && danoOk && arma.nome.equals(nomeBase, ignoreCase = true)
+        } ?: dataRepository.armasCatalogo.firstOrNull { arma ->
+            arma.nome.equals(nomeBase, ignoreCase = true)
+        }
+
+        return if (porNome != null) observacoesArmaFormatadas(porNome) else ""
     }
 
     fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {
