@@ -14,23 +14,25 @@ val localProperties = Properties().apply {
     }
 }
 
+fun firstNonBlank(vararg values: String?): String? {
+    return values.firstOrNull { !it.isNullOrBlank() }?.trim()
+}
+
 android {
     namespace = "com.gurps.ficha"
     compileSdk = 34
 
     defaultConfig {
-        val discordApiBaseUrl = (
+        val discordApiBaseUrl = (firstNonBlank(
+            localProperties.getProperty("DISCORD_ROLL_API_BASE_URL"),
             project.findProperty("DISCORD_ROLL_API_BASE_URL") as? String
-                ?: localProperties.getProperty("DISCORD_ROLL_API_BASE_URL")
-            ?: "http://10.0.2.2:8787")
-            .trim()
+        ) ?: "http://10.0.2.2:8787")
             .trimEnd('/')
             .replace("\"", "\\\"")
-        val discordApiKey = (
+        val discordApiKey = (firstNonBlank(
+            localProperties.getProperty("DISCORD_ROLL_API_KEY"),
             project.findProperty("DISCORD_ROLL_API_KEY") as? String
-                ?: localProperties.getProperty("DISCORD_ROLL_API_KEY")
-                ?: "")
-            .trim()
+        ) ?: "")
             .replace("\"", "\\\"")
 
         applicationId = "com.gurps.ficha"
