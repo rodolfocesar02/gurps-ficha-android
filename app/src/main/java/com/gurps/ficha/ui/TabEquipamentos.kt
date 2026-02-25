@@ -268,6 +268,13 @@ private fun ArmaduraSelecionadaItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary
             )
+            if (equipamento.notas.isNotBlank()) {
+                Text(
+                    equipamento.notas,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }

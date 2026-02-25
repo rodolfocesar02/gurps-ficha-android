@@ -552,10 +552,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 "${c.local} RD ${c.rd} Custo $custo Peso $peso"
             }
         }
+        val observacoes = montarObservacoesArmadura(armadura)
         val notas = buildString {
             append("Local: ${armadura.local}; RD: ${armadura.rd}")
-            if (armadura.observacoes.isNotBlank()) append("; Obs: ${armadura.observacoes}")
-            if (componentesTexto.isNotBlank()) append("; Componentes: $componentesTexto")
+            if (observacoes.isNotBlank()) append("\n$observacoes")
+            if (componentesTexto.isNotBlank()) append("\nComponentes: $componentesTexto")
         }
         val equipamento = Equipamento(
             nome = armadura.nome,
@@ -591,7 +592,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 else -> (pesoBase / divisor)
             }
             val rdLocal = componente?.rd ?: armadura.rd
-            val notas = "Local: $localSel; RD: $rdLocal"
+            val observacoes = montarObservacoesArmadura(armadura)
+            val notas = buildString {
+                append("Local: $localSel; RD: $rdLocal")
+                if (observacoes.isNotBlank()) append("\n$observacoes")
+            }
             val equipamento = Equipamento(
                 nome = "${armadura.nome} ($localSel)",
                 peso = pesoLocal,
@@ -604,6 +609,37 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             )
             adicionarEquipamento(equipamento)
         }
+    }
+
+    private fun montarObservacoesArmadura(armadura: ArmaduraCatalogoItem): String {
+        val refs = Regex("\\[(\\d+)]")
+            .findAll(armadura.observacoes)
+            .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
+            .toList()
+        var detalhes = armadura.observacoesDetalhadas
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+        if (detalhes.isEmpty()) return ""
+
+        val linhas = mutableListOf<String>()
+        val primeira = detalhes.firstOrNull()
+        if (primeira != null && primeira.contains("NT7+", ignoreCase = true)) {
+            linhas.add(primeira)
+            detalhes = detalhes.drop(1)
+        }
+
+        if (refs.isEmpty()) {
+            linhas.addAll(detalhes)
+            return linhas.joinToString("\n")
+        }
+
+        refs.zip(detalhes).forEach { (ref, texto) ->
+            linhas.add("[$ref] $texto")
+        }
+        if (detalhes.size > refs.size) {
+            linhas.addAll(detalhes.drop(refs.size))
+        }
+        return linhas.joinToString("\n")
     }
 
     fun removerEquipamento(index: Int) {
