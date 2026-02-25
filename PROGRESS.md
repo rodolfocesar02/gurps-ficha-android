@@ -129,6 +129,7 @@ Observação:
 Andamento:
 - Passo 1 concluído (2026-02-25): backend `discord-roll-api` criado e healthcheck validado localmente.
 - Passo 2 concluído (2026-02-25): `POST /api/rolls` validado com envio real para Discord (HTTP 200 e `discordMessageId` retornado).
+- Passo 3 concluído (2026-02-25): app Android integrado ao endpoint `/api/rolls` com registro de status de envio no histórico da aba Rolagem (`enviado`/`erro`).
 
 ### Lote 10 - Polimento e segurança da integração
 Escopo:
