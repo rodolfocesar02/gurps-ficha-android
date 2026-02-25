@@ -1,211 +1,90 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-02-25  
-Objetivo: consolidar implementação atual, reduzir riscos e seguir em lotes curtos com salvamento ao fim de cada lote.
+Atualizado em: 2026-02-25
+Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
-## Status Atual Consolidado
-- Build Kotlin, testes unitários e geração de APK debug estão funcionando.
-- Aba Equipamentos já possui integração de:
-  - armas corpo a corpo,
-  - armas à distância,
-  - armas de fogo,
-  - escudos,
-  - armaduras.
-- Regras já ativas:
-  - filtro por ST mínimo para seleção,
-  - DB de escudo somado no Bloqueio,
-  - dano de arma calculado com ST quando aplicável,
-  - custo/peso total consolidados.
+## Estado Atual (Consolidado)
+- Integracao Discord funcionando em producao (Railway + app Android).
+- Envio de rolagens funcionando com selecao de canal no app.
+- Cache de canais no backend (30 min).
+- Historico com status de envio, erro claro e botao de reenviar.
+- Build Kotlin, testes unitarios e APK debug funcionando.
 
-## Regra de Trabalho (Obrigatória)
-- Todo lote concluído deve terminar com:
-  1. validação padrão completa;
-  2. ponto de salvamento no Git (commit/checkpoint) com mensagem clara do lote;
-  3. atualização deste `PROGRESS.md`.
+## Lotes Ativos (Nova Ordem)
 
-## Cuidado de Codificação (UTF-8)
-- Problema já observado em produção: textos com mojibake (`MÃ¡scara`, `CalÃ§as`, `OxigÃªnio`).
-- Regra preventiva:
-  1. manter scripts e JSONs sempre em UTF-8;
-  2. evitar salvar arquivos de dados em ANSI/Windows-1252;
-  3. antes de fechar lote de dados, revisar ocorrências suspeitas (`Ã`, `Â`, `â`, `�`);
-  4. manter normalização defensiva no carregamento de catálogo (`DataRepository.sanitized`).
-
-## Plano de Lotes (Próximos Passos)
-
-### Lote 1 - Correção crítica de armaduras compostas
+### Lote 1 - Revisao de JSON e catalogos (prioridade alta)
 Escopo:
-- Corrigir adição de `traje completo + cabeça` para não dividir custo/peso base indevidamente.
-- Garantir que os conjuntos compostos usem valores próprios por parte (base e componente).
-Critério de pronto:
-- Teste funcional no app com os 5 conjuntos especiais aprovado.
-- Custo/peso final batendo com tabela.
-Status: `CONCLUIDO (2026-02-25)`
-
-### Lote 2 - Higiene de dados de armaduras (parser + JSON)
-Escopo:
-- Corrigir parser de dinheiro para não converter `$1.300` em `1.3`.
-- Corrigir campos OCR inválidos em armaduras (ex.: `rdRaw` com data).
-- Regenerar `armaduras.v1.json` com consistência de custo/peso/RD.
-Critério de pronto:
-- Sem linhas críticas inválidas no JSON.
-- Valores monetários de milhar corretos.
-Status: `CONCLUIDO (2026-02-25)`
-
-### Lote 3 - Revisão de reviewFlags (armas)
-Escopo:
-- Revisar e limpar itens com `reviewFlags` em:
-  - `armas_corpo_a_corpo.v1.review_flags.json`
-  - `armas_fogo.v1.review_flags.json`
-- Manter `armas_distancia` como referência já limpa.
-Critério de pronto:
-- Redução máxima dos `reviewFlags` sem quebrar normalização.
-Status: `CONCLUIDO (2026-02-25)`
-
-### Lote 4 - Ajuste de layout da aba Equipamentos (UX)
-Escopo:
-- Reposicionar resumo de Equipamentos para o final da aba (rodapé).
-- Reduzir tamanho visual do card resumo e tipografia.
-- Cards de Armas: após adicionar, mostrar somente nome + dano.
-Critério de pronto:
-- Layout validado em aparelho antigo e atual, sem poluição de informação.
-Status: `CONCLUIDO (2026-02-25)`
-
-### Lote 5 - Robustez e manutenção
-Escopo:
-- Reduzir fragilidade de parsing por texto em `notas` (ex.: RD por regex).
-- Melhorar tratamento de erro em carga de catálogos (sem falha silenciosa).
-- Adicionar testes focados em equipamentos (armas/escudos/armaduras).
-Critério de pronto:
-- Regressões principais cobertas por testes.
-Status: `CONCLUIDO (2026-02-25)`
-
-## Plano Posterior (Depois dos Lotes Pendentes Acima)
-
-### Lote 6 - Nova aba Rolagem (estrutura inicial)
-Escopo:
-- Criar aba `Rolagem` na navegação principal.
-- Manter aba `Notas` limpa temporariamente (sem remover código legado de forma destrutiva).
-- Estruturar estado da tela para suportar: testes, modificadores e histórico local.
-Critério de pronto:
-- Aba `Rolagem` acessível e estável.
-- `Notas` sem conteúdo jogável ativo.
-Status: `CONCLUIDO (2026-02-25)`
-
-### Lote 7 - Motor de rolagem local (MVP jogável)
-Escopo:
-- Implementar rolagem 3d6 para:
-  - testes de atributo,
-  - ataque,
-  - defesa,
-  - rolagem livre.
-- Implementar modificadores manuais (+/-) por teste.
-- Exibir resultado com cálculo completo (valor base, modificador, total alvo, rolagem, sucesso/falha).
-Critério de pronto:
-- Todos os tipos de teste executando localmente com resultado consistente.
+- Revisar arquivos JSON de catalogo, com foco principal em armaduras.
+- Melhorar a consolidacao da lista de armaduras (normalizacao, agrupamento e consistencia).
+- Melhorar sistema de busca e tags para facilitar encontrar itens.
+Criterio de pronto:
+- Catalogo de armaduras consistente e facil de manter.
+- Busca por tags mais previsivel e util para uso real.
 Status: `PENDENTE`
-Andamento:
-- Passo 1 concluído (2026-02-25): aba `Rolagem` já possui teste local 3d6 para atributo/ataque/defesa/livre, modificador manual e histórico local de sessão.
 
-### Lote 8 - Ficha clicável na aba Rolagem
+### Lote 2 - Ficha clicavel na aba Rolagem (ex-Lote 8)
 Escopo:
-- Tornar campos principais da ficha clicáveis para disparar teste direto.
+- Tornar campos principais da ficha clicaveis para disparar rolagem direta.
 - Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
-- Registrar histórico de rolagens na própria aba `Rolagem`.
-Critério de pronto:
-- Fluxo "clicou no campo -> rolou -> apareceu no histórico" funcionando para os cenários principais.
+- Registrar historico de rolagens na aba Rolagem com contexto correto.
+Criterio de pronto:
+- Fluxo "clicou no campo -> rolou -> apareceu no historico" funcionando nos cenarios principais.
 Status: `PENDENTE`
 
-### Lote 9 - Integração Discord (backend + app)
+### Lote 3 - Login / Autenticacao
 Escopo:
-- Criar backend leve para envio de mensagens ao Discord via bot (token fora do app).
-- Definir payload padrão de rolagem (personagem, tipo, modificador, resultado).
-- Conectar app ao backend para publicar resultado no canal configurado.
-Critério de pronto:
-- Rolagem feita no app aparece no canal Discord via bot com confirmação de envio no app.
-Status: `CONCLUIDO (2026-02-25)`
-Observação:
-- Pré-requisito local para validar backend: Node.js + npm instalados no ambiente.
-Andamento:
-- Passo 1 concluído (2026-02-25): backend `discord-roll-api` criado e healthcheck validado localmente.
-- Passo 2 concluído (2026-02-25): `POST /api/rolls` validado com envio real para Discord (HTTP 200 e `discordMessageId` retornado).
-- Passo 3 concluído (2026-02-25): app Android integrado ao endpoint `/api/rolls` com registro de status de envio no histórico da aba Rolagem (`enviado`/`erro`).
+- Definir modelo de autenticacao (simples e adequado para grupo pequeno).
+- Proteger envio de rolagens com identidade de usuario.
+- Preparar base para evolucao de seguranca futura sem quebrar UX.
+Criterio de pronto:
+- Usuario autenticado no app.
+- Backend aceitando apenas requisicoes autenticadas.
+Status: `PENDENTE`
 
-### Lote 10 - Polimento e segurança da integração
+### Lote 4 - Observabilidade e suporte
 Escopo:
-- Tratar erros de rede/autenticação e estados offline.
-- Adicionar opções de configuração de sessão/canal de envio.
-- Cobrir fluxo crítico com testes (unidade + integração onde viável).
-Critério de pronto:
-- Integração estável em cenário real de mesa (uso contínuo sem travas/falhas silenciosas).
-Status: `CONCLUIDO (2026-02-25)`
-Andamento:
-- Passo 1 concluído (2026-02-25): backend lista canais de voz em `/api/channels` e app permite selecionar/salvar canal de envio na aba Rolagem.
-- Passo 2 concluído (2026-02-25): backend publicado no Railway, app configurado para URL pública HTTPS e funcionamento validado em celular fora do backend local em PC.
-- Passo 3 concluído (2026-02-25): cache de canais de voz no backend com TTL de 30 minutos para reduzir latência e risco de rate limit na API do Discord.
-- Passo 4 concluído (2026-02-25): removida linha de diagnóstico de servidor na aba Rolagem após validação de produção.
-- Passo 5 concluído (2026-02-25): retentativa automática única em falha de rede, botão `Reenviar` no histórico quando envio falha e mensagens de erro mais claras para internet/autenticação/configuração.
-- Passo 6 concluído (2026-02-25): testes unitários adicionados para política de retentativa e mapeamento de mensagens de erro da integração Discord.
+- Melhorar logs de erro no backend para diagnostico rapido.
+- Padronizar mensagens de erro no app e backend.
+- Registrar evento minimo para suporte (sem expor dados sensiveis).
+Criterio de pronto:
+- Falhas mais faceis de identificar e corrigir.
+Status: `PENDENTE`
 
-### Backlog Pós-Lote 10 (Planejado)
-- Implementar autenticação/login de usuário no app e no backend (escopo futuro), mantendo o uso atual simplificado enquanto o grupo é pequeno.
+### Lote 5 - UX e desempenho
+Escopo:
+- Polir experiencia da aba Rolagem e lista de canais.
+- Ajustar feedback visual em carregamento, sucesso e falha.
+- Revisar pontos de lentidao da UI em aparelhos antigos.
+Criterio de pronto:
+- Fluxo rapido e claro em uso continuo de mesa.
+Status: `PENDENTE`
 
-## Itens Fechados (Não Mexer Agora)
-- Lote 3 (Perícias) fechado e validado.
-- Lote 4 (Magia) fechado e validado.
-- Lote 5 (Combate de ficha) fechado no escopo de ficha (sem jogabilidade tática).
-- Auto-save de recuperação implementado.
+### Lote 6 - Preparacao de release
+Escopo:
+- Revisar configuracoes de seguranca para release.
+- Revisar permissao e trafego de rede por ambiente.
+- Fechar checklist final para distribuicao estavel.
+Criterio de pronto:
+- Build release com configuracao segura e previsivel.
+Status: `PENDENTE`
 
-## Validação Padrão
-- Compilar + testes unitários:
+## Referencia Rapida de Erros (Discord)
+- `unauthorized` (401): chave de acesso invalida ou ausente.
+- `service_not_configured` (500): backend sem variavel obrigatoria.
+- `channel_id_missing` (400): canal nao definido para envio.
+- `discord_send_failed` (502): Discord recusou/indisponivel no envio.
+- `discord_channels_failed` (502): falha ao listar canais no Discord.
+- `falha de internet/timeout ao conectar no servidor`: erro de rede sem resposta HTTP.
+
+## Validacao Padrao
+- Compilar + testes unitarios:
   - `./gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`
 - Gerar APK debug:
   - `./gradlew.bat :app:assembleDebug --no-daemon`
-  - saída: `app/build/outputs/apk/debug/app-debug.apk`
+  - saida: `app/build/outputs/apk/debug/app-debug.apk`
 
-## Pontos de Salvamento
-- `snapshots/checkpoint-20260224-151219`
-- `snapshots/checkpoint-20260224-193129`
-- `snapshots/checkpoint-20260224-202718`
-- `snapshots/checkpoint-20260224-224754`
-- `snapshots/checkpoint-20260224-232517`
-
-## Decisão de Escopo Mantida
-- Situações de jogabilidade de combate (manobra/postura/múltiplas defesas por turno etc.) permanecem fora da criação/manutenção da ficha nesta fase.
-## Nota Histórica
-- Ajustes de layout da aba Equipamentos (resumo no rodapé e cards de armas compactos) já foram implementados no `Lote 4`.
-## Modo Ultra Seguro (Obrigatório)
-- Trabalhar em micro-passos (uma mudança pequena por vez).
-- Antes de cada alteração: descrever em linguagem simples o que será feito.
-- Após cada micro-passo: rodar validação padrão e gerar APK debug.
-- Fechar cada micro-passo com commit e mensagem clara.
-- Nunca executar ações destrutivas em Git.
-
-## Estado Atual da Integração Discord (Lote 9)
-- Backend `discord-roll-api` criado e versionado no repositório principal.
-- `healthcheck` local validado com sucesso.
-- Deploy remoto realizado no Railway com URL pública HTTPS.
-- Diagnóstico importante já confirmado:
-  - o `DISCORD_CHANNEL_ID` deve ser o ID do canal (não ID do servidor/guild);
-  - link de canal tem formato `.../channels/<guild_id>/<channel_id>`.
-- Teste direto na API do Discord já validou envio com sucesso ao canal correto (HTTP 200).
-- Status funcional atual:
-  1. app envia rolagens para backend remoto via HTTPS;
-  2. app lista canais de voz via backend e mantém seleção de canal no dispositivo;
-  3. histórico da aba Rolagem exibe status de envio (`enviado`/`erro`) e detalhe de falha.
-- Segurança:
-  - sempre rotacionar token do bot se ele aparecer em print/conversa;
-  - nunca commitar `.env` no Git.
-
-## Catálogo de Erros (Integração Discord)
-- `unauthorized` (backend, HTTP 401): chave `x-api-key` ausente ou inválida.
-- `service_not_configured` (backend, HTTP 500): variável obrigatória do serviço ausente.
-- `channel_id_missing` (backend, HTTP 400): envio sem canal definido (nem no payload nem no padrão).
-- `discord_send_failed` (backend, HTTP 502): Discord recusou/indisponível na hora de enviar mensagem.
-- `discord_channels_failed` (backend, HTTP 502): falha ao consultar lista de canais no Discord.
-- `chave de acesso inválida (401)` (app): API key rejeitada pelo backend.
-- `canal de envio não definido (400)` (app): nenhum canal ativo para envio.
-- `servidor não configurado corretamente (500)` (app): backend sem configuração obrigatória.
-- `falha ao publicar no Discord (502)` (app): backend não conseguiu enviar para Discord.
-- `falha de internet/timeout ao conectar no servidor` (app): indisponibilidade de rede/servidor sem resposta HTTP.
-
+## Regra de Trabalho
+- Fechar cada lote com:
+  1. validacao padrao;
+  2. commit com mensagem clara;
+  3. atualizacao deste `PROGRESS.md`.
