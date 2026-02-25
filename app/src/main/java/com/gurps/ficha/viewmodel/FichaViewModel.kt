@@ -7,15 +7,20 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.DataRepository
+import com.gurps.ficha.data.network.DiscordRollApiClient
+import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
 
@@ -25,6 +30,11 @@ data class ActiveDefense(
     val baseValue: Int,
     val bonus: Int,
     val finalValue: Int
+)
+
+data class RollDispatchStatus(
+    val enviado: Boolean,
+    val detalhe: String? = null
 )
 
 @OptIn(FlowPreview::class)
@@ -633,6 +643,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val raw = danoRaw?.trim().orEmpty()
         if (raw.isBlank()) return ""
         return CharacterRules.resolverDanoPorSt(raw, personagem.forca)
+    }
+
+    suspend fun enviarRolagemDiscord(payload: DiscordRollPayload): RollDispatchStatus {
+        return withContext(Dispatchers.IO) {
+            val resultado = DiscordRollApiClient.postRoll(
+                baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
+                payload = payload
+            )
+            if (resultado.ok) {
+                RollDispatchStatus(enviado = true)
+            } else {
+                RollDispatchStatus(
+                    enviado = false,
+                    detalhe = resultado.error ?: "erro_no_envio"
+                )
+            }
+        }
     }
 
     val nivelCarga: Int get() = personagem.nivelCarga
