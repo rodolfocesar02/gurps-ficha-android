@@ -565,18 +565,15 @@ private fun SelecionarEscudoEquipamentoDialog(
 private val LOCAIS_ARMADURA = listOf(
     "cabeca" to "Cabeca",
     "corpo" to "Corpo",
-    "membros" to "Membros",
-    "traje_completo" to "Traje Completo",
-    "cranio" to "Cranio",
-    "olhos" to "Olhos",
-    "rosto" to "Rosto",
     "pescoco" to "Pescoco",
     "tronco" to "Tronco",
     "virilha" to "Virilha",
+    "membros" to "Membros",
     "bracos" to "Bracos",
-    "maos" to "Maos",
     "pernas" to "Pernas",
-    "pes" to "Pes"
+    "pes" to "Pes",
+    "maos" to "Maos",
+    "traje_completo" to "Traje Completo"
 )
 
 @Composable
