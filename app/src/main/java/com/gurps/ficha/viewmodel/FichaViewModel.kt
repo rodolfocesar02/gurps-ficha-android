@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.Normalizer
 
 enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
 
@@ -647,18 +648,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
         val nomeBase = equipamento.nome.substringBefore(" (").trim()
         if (nomeBase.isBlank()) return ""
+        val nomeBaseNorm = normalizarChaveTexto(nomeBase)
 
         val porNome = dataRepository.armasCatalogo.firstOrNull { arma ->
             val tipoOk = equipamento.armaTipoCombate.isNullOrBlank() ||
                 arma.tipoCombate.equals(equipamento.armaTipoCombate, ignoreCase = true)
             val danoOk = equipamento.armaDanoRaw.isNullOrBlank() ||
                 arma.danoRaw.equals(equipamento.armaDanoRaw, ignoreCase = true)
-            tipoOk && danoOk && arma.nome.equals(nomeBase, ignoreCase = true)
+            val nomeOk = normalizarChaveTexto(arma.nome) == nomeBaseNorm
+            tipoOk && danoOk && nomeOk
         } ?: dataRepository.armasCatalogo.firstOrNull { arma ->
-            arma.nome.equals(nomeBase, ignoreCase = true)
+            normalizarChaveTexto(arma.nome) == nomeBaseNorm
         }
 
         return if (porNome != null) observacoesArmaFormatadas(porNome) else ""
+    }
+
+    private fun normalizarChaveTexto(valor: String): String {
+        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace(Regex("[^a-z0-9]+"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
     fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {
