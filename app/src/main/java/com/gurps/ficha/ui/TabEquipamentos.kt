@@ -467,17 +467,29 @@ private fun observacoesFormatadas(armadura: ArmaduraCatalogoItem): List<String> 
         .findAll(armadura.observacoes)
         .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
         .toList()
-    val detalhes = armadura.observacoesDetalhadas
+    val detalhesOriginais = armadura.observacoesDetalhadas
         .map { it.trim() }
         .filter { it.isNotBlank() }
+    if (detalhesOriginais.isEmpty()) return emptyList()
 
-    if (refs.isEmpty() || detalhes.isEmpty()) return emptyList()
+    val saida = mutableListOf<String>()
+    var detalhes = detalhesOriginais
 
-    val pareadas = refs.zip(detalhes).map { (ref, texto) -> "[$ref] $texto" }.toMutableList()
-    if (detalhes.size > refs.size) {
-        detalhes.drop(refs.size).forEach { extra -> pareadas.add(extra) }
+    // Para NT alto, a observacao global (NT7+) deve aparecer sem numero.
+    val primeira = detalhes.firstOrNull()
+    if (primeira != null && primeira.contains("NT7+", ignoreCase = true)) {
+        saida.add(primeira)
+        detalhes = detalhes.drop(1)
     }
-    return pareadas
+
+    if (refs.isEmpty() || detalhes.isEmpty()) return saida
+
+    val pareadas = refs.zip(detalhes).map { (ref, texto) -> "[$ref] $texto" }
+    saida.addAll(pareadas)
+    if (detalhes.size > refs.size) {
+        detalhes.drop(refs.size).forEach { extra -> saida.add(extra) }
+    }
+    return saida
 }
 
 @Composable
