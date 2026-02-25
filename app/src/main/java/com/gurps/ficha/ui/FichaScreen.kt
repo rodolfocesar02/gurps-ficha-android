@@ -35,6 +35,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,6 +51,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showLoadDialog by remember { mutableStateOf(false) }
 
     val temAptidaoMagica = viewModel.temAptidaoMagica
+    val configuration = LocalConfiguration.current
+    val density = LocalDensity.current
+    val usarNavegacaoCompacta = configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     val tabs = if (temAptidaoMagica) {
         listOf("Geral", "Traços", "Perícias", "Magia", "Combate", "Equip.", "Notas")
     } else {
@@ -104,13 +109,20 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 contentDescription = title
                             )
                         },
-                        label = { Text(title,
-                            fontSize = 10.sp,
-                            maxLines = 1, softWrap = false,
-                            style = MaterialTheme.typography.labelSmall) },
+                        label = if (usarNavegacaoCompacta) null else {
+                            {
+                                Text(
+                                    title,
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    softWrap = false,
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            }
+                        },
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
-                        alwaysShowLabel = false // Alterado para mostrar apenas quando selecionado
+                        alwaysShowLabel = false
                     )
                 }
             }

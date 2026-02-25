@@ -11,7 +11,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "acomodado",
@@ -25,7 +27,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "alcoolismo",
@@ -42,7 +46,9 @@
     "max": null,
     "rawCost": "-15 ou -20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "altruismo",
@@ -56,7 +62,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "amigavel",
@@ -70,7 +78,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "amnesia",
@@ -87,7 +97,9 @@
     "max": null,
     "rawCost": "-10 ou -25",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "antecedentes_mundanos",
@@ -101,7 +113,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "antipatico",
@@ -115,7 +129,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "aparencia",
@@ -135,7 +151,9 @@
     "max": null,
     "rawCost": "-24, -20, 16, -8 ou -4",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "apetite_incontrolavel",
@@ -149,7 +167,10 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica",
+      "magica"
+    ]
   },
   {
     "id": "assexuado",
@@ -163,7 +184,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "assustar_animais",
@@ -177,7 +200,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "magica"
+    ]
   },
   {
     "id": "ataque_infeccioso",
@@ -191,7 +216,10 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica",
+      "magica"
+    ]
   },
   {
     "id": "atavismo_por_estresse",
@@ -209,7 +237,9 @@
     "max": null,
     "rawCost": "-10, -15 ou -20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "atento",
@@ -223,7 +253,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "atrapalhado",
@@ -240,7 +272,9 @@
     "max": null,
     "rawCost": "-5 ou -10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "autodestruicao",
@@ -254,7 +288,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "avareza",
@@ -268,7 +304,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "aversao",
@@ -282,7 +320,9 @@
     "max": -10,
     "rawCost": "-10 a -20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "magica"
+    ]
   },
   {
     "id": "aversoes",
@@ -296,7 +336,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "azar",
@@ -310,7 +352,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "baixa_autoestima",
@@ -324,7 +368,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "barulhento",
@@ -338,7 +384,9 @@
     "max": null,
     "rawCost": "-2/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "bestial",
@@ -355,7 +403,9 @@
     "max": null,
     "rawCost": "-10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "bioquimica_incomum",
@@ -383,7 +433,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "caracteristicas_distintas",
@@ -397,7 +449,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "caracteristicas_sobrenaturais",
@@ -414,7 +468,10 @@
     "max": null,
     "rawCost": "-5 ou-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica",
+      "magica"
+    ]
   },
   {
     "id": "castrado",
@@ -428,7 +485,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "cegueira",
@@ -442,7 +501,9 @@
     "max": null,
     "rawCost": "-50",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "cegueira_noturna",
@@ -456,7 +517,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "chauvinista",
@@ -470,7 +533,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "circunspeccao",
@@ -484,7 +549,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "cleptomania",
@@ -498,7 +565,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "cobica",
@@ -512,7 +581,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "codigo_de_honra",
@@ -531,7 +602,9 @@
     "max": null,
     "rawCost": "-1, -5,-10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "completamente_desastrado",
@@ -561,7 +634,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "comprensivo",
@@ -575,7 +650,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "compulsao",
@@ -605,7 +682,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "consumo_ampliado",
@@ -619,7 +698,9 @@
     "max": null,
     "rawCost": "-10/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "convulsoes_pos_combate",
@@ -649,7 +730,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "covardia",
@@ -663,7 +746,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "credulidade",
@@ -677,7 +762,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "criativo",
@@ -691,7 +778,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "cuidadoso",
@@ -705,7 +794,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "curiosidade",
@@ -719,7 +810,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "daltonismo",
@@ -733,7 +826,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "deficiencia_fisica",
@@ -751,7 +846,9 @@
     "max": null,
     "rawCost": "-10, -20 ou -30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "deficiencias_menores",
@@ -765,7 +862,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "dependencia",
@@ -779,7 +878,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "dependencia",
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "dependentes",
@@ -837,7 +938,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "desdobramento_de_pers",
@@ -851,7 +954,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "despretensioso",
@@ -865,7 +970,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "destino",
@@ -883,7 +990,9 @@
     "max": null,
     "rawCost": "-5,-10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "magica"
+    ]
   },
   {
     "id": "destruidor_da_vida",
@@ -898,7 +1007,8 @@
     "rawCost": "-10",
     "specialRule": null,
     "tags": [
-      "fisica"
+      "fisica",
+      "magica"
     ]
   },
   {
@@ -913,7 +1023,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "dever",
-    "tags": []
+    "tags": [
+      "social"
+    ]
   },
   {
     "id": "dieta_restrita",
@@ -932,7 +1044,9 @@
     "max": null,
     "rawCost": "-10, -20, -30 ou -40",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "dificuldade_com_numeros",
@@ -946,7 +1060,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "dislexia",
@@ -974,7 +1090,9 @@
     "max": null,
     "rawCost": "-25",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "disosmia",
@@ -988,7 +1106,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "distracao",
@@ -1002,7 +1122,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "distraido",
@@ -1016,7 +1138,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "disturbio_neurologico",
@@ -1048,7 +1172,9 @@
     "max": null,
     "rawCost": "-1/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "social"
+    ]
   },
   {
     "id": "doenca_contagiosa",
@@ -1062,7 +1188,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "doente_terminal",
@@ -1080,7 +1208,9 @@
     "max": null,
     "rawCost": "-50, -75 ou -100",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "dor_cronica",
@@ -1144,7 +1274,10 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "drenagem",
-    "tags": []
+    "tags": [
+      "fisica",
+      "magica"
+    ]
   },
   {
     "id": "duro_de_ouvido",
@@ -1158,7 +1291,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "egoismo",
@@ -1172,7 +1307,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "eletrico",
@@ -1186,7 +1323,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "embotado",
@@ -1200,7 +1339,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "enjoacao",
@@ -1228,7 +1369,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "enjoo_espacial",
@@ -1242,7 +1385,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "enjoo_temporal",
@@ -1256,7 +1401,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "entorpecido",
@@ -1270,7 +1417,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "enxerido",
@@ -1284,7 +1433,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "epilepsia",
@@ -1298,7 +1449,9 @@
     "max": null,
     "rawCost": "-30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "estigma_social",
@@ -1332,7 +1485,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "excesso_de_confianca",
@@ -1346,7 +1501,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "expectativa_de_vida_reduzida",
@@ -1360,7 +1517,9 @@
     "max": null,
     "rawCost": "-10/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "facil_de_decifrar",
@@ -1374,7 +1533,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "facil_de_matar",
@@ -1388,7 +1549,9 @@
     "max": null,
     "rawCost": "-2/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "fanatismo",
@@ -1402,7 +1565,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "fantasias",
@@ -1421,7 +1586,9 @@
     "max": null,
     "rawCost": "-1, -5, -10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "fantasias_2",
@@ -1435,7 +1602,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "fantasias_2",
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "ferido",
@@ -1449,7 +1618,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "flashbacks",
@@ -1467,7 +1638,9 @@
     "max": null,
     "rawCost": "-5, -10 ou -20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "fobias",
@@ -1497,7 +1670,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "forma_de_sombras",
@@ -1525,7 +1700,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "fragilidade",
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "fragilidade_em_aceleracao",
@@ -1539,7 +1716,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "fraqueza",
@@ -1553,7 +1732,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "fraqueza",
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "furia",
@@ -1567,7 +1748,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "gagueira",
@@ -1581,7 +1764,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "gigantismo",
@@ -1595,7 +1780,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "gordo",
@@ -1609,7 +1796,9 @@
     "max": null,
     "rawCost": "-3",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "gregario",
@@ -1623,7 +1812,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "gula",
@@ -1637,7 +1828,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "habitos_detestaveis",
@@ -1669,7 +1862,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "hemofilia",
@@ -1683,7 +1878,9 @@
     "max": null,
     "rawCost": "-30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "hiperalgia",
@@ -1697,7 +1894,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "honestidade",
@@ -1711,7 +1910,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "horizontal",
@@ -1725,7 +1926,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "identidade_secreta",
@@ -1739,7 +1942,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "identidade_secreta",
-    "tags": []
+    "tags": [
+      "social"
+    ]
   },
   {
     "id": "identidade_trocada",
@@ -1753,7 +1958,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "impulsividade",
@@ -1767,7 +1974,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "incapaz_de_aprender",
@@ -1781,7 +1990,9 @@
     "max": null,
     "rawCost": "-30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "incapaz_de_falar",
@@ -1795,7 +2006,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "incapaz_de_flutuar",
@@ -1809,7 +2022,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "incapaz_de_sentir_prazer",
@@ -1823,7 +2038,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "incompetente",
@@ -1837,7 +2054,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "indeciso",
@@ -1851,7 +2070,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "indiferente",
@@ -1865,7 +2086,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "indulgente",
@@ -1879,7 +2102,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "impiedoso",
@@ -1907,7 +2132,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "inimigos",
@@ -1937,7 +2164,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "insono",
@@ -1954,7 +2183,9 @@
     "max": null,
     "rawCost": "-10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "intolerancia",
@@ -1973,6 +2204,7 @@
     "rawCost": "-1, -5 ou -10",
     "specialRule": null,
     "tags": [
+      "mental",
       "social"
     ]
   },
@@ -1989,6 +2221,7 @@
     "rawCost": "-1",
     "specialRule": null,
     "tags": [
+      "fisica",
       "social"
     ]
   },
@@ -2037,7 +2270,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "irritabilidade",
@@ -2051,7 +2286,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "lunatico",
@@ -2065,7 +2302,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "luxuria",
@@ -2079,7 +2318,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "magnetismo_sobrenatural",
@@ -2093,7 +2334,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "magica"
+    ]
   },
   {
     "id": "magro",
@@ -2121,7 +2364,9 @@
     "max": null,
     "rawCost": "-75",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "magica"
+    ]
   },
   {
     "id": "maldicao_divina",
@@ -2135,7 +2380,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "maldicao_divina",
-    "tags": []
+    "tags": [
+      "magica"
+    ]
   },
   {
     "id": "maneta_um_braco",
@@ -2149,7 +2396,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "maneta_uma_mao",
@@ -2163,7 +2412,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "maniaco_depressivo",
@@ -2221,7 +2472,9 @@
     "max": null,
     "rawCost": "-5/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "marca_registrada",
@@ -2268,7 +2521,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "mentalidade_de_escravo",
@@ -2314,7 +2569,9 @@
     "max": null,
     "rawCost": "-2",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "mudanca_de_personalidade",
@@ -2328,7 +2585,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "mudez",
@@ -2356,7 +2615,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "muito_gordo",
@@ -2370,7 +2631,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "nanismo",
@@ -2384,7 +2647,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "nao_iconografico",
@@ -2398,7 +2663,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "no_limite",
@@ -2412,7 +2679,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "noturno",
@@ -2426,7 +2695,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "nt_baixo",
@@ -2454,7 +2725,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "obsessao",
@@ -2488,7 +2761,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "pacifismo",
@@ -2553,7 +2828,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "pernas_tortas",
@@ -2581,7 +2858,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "piromania",
@@ -2595,7 +2874,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "pouca_empatia",
@@ -2609,7 +2890,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "preferencias",
@@ -2623,7 +2906,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "preguica",
@@ -2637,7 +2922,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "problemas_na_coluna",
@@ -2654,7 +2941,9 @@
     "max": null,
     "rawCost": "-15 ou -25",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "recuperacao_lenta",
@@ -2668,7 +2957,9 @@
     "max": null,
     "rawCost": "-5/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "refeicao_demorada",
@@ -2682,7 +2973,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "reprogramavel",
@@ -2696,7 +2989,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "repugnancia",
@@ -2714,7 +3009,10 @@
     "max": null,
     "rawCost": "-5,-10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica",
+      "magica"
+    ]
   },
   {
     "id": "reputacao",
@@ -2729,6 +3027,7 @@
     "rawCost": "Variável",
     "specialRule": "reputacao",
     "tags": [
+      "mental",
       "social"
     ]
   },
@@ -2748,7 +3047,9 @@
     "max": null,
     "rawCost": "-10, -15 ou -25",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "social"
+    ]
   },
   {
     "id": "sadismo",
@@ -2780,7 +3081,8 @@
     "rawCost": "-5 ou -10",
     "specialRule": null,
     "tags": [
-      "combate"
+      "combate",
+      "mental"
     ]
   },
   {
@@ -2795,7 +3097,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "segredo",
@@ -2814,7 +3118,9 @@
     "max": null,
     "rawCost": "-5, -10, -20 ou -30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "sem_imaginacao",
@@ -2828,7 +3134,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "sem_manuseadores",
@@ -2858,7 +3166,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "sem_pernas",
@@ -2872,7 +3182,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "sem_pernas",
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "sem_recuperacao",
@@ -2889,7 +3201,9 @@
     "max": null,
     "rawCost": "-20 ou -30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "sem_um_dedo",
@@ -2906,7 +3220,9 @@
     "max": null,
     "rawCost": "-2 ou -5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "semiereito",
@@ -2920,7 +3236,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "senso_do_dever",
@@ -2939,7 +3257,9 @@
     "max": null,
     "rawCost": "-2, -5, -10 ou -20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "simpatico",
@@ -2953,7 +3273,9 @@
     "max": null,
     "rawCost": "-1",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "solitario",
@@ -2967,7 +3289,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "sonambulismo",
@@ -2981,7 +3305,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "sonhador",
@@ -2996,7 +3322,8 @@
     "rawCost": "-1",
     "specialRule": null,
     "tags": [
-      "fisica"
+      "fisica",
+      "mental"
     ]
   },
   {
@@ -3011,7 +3338,9 @@
     "max": null,
     "rawCost": "-2/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "sono_leve",
@@ -3025,7 +3354,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "sonolento",
@@ -3039,7 +3370,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "sonolento",
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "status",
@@ -3069,7 +3402,9 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "suporte_de_vida_ampliado",
@@ -3086,7 +3421,9 @@
     "max": null,
     "rawCost": "-10 ou -40",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "surdez",
@@ -3100,7 +3437,9 @@
     "max": null,
     "rawCost": "-20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "susceptibilidade_a_magia",
@@ -3115,6 +3454,7 @@
     "rawCost": "-3/nível",
     "specialRule": null,
     "tags": [
+      "fisica",
       "magica"
     ]
   },
@@ -3134,7 +3474,9 @@
     "max": null,
     "rawCost": "-4/nível, -2/nível ou -1/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "teimosia",
@@ -3148,7 +3490,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "temor",
@@ -3162,7 +3506,9 @@
     "max": null,
     "rawCost": "-2/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "tetrapelegico",
@@ -3176,7 +3522,9 @@
     "max": null,
     "rawCost": "-80",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "timidez",
@@ -3194,7 +3542,9 @@
     "max": null,
     "rawCost": "-5, -10, ou -20",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "trapaceiro",
@@ -3208,7 +3558,9 @@
     "max": null,
     "rawCost": "-15*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "unico",
@@ -3222,7 +3574,10 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "magica",
+      "mental"
+    ]
   },
   {
     "id": "veracidade",
@@ -3236,7 +3591,9 @@
     "max": null,
     "rawCost": "-5*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "viciado_em_trabalho",
@@ -3250,7 +3607,9 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "vicio",
@@ -3264,7 +3623,9 @@
     "max": null,
     "rawCost": "Variável",
     "specialRule": "vicio",
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "visao_restrita",
@@ -3281,7 +3642,9 @@
     "max": null,
     "rawCost": "-15 ou -30",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "voto",
@@ -3300,7 +3663,9 @@
     "max": null,
     "rawCost": "-1,-5, -10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "social"
+    ]
   },
   {
     "id": "voz_irritante",
@@ -3314,7 +3679,9 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   },
   {
     "id": "vozes_fantasmagoricas",
@@ -3332,7 +3699,9 @@
     "max": null,
     "rawCost": "-5, -10 ou -15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "vulnerabilidade",
@@ -3347,7 +3716,8 @@
     "rawCost": "Variável",
     "specialRule": "vulnerabilidade",
     "tags": [
-      "combate"
+      "combate",
+      "fisica"
     ]
   },
   {
@@ -3362,7 +3732,9 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "mental"
+    ]
   },
   {
     "id": "zarolho",
@@ -3376,6 +3748,8 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [
+      "fisica"
+    ]
   }
 ]

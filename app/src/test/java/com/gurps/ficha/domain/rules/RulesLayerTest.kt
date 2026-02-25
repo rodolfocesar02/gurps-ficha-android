@@ -47,6 +47,36 @@ class RulesLayerTest {
     }
 
     @Test
+    fun `aplica arredondamento e limites nas defesas ativas`() {
+        // Esquiva nunca menor que 1
+        assertEquals(1, CombatRules.calcularEsquiva(esquivaBase = 5, nivelCarga = 5, bonusManual = -3))
+        assertEquals(1, CombatRules.calcularEsquivaBase(esquivaBase = 4, nivelCarga = 5))
+
+        // Apara/Bloqueio usam floor(NH/2)+3
+        assertEquals(8, CombatRules.calcularAparaBase(nh = 11)) // floor(5.5)+3
+        assertEquals(8, CombatRules.calcularAparaBase(nh = 10)) // floor(5.0)+3
+        assertEquals(9, CombatRules.calcularBloqueioBase(nh = 12))
+    }
+
+    @Test
+    fun `valida bordas finais de defesa base e impacto de equipamento`() {
+        // Esquiva base sem carga vs carga extrema (nível 5)
+        assertEquals(8, CombatRules.calcularEsquivaBase(esquivaBase = 8, nivelCarga = 0))
+        assertEquals(3, CombatRules.calcularEsquivaBase(esquivaBase = 8, nivelCarga = 5))
+
+        // Apara/Bloqueio com NH ímpar/par seguem floor(NH/2)+3
+        assertEquals(8, CombatRules.calcularAparaBase(nh = 11))
+        assertEquals(9, CombatRules.calcularAparaBase(nh = 12))
+        assertEquals(8, CombatRules.calcularBloqueioBase(nh = 11))
+        assertEquals(9, CombatRules.calcularBloqueioBase(nh = 12))
+
+        // Bloqueio soma DB do escudo de forma linear
+        assertEquals(8, CombatRules.calcularBloqueio(nh = 11, bonusEscudo = 0, bonusManual = 0))
+        assertEquals(9, CombatRules.calcularBloqueio(nh = 11, bonusEscudo = 1, bonusManual = 0))
+        assertEquals(10, CombatRules.calcularBloqueio(nh = 11, bonusEscudo = 2, bonusManual = 0))
+    }
+
+    @Test
     fun `respeita tabela completa de bonus de pericia por pontos`() {
         // Facil: Atr, Atr+1, Atr+1, Atr+2, Atr+3, Atr+4
         assertEquals(0, CharacterRules.calcularBonusPorDificuldade(Dificuldade.FACIL, 1))
@@ -97,5 +127,13 @@ class RulesLayerTest {
         assertEquals("2d", CharacterRules.calcularDanoGeB(14))
         assertEquals("3d+2", CharacterRules.calcularDanoGeB(20))
         assertEquals("5d+2", CharacterRules.calcularDanoGeB(30))
+    }
+
+    @Test
+    fun `resolve dano de arma por ST para tokens GdP e GeB`() {
+        assertEquals("1d+1 corte", CharacterRules.resolverDanoPorSt("GeB+1 corte", st = 10))
+        assertEquals("1d-3 perf", CharacterRules.resolverDanoPorSt("GdP-1 perf", st = 10))
+        assertEquals("1d+3 perf", CharacterRules.resolverDanoPorSt("GdP+3 perf", st = 13))
+        assertEquals("HT-3(0,5) at", CharacterRules.resolverDanoPorSt("HT-3(0,5) at", st = 12))
     }
 }

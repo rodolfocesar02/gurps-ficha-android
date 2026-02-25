@@ -1,4 +1,4 @@
-# PROGRESS - GURPS Ficha Android
+﻿# PROGRESS - GURPS Ficha Android
 
 Atualizado em: 2026-02-25  
 Objetivo: consolidar implementação atual, reduzir riscos e seguir em lotes curtos com salvamento ao fim de cada lote.
@@ -42,7 +42,7 @@ Escopo:
 Critério de pronto:
 - Sem linhas críticas inválidas no JSON.
 - Valores monetários de milhar corretos.
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 
 ### Lote 3 - Revisão de reviewFlags (armas)
 Escopo:
@@ -70,6 +70,58 @@ Escopo:
 - Adicionar testes focados em equipamentos (armas/escudos/armaduras).
 Critério de pronto:
 - Regressões principais cobertas por testes.
+Status: `PENDENTE`
+
+## Plano Posterior (Depois dos Lotes Pendentes Acima)
+
+### Lote 6 - Nova aba Rolagem (estrutura inicial)
+Escopo:
+- Criar aba `Rolagem` na navegação principal.
+- Manter aba `Notas` limpa temporariamente (sem remover código legado de forma destrutiva).
+- Estruturar estado da tela para suportar: testes, modificadores e histórico local.
+Critério de pronto:
+- Aba `Rolagem` acessível e estável.
+- `Notas` sem conteúdo jogável ativo.
+Status: `PENDENTE`
+
+### Lote 7 - Motor de rolagem local (MVP jogável)
+Escopo:
+- Implementar rolagem 3d6 para:
+  - testes de atributo,
+  - ataque,
+  - defesa,
+  - rolagem livre.
+- Implementar modificadores manuais (+/-) por teste.
+- Exibir resultado com cálculo completo (valor base, modificador, total alvo, rolagem, sucesso/falha).
+Critério de pronto:
+- Todos os tipos de teste executando localmente com resultado consistente.
+Status: `PENDENTE`
+
+### Lote 8 - Ficha clicável na aba Rolagem
+Escopo:
+- Tornar campos principais da ficha clicáveis para disparar teste direto.
+- Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
+- Registrar histórico de rolagens na própria aba `Rolagem`.
+Critério de pronto:
+- Fluxo "clicou no campo -> rolou -> apareceu no histórico" funcionando para os cenários principais.
+Status: `PENDENTE`
+
+### Lote 9 - Integração Discord (backend + app)
+Escopo:
+- Criar backend leve para envio de mensagens ao Discord via bot (token fora do app).
+- Definir payload padrão de rolagem (personagem, tipo, modificador, resultado).
+- Conectar app ao backend para publicar resultado no canal configurado.
+Critério de pronto:
+- Rolagem feita no app aparece no canal Discord via bot com confirmação de envio no app.
+Status: `PENDENTE`
+
+### Lote 10 - Polimento e segurança da integração
+Escopo:
+- Tratar erros de rede/autenticação e estados offline.
+- Adicionar opções de configuração de sessão/canal de envio.
+- Cobrir fluxo crítico com testes (unidade + integração onde viável).
+Critério de pronto:
+- Integração estável em cenário real de mesa (uso contínuo sem travas/falhas silenciosas).
 Status: `PENDENTE`
 
 ## Itens Fechados (Não Mexer Agora)

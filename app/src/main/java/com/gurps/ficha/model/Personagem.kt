@@ -211,7 +211,8 @@ data class DesvantagemDefinicao(
     val nome: String = "",
     val custo: String = "0",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
-    val pagina: Int = 0
+    val pagina: Int = 0,
+    val tags: List<String> = emptyList()
 ) {
     fun getCustoBase(): Int {
         val cleaned = custo.replace("?", "").replace("verificar", "").trim()
@@ -415,8 +416,18 @@ data class Equipamento(
     var quantidade: Int = 1,
     var notas: String = "",
     var tipo: TipoEquipamento = TipoEquipamento.GERAL,
-    var bonusDefesa: Int = 0 // Para escudos (DB - Defense Bonus)
-)
+    var bonusDefesa: Int = 0, // Para escudos (DB - Defense Bonus)
+    var armaCatalogoId: String? = null,
+    var armaTipoCombate: String? = null,
+    var armaDanoRaw: String? = null,
+    var armaStMinimo: Int? = null
+){
+    fun danoCalculadoComSt(personagem: Personagem): String? {
+        val raw = armaDanoRaw?.trim().orEmpty()
+        if (raw.isBlank()) return null
+        return CharacterRules.resolverDanoPorSt(raw, personagem.forca)
+    }
+}
 
 // ============================================================
 // COMBATE - DEFESAS ATIVAS
@@ -507,9 +518,17 @@ data class DefesasAtivas(
     }
 
     fun getBonusEscudo(personagem: Personagem): Int {
-        val escudo = escudoSelecionadoNome?.let { nome ->
-            personagem.equipamentos.find { it.nome == nome && it.tipo == TipoEquipamento.ESCUDO }
+        val escudos = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO }
+        if (escudos.isEmpty()) return 0
+
+        val nomeSelecionado = escudoSelecionadoNome
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+
+        val escudoSelecionado = nomeSelecionado?.let { nome ->
+            escudos.find { it.nome.trim().equals(nome, ignoreCase = true) }
         }
+        val escudo = escudoSelecionado ?: escudos.maxByOrNull { it.bonusDefesa }
         return escudo?.bonusDefesa ?: 0
     }
 

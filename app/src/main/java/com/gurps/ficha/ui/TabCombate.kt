@@ -167,6 +167,49 @@ fun TabCombate(viewModel: FichaViewModel) {
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
+                val escudos = viewModel.escudosEquipados
+                if (escudos.isEmpty()) {
+                    Text(
+                        "Adicione um escudo na aba Equipamentos para aplicar DB no Bloqueio.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                } else {
+                    var expandedEscudo by remember { mutableStateOf(false) }
+                    ExposedDropdownMenuBox(
+                        expanded = expandedEscudo,
+                        onExpandedChange = { expandedEscudo = !expandedEscudo }
+                    ) {
+                        val atual = escudos.find {
+                            it.nome.equals(p.defesasAtivas.escudoSelecionadoNome ?: "", ignoreCase = true)
+                        }
+                        val labelAtual = atual?.let { "${it.nome} (DB ${it.bonusDefesa})" } ?: "Selecionar Escudo"
+                        OutlinedTextField(
+                            value = labelAtual,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text("Escudo para Bloqueio") },
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedEscudo) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedEscudo,
+                            onDismissRequest = { expandedEscudo = false }
+                        ) {
+                            escudos.forEach { escudo ->
+                                DropdownMenuItem(
+                                    text = { Text("${escudo.nome} (DB ${escudo.bonusDefesa})") },
+                                    onClick = {
+                                        viewModel.atualizarEscudoBloqueio(escudo.nome)
+                                        expandedEscudo = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
     }

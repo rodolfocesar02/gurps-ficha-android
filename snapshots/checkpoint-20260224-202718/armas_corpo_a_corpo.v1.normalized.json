@@ -1,0 +1,3298 @@
+{
+  "version": 1,
+  "kind": "armas_corpo_a_corpo_normalized",
+  "sourceKind": "armas_corpo_a_corpo_raw",
+  "sourceFile": "C:\\Users\\Rodolfo\\Downloads\\arquivos para ficha de gurpsNÃO APAGUE ESTA PASTA\\OCR do modulo basico\\Tabela_de_Armas_de_Combate_Corpo_a_Corpo.xlsx",
+  "generatedAtUtc": "2026-02-24T17:13:51.736422+00:00",
+  "totalItems": 61,
+  "reviewNeededItems": 32,
+  "items": [
+    {
+      "id": "machado",
+      "rowNumber": 2,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MAÇA/MACHADO (DX-5, Maça/Machado de Duas Mãos-3, ou Mangual-4)",
+      "nome": "Machado",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$50",
+            "kind": "numeric",
+            "valor": 50.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2",
+            "kg": 2.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$50",
+        "peso": "2"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "machadinha",
+      "rowNumber": 3,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MAÇA/MACHADO (DX-5, Maça/Machado de Duas Mãos-3, ou Mangual-4)",
+      "nome": "Machadinha",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$40",
+            "kind": "numeric",
+            "valor": 40.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$40",
+        "peso": "1"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "machado_de_arremesso",
+      "rowNumber": 4,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MAÇA/MACHADO (DX-5, Maça/Machado de Duas Mãos-3, ou Mangual-4)",
+      "nome": "Machado de Arremesso",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$60",
+            "kind": "numeric",
+            "valor": 60.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2",
+            "kg": 2.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$60",
+        "peso": "2"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "maca",
+      "rowNumber": 5,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MAÇA/MACHADO (DX-5, Maça/Machado de Duas Mãos-3, ou Mangual-4)",
+      "nome": "Maça",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+3 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "12",
+        "valor": 12,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$50",
+            "kind": "numeric",
+            "valor": 50.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$50",
+        "peso": "2,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "maca_pequena",
+      "rowNumber": 6,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MAÇA/MACHADO (DX-5, Maça/Machado de Duas Mãos-3, ou Mangual-4)",
+      "nome": "Maça Pequena",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+2 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$35",
+            "kind": "numeric",
+            "valor": 35.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,5",
+            "kg": 1.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$35",
+        "peso": "1,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "picareta",
+      "rowNumber": 7,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MAÇA/MACHADO (DX-5, Maça/Machado de Duas Mãos-3, ou Mangual-4)",
+      "nome": "Picareta",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+1 perf",
+        "base": "GeB",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "[2]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$70",
+            "kind": "numeric",
+            "valor": 70.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,5",
+            "kg": 1.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$70",
+        "peso": "1,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "soco",
+      "rowNumber": 8,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BOXE, BRIGA, CARATÊ, OU DX",
+      "nome": "Soco",
+      "nt": null,
+      "ntRaw": "—",
+      "dano": {
+        "raw": "GdP-1 cont",
+        "base": "GdP",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "—",
+        "valor": null,
+        "flags": []
+      },
+      "observacoes": "[3]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C",
+        "aparar": "0",
+        "custo": "—",
+        "peso": "—"
+      },
+      "reviewFlags": [
+        "nt_nao_numerico"
+      ]
+    },
+    {
+      "id": "soco_ingles",
+      "rowNumber": 9,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BOXE, BRIGA, CARATÊ, OU DX",
+      "nome": "Soco Inglês",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GdP cont",
+        "base": "GdP",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "—",
+        "valor": null,
+        "flags": []
+      },
+      "observacoes": "[3]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C",
+          "aparar": "0",
+          "custo": {
+            "raw": "$10",
+            "kind": "numeric",
+            "valor": 10.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,125",
+            "kg": 0.125
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C",
+        "aparar": "0",
+        "custo": "$10",
+        "peso": "0,125"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "cassetete",
+      "rowNumber": 10,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BRIGA OU DX",
+      "nome": "Cassetete",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GdP cont",
+        "base": "GdP",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "7",
+        "valor": 7,
+        "flags": []
+      },
+      "observacoes": "[3]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C",
+          "aparar": "0",
+          "custo": {
+            "raw": "$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,5",
+            "kg": 0.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C",
+        "aparar": "0",
+        "custo": "$20",
+        "peso": "0,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_paralisante",
+      "rowNumber": 11,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BRIGA OU DX",
+      "nome": "Pistola Paralisante",
+      "nt": 8,
+      "ntRaw": "8",
+      "dano": {
+        "raw": "HT-3(0,5) at",
+        "base": "HT-3(0,5)",
+        "tipo": "at"
+      },
+      "stMinimo": {
+        "raw": "2",
+        "valor": 2,
+        "flags": []
+      },
+      "observacoes": "[5]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C, 1",
+          "aparar": "Não",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,5",
+            "kg": 0.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C, 1",
+        "aparar": "Não",
+        "custo": "$100",
+        "peso": "0,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "porrete",
+      "rowNumber": 12,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Porrete",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB+1 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$5",
+            "kind": "numeric",
+            "valor": 5.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,5",
+            "kg": 1.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$5 / —",
+        "peso": "1,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_larga",
+      "rowNumber": 13,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Espada Larga",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$500",
+            "kind": "numeric",
+            "valor": 500.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,5",
+            "kg": 1.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$500 / —",
+        "peso": "1,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_larga_em_gdp",
+      "rowNumber": 14,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Espada Larga em GdP",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$600",
+            "kind": "numeric",
+            "valor": 600.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,5",
+            "kg": 1.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$600 / —",
+        "peso": "1,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_bastarda",
+      "rowNumber": 15,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Espada Bastarda",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$650",
+            "kind": "numeric",
+            "valor": 650.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0D",
+        "custo": "$650 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "katana",
+      "rowNumber": 16,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Katana",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$650",
+            "kind": "numeric",
+            "valor": 650.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 1",
+        "aparar": "0",
+        "custo": "$650 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_bastarda_em_gdp",
+      "rowNumber": 17,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Espada Bastarda em GdP",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$750",
+            "kind": "numeric",
+            "valor": 750.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0D",
+        "custo": "$750 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "sabre_de_cavalaria",
+      "rowNumber": 18,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Sabre de Cavalaria",
+      "nt": 4,
+      "ntRaw": "4",
+      "dano": {
+        "raw": "GeB+1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$500",
+            "kind": "numeric",
+            "valor": 500.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,5",
+            "kg": 1.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$500 / —",
+        "peso": "1,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "maca_estrela",
+      "rowNumber": 19,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Maça-Estrela",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+3 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "12",
+        "valor": 12,
+        "flags": []
+      },
+      "observacoes": "[6]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$80",
+            "kind": "numeric",
+            "valor": 80.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3",
+            "kg": 3.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$80",
+        "peso": "3"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "nunchaku",
+      "rowNumber": 20,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
+      "nome": "Nunchaku",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+1 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "7",
+        "valor": 7,
+        "flags": []
+      },
+      "observacoes": "[6]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$20",
+        "peso": "1"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "espada_de_energia",
+      "rowNumber": 21,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE ENERGIA (DX-5 ou qualquer perícia com espada-3)",
+      "nome": "Espada de Energia",
+      "nt": null,
+      "ntRaw": "^",
+      "dano": {
+        "raw": "8d(5) qmd",
+        "base": "8d(5)",
+        "tipo": "qmd"
+      },
+      "stMinimo": {
+        "raw": "3",
+        "valor": 3,
+        "flags": []
+      },
+      "observacoes": "[7]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$10.000",
+            "kind": "numeric",
+            "valor": 10000.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2",
+        "aparar": "0",
+        "custo": "$10.000",
+        "peso": "1"
+      },
+      "reviewFlags": [
+        "nt_nao_numerico"
+      ]
+    },
+    {
+      "id": "garrote",
+      "rowNumber": 22,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "GARROTE (DX-4)",
+      "nome": "Garrote",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "espec.",
+        "base": null,
+        "tipo": null
+      },
+      "stMinimo": {
+        "raw": "—",
+        "valor": null,
+        "flags": []
+      },
+      "observacoes": "[8]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C",
+          "aparar": "Não",
+          "custo": {
+            "raw": "$2",
+            "kind": "numeric",
+            "valor": 2.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "desp.",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C",
+        "aparar": "Não",
+        "custo": "$2",
+        "peso": "desp."
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "facao",
+      "rowNumber": 23,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "FACA (DX-4, Adaga de Esgrima-3, Espadas Curtas-3, ou Espada de Energia-3)",
+      "nome": "Facão",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB-2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C, 1",
+          "aparar": "-1",
+          "custo": {
+            "raw": "$40",
+            "kind": "numeric",
+            "valor": 40.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,5",
+            "kg": 0.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "C",
+          "aparar": "-1",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C, 1 / C",
+        "aparar": "-1",
+        "custo": "$40 / —",
+        "peso": "0,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "faca",
+      "rowNumber": 24,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "FACA (DX-4, Adaga de Esgrima-3, Espadas Curtas-3, ou Espada de Energia-3)",
+      "nome": "Faca",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB-3 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C, 1",
+          "aparar": "-1",
+          "custo": {
+            "raw": "$30",
+            "kind": "numeric",
+            "valor": 30.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,25",
+            "kg": 0.25
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "C",
+          "aparar": "-1",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C, 1 / C",
+        "aparar": "-1",
+        "custo": "$30 / —",
+        "peso": "0,25 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "estaca_de_madeira",
+      "rowNumber": 25,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "FACA (DX-4, Adaga de Esgrima-3, Espadas Curtas-3, ou Espada de Energia-3)",
+      "nome": "Estaca de Madeira",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GdP(0,5) perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C",
+          "aparar": "-1",
+          "custo": {
+            "raw": "$4",
+            "kind": "numeric",
+            "valor": 4.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,25",
+            "kg": 0.25
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C",
+        "aparar": "-1",
+        "custo": "$4",
+        "peso": "0,25"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "adaga",
+      "rowNumber": 26,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "FACA (DX-4, Adaga de Esgrima-3, Espadas Curtas-3, ou Espada de Energia-3)",
+      "nome": "Adaga",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GdP-1 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "C",
+          "aparar": "-1",
+          "custo": {
+            "raw": "$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,125",
+            "kg": 0.125
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "C",
+        "aparar": "-1",
+        "custo": "$20",
+        "peso": "0,125"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "kusari",
+      "rowNumber": 27,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "KUSARI (DX-6, Chicote-3, Chicote Monofio-3, ou Mangual de Duas Mãos-4)",
+      "nome": "Kusari",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+2 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "observacoes": "[6]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1–4*",
+          "aparar": "-2D",
+          "custo": {
+            "raw": "$70",
+            "kind": "numeric",
+            "valor": 70.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1–4*",
+        "aparar": "-2D",
+        "custo": "$70",
+        "peso": "2,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "lanca_de_justa",
+      "rowNumber": 28,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "LANÇA DE JUSTA (DX-5 ou Lança-3)",
+      "nome": "Lança de Justa",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GdP+3 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "12",
+        "valor": 12,
+        "flags": []
+      },
+      "observacoes": "[9]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "4",
+          "aparar": "Não",
+          "custo": {
+            "raw": "$60",
+            "kind": "numeric",
+            "valor": 60.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3",
+            "kg": 3.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "4",
+        "aparar": "Não",
+        "custo": "$60",
+        "peso": "3"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "chicote_monofio",
+      "rowNumber": 29,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "CHICOTE MONOFIO (DX-6, Chicote-3, ou Kusari-3)",
+      "nome": "Chicote Monofio",
+      "nt": null,
+      "ntRaw": "^",
+      "dano": {
+        "raw": "GeB+1d-2(10) corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1–7*",
+          "aparar": "-2D",
+          "custo": {
+            "raw": "$900",
+            "kind": "numeric",
+            "valor": 900.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,25",
+            "kg": 0.25
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1–7*",
+        "aparar": "-2D",
+        "custo": "$900",
+        "peso": "0,25"
+      },
+      "reviewFlags": [
+        "nt_nao_numerico"
+      ]
+    },
+    {
+      "id": "glaive",
+      "rowNumber": 30,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
+      "nome": "Glaive",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GeB+3 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11‡ / 11†",
+        "valor": null,
+        "flags": [
+          "dagger",
+          "double_dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "2, 3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "4",
+            "kg": 4.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1–3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "2, 3* / 1–3*",
+        "aparar": "0D",
+        "custo": "$100 / —",
+        "peso": "4 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos",
+        "st_minimo_nao_numerico"
+      ]
+    },
+    {
+      "id": "naginata",
+      "rowNumber": 31,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
+      "nome": "Naginata",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "9†",
+        "valor": 9,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2*",
+          "aparar": "0",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3",
+            "kg": 3.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2* / 2",
+        "aparar": "0 / 0D",
+        "custo": "$100 / —",
+        "peso": "3 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "alabarda",
+      "rowNumber": 32,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
+      "nome": "Alabarda",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+5 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "13‡ / 12†",
+        "valor": null,
+        "flags": [
+          "dagger",
+          "double_dagger"
+        ]
+      },
+      "observacoes": "[2]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "2, 3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$150",
+            "kind": "numeric",
+            "valor": 150.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "6",
+            "kg": 6.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1–3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        },
+        {
+          "modo": 3,
+          "alcanceCorpo": "1–3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "2, 3* / 1–3*",
+        "aparar": "0D",
+        "custo": "$150 / — / —",
+        "peso": "6 / — / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos",
+        "st_minimo_nao_numerico"
+      ]
+    },
+    {
+      "id": "machado_de_haste",
+      "rowNumber": 33,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
+      "nome": "Machado de Haste",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+4 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "12‡",
+        "valor": 12,
+        "flags": [
+          "double_dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "2, 3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$120",
+            "kind": "numeric",
+            "valor": 120.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "5",
+            "kg": 5.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2, 3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "2, 3*",
+        "aparar": "0D",
+        "custo": "$120 / —",
+        "peso": "5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "rapieira",
+      "rowNumber": 34,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
+      "nome": "Rapieira",
+      "nt": 4,
+      "ntRaw": "4",
+      "dano": {
+        "raw": "GdP+1 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0E",
+          "custo": {
+            "raw": "$500",
+            "kind": "numeric",
+            "valor": 500.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1,3",
+            "kg": 1.3
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2",
+        "aparar": "0E",
+        "custo": "$500",
+        "peso": "1,3"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "sabre",
+      "rowNumber": 35,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "SABRE (DX-5, Adaga de Esgrima-3, Espadas Curtas-4, Espadas de Lâmina Larga-4, ou Terçado-3)",
+      "nome": "Sabre",
+      "nt": 4,
+      "ntRaw": "4",
+      "dano": {
+        "raw": "GeB-1 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0E",
+          "custo": {
+            "raw": "$700",
+            "kind": "numeric",
+            "valor": 700.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0E",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0E",
+        "custo": "$700 / —",
+        "peso": "1 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "escudo",
+      "rowNumber": 36,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESCUDO (DX-4)",
+      "nome": "Escudo",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GdP cont",
+        "base": "GdP",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "—",
+        "valor": null,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "Não",
+          "custo": {
+            "raw": "var.",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "var.",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "Não",
+        "custo": "var.",
+        "peso": "var."
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "escudo_de_espiculos_gdp_1_cont",
+      "rowNumber": 37,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESCUDO (DX-4)",
+      "nome": "Escudo de Espículos GdP+1 cont",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GdP+1 cont",
+        "base": "GdP",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "—",
+        "valor": null,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "Não",
+          "custo": {
+            "raw": "+$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": true
+          },
+          "peso": {
+            "raw": "+2,5",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "Não",
+        "custo": "+$20",
+        "peso": "+2,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "bastao_curto",
+      "rowNumber": 38,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESCUDO (DX-4)",
+      "nome": "Bastão Curto",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,5",
+            "kg": 0.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$20 / —",
+        "peso": "0,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_curta",
+      "rowNumber": 39,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESCUDO (DX-4)",
+      "nome": "Espada Curta",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$400",
+            "kind": "numeric",
+            "valor": 400.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$400 / —",
+        "peso": "1 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "sabre_de_abordagem",
+      "rowNumber": 40,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESCUDO (DX-4)",
+      "nome": "Sabre de Abordagem",
+      "nt": 4,
+      "ntRaw": "4",
+      "dano": {
+        "raw": "GeB corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "observacoes": "[10]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$300",
+            "kind": "numeric",
+            "valor": 300.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$300 / —",
+        "peso": "1 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "arreador_conjunto",
+      "rowNumber": 41,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESCUDO (DX-4)",
+      "nome": "Arreador Conjunto",
+      "nt": 7,
+      "ntRaw": "7",
+      "dano": {
+        "raw": "1d-3 qmd",
+        "base": "1d-3",
+        "tipo": "qmd"
+      },
+      "stMinimo": {
+        "raw": "3",
+        "valor": 3,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$50",
+            "kind": "numeric",
+            "valor": 50.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$50",
+        "peso": "1"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "bordao_curto",
+      "rowNumber": 42,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "HT-3(0,5) at",
+      "nome": "Bordão Curto",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0E",
+          "custo": {
+            "raw": "$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,5",
+            "kg": 0.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0E",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0E",
+        "custo": "$20 / —",
+        "peso": "0,5 / —"
+      },
+      "reviewFlags": [
+        "grupo_suspeito_possivel_desalinhamento",
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "tercado",
+      "rowNumber": 43,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "HT-3(0,5) at",
+      "nome": "Terçado",
+      "nt": 4,
+      "ntRaw": "4",
+      "dano": {
+        "raw": "GdP+1 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0E",
+          "custo": {
+            "raw": "$400",
+            "kind": "numeric",
+            "valor": 400.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "0,75",
+            "kg": 0.75
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0E",
+        "custo": "$400",
+        "peso": "0,75"
+      },
+      "reviewFlags": [
+        "grupo_suspeito_possivel_desalinhamento"
+      ]
+    },
+    {
+      "id": "lanca",
+      "rowNumber": 44,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "LANÇA (DX-5, Armas de Haste-4, ou Bastão-2)",
+      "nome": "Lança",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GdP+2 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1*",
+          "aparar": "0",
+          "custo": {
+            "raw": "$40",
+            "kind": "numeric",
+            "valor": 40.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2",
+            "kg": 2.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1*",
+        "aparar": "0",
+        "custo": "$40",
+        "peso": "2"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "azagaia",
+      "rowNumber": 45,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "LANÇA (DX-5, Armas de Haste-4, ou Bastão-2)",
+      "nome": "Azagaia",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GdP+1 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "observacoes": "[1]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "$30",
+            "kind": "numeric",
+            "valor": 30.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0",
+        "custo": "$30",
+        "peso": "1"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "lanca_longa_duas_maos",
+      "rowNumber": 46,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "LANÇA (DX-5, Armas de Haste-4, ou Bastão-2)",
+      "nome": "Lança Longa duas mãos",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GdP+2 perf",
+        "base": "GdP",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "2, 3*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$60",
+            "kind": "numeric",
+            "valor": 60.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2.5",
+            "kg": 25.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "2, 3*",
+        "aparar": "0D",
+        "custo": "$60",
+        "peso": "2.5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "bordao",
+      "rowNumber": 47,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Bordão",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB+2 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "+2",
+          "custo": {
+            "raw": "$10",
+            "kind": "numeric",
+            "valor": 10.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2",
+            "kg": 2.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1, 2",
+          "aparar": "+2",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2",
+        "aparar": "+2",
+        "custo": "$10 / —",
+        "peso": "2 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "naginata_2",
+      "rowNumber": 48,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Naginata",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+2 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "9†",
+        "valor": 9,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "Ponta romba",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3",
+            "kg": 3.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2",
+        "aparar": "0D / 0",
+        "custo": "$100 / —",
+        "peso": "3 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "malho",
+      "rowNumber": 49,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Malho",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB+4 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "13‡",
+        "valor": 13,
+        "flags": [
+          "double_dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$80",
+            "kind": "numeric",
+            "valor": 80.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "6",
+            "kg": 6.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2*",
+        "aparar": "0D",
+        "custo": "$80",
+        "peso": "6"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "machado_grande",
+      "rowNumber": 50,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Machado Grande",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GeB+3 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "12‡",
+        "valor": 12,
+        "flags": [
+          "double_dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "4",
+            "kg": 4.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2*",
+        "aparar": "0D",
+        "custo": "$100",
+        "peso": "4"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "segadeira",
+      "rowNumber": 51,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Segadeira",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "11‡",
+        "valor": 11,
+        "flags": [
+          "double_dagger"
+        ]
+      },
+      "observacoes": "[2]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$15",
+            "kind": "numeric",
+            "valor": 15.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0D",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "0D",
+        "custo": "$15 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "martelo_de_guerra",
+      "rowNumber": 52,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Martelo de Guerra",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+3 perf",
+        "base": "GeB",
+        "tipo": "perf"
+      },
+      "stMinimo": {
+        "raw": "12‡",
+        "valor": 12,
+        "flags": [
+          "double_dagger"
+        ]
+      },
+      "observacoes": "[2]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3,5",
+            "kg": 3.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2*",
+        "aparar": "0D",
+        "custo": "$100",
+        "peso": "3,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "motosserra",
+      "rowNumber": 53,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
+      "nome": "Motosserra",
+      "nt": 6,
+      "ntRaw": "6",
+      "dano": {
+        "raw": "GeB+1d corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10‡",
+        "valor": 10,
+        "flags": [
+          "double_dagger"
+        ]
+      },
+      "observacoes": "[11]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1",
+          "aparar": "Não",
+          "custo": {
+            "raw": "$150",
+            "kind": "numeric",
+            "valor": 150.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "6,5",
+            "kg": 6.5
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1",
+        "aparar": "Não",
+        "custo": "$150",
+        "peso": "6,5"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "mangual",
+      "rowNumber": 54,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "MANGUAL DE DUAS MÃOS (DX-6, Kusari-4, Maça/Machado de Duas Mãos-4, ou Mangual-3)",
+      "nome": "Mangual",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+4 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "13†",
+        "valor": 13,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "[6]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2*",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "4",
+            "kg": 4.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2*",
+        "aparar": "0D",
+        "custo": "$100",
+        "peso": "4"
+      },
+      "reviewFlags": []
+    },
+    {
+      "id": "bordao_2",
+      "rowNumber": 55,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Bordão",
+      "nt": 0,
+      "ntRaw": "0",
+      "dano": {
+        "raw": "GeB+2 cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "9†",
+        "valor": 9,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$10",
+            "kind": "numeric",
+            "valor": 10.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2",
+            "kg": 2.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0",
+        "custo": "$10 / —",
+        "peso": "2 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "naginata_3",
+      "rowNumber": 56,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Naginata",
+      "nt": 2,
+      "ntRaw": "2",
+      "dano": {
+        "raw": "GeB+3 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "9†",
+        "valor": 9,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "2",
+          "aparar": "0D",
+          "custo": {
+            "raw": "$100",
+            "kind": "numeric",
+            "valor": 100.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3",
+            "kg": 3.0
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "2",
+        "aparar": "0D / 0",
+        "custo": "$100 / —",
+        "peso": "3 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_bastarda_2",
+      "rowNumber": 57,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Espada Bastarda",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$650",
+            "kind": "numeric",
+            "valor": 650.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0",
+        "custo": "$650 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_grande",
+      "rowNumber": 58,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Espada Grande",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+3 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "12†",
+        "valor": 12,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$800",
+            "kind": "numeric",
+            "valor": 800.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3,5",
+            "kg": 3.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0",
+        "custo": "$800 / —",
+        "peso": "3,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "katana_2",
+      "rowNumber": 59,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Katana",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$650",
+            "kind": "numeric",
+            "valor": 650.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "1",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 1",
+        "aparar": "0",
+        "custo": "$650 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_bastarda_em_gdp_2",
+      "rowNumber": 60,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Espada Bastarda em GdP",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+2 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$750",
+            "kind": "numeric",
+            "valor": 750.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "2,5",
+            "kg": 2.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0",
+        "custo": "$750 / —",
+        "peso": "2,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "espada_grande_em_gdp",
+      "rowNumber": 61,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
+      "nome": "Espada Grande em GdP",
+      "nt": 3,
+      "ntRaw": "3",
+      "dano": {
+        "raw": "GeB+3 corte",
+        "base": "GeB",
+        "tipo": "corte"
+      },
+      "stMinimo": {
+        "raw": "12†",
+        "valor": 12,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "observacoes": "",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1, 2",
+          "aparar": "0",
+          "custo": {
+            "raw": "$900",
+            "kind": "numeric",
+            "valor": 900.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "3,5",
+            "kg": 3.5
+          }
+        },
+        {
+          "modo": 2,
+          "alcanceCorpo": "2",
+          "aparar": "0",
+          "custo": {
+            "raw": "—",
+            "kind": "special",
+            "valor": null,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "—",
+            "kg": null
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1, 2 / 2",
+        "aparar": "0",
+        "custo": "$900 / —",
+        "peso": "3,5 / —"
+      },
+      "reviewFlags": [
+        "multiplos_modos"
+      ]
+    },
+    {
+      "id": "chicote",
+      "rowNumber": 62,
+      "tipo": "arma_cc",
+      "categoria": "Tabela de Armas de Combate Corpo a Corpo",
+      "grupo": "CHICOTE (DX-5, Chicote Monofio-3, ou Kusari-3)",
+      "nome": "Chicote",
+      "nt": 1,
+      "ntRaw": "1",
+      "dano": {
+        "raw": "GeB-2(0,5) cont",
+        "base": "GeB",
+        "tipo": "cont"
+      },
+      "stMinimo": {
+        "raw": "var.",
+        "valor": null,
+        "flags": []
+      },
+      "observacoes": "[12]",
+      "modos": [
+        {
+          "modo": 1,
+          "alcanceCorpo": "1–7*",
+          "aparar": "-2D",
+          "custo": {
+            "raw": "$20",
+            "kind": "numeric",
+            "valor": 20.0,
+            "temPrefixoMais": false
+          },
+          "peso": {
+            "raw": "1",
+            "kg": 1.0
+          }
+        }
+      ],
+      "raw": {
+        "alcanceCorpo": "1–7*",
+        "aparar": "-2D",
+        "custo": "$20",
+        "peso": "1"
+      },
+      "reviewFlags": []
+    }
+  ]
+}

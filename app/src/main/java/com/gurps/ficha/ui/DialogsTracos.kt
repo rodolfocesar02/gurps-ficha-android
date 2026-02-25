@@ -196,9 +196,11 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
 fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     var busca by remember { mutableStateOf("") }
     var filtroTipo by remember { mutableStateOf<TipoCusto?>(null) }
+    var filtroTag by remember { mutableStateOf<String?>(null) }
     var desvantagemSelecionada by remember { mutableStateOf<DesvantagemDefinicao?>(null) }
 
-    val listaFiltrada = viewModel.dataRepository.filtrarDesvantagens(busca, filtroTipo)
+    val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
+    val listaFiltrada = viewModel.dataRepository.filtrarDesvantagens(busca, filtroTipo, filtroTag)
 
     Dialog(onDismissRequest = onDismiss) {
         Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
@@ -210,6 +212,28 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar...") },
                     modifier = Modifier.fillMaxWidth(), singleLine = true, leadingIcon = { Icon(Icons.Default.Search, null) })
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilterChip(
+                        selected = filtroTag == null,
+                        onClick = { filtroTag = null },
+                        label = { Text("Todas") }
+                    )
+                    tagsDisponiveis.forEach { tag ->
+                        FilterChip(
+                            selected = filtroTag == tag,
+                            onClick = { filtroTag = tag },
+                            label = { Text(tag) }
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 

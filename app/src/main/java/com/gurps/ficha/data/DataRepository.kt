@@ -22,6 +22,9 @@ class DataRepository(private val context: Context) {
     private var _desvantagens: List<DesvantagemDefinicao>? = null
     private var _pericias: List<PericiaDefinicao>? = null
     private var _magias: List<MagiaDefinicao>? = null
+    private var _armasCatalogo: List<ArmaCatalogoItem>? = null
+    private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
+    private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
 
     val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
@@ -34,6 +37,15 @@ class DataRepository(private val context: Context) {
 
     val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
+
+    val armasCatalogo: List<ArmaCatalogoItem>
+        get() = _armasCatalogo ?: carregarArmasCatalogo().also { _armasCatalogo = it }
+
+    val escudosCatalogo: List<EscudoCatalogoItem>
+        get() = _escudosCatalogo ?: carregarEscudosCatalogo().also { _escudosCatalogo = it }
+
+    val armadurasCatalogo: List<ArmaduraCatalogoItem>
+        get() = _armadurasCatalogo ?: carregarArmadurasCatalogo().also { _armadurasCatalogo = it }
 
     private fun carregarVantagens(): List<VantagemDefinicao> {
         return try {
@@ -61,9 +73,22 @@ class DataRepository(private val context: Context) {
 
     private fun carregarDesvantagens(): List<DesvantagemDefinicao> {
         return try {
-            val json = context.assets.open("desvantagens.json").bufferedReader().use { it.readText() }
-            val type = object : TypeToken<List<DesvantagemDefinicao>>() {}.type
-            (gson.fromJson<List<DesvantagemDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
+            carregarDesvantagensV2()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarDesvantagensV2(): List<DesvantagemDefinicao> {
+        return try {
+            val json = context.assets.open("desvantagens.v2.json").bufferedReader().use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonArray) return emptyList()
+            root.asJsonArray
+                .mapNotNull { it.asDesvantagemV2OrNull() }
+                .map { it.toLegacy() }
+                .map { it.normalizada() }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
@@ -92,6 +117,156 @@ class DataRepository(private val context: Context) {
         }
     }
 
+    private fun carregarArmasCatalogo(): List<ArmaCatalogoItem> {
+        val cc = carregarArmasCorpoACorpoNormalizadas()
+        val dist = carregarArmasDistanciaNormalizadas()
+        return (cc + dist).sortedBy { it.nome.lowercase() }
+    }
+
+    private fun carregarArmasCorpoACorpoNormalizadas(): List<ArmaCatalogoItem> {
+        return try {
+            val json = context.assets.open("armas_corpo_a_corpo.v1.normalized.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyList()
+            val items = root.asJsonObject.array("items") ?: return emptyList()
+            items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                val stObj = obj.obj("stMinimo")
+                val danoObj = obj.obj("dano")
+                val modos = obj.array("modos")
+                val modo1 = modos?.firstOrNull()?.takeIf { it.isJsonObject }?.asJsonObject
+                val custoObj = modo1?.obj("custo")
+                val pesoObj = modo1?.obj("peso")
+                ArmaCatalogoItem(
+                    id = "cc_" + obj.string("id").orEmpty(),
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    tipoCombate = "corpo_a_corpo",
+                    categoria = obj.string("categoria").orEmpty().sanitized(),
+                    grupo = obj.string("grupo").orEmpty().sanitized(),
+                    stMinimo = stObj?.int("valor"),
+                    danoRaw = danoObj?.string("raw").orEmpty().sanitized(),
+                    custoBase = custoObj?.float("valor"),
+                    pesoBaseKg = pesoObj?.float("kg")
+                )
+            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarArmasDistanciaNormalizadas(): List<ArmaCatalogoItem> {
+        val arquivos = listOf(
+            "armas_distancia.v1.normalized.json" to "distancia",
+            "armas_fogo.v1.normalized.json" to "armas_de_fogo"
+        )
+        return arquivos.flatMap { (arquivo, tipo) -> carregarArmasDistanciaDeArquivo(arquivo, tipo) }
+    }
+
+    private fun carregarArmasDistanciaDeArquivo(
+        nomeArquivo: String,
+        tipoCombate: String
+    ): List<ArmaCatalogoItem> {
+        return try {
+            val json = context.assets.open(nomeArquivo).bufferedReader().use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyList()
+            val items = root.asJsonObject.array("items") ?: return emptyList()
+            items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                val stObj = obj.obj("stMinimo")
+                val danoObj = obj.obj("dano")
+                val custoObj = obj.obj("custo")
+                val pesoObj = obj.obj("peso")
+                ArmaCatalogoItem(
+                    id = "dist_" + obj.string("id").orEmpty(),
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    tipoCombate = tipoCombate,
+                    categoria = obj.string("categoria").orEmpty().sanitized(),
+                    grupo = obj.string("grupo").orEmpty().sanitized(),
+                    stMinimo = stObj?.int("valor"),
+                    danoRaw = danoObj?.string("raw").orEmpty().sanitized(),
+                    custoBase = custoObj?.float("valor"),
+                    pesoBaseKg = pesoObj?.float("armaKg")
+                )
+            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun carregarEscudosCatalogo(): List<EscudoCatalogoItem> {
+        return try {
+            val json = context.assets.open("escudos.v1.json").bufferedReader().use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyList()
+            val items = root.asJsonObject.array("items") ?: return emptyList()
+            items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                val db = obj.int("db") ?: return@mapNotNull null
+                EscudoCatalogoItem(
+                    id = obj.string("id").orEmpty(),
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    nt = obj.int("nt"),
+                    db = db,
+                    custo = obj.float("custo"),
+                    pesoKg = obj.float("pesoKg"),
+                    stMinimo = obj.int("stMinimo"),
+                    observacoes = obj.string("observacoes").orEmpty().sanitized()
+                )
+            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+                .sortedBy { it.nome.lowercase() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarArmadurasCatalogo(): List<ArmaduraCatalogoItem> {
+        return try {
+            val json = context.assets.open("armaduras.v1.json").bufferedReader().use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyList()
+            val items = root.asJsonObject.array("items") ?: return emptyList()
+            items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                val comps = obj.array("componentes")
+                    ?.mapNotNull { c ->
+                        if (!c.isJsonObject) return@mapNotNull null
+                        val co = c.asJsonObject
+                        ArmaduraComponenteCatalogo(
+                            local = co.string("localRaw").orEmpty().sanitized(),
+                            rd = co.string("rdRaw").orEmpty().sanitized(),
+                            custoBase = co.float("custoBase"),
+                            pesoKg = co.float("pesoKg")
+                        )
+                    }
+                    .orEmpty()
+                ArmaduraCatalogoItem(
+                    id = obj.string("id").orEmpty(),
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    nt = obj.int("nt"),
+                    local = obj.string("localRaw").orEmpty().sanitized(),
+                    rd = obj.string("rdRaw").orEmpty().sanitized(),
+                    custoBase = obj.float("custoBase"),
+                    pesoBaseKg = obj.float("pesoBaseKg"),
+                    observacoes = obj.string("observacoes").orEmpty().sanitized(),
+                    componentes = comps
+                )
+            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+                .sortedBy { it.nome.lowercase() }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     // === FILTROS DE VANTAGENS ===
 
     fun filtrarVantagens(
@@ -111,12 +286,14 @@ class DataRepository(private val context: Context) {
 
     fun filtrarDesvantagens(
         busca: String = "",
-        tipoCusto: TipoCusto? = null
+        tipoCusto: TipoCusto? = null,
+        tag: String? = null
     ): List<DesvantagemDefinicao> {
         return desvantagens.filter { d ->
             val matchBusca = busca.isBlank() || d.nome.contains(busca, ignoreCase = true)
             val matchTipo = tipoCusto == null || d.tipoCusto == tipoCusto
-            matchBusca && matchTipo
+            val matchTag = tag.isNullOrBlank() || d.tags.any { it.equals(tag, ignoreCase = true) }
+            matchBusca && matchTipo && matchTag
         }
     }
 
@@ -153,6 +330,94 @@ class DataRepository(private val context: Context) {
                 agruparClasseMagia(m.classe)?.equals(classe, ignoreCase = true) == true
             matchBusca && matchEscola && matchClasse
         }
+    }
+
+    fun filtrarArmasCatalogo(
+        busca: String = "",
+        tipoCombate: String? = null,
+        stMaximo: Int? = null
+    ): List<ArmaCatalogoItem> {
+        val buscaNormalizada = busca.trim()
+        return armasCatalogo.filter { a ->
+            val matchBusca = buscaNormalizada.isBlank() ||
+                a.nome.contains(buscaNormalizada, ignoreCase = true) ||
+                a.grupo.contains(buscaNormalizada, ignoreCase = true) ||
+                a.categoria.contains(buscaNormalizada, ignoreCase = true)
+            val matchTipo = tipoCombate.isNullOrBlank() || a.tipoCombate.equals(tipoCombate, ignoreCase = true)
+            val matchSt = stMaximo == null || a.stMinimo == null || a.stMinimo <= stMaximo
+            matchBusca && matchTipo && matchSt
+        }.sortedBy { it.nome.lowercase() }
+    }
+
+    fun filtrarEscudosCatalogo(
+        busca: String = "",
+        stMaximo: Int? = null
+    ): List<EscudoCatalogoItem> {
+        val b = busca.trim()
+        return escudosCatalogo.filter { e ->
+            val matchBusca = b.isBlank() || e.nome.contains(b, ignoreCase = true)
+            val matchSt = stMaximo == null || e.stMinimo == null || e.stMinimo <= stMaximo
+            matchBusca && matchSt
+        }.sortedBy { it.nome.lowercase() }
+    }
+
+    fun filtrarArmadurasCatalogo(
+        busca: String = "",
+        nt: Int? = null,
+        localFiltro: String? = null
+    ): List<ArmaduraCatalogoItem> {
+        val b = busca.trim()
+        return armadurasCatalogo.filter { a ->
+            val matchBusca = b.isBlank() ||
+                a.nome.contains(b, ignoreCase = true) ||
+                a.local.contains(b, ignoreCase = true) ||
+                a.rd.contains(b, ignoreCase = true)
+            val matchNt = nt == null || a.nt == nt
+            val matchLocal = localFiltro.isNullOrBlank() || armaduraCobreLocal(a, localFiltro)
+            matchBusca && matchNt && matchLocal
+        }.sortedBy { it.nome.lowercase() }
+    }
+
+    private fun armaduraCobreLocal(armadura: ArmaduraCatalogoItem, localFiltro: String): Boolean {
+        val filtro = normalizarLocal(localFiltro)
+        if (filtro.isBlank()) return true
+        val locaisBrutos = mutableSetOf<String>()
+        locaisBrutos.addAll(extrairLocais(armadura.local))
+        armadura.componentes.forEach { c -> locaisBrutos.addAll(extrairLocais(c.local)) }
+
+        val locaisExpandidos = locaisBrutos
+            .flatMap { expandirLocalMacro(it) }
+            .map { normalizarLocal(it) }
+            .filter { it.isNotBlank() }
+            .toSet()
+
+        val filtroExpandido = expandirLocalMacro(filtro).map { normalizarLocal(it) }.toSet()
+        return filtroExpandido.any { it in locaisExpandidos }
+    }
+
+    private fun extrairLocais(raw: String): List<String> {
+        return raw
+            .split(Regex("[,;/|]"))
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+    }
+
+    private fun expandirLocalMacro(local: String): List<String> {
+        return when (normalizarLocal(local)) {
+            "cabeca" -> listOf("cranio", "olhos", "rosto")
+            "corpo" -> listOf("pescoco", "tronco", "virilha")
+            "membros" -> listOf("bracos", "pernas")
+            "traje_completo" -> listOf("pescoco", "tronco", "virilha", "bracos", "maos", "pernas", "pes")
+            else -> listOf(local)
+        }
+    }
+
+    private fun normalizarLocal(local: String): String {
+        return Normalizer.normalize(local, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+            .lowercase()
+            .replace(Regex("\\s+"), "_")
+            .trim()
     }
 
     fun agruparClasseMagia(classe: String?): String? {
@@ -470,6 +735,61 @@ private data class VantagemV3(
     }
 }
 
+private data class DesvantagemV2(
+    val id: String? = null,
+    val nome: String? = null,
+    val pagina: Int? = null,
+    val costKind: String? = null,
+    val fixed: Int? = null,
+    val perLevel: Int? = null,
+    val options: JsonArray? = null,
+    val min: Int? = null,
+    val max: Int? = null,
+    val rawCost: String? = null,
+    val tags: List<String>? = null
+) {
+    fun toLegacy(): DesvantagemDefinicao {
+        val tipo = when (costKind) {
+            "fixed" -> TipoCusto.FIXO
+            "perLevel" -> TipoCusto.POR_NIVEL
+            "choice" -> TipoCusto.ESCOLHA
+            "range", "special" -> TipoCusto.VARIAVEL
+            else -> TipoCusto.FIXO
+        }
+
+        val optionsList = options?.mapNotNull { it.asIntOrNull() }.orEmpty()
+
+        val custoLegacy = when (costKind) {
+            "fixed" -> fixed?.toString().orEmpty()
+            "perLevel" -> {
+                val base = perLevel ?: fixed ?: extractFirstInt(rawCost)
+                if (base != null) "$base/nível" else (rawCost ?: "0")
+            }
+            "choice" -> {
+                if (optionsList.isNotEmpty()) optionsList.joinToString(" ou ")
+                else rawCost ?: "0"
+            }
+            "range" -> {
+                when {
+                    min != null && max != null -> "$min a $max"
+                    min != null -> "$min+"
+                    else -> rawCost ?: "0"
+                }
+            }
+            else -> rawCost ?: fixed?.toString() ?: "0"
+        }
+
+        return DesvantagemDefinicao(
+            id = id.orEmpty(),
+            nome = nome.orEmpty(),
+            custo = custoLegacy,
+            tipoCusto = tipo,
+            pagina = pagina ?: 0,
+            tags = tags.orEmpty()
+        )
+    }
+}
+
 private fun extractFirstInt(raw: String?): Int? {
     if (raw.isNullOrBlank()) return null
     return Regex("-?\\d+").find(raw)?.value?.toIntOrNull()
@@ -504,6 +824,24 @@ private fun JsonElement.asVantagemV3OrNull(): VantagemV3? {
     )
 }
 
+private fun JsonElement.asDesvantagemV2OrNull(): DesvantagemV2? {
+    if (!isJsonObject) return null
+    val obj = asJsonObject
+    return DesvantagemV2(
+        id = obj.string("id"),
+        nome = obj.string("nome"),
+        pagina = obj.int("pagina"),
+        costKind = obj.string("costKind"),
+        fixed = obj.int("fixed"),
+        perLevel = obj.int("perLevel"),
+        options = obj.array("options"),
+        min = obj.int("min"),
+        max = obj.int("max"),
+        rawCost = obj.string("rawCost"),
+        tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() }
+    )
+}
+
 private fun JsonObject.string(key: String): String? {
     val el = get(key) ?: return null
     return if (el.isJsonNull) null else el.asStringOrNull()
@@ -518,6 +856,23 @@ private fun JsonObject.int(key: String): Int? {
 private fun JsonObject.array(key: String): JsonArray? {
     val el = get(key) ?: return null
     return if (el.isJsonArray) el.asJsonArray else null
+}
+
+private fun JsonObject.obj(key: String): JsonObject? {
+    val el = get(key) ?: return null
+    return if (el.isJsonObject) el.asJsonObject else null
+}
+
+private fun JsonObject.float(key: String): Float? {
+    val el = get(key) ?: return null
+    if (el.isJsonNull) return null
+    return runCatching {
+        when {
+            el.isJsonPrimitive && el.asJsonPrimitive.isNumber -> el.asFloat
+            el.isJsonPrimitive && el.asJsonPrimitive.isString -> el.asString.replace(",", ".").toFloat()
+            else -> null
+        }
+    }.getOrNull()
 }
 
 private fun JsonElement.asStringOrNull(): String? {
@@ -536,7 +891,8 @@ private fun VantagemDefinicao.normalizada(): VantagemDefinicao = copy(
 private fun DesvantagemDefinicao.normalizada(): DesvantagemDefinicao = copy(
     id = (id as String?).sanitized(),
     nome = (nome as String?).sanitized(),
-    custo = (custo as String?).sanitized()
+    custo = (custo as String?).sanitized(),
+    tags = tags.map { (it as String?).sanitized() }.filter { it.isNotBlank() }
 )
 
 private fun PericiaDefinicao.normalizada(): PericiaDefinicao = copy(

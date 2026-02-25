@@ -1,0 +1,4130 @@
+{
+  "version": 1,
+  "kind": "armas_distancia_normalized",
+  "sourceKind": "armas_fogo_raw_from_xlsx",
+  "sourceFile": "C:\\Users\\Rodolfo\\Downloads\\arquivos para ficha de gurpsNÃO APAGUE ESTA PASTA\\OCR do modulo basico\\tabela de armas de fogo.xlsx",
+  "generatedAtUtc": "2026-02-24T20:22:10.031150+00:00",
+  "totalItems": 62,
+  "reviewNeededItems": 25,
+  "items": [
+    {
+      "id": "pistola_de_pederneira_51",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola de Pederneira, .51",
+      "ntRaw": "4",
+      "nt": 4,
+      "dano": {
+        "raw": "2d-1 pa+"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "75/450",
+        "partes": [
+          "75",
+          "450"
+        ],
+        "metadeDano": "75",
+        "maximo": "450"
+      },
+      "peso": {
+        "raw": "1,5/0,005",
+        "partes": [
+          "1,5",
+          "0,005"
+        ],
+        "armaKg": 1.5,
+        "municaoKg": 0.005
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(20)"
+      },
+      "custo": {
+        "raw": "$200",
+        "valor": 200.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_com_fecho_de_roda_60",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola com Fecho de Roda, .60",
+      "ntRaw": "4",
+      "nt": 4,
+      "dano": {
+        "raw": "1d+1 pa+"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "75/400",
+        "partes": [
+          "75",
+          "400"
+        ],
+        "metadeDano": "75",
+        "maximo": "400"
+      },
+      "peso": {
+        "raw": "1,6/0,005",
+        "partes": [
+          "1,6",
+          "0,005"
+        ],
+        "armaKg": 1.6,
+        "municaoKg": 0.005
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(20)"
+      },
+      "custo": {
+        "raw": "$200",
+        "valor": 200.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "derringer_41",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Derringer, .41",
+      "ntRaw": "5",
+      "nt": 5,
+      "dano": {
+        "raw": "1d pa+"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "80/650",
+        "partes": [
+          "80",
+          "650"
+        ],
+        "metadeDano": "80",
+        "maximo": "650"
+      },
+      "peso": {
+        "raw": "0,25/0,05",
+        "partes": [
+          "0,25",
+          "0,05"
+        ],
+        "armaKg": 0.25,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "2(3i)"
+      },
+      "custo": {
+        "raw": "$100",
+        "valor": 100.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-1",
+        "valor": -1
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "revolver_36",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Revólver, .36",
+      "ntRaw": "5",
+      "nt": 5,
+      "dano": {
+        "raw": "2d-1 pa"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "120/1.300",
+        "partes": [
+          "120",
+          "1.300"
+        ],
+        "metadeDano": "120",
+        "maximo": "1.300"
+      },
+      "peso": {
+        "raw": "1,25/0,12",
+        "partes": [
+          "1,25",
+          "0,12"
+        ],
+        "armaKg": 1.25,
+        "municaoKg": 0.12
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "6(3i)"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_auto_45",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola Auto., .45",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "2d pa+"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "175/1.700",
+        "partes": [
+          "175",
+          "1.700"
+        ],
+        "metadeDano": "175",
+        "maximo": "1.700"
+      },
+      "peso": {
+        "raw": "1,5/0,3",
+        "partes": [
+          "1,5",
+          "0,3"
+        ],
+        "armaKg": 1.5,
+        "municaoKg": 0.3
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "7+1(3)"
+      },
+      "custo": {
+        "raw": "$300",
+        "valor": 300.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_auto_9_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola Auto., 9 mm",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "2d+2 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "150/1.850",
+        "partes": [
+          "150",
+          "1.850"
+        ],
+        "metadeDano": "150",
+        "maximo": "1.850"
+      },
+      "peso": {
+        "raw": "1,2/0,2",
+        "partes": [
+          "1,2",
+          "0,2"
+        ],
+        "armaKg": 1.2,
+        "municaoKg": 0.2
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "8+1(3)"
+      },
+      "custo": {
+        "raw": "$350",
+        "valor": 350.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "revolver_38",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Revólver, .38",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "2d-1 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "120/1.500",
+        "partes": [
+          "120",
+          "1.500"
+        ],
+        "metadeDano": "120",
+        "maximo": "1.500"
+      },
+      "peso": {
+        "raw": "1/0,1",
+        "partes": [
+          "1",
+          "0,1"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": 0.1
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "6(3i)"
+      },
+      "custo": {
+        "raw": "$400",
+        "valor": 400.0
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "revolver_de_cano_curto_38",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Revólver de Cano Curto, .38",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "1d+2 pa"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "120/1.250",
+        "partes": [
+          "120",
+          "1.250"
+        ],
+        "metadeDano": "120",
+        "maximo": "1.250"
+      },
+      "peso": {
+        "raw": "0,75/0,1",
+        "partes": [
+          "0,75",
+          "0,1"
+        ],
+        "armaKg": 0.75,
+        "municaoKg": 0.1
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "5(3i)"
+      },
+      "custo": {
+        "raw": "$250",
+        "valor": 250.0
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-1",
+        "valor": -1
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_auto_9_mm_2",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola Auto., 9 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "2d+2 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "150/1.850",
+        "partes": [
+          "150",
+          "1.850"
+        ],
+        "metadeDano": "150",
+        "maximo": "1.850"
+      },
+      "peso": {
+        "raw": "1,3/0,3",
+        "partes": [
+          "1,3",
+          "0,3"
+        ],
+        "armaKg": 1.3,
+        "municaoKg": 0.3
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "15+1(3)"
+      },
+      "custo": {
+        "raw": "$600",
+        "valor": 600.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_de_ocultacao_380",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola de Ocultação, .380",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "2d pa"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "125/1.500",
+        "partes": [
+          "125",
+          "1.500"
+        ],
+        "metadeDano": "125",
+        "maximo": "1.500"
+      },
+      "peso": {
+        "raw": "0,65/0,1",
+        "partes": [
+          "0,65",
+          "0,1"
+        ],
+        "armaKg": 0.65,
+        "municaoKg": 0.1
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "5+1(3)"
+      },
+      "custo": {
+        "raw": "$300",
+        "valor": 300.0
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-1",
+        "valor": -1
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "revolver_375m",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Revólver, .375M",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "3d-1 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "185/2.000",
+        "partes": [
+          "185",
+          "2.000"
+        ],
+        "metadeDano": "185",
+        "maximo": "2.000"
+      },
+      "peso": {
+        "raw": "1,5/0,105",
+        "partes": [
+          "1,5",
+          "0,105"
+        ],
+        "armaKg": 1.5,
+        "municaoKg": 0.105
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "6(3i)"
+      },
+      "custo": {
+        "raw": "$500",
+        "valor": 500.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "revolver_44m",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Revólver, .44M",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "3d pa+"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "200/2.500",
+        "partes": [
+          "200",
+          "2.500"
+        ],
+        "metadeDano": "200",
+        "maximo": "2.500"
+      },
+      "peso": {
+        "raw": "1,6/0,15",
+        "partes": [
+          "1,6",
+          "0,15"
+        ],
+        "armaKg": 1.6,
+        "municaoKg": 0.15
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "6(3i)"
+      },
+      "custo": {
+        "raw": "$900",
+        "valor": 900.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "4",
+        "valor": 4
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_auto_44m",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola Auto., .44M",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "3d pa+"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "230/2.500",
+        "partes": [
+          "230",
+          "2.500"
+        ],
+        "metadeDano": "230",
+        "maximo": "2.500"
+      },
+      "peso": {
+        "raw": "2,25/0,3",
+        "partes": [
+          "2,25",
+          "0,3"
+        ],
+        "armaKg": 2.25,
+        "municaoKg": 0.3
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "9+1(3)"
+      },
+      "custo": {
+        "raw": "$750",
+        "valor": 750.0
+      },
+      "stMinimo": {
+        "raw": "12",
+        "valor": 12,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "4",
+        "valor": 4
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_auto_40",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola Auto., .40",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "2d pa+"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "150/1.900",
+        "partes": [
+          "150",
+          "1.900"
+        ],
+        "metadeDano": "150",
+        "maximo": "1.900"
+      },
+      "peso": {
+        "raw": "1,05/0,35",
+        "partes": [
+          "1,05",
+          "0,35"
+        ],
+        "armaKg": 1.05,
+        "municaoKg": 0.35
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "15+1(3)"
+      },
+      "custo": {
+        "raw": "$640",
+        "valor": 640.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_auto_9_mm_3",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Pistola",
+      "nome": "Pistola Auto., 9 mm",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "2d+2 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "150/1.900",
+        "partes": [
+          "150",
+          "1.900"
+        ],
+        "metadeDano": "150",
+        "maximo": "1.900"
+      },
+      "peso": {
+        "raw": "1/0,35",
+        "partes": [
+          "1",
+          "0,35"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": 0.35
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "18+1(3)"
+      },
+      "custo": {
+        "raw": "$800",
+        "valor": 800.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "[1]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_girofogue_15_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Girofoguete",
+      "nome": "Pistola Girofogue, 15 mm",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "6d pa++"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "1.900",
+        "partes": [
+          "1.900"
+        ],
+        "metadeDano": "1.900",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "0,5/0,2",
+        "partes": [
+          "0,5",
+          "0,2"
+        ],
+        "armaKg": 0.5,
+        "municaoKg": 0.2
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "4(3i)"
+      },
+      "custo": {
+        "raw": "$200",
+        "valor": 200.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "[1, 2]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "mm_45",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "MM",
+      "nome": "MM, .45",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "2d+1 pa+"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "190/1.750",
+        "partes": [
+          "190",
+          "1.750"
+        ],
+        "metadeDano": "190",
+        "maximo": "1.750"
+      },
+      "peso": {
+        "raw": "7,8/2,4",
+        "partes": [
+          "7,8",
+          "2,4"
+        ],
+        "armaKg": 7.8,
+        "municaoKg": 2.4
+      },
+      "cdt": {
+        "raw": "13",
+        "valor": 13
+      },
+      "tiros": {
+        "raw": "50+1(5)"
+      },
+      "custo": {
+        "raw": "$2.200",
+        "valor": 2200.0
+      },
+      "stMinimo": {
+        "raw": "11†",
+        "valor": 11,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "mm_9_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "MM",
+      "nome": "MM, 9 mm",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "3d-1 pa"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "160/1.900",
+        "partes": [
+          "160",
+          "1.900"
+        ],
+        "metadeDano": "160",
+        "maximo": "1.900"
+      },
+      "peso": {
+        "raw": "5,2/0,75",
+        "partes": [
+          "5,2",
+          "0,75"
+        ],
+        "armaKg": 5.2,
+        "municaoKg": 0.75
+      },
+      "cdt": {
+        "raw": "8!",
+        "valor": 8
+      },
+      "tiros": {
+        "raw": "32(3)"
+      },
+      "custo": {
+        "raw": "$700",
+        "valor": 700.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_metralha_9_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "MM",
+      "nome": "Pistola-Metralha, 9 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "2d+2 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "160/1.900",
+        "partes": [
+          "160",
+          "1.900"
+        ],
+        "metadeDano": "160",
+        "maximo": "1.900"
+      },
+      "peso": {
+        "raw": "2,7/0,55",
+        "partes": [
+          "2,7",
+          "0,55"
+        ],
+        "armaKg": 2.7,
+        "municaoKg": 0.55
+      },
+      "cdt": {
+        "raw": "20",
+        "valor": 20
+      },
+      "tiros": {
+        "raw": "25+1(3)"
+      },
+      "custo": {
+        "raw": "$900",
+        "valor": 900.0
+      },
+      "stMinimo": {
+        "raw": "12",
+        "valor": 12,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "mm_9_mm_2",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "MM",
+      "nome": "MM, 9 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "3d-1 pa"
+      },
+      "precisao": {
+        "raw": "4",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "160/1.900",
+        "partes": [
+          "160",
+          "1.900"
+        ],
+        "metadeDano": "160",
+        "maximo": "1.900"
+      },
+      "peso": {
+        "raw": "3,7/0,6",
+        "partes": [
+          "3,7",
+          "0,6"
+        ],
+        "armaKg": 3.7,
+        "municaoKg": 0.6
+      },
+      "cdt": {
+        "raw": "13",
+        "valor": 13
+      },
+      "tiros": {
+        "raw": "30+1(3)"
+      },
+      "custo": {
+        "raw": "$1.200",
+        "valor": 1200.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "adp_4_6_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "MM",
+      "nome": "ADP, 4,6 mm",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "4d+1 pa-"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "200/2.000",
+        "partes": [
+          "200",
+          "2.000"
+        ],
+        "metadeDano": "200",
+        "maximo": "2.000"
+      },
+      "peso": {
+        "raw": "1,95/0,25",
+        "partes": [
+          "1,95",
+          "0,25"
+        ],
+        "armaKg": 1.95,
+        "municaoKg": 0.25
+      },
+      "cdt": {
+        "raw": "15",
+        "valor": 15
+      },
+      "tiros": {
+        "raw": "20+1(3)"
+      },
+      "custo": {
+        "raw": "$800",
+        "valor": 800.0
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "adp_gauss_4_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "MM",
+      "nome": "ADP Gauss, 4 mm",
+      "ntRaw": "10",
+      "nt": 10,
+      "dano": {
+        "raw": "4d(3) pa-"
+      },
+      "precisao": {
+        "raw": "6+1",
+        "valor": 6
+      },
+      "alcanceDistancia": {
+        "raw": "700/2.900",
+        "partes": [
+          "700",
+          "2.900"
+        ],
+        "metadeDano": "700",
+        "maximo": "2.900"
+      },
+      "peso": {
+        "raw": "2,3/0,5",
+        "partes": [
+          "2,3",
+          "0,5"
+        ],
+        "armaKg": 2.3,
+        "municaoKg": 0.5
+      },
+      "cdt": {
+        "raw": "16",
+        "valor": 16
+      },
+      "tiros": {
+        "raw": "80(3)"
+      },
+      "custo": {
+        "raw": "$3.600",
+        "valor": 3600.0
+      },
+      "stMinimo": {
+        "raw": "9†",
+        "valor": 9,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "[1]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "canhao_de_mao_90",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Mosquete",
+      "nome": "Canhão de Mão, .90",
+      "ntRaw": "3",
+      "nt": 3,
+      "dano": {
+        "raw": "2d pa++"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "100/600",
+        "partes": [
+          "100",
+          "600"
+        ],
+        "metadeDano": "100",
+        "maximo": "600"
+      },
+      "peso": {
+        "raw": "0,75/0,05",
+        "partes": [
+          "0,75",
+          "0,05"
+        ],
+        "armaKg": 0.75,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-160"
+      },
+      "custo": {
+        "raw": "$300",
+        "valor": 300.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "4",
+        "valor": 4
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "mosquete_de_mecha_80",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Mosquete",
+      "nome": "Mosquete de Mecha, .80",
+      "ntRaw": "4",
+      "nt": 4,
+      "dano": {
+        "raw": "4d pa++"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "100/600",
+        "partes": [
+          "100",
+          "600"
+        ],
+        "metadeDano": "100",
+        "maximo": "600"
+      },
+      "peso": {
+        "raw": "10/0,025",
+        "partes": [
+          "10",
+          "0,025"
+        ],
+        "armaKg": 10.0,
+        "municaoKg": 0.025
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-160"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "10Des",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "4",
+        "valor": 4
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "mosquete_de_pederneira_75",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Mosquete",
+      "nome": "Mosquete de Pederneira, .75",
+      "ntRaw": "4",
+      "nt": 4,
+      "dano": {
+        "raw": "4d pa++"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "100/1.500",
+        "partes": [
+          "100",
+          "1.500"
+        ],
+        "metadeDano": "100",
+        "maximo": "1.500"
+      },
+      "peso": {
+        "raw": "6,5/0,25",
+        "partes": [
+          "6,5",
+          "0,25"
+        ],
+        "armaKg": 6.5,
+        "municaoKg": 0.25
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-15"
+      },
+      "custo": {
+        "raw": "$200",
+        "valor": 200.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "4",
+        "valor": 4
+      },
+      "cl": {
+        "raw": "4",
+        "valor": 4
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_mosquete_577",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle-Mosquete, .577",
+      "ntRaw": "5",
+      "nt": 5,
+      "dano": {
+        "raw": "4d pa+"
+      },
+      "precisao": {
+        "raw": "4",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "700/2.100",
+        "partes": [
+          "700",
+          "2.100"
+        ],
+        "metadeDano": "700",
+        "maximo": "2.100"
+      },
+      "peso": {
+        "raw": "4,2/0,025",
+        "partes": [
+          "4,2",
+          "0,025"
+        ],
+        "armaKg": 4.2,
+        "municaoKg": 0.025
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-15"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_com_cartucho_45",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle com Cartucho, .45",
+      "ntRaw": "5",
+      "nt": 5,
+      "dano": {
+        "raw": "5d pa+"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "600/2.000",
+        "partes": [
+          "600",
+          "2.000"
+        ],
+        "metadeDano": "600",
+        "maximo": "2.000"
+      },
+      "peso": {
+        "raw": "3/0,05",
+        "partes": [
+          "3",
+          "0,05"
+        ],
+        "armaKg": 3.0,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-14"
+      },
+      "custo": {
+        "raw": "$200",
+        "valor": 200.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "carabina_a_manivela_30",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Carabina a Manivela, .30",
+      "ntRaw": "5",
+      "nt": 5,
+      "dano": {
+        "raw": "5d pa"
+      },
+      "precisao": {
+        "raw": "4",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "450/3.000",
+        "partes": [
+          "450",
+          "3.000"
+        ],
+        "metadeDano": "450",
+        "maximo": "3.000"
+      },
+      "peso": {
+        "raw": "3,5/0,15",
+        "partes": [
+          "3,5",
+          "0,15"
+        ],
+        "armaKg": 3.5,
+        "municaoKg": 0.15
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "6+1(3i)"
+      },
+      "custo": {
+        "raw": "$300",
+        "valor": 300.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_de_cavilha_7_62_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle de Cavilha, 7,62 mm",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "7d pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "1.000/4.200",
+        "partes": [
+          "1.000",
+          "4.200"
+        ],
+        "metadeDano": "1.000",
+        "maximo": "4.200"
+      },
+      "peso": {
+        "raw": "4,4/0,15",
+        "partes": [
+          "4,4",
+          "0,15"
+        ],
+        "armaKg": 4.4,
+        "municaoKg": 0.15
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "5+1(3)"
+      },
+      "custo": {
+        "raw": "$350",
+        "valor": 350.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "4",
+        "valor": 4
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_autocarregavel_7_62_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle Autocarregável, 7,62 mm",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "7d pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "1.000/4.200",
+        "partes": [
+          "1.000",
+          "4.200"
+        ],
+        "metadeDano": "1.000",
+        "maximo": "4.200"
+      },
+      "peso": {
+        "raw": "5/0,25",
+        "partes": [
+          "5",
+          "0,25"
+        ],
+        "armaKg": 5.0,
+        "municaoKg": 0.25
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "8(3)"
+      },
+      "custo": {
+        "raw": "$600",
+        "valor": 600.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_de_assalto_5_56_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle de Assalto, 5,56 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "5d pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "500/3.500",
+        "partes": [
+          "500",
+          "3.500"
+        ],
+        "metadeDano": "500",
+        "maximo": "3.500"
+      },
+      "peso": {
+        "raw": "4,5/0,5",
+        "partes": [
+          "4,5",
+          "0,5"
+        ],
+        "armaKg": 4.5,
+        "municaoKg": 0.5
+      },
+      "cdt": {
+        "raw": "12",
+        "valor": 12
+      },
+      "tiros": {
+        "raw": "30+1(3)"
+      },
+      "custo": {
+        "raw": "$800",
+        "valor": 800.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_de_assalto_7_62_mmc",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle de Assalto, 7,62 mmC",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "5d+1 pa"
+      },
+      "precisao": {
+        "raw": "4",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "400/3.000",
+        "partes": [
+          "400",
+          "3.000"
+        ],
+        "metadeDano": "400",
+        "maximo": "3.000"
+      },
+      "peso": {
+        "raw": "5,2/0,9",
+        "partes": [
+          "5,2",
+          "0,9"
+        ],
+        "armaKg": 5.2,
+        "municaoKg": 0.9
+      },
+      "cdt": {
+        "raw": "10",
+        "valor": 10
+      },
+      "tiros": {
+        "raw": "30+1(3)"
+      },
+      "custo": {
+        "raw": "$300",
+        "valor": 300.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "rifle_de_combate_7_62_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle de Combate, 7,62 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "7d pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "1.000/4.200",
+        "partes": [
+          "1.000",
+          "4.200"
+        ],
+        "metadeDano": "1.000",
+        "maximo": "4.200"
+      },
+      "peso": {
+        "raw": "5,5/0,85",
+        "partes": [
+          "5,5",
+          "0,85"
+        ],
+        "armaKg": 5.5,
+        "municaoKg": 0.85
+      },
+      "cdt": {
+        "raw": "11",
+        "valor": 11
+      },
+      "tiros": {
+        "raw": "20+1(3)"
+      },
+      "custo": {
+        "raw": "$900",
+        "valor": 900.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "3",
+        "valor": 3
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "carabina_de_assalto_5_56_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Carabina de Assalto, 5,56 mm",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "4d+2 pa"
+      },
+      "precisao": {
+        "raw": "5+1",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "45/145",
+        "partes": [
+          "45",
+          "145"
+        ],
+        "metadeDano": "45",
+        "maximo": "145"
+      },
+      "peso": {
+        "raw": "3,3/0,01",
+        "partes": [
+          "3,3",
+          "0,01"
+        ],
+        "armaKg": 3.3,
+        "municaoKg": 0.01
+      },
+      "cdt": {
+        "raw": "",
+        "valor": null
+      },
+      "tiros": {
+        "raw": "1"
+      },
+      "custo": {
+        "raw": "$1.200",
+        "valor": 1200.0
+      },
+      "stMinimo": {
+        "raw": "13(3)",
+        "valor": 13,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "2",
+        "valor": 2
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cdt_vazio",
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "rifle_de_atirador_338",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle de Atirador, .338",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "9d+1 pa"
+      },
+      "precisao": {
+        "raw": "6+3",
+        "valor": 6
+      },
+      "alcanceDistancia": {
+        "raw": "1.500/5.500",
+        "partes": [
+          "1.500",
+          "5.500"
+        ],
+        "metadeDano": "1.500",
+        "maximo": "5.500"
+      },
+      "peso": {
+        "raw": "8,7/0,4",
+        "partes": [
+          "8,7",
+          "0,4"
+        ],
+        "armaKg": 8.7,
+        "municaoKg": 0.4
+      },
+      "cdt": {
+        "raw": "",
+        "valor": null
+      },
+      "tiros": {
+        "raw": "1"
+      },
+      "custo": {
+        "raw": "$5.600",
+        "valor": 5600.0
+      },
+      "stMinimo": {
+        "raw": "41+1(3)",
+        "valor": 41,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "10↑",
+        "valor": 10
+      },
+      "recuo": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3,4]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cdt_vazio",
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "aci_6_8_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "ACI, 6,8 mm",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "6d pa"
+      },
+      "precisao": {
+        "raw": "4+2",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "700/4.000",
+        "partes": [
+          "700",
+          "4.000"
+        ],
+        "metadeDano": "700",
+        "maximo": "4.000"
+      },
+      "peso": {
+        "raw": "6/0,75",
+        "partes": [
+          "6",
+          "0,75"
+        ],
+        "armaKg": 6.0,
+        "municaoKg": 0.75
+      },
+      "cdt": {
+        "raw": "",
+        "valor": null
+      },
+      "tiros": {
+        "raw": "15"
+      },
+      "custo": {
+        "raw": "$7.000",
+        "valor": 7000.0
+      },
+      "stMinimo": {
+        "raw": "25+1(3)",
+        "valor": 25,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "10↑",
+        "valor": 10
+      },
+      "recuo": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cdt_vazio",
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "rifle_de_gauss_4_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Rifle",
+      "nome": "Rifle de Gauss, 4 mm",
+      "ntRaw": "10",
+      "nt": 10,
+      "dano": {
+        "raw": "6d+2(3) pa"
+      },
+      "precisao": {
+        "raw": "7+2",
+        "valor": 7
+      },
+      "alcanceDistancia": {
+        "raw": "1.200/4.800",
+        "partes": [
+          "1.200",
+          "4.800"
+        ],
+        "metadeDano": "1.200",
+        "maximo": "4.800"
+      },
+      "peso": {
+        "raw": "4,2/0,7",
+        "partes": [
+          "4,2",
+          "0,7"
+        ],
+        "armaKg": 4.2,
+        "municaoKg": 0.7
+      },
+      "cdt": {
+        "raw": "",
+        "valor": null
+      },
+      "tiros": {
+        "raw": "12"
+      },
+      "custo": {
+        "raw": "$7.100",
+        "valor": 7100.0
+      },
+      "stMinimo": {
+        "raw": "60(3)",
+        "valor": 60,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "10↑",
+        "valor": 10
+      },
+      "recuo": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cdt_vazio",
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "bacamarte_c8",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Espingarda",
+      "nome": "Bacamarte, C8",
+      "ntRaw": "4",
+      "nt": 4,
+      "dano": {
+        "raw": "1d pa"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "15/100",
+        "partes": [
+          "15",
+          "100"
+        ],
+        "metadeDano": "15",
+        "maximo": "100"
+      },
+      "peso": {
+        "raw": "6/0,065",
+        "partes": [
+          "6",
+          "0,065"
+        ],
+        "armaKg": 6.0,
+        "municaoKg": 0.065
+      },
+      "cdt": {
+        "raw": "1×9",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-15"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "4",
+        "valor": 4
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "espingarda_dupla_c10",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Espingarda",
+      "nome": "Espingarda Dupla, C10",
+      "ntRaw": "5",
+      "nt": 5,
+      "dano": {
+        "raw": "1d+2 pa"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "50/125",
+        "partes": [
+          "50",
+          "125"
+        ],
+        "metadeDano": "50",
+        "maximo": "125"
+      },
+      "peso": {
+        "raw": "5/0,05",
+        "partes": [
+          "5",
+          "0,05"
+        ],
+        "armaKg": 5.0,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "2×9",
+        "valor": 2
+      },
+      "tiros": {
+        "raw": "2(3i)"
+      },
+      "custo": {
+        "raw": "$450",
+        "valor": 450.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "4",
+        "valor": 4
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "espingarda_pump_c12",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Espingarda",
+      "nome": "Espingarda Pump, C12",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "1d+1 pa"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "50/125",
+        "partes": [
+          "50",
+          "125"
+        ],
+        "metadeDano": "50",
+        "maximo": "125"
+      },
+      "peso": {
+        "raw": "4/0,35",
+        "partes": [
+          "4",
+          "0,35"
+        ],
+        "armaKg": 4.0,
+        "municaoKg": 0.35
+      },
+      "cdt": {
+        "raw": "2×9",
+        "valor": 2
+      },
+      "tiros": {
+        "raw": "5(3i)"
+      },
+      "custo": {
+        "raw": "$240",
+        "valor": 240.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "4",
+        "valor": 4
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "espingarda_semiautomatica_c12",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Espingarda",
+      "nome": "Espingarda Semiautomática, C12",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "1d+1 pa"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "50/125",
+        "partes": [
+          "50",
+          "125"
+        ],
+        "metadeDano": "50",
+        "maximo": "125"
+      },
+      "peso": {
+        "raw": "4,2/0,42",
+        "partes": [
+          "4,2",
+          "0,42"
+        ],
+        "armaKg": 4.2,
+        "municaoKg": 0.42
+      },
+      "cdt": {
+        "raw": "3×9",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "6+1(3i)"
+      },
+      "custo": {
+        "raw": "$950",
+        "valor": 950.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "3",
+        "valor": 3
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": []
+    },
+    {
+      "id": "pistola_eletrolaser_conjunto",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Pistola)",
+      "nome": "Pistola Eletrolaser conjunto",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "1d-3 qmd HT-4(2) at"
+      },
+      "precisao": {
+        "raw": "4",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "40/80",
+        "partes": [
+          "40",
+          "80"
+        ],
+        "metadeDano": "40",
+        "maximo": "80"
+      },
+      "peso": {
+        "raw": "1,1/0,25",
+        "partes": [
+          "1,1",
+          "0,25"
+        ],
+        "armaKg": 1.1,
+        "municaoKg": 0.25
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "180(3)"
+      },
+      "custo": {
+        "raw": "$1.800",
+        "valor": 1800.0
+      },
+      "stMinimo": {
+        "raw": "4",
+        "valor": 4,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1, 2, 3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "pistola_laser",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Pistola)",
+      "nome": "Pistola Laser",
+      "ntRaw": "10",
+      "nt": 10,
+      "dano": {
+        "raw": "3d(2) qmd"
+      },
+      "precisao": {
+        "raw": "6",
+        "valor": 6
+      },
+      "alcanceDistancia": {
+        "raw": "250/750",
+        "partes": [
+          "250",
+          "750"
+        ],
+        "metadeDano": "250",
+        "maximo": "750"
+      },
+      "peso": {
+        "raw": "1,6/0,25",
+        "partes": [
+          "1,6",
+          "0,25"
+        ],
+        "armaKg": 1.6,
+        "municaoKg": 0.25
+      },
+      "cdt": {
+        "raw": "10",
+        "valor": 10
+      },
+      "tiros": {
+        "raw": "400(3)"
+      },
+      "custo": {
+        "raw": "$2.800",
+        "valor": 2800.0
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "pistola_de_feixe_ionico",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Pistola)",
+      "nome": "Pistola de Feixe Iônico",
+      "ntRaw": "11",
+      "nt": 11,
+      "dano": {
+        "raw": "3d(5) qmd"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "300/900",
+        "partes": [
+          "300",
+          "900"
+        ],
+        "metadeDano": "300",
+        "maximo": "900"
+      },
+      "peso": {
+        "raw": "0,8/0,25",
+        "partes": [
+          "0,8",
+          "0,25"
+        ],
+        "armaKg": 0.8,
+        "municaoKg": 0.25
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "200(3)"
+      },
+      "custo": {
+        "raw": "$2.200",
+        "valor": 2200.0
+      },
+      "stMinimo": {
+        "raw": "4",
+        "valor": 4,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[4, 5]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "carabina_eletrolaser_conjunto",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Rifle)",
+      "nome": "Carabina Eletrolaser conjunto",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "1d-3 qmd HT-4(2) at"
+      },
+      "precisao": {
+        "raw": "8+1",
+        "valor": 8
+      },
+      "alcanceDistancia": {
+        "raw": "160/470",
+        "partes": [
+          "160",
+          "470"
+        ],
+        "metadeDano": "160",
+        "maximo": "470"
+      },
+      "peso": {
+        "raw": "1,8/0,5",
+        "partes": [
+          "1,8",
+          "0,5"
+        ],
+        "armaKg": 1.8,
+        "municaoKg": 0.5
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "360(3)"
+      },
+      "custo": {
+        "raw": "$3.900",
+        "valor": 3900.0
+      },
+      "stMinimo": {
+        "raw": "4",
+        "valor": 4,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1, 2, 3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "rifle_de_atirador_a_laser",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Rifle)",
+      "nome": "Rifle de Atirador a Laser",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "5d(2) qmd"
+      },
+      "precisao": {
+        "raw": "12+2",
+        "valor": 12
+      },
+      "alcanceDistancia": {
+        "raw": "1.100/3.300",
+        "partes": [
+          "1.100",
+          "3.300"
+        ],
+        "metadeDano": "1.100",
+        "maximo": "3.300"
+      },
+      "peso": {
+        "raw": "10/2me",
+        "partes": [
+          "10",
+          "2me"
+        ],
+        "armaKg": 10.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "75(3)"
+      },
+      "custo": {
+        "raw": "$20.000",
+        "valor": 20000.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-8",
+        "valor": -8
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "rifle_laser",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Rifle)",
+      "nome": "Rifle Laser",
+      "ntRaw": "10",
+      "nt": 10,
+      "dano": {
+        "raw": "5d(2) qmd"
+      },
+      "precisao": {
+        "raw": "12+2",
+        "valor": 12
+      },
+      "alcanceDistancia": {
+        "raw": "700/2.100",
+        "partes": [
+          "700",
+          "2.100"
+        ],
+        "metadeDano": "700",
+        "maximo": "2.100"
+      },
+      "peso": {
+        "raw": "5/1",
+        "partes": [
+          "5",
+          "1"
+        ],
+        "armaKg": 5.0,
+        "municaoKg": 1.0
+      },
+      "cdt": {
+        "raw": "10",
+        "valor": 10
+      },
+      "tiros": {
+        "raw": "150(3)"
+      },
+      "custo": {
+        "raw": "$10.000",
+        "valor": 10000.0
+      },
+      "stMinimo": {
+        "raw": "7",
+        "valor": 7,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "rifle_de_feixe_ionico",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Rifle)",
+      "nome": "Rifle de Feixe Iônico",
+      "ntRaw": "11",
+      "nt": 11,
+      "dano": {
+        "raw": "6d(5) qmd"
+      },
+      "precisao": {
+        "raw": "10+2",
+        "valor": 10
+      },
+      "alcanceDistancia": {
+        "raw": "700/2.100",
+        "partes": [
+          "700",
+          "2.100"
+        ],
+        "metadeDano": "700",
+        "maximo": "2.100"
+      },
+      "peso": {
+        "raw": "5/0,5",
+        "partes": [
+          "5",
+          "0,5"
+        ],
+        "armaKg": 5.0,
+        "municaoKg": 0.5
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "50(3)"
+      },
+      "custo": {
+        "raw": "$18.000",
+        "valor": 18000.0
+      },
+      "stMinimo": {
+        "raw": "7",
+        "valor": 7,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "feixe_ionico_pesado",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Feixe (Rifle)",
+      "nome": "Feixe Iônico Pesado",
+      "ntRaw": "11",
+      "nt": 11,
+      "dano": {
+        "raw": "8d(5) qmd"
+      },
+      "precisao": {
+        "raw": "10+4",
+        "valor": 10
+      },
+      "alcanceDistancia": {
+        "raw": "900/2.700",
+        "partes": [
+          "900",
+          "2.700"
+        ],
+        "metadeDano": "900",
+        "maximo": "2.700"
+      },
+      "peso": {
+        "raw": "10/2me",
+        "partes": [
+          "10",
+          "2me"
+        ],
+        "armaKg": 10.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "3",
+        "valor": 3
+      },
+      "tiros": {
+        "raw": "90(5)"
+      },
+      "custo": {
+        "raw": "$23.000",
+        "valor": 23000.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "1",
+        "valor": 1
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio"
+      ]
+    },
+    {
+      "id": "mta_115_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Artilharia (Míssil Guiado)",
+      "nome": "MTA, 115 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "6dx10(10) cont ex"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "200/2.000",
+        "partes": [
+          "200",
+          "2.000"
+        ],
+        "metadeDano": "200",
+        "maximo": "2.000"
+      },
+      "peso": {
+        "raw": "18,5/13",
+        "partes": [
+          "18,5",
+          "13"
+        ],
+        "armaKg": 18.5,
+        "municaoKg": 13.0
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-120"
+      },
+      "custo": {
+        "raw": "$20.000",
+        "valor": 20000.0
+      },
+      "stMinimo": {
+        "raw": "11T†",
+        "valor": 11,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-10",
+        "valor": -10
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1, 2, 3]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "mas_70_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Artilharia (Míssil Guiado)",
+      "nome": "MAS, 70 mm",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "6dx3 cont ex [6d]"
+      },
+      "precisao": {
+        "raw": "7",
+        "valor": 7
+      },
+      "alcanceDistancia": {
+        "raw": "1.000/8.800",
+        "partes": [
+          "1.000",
+          "8.800"
+        ],
+        "metadeDano": "1.000",
+        "maximo": "8.800"
+      },
+      "peso": {
+        "raw": "9/11",
+        "partes": [
+          "9",
+          "11"
+        ],
+        "armaKg": 9.0,
+        "municaoKg": 11.0
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-120"
+      },
+      "custo": {
+        "raw": "$38.000",
+        "valor": 38000.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-8",
+        "valor": -8
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1, 2, 4]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "escorpiao",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Canhoneiro (Catapulta)",
+      "nome": "Escorpião",
+      "ntRaw": "2",
+      "nt": 2,
+      "dano": {
+        "raw": "5d perf"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "415/520",
+        "partes": [
+          "415",
+          "520"
+        ],
+        "metadeDano": "415",
+        "maximo": "520"
+      },
+      "peso": {
+        "raw": "55/0,45",
+        "partes": [
+          "55",
+          "0,45"
+        ],
+        "armaKg": 55.0,
+        "municaoKg": 0.45
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-130"
+      },
+      "custo": {
+        "raw": "$5.000",
+        "valor": 5000.0
+      },
+      "stMinimo": {
+        "raw": "45M†",
+        "valor": 45,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-10",
+        "valor": -10
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "mp_50",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Canhoneiro (Metralhadora)",
+      "nome": "MP, 50",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "13d+1 pa+"
+      },
+      "precisao": {
+        "raw": "6",
+        "valor": 6
+      },
+      "alcanceDistancia": {
+        "raw": "1.800/7.400",
+        "partes": [
+          "1.800",
+          "7.400"
+        ],
+        "metadeDano": "1.800",
+        "maximo": "7.400"
+      },
+      "peso": {
+        "raw": "58/16",
+        "partes": [
+          "58",
+          "16"
+        ],
+        "armaKg": 58.0,
+        "municaoKg": 16.0
+      },
+      "cdt": {
+        "raw": "8!",
+        "valor": 8
+      },
+      "tiros": {
+        "raw": "100(5)"
+      },
+      "custo": {
+        "raw": "$14.000",
+        "valor": 14000.0
+      },
+      "stMinimo": {
+        "raw": "20M†",
+        "valor": 20,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-8",
+        "valor": -8
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[5]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "sob_tambor_40_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Lançador de Granadas",
+      "nome": "Sob-Tambor, 40 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "4d(10) cont ex [2d]"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "150/440",
+        "partes": [
+          "150",
+          "440"
+        ],
+        "metadeDano": "150",
+        "maximo": "440"
+      },
+      "peso": {
+        "raw": "6.8",
+        "partes": [
+          "6.8"
+        ],
+        "armaKg": 6.8,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-13"
+      },
+      "custo": {
+        "raw": "$500",
+        "valor": 500.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "—",
+        "valor": null
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1, 6, 7]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "integrado_25_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Lançador de Granadas",
+      "nome": "Integrado, 25 mm",
+      "ntRaw": "9",
+      "nt": 9,
+      "dano": {
+        "raw": "7d cont ex [3d]"
+      },
+      "precisao": {
+        "raw": "4+2",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "2.200",
+        "partes": [
+          "2.200"
+        ],
+        "metadeDano": "2.200",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "–/0,8",
+        "partes": [
+          "–",
+          "0,8"
+        ],
+        "armaKg": null,
+        "municaoKg": 0.8
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-33"
+      },
+      "custo": {
+        "raw": "—",
+        "valor": null
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "—",
+        "valor": null
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[8]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "bazuca_60_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "ALA",
+      "nome": "Bazuca, 60 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "6dx2(10) cont ex"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "100/650",
+        "partes": [
+          "100",
+          "650"
+        ],
+        "metadeDano": "100",
+        "maximo": "650"
+      },
+      "peso": {
+        "raw": "8,3/1,7",
+        "partes": [
+          "8,3",
+          "1,7"
+        ],
+        "armaKg": 8.3,
+        "municaoKg": 1.7
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-14"
+      },
+      "custo": {
+        "raw": "$1.000",
+        "valor": 1000.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2,7]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "gif_85_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "ALA",
+      "nome": "GIF, 85 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "6dx3(10) cont ex"
+      },
+      "precisao": {
+        "raw": "3+1",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "300/1.000",
+        "partes": [
+          "300",
+          "1.000"
+        ],
+        "metadeDano": "300",
+        "maximo": "1.000"
+      },
+      "peso": {
+        "raw": "10,5/2,8",
+        "partes": [
+          "10,5",
+          "2,8"
+        ],
+        "armaKg": 10.5,
+        "municaoKg": 2.8
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "-15"
+      },
+      "custo": {
+        "raw": "$800",
+        "valor": 800.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2,7]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "ala_84_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "ALA",
+      "nome": "ALA, 84 mm",
+      "ntRaw": "8",
+      "nt": 8,
+      "dano": {
+        "raw": "6dx6(10) cont ex"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "330/2.300",
+        "partes": [
+          "330",
+          "2.300"
+        ],
+        "metadeDano": "330",
+        "maximo": "2.300"
+      },
+      "peso": {
+        "raw": "7.3",
+        "partes": [
+          "7.3"
+        ],
+        "armaKg": 7.3,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "(–)"
+      },
+      "custo": {
+        "raw": "$750",
+        "valor": 750.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-5",
+        "valor": -5
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2,7]",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "cl_vazio",
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "rifle_auto_7_62_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "ML",
+      "nome": "Rifle Auto., 7,62 mm",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "7d pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "1.000/4.200",
+        "partes": [
+          "1.000",
+          "4.200"
+        ],
+        "metadeDano": "1.000",
+        "maximo": "4.200"
+      },
+      "peso": {
+        "raw": "11/0,8",
+        "partes": [
+          "11",
+          "0,8"
+        ],
+        "armaKg": 11.0,
+        "municaoKg": 0.8
+      },
+      "cdt": {
+        "raw": "9!",
+        "valor": 9
+      },
+      "tiros": {
+        "raw": "20(3)"
+      },
+      "custo": {
+        "raw": "$6.500",
+        "valor": 6500.0
+      },
+      "stMinimo": {
+        "raw": "12T†",
+        "valor": 12,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "2",
+        "valor": 2
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "ml_7_62_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "ML",
+      "nome": "ML, 7,62 mm",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "7d pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "1.000/4.200",
+        "partes": [
+          "1.000",
+          "4.200"
+        ],
+        "metadeDano": "1.000",
+        "maximo": "4.200"
+      },
+      "peso": {
+        "raw": "15/3",
+        "partes": [
+          "15",
+          "3"
+        ],
+        "armaKg": 15.0,
+        "municaoKg": 3.0
+      },
+      "cdt": {
+        "raw": "15!",
+        "valor": 15
+      },
+      "tiros": {
+        "raw": "100(5)"
+      },
+      "custo": {
+        "raw": "$6.600",
+        "valor": 6600.0
+      },
+      "stMinimo": {
+        "raw": "13T†",
+        "valor": 13,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "1",
+        "valor": 1
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "aae_5_56_mm",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "ML",
+      "nome": "AAE, 5,56 mm",
+      "ntRaw": "7",
+      "nt": 7,
+      "dano": {
+        "raw": "5d+1 pa"
+      },
+      "precisao": {
+        "raw": "5",
+        "valor": 5
+      },
+      "alcanceDistancia": {
+        "raw": "800/3.500",
+        "partes": [
+          "800",
+          "3.500"
+        ],
+        "metadeDano": "800",
+        "maximo": "3.500"
+      },
+      "peso": {
+        "raw": "12/3,5",
+        "partes": [
+          "12",
+          "3,5"
+        ],
+        "armaKg": 12.0,
+        "municaoKg": 3.5
+      },
+      "cdt": {
+        "raw": "12!",
+        "valor": 12
+      },
+      "tiros": {
+        "raw": "200(5)"
+      },
+      "custo": {
+        "raw": "$4.800",
+        "valor": 4800.0
+      },
+      "stMinimo": {
+        "raw": "12T†",
+        "valor": 12,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "1",
+        "valor": 1
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "recuo_vazio"
+      ]
+    },
+    {
+      "id": "lanca_chama",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas de Fogo",
+      "grupo": "Lança-chama",
+      "nome": "Lança-Chama",
+      "ntRaw": "6",
+      "nt": 6,
+      "dano": {
+        "raw": "3d qmd"
+      },
+      "precisao": {
+        "raw": "—",
+        "valor": null
+      },
+      "alcanceDistancia": {
+        "raw": "50",
+        "partes": [
+          "50"
+        ],
+        "metadeDano": "50",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "35",
+        "partes": [
+          "35"
+        ],
+        "armaKg": 35.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "Jato",
+        "valor": null
+      },
+      "tiros": {
+        "raw": ""
+      },
+      "custo": {
+        "raw": "$1.800",
+        "valor": 1800.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-8",
+        "valor": -8
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "1",
+        "valor": 1
+      },
+      "observacoes": "",
+      "source": "xlsx_armas_fogo",
+      "reviewFlags": [
+        "recuo_vazio",
+        "tiros_vazio"
+      ]
+    }
+  ]
+}

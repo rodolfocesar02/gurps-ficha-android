@@ -1,0 +1,1824 @@
+{
+  "version": 1,
+  "kind": "armas_distancia_normalized",
+  "sourceKind": "armas_distancia_raw_from_xlsx",
+  "sourceFile": "C:\\Users\\Rodolfo\\Downloads\\arquivos para ficha de gurpsNÃO APAGUE ESTA PASTA\\OCR do modulo basico\\Tabela_de_Armas_a_Distancia.xlsx",
+  "generatedAtUtc": "2026-02-24T18:17:40.265265+00:00",
+  "totalItems": 28,
+  "reviewNeededItems": 0,
+  "items": [
+    {
+      "id": "zarabatana",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "grupo": "ZARABATANA (DX-6)",
+      "nome": "Zarabatana",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "1d-3 pa-"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×4",
+        "partes": [
+          "×4"
+        ],
+        "metadeDano": "×4",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "0,5/0,025",
+        "partes": [
+          "0,5",
+          "0,025"
+        ],
+        "armaKg": 0.5,
+        "municaoKg": 0.025
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$30",
+        "valor": 30.0
+      },
+      "stMinimo": {
+        "raw": "2",
+        "valor": 2,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[1, 2, 3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "boleadeira",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "grupo": "BOLEADEIRA (Sem valor predefinido)",
+      "nome": "Boleadeira",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP-1 cont"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "×3",
+        "partes": [
+          "×3"
+        ],
+        "metadeDano": "×3",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "1",
+        "partes": [
+          "1"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$20",
+        "valor": 20.0
+      },
+      "stMinimo": {
+        "raw": "7",
+        "valor": 7,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[4]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "arco_longo",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "grupo": "ARCO (DX-5)",
+      "nome": "Arco Longo",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP+2 perf"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "×15/×20",
+        "partes": [
+          "×15",
+          "×20"
+        ],
+        "metadeDano": "×15",
+        "maximo": "×20"
+      },
+      "peso": {
+        "raw": "1,5/0,05",
+        "partes": [
+          "1,5",
+          "0,05"
+        ],
+        "armaKg": 1.5,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$200",
+        "valor": 200.0
+      },
+      "stMinimo": {
+        "raw": "11†",
+        "valor": 11,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-8",
+        "valor": -8
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "arco_comum",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "grupo": "ARCO (DX-5)",
+      "nome": "Arco Comum",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP+1 perf"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "×15/×20",
+        "partes": [
+          "×15",
+          "×20"
+        ],
+        "metadeDano": "×15",
+        "maximo": "×20"
+      },
+      "peso": {
+        "raw": "1/0,05",
+        "partes": [
+          "1",
+          "0,05"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$100",
+        "valor": 100.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-7",
+        "valor": -7
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "arco_curto",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "grupo": "ARCO (DX-5)",
+      "nome": "Arco Curto",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP perf"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×10/×15",
+        "partes": [
+          "×10",
+          "×15"
+        ],
+        "metadeDano": "×10",
+        "maximo": "×15"
+      },
+      "peso": {
+        "raw": "1/0,05",
+        "partes": [
+          "1",
+          "0,05"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$50",
+        "valor": 50.0
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "arco_composto",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "grupo": "ARCO (DX-5)",
+      "nome": "Arco Composto",
+      "ntRaw": "1",
+      "nt": 1,
+      "dano": {
+        "raw": "GdP+3 perf"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "×20/×25",
+        "partes": [
+          "×20",
+          "×25"
+        ],
+        "metadeDano": "×20",
+        "maximo": "×25"
+      },
+      "peso": {
+        "raw": "2/0,05",
+        "partes": [
+          "2",
+          "0,05"
+        ],
+        "armaKg": 2.0,
+        "municaoKg": 0.05
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$900",
+        "valor": 900.0
+      },
+      "stMinimo": {
+        "raw": "10†",
+        "valor": 10,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-7",
+        "valor": -7
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "besta",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "BESTA (DX-4)",
+      "nome": "Besta",
+      "ntRaw": "2",
+      "nt": 2,
+      "dano": {
+        "raw": "GdP+4 perf"
+      },
+      "precisao": {
+        "raw": "4",
+        "valor": 4
+      },
+      "alcanceDistancia": {
+        "raw": "×20/×25",
+        "partes": [
+          "×20",
+          "×25"
+        ],
+        "metadeDano": "×20",
+        "maximo": "×25"
+      },
+      "peso": {
+        "raw": "3/0,03",
+        "partes": [
+          "3",
+          "0,03"
+        ],
+        "armaKg": 3.0,
+        "municaoKg": 0.03
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(4)"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "besta_de_garrucha",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "BESTA (DX-4)",
+      "nome": "Besta de Garrucha",
+      "ntRaw": "3",
+      "nt": 3,
+      "dano": {
+        "raw": "GdP+2 perf"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×15/×20",
+        "partes": [
+          "×15",
+          "×20"
+        ],
+        "metadeDano": "×15",
+        "maximo": "×20"
+      },
+      "peso": {
+        "raw": "2/0,03",
+        "partes": [
+          "2",
+          "0,03"
+        ],
+        "armaKg": 2.0,
+        "municaoKg": 0.03
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(4)"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "7",
+        "valor": 7,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2, 3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "besta_de_pelouro",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "BESTA (DX-4)",
+      "nome": "Besta de Pelouro",
+      "ntRaw": "3",
+      "nt": 3,
+      "dano": {
+        "raw": "GdP+4 pa"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "×20/×25",
+        "partes": [
+          "×20",
+          "×25"
+        ],
+        "metadeDano": "×20",
+        "maximo": "×25"
+      },
+      "peso": {
+        "raw": "3/0,03",
+        "partes": [
+          "3",
+          "0,03"
+        ],
+        "armaKg": 3.0,
+        "municaoKg": 0.03
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(4)"
+      },
+      "custo": {
+        "raw": "$150",
+        "valor": 150.0
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "alavanca_de_besta",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "BESTA (DX-4)",
+      "nome": "Alavanca de Besta",
+      "ntRaw": "3",
+      "nt": 3,
+      "dano": {
+        "raw": "—"
+      },
+      "precisao": {
+        "raw": "—",
+        "valor": null
+      },
+      "alcanceDistancia": {
+        "raw": "—",
+        "partes": [
+          "—"
+        ],
+        "metadeDano": "—",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "1",
+        "partes": [
+          "1"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "—",
+        "valor": null
+      },
+      "tiros": {
+        "raw": "(20)"
+      },
+      "custo": {
+        "raw": "$50",
+        "valor": 50.0
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "",
+        "valor": null
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[5]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "rede_grande",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "REDE (Capa-5)",
+      "nome": "Rede Grande",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "espec."
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "espec.",
+        "partes": [
+          "espec."
+        ],
+        "metadeDano": "espec.",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "10",
+        "partes": [
+          "10"
+        ],
+        "armaKg": 10.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$40",
+        "valor": 40.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[4, 6]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "rede_de_combate",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "REDE (Capa-5)",
+      "nome": "Rede de Combate",
+      "ntRaw": "2",
+      "nt": 2,
+      "dano": {
+        "raw": "espec."
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "espec.",
+        "partes": [
+          "espec."
+        ],
+        "metadeDano": "espec.",
+        "maximo": null
+      },
+      "peso": {
+        "raw": "2,5",
+        "partes": [
+          "2,5"
+        ],
+        "armaKg": 2.5,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$20",
+        "valor": 20.0
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[4, 6]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "funda",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "FUNDA (DX-6)",
+      "nome": "Funda",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GeB pa"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "×6/×10",
+        "partes": [
+          "×6",
+          "×10"
+        ],
+        "metadeDano": "×6",
+        "maximo": "×10"
+      },
+      "peso": {
+        "raw": "0,25/0,025",
+        "partes": [
+          "0,25",
+          "0,025"
+        ],
+        "armaKg": 0.25,
+        "municaoKg": 0.025
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$20",
+        "valor": 20.0
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[2, 3, 7]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "fustibalo",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "FUNDA (DX-6)",
+      "nome": "Fustíbalo",
+      "ntRaw": "1",
+      "nt": 1,
+      "dano": {
+        "raw": "GeB+1 pa"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×10/×15",
+        "partes": [
+          "×10",
+          "×15"
+        ],
+        "metadeDano": "×10",
+        "maximo": "×15"
+      },
+      "peso": {
+        "raw": "1/0,025",
+        "partes": [
+          "1",
+          "0,025"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": 0.025
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "1(2)"
+      },
+      "custo": {
+        "raw": "$20",
+        "valor": 20.0
+      },
+      "stMinimo": {
+        "raw": "7†",
+        "valor": 7,
+        "flags": [
+          "dagger"
+        ]
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[3, 7]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "atlatl_com_dardo",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARREMESSADOR DE LANÇA (DX-5 ou Arma de Arremesso (Lança)-4)",
+      "nome": "Atlatl (com Dardo)",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GeB-1 perf"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×3/×4",
+        "partes": [
+          "×3",
+          "×4"
+        ],
+        "metadeDano": "×3",
+        "maximo": "×4"
+      },
+      "peso": {
+        "raw": "0,5",
+        "partes": [
+          "0,5"
+        ],
+        "armaKg": 0.5,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "",
+        "valor": null
+      },
+      "tiros": {
+        "raw": ""
+      },
+      "custo": {
+        "raw": "$20",
+        "valor": 20.0
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "atlatl_com_azagaia",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARREMESSADOR DE LANÇA (DX-5 ou Arma de Arremesso (Lança)-4)",
+      "nome": "Atlatl (com Azagaia)",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GeB+1 perf"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "×2/×3",
+        "partes": [
+          "×2",
+          "×3"
+        ],
+        "metadeDano": "×2",
+        "maximo": "×3"
+      },
+      "peso": {
+        "raw": "1",
+        "partes": [
+          "1"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "",
+        "valor": null
+      },
+      "tiros": {
+        "raw": ""
+      },
+      "custo": {
+        "raw": "$30",
+        "valor": 30.0
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "machadinha",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
+      "nome": "Machadinha",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GeB corte"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×1,5/×2,5",
+        "partes": [
+          "×1,5",
+          "×2,5"
+        ],
+        "metadeDano": "×1,5",
+        "maximo": "×2,5"
+      },
+      "peso": {
+        "raw": "1",
+        "partes": [
+          "1"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$40",
+        "valor": 40.0
+      },
+      "stMinimo": {
+        "raw": "8",
+        "valor": 8,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "machado_de_arremesso",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
+      "nome": "Machado de Arremesso",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GeB+2 corte"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "×1/×1,5",
+        "partes": [
+          "×1",
+          "×1,5"
+        ],
+        "metadeDano": "×1",
+        "maximo": "×1,5"
+      },
+      "peso": {
+        "raw": "2",
+        "partes": [
+          "2"
+        ],
+        "armaKg": 2.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$60",
+        "valor": 60.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "maca",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
+      "nome": "Maça",
+      "ntRaw": "2",
+      "nt": 2,
+      "dano": {
+        "raw": "GeB+3 cont"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×0,5/×1",
+        "partes": [
+          "×0,5",
+          "×1"
+        ],
+        "metadeDano": "×0,5",
+        "maximo": "×1"
+      },
+      "peso": {
+        "raw": "2,5",
+        "partes": [
+          "2,5"
+        ],
+        "armaKg": 2.5,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$50",
+        "valor": 50.0
+      },
+      "stMinimo": {
+        "raw": "12",
+        "valor": 12,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "maca_pequena",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
+      "nome": "Maça Pequena",
+      "ntRaw": "2",
+      "nt": 2,
+      "dano": {
+        "raw": "GeB+2 cont"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×1/×1,5",
+        "partes": [
+          "×1",
+          "×1,5"
+        ],
+        "metadeDano": "×1",
+        "maximo": "×1,5"
+      },
+      "peso": {
+        "raw": "1,5",
+        "partes": [
+          "1,5"
+        ],
+        "armaKg": 1.5,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$35",
+        "valor": 35.0
+      },
+      "stMinimo": {
+        "raw": "10",
+        "valor": 10,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-3",
+        "valor": -3
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "arpao",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (ARPÃO) (DX-4 ou Arma de Arremesso (Lança)-2)",
+      "nome": "Arpão",
+      "ntRaw": "2",
+      "nt": 2,
+      "dano": {
+        "raw": "GdP+5 perf"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "×1/×1,5",
+        "partes": [
+          "×1",
+          "×1,5"
+        ],
+        "metadeDano": "×1",
+        "maximo": "×1,5"
+      },
+      "peso": {
+        "raw": "3",
+        "partes": [
+          "3"
+        ],
+        "armaKg": 3.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$60",
+        "valor": 60.0
+      },
+      "stMinimo": {
+        "raw": "11",
+        "valor": 11,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "[8]",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "facao",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
+      "nome": "Facão",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP perf"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "×0,8/×1,5",
+        "partes": [
+          "×0,8",
+          "×1,5"
+        ],
+        "metadeDano": "×0,8",
+        "maximo": "×1,5"
+      },
+      "peso": {
+        "raw": "0,5",
+        "partes": [
+          "0,5"
+        ],
+        "armaKg": 0.5,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$40",
+        "valor": 40.0
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "faca",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
+      "nome": "Faca",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP-1 perf"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "×0,5/×1",
+        "partes": [
+          "×0,5",
+          "×1"
+        ],
+        "metadeDano": "×0,5",
+        "maximo": "×1"
+      },
+      "peso": {
+        "raw": "0,25",
+        "partes": [
+          "0,25"
+        ],
+        "armaKg": 0.25,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$30",
+        "valor": 30.0
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-1",
+        "valor": -1
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "estaca_de_madeira",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
+      "nome": "Estaca de Madeira",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP(0,5) perf"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "×0,5/×1",
+        "partes": [
+          "×0,5",
+          "×1"
+        ],
+        "metadeDano": "×0,5",
+        "maximo": "×1"
+      },
+      "peso": {
+        "raw": "0,25",
+        "partes": [
+          "0,25"
+        ],
+        "armaKg": 0.25,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$4",
+        "valor": 4.0
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-2",
+        "valor": -2
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "adaga",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
+      "nome": "Adaga",
+      "ntRaw": "1",
+      "nt": 1,
+      "dano": {
+        "raw": "GdP-1 perf"
+      },
+      "precisao": {
+        "raw": "0",
+        "valor": 0
+      },
+      "alcanceDistancia": {
+        "raw": "×0,5/×1",
+        "partes": [
+          "×0,5",
+          "×1"
+        ],
+        "metadeDano": "×0,5",
+        "maximo": "×1"
+      },
+      "peso": {
+        "raw": "0,125",
+        "partes": [
+          "0,125"
+        ],
+        "armaKg": 0.125,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$20",
+        "valor": 20.0
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-1",
+        "valor": -1
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "shuriken",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (SHURIKEN) (DX-4 ou Arremesso-2)",
+      "nome": "Shuriken",
+      "ntRaw": "3",
+      "nt": 3,
+      "dano": {
+        "raw": "GdP-1 corte"
+      },
+      "precisao": {
+        "raw": "1",
+        "valor": 1
+      },
+      "alcanceDistancia": {
+        "raw": "×0,5/×1",
+        "partes": [
+          "×0,5",
+          "×1"
+        ],
+        "metadeDano": "×0,5",
+        "maximo": "×1"
+      },
+      "peso": {
+        "raw": "0,05",
+        "partes": [
+          "0,05"
+        ],
+        "armaKg": 0.05,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$3",
+        "valor": 3.0
+      },
+      "stMinimo": {
+        "raw": "5",
+        "valor": 5,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "0",
+        "valor": 0
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "lanca",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (LANÇA) (DX-4, Arma de Arremesso (Arpão)-2, ou Arremessador de Lança-4)",
+      "nome": "Lança",
+      "ntRaw": "0",
+      "nt": 0,
+      "dano": {
+        "raw": "GdP+3 perf"
+      },
+      "precisao": {
+        "raw": "2",
+        "valor": 2
+      },
+      "alcanceDistancia": {
+        "raw": "×1/×1,5",
+        "partes": [
+          "×1",
+          "×1,5"
+        ],
+        "metadeDano": "×1",
+        "maximo": "×1,5"
+      },
+      "peso": {
+        "raw": "2",
+        "partes": [
+          "2"
+        ],
+        "armaKg": 2.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$40",
+        "valor": 40.0
+      },
+      "stMinimo": {
+        "raw": "9",
+        "valor": 9,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-6",
+        "valor": -6
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    },
+    {
+      "id": "azagaia",
+      "tipo": "arma_distancia",
+      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "grupo": "ARMA DE ARREMESSO (LANÇA) (DX-4, Arma de Arremesso (Arpão)-2, ou Arremessador de Lança-4)",
+      "nome": "Azagaia",
+      "ntRaw": "1",
+      "nt": 1,
+      "dano": {
+        "raw": "GdP+1 perf"
+      },
+      "precisao": {
+        "raw": "3",
+        "valor": 3
+      },
+      "alcanceDistancia": {
+        "raw": "×1,5/×2,5",
+        "partes": [
+          "×1,5",
+          "×2,5"
+        ],
+        "metadeDano": "×1,5",
+        "maximo": "×2,5"
+      },
+      "peso": {
+        "raw": "1",
+        "partes": [
+          "1"
+        ],
+        "armaKg": 1.0,
+        "municaoKg": null
+      },
+      "cdt": {
+        "raw": "1",
+        "valor": 1
+      },
+      "tiros": {
+        "raw": "A(1)"
+      },
+      "custo": {
+        "raw": "$30",
+        "valor": 30.0
+      },
+      "stMinimo": {
+        "raw": "6",
+        "valor": 6,
+        "flags": []
+      },
+      "magnitude": {
+        "raw": "-4",
+        "valor": -4
+      },
+      "recuo": {
+        "raw": "",
+        "valor": null
+      },
+      "cl": {
+        "raw": "",
+        "valor": null
+      },
+      "observacoes": "",
+      "source": "xlsx",
+      "reviewFlags": []
+    }
+  ]
+}

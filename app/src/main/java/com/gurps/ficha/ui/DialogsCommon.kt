@@ -116,7 +116,16 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
         },
         confirmButton = {
             TextButton(onClick = {
-                if (nome.isNotBlank()) onSave(Equipamento(nome, peso.toFloatOrNull() ?: 0f, custo.toFloatOrNull() ?: 0f, quantidade.toIntOrNull()?.coerceAtLeast(1) ?: 1, notas))
+                if (nome.isNotBlank()) {
+                    val novo = (initialEquipamento ?: Equipamento()).copy(
+                        nome = nome,
+                        peso = peso.toFloatOrNull() ?: 0f,
+                        custo = custo.toFloatOrNull() ?: 0f,
+                        quantidade = quantidade.toIntOrNull()?.coerceAtLeast(1) ?: 1,
+                        notas = notas
+                    )
+                    onSave(novo)
+                }
             }) { Text("Salvar") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }

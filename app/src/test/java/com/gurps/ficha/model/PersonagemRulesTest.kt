@@ -106,6 +106,39 @@ class PersonagemRulesTest {
     }
 
     @Test
+    fun `calcula nivel de magia sem aptidao magica`() {
+        val personagem = Personagem(inteligencia = 12)
+        val magia = MagiaSelecionada(
+            definicaoId = "misseis",
+            nome = "Mísseis",
+            dificuldade = Dificuldade.DIFICIL,
+            pontosGastos = 1
+        )
+
+        // Sem AM: base IQ = 12; Dificil com 1 ponto = -2
+        assertEquals(10, magia.calcularNivel(personagem, nivelAptidaoMagica = 0))
+        assertEquals("-2", magia.getNivelRelativo(personagem, nivelAptidaoMagica = 0))
+    }
+
+    @Test
+    fun `calcula nivel de magia com aptidao magica em varios niveis`() {
+        val personagem = Personagem(inteligencia = 12)
+        val magia = MagiaSelecionada(
+            definicaoId = "luz",
+            nome = "Luz",
+            dificuldade = Dificuldade.MEDIA,
+            pontosGastos = 8
+        )
+
+        // Média com 8 pontos = +2 relativo ao atributo-base da magia (IQ+AM)
+        assertEquals(14, magia.calcularNivel(personagem, nivelAptidaoMagica = 0))
+        assertEquals("+2", magia.getNivelRelativo(personagem, nivelAptidaoMagica = 0))
+
+        assertEquals(16, magia.calcularNivel(personagem, nivelAptidaoMagica = 2))
+        assertEquals("+2", magia.getNivelRelativo(personagem, nivelAptidaoMagica = 2))
+    }
+
+    @Test
     fun `normaliza custo minimo de pontos para magias no total da ficha`() {
         val personagem = Personagem(
             magias = listOf(
@@ -160,6 +193,82 @@ class PersonagemRulesTest {
         assertEquals(8, personagem.defesasAtivas.calcularApara(personagem))
         // Base 8 + DB 2 + bonus manual 1
         assertEquals(11, personagem.defesasAtivas.calcularBloqueio(personagem))
+    }
+
+    @Test
+    fun `defesas retornam nulo sem pericia configurada e DB somente de escudo`() {
+        val personagem = Personagem(
+            destreza = 10,
+            vitalidade = 10,
+            equipamentos = listOf(
+                Equipamento(nome = "Escudo Leve", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 1),
+                Equipamento(nome = "Escudo Leve", tipo = TipoEquipamento.GERAL, bonusDefesa = 99)
+            ),
+            defesasAtivas = DefesasAtivas(
+                periciaAparaId = null,
+                periciaBloqueioId = null,
+                escudoSelecionadoNome = "Escudo Leve"
+            )
+        )
+
+        assertEquals(null, personagem.defesasAtivas.calcularApara(personagem))
+        assertEquals(null, personagem.defesasAtivas.calcularBloqueio(personagem))
+        // Deve considerar apenas o item do tipo ESCUDO (DB=1), ignorando item GERAL com mesmo nome.
+        assertEquals(1, personagem.defesasAtivas.getBonusEscudo(personagem))
+    }
+
+    @Test
+    fun `busca de DB do escudo ignora caixa e espacos e mantem filtro por tipo`() {
+        val personagem = Personagem(
+            equipamentos = listOf(
+                Equipamento(nome = " Escudo Pesado ", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 3),
+                Equipamento(nome = "escudo pesado", tipo = TipoEquipamento.GERAL, bonusDefesa = 99)
+            ),
+            defesasAtivas = DefesasAtivas(escudoSelecionadoNome = "  eScUdO pEsAdO  ")
+        )
+
+        assertEquals(3, personagem.defesasAtivas.getBonusEscudo(personagem))
+    }
+
+    @Test
+    fun `carga afeta esquiva mas nao altera apara e bloqueio base da pericia`() {
+        val base = Personagem(
+            destreza = 10,
+            vitalidade = 10,
+            equipamentos = listOf(
+                Equipamento(nome = "Escudo Medio", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 2)
+            ),
+            pericias = listOf(
+                PericiaSelecionada(
+                    definicaoId = "espada_larga",
+                    nome = "Espada Larga",
+                    atributoBase = AtributoBase.DX,
+                    dificuldade = Dificuldade.MEDIA,
+                    pontosGastos = 4
+                ),
+                PericiaSelecionada(
+                    definicaoId = "escudo",
+                    nome = "Escudo",
+                    atributoBase = AtributoBase.DX,
+                    dificuldade = Dificuldade.MEDIA,
+                    pontosGastos = 4
+                )
+            ),
+            defesasAtivas = DefesasAtivas(
+                periciaAparaId = "espada_larga",
+                periciaBloqueioId = "escudo",
+                escudoSelecionadoNome = "Escudo Medio"
+            )
+        )
+        val comCarga = base.copy(
+            equipamentos = base.equipamentos + Equipamento(nome = "Carga", peso = 25f)
+        )
+
+        assertEquals(8, base.defesasAtivas.calcularEsquiva(base))
+        assertEquals(6, comCarga.defesasAtivas.calcularEsquiva(comCarga))
+
+        assertEquals(base.defesasAtivas.calcularApara(base), comCarga.defesasAtivas.calcularApara(comCarga))
+        assertEquals(base.defesasAtivas.calcularBloqueio(base), comCarga.defesasAtivas.calcularBloqueio(comCarga))
     }
 
     @Test
@@ -231,5 +340,142 @@ class PersonagemRulesTest {
         )
 
         assertEquals(5, personagem.pontosSecundarios)
+    }
+
+    @Test
+    fun `mantem consistencia da ficha em persistencia round trip json`() {
+        val original = Personagem(
+            nome = "Teste Persistencia",
+            jogador = "Rodolfo",
+            campanha = "Campanha X",
+            pontosIniciais = 200,
+            limiteDesvantagens = -80,
+            forca = 11,
+            destreza = 12,
+            inteligencia = 13,
+            vitalidade = 10,
+            modPontosVida = 1,
+            modVontade = -1,
+            modPercepcao = 2,
+            modPontosFadiga = 1,
+            modVelocidadeBasica = 0.25f,
+            modDeslocamentoBasico = 1,
+            vantagens = listOf(
+                VantagemSelecionada(
+                    definicaoId = "aptidao_magica",
+                    nome = "Aptidão Mágica",
+                    custoBase = 10,
+                    nivel = 2,
+                    tipoCusto = TipoCusto.POR_NIVEL
+                )
+            ),
+            desvantagens = listOf(
+                DesvantagemSelecionada(
+                    definicaoId = "odioso",
+                    nome = "Odioso",
+                    custoBase = -10,
+                    custoEscolhido = -10,
+                    autocontrole = 12,
+                    tipoCusto = TipoCusto.FIXO
+                )
+            ),
+            pericias = listOf(
+                PericiaSelecionada(
+                    definicaoId = "espada_larga",
+                    nome = "Espada Larga",
+                    atributoBase = AtributoBase.DX,
+                    dificuldade = Dificuldade.MEDIA,
+                    pontosGastos = 4
+                ),
+                PericiaSelecionada(
+                    definicaoId = "escudo",
+                    nome = "Escudo",
+                    atributoBase = AtributoBase.DX,
+                    dificuldade = Dificuldade.MEDIA,
+                    pontosGastos = 2
+                )
+            ),
+            magias = listOf(
+                MagiaSelecionada(
+                    definicaoId = "luz",
+                    nome = "Luz",
+                    dificuldade = Dificuldade.MEDIA,
+                    pontosGastos = 2
+                )
+            ),
+            equipamentos = listOf(
+                Equipamento(nome = "Escudo Médio", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 2, peso = 6f, custo = 60f),
+                Equipamento(nome = "Mochila", tipo = TipoEquipamento.GERAL, peso = 10f, custo = 50f)
+            ),
+            defesasAtivas = DefesasAtivas(
+                bonusManualEsquiva = 1,
+                periciaAparaId = "espada_larga",
+                bonusManualApara = 0,
+                periciaBloqueioId = "escudo",
+                escudoSelecionadoNome = "Escudo Médio",
+                bonusManualBloqueio = 1
+            ),
+            notas = "rodada de teste"
+        )
+
+        val restaurado = Personagem.fromJson(original.toJson())
+
+        // Identidade estrutural de campos persistidos
+        assertEquals(original.nome, restaurado.nome)
+        assertEquals(original.pontosIniciais, restaurado.pontosIniciais)
+        assertEquals(original.vantagens.size, restaurado.vantagens.size)
+        assertEquals(original.desvantagens.size, restaurado.desvantagens.size)
+        assertEquals(original.pericias.size, restaurado.pericias.size)
+        assertEquals(original.magias.size, restaurado.magias.size)
+        assertEquals(original.equipamentos.size, restaurado.equipamentos.size)
+        assertEquals(original.defesasAtivas, restaurado.defesasAtivas)
+
+        // Consistência de cálculos derivados após round-trip
+        assertEquals(original.nivelCarga, restaurado.nivelCarga)
+        assertEquals(original.deslocamentoAtual, restaurado.deslocamentoAtual)
+        assertEquals(original.defesasAtivas.calcularEsquiva(original), restaurado.defesasAtivas.calcularEsquiva(restaurado))
+        assertEquals(original.defesasAtivas.calcularApara(original), restaurado.defesasAtivas.calcularApara(restaurado))
+        assertEquals(original.defesasAtivas.calcularBloqueio(original), restaurado.defesasAtivas.calcularBloqueio(restaurado))
+        assertEquals(original.pontosGastos, restaurado.pontosGastos)
+        assertEquals(original.pontosRestantes, restaurado.pontosRestantes)
+    }
+
+    @Test
+    fun `equipamento de arma resolve dano com ST do personagem`() {
+        val personagem = Personagem(forca = 10)
+        val arma = Equipamento(
+            nome = "Espada Larga",
+            tipo = TipoEquipamento.ARMA,
+            armaDanoRaw = "GeB+1 corte"
+        )
+
+        assertEquals("1d+1 corte", arma.danoCalculadoComSt(personagem))
+    }
+
+    @Test
+    fun `bloqueio usa melhor DB de escudo quando nenhum escudo foi selecionado explicitamente`() {
+        val personagem = Personagem(
+            destreza = 10,
+            equipamentos = listOf(
+                Equipamento(nome = "Escudo Leve", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 1),
+                Equipamento(nome = "Escudo Grande", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 3)
+            ),
+            pericias = listOf(
+                PericiaSelecionada(
+                    definicaoId = "escudo",
+                    nome = "Escudo",
+                    atributoBase = AtributoBase.DX,
+                    dificuldade = Dificuldade.MEDIA,
+                    pontosGastos = 2
+                )
+            ),
+            defesasAtivas = DefesasAtivas(
+                periciaBloqueioId = "escudo",
+                escudoSelecionadoNome = null
+            )
+        )
+
+        // NH 10 -> base 8, + DB 3
+        assertEquals(11, personagem.defesasAtivas.calcularBloqueio(personagem))
     }
 }

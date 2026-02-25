@@ -99,6 +99,33 @@ object CharacterRules {
         return tabelaGeB[st] ?: calcularDanoGeBExtrapolado(st)
     }
 
+    fun resolverDanoPorSt(danoRaw: String, st: Int): String {
+        var resolved = danoRaw
+            .replace("Ã—", "×")
+            .replace("â€”", "—")
+
+        // Resolve tokens baseados em ST (GdP/GeB), preservando o restante da expressão.
+        resolved = resolved.replace(Regex("\\bGdP\\b", RegexOption.IGNORE_CASE), calcularDanoGdP(st))
+        resolved = resolved.replace(Regex("\\bGeB\\b", RegexOption.IGNORE_CASE), calcularDanoGeB(st))
+
+        // Caso simples: soma modificadores mantendo notacao intuitiva (ex.: 1d+3 em vez de 2d-3).
+        val simple = Regex("^\\s*(\\d+)d(?:\\s*([+-]\\d+))?\\s*([+-]\\d+)\\s*(.*)$").find(resolved)
+        if (simple != null) {
+            val dados = simple.groupValues[1].toInt()
+            val modBase = simple.groupValues[2].toIntOrNull() ?: 0
+            val modExtra = simple.groupValues[3].toIntOrNull() ?: 0
+            val sufixo = simple.groupValues[4]
+            val modFinal = modBase + modExtra
+            val danoIntuitivo = when {
+                modFinal > 0 -> "${dados}d+$modFinal"
+                modFinal < 0 -> "${dados}d$modFinal"
+                else -> "${dados}d"
+            }
+            return (danoIntuitivo + " " + sufixo).trim()
+        }
+        return resolved
+    }
+
     private fun calcularDanoGdPExtrapolado(st: Int): String {
         // Continua o padrão da tabela em passos de +1 por 2 níveis de ST após ST 30.
         val baseSt = 30

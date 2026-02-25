@@ -1,0 +1,40 @@
+﻿ M PROGRESS.md
+ M app/src/main/assets/desvantagens.v2.json
+ M app/src/main/java/com/gurps/ficha/data/DataRepository.kt
+ M app/src/main/java/com/gurps/ficha/domain/rules/CharacterRules.kt
+ M app/src/main/java/com/gurps/ficha/model/Personagem.kt
+ M app/src/main/java/com/gurps/ficha/ui/DialogsCommon.kt
+ M app/src/main/java/com/gurps/ficha/ui/DialogsTracos.kt
+ M app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt
+ M app/src/main/java/com/gurps/ficha/ui/TabCombate.kt
+ M app/src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt
+ M app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt
+ M app/src/test/java/com/gurps/ficha/domain/rules/RulesLayerTest.kt
+ M app/src/test/java/com/gurps/ficha/model/PersonagemRulesTest.kt
+?? app/src/main/assets/armaduras.v1.json
+?? app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json
+?? app/src/main/assets/armas_corpo_a_corpo.v1.raw.json
+?? app/src/main/assets/armas_corpo_a_corpo.v1.review_flags.json
+?? app/src/main/assets/armas_distancia.v1.normalized.json
+?? app/src/main/assets/armas_distancia.v1.raw.json
+?? app/src/main/assets/armas_distancia.v1.review_flags.json
+?? app/src/main/assets/armas_fogo.v1.normalized.json
+?? app/src/main/assets/armas_fogo.v1.raw.json
+?? app/src/main/assets/armas_fogo.v1.review_flags.json
+?? app/src/main/assets/escudos.v1.json
+?? app/src/main/java/com/gurps/ficha/model/ArmaCatalogoItem.kt
+?? app/src/main/java/com/gurps/ficha/model/ArmaduraCatalogoItem.kt
+?? app/src/main/java/com/gurps/ficha/model/EscudoCatalogoItem.kt
+?? scripts/convert_armaduras_v1.py
+?? scripts/convert_armas_cc_v1_raw.py
+?? scripts/convert_armas_distancia_v1_raw.py
+?? scripts/convert_armas_fogo_v1_raw.py
+?? scripts/convert_escudos_v1.py
+?? scripts/extract_armas_distancia_v1_from_pdf.py
+?? scripts/normalize_armas_cc_v1.py
+?? scripts/normalize_armas_distancia_v1.py
+?? snapshots/checkpoint-20260224-151219/
+?? snapshots/checkpoint-20260224-193129/
+?? snapshots/checkpoint-20260224-202718/
+?? snapshots/checkpoint-20260224-202950/
+?? snapshots/checkpoint-20260224-224754/
