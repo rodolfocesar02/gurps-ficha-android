@@ -26,7 +26,7 @@ Criterio de pronto:
 Status: `CONCLUIDO`
 Andamento:
 - Passo 1 concluido (2026-02-25): novo arquivo `armaduras.v2.json` gerado a partir de `tabelas_de_Armaduras2.xlsx`, com 72 itens base, componentes/add-ons estruturados, `notes` completas (NT baixo/alto), tags e metadados de RD (dividida/flexivel/frontal).
-- Passo 1 concluido (2026-02-25): app passou a carregar `armaduras.v2.json` com fallback para `armaduras.v1.json`, incluindo busca por `tags` e `observacoesDetalhadas`.
+- Passo 1 concluido (2026-02-25): app passou a carregar `armaduras.v2.json`, incluindo busca por `tags` e `observacoesDetalhadas`.
 - Passo 2 concluido (2026-02-25): UI de armaduras atualizada com filtro dedicado por `tag` (alem de NT/local), contador de resultados e exibicao de tags na lista para selecao mais previsivel.
 - Passo 3 concluido (2026-02-25): consolidacao final do catalogo de armaduras com validacao automatica (sem duplicidade de `id`, sem duplicidade de nome normalizado, sem locais fora do canonico e sem texto quebrado/mojibake).
 - Passo 3 concluido (2026-02-25): `scripts/convert_armaduras_v2.py` reforcado para reparar texto quebrado na conversao e `scripts/validate_armaduras_v2.py` criado para checagem de consistencia do JSON antes de commit.
@@ -34,6 +34,12 @@ Andamento:
 - Ajuste rapido (2026-02-25): removidas tags redundantes de `local/local_exp/nt/tipo` na linha de tags e no filtro de Tag da armadura, evitando repeticao visual.
 - Ajuste tecnico (2026-02-25): limpeza de assets legados de armas (`raw` e `review_flags`), mantendo apenas os arquivos `normalized` usados pelo app em runtime.
 - Ajuste funcional (2026-02-25): armas corpo a corpo passam a carregar/exibir `Aparar` e observacoes da tabela, inclusive na arma ja selecionada/equipada.
+- Ajuste tecnico (2026-02-25): removido fallback de `armaduras.v1.json` e removido asset legado `armaduras.v1.json`; runtime usa somente `armaduras.v2.json`.
+- Ajuste funcional (2026-02-25): observacoes de armadura passam a aparecer tambem na lista de armaduras equipadas.
+- Ajuste funcional (2026-02-25): observacoes de armas de fogo revisadas por categoria de tabela (Pistolas/MM, Rifles/Espingardas, Ultra-Tech e Pesadas), com subfiltro dedicado quando `Armas de Fogo` esta selecionado.
+- Ajuste funcional (2026-02-25): em selecao de arma, observacoes de armas de fogo ficam ocultas por padrao e aparecem no contexto correto de filtro.
+- Ajuste corretivo (2026-02-25): leitura de referencias de observacao de arma corrigida para aceitar formatos `[1]` e `[1, 2, 3]`.
+- Ajuste corretivo (2026-02-25): fallback por nome/tipo/dano da arma para preencher observacoes em itens antigos ja equipados (quando o ID de catalogo nao estiver confiavel).
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:
