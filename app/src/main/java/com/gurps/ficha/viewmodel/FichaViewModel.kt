@@ -639,6 +639,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun observacoesArmaPorCatalogoId(armaCatalogoId: String?): String {
+        if (armaCatalogoId.isNullOrBlank()) return ""
+        val arma = dataRepository.armasCatalogo.firstOrNull { it.id == armaCatalogoId } ?: return ""
+        return observacoesArmaFormatadas(arma)
+    }
+
     fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {
         val equipamento = Equipamento(
             nome = escudo.nome,

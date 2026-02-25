@@ -357,6 +357,17 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            val observacoesCatalogo = viewModel.observacoesArmaPorCatalogoId(equipamento.armaCatalogoId)
+            val precisaExibirObservacoesCatalogo =
+                observacoesCatalogo.isNotBlank() &&
+                    !equipamento.notas.contains(observacoesCatalogo.substringBefore('\n'))
+            if (precisaExibirObservacoesCatalogo) {
+                Text(
+                    observacoesCatalogo,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
