@@ -153,6 +153,7 @@ class DataRepository(private val context: Context) {
                 val modo1 = modos?.firstOrNull()?.takeIf { it.isJsonObject }?.asJsonObject
                 val custoObj = modo1?.obj("custo")
                 val pesoObj = modo1?.obj("peso")
+                val aparar = modo1?.string("aparar")?.sanitized()
                 ArmaCatalogoItem(
                     id = "cc_" + obj.string("id").orEmpty(),
                     nome = obj.string("nome").orEmpty().sanitized(),
@@ -162,7 +163,9 @@ class DataRepository(private val context: Context) {
                     stMinimo = stObj?.int("valor"),
                     danoRaw = danoObj?.string("raw").orEmpty().sanitized(),
                     custoBase = custoObj?.float("valor"),
-                    pesoBaseKg = pesoObj?.float("kg")
+                    pesoBaseKg = pesoObj?.float("kg"),
+                    aparar = aparar,
+                    observacoes = obj.string("observacoes").orEmpty().sanitized()
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError("armas_corpo_a_corpo")
@@ -207,7 +210,9 @@ class DataRepository(private val context: Context) {
                     stMinimo = stObj?.int("valor"),
                     danoRaw = danoObj?.string("raw").orEmpty().sanitized(),
                     custoBase = custoObj?.float("valor"),
-                    pesoBaseKg = pesoObj?.float("armaKg")
+                    pesoBaseKg = pesoObj?.float("armaKg"),
+                    aparar = null,
+                    observacoes = obj.string("observacoes").orEmpty().sanitized()
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError(nomeArquivo)

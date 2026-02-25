@@ -513,12 +513,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun adicionarEquipamentoArma(arma: ArmaCatalogoItem) {
+        val notasArma = buildString {
+            if (!arma.grupo.isNullOrBlank()) append(arma.grupo)
+            if (!arma.aparar.isNullOrBlank()) {
+                if (isNotBlank()) append("\n")
+                append("Aparar: ${arma.aparar} (${explicarAparar(arma.aparar)})")
+            }
+            val observacoes = observacoesArmaCorpoACorpo(arma)
+            if (observacoes.isNotBlank()) {
+                if (isNotBlank()) append("\n")
+                append(observacoes)
+            }
+        }
         val equipamento = Equipamento(
             nome = arma.nome,
             peso = arma.pesoBaseKg ?: 0f,
             custo = arma.custoBase ?: 0f,
             quantidade = 1,
-            notas = arma.grupo,
+            notas = notasArma,
             tipo = if (arma.nome.contains("escudo", ignoreCase = true)) TipoEquipamento.ESCUDO else TipoEquipamento.ARMA,
             bonusDefesa = 0,
             armaCatalogoId = arma.id,
@@ -527,6 +539,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             armaStMinimo = arma.stMinimo
         )
         adicionarEquipamento(equipamento)
+    }
+
+    private fun explicarAparar(valor: String): String {
+        val v = valor.trim().uppercase()
+        return when {
+            v == "NÃO" || v == "NAO" -> "Nao pode aparar"
+            v.endsWith("E") -> "Arma de esgrima"
+            v.endsWith("D") -> "Arma desbalanceada"
+            v == "0" -> "Sem modificador"
+            v.startsWith("+") || v.startsWith("-") -> "Modificador na aparada"
+            else -> "Valor de aparar"
+        }
+    }
+
+    private fun observacoesArmaCorpoACorpo(arma: ArmaCatalogoItem): String {
+        if (arma.tipoCombate != "corpo_a_corpo") return ""
+        val refs = Regex("\\[(\\d+)]")
+            .findAll(arma.observacoes)
+            .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
+            .toList()
+        if (refs.isEmpty()) return ""
+        return refs.mapNotNull { ref ->
+            OBS_ARMA_CORPO_A_CORPO[ref]?.let { "[$ref] $it" }
+        }.joinToString("\n")
     }
 
     fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {
@@ -999,6 +1035,23 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .maxOfOrNull { it.nivel }
             ?: 0
         return nivelAptidaoAposMudanca <= 0
+    }
+
+    companion object {
+        private val OBS_ARMA_CORPO_A_CORPO = mapOf(
+            1 to "Pode ser de arremesso. Veja Tabela de Armas Motoras de Combate a Distancia (pag. 275).",
+            2 to "Pode ficar presa; veja Picaretas (pag. 406).",
+            3 to "Briga aumenta dano sem armas; Garras e Carate aumentam dano de socos/chutes; Boxe aumenta dano por soco.",
+            4 to "Se fracassar em um chute, precisa passar em teste de DX para nao cair.",
+            5 to "Em fracasso de HT, a vitima fica atordoada enquanto houver contato e por mais (20-HT) segundos. Depois testa HT-3 para recuperar.",
+            6 to "Aparar manguais sofre -4 e armas de esgrima (E) nao apararam. Bloquear manguais sofre -2. No nunchaku, redutores pela metade.",
+            7 to "Lamina de energia. Exige manobra Preparar para ativar/desativar. Lamina inquebravel e danifica armas/corpo ao aparar/bloquear. Celula extra: $100, 0,25 kg, 300s.",
+            8 to "Corda para estrangular; veja Garrote (pag. 406).",
+            9 to "Dano maior quando usada montado; veja Armas de Cavalaria (pag. 397).",
+            10 to "O cabo da arma pode ser usado como soco ingles em combate corporal.",
+            11 to "Muito barulhento. Funciona 2 horas com 2,5 l de gasolina.",
+            12 to "Especifique alcance maximo (ate 7 m) na compra. Custo/peso por metro. ST 5 +1 por metro. Veja Chicotes (pag. 405)."
+        )
     }
 }
 

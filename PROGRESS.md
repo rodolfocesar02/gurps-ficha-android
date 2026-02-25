@@ -33,6 +33,7 @@ Andamento:
 - Passo 4 concluido (2026-02-25): UX final do seletor de armaduras ajustada (ordem de filtros Local -> NT -> Tag, texto de orientacao de uso e acao "Limpar filtros"), fechando o lote de catalogo.
 - Ajuste rapido (2026-02-25): removidas tags redundantes de `local/local_exp/nt/tipo` na linha de tags e no filtro de Tag da armadura, evitando repeticao visual.
 - Ajuste tecnico (2026-02-25): limpeza de assets legados de armas (`raw` e `review_flags`), mantendo apenas os arquivos `normalized` usados pelo app em runtime.
+- Ajuste funcional (2026-02-25): armas corpo a corpo passam a carregar/exibir `Aparar` e observacoes da tabela, inclusive na arma ja selecionada/equipada.
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:

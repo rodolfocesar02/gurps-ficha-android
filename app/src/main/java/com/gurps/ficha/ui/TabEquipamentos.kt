@@ -350,6 +350,13 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
+            if (equipamento.notas.isNotBlank()) {
+                Text(
+                    equipamento.notas,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
@@ -543,6 +550,20 @@ private fun ArmaItemSelecao(arma: ArmaCatalogoItem, danoCalculado: String, onCli
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.tertiary
         )
+        if (!arma.aparar.isNullOrBlank()) {
+            Text(
+                "Aparar: ${arma.aparar}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+        if (arma.observacoes.isNotBlank()) {
+            Text(
+                "Obs: ${arma.observacoes}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
         Divider(modifier = Modifier.padding(top = 4.dp))
     }
 }

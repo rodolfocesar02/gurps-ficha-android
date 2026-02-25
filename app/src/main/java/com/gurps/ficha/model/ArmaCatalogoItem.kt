@@ -9,5 +9,7 @@ data class ArmaCatalogoItem(
     val stMinimo: Int?,
     val danoRaw: String,
     val custoBase: Float?,
-    val pesoBaseKg: Float?
+    val pesoBaseKg: Float?,
+    val aparar: String? = null,
+    val observacoes: String = ""
 )
