@@ -1139,35 +1139,35 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         )
 
         private val OBS_ARMA_FOGO_PISTOLA_MM = mapOf(
-            1 to "Inclui sistemas eletronicos das armas inteligentes.",
-            2 to "Foguetes aceleram com atraso: dano /3 a 1-2 m e /2 a 3-10 m.",
-            3 to "Versao civil semiautomatica: CdT 3, -25% custo e +1 CL."
+            1 to "Inclui sistemas eletronicos das armas inteligentes (veja o quadro).",
+            2 to "Os foguetes demoram um pouco para acelerar. Divida o dano por 3 a 1-2 metros e por 2 a 3-10 metros.",
+            3 to "A versao civil de uma arma semiautomatica tem CdT 3, -25% no custo e recebe um bonus de +1 na CL."
         )
 
         private val OBS_ARMA_FOGO_RIFLE = mapOf(
-            1 to "Versao civil semiautomatica: CdT 3, -25% custo e +1 CL.",
-            2 to "Se dano ultrapassar RD, dardo injeta droga/veneno. Dardo tranquilizador: teste HT-3; falha deixa inconsciente por minutos igual a margem.",
-            3 to "Inclui sistemas eletronicos das armas inteligentes (pag. 278).",
-            4 to "Inclui lancador de granadas completo de 25 mm (pag. 281)."
+            1 to "A versao civil de uma arma semiautomatica tem CdT 3, -25% no custo e um bonus de +1 na CL.",
+            2 to "Se o dano ultrapassar a RD, o dardo injeta uma droga ou veneno como ataque de acompanhamento. No caso de dardo tranquilizador, faca um teste de HT-3; um fracasso deixa o alvo inconsciente por uma quantidade de minutos igual a margem pela qual o teste falhou.",
+            3 to "Inclui os sistemas eletronicos das armas inteligentes (pag. 278).",
+            4 to "Inclui um lancador de granadas completo de 25 mm (pag. 281)."
         )
 
         private val OBS_ARMA_FOGO_ULTRATECH = mapOf(
-            1 to "A arma precisa de atmosfera para funcionar. Nao funciona em atmosfera rarefeita ou vacuo.",
-            2 to "Dano por queimadura recebe Sobretensao. Mesmo sem penetrar, alvo testa HT-4 + metade da RD local; falha deixa atordoado.",
-            3 to "Fumaca/nevoa/chuva/nuvens etc. dao RD adicional igual a penalidade de visibilidade acumulada.",
-            4 to "Dano por queimadura recebe modificador de Sobretensao.",
-            5 to "Em superciencia, onidisparador custa dobro e tem modo atordoamento com testes de HT para inconsciencia."
+            1 to "A arma precisa de atmosfera para funcionar. Ela nao produz nenhum efeito em atmosferas rarefeitas ou no vacuo.",
+            2 to "O dano por queimadura recebe o modificador de dano de Sobretensao (pag. 108). Alem disso, mesmo quando nenhum dano penetre, o alvo deve obter sucesso em um teste de HT-4 mais metade da RD do local atingido (devido ao divisor de armadura). No caso de fracasso, o choque eletrico deixa o alvo atordoado. O alvo pode fazer novo teste de HT a cada turno sob a mesma penalidade (mas sem o bonus de RD) para se recuperar.",
+            3 to "Fumaca, nevoa, chuva, nuvens etc. concedem ao alvo uma RD adicional igual a penalidade de visibilidade. Exemplo: se a chuva impuser -1 a cada 100 metros, um laser percorrendo 2.000 metros de chuva deve superar RD adicional de 20.",
+            4 to "O dano por queimadura recebe modificador de dano de Sobretensao (pag. 108).",
+            5 to "Em aventuras com superciencia, um onidisparador custa o dobro, mas tem regulagem para atordoamento: o dano se torna HT-3(3) at para pistola e HT-6(3) at para rifle. Um fracasso em teste de HT deixa a vitima inconsciente por uma quantidade de minutos igual a margem de erro."
         )
 
         private val OBS_ARMA_FOGO_PESADA = mapOf(
-            1 to "Tem distancia minima (depende do modelo/calibre).",
-            2 to "Contradisparo de risco: 1d queimadura em quem estiver atras do atirador, ate 15 m (30 m na MTA).",
-            3 to "Ataque Guiado. Usa Artilharia (Missil Guiado). 1/2D e a velocidade do projetil (m/s).",
-            4 to "Ataque Teleguiado (Visao Hiperespectral) com NH 10 do projetil. 1/2D e velocidade do projetil (m/s).",
-            5 to "Tripe destacavel pesa mais 22 kg.",
-            6 to "Pode ser anexada sob cano de rifle/carabina NT7+. Usa magnitude do rifle.",
-            7 to "Dano nao cai na metade em 1/2D, mas perde divisor de armadura (10).",
-            8 to "Embutido na ACI de NT9. Usa magnitude da ACI e possui sistema de arma inteligente."
+            1 to "Tem uma distancia minima: 10 metros no caso de um LG de 40 mm, 30 metros no caso de um MTA de 115 mm e 200 metros no caso de um MAS de 70 mm.",
+            2 to "Contra-disparo de risco: 1d ponto de dano por queimadura em qualquer pessoa que se encontre atras do atirador a uma distancia de ate 15 metros (30 no caso da MTA).",
+            3 to "Ataque Guiado (pag. 412). O Canhoneiro usa Artilharia (Missil Guiado) para atacar. 1/2D e igual a velocidade do projetil (m/s). O peso se refere ao lancador vazio/um projetil.",
+            4 to "Ataque Teleguiado (Visao Hiperespectral) (pag. 413) com NH 10 do projetil. O atirador faz teste de Bombardeiro (Missil Guiado) para apontar. Em sucesso, o missil recebe bonus de Prec. 1/2D e igual a velocidade (m/s) do projetil. O peso se refere ao lancador vazio/um projetil.",
+            5 to "Um tripe destacavel pesa mais 22 kg.",
+            6 to "Pode ser anexada a parte inferior do cano de qualquer rifle ou carabina de NT7+. Utilize a Magnitude do Rifle.",
+            7 to "O dano nao e reduzido pela metade na distancia de 1/2D, mas perdera seu divisor de armadura que e de (10).",
+            8 to "Embutido na ACI de NT9 (pag. 279). Utilize a Magnitude da ACI. Possui sistemas eletronicos das armas inteligentes (pag. 278)."
         )
     }
 }
