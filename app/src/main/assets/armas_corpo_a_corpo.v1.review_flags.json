@@ -2,87 +2,16 @@
   "version": 1,
   "kind": "armas_corpo_a_corpo_review_flags",
   "source": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+  "generatedAtUtc": "2026-02-25T10:13:05.464114+00:00",
   "totalItems": 60,
-  "flaggedItems": 31,
+  "flaggedItems": 6,
   "items": [
-    {
-      "id": "porrete",
-      "nome": "Porrete",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_larga",
-      "nome": "Espada Larga",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_larga_em_gdp",
-      "nome": "Espada Larga em GdP",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_bastarda",
-      "nome": "Espada Bastarda",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "katana",
-      "nome": "Katana",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_bastarda_em_gdp",
-      "nome": "Espada Bastarda em GdP",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "sabre_de_cavalaria",
-      "nome": "Sabre de Cavalaria",
-      "grupo": "ESPADAS DE LÂMINA LARGA (DX-5, Espadas Curtas-2, Espada de Duas Mãos-4, Espada de Energia-4, Rapieira-4, ou Sabre-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
     {
       "id": "espada_de_energia",
       "nome": "Espada de Energia",
       "grupo": "ESPADA DE ENERGIA (DX-5 ou qualquer perícia com espada-3)",
       "flags": [
         "nt_nao_numerico"
-      ]
-    },
-    {
-      "id": "facao",
-      "nome": "Facão",
-      "grupo": "FACA (DX-4, Adaga de Esgrima-3, Espadas Curtas-3, ou Espada de Energia-3)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "faca",
-      "nome": "Faca",
-      "grupo": "FACA (DX-4, Adaga de Esgrima-3, Espadas Curtas-3, ou Espada de Energia-3)",
-      "flags": [
-        "multiplos_modos"
       ]
     },
     {
@@ -98,16 +27,7 @@
       "nome": "Glaive",
       "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
       "flags": [
-        "multiplos_modos",
         "st_minimo_nao_numerico"
-      ]
-    },
-    {
-      "id": "naginata",
-      "nome": "Naginata",
-      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
-      "flags": [
-        "multiplos_modos"
       ]
     },
     {
@@ -115,48 +35,7 @@
       "nome": "Alabarda",
       "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
       "flags": [
-        "multiplos_modos",
         "st_minimo_nao_numerico"
-      ]
-    },
-    {
-      "id": "machado_de_haste",
-      "nome": "Machado de Haste",
-      "grupo": "ARMAS DE HASTE (DX-5, Bastão-4, Lança-4, ou Maça/Machado de Duas Mãos-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "sabre",
-      "nome": "Sabre",
-      "grupo": "SABRE (DX-5, Adaga de Esgrima-3, Espadas Curtas-4, Espadas de Lâmina Larga-4, ou Terçado-3)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "bastao_curto",
-      "nome": "Bastão Curto",
-      "grupo": "ESCUDO (DX-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_curta",
-      "nome": "Espada Curta",
-      "grupo": "ESCUDO (DX-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "sabre_de_abordagem",
-      "nome": "Sabre de Abordagem",
-      "grupo": "ESCUDO (DX-4)",
-      "flags": [
-        "multiplos_modos"
       ]
     },
     {
@@ -164,8 +43,7 @@
       "nome": "Bordão Curto",
       "grupo": "HT-3(0,5) at",
       "flags": [
-        "grupo_suspeito_possivel_desalinhamento",
-        "multiplos_modos"
+        "grupo_suspeito_possivel_desalinhamento"
       ]
     },
     {
@@ -174,86 +52,6 @@
       "grupo": "HT-3(0,5) at",
       "flags": [
         "grupo_suspeito_possivel_desalinhamento"
-      ]
-    },
-    {
-      "id": "bordao",
-      "nome": "Bordão",
-      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "naginata_2",
-      "nome": "Naginata",
-      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "segadeira",
-      "nome": "Segadeira",
-      "grupo": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "bordao_2",
-      "nome": "Bordão",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "naginata_3",
-      "nome": "Naginata",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_bastarda_2",
-      "nome": "Espada Bastarda",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_grande",
-      "nome": "Espada Grande",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "katana_2",
-      "nome": "Katana",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_bastarda_em_gdp_2",
-      "nome": "Espada Bastarda em GdP",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
-      ]
-    },
-    {
-      "id": "espada_grande_em_gdp",
-      "nome": "Espada Grande em GdP",
-      "grupo": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lâmina Larga-4)",
-      "flags": [
-        "multiplos_modos"
       ]
     }
   ]

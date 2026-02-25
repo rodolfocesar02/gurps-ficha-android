@@ -89,6 +89,12 @@ def review_flags(item: dict):
         flags.append("st_minimo_nao_numerico")
     if item.get("custo", {}).get("valor") is None and not is_special(item.get("custo", {}).get("raw", "")):
         flags.append("custo_nao_numerico")
+    if item.get("cdt", {}).get("valor") is None and not is_special(item.get("cdt", {}).get("raw", "")):
+        flags.append("cdt_nao_numerico")
+    if item.get("cl", {}).get("valor") is None and not is_special(item.get("cl", {}).get("raw", "")):
+        flags.append("cl_nao_numerico")
+    if item.get("recuo", {}).get("valor") is None and not is_special(item.get("recuo", {}).get("raw", "")):
+        flags.append("recuo_nao_numerico")
     if len(item.get("alcanceDistancia", {}).get("partes", [])) > 2:
         flags.append("alcance_formato_incomum")
     if len(item.get("peso", {}).get("partes", [])) > 2:

@@ -91,8 +91,6 @@ def review_flags(item):
         if is_special_token(mode.get("alcanceCorpo", "")):
             flags.append("alcance_especial")
             break
-    if len(item.get("modos", [])) > 1:
-        flags.append("multiplos_modos")
     return sorted(set(flags))
 
 

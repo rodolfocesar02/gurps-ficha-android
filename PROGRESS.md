@@ -52,7 +52,7 @@ Escopo:
 - Manter `armas_distancia` como referência já limpa.
 Critério de pronto:
 - Redução máxima dos `reviewFlags` sem quebrar normalização.
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 
 ### Lote 4 - Ajuste de layout da aba Equipamentos (UX)
 Escopo:

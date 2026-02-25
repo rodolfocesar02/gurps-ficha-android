@@ -94,16 +94,6 @@ def convert(input_xlsx: Path, output_json: Path):
             n += 1
         used.add(fid)
 
-        review = []
-        if not cdt:
-            review.append("cdt_vazio")
-        if not tiros:
-            review.append("tiros_vazio")
-        if not cl:
-            review.append("cl_vazio")
-        if not recuo:
-            review.append("recuo_vazio")
-
         items.append(
             {
                 "id": fid,
@@ -125,7 +115,7 @@ def convert(input_xlsx: Path, output_json: Path):
                 "Cl": cl,
                 "observacoes": obs,
                 "source": "xlsx_armas_fogo",
-                "reviewFlags": review,
+                "reviewFlags": [],
                 "rowNumber": r,
             }
         )

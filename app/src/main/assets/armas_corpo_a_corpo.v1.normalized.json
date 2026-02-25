@@ -3,9 +3,9 @@
   "kind": "armas_corpo_a_corpo_normalized",
   "sourceKind": "armas_corpo_a_corpo_raw",
   "sourceFile": "C:\\Users\\Rodolfo\\Downloads\\arquivos para ficha de gurpsNÃO APAGUE ESTA PASTA\\OCR do modulo basico\\Tabela_de_Armas_de_Combate_Corpo_a_Corpo.xlsx",
-  "generatedAtUtc": "2026-02-25T00:13:35.162583+00:00",
+  "generatedAtUtc": "2026-02-25T10:12:38.273066+00:00",
   "totalItems": 60,
-  "reviewNeededItems": 31,
+  "reviewNeededItems": 6,
   "items": [
     {
       "id": "machado",
@@ -545,9 +545,7 @@
         "custo": "$5 / —",
         "peso": "1,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_larga",
@@ -619,9 +617,7 @@
         "custo": "$500 / —",
         "peso": "1,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_larga_em_gdp",
@@ -693,9 +689,7 @@
         "custo": "$600 / —",
         "peso": "1,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_bastarda",
@@ -767,9 +761,7 @@
         "custo": "$650 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "katana",
@@ -841,9 +833,7 @@
         "custo": "$650 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_bastarda_em_gdp",
@@ -915,9 +905,7 @@
         "custo": "$750 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "sabre_de_cavalaria",
@@ -989,9 +977,7 @@
         "custo": "$500 / —",
         "peso": "1,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "maca_estrela",
@@ -1273,9 +1259,7 @@
         "custo": "$40 / —",
         "peso": "0,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "faca",
@@ -1347,9 +1331,7 @@
         "custo": "$30 / —",
         "peso": "0,25 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "estaca_de_madeira",
@@ -1687,7 +1669,6 @@
         "peso": "4 / —"
       },
       "reviewFlags": [
-        "multiplos_modos",
         "st_minimo_nao_numerico"
       ]
     },
@@ -1763,9 +1744,7 @@
         "custo": "$100 / —",
         "peso": "3 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "alabarda",
@@ -1861,7 +1840,6 @@
         "peso": "6 / — / —"
       },
       "reviewFlags": [
-        "multiplos_modos",
         "st_minimo_nao_numerico"
       ]
     },
@@ -1937,9 +1915,7 @@
         "custo": "$120 / —",
         "peso": "5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "rapieira",
@@ -2063,9 +2039,7 @@
         "custo": "$700 / —",
         "peso": "1 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "escudo",
@@ -2241,9 +2215,7 @@
         "custo": "$20 / —",
         "peso": "0,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_curta",
@@ -2315,9 +2287,7 @@
         "custo": "$400 / —",
         "peso": "1 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "sabre_de_abordagem",
@@ -2389,9 +2359,7 @@
         "custo": "$300 / —",
         "peso": "1 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "arreador_conjunto",
@@ -2521,8 +2489,7 @@
         "peso": "0,5 / —"
       },
       "reviewFlags": [
-        "grupo_suspeito_possivel_desalinhamento",
-        "multiplos_modos"
+        "grupo_suspeito_possivel_desalinhamento"
       ]
     },
     {
@@ -2807,9 +2774,7 @@
         "custo": "$10 / —",
         "peso": "2 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "naginata_2",
@@ -2883,9 +2848,7 @@
         "custo": "$100 / —",
         "peso": "3 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "malho",
@@ -3067,9 +3030,7 @@
         "custo": "$15 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "martelo_de_guerra",
@@ -3305,9 +3266,7 @@
         "custo": "$10 / —",
         "peso": "2 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "naginata_3",
@@ -3381,9 +3340,7 @@
         "custo": "$100 / —",
         "peso": "3 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_bastarda_2",
@@ -3457,9 +3414,7 @@
         "custo": "$650 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_grande",
@@ -3533,9 +3488,7 @@
         "custo": "$800 / —",
         "peso": "3,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "katana_2",
@@ -3609,9 +3562,7 @@
         "custo": "$650 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_bastarda_em_gdp_2",
@@ -3680,9 +3631,7 @@
         "custo": "$750 / —",
         "peso": "2,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "espada_grande_em_gdp",
@@ -3756,9 +3705,7 @@
         "custo": "$900 / —",
         "peso": "3,5 / —"
       },
-      "reviewFlags": [
-        "multiplos_modos"
-      ]
+      "reviewFlags": []
     },
     {
       "id": "chicote",

@@ -784,10 +784,7 @@
       "Cl": "",
       "observacoes": "[2]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cdt_vazio",
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 35
     },
     {
@@ -810,10 +807,7 @@
       "Cl": "",
       "observacoes": "[3,4]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cdt_vazio",
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 36
     },
     {
@@ -836,10 +830,7 @@
       "Cl": "",
       "observacoes": "[3]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cdt_vazio",
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 37
     },
     {
@@ -862,10 +853,7 @@
       "Cl": "",
       "observacoes": "[2]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cdt_vazio",
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 38
     },
     {
@@ -980,9 +968,7 @@
       "Cl": "",
       "observacoes": "[1, 2, 3]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 43
     },
     {
@@ -1005,9 +991,7 @@
       "Cl": "",
       "observacoes": "[3]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 44
     },
     {
@@ -1030,9 +1014,7 @@
       "Cl": "",
       "observacoes": "[4, 5]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 45
     },
     {
@@ -1055,9 +1037,7 @@
       "Cl": "",
       "observacoes": "[1, 2, 3]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 46
     },
     {
@@ -1080,9 +1060,7 @@
       "Cl": "",
       "observacoes": "[1]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 47
     },
     {
@@ -1105,9 +1083,7 @@
       "Cl": "",
       "observacoes": "[2]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 48
     },
     {
@@ -1130,9 +1106,7 @@
       "Cl": "",
       "observacoes": "[2]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 49
     },
     {
@@ -1155,9 +1129,7 @@
       "Cl": "",
       "observacoes": "[1]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 50
     },
     {
@@ -1180,10 +1152,7 @@
       "Cl": "",
       "observacoes": "[1, 2, 3]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 51
     },
     {
@@ -1206,10 +1175,7 @@
       "Cl": "",
       "observacoes": "[1, 2, 4]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 52
     },
     {
@@ -1232,9 +1198,7 @@
       "Cl": "2",
       "observacoes": "",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 53
     },
     {
@@ -1257,10 +1221,7 @@
       "Cl": "",
       "observacoes": "[5]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 54
     },
     {
@@ -1283,10 +1244,7 @@
       "Cl": "",
       "observacoes": "[1, 6, 7]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 55
     },
     {
@@ -1309,10 +1267,7 @@
       "Cl": "",
       "observacoes": "[8]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 56
     },
     {
@@ -1335,10 +1290,7 @@
       "Cl": "",
       "observacoes": "[2,7]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 57
     },
     {
@@ -1361,10 +1313,7 @@
       "Cl": "",
       "observacoes": "[2,7]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 58
     },
     {
@@ -1387,10 +1336,7 @@
       "Cl": "",
       "observacoes": "[2,7]",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "cl_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 59
     },
     {
@@ -1413,9 +1359,7 @@
       "Cl": "2",
       "observacoes": "",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 60
     },
     {
@@ -1438,9 +1382,7 @@
       "Cl": "1",
       "observacoes": "",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 61
     },
     {
@@ -1463,9 +1405,7 @@
       "Cl": "1",
       "observacoes": "",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 62
     },
     {
@@ -1488,10 +1428,7 @@
       "Cl": "1",
       "observacoes": "",
       "source": "xlsx_armas_fogo",
-      "reviewFlags": [
-        "tiros_vazio",
-        "recuo_vazio"
-      ],
+      "reviewFlags": [],
       "rowNumber": 63
     }
   ]
