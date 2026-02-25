@@ -554,16 +554,63 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun observacoesArmaFormatadas(arma: ArmaCatalogoItem): String {
-        if (arma.tipoCombate != "corpo_a_corpo" && arma.tipoCombate != "distancia") return ""
+        if (arma.tipoCombate != "corpo_a_corpo" && arma.tipoCombate != "distancia" && arma.tipoCombate != "armas_de_fogo") {
+            return ""
+        }
         val refs = Regex("\\[(\\d+)]")
             .findAll(arma.observacoes)
             .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
             .toList()
+        if (arma.tipoCombate == "armas_de_fogo") {
+            val classe = classificarArmaDeFogo(arma)
+            val linhas = mutableListOf<String>()
+            if (classe == ClasseArmaFogo.ULTRATECH) {
+                linhas.add("Todas as armas de feixe incluem sistemas eletronicos das armas inteligentes (pag. 278).")
+            }
+            val mapa = when (classe) {
+                ClasseArmaFogo.PISTOLA_MM -> OBS_ARMA_FOGO_PISTOLA_MM
+                ClasseArmaFogo.RIFLE_ESPINGARDA -> OBS_ARMA_FOGO_RIFLE
+                ClasseArmaFogo.ULTRATECH -> OBS_ARMA_FOGO_ULTRATECH
+                ClasseArmaFogo.PESADA -> OBS_ARMA_FOGO_PESADA
+            }
+            refs.mapNotNull { ref -> mapa[ref]?.let { "[$ref] $it" } }.forEach { linhas.add(it) }
+            return linhas.joinToString("\n")
+        }
+
         if (refs.isEmpty()) return ""
         val mapa = if (arma.tipoCombate == "distancia") OBS_ARMA_DISTANCIA else OBS_ARMA_CORPO_A_CORPO
-        return refs.mapNotNull { ref ->
-            mapa[ref]?.let { "[$ref] $it" }
-        }.joinToString("\n")
+        return refs.mapNotNull { ref -> mapa[ref]?.let { "[$ref] $it" } }.joinToString("\n")
+    }
+
+    private enum class ClasseArmaFogo {
+        PISTOLA_MM,
+        RIFLE_ESPINGARDA,
+        ULTRATECH,
+        PESADA
+    }
+
+    private fun classificarArmaDeFogo(arma: ArmaCatalogoItem): ClasseArmaFogo {
+        val grupo = arma.grupo.lowercase()
+        val nome = arma.nome.lowercase()
+        if (
+            grupo.contains("feixe") ||
+            nome.contains("laser") ||
+            nome.contains("eletrolaser") ||
+            nome.contains("ionico") ||
+            nome.contains("iônico")
+        ) return ClasseArmaFogo.ULTRATECH
+
+        if (
+            grupo.contains("artilharia") ||
+            grupo.contains("canhoneiro") ||
+            grupo.contains("lancador") ||
+            grupo.contains("lançador") ||
+            grupo.contains("ala")
+        ) return ClasseArmaFogo.PESADA
+
+        if (grupo.contains("rifle")) return ClasseArmaFogo.RIFLE_ESPINGARDA
+
+        return ClasseArmaFogo.PISTOLA_MM
     }
 
     fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {
@@ -1063,6 +1110,38 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             6 to "Rede nao tem 1/2D. Distancia Max: (ST/2 + NH/5) rede grande; (ST + NH/5) rede de combate.",
             7 to "Pode disparar pedras (NT0) ou balas de chumbo (NT2). Bala de chumbo: +1 dano e dobra distancia.",
             8 to "Preparado: exige manobra Preparar e teste de ST para disparar; remover projetil causa metade do dano de entrada."
+        )
+
+        private val OBS_ARMA_FOGO_PISTOLA_MM = mapOf(
+            1 to "Inclui sistemas eletronicos das armas inteligentes.",
+            2 to "Foguetes aceleram com atraso: dano /3 a 1-2 m e /2 a 3-10 m.",
+            3 to "Versao civil semiautomatica: CdT 3, -25% custo e +1 CL."
+        )
+
+        private val OBS_ARMA_FOGO_RIFLE = mapOf(
+            1 to "Versao civil semiautomatica: CdT 3, -25% custo e +1 CL.",
+            2 to "Se dano ultrapassar RD, dardo injeta droga/veneno. Dardo tranquilizador: teste HT-3; falha deixa inconsciente por minutos igual a margem.",
+            3 to "Inclui sistemas eletronicos das armas inteligentes (pag. 278).",
+            4 to "Inclui lancador de granadas completo de 25 mm (pag. 281)."
+        )
+
+        private val OBS_ARMA_FOGO_ULTRATECH = mapOf(
+            1 to "A arma precisa de atmosfera para funcionar. Nao funciona em atmosfera rarefeita ou vacuo.",
+            2 to "Dano por queimadura recebe Sobretensao. Mesmo sem penetrar, alvo testa HT-4 + metade da RD local; falha deixa atordoado.",
+            3 to "Fumaca/nevoa/chuva/nuvens etc. dao RD adicional igual a penalidade de visibilidade acumulada.",
+            4 to "Dano por queimadura recebe modificador de Sobretensao.",
+            5 to "Em superciencia, onidisparador custa dobro e tem modo atordoamento com testes de HT para inconsciencia."
+        )
+
+        private val OBS_ARMA_FOGO_PESADA = mapOf(
+            1 to "Tem distancia minima (depende do modelo/calibre).",
+            2 to "Contradisparo de risco: 1d queimadura em quem estiver atras do atirador, ate 15 m (30 m na MTA).",
+            3 to "Ataque Guiado. Usa Artilharia (Missil Guiado). 1/2D e a velocidade do projetil (m/s).",
+            4 to "Ataque Teleguiado (Visao Hiperespectral) com NH 10 do projetil. 1/2D e velocidade do projetil (m/s).",
+            5 to "Tripe destacavel pesa mais 22 kg.",
+            6 to "Pode ser anexada sob cano de rifle/carabina NT7+. Usa magnitude do rifle.",
+            7 to "Dano nao cai na metade em 1/2D, mas perde divisor de armadura (10).",
+            8 to "Embutido na ACI de NT9. Usa magnitude da ACI e possui sistema de arma inteligente."
         )
     }
 }
