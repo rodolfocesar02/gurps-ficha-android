@@ -104,6 +104,8 @@ Escopo:
 Critério de pronto:
 - Todos os tipos de teste executando localmente com resultado consistente.
 Status: `PENDENTE`
+Andamento:
+- Passo 1 concluído (2026-02-25): aba `Rolagem` já possui teste local 3d6 para atributo/ataque/defesa/livre, modificador manual e histórico local de sessão.
 
 ### Lote 8 - Ficha clicável na aba Rolagem
 Escopo:
