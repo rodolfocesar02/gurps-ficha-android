@@ -94,10 +94,8 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         BotaoAdicionarPadrao(texto = "Adicionar Itens", onClick = { showDialog = true })
 
-        SectionCard(title = "Equipamentos Manuais") {
-            if (equipamentosManuais.isEmpty()) {
-                Text("Nenhum item manual adicionado", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        if (equipamentosManuais.isNotEmpty()) {
+            SectionCard(title = "Equipamentos Manuais") {
                 equipamentosManuais.forEachIndexed { idx, entry ->
                     EquipamentoItem(
                         equipamento = entry.value,
@@ -112,15 +110,13 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         BotaoAdicionarPadrao(texto = "Adicionar Arma", onClick = { showArmaDialog = true })
 
-        SectionCard(title = "Armas") {
-            Text(
-                "Itens equipados: ${armasEquipadas.size}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (armasEquipadas.isEmpty()) {
-                Text("Nenhuma arma selecionada", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        if (armasEquipadas.isNotEmpty()) {
+            SectionCard(title = "Armas") {
+                Text(
+                    "Itens equipados: ${armasEquipadas.size}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 armasEquipadas.forEachIndexed { idx, entry ->
                     EquipamentoArmaItem(
                         equipamento = entry.value,
@@ -135,15 +131,13 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         BotaoAdicionarPadrao(texto = "Adicionar Escudo", onClick = { showEscudoDialog = true })
 
-        SectionCard(title = "Escudos") {
-            Text(
-                "Itens equipados: ${escudosEquipados.size}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            if (escudosEquipados.isEmpty()) {
-                Text("Nenhum escudo selecionado", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        if (escudosEquipados.isNotEmpty()) {
+            SectionCard(title = "Escudos") {
+                Text(
+                    "Itens equipados: ${escudosEquipados.size}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 escudosEquipados.forEachIndexed { idx, entry ->
                     EquipamentoItem(
                         equipamento = entry.value,
@@ -158,21 +152,19 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
 
         BotaoAdicionarPadrao(texto = "Adicionar Armadura", onClick = { showArmaduraDialog = true })
 
-        SectionCard(title = "Armaduras") {
-            Text(
-                "Itens selecionados: ${armadurasEquipadas.size}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                "Selecao por NT e Local (regra do livro).",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            if (armadurasEquipadas.isEmpty()) {
-                Text("Nenhuma armadura selecionada", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        if (armadurasEquipadas.isNotEmpty()) {
+            SectionCard(title = "Armaduras") {
+                Text(
+                    "Itens selecionados: ${armadurasEquipadas.size}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    "Selecao por NT e Local (regra do livro).",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
                 armadurasEquipadas.forEachIndexed { idx, entry ->
                     ArmaduraSelecionadaItem(
                         equipamento = entry.value,

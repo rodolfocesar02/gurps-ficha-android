@@ -42,6 +42,7 @@ Andamento:
 - Ajuste corretivo (2026-02-25): fallback por nome/tipo/dano da arma para preencher observacoes em itens antigos ja equipados (quando o ID de catalogo nao estiver confiavel).
 - Ajuste de layout (2026-02-25): botoes de acao `Adicionar ...` da aba Equipamentos foram separados dos cards (Armas/Escudos/Armaduras) e o bloco manual passou a usar `Adicionar Itens` sem icone `+` no titulo.
 - Padrao visual de botao (registrado para reutilizacao): usar `Button` Material 3 com texto `Adicionar ...`, sem icone no cabecalho do card, como elemento separado do card e respeitando o espacamento vertical padrao da tela (`Arrangement.spacedBy(16.dp)`).
+- Ajuste de visibilidade (2026-02-25): cards de Equipamentos Manuais, Armas, Escudos e Armaduras ficam ocultos quando vazios e so aparecem apos existir ao menos 1 item do tipo.
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:
