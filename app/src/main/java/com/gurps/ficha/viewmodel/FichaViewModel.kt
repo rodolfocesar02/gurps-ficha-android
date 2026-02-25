@@ -1,6 +1,7 @@
 ﻿package com.gurps.ficha.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshotFlow
@@ -11,6 +12,7 @@ import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.DiscordRollApiClient
 import com.gurps.ficha.data.network.DiscordRollPayload
+import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
@@ -90,7 +92,21 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
+    private val configPrefs = application.getSharedPreferences("gurps_config", Context.MODE_PRIVATE)
     private var personagemPendenteLimpezaMagias: Personagem? = null
+    private val prefCanalDiscordId = "discord_canal_id"
+    private val prefCanalDiscordNome = "discord_canal_nome"
+
+    var canaisDiscord by mutableStateOf<List<DiscordVoiceChannel>>(emptyList())
+        private set
+    var canaisDiscordCarregando by mutableStateOf(false)
+        private set
+    var canaisDiscordErro by mutableStateOf<String?>(null)
+        private set
+    var canalDiscordSelecionadoId by mutableStateOf<String?>(null)
+        private set
+    var canalDiscordSelecionadoNome by mutableStateOf<String?>(null)
+        private set
 
     // Listas filtradas
     val vantagensFiltradas: List<VantagemDefinicao>
@@ -148,6 +164,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .sorted()
 
     init {
+        canalDiscordSelecionadoId = configPrefs.getString(prefCanalDiscordId, null)
+        canalDiscordSelecionadoNome = configPrefs.getString(prefCanalDiscordNome, null)
+
         viewModelScope.launch {
             fichaStorage.migrarDeSharedPreferencesSeNecessario()
             restaurarAutoSaveSeExistir()
@@ -661,6 +680,46 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 )
             }
         }
+    }
+
+    fun atualizarCanaisDiscord() {
+        viewModelScope.launch {
+            canaisDiscordCarregando = true
+            canaisDiscordErro = null
+            val resultado = withContext(Dispatchers.IO) {
+                DiscordRollApiClient.fetchVoiceChannels(
+                    baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                    apiKey = BuildConfig.DISCORD_ROLL_API_KEY
+                )
+            }
+            canaisDiscordCarregando = false
+
+            if (!resultado.ok) {
+                canaisDiscordErro = resultado.error ?: "erro_ao_carregar_canais"
+                return@launch
+            }
+
+            canaisDiscord = resultado.channels
+            val selecionadoAtual = canalDiscordSelecionadoId
+            if (!selecionadoAtual.isNullOrBlank()) {
+                val canal = resultado.channels.firstOrNull { it.id == selecionadoAtual }
+                if (canal != null) {
+                    canalDiscordSelecionadoNome = "${canal.guildName} / ${canal.name}"
+                    configPrefs.edit()
+                        .putString(prefCanalDiscordNome, canalDiscordSelecionadoNome)
+                        .apply()
+                }
+            }
+        }
+    }
+
+    fun selecionarCanalDiscord(canal: DiscordVoiceChannel?) {
+        canalDiscordSelecionadoId = canal?.id
+        canalDiscordSelecionadoNome = canal?.let { "${it.guildName} / ${it.name}" }
+        configPrefs.edit()
+            .putString(prefCanalDiscordId, canalDiscordSelecionadoId)
+            .putString(prefCanalDiscordNome, canalDiscordSelecionadoNome)
+            .apply()
     }
 
     val nivelCarga: Int get() = personagem.nivelCarga

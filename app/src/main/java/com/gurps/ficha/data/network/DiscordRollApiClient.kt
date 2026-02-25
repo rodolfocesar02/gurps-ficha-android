@@ -16,11 +16,26 @@ data class DiscordRollPayload(
     val dice: List<Int>,
     val total: Int,
     val outcome: String,
-    val margin: Int?
+    val margin: Int?,
+    val channelId: String? = null
 )
 
 data class DiscordRollSendResult(
     val ok: Boolean,
+    val statusCode: Int?,
+    val error: String?
+)
+
+data class DiscordVoiceChannel(
+    val id: String,
+    val name: String,
+    val guildId: String,
+    val guildName: String
+)
+
+data class DiscordChannelsFetchResult(
+    val ok: Boolean,
+    val channels: List<DiscordVoiceChannel>,
     val statusCode: Int?,
     val error: String?
 )
@@ -72,6 +87,60 @@ object DiscordRollApiClient {
         }
     }
 
+    fun fetchVoiceChannels(baseUrl: String, apiKey: String): DiscordChannelsFetchResult {
+        if (baseUrl.isBlank()) {
+            return DiscordChannelsFetchResult(ok = false, channels = emptyList(), statusCode = null, error = "base_url_vazia")
+        }
+        if (apiKey.isBlank()) {
+            return DiscordChannelsFetchResult(ok = false, channels = emptyList(), statusCode = null, error = "api_key_vazia")
+        }
+
+        val endpoint = "${baseUrl.trimEnd('/')}/api/channels"
+        var connection: HttpURLConnection? = null
+
+        return try {
+            connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = CONNECT_TIMEOUT_MS
+                readTimeout = READ_TIMEOUT_MS
+                setRequestProperty("x-api-key", apiKey)
+            }
+
+            val statusCode = connection.responseCode
+            val rawBody = if (statusCode in 200..299) {
+                readStreamSafely(connection.inputStream)
+            } else {
+                readStreamSafely(connection.errorStream)
+            }
+
+            if (statusCode in 200..299) {
+                val response = gson.fromJson(rawBody, ChannelsResponse::class.java)
+                DiscordChannelsFetchResult(
+                    ok = response?.ok == true,
+                    channels = response?.channels ?: emptyList(),
+                    statusCode = statusCode,
+                    error = null
+                )
+            } else {
+                DiscordChannelsFetchResult(
+                    ok = false,
+                    channels = emptyList(),
+                    statusCode = statusCode,
+                    error = "http_$statusCode ${rawBody.ifBlank { "sem_detalhes" }}"
+                )
+            }
+        } catch (error: Exception) {
+            DiscordChannelsFetchResult(
+                ok = false,
+                channels = emptyList(),
+                statusCode = null,
+                error = error.message ?: "erro_desconhecido"
+            )
+        } finally {
+            connection?.disconnect()
+        }
+    }
+
     private fun readStreamSafely(stream: java.io.InputStream?): String {
         if (stream == null) return ""
         return runCatching {
@@ -80,4 +149,9 @@ object DiscordRollApiClient {
             }
         }.getOrDefault("")
     }
+
+    private data class ChannelsResponse(
+        val ok: Boolean,
+        val channels: List<DiscordVoiceChannel>?
+    )
 }

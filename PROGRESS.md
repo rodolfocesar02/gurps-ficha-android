@@ -139,6 +139,8 @@ Escopo:
 Critério de pronto:
 - Integração estável em cenário real de mesa (uso contínuo sem travas/falhas silenciosas).
 Status: `PENDENTE`
+Andamento:
+- Passo 1 concluído (2026-02-25): backend lista canais de voz em `/api/channels` e app permite selecionar/salvar canal de envio na aba Rolagem.
 
 ## Itens Fechados (Não Mexer Agora)
 - Lote 3 (Perícias) fechado e validado.

@@ -24,6 +24,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -59,6 +60,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val p = viewModel.personagem
     val historico = remember { mutableStateListOf<HistoricoRolagemItem>() }
     val coroutineScope = rememberCoroutineScope()
+    val canaisDiscord = viewModel.canaisDiscord
+    val canalSelecionadoId = viewModel.canalDiscordSelecionadoId
+    val canalSelecionadoNome = viewModel.canalDiscordSelecionadoNome
+    val canaisCarregando = viewModel.canaisDiscordCarregando
+    val canaisErro = viewModel.canaisDiscordErro
+
+    LaunchedEffect(Unit) {
+        if (canaisDiscord.isEmpty() && !canaisCarregando) {
+            viewModel.atualizarCanaisDiscord()
+        }
+    }
 
     var tipoTeste by remember { mutableStateOf(TipoTeste.ATRIBUTO) }
     var modificador by remember { mutableIntStateOf(0) }
@@ -119,6 +131,72 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            var expandedCanal by remember { mutableStateOf(false) }
+            ExposedDropdownMenuBox(
+                expanded = expandedCanal,
+                onExpandedChange = { expandedCanal = !expandedCanal }
+            ) {
+                val canalLabel = when {
+                    canaisCarregando -> "Carregando canais..."
+                    !canalSelecionadoNome.isNullOrBlank() -> canalSelecionadoNome
+                    else -> "Selecionar canal de voz"
+                }
+                OutlinedTextField(
+                    value = canalLabel,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Canal de envio Discord") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCanal) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedCanal,
+                    onDismissRequest = { expandedCanal = false }
+                ) {
+                    canaisDiscord.forEach { canal ->
+                        DropdownMenuItem(
+                            text = {
+                                Text("${canal.guildName} / ${canal.name}")
+                            },
+                            onClick = {
+                                viewModel.selecionarCanalDiscord(canal)
+                                expandedCanal = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            OutlinedButton(
+                onClick = { viewModel.atualizarCanaisDiscord() },
+                enabled = !canaisCarregando,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(if (canaisCarregando) "Atualizando..." else "Atualizar canais de voz")
+            }
+
+            if (!canaisErro.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    "Erro ao carregar canais: $canaisErro",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            if (!canalSelecionadoId.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    "Canal ativo: $canalSelecionadoNome",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
 
             var expandedTipo by remember { mutableStateOf(false) }
@@ -297,7 +375,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 dice = resultado.dadosIndividuais,
                                 total = resultado.total,
                                 outcome = resultado.tipoResultado.name,
-                                margin = if (resultado.alvo != null) resultado.margem else null
+                                margin = if (resultado.alvo != null) resultado.margem else null,
+                                channelId = canalSelecionadoId
                             )
                         )
                         registrarResultado(
