@@ -1,183 +1,99 @@
-﻿# PROGRESS - GURPS Ficha Android
+# PROGRESS - GURPS Ficha Android
 
-Status atual do projeto para retomada rápida e execução em lotes pequenos.
+Atualizado em: 2026-02-25  
+Objetivo: consolidar implementação atual, reduzir riscos e seguir em lotes curtos com salvamento ao fim de cada lote.
 
-## Fonte oficial de regras
-- Livro base usado para alinhamento da ficha:
-  - `c:\Users\Rodolfo\Desktop\rpg\gurps\livros\GURPS 4ª Edição - Módulo Básico.pdf`
-- Estrutura extraída (578 páginas) salva para referência técnica:
-  - `gurps-ficha-android/build/gurps_book_outline.txt`
+## Status Atual Consolidado
+- Build Kotlin, testes unitários e geração de APK debug estão funcionando.
+- Aba Equipamentos já possui integração de:
+  - armas corpo a corpo,
+  - armas à distância,
+  - armas de fogo,
+  - escudos,
+  - armaduras.
+- Regras já ativas:
+  - filtro por ST mínimo para seleção,
+  - DB de escudo somado no Bloqueio,
+  - dano de arma calculado com ST quando aplicável,
+  - custo/peso total consolidados.
 
-## Concluído (engenharia/base)
-- Testes unitários iniciais de regras.
-- Extração de regras para domínio.
-- Persistência com Room + migração do legado.
-- Refatoração de UI por tabs/dialogs.
-- Modelo de `Personagem` padronizado para listas imutáveis.
-- Confirmação antes de limpar magias ao perder Aptidão Mágica.
-- Filtro de perícias para Apara/Bloqueio refinado.
-- Correção de encoding/mojibake na UI.
-- Higiene de repositório (`.gitignore`) e toolchain (Gradle wrapper em `8.10.2`).
-- UX do campo numérico de pontos iniciais ajustada.
-- Robustez de parsing dos JSONs:
-  - decisão: manter estrutura atual por compatibilidade e evoluir incrementalmente (sem migração brusca agora).
-  - `PericiaDefinicao` passou a aceitar chaves alternativas de `atributosPossiveis` (incluindo grafia legada com encoding incorreto).
-  - `DataRepository` normaliza campos textuais ao carregar (trim/sanitização leve).
-  - teste adicionado para parsing legado:
-    - `app/src/test/java/com/gurps/ficha/model/PericiaJsonParsingTest.kt`
-- Aba Equipamentos simplificada:
-  - card `Resumo de Carga` removido por redundância com informações já exibidas em `Geral` e `Combate`.
-  - arquivo: `app/src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt`.
-- Estrutura futura da aba Equipamentos:
-  - placeholder discreto `Próximos Recursos` adicionado para expansão incremental sem refatoração de layout.
-  - arquivo: `app/src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt`.
-- Lote 1 - Criação de Personagem (fechado por enquanto):
-  - pacote 1: regras derivadas (deslocamento mínimo 1 e custo de Velocidade Básica por passos de 0.25).
-  - pacote 2: tabela de dano GdP/GeB alinhada à tabela oficial na faixa ST 1-30.
-  - pacote 3: revisão de deslocamento básico/velocidade com testes de borda, mantendo regra atual.
-  - item de campanha (pontos iniciais/limite de desvantagens por tipo de campanha) mantido sem alteração por decisão do usuário.
-- Pipeline de vantagens v3 (estrutura nova, sem substituir produção ainda):
-  - schema final criado: `app/src/main/assets/vantagens.v3.schema.json`.
-  - script de conversão da planilha criado: `scripts/convert_vantagens_v3.py`.
-  - arquivo inicial gerado da planilha: `app/src/main/assets/vantagens.v3.json` (259 itens, validado no schema).
-  - checkpoint de segurança criado antes da geração: `snapshots/checkpoint-20260224-005055`.
-  - atualização: regenerado a partir de `vantagens_extraidas_fiel_v2.xlsx` (264 itens, validado no schema).
-  - tags mínimas úteis aplicadas por heurística no pipeline: `combate`, `social`, `fisica`, `mental`, `magica`.
-  - política para custos híbridos definida no conversor:
-    - casos como `X ou Y/nível` ficam em `costKind = special`, preservando `options` e metadado de nível para tratamento explícito no código.
-- Pipeline de desvantagens v2 (estruturado, baseado na planilha atualizada):
-  - conversor criado: `scripts/convert_desvantagens_v2.py`.
-  - schema criado: `app/src/main/assets/desvantagens.v2.schema.json`.
-  - arquivo gerado: `app/src/main/assets/desvantagens.v2.json` (227 itens).
-  - custos convertidos para tipos estruturados:
-    - `fixed`: 157
-    - `choice`: 38
-    - `range`: 1
-    - `perLevel`: 12
-    - `special`: 19
-  - normalização aplicada: todos os custos numéricos ficam negativos para desvantagens.
-- Integração de leitura de vantagens v3 no app:
-  - `DataRepository` agora carrega `app/src/main/assets/vantagens.v3.json` e converte para o modelo legado em memória.
-  - fallback legado removido: vantagens agora vêm somente de `app/src/main/assets/vantagens.v3.json`.
-  - parser de `vantagens.v3.json` reforçado (leitura por `JsonParser` item a item) para evitar lista vazia em runtime por incompatibilidade de parse tipado.
-  - `aptidao_magica` e `elo_mental` passam como `POR_NIVEL` no app (configuração por nível), mantendo custo híbrido no domínio (`5 + 10/nível`).
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Busca de vantagens por tags (v3):
-  - `VantagemDefinicao` passou a carregar `tags`.
-  - filtro de vantagens passou a aceitar tag opcional.
-  - diálogo `Selecionar Vantagem` recebeu chips: `Todas`, `combate`, `social`, `fisica`, `mental`, `magica`.
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Varredura e normalização de custos híbridos em `vantagens.v3.json`:
-  - conversor (`scripts/convert_vantagens_v3.py`) atualizado para tratar opções por nível com 2+ opções (ex.: `3, 5, ou 8/nível`) como `special`.
-  - override canônico aplicado para `apetrechos` (`5/apetrecho`).
-  - arquivo `app/src/main/assets/vantagens.v3.json` regenerado da planilha `vantagens_extraidas_fiel_v2.xlsx` (264 itens).
-- Lote 3 (Perícias) - pacote 1 iniciado:
-  - correção da tabela de bônus por pontos para pontos intermediários (especialmente `3 pontos`) em `CharacterRules.calcularBonusPorDificuldade`.
-  - cobertura de testes ampliada em `RulesLayerTest` para os degraus `1, 2, 3, 4, 8, 12` nas quatro dificuldades.
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Lote 3 (Perícias) - pacote 2 iniciado:
-  - `PericiaDefinicao` atualizado para aceitar variações de chave de `preDefinicoes` (`preDefinições` e forma legada com encoding incorreto).
-  - testes de parsing ampliados em `PericiaJsonParsingTest` cobrindo `preDefinicoes` com chaves acentuada/legada.
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Lote 3 (Perícias) - pacote 3 iniciado:
-  - exibição de NH relativo adicionada na lista da aba Perícias (`Nível X (ATR+Y)`), alinhando com os diálogos de criação/edição.
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Lote 3 (Perícias) - fechado nesta etapa.
-- Lote 4 (Magia) - pacote 1 iniciado:
-  - filtro de magias ampliado para combinar `escola` + `classe` no repositório.
-  - UI de seleção de magias passou a ter chips de filtro por `classe`.
-  - exibição de NH nos diálogos de magia ajustada para base `IQ+AM` e relativo consistente.
-  - exibição da dificuldade de magia ajustada para usar a sigla real (`F/M/D/MD`) em vez de simplificação `D/MD`.
-  - pré-requisitos de magia mantidos sem alteração (decisão explícita do usuário).
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Lote 4 (Magia) - pacote 2 iniciado:
-  - regra de custo mínimo de magia reforçada (mínimo `1 ponto`) no repositório/viewmodel e no total da ficha.
-  - teste adicionado cobrindo normalização de custo mínimo em `PersonagemRulesTest`.
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
-- Lote 4 (Magia) - pacote 3 iniciado:
-  - classes de magia agrupadas para filtro por tags de domínio:
-    - `Bloqueio` (família `Bloq./Bloqueio...`)
-    - `Comum` (família `Com./Comm/Comum...`)
-    - `Encantamento` (família `Encant...`)
-    - `Especial`, `Informação`, `Projétil`, `Toque`, `Área` (demais famílias definidas pelo usuário)
-  - robustez de agrupamento reforçada para variações de OCR/acentuação.
-  - total de classes no filtro reduzido para 8 categorias agrupadas.
-  - validação executada com sucesso: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`.
+## Regra de Trabalho (Obrigatória)
+- Todo lote concluído deve terminar com:
+  1. validação padrão completa;
+  2. ponto de salvamento no Git (commit/checkpoint) com mensagem clara do lote;
+  3. atualização deste `PROGRESS.md`.
 
-## Em andamento
-- Nenhum item ativo no momento.
+## Plano de Lotes (Próximos Passos)
 
-## Checklist do ponto salvo
-- [x] Fonte de vantagens forçada para `app/src/main/assets/vantagens.v3.json`.
-- [x] Busca por tags em vantagens (`combate`, `social`, `fisica`, `mental`, `magica`).
-- [x] Correção de parse runtime do `v3` (lista não fica vazia).
-- [x] Ajustes de custo híbrido: `aptidao_magica`, `elo_mental`, `dx_bracal`, `st_bracal`, `apetrechos`.
-- [x] APK debug atualizado gerado para teste manual.
+### Lote 1 - Correção crítica de armaduras compostas
+Escopo:
+- Corrigir adição de `traje completo + cabeça` para não dividir custo/peso base indevidamente.
+- Garantir que os conjuntos compostos usem valores próprios por parte (base e componente).
+Critério de pronto:
+- Teste funcional no app com os 5 conjuntos especiais aprovado.
+- Custo/peso final batendo com tabela.
+Status: `CONCLUIDO (2026-02-25)`
 
-## Ponto de salvamento
-- Data: 2026-02-24
-- Marco: Lote 4 (Magia) com filtros de classe agrupados em 8 categorias e custo mínimo de magia reforçado.
-- Status de validação: `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon` executado com sucesso.
+### Lote 2 - Higiene de dados de armaduras (parser + JSON)
+Escopo:
+- Corrigir parser de dinheiro para não converter `$1.300` em `1.3`.
+- Corrigir campos OCR inválidos em armaduras (ex.: `rdRaw` com data).
+- Regenerar `armaduras.v1.json` com consistência de custo/peso/RD.
+Critério de pronto:
+- Sem linhas críticas inválidas no JSON.
+- Valores monetários de milhar corretos.
+Status: `PENDENTE`
 
-## Backlog de aderência ao livro (priorizado)
+### Lote 3 - Revisão de reviewFlags (armas)
+Escopo:
+- Revisar e limpar itens com `reviewFlags` em:
+  - `armas_corpo_a_corpo.v1.review_flags.json`
+  - `armas_fogo.v1.review_flags.json`
+- Manter `armas_distancia` como referência já limpa.
+Critério de pronto:
+- Redução máxima dos `reviewFlags` sem quebrar normalização.
+Status: `PENDENTE`
 
-### Lote 1 - Criação de Personagem (cap. 1, p. 11+)
-- Validar custo de atributos básicos e secundários com exemplos do livro.
-- Revisar limites e regras de pontos iniciais/desvantagens por template de campanha.
-- Conferir fórmulas derivadas: BC, dano GdP/GeB, velocidade, deslocamento, carga.
-- Entregável: checklist de conformidade + ajustes pontuais em regras.
+### Lote 4 - Ajuste de layout da aba Equipamentos (UX)
+Escopo:
+- Reposicionar resumo de Equipamentos para o final da aba (rodapé).
+- Reduzir tamanho visual do card resumo e tipografia.
+- Cards de Armas: após adicionar, mostrar somente nome + dano.
+Critério de pronto:
+- Layout validado em aparelho antigo e atual, sem poluição de informação.
+Status: `PENDENTE`
 
-### Lote 2 - Vantagens e Desvantagens (cap. 2-3, p. 33+ / p. 120+)
-- Revisar custo por nível, custo variável e custos por autocontrole.
-- Tratar casos especiais de vantagens com regras próprias (ex.: Aptidão Mágica).
-- Garantir bloqueios/alertas para combinações inválidas.
-- Entregável: matriz de regras por tipo de custo + testes unitários cobrindo casos de borda.
+### Lote 5 - Robustez e manutenção
+Escopo:
+- Reduzir fragilidade de parsing por texto em `notas` (ex.: RD por regex).
+- Melhorar tratamento de erro em carga de catálogos (sem falha silenciosa).
+- Adicionar testes focados em equipamentos (armas/escudos/armaduras).
+Critério de pronto:
+- Regressões principais cobertas por testes.
+Status: `PENDENTE`
 
-### Lote 3 - Perícias (cap. 4, p. 168+)
-- Conferir fórmula de NH por dificuldade/pontos (1,2,4,8,+4).
-- Validar pré-definições, especializações obrigatórias e atributos alternativos.
-- Ajustar cálculo e exibição de NH relativo em todos os diálogos.
-- Entregável: bateria de testes de perícias (fácil/média/difícil/muito difícil).
+## Itens Fechados (Não Mexer Agora)
+- Lote 3 (Perícias) fechado e validado.
+- Lote 4 (Magia) fechado e validado.
+- Lote 5 (Combate de ficha) fechado no escopo de ficha (sem jogabilidade tática).
+- Auto-save de recuperação implementado.
 
-### Lote 4 - Magia (cap. 5, p. 235+)
-- Revisar integração IQ + Aptidão Mágica no NH de magia.
-- Conferir filtros (escola/classe), pré-requisitos e custo em pontos.
-- Validar comportamento ao ganhar/perder Aptidão Mágica em cenários reais.
-- Entregável: checklist funcional de magia + testes de regressão.
-
-### Lote 5 - Combate (cap. 11-14, p. 363+)
-- Validar Esquiva, Apara e Bloqueio contra fórmulas e modificadores do livro.
-- Revisar impacto de carga e equipamentos nas defesas.
-- Ajustar regras de situação especial que estiverem fora do escopo atual.
-- Entregável: tabela comparativa app x livro para defesas ativas.
-
-### Lote 6 - Equipamento e economia (cap. 8, p. 265+)
-- Revisar custos/pesos e impacto em carga.
-- Validar recursos iniciais e consistência com riqueza/NT quando aplicável.
-- Entregável: critérios de validação para inventário e custos.
-
-### Lote 7 - Evolução e manutenção de ficha (cap. 9, p. 291+)
-- Revisar evolução de personagem (pontos ganhos/gastos).
-- Garantir persistência consistente ao longo de alterações complexas.
-- Entregável: roteiro de teste de campanha longa.
-
-## Pendências priorizadas (próximos passos)
-- Lote 4 (Magia): rodar checklist funcional de magia em cenários reais (com e sem Aptidão Mágica).
-- Lote 5 (Combate): validar Esquiva, Apara e Bloqueio contra fórmulas e modificadores do livro.
-- Lote 2 (Vantagens/Desvantagens): pausado temporariamente até recebimento das tags finais de desvantagens.
-
-## Regra de execução
-- Não alterar visual/textos sem necessidade de regra.
-- Cada lote:
-  1. levantar regra no livro,
-  2. comparar com implementação atual,
-  3. corrigir em mudanças pequenas,
-  4. validar com build/testes,
-  5. atualizar este `PROGRESS.md`.
-
-## Validação padrão
+## Validação Padrão
 - Compilar + testes unitários:
-  - `.\gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`
+  - `./gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`
 - Gerar APK debug:
-  - `.\gradlew.bat assembleDebug --no-daemon`
+  - `./gradlew.bat :app:assembleDebug --no-daemon`
   - saída: `app/build/outputs/apk/debug/app-debug.apk`
+
+## Pontos de Salvamento
+- `snapshots/checkpoint-20260224-151219`
+- `snapshots/checkpoint-20260224-193129`
+- `snapshots/checkpoint-20260224-202718`
+- `snapshots/checkpoint-20260224-224754`
+- `snapshots/checkpoint-20260224-232517`
+
+## Decisão de Escopo Mantida
+- Situações de jogabilidade de combate (manobra/postura/múltiplas defesas por turno etc.) permanecem fora da criação/manutenção da ficha nesta fase.
+## lembra-me desse item posteriormente
+o campo de resumo de Equipamento esta acima das Armaduras, esta errado, tem que ficar abaixo de tudo com uma nota de rodapé, pode diminuir o card dele e o tamanho das letras! 
+ os cards de Armas tbm pode diminuir as iformações depois de adicionado, apenas o nome do item, dano que ele causa!

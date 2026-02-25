@@ -3,6 +3,7 @@
 import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,10 @@ import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
@@ -22,7 +27,9 @@ data class ActiveDefense(
     val finalValue: Int
 )
 
+@OptIn(FlowPreview::class)
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
+    private val autoSaveRecuperacaoNome = "_autosave_recuperacao"
 
     var personagem by mutableStateOf(Personagem())
         private set
@@ -58,6 +65,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     var filtroClasseMagia by mutableStateOf<String?>(null)
         private set
 
+    var buscaArmaEquipamento by mutableStateOf("")
+        private set
+    var filtroTipoArmaEquipamento by mutableStateOf<String?>(null) // "corpo_a_corpo" | "distancia" | "armas_de_fogo" | null
+        private set
+    var buscaEscudoEquipamento by mutableStateOf("")
+        private set
+    var buscaArmaduraEquipamento by mutableStateOf("")
+        private set
+    var filtroNtArmaduraEquipamento by mutableStateOf<Int?>(null)
+        private set
+    var filtroLocalArmaduraEquipamento by mutableStateOf<String?>(null)
+        private set
+
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
     private var personagemPendenteLimpezaMagias: Personagem? = null
@@ -74,6 +94,31 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     val magiasFiltradas: List<MagiaDefinicao>
         get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
+
+    val armasEquipamentosFiltradas: List<ArmaCatalogoItem>
+        get() = dataRepository.filtrarArmasCatalogo(
+            busca = buscaArmaEquipamento,
+            tipoCombate = filtroTipoArmaEquipamento,
+            stMaximo = personagem.forca
+        )
+
+    val escudosEquipamentosFiltrados: List<EscudoCatalogoItem>
+        get() = dataRepository.filtrarEscudosCatalogo(
+            busca = buscaEscudoEquipamento,
+            stMaximo = personagem.forca
+        )
+
+    val armadurasEquipamentosFiltradas: List<ArmaduraCatalogoItem>
+        get() = dataRepository.filtrarArmadurasCatalogo(
+            busca = buscaArmaduraEquipamento,
+            nt = filtroNtArmaduraEquipamento,
+            localFiltro = filtroLocalArmaduraEquipamento
+        )
+
+    val escudosEquipados: List<Equipamento>
+        get() = personagem.equipamentos
+            .filter { it.tipo == TipoEquipamento.ESCUDO }
+            .sortedBy { it.nome.lowercase() }
 
     val todasEscolasMagia: List<String>
         get() = dataRepository.magias
@@ -92,7 +137,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     init {
         viewModelScope.launch {
             fichaStorage.migrarDeSharedPreferencesSeNecessario()
+            restaurarAutoSaveSeExistir()
             carregarListaFichas()
+        }
+
+        viewModelScope.launch {
+            snapshotFlow { personagem.toJson() }
+                .distinctUntilChanged()
+                .debounce(600)
+                .collect { json ->
+                    fichaStorage.salvarFicha(autoSaveRecuperacaoNome, json)
+                }
         }
     }
 
@@ -136,6 +191,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarFiltroClasseMagia(classe: String?) {
         filtroClasseMagia = classe
+    }
+
+    fun atualizarBuscaArmaEquipamento(busca: String) {
+        buscaArmaEquipamento = busca
+    }
+
+    fun atualizarFiltroTipoArmaEquipamento(tipo: String?) {
+        filtroTipoArmaEquipamento = tipo
+    }
+
+    fun atualizarBuscaEscudoEquipamento(busca: String) {
+        buscaEscudoEquipamento = busca
+    }
+
+    fun atualizarBuscaArmaduraEquipamento(busca: String) {
+        buscaArmaduraEquipamento = busca
+    }
+
+    fun atualizarFiltroNtArmaduraEquipamento(nt: Int?) {
+        filtroNtArmaduraEquipamento = nt
+    }
+
+    fun atualizarFiltroLocalArmaduraEquipamento(local: String?) {
+        filtroLocalArmaduraEquipamento = local
     }
 
     // === INFORMACOES BASICAS ===
@@ -366,6 +445,97 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val lista = personagem.equipamentos.toMutableList()
         lista.add(equipamento)
         personagem = personagem.copy(equipamentos = lista)
+        ajustarEscudoSelecionadoAutomatico()
+    }
+
+    fun adicionarEquipamentoArma(arma: ArmaCatalogoItem) {
+        val equipamento = Equipamento(
+            nome = arma.nome,
+            peso = arma.pesoBaseKg ?: 0f,
+            custo = arma.custoBase ?: 0f,
+            quantidade = 1,
+            notas = arma.grupo,
+            tipo = if (arma.nome.contains("escudo", ignoreCase = true)) TipoEquipamento.ESCUDO else TipoEquipamento.ARMA,
+            bonusDefesa = 0,
+            armaCatalogoId = arma.id,
+            armaTipoCombate = arma.tipoCombate,
+            armaDanoRaw = arma.danoRaw,
+            armaStMinimo = arma.stMinimo
+        )
+        adicionarEquipamento(equipamento)
+    }
+
+    fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {
+        val equipamento = Equipamento(
+            nome = escudo.nome,
+            peso = escudo.pesoKg ?: 0f,
+            custo = escudo.custo ?: 0f,
+            quantidade = 1,
+            notas = escudo.observacoes,
+            tipo = TipoEquipamento.ESCUDO,
+            bonusDefesa = escudo.db
+        )
+        adicionarEquipamento(equipamento)
+    }
+
+    fun adicionarEquipamentoArmadura(armadura: ArmaduraCatalogoItem) {
+        val componentesTexto = if (armadura.componentes.isEmpty()) {
+            ""
+        } else {
+            armadura.componentes.joinToString(" | ") { c ->
+                val custo = c.custoBase?.let { "$$it" } ?: "—"
+                val peso = c.pesoKg?.let { "${it}kg" } ?: "—"
+                "${c.local} RD ${c.rd} Custo $custo Peso $peso"
+            }
+        }
+        val notas = buildString {
+            append("Local: ${armadura.local}; RD: ${armadura.rd}")
+            if (armadura.observacoes.isNotBlank()) append("; Obs: ${armadura.observacoes}")
+            if (componentesTexto.isNotBlank()) append("; Componentes: $componentesTexto")
+        }
+        val equipamento = Equipamento(
+            nome = armadura.nome,
+            peso = armadura.pesoBaseKg ?: 0f,
+            custo = armadura.custoBase ?: 0f,
+            quantidade = 1,
+            notas = notas,
+            tipo = TipoEquipamento.ARMADURA
+        )
+        adicionarEquipamento(equipamento)
+    }
+
+    fun adicionarEquipamentoArmaduraComSelecao(armadura: ArmaduraCatalogoItem, locaisSelecionados: List<String>) {
+        val selecionadosNorm = locaisSelecionados.map { it.trim() }.filter { it.isNotBlank() }
+        val locaisFinais = if (selecionadosNorm.isEmpty()) listOf(armadura.local) else selecionadosNorm
+        val custoBase = armadura.custoBase ?: 0f
+        val pesoBase = armadura.pesoBaseKg ?: 0f
+        val possuiComponentes = armadura.componentes.isNotEmpty()
+        val divisor = locaisFinais.size.coerceAtLeast(1).toFloat()
+
+        locaisFinais.forEach { localSel ->
+            val componente = armadura.componentes.firstOrNull { it.local.equals(localSel, ignoreCase = true) }
+            val custoLocal = when {
+                componente?.custoBase != null -> componente.custoBase
+                possuiComponentes -> custoBase
+                else -> (custoBase / divisor)
+            }
+            val pesoLocal = when {
+                componente?.pesoKg != null -> componente.pesoKg
+                possuiComponentes -> pesoBase
+                else -> (pesoBase / divisor)
+            }
+            val rdLocal = componente?.rd ?: armadura.rd
+            val notas = "Local: $localSel; RD: $rdLocal"
+            val equipamento = Equipamento(
+                nome = "${armadura.nome} ($localSel)",
+                peso = pesoLocal,
+                custo = custoLocal,
+                quantidade = 1,
+                notas = notas,
+                tipo = TipoEquipamento.ARMADURA
+            )
+            adicionarEquipamento(equipamento)
+        }
     }
 
     fun removerEquipamento(index: Int) {
@@ -373,6 +543,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (index in lista.indices) {
             lista.removeAt(index)
             personagem = personagem.copy(equipamentos = lista)
+            ajustarEscudoSelecionadoAutomatico()
         }
     }
 
@@ -381,6 +552,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (index in lista.indices) {
             lista[index] = equipamento
             personagem = personagem.copy(equipamentos = lista)
+            ajustarEscudoSelecionadoAutomatico()
         }
     }
 
@@ -430,7 +602,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun carregarListaFichas() {
-        fichasSalvas = fichaStorage.listarFichas()
+        fichasSalvas = fichaStorage
+            .listarFichas()
+            .filterNot { it == autoSaveRecuperacaoNome }
+    }
+
+    private suspend fun restaurarAutoSaveSeExistir() {
+        val json = fichaStorage.carregarFicha(autoSaveRecuperacaoNome) ?: return
+        runCatching {
+            personagem = Personagem.fromJson(json)
+        }
     }
 
     // === UTILITARIOS ===
@@ -440,6 +621,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val custoTotalEquipamentos: Float get() = personagem.equipamentos.sumOf {
         (it.custo * it.quantidade).toDouble()
     }.toFloat()
+
+    fun calcularDanoArmaComSt(danoRaw: String?): String {
+        val raw = danoRaw?.trim().orEmpty()
+        if (raw.isBlank()) return ""
+        return CharacterRules.resolverDanoPorSt(raw, personagem.forca)
+    }
 
     val nivelCarga: Int get() = personagem.nivelCarga
 
@@ -503,6 +690,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarPericiaBloqueio(periciaId: String?) {
         val defesas = personagem.defesasAtivas.copy(periciaBloqueioId = periciaId)
         personagem = personagem.copy(defesasAtivas = defesas)
+        ajustarEscudoSelecionadoAutomatico()
     }
 
     fun atualizarEscudoBloqueio(escudoNome: String?) {
@@ -594,6 +782,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun cancelarLimpezaMagiasAoPerderAptidao() {
         personagemPendenteLimpezaMagias = null
         mostrarConfirmacaoLimpezaMagias = false
+    }
+
+    private fun ajustarEscudoSelecionadoAutomatico() {
+        if (personagem.defesasAtivas.periciaBloqueioId.isNullOrBlank()) return
+        val escudos = escudosEquipados
+        if (escudos.isEmpty()) {
+            val def = personagem.defesasAtivas.copy(escudoSelecionadoNome = null)
+            personagem = personagem.copy(defesasAtivas = def)
+            return
+        }
+        val atual = personagem.defesasAtivas.escudoSelecionadoNome
+        val existeAtual = atual?.let { nomeSel ->
+            escudos.any { it.nome.equals(nomeSel.trim(), ignoreCase = true) }
+        } == true
+        if (existeAtual) return
+        val melhor = escudos.maxByOrNull { it.bonusDefesa }?.nome ?: escudos.first().nome
+        val def = personagem.defesasAtivas.copy(escudoSelecionadoNome = melhor)
+        personagem = personagem.copy(defesasAtivas = def)
     }
 
     private fun atualizarVantagensComConfirmacao(vantagensAtualizadas: List<VantagemSelecionada>) {
