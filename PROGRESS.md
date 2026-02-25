@@ -3,6 +3,9 @@
 Atualizado em: 2026-02-25
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
+## Proximo Passo Imediato
+- Executar `Lote 7 - micro-passo 1`: ajustar estrutura da aba Geral sem alterar regras de calculo.
+
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
 - Envio de rolagens funcionando com selecao de canal no app.
@@ -113,6 +116,11 @@ Criterio de pronto:
 - Historico e persistencia funcionando.
 - Layout validado em uso real (scroll, campos, resumo).
 Status: `PENDENTE`
+
+## Fora de Escopo (agora)
+- Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.
+- Nao remover persistencia legada de fichas sem migracao planejada.
+- Nao alterar fluxo de integracao Discord ja validado em producao, exceto correcoes pontuais de bug.
 
 ## Referencia Rapida de Erros (Discord)
 - `unauthorized` (401): chave de acesso invalida ou ausente.
