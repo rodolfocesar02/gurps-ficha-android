@@ -55,9 +55,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val density = LocalDensity.current
     val usarNavegacaoCompacta = configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Magia", "Combate", "Equip.", "Notas")
+        listOf("Geral", "Traços", "Perícias", "Magia", "Combate", "Equip.", "Rolagem", "Notas")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Combate", "Equip.", "Notas")
+        listOf("Geral", "Traços", "Perícias", "Combate", "Equip.", "Rolagem", "Notas")
     }
     val maxTabIndex = tabs.lastIndex
 
@@ -96,16 +96,18 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 tabs.forEachIndexed { index, title ->
                     NavigationBarItem(
                         icon = {
+                            val icon = when (title) {
+                                "Geral" -> Icons.Default.Person
+                                "Traços" -> Icons.Default.Star
+                                "Perícias" -> Icons.Default.Build
+                                "Magia" -> Icons.Default.Star
+                                "Combate" -> Icons.Default.Favorite
+                                "Equip." -> Icons.Default.ShoppingCart
+                                "Rolagem" -> Icons.Default.Build
+                                else -> Icons.Default.Edit
+                            }
                             Icon(
-                                when (index) {
-                                    0 -> Icons.Default.Person
-                                    1 -> Icons.Default.Star
-                                    2 -> Icons.Default.Build
-                                    3 -> if (temAptidaoMagica) Icons.Default.Star else Icons.Default.Favorite
-                                    4 -> if (temAptidaoMagica) Icons.Default.Favorite else Icons.Default.ShoppingCart
-                                    5 -> if (temAptidaoMagica) Icons.Default.ShoppingCart else Icons.Default.Edit
-                                    else -> Icons.Default.Edit
-                                },
+                                icon,
                                 contentDescription = title
                             )
                         },
@@ -140,8 +142,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 2 -> TabPericias(viewModel)
                 3 -> if (temAptidaoMagica) TabMagias(viewModel) else TabCombate(viewModel)
                 4 -> if (temAptidaoMagica) TabCombate(viewModel) else TabEquipamentos(viewModel)
-                5 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabNotas(viewModel)
-                6 -> TabNotas(viewModel)
+                5 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabRolagem(viewModel)
+                6 -> if (temAptidaoMagica) TabRolagem(viewModel) else TabNotas(viewModel)
+                7 -> TabNotas(viewModel)
             }
         }
     }

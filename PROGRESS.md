@@ -90,7 +90,7 @@ Escopo:
 Critério de pronto:
 - Aba `Rolagem` acessível e estável.
 - `Notas` sem conteúdo jogável ativo.
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 
 ### Lote 7 - Motor de rolagem local (MVP jogável)
 Escopo:
