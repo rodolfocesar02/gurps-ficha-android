@@ -575,11 +575,20 @@ private fun SelecionarArmaduraEquipamentoDialog(
 ) {
     val armaduras = viewModel.armadurasEquipamentosFiltradas
     val tags = viewModel.tagsArmadurasEquipamentos
+    val filtrosAtivos = viewModel.buscaArmaduraEquipamento.isNotBlank() ||
+        viewModel.filtroLocalArmaduraEquipamento != null ||
+        viewModel.filtroNtArmaduraEquipamento != null ||
+        viewModel.filtroTagArmaduraEquipamento != null
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecionar Armadura") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "Use Local, depois NT e Tag para refinar mais rapido.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 OutlinedTextField(
                     value = viewModel.buscaArmaduraEquipamento,
                     onValueChange = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
@@ -587,26 +596,6 @@ private fun SelecionarArmaduraEquipamentoDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TipoArmaFiltroChip(
-                        label = "NT: Todas",
-                        selected = viewModel.filtroNtArmaduraEquipamento == null,
-                        onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
-                    )
-                    for (nt in 0..10) {
-                        TipoArmaFiltroChip(
-                            label = "NT $nt",
-                            selected = viewModel.filtroNtArmaduraEquipamento == nt,
-                            onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
-                        )
-                    }
-                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -635,6 +624,26 @@ private fun SelecionarArmaduraEquipamentoDialog(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     TipoArmaFiltroChip(
+                        label = "NT: Todas",
+                        selected = viewModel.filtroNtArmaduraEquipamento == null,
+                        onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
+                    )
+                    for (nt in 0..10) {
+                        TipoArmaFiltroChip(
+                            label = "NT $nt",
+                            selected = viewModel.filtroNtArmaduraEquipamento == nt,
+                            onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
+                        )
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TipoArmaFiltroChip(
                         label = "Tag: Todas",
                         selected = viewModel.filtroTagArmaduraEquipamento == null,
                         onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(null) }
@@ -646,6 +655,12 @@ private fun SelecionarArmaduraEquipamentoDialog(
                             onClick = { viewModel.atualizarFiltroTagArmaduraEquipamento(tag) }
                         )
                     }
+                }
+                if (filtrosAtivos) {
+                    TextButton(
+                        onClick = { viewModel.limparFiltrosArmaduraEquipamento() },
+                        modifier = Modifier.align(Alignment.End)
+                    ) { Text("Limpar filtros") }
                 }
                 Text(
                     "Resultados: ${armaduras.size}",

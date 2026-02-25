@@ -4,7 +4,7 @@ Atualizado em: 2026-02-25
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Executar `Lote 1 - passo 4`: revisar UX final do seletor de armaduras (ordem de filtros e texto de ajuda) e fechar lote.
+- Iniciar `Lote 2 - passo 1`: mapear campos principais da ficha para gatilho de rolagem direta (somente mapeamento/sem alterar regras de rolagem).
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -23,13 +23,14 @@ Escopo:
 Criterio de pronto:
 - Catalogo de armaduras consistente e facil de manter.
 - Busca por tags mais previsivel e util para uso real.
-Status: `PENDENTE`
+Status: `CONCLUIDO`
 Andamento:
 - Passo 1 concluido (2026-02-25): novo arquivo `armaduras.v2.json` gerado a partir de `tabelas_de_Armaduras2.xlsx`, com 72 itens base, componentes/add-ons estruturados, `notes` completas (NT baixo/alto), tags e metadados de RD (dividida/flexivel/frontal).
 - Passo 1 concluido (2026-02-25): app passou a carregar `armaduras.v2.json` com fallback para `armaduras.v1.json`, incluindo busca por `tags` e `observacoesDetalhadas`.
 - Passo 2 concluido (2026-02-25): UI de armaduras atualizada com filtro dedicado por `tag` (alem de NT/local), contador de resultados e exibicao de tags na lista para selecao mais previsivel.
 - Passo 3 concluido (2026-02-25): consolidacao final do catalogo de armaduras com validacao automatica (sem duplicidade de `id`, sem duplicidade de nome normalizado, sem locais fora do canonico e sem texto quebrado/mojibake).
 - Passo 3 concluido (2026-02-25): `scripts/convert_armaduras_v2.py` reforcado para reparar texto quebrado na conversao e `scripts/validate_armaduras_v2.py` criado para checagem de consistencia do JSON antes de commit.
+- Passo 4 concluido (2026-02-25): UX final do seletor de armaduras ajustada (ordem de filtros Local -> NT -> Tag, texto de orientacao de uso e acao "Limpar filtros"), fechando o lote de catalogo.
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:

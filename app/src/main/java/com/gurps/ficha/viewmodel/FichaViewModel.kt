@@ -270,6 +270,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         filtroTagArmaduraEquipamento = tag?.trim()?.takeIf { it.isNotBlank() }
     }
 
+    fun limparFiltrosArmaduraEquipamento() {
+        buscaArmaduraEquipamento = ""
+        filtroNtArmaduraEquipamento = null
+        filtroLocalArmaduraEquipamento = null
+        filtroTagArmaduraEquipamento = null
+    }
+
     // === INFORMACOES BASICAS ===
 
     fun atualizarNome(nome: String) {
