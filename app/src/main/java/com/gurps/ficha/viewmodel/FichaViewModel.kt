@@ -575,10 +575,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (arma.tipoCombate != "corpo_a_corpo" && arma.tipoCombate != "distancia" && arma.tipoCombate != "armas_de_fogo") {
             return ""
         }
-        val refs = Regex("\\[(\\d+)]")
-            .findAll(arma.observacoes)
-            .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
-            .toList()
+        val refs = extrairReferenciasObservacoes(arma.observacoes)
         if (arma.tipoCombate == "armas_de_fogo") {
             val classe = classificarArmaDeFogo(arma)
             val linhas = mutableListOf<String>()
@@ -598,6 +595,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (refs.isEmpty()) return ""
         val mapa = if (arma.tipoCombate == "distancia") OBS_ARMA_DISTANCIA else OBS_ARMA_CORPO_A_CORPO
         return refs.mapNotNull { ref -> mapa[ref]?.let { "[$ref] $it" } }.joinToString("\n")
+    }
+
+    private fun extrairReferenciasObservacoes(observacoes: String): List<Int> {
+        if (observacoes.isBlank() || !observacoes.contains("[")) return emptyList()
+        return Regex("\\d+")
+            .findAll(observacoes)
+            .mapNotNull { it.value.toIntOrNull() }
+            .distinct()
+            .toList()
     }
 
     private enum class ClasseArmaFogo {
