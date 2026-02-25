@@ -11,6 +11,11 @@ const apiKey = process.env.API_KEY || '';
 const botToken = process.env.DISCORD_BOT_TOKEN || '';
 const defaultChannelId = process.env.DISCORD_CHANNEL_ID || '';
 const DISCORD_TYPE_GUILD_VOICE = 2;
+const CHANNEL_CACHE_TTL_MS = 30 * 60 * 1000;
+const channelsCache = {
+  items: [],
+  fetchedAt: 0
+};
 
 function requireConfigured() {
   return Boolean(apiKey && botToken);
@@ -117,6 +122,30 @@ async function listVoiceChannels() {
   return channels;
 }
 
+function cacheAgeMs() {
+  if (!channelsCache.fetchedAt) return Number.MAX_SAFE_INTEGER;
+  return Date.now() - channelsCache.fetchedAt;
+}
+
+function cacheIsFresh() {
+  return channelsCache.items.length > 0 && cacheAgeMs() < CHANNEL_CACHE_TTL_MS;
+}
+
+function cacheAgeSeconds() {
+  return Math.max(0, Math.floor(cacheAgeMs() / 1000));
+}
+
+async function getVoiceChannelsCached() {
+  if (cacheIsFresh()) {
+    return { channels: channelsCache.items, fromCache: true };
+  }
+
+  const channels = await listVoiceChannels();
+  channelsCache.items = channels;
+  channelsCache.fetchedAt = Date.now();
+  return { channels, fromCache: false };
+}
+
 app.get('/health', (_req, res) => {
   res.json({
     ok: true,
@@ -137,8 +166,14 @@ app.get('/api/channels', async (req, res) => {
   }
 
   try {
-    const channels = await listVoiceChannels();
-    return res.json({ ok: true, channels });
+    const { channels, fromCache } = await getVoiceChannelsCached();
+    return res.json({
+      ok: true,
+      channels,
+      fromCache,
+      cacheAgeSeconds: cacheAgeSeconds(),
+      cacheTtlSeconds: Math.floor(CHANNEL_CACHE_TTL_MS / 1000)
+    });
   } catch (error) {
     return res.status(502).json({
       ok: false,
