@@ -82,6 +82,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var filtroTipoArmaEquipamento by mutableStateOf<String?>(null) // "corpo_a_corpo" | "distancia" | "armas_de_fogo" | null
         private set
+    var filtroCategoriaArmaFogoEquipamento by mutableStateOf<String?>(null) // "pistolas_mm" | "rifles_espingardas" | "ultratech" | "pesadas" | null
+        private set
     var buscaEscudoEquipamento by mutableStateOf("")
         private set
     var buscaArmaduraEquipamento by mutableStateOf("")
@@ -125,11 +127,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
 
     val armasEquipamentosFiltradas: List<ArmaCatalogoItem>
-        get() = dataRepository.filtrarArmasCatalogo(
+        get() {
+            val base = dataRepository.filtrarArmasCatalogo(
             busca = buscaArmaEquipamento,
             tipoCombate = filtroTipoArmaEquipamento,
             stMaximo = personagem.forca
         )
+            val categoriaFiltro = filtroCategoriaArmaFogoEquipamento
+            if (categoriaFiltro.isNullOrBlank()) return base
+            return base.filter { arma ->
+                arma.tipoCombate == "armas_de_fogo" &&
+                    categoriaArmaFogoParaFiltro(arma) == categoriaFiltro
+            }
+        }
 
     val escudosEquipamentosFiltrados: List<EscudoCatalogoItem>
         get() = dataRepository.filtrarEscudosCatalogo(
@@ -252,6 +262,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarFiltroTipoArmaEquipamento(tipo: String?) {
         filtroTipoArmaEquipamento = tipo
+        if (tipo != "armas_de_fogo") {
+            filtroCategoriaArmaFogoEquipamento = null
+        }
+    }
+
+    fun atualizarFiltroCategoriaArmaFogoEquipamento(categoria: String?) {
+        filtroCategoriaArmaFogoEquipamento = categoria
     }
 
     fun atualizarBuscaEscudoEquipamento(busca: String) {
@@ -611,6 +628,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (grupo.contains("rifle")) return ClasseArmaFogo.RIFLE_ESPINGARDA
 
         return ClasseArmaFogo.PISTOLA_MM
+    }
+
+    private fun categoriaArmaFogoParaFiltro(arma: ArmaCatalogoItem): String {
+        return when (classificarArmaDeFogo(arma)) {
+            ClasseArmaFogo.PISTOLA_MM -> "pistolas_mm"
+            ClasseArmaFogo.RIFLE_ESPINGARDA -> "rifles_espingardas"
+            ClasseArmaFogo.ULTRATECH -> "ultratech"
+            ClasseArmaFogo.PESADA -> "pesadas"
+        }
     }
 
     fun adicionarEquipamentoEscudo(escudo: EscudoCatalogoItem) {

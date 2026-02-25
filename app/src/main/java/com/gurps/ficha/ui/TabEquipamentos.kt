@@ -455,6 +455,39 @@ fun SelecionarArmaEquipamentoDialog(
                         onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("armas_de_fogo") }
                     )
                 }
+                if (viewModel.filtroTipoArmaEquipamento == "armas_de_fogo") {
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TipoArmaFiltroChip(
+                            label = "Todas Fogo",
+                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == null,
+                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento(null) }
+                        )
+                        TipoArmaFiltroChip(
+                            label = "Pistolas e MM",
+                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "pistolas_mm",
+                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pistolas_mm") }
+                        )
+                        TipoArmaFiltroChip(
+                            label = "Rifles e Espingardas",
+                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "rifles_espingardas",
+                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("rifles_espingardas") }
+                        )
+                        TipoArmaFiltroChip(
+                            label = "Ultra-Tech",
+                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "ultratech",
+                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("ultratech") }
+                        )
+                        TipoArmaFiltroChip(
+                            label = "Armas Pesadas",
+                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "pesadas",
+                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pesadas") }
+                        )
+                    }
+                }
                 if (armas.isEmpty()) {
                     Text(
                         "Nenhuma arma disponivel para o ST atual e filtros aplicados.",
