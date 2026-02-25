@@ -143,6 +143,7 @@ Andamento:
 - Passo 1 concluído (2026-02-25): backend lista canais de voz em `/api/channels` e app permite selecionar/salvar canal de envio na aba Rolagem.
 - Passo 2 concluído (2026-02-25): backend publicado no Railway, app configurado para URL pública HTTPS e funcionamento validado em celular fora do backend local em PC.
 - Passo 3 concluído (2026-02-25): cache de canais de voz no backend com TTL de 30 minutos para reduzir latência e risco de rate limit na API do Discord.
+- Passo 4 concluído (2026-02-25): removida linha de diagnóstico de servidor na aba Rolagem após validação de produção.
 
 ### Backlog Pós-Lote 10 (Planejado)
 - Implementar autenticação/login de usuário no app e no backend (escopo futuro), mantendo o uso atual simplificado enquanto o grupo é pequeno.
