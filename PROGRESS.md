@@ -126,6 +126,8 @@ Critério de pronto:
 Status: `PENDENTE`
 Observação:
 - Pré-requisito local para validar backend: Node.js + npm instalados no ambiente.
+Andamento:
+- Passo 1 concluído (2026-02-25): backend `discord-roll-api` criado e healthcheck validado localmente.
 
 ### Lote 10 - Polimento e segurança da integração
 Escopo:
