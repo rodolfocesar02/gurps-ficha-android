@@ -212,7 +212,11 @@ class DataRepository(private val context: Context) {
                     custoBase = custoObj?.float("valor"),
                     pesoBaseKg = pesoObj?.float("armaKg"),
                     aparar = null,
-                    observacoes = ""
+                    observacoes = if (tipoCombate == "distancia") {
+                        obj.string("observacoes").orEmpty().sanitized()
+                    } else {
+                        ""
+                    }
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError(nomeArquivo)

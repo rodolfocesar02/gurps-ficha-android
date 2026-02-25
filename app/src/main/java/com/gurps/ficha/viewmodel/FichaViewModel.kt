@@ -519,7 +519,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 if (isNotBlank()) append("\n")
                 append("Aparar: ${arma.aparar} (${explicarAparar(arma.aparar)})")
             }
-            val observacoes = observacoesArmaCorpoACorpo(arma)
+            val observacoes = observacoesArmaFormatadas(arma)
             if (observacoes.isNotBlank()) {
                 if (isNotBlank()) append("\n")
                 append(observacoes)
@@ -553,15 +553,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun observacoesArmaCorpoACorpo(arma: ArmaCatalogoItem): String {
-        if (arma.tipoCombate != "corpo_a_corpo") return ""
+    private fun observacoesArmaFormatadas(arma: ArmaCatalogoItem): String {
+        if (arma.tipoCombate != "corpo_a_corpo" && arma.tipoCombate != "distancia") return ""
         val refs = Regex("\\[(\\d+)]")
             .findAll(arma.observacoes)
             .mapNotNull { it.groupValues.getOrNull(1)?.toIntOrNull() }
             .toList()
         if (refs.isEmpty()) return ""
+        val mapa = if (arma.tipoCombate == "distancia") OBS_ARMA_DISTANCIA else OBS_ARMA_CORPO_A_CORPO
         return refs.mapNotNull { ref ->
-            OBS_ARMA_CORPO_A_CORPO[ref]?.let { "[$ref] $it" }
+            mapa[ref]?.let { "[$ref] $it" }
         }.joinToString("\n")
     }
 
@@ -1051,6 +1052,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             10 to "O cabo da arma pode ser usado como soco ingles em combate corporal.",
             11 to "Muito barulhento. Funciona 2 horas com 2,5 l de gasolina.",
             12 to "Especifique alcance maximo (ate 7 m) na compra. Custo/peso por metro. ST 5 +1 por metro. Veja Chicotes (pag. 405)."
+        )
+
+        private val OBS_ARMA_DISTANCIA = mapOf(
+            1 to "Ataque de acompanhamento para dopar/envenenar se o dano ultrapassar a RD. Efeito depende do veneno (pag. 437).",
+            2 to "Exige duas maos para preparar, mas apenas uma para atacar.",
+            3 to "Municao: flecha/virote $2; dardo/bolinha $0,1; pedra de funda e gratuita.",
+            4 to "Pode enredar ou apanhar o alvo (pag. 410).",
+            5 to "Sarilho/pole para recarregar besta de ST alta. Permite recarregar arma com ST ate +4 da sua em 20 manobras Preparar.",
+            6 to "Rede nao tem 1/2D. Distancia Max: (ST/2 + NH/5) rede grande; (ST + NH/5) rede de combate.",
+            7 to "Pode disparar pedras (NT0) ou balas de chumbo (NT2). Bala de chumbo: +1 dano e dobra distancia.",
+            8 to "Preparado: exige manobra Preparar e teste de ST para disparar; remover projetil causa metade do dano de entrada."
         )
     }
 }

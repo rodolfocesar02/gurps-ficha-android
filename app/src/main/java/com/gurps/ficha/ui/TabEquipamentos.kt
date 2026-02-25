@@ -557,7 +557,7 @@ private fun ArmaItemSelecao(arma: ArmaCatalogoItem, danoCalculado: String, onCli
                 color = MaterialTheme.colorScheme.primary
             )
         }
-        if (arma.tipoCombate == "corpo_a_corpo" && arma.observacoes.isNotBlank()) {
+        if ((arma.tipoCombate == "corpo_a_corpo" || arma.tipoCombate == "distancia") && arma.observacoes.isNotBlank()) {
             Text(
                 "Obs: ${arma.observacoes}",
                 style = MaterialTheme.typography.bodySmall,
