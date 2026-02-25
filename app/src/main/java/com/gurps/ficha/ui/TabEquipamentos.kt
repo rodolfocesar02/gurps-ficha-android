@@ -19,6 +19,8 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -95,7 +97,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
                 Text("Nenhuma arma selecionada", color = MaterialTheme.colorScheme.onSurfaceVariant)
             } else {
                 armasEquipadas.forEachIndexed { idx, entry ->
-                    EquipamentoItem(
+                    EquipamentoArmaItem(
                         equipamento = entry.value,
                         onEdit = { editingEquipamento = entry.index to entry.value },
                         onDelete = { viewModel.removerEquipamento(entry.index) },
@@ -130,16 +132,6 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
-        SectionCard(title = "Resumo de Equipamentos") {
-            Text("ST atual: ${p.forca}", style = MaterialTheme.typography.bodyMedium)
-            Text("Peso total: ${viewModel.pesoTotal} kg", style = MaterialTheme.typography.bodyMedium)
-            Text(
-                "Custo total: $${viewModel.custoTotalEquipamentos}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-
         SectionCard(title = "Armaduras") {
             Text(
                 "Itens selecionados: ${armadurasEquipadas.size}",
@@ -168,6 +160,7 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
             }
         }
 
+        ResumoEquipamentosFooter(viewModel = viewModel)
         Spacer(modifier = Modifier.height(24.dp))
     }
 
@@ -262,6 +255,63 @@ private fun ArmaduraSelecionadaItem(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary
             )
+        }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
+        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
+    }
+}
+
+@Composable
+private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
+    val p = viewModel.personagem
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "Resumo de Equipamentos (rodape)",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text("ST atual: ${p.forca}", style = MaterialTheme.typography.labelSmall)
+            Text("Peso total: ${viewModel.pesoTotal} kg", style = MaterialTheme.typography.labelSmall)
+            Text(
+                "Custo total: $${viewModel.custoTotalEquipamentos}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -> Unit, viewModel: FichaViewModel) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(equipamento.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+            val danoRaw = equipamento.armaDanoRaw
+            if (!danoRaw.isNullOrBlank()) {
+                val danoCalc = viewModel.calcularDanoArmaComSt(danoRaw)
+                Text(
+                    "Dano: $danoCalc",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            } else {
+                Text(
+                    "Dano: -",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
         IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }

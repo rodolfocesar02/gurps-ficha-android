@@ -61,7 +61,7 @@ Escopo:
 - Cards de Armas: após adicionar, mostrar somente nome + dano.
 Critério de pronto:
 - Layout validado em aparelho antigo e atual, sem poluição de informação.
-Status: `PENDENTE`
+Status: `CONCLUIDO (2026-02-25)`
 
 ### Lote 5 - Robustez e manutenção
 Escopo:
