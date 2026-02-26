@@ -275,7 +275,7 @@ Criterio de pronto:
 - Aba Combate no padrao de botoes/cards das outras abas.
 - Fluxo `Adicionar Apara` e `Adicionar Bloqueio` funcional com dados reais da ficha.
 - Calculos de defesa mantidos e validados.
-Status: `PENDENTE`
+Status: `CONCLUIDO`
 Andamento:
 - Passo 1 concluido: reorganizacao estrutural da UI sem alterar regras de calculo.
 - Passo 2 concluido: dialogo de `Adicionar Apara` funcional com pericias de combate da ficha.
@@ -283,6 +283,7 @@ Andamento:
 - Passo 4 concluido: cards de Apara/Bloqueio em padrao de lista, com acoes de editar e remover.
 - Passo 5 concluido: estados vazios/mensagens refinados para telas pequenas e lista de Apara com rolagem no dialogo.
 - Passo 6 concluido: validacao dos 4 cenarios com teste unitario dedicado (`TabCombateStateTest`) e `testDebugUnitTest` verde.
+- Passo 7 concluido: simplificacao final da Esquiva (sem botao redundante), com edicao de bonus no proprio fluxo de Combate.
 
 ## Fora de Escopo (agora)
 - Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.

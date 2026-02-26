@@ -471,7 +471,7 @@ data class DefesasAtivas(
      */
     fun calcularEsquiva(personagem: Personagem): Int {
         return CombatRules.calcularEsquiva(
-            esquivaBase = personagem.esquiva,
+            esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga,
             bonusManual = bonusManualEsquiva
         )
@@ -479,7 +479,7 @@ data class DefesasAtivas(
 
     fun getEsquivaBase(personagem: Personagem): Int {
         return CombatRules.calcularEsquivaBase(
-            esquivaBase = personagem.esquiva,
+            esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga
         )
     }
