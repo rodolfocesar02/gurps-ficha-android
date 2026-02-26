@@ -39,6 +39,7 @@ Andamento:
   - Cards de itens ocultos quando vazios e exibidos somente apos existir ao menos 1 item.
   - Aba Pericias sem card de cabecalho; resumo compacto de pontos no rodape (total de pericias + pontos gastos).
   - Aba Magias no mesmo padrao: botao `Adicionar Magia` separado, lista em card proprio e resumo no rodape (quantidade + pontos gastos).
+  - Itens de Magias exibidos em cards individuais (mesmo comportamento visual adotado em Pericias).
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:

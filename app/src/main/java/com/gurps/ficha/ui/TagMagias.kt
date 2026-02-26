@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -69,21 +68,18 @@ fun TabMagias(viewModel: FichaViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors()
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    p.magias.forEachIndexed { index, magia ->
+            p.magias.forEachIndexed { index, magia ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
                         MagiaItem(
                             magia = magia,
                             nivel = magia.calcularNivel(p, nivelAptidaoMagica),
                             onEdit = { editingMagiaIndex = index },
                             onDelete = { viewModel.removerMagia(index) }
                         )
-                        if (index < p.magias.lastIndex) {
-                            Divider(modifier = Modifier.padding(vertical = 8.dp))
-                        }
                     }
                 }
             }
