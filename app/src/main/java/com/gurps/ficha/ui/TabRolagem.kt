@@ -1,5 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,12 +32,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +50,7 @@ import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.abs
 import kotlinx.coroutines.launch
 
 private enum class TipoTeste(val label: String) {
@@ -107,6 +112,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var atributoSelecionado by remember { mutableStateOf("DX") }
     var ataqueSelecionadoKey by remember { mutableStateOf<String?>(null) }
     var defesaSelecionada by remember { mutableStateOf(viewModel.defesasAtivasVisiveis.firstOrNull()?.name) }
+    val atributosRapidos = listOf("ST", "DX", "IQ", "HT", "VON", "PER")
+    val modificadoresAtributo = remember {
+        mutableStateMapOf(
+            "ST" to 0, "DX" to 0, "IQ" to 0, "HT" to 0, "VON" to 0, "PER" to 0
+        )
+    }
 
     val opcoesAtributo = listOf("ST", "DX", "IQ", "HT", "PER", "VON").map { sigla ->
         RollMappedOption(
@@ -156,12 +167,16 @@ fun TabRolagem(viewModel: FichaViewModel) {
         resultado: RolagemResultado,
         payload: DiscordRollPayload,
         statusEnvio: String?,
-        detalheErro: String?
+        detalheErro: String?,
+        tipoLabel: String,
+        contextoLabel: String,
+        alvo: Int?,
+        mod: Int
     ) {
         val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val alvoTexto = alvoBase?.toString() ?: "-"
+        val alvoTexto = alvo?.toString() ?: "-"
         val margemTexto = if (resultado.alvo != null) resultado.margem.toString() else "-"
-        val linha = "$hora | ${tipoTeste.label} ($contexto) | alvo $alvoTexto | mod $modificador | total ${resultado.total} | ${resultado.tipoResultado} | margem $margemTexto"
+        val linha = "$hora | $tipoLabel ($contextoLabel) | alvo $alvoTexto | mod $mod | total ${resultado.total} | ${resultado.tipoResultado} | margem $margemTexto"
         historico.add(
             0,
             HistoricoRolagemItem(
@@ -176,6 +191,35 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
+    fun executarRolagem(tipo: TipoTeste, contextoLabel: String, alvo: Int?, mod: Int) {
+        val resultado = rolarDados(3, mod, alvo)
+        val payload = DiscordRollPayload(
+            character = p.nome.ifBlank { "Personagem" },
+            testType = tipo.label,
+            context = contextoLabel,
+            target = alvo,
+            modifier = mod,
+            dice = resultado.dadosIndividuais,
+            total = resultado.total,
+            outcome = resultado.tipoResultado.name,
+            margin = if (resultado.alvo != null) resultado.margem else null,
+            channelId = canalSelecionadoId
+        )
+        coroutineScope.launch {
+            val envio = viewModel.enviarRolagemDiscord(payload)
+            registrarResultado(
+                resultado = resultado,
+                payload = payload,
+                statusEnvio = if (envio.enviado) "enviado" else "erro",
+                detalheErro = envio.detalhe,
+                tipoLabel = tipo.label,
+                contextoLabel = contextoLabel,
+                alvo = alvo,
+                mod = mod
+            )
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -187,8 +231,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onClick = { showEditarCanalDialog = true },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(76.dp),
-            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 6.dp),
+                .height(60.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = if (backendOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
@@ -210,6 +254,119 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+            }
+        }
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        ) {
+            Column(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Text(
+                    text = "Deslize para cima/baixo em cada atributo para ajustar o modificador.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        atributosRapidos.forEach { attr ->
+                            val valor = p.getAtributo(attr)
+                            val modAttr = modificadoresAtributo[attr] ?: 0
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(vertical = 2.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    text = attr,
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                Text(
+                                    text = valor.toString(),
+                                    modifier = Modifier
+                                        .pointerInput(attr, modAttr) {
+                                            var dragAcumulado = 0f
+                                            val passoPx = 20f
+                                            detectVerticalDragGestures(
+                                                onVerticalDrag = { change, dragAmount ->
+                                                    change.consume()
+                                                    dragAcumulado += dragAmount
+                                                    while (abs(dragAcumulado) >= passoPx) {
+                                                        val atual = modificadoresAtributo[attr] ?: 0
+                                                        if (dragAcumulado < 0f) {
+                                                            modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
+                                                            dragAcumulado += passoPx
+                                                        } else {
+                                                            modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
+                                                            dragAcumulado -= passoPx
+                                                        }
+                                                    }
+                                                }
+                                            )
+                                        }
+                                        .clickable {
+                                            executarRolagem(
+                                                tipo = TipoTeste.ATRIBUTO,
+                                                contextoLabel = attr,
+                                                alvo = valor,
+                                                mod = modAttr
+                                            )
+                                        },
+                                    textAlign = TextAlign.Center,
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                                )
+                                Text(
+                                    text = "mod ${if (modAttr >= 0) "+$modAttr" else modAttr}",
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            }
+                        }
+                    }
+
+                    Column(
+                        modifier = Modifier.padding(top = 2.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        ) {
+                            Text(
+                                text = "PV ${p.pontosVida}",
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Card(
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                        ) {
+                            Text(
+                                text = "PF ${p.pontosFadiga}",
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -385,28 +542,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
             Button(
                 onClick = {
-                    val resultado = rolarDados(3, modificador, alvoBase)
-                    val payload = DiscordRollPayload(
-                        character = p.nome.ifBlank { "Personagem" },
-                        testType = tipoTeste.label,
-                        context = contexto,
-                        target = alvoBase,
-                        modifier = modificador,
-                        dice = resultado.dadosIndividuais,
-                        total = resultado.total,
-                        outcome = resultado.tipoResultado.name,
-                        margin = if (resultado.alvo != null) resultado.margem else null,
-                        channelId = canalSelecionadoId
+                    executarRolagem(
+                        tipo = tipoTeste,
+                        contextoLabel = contexto,
+                        alvo = alvoBase,
+                        mod = modificador
                     )
-                    coroutineScope.launch {
-                        val envio = viewModel.enviarRolagemDiscord(payload)
-                        registrarResultado(
-                            resultado = resultado,
-                            payload = payload,
-                            statusEnvio = if (envio.enviado) "enviado" else "erro",
-                            detalheErro = envio.detalhe
-                        )
-                    }
                 },
                 enabled = podeRolar,
                 modifier = Modifier.fillMaxWidth(),
