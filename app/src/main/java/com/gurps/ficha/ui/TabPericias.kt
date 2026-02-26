@@ -49,14 +49,12 @@ fun TabPericias(viewModel: FichaViewModel) {
             onClick = { showCustomDialog = true }
         )
 
-        SectionCard(title = "Perícias [${p.pontosPericias} pts]") {
-            if (p.pericias.isEmpty()) {
-                Text(
-                    "Nenhuma perícia adicionada",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+        if (p.pericias.isEmpty()) {
+            Text(
+                "Nenhuma perícia adicionada",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
 
         // Cards individuais para cada perícia
@@ -78,6 +76,10 @@ fun TabPericias(viewModel: FichaViewModel) {
                 }
             }
         }
+        ResumoPericiasFooter(
+            totalPericias = p.pericias.size,
+            pontosPericias = p.pontosPericias
+        )
         Spacer(modifier = Modifier.height(32.dp))
     }
 
@@ -117,6 +119,31 @@ fun TabPericias(viewModel: FichaViewModel) {
                 editingPericiaIndex = null
             }
         )
+    }
+}
+
+@Composable
+private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "Resumo de Pericias (rodape)",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text("Total de pericias: $totalPericias", style = MaterialTheme.typography.labelSmall)
+            Text(
+                "Pontos gastos: $pontosPericias",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 

@@ -37,6 +37,7 @@ Andamento:
   - Botoes `Adicionar ...` separados dos cards.
   - Sem icone `+` em cabecalho de card.
   - Cards de itens ocultos quando vazios e exibidos somente apos existir ao menos 1 item.
+  - Aba Pericias sem card de cabecalho; resumo compacto de pontos no rodape (total de pericias + pontos gastos).
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:
