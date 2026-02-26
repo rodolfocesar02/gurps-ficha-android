@@ -1,6 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -73,10 +74,22 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(), singleLine = true, leadingIcon = { Icon(Icons.Default.Search, null) })
 
                 Spacer(modifier = Modifier.height(8.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    FilterChip(selected = filtroAtributo == null, onClick = { filtroAtributo = null }, label = { Text("Todos") })
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    PericiaFiltroChip(
+                        label = "Todos",
+                        selected = filtroAtributo == null,
+                        onClick = { filtroAtributo = null }
+                    )
                     listOf("DX", "IQ", "HT", "PER", "VON").forEach { attr ->
-                        FilterChip(selected = filtroAtributo == attr, onClick = { filtroAtributo = attr }, label = { Text(attr) })
+                        PericiaFiltroChip(
+                            label = attr,
+                            selected = filtroAtributo == attr,
+                            onClick = { filtroAtributo = attr }
+                        )
                     }
                 }
 
@@ -113,6 +126,18 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 periciaSelecionada = null
             })
     }
+}
+
+@Composable
+private fun PericiaFiltroChip(label: String, selected: Boolean, onClick: () -> Unit) {
+    Text(
+        text = label,
+        modifier = Modifier
+            .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.bodySmall
+    )
 }
 
 

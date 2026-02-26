@@ -433,6 +433,22 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // === PECULIARIDADES ===
 
+    fun adicionarQualidade(qualidade: String) {
+        if (personagem.qualidades.size >= 5) return // Maximo 5
+        if (personagem.qualidades.contains(qualidade)) return // Duplicata
+        val lista = personagem.qualidades.toMutableList()
+        lista.add(qualidade)
+        personagem = personagem.copy(qualidades = lista)
+    }
+
+    fun removerQualidade(index: Int) {
+        val lista = personagem.qualidades.toMutableList()
+        if (index in lista.indices) {
+            lista.removeAt(index)
+            personagem = personagem.copy(qualidades = lista)
+        }
+    }
+
     fun adicionarPeculiaridade(peculiaridade: String) {
         if (personagem.peculiaridades.size >= 5) return // Maximo 5
         if (personagem.peculiaridades.contains(peculiaridade)) return // Duplicata

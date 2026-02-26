@@ -1,6 +1,6 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-02-25
+Atualizado em: 2026-02-26
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
@@ -12,6 +12,9 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 - Cache de canais no backend (30 min).
 - Historico com status de envio, erro claro e botao de reenviar.
 - Build Kotlin, testes unitarios e APK debug funcionando.
+- Aba Tracos com bloco novo de `Qualidades` (max 5), com +1 ponto por item e persistencia em ficha salva.
+- Filtro de Pericias atualizado com `VON` visivel em telas menores e no mesmo padrao visual dos filtros de Equipamentos.
+- Ajuste de layout em dialogos de Tracos: opcoes de Autocontrole com rolagem horizontal para nao encavalar.
 
 ## Lotes Ativos (Nova Ordem)
 
@@ -40,6 +43,17 @@ Andamento:
   - Aba Pericias sem card de cabecalho; resumo compacto de pontos no rodape (total de pericias + pontos gastos).
   - Aba Magias no mesmo padrao: botao `Adicionar Magia` separado, lista em card proprio e resumo no rodape (quantidade + pontos gastos).
   - Itens de Magias exibidos em cards individuais (mesmo comportamento visual adotado em Pericias).
+  - Aba Tracos atualizada:
+    - Novo botao/fluxo `Adicionar Qualidade`.
+    - Regras de Qualidades: maximo 5, sem duplicata, +1 pt cada.
+    - Resumo de Pontos da aba Geral exibe `Qualidades` separadamente.
+    - Padrao visual alinhado com Pericias/Magias: botoes `Adicionar ...` separados dos cards (sem `+` no cabecalho) para Vantagens, Desvantagens, Qualidades e Peculiaridades.
+    - Cards de Traços agora ficam ocultos quando vazios; rodape unico com total de tracos e pontos gastos somados.
+  - Aba Pericias:
+    - Filtro por atributo inclui `VON` com visual no padrao de Equipamentos (texto clicavel).
+    - Linha de filtros com rolagem horizontal para garantir acesso em telas menores.
+  - Dialogos de Tracos:
+    - Seletor de Autocontrole (adicionar/editar desvantagem) com rolagem horizontal para evitar sobreposicao de opcoes.
 
 Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes):
 1. Regenerar JSON:

@@ -115,7 +115,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                             {
                                 Text(
                                     title,
-                                    fontSize = 10.sp,
+                                    fontSize = 8.sp,
                                     maxLines = 1,
                                     softWrap = false,
                                     style = MaterialTheme.typography.labelSmall

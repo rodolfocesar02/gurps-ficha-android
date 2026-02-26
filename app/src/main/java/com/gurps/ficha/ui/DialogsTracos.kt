@@ -317,7 +317,10 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                 Divider()
                 Text("Autocontrole (opcional):", style = MaterialTheme.typography.labelMedium)
                 Text("GURPS 4Ed pag. 120 - multiplicadores", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     listOf(null to "Nenhum", 6 to "6 (x2)", 9 to "9 (x1.5)", 12 to "12 (x1)", 15 to "15 (x0.5)").forEach { (valor, label) ->
                         FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label, fontSize = 10.sp) })
                     }
@@ -400,7 +403,10 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -
                         label = { Text("Custo") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth())
                 }
                 Text("Autocontrole:")
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(
+                    modifier = Modifier.horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     listOf(null to "Nenhum", 6 to "6", 9 to "9", 12 to "12", 15 to "15").forEach { (valor, label) ->
                         FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label) })
                     }
@@ -426,6 +432,24 @@ fun PeculiaridadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
                 Text("Peculiaridades são mini-desvantagens (-1 pt cada, máx 5)", style = MaterialTheme.typography.bodySmall)
                 Spacer(modifier = Modifier.height(8.dp))
                 OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Peculiaridade") }, modifier = Modifier.fillMaxWidth())
+            }
+        },
+        confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text("Adicionar") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+fun QualidadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
+    var texto by remember { mutableStateOf("") }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Adicionar Qualidade") },
+        text = {
+            Column {
+                Text("Qualidades são traços positivos (+1 pt cada, máx 5)", style = MaterialTheme.typography.bodySmall)
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Qualidade") }, modifier = Modifier.fillMaxWidth())
             }
         },
         confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text("Adicionar") } },

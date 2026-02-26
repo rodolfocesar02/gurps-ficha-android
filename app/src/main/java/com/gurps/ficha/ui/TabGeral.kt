@@ -170,6 +170,7 @@ fun TabGeral(viewModel: FichaViewModel) {
             PontosResumoRow("Atributos Secundários", p.pontosSecundarios)
             PontosResumoRow("Vantagens", p.pontosVantagens)
             PontosResumoRow("Desvantagens", p.pontosDesvantagens)
+            PontosResumoRow("Qualidades", p.pontosQualidades)
             PontosResumoRow("Peculiaridades", p.pontosPeculiaridades)
             PontosResumoRow("Perícias", p.pontosPericias)
             PontosResumoRow("Magias", p.pontosMagias)

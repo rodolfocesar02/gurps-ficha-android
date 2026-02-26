@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -33,9 +35,15 @@ import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
+private fun BotaoAcaoTracosPadrao(texto: String, onClick: () -> Unit) {
+    Button(onClick = onClick) { Text(texto) }
+}
+
+@Composable
 fun TabTracos(viewModel: FichaViewModel) {
     var showSelecionarVantagem by remember { mutableStateOf(false) }
     var showSelecionarDesvantagem by remember { mutableStateOf(false) }
+    var showQualidadeDialog by remember { mutableStateOf(false) }
     var showPeculiaridadeDialog by remember { mutableStateOf(false) }
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
@@ -46,11 +54,12 @@ fun TabTracos(viewModel: FichaViewModel) {
         modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        SectionCard(title = "Vantagens [${p.pontosVantagens} pts]", onAdd = { showSelecionarVantagem = true }) {
-            if (p.vantagens.isEmpty()) {
-                Text("Nenhuma vantagem adicionada", style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        BotaoAcaoTracosPadrao(
+            texto = "Adicionar Vantagem",
+            onClick = { showSelecionarVantagem = true }
+        )
+        if (p.vantagens.isNotEmpty()) {
+            SectionCard(title = "Vantagens") {
                 p.vantagens.forEachIndexed { index, vantagem ->
                     VantagemItem(vantagem = vantagem,
                         onEdit = { editingVantagemIndex = index },
@@ -60,14 +69,12 @@ fun TabTracos(viewModel: FichaViewModel) {
             }
         }
 
-        SectionCard(
-            title = "Desvantagens [${p.pontosDesvantagens} pts]",
-            onAdd = { showSelecionarDesvantagem = true }
-        ) {
-            if (p.desvantagens.isEmpty()) {
-                Text("Nenhuma desvantagem adicionada", style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        BotaoAcaoTracosPadrao(
+            texto = "Adicionar Desvantagem",
+            onClick = { showSelecionarDesvantagem = true }
+        )
+        if (p.desvantagens.isNotEmpty()) {
+            SectionCard(title = "Desvantagens") {
                 p.desvantagens.forEachIndexed { index, desvantagem ->
                     DesvantagemItem(desvantagem = desvantagem,
                         onEdit = { editingDesvantagemIndex = index },
@@ -77,14 +84,30 @@ fun TabTracos(viewModel: FichaViewModel) {
             }
         }
 
-        SectionCard(title = "Peculiaridades [${p.pontosPeculiaridades} pts]", onAdd = { showPeculiaridadeDialog = true }) {
-            Text("Máximo: 5 peculiaridades (-1 pt cada)", style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Spacer(modifier = Modifier.height(4.dp))
-            if (p.peculiaridades.isEmpty()) {
-                Text("Nenhuma peculiaridade", style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant)
-            } else {
+        BotaoAcaoTracosPadrao(
+            texto = "Adicionar Qualidade",
+            onClick = { showQualidadeDialog = true }
+        )
+        if (p.qualidades.isNotEmpty()) {
+            SectionCard(title = "Qualidades") {
+                p.qualidades.forEachIndexed { index, qualidade ->
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically) {
+                        Text("• $qualidade", modifier = Modifier.weight(1f))
+                        IconButton(onClick = { viewModel.removerQualidade(index) }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Remover")
+                        }
+                    }
+                }
+            }
+        }
+
+        BotaoAcaoTracosPadrao(
+            texto = "Adicionar Peculiaridade",
+            onClick = { showPeculiaridadeDialog = true }
+        )
+        if (p.peculiaridades.isNotEmpty()) {
+            SectionCard(title = "Peculiaridades") {
                 p.peculiaridades.forEachIndexed { index, peculiaridade ->
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically) {
@@ -97,6 +120,11 @@ fun TabTracos(viewModel: FichaViewModel) {
             }
         }
 
+        ResumoTracosFooter(
+            totalItens = p.vantagens.size + p.desvantagens.size + p.qualidades.size + p.peculiaridades.size,
+            pontosTracos = p.pontosVantagens + p.pontosDesvantagens + p.pontosQualidades + p.pontosPeculiaridades
+        )
+
         Spacer(modifier = Modifier.height(32.dp))
     }
 
@@ -106,6 +134,11 @@ fun TabTracos(viewModel: FichaViewModel) {
 
     if (showSelecionarDesvantagem) {
         SelecionarDesvantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarDesvantagem = false })
+    }
+
+    if (showQualidadeDialog) {
+        QualidadeDialog(onDismiss = { showQualidadeDialog = false },
+            onSave = { texto -> viewModel.adicionarQualidade(texto); showQualidadeDialog = false })
     }
 
     if (showPeculiaridadeDialog) {
@@ -133,6 +166,31 @@ fun TabTracos(viewModel: FichaViewModel) {
                 editingDesvantagemIndex = null
             }
         )
+    }
+}
+
+@Composable
+private fun ResumoTracosFooter(totalItens: Int, pontosTracos: Int) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "Resumo de Traços (rodape)",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text("Total de traços: $totalItens", style = MaterialTheme.typography.labelSmall)
+            Text(
+                "Pontos gastos: $pontosTracos",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
     }
 }
 

@@ -33,6 +33,7 @@ data class Personagem(
     // Listas
     var vantagens: List<VantagemSelecionada> = emptyList(),
     var desvantagens: List<DesvantagemSelecionada> = emptyList(),
+    var qualidades: List<String> = emptyList(),
     var peculiaridades: List<String> = emptyList(),
     var pericias: List<PericiaSelecionada> = emptyList(),
     var magias: List<MagiaSelecionada> = emptyList(),
@@ -88,13 +89,14 @@ data class Personagem(
 
     val pontosVantagens: Int get() = vantagens.sumOf { it.custoFinal }
     val pontosDesvantagens: Int get() = desvantagens.sumOf { it.custoFinal }
+    val pontosQualidades: Int get() = qualidades.size
     val pontosPeculiaridades: Int get() = peculiaridades.size * -1
     val pontosPericias: Int get() = pericias.sumOf { it.pontosGastos }
     val pontosMagias: Int get() = magias.sumOf { it.pontosGastos.coerceAtLeast(1) }
 
     val pontosGastos: Int get() =
         pontosAtributos + pontosSecundarios + pontosVantagens +
-        pontosDesvantagens + pontosPeculiaridades + pontosPericias + pontosMagias
+        pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosMagias
 
     val pontosRestantes: Int get() = pontosIniciais - pontosGastos
     val desvantagensExcedemLimite: Boolean get() = pontosDesvantagens < limiteDesvantagens
@@ -119,6 +121,9 @@ data class Personagem(
             val jsonObject = com.google.gson.JsonParser.parseString(json).asJsonObject
             if (!jsonObject.has("magias")) {
                 jsonObject.add("magias", com.google.gson.JsonArray())
+            }
+            if (!jsonObject.has("qualidades")) {
+                jsonObject.add("qualidades", com.google.gson.JsonArray())
             }
             return gson.fromJson(jsonObject, Personagem::class.java)
         }
