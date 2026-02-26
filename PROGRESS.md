@@ -4,7 +4,7 @@ Atualizado em: 2026-02-26
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Iniciar `Lote 2 - passo 1`: mapear campos principais da ficha para gatilho de rolagem direta (somente mapeamento/sem alterar regras de rolagem).
+- Iniciar `Lote 13 - passo 1`: estruturar a aba Combate no padrao de botoes separados (`Adicionar Apara` e `Adicionar Bloqueio`) sem mexer nos calculos.
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -157,6 +157,133 @@ Criterio de pronto:
 - Layout validado em uso real (scroll, campos, resumo).
 Status: `PENDENTE`
 
+### Lote 8 - Seguranca de rede e configuracao por ambiente
+Escopo:
+- Remover `cleartext` global e permitir HTTP somente em debug/local.
+- Exigir HTTPS em release para chamadas de backend.
+- Revisar fluxo de chave de API no cliente para reduzir exposicao de segredo estatico.
+
+Plano de implementacao (micro-passos):
+1. Mapear configuracao atual de rede no app (Manifest, BuildConfig e cliente HTTP).
+2. Criar politica por ambiente:
+   - debug: permitir endpoint local de desenvolvimento;
+   - release: bloquear cleartext e aceitar apenas HTTPS.
+3. Implementar `network_security_config` separado por build type (debug/release) e ajustar Manifest para usar a configuracao correta.
+4. Ajustar validacao de `DISCORD_ROLL_API_BASE_URL` no app:
+   - release: falhar cedo se URL nao for HTTPS;
+   - debug: permitir URL local HTTP explicitamente.
+5. Revisar uso de `DISCORD_ROLL_API_KEY` no cliente:
+   - remover dependencia de segredo estatico para cenario de release quando possivel;
+   - manter fallback de dev controlado para debug/local.
+6. Atualizar mensagens de erro de configuracao de rede para facilitar diagnostico (sem vazar dado sensivel).
+7. Validar em execucao real:
+   - debug com backend local HTTP;
+   - release apontando para HTTPS;
+   - tentativa de HTTP em release deve falhar de forma previsivel.
+8. Rodar validacao padrao + teste manual de rolagem/listagem de canais.
+
+Riscos e mitigacao:
+- Risco medio de quebrar fluxo de desenvolvimento local:
+  - mitigar permitindo HTTP apenas no build debug com regra explicita.
+- Risco alto de regressao em release por configuracao incorreta de URL:
+  - mitigar com validacao de schema (`https://`) antes da chamada de rede e teste manual em build release.
+- Risco medio de erro de autenticacao apos ajuste de chave:
+  - mitigar com rollout gradual e mensagens claras para diferenciar erro de chave, rede e ambiente.
+
+Criterio de pronto:
+- Build release sem trafego HTTP aberto globalmente.
+- Rede separada por ambiente (debug/release) com politica explicita.
+- Risco de vazamento de segredo reduzido.
+- Fluxo de desenvolvimento local preservado em debug.
+Status: `PENDENTE`
+
+### Lote 9 - Refatoracao de arquitetura (ViewModel e Repository)
+Escopo:
+- Quebrar `FichaViewModel` por responsabilidades (tracos, pericias, magias, equipamentos, combate, rolagem).
+- Quebrar `DataRepository` em componentes menores por dominio de catalogo.
+- Reduzir acoplamento UI-regra-negocio com camadas mais claras.
+Criterio de pronto:
+- Arquivos grandes divididos em modulos/coordenadores menores.
+- Fluxos principais continuam funcionando sem regressao funcional.
+- Leitura/manutencao de codigo simplificada.
+Status: `PENDENTE`
+
+### Lote 10 - Performance e confiabilidade de dados locais
+Escopo:
+- Evitar carga pesada em getters sincronos acessados pela UI.
+- Precarregar catalogos em `Dispatchers.IO` com cache estavel para filtros.
+- Revisar autosave para manter responsividade em fichas grandes.
+Criterio de pronto:
+- Menos risco de travamento/intermitencia ao abrir telas e filtrar listas.
+- Fluxos de busca e filtros mais fluidos em aparelhos modestos.
+Status: `PENDENTE`
+
+### Lote 11 - Rede, logs e observabilidade
+Escopo:
+- Padronizar tratamento de erro e remover `printStackTrace` em runtime.
+- Melhorar cliente HTTP (timeouts, parse de erro, codigo mais testavel; considerar migracao para OkHttp/Retrofit).
+- Melhorar mensagens de falha para suporte tecnico sem expor dados sensiveis.
+Criterio de pronto:
+- Erros de rede e catalogo com diagnostico previsivel.
+- Menos falhas silenciosas e retrabalho de suporte.
+Status: `PENDENTE`
+
+### Lote 12 - Evolucao de banco, testes e higiene de repo
+Escopo:
+- Preparar evolucao do Room (schema exportado, estrategia de migration).
+- Ampliar cobertura de testes para ViewModel, parser de catalogos e fluxo de rolagem.
+- Limpar versionamento de artefatos pesados em `snapshots/` (ex.: APKs) e reforcar higiene de repositorio.
+Criterio de pronto:
+- Base pronta para evolucao de schema sem sustos.
+- Maior confianca em mudancas futuras por testes.
+- Historico de git mais limpo e focado em codigo.
+Status: `PENDENTE`
+
+### Lote 13 - Organizacao da Aba Combate (padrao de botoes/cards)
+Escopo:
+- Aplicar na aba Combate o mesmo padrao visual das abas Pericias/Equipamentos:
+  - botoes separados para acao;
+  - cards para exibicao de itens configurados;
+  - sem alterar formulas de calculo existentes.
+- Implementar fluxo guiado:
+  - botao `Adicionar Apara` seleciona uma pericia de combate ja existente na aba Pericias;
+  - botao `Adicionar Bloqueio` seleciona a pericia de escudo e o escudo equipado.
+- Preservar logica atual de Esquiva/Apara/Bloqueio e bonus manuais.
+
+Plano de implementacao (micro-passos):
+1. Reestruturar UI da aba Combate para o padrao de botoes separados, mantendo 100% da logica atual. `EM ANDAMENTO`
+2. Implementar dialogo de `Adicionar Apara` (lista de pericias de combate validas).
+3. Implementar dialogo de `Adicionar Bloqueio` (pericia de escudo + escudo equipado no mesmo fluxo).
+4. Exibir cards de configuracao ativa (Apara/Bloqueio) com acao de limpar/remover.
+5. Ajustar textos de estado vazio e feedback de uso em telas pequenas.
+6. Validar manualmente cenarios:
+   - sem pericias;
+   - com pericias sem escudo;
+   - com pericia escudo + escudo equipado;
+   - alteracao de bonus sem regressao nos valores.
+7. Rodar validacao padrao (compile + testes unitarios).
+
+Riscos e mitigacao:
+- Risco medio de regressao visual na aba Combate:
+  - mitigar implementando em passos pequenos e validando em tela pequena.
+- Risco baixo de regressao de calculo:
+  - mitigar sem alterar formulas no ViewModel/model; mudar apenas fluxo de selecao/UI.
+- Risco medio de estado inconsistente ao remover pericia/escudo:
+  - mitigar limpando selecoes invalidas e validando fallback atual.
+
+Criterio de pronto:
+- Aba Combate no padrao de botoes/cards das outras abas.
+- Fluxo `Adicionar Apara` e `Adicionar Bloqueio` funcional com dados reais da ficha.
+- Calculos de defesa mantidos e validados.
+Status: `PENDENTE`
+Andamento:
+- Passo 1 concluido: reorganizacao estrutural da UI sem alterar regras de calculo.
+- Passo 2 concluido: dialogo de `Adicionar Apara` funcional com pericias de combate da ficha.
+- Passo 3 concluido: dialogo de `Adicionar Bloqueio` funcional com pericia de escudo + escudo equipado.
+- Passo 4 concluido: cards de Apara/Bloqueio em padrao de lista, com acoes de editar e remover.
+- Passo 5 concluido: estados vazios/mensagens refinados para telas pequenas e lista de Apara com rolagem no dialogo.
+- Passo 6 concluido: validacao dos 4 cenarios com teste unitario dedicado (`TabCombateStateTest`) e `testDebugUnitTest` verde.
+
 ## Fora de Escopo (agora)
 - Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.
 - Nao remover persistencia legada de fichas sem migracao planejada.
@@ -182,3 +309,14 @@ Status: `PENDENTE`
   1. validacao padrao;
   2. commit com mensagem clara;
   3. atualizacao deste `PROGRESS.md`.
+
+## Regra Global - Encoding e Acentuacao (Projeto Todo)
+- Todos os arquivos de codigo/texto devem permanecer em `UTF-8`.
+- Antes de commit, validar rapidamente se surgiram textos corrompidos:
+  - `rg -n "�|Ã|Â" app/src/main/java app/src/main/res PROGRESS.md README.md`
+- Se aparecer caractere corrompido em string de UI:
+  1. corrigir o texto na origem;
+  2. garantir que o arquivo foi salvo em UTF-8;
+  3. recompilar (`:app:compileDebugKotlin`) e validar em tela.
+- Excecoes permitidas (nao sao bug de UI):
+  - strings de compatibilidade/normalizacao de legado (ex.: parser e limpeza de mojibake em dados antigos).

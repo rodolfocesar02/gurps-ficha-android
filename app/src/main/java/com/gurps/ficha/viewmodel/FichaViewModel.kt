@@ -1021,7 +1021,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // === COMBATE - DEFESAS ATIVAS ===
 
     fun atualizarBonusManualEsquiva(bonus: Int) {
-        val defesas = personagem.defesasAtivas.copy(bonusManualEsquiva = bonus)
+        val defesas = personagem.defesasAtivas.copy(bonusManualEsquiva = bonus.coerceIn(-20, 20))
         personagem = personagem.copy(defesasAtivas = defesas)
     }
 
@@ -1031,7 +1031,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun atualizarBonusManualApara(bonus: Int) {
-        val defesas = personagem.defesasAtivas.copy(bonusManualApara = bonus)
+        val defesas = personagem.defesasAtivas.copy(bonusManualApara = bonus.coerceIn(-20, 20))
         personagem = personagem.copy(defesasAtivas = defesas)
     }
 
@@ -1047,7 +1047,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun atualizarBonusManualBloqueio(bonus: Int) {
-        val defesas = personagem.defesasAtivas.copy(bonusManualBloqueio = bonus)
+        val defesas = personagem.defesasAtivas.copy(bonusManualBloqueio = bonus.coerceIn(-20, 20))
         personagem = personagem.copy(defesasAtivas = defesas)
     }
 
