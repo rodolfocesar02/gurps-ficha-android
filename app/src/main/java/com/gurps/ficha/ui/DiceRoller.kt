@@ -296,22 +296,23 @@ enum class TipoResultado {
 fun rolarDados(quantidade: Int, modificador: Int, alvo: Int?): RolagemResultado {
     val dados = (1..quantidade).map { Random.nextInt(1, 7) }
     val soma = dados.sum()
-    val total = soma + modificador
+    val total = soma
+    val alvoEfetivo = alvo?.plus(modificador)
 
-    val (tipoResultado, margem) = if (alvo != null) {
-        val m = alvo - total
+    val (tipoResultado, margem) = if (alvoEfetivo != null) {
+        val m = alvoEfetivo - total
         val tipo = when {
             // Sucesso Critico: 3-4 sempre, 5 se NH >= 15, 6 se NH >= 16
             soma <= 4 -> TipoResultado.SUCESSO_CRITICO
-            soma == 5 && alvo >= 15 -> TipoResultado.SUCESSO_CRITICO
-            soma == 6 && alvo >= 16 -> TipoResultado.SUCESSO_CRITICO
+            soma == 5 && alvoEfetivo >= 15 -> TipoResultado.SUCESSO_CRITICO
+            soma == 6 && alvoEfetivo >= 16 -> TipoResultado.SUCESSO_CRITICO
             // Falha Critica: 18 sempre, 17 se NH <= 15
             soma == 18 -> TipoResultado.FALHA_CRITICA
-            soma == 17 && alvo <= 15 -> TipoResultado.FALHA_CRITICA
+            soma == 17 && alvoEfetivo <= 15 -> TipoResultado.FALHA_CRITICA
             // Falha por 10+ tambem e critica
             m <= -10 -> TipoResultado.FALHA_CRITICA
             // Sucesso/Falha normal
-            total <= alvo -> TipoResultado.SUCESSO
+            total <= alvoEfetivo -> TipoResultado.SUCESSO
             else -> TipoResultado.FALHA
         }
         tipo to m
@@ -324,7 +325,7 @@ fun rolarDados(quantidade: Int, modificador: Int, alvo: Int?): RolagemResultado 
         soma = soma,
         modificador = modificador,
         total = total,
-        alvo = alvo,
+        alvo = alvoEfetivo,
         margem = margem,
         tipoResultado = tipoResultado
     )

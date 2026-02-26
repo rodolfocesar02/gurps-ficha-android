@@ -4,7 +4,7 @@ Atualizado em: 2026-02-26
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Iniciar `Lote 2 - passo 2`: tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta.
+- Continuar `Lote 2 - passo 2`: concluir campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta (ataques/defesas).
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -74,10 +74,10 @@ Escopo:
 - Registrar historico de rolagens na aba Rolagem com contexto correto.
 Criterio de pronto:
 - Fluxo "clicou no campo -> rolou -> apareceu no historico" funcionando nos cenarios principais.
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 Plano de implementacao (passo a passo com teste):
 1. [x] Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
-2. [ ] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta.
+2. [~] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta (atributos concluidos; ataques/defesas pendentes).
 3. [ ] Criar layout melhor da aba Rolagem para uso.
 4. [ ] Registrar rolagens na aba Rolagem com contexto correto.
 5. [ ] Validar fluxo completo: "clicou no campo -> rolou -> apareceu no historico" nos cenarios principais.
@@ -115,6 +115,11 @@ Andamento:
   - Defesas -> contexto padronizado `Defesa <nome>` e alvo por valor final de defesa ativa.
   - Chaves de selecao de ataque normalizadas para evitar ambiguidade entre pericias repetidas.
   - Validacao executada: `:app:compileDebugKotlin` e `testDebugUnitTest`.
+- 2026-02-26: Passo 2 iniciado na `TabRolagem` (parcial):
+  - Bloco rapido de atributos implementado com clique direto no valor para rolar (`ST`, `DX`, `IQ`, `HT`, `VON`, `PER`).
+  - Swipe vertical por atributo para ajustar modificador local por campo (intervalo `-20..+20`).
+  - Painel lateral com `PV/PF` e refinamento visual da aba para uso de mesa.
+  - Pendente no passo 2: concluir elementos clicaveis diretos para `Ataques` e `Defesas` no layout jogavel.
 
 ### Lote 3 - Login / Autenticacao
 Escopo:
