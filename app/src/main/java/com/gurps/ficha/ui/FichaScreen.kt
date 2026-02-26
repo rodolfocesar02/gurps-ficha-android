@@ -59,6 +59,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     } else {
         listOf("Geral", "Traços", "Perícias", "Combate", "Equip.", "Rolagem", "Notas")
     }
+    val rolagemTabIndex = if (temAptidaoMagica) 6 else 5
     val maxTabIndex = tabs.lastIndex
 
     LaunchedEffect(maxTabIndex) {
@@ -135,7 +136,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            PontosBar(viewModel)
+            if (selectedTab != rolagemTabIndex) {
+                PontosBar(viewModel)
+            }
             when (selectedTab) {
                 0 -> TabGeral(viewModel)
                 1 -> TabTracos(viewModel)

@@ -20,9 +20,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,10 +34,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gurps.ficha.data.network.DiscordRollPayload
+import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -55,6 +62,25 @@ private data class HistoricoRolagemItem(
     val detalheErro: String?
 )
 
+private data class RollMappedOption(
+    val id: String,
+    val label: String,
+    val contextLabel: String,
+    val target: Int?
+)
+
+private fun periciaLabel(pericia: PericiaSelecionada): String {
+    return if (pericia.especializacao.isBlank()) {
+        pericia.nome
+    } else {
+        "${pericia.nome} (${pericia.especializacao})"
+    }
+}
+
+private fun periciaSelectionKey(pericia: PericiaSelecionada, index: Int): String {
+    return "${pericia.definicaoId}|${pericia.especializacao}|$index"
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabRolagem(viewModel: FichaViewModel) {
@@ -66,6 +92,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val canalSelecionadoNome = viewModel.canalDiscordSelecionadoNome
     val canaisCarregando = viewModel.canaisDiscordCarregando
     val canaisErro = viewModel.canaisDiscordErro
+    val backendOnline = canaisErro.isNullOrBlank()
+    var showEditarCanalDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         if (canaisDiscord.isEmpty() && !canaisCarregando) {
@@ -77,23 +105,50 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var modificador by remember { mutableIntStateOf(0) }
 
     var atributoSelecionado by remember { mutableStateOf("DX") }
-    var ataqueSelecionadoId by remember { mutableStateOf<String?>(null) }
+    var ataqueSelecionadoKey by remember { mutableStateOf<String?>(null) }
     var defesaSelecionada by remember { mutableStateOf(viewModel.defesasAtivasVisiveis.firstOrNull()?.name) }
 
-    val ataqueAtual = p.pericias.firstOrNull { it.definicaoId == ataqueSelecionadoId }
-    val defesaAtual = viewModel.defesasAtivasVisiveis.firstOrNull { it.name == defesaSelecionada }
+    val opcoesAtributo = listOf("ST", "DX", "IQ", "HT", "PER", "VON").map { sigla ->
+        RollMappedOption(
+            id = sigla,
+            label = sigla,
+            contextLabel = sigla,
+            target = p.getAtributo(sigla)
+        )
+    }
+    val opcoesAtaque = p.pericias.mapIndexed { index, pericia ->
+        val nivel = pericia.calcularNivel(p)
+        RollMappedOption(
+            id = periciaSelectionKey(pericia, index),
+            label = "${periciaLabel(pericia)} ($nivel)",
+            contextLabel = "Ataque ${periciaLabel(pericia)}",
+            target = nivel
+        )
+    }
+    val opcoesDefesa = viewModel.defesasAtivasVisiveis.map { defesa ->
+        RollMappedOption(
+            id = defesa.name,
+            label = "${defesa.name} (${defesa.finalValue})",
+            contextLabel = "Defesa ${defesa.name}",
+            target = defesa.finalValue
+        )
+    }
+
+    val atributoAtual = opcoesAtributo.firstOrNull { it.id == atributoSelecionado }
+    val ataqueAtual = opcoesAtaque.firstOrNull { it.id == ataqueSelecionadoKey }
+    val defesaAtual = opcoesDefesa.firstOrNull { it.id == defesaSelecionada }
 
     val alvoBase = when (tipoTeste) {
-        TipoTeste.ATRIBUTO -> p.getAtributo(atributoSelecionado)
-        TipoTeste.ATAQUE -> ataqueAtual?.calcularNivel(p)
-        TipoTeste.DEFESA -> defesaAtual?.finalValue
+        TipoTeste.ATRIBUTO -> atributoAtual?.target
+        TipoTeste.ATAQUE -> ataqueAtual?.target
+        TipoTeste.DEFESA -> defesaAtual?.target
         TipoTeste.LIVRE -> null
     }
 
     val contexto = when (tipoTeste) {
-        TipoTeste.ATRIBUTO -> atributoSelecionado
-        TipoTeste.ATAQUE -> ataqueAtual?.nome ?: "Ataque"
-        TipoTeste.DEFESA -> defesaAtual?.name ?: "Defesa"
+        TipoTeste.ATRIBUTO -> atributoAtual?.contextLabel ?: atributoSelecionado
+        TipoTeste.ATAQUE -> ataqueAtual?.contextLabel ?: "Ataque"
+        TipoTeste.DEFESA -> defesaAtual?.contextLabel ?: "Defesa"
         TipoTeste.LIVRE -> "Livre"
     }
 
@@ -125,81 +180,45 @@ fun TabRolagem(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(start = 10.dp, top = 6.dp, end = 12.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
+        Button(
+            onClick = { showEditarCanalDialog = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(76.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 6.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = if (backendOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            )
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "EDITAR CANAL",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = canalSelecionadoNome ?: "Selecionar canal de voz",
+                    style = MaterialTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+
         SectionCard(title = "Rolagem (MVP)") {
             Text(
                 "Aba jogavel inicial. Testes locais 3d6 com modificador e historico.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            var expandedCanal by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(
-                expanded = expandedCanal,
-                onExpandedChange = { expandedCanal = !expandedCanal }
-            ) {
-                val canalLabel = when {
-                    canaisCarregando -> "Carregando canais..."
-                    !canalSelecionadoNome.isNullOrBlank() -> canalSelecionadoNome
-                    else -> "Selecionar canal de voz"
-                }
-                OutlinedTextField(
-                    value = canalLabel,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Canal de envio Discord") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCanal) },
-                    modifier = Modifier.menuAnchor().fillMaxWidth()
-                )
-                ExposedDropdownMenu(
-                    expanded = expandedCanal,
-                    onDismissRequest = { expandedCanal = false }
-                ) {
-                    canaisDiscord.forEach { canal ->
-                        DropdownMenuItem(
-                            text = {
-                                Text("${canal.guildName} / ${canal.name}")
-                            },
-                            onClick = {
-                                viewModel.selecionarCanalDiscord(canal)
-                                expandedCanal = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedButton(
-                onClick = { viewModel.atualizarCanaisDiscord() },
-                enabled = !canaisCarregando,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(if (canaisCarregando) "Atualizando..." else "Atualizar canais de voz")
-            }
-
-            if (!canaisErro.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    "Erro ao carregar canais: $canaisErro",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-
-            if (!canalSelecionadoId.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    "Canal ativo: $canalSelecionadoNome",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
             Spacer(modifier = Modifier.height(8.dp))
 
             var expandedTipo by remember { mutableStateOf(false) }
@@ -251,11 +270,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         expanded = expandedAttr,
                         onDismissRequest = { expandedAttr = false }
                     ) {
-                        listOf("ST", "DX", "IQ", "HT", "PER", "VON").forEach { attr ->
+                        opcoesAtributo.forEach { atributo ->
                             DropdownMenuItem(
-                                text = { Text(attr) },
+                                text = { Text(atributo.label) },
                                 onClick = {
-                                    atributoSelecionado = attr
+                                    atributoSelecionado = atributo.id
                                     expandedAttr = false
                                 }
                             )
@@ -270,7 +289,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     expanded = expandedAtk,
                     onExpandedChange = { expandedAtk = !expandedAtk }
                 ) {
-                    val label = ataqueAtual?.let { "${it.nome} (${it.calcularNivel(p)})" } ?: "Selecionar pericia"
+                    val label = ataqueAtual?.label ?: "Selecionar pericia"
                     OutlinedTextField(
                         value = label,
                         onValueChange = {},
@@ -283,11 +302,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         expanded = expandedAtk,
                         onDismissRequest = { expandedAtk = false }
                     ) {
-                        p.pericias.forEach { pericia ->
+                        opcoesAtaque.forEach { ataque ->
                             DropdownMenuItem(
-                                text = { Text("${pericia.nome} (${pericia.calcularNivel(p)})") },
+                                text = { Text(ataque.label) },
                                 onClick = {
-                                    ataqueSelecionadoId = pericia.definicaoId
+                                    ataqueSelecionadoKey = ataque.id
                                     expandedAtk = false
                                 }
                             )
@@ -302,7 +321,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     expanded = expandedDef,
                     onExpandedChange = { expandedDef = !expandedDef }
                 ) {
-                    val label = defesaAtual?.let { "${it.name} (${it.finalValue})" } ?: "Selecionar defesa"
+                    val label = defesaAtual?.label ?: "Selecionar defesa"
                     OutlinedTextField(
                         value = label,
                         onValueChange = {},
@@ -315,11 +334,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         expanded = expandedDef,
                         onDismissRequest = { expandedDef = false }
                     ) {
-                        viewModel.defesasAtivasVisiveis.forEach { defesa ->
+                        opcoesDefesa.forEach { defesa ->
                             DropdownMenuItem(
-                                text = { Text("${defesa.name} (${defesa.finalValue})") },
+                                text = { Text(defesa.label) },
                                 onClick = {
-                                    defesaSelecionada = defesa.name
+                                    defesaSelecionada = defesa.id
                                     expandedDef = false
                                 }
                             )
@@ -447,5 +466,75 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
 
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    if (showEditarCanalDialog) {
+        var expandedCanal by remember { mutableStateOf(false) }
+        AlertDialog(
+            onDismissRequest = { showEditarCanalDialog = false },
+            title = { Text("Canal de envio Discord") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    ExposedDropdownMenuBox(
+                        expanded = expandedCanal,
+                        onExpandedChange = { expandedCanal = !expandedCanal }
+                    ) {
+                        val canalLabel = when {
+                            canaisCarregando -> "Carregando canais..."
+                            !canalSelecionadoNome.isNullOrBlank() -> canalSelecionadoNome
+                            else -> "Selecionar canal de voz"
+                        }
+                        OutlinedTextField(
+                            value = canalLabel,
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCanal) },
+                            modifier = Modifier.menuAnchor().fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedCanal,
+                            onDismissRequest = { expandedCanal = false }
+                        ) {
+                            canaisDiscord.forEach { canal ->
+                                DropdownMenuItem(
+                                    text = { Text("${canal.guildName} / ${canal.name}") },
+                                    onClick = {
+                                        viewModel.selecionarCanalDiscord(canal)
+                                        expandedCanal = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Button(
+                        onClick = { viewModel.atualizarCanaisDiscord() },
+                        enabled = !canaisCarregando,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (backendOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text(
+                            text = if (canaisCarregando) "ATUALIZANDO..." else "ATUALIZAR CANAL",
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    if (!canaisErro.isNullOrBlank()) {
+                        Text(
+                            "Erro ao carregar canais: $canaisErro",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showEditarCanalDialog = false }) {
+                    Text("Fechar")
+                }
+            }
+        )
     }
 }

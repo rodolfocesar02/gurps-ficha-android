@@ -4,7 +4,7 @@ Atualizado em: 2026-02-26
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Iniciar `Lote 13 - passo 1`: estruturar a aba Combate no padrao de botoes separados (`Adicionar Apara` e `Adicionar Bloqueio`) sem mexer nos calculos.
+- Iniciar `Lote 2 - passo 2`: tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta.
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -15,6 +15,7 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 - Aba Tracos com bloco novo de `Qualidades` (max 5), com +1 ponto por item e persistencia em ficha salva.
 - Filtro de Pericias atualizado com `VON` visivel em telas menores e no mesmo padrao visual dos filtros de Equipamentos.
 - Ajuste de layout em dialogos de Tracos: opcoes de Autocontrole com rolagem horizontal para nao encavalar.
+- Aba Combate concluida no padrao visual atual, com configuracao de Esquiva/Apara/Bloqueio e edicao de bonus sem alterar regras de calculo.
 
 ## Lotes Ativos (Nova Ordem)
 
@@ -67,12 +68,53 @@ Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes
 
 ### Lote 2 - Ficha clicavel na aba Rolagem (ex-Lote 8)
 Escopo:
-- Tornar campos principais da ficha clicaveis para disparar rolagem direta.
 - Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
+- Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta.
+- Melhorar layout da aba Rolagem para uso em mesa.
 - Registrar historico de rolagens na aba Rolagem com contexto correto.
 Criterio de pronto:
 - Fluxo "clicou no campo -> rolou -> apareceu no historico" funcionando nos cenarios principais.
 Status: `PENDENTE`
+Plano de implementacao (passo a passo com teste):
+1. [x] Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
+2. [ ] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta.
+3. [ ] Criar layout melhor da aba Rolagem para uso.
+4. [ ] Registrar rolagens na aba Rolagem com contexto correto.
+5. [ ] Validar fluxo completo: "clicou no campo -> rolou -> apareceu no historico" nos cenarios principais.
+Matriz de mapeamento (Passo 1):
+- `Atributo`:
+  - Itens: `ST`, `DX`, `IQ`, `HT`, `PER`, `VON`.
+  - Contexto final: `"ST"`, `"DX"`, `"IQ"`, `"HT"`, `"PER"`, `"VON"`.
+  - Alvo: `personagem.getAtributo(sigla)`.
+  - Fonte atual: `Personagem.getAtributo(...)`.
+- `Ataque`:
+  - Itens: pericias da ficha (priorizar pericias de combate no layout, manter fallback para todas).
+  - Contexto final: `"Ataque <nome da pericia>"` (com especializacao quando houver).
+  - Alvo: `pericia.calcularNivel(personagem)`.
+  - Fonte atual: `personagem.pericias`.
+- `Defesa`:
+  - Itens: `Esquiva`, `Apara`, `Bloqueio` quando disponiveis.
+  - Contexto final: `"Defesa Esquiva"`, `"Defesa Apara"`, `"Defesa Bloqueio"`.
+  - Alvo: `activeDefense.finalValue`.
+  - Fonte atual: `viewModel.defesasAtivasVisiveis`.
+Regras de seguranca para implementacao:
+1. Nao navegar para outra aba.
+2. Clique e rolagem acontecem somente dentro de `TabRolagem`.
+3. Contexto enviado para payload/historico deve ser unico e padronizado.
+4. Se item nao tiver alvo valido (ex.: defesa indisponivel), bloquear rolagem e mostrar estado visual desabilitado.
+Proposta de organizacao da aba Rolagem (base para Passo 3):
+1. Bloco `Teste Rapido por Atributo` (grade com 6 botoes clicaveis).
+2. Bloco `Ataques` (lista clicavel com nome + nivel).
+3. Bloco `Defesas` (chips/botoes de Esquiva/Apara/Bloqueio).
+4. Bloco `Ajustes da Rolagem` (modificador atual e botoes +/-).
+5. Bloco `Historico da Sessao` (resultado local + status de envio).
+Andamento:
+- 2026-02-26: Passo 1 concluido na `TabRolagem` com mapeamento explicito de contexto/alvo por tipo:
+  - Atributos -> contexto sigla (`ST`, `DX`, `IQ`, `HT`, `PER`, `VON`) e alvo por `getAtributo`.
+  - Ataques -> contexto padronizado `Ataque <nome/especializacao>` e alvo por nivel calculado.
+  - Defesas -> contexto padronizado `Defesa <nome>` e alvo por valor final de defesa ativa.
+  - Chaves de selecao de ataque normalizadas para evitar ambiguidade entre pericias repetidas.
+  - Validacao executada: `:app:compileDebugKotlin` e `testDebugUnitTest`.
 
 ### Lote 3 - Login / Autenticacao
 Escopo:
@@ -238,52 +280,6 @@ Criterio de pronto:
 - Maior confianca em mudancas futuras por testes.
 - Historico de git mais limpo e focado em codigo.
 Status: `PENDENTE`
-
-### Lote 13 - Organizacao da Aba Combate (padrao de botoes/cards)
-Escopo:
-- Aplicar na aba Combate o mesmo padrao visual das abas Pericias/Equipamentos:
-  - botoes separados para acao;
-  - cards para exibicao de itens configurados;
-  - sem alterar formulas de calculo existentes.
-- Implementar fluxo guiado:
-  - botao `Adicionar Apara` seleciona uma pericia de combate ja existente na aba Pericias;
-  - botao `Adicionar Bloqueio` seleciona a pericia de escudo e o escudo equipado.
-- Preservar logica atual de Esquiva/Apara/Bloqueio e bonus manuais.
-
-Plano de implementacao (micro-passos):
-1. Reestruturar UI da aba Combate para o padrao de botoes separados, mantendo 100% da logica atual. `EM ANDAMENTO`
-2. Implementar dialogo de `Adicionar Apara` (lista de pericias de combate validas).
-3. Implementar dialogo de `Adicionar Bloqueio` (pericia de escudo + escudo equipado no mesmo fluxo).
-4. Exibir cards de configuracao ativa (Apara/Bloqueio) com acao de limpar/remover.
-5. Ajustar textos de estado vazio e feedback de uso em telas pequenas.
-6. Validar manualmente cenarios:
-   - sem pericias;
-   - com pericias sem escudo;
-   - com pericia escudo + escudo equipado;
-   - alteracao de bonus sem regressao nos valores.
-7. Rodar validacao padrao (compile + testes unitarios).
-
-Riscos e mitigacao:
-- Risco medio de regressao visual na aba Combate:
-  - mitigar implementando em passos pequenos e validando em tela pequena.
-- Risco baixo de regressao de calculo:
-  - mitigar sem alterar formulas no ViewModel/model; mudar apenas fluxo de selecao/UI.
-- Risco medio de estado inconsistente ao remover pericia/escudo:
-  - mitigar limpando selecoes invalidas e validando fallback atual.
-
-Criterio de pronto:
-- Aba Combate no padrao de botoes/cards das outras abas.
-- Fluxo `Adicionar Apara` e `Adicionar Bloqueio` funcional com dados reais da ficha.
-- Calculos de defesa mantidos e validados.
-Status: `CONCLUIDO`
-Andamento:
-- Passo 1 concluido: reorganizacao estrutural da UI sem alterar regras de calculo.
-- Passo 2 concluido: dialogo de `Adicionar Apara` funcional com pericias de combate da ficha.
-- Passo 3 concluido: dialogo de `Adicionar Bloqueio` funcional com pericia de escudo + escudo equipado.
-- Passo 4 concluido: cards de Apara/Bloqueio em padrao de lista, com acoes de editar e remover.
-- Passo 5 concluido: estados vazios/mensagens refinados para telas pequenas e lista de Apara com rolagem no dialogo.
-- Passo 6 concluido: validacao dos 4 cenarios com teste unitario dedicado (`TabCombateStateTest`) e `testDebugUnitTest` verde.
-- Passo 7 concluido: simplificacao final da Esquiva (sem botao redundante), com edicao de bonus no proprio fluxo de Combate.
 
 ## Fora de Escopo (agora)
 - Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.
