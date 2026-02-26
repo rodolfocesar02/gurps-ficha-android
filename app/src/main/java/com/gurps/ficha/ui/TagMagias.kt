@@ -36,6 +36,11 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 // === TAB MAGIAS ===
 
 @Composable
+private fun BotaoAdicionarMagiaPadrao(texto: String, onClick: () -> Unit) {
+    androidx.compose.material3.Button(onClick = onClick) { Text(texto) }
+}
+
+@Composable
 fun TabMagias(viewModel: FichaViewModel) {
     val p = viewModel.personagem
     val nivelAptidaoMagica = viewModel.nivelAptidaoMagica
@@ -51,11 +56,10 @@ fun TabMagias(viewModel: FichaViewModel) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
 
-        // Header separado
-        SectionCard(
-            title = "Magias [${p.pontosMagias} pts] (IQ + AM $nivelAptidaoMagica)",
-            onAdd = { showSelecionarMagia = true }
-        ) {}
+        BotaoAdicionarMagiaPadrao(
+            texto = "Adicionar Magia",
+            onClick = { showSelecionarMagia = true }
+        )
 
         // Lista fora do SectionCard
         if (p.magias.isEmpty()) {
@@ -85,6 +89,12 @@ fun TabMagias(viewModel: FichaViewModel) {
             }
         }
 
+        ResumoMagiasFooter(
+            totalMagias = p.magias.size,
+            pontosMagias = p.pontosMagias,
+            nivelAptidaoMagica = nivelAptidaoMagica
+        )
+
         Spacer(modifier = Modifier.height(32.dp))
     }
 
@@ -106,6 +116,28 @@ fun TabMagias(viewModel: FichaViewModel) {
                 editingMagiaIndex = null
             }
         )
+    }
+}
+
+@Composable
+private fun ResumoMagiasFooter(totalMagias: Int, pontosMagias: Int, nivelAptidaoMagica: Int) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "Resumo de Magias (rodape)",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text("Total de magias: $totalMagias", style = MaterialTheme.typography.labelSmall)
+            Text("Pontos gastos: $pontosMagias", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+            Text("IQ + AM: $nivelAptidaoMagica", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 
