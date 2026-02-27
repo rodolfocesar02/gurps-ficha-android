@@ -21,6 +21,10 @@ data class Personagem(
     var destreza: Int = 10,   // DX - +/-20 pontos/nivel
     var inteligencia: Int = 10, // IQ - +/-20 pontos/nivel
     var vitalidade: Int = 10,  // HT - +/-10 pontos/nivel
+    var forcaBase: Int = 10,
+    var destrezaBase: Int = 10,
+    var inteligenciaBase: Int = 10,
+    var vitalidadeBase: Int = 10,
 
     // Modificadores dos Atributos Secundarios
     var modPontosVida: Int = 0,
@@ -75,7 +79,11 @@ data class Personagem(
         forca = forca,
         destreza = destreza,
         inteligencia = inteligencia,
-        vitalidade = vitalidade
+        vitalidade = vitalidade,
+        forcaBase = forcaBase,
+        destrezaBase = destrezaBase,
+        inteligenciaBase = inteligenciaBase,
+        vitalidadeBase = vitalidadeBase
     )
 
     val pontosSecundarios: Int get() = CharacterRules.calcularPontosSecundarios(
@@ -124,6 +132,18 @@ data class Personagem(
             }
             if (!jsonObject.has("qualidades")) {
                 jsonObject.add("qualidades", com.google.gson.JsonArray())
+            }
+            if (!jsonObject.has("forcaBase")) {
+                jsonObject.addProperty("forcaBase", 10)
+            }
+            if (!jsonObject.has("destrezaBase")) {
+                jsonObject.addProperty("destrezaBase", 10)
+            }
+            if (!jsonObject.has("inteligenciaBase")) {
+                jsonObject.addProperty("inteligenciaBase", 10)
+            }
+            if (!jsonObject.has("vitalidadeBase")) {
+                jsonObject.addProperty("vitalidadeBase", 10)
             }
             return gson.fromJson(jsonObject, Personagem::class.java)
         }

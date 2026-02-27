@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -103,7 +104,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 "Magia" -> Icons.Default.Star
                                 "Combate" -> Icons.Default.Favorite
                                 "Equip." -> Icons.Default.ShoppingCart
-                                "Rolagem" -> Icons.Default.Build
+                                "Rolagem" -> Icons.Default.Refresh
                                 else -> Icons.Default.Build
                             }
                             Icon(

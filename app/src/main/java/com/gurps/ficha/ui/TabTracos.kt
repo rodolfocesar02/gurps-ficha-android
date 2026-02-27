@@ -167,7 +167,7 @@ fun TabTracos(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoTracosFooter(totalItens: Int, pontosTracos: Int) {
-    SummaryFooterCard(title = "Resumo de Traços (rodape)") {
+    SummaryFooterCard(title = "Resumo de Traços") {
         Text("Total de traços: $totalItens", style = MaterialTheme.typography.labelSmall)
         Text(
             "Pontos gastos: $pontosTracos",

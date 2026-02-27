@@ -293,7 +293,7 @@ private fun ArmaduraSelecionadaItem(
 @Composable
 private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
     val p = viewModel.personagem
-    SummaryFooterCard(title = "Resumo de Equipamentos (rodape)") {
+    SummaryFooterCard(title = "Resumo de Equipamentos") {
         Text("ST atual: ${p.forca}", style = MaterialTheme.typography.labelSmall)
         Text("Peso total: ${viewModel.pesoTotal} kg", style = MaterialTheme.typography.labelSmall)
         Text(

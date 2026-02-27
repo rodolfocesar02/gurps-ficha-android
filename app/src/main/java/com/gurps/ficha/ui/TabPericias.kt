@@ -122,7 +122,7 @@ fun TabPericias(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
-    SummaryFooterCard(title = "Resumo de Pericias (rodape)") {
+    SummaryFooterCard(title = "Resumo de Pericias") {
         Text("Total de pericias: $totalPericias", style = MaterialTheme.typography.labelSmall)
         Text(
             "Pontos gastos: $pontosPericias",

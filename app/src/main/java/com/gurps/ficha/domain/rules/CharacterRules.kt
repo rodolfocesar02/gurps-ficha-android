@@ -65,9 +65,18 @@ object CharacterRules {
         return deslocamento.coerceAtLeast(1)
     }
 
-    fun calcularPontosAtributos(forca: Int, destreza: Int, inteligencia: Int, vitalidade: Int): Int {
-        return (forca - 10) * 10 + (destreza - 10) * 20 +
-            (inteligencia - 10) * 20 + (vitalidade - 10) * 10
+    fun calcularPontosAtributos(
+        forca: Int,
+        destreza: Int,
+        inteligencia: Int,
+        vitalidade: Int,
+        forcaBase: Int = 10,
+        destrezaBase: Int = 10,
+        inteligenciaBase: Int = 10,
+        vitalidadeBase: Int = 10
+    ): Int {
+        return (forca - forcaBase) * 10 + (destreza - destrezaBase) * 20 +
+            (inteligencia - inteligenciaBase) * 20 + (vitalidade - vitalidadeBase) * 10
     }
 
     fun calcularPontosSecundarios(

@@ -109,7 +109,7 @@ fun TabMagias(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoMagiasFooter(totalMagias: Int, pontosMagias: Int, nivelAptidaoMagica: Int) {
-    SummaryFooterCard(title = "Resumo de Magias (rodape)") {
+    SummaryFooterCard(title = "Resumo de Magias") {
         Text("Total de magias: $totalMagias", style = MaterialTheme.typography.labelSmall)
         Text("Pontos gastos: $pontosMagias", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
         Text("IQ + AM: $nivelAptidaoMagica", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

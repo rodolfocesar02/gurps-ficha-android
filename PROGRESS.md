@@ -207,6 +207,7 @@ Escopo:
 - Preparar evolucao do Room (schema exportado, estrategia de migration).
 - Ampliar cobertura de testes para ViewModel, parser de catalogos e fluxo de rolagem.
 - Limpar versionamento de artefatos pesados em `snapshots/` (ex.: APKs) e reforcar higiene de repositorio.
+- Introduzir `RuleEngine Module` para centralizar calculos de GURPS fora da UI, facilitando testes unitarios e reduzindo acoplamento.
 Criterio de pronto:
 - Base pronta para evolucao de schema sem sustos.
 - Maior confianca em mudancas futuras por testes.

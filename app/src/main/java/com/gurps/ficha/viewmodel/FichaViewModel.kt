@@ -339,6 +339,29 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         personagem = personagem.copy(vitalidade = valor.coerceIn(1, 30))
     }
 
+    fun definirBasesAtributosPrimarios(
+        forcaBase: Int,
+        destrezaBase: Int,
+        inteligenciaBase: Int,
+        vitalidadeBase: Int
+    ) {
+        val novaForcaBase = forcaBase.coerceIn(1, 30)
+        val novaDestrezaBase = destrezaBase.coerceIn(1, 30)
+        val novaInteligenciaBase = inteligenciaBase.coerceIn(1, 30)
+        val novaVitalidadeBase = vitalidadeBase.coerceIn(1, 30)
+
+        personagem = personagem.copy(
+            forcaBase = novaForcaBase,
+            destrezaBase = novaDestrezaBase,
+            inteligenciaBase = novaInteligenciaBase,
+            vitalidadeBase = novaVitalidadeBase,
+            forca = novaForcaBase,
+            destreza = novaDestrezaBase,
+            inteligencia = novaInteligenciaBase,
+            vitalidade = novaVitalidadeBase
+        )
+    }
+
     // === MODIFICADORES SECUNDARIOS ===
 
     fun atualizarModPontosVida(valor: Int) {

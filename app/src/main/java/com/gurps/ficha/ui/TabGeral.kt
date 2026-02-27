@@ -59,6 +59,7 @@ fun TabGeral(viewModel: FichaViewModel) {
     var pontosEmFoco by remember { mutableStateOf(false) }
     var showAnotacoesDialog by remember { mutableStateOf(false) }
     var showResumoDialog by remember { mutableStateOf(false) }
+    var showBasesDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(p.pontosIniciais) {
         if (!pontosEmFoco) {
@@ -127,18 +128,26 @@ fun TabGeral(viewModel: FichaViewModel) {
         SectionCard(title = "Atributos Primarios") {
             Row(
                 modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(onClick = { showBasesDialog = true }) {
+                    Text("Definir Base")
+                }
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                AtributoEditor("ST", p.forca, (p.forca - 10) * 10) { delta ->
+                AtributoEditor("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
                     viewModel.atualizarForca(delta)
                 }
-                AtributoEditor("DX", p.destreza, (p.destreza - 10) * 20) { delta ->
+                AtributoEditor("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
                     viewModel.atualizarDestreza(delta)
                 }
-                AtributoEditor("IQ", p.inteligencia, (p.inteligencia - 10) * 20) { delta ->
+                AtributoEditor("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
                     viewModel.atualizarInteligencia(delta)
                 }
-                AtributoEditor("HT", p.vitalidade, (p.vitalidade - 10) * 10) { delta ->
+                AtributoEditor("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
                     viewModel.atualizarVitalidade(delta)
                 }
             }
@@ -288,6 +297,20 @@ fun TabGeral(viewModel: FichaViewModel) {
             }
         )
     }
+
+    if (showBasesDialog) {
+        DefinirBaseAtributosDialog(
+            forcaBaseInicial = p.forcaBase,
+            destrezaBaseInicial = p.destrezaBase,
+            inteligenciaBaseInicial = p.inteligenciaBase,
+            vitalidadeBaseInicial = p.vitalidadeBase,
+            onDismiss = { showBasesDialog = false },
+            onConfirm = { st, dx, iq, ht ->
+                viewModel.definirBasesAtributosPrimarios(st, dx, iq, ht)
+                showBasesDialog = false
+            }
+        )
+    }
 }
 
 @Composable
@@ -300,24 +323,22 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .width(36.dp)
-                .pointerInput(nome) {
+                .pointerInput(nome, valor) {
                     var dragAcumulado = 0f
-                    val passoPx = 20f
-                    var valorAtual = valor
+                    val passoPx = 40f
+                    var valorAtual = valor.coerceIn(1, 30)
                     detectVerticalDragGestures(
                         onVerticalDrag = { change, dragAmount ->
                             change.consume()
                             dragAcumulado += dragAmount
-                            while (abs(dragAcumulado) >= passoPx) {
+                            if (abs(dragAcumulado) >= passoPx) {
                                 if (dragAcumulado < 0f) {
-                                    valorAtual += 1
-                                    onSetValor(valorAtual)
-                                    dragAcumulado += passoPx
+                                    valorAtual = (valorAtual + 1).coerceIn(1, 30)
                                 } else {
-                                    valorAtual -= 1
-                                    onSetValor(valorAtual)
-                                    dragAcumulado -= passoPx
+                                    valorAtual = (valorAtual - 1).coerceIn(1, 30)
                                 }
+                                onSetValor(valorAtual)
+                                dragAcumulado = 0f
                             }
                         }
                     )
@@ -350,24 +371,22 @@ fun AtributoSecundarioEditor(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .width(34.dp)
-                .pointerInput(nome) {
+                .pointerInput(nome, modificador) {
                     var dragAcumulado = 0f
-                    val passoPx = 20f
-                    var modAtual = modificador
+                    val passoPx = 40f
+                    var modAtual = modificador.coerceIn(-20, 20)
                     detectVerticalDragGestures(
                         onVerticalDrag = { change, dragAmount ->
                             change.consume()
                             dragAcumulado += dragAmount
-                            while (abs(dragAcumulado) >= passoPx) {
+                            if (abs(dragAcumulado) >= passoPx) {
                                 if (dragAcumulado < 0f) {
-                                    modAtual += 1
-                                    onSetModificador(modAtual)
-                                    dragAcumulado += passoPx
+                                    modAtual = (modAtual + 1).coerceIn(-20, 20)
                                 } else {
-                                    modAtual -= 1
-                                    onSetModificador(modAtual)
-                                    dragAcumulado -= passoPx
+                                    modAtual = (modAtual - 1).coerceIn(-20, 20)
                                 }
+                                onSetModificador(modAtual)
+                                dragAcumulado = 0f
                             }
                         }
                     )
@@ -409,4 +428,83 @@ fun PontosResumoRow(label: String, pontos: Int, fontWeight: FontWeight = FontWei
             color = if (pontos >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
         )
     }
+}
+
+@Composable
+private fun DefinirBaseAtributosDialog(
+    forcaBaseInicial: Int,
+    destrezaBaseInicial: Int,
+    inteligenciaBaseInicial: Int,
+    vitalidadeBaseInicial: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int, Int, Int, Int) -> Unit
+) {
+    var stInput by remember(forcaBaseInicial) { mutableStateOf(forcaBaseInicial.toString()) }
+    var dxInput by remember(destrezaBaseInicial) { mutableStateOf(destrezaBaseInicial.toString()) }
+    var iqInput by remember(inteligenciaBaseInicial) { mutableStateOf(inteligenciaBaseInicial.toString()) }
+    var htInput by remember(vitalidadeBaseInicial) { mutableStateOf(vitalidadeBaseInicial.toString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Definir Base de Atributos") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    "Esses valores viram o inicial sem custo. Ao salvar, ST/DX/IQ/HT atuais serão ajustados para a nova base.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = stInput,
+                        onValueChange = { stInput = it.filter(Char::isDigit).take(2) },
+                        label = { Text("ST Base") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    OutlinedTextField(
+                        value = dxInput,
+                        onValueChange = { dxInput = it.filter(Char::isDigit).take(2) },
+                        label = { Text("DX Base") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = iqInput,
+                        onValueChange = { iqInput = it.filter(Char::isDigit).take(2) },
+                        label = { Text("IQ Base") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                    OutlinedTextField(
+                        value = htInput,
+                        onValueChange = { htInput = it.filter(Char::isDigit).take(2) },
+                        label = { Text("HT Base") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val st = (stInput.toIntOrNull() ?: forcaBaseInicial).coerceIn(1, 30)
+                    val dx = (dxInput.toIntOrNull() ?: destrezaBaseInicial).coerceIn(1, 30)
+                    val iq = (iqInput.toIntOrNull() ?: inteligenciaBaseInicial).coerceIn(1, 30)
+                    val ht = (htInput.toIntOrNull() ?: vitalidadeBaseInicial).coerceIn(1, 30)
+                    onConfirm(st, dx, iq, ht)
+                }
+            ) { Text("Salvar") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text("Cancelar") }
+        }
+    )
 }
