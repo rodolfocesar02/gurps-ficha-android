@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +48,12 @@ import kotlin.math.abs
 @Composable
 fun TabGeral(viewModel: FichaViewModel) {
     val p = viewModel.personagem
+    val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
+    val outerPadding = if (isCompactScreen) 10.dp else 12.dp
+    val contentSpacing = if (isCompactScreen) 8.dp else 10.dp
+    val rowSpacing = if (isCompactScreen) 6.dp else 8.dp
+    val dialogPadding = if (isCompactScreen) 8.dp else 10.dp
+    val dialogSpacing = if (isCompactScreen) 3.dp else 4.dp
     var pontosInput by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var ultimoPontosValidos by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var pontosEmFoco by remember { mutableStateOf(false) }
@@ -64,8 +71,8 @@ fun TabGeral(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+            .padding(outerPadding),
+        verticalArrangement = Arrangement.spacedBy(contentSpacing)
     ) {
         SectionCard(title = "") {
             OutlinedTextField(
@@ -78,7 +85,7 @@ fun TabGeral(viewModel: FichaViewModel) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(rowSpacing)
             ) {
                 OutlinedTextField(
                     value = p.jogador,
@@ -196,15 +203,18 @@ fun TabGeral(viewModel: FichaViewModel) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                        .padding(dialogPadding),
+                    verticalArrangement = Arrangement.spacedBy(dialogSpacing)
                 ) {
-                    Text("Anotacoes", style = MaterialTheme.typography.headlineMedium)
+                    Text(
+                        "Anotacoes",
+                        style = if (isCompactScreen) MaterialTheme.typography.titleLarge else MaterialTheme.typography.headlineMedium
+                    )
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                        verticalArrangement = Arrangement.spacedBy(dialogSpacing)
                     ) {
                         OutlinedTextField(
                             value = p.campanha,

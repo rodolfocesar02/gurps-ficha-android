@@ -64,6 +64,7 @@ Andamento:
 - Checkpoint de salvamento criado em 2026-02-27 (ajustes visuais base aplicados em Geral, Traços, Magias, Equipamentos e Combate).
 - Padronizacao inicial de layout: botoes `Adicionar ...` em largura total e espacamentos harmonizados entre abas.
 - Proximo passo imediato: compactacao visual para telas <= 360dp e refinamento de rodapes/dialogos.
+- Commit de salvamento: `VERSÃO DEFINITIVA)` (2026-02-27).
 
 ### Lote 3 - Login / Autenticacao
 Escopo:

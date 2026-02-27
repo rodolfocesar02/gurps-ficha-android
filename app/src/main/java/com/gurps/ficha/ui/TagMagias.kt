@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.Dificuldade
@@ -117,6 +118,8 @@ fun TabMagias(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoMagiasFooter(totalMagias: Int, pontosMagias: Int, nivelAptidaoMagica: Int) {
+    val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
+    val titleStyle = if (isCompactScreen) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -127,7 +130,7 @@ private fun ResumoMagiasFooter(totalMagias: Int, pontosMagias: Int, nivelAptidao
         ) {
             Text(
                 "Resumo de Magias (rodape)",
-                style = MaterialTheme.typography.labelMedium,
+                style = titleStyle,
                 fontWeight = FontWeight.SemiBold
             )
             Text("Total de magias: $totalMagias", style = MaterialTheme.typography.labelSmall)

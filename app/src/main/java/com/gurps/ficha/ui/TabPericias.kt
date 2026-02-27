@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.PericiaSelecionada
@@ -130,6 +131,8 @@ fun TabPericias(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
+    val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
+    val titleStyle = if (isCompactScreen) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -140,7 +143,7 @@ private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
         ) {
             Text(
                 "Resumo de Pericias (rodape)",
-                style = MaterialTheme.typography.labelMedium,
+                style = titleStyle,
                 fontWeight = FontWeight.SemiBold
             )
             Text("Total de pericias: $totalPericias", style = MaterialTheme.typography.labelSmall)

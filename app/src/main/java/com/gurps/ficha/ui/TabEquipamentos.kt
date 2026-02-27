@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.ArmaduraCatalogoItem
@@ -299,6 +300,8 @@ private fun ArmaduraSelecionadaItem(
 @Composable
 private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
     val p = viewModel.personagem
+    val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
+    val titleStyle = if (isCompactScreen) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -309,7 +312,7 @@ private fun ResumoEquipamentosFooter(viewModel: FichaViewModel) {
         ) {
             Text(
                 "Resumo de Equipamentos (rodape)",
-                style = MaterialTheme.typography.labelMedium,
+                style = titleStyle,
                 fontWeight = FontWeight.SemiBold
             )
             Text("ST atual: ${p.forca}", style = MaterialTheme.typography.labelSmall)
