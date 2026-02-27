@@ -894,6 +894,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         mostrarConfirmacaoLimpezaMagias = false
     }
 
+    fun importarFichaJson(json: String): String? {
+        return try {
+            personagem = Personagem.fromJson(json)
+            personagemPendenteLimpezaMagias = null
+            mostrarConfirmacaoLimpezaMagias = false
+            null
+        } catch (_: Exception) {
+            "Arquivo de ficha invalido ou corrompido."
+        }
+    }
+
     private suspend fun carregarListaFichas() {
         fichasSalvas = fichaStorage
             .listarFichas()

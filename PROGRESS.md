@@ -9,13 +9,6 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ### Lote 1 - Revisao de JSON e catalogos (prioridade alta)
 Escopo:
-- Revisar arquivos JSON de catalogo, com foco principal em armaduras.
-- Melhorar a consolidacao da lista de armaduras (normalizacao, agrupamento e consistencia).
-- Melhorar sistema de busca e tags para facilitar encontrar itens.
-Criterio de pronto:
-- Catalogo de armaduras consistente e facil de manter.
-- Busca por tags mais previsivel e util para uso real.
-Status: `CONCLUIDO`
 Andamento:
 - Catalogo de armaduras consolidado em `armaduras.v2.json` (72 itens), com conversao/validacao automatica via scripts `convert_armaduras_v2.py` e `validate_armaduras_v2.py`.
 - Runtime simplificado: removido asset legado `armaduras.v1.json` e removidos assets legados de armas `raw/review_flags` (app usa apenas arquivos `normalized`).
@@ -32,14 +25,8 @@ Andamento:
   - Aba Pericias sem card de cabecalho; resumo compacto de pontos no rodape (total de pericias + pontos gastos).
   - Aba Magias no mesmo padrao: botao `Adicionar Magia` separado, lista em card proprio e resumo no rodape (quantidade + pontos gastos).
   - Itens de Magias exibidos em cards individuais (mesmo comportamento visual adotado em Pericias).
-  - Aba Tracos atualizada:
-    - Novo botao/fluxo `Adicionar Qualidade`.
-    - Regras de Qualidades: maximo 5, sem duplicata, +1 pt cada.
-    - Resumo de Pontos da aba Geral exibe `Qualidades` separadamente.
+ 
     - Padrao visual alinhado com Pericias/Magias: botoes `Adicionar ...` separados dos cards (sem `+` no cabecalho) para Vantagens, Desvantagens, Qualidades e Peculiaridades.
-    - Cards de Traços agora ficam ocultos quando vazios; rodape unico com total de tracos e pontos gastos somados.
-  - Aba Pericias:
-    - Filtro por atributo inclui `VON` com visual no padrao de Equipamentos (texto clicavel).
     - Linha de filtros com rolagem horizontal para garantir acesso em telas menores.
   - Dialogos de Tracos:
     - Seletor de Autocontrole (adicionar/editar desvantagem) com rolagem horizontal para evitar sobreposicao de opcoes.
@@ -213,6 +200,47 @@ Criterio de pronto:
 - Maior confianca em mudancas futuras por testes.
 - Historico de git mais limpo e focado em codigo.
 Status: `PENDENTE`
+
+### Lote 12 - Telemetria de instalacao e notificacao de novos usuarios
+Escopo:
+- Registrar instalacao/primeiro uso do app com identificador tecnico (sem expor dados sensiveis).
+- Enviar evento para backend para acompanhamento de base instalada.
+- Disparar notificacao administrativa quando um novo dispositivo/app ativo for detectado.
+- Definir politica minima de privacidade e retenção para esses eventos.
+Criterio de pronto:
+- Backend com endpoint de registro de instalacao/primeiro uso.
+- App enviando evento de forma resiliente (retry simples, sem travar UI).
+- Canal de notificacao administrativa funcionando para novos registros.
+Status: `PENDENTE`
+
+### Lote 13 - Controle de acesso remoto (bloqueio por app/dispositivo)
+Escopo:
+- Definir modelo de identificacao do cliente (ex.: instalacao + token assinado pelo backend).
+- Criar status de acesso no backend (ativo/bloqueado).
+- Validar no app, em startup e antes de chamadas sensiveis, se o acesso esta permitido.
+- Exibir mensagem clara no app quando o acesso estiver bloqueado.
+Criterio de pronto:
+- Bloqueio remoto aplicavel sem rebuild do app.
+- Requisicoes protegidas recusando clientes bloqueados com erro padronizado.
+- Fluxo de desbloqueio previsivel e auditavel.
+Status: `PENDENTE`
+
+### Lote 14 - Importacao e exportacao de ficha de personagem
+Escopo:
+- Exportar ficha para arquivo (JSON) com metadados de versao.
+- Importar ficha de arquivo com validacao e tratamento de compatibilidade.
+- Permitir compartilhamento entre jogadores (arquivo local / intent de compartilhamento).
+- Prever estrategia de migracao de schema para import de fichas antigas.
+Criterio de pronto:
+- Usuario consegue exportar e importar ficha sem perda de dados principais.
+- Erros de importacao com mensagens claras (arquivo invalido/versao incompativel).
+- Testes unitarios para parser e compatibilidade basica entre versoes.
+Status: `EM ANDAMENTO`
+Andamento:
+- Menu principal com acoes de `Exportar Ficha (JSON)` e `Importar Ficha (JSON)`.
+- Exportacao implementada via seletor de arquivo Android (`CreateDocument`) com serializacao da ficha atual.
+- Importacao implementada via seletor de arquivo Android (`OpenDocument`) com validacao basica e feedback de sucesso/erro em dialogo.
+- Compatibilidade inicial preservada pelo parser `Personagem.fromJson`.
 
 ## Fora de Escopo (agora)
 - Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.

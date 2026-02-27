@@ -1,5 +1,8 @@
 ﻿package com.gurps.ficha.ui
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -49,6 +53,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showMenuDialog by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
+    var showImportResultDialog by remember { mutableStateOf(false) }
+    var importResultMessage by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     val temAptidaoMagica = viewModel.temAptidaoMagica
     val configuration = LocalConfiguration.current
@@ -61,6 +68,35 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
     val rolagemTabIndex = if (temAptidaoMagica) 6 else 5
     val maxTabIndex = tabs.lastIndex
+    val exportLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        runCatching {
+            context.contentResolver.openOutputStream(uri)?.use { output ->
+                output.writer(Charsets.UTF_8).use { writer ->
+                    writer.write(viewModel.personagem.toJson())
+                }
+            }
+        }
+    }
+    val importLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        val mensagem = runCatching {
+            val json = context.contentResolver.openInputStream(uri)?.use { input ->
+                input.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            }.orEmpty()
+            if (json.isBlank()) {
+                "Arquivo vazio."
+            } else {
+                viewModel.importarFichaJson(json) ?: "Ficha importada com sucesso."
+            }
+        }.getOrElse { "Falha ao importar o arquivo selecionado." }
+        importResultMessage = mensagem
+        showImportResultDialog = true
+    }
 
     LaunchedEffect(maxTabIndex) {
         if (selectedTab > maxTabIndex) {
@@ -156,7 +192,17 @@ fun FichaScreen(viewModel: FichaViewModel) {
             onDismiss = { showMenuDialog = false },
             onNovaFicha = { viewModel.novaFicha(); showMenuDialog = false },
             onSalvar = { showMenuDialog = false; showSaveDialog = true },
-            onCarregar = { showMenuDialog = false; showLoadDialog = true }
+            onCarregar = { showMenuDialog = false; showLoadDialog = true },
+            onExportar = {
+                showMenuDialog = false
+                val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
+                    .replace(Regex("[^a-zA-Z0-9._-]"), "_")
+                exportLauncher.launch("${nomeBase}.json")
+            },
+            onImportar = {
+                showMenuDialog = false
+                importLauncher.launch(arrayOf("application/json", "text/plain"))
+            }
         )
     }
 
@@ -190,6 +236,19 @@ fun FichaScreen(viewModel: FichaViewModel) {
             dismissButton = {
                 TextButton(onClick = { viewModel.cancelarLimpezaMagiasAoPerderAptidao() }) {
                     Text("Cancelar")
+                }
+            }
+        )
+    }
+
+    if (showImportResultDialog) {
+        AlertDialog(
+            onDismissRequest = { showImportResultDialog = false },
+            title = { Text("Importar Ficha") },
+            text = { Text(importResultMessage) },
+            confirmButton = {
+                TextButton(onClick = { showImportResultDialog = false }) {
+                    Text("Fechar")
                 }
             }
         )

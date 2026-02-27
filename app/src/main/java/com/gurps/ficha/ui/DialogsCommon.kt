@@ -34,7 +34,14 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.Equipamento
 
 @Composable
-fun MenuDialog(onDismiss: () -> Unit, onNovaFicha: () -> Unit, onSalvar: () -> Unit, onCarregar: () -> Unit) {
+fun MenuDialog(
+    onDismiss: () -> Unit,
+    onNovaFicha: () -> Unit,
+    onSalvar: () -> Unit,
+    onCarregar: () -> Unit,
+    onExportar: () -> Unit,
+    onImportar: () -> Unit
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Menu") },
@@ -48,6 +55,12 @@ fun MenuDialog(onDismiss: () -> Unit, onNovaFicha: () -> Unit, onSalvar: () -> U
                 }
                 TextButton(onClick = onCarregar, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Refresh, null); Spacer(modifier = Modifier.width(8.dp)); Text("Carregar Ficha")
+                }
+                TextButton(onClick = onExportar, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Done, null); Spacer(modifier = Modifier.width(8.dp)); Text("Exportar Ficha (JSON)")
+                }
+                TextButton(onClick = onImportar, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Add, null); Spacer(modifier = Modifier.width(8.dp)); Text("Importar Ficha (JSON)")
                 }
             }
         },
