@@ -65,7 +65,7 @@ private fun BotaoAdicionarCombatePadrao(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, enabled = enabled) { Text(texto) }
+    Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) { Text(texto) }
 }
 
 @Composable
@@ -90,8 +90,8 @@ fun TabCombate(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         SectionCard(title = "Configuração de Defesas") {
             Text(

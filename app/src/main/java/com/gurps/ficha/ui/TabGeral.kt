@@ -64,8 +64,8 @@ fun TabGeral(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         SectionCard(title = "") {
             OutlinedTextField(
@@ -78,7 +78,7 @@ fun TabGeral(viewModel: FichaViewModel) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedTextField(
                     value = p.jogador,
@@ -163,7 +163,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                 CaracteristicaDisplay("Desloc.", "${p.deslocamentoBasico} m/s")
                 CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga))
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 CaracteristicaDisplay("Dano GdP", p.danoGdP)
                 CaracteristicaDisplay("Dano GeB", p.danoGeB)

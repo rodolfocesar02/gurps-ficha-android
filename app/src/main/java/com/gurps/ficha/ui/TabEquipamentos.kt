@@ -48,7 +48,7 @@ import java.text.Normalizer
 
 @Composable
 private fun BotaoAdicionarPadrao(texto: String, onClick: () -> Unit) {
-    Button(onClick = onClick) { Text(texto) }
+    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text(texto) }
 }
 
 @Composable
@@ -72,8 +72,8 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         if (errosCarga.isNotEmpty()) {
             SectionCard(title = "Aviso de Catálogo") {

@@ -36,7 +36,7 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
 private fun BotaoAdicionarMagiaPadrao(texto: String, onClick: () -> Unit) {
-    androidx.compose.material3.Button(onClick = onClick) { Text(texto) }
+    androidx.compose.material3.Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text(texto) }
 }
 
 @Composable
@@ -51,8 +51,8 @@ fun TabMagias(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
         BotaoAdicionarMagiaPadrao(
@@ -73,7 +73,7 @@ fun TabMagias(viewModel: FichaViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors()
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(12.dp)) {
                         MagiaItem(
                             magia = magia,
                             nivel = magia.calcularNivel(p, nivelAptidaoMagica),
@@ -91,7 +91,7 @@ fun TabMagias(viewModel: FichaViewModel) {
             nivelAptidaoMagica = nivelAptidaoMagica
         )
 
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(24.dp))
     }
 
     if (showSelecionarMagia) {

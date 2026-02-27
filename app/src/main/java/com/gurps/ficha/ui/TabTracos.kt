@@ -36,7 +36,7 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
 private fun BotaoAcaoTracosPadrao(texto: String, onClick: () -> Unit) {
-    Button(onClick = onClick) { Text(texto) }
+    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text(texto) }
 }
 
 @Composable
@@ -51,8 +51,8 @@ fun TabTracos(viewModel: FichaViewModel) {
     val p = viewModel.personagem
 
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",

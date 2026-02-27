@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SectionCard(title: String, onAdd: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)) {
-        Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
+    Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             val mostrarCabecalho = title.isNotBlank() || onAdd != null
             if (mostrarCabecalho) {
                 Row(
@@ -40,7 +40,7 @@ fun SectionCard(title: String, onAdd: (() -> Unit)? = null, content: @Composable
                     }
                     onAdd?.let { IconButton(onClick = it) { Icon(Icons.Default.Add, contentDescription = "Adicionar") } }
                 }
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
             }
             content()
         }
