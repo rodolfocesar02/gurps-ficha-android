@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
@@ -55,9 +54,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val density = LocalDensity.current
     val usarNavegacaoCompacta = configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Magia", "Combate", "Equip.", "Rolagem", "Notas")
+        listOf("Geral", "Traços", "Perícias", "Magia", "Combate", "Equip.", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Combate", "Equip.", "Rolagem", "Notas")
+        listOf("Geral", "Traços", "Perícias", "Combate", "Equip.", "Rolagem")
     }
     val rolagemTabIndex = if (temAptidaoMagica) 6 else 5
     val maxTabIndex = tabs.lastIndex
@@ -105,7 +104,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 "Combate" -> Icons.Default.Favorite
                                 "Equip." -> Icons.Default.ShoppingCart
                                 "Rolagem" -> Icons.Default.Build
-                                else -> Icons.Default.Edit
+                                else -> Icons.Default.Build
                             }
                             Icon(
                                 icon,
@@ -146,8 +145,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 3 -> if (temAptidaoMagica) TabMagias(viewModel) else TabCombate(viewModel)
                 4 -> if (temAptidaoMagica) TabCombate(viewModel) else TabEquipamentos(viewModel)
                 5 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabRolagem(viewModel)
-                6 -> if (temAptidaoMagica) TabRolagem(viewModel) else TabNotas(viewModel)
-                7 -> TabNotas(viewModel)
+                6 -> TabRolagem(viewModel)
             }
         }
     }
