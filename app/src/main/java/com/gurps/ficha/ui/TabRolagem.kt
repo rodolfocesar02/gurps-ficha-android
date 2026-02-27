@@ -67,6 +67,7 @@ private enum class TipoTeste(val label: String) {
     ATRIBUTO("Atributo"),
     ATAQUE("Ataque"),
     PERICIA("Pericia"),
+    MAGIA("Magia"),
     DEFESA("Defesa"),
     LIVRE("Livre")
 }
@@ -96,6 +97,13 @@ private data class PericiaRollOption(
     val id: String,
     val nome: String,
     val especializacao: String,
+    val contextLabel: String,
+    val target: Int
+)
+
+private data class MagiaRollOption(
+    val id: String,
+    val nome: String,
     val contextLabel: String,
     val target: Int
 )
@@ -197,7 +205,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
     val defesasPorTipo = viewModel.defesasAtivasVisiveis.associateBy { it.type }
     var showPericiasDialog by remember { mutableStateOf(false) }
+    var showMagiasDialog by remember { mutableStateOf(false) }
     val modificadoresPericia = remember { mutableStateMapOf<String, Int>() }
+    val modificadoresMagia = remember { mutableStateMapOf<String, Int>() }
     val horizontalPadding = when {
         isTinyScreen -> 6.dp
         isVerySmallScreen -> 8.dp
@@ -254,6 +264,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
             target = nivel
         )
     }
+    val opcoesMagia = p.magias.mapIndexed { index, magia ->
+        val nivel = magia.calcularNivel(p, viewModel.nivelAptidaoMagica)
+        MagiaRollOption(
+            id = "magia_${magia.definicaoId}_$index",
+            nome = magia.nome,
+            contextLabel = "Magia ${magia.nome}",
+            target = nivel
+        )
+    }
     val opcoesAtaque = basePericiasAtaque.mapIndexed { index, pericia ->
         val nivel = pericia.calcularNivel(p)
         RollMappedOption(
@@ -307,6 +326,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
         opcoesPericia.forEach { pericia ->
             if (modificadoresPericia[pericia.id] == null) {
                 modificadoresPericia[pericia.id] = 0
+            }
+        }
+    }
+    LaunchedEffect(opcoesMagia) {
+        val ids = opcoesMagia.map { it.id }.toSet()
+        modificadoresMagia.keys.toList().forEach { id ->
+            if (id !in ids) modificadoresMagia.remove(id)
+        }
+        opcoesMagia.forEach { magia ->
+            if (modificadoresMagia[magia.id] == null) {
+                modificadoresMagia[magia.id] = 0
             }
         }
     }
@@ -975,6 +1005,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
             )
         }
 
+        if (viewModel.temAptidaoMagica) {
+            Button(
+                onClick = { showMagiasDialog = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    "Magias",
+                    style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                    maxLines = 1
+                )
+            }
+        }
+
         if (showPericiasDialog) {
             Dialog(
                 onDismissRequest = { showPericiasDialog = false },
@@ -1108,6 +1154,131 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             horizontalArrangement = Arrangement.End
                         ) {
                             TextButton(onClick = { showPericiasDialog = false }) {
+                                Text("Fechar")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (showMagiasDialog && viewModel.temAptidaoMagica) {
+            Dialog(
+                onDismissRequest = { showMagiasDialog = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp),
+                    shape = RoundedCornerShape(0.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            "Magias",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        if (opcoesMagia.isEmpty()) {
+                            Text(
+                                "Sem magias configuradas na aba Magia.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(rememberScrollState()),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                opcoesMagia.forEach { magia ->
+                                    val modMagia = modificadoresMagia[magia.id] ?: 0
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
+                                            verticalArrangement = Arrangement.spacedBy(1.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    magia.nome,
+                                                    style = defenseNumberStyle,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    modifier = Modifier.weight(2f),
+                                                    textAlign = TextAlign.Start,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                                Text(
+                                                    "NH ${magia.target}",
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .pointerInput(magia.id, modMagia) {
+                                                            var dragAcumulado = 0f
+                                                            val passoPx = 20f
+                                                            detectVerticalDragGestures(
+                                                                onVerticalDrag = { change, dragAmount ->
+                                                                    change.consume()
+                                                                    dragAcumulado += dragAmount
+                                                                    while (abs(dragAcumulado) >= passoPx) {
+                                                                        val atual = modificadoresMagia[magia.id] ?: 0
+                                                                        if (dragAcumulado < 0f) {
+                                                                            modificadoresMagia[magia.id] = (atual + 1).coerceIn(-20, 20)
+                                                                            dragAcumulado += passoPx
+                                                                        } else {
+                                                                            modificadoresMagia[magia.id] = (atual - 1).coerceIn(-20, 20)
+                                                                            dragAcumulado -= passoPx
+                                                                        }
+                                                                    }
+                                                                }
+                                                            )
+                                                        }
+                                                        .clickable {
+                                                            executarRolagem(
+                                                                tipo = TipoTeste.MAGIA,
+                                                                contextoLabel = magia.contextLabel,
+                                                                alvo = magia.target,
+                                                                mod = modMagia
+                                                            )
+                                                            showMagiasDialog = false
+                                                        },
+                                                    style = defenseNumberStyle,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    textAlign = TextAlign.End,
+                                                    maxLines = 1
+                                                )
+                                            }
+                                            Text(
+                                                "mod ${if (modMagia >= 0) "+$modMagia" else "$modMagia"}",
+                                                style = compactLabelStyle,
+                                                modifier = Modifier.fillMaxWidth(),
+                                                textAlign = TextAlign.End,
+                                                maxLines = 1
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = { showMagiasDialog = false }) {
                                 Text("Fechar")
                             }
                         }
