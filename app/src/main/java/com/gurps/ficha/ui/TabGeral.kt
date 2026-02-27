@@ -128,7 +128,7 @@ fun TabGeral(viewModel: FichaViewModel) {
         SectionCard(title = "Atributos Primarios") {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.Start
             ) {
                 TextButton(onClick = { showBasesDialog = true }) {
                     Text("Definir Base")

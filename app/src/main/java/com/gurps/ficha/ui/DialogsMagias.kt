@@ -1,6 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,8 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -27,7 +26,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -40,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -49,6 +48,18 @@ import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.MagiaSelecionada
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
+import kotlin.math.abs
+
+private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
+
+private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
+    val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
+    return if (incrementar) {
+        PONTOS_PRESETS[(indice + 1).coerceAtMost(PONTOS_PRESETS.lastIndex)]
+    } else {
+        PONTOS_PRESETS[(indice - 1).coerceAtLeast(0)]
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -192,29 +203,34 @@ fun ConfigurarMagiaDialog(
 
                 Divider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = {
-                        if (pontosGastos > 4) pontosGastos -= 4
-                        else if (pontosGastos > 2) pontosGastos = 2
-                        else if (pontosGastos > 1) pontosGastos = 1
-                    }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-
-                    Text(
-                        "$pontosGastos",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(40.dp),
-                        textAlign = TextAlign.Center
-                    )
-
-                    IconButton(onClick = {
-                        if (pontosGastos < 4) pontosGastos *= 2
-                        else if (pontosGastos < 36) pontosGastos += 4
-                    }) { Icon(Icons.Default.KeyboardArrowUp, null) }
-                }
+                Text(
+                    "$pontosGastos",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .width(56.dp)
+                        .pointerInput(pontosGastos) {
+                            var dragAcumulado = 0f
+                            val passoPx = 24f
+                            detectVerticalDragGestures(
+                                onVerticalDrag = { change, dragAmount ->
+                                    change.consume()
+                                    dragAcumulado += dragAmount
+                                    while (abs(dragAcumulado) >= passoPx) {
+                                        pontosGastos = ajustarPontosPreset(
+                                            atual = pontosGastos,
+                                            incrementar = dragAcumulado < 0f
+                                        )
+                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                    }
+                                }
+                            )
+                        },
+                    textAlign = TextAlign.Center
+                )
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    listOf(1, 2, 4, 8, 12, 16, 20).forEach { pts ->
+                    PONTOS_PRESETS.forEach { pts ->
                         TextButton(
                             onClick = { pontosGastos = pts },
                             modifier = Modifier.padding(horizontal = 1.dp),
@@ -272,29 +288,34 @@ fun EditarMagiaDialog(
 
                 Divider()
                 Text("Pontos Gastos:")
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = {
-                        if (pontosGastos > 4) pontosGastos -= 4
-                        else if (pontosGastos > 2) pontosGastos = 2
-                        else if (pontosGastos > 1) pontosGastos = 1
-                    }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-
-                    Text(
-                        "$pontosGastos",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.width(40.dp),
-                        textAlign = TextAlign.Center
-                    )
-
-                    IconButton(onClick = {
-                        if (pontosGastos < 4) pontosGastos *= 2
-                        else if (pontosGastos < 36) pontosGastos += 4
-                    }) { Icon(Icons.Default.KeyboardArrowUp, null) }
-                }
+                Text(
+                    "$pontosGastos",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .width(56.dp)
+                        .pointerInput(pontosGastos) {
+                            var dragAcumulado = 0f
+                            val passoPx = 24f
+                            detectVerticalDragGestures(
+                                onVerticalDrag = { change, dragAmount ->
+                                    change.consume()
+                                    dragAcumulado += dragAmount
+                                    while (abs(dragAcumulado) >= passoPx) {
+                                        pontosGastos = ajustarPontosPreset(
+                                            atual = pontosGastos,
+                                            incrementar = dragAcumulado < 0f
+                                        )
+                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                    }
+                                }
+                            )
+                        },
+                    textAlign = TextAlign.Center
+                )
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    listOf(1, 2, 4, 8, 12, 16, 20).forEach { pts ->
+                    PONTOS_PRESETS.forEach { pts ->
                         TextButton(
                             onClick = { pontosGastos = pts },
                             modifier = Modifier.padding(horizontal = 1.dp),

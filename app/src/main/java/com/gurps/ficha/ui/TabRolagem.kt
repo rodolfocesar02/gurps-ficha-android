@@ -579,11 +579,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
-                                Text(
-                                    text = "mod ${if (modAttr >= 0) "+$modAttr" else modAttr}",
-                                    style = compactLabelStyle,
-                                    maxLines = 1
-                                )
+                                if (modAttr != 0) {
+                                    Text(
+                                        text = "mod ${if (modAttr >= 0) "+$modAttr" else modAttr}",
+                                        style = compactLabelStyle,
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         }
                     }
@@ -734,13 +736,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     color = MaterialTheme.colorScheme.primary,
                                     textAlign = TextAlign.Center
                                 )
-                                Text(
-                                    "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
-                                    style = compactLabelStyle,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
-                                )
+                                if (modificadorAtaque != 0) {
+                                    Text(
+                                        "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                                        style = compactLabelStyle,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         }
                     }
@@ -791,13 +795,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
-                                Text(
-                                    "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
-                                    style = compactLabelStyle,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
-                                )
+                                if (modificadorAtaque != 0) {
+                                    Text(
+                                        "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                                        style = compactLabelStyle,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         }
                     }
@@ -977,13 +983,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     color = if (defesa != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center
                                 )
-                                Text(
-                                    "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
-                                    style = compactLabelStyle,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
-                                )
+                                if (modDefesa != 0) {
+                                    Text(
+                                        "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
+                                        style = compactLabelStyle,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1
+                                    )
+                                }
                             }
                         }
                     }
@@ -1137,13 +1145,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     maxLines = 1
                                                 )
                                             }
-                                            Text(
-                                                "mod ${if (modPericia >= 0) "+$modPericia" else "$modPericia"}",
-                                                style = compactLabelStyle,
-                                                modifier = Modifier.fillMaxWidth(),
-                                                textAlign = TextAlign.End,
-                                                maxLines = 1
-                                            )
+                                            if (modPericia != 0) {
+                                                Text(
+                                                    "mod ${if (modPericia >= 0) "+$modPericia" else "$modPericia"}",
+                                                    style = compactLabelStyle,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    maxLines = 1
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -1262,13 +1272,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     maxLines = 1
                                                 )
                                             }
-                                            Text(
-                                                "mod ${if (modMagia >= 0) "+$modMagia" else "$modMagia"}",
-                                                style = compactLabelStyle,
-                                                modifier = Modifier.fillMaxWidth(),
-                                                textAlign = TextAlign.End,
-                                                maxLines = 1
-                                            )
+                                            if (modMagia != 0) {
+                                                Text(
+                                                    "mod ${if (modMagia >= 0) "+$modMagia" else "$modMagia"}",
+                                                    style = compactLabelStyle,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    maxLines = 1
+                                                )
+                                            }
                                         }
                                     }
                                 }
