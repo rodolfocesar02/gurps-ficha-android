@@ -63,6 +63,7 @@ import kotlin.random.Random
 private enum class TipoTeste(val label: String) {
     ATRIBUTO("Atributo"),
     ATAQUE("Ataque"),
+    PERICIA("Pericia"),
     DEFESA("Defesa"),
     LIVRE("Livre")
 }
@@ -86,6 +87,14 @@ private data class DamageSourceOption(
     val label: String,
     val contextLabel: String,
     val damageExpression: String
+)
+
+private data class PericiaRollOption(
+    val id: String,
+    val nome: String,
+    val especializacao: String,
+    val contextLabel: String,
+    val target: Int
 )
 
 private data class ParsedDamage(
@@ -184,6 +193,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
     val defesasPorTipo = viewModel.defesasAtivasVisiveis.associateBy { it.type }
+    var periciasExpandidas by remember { mutableStateOf(true) }
+    val modificadoresPericia = remember { mutableStateMapOf<String, Int>() }
     val horizontalPadding = when {
         isTinyScreen -> 6.dp
         isVerySmallScreen -> 8.dp
@@ -230,6 +241,16 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     val periciasCombate = p.pericias.filter { it.definicaoId in PERICIAS_COMBATE }
     val basePericiasAtaque = if (periciasCombate.isNotEmpty()) periciasCombate else p.pericias
+    val opcoesPericia = p.pericias.mapIndexed { index, pericia ->
+        val nivel = pericia.calcularNivel(p)
+        PericiaRollOption(
+            id = "pericia_${periciaSelectionKey(pericia, index)}",
+            nome = pericia.nome,
+            especializacao = pericia.especializacao,
+            contextLabel = "Pericia ${periciaLabel(pericia)}",
+            target = nivel
+        )
+    }
     val opcoesAtaque = basePericiasAtaque.mapIndexed { index, pericia ->
         val nivel = pericia.calcularNivel(p)
         RollMappedOption(
@@ -273,6 +294,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
     LaunchedEffect(fontesDano) {
         if (fontesDano.isNotEmpty() && fontesDano.none { it.id == fonteDanoSelecionadaId }) {
             fonteDanoSelecionadaId = fontesDano.first().id
+        }
+    }
+    LaunchedEffect(opcoesPericia) {
+        val ids = opcoesPericia.map { it.id }.toSet()
+        modificadoresPericia.keys.toList().forEach { id ->
+            if (id !in ids) modificadoresPericia.remove(id)
+        }
+        opcoesPericia.forEach { pericia ->
+            if (modificadoresPericia[pericia.id] == null) {
+                modificadoresPericia[pericia.id] = 0
+            }
         }
     }
 
@@ -914,6 +946,114 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 )
                                 Text(
                                     "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
+                                    style = compactLabelStyle,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Button(
+            onClick = { periciasExpandidas = !periciasExpandidas },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+        ) {
+            Text(
+                "Pericias",
+                style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                maxLines = 1
+            )
+        }
+
+        if (periciasExpandidas) {
+            if (opcoesPericia.isEmpty()) {
+                Text(
+                    "Sem pericias configuradas na aba Pericias.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    opcoesPericia.forEach { pericia ->
+                        val modPericia = modificadoresPericia[pericia.id] ?: 0
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .pointerInput(pericia.id, modPericia) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 20f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                val atual = modificadoresPericia[pericia.id] ?: 0
+                                                if (dragAcumulado < 0f) {
+                                                    modificadoresPericia[pericia.id] = (atual + 1).coerceIn(-20, 20)
+                                                    dragAcumulado += passoPx
+                                                } else {
+                                                    modificadoresPericia[pericia.id] = (atual - 1).coerceIn(-20, 20)
+                                                    dragAcumulado -= passoPx
+                                                }
+                                            }
+                                        }
+                                    )
+                                },
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(1.dp)
+                            ) {
+                                Text(
+                                    pericia.nome,
+                                    style = cardTitleStyle,
+                                    fontWeight = FontWeight.SemiBold,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                if (pericia.especializacao.isNotBlank()) {
+                                    Text(
+                                        pericia.especializacao,
+                                        style = compactLabelStyle,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                                Text(
+                                    "NH ${pericia.target}",
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable {
+                                            executarRolagem(
+                                                tipo = TipoTeste.PERICIA,
+                                                contextoLabel = pericia.contextLabel,
+                                                alvo = pericia.target,
+                                                mod = modPericia
+                                            )
+                                        },
+                                    style = defenseNumberStyle,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    "mod ${if (modPericia >= 0) "+$modPericia" else "$modPericia"}",
                                     style = compactLabelStyle,
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
