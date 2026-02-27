@@ -1,10 +1,10 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-02-26
+Atualizado em: 2026-02-27
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Continuar `Lote 2 - passo 2`: concluir campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta (ataques/defesas).
+- Continuar `Lote 2 - passo 2`: concluir campos clicaveis de `Defesas` na Aba Rolagem e manter fluxo rapido de mesa.
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -77,8 +77,8 @@ Criterio de pronto:
 Status: `EM ANDAMENTO`
 Plano de implementacao (passo a passo com teste):
 1. [x] Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
-2. [~] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta (atributos concluidos; ataques/defesas pendentes).
-3. [ ] Criar layout melhor da aba Rolagem para uso.
+2. [~] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta (atributos e ataque/dano concluidos; defesas pendentes).
+3. [~] Criar layout melhor da aba Rolagem para uso.
 4. [ ] Registrar rolagens na aba Rolagem com contexto correto.
 5. [ ] Validar fluxo completo: "clicou no campo -> rolou -> apareceu no historico" nos cenarios principais.
 Matriz de mapeamento (Passo 1):
@@ -120,6 +120,17 @@ Andamento:
   - Swipe vertical por atributo para ajustar modificador local por campo (intervalo `-20..+20`).
   - Painel lateral com `PV/PF` e refinamento visual da aba para uso de mesa.
   - Pendente no passo 2: concluir elementos clicaveis diretos para `Ataques` e `Defesas` no layout jogavel.
+- 2026-02-27: Ajuste de regra de rolagem concluido:
+  - `modificador` passou a ser aplicado no valor do teste (nao mais no total dos dados), com margem coerente para GURPS.
+- 2026-02-27: Bloco `Ataque e Dano` implementado e iterado para uso rapido:
+  - Removido card legado `Rolagem (MVP)` da Aba Rolagem.
+  - Novo fluxo de combate com botao `Configurar seu Ataque e Dano`.
+  - Card `Ataque`: exibe pericia de combate e `NH` clicavel para rolar ataque 3d6.
+  - Card `Dano`: exibe arma/fonte e linhas de dano clicaveis individualmente (suporte a multiplas entradas, ex.: `1d+4 corte/1d-2+3 perf`).
+  - Fallback sem arma habilitado com dano baseado em `ST`.
+  - Swipe vertical no bloco para ajustar `mod de ataque` com foco em uso de mesa.
+  - Layout compactado com dois cards lado a lado (Ataque e Dano), textos centralizados e menor espacamento vertical.
+  - Pendente no lote: bloco clicavel de `Defesas` no mesmo padrao rapido.
 
 ### Lote 3 - Login / Autenticacao
 Escopo:
