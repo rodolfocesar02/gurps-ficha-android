@@ -115,16 +115,16 @@ fun TabGeral(viewModel: FichaViewModel) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 AtributoEditor("ST", p.forca, (p.forca - 10) * 10) { delta ->
-                    viewModel.atualizarForca(p.forca + delta)
+                    viewModel.atualizarForca(delta)
                 }
                 AtributoEditor("DX", p.destreza, (p.destreza - 10) * 20) { delta ->
-                    viewModel.atualizarDestreza(p.destreza + delta)
+                    viewModel.atualizarDestreza(delta)
                 }
                 AtributoEditor("IQ", p.inteligencia, (p.inteligencia - 10) * 20) { delta ->
-                    viewModel.atualizarInteligencia(p.inteligencia + delta)
+                    viewModel.atualizarInteligencia(delta)
                 }
                 AtributoEditor("HT", p.vitalidade, (p.vitalidade - 10) * 10) { delta ->
-                    viewModel.atualizarVitalidade(p.vitalidade + delta)
+                    viewModel.atualizarVitalidade(delta)
                 }
             }
         }
@@ -135,16 +135,16 @@ fun TabGeral(viewModel: FichaViewModel) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 AtributoSecundarioEditor("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
-                    viewModel.atualizarModPontosVida(p.modPontosVida + delta)
+                    viewModel.atualizarModPontosVida(delta)
                 }
                 AtributoSecundarioEditor("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
-                    viewModel.atualizarModVontade(p.modVontade + delta)
+                    viewModel.atualizarModVontade(delta)
                 }
                 AtributoSecundarioEditor("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
-                    viewModel.atualizarModPercepcao(p.modPercepcao + delta)
+                    viewModel.atualizarModPercepcao(delta)
                 }
                 AtributoSecundarioEditor("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
-                    viewModel.atualizarModPontosFadiga(p.modPontosFadiga + delta)
+                    viewModel.atualizarModPontosFadiga(delta)
                 }
             }
         }
@@ -218,7 +218,7 @@ fun TabGeral(viewModel: FichaViewModel) {
 }
 
 @Composable
-fun AtributoEditor(nome: String, valor: Int, custo: Int, onDelta: (Int) -> Unit) {
+fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(70.dp)) {
         Text(nome, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
         Text(
@@ -230,16 +230,19 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onDelta: (Int) -> Unit)
                 .pointerInput(nome) {
                     var dragAcumulado = 0f
                     val passoPx = 20f
+                    var valorAtual = valor
                     detectVerticalDragGestures(
                         onVerticalDrag = { change, dragAmount ->
                             change.consume()
                             dragAcumulado += dragAmount
                             while (abs(dragAcumulado) >= passoPx) {
                                 if (dragAcumulado < 0f) {
-                                    onDelta(1)
+                                    valorAtual += 1
+                                    onSetValor(valorAtual)
                                     dragAcumulado += passoPx
                                 } else {
-                                    onDelta(-1)
+                                    valorAtual -= 1
+                                    onSetValor(valorAtual)
                                     dragAcumulado -= passoPx
                                 }
                             }
@@ -248,7 +251,6 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onDelta: (Int) -> Unit)
                 },
             textAlign = TextAlign.Center
         )
-        Text("swipe", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(
             "[${if (custo >= 0) "+$custo" else custo}]",
             style = MaterialTheme.typography.bodySmall,
@@ -264,7 +266,7 @@ fun AtributoSecundarioEditor(
     modificador: Int,
     valorFinal: Int,
     custoPorPonto: Int,
-    onDelta: (Int) -> Unit
+    onSetModificador: (Int) -> Unit
 ) {
     val custo = modificador * custoPorPonto
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(70.dp)) {
@@ -278,16 +280,19 @@ fun AtributoSecundarioEditor(
                 .pointerInput(nome) {
                     var dragAcumulado = 0f
                     val passoPx = 20f
+                    var modAtual = modificador
                     detectVerticalDragGestures(
                         onVerticalDrag = { change, dragAmount ->
                             change.consume()
                             dragAcumulado += dragAmount
                             while (abs(dragAcumulado) >= passoPx) {
                                 if (dragAcumulado < 0f) {
-                                    onDelta(1)
+                                    modAtual += 1
+                                    onSetModificador(modAtual)
                                     dragAcumulado += passoPx
                                 } else {
-                                    onDelta(-1)
+                                    modAtual -= 1
+                                    onSetModificador(modAtual)
                                     dragAcumulado -= passoPx
                                 }
                             }
