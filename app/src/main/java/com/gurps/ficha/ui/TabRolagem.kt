@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -49,6 +50,7 @@ import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PERICIAS_COMBATE
 import com.gurps.ficha.model.TipoEquipamento
+import com.gurps.ficha.viewmodel.DefenseType
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -143,6 +145,10 @@ private fun splitDamageEntries(expression: String): List<String> {
 @Composable
 fun TabRolagem(viewModel: FichaViewModel) {
     val p = viewModel.personagem
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val isSmallScreen = screenWidthDp <= 380
+    val isVerySmallScreen = screenWidthDp <= 360
+    val isTinyScreen = screenWidthDp <= 320
     val historico = remember { mutableStateListOf<HistoricoRolagemItem>() }
     val coroutineScope = rememberCoroutineScope()
     val canaisDiscord = viewModel.canaisDiscord
@@ -167,6 +173,47 @@ fun TabRolagem(viewModel: FichaViewModel) {
         mutableStateMapOf(
             "ST" to 0, "DX" to 0, "IQ" to 0, "HT" to 0, "VON" to 0, "PER" to 0
         )
+    }
+    val modificadoresDefesa = remember {
+        mutableStateMapOf(
+            DefenseType.ESQUIVA to 0,
+            DefenseType.APARA to 0,
+            DefenseType.BLOQUEIO to 0
+        )
+    }
+    val defesasPorTipo = viewModel.defesasAtivasVisiveis.associateBy { it.type }
+    val horizontalPadding = when {
+        isTinyScreen -> 6.dp
+        isVerySmallScreen -> 8.dp
+        else -> 10.dp
+    }
+    val rowSpacing = when {
+        isTinyScreen -> 4.dp
+        else -> 6.dp
+    }
+    val innerCardPadding = when {
+        isTinyScreen -> 4.dp
+        else -> 6.dp
+    }
+    val statsNumberStyle = when {
+        isTinyScreen -> MaterialTheme.typography.headlineSmall
+        isVerySmallScreen -> MaterialTheme.typography.headlineMedium
+        else -> MaterialTheme.typography.headlineLarge
+    }
+    val defenseNumberStyle = when {
+        isTinyScreen -> MaterialTheme.typography.headlineSmall
+        isVerySmallScreen -> MaterialTheme.typography.headlineMedium
+        else -> MaterialTheme.typography.headlineMedium
+    }
+    val cardTitleStyle = when {
+        isTinyScreen -> MaterialTheme.typography.titleSmall
+        isVerySmallScreen -> MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp)
+        else -> MaterialTheme.typography.titleMedium
+    }
+    val compactLabelStyle = if (isVerySmallScreen) {
+        MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)
+    } else {
+        MaterialTheme.typography.labelSmall
     }
 
     val periciasCombate = p.pericias.filter { it.definicaoId in PERICIAS_COMBATE }
@@ -344,7 +391,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(start = 10.dp, top = 6.dp, end = 12.dp, bottom = 16.dp),
+            .padding(start = horizontalPadding, top = 6.dp, end = horizontalPadding, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Button(
@@ -363,13 +410,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ) {
                 Text(
                     text = "EDITAR CANAL",
-                    fontSize = 18.sp,
+                    fontSize = if (isVerySmallScreen) 16.sp else 18.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
                 )
                 Text(
                     text = canalSelecionadoNome ?: "Selecionar canal de voz",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = compactLabelStyle,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -388,17 +435,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ) {
                 Text(
                     text = "Deslize para cima/baixo em cada atributo para ajustar o modificador.",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = compactLabelStyle,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(rowSpacing),
                     verticalAlignment = Alignment.Top
                 ) {
                     Row(
                         modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                        horizontalArrangement = Arrangement.spacedBy(if (isTinyScreen) 1.dp else 2.dp)
                     ) {
                         atributosRapidos.forEach { attr ->
                             val valor = p.getAtributo(attr)
@@ -413,7 +460,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 Text(
                                     text = attr,
                                     textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = cardTitleStyle,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Clip,
                                     fontWeight = FontWeight.SemiBold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
@@ -449,13 +498,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                             )
                                         },
                                     textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.headlineLarge,
+                                    style = statsNumberStyle,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSecondaryContainer
                                 )
                                 Text(
                                     text = "mod ${if (modAttr >= 0) "+$modAttr" else modAttr}",
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = compactLabelStyle,
+                                    maxLines = 1
                                 )
                             }
                         }
@@ -471,7 +521,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             Text(
                                 text = "PV ${p.pontosVida}",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                style = MaterialTheme.typography.titleMedium,
+                                style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -481,7 +531,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             Text(
                                 text = "PF ${p.pontosFadiga}",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                                style = MaterialTheme.typography.titleMedium,
+                                style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -505,7 +555,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     .height(40.dp),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             ) {
-                Text("Configurar seu Ataque e Dano", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    "Configurar seu Ataque e Dano",
+                    style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                    maxLines = 1
+                )
             }
 
             Spacer(modifier = Modifier.height(3.dp))
@@ -536,7 +590,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    horizontalArrangement = Arrangement.spacedBy(rowSpacing),
                     verticalAlignment = Alignment.Top
                 ) {
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -548,20 +602,20 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         )
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                         ) {
                             Column(
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 5.dp),
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = 5.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(1.dp)
                             ) {
                                 Text(
                                     ataqueAtual?.contextLabel?.removePrefix("Ataque ") ?: "Ataque",
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = cardTitleStyle,
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
-                                    maxLines = 2,
+                                    maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
@@ -576,7 +630,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                 mod = modificadorAtaque
                                             )
                                         },
-                                    style = MaterialTheme.typography.headlineSmall,
+                                    style = defenseNumberStyle,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.primary,
                                     textAlign = TextAlign.Center
@@ -594,20 +648,20 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         )
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                         ) {
                             Column(
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 5.dp),
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = 5.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(1.dp)
                             ) {
                                 Text(
                                     fonteDanoAtual.label,
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = cardTitleStyle,
                                     fontWeight = FontWeight.SemiBold,
                                     modifier = Modifier.fillMaxWidth(),
                                     textAlign = TextAlign.Center,
-                                    maxLines = 2,
+                                    maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 val danos = splitDamageEntries(fonteDanoAtual.damageExpression)
@@ -623,9 +677,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     danoExpr = danoLinha
                                                 )
                                             },
-                                        style = MaterialTheme.typography.titleMedium,
+                                        style = cardTitleStyle,
                                         color = if (danoRolavel) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
                             }
@@ -634,7 +690,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 }
                 Text(
                     "Deslize para cima/baixo para ajustar mod de ataque: ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = compactLabelStyle,
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
@@ -712,6 +768,104 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         }
                     }
                 )
+            }
+        }
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                "DEFESAS",
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(rowSpacing),
+                verticalAlignment = Alignment.Top
+            ) {
+                listOf(DefenseType.ESQUIVA, DefenseType.APARA, DefenseType.BLOQUEIO).forEach { tipoDefesa ->
+                    val defesa = defesasPorTipo[tipoDefesa]
+                    val modDefesa = modificadoresDefesa[tipoDefesa] ?: 0
+                    val nomeDefesa = when (tipoDefesa) {
+                        DefenseType.ESQUIVA -> "Esquiva"
+                        DefenseType.APARA -> "Apara"
+                        DefenseType.BLOQUEIO -> "Bloqueio"
+                    }
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .pointerInput(tipoDefesa, modDefesa, defesa?.finalValue) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 20f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                val atual = modificadoresDefesa[tipoDefesa] ?: 0
+                                                if (dragAcumulado < 0f) {
+                                                    modificadoresDefesa[tipoDefesa] = (atual + 1).coerceIn(-20, 20)
+                                                    dragAcumulado += passoPx
+                                                } else {
+                                                    modificadoresDefesa[tipoDefesa] = (atual - 1).coerceIn(-20, 20)
+                                                    dragAcumulado -= passoPx
+                                                }
+                                            }
+                                        }
+                                    )
+                                },
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = 5.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(1.dp)
+                            ) {
+                                Text(
+                                    nomeDefesa,
+                                    style = cardTitleStyle,
+                                    fontWeight = FontWeight.SemiBold,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    (defesa?.finalValue?.toString() ?: "-"),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable(enabled = defesa != null) {
+                                            executarRolagem(
+                                                tipo = TipoTeste.DEFESA,
+                                                contextoLabel = "Defesa $nomeDefesa",
+                                                alvo = defesa?.finalValue,
+                                                mod = modDefesa
+                                            )
+                                        },
+                                    style = defenseNumberStyle,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (defesa != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                        Text(
+                            "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
+                            style = compactLabelStyle,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            maxLines = 1
+                        )
+                    }
+                }
             }
         }
 
