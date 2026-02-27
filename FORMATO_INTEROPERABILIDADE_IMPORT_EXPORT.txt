@@ -1,0 +1,186 @@
+﻿GURPS CHARACTER JSON INTEROP SPEC (CURRENT APP)
+Generated on: 2026-02-27
+Source of truth: app/src/main/java/com/gurps/ficha/model/Personagem.kt
+
+Purpose
+- This document defines the JSON contract currently exported/imported by this Android app.
+- Share this with the other project so both apps can read/write compatible files.
+
+Critical rules
+1. File encoding MUST be UTF-8.
+2. Exported content is a single JSON object representing Personagem (no outer wrapper).
+3. Use the exact key names shown below (case-sensitive).
+4. Keep enum values exactly as listed.
+5. Recommended: always write all fields (including nested fields) to maximize compatibility.
+
+Top-level object: Personagem
+Type: JSON object
+
+Fields
+- nome: string
+- jogador: string
+- campanha: string
+- pontosIniciais: int
+- limiteDesvantagens: int
+
+- forca: int
+- destreza: int
+- inteligencia: int
+- vitalidade: int
+
+- forcaBase: int
+- destrezaBase: int
+- inteligenciaBase: int
+- vitalidadeBase: int
+
+- modPontosVida: int
+- modVontade: int
+- modPercepcao: int
+- modPontosFadiga: int
+- modVelocidadeBasica: float
+- modDeslocamentoBasico: int
+
+- vantagens: array<VantagemSelecionada>
+- desvantagens: array<DesvantagemSelecionada>
+- qualidades: array<string>
+- peculiaridades: array<string>
+- pericias: array<PericiaSelecionada>
+- magias: array<MagiaSelecionada>
+- equipamentos: array<Equipamento>
+
+- aparencia: string
+- historico: string
+- notas: string
+
+- defesasAtivas: DefesasAtivas object
+
+Nested type: VantagemSelecionada
+- definicaoId: string
+- nome: string
+- custoBase: int
+- nivel: int
+- custoEscolhido: int
+- descricao: string
+- tipoCusto: string enum TipoCusto
+- pagina: int
+
+Nested type: DesvantagemSelecionada
+- definicaoId: string
+- nome: string
+- custoBase: int
+- nivel: int
+- custoEscolhido: int
+- descricao: string
+- autocontrole: int|null
+- tipoCusto: string enum TipoCusto
+- pagina: int
+
+Nested type: PericiaSelecionada
+- definicaoId: string
+- nome: string
+- atributoBase: string enum AtributoBase
+- dificuldade: string enum Dificuldade
+- pontosGastos: int
+- especializacao: string
+- exigeEspecializacao: boolean
+
+Nested type: MagiaSelecionada
+- definicaoId: string
+- nome: string
+- dificuldade: string enum Dificuldade
+- pontosGastos: int
+- pagina: int|null
+- texto: string|null
+- classe: string|null
+- escola: array<string>|null
+
+Nested type: Equipamento
+- nome: string
+- peso: float
+- custo: float
+- quantidade: int
+- notas: string
+- tipo: string enum TipoEquipamento
+- bonusDefesa: int
+- armaCatalogoId: string|null
+- armaTipoCombate: string|null
+- armaDanoRaw: string|null
+- armaStMinimo: int|null
+- armaduraLocal: string|null
+- armaduraRd: string|null
+
+Nested type: DefesasAtivas
+- bonusManualEsquiva: int
+- periciaAparaId: string|null
+- bonusManualApara: int
+- periciaBloqueioId: string|null
+- escudoSelecionadoNome: string|null
+- bonusManualBloqueio: int
+
+Enum values
+- TipoCusto: "fixo" | "escolha" | "variavel" | "por_nivel"
+- AtributoBase: "ST" | "DX" | "IQ" | "HT" | "PER" | "VON"
+- Dificuldade: "FACIL" | "MEDIA" | "DIFICIL" | "MUITO_DIFICIL"
+- TipoEquipamento: "GERAL" | "ARMA" | "ESCUDO" | "ARMADURA"
+
+Current import compatibility behavior (important)
+The current importer (Personagem.fromJson) auto-fills only these missing fields:
+- magias -> []
+- qualidades -> []
+- forcaBase -> 10
+- destrezaBase -> 10
+- inteligenciaBase -> 10
+- vitalidadeBase -> 10
+
+Everything else should be provided by the exporting app.
+
+Minimal valid JSON example
+{
+  "nome": "",
+  "jogador": "",
+  "campanha": "",
+  "pontosIniciais": 150,
+  "limiteDesvantagens": -75,
+  "forca": 10,
+  "destreza": 10,
+  "inteligencia": 10,
+  "vitalidade": 10,
+  "forcaBase": 10,
+  "destrezaBase": 10,
+  "inteligenciaBase": 10,
+  "vitalidadeBase": 10,
+  "modPontosVida": 0,
+  "modVontade": 0,
+  "modPercepcao": 0,
+  "modPontosFadiga": 0,
+  "modVelocidadeBasica": 0.0,
+  "modDeslocamentoBasico": 0,
+  "vantagens": [],
+  "desvantagens": [],
+  "qualidades": [],
+  "peculiaridades": [],
+  "pericias": [],
+  "magias": [],
+  "equipamentos": [],
+  "aparencia": "",
+  "historico": "",
+  "notas": "",
+  "defesasAtivas": {
+    "bonusManualEsquiva": 0,
+    "periciaAparaId": null,
+    "bonusManualApara": 0,
+    "periciaBloqueioId": null,
+    "escudoSelecionadoNome": null,
+    "bonusManualBloqueio": 0
+  }
+}
+
+Interoperability recommendation for the other project
+- Write and read exactly this schema for now.
+- If you want metadata/versioning, use a wrapper only after both apps support it.
+- Until then, keep the file root as Personagem object to avoid import failures.
+
+Where import/export currently happens in this app
+- UI file operations: app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt
+- Serialization/deserialization model: app/src/main/java/com/gurps/ficha/model/Personagem.kt
+- Import apply flow: app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt (importarFichaJson)

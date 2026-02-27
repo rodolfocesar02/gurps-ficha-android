@@ -1,0 +1,228 @@
+﻿{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gurps-ficha-android.local/schemas/personagem-import-export.schema.json",
+  "title": "Personagem",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "nome": { "type": "string" },
+    "jogador": { "type": "string" },
+    "campanha": { "type": "string" },
+    "pontosIniciais": { "type": "integer" },
+    "limiteDesvantagens": { "type": "integer" },
+
+    "forca": { "type": "integer" },
+    "destreza": { "type": "integer" },
+    "inteligencia": { "type": "integer" },
+    "vitalidade": { "type": "integer" },
+
+    "forcaBase": { "type": "integer", "default": 10 },
+    "destrezaBase": { "type": "integer", "default": 10 },
+    "inteligenciaBase": { "type": "integer", "default": 10 },
+    "vitalidadeBase": { "type": "integer", "default": 10 },
+
+    "modPontosVida": { "type": "integer" },
+    "modVontade": { "type": "integer" },
+    "modPercepcao": { "type": "integer" },
+    "modPontosFadiga": { "type": "integer" },
+    "modVelocidadeBasica": { "type": "number" },
+    "modDeslocamentoBasico": { "type": "integer" },
+
+    "vantagens": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/VantagemSelecionada" }
+    },
+    "desvantagens": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/DesvantagemSelecionada" }
+    },
+    "qualidades": {
+      "type": "array",
+      "default": [],
+      "items": { "type": "string" }
+    },
+    "peculiaridades": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pericias": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/PericiaSelecionada" }
+    },
+    "magias": {
+      "type": "array",
+      "default": [],
+      "items": { "$ref": "#/$defs/MagiaSelecionada" }
+    },
+    "equipamentos": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Equipamento" }
+    },
+
+    "aparencia": { "type": "string" },
+    "historico": { "type": "string" },
+    "notas": { "type": "string" },
+
+    "defesasAtivas": { "$ref": "#/$defs/DefesasAtivas" }
+  },
+  "required": [
+    "nome",
+    "jogador",
+    "campanha",
+    "pontosIniciais",
+    "limiteDesvantagens",
+    "forca",
+    "destreza",
+    "inteligencia",
+    "vitalidade",
+    "modPontosVida",
+    "modVontade",
+    "modPercepcao",
+    "modPontosFadiga",
+    "modVelocidadeBasica",
+    "modDeslocamentoBasico",
+    "vantagens",
+    "desvantagens",
+    "peculiaridades",
+    "pericias",
+    "equipamentos",
+    "aparencia",
+    "historico",
+    "notas",
+    "defesasAtivas"
+  ],
+  "$defs": {
+    "TipoCusto": {
+      "type": "string",
+      "enum": ["fixo", "escolha", "variavel", "por_nivel"]
+    },
+    "AtributoBase": {
+      "type": "string",
+      "enum": ["ST", "DX", "IQ", "HT", "PER", "VON"]
+    },
+    "Dificuldade": {
+      "type": "string",
+      "enum": ["FACIL", "MEDIA", "DIFICIL", "MUITO_DIFICIL"]
+    },
+    "TipoEquipamento": {
+      "type": "string",
+      "enum": ["GERAL", "ARMA", "ESCUDO", "ARMADURA"]
+    },
+
+    "VantagemSelecionada": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "definicaoId": { "type": "string" },
+        "nome": { "type": "string" },
+        "custoBase": { "type": "integer" },
+        "nivel": { "type": "integer" },
+        "custoEscolhido": { "type": "integer" },
+        "descricao": { "type": "string" },
+        "tipoCusto": { "$ref": "#/$defs/TipoCusto" },
+        "pagina": { "type": "integer" }
+      },
+      "required": [
+        "definicaoId", "nome", "custoBase", "nivel", "custoEscolhido", "descricao", "tipoCusto", "pagina"
+      ]
+    },
+
+    "DesvantagemSelecionada": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "definicaoId": { "type": "string" },
+        "nome": { "type": "string" },
+        "custoBase": { "type": "integer" },
+        "nivel": { "type": "integer" },
+        "custoEscolhido": { "type": "integer" },
+        "descricao": { "type": "string" },
+        "autocontrole": { "type": ["integer", "null"] },
+        "tipoCusto": { "$ref": "#/$defs/TipoCusto" },
+        "pagina": { "type": "integer" }
+      },
+      "required": [
+        "definicaoId", "nome", "custoBase", "nivel", "custoEscolhido", "descricao", "autocontrole", "tipoCusto", "pagina"
+      ]
+    },
+
+    "PericiaSelecionada": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "definicaoId": { "type": "string" },
+        "nome": { "type": "string" },
+        "atributoBase": { "$ref": "#/$defs/AtributoBase" },
+        "dificuldade": { "$ref": "#/$defs/Dificuldade" },
+        "pontosGastos": { "type": "integer" },
+        "especializacao": { "type": "string" },
+        "exigeEspecializacao": { "type": "boolean" }
+      },
+      "required": [
+        "definicaoId", "nome", "atributoBase", "dificuldade", "pontosGastos", "especializacao", "exigeEspecializacao"
+      ]
+    },
+
+    "MagiaSelecionada": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "definicaoId": { "type": "string" },
+        "nome": { "type": "string" },
+        "dificuldade": { "$ref": "#/$defs/Dificuldade" },
+        "pontosGastos": { "type": "integer" },
+        "pagina": { "type": ["integer", "null"] },
+        "texto": { "type": ["string", "null"] },
+        "classe": { "type": ["string", "null"] },
+        "escola": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        }
+      },
+      "required": [
+        "definicaoId", "nome", "dificuldade", "pontosGastos", "pagina", "texto", "classe", "escola"
+      ]
+    },
+
+    "Equipamento": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "nome": { "type": "string" },
+        "peso": { "type": "number" },
+        "custo": { "type": "number" },
+        "quantidade": { "type": "integer" },
+        "notas": { "type": "string" },
+        "tipo": { "$ref": "#/$defs/TipoEquipamento" },
+        "bonusDefesa": { "type": "integer" },
+        "armaCatalogoId": { "type": ["string", "null"] },
+        "armaTipoCombate": { "type": ["string", "null"] },
+        "armaDanoRaw": { "type": ["string", "null"] },
+        "armaStMinimo": { "type": ["integer", "null"] },
+        "armaduraLocal": { "type": ["string", "null"] },
+        "armaduraRd": { "type": ["string", "null"] }
+      },
+      "required": [
+        "nome", "peso", "custo", "quantidade", "notas", "tipo", "bonusDefesa",
+        "armaCatalogoId", "armaTipoCombate", "armaDanoRaw", "armaStMinimo", "armaduraLocal", "armaduraRd"
+      ]
+    },
+
+    "DefesasAtivas": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "bonusManualEsquiva": { "type": "integer" },
+        "periciaAparaId": { "type": ["string", "null"] },
+        "bonusManualApara": { "type": "integer" },
+        "periciaBloqueioId": { "type": ["string", "null"] },
+        "escudoSelecionadoNome": { "type": ["string", "null"] },
+        "bonusManualBloqueio": { "type": "integer" }
+      },
+      "required": [
+        "bonusManualEsquiva", "periciaAparaId", "bonusManualApara",
+        "periciaBloqueioId", "escudoSelecionadoNome", "bonusManualBloqueio"
+      ]
+    }
+  }
+}
