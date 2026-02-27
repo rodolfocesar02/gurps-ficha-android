@@ -70,6 +70,11 @@ Andamento:
   - abas migradas para o padrao unico (Traços, Pericias, Magias, Equipamentos, Combate e Notas);
   - nome de arquivo padronizado: `TagMagias.kt` -> `TabMagias.kt`;
   - validacao executada com sucesso: `:app:compileDebugKotlin testDebugUnitTest` e `:app:assembleDebug`.
+- Padronizacao complementar concluida:
+  - novo container reutilizavel de dialogo fullscreen em `DialogStandards.kt`;
+  - dialogos de selecao migrados para o mesmo padrao visual (Pericias, Magias, Vantagens e Desvantagens);
+  - backend `discord-roll-api` com respostas de erro e validacao de API key padronizadas (helpers reutilizaveis em `server.js`);
+  - validacao executada com sucesso: `node --check discord-roll-api/src/server.js`, `:app:compileDebugKotlin testDebugUnitTest` e `:app:assembleDebug`.
 
 ### Lote 3 - Login / Autenticacao
 Escopo:

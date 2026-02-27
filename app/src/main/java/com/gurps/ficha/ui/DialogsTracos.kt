@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -43,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.gurps.ficha.model.DesvantagemDefinicao
 import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.TipoCusto
@@ -62,9 +61,8 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
     val listaFiltrada = viewModel.dataRepository.filtrarVantagens(busca, filtroTipo, filtroTag)
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Text("Selecionar Vantagem", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -115,7 +113,6 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     TextButton(onClick = onDismiss) { Text("Fechar") }
                 }
             }
-        }
     }
 
     vantagemSelecionada?.let { definicao ->
@@ -202,9 +199,8 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
     val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
     val listaFiltrada = viewModel.dataRepository.filtrarDesvantagens(busca, filtroTipo, filtroTag)
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Text("Selecionar Desvantagem", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
 
                 Text("Atual: ${viewModel.pontosDesvantagens} pts", style = MaterialTheme.typography.bodySmall)
@@ -256,7 +252,6 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
                     TextButton(onClick = onDismiss) { Text("Fechar") }
                 }
             }
-        }
     }
 
     desvantagemSelecionada?.let { definicao ->

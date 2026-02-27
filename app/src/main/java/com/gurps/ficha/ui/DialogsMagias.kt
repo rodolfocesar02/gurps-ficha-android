@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.MagiaSelecionada
@@ -60,9 +59,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Text("Selecionar Magia", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -153,7 +151,6 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     TextButton(onClick = onDismiss) { Text("Fechar") }
                 }
             }
-        }
     }
 
     magiaSelecionada?.let { definicao ->

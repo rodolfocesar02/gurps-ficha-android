@@ -12,6 +12,7 @@ const botToken = process.env.DISCORD_BOT_TOKEN || '';
 const defaultChannelId = process.env.DISCORD_CHANNEL_ID || '';
 const DISCORD_TYPE_GUILD_VOICE = 2;
 const CHANNEL_CACHE_TTL_MS = 30 * 60 * 1000;
+const CHANNEL_CACHE_TTL_SECONDS = Math.floor(CHANNEL_CACHE_TTL_MS / 1000);
 const channelsCache = {
   items: [],
   fetchedAt: 0
@@ -21,8 +22,19 @@ function requireConfigured() {
   return Boolean(apiKey && botToken);
 }
 
+function jsonError(res, statusCode, error, detail) {
+  const payload = { ok: false, error };
+  if (detail) payload.detail = detail;
+  return res.status(statusCode).json(payload);
+}
+
 function unauthorized(res) {
-  return res.status(401).json({ ok: false, error: 'unauthorized' });
+  return jsonError(res, 401, 'unauthorized');
+}
+
+function hasValidApiKey(req) {
+  const incomingKey = req.header('x-api-key') || '';
+  return Boolean(incomingKey && incomingKey === apiKey);
 }
 
 function formatRollMessage(payload) {
@@ -157,11 +169,10 @@ app.get('/health', (_req, res) => {
 
 app.get('/api/channels', async (req, res) => {
   if (!requireConfigured()) {
-    return res.status(500).json({ ok: false, error: 'service_not_configured' });
+    return jsonError(res, 500, 'service_not_configured');
   }
 
-  const incomingKey = req.header('x-api-key') || '';
-  if (!incomingKey || incomingKey !== apiKey) {
+  if (!hasValidApiKey(req)) {
     return unauthorized(res);
   }
 
@@ -172,31 +183,26 @@ app.get('/api/channels', async (req, res) => {
       channels,
       fromCache,
       cacheAgeSeconds: cacheAgeSeconds(),
-      cacheTtlSeconds: Math.floor(CHANNEL_CACHE_TTL_MS / 1000)
+      cacheTtlSeconds: CHANNEL_CACHE_TTL_SECONDS
     });
   } catch (error) {
-    return res.status(502).json({
-      ok: false,
-      error: 'discord_channels_failed',
-      detail: error.message
-    });
+    return jsonError(res, 502, 'discord_channels_failed', error.message);
   }
 });
 
 app.post('/api/rolls', async (req, res) => {
   if (!requireConfigured()) {
-    return res.status(500).json({ ok: false, error: 'service_not_configured' });
+    return jsonError(res, 500, 'service_not_configured');
   }
 
-  const incomingKey = req.header('x-api-key') || '';
-  if (!incomingKey || incomingKey !== apiKey) {
+  if (!hasValidApiKey(req)) {
     return unauthorized(res);
   }
 
   const payload = req.body || {};
   const targetChannelId = sanitizeChannelId(payload.channelId) || sanitizeChannelId(defaultChannelId);
   if (!targetChannelId) {
-    return res.status(400).json({ ok: false, error: 'channel_id_missing' });
+    return jsonError(res, 400, 'channel_id_missing');
   }
 
   const message = formatRollMessage(payload);
@@ -209,11 +215,7 @@ app.post('/api/rolls', async (req, res) => {
       channelId: targetChannelId
     });
   } catch (error) {
-    return res.status(502).json({
-      ok: false,
-      error: 'discord_send_failed',
-      detail: error.message
-    });
+    return jsonError(res, 502, 'discord_send_failed', error.message);
   }
 });
 

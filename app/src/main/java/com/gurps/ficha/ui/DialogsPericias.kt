@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -48,8 +49,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.model.AtributoBase
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.PericiaDefinicao
@@ -66,12 +65,8 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
     val listaFiltrada = viewModel.dataRepository.filtrarPericias(busca, filtroAtributo, null)
 
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(), shape = androidx.compose.foundation.shape.RoundedCornerShape(0.dp)) {
-            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 Text("Selecionar Perícia", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(6.dp))
 
@@ -147,7 +142,6 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     TextButton(onClick = onDismiss) { Text("Fechar") }
                 }
             }
-        }
     }
 
     periciaSelecionada?.let { definicao ->
