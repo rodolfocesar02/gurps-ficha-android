@@ -541,6 +541,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
 
         var showConfigAtaqueDialog by remember { mutableStateOf(false) }
+        var showConfigDanoDialog by remember { mutableStateOf(false) }
         if (opcoesAtaque.isEmpty()) {
             Text(
                 "Sem pericias para ataque. Adicione pericias de combate na aba Pericias.",
@@ -548,18 +549,36 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
-            Button(
-                onClick = { showConfigAtaqueDialog = true },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(rowSpacing)
             ) {
-                Text(
-                    "Configurar seu Ataque e Dano",
-                    style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
-                    maxLines = 1
-                )
+                Button(
+                    onClick = { showConfigAtaqueDialog = true },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        "Ataque",
+                        style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                        maxLines = 1
+                    )
+                }
+                Button(
+                    onClick = { showConfigDanoDialog = true },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(40.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        "Dano",
+                        style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                        maxLines = 1
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(3.dp))
@@ -594,12 +613,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     verticalAlignment = Alignment.Top
                 ) {
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(
-                            "ATAQUE",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -635,17 +648,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     color = MaterialTheme.colorScheme.primary,
                                     textAlign = TextAlign.Center
                                 )
+                                Text(
+                                    "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                                    style = compactLabelStyle,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1
+                                )
                             }
                         }
                     }
 
                     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(
-                            "DANO",
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -684,25 +698,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
+                                Text(
+                                    "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                                    style = compactLabelStyle,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1
+                                )
                             }
                         }
                     }
                 }
-                Text(
-                    "Deslize para cima/baixo para ajustar mod de ataque: ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
-                    style = compactLabelStyle,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
             }
 
             if (showConfigAtaqueDialog) {
                 var expandedAtaque by remember { mutableStateOf(false) }
-                var expandedFonteDano by remember { mutableStateOf(false) }
                 AlertDialog(
                     onDismissRequest = { showConfigAtaqueDialog = false },
-                    title = { Text("Configurar Ataque e Dano") },
+                    title = { Text("Configurar Ataque") },
                     text = {
                         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             ExposedDropdownMenuBox(
@@ -732,7 +745,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     }
                                 }
                             }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showConfigAtaqueDialog = false }) {
+                            Text("Fechar")
+                        }
+                    }
+                )
+            }
 
+            if (showConfigDanoDialog) {
+                var expandedFonteDano by remember { mutableStateOf(false) }
+                AlertDialog(
+                    onDismissRequest = { showConfigDanoDialog = false },
+                    title = { Text("Configurar Dano") },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                             ExposedDropdownMenuBox(
                                 expanded = expandedFonteDano,
                                 onExpandedChange = { expandedFonteDano = !expandedFonteDano }
@@ -763,7 +792,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         }
                     },
                     confirmButton = {
-                        TextButton(onClick = { showConfigAtaqueDialog = false }) {
+                        TextButton(onClick = { showConfigDanoDialog = false }) {
                             Text("Fechar")
                         }
                     }
@@ -855,15 +884,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     color = if (defesa != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center
                                 )
+                                Text(
+                                    "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
+                                    style = compactLabelStyle,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1
+                                )
                             }
                         }
-                        Text(
-                            "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
-                            style = compactLabelStyle,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center,
-                            maxLines = 1
-                        )
                     }
                 }
             }
