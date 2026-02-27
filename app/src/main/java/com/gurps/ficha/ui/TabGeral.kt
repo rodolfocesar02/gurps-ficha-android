@@ -15,10 +15,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
 
@@ -44,6 +50,8 @@ fun TabGeral(viewModel: FichaViewModel) {
     var pontosInput by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var ultimoPontosValidos by rememberSaveable { mutableStateOf(p.pontosIniciais.toString()) }
     var pontosEmFoco by remember { mutableStateOf(false) }
+    var showAnotacoesDialog by remember { mutableStateOf(false) }
+    var showResumoDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(p.pontosIniciais) {
         if (!pontosEmFoco) {
@@ -56,10 +64,10 @@ fun TabGeral(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(10.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        SectionCard(title = "Informacoes Basicas") {
+        SectionCard(title = "") {
             OutlinedTextField(
                 value = p.nome,
                 onValueChange = { viewModel.atualizarNome(it) },
@@ -67,10 +75,10 @@ fun TabGeral(viewModel: FichaViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 OutlinedTextField(
                     value = p.jogador,
@@ -155,65 +163,120 @@ fun TabGeral(viewModel: FichaViewModel) {
                 CaracteristicaDisplay("Desloc.", "${p.deslocamentoBasico} m/s")
                 CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga))
             }
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 CaracteristicaDisplay("Dano GdP", p.danoGdP)
                 CaracteristicaDisplay("Dano GeB", p.danoGeB)
             }
         }
 
-        SectionCard(title = "Anotacoes") {
-            OutlinedTextField(
-                value = p.campanha,
-                onValueChange = { viewModel.atualizarCampanha(it.take(200)) },
-                label = { Text("Campanha (max 200)") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 2,
-                maxLines = 3
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            OutlinedTextField(
-                value = p.historico,
-                onValueChange = { viewModel.atualizarHistorico(it.take(1000)) },
-                label = { Text("Historia (max 1000)") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                maxLines = 6
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            OutlinedTextField(
-                value = p.aparencia,
-                onValueChange = { viewModel.atualizarAparencia(it.take(1000)) },
-                label = { Text("Aparencia (max 1000)") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                maxLines = 6
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            OutlinedTextField(
-                value = p.notas,
-                onValueChange = { viewModel.atualizarNotas(it.take(1000)) },
-                label = { Text("Notas (max 1000)") },
-                modifier = Modifier.fillMaxWidth(),
-                minLines = 3,
-                maxLines = 6
-            )
+        Button(
+            onClick = { showAnotacoesDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Anotacoes")
         }
 
-        SectionCard(title = "Resumo de Pontos") {
-            PontosResumoRow("Atributos Primarios", p.pontosAtributos)
-            PontosResumoRow("Atributos Secundarios", p.pontosSecundarios)
-            PontosResumoRow("Vantagens", p.pontosVantagens)
-            PontosResumoRow("Desvantagens", p.pontosDesvantagens)
-            PontosResumoRow("Qualidades", p.pontosQualidades)
-            PontosResumoRow("Peculiaridades", p.pontosPeculiaridades)
-            PontosResumoRow("Pericias", p.pontosPericias)
-            PontosResumoRow("Magias", p.pontosMagias)
-            Divider(modifier = Modifier.padding(vertical = 6.dp))
-            PontosResumoRow("Total Gasto", p.pontosGastos, fontWeight = FontWeight.Bold)
+        Button(
+            onClick = { showResumoDialog = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Resumo de Pontos")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
+    }
+
+    if (showAnotacoesDialog) {
+        Dialog(
+            onDismissRequest = { showAnotacoesDialog = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Card(modifier = Modifier.fillMaxSize(), shape = RoundedCornerShape(0.dp)) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text("Anotacoes", style = MaterialTheme.typography.headlineMedium)
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = p.campanha,
+                            onValueChange = { viewModel.atualizarCampanha(it.take(200)) },
+                            label = { Text("Campanha (max 200)") },
+                            modifier = Modifier.fillMaxWidth(),
+                            minLines = 2,
+                            maxLines = 3
+                        )
+                        OutlinedTextField(
+                            value = p.historico,
+                            onValueChange = { viewModel.atualizarHistorico(it.take(1000)) },
+                            label = { Text("Historia (max 1000)") },
+                            modifier = Modifier.fillMaxWidth(),
+                            minLines = 3,
+                            maxLines = 6
+                        )
+                        OutlinedTextField(
+                            value = p.aparencia,
+                            onValueChange = { viewModel.atualizarAparencia(it.take(1000)) },
+                            label = { Text("Aparencia (max 1000)") },
+                            modifier = Modifier.fillMaxWidth(),
+                            minLines = 3,
+                            maxLines = 6
+                        )
+                        OutlinedTextField(
+                            value = p.notas,
+                            onValueChange = { viewModel.atualizarNotas(it.take(1000)) },
+                            label = { Text("Notas (max 1000)") },
+                            modifier = Modifier.fillMaxWidth(),
+                            minLines = 3,
+                            maxLines = 6
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        TextButton(onClick = { showAnotacoesDialog = false }) {
+                            Text("Fechar")
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showResumoDialog) {
+        AlertDialog(
+            onDismissRequest = { showResumoDialog = false },
+            title = { Text("Resumo de Pontos") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    PontosResumoRow("Atributos Primarios", p.pontosAtributos)
+                    PontosResumoRow("Atributos Secundarios", p.pontosSecundarios)
+                    PontosResumoRow("Vantagens", p.pontosVantagens)
+                    PontosResumoRow("Desvantagens", p.pontosDesvantagens)
+                    PontosResumoRow("Qualidades", p.pontosQualidades)
+                    PontosResumoRow("Peculiaridades", p.pontosPeculiaridades)
+                    PontosResumoRow("Pericias", p.pontosPericias)
+                    PontosResumoRow("Magias", p.pontosMagias)
+                    Divider(modifier = Modifier.padding(vertical = 4.dp))
+                    PontosResumoRow("Total Gasto", p.pontosGastos, fontWeight = FontWeight.Bold)
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showResumoDialog = false }) {
+                    Text("Fechar")
+                }
+            }
+        )
     }
 }
 
@@ -319,7 +382,7 @@ fun CaracteristicaDisplay(nome: String, valor: String) {
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.secondaryContainer)
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(nome, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer)
         Text(valor, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
