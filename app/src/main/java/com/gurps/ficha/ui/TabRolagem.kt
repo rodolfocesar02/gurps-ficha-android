@@ -4,8 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -194,6 +196,16 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val innerCardPadding = when {
         isTinyScreen -> 4.dp
         else -> 6.dp
+    }
+    val outerCardVerticalPadding = when {
+        isTinyScreen -> 4.dp
+        isVerySmallScreen -> 5.dp
+        else -> 6.dp
+    }
+    val innerCardVerticalPadding = when {
+        isTinyScreen -> 2.dp
+        isVerySmallScreen -> 3.dp
+        else -> 4.dp
     }
     val statsNumberStyle = when {
         isTinyScreen -> MaterialTheme.typography.headlineSmall
@@ -430,7 +442,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
@@ -453,7 +465,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             Column(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .padding(vertical = 2.dp),
+                                    .padding(vertical = innerCardVerticalPadding),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
@@ -520,7 +532,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         ) {
                             Text(
                                 text = "PV ${p.pontosVida}",
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -530,7 +542,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         ) {
                             Text(
                                 text = "PF ${p.pontosFadiga}",
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -608,17 +620,26 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min),
                     horizontalArrangement = Arrangement.spacedBy(rowSpacing),
                     verticalAlignment = Alignment.Top
                 ) {
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                         ) {
                             Column(
-                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = 5.dp),
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(1.dp)
                             ) {
@@ -659,13 +680,20 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         }
                     }
 
-                    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
                         Card(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                         ) {
                             Column(
-                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = 5.dp),
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(1.dp)
                             ) {
@@ -854,7 +882,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                         ) {
                             Column(
-                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = 5.dp),
+                                modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(1.dp)
                             ) {
