@@ -13,7 +13,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -28,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.DesvantagemSelecionada
@@ -37,7 +35,7 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
 private fun BotaoAcaoTracosPadrao(texto: String, onClick: () -> Unit) {
-    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) { Text(texto) }
+    PrimaryActionButton(text = texto, onClick = onClick)
 }
 
 @Composable
@@ -51,10 +49,7 @@ fun TabTracos(viewModel: FichaViewModel) {
 
     val p = viewModel.personagem
 
-    Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    StandardTabColumn {
         BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",
             onClick = { showSelecionarVantagem = true }
@@ -172,28 +167,13 @@ fun TabTracos(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoTracosFooter(totalItens: Int, pontosTracos: Int) {
-    val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
-    val titleStyle = if (isCompactScreen) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            Text(
-                "Resumo de Traços (rodape)",
-                style = titleStyle,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text("Total de traços: $totalItens", style = MaterialTheme.typography.labelSmall)
-            Text(
-                "Pontos gastos: $pontosTracos",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+    SummaryFooterCard(title = "Resumo de Traços (rodape)") {
+        Text("Total de traços: $totalItens", style = MaterialTheme.typography.labelSmall)
+        Text(
+            "Pontos gastos: $pontosTracos",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 

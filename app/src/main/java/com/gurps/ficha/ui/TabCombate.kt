@@ -65,7 +65,7 @@ private fun BotaoAdicionarCombatePadrao(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) { Text(texto) }
+    PrimaryActionButton(text = texto, onClick = onClick, enabled = enabled)
 }
 
 @Composable
@@ -86,13 +86,7 @@ fun TabCombate(viewModel: FichaViewModel) {
     var showEditarAparaDialog by remember { mutableStateOf(false) }
     var showEditarBloqueioDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
+    StandardTabColumn {
         SectionCard(title = "Configuração de Defesas") {
             Text(
                 "Defina quais perícias e escudo entram no cálculo de Apara e Bloqueio.",

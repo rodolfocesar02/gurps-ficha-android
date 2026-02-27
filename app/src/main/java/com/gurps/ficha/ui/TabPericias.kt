@@ -2,15 +2,12 @@
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.PericiaSelecionada
@@ -20,7 +17,7 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
 private fun BotaoAdicionarPericiaPadrao(texto: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Button(onClick = onClick, modifier = modifier) { Text(texto) }
+    PrimaryActionButton(text = texto, onClick = onClick, modifier = modifier)
 }
 
 @Composable
@@ -32,13 +29,7 @@ fun TabPericias(viewModel: FichaViewModel) {
     var showCustomDialog by remember { mutableStateOf(false) }
     var editingPericiaIndex by remember { mutableStateOf<Int?>(null) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
+    StandardTabColumn(contentSpacing = 6.dp) {
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -131,28 +122,13 @@ fun TabPericias(viewModel: FichaViewModel) {
 
 @Composable
 private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
-    val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
-    val titleStyle = if (isCompactScreen) MaterialTheme.typography.labelSmall else MaterialTheme.typography.labelMedium
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            Text(
-                "Resumo de Pericias (rodape)",
-                style = titleStyle,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text("Total de pericias: $totalPericias", style = MaterialTheme.typography.labelSmall)
-            Text(
-                "Pontos gastos: $pontosPericias",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+    SummaryFooterCard(title = "Resumo de Pericias (rodape)") {
+        Text("Total de pericias: $totalPericias", style = MaterialTheme.typography.labelSmall)
+        Text(
+            "Pontos gastos: $pontosPericias",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
 

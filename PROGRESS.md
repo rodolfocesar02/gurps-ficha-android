@@ -65,6 +65,11 @@ Andamento:
 - Padronizacao inicial de layout: botoes `Adicionar ...` em largura total e espacamentos harmonizados entre abas.
 - Proximo passo imediato: compactacao visual para telas <= 360dp e refinamento de rodapes/dialogos.
 - Commit de salvamento: `VERSÃO DEFINITIVA)` (2026-02-27).
+- Padronizacao ampla de UI concluida:
+  - novo arquivo base `UiStandards.kt` com componentes reutilizaveis (`StandardTabColumn`, `PrimaryActionButton`, `SummaryFooterCard`);
+  - abas migradas para o padrao unico (Traços, Pericias, Magias, Equipamentos, Combate e Notas);
+  - nome de arquivo padronizado: `TagMagias.kt` -> `TabMagias.kt`;
+  - validacao executada com sucesso: `:app:compileDebugKotlin testDebugUnitTest` e `:app:assembleDebug`.
 
 ### Lote 3 - Login / Autenticacao
 Escopo:
