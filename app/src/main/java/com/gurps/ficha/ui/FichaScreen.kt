@@ -55,9 +55,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val density = LocalDensity.current
     val usarNavegacaoCompacta = configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Magia", "Combate", "Equip.", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Magia", "Equip.", "Defesas", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Combate", "Equip.", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Equip.", "Defesas", "Rolagem")
     }
     val rolagemTabIndex = if (temAptidaoMagica) 6 else 5
     val maxTabIndex = tabs.lastIndex
@@ -102,8 +102,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 "Traços" -> Icons.Default.Star
                                 "Perícias" -> Icons.Default.Build
                                 "Magia" -> Icons.Default.Star
-                                "Combate" -> Icons.Default.Favorite
                                 "Equip." -> Icons.Default.ShoppingCart
+                                "Defesas" -> Icons.Default.Favorite
                                 "Rolagem" -> Icons.Default.Refresh
                                 else -> Icons.Default.Build
                             }
@@ -143,9 +143,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 0 -> TabGeral(viewModel)
                 1 -> TabTracos(viewModel)
                 2 -> TabPericias(viewModel)
-                3 -> if (temAptidaoMagica) TabMagias(viewModel) else TabCombate(viewModel)
-                4 -> if (temAptidaoMagica) TabCombate(viewModel) else TabEquipamentos(viewModel)
-                5 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabRolagem(viewModel)
+                3 -> if (temAptidaoMagica) TabMagias(viewModel) else TabEquipamentos(viewModel)
+                4 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabCombate(viewModel)
+                5 -> if (temAptidaoMagica) TabCombate(viewModel) else TabRolagem(viewModel)
                 6 -> TabRolagem(viewModel)
             }
         }

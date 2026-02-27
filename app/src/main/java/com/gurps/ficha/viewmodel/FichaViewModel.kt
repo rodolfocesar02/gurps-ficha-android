@@ -571,7 +571,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun adicionarEquipamentoArma(arma: ArmaCatalogoItem) {
         val notasArma = buildString {
-            if (!arma.grupo.isNullOrBlank()) append(arma.grupo)
             if (!arma.aparar.isNullOrBlank()) {
                 if (isNotBlank()) append("\n")
                 append("Aparar: ${arma.aparar} (${explicarAparar(arma.aparar)})")

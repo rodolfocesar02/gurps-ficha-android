@@ -46,6 +46,19 @@ import com.gurps.ficha.model.TipoEquipamento
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.text.Normalizer
 
+private fun limparRuidoGrupoArma(texto: String): String {
+    if (texto.isBlank()) return texto
+    return texto
+        .lineSequence()
+        .map { it.trim() }
+        .filter { it.isNotBlank() }
+        .filterNot { linha ->
+            linha.contains("Tabela de Armas", ignoreCase = true) ||
+                Regex("\\((DX|IQ|HT|ST)-\\d+.*\\)", RegexOption.IGNORE_CASE).containsMatchIn(linha)
+        }
+        .joinToString("\n")
+}
+
 @Composable
 private fun BotaoAdicionarPadrao(texto: String, onClick: () -> Unit) {
     PrimaryActionButton(text = texto, onClick = onClick)
@@ -329,11 +342,18 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
                 )
             }
             if (equipamento.notas.isNotBlank()) {
+                val notasLimpas = if (equipamento.armaCatalogoId != null) {
+                    limparRuidoGrupoArma(equipamento.notas)
+                } else {
+                    equipamento.notas
+                }
+                if (notasLimpas.isNotBlank()) {
                 Text(
-                    equipamento.notas,
+                    notasLimpas,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                }
             }
             val observacoesCatalogo = viewModel.observacoesArmaPorEquipamento(equipamento).trim()
             val observacoesFaltantes = if (observacoesCatalogo.isBlank()) {
@@ -421,7 +441,7 @@ fun SelecionarArmaEquipamentoDialog(
                 OutlinedTextField(
                     value = viewModel.buscaArmaEquipamento,
                     onValueChange = { viewModel.atualizarBuscaArmaEquipamento(it) },
-                    label = { Text("Buscar por nome ou grupo") },
+                    label = { Text("Buscar por nome") },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -577,7 +597,7 @@ private fun ArmaItemSelecao(
     ) {
         Text(arma.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
         Text(
-            "${arma.grupo} | ST ${arma.stMinimo ?: "-"} | $tipoLabel",
+            "ST ${arma.stMinimo ?: "-"} | $tipoLabel",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
