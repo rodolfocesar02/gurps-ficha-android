@@ -45,9 +45,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.model.AtributoBase
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.PericiaDefinicao
@@ -64,16 +66,19 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
     val listaFiltrada = viewModel.dataRepository.filtrarPericias(busca, filtroAtributo, null)
 
-    Dialog(onDismissRequest = onDismiss) {
-        Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(0.9f)) {
-            Column(modifier = Modifier.padding(16.dp)) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Card(modifier = Modifier.fillMaxWidth().fillMaxHeight(), shape = androidx.compose.foundation.shape.RoundedCornerShape(0.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)) {
                 Text("Selecionar Perícia", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
                 OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar...") },
                     modifier = Modifier.fillMaxWidth(), singleLine = true, leadingIcon = { Icon(Icons.Default.Search, null) })
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -95,20 +100,46 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
                 Text("${listaFiltrada.size} perícias encontradas", style = MaterialTheme.typography.bodySmall)
 
-                LazyColumn(modifier = Modifier.weight(1f)) {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
                     items(listaFiltrada) { definicao ->
                         val jaAdicionada = viewModel.periciaJaAdicionada(definicao.id)
-                        ListItem(
-                            headlineContent = { Text(definicao.nome + if (definicao.exigeEspecializacao) " *" else "") },
-                            supportingContent = {
-                                val atributos = definicao.atributosPossiveis?.joinToString("/") ?: definicao.atributoBase
-                                val dificuldade = if (definicao.dificuldadeVariavel) "F/M/D/MD" else definicao.dificuldadeFixa ?: "M"
-                                Text("$atributos/$dificuldade")
-                            },
-                            trailingContent = { if (jaAdicionada) Text("Adicionada", color = MaterialTheme.colorScheme.outline) },
-                            modifier = Modifier.clickable(enabled = !jaAdicionada || definicao.exigeEspecializacao) { periciaSelecionada = definicao }
-                        )
-                        Divider()
+                        val atributos = definicao.atributosPossiveis?.joinToString("/") ?: definicao.atributoBase
+                        val dificuldade = if (definicao.dificuldadeVariavel) "F/M/D/MD" else definicao.dificuldadeFixa ?: "M"
+                        val atributoBaseTexto = "$atributos/$dificuldade"
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(enabled = !jaAdicionada || definicao.exigeEspecializacao) { periciaSelecionada = definicao },
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = definicao.nome + if (definicao.exigeEspecializacao) " *" else "",
+                                    modifier = Modifier.weight(1f),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = atributoBaseTexto,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1
+                                )
+                                if (jaAdicionada) {
+                                    Text("Adicionada", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.labelSmall)
+                                }
+                            }
+                        }
                     }
                 }
 

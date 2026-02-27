@@ -18,8 +18,8 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 // === TAB PERICIAS ===
 
 @Composable
-private fun BotaoAdicionarPericiaPadrao(texto: String, onClick: () -> Unit) {
-    Button(onClick = onClick) { Text(texto) }
+private fun BotaoAdicionarPericiaPadrao(texto: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(onClick = onClick, modifier = modifier) { Text(texto) }
 }
 
 @Composable
@@ -35,19 +35,25 @@ fun TabPericias(viewModel: FichaViewModel) {
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(12.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
 
-        BotaoAdicionarPericiaPadrao(
-            texto = "Adicionar Perícia",
-            onClick = { showSelecionarPericia = true }
-        )
-
-        BotaoAdicionarPericiaPadrao(
-            texto = "Criar Perícia",
-            onClick = { showCustomDialog = true }
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            BotaoAdicionarPericiaPadrao(
+                texto = "Adicionar Perícia",
+                onClick = { showSelecionarPericia = true },
+                modifier = Modifier.weight(1f)
+            )
+            BotaoAdicionarPericiaPadrao(
+                texto = "Criar Perícia",
+                onClick = { showCustomDialog = true },
+                modifier = Modifier.weight(1f)
+            )
+        }
 
         if (p.pericias.isEmpty()) {
             Text(
@@ -64,7 +70,7 @@ fun TabPericias(viewModel: FichaViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors()
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(10.dp)) {
 
                     PericiaItem(
                         pericia = pericia,
@@ -80,7 +86,7 @@ fun TabPericias(viewModel: FichaViewModel) {
             totalPericias = p.pericias.size,
             pontosPericias = p.pontosPericias
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(16.dp))
     }
 
     if (showSelecionarPericia) {
@@ -162,8 +168,11 @@ fun PericiaItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(1f)) {
-
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 6.dp)
+        ) {
             Text(
                 pericia.nome +
                         if (pericia.especializacao.isNotBlank())
@@ -172,23 +181,25 @@ fun PericiaItem(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
-
             Text(
                 "${pericia.atributoBase.sigla}/${pericia.dificuldade.sigla} • ${pericia.pontosGastos} pts",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-
-        Text(
-            "Nível $nivel (${pericia.atributoBase.sigla}$nivelRelativo)",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Remover")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "NH $nivel",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Remover")
+            }
         }
     }
 }

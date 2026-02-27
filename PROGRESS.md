@@ -4,7 +4,8 @@ Atualizado em: 2026-02-27
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Proximo Passo Imediato
-- Continuar `Lote 2 - passo 2`: concluir campos clicaveis de `Defesas` na Aba Rolagem e manter fluxo rapido de mesa.
+- `Lote 2 - passo 5`: validar fluxo completo na Aba Rolagem ("clicou -> rolou -> historico") para Atributos, Ataque, Dano, Defesas, Pericias e Magias.
+- `Lote 7`: consolidar refinos finais de layout/espacamento na Aba Geral e Aba Pericias apos testes em telas pequenas.
 
 ## Estado Atual (Consolidado)
 - Integracao Discord funcionando em producao (Railway + app Android).
@@ -77,9 +78,9 @@ Criterio de pronto:
 Status: `EM ANDAMENTO`
 Plano de implementacao (passo a passo com teste):
 1. [x] Mapear contexto do clique (ex.: "Ataque Espada Curta", "Defesa Esquiva", "DX").
-2. [~] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta (atributos e ataque/dano concluidos; defesas pendentes).
-3. [~] Criar layout melhor da aba Rolagem para uso.
-4. [ ] Registrar rolagens na aba Rolagem com contexto correto.
+2. [x] Tornar campos DENTRO DA ABA ROLAGEM clicaveis para disparar rolagem direta.
+3. [x] Criar layout melhor da aba Rolagem para uso.
+4. [x] Registrar rolagens na aba Rolagem com contexto correto.
 5. [ ] Validar fluxo completo: "clicou no campo -> rolou -> apareceu no historico" nos cenarios principais.
 Matriz de mapeamento (Passo 1):
 - `Atributo`:
@@ -131,6 +132,23 @@ Andamento:
   - Swipe vertical no bloco para ajustar `mod de ataque` com foco em uso de mesa.
   - Layout compactado com dois cards lado a lado (Ataque e Dano), textos centralizados e menor espacamento vertical.
   - Pendente no lote: bloco clicavel de `Defesas` no mesmo padrao rapido.
+- 2026-02-27: Avancos de layout e fluxo na Aba Rolagem:
+  - Bloco `Defesas` implementado com 3 cards lado a lado (`Esquiva`, `Apara`, `Bloqueio`), cada um com clique de rolagem e swipe de modificador proprio.
+  - `Ataque` e `Dano` mantidos lado a lado com altura simetrica e mesma cor de card do bloco de atributos.
+  - `mod` exibido dentro dos cards de `Ataque`, `Dano` e `Defesas`; removido texto geral de mod de ataque fora dos cards.
+  - Botao unico de configuracao foi dividido em dois botoes: `Ataque` e `Dano` com dialogs separados.
+  - Bloco `Pericias` adicionado com rolagem por `NH`, swipe de modificador por item e dialog full-screen.
+  - Bloco `Magias` adicionado (visivel apenas com `Aptidao Magica`), com mesmo padrao de `Pericias` e rolagem por `NH`.
+  - Dialogs de `Pericias`/`Magias` na Rolagem passaram a fechar automaticamente ao clicar em `NH`.
+
+Levantamento do que foi feito no Lote 2:
+- Rolagem rapida por Atributos, Ataque, Dano, Defesas, Pericias e Magias implementada na mesma aba.
+- Historico local com status de envio e reenvio mantido apos os novos blocos.
+- Fluxo de mesa ficou mais compacto e adaptativo para telas pequenas.
+
+Levantamento do que ainda precisa ser feito no Lote 2:
+- Executar validacao manual fim-a-fim dos cenarios principais (passo 5).
+- Revisar pequenos ajustes visuais residuais (espacamento/alinhamento) apos testes em aparelhos menores.
 
 ### Lote 3 - Login / Autenticacao
 Escopo:
@@ -213,7 +231,24 @@ Criterio de pronto:
 - Aba Geral reorganizada conforme escopo, sem quebra de calculos.
 - Historico e persistencia funcionando.
 - Layout validado em uso real (scroll, campos, resumo).
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
+
+Andamento:
+- 2026-02-27: Primeira rodada de reforma aplicada:
+  - Aba `Notas` removida da navegacao; campos textuais migrados para a Aba Geral.
+  - Bloco de anotacoes na Geral com limites aplicados:
+    - `Campanha` (200),
+    - `Historia` (1000),
+    - `Aparencia` (1000),
+    - `Notas` (1000).
+  - Controles de atributos primarios e secundarios migrados de botoes +/- para swipe vertical.
+  - Ajustes de densidade visual na Geral (menos padding/espacamento entre cards e elementos).
+  - Blocos `Anotacoes` e `Resumo de Pontos` convertidos para botoes com dialogs (`Anotacoes` full-screen, `Resumo` adaptativo).
+
+Levantamento do que ainda precisa ser feito no Lote 7:
+- Avaliar se unificacao dos 3 blocos de atributos em um unico card sera mantida como requisito final.
+- Refinar layout final da Geral em telas pequenas e grandes com teste manual.
+- Fechar consolidacao de rotulos e composicao final do resumo de pontos conforme criterio de pronto.
 
 ### Lote 8 - Seguranca de rede e configuracao por ambiente
 Escopo:
