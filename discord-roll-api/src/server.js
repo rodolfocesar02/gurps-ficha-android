@@ -41,25 +41,42 @@ function formatRollMessage(payload) {
   const character = payload.character || 'Personagem';
   const testType = payload.testType || 'Rolagem';
   const context = payload.context ? ` (${payload.context})` : '';
-
-  const target = payload.target != null ? String(payload.target) : '-';
-  const modifier = Number(payload.modifier || 0);
-  const modifierLabel = modifier >= 0 ? `+${modifier}` : String(modifier);
-
-  const dice = Array.isArray(payload.dice) && payload.dice.length > 0
-    ? payload.dice.join(', ')
+  const diceValues = Array.isArray(payload.dice) ? payload.dice : [];
+  const dice = diceValues.length > 0
+    ? diceValues.map((value) => `🎲${value}`).join(' ')
     : '-';
 
   const total = payload.total != null ? String(payload.total) : '-';
-  const outcome = payload.outcome || '-';
-  const margin = payload.margin != null ? String(payload.margin) : '-';
+  const margin = Number(payload.margin);
+  const hasMargin = Number.isFinite(margin);
+  const isSuccess = String(payload.outcome || '').startsWith('SUCESSO');
+  const isFailure = String(payload.outcome || '').startsWith('FALHA');
+  const isThreeD6 =
+    payload.testType !== 'Dano' &&
+    diceValues.length === 3 &&
+    diceValues.every((value) => Number.isInteger(value) && value >= 1 && value <= 6);
+  const rawDiceTotal = isThreeD6
+    ? diceValues.reduce((acc, value) => acc + value, 0)
+    : null;
+
+  let outcomeLabel = payload.outcome || '-';
+  if (isThreeD6 && (rawDiceTotal === 3 || rawDiceTotal === 4)) {
+    outcomeLabel = 'SUCESSO DECISIVO 🍀';
+  } else if (isThreeD6 && (rawDiceTotal === 17 || rawDiceTotal === 18)) {
+    outcomeLabel = 'FALHA CRÍTICA! 😈';
+  } else if (hasMargin && isSuccess) {
+    const plusMargin = Math.abs(margin);
+    outcomeLabel = `SUCESSO +${plusMargin}`;
+  } else if (hasMargin && isFailure) {
+    const minusMargin = Math.abs(margin);
+    outcomeLabel = `FALHA -${minusMargin}`;
+  }
 
   return [
-    `🎲 **${character}**`,
-    `Teste: **${testType}**${context}`,
-    `Alvo: **${target}** | Mod: **${modifierLabel}**`,
-    `Dados: [${dice}] | Total: **${total}**`,
-    `Resultado: **${outcome}** | Margem: **${margin}**`
+    `**${character}**`,
+    `**${testType}**${context}`,
+    `Dados: ${dice} = **${total}**`,
+    `Resultado: **${outcomeLabel}**`
   ].join('\n');
 }
 
