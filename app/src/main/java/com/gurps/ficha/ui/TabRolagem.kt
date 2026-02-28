@@ -47,6 +47,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.data.network.DiscordRollPayload
@@ -62,6 +64,8 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+
+private const val CUSTOM_ROLL_RETENTION_MS = 5 * 60 * 1000L
 
 private enum class TipoTeste(val label: String) {
     ATRIBUTO("Atributo"),
@@ -112,6 +116,110 @@ private data class ParsedDamage(
     val diceCount: Int,
     val modifier: Int,
     val suffix: String
+)
+
+private data class SoulAspectOption(
+    val nome: String,
+    val descricao: String
+)
+
+private val SOUL_ASPECT_OPTIONS = listOf(
+    SoulAspectOption(
+        nome = "1º Aspecto - Comunicação empática",
+        descricao = """
+            O jogador pode usar magia da alma para se entapizar com um ser, qualquer ser, e se comunicar de uma maneira diferente.
+
+            Em jogo: A magia da alma permite aos jogadores verem as almas e tudo que há relacionado com ela em “cena”. Por exemplo, Salamur, ao usar a magia da alma conseguiu “sentir” a presença de uma entidade maior no deserto. Além disso, ao pegar em suas mãos o equipamento de Meldor, ele conseguiu ver seus últimos momentos antes de morrer, dando uma pista de onde começar a procurar por Meldor e o que aconteceu com ele.
+
+            César, em outro momento, utilizou a magia “Luz contínua” com um adicional de um ponto em magia da alma, o que o ajudou a revelar uma entrada secreta em uma câmara onde, aparentemente, não havia nada.
+
+            Em combate: O jogador pode criar um “vínculo” maior com a alma dos inimigos/aliados. Magias que afetam diretamente a mente/sentidos dos inimigos, que precisam de concentração, agora podem ser utilizadas normalmente, sem uma concentração prévia. Por exemplo, César pôde usar a magia Medo em um “Grande Rotmen” sem precisar se concentrar nela. Além disso, caso algum jogador tivesse interesse, poderia usar Intimidação com Magia da Alma e conseguir afetar todos os jogadores. Magias de cura também podem ser afetadas positivamente pela Magia da Alma, quando utilizadas juntas.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "2º Aspecto - Translocação astral",
+        descricao = """
+            Jogadores conseguem forçar o deslocamento do corpo no mundo real a partir do movimento dele no mundo da alma. (Deslocamento reduzido)
+
+            Em cena: Os jogadores podem “cruzar” lugares utilizando o mundo da alma, é como uma translocação ou teleporte, mas ela permite que os jogadores “vejam/interajam” com o mundo exterior enquanto o fazem.
+
+            Em jogo: O jogador pode gastar 1 ponto de magia da alma para fazer um ataque ou uma defesa ativa oculta, utilizando o mundo espiritual antes do mundo real.
+
+            Em caso de ataque: O jogador deve declarar que irá utilizar a magia da alma e fazer um teste de “sentidos”, antes do ataque. O teste de sentidos é baseado em DX ou HT, seja qual for maior. Após o teste de sentido, caso sucesso, o jogador faz o teste de ataque contra o inimigo. O inimigo tem que fazer um teste de percepção com redutor de -4 para poder usar alguma defesa ativa.
+
+            Em caso de defesa: O jogador deve declarar que irá utilizar esse ponto de magia da alma como uma defesa ativa e, ao fazer, se esquiva automaticamente do ataque.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "3º Aspecto - Corrente da alma",
+        descricao = """
+            Vincula a alma do jogador com um objeto inanimado.
+            Ainda há a possibilidade de uma entidade poder ser relacionada à vinculação, podendo intervir positivamente, ou negativamente, no processo.
+
+            Em cena: O jogador Xing tem um machado que estima muito, há muitos anos utiliza o machado para todo tipo de atividade e não se separa por nada dele. Nesses casos, o jogador pode fazer um vínculo de alma com o objeto, intensificando a sua ligação com o objeto para todos os fins.
+            Xing, portanto, se concentra, pede bênçãos as entidades em que ele acredita e vincula o machado à sua alma, ampliando as suas habilidades de todas as jogadas com o objeto, podendo acertar o arremesso dessa arma em alvos que, normalmente, talvez não pudesse.
+
+            Em jogo: O jogador utiliza 1 ponto de magia da alma e faz um teste de vontade. Se falhar o teste, o jogador tem um período de 24 horas para tentar novamente. Caso o sucesso aconteça, o jogador irá ampliar as suas capacidades com o objeto. No caso de uma arma, o jogador irá aumentar todo NH efetivo com esse equipamento em 2 pontos, sempre que usar essa arma. Além disso, qualquer personagem que pegar a arma e tentar usá-la, terá uma penalidade de 2 de NH efetivo para o fazer. Em relação ao ponto de alma, ele ficará “preso” na arma até o vínculo ser rompido. Portanto, se o jogador tiver 4 pontos de alma, ele terá, depois da vinculação, 3 pontos.
+
+            Se, por qualquer motivo, o vínculo for rompido sem ser pelo próprio jogador, o jogador terá de fazer um teste de vontade para não ser atordoado. As formas de se romper o vínculo são: Algum outro jogador pode fazer uma jogada de vínculo de alma, fazendo um teste de vontade entre os personagens. Se o jogador for desarmado, o inimigo conseguir segurar a arma, e atacar com ela, o vínculo é rompido. Se o personagem, por algum motivo, arremessar a arma e não conseguir recuperá-la, o vínculo será rompido. Se a arma for roubada, em qualquer tipo de cena ou jogada, o vínculo será rompido.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "4° Aspecto - Manipulação da alma",
+        descricao = """
+            O indivíduo consegue manipular a alma, aumentando a sua projeção em aspectos da sua realidade, podendo impulsionar as suas capacidades, sejam físicas ou mentais.
+
+            Em cena: O jogador pode usar o seu poder da alma para intensificar alguma característica, habilidade, peculiaridade ou perícia, aumentando positivamente suas capacidades.
+
+            Por exemplo: O jogador Xing precisa levantar uma pedra muito pesada, mas não tem ST suficiente, então, pode usar um ponto de magia da alma para ampliar a sua capacidade de carregamento por um breve momento.
+            Ou, o jogador César precisava conseguir enxergar uma particularidade, mas a dificuldade da jogada o impedia, portanto ele usou um ponto de magia da alma para intensificar a sua percepção (visão) e conseguiu enxergar o detalhe necessário.
+
+            Em jogo: O jogador consegue usar um ponto de magia da alma para ampliar suas capacidades.
+            Tabela: Atributo 1:1, Perícia 1:3. Atributos secundários 1:3. Intensificação de dano: 1 ponto de magia da alma = +1 dano por dado.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "1º Aspecto - Expiação",
+        descricao = """
+            O jogador pode usar a magia da alma para “apatizar” um outro ser, ao se conectar, fazendo o canal das emoções do alvo se atrofiar, a ponto dele praticamente não ter mais emoções.
+
+            Em jogo:.
+            Em combate: O jogador usa a conexão da magia da alma para forçar a remoção de uma ou mais emoções no alvo.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "2º Aspecto - Intrusão mental",
+        descricao = """
+            Jogadores conseguem forçar o deslocamento do corpo alheio a partir da alma do alvo.
+
+            Em cena:.
+            Em jogo: O jogador pode “atrapalhar” o ataque ou a ação do alvo, fazendo o corpo do alvo se movimentar, a partir de uma ação na alma do alvo.
+            Em caso de defesa:.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "3º Aspecto - Corrente da condenação",
+        descricao = """
+            Vincula uma alma com um objeto inanimado. Também pode vincular a uma entidade, mas depende da Mão da Criação.
+            Em sua versão corrompida, o jogador consegue “amaldiçoar” a alma alheia, a vinculando a um local/item que a prenderá ali eternamente.
+
+            Em cena:.
+            Em jogo:.
+            Passando ou não no teste, o jogador usa um ponto de magia da alma para abrir o canal de conexão. Para vincular com a entidade, caso ela aceite, o jogador deverá utilizar outro ponto de magia da alma, caso não seja ele o portador, o portador que deverá utilizar esse ponto em seu lugar.
+            O criado, faz mais um teste com a perícia e, agora sim, o vínculo está feito.
+            *A depender da entidade, mais testes poderão ser exigidos.
+        """.trimIndent()
+    ),
+    SoulAspectOption(
+        nome = "4° Aspecto - Manipulação da alma",
+        descricao = """
+            O indivíduo consegue manipular a alma alheia, a fazendo reduzir a capacidade do alvo em algum aspecto, ou característica, sejam elas físicas ou mentais.
+
+            Em cena:.
+            Em jogo: O jogador consegue usar um ponto de magia da alma para ampliar suas capacidades.
+            Tabela: Atributo 1:1, Perícia 1:3. Atributos secundários 1:3. Intensificação de dano: 1 ponto de magia da alma = +1 dano por dado.
+        """.trimIndent()
+    )
 )
 
 private fun periciaLabel(pericia: PericiaSelecionada): String {
@@ -206,6 +314,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val defesasPorTipo = viewModel.defesasAtivasVisiveis.associateBy { it.type }
     var showPericiasDialog by remember { mutableStateOf(false) }
     var showMagiasDialog by remember { mutableStateOf(false) }
+    var showRolagemPersonalizadaDialog by remember { mutableStateOf(false) }
+    var showMagiaAlmaDialog by remember { mutableStateOf(false) }
+    var aspectoMagiaAlmaSelecionado by remember { mutableStateOf<SoulAspectOption?>(null) }
+    var modificadorMagiaAlma by remember { mutableIntStateOf(0) }
+    var dadosPersonalizadosQuantidade by remember { mutableIntStateOf(1) }
+    var dadosPersonalizadosFaces by remember { mutableIntStateOf(6) }
+    var dadosPersonalizadosModificador by remember { mutableIntStateOf(0) }
+    var dadosPersonalizadosQuantidadeInput by remember { mutableStateOf("1") }
+    var dadosPersonalizadosFacesInput by remember { mutableStateOf("6") }
+    var dadosPersonalizadosModificadorInput by remember { mutableStateOf("0") }
+    var ultimoUsoRolagemPersonalizadaMs by remember { mutableStateOf<Long?>(null) }
     val modificadoresPericia = remember { mutableStateMapOf<String, Int>() }
     val modificadoresMagia = remember { mutableStateMapOf<String, Int>() }
     val horizontalPadding = when {
@@ -273,6 +392,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             target = nivel
         )
     }
+    val nivelMagiaDaAlma = 10 + viewModel.nivelAptidaoAstral
     val opcoesAtaque = basePericiasAtaque.mapIndexed { index, pericia ->
         val nivel = pericia.calcularNivel(p)
         RollMappedOption(
@@ -461,6 +581,101 @@ fun TabRolagem(viewModel: FichaViewModel) {
             if (historico.size > 20) {
                 historico.removeLast()
             }
+        }
+    }
+
+    fun executarRolagemPersonalizada(contextoLabel: String, quantidade: Int, faces: Int, mod: Int) {
+        val qtdNormalizada = quantidade.coerceIn(1, 300)
+        val facesNormalizadas = faces.coerceIn(1, 1000)
+        val modNormalizado = mod.coerceIn(-999, 999)
+        val dados = (1..qtdNormalizada).map { Random.nextInt(1, facesNormalizadas + 1) }
+        val soma = dados.sum()
+        val total = soma + modNormalizado
+        val expr = buildString {
+            append("${qtdNormalizada}d$facesNormalizadas")
+            if (modNormalizado > 0) append("+$modNormalizado")
+            if (modNormalizado < 0) append(modNormalizado)
+        }
+        val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val linha = "$hora | Livre ($contextoLabel) | expr $expr | dados ${dados.joinToString(prefix = "[", postfix = "]")} | total $total"
+        val payload = DiscordRollPayload(
+            character = p.nome.ifBlank { "Personagem" },
+            testType = "Livre",
+            context = contextoLabel,
+            target = null,
+            modifier = modNormalizado,
+            dice = dados,
+            total = total,
+            outcome = TipoResultado.NENHUM.name,
+            margin = null,
+            channelId = canalSelecionadoId
+        )
+        coroutineScope.launch {
+            val envio = viewModel.enviarRolagemDiscord(payload)
+            historico.add(
+                0,
+                HistoricoRolagemItem(
+                    texto = linha,
+                    payload = payload,
+                    statusEnvio = if (envio.enviado) "enviado" else "erro",
+                    detalheErro = envio.detalhe
+                )
+            )
+            if (historico.size > 20) {
+                historico.removeLast()
+            }
+        }
+    }
+
+    fun resetarRolagemPersonalizadaParaPadrao() {
+        dadosPersonalizadosQuantidade = 1
+        dadosPersonalizadosFaces = 6
+        dadosPersonalizadosModificador = 0
+        dadosPersonalizadosQuantidadeInput = "1"
+        dadosPersonalizadosFacesInput = "6"
+        dadosPersonalizadosModificadorInput = "0"
+    }
+
+    fun reterRolagemPersonalizadaAindaValida(): Boolean {
+        val ultimoUso = ultimoUsoRolagemPersonalizadaMs ?: return false
+        return (System.currentTimeMillis() - ultimoUso) <= CUSTOM_ROLL_RETENTION_MS
+    }
+
+    fun atualizarQuantidadePorInput(raw: String) {
+        val filtrado = raw.filter { it.isDigit() }.take(3)
+        dadosPersonalizadosQuantidadeInput = filtrado
+        filtrado.toIntOrNull()?.let {
+            dadosPersonalizadosQuantidade = it.coerceIn(1, 300)
+            dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
+        }
+    }
+
+    fun atualizarFacesPorInput(raw: String) {
+        val filtrado = raw.filter { it.isDigit() }.take(4)
+        dadosPersonalizadosFacesInput = filtrado
+        filtrado.toIntOrNull()?.let {
+            dadosPersonalizadosFaces = it.coerceIn(1, 1000)
+            dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
+        }
+    }
+
+    fun atualizarModificadorPorInput(raw: String) {
+        var filtrado = raw.filterIndexed { index, c -> c.isDigit() || (index == 0 && c == '-') }
+        if (filtrado.count { it == '-' } > 1) {
+            filtrado = filtrado.replace("-", "")
+        }
+        if (filtrado.isNotEmpty() && !filtrado.startsWith("-")) {
+            filtrado = filtrado.filter { it.isDigit() }
+        }
+        filtrado = if (filtrado.startsWith("-")) {
+            "-" + filtrado.drop(1).filter { it.isDigit() }.take(3)
+        } else {
+            filtrado.filter { it.isDigit() }.take(3)
+        }
+        dadosPersonalizadosModificadorInput = filtrado
+        filtrado.toIntOrNull()?.let {
+            dadosPersonalizadosModificador = it.coerceIn(-999, 999)
+            dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
         }
     }
 
@@ -999,6 +1214,115 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
+        if (viewModel.temAptidaoAstral) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { showMagiaAlmaDialog = true },
+                    modifier = Modifier
+                        .weight(2f)
+                        .height(40.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        "Magia da Alma",
+                        style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                        maxLines = 1
+                    )
+                }
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .pointerInput(modificadorMagiaAlma, nivelMagiaDaAlma) {
+                            var dragAcumulado = 0f
+                            val passoPx = 20f
+                            detectVerticalDragGestures(
+                                onVerticalDrag = { change, dragAmount ->
+                                    change.consume()
+                                    dragAcumulado += dragAmount
+                                    while (abs(dragAcumulado) >= passoPx) {
+                                        if (dragAcumulado < 0f) {
+                                            modificadorMagiaAlma = (modificadorMagiaAlma + 1).coerceIn(-20, 20)
+                                            dragAcumulado += passoPx
+                                        } else {
+                                            modificadorMagiaAlma = (modificadorMagiaAlma - 1).coerceIn(-20, 20)
+                                            dragAcumulado -= passoPx
+                                        }
+                                    }
+                                }
+                            )
+                        },
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(1.dp)
+                    ) {
+                        Text(
+                            "NH $nivelMagiaDaAlma",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    executarRolagem(
+                                        tipo = TipoTeste.MAGIA,
+                                        contextoLabel = "Magia da Alma",
+                                        alvo = nivelMagiaDaAlma,
+                                        mod = modificadorMagiaAlma
+                                    )
+                                },
+                            style = defenseNumberStyle,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            textAlign = TextAlign.Center,
+                            maxLines = 1
+                        )
+                        if (modificadorMagiaAlma != 0) {
+                            Text(
+                                "mod ${if (modificadorMagiaAlma >= 0) "+$modificadorMagiaAlma" else "$modificadorMagiaAlma"}",
+                                style = compactLabelStyle,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                maxLines = 1
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        Button(
+            onClick = {
+                if (!reterRolagemPersonalizadaAindaValida()) {
+                    resetarRolagemPersonalizadaParaPadrao()
+                }
+                showRolagemPersonalizadaDialog = true
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+        ) {
+            val exprAtual = buildString {
+                if (reterRolagemPersonalizadaAindaValida()) {
+                    append("${dadosPersonalizadosQuantidade}d${dadosPersonalizadosFaces}")
+                    if (dadosPersonalizadosModificador > 0) append("+$dadosPersonalizadosModificador")
+                    if (dadosPersonalizadosModificador < 0) append(dadosPersonalizadosModificador)
+                } else {
+                    append("1d6")
+                }
+            }
+            Text(
+                "Rolagem Personalizada ($exprAtual)",
+                style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
         Button(
             onClick = { showPericiasDialog = true },
             modifier = Modifier
@@ -1170,6 +1494,308 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     }
                 }
             }
+        }
+
+        if (showRolagemPersonalizadaDialog) {
+            Dialog(
+                onDismissRequest = { showRolagemPersonalizadaDialog = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp),
+                    shape = RoundedCornerShape(0.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            "Rolagem Personalizada",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        Text(
+                            "Deslize para cima/baixo em cada card para ajustar.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .pointerInput(dadosPersonalizadosQuantidade) {
+                                        var dragAcumulado = 0f
+                                        val passoPx = 20f
+                                        detectVerticalDragGestures(
+                                            onVerticalDrag = { change, dragAmount ->
+                                                change.consume()
+                                                dragAcumulado += dragAmount
+                                                while (abs(dragAcumulado) >= passoPx) {
+                                                    if (dragAcumulado < 0f) {
+                                                        dadosPersonalizadosQuantidade = (dadosPersonalizadosQuantidade + 1).coerceIn(1, 300)
+                                                        dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
+                                                        dragAcumulado += passoPx
+                                                    } else {
+                                                        dadosPersonalizadosQuantidade = (dadosPersonalizadosQuantidade - 1).coerceIn(1, 300)
+                                                        dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
+                                                        dragAcumulado -= passoPx
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    },
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text("Qtd", style = MaterialTheme.typography.labelSmall)
+                                    Text("$dadosPersonalizadosQuantidade", style = defenseNumberStyle, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            Card(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .pointerInput(dadosPersonalizadosFaces) {
+                                        var dragAcumulado = 0f
+                                        val passoPx = 20f
+                                        detectVerticalDragGestures(
+                                            onVerticalDrag = { change, dragAmount ->
+                                                change.consume()
+                                                dragAcumulado += dragAmount
+                                                while (abs(dragAcumulado) >= passoPx) {
+                                                    if (dragAcumulado < 0f) {
+                                                        dadosPersonalizadosFaces = (dadosPersonalizadosFaces + 1).coerceIn(1, 1000)
+                                                        dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
+                                                        dragAcumulado += passoPx
+                                                    } else {
+                                                        dadosPersonalizadosFaces = (dadosPersonalizadosFaces - 1).coerceIn(1, 1000)
+                                                        dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
+                                                        dragAcumulado -= passoPx
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    },
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text("Faces", style = MaterialTheme.typography.labelSmall)
+                                    Text("$dadosPersonalizadosFaces", style = defenseNumberStyle, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            Card(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .pointerInput(dadosPersonalizadosModificador) {
+                                        var dragAcumulado = 0f
+                                        val passoPx = 20f
+                                        detectVerticalDragGestures(
+                                            onVerticalDrag = { change, dragAmount ->
+                                                change.consume()
+                                                dragAcumulado += dragAmount
+                                                while (abs(dragAcumulado) >= passoPx) {
+                                                    if (dragAcumulado < 0f) {
+                                                        dadosPersonalizadosModificador = (dadosPersonalizadosModificador + 1).coerceIn(-999, 999)
+                                                        dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
+                                                        dragAcumulado += passoPx
+                                                    } else {
+                                                        dadosPersonalizadosModificador = (dadosPersonalizadosModificador - 1).coerceIn(-999, 999)
+                                                        dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
+                                                        dragAcumulado -= passoPx
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    },
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text("Mod", style = MaterialTheme.typography.labelSmall)
+                                    val modTexto = when {
+                                        dadosPersonalizadosModificador > 0 -> "+$dadosPersonalizadosModificador"
+                                        else -> dadosPersonalizadosModificador.toString()
+                                    }
+                                    Text(modTexto, style = defenseNumberStyle, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            OutlinedTextField(
+                                value = dadosPersonalizadosQuantidadeInput,
+                                onValueChange = { atualizarQuantidadePorInput(it) },
+                                modifier = Modifier.weight(1f),
+                                label = { Text("Qtd") },
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                            OutlinedTextField(
+                                value = dadosPersonalizadosFacesInput,
+                                onValueChange = { atualizarFacesPorInput(it) },
+                                modifier = Modifier.weight(1f),
+                                label = { Text("Faces") },
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                            OutlinedTextField(
+                                value = dadosPersonalizadosModificadorInput,
+                                onValueChange = { atualizarModificadorPorInput(it) },
+                                modifier = Modifier.weight(1f),
+                                label = { Text("Mod") },
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                        }
+
+                        val expressaoPersonalizada = buildString {
+                            append("${dadosPersonalizadosQuantidade}d${dadosPersonalizadosFaces}")
+                            if (dadosPersonalizadosModificador > 0) append("+$dadosPersonalizadosModificador")
+                            if (dadosPersonalizadosModificador < 0) append(dadosPersonalizadosModificador)
+                        }
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                        ) {
+                            Text(
+                                "Expressão: $expressaoPersonalizada",
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                executarRolagemPersonalizada(
+                                    contextoLabel = "Rolagem Personalizada",
+                                    quantidade = dadosPersonalizadosQuantidade,
+                                    faces = dadosPersonalizadosFaces,
+                                    mod = dadosPersonalizadosModificador
+                                )
+                                ultimoUsoRolagemPersonalizadaMs = System.currentTimeMillis()
+                                showRolagemPersonalizadaDialog = false
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(42.dp)
+                        ) {
+                            Text(
+                                "Rolar $expressaoPersonalizada",
+                                style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                                maxLines = 1
+                            )
+                        }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = { showRolagemPersonalizadaDialog = false }) {
+                                Text("Fechar")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (showMagiaAlmaDialog && viewModel.temAptidaoAstral) {
+            Dialog(
+                onDismissRequest = { showMagiaAlmaDialog = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp),
+                    shape = RoundedCornerShape(0.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            "Magia da Alma",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            SOUL_ASPECT_OPTIONS.forEach { aspecto ->
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { aspectoMagiaAlmaSelecionado = aspecto },
+                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                ) {
+                                    Text(
+                                        text = aspecto.nome,
+                                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = { showMagiaAlmaDialog = false }) {
+                                Text("Fechar")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        aspectoMagiaAlmaSelecionado?.let { aspecto ->
+            AlertDialog(
+                onDismissRequest = { aspectoMagiaAlmaSelecionado = null },
+                title = { Text(aspecto.nome) },
+                text = {
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = 460.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(aspecto.descricao, style = MaterialTheme.typography.bodyMedium)
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { aspectoMagiaAlmaSelecionado = null }) {
+                        Text("Fechar")
+                    }
+                }
+            )
         }
 
         if (showMagiasDialog && viewModel.temAptidaoMagica) {

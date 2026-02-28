@@ -397,7 +397,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (personagem.vantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
             return // Ja existe
         }
-        val vantagem = dataRepository.criarVantagemSelecionada(definicao, nivel, custoEscolhido, descricao)
+        val nivelNormalizado = normalizarNivelVantagem(definicao.id, nivel)
+        val vantagem = dataRepository.criarVantagemSelecionada(definicao, nivelNormalizado, custoEscolhido, descricao)
         val lista = personagem.vantagens.toMutableList()
         lista.add(vantagem)
         atualizarVantagensComConfirmacao(lista)
@@ -414,7 +415,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarVantagem(index: Int, vantagem: VantagemSelecionada) {
         val lista = personagem.vantagens.toMutableList()
         if (index in lista.indices) {
-            lista[index] = vantagem
+            val nivelNormalizado = normalizarNivelVantagem(vantagem.definicaoId, vantagem.nivel)
+            lista[index] = vantagem.copy(nivel = nivelNormalizado)
             atualizarVantagensComConfirmacao(lista)
         }
     }
@@ -1051,6 +1053,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val temAptidaoMagica: Boolean
         get() = nivelAptidaoMagica > 0
 
+    val nivelAptidaoAstral: Int
+        get() = personagem.vantagens
+            .filter { it.definicaoId.equals("aptidao_astral", ignoreCase = true) }
+            .maxOfOrNull { (it.nivel - 1).coerceAtLeast(0) }
+            ?: 0
+
+    val temAptidaoAstral: Boolean
+        get() = personagem.vantagens.any { it.definicaoId.equals("aptidao_astral", ignoreCase = true) }
+
     // === COMBATE - DEFESAS ATIVAS ===
 
     fun atualizarBonusManualEsquiva(bonus: Int) {
@@ -1199,6 +1210,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .maxOfOrNull { it.nivel }
             ?: 0
         return nivelAptidaoAposMudanca <= 0
+    }
+
+    private fun normalizarNivelVantagem(definicaoId: String, nivel: Int): Int {
+        if (definicaoId.equals("aptidao_astral", ignoreCase = true)) {
+            return nivel.coerceIn(1, 4)
+        }
+        return nivel.coerceAtLeast(1)
     }
 
     companion object {

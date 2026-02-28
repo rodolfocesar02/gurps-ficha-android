@@ -228,6 +228,22 @@
     "tags": []
   },
   {
+    "id": "aptidao_astral",
+    "nome": "Aptidão Astral",
+    "pagina": 40,
+    "costKind": "special",
+    "fixed": 5,
+    "perLevel": 10,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "5, 15, 25 ou 35",
+    "specialRule": "aptidao_astral",
+    "tags": [
+      "magica"
+    ]
+  },
+  {
     "id": "aptidao_magica",
     "nome": "Aptidão Mágica",
     "pagina": 40,

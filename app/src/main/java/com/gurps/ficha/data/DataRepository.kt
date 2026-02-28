@@ -760,6 +760,7 @@ private data class VantagemV3(
     fun toLegacy(): VantagemDefinicao {
         val tipo = when {
             id.equals("aptidao_magica", ignoreCase = true) -> TipoCusto.POR_NIVEL
+            id.equals("aptidao_astral", ignoreCase = true) -> TipoCusto.POR_NIVEL
             id.equals("elo_mental", ignoreCase = true) -> TipoCusto.POR_NIVEL
             costKind == "fixed" -> TipoCusto.FIXO
             costKind == "perLevel" -> TipoCusto.POR_NIVEL
@@ -771,7 +772,9 @@ private data class VantagemV3(
         val optionsList = options?.mapNotNull { it.asIntOrNull() }.orEmpty()
 
         val custoLegacy = when {
-            id.equals("aptidao_magica", ignoreCase = true) || id.equals("elo_mental", ignoreCase = true) ->
+            id.equals("aptidao_magica", ignoreCase = true) ||
+            id.equals("aptidao_astral", ignoreCase = true) ||
+            id.equals("elo_mental", ignoreCase = true) ->
                 rawCost ?: "5 + 10/nível"
             costKind == "fixed" -> fixed?.toString().orEmpty()
             costKind == "perLevel" -> {

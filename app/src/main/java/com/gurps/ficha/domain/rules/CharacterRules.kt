@@ -171,6 +171,7 @@ object CharacterRules {
     ): Int {
         if (
             definicaoId.equals("aptidao_magica", ignoreCase = true) ||
+            definicaoId.equals("aptidao_astral", ignoreCase = true) ||
             definicaoId.equals("elo_mental", ignoreCase = true)
         ) {
             return 5 + (nivel - 1) * 10
