@@ -45,6 +45,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.text.KeyboardOptions
@@ -123,6 +125,16 @@ private data class SoulAspectOption(
     val nome: String,
     val descricao: String
 )
+
+private fun atributoNomeCompleto(sigla: String): String = when (sigla.uppercase()) {
+    "ST" -> "Força"
+    "DX" -> "Destreza"
+    "IQ" -> "Inteligência"
+    "HT" -> "Vitalidade"
+    "VON" -> "Vontade"
+    "PER" -> "Percepção"
+    else -> sigla
+}
 
 private val SOUL_ASPECT_OPTIONS = listOf(
     SoulAspectOption(
@@ -737,111 +749,66 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(rowSpacing),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(if (isTinyScreen) 1.dp else 2.dp)
-                    ) {
+                if (isPraCegoVariant) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         atributosRapidos.forEach { attr ->
                             val valor = p.getAtributo(attr)
                             val modAttr = modificadoresAtributo[attr] ?: 0
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(vertical = innerCardVerticalPadding),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            val nomeAttr = atributoNomeCompleto(attr)
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                             ) {
-                                Text(
-                                    text = attr,
-                                    textAlign = TextAlign.Center,
-                                    style = cardTitleStyle,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Clip,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                                Text(
-                                    text = valor.toString(),
+                                Row(
                                     modifier = Modifier
-                                        .then(
-                                            if (!isPraCegoVariant) {
-                                                Modifier.pointerInput(attr, modAttr) {
-                                                    var dragAcumulado = 0f
-                                                    val passoPx = 20f
-                                                    detectVerticalDragGestures(
-                                                        onVerticalDrag = { change, dragAmount ->
-                                                            change.consume()
-                                                            dragAcumulado += dragAmount
-                                                            while (abs(dragAcumulado) >= passoPx) {
-                                                                val atual = modificadoresAtributo[attr] ?: 0
-                                                                if (dragAcumulado < 0f) {
-                                                                    modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
-                                                                    dragAcumulado += passoPx
-                                                                } else {
-                                                                    modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
-                                                                    dragAcumulado -= passoPx
-                                                                }
-                                                            }
-                                                        }
-                                                    )
-                                                }
-                                            } else {
-                                                Modifier
-                                            }
-                                        )
-                                        .clickable {
-                                            executarRolagem(
-                                                tipo = TipoTeste.ATRIBUTO,
-                                                contextoLabel = attr,
-                                                alvo = valor,
-                                                mod = modAttr
-                                            )
-                                        },
-                                    textAlign = TextAlign.Center,
-                                    style = statsNumberStyle,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
-                                if (modAttr != 0) {
-                                    Text(
-                                        text = "mod ${if (modAttr >= 0) "+$modAttr" else modAttr}",
-                                        style = compactLabelStyle,
-                                        maxLines = 1
-                                    )
-                                }
-                                if (isPraCegoVariant) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column(modifier = Modifier.weight(1f)) {
+                                        Text("$attr - $nomeAttr", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                                        if (modAttr != 0) {
+                                            Text("mod ${if (modAttr >= 0) "+$modAttr" else modAttr}", style = compactLabelStyle)
+                                        }
+                                    }
+                                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                         TextButton(
                                             onClick = {
                                                 val atual = modificadoresAtributo[attr] ?: 0
                                                 modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
                                             },
-                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                            modifier = Modifier.semantics { contentDescription = "Diminuir modificador de $nomeAttr" },
+                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                                         ) { Text("-") }
+                                        Text(
+                                            text = valor.toString(),
+                                            modifier = Modifier.clickable {
+                                                executarRolagem(
+                                                    tipo = TipoTeste.ATRIBUTO,
+                                                    contextoLabel = attr,
+                                                    alvo = valor,
+                                                    mod = modAttr
+                                                )
+                                            },
+                                            textAlign = TextAlign.Center,
+                                            style = statsNumberStyle,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                                        )
                                         TextButton(
                                             onClick = {
                                                 val atual = modificadoresAtributo[attr] ?: 0
                                                 modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
                                             },
-                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                            modifier = Modifier.semantics { contentDescription = "Aumentar modificador de $nomeAttr" },
+                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                                         ) { Text("+") }
                                     }
                                 }
                             }
                         }
-                    }
-
-                    Column(
-                        modifier = Modifier.padding(top = 2.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                        ) {
+                        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                             Text(
                                 text = "PV ${p.pontosVida}",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
@@ -849,15 +816,114 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
-                        Card(
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-                        ) {
+                        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
                             Text(
                                 text = "PF ${p.pontosFadiga}",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold
                             )
+                        }
+                    }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(rowSpacing),
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            horizontalArrangement = Arrangement.spacedBy(if (isTinyScreen) 1.dp else 2.dp)
+                        ) {
+                            atributosRapidos.forEach { attr ->
+                                val valor = p.getAtributo(attr)
+                                val modAttr = modificadoresAtributo[attr] ?: 0
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(vertical = innerCardVerticalPadding),
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(
+                                        text = attr,
+                                        textAlign = TextAlign.Center,
+                                        style = cardTitleStyle,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Clip,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                    Text(
+                                        text = valor.toString(),
+                                        modifier = Modifier
+                                            .pointerInput(attr, modAttr) {
+                                                var dragAcumulado = 0f
+                                                val passoPx = 20f
+                                                detectVerticalDragGestures(
+                                                    onVerticalDrag = { change, dragAmount ->
+                                                        change.consume()
+                                                        dragAcumulado += dragAmount
+                                                        while (abs(dragAcumulado) >= passoPx) {
+                                                            val atual = modificadoresAtributo[attr] ?: 0
+                                                            if (dragAcumulado < 0f) {
+                                                                modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
+                                                                dragAcumulado += passoPx
+                                                            } else {
+                                                                modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
+                                                                dragAcumulado -= passoPx
+                                                            }
+                                                        }
+                                                    }
+                                                )
+                                            }
+                                            .clickable {
+                                                executarRolagem(
+                                                    tipo = TipoTeste.ATRIBUTO,
+                                                    contextoLabel = attr,
+                                                    alvo = valor,
+                                                    mod = modAttr
+                                                )
+                                            },
+                                        textAlign = TextAlign.Center,
+                                        style = statsNumberStyle,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
+                                    if (modAttr != 0) {
+                                        Text(
+                                            text = "mod ${if (modAttr >= 0) "+$modAttr" else modAttr}",
+                                            style = compactLabelStyle,
+                                            maxLines = 1
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        Column(
+                            modifier = Modifier.padding(top = 2.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            ) {
+                                Text(
+                                    text = "PV ${p.pontosVida}",
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
+                                    style = cardTitleStyle,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            Card(
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            ) {
+                                Text(
+                                    text = "PF ${p.pontosFadiga}",
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
+                                    style = cardTitleStyle,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
                         }
                     }
                 }

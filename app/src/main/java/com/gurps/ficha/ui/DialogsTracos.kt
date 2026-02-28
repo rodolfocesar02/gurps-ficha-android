@@ -39,10 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.DesvantagemDefinicao
 import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.TipoCusto
@@ -127,6 +130,7 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit, onSave: (Int, Int, String) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivel by remember { mutableStateOf(1) }
     var custoEscolhido by remember { mutableStateOf(definicao.getCustoBase()) }
     var descricao by remember { mutableStateOf("") }
@@ -144,10 +148,33 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
                 when (definicao.tipoCusto) {
                     TipoCusto.POR_NIVEL -> {
                         Text("Nível:")
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                        if (isPraCegoVariant) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextButton(
+                                    onClick = { if (nivel > 1) nivel-- },
+                                    modifier = Modifier.semantics { contentDescription = "Diminuir nível de vantagem" }
+                                ) { Text("-") }
+                                Text(
+                                    "$nivel",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                )
+                                TextButton(
+                                    onClick = { if (nivel < 10) nivel++ },
+                                    modifier = Modifier.semantics { contentDescription = "Aumentar nível de vantagem" }
+                                ) { Text("+") }
+                            }
+                        } else {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                                Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            }
                         }
                         Text("Custo: ${definicao.getCustoPorNivel() * nivel} pts", fontWeight = FontWeight.Bold)
                     }
@@ -266,6 +293,7 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -> Unit, onSave: (Int, Int, String, Int?) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivel by remember { mutableStateOf(1) }
     var custoEscolhido by remember { mutableStateOf(definicao.getCustoBase()) }
     var descricao by remember { mutableStateOf("") }
@@ -283,10 +311,33 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                 when (definicao.tipoCusto) {
                     TipoCusto.POR_NIVEL -> {
                         Text("Nível:")
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                        if (isPraCegoVariant) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextButton(
+                                    onClick = { if (nivel > 1) nivel-- },
+                                    modifier = Modifier.semantics { contentDescription = "Diminuir nível de desvantagem" }
+                                ) { Text("-") }
+                                Text(
+                                    "$nivel",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 8.dp)
+                                )
+                                TextButton(
+                                    onClick = { if (nivel < 10) nivel++ },
+                                    modifier = Modifier.semantics { contentDescription = "Aumentar nível de desvantagem" }
+                                ) { Text("+") }
+                            }
+                        } else {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                                Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            }
                         }
                         Text("Custo: ${definicao.getCustoPorNivel() * nivel} pts", fontWeight = FontWeight.Bold)
                     }
@@ -342,6 +393,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
 
 @Composable
 fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, onSave: (VantagemSelecionada) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivel by remember { mutableStateOf(vantagem.nivel) }
     var custoEscolhido by remember { mutableStateOf(vantagem.custoEscolhido) }
     var descricao by remember { mutableStateOf(vantagem.descricao) }
@@ -353,10 +405,33 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                        Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                    if (isPraCegoVariant) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextButton(
+                                onClick = { if (nivel > 1) nivel-- },
+                                modifier = Modifier.semantics { contentDescription = "Diminuir nível da vantagem" }
+                            ) { Text("-") }
+                            Text(
+                                "$nivel",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                            TextButton(
+                                onClick = { if (nivel < 10) nivel++ },
+                                modifier = Modifier.semantics { contentDescription = "Aumentar nível da vantagem" }
+                            ) { Text("+") }
+                        }
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                        }
                     }
                 }
                 if (vantagem.tipoCusto == TipoCusto.VARIAVEL || vantagem.tipoCusto == TipoCusto.ESCOLHA) {
@@ -375,6 +450,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -> Unit, onSave: (DesvantagemSelecionada) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivel by remember { mutableStateOf(desvantagem.nivel) }
     var custoEscolhido by remember { mutableStateOf(desvantagem.custoEscolhido) }
     var descricao by remember { mutableStateOf(desvantagem.descricao) }
@@ -387,10 +463,33 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 if (desvantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                        Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                    if (isPraCegoVariant) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextButton(
+                                onClick = { if (nivel > 1) nivel-- },
+                                modifier = Modifier.semantics { contentDescription = "Diminuir nível da desvantagem" }
+                            ) { Text("-") }
+                            Text(
+                                "$nivel",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 8.dp)
+                            )
+                            TextButton(
+                                onClick = { if (nivel < 10) nivel++ },
+                                modifier = Modifier.semantics { contentDescription = "Aumentar nível da desvantagem" }
+                            ) { Text("+") }
+                        }
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                        }
                     }
                 }
                 if (desvantagem.tipoCusto == TipoCusto.VARIAVEL || desvantagem.tipoCusto == TipoCusto.ESCOLHA) {

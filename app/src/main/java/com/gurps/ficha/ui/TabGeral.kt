@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -37,6 +38,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -51,6 +54,7 @@ import kotlin.math.abs
 fun TabGeral(viewModel: FichaViewModel) {
     val p = viewModel.personagem
     val isCompactScreen = LocalConfiguration.current.screenWidthDp <= 360
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val outerPadding = if (isCompactScreen) 10.dp else 12.dp
     val contentSpacing = if (isCompactScreen) 8.dp else 10.dp
     val rowSpacing = if (isCompactScreen) 6.dp else 8.dp
@@ -139,41 +143,75 @@ fun TabGeral(viewModel: FichaViewModel) {
                     Text("Definir Base")
                 }
             }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                AtributoEditor("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
-                    viewModel.atualizarForca(delta)
+            if (isPraCegoVariant) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    AtributoPrimarioLinearCard("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
+                        viewModel.atualizarForca(delta)
+                    }
+                    AtributoPrimarioLinearCard("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
+                        viewModel.atualizarDestreza(delta)
+                    }
+                    AtributoPrimarioLinearCard("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
+                        viewModel.atualizarInteligencia(delta)
+                    }
+                    AtributoPrimarioLinearCard("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
+                        viewModel.atualizarVitalidade(delta)
+                    }
                 }
-                AtributoEditor("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
-                    viewModel.atualizarDestreza(delta)
-                }
-                AtributoEditor("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                    viewModel.atualizarInteligencia(delta)
-                }
-                AtributoEditor("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                    viewModel.atualizarVitalidade(delta)
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    AtributoEditor("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
+                        viewModel.atualizarForca(delta)
+                    }
+                    AtributoEditor("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
+                        viewModel.atualizarDestreza(delta)
+                    }
+                    AtributoEditor("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
+                        viewModel.atualizarInteligencia(delta)
+                    }
+                    AtributoEditor("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
+                        viewModel.atualizarVitalidade(delta)
+                    }
                 }
             }
         }
 
         SectionCard(title = "Atributos Secundarios") {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                AtributoSecundarioEditor("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
-                    viewModel.atualizarModPontosVida(delta)
+            if (isPraCegoVariant) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    AtributoSecundarioLinearCard("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
+                        viewModel.atualizarModPontosVida(delta)
+                    }
+                    AtributoSecundarioLinearCard("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
+                        viewModel.atualizarModVontade(delta)
+                    }
+                    AtributoSecundarioLinearCard("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
+                        viewModel.atualizarModPercepcao(delta)
+                    }
+                    AtributoSecundarioLinearCard("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
+                        viewModel.atualizarModPontosFadiga(delta)
+                    }
                 }
-                AtributoSecundarioEditor("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
-                    viewModel.atualizarModVontade(delta)
-                }
-                AtributoSecundarioEditor("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
-                    viewModel.atualizarModPercepcao(delta)
-                }
-                AtributoSecundarioEditor("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
-                    viewModel.atualizarModPontosFadiga(delta)
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    AtributoSecundarioEditor("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
+                        viewModel.atualizarModPontosVida(delta)
+                    }
+                    AtributoSecundarioEditor("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
+                        viewModel.atualizarModVontade(delta)
+                    }
+                    AtributoSecundarioEditor("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
+                        viewModel.atualizarModPercepcao(delta)
+                    }
+                    AtributoSecundarioEditor("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
+                        viewModel.atualizarModPontosFadiga(delta)
+                    }
                 }
             }
         }
@@ -443,6 +481,105 @@ fun AtributoSecundarioEditor(
                 style = MaterialTheme.typography.bodySmall,
                 color = if (custo >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
             )
+        }
+    }
+}
+
+private fun nomeAtributoPrimario(sigla: String): String = when (sigla.uppercase()) {
+    "ST" -> "Força"
+    "DX" -> "Destreza"
+    "IQ" -> "Inteligência"
+    "HT" -> "Vitalidade"
+    else -> sigla
+}
+
+private fun nomeAtributoSecundario(sigla: String): String = when (sigla.uppercase()) {
+    "PV" -> "Pontos de Vida"
+    "VON" -> "Vontade"
+    "PER" -> "Percepção"
+    "PF" -> "Pontos de Fadiga"
+    else -> sigla
+}
+
+@Composable
+private fun AtributoPrimarioLinearCard(sigla: String, valor: Int, custo: Int, onSetValor: (Int) -> Unit) {
+    val nome = nomeAtributoPrimario(sigla)
+    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("$sigla - $nome", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text(
+                    "[${if (custo >= 0) "+$custo" else custo}]",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (custo >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+                )
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                TextButton(
+                    onClick = { onSetValor((valor - 1).coerceIn(1, 30)) },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
+                ) { Text("-") }
+                Text(valor.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                TextButton(
+                    onClick = { onSetValor((valor + 1).coerceIn(1, 30)) },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
+                ) { Text("+") }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AtributoSecundarioLinearCard(
+    sigla: String,
+    valorBase: Int,
+    modificador: Int,
+    valorFinal: Int,
+    custoPorPonto: Int,
+    onSetModificador: (Int) -> Unit
+) {
+    val nome = nomeAtributoSecundario(sigla)
+    val custo = modificador * custoPorPonto
+    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text("$sigla - $nome", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                Text("base $valorBase", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (modificador != 0) {
+                    Text(
+                        "[${if (custo >= 0) "+$custo" else custo}]",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (custo >= 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            }
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                TextButton(
+                    onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
+                ) { Text("-") }
+                Text(valorFinal.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                TextButton(
+                    onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
+                ) { Text("+") }
+            }
         }
     }
 }

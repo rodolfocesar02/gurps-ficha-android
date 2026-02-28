@@ -1,7 +1,51 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-02-27
+Atualizado em: 2026-02-28
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
+
+## Handoff Rapido (VISUAL + PRACEGO)
+Resumo do bloco finalizado em 2026-02-28 para o proximo agente:
+
+- VISUAL:
+  - Mantido estavel, sem mudanca de layout neste bloco.
+  - Fluxo de compilacao validado junto com PRACEGO.
+- PRACEGO:
+  - Aba Geral reorganizada em fluxo linear com cards separados para atributos primarios e secundarios.
+  - Cada atributo com botoes `-` e `+` rotulados para leitor de tela (`diminuir`/`aumentar` + nome do atributo).
+  - Aba Rolagem reorganizada em cards lineares separados (sem swipe), com controles acessiveis e rotulados.
+  - PV/PF mantidos como informativos (sem botoes), conforme regra definida.
+  - Dialogos de Tracos/Pericias/Magias com botoes de ajuste centralizados e rotulos de acessibilidade (`-`/`+`, editar, etc).
+- Validacao executada:
+  - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin --no-daemon`
+  - Resultado: `BUILD SUCCESSFUL`.
+- Regra operacional reforcada:
+  - Sempre explicitar no inicio do bloco de UI qual variante esta sendo alterada: `VISUAL` ou `PRACEGO`.
+
+## Handoff (proximo agente)
+Contexto imediato para continuidade sem retrabalho:
+- Ultimo foco funcional: `Lote 14` (importacao/exportacao de ficha em JSON) foi iniciado e esta em `EM ANDAMENTO`.
+- Fluxo ja implementado:
+  - Menu com `Exportar Ficha (JSON)` e `Importar Ficha (JSON)`.
+  - Export via `CreateDocument` escrevendo `personagem.toJson()`.
+  - Import via `OpenDocument` lendo JSON e aplicando `Personagem.fromJson` via ViewModel.
+  - Feedback de importacao por dialogo (sucesso/erro).
+- Ultimos ajustes de UX entregues antes do handoff:
+  - Ordem de abas alterada (`Equip.` antes de `Defesas`) e renome `Combate` -> `Defesas`.
+  - Limpeza visual de `grupo`/`Tabela de Armas...` na selecao de armas e nos cards equipados.
+  - Ajustes de swipe em atributos/pericias/magias e exibicao condicional de `mod` na rolagem.
+- Estado de integracao:
+  - Repositorio local sincronizado com GitHub (`origin/main` atualizado no ultimo push conhecido).
+
+## Metodo de Trabalho Atual
+Padrao combinado para as proximas execucoes:
+1. Implementar por blocos pequenos e validaveis (evitar mudanca grande em um passo unico).
+2. Sempre validar com:
+   - `./gradlew.bat :app:compileDebugKotlin testDebugUnitTest --no-daemon`
+   - `./gradlew.bat :app:assembleDebug --no-daemon` quando houver impacto de entrega.
+3. Fechar bloco com commit claro; quando solicitado, fazer tambem `push` para GitHub.
+4. Atualizar este `PROGRESS.md` a cada bloco concluido, com status real do lote.
+5. Preservar compatibilidade de dados salvos (fichas antigas) em qualquer alteracao de modelo.
+6. Manter limpeza visual sem alterar regra matematica sem aprovacao explicita.
 
 
 
@@ -43,7 +87,7 @@ Checklist de manutencao do catalogo de armaduras (obrigatorio em futuras edicoes
 
 ### Lote 2 - Ficha clicavel na aba Rolagem (ex-Lote 8)
 Escopo:
-Levantamento do que ainda precisa ser feito no Lote 2:
+Levantamento do que ainda precisa ser feitof no Lote 2:
 
 - Revisar pequenos ajustes visuais residuais (espacamento/alinhamento) apos testes em aparelhos menores.
 Status: `EM ANDAMENTO`
@@ -278,3 +322,10 @@ Andamento:
   3. recompilar (`:app:compileDebugKotlin`) e validar em tela.
 - Excecoes permitidas (nao sao bug de UI):
   - strings de compatibilidade/normalizacao de legado (ex.: parser e limpeza de mojibake em dados antigos).
+
+## REGRA GLOBAL - UI EM DUAS VARIANTES (OBRIGATORIO)
+- BASE UNICA DE REGRA DE NEGOCIO: TODA REGRA DE DADOS/VIEWMODEL/DOMINIO FICA EM `app/src/main`.
+- UI VISUAL: ALTERACOES DE LAYOUT DA VERSAO PADRAO DEVEM SER FEITAS NA VARIANTE `VISUAL`.
+- UI PRA CEGO: ALTERACOES DE LAYOUT DE ACESSIBILIDADE DEVEM SER FEITAS NA VARIANTE `PRACEGO`.
+- SEMPRE CONFIRMAR EXPLICITAMENTE, NO INICIO DE CADA BLOCO DE AJUSTE VISUAL, QUAL VARIANTE ESTA SENDO ALTERADA: `VISUAL` OU `PRACEGO`.
+- SE O PEDIDO DO USUARIO NAO ESPECIFICAR A VARIANTE, CONFIRMAR ANTES DE EDITAR LAYOUT.

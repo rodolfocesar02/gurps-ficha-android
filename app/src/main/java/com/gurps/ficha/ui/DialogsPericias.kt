@@ -41,6 +41,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -351,8 +353,14 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
                 )
                 if (isPraCegoVariant) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) }) { Text("-") }
-                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) }) { Text("+") }
+                        TextButton(
+                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da perícia" }
+                        ) { Text("-") }
+                        TextButton(
+                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da perícia" }
+                        ) { Text("+") }
                     }
                 }
 
@@ -448,8 +456,14 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
                 )
                 if (isPraCegoVariant) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) }) { Text("-") }
-                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) }) { Text("+") }
+                        TextButton(
+                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da perícia" }
+                        ) { Text("-") }
+                        TextButton(
+                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da perícia" }
+                        ) { Text("+") }
                     }
                 }
 
