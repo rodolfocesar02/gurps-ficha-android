@@ -177,7 +177,7 @@ fun PericiaItem(
                 color = MaterialTheme.colorScheme.primary
             )
             IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Remover")
+                Icon(Icons.Default.Delete, contentDescription = "Remover perícia ${pericia.nome}")
             }
         }
     }

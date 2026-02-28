@@ -160,7 +160,7 @@ fun MagiaItem(
         )
 
         IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Remover")
+            Icon(Icons.Default.Delete, contentDescription = "Remover magia ${magia.nome}")
         }
     }
 }

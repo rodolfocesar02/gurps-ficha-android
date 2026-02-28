@@ -64,6 +64,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.gurps.ficha.BuildConfig
 
 private const val CUSTOM_ROLL_RETENTION_MS = 5 * 60 * 1000L
 
@@ -279,6 +280,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val isSmallScreen = screenWidthDp <= 380
     val isVerySmallScreen = screenWidthDp <= 360
     val isTinyScreen = screenWidthDp <= 320
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val historico = remember { mutableStateListOf<HistoricoRolagemItem>() }
     val coroutineScope = rememberCoroutineScope()
     val canaisDiscord = viewModel.canaisDiscord
@@ -726,7 +728,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = "Deslize para cima/baixo em cada atributo para ajustar o modificador.",
+                    text = if (isPraCegoVariant) {
+                        "Use os botões - e + para ajustar modificadores."
+                    } else {
+                        "Deslize para cima/baixo em cada atributo para ajustar o modificador."
+                    },
                     style = compactLabelStyle,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
@@ -761,26 +767,32 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 Text(
                                     text = valor.toString(),
                                     modifier = Modifier
-                                        .pointerInput(attr, modAttr) {
-                                            var dragAcumulado = 0f
-                                            val passoPx = 20f
-                                            detectVerticalDragGestures(
-                                                onVerticalDrag = { change, dragAmount ->
-                                                    change.consume()
-                                                    dragAcumulado += dragAmount
-                                                    while (abs(dragAcumulado) >= passoPx) {
-                                                        val atual = modificadoresAtributo[attr] ?: 0
-                                                        if (dragAcumulado < 0f) {
-                                                            modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
-                                                            dragAcumulado += passoPx
-                                                        } else {
-                                                            modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
-                                                            dragAcumulado -= passoPx
+                                        .then(
+                                            if (!isPraCegoVariant) {
+                                                Modifier.pointerInput(attr, modAttr) {
+                                                    var dragAcumulado = 0f
+                                                    val passoPx = 20f
+                                                    detectVerticalDragGestures(
+                                                        onVerticalDrag = { change, dragAmount ->
+                                                            change.consume()
+                                                            dragAcumulado += dragAmount
+                                                            while (abs(dragAcumulado) >= passoPx) {
+                                                                val atual = modificadoresAtributo[attr] ?: 0
+                                                                if (dragAcumulado < 0f) {
+                                                                    modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
+                                                                    dragAcumulado += passoPx
+                                                                } else {
+                                                                    modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
+                                                                    dragAcumulado -= passoPx
+                                                                }
+                                                            }
                                                         }
-                                                    }
+                                                    )
                                                 }
-                                            )
-                                        }
+                                            } else {
+                                                Modifier
+                                            }
+                                        )
                                         .clickable {
                                             executarRolagem(
                                                 tipo = TipoTeste.ATRIBUTO,
@@ -800,6 +812,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         style = compactLabelStyle,
                                         maxLines = 1
                                     )
+                                }
+                                if (isPraCegoVariant) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        TextButton(
+                                            onClick = {
+                                                val atual = modificadoresAtributo[attr] ?: 0
+                                                modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
+                                            },
+                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                        ) { Text("-") }
+                                        TextButton(
+                                            onClick = {
+                                                val atual = modificadoresAtributo[attr] ?: 0
+                                                modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
+                                            },
+                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                        ) { Text("+") }
+                                    }
                                 }
                             }
                         }
@@ -880,27 +910,48 @@ fun TabRolagem(viewModel: FichaViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .pointerInput(modificadorAtaque) {
-                        var dragAcumulado = 0f
-                        val passoPx = 20f
-                        detectVerticalDragGestures(
-                            onVerticalDrag = { change, dragAmount ->
-                                change.consume()
-                                dragAcumulado += dragAmount
-                                while (abs(dragAcumulado) >= passoPx) {
-                                    if (dragAcumulado < 0f) {
-                                        modificadorAtaque = (modificadorAtaque + 1).coerceIn(-20, 20)
-                                        dragAcumulado += passoPx
-                                    } else {
-                                        modificadorAtaque = (modificadorAtaque - 1).coerceIn(-20, 20)
-                                        dragAcumulado -= passoPx
+                    .then(
+                        if (!isPraCegoVariant) {
+                            Modifier.pointerInput(modificadorAtaque) {
+                                var dragAcumulado = 0f
+                                val passoPx = 20f
+                                detectVerticalDragGestures(
+                                    onVerticalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragAcumulado += dragAmount
+                                        while (abs(dragAcumulado) >= passoPx) {
+                                            if (dragAcumulado < 0f) {
+                                                modificadorAtaque = (modificadorAtaque + 1).coerceIn(-20, 20)
+                                                dragAcumulado += passoPx
+                                            } else {
+                                                modificadorAtaque = (modificadorAtaque - 1).coerceIn(-20, 20)
+                                                dragAcumulado -= passoPx
+                                            }
+                                        }
                                     }
-                                }
+                                )
                             }
-                        )
-                    },
+                        } else {
+                            Modifier
+                        }
+                    ),
                 verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
+                if (isPraCegoVariant) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        TextButton(onClick = { modificadorAtaque = (modificadorAtaque - 1).coerceIn(-20, 20) }) { Text("-") }
+                        Text(
+                            "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                            style = compactLabelStyle,
+                            modifier = Modifier.padding(horizontal = 6.dp)
+                        )
+                        TextButton(onClick = { modificadorAtaque = (modificadorAtaque + 1).coerceIn(-20, 20) }) { Text("+") }
+                    }
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1145,26 +1196,32 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .pointerInput(tipoDefesa, modDefesa, defesa?.finalValue) {
-                                    var dragAcumulado = 0f
-                                    val passoPx = 20f
-                                    detectVerticalDragGestures(
-                                        onVerticalDrag = { change, dragAmount ->
-                                            change.consume()
-                                            dragAcumulado += dragAmount
-                                            while (abs(dragAcumulado) >= passoPx) {
-                                                val atual = modificadoresDefesa[tipoDefesa] ?: 0
-                                                if (dragAcumulado < 0f) {
-                                                    modificadoresDefesa[tipoDefesa] = (atual + 1).coerceIn(-20, 20)
-                                                    dragAcumulado += passoPx
-                                                } else {
-                                                    modificadoresDefesa[tipoDefesa] = (atual - 1).coerceIn(-20, 20)
-                                                    dragAcumulado -= passoPx
+                                .then(
+                                    if (!isPraCegoVariant) {
+                                        Modifier.pointerInput(tipoDefesa, modDefesa, defesa?.finalValue) {
+                                            var dragAcumulado = 0f
+                                            val passoPx = 20f
+                                            detectVerticalDragGestures(
+                                                onVerticalDrag = { change, dragAmount ->
+                                                    change.consume()
+                                                    dragAcumulado += dragAmount
+                                                    while (abs(dragAcumulado) >= passoPx) {
+                                                        val atual = modificadoresDefesa[tipoDefesa] ?: 0
+                                                        if (dragAcumulado < 0f) {
+                                                            modificadoresDefesa[tipoDefesa] = (atual + 1).coerceIn(-20, 20)
+                                                            dragAcumulado += passoPx
+                                                        } else {
+                                                            modificadoresDefesa[tipoDefesa] = (atual - 1).coerceIn(-20, 20)
+                                                            dragAcumulado -= passoPx
+                                                        }
+                                                    }
                                                 }
-                                            }
+                                            )
                                         }
-                                    )
-                                },
+                                    } else {
+                                        Modifier
+                                    }
+                                ),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                         ) {
                             Column(
@@ -1207,6 +1264,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         maxLines = 1
                                     )
                                 }
+                                if (isPraCegoVariant) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
+                                        TextButton(
+                                            onClick = {
+                                                val atual = modificadoresDefesa[tipoDefesa] ?: 0
+                                                modificadoresDefesa[tipoDefesa] = (atual - 1).coerceIn(-20, 20)
+                                            },
+                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                        ) { Text("-") }
+                                        TextButton(
+                                            onClick = {
+                                                val atual = modificadoresDefesa[tipoDefesa] ?: 0
+                                                modificadoresDefesa[tipoDefesa] = (atual + 1).coerceIn(-20, 20)
+                                            },
+                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                        ) { Text("+") }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1236,25 +1311,31 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 Card(
                     modifier = Modifier
                         .weight(1f)
-                        .pointerInput(modificadorMagiaAlma, nivelMagiaDaAlma) {
-                            var dragAcumulado = 0f
-                            val passoPx = 20f
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { change, dragAmount ->
-                                    change.consume()
-                                    dragAcumulado += dragAmount
-                                    while (abs(dragAcumulado) >= passoPx) {
-                                        if (dragAcumulado < 0f) {
-                                            modificadorMagiaAlma = (modificadorMagiaAlma + 1).coerceIn(-20, 20)
-                                            dragAcumulado += passoPx
-                                        } else {
-                                            modificadorMagiaAlma = (modificadorMagiaAlma - 1).coerceIn(-20, 20)
-                                            dragAcumulado -= passoPx
+                        .then(
+                            if (!isPraCegoVariant) {
+                                Modifier.pointerInput(modificadorMagiaAlma, nivelMagiaDaAlma) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 20f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                if (dragAcumulado < 0f) {
+                                                    modificadorMagiaAlma = (modificadorMagiaAlma + 1).coerceIn(-20, 20)
+                                                    dragAcumulado += passoPx
+                                                } else {
+                                                    modificadorMagiaAlma = (modificadorMagiaAlma - 1).coerceIn(-20, 20)
+                                                    dragAcumulado -= passoPx
+                                                }
+                                            }
                                         }
-                                    }
+                                    )
                                 }
-                            )
-                        },
+                            } else {
+                                Modifier
+                            }
+                        ),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                 ) {
                     Column(
@@ -1288,6 +1369,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 textAlign = TextAlign.Center,
                                 maxLines = 1
                             )
+                        }
+                        if (isPraCegoVariant) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
+                                TextButton(
+                                    onClick = { modificadorMagiaAlma = (modificadorMagiaAlma - 1).coerceIn(-20, 20) },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                ) { Text("-") }
+                                TextButton(
+                                    onClick = { modificadorMagiaAlma = (modificadorMagiaAlma + 1).coerceIn(-20, 20) },
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                                ) { Text("+") }
+                            }
                         }
                     }
                 }
@@ -1433,26 +1526,32 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     "NH ${pericia.target}",
                                                     modifier = Modifier
                                                         .weight(1f)
-                                                        .pointerInput(pericia.id, modPericia) {
-                                                            var dragAcumulado = 0f
-                                                            val passoPx = 20f
-                                                            detectVerticalDragGestures(
-                                                                onVerticalDrag = { change, dragAmount ->
-                                                                    change.consume()
-                                                                    dragAcumulado += dragAmount
-                                                                    while (abs(dragAcumulado) >= passoPx) {
-                                                                        val atual = modificadoresPericia[pericia.id] ?: 0
-                                                                        if (dragAcumulado < 0f) {
-                                                                            modificadoresPericia[pericia.id] = (atual + 1).coerceIn(-20, 20)
-                                                                            dragAcumulado += passoPx
-                                                                        } else {
-                                                                            modificadoresPericia[pericia.id] = (atual - 1).coerceIn(-20, 20)
-                                                                            dragAcumulado -= passoPx
+                                                        .then(
+                                                            if (!isPraCegoVariant) {
+                                                                Modifier.pointerInput(pericia.id, modPericia) {
+                                                                    var dragAcumulado = 0f
+                                                                    val passoPx = 20f
+                                                                    detectVerticalDragGestures(
+                                                                        onVerticalDrag = { change, dragAmount ->
+                                                                            change.consume()
+                                                                            dragAcumulado += dragAmount
+                                                                            while (abs(dragAcumulado) >= passoPx) {
+                                                                                val atual = modificadoresPericia[pericia.id] ?: 0
+                                                                                if (dragAcumulado < 0f) {
+                                                                                    modificadoresPericia[pericia.id] = (atual + 1).coerceIn(-20, 20)
+                                                                                    dragAcumulado += passoPx
+                                                                                } else {
+                                                                                    modificadoresPericia[pericia.id] = (atual - 1).coerceIn(-20, 20)
+                                                                                    dragAcumulado -= passoPx
+                                                                                }
+                                                                            }
                                                                         }
-                                                                    }
+                                                                    )
                                                                 }
-                                                            )
-                                                        }
+                                                            } else {
+                                                                Modifier
+                                                            }
+                                                        )
                                                         .clickable {
                                                             executarRolagem(
                                                                 tipo = TipoTeste.PERICIA,
@@ -1477,6 +1576,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     textAlign = TextAlign.End,
                                                     maxLines = 1
                                                 )
+                                            }
+                                            if (isPraCegoVariant) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.End,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    TextButton(onClick = {
+                                                        val atual = modificadoresPericia[pericia.id] ?: 0
+                                                        modificadoresPericia[pericia.id] = (atual - 1).coerceIn(-20, 20)
+                                                    }) { Text("-") }
+                                                    TextButton(onClick = {
+                                                        val atual = modificadoresPericia[pericia.id] ?: 0
+                                                        modificadoresPericia[pericia.id] = (atual + 1).coerceIn(-20, 20)
+                                                    }) { Text("+") }
+                                                }
                                             }
                                         }
                                     }
@@ -1531,27 +1646,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             Card(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .pointerInput(dadosPersonalizadosQuantidade) {
-                                        var dragAcumulado = 0f
-                                        val passoPx = 20f
-                                        detectVerticalDragGestures(
-                                            onVerticalDrag = { change, dragAmount ->
-                                                change.consume()
-                                                dragAcumulado += dragAmount
-                                                while (abs(dragAcumulado) >= passoPx) {
-                                                    if (dragAcumulado < 0f) {
-                                                        dadosPersonalizadosQuantidade = (dadosPersonalizadosQuantidade + 1).coerceIn(1, 300)
-                                                        dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
-                                                        dragAcumulado += passoPx
-                                                    } else {
-                                                        dadosPersonalizadosQuantidade = (dadosPersonalizadosQuantidade - 1).coerceIn(1, 300)
-                                                        dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
-                                                        dragAcumulado -= passoPx
+                                    .then(
+                                        if (!isPraCegoVariant) {
+                                            Modifier.pointerInput(dadosPersonalizadosQuantidade) {
+                                                var dragAcumulado = 0f
+                                                val passoPx = 20f
+                                                detectVerticalDragGestures(
+                                                    onVerticalDrag = { change, dragAmount ->
+                                                        change.consume()
+                                                        dragAcumulado += dragAmount
+                                                        while (abs(dragAcumulado) >= passoPx) {
+                                                            if (dragAcumulado < 0f) {
+                                                                dadosPersonalizadosQuantidade = (dadosPersonalizadosQuantidade + 1).coerceIn(1, 300)
+                                                                dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
+                                                                dragAcumulado += passoPx
+                                                            } else {
+                                                                dadosPersonalizadosQuantidade = (dadosPersonalizadosQuantidade - 1).coerceIn(1, 300)
+                                                                dadosPersonalizadosQuantidadeInput = dadosPersonalizadosQuantidade.toString()
+                                                                dragAcumulado -= passoPx
+                                                            }
+                                                        }
                                                     }
-                                                }
+                                                )
                                             }
-                                        )
-                                    },
+                                        } else {
+                                            Modifier
+                                        }
+                                    ),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Column(
@@ -1565,27 +1686,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             Card(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .pointerInput(dadosPersonalizadosFaces) {
-                                        var dragAcumulado = 0f
-                                        val passoPx = 20f
-                                        detectVerticalDragGestures(
-                                            onVerticalDrag = { change, dragAmount ->
-                                                change.consume()
-                                                dragAcumulado += dragAmount
-                                                while (abs(dragAcumulado) >= passoPx) {
-                                                    if (dragAcumulado < 0f) {
-                                                        dadosPersonalizadosFaces = (dadosPersonalizadosFaces + 1).coerceIn(1, 1000)
-                                                        dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
-                                                        dragAcumulado += passoPx
-                                                    } else {
-                                                        dadosPersonalizadosFaces = (dadosPersonalizadosFaces - 1).coerceIn(1, 1000)
-                                                        dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
-                                                        dragAcumulado -= passoPx
+                                    .then(
+                                        if (!isPraCegoVariant) {
+                                            Modifier.pointerInput(dadosPersonalizadosFaces) {
+                                                var dragAcumulado = 0f
+                                                val passoPx = 20f
+                                                detectVerticalDragGestures(
+                                                    onVerticalDrag = { change, dragAmount ->
+                                                        change.consume()
+                                                        dragAcumulado += dragAmount
+                                                        while (abs(dragAcumulado) >= passoPx) {
+                                                            if (dragAcumulado < 0f) {
+                                                                dadosPersonalizadosFaces = (dadosPersonalizadosFaces + 1).coerceIn(1, 1000)
+                                                                dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
+                                                                dragAcumulado += passoPx
+                                                            } else {
+                                                                dadosPersonalizadosFaces = (dadosPersonalizadosFaces - 1).coerceIn(1, 1000)
+                                                                dadosPersonalizadosFacesInput = dadosPersonalizadosFaces.toString()
+                                                                dragAcumulado -= passoPx
+                                                            }
+                                                        }
                                                     }
-                                                }
+                                                )
                                             }
-                                        )
-                                    },
+                                        } else {
+                                            Modifier
+                                        }
+                                    ),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Column(
@@ -1599,27 +1726,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             Card(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .pointerInput(dadosPersonalizadosModificador) {
-                                        var dragAcumulado = 0f
-                                        val passoPx = 20f
-                                        detectVerticalDragGestures(
-                                            onVerticalDrag = { change, dragAmount ->
-                                                change.consume()
-                                                dragAcumulado += dragAmount
-                                                while (abs(dragAcumulado) >= passoPx) {
-                                                    if (dragAcumulado < 0f) {
-                                                        dadosPersonalizadosModificador = (dadosPersonalizadosModificador + 1).coerceIn(-999, 999)
-                                                        dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
-                                                        dragAcumulado += passoPx
-                                                    } else {
-                                                        dadosPersonalizadosModificador = (dadosPersonalizadosModificador - 1).coerceIn(-999, 999)
-                                                        dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
-                                                        dragAcumulado -= passoPx
+                                    .then(
+                                        if (!isPraCegoVariant) {
+                                            Modifier.pointerInput(dadosPersonalizadosModificador) {
+                                                var dragAcumulado = 0f
+                                                val passoPx = 20f
+                                                detectVerticalDragGestures(
+                                                    onVerticalDrag = { change, dragAmount ->
+                                                        change.consume()
+                                                        dragAcumulado += dragAmount
+                                                        while (abs(dragAcumulado) >= passoPx) {
+                                                            if (dragAcumulado < 0f) {
+                                                                dadosPersonalizadosModificador = (dadosPersonalizadosModificador + 1).coerceIn(-999, 999)
+                                                                dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
+                                                                dragAcumulado += passoPx
+                                                            } else {
+                                                                dadosPersonalizadosModificador = (dadosPersonalizadosModificador - 1).coerceIn(-999, 999)
+                                                                dadosPersonalizadosModificadorInput = dadosPersonalizadosModificador.toString()
+                                                                dragAcumulado -= passoPx
+                                                            }
+                                                        }
                                                     }
-                                                }
+                                                )
                                             }
-                                        )
-                                    },
+                                        } else {
+                                            Modifier
+                                        }
+                                    ),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Column(
@@ -1862,26 +1995,32 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     "NH ${magia.target}",
                                                     modifier = Modifier
                                                         .weight(1f)
-                                                        .pointerInput(magia.id, modMagia) {
-                                                            var dragAcumulado = 0f
-                                                            val passoPx = 20f
-                                                            detectVerticalDragGestures(
-                                                                onVerticalDrag = { change, dragAmount ->
-                                                                    change.consume()
-                                                                    dragAcumulado += dragAmount
-                                                                    while (abs(dragAcumulado) >= passoPx) {
-                                                                        val atual = modificadoresMagia[magia.id] ?: 0
-                                                                        if (dragAcumulado < 0f) {
-                                                                            modificadoresMagia[magia.id] = (atual + 1).coerceIn(-20, 20)
-                                                                            dragAcumulado += passoPx
-                                                                        } else {
-                                                                            modificadoresMagia[magia.id] = (atual - 1).coerceIn(-20, 20)
-                                                                            dragAcumulado -= passoPx
+                                                        .then(
+                                                            if (!isPraCegoVariant) {
+                                                                Modifier.pointerInput(magia.id, modMagia) {
+                                                                    var dragAcumulado = 0f
+                                                                    val passoPx = 20f
+                                                                    detectVerticalDragGestures(
+                                                                        onVerticalDrag = { change, dragAmount ->
+                                                                            change.consume()
+                                                                            dragAcumulado += dragAmount
+                                                                            while (abs(dragAcumulado) >= passoPx) {
+                                                                                val atual = modificadoresMagia[magia.id] ?: 0
+                                                                                if (dragAcumulado < 0f) {
+                                                                                    modificadoresMagia[magia.id] = (atual + 1).coerceIn(-20, 20)
+                                                                                    dragAcumulado += passoPx
+                                                                                } else {
+                                                                                    modificadoresMagia[magia.id] = (atual - 1).coerceIn(-20, 20)
+                                                                                    dragAcumulado -= passoPx
+                                                                                }
+                                                                            }
                                                                         }
-                                                                    }
+                                                                    )
                                                                 }
-                                                            )
-                                                        }
+                                                            } else {
+                                                                Modifier
+                                                            }
+                                                        )
                                                         .clickable {
                                                             executarRolagem(
                                                                 tipo = TipoTeste.MAGIA,
@@ -1906,6 +2045,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     textAlign = TextAlign.End,
                                                     maxLines = 1
                                                 )
+                                            }
+                                            if (isPraCegoVariant) {
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.End,
+                                                    verticalAlignment = Alignment.CenterVertically
+                                                ) {
+                                                    TextButton(onClick = {
+                                                        val atual = modificadoresMagia[magia.id] ?: 0
+                                                        modificadoresMagia[magia.id] = (atual - 1).coerceIn(-20, 20)
+                                                    }) { Text("-") }
+                                                    TextButton(onClick = {
+                                                        val atual = modificadoresMagia[magia.id] ?: 0
+                                                        modificadoresMagia[magia.id] = (atual + 1).coerceIn(-20, 20)
+                                                    }) { Text("+") }
+                                                }
                                             }
                                         }
                                     }

@@ -16,6 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -44,7 +47,9 @@ fun StandardTabColumn(
 fun PrimaryActionButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
     Button(
         onClick = onClick,
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .semantics { contentDescription = text },
         enabled = enabled
     ) { Text(text) }
 }
@@ -62,7 +67,12 @@ fun SummaryFooterCard(title: String, content: @Composable ColumnScope.() -> Unit
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            Text(title, style = titleStyle, fontWeight = FontWeight.SemiBold)
+            Text(
+                title,
+                style = titleStyle,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.semantics { heading() }
+            )
             content()
         }
     }

@@ -8,7 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.gurps.ficha.ui.FichaScreen
+import com.gurps.ficha.ui.AppUiEntry
 import com.gurps.ficha.ui.theme.GURPSFichaTheme
 import com.gurps.ficha.viewmodel.FichaViewModel
 
@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val viewModel: FichaViewModel = viewModel()
-                    FichaScreen(viewModel = viewModel)
+                    AppUiEntry(viewModel = viewModel)
                 }
             }
         }

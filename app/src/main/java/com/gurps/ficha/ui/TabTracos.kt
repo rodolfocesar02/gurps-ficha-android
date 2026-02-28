@@ -91,7 +91,7 @@ fun TabTracos(viewModel: FichaViewModel) {
                         verticalAlignment = Alignment.CenterVertically) {
                         Text("• $qualidade", modifier = Modifier.weight(1f))
                         IconButton(onClick = { viewModel.removerQualidade(index) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Remover")
+                            Icon(Icons.Default.Delete, contentDescription = "Remover qualidade $qualidade")
                         }
                     }
                 }
@@ -109,7 +109,7 @@ fun TabTracos(viewModel: FichaViewModel) {
                         verticalAlignment = Alignment.CenterVertically) {
                         Text("• $peculiaridade", modifier = Modifier.weight(1f))
                         IconButton(onClick = { viewModel.removerPeculiaridade(index) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Remover")
+                            Icon(Icons.Default.Delete, contentDescription = "Remover peculiaridade $peculiaridade")
                         }
                     }
                 }
@@ -186,8 +186,8 @@ fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: ()
             Text("${vantagem.custoFinal} pts" + if (vantagem.nivel > 1) " (Nível ${vantagem.nivel})" else "",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
         }
-        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
-        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar vantagem ${vantagem.nome}") }
+        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover vantagem ${vantagem.nome}") }
     }
 }
 
@@ -204,8 +204,8 @@ fun DesvantagemItem(desvantagem: DesvantagemSelecionada, onEdit: () -> Unit, onD
                 Text("Autocontrole: $ac (${getMultiplicadorAutocontrole(ac)})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
             }
         }
-        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
-        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar desvantagem ${desvantagem.nome}") }
+        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover desvantagem ${desvantagem.nome}") }
     }
 }
 

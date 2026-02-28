@@ -19,6 +19,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -34,11 +36,19 @@ fun SectionCard(title: String, onAdd: (() -> Unit)? = null, content: @Composable
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (title.isNotBlank()) {
-                        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                        Text(
+                            title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.semantics { heading() }
+                        )
                     } else {
                         Spacer(modifier = Modifier)
                     }
-                    onAdd?.let { IconButton(onClick = it) { Icon(Icons.Default.Add, contentDescription = "Adicionar") } }
+                    onAdd?.let {
+                        val descricao = if (title.isNotBlank()) "Adicionar em $title" else "Adicionar"
+                        IconButton(onClick = it) { Icon(Icons.Default.Add, contentDescription = descricao) }
+                    }
                 }
                 Spacer(modifier = Modifier.height(6.dp))
             }

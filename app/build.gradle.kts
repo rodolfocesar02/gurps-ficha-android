@@ -48,6 +48,23 @@ android {
             useSupportLibrary = true
         }
     }
+    flavorDimensions += "ui"
+    productFlavors {
+        create("visual") {
+            dimension = "ui"
+            applicationIdSuffix = ".visual"
+            versionNameSuffix = "-visual"
+            buildConfigField("String", "UI_VARIANT", "\"visual\"")
+            resValue("string", "app_name", "GURPS Ficha (Visual)")
+        }
+        create("pracego") {
+            dimension = "ui"
+            applicationIdSuffix = ".pracego"
+            versionNameSuffix = "-pracego"
+            buildConfigField("String", "UI_VARIANT", "\"pracego\"")
+            resValue("string", "app_name", "GURPS Ficha (Pra Cego)")
+        }
+    }
 
     buildTypes {
         release {

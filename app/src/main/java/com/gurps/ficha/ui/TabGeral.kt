@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
 
@@ -319,36 +320,55 @@ fun TabGeral(viewModel: FichaViewModel) {
 
 @Composable
 fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(70.dp)) {
         Text(nome, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
-        Text(
-            valor.toString(),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .width(36.dp)
-                .pointerInput(nome, valor) {
-                    var dragAcumulado = 0f
-                    val passoPx = 40f
-                    var valorAtual = valor.coerceIn(1, 30)
-                    detectVerticalDragGestures(
-                        onVerticalDrag = { change, dragAmount ->
-                            change.consume()
-                            dragAcumulado += dragAmount
-                            if (abs(dragAcumulado) >= passoPx) {
-                                if (dragAcumulado < 0f) {
-                                    valorAtual = (valorAtual + 1).coerceIn(1, 30)
-                                } else {
-                                    valorAtual = (valorAtual - 1).coerceIn(1, 30)
+        if (isPraCegoVariant) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                TextButton(onClick = { onSetValor((valor - 1).coerceIn(1, 30)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                    Text("-")
+                }
+                Text(
+                    valor.toString(),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.width(36.dp),
+                    textAlign = TextAlign.Center
+                )
+                TextButton(onClick = { onSetValor((valor + 1).coerceIn(1, 30)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                    Text("+")
+                }
+            }
+        } else {
+            Text(
+                valor.toString(),
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .width(36.dp)
+                    .pointerInput(nome, valor) {
+                        var dragAcumulado = 0f
+                        val passoPx = 40f
+                        var valorAtual = valor.coerceIn(1, 30)
+                        detectVerticalDragGestures(
+                            onVerticalDrag = { change, dragAmount ->
+                                change.consume()
+                                dragAcumulado += dragAmount
+                                if (abs(dragAcumulado) >= passoPx) {
+                                    if (dragAcumulado < 0f) {
+                                        valorAtual = (valorAtual + 1).coerceIn(1, 30)
+                                    } else {
+                                        valorAtual = (valorAtual - 1).coerceIn(1, 30)
+                                    }
+                                    onSetValor(valorAtual)
+                                    dragAcumulado = 0f
                                 }
-                                onSetValor(valorAtual)
-                                dragAcumulado = 0f
                             }
-                        }
-                    )
-                },
-            textAlign = TextAlign.Center
-        )
+                        )
+                    },
+                textAlign = TextAlign.Center
+            )
+        }
         Text(
             "[${if (custo >= 0) "+$custo" else custo}]",
             style = MaterialTheme.typography.bodySmall,
@@ -366,37 +386,56 @@ fun AtributoSecundarioEditor(
     custoPorPonto: Int,
     onSetModificador: (Int) -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val custo = modificador * custoPorPonto
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(70.dp)) {
         Text(nome, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-        Text(
-            valorFinal.toString(),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .width(34.dp)
-                .pointerInput(nome, modificador) {
-                    var dragAcumulado = 0f
-                    val passoPx = 40f
-                    var modAtual = modificador.coerceIn(-20, 20)
-                    detectVerticalDragGestures(
-                        onVerticalDrag = { change, dragAmount ->
-                            change.consume()
-                            dragAcumulado += dragAmount
-                            if (abs(dragAcumulado) >= passoPx) {
-                                if (dragAcumulado < 0f) {
-                                    modAtual = (modAtual + 1).coerceIn(-20, 20)
-                                } else {
-                                    modAtual = (modAtual - 1).coerceIn(-20, 20)
+        if (isPraCegoVariant) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                TextButton(onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                    Text("-")
+                }
+                Text(
+                    valorFinal.toString(),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.width(34.dp),
+                    textAlign = TextAlign.Center
+                )
+                TextButton(onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                    Text("+")
+                }
+            }
+        } else {
+            Text(
+                valorFinal.toString(),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .width(34.dp)
+                    .pointerInput(nome, modificador) {
+                        var dragAcumulado = 0f
+                        val passoPx = 40f
+                        var modAtual = modificador.coerceIn(-20, 20)
+                        detectVerticalDragGestures(
+                            onVerticalDrag = { change, dragAmount ->
+                                change.consume()
+                                dragAcumulado += dragAmount
+                                if (abs(dragAcumulado) >= passoPx) {
+                                    if (dragAcumulado < 0f) {
+                                        modAtual = (modAtual + 1).coerceIn(-20, 20)
+                                    } else {
+                                        modAtual = (modAtual - 1).coerceIn(-20, 20)
+                                    }
+                                    onSetModificador(modAtual)
+                                    dragAcumulado = 0f
                                 }
-                                onSetModificador(modAtual)
-                                dragAcumulado = 0f
                             }
-                        }
-                    )
-                },
-            textAlign = TextAlign.Center
-        )
+                        )
+                    },
+                textAlign = TextAlign.Center
+            )
+        }
         Text("base $valorBase", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         if (modificador != 0) {
             Text(

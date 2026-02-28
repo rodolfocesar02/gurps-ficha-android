@@ -298,8 +298,8 @@ private fun ArmaduraSelecionadaItem(
                 )
             }
         }
-        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
-        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar armadura ${equipamento.nome}") }
+        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover armadura ${equipamento.nome}") }
     }
 }
 
@@ -374,8 +374,8 @@ fun EquipamentoArmaItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: 
                 )
             }
         }
-        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
-        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar arma ${equipamento.nome}") }
+        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover arma ${equipamento.nome}") }
     }
 }
 
@@ -417,8 +417,8 @@ fun EquipamentoItem(equipamento: Equipamento, onEdit: () -> Unit, onDelete: () -
                 )
             }
         }
-        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar") }
-        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover") }
+        IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar equipamento ${equipamento.nome}") }
+        IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = "Remover equipamento ${equipamento.nome}") }
     }
 }
 

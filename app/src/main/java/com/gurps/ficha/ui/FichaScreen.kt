@@ -41,9 +41,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +63,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val temAptidaoMagica = viewModel.temAptidaoMagica
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
-    val usarNavegacaoCompacta = configuration.screenWidthDp < 390 || density.fontScale > 1.1f
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val usarNavegacaoCompacta = if (isPraCegoVariant) {
+        false
+    } else {
+        configuration.screenWidthDp < 390 || density.fontScale > 1.1f
+    }
     val tabs = if (temAptidaoMagica) {
         listOf("Geral", "Traços", "Perícias", "Magia", "Equip.", "Defesas", "Rolagem")
     } else {
@@ -118,7 +126,14 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 actions = {
-                    IconButton(onClick = { showMenuDialog = true }) {
+                    IconButton(
+                        onClick = { showMenuDialog = true },
+                        modifier = if (isPraCegoVariant) {
+                            Modifier.semantics { contentDescription = "Abrir menu da ficha" }
+                        } else {
+                            Modifier
+                        }
+                    ) {
                         Icon(
                             Icons.Default.MoreVert,
                             contentDescription = "Menu",
@@ -145,7 +160,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                             }
                             Icon(
                                 icon,
-                                contentDescription = title
+                                contentDescription = if (isPraCegoVariant) "Aba $title" else title
                             )
                         },
                         label = if (usarNavegacaoCompacta) null else {
@@ -259,6 +274,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
 fun PontosBar(viewModel: FichaViewModel) {
     val p = viewModel.personagem
     val restantes = p.pontosRestantes
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val corRestantes = when {
         restantes < 0 -> MaterialTheme.colorScheme.error
         restantes == 0 -> MaterialTheme.colorScheme.tertiary
@@ -266,7 +282,16 @@ fun PontosBar(viewModel: FichaViewModel) {
     }
 
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = if (isPraCegoVariant) {
+            Modifier
+                .fillMaxWidth()
+                .semantics {
+                    contentDescription =
+                        "Resumo de pontos. Iniciais ${p.pontosIniciais}. Gastos ${p.pontosGastos}. Restantes $restantes."
+                }
+        } else {
+            Modifier.fillMaxWidth()
+        },
         color = MaterialTheme.colorScheme.surfaceVariant,
         tonalElevation = 2.dp
     ) {

@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.MagiaSelecionada
@@ -186,6 +187,7 @@ fun ConfigurarMagiaDialog(
     onDismiss: () -> Unit,
     onSave: (Int) -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(1) }
     val dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa ?: "D")
     
@@ -209,25 +211,37 @@ fun ConfigurarMagiaDialog(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .width(56.dp)
-                        .pointerInput(pontosGastos) {
-                            var dragAcumulado = 0f
-                            val passoPx = 24f
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { change, dragAmount ->
-                                    change.consume()
-                                    dragAcumulado += dragAmount
-                                    while (abs(dragAcumulado) >= passoPx) {
-                                        pontosGastos = ajustarPontosPreset(
-                                            atual = pontosGastos,
-                                            incrementar = dragAcumulado < 0f
-                                        )
-                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
-                                    }
+                        .then(
+                            if (!isPraCegoVariant) {
+                                Modifier.pointerInput(pontosGastos) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 24f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                pontosGastos = ajustarPontosPreset(
+                                                    atual = pontosGastos,
+                                                    incrementar = dragAcumulado < 0f
+                                                )
+                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                            }
+                                        }
+                                    )
                                 }
-                            )
-                        },
+                            } else {
+                                Modifier
+                            }
+                        ),
                     textAlign = TextAlign.Center
                 )
+                if (isPraCegoVariant) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) }) { Text("-") }
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) }) { Text("+") }
+                    }
+                }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     PONTOS_PRESETS.forEach { pts ->
@@ -271,6 +285,7 @@ fun EditarMagiaDialog(
     onDismiss: () -> Unit,
     onSave: (MagiaSelecionada) -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(magia.pontosGastos) }
     
     // Calcula nível preview
@@ -294,25 +309,37 @@ fun EditarMagiaDialog(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .width(56.dp)
-                        .pointerInput(pontosGastos) {
-                            var dragAcumulado = 0f
-                            val passoPx = 24f
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { change, dragAmount ->
-                                    change.consume()
-                                    dragAcumulado += dragAmount
-                                    while (abs(dragAcumulado) >= passoPx) {
-                                        pontosGastos = ajustarPontosPreset(
-                                            atual = pontosGastos,
-                                            incrementar = dragAcumulado < 0f
-                                        )
-                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
-                                    }
+                        .then(
+                            if (!isPraCegoVariant) {
+                                Modifier.pointerInput(pontosGastos) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 24f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                pontosGastos = ajustarPontosPreset(
+                                                    atual = pontosGastos,
+                                                    incrementar = dragAcumulado < 0f
+                                                )
+                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                            }
+                                        }
+                                    )
                                 }
-                            )
-                        },
+                            } else {
+                                Modifier
+                            }
+                        ),
                     textAlign = TextAlign.Center
                 )
+                if (isPraCegoVariant) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) }) { Text("-") }
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) }) { Text("+") }
+                    }
+                }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     PONTOS_PRESETS.forEach { pts ->

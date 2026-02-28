@@ -48,6 +48,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.AtributoBase
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.PericiaDefinicao
@@ -257,6 +258,7 @@ fun CriarPericiaCustomizadaDialog(
 @Composable
 fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem, onDismiss: () -> Unit,
     onSave: (Int, String, AtributoBase?, Dificuldade?) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(1) }
     var especializacao by remember { mutableStateOf("") }
     var atributoEscolhido by remember { mutableStateOf(AtributoBase.fromSigla(definicao.atributoBase)) }
@@ -322,25 +324,37 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .width(56.dp)
-                        .pointerInput(pontosGastos) {
-                            var dragAcumulado = 0f
-                            val passoPx = 24f
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { change, dragAmount ->
-                                    change.consume()
-                                    dragAcumulado += dragAmount
-                                    while (abs(dragAcumulado) >= passoPx) {
-                                        pontosGastos = ajustarPontosPreset(
-                                            atual = pontosGastos,
-                                            incrementar = dragAcumulado < 0f
-                                        )
-                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
-                                    }
+                        .then(
+                            if (!isPraCegoVariant) {
+                                Modifier.pointerInput(pontosGastos) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 24f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                pontosGastos = ajustarPontosPreset(
+                                                    atual = pontosGastos,
+                                                    incrementar = dragAcumulado < 0f
+                                                )
+                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                            }
+                                        }
+                                    )
                                 }
-                            )
-                        },
+                            } else {
+                                Modifier
+                            }
+                        ),
                     textAlign = TextAlign.Center
                 )
+                if (isPraCegoVariant) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) }) { Text("-") }
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) }) { Text("+") }
+                    }
+                }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     PONTOS_PRESETS.forEach { pts ->
@@ -378,6 +392,7 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onDismiss: () -> Unit, onSave: (PericiaSelecionada) -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(pericia.pontosGastos) }
     var especializacao by remember { mutableStateOf(pericia.especializacao) }
 
@@ -406,25 +421,37 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .width(56.dp)
-                        .pointerInput(pontosGastos) {
-                            var dragAcumulado = 0f
-                            val passoPx = 24f
-                            detectVerticalDragGestures(
-                                onVerticalDrag = { change, dragAmount ->
-                                    change.consume()
-                                    dragAcumulado += dragAmount
-                                    while (abs(dragAcumulado) >= passoPx) {
-                                        pontosGastos = ajustarPontosPreset(
-                                            atual = pontosGastos,
-                                            incrementar = dragAcumulado < 0f
-                                        )
-                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
-                                    }
+                        .then(
+                            if (!isPraCegoVariant) {
+                                Modifier.pointerInput(pontosGastos) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 24f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                pontosGastos = ajustarPontosPreset(
+                                                    atual = pontosGastos,
+                                                    incrementar = dragAcumulado < 0f
+                                                )
+                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                            }
+                                        }
+                                    )
                                 }
-                            )
-                        },
+                            } else {
+                                Modifier
+                            }
+                        ),
                     textAlign = TextAlign.Center
                 )
+                if (isPraCegoVariant) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) }) { Text("-") }
+                        TextButton(onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) }) { Text("+") }
+                    }
+                }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     PONTOS_PRESETS.forEach { pts ->
