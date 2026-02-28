@@ -3,6 +3,11 @@
 Atualizado em: 2026-02-28
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
+## Atualizacao Final do Bloco (2026-02-28)
+    - `1d92bde` chore(deploy): retry railway queue
+  - Observacao operacional:
+    - aplicacao final depende do Railway sair de estado `QUEUED` para `ACTIVE` no deploy mais recente.
+
 ## Handoff Rapido (VISUAL + PRACEGO)
 Resumo do bloco finalizado em 2026-02-28 para o proximo agente:
 
