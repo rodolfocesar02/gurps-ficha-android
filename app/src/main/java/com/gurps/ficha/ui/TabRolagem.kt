@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -112,7 +113,10 @@ private data class MagiaRollOption(
     val id: String,
     val nome: String,
     val contextLabel: String,
-    val target: Int
+    val target: Int,
+    val duracao: String?,
+    val energia: String?,
+    val tempoOperacao: String?
 )
 
 private data class ParsedDamage(
@@ -330,6 +334,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var showMagiasDialog by remember { mutableStateOf(false) }
     var showRolagemPersonalizadaDialog by remember { mutableStateOf(false) }
     var showMagiaAlmaDialog by remember { mutableStateOf(false) }
+    var showEnergiaManualDialog by remember { mutableStateOf(false) }
+    var showEditarPvRolagemDialog by remember { mutableStateOf(false) }
+    var showEditarPfRolagemDialog by remember { mutableStateOf(false) }
+    var magiaPendenteEnergia by remember { mutableStateOf<MagiaRollOption?>(null) }
+    var energiaManualInput by remember { mutableStateOf("") }
     var aspectoMagiaAlmaSelecionado by remember { mutableStateOf<SoulAspectOption?>(null) }
     var modificadorMagiaAlma by remember { mutableIntStateOf(0) }
     var modificadorGlobalPraCego by remember { mutableIntStateOf(0) }
@@ -386,6 +395,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
         MaterialTheme.typography.labelSmall
     }
 
+    val pvFixoRolagem = p.pontosVida.coerceAtLeast(0)
+    val pfFixoRolagem = p.pontosFadiga.coerceAtLeast(0)
+    val maxPvRolagem = (pvFixoRolagem * 5).coerceAtLeast(0)
+    val pvAtualRolagem = (p.pontosVidaRolagemAtual ?: pvFixoRolagem).coerceIn(0, maxPvRolagem)
+    val pfAtualRolagem = (p.pontosFadigaRolagemAtual ?: pfFixoRolagem).coerceAtLeast(0)
+    var pvAtualInput by remember { mutableStateOf(pvAtualRolagem.toString()) }
+    var pfAtualInput by remember { mutableStateOf(pfAtualRolagem.toString()) }
+
     val periciasCombate = p.pericias.filter { it.definicaoId in PERICIAS_COMBATE }
     val basePericiasAtaque = if (periciasCombate.isNotEmpty()) periciasCombate else p.pericias
     val opcoesPericia = p.pericias.mapIndexed { index, pericia ->
@@ -399,12 +416,16 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
     val opcoesMagia = p.magias.mapIndexed { index, magia ->
+        val definicaoMagia = viewModel.dataRepository.getMagiaPorId(magia.definicaoId)
         val nivel = magia.calcularNivel(p, viewModel.nivelAptidaoMagica)
         MagiaRollOption(
             id = "magia_${magia.definicaoId}_$index",
             nome = magia.nome,
             contextLabel = "Magia ${magia.nome}",
-            target = nivel
+            target = nivel,
+            duracao = magia.duracao ?: definicaoMagia?.duracao,
+            energia = magia.energia ?: definicaoMagia?.energia,
+            tempoOperacao = magia.tempoOperacao ?: definicaoMagia?.tempoOperacao
         )
     }
     val nivelMagiaDaAlma = 10 + viewModel.nivelAptidaoAstral
@@ -473,6 +494,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
             if (modificadoresMagia[magia.id] == null) {
                 modificadoresMagia[magia.id] = 0
             }
+        }
+    }
+    LaunchedEffect(pvAtualRolagem) {
+        pvAtualInput = pvAtualRolagem.toString()
+    }
+    LaunchedEffect(pfAtualRolagem) {
+        pfAtualInput = pfAtualRolagem.toString()
+    }
+    LaunchedEffect(p.pontosVidaRolagemAtual, pvFixoRolagem, maxPvRolagem) {
+        val normalizado = (p.pontosVidaRolagemAtual ?: pvFixoRolagem).coerceIn(0, maxPvRolagem)
+        if (p.pontosVidaRolagemAtual != normalizado) {
+            viewModel.atualizarPontosVidaRolagemAtual(normalizado)
+        }
+    }
+    LaunchedEffect(p.pontosFadigaRolagemAtual, pfFixoRolagem) {
+        val normalizado = (p.pontosFadigaRolagemAtual ?: pfFixoRolagem).coerceAtLeast(0)
+        if (p.pontosFadigaRolagemAtual != normalizado) {
+            viewModel.atualizarPontosFadigaRolagemAtual(normalizado)
         }
     }
 
@@ -709,6 +748,43 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
+    fun custoEnergiaFixo(energia: String?): Int? {
+        val texto = energia?.trim().orEmpty()
+        if (texto.isBlank()) return null
+        return texto.toIntOrNull()
+    }
+
+    fun consumirEnergiaMagia(custoEnergia: Int) {
+        if (custoEnergia <= 0) return
+        val novoPf = (pfAtualRolagem - custoEnergia).coerceAtLeast(0)
+        viewModel.atualizarPontosFadigaRolagemAtual(novoPf)
+    }
+
+    fun tratarCustoEnergiaAposRolagemMagia(magia: MagiaRollOption) {
+        val custoFixo = custoEnergiaFixo(magia.energia)
+        if (custoFixo != null) {
+            consumirEnergiaMagia(custoFixo)
+            return
+        }
+        val energiaTexto = magia.energia?.trim().orEmpty()
+        if (energiaTexto.isBlank()) return
+        magiaPendenteEnergia = magia
+        energiaManualInput = ""
+        showEnergiaManualDialog = true
+    }
+
+    fun ajustarPvRolagemPorSwipe(incrementar: Boolean) {
+        val atual = pvAtualRolagem
+        val novo = if (incrementar) atual + 1 else atual - 1
+        viewModel.atualizarPontosVidaRolagemAtual(novo)
+    }
+
+    fun ajustarPfRolagemPorSwipe(incrementar: Boolean) {
+        val atual = pfAtualRolagem
+        val novo = if (incrementar) atual + 1 else atual - 1
+        viewModel.atualizarPontosFadigaRolagemAtual(novo)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -746,54 +822,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
-        if (isPraCegoVariant) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-            ) {
-                Column(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text(
-                        "Modificador Global: ${if (modificadorGlobalPraCego >= 0) "+$modificadorGlobalPraCego" else "$modificadorGlobalPraCego"}",
-                        style = cardTitleStyle,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        listOf(-5, -2, -1, 0, 1, 2, 5).forEach { delta ->
-                            val label = if (delta == 0) "C" else if (delta > 0) "+$delta" else "$delta"
-                            val descricao = when {
-                                delta < 0 -> "Diminuir modificador em ${abs(delta)}"
-                                delta > 0 -> "Aumentar modificador em $delta"
-                                else -> "Limpar modificadores"
-                            }
-                            OutlinedButton(
-                                onClick = {
-                                    modificadorGlobalPraCego = if (delta == 0) {
-                                        0
-                                    } else {
-                                        (modificadorGlobalPraCego + delta).coerceIn(-999, 999)
-                                    }
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .semantics { contentDescription = descricao },
-                                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 0.dp, vertical = 0.dp)
-                            ) {
-                                Text(label)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -803,18 +831,55 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(
-                    text = if (isPraCegoVariant) {
-                        "Use o modificador global para aplicar bonus ou penalidade em todas as rolagens."
-                    } else {
-                        "Deslize para cima/baixo em cada atributo para ajustar o modificador."
-                    },
-                    style = compactLabelStyle,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
+                if (!isPraCegoVariant) {
+                    Text(
+                        text = "Deslize para cima/baixo em cada atributo para ajustar o modificador.",
+                        style = compactLabelStyle,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                }
 
                 if (isPraCegoVariant) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Card(
+                                modifier = Modifier.weight(1f),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text("PV: $pvFixoRolagem/$pvAtualRolagem", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                                    TextButton(
+                                        onClick = { showEditarPvRolagemDialog = true },
+                                        modifier = Modifier.semantics { contentDescription = "Editar pontos de vida da rolagem" }
+                                    ) {
+                                        Text("Editar PV")
+                                    }
+                                }
+                            }
+                            Card(
+                                modifier = Modifier.weight(1f),
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text("PF: $pfFixoRolagem/$pfAtualRolagem", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                                    TextButton(
+                                        onClick = { showEditarPfRolagemDialog = true },
+                                        modifier = Modifier.semantics { contentDescription = "Editar pontos de fadiga da rolagem" }
+                                    ) {
+                                        Text("Editar PF")
+                                    }
+                                }
+                            }
+                        }
                         atributosRapidos.forEach { attr ->
                             val valor = p.getAtributo(attr)
                             val nomeAttr = atributoNomeCompleto(attr)
@@ -852,31 +917,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 }
                             }
                         }
-                        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                            Text(
-                                text = "PV ${p.pontosVida}",
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
-                                style = cardTitleStyle,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                        Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)) {
-                            Text(
-                                text = "PF ${p.pontosFadiga}",
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
-                                style = cardTitleStyle,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
                     }
                 } else {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(rowSpacing),
-                        verticalAlignment = Alignment.Top
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Row(
-                            modifier = Modifier.weight(1f),
-                            horizontalArrangement = Arrangement.spacedBy(if (isTinyScreen) 1.dp else 2.dp)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(if (isTinyScreen) 4.dp else 8.dp)
                         ) {
                             atributosRapidos.forEach { attr ->
                                 val valor = p.getAtributo(attr)
@@ -944,29 +990,122 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             }
                         }
 
-                        Column(
-                            modifier = Modifier.padding(top = 2.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Card(
+                                modifier = Modifier.weight(1f),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                             ) {
-                                Text(
-                                    text = "PV ${p.pontosVida}",
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
-                                    style = cardTitleStyle,
-                                    fontWeight = FontWeight.SemiBold
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                                        .pointerInput(pvAtualRolagem) {
+                                            var dragAcumulado = 0f
+                                            val passoPx = 20f
+                                            detectVerticalDragGestures(
+                                                onVerticalDrag = { change, dragAmount ->
+                                                    change.consume()
+                                                    dragAcumulado += dragAmount
+                                                    while (abs(dragAcumulado) >= passoPx) {
+                                                        ajustarPvRolagemPorSwipe(incrementar = dragAcumulado < 0f)
+                                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                                    }
+                                                }
+                                            )
+                                        },
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("PV", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        "$pvFixoRolagem/$pvAtualRolagem",
+                                        style = defenseNumberStyle,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
                             }
                             Card(
+                                modifier = Modifier.weight(1f),
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                             ) {
-                                Text(
-                                    text = "PF ${p.pontosFadiga}",
-                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
-                                    style = cardTitleStyle,
-                                    fontWeight = FontWeight.SemiBold
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                                        .pointerInput(pfAtualRolagem) {
+                                            var dragAcumulado = 0f
+                                            val passoPx = 20f
+                                            detectVerticalDragGestures(
+                                                onVerticalDrag = { change, dragAmount ->
+                                                    change.consume()
+                                                    dragAcumulado += dragAmount
+                                                    while (abs(dragAcumulado) >= passoPx) {
+                                                        ajustarPfRolagemPorSwipe(incrementar = dragAcumulado < 0f)
+                                                        dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                                    }
+                                                }
+                                            )
+                                        },
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text("PF", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        "$pfFixoRolagem/$pfAtualRolagem",
+                                        style = defenseNumberStyle,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isPraCegoVariant) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        "Modificador Global: ${if (modificadorGlobalPraCego >= 0) "+$modificadorGlobalPraCego" else "$modificadorGlobalPraCego"}",
+                        style = cardTitleStyle,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        listOf(-5, -2, -1, 0, 1, 2, 5).forEach { delta ->
+                            val label = if (delta == 0) "C" else if (delta > 0) "+$delta" else "$delta"
+                            val descricao = when {
+                                delta < 0 -> "Diminuir modificador em ${abs(delta)}"
+                                delta > 0 -> "Aumentar modificador em $delta"
+                                else -> "Limpar modificadores"
+                            }
+                            OutlinedButton(
+                                onClick = {
+                                    modificadorGlobalPraCego = if (delta == 0) 0 else (modificadorGlobalPraCego + delta).coerceIn(-999, 999)
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .semantics { contentDescription = descricao },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 0.dp, vertical = 0.dp)
+                            ) {
+                                Text(label)
                             }
                         }
                     }
@@ -2093,6 +2232,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                                 alvo = magia.target,
                                                                 mod = modMagia
                                                             )
+                                                            tratarCustoEnergiaAposRolagemMagia(magia)
                                                             showMagiasDialog = false
                                                         },
                                                     style = defenseNumberStyle,
@@ -2100,6 +2240,45 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     color = MaterialTheme.colorScheme.primary,
                                                     textAlign = TextAlign.End,
                                                     maxLines = 1
+                                                )
+                                            }
+                                            magia.duracao?.takeIf { it.isNotBlank() }?.let { duracao ->
+                                                Text(
+                                                    "Duracao: $duracao",
+                                                    style = compactLabelStyle,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .semantics {
+                                                            if (isPraCegoVariant) contentDescription = "Duracao da magia ${magia.nome}: $duracao"
+                                                        },
+                                                    maxLines = 2,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                            magia.energia?.takeIf { it.isNotBlank() }?.let { energia ->
+                                                Text(
+                                                    "Energia: $energia",
+                                                    style = compactLabelStyle,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .semantics {
+                                                            if (isPraCegoVariant) contentDescription = "Energia da magia ${magia.nome}: $energia"
+                                                        },
+                                                    maxLines = 2,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                            magia.tempoOperacao?.takeIf { it.isNotBlank() }?.let { tempo ->
+                                                Text(
+                                                    "Tempo de operacao: $tempo",
+                                                    style = compactLabelStyle,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .semantics {
+                                                            if (isPraCegoVariant) contentDescription = "Tempo de operacao da magia ${magia.nome}: $tempo"
+                                                        },
+                                                    maxLines = 2,
+                                                    overflow = TextOverflow.Ellipsis
                                                 )
                                             }
                                             if (!isPraCegoVariant && modMagia != 0) {
@@ -2127,6 +2306,161 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     }
                 }
             }
+        }
+
+        if (showEnergiaManualDialog && magiaPendenteEnergia != null) {
+            val magiaEnergia = magiaPendenteEnergia!!
+            AlertDialog(
+                onDismissRequest = {
+                    showEnergiaManualDialog = false
+                    magiaPendenteEnergia = null
+                },
+                title = { Text("Gasto de energia") },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            "Magia: ${magiaEnergia.nome}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        magiaEnergia.energia?.takeIf { it.isNotBlank() }?.let { energia ->
+                            Text(
+                                "Energia da ficha: $energia",
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
+                        OutlinedTextField(
+                            value = energiaManualInput,
+                            onValueChange = { raw ->
+                                energiaManualInput = raw.filter { it.isDigit() }.take(4)
+                            },
+                            label = { Text("Energia gasta agora") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .semantics {
+                                    if (isPraCegoVariant) contentDescription = "Informar energia gasta para a magia ${magiaEnergia.nome}"
+                                }
+                        )
+                        Text(
+                            "PF da rolagem atual: $pfAtualRolagem",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            energiaManualInput.toIntOrNull()?.let { custo ->
+                                consumirEnergiaMagia(custo)
+                            }
+                            showEnergiaManualDialog = false
+                            magiaPendenteEnergia = null
+                            energiaManualInput = ""
+                        },
+                        enabled = energiaManualInput.toIntOrNull() != null
+                    ) {
+                        Text("Aplicar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            showEnergiaManualDialog = false
+                            magiaPendenteEnergia = null
+                            energiaManualInput = ""
+                        }
+                    ) {
+                        Text("Ignorar")
+                    }
+                }
+            )
+        }
+
+        if (showEditarPvRolagemDialog) {
+            AlertDialog(
+                onDismissRequest = { showEditarPvRolagemDialog = false },
+                title = { Text("Editar PV da Rolagem") },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("PV fixo: $pvFixoRolagem | Limite atual: 0 a $maxPvRolagem")
+                        OutlinedTextField(
+                            value = pvAtualInput,
+                            onValueChange = { raw ->
+                                val filtrado = raw.filter { it.isDigit() }.take(4)
+                                pvAtualInput = filtrado
+                            },
+                            label = { Text("PV atual") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .semantics { contentDescription = "Campo de pontos de vida da rolagem" }
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val valor = pvAtualInput.toIntOrNull() ?: pvAtualRolagem
+                        viewModel.atualizarPontosVidaRolagemAtual(valor)
+                        showEditarPvRolagemDialog = false
+                    }) {
+                        Text("Salvar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        pvAtualInput = pvAtualRolagem.toString()
+                        showEditarPvRolagemDialog = false
+                    }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+
+        if (showEditarPfRolagemDialog) {
+            AlertDialog(
+                onDismissRequest = { showEditarPfRolagemDialog = false },
+                title = { Text("Editar PF da Rolagem") },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("PF fixo: $pfFixoRolagem | Minimo atual: 0")
+                        OutlinedTextField(
+                            value = pfAtualInput,
+                            onValueChange = { raw ->
+                                val filtrado = raw.filter { it.isDigit() }.take(4)
+                                pfAtualInput = filtrado
+                            },
+                            label = { Text("PF atual") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .semantics { contentDescription = "Campo de pontos de fadiga da rolagem" }
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        val valor = pfAtualInput.toIntOrNull() ?: pfAtualRolagem
+                        viewModel.atualizarPontosFadigaRolagemAtual(valor)
+                        showEditarPfRolagemDialog = false
+                    }) {
+                        Text("Salvar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        pfAtualInput = pfAtualRolagem.toString()
+                        showEditarPfRolagemDialog = false
+                    }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
         }
 
         SectionCard(title = "Historico da Sessao") {

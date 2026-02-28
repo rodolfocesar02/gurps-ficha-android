@@ -605,7 +605,10 @@ class DataRepository(private val context: Context) {
             pagina = definicao.pagina,
             texto = definicao.texto ?: "",
             classe = definicao.classe,
-            escola = definicao.escola
+            escola = definicao.escola,
+            duracao = definicao.duracao,
+            energia = definicao.energia,
+            tempoOperacao = definicao.tempoOperacao
         )
     }
 

@@ -390,6 +390,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         personagem = personagem.copy(modDeslocamentoBasico = valor.coerceIn(-10, 10))
     }
 
+    fun atualizarPontosVidaRolagemAtual(valor: Int?) {
+        val maxPvRolagem = (personagem.pontosVida.coerceAtLeast(0) * 5).coerceAtLeast(0)
+        personagem = personagem.copy(
+            pontosVidaRolagemAtual = valor?.coerceIn(0, maxPvRolagem)
+        )
+    }
+
+    fun atualizarPontosFadigaRolagemAtual(valor: Int?) {
+        personagem = personagem.copy(
+            pontosFadigaRolagemAtual = valor?.coerceAtLeast(0)
+        )
+    }
+
     // === VANTAGENS ===
 
     fun adicionarVantagem(definicao: VantagemDefinicao, nivel: Int = 1, custoEscolhido: Int = 0, descricao: String = "") {

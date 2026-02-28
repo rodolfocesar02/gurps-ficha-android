@@ -49,7 +49,11 @@ data class Personagem(
     var notas: String = "",
 
     // Combate
-    var defesasAtivas: DefesasAtivas = DefesasAtivas()
+    var defesasAtivas: DefesasAtivas = DefesasAtivas(),
+
+    // Rolagem (estado de sessao salvo por ficha)
+    var pontosVidaRolagemAtual: Int? = null,
+    var pontosFadigaRolagemAtual: Int? = null
 ) {
     // === CALCULOS AUTOMATICOS ===
     val pontosVida: Int get() = forca + modPontosVida
@@ -403,7 +407,10 @@ data class MagiaSelecionada(
     val pagina: Int? = 0,
     val texto: String? = "",
     val classe: String? = null,
-    val escola: List<String>? = null
+    val escola: List<String>? = null,
+    val duracao: String? = null,
+    val energia: String? = null,
+    val tempoOperacao: String? = null
 ) {
     /**
      * Calcula o nivel da magia seguindo a mesma logica das pericias (IQ + Aptidao Magica).
