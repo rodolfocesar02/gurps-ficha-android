@@ -332,6 +332,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var showMagiaAlmaDialog by remember { mutableStateOf(false) }
     var aspectoMagiaAlmaSelecionado by remember { mutableStateOf<SoulAspectOption?>(null) }
     var modificadorMagiaAlma by remember { mutableIntStateOf(0) }
+    var modificadorGlobalPraCego by remember { mutableIntStateOf(0) }
     var dadosPersonalizadosQuantidade by remember { mutableIntStateOf(1) }
     var dadosPersonalizadosFaces by remember { mutableIntStateOf(6) }
     var dadosPersonalizadosModificador by remember { mutableIntStateOf(0) }
@@ -504,13 +505,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     fun executarRolagem(tipo: TipoTeste, contextoLabel: String, alvo: Int?, mod: Int) {
-        val resultado = rolarDados(3, mod, alvo)
+        val modEfetivo = if (isPraCegoVariant) {
+            (mod + modificadorGlobalPraCego).coerceIn(-999, 999)
+        } else {
+            mod
+        }
+        val resultado = rolarDados(3, modEfetivo, alvo)
         val payload = DiscordRollPayload(
             character = p.nome.ifBlank { "Personagem" },
             testType = tipo.label,
             context = contextoLabel,
             target = alvo,
-            modifier = mod,
+            modifier = modEfetivo,
             dice = resultado.dadosIndividuais,
             total = resultado.total,
             outcome = resultado.tipoResultado.name,
@@ -527,7 +533,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 tipoLabel = tipo.label,
                 contextoLabel = contextoLabel,
                 alvo = alvo,
-                mod = mod
+                mod = modEfetivo
             )
         }
     }
@@ -566,7 +572,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
         val dados = (1..parsed.diceCount).map { Random.nextInt(1, 7) }
         val soma = dados.sum()
-        val total = soma + parsed.modifier
+        val modEfetivo = if (isPraCegoVariant) {
+            (parsed.modifier + modificadorGlobalPraCego).coerceIn(-999, 999)
+        } else {
+            parsed.modifier
+        }
+        val total = soma + modEfetivo
         val sufixo = if (parsed.suffix.isBlank()) "" else " ${parsed.suffix}"
         val linha = "$hora | Dano ($contextoLabel) | expr $danoExpr | dados ${dados.joinToString(prefix = "[", postfix = "]")} | total $total$sufixo"
         val payload = DiscordRollPayload(
@@ -574,7 +585,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             testType = "Dano",
             context = contextoLabel,
             target = null,
-            modifier = parsed.modifier,
+            modifier = modEfetivo,
             dice = dados,
             total = total,
             outcome = TipoResultado.NENHUM.name,
@@ -602,13 +613,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val qtdNormalizada = quantidade.coerceIn(1, 300)
         val facesNormalizadas = faces.coerceIn(1, 1000)
         val modNormalizado = mod.coerceIn(-999, 999)
+        val modEfetivo = if (isPraCegoVariant) {
+            (modNormalizado + modificadorGlobalPraCego).coerceIn(-999, 999)
+        } else {
+            modNormalizado
+        }
         val dados = (1..qtdNormalizada).map { Random.nextInt(1, facesNormalizadas + 1) }
         val soma = dados.sum()
-        val total = soma + modNormalizado
+        val total = soma + modEfetivo
         val expr = buildString {
             append("${qtdNormalizada}d$facesNormalizadas")
-            if (modNormalizado > 0) append("+$modNormalizado")
-            if (modNormalizado < 0) append(modNormalizado)
+            if (modEfetivo > 0) append("+$modEfetivo")
+            if (modEfetivo < 0) append(modEfetivo)
         }
         val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         val linha = "$hora | Livre ($contextoLabel) | expr $expr | dados ${dados.joinToString(prefix = "[", postfix = "]")} | total $total"
@@ -617,7 +633,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             testType = "Livre",
             context = contextoLabel,
             target = null,
-            modifier = modNormalizado,
+            modifier = modEfetivo,
             dice = dados,
             total = total,
             outcome = TipoResultado.NENHUM.name,
@@ -730,6 +746,54 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
+        if (isPraCegoVariant) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            ) {
+                Column(
+                    modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        "Modificador Global: ${if (modificadorGlobalPraCego >= 0) "+$modificadorGlobalPraCego" else "$modificadorGlobalPraCego"}",
+                        style = cardTitleStyle,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        listOf(-5, -2, -1, 0, 1, 2, 5).forEach { delta ->
+                            val label = if (delta == 0) "C" else if (delta > 0) "+$delta" else "$delta"
+                            val descricao = when {
+                                delta < 0 -> "Diminuir modificador em ${abs(delta)}"
+                                delta > 0 -> "Aumentar modificador em $delta"
+                                else -> "Limpar modificadores"
+                            }
+                            OutlinedButton(
+                                onClick = {
+                                    modificadorGlobalPraCego = if (delta == 0) {
+                                        0
+                                    } else {
+                                        (modificadorGlobalPraCego + delta).coerceIn(-999, 999)
+                                    }
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .semantics { contentDescription = descricao },
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 0.dp, vertical = 0.dp)
+                            ) {
+                                Text(label)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -741,7 +805,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ) {
                 Text(
                     text = if (isPraCegoVariant) {
-                        "Use os botões - e + para ajustar modificadores."
+                        "Use o modificador global para aplicar bonus ou penalidade em todas as rolagens."
                     } else {
                         "Deslize para cima/baixo em cada atributo para ajustar o modificador."
                     },
@@ -753,7 +817,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         atributosRapidos.forEach { attr ->
                             val valor = p.getAtributo(attr)
-                            val modAttr = modificadoresAtributo[attr] ?: 0
                             val nomeAttr = atributoNomeCompleto(attr)
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
@@ -766,45 +829,26 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Column(modifier = Modifier.weight(1f)) {
+                                    Column {
                                         Text("$attr - $nomeAttr", style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
-                                        if (modAttr != 0) {
-                                            Text("mod ${if (modAttr >= 0) "+$modAttr" else modAttr}", style = compactLabelStyle)
-                                        }
                                     }
-                                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                        TextButton(
-                                            onClick = {
-                                                val atual = modificadoresAtributo[attr] ?: 0
-                                                modificadoresAtributo[attr] = (atual - 1).coerceIn(-20, 20)
-                                            },
-                                            modifier = Modifier.semantics { contentDescription = "Diminuir modificador de $nomeAttr" },
-                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 6.dp, vertical = 0.dp)
-                                        ) { Text("-") }
-                                        Text(
-                                            text = valor.toString(),
-                                            modifier = Modifier.clickable {
+                                    Text(
+                                        text = valor.toString(),
+                                        modifier = Modifier
+                                            .semantics { contentDescription = "Rolar $attr" }
+                                            .clickable {
                                                 executarRolagem(
                                                     tipo = TipoTeste.ATRIBUTO,
                                                     contextoLabel = attr,
                                                     alvo = valor,
-                                                    mod = modAttr
+                                                    mod = 0
                                                 )
                                             },
-                                            textAlign = TextAlign.Center,
-                                            style = statsNumberStyle,
-                                            fontWeight = FontWeight.Bold,
-                                            color = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                        TextButton(
-                                            onClick = {
-                                                val atual = modificadoresAtributo[attr] ?: 0
-                                                modificadoresAtributo[attr] = (atual + 1).coerceIn(-20, 20)
-                                            },
-                                            modifier = Modifier.semantics { contentDescription = "Aumentar modificador de $nomeAttr" },
-                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 6.dp, vertical = 0.dp)
-                                        ) { Text("+") }
-                                    }
+                                        textAlign = TextAlign.Center,
+                                        style = statsNumberStyle,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                                    )
                                 }
                             }
                         }
@@ -973,12 +1017,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
             Spacer(modifier = Modifier.height(3.dp))
 
+            val modAtaqueAtual = if (isPraCegoVariant) 0 else modificadorAtaque
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .then(
                         if (!isPraCegoVariant) {
-                            Modifier.pointerInput(modificadorAtaque) {
+                            Modifier.pointerInput(modAtaqueAtual) {
                                 var dragAcumulado = 0f
                                 val passoPx = 20f
                                 detectVerticalDragGestures(
@@ -1003,21 +1048,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     ),
                 verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
-                if (isPraCegoVariant) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextButton(onClick = { modificadorAtaque = (modificadorAtaque - 1).coerceIn(-20, 20) }) { Text("-") }
-                        Text(
-                            "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
-                            style = compactLabelStyle,
-                            modifier = Modifier.padding(horizontal = 6.dp)
-                        )
-                        TextButton(onClick = { modificadorAtaque = (modificadorAtaque + 1).coerceIn(-20, 20) }) { Text("+") }
-                    }
-                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -1055,12 +1085,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     "NH ${ataqueAtual?.target ?: "-"}",
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .semantics {
+                                            contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"}"
+                                        }
                                         .clickable(enabled = ataqueAtual?.target != null) {
                                             executarRolagem(
                                                 tipo = TipoTeste.ATAQUE,
                                                 contextoLabel = ataqueAtual?.contextLabel ?: "Ataque",
                                                 alvo = ataqueAtual?.target,
-                                                mod = modificadorAtaque
+                                                mod = modAtaqueAtual
                                             )
                                         },
                                     style = defenseNumberStyle,
@@ -1068,9 +1101,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     color = MaterialTheme.colorScheme.primary,
                                     textAlign = TextAlign.Center
                                 )
-                                if (modificadorAtaque != 0) {
+                                if (!isPraCegoVariant && modAtaqueAtual != 0) {
                                     Text(
-                                        "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                                        "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",
                                         style = compactLabelStyle,
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Center,
@@ -1114,6 +1147,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         danoLinha,
                                         modifier = Modifier
                                             .fillMaxWidth()
+                                            .semantics {
+                                                contentDescription = "Rolar dano ${fonteDanoAtual.contextLabel}: $danoLinha"
+                                            }
                                             .clickable(enabled = danoRolavel) {
                                                 executarRolagemDano(
                                                     contextoLabel = fonteDanoAtual.contextLabel,
@@ -1127,9 +1163,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
-                                if (modificadorAtaque != 0) {
+                                if (!isPraCegoVariant && modAtaqueAtual != 0) {
                                     Text(
-                                        "mod ${if (modificadorAtaque >= 0) "+$modificadorAtaque" else "$modificadorAtaque"}",
+                                        "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",
                                         style = compactLabelStyle,
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Center,
@@ -1248,7 +1284,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ) {
                 listOf(DefenseType.ESQUIVA, DefenseType.APARA, DefenseType.BLOQUEIO).forEach { tipoDefesa ->
                     val defesa = defesasPorTipo[tipoDefesa]
-                    val modDefesa = modificadoresDefesa[tipoDefesa] ?: 0
+                    val modDefesa = if (isPraCegoVariant) 0 else (modificadoresDefesa[tipoDefesa] ?: 0)
                     val nomeDefesa = when (tipoDefesa) {
                         DefenseType.ESQUIVA -> "Esquiva"
                         DefenseType.APARA -> "Apara"
@@ -1308,6 +1344,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     (defesa?.finalValue?.toString() ?: "-"),
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .semantics { contentDescription = "Rolar defesa $nomeDefesa" }
                                         .clickable(enabled = defesa != null) {
                                             executarRolagem(
                                                 tipo = TipoTeste.DEFESA,
@@ -1321,7 +1358,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     color = if (defesa != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center
                                 )
-                                if (modDefesa != 0) {
+                                if (!isPraCegoVariant && modDefesa != 0) {
                                     Text(
                                         "mod ${if (modDefesa >= 0) "+$modDefesa" else "$modDefesa"}",
                                         style = compactLabelStyle,
@@ -1329,24 +1366,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         textAlign = TextAlign.Center,
                                         maxLines = 1
                                     )
-                                }
-                                if (isPraCegoVariant) {
-                                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
-                                        TextButton(
-                                            onClick = {
-                                                val atual = modificadoresDefesa[tipoDefesa] ?: 0
-                                                modificadoresDefesa[tipoDefesa] = (atual - 1).coerceIn(-20, 20)
-                                            },
-                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
-                                        ) { Text("-") }
-                                        TextButton(
-                                            onClick = {
-                                                val atual = modificadoresDefesa[tipoDefesa] ?: 0
-                                                modificadoresDefesa[tipoDefesa] = (atual + 1).coerceIn(-20, 20)
-                                            },
-                                            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
-                                        ) { Text("+") }
-                                    }
                                 }
                             }
                         }
@@ -1356,6 +1375,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
 
         if (viewModel.temAptidaoAstral) {
+            val modMagiaAlma = if (isPraCegoVariant) 0 else modificadorMagiaAlma
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -1413,12 +1433,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             "NH $nivelMagiaDaAlma",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .semantics { contentDescription = "Rolar Magia da Alma" }
                                 .clickable {
                                     executarRolagem(
                                         tipo = TipoTeste.MAGIA,
                                         contextoLabel = "Magia da Alma",
                                         alvo = nivelMagiaDaAlma,
-                                        mod = modificadorMagiaAlma
+                                        mod = modMagiaAlma
                                     )
                                 },
                             style = defenseNumberStyle,
@@ -1427,26 +1448,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             textAlign = TextAlign.Center,
                             maxLines = 1
                         )
-                        if (modificadorMagiaAlma != 0) {
+                        if (!isPraCegoVariant && modMagiaAlma != 0) {
                             Text(
-                                "mod ${if (modificadorMagiaAlma >= 0) "+$modificadorMagiaAlma" else "$modificadorMagiaAlma"}",
+                                "mod ${if (modMagiaAlma >= 0) "+$modMagiaAlma" else "$modMagiaAlma"}",
                                 style = compactLabelStyle,
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
                                 maxLines = 1
                             )
-                        }
-                        if (isPraCegoVariant) {
-                            Row(horizontalArrangement = Arrangement.spacedBy(2.dp), verticalAlignment = Alignment.CenterVertically) {
-                                TextButton(
-                                    onClick = { modificadorMagiaAlma = (modificadorMagiaAlma - 1).coerceIn(-20, 20) },
-                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
-                                ) { Text("-") }
-                                TextButton(
-                                    onClick = { modificadorMagiaAlma = (modificadorMagiaAlma + 1).coerceIn(-20, 20) },
-                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp, vertical = 0.dp)
-                                ) { Text("+") }
-                            }
                         }
                     }
                 }
@@ -1549,7 +1558,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 opcoesPericia.forEach { pericia ->
-                                    val modPericia = modificadoresPericia[pericia.id] ?: 0
+                                    val modPericia = if (isPraCegoVariant) 0 else (modificadoresPericia[pericia.id] ?: 0)
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
                                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -1618,6 +1627,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                                 Modifier
                                                             }
                                                         )
+                                                        .semantics {
+                                                            contentDescription = "Rolar pericia ${pericia.nome}"
+                                                        }
                                                         .clickable {
                                                             executarRolagem(
                                                                 tipo = TipoTeste.PERICIA,
@@ -1634,7 +1646,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     maxLines = 1
                                                 )
                                             }
-                                            if (modPericia != 0) {
+                                            if (!isPraCegoVariant && modPericia != 0) {
                                                 Text(
                                                     "mod ${if (modPericia >= 0) "+$modPericia" else "$modPericia"}",
                                                     style = compactLabelStyle,
@@ -1642,22 +1654,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     textAlign = TextAlign.End,
                                                     maxLines = 1
                                                 )
-                                            }
-                                            if (isPraCegoVariant) {
-                                                Row(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.End,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    TextButton(onClick = {
-                                                        val atual = modificadoresPericia[pericia.id] ?: 0
-                                                        modificadoresPericia[pericia.id] = (atual - 1).coerceIn(-20, 20)
-                                                    }) { Text("-") }
-                                                    TextButton(onClick = {
-                                                        val atual = modificadoresPericia[pericia.id] ?: 0
-                                                        modificadoresPericia[pericia.id] = (atual + 1).coerceIn(-20, 20)
-                                                    }) { Text("+") }
-                                                }
                                             }
                                         }
                                     }
@@ -2034,7 +2030,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 opcoesMagia.forEach { magia ->
-                                    val modMagia = modificadoresMagia[magia.id] ?: 0
+                                    val modMagia = if (isPraCegoVariant) 0 else (modificadoresMagia[magia.id] ?: 0)
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
                                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -2087,6 +2083,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                                 Modifier
                                                             }
                                                         )
+                                                        .semantics {
+                                                            contentDescription = "Rolar magia ${magia.nome}"
+                                                        }
                                                         .clickable {
                                                             executarRolagem(
                                                                 tipo = TipoTeste.MAGIA,
@@ -2103,7 +2102,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     maxLines = 1
                                                 )
                                             }
-                                            if (modMagia != 0) {
+                                            if (!isPraCegoVariant && modMagia != 0) {
                                                 Text(
                                                     "mod ${if (modMagia >= 0) "+$modMagia" else "$modMagia"}",
                                                     style = compactLabelStyle,
@@ -2111,22 +2110,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     textAlign = TextAlign.End,
                                                     maxLines = 1
                                                 )
-                                            }
-                                            if (isPraCegoVariant) {
-                                                Row(
-                                                    modifier = Modifier.fillMaxWidth(),
-                                                    horizontalArrangement = Arrangement.End,
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    TextButton(onClick = {
-                                                        val atual = modificadoresMagia[magia.id] ?: 0
-                                                        modificadoresMagia[magia.id] = (atual - 1).coerceIn(-20, 20)
-                                                    }) { Text("-") }
-                                                    TextButton(onClick = {
-                                                        val atual = modificadoresMagia[magia.id] ?: 0
-                                                        modificadoresMagia[magia.id] = (atual + 1).coerceIn(-20, 20)
-                                                    }) { Text("+") }
-                                                }
                                             }
                                         }
                                     }
