@@ -583,3 +583,17 @@ Arquivos alterados:
 
 Validacao:
 - `./gradlew :app:assembleDebug` (OK - compilou `assembleVisualDebug` e `assemblePracegoDebug`)
+
+## Atualizacao 2026-03-01 - Pente fino de acessibilidade (Geral -> Rolagem)
+
+Revisao executada com foco em controles de botao usados nas abas principais e dialogos associados.
+
+Ajustes aplicados:
+- `TabGeral.kt`:
+  - botoes `-` e `+` dos editores de atributo/modificador receberam `contentDescription` explicito para leitor de tela.
+- `DialogsTracos.kt`:
+  - `IconButton` com setas (subir/descer nivel) agora possuem `contentDescription` explicito em todos os fluxos (vantagem/desvantagem, configurar/editar).
+
+Validacao:
+- Build completa em ambas as variantes: `./gradlew :app:assembleDebug` (OK)
+- Resultado de auditoria: sem `IconButton` com `Icon(..., null)` nos arquivos de abas (`Tab*`).
