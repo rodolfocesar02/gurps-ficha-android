@@ -53,6 +53,21 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
     - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
     - `./gradlew.bat :app:installVisualDebug :app:installPracegoDebug --no-daemon`
     - resultado: `BUILD SUCCESSFUL` e instalacao concluida no emulador `Pixel_8a(AVD)`.
+  - refinamento de validacao de pre-requisitos (casos especiais do XLSX):
+    - parser de pre-requisito reforcado para termos compostos com `ou` e `e`;
+    - validacao por categoria de pericia base:
+      - combate desarmado;
+      - arma de combate corpo a corpo;
+      - arma de esgrima;
+      - pericia de tiro / arma de longo alcance;
+      - sacar rapido;
+      - defesa ativa (bloquear/aparar).
+    - suporte a ancora explicita de limite (ex.: `nao pode exceder a pericia X`) para exigir vinculo da tecnica com a pericia correta quando houver pericia-alvo explicita no texto.
+  - validacao executada apos refinamento:
+    - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin --no-daemon`
+    - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
+    - `./gradlew.bat :app:installVisualDebug :app:installPracegoDebug --no-daemon`
+    - resultado: `BUILD SUCCESSFUL` nas duas variantes e instalacao no emulador ativo.
 - Validacao executada nas duas variantes:
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
