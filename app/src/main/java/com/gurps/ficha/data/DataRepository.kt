@@ -21,7 +21,9 @@ class DataRepository(private val context: Context) {
     private var _vantagens: List<VantagemDefinicao>? = null
     private var _desvantagens: List<DesvantagemDefinicao>? = null
     private var _pericias: List<PericiaDefinicao>? = null
+    private var _periciasSuplementares: List<PericiaSuplementarItem>? = null
     private var _magias: List<MagiaDefinicao>? = null
+    private var _tecnicasCatalogo: List<TecnicaCatalogoItem>? = null
     private var _armasCatalogo: List<ArmaCatalogoItem>? = null
     private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
@@ -36,8 +38,14 @@ class DataRepository(private val context: Context) {
     val pericias: List<PericiaDefinicao>
         get() = _pericias ?: carregarPericias().also { _pericias = it }
 
+    val periciasSuplementares: List<PericiaSuplementarItem>
+        get() = _periciasSuplementares ?: carregarPericiasSuplementares().also { _periciasSuplementares = it }
+
     val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
+
+    val tecnicasCatalogo: List<TecnicaCatalogoItem>
+        get() = _tecnicasCatalogo ?: carregarTecnicasCatalogo().also { _tecnicasCatalogo = it }
 
     val armasCatalogo: List<ArmaCatalogoItem>
         get() = _armasCatalogo ?: carregarArmasCatalogo().also { _armasCatalogo = it }
@@ -71,15 +79,47 @@ class DataRepository(private val context: Context) {
 
     private fun carregarVantagensV3(): List<VantagemDefinicao> {
         return try {
-            val json = context.assets.open("vantagens.v3.json").bufferedReader().use { it.readText() }
-            val root = JsonParser.parseString(json)
+            val jsonBase = context.assets.open("vantagens.v3.json").bufferedReader().use { it.readText() }
+            val root = JsonParser.parseString(jsonBase)
             if (!root.isJsonArray) return emptyList()
-            root.asJsonArray
+            val base = root.asJsonArray
                 .mapNotNull { it.asVantagemV3OrNull() }
                 .map { it.toLegacy() }
                 .map { it.normalizada() }
+            val extras = carregarVantagensExtrasArtesMarciaisV1()
+            val seen = base.map { it.id.lowercase() }.toMutableSet()
+            val merged = base.toMutableList()
+            extras.forEach { extra ->
+                val key = extra.id.lowercase()
+                if (key !in seen) {
+                    merged.add(extra)
+                    seen.add(key)
+                }
+            }
+            clearLoadError("vantagens")
+            merged
         } catch (e: Exception) {
+            registerLoadError("vantagens", e)
             e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarVantagensExtrasArtesMarciaisV1(): List<VantagemDefinicao> {
+        return try {
+            val json = context.assets.open("vantagens_artes_marciais.v1.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonArray) return emptyList()
+            val parsed = root.asJsonArray
+                .mapNotNull { it.asVantagemV3OrNull() }
+                .map { it.toLegacy() }
+                .map { it.normalizada() }
+            clearLoadError("vantagens_artes_marciais")
+            parsed
+        } catch (e: Exception) {
+            registerLoadError("vantagens_artes_marciais", e)
             emptyList()
         }
     }
@@ -112,9 +152,46 @@ class DataRepository(private val context: Context) {
         return try {
             val json = context.assets.open("pericias.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<PericiaDefinicao>>() {}.type
-            (gson.fromJson<List<PericiaDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
+            val parsed = (gson.fromJson<List<PericiaDefinicao>>(json, type) ?: emptyList())
+                .map { it.normalizada() }
+            clearLoadError("pericias")
+            parsed
         } catch (e: Exception) {
+            registerLoadError("pericias", e)
             e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarPericiasSuplementares(): List<PericiaSuplementarItem> {
+        return try {
+            val json = context.assets.open("pericias_artes_marciais.v1.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyList()
+            val items = root.asJsonObject.array("items") ?: return emptyList()
+            val parsed = items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                PericiaSuplementarItem(
+                    id = obj.string("id").orEmpty().sanitized(),
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    pagina = obj.int("pagina"),
+                    paginaRaw = obj.string("paginaRaw").orEmpty().sanitized(),
+                    dificuldadeRaw = obj.string("dificuldadeRaw").orEmpty().sanitized(),
+                    preDefinidoRaw = obj.string("preDefinidoRaw").orEmpty().sanitized(),
+                    preRequisitoRaw = obj.string("preRequisitoRaw").orEmpty().sanitized(),
+                    descricao = obj.string("descricao").orEmpty().sanitized(),
+                    modificadores = obj.string("modificadores").orEmpty().sanitized(),
+                    sourceBook = obj.string("sourceBook").orEmpty().sanitized(),
+                    sourceFile = obj.string("sourceFile").orEmpty().sanitized()
+                )
+            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+            clearLoadError("pericias_artes_marciais")
+            parsed
+        } catch (e: Exception) {
+            registerLoadError("pericias_artes_marciais", e)
             emptyList()
         }
     }
@@ -123,9 +200,46 @@ class DataRepository(private val context: Context) {
         return try {
             val json = context.assets.open("magias2versao.json").bufferedReader().use { it.readText() }
             val type = object : TypeToken<List<MagiaDefinicao>>() {}.type
-            (gson.fromJson<List<MagiaDefinicao>>(json, type) ?: emptyList()).map { it.normalizada() }
+            val parsed = (gson.fromJson<List<MagiaDefinicao>>(json, type) ?: emptyList())
+                .map { it.normalizada() }
+            clearLoadError("magias")
+            parsed
         } catch (e: Exception) {
+            registerLoadError("magias", e)
             e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    private fun carregarTecnicasCatalogo(): List<TecnicaCatalogoItem> {
+        return try {
+            val json = context.assets.open("tecnicas.v1.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyList()
+            val items = root.asJsonObject.array("items") ?: return emptyList()
+            val parsed = items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                TecnicaCatalogoItem(
+                    id = obj.string("id").orEmpty().sanitized(),
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    pagina = obj.int("pagina"),
+                    paginaRaw = obj.string("paginaRaw").orEmpty().sanitized(),
+                    dificuldadeRaw = obj.string("dificuldadeRaw").orEmpty().sanitized(),
+                    preDefinidoRaw = obj.string("preDefinidoRaw").orEmpty().sanitized(),
+                    preRequisitoRaw = obj.string("preRequisitoRaw").orEmpty().sanitized(),
+                    descricao = obj.string("descricao").orEmpty().sanitized(),
+                    modificadores = obj.string("modificadores").orEmpty().sanitized(),
+                    sourceBook = obj.string("sourceBook").orEmpty().sanitized(),
+                    sourceFile = obj.string("sourceFile").orEmpty().sanitized()
+                )
+            }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
+            clearLoadError("tecnicas")
+            parsed
+        } catch (e: Exception) {
+            registerLoadError("tecnicas", e)
             emptyList()
         }
     }
@@ -385,6 +499,21 @@ class DataRepository(private val context: Context) {
         }
     }
 
+    fun filtrarTecnicasCatalogo(
+        busca: String = "",
+        sourceBook: String? = null
+    ): List<TecnicaCatalogoItem> {
+        val b = busca.trim()
+        return tecnicasCatalogo.filter { t ->
+            val matchBusca = b.isBlank() ||
+                t.nome.contains(b, ignoreCase = true) ||
+                t.descricao.contains(b, ignoreCase = true) ||
+                t.preRequisitoRaw.contains(b, ignoreCase = true)
+            val matchSource = sourceBook.isNullOrBlank() || t.sourceBook.equals(sourceBook, ignoreCase = true)
+            matchBusca && matchSource
+        }.sortedBy { it.nome.lowercase() }
+    }
+
     fun filtrarArmasCatalogo(
         busca: String = "",
         tipoCombate: String? = null,
@@ -589,6 +718,21 @@ class DataRepository(private val context: Context) {
             pontosGastos = pontosGastos,
             especializacao = especializacao,
             exigeEspecializacao = definicao.exigeEspecializacao
+        )
+    }
+
+    fun criarTecnicaSelecionada(
+        definicao: TecnicaCatalogoItem,
+        pontosGastos: Int = 1
+    ): TecnicaSelecionada {
+        return TecnicaSelecionada(
+            definicaoId = definicao.id,
+            nome = definicao.nome,
+            pontosGastos = pontosGastos.coerceAtLeast(1),
+            dificuldadeRaw = definicao.dificuldadeRaw,
+            preDefinidoRaw = definicao.preDefinidoRaw,
+            preRequisitoRaw = definicao.preRequisitoRaw,
+            sourceBook = definicao.sourceBook
         )
     }
 

@@ -18,6 +18,25 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
   - Resultado: `BUILD SUCCESSFUL`.
+- Decisao operacional de catalogos XLSX:
+  - manter os JSON atuais do projeto para Armaduras, Escudos, Armas de Fogo, Armas Corpo a Corpo e Vantagens base (sem substituir agora);
+  - focar proximo lote nos novos arquivos de Pericias/Tecnicas (Artes Marciais e Gun Fu).
+- Lote 15 iniciado (base compartilhada para VISUAL + PRACEGO):
+  - scripts novos criados para conversao:
+    - `scripts/convert_pericias_artes_marciais_v1.py`
+    - `scripts/convert_tecnicas_v1.py`
+  - assets novos gerados:
+    - `app/src/main/assets/pericias_artes_marciais.v1.json` (40 itens)
+    - `app/src/main/assets/tecnicas.v1.json` (113 itens)
+    - `app/src/main/assets/vantagens_artes_marciais.v1.json` (24 itens)
+  - `DataRepository` atualizado para:
+    - carregar `pericias_artes_marciais.v1.json` e `tecnicas.v1.json`;
+    - fazer merge seguro de `vantagens_artes_marciais.v1.json` com `vantagens.v3.json` sem sobrescrever ids ja existentes.
+  - `FichaViewModel` atualizado para expor catalogos suplementares (Pericias Artes Marciais e Tecnicas).
+- Validacao executada nas duas variantes:
+  - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
+  - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
+  - Resultado: `BUILD SUCCESSFUL`.
 
 ## Atualizacao Final do Bloco (2026-02-28)
     - `1d92bde` chore(deploy): retry railway queue
@@ -136,7 +155,26 @@ Escopo:
 Criterio de pronto:
 - Usuario autenticado no app.
 - Backend aceitando apenas requisicoes autenticadas.
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
+Andamento:
+- Bloco 1 concluido:
+  - conversao dos XLSX para novos assets suplementares;
+  - carregamento no `DataRepository`;
+  - merge inicial de vantagens extras com o catalogo base (sem substituir itens existentes);
+  - exposicao no `FichaViewModel` para uso nos proximos blocos de dominio/UI.
+- Bloco 2 concluido (dominio/persistencia base):
+  - `Personagem` recebeu campo `tecnicas` com default seguro (retrocompativel em JSON legado);
+  - `FichaViewModel` recebeu operacoes de tecnicas (adicionar/editar/remover) e filtros de catalogo;
+  - persistencia e import/export passam a carregar/salvar `tecnicas` sem quebrar fichas antigas.
+- Bloco 3 concluido (UI compartilhada para VISUAL + PRACEGO):
+  - Aba Pericias atualizada com fluxo de Tecnicas:
+    - adicionar tecnica (dialogo de selecao + configuracao de pontos);
+    - editar/remover tecnica;
+    - resumo de tecnicas (quantidade + pontos).
+  - Dialogo de visualizacao de Pericias Suplementares (Artes Marciais) com busca.
+  - Suporte de acessibilidade reforcado na variante `PRACEGO` para ajuste de pontos (`-`/`+`) em tecnicas.
+- Proximo passo imediato:
+  - revisar UX final de Tecnicas/Pericias Suplementares em tela pequena e definir regra matematica de impacto de Tecnicas nos calculos (se aplicavel no escopo atual).
 
 ### Lote 4 - Observabilidade e suporte
 Escopo:
@@ -309,6 +347,63 @@ Andamento:
 - Importacao implementada via seletor de arquivo Android (`OpenDocument`) com parser versionado e feedback de sucesso/erro em dialogo.
 - Compatibilidade preservada para JSON legado sem envelope e validacao de versao futura no import.
 - Testes unitarios adicionados para parser e compatibilidade basica entre versoes (`PersonagemInteropTest`).
+
+### Lote 15 - Integracao de Pericias, Tecnicas e Vantagens (Artes Marciais + Gun Fu)
+Escopo:
+- Implementar pipeline para incorporar ao app os novos conteudos de:
+  - `pericias_Artes _marciais.xlsx`
+  - `Tecnicas_Livro _artes_Marciais.xlsx`
+  - `Tecnicas_livro_GunFu.xlsx`
+- Integrar tambem vantagens extras de:
+  - `Vantagens_Artes_Marcias.xlsx`
+- Criar estrategia de dados para tecnicas (novo catalogo) sem quebrar o modelo atual de Pericias.
+- Criar estrategia de merge para vantagens extras sem sobrescrever `vantagens.v3.json` base ja consolidado.
+- Exibir e utilizar tecnicas no fluxo da ficha (com persistencia e compatibilidade).
+- Manter intactos os JSON atuais ja consolidados de armaduras/escudos/armas/vantagens base.
+
+Plano de implementacao (passo a passo):
+1. Levantamento e mapeamento:
+   - mapear colunas reais dos 4 XLSX;
+   - definir schema alvo (JSON) para `pericias_artes_marciais`, `tecnicas` e `vantagens_extra_artes_marciais` (campos minimos, tipos, ids).
+2. Conversores e validadores:
+   - criar script de conversao para `pericias_Artes _marciais.xlsx`;
+   - criar script de conversao para tecnicas (Artes Marciais + Gun Fu, com fonte/livro e pagina);
+   - criar script de conversao para `Vantagens_Artes_Marcias.xlsx` em arquivo complementar de vantagens;
+   - criar validacoes basicas (ids unicos, campos obrigatorios, normalizacao de texto/acentuacao).
+3. Assets e DataRepository:
+   - adicionar novos JSONs em `app/src/main/assets`;
+   - carregar no `DataRepository` com tratamento de erro padronizado;
+   - fazer merge em runtime das vantagens extras com o catalogo base, sem regressao de filtro/busca.
+   - manter retrocompatibilidade com dados existentes.
+4. Dominio e modelo:
+   - introduzir modelo de `TecnicaDefinicao` e `TecnicaSelecionada`;
+   - definir regra inicial de uso (ligacao com pericia base, dificuldade, limite de nivel quando aplicavel).
+5. UI e fluxo de ficha:
+   - adicionar secao de tecnicas na ficha (lista, adicionar/remover, pontos quando aplicavel);
+   - garantir funcionamento nas duas variantes de UI (`VISUAL` e `PRACEGO`), preservando acessibilidade.
+6. Persistencia e import/export:
+   - incluir tecnicas no `Personagem` com defaults seguros;
+   - garantir round-trip em salvar/carregar e import/export JSON.
+7. Validacao final:
+   - testes unitarios de parser/conversao e regras basicas;
+   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
+   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`.
+
+Riscos e mitigacao:
+- Risco medio de divergencia de schema entre livros:
+  - mitigar com campo de `origem` por item e regras minimas comuns.
+- Risco medio de regressao em persistencia:
+  - mitigar com defaults no modelo e testes de round-trip.
+- Risco medio de regressao visual/acessibilidade:
+  - mitigar validando em `VISUAL` e `PRACEGO` no mesmo bloco de entrega.
+
+Criterio de pronto:
+- Novos catalogos de Pericias/Tecnicas/Vantagens extras convertidos e carregados no app.
+- Usuario consegue adicionar/remover tecnicas sem quebrar calculos existentes.
+- Usuario consegue visualizar/selecionar vantagens extras de Artes Marciais junto ao catalogo atual.
+- Persistencia local e import/export funcionando com os novos campos.
+- Fluxo validado com build/test em `VISUAL` e `PRACEGO`.
+Status: `PENDENTE`
 
 ## Fora de Escopo (agora)
 - Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.

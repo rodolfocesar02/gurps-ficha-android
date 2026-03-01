@@ -78,6 +78,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var filtroClasseMagia by mutableStateOf<String?>(null)
         private set
+    var buscaTecnica by mutableStateOf("")
+        private set
+    var filtroFonteTecnica by mutableStateOf<String?>(null)
+        private set
 
     var buscaArmaEquipamento by mutableStateOf("")
         private set
@@ -124,8 +128,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val periciasFiltradas: List<PericiaDefinicao>
         get() = dataRepository.filtrarPericias(buscaPericia, filtroAtributoPericia, filtroDificuldadePericia)
 
+    val periciasSuplementaresArtesMarciais: List<PericiaSuplementarItem>
+        get() = dataRepository.periciasSuplementares
+
     val magiasFiltradas: List<MagiaDefinicao>
         get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
+
+    val tecnicasCatalogo: List<TecnicaCatalogoItem>
+        get() = dataRepository.tecnicasCatalogo
+
+    val tecnicasFiltradas: List<TecnicaCatalogoItem>
+        get() = dataRepository.filtrarTecnicasCatalogo(buscaTecnica, filtroFonteTecnica)
 
     val armasEquipamentosFiltradas: List<ArmaCatalogoItem>
         get() {
@@ -255,6 +268,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun atualizarFiltroClasseMagia(classe: String?) {
         filtroClasseMagia = classe
+    }
+
+    fun atualizarBuscaTecnica(busca: String) {
+        buscaTecnica = busca
+    }
+
+    fun atualizarFiltroFonteTecnica(fonte: String?) {
+        filtroFonteTecnica = fonte
     }
 
     fun atualizarBuscaArmaEquipamento(busca: String) {
@@ -572,6 +593,37 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (index in lista.indices) {
             lista[index] = magia.copy(pontosGastos = magia.pontosGastos.coerceAtLeast(1))
             personagem = personagem.copy(magias = lista)
+        }
+    }
+
+    // === TECNICAS ===
+
+    fun adicionarTecnica(
+        definicao: TecnicaCatalogoItem,
+        pontosGastos: Int = 1
+    ) {
+        if (personagem.tecnicas.any { it.definicaoId == definicao.id }) {
+            return
+        }
+        val tecnica = dataRepository.criarTecnicaSelecionada(definicao, pontosGastos)
+        val lista = personagem.tecnicas.toMutableList()
+        lista.add(tecnica)
+        personagem = personagem.copy(tecnicas = lista)
+    }
+
+    fun removerTecnica(index: Int) {
+        val lista = personagem.tecnicas.toMutableList()
+        if (index in lista.indices) {
+            lista.removeAt(index)
+            personagem = personagem.copy(tecnicas = lista)
+        }
+    }
+
+    fun atualizarTecnica(index: Int, tecnica: TecnicaSelecionada) {
+        val lista = personagem.tecnicas.toMutableList()
+        if (index in lista.indices) {
+            lista[index] = tecnica.copy(pontosGastos = tecnica.pontosGastos.coerceAtLeast(1))
+            personagem = personagem.copy(tecnicas = lista)
         }
     }
 
@@ -1070,6 +1122,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun magiaJaAdicionada(id: String): Boolean {
         return personagem.magias.any { it.definicaoId == id }
+    }
+
+    fun tecnicaJaAdicionada(id: String): Boolean {
+        return personagem.tecnicas.any { it.definicaoId == id }
     }
 
     val nivelAptidaoMagica: Int

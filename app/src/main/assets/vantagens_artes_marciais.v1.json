@@ -1,0 +1,358 @@
+[
+  {
+    "id": "padrao_de_tempo_alterado",
+    "nome": "Padrão de Tempo Alterado",
+    "pagina": 42,
+    "costKind": "special",
+    "fixed": 75,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B75",
+    "specialRule": "padrao_de_tempo_alterado",
+    "tags": []
+  },
+  {
+    "id": "garras_cegas",
+    "nome": "Garras (Cegas)",
+    "pagina": 42,
+    "costKind": "special",
+    "fixed": 3,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "3 pontos",
+    "specialRule": "garras_cegas",
+    "tags": [
+      "combate"
+    ]
+  },
+  {
+    "id": "resistencia_a_dano",
+    "nome": "Resistência a Dano",
+    "pagina": 43,
+    "costKind": "special",
+    "fixed": 83,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B83",
+    "specialRule": "resistencia_a_dano",
+    "tags": [
+      "fisica"
+    ]
+  },
+  {
+    "id": "defesas_ampliadas_esquiva_aparar_bloqueio",
+    "nome": "Defesas Ampliadas (Esquiva, Aparar, Bloqueio)",
+    "pagina": 0,
+    "costKind": "special",
+    "fixed": 52,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B52",
+    "specialRule": "defesas_ampliadas_esquiva_aparar_bloqueio",
+    "tags": [
+      "combate"
+    ]
+  },
+  {
+    "id": "nocao_de_tempo_ampliada",
+    "nome": "Noção de Tempo Ampliada",
+    "pagina": 44,
+    "costKind": "special",
+    "fixed": 73,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B73",
+    "specialRule": "nocao_de_tempo_ampliada",
+    "tags": []
+  },
+  {
+    "id": "ataque_adicional",
+    "nome": "Ataque Adicional",
+    "pagina": 44,
+    "costKind": "special",
+    "fixed": 42,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B42",
+    "specialRule": "ataque_adicional",
+    "tags": [
+      "combate"
+    ]
+  },
+  {
+    "id": "destemor",
+    "nome": "Destemor",
+    "pagina": 44,
+    "costKind": "special",
+    "fixed": 53,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B53",
+    "specialRule": "destemor",
+    "tags": []
+  },
+  {
+    "id": "flexibilidade",
+    "nome": "Flexibilidade",
+    "pagina": 44,
+    "costKind": "special",
+    "fixed": 61,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B61",
+    "specialRule": "flexibilidade",
+    "tags": []
+  },
+  {
+    "id": "apetrechos",
+    "nome": "Apetrechos",
+    "pagina": 45,
+    "costKind": "special",
+    "fixed": 5,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "5/apetrecho",
+    "specialRule": "apetrechos",
+    "tags": []
+  },
+  {
+    "id": "atirador_arqueiro_heroico",
+    "nome": "Atirador (Arqueiro Heroico)",
+    "pagina": 45,
+    "costKind": "special",
+    "fixed": 20,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "20 pontos",
+    "specialRule": "atirador_arqueiro_heroico",
+    "tags": []
+  },
+  {
+    "id": "tolerancia_a_ferimentos_reducao_de_dano",
+    "nome": "Tolerância a Ferimentos (Redução de Dano)",
+    "pagina": 45,
+    "costKind": "special",
+    "fixed": null,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "50 pontos (divisor 2), 75 (3), 100 (4)",
+    "specialRule": "tolerancia_a_ferimentos_reducao_de_dano",
+    "tags": []
+  },
+  {
+    "id": "ataque_inato",
+    "nome": "Ataque Inato",
+    "pagina": 0,
+    "costKind": "special",
+    "fixed": null,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "Variável",
+    "specialRule": "ataque_inato",
+    "tags": [
+      "combate"
+    ]
+  },
+  {
+    "id": "regeneracao",
+    "nome": "Regeneração",
+    "pagina": 47,
+    "costKind": "special",
+    "fixed": 82,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B82",
+    "specialRule": "regeneracao",
+    "tags": []
+  },
+  {
+    "id": "resistente",
+    "nome": "Resistente",
+    "pagina": 47,
+    "costKind": "special",
+    "fixed": 85,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B85",
+    "specialRule": "resistente",
+    "tags": [
+      "fisica"
+    ]
+  },
+  {
+    "id": "golpeadores",
+    "nome": "Golpeadores",
+    "pagina": 47,
+    "costKind": "special",
+    "fixed": 62,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B62",
+    "specialRule": "golpeadores",
+    "tags": [
+      "combate"
+    ]
+  },
+  {
+    "id": "talento_chi_poderoso",
+    "nome": "Talento (Chi Poderoso)",
+    "pagina": 0,
+    "costKind": "special",
+    "fixed": 15,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "15 pontos/nível",
+    "specialRule": "talento_chi_poderoso",
+    "tags": []
+  },
+  {
+    "id": "talento_equilibrio_interior",
+    "nome": "Talento (Equilíbrio Interior)",
+    "pagina": 48,
+    "costKind": "special",
+    "fixed": 15,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "15 pontos/nível",
+    "specialRule": "talento_equilibrio_interior",
+    "tags": []
+  },
+  {
+    "id": "treinado_por_um_mestre",
+    "nome": "Treinado por um Mestre",
+    "pagina": 48,
+    "costKind": "special",
+    "fixed": 30,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "30 pontos",
+    "specialRule": "treinado_por_um_mestre",
+    "tags": []
+  },
+  {
+    "id": "mestre_de_armas",
+    "nome": "Mestre de Armas",
+    "pagina": 0,
+    "costKind": "special",
+    "fixed": null,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "20-45 pontos (conforme pág. B51)",
+    "specialRule": "mestre_de_armas",
+    "tags": [
+      "combate"
+    ]
+  },
+  {
+    "id": "talento_instintivo",
+    "nome": "Talento Instintivo",
+    "pagina": 49,
+    "costKind": "special",
+    "fixed": 92,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "consulte pág. B92",
+    "specialRule": "talento_instintivo",
+    "tags": []
+  },
+  {
+    "id": "pontos_de_vida_adicionais",
+    "nome": "Pontos de Vida Adicionais",
+    "pagina": 49,
+    "costKind": "special",
+    "fixed": null,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "Variável",
+    "specialRule": "pontos_de_vida_adicionais",
+    "tags": [
+      "fisica"
+    ]
+  },
+  {
+    "id": "familiaridade_com_o_estilo",
+    "nome": "Familiaridade com o Estilo",
+    "pagina": 49,
+    "costKind": "special",
+    "fixed": 1,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "1 ponto",
+    "specialRule": "familiaridade_com_o_estilo",
+    "tags": []
+  },
+  {
+    "id": "qualidades_do_estilo",
+    "nome": "Qualidades do Estilo",
+    "pagina": 0,
+    "costKind": "special",
+    "fixed": 1,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "1 ponto cada",
+    "specialRule": "qualidades_do_estilo",
+    "tags": []
+  },
+  {
+    "id": "vinculo_com_arma",
+    "nome": "Vínculo com Arma",
+    "pagina": 0,
+    "costKind": "special",
+    "fixed": 1,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "1 ponto",
+    "specialRule": "vinculo_com_arma",
+    "tags": [
+      "combate"
+    ]
+  }
+]
