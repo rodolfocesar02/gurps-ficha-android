@@ -1170,33 +1170,27 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val prerequisito = normalizarTexto(definicao.preRequisitoRaw)
         if (prerequisito.isBlank() || prerequisito == "-") return true
 
-        val termoPericia = normalizarTexto(periciaBase.nome)
-        if (termoPericia.isBlank()) return false
-
-        val termosGenericos = listOf(
-            "qualquer pericia",
-            "pericia pre requisito",
-            "outra pericia",
-            "arma de combate corpo a corpo",
-            "desarmado",
-            "apropriada"
-        )
-        if (termosGenericos.any { prerequisito.contains(it) }) {
-            return true
+        val ancoraPericia = extrairAncoraPericiaNoLimite(prerequisito)
+        if (!ancoraPericia.isNullOrBlank()) {
+            val matchAncora = periciaCorrespondeTermo(periciaBase, ancoraPericia)
+            if (matchAncora != null) return matchAncora
         }
 
         val blocoPrincipal = prerequisito.substringBefore(";")
         val termos = blocoPrincipal
             .replace(" ou ", ",")
+            .replace(" e ", ",")
             .split(",")
             .map { it.trim() }
             .filter { it.isNotBlank() }
         if (termos.isEmpty()) return true
 
-        return termos.any { termo ->
-            val termoLimpo = normalizarTexto(termo)
-            termoLimpo.contains(termoPericia) || termoPericia.contains(termoLimpo)
+        val avaliacao = termos
+            .mapNotNull { termo -> periciaCorrespondeTermo(periciaBase, termo) }
+        if (avaliacao.isNotEmpty()) {
+            return avaliacao.any { it }
         }
+        return true
     }
 
     val nivelAptidaoMagica: Int
@@ -1382,6 +1376,180 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .replace(Regex("[^a-z0-9\\s/+_-]"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
+    }
+
+    private fun extrairAncoraPericiaNoLimite(prerequisitoNormalizado: String): String? {
+        val trechoLimite = prerequisitoNormalizado.substringAfter("nao pode exceder", "")
+        if (trechoLimite.isBlank()) return null
+        val semPrefixo = trechoLimite
+            .removePrefix(" o ")
+            .removePrefix(" a ")
+            .removePrefix(" as ")
+            .removePrefix(" os ")
+            .removePrefix(" nivel de ")
+            .removePrefix(" nivel da ")
+            .removePrefix(" nivel do ")
+            .removePrefix(" pericia ")
+            .removePrefix(" pericias ")
+            .trim()
+        val candidata = semPrefixo
+            .substringBefore(" +")
+            .substringBefore(" -")
+            .substringBefore(" baseada")
+            .substringBefore(" ou ")
+            .trim()
+        if (candidata.isBlank()) return null
+        val termosGenericos = listOf(
+            "pre requisito",
+            "pericia de tiro",
+            "pericia com arma",
+            "defesa ativa",
+            "bloquear",
+            "aparar",
+            "st",
+            "dx",
+            "ht",
+            "iq",
+            "per"
+        )
+        if (termosGenericos.any { candidata == it || candidata.startsWith("$it ") }) {
+            return null
+        }
+        return candidata
+    }
+
+    private fun periciaCorrespondeTermo(pericia: PericiaSelecionada, termoRaw: String): Boolean? {
+        val termo = normalizarTexto(termoRaw)
+        if (termo.isBlank()) return null
+        if (termo in setOf("st", "dx", "ht", "iq", "per", "von")) return null
+
+        return when {
+            termo.contains("qualquer pericia") && termo.contains("tiro") -> periciaEhTiro(pericia)
+            termo.contains("qualquer pericia de tiro adequada") -> periciaEhTiro(pericia)
+            termo.contains("qualquer pericia de tiro") -> periciaEhTiro(pericia)
+            termo.contains("arma de longo alcance") -> periciaEhTiro(pericia)
+            termo.contains("qualquer pericia de sacar rapido") -> periciaEhSacarRapido(pericia)
+            termo.contains("agarrar desarmado") -> periciaEhAgarrarDesarmado(pericia)
+            termo.contains("combate desarmado") -> periciaEhDesarmado(pericia)
+            termo.contains("qualquer pericia com arma de esgrima") -> periciaEhArmaEsgrima(pericia)
+            termo.contains("arma de esgrima") -> periciaEhArmaEsgrima(pericia)
+            termo.contains("arma de combate corpo a corpo") -> periciaEhCorpoACorpo(pericia)
+            termo.contains("qualquer pericia com arma") -> periciaEhCorpoACorpo(pericia) || periciaEhTiro(pericia)
+            termo.contains("defesa ativa") -> periciaEhDefesaAtiva(pericia)
+            termo.contains("bloquear ou aparar") -> periciaEhDefesaAtiva(pericia)
+            termo.contains("pericia pre requisito") -> true
+            termo.contains("outra pericia") -> true
+            termo.contains("apropriada") && termo.contains("arma") -> periciaEhCorpoACorpo(pericia) || periciaEhTiro(pericia)
+            else -> periciaBateNomeLiteral(pericia, termo)
+        }
+    }
+
+    private fun periciaBateNomeLiteral(pericia: PericiaSelecionada, termoNormalizado: String): Boolean? {
+        val termosPericia = termosBuscaPericia(pericia)
+        if (termosPericia.isEmpty()) return null
+        if (termoNormalizado.length <= 1) return null
+        val match = termosPericia.any { termoPericia ->
+            termoPericia.contains(termoNormalizado) || termoNormalizado.contains(termoPericia)
+        }
+        return match
+    }
+
+    private fun termosBuscaPericia(pericia: PericiaSelecionada): Set<String> {
+        val base = mutableSetOf<String>()
+        val nome = normalizarTexto(pericia.nome)
+        val especializacao = normalizarTexto(pericia.especializacao)
+        if (nome.isNotBlank()) base.add(nome)
+        if (especializacao.isNotBlank()) base.add(especializacao)
+        if (nome.isNotBlank() && especializacao.isNotBlank()) {
+            base.add("$nome ($especializacao)")
+            base.add("$nome $especializacao")
+        }
+
+        fun addAlias(valor: String, vararg aliases: String) {
+            if (!base.contains(valor)) return
+            aliases.map(::normalizarTexto).filter { it.isNotBlank() }.forEach { base.add(it) }
+        }
+
+        addAlias(normalizarTexto("carate"), "karate")
+        addAlias(normalizarTexto("judo"), "judo")
+        addAlias(normalizarTexto("luta greco romana"), "luta-greco romana", "wrestling")
+        addAlias(normalizarTexto("armas de fogo"), "arma de fogo")
+        addAlias(normalizarTexto("arcos"), "arco")
+        addAlias(normalizarTexto("espadas curtas"), "espada curta")
+        addAlias(normalizarTexto("espadas de lamina larga"), "espada de lamina larga", "espada larga")
+        addAlias(normalizarTexto("maca/machado"), "maca", "machado")
+        addAlias(normalizarTexto("maca/machado de duas maos"), "maca de duas maos", "machado de duas maos")
+        return base
+    }
+
+    private fun periciaEhDesarmado(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        val chaves = listOf("briga", "boxe", "carate", "karate", "judo", "sumo", "luta greco romana")
+        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
+    }
+
+    private fun periciaEhAgarrarDesarmado(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        val chaves = listOf("judo", "sumo", "luta greco romana", "briga")
+        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
+    }
+
+    private fun periciaEhCorpoACorpo(pericia: PericiaSelecionada): Boolean {
+        val idNormalizado = pericia.definicaoId.trim().lowercase()
+        if (PERICIAS_COMBATE.contains(idNormalizado)) return true
+        val termos = termosBuscaPericia(pericia)
+        val chaves = listOf(
+            "adaga",
+            "espada",
+            "maca",
+            "machado",
+            "chicote",
+            "kusari",
+            "lanca",
+            "bastao",
+            "capa",
+            "jitte",
+            "sai",
+            "mangual",
+            "arma de haste",
+            "faca"
+        )
+        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } } || periciaEhDesarmado(pericia)
+    }
+
+    private fun periciaEhArmaEsgrima(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        if (termos.any { it.contains("esgrima") }) return true
+        val ids = setOf("adaga_de_esgrima", "rapieira", "sabre")
+        return pericia.definicaoId.trim().lowercase() in ids
+    }
+
+    private fun periciaEhTiro(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        val chaves = listOf(
+            "armas de fogo",
+            "armas de feixe",
+            "arco",
+            "besta",
+            "funda",
+            "arma de arremesso",
+            "arremessador de lanca",
+            "canhoneiro",
+            "artilharia",
+            "arma de longo alcance"
+        )
+        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
+    }
+
+    private fun periciaEhSacarRapido(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        return termos.any { it.contains("sacar rapido") }
+    }
+
+    private fun periciaEhDefesaAtiva(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        if (termos.any { it.contains("escudo") }) return true
+        return periciaEhCorpoACorpo(pericia) || periciaEhDesarmado(pericia)
     }
 
     companion object {
