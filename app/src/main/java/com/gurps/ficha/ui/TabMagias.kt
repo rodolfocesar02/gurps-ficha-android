@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -61,9 +62,16 @@ fun TabMagias(viewModel: FichaViewModel) {
             )
         } else {
             p.magias.forEachIndexed { index, magia ->
+                // retrieve definition to inspect prerequisites
+                val definicao = viewModel.dataRepository.getMagiaPorId(magia.definicaoId)
+                val failureMsg = definicao?.let { viewModel.prereqFailureForMagia(it) }
+                val hasFailure = failureMsg != null
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors()
+                    colors = CardDefaults.cardColors(),
+                    border = if (hasFailure) BorderStroke(2.dp, MaterialTheme.colorScheme.error)
+                    else CardDefaults.outlinedCardBorder()
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         MagiaItem(
@@ -72,6 +80,14 @@ fun TabMagias(viewModel: FichaViewModel) {
                             onEdit = { editingMagiaIndex = index },
                             onDelete = { viewModel.removerMagia(index) }
                         )
+                        if (failureMsg != null) {
+                            Text(
+                                failureMsg,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
                     }
                 }
             }

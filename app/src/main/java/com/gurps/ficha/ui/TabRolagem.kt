@@ -426,17 +426,19 @@ fun TabRolagem(viewModel: FichaViewModel) {
             target = nivel
         )
     }
-    val opcoesMagia = p.magias.mapIndexed { index, magia ->
+    val opcoesMagia = p.magias.mapIndexedNotNull { index, magia ->
         val definicaoMagia = viewModel.dataRepository.getMagiaPorId(magia.definicaoId)
+        // only include if prereqs satisfied
+        if (definicaoMagia == null || !viewModel.prereqsSatisfied(definicaoMagia)) return@mapIndexedNotNull null
         val nivel = magia.calcularNivel(p, viewModel.nivelAptidaoMagica)
         MagiaRollOption(
             id = "magia_${magia.definicaoId}_$index",
             nome = magia.nome,
             contextLabel = "Magia ${magia.nome}",
             target = nivel,
-            duracao = magia.duracao ?: definicaoMagia?.duracao,
-            energia = magia.energia ?: definicaoMagia?.energia,
-            tempoOperacao = magia.tempoOperacao ?: definicaoMagia?.tempoOperacao
+            duracao = magia.duracao ?: definicaoMagia.duracao,
+            energia = magia.energia ?: definicaoMagia.energia,
+            tempoOperacao = magia.tempoOperacao ?: definicaoMagia.tempoOperacao
         )
     }
     val opcoesTecnica = p.tecnicas.mapIndexed { index, tecnica ->
