@@ -19,6 +19,7 @@ class DataRepository(private val context: Context) {
     private val gson = Gson()
 
     private var _vantagens: List<VantagemDefinicao>? = null
+    private var _vantagensArtesMarciaisIds: Set<String> = emptySet()
     private var _desvantagens: List<DesvantagemDefinicao>? = null
     private var _pericias: List<PericiaDefinicao>? = null
     private var _periciasV2Rules: Map<String, PericiaV2RuleMapItem>? = null
@@ -120,6 +121,10 @@ class DataRepository(private val context: Context) {
                 .mapNotNull { it.asVantagemV3OrNull() }
                 .map { it.toLegacy() }
                 .map { it.normalizada() }
+            _vantagensArtesMarciaisIds = parsed
+                .map { it.id.lowercase() }
+                .filter { it.isNotBlank() }
+                .toSet()
             clearLoadError("vantagens_artes_marciais")
             parsed
         } catch (e: Exception) {
@@ -554,13 +559,15 @@ class DataRepository(private val context: Context) {
     fun filtrarVantagens(
         busca: String = "",
         tipoCusto: TipoCusto? = null,
-        tag: String? = null
+        tag: String? = null,
+        somenteArtesMarciais: Boolean = false
     ): List<VantagemDefinicao> {
         return vantagens.filter { v ->
             val matchBusca = busca.isBlank() || v.nome.contains(busca, ignoreCase = true)
             val matchTipo = tipoCusto == null || v.tipoCusto == tipoCusto
             val matchTag = tag.isNullOrBlank() || v.tags.any { it.equals(tag, ignoreCase = true) }
-            matchBusca && matchTipo && matchTag
+            val matchArtesMarciais = !somenteArtesMarciais || _vantagensArtesMarciaisIds.contains(v.id.lowercase())
+            matchBusca && matchTipo && matchTag && matchArtesMarciais
         }
     }
 
