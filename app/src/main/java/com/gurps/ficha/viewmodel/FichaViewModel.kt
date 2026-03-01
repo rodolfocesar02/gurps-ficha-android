@@ -117,6 +117,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
+    private val tecnicasNomesNormalizados: Set<String>
+        get() = dataRepository.tecnicasCatalogo
+            .asSequence()
+            .map { normalizarTexto(it.nome) }
+            .filter { it.isNotBlank() }
+            .toSet()
     private val configPrefs = application.getSharedPreferences("gurps_config", Context.MODE_PRIVATE)
     private var personagemPendenteLimpezaMagias: Personagem? = null
     private val prefCanalDiscordId = "discord_canal_id"
@@ -1198,7 +1204,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun tecnicaAtendePreRequisito(definicao: TecnicaCatalogoItem, periciaBase: PericiaSelecionada): Boolean {
-        val prerequisito = normalizarTexto(definicao.preRequisitoRaw)
+        val prerequisitoRaw = definicao.preRequisitoRaw
+        val prerequisito = normalizarTexto(prerequisitoRaw)
         if (prerequisito.isBlank() || prerequisito == "-") return true
 
         val ancoraPericia = extrairAncoraPericiaNoLimite(prerequisito)
@@ -1207,7 +1214,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             if (matchAncora != null) return matchAncora
         }
 
-        val blocoPrincipal = prerequisito.substringBefore(";")
+        val blocoPrincipal = normalizarTexto(prerequisitoRaw.substringBefore(";"))
         val termos = blocoPrincipal
             .replace(" ou ", ",")
             .replace(" e ", ",")
@@ -1502,9 +1509,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private fun periciaCorrespondeTermo(pericia: PericiaSelecionada, termoRaw: String): Boolean? {
         val termo = normalizarTexto(termoRaw)
         if (termo.isBlank()) return null
-        if (termo in setOf("st", "dx", "ht", "iq", "per", "von")) return null
+        if (termo in setOf("st", "dx", "ht", "iq", "per", "von", "aparar", "bloquear")) return null
 
         return when {
+            termo in tecnicasNomesNormalizados -> null
+            termo.contains("consulte pag") || termo.contains("consulte pg") -> null
+            termo.startsWith("tecnica ") -> null
+            termo.contains("habitos detestaveis") -> null
+            termo.contains("armas de fogo") && termo.contains("pistola") -> periciaEhArmasFogo(pericia) && periciaEhPistola(pericia)
+            termo.contains("qualquer pericia de combate") -> periciaEhCombate(pericia)
             termo.contains("qualquer pericia") && termo.contains("tiro") -> periciaEhTiro(pericia)
             termo.contains("qualquer pericia de tiro adequada") -> periciaEhTiro(pericia)
             termo.contains("qualquer pericia de tiro") -> periciaEhTiro(pericia)
@@ -1620,6 +1633,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             "arma de longo alcance"
         )
         return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
+    }
+
+    private fun periciaEhArmasFogo(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        return termos.any { it.contains("armas de fogo") || it.contains("arma de fogo") }
+    }
+
+    private fun periciaEhPistola(pericia: PericiaSelecionada): Boolean {
+        val termos = termosBuscaPericia(pericia)
+        return termos.any { it.contains("pistola") }
+    }
+
+    private fun periciaEhCombate(pericia: PericiaSelecionada): Boolean {
+        return periciaEhCorpoACorpo(pericia) || periciaEhTiro(pericia) || periciaEhDefesaAtiva(pericia)
     }
 
     private fun periciaEhSacarRapido(pericia: PericiaSelecionada): Boolean {
