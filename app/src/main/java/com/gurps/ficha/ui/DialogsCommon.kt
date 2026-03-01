@@ -39,7 +39,8 @@ fun MenuDialog(
     onNovaFicha: () -> Unit,
     onSalvar: () -> Unit,
     onCarregar: () -> Unit,
-    onExportar: () -> Unit,
+    onExportarCompativel: () -> Unit,
+    onExportarVersionado: () -> Unit,
     onImportar: () -> Unit
 ) {
     AlertDialog(
@@ -56,8 +57,11 @@ fun MenuDialog(
                 TextButton(onClick = onCarregar, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Refresh, null); Spacer(modifier = Modifier.width(8.dp)); Text("Carregar Ficha")
                 }
-                TextButton(onClick = onExportar, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.Done, null); Spacer(modifier = Modifier.width(8.dp)); Text("Exportar Ficha (JSON)")
+                TextButton(onClick = onExportarCompativel, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Done, null); Spacer(modifier = Modifier.width(8.dp)); Text("Exportar Ficha (JSON Compatível)")
+                }
+                TextButton(onClick = onExportarVersionado, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Done, null); Spacer(modifier = Modifier.width(8.dp)); Text("Exportar Ficha (JSON Versionado)")
                 }
                 TextButton(onClick = onImportar, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Add, null); Spacer(modifier = Modifier.width(8.dp)); Text("Importar Ficha (JSON)")

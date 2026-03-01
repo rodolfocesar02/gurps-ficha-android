@@ -909,12 +909,27 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         mostrarConfirmacaoLimpezaMagias = false
     }
 
+    fun exportarFichaJsonCompativel(): String {
+        return personagem.toJson()
+    }
+
+    fun exportarFichaJsonVersionada(): String {
+        return PersonagemInterop.exportarJson(
+            personagem = personagem,
+            appVersion = BuildConfig.VERSION_NAME,
+            uiVariant = BuildConfig.UI_VARIANT
+        )
+    }
+
     fun importarFichaJson(json: String): String? {
         return try {
-            personagem = Personagem.fromJson(json)
+            val resultado = PersonagemInterop.importarJson(json)
+            personagem = resultado.personagem
             personagemPendenteLimpezaMagias = null
             mostrarConfirmacaoLimpezaMagias = false
-            null
+            resultado.aviso?.let { "Ficha importada com sucesso. $it" }
+        } catch (_: UnsupportedOperationException) {
+            "Versao de arquivo nao suportada por esta versao do app."
         } catch (_: Exception) {
             "Arquivo de ficha invalido ou corrompido."
         }
