@@ -1,0 +1,44 @@
+{
+  "canonical_terms": [
+    {
+      "id": "carate",
+      "canonical": "Caratê",
+      "variants": ["carate", "caraté", "karate", "karatê"]
+    },
+    {
+      "id": "judo",
+      "canonical": "Judô",
+      "variants": ["judo", "judô"]
+    },
+    {
+      "id": "luta_greco_romana",
+      "canonical": "Luta Greco-Romana",
+      "variants": [
+        "luta greco-romana",
+        "luta greco romana",
+        "luta-greco romana",
+        "luta-greco-romana"
+      ]
+    },
+    {
+      "id": "sacar_rapido",
+      "canonical": "Sacar Rápido",
+      "variants": ["sacar rápido", "sacar-rápido", "sacar rapido", "sacar-rapido"]
+    },
+    {
+      "id": "pre_requisito",
+      "canonical": "pré-requisito",
+      "variants": ["pré-requisito", "pre-requisito", "pré requisito", "pre requisito"]
+    },
+    {
+      "id": "pre_definido",
+      "canonical": "pré-definido",
+      "variants": ["pré-definido", "pre-definido", "pré definido", "pre definido"]
+    },
+    {
+      "id": "pericia",
+      "canonical": "perícia",
+      "variants": ["perícia", "pericia"]
+    }
+  ]
+}

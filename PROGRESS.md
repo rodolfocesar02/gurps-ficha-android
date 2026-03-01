@@ -68,6 +68,19 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
     - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
     - `./gradlew.bat :app:installVisualDebug :app:installPracegoDebug --no-daemon`
     - resultado: `BUILD SUCCESSFUL` nas duas variantes e instalacao no emulador ativo.
+  - pacote de saude de dados (associacao textual) iniciado:
+    - novo dicionario de aliases canonicos: `scripts/text_aliases_ptbr.json`;
+    - novo auditor de associacao textual para JSON:
+      - `scripts/validate_text_associations.py`;
+      - varre acentuacao/hifenizacao/variantes de token e detecta mojibake;
+      - gera relatorio estruturado em JSON para revisao e saneamento.
+    - primeiro relatorio gerado:
+      - `scripts/reports/text_association_report.json`;
+      - resumo inicial em `app/src/main/assets`: 18 arquivos analisados, 30 achados de mojibake, 1274 grupos de variantes e 5 conflitos canonicos criticos (carate, judo, luta_greco_romana, sacar_rapido, pre_requisito).
+    - comando recomendado (baseline):
+      - `python scripts/validate_text_associations.py --assets-dir app/src/main/assets --report-out scripts/reports/text_association_report.json`
+    - comando recomendado (bloqueio estrito em CI/local):
+      - `python scripts/validate_text_associations.py --assets-dir app/src/main/assets --report-out scripts/reports/text_association_report.json --strict`
 - Validacao executada nas duas variantes:
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
