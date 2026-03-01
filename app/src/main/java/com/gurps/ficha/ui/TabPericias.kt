@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -25,6 +26,7 @@ private fun BotaoAdicionarPericiaPadrao(texto: String, onClick: () -> Unit, modi
 fun TabPericias(viewModel: FichaViewModel) {
 
     val p = viewModel.personagem
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
 
     var showSelecionarPericia by remember { mutableStateOf(false) }
     var showPericiasSuplementares by remember { mutableStateOf(false) }
@@ -35,35 +37,59 @@ fun TabPericias(viewModel: FichaViewModel) {
 
     StandardTabColumn(contentSpacing = 6.dp) {
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            BotaoAdicionarPericiaPadrao(
-                texto = "Adicionar Perícia",
-                onClick = { showSelecionarPericia = true },
-                modifier = Modifier.weight(1f)
-            )
-            BotaoAdicionarPericiaPadrao(
-                texto = "Criar Perícia",
-                onClick = { showCustomDialog = true },
-                modifier = Modifier.weight(1f)
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            BotaoAdicionarPericiaPadrao(
-                texto = "Adicionar Técnica",
-                onClick = { showSelecionarTecnica = true },
-                modifier = Modifier.weight(1f)
-            )
-            BotaoAdicionarPericiaPadrao(
-                texto = "Perícias Suplementares",
-                onClick = { showPericiasSuplementares = true },
-                modifier = Modifier.weight(1f)
-            )
+        if (isPraCegoVariant) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Adicionar Perícia",
+                    onClick = { showSelecionarPericia = true }
+                )
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Criar Perícia",
+                    onClick = { showCustomDialog = true }
+                )
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Adicionar Técnica",
+                    onClick = { showSelecionarTecnica = true }
+                )
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Perícias Suplementares",
+                    onClick = { showPericiasSuplementares = true }
+                )
+            }
+        } else {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Adicionar Perícia",
+                    onClick = { showSelecionarPericia = true },
+                    modifier = Modifier.weight(1f)
+                )
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Criar Perícia",
+                    onClick = { showCustomDialog = true },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Adicionar Técnica",
+                    onClick = { showSelecionarTecnica = true },
+                    modifier = Modifier.weight(1f)
+                )
+                BotaoAdicionarPericiaPadrao(
+                    texto = "Perícias Suplementares",
+                    onClick = { showPericiasSuplementares = true },
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
 
         if (p.pericias.isEmpty()) {

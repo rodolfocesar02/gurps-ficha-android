@@ -18,6 +18,9 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
   - Resultado: `BUILD SUCCESSFUL`.
+- Ajuste incremental de acessibilidade (PRACEGO):
+  - Aba Pericias com botoes de acao em fluxo linear vertical, largura total e espacamento simetrico;
+  - VISUAL mantido no layout em grade 2x2 para esses botoes.
 - Decisao operacional de catalogos XLSX:
   - manter os JSON atuais do projeto para Armaduras, Escudos, Armas de Fogo, Armas Corpo a Corpo e Vantagens base (sem substituir agora);
   - focar proximo lote nos novos arquivos de Pericias/Tecnicas (Artes Marciais e Gun Fu).
