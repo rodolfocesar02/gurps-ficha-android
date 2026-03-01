@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.CombatRules
+import java.text.Normalizer
 
 /**
  * Modelo de dados para a Ficha de Personagem GURPS 4a Edicao
@@ -406,8 +407,27 @@ data class TecnicaSelecionada(
     }
 
     fun calcularNivel(personagem: Personagem): Int? {
-        val nivelPericiaBase = encontrarPericiaBase(personagem)?.calcularNivel(personagem) ?: return null
-        return nivelPericiaBase + preDefinidoModificador + nivelRelativoPredefinido
+        val periciaBase = encontrarPericiaBase(personagem) ?: return null
+        val nhPericiaBase = periciaBase.calcularNivel(personagem)
+        val preDefinidoNormalizado = normalizarPredefinido(preDefinidoRaw)
+        val basePreDefinido = when {
+            preDefinidoNormalizado.contains("aparar") -> CombatRules.calcularAparaBase(nhPericiaBase)
+            preDefinidoNormalizado.contains("bloquear") -> CombatRules.calcularBloqueioBase(nhPericiaBase)
+            preDefinidoNormalizado.contains("esquiva") -> personagem.esquiva
+            else -> nhPericiaBase
+        }
+        return basePreDefinido + preDefinidoModificador + nivelRelativoPredefinido
+    }
+
+    private fun normalizarPredefinido(valor: String): String {
+        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace("-", " ")
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 }
 

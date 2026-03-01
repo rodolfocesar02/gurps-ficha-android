@@ -41,6 +41,21 @@ data class RollDispatchStatus(
     val detalhe: String? = null
 )
 
+enum class TecnicaLimiteKind {
+    NENHUM,
+    EXPLICITO_RELATIVO,
+    PERICIA_BASE,
+    PREDEFINIDO_APARAR,
+    PREDEFINIDO_BLOQUEAR,
+    METADE_PENALIDADE
+}
+
+data class TecnicaRegraPerfil(
+    val limiteKind: TecnicaLimiteKind,
+    val limiteRelativo: Int?,
+    val preRequisitoExibicao: String
+)
+
 @OptIn(FlowPreview::class)
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val autoSaveRecuperacaoNome = "_autosave_recuperacao"
@@ -1162,8 +1177,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun limiteMaximoTecnica(definicao: TecnicaCatalogoItem): Int? {
-        val predefMod = dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
-        return dataRepository.extrairLimiteMaximoRelativo(definicao.preRequisitoRaw, predefMod)
+        return regraPerfilTecnica(definicao).limiteRelativo
+    }
+
+    fun preRequisitoExibicaoTecnica(definicao: TecnicaCatalogoItem): String {
+        return regraPerfilTecnica(definicao).preRequisitoExibicao
+    }
+
+    fun calcularNivelTecnicaPreview(
+        definicao: TecnicaCatalogoItem,
+        periciaBase: PericiaSelecionada,
+        nivelRelativoPredefinido: Int
+    ): Int? {
+        val tecnica = dataRepository.criarTecnicaSelecionada(
+            definicao = definicao,
+            periciaBase = periciaBase,
+            nivelRelativoPredefinido = nivelRelativoPredefinido
+        )
+        return tecnica.calcularNivel(personagem)
     }
 
     fun tecnicaAtendePreRequisito(definicao: TecnicaCatalogoItem, periciaBase: PericiaSelecionada): Boolean {
@@ -1373,6 +1404,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .replace(Regex("\\p{M}+"), "")
         return semAcento
             .lowercase()
+            .replace("-", " ")
             .replace(Regex("[^a-z0-9\\s/+_-]"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
@@ -1382,15 +1414,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val trechoLimite = prerequisitoNormalizado.substringAfter("nao pode exceder", "")
         if (trechoLimite.isBlank()) return null
         val semPrefixo = trechoLimite
-            .removePrefix(" o ")
-            .removePrefix(" a ")
-            .removePrefix(" as ")
-            .removePrefix(" os ")
-            .removePrefix(" nivel de ")
-            .removePrefix(" nivel da ")
-            .removePrefix(" nivel do ")
-            .removePrefix(" pericia ")
-            .removePrefix(" pericias ")
+            .trim()
+            .replace(Regex("^(o|a|os|as)\\s+"), "")
+            .replace(Regex("^nivel\\s+de\\s+"), "")
+            .replace(Regex("^nivel\\s+da\\s+"), "")
+            .replace(Regex("^nivel\\s+do\\s+"), "")
+            .replace(Regex("^pericias?\\s+"), "")
             .trim()
         val candidata = semPrefixo
             .substringBefore(" +")
@@ -1401,6 +1430,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (candidata.isBlank()) return null
         val termosGenericos = listOf(
             "pre requisito",
+            "pre requisito aparar",
+            "pre requisito bloquear",
             "pericia de tiro",
             "pericia com arma",
             "defesa ativa",
@@ -1416,6 +1447,56 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             return null
         }
         return candidata
+    }
+
+    private fun regraPerfilTecnica(definicao: TecnicaCatalogoItem): TecnicaRegraPerfil {
+        val prerequisitoRaw = definicao.preRequisitoRaw
+        val prerequisito = normalizarTexto(prerequisitoRaw)
+        val predefMod = dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
+        val bonusExplicito = Regex("([+-]\\d+)").find(prerequisito)?.groupValues?.getOrNull(1)?.toIntOrNull()
+
+        val kind = when {
+            prerequisito.contains("metade da penalidade") -> TecnicaLimiteKind.METADE_PENALIDADE
+            bonusExplicito != null && prerequisito.contains("nao pode exceder") -> TecnicaLimiteKind.EXPLICITO_RELATIVO
+            prerequisito.contains("nao pode exceder") && prerequisito.contains("pre requisito aparar") -> TecnicaLimiteKind.PREDEFINIDO_APARAR
+            prerequisito.contains("nao pode exceder") && prerequisito.contains("pre requisito bloquear") -> TecnicaLimiteKind.PREDEFINIDO_BLOQUEAR
+            prerequisito.contains("nao pode exceder") -> TecnicaLimiteKind.PERICIA_BASE
+            else -> TecnicaLimiteKind.NENHUM
+        }
+
+        val limiteRelativo = when (kind) {
+            TecnicaLimiteKind.NENHUM -> null
+            TecnicaLimiteKind.METADE_PENALIDADE -> {
+                val penalidade = kotlin.math.abs(predefMod)
+                if (penalidade > 0) penalidade / 2 else null
+            }
+            TecnicaLimiteKind.EXPLICITO_RELATIVO -> bonusExplicito
+            TecnicaLimiteKind.PREDEFINIDO_APARAR,
+            TecnicaLimiteKind.PREDEFINIDO_BLOQUEAR,
+            TecnicaLimiteKind.PERICIA_BASE -> kotlin.math.abs(predefMod).takeIf { it > 0 } ?: 0
+        }
+
+        val preReqExibicao = when (kind) {
+            TecnicaLimiteKind.PREDEFINIDO_APARAR -> {
+                prerequisitoRaw.replace(
+                    Regex("(?i)não\\s+pode\\s+exceder\\s+o\\s+pré-requisito\\s+Aparar"),
+                    "não pode exceder o pré-definido Aparar"
+                )
+            }
+            TecnicaLimiteKind.PREDEFINIDO_BLOQUEAR -> {
+                prerequisitoRaw.replace(
+                    Regex("(?i)não\\s+pode\\s+exceder\\s+o\\s+pré-requisito\\s+Bloquear"),
+                    "não pode exceder o pré-definido Bloquear"
+                )
+            }
+            else -> prerequisitoRaw
+        }
+
+        return TecnicaRegraPerfil(
+            limiteKind = kind,
+            limiteRelativo = limiteRelativo,
+            preRequisitoExibicao = preReqExibicao
+        )
     }
 
     private fun periciaCorrespondeTermo(pericia: PericiaSelecionada, termoRaw: String): Boolean? {

@@ -814,7 +814,9 @@ class DataRepository(private val context: Context) {
         }
         if (!normalizado.contains("nao pode exceder")) return null
         val bonus = Regex("([+-]\\d+)").find(normalizado)?.groupValues?.getOrNull(1)?.toIntOrNull()
-        return bonus ?: 0
+        if (bonus != null) return bonus
+        val relativoAteBase = kotlin.math.abs(preDefinidoModificador)
+        return relativoAteBase.takeIf { it > 0 } ?: 0
     }
 
     companion object {

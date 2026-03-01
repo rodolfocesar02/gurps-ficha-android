@@ -142,6 +142,7 @@ fun ConfigurarTecnicaDialog(
     var periciaSelecionadaId by remember { mutableStateOf<String?>(null) }
     var nivelRelativo by remember { mutableStateOf(0) }
     var erro by remember { mutableStateOf<String?>(null) }
+    val preRequisitoExibicao = viewModel.preRequisitoExibicaoTecnica(definicao)
 
     val periciaBase = pericias.firstOrNull { pericia ->
         periciaTecnicaKey(pericia) == periciaSelecionadaId
@@ -153,8 +154,9 @@ fun ConfigurarTecnicaDialog(
 
     val predefModificador = viewModel.dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
     val custo = viewModel.custoTecnica(definicao, nivelRelativo)
-    val nivelPericia = periciaBase?.calcularNivel(viewModel.personagem)
-    val nhTecnica = if (nivelPericia != null) nivelPericia + predefModificador + nivelRelativo else null
+    val nhTecnica = periciaBase?.let {
+        viewModel.calcularNivelTecnicaPreview(definicao, it, nivelRelativo)
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -170,8 +172,8 @@ fun ConfigurarTecnicaDialog(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                if (definicao.preRequisitoRaw.isNotBlank()) {
-                    Text("Pré-requisito: ${definicao.preRequisitoRaw}", style = MaterialTheme.typography.bodySmall)
+                if (preRequisitoExibicao.isNotBlank()) {
+                    Text("Pré-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
                 }
                 if (definicao.preDefinidoRaw.isNotBlank()) {
                     Text("Pré-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
@@ -287,7 +289,14 @@ fun EditarTecnicaDialog(
     if (nivelRelativo > nivelMaximo) nivelRelativo = nivelMaximo
     val dificuldadeDificil = tecnica.dificuldadeRaw.lowercase().contains("dif")
     val custo = if (nivelRelativo == 0) 0 else if (dificuldadeDificil) nivelRelativo + 1 else nivelRelativo
-    val nhTecnica = periciaBase?.calcularNivel(personagem)?.plus(predefModificador + nivelRelativo)
+    val nhTecnica = periciaBase?.let {
+        tecnica.copy(
+            periciaBaseDefinicaoId = it.definicaoId,
+            periciaBaseNome = it.nome,
+            periciaBaseEspecializacao = it.especializacao,
+            nivelRelativoPredefinido = nivelRelativo
+        ).calcularNivel(personagem)
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
