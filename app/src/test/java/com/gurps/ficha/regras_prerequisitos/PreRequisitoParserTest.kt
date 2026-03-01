@@ -49,4 +49,26 @@ class PreRequisitoParserTest {
         assertEquals(1, res.tipos.size)
         assertTrue(res.tipos[0] is PreRequisitoType.MagiaConhecida)
     }
+
+    @Test
+    fun `checkSimples validates character attributes`() {
+        val char = mapOf<String, Any>(
+            "IQ" to 13,
+            "aptidao_magica" to 2,
+            "magias_fogo" to 1,
+            "magias_conhecidas" to setOf("Magia Exemplo")
+        )
+        val prereqs = PreRequisitoParser.parse("IQ 12+, AM2, 1 mágicas de Fogo, Magia Exemplo").tipos
+        val report = PreRequisitoChecker.checkSimples(char, prereqs)
+        assertEquals("todos requisitos atendidos", report)
+
+        val badChar = mapOf<String, Any>(
+            "IQ" to 10,
+            "aptidao_magica" to 1,
+            "magias_fogo" to 0,
+            "magias_conhecidas" to emptySet<String>()
+        )
+        val report2 = PreRequisitoChecker.checkSimples(badChar, prereqs)
+        assertTrue(report2.contains("faltando"))
+    }
 }
