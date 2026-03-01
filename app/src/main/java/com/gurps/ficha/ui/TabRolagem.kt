@@ -75,6 +75,7 @@ private enum class TipoTeste(val label: String) {
     ATRIBUTO("Atributo"),
     ATAQUE("Ataque"),
     PERICIA("Pericia"),
+    TECNICA("Tecnica"),
     MAGIA("Magia"),
     DEFESA("Defesa"),
     LIVRE("Livre")
@@ -117,6 +118,14 @@ private data class MagiaRollOption(
     val duracao: String?,
     val energia: String?,
     val tempoOperacao: String?
+)
+
+private data class TecnicaRollOption(
+    val id: String,
+    val nome: String,
+    val periciaBaseNome: String,
+    val contextLabel: String,
+    val target: Int?
 )
 
 private data class ParsedDamage(
@@ -331,6 +340,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
     val defesasPorTipo = viewModel.defesasAtivasVisiveis.associateBy { it.type }
     var showPericiasDialog by remember { mutableStateOf(false) }
+    var showTecnicasDialog by remember { mutableStateOf(false) }
     var showMagiasDialog by remember { mutableStateOf(false) }
     var showRolagemPersonalizadaDialog by remember { mutableStateOf(false) }
     var showMagiaAlmaDialog by remember { mutableStateOf(false) }
@@ -350,6 +360,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var dadosPersonalizadosModificadorInput by remember { mutableStateOf("0") }
     var ultimoUsoRolagemPersonalizadaMs by remember { mutableStateOf<Long?>(null) }
     val modificadoresPericia = remember { mutableStateMapOf<String, Int>() }
+    val modificadoresTecnica = remember { mutableStateMapOf<String, Int>() }
     val modificadoresMagia = remember { mutableStateMapOf<String, Int>() }
     val horizontalPadding = when {
         isTinyScreen -> 6.dp
@@ -428,6 +439,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
             tempoOperacao = magia.tempoOperacao ?: definicaoMagia?.tempoOperacao
         )
     }
+    val opcoesTecnica = p.tecnicas.mapIndexed { index, tecnica ->
+        TecnicaRollOption(
+            id = "tecnica_${tecnica.definicaoId}_$index",
+            nome = tecnica.nome,
+            periciaBaseNome = tecnica.periciaBaseNome,
+            contextLabel = "Tecnica ${tecnica.nome}",
+            target = tecnica.calcularNivel(p)
+        )
+    }
     val nivelMagiaDaAlma = 10 + viewModel.nivelAptidaoAstral
     val opcoesAtaque = basePericiasAtaque.mapIndexed { index, pericia ->
         val nivel = pericia.calcularNivel(p)
@@ -496,6 +516,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
     }
+    LaunchedEffect(opcoesTecnica) {
+        val ids = opcoesTecnica.map { it.id }.toSet()
+        modificadoresTecnica.keys.toList().forEach { id ->
+            if (id !in ids) modificadoresTecnica.remove(id)
+        }
+        opcoesTecnica.forEach { tecnica ->
+            if (modificadoresTecnica[tecnica.id] == null) {
+                modificadoresTecnica[tecnica.id] = 0
+            }
+        }
+    }
     LaunchedEffect(pvAtualRolagem) {
         pvAtualInput = pvAtualRolagem.toString()
     }
@@ -526,9 +557,19 @@ fun TabRolagem(viewModel: FichaViewModel) {
         mod: Int
     ) {
         val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val alvoTexto = alvo?.toString() ?: "-"
-        val margemTexto = if (resultado.alvo != null) resultado.margem.toString() else "-"
-        val linha = "$hora | $tipoLabel ($contextoLabel) | alvo $alvoTexto | mod $mod | total ${resultado.total} | ${resultado.tipoResultado} | margem $margemTexto"
+        val dadosTexto = resultado.dadosIndividuais.joinToString(" ")
+        val resultadoTexto = if (alvo != null) {
+            val margemTexto = if (resultado.margem >= 0) "+${resultado.margem}" else "${resultado.margem}"
+            "${resultado.tipoResultado.name.replace("_", " ")} $margemTexto"
+        } else {
+            resultado.total.toString()
+        }
+        val linha = """
+            $hora | ${payload.character}
+            $tipoLabel ($contextoLabel)
+            Dados: $dadosTexto = ${resultado.total}
+            Resultado: $resultadoTexto
+        """.trimIndent()
         historico.add(
             0,
             HistoricoRolagemItem(
@@ -581,7 +622,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val parsed = parseDamageExpression(danoExpr)
         val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         if (parsed == null) {
-            val linha = "$hora | Dano ($contextoLabel) | expressao nao rolavel: $danoExpr"
+            val linha = """
+                $hora | ${p.nome.ifBlank { "Personagem" }}
+                Dano ($contextoLabel)
+                Dados: -
+                Resultado: expressao nao rolavel ($danoExpr)
+            """.trimIndent()
             val payload = DiscordRollPayload(
                 character = p.nome.ifBlank { "Personagem" },
                 testType = "Dano",
@@ -617,8 +663,18 @@ fun TabRolagem(viewModel: FichaViewModel) {
             parsed.modifier
         }
         val total = soma + modEfetivo
-        val sufixo = if (parsed.suffix.isBlank()) "" else " ${parsed.suffix}"
-        val linha = "$hora | Dano ($contextoLabel) | expr $danoExpr | dados ${dados.joinToString(prefix = "[", postfix = "]")} | total $total$sufixo"
+        val dadosTexto = dados.joinToString(" ")
+        val resultadoTexto = buildString {
+            append(total)
+            if (parsed.suffix.isNotBlank()) append(" ${parsed.suffix}")
+            if (modEfetivo != 0) append(" (mod ${if (modEfetivo > 0) "+$modEfetivo" else "$modEfetivo"})")
+        }
+        val linha = """
+            $hora | ${p.nome.ifBlank { "Personagem" }}
+            Dano ($contextoLabel)
+            Dados: $dadosTexto = $total
+            Resultado: $resultadoTexto
+        """.trimIndent()
         val payload = DiscordRollPayload(
             character = p.nome.ifBlank { "Personagem" },
             testType = "Dano",
@@ -666,7 +722,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
             if (modEfetivo < 0) append(modEfetivo)
         }
         val hora = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val linha = "$hora | Livre ($contextoLabel) | expr $expr | dados ${dados.joinToString(prefix = "[", postfix = "]")} | total $total"
+        val linha = """
+            $hora | ${p.nome.ifBlank { "Personagem" }}
+            Livre ($contextoLabel)
+            Dados: ${dados.joinToString(" ")} = $total
+            Resultado: $total ($expr)
+        """.trimIndent()
         val payload = DiscordRollPayload(
             character = p.nome.ifBlank { "Personagem" },
             testType = "Livre",
@@ -1644,6 +1705,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
             )
         }
 
+        if (opcoesTecnica.isNotEmpty()) {
+            Button(
+                onClick = { showTecnicasDialog = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    "Tecnicas",
+                    style = if (isVerySmallScreen) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+                    maxLines = 1
+                )
+            }
+        }
+
         if (viewModel.temAptidaoMagica) {
             Button(
                 onClick = { showMagiasDialog = true },
@@ -2308,6 +2385,162 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
+        if (showTecnicasDialog) {
+            Dialog(
+                onDismissRequest = { showTecnicasDialog = false },
+                properties = DialogProperties(usePlatformDefaultWidth = false)
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(0.dp),
+                    shape = RoundedCornerShape(0.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            "Tecnicas",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
+                        if (opcoesTecnica.isEmpty()) {
+                            Text(
+                                "Sem tecnicas configuradas na aba Tecnicas.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        } else {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .verticalScroll(rememberScrollState()),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                opcoesTecnica.forEach { tecnica ->
+                                    val modTecnica = if (isPraCegoVariant) 0 else (modificadoresTecnica[tecnica.id] ?: 0)
+                                    Card(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
+                                            verticalArrangement = Arrangement.spacedBy(1.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Column(
+                                                    modifier = Modifier.weight(2f),
+                                                    horizontalAlignment = Alignment.Start,
+                                                    verticalArrangement = Arrangement.spacedBy(1.dp)
+                                                ) {
+                                                    Text(
+                                                        tecnica.nome,
+                                                        style = defenseNumberStyle,
+                                                        fontWeight = FontWeight.SemiBold,
+                                                        modifier = Modifier.fillMaxWidth(),
+                                                        textAlign = TextAlign.Start,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                    if (tecnica.periciaBaseNome.isNotBlank()) {
+                                                        Text(
+                                                            tecnica.periciaBaseNome,
+                                                            style = compactLabelStyle,
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            textAlign = TextAlign.Start,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis
+                                                        )
+                                                    }
+                                                }
+                                                Text(
+                                                    "NH ${tecnica.target ?: "-"}",
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .then(
+                                                            if (!isPraCegoVariant && tecnica.target != null) {
+                                                                Modifier.pointerInput(tecnica.id, modTecnica) {
+                                                                    var dragAcumulado = 0f
+                                                                    val passoPx = 20f
+                                                                    detectVerticalDragGestures(
+                                                                        onVerticalDrag = { change, dragAmount ->
+                                                                            change.consume()
+                                                                            dragAcumulado += dragAmount
+                                                                            while (abs(dragAcumulado) >= passoPx) {
+                                                                                val atual = modificadoresTecnica[tecnica.id] ?: 0
+                                                                                if (dragAcumulado < 0f) {
+                                                                                    modificadoresTecnica[tecnica.id] = (atual + 1).coerceIn(-20, 20)
+                                                                                    dragAcumulado += passoPx
+                                                                                } else {
+                                                                                    modificadoresTecnica[tecnica.id] = (atual - 1).coerceIn(-20, 20)
+                                                                                    dragAcumulado -= passoPx
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    )
+                                                                }
+                                                            } else {
+                                                                Modifier
+                                                            }
+                                                        )
+                                                        .semantics {
+                                                            contentDescription = if (tecnica.target == null) {
+                                                                "Tecnica ${tecnica.nome} sem nivel disponivel"
+                                                            } else {
+                                                                "Rolar tecnica ${tecnica.nome}"
+                                                            }
+                                                        }
+                                                        .clickable(enabled = tecnica.target != null) {
+                                                            executarRolagem(
+                                                                tipo = TipoTeste.TECNICA,
+                                                                contextoLabel = tecnica.contextLabel,
+                                                                alvo = tecnica.target,
+                                                                mod = modTecnica
+                                                            )
+                                                            showTecnicasDialog = false
+                                                        },
+                                                    style = defenseNumberStyle,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    textAlign = TextAlign.End,
+                                                    maxLines = 1
+                                                )
+                                            }
+                                            if (!isPraCegoVariant && modTecnica != 0 && tecnica.target != null) {
+                                                Text(
+                                                    "mod ${if (modTecnica >= 0) "+$modTecnica" else "$modTecnica"}",
+                                                    style = compactLabelStyle,
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.End,
+                                                    maxLines = 1
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(onClick = { showTecnicasDialog = false }) {
+                                Text("Fechar")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         if (showEnergiaManualDialog && magiaPendenteEnergia != null) {
             val magiaEnergia = magiaPendenteEnergia!!
             AlertDialog(
@@ -2472,11 +2705,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 )
             } else {
                 historico.forEachIndexed { index, item ->
-                    val statusLabel = item.statusEnvio?.let { status ->
-                        " | envio: $status"
-                    }.orEmpty()
                     Text(
-                        "${item.texto}$statusLabel",
+                        item.texto,
                         style = MaterialTheme.typography.labelSmall,
                         color = if (item.statusEnvio == "erro") {
                             MaterialTheme.colorScheme.error
@@ -2484,6 +2714,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             MaterialTheme.colorScheme.onSurface
                         }
                     )
+                    item.statusEnvio?.let { status ->
+                        Text(
+                            "envio: $status",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (status == "erro") MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                     if (item.statusEnvio == "erro" && !item.detalheErro.isNullOrBlank()) {
                         Text(
                             "detalhe: ${item.detalheErro}",
