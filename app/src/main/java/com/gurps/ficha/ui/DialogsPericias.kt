@@ -285,6 +285,13 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
         title = { Text(definicao.nome) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+                TextButton(
+                    onClick = { mostrarDescricao = true },
+                    modifier = Modifier.semantics {
+                        contentDescription = "Abrir descrição da perícia ${definicao.nome}"
+                    }
+                ) { Text("Descrição: ${definicao.nome}") }
+
                 if (definicao.exigeEspecializacao) {
                     Text("Esta perícia exige especialização!", color = MaterialTheme.colorScheme.error)
                     OutlinedTextField(value = especializacao, onValueChange = {
@@ -323,12 +330,6 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                 } else {
                     Text("Dificuldade: ${dificuldadeEscolhida.nomeCompleto}", style = MaterialTheme.typography.bodyMedium)
                 }
-                TextButton(
-                    onClick = { mostrarDescricao = true },
-                    modifier = Modifier.semantics {
-                        contentDescription = "Abrir descrição da perícia ${definicao.nome}"
-                    }
-                ) { Text("Descrição: ${definicao.nome}") }
 
                 Divider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)

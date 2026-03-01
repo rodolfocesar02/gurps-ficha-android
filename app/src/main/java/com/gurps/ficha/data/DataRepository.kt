@@ -21,6 +21,7 @@ class DataRepository(private val context: Context) {
     private var _vantagens: List<VantagemDefinicao>? = null
     private var _desvantagens: List<DesvantagemDefinicao>? = null
     private var _pericias: List<PericiaDefinicao>? = null
+    private var _periciasV2Rules: Map<String, PericiaV2RuleMapItem>? = null
     private var _periciasSuplementares: List<PericiaSuplementarItem>? = null
     private var _magias: List<MagiaDefinicao>? = null
     private var _tecnicasCatalogo: List<TecnicaCatalogoItem>? = null
@@ -37,6 +38,9 @@ class DataRepository(private val context: Context) {
 
     val pericias: List<PericiaDefinicao>
         get() = _pericias ?: carregarPericias().also { _pericias = it }
+
+    val periciasV2Rules: Map<String, PericiaV2RuleMapItem>
+        get() = _periciasV2Rules ?: carregarPericiasV2Rules().also { _periciasV2Rules = it }
 
     val periciasSuplementares: List<PericiaSuplementarItem>
         get() = _periciasSuplementares ?: carregarPericiasSuplementares().also { _periciasSuplementares = it }
@@ -154,12 +158,123 @@ class DataRepository(private val context: Context) {
             val type = object : TypeToken<List<PericiaDefinicao>>() {}.type
             val parsed = (gson.fromJson<List<PericiaDefinicao>>(json, type) ?: emptyList())
                 .map { it.normalizada() }
+                .map { aplicarRegraPericiaV2(it, periciasV2Rules[it.id]) }
             clearLoadError("pericias")
             parsed
         } catch (e: Exception) {
             registerLoadError("pericias", e)
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    private fun carregarPericiasV2Rules(): Map<String, PericiaV2RuleMapItem> {
+        return try {
+            val json = context.assets.open("pericias_v2_rules_map.json")
+                .bufferedReader()
+                .use { it.readText() }
+            val root = JsonParser.parseString(json)
+            if (!root.isJsonObject) return emptyMap()
+            val items = root.asJsonObject.array("items") ?: return emptyMap()
+            val parsed = items.mapNotNull { el ->
+                if (!el.isJsonObject) return@mapNotNull null
+                val obj = el.asJsonObject
+                val id = obj.string("id").orEmpty().sanitized()
+                if (id.isBlank()) return@mapNotNull null
+                val tipoObj = obj.obj("tipo")
+                val preReqObj = obj.obj("preRequisito")
+                val predefObj = obj.obj("preDefinido")
+
+                val tipoRegra = PericiaV2TipoRegra(
+                    attributeMode = tipoObj?.string("attributeMode").orEmpty().sanitized(default = "fixed"),
+                    attributeOptions = tipoObj?.array("attributeOptions")
+                        ?.mapNotNull { it.asStringOrNull()?.sanitized() }
+                        ?.filter { it.isNotBlank() }
+                        .orEmpty(),
+                    difficultyMode = tipoObj?.string("difficultyMode").orEmpty().sanitized(default = "fixed"),
+                    difficulty = tipoObj?.string("difficulty")?.sanitized()
+                )
+
+                val andGroups = preReqObj
+                    ?.obj("logic")
+                    ?.array("and")
+                    ?.mapNotNull { andEl ->
+                        if (!andEl.isJsonObject) return@mapNotNull null
+                        val orArray = andEl.asJsonObject.array("or") ?: return@mapNotNull null
+                        val conds = orArray.mapNotNull { tokenEl ->
+                            if (!tokenEl.isJsonObject) return@mapNotNull null
+                            val tokenObj = tokenEl.asJsonObject
+                            val tokenType = tokenObj.string("type").orEmpty().sanitized()
+                            when (tokenType) {
+                                "required_advantage" -> {
+                                    val value = (tokenObj.string("catalogMatch")
+                                        ?: tokenObj.string("value"))
+                                        .orEmpty()
+                                        .sanitized()
+                                    if (value.isBlank()) null else PericiaV2CondicaoPreRequisito(
+                                        type = tokenType,
+                                        value = value
+                                    )
+                                }
+                                "required_skill_level" -> {
+                                    val value = tokenObj.string("value").orEmpty().sanitized()
+                                    val minLevel = tokenObj.int("minLevel")
+                                    if (value.isBlank() || minLevel == null) null
+                                    else PericiaV2CondicaoPreRequisito(
+                                        type = tokenType,
+                                        value = value,
+                                        minLevel = minLevel
+                                    )
+                                }
+                                else -> null
+                            }
+                        }.filter { it.value.isNotBlank() }
+                        conds.takeIf { it.isNotEmpty() }
+                    }
+                    .orEmpty()
+
+                val parsedPredef = predefObj
+                    ?.array("parsed")
+                    ?.mapNotNull { predefEl ->
+                        if (!predefEl.isJsonObject) return@mapNotNull null
+                        val predef = predefEl.asJsonObject
+                        PericiaV2PreDefinidoEntrada(
+                            type = predef.string("type").orEmpty().sanitized(),
+                            base = predef.string("base").orEmpty().sanitized(),
+                            modifier = predef.int("modifier") ?: 0
+                        )
+                    }
+                    .orEmpty()
+
+                val regra = PericiaV2RuleMapItem(
+                    id = id,
+                    nome = obj.string("nome").orEmpty().sanitized(),
+                    tipo = tipoRegra,
+                    preRequisito = PericiaV2PreRequisitoRegra(
+                        raw = preReqObj?.string("raw").orEmpty().sanitized(),
+                        allowWithoutPrerequisite = preReqObj?.bool("allowWithoutPrerequisite") ?: true,
+                        andGroups = andGroups
+                    ),
+                    preDefinido = PericiaV2PreDefinidoRegra(
+                        raw = predefObj?.string("raw").orEmpty().sanitized(),
+                        onZeroPoints = predefObj?.string("onZeroPoints").orEmpty().sanitized(),
+                        parsed = parsedPredef
+                    ),
+                    descricao = obj.string("descricao").orEmpty().sanitized(),
+                    modificadoresRaw = obj
+                        .obj("modificadores")
+                        ?.string("raw")
+                        .orEmpty()
+                        .sanitized()
+                )
+                id to regra
+            }.toMap()
+
+            clearLoadError("pericias_v2_rules_map")
+            parsed
+        } catch (e: Exception) {
+            registerLoadError("pericias_v2_rules_map", e)
+            emptyMap()
         }
     }
 
@@ -721,6 +836,23 @@ class DataRepository(private val context: Context) {
         )
     }
 
+    fun validarPreRequisitosPericia(definicao: PericiaDefinicao, personagem: Personagem): String? {
+        val regra = periciasV2Rules[definicao.id] ?: return null
+        val andGroups = regra.preRequisito.andGroups
+        if (andGroups.isEmpty() || regra.preRequisito.allowWithoutPrerequisite) return null
+
+        val gruposFalhos = andGroups.filter { grupo ->
+            grupo.none { condicao -> atendeCondicaoPreReqPericia(condicao, personagem) }
+        }
+        if (gruposFalhos.isEmpty()) return null
+
+        return regra.preRequisito.raw
+            .takeIf { it.isNotBlank() }
+            ?: "Pré-requisito não atendido."
+    }
+
+    fun regraPericiaV2(id: String): PericiaV2RuleMapItem? = periciasV2Rules[id]
+
     fun criarTecnicaSelecionada(
         definicao: TecnicaCatalogoItem,
         periciaBase: PericiaSelecionada,
@@ -817,6 +949,85 @@ class DataRepository(private val context: Context) {
         if (bonus != null) return bonus
         val relativoAteBase = kotlin.math.abs(preDefinidoModificador)
         return relativoAteBase.takeIf { it > 0 } ?: 0
+    }
+
+    private fun aplicarRegraPericiaV2(
+        definicao: PericiaDefinicao,
+        regra: PericiaV2RuleMapItem?
+    ): PericiaDefinicao {
+        if (regra == null) return definicao
+
+        val atributoMode = regra.tipo.attributeMode.lowercase()
+        val dificuldadeMode = regra.tipo.difficultyMode.lowercase()
+
+        val atributosAjustados = when {
+            atributoMode == "choice" && regra.tipo.attributeOptions.isNotEmpty() -> regra.tipo.attributeOptions
+            definicao.atributosPossiveis != null && definicao.atributosPossiveis.isNotEmpty() -> definicao.atributosPossiveis
+            else -> listOf(definicao.atributoBase)
+        }.map { it.sanitized(default = "IQ") }
+            .filter { it.isNotBlank() }
+            .distinct()
+
+        val atributoBaseAjustado = when {
+            definicao.atributoBase.isNotBlank() -> definicao.atributoBase
+            atributosAjustados.isNotEmpty() -> atributosAjustados.first()
+            else -> "IQ"
+        }
+
+        val dificuldadeAjustada = when {
+            dificuldadeMode == "fixed" && !regra.tipo.difficulty.isNullOrBlank() -> regra.tipo.difficulty
+            else -> definicao.dificuldadeFixa
+        }?.sanitized(default = "M")
+
+        return definicao.copy(
+            atributoBase = atributoBaseAjustado.sanitized(default = "IQ"),
+            atributosPossiveis = atributosAjustados.takeIf { it.size > 1 },
+            atributoEscolhaObrigatoria = atributosAjustados.size > 1,
+            dificuldadeFixa = dificuldadeAjustada,
+            dificuldadeVariavel = dificuldadeMode == "variable"
+        )
+    }
+
+    private fun atendeCondicaoPreReqPericia(
+        condicao: PericiaV2CondicaoPreRequisito,
+        personagem: Personagem
+    ): Boolean {
+        return when (condicao.type.lowercase()) {
+            "required_advantage" -> personagem.vantagens.any { vantagem ->
+                val alvo = normalizarComparacao(condicao.value)
+                val nome = normalizarComparacao(vantagem.nome)
+                val id = normalizarComparacao(vantagem.definicaoId)
+                nome.contains(alvo) || id.contains(alvo)
+            }
+            "required_skill_level" -> {
+                val min = condicao.minLevel ?: return false
+                personagem.pericias.any { pericia ->
+                    periciaCorrespondeNome(condicao.value, pericia) &&
+                        pericia.calcularNivel(personagem) >= min
+                }
+            }
+            else -> true
+        }
+    }
+
+    private fun periciaCorrespondeNome(valorRaw: String, pericia: PericiaSelecionada): Boolean {
+        val alvo = normalizarComparacao(valorRaw)
+        if (alvo.isBlank()) return false
+        val nome = normalizarComparacao(pericia.nome)
+        val especializacao = normalizarComparacao(pericia.especializacao)
+        return nome.contains(alvo) || alvo.contains(nome) ||
+            (especializacao.isNotBlank() && (especializacao.contains(alvo) || alvo.contains(especializacao)))
+    }
+
+    private fun normalizarComparacao(valor: String): String {
+        val semAcento = Normalizer.normalize(valor.sanitized(), Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace("-", " ")
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
     companion object {
@@ -1133,6 +1344,18 @@ private fun JsonObject.float(key: String): Float? {
         when {
             el.isJsonPrimitive && el.asJsonPrimitive.isNumber -> el.asFloat
             el.isJsonPrimitive && el.asJsonPrimitive.isString -> el.asString.replace(",", ".").toFloat()
+            else -> null
+        }
+    }.getOrNull()
+}
+
+private fun JsonObject.bool(key: String): Boolean? {
+    val el = get(key) ?: return null
+    if (el.isJsonNull) return null
+    return runCatching {
+        when {
+            el.isJsonPrimitive && el.asJsonPrimitive.isBoolean -> el.asBoolean
+            el.isJsonPrimitive && el.asJsonPrimitive.isString -> el.asString.equals("true", ignoreCase = true)
             else -> null
         }
     }.getOrNull()

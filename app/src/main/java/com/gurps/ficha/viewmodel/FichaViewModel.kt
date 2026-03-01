@@ -553,15 +553,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         especializacao: String = "",
         atributoEscolhido: AtributoBase? = null,
         dificuldadeEscolhida: Dificuldade? = null
-    ) {
+    ): String? {
         // Verifica duplicatas (mesmo id e especializacao)
         if (personagem.pericias.any { it.definicaoId == definicao.id && it.especializacao == especializacao }) {
-            return // Ja existe
+            return "Essa perícia já foi adicionada."
+        }
+        val erroPreRequisito = dataRepository.validarPreRequisitosPericia(definicao, personagem)
+        if (erroPreRequisito != null) {
+            return "Pré-requisito não atendido: $erroPreRequisito"
         }
         val pericia = dataRepository.criarPericiaSelecionada(definicao, pontosGastos, especializacao, atributoEscolhido, dificuldadeEscolhida)
         val lista = personagem.pericias.toMutableList()
         lista.add(pericia)
         personagem = personagem.copy(pericias = lista)
+        return null
     }
 
     fun adicionarPericiaCustomizada(pericia: PericiaSelecionada) {

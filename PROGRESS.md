@@ -560,3 +560,26 @@ Arquivos alterados:
 
 Validacao executada:
 - `./gradlew :app:assembleDebug` (OK)
+
+## Atualizacao 2026-03-01 - Integracao do pericias_v2_rules_map na ficha
+
+Implementacao concluida:
+- `pericias_v2_rules_map.json` agora embarcado em `app/src/main/assets`.
+- `DataRepository` passa a carregar e manter mapa de regras V2 em runtime.
+- Regras de tipo (atributo/dificuldade) da V2 agora podem sobrescrever definicoes de pericia ao carregar catalogo.
+- Validacao de pre-requisito da V2 integrada ao fluxo de adicionar pericia:
+  - suporta condicoes estruturadas em grupos `AND` com alternativas `OR`;
+  - suporte inicial para `required_advantage` e `required_skill_level`.
+- Fluxo UI de adicionar pericia atualizado:
+  - `FichaViewModel.adicionarPericia` retorna erro textual quando bloqueado;
+  - `ConfigurarPericiaDialog` exibe mensagem e nao fecha quando pre-requisito falha.
+
+Arquivos alterados:
+- `app/src/main/assets/pericias_v2_rules_map.json`
+- `app/src/main/java/com/gurps/ficha/model/CatalogosSuplementares.kt`
+- `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
+- `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
+- `app/src/main/java/com/gurps/ficha/ui/DialogsPericias.kt`
+
+Validacao:
+- `./gradlew :app:assembleDebug` (OK - compilou `assembleVisualDebug` e `assemblePracegoDebug`)
