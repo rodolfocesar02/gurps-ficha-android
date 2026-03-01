@@ -36,6 +36,23 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
     - carregar `pericias_artes_marciais.v1.json` e `tecnicas.v1.json`;
     - fazer merge seguro de `vantagens_artes_marciais.v1.json` com `vantagens.v3.json` sem sobrescrever ids ja existentes.
   - `FichaViewModel` atualizado para expor catalogos suplementares (Pericias Artes Marciais e Tecnicas).
+- Lote 15 - Bloco Tecnicas separado (inicio em 2026-03-01):
+  - iniciada implementacao da nova aba `Tecnicas` separada da aba `Pericias`;
+  - objetivo do bloco: validar vinculo forte tecnica <-> pericia base, automatizar custo por tabela GURPS (valor predefinido + nivel) e aplicar nas duas variantes (`VISUAL` e `PRACEGO`);
+  - compatibilidade alvo: manter fichas antigas funcionando com defaults seguros no modelo de tecnica.
+  - entregue no bloco:
+    - navegacao atualizada com aba dedicada `Tecnicas` (removida da aba `Pericias`);
+    - `TecnicaSelecionada` evoluida com vinculo explicito da pericia base (`definicaoId` + especializacao), nivel relativo ao predefinido e suporte a calculo de NH da tecnica;
+    - validacao de pre-requisito na adicao de tecnica (bloqueio quando a pericia base selecionada nao atende);
+    - custo automatico da tecnica conforme tabela:
+      - Media: +0=0, +1=1, +2=2, +3=3, +4=4, +n=n;
+      - Dificil: +0=0, +1=2, +2=3, +3=4, +4=5, +n=n+1;
+    - leitura de limite maximo quando detectavel em `preRequisitoRaw` (ex.: `nao pode exceder +X` e regra de `metade da penalidade`).
+  - validacao executada nas duas variantes:
+    - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin --no-daemon`
+    - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
+    - `./gradlew.bat :app:installVisualDebug :app:installPracegoDebug --no-daemon`
+    - resultado: `BUILD SUCCESSFUL` e instalacao concluida no emulador `Pixel_8a(AVD)`.
 - Validacao executada nas duas variantes:
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`

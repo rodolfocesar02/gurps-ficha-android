@@ -71,11 +71,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Magia", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
     }
-    val rolagemTabIndex = if (temAptidaoMagica) 6 else 5
+    val rolagemTabIndex = if (temAptidaoMagica) 7 else 6
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -165,6 +165,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 "Geral" -> Icons.Default.Person
                                 "Traços" -> Icons.Default.Star
                                 "Perícias" -> Icons.Default.Build
+                                "Técnicas" -> Icons.Default.Build
                                 "Magia" -> Icons.Default.Star
                                 "Equip." -> Icons.Default.ShoppingCart
                                 "Defesas" -> Icons.Default.Favorite
@@ -207,10 +208,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 0 -> TabGeral(viewModel)
                 1 -> TabTracos(viewModel)
                 2 -> TabPericias(viewModel)
-                3 -> if (temAptidaoMagica) TabMagias(viewModel) else TabEquipamentos(viewModel)
-                4 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabCombate(viewModel)
-                5 -> if (temAptidaoMagica) TabCombate(viewModel) else TabRolagem(viewModel)
-                6 -> TabRolagem(viewModel)
+                3 -> TabTecnicas(viewModel)
+                4 -> if (temAptidaoMagica) TabMagias(viewModel) else TabEquipamentos(viewModel)
+                5 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabCombate(viewModel)
+                6 -> if (temAptidaoMagica) TabCombate(viewModel) else TabRolagem(viewModel)
+                7 -> TabRolagem(viewModel)
             }
         }
     }

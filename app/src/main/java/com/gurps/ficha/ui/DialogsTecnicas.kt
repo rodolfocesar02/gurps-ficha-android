@@ -3,14 +3,12 @@ package com.gurps.ficha.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -32,19 +30,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.gurps.ficha.BuildConfig
+import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PericiaSuplementarItem
+import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.TecnicaCatalogoItem
 import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
-
-private val TECNICA_PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,11 +97,10 @@ fun SelecionarTecnicaDialog(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(tecnicas) { tecnica ->
-                    val jaAdicionada = viewModel.tecnicaJaAdicionada(tecnica.id)
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable(enabled = !jaAdicionada) { tecnicaSelecionada = tecnica },
+                            .clickable { tecnicaSelecionada = tecnica },
                         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                     ) {
                         Column(modifier = Modifier.padding(10.dp)) {
@@ -117,9 +110,6 @@ fun SelecionarTecnicaDialog(
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
-                            if (jaAdicionada) {
-                                Text("Adicionada", color = MaterialTheme.colorScheme.outline)
-                            }
                         }
                     }
                 }
@@ -132,30 +122,48 @@ fun SelecionarTecnicaDialog(
 
     tecnicaSelecionada?.let { definicao ->
         ConfigurarTecnicaDialog(
+            viewModel = viewModel,
             definicao = definicao,
             onDismiss = { tecnicaSelecionada = null },
-            onSave = { pontos ->
-                viewModel.adicionarTecnica(definicao, pontos)
-                tecnicaSelecionada = null
-            }
+            onSave = { tecnicaSelecionada = null }
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigurarTecnicaDialog(
+    viewModel: FichaViewModel,
     definicao: TecnicaCatalogoItem,
     onDismiss: () -> Unit,
-    onSave: (pontosGastos: Int) -> Unit
+    onSave: () -> Unit
 ) {
-    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
-    var pontosGastos by remember { mutableStateOf(1) }
+    val pericias = viewModel.personagem.pericias
+    var periciaSelecionadaId by remember { mutableStateOf<String?>(null) }
+    var nivelRelativo by remember { mutableStateOf(0) }
+    var erro by remember { mutableStateOf<String?>(null) }
+
+    val periciaBase = pericias.firstOrNull { pericia ->
+        periciaTecnicaKey(pericia) == periciaSelecionadaId
+    }
+    val atendePreReq = periciaBase?.let { viewModel.tecnicaAtendePreRequisito(definicao, it) } ?: false
+    val limiteMaximo = viewModel.limiteMaximoTecnica(definicao)
+    val nivelMaximo = limiteMaximo ?: 12
+    if (nivelRelativo > nivelMaximo) nivelRelativo = nivelMaximo
+
+    val predefModificador = viewModel.dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
+    val custo = viewModel.custoTecnica(definicao, nivelRelativo)
+    val nivelPericia = periciaBase?.calcularNivel(viewModel.personagem)
+    val nhTecnica = if (nivelPericia != null) nivelPericia + predefModificador + nivelRelativo else null
 
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Configurar Técnica") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 Text(definicao.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(
                     "${definicao.sourceBook} • ${definicao.dificuldadeRaw}",
@@ -168,38 +176,81 @@ fun ConfigurarTecnicaDialog(
                 if (definicao.preDefinidoRaw.isNotBlank()) {
                     Text("Pré-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
                 }
-                Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
-                Text(
-                    "$pontosGastos",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(56.dp)
-                )
-                if (isPraCegoVariant) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        TextButton(
-                            onClick = { pontosGastos = TECNICA_PONTOS_PRESETS[(TECNICA_PONTOS_PRESETS.indexOf(pontosGastos) - 1).coerceAtLeast(0)] },
-                            modifier = Modifier.semantics { contentDescription = "Diminuir pontos da técnica" }
-                        ) { Text("-") }
-                        TextButton(
-                            onClick = { pontosGastos = TECNICA_PONTOS_PRESETS[(TECNICA_PONTOS_PRESETS.indexOf(pontosGastos) + 1).coerceAtMost(TECNICA_PONTOS_PRESETS.lastIndex)] },
-                            modifier = Modifier.semantics { contentDescription = "Aumentar pontos da técnica" }
-                        ) { Text("+") }
+
+                if (pericias.isEmpty()) {
+                    Text(
+                        "Adicione ao menos uma perícia antes de configurar técnicas.",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else {
+                    Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
+                    pericias.forEach { pericia ->
+                        val key = periciaTecnicaKey(pericia)
+                        FilterChip(
+                            selected = periciaSelecionadaId == key,
+                            onClick = {
+                                periciaSelecionadaId = key
+                                erro = null
+                            },
+                            label = { Text(periciaTecnicaLabel(pericia)) }
+                        )
                     }
                 }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    TECNICA_PONTOS_PRESETS.forEach { pontos ->
-                        TextButton(
-                            onClick = { pontosGastos = pontos },
-                            modifier = Modifier.padding(horizontal = 1.dp),
-                            contentPadding = PaddingValues(horizontal = 4.dp)
-                        ) { Text("$pontos") }
-                    }
+
+                Text("Nível acima do predefinido: +$nivelRelativo", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(
+                        enabled = nivelRelativo > 0,
+                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) }
+                    ) { Text("-") }
+                    TextButton(
+                        enabled = nivelRelativo < nivelMaximo,
+                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) }
+                    ) { Text("+") }
+                }
+                if (limiteMaximo != null) {
+                    Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
+                }
+
+                Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "Pré-definido base: ${if (predefModificador >= 0) "+$predefModificador" else predefModificador}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+                nhTecnica?.let {
+                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                }
+                if (periciaBase != null && !atendePreReq) {
+                    Text(
+                        "A perícia selecionada não atende ao pré-requisito.",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                erro?.let {
+                    Text(it, color = MaterialTheme.colorScheme.error)
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(pontosGastos) }) { Text("Adicionar") }
+            TextButton(
+                enabled = periciaBase != null && atendePreReq,
+                onClick = {
+                    val pericia = periciaBase ?: run {
+                        erro = "Selecione uma perícia base."
+                        return@TextButton
+                    }
+                    val erroAdicionar = viewModel.adicionarTecnica(
+                        definicao = definicao,
+                        periciaBase = pericia,
+                        nivelRelativoPredefinido = nivelRelativo
+                    )
+                    if (erroAdicionar != null) {
+                        erro = erroAdicionar
+                    } else {
+                        onSave()
+                    }
+                }
+            ) { Text("Adicionar") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancelar") }
@@ -207,14 +258,36 @@ fun ConfigurarTecnicaDialog(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarTecnicaDialog(
     tecnica: TecnicaSelecionada,
+    personagem: Personagem,
     onDismiss: () -> Unit,
     onSave: (TecnicaSelecionada) -> Unit
 ) {
-    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
-    var pontosGastos by remember { mutableStateOf(tecnica.pontosGastos) }
+    var nivelRelativo by remember { mutableStateOf(tecnica.nivelRelativoPredefinido.coerceAtLeast(0)) }
+    var periciaSelecionadaId by remember {
+        mutableStateOf(
+            periciaTecnicaKey(
+                PericiaSelecionada(
+                    definicaoId = tecnica.periciaBaseDefinicaoId,
+                    nome = tecnica.periciaBaseNome,
+                    especializacao = tecnica.periciaBaseEspecializacao
+                )
+            )
+        )
+    }
+
+    val pericias = personagem.pericias
+    val periciaBase = pericias.firstOrNull { periciaTecnicaKey(it) == periciaSelecionadaId }
+    val predefModificador = tecnica.preDefinidoModificador
+    val limiteMaximo = tecnica.limiteMaximoRelativo
+    val nivelMaximo = limiteMaximo ?: 12
+    if (nivelRelativo > nivelMaximo) nivelRelativo = nivelMaximo
+    val dificuldadeDificil = tecnica.dificuldadeRaw.lowercase().contains("dif")
+    val custo = if (nivelRelativo == 0) 0 else if (dificuldadeDificil) nivelRelativo + 1 else nivelRelativo
+    val nhTecnica = periciaBase?.calcularNivel(personagem)?.plus(predefModificador + nivelRelativo)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -223,33 +296,54 @@ fun EditarTecnicaDialog(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text("${tecnica.sourceBook} • ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
-                Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
-                Text("$pontosGastos", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                if (isPraCegoVariant) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                        TextButton(
-                            onClick = { pontosGastos = TECNICA_PONTOS_PRESETS[(TECNICA_PONTOS_PRESETS.indexOf(pontosGastos) - 1).coerceAtLeast(0)] },
-                            modifier = Modifier.semantics { contentDescription = "Diminuir pontos da técnica" }
-                        ) { Text("-") }
-                        TextButton(
-                            onClick = { pontosGastos = TECNICA_PONTOS_PRESETS[(TECNICA_PONTOS_PRESETS.indexOf(pontosGastos) + 1).coerceAtMost(TECNICA_PONTOS_PRESETS.lastIndex)] },
-                            modifier = Modifier.semantics { contentDescription = "Aumentar pontos da técnica" }
-                        ) { Text("+") }
-                    }
+
+                Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
+                pericias.forEach { pericia ->
+                    val key = periciaTecnicaKey(pericia)
+                    FilterChip(
+                        selected = periciaSelecionadaId == key,
+                        onClick = { periciaSelecionadaId = key },
+                        label = { Text(periciaTecnicaLabel(pericia)) }
+                    )
                 }
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    TECNICA_PONTOS_PRESETS.forEach { pontos ->
-                        TextButton(
-                            onClick = { pontosGastos = pontos },
-                            modifier = Modifier.padding(horizontal = 1.dp),
-                            contentPadding = PaddingValues(horizontal = 4.dp)
-                        ) { Text("$pontos") }
-                    }
+
+                Text("Nível acima do predefinido: +$nivelRelativo", style = MaterialTheme.typography.labelMedium)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    TextButton(
+                        enabled = nivelRelativo > 0,
+                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) }
+                    ) { Text("-") }
+                    TextButton(
+                        enabled = nivelRelativo < nivelMaximo,
+                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) }
+                    ) { Text("+") }
+                }
+                if (limiteMaximo != null) {
+                    Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
+                }
+
+                Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
+                nhTecnica?.let {
+                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(tecnica.copy(pontosGastos = pontosGastos.coerceAtLeast(1))) }) { Text("Salvar") }
+            TextButton(
+                enabled = periciaBase != null,
+                onClick = {
+                    val pericia = periciaBase ?: return@TextButton
+                    onSave(
+                        tecnica.copy(
+                            nivelRelativoPredefinido = nivelRelativo,
+                            pontosGastos = custo,
+                            periciaBaseDefinicaoId = pericia.definicaoId,
+                            periciaBaseNome = pericia.nome,
+                            periciaBaseEspecializacao = pericia.especializacao
+                        )
+                    )
+                }
+            ) { Text("Salvar") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancelar") }
@@ -316,5 +410,17 @@ private fun PericiaSuplementarCard(item: PericiaSuplementarItem) {
                 Text(item.descricao, style = MaterialTheme.typography.bodySmall)
             }
         }
+    }
+}
+
+private fun periciaTecnicaKey(pericia: PericiaSelecionada): String {
+    return "${pericia.definicaoId}|${pericia.especializacao.lowercase()}"
+}
+
+private fun periciaTecnicaLabel(pericia: PericiaSelecionada): String {
+    return if (pericia.especializacao.isBlank()) {
+        pericia.nome
+    } else {
+        "${pericia.nome} (${pericia.especializacao})"
     }
 }
