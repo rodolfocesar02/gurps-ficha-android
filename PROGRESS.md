@@ -16,6 +16,20 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
   - Acessibilidade:
     - ajustes de controle `- valor +` nos fluxos de ajuste numerico de Pericias/Magias/Tecnicas na variante PRACEGO;
     - rotulos semanticos reforcados para leitor de tela nos botoes de ajuste.
+  - Pericias V2 (preview tecnico e mapa de regras para motor):
+    - novo gerador de mapa estruturado: `scripts/generate_pericias_v2_rules_map.py`;
+    - arquivo gerado: `scripts/reports/pericias_v2_rules_map.json`;
+    - regras aplicadas no mapa:
+      - `Perícia Profissional (†)` e `Perícias de Passatempo (†)`: atributo de escolha do usuario (`DX` ou `IQ`);
+      - `Pré-requisito` vazio: adicao permitida sem bloqueio;
+      - `Pré-definido` vazio: ao adicionar com `0` pontos, usar pré-definido padrao da perícia;
+      - `Modificadores` vazios: nao automatizar nesta etapa (manter manual/texto).
+    - resumo do lote no mapa:
+      - total: `246`;
+      - atributo em escolha do usuario: `2`;
+      - pre-requisito vazio: `210`;
+      - pre-definido vazio: `11`;
+      - modificadores vazios: `96`.
 - Lote 14 (import/export JSON) avancou em base compartilhada `app/src/main`:
   - Novo envelope de interoperabilidade com metadados: `schema`, `schemaVersion`, `exportedAtUtc`, `appVersion`, `uiVariant`, `character`.
   - Exportacao no menu ajustada para dois formatos:
