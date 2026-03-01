@@ -40,6 +40,7 @@ data class Personagem(
     var qualidades: List<String> = emptyList(),
     var peculiaridades: List<String> = emptyList(),
     var pericias: List<PericiaSelecionada> = emptyList(),
+    var tecnicas: List<TecnicaSelecionada> = emptyList(),
     var magias: List<MagiaSelecionada> = emptyList(),
     var equipamentos: List<Equipamento> = emptyList(),
 
@@ -136,6 +137,9 @@ data class Personagem(
             }
             if (!jsonObject.has("qualidades")) {
                 jsonObject.add("qualidades", com.google.gson.JsonArray())
+            }
+            if (!jsonObject.has("tecnicas")) {
+                jsonObject.add("tecnicas", com.google.gson.JsonArray())
             }
             if (!jsonObject.has("forcaBase")) {
                 jsonObject.addProperty("forcaBase", 10)
@@ -376,6 +380,16 @@ data class PericiaSelecionada(
         return when { dif > 0 -> "+$dif"; dif < 0 -> "$dif"; else -> "+0" }
     }
 }
+
+data class TecnicaSelecionada(
+    val definicaoId: String = "",
+    var nome: String = "",
+    var pontosGastos: Int = 1,
+    var dificuldadeRaw: String = "",
+    var preDefinidoRaw: String = "",
+    var preRequisitoRaw: String = "",
+    var sourceBook: String = ""
+)
 
 // ============================================================
 // MAGIAS
