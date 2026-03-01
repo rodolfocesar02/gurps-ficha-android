@@ -1,0 +1,421 @@
+{
+  "input": "C:\\Users\\Rodolfo\\Desktop\\bachup ficha gurps\\Tabbela de pericias_V2.xlsx",
+  "headers": [
+    "Página",
+    "Nome da Perícia",
+    "Tipo ou (dificuldade)",
+    "Predefinido",
+    "Pré-Requisito",
+    "Descrição",
+    "Modificadores (se houver)"
+  ],
+  "summary": {
+    "totalRows": 246,
+    "tipoValido": 244,
+    "tipoInvalido": 2,
+    "exigeEspecializacaoTrue": 68,
+    "exigeEspecializacaoFalse": 178,
+    "mojibakeSuspeitas": 0,
+    "preRequisitoVazio": 210,
+    "preDefinidoVazio": 11,
+    "descricaoVazia": 0,
+    "modificadoresVazio": 96,
+    "linksEstritos": {
+      "vantagens": 21,
+      "desvantagens": 0,
+      "magias": 6,
+      "tecnicas": 0
+    },
+    "linksAmplos": {
+      "vantagens": 63,
+      "desvantagens": 40,
+      "magias": 48,
+      "tecnicas": 5
+    }
+  },
+  "tipoInvalidos": [
+    {
+      "row": 196,
+      "nome": "Perícia Profissional (†)",
+      "tipoRaw": "DX ou IQ/Média",
+      "motivo": "atributo_invalido:DX ou IQ"
+    },
+    {
+      "row": 197,
+      "nome": "Perícias de Passatempo (†)",
+      "tipoRaw": "DX ou IQ/Fácil",
+      "motivo": "atributo_invalido:DX ou IQ"
+    }
+  ],
+  "amostrasLigacoesEstritas": [
+    {
+      "row": 4,
+      "nome": "Acrobacia Aquática",
+      "preRequisitoRaw": "Natação ou Anfíbio ou Aquático",
+      "preDefinidoRaw": "Acrobacia-4",
+      "linksEstritos": {
+        "vantagens": [
+          "Anfíbio"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 20,
+      "nome": "Arqueiro Zen",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas; Arco 18+; Meditação",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 27,
+      "nome": "Arte da Invisibilidade",
+      "preRequisitoRaw": "Treinado por um Mestre; Hipnotismo 14+; Furtividade 14+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 28,
+      "nome": "Arte do Arremesso",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 50,
+      "nome": "Capa",
+      "preRequisitoRaw": "-",
+      "preDefinidoRaw": "DX-5, Escudo-4 ou Rede-4",
+      "linksEstritos": {
+        "vantagens": [],
+        "desvantagens": [],
+        "magias": [
+          "Escudo"
+        ],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 55,
+      "nome": "Carroceiro (†)",
+      "preRequisitoRaw": "-",
+      "preDefinidoRaw": "IQ-5, Adestramento-4 ou Cavalgar-2 (-3 entre especializações)",
+      "linksEstritos": {
+        "vantagens": [],
+        "desvantagens": [],
+        "magias": [
+          "Cavalgar"
+        ],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 65,
+      "nome": "Conhecimento Oculto (†)",
+      "preRequisitoRaw": "Antecedentes Incomuns (a critério do Mestre)",
+      "preDefinidoRaw": "-",
+      "linksEstritos": {
+        "vantagens": [
+          "Antecedentes Incomuns"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 71,
+      "nome": "Controle das Funções Involuntárias",
+      "preRequisitoRaw": "Treinado por um Mestre; Controle da Respiração; Meditação",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [
+          "Respiração"
+        ],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 82,
+      "nome": "Deslumbrar (Cativar)",
+      "preRequisitoRaw": "Carisma 1; Oratória 12+; Sugerir 12+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Carisma"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 83,
+      "nome": "Deslumbrar (Despertar Emoção)",
+      "preRequisitoRaw": "Carisma 1; Oratória 12+; Persuadir 12+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Carisma"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 84,
+      "nome": "Deslumbrar (Persuadir)",
+      "preRequisitoRaw": "Carisma 1; Oratória 12+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Carisma"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 85,
+      "nome": "Deslumbrar (Sugerir)",
+      "preRequisitoRaw": "Carisma 1; Oratória 12+; Persuadir 12+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Carisma"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 86,
+      "nome": "Desviar",
+      "preRequisitoRaw": "Treinado por um Mestre",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 120,
+      "nome": "Força Mental",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas (ou mago/psi a critério do Mestre)",
+      "preDefinidoRaw": "-",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 128,
+      "nome": "Golpe Debilitante",
+      "preRequisitoRaw": "Treinado por um Mestre",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 129,
+      "nome": "Golpe Poderoso",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 130,
+      "nome": "Habilidade com Nós",
+      "preRequisitoRaw": "-",
+      "preDefinidoRaw": "DX-4, Escalada-4 ou Tripulante de Navio-4",
+      "linksEstritos": {
+        "vantagens": [],
+        "desvantagens": [],
+        "magias": [
+          "Escalada"
+        ],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 145,
+      "nome": "Kiai",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 148,
+      "nome": "Lança de Justa",
+      "preRequisitoRaw": "Cavalgar",
+      "preDefinidoRaw": "DX-5 ou Lança-3",
+      "linksEstritos": {
+        "vantagens": [],
+        "desvantagens": [],
+        "magias": [
+          "Cavalgar"
+        ],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 158,
+      "nome": "Lutar às Cegas",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 189,
+      "nome": "Passos Leves",
+      "preRequisitoRaw": "Treinado por um Mestre; Acrobacia 14+; Furtividade 14+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 204,
+      "nome": "Pontos de Pressão",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas",
+      "preDefinidoRaw": "Nenhum (Medicina Alternativa-4 em campanha cinematográfica)",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 205,
+      "nome": "Pontos Secretos",
+      "preRequisitoRaw": "Treinado por um Mestre; Pontos de Pressão 16+",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 206,
+      "nome": "Postura Imóvel",
+      "preRequisitoRaw": "Treinado por um Mestre",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre"
+        ],
+        "desvantagens": [],
+        "magias": [],
+        "tecnicas": []
+      }
+    },
+    {
+      "row": 226,
+      "nome": "Salto Voador",
+      "preRequisitoRaw": "Treinado por um Mestre ou Mestre de Armas; Salto; Golpe Poderoso",
+      "preDefinidoRaw": "Nenhum",
+      "linksEstritos": {
+        "vantagens": [
+          "Treinado por um Mestre",
+          "Mestre de Armas"
+        ],
+        "desvantagens": [],
+        "magias": [
+          "Salto"
+        ],
+        "tecnicas": []
+      }
+    }
+  ],
+  "recomendacoes": [
+    "Normalizar Tipo: mapear Vontade->VON, Per->PER e Variavel para dificuldadeVariavel=true.",
+    "Transformar familias com especializacao (marcador † ou 'varias') em exigeEspecializacao=true com opcao de especializacao no app.",
+    "Estruturar preDefinidoRaw em regras parseaveis (atributo/pericia/modificador) para calculo automatico.",
+    "Estruturar preRequisitoRaw em termos parseaveis (OR/AND; vantagens; niveis minimos) para validacao automatica robusta.",
+    "Padronizar nomes para reduzir divergencia com pericias.json atual e melhorar casamento tecnico/pericia base."
+  ]
+}

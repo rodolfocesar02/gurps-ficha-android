@@ -4,6 +4,18 @@ Atualizado em: 2026-03-01
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
 
 ## Atualizacao do Bloco (2026-03-01)
+- Incrementos recentes de UX/rolagem (VISUAL + PRACEGO):
+  - Aba Pericias padronizada com botoes lineares verticais nas duas variantes:
+    - `Adicionar Pericia`
+    - `Criar Pericia`
+    - `Pericias Suplementares` (por ultimo).
+  - Aba Rolagem:
+    - novo botao `Tecnicas` com lista das tecnicas cadastradas e rolagem por NH;
+    - exibicao condicional: botao `Tecnicas` aparece apenas quando houver tecnicas cadastradas;
+    - historico de sessao padronizado no formato textual do Discord (sem emojis), com blocos de `Dados` e `Resultado`.
+  - Acessibilidade:
+    - ajustes de controle `- valor +` nos fluxos de ajuste numerico de Pericias/Magias/Tecnicas na variante PRACEGO;
+    - rotulos semanticos reforcados para leitor de tela nos botoes de ajuste.
 - Lote 14 (import/export JSON) avancou em base compartilhada `app/src/main`:
   - Novo envelope de interoperabilidade com metadados: `schema`, `schemaVersion`, `exportedAtUtc`, `appVersion`, `uiVariant`, `character`.
   - Exportacao no menu ajustada para dois formatos:
@@ -249,7 +261,7 @@ Escopo:
 - Registrar evento minimo para suporte (sem expor dados sensiveis).
 Criterio de pronto:
 - Falhas mais faceis de identificar e corrigir.
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 
 ### Lote 5 - UX e desempenho
 Escopo:
@@ -381,7 +393,6 @@ Criterio de pronto:
 - App enviando evento de forma resiliente (retry simples, sem travar UI).
 - Canal de notificacao administrativa funcionando para novos registros.
 Status: `PENDENTE`
-
 ### Lote 13 - Controle de acesso remoto (bloqueio por app/dispositivo)
 Escopo:
 - Definir modelo de identificacao do cliente (ex.: instalacao + token assinado pelo backend).
