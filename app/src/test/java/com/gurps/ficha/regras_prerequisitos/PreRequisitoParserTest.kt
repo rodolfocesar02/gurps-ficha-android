@@ -3,6 +3,12 @@ package com.gurps.ficha.regras_prerequisitos
 import org.junit.Assert.*
 import org.junit.Test
 
+import com.gurps.ficha.data.DataRepository
+import com.gurps.ficha.model.Personagem
+import com.gurps.ficha.model.VantagemSelecionada
+import com.gurps.ficha.model.MagiaDefinicao
+import com.gurps.ficha.viewmodel.FichaViewModel
+
 class PreRequisitoParserTest {
     @Test
     fun `empty or dash returns no types`() {
@@ -71,4 +77,22 @@ class PreRequisitoParserTest {
         val report2 = PreRequisitoChecker.checkSimples(badChar, prereqs)
         assertTrue(report2.contains("faltando"))
     }
+
+    // --- integração com repositório e ViewModel ------------------------------------------------
+
+    @Test
+    fun `repository validates magia prerequisites correctly`() {
+        // contexto mínimo com lista vazia de magias (não acessa assets)
+        val repo = DataRepository(object : android.content.ContextWrapper(null) {})
+        val person = Personagem()
+        person.inteligencia = 12
+        person.vantagens = listOf(VantagemSelecionada(definicaoId = "aptidao_magica", nivel = 1))
+
+        val magia = MagiaDefinicao(id = "m1", nome = "Teste", preRequisitos = "IQ 13+")
+        assertNotNull(repo.validarPreRequisitosMagia(magia, person))
+        person.inteligencia = 14
+        assertNull(repo.validarPreRequisitosMagia(magia, person))
+    }
+
 }
+
