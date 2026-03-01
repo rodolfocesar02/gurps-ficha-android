@@ -31,6 +31,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.PericiaSelecionada
@@ -199,15 +201,22 @@ fun ConfigurarTecnicaDialog(
                     }
                 }
 
-                Text("Nível acima do predefinido: +$nivelRelativo", style = MaterialTheme.typography.labelMedium)
+                Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         enabled = nivelRelativo > 0,
-                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) }
+                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
                     ) { Text("-") }
+                    Text(
+                        "+$nivelRelativo",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                     TextButton(
                         enabled = nivelRelativo < nivelMaximo,
-                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) }
+                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
                     ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
@@ -316,15 +325,22 @@ fun EditarTecnicaDialog(
                     )
                 }
 
-                Text("Nível acima do predefinido: +$nivelRelativo", style = MaterialTheme.typography.labelMedium)
+                Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         enabled = nivelRelativo > 0,
-                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) }
+                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
                     ) { Text("-") }
+                    Text(
+                        "+$nivelRelativo",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                     TextButton(
                         enabled = nivelRelativo < nivelMaximo,
-                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) }
+                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
                     ) { Text("+") }
                 }
                 if (limiteMaximo != null) {

@@ -207,43 +207,48 @@ fun ConfigurarMagiaDialog(
 
                 Divider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
-                Text(
-                    "$pontosGastos",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .width(56.dp)
-                        .then(
-                            if (!isPraCegoVariant) {
-                                Modifier.pointerInput(pontosGastos) {
-                                    var dragAcumulado = 0f
-                                    val passoPx = 24f
-                                    detectVerticalDragGestures(
-                                        onVerticalDrag = { change, dragAmount ->
-                                            change.consume()
-                                            dragAcumulado += dragAmount
-                                            while (abs(dragAcumulado) >= passoPx) {
-                                                pontosGastos = ajustarPontosPreset(
-                                                    atual = pontosGastos,
-                                                    incrementar = dragAcumulado < 0f
-                                                )
-                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
-                                            }
+                if (!isPraCegoVariant) {
+                    Text(
+                        "$pontosGastos",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .width(56.dp)
+                            .pointerInput(pontosGastos) {
+                                var dragAcumulado = 0f
+                                val passoPx = 24f
+                                detectVerticalDragGestures(
+                                    onVerticalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragAcumulado += dragAmount
+                                        while (abs(dragAcumulado) >= passoPx) {
+                                            pontosGastos = ajustarPontosPreset(
+                                                atual = pontosGastos,
+                                                incrementar = dragAcumulado < 0f
+                                            )
+                                            dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
                                         }
-                                    )
-                                }
-                            } else {
-                                Modifier
-                            }
-                        ),
-                    textAlign = TextAlign.Center
-                )
+                                    }
+                                )
+                            },
+                        textAlign = TextAlign.Center
+                    )
+                }
                 if (isPraCegoVariant) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         TextButton(
                             onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da magia" }
                         ) { Text("-") }
+                        Text(
+                            "$pontosGastos",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 8.dp)
+                                .semantics { contentDescription = "Pontos gastos atuais da magia: $pontosGastos" }
+                        )
                         TextButton(
                             onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da magia" }
@@ -311,43 +316,48 @@ fun EditarMagiaDialog(
 
                 Divider()
                 Text("Pontos Gastos:")
-                Text(
-                    "$pontosGastos",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .width(56.dp)
-                        .then(
-                            if (!isPraCegoVariant) {
-                                Modifier.pointerInput(pontosGastos) {
-                                    var dragAcumulado = 0f
-                                    val passoPx = 24f
-                                    detectVerticalDragGestures(
-                                        onVerticalDrag = { change, dragAmount ->
-                                            change.consume()
-                                            dragAcumulado += dragAmount
-                                            while (abs(dragAcumulado) >= passoPx) {
-                                                pontosGastos = ajustarPontosPreset(
-                                                    atual = pontosGastos,
-                                                    incrementar = dragAcumulado < 0f
-                                                )
-                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
-                                            }
+                if (!isPraCegoVariant) {
+                    Text(
+                        "$pontosGastos",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .width(56.dp)
+                            .pointerInput(pontosGastos) {
+                                var dragAcumulado = 0f
+                                val passoPx = 24f
+                                detectVerticalDragGestures(
+                                    onVerticalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragAcumulado += dragAmount
+                                        while (abs(dragAcumulado) >= passoPx) {
+                                            pontosGastos = ajustarPontosPreset(
+                                                atual = pontosGastos,
+                                                incrementar = dragAcumulado < 0f
+                                            )
+                                            dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
                                         }
-                                    )
-                                }
-                            } else {
-                                Modifier
-                            }
-                        ),
-                    textAlign = TextAlign.Center
-                )
+                                    }
+                                )
+                            },
+                        textAlign = TextAlign.Center
+                    )
+                }
                 if (isPraCegoVariant) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         TextButton(
                             onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da magia" }
                         ) { Text("-") }
+                        Text(
+                            "$pontosGastos",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(horizontal = 8.dp)
+                                .semantics { contentDescription = "Pontos gastos atuais da magia: $pontosGastos" }
+                        )
                         TextButton(
                             onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da magia" }
