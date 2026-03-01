@@ -282,7 +282,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(definicao.nome) },
+        title = null,
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 TextButton(
@@ -290,7 +290,13 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                     modifier = Modifier.semantics {
                         contentDescription = "Abrir descrição da perícia ${definicao.nome}"
                     }
-                ) { Text("Descrição: ${definicao.nome}") }
+                ) {
+                    Text(
+                        "Descrição: ${definicao.nome}",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 if (definicao.exigeEspecializacao) {
                     Text("Esta perícia exige especialização!", color = MaterialTheme.colorScheme.error)

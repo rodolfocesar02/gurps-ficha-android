@@ -363,7 +363,11 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
         Text(nome, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
         if (isPraCegoVariant) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                TextButton(onClick = { onSetValor((valor - 1).coerceIn(1, 30)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                TextButton(
+                    onClick = { onSetValor((valor - 1).coerceIn(1, 30)) },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                ) {
                     Text("-")
                 }
                 Text(
@@ -373,7 +377,11 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
                     modifier = Modifier.width(36.dp),
                     textAlign = TextAlign.Center
                 )
-                TextButton(onClick = { onSetValor((valor + 1).coerceIn(1, 30)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                TextButton(
+                    onClick = { onSetValor((valor + 1).coerceIn(1, 30)) },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                ) {
                     Text("+")
                 }
             }
@@ -430,7 +438,11 @@ fun AtributoSecundarioEditor(
         Text(nome, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
         if (isPraCegoVariant) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                TextButton(onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                TextButton(
+                    onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                ) {
                     Text("-")
                 }
                 Text(
@@ -440,7 +452,11 @@ fun AtributoSecundarioEditor(
                     modifier = Modifier.width(34.dp),
                     textAlign = TextAlign.Center
                 )
-                TextButton(onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) }, contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)) {
+                TextButton(
+                    onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
+                ) {
                     Text("+")
                 }
             }

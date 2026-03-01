@@ -171,9 +171,13 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
                             }
                         } else {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                                IconButton(onClick = { if (nivel > 1) nivel-- }) {
+                                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível de vantagem")
+                                }
                                 Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                                IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                                IconButton(onClick = { if (nivel < 10) nivel++ }) {
+                                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível de vantagem")
+                                }
                             }
                         }
                         Text("Custo: ${definicao.getCustoPorNivel() * nivel} pts", fontWeight = FontWeight.Bold)
@@ -334,9 +338,13 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                             }
                         } else {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                                IconButton(onClick = { if (nivel > 1) nivel-- }) {
+                                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível de desvantagem")
+                                }
                                 Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                                IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                                IconButton(onClick = { if (nivel < 10) nivel++ }) {
+                                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível de desvantagem")
+                                }
                             }
                         }
                         Text("Custo: ${definicao.getCustoPorNivel() * nivel} pts", fontWeight = FontWeight.Bold)
@@ -428,9 +436,13 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
                         }
                     } else {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            IconButton(onClick = { if (nivel > 1) nivel-- }) {
+                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível da vantagem")
+                            }
                             Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            IconButton(onClick = { if (nivel < 10) nivel++ }) {
+                                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível da vantagem")
+                            }
                         }
                     }
                 }
@@ -486,9 +498,13 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -
                         }
                     } else {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > 1) nivel-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            IconButton(onClick = { if (nivel > 1) nivel-- }) {
+                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível da desvantagem")
+                            }
                             Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < 10) nivel++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            IconButton(onClick = { if (nivel < 10) nivel++ }) {
+                                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível da desvantagem")
+                            }
                         }
                     }
                 }
