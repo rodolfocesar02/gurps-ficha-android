@@ -149,7 +149,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_reducao_de_dano",
-    "nome": "Tolerância a Ferimentos (Redução de Dano)",
+    "nome": "Tolerncia a Ferimentos (Reduo de Dano)",
     "pagina": 45,
     "costKind": "special",
     "fixed": null,

@@ -2189,7 +2189,7 @@
   },
   {
     "id": "intolerancia",
-    "nome": "Intolerância",
+    "nome": "Intolerncia",
     "pagina": 147,
     "costKind": "choice",
     "fixed": null,
@@ -2210,7 +2210,7 @@
   },
   {
     "id": "intolerancia_ao_alcool",
-    "nome": "Intolerância ao Álcool",
+    "nome": "Intolerncia ao lcool",
     "pagina": 165,
     "costKind": "fixed",
     "fixed": -1,
@@ -2227,7 +2227,7 @@
   },
   {
     "id": "intolerancia_g",
-    "nome": "Intolerância-G",
+    "nome": "Intolerncia-G",
     "pagina": 147,
     "costKind": "choice",
     "fixed": null,
@@ -2995,7 +2995,7 @@
   },
   {
     "id": "repugnancia",
-    "nome": "Repugnância",
+    "nome": "Repugnncia",
     "pagina": 154,
     "costKind": "choice",
     "fixed": null,

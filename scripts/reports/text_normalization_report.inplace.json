@@ -1,0 +1,122 @@
+{
+  "summary": {
+    "inputDir": "app/src/main/assets",
+    "outputDir": "app/src/main/assets",
+    "filesScanned": 18,
+    "filesChanged": 0,
+    "aliasReplacements": 0,
+    "mojibakeFixes": 0,
+    "inPlace": true,
+    "fixMojibake": true
+  },
+  "files": [
+    {
+      "file": "armaduras.v2.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "armas_corpo_a_corpo.v1.normalized.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "armas_distancia.v1.normalized.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "armas_fogo.v1.normalized.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "desvantagens.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "desvantagens.v2.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "desvantagens.v2.schema.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "escudos.v1.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "magias.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "magias2versao.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "pericias.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "pericias_artes_marciais.v1.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "tecnicas.v1.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "vantagens.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "vantagens.v2.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "vantagens.v3.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "vantagens.v3.schema.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    },
+    {
+      "file": "vantagens_artes_marciais.v1.json",
+      "changed": false,
+      "aliasReplacements": 0,
+      "mojibakeFixes": 0
+    }
+  ]
+}

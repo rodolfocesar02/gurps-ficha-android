@@ -617,7 +617,7 @@
   },
   {
     "id": "carate",
-    "nome": "Caraté",
+    "nome": "Caratê",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1233,7 +1233,7 @@
   },
   {
     "id": "espada_de_lamina_larga",
-    "nome": "Espadas de Lâmina Larga",
+    "nome": "Espadas de Lmina Larga",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1761,7 +1761,7 @@
   },
   {
     "id": "leitura_dinamica",
-    "nome": "Leitura Dinâmica",
+    "nome": "Leitura Dinmica",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2003,7 +2003,7 @@
   },
   {
     "id": "mecanica_nt",
-    "nome": "Mecânica/NT†",
+    "nome": "Mecnica/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2047,7 +2047,7 @@
   },
   {
     "id": "mendicancia",
-    "nome": "Mendicância",
+    "nome": "Mendicncia",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2245,7 +2245,7 @@
   },
   {
     "id": "operacao_de_aparelhos_eletronicosnt_vigilancia",
-    "nome": "Operação de Aparelhos Eletrônicos/NT (Vigilância)",
+    "nome": "Operao de Aparelhos Eletrnicos/NT (Vigilncia)",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2289,7 +2289,7 @@
   },
   {
     "id": "paleontologiant_paleobotanica",
-    "nome": "Paleontologia/NT (Paleobotânica)",
+    "nome": "Paleontologia/NT (Paleobotnica)",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2801,7 +2801,7 @@
   },
   {
     "id": "sacarrapido",
-    "nome": "Sacar-Rápido†",
+    "nome": "Sacar Rápido†",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,

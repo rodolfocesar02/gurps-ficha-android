@@ -326,7 +326,7 @@
       "preDefinidoRaw": "Nenhum",
       "preRequisitoRaw": "Treinado por um Mestre",
       "descricao": "O Mestre pode permitir ataques de pontos de pressão que produzem efeitos sob Ferimento Realista. O atacante deve atingir o local de acerto alvo com um adicional de -2, infligir pelo menos um ponto de lesão e vencer uma Disputa Rápida de Pontos de Pressão contra o HT da vítima.",
-      "modificadores": "-2 adicional para acertar o local. Os efeitos variam conforme o local atingido (Braço/Perna: efeitos menores; Pescoço/Crânio/Órgãos Vitais: efeitos desagradáveis temporários; Ouvido/Mandíbula/Nariz: desvantagens temporárias; Coluna: nocaute).",
+      "modificadores": "-2 adicional para acertar o local. Os efeitos variam conforme o local atingido (Brao/Perna: efeitos menores; Pescoo/Crnio/rgos Vitais: efeitos desagradveis temporrios; Ouvido/Mandbula/Nariz: desvantagens temporrias; Coluna: nocaute).",
       "sourceBook": "Artes Marciais",
       "sourceFile": "pericias_Artes _marciais.xlsx"
     },
@@ -482,7 +482,7 @@
       "preDefinidoRaw": "Nenhum",
       "preRequisitoRaw": "Treinado por um Mestre e Hipnotismo com 14+",
       "descricao": "Induz um estado de transe em outras pessoas por meio de movimentos hipnóticos das mãos. Requer concentração. Gasta 1 PF e faz uma Disputa Rápida contra a Vontade da vítima.",
-      "modificadores": "-1 por dois metros completos de distância; quaisquer penalidades de visibilidade; +1 após dois turnos de concentração, +2 após quatro turnos, +3 após oito turnos, +4 após 16 turnos e mais +1 por duplicação do tempo.",
+      "modificadores": "-1 por dois metros completos de distncia; quaisquer penalidades de visibilidade; +1 aps dois turnos de concentrao, +2 aps quatro turnos, +3 aps oito turnos, +4 aps 16 turnos e mais +1 por duplicao do tempo.",
       "sourceBook": "Artes Marciais",
       "sourceFile": "pericias_Artes _marciais.xlsx"
     },

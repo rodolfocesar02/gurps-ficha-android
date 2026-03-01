@@ -932,21 +932,21 @@
   },
   {
     "id": "intolerância",
-    "nome": "Intolerância",
+    "nome": "Intolerncia",
     "custo": "Variável",
     "tipoCusto": "variavel",
     "pagina": 147
   },
   {
     "id": "intolerância_ao_álcool",
-    "nome": "Intolerância ao Álcool",
+    "nome": "Intolerncia ao lcool",
     "custo": "-1",
     "tipoCusto": "fixo",
     "pagina": 165
   },
   {
     "id": "intolerânciag",
-    "nome": "Intolerância-G",
+    "nome": "Intolerncia-G",
     "custo": "-10 ou -20",
     "tipoCusto": "escolha",
     "pagina": 147
@@ -1282,7 +1282,7 @@
   },
   {
     "id": "repugnância",
-    "nome": "Repugnância",
+    "nome": "Repugnncia",
     "custo": "-5 a -15",
     "tipoCusto": "fixo",
     "pagina": 154

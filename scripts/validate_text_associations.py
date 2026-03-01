@@ -11,6 +11,15 @@ from typing import Dict, Iterable, List, Set, Tuple
 
 TOKEN_RE = re.compile(r"[\wÀ-ÿ][\wÀ-ÿ'/-]*", re.UNICODE)
 MOJIBAKE_RE = re.compile(r"[ÃÂ�]")
+SKIP_KEYS = {
+    "id",
+    "kind",
+    "schema",
+    "schemaVersion",
+    "sourceFile",
+    "sourceFiles",
+    "generatedAtUtc",
+}
 
 
 def normalize_key(value: str) -> str:
@@ -27,15 +36,15 @@ class FileFinding:
     snippet: str
 
 
-def iter_strings(node):
+def iter_strings(node, parent_key: str = ""):
     if isinstance(node, dict):
-        for value in node.values():
-            yield from iter_strings(value)
+        for key, value in node.items():
+            yield from iter_strings(value, key)
     elif isinstance(node, list):
         for value in node:
-            yield from iter_strings(value)
+            yield from iter_strings(value, parent_key)
     elif isinstance(node, str):
-        yield node
+        yield node, parent_key
 
 
 def load_aliases(path: Path) -> List[dict]:
@@ -83,7 +92,9 @@ def audit(
         except Exception:
             continue
         rel_path = str(file_path).replace("\\", "/")
-        for s in iter_strings(payload):
+        for s, field_key in iter_strings(payload):
+            if field_key in SKIP_KEYS:
+                continue
             if MOJIBAKE_RE.search(s):
                 mojibake_findings.append(FileFinding(path=rel_path, snippet=s[:180]))
             for token in TOKEN_RE.findall(s):
@@ -115,13 +126,14 @@ def audit(
         term_id = term["id"]
         hits = alias_hits.get(term_id, {})
         observed = sorted(hits.keys(), key=lambda x: x.lower())
+        observed_casefold = {v.casefold() for v in observed}
         canonical_report.append(
             {
                 "id": term_id,
                 "canonical": canonical_by_term[term_id],
                 "observedForms": observed,
                 "observedFiles": sorted({fp for forms in hits.values() for fp in forms}),
-                "needsNormalization": len(observed) > 1,
+                "needsNormalization": len(observed_casefold) > 1,
             }
         )
 

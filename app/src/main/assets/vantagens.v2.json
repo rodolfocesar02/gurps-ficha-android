@@ -487,7 +487,7 @@
   },
   {
     "id": "calculos_instantaneos",
-    "nome": "Cálculos Instantâneos",
+    "nome": "Clculos Instantneos",
     "pagina": 46,
     "costKind": "fixed",
     "fixed": 2,
@@ -3229,7 +3229,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_difuso",
-    "nome": "Tolerância a Ferimentos(Difuso)",
+    "nome": "Tolerncia a Ferimentos(Difuso)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 100,
@@ -3243,7 +3243,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_homogeneo",
-    "nome": "Tolerância a Ferimentos(Homogêneo)",
+    "nome": "Tolerncia a Ferimentos(Homogneo)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 40,
@@ -3257,7 +3257,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_nao_vivo",
-    "nome": "Tolerância a Ferimentos(Não-Vivo)",
+    "nome": "Tolerncia a Ferimentos(No-Vivo)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 20,
@@ -3271,7 +3271,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_cerebro",
-    "nome": "Tolerância a Ferimentos(Sem Cérebro)",
+    "nome": "Tolerncia a Ferimentos(Sem Crebro)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
@@ -3285,7 +3285,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_cabeca",
-    "nome": "Tolerância a Ferimentos(Sem Cabeça)",
+    "nome": "Tolerncia a Ferimentos(Sem Cabea)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 7,
@@ -3299,7 +3299,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_olho",
-    "nome": "Tolerância a Ferimentos(Sem Olho)",
+    "nome": "Tolerncia a Ferimentos(Sem Olho)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
@@ -3313,7 +3313,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_orgaos_vitais",
-    "nome": "Tolerância a Ferimentos(Sem Órgãos Vitais)",
+    "nome": "Tolerncia a Ferimentos(Sem rgos Vitais)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
@@ -3327,7 +3327,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_sangue",
-    "nome": "Tolerância a Ferimentos(Sem Sangue)",
+    "nome": "Tolerncia a Ferimentos(Sem Sangue)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
@@ -3341,7 +3341,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_pescoco",
-    "nome": "Tolerância a Ferimentos(Sem Pescoço)",
+    "nome": "Tolerncia a Ferimentos(Sem Pescoo)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
@@ -3355,7 +3355,7 @@
   },
   {
     "id": "tolerancia_a_radiacao",
-    "nome": "Tolerância à Radiação",
+    "nome": "Tolerncia  Radiao",
     "pagina": 95,
     "costKind": "special",
     "fixed": null,
@@ -3369,7 +3369,7 @@
   },
   {
     "id": "tolerancia_a_temperatura",
-    "nome": "Tolerância à Temperatura",
+    "nome": "Tolerncia  Temperatura",
     "pagina": 95,
     "costKind": "perLevel",
     "fixed": null,
@@ -3383,7 +3383,7 @@
   },
   {
     "id": "tolerancia_ao_alcool",
-    "nome": "Tolerância ao Álcool",
+    "nome": "Tolerncia ao lcool",
     "pagina": 101,
     "costKind": "fixed",
     "fixed": 1,
@@ -3397,7 +3397,7 @@
   },
   {
     "id": "tolerancia_g_ampliada",
-    "nome": "Tolerância-G Ampliada",
+    "nome": "Tolerncia-G Ampliada",
     "pagina": 95,
     "costKind": "special",
     "fixed": null,
