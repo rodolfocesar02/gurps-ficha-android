@@ -1,0 +1,42 @@
+name: Text Association Audit
+
+on:
+  pull_request:
+    paths:
+      - "app/src/main/assets/*.json"
+      - "scripts/*.py"
+      - "scripts/*.json"
+      - ".github/workflows/text-association-audit.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "app/src/main/assets/*.json"
+      - "scripts/*.py"
+      - "scripts/*.json"
+      - ".github/workflows/text-association-audit.yml"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run strict text association audit
+        run: |
+          python scripts/validate_text_associations.py \
+            --assets-dir app/src/main/assets \
+            --report-out scripts/reports/text_association_report.ci.json \
+            --strict
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: text-association-report
+          path: scripts/reports/text_association_report.ci.json

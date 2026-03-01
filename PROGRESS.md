@@ -93,6 +93,12 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
     - validacao Android apos normalizacao:
       - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin --no-daemon`
       - resultado: `BUILD SUCCESSFUL`.
+  - auditor integrado em CI:
+    - novo workflow: `.github/workflows/text-association-audit.yml`;
+    - executa auditor em modo estrito em `push` para `main` e em `pull_request` quando houver mudancas em assets/scripts;
+    - comando CI:
+      - `python scripts/validate_text_associations.py --assets-dir app/src/main/assets --report-out scripts/reports/text_association_report.ci.json --strict`
+    - artefato de relatorio anexado automaticamente no job (`text-association-report`).
 - Validacao executada nas duas variantes:
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
