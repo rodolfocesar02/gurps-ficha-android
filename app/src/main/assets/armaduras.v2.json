@@ -1463,7 +1463,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "1",
       "nt": 1,
-      "localRaw": "crânio, rosto",
+      "localRaw": "crnio, rosto",
       "locaisNorm": [
         "cranio",
         "rosto"
@@ -1504,7 +1504,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "1",
       "nt": 1,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],
@@ -1542,7 +1542,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "1",
       "nt": 1,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],
@@ -1586,7 +1586,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "1",
       "nt": 1,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],
@@ -1625,7 +1625,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "1",
       "nt": 1,
-      "localRaw": "crânio, rosto",
+      "localRaw": "crnio, rosto",
       "locaisNorm": [
         "cranio",
         "rosto"
@@ -1666,7 +1666,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "2",
       "nt": 2,
-      "localRaw": "crânio, rosto",
+      "localRaw": "crnio, rosto",
       "locaisNorm": [
         "cranio",
         "rosto"
@@ -1707,7 +1707,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "2",
       "nt": 2,
-      "localRaw": "crânio, pescoço",
+      "localRaw": "crnio, pescoo",
       "locaisNorm": [
         "cranio",
         "pescoco"
@@ -1755,7 +1755,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "3",
       "nt": 3,
-      "localRaw": "crânio, rosto",
+      "localRaw": "crnio, rosto",
       "locaisNorm": [
         "cranio",
         "rosto"
@@ -1839,7 +1839,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "3",
       "nt": 3,
-      "localRaw": "crânio, rosto, pescoço",
+      "localRaw": "crnio, rosto, pescoo",
       "locaisNorm": [
         "cranio",
         "pescoco",
@@ -1888,7 +1888,7 @@
       "secao": "NT_Baixo_Proteção para Cabeca",
       "ntRaw": "3",
       "nt": 3,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],
@@ -2753,7 +2753,7 @@
       "secao": "NT_Alto_Capacetes",
       "ntRaw": "6",
       "nt": 6,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],
@@ -2791,7 +2791,7 @@
       "secao": "NT_Alto_Capacetes",
       "ntRaw": "7",
       "nt": 7,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],
@@ -2872,7 +2872,7 @@
       "secao": "NT_Alto_Capacetes",
       "ntRaw": "8",
       "nt": 8,
-      "localRaw": "crânio",
+      "localRaw": "crnio",
       "locaisNorm": [
         "cranio"
       ],

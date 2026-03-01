@@ -81,6 +81,18 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
       - `python scripts/validate_text_associations.py --assets-dir app/src/main/assets --report-out scripts/reports/text_association_report.json`
     - comando recomendado (bloqueio estrito em CI/local):
       - `python scripts/validate_text_associations.py --assets-dir app/src/main/assets --report-out scripts/reports/text_association_report.json --strict`
+  - pacote de saude de dados (fase 2 - normalizacao automatica aplicada):
+    - novo normalizador: `scripts/normalize_text_associations.py`;
+    - protecao de campos tecnicos no normalizador/auditor (`id`, `kind`, `sourceFile`, etc.) para evitar alteracao de chaves de dados;
+    - normalizacao aplicada em `app/src/main/assets` com aliases + reparo de mojibake:
+      - `python scripts/normalize_text_associations.py --input-dir app/src/main/assets --aliases scripts/text_aliases_ptbr.json --report-out scripts/reports/text_normalization_report.inplace.json --fix-mojibake --in-place`
+      - resultado: 18 arquivos analisados, 14 alterados, 3 substituicoes por alias e 215 reparos de mojibake.
+    - auditoria pos-normalizacao:
+      - `python scripts/validate_text_associations.py --assets-dir app/src/main/assets --report-out scripts/reports/text_association_report.after_inplace.json`
+      - resultado: 0 achados de mojibake e 0 conflitos canonicos criticos.
+    - validacao Android apos normalizacao:
+      - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin --no-daemon`
+      - resultado: `BUILD SUCCESSFUL`.
 - Validacao executada nas duas variantes:
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`

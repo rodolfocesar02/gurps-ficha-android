@@ -819,7 +819,7 @@
   },
   {
     "id": "arma_de_relampago",
-    "nome": "Arma de Relâmpago",
+    "nome": "Arma de Relmpago",
     "dificuldade": "D",
     "pagina": 198,
     "classe": "Comum",
@@ -830,7 +830,7 @@
     "duracao": "1 min.",
     "energia": "04/01",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "AM2, Relâmpago"
+    "preRequisitos": "AM2, Relmpago"
   },
   {
     "id": "arma_espiritual",
@@ -932,7 +932,7 @@
   },
   {
     "id": "armadura_de_relampagos",
-    "nome": "Armadura de Relâmpagos",
+    "nome": "Armadura de Relmpagos",
     "dificuldade": "D",
     "pagina": 198,
     "classe": "Comum",
@@ -943,7 +943,7 @@
     "duracao": "1 min.",
     "energia": "07/04",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "6 mágicas de Relâmpago incl. Imunidade a Relâmpagos"
+    "preRequisitos": "6 mgicas de Relmpago incl. Imunidade a Relmpagos"
   },
   {
     "id": "armadura_flamejante",
@@ -1499,7 +1499,7 @@
   },
   {
     "id": "bola_de_relampagos",
-    "nome": "Bola de Relâmpagos",
+    "nome": "Bola de Relmpagos",
     "dificuldade": "D",
     "pagina": 197,
     "classe": "Comum",
@@ -1510,7 +1510,7 @@
     "duracao": "1 min.",
     "energia": "2 a 6/M",
     "tempoOperacao": "1 a 3 seg.",
-    "preRequisitos": "Aporte, Relâmpago"
+    "preRequisitos": "Aporte, Relmpago"
   },
   {
     "id": "braco_de_ferro",
@@ -1867,7 +1867,7 @@
   },
   {
     "id": "chicote_de_relampago",
-    "nome": "Chicote de Relâmpago",
+    "nome": "Chicote de Relmpago",
     "dificuldade": "D",
     "pagina": 196,
     "classe": "Comum",
@@ -1878,7 +1878,7 @@
     "duracao": "10 seg.",
     "energia": "1 por 2 m#",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Relâmpago"
+    "preRequisitos": "Relmpago"
   },
   {
     "id": "chuva",
@@ -2409,7 +2409,10 @@
     "pagina": 28,
     "classe": "Especial",
     "escola": [
-      "Ar", "Fogo", "Terra", "Água"
+      "Ar",
+      "Fogo",
+      "Terra",
+      "Água"
     ],
     "duracao": "1 min.",
     "energia": "Especial",
@@ -2470,7 +2473,7 @@
     "duracao": "1 min.",
     "energia": "06/03",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Identificar Função, Serralheiro, Relâmpago"
+    "preRequisitos": "Identificar Funo, Serralheiro, Relmpago"
   },
   {
     "id": "controle_de_membro",
@@ -2605,7 +2608,10 @@
     "pagina": 27,
     "classe": "Especial",
     "escola": [
-      "Ar", "Fogo", "Terra", "Água"
+      "Ar",
+      "Fogo",
+      "Terra",
+      "Água"
     ],
     "duracao": "1 hora",
     "energia": "4#",
@@ -2838,7 +2844,7 @@
   },
   {
     "id": "corpo_de_relampagos",
-    "nome": "Corpo de Relâmpagos",
+    "nome": "Corpo de Relmpagos",
     "dificuldade": "MD",
     "pagina": 198,
     "classe": "Comum/R-HT",
@@ -2849,7 +2855,7 @@
     "duracao": "1 min.",
     "energia": "12/04",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "AM2, Relâmpago"
+    "preRequisitos": "AM2, Relmpago"
   },
   {
     "id": "corpo_de_sombra",
@@ -3083,7 +3089,10 @@
     "pagina": 28,
     "classe": "Especial",
     "escola": [
-      "Ar", "Fogo", "Terra", "Água"
+      "Ar",
+      "Fogo",
+      "Terra",
+      "Água"
     ],
     "duracao": "Perm.",
     "energia": "Especial",
@@ -4770,7 +4779,7 @@
     "duracao": "24 horas",
     "energia": "20",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "4 outras mágicas Necromântica"
+    "preRequisitos": "4 outras mgicas Necromntica"
   },
   {
     "id": "esquecimento",
@@ -5480,7 +5489,7 @@
   },
   {
     "id": "giralaminas",
-    "nome": "Gira-Lâminas",
+    "nome": "Gira-Lminas",
     "dificuldade": "D",
     "pagina": 168,
     "classe": "Comum/ R-Especial",
@@ -5490,11 +5499,11 @@
     "duracao": "1 min.",
     "energia": "02/02",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Escudo ou Girar Lâmina"
+    "preRequisitos": "Escudo ou Girar Lmina"
   },
   {
     "id": "girar_lamina",
-    "nome": "Girar Lâmina",
+    "nome": "Girar Lmina",
     "dificuldade": "D",
     "pagina": 167,
     "classe": "Bloqueio/R-DX",
@@ -5907,7 +5916,7 @@
   },
   {
     "id": "imunidade_a_relampagos",
-    "nome": "Imunidade a Relâmpagos",
+    "nome": "Imunidade a Relmpagos",
     "dificuldade": "D",
     "pagina": 196,
     "classe": "Comum",
@@ -6037,7 +6046,7 @@
   },
   {
     "id": "insignificancia",
-    "nome": "Insignificância",
+    "nome": "Insignificncia",
     "dificuldade": "D",
     "pagina": 48,
     "classe": "Comum/R-Espec.",
@@ -7378,7 +7387,7 @@
   },
   {
     "id": "muralha_de_relampagos",
-    "nome": "Muralha de Relâmpagos",
+    "nome": "Muralha de Relmpagos",
     "dificuldade": "D",
     "pagina": 197,
     "classe": "Comum",
@@ -7389,7 +7398,7 @@
     "duracao": "1 min.",
     "energia": "2 a 6/I",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Relâmpago"
+    "preRequisitos": "Relmpago"
   },
   {
     "id": "muralha_de_silencio",
@@ -7482,7 +7491,8 @@
     "dificuldade": "D",
     "pagina": 104,
     "classe": "Comum",
-    "escola": ["Reconhecimento",
+    "escola": [
+      "Reconhecimento",
       "Alimentos"
     ],
     "duracao": "1 min.",
@@ -7520,7 +7530,7 @@
   },
   {
     "id": "neutralizacao_instantanea_de_veneno",
-    "nome": "Neutralização Instantânea de Veneno",
+    "nome": "Neutralizao Instantnea de Veneno",
     "dificuldade": "D",
     "pagina": 92,
     "classe": "Comum",
@@ -7618,7 +7628,7 @@
     "duracao": "10 seg.",
     "energia": "1 a 5/I",
     "tempoOperacao": "1 a 5 seg.",
-    "preRequisitos": "Moldar Ar, Relâmpago"
+    "preRequisitos": "Moldar Ar, Relmpago"
   },
   {
     "id": "nuvem_de_fogo",
@@ -7763,7 +7773,7 @@
   },
   {
     "id": "olhar_de_relampago",
-    "nome": "Olhar de Relâmpago",
+    "nome": "Olhar de Relmpago",
     "dificuldade": "MD",
     "pagina": 163,
     "classe": "Comum",
@@ -7774,7 +7784,7 @@
     "duracao": "1 min.",
     "energia": "1 a 4",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Relâmpago, Imunidade a Relâmpagos"
+    "preRequisitos": "Relmpago, Imunidade a Relmpagos"
   },
   {
     "id": "olho_magico",
@@ -7906,7 +7916,7 @@
   },
   {
     "id": "panico",
-    "nome": "Pânico",
+    "nome": "Pnico",
     "dificuldade": "D",
     "pagina": 134,
     "classe": "Área/R-Vont",
@@ -8623,7 +8633,7 @@
   },
   {
     "id": "projeteis_de_relampago",
-    "nome": "Projéteis de Relâmpago",
+    "nome": "Projteis de Relmpago",
     "dificuldade": "D",
     "pagina": 198,
     "classe": "Comum",
@@ -8634,7 +8644,7 @@
     "duracao": "1 min.",
     "energia": "4/2#",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "Arma de Relâmpago"
+    "preRequisitos": "Arma de Relmpago"
   },
   {
     "id": "projeteis_flamejantes",
@@ -9120,7 +9130,7 @@
   },
   {
     "id": "regeneracao_instantanea",
-    "nome": "Regeneração Instantânea",
+    "nome": "Regenerao Instantnea",
     "dificuldade": "MD",
     "pagina": 93,
     "classe": "Comum",
@@ -9176,7 +9186,7 @@
   },
   {
     "id": "relampago",
-    "nome": "Relâmpago",
+    "nome": "Relmpago",
     "dificuldade": "D",
     "pagina": 196,
     "classe": "Projetil",
@@ -9191,7 +9201,7 @@
   },
   {
     "id": "relampago_explosivo",
-    "nome": "Relâmpago Explosivo",
+    "nome": "Relmpago Explosivo",
     "dificuldade": "D",
     "pagina": 196,
     "classe": "Projetil",
@@ -9202,7 +9212,7 @@
     "duracao": "Instant.",
     "energia": "2 a 2×AM#",
     "tempoOperacao": "1 a 3 seg.",
-    "preRequisitos": "Relâmpago"
+    "preRequisitos": "Relmpago"
   },
   {
     "id": "remendar",
@@ -9528,7 +9538,7 @@
     "duracao": "Perm.",
     "energia": "300",
     "tempoOperacao": "2 horas",
-    "preRequisitos": "Regeneração Instantânea, Convocar Espírito"
+    "preRequisitos": "Regenerao Instantnea, Convocar Esprito"
   },
   {
     "id": "restauracao",
@@ -9546,7 +9556,7 @@
   },
   {
     "id": "restauracao_instantanea",
-    "nome": "Restauração Instantânea",
+    "nome": "Restaurao Instantnea",
     "dificuldade": "MD",
     "pagina": 93,
     "classe": "Comum",
@@ -10699,7 +10709,7 @@
     "duracao": "1 min.#",
     "energia": "2, 4 ou 6/M",
     "tempoOperacao": "Instant.#",
-    "preRequisitos": "Furacão, Relâmpago"
+    "preRequisitos": "Furaco, Relmpago"
   },
   {
     "id": "tepidez",
@@ -10913,7 +10923,7 @@
     "duracao": "Instant.",
     "energia": "1 a 3",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Relâmpago"
+    "preRequisitos": "Relmpago"
   },
   {
     "id": "toque_congelante",

@@ -10,7 +10,7 @@
     {
       "id": "zarabatana",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia",
       "grupo": "ZARABATANA (DX-6)",
       "nome": "Zarabatana",
       "ntRaw": "0",
@@ -74,7 +74,7 @@
     {
       "id": "boleadeira",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia",
       "grupo": "BOLEADEIRA (Sem valor predefinido)",
       "nome": "Boleadeira",
       "ntRaw": "0",
@@ -137,7 +137,7 @@
     {
       "id": "arco_longo",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia",
       "grupo": "ARCO (DX-5)",
       "nome": "Arco Longo",
       "ntRaw": "0",
@@ -204,7 +204,7 @@
     {
       "id": "arco_comum",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia",
       "grupo": "ARCO (DX-5)",
       "nome": "Arco Comum",
       "ntRaw": "0",
@@ -271,7 +271,7 @@
     {
       "id": "arco_curto",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia",
       "grupo": "ARCO (DX-5)",
       "nome": "Arco Curto",
       "ntRaw": "0",
@@ -338,7 +338,7 @@
     {
       "id": "arco_composto",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia",
       "grupo": "ARCO (DX-5)",
       "nome": "Arco Composto",
       "ntRaw": "1",
@@ -405,7 +405,7 @@
     {
       "id": "besta",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "BESTA (DX-4)",
       "nome": "Besta",
       "ntRaw": "2",
@@ -472,7 +472,7 @@
     {
       "id": "besta_de_garrucha",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "BESTA (DX-4)",
       "nome": "Besta de Garrucha",
       "ntRaw": "3",
@@ -537,7 +537,7 @@
     {
       "id": "besta_de_pelouro",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "BESTA (DX-4)",
       "nome": "Besta de Pelouro",
       "ntRaw": "3",
@@ -604,7 +604,7 @@
     {
       "id": "alavanca_de_besta",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "BESTA (DX-4)",
       "nome": "Alavanca de Besta",
       "ntRaw": "3",
@@ -669,7 +669,7 @@
     {
       "id": "rede_grande",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "REDE (Capa-5)",
       "nome": "Rede Grande",
       "ntRaw": "0",
@@ -732,7 +732,7 @@
     {
       "id": "rede_de_combate",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "REDE (Capa-5)",
       "nome": "Rede de Combate",
       "ntRaw": "2",
@@ -795,7 +795,7 @@
     {
       "id": "funda",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "FUNDA (DX-6)",
       "nome": "Funda",
       "ntRaw": "0",
@@ -860,7 +860,7 @@
     {
       "id": "fustibalo",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "FUNDA (DX-6)",
       "nome": "Fustíbalo",
       "ntRaw": "1",
@@ -927,7 +927,7 @@
     {
       "id": "atlatl_com_dardo",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARREMESSADOR DE LANÇA (DX-5 ou Arma de Arremesso (Lança)-4)",
       "nome": "Atlatl (com Dardo)",
       "ntRaw": "0",
@@ -991,7 +991,7 @@
     {
       "id": "atlatl_com_azagaia",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARREMESSADOR DE LANÇA (DX-5 ou Arma de Arremesso (Lança)-4)",
       "nome": "Atlatl (com Azagaia)",
       "ntRaw": "0",
@@ -1055,7 +1055,7 @@
     {
       "id": "machadinha",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
       "nome": "Machadinha",
       "ntRaw": "0",
@@ -1119,7 +1119,7 @@
     {
       "id": "machado_de_arremesso",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
       "nome": "Machado de Arremesso",
       "ntRaw": "0",
@@ -1183,7 +1183,7 @@
     {
       "id": "maca",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
       "nome": "Maça",
       "ntRaw": "2",
@@ -1247,7 +1247,7 @@
     {
       "id": "maca_pequena",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (MAÇA/MACHADO) (DX-4)",
       "nome": "Maça Pequena",
       "ntRaw": "2",
@@ -1311,8 +1311,8 @@
     {
       "id": "arpao",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
-      "grupo": "ARMA DE ARREMESSO (ARPÃO) (DX-4 ou Arma de Arremesso (Lança)-2)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
+      "grupo": "ARMA DE ARREMESSO (ARPO) (DX-4 ou Arma de Arremesso (Lana)-2)",
       "nome": "Arpão",
       "ntRaw": "2",
       "nt": 2,
@@ -1375,7 +1375,7 @@
     {
       "id": "facao",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
       "nome": "Facão",
       "ntRaw": "0",
@@ -1439,7 +1439,7 @@
     {
       "id": "faca",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
       "nome": "Faca",
       "ntRaw": "0",
@@ -1503,7 +1503,7 @@
     {
       "id": "estaca_de_madeira",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
       "nome": "Estaca de Madeira",
       "ntRaw": "0",
@@ -1567,7 +1567,7 @@
     {
       "id": "adaga",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (FACA) (DX-4)",
       "nome": "Adaga",
       "ntRaw": "1",
@@ -1631,7 +1631,7 @@
     {
       "id": "shuriken",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (SHURIKEN) (DX-4 ou Arremesso-2)",
       "nome": "Shuriken",
       "ntRaw": "3",
@@ -1695,7 +1695,7 @@
     {
       "id": "lanca",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (LANÇA) (DX-4, Arma de Arremesso (Arpão)-2, ou Arremessador de Lança-4)",
       "nome": "Lança",
       "ntRaw": "0",
@@ -1759,7 +1759,7 @@
     {
       "id": "azagaia",
       "tipo": "arma_distancia",
-      "categoria": "Tabela de Armas Motoras de Combate à Distância (continuação)",
+      "categoria": "Tabela de Armas Motoras de Combate  Distncia (continuao)",
       "grupo": "ARMA DE ARREMESSO (LANÇA) (DX-4, Arma de Arremesso (Arpão)-2, ou Arremessador de Lança-4)",
       "nome": "Azagaia",
       "ntRaw": "1",

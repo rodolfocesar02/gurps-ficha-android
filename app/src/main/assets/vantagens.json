@@ -209,7 +209,7 @@
     "tipoCusto": "escolha",
     "pagina": 44
   },
-    {
+  {
     "id": "boa_forma",
     "nome": "Boa Forma",
     "custo": "5",
@@ -253,7 +253,7 @@
   },
   {
     "id": "cálculos_instantâneos",
-    "nome": "Cálculos Instantâneos",
+    "nome": "Clculos Instantneos",
     "custo": "2",
     "tipoCusto": "fixo",
     "pagina": 46
@@ -1611,35 +1611,35 @@
   },
   {
     "id": "tolerância_a_ferimentos",
-    "nome": "Tolerância a Ferimentos",
+    "nome": "Tolerncia a Ferimentos",
     "custo": "Variável",
     "tipoCusto": "variavel",
     "pagina": 94
   },
   {
     "id": "tolerância_à_radiação",
-    "nome": "Tolerância à Radiação",
+    "nome": "Tolerncia  Radiao",
     "custo": "Variável",
     "tipoCusto": "variavel",
     "pagina": 95
   },
   {
     "id": "tolerância_à_temperatura",
-    "nome": "Tolerância à Temperatura",
+    "nome": "Tolerncia  Temperatura",
     "custo": "1/nível",
     "tipoCusto": "por_nivel",
     "pagina": 95
   },
   {
     "id": "tolerância_ao_álcool",
-    "nome": "Tolerância ao Álcool",
+    "nome": "Tolerncia ao lcool",
     "custo": "1",
     "tipoCusto": "fixo",
     "pagina": 101
   },
   {
     "id": "tolerânciag_ampliada",
-    "nome": "Tolerância-G Ampliada",
+    "nome": "Tolerncia-G Ampliada",
     "custo": "5 a 25",
     "tipoCusto": "fixo",
     "pagina": 95
