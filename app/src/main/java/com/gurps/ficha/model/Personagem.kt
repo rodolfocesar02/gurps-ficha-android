@@ -105,11 +105,12 @@ data class Personagem(
     val pontosQualidades: Int get() = qualidades.size
     val pontosPeculiaridades: Int get() = peculiaridades.size * -1
     val pontosPericias: Int get() = pericias.sumOf { it.pontosGastos }
+    val pontosTecnicas: Int get() = tecnicas.sumOf { it.pontosGastos.coerceAtLeast(0) }
     val pontosMagias: Int get() = magias.sumOf { it.pontosGastos.coerceAtLeast(1) }
 
     val pontosGastos: Int get() =
         pontosAtributos + pontosSecundarios + pontosVantagens +
-        pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosMagias
+        pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosTecnicas + pontosMagias
 
     val pontosRestantes: Int get() = pontosIniciais - pontosGastos
     val desvantagensExcedemLimite: Boolean get() = pontosDesvantagens < limiteDesvantagens
@@ -384,12 +385,31 @@ data class PericiaSelecionada(
 data class TecnicaSelecionada(
     val definicaoId: String = "",
     var nome: String = "",
-    var pontosGastos: Int = 1,
+    var pontosGastos: Int = 0,
+    var nivelRelativoPredefinido: Int = 0,
+    var periciaBaseDefinicaoId: String = "",
+    var periciaBaseNome: String = "",
+    var periciaBaseEspecializacao: String = "",
+    var preDefinidoModificador: Int = 0,
+    var limiteMaximoRelativo: Int? = null,
     var dificuldadeRaw: String = "",
     var preDefinidoRaw: String = "",
     var preRequisitoRaw: String = "",
     var sourceBook: String = ""
-)
+) {
+    fun encontrarPericiaBase(personagem: Personagem): PericiaSelecionada? {
+        if (periciaBaseDefinicaoId.isBlank()) return null
+        return personagem.pericias.firstOrNull { pericia ->
+            pericia.definicaoId == periciaBaseDefinicaoId &&
+                pericia.especializacao.equals(periciaBaseEspecializacao, ignoreCase = true)
+        }
+    }
+
+    fun calcularNivel(personagem: Personagem): Int? {
+        val nivelPericiaBase = encontrarPericiaBase(personagem)?.calcularNivel(personagem) ?: return null
+        return nivelPericiaBase + preDefinidoModificador + nivelRelativoPredefinido
+    }
+}
 
 // ============================================================
 // MAGIAS

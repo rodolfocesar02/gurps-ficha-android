@@ -12,7 +12,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.PericiaSelecionada
-import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 // === TAB PERICIAS ===
@@ -32,8 +31,6 @@ fun TabPericias(viewModel: FichaViewModel) {
     var showPericiasSuplementares by remember { mutableStateOf(false) }
     var showCustomDialog by remember { mutableStateOf(false) }
     var editingPericiaIndex by remember { mutableStateOf<Int?>(null) }
-    var showSelecionarTecnica by remember { mutableStateOf(false) }
-    var editingTecnicaIndex by remember { mutableStateOf<Int?>(null) }
 
     StandardTabColumn(contentSpacing = 6.dp) {
 
@@ -49,10 +46,6 @@ fun TabPericias(viewModel: FichaViewModel) {
                 BotaoAdicionarPericiaPadrao(
                     texto = "Criar Perícia",
                     onClick = { showCustomDialog = true }
-                )
-                BotaoAdicionarPericiaPadrao(
-                    texto = "Adicionar Técnica",
-                    onClick = { showSelecionarTecnica = true }
                 )
                 BotaoAdicionarPericiaPadrao(
                     texto = "Perícias Suplementares",
@@ -72,16 +65,6 @@ fun TabPericias(viewModel: FichaViewModel) {
                 BotaoAdicionarPericiaPadrao(
                     texto = "Criar Perícia",
                     onClick = { showCustomDialog = true },
-                    modifier = Modifier.weight(1f)
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                BotaoAdicionarPericiaPadrao(
-                    texto = "Adicionar Técnica",
-                    onClick = { showSelecionarTecnica = true },
                     modifier = Modifier.weight(1f)
                 )
                 BotaoAdicionarPericiaPadrao(
@@ -119,34 +102,9 @@ fun TabPericias(viewModel: FichaViewModel) {
                 }
             }
         }
-        if (p.tecnicas.isNotEmpty()) {
-            Text(
-                "Técnicas",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-        p.tecnicas.forEachIndexed { index, tecnica ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors()
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-                    TecnicaItem(
-                        tecnica = tecnica,
-                        onEdit = { editingTecnicaIndex = index },
-                        onDelete = { viewModel.removerTecnica(index) }
-                    )
-                }
-            }
-        }
         ResumoPericiasFooter(
             totalPericias = p.pericias.size,
             pontosPericias = p.pontosPericias
-        )
-        ResumoTecnicasFooter(
-            totalTecnicas = p.tecnicas.size,
-            pontosTecnicas = p.tecnicas.sumOf { it.pontosGastos }
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -177,13 +135,6 @@ fun TabPericias(viewModel: FichaViewModel) {
         )
     }
 
-    if (showSelecionarTecnica) {
-        SelecionarTecnicaDialog(
-            viewModel = viewModel,
-            onDismiss = { showSelecionarTecnica = false }
-        )
-    }
-
     if (showPericiasSuplementares) {
         PericiasSuplementaresDialog(
             viewModel = viewModel,
@@ -202,17 +153,6 @@ fun TabPericias(viewModel: FichaViewModel) {
             }
         )
     }
-
-    editingTecnicaIndex?.let { index ->
-        EditarTecnicaDialog(
-            tecnica = p.tecnicas[index],
-            onDismiss = { editingTecnicaIndex = null },
-            onSave = {
-                viewModel.atualizarTecnica(index, it)
-                editingTecnicaIndex = null
-            }
-        )
-    }
 }
 
 @Composable
@@ -221,18 +161,6 @@ private fun ResumoPericiasFooter(totalPericias: Int, pontosPericias: Int) {
         Text("Total de pericias: $totalPericias", style = MaterialTheme.typography.labelSmall)
         Text(
             "Pontos gastos: $pontosPericias",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
-@Composable
-private fun ResumoTecnicasFooter(totalTecnicas: Int, pontosTecnicas: Int) {
-    SummaryFooterCard(title = "Resumo de Tecnicas") {
-        Text("Total de tecnicas: $totalTecnicas", style = MaterialTheme.typography.labelSmall)
-        Text(
-            "Pontos gastos: $pontosTecnicas",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary
         )
@@ -286,41 +214,6 @@ fun PericiaItem(
             IconButton(onClick = onDelete) {
                 Icon(Icons.Default.Delete, contentDescription = "Remover perícia ${pericia.nome}")
             }
-        }
-    }
-}
-
-@Composable
-fun TecnicaItem(
-    tecnica: TecnicaSelecionada,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onEdit() },
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 6.dp)
-        ) {
-            Text(
-                tecnica.nome,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
-            )
-            Text(
-                "${tecnica.sourceBook} • ${tecnica.dificuldadeRaw} • ${tecnica.pontosGastos} pts",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Remover técnica ${tecnica.nome}")
         }
     }
 }

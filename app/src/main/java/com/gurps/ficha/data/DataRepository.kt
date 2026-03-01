@@ -723,12 +723,24 @@ class DataRepository(private val context: Context) {
 
     fun criarTecnicaSelecionada(
         definicao: TecnicaCatalogoItem,
-        pontosGastos: Int = 1
+        periciaBase: PericiaSelecionada,
+        nivelRelativoPredefinido: Int = 0
     ): TecnicaSelecionada {
+        val nivelNormalizado = nivelRelativoPredefinido.coerceAtLeast(0)
+        val dificuldade = tecnicaDificuldade(definicao.dificuldadeRaw)
+        val custo = calcularCustoTecnica(dificuldade, nivelNormalizado)
+        val predefMod = extrairModificadorPredefinido(definicao.preDefinidoRaw)
+        val limiteMaximo = extrairLimiteMaximoRelativo(definicao.preRequisitoRaw, predefMod)
         return TecnicaSelecionada(
             definicaoId = definicao.id,
             nome = definicao.nome,
-            pontosGastos = pontosGastos.coerceAtLeast(1),
+            pontosGastos = custo,
+            nivelRelativoPredefinido = nivelNormalizado,
+            periciaBaseDefinicaoId = periciaBase.definicaoId,
+            periciaBaseNome = periciaBase.nome,
+            periciaBaseEspecializacao = periciaBase.especializacao,
+            preDefinidoModificador = predefMod,
+            limiteMaximoRelativo = limiteMaximo,
             dificuldadeRaw = definicao.dificuldadeRaw,
             preDefinidoRaw = definicao.preDefinidoRaw,
             preRequisitoRaw = definicao.preRequisitoRaw,
@@ -772,6 +784,37 @@ class DataRepository(private val context: Context) {
 
     fun getMagiaPorId(id: String): MagiaDefinicao? {
         return magias.find { it.id == id }
+    }
+
+    fun tecnicaDificuldade(dificuldadeRaw: String): String {
+        val normalizada = dificuldadeRaw.sanitized().lowercase()
+        return if (normalizada.contains("dif")) "DIFICIL" else "MEDIA"
+    }
+
+    fun calcularCustoTecnica(dificuldade: String, nivelRelativoPredefinido: Int): Int {
+        val nivel = nivelRelativoPredefinido.coerceAtLeast(0)
+        if (nivel == 0) return 0
+        return if (dificuldade == "DIFICIL") nivel + 1 else nivel
+    }
+
+    fun extrairModificadorPredefinido(preDefinidoRaw: String): Int {
+        val raw = preDefinidoRaw.sanitized()
+        if (raw == "-") return 0
+        return Regex("([+-]\\d+)").find(raw)?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 0
+    }
+
+    fun extrairLimiteMaximoRelativo(preRequisitoRaw: String, preDefinidoModificador: Int): Int? {
+        val raw = preRequisitoRaw.sanitized()
+        val normalizado = Normalizer.normalize(raw, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+            .lowercase()
+        if (normalizado.contains("metade da penalidade")) {
+            val penalidade = kotlin.math.abs(preDefinidoModificador)
+            return if (penalidade > 0) penalidade / 2 else null
+        }
+        if (!normalizado.contains("nao pode exceder")) return null
+        val bonus = Regex("([+-]\\d+)").find(normalizado)?.groupValues?.getOrNull(1)?.toIntOrNull()
+        return bonus ?: 0
     }
 
     companion object {

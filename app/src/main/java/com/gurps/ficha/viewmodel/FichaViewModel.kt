@@ -600,15 +600,28 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     fun adicionarTecnica(
         definicao: TecnicaCatalogoItem,
-        pontosGastos: Int = 1
-    ) {
-        if (personagem.tecnicas.any { it.definicaoId == definicao.id }) {
-            return
+        periciaBase: PericiaSelecionada,
+        nivelRelativoPredefinido: Int = 0
+    ): String? {
+        if (personagem.tecnicas.any { it.definicaoId == definicao.id && it.periciaBaseDefinicaoId == periciaBase.definicaoId && it.periciaBaseEspecializacao == periciaBase.especializacao }) {
+            return "Esta técnica já foi adicionada para esta perícia base."
         }
-        val tecnica = dataRepository.criarTecnicaSelecionada(definicao, pontosGastos)
+        if (!tecnicaAtendePreRequisito(definicao, periciaBase)) {
+            return "A perícia selecionada não atende o pré-requisito desta técnica."
+        }
+        val limiteMaximo = limiteMaximoTecnica(definicao)
+        if (limiteMaximo != null && nivelRelativoPredefinido > limiteMaximo) {
+            return "Esta técnica permite no máximo predefinido +$limiteMaximo."
+        }
+        val tecnica = dataRepository.criarTecnicaSelecionada(
+            definicao = definicao,
+            periciaBase = periciaBase,
+            nivelRelativoPredefinido = nivelRelativoPredefinido
+        )
         val lista = personagem.tecnicas.toMutableList()
         lista.add(tecnica)
         personagem = personagem.copy(tecnicas = lista)
+        return null
     }
 
     fun removerTecnica(index: Int) {
@@ -622,7 +635,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarTecnica(index: Int, tecnica: TecnicaSelecionada) {
         val lista = personagem.tecnicas.toMutableList()
         if (index in lista.indices) {
-            lista[index] = tecnica.copy(pontosGastos = tecnica.pontosGastos.coerceAtLeast(1))
+            val dificuldade = dataRepository.tecnicaDificuldade(tecnica.dificuldadeRaw)
+            val nivelRelativo = tecnica.nivelRelativoPredefinido.coerceAtLeast(0)
+            val custo = dataRepository.calcularCustoTecnica(dificuldade, nivelRelativo)
+            lista[index] = tecnica.copy(
+                pontosGastos = custo,
+                nivelRelativoPredefinido = nivelRelativo
+            )
             personagem = personagem.copy(tecnicas = lista)
         }
     }
@@ -1124,8 +1143,60 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return personagem.magias.any { it.definicaoId == id }
     }
 
-    fun tecnicaJaAdicionada(id: String): Boolean {
-        return personagem.tecnicas.any { it.definicaoId == id }
+    fun tecnicaJaAdicionada(id: String, periciaBaseDefinicaoId: String? = null, periciaBaseEspecializacao: String = ""): Boolean {
+        return personagem.tecnicas.any { tecnica ->
+            if (tecnica.definicaoId != id) {
+                false
+            } else if (periciaBaseDefinicaoId.isNullOrBlank()) {
+                true
+            } else {
+                tecnica.periciaBaseDefinicaoId == periciaBaseDefinicaoId &&
+                    tecnica.periciaBaseEspecializacao.equals(periciaBaseEspecializacao, ignoreCase = true)
+            }
+        }
+    }
+
+    fun custoTecnica(definicao: TecnicaCatalogoItem, nivelRelativoPredefinido: Int): Int {
+        val dificuldade = dataRepository.tecnicaDificuldade(definicao.dificuldadeRaw)
+        return dataRepository.calcularCustoTecnica(dificuldade, nivelRelativoPredefinido.coerceAtLeast(0))
+    }
+
+    fun limiteMaximoTecnica(definicao: TecnicaCatalogoItem): Int? {
+        val predefMod = dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
+        return dataRepository.extrairLimiteMaximoRelativo(definicao.preRequisitoRaw, predefMod)
+    }
+
+    fun tecnicaAtendePreRequisito(definicao: TecnicaCatalogoItem, periciaBase: PericiaSelecionada): Boolean {
+        val prerequisito = normalizarTexto(definicao.preRequisitoRaw)
+        if (prerequisito.isBlank() || prerequisito == "-") return true
+
+        val termoPericia = normalizarTexto(periciaBase.nome)
+        if (termoPericia.isBlank()) return false
+
+        val termosGenericos = listOf(
+            "qualquer pericia",
+            "pericia pre requisito",
+            "outra pericia",
+            "arma de combate corpo a corpo",
+            "desarmado",
+            "apropriada"
+        )
+        if (termosGenericos.any { prerequisito.contains(it) }) {
+            return true
+        }
+
+        val blocoPrincipal = prerequisito.substringBefore(";")
+        val termos = blocoPrincipal
+            .replace(" ou ", ",")
+            .split(",")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+        if (termos.isEmpty()) return true
+
+        return termos.any { termo ->
+            val termoLimpo = normalizarTexto(termo)
+            termoLimpo.contains(termoPericia) || termoPericia.contains(termoLimpo)
+        }
     }
 
     val nivelAptidaoMagica: Int
@@ -1301,6 +1372,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             return nivel.coerceIn(1, 4)
         }
         return nivel.coerceAtLeast(1)
+    }
+
+    private fun normalizarTexto(valor: String): String {
+        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace(Regex("[^a-z0-9\\s/+_-]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
     companion object {
