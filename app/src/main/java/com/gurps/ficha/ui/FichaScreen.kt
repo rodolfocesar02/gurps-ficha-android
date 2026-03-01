@@ -47,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
+import com.gurps.ficha.model.PersonagemInterop
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,14 +77,26 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
     val rolagemTabIndex = if (temAptidaoMagica) 6 else 5
     val maxTabIndex = tabs.lastIndex
-    val exportLauncher = rememberLauncherForActivityResult(
+    val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
         runCatching {
             context.contentResolver.openOutputStream(uri)?.use { output ->
                 output.writer(Charsets.UTF_8).use { writer ->
-                    writer.write(viewModel.personagem.toJson())
+                    writer.write(viewModel.exportarFichaJsonCompativel())
+                }
+            }
+        }
+    }
+    val exportVersionadoLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        runCatching {
+            context.contentResolver.openOutputStream(uri)?.use { output ->
+                output.writer(Charsets.UTF_8).use { writer ->
+                    writer.write(viewModel.exportarFichaJsonVersionada())
                 }
             }
         }
@@ -208,11 +221,17 @@ fun FichaScreen(viewModel: FichaViewModel) {
             onNovaFicha = { viewModel.novaFicha(); showMenuDialog = false },
             onSalvar = { showMenuDialog = false; showSaveDialog = true },
             onCarregar = { showMenuDialog = false; showLoadDialog = true },
-            onExportar = {
+            onExportarCompativel = {
                 showMenuDialog = false
                 val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
                     .replace(Regex("[^a-zA-Z0-9._-]"), "_")
-                exportLauncher.launch("${nomeBase}.json")
+                exportCompativelLauncher.launch("${nomeBase}.json")
+            },
+            onExportarVersionado = {
+                showMenuDialog = false
+                val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
+                    .replace(Regex("[^a-zA-Z0-9._-]"), "_")
+                exportVersionadoLauncher.launch("${nomeBase}_v${PersonagemInterop.SCHEMA_VERSION_ATUAL}.json")
             },
             onImportar = {
                 showMenuDialog = false

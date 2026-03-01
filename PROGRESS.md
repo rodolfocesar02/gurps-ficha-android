@@ -1,7 +1,23 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-02-28
+Atualizado em: 2026-03-01
 Objetivo atual: evoluir o app a partir da base ja estavel em producao.
+
+## Atualizacao do Bloco (2026-03-01)
+- Lote 14 (import/export JSON) avancou em base compartilhada `app/src/main`:
+  - Novo envelope de interoperabilidade com metadados: `schema`, `schemaVersion`, `exportedAtUtc`, `appVersion`, `uiVariant`, `character`.
+  - Exportacao no menu ajustada para dois formatos:
+    - `JSON Compativel` (legado, para versoes antigas do app);
+    - `JSON Versionado` (novo envelope de interoperabilidade).
+  - Importacao aceita tanto envelope novo quanto JSON legado sem envelope (compatibilidade retroativa).
+  - Validacao de compatibilidade de versao no import:
+    - versao futura -> erro claro de versao incompativel;
+    - arquivo invalido/corrompido -> erro padronizado.
+  - Testes unitarios adicionados para parser/import-export (`PersonagemInteropTest`).
+- Validacao executada nas duas variantes:
+  - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
+  - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
+  - Resultado: `BUILD SUCCESSFUL`.
 
 ## Atualizacao Final do Bloco (2026-02-28)
     - `1d92bde` chore(deploy): retry railway queue
@@ -287,9 +303,12 @@ Criterio de pronto:
 Status: `EM ANDAMENTO`
 Andamento:
 - Menu principal com acoes de `Exportar Ficha (JSON)` e `Importar Ficha (JSON)`.
-- Exportacao implementada via seletor de arquivo Android (`CreateDocument`) com serializacao da ficha atual.
-- Importacao implementada via seletor de arquivo Android (`OpenDocument`) com validacao basica e feedback de sucesso/erro em dialogo.
-- Compatibilidade inicial preservada pelo parser `Personagem.fromJson`.
+- Exportacao implementada via seletor de arquivo Android (`CreateDocument`) com dois formatos:
+  - `JSON Compativel` (legado);
+  - `JSON Versionado` (envelope com metadados via `PersonagemInterop.exportarJson`).
+- Importacao implementada via seletor de arquivo Android (`OpenDocument`) com parser versionado e feedback de sucesso/erro em dialogo.
+- Compatibilidade preservada para JSON legado sem envelope e validacao de versao futura no import.
+- Testes unitarios adicionados para parser e compatibilidade basica entre versoes (`PersonagemInteropTest`).
 
 ## Fora de Escopo (agora)
 - Nao alterar regras matematicas de custo/pontos durante reforma visual da aba Geral.
