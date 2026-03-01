@@ -539,3 +539,24 @@ Status: `PENDENTE`
 - UI PRA CEGO: ALTERACOES DE LAYOUT DE ACESSIBILIDADE DEVEM SER FEITAS NA VARIANTE `PRACEGO`.
 - SEMPRE CONFIRMAR EXPLICITAMENTE, NO INICIO DE CADA BLOCO DE AJUSTE VISUAL, QUAL VARIANTE ESTA SENDO ALTERADA: `VISUAL` OU `PRACEGO`.
 - SE O PEDIDO DO USUARIO NAO ESPECIFICAR A VARIANTE, CONFIRMAR ANTES DE EDITAR LAYOUT.
+
+## Atualizacao 2026-03-01 - Descricoes de Pericias sem poluicao visual
+
+Escopo implementado (vale para VISUAL e PRACEGO, pois esta no codigo compartilhado `app/src/main`):
+- Pericias Suplementares agora mostram apenas resumo curto (1 linha) no card.
+- Card ganhou botao `Detalhes` para abrir conteudo completo sem poluir lista.
+- Novo dialogo de detalhes com secoes fixas e previsiveis:
+  - O que faz
+  - Pre-requisito
+  - Pre-definido
+  - Modificadores (somente quando existir)
+- Acessibilidade adicionada:
+  - rotulos de acao (`Abrir detalhes...` / `Fechar detalhes...`)
+  - titulos de secao marcados como heading para leitura por leitor de tela
+  - resumo rapido extra na variante PRACEGO para leitura inicial
+
+Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
+
+Validacao executada:
+- `./gradlew :app:assembleDebug` (OK)

@@ -1,4 +1,4 @@
-package com.gurps.ficha.ui
+﻿package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PericiaSuplementarItem
 import com.gurps.ficha.model.Personagem
@@ -65,12 +68,12 @@ fun SelecionarTecnicaDialog(
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text("Selecionar Técnica", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text("Selecionar TÃ©cnica", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = busca,
                 onValueChange = { busca = it },
-                label = { Text("Buscar técnica...") },
+                label = { Text("Buscar tÃ©cnica...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Default.Search, null) }
@@ -91,7 +94,7 @@ fun SelecionarTecnicaDialog(
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${tecnicas.size} técnicas encontradas", style = MaterialTheme.typography.bodySmall)
+            Text("${tecnicas.size} tÃ©cnicas encontradas", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(4.dp))
 
             LazyColumn(
@@ -108,7 +111,7 @@ fun SelecionarTecnicaDialog(
                         Column(modifier = Modifier.padding(10.dp)) {
                             Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
                             Text(
-                                "${tecnica.sourceBook} • ${tecnica.dificuldadeRaw}",
+                                "${tecnica.sourceBook} â€¢ ${tecnica.dificuldadeRaw}",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -162,7 +165,7 @@ fun ConfigurarTecnicaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar Técnica") },
+        title = { Text("Configurar TÃ©cnica") },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -170,24 +173,24 @@ fun ConfigurarTecnicaDialog(
             ) {
                 Text(definicao.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(
-                    "${definicao.sourceBook} • ${definicao.dificuldadeRaw}",
+                    "${definicao.sourceBook} â€¢ ${definicao.dificuldadeRaw}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 if (preRequisitoExibicao.isNotBlank()) {
-                    Text("Pré-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
+                    Text("PrÃ©-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
                 }
                 if (definicao.preDefinidoRaw.isNotBlank()) {
-                    Text("Pré-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
+                    Text("PrÃ©-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
                 }
 
                 if (pericias.isEmpty()) {
                     Text(
-                        "Adicione ao menos uma perícia antes de configurar técnicas.",
+                        "Adicione ao menos uma perÃ­cia antes de configurar tÃ©cnicas.",
                         color = MaterialTheme.colorScheme.error
                     )
                 } else {
-                    Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
+                    Text("PerÃ­cia base:", style = MaterialTheme.typography.labelMedium)
                     pericias.forEach { pericia ->
                         val key = periciaTecnicaKey(pericia)
                         FilterChip(
@@ -201,12 +204,12 @@ fun ConfigurarTecnicaDialog(
                     }
                 }
 
-                Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
+                Text("NÃ­vel acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         enabled = nivelRelativo > 0,
                         onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
-                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nÃ­vel da tÃ©cnica" }
                     ) { Text("-") }
                     Text(
                         "+$nivelRelativo",
@@ -216,24 +219,24 @@ fun ConfigurarTecnicaDialog(
                     TextButton(
                         enabled = nivelRelativo < nivelMaximo,
                         onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
-                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nÃ­vel da tÃ©cnica" }
                     ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
-                    Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
+                    Text("Limite mÃ¡ximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
                 }
 
-                Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
+                Text("Custo automÃ¡tico: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
                 Text(
-                    "Pré-definido base: ${if (predefModificador >= 0) "+$predefModificador" else predefModificador}",
+                    "PrÃ©-definido base: ${if (predefModificador >= 0) "+$predefModificador" else predefModificador}",
                     style = MaterialTheme.typography.bodySmall
                 )
                 nhTecnica?.let {
-                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("NH da TÃ©cnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
                 if (periciaBase != null && !atendePreReq) {
                     Text(
-                        "A perícia selecionada não atende ao pré-requisito.",
+                        "A perÃ­cia selecionada nÃ£o atende ao prÃ©-requisito.",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -247,7 +250,7 @@ fun ConfigurarTecnicaDialog(
                 enabled = periciaBase != null && atendePreReq,
                 onClick = {
                     val pericia = periciaBase ?: run {
-                        erro = "Selecione uma perícia base."
+                        erro = "Selecione uma perÃ­cia base."
                         return@TextButton
                     }
                     val erroAdicionar = viewModel.adicionarTecnica(
@@ -309,13 +312,13 @@ fun EditarTecnicaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar Técnica") },
+        title = { Text("Editar TÃ©cnica") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text("${tecnica.sourceBook} • ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
+                Text("${tecnica.sourceBook} â€¢ ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
 
-                Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
+                Text("PerÃ­cia base:", style = MaterialTheme.typography.labelMedium)
                 pericias.forEach { pericia ->
                     val key = periciaTecnicaKey(pericia)
                     FilterChip(
@@ -325,12 +328,12 @@ fun EditarTecnicaDialog(
                     )
                 }
 
-                Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
+                Text("NÃ­vel acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         enabled = nivelRelativo > 0,
                         onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
-                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nÃ­vel da tÃ©cnica" }
                     ) { Text("-") }
                     Text(
                         "+$nivelRelativo",
@@ -340,16 +343,16 @@ fun EditarTecnicaDialog(
                     TextButton(
                         enabled = nivelRelativo < nivelMaximo,
                         onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
-                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nÃ­vel da tÃ©cnica" }
                     ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
-                    Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
+                    Text("Limite mÃ¡ximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
                 }
 
-                Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
+                Text("Custo automÃ¡tico: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
                 nhTecnica?.let {
-                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("NH da TÃ©cnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
             }
         },
@@ -382,6 +385,7 @@ fun PericiasSuplementaresDialog(
     onDismiss: () -> Unit
 ) {
     var busca by remember { mutableStateOf("") }
+    var itemDetalhes by remember { mutableStateOf<PericiaSuplementarItem?>(null) }
     val itens = viewModel.periciasSuplementaresArtesMarciais.filter { pericia ->
         busca.isBlank() ||
             pericia.nome.contains(busca, ignoreCase = true) ||
@@ -390,25 +394,28 @@ fun PericiasSuplementaresDialog(
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text("Perícias Suplementares", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text("PerÃ­cias Suplementares", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = busca,
                 onValueChange = { busca = it },
-                label = { Text("Buscar perícia...") },
+                label = { Text("Buscar perÃ­cia...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Default.Search, null) }
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${itens.size} perícias encontradas", style = MaterialTheme.typography.bodySmall)
+            Text("${itens.size} perÃ­cias encontradas", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(itens) { pericia ->
-                    PericiaSuplementarCard(item = pericia)
+                    PericiaSuplementarCard(
+                        item = pericia,
+                        onOpenDetails = { itemDetalhes = pericia }
+                    )
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -416,25 +423,124 @@ fun PericiasSuplementaresDialog(
             }
         }
     }
+
+    itemDetalhes?.let { item ->
+        PericiaSuplementarDetalhesDialog(
+            item = item,
+            onDismiss = { itemDetalhes = null }
+        )
+    }
 }
 
 @Composable
-private fun PericiaSuplementarCard(item: PericiaSuplementarItem) {
+private fun PericiaSuplementarCard(
+    item: PericiaSuplementarItem,
+    onOpenDetails: () -> Unit
+) {
+    val previewDescricao = item.descricao.trim().replace(Regex("\\s+"), " ")
+    val resumoCurto = when {
+        previewDescricao.isBlank() -> "Sem descrição resumida."
+        previewDescricao.length <= 88 -> previewDescricao
+        else -> previewDescricao.take(88).trimEnd() + "..."
+    }
+
     Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
         Column(modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(item.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
             Text(
-                "${item.sourceBook} • ${item.dificuldadeRaw}",
+                "${item.sourceBook} â€¢ ${item.dificuldadeRaw}",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            if (item.preRequisitoRaw.isNotBlank()) {
-                Text("Pré-requisito: ${item.preRequisitoRaw}", style = MaterialTheme.typography.bodySmall)
-            }
-            if (item.descricao.isNotBlank()) {
-                Text(item.descricao, style = MaterialTheme.typography.bodySmall)
+            Text(
+                resumoCurto,
+                style = MaterialTheme.typography.bodySmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            TextButton(
+                onClick = onOpenDetails,
+                modifier = Modifier.semantics {
+                    contentDescription = "Abrir detalhes da perícia ${item.nome}"
+                }
+            ) {
+                Text("Detalhes")
             }
         }
+    }
+}
+
+@Composable
+private fun PericiaSuplementarDetalhesDialog(
+    item: PericiaSuplementarItem,
+    onDismiss: () -> Unit
+) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(item.nome) },
+        text = {
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    "${item.sourceBook} • ${item.dificuldadeRaw}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                PericiaDetalhesSecao(
+                    titulo = "O que faz",
+                    conteudo = item.descricao.ifBlank { "Sem descrição detalhada." }
+                )
+                PericiaDetalhesSecao(
+                    titulo = "Pré-requisito",
+                    conteudo = item.preRequisitoRaw.ifBlank { "Sem pré-requisito." }
+                )
+                PericiaDetalhesSecao(
+                    titulo = "Pré-definido",
+                    conteudo = item.preDefinidoRaw.ifBlank { "Sem pré-definido." }
+                )
+                if (item.modificadores.isNotBlank()) {
+                    PericiaDetalhesSecao(
+                        titulo = "Modificadores",
+                        conteudo = item.modificadores
+                    )
+                }
+                if (isPraCegoVariant) {
+                    Text(
+                        "Resumo rápido: ${item.nome}. ${item.preRequisitoRaw.ifBlank { "Sem pré-requisito." }}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.semantics {
+                    contentDescription = "Fechar detalhes da perícia ${item.nome}"
+                }
+            ) { Text("Fechar") }
+        }
+    )
+}
+
+@Composable
+private fun PericiaDetalhesSecao(
+    titulo: String,
+    conteudo: String
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            titulo,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.semantics { heading() }
+        )
+        Text(conteudo, style = MaterialTheme.typography.bodyMedium)
     }
 }
 
@@ -449,3 +555,4 @@ private fun periciaTecnicaLabel(pericia: PericiaSelecionada): String {
         "${pericia.nome} (${pericia.especializacao})"
     }
 }
+
