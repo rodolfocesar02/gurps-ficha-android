@@ -1,0 +1,60 @@
+[
+  {
+    "id": "magia_curacao",
+    "nome": "Curar Planta",
+    "preRequisitos": "",
+    "preRequisitosProcessado": []
+  },
+  {
+    "id": "magia_fogo_superior",
+    "nome": "Bolt de Fogo Superior",
+    "preRequisitos": "AM2, IQ 13+, 2 mágicas de Fogo",
+    "preRequisitosProcessado": [
+      { "tipo": "atributo", "nome": "AM", "minimo": 2 },
+      { "tipo": "atributo", "nome": "IQ", "minimo": 13 },
+      { "tipo": "magias_escola", "quantidade": 2, "escola": "Fogo" }
+    ]
+  },
+  {
+    "id": "magia_com_ou",
+    "nome": "Magia Alternativa",
+    "preRequisitos": "Persuasão ou a vantagem Empatia com Animais",
+    "preRequisitosProcessado": [
+      { "tipo": "magia_conhecida", "nomeMagia": "Persuasão" },
+      { "tipo": "magia_conhecida", "nomeMagia": "a vantagem Empatia com Animais" }
+    ]
+  },
+  {
+    "id": "magia_am2",
+    "nome": "Magia AM2",
+    "preRequisitos": "AM2",
+    "preRequisitosProcessado": [
+      { "tipo": "aptidao_magica", "nivel": 2 }
+    ]
+  },
+  {
+    "id": "magia_am_3",
+    "nome": "Magia AM 3",
+    "preRequisitos": "AM 3",
+    "preRequisitosProcessado": [
+      { "tipo": "aptidao_magica", "nivel": 3 }
+    ]
+  },
+  {
+    "id": "magia_amplus",
+    "nome": "Magia AM+4",
+    "preRequisitos": "AM+4",
+    "preRequisitosProcessado": [
+      { "tipo": "aptidao_magica", "nivel": 4 }
+    ]
+  },
+  {
+    "id": "magia_combo",
+    "nome": "Magia Combinada",
+    "preRequisitos": "IQ 11, AM 1",
+    "preRequisitosProcessado": [
+      { "tipo": "atributo", "nome": "IQ", "minimo": 11 },
+      { "tipo": "aptidao_magica", "nivel": 1 }
+    ]
+  }
+]
