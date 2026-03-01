@@ -615,6 +615,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return null
     }
 
+    /** Retorna mensagem de pré‑requisitos faltantes ou `null`. */
+    fun prereqFailureForMagia(def: MagiaDefinicao): String? {
+        return dataRepository.missingPreRequisitoReport(def, personagem)
+    }
+
+    /** Indica se todos os pré‑requisitos da magia estão satisfeitos. */
+    fun prereqsSatisfied(def: MagiaDefinicao): Boolean {
+        return prereqFailureForMagia(def) == null
+    }
+
     fun removerMagia(index: Int) {
         val lista = personagem.magias.toMutableList()
         if (index in lista.indices) {

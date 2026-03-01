@@ -90,9 +90,15 @@ class PreRequisitoParserTest {
 
         val magia = MagiaDefinicao(id = "m1", nome = "Teste", preRequisitos = "IQ 13+")
         assertNotNull(repo.validarPreRequisitosMagia(magia, person))
+        // should also produce a descriptive report
+        val msg = repo.missingPreRequisitoReport(magia, person)
+        assertNotNull(msg)
+        assertTrue(msg!!.contains("IQ"))
         person.inteligencia = 14
         assertNull(repo.validarPreRequisitosMagia(magia, person))
+        assertNull(repo.missingPreRequisitoReport(magia, person))
     }
+
 
 }
 

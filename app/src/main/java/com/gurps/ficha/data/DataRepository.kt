@@ -957,6 +957,39 @@ class DataRepository(private val context: Context) {
         return if (report.startsWith("faltando")) raw else null
     }
 
+    /**
+     * Retorna um texto descritivo dos pré‑requisitos faltantes para a magia ou
+     * `null` se todos forem atendidos. A string resultante não inclui o prefixo
+     * "faltando:" que [PreRequisitoChecker.checkSimples] produz.
+     */
+    fun missingPreRequisitoReport(definicao: MagiaDefinicao, personagem: Personagem): String? {
+        val raw = validarPreRequisitosMagia(definicao, personagem) ?: return null
+        val parsed = PreRequisitoParser.parse(raw)
+        if (parsed.tipos.isEmpty()) return null
+
+        val mapa = mutableMapOf<String, Any>()
+        mapa["ST"] = personagem.forca
+        mapa["DX"] = personagem.destreza
+        mapa["IQ"] = personagem.inteligencia
+        mapa["HT"] = personagem.vitalidade
+        val mag = personagem.vantagens.firstOrNull { it.definicaoId == "aptidao_magica" }?.nivel ?: 0
+        mapa["aptidao_magica"] = mag
+        val conhecidas = mutableSetOf<String>()
+        personagem.magias.forEach { sel ->
+            val other = getMagiaPorId(sel.definicaoId)
+            val nome = other?.nome ?: sel.nome
+            conhecidas.add(nome)
+            other?.escola?.forEach { escola ->
+                val key = "magias_${escola.lowercase()}"
+                mapa[key] = (mapa[key] as? Int ?: 0) + 1
+            }
+        }
+        mapa["magias_conhecidas"] = conhecidas
+
+        val report = PreRequisitoChecker.checkSimples(mapa, parsed.tipos)
+        return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
+    }
+
     // === BUSCA POR ID ===
 
     fun getVantagemPorId(id: String): VantagemDefinicao? {
