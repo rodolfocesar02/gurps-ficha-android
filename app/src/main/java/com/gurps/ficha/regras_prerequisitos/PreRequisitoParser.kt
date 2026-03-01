@@ -50,29 +50,30 @@ object PreRequisitoParser {
                 // nenhum requisito (marcado por vazio ou traço)
                 tok.isBlank() -> { /* nada a fazer */ }
                 // atributo mínimo (IQ 12+ etc.)
-                Regex("^([A-Za-zÀ-ú]+)\s*(\d+)\\+").matches(tok) -> {
-                    val (atributo, valor) = Regex("^([A-Za-zÀ-ú]+)\s*(\d+)\\+")
+                // use raw string to avoid needing double-escaping
+                Regex("""^([A-Za-zÀ-ú]+)\s*(\d+)\+""").matches(tok) -> {
+                    val (atributo, valor) = Regex("""^([A-Za-zÀ-ú]+)\s*(\d+)\+""")
                         .find(tok)!!.destructured
                     tipos.add(PreRequisitoType.AttributeMin(atributo, valor.toInt()))
                 }
                 // aptidão mágica escrita como AM, com várias formas: AM2, AM 2, AM+2, aM 2
-                Regex("^AM\s*\+?\s*(\\d+)", RegexOption.IGNORE_CASE).find(tok) != null
-                        || Regex("^(Apt[ií]d[aã]o M[aá]gica)\s*(?:n[ií]vel)?\s*(\\d+)", RegexOption.IGNORE_CASE).find(tok) != null -> {
+                Regex("""^AM\s*\+?\s*(\d+)""", RegexOption.IGNORE_CASE).find(tok) != null
+                        || Regex("""^(Apt[ií]d[aã]o M[aá]gica)\s*(?:n[ií]vel)?\s*(\d+)""", RegexOption.IGNORE_CASE).find(tok) != null -> {
                     // tentamos primeiro padrão "AM"
-                    val amMatch = Regex("^AM\s*\+?\s*(\\d+)", RegexOption.IGNORE_CASE).find(tok)
+                    val amMatch = Regex("""^AM\s*\+?\s*(\d+)""", RegexOption.IGNORE_CASE).find(tok)
                     val nivel = if (amMatch != null) {
                         amMatch.groupValues[1].toInt()
                     } else {
                         // então padrão extenso "Aptidão Mágica X"
-                        val ext = Regex("^(Apt[ií]d[aã]o M[aá]gica)\s*(?:n[ií]vel)?\s*(\\d+)", RegexOption.IGNORE_CASE)
+                        val ext = Regex("""^(Apt[ií]d[aã]o M[aá]gica)\s*(?:n[ií]vel)?\s*(\d+)""", RegexOption.IGNORE_CASE)
                             .find(tok)!!
                         ext.groupValues[2].toInt()
                     }
                     tipos.add(PreRequisitoType.AptidaoMagica(nivel))
                 }
                 // X mágicas de Escola (2 mágicas de Fogo, etc.)
-                Regex("^(\\d+) mági[cq]as de ([A-Za-zÀ-ú ]+)", RegexOption.IGNORE_CASE).find(tok) != null -> {
-                    val (qtd, escola) = Regex("^(\\d+) mági[cq]as de ([A-Za-zÀ-ú ]+)", RegexOption.IGNORE_CASE)
+                Regex("""^(\d+) mági[cq]as de ([A-Za-zÀ-ú ]+)""", RegexOption.IGNORE_CASE).find(tok) != null -> {
+                    val (qtd, escola) = Regex("""^(\d+) mági[cq]as de ([A-Za-zÀ-ú ]+)""", RegexOption.IGNORE_CASE)
                         .find(tok)!!.destructured
                     tipos.add(PreRequisitoType.MagiasEscola(qtd.toInt(), escola.trim()))
                 }
