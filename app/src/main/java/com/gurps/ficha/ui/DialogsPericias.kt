@@ -159,10 +159,13 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
 
     periciaSelecionada?.let { definicao ->
-        ConfigurarPericiaDialog(definicao = definicao, personagem = viewModel.personagem, onDismiss = { periciaSelecionada = null },
+        ConfigurarPericiaDialog(viewModel = viewModel, definicao = definicao, personagem = viewModel.personagem, onDismiss = { periciaSelecionada = null },
             onSave = { pontosGastos, especializacao, atributo, dificuldade ->
-                viewModel.adicionarPericia(definicao, pontosGastos, especializacao, atributo, dificuldade)
-                periciaSelecionada = null
+                val erro = viewModel.adicionarPericia(definicao, pontosGastos, especializacao, atributo, dificuldade)
+                if (erro == null) {
+                    periciaSelecionada = null
+                }
+                erro
             })
     }
 }
@@ -258,13 +261,16 @@ fun CriarPericiaCustomizadaDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem, onDismiss: () -> Unit,
-    onSave: (Int, String, AtributoBase?, Dificuldade?) -> Unit) {
+fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinicao, personagem: Personagem, onDismiss: () -> Unit,
+    onSave: (Int, String, AtributoBase?, Dificuldade?) -> String?) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(1) }
     var especializacao by remember { mutableStateOf("") }
     var atributoEscolhido by remember { mutableStateOf(AtributoBase.fromSigla(definicao.atributoBase)) }
     var dificuldadeEscolhida by remember { mutableStateOf(Dificuldade.fromSigla(definicao.dificuldadeFixa)) }
+    var erroCadastro by remember { mutableStateOf<String?>(null) }
+    var mostrarDescricao by remember { mutableStateOf(false) }
+    val regraV2 = remember(definicao.id) { viewModel.dataRepository.regraPericiaV2(definicao.id) }
 
     val atributosPossiveis = definicao.atributosPossiveis?.map { AtributoBase.fromSigla(it) } ?: listOf(AtributoBase.fromSigla(definicao.atributoBase))
     val precisaEscolherAtributo = atributosPossiveis.size > 1 || definicao.atributoEscolhaObrigatoria
@@ -276,7 +282,7 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar: ${definicao.nome}") },
+        title = { Text(definicao.nome) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 if (definicao.exigeEspecializacao) {
@@ -317,6 +323,12 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
                 } else {
                     Text("Dificuldade: ${dificuldadeEscolhida.nomeCompleto}", style = MaterialTheme.typography.bodyMedium)
                 }
+                TextButton(
+                    onClick = { mostrarDescricao = true },
+                    modifier = Modifier.semantics {
+                        contentDescription = "Abrir descrição da perícia ${definicao.nome}"
+                    }
+                ) { Text("Descrição: ${definicao.nome}") }
 
                 Divider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
@@ -387,16 +399,30 @@ fun ConfigurarPericiaDialog(definicao: PericiaDefinicao, personagem: Personagem,
                         Text("NH: $nivelPreview (${atributoEscolhido.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     }
                 }
+                erroCadastro?.let {
+                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
             }
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(pontosGastos, especializacao, atributoEscolhido, dificuldadeEscolhida) },
+                onClick = { erroCadastro = onSave(pontosGastos, especializacao, atributoEscolhido, dificuldadeEscolhida) },
                 enabled = !definicao.exigeEspecializacao || especializacao.isNotBlank()
             ) { Text("Adicionar") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricao) {
+        PericiaDescricaoDialog(
+            definicao = definicao,
+            descricao = regraV2?.descricao.orEmpty(),
+            preRequisito = regraV2?.preRequisito?.raw.orEmpty(),
+            preDefinido = regraV2?.preDefinido?.raw.orEmpty(),
+            modificadores = regraV2?.modificadoresRaw.orEmpty(),
+            onDismiss = { mostrarDescricao = false }
+        )
+    }
 }
 
 // === DIALOGS DE EDICAO ===
@@ -494,6 +520,42 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
         },
         confirmButton = { TextButton(onClick = { onSave(pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+private fun PericiaDescricaoDialog(
+    definicao: PericiaDefinicao,
+    descricao: String,
+    preRequisito: String,
+    preDefinido: String,
+    modificadores: String,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Descrição: ${definicao.nome}") },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    descricao.ifBlank { "Sem descrição detalhada disponível." },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                if (preRequisito.isNotBlank() && preRequisito != "-") {
+                    Text("Pré-requisito: $preRequisito", style = MaterialTheme.typography.bodySmall)
+                }
+                if (preDefinido.isNotBlank() && preDefinido != "-") {
+                    Text("Pré-definido: $preDefinido", style = MaterialTheme.typography.bodySmall)
+                }
+                if (modificadores.isNotBlank() && modificadores != "-") {
+                    Text("Modificadores: $modificadores", style = MaterialTheme.typography.bodySmall)
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
     )
 }
 
