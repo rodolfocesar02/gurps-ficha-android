@@ -8,6 +8,8 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.gurps.ficha.model.*
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoChecker
 import java.text.Normalizer
 
 /**
@@ -905,6 +907,54 @@ class DataRepository(private val context: Context) {
             energia = definicao.energia,
             tempoOperacao = definicao.tempoOperacao
         )
+    }
+
+    /**
+     * Valida pré-requisitos de uma magia usando o parser/checar simples.
+     * Retorna `null` se não há problemas ou a string bruta em caso de falha.
+     *
+     * A implementação é deliberadamente simples: gera um mapa de atributos, nível
+     * de aptidão mágica, contagem de magias por escola e conjunto de magias
+     * conhecidas, e delega para [PreRequisitoChecker.checkSimples].
+     *
+     * O retorno igual ao raw facilita exibir a condição original ao usuário—
+     * o código de UI (ViewModel) não precisa entender a gramática.
+     */
+    fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
+        val raw = definicao.preRequisitos?.trim().orEmpty()
+        if (raw.isEmpty() || raw == "—") return null
+
+        val parsed = PreRequisitoParser.parse(raw)
+        if (parsed.tipos.isEmpty()) return null
+
+        val mapa = mutableMapOf<String, Any>()
+        // Atributos fundamentais (siglas em maiúsculas, conforme parser espera)
+        mapa["ST"] = personagem.forca
+        mapa["DX"] = personagem.destreza
+        mapa["IQ"] = personagem.inteligencia
+        mapa["HT"] = personagem.vitalidade
+
+        // aptidão mágica é armazenada como vantagem por nível
+        val mag = personagem.vantagens
+            .firstOrNull { it.definicaoId == "aptidao_magica" }
+            ?.nivel ?: 0
+        mapa["aptidao_magica"] = mag
+
+        // contagem de magias já aprendidas por escola e lista de nomes
+        val conhecidas = mutableSetOf<String>()
+        personagem.magias.forEach { selecionada ->
+            val other = getMagiaPorId(selecionada.definicaoId)
+            val nome = other?.nome ?: selecionada.nome
+            conhecidas.add(nome)
+            other?.escola?.forEach { escola ->
+                val key = "magias_${escola.lowercase()}"
+                mapa[key] = (mapa[key] as? Int ?: 0) + 1
+            }
+        }
+        mapa["magias_conhecidas"] = conhecidas
+
+        val report = PreRequisitoChecker.checkSimples(mapa, parsed.tipos)
+        return if (report.startsWith("faltando")) raw else null
     }
 
     // === BUSCA POR ID ===

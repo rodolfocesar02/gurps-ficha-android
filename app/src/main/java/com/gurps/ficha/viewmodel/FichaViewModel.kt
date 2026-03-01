@@ -593,17 +593,26 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // === MAGIAS ===
 
+    /**
+     * Tenta adicionar uma magia; retorna mensagem de erro em caso de falha
+     * (pré-requisito não atendido ou já existente).
+     */
     fun adicionarMagia(
         definicao: MagiaDefinicao,
         pontosGastos: Int = 1
-    ) {
+    ): String? {
         if (personagem.magias.any { it.definicaoId == definicao.id }) {
-            return
+            return "Magia já adicionada."
+        }
+        val erro = dataRepository.validarPreRequisitosMagia(definicao, personagem)
+        if (erro != null) {
+            return "Pré‑requisito não atendido: $erro"
         }
         val magia = dataRepository.criarMagiaSelecionada(definicao, pontosGastos.coerceAtLeast(1))
         val lista = personagem.magias.toMutableList()
         lista.add(magia)
         personagem = personagem.copy(magias = lista)
+        return null
     }
 
     fun removerMagia(index: Int) {
