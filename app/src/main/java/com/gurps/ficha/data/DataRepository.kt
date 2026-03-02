@@ -921,7 +921,7 @@ class DataRepository(private val context: Context) {
      * o código de UI (ViewModel) não precisa entender a gramática.
      */
     fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
-        val raw = definicao.preRequisitos?.trim().orEmpty()
+        val raw = preRequisitoRawNormalizado(definicao)
         if (raw.isEmpty() || raw == "—") return null
 
         val parsed = PreRequisitoParser.parse(raw)
@@ -939,7 +939,7 @@ class DataRepository(private val context: Context) {
      * "faltando:" que [PreRequisitoChecker.checkSimples] produz.
      */
     fun missingPreRequisitoReport(definicao: MagiaDefinicao, personagem: Personagem): String? {
-        val raw = definicao.preRequisitos?.trim().orEmpty()
+        val raw = preRequisitoRawNormalizado(definicao)
         if (raw.isEmpty() || raw == "—") return null
 
         val parsed = PreRequisitoParser.parse(raw)
@@ -951,6 +951,29 @@ class DataRepository(private val context: Context) {
         if (!report.startsWith("faltando")) return null
         return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
     }
+
+    /**
+     * Correções pontuais de textos conhecidos com mojibake/ambiguidade para
+     * evitar quebrar validação automática enquanto preserva a regra funcional.
+     */
+    private fun preRequisitoRawNormalizado(definicao: MagiaDefinicao): String {
+        val rawOriginal = definicao.preRequisitos?.trim().orEmpty()
+        val override = preRequisitosOverridePorMagiaId[definicao.id]
+        return (override ?: rawOriginal).trim()
+    }
+
+    private val preRequisitosOverridePorMagiaId: Map<String, String> = mapOf(
+        "criar_portal" to "Controle de Portal ou Teleporte ou Viagem no Tempo ou Trocar de Plano",
+        "metamorfose_superior" to "AM3, Alterar Corpo, quaisquer 4 magicas Metamorfose, 10 outras magicas",
+        "imunidade_a_encantamento" to "qualquer uma magia de Limitacao",
+        "restauracao" to "Cura Profunda, ou quaisquer 2 de Aliviar Paralisia e Restaurar",
+        "geiser" to "6 magicas da Agua, incl. Criar Nascente, quaisquer 4 magicas da Terra ou Fogo",
+        "espirito_de_caveira" to "4 outras magicas de Necromancia",
+        "armadura_de_relampagos" to "6 magicas de Relampago, incl. Imunidade a Relampagos",
+        "condicionamento_permanente" to "AM3, 15 magicas de Controle da Mente, incl. Condicionamento",
+        "controle_de_membro" to "AM1, 5 magicas de Corpo, incl. Espasmo",
+        "adivinhacao" to "Historia, 1 outras magicas"
+    )
 
     /**
      * Regra operacional pedida: se o texto de pre-requisito estiver em um
