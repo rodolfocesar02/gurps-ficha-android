@@ -247,7 +247,7 @@ private fun EsquivaConfiguradaCard(
     bonusEsquiva: Int,
     onEditar: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors()) {
+    Card(modifier = Modifier.fillMaxWidth(), colors = appCardColors()) {
         Row(
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -338,7 +338,7 @@ private fun AparaConfiguradaCard(
     onEditar: () -> Unit,
     onRemover: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors()) {
+    Card(modifier = Modifier.fillMaxWidth(), colors = appCardColors()) {
         Row(
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -380,7 +380,7 @@ private fun BloqueioConfiguradoCard(
     onEditar: () -> Unit,
     onRemover: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors()) {
+    Card(modifier = Modifier.fillMaxWidth(), colors = appCardColors()) {
         Row(
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,

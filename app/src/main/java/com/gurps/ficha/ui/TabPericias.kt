@@ -30,7 +30,7 @@ fun TabPericias(viewModel: FichaViewModel) {
     var showCustomDialog by remember { mutableStateOf(false) }
     var editingPericiaIndex by remember { mutableStateOf<Int?>(null) }
 
-    StandardTabColumn(contentSpacing = 6.dp) {
+    StandardTabColumn(contentSpacing = 4.dp) {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -66,7 +66,7 @@ fun TabPericias(viewModel: FichaViewModel) {
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors()
+                colors = appCardColors()
             ) {
                 Column(modifier = Modifier.padding(10.dp)) {
 
