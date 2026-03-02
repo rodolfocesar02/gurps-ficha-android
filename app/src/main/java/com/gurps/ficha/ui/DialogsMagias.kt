@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -41,8 +42,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
@@ -52,6 +57,7 @@ import com.gurps.ficha.model.MagiaSelecionada
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
+import kotlinx.coroutines.withTimeoutOrNull
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 
@@ -67,8 +73,10 @@ private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var magiaSelecionada by remember { mutableStateOf<MagiaDefinicao?>(null) }
     var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
+    var adicaoForcadaSemPrereq by remember { mutableStateOf(false) }
 
     val listaFiltrada = viewModel.magiasFiltradas
     val escolas = viewModel.todasEscolasMagia
@@ -138,8 +146,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 Text("${listaFiltrada.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
 
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(listaFiltrada) { definicao ->
+                    itemsIndexed(listaFiltrada) { _, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
+                        val prereqFalha = viewModel.prereqFailureForMagia(definicao)
+                        val prereqOk = prereqFalha == null
                         
                         // Formatando Classe e Escola
                         val classeEscola = listOfNotNull(
@@ -154,12 +164,43 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             trailingContent = {
                                 if (jaAdicionada) {
                                     Text("Adicionada", color = MaterialTheme.colorScheme.outline)
+                                } else if (!prereqOk) {
+                                    Text("Bloqueada", color = MaterialTheme.colorScheme.error)
                                 }
                             },
-                            modifier = Modifier.clickable(enabled = !jaAdicionada) {
-                                erroAdicionarMagia = null
-                                magiaSelecionada = definicao
-                            }
+                            modifier = Modifier
+                                .pointerInput(definicao.id, jaAdicionada, prereqOk) {
+                                    awaitEachGesture {
+                                        awaitFirstDown(requireUnconsumed = false)
+                                        val up = withTimeoutOrNull(3000L) { waitForUpOrCancellation() }
+                                        if (up == null) {
+                                            if (!jaAdicionada && !prereqOk) {
+                                                erroAdicionarMagia = null
+                                                adicaoForcadaSemPrereq = true
+                                                magiaSelecionada = definicao
+                                            }
+                                            waitForUpOrCancellation()
+                                        } else {
+                                            if (!jaAdicionada && prereqOk) {
+                                                erroAdicionarMagia = null
+                                                adicaoForcadaSemPrereq = false
+                                                magiaSelecionada = definicao
+                                            }
+                                        }
+                                    }
+                                }
+                                .semantics {
+                                    if (isPraCegoVariant) {
+                                        contentDescription = if (prereqOk) {
+                                            "Magia ${definicao.nome}. Pre requisitos atendidos. Toque para configurar."
+                                        } else {
+                                            "Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Pressione por tres segundos para adicionar sem pre requisito."
+                                        }
+                                    }
+                                }
+                                .then(
+                                    if (!prereqOk) Modifier.alpha(0.45f) else Modifier
+                                )
                         )
                         Divider()
                     }
@@ -179,11 +220,19 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             nivelAptidaoMagica = viewModel.nivelAptidaoMagica,
             prereqFalha = prereqFalha,
             erroPersistente = erroAdicionarMagia,
+            adicaoForcadaSemPrereq = adicaoForcadaSemPrereq,
             onDismiss = { magiaSelecionada = null },
-            onSave = { pontosGastos, encantamentoAlvo ->
-                val erro = viewModel.adicionarMagia(definicao, pontosGastos, encantamentoAlvo)
+            onSave = { pontosGastos, encantamentoAlvo, especializacaoMagia ->
+                val erro = viewModel.adicionarMagia(
+                    definicao = definicao,
+                    pontosGastos = pontosGastos,
+                    encantamentoAlvo = encantamentoAlvo,
+                    especializacaoMagia = especializacaoMagia,
+                    ignorarPreRequisito = adicaoForcadaSemPrereq
+                )
                 if (erro == null) {
                     erroAdicionarMagia = null
+                    adicaoForcadaSemPrereq = false
                     magiaSelecionada = null
                 } else {
                     erroAdicionarMagia = erro
@@ -200,13 +249,30 @@ fun ConfigurarMagiaDialog(
     nivelAptidaoMagica: Int,
     prereqFalha: String?,
     erroPersistente: String?,
+    adicaoForcadaSemPrereq: Boolean,
     onDismiss: () -> Unit,
-    onSave: (Int, String?) -> Unit
+    onSave: (Int, String?, String?) -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(1) }
     var encantamentoAlvoInput by remember { mutableStateOf("") }
+    var especializacaoMagiaInput by remember { mutableStateOf("") }
     val exigeEncantamentoAlvo = definicao.id.equals("imunidade_a_encantamento", ignoreCase = true)
+    val exigeEspecializacao = definicao.id.lowercase() in setOf(
+        "adivinhacao",
+        "cavalgar",
+        "controle_de_hibrido",
+        "golem",
+        "passageiro_interno",
+        "criar_elemental",
+        "convocar_elemental",
+        "controle_de_elemental"
+    )
+    val labelEspecializacao = when (definicao.id.lowercase()) {
+        "cavalgar", "controle_de_hibrido", "passageiro_interno" -> "Animal (especializacao)"
+        "criar_elemental", "convocar_elemental", "controle_de_elemental" -> "Escola (Ar/Fogo/Terra/Agua)"
+        else -> "Especializacao"
+    }
     val dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa ?: "D")
     
     // Calcula nível preview
@@ -298,11 +364,28 @@ fun ConfigurarMagiaDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+                if (adicaoForcadaSemPrereq) {
+                    Text(
+                        text = "Adicao forcada sem pre-requisito (pressionar 3s).",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
                 if (exigeEncantamentoAlvo) {
                     OutlinedTextField(
                         value = encantamentoAlvoInput,
                         onValueChange = { encantamentoAlvoInput = it.take(80) },
                         label = { Text("Qual encantamento?") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                if (exigeEspecializacao) {
+                    OutlinedTextField(
+                        value = especializacaoMagiaInput,
+                        onValueChange = { especializacaoMagiaInput = it.take(80) },
+                        label = { Text(labelEspecializacao) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -320,9 +403,10 @@ fun ConfigurarMagiaDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(pontosGastos, encantamentoAlvoInput) },
-                enabled = prereqFalha.isNullOrBlank() &&
-                    (!exigeEncantamentoAlvo || encantamentoAlvoInput.isNotBlank())
+                onClick = { onSave(pontosGastos, encantamentoAlvoInput, especializacaoMagiaInput) },
+                enabled = (prereqFalha.isNullOrBlank() || adicaoForcadaSemPrereq) &&
+                    (!exigeEncantamentoAlvo || encantamentoAlvoInput.isNotBlank()) &&
+                    (!exigeEspecializacao || especializacaoMagiaInput.isNotBlank())
             ) { Text("Adicionar") }
         },
         dismissButton = {

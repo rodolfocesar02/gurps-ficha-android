@@ -600,24 +600,46 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun adicionarMagia(
         definicao: MagiaDefinicao,
         pontosGastos: Int = 1,
-        encantamentoAlvo: String? = null
+        encantamentoAlvo: String? = null,
+        especializacaoMagia: String? = null,
+        ignorarPreRequisito: Boolean = false
     ): String? {
-        if (personagem.magias.any { it.definicaoId == definicao.id }) {
+        if (!permiteMultiplasInstanciasMagia(definicao.id) && personagem.magias.any { it.definicaoId == definicao.id }) {
             return "Magia já adicionada."
         }
+
+        if (permiteMultiplasInstanciasPorEscola(definicao.id)) {
+            val escolaNorm = especializacaoMagia?.trim()?.lowercase()
+            if (escolaNorm.isNullOrBlank()) return "Informe a escola da magia."
+            val duplicadaEscola = personagem.magias.any {
+                it.definicaoId == definicao.id &&
+                    it.especializacaoMagia?.trim()?.equals(escolaNorm, ignoreCase = true) == true
+            }
+            if (duplicadaEscola) return "Esta magia já foi adicionada para essa escola."
+        }
+
         if (definicao.id.equals("imunidade_a_encantamento", ignoreCase = true) &&
             encantamentoAlvo.isNullOrBlank()
         ) {
             return "Informe qual encantamento sera protegido."
         }
-        val erro = dataRepository.validarPreRequisitosMagia(definicao, personagem)
-        if (erro != null) {
-            return "Pré‑requisito não atendido: $erro"
+        val especializacaoObrigatoriaErro = validarEspecializacaoObrigatoria(definicao.id, especializacaoMagia)
+        if (especializacaoObrigatoriaErro != null) return especializacaoObrigatoriaErro
+
+        if (!ignorarPreRequisito) {
+            val erro = dataRepository.validarPreRequisitosMagia(definicao, personagem)
+            if (erro != null) {
+                return "Pré‑requisito não atendido: $erro"
+            }
+
+            val erroRegraEspecial = validarRegrasEspeciaisMagia(definicao, especializacaoMagia)
+            if (erroRegraEspecial != null) return erroRegraEspecial
         }
         val magia = dataRepository.criarMagiaSelecionada(
             definicao = definicao,
             pontosGastos = pontosGastos.coerceAtLeast(1),
-            encantamentoAlvo = encantamentoAlvo
+            encantamentoAlvo = encantamentoAlvo,
+            especializacaoMagia = especializacaoMagia
         )
         val lista = personagem.magias.toMutableList()
         lista.add(magia)
@@ -627,12 +649,133 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna mensagem de pré‑requisitos faltantes ou `null`. */
     fun prereqFailureForMagia(def: MagiaDefinicao): String? {
+        val regraEspecial = validarRegrasEspeciaisMagia(def, null)
+        if (regraEspecial != null) return regraEspecial
         return dataRepository.missingPreRequisitoReport(def, personagem)
     }
 
     /** Indica se todos os pré‑requisitos da magia estão satisfeitos. */
     fun prereqsSatisfied(def: MagiaDefinicao): Boolean {
         return prereqFailureForMagia(def) == null
+    }
+
+    private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
+        return definicaoId.lowercase() in setOf(
+            "criar_elemental",
+            "convocar_elemental",
+            "controle_de_elemental",
+            "anular_possessao",
+            "cavalgar"
+        )
+    }
+
+    private fun permiteMultiplasInstanciasPorEscola(definicaoId: String): Boolean {
+        return definicaoId.lowercase() in setOf("criar_elemental", "convocar_elemental", "controle_de_elemental")
+    }
+
+    private fun validarEspecializacaoObrigatoria(definicaoId: String, especializacaoMagia: String?): String? {
+        val exigeEspecializacao = definicaoId.lowercase() in setOf(
+            "adivinhacao",
+            "cavalgar",
+            "controle_de_hibrido",
+            "golem",
+            "passageiro_interno",
+            "criar_elemental",
+            "convocar_elemental",
+            "controle_de_elemental"
+        )
+        if (!exigeEspecializacao) return null
+        if (especializacaoMagia.isNullOrBlank()) {
+            return "Informe a especializacao desta magia."
+        }
+        return null
+    }
+
+    private fun validarRegrasEspeciaisMagia(definicao: MagiaDefinicao, especializacaoMagia: String?): String? {
+        val id = definicao.id.lowercase()
+        val magias = personagem.magias
+        val am = nivelAptidaoMagica
+        fun hasMagia(nome: String): Boolean =
+            magias.any { it.nome.equals(nome, ignoreCase = true) }
+        fun nivelMagia(nome: String): Int? =
+            magias.firstOrNull { it.nome.equals(nome, ignoreCase = true) }?.calcularNivel(personagem, am)
+        fun countEscola(escola: String): Int =
+            magias.count { it.escola.orEmpty().any { e -> e.equals(escola, ignoreCase = true) } }
+
+        return when (id) {
+            "corpo_de_vento" -> {
+                if (am < 3) "Pré-requisito não atendido: Aptidão Mágica 3."
+                else if ((nivelMagia("Corpo de Ar") ?: 0) < 16) "Pré-requisito não atendido: Corpo de Ar NH 16+."
+                else if ((nivelMagia("Furacão") ?: 0) < 16 && (nivelMagia("Furacao") ?: 0) < 16) "Pré-requisito não atendido: Furacão NH 16+."
+                else null
+            }
+            "criar_elemental" -> {
+                if (am < 2) "Pré-requisito não atendido: Aptidão Mágica 2."
+                else if (!hasMagia("Controle de Elemental")) "Pré-requisito não atendido: Controle de Elemental."
+                else null
+            }
+            "convocar_elemental" -> {
+                if (am < 1) "Pré-requisito não atendido: Aptidão Mágica 1."
+                else null
+            }
+            "controle_de_elemental" -> {
+                if (!hasMagia("Convocar Elemental")) "Pré-requisito não atendido: Convocar Elemental."
+                else null
+            }
+            "adivinhacao" -> {
+                val temHistoria = personagem.pericias.any { it.nome.equals("História", ignoreCase = true) || it.nome.equals("Historia", ignoreCase = true) }
+                if (!temHistoria) "Pré-requisito não atendido: História."
+                else null
+            }
+            "anular_possessao" -> {
+                if (!hasMagia("Passageiro da Alma")) "Pré-requisito não atendido: Passageiro da Alma."
+                else if (!hasMagia("Possessão") && !hasMagia("Possessao")) "Pré-requisito não atendido: Possessão."
+                else null
+            }
+            "cavalgar" -> {
+                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
+                if (countControleAnimal < 1) "Pré-requisito não atendido: pelo menos 1 magia de Controle de Animal."
+                else null
+            }
+            "controle_de_hibrido" -> {
+                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
+                if (countControleAnimal < 2) "Pré-requisito não atendido: 2 magias de Controle de Animal."
+                else null
+            }
+            "espantar_zumbi" -> if (!hasMagia("Zumbi")) "Pré-requisito não atendido: Zumbi." else null
+            "golem" -> {
+                if (!hasMagia("Encantar")) "Pré-requisito não atendido: Encantar."
+                else if (!hasMagia("Moldar Terra")) "Pré-requisito não atendido: Moldar Terra."
+                else if (!hasMagia("Animação") && !hasMagia("Animacao")) "Pré-requisito não atendido: Animação."
+                else null
+            }
+            "passageiro_interno" -> {
+                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
+                if (countControleAnimal < 2) "Pré-requisito não atendido: 2 magias de Controle de Animal."
+                else null
+            }
+            "reconstruirnt" -> {
+                if (am < 3) "Pré-requisito não atendido: Aptidão Mágica 3."
+                else if (!hasMagia("Consertar")) "Pré-requisito não atendido: Consertar."
+                else if (!hasMagia("Criar Objeto")) "Pré-requisito não atendido: Criar Objeto."
+                else {
+                    val escolasOk = listOf("Ar", "Fogo", "Terra", "Água", "Agua").map { countEscola(it) }.chunked(2).map { it.maxOrNull() ?: 0 }
+                    if (escolasOk.any { it < 3 }) "Pré-requisito não atendido: 3 magias de cada escola (Ar/Fogo/Terra/Água)."
+                    else null
+                }
+            }
+            "repelir_animal" -> {
+                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
+                if (countControleAnimal < 1) "Pré-requisito não atendido: Controle de Animal."
+                else null
+            }
+            "transformar_outro" -> {
+                if (!hasMagia("Metamorfosear Outro")) "Pré-requisito não atendido: Metamorfosear Outro."
+                else if (!hasMagia("Transformar Corpo")) "Pré-requisito não atendido: Transformar Corpo."
+                else null
+            }
+            else -> null
+        }
     }
 
     fun removerMagia(index: Int) {
