@@ -69,6 +69,9 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            // Gera APK release assinado com a chave debug por padrao.
+            // Substituir por keystore de producao quando configurada.
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

@@ -1,6 +1,6 @@
 ﻿package com.gurps.ficha.ui
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -42,9 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.draw.alpha
@@ -159,7 +156,33 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         ).joinToString(" · ")
 
                         ListItem(
-                            headlineContent = { Text(definicao.nome) },
+                            headlineContent = {
+                                Text(
+                                    definicao.nome,
+                                    modifier = Modifier.pointerInput(definicao.id, jaAdicionada, prereqOk) {
+                                        detectTapGestures(
+                                            onPress = {
+                                                val liberadoAntes = withTimeoutOrNull(3000L) {
+                                                    tryAwaitRelease()
+                                                }
+                                                if (liberadoAntes == null) {
+                                                    if (!jaAdicionada && !prereqOk) {
+                                                        erroAdicionarMagia = null
+                                                        adicaoForcadaSemPrereq = true
+                                                        magiaSelecionada = definicao
+                                                    }
+                                                } else if (liberadoAntes) {
+                                                    if (!jaAdicionada && prereqOk) {
+                                                        erroAdicionarMagia = null
+                                                        adicaoForcadaSemPrereq = false
+                                                        magiaSelecionada = definicao
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    }
+                                )
+                            },
                             supportingContent = { Text("$classeEscola | pag. ${definicao.pagina}") },
                             trailingContent = {
                                 if (jaAdicionada) {
@@ -169,32 +192,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 }
                             },
                             modifier = Modifier
-                                .pointerInput(definicao.id, jaAdicionada, prereqOk) {
-                                    awaitEachGesture {
-                                        awaitFirstDown(requireUnconsumed = false)
-                                        val up = withTimeoutOrNull(3000L) { waitForUpOrCancellation() }
-                                        if (up == null) {
-                                            if (!jaAdicionada && !prereqOk) {
-                                                erroAdicionarMagia = null
-                                                adicaoForcadaSemPrereq = true
-                                                magiaSelecionada = definicao
-                                            }
-                                            waitForUpOrCancellation()
-                                        } else {
-                                            if (!jaAdicionada && prereqOk) {
-                                                erroAdicionarMagia = null
-                                                adicaoForcadaSemPrereq = false
-                                                magiaSelecionada = definicao
-                                            }
-                                        }
-                                    }
-                                }
                                 .semantics {
                                     if (isPraCegoVariant) {
                                         contentDescription = if (prereqOk) {
-                                            "Magia ${definicao.nome}. Pre requisitos atendidos. Toque para configurar."
+                                            "Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
                                         } else {
-                                            "Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Pressione por tres segundos para adicionar sem pre requisito."
+                                            "Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Pressione por tres segundos no nome para adicionar sem pre requisito."
                                         }
                                     }
                                 }
