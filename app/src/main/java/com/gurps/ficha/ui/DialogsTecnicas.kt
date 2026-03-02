@@ -68,12 +68,12 @@ fun SelecionarTecnicaDialog(
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text("Selecionar TÃ©cnica", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text("Selecionar Técnica", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = busca,
                 onValueChange = { busca = it },
-                label = { Text("Buscar tÃ©cnica...") },
+                label = { Text("Buscar técnica...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Default.Search, null) }
@@ -94,7 +94,7 @@ fun SelecionarTecnicaDialog(
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${tecnicas.size} tÃ©cnicas encontradas", style = MaterialTheme.typography.bodySmall)
+            Text("${tecnicas.size} técnicas encontradas", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(4.dp))
 
             LazyColumn(
@@ -165,7 +165,7 @@ fun ConfigurarTecnicaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar TÃ©cnica") },
+        title = { Text("Configurar Técnica") },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -178,19 +178,19 @@ fun ConfigurarTecnicaDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 if (preRequisitoExibicao.isNotBlank()) {
-                    Text("PrÃ©-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
+                    Text("Pré-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
                 }
                 if (definicao.preDefinidoRaw.isNotBlank()) {
-                    Text("PrÃ©-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
+                    Text("Pré-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
                 }
 
                 if (pericias.isEmpty()) {
                     Text(
-                        "Adicione ao menos uma perÃ­cia antes de configurar tÃ©cnicas.",
+                        "Adicione ao menos uma perícia antes de configurar técnicas.",
                         color = MaterialTheme.colorScheme.error
                     )
                 } else {
-                    Text("PerÃ­cia base:", style = MaterialTheme.typography.labelMedium)
+                    Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
                     pericias.forEach { pericia ->
                         val key = periciaTecnicaKey(pericia)
                         FilterChip(
@@ -204,12 +204,12 @@ fun ConfigurarTecnicaDialog(
                     }
                 }
 
-                Text("NÃ­vel acima do predefinido:", style = MaterialTheme.typography.labelMedium)
+                Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         enabled = nivelRelativo > 0,
                         onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
-                        modifier = Modifier.semantics { contentDescription = "Diminuir nÃ­vel da tÃ©cnica" }
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
                     ) { Text("-") }
                     Text(
                         "+$nivelRelativo",
@@ -219,24 +219,24 @@ fun ConfigurarTecnicaDialog(
                     TextButton(
                         enabled = nivelRelativo < nivelMaximo,
                         onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
-                        modifier = Modifier.semantics { contentDescription = "Aumentar nÃ­vel da tÃ©cnica" }
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
                     ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
-                    Text("Limite mÃ¡ximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
+                    Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
                 }
 
-                Text("Custo automÃ¡tico: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
+                Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
                 Text(
-                    "PrÃ©-definido base: ${if (predefModificador >= 0) "+$predefModificador" else predefModificador}",
+                    "Pré-definido base: ${if (predefModificador >= 0) "+$predefModificador" else predefModificador}",
                     style = MaterialTheme.typography.bodySmall
                 )
                 nhTecnica?.let {
-                    Text("NH da TÃ©cnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
                 if (periciaBase != null && !atendePreReq) {
                     Text(
-                        "A perÃ­cia selecionada nÃ£o atende ao prÃ©-requisito.",
+                        "A perícia selecionada não atende ao pré-requisito.",
                         color = MaterialTheme.colorScheme.error
                     )
                 }
@@ -250,7 +250,7 @@ fun ConfigurarTecnicaDialog(
                 enabled = periciaBase != null && atendePreReq,
                 onClick = {
                     val pericia = periciaBase ?: run {
-                        erro = "Selecione uma perÃ­cia base."
+                        erro = "Selecione uma perícia base."
                         return@TextButton
                     }
                     val erroAdicionar = viewModel.adicionarTecnica(
@@ -312,13 +312,13 @@ fun EditarTecnicaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar TÃ©cnica") },
+        title = { Text("Editar Técnica") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text("${tecnica.sourceBook} â€¢ ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
 
-                Text("PerÃ­cia base:", style = MaterialTheme.typography.labelMedium)
+                Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
                 pericias.forEach { pericia ->
                     val key = periciaTecnicaKey(pericia)
                     FilterChip(
@@ -328,12 +328,12 @@ fun EditarTecnicaDialog(
                     )
                 }
 
-                Text("NÃ­vel acima do predefinido:", style = MaterialTheme.typography.labelMedium)
+                Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(
                         enabled = nivelRelativo > 0,
                         onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
-                        modifier = Modifier.semantics { contentDescription = "Diminuir nÃ­vel da tÃ©cnica" }
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
                     ) { Text("-") }
                     Text(
                         "+$nivelRelativo",
@@ -343,16 +343,16 @@ fun EditarTecnicaDialog(
                     TextButton(
                         enabled = nivelRelativo < nivelMaximo,
                         onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
-                        modifier = Modifier.semantics { contentDescription = "Aumentar nÃ­vel da tÃ©cnica" }
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
                     ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
-                    Text("Limite mÃ¡ximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
+                    Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
                 }
 
-                Text("Custo automÃ¡tico: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
+                Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
                 nhTecnica?.let {
-                    Text("NH da TÃ©cnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
             }
         },
@@ -394,18 +394,18 @@ fun PericiasSuplementaresDialog(
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text("PerÃ­cias Suplementares", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+            Text("Perícias Suplementares", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = busca,
                 onValueChange = { busca = it },
-                label = { Text("Buscar perÃ­cia...") },
+                label = { Text("Buscar perícia...") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Default.Search, null) }
             )
             Spacer(modifier = Modifier.height(4.dp))
-            Text("${itens.size} perÃ­cias encontradas", style = MaterialTheme.typography.bodySmall)
+            Text("${itens.size} perícias encontradas", style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(
                 modifier = Modifier.weight(1f),
@@ -555,4 +555,6 @@ private fun periciaTecnicaLabel(pericia: PericiaSelecionada): String {
         "${pericia.nome} (${pericia.especializacao})"
     }
 }
+
+
 
