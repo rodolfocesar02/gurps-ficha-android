@@ -117,6 +117,22 @@ object PreRequisitoParser {
             return PreRequisitoType.QuantidadeOutrasMagias(qtd, contexto)
         }
 
+        val emEscolasDiferentes = Regex(
+            "^(\\d+)\\s+m[aá]g(?:ica|ia)s?\\s+em\\s+([a-zà-ú0-9]+)\\s+(outras\\s+)?escolas\\s+diferentes$",
+            RegexOption.IGNORE_CASE
+        ).find(tok)
+        if (emEscolasDiferentes != null) {
+            val magiasPorEscola = emEscolasDiferentes.groupValues[1].toIntOrNull() ?: return null
+            val escolasRaw = emEscolasDiferentes.groupValues[2]
+            val escolasDiferentes = numeroFlex(escolasRaw) ?: return null
+            val outras = emEscolasDiferentes.groupValues[3].isNotBlank()
+            return PreRequisitoType.MagiasEmEscolasDiferentes(
+                magiasPorEscola = magiasPorEscola,
+                escolasDiferentes = escolasDiferentes,
+                outrasEscolas = outras
+            )
+        }
+
         val quaisquerMagiasDa = Regex(
             "^quaisquer?\\s+(\\d+)\\s+m[aá]g(?:ica|ia)s\\s+da\\s+(.+)$",
             RegexOption.IGNORE_CASE
@@ -243,5 +259,27 @@ object PreRequisitoParser {
     private fun containsBypassMarker(value: String): Boolean {
         if (value.contains('#')) return true
         return value.contains("especial", ignoreCase = true)
+    }
+
+    private fun numeroFlex(raw: String): Int? {
+        raw.toIntOrNull()?.let { return it }
+        return when (raw.lowercase().trim()) {
+            "um", "uma" -> 1
+            "dois", "duas" -> 2
+            "tres", "três" -> 3
+            "quatro" -> 4
+            "cinco" -> 5
+            "seis" -> 6
+            "sete" -> 7
+            "oito" -> 8
+            "nove" -> 9
+            "dez" -> 10
+            "onze" -> 11
+            "doze" -> 12
+            "treze" -> 13
+            "catorze", "quatorze" -> 14
+            "quinze" -> 15
+            else -> null
+        }
     }
 }

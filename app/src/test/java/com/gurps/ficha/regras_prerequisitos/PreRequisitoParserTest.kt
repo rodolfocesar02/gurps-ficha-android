@@ -70,6 +70,9 @@ class PreRequisitoParserTest {
 
         val naoPode = PreRequisitoParser.parse("Nao pode ser cego")
         assertTrue(naoPode.tipos.any { it is PreRequisitoType.NaoPodeSer })
+
+        val emEscolas = PreRequisitoParser.parse("2 magicas em dez escolas diferentes")
+        assertTrue(emEscolas.tipos.any { it is PreRequisitoType.MagiasEmEscolasDiferentes })
     }
 
     @Test

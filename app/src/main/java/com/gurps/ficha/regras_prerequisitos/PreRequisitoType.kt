@@ -24,6 +24,11 @@ sealed class PreRequisitoType {
         val quantidade: Int,
         val temas: Set<String>
     ) : PreRequisitoType()
+    data class MagiasEmEscolasDiferentes(
+        val magiasPorEscola: Int,
+        val escolasDiferentes: Int,
+        val outrasEscolas: Boolean = false
+    ) : PreRequisitoType()
     data class NaoPodeSer(val condicoes: Set<String>) : PreRequisitoType()
     data class NivelMin(val nivel: Int) : PreRequisitoType()
 }
