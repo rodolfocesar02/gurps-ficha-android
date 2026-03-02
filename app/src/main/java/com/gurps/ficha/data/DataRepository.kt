@@ -891,7 +891,8 @@ class DataRepository(private val context: Context) {
 
     fun criarMagiaSelecionada(
         definicao: MagiaDefinicao,
-        pontosGastos: Int = 1
+        pontosGastos: Int = 1,
+        encantamentoAlvo: String? = null
     ): MagiaSelecionada {
         val pontosNormalizados = pontosGastos.coerceAtLeast(1)
         return MagiaSelecionada(
@@ -905,7 +906,8 @@ class DataRepository(private val context: Context) {
             escola = definicao.escola,
             duracao = definicao.duracao,
             energia = definicao.energia,
-            tempoOperacao = definicao.tempoOperacao
+            tempoOperacao = definicao.tempoOperacao,
+            encantamentoAlvo = encantamentoAlvo?.trim()?.takeIf { it.isNotBlank() }
         )
     }
 
@@ -971,14 +973,14 @@ class DataRepository(private val context: Context) {
         "encantar" to "Aptidao Magica 2, 1 magica em dez outras escolas",
         "expulsar" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
         "extrair_corrente_eletricant" to "Roubar Corrente Eletrica e 2 magicas em dez escolas diferentes",
-        "imunidade_a_encantamento" to "-",
+        "imunidade_a_encantamento" to "Encantar",
         "localizar_portal" to "Aptidao Magica 2, Localizar Magica e 1 magica em dez escolas diferentes",
         "criar_portal" to "Controle de Portal ou Teleporte ou Viagem no Tempo ou Trocar de Plano",
         "metamorfose_superior" to "AM3, Alterar Corpo, quaisquer 4 magicas Metamorfose, 10 outras magicas",
         "restauracao" to "Cura Profunda, ou quaisquer 2 de Aliviar Paralisia e Restaurar",
         "geiser" to "6 magicas da Agua, incl. Criar Nascente, quaisquer 4 magicas da Terra ou Fogo",
-        "espirito_de_caveira" to "4 outras magicas de Necromancia",
-        "armadura_de_relampagos" to "6 magicas de Relampago, incl. Imunidade a Relampagos",
+        "espirito_de_caveira" to "4 magicas de Necromancia",
+        "armadura_de_relampagos" to "6 magicas de Relampagos, incl. Imunidade a Relampagos",
         "condicionamento_permanente" to "AM3, 15 magicas de Controle da Mente, incl. Condicionamento",
         "controle_de_membro" to "AM1, 5 magicas de Corpo, incl. Espasmo",
         "adivinhacao" to "Historia, 1 outras magicas"

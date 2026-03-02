@@ -180,8 +180,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             prereqFalha = prereqFalha,
             erroPersistente = erroAdicionarMagia,
             onDismiss = { magiaSelecionada = null },
-            onSave = { pontosGastos ->
-                val erro = viewModel.adicionarMagia(definicao, pontosGastos)
+            onSave = { pontosGastos, encantamentoAlvo ->
+                val erro = viewModel.adicionarMagia(definicao, pontosGastos, encantamentoAlvo)
                 if (erro == null) {
                     erroAdicionarMagia = null
                     magiaSelecionada = null
@@ -201,10 +201,12 @@ fun ConfigurarMagiaDialog(
     prereqFalha: String?,
     erroPersistente: String?,
     onDismiss: () -> Unit,
-    onSave: (Int) -> Unit
+    onSave: (Int, String?) -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(1) }
+    var encantamentoAlvoInput by remember { mutableStateOf("") }
+    val exigeEncantamentoAlvo = definicao.id.equals("imunidade_a_encantamento", ignoreCase = true)
     val dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa ?: "D")
     
     // Calcula nível preview
@@ -296,6 +298,15 @@ fun ConfigurarMagiaDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+                if (exigeEncantamentoAlvo) {
+                    OutlinedTextField(
+                        value = encantamentoAlvoInput,
+                        onValueChange = { encantamentoAlvoInput = it.take(80) },
+                        label = { Text("Qual encantamento?") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
@@ -309,8 +320,9 @@ fun ConfigurarMagiaDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(pontosGastos) },
-                enabled = prereqFalha.isNullOrBlank()
+                onClick = { onSave(pontosGastos, encantamentoAlvoInput) },
+                enabled = prereqFalha.isNullOrBlank() &&
+                    (!exigeEncantamentoAlvo || encantamentoAlvoInput.isNotBlank())
             ) { Text("Adicionar") }
         },
         dismissButton = {

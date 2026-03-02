@@ -599,16 +599,26 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
      */
     fun adicionarMagia(
         definicao: MagiaDefinicao,
-        pontosGastos: Int = 1
+        pontosGastos: Int = 1,
+        encantamentoAlvo: String? = null
     ): String? {
         if (personagem.magias.any { it.definicaoId == definicao.id }) {
             return "Magia já adicionada."
+        }
+        if (definicao.id.equals("imunidade_a_encantamento", ignoreCase = true) &&
+            encantamentoAlvo.isNullOrBlank()
+        ) {
+            return "Informe qual encantamento sera protegido."
         }
         val erro = dataRepository.validarPreRequisitosMagia(definicao, personagem)
         if (erro != null) {
             return "Pré‑requisito não atendido: $erro"
         }
-        val magia = dataRepository.criarMagiaSelecionada(definicao, pontosGastos.coerceAtLeast(1))
+        val magia = dataRepository.criarMagiaSelecionada(
+            definicao = definicao,
+            pontosGastos = pontosGastos.coerceAtLeast(1),
+            encantamentoAlvo = encantamentoAlvo
+        )
         val lista = personagem.magias.toMutableList()
         lista.add(magia)
         personagem = personagem.copy(magias = lista)
