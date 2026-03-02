@@ -402,7 +402,7 @@ fun ConfigurarMagiaDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                Card(colors = appCardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
                             "NH: $nivelPreview (IQ+AM$nivelRelativo)",
@@ -516,7 +516,7 @@ fun EditarMagiaDialog(
                 }
 
                 Divider()
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                Card(colors = appCardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
                             "NH: $nivelPreview (IQ+AM$nivelRelativo)",

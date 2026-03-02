@@ -916,7 +916,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         ) {
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
@@ -933,7 +933,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             }
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
@@ -954,7 +954,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             val nomeAttr = atributoNomeCompleto(attr)
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1066,7 +1066,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         ) {
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1100,7 +1100,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             }
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -2840,3 +2840,4 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 }
+

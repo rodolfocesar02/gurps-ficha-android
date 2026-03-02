@@ -46,7 +46,7 @@ fun TabMagias(viewModel: FichaViewModel) {
     var showSelecionarMagia by remember { mutableStateOf(false) }
     var editingMagiaIndex by remember { mutableStateOf<Int?>(null) }
 
-    StandardTabColumn {
+    StandardTabColumn(contentSpacing = 4.dp) {
 
         BotaoAdicionarMagiaPadrao(
             texto = "Adicionar Magia",
@@ -69,7 +69,7 @@ fun TabMagias(viewModel: FichaViewModel) {
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(),
+                    colors = appCardColors(),
                     border = if (hasFailure) BorderStroke(2.dp, MaterialTheme.colorScheme.error)
                     else CardDefaults.outlinedCardBorder()
                 ) {
@@ -180,4 +180,3 @@ fun MagiaItem(
         }
     }
 }
-

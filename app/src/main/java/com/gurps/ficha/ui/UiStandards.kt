@@ -30,7 +30,7 @@ fun rememberIsCompactScreen(): Boolean = LocalConfiguration.current.screenWidthD
 @Composable
 fun StandardTabColumn(
     modifier: Modifier = Modifier,
-    contentSpacing: androidx.compose.ui.unit.Dp = 12.dp,
+    contentSpacing: androidx.compose.ui.unit.Dp = 4.dp,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
@@ -42,6 +42,11 @@ fun StandardTabColumn(
         content = content
     )
 }
+
+@Composable
+fun appCardColors() = CardDefaults.cardColors(
+    containerColor = MaterialTheme.colorScheme.secondaryContainer
+)
 
 @Composable
 fun PrimaryActionButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
@@ -61,6 +66,7 @@ fun SummaryFooterCard(title: String, content: @Composable ColumnScope.() -> Unit
 
     Card(
         modifier = Modifier.fillMaxWidth(),
+        colors = appCardColors(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(

@@ -401,7 +401,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                 }
 
                 Divider()
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+                Card(colors = appCardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text("NH: $nivelPreview (${atributoEscolhido.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     }

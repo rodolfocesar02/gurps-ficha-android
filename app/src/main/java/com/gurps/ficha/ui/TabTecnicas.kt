@@ -36,7 +36,7 @@ fun TabTecnicas(viewModel: FichaViewModel) {
     var showSelecionarTecnica by remember { mutableStateOf(false) }
     var editingTecnicaIndex by remember { mutableStateOf<Int?>(null) }
 
-    StandardTabColumn(contentSpacing = 6.dp) {
+    StandardTabColumn(contentSpacing = 4.dp) {
         if (isPraCegoVariant) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,7 +71,7 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         personagem.tecnicas.forEachIndexed { index, tecnica ->
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors()
+                colors = appCardColors()
             ) {
                 Column(modifier = Modifier.padding(10.dp)) {
                     TecnicaItem(

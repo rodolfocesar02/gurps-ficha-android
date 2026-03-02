@@ -26,7 +26,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SectionCard(title: String, onAdd: (() -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = appCardColors(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+    ) {
         Column(modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             val mostrarCabecalho = title.isNotBlank() || onAdd != null
             if (mostrarCabecalho) {
