@@ -94,6 +94,37 @@ Validacao executada:
 - `./gradlew.bat :app:compileVisualDebugKotlin :app:testVisualDebugUnitTest --no-daemon`
 - `./gradlew.bat :app:compilePracegoDebugKotlin :app:testPracegoDebugUnitTest --no-daemon`
 - resultado: `BUILD SUCCESSFUL`.
+
+### Lote 16.1 - Regras de "magias em X escolas diferentes" (2026-03-02)
+Ajustes aplicados com base nas novas referencias:
+- parser para `N magicas em X escolas diferentes` (inclui numeros por extenso: `seis`, `dez`, `quinze`);
+- checker para validar quantidade minima de escolas com pelo menos `N` magias;
+- overrides textuais aplicados para:
+  - `acelerar_tempo`
+  - `conceder_magica`
+  - `convocacao_planar`
+  - `convocar_demonio`
+  - `desejo`
+  - `encantar`
+  - `expulsar`
+  - `extrair_corrente_eletricant`
+  - `imunidade_a_encantamento` (forcado para `-`)
+  - `localizar_portal`
+- cobertura ampliada para descricoes semelhantes no mesmo padrao.
+
+Validacao atualizada:
+- total de magias: `831`
+- corretas: `828`
+- corrigidas neste bloco (padroes alvo): `22`
+- faltam corrigir: `3`
+
+Mais problematicas (restantes):
+1. `armadura_de_relampagos` (token/encoding corrompido em `mgicas`)
+2. `espirito_de_caveira` (token/encoding corrompido em `mgicas`/`necromntica`)
+3. `imunidade_a_encantamento` (texto legado de `qualquer encantamento`, embora runtime esteja liberado por override `-`)
+
+Mais simples de corrigir:
+- neste momento, os 3 itens acima (todos com 1 erro residual cada).
 - Ajuste incremental de acessibilidade (PRACEGO):
   - Aba Pericias com botoes de acao em fluxo linear vertical, largura total e espacamento simetrico;
   - VISUAL mantido no layout em grade 2x2 para esses botoes.

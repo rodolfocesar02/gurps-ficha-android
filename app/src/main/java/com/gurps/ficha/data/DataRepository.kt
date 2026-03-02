@@ -963,9 +963,18 @@ class DataRepository(private val context: Context) {
     }
 
     private val preRequisitosOverridePorMagiaId: Map<String, String> = mapOf(
+        "acelerar_tempo" to "Aptidao Magica 2, IQ 13+, 2 magicas em dez escolas diferentes",
+        "conceder_magica" to "Aptidao Magica 1, Conceder Pericia, 2 magicas em seis escolas diferentes",
+        "convocacao_planar" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
+        "convocar_demonio" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
+        "desejo" to "Pequeno Desejo e 1 magica em quinze escolas diferentes",
+        "encantar" to "Aptidao Magica 2, 1 magica em dez outras escolas",
+        "expulsar" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
+        "extrair_corrente_eletricant" to "Roubar Corrente Eletrica e 2 magicas em dez escolas diferentes",
+        "imunidade_a_encantamento" to "-",
+        "localizar_portal" to "Aptidao Magica 2, Localizar Magica e 1 magica em dez escolas diferentes",
         "criar_portal" to "Controle de Portal ou Teleporte ou Viagem no Tempo ou Trocar de Plano",
         "metamorfose_superior" to "AM3, Alterar Corpo, quaisquer 4 magicas Metamorfose, 10 outras magicas",
-        "imunidade_a_encantamento" to "qualquer uma magia de Limitacao",
         "restauracao" to "Cura Profunda, ou quaisquer 2 de Aliviar Paralisia e Restaurar",
         "geiser" to "6 magicas da Agua, incl. Criar Nascente, quaisquer 4 magicas da Terra ou Fogo",
         "espirito_de_caveira" to "4 outras magicas de Necromancia",

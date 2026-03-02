@@ -106,6 +106,13 @@ object PreRequisitoChecker {
                     "${requisito.quantidade} outras magias${requisito.contexto?.let { " de $it" } ?: ""} (atual $total)"
                 } else null
             }
+            is PreRequisitoType.MagiasEmEscolasDiferentes -> {
+                val porEscola = magiasPorEscola(personagem)
+                val escolasAtendidas = porEscola.values.count { it >= requisito.magiasPorEscola }
+                if (escolasAtendidas < requisito.escolasDiferentes) {
+                    "${requisito.magiasPorEscola} magias em ${requisito.escolasDiferentes} escolas diferentes (atual $escolasAtendidas)"
+                } else null
+            }
             is PreRequisitoType.QualquerMagiaComNome -> {
                 val trecho = normalizar(requisito.trechoNome)
                 val atende = magiasNomes(personagem).any { it.contains(trecho) }
