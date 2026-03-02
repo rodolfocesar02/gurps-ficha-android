@@ -464,7 +464,8 @@ data class MagiaSelecionada(
     val escola: List<String>? = null,
     val duracao: String? = null,
     val energia: String? = null,
-    val tempoOperacao: String? = null
+    val tempoOperacao: String? = null,
+    val encantamentoAlvo: String? = null
 ) {
     /**
      * Calcula o nivel da magia seguindo a mesma logica das pericias (IQ + Aptidao Magica).

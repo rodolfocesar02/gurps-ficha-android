@@ -125,6 +125,20 @@ Mais problematicas (restantes):
 
 Mais simples de corrigir:
 - neste momento, os 3 itens acima (todos com 1 erro residual cada).
+
+### Lote 16.2 - Ajustes finais de prerequisitos solicitados (2026-03-02)
+Ajustes aplicados:
+- `armadura_de_relampagos`: normalizado para `6 magicas de Relampagos, incl. Imunidade a Relampagos`.
+- `espirito_de_caveira`: normalizado para `4 magicas de Necromancia`.
+- caso especifico `imunidade_a_encantamento`:
+  - pre-requisito operacional ajustado para `Encantar`;
+  - dialogo de adicionar magia agora exige campo `Qual encantamento?`;
+  - enquanto o campo estiver vazio, o botao `Adicionar` permanece bloqueado;
+  - valor informado passa a ser salvo em `MagiaSelecionada.encantamentoAlvo`.
+
+Validacao executada:
+- `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
+- resultado: `BUILD SUCCESSFUL`.
 - Ajuste incremental de acessibilidade (PRACEGO):
   - Aba Pericias com botoes de acao em fluxo linear vertical, largura total e espacamento simetrico;
   - VISUAL mantido no layout em grade 2x2 para esses botoes.
