@@ -1,6 +1,5 @@
 ﻿package com.gurps.ficha.ui
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -54,7 +54,6 @@ import com.gurps.ficha.model.MagiaSelecionada
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
-import kotlinx.coroutines.withTimeoutOrNull
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 
@@ -69,10 +68,22 @@ private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
 
 private fun formatarFalhaPreReq(falha: String): String {
     return falha
+        .replace(Regex("(?i)^pré[-‑ ]requisito\\s+não\\s+atendido\\s*:\\s*"), "")
+        .replace(Regex("(?i)^pre[-‑ ]requisito\\s+nao\\s+atendido\\s*:\\s*"), "")
         .replace(Regex("(?i)conhecimento\\s+magico\\s+requerido\\s*:\\s*"), "")
         .replace(Regex("(?i)conhecimento\\s+requerido\\s*:\\s*"), "")
         .replace(Regex("\\s*,\\s*"), ", ")
         .replace(Regex("\\s+"), " ")
+        .trim()
+}
+
+private fun motivoBloqueioCurto(falha: String): String {
+    val limpo = formatarFalhaPreReq(falha)
+    if (limpo.isBlank()) return "Pré-requisito pendente."
+    return limpo
+        .substringBefore(".")
+        .substringBefore(";")
+        .substringBefore(",")
         .trim()
 }
 
@@ -82,11 +93,28 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var magiaSelecionada by remember { mutableStateOf<MagiaDefinicao?>(null) }
     var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
-    var adicaoForcadaSemPrereq by remember { mutableStateOf(false) }
+    var modoAlvoAtivo by remember { mutableStateOf(false) }
+    var magiaAlvoId by remember { mutableStateOf<String?>(null) }
 
     val listaFiltrada = viewModel.magiasFiltradas
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
+    val magiaAlvoSelecionada = listaFiltrada.firstOrNull { it.id == magiaAlvoId }
+    val idsRelacionadosAlvo = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+        viewModel.idsRelacionadosMagiaAlvo(magiaAlvoSelecionada)
+    } else {
+        emptySet()
+    }
+    val listaExibicao = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+        val relacionadas = listaFiltrada.filter { it.id in idsRelacionadosAlvo }
+        if (relacionadas.isNotEmpty()) {
+            relacionadas.sortedBy { if (it.id == magiaAlvoSelecionada.id) 0 else 1 }
+        } else {
+            listaFiltrada
+        }
+    } else {
+        listaFiltrada
+    }
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
             Column(modifier = Modifier.fillMaxSize()) {
@@ -101,6 +129,35 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     singleLine = true,
                     leadingIcon = { Icon(Icons.Default.Search, null) }
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    FilterChip(
+                        selected = modoAlvoAtivo,
+                        onClick = {
+                            modoAlvoAtivo = !modoAlvoAtivo
+                            if (!modoAlvoAtivo) magiaAlvoId = null
+                        },
+                        label = { Text("Modo Alvo") }
+                    )
+                    if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+                        Text(
+                            "Alvo: ${magiaAlvoSelecionada.nome}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    } else if (modoAlvoAtivo) {
+                        Text(
+                            "Toque em \"Alvo\" na magia desejada.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
                 
@@ -149,10 +206,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("${listaFiltrada.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
+                Text("${listaExibicao.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
 
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    itemsIndexed(listaFiltrada) { _, definicao ->
+                    itemsIndexed(listaExibicao) { _, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
                         val prereqFalha = viewModel.prereqFailureForMagia(definicao)
                         val prereqOk = prereqFalha == null
@@ -167,37 +224,39 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    definicao.nome,
-                                    modifier = Modifier.pointerInput(definicao.id, jaAdicionada, prereqOk) {
-                                        detectTapGestures(
-                                            onPress = {
-                                                val liberadoAntes = withTimeoutOrNull(3000L) {
-                                                    tryAwaitRelease()
-                                                }
-                                                if (liberadoAntes == null) {
-                                                    if (!jaAdicionada && !prereqOk) {
-                                                        erroAdicionarMagia = null
-                                                        adicaoForcadaSemPrereq = true
-                                                        magiaSelecionada = definicao
-                                                    }
-                                                } else if (liberadoAntes) {
-                                                    if (!jaAdicionada && prereqOk) {
-                                                        erroAdicionarMagia = null
-                                                        adicaoForcadaSemPrereq = false
-                                                        magiaSelecionada = definicao
-                                                    }
-                                                }
-                                            }
-                                        )
-                                    }
+                                    definicao.nome
                                 )
                             },
-                            supportingContent = { Text("$classeEscola | pag. ${definicao.pagina}") },
+                            supportingContent = {
+                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                    Text("$classeEscola | pag. ${definicao.pagina}")
+                                    if (!prereqOk && !prereqFalha.isNullOrBlank()) {
+                                        Text(
+                                            "Falta: ${motivoBloqueioCurto(prereqFalha)}",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.error
+                                        )
+                                    }
+                                }
+                            },
                             trailingContent = {
-                                if (jaAdicionada) {
-                                    Text("Adicionada", color = MaterialTheme.colorScheme.outline)
-                                } else if (!prereqOk) {
-                                    Text("Bloqueada", color = MaterialTheme.colorScheme.error)
+                                Column(horizontalAlignment = Alignment.End) {
+                                    if (modoAlvoAtivo && !jaAdicionada) {
+                                        TextButton(
+                                            onClick = { magiaAlvoId = definicao.id },
+                                            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)
+                                        ) {
+                                            Text(
+                                                if (magiaAlvoId == definicao.id) "Alvo" else "Definir Alvo",
+                                                color = if (magiaAlvoId == definicao.id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                    if (jaAdicionada) {
+                                        Text("Adicionada", color = MaterialTheme.colorScheme.outline)
+                                    } else if (!prereqOk) {
+                                        Text("Bloqueada", color = MaterialTheme.colorScheme.error)
+                                    }
                                 }
                             },
                             modifier = Modifier
@@ -206,10 +265,14 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                         contentDescription = if (prereqOk) {
                                             "Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
                                         } else {
-                                            "Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Pressione por tres segundos no nome para adicionar sem pre requisito."
+                                            "Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Abra o dialogo e use adicao forcada se autorizado."
                                         }
                                     }
                                 }
+                                .then(if (!jaAdicionada) Modifier.clickable {
+                                    erroAdicionarMagia = null
+                                    magiaSelecionada = definicao
+                                } else Modifier)
                                 .then(
                                     if (!prereqOk) Modifier.alpha(0.45f) else Modifier
                                 )
@@ -232,19 +295,17 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             nivelAptidaoMagica = viewModel.nivelAptidaoMagica,
             prereqFalha = prereqFalha,
             erroPersistente = erroAdicionarMagia,
-            adicaoForcadaSemPrereq = adicaoForcadaSemPrereq,
             onDismiss = { magiaSelecionada = null },
-            onSave = { pontosGastos, encantamentoAlvo, especializacaoMagia ->
+            onSave = { pontosGastos, encantamentoAlvo, especializacaoMagia, ignorarPreReq ->
                 val erro = viewModel.adicionarMagia(
                     definicao = definicao,
                     pontosGastos = pontosGastos,
                     encantamentoAlvo = encantamentoAlvo,
                     especializacaoMagia = especializacaoMagia,
-                    ignorarPreRequisito = adicaoForcadaSemPrereq
+                    ignorarPreRequisito = ignorarPreReq
                 )
                 if (erro == null) {
                     erroAdicionarMagia = null
-                    adicaoForcadaSemPrereq = false
                     magiaSelecionada = null
                 } else {
                     erroAdicionarMagia = erro
@@ -261,14 +322,15 @@ fun ConfigurarMagiaDialog(
     nivelAptidaoMagica: Int,
     prereqFalha: String?,
     erroPersistente: String?,
-    adicaoForcadaSemPrereq: Boolean,
     onDismiss: () -> Unit,
-    onSave: (Int, String?, String?) -> Unit
+    onSave: (Int, String?, String?, Boolean) -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(1) }
     var encantamentoAlvoInput by remember { mutableStateOf("") }
     var especializacaoMagiaInput by remember { mutableStateOf("") }
+    var adicaoForcadaSemPrereq by remember { mutableStateOf(false) }
+    var confirmarAdicaoForcada by remember { mutableStateOf(false) }
     val exigeEncantamentoAlvo = definicao.id.equals("imunidade_a_encantamento", ignoreCase = true)
     val exigeEspecializacao = definicao.id.lowercase() in setOf(
         "adivinhacao",
@@ -376,13 +438,22 @@ fun ConfigurarMagiaDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                if (adicaoForcadaSemPrereq) {
-                    Text(
-                        text = "Adicao forcada sem pre-requisito (pressionar 3s).",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                if (!prereqFalha.isNullOrBlank()) {
+                    TextButton(
+                        onClick = { confirmarAdicaoForcada = true },
+                        contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)
+                    ) {
+                        Text(
+                            text = if (adicaoForcadaSemPrereq) {
+                                "Adição Forçada sem pré-requisito (ATIVADA)"
+                            } else {
+                                "Adição Forçada sem pré-requisito"
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
                 if (exigeEncantamentoAlvo) {
                     OutlinedTextField(
@@ -415,7 +486,7 @@ fun ConfigurarMagiaDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(pontosGastos, encantamentoAlvoInput, especializacaoMagiaInput) },
+                onClick = { onSave(pontosGastos, encantamentoAlvoInput, especializacaoMagiaInput, adicaoForcadaSemPrereq) },
                 enabled = (prereqFalha.isNullOrBlank() || adicaoForcadaSemPrereq) &&
                     (!exigeEncantamentoAlvo || encantamentoAlvoInput.isNotBlank()) &&
                     (!exigeEspecializacao || especializacaoMagiaInput.isNotBlank())
@@ -425,6 +496,29 @@ fun ConfigurarMagiaDialog(
             TextButton(onClick = { onDismiss() }) { Text("Cancelar") }
         }
     )
+
+    if (confirmarAdicaoForcada) {
+        AlertDialog(
+            onDismissRequest = { confirmarAdicaoForcada = false },
+            title = { Text("CONFIRMAÇÃO") },
+            text = {
+                Text(
+                    "SEU MESTRE AUTORIZOU?",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    adicaoForcadaSemPrereq = true
+                    confirmarAdicaoForcada = false
+                }) { Text("SIM") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmarAdicaoForcada = false }) { Text("NAO") }
+            }
+        )
+    }
 }
 
 

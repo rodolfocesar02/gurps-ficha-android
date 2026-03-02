@@ -659,6 +659,29 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return prereqFailureForMagia(def) == null
     }
 
+    /** Retorna ids de magias relacionadas ao alvo (alvo + pré-requisitos textuais diretos). */
+    fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
+        val textoBase = buildString {
+            append(alvo.preRequisitos.orEmpty())
+            val faltantes = prereqFailureForMagia(alvo)
+            if (!faltantes.isNullOrBlank()) {
+                append(' ')
+                append(faltantes)
+            }
+        }
+        val textoNormalizado = normalizarTexto(textoBase)
+        if (textoNormalizado.isBlank()) return setOf(alvo.id)
+
+        val idsRelacionados = mutableSetOf(alvo.id)
+        dataRepository.magias.forEach { magia ->
+            val nomeNormalizado = normalizarTexto(magia.nome)
+            if (nomeNormalizado.length >= 4 && textoNormalizado.contains(nomeNormalizado)) {
+                idsRelacionados.add(magia.id)
+            }
+        }
+        return idsRelacionados
+    }
+
     private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
         return definicaoId.lowercase() in setOf(
             "criar_elemental",
@@ -1612,10 +1635,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .substringBefore(" ou ")
             .trim()
         if (candidata.isBlank()) return null
+        val candidataSemBonus = candidata
+            .replace(Regex("[+-]\\d+.*$"), "")
+            .replace(Regex("\\s+"), " ")
+            .trim()
         val termosGenericos = listOf(
             "pre requisito",
             "pre requisito aparar",
             "pre requisito bloquear",
+            "pericia pre requisito",
             "pericia de tiro",
             "pericia com arma",
             "defesa ativa",
@@ -1627,10 +1655,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             "iq",
             "per"
         )
-        if (termosGenericos.any { candidata == it || candidata.startsWith("$it ") }) {
+        if (termosGenericos.any { termo ->
+                candidata == termo ||
+                    candidata.startsWith("$termo ") ||
+                    candidataSemBonus == termo ||
+                    candidataSemBonus.startsWith("$termo ")
+            }) {
             return null
         }
-        return candidata
+        return candidataSemBonus.ifBlank { candidata }
     }
 
     private fun regraPerfilTecnica(definicao: TecnicaCatalogoItem): TecnicaRegraPerfil {

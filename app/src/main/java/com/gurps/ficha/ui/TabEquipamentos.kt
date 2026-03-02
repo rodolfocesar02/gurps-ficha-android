@@ -515,7 +515,7 @@ fun SelecionarArmaEquipamentoDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(320.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         items(armas, key = { it.id }) { arma ->
                             ArmaItemSelecao(
@@ -588,44 +588,47 @@ private fun ArmaItemSelecao(
         else -> "Distancia"
     }
 
-    Column(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 4.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
-        Text(arma.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-        Text(
-            "ST ${arma.stMinimo ?: "-"} | $tipoLabel",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Text(
-            "Dano: ${arma.danoRaw} -> $danoCalculado | Custo: $${arma.custoBase ?: 0f} | Peso: ${arma.pesoBaseKg ?: 0f} kg",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.tertiary
-        )
-        if (!arma.aparar.isNullOrBlank()) {
+        Column(
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(arma.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
             Text(
-                "Aparar: ${arma.aparar}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
-        val podeMostrarObs = when (arma.tipoCombate) {
-            "armas_de_fogo" -> mostrarObsArmaFogo
-            "corpo_a_corpo", "distancia" -> true
-            else -> false
-        }
-        if (podeMostrarObs && arma.observacoes.isNotBlank()) {
-            Text(
-                "Obs: ${arma.observacoes}",
+                "ST ${arma.stMinimo ?: "-"} | $tipoLabel",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Text(
+                "Dano: ${arma.danoRaw} -> $danoCalculado | Custo: $${arma.custoBase ?: 0f} | Peso: ${arma.pesoBaseKg ?: 0f} kg",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+            if (!arma.aparar.isNullOrBlank()) {
+                Text(
+                    "Aparar: ${arma.aparar}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            val podeMostrarObs = when (arma.tipoCombate) {
+                "armas_de_fogo" -> mostrarObsArmaFogo
+                "corpo_a_corpo", "distancia" -> true
+                else -> false
+            }
+            if (podeMostrarObs && arma.observacoes.isNotBlank()) {
+                Text(
+                    "Obs: ${arma.observacoes}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
-        Divider(modifier = Modifier.padding(top = 4.dp))
     }
 }
 
@@ -661,22 +664,26 @@ private fun SelecionarEscudoEquipamentoDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(260.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         items(escudos, key = { it.id }) { escudo ->
-                            Column(
+                            Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { onSelect(escudo) }
-                                    .padding(vertical = 4.dp)
+                                    .clickable { onSelect(escudo) },
+                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                             ) {
-                                Text(escudo.nome, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                                Text(
-                                    "DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Divider(modifier = Modifier.padding(top = 4.dp))
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(escudo.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                                    Text(
+                                        "DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
                         }
                     }
@@ -791,37 +798,41 @@ private fun SelecionarArmaduraEquipamentoDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(280.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
                         items(armaduras, key = { it.id }) { armadura ->
-                            Column(
+                            Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { onSelect(armadura) }
-                                    .padding(vertical = 4.dp)
+                                    .clickable { onSelect(armadura) },
+                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                             ) {
-                                Text(corrigirTextoQuebrado(armadura.nome), style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
-                                Text(
-                                    "NT ${armadura.nt ?: "-"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    "Local: ${corrigirTextoQuebrado(armadura.local)}",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                val observacoes = observacoesFormatadas(armadura)
-                                if (observacoes.isNotEmpty()) {
-                                    observacoes.forEach { linha ->
-                                        Text(
-                                            linha,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.tertiary
-                                        )
+                                Column(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(corrigirTextoQuebrado(armadura.nome), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                                    Text(
+                                        "NT ${armadura.nt ?: "-"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                    Text(
+                                        "Local: ${corrigirTextoQuebrado(armadura.local)}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    val observacoes = observacoesFormatadas(armadura)
+                                    if (observacoes.isNotEmpty()) {
+                                        observacoes.forEach { linha ->
+                                            Text(
+                                                linha,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = MaterialTheme.colorScheme.tertiary
+                                            )
+                                        }
                                     }
                                 }
-                                Divider(modifier = Modifier.padding(top = 4.dp))
                             }
                         }
                     }
