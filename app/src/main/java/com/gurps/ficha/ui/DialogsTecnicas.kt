@@ -99,7 +99,7 @@ fun SelecionarTecnicaDialog(
 
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 items(tecnicas) { tecnica ->
                     Card(
@@ -108,12 +108,25 @@ fun SelecionarTecnicaDialog(
                             .clickable { tecnicaSelecionada = tecnica },
                         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                     ) {
-                        Column(modifier = Modifier.padding(10.dp)) {
-                            Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 8.dp, vertical = 6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
                             Text(
-                                "${tecnica.sourceBook} â€¢ ${tecnica.dificuldadeRaw}",
+                                tecnica.nome,
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            Text(
+                                "${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 1
                             )
                         }
                     }
@@ -173,7 +186,7 @@ fun ConfigurarTecnicaDialog(
             ) {
                 Text(definicao.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(
-                    "${definicao.sourceBook} â€¢ ${definicao.dificuldadeRaw}",
+                    "${definicao.sourceBook} | ${definicao.dificuldadeRaw}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -316,7 +329,7 @@ fun EditarTecnicaDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text("${tecnica.sourceBook} â€¢ ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
+                Text("${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
 
                 Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
                 pericias.forEach { pericia ->
@@ -409,7 +422,7 @@ fun PericiasSuplementaresDialog(
             Spacer(modifier = Modifier.height(4.dp))
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 items(itens) { pericia ->
                     PericiaSuplementarCard(
@@ -437,26 +450,19 @@ private fun PericiaSuplementarCard(
     item: PericiaSuplementarItem,
     onOpenDetails: () -> Unit
 ) {
-    val previewDescricao = item.descricao.trim().replace(Regex("\\s+"), " ")
-    val resumoCurto = when {
-        previewDescricao.isBlank() -> "Sem descrição resumida."
-        previewDescricao.length <= 88 -> previewDescricao
-        else -> previewDescricao.take(88).trimEnd() + "..."
-    }
-
     Card(modifier = Modifier.fillMaxWidth(), elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
-        Column(modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text(item.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(
-                "${item.sourceBook} â€¢ ${item.dificuldadeRaw}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Text(
-                resumoCurto,
-                style = MaterialTheme.typography.bodySmall,
+                item.nome,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                "${item.sourceBook} | ${item.dificuldadeRaw}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             TextButton(
                 onClick = onOpenDetails,

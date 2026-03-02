@@ -21,12 +21,12 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -99,16 +99,42 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
                 Text("${listaFiltrada.size} vantagens encontradas", style = MaterialTheme.typography.bodySmall)
 
-                LazyColumn(modifier = Modifier.weight(1f)) {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
                     items(listaFiltrada) { definicao ->
                         val jaAdicionada = viewModel.vantagemJaAdicionada(definicao.id)
-                        ListItem(
-                            headlineContent = { Text(definicao.nome, fontWeight = if (jaAdicionada) FontWeight.Normal else FontWeight.Medium) },
-                            supportingContent = { Text("${definicao.custo} pts | ${definicao.tipoCusto.name.lowercase()} | pag. ${definicao.pagina}") },
-                            trailingContent = { if (jaAdicionada) Text("Adicionada", color = MaterialTheme.colorScheme.outline) },
-                            modifier = Modifier.clickable(enabled = !jaAdicionada) { vantagemSelecionada = definicao }
-                        )
-                        Divider()
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(enabled = !jaAdicionada) { vantagemSelecionada = definicao },
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        definicao.nome,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = if (jaAdicionada) FontWeight.Normal else FontWeight.Medium
+                                    )
+                                    Text(
+                                        "${definicao.custo} pts | ${definicao.tipoCusto.name.lowercase()} | pag. ${definicao.pagina}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                if (jaAdicionada) {
+                                    Text("Adicionada", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.labelSmall)
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -266,16 +292,42 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
 
                 Text("${listaFiltrada.size} desvantagens encontradas", style = MaterialTheme.typography.bodySmall)
 
-                LazyColumn(modifier = Modifier.weight(1f)) {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
                     items(listaFiltrada) { definicao ->
                         val jaAdicionada = viewModel.desvantagemJaAdicionada(definicao.id)
-                        ListItem(
-                            headlineContent = { Text(definicao.nome) },
-                            supportingContent = { Text("${definicao.custo} pts | ${definicao.tipoCusto.name.lowercase()} | pag. ${definicao.pagina}") },
-                            trailingContent = { if (jaAdicionada) Text("Adicionada", color = MaterialTheme.colorScheme.outline) },
-                            modifier = Modifier.clickable(enabled = !jaAdicionada) { desvantagemSelecionada = definicao }
-                        )
-                        Divider()
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(enabled = !jaAdicionada) { desvantagemSelecionada = definicao },
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        definicao.nome,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = if (jaAdicionada) FontWeight.Normal else FontWeight.Medium
+                                    )
+                                    Text(
+                                        "${definicao.custo} pts | ${definicao.tipoCusto.name.lowercase()} | pag. ${definicao.pagina}",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                if (jaAdicionada) {
+                                    Text("Adicionada", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.labelSmall)
+                                }
+                            }
+                        }
                     }
                 }
 
