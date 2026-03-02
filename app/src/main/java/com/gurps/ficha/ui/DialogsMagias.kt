@@ -67,6 +67,15 @@ private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
     }
 }
 
+private fun formatarFalhaPreReq(falha: String): String {
+    return falha
+        .replace(Regex("(?i)conhecimento\\s+magico\\s+requerido\\s*:\\s*"), "")
+        .replace(Regex("(?i)conhecimento\\s+requerido\\s*:\\s*"), "")
+        .replace(Regex("\\s*,\\s*"), ", ")
+        .replace(Regex("\\s+"), " ")
+        .trim()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
@@ -354,17 +363,17 @@ fun ConfigurarMagiaDialog(
                 }
 
                 Divider()
-                val preReqRaw = definicao.preRequisitos?.trim().orEmpty()
-                if (preReqRaw.isNotBlank()) {
-                    Text("Pre-requisito: $preReqRaw", style = MaterialTheme.typography.bodySmall)
+                val erroPreReq = erroPersistente ?: prereqFalha?.let {
+                    "Pre-requisito nao atendido: ${formatarFalhaPreReq(it)}"
                 }
-                val erroPreReq = erroPersistente ?: prereqFalha?.let { "Pre-requisito nao atendido: $it" }
                 if (!erroPreReq.isNullOrBlank()) {
                     Text(
                         text = erroPreReq,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
                 if (adicaoForcadaSemPrereq) {
