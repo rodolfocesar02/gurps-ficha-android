@@ -892,7 +892,8 @@ class DataRepository(private val context: Context) {
     fun criarMagiaSelecionada(
         definicao: MagiaDefinicao,
         pontosGastos: Int = 1,
-        encantamentoAlvo: String? = null
+        encantamentoAlvo: String? = null,
+        especializacaoMagia: String? = null
     ): MagiaSelecionada {
         val pontosNormalizados = pontosGastos.coerceAtLeast(1)
         return MagiaSelecionada(
@@ -907,7 +908,8 @@ class DataRepository(private val context: Context) {
             duracao = definicao.duracao,
             energia = definicao.energia,
             tempoOperacao = definicao.tempoOperacao,
-            encantamentoAlvo = encantamentoAlvo?.trim()?.takeIf { it.isNotBlank() }
+            encantamentoAlvo = encantamentoAlvo?.trim()?.takeIf { it.isNotBlank() },
+            especializacaoMagia = especializacaoMagia?.trim()?.takeIf { it.isNotBlank() }
         )
     }
 
@@ -983,7 +985,21 @@ class DataRepository(private val context: Context) {
         "armadura_de_relampagos" to "6 magicas de Relampagos, incl. Imunidade a Relampagos",
         "condicionamento_permanente" to "AM3, 15 magicas de Controle da Mente, incl. Condicionamento",
         "controle_de_membro" to "AM1, 5 magicas de Corpo, incl. Espasmo",
-        "adivinhacao" to "Historia, 1 outras magicas"
+        "adivinhacao" to "Historia",
+        "anular_possessao" to "Passageiro da Alma e Possessao",
+        "convocar_elemental" to "Aptidao Magica 1 e 8 magicas da escola apropriada",
+        "controle_de_elemental" to "Convocar Elemental para a escola apropriada",
+        "corpo_de_vento" to "Aptidao Magica 3, Corpo de Ar e Furacao, cada um com NH 16 ou superior, 1 magica em cinco escolas diferentes",
+        "cavalgar" to "Pelo menos uma magia de Controle de Animal",
+        "controle_de_hibrido" to "2 magicas de Controle de Animal",
+        "espantar_zumbi" to "Zumbi",
+        "golem" to "Encantar, Moldar Terra e Animacao",
+        "maldicao" to "Aptidao Magica 2 e 2 magicas em dez escolas diferentes",
+        "passageiro_interno" to "2 magicas de Controle de Animal diferentes",
+        "reconstruirnt" to "Aptidao Magica 3, Consertar, Criar Objeto e 3 magicas de cada escola Ar, Fogo, Terra e Agua",
+        "repelir_animal" to "Controle de Animal",
+        "suspender" to "Aptidao Magica 2 e 2 magicas em dez escolas diferentes",
+        "transformar_outro" to "Metamorfosear Outro e Transformar Corpo"
     )
 
     /**
@@ -1580,7 +1596,7 @@ private fun PericiaDefinicao.normalizada(): PericiaDefinicao = copy(
 
 private fun MagiaDefinicao.normalizada(): MagiaDefinicao = copy(
     id = (id as String?).sanitized(),
-    nome = (nome as String?).sanitized(),
+    nome = (nome as String?).sanitized().let { if ((id as String?).sanitized() == "suspender") "Suspender Aptidao Magica" else it },
     dificuldadeFixa = (dificuldadeFixa as String?)?.sanitized(),
     classe = (classe as String?)?.sanitized(),
     escola = escola?.map { (it as String?).sanitized() }?.filter { it.isNotBlank() },
