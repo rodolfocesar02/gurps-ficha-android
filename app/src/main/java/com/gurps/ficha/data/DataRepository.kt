@@ -925,35 +925,11 @@ class DataRepository(private val context: Context) {
         if (raw.isEmpty() || raw == "—") return null
 
         val parsed = PreRequisitoParser.parse(raw)
-        if (parsed.tipos.isEmpty()) return null
+        if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
 
-        val mapa = mutableMapOf<String, Any>()
-        // Atributos fundamentais (siglas em maiúsculas, conforme parser espera)
-        mapa["ST"] = personagem.forca
-        mapa["DX"] = personagem.destreza
-        mapa["IQ"] = personagem.inteligencia
-        mapa["HT"] = personagem.vitalidade
-
-        // aptidão mágica é armazenada como vantagem por nível
-        val mag = personagem.vantagens
-            .firstOrNull { it.definicaoId == "aptidao_magica" }
-            ?.nivel ?: 0
-        mapa["aptidao_magica"] = mag
-
-        // contagem de magias já aprendidas por escola e lista de nomes
-        val conhecidas = mutableSetOf<String>()
-        personagem.magias.forEach { selecionada ->
-            val other = getMagiaPorId(selecionada.definicaoId)
-            val nome = other?.nome ?: selecionada.nome
-            conhecidas.add(nome)
-            other?.escola?.forEach { escola ->
-                val key = "magias_${escola.lowercase()}"
-                mapa[key] = (mapa[key] as? Int ?: 0) + 1
-            }
-        }
-        mapa["magias_conhecidas"] = conhecidas
-
-        val report = PreRequisitoChecker.checkSimples(mapa, parsed.tipos)
+        val mapa = buildPreReqContext(personagem)
+        val report = PreRequisitoChecker.checkParseResult(mapa, parsed)
+        if (isPrerequisitoTratadoComoSemRequisito(raw, parsed, report)) return null
         return if (report.startsWith("faltando")) raw else null
     }
 
@@ -963,31 +939,118 @@ class DataRepository(private val context: Context) {
      * "faltando:" que [PreRequisitoChecker.checkSimples] produz.
      */
     fun missingPreRequisitoReport(definicao: MagiaDefinicao, personagem: Personagem): String? {
-        val raw = validarPreRequisitosMagia(definicao, personagem) ?: return null
-        val parsed = PreRequisitoParser.parse(raw)
-        if (parsed.tipos.isEmpty()) return null
+        val raw = definicao.preRequisitos?.trim().orEmpty()
+        if (raw.isEmpty() || raw == "—") return null
 
+        val parsed = PreRequisitoParser.parse(raw)
+        if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
+
+        val mapa = buildPreReqContext(personagem)
+        val report = PreRequisitoChecker.checkParseResult(mapa, parsed)
+        if (isPrerequisitoTratadoComoSemRequisito(raw, parsed, report)) return null
+        if (!report.startsWith("faltando")) return null
+        return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
+    }
+
+    /**
+     * Regra operacional pedida: se o texto de pre-requisito estiver em um
+     * formato ainda quebrado/ambíguo para o parser, libera adição da magia
+     * como se fosse sem pre-requisito.
+     */
+    private fun isPrerequisitoTratadoComoSemRequisito(
+        raw: String,
+        parsed: PreRequisitoParser.ParseResult,
+        report: String
+    ): Boolean {
+        if (!report.startsWith("faltando")) return false
+
+        val normalized = normalizarNomeRequisito(raw)
+        if (
+            normalized.contains("todos os pre requisitos") ||
+            normalized.contains("qualquer encantamento de limitacao")
+        ) return true
+
+        val suspiciousFreeText = parsed.tipos
+            .filterIsInstance<com.gurps.ficha.regras_prerequisitos.PreRequisitoType.MagiaConhecida>()
+            .map { normalizarNomeRequisito(it.nomeMagia) }
+            .any { token ->
+                token.contains("quaisquer") ||
+                    token.contains("qualquer uma") ||
+                    token.contains("outras magicas") ||
+                    token.contains("nao pode ser") ||
+                    token.contains("incl")
+            }
+
+        return suspiciousFreeText
+    }
+
+    private fun buildPreReqContext(personagem: Personagem): MutableMap<String, Any> {
         val mapa = mutableMapOf<String, Any>()
         mapa["ST"] = personagem.forca
         mapa["DX"] = personagem.destreza
         mapa["IQ"] = personagem.inteligencia
         mapa["HT"] = personagem.vitalidade
-        val mag = personagem.vantagens.firstOrNull { it.definicaoId == "aptidao_magica" }?.nivel ?: 0
-        mapa["aptidao_magica"] = mag
-        val conhecidas = mutableSetOf<String>()
-        personagem.magias.forEach { sel ->
-            val other = getMagiaPorId(sel.definicaoId)
-            val nome = other?.nome ?: sel.nome
-            conhecidas.add(nome)
-            other?.escola?.forEach { escola ->
-                val key = "magias_${escola.lowercase()}"
-                mapa[key] = (mapa[key] as? Int ?: 0) + 1
+
+        val nivelAptidaoMagica = personagem.vantagens
+            .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+            .maxOfOrNull { it.nivel }
+            ?: 0
+        mapa["aptidao_magica"] = nivelAptidaoMagica
+
+        val magiasConhecidas = mutableSetOf<String>()
+        val magiasConhecidasNormalizadas = mutableSetOf<String>()
+        val escolasPorMagiaNormalizadas = mutableMapOf<String, MutableSet<String>>()
+        val magiasPorEscolaNormalizada = mutableMapOf<String, Int>()
+        personagem.magias.forEach { selecionada ->
+            val nome = selecionada.nome
+            magiasConhecidas.add(nome)
+            magiasConhecidasNormalizadas.add(normalizarNomeRequisito(nome))
+            val magiaKey = normalizarNomeRequisito(nome)
+            val escolasNormalizadas = escolasPorMagiaNormalizadas.getOrPut(magiaKey) { mutableSetOf() }
+            selecionada.escola.orEmpty().forEach { escola ->
+                val escolaKey = normalizarNomeRequisito(escola)
+                escolasNormalizadas.add(escolaKey)
+                val countKey = "magias_$escolaKey"
+                mapa[countKey] = (mapa[countKey] as? Int ?: 0) + 1
+                magiasPorEscolaNormalizada[escolaKey] = (magiasPorEscolaNormalizada[escolaKey] ?: 0) + 1
             }
         }
-        mapa["magias_conhecidas"] = conhecidas
+        mapa["magias_conhecidas"] = magiasConhecidas
+        mapa["magias_conhecidas_normalizadas"] = magiasConhecidasNormalizadas
+        mapa["magias_por_escola_normalizada"] = magiasPorEscolaNormalizada.toMap()
+        mapa["escolas_conhecidas_normalizadas"] = magiasPorEscolaNormalizada.keys.toSet()
+        mapa["escolas_por_magia_normalizadas"] = escolasPorMagiaNormalizadas.mapValues { it.value.toSet() }
 
-        val report = PreRequisitoChecker.checkSimples(mapa, parsed.tipos)
-        return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
+        val vantagensConhecidasNormalizadas = personagem.vantagens
+            .map { v -> normalizarNomeRequisito(v.nome) }
+            .filter { it.isNotBlank() }
+            .toSet()
+        mapa["vantagens_conhecidas_normalizadas"] = vantagensConhecidasNormalizadas
+
+        val periciasConhecidasNormalizadas = personagem.pericias
+            .map { p -> normalizarNomeRequisito(p.nome) }
+            .filter { it.isNotBlank() }
+            .toSet()
+        mapa["pericias_conhecidas_normalizadas"] = periciasConhecidasNormalizadas
+
+        val condicoesEstado = mutableSetOf<String>()
+        personagem.desvantagens.forEach { condicoesEstado.add(normalizarNomeRequisito(it.nome)) }
+        personagem.qualidades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
+        personagem.peculiaridades.forEach { condicoesEstado.add(normalizarNomeRequisito(it)) }
+        mapa["condicoes_estado_normalizadas"] = condicoesEstado
+
+        return mapa
+    }
+
+    private fun normalizarNomeRequisito(valor: String): String {
+        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace("-", " ")
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
     // === BUSCA POR ID ===
@@ -1514,4 +1577,3 @@ private fun String.fixMojibakeIfNeeded(): String {
     }
     return current
 }
-

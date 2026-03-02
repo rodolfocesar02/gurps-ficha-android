@@ -55,6 +55,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.data.network.DiscordRollPayload
+import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PERICIAS_COMBATE
 import com.gurps.ficha.model.TipoEquipamento
@@ -823,10 +824,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
         viewModel.atualizarPontosFadigaRolagemAtual(novoPf)
     }
 
+    fun custoEnergiaComReducaoNh(custoBase: Int, nhBasico: Int): Int {
+        return MagiaEnergiaRules.custoAjustadoPorNh(custoBase, nhBasico)
+    }
+
     fun tratarCustoEnergiaAposRolagemMagia(magia: MagiaRollOption) {
+        val nhBasico = magia.target
         val custoFixo = custoEnergiaFixo(magia.energia)
         if (custoFixo != null) {
-            consumirEnergiaMagia(custoFixo)
+            consumirEnergiaMagia(custoEnergiaComReducaoNh(custoFixo, nhBasico))
             return
         }
         val energiaTexto = magia.energia?.trim().orEmpty()
@@ -2569,7 +2575,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             onValueChange = { raw ->
                                 energiaManualInput = raw.filter { it.isDigit() }.take(4)
                             },
-                            label = { Text("Energia gasta agora") },
+                            label = { Text("Custo base da magia agora") },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                             modifier = Modifier
@@ -2583,13 +2589,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                        energiaManualInput.toIntOrNull()?.let { custoBase ->
+                            val reducao = MagiaEnergiaRules.reducaoPorNh(magiaEnergia.target)
+                            val custoFinal = custoEnergiaComReducaoNh(custoBase, magiaEnergia.target)
+                            Text(
+                                "Reducao por NH ${magiaEnergia.target}: -$reducao | custo final: $custoFinal",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 },
                 confirmButton = {
                     TextButton(
                         onClick = {
-                            energiaManualInput.toIntOrNull()?.let { custo ->
-                                consumirEnergiaMagia(custo)
+                            energiaManualInput.toIntOrNull()?.let { custoBase ->
+                                val custoFinal = custoEnergiaComReducaoNh(custoBase, magiaEnergia.target)
+                                consumirEnergiaMagia(custoFinal)
                             }
                             showEnergiaManualDialog = false
                             magiaPendenteEnergia = null
