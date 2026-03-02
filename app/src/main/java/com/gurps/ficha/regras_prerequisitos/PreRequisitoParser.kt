@@ -203,11 +203,25 @@ object PreRequisitoParser {
     }
 
     private fun splitAndParts(raw: String): List<String> {
+        val inlineIncl = Regex("(?i)^(.+?)\\s+incl\\.?\\s+(.+)$").find(raw)
+        if (inlineIncl != null) {
+            val before = inlineIncl.groupValues[1].trim()
+            val after = "incl. ${inlineIncl.groupValues[2].trim()}"
+            return listOf(before, after)
+        }
+
+        val escolaComE = Regex(
+            "(?i)^\\d+\\s+m[aá]g(?:ica|ia)s\\s+(?:de|da|do|sobre)\\s+.+\\s+e\\s+.+$"
+        ).matches(raw)
+        if (escolaComE && !raw.contains(Regex("(?i)\\s+mais\\s+")) && !raw.contains(Regex("(?i)\\s+ou\\s+"))) {
+            return listOf(raw)
+        }
+
         if (raw.contains(Regex("(?i)^quaisquer?\\s+\\d+\\s+de\\s+"))) {
             return listOf(raw)
         }
         return raw
-            .split(Regex("(?i)\\s+e\\s+"))
+            .split(Regex("(?i)\\s+e\\s+|\\s+mais\\s+"))
             .map { it.trim() }
             .filter { it.isNotBlank() }
     }
