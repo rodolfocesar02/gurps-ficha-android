@@ -44,6 +44,56 @@ Objetivo atual: evoluir o app a partir da base ja estavel em producao.
   - `./gradlew.bat :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin :app:testVisualDebugUnitTest :app:testPracegoDebugUnitTest --no-daemon`
   - `./gradlew.bat :app:assembleVisualDebug :app:assemblePracegoDebug --no-daemon`
   - Resultado: `BUILD SUCCESSFUL`.
+
+## Lote 16 - Magias: robustez de pre-requisitos por padrao (2026-03-02)
+Escopo:
+- manter regras que ja estavam corretas;
+- quando o texto estiver quebrado/ambiguo, tratar como `sem pre-requisito` (fallback operacional);
+- ampliar parser para padroes recorrentes em lote (nao so casos isolados):
+  - `incl.` inline;
+  - `mais` como conjuncao de requisitos;
+  - contagem com escola composta contendo `e`.
+
+Entregue:
+- fallback de pre-requisito quebrado/ambiguo ativo na validacao de adicao;
+- parser/checker reforcados para padroes de lote;
+- custo de energia por NH mantido ativo e coexistente com fluxo atual;
+- UI de adicionar magia mantendo erro em vermelho quando houver falha valida.
+
+Validacao de cobertura (assets `magias2versao.json`):
+- total de magias: `831`
+- corretas: `814`
+- corrigidas neste bloco (por padrao): `22`
+- faltam corrigir: `17`
+
+Magias mais problematicas (top 10 no recorte atual):
+1. `acelerar_tempo` - `2 magicas de 10 escolas`
+2. `conceder_magica` - `1 magia em 6 escolas diferentes`
+3. `convocacao_planar` - `1 magia em 10 escolas diferentes`
+4. `convocar_demonio` - `1 magia em 10 escolas diferentes`
+5. `desejo` - `1 magia em 15 escolas`
+6. `encantar` - `1 magia em 10 escolas diferentes`
+7. `expulsar` - `1 magia em 10 escolas diferentes`
+8. `extrair_corrente_eletricant` - `2 magicas em 10 escolas diferentes`
+9. `imunidade_a_encantamento` - `qualquer encantamento de limitacao`
+10. `localizar_portal` - `1 magia em 10 escolas diferentes`
+
+Magias mais simples de corrigir (top 10 com 1 erro de regra):
+1. `acelerar_tempo`
+2. `conceder_magica`
+3. `convocacao_planar`
+4. `convocar_demonio`
+5. `desejo`
+6. `encantar`
+7. `expulsar`
+8. `extrair_corrente_eletricant`
+9. `imunidade_a_encantamento`
+10. `localizar_portal`
+
+Validacao executada:
+- `./gradlew.bat :app:compileVisualDebugKotlin :app:testVisualDebugUnitTest --no-daemon`
+- `./gradlew.bat :app:compilePracegoDebugKotlin :app:testPracegoDebugUnitTest --no-daemon`
+- resultado: `BUILD SUCCESSFUL`.
 - Ajuste incremental de acessibilidade (PRACEGO):
   - Aba Pericias com botoes de acao em fluxo linear vertical, largura total e espacamento simetrico;
   - VISUAL mantido no layout em grade 2x2 para esses botoes.
