@@ -68,6 +68,7 @@ private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
 @Composable
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     var magiaSelecionada by remember { mutableStateOf<MagiaDefinicao?>(null) }
+    var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
 
     val listaFiltrada = viewModel.magiasFiltradas
     val escolas = viewModel.todasEscolasMagia
@@ -155,7 +156,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     Text("Adicionada", color = MaterialTheme.colorScheme.outline)
                                 }
                             },
-                            modifier = Modifier.clickable(enabled = !jaAdicionada) { magiaSelecionada = definicao }
+                            modifier = Modifier.clickable(enabled = !jaAdicionada) {
+                                erroAdicionarMagia = null
+                                magiaSelecionada = definicao
+                            }
                         )
                         Divider()
                     }
@@ -168,14 +172,22 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
 
     magiaSelecionada?.let { definicao ->
+        val prereqFalha = viewModel.prereqFailureForMagia(definicao)
         ConfigurarMagiaDialog(
             definicao = definicao,
             personagem = viewModel.personagem,
             nivelAptidaoMagica = viewModel.nivelAptidaoMagica,
+            prereqFalha = prereqFalha,
+            erroPersistente = erroAdicionarMagia,
             onDismiss = { magiaSelecionada = null },
             onSave = { pontosGastos ->
-                viewModel.adicionarMagia(definicao, pontosGastos)
-                magiaSelecionada = null
+                val erro = viewModel.adicionarMagia(definicao, pontosGastos)
+                if (erro == null) {
+                    erroAdicionarMagia = null
+                    magiaSelecionada = null
+                } else {
+                    erroAdicionarMagia = erro
+                }
             }
         )
     }
@@ -186,6 +198,8 @@ fun ConfigurarMagiaDialog(
     definicao: MagiaDefinicao,
     personagem: Personagem,
     nivelAptidaoMagica: Int,
+    prereqFalha: String?,
+    erroPersistente: String?,
     onDismiss: () -> Unit,
     onSave: (Int) -> Unit
 ) {
@@ -269,6 +283,19 @@ fun ConfigurarMagiaDialog(
                 }
 
                 Divider()
+                val preReqRaw = definicao.preRequisitos?.trim().orEmpty()
+                if (preReqRaw.isNotBlank()) {
+                    Text("Pre-requisito: $preReqRaw", style = MaterialTheme.typography.bodySmall)
+                }
+                val erroPreReq = erroPersistente ?: prereqFalha?.let { "Pre-requisito nao atendido: $it" }
+                if (!erroPreReq.isNullOrBlank()) {
+                    Text(
+                        text = erroPreReq,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
@@ -281,7 +308,10 @@ fun ConfigurarMagiaDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(pontosGastos) }) { Text("Adicionar") }
+            TextButton(
+                onClick = { onSave(pontosGastos) },
+                enabled = prereqFalha.isNullOrBlank()
+            ) { Text("Adicionar") }
         },
         dismissButton = {
             TextButton(onClick = { onDismiss() }) { Text("Cancelar") }
