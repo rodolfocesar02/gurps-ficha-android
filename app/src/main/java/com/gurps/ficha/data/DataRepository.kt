@@ -972,6 +972,14 @@ class DataRepository(private val context: Context) {
         return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
     }
 
+    fun preRequisitoNormalizadoParaAnalise(definicao: MagiaDefinicao): String {
+        return preRequisitoRawNormalizado(definicao)
+    }
+
+    fun magiaSemPreRequisito(definicao: MagiaDefinicao): Boolean {
+        return isSemPreRequisitoRaw(preRequisitoRawNormalizado(definicao))
+    }
+
     /**
      * Correções pontuais de textos conhecidos com mojibake/ambiguidade para
      * evitar quebrar validação automática enquanto preserva a regra funcional.

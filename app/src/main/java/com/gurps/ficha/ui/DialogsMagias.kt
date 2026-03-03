@@ -1,5 +1,12 @@
 ﻿package com.gurps.ficha.ui
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.speech.RecognizerIntent
+import android.speech.tts.TextToSpeech
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,6 +39,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,14 +53,18 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.MagiaSelecionada
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
+import java.text.Normalizer
+import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
@@ -90,11 +102,13 @@ private fun motivoBloqueioCurto(falha: String): String {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
+    val context = LocalContext.current
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var magiaSelecionada by remember { mutableStateOf<MagiaDefinicao?>(null) }
     var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
     var modoAlvoAtivo by remember { mutableStateOf(false) }
     var magiaAlvoId by remember { mutableStateOf<String?>(null) }
+    var statusAjudaVoz by remember { mutableStateOf<String?>(null) }
 
     val listaFiltrada = viewModel.magiasFiltradas
     val catalogoMagias = viewModel.dataRepository.magias
@@ -116,6 +130,173 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         }
     } else {
         listaFiltrada
+    }
+    val proximaSugerida = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+        listaExibicao.firstOrNull { magia ->
+            magia.id != magiaAlvoSelecionada.id &&
+                !viewModel.magiaJaAdicionada(magia.id) &&
+                viewModel.prereqFailureForMagia(magia) == null
+        }
+    } else {
+        null
+    }
+
+    var ttsEngine by remember { mutableStateOf<TextToSpeech?>(null) }
+    DisposableEffect(Unit) {
+        var localEngine: TextToSpeech? = null
+        val engine = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                localEngine?.language = Locale("pt", "BR")
+            }
+        }
+        localEngine = engine
+        ttsEngine = engine
+        onDispose {
+            engine.stop()
+            engine.shutdown()
+            ttsEngine = null
+        }
+    }
+    fun falarAjuda(texto: String) {
+        statusAjudaVoz = texto
+        ttsEngine?.speak(texto, TextToSpeech.QUEUE_FLUSH, null, "ajuda_voz_magias")
+    }
+    fun normalizarComandoVoz(valor: String): String {
+        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+    }
+    fun encontrarMagiaPorComando(raw: String): MagiaDefinicao? {
+        val alvo = normalizarComandoVoz(raw)
+        if (alvo.isBlank()) return null
+        return catalogoMagias
+            .sortedBy { magia ->
+                val nome = normalizarComandoVoz(magia.nome)
+                when {
+                    nome == alvo -> 0
+                    nome.startsWith(alvo) -> 1
+                    nome.contains(alvo) -> 2
+                    alvo.contains(nome) -> 3
+                    else -> 50 + kotlin.math.abs(nome.length - alvo.length)
+                }
+            }
+            .firstOrNull { magia ->
+                val nome = normalizarComandoVoz(magia.nome)
+                nome == alvo || nome.contains(alvo) || alvo.contains(nome)
+            }
+    }
+    fun processarComandoVoz(comandoRaw: String) {
+        val comando = normalizarComandoVoz(comandoRaw)
+        when {
+            comando.startsWith("quero ") || comando.startsWith("objetivo ") -> {
+                val termo = comando.removePrefix("quero ").removePrefix("objetivo ").trim()
+                val magia = encontrarMagiaPorComando(termo)
+                if (magia == null) {
+                    falarAjuda("Não encontrei a magia solicitada.")
+                    return
+                }
+                modoAlvoAtivo = true
+                magiaAlvoId = magia.id
+                val falha = viewModel.prereqFailureForMagia(magia)
+                val recomendada = viewModel.listaRelacionadosMagiaAlvo(magia)
+                    .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
+                    .firstOrNull {
+                        it.id != magia.id &&
+                            !viewModel.magiaJaAdicionada(it.id) &&
+                            viewModel.prereqFailureForMagia(it) == null
+                    }
+                val resposta = buildString {
+                    append("Alvo definido: ${magia.nome}. ")
+                    if (falha.isNullOrBlank()) append("Pré requisitos atendidos. ")
+                    else append("Falta: ${formatarFalhaPreReq(falha)}. ")
+                    if (recomendada != null) append("Próxima recomendada: ${recomendada.nome}.")
+                    else append("Sem recomendação imediata.")
+                }
+                falarAjuda(resposta)
+            }
+            comando.contains("proxima") || comando.contains("próxima") -> {
+                if (proximaSugerida != null) {
+                    falarAjuda("Próxima recomendada: ${proximaSugerida.nome}.")
+                } else {
+                    falarAjuda("Não há recomendação imediata.")
+                }
+            }
+            comando.contains("adicionar sugerida") || comando == "adicionar" -> {
+                val alvo = proximaSugerida
+                if (alvo == null) {
+                    falarAjuda("Não existe magia sugerida para adicionar agora.")
+                    return
+                }
+                val erro = viewModel.adicionarMagia(definicao = alvo, pontosGastos = 1)
+                if (erro == null) {
+                    falarAjuda("Magia ${alvo.nome} adicionada.")
+                } else {
+                    falarAjuda("Não foi possível adicionar ${alvo.nome}. ${formatarFalhaPreReq(erro)}")
+                }
+            }
+            comando.contains("por que bloqueada") || comando.contains("porque bloqueada") || comando.contains("faltando") -> {
+                val alvo = magiaAlvoSelecionada
+                if (alvo == null) {
+                    falarAjuda("Defina uma magia alvo primeiro.")
+                    return
+                }
+                val falha = viewModel.prereqFailureForMagia(alvo)
+                if (falha.isNullOrBlank()) falarAjuda("${alvo.nome} está liberada.")
+                else falarAjuda("Para ${alvo.nome} falta ${formatarFalhaPreReq(falha)}.")
+            }
+            else -> {
+                falarAjuda("Comandos: quero nome da magia, próxima, adicionar sugerida, por que bloqueada.")
+            }
+        }
+    }
+    val reconhecimentoVozLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val texto = result.data
+            ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            ?.firstOrNull()
+            ?.trim()
+        if (texto.isNullOrBlank()) {
+            falarAjuda("Não consegui entender o comando.")
+        } else {
+            processarComandoVoz(texto)
+        }
+    }
+    val permissaoAudioLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (!granted) {
+            falarAjuda("Permissão de microfone não concedida.")
+            return@rememberLauncherForActivityResult
+        }
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-BR")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Fale o comando de magia")
+            putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+        }
+        reconhecimentoVozLauncher.launch(intent)
+    }
+    fun iniciarAjudaVoz() {
+        val possuiPermissao = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!possuiPermissao) {
+            permissaoAudioLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            return
+        }
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "pt-BR")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Fale o comando de magia")
+            putExtra(RecognizerIntent.EXTRA_PREFER_OFFLINE, true)
+        }
+        reconhecimentoVozLauncher.launch(intent)
     }
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
@@ -159,6 +340,26 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                    if (isPraCegoVariant) {
+                        TextButton(
+                            onClick = { iniciarAjudaVoz() },
+                            modifier = Modifier.semantics {
+                                contentDescription = "Ajuda por voz. Diga: quero nome da magia, próxima, adicionar sugerida, por que bloqueada."
+                            }
+                        ) {
+                            Text("Ajuda por Voz")
+                        }
+                    }
+                }
+                statusAjudaVoz?.let { msg ->
+                    Text(
+                        msg,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.semantics {
+                            if (isPraCegoVariant) contentDescription = "Resposta da ajuda por voz: $msg"
+                        }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -209,9 +410,23 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("${listaExibicao.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
+                if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+                    val textoGuia = proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
+                        ?: "Sem recomendação imediata. Verifique magias básicas liberadas."
+                    Text(
+                        textoGuia,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.semantics {
+                            if (isPraCegoVariant) {
+                                contentDescription = "Guia do modo alvo. $textoGuia"
+                            }
+                        }
+                    )
+                }
 
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    itemsIndexed(listaExibicao) { _, definicao ->
+                    itemsIndexed(listaExibicao) { indice, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
                         val prereqFalha = viewModel.prereqFailureForMagia(definicao)
                         val prereqOk = prereqFalha == null
@@ -246,7 +461,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     if (modoAlvoAtivo && !jaAdicionada) {
                                         TextButton(
                                             onClick = { magiaAlvoId = definicao.id },
-                                            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)
+                                            contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
+                                            modifier = Modifier.semantics {
+                                                if (isPraCegoVariant) {
+                                                    contentDescription = "Definir alvo para magia ${definicao.nome}"
+                                                }
+                                            }
                                         ) {
                                             Text(
                                                 if (magiaAlvoId == definicao.id) "Alvo" else "Definir Alvo",
@@ -265,9 +485,9 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 .semantics {
                                     if (isPraCegoVariant) {
                                         contentDescription = if (prereqOk) {
-                                            "Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
+                                            "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
                                         } else {
-                                            "Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Abra o dialogo e use adicao forcada se autorizado."
+                                            "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Abra o dialogo e use adicao forcada se autorizado."
                                         }
                                     }
                                 }
