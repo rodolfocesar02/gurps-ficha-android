@@ -123,3 +123,16 @@ Toda entrega deve fechar com:
   - `compileVisualDebugKotlin` OK
   - `compilePracegoDebugKotlin` OK
   - `testVisualDebugUnitTest` OK
+
+## Andamento do lote (2026-03-03 - Etapa 4)
+- Cache implementado no motor de magias:
+  - cache de parse de pré-requisito (`PreRequisitoParser`) com LRU interno;
+  - cache de resultado de `Modo Alvo` por chave de contexto (alvo + assinatura de estado).
+- Integração no `FichaViewModel`:
+  - envio de chave contextual para reaproveitar resultado sem recomputação.
+- Resultado esperado:
+  - melhora de resposta ao repetir busca do mesmo alvo no mesmo estado de personagem.
+- Validação:
+  - `compileVisualDebugKotlin` OK
+  - `compilePracegoDebugKotlin` OK
+  - `testVisualDebugUnitTest` OK
