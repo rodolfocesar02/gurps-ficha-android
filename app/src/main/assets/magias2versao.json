@@ -1735,7 +1735,7 @@
     "duracao": "5 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "1 mágica de Controle de Animais"
+    "preRequisitos": "1 mágica de Controle de Animal"
   },
   {
     "id": "cegar",
@@ -2445,7 +2445,7 @@
     "duracao": "1 min.",
     "energia": "06/03",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "2 mágicas de Controle de Animais"
+    "preRequisitos": "2 mágicas de Controle de Animal"
   },
   {
     "id": "controle_de_ilusao",
@@ -4413,7 +4413,7 @@
     "duracao": "Perm.",
     "energia": "10 a 50",
     "tempoOperacao": "1 min.",
-    "preRequisitos": "Rejuvenescere, ou 6 mágicas de Necromancia"
+    "preRequisitos": "Rejuvenescer, ou 6 mágicas de Necromancia"
   },
   {
     "id": "envenenar_alimento",

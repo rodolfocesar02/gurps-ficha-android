@@ -31,7 +31,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -572,6 +575,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigurarMagiaDialog(
     definicao: MagiaDefinicao,
@@ -583,12 +587,16 @@ fun ConfigurarMagiaDialog(
     onSave: (Int, String?, String?, Boolean) -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val opcoesSubEscolaAnimais = listOf("Criaturas da Terra", "Criaturas do Ar", "Criaturas do Mar")
     var pontosGastos by remember { mutableStateOf(1) }
     var encantamentoAlvoInput by remember { mutableStateOf("") }
     var especializacaoMagiaInput by remember { mutableStateOf("") }
+    var subEscolaAnimaisExpandida by remember { mutableStateOf(false) }
     var adicaoForcadaSemPrereq by remember { mutableStateOf(false) }
     var confirmarAdicaoForcada by remember { mutableStateOf(false) }
     val exigeEncantamentoAlvo = definicao.id.equals("imunidade_a_encantamento", ignoreCase = true)
+    val exigeSubEscolaAnimais = definicao.id.equals("controle_de_animal", ignoreCase = true) ||
+        definicao.escola.orEmpty().any { it.equals("Animais", ignoreCase = true) }
     val exigeEspecializacao = definicao.id.lowercase() in setOf(
         "adivinhacao",
         "cavalgar",
@@ -599,10 +607,13 @@ fun ConfigurarMagiaDialog(
         "convocar_elemental",
         "controle_de_elemental"
     )
-    val labelEspecializacao = when (definicao.id.lowercase()) {
+    val labelEspecializacao = when {
+        exigeSubEscolaAnimais -> "Sub-escola de Animais"
+        else -> when (definicao.id.lowercase()) {
         "cavalgar", "controle_de_hibrido", "passageiro_interno" -> "Animal (especializacao)"
         "criar_elemental", "convocar_elemental", "controle_de_elemental" -> "Escola (Ar/Fogo/Terra/Agua)"
         else -> "Especializacao"
+        }
     }
     val dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa ?: "D")
     
@@ -721,7 +732,39 @@ fun ConfigurarMagiaDialog(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
-                if (exigeEspecializacao) {
+                if (exigeSubEscolaAnimais) {
+                    ExposedDropdownMenuBox(
+                        expanded = subEscolaAnimaisExpandida,
+                        onExpandedChange = { subEscolaAnimaisExpandida = !subEscolaAnimaisExpandida },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        OutlinedTextField(
+                            value = especializacaoMagiaInput,
+                            onValueChange = {},
+                            readOnly = true,
+                            label = { Text(labelEspecializacao) },
+                            trailingIcon = {
+                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = subEscolaAnimaisExpandida)
+                            },
+                            singleLine = true,
+                            modifier = Modifier.menuAnchor().fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = subEscolaAnimaisExpandida,
+                            onDismissRequest = { subEscolaAnimaisExpandida = false }
+                        ) {
+                            opcoesSubEscolaAnimais.forEach { opcao ->
+                                DropdownMenuItem(
+                                    text = { Text(opcao) },
+                                    onClick = {
+                                        especializacaoMagiaInput = opcao
+                                        subEscolaAnimaisExpandida = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+                } else if (exigeEspecializacao) {
                     OutlinedTextField(
                         value = especializacaoMagiaInput,
                         onValueChange = { especializacaoMagiaInput = it.take(80) },
@@ -746,7 +789,7 @@ fun ConfigurarMagiaDialog(
                 onClick = { onSave(pontosGastos, encantamentoAlvoInput, especializacaoMagiaInput, adicaoForcadaSemPrereq) },
                 enabled = (prereqFalha.isNullOrBlank() || adicaoForcadaSemPrereq) &&
                     (!exigeEncantamentoAlvo || encantamentoAlvoInput.isNotBlank()) &&
-                    (!exigeEspecializacao || especializacaoMagiaInput.isNotBlank())
+                    (!(exigeEspecializacao || exigeSubEscolaAnimais) || especializacaoMagiaInput.isNotBlank())
             ) { Text("Adicionar") }
         },
         dismissButton = {

@@ -74,3 +74,17 @@ Atualizado em: 2026-03-03
 - Validação:
   - `:app:compileVisualDebugKotlin` OK
   - `:app:compilePracegoDebugKotlin` OK
+
+## Atualização incremental (Etapa C - 2026-03-03)
+- Padronização textual em `magias2versao.json`:
+  - `Controle de Animais` -> `Controle de Animal`.
+- Nova regra de sub-escola para magia da escola `Animais`:
+  - opções fixas: `Criaturas da Terra`, `Criaturas do Ar`, `Criaturas do Mar`.
+  - seleção obrigatória ao adicionar magia da escola `Animais`.
+- `Controle de Animal`:
+  - permite múltiplas instâncias;
+  - bloqueia duplicata da mesma sub-escola;
+  - aceita coexistência por sub-escola diferente (`Terra`, `Ar`, `Mar`).
+- UI:
+  - diálogo de configuração de magia agora usa seleção guiada (dropdown) para sub-escola de `Animais`.
+  - aba de magias exibe especialização no título da magia: `Nome (Sub-escola)`.

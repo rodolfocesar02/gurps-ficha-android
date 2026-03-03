@@ -139,6 +139,11 @@ fun MagiaItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val nomeExibicao = if (magia.especializacaoMagia.isNullOrBlank()) {
+        magia.nome
+    } else {
+        "${magia.nome} (${magia.especializacaoMagia})"
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -148,7 +153,7 @@ fun MagiaItem(
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                magia.nome,
+                nomeExibicao,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
@@ -176,7 +181,7 @@ fun MagiaItem(
         )
 
         IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Remover magia ${magia.nome}")
+            Icon(Icons.Default.Delete, contentDescription = "Remover magia $nomeExibicao")
         }
     }
 }
