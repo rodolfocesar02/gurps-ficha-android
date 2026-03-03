@@ -97,3 +97,16 @@ Toda entrega deve fechar com:
   - `compileVisualDebugKotlin` OK;
   - `compilePracegoDebugKotlin` OK;
   - `testVisualDebugUnitTest` OK.
+
+## Andamento do lote (2026-03-03 - Etapa 2)
+- `Modo Alvo` migrado para cálculo assíncrono no `FichaViewModel`.
+- Estados adicionados para UI:
+  - `modoAlvoCarregando`
+  - `modoAlvoRelacionadosIds`
+  - `modoAlvoErro`
+- Requisições agora têm cancelamento/substituição quando o contexto muda.
+- A tela de magias passa a consumir resultado pronto e exibe status de cálculo.
+- Validação:
+  - `compileVisualDebugKotlin` OK
+  - `compilePracegoDebugKotlin` OK
+  - `testVisualDebugUnitTest` OK
