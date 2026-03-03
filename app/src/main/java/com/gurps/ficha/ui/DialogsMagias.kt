@@ -420,6 +420,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.error
                         )
+                    } else if (!viewModel.modoAlvoAviso.isNullOrBlank()) {
+                        Text(
+                            viewModel.modoAlvoAviso.orEmpty(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
                     val textoGuia = proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
                         ?: "Sem recomendação imediata. Verifique magias básicas liberadas."

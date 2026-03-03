@@ -1,4 +1,4 @@
-package com.gurps.ficha.domain.magias
+﻿package com.gurps.ficha.domain.magias
 
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.model.MagiaDefinicao
@@ -10,10 +10,63 @@ import java.text.Normalizer
 class MagiaTargetEngine(
     private val dataRepository: DataRepository
 ) {
+    data class ModoAlvoResult(
+        val ids: List<String>,
+        val parcial: Boolean = false,
+        val aviso: String? = null
+    )
+
+    private data class GuardrailBudget(
+        val startedAtMs: Long = System.currentTimeMillis(),
+        val maxMs: Long = 420,
+        val maxNodes: Int = 1600,
+        val maxDepth: Int = 3,
+        var nodes: Int = 0,
+        var limiteMotivo: String? = null
+    ) {
+        fun step(amount: Int = 1): Boolean {
+            nodes += amount
+            if (nodes > maxNodes) {
+                limiteMotivo = "limite de análise de nós"
+                return false
+            }
+            if (System.currentTimeMillis() - startedAtMs > maxMs) {
+                limiteMotivo = "limite de tempo"
+                return false
+            }
+            return true
+        }
+
+        fun allowDepth(depth: Int): Boolean {
+            if (depth > maxDepth) {
+                limiteMotivo = "limite de profundidade"
+                return false
+            }
+            return true
+        }
+
+        fun parcialResult(ids: List<String>): ModoAlvoResult {
+            val motivo = limiteMotivo ?: "limite de segurança"
+            return ModoAlvoResult(
+                ids = ids,
+                parcial = true,
+                aviso = "Trilha parcial (guardrail: $motivo)."
+            )
+        }
+    }
+
     fun listaRelacionadosMagiaAlvo(
         alvo: MagiaDefinicao,
         personagem: Personagem
     ): List<String> {
+        return calcularModoAlvo(alvo, personagem).ids
+    }
+
+    fun calcularModoAlvo(
+        alvo: MagiaDefinicao,
+        personagem: Personagem
+    ): ModoAlvoResult {
+        val budget = GuardrailBudget()
         val prereqRaw = dataRepository.preRequisitoNormalizadoParaAnalise(alvo)
         val idsRelacionados = mutableListOf<String>()
         val nomesObrigatorios = mutableSetOf<String>()
@@ -25,10 +78,11 @@ class MagiaTargetEngine(
         }
 
         addId(alvo.id)
-        if (dataRepository.magiaSemPreRequisito(alvo)) return listOf(alvo.id)
+        if (dataRepository.magiaSemPreRequisito(alvo)) return ModoAlvoResult(idsRelacionados)
 
         val parsed = PreRequisitoParser.parse(prereqRaw)
         parsed.tipos.forEach { tipo ->
+            if (!budget.step()) return budget.parcialResult(idsRelacionados)
             when (tipo) {
                 is PreRequisitoType.MagiaConhecida -> nomesObrigatorios.add(normalizarTexto(tipo.nomeMagia))
                 is PreRequisitoType.MagiaInclusaNaContagem -> {
@@ -67,27 +121,35 @@ class MagiaTargetEngine(
         }
 
         val nomesDiretos = dataRepository.magias.filter { magia ->
+            if (!budget.step()) return budget.parcialResult(idsRelacionados)
             val nomeNormalizado = normalizarTexto(magia.nome)
             nomesObrigatorios.any { nomeReq ->
-                nomeReq.isNotBlank() && (nomeNormalizado == nomeReq || nomeNormalizado.contains(nomeReq) || nomeReq.contains(nomeNormalizado))
+                nomeReq.isNotBlank() &&
+                    (nomeNormalizado == nomeReq || nomeNormalizado.contains(nomeReq) || nomeReq.contains(nomeNormalizado))
             }
         }
         nomesDiretos.sortedBy { prioridadeMagiaParaAlvo(it) }.forEach { addId(it.id) }
 
         familiasSomenteNome.forEach { token ->
+            if (!budget.step()) return budget.parcialResult(idsRelacionados)
             val candidatas = dataRepository.magias
-                .filter { magia -> nomeCombinaFamilia(normalizarTexto(magia.nome), token) }
+                .filter { magia ->
+                    if (!budget.step()) return budget.parcialResult(idsRelacionados)
+                    nomeCombinaFamilia(normalizarTexto(magia.nome), token)
+                }
                 .sortedBy { prioridadeMagiaParaAlvo(it) }
                 .take(8)
             candidatas.forEach { addId(it.id) }
         }
 
         escolasComQtd.forEach { (escolaNorm, qtd) ->
+            if (!budget.step()) return budget.parcialResult(idsRelacionados)
             val trilha = gerarTrilhaProgressaoPorEscola(
                 escolaNorm = escolaNorm,
                 quantidadeDesejada = qtd,
                 estadoInicial = personagem,
-                limiteMaxSugestoes = (qtd + 8).coerceIn(10, 20)
+                limiteMaxSugestoes = (qtd + 8).coerceIn(10, 20),
+                budget = budget
             )
             trilha.forEach { addId(it.id) }
         }
@@ -95,6 +157,7 @@ class MagiaTargetEngine(
         if (reqEscolasDiferentes.isNotEmpty()) {
             val escolasConhecidas = mutableMapOf<String, Int>()
             personagem.magias.forEach { magia ->
+                if (!budget.step()) return budget.parcialResult(idsRelacionados)
                 magia.escola.orEmpty().map(::normalizarTexto).forEach { escola ->
                     escolasConhecidas[escola] = (escolasConhecidas[escola] ?: 0) + 1
                 }
@@ -107,9 +170,11 @@ class MagiaTargetEngine(
                 .sortedBy { escola -> escolasConhecidas[escola] ?: 0 }
 
             reqEscolasDiferentes.forEach { req ->
+                if (!budget.step()) return budget.parcialResult(idsRelacionados)
                 var escolasSugeridas = 0
                 val limiteEscolas = req.escolasDiferentes.coerceIn(1, 15)
                 escolasCatalogoOrdenadas.forEach { escolaNorm ->
+                    if (!budget.step()) return budget.parcialResult(idsRelacionados)
                     if (escolasSugeridas >= limiteEscolas) return@forEach
                     val countAtual = escolasConhecidas[escolaNorm] ?: 0
                     if (req.outrasEscolas && countAtual > 0) return@forEach
@@ -118,7 +183,8 @@ class MagiaTargetEngine(
                         escolaNorm = escolaNorm,
                         quantidadeDesejada = req.magiasPorEscola,
                         estadoInicial = personagem,
-                        limiteMaxSugestoes = (req.magiasPorEscola + 2).coerceIn(3, 8)
+                        limiteMaxSugestoes = (req.magiasPorEscola + 2).coerceIn(3, 8),
+                        budget = budget
                     )
                     if (trilha.isNotEmpty()) {
                         trilha.forEach { addId(it.id) }
@@ -132,28 +198,36 @@ class MagiaTargetEngine(
             val escolasAlvo = alvo.escola.orEmpty().map(::normalizarTexto).toSet()
             if (escolasAlvo.isNotEmpty()) {
                 escolasAlvo.forEach { escolaNorm ->
+                    if (!budget.step()) return budget.parcialResult(idsRelacionados)
                     val fallback = gerarTrilhaProgressaoPorEscola(
                         escolaNorm = escolaNorm,
                         quantidadeDesejada = 6,
                         estadoInicial = personagem,
-                        limiteMaxSugestoes = 12
+                        limiteMaxSugestoes = 12,
+                        budget = budget
                     )
                     fallback.forEach { addId(it.id) }
                 }
             }
         }
-        return idsRelacionados
+
+        return if (budget.limiteMotivo != null) budget.parcialResult(idsRelacionados)
+        else ModoAlvoResult(ids = idsRelacionados)
     }
 
     private fun gerarTrilhaProgressaoPorEscola(
         escolaNorm: String,
         quantidadeDesejada: Int,
         estadoInicial: Personagem,
-        limiteMaxSugestoes: Int
+        limiteMaxSugestoes: Int,
+        budget: GuardrailBudget
     ): List<MagiaDefinicao> {
         if (escolaNorm.isBlank()) return emptyList()
         val candidatas = dataRepository.magias
-            .filter { magia -> magia.escola.orEmpty().map(::normalizarTexto).any { it == escolaNorm } }
+            .filter { magia ->
+                if (!budget.step()) return emptyList()
+                magia.escola.orEmpty().map(::normalizarTexto).any { it == escolaNorm }
+            }
             .sortedBy { prioridadeMagiaParaAlvo(it) }
         if (candidatas.isEmpty()) return emptyList()
 
@@ -163,7 +237,9 @@ class MagiaTargetEngine(
         var guard = 0
         while (trilha.size < limite && guard < 120) {
             guard++
+            if (!budget.step()) break
             val proxima = candidatas.firstOrNull { magia ->
+                if (!budget.step()) return@firstOrNull false
                 trilha.none { it.id == magia.id } &&
                     estado.magias.none { it.definicaoId == magia.id } &&
                     magiaPodeSerAprendidaNoEstado(magia, estado)
@@ -183,7 +259,8 @@ class MagiaTargetEngine(
             val ponte = primeiraMagiaPonteAprendivel(
                 bloqueadas = bloqueadasDaEscola,
                 estado = estado,
-                idsJaPlanejados = trilha.map { it.id }.toSet()
+                idsJaPlanejados = trilha.map { it.id }.toSet(),
+                budget = budget
             ) ?: break
             trilha.add(ponte)
             estado = adicionarMagiaNoEstado(estado, ponte)
@@ -200,31 +277,36 @@ class MagiaTargetEngine(
     private fun primeiraMagiaPonteAprendivel(
         bloqueadas: List<MagiaDefinicao>,
         estado: Personagem,
-        idsJaPlanejados: Set<String>
+        idsJaPlanejados: Set<String>,
+        budget: GuardrailBudget
     ): MagiaDefinicao? {
         val visitados = mutableSetOf<String>()
         val fila = ArrayDeque<Pair<MagiaDefinicao, Int>>()
         bloqueadas.sortedBy { prioridadeMagiaParaAlvo(it) }.forEach { fila.add(it to 0) }
         while (fila.isNotEmpty()) {
+            if (!budget.step()) return null
             val (atual, profundidade) = fila.removeFirst()
+            if (!budget.allowDepth(profundidade)) return null
             if (!visitados.add(atual.id)) continue
-            val dependencias = dependenciasDiretasMagia(atual)
+            val dependencias = dependenciasDiretasMagia(atual, budget)
             dependencias.forEach { dep ->
+                if (!budget.step()) return null
                 if (dep.id in idsJaPlanejados) return@forEach
                 if (estado.magias.any { it.definicaoId == dep.id }) return@forEach
                 if (magiaPodeSerAprendidaNoEstado(dep, estado)) return dep
-                if (profundidade < 2) fila.add(dep to (profundidade + 1))
+                if (profundidade < budget.maxDepth) fila.add(dep to (profundidade + 1))
             }
         }
         return null
     }
 
-    private fun dependenciasDiretasMagia(magia: MagiaDefinicao): List<MagiaDefinicao> {
+    private fun dependenciasDiretasMagia(magia: MagiaDefinicao, budget: GuardrailBudget): List<MagiaDefinicao> {
         val prereq = dataRepository.preRequisitoNormalizadoParaAnalise(magia)
         if (prereq.isBlank()) return emptyList()
         val parsed = PreRequisitoParser.parse(prereq)
         val nomes = linkedSetOf<String>()
         parsed.tipos.forEach { tipo ->
+            if (!budget.step()) return emptyList()
             when (tipo) {
                 is PreRequisitoType.MagiaConhecida -> nomes.add(normalizarTexto(tipo.nomeMagia))
                 is PreRequisitoType.MagiaInclusaNaContagem -> nomes.add(normalizarTexto(tipo.nomeMagia))
@@ -235,6 +317,7 @@ class MagiaTargetEngine(
         return dataRepository.magias
             .asSequence()
             .filter { candidata ->
+                if (!budget.step()) return@filter false
                 val nome = normalizarTexto(candidata.nome)
                 nomes.any { req ->
                     req.isNotBlank() &&

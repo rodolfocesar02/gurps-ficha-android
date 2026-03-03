@@ -110,3 +110,16 @@ Toda entrega deve fechar com:
   - `compileVisualDebugKotlin` OK
   - `compilePracegoDebugKotlin` OK
   - `testVisualDebugUnitTest` OK
+
+## Andamento do lote (2026-03-03 - Etapa 3)
+- Guardrails adicionados ao `MagiaTargetEngine`:
+  - limite de tempo por execução;
+  - limite de nós analisados;
+  - limite de profundidade de busca.
+- Ao atingir limite, o motor retorna trilha parcial segura (sem travar).
+- `FichaViewModel` agora expõe `modoAlvoAviso` para informar fallback ao usuário.
+- UI de magias mostra aviso de trilha parcial quando guardrail é acionado.
+- Validação:
+  - `compileVisualDebugKotlin` OK
+  - `compilePracegoDebugKotlin` OK
+  - `testVisualDebugUnitTest` OK
