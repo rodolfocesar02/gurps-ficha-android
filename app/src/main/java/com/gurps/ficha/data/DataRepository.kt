@@ -942,7 +942,7 @@ class DataRepository(private val context: Context) {
      */
     fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
         val raw = preRequisitoRawNormalizado(definicao)
-        if (raw.isEmpty() || raw == "—") return null
+        if (isSemPreRequisitoRaw(raw)) return null
 
         val parsed = PreRequisitoParser.parse(raw)
         if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
@@ -960,7 +960,7 @@ class DataRepository(private val context: Context) {
      */
     fun missingPreRequisitoReport(definicao: MagiaDefinicao, personagem: Personagem): String? {
         val raw = preRequisitoRawNormalizado(definicao)
-        if (raw.isEmpty() || raw == "—") return null
+        if (isSemPreRequisitoRaw(raw)) return null
 
         val parsed = PreRequisitoParser.parse(raw)
         if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
@@ -977,9 +977,34 @@ class DataRepository(private val context: Context) {
      * evitar quebrar validação automática enquanto preserva a regra funcional.
      */
     private fun preRequisitoRawNormalizado(definicao: MagiaDefinicao): String {
-        val rawOriginal = definicao.preRequisitos?.trim().orEmpty()
+        val rawOriginal = definicao.preRequisitos
+            ?.fixMojibakeIfNeeded()
+            ?.trim()
+            .orEmpty()
         val override = preRequisitosOverridePorMagiaId[definicao.id]
-        return (override ?: rawOriginal).trim()
+        return (override ?: rawOriginal)
+            .fixMojibakeIfNeeded()
+            .trim()
+    }
+
+    private fun isSemPreRequisitoRaw(raw: String): Boolean {
+        val trimmed = raw.trim()
+        if (trimmed.isEmpty()) return true
+        if (trimmed == "-" || trimmed == "—" || trimmed == "–" || trimmed == "−") return true
+        if (trimmed == "â€”" || trimmed == "â€“" || trimmed == "âˆ’") return true
+        if (trimmed == "?" || trimmed == "??" || trimmed == "???") return true
+
+        val normalizado = normalizarNomeRequisito(trimmed)
+        if (normalizado.isBlank()) return true
+        return normalizado in setOf(
+            "nenhum",
+            "nenhuma",
+            "na",
+            "n a",
+            "nao ha",
+            "sem prerequisito",
+            "sem prerequisitos"
+        )
     }
 
     private val preRequisitosOverridePorMagiaId: Map<String, String> = mapOf(

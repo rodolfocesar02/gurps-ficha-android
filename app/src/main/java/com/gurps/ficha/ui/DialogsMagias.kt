@@ -101,13 +101,14 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
     val magiaAlvoSelecionada = catalogoMagias.firstOrNull { it.id == magiaAlvoId }
-    val idsRelacionadosAlvo = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
-        viewModel.idsRelacionadosMagiaAlvo(magiaAlvoSelecionada)
+    val ordemRelacionadosAlvo: List<String> = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+        viewModel.listaRelacionadosMagiaAlvo(magiaAlvoSelecionada)
     } else {
-        emptySet()
+        emptyList()
     }
     val listaExibicao = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
-        val relacionadas = catalogoMagias.filter { it.id in idsRelacionadosAlvo }
+        val relacionadas = ordemRelacionadosAlvo
+            .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
         if (relacionadas.isNotEmpty()) {
             relacionadas.sortedBy { if (it.id == magiaAlvoSelecionada.id) 0 else 1 }
         } else {
