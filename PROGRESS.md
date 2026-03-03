@@ -1,64 +1,90 @@
-# PROGRESS - GURPS Ficha Android
+Ôªø# PROGRESS - GURPS Ficha Android
 
 Atualizado em: 2026-03-03
 
 ## Estado Atual
 - Branch: `main`
-- Variantes ativas: `visual` e `pracego`
-- Vers„o atual: `versionCode 2`, `versionName 1.1`
-- Build/tests base: OK (`compileVisualDebugKotlin`, `compilePracegoDebugKotlin`, `testVisualDebugUnitTest`, `testPracegoDebugUnitTest`)
+- Variantes: `visual` e `pracego`
+- Vers√£o: `versionCode 2`, `versionName 1.1`
+- Situa√ß√£o cr√≠tica aberta: travamento no `Modo Alvo` com magias de pr√©-requisito complexo (relato de crash repetido em teste manual).
 
-## Entregas consolidadas
-- Regras de prÈ-requisito de magias com suporte a:
-  - `Aptid„o M·gica` base nÌvel 0.
-  - Operadores `ou`/`e` no parsing principal.
-  - Marcadores de sem prÈ-requisito (`-`, travessıes e mojibake, `???`, vazio) tratados como liberados.
-  - Prioridade de resoluÁ„o: magia -> vantagem -> perÌcia.
-- Modo Alvo de magias ativo com:
-  - foco em magia objetivo;
-  - motivo curto de bloqueio no card;
-  - lista relacionada por cadeia de desbloqueio (nome/escola/requisitos agregados).
-- UX de adiÁ„o forÁada:
-  - removido gesto de segurar no card;
-  - aÁ„o no di·logo com confirmaÁ„o (`SEU MESTRE AUTORIZOU?`).
-- Acessibilidade PRACEGO:
-  - revis„o dos rÛtulos crÌticos;
-  - rolagens com rÛtulo incluindo atributo e valor.
+## Diagn√≥stico resumido
+- O c√°lculo de trilha do `Modo Alvo` est√° acoplado ao ViewModel/UI e pode escalar demais em cen√°rios complexos.
+- Sintoma prov√°vel: sobrecarga de processamento durante recomputa√ß√µes (queda de responsividade e encerramento do app).
+- Decis√£o t√©cnica aprovada: separar o motor de magias do motor geral da ficha.
 
-## Assistente Guiado por Voz (V1) - Implementado
-- Escopo V1 (offline) na seleÁ„o de magias:
-  - bot„o `Ajuda por Voz` (PRACEGO);
-  - reconhecimento via `SpeechRecognizer` (`RecognizerIntent`, preferÍncia offline);
-  - retorno por `TextToSpeech` em portuguÍs;
-  - comandos suportados:
-    - `quero <nome da magia>` / `objetivo <nome da magia>`
-    - `prÛxima`
-    - `adicionar sugerida`
-    - `por que bloqueada`
-  - feedback curto em tela e por voz para orientar a trilha de desbloqueio.
-- Permiss„o adicionada:
-  - `android.permission.RECORD_AUDIO`
-- Limite atual do V1:
-  - depende da disponibilidade local do reconhecimento offline no dispositivo.
+## LOTE DE REFATORA√á√ÉO (para pr√≥ximos agentes)
 
-## PrÛximas prioridades
-1. Refinar a trilha mÌnima do Modo Alvo para todos os casos agregados (`N escolas`, `N magias de escola`, famÌlia por nome).
-2. Melhorar a robustez dos comandos de voz com aliases e confirmaÁ„o contextual.
-3. Rodada final de regress„o de prÈ-requisitos + acessibilidade PRACEGO.
+### Etapa 1 - Separa√ß√£o arquitetural (in√≠cio imediato)
+Objetivo:
+- Extrair regras de sugest√£o/trilha de magias para um motor dedicado (`MagicEngine`), desacoplado da tela.
+
+Entreg√°veis:
+- Novo componente de dom√≠nio/dados para c√°lculo de `Modo Alvo`.
+- ViewModel apenas orquestra entrada/sa√≠da (sem l√≥gica pesada interna).
+- Cobertura m√≠nima de compila√ß√£o e regress√£o b√°sica.
+
+Crit√©rio de aceite:
+- Nenhum comportamento funcional removido.
+- C√≥digo de `Modo Alvo` n√£o fica mais concentrado no `FichaViewModel`.
+
+### Etapa 2 - Execu√ß√£o ass√≠ncrona e estabilidade
+Objetivo:
+- Tirar c√°lculo de trilha da thread de UI.
+
+Entreg√°veis:
+- C√°lculo em `Dispatchers.Default`.
+- Estados expl√≠citos para UI: `idle`, `loading`, `ready`, `error`.
+- Debounce/cancelamento de recomputa√ß√£o quando usu√°rio altera filtros/alvo rapidamente.
+
+Crit√©rio de aceite:
+- Tela continua responsiva enquanto calcula recomenda√ß√µes.
+
+### Etapa 3 - Guardrails de seguran√ßa
+Objetivo:
+- Evitar explos√£o combinat√≥ria.
+
+Entreg√°veis:
+- Limites configur√°veis: profundidade, n√≥s explorados e tempo m√°ximo por execu√ß√£o.
+- Fallback seguro quando exceder limite (mensagem curta e trilha parcial √∫til).
+
+Crit√©rio de aceite:
+- Sem crash em cen√°rios de pr√©-requisito profundo.
+
+### Etapa 4 - Cache e desempenho
+Objetivo:
+- Reaproveitar resultados e reduzir custo de parsing.
+
+Entreg√°veis:
+- Cache do parse de pr√©-requisitos por magia.
+- Cache de resultados por chave de contexto (alvo + conjunto de magias conhecidas + AM/atributos relevantes).
+
+Crit√©rio de aceite:
+- Tempo de resposta perceptivelmente menor em reabertura de alvo j√° consultado.
+
+### Etapa 5 - Qualidade e acessibilidade PRACEGO
+Objetivo:
+- Tornar o fluxo de descoberta de pr√©-requisitos mais intuitivo e robusto para usu√°rio cego.
+
+Entreg√°veis:
+- R√≥tulos e mensagens curtas consistentes para estado de bloqueio/desbloqueio.
+- Ajustes no assistente guiado por voz V1 para narrar progresso do alvo sem redund√¢ncia.
+- Casos de teste automatizados do `Modo Alvo` (ex.: `Rel√¢mpago`, `Encantar`, casos com escolas diferentes).
+
+Crit√©rio de aceite:
+- Fluxo validado manualmente no PRACEGO sem perda de contexto do alvo.
 
 ## Releases
-- Artefatos release nomeados:
-  - `app/build/outputs/apk/release_named/GURPS_VISUAL.apk`
-  - `app/build/outputs/apk/release_named/GURPS_PRACEGO.apk`
+- Pasta padr√£o de sa√≠da:
+  - `app/build/outputs/apk/release_named/`
+- Conven√ß√£o atual:
+  - `GURPS_VISUAL.apk`
+  - `GURPS_PRACEGO.apk`
+  - vers√µes de backup est√°vel nomeadas com sufixo `_ESTAVEL_ANTERIOR`.
 
 ## Regra operacional
-- Toda entrega deve fechar com:
-  1. build/test;
-  2. atualizaÁ„o deste `PROGRESS.md`;
-  3. commit/push;
-  4. geraÁ„o de APKs quando solicitado.
-
-## AtualizaÁ„o r·pida (2026-03-03 - Modo Alvo escalonado)
-- Corrigido travamento de trilha no Modo Alvo quando n„o havia mais magia da escola imediatamente liberada.
-- Agora o algoritmo injeta magias-ponte que destravam a prÛxima etapa da cadeia.
-- Caso alvo reportado: `Relampago` com requisito `6 magias de Ar` n„o deve mais parar no meio da progress„o.
+Toda entrega deve fechar com:
+1. build/test;
+2. atualiza√ß√£o deste `PROGRESS.md`;
+3. commit/push;
+4. gera√ß√£o de APKs quando solicitado.
