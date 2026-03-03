@@ -57,3 +57,8 @@ Atualizado em: 2026-03-03
   2. atualização deste `PROGRESS.md`;
   3. commit/push;
   4. geração de APKs quando solicitado.
+
+## Atualização rápida (2026-03-03 - Modo Alvo escalonado)
+- Corrigido travamento de trilha no Modo Alvo quando não havia mais magia da escola imediatamente liberada.
+- Agora o algoritmo injeta magias-ponte que destravam a próxima etapa da cadeia.
+- Caso alvo reportado: `Relampago` com requisito `6 magias de Ar` não deve mais parar no meio da progressão.
