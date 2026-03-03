@@ -60,3 +60,17 @@ Atualizado em: 2026-03-03
   - aumentar chance de recomendação imediata e reduzir listas vazias em alvos complexos.
 - Pendência:
   - validar manualmente no fluxo real os casos `Desejo`, `Convocar Demônio` e `Translocação`.
+
+## Atualização incremental (Etapa B - 2026-03-03)
+- `Modo Alvo` desativado temporariamente na UI para estabilizar o fluxo geral de magias.
+- `Ajuda por Voz` desativada temporariamente na variante `pracego`.
+- `magias2versao.json` passou por limpeza de codificação e remoção de caracteres inválidos.
+- Regras específicas ajustadas:
+  - `transformar_objeto`: `Aptidão Mágica 2, Remodelar e 4 mágicas de Criar`.
+  - `restauracao`: `Cura Profunda ou 2 entre Aliviar Paralisia e mágicas de Restaurar`.
+  - `talisma`: pré-requisito simplificado para `Encantar`.
+- Rolagem de magia:
+  - para `Talismã`, o diálogo de custo de energia agora exige escolher uma magia do repertório antes de confirmar.
+- Validação:
+  - `:app:compileVisualDebugKotlin` OK
+  - `:app:compilePracegoDebugKotlin` OK

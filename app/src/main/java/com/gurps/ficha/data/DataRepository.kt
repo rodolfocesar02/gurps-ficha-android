@@ -1028,7 +1028,7 @@ class DataRepository(private val context: Context) {
         "localizar_portal" to "Aptidao Magica 2, Localizar Magica e 1 magica em dez escolas diferentes",
         "criar_portal" to "Controle de Portal ou Teleporte ou Viagem no Tempo ou Trocar de Plano",
         "metamorfose_superior" to "AM3, Alterar Corpo, quaisquer 4 magicas Metamorfose, 10 outras magicas",
-        "restauracao" to "Cura Profunda, ou quaisquer 2 de Aliviar Paralisia e Restaurar",
+        "restauracao" to "Cura Profunda ou 2 entre Aliviar Paralisia e magicas de Restaurar",
         "geiser" to "6 magicas da Agua, incl. Criar Nascente, quaisquer 4 magicas da Terra ou Fogo",
         "espirito_de_caveira" to "4 magicas de Necromancia",
         "armadura_de_relampagos" to "6 magicas de Relampagos, incl. Imunidade a Relampagos",
@@ -1048,7 +1048,9 @@ class DataRepository(private val context: Context) {
         "reconstruirnt" to "Aptidao Magica 3, Consertar, Criar Objeto e 3 magicas de cada escola Ar, Fogo, Terra e Agua",
         "repelir_animal" to "Controle de Animal",
         "suspender" to "Aptidao Magica 2 e 2 magicas em dez escolas diferentes",
-        "transformar_outro" to "Metamorfosear Outro e Transformar Corpo"
+        "transformar_objeto" to "Aptidao Magica 2, Remodelar e 4 magicas de Criar",
+        "transformar_outro" to "Metamorfosear Outro e Transformar Corpo",
+        "talisma" to "Encantar"
     )
 
     /**

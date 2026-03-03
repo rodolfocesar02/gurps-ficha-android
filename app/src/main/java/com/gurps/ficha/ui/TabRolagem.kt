@@ -113,12 +113,14 @@ private data class PericiaRollOption(
 
 private data class MagiaRollOption(
     val id: String,
+    val definicaoId: String,
     val nome: String,
     val contextLabel: String,
     val target: Int,
     val duracao: String?,
     val energia: String?,
-    val tempoOperacao: String?
+    val tempoOperacao: String?,
+    val encantamentoAlvo: String?
 )
 
 private data class TecnicaRollOption(
@@ -350,6 +352,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var showEditarPfRolagemDialog by remember { mutableStateOf(false) }
     var magiaPendenteEnergia by remember { mutableStateOf<MagiaRollOption?>(null) }
     var energiaManualInput by remember { mutableStateOf("") }
+    var talismaMagiaVinculada by remember { mutableStateOf<String?>(null) }
     var aspectoMagiaAlmaSelecionado by remember { mutableStateOf<SoulAspectOption?>(null) }
     var modificadorMagiaAlma by remember { mutableIntStateOf(0) }
     var modificadorGlobalPraCego by remember { mutableIntStateOf(0) }
@@ -434,14 +437,21 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val nivel = magia.calcularNivel(p, viewModel.nivelAptidaoMagica)
         MagiaRollOption(
             id = "magia_${magia.definicaoId}_$index",
+            definicaoId = magia.definicaoId,
             nome = magia.nome,
             contextLabel = "Magia ${magia.nome}",
             target = nivel,
             duracao = magia.duracao ?: definicaoMagia.duracao,
             energia = magia.energia ?: definicaoMagia.energia,
-            tempoOperacao = magia.tempoOperacao ?: definicaoMagia.tempoOperacao
+            tempoOperacao = magia.tempoOperacao ?: definicaoMagia.tempoOperacao,
+            encantamentoAlvo = magia.encantamentoAlvo
         )
     }
+    val repertorioParaTalisma = p.magias
+        .map { it.nome }
+        .filter { !it.equals("Talismã", ignoreCase = true) && !it.equals("Talisma", ignoreCase = true) }
+        .distinct()
+        .sorted()
     val opcoesTecnica = p.tecnicas.mapIndexed { index, tecnica ->
         TecnicaRollOption(
             id = "tecnica_${tecnica.definicaoId}_$index",
@@ -830,15 +840,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     fun tratarCustoEnergiaAposRolagemMagia(magia: MagiaRollOption) {
         val nhBasico = magia.target
+        val isTalisma = magia.definicaoId.equals("talisma", ignoreCase = true)
         val custoFixo = custoEnergiaFixo(magia.energia)
-        if (custoFixo != null) {
+        if (custoFixo != null && !isTalisma) {
             consumirEnergiaMagia(custoEnergiaComReducaoNh(custoFixo, nhBasico))
             return
         }
         val energiaTexto = magia.energia?.trim().orEmpty()
-        if (energiaTexto.isBlank()) return
+        if (energiaTexto.isBlank() && !isTalisma) return
         magiaPendenteEnergia = magia
-        energiaManualInput = ""
+        energiaManualInput = custoFixo?.toString() ?: ""
+        talismaMagiaVinculada = magia.encantamentoAlvo?.takeIf { it.isNotBlank() }
         showEnergiaManualDialog = true
     }
 
@@ -2553,10 +2565,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
         if (showEnergiaManualDialog && magiaPendenteEnergia != null) {
             val magiaEnergia = magiaPendenteEnergia!!
+            val exigeVinculoTalisma = magiaEnergia.definicaoId.equals("talisma", ignoreCase = true)
+            var menuTalismaExpandido by remember { mutableStateOf(false) }
             AlertDialog(
                 onDismissRequest = {
                     showEnergiaManualDialog = false
                     magiaPendenteEnergia = null
+                    talismaMagiaVinculada = null
                 },
                 title = { Text("Gasto de energia") },
                 text = {
@@ -2571,6 +2586,45 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 "Energia da ficha: $energia",
                                 style = MaterialTheme.typography.bodySmall
                             )
+                        }
+                        if (exigeVinculoTalisma) {
+                            Text(
+                                "Talismã: escolha uma magia do repertório para finalizar a rolagem.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            ExposedDropdownMenuBox(
+                                expanded = menuTalismaExpandido,
+                                onExpandedChange = { menuTalismaExpandido = !menuTalismaExpandido },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                OutlinedTextField(
+                                    value = talismaMagiaVinculada.orEmpty(),
+                                    onValueChange = {},
+                                    readOnly = true,
+                                    label = { Text("Talismã: magia vinculada") },
+                                    trailingIcon = {
+                                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuTalismaExpandido)
+                                    },
+                                    modifier = Modifier
+                                        .menuAnchor()
+                                        .fillMaxWidth()
+                                )
+                                ExposedDropdownMenu(
+                                    expanded = menuTalismaExpandido,
+                                    onDismissRequest = { menuTalismaExpandido = false }
+                                ) {
+                                    repertorioParaTalisma.forEach { nomeMagia ->
+                                        DropdownMenuItem(
+                                            text = { Text(nomeMagia) },
+                                            onClick = {
+                                                talismaMagiaVinculada = nomeMagia
+                                                menuTalismaExpandido = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
                         }
                         OutlinedTextField(
                             value = energiaManualInput,
@@ -2612,8 +2666,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             showEnergiaManualDialog = false
                             magiaPendenteEnergia = null
                             energiaManualInput = ""
+                            talismaMagiaVinculada = null
                         },
-                        enabled = energiaManualInput.toIntOrNull() != null
+                        enabled = energiaManualInput.toIntOrNull() != null &&
+                            (!exigeVinculoTalisma || !talismaMagiaVinculada.isNullOrBlank())
                     ) {
                         Text("Aplicar")
                     }
@@ -2624,6 +2680,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             showEnergiaManualDialog = false
                             magiaPendenteEnergia = null
                             energiaManualInput = ""
+                            talismaMagiaVinculada = null
                         }
                     ) {
                         Text("Ignorar")
