@@ -88,3 +88,12 @@ Toda entrega deve fechar com:
 2. atualização deste `PROGRESS.md`;
 3. commit/push;
 4. geração de APKs quando solicitado.
+
+## Andamento do Lote
+- Etapa 1 iniciada e aplicada parcialmente:
+  - lógica de trilha do `Modo Alvo` extraída para `MagiaTargetEngine`;
+  - `FichaViewModel` agora delega cálculo de relacionados para o motor dedicado.
+- Validação da Etapa 1 (parcial):
+  - `compileVisualDebugKotlin` OK;
+  - `compilePracegoDebugKotlin` OK;
+  - `testVisualDebugUnitTest` OK.
