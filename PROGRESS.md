@@ -3,6 +3,20 @@
 Atualizado em: 2026-03-03
 Objetivo atual: consolidar regras de pré-requisito (Aptidão Mágica nível 0-base e Modo Alvo por família de nome) mantendo estabilidade de build.
 
+## Atualização do Bloco (2026-03-03 - migração de `magias2versao.json` e validação de link de pré-requisitos)
+- Arquivo de dados de magias:
+  - mantido o arquivo oficial `app/src/main/assets/magias2versao.json` (não foi criado arquivo paralelo);
+  - correções diretas de termos quebrados no próprio JSON (ex.: `Relmpago` -> `Relampago`, `Projteis` -> `Projeteis`, `Furaco` -> `Furacao`, `mgicas` -> `magicas`);
+  - confirmado que o dataset segue no formato estruturado por campo (`classe`, `escola`, `duracao`, `energia`, `tempoOperacao`, `preRequisitos`) e sem retorno ao formato monolítico em `texto`.
+- Consistência de pré-requisitos (checagem de ligação):
+  - teste de consistência executado para famílias/nomes após correção;
+  - caso alvo validado: `relampago` com pré-requisito por escola (`6 mágicas do Ar`) e cadeia relacionada por nome (`Relampago`/`Relampagos`) preservada;
+  - contagens observadas na validação: escola `Ar` com 49 magias e família `relampag` com 11 magias.
+- Rotina operacional seguida:
+  - salvar alterações de dados;
+  - compilar/testar;
+  - instalar e abrir variante visual no emulador para verificação funcional.
+
 ## Atualização do Bloco (2026-03-03 - normalização de schema de magia e acessibilidade da rolagem)
 - Magias - schema/fallback:
   - reforçada normalização para manter metadados separados de `texto`;
