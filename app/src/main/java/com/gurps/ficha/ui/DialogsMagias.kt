@@ -69,6 +69,8 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
+private const val MODO_ALVO_HABILITADO = false
+private const val AJUDA_VOZ_HABILITADA = false
 
 private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
     val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
@@ -105,27 +107,29 @@ private fun motivoBloqueioCurto(falha: String): String {
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val ajudaVozAtiva = isPraCegoVariant && AJUDA_VOZ_HABILITADA
     var magiaSelecionada by remember { mutableStateOf<MagiaDefinicao?>(null) }
     var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
     var modoAlvoAtivo by remember { mutableStateOf(false) }
     var magiaAlvoId by remember { mutableStateOf<String?>(null) }
     var statusAjudaVoz by remember { mutableStateOf<String?>(null) }
+    val modoAlvoAtivoEfetivo = MODO_ALVO_HABILITADO && modoAlvoAtivo
 
     val listaFiltrada = viewModel.magiasFiltradas
     val catalogoMagias = viewModel.dataRepository.magias
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
     val magiaAlvoSelecionada = catalogoMagias.firstOrNull { it.id == magiaAlvoId }
-    val ordemRelacionadosAlvo: List<String> = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+    val ordemRelacionadosAlvo: List<String> = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         viewModel.modoAlvoRelacionadosIds
     } else {
         emptyList()
     }
     val assinaturaModoAlvo = viewModel.assinaturaEstadoMagiasParaModoAlvo()
-    LaunchedEffect(modoAlvoAtivo, magiaAlvoId, assinaturaModoAlvo) {
-        viewModel.requisitarModoAlvo(magiaAlvoId, modoAlvoAtivo)
+    LaunchedEffect(modoAlvoAtivoEfetivo, magiaAlvoId, assinaturaModoAlvo) {
+        viewModel.requisitarModoAlvo(magiaAlvoId, modoAlvoAtivoEfetivo)
     }
-    val listaExibicao = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+    val listaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         val relacionadas = ordemRelacionadosAlvo
             .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
         if (relacionadas.isNotEmpty()) {
@@ -136,7 +140,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     } else {
         listaFiltrada
     }
-    val proximaSugerida = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+    val proximaSugerida = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         listaExibicao.firstOrNull { magia ->
             magia.id != magiaAlvoSelecionada.id &&
                 !viewModel.magiaJaAdicionada(magia.id) &&
@@ -196,6 +200,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
     fun processarComandoVoz(comandoRaw: String) {
         val comando = normalizarComandoVoz(comandoRaw)
+        if (!MODO_ALVO_HABILITADO) {
+            falarAjuda("Modo Alvo está desativado temporariamente.")
+            return
+        }
         when {
             comando.startsWith("quero ") || comando.startsWith("objetivo ") -> {
                 val termo = comando.removePrefix("quero ").removePrefix("objetivo ").trim()
@@ -316,28 +324,30 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    FilterChip(
-                        selected = modoAlvoAtivo,
-                        onClick = {
-                            modoAlvoAtivo = !modoAlvoAtivo
-                            if (!modoAlvoAtivo) magiaAlvoId = null
-                        },
-                        label = { Text("Modo Alvo") }
-                    )
-                    if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
-                        Text(
-                            "Alvo: ${magiaAlvoSelecionada.nome}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
+                    if (MODO_ALVO_HABILITADO) {
+                        FilterChip(
+                            selected = modoAlvoAtivo,
+                            onClick = {
+                                modoAlvoAtivo = !modoAlvoAtivo
+                                if (!modoAlvoAtivo) magiaAlvoId = null
+                            },
+                            label = { Text("Modo Alvo") }
                         )
-                    } else if (modoAlvoAtivo) {
-                        Text(
-                            "Toque em \"Alvo\" na magia desejada.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
+                            Text(
+                                "Alvo: ${magiaAlvoSelecionada.nome}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        } else if (modoAlvoAtivoEfetivo) {
+                            Text(
+                                "Toque em \"Alvo\" na magia desejada.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
-                    if (isPraCegoVariant) {
+                    if (ajudaVozAtiva) {
                         TextButton(
                             onClick = { iniciarAjudaVoz() },
                             modifier = Modifier.semantics {
@@ -349,14 +359,16 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     }
                 }
                 statusAjudaVoz?.let { msg ->
-                    Text(
-                        msg,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.semantics {
-                            if (isPraCegoVariant) contentDescription = "Resposta da ajuda por voz: $msg"
-                        }
-                    )
+                    if (ajudaVozAtiva) {
+                        Text(
+                            msg,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.semantics {
+                                contentDescription = "Resposta da ajuda por voz: $msg"
+                            }
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -407,7 +419,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("${listaExibicao.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
-                if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+                if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
                     if (viewModel.modoAlvoCarregando) {
                         Text(
                             "Calculando trilha do alvo...",
@@ -475,7 +487,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             },
                             trailingContent = {
                                 Column(horizontalAlignment = Alignment.End) {
-                                    if (modoAlvoAtivo && !jaAdicionada) {
+                                    if (modoAlvoAtivoEfetivo && !jaAdicionada) {
                                         TextButton(
                                             onClick = { magiaAlvoId = definicao.id },
                                             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
