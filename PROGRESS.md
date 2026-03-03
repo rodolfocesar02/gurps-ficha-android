@@ -4,152 +4,101 @@ Atualizado em: 2026-03-03
 
 ## Estado Atual
 - Branch: `main`
-- Variantes: `visual` e `pracego`
-- Versão: `versionCode 2`, `versionName 1.1`
-- Situação crítica aberta: travamento no `Modo Alvo` com magias de pré-requisito complexo (relato de crash repetido em teste manual).
+- Variantes ativas: `visual` e `pracego`
+- Build geral: estável (debug/release das duas variantes compilando)
+- Problema aberto: `Modo Alvo` ainda falha em cenários com pré-requisitos encadeados/complexos (ex.: Desejo, Convocar Demônio, Translocação)
 
-## Diagnóstico resumido
-- O cálculo de trilha do `Modo Alvo` está acoplado ao ViewModel/UI e pode escalar demais em cenários complexos.
-- Sintoma provável: sobrecarga de processamento durante recomputações (queda de responsividade e encerramento do app).
-- Decisão técnica aprovada: separar o motor de magias do motor geral da ficha.
+## Regras importantes do projeto (manter)
+- Aptidão Mágica é pré-requisito global para magias (nível base 0).
+- Parser deve respeitar `ou` como alternativa e `e` como acumulação.
+- Fallback de pré-requisito nominal: magia -> vantagem -> perícia.
+- Marcadores `Especial` e `#` mantêm bypass de validação automática.
+- Marcadores de sem pré-requisito (`-`, variações de traço, vazio, `???`) devem liberar magia.
+- PRACEGO exige rótulos semânticos claros e mensagens curtas de bloqueio/recomendação.
 
-## LOTE DE REFATORAÇÃO (para próximos agentes)
-
-### Etapa 1 - Separação arquitetural (início imediato)
-Objetivo:
-- Extrair regras de sugestão/trilha de magias para um motor dedicado (`MagicEngine`), desacoplado da tela.
-
-Entregáveis:
-- Novo componente de domínio/dados para cálculo de `Modo Alvo`.
-- ViewModel apenas orquestra entrada/saída (sem lógica pesada interna).
-- Cobertura mínima de compilação e regressão básica.
-
-Critério de aceite:
-- Nenhum comportamento funcional removido.
-- Código de `Modo Alvo` não fica mais concentrado no `FichaViewModel`.
-
-### Etapa 2 - Execução assíncrona e estabilidade
-Objetivo:
-- Tirar cálculo de trilha da thread de UI.
-
-Entregáveis:
-- Cálculo em `Dispatchers.Default`.
-- Estados explícitos para UI: `idle`, `loading`, `ready`, `error`.
-- Debounce/cancelamento de recomputação quando usuário altera filtros/alvo rapidamente.
-
-Critério de aceite:
-- Tela continua responsiva enquanto calcula recomendações.
-
-### Etapa 3 - Guardrails de segurança
-Objetivo:
-- Evitar explosão combinatória.
-
-Entregáveis:
-- Limites configuráveis: profundidade, nós explorados e tempo máximo por execução.
-- Fallback seguro quando exceder limite (mensagem curta e trilha parcial útil).
-
-Critério de aceite:
-- Sem crash em cenários de pré-requisito profundo.
-
-### Etapa 4 - Cache e desempenho
-Objetivo:
-- Reaproveitar resultados e reduzir custo de parsing.
-
-Entregáveis:
-- Cache do parse de pré-requisitos por magia.
-- Cache de resultados por chave de contexto (alvo + conjunto de magias conhecidas + AM/atributos relevantes).
-
-Critério de aceite:
-- Tempo de resposta perceptivelmente menor em reabertura de alvo já consultado.
-
-### Etapa 5 - Qualidade e acessibilidade PRACEGO
-Objetivo:
-- Tornar o fluxo de descoberta de pré-requisitos mais intuitivo e robusto para usuário cego.
-
-Entregáveis:
-- Rótulos e mensagens curtas consistentes para estado de bloqueio/desbloqueio.
-- Ajustes no assistente guiado por voz V1 para narrar progresso do alvo sem redundância.
-- Casos de teste automatizados do `Modo Alvo` (ex.: `Relâmpago`, `Encantar`, casos com escolas diferentes).
-
-Critério de aceite:
-- Fluxo validado manualmente no PRACEGO sem perda de contexto do alvo.
-
-## Releases
-- Pasta padrão de saída:
-  - `app/build/outputs/apk/release_named/`
-- Convenção atual:
-  - `GURPS_VISUAL.apk`
-  - `GURPS_PRACEGO.apk`
-  - versões de backup estável nomeadas com sufixo `_ESTAVEL_ANTERIOR`.
-
-## Regra operacional
-Toda entrega deve fechar com:
-1. build/test;
-2. atualização deste `PROGRESS.md`;
-3. commit/push;
-4. geração de APKs quando solicitado.
-
-## Andamento do Lote
-- Etapa 1 iniciada e aplicada parcialmente:
-  - lógica de trilha do `Modo Alvo` extraída para `MagiaTargetEngine`;
-  - `FichaViewModel` agora delega cálculo de relacionados para o motor dedicado.
-- Validação da Etapa 1 (parcial):
-  - `compileVisualDebugKotlin` OK;
-  - `compilePracegoDebugKotlin` OK;
-  - `testVisualDebugUnitTest` OK.
-
-## Andamento do lote (2026-03-03 - Etapa 2)
-- `Modo Alvo` migrado para cálculo assíncrono no `FichaViewModel`.
-- Estados adicionados para UI:
+## O que já foi estruturado
+- Motor de Modo Alvo separado do ViewModel: `MagiaTargetEngine`.
+- Cálculo assíncrono no ViewModel com estados:
   - `modoAlvoCarregando`
   - `modoAlvoRelacionadosIds`
   - `modoAlvoErro`
-- Requisições agora têm cancelamento/substituição quando o contexto muda.
-- A tela de magias passa a consumir resultado pronto e exibe status de cálculo.
-- Validação:
-  - `compileVisualDebugKotlin` OK
-  - `compilePracegoDebugKotlin` OK
-  - `testVisualDebugUnitTest` OK
+  - `modoAlvoAviso`
+- Guardrails ativos (tempo/nós/profundidade) para evitar travamentos.
+- Cache de parse e cache de resultado por contexto.
 
-## Andamento do lote (2026-03-03 - Etapa 3)
-- Guardrails adicionados ao `MagiaTargetEngine`:
-  - limite de tempo por execução;
-  - limite de nós analisados;
-  - limite de profundidade de busca.
-- Ao atingir limite, o motor retorna trilha parcial segura (sem travar).
-- `FichaViewModel` agora expõe `modoAlvoAviso` para informar fallback ao usuário.
-- UI de magias mostra aviso de trilha parcial quando guardrail é acionado.
-- Validação:
-  - `compileVisualDebugKotlin` OK
-  - `compilePracegoDebugKotlin` OK
-  - `testVisualDebugUnitTest` OK
+## Decisão técnica nova (prioridade máxima)
+- Não reescrever o sistema inteiro de magias.
+- Reescrever **somente o planner do Modo Alvo** (núcleo de geração de trilha).
+- Manter parser, validação base e UI atuais.
 
-## Andamento do lote (2026-03-03 - Etapa 4)
-- Cache implementado no motor de magias:
-  - cache de parse de pré-requisito (`PreRequisitoParser`) com LRU interno;
-  - cache de resultado de `Modo Alvo` por chave de contexto (alvo + assinatura de estado).
-- Integração no `FichaViewModel`:
-  - envio de chave contextual para reaproveitar resultado sem recomputação.
-- Resultado esperado:
-  - melhora de resposta ao repetir busca do mesmo alvo no mesmo estado de personagem.
-- Validação:
-  - `compileVisualDebugKotlin` OK
-  - `compilePracegoDebugKotlin` OK
-  - `testVisualDebugUnitTest` OK
+## Plano para o próximo agente
 
-## Andamento do lote (2026-03-03 - Etapa 5)
-- PRACEGO (Modo Alvo) refinado:
-  - card da magia recomendada marca `Recomendada`;
-  - rótulo semântico da recomendação explicita prioridade para avanço do alvo.
-- Testes adicionados para casos críticos de parser:
-  - estilo `Relâmpago` (`AM1, 6 mágicas do Ar`);
-  - estilo `Encantar` (`1 mágica em dez escolas diferentes`).
-- Bateria de validação executada (completa):
-  - `compileVisualDebugKotlin` OK
-  - `compilePracegoDebugKotlin` OK
-  - `testVisualDebugUnitTest` OK
-  - `testPracegoDebugUnitTest` OK
-  - `assembleVisualDebug` OK
-  - `assemblePracegoDebug` OK
-  - `assembleVisualRelease` OK
-  - `assemblePracegoRelease` OK
+### Etapa A - Novo Planner de Dependências (substituir núcleo atual)
+Objetivo:
+- Montar trilha completa com dependências transitivas (A -> B -> C -> básicas), sem cortar requisitos intermediários.
+
+Entregáveis:
+- Novo componente de planejamento (ex.: `MagiaDependencyPlanner`) usado por `MagiaTargetEngine`.
+- Resolução de requisitos por tipo:
+  - nomes explícitos de magia,
+  - `N mágicas de escola X`,
+  - `N mágicas em K escolas diferentes`,
+  - combinações com `ou`/`e`.
+
+Critério de aceite:
+- Para um alvo bloqueado, sempre haver “próximas ações possíveis” quando existir caminho válido.
+
+### Etapa B - Estratégia de priorização
+Objetivo:
+- Ordenar trilha por menor custo de desbloqueio (menos passos primeiro).
+
+Entregáveis:
+- Heurística de prioridade com pontuação por distância de desbloqueio.
+- Separar na resposta:
+  - `proximas_imediatas` (já adicionáveis)
+  - `trilha_planejada` (ordem de desbloqueio)
+
+### Etapa C - Guardrails mais inteligentes
+Objetivo:
+- Evitar falso-positivo de “trilha parcial” em casos comuns.
+
+Entregáveis:
+- Ajustar limites com orçamento progressivo.
+- Só retornar parcial quando realmente exceder busca útil.
+
+### Etapa D - Testes críticos obrigatórios
+Casos mínimos:
+- `Relâmpago`
+- `Teleporte`
+- `Translocação`
+- `Convocar Demônio`
+- `Desejo`
+- `Encantar`
+
+Critério de aceite:
+- Testes unitários e integração do planner cobrindo encadeamento e quantificadores.
+
+### Etapa E - PRACEGO no fluxo final
+Objetivo:
+- Garantir que o usuário cego receba orientação acionável.
+
+Entregáveis:
+- Texto curto sempre com:
+  - o que falta agora,
+  - qual magia pode adicionar agora,
+  - qual próxima etapa após isso.
+
+## Checklist de entrega (obrigatório)
+1. Rodar build/test nas duas variantes.
+2. Atualizar este `PROGRESS.md`.
+3. Commit + push.
+4. Gerar APKs quando solicitado.
+
+## Andamento novo (2026-03-03 - Reescrita do planner de Modo Alvo)
+- Iniciado novo núcleo de planejamento: `MagiaDependencyPlanner`.
+- `MagiaTargetEngine` passou a usar o planner novo para montar trilha transitiva.
+- Objetivo desta troca:
+  - resolver pré-requisitos em cadeia (dependência da dependência);
+  - melhorar casos com `N mágicas em K escolas diferentes`;
+  - reduzir lista vazia/incompleta em alvos complexos.
+- Status: implementação inicial concluída e compilando; validar comportamento real dos casos críticos.
