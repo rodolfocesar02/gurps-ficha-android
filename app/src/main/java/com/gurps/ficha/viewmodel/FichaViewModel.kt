@@ -663,7 +663,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna ids de magias relacionadas ao alvo em ordem de progressão sugerida. */
     fun listaRelacionadosMagiaAlvo(alvo: MagiaDefinicao): List<String> {
-        val prereqRaw = alvo.preRequisitos.orEmpty()
+        val prereqRaw = dataRepository.preRequisitoNormalizadoParaAnalise(alvo)
         val idsRelacionados = mutableListOf<String>()
         val nomesObrigatorios = mutableSetOf<String>()
         val familiasNome = mutableSetOf<String>()
@@ -674,6 +674,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         addId(alvo.id)
+
+        if (dataRepository.magiaSemPreRequisito(alvo)) {
+            return listOf(alvo.id)
+        }
 
         val parsed = PreRequisitoParser.parse(prereqRaw)
         parsed.tipos.forEach { tipo ->
