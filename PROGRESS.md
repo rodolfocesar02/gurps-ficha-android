@@ -1,7 +1,66 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-02
-Objetivo atual: estabilizar release das variantes VISUAL e PRACEGO e organizar entrega de build.
+Atualizado em: 2026-03-03
+Objetivo atual: consolidar regras de pré-requisito (Aptidão Mágica nível 0-base e Modo Alvo por família de nome) mantendo estabilidade de build.
+
+## Atualização do Bloco (2026-03-03 - normalização de schema de magia e acessibilidade da rolagem)
+- Magias - schema/fallback:
+  - reforçada normalização para manter metadados separados de `texto`;
+  - quando `classe/escola/duração/energia/tempo de operação/pré-requisitos` vierem só em `texto`, o loader extrai para os campos corretos;
+  - `texto` passa a ficar reservado para descrição residual (linhas que não são metadados).
+- Magias - correção de nome:
+  - adicionado reparo automático de nomes truncados no carregamento (ex.: `Relmpago` -> `Relampago`);
+  - fallback seguro por `id` para casos suspeitos de truncamento no campo `nome`;
+  - mesma correção aplicada em `preRequisitos` para reduzir falhas por tokens corrompidos.
+- Rolagem PRACEGO:
+  - rótulo semântico dos botões rápidos de atributo agora inclui valor:
+    - formato: `Rolagem de ST X`, `Rolagem de IQ X`, etc.
+- Validação:
+  - `:app:compileVisualDebugKotlin` e `:app:compilePracegoDebugKotlin` OK;
+  - `:app:testVisualDebugUnitTest` e `:app:testPracegoDebugUnitTest` OK.
+- Nota para futuros agentes:
+  - manter prioridade de leitura dos campos estruturados de magia; usar extração por `texto` apenas como compatibilidade legada.
+
+## Atualização do Bloco (2026-03-03 - Aptidão Mágica 0-base e Modo Alvo por família)
+- Aptidão Mágica (regra base):
+  - cálculo de nível efetivo ajustado para base 0 (`nível interno - 1`) em validações de magia;
+  - presença da vantagem continua habilitando acesso à aba/regras mágicas;
+  - exibição de nível/custo na UI de Vantagens ajustada para refletir `nível 0 +5, +10 por nível`.
+- Modo Alvo (magias):
+  - reforçada a identificação de relacionadas por parser de pré-requisito;
+  - adicionada detecção de famílias no **nome da magia** (ex.: `Ácido`, `Relâmpago`) com tolerância a singular/plural e acentuação;
+  - mantida coexistência com relação por escola e por nomes explícitos.
+- Verificação técnica:
+  - `:app:compileVisualDebugKotlin` e `:app:compilePracegoDebugKotlin` executados com sucesso;
+  - `:app:testVisualDebugUnitTest` e `:app:testPracegoDebugUnitTest` executados com sucesso.
+
+## Atualização do Bloco (2026-03-02 - UX de Magias, técnicas e padronização de cards)
+- Magias - usabilidade:
+  - implementado `Modo Alvo` na seleção de magias para foco em uma magia objetivo;
+  - adicionada listagem relacionada ao alvo (alvo + pré-requisitos textuais detectados);
+  - cards de magia bloqueada agora mostram motivo curto: `Falta: <resumo>`.
+- Magias - adição forçada:
+  - removida a mecânica de segurar por 3 segundos;
+  - adição forçada movida para o diálogo da magia;
+  - clique em `Adição Forçada sem pré-requisito` abre popup de confirmação:
+    - texto em caixa alta: `SEU MESTRE AUTORIZOU?`
+    - botões: `SIM` e `NAO`.
+- Técnicas - pré-requisito:
+  - corrigida extração da âncora de limite (`pré-requisito+N`) para não bloquear falsamente;
+  - perícias de combate corpo a corpo (ex.: `Espadas Curtas`) voltam a satisfazer técnicas como `Finta`.
+- UI/consistência:
+  - padronização de cards de seleção para o mesmo estilo da seleção de perícias em:
+    - vantagens/desvantagens;
+    - técnicas/perícias suplementares;
+    - seletores de arma/escudo/armadura.
+- Build e artefatos:
+  - debug e release compilados com sucesso nas variantes `visual` e `pracego`;
+  - APKs release atualizados em:
+    - `app/build/outputs/apk/release_named/GURPS_VISUAL.apk`
+    - `app/build/outputs/apk/release_named/GURPS_PRACEGO.apk`
+- Controle de versão:
+  - commit aplicado e enviado para `origin/main`:
+    - `8f8572d` - melhorias de UX de magias, confirmação de adição forçada, padronização de cards e ajuste de pré-requisito de técnicas.
 
 ## Atualização do Bloco (2026-03-02 - ícones de abas e release adiado)
 - Decisão de entrega:
@@ -58,12 +117,12 @@ Objetivo atual: estabilizar release das variantes VISUAL e PRACEGO e organizar e
   - `versionCode = 2`
   - `versionName = 1.1`
 - Último commit funcional registrado:
-  - `433dae7` feat(magias): add specialization-based special cases and forced add on 3s hold
+  - `8f8572d` Melhora UX de magias (modo alvo e bloqueio curto), move adição forçada para diálogo com confirmação, padroniza cards e ajusta pré-requisito de técnicas
 
 ## Próximas Entregas Imediatas
-1. Aplicar novo ícone do aplicativo nas duas variantes.
-2. Gerar APKs `release` assinados e nomeados por variante/data/commit.
-3. Validar instalação manual dos APKs de release em dispositivo real.
+1. Validar fluxo completo do `Modo Alvo` em sessão real de criação de personagem.
+2. Refinar `Modo Alvo` com trilha explícita (`alvo -> pré-requisito -> subpré-requisito`), se necessário.
+3. Executar checklist final de regressão visual/PRACEGO antes do próximo release público.
 
 ## Regra de Trabalho
 - Toda alteração deve fechar com:

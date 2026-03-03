@@ -33,6 +33,14 @@ import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 
+private fun nivelExibicaoVantagem(vantagem: VantagemSelecionada): Int {
+    return if (vantagem.definicaoId.equals("aptidao_magica", ignoreCase = true)) {
+        (vantagem.nivel - 1).coerceAtLeast(0)
+    } else {
+        vantagem.nivel
+    }
+}
+
 @Composable
 private fun BotaoAcaoTracosPadrao(texto: String, onClick: () -> Unit) {
     PrimaryActionButton(text = texto, onClick = onClick)
@@ -179,11 +187,20 @@ private fun ResumoTracosFooter(totalItens: Int, pontosTracos: Int) {
 
 @Composable
 fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: () -> Unit) {
+    val nivelExibicao = nivelExibicaoVantagem(vantagem)
+    val sufixoNivel = if (
+        vantagem.definicaoId.equals("aptidao_magica", ignoreCase = true) ||
+        nivelExibicao > 1
+    ) {
+        " (Nível $nivelExibicao)"
+    } else {
+        ""
+    }
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(vantagem.nome + if (vantagem.descricao.isNotBlank()) " (${vantagem.descricao})" else "",
                 style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
-            Text("${vantagem.custoFinal} pts" + if (vantagem.nivel > 1) " (Nível ${vantagem.nivel})" else "",
+            Text("${vantagem.custoFinal} pts$sufixoNivel",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar vantagem ${vantagem.nome}") }

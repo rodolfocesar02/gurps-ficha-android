@@ -17,6 +17,8 @@ import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.roll.RollDispatchPolicy
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
@@ -661,8 +663,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna ids de magias relacionadas ao alvo (alvo + pré-requisitos textuais diretos). */
     fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
+        val prereqRaw = alvo.preRequisitos.orEmpty()
         val textoBase = buildString {
-            append(alvo.preRequisitos.orEmpty())
+            append(prereqRaw)
             val faltantes = prereqFailureForMagia(alvo)
             if (!faltantes.isNullOrBlank()) {
                 append(' ')
@@ -670,16 +673,147 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
         val textoNormalizado = normalizarTexto(textoBase)
-        if (textoNormalizado.isBlank()) return setOf(alvo.id)
+        if (textoNormalizado.isBlank()) {
+            return setOf(alvo.id) + dataRepository.magias
+                .filter { magia ->
+                    magia.escola.orEmpty().any { escola ->
+                        alvo.escola.orEmpty().any { eAlvo ->
+                            normalizarTexto(escola) == normalizarTexto(eAlvo)
+                        }
+                    }
+                }
+                .map { it.id }
+        }
 
         val idsRelacionados = mutableSetOf(alvo.id)
+        val nomesObrigatorios = mutableSetOf<String>()
+        val familiasNome = mutableSetOf<String>()
+        val escolasMencionadas = mutableSetOf<String>()
+
+        val parsed = PreRequisitoParser.parse(prereqRaw)
+        parsed.tipos.forEach { tipo ->
+            when (tipo) {
+                is PreRequisitoType.MagiaConhecida -> nomesObrigatorios.add(normalizarTexto(tipo.nomeMagia))
+                is PreRequisitoType.MagiaInclusaNaContagem -> {
+                    nomesObrigatorios.add(normalizarTexto(tipo.nomeMagia))
+                    tipo.escolaContexto?.let { escolasMencionadas.add(normalizarTexto(it)) }
+                }
+                is PreRequisitoType.MagiasEscola -> {
+                    val token = normalizarTexto(tipo.escola)
+                    escolasMencionadas.add(token)
+                    familiasNome.add(token)
+                }
+                is PreRequisitoType.QuantidadeMagiasPorEscolas -> {
+                    tipo.escolas.forEach { escola ->
+                        val token = normalizarTexto(escola)
+                        escolasMencionadas.add(token)
+                        familiasNome.add(token)
+                    }
+                }
+                is PreRequisitoType.QuantidadeMagiasPorTemas -> {
+                    tipo.temas.forEach { familiasNome.add(normalizarTexto(it)) }
+                }
+                is PreRequisitoType.QualquerMagiaComNome -> familiasNome.add(normalizarTexto(tipo.trechoNome))
+                is PreRequisitoType.QuantidadeOutrasMagias -> {
+                    val ctx = tipo.contexto?.let(::normalizarTexto)
+                    if (!ctx.isNullOrBlank()) familiasNome.add(ctx)
+                }
+                else -> Unit
+            }
+        }
+
+        familiasNome.addAll(extrairFamiliasPorTexto(textoNormalizado))
+
+        val escolasCatalogo = dataRepository.magias
+            .flatMap { it.escola.orEmpty() }
+            .map(::normalizarTexto)
+            .filter { it.length >= 3 }
+            .distinct()
+            .toSet()
+        val escolasResolvidas = mutableSetOf<String>()
+        escolasMencionadas.forEach { escolaToken ->
+            val variantes = variantesFamilia(escolaToken)
+            escolasCatalogo.forEach { escolaCatalogo ->
+                if (variantes.any { it == escolaCatalogo || escolaCatalogo.contains(it) || it.contains(escolaCatalogo) }) {
+                    escolasResolvidas.add(escolaCatalogo)
+                }
+            }
+        }
+
         dataRepository.magias.forEach { magia ->
             val nomeNormalizado = normalizarTexto(magia.nome)
-            if (nomeNormalizado.length >= 4 && textoNormalizado.contains(nomeNormalizado)) {
+            val escolasMagia = magia.escola.orEmpty().map(::normalizarTexto)
+
+            val porNomeObrigatorio = nomesObrigatorios.any { nomeReq ->
+                nomeReq.isNotBlank() && (nomeNormalizado == nomeReq || nomeNormalizado.contains(nomeReq) || nomeReq.contains(nomeNormalizado))
+            }
+            val porTextoDireto = nomeNormalizado.length >= 4 && textoNormalizado.contains(nomeNormalizado)
+            val porEscola = escolasMagia.any { it in escolasResolvidas }
+            val porFamiliaNome = familiasNome.any { token -> nomeCombinaFamilia(nomeNormalizado, token) }
+
+            if (porNomeObrigatorio || porTextoDireto || porEscola || porFamiliaNome) {
                 idsRelacionados.add(magia.id)
             }
         }
+
+        if (idsRelacionados.size <= 1) {
+            val escolasAlvo = alvo.escola.orEmpty().map(::normalizarTexto).toSet()
+            if (escolasAlvo.isNotEmpty()) {
+                dataRepository.magias.forEach { magia ->
+                    val escolasMagia = magia.escola.orEmpty().map(::normalizarTexto)
+                    if (escolasMagia.any { it in escolasAlvo }) {
+                        idsRelacionados.add(magia.id)
+                    }
+                }
+            }
+        }
         return idsRelacionados
+    }
+
+    private fun extrairFamiliasPorTexto(textoNormalizado: String): Set<String> {
+        if (textoNormalizado.isBlank()) return emptySet()
+        val tokens = mutableSetOf<String>()
+        val regexes = listOf(
+            Regex("\\b\\d+\\s+mag(?:ica|ia)s?\\s+(?:de|da|do|sobre)\\s+([a-z0-9\\s]+)"),
+            Regex("\\bqualquer(?:\\s+uma)?\\s+mag(?:ica|ia)\\s+(?:de\\s+)?([a-z0-9\\s]+)"),
+            Regex("\\btema\\s+([a-z0-9\\s]+)")
+        )
+        regexes.forEach { regex ->
+            regex.findAll(textoNormalizado).forEach { match ->
+                val bruto = match.groupValues.getOrNull(1).orEmpty()
+                bruto.split(Regex("\\s+ou\\s+|\\s+e\\s+"))
+                    .map { limparTokenFamilia(it) }
+                    .filter { it.length >= 3 }
+                    .forEach { tokens.add(it) }
+            }
+        }
+        return tokens
+    }
+
+    private fun limparTokenFamilia(valor: String): String {
+        return valor
+            .replace(Regex("\\b(incl|inclusive|outras|outra|diferentes|diferente)\\b"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+    }
+
+    private fun variantesFamilia(token: String): Set<String> {
+        val base = limparTokenFamilia(normalizarTexto(token))
+        if (base.isBlank()) return emptySet()
+        val variantes = linkedSetOf(base)
+        if (base.endsWith("s") && base.length > 3) variantes.add(base.dropLast(1))
+        if (!base.endsWith("s")) variantes.add("${base}s")
+        return variantes
+    }
+
+    private fun nomeCombinaFamilia(nomeNormalizado: String, token: String): Boolean {
+        if (nomeNormalizado.isBlank() || token.isBlank()) return false
+        return variantesFamilia(token).any { variante ->
+            variante.isNotBlank() && (
+                nomeNormalizado.contains(variante) ||
+                    Regex("\\b${Regex.escape(variante)}\\b").containsMatchIn(nomeNormalizado)
+                )
+        }
     }
 
     private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
@@ -1434,11 +1568,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val nivelAptidaoMagica: Int
         get() = personagem.vantagens
             .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-            .maxOfOrNull { it.nivel }
+            .maxOfOrNull { (it.nivel - 1).coerceAtLeast(0) }
             ?: 0
 
     val temAptidaoMagica: Boolean
-        get() = nivelAptidaoMagica > 0
+        get() = personagem.vantagens.any { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
 
     val nivelAptidaoAstral: Int
         get() = personagem.vantagens
@@ -1592,11 +1726,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun deveConfirmarLimpezaMagias(vantagensAtualizadas: List<VantagemSelecionada>): Boolean {
         if (personagem.magias.isEmpty()) return false
-        val nivelAptidaoAposMudanca = vantagensAtualizadas
-            .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-            .maxOfOrNull { it.nivel }
-            ?: 0
-        return nivelAptidaoAposMudanca <= 0
+        val possuiAptidaoAposMudanca = vantagensAtualizadas
+            .any { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+        return !possuiAptidaoAposMudanca
     }
 
     private fun normalizarNivelVantagem(definicaoId: String, nivel: Int): Int {

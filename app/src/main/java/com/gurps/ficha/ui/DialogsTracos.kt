@@ -53,6 +53,26 @@ import com.gurps.ficha.model.VantagemDefinicao
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 
+private fun vantagemEhAptidaoMagica(definicaoId: String): Boolean {
+    return definicaoId.equals("aptidao_magica", ignoreCase = true)
+}
+
+private fun nivelExibicaoVantagem(definicaoId: String, nivelInterno: Int): Int {
+    return if (vantagemEhAptidaoMagica(definicaoId)) {
+        (nivelInterno - 1).coerceAtLeast(0)
+    } else {
+        nivelInterno
+    }
+}
+
+private fun custoVantagemPorNivelExibicao(definicao: VantagemDefinicao, nivelInterno: Int): Int {
+    return if (vantagemEhAptidaoMagica(definicao.id)) {
+        5 + (nivelInterno - 1).coerceAtLeast(0) * 10
+    } else {
+        definicao.getCustoPorNivel() * nivelInterno
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
@@ -174,6 +194,8 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
                 when (definicao.tipoCusto) {
                     TipoCusto.POR_NIVEL -> {
                         Text("Nível:")
+                        val nivelMinimo = 1
+                        val nivelMaximo = if (vantagemEhAptidaoMagica(definicao.id)) 11 else 10
                         if (isPraCegoVariant) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -181,32 +203,32 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 TextButton(
-                                    onClick = { if (nivel > 1) nivel-- },
+                                    onClick = { if (nivel > nivelMinimo) nivel-- },
                                     modifier = Modifier.semantics { contentDescription = "Diminuir nível de vantagem" }
                                 ) { Text("-") }
                                 Text(
-                                    "$nivel",
+                                    "${nivelExibicaoVantagem(definicao.id, nivel)}",
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(horizontal = 8.dp)
                                 )
                                 TextButton(
-                                    onClick = { if (nivel < 10) nivel++ },
+                                    onClick = { if (nivel < nivelMaximo) nivel++ },
                                     modifier = Modifier.semantics { contentDescription = "Aumentar nível de vantagem" }
                                 ) { Text("+") }
                             }
                         } else {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(onClick = { if (nivel > 1) nivel-- }) {
+                                IconButton(onClick = { if (nivel > nivelMinimo) nivel-- }) {
                                     Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível de vantagem")
                                 }
-                                Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                                IconButton(onClick = { if (nivel < 10) nivel++ }) {
+                                Text("${nivelExibicaoVantagem(definicao.id, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                IconButton(onClick = { if (nivel < nivelMaximo) nivel++ }) {
                                     Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível de vantagem")
                                 }
                             }
                         }
-                        Text("Custo: ${definicao.getCustoPorNivel() * nivel} pts", fontWeight = FontWeight.Bold)
+                        Text("Custo: ${custoVantagemPorNivelExibicao(definicao, nivel)} pts", fontWeight = FontWeight.Bold)
                     }
                     TipoCusto.ESCOLHA -> {
                         Text("Escolha o custo:")
@@ -234,7 +256,7 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
         confirmButton = {
             TextButton(onClick = {
                 val custoFinal = when (definicao.tipoCusto) {
-                    TipoCusto.POR_NIVEL -> definicao.getCustoPorNivel() * nivel
+                    TipoCusto.POR_NIVEL -> custoVantagemPorNivelExibicao(definicao, nivel)
                     TipoCusto.ESCOLHA, TipoCusto.VARIAVEL -> custoEscolhido
                     TipoCusto.FIXO -> definicao.getCustoBase()
                 }
@@ -465,6 +487,8 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
+                    val nivelMinimo = 1
+                    val nivelMaximo = if (vantagemEhAptidaoMagica(vantagem.definicaoId)) 11 else 10
                     if (isPraCegoVariant) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -472,27 +496,27 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextButton(
-                                onClick = { if (nivel > 1) nivel-- },
+                                onClick = { if (nivel > nivelMinimo) nivel-- },
                                 modifier = Modifier.semantics { contentDescription = "Diminuir nível da vantagem" }
                             ) { Text("-") }
                             Text(
-                                "$nivel",
+                                "${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 8.dp)
                             )
                             TextButton(
-                                onClick = { if (nivel < 10) nivel++ },
+                                onClick = { if (nivel < nivelMaximo) nivel++ },
                                 modifier = Modifier.semantics { contentDescription = "Aumentar nível da vantagem" }
                             ) { Text("+") }
                         }
                     } else {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > 1) nivel-- }) {
+                            IconButton(onClick = { if (nivel > nivelMinimo) nivel-- }) {
                                 Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível da vantagem")
                             }
-                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < 10) nivel++ }) {
+                            Text("${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            IconButton(onClick = { if (nivel < nivelMaximo) nivel++ }) {
                                 Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível da vantagem")
                             }
                         }

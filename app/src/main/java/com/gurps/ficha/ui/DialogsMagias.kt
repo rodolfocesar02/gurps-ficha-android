@@ -97,16 +97,17 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     var magiaAlvoId by remember { mutableStateOf<String?>(null) }
 
     val listaFiltrada = viewModel.magiasFiltradas
+    val catalogoMagias = viewModel.dataRepository.magias
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
-    val magiaAlvoSelecionada = listaFiltrada.firstOrNull { it.id == magiaAlvoId }
+    val magiaAlvoSelecionada = catalogoMagias.firstOrNull { it.id == magiaAlvoId }
     val idsRelacionadosAlvo = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
         viewModel.idsRelacionadosMagiaAlvo(magiaAlvoSelecionada)
     } else {
         emptySet()
     }
     val listaExibicao = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
-        val relacionadas = listaFiltrada.filter { it.id in idsRelacionadosAlvo }
+        val relacionadas = catalogoMagias.filter { it.id in idsRelacionadosAlvo }
         if (relacionadas.isNotEmpty()) {
             relacionadas.sortedBy { if (it.id == magiaAlvoSelecionada.id) 0 else 1 }
         } else {

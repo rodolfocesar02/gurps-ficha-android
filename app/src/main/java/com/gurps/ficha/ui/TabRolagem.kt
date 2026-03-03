@@ -969,7 +969,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     Text(
                                         text = valor.toString(),
                                         modifier = Modifier
-                                            .semantics { contentDescription = "Rolar $attr" }
+                                            .semantics {
+                                                contentDescription = "Rolagem de $attr $valor"
+                                            }
                                             .clickable {
                                                 executarRolagem(
                                                     tipo = TipoTeste.ATRIBUTO,
