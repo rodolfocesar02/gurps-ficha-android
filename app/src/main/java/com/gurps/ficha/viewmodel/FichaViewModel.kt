@@ -742,14 +742,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
         // 3) Requisitos por escola: trilha de desbloqueio sugerida.
         escolasComQtd.forEach { (escolaNorm, qtd) ->
-            val trilha = gerarTrilhaProgressaoPorEscola(
-                escolaNorm = escolaNorm,
-                quantidadeDesejada = qtd,
-                estadoInicial = personagem,
-                limiteMaxSugestoes = (qtd + 4).coerceIn(6, 14)
-            )
-            trilha.forEach { addId(it.id) }
-        }
+                val trilha = gerarTrilhaProgressaoPorEscola(
+                    escolaNorm = escolaNorm,
+                    quantidadeDesejada = qtd,
+                    estadoInicial = personagem,
+                    limiteMaxSugestoes = (qtd + 8).coerceIn(10, 20)
+                )
+                trilha.forEach { addId(it.id) }
+            }
 
         // 4) Requisitos de escolas diferentes (ex.: Encantar).
         if (reqEscolasDiferentes.isNotEmpty()) {
@@ -825,20 +825,96 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
         val trilha = mutableListOf<MagiaDefinicao>()
         var estado = estadoInicial
-        val limite = limiteMaxSugestoes.coerceAtLeast(3)
+        val limite = limiteMaxSugestoes.coerceAtLeast(6)
         var guard = 0
-        while (trilha.size < limite && guard < 80) {
+        while (trilha.size < limite && guard < 120) {
             guard++
             val proxima = candidatas.firstOrNull { magia ->
                 trilha.none { it.id == magia.id } &&
                     estado.magias.none { it.definicaoId == magia.id } &&
                     magiaPodeSerAprendidaNoEstado(magia, estado)
-            } ?: break
-            trilha.add(proxima)
-            estado = adicionarMagiaNoEstado(estado, proxima)
-            if (trilha.size >= quantidadeDesejada && trilha.size >= 6) break
+            }
+            if (proxima != null) {
+                trilha.add(proxima)
+                estado = adicionarMagiaNoEstado(estado, proxima)
+                val totalNaEscola = contarMagiasDaEscolaNoEstado(estado, escolaNorm)
+                if (totalNaEscola >= quantidadeDesejada && trilha.size >= (quantidadeDesejada + 2).coerceAtMost(limite)) {
+                    break
+                }
+                continue
+            }
+
+            // Quando a trilha por escola trava, tenta adicionar "magias-ponte" que destravam
+            // as próximas da escola (inclusive fora da escola, se necessário).
+            val bloqueadasDaEscola = candidatas.filter { magia ->
+                trilha.none { it.id == magia.id } &&
+                    estado.magias.none { it.definicaoId == magia.id }
+            }
+            val ponte = primeiraMagiaPonteAprendivel(
+                bloqueadas = bloqueadasDaEscola,
+                estado = estado,
+                idsJaPlanejados = trilha.map { it.id }.toSet()
+            ) ?: break
+            trilha.add(ponte)
+            estado = adicionarMagiaNoEstado(estado, ponte)
         }
         return trilha
+    }
+
+    private fun contarMagiasDaEscolaNoEstado(estado: Personagem, escolaNorm: String): Int {
+        return estado.magias.count { magia ->
+            magia.escola.orEmpty().map(::normalizarTexto).any { it == escolaNorm }
+        }
+    }
+
+    private fun primeiraMagiaPonteAprendivel(
+        bloqueadas: List<MagiaDefinicao>,
+        estado: Personagem,
+        idsJaPlanejados: Set<String>
+    ): MagiaDefinicao? {
+        val visitados = mutableSetOf<String>()
+        val fila = ArrayDeque<Pair<MagiaDefinicao, Int>>()
+        bloqueadas.sortedBy { prioridadeMagiaParaAlvo(it) }.forEach { fila.add(it to 0) }
+        while (fila.isNotEmpty()) {
+            val (atual, profundidade) = fila.removeFirst()
+            if (!visitados.add(atual.id)) continue
+            val dependencias = dependenciasDiretasMagia(atual)
+            dependencias.forEach { dep ->
+                if (dep.id in idsJaPlanejados) return@forEach
+                if (estado.magias.any { it.definicaoId == dep.id }) return@forEach
+                if (magiaPodeSerAprendidaNoEstado(dep, estado)) return dep
+                if (profundidade < 2) {
+                    fila.add(dep to (profundidade + 1))
+                }
+            }
+        }
+        return null
+    }
+
+    private fun dependenciasDiretasMagia(magia: MagiaDefinicao): List<MagiaDefinicao> {
+        val prereq = dataRepository.preRequisitoNormalizadoParaAnalise(magia)
+        if (prereq.isBlank()) return emptyList()
+        val parsed = PreRequisitoParser.parse(prereq)
+        val nomes = linkedSetOf<String>()
+        parsed.tipos.forEach { tipo ->
+            when (tipo) {
+                is PreRequisitoType.MagiaConhecida -> nomes.add(normalizarTexto(tipo.nomeMagia))
+                is PreRequisitoType.MagiaInclusaNaContagem -> nomes.add(normalizarTexto(tipo.nomeMagia))
+                else -> Unit
+            }
+        }
+        if (nomes.isEmpty()) return emptyList()
+        return dataRepository.magias
+            .asSequence()
+            .filter { candidata ->
+                val nome = normalizarTexto(candidata.nome)
+                nomes.any { req ->
+                    req.isNotBlank() &&
+                        (nome == req || nome.contains(req) || req.contains(nome))
+                }
+            }
+            .sortedBy { prioridadeMagiaParaAlvo(it) }
+            .toList()
     }
 
     private fun magiaPodeSerAprendidaNoEstado(definicao: MagiaDefinicao, estado: Personagem): Boolean {
