@@ -102,3 +102,8 @@ Entregáveis:
   - melhorar casos com `N mágicas em K escolas diferentes`;
   - reduzir lista vazia/incompleta em alvos complexos.
 - Status: implementação inicial concluída e compilando; validar comportamento real dos casos críticos.
+- Ajuste adicional aplicado no novo planner:
+  - correspondência nominal de magia agora prioriza nome exato (evita falso match de "Encantar" com "Encantamento");
+  - quando não há exato, usa ranking por proximidade textual controlada.
+  - seleção de magia por escola prioriza mágicas sem pré-requisito antes das cadeias mais caras.
+- Validação completa executada novamente após ajuste (debug/release + testes das duas variantes) sem falhas.
