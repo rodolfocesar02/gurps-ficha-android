@@ -4,111 +4,59 @@ Atualizado em: 2026-03-03
 
 ## Estado Atual
 - Branch: `main`
-- Variantes ativas: `visual` e `pracego`
-- Build geral: estável (debug/release das duas variantes compilando)
-- Problema aberto: `Modo Alvo` ainda falha em cenários com pré-requisitos encadeados/complexos (ex.: Desejo, Convocar Demônio, Translocação)
+- Variantes: `visual` e `pracego`
+- Build: estável (debug/release das duas variantes compilando)
+- Foco atual: qualidade do `Modo Alvo` em pré-requisitos complexos (ex.: `Desejo`, `Convocar Demônio`, `Translocação`).
 
-## Regras importantes do projeto (manter)
-- Aptidão Mágica é pré-requisito global para magias (nível base 0).
-- Parser deve respeitar `ou` como alternativa e `e` como acumulação.
-- Fallback de pré-requisito nominal: magia -> vantagem -> perícia.
-- Marcadores `Especial` e `#` mantêm bypass de validação automática.
-- Marcadores de sem pré-requisito (`-`, variações de traço, vazio, `???`) devem liberar magia.
-- PRACEGO exige rótulos semânticos claros e mensagens curtas de bloqueio/recomendação.
+## Regras de Projeto (essenciais)
+- Aptidão Mágica é pré-requisito global para magias (base nível 0).
+- Parser: `ou` = alternativa, `e` = acumulação.
+- Fallback nominal de pré-requisito: magia -> vantagem -> perícia.
+- `Especial` e `#` = bypass da validação automática.
+- `-`/traços/vazio/`???` = sem pré-requisito (deve liberar).
+- PRACEGO: rótulos semânticos claros + mensagens curtas de bloqueio e recomendação.
 
-## O que já foi estruturado
-- Motor de Modo Alvo separado do ViewModel: `MagiaTargetEngine`.
-- Cálculo assíncrono no ViewModel com estados:
-  - `modoAlvoCarregando`
-  - `modoAlvoRelacionadosIds`
-  - `modoAlvoErro`
-  - `modoAlvoAviso`
-- Guardrails ativos (tempo/nós/profundidade) para evitar travamentos.
-- Cache de parse e cache de resultado por contexto.
+## Feito
+- `Modo Alvo` desacoplado da UI:
+  - motor dedicado `MagiaTargetEngine`;
+  - cálculo assíncrono no `FichaViewModel`;
+  - estados de UI (`carregando`, `erro`, `aviso`, `ids`).
+- Guardrails implementados (tempo/nós/profundidade).
+- Cache implementado:
+  - parse de pré-requisito;
+  - resultado por contexto de alvo.
+- Início da reescrita do planner:
+  - novo `MagiaDependencyPlanner` com resolução transitiva;
+  - prioridade de match nominal exato (evita falso match `Encantar` vs `Encantamento`);
+  - tentativa com rollback para múltiplas escolas/candidatas.
+- Testes e builds executados repetidamente nas duas variantes sem quebra.
 
-## Decisão técnica nova (prioridade máxima)
-- Não reescrever o sistema inteiro de magias.
-- Reescrever **somente o planner do Modo Alvo** (núcleo de geração de trilha).
-- Manter parser, validação base e UI atuais.
+## Não Feito (pendente)
+- Fechar robustez total do planner para todos os casos com `N mágicas em K escolas diferentes`.
+- Garantir que sempre apareça uma trilha útil quando existir caminho válido (evitar listas “secas”).
+- Cobertura de testes dedicada ao planner para casos reais:
+  - `Desejo`, `Convocar Demônio`, `Translocação`, `Teleporte`, `Encantar`, `Relâmpago`.
+- Ajustar UX final do PRACEGO para narrar:
+  - falta imediata,
+  - próxima ação possível,
+  - próxima etapa após adicionar.
 
-## Plano para o próximo agente
+## Próximos Passos (ordem)
+1. Refinar heurística de escolha de escola/candidata no planner (priorizar escolas com magia básica destravável).
+2. Adicionar testes automatizados de regressão para os 6 casos críticos.
+3. Ajustar mensagem final de guia no card PRACEGO com ações imediatas.
+4. Validar novamente com bateria completa (debug/release + unit tests em ambas variantes).
 
-### Etapa A - Novo Planner de Dependências (substituir núcleo atual)
-Objetivo:
-- Montar trilha completa com dependências transitivas (A -> B -> C -> básicas), sem cortar requisitos intermediários.
-
-Entregáveis:
-- Novo componente de planejamento (ex.: `MagiaDependencyPlanner`) usado por `MagiaTargetEngine`.
-- Resolução de requisitos por tipo:
-  - nomes explícitos de magia,
-  - `N mágicas de escola X`,
-  - `N mágicas em K escolas diferentes`,
-  - combinações com `ou`/`e`.
-
-Critério de aceite:
-- Para um alvo bloqueado, sempre haver “próximas ações possíveis” quando existir caminho válido.
-
-### Etapa B - Estratégia de priorização
-Objetivo:
-- Ordenar trilha por menor custo de desbloqueio (menos passos primeiro).
-
-Entregáveis:
-- Heurística de prioridade com pontuação por distância de desbloqueio.
-- Separar na resposta:
-  - `proximas_imediatas` (já adicionáveis)
-  - `trilha_planejada` (ordem de desbloqueio)
-
-### Etapa C - Guardrails mais inteligentes
-Objetivo:
-- Evitar falso-positivo de “trilha parcial” em casos comuns.
-
-Entregáveis:
-- Ajustar limites com orçamento progressivo.
-- Só retornar parcial quando realmente exceder busca útil.
-
-### Etapa D - Testes críticos obrigatórios
-Casos mínimos:
-- `Relâmpago`
-- `Teleporte`
-- `Translocação`
-- `Convocar Demônio`
-- `Desejo`
-- `Encantar`
-
-Critério de aceite:
-- Testes unitários e integração do planner cobrindo encadeamento e quantificadores.
-
-### Etapa E - PRACEGO no fluxo final
-Objetivo:
-- Garantir que o usuário cego receba orientação acionável.
-
-Entregáveis:
-- Texto curto sempre com:
-  - o que falta agora,
-  - qual magia pode adicionar agora,
-  - qual próxima etapa após isso.
-
-## Checklist de entrega (obrigatório)
-1. Rodar build/test nas duas variantes.
+## Regra operacional
+1. Rodar build/test das duas variantes.
 2. Atualizar este `PROGRESS.md`.
 3. Commit + push.
 4. Gerar APKs quando solicitado.
 
-## Andamento novo (2026-03-03 - Reescrita do planner de Modo Alvo)
-- Iniciado novo núcleo de planejamento: `MagiaDependencyPlanner`.
-- `MagiaTargetEngine` passou a usar o planner novo para montar trilha transitiva.
-- Objetivo desta troca:
-  - resolver pré-requisitos em cadeia (dependência da dependência);
-  - melhorar casos com `N mágicas em K escolas diferentes`;
-  - reduzir lista vazia/incompleta em alvos complexos.
-- Status: implementação inicial concluída e compilando; validar comportamento real dos casos críticos.
-- Ajuste adicional aplicado no novo planner:
-  - correspondência nominal de magia agora prioriza nome exato (evita falso match de "Encantar" com "Encantamento");
-  - quando não há exato, usa ranking por proximidade textual controlada.
-  - seleção de magia por escola prioriza mágicas sem pré-requisito antes das cadeias mais caras.
-- Validação completa executada novamente após ajuste (debug/release + testes das duas variantes) sem falhas.
-- Próximo passo aplicado (planner):
-  - para requisitos de escolas diferentes, o algoritmo agora tenta múltiplas escolas e faz rollback quando uma tentativa não fecha;
-  - para quantidade por escola, tenta múltiplas magias candidatas em vez de falhar na primeira.
-- Resultado esperado: menos casos de lista vazia no Modo Alvo para magias como Desejo/Convocar Demônio.
-- Validação completa executada após ajuste (debug/release + unit tests das duas variantes) OK.
+## Atualização incremental (Etapa A)
+- Heurística de escolas refinada no planner:
+  - em `N magias em K escolas`, agora prioriza escolas com magia básica (sem pré-requisito) e com magia já aprendível no estado atual.
+- Resultado esperado:
+  - aumentar chance de recomendação imediata e reduzir listas vazias em alvos complexos.
+- Pendência:
+  - validar manualmente no fluxo real os casos `Desejo`, `Convocar Demônio` e `Translocação`.

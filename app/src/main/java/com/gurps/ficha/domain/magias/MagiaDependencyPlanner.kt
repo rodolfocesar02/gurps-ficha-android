@@ -214,7 +214,10 @@ class MagiaDependencyPlanner(
                     if (req.outrasEscolas && (initialCounts[school] ?: 0) > 0) return@filter false
                     (current[school] ?: 0) < perSchool
                 }
-                .sortedBy { current[it] ?: 0 }
+                .sortedWith(
+                    compareBy<String> { current[it] ?: 0 }
+                        .thenByDescending { schoolQuickScore(it, personagemBase, knownBase, planned) }
+                )
             if (options.isEmpty()) return false
             var schoolSatisfied = false
             for (schoolChoice in options) {
@@ -341,6 +344,24 @@ class MagiaDependencyPlanner(
                     .thenBy { heuristicCost(it, personagemBase, planned) }
             )
             .take(8)
+    }
+
+    private fun schoolQuickScore(
+        schoolNorm: String,
+        personagemBase: Personagem,
+        knownBase: Set<String>,
+        planned: Set<String>
+    ): Int {
+        var score = 0
+        val candidates = dataRepository.magias.filter { spell ->
+            spell.id !in knownBase &&
+                spell.id !in planned &&
+                spell.escola.orEmpty().map(::norm).any { it == schoolNorm }
+        }
+        if (candidates.any { dataRepository.magiaSemPreRequisito(it) }) score += 100
+        if (candidates.any { dataRepository.validarPreRequisitosMagia(it, simulatedPersonagem(personagemBase, planned)) == null }) score += 50
+        score += candidates.size.coerceAtMost(20)
+        return score
     }
 
     private fun countSchool(schoolNorm: String, personagemBase: Personagem, planned: Set<String>): Int {
