@@ -724,7 +724,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 modoAlvoErro = null
                 modoAlvoAviso = null
                 val resultado = withContext(Dispatchers.Default) {
-                    magiaTargetEngine.calcularModoAlvo(alvo, personagem)
+                    magiaTargetEngine.calcularModoAlvo(alvo, personagem, chave)
                 }
                 modoAlvoRelacionadosIds = resultado.ids
                 modoAlvoAviso = resultado.aviso

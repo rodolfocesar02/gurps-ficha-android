@@ -6,10 +6,22 @@ import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import java.text.Normalizer
+import java.util.LinkedHashMap
 
 class MagiaTargetEngine(
     private val dataRepository: DataRepository
 ) {
+    private val parseCache = object : LinkedHashMap<String, PreRequisitoParser.ParseResult>(256, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, PreRequisitoParser.ParseResult>?): Boolean {
+            return size > 256
+        }
+    }
+    private val modoAlvoCache = object : LinkedHashMap<String, ModoAlvoResult>(128, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ModoAlvoResult>?): Boolean {
+            return size > 128
+        }
+    }
+
     data class ModoAlvoResult(
         val ids: List<String>,
         val parcial: Boolean = false,
@@ -64,8 +76,15 @@ class MagiaTargetEngine(
 
     fun calcularModoAlvo(
         alvo: MagiaDefinicao,
-        personagem: Personagem
+        personagem: Personagem,
+        contextoKey: String? = null
     ): ModoAlvoResult {
+        val chaveCache = contextoKey?.takeIf { it.isNotBlank() }
+        if (chaveCache != null) {
+            synchronized(this) {
+                modoAlvoCache[chaveCache]?.let { return it }
+            }
+        }
         val budget = GuardrailBudget()
         val prereqRaw = dataRepository.preRequisitoNormalizadoParaAnalise(alvo)
         val idsRelacionados = mutableListOf<String>()
@@ -80,7 +99,7 @@ class MagiaTargetEngine(
         addId(alvo.id)
         if (dataRepository.magiaSemPreRequisito(alvo)) return ModoAlvoResult(idsRelacionados)
 
-        val parsed = PreRequisitoParser.parse(prereqRaw)
+        val parsed = parseCached(prereqRaw)
         parsed.tipos.forEach { tipo ->
             if (!budget.step()) return budget.parcialResult(idsRelacionados)
             when (tipo) {
@@ -211,8 +230,14 @@ class MagiaTargetEngine(
             }
         }
 
-        return if (budget.limiteMotivo != null) budget.parcialResult(idsRelacionados)
+        val result = if (budget.limiteMotivo != null) budget.parcialResult(idsRelacionados)
         else ModoAlvoResult(ids = idsRelacionados)
+        if (chaveCache != null) {
+            synchronized(this) {
+                modoAlvoCache[chaveCache] = result
+            }
+        }
+        return result
     }
 
     private fun gerarTrilhaProgressaoPorEscola(
@@ -303,7 +328,7 @@ class MagiaTargetEngine(
     private fun dependenciasDiretasMagia(magia: MagiaDefinicao, budget: GuardrailBudget): List<MagiaDefinicao> {
         val prereq = dataRepository.preRequisitoNormalizadoParaAnalise(magia)
         if (prereq.isBlank()) return emptyList()
-        val parsed = PreRequisitoParser.parse(prereq)
+        val parsed = parseCached(prereq)
         val nomes = linkedSetOf<String>()
         parsed.tipos.forEach { tipo ->
             if (!budget.step()) return emptyList()
@@ -386,5 +411,16 @@ class MagiaTargetEngine(
             .replace(Regex("[^a-z0-9\\s/+_-]"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
+    }
+
+    private fun parseCached(raw: String): PreRequisitoParser.ParseResult {
+        synchronized(this) {
+            parseCache[raw]?.let { return it }
+        }
+        val parsed = PreRequisitoParser.parse(raw)
+        synchronized(this) {
+            parseCache[raw] = parsed
+        }
+        return parsed
     }
 }
