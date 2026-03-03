@@ -139,9 +139,23 @@ class MagiaDependencyPlanner(
     ): Boolean {
         val token = norm(rawName)
         if (token.isBlank()) return false
-        val candidates = dataRepository.magias
-            .filter { spellNameMatches(norm(it.nome), token) }
+        val exact = dataRepository.magias
+            .filter { norm(it.nome) == token }
             .sortedBy { heuristicCost(it, personagemBase, planned) }
+        val candidates = if (exact.isNotEmpty()) {
+            exact
+        } else {
+            dataRepository.magias
+                .mapNotNull { magia ->
+                    val score = namedMatchScore(norm(magia.nome), token) ?: return@mapNotNull null
+                    magia to score
+                }
+                .sortedWith(
+                    compareBy<Pair<MagiaDefinicao, Int>> { it.second }
+                        .thenBy { heuristicCost(it.first, personagemBase, planned) }
+                )
+                .map { it.first }
+        }
         for (candidate in candidates) {
             if (!budget.step()) return false
             if (ensureSpell(candidate, personagemBase, knownBase, planned, visiting, depth + 1)) return true
@@ -299,7 +313,10 @@ class MagiaDependencyPlanner(
                     spell.id !in planned &&
                     spell.escola.orEmpty().map(::norm).any { it == schoolNorm }
             }
-            .sortedBy { heuristicCost(it, personagemBase, planned) }
+            .sortedWith(
+                compareBy<MagiaDefinicao> { if (dataRepository.magiaSemPreRequisito(it)) 0 else 1 }
+                    .thenBy { heuristicCost(it, personagemBase, planned) }
+            )
             .firstOrNull()
     }
 
@@ -371,10 +388,18 @@ class MagiaDependencyPlanner(
     }
 
     private fun spellNameMatches(normalizedSpellName: String, normalizedToken: String): Boolean {
-        if (normalizedSpellName.isBlank() || normalizedToken.isBlank()) return false
-        return normalizedSpellName == normalizedToken ||
-            normalizedSpellName.contains(normalizedToken) ||
-            normalizedToken.contains(normalizedSpellName)
+        return namedMatchScore(normalizedSpellName, normalizedToken) != null
+    }
+
+    private fun namedMatchScore(normalizedSpellName: String, normalizedToken: String): Int? {
+        if (normalizedSpellName.isBlank() || normalizedToken.isBlank()) return null
+        if (normalizedSpellName == normalizedToken) return 0
+        val tokenRegex = Regex("\\b${Regex.escape(normalizedToken)}\\b")
+        if (tokenRegex.containsMatchIn(normalizedSpellName)) return 1
+        if (normalizedSpellName.startsWith("$normalizedToken ")) return 2
+        if (normalizedSpellName.contains(normalizedToken)) return 3
+        if (normalizedToken.contains(normalizedSpellName)) return 5
+        return null
     }
 
     private fun norm(raw: String): String {
