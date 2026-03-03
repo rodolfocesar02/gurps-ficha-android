@@ -20,9 +20,12 @@ import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.Normalizer
@@ -98,6 +101,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var filtroFonteTecnica by mutableStateOf<String?>(null)
         private set
+
+    var modoAlvoRelacionadosIds by mutableStateOf<List<String>>(emptyList())
+        private set
+    var modoAlvoCarregando by mutableStateOf(false)
+        private set
+    var modoAlvoErro by mutableStateOf<String?>(null)
+        private set
+    private var modoAlvoJob: Job? = null
+    private var modoAlvoUltimaChave: String? = null
 
     var buscaArmaEquipamento by mutableStateOf("")
         private set
@@ -669,6 +681,56 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     /** Compatibilidade com chamadas antigas. */
     fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
         return listaRelacionadosMagiaAlvo(alvo).toSet()
+    }
+
+    fun assinaturaEstadoMagiasParaModoAlvo(): String {
+        val ids = personagem.magias
+            .map { "${it.definicaoId}:${it.pontosGastos}:${it.especializacaoMagia.orEmpty()}" }
+            .sorted()
+            .joinToString("|")
+        return "$ids|am:$nivelAptidaoMagica|iq:${personagem.inteligencia}"
+    }
+
+    fun requisitarModoAlvo(alvoId: String?, ativo: Boolean) {
+        if (!ativo || alvoId.isNullOrBlank()) {
+            modoAlvoJob?.cancel()
+            modoAlvoRelacionadosIds = emptyList()
+            modoAlvoCarregando = false
+            modoAlvoErro = null
+            modoAlvoUltimaChave = null
+            return
+        }
+        val chave = "$alvoId|${assinaturaEstadoMagiasParaModoAlvo()}"
+        if (chave == modoAlvoUltimaChave && (modoAlvoRelacionadosIds.isNotEmpty() || modoAlvoCarregando)) {
+            return
+        }
+        modoAlvoUltimaChave = chave
+        val alvo = dataRepository.magias.firstOrNull { it.id == alvoId }
+        if (alvo == null) {
+            modoAlvoRelacionadosIds = emptyList()
+            modoAlvoCarregando = false
+            modoAlvoErro = "Magia alvo não encontrada."
+            return
+        }
+        modoAlvoJob?.cancel()
+        modoAlvoJob = viewModelScope.launch {
+            try {
+                delay(120)
+                modoAlvoCarregando = true
+                modoAlvoErro = null
+                val resultado = withContext(Dispatchers.Default) {
+                    magiaTargetEngine.listaRelacionadosMagiaAlvo(alvo, personagem)
+                }
+                modoAlvoRelacionadosIds = resultado
+            } catch (_: CancellationException) {
+                // Requisição substituída por uma mais recente.
+            } catch (t: Throwable) {
+                modoAlvoRelacionadosIds = emptyList()
+                modoAlvoErro = t.message ?: "Falha ao calcular trilha do alvo."
+            } finally {
+                modoAlvoCarregando = false
+            }
+        }
     }
 
     private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {

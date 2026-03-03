@@ -41,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -116,9 +117,13 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val classes = viewModel.todasClassesMagia
     val magiaAlvoSelecionada = catalogoMagias.firstOrNull { it.id == magiaAlvoId }
     val ordemRelacionadosAlvo: List<String> = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
-        viewModel.listaRelacionadosMagiaAlvo(magiaAlvoSelecionada)
+        viewModel.modoAlvoRelacionadosIds
     } else {
         emptyList()
+    }
+    val assinaturaModoAlvo = viewModel.assinaturaEstadoMagiasParaModoAlvo()
+    LaunchedEffect(modoAlvoAtivo, magiaAlvoId, assinaturaModoAlvo) {
+        viewModel.requisitarModoAlvo(magiaAlvoId, modoAlvoAtivo)
     }
     val listaExibicao = if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
         val relacionadas = ordemRelacionadosAlvo
@@ -202,19 +207,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 modoAlvoAtivo = true
                 magiaAlvoId = magia.id
                 val falha = viewModel.prereqFailureForMagia(magia)
-                val recomendada = viewModel.listaRelacionadosMagiaAlvo(magia)
-                    .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
-                    .firstOrNull {
-                        it.id != magia.id &&
-                            !viewModel.magiaJaAdicionada(it.id) &&
-                            viewModel.prereqFailureForMagia(it) == null
-                    }
                 val resposta = buildString {
                     append("Alvo definido: ${magia.nome}. ")
                     if (falha.isNullOrBlank()) append("Pré requisitos atendidos. ")
                     else append("Falta: ${formatarFalhaPreReq(falha)}. ")
-                    if (recomendada != null) append("Próxima recomendada: ${recomendada.nome}.")
-                    else append("Sem recomendação imediata.")
+                    append("Calculando trilha recomendada.")
                 }
                 falarAjuda(resposta)
             }
@@ -411,6 +408,19 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text("${listaExibicao.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
                 if (modoAlvoAtivo && magiaAlvoSelecionada != null) {
+                    if (viewModel.modoAlvoCarregando) {
+                        Text(
+                            "Calculando trilha do alvo...",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    } else if (!viewModel.modoAlvoErro.isNullOrBlank()) {
+                        Text(
+                            viewModel.modoAlvoErro.orEmpty(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                     val textoGuia = proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
                         ?: "Sem recomendação imediata. Verifique magias básicas liberadas."
                     Text(
