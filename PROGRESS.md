@@ -3,6 +3,38 @@
 Atualizado em: 2026-03-03
 Objetivo atual: consolidar regras de pré-requisito (Aptidão Mágica nível 0-base e Modo Alvo por família de nome) mantendo estabilidade de build.
 
+## Atualização do Bloco (2026-03-03 - Modo Alvo com trilha de desbloqueio)
+- Ajuste funcional do `Modo Alvo`:
+  - saiu de lista ampla por relação textual para **lista ordenada por progressão**;
+  - agora prioriza:
+    - magia alvo;
+    - pré-requisitos explícitos por nome;
+    - trilha de magias possíveis por escola (desbloqueando próximas em sequência);
+    - requisitos de “escolas diferentes” (caso de `Encantar`) com foco em escolas ainda faltantes.
+- Casos foco cobertos:
+  - `Relampago` (`6 magias de Ar`): lista sugerida por cadeia de desbloqueio da escola Ar;
+  - `Encantar` (`1 magia em 10 escolas diferentes`): sugestões distribuídas por escolas para completar o requisito.
+- Validação:
+  - `:app:compileVisualDebugKotlin` OK;
+  - `:app:installVisualDebug` OK;
+  - execução da variante visual no emulador realizada.
+
+## Atualização do Bloco (2026-03-03 - magias sem pré-requisito com dash/mojibake)
+- Problema identificado:
+  - parte do dataset está com `preRequisitos` em formato mojibake de travessão (`â€”`) em vez de `—`;
+  - a validação estava tratando só `—` literal e bloqueava magia básica com mensagem `???`.
+- Correção aplicada:
+  - `DataRepository.validarPreRequisitosMagia` e `missingPreRequisitoReport` agora usam `isSemPreRequisitoRaw(...)`;
+  - a regra considera como sem pré-requisito: vazio, `-`, `—`, `–`, `−`, variações mojibake (`â€”`, `â€“`, `âˆ’`) e `???`;
+  - `preRequisitoRawNormalizado` passou a aplicar `fixMojibakeIfNeeded()` antes de validar.
+- Varredura executada no JSON:
+  - total identificado com marcador de sem pré-requisito: **29 magias**;
+  - inclui casos citados: `purificar_o_ar` e `localizar_ar`.
+- Validação técnica:
+  - `:app:compileVisualDebugKotlin` OK;
+  - `:app:testVisualDebugUnitTest` OK;
+  - `:app:installVisualDebug` OK e abertura no emulador (Visual) realizada.
+
 ## Atualização do Bloco (2026-03-03 - migração de `magias2versao.json` e validação de link de pré-requisitos)
 - Arquivo de dados de magias:
   - mantido o arquivo oficial `app/src/main/assets/magias2versao.json` (não foi criado arquivo paralelo);

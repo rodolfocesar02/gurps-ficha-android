@@ -661,34 +661,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return prereqFailureForMagia(def) == null
     }
 
-    /** Retorna ids de magias relacionadas ao alvo (alvo + pré-requisitos textuais diretos). */
-    fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
+    /** Retorna ids de magias relacionadas ao alvo em ordem de progressão sugerida. */
+    fun listaRelacionadosMagiaAlvo(alvo: MagiaDefinicao): List<String> {
         val prereqRaw = alvo.preRequisitos.orEmpty()
-        val textoBase = buildString {
-            append(prereqRaw)
-            val faltantes = prereqFailureForMagia(alvo)
-            if (!faltantes.isNullOrBlank()) {
-                append(' ')
-                append(faltantes)
-            }
-        }
-        val textoNormalizado = normalizarTexto(textoBase)
-        if (textoNormalizado.isBlank()) {
-            return setOf(alvo.id) + dataRepository.magias
-                .filter { magia ->
-                    magia.escola.orEmpty().any { escola ->
-                        alvo.escola.orEmpty().any { eAlvo ->
-                            normalizarTexto(escola) == normalizarTexto(eAlvo)
-                        }
-                    }
-                }
-                .map { it.id }
-        }
-
-        val idsRelacionados = mutableSetOf(alvo.id)
+        val idsRelacionados = mutableListOf<String>()
         val nomesObrigatorios = mutableSetOf<String>()
         val familiasNome = mutableSetOf<String>()
-        val escolasMencionadas = mutableSetOf<String>()
+        val escolasComQtd = mutableListOf<Pair<String, Int>>()
+        val reqEscolasDiferentes = mutableListOf<PreRequisitoType.MagiasEmEscolasDiferentes>()
+        fun addId(id: String) {
+            if (id !in idsRelacionados) idsRelacionados.add(id)
+        }
+
+        addId(alvo.id)
 
         val parsed = PreRequisitoParser.parse(prereqRaw)
         parsed.tipos.forEach { tipo ->
@@ -696,18 +681,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 is PreRequisitoType.MagiaConhecida -> nomesObrigatorios.add(normalizarTexto(tipo.nomeMagia))
                 is PreRequisitoType.MagiaInclusaNaContagem -> {
                     nomesObrigatorios.add(normalizarTexto(tipo.nomeMagia))
-                    tipo.escolaContexto?.let { escolasMencionadas.add(normalizarTexto(it)) }
+                    tipo.escolaContexto?.let { escolasComQtd.add(normalizarTexto(it) to 1) }
                 }
                 is PreRequisitoType.MagiasEscola -> {
-                    val token = normalizarTexto(tipo.escola)
-                    escolasMencionadas.add(token)
-                    familiasNome.add(token)
+                    val escolaNorm = normalizarTexto(tipo.escola)
+                    escolasComQtd.add(escolaNorm to tipo.quantidade.coerceAtLeast(1))
                 }
                 is PreRequisitoType.QuantidadeMagiasPorEscolas -> {
                     tipo.escolas.forEach { escola ->
-                        val token = normalizarTexto(escola)
-                        escolasMencionadas.add(token)
-                        familiasNome.add(token)
+                        escolasComQtd.add(normalizarTexto(escola) to tipo.quantidade.coerceAtLeast(1))
                     }
                 }
                 is PreRequisitoType.QuantidadeMagiasPorTemas -> {
@@ -716,13 +698,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 is PreRequisitoType.QualquerMagiaComNome -> familiasNome.add(normalizarTexto(tipo.trechoNome))
                 is PreRequisitoType.QuantidadeOutrasMagias -> {
                     val ctx = tipo.contexto?.let(::normalizarTexto)
-                    if (!ctx.isNullOrBlank()) familiasNome.add(ctx)
+                    if (!ctx.isNullOrBlank()) {
+                        // Só trata como família de nome se não for escola conhecida.
+                        familiasNome.add(ctx)
+                    }
                 }
+                is PreRequisitoType.MagiasEmEscolasDiferentes -> reqEscolasDiferentes.add(tipo)
                 else -> Unit
             }
         }
-
-        familiasNome.addAll(extrairFamiliasPorTexto(textoNormalizado))
 
         val escolasCatalogo = dataRepository.magias
             .flatMap { it.escola.orEmpty() }
@@ -730,64 +714,150 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .filter { it.length >= 3 }
             .distinct()
             .toSet()
-        val escolasResolvidas = mutableSetOf<String>()
-        escolasMencionadas.forEach { escolaToken ->
-            val variantes = variantesFamilia(escolaToken)
-            escolasCatalogo.forEach { escolaCatalogo ->
-                if (variantes.any { it == escolaCatalogo || escolaCatalogo.contains(it) || it.contains(escolaCatalogo) }) {
-                    escolasResolvidas.add(escolaCatalogo)
+        val familiasSomenteNome = familiasNome.filter { token ->
+            token.length >= 3 && token !in escolasCatalogo
+        }
+
+        // 1) Nomes explícitos citados no pré-requisito.
+        val nomesDiretos = dataRepository.magias.filter { magia ->
+            val nomeNormalizado = normalizarTexto(magia.nome)
+            nomesObrigatorios.any { nomeReq ->
+                nomeReq.isNotBlank() && (nomeNormalizado == nomeReq || nomeNormalizado.contains(nomeReq) || nomeReq.contains(nomeNormalizado))
+            }
+        }
+        nomesDiretos.sortedBy { prioridadeMagiaParaAlvo(it) }.forEach { addId(it.id) }
+
+        // 2) Famílias por nome (ex.: "ácido", "relâmpago"), limitadas.
+        familiasSomenteNome.forEach { token ->
+            val candidatas = dataRepository.magias
+                .filter { magia -> nomeCombinaFamilia(normalizarTexto(magia.nome), token) }
+                .sortedBy { prioridadeMagiaParaAlvo(it) }
+                .take(8)
+            candidatas.forEach { addId(it.id) }
+        }
+
+        // 3) Requisitos por escola: trilha de desbloqueio sugerida.
+        escolasComQtd.forEach { (escolaNorm, qtd) ->
+            val trilha = gerarTrilhaProgressaoPorEscola(
+                escolaNorm = escolaNorm,
+                quantidadeDesejada = qtd,
+                estadoInicial = personagem,
+                limiteMaxSugestoes = (qtd + 4).coerceIn(6, 14)
+            )
+            trilha.forEach { addId(it.id) }
+        }
+
+        // 4) Requisitos de escolas diferentes (ex.: Encantar).
+        if (reqEscolasDiferentes.isNotEmpty()) {
+            val escolasConhecidas = mutableMapOf<String, Int>()
+            personagem.magias.forEach { magia ->
+                magia.escola.orEmpty().map(::normalizarTexto).forEach { escola ->
+                    escolasConhecidas[escola] = (escolasConhecidas[escola] ?: 0) + 1
+                }
+            }
+            val escolasCatalogoOrdenadas = dataRepository.magias
+                .flatMap { it.escola.orEmpty() }
+                .map(::normalizarTexto)
+                .filter { it.isNotBlank() }
+                .distinct()
+                .sortedBy { escola -> escolasConhecidas[escola] ?: 0 }
+
+            reqEscolasDiferentes.forEach { req ->
+                var escolasSugeridas = 0
+                val limiteEscolas = req.escolasDiferentes.coerceIn(1, 15)
+                escolasCatalogoOrdenadas.forEach { escolaNorm ->
+                    if (escolasSugeridas >= limiteEscolas) return@forEach
+                    val countAtual = escolasConhecidas[escolaNorm] ?: 0
+                    if (req.outrasEscolas && countAtual > 0) return@forEach
+                    if (countAtual >= req.magiasPorEscola) return@forEach
+                    val trilha = gerarTrilhaProgressaoPorEscola(
+                        escolaNorm = escolaNorm,
+                        quantidadeDesejada = req.magiasPorEscola,
+                        estadoInicial = personagem,
+                        limiteMaxSugestoes = (req.magiasPorEscola + 2).coerceIn(3, 8)
+                    )
+                    if (trilha.isNotEmpty()) {
+                        trilha.forEach { addId(it.id) }
+                        escolasSugeridas++
+                    }
                 }
             }
         }
 
-        dataRepository.magias.forEach { magia ->
-            val nomeNormalizado = normalizarTexto(magia.nome)
-            val escolasMagia = magia.escola.orEmpty().map(::normalizarTexto)
-
-            val porNomeObrigatorio = nomesObrigatorios.any { nomeReq ->
-                nomeReq.isNotBlank() && (nomeNormalizado == nomeReq || nomeNormalizado.contains(nomeReq) || nomeReq.contains(nomeNormalizado))
-            }
-            val porTextoDireto = nomeNormalizado.length >= 4 && textoNormalizado.contains(nomeNormalizado)
-            val porEscola = escolasMagia.any { it in escolasResolvidas }
-            val porFamiliaNome = familiasNome.any { token -> nomeCombinaFamilia(nomeNormalizado, token) }
-
-            if (porNomeObrigatorio || porTextoDireto || porEscola || porFamiliaNome) {
-                idsRelacionados.add(magia.id)
-            }
-        }
-
+        // 5) Fallback: quando não houver vínculo suficiente, mostra trilha da escola do alvo.
         if (idsRelacionados.size <= 1) {
             val escolasAlvo = alvo.escola.orEmpty().map(::normalizarTexto).toSet()
             if (escolasAlvo.isNotEmpty()) {
-                dataRepository.magias.forEach { magia ->
-                    val escolasMagia = magia.escola.orEmpty().map(::normalizarTexto)
-                    if (escolasMagia.any { it in escolasAlvo }) {
-                        idsRelacionados.add(magia.id)
-                    }
+                escolasAlvo.forEach { escolaNorm ->
+                    val fallback = gerarTrilhaProgressaoPorEscola(
+                        escolaNorm = escolaNorm,
+                        quantidadeDesejada = 6,
+                        estadoInicial = personagem,
+                        limiteMaxSugestoes = 12
+                    )
+                    fallback.forEach { addId(it.id) }
                 }
             }
         }
         return idsRelacionados
     }
 
-    private fun extrairFamiliasPorTexto(textoNormalizado: String): Set<String> {
-        if (textoNormalizado.isBlank()) return emptySet()
-        val tokens = mutableSetOf<String>()
-        val regexes = listOf(
-            Regex("\\b\\d+\\s+mag(?:ica|ia)s?\\s+(?:de|da|do|sobre)\\s+([a-z0-9\\s]+)"),
-            Regex("\\bqualquer(?:\\s+uma)?\\s+mag(?:ica|ia)\\s+(?:de\\s+)?([a-z0-9\\s]+)"),
-            Regex("\\btema\\s+([a-z0-9\\s]+)")
-        )
-        regexes.forEach { regex ->
-            regex.findAll(textoNormalizado).forEach { match ->
-                val bruto = match.groupValues.getOrNull(1).orEmpty()
-                bruto.split(Regex("\\s+ou\\s+|\\s+e\\s+"))
-                    .map { limparTokenFamilia(it) }
-                    .filter { it.length >= 3 }
-                    .forEach { tokens.add(it) }
-            }
+    /** Compatibilidade com chamadas antigas. */
+    fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
+        return listaRelacionadosMagiaAlvo(alvo).toSet()
+    }
+
+    private fun gerarTrilhaProgressaoPorEscola(
+        escolaNorm: String,
+        quantidadeDesejada: Int,
+        estadoInicial: Personagem,
+        limiteMaxSugestoes: Int
+    ): List<MagiaDefinicao> {
+        if (escolaNorm.isBlank()) return emptyList()
+        val candidatas = dataRepository.magias
+            .filter { magia -> magia.escola.orEmpty().map(::normalizarTexto).any { it == escolaNorm } }
+            .sortedBy { prioridadeMagiaParaAlvo(it) }
+        if (candidatas.isEmpty()) return emptyList()
+
+        val trilha = mutableListOf<MagiaDefinicao>()
+        var estado = estadoInicial
+        val limite = limiteMaxSugestoes.coerceAtLeast(3)
+        var guard = 0
+        while (trilha.size < limite && guard < 80) {
+            guard++
+            val proxima = candidatas.firstOrNull { magia ->
+                trilha.none { it.id == magia.id } &&
+                    estado.magias.none { it.definicaoId == magia.id } &&
+                    magiaPodeSerAprendidaNoEstado(magia, estado)
+            } ?: break
+            trilha.add(proxima)
+            estado = adicionarMagiaNoEstado(estado, proxima)
+            if (trilha.size >= quantidadeDesejada && trilha.size >= 6) break
         }
-        return tokens
+        return trilha
+    }
+
+    private fun magiaPodeSerAprendidaNoEstado(definicao: MagiaDefinicao, estado: Personagem): Boolean {
+        return dataRepository.validarPreRequisitosMagia(definicao, estado) == null
+    }
+
+    private fun adicionarMagiaNoEstado(estado: Personagem, definicao: MagiaDefinicao): Personagem {
+        if (estado.magias.any { it.definicaoId == definicao.id }) return estado
+        val nova = dataRepository.criarMagiaSelecionada(
+            definicao = definicao,
+            pontosGastos = 1,
+            encantamentoAlvo = null,
+            especializacaoMagia = null
+        )
+        return estado.copy(magias = estado.magias + nova)
+    }
+
+    private fun prioridadeMagiaParaAlvo(magia: MagiaDefinicao): Int {
+        val pre = magia.preRequisitos.orEmpty().trim()
+        if (pre.isBlank()) return 0
+        val texto = normalizarTexto(pre)
+        val conectores = Regex("\\bou\\b|\\be\\b|,").findAll(texto).count()
+        return conectores + (texto.length / 30)
     }
 
     private fun limparTokenFamilia(valor: String): String {
