@@ -76,6 +76,26 @@ class PreRequisitoParserTest {
     }
 
     @Test
+    fun `relampago prerequisites parse school count correctly`() {
+        val parsed = PreRequisitoParser.parse("AM1, 6 magicas do Ar")
+        assertTrue(parsed.tipos.any { it is PreRequisitoType.AptidaoMagica && it.nivel == 1 })
+        val escola = parsed.tipos.filterIsInstance<PreRequisitoType.MagiasEscola>().firstOrNull()
+        assertNotNull(escola)
+        assertEquals(6, escola?.quantidade)
+        assertEquals("Ar", escola?.escola)
+    }
+
+    @Test
+    fun `encantar style prerequisites parse schools different correctly`() {
+        val parsed = PreRequisitoParser.parse("Aptidao Magica 2 e 1 magica em dez escolas diferentes")
+        assertTrue(parsed.tipos.any { it is PreRequisitoType.AptidaoMagica && it.nivel == 2 })
+        val multi = parsed.tipos.filterIsInstance<PreRequisitoType.MagiasEmEscolasDiferentes>().firstOrNull()
+        assertNotNull(multi)
+        assertEquals(1, multi?.magiasPorEscola)
+        assertEquals(10, multi?.escolasDiferentes)
+    }
+
+    @Test
     fun `repository validates fallback magia vantagem pericia and escudo exception`() {
         val repo = DataRepository(object : ContextWrapper(null) {})
         val person = Personagem().apply {

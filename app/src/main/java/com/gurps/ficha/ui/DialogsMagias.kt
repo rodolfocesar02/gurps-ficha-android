@@ -446,6 +446,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
                         val prereqFalha = viewModel.prereqFailureForMagia(definicao)
                         val prereqOk = prereqFalha == null
+                        val recomendada = proximaSugerida?.id == definicao.id
                         
                         // Formatando Classe e Escola
                         val classeEscola = listOfNotNull(
@@ -494,6 +495,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                         Text("Adicionada", color = MaterialTheme.colorScheme.outline)
                                     } else if (!prereqOk) {
                                         Text("Bloqueada", color = MaterialTheme.colorScheme.error)
+                                    } else if (recomendada) {
+                                        Text("Recomendada", color = MaterialTheme.colorScheme.primary)
                                     }
                                 }
                             },
@@ -501,7 +504,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 .semantics {
                                     if (isPraCegoVariant) {
                                         contentDescription = if (prereqOk) {
-                                            "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
+                                            if (recomendada) {
+                                                "Posição ${indice + 1}. Magia ${definicao.nome}. Recomendação atual para avançar no alvo. Pré requisitos atendidos. Toque no nome para configurar."
+                                            } else {
+                                                "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
+                                            }
                                         } else {
                                             "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Abra o dialogo e use adicao forcada se autorizado."
                                         }

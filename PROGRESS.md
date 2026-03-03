@@ -136,3 +136,20 @@ Toda entrega deve fechar com:
   - `compileVisualDebugKotlin` OK
   - `compilePracegoDebugKotlin` OK
   - `testVisualDebugUnitTest` OK
+
+## Andamento do lote (2026-03-03 - Etapa 5)
+- PRACEGO (Modo Alvo) refinado:
+  - card da magia recomendada marca `Recomendada`;
+  - rótulo semântico da recomendação explicita prioridade para avanço do alvo.
+- Testes adicionados para casos críticos de parser:
+  - estilo `Relâmpago` (`AM1, 6 mágicas do Ar`);
+  - estilo `Encantar` (`1 mágica em dez escolas diferentes`).
+- Bateria de validação executada (completa):
+  - `compileVisualDebugKotlin` OK
+  - `compilePracegoDebugKotlin` OK
+  - `testVisualDebugUnitTest` OK
+  - `testPracegoDebugUnitTest` OK
+  - `assembleVisualDebug` OK
+  - `assemblePracegoDebug` OK
+  - `assembleVisualRelease` OK
+  - `assemblePracegoRelease` OK
