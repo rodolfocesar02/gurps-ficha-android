@@ -108,6 +108,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var modoAlvoErro by mutableStateOf<String?>(null)
         private set
+    var modoAlvoAviso by mutableStateOf<String?>(null)
+        private set
     private var modoAlvoJob: Job? = null
     private var modoAlvoUltimaChave: String? = null
 
@@ -697,6 +699,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             modoAlvoRelacionadosIds = emptyList()
             modoAlvoCarregando = false
             modoAlvoErro = null
+            modoAlvoAviso = null
             modoAlvoUltimaChave = null
             return
         }
@@ -710,6 +713,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             modoAlvoRelacionadosIds = emptyList()
             modoAlvoCarregando = false
             modoAlvoErro = "Magia alvo não encontrada."
+            modoAlvoAviso = null
             return
         }
         modoAlvoJob?.cancel()
@@ -718,15 +722,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 delay(120)
                 modoAlvoCarregando = true
                 modoAlvoErro = null
+                modoAlvoAviso = null
                 val resultado = withContext(Dispatchers.Default) {
-                    magiaTargetEngine.listaRelacionadosMagiaAlvo(alvo, personagem)
+                    magiaTargetEngine.calcularModoAlvo(alvo, personagem)
                 }
-                modoAlvoRelacionadosIds = resultado
+                modoAlvoRelacionadosIds = resultado.ids
+                modoAlvoAviso = resultado.aviso
             } catch (_: CancellationException) {
                 // Requisição substituída por uma mais recente.
             } catch (t: Throwable) {
                 modoAlvoRelacionadosIds = emptyList()
                 modoAlvoErro = t.message ?: "Falha ao calcular trilha do alvo."
+                modoAlvoAviso = null
             } finally {
                 modoAlvoCarregando = false
             }
