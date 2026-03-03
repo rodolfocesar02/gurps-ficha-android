@@ -107,3 +107,8 @@ Entregáveis:
   - quando não há exato, usa ranking por proximidade textual controlada.
   - seleção de magia por escola prioriza mágicas sem pré-requisito antes das cadeias mais caras.
 - Validação completa executada novamente após ajuste (debug/release + testes das duas variantes) sem falhas.
+- Próximo passo aplicado (planner):
+  - para requisitos de escolas diferentes, o algoritmo agora tenta múltiplas escolas e faz rollback quando uma tentativa não fecha;
+  - para quantidade por escola, tenta múltiplas magias candidatas em vez de falhar na primeira.
+- Resultado esperado: menos casos de lista vazia no Modo Alvo para magias como Desejo/Convocar Demônio.
+- Validação completa executada após ajuste (debug/release + unit tests das duas variantes) OK.

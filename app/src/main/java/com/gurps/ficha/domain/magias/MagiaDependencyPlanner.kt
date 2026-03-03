@@ -176,9 +176,21 @@ class MagiaDependencyPlanner(
         val required = quantity.coerceAtLeast(1)
         while (countSchool(school, personagemBase, planned) < required) {
             if (!budget.step()) return false
-            val candidate = nextSchoolCandidate(school, personagemBase, knownBase, planned)
-                ?: return false
-            if (!ensureSpell(candidate, personagemBase, knownBase, planned, visiting, depth + 1)) return false
+            val candidates = nextSchoolCandidates(school, personagemBase, knownBase, planned)
+            if (candidates.isEmpty()) return false
+            var added = false
+            for (candidate in candidates) {
+                if (!budget.step()) return false
+                val snapshot = LinkedHashSet(planned)
+                val ok = ensureSpell(candidate, personagemBase, knownBase, planned, visiting, depth + 1)
+                if (ok) {
+                    added = true
+                    break
+                }
+                planned.clear()
+                planned.addAll(snapshot)
+            }
+            if (!added) return false
         }
         return true
     }
@@ -203,17 +215,28 @@ class MagiaDependencyPlanner(
                     (current[school] ?: 0) < perSchool
                 }
                 .sortedBy { current[it] ?: 0 }
-            val schoolChoice = options.firstOrNull() ?: return false
-            val okSchool = ensureSchoolCount(
-                rawSchool = schoolChoice,
-                quantity = perSchool,
-                personagemBase = personagemBase,
-                knownBase = knownBase,
-                planned = planned,
-                visiting = visiting,
-                depth = depth + 1
-            )
-            if (!okSchool) return false
+            if (options.isEmpty()) return false
+            var schoolSatisfied = false
+            for (schoolChoice in options) {
+                if (!budget.step()) return false
+                val snapshot = LinkedHashSet(planned)
+                val okSchool = ensureSchoolCount(
+                    rawSchool = schoolChoice,
+                    quantity = perSchool,
+                    personagemBase = personagemBase,
+                    knownBase = knownBase,
+                    planned = planned,
+                    visiting = visiting,
+                    depth = depth + 1
+                )
+                if (okSchool) {
+                    schoolSatisfied = true
+                    break
+                }
+                planned.clear()
+                planned.addAll(snapshot)
+            }
+            if (!schoolSatisfied) return false
         }
         return true
     }
@@ -301,12 +324,12 @@ class MagiaDependencyPlanner(
         return score
     }
 
-    private fun nextSchoolCandidate(
+    private fun nextSchoolCandidates(
         schoolNorm: String,
         personagemBase: Personagem,
         knownBase: Set<String>,
         planned: Set<String>
-    ): MagiaDefinicao? {
+    ): List<MagiaDefinicao> {
         return dataRepository.magias
             .filter { spell ->
                 spell.id !in knownBase &&
@@ -317,7 +340,7 @@ class MagiaDependencyPlanner(
                 compareBy<MagiaDefinicao> { if (dataRepository.magiaSemPreRequisito(it)) 0 else 1 }
                     .thenBy { heuristicCost(it, personagemBase, planned) }
             )
-            .firstOrNull()
+            .take(8)
     }
 
     private fun countSchool(schoolNorm: String, personagemBase: Personagem, planned: Set<String>): Int {
