@@ -63,6 +63,11 @@ data class TecnicaRegraPerfil(
 @OptIn(FlowPreview::class)
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val autoSaveRecuperacaoNome = "_autosave_recuperacao"
+    private val subEscolasAnimais = listOf(
+        "Criaturas da Terra",
+        "Criaturas do Ar",
+        "Criaturas do Mar"
+    )
 
     var personagem by mutableStateOf(Personagem())
         private set
@@ -624,6 +629,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             return "Magia já adicionada."
         }
 
+        if (definicao.id.equals("controle_de_animal", ignoreCase = true)) {
+            val subEscola = especializacaoMagia?.trim().orEmpty()
+            if (subEscola.isBlank()) {
+                return "Selecione a sub-escola: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
+            }
+            val duplicadaSubEscola = personagem.magias.any {
+                it.definicaoId.equals("controle_de_animal", ignoreCase = true) &&
+                    it.especializacaoMagia?.trim()?.equals(subEscola, ignoreCase = true) == true
+            }
+            if (duplicadaSubEscola) {
+                return "Controle de Animal já foi adicionada para esta sub-escola."
+            }
+        }
+
         if (permiteMultiplasInstanciasPorEscola(definicao.id)) {
             val escolaNorm = especializacaoMagia?.trim()?.lowercase()
             if (escolaNorm.isNullOrBlank()) return "Informe a escola da magia."
@@ -746,7 +765,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             "convocar_elemental",
             "controle_de_elemental",
             "anular_possessao",
-            "cavalgar"
+            "cavalgar",
+            "controle_de_animal"
         )
     }
 
@@ -755,6 +775,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun validarEspecializacaoObrigatoria(definicaoId: String, especializacaoMagia: String?): String? {
+        val definicao = dataRepository.getMagiaPorId(definicaoId)
+        val exigeSubEscolaAnimais = definicaoId.equals("controle_de_animal", ignoreCase = true) ||
+            definicao?.escola.orEmpty().any { it.equals("Animais", ignoreCase = true) }
+        if (exigeSubEscolaAnimais) {
+            if (especializacaoMagia.isNullOrBlank()) {
+                return "Selecione a sub-escola: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
+            }
+            val valida = subEscolasAnimais.any { it.equals(especializacaoMagia.trim(), ignoreCase = true) }
+            if (!valida) {
+                return "Sub-escola inválida. Use: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
+            }
+            return null
+        }
+
         val exigeEspecializacao = definicaoId.lowercase() in setOf(
             "adivinhacao",
             "cavalgar",
