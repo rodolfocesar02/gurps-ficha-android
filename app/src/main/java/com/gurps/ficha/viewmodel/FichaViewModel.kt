@@ -855,6 +855,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 else if (!hasMagia("Transformar Corpo")) "Pré-requisito não atendido: Transformar Corpo."
                 else null
             }
+            "restauracao" -> {
+                if (hasMagia("Cura Profunda")) {
+                    null
+                } else {
+                    val temAliviarParalisia = hasMagia("Aliviar Paralisia")
+                    val totalRestaurar = magias.count { it.nome.contains("Restaurar", ignoreCase = true) }
+                    val contagem = (if (temAliviarParalisia) 1 else 0) + totalRestaurar
+                    if (contagem < 2) {
+                        "Pré-requisito não atendido: Cura Profunda ou 2 entre Aliviar Paralisia e mágicas de Restaurar."
+                    } else {
+                        null
+                    }
+                }
+            }
             else -> null
         }
     }

@@ -9552,7 +9552,7 @@
     "duracao": "Perm.",
     "energia": "15",
     "tempoOperacao": "1 min.#",
-    "preRequisitos": "Cura Profunda, ou 2 Aliviar Paralisia e as mágicas de Restaurar"
+    "preRequisitos": "Cura Profunda ou 2 entre Aliviar Paralisia e mágicas de Restaurar"
   },
   {
     "id": "restauracao_instantanea",
@@ -10549,7 +10549,7 @@
     "duracao": "1 dia",
     "energia": "Varia",
     "tempoOperacao": "—",
-    "preRequisitos": "Encantar, mágica oposta"
+    "preRequisitos": "Encantar"
   },
   {
     "id": "tapete_voador",
@@ -11035,7 +11035,7 @@
     "duracao": "1 hora",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "AM2, Remodelar, 4 mágicas Criar"
+    "preRequisitos": "Aptidão Mágica 2, Remodelar e 4 mágicas de Criar"
   },
   {
     "id": "transformar_outro",
