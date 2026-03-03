@@ -558,6 +558,22 @@ class DataRepository(private val context: Context) {
 
     // === FILTROS DE VANTAGENS ===
 
+    private fun normalizarBusca(valor: String): String {
+        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace(Regex("\\s+"), " ")
+            .trim()
+    }
+
+    private fun contemBusca(texto: String, busca: String): Boolean {
+        if (busca.isBlank()) return true
+        val buscaNorm = normalizarBusca(busca)
+        if (buscaNorm.isBlank()) return true
+        return normalizarBusca(texto).contains(buscaNorm)
+    }
+
     fun filtrarVantagens(
         busca: String = "",
         tipoCusto: TipoCusto? = null,
@@ -565,9 +581,9 @@ class DataRepository(private val context: Context) {
         somenteArtesMarciais: Boolean = false
     ): List<VantagemDefinicao> {
         return vantagens.filter { v ->
-            val matchBusca = busca.isBlank() || v.nome.contains(busca, ignoreCase = true)
+            val matchBusca = contemBusca(v.nome, busca)
             val matchTipo = tipoCusto == null || v.tipoCusto == tipoCusto
-            val matchTag = tag.isNullOrBlank() || v.tags.any { it.equals(tag, ignoreCase = true) }
+            val matchTag = tag.isNullOrBlank() || v.tags.any { contemBusca(it, tag) }
             val matchArtesMarciais = !somenteArtesMarciais || _vantagensArtesMarciaisIds.contains(v.id.lowercase())
             matchBusca && matchTipo && matchTag && matchArtesMarciais
         }
@@ -581,9 +597,9 @@ class DataRepository(private val context: Context) {
         tag: String? = null
     ): List<DesvantagemDefinicao> {
         return desvantagens.filter { d ->
-            val matchBusca = busca.isBlank() || d.nome.contains(busca, ignoreCase = true)
+            val matchBusca = contemBusca(d.nome, busca)
             val matchTipo = tipoCusto == null || d.tipoCusto == tipoCusto
-            val matchTag = tag.isNullOrBlank() || d.tags.any { it.equals(tag, ignoreCase = true) }
+            val matchTag = tag.isNullOrBlank() || d.tags.any { contemBusca(it, tag) }
             matchBusca && matchTipo && matchTag
         }
     }
@@ -596,12 +612,12 @@ class DataRepository(private val context: Context) {
         dificuldade: String? = null
     ): List<PericiaDefinicao> {
         return pericias.filter { p ->
-            val matchBusca = busca.isBlank() || p.nome.contains(busca, ignoreCase = true)
+            val matchBusca = contemBusca(p.nome, busca)
             val matchAtributo = atributoBase.isNullOrBlank() ||
-                p.atributoBase.equals(atributoBase, ignoreCase = true) ||
-                p.atributosPossiveis?.any { it.equals(atributoBase, ignoreCase = true) } == true
+                contemBusca(p.atributoBase, atributoBase) ||
+                p.atributosPossiveis?.any { contemBusca(it, atributoBase) } == true
             val matchDificuldade = dificuldade.isNullOrBlank() ||
-                p.dificuldadeFixa.equals(dificuldade, ignoreCase = true)
+                contemBusca(p.dificuldadeFixa.orEmpty(), dificuldade)
             matchBusca && matchAtributo && matchDificuldade
         }
     }
@@ -614,11 +630,11 @@ class DataRepository(private val context: Context) {
         classe: String? = null
     ): List<MagiaDefinicao> {
         return magias.filter { m ->
-            val matchBusca = busca.isBlank() || m.nome.contains(busca, ignoreCase = true)
+            val matchBusca = contemBusca(m.nome, busca)
             val matchEscola = escola.isNullOrBlank() ||
-                m.escola?.any { it.equals(escola, ignoreCase = true) } == true
+                m.escola?.any { contemBusca(it, escola) } == true
             val matchClasse = classe.isNullOrBlank() ||
-                agruparClasseMagia(m.classe)?.equals(classe, ignoreCase = true) == true
+                contemBusca(agruparClasseMagia(m.classe).orEmpty(), classe)
             matchBusca && matchEscola && matchClasse
         }
     }
@@ -630,10 +646,10 @@ class DataRepository(private val context: Context) {
         val b = busca.trim()
         return tecnicasCatalogo.filter { t ->
             val matchBusca = b.isBlank() ||
-                t.nome.contains(b, ignoreCase = true) ||
-                t.descricao.contains(b, ignoreCase = true) ||
-                t.preRequisitoRaw.contains(b, ignoreCase = true)
-            val matchSource = sourceBook.isNullOrBlank() || t.sourceBook.equals(sourceBook, ignoreCase = true)
+                contemBusca(t.nome, b) ||
+                contemBusca(t.descricao, b) ||
+                contemBusca(t.preRequisitoRaw, b)
+            val matchSource = sourceBook.isNullOrBlank() || contemBusca(t.sourceBook, sourceBook)
             matchBusca && matchSource
         }.sortedBy { it.nome.lowercase() }
     }
@@ -646,10 +662,10 @@ class DataRepository(private val context: Context) {
         val buscaNormalizada = busca.trim()
         return armasCatalogo.filter { a ->
             val matchBusca = buscaNormalizada.isBlank() ||
-                a.nome.contains(buscaNormalizada, ignoreCase = true) ||
-                a.grupo.contains(buscaNormalizada, ignoreCase = true) ||
-                a.categoria.contains(buscaNormalizada, ignoreCase = true)
-            val matchTipo = tipoCombate.isNullOrBlank() || a.tipoCombate.equals(tipoCombate, ignoreCase = true)
+                contemBusca(a.nome, buscaNormalizada) ||
+                contemBusca(a.grupo, buscaNormalizada) ||
+                contemBusca(a.categoria, buscaNormalizada)
+            val matchTipo = tipoCombate.isNullOrBlank() || contemBusca(a.tipoCombate, tipoCombate)
             val matchSt = stMaximo == null || a.stMinimo == null || a.stMinimo <= stMaximo
             matchBusca && matchTipo && matchSt
         }.sortedBy { it.nome.lowercase() }
@@ -661,7 +677,7 @@ class DataRepository(private val context: Context) {
     ): List<EscudoCatalogoItem> {
         val b = busca.trim()
         return escudosCatalogo.filter { e ->
-            val matchBusca = b.isBlank() || e.nome.contains(b, ignoreCase = true)
+            val matchBusca = b.isBlank() || contemBusca(e.nome, b)
             val matchSt = stMaximo == null || e.stMinimo == null || e.stMinimo <= stMaximo
             matchBusca && matchSt
         }.sortedBy { it.nome.lowercase() }
@@ -677,14 +693,14 @@ class DataRepository(private val context: Context) {
         val tag = tagFiltro?.trim().orEmpty()
         return armadurasCatalogo.filter { a ->
             val matchBusca = b.isBlank() ||
-                a.nome.contains(b, ignoreCase = true) ||
-                a.local.contains(b, ignoreCase = true) ||
-                a.rd.contains(b, ignoreCase = true) ||
-                a.tags.any { it.contains(b, ignoreCase = true) } ||
-                a.observacoesDetalhadas.any { it.contains(b, ignoreCase = true) } ||
+                contemBusca(a.nome, b) ||
+                contemBusca(a.local, b) ||
+                contemBusca(a.rd, b) ||
+                a.tags.any { contemBusca(it, b) } ||
+                a.observacoesDetalhadas.any { contemBusca(it, b) } ||
                 a.componentes.any { c ->
-                    c.tags.any { it.contains(b, ignoreCase = true) } ||
-                        c.observacoesDetalhadas.any { it.contains(b, ignoreCase = true) }
+                    c.tags.any { contemBusca(it, b) } ||
+                        c.observacoesDetalhadas.any { contemBusca(it, b) }
                 }
             val matchNt = nt == null || a.nt == nt
             val matchLocal = localFiltro.isNullOrBlank() || armaduraCobreLocal(a, localFiltro)
@@ -695,8 +711,8 @@ class DataRepository(private val context: Context) {
 
     private fun armaduraTemTag(armadura: ArmaduraCatalogoItem, tagFiltro: String): Boolean {
         if (tagFiltro.isBlank()) return true
-        return armadura.tags.any { it.equals(tagFiltro, ignoreCase = true) } ||
-            armadura.componentes.any { c -> c.tags.any { it.equals(tagFiltro, ignoreCase = true) } }
+        return armadura.tags.any { contemBusca(it, tagFiltro) } ||
+            armadura.componentes.any { c -> c.tags.any { contemBusca(it, tagFiltro) } }
     }
 
     private fun armaduraCobreLocal(armadura: ArmaduraCatalogoItem, localFiltro: String): Boolean {
@@ -1043,7 +1059,7 @@ class DataRepository(private val context: Context) {
 
         val nivelAptidaoMagica = personagem.vantagens
             .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-            .maxOfOrNull { it.nivel }
+            .maxOfOrNull { (it.nivel - 1).coerceAtLeast(0) }
             ?: 0
         mapa["aptidao_magica"] = nivelAptidaoMagica
 
@@ -1594,17 +1610,169 @@ private fun PericiaDefinicao.normalizada(): PericiaDefinicao = copy(
     dificuldadeFixa = (dificuldadeFixa as String?)?.sanitized()
 )
 
-private fun MagiaDefinicao.normalizada(): MagiaDefinicao = copy(
-    id = (id as String?).sanitized(),
-    nome = (nome as String?).sanitized().let { if ((id as String?).sanitized() == "suspender") "Suspender Aptidao Magica" else it },
-    dificuldadeFixa = (dificuldadeFixa as String?)?.sanitized(),
-    classe = (classe as String?)?.sanitized(),
-    escola = escola?.map { (it as String?).sanitized() }?.filter { it.isNotBlank() },
-    duracao = (duracao as String?)?.sanitized(),
-    energia = (energia as String?)?.sanitized(),
-    tempoOperacao = (tempoOperacao as String?)?.sanitized(),
-    preRequisitos = (preRequisitos as String?)?.sanitized()
+private fun MagiaDefinicao.normalizada(): MagiaDefinicao {
+    val magiaId = id.sanitized()
+    val textoRaw = texto.sanitized()
+    val meta = extrairMetadadosDoTextoMagia(textoRaw)
+    val nomeSanitizado = nome.sanitized()
+    val nomeCorrigido = if (magiaId == "suspender") {
+        "Suspender Aptidao Magica"
+    } else {
+        corrigirNomeMagiaPorId(magiaId, nomeSanitizado)
+    }
+    val escolaNormalizada = escola?.map { it.sanitized() }?.filter { it.isNotBlank() }
+
+    return copy(
+        id = magiaId,
+        nome = nomeCorrigido,
+        dificuldadeFixa = dificuldadeFixa?.sanitized(),
+        classe = classe?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.classe,
+        escola = escolaNormalizada?.takeUnless { it.isEmpty() } ?: meta.escola,
+        duracao = duracao?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.duracao,
+        energia = energia?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.energia,
+        tempoOperacao = tempoOperacao?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.tempoOperacao,
+        preRequisitos = corrigirTextoMagiaCorrompido(
+            preRequisitos?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.preRequisitos.orEmpty()
+        ).takeIf { it.isNotBlank() },
+        texto = meta.descricao
+    )
+}
+
+private data class MetaMagiaExtraida(
+    val classe: String? = null,
+    val escola: List<String>? = null,
+    val duracao: String? = null,
+    val energia: String? = null,
+    val tempoOperacao: String? = null,
+    val preRequisitos: String? = null,
+    val descricao: String? = null
 )
+
+private fun extrairMetadadosDoTextoMagia(texto: String?): MetaMagiaExtraida {
+    if (texto.isNullOrBlank()) return MetaMagiaExtraida(descricao = "")
+    var classe: String? = null
+    var escola: List<String>? = null
+    var duracao: String? = null
+    var energia: String? = null
+    var tempo: String? = null
+    var preReq: String? = null
+    val descricaoLinhas = mutableListOf<String>()
+
+    texto.lines().forEach { linha ->
+        val atual = linha.trim()
+        if (atual.isBlank()) return@forEach
+        val classeMatch = Regex("(?i)^classe\\s*:\\s*(.+)$").find(atual)
+        if (classeMatch != null) {
+            classe = classeMatch.groupValues[1].trim().takeIf { it.isNotBlank() }
+            return@forEach
+        }
+        val escolaMatch = Regex("(?i)^escola\\s*:\\s*(.+)$").find(atual)
+        if (escolaMatch != null) {
+            val escolas = escolaMatch.groupValues[1]
+                .split("/", ",", ";")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+            escola = escolas.takeIf { it.isNotEmpty() }
+            return@forEach
+        }
+        val duracaoMatch = Regex("(?i)^dura[cç][aã]o\\s*:\\s*(.+)$").find(atual)
+        if (duracaoMatch != null) {
+            duracao = duracaoMatch.groupValues[1].trim().takeIf { it.isNotBlank() }
+            return@forEach
+        }
+        val energiaMatch = Regex("(?i)^energia\\s*:\\s*(.+)$").find(atual)
+        if (energiaMatch != null) {
+            energia = energiaMatch.groupValues[1].trim().takeIf { it.isNotBlank() }
+            return@forEach
+        }
+        val tempoMatch = Regex("(?i)^tempo\\s+de\\s+opera[cç][aã]o\\s*:\\s*(.+)$").find(atual)
+        if (tempoMatch != null) {
+            tempo = tempoMatch.groupValues[1].trim().takeIf { it.isNotBlank() }
+            return@forEach
+        }
+        val preReqMatch = Regex("(?i)^pr[eé][ -]?requisitos?\\s*:\\s*(.+)$").find(atual)
+        if (preReqMatch != null) {
+            preReq = preReqMatch.groupValues[1].trim().takeIf { it.isNotBlank() }
+            return@forEach
+        }
+        descricaoLinhas.add(atual)
+    }
+
+    return MetaMagiaExtraida(
+        classe = classe,
+        escola = escola,
+        duracao = duracao,
+        energia = energia,
+        tempoOperacao = tempo,
+        preRequisitos = preReq,
+        descricao = descricaoLinhas.joinToString("\n").trim().takeIf { it.isNotBlank() } ?: ""
+    )
+}
+
+private fun corrigirNomeMagiaPorId(id: String, nomeAtual: String): String {
+    if (nomeAtual.isBlank()) return humanizarIdMagia(id)
+    val nomeReparado = corrigirTextoMagiaCorrompido(nomeAtual)
+
+    val idRotulo = humanizarIdMagia(id)
+    val nomeNorm = normalizarComparacaoMagia(nomeReparado)
+    val idNorm = normalizarComparacaoMagia(idRotulo)
+    if (nomeNorm.isBlank()) return idRotulo
+
+    val suspeitaTruncamento = nomeNorm.length + 1 <= idNorm.length &&
+        (idNorm.contains(nomeNorm) || distanciaLevenshtein(nomeNorm, idNorm) <= 2)
+    return if (suspeitaTruncamento) idRotulo else nomeReparado
+}
+
+private fun corrigirTextoMagiaCorrompido(valor: String): String {
+    if (valor.isBlank()) return valor
+    return valor
+        .replace(Regex("\\bRelmpagos\\b", RegexOption.IGNORE_CASE), "Relampagos")
+        .replace(Regex("\\bRelmpago\\b", RegexOption.IGNORE_CASE), "Relampago")
+        .replace(Regex("\\bFuraco\\b", RegexOption.IGNORE_CASE), "Furacao")
+        .replace(Regex("\\bMgicas\\b", RegexOption.IGNORE_CASE), "Magicas")
+        .replace(Regex("\\bMgica\\b", RegexOption.IGNORE_CASE), "Magica")
+}
+
+private fun humanizarIdMagia(id: String): String {
+    return id
+        .split("_")
+        .filter { it.isNotBlank() }
+        .joinToString(" ") { token ->
+            token.lowercase().replaceFirstChar { c -> c.titlecase() }
+        }
+}
+
+private fun normalizarComparacaoMagia(valor: String): String {
+    val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}+"), "")
+    return semAcento
+        .lowercase()
+        .replace(Regex("[^a-z0-9\\s]"), " ")
+        .replace(Regex("\\s+"), " ")
+        .trim()
+}
+
+private fun distanciaLevenshtein(a: String, b: String): Int {
+    if (a == b) return 0
+    if (a.isEmpty()) return b.length
+    if (b.isEmpty()) return a.length
+    val dp = IntArray(b.length + 1) { it }
+    for (i in 1..a.length) {
+        var prevDiagonal = dp[0]
+        dp[0] = i
+        for (j in 1..b.length) {
+            val prevUp = dp[j]
+            val custo = if (a[i - 1] == b[j - 1]) 0 else 1
+            dp[j] = minOf(
+                dp[j] + 1,
+                dp[j - 1] + 1,
+                prevDiagonal + custo
+            )
+            prevDiagonal = prevUp
+        }
+    }
+    return dp[b.length]
+}
 
 private fun String?.sanitized(default: String = ""): String {
     return this

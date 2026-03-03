@@ -44,6 +44,20 @@ import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.TecnicaCatalogoItem
 import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
+import java.text.Normalizer
+
+private fun normalizarBusca(valor: String): String {
+    val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}+"), "")
+    return semAcento.lowercase().replace(Regex("\\s+"), " ").trim()
+}
+
+private fun contemBusca(texto: String, busca: String): Boolean {
+    if (busca.isBlank()) return true
+    val buscaNorm = normalizarBusca(busca)
+    if (buscaNorm.isBlank()) return true
+    return normalizarBusca(texto).contains(buscaNorm)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,8 +74,8 @@ fun SelecionarTecnicaDialog(
     }
     val tecnicas = viewModel.tecnicasCatalogo.filter { tecnica ->
         val matchBusca = busca.isBlank() ||
-            tecnica.nome.contains(busca, ignoreCase = true) ||
-            tecnica.descricao.contains(busca, ignoreCase = true)
+            contemBusca(tecnica.nome, busca) ||
+            contemBusca(tecnica.descricao, busca)
         val matchFonte = filtroFonte.isNullOrBlank() || tecnica.sourceBook.equals(filtroFonte, ignoreCase = true)
         matchBusca && matchFonte
     }
@@ -401,8 +415,8 @@ fun PericiasSuplementaresDialog(
     var itemDetalhes by remember { mutableStateOf<PericiaSuplementarItem?>(null) }
     val itens = viewModel.periciasSuplementaresArtesMarciais.filter { pericia ->
         busca.isBlank() ||
-            pericia.nome.contains(busca, ignoreCase = true) ||
-            pericia.descricao.contains(busca, ignoreCase = true)
+            contemBusca(pericia.nome, busca) ||
+            contemBusca(pericia.descricao, busca)
     }
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
