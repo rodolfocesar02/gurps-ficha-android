@@ -86,13 +86,20 @@ Partes implementadas:
   - equivalência funcional preservada (sem inconsistências);
   - refinamento incremental aplicado (`INCREMENTAL_NO_IMPACT`) para reaproveitar sugestões/bloqueio quando mudança não impacta alvo;
   - conclusão atual: ainda sem ganho de p95 sobre full nesse cenário, mas diferença caiu.
+- Telemetria de ranking Lote 2 calibrada com `magias2versao.json`:
+  - `ALVOS_COM_DIAGNOSTICO=67`;
+  - `TOP1_ESCOLA_NOVA=100%`;
+  - `TOP1_SEM_PREREQ=100%`;
+  - `TOP3_TEM_SEM_PREREQ=100%`.
+- Tratamento de pré-requisito vazio/mojibake consolidado no custo do ranking
+  (`—`, `â€”`, etc. passam a ser considerados sem pré-requisito real).
 - Otimização estrutural no motor para caminho de escola:
   - índices em memória por catálogo (`id -> nome/pre/escolas normalizadas`);
   - cache de parsing por magia (`dependenciasNomeadas`, `regrasEscolas`, `regrasNumericas`, `cadeiaObrigatoria`);
   - remoção de varreduras repetidas do catálogo completo em cálculos internos.
 
 Partes faltantes:
-- Ajuste fino final de pesos usando execução no catálogo real completo.
+- Ajuste fino final de diversidade entre escolas nas sugestões (evitar repetição de top1 em alvos distintos sem contexto de progresso).
 
 ### Lote 3 - Estado Incremental
 Partes implementadas:
@@ -135,7 +142,7 @@ Partes faltantes:
 - Reativação controlada por flag.
 
 ## Próximos Passos imediatos
-1. Rodar telemetria de ranking no catálogo real e calibrar pesos finais do Lote 2.
+1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
 2. Otimizar o caminho incremental de sugestões e repetir comparativo delta vs full.
 3. Preparar adaptador mínimo (Lote 4) em flag separada para primeiro teste no emulador.
 
