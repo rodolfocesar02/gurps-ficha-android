@@ -98,4 +98,37 @@ class NexusArcanoEngineLote1Test {
         assertTrue(r.chavesFaltantes.any { it.id == "chave_teleporte" })
         assertFalse(r.proximasAcoes.any { it.magiaId == "translocacao" })
     }
+
+    @Test
+    fun regra_escolas_aceita_numero_por_palavra_dez() {
+        val catalogo = object : ArcanoCatalogo {
+            private val dados = mapOf(
+                "encantar" to Triple("Encantar", listOf("Encantamento"), "1 magia em dez outras escolas"),
+                "m1" to Triple("M1", listOf("Ar"), "-"),
+                "m2" to Triple("M2", listOf("Terra"), "-"),
+                "m3" to Triple("M3", listOf("Agua"), "-"),
+                "m4" to Triple("M4", listOf("Fogo"), "-"),
+                "m5" to Triple("M5", listOf("Luz"), "-"),
+                "m6" to Triple("M6", listOf("Som"), "-"),
+                "m7" to Triple("M7", listOf("Corpo"), "-"),
+                "m8" to Triple("M8", listOf("Mente"), "-"),
+                "m9" to Triple("M9", listOf("Portais"), "-")
+            )
+            override fun preRequisitoRaw(magiaId: String): String = dados[magiaId]?.third.orEmpty()
+            override fun escolas(magiaId: String): List<String> = dados[magiaId]?.second.orEmpty()
+            override fun nome(magiaId: String): String = dados[magiaId]?.first.orEmpty()
+            override fun existe(magiaId: String): Boolean = dados.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = dados.keys.toList()
+        }
+        val engine = NexusArcanoEngine(catalogo)
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("m1", "m2", "m3", "m4", "m5", "m6", "m7", "m8", "m9"),
+            am = 0,
+            iq = 10
+        )
+
+        val r = engine.calcularEstadoAlvo("encantar", estado)
+        assertTrue(r.chavesFaltantes.any { it.id == "chave_escolas_encantar_10" })
+        assertFalse(r.chavesAtivas.any { it.id == "chave_escolas_encantar_10" })
+    }
 }

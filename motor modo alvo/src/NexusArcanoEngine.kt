@@ -141,7 +141,7 @@ class NexusArcanoEngine(
         .sortedByDescending { it.second.length }
 
     private val regraEscolasRegex = Regex(
-        "(\\d+)\\s*m\\s*a\\s*g\\s*i\\s*c\\s*a(?:s)?\\s*(?:em|de)\\s*(\\d+)\\s*(outras\\s+)?escolas(?:\\s+diferentes)?"
+        "([a-z0-9]+)\\s*m\\s*a\\s*g\\s*i(?:\\s*c)?\\s*a(?:s)?\\s*(?:em|de)\\s*([a-z0-9]+)\\s*(outras\\s+)?escolas(?:\\s+diferentes)?"
     )
     private val somaRegex = Regex("\\(([^\\)]*?)\\)\\s*:?\\s*(\\d+)\\+?", RegexOption.IGNORE_CASE)
     private val amRegex = Regex("\\bam\\s*(\\d+)\\b")
@@ -819,7 +819,7 @@ class NexusArcanoEngine(
             regraEscolasRegex
                 .findAll(raw)
                 .mapNotNull { m ->
-                    val qtd = m.groupValues[2].toIntOrNull() ?: return@mapNotNull null
+                    val qtd = parseNumeroToken(m.groupValues[2]) ?: return@mapNotNull null
                     RegraEscolas(
                         magiaOrigemId = magiaId,
                         quantidadeEscolas = qtd,
@@ -827,6 +827,34 @@ class NexusArcanoEngine(
                     )
                 }
                 .toList()
+        }
+    }
+
+    private fun parseNumeroToken(raw: String): Int? {
+        val token = normalize(raw)
+        token.toIntOrNull()?.let { return it }
+        return when (token) {
+            "um", "uma" -> 1
+            "dois", "duas" -> 2
+            "tres" -> 3
+            "quatro" -> 4
+            "cinco" -> 5
+            "seis" -> 6
+            "sete" -> 7
+            "oito" -> 8
+            "nove" -> 9
+            "dez" -> 10
+            "onze" -> 11
+            "doze" -> 12
+            "treze" -> 13
+            "catorze", "quatorze" -> 14
+            "quinze" -> 15
+            "dezesseis" -> 16
+            "dezessete" -> 17
+            "dezoito" -> 18
+            "dezenove" -> 19
+            "vinte" -> 20
+            else -> null
         }
     }
 
