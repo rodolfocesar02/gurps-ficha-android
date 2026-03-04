@@ -2,6 +2,8 @@
 
 Status: planejamento ativo (isolado da ficha)
 
+Leitura de execução: `NOTE.md`
+
 ## Objetivo
 Criar um motor determinístico de progressão de magias com foco em pré-requisitos reais, sem travar UI, com saída curta e previsível.
 
