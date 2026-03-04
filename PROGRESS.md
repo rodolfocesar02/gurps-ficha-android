@@ -79,6 +79,12 @@ Partes implementadas:
     - antes da otimização de índices: p50 ~ 1460.8 ms | p95 ~ 1581.0 ms | max ~ 1613.1 ms
     - após otimização de índices/cache de parsing: p50 ~ 0.784 ms | p95 ~ 0.929 ms | max ~ 214.8 ms
   - consistência funcional: sem exceções e sem inconsistências estruturais em ambos.
+- Teste comparativo `delta incremental vs full` por rodada adicionado (`magias2versao.json`):
+  - alvo: `desejo`, 24 rodadas;
+  - delta p50 ~ 0.052 ms, p95 ~ 1.082 ms;
+  - full p50 ~ 0.025 ms, p95 ~ 1.020 ms;
+  - equivalência funcional preservada (sem inconsistências).
+  - conclusão: primeira versão do delta ainda não trouxe ganho de p95 nesse cenário.
 - Otimização estrutural no motor para caminho de escola:
   - índices em memória por catálogo (`id -> nome/pre/escolas normalizadas`);
   - cache de parsing por magia (`dependenciasNomeadas`, `regrasEscolas`, `regrasNumericas`, `cadeiaObrigatoria`);
@@ -116,7 +122,7 @@ Partes implementadas:
   - valida hit de cache, invalidação por magia, invalidação incremental por impacto, delta incremental e métricas de tempo.
 
 Partes faltantes:
-- Refinar delta incremental para reduzir ainda mais recomputação de sugestões em cenários mistos (known+atributo).
+- Refinar delta incremental para reduzir recomputação de sugestões (hoje equivalência ok, ganho de p95 ainda insuficiente em comparativo direto).
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
@@ -129,8 +135,8 @@ Partes faltantes:
 
 ## Próximos Passos imediatos
 1. Rodar telemetria de ranking no catálogo real e calibrar pesos finais do Lote 2.
-2. Instrumentar teste comparativo de tempo por rodada com e sem delta incremental.
-3. Ajustar ranking final do Lote 2 com telemetria real por alvo.
+2. Otimizar o caminho incremental de sugestões e repetir comparativo delta vs full.
+3. Preparar adaptador mínimo (Lote 4) em flag separada para primeiro teste no emulador.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
