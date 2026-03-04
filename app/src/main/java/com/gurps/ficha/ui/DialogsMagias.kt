@@ -370,7 +370,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             onClick = {
                                 modoAlvoAtivo = !modoAlvoAtivo
                                 if (!modoAlvoAtivo) magiaAlvoId = null
-                                else viewModel.atualizarBuscaMagia("")
+                                else {
+                                    viewModel.atualizarBuscaMagia("")
+                                    viewModel.atualizarFiltroClasseMagia(null)
+                                    viewModel.atualizarFiltroEscolaMagia(null)
+                                }
                             },
                             label = { Text("Modo Alvo") }
                         )
@@ -511,6 +515,28 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                    if (isPraCegoVariant) {
+                        val resumoAcessivel = buildString {
+                            append("Modo alvo ativo. ")
+                            append("Magia alvo: ${magiaAlvoSelecionada.nome}. ")
+                            if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
+                                append("Próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(", ")}. ")
+                            } else {
+                                append("Sem ação imediata recomendada. ")
+                            }
+                            if (viewModel.modoAlvoChavesFaltantes.isNotEmpty()) {
+                                append("Chaves pendentes: ${viewModel.modoAlvoChavesFaltantes.take(2).joinToString(", ")}.")
+                            }
+                        }
+                        Text(
+                            "Resumo acessível do alvo pronto para leitura.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.semantics {
+                                contentDescription = resumoAcessivel
+                            }
+                        )
+                    }
                 }
 
                 LazyColumn(modifier = Modifier.weight(1f)) {
@@ -552,6 +578,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                             onClick = {
                                                 magiaAlvoId = definicao.id
                                                 viewModel.atualizarBuscaMagia("")
+                                                viewModel.atualizarFiltroClasseMagia(null)
+                                                viewModel.atualizarFiltroEscolaMagia(null)
                                             },
                                             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
                                             modifier = Modifier.semantics {
