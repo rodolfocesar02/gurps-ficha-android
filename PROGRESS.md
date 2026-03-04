@@ -15,6 +15,16 @@ Atualizado em: 2026-03-04
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
 - Organização de trabalho separada criada em `motor modo alvo/` para evolução do novo motor.
+- Validação funcional da variante `pracego` executada no emulador:
+  - build/assemble `pracego` verde;
+  - instalação em emulador (`installPracegoDebug`) concluída;
+  - app aberto com sucesso (`MainActivity` em estado resumed);
+  - stress rápido com `adb shell monkey` (300 eventos) sem crash/ANR do app.
+- Auditoria rápida de acessibilidade na UI:
+  - cobertura de `semantics/contentDescription` presente nos fluxos principais já mapeados;
+  - sem crash de execução na variante `pracego` durante validação.
+- Limitação de ferramenta registrada:
+  - `lintPracegoDebug` falhou por bug interno do lint (`AutoboxingStateCreationDetector`), sem evidência de erro funcional do app.
 
 ## Lotes (divisão por partes)
 ### Lote 1 - Núcleo de Chaves e Blocos
@@ -159,11 +169,11 @@ Partes implementadas:
 
 Partes faltantes:
 - Rodar validação funcional em emulador com a flag de modo alvo ligada.
-  - Bloqueio atual neste ambiente: `adb` indisponível no PATH.
+  - pendente de roteiro manual guiado (fluxo completo com usuário) após ligar a flag.
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
-2. Rodar primeiro teste no emulador com Lote 4 (flag controlada) e medir fluidez.
+2. Rodar primeiro teste no emulador com Lote 4 (flag controlada) e medir fluidez no fluxo real de magias.
 3. Iterar otimização do delta incremental com foco em p95 sem perder equivalência.
 
 ## Regra operacional
