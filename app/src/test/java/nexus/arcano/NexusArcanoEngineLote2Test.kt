@@ -123,6 +123,24 @@ class NexusArcanoEngineLote2Test {
         assertTrue("cand_terra" in ids)
     }
 
+    @Test
+    fun custo_pesa_dependencias_e_prioriza_candidata_mais_barata() {
+        val engine = NexusArcanoEngine(catalogoCusto())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("base_ar", "dep_x"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+
+        val r = engine.calcularEstadoAlvo("alvo", estado)
+        val ids = r.proximasAcoes.map { it.magiaId }
+
+        assertTrue(ids.indexOf("cand_barata") >= 0)
+        assertTrue(ids.indexOf("cand_cara") >= 0)
+        assertTrue(ids.indexOf("cand_barata") < ids.indexOf("cand_cara"))
+    }
+
     private fun catalogoComPoucasEscolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(
@@ -188,6 +206,26 @@ class NexusArcanoEngineLote2Test {
             M("base_agua", "Base Agua", listOf("Agua"), ""),
             M("cand_agua", "Cand Agua", listOf("Agua"), ""),
             M("cand_terra", "Cand Terra", listOf("Terra"), "")
+        )
+        val byId = magias.associateBy { it.id }
+
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoCusto(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo", "Alvo", listOf("Meta"), "1 magica em 5 outras escolas"),
+            M("base_ar", "Base Ar", listOf("Ar"), ""),
+            M("cand_barata", "Cand Barata", listOf("Agua"), ""),
+            M("cand_cara", "Cand Cara", listOf("Terra"), "dep_x"),
+            M("dep_x", "Dep X", listOf("Som"), "")
         )
         val byId = magias.associateBy { it.id }
 

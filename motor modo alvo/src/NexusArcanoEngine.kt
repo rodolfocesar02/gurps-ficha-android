@@ -241,7 +241,8 @@ class NexusArcanoEngine(
                 val count = escolasConhecidas.size
                 (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
             }
-            return depsMissing + faltaNum + faltaEsc
+            val complexidadeBase = if (normalize(catalogo.preRequisitoRaw(candId)).isBlank()) 0 else 1
+            return depsMissing * 3 + faltaNum * 5 + faltaEsc * 2 + complexidadeBase
         }
         val avaliados = candidatos.map { candId ->
             val escola = normalize(catalogo.escolas(candId).firstOrNull().orEmpty())

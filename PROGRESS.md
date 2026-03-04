@@ -58,13 +58,17 @@ Partes implementadas:
   - último recurso com repetição permitida.
 - Planejador agora sugere apenas magias aprendíveis no estado atual (evita recomendação bloqueada).
 - Regra `outras escolas` agora exclui automaticamente a escola da magia de origem nas sugestões laterais.
+- Pontuação de custo calibrada com peso maior para bloqueios relevantes:
+  - dependência nomeada pendente;
+  - gate numérico pendente;
+  - gate de escolas do próprio candidato.
 - Cobertura de teste ampliada no Lote 2 para:
   - exclusão de candidata bloqueada por pré-requisito numérico;
   - exclusão de escola inválida em contexto de `outras escolas`.
+  - priorização por custo (candidata barata antes da cara).
 
 Partes faltantes:
-- Heurística de prioridade final (cadeia obrigatória > escola nova > custo baixo).
-- Ajustar pontuação de custo de desbloqueio para candidatas com pré-requisitos leves.
+- Ajuste fino de pesos do custo com catálogo real completo (telemetria de ranking por alvo).
 
 ### Lote 3 - Estado Incremental
 Partes implementadas:
