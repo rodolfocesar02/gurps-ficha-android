@@ -686,7 +686,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun listaRelacionadosMagiaAlvo(alvo: MagiaDefinicao): List<String> {
         val snapshot = nexusArcanoModoAlvoAdapter.calcular(
             alvoId = alvo.id,
-            personagem = personagem,
+            magiasConhecidasIds = personagem.magias.asSequence().map { it.definicaoId }.toSet(),
+            iq = personagem.inteligencia,
+            dx = personagem.destreza,
             am = nivelAptidaoMagica
         )
         return snapshot.relacionadosIds
@@ -727,12 +729,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         modoAlvoAviso = null
         modoAlvoCarregando = true
 
+        val magiasConhecidasSnapshot = personagem.magias.asSequence().map { it.definicaoId }.toSet()
+        val iqSnapshot = personagem.inteligencia
+        val dxSnapshot = personagem.destreza
+        val amSnapshot = nivelAptidaoMagica
         modoAlvoJob = viewModelScope.launch(Dispatchers.Default) {
             try {
                 val snapshot = nexusArcanoModoAlvoAdapter.calcular(
                     alvoId = alvoId,
-                    personagem = personagem,
-                    am = nivelAptidaoMagica
+                    magiasConhecidasIds = magiasConhecidasSnapshot,
+                    iq = iqSnapshot,
+                    dx = dxSnapshot,
+                    am = amSnapshot
                 )
                 withContext(Dispatchers.Main) {
                     modoAlvoRelacionadosIds = snapshot.relacionadosIds

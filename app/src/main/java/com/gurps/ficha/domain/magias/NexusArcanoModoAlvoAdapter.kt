@@ -1,7 +1,6 @@
 ﻿package com.gurps.ficha.domain.magias
 
 import com.gurps.ficha.model.MagiaDefinicao
-import com.gurps.ficha.model.Personagem
 import nexus.arcano.ArcanoCatalogo
 import nexus.arcano.ArcanoChave
 import nexus.arcano.ArcanoEstadoPersonagem
@@ -40,7 +39,13 @@ class NexusArcanoModoAlvoAdapter(
         }
     )
 
-    fun calcular(alvoId: String, personagem: Personagem, am: Int): NexusArcanoModoAlvoSnapshot {
+    fun calcular(
+        alvoId: String,
+        magiasConhecidasIds: Set<String>,
+        iq: Int,
+        dx: Int,
+        am: Int
+    ): NexusArcanoModoAlvoSnapshot {
         if (!magiasById.containsKey(alvoId)) {
             return NexusArcanoModoAlvoSnapshot(
                 relacionadosIds = emptyList(),
@@ -52,10 +57,10 @@ class NexusArcanoModoAlvoAdapter(
         }
 
         val estado = ArcanoEstadoPersonagem(
-            magiasConhecidasIds = personagem.magias.asSequence().map { it.definicaoId }.toSet(),
+            magiasConhecidasIds = magiasConhecidasIds,
             am = am,
-            iq = personagem.inteligencia,
-            dx = personagem.destreza
+            iq = iq,
+            dx = dx
         )
 
         val resultado = engine.calcularEstadoAlvo(alvoId, estado)

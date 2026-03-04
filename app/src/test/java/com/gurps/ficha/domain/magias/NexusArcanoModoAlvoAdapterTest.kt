@@ -1,7 +1,6 @@
 ﻿package com.gurps.ficha.domain.magias
 
 import com.gurps.ficha.model.MagiaDefinicao
-import com.gurps.ficha.model.Personagem
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -14,7 +13,9 @@ class NexusArcanoModoAlvoAdapterTest {
 
         val snapshot = adapter.calcular(
             alvoId = "desejo",
-            personagem = Personagem(inteligencia = 15),
+            magiasConhecidasIds = emptySet(),
+            iq = 15,
+            dx = 10,
             am = 3
         )
 
@@ -30,7 +31,9 @@ class NexusArcanoModoAlvoAdapterTest {
 
         val snapshot = adapter.calcular(
             alvoId = "inexistente",
-            personagem = Personagem(),
+            magiasConhecidasIds = emptySet(),
+            iq = 10,
+            dx = 10,
             am = 0
         )
 

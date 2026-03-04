@@ -162,18 +162,28 @@ Partes implementadas:
 - Reativação controlada por flag de build implementada:
   - `BuildConfig.MODO_ALVO_NEXUS_HABILITADO`;
   - leitura de `local.properties` / propriedade Gradle `MODO_ALVO_NEXUS_HABILITADO`.
+- Robustez de cálculo no `FichaViewModel`:
+  - cálculo do NEXUS ARCANO usa snapshot imutável de estado (`magias conhecidas`, `IQ`, `DX`, `AM`);
+  - evita inconsistência quando o usuário altera magias durante recálculo assíncrono.
+- UX do fluxo de alvo refinada:
+  - ao ativar modo alvo ou definir novo alvo, limpa busca/filtros de classe/escola para reduzir estado confuso;
+  - resumo adicional acessível no `pracego` com leitura consolidada de alvo, próximas ações e chaves pendentes.
 - Testes unitários do adaptador adicionados:
   - `app/src/test/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapterTest.kt`
 - Checklist de smoke test emulador do Lote 4 criado:
   - `motor modo alvo/lotes/lote-04-smoke-check-emulador.md`
+- Validação de execução no emulador (`pracego`) após os ajustes:
+  - `:app:installPracegoDebug` concluído;
+  - `MainActivity` em estado resumed após launch;
+  - sem crash/ANR em abertura imediata.
 
 Partes faltantes:
-- Rodar validação funcional em emulador com a flag de modo alvo ligada.
-  - pendente de roteiro manual guiado (fluxo completo com usuário) após ligar a flag.
+- Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
+  (entrada/saída do diálogo, adicionar magias recomendadas em sequência e confirmar estabilidade da trilha).
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
-2. Rodar primeiro teste no emulador com Lote 4 (flag controlada) e medir fluidez no fluxo real de magias.
+2. Executar roteiro guiado com usuário no emulador com flag do NEXUS ARCANO ligada e coletar ajustes finais de UX.
 3. Iterar otimização do delta incremental com foco em p95 sem perder equivalência.
 
 ## Regra operacional
