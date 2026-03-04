@@ -140,6 +140,18 @@ class NexusArcanoEngine(
     private val cadeiaCache = mutableMapOf<String, List<String>>()
     private val temposRodadaNs = ArrayDeque<Long>()
     private val maxTempos = 512
+    private val alvosComRegraEscolas: Set<String> by lazy {
+        allMagiaIds.filter { regrasEscolasPorMagia(it).isNotEmpty() }.toSet()
+    }
+    private val dependentesDiretosByMagia: Map<String, Set<String>> by lazy {
+        val out = mutableMapOf<String, MutableSet<String>>()
+        allMagiaIds.forEach { alvo ->
+            dependenciasNomeadas(alvo).forEach { dep ->
+                out.getOrPut(dep) { mutableSetOf() }.add(alvo)
+            }
+        }
+        out.mapValues { it.value.toSet() }
+    }
 
     fun calcularEstadoAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): ArcanoResultado {
         val t0 = System.nanoTime()
@@ -681,6 +693,30 @@ class NexusArcanoEngine(
         val token = "|$magiaId|"
         cacheResultados.keys.removeIf { token in it.assinaturaKnown }
         cacheDiagnosticos.keys.removeIf { token in it.assinaturaKnown }
+    }
+
+    fun invalidarCacheIncrementalPorMagia(magiaId: String) {
+        val impactados = alvosImpactadosPorMagia(magiaId)
+        if (impactados.isEmpty()) return
+        cacheResultados.keys.removeIf { it.alvoId in impactados }
+        cacheDiagnosticos.keys.removeIf { it.alvoId in impactados }
+    }
+
+    fun alvosImpactadosPorMagia(magiaId: String): Set<String> {
+        val visit = mutableSetOf<String>()
+        val queue = ArrayDeque<String>()
+        queue.addLast(magiaId)
+        while (queue.isNotEmpty()) {
+            val atual = queue.removeFirst()
+            dependentesDiretosByMagia[atual].orEmpty().forEach { dep ->
+                if (visit.add(dep)) queue.addLast(dep)
+            }
+        }
+        if (catalogo.existe(magiaId)) {
+            visit += magiaId
+        }
+        visit += alvosComRegraEscolas
+        return visit
     }
 
     fun cacheStats(): ArcanoCacheStats {
