@@ -81,11 +81,11 @@ Partes implementadas:
   - consistência funcional: sem exceções e sem inconsistências estruturais em ambos.
 - Teste comparativo `delta incremental vs full` por rodada adicionado (`magias2versao.json`):
   - alvo: `desejo`, 24 rodadas;
-  - delta p50 ~ 0.044 ms, p95 ~ 1.047 ms;
-  - full p50 ~ 0.025 ms, p95 ~ 1.020 ms;
+  - delta p50 ~ 0.035 ms, p95 ~ 1.463 ms;
+  - full p50 ~ 0.015 ms, p95 ~ 1.373 ms;
   - equivalência funcional preservada (sem inconsistências);
-  - refinamento incremental aplicado (`INCREMENTAL_NO_IMPACT`) para reaproveitar sugestões/bloqueio quando mudança não impacta alvo;
-  - conclusão atual: ainda sem ganho de p95 sobre full nesse cenário, mas diferença caiu.
+  - refinamento incremental aplicado e validado sem divergência;
+  - conclusão atual: delta ainda acima do p95 do full nesse cenário.
 - Telemetria de ranking Lote 2 calibrada com `magias2versao.json`:
   - `ALVOS_COM_DIAGNOSTICO=67`;
   - `TOP1_ESCOLA_NOVA=100%`;
@@ -131,7 +131,7 @@ Partes implementadas:
   - valida hit de cache, invalidação por magia, invalidação incremental por impacto, delta incremental e métricas de tempo.
 
 Partes faltantes:
-- Refinar delta incremental para bater p95 do full em cenário de rodada real (ainda levemente acima).
+- Refinar delta incremental para bater p95 do full em cenário de rodada real (ainda acima).
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
@@ -144,8 +144,8 @@ Partes faltantes:
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
-2. Otimizar o caminho incremental de sugestões e repetir comparativo delta vs full.
-3. Preparar adaptador mínimo (Lote 4) em flag separada para primeiro teste no emulador.
+2. Preparar adaptador mínimo (Lote 4) em flag separada para primeiro teste no emulador.
+3. Iterar otimização do delta incremental com foco em p95 sem perder equivalência.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
