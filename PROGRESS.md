@@ -103,7 +103,10 @@ Partes implementadas:
 - Delta incremental inicial implementado no motor:
   - `calcularEstadoAlvoIncremental(alvo, estadoAnterior, resultadoAnterior, estadoNovo)`;
   - caminho incremental para mudança apenas de magias conhecidas;
-  - fallback automático para full quando há mudança de atributo/alinhamento inválido.
+  - fallback automático para full apenas quando há desalinhamento inválido do snapshot anterior.
+- Delta incremental expandido para mudança de atributos sem fallback full:
+  - recálculo incremental de chaves numéricas (`AM/IQ/soma`) no snapshot do alvo;
+  - manutenção de equivalência funcional com cálculo completo validada em teste.
 - Métrica básica de cache adicionada (`cacheStats`: entradas/hits/misses).
 - Métrica de tempo por rodada adicionada:
   - `timingStats` com `amostras`, `mediaMs`, `p95Ms`, `maxMs`;
@@ -113,7 +116,7 @@ Partes implementadas:
   - valida hit de cache, invalidação por magia, invalidação incremental por impacto, delta incremental e métricas de tempo.
 
 Partes faltantes:
-- Expandir delta incremental para cobrir também mudanças de atributos sem fallback full.
+- Refinar delta incremental para reduzir ainda mais recomputação de sugestões em cenários mistos (known+atributo).
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
@@ -126,8 +129,8 @@ Partes faltantes:
 
 ## Próximos Passos imediatos
 1. Rodar telemetria de ranking no catálogo real e calibrar pesos finais do Lote 2.
-2. Expandir delta incremental do Lote 3 para cenários de atributo (AM/IQ/DX) sem fallback full.
-3. Instrumentar teste comparativo de tempo por rodada com e sem delta incremental.
+2. Instrumentar teste comparativo de tempo por rodada com e sem delta incremental.
+3. Ajustar ranking final do Lote 2 com telemetria real por alvo.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
