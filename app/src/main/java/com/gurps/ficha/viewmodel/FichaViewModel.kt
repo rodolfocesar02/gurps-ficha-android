@@ -63,12 +63,6 @@ data class TecnicaRegraPerfil(
 @OptIn(FlowPreview::class)
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val autoSaveRecuperacaoNome = "_autosave_recuperacao"
-    private val subEscolasAnimais = listOf(
-        "Criaturas da Terra",
-        "Criaturas do Ar",
-        "Criaturas do Mar"
-    )
-
     var personagem by mutableStateOf(Personagem())
         private set
 
@@ -629,20 +623,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             return "Magia já adicionada."
         }
 
-        if (definicao.id.equals("controle_de_animal", ignoreCase = true)) {
-            val subEscola = especializacaoMagia?.trim().orEmpty()
-            if (subEscola.isBlank()) {
-                return "Selecione a sub-escola: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
-            }
-            val duplicadaSubEscola = personagem.magias.any {
-                it.definicaoId.equals("controle_de_animal", ignoreCase = true) &&
-                    it.especializacaoMagia?.trim()?.equals(subEscola, ignoreCase = true) == true
-            }
-            if (duplicadaSubEscola) {
-                return "Controle de Animal já foi adicionada para esta sub-escola."
-            }
-        }
-
         if (permiteMultiplasInstanciasPorEscola(definicao.id)) {
             val escolaNorm = especializacaoMagia?.trim()?.lowercase()
             if (escolaNorm.isNullOrBlank()) return "Informe a escola da magia."
@@ -765,8 +745,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             "convocar_elemental",
             "controle_de_elemental",
             "anular_possessao",
-            "cavalgar",
-            "controle_de_animal"
+            "cavalgar"
         )
     }
 
@@ -775,16 +754,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun validarEspecializacaoObrigatoria(definicaoId: String, especializacaoMagia: String?): String? {
-        val definicao = dataRepository.getMagiaPorId(definicaoId)
-        val exigeSubEscolaAnimais = definicaoId.equals("controle_de_animal", ignoreCase = true) ||
-            definicao?.escola.orEmpty().any { it.equals("Animais", ignoreCase = true) }
+        val exigeSubEscolaAnimais = definicaoId.equals("controle_de_animal", ignoreCase = true)
         if (exigeSubEscolaAnimais) {
             if (especializacaoMagia.isNullOrBlank()) {
                 return "Selecione a sub-escola: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
-            }
-            val valida = subEscolasAnimais.any { it.equals(especializacaoMagia.trim(), ignoreCase = true) }
-            if (!valida) {
-                return "Sub-escola inválida. Use: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
             }
             return null
         }
@@ -816,6 +789,57 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             magias.firstOrNull { it.nome.equals(nome, ignoreCase = true) }?.calcularNivel(personagem, am)
         fun countEscola(escola: String): Int =
             magias.count { it.escola.orEmpty().any { e -> e.equals(escola, ignoreCase = true) } }
+        fun normalizarTokenAnimal(raw: String): String {
+            return raw
+                .lowercase()
+                .replace("á", "a")
+                .replace("ã", "a")
+                .replace("â", "a")
+                .replace("é", "e")
+                .replace("ê", "e")
+                .replace("í", "i")
+                .replace("ó", "o")
+                .replace("ô", "o")
+                .replace("õ", "o")
+                .replace("ú", "u")
+                .replace(Regex("[^a-z0-9\\s]"), " ")
+                .replace(Regex("\\s+"), " ")
+                .trim()
+        }
+        fun caminhoControleAnimal(magia: MagiaSelecionada): String? {
+            val did = magia.definicaoId.lowercase()
+            return when {
+                did.endsWith("_ar") -> "ar"
+                did.endsWith("_terra") -> "terra"
+                did.endsWith("_mar") -> "mar"
+                did == "controle_de_animal" -> {
+                    val tokens = listOf(
+                        magia.especializacaoMagia.orEmpty(),
+                        magia.nome
+                    ).joinToString(" ")
+                    val norm = normalizarTokenAnimal(tokens)
+                    when {
+                        norm.contains("criaturas do ar") || norm.contains(" do ar") -> "ar"
+                        norm.contains("criaturas da terra") || norm.contains(" da terra") -> "terra"
+                        norm.contains("criaturas do mar") || norm.contains(" do mar") -> "mar"
+                        else -> "generic"
+                    }
+                }
+                else -> null
+            }
+        }
+        fun totalControleAnimal(): Int {
+            return magias.count {
+                val did = it.definicaoId.lowercase()
+                did == "controle_de_animal" || did.startsWith("controle_de_animal_")
+            }
+        }
+        fun caminhosControleAnimalDistintos(): Int {
+            return magias
+                .mapNotNull(::caminhoControleAnimal)
+                .toSet()
+                .size
+        }
 
         return when (id) {
             "corpo_de_vento" -> {
@@ -848,13 +872,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 else null
             }
             "cavalgar" -> {
-                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
-                if (countControleAnimal < 1) "Pré-requisito não atendido: pelo menos 1 magia de Controle de Animal."
+                if (totalControleAnimal() < 1) "Pré-requisito não atendido: pelo menos 1 magia de Controle de Animal."
                 else null
             }
             "controle_de_hibrido" -> {
-                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
-                if (countControleAnimal < 2) "Pré-requisito não atendido: 2 magias de Controle de Animal."
+                if (caminhosControleAnimalDistintos() < 2) "Pré-requisito não atendido: 2 caminhos distintos de Controle de Animal (Ar/Terra/Mar)."
                 else null
             }
             "espantar_zumbi" -> if (!hasMagia("Zumbi")) "Pré-requisito não atendido: Zumbi." else null
@@ -865,8 +887,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 else null
             }
             "passageiro_interno" -> {
-                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
-                if (countControleAnimal < 2) "Pré-requisito não atendido: 2 magias de Controle de Animal."
+                if (caminhosControleAnimalDistintos() < 2) "Pré-requisito não atendido: 2 caminhos distintos de Controle de Animal (Ar/Terra/Mar)."
                 else null
             }
             "reconstruirnt" -> {
@@ -880,8 +901,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             "repelir_animal" -> {
-                val countControleAnimal = magias.count { it.nome.contains("Controle", ignoreCase = true) && it.nome.contains("Animal", ignoreCase = true) }
-                if (countControleAnimal < 1) "Pré-requisito não atendido: Controle de Animal."
+                if (totalControleAnimal() < 1) "Pré-requisito não atendido: Controle de Animal."
                 else null
             }
             "transformar_outro" -> {

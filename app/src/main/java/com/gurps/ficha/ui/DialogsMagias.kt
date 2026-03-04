@@ -72,7 +72,7 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-private const val MODO_ALVO_HABILITADO = false
+private const val MODO_ALVO_HABILITADO = true
 private const val AJUDA_VOZ_HABILITADA = false
 
 private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
@@ -595,8 +595,7 @@ fun ConfigurarMagiaDialog(
     var adicaoForcadaSemPrereq by remember { mutableStateOf(false) }
     var confirmarAdicaoForcada by remember { mutableStateOf(false) }
     val exigeEncantamentoAlvo = definicao.id.equals("imunidade_a_encantamento", ignoreCase = true)
-    val exigeSubEscolaAnimais = definicao.id.equals("controle_de_animal", ignoreCase = true) ||
-        definicao.escola.orEmpty().any { it.equals("Animais", ignoreCase = true) }
+    val exigeSubEscolaAnimais = definicao.id.equals("controle_de_animal", ignoreCase = true)
     val exigeEspecializacao = definicao.id.lowercase() in setOf(
         "adivinhacao",
         "cavalgar",

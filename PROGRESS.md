@@ -1,6 +1,6 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-03
+Atualizado em: 2026-03-04
 
 ## Estado Atual
 - Branch: `main`
@@ -88,3 +88,46 @@ Atualizado em: 2026-03-03
 - UI:
   - diálogo de configuração de magia agora usa seleção guiada (dropdown) para sub-escola de `Animais`.
   - aba de magias exibe especialização no título da magia: `Nome (Sub-escola)`.
+
+## Atualização incremental (Etapa D - 2026-03-04)
+- Escola `Animais` migrada para caminhos explícitos em catálogo:
+  - remoção das versões genéricas: `controle_de_animal`, `convocar_animal`, `dominar_animal`, `falar_com_animais`.
+  - criação de variantes por caminho: `_terra`, `_ar`, `_mar` para as quatro famílias acima.
+- Pré-requisitos entre variantes de `Animais` alinhados por caminho:
+  - `Convocar Animal (X)` -> `Controle de Animal (X)`;
+  - `Dominar Animal (X)` -> `Controle de Animal (X)`;
+  - `Falar com Animais (X)` -> `Convocar Animal (X)`.
+- Runtime simplificado para `Animais`:
+  - removida exigência de sub-escola em tempo de adição para qualquer magia da escola `Animais`;
+  - diálogo mantém especialização apenas para casos ainda exigidos (`Elemental`, etc.).
+
+## Atualização incremental (Etapa E - 2026-03-04)
+- Regras especiais de magias ligadas a `Animais` atualizadas para caminhos distintos:
+  - `cavalgar`: exige >= 1 `Controle de Animal` (qualquer caminho);
+  - `controle_de_hibrido`: exige 2 caminhos distintos de `Controle de Animal` (`Ar/Terra/Mar`);
+  - `passageiro_interno`: exige 2 caminhos distintos de `Controle de Animal` (`Ar/Terra/Mar`);
+  - `repelir_animal`: exige >= 1 `Controle de Animal`.
+- Compatibilidade mantida para fichas antigas:
+  - reconhecimento de caminho por sufixo de id (`_ar`, `_terra`, `_mar`);
+  - fallback por texto/especialização legado quando necessário.
+
+## Atualização incremental (Etapa F - 2026-03-04)
+- Modo Alvo reativado na UI:
+  - `MODO_ALVO_HABILITADO = true`.
+- Testabilidade do motor melhorada:
+  - novo contrato `MagiaPlannerDataSource`;
+  - `DataRepository` implementa o contrato;
+  - `MagiaTargetEngine`/`MagiaDependencyPlanner` desacoplados para testes unitários.
+- Testes unitários novos:
+  - `MagiaTargetEngineAnimaisTest`: valida trilhas por caminho (`Ar/Terra/Mar`) sem vazamento.
+  - `MagiaTargetEngineCatalogSweepTest`: varredura completa do catálogo no Modo Alvo.
+- Sweep do catálogo:
+  - total de magias testadas: `839`;
+  - exceções/travas: `0`;
+  - alvos sem aparecer na própria trilha: `0`;
+  - relatório salvo em `app/build/reports/modo_alvo_sweep_report.txt`.
+- Validação executada nas duas variantes:
+  - `:app:compileVisualDebugKotlin` OK
+  - `:app:compilePracegoDebugKotlin` OK
+  - `:app:testVisualDebugUnitTest` OK
+  - `:app:testPracegoDebugUnitTest` OK

@@ -1,6 +1,5 @@
 ﻿package com.gurps.ficha.domain.magias
 
-import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
@@ -8,7 +7,7 @@ import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import java.util.LinkedHashMap
 
 class MagiaTargetEngine(
-    private val dataRepository: DataRepository
+    private val dataRepository: MagiaPlannerDataSource
 ) {
     private val parseCache = object : LinkedHashMap<String, PreRequisitoParser.ParseResult>(512, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, PreRequisitoParser.ParseResult>?): Boolean {

@@ -1631,7 +1631,7 @@
     "pagina": 148,
     "classe": "Comum",
     "escola": [
-      "Desloc.",
+      "Deslocamento",
       "Clima"
     ],
     "duracao": "1 hora",
@@ -2375,8 +2375,36 @@
     "preRequisitos": "AM1"
   },
   {
-    "id": "controle_de_animal",
-    "nome": "Controle de Animal",
+    "id": "controle_de_animal_terra",
+    "nome": "Controle de Animal (Criaturas da Terra)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comum/R-Vont",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "Varia",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Acalmar Animal"
+  },
+  {
+    "id": "controle_de_animal_ar",
+    "nome": "Controle de Animal (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comum/R-Vont",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "Varia",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Acalmar Animal"
+  },
+  {
+    "id": "controle_de_animal_mar",
+    "nome": "Controle de Animal (Criaturas do Mar)",
     "dificuldade": "D",
     "pagina": 30,
     "classe": "Comum/R-Vont",
@@ -2574,8 +2602,8 @@
     "preRequisitos": "AM1, 1 mágica em 10 escolas diferentes"
   },
   {
-    "id": "convocar_animal",
-    "nome": "Convocar Animal",
+    "id": "convocar_animal_terra",
+    "nome": "Convocar Animal (Criaturas da Terra)",
     "dificuldade": "D",
     "pagina": 30,
     "classe": "Comm",
@@ -2585,7 +2613,35 @@
     "duracao": "1 min.",
     "energia": "3/2#",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Acalmar Animal"
+    "preRequisitos": "Controle de Animal (Criaturas da Terra)"
+  },
+  {
+    "id": "convocar_animal_ar",
+    "nome": "Convocar Animal (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comm",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "3/2#",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Ar)"
+  },
+  {
+    "id": "convocar_animal_mar",
+    "nome": "Convocar Animal (Criaturas do Mar)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comm",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "3/2#",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Mar)"
   },
   {
     "id": "convocar_demonio",
@@ -3684,7 +3740,7 @@
     "pagina": 143,
     "classe": "Bloqueio",
     "escola": [
-      "Desloc.",
+      "Deslocamento",
       "Proteção"
     ],
     "duracao": "Instant.",
@@ -3906,8 +3962,8 @@
     "preRequisitos": "Requisitar Idioma, 3 idiomas Com Sotaque"
   },
   {
-    "id": "dominar_animal",
-    "nome": "Dominar Animal",
+    "id": "dominar_animal_terra",
+    "nome": "Dominar Animal (Criaturas da Terra)",
     "dificuldade": "D",
     "pagina": 30,
     "classe": "Comum/Bloqueio/R-IQ",
@@ -3917,7 +3973,35 @@
     "duracao": "Indef.",
     "energia": "2",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Acalmar Animal"
+    "preRequisitos": "Controle de Animal (Criaturas da Terra)"
+  },
+  {
+    "id": "dominar_animal_ar",
+    "nome": "Dominar Animal (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comum/Bloqueio/R-IQ",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "Indef.",
+    "energia": "2",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Ar)"
+  },
+  {
+    "id": "dominar_animal_mar",
+    "nome": "Dominar Animal (Criaturas do Mar)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comum/Bloqueio/R-IQ",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "Indef.",
+    "energia": "2",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Mar)"
   },
   {
     "id": "domo_absoluto",
@@ -4993,8 +5077,8 @@
     "preRequisitos": "Poltergeist"
   },
   {
-    "id": "falar_com_animais",
-    "nome": "Falar com Animais",
+    "id": "falar_com_animais_terra",
+    "nome": "Falar com Animais (Criaturas da Terra)",
     "dificuldade": "D",
     "pagina": 31,
     "classe": "Comum",
@@ -5004,7 +5088,35 @@
     "duracao": "1 min.",
     "energia": "04/02",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Convocar Animais"
+    "preRequisitos": "Convocar Animal (Criaturas da Terra)"
+  },
+  {
+    "id": "falar_com_animais_ar",
+    "nome": "Falar com Animais (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "04/02",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Convocar Animal (Criaturas do Ar)"
+  },
+  {
+    "id": "falar_com_animais_mar",
+    "nome": "Falar com Animais (Criaturas do Mar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "04/02",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Convocar Animal (Criaturas do Mar)"
   },
   {
     "id": "falar_com_maquinasnt",
@@ -11761,4 +11873,3 @@
     "preRequisitos": "Zumbi, Carisma 2+"
   }
 ]
-
