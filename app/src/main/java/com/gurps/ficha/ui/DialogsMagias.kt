@@ -72,7 +72,7 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-private const val MODO_ALVO_HABILITADO = false
+private val MODO_ALVO_HABILITADO = BuildConfig.MODO_ALVO_NEXUS_HABILITADO
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
 
