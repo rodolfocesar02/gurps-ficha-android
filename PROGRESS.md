@@ -100,16 +100,20 @@ Partes implementadas:
 - Invalidação incremental por impacto de alvo adicionada:
   - `alvosImpactadosPorMagia` (dependência direta/indireta + alvos com regra de escolas);
   - `invalidarCacheIncrementalPorMagia` remove apenas entradas de alvos impactados.
+- Delta incremental inicial implementado no motor:
+  - `calcularEstadoAlvoIncremental(alvo, estadoAnterior, resultadoAnterior, estadoNovo)`;
+  - caminho incremental para mudança apenas de magias conhecidas;
+  - fallback automático para full quando há mudança de atributo/alinhamento inválido.
 - Métrica básica de cache adicionada (`cacheStats`: entradas/hits/misses).
 - Métrica de tempo por rodada adicionada:
   - `timingStats` com `amostras`, `mediaMs`, `p95Ms`, `maxMs`;
   - janela limitada em memória (até 512 amostras recentes).
 - Testes iniciais do Lote 3 adicionados:
   - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote3Test.kt`
-  - valida hit de cache, invalidação por magia, invalidação incremental por impacto e métricas de tempo.
+  - valida hit de cache, invalidação por magia, invalidação incremental por impacto, delta incremental e métricas de tempo.
 
 Partes faltantes:
-- Recalcular apenas chaves impactadas por cada nova magia (delta real no resultado, além da invalidação de cache por alvo).
+- Expandir delta incremental para cobrir também mudanças de atributos sem fallback full.
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
@@ -122,8 +126,8 @@ Partes faltantes:
 
 ## Próximos Passos imediatos
 1. Rodar telemetria de ranking no catálogo real e calibrar pesos finais do Lote 2.
-2. Implementar delta incremental real no Lote 3 (recalcular blocos/chaves impactados sem recomputo completo).
-3. Instrumentar teste comparativo de tempo por rodada com e sem delta real.
+2. Expandir delta incremental do Lote 3 para cenários de atributo (AM/IQ/DX) sem fallback full.
+3. Instrumentar teste comparativo de tempo por rodada com e sem delta incremental.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.

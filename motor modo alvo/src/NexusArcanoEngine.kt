@@ -53,6 +53,12 @@ data class ArcanoTimingStats(
     val maxMs: Double
 )
 
+data class ArcanoDeltaResultado(
+    val resultado: ArcanoResultado,
+    val modo: String,
+    val chavesRecalculadas: Int
+)
+
 interface ArcanoCatalogo {
     fun preRequisitoRaw(magiaId: String): String
     fun escolas(magiaId: String): List<String>
@@ -98,6 +104,13 @@ class NexusArcanoEngine(
         val dx: Int
     )
 
+    private data class SnapshotAlvo(
+        val alvoId: String,
+        val cadeiaSemAlvo: List<String>,
+        val regrasEscolas: List<RegraEscolas>,
+        val regrasNumericas: List<RegraNumerica>
+    )
+
     private val cacheResultados = object : LinkedHashMap<CacheKey, ArcanoResultado>(128, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, ArcanoResultado>?): Boolean {
             return size > 256
@@ -138,6 +151,7 @@ class NexusArcanoEngine(
     private val regrasEscolasCache = mutableMapOf<String, List<RegraEscolas>>()
     private val regrasNumericasCache = mutableMapOf<String, List<RegraNumerica>>()
     private val cadeiaCache = mutableMapOf<String, List<String>>()
+    private val snapshotCache = mutableMapOf<String, SnapshotAlvo>()
     private val temposRodadaNs = ArrayDeque<Long>()
     private val maxTempos = 512
     private val alvosComRegraEscolas: Set<String> by lazy {
@@ -175,10 +189,10 @@ class NexusArcanoEngine(
             }
 
             val known = estado.magiasConhecidasIds
-            val cadeia = construirCadeiaObrigatoria(alvoId)
-            val cadeiaSemAlvo = cadeia.filter { it != alvoId }
-            val regrasEscolas = coletarRegrasEscolas(cadeia)
-            val regrasNumericas = coletarRegrasNumericas(cadeia)
+            val snapshot = snapshotAlvo(alvoId)
+            val cadeiaSemAlvo = snapshot.cadeiaSemAlvo
+            val regrasEscolas = snapshot.regrasEscolas
+            val regrasNumericas = snapshot.regrasNumericas
 
             val chaves = mutableListOf<ArcanoChave>()
 
@@ -332,6 +346,113 @@ class NexusArcanoEngine(
         } finally {
             registrarTempoRodada(System.nanoTime() - t0)
         }
+    }
+
+    fun calcularEstadoAlvoIncremental(
+        alvoId: String,
+        estadoAnterior: ArcanoEstadoPersonagem,
+        resultadoAnterior: ArcanoResultado,
+        estadoNovo: ArcanoEstadoPersonagem
+    ): ArcanoDeltaResultado {
+        if (!catalogo.existe(alvoId)) {
+            return ArcanoDeltaResultado(
+                resultado = calcularEstadoAlvo(alvoId, estadoNovo),
+                modo = "FULL_TARGET_NOT_FOUND",
+                chavesRecalculadas = 0
+            )
+        }
+        val attrsMudaram = estadoAnterior.am != estadoNovo.am ||
+            estadoAnterior.iq != estadoNovo.iq ||
+            estadoAnterior.dx != estadoNovo.dx
+        if (attrsMudaram) {
+            return ArcanoDeltaResultado(
+                resultado = calcularEstadoAlvo(alvoId, estadoNovo),
+                modo = "FULL_ATTR_CHANGED",
+                chavesRecalculadas = 0
+            )
+        }
+
+        val knownAntes = estadoAnterior.magiasConhecidasIds
+        val knownNovo = estadoNovo.magiasConhecidasIds
+        if (knownAntes == knownNovo) {
+            return ArcanoDeltaResultado(
+                resultado = resultadoAnterior,
+                modo = "NO_CHANGES",
+                chavesRecalculadas = 0
+            )
+        }
+
+        val snapshot = snapshotAlvo(alvoId)
+        val expectedIds = chavesEsperadasIds(snapshot)
+        val prevMap = (resultadoAnterior.chavesAtivas + resultadoAnterior.chavesFaltantes).associateBy { it.id }
+        if (!expectedIds.all { it in prevMap }) {
+            return ArcanoDeltaResultado(
+                resultado = calcularEstadoAlvo(alvoId, estadoNovo),
+                modo = "FULL_PREV_MISMATCH",
+                chavesRecalculadas = 0
+            )
+        }
+
+        val novasChaves = prevMap.toMutableMap()
+        var recalculadas = 0
+        val changedKnown = (knownAntes - knownNovo) + (knownNovo - knownAntes)
+        changedKnown.forEach { magiaId ->
+            val keyId = "chave_$magiaId"
+            val old = novasChaves[keyId]
+            if (old != null) {
+                novasChaves[keyId] = old.copy(ativa = magiaId in knownNovo)
+                recalculadas += 1
+            }
+        }
+
+        val escolasAntes = escolasConhecidas(knownAntes)
+        val escolasAgora = escolasConhecidas(knownNovo)
+        if (escolasAntes != escolasAgora) {
+            snapshot.regrasEscolas.forEach { regra ->
+                val keyId = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}"
+                val old = novasChaves[keyId]
+                if (old != null) {
+                    novasChaves[keyId] = old.copy(ativa = atendeRegraEscolas(regra, knownNovo))
+                    recalculadas += 1
+                }
+            }
+        }
+
+        val chaveAlvoId = "chave_alvo_$alvoId"
+        novasChaves[chaveAlvoId]?.let { old ->
+            val ativaAlvo = magiaAprendivelAgora(alvoId, knownNovo, estadoNovo) || alvoId in knownNovo
+            novasChaves[chaveAlvoId] = old.copy(ativa = ativaAlvo)
+            recalculadas += 1
+        }
+
+        val ordemEsperada = chavesEsperadasOrdem(snapshot)
+        val chavesOrdenadas = ordemEsperada.mapNotNull { novasChaves[it] }
+        val ativas = chavesOrdenadas.filter { it.ativa }
+        val faltantes = chavesOrdenadas.filterNot { it.ativa }
+        val proximas = sugerirProximasAcoes(alvoId, knownNovo, snapshot.cadeiaSemAlvo, estadoNovo)
+        val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, snapshot.cadeiaSemAlvo, estadoNovo, knownNovo)
+        val bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
+            bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
+        } else {
+            null
+        }
+        val codigo = if (bloqueio != null) {
+            codigoBloqueio(bloqueioNumerico, faltantes)
+        } else {
+            null
+        }
+
+        return ArcanoDeltaResultado(
+            resultado = ArcanoResultado(
+                chavesAtivas = ativas,
+                chavesFaltantes = faltantes,
+                proximasAcoes = proximas,
+                motivoBloqueio = bloqueio,
+                motivoCodigo = codigo
+            ),
+            modo = "INCREMENTAL_KEYS_ONLY",
+            chavesRecalculadas = recalculadas
+        )
     }
 
     private fun sugerirProximasAcoes(
@@ -582,6 +703,38 @@ class NexusArcanoEngine(
             .distinct()
             .flatMap { regrasNumericasPorMagia(it) }
     }
+
+    private fun snapshotAlvo(alvoId: String): SnapshotAlvo {
+        return snapshotCache.getOrPut(alvoId) {
+            val cadeia = construirCadeiaObrigatoria(alvoId)
+            val cadeiaSemAlvo = cadeia.filter { it != alvoId }
+            SnapshotAlvo(
+                alvoId = alvoId,
+                cadeiaSemAlvo = cadeiaSemAlvo,
+                regrasEscolas = coletarRegrasEscolas(cadeia),
+                regrasNumericas = coletarRegrasNumericas(cadeia)
+            )
+        }
+    }
+
+    private fun chavesEsperadasOrdem(snapshot: SnapshotAlvo): List<String> {
+        val ordem = mutableListOf<String>()
+        snapshot.cadeiaSemAlvo.forEach { ordem += "chave_$it" }
+        snapshot.regrasEscolas.forEach { regra ->
+            ordem += "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}"
+        }
+        snapshot.regrasNumericas.forEach { regra ->
+            regra.minAm?.let { ordem += "chave_am_${regra.magiaOrigemId}_$it" }
+            regra.minIq?.let { ordem += "chave_iq_${regra.magiaOrigemId}_$it" }
+            if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
+                ordem += "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}"
+            }
+        }
+        ordem += "chave_alvo_${snapshot.alvoId}"
+        return ordem
+    }
+
+    private fun chavesEsperadasIds(snapshot: SnapshotAlvo): Set<String> = chavesEsperadasOrdem(snapshot).toSet()
 
     private fun regrasEscolasPorMagia(magiaId: String): List<RegraEscolas> {
         return regrasEscolasCache.getOrPut(magiaId) {
