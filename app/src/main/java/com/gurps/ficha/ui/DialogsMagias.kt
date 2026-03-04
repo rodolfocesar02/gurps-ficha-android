@@ -72,7 +72,7 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-private val MODO_ALVO_HABILITADO = BuildConfig.MODO_ALVO_NEXUS_HABILITADO
+private const val MODO_ALVO_HABILITADO = true
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
 
@@ -145,7 +145,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val listaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         val relacionadas = ordemRelacionadosAlvo
             .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
-        val pool = if (relacionadas.isNotEmpty()) relacionadas else catalogoMagias
+        val pool = if (relacionadas.size > 1) relacionadas else catalogoMagias
         val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
         val escolasConhecidas = viewModel.personagem.magias
             .flatMap { it.escola.orEmpty() }
@@ -171,7 +171,19 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             }
         }
         val fallbackBloqueadas = if (selecionadas.isEmpty()) {
-            candidatas.take(MAX_OPCOES_MODO_ALVO)
+            catalogoMagias
+                .asSequence()
+                .filter { magia ->
+                    magia.id != magiaAlvoSelecionada.id &&
+                        magia.id !in idsJaAdicionadas
+                }
+                .sortedWith(
+                    compareBy<MagiaDefinicao> {
+                        if (viewModel.prereqFailureForMagia(it) == null) 0 else 1
+                    }.thenBy { it.nome.lowercase() }
+                )
+                .take(MAX_OPCOES_MODO_ALVO)
+                .toList()
         } else {
             emptyList()
         }

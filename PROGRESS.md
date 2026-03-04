@@ -177,10 +177,17 @@ Partes implementadas:
   - `:app:installPracegoDebug` concluído;
   - `MainActivity` em estado resumed após launch;
   - sem crash/ANR em abertura imediata.
+- Correções de trilha aplicadas após teste manual de `Desejo`, `Cavalgar` e `Adivinhação`:
+  - parser de regra de escolas no NEXUS ARCANO atualizado para aceitar `magia(s)` e `mágica(s)` e números por palavra (`dez`, `quinze`, etc.);
+  - fallback da lista no diálogo de magias reforçado quando o pool do alvo vem vazio (passa a buscar sugestões no catálogo completo);
+  - filtro de opções imediatas mantém prioridade para magias aprendíveis agora.
+- Ajuste operacional de validação:
+  - durante o teste atual, `MODO_ALVO_HABILITADO` foi forçado para `true` em `DialogsMagias.kt` para eliminar ambiguidade de flag e garantir visibilidade do chip no emulador.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
   (entrada/saída do diálogo, adicionar magias recomendadas em sequência e confirmar estabilidade da trilha).
+- Remover o forçamento temporário (`MODO_ALVO_HABILITADO = true`) e retornar ao controle por flag de build após validação final.
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
