@@ -187,6 +187,10 @@ Partes implementadas:
 - Hotfix de performance/UI no modo alvo:
   - remoção de varredura pesada em recomposição da tela de magias;
   - lista e próxima recomendada passam a usar IDs prontos do ViewModel (`modoAlvoRelacionadosIds` / `modoAlvoProximasAcoesIds`), reduzindo risco de ANR.
+- Diagnóstico consolidado do lote atual (teste manual):
+  - motor atual ainda é heurístico guloso por rodada (`greedy`) e não garante caminho global mínimo;
+  - em cenário real de `Desejo` houve deriva para trilhas longas (ex.: ~27 magias) apesar de existir trilha mais curta;
+  - conclusão: falta implementar planejamento de caminho mínimo global para cumprir objetivo de "menos magias possível".
 - Ajuste operacional de validação:
   - durante o teste atual, `MODO_ALVO_HABILITADO` foi forçado para `true` em `DialogsMagias.kt` para eliminar ambiguidade de flag e garantir visibilidade do chip no emulador.
 
@@ -194,11 +198,12 @@ Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
   (entrada/saída do diálogo, adicionar magias recomendadas em sequência e confirmar estabilidade da trilha).
 - Remover o forçamento temporário (`MODO_ALVO_HABILITADO = true`) e retornar ao controle por flag de build após validação final.
+- Novo sublote pendente: algoritmo de caminho mínimo (BFS/A*) no NEXUS ARCANO para otimização global de trilha.
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
-2. Executar roteiro guiado com usuário no emulador com flag do NEXUS ARCANO ligada e coletar ajustes finais de UX.
-3. Iterar otimização do delta incremental com foco em p95 sem perder equivalência.
+2. Implementar sublote de caminho mínimo global (BFS/A*) para priorizar menor número de magias até o alvo.
+3. Após isso, executar roteiro guiado de validação final e remover forçamento temporário do modo alvo.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
