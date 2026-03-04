@@ -146,6 +146,10 @@ class NexusArcanoEngine(
     private val somaRegex = Regex("\\(([^\\)]*?)\\)\\s*:?\\s*(\\d+)\\+?", RegexOption.IGNORE_CASE)
     private val amRegex = Regex("\\bam\\s*(\\d+)\\b")
     private val iqRegex = Regex("\\biq\\s*(\\d+)\\b")
+    private val pesoDepsMissing = 6
+    private val pesoFaltaNumerica = 8
+    private val pesoFaltaEscolas = 3
+    private val pesoComplexidadeBase = 4
 
     private val dependenciasCache = mutableMapOf<String, List<String>>()
     private val regrasEscolasCache = mutableMapOf<String, List<RegraEscolas>>()
@@ -652,8 +656,11 @@ class NexusArcanoEngine(
                 val count = escolasConhecidas.size
                 (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
             }
-            val complexidadeBase = if (preNorm(candId).isBlank()) 0 else 1
-            return depsMissing * 3 + faltaNum * 5 + faltaEsc * 2 + complexidadeBase
+            val complexidadeBase = if (preRequisitoSemConteudo(candId)) 0 else 1
+            return depsMissing * pesoDepsMissing +
+                faltaNum * pesoFaltaNumerica +
+                faltaEsc * pesoFaltaEscolas +
+                complexidadeBase * pesoComplexidadeBase
         }
 
         return allMagiaIds
@@ -991,6 +998,14 @@ class NexusArcanoEngine(
             iq = estado.iq,
             dx = estado.dx
         )
+    }
+
+    private fun preRequisitoSemConteudo(magiaId: String): Boolean {
+        val raw = preRaw(magiaId).trim().lowercase()
+        if (raw.isBlank()) return true
+        if (raw in setOf("-", "—", "–", "−", "?", "??", "???", "â€”", "â€“", "âˆ’")) return true
+        val norm = preNorm(magiaId)
+        return norm.isBlank()
     }
 
     private fun nomeMagia(magiaId: String): String = nomeById[magiaId] ?: catalogo.nome(magiaId)

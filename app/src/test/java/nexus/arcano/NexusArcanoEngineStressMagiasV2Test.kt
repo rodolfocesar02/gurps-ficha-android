@@ -260,6 +260,61 @@ class NexusArcanoEngineStressMagiasV2Test {
         )
     }
 
+    @Test
+    fun telemetria_ranking_lote2_magias_v2() {
+        val catalogo = carregarCatalogoMagiasV2()
+        val engine = NexusArcanoEngine(catalogo)
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = emptySet(),
+            am = 3,
+            iq = 15,
+            dx = 12
+        )
+
+        var alvosComDiagnostico = 0
+        var top1EscolaNova = 0
+        var top1SemPreReq = 0
+        var top3SemPreReq = 0
+
+        val amostras = mutableListOf<String>()
+        catalogo.todasMagiasIds().forEach { alvoId ->
+            val diag = engine.diagnosticarRankingAlvo(alvoId, estado)
+            if (diag.isEmpty()) return@forEach
+            val elegiveis = diag.filter { it.elegivel }
+            if (elegiveis.isEmpty()) return@forEach
+            alvosComDiagnostico += 1
+
+            val top1 = elegiveis.first()
+            if (top1.escolaNova) top1EscolaNova += 1
+            if (preReqSemConteudo(catalogo.preRequisitoRaw(top1.magiaId))) top1SemPreReq += 1
+
+            val top3 = elegiveis.take(3)
+            if (top3.any { preReqSemConteudo(catalogo.preRequisitoRaw(it.magiaId)) }) top3SemPreReq += 1
+
+            if (amostras.size < 40) {
+                amostras += "$alvoId -> top1=${top1.magiaId} escolaNova=${top1.escolaNova} custo=${top1.custo} pre='${catalogo.preRequisitoRaw(top1.magiaId)}'"
+            }
+        }
+
+        val pctTop1Nova = if (alvosComDiagnostico == 0) 0.0 else top1EscolaNova * 100.0 / alvosComDiagnostico
+        val pctTop1SemPre = if (alvosComDiagnostico == 0) 0.0 else top1SemPreReq * 100.0 / alvosComDiagnostico
+        val pctTop3SemPre = if (alvosComDiagnostico == 0) 0.0 else top3SemPreReq * 100.0 / alvosComDiagnostico
+
+        val relatorio = buildString {
+            appendLine("TESTE=telemetria_ranking_lote2_magias_v2")
+            appendLine("ALVOS_COM_DIAGNOSTICO=$alvosComDiagnostico")
+            appendLine("TOP1_ESCOLA_NOVA_PERCENT=${"%.2f".format(pctTop1Nova)}")
+            appendLine("TOP1_SEM_PREREQ_PERCENT=${"%.2f".format(pctTop1SemPre)}")
+            appendLine("TOP3_TEM_SEM_PREREQ_PERCENT=${"%.2f".format(pctTop3SemPre)}")
+            appendLine()
+            appendLine("AMOSTRAS")
+            amostras.forEach { appendLine(it) }
+        }
+        salvarRelatorio("nexus_arcano_magiasv2_telemetria_ranking_lote2.txt", relatorio)
+
+        assertTrue("Telemetria de ranking sem alvos com diagnóstico.", alvosComDiagnostico > 0)
+    }
+
     private fun salvarRelatorio(nome: String, conteudo: String) {
         val outDir = Path.of("build", "reports")
         Files.createDirectories(outDir)
@@ -310,6 +365,12 @@ class NexusArcanoEngineStressMagiasV2Test {
             .replace(Regex("[^a-z0-9\\s]"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
+    }
+
+    private fun preReqSemConteudo(raw: String): Boolean {
+        val t = raw.trim().lowercase()
+        if (t.isBlank()) return true
+        return t in setOf("-", "—", "–", "−", "?", "??", "???", "â€”", "â€“", "âˆ’")
     }
 }
 
