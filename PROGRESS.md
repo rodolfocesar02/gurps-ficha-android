@@ -56,6 +56,11 @@ Partes implementadas:
   - escolas novas sem repetição;
   - fallback sem repetir escola;
   - último recurso com repetição permitida.
+- Planejador agora sugere apenas magias aprendíveis no estado atual (evita recomendação bloqueada).
+- Regra `outras escolas` agora exclui automaticamente a escola da magia de origem nas sugestões laterais.
+- Cobertura de teste ampliada no Lote 2 para:
+  - exclusão de candidata bloqueada por pré-requisito numérico;
+  - exclusão de escola inválida em contexto de `outras escolas`.
 
 Partes faltantes:
 - Heurística de prioridade final (cadeia obrigatória > escola nova > custo baixo).

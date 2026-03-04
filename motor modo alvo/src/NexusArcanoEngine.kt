@@ -209,6 +209,13 @@ class NexusArcanoEngine(
         if (regras.isEmpty()) return emptyList()
 
         val escolasConhecidas = escolasConhecidas(known)
+        val escolasProibidas = regras
+            .asSequence()
+            .filter { it.outrasEscolas }
+            .flatMap { regra -> catalogo.escolas(regra.magiaOrigemId).asSequence() }
+            .map(::normalize)
+            .filter { it.isNotBlank() }
+            .toSet()
         val escolasUsadasNaRodada = mutableSetOf<String>()
         val candidatos = catalogo.todasMagiasIds()
             .asSequence()
@@ -220,7 +227,8 @@ class NexusArcanoEngine(
             val id: String,
             val escola: String,
             val escolaNova: Boolean,
-            val custo: Int
+            val custo: Int,
+            val aprendivelAgora: Boolean
         )
         fun custoDesbloqueio(candId: String): Int {
             val depsMissing = dependenciasNomeadas(candId).count { it !in known }
@@ -242,9 +250,14 @@ class NexusArcanoEngine(
                 id = candId,
                 escola = escola,
                 escolaNova = escolaNova,
-                custo = custoDesbloqueio(candId)
+                custo = custoDesbloqueio(candId),
+                aprendivelAgora = magiaAprendivelAgora(candId, known, estado)
             )
-        }.filter { it.escola.isNotBlank() }
+        }.filter {
+            it.escola.isNotBlank() &&
+                it.aprendivelAgora &&
+                it.escola !in escolasProibidas
+        }
 
         val ordenados = avaliados.sortedWith(
             compareByDescending<Cand> { it.escolaNova }
