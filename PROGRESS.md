@@ -154,9 +154,12 @@ Partes implementadas:
   - leitura de `local.properties` / propriedade Gradle `MODO_ALVO_NEXUS_HABILITADO`.
 - Testes unitários do adaptador adicionados:
   - `app/src/test/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapterTest.kt`
+- Checklist de smoke test emulador do Lote 4 criado:
+  - `motor modo alvo/lotes/lote-04-smoke-check-emulador.md`
 
 Partes faltantes:
 - Rodar validação funcional em emulador com a flag de modo alvo ligada.
+  - Bloqueio atual neste ambiente: `adb` indisponível no PATH.
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
