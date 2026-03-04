@@ -70,6 +70,19 @@ Partes implementadas:
   - exclusão de escola inválida em contexto de `outras escolas`.
   - priorização por custo (candidata barata antes da cara).
   - diagnóstico de ranking validado com motivo de exclusão.
+- Teste pesado com catálogo real `magias2versao.json` adicionado:
+  - `NexusArcanoEngineStressMagiasV2Test`
+  - estresse de 40 alvos com pré-requisitos longos (600 amostras):
+    - antes da otimização de índices: p95 ~ 7.8 ms | p99 ~ 106.8 ms | max ~ 3449.9 ms
+    - após otimização de índices/cache de parsing: p95 ~ 0.027 ms | p99 ~ 3.946 ms | max ~ 367.0 ms
+  - sweep completo da escola `Encantamento` (59 alvos):
+    - antes da otimização de índices: p50 ~ 1460.8 ms | p95 ~ 1581.0 ms | max ~ 1613.1 ms
+    - após otimização de índices/cache de parsing: p50 ~ 0.784 ms | p95 ~ 0.929 ms | max ~ 214.8 ms
+  - consistência funcional: sem exceções e sem inconsistências estruturais em ambos.
+- Otimização estrutural no motor para caminho de escola:
+  - índices em memória por catálogo (`id -> nome/pre/escolas normalizadas`);
+  - cache de parsing por magia (`dependenciasNomeadas`, `regrasEscolas`, `regrasNumericas`, `cadeiaObrigatoria`);
+  - remoção de varreduras repetidas do catálogo completo em cálculos internos.
 
 Partes faltantes:
 - Ajuste fino final de pesos usando execução no catálogo real completo.

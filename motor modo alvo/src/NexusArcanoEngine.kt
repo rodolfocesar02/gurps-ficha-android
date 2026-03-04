@@ -103,6 +103,34 @@ class NexusArcanoEngine(
     }
     private var cacheHits: Long = 0
     private var cacheMisses: Long = 0
+    private val allMagiaIds: List<String> = catalogo.todasMagiasIds().sorted()
+    private val nomeById: Map<String, String> = allMagiaIds.associateWith { catalogo.nome(it) }
+    private val nomeNormById: Map<String, String> = allMagiaIds.associateWith { id -> normalize(nomeById[id].orEmpty()) }
+    private val preRawById: Map<String, String> = allMagiaIds.associateWith { catalogo.preRequisitoRaw(it) }
+    private val preNormById: Map<String, String> = allMagiaIds.associateWith { id -> normalize(preRawById[id].orEmpty()) }
+    private val escolasById: Map<String, List<String>> = allMagiaIds.associateWith { catalogo.escolas(it) }
+    private val escolasNormById: Map<String, List<String>> = allMagiaIds.associateWith { id ->
+        escolasById[id].orEmpty().map(::normalize).filter { it.isNotBlank() }
+    }
+    private val escolaPrincipalNormById: Map<String, String> = allMagiaIds.associateWith { id ->
+        escolasNormById[id].orEmpty().firstOrNull().orEmpty()
+    }
+    private val nomesNormalizadosPorTamanho: List<Pair<String, String>> = allMagiaIds
+        .map { id -> id to nomeNormById[id].orEmpty() }
+        .filter { (_, nomeNorm) -> nomeNorm.isNotBlank() }
+        .sortedByDescending { it.second.length }
+
+    private val regraEscolasRegex = Regex(
+        "(\\d+)\\s*m\\s*a\\s*g\\s*i\\s*c\\s*a(?:s)?\\s*(?:em|de)\\s*(\\d+)\\s*(outras\\s+)?escolas(?:\\s+diferentes)?"
+    )
+    private val somaRegex = Regex("\\(([^\\)]*?)\\)\\s*:?\\s*(\\d+)\\+?", RegexOption.IGNORE_CASE)
+    private val amRegex = Regex("\\bam\\s*(\\d+)\\b")
+    private val iqRegex = Regex("\\biq\\s*(\\d+)\\b")
+
+    private val dependenciasCache = mutableMapOf<String, List<String>>()
+    private val regrasEscolasCache = mutableMapOf<String, List<RegraEscolas>>()
+    private val regrasNumericasCache = mutableMapOf<String, List<RegraNumerica>>()
+    private val cadeiaCache = mutableMapOf<String, List<String>>()
 
     fun calcularEstadoAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): ArcanoResultado {
         val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
@@ -134,7 +162,7 @@ class NexusArcanoEngine(
         cadeiaSemAlvo.forEach { id ->
             chaves += ArcanoChave(
                 id = "chave_$id",
-                descricao = "Aprender ${catalogo.nome(id)}",
+                descricao = "Aprender ${nomeMagia(id)}",
                 ativa = id in known
             )
         }
@@ -143,7 +171,7 @@ class NexusArcanoEngine(
             val ativa = atendeRegraEscolas(regra, known)
             chaves += ArcanoChave(
                 id = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}",
-                descricao = "Atender ${regra.quantidadeEscolas} escolas para ${catalogo.nome(regra.magiaOrigemId)}",
+                descricao = "Atender ${regra.quantidadeEscolas} escolas para ${nomeMagia(regra.magiaOrigemId)}",
                 ativa = ativa
             )
         }
@@ -151,14 +179,14 @@ class NexusArcanoEngine(
             regra.minAm?.let { minAm ->
                 chaves += ArcanoChave(
                     id = "chave_am_${regra.magiaOrigemId}_$minAm",
-                    descricao = "Ter AM $minAm para ${catalogo.nome(regra.magiaOrigemId)}",
+                    descricao = "Ter AM $minAm para ${nomeMagia(regra.magiaOrigemId)}",
                     ativa = estado.am >= minAm
                 )
             }
             regra.minIq?.let { minIq ->
                 chaves += ArcanoChave(
                     id = "chave_iq_${regra.magiaOrigemId}_$minIq",
-                    descricao = "Ter IQ $minIq para ${catalogo.nome(regra.magiaOrigemId)}",
+                    descricao = "Ter IQ $minIq para ${nomeMagia(regra.magiaOrigemId)}",
                     ativa = estado.iq >= minIq
                 )
             }
@@ -166,7 +194,7 @@ class NexusArcanoEngine(
                 val somaAtual = regra.somaAtributos.sumOf { valorAtributo(it, estado) }
                 chaves += ArcanoChave(
                     id = "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}",
-                    descricao = "Ter ${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma} para ${catalogo.nome(regra.magiaOrigemId)}",
+                    descricao = "Ter ${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma} para ${nomeMagia(regra.magiaOrigemId)}",
                     ativa = somaAtual >= regra.minSoma
                 )
             }
@@ -175,7 +203,7 @@ class NexusArcanoEngine(
         val alvoLiberado = magiaAprendivelAgora(alvoId, known, estado)
         chaves += ArcanoChave(
             id = "chave_alvo_$alvoId",
-            descricao = "Liberar ${catalogo.nome(alvoId)}",
+            descricao = "Liberar ${nomeMagia(alvoId)}",
             ativa = alvoLiberado || alvoId in known
         )
 
@@ -253,11 +281,11 @@ class NexusArcanoEngine(
             compareByDescending<AvaliacaoCandidata> { it.elegivel }
                 .thenByDescending { it.escolaNova }
                 .thenBy { it.custo }
-                .thenBy { normalize(catalogo.nome(it.id)) }
+                .thenBy { nomeMagiaNorm(it.id) }
         ).map { cand ->
             ArcanoRankingDiagnostico(
                 magiaId = cand.id,
-                nome = catalogo.nome(cand.id),
+                nome = nomeMagia(cand.id),
                 escola = cand.escola,
                 escolaNova = cand.escolaNova,
                 aprendivelAgora = cand.aprendivelAgora,
@@ -325,7 +353,7 @@ class NexusArcanoEngine(
         return out
             .filter { it.magiaId !in known }
             .distinctBy { it.magiaId }
-            .sortedWith(compareBy<ArcanoAcao> { it.prioridade }.thenBy { normalize(catalogo.nome(it.magiaId)) })
+            .sortedWith(compareBy<ArcanoAcao> { it.prioridade }.thenBy { nomeMagiaNorm(it.magiaId) })
             .take(3)
     }
 
@@ -349,7 +377,7 @@ class NexusArcanoEngine(
         val ordenados = avaliados.sortedWith(
             compareByDescending<AvaliacaoCandidata> { it.escolaNova }
                 .thenBy { it.custo }
-                .thenBy { normalize(catalogo.nome(it.id)) }
+                .thenBy { nomeMagiaNorm(it.id) }
         )
 
         val out = mutableListOf<ArcanoAcao>()
@@ -360,7 +388,7 @@ class NexusArcanoEngine(
             if (cand.escola in escolasUsadasNaRodada) return@forEach
             out += ArcanoAcao(
                 magiaId = cand.id,
-                motivo = "Abrir escola para liberar ${catalogo.nome(magiaId)}",
+                motivo = "Abrir escola para liberar ${nomeMagia(magiaId)}",
                 prioridade = 1 + cand.custo
             )
             escolasUsadasNaRodada += cand.escola
@@ -372,7 +400,7 @@ class NexusArcanoEngine(
             if (cand.escola in escolasUsadasNaRodada) return@forEach
             out += ArcanoAcao(
                 magiaId = cand.id,
-                motivo = "Fallback de progresso para ${catalogo.nome(magiaId)}",
+                motivo = "Fallback de progresso para ${nomeMagia(magiaId)}",
                 prioridade = 10 + cand.custo
             )
             escolasUsadasNaRodada += cand.escola
@@ -383,7 +411,7 @@ class NexusArcanoEngine(
             if (out.any { it.magiaId == cand.id }) return@forEach
             out += ArcanoAcao(
                 magiaId = cand.id,
-                motivo = "Fallback final para ${catalogo.nome(magiaId)}",
+                motivo = "Fallback final para ${nomeMagia(magiaId)}",
                 prioridade = 20 + cand.custo
             )
         }
@@ -403,9 +431,7 @@ class NexusArcanoEngine(
         val escolasProibidas = regras
             .asSequence()
             .filter { it.outrasEscolas }
-            .flatMap { regra -> catalogo.escolas(regra.magiaOrigemId).asSequence() }
-            .map(::normalize)
-            .filter { it.isNotBlank() }
+            .flatMap { regra -> escolasNorm(regra.magiaOrigemId).asSequence() }
             .toSet()
 
         fun custoDesbloqueio(candId: String): Int {
@@ -419,16 +445,15 @@ class NexusArcanoEngine(
                 val count = escolasConhecidas.size
                 (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
             }
-            val complexidadeBase = if (normalize(catalogo.preRequisitoRaw(candId)).isBlank()) 0 else 1
+            val complexidadeBase = if (preNorm(candId).isBlank()) 0 else 1
             return depsMissing * 3 + faltaNum * 5 + faltaEsc * 2 + complexidadeBase
         }
 
-        return catalogo.todasMagiasIds()
+        return allMagiaIds
             .asSequence()
             .filter { it !in known && it != magiaId && it !in idsProibidos }
-            .sortedBy { normalize(catalogo.nome(it)) }
             .map { candId ->
-                val escola = normalize(catalogo.escolas(candId).firstOrNull().orEmpty())
+                val escola = escolaPrincipalNorm(candId)
                 val escolaNova = escola.isNotBlank() && escola !in escolasConhecidas
                 AvaliacaoCandidata(
                     id = candId,
@@ -452,7 +477,7 @@ class NexusArcanoEngine(
     private fun atendeRegraEscolas(regra: RegraEscolas, known: Set<String>): Boolean {
         val set = escolasConhecidas(known).toMutableSet()
         if (regra.outrasEscolas) {
-            val daMagia = catalogo.escolas(regra.magiaOrigemId).map(::normalize).toSet()
+            val daMagia = escolasNorm(regra.magiaOrigemId).toSet()
             set.removeAll(daMagia)
         }
         return set.size >= regra.quantidadeEscolas
@@ -461,9 +486,7 @@ class NexusArcanoEngine(
     private fun escolasConhecidas(known: Set<String>): Set<String> {
         return known
             .asSequence()
-            .flatMap { id -> catalogo.escolas(id).asSequence() }
-            .map(::normalize)
-            .filter { it.isNotBlank() }
+            .flatMap { id -> escolasNorm(id).asSequence() }
             .toSet()
     }
 
@@ -479,70 +502,78 @@ class NexusArcanoEngine(
     }
 
     private fun construirCadeiaObrigatoria(alvoId: String): List<String> {
-        val visit = mutableSetOf<String>()
-        val ordem = mutableListOf<String>()
+        return cadeiaCache.getOrPut(alvoId) {
+            val visit = mutableSetOf<String>()
+            val ordem = mutableListOf<String>()
 
-        fun dfs(id: String) {
-            if (!visit.add(id)) return
-            dependenciasNomeadas(id).forEach(::dfs)
-            ordem += id
+            fun dfs(id: String) {
+                if (!visit.add(id)) return
+                dependenciasNomeadas(id).forEach(::dfs)
+                ordem += id
+            }
+
+            dfs(alvoId)
+            ordem
         }
-
-        dfs(alvoId)
-        return ordem
     }
 
     private fun dependenciasNomeadas(magiaId: String): List<String> {
-        val raw = normalize(catalogo.preRequisitoRaw(magiaId))
-        if (raw.isBlank()) return emptyList()
+        return dependenciasCache.getOrPut(magiaId) {
+            val raw = preNorm(magiaId)
+            if (raw.isBlank()) return@getOrPut emptyList()
 
-        val nomes = catalogo.todasMagiasIds()
-            .map { id -> id to normalize(catalogo.nome(id)) }
-            .filter { (id, nomeNorm) -> id != magiaId && nomeNorm.isNotBlank() }
-            .sortedByDescending { it.second.length }
-
-        val out = linkedSetOf<String>()
-        val rangesAceitos = mutableListOf<IntRange>()
-        nomes.forEach { (id, nomeNorm) ->
-            val rgx = Regex("\\b${Regex.escape(nomeNorm)}\\b")
-            val match = rgx.find(raw) ?: return@forEach
-            val range = match.range
-            val sobreposto = rangesAceitos.any { r -> range.first <= r.last && r.first <= range.last }
-            if (sobreposto) return@forEach
-            if (!pareceReferenciaDeEscola(raw, match.range.first, match.range.last + 1)) {
-                out += id
-                rangesAceitos += range
+            val out = linkedSetOf<String>()
+            val rangesAceitos = mutableListOf<IntRange>()
+            nomesNormalizadosPorTamanho.forEach { (id, nomeNorm) ->
+                if (id == magiaId) return@forEach
+                val rgx = Regex("\\b${Regex.escape(nomeNorm)}\\b")
+                val match = rgx.find(raw) ?: return@forEach
+                val range = match.range
+                val sobreposto = rangesAceitos.any { r -> range.first <= r.last && r.first <= range.last }
+                if (sobreposto) return@forEach
+                if (!pareceReferenciaDeEscola(raw, match.range.first, match.range.last + 1)) {
+                    out += id
+                    rangesAceitos += range
+                }
             }
+            out.toList()
         }
-        return out.toList()
     }
 
     private fun coletarRegrasEscolas(ids: List<String>): List<RegraEscolas> {
-        val out = mutableListOf<RegraEscolas>()
-        ids.distinct().forEach { id ->
-            val raw = normalize(catalogo.preRequisitoRaw(id))
-            val matches = Regex(
-                "(\\d+)\\s*m\\s*a\\s*g\\s*i\\s*c\\s*a(?:s)?\\s*(?:em|de)\\s*(\\d+)\\s*(outras\\s+)?escolas(?:\\s+diferentes)?"
-            )
-                .findAll(raw)
-            matches.forEach { m ->
-                val qtd = m.groupValues[2].toIntOrNull() ?: return@forEach
-                out += RegraEscolas(
-                    magiaOrigemId = id,
-                    quantidadeEscolas = qtd,
-                    outrasEscolas = m.groupValues[3].isNotBlank()
-                )
-            }
-        }
-        return out
+        return ids
+            .distinct()
+            .flatMap { regrasEscolasPorMagia(it) }
     }
 
     private fun coletarRegrasNumericas(ids: List<String>): List<RegraNumerica> {
-        val out = mutableListOf<RegraNumerica>()
-        ids.distinct().forEach { id ->
-            val rawOriginal = catalogo.preRequisitoRaw(id)
-            val raw = normalize(rawOriginal)
-            val somaMatch = Regex("\\(([^\\)]*?)\\)\\s*:?\\s*(\\d+)\\+?", RegexOption.IGNORE_CASE).find(rawOriginal)
+        return ids
+            .distinct()
+            .flatMap { regrasNumericasPorMagia(it) }
+    }
+
+    private fun regrasEscolasPorMagia(magiaId: String): List<RegraEscolas> {
+        return regrasEscolasCache.getOrPut(magiaId) {
+            val raw = preNorm(magiaId)
+            regraEscolasRegex
+                .findAll(raw)
+                .mapNotNull { m ->
+                    val qtd = m.groupValues[2].toIntOrNull() ?: return@mapNotNull null
+                    RegraEscolas(
+                        magiaOrigemId = magiaId,
+                        quantidadeEscolas = qtd,
+                        outrasEscolas = m.groupValues[3].isNotBlank()
+                    )
+                }
+                .toList()
+        }
+    }
+
+    private fun regrasNumericasPorMagia(magiaId: String): List<RegraNumerica> {
+        return regrasNumericasCache.getOrPut(magiaId) {
+            val rawOriginal = preRaw(magiaId)
+            val raw = preNorm(magiaId)
+            val somaMatch = somaRegex.find(rawOriginal)
             val somaAtributos = somaMatch
                 ?.groupValues
                 ?.getOrNull(1)
@@ -552,7 +583,6 @@ class NexusArcanoEngine(
                 ?: emptyList()
             val minSoma = somaMatch?.groupValues?.getOrNull(2)?.toIntOrNull()
             val rawSemSoma = if (somaMatch != null) {
-                // Em raw normalizado, remove apenas o trecho "atributos ... numero" equivalente.
                 val attrsNorm = somaAtributos.joinToString(" ")
                 if (attrsNorm.isNotBlank() && minSoma != null) {
                     raw.replace(Regex("\\b${Regex.escape(attrsNorm)}\\s*${Regex.escape(minSoma.toString())}\\b"), " ")
@@ -562,20 +592,23 @@ class NexusArcanoEngine(
             } else {
                 raw
             }
-            val am = Regex("\\bam\\s*(\\d+)\\b").find(rawSemSoma)?.groupValues?.getOrNull(1)?.toIntOrNull()
-            val iqEncontrado = Regex("\\biq\\s*(\\d+)\\b").find(rawSemSoma)?.groupValues?.getOrNull(1)?.toIntOrNull()
+            val am = amRegex.find(rawSemSoma)?.groupValues?.getOrNull(1)?.toIntOrNull()
+            val iqEncontrado = iqRegex.find(rawSemSoma)?.groupValues?.getOrNull(1)?.toIntOrNull()
             val iq = if (somaAtributos.contains("iq") && minSoma != null && iqEncontrado == minSoma) null else iqEncontrado
             if (am != null || iq != null || (somaAtributos.isNotEmpty() && minSoma != null)) {
-                out += RegraNumerica(
-                    magiaOrigemId = id,
-                    minAm = am,
-                    minIq = iq,
-                    somaAtributos = somaAtributos,
-                    minSoma = minSoma
+                listOf(
+                    RegraNumerica(
+                        magiaOrigemId = magiaId,
+                        minAm = am,
+                        minIq = iq,
+                        somaAtributos = somaAtributos,
+                        minSoma = minSoma
+                    )
                 )
+            } else {
+                emptyList()
             }
         }
-        return out
     }
 
     private fun bloqueioNumericoParaMagia(magiaId: String, estado: ArcanoEstadoPersonagem): String? {
@@ -590,7 +623,7 @@ class NexusArcanoEngine(
             }
         }
         if (faltas.isEmpty()) return null
-        return "Falta ${faltas.joinToString(" e ")} para ${catalogo.nome(magiaId)}."
+        return "Falta ${faltas.joinToString(" e ")} para ${nomeMagia(magiaId)}."
     }
 
     private fun primeiroBloqueioNumerico(
@@ -653,6 +686,20 @@ class NexusArcanoEngine(
             dx = estado.dx
         )
     }
+
+    private fun nomeMagia(magiaId: String): String = nomeById[magiaId] ?: catalogo.nome(magiaId)
+
+    private fun nomeMagiaNorm(magiaId: String): String = nomeNormById[magiaId] ?: normalize(nomeMagia(magiaId))
+
+    private fun preRaw(magiaId: String): String = preRawById[magiaId] ?: catalogo.preRequisitoRaw(magiaId)
+
+    private fun preNorm(magiaId: String): String = preNormById[magiaId] ?: normalize(preRaw(magiaId))
+
+    private fun escolasNorm(magiaId: String): List<String> = escolasNormById[magiaId]
+        ?: catalogo.escolas(magiaId).map(::normalize).filter { it.isNotBlank() }
+
+    private fun escolaPrincipalNorm(magiaId: String): String = escolaPrincipalNormById[magiaId]
+        ?: escolasNorm(magiaId).firstOrNull().orEmpty()
 
     private fun normalize(raw: String): String {
         val semAcento = Normalizer.normalize(raw, Normalizer.Form.NFD)
