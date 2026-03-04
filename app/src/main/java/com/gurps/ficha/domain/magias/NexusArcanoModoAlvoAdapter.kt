@@ -64,26 +64,34 @@ class NexusArcanoModoAlvoAdapter(
         )
 
         val resultado = engine.calcularEstadoAlvo(alvoId, estado)
-        val idsAcoes = resultado.proximasAcoes.asSequence()
+        val idsAcoesMotor = resultado.proximasAcoes.asSequence()
             .map { it.magiaId }
             .filter { magiasById.containsKey(it) }
             .distinct()
             .take(3)
             .toList()
+        val idsAcoes = idsAcoesMotor.toMutableList()
 
         val relacionados = linkedSetOf<String>()
         relacionados.add(alvoId)
         idsAcoes.forEach { relacionados.add(it) }
 
-        if (idsAcoes.isEmpty()) {
-            engine.diagnosticarRankingAlvo(alvoId, estado)
-                .asSequence()
-                .filter { it.elegivel }
-                .map { it.magiaId }
-                .filter { magiasById.containsKey(it) }
-                .distinct()
-                .take(3)
-                .forEach { relacionados.add(it) }
+        val rankingElegivel = engine.diagnosticarRankingAlvo(alvoId, estado)
+            .asSequence()
+            .filter { it.elegivel }
+            .map { it.magiaId }
+            .filter { magiasById.containsKey(it) }
+            .filter { it != alvoId }
+            .distinct()
+            .toList()
+
+        rankingElegivel.forEach { candId ->
+            if (idsAcoes.size < 3 && candId !in idsAcoes) {
+                idsAcoes.add(candId)
+            }
+            if (relacionados.size < 7) {
+                relacionados.add(candId)
+            }
         }
 
         return NexusArcanoModoAlvoSnapshot(

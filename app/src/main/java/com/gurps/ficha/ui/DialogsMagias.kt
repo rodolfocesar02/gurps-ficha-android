@@ -143,60 +143,22 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .trim()
     }
     val listaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        val relacionadas = ordemRelacionadosAlvo
-            .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
-        val pool = if (relacionadas.size > 1) relacionadas else catalogoMagias
         val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
-        val escolasConhecidas = viewModel.personagem.magias
-            .flatMap { it.escola.orEmpty() }
-            .map(::normalizarEscola)
-            .filter { it.isNotBlank() }
-            .toMutableSet()
-        val candidatas = pool.filter { magia ->
-            magia.id != magiaAlvoSelecionada.id &&
-                magia.id !in idsJaAdicionadas
-        }
-        val aprendiveis = candidatas.filter { viewModel.prereqFailureForMagia(it) == null }
-        val selecionadas = mutableListOf<MagiaDefinicao>()
-        val fila = aprendiveis.toMutableList()
-        while (selecionadas.size < MAX_OPCOES_MODO_ALVO && fila.isNotEmpty()) {
-            val idxEscolaNova = fila.indexOfFirst { magia ->
-                val escolaPrincipal = magia.escola?.firstOrNull()?.let(::normalizarEscola).orEmpty()
-                escolaPrincipal.isBlank() || escolaPrincipal !in escolasConhecidas
-            }
-            val escolhida = if (idxEscolaNova >= 0) fila.removeAt(idxEscolaNova) else fila.removeAt(0)
-            selecionadas.add(escolhida)
-            escolhida.escola?.firstOrNull()?.let(::normalizarEscola)?.takeIf { it.isNotBlank() }?.let {
-                escolasConhecidas.add(it)
-            }
-        }
-        val fallbackBloqueadas = if (selecionadas.isEmpty()) {
-            catalogoMagias
-                .asSequence()
-                .filter { magia ->
-                    magia.id != magiaAlvoSelecionada.id &&
-                        magia.id !in idsJaAdicionadas
-                }
-                .sortedWith(
-                    compareBy<MagiaDefinicao> {
-                        if (viewModel.prereqFailureForMagia(it) == null) 0 else 1
-                    }.thenBy { it.nome.lowercase() }
-                )
-                .take(MAX_OPCOES_MODO_ALVO)
-                .toList()
-        } else {
-            emptyList()
-        }
-        listOf(magiaAlvoSelecionada) + if (selecionadas.isNotEmpty()) selecionadas else fallbackBloqueadas
+        val relacionadas = ordemRelacionadosAlvo
+            .asSequence()
+            .filter { it != magiaAlvoSelecionada.id }
+            .filter { it !in idsJaAdicionadas }
+            .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
+            .distinctBy { it.id }
+            .take(6)
+            .toList()
+        listOf(magiaAlvoSelecionada) + relacionadas
     } else {
         listaFiltrada
     }
     val proximaSugerida = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        listaExibicao.firstOrNull { magia ->
-            magia.id != magiaAlvoSelecionada.id &&
-                !viewModel.magiaJaAdicionada(magia.id) &&
-                viewModel.prereqFailureForMagia(magia) == null
-        }
+        val id = viewModel.modoAlvoProximasAcoesIds.firstOrNull()
+        catalogoMagias.firstOrNull { it.id == id }
     } else {
         null
     }
