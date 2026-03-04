@@ -62,22 +62,36 @@ Partes implementadas:
   - dependência nomeada pendente;
   - gate numérico pendente;
   - gate de escolas do próprio candidato.
+- Telemetria de ranking adicionada no motor:
+  - novo diagnóstico por alvo com lista de candidatas, custo e elegibilidade;
+  - motivo de exclusão padronizado (`SEM_ESCOLA`, `NAO_APRENDIVEL_AGORA`, `ESCOLA_DA_ORIGEM_BLOQUEADA`).
 - Cobertura de teste ampliada no Lote 2 para:
   - exclusão de candidata bloqueada por pré-requisito numérico;
   - exclusão de escola inválida em contexto de `outras escolas`.
   - priorização por custo (candidata barata antes da cara).
+  - diagnóstico de ranking validado com motivo de exclusão.
 
 Partes faltantes:
-- Ajuste fino de pesos do custo com catálogo real completo (telemetria de ranking por alvo).
+- Ajuste fino final de pesos usando execução no catálogo real completo.
 
 ### Lote 3 - Estado Incremental
 Partes implementadas:
 - Estrutura separada preparada para cache incremental por alvo.
+- Snapshot em memória por `alvo + estado` para:
+  - `calcularEstadoAlvo`;
+  - `diagnosticarRankingAlvo`.
+- LRU leve (até 256 entradas por cache) para conter uso de memória.
+- Invalidação operacional inicial:
+  - limpeza total (`limparCache`);
+  - invalidação por magia (`invalidarCachePorMagia`).
+- Métrica básica de cache adicionada (`cacheStats`: entradas/hits/misses).
+- Testes iniciais do Lote 3 adicionados:
+  - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote3Test.kt`
+  - valida hit de cache e invalidação por magia.
 
 Partes faltantes:
-- Snapshot por alvo.
-- Recalcular apenas chaves impactadas por cada nova magia.
-- Métrica de performance por rodada (tempo médio e p95).
+- Recalcular apenas chaves impactadas por cada nova magia (delta real, sem recomputo completo).
+- Métrica de performance por rodada com janela temporal (tempo médio e p95).
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
@@ -89,9 +103,9 @@ Partes faltantes:
 - Reativação controlada por flag.
 
 ## Próximos Passos imediatos
-1. Fechar priorização final do Lote 2 (cadeia obrigatória > escola nova > custo baixo).
-2. Ajustar pontuação de custo para evitar recomendações ineficientes em escolas já atendidas.
-3. Iniciar cache incremental do Lote 3.
+1. Rodar telemetria de ranking no catálogo real e calibrar pesos finais do Lote 2.
+2. Implementar delta incremental real no Lote 3 (recalcular apenas blocos impactados).
+3. Ligar métricas de tempo por rodada (médio/p95) para validar ganho prático.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.

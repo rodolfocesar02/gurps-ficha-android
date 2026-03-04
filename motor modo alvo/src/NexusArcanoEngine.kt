@@ -29,6 +29,23 @@ data class ArcanoResultado(
     val motivoCodigo: String? = null
 )
 
+data class ArcanoRankingDiagnostico(
+    val magiaId: String,
+    val nome: String,
+    val escola: String,
+    val escolaNova: Boolean,
+    val aprendivelAgora: Boolean,
+    val custo: Int,
+    val elegivel: Boolean,
+    val motivoExclusao: String?
+)
+
+data class ArcanoCacheStats(
+    val entradas: Int,
+    val hits: Long,
+    val misses: Long
+)
+
 interface ArcanoCatalogo {
     fun preRequisitoRaw(magiaId: String): String
     fun escolas(magiaId: String): List<String>
@@ -54,14 +71,56 @@ class NexusArcanoEngine(
         val minSoma: Int? = null
     )
 
+    private data class AvaliacaoCandidata(
+        val id: String,
+        val escola: String,
+        val escolaNova: Boolean,
+        val custo: Int,
+        val aprendivelAgora: Boolean,
+        val escolaBloqueada: Boolean
+    ) {
+        val elegivel: Boolean
+            get() = escola.isNotBlank() && aprendivelAgora && !escolaBloqueada
+    }
+
+    private data class CacheKey(
+        val alvoId: String,
+        val assinaturaKnown: String,
+        val am: Int,
+        val iq: Int,
+        val dx: Int
+    )
+
+    private val cacheResultados = object : LinkedHashMap<CacheKey, ArcanoResultado>(128, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, ArcanoResultado>?): Boolean {
+            return size > 256
+        }
+    }
+    private val cacheDiagnosticos = object : LinkedHashMap<CacheKey, List<ArcanoRankingDiagnostico>>(128, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, List<ArcanoRankingDiagnostico>>?): Boolean {
+            return size > 256
+        }
+    }
+    private var cacheHits: Long = 0
+    private var cacheMisses: Long = 0
+
     fun calcularEstadoAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): ArcanoResultado {
+        val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
+        cacheResultados[key]?.let {
+            cacheHits += 1
+            return it
+        }
+        cacheMisses += 1
+
         if (!catalogo.existe(alvoId)) {
-            return ArcanoResultado(
+            val resultado = ArcanoResultado(
                 chavesAtivas = emptyList(),
                 chavesFaltantes = emptyList(),
                 proximasAcoes = emptyList(),
                 motivoBloqueio = "Alvo não encontrado no catálogo."
             )
+            cacheResultados[key] = resultado
+            return resultado
         }
 
         val known = estado.magiasConhecidasIds
@@ -136,13 +195,84 @@ class NexusArcanoEngine(
             null
         }
 
-        return ArcanoResultado(
+        val resultado = ArcanoResultado(
             chavesAtivas = ativas,
             chavesFaltantes = faltantes,
             proximasAcoes = proximas,
             motivoBloqueio = bloqueio,
             motivoCodigo = codigo
         )
+        cacheResultados[key] = resultado
+        return resultado
+    }
+
+    fun diagnosticarRankingAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): List<ArcanoRankingDiagnostico> {
+        val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
+        cacheDiagnosticos[key]?.let {
+            cacheHits += 1
+            return it
+        }
+        cacheMisses += 1
+
+        if (!catalogo.existe(alvoId)) {
+            cacheDiagnosticos[key] = emptyList()
+            return emptyList()
+        }
+
+        val known = estado.magiasConhecidasIds
+        val cadeia = construirCadeiaObrigatoria(alvoId)
+        val cadeiaSemAlvo = cadeia.filter { it != alvoId }
+
+        val proximaObrigatoria = cadeiaSemAlvo.firstOrNull { it !in known }
+        val focoMagia = when {
+            proximaObrigatoria != null &&
+                !magiaAprendivelAgora(proximaObrigatoria, known, estado) &&
+                bloqueioNumericoParaMagia(proximaObrigatoria, estado) == null -> proximaObrigatoria
+            proximaObrigatoria == null &&
+                alvoId !in known &&
+                !magiaAprendivelAgora(alvoId, known, estado) &&
+                bloqueioNumericoParaMagia(alvoId, estado) == null -> alvoId
+            else -> null
+        } ?: run {
+            cacheDiagnosticos[key] = emptyList()
+            return emptyList()
+        }
+
+        val idsProibidos = if (focoMagia == proximaObrigatoria) {
+            cadeiaSemAlvo.toSet() + alvoId
+        } else {
+            setOf(alvoId)
+        }
+
+        val diag = avaliarCandidatasParaRegraDeEscolas(
+            magiaId = focoMagia,
+            known = known,
+            estado = estado,
+            idsProibidos = idsProibidos
+        ).sortedWith(
+            compareByDescending<AvaliacaoCandidata> { it.elegivel }
+                .thenByDescending { it.escolaNova }
+                .thenBy { it.custo }
+                .thenBy { normalize(catalogo.nome(it.id)) }
+        ).map { cand ->
+            ArcanoRankingDiagnostico(
+                magiaId = cand.id,
+                nome = catalogo.nome(cand.id),
+                escola = cand.escola,
+                escolaNova = cand.escolaNova,
+                aprendivelAgora = cand.aprendivelAgora,
+                custo = cand.custo,
+                elegivel = cand.elegivel,
+                motivoExclusao = when {
+                    cand.escola.isBlank() -> "SEM_ESCOLA"
+                    !cand.aprendivelAgora -> "NAO_APRENDIVEL_AGORA"
+                    cand.escolaBloqueada -> "ESCOLA_DA_ORIGEM_BLOQUEADA"
+                    else -> null
+                }
+            )
+        }
+        cacheDiagnosticos[key] = diag
+        return diag
     }
 
     private fun sugerirProximasAcoes(
@@ -208,60 +338,16 @@ class NexusArcanoEngine(
         val regras = coletarRegrasEscolas(listOf(magiaId))
         if (regras.isEmpty()) return emptyList()
 
-        val escolasConhecidas = escolasConhecidas(known)
-        val escolasProibidas = regras
-            .asSequence()
-            .filter { it.outrasEscolas }
-            .flatMap { regra -> catalogo.escolas(regra.magiaOrigemId).asSequence() }
-            .map(::normalize)
-            .filter { it.isNotBlank() }
-            .toSet()
+        val avaliados = avaliarCandidatasParaRegraDeEscolas(
+            magiaId = magiaId,
+            known = known,
+            estado = estado,
+            idsProibidos = idsProibidos
+        ).filter { it.elegivel }
+
         val escolasUsadasNaRodada = mutableSetOf<String>()
-        val candidatos = catalogo.todasMagiasIds()
-            .asSequence()
-            .filter { it !in known && it != magiaId && it !in idsProibidos }
-            .sortedBy { normalize(catalogo.nome(it)) }
-            .toList()
-
-        data class Cand(
-            val id: String,
-            val escola: String,
-            val escolaNova: Boolean,
-            val custo: Int,
-            val aprendivelAgora: Boolean
-        )
-        fun custoDesbloqueio(candId: String): Int {
-            val depsMissing = dependenciasNomeadas(candId).count { it !in known }
-            val regraNum = coletarRegrasNumericas(listOf(candId)).firstOrNull()
-            val faltaNum = if (regraNum == null) 0 else {
-                if (atendeRegraNumerica(regraNum, estado)) 0 else 1
-            }
-            val regraEsc = coletarRegrasEscolas(listOf(candId)).firstOrNull()
-            val faltaEsc = if (regraEsc == null) 0 else {
-                val count = escolasConhecidas.size
-                (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
-            }
-            val complexidadeBase = if (normalize(catalogo.preRequisitoRaw(candId)).isBlank()) 0 else 1
-            return depsMissing * 3 + faltaNum * 5 + faltaEsc * 2 + complexidadeBase
-        }
-        val avaliados = candidatos.map { candId ->
-            val escola = normalize(catalogo.escolas(candId).firstOrNull().orEmpty())
-            val escolaNova = escola.isNotBlank() && escola !in escolasConhecidas
-            Cand(
-                id = candId,
-                escola = escola,
-                escolaNova = escolaNova,
-                custo = custoDesbloqueio(candId),
-                aprendivelAgora = magiaAprendivelAgora(candId, known, estado)
-            )
-        }.filter {
-            it.escola.isNotBlank() &&
-                it.aprendivelAgora &&
-                it.escola !in escolasProibidas
-        }
-
         val ordenados = avaliados.sortedWith(
-            compareByDescending<Cand> { it.escolaNova }
+            compareByDescending<AvaliacaoCandidata> { it.escolaNova }
                 .thenBy { it.custo }
                 .thenBy { normalize(catalogo.nome(it.id)) }
         )
@@ -302,6 +388,57 @@ class NexusArcanoEngine(
             )
         }
         return out
+    }
+
+    private fun avaliarCandidatasParaRegraDeEscolas(
+        magiaId: String,
+        known: Set<String>,
+        estado: ArcanoEstadoPersonagem,
+        idsProibidos: Set<String>
+    ): List<AvaliacaoCandidata> {
+        val regras = coletarRegrasEscolas(listOf(magiaId))
+        if (regras.isEmpty()) return emptyList()
+
+        val escolasConhecidas = escolasConhecidas(known)
+        val escolasProibidas = regras
+            .asSequence()
+            .filter { it.outrasEscolas }
+            .flatMap { regra -> catalogo.escolas(regra.magiaOrigemId).asSequence() }
+            .map(::normalize)
+            .filter { it.isNotBlank() }
+            .toSet()
+
+        fun custoDesbloqueio(candId: String): Int {
+            val depsMissing = dependenciasNomeadas(candId).count { it !in known }
+            val regraNum = coletarRegrasNumericas(listOf(candId)).firstOrNull()
+            val faltaNum = if (regraNum == null) 0 else {
+                if (atendeRegraNumerica(regraNum, estado)) 0 else 1
+            }
+            val regraEsc = coletarRegrasEscolas(listOf(candId)).firstOrNull()
+            val faltaEsc = if (regraEsc == null) 0 else {
+                val count = escolasConhecidas.size
+                (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
+            }
+            val complexidadeBase = if (normalize(catalogo.preRequisitoRaw(candId)).isBlank()) 0 else 1
+            return depsMissing * 3 + faltaNum * 5 + faltaEsc * 2 + complexidadeBase
+        }
+
+        return catalogo.todasMagiasIds()
+            .asSequence()
+            .filter { it !in known && it != magiaId && it !in idsProibidos }
+            .sortedBy { normalize(catalogo.nome(it)) }
+            .map { candId ->
+                val escola = normalize(catalogo.escolas(candId).firstOrNull().orEmpty())
+                val escolaNova = escola.isNotBlank() && escola !in escolasConhecidas
+                AvaliacaoCandidata(
+                    id = candId,
+                    escola = escola,
+                    escolaNova = escolaNova,
+                    custo = custoDesbloqueio(candId),
+                    aprendivelAgora = magiaAprendivelAgora(candId, known, estado),
+                    escolaBloqueada = escola in escolasProibidas
+                )
+            }.toList()
     }
 
     private fun magiaAprendivelAgora(magiaId: String, known: Set<String>, estado: ArcanoEstadoPersonagem): Boolean {
@@ -478,6 +615,43 @@ class NexusArcanoEngine(
             primeiro.startsWith("chave_alvo_") -> "TARGET_PENDING"
             else -> "UNKNOWN_BLOCK"
         }
+    }
+
+    fun limparCache() {
+        cacheResultados.clear()
+        cacheDiagnosticos.clear()
+        cacheHits = 0
+        cacheMisses = 0
+    }
+
+    fun invalidarCachePorMagia(magiaId: String) {
+        val token = "|$magiaId|"
+        cacheResultados.keys.removeIf { token in it.assinaturaKnown }
+        cacheDiagnosticos.keys.removeIf { token in it.assinaturaKnown }
+    }
+
+    fun cacheStats(): ArcanoCacheStats {
+        val entradas = cacheResultados.size + cacheDiagnosticos.size
+        return ArcanoCacheStats(
+            entradas = entradas,
+            hits = cacheHits,
+            misses = cacheMisses
+        )
+    }
+
+    private fun cacheKey(
+        alvoId: String,
+        known: Set<String>,
+        estado: ArcanoEstadoPersonagem
+    ): CacheKey {
+        val assinaturaKnown = known.sorted().joinToString(separator = "|", prefix = "|", postfix = "|")
+        return CacheKey(
+            alvoId = alvoId,
+            assinaturaKnown = assinaturaKnown,
+            am = estado.am,
+            iq = estado.iq,
+            dx = estado.dx
+        )
     }
 
     private fun normalize(raw: String): String {
