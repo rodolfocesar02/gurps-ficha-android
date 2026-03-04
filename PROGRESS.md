@@ -136,15 +136,29 @@ Partes faltantes:
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
 - Recurso antigo desativado na ficha para evitar travamentos.
+- Adaptador mínimo `NEXUS ARCANO` criado no app:
+  - `app/src/main/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapter.kt`
+  - entrada: catálogo `magias2versao` + estado do personagem (`magias`, `AM`, `IQ`, `DX`);
+  - saída: `relacionadosIds` + `chavesAtivas` + `chavesFaltantes` + `proximasAcoesIds` + `aviso`.
+- `FichaViewModel` integrado ao adaptador:
+  - stubs removidos de `listaRelacionadosMagiaAlvo`, `idsRelacionadosMagiaAlvo`,
+    `assinaturaEstadoMagiasParaModoAlvo`, `requisitarModoAlvo`;
+  - cálculo assíncrono em `Dispatchers.Default` com cancelamento seguro;
+  - estado de UI adicionado: `modoAlvoChavesAtivas`, `modoAlvoChavesFaltantes`, `modoAlvoProximasAcoes`.
+- UI de magias preparada para exibir resumo mínimo no modo alvo:
+  - linha de `3 próximas ações`;
+  - linha de `chaves faltantes` (até 3);
+  - sem reativar a flag global do modo alvo antigo.
+- Testes unitários do adaptador adicionados:
+  - `app/src/test/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapterTest.kt`
 
 Partes faltantes:
-- Criar adaptador de entrada/saída do `NEXUS ARCANO`.
-- Exibir na UI apenas: chaves + 3 próximas ações.
 - Reativação controlada por flag.
+- Rodar validação funcional em emulador com a flag de modo alvo ligada.
 
 ## Próximos Passos imediatos
 1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
-2. Preparar adaptador mínimo (Lote 4) em flag separada para primeiro teste no emulador.
+2. Rodar primeiro teste no emulador com Lote 4 (flag controlada) e medir fluidez.
 3. Iterar otimização do delta incremental com foco em p95 sem perder equivalência.
 
 ## Regra operacional

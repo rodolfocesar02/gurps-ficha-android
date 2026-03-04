@@ -497,6 +497,20 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             }
                         }
                     )
+                    if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
+                        Text(
+                            "3 próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(" | ")}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    if (viewModel.modoAlvoChavesFaltantes.isNotEmpty()) {
+                        Text(
+                            "Chaves faltantes: ${viewModel.modoAlvoChavesFaltantes.take(3).joinToString(" | ")}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 LazyColumn(modifier = Modifier.weight(1f)) {
