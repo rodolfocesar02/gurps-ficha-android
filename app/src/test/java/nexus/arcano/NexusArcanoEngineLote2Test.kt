@@ -89,6 +89,40 @@ class NexusArcanoEngineLote2Test {
         assertEquals(listOf("cand_agua", "cand_terra"), primeiros)
     }
 
+    @Test
+    fun planejador_so_sugere_magia_aprendivel_agora() {
+        val engine = NexusArcanoEngine(catalogoComCandidataBloqueada())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("base_ar"),
+            am = 3,
+            iq = 12,
+            dx = 12
+        )
+
+        val r = engine.calcularEstadoAlvo("alvo", estado)
+        val ids = r.proximasAcoes.map { it.magiaId }
+
+        assertTrue("cand_livre" in ids)
+        assertTrue("cand_bloqueada" !in ids)
+    }
+
+    @Test
+    fun regra_outras_escolas_exclui_escola_da_magia_origem() {
+        val engine = NexusArcanoEngine(catalogoOutrasEscolas())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("base_agua"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+
+        val r = engine.calcularEstadoAlvo("alvo_agua", estado)
+        val ids = r.proximasAcoes.map { it.magiaId }
+
+        assertTrue("cand_agua" !in ids)
+        assertTrue("cand_terra" in ids)
+    }
+
     private fun catalogoComPoucasEscolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(
@@ -116,6 +150,44 @@ class NexusArcanoEngineLote2Test {
             M("cand_agua", "Aguia", listOf("Agua"), ""),
             M("cand_terra", "Bardo", listOf("Terra"), ""),
             M("cand_ar", "Canto", listOf("Ar"), "")
+        )
+        val byId = magias.associateBy { it.id }
+
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoComCandidataBloqueada(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo", "Alvo", listOf("Meta"), "1 magica em 5 outras escolas"),
+            M("base_ar", "Base Ar", listOf("Ar"), ""),
+            M("cand_livre", "Cand Livre", listOf("Terra"), ""),
+            M("cand_bloqueada", "Cand Bloqueada", listOf("Agua"), "IQ 14+")
+        )
+        val byId = magias.associateBy { it.id }
+
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoOutrasEscolas(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo_agua", "Alvo Agua", listOf("Agua"), "1 magica em 5 outras escolas"),
+            M("base_agua", "Base Agua", listOf("Agua"), ""),
+            M("cand_agua", "Cand Agua", listOf("Agua"), ""),
+            M("cand_terra", "Cand Terra", listOf("Terra"), "")
         )
         val byId = magias.associateBy { it.id }
 
