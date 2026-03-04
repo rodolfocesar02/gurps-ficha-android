@@ -46,6 +46,13 @@ data class ArcanoCacheStats(
     val misses: Long
 )
 
+data class ArcanoTimingStats(
+    val amostras: Int,
+    val mediaMs: Double,
+    val p95Ms: Double,
+    val maxMs: Double
+)
+
 interface ArcanoCatalogo {
     fun preRequisitoRaw(magiaId: String): String
     fun escolas(magiaId: String): List<String>
@@ -131,176 +138,188 @@ class NexusArcanoEngine(
     private val regrasEscolasCache = mutableMapOf<String, List<RegraEscolas>>()
     private val regrasNumericasCache = mutableMapOf<String, List<RegraNumerica>>()
     private val cadeiaCache = mutableMapOf<String, List<String>>()
+    private val temposRodadaNs = ArrayDeque<Long>()
+    private val maxTempos = 512
 
     fun calcularEstadoAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): ArcanoResultado {
-        val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
-        cacheResultados[key]?.let {
-            cacheHits += 1
-            return it
-        }
-        cacheMisses += 1
+        val t0 = System.nanoTime()
+        try {
+            val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
+            cacheResultados[key]?.let {
+                cacheHits += 1
+                return it
+            }
+            cacheMisses += 1
 
-        if (!catalogo.existe(alvoId)) {
+            if (!catalogo.existe(alvoId)) {
+                val resultado = ArcanoResultado(
+                    chavesAtivas = emptyList(),
+                    chavesFaltantes = emptyList(),
+                    proximasAcoes = emptyList(),
+                    motivoBloqueio = "Alvo não encontrado no catálogo."
+                )
+                cacheResultados[key] = resultado
+                return resultado
+            }
+
+            val known = estado.magiasConhecidasIds
+            val cadeia = construirCadeiaObrigatoria(alvoId)
+            val cadeiaSemAlvo = cadeia.filter { it != alvoId }
+            val regrasEscolas = coletarRegrasEscolas(cadeia)
+            val regrasNumericas = coletarRegrasNumericas(cadeia)
+
+            val chaves = mutableListOf<ArcanoChave>()
+
+            cadeiaSemAlvo.forEach { id ->
+                chaves += ArcanoChave(
+                    id = "chave_$id",
+                    descricao = "Aprender ${nomeMagia(id)}",
+                    ativa = id in known
+                )
+            }
+
+            regrasEscolas.forEach { regra ->
+                val ativa = atendeRegraEscolas(regra, known)
+                chaves += ArcanoChave(
+                    id = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}",
+                    descricao = "Atender ${regra.quantidadeEscolas} escolas para ${nomeMagia(regra.magiaOrigemId)}",
+                    ativa = ativa
+                )
+            }
+            regrasNumericas.forEach { regra ->
+                regra.minAm?.let { minAm ->
+                    chaves += ArcanoChave(
+                        id = "chave_am_${regra.magiaOrigemId}_$minAm",
+                        descricao = "Ter AM $minAm para ${nomeMagia(regra.magiaOrigemId)}",
+                        ativa = estado.am >= minAm
+                    )
+                }
+                regra.minIq?.let { minIq ->
+                    chaves += ArcanoChave(
+                        id = "chave_iq_${regra.magiaOrigemId}_$minIq",
+                        descricao = "Ter IQ $minIq para ${nomeMagia(regra.magiaOrigemId)}",
+                        ativa = estado.iq >= minIq
+                    )
+                }
+                if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
+                    val somaAtual = regra.somaAtributos.sumOf { valorAtributo(it, estado) }
+                    chaves += ArcanoChave(
+                        id = "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}",
+                        descricao = "Ter ${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma} para ${nomeMagia(regra.magiaOrigemId)}",
+                        ativa = somaAtual >= regra.minSoma
+                    )
+                }
+            }
+
+            val alvoLiberado = magiaAprendivelAgora(alvoId, known, estado)
+            chaves += ArcanoChave(
+                id = "chave_alvo_$alvoId",
+                descricao = "Liberar ${nomeMagia(alvoId)}",
+                ativa = alvoLiberado || alvoId in known
+            )
+
+            val proximas = sugerirProximasAcoes(alvoId, known, cadeiaSemAlvo, estado)
+            val ativas = chaves.filter { it.ativa }
+            val faltantes = chaves.filterNot { it.ativa }
+
+            val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, cadeiaSemAlvo, estado, known)
+            val bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
+                bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
+            } else {
+                null
+            }
+            val codigo = if (bloqueio != null) {
+                codigoBloqueio(bloqueioNumerico, faltantes)
+            } else {
+                null
+            }
+
             val resultado = ArcanoResultado(
-                chavesAtivas = emptyList(),
-                chavesFaltantes = emptyList(),
-                proximasAcoes = emptyList(),
-                motivoBloqueio = "Alvo não encontrado no catálogo."
+                chavesAtivas = ativas,
+                chavesFaltantes = faltantes,
+                proximasAcoes = proximas,
+                motivoBloqueio = bloqueio,
+                motivoCodigo = codigo
             )
             cacheResultados[key] = resultado
             return resultado
+        } finally {
+            registrarTempoRodada(System.nanoTime() - t0)
         }
-
-        val known = estado.magiasConhecidasIds
-        val cadeia = construirCadeiaObrigatoria(alvoId)
-        val cadeiaSemAlvo = cadeia.filter { it != alvoId }
-        val regrasEscolas = coletarRegrasEscolas(cadeia)
-        val regrasNumericas = coletarRegrasNumericas(cadeia)
-
-        val chaves = mutableListOf<ArcanoChave>()
-
-        cadeiaSemAlvo.forEach { id ->
-            chaves += ArcanoChave(
-                id = "chave_$id",
-                descricao = "Aprender ${nomeMagia(id)}",
-                ativa = id in known
-            )
-        }
-
-        regrasEscolas.forEach { regra ->
-            val ativa = atendeRegraEscolas(regra, known)
-            chaves += ArcanoChave(
-                id = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}",
-                descricao = "Atender ${regra.quantidadeEscolas} escolas para ${nomeMagia(regra.magiaOrigemId)}",
-                ativa = ativa
-            )
-        }
-        regrasNumericas.forEach { regra ->
-            regra.minAm?.let { minAm ->
-                chaves += ArcanoChave(
-                    id = "chave_am_${regra.magiaOrigemId}_$minAm",
-                    descricao = "Ter AM $minAm para ${nomeMagia(regra.magiaOrigemId)}",
-                    ativa = estado.am >= minAm
-                )
-            }
-            regra.minIq?.let { minIq ->
-                chaves += ArcanoChave(
-                    id = "chave_iq_${regra.magiaOrigemId}_$minIq",
-                    descricao = "Ter IQ $minIq para ${nomeMagia(regra.magiaOrigemId)}",
-                    ativa = estado.iq >= minIq
-                )
-            }
-            if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
-                val somaAtual = regra.somaAtributos.sumOf { valorAtributo(it, estado) }
-                chaves += ArcanoChave(
-                    id = "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}",
-                    descricao = "Ter ${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma} para ${nomeMagia(regra.magiaOrigemId)}",
-                    ativa = somaAtual >= regra.minSoma
-                )
-            }
-        }
-
-        val alvoLiberado = magiaAprendivelAgora(alvoId, known, estado)
-        chaves += ArcanoChave(
-            id = "chave_alvo_$alvoId",
-            descricao = "Liberar ${nomeMagia(alvoId)}",
-            ativa = alvoLiberado || alvoId in known
-        )
-
-        val proximas = sugerirProximasAcoes(alvoId, known, cadeiaSemAlvo, estado)
-        val ativas = chaves.filter { it.ativa }
-        val faltantes = chaves.filterNot { it.ativa }
-
-        val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, cadeiaSemAlvo, estado, known)
-        val bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
-            bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
-        } else {
-            null
-        }
-        val codigo = if (bloqueio != null) {
-            codigoBloqueio(bloqueioNumerico, faltantes)
-        } else {
-            null
-        }
-
-        val resultado = ArcanoResultado(
-            chavesAtivas = ativas,
-            chavesFaltantes = faltantes,
-            proximasAcoes = proximas,
-            motivoBloqueio = bloqueio,
-            motivoCodigo = codigo
-        )
-        cacheResultados[key] = resultado
-        return resultado
     }
 
     fun diagnosticarRankingAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): List<ArcanoRankingDiagnostico> {
-        val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
-        cacheDiagnosticos[key]?.let {
-            cacheHits += 1
-            return it
-        }
-        cacheMisses += 1
+        val t0 = System.nanoTime()
+        try {
+            val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
+            cacheDiagnosticos[key]?.let {
+                cacheHits += 1
+                return it
+            }
+            cacheMisses += 1
 
-        if (!catalogo.existe(alvoId)) {
-            cacheDiagnosticos[key] = emptyList()
-            return emptyList()
-        }
+            if (!catalogo.existe(alvoId)) {
+                cacheDiagnosticos[key] = emptyList()
+                return emptyList()
+            }
 
-        val known = estado.magiasConhecidasIds
-        val cadeia = construirCadeiaObrigatoria(alvoId)
-        val cadeiaSemAlvo = cadeia.filter { it != alvoId }
+            val known = estado.magiasConhecidasIds
+            val cadeia = construirCadeiaObrigatoria(alvoId)
+            val cadeiaSemAlvo = cadeia.filter { it != alvoId }
 
-        val proximaObrigatoria = cadeiaSemAlvo.firstOrNull { it !in known }
-        val focoMagia = when {
-            proximaObrigatoria != null &&
-                !magiaAprendivelAgora(proximaObrigatoria, known, estado) &&
-                bloqueioNumericoParaMagia(proximaObrigatoria, estado) == null -> proximaObrigatoria
-            proximaObrigatoria == null &&
-                alvoId !in known &&
-                !magiaAprendivelAgora(alvoId, known, estado) &&
-                bloqueioNumericoParaMagia(alvoId, estado) == null -> alvoId
-            else -> null
-        } ?: run {
-            cacheDiagnosticos[key] = emptyList()
-            return emptyList()
-        }
+            val proximaObrigatoria = cadeiaSemAlvo.firstOrNull { it !in known }
+            val focoMagia = when {
+                proximaObrigatoria != null &&
+                    !magiaAprendivelAgora(proximaObrigatoria, known, estado) &&
+                    bloqueioNumericoParaMagia(proximaObrigatoria, estado) == null -> proximaObrigatoria
+                proximaObrigatoria == null &&
+                    alvoId !in known &&
+                    !magiaAprendivelAgora(alvoId, known, estado) &&
+                    bloqueioNumericoParaMagia(alvoId, estado) == null -> alvoId
+                else -> null
+            } ?: run {
+                cacheDiagnosticos[key] = emptyList()
+                return emptyList()
+            }
 
-        val idsProibidos = if (focoMagia == proximaObrigatoria) {
-            cadeiaSemAlvo.toSet() + alvoId
-        } else {
-            setOf(alvoId)
-        }
+            val idsProibidos = if (focoMagia == proximaObrigatoria) {
+                cadeiaSemAlvo.toSet() + alvoId
+            } else {
+                setOf(alvoId)
+            }
 
-        val diag = avaliarCandidatasParaRegraDeEscolas(
-            magiaId = focoMagia,
-            known = known,
-            estado = estado,
-            idsProibidos = idsProibidos
-        ).sortedWith(
-            compareByDescending<AvaliacaoCandidata> { it.elegivel }
-                .thenByDescending { it.escolaNova }
-                .thenBy { it.custo }
-                .thenBy { nomeMagiaNorm(it.id) }
-        ).map { cand ->
-            ArcanoRankingDiagnostico(
-                magiaId = cand.id,
-                nome = nomeMagia(cand.id),
-                escola = cand.escola,
-                escolaNova = cand.escolaNova,
-                aprendivelAgora = cand.aprendivelAgora,
-                custo = cand.custo,
-                elegivel = cand.elegivel,
-                motivoExclusao = when {
-                    cand.escola.isBlank() -> "SEM_ESCOLA"
-                    !cand.aprendivelAgora -> "NAO_APRENDIVEL_AGORA"
-                    cand.escolaBloqueada -> "ESCOLA_DA_ORIGEM_BLOQUEADA"
-                    else -> null
-                }
-            )
+            val diag = avaliarCandidatasParaRegraDeEscolas(
+                magiaId = focoMagia,
+                known = known,
+                estado = estado,
+                idsProibidos = idsProibidos
+            ).sortedWith(
+                compareByDescending<AvaliacaoCandidata> { it.elegivel }
+                    .thenByDescending { it.escolaNova }
+                    .thenBy { it.custo }
+                    .thenBy { nomeMagiaNorm(it.id) }
+            ).map { cand ->
+                ArcanoRankingDiagnostico(
+                    magiaId = cand.id,
+                    nome = nomeMagia(cand.id),
+                    escola = cand.escola,
+                    escolaNova = cand.escolaNova,
+                    aprendivelAgora = cand.aprendivelAgora,
+                    custo = cand.custo,
+                    elegivel = cand.elegivel,
+                    motivoExclusao = when {
+                        cand.escola.isBlank() -> "SEM_ESCOLA"
+                        !cand.aprendivelAgora -> "NAO_APRENDIVEL_AGORA"
+                        cand.escolaBloqueada -> "ESCOLA_DA_ORIGEM_BLOQUEADA"
+                        else -> null
+                    }
+                )
+            }
+            cacheDiagnosticos[key] = diag
+            return diag
+        } finally {
+            registrarTempoRodada(System.nanoTime() - t0)
         }
-        cacheDiagnosticos[key] = diag
-        return diag
     }
 
     private fun sugerirProximasAcoes(
@@ -655,6 +674,7 @@ class NexusArcanoEngine(
         cacheDiagnosticos.clear()
         cacheHits = 0
         cacheMisses = 0
+        temposRodadaNs.clear()
     }
 
     fun invalidarCachePorMagia(magiaId: String) {
@@ -670,6 +690,35 @@ class NexusArcanoEngine(
             hits = cacheHits,
             misses = cacheMisses
         )
+    }
+
+    fun timingStats(): ArcanoTimingStats {
+        if (temposRodadaNs.isEmpty()) {
+            return ArcanoTimingStats(
+                amostras = 0,
+                mediaMs = 0.0,
+                p95Ms = 0.0,
+                maxMs = 0.0
+            )
+        }
+        val asMs = temposRodadaNs.map { it / 1_000_000.0 }.sorted()
+        val media = asMs.average()
+        val p95Idx = ((asMs.size - 1) * 0.95).toInt().coerceIn(0, asMs.size - 1)
+        val max = asMs.last()
+        return ArcanoTimingStats(
+            amostras = asMs.size,
+            mediaMs = media,
+            p95Ms = asMs[p95Idx],
+            maxMs = max
+        )
+    }
+
+    private fun registrarTempoRodada(deltaNs: Long) {
+        if (deltaNs < 0) return
+        temposRodadaNs.addLast(deltaNs)
+        while (temposRodadaNs.size > maxTempos) {
+            temposRodadaNs.removeFirst()
+        }
     }
 
     private fun cacheKey(

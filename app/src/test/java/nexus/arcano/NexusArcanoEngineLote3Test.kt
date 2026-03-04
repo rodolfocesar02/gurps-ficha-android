@@ -48,4 +48,44 @@ class NexusArcanoEngineLote3Test {
         assertTrue(antes >= 1)
         assertTrue(depois < antes)
     }
+
+    @Test
+    fun timing_stats_registra_media_p95_e_max() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+
+        engine.limparCache()
+        repeat(6) {
+            engine.calcularEstadoAlvo("desejo", estado)
+            engine.diagnosticarRankingAlvo("desejo", estado)
+        }
+        val stats = engine.timingStats()
+
+        assertTrue(stats.amostras >= 12)
+        assertTrue(stats.mediaMs >= 0.0)
+        assertTrue(stats.p95Ms >= 0.0)
+        assertTrue(stats.maxMs >= stats.p95Ms)
+    }
+
+    @Test
+    fun limpar_cache_zera_tambem_metricas_de_tempo() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+
+        engine.calcularEstadoAlvo("desejo", estado)
+        assertTrue(engine.timingStats().amostras >= 1)
+
+        engine.limparCache()
+        assertEquals(0, engine.timingStats().amostras)
+    }
 }

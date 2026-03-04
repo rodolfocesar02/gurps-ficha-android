@@ -98,13 +98,15 @@ Partes implementadas:
   - limpeza total (`limparCache`);
   - invalidação por magia (`invalidarCachePorMagia`).
 - Métrica básica de cache adicionada (`cacheStats`: entradas/hits/misses).
+- Métrica de tempo por rodada adicionada:
+  - `timingStats` com `amostras`, `mediaMs`, `p95Ms`, `maxMs`;
+  - janela limitada em memória (até 512 amostras recentes).
 - Testes iniciais do Lote 3 adicionados:
   - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote3Test.kt`
-  - valida hit de cache e invalidação por magia.
+  - valida hit de cache, invalidação por magia e métricas de tempo.
 
 Partes faltantes:
 - Recalcular apenas chaves impactadas por cada nova magia (delta real, sem recomputo completo).
-- Métrica de performance por rodada com janela temporal (tempo médio e p95).
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
@@ -118,7 +120,7 @@ Partes faltantes:
 ## Próximos Passos imediatos
 1. Rodar telemetria de ranking no catálogo real e calibrar pesos finais do Lote 2.
 2. Implementar delta incremental real no Lote 3 (recalcular apenas blocos impactados).
-3. Ligar métricas de tempo por rodada (médio/p95) para validar ganho prático.
+3. Instrumentar teste comparativo de tempo com/sem delta incremental por rodada.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
