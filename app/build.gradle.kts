@@ -34,6 +34,12 @@ android {
             project.findProperty("DISCORD_ROLL_API_KEY") as? String
         ) ?: "")
             .replace("\"", "\\\"")
+        val modoAlvoNexusHabilitado = (firstNonBlank(
+            localProperties.getProperty("MODO_ALVO_NEXUS_HABILITADO"),
+            project.findProperty("MODO_ALVO_NEXUS_HABILITADO") as? String
+        ) ?: "false")
+            .lowercase()
+            .let { it == "1" || it == "true" || it == "yes" || it == "on" }
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
@@ -42,6 +48,7 @@ android {
         versionName = "1.1"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
+        buildConfigField("boolean", "MODO_ALVO_NEXUS_HABILITADO", modoAlvoNexusHabilitado.toString())
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

@@ -149,11 +149,13 @@ Partes implementadas:
   - linha de `3 próximas ações`;
   - linha de `chaves faltantes` (até 3);
   - sem reativar a flag global do modo alvo antigo.
+- Reativação controlada por flag de build implementada:
+  - `BuildConfig.MODO_ALVO_NEXUS_HABILITADO`;
+  - leitura de `local.properties` / propriedade Gradle `MODO_ALVO_NEXUS_HABILITADO`.
 - Testes unitários do adaptador adicionados:
   - `app/src/test/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapterTest.kt`
 
 Partes faltantes:
-- Reativação controlada por flag.
 - Rodar validação funcional em emulador com a flag de modo alvo ligada.
 
 ## Próximos Passos imediatos
