@@ -88,4 +88,37 @@ class NexusArcanoEngineLote3Test {
         engine.limparCache()
         assertEquals(0, engine.timingStats().amostras)
     }
+
+    @Test
+    fun invalidacao_incremental_remove_so_alvos_impactados() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+
+        engine.limparCache()
+        engine.calcularEstadoAlvo("desejo", estado)
+        engine.calcularEstadoAlvo("translocacao", estado)
+        val antes = engine.cacheStats().entradas
+
+        engine.invalidarCacheIncrementalPorMagia("encantar")
+        val depois = engine.cacheStats().entradas
+
+        assertTrue(antes >= 2)
+        assertTrue(depois >= 1)
+        assertTrue(depois < antes)
+    }
+
+    @Test
+    fun alvos_impactados_inclui_cadeia_dependente() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+
+        val impactados = engine.alvosImpactadosPorMagia("encantar")
+
+        assertTrue("pequeno_desejo" in impactados)
+        assertTrue("desejo" in impactados)
+    }
 }
