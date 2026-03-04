@@ -364,17 +364,10 @@ class NexusArcanoEngine(
         val attrsMudaram = estadoAnterior.am != estadoNovo.am ||
             estadoAnterior.iq != estadoNovo.iq ||
             estadoAnterior.dx != estadoNovo.dx
-        if (attrsMudaram) {
-            return ArcanoDeltaResultado(
-                resultado = calcularEstadoAlvo(alvoId, estadoNovo),
-                modo = "FULL_ATTR_CHANGED",
-                chavesRecalculadas = 0
-            )
-        }
-
         val knownAntes = estadoAnterior.magiasConhecidasIds
         val knownNovo = estadoNovo.magiasConhecidasIds
-        if (knownAntes == knownNovo) {
+        val knownMudou = knownAntes != knownNovo
+        if (!attrsMudaram && !knownMudou) {
             return ArcanoDeltaResultado(
                 resultado = resultadoAnterior,
                 modo = "NO_CHANGES",
@@ -395,25 +388,59 @@ class NexusArcanoEngine(
 
         val novasChaves = prevMap.toMutableMap()
         var recalculadas = 0
-        val changedKnown = (knownAntes - knownNovo) + (knownNovo - knownAntes)
-        changedKnown.forEach { magiaId ->
-            val keyId = "chave_$magiaId"
-            val old = novasChaves[keyId]
-            if (old != null) {
-                novasChaves[keyId] = old.copy(ativa = magiaId in knownNovo)
-                recalculadas += 1
+        if (knownMudou) {
+            val changedKnown = (knownAntes - knownNovo) + (knownNovo - knownAntes)
+            changedKnown.forEach { magiaId ->
+                val keyId = "chave_$magiaId"
+                val old = novasChaves[keyId]
+                if (old != null) {
+                    novasChaves[keyId] = old.copy(ativa = magiaId in knownNovo)
+                    recalculadas += 1
+                }
             }
         }
 
-        val escolasAntes = escolasConhecidas(knownAntes)
-        val escolasAgora = escolasConhecidas(knownNovo)
-        if (escolasAntes != escolasAgora) {
-            snapshot.regrasEscolas.forEach { regra ->
-                val keyId = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}"
-                val old = novasChaves[keyId]
-                if (old != null) {
-                    novasChaves[keyId] = old.copy(ativa = atendeRegraEscolas(regra, knownNovo))
-                    recalculadas += 1
+        if (knownMudou) {
+            val escolasAntes = escolasConhecidas(knownAntes)
+            val escolasAgora = escolasConhecidas(knownNovo)
+            if (escolasAntes != escolasAgora) {
+                snapshot.regrasEscolas.forEach { regra ->
+                    val keyId = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}"
+                    val old = novasChaves[keyId]
+                    if (old != null) {
+                        novasChaves[keyId] = old.copy(ativa = atendeRegraEscolas(regra, knownNovo))
+                        recalculadas += 1
+                    }
+                }
+            }
+        }
+
+        if (attrsMudaram) {
+            snapshot.regrasNumericas.forEach { regra ->
+                regra.minAm?.let { minAm ->
+                    val keyId = "chave_am_${regra.magiaOrigemId}_$minAm"
+                    val old = novasChaves[keyId]
+                    if (old != null) {
+                        novasChaves[keyId] = old.copy(ativa = estadoNovo.am >= minAm)
+                        recalculadas += 1
+                    }
+                }
+                regra.minIq?.let { minIq ->
+                    val keyId = "chave_iq_${regra.magiaOrigemId}_$minIq"
+                    val old = novasChaves[keyId]
+                    if (old != null) {
+                        novasChaves[keyId] = old.copy(ativa = estadoNovo.iq >= minIq)
+                        recalculadas += 1
+                    }
+                }
+                if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
+                    val keyId = "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}"
+                    val old = novasChaves[keyId]
+                    if (old != null) {
+                        val somaAtual = regra.somaAtributos.sumOf { valorAtributo(it, estadoNovo) }
+                        novasChaves[keyId] = old.copy(ativa = somaAtual >= regra.minSoma)
+                        recalculadas += 1
+                    }
                 }
             }
         }
@@ -441,6 +468,12 @@ class NexusArcanoEngine(
         } else {
             null
         }
+        val modo = when {
+            knownMudou && attrsMudaram -> "INCREMENTAL_KNOWN_ATTR"
+            knownMudou -> "INCREMENTAL_KNOWN_ONLY"
+            attrsMudaram -> "INCREMENTAL_ATTR_ONLY"
+            else -> "NO_CHANGES"
+        }
 
         return ArcanoDeltaResultado(
             resultado = ArcanoResultado(
@@ -450,7 +483,7 @@ class NexusArcanoEngine(
                 motivoBloqueio = bloqueio,
                 motivoCodigo = codigo
             ),
-            modo = "INCREMENTAL_KEYS_ONLY",
+            modo = modo,
             chavesRecalculadas = recalculadas
         )
     }

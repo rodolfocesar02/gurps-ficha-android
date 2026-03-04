@@ -138,7 +138,7 @@ class NexusArcanoEngineLote3Test {
         val inc = engine.calcularEstadoAlvoIncremental("desejo", estadoAntes, anterior, estadoDepois)
         val full = engine.calcularEstadoAlvo("desejo", estadoDepois)
 
-        assertEquals("INCREMENTAL_KEYS_ONLY", inc.modo)
+        assertEquals("INCREMENTAL_KNOWN_ONLY", inc.modo)
         assertTrue(inc.chavesRecalculadas > 0)
         assertEquals(full.chavesAtivas.map { it.id }.toSet(), inc.resultado.chavesAtivas.map { it.id }.toSet())
         assertEquals(full.chavesFaltantes.map { it.id }.toSet(), inc.resultado.chavesFaltantes.map { it.id }.toSet())
@@ -146,7 +146,7 @@ class NexusArcanoEngineLote3Test {
     }
 
     @Test
-    fun incremental_cai_para_full_quando_muda_atributo() {
+    fun incremental_trata_mudanca_de_atributo_sem_fallback_full() {
         val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
         val estadoAntes = ArcanoEstadoPersonagem(
             magiasConhecidasIds = setOf("magia_ar"),
@@ -156,9 +156,13 @@ class NexusArcanoEngineLote3Test {
         )
         val estadoDepois = estadoAntes.copy(iq = 14)
         val anterior = engine.calcularEstadoAlvo("teleporte", estadoAntes)
+        val full = engine.calcularEstadoAlvo("teleporte", estadoDepois)
 
         val inc = engine.calcularEstadoAlvoIncremental("teleporte", estadoAntes, anterior, estadoDepois)
 
-        assertEquals("FULL_ATTR_CHANGED", inc.modo)
+        assertEquals("INCREMENTAL_ATTR_ONLY", inc.modo)
+        assertTrue(inc.chavesRecalculadas > 0)
+        assertEquals(full.chavesAtivas.map { it.id }.toSet(), inc.resultado.chavesAtivas.map { it.id }.toSet())
+        assertEquals(full.chavesFaltantes.map { it.id }.toSet(), inc.resultado.chavesFaltantes.map { it.id }.toSet())
     }
 }
