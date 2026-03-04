@@ -94,6 +94,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    sourceSets {
+        getByName("main") {
+            java.srcDir("../motor modo alvo/src")
+        }
+    }
 }
 
 dependencies {
