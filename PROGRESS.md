@@ -93,13 +93,14 @@ Partes implementadas:
   - `TOP3_TEM_SEM_PREREQ=100%`.
 - Tratamento de pré-requisito vazio/mojibake consolidado no custo do ranking
   (`—`, `â€”`, etc. passam a ser considerados sem pré-requisito real).
+- Desempate determinístico por alvo adicionado no ranking (`tieBreakPorAlvo`) para reduzir repetição em empates.
 - Otimização estrutural no motor para caminho de escola:
   - índices em memória por catálogo (`id -> nome/pre/escolas normalizadas`);
   - cache de parsing por magia (`dependenciasNomeadas`, `regrasEscolas`, `regrasNumericas`, `cadeiaObrigatoria`);
   - remoção de varreduras repetidas do catálogo completo em cálculos internos.
 
 Partes faltantes:
-- Ajuste fino final de diversidade entre escolas nas sugestões (evitar repetição de top1 em alvos distintos sem contexto de progresso).
+- Ajuste fino final de diversidade entre escolas nas sugestões (ainda há concentração de top1 em parte dos alvos).
 
 ### Lote 3 - Estado Incremental
 Partes implementadas:

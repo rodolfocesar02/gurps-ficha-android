@@ -588,6 +588,7 @@ class NexusArcanoEngine(
         val ordenados = avaliados.sortedWith(
             compareByDescending<AvaliacaoCandidata> { it.escolaNova }
                 .thenBy { it.custo }
+                .thenBy { tieBreakPorAlvo(magiaId, it.id) }
                 .thenBy { nomeMagiaNorm(it.id) }
         )
 
@@ -998,6 +999,10 @@ class NexusArcanoEngine(
             iq = estado.iq,
             dx = estado.dx
         )
+    }
+
+    private fun tieBreakPorAlvo(alvoId: String, candId: String): Int {
+        return (alvoId + "|" + candId).hashCode()
     }
 
     private fun preRequisitoSemConteudo(magiaId: String): Boolean {
