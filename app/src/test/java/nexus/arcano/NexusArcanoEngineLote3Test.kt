@@ -121,4 +121,44 @@ class NexusArcanoEngineLote3Test {
         assertTrue("pequeno_desejo" in impactados)
         assertTrue("desejo" in impactados)
     }
+
+    @Test
+    fun incremental_bate_com_recalculo_completo_quando_muda_known() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+        val estadoAntes = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+        val estadoDepois = estadoAntes.copy(
+            magiasConhecidasIds = estadoAntes.magiasConhecidasIds + "encantar"
+        )
+        val anterior = engine.calcularEstadoAlvo("desejo", estadoAntes)
+        val inc = engine.calcularEstadoAlvoIncremental("desejo", estadoAntes, anterior, estadoDepois)
+        val full = engine.calcularEstadoAlvo("desejo", estadoDepois)
+
+        assertEquals("INCREMENTAL_KEYS_ONLY", inc.modo)
+        assertTrue(inc.chavesRecalculadas > 0)
+        assertEquals(full.chavesAtivas.map { it.id }.toSet(), inc.resultado.chavesAtivas.map { it.id }.toSet())
+        assertEquals(full.chavesFaltantes.map { it.id }.toSet(), inc.resultado.chavesFaltantes.map { it.id }.toSet())
+        assertEquals(full.proximasAcoes.map { it.magiaId }, inc.resultado.proximasAcoes.map { it.magiaId })
+    }
+
+    @Test
+    fun incremental_cai_para_full_quando_muda_atributo() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+        val estadoAntes = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar"),
+            am = 3,
+            iq = 12,
+            dx = 12
+        )
+        val estadoDepois = estadoAntes.copy(iq = 14)
+        val anterior = engine.calcularEstadoAlvo("teleporte", estadoAntes)
+
+        val inc = engine.calcularEstadoAlvoIncremental("teleporte", estadoAntes, anterior, estadoDepois)
+
+        assertEquals("FULL_ATTR_CHANGED", inc.modo)
+    }
 }
