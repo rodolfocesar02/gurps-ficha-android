@@ -81,10 +81,11 @@ Partes implementadas:
   - consistência funcional: sem exceções e sem inconsistências estruturais em ambos.
 - Teste comparativo `delta incremental vs full` por rodada adicionado (`magias2versao.json`):
   - alvo: `desejo`, 24 rodadas;
-  - delta p50 ~ 0.052 ms, p95 ~ 1.082 ms;
+  - delta p50 ~ 0.044 ms, p95 ~ 1.047 ms;
   - full p50 ~ 0.025 ms, p95 ~ 1.020 ms;
-  - equivalência funcional preservada (sem inconsistências).
-  - conclusão: primeira versão do delta ainda não trouxe ganho de p95 nesse cenário.
+  - equivalência funcional preservada (sem inconsistências);
+  - refinamento incremental aplicado (`INCREMENTAL_NO_IMPACT`) para reaproveitar sugestões/bloqueio quando mudança não impacta alvo;
+  - conclusão atual: ainda sem ganho de p95 sobre full nesse cenário, mas diferença caiu.
 - Otimização estrutural no motor para caminho de escola:
   - índices em memória por catálogo (`id -> nome/pre/escolas normalizadas`);
   - cache de parsing por magia (`dependenciasNomeadas`, `regrasEscolas`, `regrasNumericas`, `cadeiaObrigatoria`);
@@ -122,7 +123,7 @@ Partes implementadas:
   - valida hit de cache, invalidação por magia, invalidação incremental por impacto, delta incremental e métricas de tempo.
 
 Partes faltantes:
-- Refinar delta incremental para reduzir recomputação de sugestões (hoje equivalência ok, ganho de p95 ainda insuficiente em comparativo direto).
+- Refinar delta incremental para bater p95 do full em cenário de rodada real (ainda levemente acima).
 
 ### Lote 4 - Adaptador mínimo com a ficha
 Partes implementadas:
