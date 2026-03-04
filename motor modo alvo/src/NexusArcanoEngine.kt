@@ -170,6 +170,20 @@ class NexusArcanoEngine(
         }
         out.mapValues { it.value.toSet() }
     }
+    private val dependentesTransitivosByMagia: Map<String, Set<String>> by lazy {
+        allMagiaIds.associateWith { magiaId ->
+            val visit = mutableSetOf<String>()
+            val queue = ArrayDeque<String>()
+            queue.addLast(magiaId)
+            while (queue.isNotEmpty()) {
+                val atual = queue.removeFirst()
+                dependentesDiretosByMagia[atual].orEmpty().forEach { dep ->
+                    if (visit.add(dep)) queue.addLast(dep)
+                }
+            }
+            visit.toSet()
+        }
+    }
 
     fun calcularEstadoAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): ArcanoResultado {
         val t0 = System.nanoTime()
@@ -457,7 +471,7 @@ class NexusArcanoEngine(
                 mudanca == alvoId ||
                 alvoId in alvosDependentesTransitivos(mudanca)
         }
-        val precisaRecalcularDerivados = attrsMudaram || escolasMudaram || impactaDependenciaAlvo
+        val precisaRecalcularDerivados = attrsMudaram || escolasMudaram || impactaDependenciaAlvo || knownMudou
 
         val chaveAlvoId = "chave_alvo_$alvoId"
         if (precisaRecalcularDerivados) {
@@ -494,10 +508,10 @@ class NexusArcanoEngine(
             codigo = resultadoAnterior.motivoCodigo
         }
         val modo = when {
-            !precisaRecalcularDerivados -> "INCREMENTAL_NO_IMPACT"
             knownMudou && attrsMudaram -> "INCREMENTAL_KNOWN_ATTR"
             knownMudou -> "INCREMENTAL_KNOWN_ONLY"
             attrsMudaram -> "INCREMENTAL_ATTR_ONLY"
+            !precisaRecalcularDerivados -> "INCREMENTAL_NO_IMPACT"
             else -> "NO_CHANGES"
         }
 
@@ -936,16 +950,7 @@ class NexusArcanoEngine(
     }
 
     private fun alvosDependentesTransitivos(magiaId: String): Set<String> {
-        val visit = mutableSetOf<String>()
-        val queue = ArrayDeque<String>()
-        queue.addLast(magiaId)
-        while (queue.isNotEmpty()) {
-            val atual = queue.removeFirst()
-            dependentesDiretosByMagia[atual].orEmpty().forEach { dep ->
-                if (visit.add(dep)) queue.addLast(dep)
-            }
-        }
-        return visit
+        return dependentesTransitivosByMagia[magiaId].orEmpty()
     }
 
     fun cacheStats(): ArcanoCacheStats {
