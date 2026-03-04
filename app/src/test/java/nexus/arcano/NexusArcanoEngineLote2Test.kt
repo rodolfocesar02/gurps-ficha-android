@@ -141,6 +141,26 @@ class NexusArcanoEngineLote2Test {
         assertTrue(ids.indexOf("cand_barata") < ids.indexOf("cand_cara"))
     }
 
+    @Test
+    fun diagnostico_de_ranking_mostra_motivos_de_exclusao() {
+        val engine = NexusArcanoEngine(catalogoComCandidataBloqueada())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("base_ar"),
+            am = 3,
+            iq = 12,
+            dx = 12
+        )
+
+        val diag = engine.diagnosticarRankingAlvo("alvo", estado)
+        val livre = diag.firstOrNull { it.magiaId == "cand_livre" }
+        val bloqueada = diag.firstOrNull { it.magiaId == "cand_bloqueada" }
+
+        assertTrue(livre != null && livre.elegivel)
+        assertTrue(livre?.motivoExclusao == null)
+        assertTrue(bloqueada != null && !bloqueada.elegivel)
+        assertEquals("NAO_APRENDIVEL_AGORA", bloqueada?.motivoExclusao)
+    }
+
     private fun catalogoComPoucasEscolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(
