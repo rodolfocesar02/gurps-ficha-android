@@ -388,6 +388,7 @@ class NexusArcanoEngine(
 
         val novasChaves = prevMap.toMutableMap()
         var recalculadas = 0
+        var escolasMudaram = false
         if (knownMudou) {
             val changedKnown = (knownAntes - knownNovo) + (knownNovo - knownAntes)
             changedKnown.forEach { magiaId ->
@@ -403,6 +404,7 @@ class NexusArcanoEngine(
         if (knownMudou) {
             val escolasAntes = escolasConhecidas(knownAntes)
             val escolasAgora = escolasConhecidas(knownNovo)
+            escolasMudaram = escolasAntes != escolasAgora
             if (escolasAntes != escolasAgora) {
                 snapshot.regrasEscolas.forEach { regra ->
                     val keyId = "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}"
@@ -445,30 +447,50 @@ class NexusArcanoEngine(
             }
         }
 
+        val changedKnown = if (knownMudou) (knownAntes - knownNovo) + (knownNovo - knownAntes) else emptySet()
+        val impactaDependenciaAlvo = changedKnown.any { mudanca ->
+            mudanca in snapshot.cadeiaSemAlvo ||
+                mudanca == alvoId ||
+                alvoId in alvosDependentesTransitivos(mudanca)
+        }
+        val precisaRecalcularDerivados = attrsMudaram || escolasMudaram || impactaDependenciaAlvo
+
         val chaveAlvoId = "chave_alvo_$alvoId"
-        novasChaves[chaveAlvoId]?.let { old ->
-            val ativaAlvo = magiaAprendivelAgora(alvoId, knownNovo, estadoNovo) || alvoId in knownNovo
-            novasChaves[chaveAlvoId] = old.copy(ativa = ativaAlvo)
-            recalculadas += 1
+        if (precisaRecalcularDerivados) {
+            novasChaves[chaveAlvoId]?.let { old ->
+                val ativaAlvo = magiaAprendivelAgora(alvoId, knownNovo, estadoNovo) || alvoId in knownNovo
+                novasChaves[chaveAlvoId] = old.copy(ativa = ativaAlvo)
+                recalculadas += 1
+            }
         }
 
         val ordemEsperada = chavesEsperadasOrdem(snapshot)
         val chavesOrdenadas = ordemEsperada.mapNotNull { novasChaves[it] }
         val ativas = chavesOrdenadas.filter { it.ativa }
         val faltantes = chavesOrdenadas.filterNot { it.ativa }
-        val proximas = sugerirProximasAcoes(alvoId, knownNovo, snapshot.cadeiaSemAlvo, estadoNovo)
-        val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, snapshot.cadeiaSemAlvo, estadoNovo, knownNovo)
-        val bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
-            bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
+        val proximas: List<ArcanoAcao>
+        val bloqueio: String?
+        val codigo: String?
+        if (precisaRecalcularDerivados) {
+            proximas = sugerirProximasAcoes(alvoId, knownNovo, snapshot.cadeiaSemAlvo, estadoNovo)
+            val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, snapshot.cadeiaSemAlvo, estadoNovo, knownNovo)
+            bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
+                bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
+            } else {
+                null
+            }
+            codigo = if (bloqueio != null) {
+                codigoBloqueio(bloqueioNumerico, faltantes)
+            } else {
+                null
+            }
         } else {
-            null
-        }
-        val codigo = if (bloqueio != null) {
-            codigoBloqueio(bloqueioNumerico, faltantes)
-        } else {
-            null
+            proximas = resultadoAnterior.proximasAcoes
+            bloqueio = resultadoAnterior.motivoBloqueio
+            codigo = resultadoAnterior.motivoCodigo
         }
         val modo = when {
+            !precisaRecalcularDerivados -> "INCREMENTAL_NO_IMPACT"
             knownMudou && attrsMudaram -> "INCREMENTAL_KNOWN_ATTR"
             knownMudou -> "INCREMENTAL_KNOWN_ONLY"
             attrsMudaram -> "INCREMENTAL_ATTR_ONLY"
@@ -902,6 +924,19 @@ class NexusArcanoEngine(
             visit += magiaId
         }
         visit += alvosComRegraEscolas
+        return visit
+    }
+
+    private fun alvosDependentesTransitivos(magiaId: String): Set<String> {
+        val visit = mutableSetOf<String>()
+        val queue = ArrayDeque<String>()
+        queue.addLast(magiaId)
+        while (queue.isNotEmpty()) {
+            val atual = queue.removeFirst()
+            dependentesDiretosByMagia[atual].orEmpty().forEach { dep ->
+                if (visit.add(dep)) queue.addLast(dep)
+            }
+        }
         return visit
     }
 
