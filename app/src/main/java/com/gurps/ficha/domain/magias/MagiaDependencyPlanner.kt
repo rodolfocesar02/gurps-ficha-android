@@ -1,6 +1,5 @@
 package com.gurps.ficha.domain.magias
 
-import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.MagiaSelecionada
@@ -10,7 +9,7 @@ import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import java.text.Normalizer
 
 class MagiaDependencyPlanner(
-    private val dataRepository: DataRepository,
+    private val dataRepository: MagiaPlannerDataSource,
     private val parseFn: (String) -> PreRequisitoParser.ParseResult,
     private val budget: Budget
 ) {

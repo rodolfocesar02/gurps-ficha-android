@@ -7,6 +7,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
+import com.gurps.ficha.domain.magias.MagiaPlannerDataSource
 import com.gurps.ficha.model.*
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoChecker
@@ -16,7 +17,7 @@ import java.text.Normalizer
  * Repositorio para carregar dados de Vantagens, Desvantagens, Pericias e Magias
  * a partir dos arquivos JSON em assets/
  */
-class DataRepository(private val context: Context) {
+class DataRepository(private val context: Context) : MagiaPlannerDataSource {
 
     private val gson = Gson()
 
@@ -48,7 +49,7 @@ class DataRepository(private val context: Context) {
     val periciasSuplementares: List<PericiaSuplementarItem>
         get() = _periciasSuplementares ?: carregarPericiasSuplementares().also { _periciasSuplementares = it }
 
-    val magias: List<MagiaDefinicao>
+    override val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
 
     val tecnicasCatalogo: List<TecnicaCatalogoItem>
@@ -940,7 +941,7 @@ class DataRepository(private val context: Context) {
      * O retorno igual ao raw facilita exibir a condição original ao usuário—
      * o código de UI (ViewModel) não precisa entender a gramática.
      */
-    fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
+    override fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
         val raw = preRequisitoRawNormalizado(definicao)
         if (isSemPreRequisitoRaw(raw)) return null
 
@@ -972,11 +973,11 @@ class DataRepository(private val context: Context) {
         return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
     }
 
-    fun preRequisitoNormalizadoParaAnalise(definicao: MagiaDefinicao): String {
+    override fun preRequisitoNormalizadoParaAnalise(definicao: MagiaDefinicao): String {
         return preRequisitoRawNormalizado(definicao)
     }
 
-    fun magiaSemPreRequisito(definicao: MagiaDefinicao): Boolean {
+    override fun magiaSemPreRequisito(definicao: MagiaDefinicao): Boolean {
         return isSemPreRequisitoRaw(preRequisitoRawNormalizado(definicao))
     }
 
