@@ -9,6 +9,7 @@ Atualizado em: 2026-03-04
 - Foco: estabilidade da ficha e evolução do motor externo `NEXUS ARCANO`
 - Pasta do motor externo: `motor modo alvo/`
 - Checkpoint consolidado: suíte Lote 2 separada e verde em teste unitário.
+- Status operacional do Lote 4: pronto para teste manual guiado com flag do NEXUS ARCANO.
 
 ## Feito
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
