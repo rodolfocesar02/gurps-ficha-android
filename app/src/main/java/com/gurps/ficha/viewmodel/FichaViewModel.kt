@@ -13,6 +13,7 @@ import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.DiscordRollApiClient
 import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.network.DiscordVoiceChannel
+import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.roll.RollDispatchPolicy
 import com.gurps.ficha.domain.rules.CharacterRules
@@ -108,6 +109,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var modoAlvoAviso by mutableStateOf<String?>(null)
         private set
+    var modoAlvoChavesAtivas by mutableStateOf<List<String>>(emptyList())
+        private set
+    var modoAlvoChavesFaltantes by mutableStateOf<List<String>>(emptyList())
+        private set
+    var modoAlvoProximasAcoes by mutableStateOf<List<String>>(emptyList())
+        private set
     private var modoAlvoJob: Job? = null
     private var modoAlvoUltimaChave: String? = null
 
@@ -130,6 +137,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
+    private val nexusArcanoModoAlvoAdapter by lazy {
+        NexusArcanoModoAlvoAdapter(dataRepository.magias)
+    }
     private val tecnicasNomesNormalizados: Set<String>
         get() = dataRepository.tecnicasCatalogo
             .asSequence()
@@ -674,25 +684,75 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna ids de magias relacionadas ao alvo em ordem de progressão sugerida. */
     fun listaRelacionadosMagiaAlvo(alvo: MagiaDefinicao): List<String> {
-        return emptyList()
+        val snapshot = nexusArcanoModoAlvoAdapter.calcular(
+            alvoId = alvo.id,
+            personagem = personagem,
+            am = nivelAptidaoMagica
+        )
+        return snapshot.relacionadosIds
     }
 
     /** Compatibilidade com chamadas antigas. */
     fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
-        return emptySet()
+        return listaRelacionadosMagiaAlvo(alvo).toSet()
     }
 
     fun assinaturaEstadoMagiasParaModoAlvo(): String {
-        return ""
+        val ids = personagem.magias.asSequence()
+            .map { it.definicaoId }
+            .distinct()
+            .sorted()
+            .joinToString("|")
+        return "$ids#am=$nivelAptidaoMagica#iq=${personagem.inteligencia}#dx=${personagem.destreza}"
     }
 
     fun requisitarModoAlvo(alvoId: String?, ativo: Boolean) {
         modoAlvoJob?.cancel()
-        modoAlvoRelacionadosIds = emptyList()
-        modoAlvoCarregando = false
+        if (!ativo || alvoId.isNullOrBlank()) {
+            modoAlvoRelacionadosIds = emptyList()
+            modoAlvoCarregando = false
+            modoAlvoErro = null
+            modoAlvoAviso = null
+            modoAlvoChavesAtivas = emptyList()
+            modoAlvoChavesFaltantes = emptyList()
+            modoAlvoProximasAcoes = emptyList()
+            modoAlvoUltimaChave = null
+            return
+        }
+
+        val chave = "$alvoId|${assinaturaEstadoMagiasParaModoAlvo()}"
+        if (chave == modoAlvoUltimaChave && modoAlvoRelacionadosIds.isNotEmpty()) return
+        modoAlvoUltimaChave = chave
         modoAlvoErro = null
         modoAlvoAviso = null
-        modoAlvoUltimaChave = null
+        modoAlvoCarregando = true
+
+        modoAlvoJob = viewModelScope.launch(Dispatchers.Default) {
+            try {
+                val snapshot = nexusArcanoModoAlvoAdapter.calcular(
+                    alvoId = alvoId,
+                    personagem = personagem,
+                    am = nivelAptidaoMagica
+                )
+                withContext(Dispatchers.Main) {
+                    modoAlvoRelacionadosIds = snapshot.relacionadosIds
+                    modoAlvoChavesAtivas = snapshot.chavesAtivas.map { it.descricao }
+                    modoAlvoChavesFaltantes = snapshot.chavesFaltantes.map { it.descricao }
+                    modoAlvoProximasAcoes = snapshot.proximasAcoesIds.map { id ->
+                        dataRepository.magias.firstOrNull { it.id == id }?.nome ?: id
+                    }
+                    modoAlvoAviso = snapshot.aviso
+                    modoAlvoCarregando = false
+                }
+            } catch (_: CancellationException) {
+                // cancelamento esperado ao trocar alvo/estado
+            } catch (t: Throwable) {
+                withContext(Dispatchers.Main) {
+                    modoAlvoErro = "Erro ao calcular modo alvo: ${t.message ?: "falha inesperada"}"
+                    modoAlvoCarregando = false
+                }
+            }
+        }
     }
 
     private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
