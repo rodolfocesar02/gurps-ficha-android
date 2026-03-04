@@ -177,6 +177,89 @@ class NexusArcanoEngineStressMagiasV2Test {
         assertTrue("Relatorio da escola Encantamento nao gerou latencias.", latenciasMs.isNotEmpty())
     }
 
+    @Test
+    fun comparativo_delta_incremental_vs_full_por_rodada_magias_v2() {
+        val catalogo = carregarCatalogoMagiasV2()
+        val engineInc = NexusArcanoEngine(catalogo)
+        val engineFull = NexusArcanoEngine(catalogo)
+        val alvoId = if (catalogo.existe("desejo")) "desejo" else catalogo.todasMagiasIds().first()
+
+        val additions = catalogo.todasMagiasIds()
+            .filter { it != alvoId }
+            .take(24)
+
+        var estadoAnterior = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = emptySet(),
+            am = 3,
+            iq = 15,
+            dx = 12
+        )
+        var resultadoAnterior = engineInc.calcularEstadoAlvo(alvoId, estadoAnterior)
+
+        val temposIncMs = mutableListOf<Double>()
+        val temposFullMs = mutableListOf<Double>()
+        val inconsistencias = mutableListOf<String>()
+
+        additions.forEach { novaMagia ->
+            val estadoNovo = estadoAnterior.copy(
+                magiasConhecidasIds = estadoAnterior.magiasConhecidasIds + novaMagia
+            )
+
+            val tInc = System.nanoTime()
+            val delta = engineInc.calcularEstadoAlvoIncremental(
+                alvoId = alvoId,
+                estadoAnterior = estadoAnterior,
+                resultadoAnterior = resultadoAnterior,
+                estadoNovo = estadoNovo
+            )
+            temposIncMs += (System.nanoTime() - tInc) / 1_000_000.0
+
+            val tFull = System.nanoTime()
+            val full = engineFull.calcularEstadoAlvo(alvoId, estadoNovo)
+            temposFullMs += (System.nanoTime() - tFull) / 1_000_000.0
+
+            val aInc = delta.resultado.chavesAtivas.map { it.id }.toSet()
+            val fInc = delta.resultado.chavesFaltantes.map { it.id }.toSet()
+            val aFull = full.chavesAtivas.map { it.id }.toSet()
+            val fFull = full.chavesFaltantes.map { it.id }.toSet()
+            if (aInc != aFull || fInc != fFull || delta.resultado.proximasAcoes.map { it.magiaId } != full.proximasAcoes.map { it.magiaId }) {
+                inconsistencias += "Divergencia apos adicionar $novaMagia | modo=${delta.modo}"
+            }
+
+            estadoAnterior = estadoNovo
+            resultadoAnterior = delta.resultado
+        }
+
+        val p50Inc = percentile(temposIncMs, 50.0)
+        val p95Inc = percentile(temposIncMs, 95.0)
+        val p50Full = percentile(temposFullMs, 50.0)
+        val p95Full = percentile(temposFullMs, 95.0)
+        val ganhoP95 = if (p95Full > 0.0) (p95Full - p95Inc) / p95Full * 100.0 else 0.0
+
+        val relatorio = buildString {
+            appendLine("TESTE=comparativo_delta_incremental_vs_full_por_rodada_magias_v2")
+            appendLine("ALVO=$alvoId")
+            appendLine("RODADAS=${additions.size}")
+            appendLine("DELTA_P50_MS=${"%.3f".format(p50Inc)}")
+            appendLine("DELTA_P95_MS=${"%.3f".format(p95Inc)}")
+            appendLine("FULL_P50_MS=${"%.3f".format(p50Full)}")
+            appendLine("FULL_P95_MS=${"%.3f".format(p95Full)}")
+            appendLine("GANHO_P95_PERCENT=${"%.2f".format(ganhoP95)}")
+            appendLine("INCONSISTENCIAS=${inconsistencias.size}")
+            appendLine()
+            appendLine("INCONSISTENCIAS_LIST")
+            inconsistencias.forEach { appendLine(it) }
+        }
+        salvarRelatorio("nexus_arcano_magiasv2_delta_vs_full.txt", relatorio)
+
+        assertTrue("Comparativo nao gerou amostras de delta.", temposIncMs.isNotEmpty())
+        assertTrue("Comparativo nao gerou amostras de full.", temposFullMs.isNotEmpty())
+        assertTrue(
+            "Delta incremental divergiu do full em alguma rodada. Veja build/reports/nexus_arcano_magiasv2_delta_vs_full.txt",
+            inconsistencias.isEmpty()
+        )
+    }
+
     private fun salvarRelatorio(nome: String, conteudo: String) {
         val outDir = Path.of("build", "reports")
         Files.createDirectories(outDir)
