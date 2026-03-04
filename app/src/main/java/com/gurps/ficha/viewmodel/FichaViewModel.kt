@@ -14,7 +14,6 @@ import com.gurps.ficha.data.network.DiscordRollApiClient
 import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.data.storage.FichaStorageRepository
-import com.gurps.ficha.domain.magias.MagiaTargetEngine
 import com.gurps.ficha.domain.roll.RollDispatchPolicy
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
@@ -131,7 +130,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
-    private val magiaTargetEngine = MagiaTargetEngine(dataRepository)
     private val tecnicasNomesNormalizados: Set<String>
         get() = dataRepository.tecnicasCatalogo
             .asSequence()
@@ -676,67 +674,25 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna ids de magias relacionadas ao alvo em ordem de progressão sugerida. */
     fun listaRelacionadosMagiaAlvo(alvo: MagiaDefinicao): List<String> {
-        return magiaTargetEngine.listaRelacionadosMagiaAlvo(alvo, personagem)
+        return emptyList()
     }
 
     /** Compatibilidade com chamadas antigas. */
     fun idsRelacionadosMagiaAlvo(alvo: MagiaDefinicao): Set<String> {
-        return listaRelacionadosMagiaAlvo(alvo).toSet()
+        return emptySet()
     }
 
     fun assinaturaEstadoMagiasParaModoAlvo(): String {
-        val ids = personagem.magias
-            .map { "${it.definicaoId}:${it.pontosGastos}:${it.especializacaoMagia.orEmpty()}" }
-            .sorted()
-            .joinToString("|")
-        return "$ids|am:$nivelAptidaoMagica|iq:${personagem.inteligencia}"
+        return ""
     }
 
     fun requisitarModoAlvo(alvoId: String?, ativo: Boolean) {
-        if (!ativo || alvoId.isNullOrBlank()) {
-            modoAlvoJob?.cancel()
-            modoAlvoRelacionadosIds = emptyList()
-            modoAlvoCarregando = false
-            modoAlvoErro = null
-            modoAlvoAviso = null
-            modoAlvoUltimaChave = null
-            return
-        }
-        val chave = "$alvoId|${assinaturaEstadoMagiasParaModoAlvo()}"
-        if (chave == modoAlvoUltimaChave && (modoAlvoRelacionadosIds.isNotEmpty() || modoAlvoCarregando)) {
-            return
-        }
-        modoAlvoUltimaChave = chave
-        val alvo = dataRepository.magias.firstOrNull { it.id == alvoId }
-        if (alvo == null) {
-            modoAlvoRelacionadosIds = emptyList()
-            modoAlvoCarregando = false
-            modoAlvoErro = "Magia alvo não encontrada."
-            modoAlvoAviso = null
-            return
-        }
         modoAlvoJob?.cancel()
-        modoAlvoJob = viewModelScope.launch {
-            try {
-                delay(120)
-                modoAlvoCarregando = true
-                modoAlvoErro = null
-                modoAlvoAviso = null
-                val resultado = withContext(Dispatchers.Default) {
-                    magiaTargetEngine.calcularModoAlvo(alvo, personagem, chave)
-                }
-                modoAlvoRelacionadosIds = resultado.ids
-                modoAlvoAviso = resultado.aviso
-            } catch (_: CancellationException) {
-                // Requisição substituída por uma mais recente.
-            } catch (t: Throwable) {
-                modoAlvoRelacionadosIds = emptyList()
-                modoAlvoErro = t.message ?: "Falha ao calcular trilha do alvo."
-                modoAlvoAviso = null
-            } finally {
-                modoAlvoCarregando = false
-            }
-        }
+        modoAlvoRelacionadosIds = emptyList()
+        modoAlvoCarregando = false
+        modoAlvoErro = null
+        modoAlvoAviso = null
+        modoAlvoUltimaChave = null
     }
 
     private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {

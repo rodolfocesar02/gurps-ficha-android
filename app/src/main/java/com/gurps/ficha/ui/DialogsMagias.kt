@@ -72,8 +72,9 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-private const val MODO_ALVO_HABILITADO = true
+private const val MODO_ALVO_HABILITADO = false
 private const val AJUDA_VOZ_HABILITADA = false
+private const val MAX_OPCOES_MODO_ALVO = 3
 
 private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
     val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
@@ -132,14 +133,49 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     LaunchedEffect(modoAlvoAtivoEfetivo, magiaAlvoId, assinaturaModoAlvo) {
         viewModel.requisitarModoAlvo(magiaAlvoId, modoAlvoAtivoEfetivo)
     }
+    fun normalizarEscola(raw: String): String {
+        val semAcento = Normalizer.normalize(raw, Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento
+            .lowercase()
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
+    }
     val listaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         val relacionadas = ordemRelacionadosAlvo
             .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
-        if (relacionadas.isNotEmpty()) {
-            relacionadas.sortedBy { if (it.id == magiaAlvoSelecionada.id) 0 else 1 }
-        } else {
-            listaFiltrada
+        val pool = if (relacionadas.isNotEmpty()) relacionadas else catalogoMagias
+        val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
+        val escolasConhecidas = viewModel.personagem.magias
+            .flatMap { it.escola.orEmpty() }
+            .map(::normalizarEscola)
+            .filter { it.isNotBlank() }
+            .toMutableSet()
+        val candidatas = pool.filter { magia ->
+            magia.id != magiaAlvoSelecionada.id &&
+                magia.id !in idsJaAdicionadas
         }
+        val aprendiveis = candidatas.filter { viewModel.prereqFailureForMagia(it) == null }
+        val selecionadas = mutableListOf<MagiaDefinicao>()
+        val fila = aprendiveis.toMutableList()
+        while (selecionadas.size < MAX_OPCOES_MODO_ALVO && fila.isNotEmpty()) {
+            val idxEscolaNova = fila.indexOfFirst { magia ->
+                val escolaPrincipal = magia.escola?.firstOrNull()?.let(::normalizarEscola).orEmpty()
+                escolaPrincipal.isBlank() || escolaPrincipal !in escolasConhecidas
+            }
+            val escolhida = if (idxEscolaNova >= 0) fila.removeAt(idxEscolaNova) else fila.removeAt(0)
+            selecionadas.add(escolhida)
+            escolhida.escola?.firstOrNull()?.let(::normalizarEscola)?.takeIf { it.isNotBlank() }?.let {
+                escolasConhecidas.add(it)
+            }
+        }
+        val fallbackBloqueadas = if (selecionadas.isEmpty()) {
+            candidatas.take(MAX_OPCOES_MODO_ALVO)
+        } else {
+            emptyList()
+        }
+        listOf(magiaAlvoSelecionada) + if (selecionadas.isNotEmpty()) selecionadas else fallbackBloqueadas
     } else {
         listaFiltrada
     }
@@ -217,6 +253,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
                 modoAlvoAtivo = true
                 magiaAlvoId = magia.id
+                viewModel.atualizarBuscaMagia("")
                 val falha = viewModel.prereqFailureForMagia(magia)
                 val resposta = buildString {
                     append("Alvo definido: ${magia.nome}. ")
@@ -333,6 +370,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             onClick = {
                                 modoAlvoAtivo = !modoAlvoAtivo
                                 if (!modoAlvoAtivo) magiaAlvoId = null
+                                else viewModel.atualizarBuscaMagia("")
                             },
                             label = { Text("Modo Alvo") }
                         )
@@ -421,7 +459,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("${listaExibicao.size} magias encontradas", style = MaterialTheme.typography.bodySmall)
+                val textoContagem = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
+                    "${(listaExibicao.size - 1).coerceAtLeast(0)} opções imediatas"
+                } else {
+                    "${listaExibicao.size} magias encontradas"
+                }
+                Text(textoContagem, style = MaterialTheme.typography.bodySmall)
                 if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
                     if (viewModel.modoAlvoCarregando) {
                         Text(
@@ -492,7 +535,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 Column(horizontalAlignment = Alignment.End) {
                                     if (modoAlvoAtivoEfetivo && !jaAdicionada) {
                                         TextButton(
-                                            onClick = { magiaAlvoId = definicao.id },
+                                            onClick = {
+                                                magiaAlvoId = definicao.id
+                                                viewModel.atualizarBuscaMagia("")
+                                            },
                                             contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp),
                                             modifier = Modifier.semantics {
                                                 if (isPraCegoVariant) {
