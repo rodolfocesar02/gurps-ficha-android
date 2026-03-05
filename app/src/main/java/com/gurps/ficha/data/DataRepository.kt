@@ -7,7 +7,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
-import com.gurps.ficha.domain.magias.MagiaPlannerDataSource
 import com.gurps.ficha.model.*
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoChecker
@@ -17,7 +16,7 @@ import java.text.Normalizer
  * Repositorio para carregar dados de Vantagens, Desvantagens, Pericias e Magias
  * a partir dos arquivos JSON em assets/
  */
-class DataRepository(private val context: Context) : MagiaPlannerDataSource {
+class DataRepository(private val context: Context) {
 
     private val gson = Gson()
 
@@ -49,7 +48,7 @@ class DataRepository(private val context: Context) : MagiaPlannerDataSource {
     val periciasSuplementares: List<PericiaSuplementarItem>
         get() = _periciasSuplementares ?: carregarPericiasSuplementares().also { _periciasSuplementares = it }
 
-    override val magias: List<MagiaDefinicao>
+    val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
 
     val tecnicasCatalogo: List<TecnicaCatalogoItem>
@@ -575,6 +574,13 @@ class DataRepository(private val context: Context) : MagiaPlannerDataSource {
         return normalizarBusca(texto).contains(buscaNorm)
     }
 
+    private fun igualNormalizado(texto: String, valor: String): Boolean {
+        val textoNorm = normalizarBusca(texto)
+        val valorNorm = normalizarBusca(valor)
+        if (textoNorm.isBlank() || valorNorm.isBlank()) return false
+        return textoNorm == valorNorm
+    }
+
     fun filtrarVantagens(
         busca: String = "",
         tipoCusto: TipoCusto? = null,
@@ -633,7 +639,7 @@ class DataRepository(private val context: Context) : MagiaPlannerDataSource {
         return magias.filter { m ->
             val matchBusca = contemBusca(m.nome, busca)
             val matchEscola = escola.isNullOrBlank() ||
-                m.escola?.any { contemBusca(it, escola) } == true
+                m.escola?.any { igualNormalizado(it, escola) } == true
             val matchClasse = classe.isNullOrBlank() ||
                 contemBusca(agruparClasseMagia(m.classe).orEmpty(), classe)
             matchBusca && matchEscola && matchClasse
@@ -941,7 +947,7 @@ class DataRepository(private val context: Context) : MagiaPlannerDataSource {
      * O retorno igual ao raw facilita exibir a condição original ao usuário—
      * o código de UI (ViewModel) não precisa entender a gramática.
      */
-    override fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
+    fun validarPreRequisitosMagia(definicao: MagiaDefinicao, personagem: Personagem): String? {
         val raw = preRequisitoRawNormalizado(definicao)
         if (isSemPreRequisitoRaw(raw)) return null
 
@@ -973,11 +979,11 @@ class DataRepository(private val context: Context) : MagiaPlannerDataSource {
         return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }
     }
 
-    override fun preRequisitoNormalizadoParaAnalise(definicao: MagiaDefinicao): String {
+    fun preRequisitoNormalizadoParaAnalise(definicao: MagiaDefinicao): String {
         return preRequisitoRawNormalizado(definicao)
     }
 
-    override fun magiaSemPreRequisito(definicao: MagiaDefinicao): Boolean {
+    fun magiaSemPreRequisito(definicao: MagiaDefinicao): Boolean {
         return isSemPreRequisitoRaw(preRequisitoRawNormalizado(definicao))
     }
 

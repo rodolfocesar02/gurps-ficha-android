@@ -75,6 +75,7 @@ private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 private const val MODO_ALVO_HABILITADO = true
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
+private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
 
 private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
     val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
@@ -106,6 +107,18 @@ private fun motivoBloqueioCurto(falha: String): String {
         .trim()
 }
 
+private fun magiaDaEscolaTecnologica(def: MagiaDefinicao): Boolean {
+    return def.escola
+        .orEmpty()
+        .asSequence()
+        .map { valor ->
+            val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+                .replace(Regex("\\p{M}+"), "")
+            semAcento.lowercase().trim()
+        }
+        .any { it == ESCOLA_NUNCA_RECOMENDAR }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
@@ -121,9 +134,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
     val listaFiltrada = viewModel.magiasFiltradas
     val catalogoMagias = viewModel.dataRepository.magias
+    val catalogoPorId = remember(catalogoMagias) { catalogoMagias.associateBy { it.id } }
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
-    val magiaAlvoSelecionada = catalogoMagias.firstOrNull { it.id == magiaAlvoId }
+    val magiaAlvoSelecionada = magiaAlvoId?.let { catalogoPorId[it] }
     val ordemRelacionadosAlvo: List<String> = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         viewModel.modoAlvoRelacionadosIds
     } else {
@@ -133,32 +147,42 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     LaunchedEffect(modoAlvoAtivoEfetivo, magiaAlvoId, assinaturaModoAlvo) {
         viewModel.requisitarModoAlvo(magiaAlvoId, modoAlvoAtivoEfetivo)
     }
-    fun normalizarEscola(raw: String): String {
-        val semAcento = Normalizer.normalize(raw, Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-        return semAcento
-            .lowercase()
-            .replace(Regex("[^a-z0-9\\s]"), " ")
-            .replace(Regex("\\s+"), " ")
-            .trim()
-    }
     val listaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
         val relacionadas = ordemRelacionadosAlvo
             .asSequence()
             .filter { it != magiaAlvoSelecionada.id }
             .filter { it !in idsJaAdicionadas }
-            .mapNotNull { id -> catalogoMagias.firstOrNull { it.id == id } }
+            .mapNotNull { id -> catalogoPorId[id] }
             .distinctBy { it.id }
             .take(6)
             .toList()
-        listOf(magiaAlvoSelecionada) + relacionadas
+        val aprendiveisRelacionadas = relacionadas.filter { viewModel.prereqFailureForMagia(it) == null }
+        val fallbackAprendiveis = if (aprendiveisRelacionadas.isEmpty()) {
+            catalogoMagias
+                .asSequence()
+                .filter { magia ->
+                    magia.id != magiaAlvoSelecionada.id &&
+                        magia.id !in idsJaAdicionadas &&
+                        magia.id !in relacionadas.map { it.id }.toSet()
+                }
+                .filterNot { magiaDaEscolaTecnologica(it) }
+                .filter { viewModel.prereqFailureForMagia(it) == null }
+                .take(MAX_OPCOES_MODO_ALVO)
+                .toList()
+        } else {
+            emptyList()
+        }
+        listOf(magiaAlvoSelecionada) + relacionadas + fallbackAprendiveis
     } else {
         listaFiltrada
     }
     val proximaSugerida = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        val id = viewModel.modoAlvoProximasAcoesIds.firstOrNull()
-        catalogoMagias.firstOrNull { it.id == id }
+        val idMotor = viewModel.modoAlvoProximasAcoesIds.firstOrNull()
+        val recomendadaMotor = idMotor?.let { catalogoPorId[it] }?.takeIf { viewModel.prereqFailureForMagia(it) == null }
+        recomendadaMotor ?: listaExibicao.firstOrNull { magia ->
+            magia.id != magiaAlvoSelecionada.id && viewModel.prereqFailureForMagia(magia) == null
+        }
     } else {
         null
     }

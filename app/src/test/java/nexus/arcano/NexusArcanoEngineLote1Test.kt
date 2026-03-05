@@ -131,4 +131,36 @@ class NexusArcanoEngineLote1Test {
         assertTrue(r.chavesFaltantes.any { it.id == "chave_escolas_encantar_10" })
         assertFalse(r.chavesAtivas.any { it.id == "chave_escolas_encantar_10" })
     }
+
+    @Test
+    fun dependencia_nomeada_reconhece_singular_plural() {
+        val catalogo = object : ArcanoCatalogo {
+            private val dados = mapOf(
+                "curar_planta" to Triple("Curar Planta", listOf("Plantas"), "-"),
+                "crescimento_de_plantas" to Triple("Crescimento de Plantas", listOf("Plantas"), "Curar Plantas")
+            )
+            override fun preRequisitoRaw(magiaId: String): String = dados[magiaId]?.third.orEmpty()
+            override fun escolas(magiaId: String): List<String> = dados[magiaId]?.second.orEmpty()
+            override fun nome(magiaId: String): String = dados[magiaId]?.first.orEmpty()
+            override fun existe(magiaId: String): Boolean = dados.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = dados.keys.toList()
+        }
+        val engine = NexusArcanoEngine(catalogo)
+        val estadoBloqueado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = emptySet(),
+            am = 0,
+            iq = 10
+        )
+        val estadoLiberado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("curar_planta"),
+            am = 0,
+            iq = 10
+        )
+
+        val rBloqueado = engine.calcularEstadoAlvo("crescimento_de_plantas", estadoBloqueado)
+        val rLiberado = engine.calcularEstadoAlvo("crescimento_de_plantas", estadoLiberado)
+
+        assertTrue(rBloqueado.chavesFaltantes.any { it.id == "chave_curar_planta" })
+        assertTrue(rLiberado.chavesAtivas.any { it.id == "chave_curar_planta" })
+    }
 }
