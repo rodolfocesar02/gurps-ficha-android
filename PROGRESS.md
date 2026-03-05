@@ -82,7 +82,7 @@ Passos:
 5. Definir meta operacional: eliminar `Skipped frames` recorrente acima de 30 em uso normal - `feito` (critério: `0` ocorrências de `Skipped >= 30` em 3 execuções consecutivas do roteiro fixo; alvo complementar de frame time: `open p95 <= 250 ms`, `scroll p95 <= 25 ms`).
 
 ### Lote F - Validação, Auditoria e Go/No-Go
-Status: `PENDENTE`
+Status: `FEITO`
 
 Passos:
 1. Cenário canônico de aceite:
@@ -101,6 +101,7 @@ Passos:
    - unit tests do motor;
    - teste manual em emulador;
    - relatório consolidado no `PROGRESS.md`.
+   - status: `FEITO` (suíte unitária alvo + validação emulador `visual/pracego` sem crash/ANR).
 
 ## Feito
 - Lote A global iniciado no NEXUS ARCANO:
@@ -157,6 +158,21 @@ Passos:
   - snapshot do adapter auditado no cenário real de `Desejo` por múltiplas rodadas;
   - presença obrigatória confirmada de `progressoCadeia`, `progressoEscolas`, `proximaObrigatoria` e `proximaLateralUtil` enquanto alvo bloqueado;
   - relatório: `app/build/reports/nexus_arcano_lote_f_ux_snapshot_desejo.txt`.
+- Lote F passo 4 concluído com auditoria final (2026-03-05):
+  - suíte unitária executada e verde:
+    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest`
+    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
+    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLote2Test`
+    - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest`
+    - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
+  - validação em emulador nas variantes `visual` e `pracego`:
+    - launch OK;
+    - smoke com `300` eventos (`adb monkey`) por variante;
+    - sem `FATAL EXCEPTION`/`ANR`.
+  - relatório: `app/build/reports/nexus_arcano_lote_f_step4_emulador_validacao.txt`.
+- Fechamento do Lote F (2026-03-05):
+  - critérios funcionais e de UX atendidos no cenário canônico;
+  - decisão de Go/No-Go: `GO` para continuar evolução incremental sem reinício do motor.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -389,9 +405,9 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Rodar validação manual final em `visual` e `pracego` com checklist de regressão (Lote F passo 4).
-2. Consolidar resultado final de Go/No-Go no `PROGRESS.md` com os critérios funcionais e de UX.
-3. Reabrir frente de performance caso `open p95` permaneça acima de `250 ms` após ajustes funcionais do Lote F.
+1. Reabrir frente de performance para atacar o gargalo remanescente de abertura (`open p95=300 ms`).
+2. Reexecutar a medição do Lote E após novo ajuste de abertura e atualizar baseline no `PROGRESS.md`.
+3. Manter regressão canônica do Lote F no pipeline local sempre que houver ajuste do modo alvo.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
