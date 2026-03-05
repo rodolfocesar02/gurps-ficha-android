@@ -394,6 +394,11 @@ Partes implementadas:
   - falha de pré-requisito por magia voltou a aparecer no card (ex.: `Falta: ...`);
   - cálculo de pré-requisitos no seletor movido para `Dispatchers.Default` (assíncrono), evitando travamento da UI por avaliação em massa;
   - validação de pré-requisito no `ConfigurarMagiaDialog` também movida para execução assíncrona quando não houver resultado pré-computado.
+- Hotfix ANR 3 (após novo travamento no diálogo de configuração):
+  - diagnóstico via logcat/ActivityManager: ANR por `Input dispatching timed out` com pico de CPU do app e GC intenso durante modo alvo;
+  - corte de carga no seletor: removida validação em massa de pré-requisito na lista;
+  - modo alvo agora valida somente poucas candidatas imediatas (até 4) para sugestão e valida sob demanda ao abrir o diálogo da magia;
+  - cache de falhas por magia continua sendo preenchido de forma incremental (on-demand), reduzindo churn de alocação.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
