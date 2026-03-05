@@ -131,6 +131,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private var modoAlvoUltimaChave: String? = null
     private var prereqCacheAssinatura: String? = null
     private val prereqFailureCache = HashMap<String, String?>()
+    private var prereqCacheAssinaturaRapida: String? = null
+    private val prereqFailureCacheRapida = HashMap<String, String?>()
     private var magiasFiltradasCacheKey: String? = null
     private var magiasFiltradasCache: List<MagiaDefinicao> = emptyList()
     private val todasEscolasMagiaCache: List<String> by lazy {
@@ -688,7 +690,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (especializacaoObrigatoriaErro != null) return especializacaoObrigatoriaErro
 
         if (!ignorarPreRequisito) {
-            val erro = prereqFailureForMagia(definicao)
+            val erro = prereqFailureForMagiaRapida(definicao)
             if (erro != null) {
                 return "Pré‑requisito não atendido: $erro"
             }
@@ -745,6 +747,26 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     /** Indica se todos os pré‑requisitos da magia estão satisfeitos. */
     fun prereqsSatisfied(def: MagiaDefinicao): Boolean {
         return prereqFailureForMagia(def) == null
+    }
+
+    /** Versao leve para UI: evita calculo hierarquico pesado do motor de alvo. */
+    fun prereqFailureForMagiaRapida(def: MagiaDefinicao): String? {
+        val assinaturaAtual = assinaturaEstadoMagiasParaModoAlvo()
+        if (assinaturaAtual != prereqCacheAssinaturaRapida) {
+            prereqCacheAssinaturaRapida = assinaturaAtual
+            prereqFailureCacheRapida.clear()
+        }
+        prereqFailureCacheRapida[def.id]?.let { return it }
+
+        val regraEspecial = validarRegrasEspeciaisMagia(def, null)
+        if (regraEspecial != null) {
+            prereqFailureCacheRapida[def.id] = regraEspecial
+            return regraEspecial
+        }
+
+        return dataRepository.missingPreRequisitoReport(def, personagem).also {
+            prereqFailureCacheRapida[def.id] = it
+        }
     }
 
     /** Retorna ids de magias relacionadas ao alvo em ordem de progressão sugerida. */

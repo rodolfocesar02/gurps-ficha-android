@@ -399,6 +399,11 @@ Partes implementadas:
   - corte de carga no seletor: removida validação em massa de pré-requisito na lista;
   - modo alvo agora valida somente poucas candidatas imediatas (até 4) para sugestão e valida sob demanda ao abrir o diálogo da magia;
   - cache de falhas por magia continua sendo preenchido de forma incremental (on-demand), reduzindo churn de alocação.
+- Hotfix ANR 4 + continuidade de recomendações:
+  - introduzida checagem leve de pré-requisitos para UI (`prereqFailureForMagiaRapida`) sem cálculo hierárquico pesado;
+  - validação de UI e confirmação de adição passam a usar essa checagem leve para reduzir congelamento perceptível;
+  - fallback de sugestões no modo alvo passou a rodar sempre (não só quando o motor retorna vazio), com prioridade para magias simples de escolas novas;
+  - objetivo: evitar estado "parou de recomendar" ao redor de 9-10 magias e manter o fluxo para completar escolas pendentes.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
