@@ -96,6 +96,7 @@ Passos:
    - status: `FEITO` (9/9 rodadas com `meta_reduzida=true` no cenário canônico).
 3. Critério de sucesso de UX:
    - usuário entende claramente o que falta (cadeia + contadores).
+   - status: `FEITO` (snapshot validado no cenário real com cadeia, contadores e próximas ações em todas as rodadas auditadas).
 4. Auditoria final:
    - unit tests do motor;
    - teste manual em emulador;
@@ -152,6 +153,10 @@ Passos:
   - mesmo cenário canônico do passo 1, com checagem rodada a rodada no `NexusArcanoEngine`;
   - resultado: `9/9` rodadas com redução de ao menos uma meta pendente (`meta_reduzida=true`);
   - relatório: `app/build/reports/nexus_arcano_lote_f_metas_reduzidas_por_rodada.txt`.
+- Lote F passo 3 validado no contrato de UX/transparência (2026-03-05):
+  - snapshot do adapter auditado no cenário real de `Desejo` por múltiplas rodadas;
+  - presença obrigatória confirmada de `progressoCadeia`, `progressoEscolas`, `proximaObrigatoria` e `proximaLateralUtil` enquanto alvo bloqueado;
+  - relatório: `app/build/reports/nexus_arcano_lote_f_ux_snapshot_desejo.txt`.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -384,10 +389,9 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Executar Lote F passo 3 com revisão de UX/transparência no fluxo real do diálogo.
-2. Rodar validação manual final em `visual` e `pracego` com checklist de regressão (Lote F passo 4).
-3. Consolidar resultado final de Go/No-Go no `PROGRESS.md` com os critérios funcionais e de UX.
-4. Reabrir frente de performance caso `open p95` permaneça acima de `250 ms` após ajustes funcionais do Lote F.
+1. Rodar validação manual final em `visual` e `pracego` com checklist de regressão (Lote F passo 4).
+2. Consolidar resultado final de Go/No-Go no `PROGRESS.md` com os critérios funcionais e de UX.
+3. Reabrir frente de performance caso `open p95` permaneça acima de `250 ms` após ajustes funcionais do Lote F.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
