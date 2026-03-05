@@ -275,6 +275,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         canalDiscordSelecionadoId = configPrefs.getString(prefCanalDiscordId, null)
         canalDiscordSelecionadoNome = configPrefs.getString(prefCanalDiscordNome, null)
 
+        // Pré-aquece catálogo/índices de magia fora da UI para reduzir lentidão
+        // na primeira abertura do seletor de magias.
+        viewModelScope.launch(Dispatchers.Default) {
+            runCatching {
+                dataRepository.magias
+                dataRepository.filtrarMagias()
+            }
+        }
+
         viewModelScope.launch {
             fichaStorage.migrarDeSharedPreferencesSeNecessario()
             restaurarAutoSaveSeExistir()
