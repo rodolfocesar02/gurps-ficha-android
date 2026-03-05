@@ -103,6 +103,42 @@ class NexusArcanoModoAlvoAdapter(
         )
     }
 
+    fun falhaPreRequisitoHierarquica(
+        alvoId: String,
+        magiasConhecidasIds: Set<String>,
+        iq: Int,
+        dx: Int,
+        am: Int
+    ): String? {
+        if (!magiasById.containsKey(alvoId)) return "Alvo não encontrado no catálogo."
+
+        val resultado = engine.calcularEstadoAlvo(
+            alvoId = alvoId,
+            estado = ArcanoEstadoPersonagem(
+                magiasConhecidasIds = magiasConhecidasIds,
+                am = am,
+                iq = iq,
+                dx = dx
+            )
+        )
+
+        val chaveAlvoId = "chave_alvo_$alvoId"
+        val alvoLiberado = resultado.chavesAtivas.any { it.id == chaveAlvoId }
+        if (alvoLiberado) return null
+
+        val faltas = resultado.chavesFaltantes
+            .asSequence()
+            .filter { it.id != chaveAlvoId }
+            .map { it.descricao.trim() }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .take(3)
+            .toList()
+
+        if (faltas.isNotEmpty()) return faltas.joinToString(" | ")
+        return resultado.motivoBloqueio?.trim()?.takeIf { it.isNotBlank() }
+    }
+
     private fun montarAviso(resultado: ArcanoResultado): String? {
         val faltantes = resultado.chavesFaltantes.take(3)
             .joinToString(" | ") { it.descricao }

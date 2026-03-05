@@ -652,7 +652,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (especializacaoObrigatoriaErro != null) return especializacaoObrigatoriaErro
 
         if (!ignorarPreRequisito) {
-            val erro = dataRepository.validarPreRequisitosMagia(definicao, personagem)
+            val erro = prereqFailureForMagia(definicao)
             if (erro != null) {
                 return "Pré‑requisito não atendido: $erro"
             }
@@ -676,6 +676,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun prereqFailureForMagia(def: MagiaDefinicao): String? {
         val regraEspecial = validarRegrasEspeciaisMagia(def, null)
         if (regraEspecial != null) return regraEspecial
+
+        val knownIds = personagem.magias.asSequence().map { it.definicaoId }.toSet()
+        val erroHierarquico = nexusArcanoModoAlvoAdapter.falhaPreRequisitoHierarquica(
+            alvoId = def.id,
+            magiasConhecidasIds = knownIds,
+            iq = personagem.inteligencia,
+            dx = personagem.destreza,
+            am = nivelAptidaoMagica
+        )
+        if (erroHierarquico != null) return erroHierarquico
+
+        // Fallback de compatibilidade para casos com texto legado atípico.
         return dataRepository.missingPreRequisitoReport(def, personagem)
     }
 
