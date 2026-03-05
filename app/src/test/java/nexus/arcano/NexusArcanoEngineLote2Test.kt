@@ -178,6 +178,27 @@ class NexusArcanoEngineLote2Test {
         assertTrue(primeira != "cand_repete_ar")
     }
 
+    @Test
+    fun escola_tecnologica_fica_excluida_da_recomendacao_e_marcada_no_diagnostico() {
+        val engine = NexusArcanoEngine(catalogoComTecnologica())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("base_ar"),
+            am = 3,
+            iq = 14,
+            dx = 12
+        )
+
+        val r = engine.calcularEstadoAlvo("alvo", estado)
+        val ids = r.proximasAcoes.map { it.magiaId }
+        assertTrue("cand_tecnologica" !in ids)
+
+        val diag = engine.diagnosticarRankingAlvo("alvo", estado)
+        val tec = diag.firstOrNull { it.magiaId == "cand_tecnologica" }
+        assertTrue(tec != null)
+        assertTrue(tec?.elegivel == false)
+        assertEquals("ESCOLA_BLOQUEADA_POLITICA", tec?.motivoExclusao)
+    }
+
     private fun catalogoComPoucasEscolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(
@@ -283,6 +304,24 @@ class NexusArcanoEngineLote2Test {
             M("cand_repete_ar", "Cand Repete Ar", listOf("Ar"), ""),
             M("cand_nova_agua", "Cand Nova Agua", listOf("Agua"), "qualquer"),
             M("cand_nova_terra", "Cand Nova Terra", listOf("Terra"), "qualquer")
+        )
+        val byId = magias.associateBy { it.id }
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoComTecnologica(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo", "Alvo", listOf("Meta"), "1 magica em 3 outras escolas"),
+            M("base_ar", "Base Ar", listOf("Ar"), ""),
+            M("cand_tecnologica", "Cand Tecnologica", listOf("Tecnologica"), ""),
+            M("cand_agua", "Cand Agua", listOf("Agua"), "")
         )
         val byId = magias.associateBy { it.id }
         return object : ArcanoCatalogo {
