@@ -59,16 +59,17 @@ Passos:
 4. Incluir fallback controlado quando não houver escola nova aprendível (explicar motivo): `FEITO`.
 
 ### Lote D - Contrato de UI e Transparência de Progresso
-Status: `PENDENTE`
+Status: `FEITO`
 
 Passos:
 1. Exibir progresso explícito no diálogo:
    - `Escolas p/ Encantar: X/10`;
    - `Escolas p/ Desejo: Y/15`;
    - `Cadeia: Encantar -> Pequeno Desejo -> Desejo`.
-2. Mostrar "próxima obrigatória" vs "próxima lateral útil".
-3. Mostrar motivo de bloqueio em formato curto e estável (sem texto ambíguo).
-4. Manter botão/fluxo de teste manual para validação rodada a rodada.
+   - status: `FEITO`.
+2. Mostrar "próxima obrigatória" vs "próxima lateral útil": `FEITO`.
+3. Mostrar motivo de bloqueio em formato curto e estável (sem texto ambíguo): `FEITO`.
+4. Manter botão/fluxo de teste manual para validação rodada a rodada: `FEITO`.
 
 ### Lote E - Performance e Estabilidade do Fluxo
 Status: `EM ANDAMENTO`
@@ -120,6 +121,11 @@ Passos:
   - bloqueio de repetição de escola em sequência no plano global com exceção explícita para cadeia obrigatória;
   - exclusão da escola `Tecnológica` validada em recomendação e diagnóstico (`ESCOLA_BLOQUEADA_POLITICA`);
   - fallback controlado com motivo explícito quando não há escola nova aprendível.
+- Fechamento do Lote D (2026-03-05):
+  - snapshot do modo alvo agora inclui progresso explícito de cadeia e contadores de escolas;
+  - diálogo mostra "próxima obrigatória" e "próxima lateral útil" separadamente;
+  - motivo de bloqueio curto e estável exibido por código de bloqueio do motor;
+  - botão "Recalcular rodada" adicionado para validação manual rodada a rodada.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -352,10 +358,10 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Iniciar Lote D no diálogo de magias com progresso explícito (cadeia + contadores).
-2. Expor no diálogo os campos do plano global (`próxima ação` + `metas impactadas`).
-3. Executar cenário canônico do Lote F (`AM3`, `IQ15`, `Desejo`) só com recomendadas.
-4. Registrar trilha final e diagnóstico consolidado no `PROGRESS.md`.
+1. Iniciar Lote E com medição objetiva de p95 no fluxo real do diálogo de magias (abertura e scroll).
+2. Rodar cenário canônico do Lote F (`AM3`, `IQ15`, `Desejo`) seguindo apenas recomendadas.
+3. Registrar trilha final, número de rodadas e bloqueios curtos observados no `PROGRESS.md`.
+4. Executar validação manual final em `visual` e `pracego` com checklist de regressão.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
