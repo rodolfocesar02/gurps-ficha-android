@@ -602,7 +602,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     itemsIndexed(listaExibicao) { indice, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
-                        val prereqFalha = prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
+                        val prereqFalha = if (modoAlvoAtivoEfetivo) {
+                            prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
+                        } else {
+                            null
+                        }
                         val prereqOk = prereqFalha == null
                         val recomendada = proximaSugerida?.id == definicao.id
                         
@@ -622,7 +626,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             supportingContent = {
                                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                     Text("$classeEscola | pag. ${definicao.pagina}")
-                                    if (!prereqOk && !prereqFalha.isNullOrBlank()) {
+                                    if (modoAlvoAtivoEfetivo && !prereqOk && !prereqFalha.isNullOrBlank()) {
                                         Text(
                                             "Falta: ${motivoBloqueioCurto(prereqFalha)}",
                                             style = MaterialTheme.typography.bodySmall,
@@ -656,7 +660,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     }
                                     if (jaAdicionada) {
                                         Text("Adicionada", color = MaterialTheme.colorScheme.outline)
-                                    } else if (!prereqOk) {
+                                    } else if (modoAlvoAtivoEfetivo && !prereqOk) {
                                         Text("Bloqueada", color = MaterialTheme.colorScheme.error)
                                     } else if (recomendada) {
                                         Text("Recomendada", color = MaterialTheme.colorScheme.primary)
@@ -682,7 +686,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     magiaSelecionada = definicao
                                 } else Modifier)
                                 .then(
-                                    if (!prereqOk) Modifier.alpha(0.45f) else Modifier
+                                    if (modoAlvoAtivoEfetivo && !prereqOk) Modifier.alpha(0.45f) else Modifier
                                 )
                         )
                         Divider()
