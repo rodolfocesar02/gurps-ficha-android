@@ -157,31 +157,34 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .distinctBy { it.id }
             .take(6)
             .toList()
-        val aprendiveisRelacionadas = relacionadas.filter { viewModel.prereqFailureForMagia(it) == null }
-        val fallbackAprendiveis = if (aprendiveisRelacionadas.isEmpty()) {
-            catalogoMagias
-                .asSequence()
-                .filter { magia ->
-                    magia.id != magiaAlvoSelecionada.id &&
-                        magia.id !in idsJaAdicionadas &&
-                        magia.id !in relacionadas.map { it.id }.toSet()
-                }
-                .filterNot { magiaDaEscolaTecnologica(it) }
-                .filter { viewModel.prereqFailureForMagia(it) == null }
-                .take(MAX_OPCOES_MODO_ALVO)
-                .toList()
-        } else {
-            emptyList()
-        }
-        listOf(magiaAlvoSelecionada) + relacionadas + fallbackAprendiveis
+        val idsRelacionadas = relacionadas.asSequence().map { it.id }.toSet()
+        val fallbackPorMotor = viewModel.modoAlvoProximasAcoesIds
+            .asSequence()
+            .filter { it != magiaAlvoSelecionada.id }
+            .filter { it !in idsJaAdicionadas }
+            .filter { it !in idsRelacionadas }
+            .mapNotNull { id -> catalogoPorId[id] }
+            .filterNot { magiaDaEscolaTecnologica(it) }
+            .distinctBy { it.id }
+            .take(MAX_OPCOES_MODO_ALVO)
+            .toList()
+        (listOf(magiaAlvoSelecionada) + relacionadas + fallbackPorMotor).distinctBy { it.id }
     } else {
         listaFiltrada
     }
+    val prereqFalhasMap = remember(listaExibicao, assinaturaModoAlvo, modoAlvoAtivoEfetivo) {
+        if (!modoAlvoAtivoEfetivo) {
+            emptyMap()
+        } else {
+            listaExibicao.associate { magia -> magia.id to viewModel.prereqFailureForMagia(magia) }
+        }
+    }
     val proximaSugerida = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
         val idMotor = viewModel.modoAlvoProximasAcoesIds.firstOrNull()
-        val recomendadaMotor = idMotor?.let { catalogoPorId[it] }?.takeIf { viewModel.prereqFailureForMagia(it) == null }
+        val recomendadaMotor = idMotor?.let { catalogoPorId[it] }
+            ?.takeIf { prereqFalhasMap[it.id] == null }
         recomendadaMotor ?: listaExibicao.firstOrNull { magia ->
-            magia.id != magiaAlvoSelecionada.id && viewModel.prereqFailureForMagia(magia) == null
+            magia.id != magiaAlvoSelecionada.id && prereqFalhasMap[magia.id] == null
         }
     } else {
         null
@@ -540,7 +543,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     itemsIndexed(listaExibicao) { indice, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
-                        val prereqFalha = viewModel.prereqFailureForMagia(definicao)
+                        val prereqFalha = prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
                         val prereqOk = prereqFalha == null
                         val recomendada = proximaSugerida?.id == definicao.id
                         
@@ -634,7 +637,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
 
     magiaSelecionada?.let { definicao ->
-        val prereqFalha = viewModel.prereqFailureForMagia(definicao)
+        val prereqFalha = prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
         ConfigurarMagiaDialog(
             definicao = definicao,
             personagem = viewModel.personagem,
