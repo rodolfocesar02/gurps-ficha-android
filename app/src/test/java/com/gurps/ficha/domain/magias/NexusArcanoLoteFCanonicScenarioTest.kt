@@ -3,6 +3,10 @@ package com.gurps.ficha.domain.magias
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.gurps.ficha.model.MagiaDefinicao
+import nexus.arcano.ArcanoCatalogo
+import nexus.arcano.ArcanoEstadoPersonagem
+import nexus.arcano.ArcanoMetaProgress
+import nexus.arcano.NexusArcanoEngine
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -108,6 +112,102 @@ class NexusArcanoLoteFCanonicScenarioTest {
         )
     }
 
+    @Test
+    fun cenario_canonico_desejo_cada_acao_recomendada_reduz_meta_pendente() {
+        val catalogo = carregarCatalogoMagiasV2Normalizado()
+        val adapter = NexusArcanoModoAlvoAdapter(catalogo)
+        val engine = criarEngine(catalogo)
+        val known = linkedSetOf<String>()
+        val alvoId = "desejo"
+        val am = 3
+        val iq = 15
+        val dx = 12
+        val maxRodadas = 60
+        val linhas = mutableListOf<String>()
+
+        for (rodada in 1..maxRodadas) {
+            val estadoAntes = ArcanoEstadoPersonagem(
+                magiasConhecidasIds = known,
+                am = am,
+                iq = iq,
+                dx = dx
+            )
+            val falhaAlvo = adapter.falhaPreRequisitoHierarquica(
+                alvoId = alvoId,
+                magiasConhecidasIds = known,
+                iq = iq,
+                dx = dx,
+                am = am
+            )
+            if (falhaAlvo == null) break
+
+            val metasAntes = engine.diagnosticarMetasAlvo(alvoId, estadoAntes)
+            val snapshot = adapter.calcular(
+                alvoId = alvoId,
+                magiasConhecidasIds = known,
+                iq = iq,
+                dx = dx,
+                am = am
+            )
+            val recomendada = snapshot.proximasAcoesIds.firstOrNull { it !in known }
+            assertNotNull("Sem recomendacao na rodada $rodada para alvo '$alvoId'.", recomendada)
+            val recomendadaId = recomendada!!
+
+            val falhaRecomendada = adapter.falhaPreRequisitoHierarquica(
+                alvoId = recomendadaId,
+                magiasConhecidasIds = known,
+                iq = iq,
+                dx = dx,
+                am = am
+            )
+            assertNull(
+                "Recomendacao '$recomendadaId' nao esta aprendivel na rodada $rodada.",
+                falhaRecomendada
+            )
+
+            known += recomendadaId
+            val estadoDepois = ArcanoEstadoPersonagem(
+                magiasConhecidasIds = known,
+                am = am,
+                iq = iq,
+                dx = dx
+            )
+            val metasDepois = engine.diagnosticarMetasAlvo(alvoId, estadoDepois)
+            val melhorou = houveMelhoraMetaPendente(metasAntes, metasDepois)
+            linhas += "R$rodada|acao=$recomendadaId|meta_reduzida=$melhorou"
+            assertTrue(
+                "A acao '$recomendadaId' na rodada $rodada nao reduziu nenhuma meta pendente.",
+                melhorou
+            )
+        }
+
+        val falhaFinal = adapter.falhaPreRequisitoHierarquica(
+            alvoId = alvoId,
+            magiasConhecidasIds = known,
+            iq = iq,
+            dx = dx,
+            am = am
+        )
+
+        salvarRelatorio(
+            nome = "nexus_arcano_lote_f_metas_reduzidas_por_rodada.txt",
+            conteudo = buildString {
+                appendLine("TESTE=cenario_canonico_desejo_metas_reduzidas")
+                appendLine("ALVO=$alvoId")
+                appendLine("SUCESSO=${falhaFinal == null}")
+                appendLine("PASSOS=${known.size}")
+                appendLine("FALHA_FINAL=${falhaFinal ?: "-"}")
+                appendLine("RODADAS")
+                linhas.forEach { appendLine(it) }
+            }
+        )
+
+        assertNull(
+            "Desejo nao foi liberado apos validar reducao de metas por rodada.",
+            falhaFinal
+        )
+    }
+
     private fun carregarCatalogoMagiasV2Normalizado(): List<MagiaDefinicao> {
         val pathCandidates = listOf(
             Path.of("src", "main", "assets", "magias2versao.json"),
@@ -136,6 +236,45 @@ class NexusArcanoLoteFCanonicScenarioTest {
         val outDir = Path.of("build", "reports")
         Files.createDirectories(outDir)
         Files.write(outDir.resolve(nome), conteudo.toByteArray(StandardCharsets.UTF_8))
+    }
+
+    private fun criarEngine(catalogo: List<MagiaDefinicao>): NexusArcanoEngine {
+        val byId = catalogo.associateBy { it.id }
+        return NexusArcanoEngine(
+            object : ArcanoCatalogo {
+                override fun preRequisitoRaw(magiaId: String): String =
+                    byId[magiaId]?.preRequisitos.orEmpty()
+
+                override fun escolas(magiaId: String): List<String> =
+                    byId[magiaId]?.escola.orEmpty()
+
+                override fun nome(magiaId: String): String =
+                    byId[magiaId]?.nome.orEmpty()
+
+                override fun existe(magiaId: String): Boolean =
+                    byId.containsKey(magiaId)
+
+                override fun todasMagiasIds(): List<String> =
+                    byId.keys.sorted()
+            }
+        )
+    }
+
+    private fun houveMelhoraMetaPendente(
+        metasAntes: List<ArcanoMetaProgress>,
+        metasDepois: List<ArcanoMetaProgress>
+    ): Boolean {
+        val depoisPorId = metasDepois.associateBy { it.id }
+        return metasAntes
+            .asSequence()
+            .filter { !it.atendida }
+            .any { antes ->
+                val depois = depoisPorId[antes.id] ?: return@any true
+                (depois.atendida && !antes.atendida) ||
+                    (depois.atual > antes.atual) ||
+                    (antes.bloqueadaPorUpstream && !depois.bloqueadaPorUpstream) ||
+                    (depois.requerido < antes.requerido)
+            }
     }
 }
 
