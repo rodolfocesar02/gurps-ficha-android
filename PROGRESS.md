@@ -93,6 +93,7 @@ Passos:
 2. Critério de sucesso funcional:
    - alvo liberado sem deriva longa;
    - cada ação reduz ao menos 1 meta pendente.
+   - status: `FEITO` (9/9 rodadas com `meta_reduzida=true` no cenário canônico).
 3. Critério de sucesso de UX:
    - usuário entende claramente o que falta (cadeia + contadores).
 4. Auditoria final:
@@ -147,6 +148,10 @@ Passos:
   - cenário: `AM3`, `IQ15`, `DX12`, alvo `Desejo`, seguindo apenas recomendações do adapter;
   - resultado: `SUCESSO=true`, `PASSOS=9`, alvo liberado sem bloqueio final;
   - relatório: `app/build/reports/nexus_arcano_lote_f_cenario_canonico_desejo.txt`.
+- Lote F passo 2 validado no diagnóstico de metas (2026-03-05):
+  - mesmo cenário canônico do passo 1, com checagem rodada a rodada no `NexusArcanoEngine`;
+  - resultado: `9/9` rodadas com redução de ao menos uma meta pendente (`meta_reduzida=true`);
+  - relatório: `app/build/reports/nexus_arcano_lote_f_metas_reduzidas_por_rodada.txt`.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -379,9 +384,9 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Executar Lote F passo 2: validar que cada ação recomendada reduz ao menos 1 meta pendente.
-2. Executar Lote F passo 3 com revisão de UX/transparência no fluxo real do diálogo.
-3. Rodar validação manual final em `visual` e `pracego` com checklist de regressão (Lote F passo 4).
+1. Executar Lote F passo 3 com revisão de UX/transparência no fluxo real do diálogo.
+2. Rodar validação manual final em `visual` e `pracego` com checklist de regressão (Lote F passo 4).
+3. Consolidar resultado final de Go/No-Go no `PROGRESS.md` com os critérios funcionais e de UX.
 4. Reabrir frente de performance caso `open p95` permaneça acima de `250 ms` após ajustes funcionais do Lote F.
 
 ## Regra operacional
