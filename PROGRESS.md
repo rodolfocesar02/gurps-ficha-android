@@ -2,445 +2,121 @@
 
 Atualizado em: 2026-03-05
 
-## Estado Atual
-- Branch: `main`
-- Variantes: `visual` e `pracego`
-- Build: estável nas variantes principais
-- Foco: estabilidade da ficha e evolução do motor externo `NEXUS ARCANO`
-- Pasta do motor externo: `motor modo alvo/`
-- Checkpoint consolidado: suíte Lote 2 separada e verde em teste unitário.
-- Status operacional do Lote 4: pronto para teste manual guiado com flag do NEXUS ARCANO.
-- Stress test do NEXUS ARCANO reexecutado em `2026-03-05` com relatórios atualizados em `app/build/reports/`.
-- Modo alvo antigo: removido do projeto (`app/` e `motor modo alvo/arquivos-legados`), fluxo unificado no NEXUS ARCANO.
-- Diagnóstico funcional atual: em teste manual real (`AM3`, `IQ15`), usuário chegou a `35` magias e ainda não liberou `Desejo` seguindo apenas recomendações.
-- Diagnóstico de performance em tempo real (2026-03-05): sem crash/ANR no fluxo principal, porém com jank recorrente (`Choreographer: Skipped 31-48 frames`) em interações da tela de magias.
-- Decisão técnica: não reiniciar do zero; evoluir o NEXUS ARCANO para um planejador global (não guloso por rodada).
-- Go/No-Go atual (2026-03-05): `GO` após fechamento do Lote F com cenário canônico e auditoria final verdes.
-- Hotfix ANR (2026-03-05 19:36): corrigido cálculo massivo de pré-requisitos no diálogo de magias quando `Modo Alvo` está ativo sem alvo definido (evita travamento por recomposição no thread principal).
-- Hotfix ANR 2 (2026-03-05 19:42): removida validação hierárquica em massa dentro do fallback do seletor no `Modo Alvo` (ao escolher alvo), evitando execução pesada do planejador no thread principal.
+## Objetivo Atual
+Garantir que o **Modo Alvo** aplique os pré-requisitos de magia com comportamento canônico GURPS, sem divergência entre telas, motor e catálogo.
 
-## Plano de Virada do Motor (Lotes + Passos)
-Objetivo macro: garantir que recomendações levem ao alvo com menor caminho viável e progresso explícito de requisitos compostos (cadeia + escolas + atributos).
+## Diagnóstico Confirmado
+1. Existem duas lógicas de validação em paralelo (rápida e hierárquica), com resultados diferentes em alguns casos.
+2. O Modo Alvo consome `preRequisitos` bruto da `MagiaDefinicao` no adapter, sem garantir uso do texto canônico corrigido por override.
+3. O runtime usa `app/src/main/assets/magias2versao.json`, que contém divergências de texto em relação às correções canônicas mapeadas no repositório.
+4. O parser do motor (`NexusArcanoEngine`) é simplificado para alguns casos de `ou` e pode selecionar cadeia/regras numéricas fora da alternativa correta.
+5. Auditoria global `NexusArcanoModoAlvoAuditoriaTodasMagiasTest` falha por OOM e não fecha diagnóstico completo de regressão.
 
-### Lote A - Modelo de Objetivo Global (Obrigatório)
-Status: `EM ANDAMENTO`
+## Plano de Ação (Lotes)
+
+### Lote 1 - Fonte Única de Pré-Requisito Canônico
+Status: `PENDENTE`
 
 Passos:
-1. Formalizar alvo como conjunto de metas obrigatórias: `PARCIAL`
-   - cadeia (`Encantar -> Pequeno Desejo -> Desejo`);
-   - contadores (`10 escolas`, `15 escolas`);
-   - gates numéricos (`AM/IQ/DX`).
-2. Converter pré-requisito textual para estrutura canônica por tipo: `PARCIAL`
-   - `MAGIA_EXATA`, `MAGIA_OU`, `ESCOLAS_DISTINTAS`, `NUMERICO`, `CADEIA`.
-3. Definir estado de progresso por meta com `faltante`, `atendido`, `bloqueado por upstream`: `PARCIAL`.
-4. Adicionar checksum de estado para auditoria determinística: `FEITO`.
+1. Criar no `DataRepository` uma função pública de acesso canônico por magia (`id -> preRequisitoCanonico`).
+Arquivo: `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
+2. Aplicar override canônico no carregamento de magias (não só na validação textual), para que `MagiaDefinicao.preRequisitos` já saia normalizado.
+Arquivo: `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
+3. Garantir que `FichaViewModel` e `NexusArcanoModoAlvoAdapter` usem essa mesma fonte, sem caminhos paralelos.
+Arquivos:
+- `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
+- `app/src/main/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapter.kt`
 
-### Lote B - Planejador de Caminho Mínimo (BFS/A* com custo)
-Status: `FEITO`
+Critério de aceite:
+- Para uma magia qualquer, texto de pré-requisito exibido/validado/recomendado é idêntico em todos os fluxos.
 
-Passos:
-1. Implementar busca global de caminho (BFS/A*) sobre estado incremental: `FEITO` (A* heurístico com cache/memo de metas por estado na rodada).
-2. Função de custo:
-   - `+1` por magia adicionada;
-   - penalidade para escola repetida quando meta de escolas ainda não fechou;
-   - penalidade forte para ação que não reduz nenhuma meta pendente.
-   - status: `FEITO`.
-3. Restringir expansão a magias aprendíveis no estado atual (sem sugestão impossível): `FEITO`.
-4. Garantir que saída da busca devolva:
-   - próxima ação;
-   - trilha curta prevista;
-   - metas impactadas pela ação.
-   - status: `FEITO`.
-
-### Lote C - Recomendador de Escolas (anti-deriva)
-Status: `FEITO`
+### Lote 2 - Saneamento do Catálogo Runtime (`magias2versao.json`)
+Status: `PENDENTE`
 
 Passos:
-1. Priorizar automaticamente escola nova enquanto houver meta de escolas pendente: `FEITO`.
-2. Bloquear recomendação redundante de mesma escola em sequência, salvo exceção obrigatória de cadeia: `FEITO`.
-3. Excluir definitivamente escola `Tecnológica` do pool recomendado: `FEITO`.
-4. Incluir fallback controlado quando não houver escola nova aprendível (explicar motivo): `FEITO`.
+1. Auditar divergências entre `magias2versao.json` e overrides canônicos (`preRequisitosOverridePorMagiaId`).
+2. Corrigir entradas críticas de progressão (prioridade alta):
+- `encantar`
+- `pequeno_desejo`
+- `desejo`
+- `desejo_superior`
+- cadeias de portal/expulsão/convocação com contagem de escolas
+3. Corrigir entradas com marcador `#` que devem virar regra explícita canônica quando houver definição conhecida.
+Arquivo: `app/src/main/assets/magias2versao.json`
 
-### Lote D - Contrato de UI e Transparência de Progresso
-Status: `FEITO`
+Critério de aceite:
+- Diferenças entre catálogo runtime e regra canônica reduzidas aos casos explicitamente não automatizáveis.
 
-Passos:
-1. Exibir progresso explícito no diálogo:
-   - `Escolas p/ Encantar: X/10`;
-   - `Escolas p/ Desejo: Y/15`;
-   - `Cadeia: Encantar -> Pequeno Desejo -> Desejo`.
-   - status: `FEITO`.
-2. Mostrar "próxima obrigatória" vs "próxima lateral útil": `FEITO`.
-3. Mostrar motivo de bloqueio em formato curto e estável (sem texto ambíguo): `FEITO`.
-4. Manter botão/fluxo de teste manual para validação rodada a rodada: `FEITO`.
-
-### Lote E - Performance e Estabilidade do Fluxo
-Status: `FEITO`
+### Lote 3 - Unificação da Validação de Pré-Requisito
+Status: `PENDENTE`
 
 Passos:
-1. Manter pré-aquecimento de catálogo/índice de magias em background (`FichaViewModel init`) - `feito`.
-2. Manter cache de filtros/listas (ViewModel + DataRepository) - `feito`.
-3. Reduzir recomputação pesada na lista fora do modo alvo - `feito`.
-4. Medir p95 de abertura do seletor e p95 de scroll com cenário fixo no emulador - `feito` (`open p95=300 ms`, `scroll p95=17 ms`, relatório em `app/build/reports/nexus_arcano_lote_e_step4_perf_emulador.txt`).
-5. Definir meta operacional: eliminar `Skipped frames` recorrente acima de 30 em uso normal - `feito` (critério: `0` ocorrências de `Skipped >= 30` em 3 execuções consecutivas do roteiro fixo; alvo complementar de frame time: `open p95 <= 250 ms`, `scroll p95 <= 25 ms`).
+1. Definir um único contrato de validação para UI e Modo Alvo (mesma semântica de `faltando`).
+2. Eliminar fallback conflitante que permita resultado diferente para a mesma magia/estado.
+Arquivos:
+- `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
+- `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
+- `app/src/main/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapter.kt`
 
-### Lote F - Validação, Auditoria e Go/No-Go
-Status: `FEITO`
+Critério de aceite:
+- Mesmo personagem + mesma magia => mesma resposta de bloqueio em lista, diálogo e modo alvo.
+
+### Lote 4 - Correção Semântica do Parser do Motor (`ou`/alternativas)
+Status: `PENDENTE`
 
 Passos:
-1. Cenário canônico de aceite:
-   - personagem `AM3`, `IQ15`;
-   - alvo `Desejo`;
-   - seguir apenas recomendadas até liberar alvo.
-   - status: `FEITO` (teste automatizado `NexusArcanoLoteFCanonicScenarioTest`, `PASSOS=9`).
-2. Critério de sucesso funcional:
-   - alvo liberado sem deriva longa;
-   - cada ação reduz ao menos 1 meta pendente.
-   - status: `FEITO` (9/9 rodadas com `meta_reduzida=true` no cenário canônico).
-3. Critério de sucesso de UX:
-   - usuário entende claramente o que falta (cadeia + contadores).
-   - status: `FEITO` (snapshot validado no cenário real com cadeia, contadores e próximas ações em todas as rodadas auditadas).
-4. Auditoria final:
-   - unit tests do motor;
-   - teste manual em emulador;
-   - relatório consolidado no `PROGRESS.md`.
-   - status: `FEITO` (suíte unitária alvo + validação emulador `visual/pracego` sem crash/ANR).
+1. Revisar `dependenciasNomeadasGrupos` para preservar corretamente alternativas compostas (`A ou B, C`).
+2. Associar extração de regra numérica/escolas ao ramo de alternativa escolhido, evitando mistura global inválida.
+3. Cobrir casos de `outras escolas`, soma de atributos e requisitos nomeados simultâneos.
+Arquivo: `motor modo alvo/src/NexusArcanoEngine.kt`
 
-## Feito
-- Lote A global iniciado no NEXUS ARCANO:
-  - novo contrato de metas canônicas `ArcanoMetaProgress` + `ArcanoMetaTipo`;
-  - novo diagnóstico público `diagnosticarMetasAlvo(alvoId, estado)`;
-  - cobre metas de cadeia, escolas distintas, numéricos (`AM/IQ/soma`) e alvo final;
-  - testes globais adicionados em `NexusArcanoEngineLoteAGlobalTest` para múltiplos alvos (`Desejo`, `Desejo Superior`, `Translocação`).
-- Evolução do Lote A/B (2026-03-05):
-  - checksum determinístico de metas adicionado: `checksumMetasAlvo(alvoId, estado)` (`v1:sha256`);
-  - planejador global passa a retornar `proximaAcaoMagiaId` + `metasImpactadasProximaAcao`;
-  - impacto de metas agora considera também metas que saem do diagnóstico por resolução da cadeia dinâmica;
-  - cobertura de teste ampliada em `NexusArcanoEngineLoteAGlobalTest` e `NexusArcanoEngineLoteBGlobalTest`;
-  - suíte verde: `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest --tests nexus.arcano.NexusArcanoEngineLote2Test`.
-- Fechamento do Lote B (2026-03-05):
-  - custo do A* ajustado com base `+1`, penalidade de escola repetida com meta pendente e penalidade forte sem redução de meta;
-  - expansão global validada para aceitar apenas magias aprendíveis agora;
-  - contrato de saída do plano validado (próxima ação + trilha + metas impactadas);
-  - novos testes de regressão adicionados e verdes em `NexusArcanoEngineLoteBGlobalTest`.
-- Fechamento do Lote C (2026-03-05):
-  - prioridade de escola nova com meta pendente coberta por regressão no Lote 2;
-  - bloqueio de repetição de escola em sequência no plano global com exceção explícita para cadeia obrigatória;
-  - exclusão da escola `Tecnológica` validada em recomendação e diagnóstico (`ESCOLA_BLOQUEADA_POLITICA`);
-  - fallback controlado com motivo explícito quando não há escola nova aprendível.
-- Fechamento do Lote D (2026-03-05):
-  - snapshot do modo alvo agora inclui progresso explícito de cadeia e contadores de escolas;
-  - diálogo mostra "próxima obrigatória" e "próxima lateral útil" separadamente;
-  - motivo de bloqueio curto e estável exibido por código de bloqueio do motor;
-  - botão "Recalcular rodada" adicionado para validação manual rodada a rodada.
-- Lote E passo 4 medido no emulador (2026-03-05):
-  - script versionado: `scripts/measure_lote_e_step4_perf.ps1` (fluxo fixo da aba Magia);
-  - pacote medido: `com.gurps.ficha.visual` em `emulator-5554`;
-  - `open p95=300 ms` e `scroll p95=17 ms` (amostras: 12/12);
-  - relatório salvo em `app/build/reports/nexus_arcano_lote_e_step4_perf_emulador.txt`.
-- Lote E passo 5 formalizado e baseline revalidada (2026-03-05):
-  - meta operacional documentada: zerar recorrência de `Skipped >= 30` no fluxo normal (3 execuções seguidas);
-  - otimização aplicada no seletor de magias: inicialização de `TextToSpeech` apenas quando ajuda por voz estiver ativa;
-  - melhoria estrutural de recomposição na lista: `key` estável por `id` em `LazyColumn`;
-  - nova medição pós-ajuste: `open p95=300 ms` (`mediana 250 ms`) e `scroll p95=20 ms` (`max 29 ms`);
-  - status operacional atual: meta de scroll dentro da faixa alvo, meta de abertura ainda pendente.
-- Fechamento do Lote E (2026-03-05):
-  - roteiro de medição do seletor consolidado e versionado;
-  - baseline de abertura/scroll registrada em relatório reprodutível;
-  - meta operacional de jank definida para acompanhamento contínuo na sequência do projeto.
-- Lote F passo 1 validado por teste canônico automatizado (2026-03-05):
-  - novo teste: `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`;
-  - cenário: `AM3`, `IQ15`, `DX12`, alvo `Desejo`, seguindo apenas recomendações do adapter;
-  - resultado: `SUCESSO=true`, `PASSOS=9`, alvo liberado sem bloqueio final;
-  - relatório: `app/build/reports/nexus_arcano_lote_f_cenario_canonico_desejo.txt`.
-- Lote F passo 2 validado no diagnóstico de metas (2026-03-05):
-  - mesmo cenário canônico do passo 1, com checagem rodada a rodada no `NexusArcanoEngine`;
-  - resultado: `9/9` rodadas com redução de ao menos uma meta pendente (`meta_reduzida=true`);
-  - relatório: `app/build/reports/nexus_arcano_lote_f_metas_reduzidas_por_rodada.txt`.
-- Lote F passo 3 validado no contrato de UX/transparência (2026-03-05):
-  - snapshot do adapter auditado no cenário real de `Desejo` por múltiplas rodadas;
-  - presença obrigatória confirmada de `progressoCadeia`, `progressoEscolas`, `proximaObrigatoria` e `proximaLateralUtil` enquanto alvo bloqueado;
-  - relatório: `app/build/reports/nexus_arcano_lote_f_ux_snapshot_desejo.txt`.
-- Lote F passo 4 concluído com auditoria final (2026-03-05):
-  - suíte unitária executada e verde:
-    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest`
-    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
-    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLote2Test`
-    - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest`
-    - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
-  - validação em emulador nas variantes `visual` e `pracego`:
-    - launch OK;
-    - smoke com `300` eventos (`adb monkey`) por variante;
-    - sem `FATAL EXCEPTION`/`ANR`.
-  - relatório: `app/build/reports/nexus_arcano_lote_f_step4_emulador_validacao.txt`.
-- Fechamento do Lote F (2026-03-05):
-  - critérios funcionais e de UX atendidos no cenário canônico;
-  - decisão de Go/No-Go: `GO` para continuar evolução incremental sem reinício do motor.
-- Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
-- Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
-- Fluxo da ficha estabilizado após reinício/validação do emulador.
-- Organização de trabalho separada criada em `motor modo alvo/` para evolução do novo motor.
-- Validação funcional da variante `pracego` executada no emulador:
-  - build/assemble `pracego` verde;
-  - instalação em emulador (`installPracegoDebug`) concluída;
-  - app aberto com sucesso (`MainActivity` em estado resumed);
-  - stress rápido com `adb shell monkey` (300 eventos) sem crash/ANR do app.
-- Auditoria rápida de acessibilidade na UI:
-  - cobertura de `semantics/contentDescription` presente nos fluxos principais já mapeados;
-  - sem crash de execução na variante `pracego` durante validação.
-- Limitação de ferramenta registrada:
-  - `lintPracegoDebug` falhou por bug interno do lint (`AutoboxingStateCreationDetector`), sem evidência de erro funcional do app.
-- Correção de matching singular/plural nas dependências nomeadas do NEXUS ARCANO:
-  - pré-requisito em plural agora casa com magia em singular (e vice-versa), reduzindo bloqueio falso.
-- Correção no filtro de escola da UI de magias:
-  - comparação passou de `contains` para igualdade normalizada, evitando falso positivo (ex.: filtro `Ar` não puxa mais `Quebrar e Consertar`).
-- Stress test completo do NEXUS ARCANO (Lote 2/3) reexecutado e verde:
-  - `stress_ramificacoes_longas_com_magias_v2`: 40 alvos, 600 amostras, p50 `0,002 ms`, p95 `0,037 ms`, p99 `5,535 ms`, max `573,522 ms`, `0` exceções/inconsistências;
-  - `sweep_escola_encantamento_consistencia_e_tempo_magias_v2`: 59 alvos, p50 `0,834 ms`, p95 `1,216 ms`, max `437,819 ms`, `0` exceções/inconsistências;
-  - `comparativo_delta_incremental_vs_full_por_rodada_magias_v2`: 24 rodadas, equivalência funcional preservada (`0` inconsistências), delta ainda acima do full no p95 (`1,541 ms` vs `1,414 ms`);
-  - `telemetria_ranking_lote2_magias_v2`: `ALVOS_COM_DIAGNOSTICO=67`, `TOP1_ESCOLA_NOVA=100%`, `TOP1_SEM_PREREQ=100%`, `TOP3_TEM_SEM_PREREQ=100%`.
-- Limpeza estrutural do modo alvo antigo concluída:
-  - removidos `MagiaTargetEngine`, `MagiaDependencyPlanner`, `MagiaPlannerDataSource` e testes legados associados em `app/src/main`, `app/src/test` e `motor modo alvo/arquivos-legados`.
-  - `DataRepository` desacoplado da interface legada antiga.
-- Auditoria automática magia-por-magia do modo alvo (NEXUS ARCANO) adicionada e executada:
-  - teste: `NexusArcanoModoAlvoAuditoriaTodasMagiasTest`;
-  - total de magias auditadas: `839` (catálogo `magias2versao.json`);
-  - status atual após correções de parser/cadeia: `SUCESSO=838`, `FALHA=0`, `BLOQUEIO_NUMERICO=1` (`desejo_superior`);
-  - checagem de menor caminho (BFS limitada) em `404` alvos: `DESVIO_MENOR_CAMINHO_ENCONTRADO=0`;
-  - relatório: `app/build/reports/nexus_arcano_modo_alvo_auditoria_todas_magias.txt`.
-- Teste em emulador executado para lag/gargalo (variante `pracego`):
-  - instalação: `:app:installPracegoDebug` OK;
-  - carga de eventos: `adb shell monkey -p com.gurps.ficha.pracego --throttle 80 -v 1200`;
-  - sem crash/ANR detectado no logcat durante execução;
-  - `gfxinfo`: `879` frames, janky `17,41%` (legacy `29,81%`), p50 `17ms`, p90 `48ms`, p95 `113ms`, p99 `400ms`, `Slow UI thread=119`, `Slow draw commands=66`.
+Critério de aceite:
+- O motor não recomenda cadeia impossível nem ignora restrição de alternativa.
 
-## Lotes (divisão por partes)
-### Lote 1 - Núcleo de Chaves e Blocos
-Partes implementadas:
-- Contratos base definidos (`ArcanoEstadoPersonagem`, `ArcanoChave`, `ArcanoAcao`, `ArcanoResultado`).
-- Núcleo inicial implementado em `motor modo alvo/src/NexusArcanoEngine.kt`.
-- Regra hard-first aplicada: cadeia obrigatória antes de contadores de escola.
-- Extração inicial de dependências nomeadas e regra `N mágicas em X escolas`.
-- Extração e validação inicial de pré-requisitos numéricos (`AM`/`IQ`).
-- Bloqueio numérico evita sugestão falsa de escola quando falta atributo.
-- Suporte inicial a pré-requisito numérico composto (ex.: `(DX+IQ):30+`).
-- Filtro inicial de ambiguidade nome/escola em dependências nomeadas.
-- Filtro de sobreposição em dependências nomeadas (evita curto+longo simultâneo).
-- Matching singular/plural em nomes de magia para dependências nomeadas (ex.: `Curar Planta` <-> `Curar Plantas`).
-- Testes automatizados do Lote 1 implementados (`Desejo`, `Desejo Superior`, `Teleporte`, `Convocar Demônio`, `Translocação`):
-  - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote1Test.kt`
-  - suíte verde em `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLote1Test`
-- API de motivo estável inicial implementada no resultado:
-  - `motivoBloqueio` (mensagem)
-  - `motivoCodigo` (`NUMERIC_GATE`, `SCHOOL_COUNT_PENDING`, `CHAIN_PENDING`, `TARGET_PENDING`, `UNKNOWN_BLOCK`)
-- Saída inicial com chaves ativas/faltantes + até 3 ações.
-- Smoke-check manual criado em `motor modo alvo/lotes/lote-01-smoke-check.md`.
+### Lote 5 - Ordem Canônica de Progressão
+Status: `PENDENTE`
 
-Partes faltantes:
-- Expandir suporte de atributos compostos além de `DX`/`IQ` no estado atual.
-- Refinar ambiguidade nome/escola para cenários mais complexos de texto.
-- Refinar matriz de códigos de bloqueio para cenários combinados.
+Passos:
+1. Reforçar prioridade hard-first:
+- cadeia nomeada obrigatória
+- depois contagem de escolas
+- depois alvo final
+2. Garantir que recomendação lateral não fure bloqueio de cadeia.
+Arquivo: `motor modo alvo/src/NexusArcanoEngine.kt`
 
-### Lote 2 - Planejador de 3 Próximas Ações
-Partes implementadas:
-- Limite de saída em até 3 ações já considerado no núcleo inicial.
-- Desempate determinístico por prioridade e nome normalizado.
-- Fallback de escolas evita sugerir alvo/cadeia pendente como ação lateral.
-- Priorização com custo inicial de desbloqueio (dependências/número/escolas) aplicada ao ranking.
-- Fallback robusto para completar até 3 ações quando faltarem escolas novas.
-- Testes do planejador extraídos para suíte dedicada do Lote 2:
-  - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote2Test.kt`
-  - cobertura atual: `até 3 ações`, `ordem determinística`, `não sugerir alvo/cadeia como lateral`, `fallback final`, `empate de custo`.
-- Fallback em 3 passos com deduplicação de escola por rodada:
-  - escolas novas sem repetição;
-  - fallback sem repetir escola;
-  - último recurso com repetição permitida.
-- Planejador agora sugere apenas magias aprendíveis no estado atual (evita recomendação bloqueada).
-- Regra `outras escolas` agora exclui automaticamente a escola da magia de origem nas sugestões laterais.
-- Pontuação de custo calibrada com peso maior para bloqueios relevantes:
-  - dependência nomeada pendente;
-  - gate numérico pendente;
-  - gate de escolas do próprio candidato.
-- Telemetria de ranking adicionada no motor:
-  - novo diagnóstico por alvo com lista de candidatas, custo e elegibilidade;
-  - motivo de exclusão padronizado (`SEM_ESCOLA`, `NAO_APRENDIVEL_AGORA`, `ESCOLA_DA_ORIGEM_BLOQUEADA`).
-- Cobertura de teste ampliada no Lote 2 para:
-  - exclusão de candidata bloqueada por pré-requisito numérico;
-  - exclusão de escola inválida em contexto de `outras escolas`.
-  - priorização por custo (candidata barata antes da cara).
-  - diagnóstico de ranking validado com motivo de exclusão.
-- Teste pesado com catálogo real `magias2versao.json` adicionado:
-  - `NexusArcanoEngineStressMagiasV2Test`
-  - estresse de 40 alvos com pré-requisitos longos (600 amostras):
-    - antes da otimização de índices: p95 ~ 7.8 ms | p99 ~ 106.8 ms | max ~ 3449.9 ms
-    - após otimização de índices/cache de parsing: p95 ~ 0.027 ms | p99 ~ 3.946 ms | max ~ 367.0 ms
-  - sweep completo da escola `Encantamento` (59 alvos):
-    - antes da otimização de índices: p50 ~ 1460.8 ms | p95 ~ 1581.0 ms | max ~ 1613.1 ms
-    - após otimização de índices/cache de parsing: p50 ~ 0.784 ms | p95 ~ 0.929 ms | max ~ 214.8 ms
-  - consistência funcional: sem exceções e sem inconsistências estruturais em ambos.
-- Teste comparativo `delta incremental vs full` por rodada adicionado (`magias2versao.json`):
-  - alvo: `desejo`, 24 rodadas;
-  - delta p50 ~ 0.035 ms, p95 ~ 1.463 ms;
-  - full p50 ~ 0.015 ms, p95 ~ 1.373 ms;
-  - equivalência funcional preservada (sem inconsistências);
-  - refinamento incremental aplicado e validado sem divergência;
-  - conclusão atual: delta ainda acima do p95 do full nesse cenário.
-- Telemetria de ranking Lote 2 calibrada com `magias2versao.json`:
-  - `ALVOS_COM_DIAGNOSTICO=67`;
-  - `TOP1_ESCOLA_NOVA=100%`;
-  - `TOP1_SEM_PREREQ=100%`;
-  - `TOP3_TEM_SEM_PREREQ=100%`.
-- Tratamento de pré-requisito vazio/mojibake consolidado no custo do ranking
-  (`—`, `â€”`, etc. passam a ser considerados sem pré-requisito real).
-- Desempate determinístico por alvo adicionado no ranking (`tieBreakPorAlvo`) para reduzir repetição em empates.
-- Otimização estrutural no motor para caminho de escola:
-  - índices em memória por catálogo (`id -> nome/pre/escolas normalizadas`);
-  - cache de parsing por magia (`dependenciasNomeadas`, `regrasEscolas`, `regrasNumericas`, `cadeiaObrigatoria`);
-  - remoção de varreduras repetidas do catálogo completo em cálculos internos.
+Critério de aceite:
+- Cenário `Encantar -> Pequeno Desejo -> Desejo` sempre respeitado antes de fechamento final.
 
-Partes faltantes:
-- Ajuste fino final de diversidade entre escolas nas sugestões (ainda há concentração de top1 em parte dos alvos).
+### Lote 6 - Testes, Auditoria e Evidência
+Status: `PENDENTE`
 
-### Lote 3 - Estado Incremental
-Partes implementadas:
-- Estrutura separada preparada para cache incremental por alvo.
-- Snapshot em memória por `alvo + estado` para:
-  - `calcularEstadoAlvo`;
-  - `diagnosticarRankingAlvo`.
-- LRU leve (até 256 entradas por cache) para conter uso de memória.
-- Invalidação operacional inicial:
-  - limpeza total (`limparCache`);
-  - invalidação por magia (`invalidarCachePorMagia`).
-- Invalidação incremental por impacto de alvo adicionada:
-  - `alvosImpactadosPorMagia` (dependência direta/indireta + alvos com regra de escolas);
-  - `invalidarCacheIncrementalPorMagia` remove apenas entradas de alvos impactados.
-- Delta incremental inicial implementado no motor:
-  - `calcularEstadoAlvoIncremental(alvo, estadoAnterior, resultadoAnterior, estadoNovo)`;
-  - caminho incremental para mudança apenas de magias conhecidas;
-  - fallback automático para full apenas quando há desalinhamento inválido do snapshot anterior.
-- Delta incremental expandido para mudança de atributos sem fallback full:
-  - recálculo incremental de chaves numéricas (`AM/IQ/soma`) no snapshot do alvo;
-  - manutenção de equivalência funcional com cálculo completo validada em teste.
-- Métrica básica de cache adicionada (`cacheStats`: entradas/hits/misses).
-- Métrica de tempo por rodada adicionada:
-  - `timingStats` com `amostras`, `mediaMs`, `p95Ms`, `maxMs`;
-  - janela limitada em memória (até 512 amostras recentes).
-- Testes iniciais do Lote 3 adicionados:
-  - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote3Test.kt`
-  - valida hit de cache, invalidação por magia, invalidação incremental por impacto, delta incremental e métricas de tempo.
+Passos:
+1. Adicionar testes de regressão para:
+- `nao pode ser/ter` (cego/cegueira, surdo/surdez)
+- `(DX + IQ):30+`
+- `outras escolas` vs `escolas diferentes`
+- alternativa com `ou`
+Arquivos:
+- `app/src/test/java/com/gurps/ficha/regras_prerequisitos/PreRequisitoParserTest.kt`
+- `app/src/test/java/nexus/arcano/*`
+2. Ajustar auditoria global para não estourar memória (reduzir BFS/estado, limitar amostra ou particionar teste).
+Arquivo: `app/src/test/java/nexus/arcano/NexusArcanoModoAlvoAuditoriaTodasMagiasTest.kt`
+3. Gerar relatórios em `app/build/reports/` com resumo de sucesso/falha.
 
-Partes faltantes:
-- Refinar delta incremental para bater p95 do full em cenário de rodada real (ainda acima).
+Critério de aceite:
+- Suite alvo passa sem OOM e com relatório reproduzível.
 
-### Lote 4 - Adaptador mínimo com a ficha
-Partes implementadas:
-- Recurso antigo desativado na ficha para evitar travamentos.
-- Adaptador mínimo `NEXUS ARCANO` criado no app:
-  - `app/src/main/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapter.kt`
-  - entrada: catálogo `magias2versao` + estado do personagem (`magias`, `AM`, `IQ`, `DX`);
-  - saída: `relacionadosIds` + `chavesAtivas` + `chavesFaltantes` + `proximasAcoesIds` + `aviso`.
-- `FichaViewModel` integrado ao adaptador:
-  - stubs removidos de `listaRelacionadosMagiaAlvo`, `idsRelacionadosMagiaAlvo`,
-    `assinaturaEstadoMagiasParaModoAlvo`, `requisitarModoAlvo`;
-  - cálculo assíncrono em `Dispatchers.Default` com cancelamento seguro;
-  - estado de UI adicionado: `modoAlvoChavesAtivas`, `modoAlvoChavesFaltantes`, `modoAlvoProximasAcoes`.
-- UI de magias preparada para exibir resumo mínimo no modo alvo:
-  - linha de `3 próximas ações`;
-  - linha de `chaves faltantes` (até 3);
-  - sem reativar a flag global do modo alvo antigo.
-- Reativação controlada por flag de build implementada:
-  - `BuildConfig.MODO_ALVO_NEXUS_HABILITADO`;
-  - leitura de `local.properties` / propriedade Gradle `MODO_ALVO_NEXUS_HABILITADO`.
-- Robustez de cálculo no `FichaViewModel`:
-  - cálculo do NEXUS ARCANO usa snapshot imutável de estado (`magias conhecidas`, `IQ`, `DX`, `AM`);
-  - evita inconsistência quando o usuário altera magias durante recálculo assíncrono.
-- UX do fluxo de alvo refinada:
-  - ao ativar modo alvo ou definir novo alvo, limpa busca/filtros de classe/escola para reduzir estado confuso;
-  - resumo adicional acessível no `pracego` com leitura consolidada de alvo, próximas ações e chaves pendentes.
-- Testes unitários do adaptador adicionados:
-  - `app/src/test/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapterTest.kt`
-- Checklist de smoke test emulador do Lote 4 criado:
-  - `motor modo alvo/lotes/lote-04-smoke-check-emulador.md`
-- Validação de execução no emulador (`pracego`) após os ajustes:
-  - `:app:installPracegoDebug` concluído;
-  - `MainActivity` em estado resumed após launch;
-  - sem crash/ANR em abertura imediata.
-- Correções de trilha aplicadas após teste manual de `Desejo`, `Cavalgar` e `Adivinhação`:
-  - parser de regra de escolas no NEXUS ARCANO atualizado para aceitar `magia(s)` e `mágica(s)` e números por palavra (`dez`, `quinze`, etc.);
-  - fallback da lista no diálogo de magias reforçado quando o pool do alvo vem vazio (passa a buscar sugestões no catálogo completo);
-  - filtro de opções imediatas mantém prioridade para magias aprendíveis agora.
-- Hotfix de continuidade de recomendações após progresso parcial:
-  - adaptador do NEXUS ARCANO agora sempre complementa as 3 próximas ações com candidatas elegíveis do ranking quando a cadeia principal estiver bloqueada;
-  - evita estado "parou de recomendar" após adicionar várias magias sem fechar totalmente o alvo.
-- Hotfix de performance/UI no modo alvo:
-  - remoção de varredura pesada em recomposição da tela de magias;
-  - lista e próxima recomendada passam a usar IDs prontos do ViewModel (`modoAlvoRelacionadosIds` / `modoAlvoProximasAcoesIds`), reduzindo risco de ANR.
-- Diagnóstico consolidado do lote atual (teste manual):
-  - motor atual ainda é heurístico guloso por rodada (`greedy`) e não garante caminho global mínimo;
-  - em cenário real de `Desejo` houve deriva para trilhas longas (ex.: ~27 magias) apesar de existir trilha mais curta;
-  - conclusão: falta implementar planejamento de caminho mínimo global para cumprir objetivo de "menos magias possível".
-- Ajuste operacional de validação:
-  - durante o teste atual, `MODO_ALVO_HABILITADO` foi forçado para `true` em `DialogsMagias.kt` para eliminar ambiguidade de flag e garantir visibilidade do chip no emulador.
-- Auditoria de uso em runtime consolidada:
-  - fluxo de UI/ViewModel usa `NexusArcanoModoAlvoAdapter` como fonte de cálculo do modo alvo;
-  - sem referências remanescentes a `MagiaTargetEngine`/`MagiaDependencyPlanner`/`MagiaPlannerDataSource` no código ativo.
-- Correção estrutural no motor para cenários com `ou` em dependências nomeadas:
-  - leitura por grupos alternativos (`A ou B`) em vez de tratar tudo como obrigatório;
-  - cadeia obrigatória dinâmica por estado para reduzir trilhas longas desnecessárias;
-  - desempate de alternativa por custo aproximado de profundidade.
-- Hotfix UX/performance no seletor de magias (modo alvo):
-  - remoção de bloco de telemetria textual excessiva visível na tela;
-  - recomendação passa a considerar apenas magia com pré-requisito realmente atendido;
-  - falha de pré-requisito por magia voltou a aparecer no card (ex.: `Falta: ...`);
-  - cálculo de pré-requisitos no seletor movido para `Dispatchers.Default` (assíncrono), evitando travamento da UI por avaliação em massa;
-  - validação de pré-requisito no `ConfigurarMagiaDialog` também movida para execução assíncrona quando não houver resultado pré-computado.
-- Hotfix ANR 3 (após novo travamento no diálogo de configuração):
-  - diagnóstico via logcat/ActivityManager: ANR por `Input dispatching timed out` com pico de CPU do app e GC intenso durante modo alvo;
-  - corte de carga no seletor: removida validação em massa de pré-requisito na lista;
-  - modo alvo agora valida somente poucas candidatas imediatas (até 4) para sugestão e valida sob demanda ao abrir o diálogo da magia;
-  - cache de falhas por magia continua sendo preenchido de forma incremental (on-demand), reduzindo churn de alocação.
-- Hotfix ANR 4 + continuidade de recomendações:
-  - introduzida checagem leve de pré-requisitos para UI (`prereqFailureForMagiaRapida`) sem cálculo hierárquico pesado;
-  - validação de UI e confirmação de adição passam a usar essa checagem leve para reduzir congelamento perceptível;
-  - fallback de sugestões no modo alvo passou a rodar sempre (não só quando o motor retorna vazio), com prioridade para magias simples de escolas novas;
-  - objetivo: evitar estado "parou de recomendar" ao redor de 9-10 magias e manter o fluxo para completar escolas pendentes.
-- Hotfix continuidade 14/15 escolas:
-  - removido bloqueio artificial de recomendações da escola Tecnológica no modo alvo;
-  - motor de fallback volta a considerar todas as escolas ao tentar completar contadores (`10 outras` / `15 diferentes`);
-  - objetivo: evitar estado "Sem recomendação imediata" quando a última escola faltante era justamente a excluída.
-- Ajuste de política de recomendação (pedido do usuário):
-  - restabelecida exclusão da escola Tecnológica nas recomendações de modo alvo;
-  - quando não houver magia liberada imediata, o sistema passa a recomendar a melhor **próxima etapa** não-tecnológica (bloqueada com menor complexidade de falta), em vez de ficar sem recomendação;
-  - avaliação ampliada para até 10 candidatas leves por rodada para reduzir risco de "beco sem saída" em 14/15.
+## Regras Operacionais
+1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
+2. Não aceitar correção só por "funcionou no caso X"; incluir teste de regressão.
+3. Quando houver divergência entre JSON e regra canônica, corrigir ambos ou documentar exceção explícita.
+4. Cada lote só fecha com:
+- testes passando
+- relatório em `app/build/reports/`
+- atualização deste `PROGRESS.md`
+5. Commit por lote com mensagem objetiva (`lote-N: ...`).
 
-Partes faltantes:
-- Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
-  (entrada/saída do diálogo, adicionar magias recomendadas em sequência e confirmar estabilidade da trilha).
-- Remover o forçamento temporário (`MODO_ALVO_HABILITADO = true`) e retornar ao controle por flag de build após validação final.
-- Novo sublote pendente: algoritmo de caminho mínimo (BFS/A*) no NEXUS ARCANO para otimização global de trilha.
-
-## Checkpoint 10 Itens (2026-03-05)
-1. Build unitário do stress do NEXUS ARCANO executado e verde.
-2. Relatório de ramificações longas atualizado (`p95=0,037 ms`, sem inconsistências).
-3. Relatório de sweep da escola Encantamento atualizado (`p95=1,216 ms`, sem inconsistências).
-4. Comparativo delta vs full atualizado (equivalência funcional preservada).
-5. Telemetria do ranking Lote 2 reconfirmada com `67` alvos com diagnóstico.
-6. Correção de singular/plural implementada no parser de dependências nomeadas.
-7. Teste unitário de regressão para singular/plural adicionado e verde.
-8. Correção de filtro de escola por igualdade normalizada aplicada no app.
-9. Auditoria de runtime confirma uso do NEXUS ARCANO no fluxo principal.
-10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
-
-## Próximos Passos imediatos
-1. Reabrir frente de performance para atacar o gargalo remanescente de abertura (`open p95=300 ms`).
-2. Reexecutar a medição do Lote E após novo ajuste de abertura e atualizar baseline no `PROGRESS.md`.
-3. Manter regressão canônica do Lote F no pipeline local sempre que houver ajuste do modo alvo.
-
-## Regra operacional
-1. Implementar apenas a parte atual do lote.
-2. Rodar build/test das variantes necessárias.
-3. Atualizar este `PROGRESS.md` marcando:
-- partes implementadas do lote atual;
-- partes faltantes do lote atual;
-- próximo passo imediato.
-4. Commit + push.
+## Comandos de Verificação (mínimo)
+- `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
+- `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
+- `./gradlew :app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
