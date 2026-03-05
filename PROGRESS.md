@@ -388,6 +388,12 @@ Partes implementadas:
   - leitura por grupos alternativos (`A ou B`) em vez de tratar tudo como obrigatório;
   - cadeia obrigatória dinâmica por estado para reduzir trilhas longas desnecessárias;
   - desempate de alternativa por custo aproximado de profundidade.
+- Hotfix UX/performance no seletor de magias (modo alvo):
+  - remoção de bloco de telemetria textual excessiva visível na tela;
+  - recomendação passa a considerar apenas magia com pré-requisito realmente atendido;
+  - falha de pré-requisito por magia voltou a aparecer no card (ex.: `Falta: ...`);
+  - cálculo de pré-requisitos no seletor movido para `Dispatchers.Default` (assíncrono), evitando travamento da UI por avaliação em massa;
+  - validação de pré-requisito no `ConfigurarMagiaDialog` também movida para execução assíncrona quando não houver resultado pré-computado.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
