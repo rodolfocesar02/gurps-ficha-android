@@ -132,6 +132,23 @@ class NexusArcanoEngineLoteBGlobalTest {
         assertTrue(plano.metasImpactadasProximaAcao.isNotEmpty())
     }
 
+    @Test
+    fun repeticao_de_escola_em_sequencia_e_permitida_quando_cadeia_obrigatoria_exige() {
+        val engine = NexusArcanoEngine(catalogoPasso2ExcecaoCadeia())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar", "magia_terra"),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+
+        val plano = engine.planejarCaminhoMinimo("desejo_local", estado)
+
+        assertTrue(plano.trilhaMagiasIds.size >= 2)
+        assertEquals("encantar_local", plano.trilhaMagiasIds[0])
+        assertEquals("pequeno_desejo_local", plano.trilhaMagiasIds[1])
+    }
+
     private fun catalogoPasso2Escolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(
@@ -175,6 +192,26 @@ class NexusArcanoEngineLoteBGlobalTest {
             M("alvo_ou", "Alvo OU", listOf("Meta"), "dep_bloqueada ou dep_livre"),
             M("dep_livre", "Dep Livre", listOf("Ar"), ""),
             M("dep_bloqueada", "Dep Bloqueada", listOf("Terra"), "IQ 14+")
+        )
+        val byId = magias.associateBy { it.id }
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoPasso2ExcecaoCadeia(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("encantar_local", "Encantar Local", listOf("Encantamento"), "1 magica em 2 outras escolas"),
+            M("pequeno_desejo_local", "Pequeno Desejo Local", listOf("Encantamento"), "Encantar Local"),
+            M("desejo_local", "Desejo Local", listOf("Encantamento"), "Pequeno Desejo Local"),
+            M("magia_ar", "Magia Ar", listOf("Ar"), ""),
+            M("magia_terra", "Magia Terra", listOf("Terra"), ""),
+            M("magia_agua_lateral", "Magia Agua Lateral", listOf("Agua"), "")
         )
         val byId = magias.associateBy { it.id }
         return object : ArcanoCatalogo {

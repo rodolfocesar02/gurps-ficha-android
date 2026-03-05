@@ -631,14 +631,24 @@ class NexusArcanoEngine(
 
         data class CandidataExpansao(
             val id: String,
+            val escola: String,
             val custoAcao: Int,
             val reducao: Int,
             val escolaNova: Boolean
         )
 
-        fun candidatasExpandiveis(known: Set<String>): List<CandidataExpansao> {
+        fun ordenarCandidatas(cands: List<CandidataExpansao>): List<CandidataExpansao> {
+            return cands.sortedWith(
+                compareByDescending<CandidataExpansao> { it.reducao }
+                    .thenByDescending { it.escolaNova }
+                    .thenBy { it.custoAcao }
+                    .thenBy { nomeMagiaNorm(it.id) }
+            )
+        }
+
+        fun candidatasExpandiveis(known: Set<String>, path: List<String>): List<CandidataExpansao> {
             val escolasAtuais = escolasConhecidas(known)
-            return allMagiaIds.asSequence()
+            val base = allMagiaIds.asSequence()
                 .filter { it !in known }
                 .filterNot { escolaBloqueadaPorPolitica(it) }
                 .filter { magiaAprendivelAgora(it, known, estado) }
@@ -647,19 +657,28 @@ class NexusArcanoEngine(
                     val escolaNova = escola.isNotBlank() && escola !in escolasAtuais
                     CandidataExpansao(
                         id = id,
+                        escola = escola,
                         custoAcao = custoAcaoPlano(known, id),
                         reducao = reducaoPendencias(known, id),
                         escolaNova = escolaNova
                     )
                 }
-                .sortedWith(
-                    compareByDescending<CandidataExpansao> { it.reducao }
-                        .thenByDescending { it.escolaNova }
-                        .thenBy { it.custoAcao }
-                        .thenBy { nomeMagiaNorm(it.id) }
-                )
-                .take(larguraExpansao)
                 .toList()
+
+            val metaEscolaPendente = existeMetaEscolaPendente(known)
+            val ultimaEscola = path.lastOrNull()?.let { escolaPrincipalNorm(it) }.orEmpty()
+            val cadeiaPendente = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+                .filter { it !in known }
+                .toSet()
+            val semRepeticaoSequencial = if (metaEscolaPendente && ultimaEscola.isNotBlank()) {
+                base.filterNot { cand ->
+                    cand.escola == ultimaEscola && cand.id !in cadeiaPendente
+                }
+            } else {
+                base
+            }
+            val efetivas = if (semRepeticaoSequencial.isNotEmpty()) semRepeticaoSequencial else base
+            return ordenarCandidatas(efetivas).take(larguraExpansao)
         }
 
         val open = java.util.PriorityQueue<Node>(compareBy<Node> { it.f }.thenBy { it.g })
@@ -695,7 +714,7 @@ class NexusArcanoEngine(
             }
             if (atual.g >= profundidadeMax) continue
 
-            val expandiveis = candidatasExpandiveis(atual.known)
+            val expandiveis = candidatasExpandiveis(atual.known, atual.path)
             expandiveis.forEach { cand ->
                 val novoKnown = atual.known + cand.id
                 val g2 = atual.g + cand.custoAcao
