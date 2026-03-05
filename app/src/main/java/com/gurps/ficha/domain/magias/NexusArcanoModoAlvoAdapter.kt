@@ -18,6 +18,7 @@ data class NexusArcanoModoAlvoSnapshot(
     val progressoEscolas: List<String> = emptyList(),
     val proximaObrigatoriaId: String? = null,
     val proximaLateralUtilId: String? = null,
+    val bloqueioCurto: String? = null,
     val aviso: String? = null
 )
 
@@ -62,6 +63,7 @@ class NexusArcanoModoAlvoAdapter(
                 progressoEscolas = emptyList(),
                 proximaObrigatoriaId = null,
                 proximaLateralUtilId = null,
+                bloqueioCurto = null,
                 aviso = "Alvo não encontrado no catálogo."
             )
         }
@@ -117,6 +119,7 @@ class NexusArcanoModoAlvoAdapter(
             progressoEscolas = montarProgressoEscolas(metas),
             proximaObrigatoriaId = proximaObrigatoria,
             proximaLateralUtilId = proximaLateralUtil,
+            bloqueioCurto = montarBloqueioCurto(resultado),
             aviso = montarAviso(resultado)
         )
     }
@@ -198,5 +201,16 @@ class NexusArcanoModoAlvoAdapter(
                     !id.startsWith("chave_soma_") &&
                     !id.startsWith("chave_alvo_")
             }?.removePrefix("chave_")
+    }
+
+    private fun montarBloqueioCurto(resultado: ArcanoResultado): String? {
+        return when (resultado.motivoCodigo) {
+            "NUMERIC_GATE" -> "Bloqueio: atributo ou aptidao magica insuficiente."
+            "SCHOOL_COUNT_PENDING" -> "Bloqueio: contador de escolas pendente."
+            "CHAIN_PENDING" -> "Bloqueio: cadeia obrigatoria pendente."
+            "TARGET_PENDING" -> "Bloqueio: alvo ainda nao liberado."
+            "UNKNOWN_BLOCK" -> "Bloqueio: requisitos pendentes."
+            else -> null
+        }
     }
 }

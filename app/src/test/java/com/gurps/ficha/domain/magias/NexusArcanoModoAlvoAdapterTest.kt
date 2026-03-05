@@ -48,7 +48,23 @@ class NexusArcanoModoAlvoAdapterTest {
         assertEquals(emptyList<String>(), snapshot.progressoEscolas)
         assertEquals(null, snapshot.proximaObrigatoriaId)
         assertEquals(null, snapshot.proximaLateralUtilId)
+        assertEquals(null, snapshot.bloqueioCurto)
         assertTrue(snapshot.aviso.orEmpty().contains("não encontrado", ignoreCase = true))
+    }
+
+    @Test
+    fun `calcular devolve bloqueio curto estavel para gate numerico`() {
+        val adapter = NexusArcanoModoAlvoAdapter(catalogoBase())
+
+        val snapshot = adapter.calcular(
+            alvoId = "supremo_numerico",
+            magiasConhecidasIds = emptySet(),
+            iq = 10,
+            dx = 10,
+            am = 0
+        )
+
+        assertEquals("Bloqueio: atributo ou aptidao magica insuficiente.", snapshot.bloqueioCurto)
     }
 
     private fun catalogoBase(): List<MagiaDefinicao> {
@@ -82,6 +98,12 @@ class NexusArcanoModoAlvoAdapterTest {
                 nome = "Desejo",
                 escola = listOf("Encantamento"),
                 preRequisitos = "Pequeno Desejo e 1 magia em 2 outras escolas"
+            ),
+            MagiaDefinicao(
+                id = "supremo_numerico",
+                nome = "Supremo Numerico",
+                escola = listOf("Encantamento"),
+                preRequisitos = "AM5"
             )
         )
     }
