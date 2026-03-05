@@ -26,6 +26,9 @@ class NexusArcanoModoAlvoAdapterTest {
         assertTrue(snapshot.progressoCadeia.orEmpty().contains("Cadeia:", ignoreCase = true))
         assertTrue(snapshot.progressoEscolas.isNotEmpty())
         assertTrue(snapshot.progressoEscolas.any { it.contains("Escolas para", ignoreCase = true) })
+        assertEquals("encantar", snapshot.proximaObrigatoriaId)
+        assertTrue(!snapshot.proximaLateralUtilId.isNullOrBlank())
+        assertTrue(snapshot.proximaLateralUtilId != snapshot.proximaObrigatoriaId)
     }
 
     @Test
@@ -43,6 +46,8 @@ class NexusArcanoModoAlvoAdapterTest {
         assertEquals(emptyList<String>(), snapshot.relacionadosIds)
         assertEquals(emptyList<String>(), snapshot.proximasAcoesIds)
         assertEquals(emptyList<String>(), snapshot.progressoEscolas)
+        assertEquals(null, snapshot.proximaObrigatoriaId)
+        assertEquals(null, snapshot.proximaLateralUtilId)
         assertTrue(snapshot.aviso.orEmpty().contains("não encontrado", ignoreCase = true))
     }
 
