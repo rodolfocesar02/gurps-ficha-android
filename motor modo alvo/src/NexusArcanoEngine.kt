@@ -1,5 +1,6 @@
 ﻿package nexus.arcano
 
+import java.security.MessageDigest
 import java.text.Normalizer
 
 data class ArcanoEstadoPersonagem(
@@ -57,6 +58,14 @@ data class ArcanoDeltaResultado(
     val resultado: ArcanoResultado,
     val modo: String,
     val chavesRecalculadas: Int
+)
+
+data class ArcanoPlanoResultado(
+    val trilhaMagiasIds: List<String>,
+    val explorados: Int,
+    val motivo: String? = null,
+    val proximaAcaoMagiaId: String? = trilhaMagiasIds.firstOrNull(),
+    val metasImpactadasProximaAcao: List<String> = emptyList()
 )
 
 enum class ArcanoMetaTipo {
@@ -148,6 +157,11 @@ class NexusArcanoEngine(
     private val cacheDiagnosticos = object : LinkedHashMap<CacheKey, List<ArcanoRankingDiagnostico>>(128, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, List<ArcanoRankingDiagnostico>>?): Boolean {
             return size > 256
+        }
+    }
+    private val cachePlanos = object : LinkedHashMap<CacheKey, ArcanoPlanoResultado>(128, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, ArcanoPlanoResultado>?): Boolean {
+            return size > 128
         }
     }
     private var cacheHits: Long = 0
@@ -506,6 +520,158 @@ class NexusArcanoEngine(
             .sortedWith(compareBy<ArcanoMetaProgress> { it.tipo.ordinal }.thenBy { it.id })
     }
 
+    fun checksumMetasAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): String {
+        val metas = diagnosticarMetasAlvo(alvoId, estado)
+        if (metas.isEmpty()) return "v1:SEM_METAS"
+        val canonical = metas.joinToString("|") { meta ->
+            listOf(
+                meta.id,
+                meta.tipo.name,
+                meta.origemMagiaId,
+                meta.requerido.toString(),
+                meta.atual.toString(),
+                if (meta.atendida) "1" else "0",
+                if (meta.bloqueadaPorUpstream) "1" else "0"
+            ).joinToString(":")
+        }
+        return "v1:${sha256Hex(canonical)}"
+    }
+
+    fun planejarCaminhoMinimo(
+        alvoId: String,
+        estado: ArcanoEstadoPersonagem,
+        limiteNos: Int = 1800,
+        larguraExpansao: Int = 20,
+        profundidadeMax: Int = 28
+    ): ArcanoPlanoResultado {
+        val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
+        cachePlanos[key]?.let {
+            cacheHits += 1
+            return it
+        }
+        cacheMisses += 1
+
+        if (!catalogo.existe(alvoId)) {
+            val out = ArcanoPlanoResultado(emptyList(), explorados = 0, motivo = "Alvo não encontrado no catálogo.")
+            cachePlanos[key] = out
+            return out
+        }
+        if (bloqueioNumericoParaMagia(alvoId, estado) != null) {
+            val out = ArcanoPlanoResultado(emptyList(), explorados = 0, motivo = bloqueioNumericoParaMagia(alvoId, estado))
+            cachePlanos[key] = out
+            return out
+        }
+
+        data class Node(
+            val known: Set<String>,
+            val path: List<String>,
+            val g: Int,
+            val f: Int
+        )
+
+        fun assinatura(known: Set<String>): String = known.sorted().joinToString("|")
+
+        fun estimativaRestante(known: Set<String>): Int {
+            if (magiaAprendivelAgora(alvoId, known, estado) || alvoId in known) return 0
+            val cadeiaPend = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+                .count { it != alvoId && it !in known }
+            val defEscolas = coletarRegrasEscolas(construirCadeiaObrigatoriaParaEstado(alvoId, known))
+                .maxOfOrNull { regra ->
+                    val set = escolasConhecidas(known).toMutableSet().also {
+                        if (regra.outrasEscolas) it.removeAll(escolasNorm(regra.magiaOrigemId).toSet())
+                    }
+                    (regra.quantidadeEscolas - set.size).coerceAtLeast(0)
+                } ?: 0
+            val alvoPend = if (alvoId in known) 0 else 1
+            return cadeiaPend + defEscolas + alvoPend
+        }
+
+        fun ganhoMetas(known: Set<String>, candId: String): Int {
+            val antes = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known)).count { it.atendida }
+            val depois = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known + candId)).count { it.atendida }
+            return (depois - antes).coerceAtLeast(0)
+        }
+
+        fun candidatasExpandiveis(known: Set<String>): List<String> {
+            val escolasAtuais = escolasConhecidas(known)
+            return allMagiaIds.asSequence()
+                .filter { it !in known }
+                .filterNot { escolaBloqueadaPorPolitica(it) }
+                .filter { magiaAprendivelAgora(it, known, estado) }
+                .map { id ->
+                    val escola = escolaPrincipalNorm(id)
+                    val escolaNova = escola.isNotBlank() && escola !in escolasAtuais
+                    val score = ganhoMetas(known, id) * 100 + if (escolaNova) 25 else 0
+                    id to score
+                }
+                .sortedWith(compareByDescending<Pair<String, Int>> { it.second }.thenBy { nomeMagiaNorm(it.first) })
+                .take(larguraExpansao)
+                .map { it.first }
+                .toList()
+        }
+
+        val open = java.util.PriorityQueue<Node>(compareBy<Node> { it.f }.thenBy { it.g })
+        val bestG = HashMap<String, Int>()
+        val startKnown = estado.magiasConhecidasIds
+        val start = Node(
+            known = startKnown,
+            path = emptyList(),
+            g = 0,
+            f = estimativaRestante(startKnown)
+        )
+        open.add(start)
+        bestG[assinatura(startKnown)] = 0
+
+        var explorados = 0
+        while (open.isNotEmpty() && explorados < limiteNos) {
+            val atual = open.poll() ?: break
+            explorados++
+
+            if (magiaAprendivelAgora(alvoId, atual.known, estado) || alvoId in atual.known) {
+                val proximaAcao = atual.path.firstOrNull()
+                val metasImpactadas = proximaAcao
+                    ?.let { metasImpactadasPorAcao(alvoId, estado, startKnown, it) }
+                    .orEmpty()
+                val plano = ArcanoPlanoResultado(
+                    trilhaMagiasIds = atual.path,
+                    explorados = explorados,
+                    proximaAcaoMagiaId = proximaAcao,
+                    metasImpactadasProximaAcao = metasImpactadas
+                )
+                cachePlanos[key] = plano
+                return plano
+            }
+            if (atual.g >= profundidadeMax) continue
+
+            val expandiveis = candidatasExpandiveis(atual.known)
+            expandiveis.forEach { cand ->
+                val novoKnown = atual.known + cand
+                val g2 = atual.g + 1
+                val sig = assinatura(novoKnown)
+                val prev = bestG[sig]
+                if (prev != null && prev <= g2) return@forEach
+                bestG[sig] = g2
+                val h2 = estimativaRestante(novoKnown)
+                open.add(
+                    Node(
+                        known = novoKnown,
+                        path = atual.path + cand,
+                        g = g2,
+                        f = g2 + h2
+                    )
+                )
+            }
+        }
+
+        val out = ArcanoPlanoResultado(
+            trilhaMagiasIds = emptyList(),
+            explorados = explorados,
+            motivo = "Plano global não encontrado dentro do limite."
+        )
+        cachePlanos[key] = out
+        return out
+    }
+
     fun calcularEstadoAlvoIncremental(
         alvoId: String,
         estadoAnterior: ArcanoEstadoPersonagem,
@@ -674,6 +840,21 @@ class NexusArcanoEngine(
         known: Set<String>,
         estado: ArcanoEstadoPersonagem
     ): List<ArcanoAcao> {
+        val planoGlobal = planejarCaminhoMinimo(alvoId, estado.copy(magiasConhecidasIds = known))
+        if (planoGlobal.trilhaMagiasIds.isNotEmpty()) {
+            return planoGlobal.trilhaMagiasIds
+                .filter { it !in known }
+                .distinct()
+                .take(3)
+                .mapIndexed { idx, magiaId ->
+                    ArcanoAcao(
+                        magiaId = magiaId,
+                        motivo = "Caminho global mínimo",
+                        prioridade = idx
+                    )
+                }
+        }
+
         val cadeiaSemAlvo = construirCadeiaObrigatoriaParaEstado(alvoId, known).filter { it != alvoId }
         val out = mutableListOf<ArcanoAcao>()
 
@@ -1161,6 +1342,7 @@ class NexusArcanoEngine(
     fun limparCache() {
         cacheResultados.clear()
         cacheDiagnosticos.clear()
+        cachePlanos.clear()
         cacheHits = 0
         cacheMisses = 0
         temposRodadaNs.clear()
@@ -1170,6 +1352,7 @@ class NexusArcanoEngine(
         val token = "|$magiaId|"
         cacheResultados.keys.removeIf { token in it.assinaturaKnown }
         cacheDiagnosticos.keys.removeIf { token in it.assinaturaKnown }
+        cachePlanos.keys.removeIf { token in it.assinaturaKnown }
     }
 
     fun invalidarCacheIncrementalPorMagia(magiaId: String) {
@@ -1177,6 +1360,7 @@ class NexusArcanoEngine(
         if (impactados.isEmpty()) return
         cacheResultados.keys.removeIf { it.alvoId in impactados }
         cacheDiagnosticos.keys.removeIf { it.alvoId in impactados }
+        cachePlanos.keys.removeIf { it.alvoId in impactados }
     }
 
     fun alvosImpactadosPorMagia(magiaId: String): Set<String> {
@@ -1201,7 +1385,7 @@ class NexusArcanoEngine(
     }
 
     fun cacheStats(): ArcanoCacheStats {
-        val entradas = cacheResultados.size + cacheDiagnosticos.size
+        val entradas = cacheResultados.size + cacheDiagnosticos.size + cachePlanos.size
         return ArcanoCacheStats(
             entradas = entradas,
             hits = cacheHits,
@@ -1255,6 +1439,52 @@ class NexusArcanoEngine(
 
     private fun tieBreakPorAlvo(alvoId: String, candId: String): Int {
         return (alvoId + "|" + candId).hashCode()
+    }
+
+    private fun metasImpactadasPorAcao(
+        alvoId: String,
+        estado: ArcanoEstadoPersonagem,
+        known: Set<String>,
+        acaoMagiaId: String
+    ): List<String> {
+        if (acaoMagiaId in known) return emptyList()
+        val antes = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known))
+        val antesById = antes.associateBy { it.id }
+        val depois = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known + acaoMagiaId))
+        val depoisIds = depois.map { it.id }.toSet()
+        val impactadas = linkedSetOf<String>()
+
+        depois.forEach { metaDepois ->
+            val metaAntes = antesById[metaDepois.id]
+            if (metaAntes == null) {
+                impactadas += metaDepois.id
+                return@forEach
+            }
+            val progressoNumerico = metaDepois.atual > metaAntes.atual
+            val passouParaAtendida = !metaAntes.atendida && metaDepois.atendida
+            val destravouUpstream = metaAntes.bloqueadaPorUpstream && !metaDepois.bloqueadaPorUpstream
+            if (progressoNumerico || passouParaAtendida || destravouUpstream) {
+                impactadas += metaDepois.id
+            }
+        }
+        antes.forEach { metaAntes ->
+            if (metaAntes.id !in depoisIds && !metaAntes.atendida) {
+                impactadas += metaAntes.id
+            }
+        }
+
+        return impactadas
+            .sorted()
+            .toList()
+    }
+
+    private fun sha256Hex(raw: String): String {
+        val digest = MessageDigest.getInstance("SHA-256").digest(raw.toByteArray(Charsets.UTF_8))
+        return digest.joinToString(separator = "") { byte ->
+            val value = byte.toInt() and 0xff
+            val token = value.toString(16)
+            if (token.length == 1) "0$token" else token
+        }
     }
 
     private fun preRequisitoSemConteudo(magiaId: String): Boolean {
