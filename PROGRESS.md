@@ -33,15 +33,15 @@ Passos:
 4. Adicionar checksum de estado para auditoria determinística: `FEITO`.
 
 ### Lote B - Planejador de Caminho Mínimo (BFS/A* com custo)
-Status: `EM ANDAMENTO`
+Status: `FEITO`
 
 Passos:
-1. Implementar busca global de caminho (BFS/A*) sobre estado incremental: `PARCIAL` (A* heurístico limitado em nós/profundidade já ativo).
+1. Implementar busca global de caminho (BFS/A*) sobre estado incremental: `FEITO` (A* heurístico com cache/memo de metas por estado na rodada).
 2. Função de custo:
    - `+1` por magia adicionada;
    - penalidade para escola repetida quando meta de escolas ainda não fechou;
    - penalidade forte para ação que não reduz nenhuma meta pendente.
-   - status: `PARCIAL`.
+   - status: `FEITO`.
 3. Restringir expansão a magias aprendíveis no estado atual (sem sugestão impossível): `FEITO`.
 4. Garantir que saída da busca devolva:
    - próxima ação;
@@ -110,6 +110,11 @@ Passos:
   - impacto de metas agora considera também metas que saem do diagnóstico por resolução da cadeia dinâmica;
   - cobertura de teste ampliada em `NexusArcanoEngineLoteAGlobalTest` e `NexusArcanoEngineLoteBGlobalTest`;
   - suíte verde: `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest --tests nexus.arcano.NexusArcanoEngineLote2Test`.
+- Fechamento do Lote B (2026-03-05):
+  - custo do A* ajustado com base `+1`, penalidade de escola repetida com meta pendente e penalidade forte sem redução de meta;
+  - expansão global validada para aceitar apenas magias aprendíveis agora;
+  - contrato de saída do plano validado (próxima ação + trilha + metas impactadas);
+  - novos testes de regressão adicionados e verdes em `NexusArcanoEngineLoteBGlobalTest`.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
