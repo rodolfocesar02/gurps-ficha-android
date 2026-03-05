@@ -1056,7 +1056,7 @@ class DataRepository(private val context: Context) {
         "convocacao_planar" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
         "convocar_demonio" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
         "desejo" to "Pequeno Desejo e 1 magica em quinze escolas diferentes",
-        "encantar" to "Aptidao Magica 2, 1 magica em dez outras escolas",
+        "encantar" to "Aptidao Magica 2, 1 magica em dez outras escolas diferentes",
         "expulsar" to "Aptidao Magica 1 e 1 magica em dez escolas diferentes",
         "extrair_corrente_eletricant" to "Roubar Corrente Eletrica e 2 magicas em dez escolas diferentes",
         "imunidade_a_encantamento" to "Encantar",
