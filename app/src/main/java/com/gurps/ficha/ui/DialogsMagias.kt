@@ -77,6 +77,7 @@ private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 private const val MODO_ALVO_HABILITADO = true
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
+private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
 
 private fun preReqProvavelmenteLivre(def: MagiaDefinicao): Boolean {
     val raw = def.preRequisitos?.trim().orEmpty()
@@ -112,6 +113,22 @@ private fun motivoBloqueioCurto(falha: String): String {
         .substringBefore(";")
         .substringBefore(",")
         .trim()
+}
+
+private fun scoreFalhaParaProximoPasso(falha: String?): Int {
+    if (falha.isNullOrBlank()) return 0
+    val texto = falha.lowercase()
+    var score = 10
+    if ("conhecimento requerido" in texto || "aprender" in texto) score += 5
+    if (" ou " in texto) score += 8
+    if (" e " in texto) score += 12
+    score += texto.count { it == ',' } * 3
+    score += texto.count { it == '|' } * 4
+    return score
+}
+
+private fun magiaDaEscolaTecnologica(def: MagiaDefinicao): Boolean {
+    return escolasNormalizadas(def).any { it == ESCOLA_NUNCA_RECOMENDAR }
 }
 
 private fun escolasNormalizadas(def: MagiaDefinicao): Set<String> {
@@ -179,6 +196,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .asSequence()
             .filter { it !in idsBloqueadosBase }
             .mapNotNull { id -> catalogoPorId[id] }
+            .filterNot { magiaDaEscolaTecnologica(it) }
             .distinctBy { it.id }
             .take(MAX_OPCOES_MODO_ALVO)
             .toList()
@@ -196,6 +214,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             val candidatas = catalogoMagias
                 .asSequence()
                 .filter { it.id !in idsExcluidas }
+                .filterNot { magiaDaEscolaTecnologica(it) }
                 .toList()
 
             fun tentarAproveitar(pool: Sequence<MagiaDefinicao>) {
@@ -274,8 +293,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .asSequence()
             .filter { it != magiaAlvoSelecionada.id }
             .filter { it !in idsJaAdicionadas }
+            .mapNotNull { id ->
+                val magia = catalogoPorId[id] ?: return@mapNotNull null
+                if (magiaDaEscolaTecnologica(magia)) null else id
+            }
             .distinct()
-            .take(4)
+            .take(10)
             .toList()
 
         val avaliadas = withContext(Dispatchers.Default) {
@@ -285,6 +308,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         }
         prereqFalhasMap = prereqFalhasMap + avaliadas
         proximaSugeridaId = candidatasIds.firstOrNull { id -> avaliadas[id] == null }
+            ?: candidatasIds.minByOrNull { id -> scoreFalhaParaProximoPasso(avaliadas[id]) }
         recomendacaoEmAnalise = false
     }
 
@@ -590,10 +614,19 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
+                    val proximaBloqueada = proximaSugerida?.let { magia ->
+                        prereqFalhasMap[magia.id] != null
+                    } ?: false
                     val textoGuia = if (recomendacaoEmAnalise) {
                         "Analisando pré-requisitos..."
                     } else {
-                        proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
+                        proximaSugerida?.let {
+                            if (proximaBloqueada) {
+                                "Próxima etapa recomendada: ${it.nome}"
+                            } else {
+                                "Próxima recomendada: ${it.nome}"
+                            }
+                        }
                             ?: "Sem recomendação imediata liberada."
                     }
                     Text(

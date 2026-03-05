@@ -408,6 +408,10 @@ Partes implementadas:
   - removido bloqueio artificial de recomendações da escola Tecnológica no modo alvo;
   - motor de fallback volta a considerar todas as escolas ao tentar completar contadores (`10 outras` / `15 diferentes`);
   - objetivo: evitar estado "Sem recomendação imediata" quando a última escola faltante era justamente a excluída.
+- Ajuste de política de recomendação (pedido do usuário):
+  - restabelecida exclusão da escola Tecnológica nas recomendações de modo alvo;
+  - quando não houver magia liberada imediata, o sistema passa a recomendar a melhor **próxima etapa** não-tecnológica (bloqueada com menor complexidade de falta), em vez de ficar sem recomendação;
+  - avaliação ampliada para até 10 candidatas leves por rodada para reduzir risco de "beco sem saída" em 14/15.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
