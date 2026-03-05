@@ -15,6 +15,7 @@ Atualizado em: 2026-03-05
 - Diagnóstico funcional atual: em teste manual real (`AM3`, `IQ15`), usuário chegou a `35` magias e ainda não liberou `Desejo` seguindo apenas recomendações.
 - Diagnóstico de performance em tempo real (2026-03-05): sem crash/ANR no fluxo principal, porém com jank recorrente (`Choreographer: Skipped 31-48 frames`) em interações da tela de magias.
 - Decisão técnica: não reiniciar do zero; evoluir o NEXUS ARCANO para um planejador global (não guloso por rodada).
+- Go/No-Go atual (2026-03-05): `GO` após fechamento do Lote F com cenário canônico e auditoria final verdes.
 
 ## Plano de Virada do Motor (Lotes + Passos)
 Objetivo macro: garantir que recomendações levem ao alvo com menor caminho viável e progresso explícito de requisitos compostos (cadeia + escolas + atributos).
