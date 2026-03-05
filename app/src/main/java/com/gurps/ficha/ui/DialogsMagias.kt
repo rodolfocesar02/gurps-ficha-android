@@ -561,6 +561,22 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             }
                         }
                     )
+                    if (!viewModel.modoAlvoProgressoCadeia.isNullOrBlank()) {
+                        Text(
+                            viewModel.modoAlvoProgressoCadeia.orEmpty(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    if (viewModel.modoAlvoProgressoEscolas.isNotEmpty()) {
+                        viewModel.modoAlvoProgressoEscolas.take(3).forEach { linha ->
+                            Text(
+                                linha,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                     if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
                         Text(
                             "3 próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(" | ")}",
