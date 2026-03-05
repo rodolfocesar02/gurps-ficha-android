@@ -119,6 +119,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     private var modoAlvoJob: Job? = null
     private var modoAlvoUltimaChave: String? = null
+    private var prereqCacheAssinatura: String? = null
+    private val prereqFailureCache = HashMap<String, String?>()
 
     var buscaArmaEquipamento by mutableStateOf("")
         private set
@@ -674,8 +676,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna mensagem de pré‑requisitos faltantes ou `null`. */
     fun prereqFailureForMagia(def: MagiaDefinicao): String? {
+        val assinaturaAtual = assinaturaEstadoMagiasParaModoAlvo()
+        if (assinaturaAtual != prereqCacheAssinatura) {
+            prereqCacheAssinatura = assinaturaAtual
+            prereqFailureCache.clear()
+        }
+        prereqFailureCache[def.id]?.let { return it }
+
         val regraEspecial = validarRegrasEspeciaisMagia(def, null)
-        if (regraEspecial != null) return regraEspecial
+        if (regraEspecial != null) {
+            prereqFailureCache[def.id] = regraEspecial
+            return regraEspecial
+        }
 
         val knownIds = personagem.magias.asSequence().map { it.definicaoId }.toSet()
         val erroHierarquico = nexusArcanoModoAlvoAdapter.falhaPreRequisitoHierarquica(
@@ -685,10 +697,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             dx = personagem.destreza,
             am = nivelAptidaoMagica
         )
-        if (erroHierarquico != null) return erroHierarquico
+        if (erroHierarquico != null) {
+            prereqFailureCache[def.id] = erroHierarquico
+            return erroHierarquico
+        }
 
         // Fallback de compatibilidade para casos com texto legado atípico.
-        return dataRepository.missingPreRequisitoReport(def, personagem)
+        return dataRepository.missingPreRequisitoReport(def, personagem).also {
+            prereqFailureCache[def.id] = it
+        }
     }
 
     /** Indica se todos os pré‑requisitos da magia estão satisfeitos. */
