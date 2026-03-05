@@ -121,6 +121,22 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private var modoAlvoUltimaChave: String? = null
     private var prereqCacheAssinatura: String? = null
     private val prereqFailureCache = HashMap<String, String?>()
+    private var magiasFiltradasCacheKey: String? = null
+    private var magiasFiltradasCache: List<MagiaDefinicao> = emptyList()
+    private val todasEscolasMagiaCache: List<String> by lazy {
+        dataRepository.magias
+            .flatMap { it.escola ?: emptyList() }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+    }
+    private val todasClassesMagiaCache: List<String> by lazy {
+        dataRepository.magias
+            .mapNotNull { dataRepository.agruparClasseMagia(it.classe) }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+    }
 
     var buscaArmaEquipamento by mutableStateOf("")
         private set
@@ -180,7 +196,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = dataRepository.periciasSuplementares
 
     val magiasFiltradas: List<MagiaDefinicao>
-        get() = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
+        get() {
+            val key = "${buscaMagia.trim()}|${filtroEscolaMagia.orEmpty()}|${filtroClasseMagia.orEmpty()}"
+            if (key != magiasFiltradasCacheKey) {
+                magiasFiltradasCacheKey = key
+                magiasFiltradasCache = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
+            }
+            return magiasFiltradasCache
+        }
 
     val tecnicasCatalogo: List<TecnicaCatalogoItem>
         get() = dataRepository.tecnicasCatalogo
@@ -243,18 +266,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .sortedBy { it.nome.lowercase() }
 
     val todasEscolasMagia: List<String>
-        get() = dataRepository.magias
-            .flatMap { it.escola ?: emptyList() }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
+        get() = todasEscolasMagiaCache
 
     val todasClassesMagia: List<String>
-        get() = dataRepository.magias
-            .mapNotNull { dataRepository.agruparClasseMagia(it.classe) }
-            .filter { it.isNotBlank() }
-            .distinct()
-            .sorted()
+        get() = todasClassesMagiaCache
 
     init {
         canalDiscordSelecionadoId = configPrefs.getString(prefCanalDiscordId, null)

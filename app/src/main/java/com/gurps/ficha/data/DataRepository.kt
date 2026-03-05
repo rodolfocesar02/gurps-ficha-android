@@ -17,6 +17,12 @@ import java.text.Normalizer
  * a partir dos arquivos JSON em assets/
  */
 class DataRepository(private val context: Context) {
+    private data class MagiaFiltroIndex(
+        val definicao: MagiaDefinicao,
+        val nomeNorm: String,
+        val classeNorm: String,
+        val escolasNorm: Set<String>
+    )
 
     private val gson = Gson()
 
@@ -27,6 +33,7 @@ class DataRepository(private val context: Context) {
     private var _periciasV2Rules: Map<String, PericiaV2RuleMapItem>? = null
     private var _periciasSuplementares: List<PericiaSuplementarItem>? = null
     private var _magias: List<MagiaDefinicao>? = null
+    private var _magiasFiltroIndex: List<MagiaFiltroIndex>? = null
     private var _tecnicasCatalogo: List<TecnicaCatalogoItem>? = null
     private var _armasCatalogo: List<ArmaCatalogoItem>? = null
     private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
@@ -50,6 +57,21 @@ class DataRepository(private val context: Context) {
 
     val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
+
+    private val magiasFiltroIndex: List<MagiaFiltroIndex>
+        get() = _magiasFiltroIndex ?: magias.map { magia ->
+            MagiaFiltroIndex(
+                definicao = magia,
+                nomeNorm = normalizarBusca(magia.nome),
+                classeNorm = normalizarBusca(agruparClasseMagia(magia.classe).orEmpty()),
+                escolasNorm = magia.escola
+                    .orEmpty()
+                    .asSequence()
+                    .map { normalizarBusca(it) }
+                    .filter { it.isNotBlank() }
+                    .toSet()
+            )
+        }.also { _magiasFiltroIndex = it }
 
     val tecnicasCatalogo: List<TecnicaCatalogoItem>
         get() = _tecnicasCatalogo ?: carregarTecnicasCatalogo().also { _tecnicasCatalogo = it }
@@ -636,14 +658,20 @@ class DataRepository(private val context: Context) {
         escola: String? = null,
         classe: String? = null
     ): List<MagiaDefinicao> {
-        return magias.filter { m ->
-            val matchBusca = contemBusca(m.nome, busca)
-            val matchEscola = escola.isNullOrBlank() ||
-                m.escola?.any { igualNormalizado(it, escola) } == true
-            val matchClasse = classe.isNullOrBlank() ||
-                contemBusca(agruparClasseMagia(m.classe).orEmpty(), classe)
-            matchBusca && matchEscola && matchClasse
-        }
+        if (busca.isBlank() && escola.isNullOrBlank() && classe.isNullOrBlank()) return magias
+
+        val buscaNorm = normalizarBusca(busca)
+        val escolaNorm = escola?.let(::normalizarBusca).orEmpty()
+        val classeNorm = classe?.let(::normalizarBusca).orEmpty()
+        return magiasFiltroIndex.asSequence()
+            .filter { idx ->
+                val matchBusca = buscaNorm.isBlank() || idx.nomeNorm.contains(buscaNorm)
+                val matchEscola = escolaNorm.isBlank() || escolaNorm in idx.escolasNorm
+                val matchClasse = classeNorm.isBlank() || idx.classeNorm.contains(classeNorm)
+                matchBusca && matchEscola && matchClasse
+            }
+            .map { it.definicao }
+            .toList()
     }
 
     fun filtrarTecnicasCatalogo(
