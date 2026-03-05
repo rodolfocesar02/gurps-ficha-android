@@ -117,6 +117,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var modoAlvoProximasAcoesIds by mutableStateOf<List<String>>(emptyList())
         private set
+    var modoAlvoProgressoCadeia by mutableStateOf<String?>(null)
+        private set
+    var modoAlvoProgressoEscolas by mutableStateOf<List<String>>(emptyList())
+        private set
     private var modoAlvoJob: Job? = null
     private var modoAlvoUltimaChave: String? = null
     private var prereqCacheAssinatura: String? = null
@@ -774,6 +778,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             modoAlvoChavesFaltantes = emptyList()
             modoAlvoProximasAcoes = emptyList()
             modoAlvoProximasAcoesIds = emptyList()
+            modoAlvoProgressoCadeia = null
+            modoAlvoProgressoEscolas = emptyList()
             modoAlvoUltimaChave = null
             return
         }
@@ -806,6 +812,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     modoAlvoProximasAcoes = snapshot.proximasAcoesIds.map { id ->
                         dataRepository.magias.firstOrNull { it.id == id }?.nome ?: id
                     }
+                    modoAlvoProgressoCadeia = snapshot.progressoCadeia
+                    modoAlvoProgressoEscolas = snapshot.progressoEscolas
                     modoAlvoAviso = snapshot.aviso
                     modoAlvoCarregando = false
                 }

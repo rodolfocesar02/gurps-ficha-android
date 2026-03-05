@@ -4,6 +4,8 @@ import com.gurps.ficha.model.MagiaDefinicao
 import nexus.arcano.ArcanoCatalogo
 import nexus.arcano.ArcanoChave
 import nexus.arcano.ArcanoEstadoPersonagem
+import nexus.arcano.ArcanoMetaProgress
+import nexus.arcano.ArcanoMetaTipo
 import nexus.arcano.ArcanoResultado
 import nexus.arcano.NexusArcanoEngine
 
@@ -12,6 +14,8 @@ data class NexusArcanoModoAlvoSnapshot(
     val chavesAtivas: List<ArcanoChave>,
     val chavesFaltantes: List<ArcanoChave>,
     val proximasAcoesIds: List<String>,
+    val progressoCadeia: String? = null,
+    val progressoEscolas: List<String> = emptyList(),
     val aviso: String? = null
 )
 
@@ -52,6 +56,8 @@ class NexusArcanoModoAlvoAdapter(
                 chavesAtivas = emptyList(),
                 chavesFaltantes = emptyList(),
                 proximasAcoesIds = emptyList(),
+                progressoCadeia = null,
+                progressoEscolas = emptyList(),
                 aviso = "Alvo não encontrado no catálogo."
             )
         }
@@ -64,6 +70,7 @@ class NexusArcanoModoAlvoAdapter(
         )
 
         val resultado = engine.calcularEstadoAlvo(alvoId, estado)
+        val metas = engine.diagnosticarMetasAlvo(alvoId, estado)
         val idsAcoesMotor = resultado.proximasAcoes.asSequence()
             .map { it.magiaId }
             .filter { magiasById.containsKey(it) }
@@ -99,6 +106,8 @@ class NexusArcanoModoAlvoAdapter(
             chavesAtivas = resultado.chavesAtivas,
             chavesFaltantes = resultado.chavesFaltantes,
             proximasAcoesIds = idsAcoes,
+            progressoCadeia = montarProgressoCadeia(alvoId, metas),
+            progressoEscolas = montarProgressoEscolas(metas),
             aviso = montarAviso(resultado)
         )
     }
@@ -148,5 +157,23 @@ class NexusArcanoModoAlvoAdapter(
             faltantes.isNotBlank() -> "Chaves pendentes: $faltantes"
             else -> null
         }
+    }
+
+    private fun montarProgressoCadeia(alvoId: String, metas: List<ArcanoMetaProgress>): String? {
+        val cadeiaIds = metas
+            .filter { it.tipo == ArcanoMetaTipo.CADEIA_MAGIA }
+            .map { it.origemMagiaId }
+            .distinct()
+        if (cadeiaIds.isEmpty()) return null
+        val nomes = (cadeiaIds + alvoId)
+            .distinct()
+            .map { id -> magiasById[id]?.nome ?: id }
+        return "Cadeia: ${nomes.joinToString(" -> ")}"
+    }
+
+    private fun montarProgressoEscolas(metas: List<ArcanoMetaProgress>): List<String> {
+        return metas
+            .filter { it.tipo == ArcanoMetaTipo.ESCOLAS_DISTINTAS }
+            .map { meta -> "${meta.descricao}: ${meta.atual}/${meta.requerido}" }
     }
 }
