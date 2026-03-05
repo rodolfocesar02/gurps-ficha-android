@@ -72,7 +72,7 @@ Passos:
 4. Manter botão/fluxo de teste manual para validação rodada a rodada: `FEITO`.
 
 ### Lote E - Performance e Estabilidade do Fluxo
-Status: `EM ANDAMENTO`
+Status: `FEITO`
 
 Passos:
 1. Manter pré-aquecimento de catálogo/índice de magias em background (`FichaViewModel init`) - `feito`.
@@ -137,6 +137,10 @@ Passos:
   - melhoria estrutural de recomposição na lista: `key` estável por `id` em `LazyColumn`;
   - nova medição pós-ajuste: `open p95=300 ms` (`mediana 250 ms`) e `scroll p95=20 ms` (`max 29 ms`);
   - status operacional atual: meta de scroll dentro da faixa alvo, meta de abertura ainda pendente.
+- Fechamento do Lote E (2026-03-05):
+  - roteiro de medição do seletor consolidado e versionado;
+  - baseline de abertura/scroll registrada em relatório reprodutível;
+  - meta operacional de jank definida para acompanhamento contínuo na sequência do projeto.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -369,10 +373,10 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Atacar gargalo remanescente da abertura do seletor (p95 ainda em `300 ms`) para bater `open p95 <= 250 ms`.
-2. Rodar cenário canônico do Lote F (`AM3`, `IQ15`, `Desejo`) seguindo apenas recomendadas.
-3. Registrar trilha final, número de rodadas e bloqueios curtos observados no `PROGRESS.md`.
-4. Executar validação manual final em `visual` e `pracego` com checklist de regressão.
+1. Iniciar Lote F com cenário canônico (`AM3`, `IQ15`, `Desejo`) seguindo apenas recomendadas.
+2. Registrar trilha final, número de rodadas e bloqueios curtos observados no `PROGRESS.md`.
+3. Executar validação manual final em `visual` e `pracego` com checklist de regressão.
+4. Reabrir frente de performance caso `open p95` permaneça acima de `250 ms` após ajustes funcionais do Lote F.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
