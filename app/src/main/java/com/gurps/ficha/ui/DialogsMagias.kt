@@ -234,8 +234,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     } else {
         listaFiltrada
     }
-    val prereqFalhasMap = remember(listaExibicao, assinaturaModoAlvo, modoAlvoAtivoEfetivo) {
-        if (!modoAlvoAtivoEfetivo) {
+    val prereqFalhasMap = remember(listaExibicao, assinaturaModoAlvo, modoAlvoAtivoEfetivo, magiaAlvoSelecionada?.id) {
+        if (!modoAlvoAtivoEfetivo || magiaAlvoSelecionada == null) {
             emptyMap()
         } else {
             listaExibicao.associate { magia -> magia.id to viewModel.prereqFailureForMagia(magia) }
@@ -667,8 +667,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         key = { _, definicao -> definicao.id }
                     ) { indice, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
-                        val prereqFalha = if (modoAlvoAtivoEfetivo) {
-                            prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
+                        val prereqFalha = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
+                            prereqFalhasMap[definicao.id]
                         } else {
                             null
                         }
