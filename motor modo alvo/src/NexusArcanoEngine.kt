@@ -70,6 +70,11 @@ interface ArcanoCatalogo {
 class NexusArcanoEngine(
     private val catalogo: ArcanoCatalogo
 ) {
+    private data class NomeVariante(
+        val id: String,
+        val nome: String
+    )
+
     data class RegraEscolas(
         val magiaOrigemId: String,
         val quantidadeEscolas: Int,
@@ -90,10 +95,14 @@ class NexusArcanoEngine(
         val escolaNova: Boolean,
         val custo: Int,
         val aprendivelAgora: Boolean,
-        val escolaBloqueada: Boolean
+        val escolaBloqueadaOrigem: Boolean,
+        val escolaBloqueadaPolitica: Boolean
     ) {
         val elegivel: Boolean
-            get() = escola.isNotBlank() && aprendivelAgora && !escolaBloqueada
+            get() = escola.isNotBlank() &&
+                aprendivelAgora &&
+                !escolaBloqueadaOrigem &&
+                !escolaBloqueadaPolitica
     }
 
     private data class CacheKey(
@@ -135,10 +144,21 @@ class NexusArcanoEngine(
     private val escolaPrincipalNormById: Map<String, String> = allMagiaIds.associateWith { id ->
         escolasNormById[id].orEmpty().firstOrNull().orEmpty()
     }
-    private val nomesNormalizadosPorTamanho: List<Pair<String, String>> = allMagiaIds
-        .map { id -> id to nomeNormById[id].orEmpty() }
-        .filter { (_, nomeNorm) -> nomeNorm.isNotBlank() }
-        .sortedByDescending { it.second.length }
+    private val nomesNormalizadosPorTamanho: List<NomeVariante> = allMagiaIds
+        .asSequence()
+        .flatMap { id ->
+            val nomeNorm = nomeNormById[id].orEmpty()
+            if (nomeNorm.isBlank()) {
+                emptySequence()
+            } else {
+                variantesSingularPlural(nomeNorm)
+                    .asSequence()
+                    .map { variante -> NomeVariante(id = id, nome = variante) }
+            }
+        }
+        .distinctBy { "${it.id}|${it.nome}" }
+        .sortedByDescending { it.nome.length }
+        .toList()
 
     private val regraEscolasRegex = Regex(
         "([a-z0-9]+)\\s*m\\s*a\\s*g\\s*i(?:\\s*c)?\\s*a(?:s)?\\s*(?:em|de)\\s*([a-z0-9]+)\\s*(outras\\s+)?escolas(?:\\s+diferentes)?"
@@ -150,8 +170,11 @@ class NexusArcanoEngine(
     private val pesoFaltaNumerica = 8
     private val pesoFaltaEscolas = 3
     private val pesoComplexidadeBase = 4
+    private val escolasNuncaRecomendar = setOf("tecnologica")
+    private val splitOuRegex = Regex("\\s+ou\\s+")
 
     private val dependenciasCache = mutableMapOf<String, List<String>>()
+    private val dependenciasGruposCache = mutableMapOf<String, List<List<String>>>()
     private val regrasEscolasCache = mutableMapOf<String, List<RegraEscolas>>()
     private val regrasNumericasCache = mutableMapOf<String, List<RegraNumerica>>()
     private val cadeiaCache = mutableMapOf<String, List<String>>()
@@ -262,11 +285,12 @@ class NexusArcanoEngine(
                 ativa = alvoLiberado || alvoId in known
             )
 
-            val proximas = sugerirProximasAcoes(alvoId, known, cadeiaSemAlvo, estado)
+            val cadeiaSemAlvoEfetiva = construirCadeiaObrigatoriaParaEstado(alvoId, known).filter { it != alvoId }
+            val proximas = sugerirProximasAcoes(alvoId, known, estado)
             val ativas = chaves.filter { it.ativa }
             val faltantes = chaves.filterNot { it.ativa }
 
-            val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, cadeiaSemAlvo, estado, known)
+            val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, cadeiaSemAlvoEfetiva, estado, known)
             val bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
                 bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
             } else {
@@ -354,7 +378,8 @@ class NexusArcanoEngine(
                     motivoExclusao = when {
                         cand.escola.isBlank() -> "SEM_ESCOLA"
                         !cand.aprendivelAgora -> "NAO_APRENDIVEL_AGORA"
-                        cand.escolaBloqueada -> "ESCOLA_DA_ORIGEM_BLOQUEADA"
+                        cand.escolaBloqueadaOrigem -> "ESCOLA_DA_ORIGEM_BLOQUEADA"
+                        cand.escolaBloqueadaPolitica -> "ESCOLA_BLOQUEADA_POLITICA"
                         else -> null
                     }
                 )
@@ -490,8 +515,9 @@ class NexusArcanoEngine(
         val bloqueio: String?
         val codigo: String?
         if (precisaRecalcularDerivados) {
-            proximas = sugerirProximasAcoes(alvoId, knownNovo, snapshot.cadeiaSemAlvo, estadoNovo)
-            val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, snapshot.cadeiaSemAlvo, estadoNovo, knownNovo)
+            val cadeiaSemAlvoEfetiva = construirCadeiaObrigatoriaParaEstado(alvoId, knownNovo).filter { it != alvoId }
+            proximas = sugerirProximasAcoes(alvoId, knownNovo, estadoNovo)
+            val bloqueioNumerico = primeiroBloqueioNumerico(alvoId, cadeiaSemAlvoEfetiva, estadoNovo, knownNovo)
             bloqueio = if (proximas.isEmpty() && faltantes.isNotEmpty()) {
                 bloqueioNumerico ?: "Sem ação imediata. Verifique chaves pendentes."
             } else {
@@ -531,14 +557,16 @@ class NexusArcanoEngine(
     private fun sugerirProximasAcoes(
         alvoId: String,
         known: Set<String>,
-        cadeiaSemAlvo: List<String>,
         estado: ArcanoEstadoPersonagem
     ): List<ArcanoAcao> {
+        val cadeiaSemAlvo = construirCadeiaObrigatoriaParaEstado(alvoId, known).filter { it != alvoId }
         val out = mutableListOf<ArcanoAcao>()
 
         val proximaObrigatoria = cadeiaSemAlvo.firstOrNull { it !in known }
         if (proximaObrigatoria != null) {
-            if (magiaAprendivelAgora(proximaObrigatoria, known, estado)) {
+            if (magiaAprendivelAgora(proximaObrigatoria, known, estado) &&
+                !escolaBloqueadaPorPolitica(proximaObrigatoria)
+            ) {
                 out += ArcanoAcao(
                     magiaId = proximaObrigatoria,
                     motivo = "Cadeia obrigatória",
@@ -556,7 +584,9 @@ class NexusArcanoEngine(
             }
         } else {
             if (alvoId !in known) {
-                if (magiaAprendivelAgora(alvoId, known, estado)) {
+                if (magiaAprendivelAgora(alvoId, known, estado) &&
+                    !escolaBloqueadaPorPolitica(alvoId)
+                ) {
                     out += ArcanoAcao(
                         magiaId = alvoId,
                         motivo = "Alvo liberado",
@@ -661,7 +691,7 @@ class NexusArcanoEngine(
             .toSet()
 
         fun custoDesbloqueio(candId: String): Int {
-            val depsMissing = dependenciasNomeadas(candId).count { it !in known }
+            val depsMissing = dependenciasMinimasPendentes(candId, known)
             val regraNum = coletarRegrasNumericas(listOf(candId)).firstOrNull()
             val faltaNum = if (regraNum == null) 0 else {
                 if (atendeRegraNumerica(regraNum, estado)) 0 else 1
@@ -690,15 +720,17 @@ class NexusArcanoEngine(
                     escolaNova = escolaNova,
                     custo = custoDesbloqueio(candId),
                     aprendivelAgora = magiaAprendivelAgora(candId, known, estado),
-                    escolaBloqueada = escola in escolasProibidas
+                    escolaBloqueadaOrigem = escola in escolasProibidas,
+                    escolaBloqueadaPolitica = escola in escolasNuncaRecomendar
                 )
             }.toList()
     }
 
     private fun magiaAprendivelAgora(magiaId: String, known: Set<String>, estado: ArcanoEstadoPersonagem): Boolean {
         if (magiaId in known) return true
-        val deps = dependenciasNomeadas(magiaId)
-        if (deps.any { it !in known }) return false
+        val gruposDeps = dependenciasNomeadasGrupos(magiaId)
+        val depsOk = if (gruposDeps.isEmpty()) true else gruposDeps.any { grupo -> grupo.all { it in known } }
+        if (!depsOk) return false
         if (!coletarRegrasEscolas(listOf(magiaId)).all { atendeRegraEscolas(it, known) }) return false
         return coletarRegrasNumericas(listOf(magiaId)).all { atendeRegraNumerica(it, estado) }
     }
@@ -737,7 +769,10 @@ class NexusArcanoEngine(
 
             fun dfs(id: String) {
                 if (!visit.add(id)) return
-                dependenciasNomeadas(id).forEach(::dfs)
+                dependenciasNomeadasGrupos(id)
+                    .flatMap { it }
+                    .distinct()
+                    .forEach(::dfs)
                 ordem += id
             }
 
@@ -746,27 +781,96 @@ class NexusArcanoEngine(
         }
     }
 
+    private fun construirCadeiaObrigatoriaParaEstado(alvoId: String, known: Set<String>): List<String> {
+        val visit = mutableSetOf<String>()
+        val ordem = mutableListOf<String>()
+
+        fun dfs(id: String) {
+            if (!visit.add(id)) return
+            dependenciasEscolhidasParaEstado(id, known).forEach(::dfs)
+            ordem += id
+        }
+
+        dfs(alvoId)
+        return ordem
+    }
+
     private fun dependenciasNomeadas(magiaId: String): List<String> {
         return dependenciasCache.getOrPut(magiaId) {
+            dependenciasNomeadasGrupos(magiaId).flatMap { it }.distinct()
+        }
+    }
+
+    private fun dependenciasNomeadasGrupos(magiaId: String): List<List<String>> {
+        return dependenciasGruposCache.getOrPut(magiaId) {
             val raw = preNorm(magiaId)
             if (raw.isBlank()) return@getOrPut emptyList()
 
-            val out = linkedSetOf<String>()
-            val rangesAceitos = mutableListOf<IntRange>()
-            nomesNormalizadosPorTamanho.forEach { (id, nomeNorm) ->
-                if (id == magiaId) return@forEach
-                val rgx = Regex("\\b${Regex.escape(nomeNorm)}\\b")
-                val match = rgx.find(raw) ?: return@forEach
-                val range = match.range
-                val sobreposto = rangesAceitos.any { r -> range.first <= r.last && r.first <= range.last }
-                if (sobreposto) return@forEach
-                if (!pareceReferenciaDeEscola(raw, match.range.first, match.range.last + 1)) {
-                    out += id
-                    rangesAceitos += range
-                }
+            val depsRawCompleto = extrairDependenciasNomeadas(raw, magiaId)
+            val partesOu = raw.split(splitOuRegex).map { it.trim() }.filter { it.isNotBlank() }
+            if (partesOu.size <= 1) {
+                return@getOrPut if (depsRawCompleto.isEmpty()) emptyList() else listOf(depsRawCompleto)
             }
-            out.toList()
+
+            val grupos = partesOu
+                .map { parte -> extrairDependenciasNomeadas(parte, magiaId) }
+                .filter { it.isNotEmpty() }
+                .distinctBy { it.joinToString("|") }
+
+            if (grupos.isEmpty()) {
+                if (depsRawCompleto.isEmpty()) emptyList() else listOf(depsRawCompleto)
+            } else {
+                grupos
+            }
         }
+    }
+
+    private fun dependenciasMinimasPendentes(magiaId: String, known: Set<String>): Int {
+        val grupos = dependenciasNomeadasGrupos(magiaId)
+        if (grupos.isEmpty()) return 0
+        return grupos.minOfOrNull { grupo -> grupo.count { it !in known } } ?: 0
+    }
+
+    private fun dependenciasEscolhidasParaEstado(magiaId: String, known: Set<String>): List<String> {
+        val grupos = dependenciasNomeadasGrupos(magiaId)
+        if (grupos.isEmpty()) return emptyList()
+        if (grupos.any { grupo -> grupo.all { it in known } }) return emptyList()
+        return grupos.minWithOrNull(
+            compareBy<List<String>> { grupo -> grupo.count { it !in known } }
+                .thenBy { grupo -> grupo.sumOf { custoAproximadoDependencia(it, known, mutableSetOf()) } }
+                .thenBy { it.size }
+                .thenBy { it.joinToString("|") }
+        ).orEmpty()
+    }
+
+    private fun custoAproximadoDependencia(magiaId: String, known: Set<String>, visit: MutableSet<String>): Int {
+        if (magiaId in known) return 0
+        if (!visit.add(magiaId)) return 999
+        val grupos = dependenciasNomeadasGrupos(magiaId)
+        if (grupos.isEmpty()) return 1
+        val melhorGrupo = grupos.minOfOrNull { grupo ->
+            grupo.sumOf { dep -> custoAproximadoDependencia(dep, known, visit.toMutableSet()) }
+        } ?: 0
+        return 1 + melhorGrupo
+    }
+
+    private fun extrairDependenciasNomeadas(raw: String, magiaId: String): List<String> {
+        val out = linkedSetOf<String>()
+        val rangesAceitos = mutableListOf<IntRange>()
+        nomesNormalizadosPorTamanho.forEach { candidato ->
+            val id = candidato.id
+            if (id == magiaId || id in out) return@forEach
+            val rgx = Regex("\\b${Regex.escape(candidato.nome)}\\b")
+            val match = rgx.find(raw) ?: return@forEach
+            val range = match.range
+            val sobreposto = rangesAceitos.any { r -> range.first <= r.last && r.first <= range.last }
+            if (sobreposto) return@forEach
+            if (!pareceReferenciaDeEscola(raw, match.range.first, match.range.last + 1)) {
+                out += id
+                rangesAceitos += range
+            }
+        }
+        return out.toList()
     }
 
     private fun coletarRegrasEscolas(ids: List<String>): List<RegraEscolas> {
@@ -1059,6 +1163,66 @@ class NexusArcanoEngine(
 
     private fun escolaPrincipalNorm(magiaId: String): String = escolaPrincipalNormById[magiaId]
         ?: escolasNorm(magiaId).firstOrNull().orEmpty()
+
+    private fun escolaBloqueadaPorPolitica(magiaId: String): Boolean {
+        val escola = escolaPrincipalNorm(magiaId)
+        return escola in escolasNuncaRecomendar
+    }
+
+    private fun variantesSingularPlural(nomeNorm: String): Set<String> {
+        val tokens = nomeNorm
+            .split(" ")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+            .toMutableList()
+        if (tokens.isEmpty()) return emptySet()
+        val idx = tokens.indexOfLast { it.length > 2 }.coerceAtLeast(tokens.lastIndex)
+        val tokenBase = tokens[idx]
+        val singular = singularizarTokenPt(tokenBase)
+        val plural = pluralizarTokenPt(singular)
+        val out = linkedSetOf(nomeNorm)
+
+        fun addComToken(novoToken: String) {
+            if (novoToken.isBlank()) return
+            val copia = tokens.toMutableList()
+            copia[idx] = novoToken
+            out += copia.joinToString(" ")
+        }
+
+        addComToken(singular)
+        addComToken(plural)
+        return out
+    }
+
+    private fun singularizarTokenPt(token: String): String {
+        if (token.length <= 3) return token
+        return when {
+            token.endsWith("oes") && token.length > 4 -> token.dropLast(3) + "ao"
+            token.endsWith("aes") && token.length > 4 -> token.dropLast(3) + "ao"
+            token.endsWith("ais") && token.length > 4 -> token.dropLast(3) + "al"
+            token.endsWith("eis") && token.length > 4 -> token.dropLast(3) + "el"
+            token.endsWith("ois") && token.length > 4 -> token.dropLast(3) + "ol"
+            token.endsWith("uis") && token.length > 4 -> token.dropLast(3) + "ul"
+            token.endsWith("ns") && token.length > 3 -> token.dropLast(2) + "m"
+            token.endsWith("s") && !token.endsWith("ss") -> token.dropLast(1)
+            else -> token
+        }
+    }
+
+    private fun pluralizarTokenPt(token: String): String {
+        if (token.isBlank()) return token
+        return when {
+            token.endsWith("s") -> token
+            token.endsWith("m") && token.length > 2 -> token.dropLast(1) + "ns"
+            token.endsWith("al") && token.length > 3 -> token.dropLast(2) + "ais"
+            token.endsWith("el") && token.length > 3 -> token.dropLast(2) + "eis"
+            token.endsWith("ol") && token.length > 3 -> token.dropLast(2) + "ois"
+            token.endsWith("ul") && token.length > 3 -> token.dropLast(2) + "uis"
+            token.endsWith("ao") && token.length > 3 -> token.dropLast(2) + "oes"
+            token.endsWith("r") || token.endsWith("z") -> token + "es"
+            else -> token + "s"
+        }
+    }
 
     private fun normalize(raw: String): String {
         val semAcento = Normalizer.normalize(raw, Normalizer.Form.NFD)

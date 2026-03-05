@@ -1,6 +1,6 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-04
+Atualizado em: 2026-03-05
 
 ## Estado Atual
 - Branch: `main`
@@ -10,6 +10,8 @@ Atualizado em: 2026-03-04
 - Pasta do motor externo: `motor modo alvo/`
 - Checkpoint consolidado: suíte Lote 2 separada e verde em teste unitário.
 - Status operacional do Lote 4: pronto para teste manual guiado com flag do NEXUS ARCANO.
+- Stress test do NEXUS ARCANO reexecutado em `2026-03-05` com relatórios atualizados em `app/build/reports/`.
+- Modo alvo antigo: removido do projeto (`app/` e `motor modo alvo/arquivos-legados`), fluxo unificado no NEXUS ARCANO.
 
 ## Feito
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
@@ -26,6 +28,29 @@ Atualizado em: 2026-03-04
   - sem crash de execução na variante `pracego` durante validação.
 - Limitação de ferramenta registrada:
   - `lintPracegoDebug` falhou por bug interno do lint (`AutoboxingStateCreationDetector`), sem evidência de erro funcional do app.
+- Correção de matching singular/plural nas dependências nomeadas do NEXUS ARCANO:
+  - pré-requisito em plural agora casa com magia em singular (e vice-versa), reduzindo bloqueio falso.
+- Correção no filtro de escola da UI de magias:
+  - comparação passou de `contains` para igualdade normalizada, evitando falso positivo (ex.: filtro `Ar` não puxa mais `Quebrar e Consertar`).
+- Stress test completo do NEXUS ARCANO (Lote 2/3) reexecutado e verde:
+  - `stress_ramificacoes_longas_com_magias_v2`: 40 alvos, 600 amostras, p50 `0,002 ms`, p95 `0,037 ms`, p99 `5,535 ms`, max `573,522 ms`, `0` exceções/inconsistências;
+  - `sweep_escola_encantamento_consistencia_e_tempo_magias_v2`: 59 alvos, p50 `0,834 ms`, p95 `1,216 ms`, max `437,819 ms`, `0` exceções/inconsistências;
+  - `comparativo_delta_incremental_vs_full_por_rodada_magias_v2`: 24 rodadas, equivalência funcional preservada (`0` inconsistências), delta ainda acima do full no p95 (`1,541 ms` vs `1,414 ms`);
+  - `telemetria_ranking_lote2_magias_v2`: `ALVOS_COM_DIAGNOSTICO=67`, `TOP1_ESCOLA_NOVA=100%`, `TOP1_SEM_PREREQ=100%`, `TOP3_TEM_SEM_PREREQ=100%`.
+- Limpeza estrutural do modo alvo antigo concluída:
+  - removidos `MagiaTargetEngine`, `MagiaDependencyPlanner`, `MagiaPlannerDataSource` e testes legados associados em `app/src/main`, `app/src/test` e `motor modo alvo/arquivos-legados`.
+  - `DataRepository` desacoplado da interface legada antiga.
+- Auditoria automática magia-por-magia do modo alvo (NEXUS ARCANO) adicionada e executada:
+  - teste: `NexusArcanoModoAlvoAuditoriaTodasMagiasTest`;
+  - total de magias auditadas: `839` (catálogo `magias2versao.json`);
+  - status atual após correções de parser/cadeia: `SUCESSO=838`, `FALHA=0`, `BLOQUEIO_NUMERICO=1` (`desejo_superior`);
+  - checagem de menor caminho (BFS limitada) em `404` alvos: `DESVIO_MENOR_CAMINHO_ENCONTRADO=0`;
+  - relatório: `app/build/reports/nexus_arcano_modo_alvo_auditoria_todas_magias.txt`.
+- Teste em emulador executado para lag/gargalo (variante `pracego`):
+  - instalação: `:app:installPracegoDebug` OK;
+  - carga de eventos: `adb shell monkey -p com.gurps.ficha.pracego --throttle 80 -v 1200`;
+  - sem crash/ANR detectado no logcat durante execução;
+  - `gfxinfo`: `879` frames, janky `17,41%` (legacy `29,81%`), p50 `17ms`, p90 `48ms`, p95 `113ms`, p99 `400ms`, `Slow UI thread=119`, `Slow draw commands=66`.
 
 ## Lotes (divisão por partes)
 ### Lote 1 - Núcleo de Chaves e Blocos
@@ -39,6 +64,7 @@ Partes implementadas:
 - Suporte inicial a pré-requisito numérico composto (ex.: `(DX+IQ):30+`).
 - Filtro inicial de ambiguidade nome/escola em dependências nomeadas.
 - Filtro de sobreposição em dependências nomeadas (evita curto+longo simultâneo).
+- Matching singular/plural em nomes de magia para dependências nomeadas (ex.: `Curar Planta` <-> `Curar Plantas`).
 - Testes automatizados do Lote 1 implementados (`Desejo`, `Desejo Superior`, `Teleporte`, `Convocar Demônio`, `Translocação`):
   - `app/src/test/java/nexus/arcano/NexusArcanoEngineLote1Test.kt`
   - suíte verde em `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLote1Test`
@@ -193,6 +219,13 @@ Partes implementadas:
   - conclusão: falta implementar planejamento de caminho mínimo global para cumprir objetivo de "menos magias possível".
 - Ajuste operacional de validação:
   - durante o teste atual, `MODO_ALVO_HABILITADO` foi forçado para `true` em `DialogsMagias.kt` para eliminar ambiguidade de flag e garantir visibilidade do chip no emulador.
+- Auditoria de uso em runtime consolidada:
+  - fluxo de UI/ViewModel usa `NexusArcanoModoAlvoAdapter` como fonte de cálculo do modo alvo;
+  - sem referências remanescentes a `MagiaTargetEngine`/`MagiaDependencyPlanner`/`MagiaPlannerDataSource` no código ativo.
+- Correção estrutural no motor para cenários com `ou` em dependências nomeadas:
+  - leitura por grupos alternativos (`A ou B`) em vez de tratar tudo como obrigatório;
+  - cadeia obrigatória dinâmica por estado para reduzir trilhas longas desnecessárias;
+  - desempate de alternativa por custo aproximado de profundidade.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
@@ -200,10 +233,22 @@ Partes faltantes:
 - Remover o forçamento temporário (`MODO_ALVO_HABILITADO = true`) e retornar ao controle por flag de build após validação final.
 - Novo sublote pendente: algoritmo de caminho mínimo (BFS/A*) no NEXUS ARCANO para otimização global de trilha.
 
+## Checkpoint 10 Itens (2026-03-05)
+1. Build unitário do stress do NEXUS ARCANO executado e verde.
+2. Relatório de ramificações longas atualizado (`p95=0,037 ms`, sem inconsistências).
+3. Relatório de sweep da escola Encantamento atualizado (`p95=1,216 ms`, sem inconsistências).
+4. Comparativo delta vs full atualizado (equivalência funcional preservada).
+5. Telemetria do ranking Lote 2 reconfirmada com `67` alvos com diagnóstico.
+6. Correção de singular/plural implementada no parser de dependências nomeadas.
+7. Teste unitário de regressão para singular/plural adicionado e verde.
+8. Correção de filtro de escola por igualdade normalizada aplicada no app.
+9. Auditoria de runtime confirma uso do NEXUS ARCANO no fluxo principal.
+10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
+
 ## Próximos Passos imediatos
-1. Ajustar diversidade do ranking do Lote 2 entre alvos distintos (telemetria já coletada).
-2. Implementar sublote de caminho mínimo global (BFS/A*) para priorizar menor número de magias até o alvo.
-3. Após isso, executar roteiro guiado de validação final e remover forçamento temporário do modo alvo.
+1. Implementar sublote de caminho mínimo global (BFS/A*) para priorizar menor número de magias até o alvo.
+2. Remover forçamento temporário do modo alvo (`MODO_ALVO_HABILITADO = true`) após validação funcional final.
+3. Reexecutar auditoria completa (catálogo + emulador) após entrada do caminho mínimo global.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
