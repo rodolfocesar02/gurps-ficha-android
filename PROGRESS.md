@@ -404,6 +404,10 @@ Partes implementadas:
   - validação de UI e confirmação de adição passam a usar essa checagem leve para reduzir congelamento perceptível;
   - fallback de sugestões no modo alvo passou a rodar sempre (não só quando o motor retorna vazio), com prioridade para magias simples de escolas novas;
   - objetivo: evitar estado "parou de recomendar" ao redor de 9-10 magias e manter o fluxo para completar escolas pendentes.
+- Hotfix continuidade 14/15 escolas:
+  - removido bloqueio artificial de recomendações da escola Tecnológica no modo alvo;
+  - motor de fallback volta a considerar todas as escolas ao tentar completar contadores (`10 outras` / `15 diferentes`);
+  - objetivo: evitar estado "Sem recomendação imediata" quando a última escola faltante era justamente a excluída.
 
 Partes faltantes:
 - Rodar validação funcional guiada do fluxo completo de magias com a flag do NEXUS ARCANO ligada
