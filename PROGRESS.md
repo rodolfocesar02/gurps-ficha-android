@@ -20,17 +20,17 @@ Atualizado em: 2026-03-05
 Objetivo macro: garantir que recomendações levem ao alvo com menor caminho viável e progresso explícito de requisitos compostos (cadeia + escolas + atributos).
 
 ### Lote A - Modelo de Objetivo Global (Obrigatório)
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. Formalizar alvo como conjunto de metas obrigatórias:
+1. Formalizar alvo como conjunto de metas obrigatórias: `PARCIAL`
    - cadeia (`Encantar -> Pequeno Desejo -> Desejo`);
    - contadores (`10 escolas`, `15 escolas`);
    - gates numéricos (`AM/IQ/DX`).
-2. Converter pré-requisito textual para estrutura canônica por tipo:
+2. Converter pré-requisito textual para estrutura canônica por tipo: `PARCIAL`
    - `MAGIA_EXATA`, `MAGIA_OU`, `ESCOLAS_DISTINTAS`, `NUMERICO`, `CADEIA`.
-3. Definir estado de progresso por meta com `faltante`, `atendido`, `bloqueado por upstream`.
-4. Adicionar checksum de estado para auditoria determinística.
+3. Definir estado de progresso por meta com `faltante`, `atendido`, `bloqueado por upstream`: `PARCIAL`.
+4. Adicionar checksum de estado para auditoria determinística: `PENDENTE`.
 
 ### Lote B - Planejador de Caminho Mínimo (BFS/A* com custo)
 Status: `PENDENTE`
@@ -97,6 +97,11 @@ Passos:
    - relatório consolidado no `PROGRESS.md`.
 
 ## Feito
+- Lote A global iniciado no NEXUS ARCANO:
+  - novo contrato de metas canônicas `ArcanoMetaProgress` + `ArcanoMetaTipo`;
+  - novo diagnóstico público `diagnosticarMetasAlvo(alvoId, estado)`;
+  - cobre metas de cadeia, escolas distintas, numéricos (`AM/IQ/soma`) e alvo final;
+  - testes globais adicionados em `NexusArcanoEngineLoteAGlobalTest` para múltiplos alvos (`Desejo`, `Desejo Superior`, `Translocação`).
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
