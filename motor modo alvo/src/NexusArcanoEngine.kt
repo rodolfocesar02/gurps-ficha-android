@@ -1002,6 +1002,8 @@ class NexusArcanoEngine(
                 .thenBy { tieBreakPorAlvo(magiaId, it.id) }
                 .thenBy { nomeMagiaNorm(it.id) }
         )
+        val temEscolaNovaElegivel = ordenados.any { it.escolaNova }
+        val motivoSemEscolaNova = "Sem escola nova aprendivel agora para ${nomeMagia(magiaId)}"
 
         val out = mutableListOf<ArcanoAcao>()
         // Passo 1: escolas novas sem repetição.
@@ -1023,7 +1025,11 @@ class NexusArcanoEngine(
             if (cand.escola in escolasUsadasNaRodada) return@forEach
             out += ArcanoAcao(
                 magiaId = cand.id,
-                motivo = "Fallback de progresso para ${nomeMagia(magiaId)}",
+                motivo = if (temEscolaNovaElegivel) {
+                    "Fallback de progresso para ${nomeMagia(magiaId)}"
+                } else {
+                    "$motivoSemEscolaNova; fallback de progresso"
+                },
                 prioridade = 10 + cand.custo
             )
             escolasUsadasNaRodada += cand.escola
@@ -1034,7 +1040,11 @@ class NexusArcanoEngine(
             if (out.any { it.magiaId == cand.id }) return@forEach
             out += ArcanoAcao(
                 magiaId = cand.id,
-                motivo = "Fallback final para ${nomeMagia(magiaId)}",
+                motivo = if (temEscolaNovaElegivel) {
+                    "Fallback final para ${nomeMagia(magiaId)}"
+                } else {
+                    "$motivoSemEscolaNova; fallback final"
+                },
                 prioridade = 20 + cand.custo
             )
         }
