@@ -79,7 +79,7 @@ Passos:
 2. Manter cache de filtros/listas (ViewModel + DataRepository) - `feito`.
 3. Reduzir recomputação pesada na lista fora do modo alvo - `feito`.
 4. Medir p95 de abertura do seletor e p95 de scroll com cenário fixo no emulador - `feito` (`open p95=300 ms`, `scroll p95=17 ms`, relatório em `app/build/reports/nexus_arcano_lote_e_step4_perf_emulador.txt`).
-5. Definir meta operacional: eliminar `Skipped frames` recorrente acima de 30 em uso normal.
+5. Definir meta operacional: eliminar `Skipped frames` recorrente acima de 30 em uso normal - `feito` (critério: `0` ocorrências de `Skipped >= 30` em 3 execuções consecutivas do roteiro fixo; alvo complementar de frame time: `open p95 <= 250 ms`, `scroll p95 <= 25 ms`).
 
 ### Lote F - Validação, Auditoria e Go/No-Go
 Status: `PENDENTE`
@@ -131,6 +131,12 @@ Passos:
   - pacote medido: `com.gurps.ficha.visual` em `emulator-5554`;
   - `open p95=300 ms` e `scroll p95=17 ms` (amostras: 12/12);
   - relatório salvo em `app/build/reports/nexus_arcano_lote_e_step4_perf_emulador.txt`.
+- Lote E passo 5 formalizado e baseline revalidada (2026-03-05):
+  - meta operacional documentada: zerar recorrência de `Skipped >= 30` no fluxo normal (3 execuções seguidas);
+  - otimização aplicada no seletor de magias: inicialização de `TextToSpeech` apenas quando ajuda por voz estiver ativa;
+  - melhoria estrutural de recomposição na lista: `key` estável por `id` em `LazyColumn`;
+  - nova medição pós-ajuste: `open p95=300 ms` (`mediana 250 ms`) e `scroll p95=20 ms` (`max 29 ms`);
+  - status operacional atual: meta de scroll dentro da faixa alvo, meta de abertura ainda pendente.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -363,7 +369,7 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Executar Lote E passo 5 com base no relatório: reduzir jank na abertura do seletor e eliminar recorrência de `Skipped frames > 30`.
+1. Atacar gargalo remanescente da abertura do seletor (p95 ainda em `300 ms`) para bater `open p95 <= 250 ms`.
 2. Rodar cenário canônico do Lote F (`AM3`, `IQ15`, `Desejo`) seguindo apenas recomendadas.
 3. Registrar trilha final, número de rodadas e bloqueios curtos observados no `PROGRESS.md`.
 4. Executar validação manual final em `visual` e `pracego` com checklist de regressão.

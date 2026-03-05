@@ -148,7 +148,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
     val listaFiltrada = viewModel.magiasFiltradas
     val catalogoMagias = viewModel.dataRepository.magias
-    val catalogoPorId = remember(catalogoMagias) { catalogoMagias.associateBy { it.id } }
+    val precisaCatalogoPorId = modoAlvoAtivoEfetivo || magiaAlvoId != null || ajudaVozAtiva
+    val catalogoPorId = remember(catalogoMagias, precisaCatalogoPorId) {
+        if (precisaCatalogoPorId) catalogoMagias.associateBy { it.id } else emptyMap()
+    }
     val escolas = viewModel.todasEscolasMagia
     val classes = viewModel.todasClassesMagia
     val magiaAlvoSelecionada = magiaAlvoId?.let { catalogoPorId[it] }
@@ -250,19 +253,21 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
 
     var ttsEngine by remember { mutableStateOf<TextToSpeech?>(null) }
-    DisposableEffect(Unit) {
-        var localEngine: TextToSpeech? = null
-        val engine = TextToSpeech(context) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                localEngine?.language = Locale("pt", "BR")
+    if (ajudaVozAtiva) {
+        DisposableEffect(Unit) {
+            var localEngine: TextToSpeech? = null
+            val engine = TextToSpeech(context) { status ->
+                if (status == TextToSpeech.SUCCESS) {
+                    localEngine?.language = Locale("pt", "BR")
+                }
             }
-        }
-        localEngine = engine
-        ttsEngine = engine
-        onDispose {
-            engine.stop()
-            engine.shutdown()
-            ttsEngine = null
+            localEngine = engine
+            ttsEngine = engine
+            onDispose {
+                engine.stop()
+                engine.shutdown()
+                ttsEngine = null
+            }
         }
     }
     fun falarAjuda(texto: String) {
@@ -657,7 +662,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    itemsIndexed(listaExibicao) { indice, definicao ->
+                    itemsIndexed(
+                        items = listaExibicao,
+                        key = { _, definicao -> definicao.id }
+                    ) { indice, definicao ->
                         val jaAdicionada = viewModel.magiaJaAdicionada(definicao.id)
                         val prereqFalha = if (modoAlvoAtivoEfetivo) {
                             prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
