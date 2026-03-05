@@ -115,6 +115,23 @@ class NexusArcanoEngineLoteBGlobalTest {
         assertFalse(plano.trilhaMagiasIds.contains("dep_bloqueada"))
     }
 
+    @Test
+    fun contrato_de_saida_do_plano_retorna_proxima_trilha_e_metas_impactadas() {
+        val engine = NexusArcanoEngine(catalogoPasso2SemReducao())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = emptySet(),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+
+        val plano = engine.planejarCaminhoMinimo("alvo_deps", estado)
+
+        assertTrue(plano.trilhaMagiasIds.size >= 2)
+        assertEquals(plano.trilhaMagiasIds.first(), plano.proximaAcaoMagiaId)
+        assertTrue(plano.metasImpactadasProximaAcao.isNotEmpty())
+    }
+
     private fun catalogoPasso2Escolas(): ArcanoCatalogo {
         data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
         val magias = listOf(
