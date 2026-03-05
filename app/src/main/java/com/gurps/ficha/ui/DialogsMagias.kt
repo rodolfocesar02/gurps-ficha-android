@@ -77,7 +77,6 @@ private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 private const val MODO_ALVO_HABILITADO = true
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
-private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
 
 private fun preReqProvavelmenteLivre(def: MagiaDefinicao): Boolean {
     val raw = def.preRequisitos?.trim().orEmpty()
@@ -113,18 +112,6 @@ private fun motivoBloqueioCurto(falha: String): String {
         .substringBefore(";")
         .substringBefore(",")
         .trim()
-}
-
-private fun magiaDaEscolaTecnologica(def: MagiaDefinicao): Boolean {
-    return def.escola
-        .orEmpty()
-        .asSequence()
-        .map { valor ->
-            val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
-                .replace(Regex("\\p{M}+"), "")
-            semAcento.lowercase().trim()
-        }
-        .any { it == ESCOLA_NUNCA_RECOMENDAR }
 }
 
 private fun escolasNormalizadas(def: MagiaDefinicao): Set<String> {
@@ -192,7 +179,6 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .asSequence()
             .filter { it !in idsBloqueadosBase }
             .mapNotNull { id -> catalogoPorId[id] }
-            .filterNot { magiaDaEscolaTecnologica(it) }
             .distinctBy { it.id }
             .take(MAX_OPCOES_MODO_ALVO)
             .toList()
@@ -210,7 +196,6 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             val candidatas = catalogoMagias
                 .asSequence()
                 .filter { it.id !in idsExcluidas }
-                .filterNot { magiaDaEscolaTecnologica(it) }
                 .toList()
 
             fun tentarAproveitar(pool: Sequence<MagiaDefinicao>) {
