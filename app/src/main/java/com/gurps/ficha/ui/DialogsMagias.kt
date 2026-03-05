@@ -67,6 +67,8 @@ import com.gurps.ficha.model.MagiaDefinicao
 import com.gurps.ficha.model.MagiaSelecionada
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.Normalizer
 import java.util.Locale
 import kotlin.math.abs
@@ -232,12 +234,51 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     } else {
         listaFiltrada
     }
-    val prereqFalhasMap = emptyMap<String, String?>()
+    val assinaturaListaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
+        listaExibicao.joinToString("|") { it.id }
+    } else {
+        ""
+    }
+    var prereqFalhasMap by remember(
+        modoAlvoAtivoEfetivo,
+        magiaAlvoSelecionada?.id,
+        assinaturaModoAlvo,
+        assinaturaListaExibicao
+    ) { mutableStateOf<Map<String, String?>>(emptyMap()) }
+    LaunchedEffect(
+        modoAlvoAtivoEfetivo,
+        magiaAlvoSelecionada?.id,
+        assinaturaModoAlvo,
+        assinaturaListaExibicao
+    ) {
+        if (!(modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null)) {
+            prereqFalhasMap = emptyMap()
+            return@LaunchedEffect
+        }
+        val candidatas = listaExibicao.take(24)
+        prereqFalhasMap = withContext(Dispatchers.Default) {
+            candidatas.associate { magia ->
+                magia.id to viewModel.prereqFailureForMagia(magia)
+            }
+        }
+    }
     val proximaSugerida = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        val idMotor = viewModel.modoAlvoProximasAcoesIds.firstOrNull()
-        val recomendadaMotor = idMotor?.let { catalogoPorId[it] }
-        recomendadaMotor ?: listaExibicao.firstOrNull { magia ->
-            magia.id != magiaAlvoSelecionada.id
+        val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
+        val candidatosOrdenados = (
+            viewModel.modoAlvoProximasAcoesIds + listaExibicao.map { it.id }
+            ).distinct()
+        candidatosOrdenados
+            .asSequence()
+            .mapNotNull { id -> catalogoPorId[id] }
+            .firstOrNull { magia ->
+                magia.id != magiaAlvoSelecionada.id &&
+                    magia.id !in idsJaAdicionadas &&
+                    prereqFalhasMap.containsKey(magia.id) &&
+                    prereqFalhasMap[magia.id] == null
+            } ?: listaExibicao.firstOrNull { magia ->
+            magia.id != magiaAlvoSelecionada.id &&
+                prereqFalhasMap.containsKey(magia.id) &&
+                prereqFalhasMap[magia.id] == null
         }
     } else {
         null
@@ -545,8 +586,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                    val textoGuia = proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
-                        ?: "Sem recomendação imediata. Verifique magias básicas liberadas."
+                    val textoGuia = if (prereqFalhasMap.isEmpty()) {
+                        "Analisando pré-requisitos..."
+                    } else {
+                        proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
+                            ?: "Sem recomendação imediata liberada."
+                    }
                     Text(
                         textoGuia,
                         style = MaterialTheme.typography.bodySmall,
@@ -557,73 +602,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             }
                         }
                     )
-                    if (!viewModel.modoAlvoProgressoCadeia.isNullOrBlank()) {
+                    val progressoEscolasLinha = viewModel.modoAlvoProgressoEscolas.firstOrNull()
+                    if (!progressoEscolasLinha.isNullOrBlank()) {
                         Text(
-                            viewModel.modoAlvoProgressoCadeia.orEmpty(),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    if (viewModel.modoAlvoProgressoEscolas.isNotEmpty()) {
-                        viewModel.modoAlvoProgressoEscolas.take(3).forEach { linha ->
-                            Text(
-                                linha,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                    if (!viewModel.modoAlvoProximaObrigatoria.isNullOrBlank()) {
-                        Text(
-                            "Próxima obrigatória: ${viewModel.modoAlvoProximaObrigatoria}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    if (!viewModel.modoAlvoProximaLateralUtil.isNullOrBlank()) {
-                        Text(
-                            "Próxima lateral útil: ${viewModel.modoAlvoProximaLateralUtil}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    if (!viewModel.modoAlvoBloqueioCurto.isNullOrBlank()) {
-                        Text(
-                            viewModel.modoAlvoBloqueioCurto.orEmpty(),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            "Teste manual: adicione uma recomendada e recalcule a rodada.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.weight(1f)
-                        )
-                        TextButton(
-                            onClick = { viewModel.recalcularModoAlvoAgora(magiaAlvoId) },
-                            modifier = Modifier.semantics {
-                                if (isPraCegoVariant) {
-                                    contentDescription = "Recalcular rodada do modo alvo"
-                                }
-                            }
-                        ) { Text("Recalcular rodada") }
-                    }
-                    if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
-                        Text(
-                            "3 próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(" | ")}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    if (viewModel.modoAlvoChavesFaltantes.isNotEmpty()) {
-                        Text(
-                            "Chaves faltantes: ${viewModel.modoAlvoChavesFaltantes.take(3).joinToString(" | ")}",
+                            progressoEscolasLinha,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -632,13 +614,13 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         val resumoAcessivel = buildString {
                             append("Modo alvo ativo. ")
                             append("Magia alvo: ${magiaAlvoSelecionada.nome}. ")
-                            if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
-                                append("Próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(", ")}. ")
+                            if (proximaSugerida != null) {
+                                append("Próxima recomendada: ${proximaSugerida.nome}. ")
                             } else {
                                 append("Sem ação imediata recomendada. ")
                             }
-                            if (viewModel.modoAlvoChavesFaltantes.isNotEmpty()) {
-                                append("Chaves pendentes: ${viewModel.modoAlvoChavesFaltantes.take(2).joinToString(", ")}.")
+                            if (!progressoEscolasLinha.isNullOrBlank()) {
+                                append("Progresso: $progressoEscolasLinha")
                             }
                         }
                         Text(
@@ -663,8 +645,9 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         } else {
                             null
                         }
-                        val prereqOk = prereqFalha == null
-                        val recomendada = proximaSugerida?.id == definicao.id
+                        val prereqCalculado = !modoAlvoAtivoEfetivo || magiaAlvoSelecionada == null || prereqFalhasMap.containsKey(definicao.id)
+                        val prereqOk = !modoAlvoAtivoEfetivo || magiaAlvoSelecionada == null || (prereqCalculado && prereqFalha == null)
+                        val recomendada = prereqCalculado && proximaSugerida?.id == definicao.id
                         
                         // Formatando Classe e Escola
                         val classeEscola = listOfNotNull(
@@ -682,7 +665,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             supportingContent = {
                                 Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                                     Text("$classeEscola | pag. ${definicao.pagina}")
-                                    if (modoAlvoAtivoEfetivo && !prereqOk && !prereqFalha.isNullOrBlank()) {
+                                    if (modoAlvoAtivoEfetivo && prereqCalculado && !prereqOk && !prereqFalha.isNullOrBlank()) {
                                         Text(
                                             "Falta: ${motivoBloqueioCurto(prereqFalha)}",
                                             style = MaterialTheme.typography.bodySmall,
@@ -716,7 +699,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     }
                                     if (jaAdicionada) {
                                         Text("Adicionada", color = MaterialTheme.colorScheme.outline)
-                                    } else if (modoAlvoAtivoEfetivo && !prereqOk) {
+                                    } else if (modoAlvoAtivoEfetivo && prereqCalculado && !prereqOk) {
                                         Text("Bloqueada", color = MaterialTheme.colorScheme.error)
                                     } else if (recomendada) {
                                         Text("Recomendada", color = MaterialTheme.colorScheme.primary)
@@ -742,7 +725,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     magiaSelecionada = definicao
                                 } else Modifier)
                                 .then(
-                                    if (modoAlvoAtivoEfetivo && !prereqOk) Modifier.alpha(0.45f) else Modifier
+                                    if (modoAlvoAtivoEfetivo && prereqCalculado && !prereqOk) Modifier.alpha(0.45f) else Modifier
                                 )
                         )
                         Divider()
@@ -756,12 +739,25 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
 
     magiaSelecionada?.let { definicao ->
-        val prereqFalha = prereqFalhasMap[definicao.id] ?: viewModel.prereqFailureForMagia(definicao)
+        val prereqFalhaPrecomputada = prereqFalhasMap[definicao.id]
+        val prereqCalculado = prereqFalhasMap.containsKey(definicao.id)
+        var prereqFalhaDialog by remember(definicao.id, assinaturaModoAlvo, prereqCalculado) {
+            mutableStateOf(if (prereqCalculado) prereqFalhaPrecomputada else null)
+        }
+        LaunchedEffect(definicao.id, assinaturaModoAlvo, prereqCalculado) {
+            prereqFalhaDialog = if (prereqCalculado) {
+                prereqFalhaPrecomputada
+            } else {
+                withContext(Dispatchers.Default) {
+                    viewModel.prereqFailureForMagia(definicao)
+                }
+            }
+        }
         ConfigurarMagiaDialog(
             definicao = definicao,
             personagem = viewModel.personagem,
             nivelAptidaoMagica = viewModel.nivelAptidaoMagica,
-            prereqFalha = prereqFalha,
+            prereqFalha = prereqFalhaDialog,
             erroPersistente = erroAdicionarMagia,
             onDismiss = { magiaSelecionada = null },
             onSave = { pontosGastos, encantamentoAlvo, especializacaoMagia, ignorarPreReq ->
