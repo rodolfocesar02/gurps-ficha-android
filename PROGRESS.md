@@ -78,7 +78,7 @@ Passos:
 1. Manter pré-aquecimento de catálogo/índice de magias em background (`FichaViewModel init`) - `feito`.
 2. Manter cache de filtros/listas (ViewModel + DataRepository) - `feito`.
 3. Reduzir recomputação pesada na lista fora do modo alvo - `feito`.
-4. Medir p95 de abertura do seletor e p95 de scroll com cenário fixo no emulador.
+4. Medir p95 de abertura do seletor e p95 de scroll com cenário fixo no emulador - `feito` (`open p95=300 ms`, `scroll p95=17 ms`, relatório em `app/build/reports/nexus_arcano_lote_e_step4_perf_emulador.txt`).
 5. Definir meta operacional: eliminar `Skipped frames` recorrente acima de 30 em uso normal.
 
 ### Lote F - Validação, Auditoria e Go/No-Go
@@ -126,6 +126,11 @@ Passos:
   - diálogo mostra "próxima obrigatória" e "próxima lateral útil" separadamente;
   - motivo de bloqueio curto e estável exibido por código de bloqueio do motor;
   - botão "Recalcular rodada" adicionado para validação manual rodada a rodada.
+- Lote E passo 4 medido no emulador (2026-03-05):
+  - script versionado: `scripts/measure_lote_e_step4_perf.ps1` (fluxo fixo da aba Magia);
+  - pacote medido: `com.gurps.ficha.visual` em `emulator-5554`;
+  - `open p95=300 ms` e `scroll p95=17 ms` (amostras: 12/12);
+  - relatório salvo em `app/build/reports/nexus_arcano_lote_e_step4_perf_emulador.txt`.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -358,7 +363,7 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Iniciar Lote E com medição objetiva de p95 no fluxo real do diálogo de magias (abertura e scroll).
+1. Executar Lote E passo 5 com base no relatório: reduzir jank na abertura do seletor e eliminar recorrência de `Skipped frames > 30`.
 2. Rodar cenário canônico do Lote F (`AM3`, `IQ15`, `Desejo`) seguindo apenas recomendadas.
 3. Registrar trilha final, número de rodadas e bloqueios curtos observados no `PROGRESS.md`.
 4. Executar validação manual final em `visual` e `pracego` com checklist de regressão.
