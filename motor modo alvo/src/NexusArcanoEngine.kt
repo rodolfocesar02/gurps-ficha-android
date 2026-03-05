@@ -204,6 +204,9 @@ class NexusArcanoEngine(
     private val pesoFaltaNumerica = 8
     private val pesoFaltaEscolas = 3
     private val pesoComplexidadeBase = 4
+    private val custoBasePlano = 1
+    private val penalidadePlanoEscolaRepetida = 4
+    private val penalidadePlanoSemReducaoMeta = 12
     private val escolasNuncaRecomendar = setOf("tecnologica")
     private val splitOuRegex = Regex("\\s+ou\\s+")
 
@@ -570,6 +573,32 @@ class NexusArcanoEngine(
         )
 
         fun assinatura(known: Set<String>): String = known.sorted().joinToString("|")
+        val metasMemo = mutableMapOf<String, List<ArcanoMetaProgress>>()
+
+        fun metasEstado(known: Set<String>): List<ArcanoMetaProgress> {
+            val sig = assinatura(known)
+            return metasMemo.getOrPut(sig) {
+                diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known))
+            }
+        }
+
+        fun scorePendencias(metas: List<ArcanoMetaProgress>): Int {
+            return metas.sumOf { meta ->
+                if (meta.atendida) 0 else (meta.requerido - meta.atual).coerceAtLeast(1)
+            }
+        }
+
+        fun reducaoPendencias(known: Set<String>, candId: String): Int {
+            val antes = metasEstado(known)
+            val depois = metasEstado(known + candId)
+            val pontuacaoAntes = scorePendencias(antes)
+            val pontuacaoDepois = scorePendencias(depois)
+            return (pontuacaoAntes - pontuacaoDepois).coerceAtLeast(0)
+        }
+
+        fun existeMetaEscolaPendente(known: Set<String>): Boolean {
+            return metasEstado(known).any { it.tipo == ArcanoMetaTipo.ESCOLAS_DISTINTAS && !it.atendida }
+        }
 
         fun estimativaRestante(known: Set<String>): Int {
             if (magiaAprendivelAgora(alvoId, known, estado) || alvoId in known) return 0
@@ -586,13 +615,28 @@ class NexusArcanoEngine(
             return cadeiaPend + defEscolas + alvoPend
         }
 
-        fun ganhoMetas(known: Set<String>, candId: String): Int {
-            val antes = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known)).count { it.atendida }
-            val depois = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known + candId)).count { it.atendida }
-            return (depois - antes).coerceAtLeast(0)
+        fun custoAcaoPlano(known: Set<String>, candId: String): Int {
+            val escolasAtuais = escolasConhecidas(known)
+            val escolaCand = escolaPrincipalNorm(candId)
+            val escolaRepetida = escolaCand.isNotBlank() && escolaCand in escolasAtuais
+            val penalidadeEscola = if (existeMetaEscolaPendente(known) && escolaRepetida) {
+                penalidadePlanoEscolaRepetida
+            } else {
+                0
+            }
+            val reduziuPendencia = reducaoPendencias(known, candId) > 0
+            val penalidadeSemReducao = if (reduziuPendencia) 0 else penalidadePlanoSemReducaoMeta
+            return custoBasePlano + penalidadeEscola + penalidadeSemReducao
         }
 
-        fun candidatasExpandiveis(known: Set<String>): List<String> {
+        data class CandidataExpansao(
+            val id: String,
+            val custoAcao: Int,
+            val reducao: Int,
+            val escolaNova: Boolean
+        )
+
+        fun candidatasExpandiveis(known: Set<String>): List<CandidataExpansao> {
             val escolasAtuais = escolasConhecidas(known)
             return allMagiaIds.asSequence()
                 .filter { it !in known }
@@ -601,12 +645,20 @@ class NexusArcanoEngine(
                 .map { id ->
                     val escola = escolaPrincipalNorm(id)
                     val escolaNova = escola.isNotBlank() && escola !in escolasAtuais
-                    val score = ganhoMetas(known, id) * 100 + if (escolaNova) 25 else 0
-                    id to score
+                    CandidataExpansao(
+                        id = id,
+                        custoAcao = custoAcaoPlano(known, id),
+                        reducao = reducaoPendencias(known, id),
+                        escolaNova = escolaNova
+                    )
                 }
-                .sortedWith(compareByDescending<Pair<String, Int>> { it.second }.thenBy { nomeMagiaNorm(it.first) })
+                .sortedWith(
+                    compareByDescending<CandidataExpansao> { it.reducao }
+                        .thenByDescending { it.escolaNova }
+                        .thenBy { it.custoAcao }
+                        .thenBy { nomeMagiaNorm(it.id) }
+                )
                 .take(larguraExpansao)
-                .map { it.first }
                 .toList()
         }
 
@@ -645,8 +697,8 @@ class NexusArcanoEngine(
 
             val expandiveis = candidatasExpandiveis(atual.known)
             expandiveis.forEach { cand ->
-                val novoKnown = atual.known + cand
-                val g2 = atual.g + 1
+                val novoKnown = atual.known + cand.id
+                val g2 = atual.g + cand.custoAcao
                 val sig = assinatura(novoKnown)
                 val prev = bestG[sig]
                 if (prev != null && prev <= g2) return@forEach
@@ -655,7 +707,7 @@ class NexusArcanoEngine(
                 open.add(
                     Node(
                         known = novoKnown,
-                        path = atual.path + cand,
+                        path = atual.path + cand.id,
                         g = g2,
                         f = g2 + h2
                     )
