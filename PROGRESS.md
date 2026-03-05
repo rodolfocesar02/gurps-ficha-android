@@ -12,6 +12,89 @@ Atualizado em: 2026-03-05
 - Status operacional do Lote 4: pronto para teste manual guiado com flag do NEXUS ARCANO.
 - Stress test do NEXUS ARCANO reexecutado em `2026-03-05` com relatórios atualizados em `app/build/reports/`.
 - Modo alvo antigo: removido do projeto (`app/` e `motor modo alvo/arquivos-legados`), fluxo unificado no NEXUS ARCANO.
+- Diagnóstico funcional atual: em teste manual real (`AM3`, `IQ15`), usuário chegou a `35` magias e ainda não liberou `Desejo` seguindo apenas recomendações.
+- Diagnóstico de performance em tempo real (2026-03-05): sem crash/ANR no fluxo principal, porém com jank recorrente (`Choreographer: Skipped 31-48 frames`) em interações da tela de magias.
+- Decisão técnica: não reiniciar do zero; evoluir o NEXUS ARCANO para um planejador global (não guloso por rodada).
+
+## Plano de Virada do Motor (Lotes + Passos)
+Objetivo macro: garantir que recomendações levem ao alvo com menor caminho viável e progresso explícito de requisitos compostos (cadeia + escolas + atributos).
+
+### Lote A - Modelo de Objetivo Global (Obrigatório)
+Status: `PENDENTE`
+
+Passos:
+1. Formalizar alvo como conjunto de metas obrigatórias:
+   - cadeia (`Encantar -> Pequeno Desejo -> Desejo`);
+   - contadores (`10 escolas`, `15 escolas`);
+   - gates numéricos (`AM/IQ/DX`).
+2. Converter pré-requisito textual para estrutura canônica por tipo:
+   - `MAGIA_EXATA`, `MAGIA_OU`, `ESCOLAS_DISTINTAS`, `NUMERICO`, `CADEIA`.
+3. Definir estado de progresso por meta com `faltante`, `atendido`, `bloqueado por upstream`.
+4. Adicionar checksum de estado para auditoria determinística.
+
+### Lote B - Planejador de Caminho Mínimo (BFS/A* com custo)
+Status: `PENDENTE`
+
+Passos:
+1. Implementar busca global de caminho (BFS/A*) sobre estado incremental.
+2. Função de custo:
+   - `+1` por magia adicionada;
+   - penalidade para escola repetida quando meta de escolas ainda não fechou;
+   - penalidade forte para ação que não reduz nenhuma meta pendente.
+3. Restringir expansão a magias aprendíveis no estado atual (sem sugestão impossível).
+4. Garantir que saída da busca devolva:
+   - próxima ação;
+   - trilha curta prevista;
+   - metas impactadas pela ação.
+
+### Lote C - Recomendador de Escolas (anti-deriva)
+Status: `PENDENTE`
+
+Passos:
+1. Priorizar automaticamente escola nova enquanto houver meta de escolas pendente.
+2. Bloquear recomendação redundante de mesma escola em sequência, salvo exceção obrigatória de cadeia.
+3. Excluir definitivamente escola `Tecnológica` do pool recomendado.
+4. Incluir fallback controlado quando não houver escola nova aprendível (explicar motivo).
+
+### Lote D - Contrato de UI e Transparência de Progresso
+Status: `PENDENTE`
+
+Passos:
+1. Exibir progresso explícito no diálogo:
+   - `Escolas p/ Encantar: X/10`;
+   - `Escolas p/ Desejo: Y/15`;
+   - `Cadeia: Encantar -> Pequeno Desejo -> Desejo`.
+2. Mostrar "próxima obrigatória" vs "próxima lateral útil".
+3. Mostrar motivo de bloqueio em formato curto e estável (sem texto ambíguo).
+4. Manter botão/fluxo de teste manual para validação rodada a rodada.
+
+### Lote E - Performance e Estabilidade do Fluxo
+Status: `EM ANDAMENTO`
+
+Passos:
+1. Manter pré-aquecimento de catálogo/índice de magias em background (`FichaViewModel init`) - `feito`.
+2. Manter cache de filtros/listas (ViewModel + DataRepository) - `feito`.
+3. Reduzir recomputação pesada na lista fora do modo alvo - `feito`.
+4. Medir p95 de abertura do seletor e p95 de scroll com cenário fixo no emulador.
+5. Definir meta operacional: eliminar `Skipped frames` recorrente acima de 30 em uso normal.
+
+### Lote F - Validação, Auditoria e Go/No-Go
+Status: `PENDENTE`
+
+Passos:
+1. Cenário canônico de aceite:
+   - personagem `AM3`, `IQ15`;
+   - alvo `Desejo`;
+   - seguir apenas recomendadas até liberar alvo.
+2. Critério de sucesso funcional:
+   - alvo liberado sem deriva longa;
+   - cada ação reduz ao menos 1 meta pendente.
+3. Critério de sucesso de UX:
+   - usuário entende claramente o que falta (cadeia + contadores).
+4. Auditoria final:
+   - unit tests do motor;
+   - teste manual em emulador;
+   - relatório consolidado no `PROGRESS.md`.
 
 ## Feito
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
@@ -246,9 +329,10 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Implementar sublote de caminho mínimo global (BFS/A*) para priorizar menor número de magias até o alvo.
-2. Remover forçamento temporário do modo alvo (`MODO_ALVO_HABILITADO = true`) após validação funcional final.
-3. Reexecutar auditoria completa (catálogo + emulador) após entrada do caminho mínimo global.
+1. Iniciar Lote A (modelo de objetivo global) e congelar contrato de metas para `Desejo`.
+2. Implementar Lote B (busca global BFS/A*) com custo anti-deriva por escola.
+3. Integrar Lote C/D no diálogo de magias (progresso explícito + recomendação obrigatória/lateral).
+4. Rodar Lote F cenário canônico (`AM3`, `IQ15`, `Desejo`) e registrar resultado.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
