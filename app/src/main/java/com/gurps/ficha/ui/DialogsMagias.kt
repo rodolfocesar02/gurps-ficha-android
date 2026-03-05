@@ -119,6 +119,20 @@ private fun magiaDaEscolaTecnologica(def: MagiaDefinicao): Boolean {
         .any { it == ESCOLA_NUNCA_RECOMENDAR }
 }
 
+private fun escolasNormalizadas(def: MagiaDefinicao): Set<String> {
+    return def.escola
+        .orEmpty()
+        .asSequence()
+        .map { valor ->
+            Normalizer.normalize(valor, Normalizer.Form.NFD)
+                .replace(Regex("\\p{M}+"), "")
+                .lowercase()
+                .trim()
+        }
+        .filter { it.isNotBlank() }
+        .toSet()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
@@ -158,17 +172,62 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .take(6)
             .toList()
         val idsRelacionadas = relacionadas.asSequence().map { it.id }.toSet()
+        val idsBloqueadosBase = buildSet {
+            add(magiaAlvoSelecionada.id)
+            addAll(idsJaAdicionadas)
+            addAll(idsRelacionadas)
+        }
         val fallbackPorMotor = viewModel.modoAlvoProximasAcoesIds
             .asSequence()
-            .filter { it != magiaAlvoSelecionada.id }
-            .filter { it !in idsJaAdicionadas }
-            .filter { it !in idsRelacionadas }
+            .filter { it !in idsBloqueadosBase }
             .mapNotNull { id -> catalogoPorId[id] }
             .filterNot { magiaDaEscolaTecnologica(it) }
             .distinctBy { it.id }
             .take(MAX_OPCOES_MODO_ALVO)
             .toList()
-        (listOf(magiaAlvoSelecionada) + relacionadas + fallbackPorMotor).distinctBy { it.id }
+        val idsFallbackMotor = fallbackPorMotor.asSequence().map { it.id }.toSet()
+        val escolasConhecidas = idsJaAdicionadas
+            .asSequence()
+            .mapNotNull { id -> catalogoPorId[id] }
+            .flatMap { magia -> escolasNormalizadas(magia).asSequence() }
+            .toSet()
+        val fallbackExploracao = if (fallbackPorMotor.isEmpty()) {
+            val limiteVerificacoes = 180
+            var verificadas = 0
+            val sugestoes = mutableListOf<MagiaDefinicao>()
+            val idsExcluidas = idsBloqueadosBase + idsFallbackMotor
+            val candidatas = catalogoMagias
+                .asSequence()
+                .filter { it.id !in idsExcluidas }
+                .filterNot { magiaDaEscolaTecnologica(it) }
+                .toList()
+
+            fun tentarAproveitar(pool: Sequence<MagiaDefinicao>) {
+                for (magia in pool) {
+                    if (sugestoes.size >= MAX_OPCOES_MODO_ALVO) break
+                    if (verificadas >= limiteVerificacoes) break
+                    verificadas++
+                    if (viewModel.prereqFailureForMagia(magia) == null) {
+                        sugestoes.add(magia)
+                    }
+                }
+            }
+
+            tentarAproveitar(
+                candidatas.asSequence().filter { magia ->
+                    val escolas = escolasNormalizadas(magia)
+                    escolas.isNotEmpty() && escolas.none { it in escolasConhecidas }
+                }
+            )
+            if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+                tentarAproveitar(candidatas.asSequence())
+            }
+            sugestoes.distinctBy { it.id }
+        } else {
+            emptyList()
+        }
+        (listOf(magiaAlvoSelecionada) + relacionadas + fallbackPorMotor + fallbackExploracao)
+            .distinctBy { it.id }
     } else {
         listaFiltrada
     }
