@@ -844,6 +844,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun recalcularModoAlvoAgora(alvoId: String?) {
+        if (alvoId.isNullOrBlank()) return
+        modoAlvoUltimaChave = null
+        requisitarModoAlvo(alvoId, ativo = true)
+    }
+
     private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
         return definicaoId.lowercase() in setOf(
             "criar_elemental",
