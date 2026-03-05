@@ -125,6 +125,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var modoAlvoProximaLateralUtil by mutableStateOf<String?>(null)
         private set
+    var modoAlvoBloqueioCurto by mutableStateOf<String?>(null)
+        private set
     private var modoAlvoJob: Job? = null
     private var modoAlvoUltimaChave: String? = null
     private var prereqCacheAssinatura: String? = null
@@ -786,6 +788,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             modoAlvoProgressoEscolas = emptyList()
             modoAlvoProximaObrigatoria = null
             modoAlvoProximaLateralUtil = null
+            modoAlvoBloqueioCurto = null
             modoAlvoUltimaChave = null
             return
         }
@@ -826,6 +829,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     modoAlvoProximaLateralUtil = snapshot.proximaLateralUtilId?.let { id ->
                         dataRepository.magias.firstOrNull { it.id == id }?.nome ?: id
                     }
+                    modoAlvoBloqueioCurto = snapshot.bloqueioCurto
                     modoAlvoAviso = snapshot.aviso
                     modoAlvoCarregando = false
                 }

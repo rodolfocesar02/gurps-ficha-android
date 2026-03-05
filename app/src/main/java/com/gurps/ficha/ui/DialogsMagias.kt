@@ -591,6 +591,13 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+                    if (!viewModel.modoAlvoBloqueioCurto.isNullOrBlank()) {
+                        Text(
+                            viewModel.modoAlvoBloqueioCurto.orEmpty(),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    }
                     if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
                         Text(
                             "3 próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(" | ")}",
