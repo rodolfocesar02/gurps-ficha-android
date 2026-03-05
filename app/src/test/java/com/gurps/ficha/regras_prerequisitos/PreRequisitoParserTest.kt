@@ -96,6 +96,50 @@ class PreRequisitoParserTest {
     }
 
     @Test
+    fun `encantar style also parses without explicit diferentes`() {
+        val parsed = PreRequisitoParser.parse("Aptidao Magica 2, 1 magica em dez outras escolas")
+        assertTrue(parsed.tipos.any { it is PreRequisitoType.AptidaoMagica && it.nivel == 2 })
+        val multi = parsed.tipos.filterIsInstance<PreRequisitoType.MagiasEmEscolasDiferentes>().firstOrNull()
+        assertNotNull(multi)
+        assertEquals(1, multi?.magiasPorEscola)
+        assertEquals(10, multi?.escolasDiferentes)
+        assertEquals(true, multi?.outrasEscolas)
+    }
+
+    @Test
+    fun `repository unlocks encantar with ten other schools`() {
+        val repo = DataRepository(object : ContextWrapper(null) {})
+        val person = Personagem().apply {
+            vantagens = listOf(
+                VantagemSelecionada(definicaoId = "aptidao_magica", nome = "Aptidao Magica", nivel = 3)
+            )
+            val escolas = listOf(
+                "Ar",
+                "Fogo",
+                "Terra",
+                "Agua",
+                "Som",
+                "Necromancia",
+                "Protecao",
+                "Corpo",
+                "Mente",
+                "Luz"
+            )
+            magias = escolas.mapIndexed { idx, escola ->
+                MagiaSelecionada(
+                    definicaoId = "m$idx",
+                    nome = "Magia $idx",
+                    escola = listOf(escola)
+                )
+            }
+        }
+        val encantar = MagiaDefinicao(id = "encantar", nome = "Encantar")
+
+        assertNull(repo.missingPreRequisitoReport(encantar, person))
+        assertNull(repo.validarPreRequisitosMagia(encantar, person))
+    }
+
+    @Test
     fun `repository validates fallback magia vantagem pericia and escudo exception`() {
         val repo = DataRepository(object : ContextWrapper(null) {})
         val person = Personagem().apply {

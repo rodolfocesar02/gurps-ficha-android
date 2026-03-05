@@ -118,7 +118,7 @@ object PreRequisitoParser {
         }
 
         val emEscolasDiferentes = Regex(
-            "^(\\d+)\\s+m[aá]g(?:ica|ia)s?\\s+em\\s+([a-zà-ú0-9]+)\\s+(outras\\s+)?escolas\\s+diferentes$",
+            "^(\\d+)\\s+m[aá]g(?:ica|ia)s?\\s+em\\s+([a-zà-ú0-9]+)\\s+(outras\\s+)?escolas(?:\\s+diferentes)?$",
             RegexOption.IGNORE_CASE
         ).find(tok)
         if (emEscolasDiferentes != null) {
