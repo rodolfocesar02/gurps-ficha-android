@@ -598,6 +598,26 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.error
                         )
                     }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Teste manual: adicione uma recomendada e recalcule a rodada.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.weight(1f)
+                        )
+                        TextButton(
+                            onClick = { viewModel.recalcularModoAlvoAgora(magiaAlvoId) },
+                            modifier = Modifier.semantics {
+                                if (isPraCegoVariant) {
+                                    contentDescription = "Recalcular rodada do modo alvo"
+                                }
+                            }
+                        ) { Text("Recalcular rodada") }
+                    }
                     if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
                         Text(
                             "3 próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(" | ")}",
