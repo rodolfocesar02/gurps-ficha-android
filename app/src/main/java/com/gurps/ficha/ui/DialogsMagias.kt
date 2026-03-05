@@ -234,54 +234,53 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     } else {
         listaFiltrada
     }
-    val assinaturaListaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        listaExibicao.joinToString("|") { it.id }
-    } else {
-        ""
-    }
     var prereqFalhasMap by remember(
         modoAlvoAtivoEfetivo,
         magiaAlvoSelecionada?.id,
-        assinaturaModoAlvo,
-        assinaturaListaExibicao
+        assinaturaModoAlvo
     ) { mutableStateOf<Map<String, String?>>(emptyMap()) }
+    var proximaSugeridaId by remember(
+        modoAlvoAtivoEfetivo,
+        magiaAlvoSelecionada?.id,
+        assinaturaModoAlvo
+    ) { mutableStateOf<String?>(null) }
+    var recomendacaoEmAnalise by remember(
+        modoAlvoAtivoEfetivo,
+        magiaAlvoSelecionada?.id,
+        assinaturaModoAlvo
+    ) { mutableStateOf(false) }
+    val proximaSugerida = proximaSugeridaId?.let { catalogoPorId[it] }
     LaunchedEffect(
         modoAlvoAtivoEfetivo,
         magiaAlvoSelecionada?.id,
         assinaturaModoAlvo,
-        assinaturaListaExibicao
+        viewModel.modoAlvoProximasAcoesIds
     ) {
         if (!(modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null)) {
             prereqFalhasMap = emptyMap()
+            proximaSugeridaId = null
+            recomendacaoEmAnalise = false
             return@LaunchedEffect
         }
-        val candidatas = listaExibicao.take(24)
-        prereqFalhasMap = withContext(Dispatchers.Default) {
-            candidatas.associate { magia ->
-                magia.id to viewModel.prereqFailureForMagia(magia)
+
+        recomendacaoEmAnalise = true
+        val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
+        val candidatasIds = (viewModel.modoAlvoProximasAcoesIds + listaExibicao.map { it.id })
+            .asSequence()
+            .filter { it != magiaAlvoSelecionada.id }
+            .filter { it !in idsJaAdicionadas }
+            .distinct()
+            .take(4)
+            .toList()
+
+        val avaliadas = withContext(Dispatchers.Default) {
+            candidatasIds.associateWith { id ->
+                catalogoPorId[id]?.let { magia -> viewModel.prereqFailureForMagia(magia) }
             }
         }
-    }
-    val proximaSugerida = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
-        val candidatosOrdenados = (
-            viewModel.modoAlvoProximasAcoesIds + listaExibicao.map { it.id }
-            ).distinct()
-        candidatosOrdenados
-            .asSequence()
-            .mapNotNull { id -> catalogoPorId[id] }
-            .firstOrNull { magia ->
-                magia.id != magiaAlvoSelecionada.id &&
-                    magia.id !in idsJaAdicionadas &&
-                    prereqFalhasMap.containsKey(magia.id) &&
-                    prereqFalhasMap[magia.id] == null
-            } ?: listaExibicao.firstOrNull { magia ->
-            magia.id != magiaAlvoSelecionada.id &&
-                prereqFalhasMap.containsKey(magia.id) &&
-                prereqFalhasMap[magia.id] == null
-        }
-    } else {
-        null
+        prereqFalhasMap = prereqFalhasMap + avaliadas
+        proximaSugeridaId = candidatasIds.firstOrNull { id -> avaliadas[id] == null }
+        recomendacaoEmAnalise = false
     }
 
     var ttsEngine by remember { mutableStateOf<TextToSpeech?>(null) }
@@ -586,7 +585,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
-                    val textoGuia = if (prereqFalhasMap.isEmpty()) {
+                    val textoGuia = if (recomendacaoEmAnalise) {
                         "Analisando pré-requisitos..."
                     } else {
                         proximaSugerida?.let { "Próxima recomendada: ${it.nome}" }
@@ -645,7 +644,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         } else {
                             null
                         }
-                        val prereqCalculado = !modoAlvoAtivoEfetivo || magiaAlvoSelecionada == null || prereqFalhasMap.containsKey(definicao.id)
+                        val prereqCalculado =
+                            !modoAlvoAtivoEfetivo || magiaAlvoSelecionada == null || prereqFalhasMap.containsKey(definicao.id)
                         val prereqOk = !modoAlvoAtivoEfetivo || magiaAlvoSelecionada == null || (prereqCalculado && prereqFalha == null)
                         val recomendada = prereqCalculado && proximaSugerida?.id == definicao.id
                         
@@ -752,6 +752,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     viewModel.prereqFailureForMagia(definicao)
                 }
             }
+            prereqFalhasMap = prereqFalhasMap + (definicao.id to prereqFalhaDialog)
         }
         ConfigurarMagiaDialog(
             definicao = definicao,
