@@ -577,6 +577,20 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             )
                         }
                     }
+                    if (!viewModel.modoAlvoProximaObrigatoria.isNullOrBlank()) {
+                        Text(
+                            "Próxima obrigatória: ${viewModel.modoAlvoProximaObrigatoria}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                    if (!viewModel.modoAlvoProximaLateralUtil.isNullOrBlank()) {
+                        Text(
+                            "Próxima lateral útil: ${viewModel.modoAlvoProximaLateralUtil}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                     if (viewModel.modoAlvoProximasAcoes.isNotEmpty()) {
                         Text(
                             "3 próximas ações: ${viewModel.modoAlvoProximasAcoes.take(3).joinToString(" | ")}",

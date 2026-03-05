@@ -16,6 +16,8 @@ data class NexusArcanoModoAlvoSnapshot(
     val proximasAcoesIds: List<String>,
     val progressoCadeia: String? = null,
     val progressoEscolas: List<String> = emptyList(),
+    val proximaObrigatoriaId: String? = null,
+    val proximaLateralUtilId: String? = null,
     val aviso: String? = null
 )
 
@@ -58,6 +60,8 @@ class NexusArcanoModoAlvoAdapter(
                 proximasAcoesIds = emptyList(),
                 progressoCadeia = null,
                 progressoEscolas = emptyList(),
+                proximaObrigatoriaId = null,
+                proximaLateralUtilId = null,
                 aviso = "Alvo não encontrado no catálogo."
             )
         }
@@ -100,6 +104,9 @@ class NexusArcanoModoAlvoAdapter(
                 relacionados.add(candId)
             }
         }
+        val proximaObrigatoria = extrairPrimeiraCadeiaPendenteId(resultado)
+            ?.takeIf { magiasById.containsKey(it) }
+        val proximaLateralUtil = idsAcoes.firstOrNull { it != proximaObrigatoria } ?: idsAcoes.firstOrNull()
 
         return NexusArcanoModoAlvoSnapshot(
             relacionadosIds = relacionados.toList(),
@@ -108,6 +115,8 @@ class NexusArcanoModoAlvoAdapter(
             proximasAcoesIds = idsAcoes,
             progressoCadeia = montarProgressoCadeia(alvoId, metas),
             progressoEscolas = montarProgressoEscolas(metas),
+            proximaObrigatoriaId = proximaObrigatoria,
+            proximaLateralUtilId = proximaLateralUtil,
             aviso = montarAviso(resultado)
         )
     }
@@ -175,5 +184,19 @@ class NexusArcanoModoAlvoAdapter(
         return metas
             .filter { it.tipo == ArcanoMetaTipo.ESCOLAS_DISTINTAS }
             .map { meta -> "${meta.descricao}: ${meta.atual}/${meta.requerido}" }
+    }
+
+    private fun extrairPrimeiraCadeiaPendenteId(resultado: ArcanoResultado): String? {
+        return resultado.chavesFaltantes
+            .asSequence()
+            .map { it.id }
+            .firstOrNull { id ->
+                id.startsWith("chave_") &&
+                    !id.startsWith("chave_escolas_") &&
+                    !id.startsWith("chave_am_") &&
+                    !id.startsWith("chave_iq_") &&
+                    !id.startsWith("chave_soma_") &&
+                    !id.startsWith("chave_alvo_")
+            }?.removePrefix("chave_")
     }
 }
