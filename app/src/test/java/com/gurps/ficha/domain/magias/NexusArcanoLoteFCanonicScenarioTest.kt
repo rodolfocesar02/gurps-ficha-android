@@ -208,6 +208,82 @@ class NexusArcanoLoteFCanonicScenarioTest {
         )
     }
 
+    @Test
+    fun cenario_canonico_desejo_snapshot_explica_cadeia_contadores_e_proximas_acoes() {
+        val catalogo = carregarCatalogoMagiasV2Normalizado()
+        val byId = catalogo.associateBy { it.id }
+        val adapter = NexusArcanoModoAlvoAdapter(catalogo)
+        val known = linkedSetOf<String>()
+        val alvoId = "desejo"
+        val am = 3
+        val iq = 15
+        val dx = 12
+        val maxRodadas = 8
+        val linhas = mutableListOf<String>()
+
+        for (rodada in 1..maxRodadas) {
+            val falhaAlvo = adapter.falhaPreRequisitoHierarquica(
+                alvoId = alvoId,
+                magiasConhecidasIds = known,
+                iq = iq,
+                dx = dx,
+                am = am
+            )
+            if (falhaAlvo == null) break
+
+            val snapshot = adapter.calcular(
+                alvoId = alvoId,
+                magiasConhecidasIds = known,
+                iq = iq,
+                dx = dx,
+                am = am
+            )
+
+            assertTrue(
+                "Rodada $rodada sem progresso de cadeia no snapshot.",
+                !snapshot.progressoCadeia.isNullOrBlank()
+            )
+            assertTrue(
+                "Rodada $rodada sem contadores de escolas no snapshot.",
+                snapshot.progressoEscolas.isNotEmpty()
+            )
+            assertTrue(
+                "Rodada $rodada sem proxima obrigatoria no snapshot.",
+                !snapshot.proximaObrigatoriaId.isNullOrBlank()
+            )
+            assertTrue(
+                "Rodada $rodada sem proxima lateral util no snapshot.",
+                !snapshot.proximaLateralUtilId.isNullOrBlank()
+            )
+
+            linhas += buildString {
+                append("R$rodada")
+                append("|cadeia=${snapshot.progressoCadeia.orEmpty()}")
+                append("|escolas=${snapshot.progressoEscolas.joinToString(" || ")}")
+                append("|obrigatoria=${snapshot.proximaObrigatoriaId.orEmpty().ifBlank { "-" }}")
+                append("|lateral=${snapshot.proximaLateralUtilId.orEmpty().ifBlank { "-" }}")
+                append("|bloqueio=${snapshot.bloqueioCurto.orEmpty().ifBlank { "-" }}")
+            }
+
+            val recomendada = snapshot.proximasAcoesIds.firstOrNull { it !in known } ?: break
+            known += recomendada
+            linhas += "R$rodada|acao=$recomendada|acao_nome=${byId[recomendada]?.nome ?: recomendada}"
+        }
+
+        salvarRelatorio(
+            nome = "nexus_arcano_lote_f_ux_snapshot_desejo.txt",
+            conteudo = buildString {
+                appendLine("TESTE=cenario_canonico_desejo_snapshot_ux")
+                appendLine("ALVO=$alvoId")
+                appendLine("RODADAS_AVALIADAS=${linhas.count { it.startsWith("R") }}")
+                appendLine("LINHAS")
+                linhas.forEach { appendLine(it) }
+            }
+        )
+
+        assertTrue("Nao houve linhas de diagnostico de UX no snapshot.", linhas.isNotEmpty())
+    }
+
     private fun carregarCatalogoMagiasV2Normalizado(): List<MagiaDefinicao> {
         val pathCandidates = listOf(
             Path.of("src", "main", "assets", "magias2versao.json"),
