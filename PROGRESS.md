@@ -89,6 +89,7 @@ Passos:
    - personagem `AM3`, `IQ15`;
    - alvo `Desejo`;
    - seguir apenas recomendadas até liberar alvo.
+   - status: `FEITO` (teste automatizado `NexusArcanoLoteFCanonicScenarioTest`, `PASSOS=9`).
 2. Critério de sucesso funcional:
    - alvo liberado sem deriva longa;
    - cada ação reduz ao menos 1 meta pendente.
@@ -141,6 +142,11 @@ Passos:
   - roteiro de medição do seletor consolidado e versionado;
   - baseline de abertura/scroll registrada em relatório reprodutível;
   - meta operacional de jank definida para acompanhamento contínuo na sequência do projeto.
+- Lote F passo 1 validado por teste canônico automatizado (2026-03-05):
+  - novo teste: `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`;
+  - cenário: `AM3`, `IQ15`, `DX12`, alvo `Desejo`, seguindo apenas recomendações do adapter;
+  - resultado: `SUCESSO=true`, `PASSOS=9`, alvo liberado sem bloqueio final;
+  - relatório: `app/build/reports/nexus_arcano_lote_f_cenario_canonico_desejo.txt`.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -373,9 +379,9 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Iniciar Lote F com cenário canônico (`AM3`, `IQ15`, `Desejo`) seguindo apenas recomendadas.
-2. Registrar trilha final, número de rodadas e bloqueios curtos observados no `PROGRESS.md`.
-3. Executar validação manual final em `visual` e `pracego` com checklist de regressão.
+1. Executar Lote F passo 2: validar que cada ação recomendada reduz ao menos 1 meta pendente.
+2. Executar Lote F passo 3 com revisão de UX/transparência no fluxo real do diálogo.
+3. Rodar validação manual final em `visual` e `pracego` com checklist de regressão (Lote F passo 4).
 4. Reabrir frente de performance caso `open p95` permaneça acima de `250 ms` após ajustes funcionais do Lote F.
 
 ## Regra operacional
