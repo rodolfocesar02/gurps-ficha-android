@@ -79,6 +79,12 @@ private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
 private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
 
+private fun preReqProvavelmenteLivre(def: MagiaDefinicao): Boolean {
+    val raw = def.preRequisitos?.trim().orEmpty()
+    if (raw.isBlank()) return true
+    return raw in setOf("-", "—", "–", "−", "nenhum", "nenhuma")
+}
+
 private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
     val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
     return if (incrementar) {
@@ -196,8 +202,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             .mapNotNull { id -> catalogoPorId[id] }
             .flatMap { magia -> escolasNormalizadas(magia).asSequence() }
             .toSet()
-        val fallbackExploracao = if (fallbackPorMotor.isEmpty()) {
-            val limiteVerificacoes = 180
+        val fallbackExploracao = run {
+            val limiteVerificacoes = 220
             var verificadas = 0
             val sugestoes = mutableListOf<MagiaDefinicao>()
             val idsExcluidas = idsBloqueadosBase + idsFallbackMotor
@@ -216,18 +222,32 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
             }
 
+            // Prioridade 1: magia simples de escola nova para destravar contadores.
             tentarAproveitar(
                 candidatas.asSequence().filter { magia ->
                     val escolas = escolasNormalizadas(magia)
-                    escolas.isNotEmpty() && escolas.none { it in escolasConhecidas }
+                    escolas.isNotEmpty() &&
+                        escolas.none { it in escolasConhecidas } &&
+                        preReqProvavelmenteLivre(magia)
                 }
             )
+            // Prioridade 2: qualquer magia de escola nova.
+            if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+                tentarAproveitar(
+                    candidatas.asSequence().filter { magia ->
+                        val escolas = escolasNormalizadas(magia)
+                        escolas.isNotEmpty() && escolas.none { it in escolasConhecidas }
+                    }
+                )
+            }
+            // Prioridade 3: magia simples em geral.
+            if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+                tentarAproveitar(candidatas.asSequence().filter { magia -> preReqProvavelmenteLivre(magia) })
+            }
             if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
                 tentarAproveitar(candidatas.asSequence())
             }
             sugestoes.distinctBy { it.id }
-        } else {
-            emptyList()
         }
         (listOf(magiaAlvoSelecionada) + relacionadas + fallbackPorMotor + fallbackExploracao)
             .distinctBy { it.id }
@@ -275,7 +295,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
 
         val avaliadas = withContext(Dispatchers.Default) {
             candidatasIds.associateWith { id ->
-                catalogoPorId[id]?.let { magia -> viewModel.prereqFailureForMagia(magia) }
+                catalogoPorId[id]?.let { magia -> viewModel.prereqFailureForMagiaRapida(magia) }
             }
         }
         prereqFalhasMap = prereqFalhasMap + avaliadas
@@ -350,7 +370,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 modoAlvoAtivo = true
                 magiaAlvoId = magia.id
                 viewModel.atualizarBuscaMagia("")
-                val falha = viewModel.prereqFailureForMagia(magia)
+                val falha = viewModel.prereqFailureForMagiaRapida(magia)
                 val resposta = buildString {
                     append("Alvo definido: ${magia.nome}. ")
                     if (falha.isNullOrBlank()) append("Pré requisitos atendidos. ")
@@ -385,7 +405,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     falarAjuda("Defina uma magia alvo primeiro.")
                     return
                 }
-                val falha = viewModel.prereqFailureForMagia(alvo)
+                val falha = viewModel.prereqFailureForMagiaRapida(alvo)
                 if (falha.isNullOrBlank()) falarAjuda("${alvo.nome} está liberada.")
                 else falarAjuda("Para ${alvo.nome} falta ${formatarFalhaPreReq(falha)}.")
             }
@@ -749,7 +769,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 prereqFalhaPrecomputada
             } else {
                 withContext(Dispatchers.Default) {
-                    viewModel.prereqFailureForMagia(definicao)
+                    viewModel.prereqFailureForMagiaRapida(definicao)
                 }
             }
             prereqFalhasMap = prereqFalhasMap + (definicao.id to prereqFalhaDialog)
