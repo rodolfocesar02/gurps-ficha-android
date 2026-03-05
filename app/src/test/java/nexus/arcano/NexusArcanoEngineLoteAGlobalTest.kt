@@ -1,6 +1,8 @@
 package nexus.arcano
 
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -59,5 +61,24 @@ class NexusArcanoEngineLoteAGlobalTest {
         assertTrue(metas.any { it.id == "meta_alvo_translocacao" && !it.atendida })
         assertFalse(metas.isEmpty())
     }
-}
 
+    @Test
+    fun checksum_de_metas_e_deterministico_e_sensivel_a_estado() {
+        val engine = NexusArcanoEngine(NexusArcanoTestCatalog.base())
+        val estadoBase = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("magia_ar", "magia_terra", "magia_agua"),
+            am = 3,
+            iq = 15,
+            dx = 12
+        )
+        val estadoComProgresso = estadoBase.copy(magiasConhecidasIds = estadoBase.magiasConhecidasIds + "encantar")
+
+        val checksum1 = engine.checksumMetasAlvo("desejo", estadoBase)
+        val checksum2 = engine.checksumMetasAlvo("desejo", estadoBase)
+        val checksum3 = engine.checksumMetasAlvo("desejo", estadoComProgresso)
+
+        assertTrue(checksum1.startsWith("v1:"))
+        assertEquals(checksum1, checksum2)
+        assertNotEquals(checksum1, checksum3)
+    }
+}
