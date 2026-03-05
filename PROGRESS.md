@@ -50,13 +50,13 @@ Passos:
    - status: `FEITO`.
 
 ### Lote C - Recomendador de Escolas (anti-deriva)
-Status: `PENDENTE`
+Status: `FEITO`
 
 Passos:
-1. Priorizar automaticamente escola nova enquanto houver meta de escolas pendente.
-2. Bloquear recomendação redundante de mesma escola em sequência, salvo exceção obrigatória de cadeia.
-3. Excluir definitivamente escola `Tecnológica` do pool recomendado.
-4. Incluir fallback controlado quando não houver escola nova aprendível (explicar motivo).
+1. Priorizar automaticamente escola nova enquanto houver meta de escolas pendente: `FEITO`.
+2. Bloquear recomendação redundante de mesma escola em sequência, salvo exceção obrigatória de cadeia: `FEITO`.
+3. Excluir definitivamente escola `Tecnológica` do pool recomendado: `FEITO`.
+4. Incluir fallback controlado quando não houver escola nova aprendível (explicar motivo): `FEITO`.
 
 ### Lote D - Contrato de UI e Transparência de Progresso
 Status: `PENDENTE`
@@ -115,6 +115,11 @@ Passos:
   - expansão global validada para aceitar apenas magias aprendíveis agora;
   - contrato de saída do plano validado (próxima ação + trilha + metas impactadas);
   - novos testes de regressão adicionados e verdes em `NexusArcanoEngineLoteBGlobalTest`.
+- Fechamento do Lote C (2026-03-05):
+  - prioridade de escola nova com meta pendente coberta por regressão no Lote 2;
+  - bloqueio de repetição de escola em sequência no plano global com exceção explícita para cadeia obrigatória;
+  - exclusão da escola `Tecnológica` validada em recomendação e diagnóstico (`ESCOLA_BLOQUEADA_POLITICA`);
+  - fallback controlado com motivo explícito quando não há escola nova aprendível.
 - Catálogo de magias com ajustes e normalizações recentes (incluindo escola `Animais` por caminhos).
 - Regras especiais de magias ajustadas para caminhos `Ar/Terra/Mar` quando aplicável.
 - Fluxo da ficha estabilizado após reinício/validação do emulador.
@@ -347,10 +352,10 @@ Partes faltantes:
 10. Auditoria de código confirma remoção do legado antigo do modo alvo no projeto.
 
 ## Próximos Passos imediatos
-1. Ajustar função de custo do Lote B para reduzir deriva residual em cenários reais de `Desejo`.
-2. Expor no diálogo de magias os novos campos do plano global (`próxima ação` + `metas impactadas`).
-3. Integrar Lote D com progresso explícito (cadeia + contadores) no fluxo atual.
-4. Rodar Lote F no cenário canônico (`AM3`, `IQ15`, `Desejo`) e registrar trilha final no `PROGRESS.md`.
+1. Iniciar Lote D no diálogo de magias com progresso explícito (cadeia + contadores).
+2. Expor no diálogo os campos do plano global (`próxima ação` + `metas impactadas`).
+3. Executar cenário canônico do Lote F (`AM3`, `IQ15`, `Desejo`) só com recomendadas.
+4. Registrar trilha final e diagnóstico consolidado no `PROGRESS.md`.
 
 ## Regra operacional
 1. Implementar apenas a parte atual do lote.
