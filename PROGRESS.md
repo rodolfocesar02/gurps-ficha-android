@@ -17,6 +17,7 @@ Atualizado em: 2026-03-05
 - Decisão técnica: não reiniciar do zero; evoluir o NEXUS ARCANO para um planejador global (não guloso por rodada).
 - Go/No-Go atual (2026-03-05): `GO` após fechamento do Lote F com cenário canônico e auditoria final verdes.
 - Hotfix ANR (2026-03-05 19:36): corrigido cálculo massivo de pré-requisitos no diálogo de magias quando `Modo Alvo` está ativo sem alvo definido (evita travamento por recomposição no thread principal).
+- Hotfix ANR 2 (2026-03-05 19:42): removida validação hierárquica em massa dentro do fallback do seletor no `Modo Alvo` (ao escolher alvo), evitando execução pesada do planejador no thread principal.
 
 ## Plano de Virada do Motor (Lotes + Passos)
 Objetivo macro: garantir que recomendações levem ao alvo com menor caminho viável e progresso explícito de requisitos compostos (cadeia + escolas + atributos).
