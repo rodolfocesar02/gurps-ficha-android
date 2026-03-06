@@ -346,6 +346,12 @@ class DataRepository(private val context: Context) {
             val type = object : TypeToken<List<MagiaDefinicao>>() {}.type
             val parsed = (gson.fromJson<List<MagiaDefinicao>>(json, type) ?: emptyList())
                 .map { it.normalizada() }
+                .map { magia ->
+                    magia.copy(
+                        preRequisitos = preRequisitoCanonicoTexto(magia.id, magia.preRequisitos)
+                            .takeIf { it.isNotBlank() }
+                    )
+                }
             clearLoadError("magias")
             parsed
         } catch (e: Exception) {
@@ -1020,14 +1026,12 @@ class DataRepository(private val context: Context) {
      * evitar quebrar validação automática enquanto preserva a regra funcional.
      */
     private fun preRequisitoRawNormalizado(definicao: MagiaDefinicao): String {
-        val rawOriginal = definicao.preRequisitos
-            ?.fixMojibakeIfNeeded()
-            ?.trim()
-            .orEmpty()
-        val override = preRequisitosOverridePorMagiaId[definicao.id]
-        return (override ?: rawOriginal)
-            .fixMojibakeIfNeeded()
-            .trim()
+        return preRequisitoCanonicoTexto(definicao.id, definicao.preRequisitos)
+    }
+
+    fun preRequisitoCanonicoPorId(magiaId: String): String {
+        val definicao = getMagiaPorId(magiaId) ?: return ""
+        return preRequisitoRawNormalizado(definicao)
     }
 
     private fun isSemPreRequisitoRaw(raw: String): Boolean {
@@ -1087,6 +1091,17 @@ class DataRepository(private val context: Context) {
         "transformar_outro" to "Metamorfosear Outro e Transformar Corpo",
         "talisma" to "Encantar"
     )
+
+    private fun preRequisitoCanonicoTexto(magiaId: String, raw: String?): String {
+        val rawOriginal = raw
+            ?.fixMojibakeIfNeeded()
+            ?.trim()
+            .orEmpty()
+        val override = preRequisitosOverridePorMagiaId[magiaId]
+        return (override ?: rawOriginal)
+            .fixMojibakeIfNeeded()
+            .trim()
+    }
 
     /**
      * Regra operacional pedida: se o texto de pre-requisito estiver em um

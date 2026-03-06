@@ -1,6 +1,6 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-05
+Atualizado em: 2026-03-06
 
 ## Objetivo Atual
 Garantir que o **Modo Alvo** aplique os pré-requisitos de magia com comportamento canônico GURPS, sem divergência entre telas, motor e catálogo.
@@ -15,14 +15,14 @@ Garantir que o **Modo Alvo** aplique os pré-requisitos de magia com comportamen
 ## Plano de Ação (Lotes)
 
 ### Lote 1 - Fonte Única de Pré-Requisito Canônico
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. Criar no `DataRepository` uma função pública de acesso canônico por magia (`id -> preRequisitoCanonico`).
+1. [x] Criar no `DataRepository` uma função pública de acesso canônico por magia (`id -> preRequisitoCanonico`).
 Arquivo: `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
-2. Aplicar override canônico no carregamento de magias (não só na validação textual), para que `MagiaDefinicao.preRequisitos` já saia normalizado.
+2. [x] Aplicar override canônico no carregamento de magias (não só na validação textual), para que `MagiaDefinicao.preRequisitos` já saia normalizado.
 Arquivo: `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
-3. Garantir que `FichaViewModel` e `NexusArcanoModoAlvoAdapter` usem essa mesma fonte, sem caminhos paralelos.
+3. [ ] Garantir que `FichaViewModel` e `NexusArcanoModoAlvoAdapter` usem essa mesma fonte, sem caminhos paralelos.
 Arquivos:
 - `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 - `app/src/main/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapter.kt`
@@ -62,12 +62,12 @@ Critério de aceite:
 - Mesmo personagem + mesma magia => mesma resposta de bloqueio em lista, diálogo e modo alvo.
 
 ### Lote 4 - Correção Semântica do Parser do Motor (`ou`/alternativas)
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. Revisar `dependenciasNomeadasGrupos` para preservar corretamente alternativas compostas (`A ou B, C`).
-2. Associar extração de regra numérica/escolas ao ramo de alternativa escolhido, evitando mistura global inválida.
-3. Cobrir casos de `outras escolas`, soma de atributos e requisitos nomeados simultâneos.
+1. [x] Revisar `dependenciasNomeadasGrupos` para preservar corretamente alternativas compostas (`A ou B, C`).
+2. [x] Associar seleção de dependências nomeadas ao parser por termo (vírgulas + `ou`), com fallback heurístico.
+3. [ ] Cobrir casos de `outras escolas`, soma de atributos e requisitos nomeados simultâneos.
 Arquivo: `motor modo alvo/src/NexusArcanoEngine.kt`
 
 Critério de aceite:

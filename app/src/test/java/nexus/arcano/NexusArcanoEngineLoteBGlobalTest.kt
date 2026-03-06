@@ -116,6 +116,32 @@ class NexusArcanoEngineLoteBGlobalTest {
     }
 
     @Test
+    fun alternativa_com_virgula_preserva_dependencia_compartilhada() {
+        val engine = NexusArcanoEngine(catalogoPasso4DependenciaCompartilhada())
+
+        val estadoSoOpcional = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("opcao_b"),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+        val resultadoSoOpcional = engine.calcularEstadoAlvo("alvo_composto", estadoSoOpcional)
+
+        assertTrue(resultadoSoOpcional.chavesFaltantes.any { it.id == "chave_base_obrigatoria" })
+        assertTrue(resultadoSoOpcional.proximasAcoes.any { it.magiaId == "base_obrigatoria" })
+        assertFalse(resultadoSoOpcional.chavesAtivas.any { it.id == "chave_alvo_alvo_composto" })
+
+        val estadoComBase = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("base_obrigatoria", "opcao_b"),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+        val resultadoComBase = engine.calcularEstadoAlvo("alvo_composto", estadoComBase)
+        assertTrue(resultadoComBase.chavesAtivas.any { it.id == "chave_alvo_alvo_composto" })
+    }
+
+    @Test
     fun contrato_de_saida_do_plano_retorna_proxima_trilha_e_metas_impactadas() {
         val engine = NexusArcanoEngine(catalogoPasso2SemReducao())
         val estado = ArcanoEstadoPersonagem(
@@ -212,6 +238,24 @@ class NexusArcanoEngineLoteBGlobalTest {
             M("magia_ar", "Magia Ar", listOf("Ar"), ""),
             M("magia_terra", "Magia Terra", listOf("Terra"), ""),
             M("magia_agua_lateral", "Magia Agua Lateral", listOf("Agua"), "")
+        )
+        val byId = magias.associateBy { it.id }
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoPasso4DependenciaCompartilhada(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo_composto", "Alvo Composto", listOf("Meta"), "Base Obrigatoria, Opcao A ou Opcao B"),
+            M("base_obrigatoria", "Base Obrigatoria", listOf("Ar"), ""),
+            M("opcao_a", "Opcao A", listOf("Terra"), ""),
+            M("opcao_b", "Opcao B", listOf("Agua"), "")
         )
         val byId = magias.associateBy { it.id }
         return object : ArcanoCatalogo {
