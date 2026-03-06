@@ -5,17 +5,30 @@ Atualizado em: 2026-03-06
 ## Objetivo Atual
 Garantir que o **Modo Alvo** aplique os pré-requisitos de magia com comportamento canônico GURPS, sem divergência entre telas, motor e catálogo.
 
+## Estado Atual
+Feito:
+1. Fonte canônica de pré-requisito aplicada no carregamento de catálogo e no fluxo principal de validação.
+2. Catálogo runtime (`magias2versao.json`) sincronizado com overrides canônicos (`same=36`, `diff=0`).
+3. Pendências com marcador `#` sem override canônico resolvidas (`sem_override_com_hash=0`).
+4. Motor do modo alvo ajustado para tratar alternativas com `ou` usando parser por termo, sem perder dependências compartilhadas.
+
+Falta:
+1. Fechar auditoria final de divergência residual de mensagens entre UI e modo alvo (Lote 3, passo 3).
+2. Completar cobertura de casos combinados no parser do motor (`outras escolas` + soma de atributos + nomeadas simultâneas) no Lote 4.
+3. Implementar e validar prioridade canônica hard-first da progressão (Lote 5).
+4. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
+
 ## Diagnóstico Confirmado
-1. Existem duas lógicas de validação em paralelo (rápida e hierárquica), com resultados diferentes em alguns casos.
-2. O Modo Alvo consome `preRequisitos` bruto da `MagiaDefinicao` no adapter, sem garantir uso do texto canônico corrigido por override.
-3. O runtime usa `app/src/main/assets/magias2versao.json`, que contém divergências de texto em relação às correções canônicas mapeadas no repositório.
-4. O parser do motor (`NexusArcanoEngine`) é simplificado para alguns casos de `ou` e pode selecionar cadeia/regras numéricas fora da alternativa correta.
-5. Auditoria global `NexusArcanoModoAlvoAuditoriaTodasMagiasTest` falha por OOM e não fecha diagnóstico completo de regressão.
+1. Divergência de validação rápida vs hierárquica na UI foi eliminada no `FichaViewModel`.
+2. Uso de texto bruto sem canônico no runtime foi corrigido para a carga de `MagiaDefinicao`.
+3. Divergências de catálogo runtime vs override canônico foram saneadas para o conjunto mapeado.
+4. Ainda faltam casos combinados avançados no parser do motor (`ou` + regras numéricas/escolas) para cobertura total.
+5. Auditoria global `NexusArcanoModoAlvoAuditoriaTodasMagiasTest` ainda falha por OOM e segue pendente.
 
 ## Plano de Ação (Lotes)
 
 ### Lote 1 - Fonte Única de Pré-Requisito Canônico
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Criar no `DataRepository` uma função pública de acesso canônico por magia (`id -> preRequisitoCanonico`).
