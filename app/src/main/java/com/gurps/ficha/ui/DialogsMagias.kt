@@ -74,7 +74,6 @@ import java.util.Locale
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-private const val MODO_ALVO_HABILITADO = true
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
 private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
@@ -150,13 +149,14 @@ private fun escolasNormalizadas(def: MagiaDefinicao): Set<String> {
 fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val modoAlvoHabilitado = (BuildConfig.MODO_ALVO_NEXUS_HABILITADO == true) || BuildConfig.DEBUG
     val ajudaVozAtiva = isPraCegoVariant && AJUDA_VOZ_HABILITADA
     var magiaSelecionada by remember { mutableStateOf<MagiaDefinicao?>(null) }
     var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
     var modoAlvoAtivo by remember { mutableStateOf(false) }
     var magiaAlvoId by remember { mutableStateOf<String?>(null) }
     var statusAjudaVoz by remember { mutableStateOf<String?>(null) }
-    val modoAlvoAtivoEfetivo = MODO_ALVO_HABILITADO && modoAlvoAtivo
+    val modoAlvoAtivoEfetivo = modoAlvoHabilitado && modoAlvoAtivo
 
     val listaFiltrada = viewModel.magiasFiltradas
     val catalogoMagias = viewModel.dataRepository.magias
@@ -173,90 +173,103 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         emptyList()
     }
     val assinaturaModoAlvo = viewModel.assinaturaEstadoMagiasParaModoAlvo()
+    val idsJaAdicionadas = remember(assinaturaModoAlvo) {
+        viewModel.personagem.magias.map { it.definicaoId }.toSet()
+    }
     LaunchedEffect(modoAlvoAtivoEfetivo, magiaAlvoId, assinaturaModoAlvo) {
         viewModel.requisitarModoAlvo(magiaAlvoId, modoAlvoAtivoEfetivo)
     }
-    val listaExibicao = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-        val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
-        val relacionadas = ordemRelacionadosAlvo
-            .asSequence()
-            .filter { it != magiaAlvoSelecionada.id }
-            .filter { it !in idsJaAdicionadas }
-            .mapNotNull { id -> catalogoPorId[id] }
-            .distinctBy { it.id }
-            .take(6)
-            .toList()
-        val idsRelacionadas = relacionadas.asSequence().map { it.id }.toSet()
-        val idsBloqueadosBase = buildSet {
-            add(magiaAlvoSelecionada.id)
-            addAll(idsJaAdicionadas)
-            addAll(idsRelacionadas)
-        }
-        val fallbackPorMotor = viewModel.modoAlvoProximasAcoesIds
-            .asSequence()
-            .filter { it !in idsBloqueadosBase }
-            .mapNotNull { id -> catalogoPorId[id] }
-            .filterNot { magiaDaEscolaTecnologica(it) }
-            .distinctBy { it.id }
-            .take(MAX_OPCOES_MODO_ALVO)
-            .toList()
-        val idsFallbackMotor = fallbackPorMotor.asSequence().map { it.id }.toSet()
-        val escolasConhecidas = idsJaAdicionadas
-            .asSequence()
-            .mapNotNull { id -> catalogoPorId[id] }
-            .flatMap { magia -> escolasNormalizadas(magia).asSequence() }
-            .toSet()
-        val fallbackExploracao = run {
-            val limiteVerificacoes = 220
-            var verificadas = 0
-            val sugestoes = mutableListOf<MagiaDefinicao>()
-            val idsExcluidas = idsBloqueadosBase + idsFallbackMotor
-            val candidatas = catalogoMagias
+    val listaExibicao = remember(
+        modoAlvoAtivoEfetivo,
+        magiaAlvoSelecionada?.id,
+        assinaturaModoAlvo,
+        ordemRelacionadosAlvo,
+        viewModel.modoAlvoProximasAcoesIds,
+        listaFiltrada,
+        catalogoMagias,
+        catalogoPorId
+    ) {
+        if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
+            val relacionadas = ordemRelacionadosAlvo
                 .asSequence()
-                .filter { it.id !in idsExcluidas }
-                .filterNot { magiaDaEscolaTecnologica(it) }
+                .filter { it != magiaAlvoSelecionada.id }
+                .filter { it !in idsJaAdicionadas }
+                .mapNotNull { id -> catalogoPorId[id] }
+                .distinctBy { it.id }
+                .take(6)
                 .toList()
-
-            fun tentarAproveitar(pool: Sequence<MagiaDefinicao>) {
-                for (magia in pool) {
-                    if (sugestoes.size >= MAX_OPCOES_MODO_ALVO) break
-                    if (verificadas >= limiteVerificacoes) break
-                    verificadas++
-                    sugestoes.add(magia)
-                }
+            val idsRelacionadas = relacionadas.asSequence().map { it.id }.toSet()
+            val idsBloqueadosBase = buildSet {
+                add(magiaAlvoSelecionada.id)
+                addAll(idsJaAdicionadas)
+                addAll(idsRelacionadas)
             }
+            val fallbackPorMotor = viewModel.modoAlvoProximasAcoesIds
+                .asSequence()
+                .filter { it !in idsBloqueadosBase }
+                .mapNotNull { id -> catalogoPorId[id] }
+                .filterNot { magiaDaEscolaTecnologica(it) }
+                .distinctBy { it.id }
+                .take(MAX_OPCOES_MODO_ALVO)
+                .toList()
+            val idsFallbackMotor = fallbackPorMotor.asSequence().map { it.id }.toSet()
+            val escolasConhecidas = idsJaAdicionadas
+                .asSequence()
+                .mapNotNull { id -> catalogoPorId[id] }
+                .flatMap { magia -> escolasNormalizadas(magia).asSequence() }
+                .toSet()
+            val fallbackExploracao = run {
+                val limiteVerificacoes = 220
+                var verificadas = 0
+                val sugestoes = mutableListOf<MagiaDefinicao>()
+                val idsExcluidas = idsBloqueadosBase + idsFallbackMotor
+                val candidatas = catalogoMagias
+                    .asSequence()
+                    .filter { it.id !in idsExcluidas }
+                    .filterNot { magiaDaEscolaTecnologica(it) }
+                    .toList()
 
-            // Prioridade 1: magia simples de escola nova para destravar contadores.
-            tentarAproveitar(
-                candidatas.asSequence().filter { magia ->
-                    val escolas = escolasNormalizadas(magia)
-                    escolas.isNotEmpty() &&
-                        escolas.none { it in escolasConhecidas } &&
-                        preReqProvavelmenteLivre(magia)
+                fun tentarAproveitar(pool: Sequence<MagiaDefinicao>) {
+                    for (magia in pool) {
+                        if (sugestoes.size >= MAX_OPCOES_MODO_ALVO) break
+                        if (verificadas >= limiteVerificacoes) break
+                        verificadas++
+                        sugestoes.add(magia)
+                    }
                 }
-            )
-            // Prioridade 2: qualquer magia de escola nova.
-            if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+
+                // Prioridade 1: magia simples de escola nova para destravar contadores.
                 tentarAproveitar(
                     candidatas.asSequence().filter { magia ->
                         val escolas = escolasNormalizadas(magia)
-                        escolas.isNotEmpty() && escolas.none { it in escolasConhecidas }
+                        escolas.isNotEmpty() &&
+                            escolas.none { it in escolasConhecidas } &&
+                            preReqProvavelmenteLivre(magia)
                     }
                 )
+                // Prioridade 2: qualquer magia de escola nova.
+                if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+                    tentarAproveitar(
+                        candidatas.asSequence().filter { magia ->
+                            val escolas = escolasNormalizadas(magia)
+                            escolas.isNotEmpty() && escolas.none { it in escolasConhecidas }
+                        }
+                    )
+                }
+                // Prioridade 3: magia simples em geral.
+                if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+                    tentarAproveitar(candidatas.asSequence().filter { magia -> preReqProvavelmenteLivre(magia) })
+                }
+                if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
+                    tentarAproveitar(candidatas.asSequence())
+                }
+                sugestoes.distinctBy { it.id }
             }
-            // Prioridade 3: magia simples em geral.
-            if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
-                tentarAproveitar(candidatas.asSequence().filter { magia -> preReqProvavelmenteLivre(magia) })
-            }
-            if (sugestoes.size < MAX_OPCOES_MODO_ALVO && verificadas < limiteVerificacoes) {
-                tentarAproveitar(candidatas.asSequence())
-            }
-            sugestoes.distinctBy { it.id }
+            (listOf(magiaAlvoSelecionada) + relacionadas + fallbackPorMotor + fallbackExploracao)
+                .distinctBy { it.id }
+        } else {
+            listaFiltrada
         }
-        (listOf(magiaAlvoSelecionada) + relacionadas + fallbackPorMotor + fallbackExploracao)
-            .distinctBy { it.id }
-    } else {
-        listaFiltrada
     }
     var prereqFalhasMap by remember(
         modoAlvoAtivoEfetivo,
@@ -288,7 +301,6 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         }
 
         recomendacaoEmAnalise = true
-        val idsJaAdicionadas = viewModel.personagem.magias.map { it.definicaoId }.toSet()
         val candidatasIds = (viewModel.modoAlvoProximasAcoesIds + listaExibicao.map { it.id })
             .asSequence()
             .filter { it != magiaAlvoSelecionada.id }
@@ -364,7 +376,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     }
     fun processarComandoVoz(comandoRaw: String) {
         val comando = normalizarComandoVoz(comandoRaw)
-        if (!MODO_ALVO_HABILITADO) {
+        if (!modoAlvoHabilitado) {
             falarAjuda("Modo Alvo está desativado temporariamente.")
             return
         }
@@ -489,7 +501,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (MODO_ALVO_HABILITADO) {
+                    if (modoAlvoHabilitado) {
                         FilterChip(
                             selected = modoAlvoAtivo,
                             onClick = {

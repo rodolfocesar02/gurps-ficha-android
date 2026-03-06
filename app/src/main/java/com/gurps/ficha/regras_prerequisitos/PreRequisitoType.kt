@@ -29,6 +29,10 @@ sealed class PreRequisitoType {
         val escolasDiferentes: Int,
         val outrasEscolas: Boolean = false
     ) : PreRequisitoType()
+    data class AtributosSomaMin(
+        val atributos: List<String>,
+        val minimo: Int
+    ) : PreRequisitoType()
     data class NaoPodeSer(val condicoes: Set<String>) : PreRequisitoType()
     data class NivelMin(val nivel: Int) : PreRequisitoType()
 }
