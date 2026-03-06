@@ -22,7 +22,7 @@ Passos:
 Arquivo: `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
 2. [x] Aplicar override canônico no carregamento de magias (não só na validação textual), para que `MagiaDefinicao.preRequisitos` já saia normalizado.
 Arquivo: `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
-3. [ ] Garantir que `FichaViewModel` e `NexusArcanoModoAlvoAdapter` usem essa mesma fonte, sem caminhos paralelos.
+3. [x] Garantir que `FichaViewModel` e `NexusArcanoModoAlvoAdapter` usem essa mesma fonte, sem caminhos paralelos.
 Arquivos:
 - `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 - `app/src/main/java/com/gurps/ficha/domain/magias/NexusArcanoModoAlvoAdapter.kt`
@@ -48,11 +48,12 @@ Critério de aceite:
 - Diferenças entre catálogo runtime e regra canônica reduzidas aos casos explicitamente não automatizáveis.
 
 ### Lote 3 - Unificação da Validação de Pré-Requisito
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. Definir um único contrato de validação para UI e Modo Alvo (mesma semântica de `faltando`).
-2. Eliminar fallback conflitante que permita resultado diferente para a mesma magia/estado.
+1. [x] Definir um único contrato de validação para UI e Modo Alvo (mesma semântica de bloqueio por magia).
+2. [x] Eliminar fallback conflitante no `FichaViewModel` entre validação rápida e validação principal.
+3. [ ] Fechar auditoria de divergência residual entre mensagem de chave do modo alvo e bloqueio de adição na UI.
 Arquivos:
 - `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 - `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
