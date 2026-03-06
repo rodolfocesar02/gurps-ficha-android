@@ -3153,7 +3153,7 @@
     "duracao": "Perm.",
     "energia": "Especial",
     "tempoOperacao": "Especial",
-    "preRequisitos": "AM2, Controle de Elemental#"
+    "preRequisitos": "AM2, Controle de Elemental"
   },
   {
     "id": "criar_fogo",

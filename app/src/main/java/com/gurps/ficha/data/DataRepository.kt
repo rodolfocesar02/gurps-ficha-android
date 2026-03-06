@@ -1077,6 +1077,7 @@ class DataRepository(private val context: Context) {
         "anular_possessao" to "Passageiro da Alma e Possessao",
         "convocar_elemental" to "Aptidao Magica 1 e 8 magicas da escola apropriada",
         "controle_de_elemental" to "Convocar Elemental para a escola apropriada",
+        "criar_elemental" to "AM2, Controle de Elemental",
         "corpo_de_vento" to "Aptidao Magica 3, Corpo de Ar e Furacao, cada um com NH 16 ou superior, 1 magica em cinco escolas diferentes",
         "cavalgar" to "Pelo menos uma magia de Controle de Animal",
         "controle_de_hibrido" to "2 magicas de Controle de Animal",
