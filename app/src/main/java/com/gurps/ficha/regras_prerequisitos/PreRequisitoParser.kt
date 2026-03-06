@@ -77,7 +77,7 @@ object PreRequisitoParser {
         val tok = cleanupConnectorPrefix(token)
         if (tok.isBlank() || tok == "-") return null
 
-        val naoPodeSer = Regex("(?i)^n[aã]o\\s+pode\\s+ser\\s+(.+)$").find(tok)
+        val naoPodeSer = Regex("(?i)^n[aã]o\\s+pode\\s+(?:ser|ter)\\s+(.+)$").find(tok)
         if (naoPodeSer != null) {
             val condicoes = naoPodeSer.groupValues[1]
                 .split(Regex("(?i)\\s+ou\\s+"))
@@ -85,6 +85,20 @@ object PreRequisitoParser {
                 .filter { it.isNotBlank() }
                 .toSet()
             return PreRequisitoType.NaoPodeSer(condicoes)
+        }
+
+        val somaAtributos = Regex(
+            "^\\(?\\s*([A-Za-zÀ-ú]+)\\s*\\+\\s*([A-Za-zÀ-ú]+)\\s*\\)?\\s*:?\\s*(\\d+)\\+?$",
+            RegexOption.IGNORE_CASE
+        ).find(tok)
+        if (somaAtributos != null) {
+            val atr1 = somaAtributos.groupValues[1].trim()
+            val atr2 = somaAtributos.groupValues[2].trim()
+            val minimo = somaAtributos.groupValues[3].toIntOrNull() ?: return null
+            return PreRequisitoType.AtributosSomaMin(
+                atributos = listOf(atr1, atr2),
+                minimo = minimo
+            )
         }
 
         val attrMatch = Regex("^([A-Za-zÀ-ú]+)\\s*(\\d+)\\+").find(tok)

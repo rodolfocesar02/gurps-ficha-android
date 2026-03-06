@@ -24,19 +24,19 @@ android {
 
     defaultConfig {
         val discordApiBaseUrl = (firstNonBlank(
-            localProperties.getProperty("DISCORD_ROLL_API_BASE_URL"),
-            project.findProperty("DISCORD_ROLL_API_BASE_URL") as? String
+            project.findProperty("DISCORD_ROLL_API_BASE_URL") as? String,
+            localProperties.getProperty("DISCORD_ROLL_API_BASE_URL")
         ) ?: "http://10.0.2.2:8787")
             .trimEnd('/')
             .replace("\"", "\\\"")
         val discordApiKey = (firstNonBlank(
-            localProperties.getProperty("DISCORD_ROLL_API_KEY"),
-            project.findProperty("DISCORD_ROLL_API_KEY") as? String
+            project.findProperty("DISCORD_ROLL_API_KEY") as? String,
+            localProperties.getProperty("DISCORD_ROLL_API_KEY")
         ) ?: "")
             .replace("\"", "\\\"")
         val modoAlvoNexusHabilitado = (firstNonBlank(
-            localProperties.getProperty("MODO_ALVO_NEXUS_HABILITADO"),
-            project.findProperty("MODO_ALVO_NEXUS_HABILITADO") as? String
+            project.findProperty("MODO_ALVO_NEXUS_HABILITADO") as? String,
+            localProperties.getProperty("MODO_ALVO_NEXUS_HABILITADO")
         ) ?: "false")
             .lowercase()
             .let { it == "1" || it == "true" || it == "yes" || it == "on" }
@@ -48,7 +48,11 @@ android {
         versionName = "1.1"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
-        buildConfigField("boolean", "MODO_ALVO_NEXUS_HABILITADO", modoAlvoNexusHabilitado.toString())
+        buildConfigField(
+            "Boolean",
+            "MODO_ALVO_NEXUS_HABILITADO",
+            "Boolean.valueOf(${modoAlvoNexusHabilitado.toString()})"
+        )
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

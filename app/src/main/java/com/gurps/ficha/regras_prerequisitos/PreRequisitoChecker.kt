@@ -58,9 +58,7 @@ object PreRequisitoChecker {
     private fun requirementFailure(personagem: Map<String, Any>, requisito: PreRequisitoType): String? {
         return when (requisito) {
             is PreRequisitoType.AttributeMin -> {
-                val atual = (personagem[requisito.atributo] as? Int)
-                    ?: (personagem[requisito.atributo.uppercase()] as? Int)
-                    ?: 0
+                val atual = valorAtributo(personagem, requisito.atributo)
                 if (atual < requisito.minimo) {
                     "${requisito.atributo} >= ${requisito.minimo} (atual $atual)"
                 } else null
@@ -113,6 +111,12 @@ object PreRequisitoChecker {
                     "${requisito.magiasPorEscola} magias em ${requisito.escolasDiferentes} escolas diferentes (atual $escolasAtendidas)"
                 } else null
             }
+            is PreRequisitoType.AtributosSomaMin -> {
+                val atual = requisito.atributos.sumOf { valorAtributo(personagem, it) }
+                if (atual < requisito.minimo) {
+                    "${requisito.atributos.joinToString(" + ")} >= ${requisito.minimo} (atual $atual)"
+                } else null
+            }
             is PreRequisitoType.QualquerMagiaComNome -> {
                 val trecho = normalizar(requisito.trechoNome)
                 val atende = magiasNomes(personagem).any { it.contains(trecho) }
@@ -138,8 +142,16 @@ object PreRequisitoChecker {
             }
             is PreRequisitoType.NaoPodeSer -> {
                 val estado = condicoesEstado(personagem)
-                val proibidas = requisito.condicoes.map { normalizar(it) }
-                val violacoes = proibidas.filter { it in estado }
+                val estadoExpandido = estado
+                    .asSequence()
+                    .flatMap { aliasesCondicao(it).asSequence() }
+                    .toSet()
+                val proibidas = requisito.condicoes
+                    .asSequence()
+                    .map { normalizar(it) }
+                    .flatMap { aliasesCondicao(it).asSequence() }
+                    .toSet()
+                val violacoes = proibidas.filter { it in estadoExpandido }
                 if (violacoes.isNotEmpty()) {
                     "Nao pode ser: ${violacoes.joinToString(" ou ")}"
                 } else null
@@ -233,5 +245,21 @@ object PreRequisitoChecker {
             .replace(Regex("[^a-z0-9\\s]"), " ")
             .replace(Regex("\\s+"), " ")
             .trim()
+    }
+
+    private fun valorAtributo(personagem: Map<String, Any>, atributo: String): Int {
+        val atrNorm = normalizar(atributo).uppercase()
+        return (personagem[atrNorm] as? Int)
+            ?: (personagem[atributo] as? Int)
+            ?: (personagem[atributo.uppercase()] as? Int)
+            ?: 0
+    }
+
+    private fun aliasesCondicao(condicaoNorm: String): Set<String> {
+        return when (condicaoNorm) {
+            "cego", "cegueira" -> setOf("cego", "cegueira")
+            "surdo", "surdez" -> setOf("surdo", "surdez")
+            else -> setOf(condicaoNorm)
+        }
     }
 }

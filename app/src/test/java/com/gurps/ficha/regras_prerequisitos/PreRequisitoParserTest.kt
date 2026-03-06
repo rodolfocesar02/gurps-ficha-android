@@ -201,4 +201,56 @@ class PreRequisitoParserTest {
         assertNull(repo.validarPreRequisitosMagia(magia, person))
         assertNull(repo.missingPreRequisitoReport(magia, person))
     }
+
+    @Test
+    fun `nao pode ter e nao pode ser sao interpretados como bloqueio de desvantagem`() {
+        val parsed = PreRequisitoParser.parse("Nao pode ter Cegueira ou Disopia")
+        assertTrue(parsed.tipos.any { it is PreRequisitoType.NaoPodeSer })
+
+        val personagem = mapOf<String, Any>(
+            "condicoes_estado_normalizadas" to setOf("cego")
+        )
+        val report = PreRequisitoChecker.checkParseResult(personagem, parsed)
+        assertTrue(report.startsWith("faltando"))
+    }
+
+    @Test
+    fun `surdo e surdez sao tratados como equivalentes no bloqueio`() {
+        val parsed = PreRequisitoParser.parse("Nao pode ser Surdo ou Duro de Ouvido")
+        val personagem = mapOf<String, Any>(
+            "condicoes_estado_normalizadas" to setOf("surdez")
+        )
+        val report = PreRequisitoChecker.checkParseResult(personagem, parsed)
+        assertTrue(report.startsWith("faltando"))
+    }
+
+    @Test
+    fun `soma de atributos dx mais iq e reconhecida e validada`() {
+        val parsed = PreRequisitoParser.parse("AM3, Desejo, (DX + IQ):30+")
+        val soma = parsed.tipos.filterIsInstance<PreRequisitoType.AtributosSomaMin>().firstOrNull()
+        assertNotNull(soma)
+        assertEquals(listOf("DX", "IQ"), soma?.atributos)
+        assertEquals(30, soma?.minimo)
+
+        val personagemBaixo = mapOf<String, Any>(
+            "aptidao_magica" to 3,
+            "magias_conhecidas_normalizadas" to setOf("desejo"),
+            "escolas_conhecidas_normalizadas" to emptySet<String>(),
+            "magias_por_escola_normalizada" to emptyMap<String, Int>(),
+            "escolas_por_magia_normalizadas" to emptyMap<String, Set<String>>(),
+            "vantagens_conhecidas_normalizadas" to emptySet<String>(),
+            "pericias_conhecidas_normalizadas" to emptySet<String>(),
+            "condicoes_estado_normalizadas" to emptySet<String>(),
+            "DX" to 12,
+            "IQ" to 17
+        )
+        val personagemOk = personagemBaixo.toMutableMap().apply {
+            this["IQ"] = 18
+        }
+
+        val reportBaixo = PreRequisitoChecker.checkParseResult(personagemBaixo, parsed)
+        val reportOk = PreRequisitoChecker.checkParseResult(personagemOk, parsed)
+        assertTrue(reportBaixo.startsWith("faltando"))
+        assertEquals("todos requisitos atendidos", reportOk)
+    }
 }
