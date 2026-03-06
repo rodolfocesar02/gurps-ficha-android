@@ -1,5 +1,7 @@
 ﻿package nexus.arcano
 
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import java.security.MessageDigest
 import java.text.Normalizer
 
@@ -208,7 +210,7 @@ class NexusArcanoEngine(
     private val penalidadePlanoEscolaRepetida = 4
     private val penalidadePlanoSemReducaoMeta = 12
     private val escolasNuncaRecomendar = setOf("tecnologica")
-    private val splitOuRegex = Regex("\\s+ou\\s+")
+    private val maxGruposDependencias = 96
 
     private val dependenciasCache = mutableMapOf<String, List<String>>()
     private val dependenciasGruposCache = mutableMapOf<String, List<List<String>>>()
@@ -1180,11 +1182,16 @@ class NexusArcanoEngine(
 
     private fun dependenciasNomeadasGrupos(magiaId: String): List<List<String>> {
         return dependenciasGruposCache.getOrPut(magiaId) {
+            val gruposPorParser = dependenciasNomeadasGruposPorParser(magiaId)
+            if (gruposPorParser.isNotEmpty()) {
+                return@getOrPut gruposPorParser
+            }
+
             val raw = preNorm(magiaId)
             if (raw.isBlank()) return@getOrPut emptyList()
 
             val depsRawCompleto = extrairDependenciasNomeadas(raw, magiaId)
-            val partesOu = raw.split(splitOuRegex).map { it.trim() }.filter { it.isNotBlank() }
+            val partesOu = raw.split(Regex("\\s+ou\\s+")).map { it.trim() }.filter { it.isNotBlank() }
             if (partesOu.size <= 1) {
                 return@getOrPut if (depsRawCompleto.isEmpty()) emptyList() else listOf(depsRawCompleto)
             }
@@ -1200,6 +1207,74 @@ class NexusArcanoEngine(
                 grupos
             }
         }
+    }
+
+    private fun dependenciasNomeadasGruposPorParser(magiaId: String): List<List<String>> {
+        val raw = preRaw(magiaId).trim()
+        if (raw.isBlank()) return emptyList()
+
+        val parsed = PreRequisitoParser.parse(raw)
+        if (parsed.terms.isEmpty()) return emptyList()
+
+        val alternativasPorTermo = parsed.terms
+            .mapNotNull { termo ->
+                val alternativas = termo.alternatives
+                    .mapNotNull { alternativa ->
+                        val deps = linkedSetOf<String>()
+                        alternativa
+                            .filterIsInstance<PreRequisitoType.MagiaConhecida>()
+                            .forEach { token ->
+                                resolverDependenciasNomeadasToken(token.nomeMagia, magiaId)
+                                    .forEach { deps += it }
+                            }
+                        deps.takeIf { it.isNotEmpty() }?.toList()
+                    }
+                    .distinctBy { it.joinToString("|") }
+                alternativas.takeIf { it.isNotEmpty() }
+            }
+
+        if (alternativasPorTermo.isEmpty()) return emptyList()
+        return combinarAlternativasDependencias(alternativasPorTermo)
+    }
+
+    private fun resolverDependenciasNomeadasToken(tokenRaw: String, magiaId: String): List<String> {
+        val tokenNorm = normalize(tokenRaw)
+        if (tokenNorm.isBlank()) return emptyList()
+
+        val matchDireto = nomesNormalizadosPorTamanho
+            .asSequence()
+            .filter { it.id != magiaId && it.nome == tokenNorm }
+            .map { it.id }
+            .distinct()
+            .toList()
+        if (matchDireto.isNotEmpty()) return matchDireto
+
+        return extrairDependenciasNomeadas(tokenNorm, magiaId)
+    }
+
+    private fun combinarAlternativasDependencias(
+        alternativasPorTermo: List<List<List<String>>>
+    ): List<List<String>> {
+        var acumulado = listOf(emptyList<String>())
+
+        alternativasPorTermo.forEach { alternativas ->
+            val prox = linkedMapOf<String, List<String>>()
+            loop@ for (base in acumulado) {
+                for (alt in alternativas) {
+                    val combinado = (base + alt).distinct()
+                    if (combinado.isEmpty()) continue
+                    val key = combinado.joinToString("|")
+                    prox.putIfAbsent(key, combinado)
+                    if (prox.size >= maxGruposDependencias) break@loop
+                }
+            }
+            acumulado = prox.values.toList()
+            if (acumulado.isEmpty()) return emptyList()
+        }
+
+        return acumulado
+            .filter { it.isNotEmpty() }
+            .distinctBy { it.joinToString("|") }
     }
 
     private fun dependenciasMinimasPendentes(magiaId: String, known: Set<String>): Int {
