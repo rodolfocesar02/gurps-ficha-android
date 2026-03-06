@@ -53,7 +53,7 @@
     "duracao": "1 min.",
     "energia": "Varia",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "AM2, IQ 13+, 2 mágicas de 10 escolas"
+    "preRequisitos": "Aptidao Magica 2, IQ 13+, 2 magicas em dez escolas diferentes"
   },
   {
     "id": "acido_essencial",
@@ -123,7 +123,7 @@
     "duracao": "Instant.",
     "energia": "10",
     "tempoOperacao": "1 hora#",
-    "preRequisitos": "História, outras mágicas#"
+    "preRequisitos": "Historia"
   },
   {
     "id": "aerovisao",
@@ -645,7 +645,7 @@
     "duracao": "Instant.",
     "energia": "10",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "Passageiro da Alma ou Possessão#"
+    "preRequisitos": "Passageiro da Alma e Possessao"
   },
   {
     "id": "apanhar_magica",
@@ -943,7 +943,7 @@
     "duracao": "1 min.",
     "energia": "07/04",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "6 magicas de Relampago incl. Imunidade a Relampagos"
+    "preRequisitos": "6 magicas de Relampagos, incl. Imunidade a Relampagos"
   },
   {
     "id": "armadura_flamejante",
@@ -1735,7 +1735,7 @@
     "duracao": "5 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "1 mágica de Controle de Animal"
+    "preRequisitos": "Pelo menos uma magia de Controle de Animal"
   },
   {
     "id": "cegar",
@@ -2189,7 +2189,7 @@
     "duracao": "Perm.",
     "energia": "Varia",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "AM1, Conceder Perícia, 1 mágica em 6 escolas diferentes"
+    "preRequisitos": "Aptidao Magica 1, Conceder Pericia, 2 magicas em seis escolas diferentes"
   },
   {
     "id": "conceder_pericia",
@@ -2274,7 +2274,7 @@
     "duracao": "Perm.",
     "energia": "30",
     "tempoOperacao": "1 min.",
-    "preRequisitos": "AM3, 15 mágicas de Controle da Mente incl. Condicionamento"
+    "preRequisitos": "AM3, 15 magicas de Controle da Mente, incl. Condicionamento"
   },
   {
     "id": "conduzir_corrente_eletricant",
@@ -2445,7 +2445,7 @@
     "duracao": "1 min.",
     "energia": "Especial",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Convocar Elemental#"
+    "preRequisitos": "Convocar Elemental para a escola apropriada"
   },
   {
     "id": "controle_de_emocao",
@@ -2473,7 +2473,7 @@
     "duracao": "1 min.",
     "energia": "06/03",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "2 mágicas de Controle de Animal"
+    "preRequisitos": "2 magicas de Controle de Animal"
   },
   {
     "id": "controle_de_ilusao",
@@ -2515,7 +2515,7 @@
     "duracao": "5 seg.",
     "energia": "3/3#",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "AM1, 5 mágicas de Corpo incl. Espasmo"
+    "preRequisitos": "AM1, 5 magicas de Corpo, incl. Espasmo"
   },
   {
     "id": "controle_de_pessoa",
@@ -2599,7 +2599,7 @@
     "duracao": "1 hora",
     "energia": "20#",
     "tempoOperacao": "5 min.",
-    "preRequisitos": "AM1, 1 mágica em 10 escolas diferentes"
+    "preRequisitos": "Aptidao Magica 1 e 1 magica em dez escolas diferentes"
   },
   {
     "id": "convocar_animal_terra",
@@ -2655,7 +2655,7 @@
     "duracao": "1 hora#",
     "energia": "20#",
     "tempoOperacao": "5 min.",
-    "preRequisitos": "AM1, 1 mágica em 10 escolas diferentes"
+    "preRequisitos": "Aptidao Magica 1 e 1 magica em dez escolas diferentes"
   },
   {
     "id": "convocar_elemental",
@@ -2672,7 +2672,7 @@
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "AM1, #"
+    "preRequisitos": "Aptidao Magica 1 e 8 magicas da escola apropriada"
   },
   {
     "id": "convocar_espirito",
@@ -2939,7 +2939,7 @@
     "duracao": "1 min.",
     "energia": "08/04",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "AM3, Corpo de Ar; Furacão, 1 mágica em 5 escolas diferentes#"
+    "preRequisitos": "Aptidao Magica 3, Corpo de Ar e Furacao, cada um com NH 16 ou superior, 1 magica em cinco escolas diferentes"
   },
   {
     "id": "corpo_etereo",
@@ -3279,7 +3279,7 @@
     "duracao": "1 min.",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "Controle de Portal ou Teleporte, Viagem no Tempo ou Trocar de Plano"
+    "preRequisitos": "Controle de Portal ou Teleporte ou Viagem no Tempo ou Trocar de Plano"
   },
   {
     "id": "criar_servo",
@@ -3547,7 +3547,7 @@
     "duracao": "Especial",
     "energia": "250",
     "tempoOperacao": "—",
-    "preRequisitos": "Pequeno Desejo, 1 mágica em 15 escolas"
+    "preRequisitos": "Pequeno Desejo e 1 magica em quinze escolas diferentes"
   },
   {
     "id": "desejo_superior",
@@ -4256,7 +4256,7 @@
     "duracao": "Perm.",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "AM2, 1 mágica em 10 escolas diferentes"
+    "preRequisitos": "Aptidao Magica 2, 1 magica em dez outras escolas diferentes"
   },
   {
     "id": "enclausuramento_arboreo",
@@ -4778,7 +4778,7 @@
     "duracao": "1 dia",
     "energia": "5",
     "tempoOperacao": "4 seg.",
-    "preRequisitos": "Zumbi#"
+    "preRequisitos": "Zumbi"
   },
   {
     "id": "espasmo",
@@ -4863,7 +4863,7 @@
     "duracao": "24 horas",
     "energia": "20",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "4 outras magicas Necromntica"
+    "preRequisitos": "4 magicas de Necromancia"
   },
   {
     "id": "esquecimento",
@@ -5004,7 +5004,7 @@
     "duracao": "Instant.",
     "energia": "Varia",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "AM1, 1 mágica em 10 escolas diferentes"
+    "preRequisitos": "Aptidao Magica 1 e 1 magica em dez escolas diferentes"
   },
   {
     "id": "extase",
@@ -5060,7 +5060,7 @@
     "duracao": "1 min.",
     "energia": "0/1#",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Roubar Corrente Elétrica, 2 mágicas em 10 escolas diferentes"
+    "preRequisitos": "Roubar Corrente Eletrica e 2 magicas em dez escolas diferentes"
   },
   {
     "id": "faca_alada",
@@ -5526,7 +5526,7 @@
     "duracao": "1 seg.",
     "energia": "05/02",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "6 mágicas da Água incl. Criar Nascente e quaisquer 4 mágicas da Terra ou Fogo"
+    "preRequisitos": "6 magicas da Agua, incl. Criar Nascente, quaisquer 4 magicas da Terra ou Fogo"
   },
   {
     "id": "geladura",
@@ -5639,7 +5639,7 @@
     "duracao": "Perm.",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "Encantar, Moldar Terra, Animar#"
+    "preRequisitos": "Encantar, Moldar Terra e Animacao"
   },
   {
     "id": "golpe_distante",
@@ -5995,7 +5995,7 @@
     "duracao": "Perm.",
     "energia": "Varia",
     "tempoOperacao": "—",
-    "preRequisitos": "Qualquer Encantamento de Limitação"
+    "preRequisitos": "Encantar"
   },
   {
     "id": "imunidade_a_pressao",
@@ -6761,7 +6761,7 @@
     "duracao": "Instant.",
     "energia": "3",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "AM2, Localizar Mágica, 1 mágica em 10 escolas diferentes"
+    "preRequisitos": "Aptidao Magica 2, Localizar Magica e 1 magica em dez escolas diferentes"
   },
   {
     "id": "localizar_radiacao",
@@ -6971,7 +6971,7 @@
     "duracao": "Especial",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "AM2, 2 mágicas em 10 escolas diferentes#"
+    "preRequisitos": "Aptidao Magica 2 e 2 magicas em dez escolas diferentes"
   },
   {
     "id": "maleficio",
@@ -7270,7 +7270,7 @@
     "duracao": "1 min.",
     "energia": "20/M#",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "AM3, Alterar Corpo, 4 Metamorfose, 10 outras mágicas"
+    "preRequisitos": "AM3, Alterar Corpo, quaisquer 4 magicas Metamorfose, 10 outras magicas"
   },
   {
     "id": "metamorfosear_outro",
@@ -8094,7 +8094,7 @@
     "duracao": "1 min.",
     "energia": "04/01",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "2 mágicas de Controle de Animal"
+    "preRequisitos": "2 magicas de Controle de Animal diferentes"
   },
   {
     "id": "passo_leve",
@@ -9097,7 +9097,7 @@
     "duracao": "Perm.",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "AM3, Consertar, Criar Objeto, 3 mágicas de cada elemento#"
+    "preRequisitos": "Aptidao Magica 3, Consertar, Criar Objeto e 3 magicas de cada escola Ar, Fogo, Terra e Agua"
   },
   {
     "id": "recordar",
@@ -9464,7 +9464,7 @@
     "duracao": "Hora",
     "energia": "Varia",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "1 mágica de Controle de Animal ou 4 mágicas de Animais"
+    "preRequisitos": "Controle de Animal"
   },
   {
     "id": "repelir_espiritos",
@@ -9664,7 +9664,7 @@
     "duracao": "Perm.",
     "energia": "15",
     "tempoOperacao": "1 min.#",
-    "preRequisitos": "Cura Profunda ou 2 entre Aliviar Paralisia e mágicas de Restaurar"
+    "preRequisitos": "Cura Profunda ou 2 entre Aliviar Paralisia e magicas de Restaurar"
   },
   {
     "id": "restauracao_instantanea",
@@ -10563,7 +10563,7 @@
     "duracao": "10 min.",
     "energia": "12/12#",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "AM2, 2 mágicas em 10 escolas diferentes#"
+    "preRequisitos": "Aptidao Magica 2 e 2 magicas em dez escolas diferentes"
   },
   {
     "id": "suspender_encantamento",
@@ -11147,7 +11147,7 @@
     "duracao": "1 hora",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "Aptidão Mágica 2, Remodelar e 4 mágicas de Criar"
+    "preRequisitos": "Aptidao Magica 2, Remodelar e 4 magicas de Criar"
   },
   {
     "id": "transformar_outro",
@@ -11161,7 +11161,7 @@
     "duracao": "1 hora",
     "energia": "Varia",
     "tempoOperacao": "2 min.",
-    "preRequisitos": "Metamorfosear Outro, Transformar Corpo#"
+    "preRequisitos": "Metamorfosear Outro e Transformar Corpo"
   },
   {
     "id": "translocacao",
