@@ -31,17 +31,18 @@ Critério de aceite:
 - Para uma magia qualquer, texto de pré-requisito exibido/validado/recomendado é idêntico em todos os fluxos.
 
 ### Lote 2 - Saneamento do Catálogo Runtime (`magias2versao.json`)
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. Auditar divergências entre `magias2versao.json` e overrides canônicos (`preRequisitosOverridePorMagiaId`).
-2. Corrigir entradas críticas de progressão (prioridade alta):
+1. [x] Auditar divergências entre `magias2versao.json` e overrides canônicos (`preRequisitosOverridePorMagiaId`).
+2. [x] Corrigir entradas críticas de progressão (prioridade alta):
 - `encantar`
 - `pequeno_desejo`
 - `desejo`
 - `desejo_superior`
 - cadeias de portal/expulsão/convocação com contagem de escolas
-3. Corrigir entradas com marcador `#` que devem virar regra explícita canônica quando houver definição conhecida.
+3. [x] Sincronizar no runtime as 35 entradas com override canônico (resultado: `same=35`, `diff=0` no auditor local).
+4. [ ] Corrigir entradas com marcador `#` que devem virar regra explícita canônica quando houver definição conhecida e ainda não possuem override.
 Arquivo: `app/src/main/assets/magias2versao.json`
 
 Critério de aceite:
