@@ -131,10 +131,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private var modoAlvoUltimaChave: String? = null
     private var prereqCacheAssinatura: String? = null
     private val prereqFailureCache = HashMap<String, String?>()
-    private var prereqCacheAssinaturaRapida: String? = null
-    private val prereqFailureCacheRapida = HashMap<String, String?>()
     private var magiasFiltradasCacheKey: String? = null
     private var magiasFiltradasCache: List<MagiaDefinicao> = emptyList()
+    private val magiasByIdCache: Map<String, MagiaDefinicao> by lazy {
+        dataRepository.magias.associateBy { it.id }
+    }
     private val todasEscolasMagiaCache: List<String> by lazy {
         dataRepository.magias
             .flatMap { it.escola ?: emptyList() }
@@ -712,6 +713,10 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Retorna mensagem de pré‑requisitos faltantes ou `null`. */
     fun prereqFailureForMagia(def: MagiaDefinicao): String? {
+        return prereqFailureForMagiaUnificada(def)
+    }
+
+    private fun prereqFailureForMagiaUnificada(def: MagiaDefinicao): String? {
         val assinaturaAtual = assinaturaEstadoMagiasParaModoAlvo()
         if (assinaturaAtual != prereqCacheAssinatura) {
             prereqCacheAssinatura = assinaturaAtual
@@ -725,23 +730,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             return regraEspecial
         }
 
-        val knownIds = personagem.magias.asSequence().map { it.definicaoId }.toSet()
         val erroHierarquico = nexusArcanoModoAlvoAdapter.falhaPreRequisitoHierarquica(
             alvoId = def.id,
-            magiasConhecidasIds = knownIds,
+            magiasConhecidasIds = personagem.magias.asSequence().map { it.definicaoId }.toSet(),
             iq = personagem.inteligencia,
             dx = personagem.destreza,
             am = nivelAptidaoMagica
         )
-        if (erroHierarquico != null) {
-            prereqFailureCache[def.id] = erroHierarquico
-            return erroHierarquico
-        }
-
-        // Fallback de compatibilidade para casos com texto legado atípico.
-        return dataRepository.missingPreRequisitoReport(def, personagem).also {
-            prereqFailureCache[def.id] = it
-        }
+        prereqFailureCache[def.id] = erroHierarquico
+        return erroHierarquico
     }
 
     /** Indica se todos os pré‑requisitos da magia estão satisfeitos. */
@@ -749,24 +746,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return prereqFailureForMagia(def) == null
     }
 
-    /** Versao leve para UI: evita calculo hierarquico pesado do motor de alvo. */
+    /** Mesmo contrato da validação principal, com cache compartilhado por estado. */
     fun prereqFailureForMagiaRapida(def: MagiaDefinicao): String? {
-        val assinaturaAtual = assinaturaEstadoMagiasParaModoAlvo()
-        if (assinaturaAtual != prereqCacheAssinaturaRapida) {
-            prereqCacheAssinaturaRapida = assinaturaAtual
-            prereqFailureCacheRapida.clear()
-        }
-        prereqFailureCacheRapida[def.id]?.let { return it }
-
-        val regraEspecial = validarRegrasEspeciaisMagia(def, null)
-        if (regraEspecial != null) {
-            prereqFailureCacheRapida[def.id] = regraEspecial
-            return regraEspecial
-        }
-
-        return dataRepository.missingPreRequisitoReport(def, personagem).also {
-            prereqFailureCacheRapida[def.id] = it
-        }
+        return prereqFailureForMagiaUnificada(def)
     }
 
     /** Retorna ids de magias relacionadas ao alvo em ordem de progressão sugerida. */
@@ -841,15 +823,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     modoAlvoChavesFaltantes = snapshot.chavesFaltantes.map { it.descricao }
                     modoAlvoProximasAcoesIds = snapshot.proximasAcoesIds
                     modoAlvoProximasAcoes = snapshot.proximasAcoesIds.map { id ->
-                        dataRepository.magias.firstOrNull { it.id == id }?.nome ?: id
+                        magiasByIdCache[id]?.nome ?: id
                     }
                     modoAlvoProgressoCadeia = snapshot.progressoCadeia
                     modoAlvoProgressoEscolas = snapshot.progressoEscolas
                     modoAlvoProximaObrigatoria = snapshot.proximaObrigatoriaId?.let { id ->
-                        dataRepository.magias.firstOrNull { it.id == id }?.nome ?: id
+                        magiasByIdCache[id]?.nome ?: id
                     }
                     modoAlvoProximaLateralUtil = snapshot.proximaLateralUtilId?.let { id ->
-                        dataRepository.magias.firstOrNull { it.id == id }?.nome ?: id
+                        magiasByIdCache[id]?.nome ?: id
                     }
                     modoAlvoBloqueioCurto = snapshot.bloqueioCurto
                     modoAlvoAviso = snapshot.aviso
