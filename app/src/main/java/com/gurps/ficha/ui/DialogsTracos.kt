@@ -571,15 +571,39 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
 
 
 @Composable
-fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, onSave: (VantagemSelecionada) -> Unit) {
+fun EditarVantagemDialog(
+    vantagem: VantagemSelecionada,
+    descricaoCatalogo: String = "",
+    onDismiss: () -> Unit,
+    onSave: (VantagemSelecionada) -> Unit
+) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivel by remember { mutableStateOf(vantagem.nivel) }
     var custoEscolhido by remember { mutableStateOf(vantagem.custoEscolhido) }
     var descricao by remember { mutableStateOf(vantagem.descricao) }
+    var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar: ${vantagem.nome}") },
+        title = {
+            Text(
+                vantagem.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoCatalogo.isNotBlank()) {
+                            it.clickable { mostrarDescricaoCatalogo = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoCatalogo.isNotBlank()) {
+                            contentDescription = "Nome da vantagem ${vantagem.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
@@ -647,20 +671,53 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
         confirmButton = { TextButton(onClick = { onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao)) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricaoCatalogo) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricaoCatalogo = false },
+            title = { Text(vantagem.nome, color = MaterialTheme.colorScheme.primary) },
+            text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
+            confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") } }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -> Unit, onSave: (DesvantagemSelecionada) -> Unit) {
+fun EditarDesvantagemDialog(
+    desvantagem: DesvantagemSelecionada,
+    descricaoCatalogo: String = "",
+    onDismiss: () -> Unit,
+    onSave: (DesvantagemSelecionada) -> Unit
+) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivel by remember { mutableStateOf(desvantagem.nivel) }
     var custoEscolhido by remember { mutableStateOf(desvantagem.custoEscolhido) }
     var descricao by remember { mutableStateOf(desvantagem.descricao) }
     var autocontrole by remember { mutableStateOf(desvantagem.autocontrole) }
+    var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar: ${desvantagem.nome}") },
+        title = {
+            Text(
+                desvantagem.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoCatalogo.isNotBlank()) {
+                            it.clickable { mostrarDescricaoCatalogo = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoCatalogo.isNotBlank()) {
+                            contentDescription = "Nome da desvantagem ${desvantagem.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 if (desvantagem.tipoCusto == TipoCusto.POR_NIVEL) {
@@ -735,6 +792,15 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -
         confirmButton = { TextButton(onClick = { onSave(desvantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, autocontrole = autocontrole)) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricaoCatalogo) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricaoCatalogo = false },
+            title = { Text(desvantagem.nome, color = MaterialTheme.colorScheme.primary) },
+            text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
+            confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") } }
+        )
+    }
 }
 
 

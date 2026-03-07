@@ -437,10 +437,20 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onDismiss: () -> Unit, onSave: (PericiaSelecionada) -> Unit) {
+fun EditarPericiaDialog(
+    pericia: PericiaSelecionada,
+    personagem: Personagem,
+    descricaoRegra: String = "",
+    preRequisitoRegra: String = "",
+    preDefinidoRegra: String = "",
+    modificadoresRegra: String = "",
+    onDismiss: () -> Unit,
+    onSave: (PericiaSelecionada) -> Unit
+) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(pericia.pontosGastos) }
     var especializacao by remember { mutableStateOf(pericia.especializacao) }
+    var mostrarDescricao by remember { mutableStateOf(false) }
 
     val previewPericia = pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)
     val nivelPreview = previewPericia.calcularNivel(personagem)
@@ -448,7 +458,25 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar: ${pericia.nome}") },
+        title = {
+            Text(
+                pericia.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoRegra.isNotBlank()) {
+                            it.clickable { mostrarDescricao = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoRegra.isNotBlank()) {
+                            contentDescription = "Nome da perícia ${pericia.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("${pericia.atributoBase.sigla}/${pericia.dificuldade.sigla}")
@@ -528,6 +556,34 @@ fun EditarPericiaDialog(pericia: PericiaSelecionada, personagem: Personagem, onD
         confirmButton = { TextButton(onClick = { onSave(pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)) }) { Text("Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricao) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricao = false },
+            title = { Text("Descrição: ${pericia.nome}") },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        descricaoRegra.ifBlank { "Sem descrição detalhada disponível." },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    if (preRequisitoRegra.isNotBlank() && preRequisitoRegra != "-") {
+                        Text("Pré-requisito: $preRequisitoRegra", style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (preDefinidoRegra.isNotBlank() && preDefinidoRegra != "-") {
+                        Text("Pré-definido: $preDefinidoRegra", style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (modificadoresRegra.isNotBlank() && modificadoresRegra != "-") {
+                        Text("Modificadores: $modificadoresRegra", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { mostrarDescricao = false }) { Text("Fechar") } }
+        )
+    }
 }
 
 @Composable

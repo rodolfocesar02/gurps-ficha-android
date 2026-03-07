@@ -181,8 +181,14 @@ fun TabTracos(viewModel: FichaViewModel) {
     }
 
     editingVantagemIndex?.let { index ->
+        val vantagem = p.vantagens[index]
+        val descricaoCatalogo = viewModel.dataRepository.vantagens
+            .firstOrNull { it.id == vantagem.definicaoId }
+            ?.descricao
+            .orEmpty()
         EditarVantagemDialog(
-            vantagem = p.vantagens[index],
+            vantagem = vantagem,
+            descricaoCatalogo = descricaoCatalogo,
             onDismiss = { editingVantagemIndex = null },
             onSave = { novaVantagem ->
                 viewModel.atualizarVantagem(index, novaVantagem)
@@ -192,8 +198,14 @@ fun TabTracos(viewModel: FichaViewModel) {
     }
 
     editingDesvantagemIndex?.let { index ->
+        val desvantagem = p.desvantagens[index]
+        val descricaoCatalogo = viewModel.dataRepository.desvantagens
+            .firstOrNull { it.id == desvantagem.definicaoId }
+            ?.descricao
+            .orEmpty()
         EditarDesvantagemDialog(
-            desvantagem = p.desvantagens[index],
+            desvantagem = desvantagem,
+            descricaoCatalogo = descricaoCatalogo,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->
                 viewModel.atualizarDesvantagem(index, novaDesvantagem)

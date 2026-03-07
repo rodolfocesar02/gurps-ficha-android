@@ -256,7 +256,8 @@
     "specialRule": "aptidao_astral",
     "tags": [
       "magica"
-    ]
+    ],
+    "descricao": "A alma e o que chamamos de materia escura: tudo aquilo que existe entre a materia. A consciencia necessita de materia escura para interagir com a materia normal. Os conduites de magia da alma sao consciencias que acumulam mais materia escura, ampliando o alcance da consciencia.\n\nAlma e um atributo que todo jogador inicia, como HT, ST, IQ ou DX. Todo jogador comeca com 10 pontos de Alma, usados como atributo normal. Esse valor e estatico em 10, exceto em casos especificos definidos pelo sistema.\n\nOs jogadores podem influenciar como usam o poder da Alma com a Vantagem Aptidao Astral, que funciona como Aptidao Magica: a cada nivel de Aptidao Astral, o jogador adiciona esse valor ao atributo Alma quando fizer uma jogada.\n\nExemplo: Cesar quer entender melhor Duncan para tomar uma decisao e tenta empatia emocional sem avisar. Nesse caso, ele joga contra a Alma do alvo. Com 3 niveis de Aptidao Astral contra 1 nivel de Duncan, Cesar joga para 13 e Duncan para 11, reduzido pela margem de sucesso de Cesar. O alvo tambem pode fazer teste de Vontade para adicionar 1/5 da Vontade (arredondado para baixo) na defesa de Alma, caso perceba a acao."
   },
   {
     "id": "aptidao_magica",
