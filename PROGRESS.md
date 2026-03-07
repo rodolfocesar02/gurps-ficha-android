@@ -1,6 +1,6 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-06
+Atualizado em: 2026-03-07
 
 ## Objetivo Atual
 Garantir que o **Modo Alvo** aplique os pré-requisitos de magia com comportamento canônico GURPS, sem divergência entre telas, motor e catálogo.
@@ -13,10 +13,9 @@ Feito:
 4. Motor do modo alvo ajustado para tratar alternativas com `ou` usando parser por termo, sem perder dependências compartilhadas.
 
 Falta:
-1. Fechar auditoria final de divergência residual de mensagens entre UI e modo alvo (Lote 3, passo 3).
-2. Completar cobertura de casos combinados no parser do motor (`outras escolas` + soma de atributos + nomeadas simultâneas) no Lote 4.
-3. Implementar e validar prioridade canônica hard-first da progressão (Lote 5).
-4. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
+1. Completar cobertura de casos combinados no parser do motor (`outras escolas` + soma de atributos + nomeadas simultâneas) no Lote 4.
+2. Implementar e validar prioridade canônica hard-first da progressão (Lote 5).
+3. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
 
 ## Diagnóstico Confirmado
 1. Divergência de validação rápida vs hierárquica na UI foi eliminada no `FichaViewModel`.
@@ -62,12 +61,12 @@ Critério de aceite:
 - Diferenças entre catálogo runtime e regra canônica reduzidas aos casos explicitamente não automatizáveis.
 
 ### Lote 3 - Unificação da Validação de Pré-Requisito
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Definir um único contrato de validação para UI e Modo Alvo (mesma semântica de bloqueio por magia).
 2. [x] Eliminar fallback conflitante no `FichaViewModel` entre validação rápida e validação principal.
-3. [ ] Fechar auditoria de divergência residual entre mensagem de chave do modo alvo e bloqueio de adição na UI.
+3. [x] Fechar auditoria de divergência residual entre mensagem de chave do modo alvo e bloqueio de adição na UI (adapter usa fonte única de mensagem de bloqueio).
 Arquivos:
 - `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 - `app/src/main/java/com/gurps/ficha/data/DataRepository.kt`
