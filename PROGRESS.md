@@ -181,6 +181,30 @@ Arquivo: `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 Critério de aceite:
 - Técnicas com pré-requisito específico só aceitam perícias compatíveis com a regra textual/canônica.
 
+### Lote 10 - Auditoria de Rotulagem por Aba (PraCego)
+Status: `EM_ANDAMENTO`
+
+Passos:
+1. [x] Registrar lotes e checklist de execução no `PROGRESS.md`.
+2. [ ] Corrigir anúncio de estado "pré-requisito atendido" antes do cálculo finalizar na lista de Magias (TalkBack).
+3. [ ] Rotular explicitamente ação de editar em item de Perícias.
+4. [ ] Rotular explicitamente ação de editar em item de Técnicas.
+5. [ ] Validar com build `visual/pracego` + instalação no emulador.
+
+Critério de aceite:
+- Fluxo de Magias/Perícias/Técnicas na variante `pracego` sem ambiguidade de ação para TalkBack.
+
+### Lote 11 - Fechamento e Publicação
+Status: `PENDENTE`
+
+Passos:
+1. [ ] Atualizar `PROGRESS.md` com fechamento dos lotes 10/11 e evidências de validação.
+2. [ ] Confirmar árvore de commit sem `pdf/xlsx`.
+3. [ ] Executar push para `origin/main`.
+
+Critério de aceite:
+- Branch remota atualizada sem artefatos indevidos (`.pdf`/`.xlsx`).
+
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
 2. Não aceitar correção só por "funcionou no caso X"; incluir teste de regressão.
