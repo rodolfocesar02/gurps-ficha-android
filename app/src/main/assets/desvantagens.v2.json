@@ -196,7 +196,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Assustar Animais M Sob -10 123 Ataque Infeccioso F Sob -5 123 Atavismo por Estresse M X Variável* 123 Atento M — -1 163 Atrapalhado F — -5 ou -10 123 Autodestruição F X -10 123 Avareza M — -10* 123 Aversão M Sob Variável 123 Aversões M — -1 163 Azar M — -10 124 Baixa Autoestima M — -10 124 Barulhento F — -2/nível 124 Bestial M X -10 ou -15 124 Bioquímica Incomum F X -5 125 Briguento M — -10* 125 Características Distintas F — -1 165 Características Sobrenaturais F Sob Variável 125 Castrado F — -1 165 Cegueira F — -50 125 Cegueira Noturna F — -10 126 Chauvinista M — -1 163 Circunspecção M — -10 126 Cleptomania M — -15* 126 Cobiça M — -15* 126 Código de Honra M — -1 ou -5 a -15 126, 163 Completamente Desastrado F — -15 132 Complexo de Culpa M — -5 127 Compreensivo M — -1 163 Compulsão M — -5 a -15* 127 Confuso M — -10* 128 Consumo Ampliado F — -10/nível 128 Convulsões Pós-combate M — -5* 129 Corcunda F — -10 129 Covardia M — -10* 129 Credulidade M — -10* 129 Criativo M — -1 163 Cuidadoso M — -1 164 Curiosidade M — -5* 129 Daltonismo F — -10 129 Deficiência Física F — -10 a -30 130 Deficiências Menores F — -1 165 Dependência F X Variável 130 Dependentes Soc — Variável 130 Depressão Crônica M — -15* 131"
   },
   {
     "id": "assustar_animais",
@@ -288,7 +289,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Autodestruição F X -10 123 Avareza M — -10* 123 Aversão M Sob Variável 123 Aversões M — -1 163 Azar M — -10 124 Baixa Autoestima M — -10 124 Barulhento F — -2/nível 124 Bestial M X -10 ou -15 124 Bioquímica Incomum F X -5 125 Briguento M — -10* 125 Características Distintas F — -1 165 Características Sobrenaturais F Sob Variável 125 Castrado F — -1 165 Cegueira F — -50 125 Cegueira Noturna F — -10 126 Chauvinista M — -1 163 Circunspecção M — -10 126 Cleptomania M — -15* 126 Cobiça M — -15* 126 Código de Honra M — -1 ou -5 a -15 126, 163 Completamente Desastrado F — -15 132 Complexo de Culpa M — -5 127 Compreensivo M — -1 163 Compulsão M — -5 a -15* 127 Confuso M — -10* 128 Consumo Ampliado F — -10/nível 128 Convulsões Pós-combate M — -5* 129 Corcunda F — -10 129 Covardia M — -10* 129 Credulidade M — -10* 129 Criativo M — -1 163 Cuidadoso M — -1 164 Curiosidade M — -5* 129 Daltonismo F — -10 129 Deficiência Física F — -10 a -30 130 Deficiências Menores F — -1 165 Dependência F X Variável 130 Dependentes Soc — Variável 130 Depressão Crônica M — -15* 131 Desastrado F — -5 132 Desatento M — -10* 132 Desdobramento de Pers. M — -15* 132 Despretensioso M — -1 164 Destino M Sob Variável 132"
   },
   {
     "id": "autodestruicao",
@@ -441,7 +443,8 @@
     "max": null,
     "rawCost": "-5",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Briguento M — -10* 125 Características Distintas F — -1 165 Características Sobrenaturais F Sob Variável 125 Castrado F — -1 165 Cegueira F — -50 125 Cegueira Noturna F — -10 126 Chauvinista M — -1 163 Circunspecção M — -10 126 Cleptomania M — -15* 126 Cobiça M — -15* 126 Código de Honra M — -1 ou -5 a -15 126, 163 Completamente Desastrado F — -15 132 Complexo de Culpa M — -5 127 Compreensivo M — -1 163 Compulsão M — -5 a -15* 127 Confuso M — -10* 128 Consumo Ampliado F — -10/nível 128 Convulsões Pós-combate M — -5* 129 Corcunda F — -10 129 Covardia M — -10* 129 Credulidade M — -10* 129 Criativo M — -1 163 Cuidadoso M — -1 164 Curiosidade M — -5* 129 Daltonismo F — -10 129 Deficiência Física F — -10 a -30 130 Deficiências Menores F — -1 165 Dependência F X Variável 130 Dependentes Soc — Variável 130 Depressão Crônica M — -15* 131 Desastrado F — -5 132 Desatento M — -10* 132 Desdobramento de Pers. M — -15* 132 Despretensioso M — -1 164 Destino M Sob Variável 132 Destruidor da Vida M Sob -10 132 Dever Soc — Variável 133 Dieta Restrita F — -10 a -40 134 Dificuldade com Números M — -5 134Desvantagem M/F/Soc X/Sob Custo Pág. Dislexia M — -10 134 Disopia F — -25 134 Disosmia F — -5 135 Distração M — -15 135 Distraído M — -1 164"
   },
   {
     "id": "briquento",
@@ -457,7 +460,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "-10 pontos* O personagem gosta de intimidar as pessoas sempre que for possível fazê-lo im punemente. Dependendo da personalidade e da posição que ele ocupa, isso pode to mar a forma de agressões físicas, hostilida de intelectual ou um “gelo” social. Ele deve fazer um teste de autocontrole para não re alizar uma bravata grosseira quando sabe que não deve — mas para representar o personagem corretamente, ele deveria pro vocar tantas pessoas quantas puder. Como ninguém gosta de um fanfarrão, seus testes de reação sofrem uma penalidade de -2. Características Sobrenaturais 3 5 Variável O personagem tem características per turbadoras que o qualificam como um de mônio, um vampiro ou um ser sobrenatu ral. Ele consegue se passar por um mortal comum para qualquer observador, mas um exame mais detalhado revela que ele tem alguma coisa estranha. Um especialis ta pode acabar descobrindo o seu segredo. Características Sobrenaturais difere de Feições Estranhas (pág. 22), pois não costumam ser óbvias; elas se tornam apa rentes somente em circunstâncias espe ciais. Mas, quando notadas, resultam em uma penalidade de reação. Essas carac terísticas também concedem — àqueles que sabem o que procurar — um bônus em qualquer teste de habilidade (contra Conhecimento Oculto, Ocultismo, etc.) feito com o objetivo de identificar a ver dadeira natureza do personagem. Esta desvantagem também pode ser acompanhada de níveis de aparência que variam de Hediondo a Muito Bonito (v. Aparência Física, pág. 20). No entanto, o personagem não recebe nenhum ponto de Características Sobrenaturais se for Monstruoso ou Horrendo. Se a aparên cia dele for tão assustadora assim, ele"
   },
   {
     "id": "caracteristicas_distintas",
@@ -511,7 +515,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "O personagem não tem os órgãos sexuais típicos de sua raça, gênero e faixa etária ou talvez seja genui namente assexuado e apenas se pa reça com alguém de uma raça ou sexo em particular. Isso pode fazer com que ele tenha uma aparência diferente, Estigma Social ou Feições Estranhas em alguns cenários. No entanto, existem alguns benefícios menores: ele é imune à sedução e nunca terá um filho por acidente. Isso é muito mais que uma simples esterilidade (que é uma característi ca que vale 0 ponto)."
   },
   {
     "id": "cegueira",
@@ -651,7 +656,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "ma maneira que o caso anterior, mas qualquer fracasso em um teste de DX ou em uma perícia com base em DX é con siderado uma falha crítica. -15 pontos. Esta característica pode parecer inú til, mas não precisa ser. Grande parte dos robôs realistas de NT7 e NT8 têm esta desvantagem. Desatento 2 -10 pontos* O personagem não consegue se con centrar em uma só tarefa por mais que alguns minutos. Ele deve fazer um tes te de autocontrole sempre que precisar manter o interesse por um longo perí odo de tempo ou quando houver algo para distraí-lo. No caso de um fracasso, ele também fracassa automaticamente na tarefa que estava realizando. O Mes tre pode conceder um pequeno bônus no teste de autocontrole em situações em que a sobrevivência dele está em jogo. Desdobramento de Personalidade 2 -15 pontos* O personagem tem duas ou mais personalidades — cada uma com seu próprio padrão de comportamento, lembranças distintas ou até mesmo no mes diferentes. Selecione um “pacote” de desvanta gens mentais e até um máximo de cin co peculiaridades para cada personali dade. O Mestre também pode permitir variações na IQ, Percepção, Vontade e desvantagens mentais quando elas fize ram sentido. Todos os pacotes de carac terísticas mentais devem ter o mesmo custo em pontos. Quando estiver cal culando o valor em pontos de persona gem, conte uma única vez o “preço do pacote” e não uma vez para cada perso -nalidade. Todas as personalidades apre sentam as mesmas características e pe rícias físicas (embora algumas possam"
   },
   {
     "id": "complexo_de_culpa",
@@ -684,7 +690,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "Um caso suave de Indulgente (pág. 146). O personagem é capaz de per ceber os sentimentos e motivações de outras pessoas e, se estiver certo, estará propenso a ajudá-las."
   },
   {
     "id": "compulsao",
@@ -891,7 +898,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Deficiências Menores F — -1 165 Dependência F X Variável 130 Dependentes Soc — Variável 130 Depressão Crônica M — -15* 131 Desastrado F — -5 132 Desatento M — -10* 132 Desdobramento de Pers. M — -15* 132 Despretensioso M — -1 164 Destino M Sob Variável 132 Destruidor da Vida M Sob -10 132 Dever Soc — Variável 133 Dieta Restrita F — -10 a -40 134 Dificuldade com Números M — -5 134Desvantagem M/F/Soc X/Sob Custo Pág. Dislexia M — -10 134 Disopia F — -25 134 Disosmia F — -5 135 Distração M — -15 135 Distraído M — -1 164 Distúrbio Neurológico F — Variável 135 Dívidas Soc — -1/nível 26 Doença Contagiosa F — -5 135 Doente Terminal F — -50, -75 ou -100 135 Dor Crônica F — Variável 135 Dorminhoco F — -5 136 Doutrinas Religiosas M — -5 a -15 136 Drenagem F Sob Variável 136 Duro de Ouvido F — -10 136 Egoísmo M — -5* 136 Elétrico F X -20 137 Embotado M — -1 164 Enjoadiço M — -10* 137 Enjoo F — -10 137 Enjoo Espacial F — -10 137 Enjoo Temporal F — -10 137 Entorpecido F — -20 137 Enxerido M — -1 164 Epilepsia F — -30 138 Estigma Social Soc — -5 a -20 138 Estômago Sensível F — -1 165 Excesso de Confiança M — -5* 139 Expectativa de Vida Reduzida F X -10/nível 139 Fácil de Decifrar M — -10 139 Fácil de Matar F — -2/nível 139 Fanatismo M — -15 139"
   },
   {
     "id": "deficiencias_menores",
@@ -1117,7 +1125,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "Dislexia M — -10 134 Disopia F — -25 134 Disosmia F — -5 135 Distração M — -15 135 Distraído M — -1 164 Distúrbio Neurológico F — Variável 135 Dívidas Soc — -1/nível 26 Doença Contagiosa F — -5 135 Doente Terminal F — -50, -75 ou -100 135 Dor Crônica F — Variável 135 Dorminhoco F — -5 136 Doutrinas Religiosas M — -5 a -15 136 Drenagem F Sob Variável 136 Duro de Ouvido F — -10 136 Egoísmo M — -5* 136 Elétrico F X -20 137 Embotado M — -1 164 Enjoadiço M — -10* 137 Enjoo F — -10 137 Enjoo Espacial F — -10 137 Enjoo Temporal F — -10 137 Entorpecido F — -20 137 Enxerido M — -1 164 Epilepsia F — -30 138 Estigma Social Soc — -5 a -20 138 Estômago Sensível F — -1 165 Excesso de Confiança M — -5* 139 Expectativa de Vida Reduzida F X -10/nível 139 Fácil de Decifrar M — -10 139 Fácil de Matar F — -2/nível 139 Fanatismo M — -15 139 Fantasias M — -1 ou -5 a -15 139, 164 Feições Estranhas F — Variável 22 Ferido F — -5 140 Flashbacks M — Variável 140 Fobias M — Variável* 140 Fora de Forma F — -5 142 Forma de Sombras F X -20 142 Fragilidade F X Variável 142 Fragilidade em Aceleração F — -1 165 Fraqueza F X Variável 143 Fúria M — -10* 143 Gagueira F — -10 143 Gigantismo F — 0 19"
   },
   {
     "id": "dislexia",
@@ -1235,7 +1244,8 @@
     "specialRule": null,
     "tags": [
       "social"
-    ]
+    ],
+    "descricao": "Doença Contagiosa F — -5 135 Doente Terminal F — -50, -75 ou -100 135 Dor Crônica F — Variável 135 Dorminhoco F — -5 136 Doutrinas Religiosas M — -5 a -15 136 Drenagem F Sob Variável 136 Duro de Ouvido F — -10 136 Egoísmo M — -5* 136 Elétrico F X -20 137 Embotado M — -1 164 Enjoadiço M — -10* 137 Enjoo F — -10 137 Enjoo Espacial F — -10 137 Enjoo Temporal F — -10 137 Entorpecido F — -20 137 Enxerido M — -1 164 Epilepsia F — -30 138 Estigma Social Soc — -5 a -20 138 Estômago Sensível F — -1 165 Excesso de Confiança M — -5* 139 Expectativa de Vida Reduzida F X -10/nível 139 Fácil de Decifrar M — -10 139 Fácil de Matar F — -2/nível 139 Fanatismo M — -15 139 Fantasias M — -1 ou -5 a -15 139, 164 Feições Estranhas F — Variável 22 Ferido F — -5 140 Flashbacks M — Variável 140 Fobias M — Variável* 140 Fora de Forma F — -5 142 Forma de Sombras F X -20 142 Fragilidade F X Variável 142 Fragilidade em Aceleração F — -1 165 Fraqueza F X Variável 143 Fúria M — -10* 143 Gagueira F — -10 143 Gigantismo F — 0 19 Gordo F — -3 19 Gregário M — -10 122 Gula M — -5* 143 Hábitos Detestáveis M — -5, -10, ou -15 22 Hábitos ou Expressões M — -1 164 Hemofilia F — -30 144 Hiperalgia F — -10 144"
   },
   {
     "id": "doenca_contagiosa",
@@ -1426,7 +1436,8 @@
     "max": null,
     "rawCost": "-10*",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "O personagem fica em um estado de plorável sempre que estiver em um veículo em movimento, seja um automóvel, trem, avião, balão, navio ou nave espacial. Ele é incapaz de aprender qualquer perícia que envolva a operação de um veículo. Sempre que entrar em um veículo em movimento, o personagem precisa fazer um teste con tra a HT. Um fracasso indica que o perso nagem vomita e sofre uma penalidade de -5 em todos os testes de habilidade, DX e IQ durante o resto da viagem. Um sucesso indica que ele está apenas muito enjoado e sofre uma penalidade de -2 nos testes de habilidade, DX e IQ. Ele deve fazer um tes te por dia no caso de viagens longas. Enjoo Espacial 3 O personagem se sente muito mal quando está em queda livre. Ele nunca poderá aprender a perícia Queda Livre e sempre fará os testes dessa perícia usan do o valor predefinido. Além disso, ele sofre uma penalidade de -4 no teste de HT para evitar a “síndrome de adaptação no espaço” (pág. 433). Se fracassar no primeiro teste de HT, o personagem pre cisa voltar à gravidade normal (essa será a única maneira de ele se recuperar). Esta característica só é permitida em campanhas que envolvem viagens espaciais regulares. Enjoo Temporal 3 O personagem fica enjoado quando viaja no tempo, entre dimensões ou duran te um teleporte. Ele não pode ter poderes psíquicos, mágicas ou perícias tecnoló gicas que estejam relacionadas com esse tipo de viagem, nem aprender a perícia Percepção do Corpo. O personagem tem que fazer um teste de HT sempre que via jar no tempo ou entre dimensões e durante teleportes. No caso de um fracasso, ele fica"
   },
   {
     "id": "enjoo",
@@ -1527,7 +1538,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Estigma Social Soc — -5 a -20 138 Estômago Sensível F — -1 165 Excesso de Confiança M — -5* 139 Expectativa de Vida Reduzida F X -10/nível 139 Fácil de Decifrar M — -10 139 Fácil de Matar F — -2/nível 139 Fanatismo M — -15 139 Fantasias M — -1 ou -5 a -15 139, 164 Feições Estranhas F — Variável 22 Ferido F — -5 140 Flashbacks M — Variável 140 Fobias M — Variável* 140 Fora de Forma F — -5 142 Forma de Sombras F X -20 142 Fragilidade F X Variável 142 Fragilidade em Aceleração F — -1 165 Fraqueza F X Variável 143 Fúria M — -10* 143 Gagueira F — -10 143 Gigantismo F — 0 19 Gordo F — -3 19 Gregário M — -10 122 Gula M — -5* 143 Hábitos Detestáveis M — -5, -10, ou -15 22 Hábitos ou Expressões M — -1 164 Hemofilia F — -30 144 Hiperalgia F — -10 144 Honestidade M — -10* 144 Horizontal F X -10 145 Identidade Secreta Soc — Variável 145 Identidade Trocada F — -5 21 Impulsividade M — -10* 145 Incapaz de Aprender M — -30 145 Incapaz de Falar F — -15 145 Incapaz de Flutuar F — -1 165 Incapaz de Sentir Prazer F — -15 145 Incompetente M — -1 164 Indeciso M — -10* 145 Indiferente M — -5* 146 Indulgente M — -15* 146"
   },
   {
     "id": "estigma_social",
@@ -1598,7 +1610,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Fácil de Decifrar M — -10 139 Fácil de Matar F — -2/nível 139 Fanatismo M — -15 139 Fantasias M — -1 ou -5 a -15 139, 164 Feições Estranhas F — Variável 22 Ferido F — -5 140 Flashbacks M — Variável 140 Fobias M — Variável* 140 Fora de Forma F — -5 142 Forma de Sombras F X -20 142 Fragilidade F X Variável 142 Fragilidade em Aceleração F — -1 165 Fraqueza F X Variável 143 Fúria M — -10* 143 Gagueira F — -10 143 Gigantismo F — 0 19 Gordo F — -3 19 Gregário M — -10 122 Gula M — -5* 143 Hábitos Detestáveis M — -5, -10, ou -15 22 Hábitos ou Expressões M — -1 164 Hemofilia F — -30 144 Hiperalgia F — -10 144 Honestidade M — -10* 144 Horizontal F X -10 145 Identidade Secreta Soc — Variável 145 Identidade Trocada F — -5 21 Impulsividade M — -10* 145 Incapaz de Aprender M — -30 145 Incapaz de Falar F — -15 145 Incapaz de Flutuar F — -1 165 Incapaz de Sentir Prazer F — -15 145 Incompetente M — -1 164 Indeciso M — -10* 145 Indiferente M — -5* 146 Indulgente M — -15* 146"
   },
   {
     "id": "facil_de_decifrar",
@@ -1808,7 +1821,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Fraqueza F X Variável 143 Fúria M — -10* 143 Gagueira F — -10 143 Gigantismo F — 0 19 Gordo F — -3 19 Gregário M — -10 122 Gula M — -5* 143 Hábitos Detestáveis M — -5, -10, ou -15 22 Hábitos ou Expressões M — -1 164 Hemofilia F — -30 144 Hiperalgia F — -10 144 Honestidade M — -10* 144 Horizontal F X -10 145 Identidade Secreta Soc — Variável 145 Identidade Trocada F — -5 21 Impulsividade M — -10* 145 Incapaz de Aprender M — -30 145 Incapaz de Falar F — -15 145 Incapaz de Flutuar F — -1 165 Incapaz de Sentir Prazer F — -15 145 Incompetente M — -1 164 Indeciso M — -10* 145 Indiferente M — -5* 146 Indulgente M — -15* 146"
   },
   {
     "id": "fraqueza",
@@ -1875,7 +1889,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "O personagem tem uma altura anor mal em relação à sua espécie. Indepen dente da ST, essa dimensão está acima do maior valor da Tabela de Constitui -Tabela de Modificador de Tamanho Maior DimensãoModificador de Tamanho 5 cm -10 7 cm -9 10 cm -8 15 cm -7 20 cm -6 30 cm -5 50 cm -4 70 cm -3 1 m -2 1,5 m -1 2 m 0Maior DimensãoModificador de Tamanho 3 m +1 5 m +2 7 m +3 10 m +4 15 m +5 20 m +6 30 m +7 50 m +8 70 m +9 100 m +10 150 m +11 Como o GURPS funciona: ST, Massa e Deslocamento Seria mais realista calcular o Deslocamento Básico a partir da proporção entre a ST e a massa; por exemplo, um personagem Muito Gordo se moveria mais de vagar que outro com uma constituição física Comum. Se quiser simular essa con dição, compre +1 de Deslocamento Básico se seu PdJ for Magro, -1 se ele estiver Acima do Peso, -2 se for Gordo e -3 se for Muito Gordo, ao custo normal de pontos. Em geral, as mulheres também são mais leves e mais fracas que os ho mens. Você pode simular este fato comprando -1 ou -2 de ST ao custo nor mal de pontos. Escolha um peso apropriado para a ST inferior. Contudo, o Mestre não deve exigir nenhuma dessas sugestões. A maioria dos jogadores prefere escolher a ST, altura, peso e gênero do personagem"
   },
   {
     "id": "gordo",
@@ -2132,7 +2147,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem sempre afunda na água. Isso se aplica com mais frequ ência a máquinas, mas também pode afetar raças fictícias ou ser resultado de uma maldição. Intolerância ao Álcool Uma dose de bebida alcoólica surte efeito imediato no personagem. Ele fica intoxicado com muito mais rapidez que o normal e sofre uma penalidade de -2 em qualquer teste de HT relacionado à bebedeira."
+    "descricao": "O personagem sempre afunda na água. Isso se aplica com mais frequ ência a máquinas, mas também pode afetar raças fictícias ou ser resultado de uma maldição."
   },
   {
     "id": "incapaz_de_sentir_prazer",
@@ -2231,7 +2246,8 @@
     "max": null,
     "rawCost": "-10",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "cruel. Ele é capaz de decifrar as emoções alheias, mas apenas com o objetivo de manipulá-las, pois não se importa nem um pouco com sentimentos e sofrimen to. Isso impõe uma penalidade de -3 nos testes de Pedagogia, nos testes de Psico logia feitos para ajudar outras pessoas (e não para identificar fraquezas ou realizar pesquisas científicas) e em qualquer teste para lidar com pessoas que sofreram as consequências de sua insensibilidade no passado (a critério do Mestre). Da mes ma maneira, a reação de vítimas antigas e de qualquer pessoa com Empatia so fre uma penalidade de -1. No entanto, a crueldade também tem suas vantagens: o personagem recebe um bônus de +1 nos testes de Interrogatório e Intimidação quando faz uso de ameaças ou tortura. Insone 3 O personagem às vezes passa por pe ríodos em que ele tem dificuldade para dormir. Nesses momentos, o jogador de verá fazer um teste de HT-1 uma vez por noite. Se for bem-sucedido, ele adorme cerá facilmente, encerrando o período de insônia. No caso de um fracasso, ele perderá duas horas de sono nessa mesma noite (e sofrerá todos os efeitos rotinei ros; veja Sono Perdido, pág. 426) e o epi sódio insônia se repetirá mais uma noite. No caso de uma falha crítica, ele não conseguirá dormir. O valor em pontos dependerá da gravidade do problema: Suave: O MJ jogará 3d em segredo para obter o número de dias que separam dois episódios de insônia. -10 pontos. Grave: O MJ jogará 2d-1 para obter o número de dias que separam dois epi sódios de insônia. -15 pontos. Independente da gravidade do pro blema, o MJ poderá exigir um teste de HT toda vez que o personagem passar por um estresse prolongado. Um fra -"
   },
   {
     "id": "ingenuo",
@@ -2301,7 +2317,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "O personagem às vezes passa por pe ríodos em que ele tem dificuldade para dormir. Nesses momentos, o jogador de verá fazer um teste de HT-1 uma vez por noite. Se for bem-sucedido, ele adorme cerá facilmente, encerrando o período de insônia. No caso de um fracasso, ele perderá duas horas de sono nessa mesma noite (e sofrerá todos os efeitos rotinei ros; veja Sono Perdido, pág. 426) e o epi sódio insônia se repetirá mais uma noite. No caso de uma falha crítica, ele não conseguirá dormir. O valor em pontos dependerá da gravidade do problema: Suave: O MJ jogará 3d em segredo para obter o número de dias que separam dois episódios de insônia. -10 pontos. Grave: O MJ jogará 2d-1 para obter o número de dias que separam dois epi sódios de insônia. -15 pontos. Independente da gravidade do pro blema, o MJ poderá exigir um teste de HT toda vez que o personagem passar por um estresse prolongado. Um fra casso significa que um episódio de in sônia se iniciará imediatamente. Intolerância 2 Variável O personagem não gosta e não con fia em pessoas que são diferentes dele. Ele pode ter preconceitos em relação à classe, etnia, nacionalidade, religião, sexo ou espécie. As vítimas de sua In tolerância reagem diante dele com uma penalidade que varia entre -1 e -5 (a critério do Mestre). O valor em pontos depende da amplitude da Intolerância. Os testes de reação de um personagem completamente intolerante frente a qual quer pessoa que não pertença à sua raça, etnia, nacionalidade, religião ou espécie (escolha uma opção) sofre uma penalida de de -3. No caso de uma reação “boa”, ele"
   },
   {
     "id": "intolerancia",
@@ -2322,7 +2339,8 @@
     "tags": [
       "mental",
       "social"
-    ]
+    ],
+    "descricao": "Variável O personagem não gosta e não con fia em pessoas que são diferentes dele. Ele pode ter preconceitos em relação à classe, etnia, nacionalidade, religião, sexo ou espécie. As vítimas de sua In tolerância reagem diante dele com uma penalidade que varia entre -1 e -5 (a critério do Mestre). O valor em pontos depende da amplitude da Intolerância. Os testes de reação de um personagem completamente intolerante frente a qual quer pessoa que não pertença à sua raça, etnia, nacionalidade, religião ou espécie (escolha uma opção) sofre uma penalida de de -3. No caso de uma reação “boa”, ele vai tolerar a pessoa e será tão cortês quan to possível (apesar de frio e reservado). No caso de uma reação “neutra”, ele ainda to lera a pessoa, mas deixa claro, por meio de palavras e atitudes, que não faz a mínima questão de vê-la por perto e a considera inferior e/ou repugnante. Se a reação for pior, o personagem pode atacar ou se recu sar a se associar com a vítima. Uma Intole rância desse tipo vale -10 pontos.Uma Intolerância dirigida contra uma classe, etnia, nacionalidade, reli gião, sexo ou espécie específica vale des de -5 pontos, contra vítimas que podem ser encontradas com frequência, até -1 (nada mais que uma peculiaridade de sagradável), se as vítimas forem raras. Intolerância-G 3 O personagem é capaz de agir em poucos tipos de gravidade. Para um ser humano comum, as penalidades para qualquer gravidade (exceto a na tiva) se acumulam em intervalos de 0,2G; consulte Gravidades Diferentes (pág. 351). Se a penalidade variar em intervalos de 0,1G, ela vale -10 pontos; se variar em intervalos de 0,05G, ela vale -20 pontos."
   },
   {
     "id": "intolerancia_ao_alcool",
@@ -2339,7 +2357,8 @@
     "tags": [
       "fisica",
       "social"
-    ]
+    ],
+    "descricao": "Uma dose de bebida alcoólica surte efeito imediato no personagem. Ele fica intoxicado com muito mais rapidez que o normal e sofre uma penalidade de -2 em qualquer teste de HT relacionado à bebedeira."
   },
   {
     "id": "intolerancia_g",
@@ -2358,7 +2377,8 @@
     "specialRule": null,
     "tags": [
       "social"
-    ]
+    ],
+    "descricao": "O personagem é capaz de agir em poucos tipos de gravidade. Para um ser humano comum, as penalidades para qualquer gravidade (exceto a na tiva) se acumulam em intervalos de 0,2G; consulte Gravidades Diferentes (pág. 351). Se a penalidade variar em intervalos de 0,1G, ela vale -10 pontos; se variar em intervalos de 0,05G, ela vale -20 pontos. Esta desvantagem só é permitida em campanhas em que a viagem espacial é uma realidade. Inveja 2 O personagem tem uma reação ime diatamente ruim diante de outra pessoa que pareça mais inteligente, atraente ou em melhor situação que ele. Talvez ele se oponha a qualquer plano propos to por um “rival” e odiará se alguma outra pessoa estiver em evidência (esta desvantagem combina bem com Me galomania). Um PdM invejoso, impõe penalidades entre -2 e -4 às reações das vítimas de sua inveja. Invertebrado 3 1 O personagem não possui coluna vertebral, exoesqueleto ou qualquer outro suporte corporal natural. Ele uti liza sua Base de Carga total para em purrar coisas, mas apenas 1/4 da BC para calcular o peso de objetos que o personagem é capaz de erguer, carregar ou puxar. Apesar disso, esta desvanta gem também apresenta um pequeno benefício colateral: a capacidade de se espremer por aberturas muito menores do que sugere o seu tamanho. Observe que esta característica dife re um pouco da definição biológica de"
   },
   {
     "id": "inveja",
@@ -2739,7 +2759,8 @@
     "max": null,
     "rawCost": "-15",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "emitir sons. Toda comunicação com os outros deve ser feita sem a fala: por es crito, linguagem de sinais, código Mor se, telepatia, etc. O tempo gasto para se comunicar dessa maneira conta integral mente para o aperfeiçoamento, por meio do estudo, das perícias relacionadas (v. o Capítulo 9). Nenhum teste é preciso (nem permitido) quando o personagem tentar se comunicar com outros PdJs que não conhecem sua linguagem de si nais; interprete isso por sua conta! Não é possível ter quaisquer outras caracte rísticas relacionadas à fala. -25 pontos. Incapaz de Sentir Prazer 3 A parte do cérebro responsável pelo prazer está desgastada ou não existe no personagem. Ele não é capaz de apreciar o sabor de uma boa refeição, o prazer do sexo, a beleza selvagem do combate, etc. Ele pode nem mesmo se lembrar das sen sações causadas por tudo isso. O perso nagem é capaz de fingir, mas sofre uma penalidade de -3 em todos os testes de Bo emia, Connoisseur, Arte Erótica e Jogos de Azar. As outras pessoas reagem diante dele com uma penalidade entre -1 e -3 em qualquer situação em que a sua falta de capacidade de sentir prazer se torne evi dente (a critério do Mestre). Uma reação ruim resulta em ridicularização por parte de pessoas cultas, rejeição por parte de um amante, etc., e não em violência. Algumas sociedades com tecnologia extremamente avançada podem reali zar cirurgias para produzir esse estado, como uma forma de punição. Nesse caso, o personagem não planejará uma vingan ça… pois não sentirá prazer algum nisso. Indeciso 2 -10 pontos* O personagem tem dificuldade para se decidir. Enquanto só existir um caminho"
   },
   {
     "id": "muito_fora_de_forma",
@@ -2755,7 +2776,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "maneira que o caso anterior, mas a pe nalidade nos testes de HT é de -2. Além disso, o personagem recupera PF a ape nas metade da velocidade usual. O per sonagem não pode adquirir nenhum ní vel de Resistente (pág. 84). -15 pontos. Nos dois casos, esta desvantagem se aplica apenas aos PF perdidos por es forço, calor, etc. Ela não surte esse efei to sobre os pontos de fadiga “gastos” com psiquismo ou magia. Forma de Sombras 3 1 Consulte a pág. 61. Se o personagem não for capaz de desligar esta habilidade, então ela é considerada uma desvantagem. Fragilidade 3 1 Variável O personagem é suscetível a ferimen tos que não se aplicam a seres humanos comuns. Os ataques não o ferem mais que o normal (isso seria Vulnerabilidade, pág. 161), mas uma quantidade suficiente de dano penetrante pode provocar efeitos mais catastróficos do que um atordoa mento, inconsciência ou sangramento. Entre as possibilidades se incluem: Queimável: O corpo do personagem queima mais rápido que a carne. Talvez ele seja muito seco, resinoso ou feito de madeira. Ele deve fazer um teste de HT para não pegar fogo sempre que sofrer um ferimento grave devido a um ataque por queimadura ou explosão. O persona gem pega fogo automaticamente se esse ataque causar um ferimento de 10 ou mais pontos de dano. Depois que estiver em chamas, ele sofre 1d-1 ponto de dano por segundo até conseguir apagar o fogo mergulhando na água, rolando no chão (leva 3 segundos), etc. -5 pontos. Explosivo: O corpo do personagem contém explosivos, gás comprimido ou algo ainda mais instável. Ele explode de pois de qualquer tipo de falha crítica em"
   },
   {
     "id": "muito_gordo",
@@ -2931,7 +2953,8 @@
     "specialRule": null,
     "tags": [
       "combate"
-    ]
+    ],
+    "descricao": "Padrão de Tempo Reduzido M X -100 152 Paralisia Frente ao Combate F — -15 152 Paranoia M — -10 152 Pernas Tortas F — -1 165 Pesadelos M — -5* 152 Piromania M — -5* 153 Pouca Empatia M — -20 153 Preferências M — -1 164 Preguiça M — -10 153Desvantagem M/F/Soc X/Sob Custo Pág. Problemas na Coluna F — -15 ou -25 153 Recuperação Lenta F — -5/nível 153 Refeição Demorada F X -10 153 Reprogramável M X -10 153 Repugnância F Sob -5 a -15 154 Reputação Soc — Variável 26 Ressacas Terríveis F — -1 165 Riqueza Soc — Variável 25 Sadismo M — -15* 154 Sangue Frio F — -5 ou -10 154 Sanguinolência M — -10* 154 Segredo Soc — -5 a -30 155 Sem Imaginação M — -5 155 Sem Manuseadores F X -50 149 Sem Noção de Profundidade F — -15 155 Sem Pernas F X Variável 156 Sem Recuperação F X -20 ou -30 156 Sem um Dedo F — -2 ou -5 156 Semiereto F X -5 156 Senso do Dever M — -2 a -20 156 Simpático M — -1 164 Solitário M — -5* 157 Sonambulismo M — -5* 157 Sonhador M — -1 164 Sono Complementar F — -2/nível 157 Sono Leve F — -5 157 Sonolento F X Variável 157 Status Soc — -5/nível 28 Supersensitivo M Sob -15 157 Suporte de Vida Ampliado F X Variável 158 Surdez F — -20 158 Susceptibilidade à Magia M Sob -3/nível 158 Suscetível F — Variável 158 Teimosia M — -5 158 Temor M — -2/nível 158"
   },
   {
     "id": "padrao_de_tempo_reduzido",
@@ -2945,7 +2968,8 @@
     "max": null,
     "rawCost": "-100",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Paralisia Frente ao Combate F — -15 152 Paranoia M — -10 152 Pernas Tortas F — -1 165 Pesadelos M — -5* 152 Piromania M — -5* 153 Pouca Empatia M — -20 153 Preferências M — -1 164 Preguiça M — -10 153Desvantagem M/F/Soc X/Sob Custo Pág. Problemas na Coluna F — -15 ou -25 153 Recuperação Lenta F — -5/nível 153 Refeição Demorada F X -10 153 Reprogramável M X -10 153 Repugnância F Sob -5 a -15 154 Reputação Soc — Variável 26 Ressacas Terríveis F — -1 165 Riqueza Soc — Variável 25 Sadismo M — -15* 154 Sangue Frio F — -5 ou -10 154 Sanguinolência M — -10* 154 Segredo Soc — -5 a -30 155 Sem Imaginação M — -5 155 Sem Manuseadores F X -50 149 Sem Noção de Profundidade F — -15 155 Sem Pernas F X Variável 156 Sem Recuperação F X -20 ou -30 156 Sem um Dedo F — -2 ou -5 156 Semiereto F X -5 156 Senso do Dever M — -2 a -20 156 Simpático M — -1 164 Solitário M — -5* 157 Sonambulismo M — -5* 157 Sonhador M — -1 164 Sono Complementar F — -2/nível 157 Sono Leve F — -5 157 Sonolento F X Variável 157 Status Soc — -5/nível 28 Supersensitivo M Sob -15 157 Suporte de Vida Ampliado F X Variável 158 Surdez F — -20 158 Susceptibilidade à Magia M Sob -3/nível 158 Suscetível F — Variável 158 Teimosia M — -5 158 Temor M — -2/nível 158 Tetraplégico F — -80 159"
   },
   {
     "id": "paralisia_frente_ao_combate",
@@ -2961,7 +2985,8 @@
     "specialRule": null,
     "tags": [
       "combate"
-    ]
+    ],
+    "descricao": "Paranoia M — -10 152 Pernas Tortas F — -1 165 Pesadelos M — -5* 152 Piromania M — -5* 153 Pouca Empatia M — -20 153 Preferências M — -1 164 Preguiça M — -10 153Desvantagem M/F/Soc X/Sob Custo Pág. Problemas na Coluna F — -15 ou -25 153 Recuperação Lenta F — -5/nível 153 Refeição Demorada F X -10 153 Reprogramável M X -10 153 Repugnância F Sob -5 a -15 154 Reputação Soc — Variável 26 Ressacas Terríveis F — -1 165 Riqueza Soc — Variável 25 Sadismo M — -15* 154 Sangue Frio F — -5 ou -10 154 Sanguinolência M — -10* 154 Segredo Soc — -5 a -30 155 Sem Imaginação M — -5 155 Sem Manuseadores F X -50 149 Sem Noção de Profundidade F — -15 155 Sem Pernas F X Variável 156 Sem Recuperação F X -20 ou -30 156 Sem um Dedo F — -2 ou -5 156 Semiereto F X -5 156 Senso do Dever M — -2 a -20 156 Simpático M — -1 164 Solitário M — -5* 157 Sonambulismo M — -5* 157 Sonhador M — -1 164 Sono Complementar F — -2/nível 157 Sono Leve F — -5 157 Sonolento F X Variável 157 Status Soc — -5/nível 28 Supersensitivo M Sob -15 157 Suporte de Vida Ampliado F X Variável 158 Surdez F — -20 158 Susceptibilidade à Magia M Sob -3/nível 158 Suscetível F — Variável 158 Teimosia M — -5 158 Temor M — -2/nível 158 Tetraplégico F — -80 159 Timidez M — -5, -10, ou -20 159"
   },
   {
     "id": "paranoia",
@@ -3170,7 +3195,8 @@
     "tags": [
       "fisica",
       "magica"
-    ]
+    ],
+    "descricao": "O personagem tem uma reação sobrenatural incapacitante diante de uma substância comumente inócua. Se tocar nessa substância ou respirá - -la, ele deve fazer um teste de HT ime diatamente. Se fracassar ele sofre uma penalidade de -5 em todas as perícias e atributos durante os próximos 10 minutos. Se ingerir a substância, ele sofre uma penalidade de -5 em todos os atributos e -10 em todas as perícias e testes de Sentidos — novamente du rante 10 minutos. O valor em pontos da desvantagem depende da raridade da substância:Ocasional (couro, sabonete): -5 pontos. Comum (fumaça, madeira): -10 pontos. Muito Comum (grama, metal): -15 pontos. Esta reação é de natureza física. Para efeitos mentais, consulte Aversão (pág. 123)."
   },
   {
     "id": "reputacao",
@@ -3334,7 +3360,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Sem Pernas F X Variável 156 Sem Recuperação F X -20 ou -30 156 Sem um Dedo F — -2 ou -5 156 Semiereto F X -5 156 Senso do Dever M — -2 a -20 156 Simpático M — -1 164 Solitário M — -5* 157 Sonambulismo M — -5* 157 Sonhador M — -1 164 Sono Complementar F — -2/nível 157 Sono Leve F — -5 157 Sonolento F X Variável 157 Status Soc — -5/nível 28 Supersensitivo M Sob -15 157 Suporte de Vida Ampliado F X Variável 158 Surdez F — -20 158 Susceptibilidade à Magia M Sob -3/nível 158 Suscetível F — Variável 158 Teimosia M — -5 158 Temor M — -2/nível 158 Tetraplégico F — -80 159 Timidez M — -5, -10, ou -20 159 Trapaceiro M — -15* 159 Único M Sob -5 159 Veracidade M — -5* 159 Viciado em Trabalho M — -5 159 Vício M/F — Variável 159, 164, 165 Visão Restrita F — -15 ou -30 160 Voto M — -1 ou -5 a -15 160, 165 Voz Irritante F — -10 161 Vozes Fantasmagóricas M — -5 a -15 161 Vulnerabilidade F X Variável 161 Xenofilia M — -10* 161 Zarolho F — -15 162 modifiCadores Os seguintes modificadores são aplicáveis às vantagens e desvantagens em geral. Muitas características têm seus próprios modificadores especiais; consulte a descrição da característica específica para maiores detalhes. Na coluna Tipo, os modificadores de ataque (v. pág. 102) são denotados pela letra A; uma limitação de Instrumento (v. pág. 116) é denotada por um E. Um — indica que não é nenhuma das duas. ampliações Nome Tipo Valor Pág. Acompanhamento A Variável 102 Acurado A +5%/nível 102 Afeta a Matéria — +40% 102 Afeta Insubstancial — +20% 102"
   },
   {
     "id": "sem_pernas",
@@ -3350,7 +3377,8 @@
     "specialRule": "sem_pernas",
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "com essa possibilidade). -30 pontos.Auxílio Tecnológico Uma cadeira de rodas impulsionada pela força dos braços do personagem ou uma plataforma com rodas tem um Deslocamento terrestre de 1/4 do atri buto ST do personagem (arredondado para baixo), mas ele não é capaz de passar por portas estreitas, subir esca das ou calçadas com degraus, entrar na maioria dos veículos, etc. Se o personagem tiver acesso a pró teses, que cancelam esta desvantagem enquanto estiverem sendo utilizadas, aplique a limitação Mitigador (pág. 113) à Deficiência Física e a qualquer Deslo camento Básico reduzido. Se uma cirur gia ou peças de reposição avançadas são capazes de recomprar a desvantagem completamente, então será necessário pagar pelos pontos de personagem re cebidos pela Deficiência Física e pelo Deslocamento Básico reduzido. Dependência 3 2 Variável O personagem precisa ingerir uma determinada substância em intervalos regulares (ex.: uma droga ou poção má gica), tocar ou carregar um objeto (ex.: relicário sagrado ou amuleto mágico) ou passar algum tempo em um deter minado ambiente (ex.: seu caixão ou sua terra, planeta ou plano natal) para poder sobreviver. Se ele não conseguir fazer isso, começa a perder PV e acaba morrendo. O valor em pontos da des vantagem depende da raridade do item do qual o personagem depende: Rara (não pode ser comprado; tem que ser encontrado ou fabrica do): -30 pontos. Ocasional (muito caro ou difícil de encontrar): -20 pontos. Comum (caro e de certa forma difícil de encontrar): -10 pontos."
   },
   {
     "id": "sem_recuperacao",
@@ -3389,7 +3417,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "lidade de -1 na DX da mão em questão (somente). -2 pontos. Sem o Polegar: Ele sofre uma pena lidade de -5 na DX da mão em questão (somente). -5 pontos. Semiereto 3 1 O personagem tem uma postura se miereta, como a de um chipanzé. Ele é capaz de ficar em pé com um mínimo de conforto, o que lhe permite usar os membros dianteiros para golpear ini migos, segurar bebês ou até mesmo manipular objetos. Ele consegue ca minhar de forma desajeitada em uma postura totalmente ereta (-40% no Des locamento), mas tem que usar todos os seus membros para correr com Deslo camento total. Se tiver uma DX maior ou igual a 12, o personagem também é capaz de carregar um objeto pequeno ou dois enquanto caminha. Senso do Dever 2 O personagem sente um dever para com uma determinada classe de pesso as. Ele nunca vai traí-las ou abandoná - -las quando estiverem enfrentando um problema, nem deixar que sofram ou passem fome, se puder ajudar. Esta des vantagem é diferente de um Dever (pág. 133) verdadeiro. Um Dever é imposto. O Senso do Dever vem do coração. Se o personagem for conhecido por ter um Senso do Dever, a reação de ou tras pessoas em relação a ele recebe um bônus de +2 sempre que o Mestre for ve rificar se os outros confiam nele numa situação de perigo. Contudo, se o perso nagem agir contra seu Senso do Dever, indo contra os interesses daqueles que supostamente deveria proteger, o Mes tre pode penalizá-lo por má atuação. O Mestre deve definir o valor em"
   },
   {
     "id": "semiereito",
@@ -3405,7 +3434,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "O personagem tem uma postura se miereta, como a de um chipanzé. Ele é capaz de ficar em pé com um mínimo de conforto, o que lhe permite usar os membros dianteiros para golpear ini migos, segurar bebês ou até mesmo manipular objetos. Ele consegue ca minhar de forma desajeitada em uma postura totalmente ereta (-40% no Des locamento), mas tem que usar todos os seus membros para correr com Deslo camento total. Se tiver uma DX maior ou igual a 12, o personagem também é capaz de carregar um objeto pequeno ou dois enquanto caminha. Senso do Dever 2 O personagem sente um dever para com uma determinada classe de pesso as. Ele nunca vai traí-las ou abandoná - -las quando estiverem enfrentando um problema, nem deixar que sofram ou passem fome, se puder ajudar. Esta des vantagem é diferente de um Dever (pág. 133) verdadeiro. Um Dever é imposto. O Senso do Dever vem do coração. Se o personagem for conhecido por ter um Senso do Dever, a reação de ou tras pessoas em relação a ele recebe um bônus de +2 sempre que o Mestre for ve rificar se os outros confiam nele numa situação de perigo. Contudo, se o perso nagem agir contra seu Senso do Dever, indo contra os interesses daqueles que supostamente deveria proteger, o Mes tre pode penalizá-lo por má atuação. O Mestre deve definir o valor em pontos do Senso do Dever com base no tamanho do grupo que o personagem se sente compelido a ajudar: Indivíduos (o Presidente, seu “bra ço-direito”, etc.): -2 pontos. Grupo Pequeno (ex.: seus amigos"
   },
   {
     "id": "senso_do_dever",
@@ -3546,7 +3576,8 @@
     "specialRule": "sonolento",
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "Traços Inerentes: Cauda; Voz Ronro nante."
   },
   {
     "id": "status",
@@ -3579,7 +3610,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "O personagem é telepaticamente sensitivo à presença de outros indivídu os, a todo tempo. Ele costuma ouvir um zumbido constante e irritante de sons psíquicos de baixa intensidade. Isso não implica qualquer tipo de habilidade tele pática útil, pois os pensamentos e emo ções recebidos se mantêm logo abaixo do limiar da compreensão consciente. Se existir qualquer ser inteligente (IQ 6+) num raio de 20 metros, a DX e a IQ do personagem sofrem uma penalidade de -1. Esse valor se torna -2 para 10 ou mais pessoas, -3 para 100 ou mais, -4 para 1.000 ou mais e assim por diante. Se a DX ou a IQ forem reduzidas à metade de seu valor original por causa dessa pe nalidade, o personagem sofre um colap so e não consegui realizar nenhuma ação até o “barulho” desaparecer. Inteligência artificial e indivíduos protegidos telepati camente (psiquismo, tecnologia ou qual quer outra coisa) não o incomodam. Supersensitivo apresenta um efei to colateral benéfico: o ruído psíquico alerta o personagem da existência de pessoas num raio de 20 metros e o nível do ruído diz aproximadamente quantas pessoas são. No entanto, o ruído é difu so demais para determinar a localiza ção desses indivíduos.Sonambulismo é simplesmente uma condição incômoda ou embaraçosa na maioria das circunstâncias, mas pode se tornar muito perigosa se o personagem passear dormindo enquanto está acampado em território inimigo."
   },
   {
     "id": "suporte_de_vida_ampliado",
@@ -3598,7 +3630,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "uma cabine pressurizada cheia dessa substância. O Mestre tem a palavra final. Com a permissão do MJ, os seres hu manos comuns podem adquirir essa des vantagem para representar as exigências especiais de certas doenças crônicas. Surdez 3 O personagem não é capaz de ouvir nada. Qualquer informação deve ser transmitida a ele por meio da escrita (se ele for alfabetizado) ou linguagem de sinais. Contudo, o tempo gasto para se comunicar dessa maneira conta in tegralmente para o aperfeiçoamento, por meio do estudo, das perícias rela cionadas (Mímica/Pantomima, Leitura Labial etc.); v. o Capítulo 9. Suscetibilidade à Magia 2 5 -3 pontos/nível A magia tem mais chance de afetar o personagem. Acrescente o nível de Sus cetibilidade à Magia do personagem ao NH de qualquer pessoa que estiver fa zendo uma mágica contra ele e subtraia o mesmo valor dos testes para resistir a qualquer mágica que seja passível de resistência. Exemplo: se o personagem tem Suscetibilidade à Magia 4, qual quer mago recebe um bônus de +4 para lançar mágicas contra ele e ele sofre uma penalidade de -4 para resistir. A Suscetibilidade à Magia torna o personagem mais vulnerável às mágicas lançadas diretamente contra ele. Ela não afeta Mágicas de Projétil, ataques com armas mágicas ou mágicas de informa ção que não forem lançadas diretamente contra o personagem. Esta desvantagem também não surte efeitos sobre outros poderes sobrenaturais; ex.: milagres di vinos, psiquismo ou o poder inato dos espíritos. A Suscetibilidade à Magia age normalmente contra mágicas de área;"
   },
   {
     "id": "surdez",
@@ -3632,7 +3665,8 @@
     "tags": [
       "fisica",
       "magica"
-    ]
+    ],
+    "descricao": "Suscetível F — Variável 158 Teimosia M — -5 158 Temor M — -2/nível 158 Tetraplégico F — -80 159 Timidez M — -5, -10, ou -20 159 Trapaceiro M — -15* 159 Único M Sob -5 159 Veracidade M — -5* 159 Viciado em Trabalho M — -5 159 Vício M/F — Variável 159, 164, 165 Visão Restrita F — -15 ou -30 160 Voto M — -1 ou -5 a -15 160, 165 Voz Irritante F — -10 161 Vozes Fantasmagóricas M — -5 a -15 161 Vulnerabilidade F X Variável 161 Xenofilia M — -10* 161 Zarolho F — -15 162 modifiCadores Os seguintes modificadores são aplicáveis às vantagens e desvantagens em geral. Muitas características têm seus próprios modificadores especiais; consulte a descrição da característica específica para maiores detalhes. Na coluna Tipo, os modificadores de ataque (v. pág. 102) são denotados pela letra A; uma limitação de Instrumento (v. pág. 116) é denotada por um E. Um — indica que não é nenhuma das duas. ampliações Nome Tipo Valor Pág. Acompanhamento A Variável 102 Acurado A +5%/nível 102 Afeta a Matéria — +40% 102 Afeta Insubstancial — +20% 102 Agente de Contato A +150% 102 Agente Respiratório A +50% 102 Agente Sanguíneo A +100% 102 Alcance Ampliado — +10%/nível 102 Área Seletiva A +20% 103 Assinatura Discreta A +10% 103 Assinatura Inexistente A +20% 103 Aura A +80% 103Nome Tipo Valor Pág. Barreira A +30% ou +60% 103 Base Sensorial A Variável 103 Baseado em (Atributo Diferente) A +20% 103 Cíclico A Variável 104 Cone A Variável 104 Cósmica — Variável 105 Custo em Pontos de Fadiga Red. — +20%/nível 105 De cima A +30% 105 Divisor de Armadura A Variável 105"
   },
   {
     "id": "suscetivel",
@@ -3703,7 +3737,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "para esse limite — mas o jogador pode reduzir a ST e DX do personagem em até quatro níveis sem que isso conte para o limite (os pontos recebidos por reduções maiores são contados normalmente). Para informações sobre próteses e correções cirúrgicas, consulte Defici ência Física (pág. 130) e Maneta (Um Braço) (pág. 148) para pernas e braços, respectivamente. Timidez 2 -5, -10 ou -20 pontos O personagem se sente desconfor tável quando há pessoas estranhas por perto. Interprete! Esta desvantagem é apresentada em três níveis e pode ser recomprada um nível por vez. Suave: O personagem fica um tan to desconfortável na presença de pes soas estranhas, especialmente se elas forem agressivas ou atraentes. Todas as perícias que o obrigam a lidar com o público (incluindo Atuação, Boemia, Comércio, Diplomacia, Dissimulação, Intimidação, Lábia, Liderança, Manha, Mendicância, Oratória, Pedagogia, Po lítica, Sex Appeal e Trato Social) sofrem uma penalidade de -1. -5 pontos. Grave: O personagem se sente mui to desconfortável na presença de es tranhos e tende a permanecer calado, mesmo entre amigos. Todas as perícias listadas acima sofrem uma penalidade de -2. -10 pontos. Incapacitante: O personagem evita pessoas estranhas sempre que possível. Ele não pode aprender nenhuma das perícias acima e o valor predefinido em seus testes com essas perícias sofre uma penalidade adicional de -4. -20 pontos. Trapaceiro 2 -15 pontos* O personagem precisa da empol gação resultante de superar intelectu -"
   },
   {
     "id": "timidez",
@@ -3829,7 +3864,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Voto M — -1 ou -5 a -15 160, 165 Voz Irritante F — -10 161 Vozes Fantasmagóricas M — -5 a -15 161 Vulnerabilidade F X Variável 161 Xenofilia M — -10* 161 Zarolho F — -15 162 modifiCadores Os seguintes modificadores são aplicáveis às vantagens e desvantagens em geral. Muitas características têm seus próprios modificadores especiais; consulte a descrição da característica específica para maiores detalhes. Na coluna Tipo, os modificadores de ataque (v. pág. 102) são denotados pela letra A; uma limitação de Instrumento (v. pág. 116) é denotada por um E. Um — indica que não é nenhuma das duas. ampliações Nome Tipo Valor Pág. Acompanhamento A Variável 102 Acurado A +5%/nível 102 Afeta a Matéria — +40% 102 Afeta Insubstancial — +20% 102 Agente de Contato A +150% 102 Agente Respiratório A +50% 102 Agente Sanguíneo A +100% 102 Alcance Ampliado — +10%/nível 102 Área Seletiva A +20% 103 Assinatura Discreta A +10% 103 Assinatura Inexistente A +20% 103 Aura A +80% 103Nome Tipo Valor Pág. Barreira A +30% ou +60% 103 Base Sensorial A Variável 103 Baseado em (Atributo Diferente) A +20% 103 Cíclico A Variável 104 Cone A Variável 104 Cósmica — Variável 105 Custo em Pontos de Fadiga Red. — +20%/nível 105 De cima A +30% 105 Divisor de Armadura A Variável 105 Efeito Colateral A Variável 105 Efeito de Área A +50%/nível 105 Explosão (ex) A +50%/nível 108 Flutuação A +20% 105 Fogo Contínuo A Variável 105 Fragmentação (frag) A +15%/dado 108"
   },
   {
     "id": "voto",
@@ -3850,7 +3886,8 @@
     "specialRule": null,
     "tags": [
       "social"
-    ]
+    ],
+    "descricao": "ou códigos de conduta. Essas “desvantagens mentais autoimpostas” comparti lham três características que as distinguem das outras desvantagens mentais: • Elas podem ser “recompradas” a qualquer momento com pontos de personagem. Às vezes as pessoas acordam de manhã e decidem viver suas vidas de um jeito diferente sem qualquer motivo especial! • Elas não podem ser causadas por Atribulações (pág. 43), drogas, cirurgia cerebral ou outras alterações “repentinas e estranhas” de comportamento. Es sas técnicas poderiam criar um pacifista ou um maníaco, mas seria preciso ma gia, Controle da Mente (pág. 49) ou Lavagem Cerebral (pág. 206) prolongada para impor a um personagem algo tão complexo quanto um código de conduta. • Elas podem ser utilizadas juntamente com a limitação Pacto (pág. 114) como condições que o personagem deve cumprir para manter seus poderes sobrenaturais.que oferece uma chance de resistência. Para cada uma delas, o jogador deve escolher um número de autocontrole: um número alvo contra o qual ele deve jogar para evitar que a desvantagem domine o personagem. Isso modifica o valor em pontos da desvantagem da seguinte forma: O personagem só consegue resistir muito raramente (resultado de 6 ou menos): 2 × custo listado. O personagem consegue resistir com alguma frequência (resultado de 9 ou menos): 1,5 × custo listado. O personagem consegue resistir com muita frequência (resultado de 12 ou menos): custo listado. O personagem consegue resistir quase sempre (resultado de 15 ou me nos): 0,5 × custo listado. Ignore todas as frações (ex.: -22,5 pontos se tornam -22 pontos). O número de autocontrole padrão é 12: o jogador precisa obter 12 ou menos com 3 dados para controlar a desvantagem. Nesse valor, a desvanta gem concede os pontos listados nela. O jogador pode escolher um autocon trole de 15 se quiser que a desvanta gem seja mais uma tendência do que um problema real. Um autocontrole de 9 já limitaria mais as opções do"
   },
   {
     "id": "voz_irritante",
@@ -3887,7 +3924,8 @@
     "specialRule": null,
     "tags": [
       "mental"
-    ]
+    ],
+    "descricao": "mente são consequência de problemas mentais, mas também podem revelar algum tipo de possessão sobrenatural. Nesse caso, a psicoterapia não é capaz de revelar a causa, muito menos a cura, do problema. Se conseguir exorcizar os espíritos malignos, o personagem fica curado, mas precisará recomprar a desvantagem. Vulnerabilidade 3 1 Variável O personagem sofre dano adicional de uma forma específica de ataque. Sempre que esse tipo de ataque o atingir, o Mestre deve aplicar um multiplicador especial ao dano que ultrapassar a RD. Os multiplicadores de dano normais (por corte, perfuração, etc.) multiplicam novamente o dano. Exemplo: Um lobisomem com Vulnerabilidade (Prata ×4) é retalhado com uma faca de prata que causa 1 ponto de dano por corte. O Mestre multiplica esse valor por 4 para obter o dano da Vulnerabilidade — um resultado de 4 pontos de dano — e, em seguida, multiplica esse valor por 1,5 (por se tratar de um ataque por corte). A lesão final é de 6 pontos de dano. O valor em pontos da desvantagem depende do multiplicador de ferimen to e da raridade do ataque:Utilize as categorias descritas no quadro Defesas Limitadas (pág. 84) para avaliar a frequência. Cabe ao Mes tre decidir a raridade de uma determi nada forma de ataque. Não é possível adquirir mais que dois tipos de Vulne rabilidade sem a permissão do Mestre. O personagem não pode ter Vulne rabilidade a coisas contra as quais ele também tem uma defesa específica:"
   },
   {
     "id": "vulnerabilidade",
@@ -3938,6 +3976,7 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "modifiCadores Os seguintes modificadores são aplicáveis às vantagens e desvantagens em geral. Muitas características têm seus próprios modificadores especiais; consulte a descrição da característica específica para maiores detalhes. Na coluna Tipo, os modificadores de ataque (v. pág. 102) são denotados pela letra A; uma limitação de Instrumento (v. pág. 116) é denotada por um E. Um — indica que não é nenhuma das duas. ampliações Nome Tipo Valor Pág. Acompanhamento A Variável 102 Acurado A +5%/nível 102 Afeta a Matéria — +40% 102 Afeta Insubstancial — +20% 102 Agente de Contato A +150% 102 Agente Respiratório A +50% 102 Agente Sanguíneo A +100% 102 Alcance Ampliado — +10%/nível 102 Área Seletiva A +20% 103 Assinatura Discreta A +10% 103 Assinatura Inexistente A +20% 103 Aura A +80% 103Nome Tipo Valor Pág. Barreira A +30% ou +60% 103 Base Sensorial A Variável 103 Baseado em (Atributo Diferente) A +20% 103 Cíclico A Variável 104 Cone A Variável 104 Cósmica — Variável 105 Custo em Pontos de Fadiga Red. — +20%/nível 105 De cima A +30% 105 Divisor de Armadura A Variável 105 Efeito Colateral A Variável 105 Efeito de Área A +50%/nível 105 Explosão (ex) A +50%/nível 108 Flutuação A +20% 105 Fogo Contínuo A Variável 105 Fragmentação (frag) A +15%/dado 108"
   }
 ]
