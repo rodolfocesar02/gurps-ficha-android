@@ -131,10 +131,12 @@ Critério de aceite:
 5. Commit por lote com mensagem objetiva (`lote-N: ...`).
 
 ## Operação Atual (2026-03-07)
-1. Registrar e versionar o início da validação no emulador.
-2. Validar comportamento da build `visual` em execução real.
-3. Remover qualquer pacote instalado (`visual`/`pracego`) no emulador.
-4. Instalar novamente apenas a versão `visual`.
+1. [x] Registrar e versionar o início da validação no emulador.
+2. [x] Validar comportamento da build `visual` em execução real.
+3. [x] Tentar remover qualquer pacote instalado (`visual`/`pracego`) no emulador.
+4. [x] Instalar novamente apenas a versão `visual`.
+5. [x] Confirmar abertura de `com.gurps.ficha.visual/com.gurps.ficha.MainActivity` via `am start -W` (Status: ok).
+6. [x] Confirmar ausência de `pracego` e pacote base via `am start -W` (Error type 3).
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
