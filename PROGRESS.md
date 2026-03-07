@@ -2,6 +2,13 @@
 
 Atualizado em: 2026-03-07
 
+## Regra Permanente - Higiene de Texto (acentos/artefatos)
+**Regra fixa para todos os lotes daqui em diante:**
+1. Antes de commit de catálogo/UI, executar varredura de mojibake e acentuação quebrada nos arquivos ativos (`app/src/main/assets/*.json` e textos exibidos pela UI).
+2. Bloquear publicação se houver strings com artefatos típicos (`Ã`, `Â`, `ï¿½`, `�`, `n?o`, `per?cia`, `pr?-requisito` e variantes).
+3. Corrigir no próprio arquivo-fonte canônico antes de gerar APK.
+4. Registrar no `PROGRESS.md` o relatório da varredura em cada lote que tocar texto.
+
 ## Objetivo Atual
 Garantir que o **Modo Alvo** aplique os pré-requisitos de magia com comportamento canônico GURPS, sem divergência entre telas, motor e catálogo.
 

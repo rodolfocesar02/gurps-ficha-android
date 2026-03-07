@@ -16,7 +16,7 @@
       "dificuldadeRaw": "Média",
       "preDefinidoRaw": "Acrobacia-6",
       "preRequisitoRaw": "Acrobacia; não pode exceder a perícia Acrobacia",
-      "descricao": "Isso representa o treinamento para rapidamente ficar em pé em uma luta; consulte Levantar Acrobático (pág. 98) para obter detalhes. Um teste bem-sucedido permite que você passe da posição deitada para a em pé com uma única manobra de Mudança de Posição; em um sucesso crítico, você o faz como um \"passo\". O fracasso significa que você vai para uma postura sentada. A falha crítica deixa você deitado, desperdiçando seu turno. Você também pode usar o Levantar Acrobático para ir de engatinhando ou sentado para em pé como um passo. Nesse caso, falha significa que você se posiciona como uma manobra de Mudança de Posição, não como um passo. Falha crítica significa que você caiu!",
+      "descricao": "Isso representa o treinamento para rapidamente ficar em pé em uma luta; consulte Levantar Acrobático (pág. 98) para obter detalhes. Um teste bem-sucedido permite que você passe da posição deitada para a em pé com uma única manobra de Mudança de Posição; em um sucesso crítico, você o faz como um \"passo\". O fracasso significa que você vai para uma postura sentada. A falha crítica deixa você deitado, desperdiçando seu turno. Você também pode usar o Levantar Acrobático para ir de engatinhando ou sentado para em pé como um passo. Nesse caso, falha significa que você se posiciona como uma manobra de Mudança de Posição, não como um passo. Falha crítica significa que você caiu!",
       "modificadores": "Uma penalidade igual ao seu nível de carga.",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
@@ -30,7 +30,7 @@
       "preDefinidoRaw": "perícia pré-requisito Aparar-1",
       "preRequisitoRaw": "Boxe, Briga ou Caratê; não pode exceder o pré-requisito Aparar",
       "descricao": "Apenas alguns estilos \"difíceis\" ensinam essa tática. Em vez de meramente desviar um golpe, você tenta ferir seu atacante com um aparar especialmente forte. Isso é incompatível com Aparar Cruzado (pág. 121). Jogue contra Aparar Agressivo para defender, com o usual -2 para Boxe contra um chute, ou -3 para Boxe ou Briga contra uma arma de balanço. Você não pode recuar. Falha significa que você foi atingido; seu atacante pode escolher acertar seu alvo original, seu braço de defesa ou sua mão de defesa. Sucesso significa que você aparou e pode jogar contra a perícia subjacente para acertar a parte do corpo ou arma que está atacando.",
-      "modificadores": "Modificadores: Contra desarmados, -2 para acertar um braço ou perna, -4 para acertar uma mão ou pé; -2 para Boxe contra perna ou pé; -1 se seu oponente conhece Retração Rápida (pág. 51). Contra armado, um básico -3; outro -3 a -5 para o tamanho da arma (consulte pág. B400); mais -3 para Boxe ou Briga contra uma arma de balanço.",
+      "modificadores": "Modificadores: Contra desarmados, -2 para acertar um braço ou perna, -4 para acertar uma mão ou pé; -2 para Boxe contra perna ou pé; -1 se seu oponente conhece Retração Rápida (pág. 51). Contra armado, um básico -3; outro -3 a -5 para o tamanho da arma (consulte pág. B400); mais -3 para Boxe ou Briga contra uma arma de balanço.",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
     },
@@ -335,16 +335,16 @@
     },
     {
       "id": "artes_marciais_evasao",
-      "nome": "Evas?o",
+      "nome": "Evasão",
       "pagina": 76,
       "paginaRaw": "76",
-      "dificuldadeRaw": "M?dia",
-      "preDefinidoRaw": "Acrobacia ou Jud?",
-      "preRequisitoRaw": "Acrobacia ou Jud?; n?o pode exceder a per?cia pr?-requisito +5",
+      "dificuldadeRaw": "Média",
+      "preDefinidoRaw": "Acrobacia ou Judô",
+      "preRequisitoRaw": "Acrobacia ou Judô; não pode exceder a perícia pré-requisito +5",
       "descricao": "esta tecnica representa o treinamento para evitar oponentes que desejam obstruir seu movimento. evasao (acrobacia) permite que voce vire, tombe ou gire em torno de seu oponente, enquanto evasao (judo) permite que voce afaste as maos de seu inimigo conforme voce passa correndo. qualquer um substitui dx ao tentar evadir (consulte evadir, pag. b368). todas as penalidades normais se aplicam",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
-      "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
+      "sourceFile": "GURPS 4? Edição - Artes Marciais.pdf"
     },
     {
       "id": "artes_marciais_finta",
@@ -485,7 +485,7 @@
       "preDefinidoRaw": "Perícia pré-requisito Aparar-1",
       "preRequisitoRaw": "Briga ou Caratê; não pode exceder o pré-requisito Aparar",
       "descricao": "Obstruir é uma tentativa de desviar um ataque de linha baixa – normalmente um chute – interpondo um pé ou perna de forma agressiva o suficiente para ferir o atacante. Só é útil contra ataques na parte inferior do corpo (pés, pernas ou virilha). Você pode tentar, em vez de uma defesa de perna ou pé que não cause danos, uma vez por turno; consulte Aparar com Pernas ou Pés (pág. 123). Jogue contra Obstruir para se defender, com o -3 normal para Briga contra uma arma de golpe. Você não pode recuar. Falha significa que você foi atingido; seu atacante pode escolher acertar seu alvo original, sua perna de defesa ou seu pé de defesa. Sucesso significa que você aparou e pode jogar contra a perícia subjacente para acertar a parte do corpo ou arma que está atacando.",
-      "modificadores": "Modificadores: O -2 normal para chutar. Contra desarmado, +0 para acertar uma perna, -2 para acertar um braço ou pé, -4 para acertar uma mão; -1 se seu oponente conhece Retração Rápida (pág. 51). Contra armado, um básico -3; outro -3 a -5 para o tamanho da arma (consulte a pág. B400); mais -3 para Briga contra uma arma de balanço.",
+      "modificadores": "Modificadores: O -2 normal para chutar. Contra desarmado, +0 para acertar uma perna, -2 para acertar um braço ou pé, -4 para acertar uma mão; -1 se seu oponente conhece Retração Rápida (pág. 51). Contra armado, um básico -3; outro -3 a -5 para o tamanho da arma (consulte a pág. B400); mais -3 para Briga contra uma arma de balanço.",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
     },
@@ -832,9 +832,9 @@
       "nome": "Telefone",
       "pagina": 81,
       "paginaRaw": "81",
-      "dificuldadeRaw": "M?dia",
-      "preDefinidoRaw": "Boxe-3, Briga-3 ou Carat?-3",
-      "preRequisitoRaw": "Boxe, Briga ou Carat?; n?o pode exceder a per?cia pr?-requisito -1",
+      "dificuldadeRaw": "Média",
+      "preDefinidoRaw": "Boxe-3, Briga-3 ou Caratê-3",
+      "preRequisitoRaw": "Boxe, Briga ou Caratê; não pode exceder a perícia pré-requisito -1",
       "descricao": "este e um ataque a orelha do seu inimigo usando a mao em concha ou aberta. o objetivo e estourar seu timpano, atordoando e ensurdecendo-o. voce deve estar em combate corpo a corpo e ter pelo menos uma mao livre e vazia. jogue contra telefone para acertar. seu oponente pode usar qualquer defesa ativa. se o ataque for bem -sucedido, ele causa gdp-3 de dano por contusao mais bonus de pericia. alem disso, faca uma disputa rapida: telefone contra o ht da vitima. se voce vencer, seu alvo ficara fisicamente atordoado (pag. b420); ele tambem tera -1 dx e surdo em um ouvido (trate como duro de ouvido) por 1d segundos. em uma falha critica no teste de ht ou sucesso critico no telefone, a vitima deve jogar como se fosse uma lesao incapacitante para ver quanto tempo ela ficara parcialmente surda; consulte a pag. b422. o dano permanente e possivel! o telefone funciona melhor se voce acertar as duas orelhas simultaneamente. para fazer um telefone duplo, voce deve ter duas maos vazias livres e usar o ataque total (duplo) ou outra forma de ataques multiplos. o ataque com duas armas com a pericia de combate desarmado apropriada e uma opcao; adicione as penalidades para aquela tecnica para telefone ao determinar a pericia efetiva. se apenas uma mao bater, resolva como acima. se ambas acertarem, faca uma disputa rapida. se voce vencer, sua vitima ficara surda em ambos os ouvidos (trate como surdez) por 2d segundos. mais uma vez, uma falha critica em ht ou sucesso critico em telefone indica uma lesao incapacitante que pode se tornar permanente",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
@@ -936,13 +936,13 @@
       "nome": "Chute com Vara",
       "pagina": 88,
       "paginaRaw": "88",
-      "dificuldadeRaw": "Dif?cil",
-      "preDefinidoRaw": "Carat?-4",
-      "preRequisitoRaw": "Saltar e Carat?; n?o pode exceder a per?cia Carat?",
+      "dificuldadeRaw": "Difícil",
+      "preDefinidoRaw": "Caratê-4",
+      "preRequisitoRaw": "Saltar e Caratê; não pode exceder a perícia Caratê",
       "descricao": "esta tecnica e uma variacao do chute saltando (pag. 75) que usa uma vara – normalmente um bastao, mas as vezes uma espada cravada no chao ou ate mesmo um corrimao conveniente – para saltar para um chute. envolve um salto com vara curto para a frente ou para os lados que termina em um chute certeiro. e uma opcao especial para ataque total. use as seguintes regras em vez da normal para essa manobra. para tentar um chute com vara, voce deve ter as duas maos em uma vara, espada ou alavanca vertical semelhante. voce deve dar pelo menos dois passos em direcao ao inimigo; isso efetivamente da a voce um metro extra de alcance. jogue contra chute com vara para acertar. seu alvo defende com -2. se voce acertar, voce causa gdp+3 de dano por contusao – ou gdp+1 a +1 por dado, se melhor – mais seu bonus de carate. se voce errar, ou se seu alvo defender com sucesso, voce caira, a menos que possa fazer um teste de dx -4 ou acrobacia -2. acertando ou errando, voce nao tem defesa ate o proximo turno! por mais estranho que possa parecer, alguns artistas marciais do mundo real praticam esse chute, embora sua eficacia seja duvidosa. por opcao do mestre, guerreiros realistas que praticam estilos especialmente chamativos podem comprar um beneficio de estilo que os permite melhorar esta tecnica",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
-      "sourceFile": "Artes Marciais 4? Edi??o.pdf"
+      "sourceFile": "Artes Marciais 4? Edição.pdf"
     },
     {
       "id": "artes_marciais_chute_com_salto_voador_ou_estocada_voadora",
@@ -979,7 +979,7 @@
       "preDefinidoRaw": "Perícia pré-requisito Aparar-3",
       "preRequisitoRaw": "Judô, Sumô ou Luta Greco-Romana; não pode exceder o pré-requisito Aparar",
       "descricao": "Essa técnica - popular entre guerreiros cinematográficos, capangas musculosos e super \"durões\" - envolve pegar um ataque em sua mão. Não é realista! É uma defesa com uma mão, mesmo que a perícia pré-requisito geralmente pare com as duas mãos e seja incompatível com Aparar Cruzado (pág. 121). Jogue contra Segurar com a Mão para defender, com o -2 normal para Sumô contra um chute, ou -3 para Sumô ou Luta Greco-Romana contra uma arma. Você não pode recuar. Falha significa que você foi atingido. O atacante pode escolher acertar seu alvo original, no braço aparando ou a mão aparando. Sucesso significa que você aparou e pode jogar contra a perícia pré-requisito para agarrar seu atacante.",
-      "modificadores": "Modificadores: Contra desarmado, -2 para acertar uma mão ou pé; -2 para Sumô contra um pé; -1 se seu oponente conhece Retração Rápida (pág. 51). Contra armado, um básico -3; outro -3 a -5 para o tamanho da arma (consulte pág. B400); mais -3 para Sumô ou Luta Greco-Romana contra uma arma. O Mestre pode permitir que lutadores realistas tentem essa técnica no predefinido. As consequências do fracasso são graves o suficiente para mantê-lo sob controle. Você também pode aprender Segurar com a Mão para Aparar Armas de Projétil para pegar armas de longo alcance. Se você tiver Aparar Precognitivo, você pode usar qualquer especialidade de Segurar com a Mão para isso. Segurar com a Mão pode capturar apenas projéteis (não feixes) que o aparar subjacente poderia desviar. Use os modificadores padrão para tais aparar em vez dos acima. O sucesso arranca a arma no ar, independentemente da RD da mão. Falha significa que você foi atingido. Não use Segurar com a Mão para pegar algo jogado em você - use Apanhar (pág. B352).",
+      "modificadores": "Modificadores: Contra desarmado, -2 para acertar uma mão ou pé; -2 para Sumô contra um pé; -1 se seu oponente conhece Retração Rápida (pág. 51). Contra armado, um básico -3; outro -3 a -5 para o tamanho da arma (consulte pág. B400); mais -3 para Sumô ou Luta Greco-Romana contra uma arma. O Mestre pode permitir que lutadores realistas tentem essa técnica no predefinido. As consequências do fracasso são graves o suficiente para mantê-lo sob controle. Você também pode aprender Segurar com a Mão para Aparar Armas de Projétil para pegar armas de longo alcance. Se você tiver Aparar Precognitivo, você pode usar qualquer especialidade de Segurar com a Mão para isso. Segurar com a Mão pode capturar apenas projéteis (não feixes) que o aparar subjacente poderia desviar. Use os modificadores padrão para tais aparar em vez dos acima. O sucesso arranca a arma no ar, independentemente da RD da mão. Falha significa que você foi atingido. Não use Segurar com a Mão para pegar algo jogado em você - use Apanhar (pág. B352).",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
     },
@@ -1024,16 +1024,16 @@
     },
     {
       "id": "artes_marciais_ataque_no_ponto_de_pressao",
-      "nome": "Ataque no Ponto de Press?o",
+      "nome": "Ataque no Ponto de Pressão",
       "pagina": 88,
       "paginaRaw": "88",
-      "dificuldadeRaw": "Dif?cil",
-      "preDefinidoRaw": "Per?cia pr?-requisito de per?cia de combate-2",
-      "preRequisitoRaw": "Pontos de Press?o ou Pontos Secretos e uma per?cia de combate que seja ?til com essas per?cias; n?o pode exceder a per?cia de combate",
+      "dificuldadeRaw": "Difícil",
+      "preDefinidoRaw": "Perícia pré-requisito de perícia de combate-2",
+      "preRequisitoRaw": "Pontos de Pressão ou Pontos Secretos e uma perícia de combate que seja útil com essas perícias; não pode exceder a perícia de combate",
       "descricao": "pre-requisitos: pontos de pressao ou pontos secretos e uma pericia de combate que seja util com essas pericias; nao pode exceder a pericia de combate. ataques com as pericias pontos de pressao e pontos secretos normalmente tem -2 para acertar. essa tecnica permite que voce desconte essa penalidade",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
-      "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
+      "sourceFile": "GURPS 4? Edição - Artes Marciais.pdf"
     },
     {
       "id": "artes_marciais_golpe_letal",
@@ -1194,11 +1194,11 @@
     {
       "id": "artes_marciais_defesa_cronometrada",
       "nome": "Defesa Cronometrada",
-      "pagina": 90,
-      "paginaRaw": "90",
+      "pagina": 89,
+      "paginaRaw": "89",
       "dificuldadeRaw": "Difícil",
       "preDefinidoRaw": "Defesa ativa-2",
-      "preRequisitoRaw": "Defesa ativa; n?o pode exceder a defesa ativa",
+      "preRequisitoRaw": "Defesa ativa; não pode exceder a defesa ativa",
       "descricao": "Essa técnica ajuda você a se defender de oponentes que usam acrobacias ou velocidade para se mover atrás de você e atacar. Ela permite que você desconte o -2 para um ataque de flanco ou \"esquivos\" (pág. B391) para uma defesa ativa. Para Bloquear ou Aparar, você deve se especializar por perícia de combate. Você pode usar a Defesa Cronometrada (Esquivar) apenas uma vez por turno.",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
@@ -1206,16 +1206,16 @@
     },
     {
       "id": "artes_marciais_ataque_furacao",
-      "nome": "Ataque Furac?o",
-      "pagina": 90,
-      "paginaRaw": "90",
-      "dificuldadeRaw": "Dif?cil",
-      "preDefinidoRaw": "Per?cia pr?-requisito-5",
-      "preRequisitoRaw": "Boxe, Carat? ou qualquer per?cia de Arma de Combate Corpo a Corpo; n?o pode exceder a per?cia pr?-requisito",
-      "descricao": "pre-requisito: boxe, carate ou qualquer pericia de arma de combate corpo a corpo; nao pode exceder a pericia pre-requisito. ataque furacao e um ataque total especial que permite atacar todos os inimigos adjacentes a voce com a velocidade da luz! se voce fizer um ataque furacao, e tudo o que voce pode fazer naquele turno, nao importa o quao rapido ou habilidoso voce seja. por ser um ataque total, voce fica sem defesas ativas. caso contrario, as regras abaixo substituem as usuais para essa manobra. quando voce lanca um ataque furacao, voce gira no lugar (voce nao pode dar um passo) e ataca todos os inimigos dentro de um metro. voce deve ataca-los no sentido horario ou anti-horario – sua escolha. todos os seus ataques devem ser chutes, socos ou golpes com uma arma giratoria, e voce nao pode combinar o ataque furacao com outra tecnica (como desarmar, mas veja desarmar aprimorado, pag. 84) ou com pericias cinematograficas como golpe poderoso. determine um ponto de impacto aleatorio para cada inimigo e depois jogue contra o ataque furacao para acertar, com as penalidades habituais no local de acerto. seus oponentes defendem normalmente. resolva cada ataque completamente antes de passar para o proximo. se estiver usando uma arma que pode ficar presa (consulte picaretas, pag. b406), seu ataque furacao termina no primeiro ataque bem-sucedido. se algum dos ataques for um erro critico – ou se algum de seus inimigos tiver sucesso critico em sua defesa – entao esse ataque e todos os ataques restantes sao erros criticos. role na tabela de erro critico (pag. b556) uma vez por ataque! voce pode encerrar um ataque furacao de frente para qualquer direcao. as tecnicas deste capitulo nao constituem uma lista exaustiva. cada mestre das artes marciais tem movimentos unicos, um manual tipico de esgrima descreve centenas de ataques e aparas para um tipo de espada e uma pesquisa global de artes de luta desarmadas revelaria milhares de chutes. isso nem sequer toca nos feitos da lenda e do cinema, que – livres dos grilhoes da fisica – superam em muito as tecnicas realistas! assim, e provavel que o mestre aprenda novas tecnicas com base na realidade e na ficcao... e enfrente jogadores que desejam movimentos exclusivos para seus personagens. a maioria das “novas” tecnicas sao variacoes das existentes, com diferencas tao sutis que nao merecem efeitos de jogo. para estes, nao se preocupe com o sistema de criacao abaixo. basta renomear uma das tecnicas nas paginas 65 -89 para concordar com sua fonte e usar as regras conforme escritas. a tecnica original e todas as versoes renomeadas devem ser predefinidas uma para a outra, sem penalidade. por exemplo, voce pode se referir a golpe letal (pag. 85) como “mao de lanca” ou “bico da garca”, mas todos usariam as regras de golpe letal e se defrontariam com pericia total. abaixo esta uma versao bastante expandida de criando tecnicas (pag. b229) que se destina a tecnicas verdadeiramente novas. este sistema destina -se a campanhas dedicadas ao artes marciais. seu grau de detalhamento seria excessivo em outros tipos de jogos. tambem e principalmente para mestres. se o mestre permitir que os jogadores as usem, ele deve examinar cuidadosamente suas criacoes antes de permitir. nome de a tecnica um nome evocativo. voce pode pegar isso de um estilo do mundo real ou de uma fonte ficticia, ou simplesmente inventar. o nome pode ser prosaico, como “gancho”; projetado para assustar os inimigos, como “vindo do inferno”; ou poetico, como “escovar a cauda do cavalo” ou “andorinha voam”. conceito decida o que a tecnica faz em termos de jogo. va para predefinido (pags. 90-92) para ver o que e possivel, se voce nao tiver certeza. o importante a lembrar e que as pericias de combate – estudadas como parte de um estilo ou por conta propria – representam a destilacao de decadas, seculos ou milenios de experiencia em circunstancias em que erro pode significar morte. assim, seus principais usos fornecem um equilibrio testado e comprovado entre varias medidas de eficacia, notadamente defesa, mobilidade, potencia, precisao, alcance e velocidade. uma tecnica que enfatiza uma ou duas dessas coisas comprometera o resto. tambem tenha em mente que uma tecnica nao pode melhorar o uso basico do predefinido da pericia: socos para boxe, briga ou carate; agarrar para judo, sumo ou luta greco -romana; ou balancos e estocadas para pericias com armas de combate corpo - a-corpo. as tecnicas so podem aumentar os usos secundarios (por exemplo, chutes, para briga ou carate) ou versoes penalizadas dos primarios. a mesma logica se aplica a tecnicas que sao predefinidos para defesas ativas: estas nao podem melhorar as jogadas de defesa ativa comuns, apenas usos penalizados em circunstancias especiais. tonfas pre-requisitos a menos que a tecnica seja baseada em esquiva ou um atributo, ela deve especificar pelo menos uma pericia pre - requisito. a tecnica e predefinida automaticamente para esta pericia – ou, para tecnicas defensivas, para a pontuacao de bloquear ou aparar calculada a partir desta pericia. se mais de uma pericia for qualificada como um pre -requisito e fornecer um",
+      "nome": "Ataque Furacão",
+      "pagina": 89,
+      "paginaRaw": "89",
+      "dificuldadeRaw": "Difícil",
+      "preDefinidoRaw": "Perícia pré-requisito-5",
+      "preRequisitoRaw": "Boxe, Caratê ou qualquer perícia de Arma de Combate Corpo a Corpo; não pode exceder a perícia pré-requisito",
+      "descricao": "Ataque Furacão é um Ataque Total especial que permite atacar todos os inimigos adjacentes a você com a velocidade da luz! Se você fizer um Ataque Furacão, é tudo o que você pode fazer naquele turno, não importa o quão rápido ou habilidoso você seja. Por ser um Ataque Total, você fica sem defesas ativas. Caso contrário, as regras abaixo substituem as usuais para essa manobra. Quando você lança um Ataque Furacão, você gira no lugar (você não pode dar um passo) e ataca todos os inimigos dentro de um metro. Você deve atacá-los no sentido horário ou anti-horário – sua escolha. Todos os seus ataques devem ser chutes, socos ou golpes com uma arma giratória, e você não pode combinar o Ataque Furacão com outra técnica (como Desarmar, mas veja Desarmar Aprimorado, pág. 84) ou com perícias cinematográficas como Golpe Poderoso. Determine um ponto de impacto aleatório para cada inimigo e depois jogue contra o Ataque Furacão para acertar, com as penalidades habituais no local de acerto. Seus oponentes defendem normalmente. Resolva cada ataque completamente antes de passar para o próximo. Se estiver usando uma arma que pode ficar presa (consulte Picaretas, pág. B406), seu Ataque Furacão termina no primeiro ataque bem-sucedido. Se algum dos ataques for um erro crítico – ou se algum de seus inimigos tiver sucesso crítico em sua defesa – então esse ataque e todos os ataques restantes são erros críticos. Role na Tabela de Erro Crítico (pág. B556) uma vez por ataque! Você pode encerrar um Ataque Furacão de frente para qualquer direção.",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
-      "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
+      "sourceFile": "GURPS 4? Edição - Artes Marciais.pdf"
     },
     {
       "id": "gun_fu_tiro_de_costas",
@@ -1258,7 +1258,7 @@
     },
     {
       "id": "gun_fu_batalha_de_curta_distancia",
-      "nome": "Batalha de Curta Distncia",
+      "nome": "Batalha de Curta Distância",
       "pagina": 26,
       "paginaRaw": "26",
       "dificuldadeRaw": "Média",
@@ -1414,7 +1414,7 @@
     },
     {
       "id": "gun_fu_desarme_instantaneo_do_arsenal",
-      "nome": "Desarme Instantneo do Arsenal",
+      "nome": "Desarme Instantâneo do Arsenal",
       "pagina": 28,
       "paginaRaw": "28",
       "dificuldadeRaw": "Difícil",
