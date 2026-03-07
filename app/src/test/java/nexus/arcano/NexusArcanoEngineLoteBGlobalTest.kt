@@ -142,6 +142,22 @@ class NexusArcanoEngineLoteBGlobalTest {
     }
 
     @Test
+    fun alternativa_com_escolas_e_numerico_nao_bloqueia_ramo_nomeado() {
+        val engine = NexusArcanoEngine(catalogoPasso4AlternativaMista())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("dep_livre"),
+            am = 1,
+            iq = 10,
+            dx = 10
+        )
+
+        val resultado = engine.calcularEstadoAlvo("alvo_misto", estado)
+        assertTrue(resultado.chavesAtivas.any { it.id == "chave_alvo_alvo_misto" })
+        assertFalse(resultado.motivoCodigo == "NUMERIC_GATE")
+        assertTrue(resultado.proximasAcoes.any { it.magiaId == "alvo_misto" })
+    }
+
+    @Test
     fun contrato_de_saida_do_plano_retorna_proxima_trilha_e_metas_impactadas() {
         val engine = NexusArcanoEngine(catalogoPasso2SemReducao())
         val estado = ArcanoEstadoPersonagem(
@@ -256,6 +272,22 @@ class NexusArcanoEngineLoteBGlobalTest {
             M("base_obrigatoria", "Base Obrigatoria", listOf("Ar"), ""),
             M("opcao_a", "Opcao A", listOf("Terra"), ""),
             M("opcao_b", "Opcao B", listOf("Agua"), "")
+        )
+        val byId = magias.associateBy { it.id }
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoPasso4AlternativaMista(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo_misto", "Alvo Misto", listOf("Meta"), "Dep Livre ou IQ 13+ e 1 magica em 3 escolas diferentes"),
+            M("dep_livre", "Dep Livre", listOf("Ar"), "")
         )
         val byId = magias.associateBy { it.id }
         return object : ArcanoCatalogo {

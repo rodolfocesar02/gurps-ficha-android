@@ -120,6 +120,12 @@ class NexusArcanoEngine(
         val minSoma: Int? = null
     )
 
+    private data class RequisitoBranch(
+        val dependencias: List<String>,
+        val regrasEscolas: List<RegraEscolas>,
+        val regrasNumericas: List<RegraNumerica>
+    )
+
     private data class AvaliacaoCandidata(
         val id: String,
         val escola: String,
@@ -214,6 +220,7 @@ class NexusArcanoEngine(
 
     private val dependenciasCache = mutableMapOf<String, List<String>>()
     private val dependenciasGruposCache = mutableMapOf<String, List<List<String>>>()
+    private val requisitoBranchesCache = mutableMapOf<String, List<RequisitoBranch>>()
     private val regrasEscolasCache = mutableMapOf<String, List<RegraEscolas>>()
     private val regrasNumericasCache = mutableMapOf<String, List<RegraNumerica>>()
     private val cadeiaCache = mutableMapOf<String, List<String>>()
@@ -378,11 +385,11 @@ class NexusArcanoEngine(
             val focoMagia = when {
                 proximaObrigatoria != null &&
                     !magiaAprendivelAgora(proximaObrigatoria, known, estado) &&
-                    bloqueioNumericoParaMagia(proximaObrigatoria, estado) == null -> proximaObrigatoria
+                    bloqueioNumericoParaMagia(proximaObrigatoria, estado, known) == null -> proximaObrigatoria
                 proximaObrigatoria == null &&
                     alvoId !in known &&
                     !magiaAprendivelAgora(alvoId, known, estado) &&
-                    bloqueioNumericoParaMagia(alvoId, estado) == null -> alvoId
+                    bloqueioNumericoParaMagia(alvoId, estado, known) == null -> alvoId
                 else -> null
             } ?: run {
                 cacheDiagnosticos[key] = emptyList()
@@ -561,8 +568,9 @@ class NexusArcanoEngine(
             cachePlanos[key] = out
             return out
         }
-        if (bloqueioNumericoParaMagia(alvoId, estado) != null) {
-            val out = ArcanoPlanoResultado(emptyList(), explorados = 0, motivo = bloqueioNumericoParaMagia(alvoId, estado))
+        val bloqueioNumericoAlvo = bloqueioNumericoParaMagia(alvoId, estado, estado.magiasConhecidasIds)
+        if (bloqueioNumericoAlvo != null) {
+            val out = ArcanoPlanoResultado(emptyList(), explorados = 0, motivo = bloqueioNumericoAlvo)
             cachePlanos[key] = out
             return out
         }
@@ -941,7 +949,7 @@ class NexusArcanoEngine(
                     motivo = "Cadeia obrigatória",
                     prioridade = 0
                 )
-            } else if (bloqueioNumericoParaMagia(proximaObrigatoria, estado) != null) {
+            } else if (bloqueioNumericoParaMagia(proximaObrigatoria, estado, known) != null) {
                 // Bloqueio por atributo/AM: não sugerir escola como falso avanço.
             } else {
                 out += sugerirParaRegraDeEscolas(
@@ -961,7 +969,7 @@ class NexusArcanoEngine(
                         motivo = "Alvo liberado",
                         prioridade = 0
                     )
-                } else if (bloqueioNumericoParaMagia(alvoId, estado) != null) {
+                } else if (bloqueioNumericoParaMagia(alvoId, estado, known) != null) {
                     // Bloqueio por atributo/AM: sem sugestão de escola.
                 } else {
                     out += sugerirParaRegraDeEscolas(
@@ -1059,7 +1067,7 @@ class NexusArcanoEngine(
         estado: ArcanoEstadoPersonagem,
         idsProibidos: Set<String>
     ): List<AvaliacaoCandidata> {
-        val regras = coletarRegrasEscolas(listOf(magiaId))
+        val regras = regrasEscolasRelevantes(magiaId, known, estado)
         if (regras.isEmpty()) return emptyList()
 
         val escolasConhecidas = escolasConhecidas(known)
@@ -1071,11 +1079,11 @@ class NexusArcanoEngine(
 
         fun custoDesbloqueio(candId: String): Int {
             val depsMissing = dependenciasMinimasPendentes(candId, known)
-            val regraNum = coletarRegrasNumericas(listOf(candId)).firstOrNull()
+            val regraNum = regrasNumericasRelevantes(candId, known, estado).firstOrNull()
             val faltaNum = if (regraNum == null) 0 else {
                 if (atendeRegraNumerica(regraNum, estado)) 0 else 1
             }
-            val regraEsc = coletarRegrasEscolas(listOf(candId)).firstOrNull()
+            val regraEsc = regrasEscolasRelevantes(candId, known, estado).firstOrNull()
             val faltaEsc = if (regraEsc == null) 0 else {
                 val count = escolasConhecidas.size
                 (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
@@ -1107,11 +1115,58 @@ class NexusArcanoEngine(
 
     private fun magiaAprendivelAgora(magiaId: String, known: Set<String>, estado: ArcanoEstadoPersonagem): Boolean {
         if (magiaId in known) return true
+        val branches = requisitoBranchesPorMagia(magiaId)
+        if (branches.isNotEmpty()) {
+            return branches.any { branch ->
+                branch.dependencias.all { it in known } &&
+                    branch.regrasEscolas.all { atendeRegraEscolas(it, known) } &&
+                    branch.regrasNumericas.all { atendeRegraNumerica(it, estado) }
+            }
+        }
+
         val gruposDeps = dependenciasNomeadasGrupos(magiaId)
         val depsOk = if (gruposDeps.isEmpty()) true else gruposDeps.any { grupo -> grupo.all { it in known } }
         if (!depsOk) return false
         if (!coletarRegrasEscolas(listOf(magiaId)).all { atendeRegraEscolas(it, known) }) return false
         return coletarRegrasNumericas(listOf(magiaId)).all { atendeRegraNumerica(it, estado) }
+    }
+
+    private fun regrasEscolasRelevantes(
+        magiaId: String,
+        known: Set<String>,
+        estado: ArcanoEstadoPersonagem
+    ): List<RegraEscolas> {
+        val branch = escolherBranchRelevante(magiaId, known, estado)
+        if (branch != null && branch.regrasEscolas.isNotEmpty()) return branch.regrasEscolas
+        return coletarRegrasEscolas(listOf(magiaId))
+    }
+
+    private fun regrasNumericasRelevantes(
+        magiaId: String,
+        known: Set<String>,
+        estado: ArcanoEstadoPersonagem
+    ): List<RegraNumerica> {
+        val branch = escolherBranchRelevante(magiaId, known, estado)
+        if (branch != null && branch.regrasNumericas.isNotEmpty()) return branch.regrasNumericas
+        return coletarRegrasNumericas(listOf(magiaId))
+    }
+
+    private fun escolherBranchRelevante(
+        magiaId: String,
+        known: Set<String>,
+        estado: ArcanoEstadoPersonagem
+    ): RequisitoBranch? {
+        val branches = requisitoBranchesPorMagia(magiaId)
+        if (branches.isEmpty()) return null
+        return branches.minWithOrNull(
+            compareBy<RequisitoBranch> { branch -> branch.dependencias.count { it !in known } }
+                .thenBy { branch -> branch.regrasEscolas.count { !atendeRegraEscolas(it, known) } }
+                .thenBy { branch -> branch.regrasNumericas.count { !atendeRegraNumerica(it, estado) } }
+                .thenBy { it.dependencias.size }
+                .thenBy { it.regrasEscolas.size }
+                .thenBy { it.regrasNumericas.size }
+                .thenBy { branchKey(it) }
+        )
     }
 
     private fun atendeRegraEscolas(regra: RegraEscolas, known: Set<String>): Boolean {
@@ -1182,6 +1237,14 @@ class NexusArcanoEngine(
 
     private fun dependenciasNomeadasGrupos(magiaId: String): List<List<String>> {
         return dependenciasGruposCache.getOrPut(magiaId) {
+            val gruposPorBranch = requisitoBranchesPorMagia(magiaId)
+                .map { it.dependencias }
+                .filter { it.isNotEmpty() }
+                .distinctBy { it.joinToString("|") }
+            if (gruposPorBranch.isNotEmpty()) {
+                return@getOrPut gruposPorBranch
+            }
+
             val gruposPorParser = dependenciasNomeadasGruposPorParser(magiaId)
             if (gruposPorParser.isNotEmpty()) {
                 return@getOrPut gruposPorParser
@@ -1277,13 +1340,196 @@ class NexusArcanoEngine(
             .distinctBy { it.joinToString("|") }
     }
 
+    private fun requisitoBranchesPorMagia(magiaId: String): List<RequisitoBranch> {
+        return requisitoBranchesCache.getOrPut(magiaId) {
+            val raw = preRaw(magiaId).trim()
+            if (raw.isBlank()) {
+                return@getOrPut listOf(
+                    RequisitoBranch(
+                        dependencias = emptyList(),
+                        regrasEscolas = emptyList(),
+                        regrasNumericas = emptyList()
+                    )
+                )
+            }
+
+            val parsed = PreRequisitoParser.parse(raw)
+            if (parsed.terms.isEmpty()) {
+                val depsFallback = extrairDependenciasNomeadas(preNorm(magiaId), magiaId)
+                val escolasFallback = regrasEscolasPorMagia(magiaId)
+                val numericasFallback = regrasNumericasPorMagia(magiaId)
+                if (depsFallback.isEmpty() && escolasFallback.isEmpty() && numericasFallback.isEmpty()) {
+                    return@getOrPut emptyList()
+                }
+                return@getOrPut listOf(
+                    RequisitoBranch(
+                        dependencias = depsFallback,
+                        regrasEscolas = escolasFallback,
+                        regrasNumericas = numericasFallback
+                    )
+                )
+            }
+
+            val alternativasPorTermo = parsed.terms.map { termo ->
+                val alternativas = termo.alternatives
+                    .map { alternativa -> branchFromAlternative(magiaId, alternativa) }
+                    .ifEmpty {
+                        listOf(
+                            RequisitoBranch(
+                                dependencias = emptyList(),
+                                regrasEscolas = emptyList(),
+                                regrasNumericas = emptyList()
+                            )
+                        )
+                    }
+                    .distinctBy { branchKey(it) }
+                alternativas
+            }
+
+            combinarBranches(alternativasPorTermo)
+        }
+    }
+
+    private fun branchFromAlternative(
+        magiaId: String,
+        alternativa: List<PreRequisitoType>
+    ): RequisitoBranch {
+        val deps = linkedSetOf<String>()
+        val regrasEscolas = mutableListOf<RegraEscolas>()
+        val regrasNumericas = mutableListOf<RegraNumerica>()
+
+        alternativa.forEach { tipo ->
+            when (tipo) {
+                is PreRequisitoType.MagiaConhecida -> {
+                    resolverDependenciasNomeadasToken(tipo.nomeMagia, magiaId)
+                        .forEach { deps += it }
+                }
+                is PreRequisitoType.MagiasEmEscolasDiferentes -> {
+                    regrasEscolas += RegraEscolas(
+                        magiaOrigemId = magiaId,
+                        quantidadeEscolas = tipo.escolasDiferentes,
+                        outrasEscolas = tipo.outrasEscolas
+                    )
+                }
+                is PreRequisitoType.AptidaoMagica -> {
+                    regrasNumericas += RegraNumerica(
+                        magiaOrigemId = magiaId,
+                        minAm = tipo.nivel,
+                        minIq = null
+                    )
+                }
+                is PreRequisitoType.AttributeMin -> {
+                    if (normalize(tipo.atributo) == "iq") {
+                        regrasNumericas += RegraNumerica(
+                            magiaOrigemId = magiaId,
+                            minAm = null,
+                            minIq = tipo.minimo
+                        )
+                    }
+                }
+                is PreRequisitoType.AtributosSomaMin -> {
+                    regrasNumericas += RegraNumerica(
+                        magiaOrigemId = magiaId,
+                        minAm = null,
+                        minIq = null,
+                        somaAtributos = tipo.atributos.map(::normalize).filter { it.isNotBlank() },
+                        minSoma = tipo.minimo
+                    )
+                }
+                else -> Unit
+            }
+        }
+
+        return RequisitoBranch(
+            dependencias = deps.toList(),
+            regrasEscolas = regrasEscolas.distinct(),
+            regrasNumericas = regrasNumericas.distinct()
+        )
+    }
+
+    private fun combinarBranches(alternativasPorTermo: List<List<RequisitoBranch>>): List<RequisitoBranch> {
+        var acumulado = listOf(
+            RequisitoBranch(
+                dependencias = emptyList(),
+                regrasEscolas = emptyList(),
+                regrasNumericas = emptyList()
+            )
+        )
+
+        alternativasPorTermo.forEach { alternativas ->
+            val prox = linkedMapOf<String, RequisitoBranch>()
+            loop@ for (base in acumulado) {
+                for (alt in alternativas) {
+                    val combinado = RequisitoBranch(
+                        dependencias = (base.dependencias + alt.dependencias).distinct(),
+                        regrasEscolas = (base.regrasEscolas + alt.regrasEscolas).distinct(),
+                        regrasNumericas = (base.regrasNumericas + alt.regrasNumericas).distinct()
+                    )
+                    prox.putIfAbsent(branchKey(combinado), combinado)
+                    if (prox.size >= maxGruposDependencias) break@loop
+                }
+            }
+            acumulado = prox.values.toList()
+            if (acumulado.isEmpty()) return emptyList()
+        }
+
+        return acumulado
+            .distinctBy { branchKey(it) }
+    }
+
+    private fun branchKey(branch: RequisitoBranch): String {
+        val deps = branch.dependencias.sorted().joinToString(",")
+        val escolas = branch.regrasEscolas
+            .sortedWith(compareBy<RegraEscolas> { it.magiaOrigemId }.thenBy { it.quantidadeEscolas }.thenBy { it.outrasEscolas })
+            .joinToString(",") { "${it.magiaOrigemId}:${it.quantidadeEscolas}:${if (it.outrasEscolas) 1 else 0}" }
+        val nums = branch.regrasNumericas
+            .sortedWith(compareBy<RegraNumerica> { it.magiaOrigemId }.thenBy { it.minAm ?: -1 }.thenBy { it.minIq ?: -1 }.thenBy { it.minSoma ?: -1 })
+            .joinToString(",") {
+                val soma = it.somaAtributos.sorted().joinToString("+")
+                "${it.magiaOrigemId}:${it.minAm ?: "-"}:${it.minIq ?: "-"}:${it.minSoma ?: "-"}:$soma"
+            }
+        return "$deps|$escolas|$nums"
+    }
+
     private fun dependenciasMinimasPendentes(magiaId: String, known: Set<String>): Int {
+        val branches = requisitoBranchesPorMagia(magiaId)
+        if (branches.isNotEmpty()) {
+            if (branches.any { branch ->
+                    branch.dependencias.all { it in known }
+                }) return 0
+            return branches.minOfOrNull { branch ->
+                branch.dependencias.count { it !in known }
+            } ?: 0
+        }
+
         val grupos = dependenciasNomeadasGrupos(magiaId)
         if (grupos.isEmpty()) return 0
         return grupos.minOfOrNull { grupo -> grupo.count { it !in known } } ?: 0
     }
 
     private fun dependenciasEscolhidasParaEstado(magiaId: String, known: Set<String>): List<String> {
+        val branches = requisitoBranchesPorMagia(magiaId)
+        if (branches.isNotEmpty()) {
+            val satisfeita = branches.firstOrNull { branch ->
+                branch.dependencias.all { it in known } &&
+                    branch.regrasEscolas.all { atendeRegraEscolas(it, known) }
+            }
+            if (satisfeita != null) return emptyList()
+
+            val escolhida = branches.minWithOrNull(
+                compareBy<RequisitoBranch> { branch -> branch.dependencias.count { it !in known } }
+                    .thenBy { branch -> branch.regrasEscolas.count { !atendeRegraEscolas(it, known) } }
+                    .thenBy { branch -> branch.regrasNumericas.count() }
+                    .thenBy { branch -> branch.dependencias.sumOf { custoAproximadoDependencia(it, known, mutableSetOf()) } }
+                    .thenBy { it.dependencias.size }
+                    .thenBy { it.dependencias.joinToString("|") }
+            )
+            return escolhida
+                ?.dependencias
+                ?.filter { it !in known }
+                .orEmpty()
+        }
+
         val grupos = dependenciasNomeadasGrupos(magiaId)
         if (grupos.isEmpty()) return emptyList()
         if (grupos.any { grupo -> grupo.all { it in known } }) return emptyList()
@@ -1456,8 +1702,12 @@ class NexusArcanoEngine(
         }
     }
 
-    private fun bloqueioNumericoParaMagia(magiaId: String, estado: ArcanoEstadoPersonagem): String? {
-        val regra = coletarRegrasNumericas(listOf(magiaId)).firstOrNull() ?: return null
+    private fun bloqueioNumericoParaMagia(
+        magiaId: String,
+        estado: ArcanoEstadoPersonagem,
+        known: Set<String>
+    ): String? {
+        val regra = regrasNumericasRelevantes(magiaId, known, estado).firstOrNull() ?: return null
         val faltas = mutableListOf<String>()
         regra.minAm?.let { if (estado.am < it) faltas += "AM >= $it" }
         regra.minIq?.let { if (estado.iq < it) faltas += "IQ >= $it" }
@@ -1478,7 +1728,7 @@ class NexusArcanoEngine(
         known: Set<String>
     ): String? {
         val alvoDeBloqueio = cadeiaSemAlvo.firstOrNull { it !in known } ?: alvoId
-        return bloqueioNumericoParaMagia(alvoDeBloqueio, estado)
+        return bloqueioNumericoParaMagia(alvoDeBloqueio, estado, known)
     }
 
     private fun codigoBloqueio(
