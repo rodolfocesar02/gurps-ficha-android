@@ -130,6 +130,12 @@ Critério de aceite:
 - atualização deste `PROGRESS.md`
 5. Commit por lote com mensagem objetiva (`lote-N: ...`).
 
+## Operação Atual (2026-03-07)
+1. Registrar e versionar o início da validação no emulador.
+2. Validar comportamento da build `visual` em execução real.
+3. Remover qualquer pacote instalado (`visual`/`pracego`) no emulador.
+4. Instalar novamente apenas a versão `visual`.
+
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
