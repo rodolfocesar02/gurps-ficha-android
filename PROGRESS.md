@@ -218,6 +218,23 @@ Critério de aceite:
 - Casos não pareados ou reconciliados manualmente documentados em relatório.
 - Build das duas variantes compilando após a migração.
 
+### Lote 13 - Conciliação Canônica de Descrições de Técnicas (Artes Marciais + Gun Fu)
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Criar pipeline de merge/auditoria para técnicas usando `xlsx` como base e verificação contra `pdf` canônico por livro.
+Arquivos:
+- `scripts/merge_tecnicas_descricao.py`
+2. [ ] Executar merge em `tecnicas.v1.json`, gerar relatório de cobertura/divergência e aplicar correções.
+Arquivos:
+- `app/src/main/assets/tecnicas.v1.json`
+- `scripts/reports/tecnicas_descricao_merge_report.json`
+3. [ ] Validar parse/build, atualizar evidências no `PROGRESS.md` e concluir lote.
+
+Critério de aceite:
+- Todas as técnicas de `Artes Marciais` e `Gun Fu` no catálogo ativo com `descricao` consistente com os `xlsx`.
+- Divergências detectadas contra `pdf` canônico registradas no relatório e priorizadas com texto do `pdf`.
+
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
 2. Não aceitar correção só por "funcionou no caso X"; incluir teste de regressão.
