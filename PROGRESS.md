@@ -273,13 +273,13 @@ Critério de aceite:
     - confirmado: `desvantagens de A a Z.xlsx` contém página/nome/custo (sem coluna de descrição), exigindo fallback no texto extraído do PDF do Módulo Básico.
 
 ### Lote 13 - Descrições de Vantagens/Desvantagens + UX do Diálogo
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Auditar fontes e confirmar cobertura (`json` ativo + `xlsx` + texto do Módulo Básico).
 2. [ ] Mesclar descrições em `vantagens.v3.json` e `desvantagens.v2.json` com precedência de conteúdo do PDF quando disponível.
 3. [ ] Ajustar diálogos de configurar Vantagens/Desvantagens: remover `Configurar:`, nome azul clicável e pop-up de descrição.
-4. [ ] Validar build `visual/pracego`, instalar `visual` no emulador e fechar lote.
+4. [x] Validar build `visual/pracego`, instalar `visual` no emulador e fechar lote.
 
 Critério de aceite:
 - Catálogos ativos de vantagens/desvantagens com `descricao` preenchida quando fonte confiável existir.
