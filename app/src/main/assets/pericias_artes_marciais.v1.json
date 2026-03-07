@@ -495,7 +495,7 @@
       "preDefinidoRaw": "Nenhum",
       "preRequisitoRaw": "Treinado por um Mestre, Acrobacia 14+ e Escalada 14+",
       "descricao": "Permite escalar superfícies verticais ou quase verticais. Teste uma vez por segundo de escalada. O sucesso permite viajar metade do Deslocamento. Falha significa queda.",
-      "modificadores": "Modificadores: Penalidade igual ao nível de carga. Tipo de superfície: +2 (áspera), +0 (maioria), -2 (lisa); +2 se inclinado; -1 (molhado), -3 (gelado/viscoso), -5 (oleoso). Liberar um membro: -2 por extremidade a menos. Garras: +2 (exceto lisa).",
+      "modificadores": "Modificadores: Penalidade igual ao nível de carga. Tipo de superfície: +2 (áspera), +0 (maioria), -2 (lisa); +2 se inclinado; -1 (molhado), -3 (gelado/viscoso), -5 (oleoso). Liberar um membro: -2 por extremidade a menos. Garras: +2 (exceto lisa).",
       "sourceBook": "Artes Marciais",
       "sourceFile": "pericias_Artes _marciais.xlsx"
     },

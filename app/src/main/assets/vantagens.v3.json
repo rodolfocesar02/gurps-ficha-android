@@ -1095,7 +1095,7 @@
     "rawCost": "100",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se teleporta. Requer teste de IQ com penalidades por distância e tempo de preparo. Custa 100 pontos/nível? (não especificado, mas descrito como 100 pts? Na verdade, na pág. 54 diz \"Dobra\" e depois \"Padrão de Tempo Alterado 100 pts\", mas Dobra não tem custo explícito; provavelmente é 100 pts?). Vou considerar que é uma vantagem com custo variável."
+    "descricao": "O personagem se teleporta. Requer teste de IQ com penalidades por distância e tempo de preparo. Custo não especificado com total clareza na fonte; tratar como vantagem de custo variável conforme a mesa."
   },
   {
     "id": "dominacao",
@@ -1235,7 +1235,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Compreende emoções de animais e pode usar influência neles. Custa 5 pontos? (não especificado, mas provavelmente similar a Empatia)."
+    "descricao": "Compreende emoções de animais e pode usar influência neles. Custo não especificado com total clareza; em geral é tratado como similar à Empatia."
   },
   {
     "id": "empatia_com_espiritos",
@@ -1250,7 +1250,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Funciona como Empatia com espíritos. Custa 10 pontos? (não especificado)."
+    "descricao": "Funciona como Empatia com espíritos. Custo não especificado com total clareza na fonte."
   },
   {
     "id": "empatia_com_plantas",
@@ -1265,7 +1265,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Compreende plantas e pode influenciá-las. Custa 5 pontos? (não especificado)."
+    "descricao": "Compreende plantas e pode influenciá-las. Custo não especificado com total clareza na fonte."
   },
   {
     "id": "encolhimento",
@@ -1403,7 +1403,7 @@
     "rawCost": "30",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é imune a poderes psíquicos. Custa 30 pontos? (não especificado). Ampliações: Ativada/Desativada (+100%), Efeito de Área (+50%/nível). Limitação: Resistível (-50%)."
+    "descricao": "O personagem é imune a poderes psíquicos. Custo base tratado como não totalmente especificado na fonte. Ampliações: Ativada/Desativada (+100%), Efeito de Área (+50%/nível). Limitação: Resistível (-50%)."
   },
   {
     "id": "estilo",
@@ -2609,7 +2609,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem vê presságios em fenômenos naturais. Custa 25 pontos? (não especificado)."
+    "descricao": "O personagem vê presságios em fenômenos naturais. Custo não especificado com total clareza na fonte."
   },
   {
     "id": "otima_forma",
@@ -3197,7 +3197,7 @@
     "rawCost": "40",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem regenera membros perdidos. Custa 40 pontos? (não especificado). Limitação: Superficial (-50%)."
+    "descricao": "O personagem regenera membros perdidos. Custo não especificado com total clareza na fonte. Limitação: Superficial (-50%)."
   },
   {
     "id": "retencao",
@@ -3357,7 +3357,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem detecta vibrações na água ou no ar. Custo? Ampliação: Universal (+50%)."
+    "descricao": "O personagem detecta vibrações na água ou no ar. Custo base variável conforme a construção da vantagem. Ampliação: Universal (+50%)."
   },
   {
     "id": "sentido_protegido",
@@ -3599,7 +3599,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +4 em tarefas que usam o tato (além de Sentidos Aguçados). Custa 10 pontos? (não especificado)."
+    "descricao": "Bônus de +4 em tarefas que usam o tato (além de Sentidos Aguçados). Custo não especificado com total clareza na fonte."
   },
   {
     "id": "telecinese",

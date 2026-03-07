@@ -1,0 +1,21 @@
+{
+  "scanned_files": 194,
+  "changed_files": 3,
+  "changes": [
+    {
+      "file": "app/src/main/assets/pericias_artes_marciais.v1.json",
+      "markers_before": 0,
+      "markers_after": 0
+    },
+    {
+      "file": "app/src/main/assets/tecnicas.v1.json",
+      "markers_before": 40,
+      "markers_after": 40
+    },
+    {
+      "file": "scripts/normalize_armas_distancia_v1.py",
+      "markers_before": 6,
+      "markers_after": 6
+    }
+  ]
+}

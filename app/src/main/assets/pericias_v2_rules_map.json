@@ -1047,7 +1047,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Armas de Haste em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Armas de Haste em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -1075,7 +1075,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Armeiro/NT†, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Armeiro/NT†, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -2315,7 +2315,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Bastão em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Bastão em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -3265,7 +3265,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Per?cia para montar e controlar montarias em deslocamento, manobras e situa??es de risco.",
+      "descricao": "Perícia para montar e controlar montarias em deslocamento, manobras e situações de risco.",
       "modificadores": {
         "raw": ""
       }
@@ -3293,7 +3293,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Chicote em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Chicote em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -3321,7 +3321,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Chicote de Energia em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Chicote de Energia em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -3349,7 +3349,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Chicote Monofio em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Chicote Monofio em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -6321,7 +6321,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Espada de Duas Mãos em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Espada de Duas Mãos em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -6349,7 +6349,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Espada de Energia em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Espada de Energia em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -6377,7 +6377,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Espadas Curtas em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Espadas Curtas em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -6405,7 +6405,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Espadas de Lmina Larga em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Espadas de Lmina Larga em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -6702,7 +6702,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Faca em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Faca em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -8419,7 +8419,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Jitte/Sai, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Jitte/Sai, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -8767,7 +8767,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Kusari, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Kusari, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -8893,7 +8893,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Lança em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Lança em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -9341,7 +9341,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Lip Reading, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Lip Reading, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -9567,7 +9567,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Maça/Machado em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Maça/Machado em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -9595,7 +9595,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Maça/Machado de Duas Mãos em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Maça/Machado de Duas Mãos em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -9767,7 +9767,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Mangual em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Mangual em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -9795,7 +9795,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Mangual de Duas Mãos em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Mangual de Duas Mãos em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -10883,7 +10883,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Noção do Clima, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Noção do Clima, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -13475,7 +13475,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Rapieira em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Rapieira em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -13785,7 +13785,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Treinamento no uso de Sabre em combate, incluindo manuseio, ataques e defesas compat?veis com a arma.",
+      "descricao": "Treinamento no uso de Sabre em combate, incluindo manuseio, ataques e defesas compatíveis com a arma.",
       "modificadores": {
         "raw": ""
       }
@@ -14734,7 +14734,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Terçado, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Terçado, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -14836,7 +14836,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Habilidade de vestir, operar e se movimentar com Traje de Combate/NT, reduzindo erros de opera??o em campo.",
+      "descricao": "Habilidade de vestir, operar e se movimentar com Traje de Combate/NT, reduzindo erros de operação em campo.",
       "modificadores": {
         "raw": ""
       }
@@ -14864,7 +14864,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Habilidade de vestir, operar e se movimentar com Traje de Mergulho/NT, reduzindo erros de opera??o em campo.",
+      "descricao": "Habilidade de vestir, operar e se movimentar com Traje de Mergulho/NT, reduzindo erros de operação em campo.",
       "modificadores": {
         "raw": ""
       }
@@ -14892,7 +14892,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Habilidade de vestir, operar e se movimentar com Traje NBQ/NT, reduzindo erros de opera??o em campo.",
+      "descricao": "Habilidade de vestir, operar e se movimentar com Traje NBQ/NT, reduzindo erros de operação em campo.",
       "modificadores": {
         "raw": ""
       }
@@ -14920,7 +14920,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Habilidade de vestir, operar e se movimentar com Traje Pressurizado, reduzindo erros de opera??o em campo.",
+      "descricao": "Habilidade de vestir, operar e se movimentar com Traje Pressurizado, reduzindo erros de operação em campo.",
       "modificadores": {
         "raw": ""
       }
@@ -15134,7 +15134,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Tripulante Aéreo/NT, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Tripulante Aéreo/NT, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -15162,7 +15162,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Tripulante de Navio/NT, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Tripulante de Navio/NT, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -15190,7 +15190,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Tripulante de Submarino/NT, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Tripulante de Submarino/NT, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }
@@ -15218,7 +15218,7 @@
         "onZeroPoints": "-",
         "parsed": []
       },
-      "descricao": "Conhecimento pr?tico de Tripulante Espacial/NT, aplicado em testes da per?cia conforme o contexto de jogo.",
+      "descricao": "Conhecimento prático de Tripulante Espacial/NT, aplicado em testes da perícia conforme o contexto de jogo.",
       "modificadores": {
         "raw": ""
       }

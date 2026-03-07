@@ -1,0 +1,48 @@
+{
+  "scanned_json_files": 19,
+  "changed_files": 6,
+  "changes": [
+    {
+      "file": "app/src/main/assets/desvantagens.v2.schema.json",
+      "markers_before": 0,
+      "markers_after": 0,
+      "q_tokens_before": 0,
+      "q_tokens_after": 0
+    },
+    {
+      "file": "app/src/main/assets/escudos.v1.json",
+      "markers_before": 1,
+      "markers_after": 1,
+      "q_tokens_before": 0,
+      "q_tokens_after": 0
+    },
+    {
+      "file": "app/src/main/assets/pericias_v2_rules_map.json",
+      "markers_before": 45,
+      "markers_after": 45,
+      "q_tokens_before": 43,
+      "q_tokens_after": 1
+    },
+    {
+      "file": "app/src/main/assets/tecnicas.v1.json",
+      "markers_before": 40,
+      "markers_after": 40,
+      "q_tokens_before": 45,
+      "q_tokens_after": 4
+    },
+    {
+      "file": "app/src/main/assets/vantagens.v3.json",
+      "markers_before": 33,
+      "markers_after": 33,
+      "q_tokens_before": 15,
+      "q_tokens_after": 5
+    },
+    {
+      "file": "app/src/main/assets/vantagens.v3.schema.json",
+      "markers_before": 0,
+      "markers_after": 0,
+      "q_tokens_before": 0,
+      "q_tokens_after": 0
+    }
+  ]
+}

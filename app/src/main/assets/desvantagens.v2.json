@@ -3214,7 +3214,7 @@
       "mental",
       "social"
     ],
-    "descricao": "Nível Tecnológico e Recursos Iniciais. .. .. .. .. .. .. .. .. .. .. .. 27 Importância. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. . 28 Meritocracias sem Classe. .. .. .. .. .. .. .. . 28 Regras Especiais para Hierarquia. .. .. .. .. .. .. .. .. .. .. .. .. 29 Exemplo de Criação de Personagem (cont. ). .. .. .. .. .. .. .. 30 Privilégio. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. 30 Restrições Sociais. .. .. .. .. .. .. .. .. .. .. .. .. . 30 amIgOs e InImIgOs �������������������������������� 31 PdMs Associados. .. .. .. .. .. .. .. .. .. .. .. .. .. . 31 Contatos. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. . 31 IdentIdades ������������������������������������������ 31"
+    "descricao": "Reputação representa como um grupo social percebe o personagem. Ela pode ser positiva ou negativa, e seu valor depende da abrangência do grupo, da frequência de contato e da intensidade desse julgamento. Aplique bônus ou penalidades de reação quando o personagem lida com pessoas que conhecem essa reputação."
   },
   {
     "id": "riqueza",
@@ -3235,7 +3235,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Recursos Iniciais. .. .. .. .. .. .. .. .. .. .. .. .. .. . 26 Reputação. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. 26 Nível Tecnológico e Recursos Iniciais. .. .. .. .. .. .. .. .. .. .. .. 27 Importância. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. . 28 Meritocracias sem Classe. .. .. .. .. .. .. .. . 28 Regras Especiais para Hierarquia. .. .. .. .. .. .. .. .. .. .. .. .. 29 Exemplo de Criação de Personagem (cont. ). .. .. .. .. .. .. .. 30 Privilégio. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. 30 Restrições Sociais. .. .. .. .. .. .. .. .. .. .. .. .. . 30 amIgOs e InImIgOs �������������������������������� 31 PdMs Associados. .. .. .. .. .. .. .. .. .. .. .. .. .. . 31 Contatos. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. . 31 IdentIdades ������������������������������������������ 31"
+    "descricao": "Riqueza abaixo da média limita recursos iniciais, padrão de vida e acesso a bens e serviços. Níveis menores de riqueza podem impor dificuldades sociais e econômicas, conforme o cenário. Use os níveis de riqueza da campanha para definir dinheiro inicial e efeitos de custo de vida."
   },
   {
     "id": "sadismo",
