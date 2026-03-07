@@ -181,13 +181,33 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
     var nivel by remember { mutableStateOf(1) }
     var custoEscolhido by remember { mutableStateOf(definicao.getCustoBase()) }
     var descricao by remember { mutableStateOf("") }
+    val descricaoCatalogo = definicao.descricao?.trim().orEmpty()
+    var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     val opcoesEscolha = definicao.getOpcoesEscolha()
     val intervalo = definicao.getIntervaloVariavel()
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar: ${definicao.nome}") },
+        title = {
+            Text(
+                definicao.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoCatalogo.isNotBlank()) {
+                            it.clickable { mostrarDescricaoCatalogo = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoCatalogo.isNotBlank()) {
+                            contentDescription = "Nome da vantagem ${definicao.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
@@ -283,6 +303,17 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricaoCatalogo) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricaoCatalogo = false },
+            title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary) },
+            text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
+            confirmButton = {
+                TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -394,12 +425,32 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     var custoEscolhido by remember { mutableStateOf(definicao.getCustoBase()) }
     var descricao by remember { mutableStateOf("") }
     var autocontrole by remember { mutableStateOf<Int?>(null) }
+    val descricaoCatalogo = definicao.descricao?.trim().orEmpty()
+    var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     val opcoesEscolha = definicao.getOpcoesEscolha()
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar: ${definicao.nome}") },
+        title = {
+            Text(
+                definicao.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoCatalogo.isNotBlank()) {
+                            it.clickable { mostrarDescricaoCatalogo = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoCatalogo.isNotBlank()) {
+                            contentDescription = "Nome da desvantagem ${definicao.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
@@ -505,6 +556,17 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricaoCatalogo) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricaoCatalogo = false },
+            title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary) },
+            text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
+            confirmButton = {
+                TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") }
+            }
+        )
+    }
 }
 
 
