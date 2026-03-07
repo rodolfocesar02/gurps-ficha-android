@@ -1,4 +1,4 @@
-package com.gurps.ficha.ui
+﻿package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -136,16 +136,9 @@ private fun TecnicaItem(
                 .padding(end = 6.dp)
         ) {
             Text(
-                tecnica.nome,
+                "${tecnica.nome}${nivelTecnica?.let { " NH $it" } ?: ""}",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
-            )
-            val base = tecnica.periciaBaseNome.ifBlank { "Perícia base não vinculada" }
-            val nivel = nivelTecnica?.let { " • NH $it" } ?: ""
-            Text(
-                "$base • ${tecnica.dificuldadeRaw} • ${tecnica.pontosGastos} pts$nivel",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         IconButton(onClick = onDelete) {

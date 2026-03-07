@@ -38,7 +38,6 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -794,15 +793,56 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             definicao.escola?.joinToString(" · ")?.takeIf { it.isNotBlank() }
                         ).joinToString(" · ")
 
-                        ListItem(
-                            headlineContent = {
-                                Text(
-                                    definicao.nome
-                                )
-                            },
-                            supportingContent = {
-                                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                    Text("$classeEscola | pag. ${definicao.pagina}")
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 2.dp)
+                                .semantics {
+                                    if (isPraCegoVariant) {
+                                        contentDescription = if (prereqOk) {
+                                            if (recomendada) {
+                                                "Posição ${indice + 1}. Magia ${definicao.nome}. Recomendação atual para avançar no alvo. Pré requisitos atendidos. Toque no nome para configurar."
+                                            } else {
+                                                "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
+                                            }
+                                        } else {
+                                            "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Abra o dialogo e use adicao forcada se autorizado."
+                                        }
+                                    }
+                                }
+                                .then(if (!jaAdicionada) Modifier.clickable {
+                                    erroAdicionarMagia = null
+                                    magiaSelecionada = definicao
+                                } else Modifier)
+                                .then(
+                                    if (modoAlvoAtivoEfetivo && prereqCalculado && !prereqOk) Modifier.alpha(0.45f) else Modifier
+                                ),
+                            colors = appCardColors(),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp, vertical = 8.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(end = 8.dp),
+                                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                                ) {
+                                    Text(
+                                        definicao.nome,
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    Text(
+                                        "$classeEscola | pag. ${definicao.pagina}",
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                     if (modoAlvoAtivoEfetivo && prereqCalculado && !prereqOk && !prereqFalha.isNullOrBlank()) {
                                         Text(
                                             "Falta: ${motivoBloqueioCurto(prereqFalha)}",
@@ -811,8 +851,6 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                         )
                                     }
                                 }
-                            },
-                            trailingContent = {
                                 Column(horizontalAlignment = Alignment.End) {
                                     if (modoAlvoAtivoEfetivo && !jaAdicionada) {
                                         TextButton(
@@ -843,30 +881,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                         Text("Recomendada", color = MaterialTheme.colorScheme.primary)
                                     }
                                 }
-                            },
-                            modifier = Modifier
-                                .semantics {
-                                    if (isPraCegoVariant) {
-                                        contentDescription = if (prereqOk) {
-                                            if (recomendada) {
-                                                "Posição ${indice + 1}. Magia ${definicao.nome}. Recomendação atual para avançar no alvo. Pré requisitos atendidos. Toque no nome para configurar."
-                                            } else {
-                                                "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos atendidos. Toque no nome para configurar."
-                                            }
-                                        } else {
-                                            "Posição ${indice + 1}. Magia ${definicao.nome}. Pre requisitos nao atendidos: ${prereqFalha ?: "nao informado"}. Abra o dialogo e use adicao forcada se autorizado."
-                                        }
-                                    }
-                                }
-                                .then(if (!jaAdicionada) Modifier.clickable {
-                                    erroAdicionarMagia = null
-                                    magiaSelecionada = definicao
-                                } else Modifier)
-                                .then(
-                                    if (modoAlvoAtivoEfetivo && prereqCalculado && !prereqOk) Modifier.alpha(0.45f) else Modifier
-                                )
-                        )
-                        Divider()
+                            }
+                        }
                     }
                 }
 

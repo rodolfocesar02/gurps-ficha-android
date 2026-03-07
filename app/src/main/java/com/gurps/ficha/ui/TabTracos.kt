@@ -14,8 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -63,12 +61,19 @@ fun TabTracos(viewModel: FichaViewModel) {
             onClick = { showSelecionarVantagem = true }
         )
         if (p.vantagens.isNotEmpty()) {
-            SectionCard(title = "Vantagens") {
-                p.vantagens.forEachIndexed { index, vantagem ->
-                    VantagemItem(vantagem = vantagem,
-                        onEdit = { editingVantagemIndex = index },
-                        onDelete = { viewModel.removerVantagem(index) })
-                    if (index < p.vantagens.lastIndex) Divider(modifier = Modifier.padding(vertical = 4.dp))
+            Text("Vantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            p.vantagens.forEachIndexed { index, vantagem ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        VantagemItem(
+                            vantagem = vantagem,
+                            onEdit = { editingVantagemIndex = index },
+                            onDelete = { viewModel.removerVantagem(index) }
+                        )
+                    }
                 }
             }
         }
@@ -78,12 +83,19 @@ fun TabTracos(viewModel: FichaViewModel) {
             onClick = { showSelecionarDesvantagem = true }
         )
         if (p.desvantagens.isNotEmpty()) {
-            SectionCard(title = "Desvantagens") {
-                p.desvantagens.forEachIndexed { index, desvantagem ->
-                    DesvantagemItem(desvantagem = desvantagem,
-                        onEdit = { editingDesvantagemIndex = index },
-                        onDelete = { viewModel.removerDesvantagem(index) })
-                    if (index < p.desvantagens.lastIndex) Divider(modifier = Modifier.padding(vertical = 4.dp))
+            Text("Desvantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            p.desvantagens.forEachIndexed { index, desvantagem ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        DesvantagemItem(
+                            desvantagem = desvantagem,
+                            onEdit = { editingDesvantagemIndex = index },
+                            onDelete = { viewModel.removerDesvantagem(index) }
+                        )
+                    }
                 }
             }
         }
@@ -93,11 +105,20 @@ fun TabTracos(viewModel: FichaViewModel) {
             onClick = { showQualidadeDialog = true }
         )
         if (p.qualidades.isNotEmpty()) {
-            SectionCard(title = "Qualidades") {
-                p.qualidades.forEachIndexed { index, qualidade ->
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Text("• $qualidade", modifier = Modifier.weight(1f))
+            Text("Qualidades", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            p.qualidades.forEachIndexed { index, qualidade ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(qualidade, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
                         IconButton(onClick = { viewModel.removerQualidade(index) }) {
                             Icon(Icons.Default.Delete, contentDescription = "Remover qualidade $qualidade")
                         }
@@ -111,11 +132,20 @@ fun TabTracos(viewModel: FichaViewModel) {
             onClick = { showPeculiaridadeDialog = true }
         )
         if (p.peculiaridades.isNotEmpty()) {
-            SectionCard(title = "Peculiaridades") {
-                p.peculiaridades.forEachIndexed { index, peculiaridade ->
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically) {
-                        Text("• $peculiaridade", modifier = Modifier.weight(1f))
+            Text("Peculiaridades", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            p.peculiaridades.forEachIndexed { index, peculiaridade ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(peculiaridade, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
                         IconButton(onClick = { viewModel.removerPeculiaridade(index) }) {
                             Icon(Icons.Default.Delete, contentDescription = "Remover peculiaridade $peculiaridade")
                         }
