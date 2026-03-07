@@ -302,13 +302,18 @@ Status: `EM ANDAMENTO`
 
 Passos:
 1. [x] Registrar plano de fechamento dos faltantes remanescentes após lote 13.
-2. [ ] Reforçar extração do texto do Módulo Básico com fallback fuzzy seguro para títulos com variação OCR/acentuação.
-3. [ ] Reexecutar merge de descrições e atualizar relatório de cobertura.
+2. [x] Reforçar extração do texto do Módulo Básico com fallback fuzzy seguro para títulos com variação OCR/acentuação.
+3. [x] Reexecutar merge de descrições e atualizar relatório de cobertura.
 4. [ ] Validar build `visual/pracego`, instalar `visual` no emulador e fechar lote.
 
 Critério de aceite:
 - Redução máxima dos faltantes de descrição em vantagens/desvantagens sem contrariar o texto do PDF.
 - Evidência em relatório versionado e validação de build/instalação concluída.
+
+Evidência parcial:
+- vantagens com descrição: `264/265` (faltante: `aptidao_astral`);
+- desvantagens com descrição: `227/227`;
+- relatório: `scripts/reports/tracos_descricao_merge_report.json`.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`

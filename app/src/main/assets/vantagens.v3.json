@@ -92,7 +92,7 @@
     "rawCost": "20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode andar em muros e tetos sem risco de queda, movendo-se com metade do Deslocamento Básico. Custa 20 pontos. Limitação: Específico (apenas um material) de -40% a -80%."
+    "descricao": "Agente Cativante M — 15/nível 90 Aliados Soc — Variável 35 Ambidestria F — 5 38 Ampliador de Mana M Sob 50/nível 38 Anfíbio F X 10 38 Antecedentes Incomuns M — Variável 39 Apagado Soc — 10 39 Aparência F — Variável 21 Apetrechos M — 5/apetrecho 39 Aptidão Mágica M Sob 5 + 10/nível 40 Arrebatador M Sob 80 40 Arremedo M X 10 41 Artífice M — 10/nível 90 Artista Talentoso M — 5/nível 90 Ataque Adicional F — 25/nível 42 Ataque Constritivo F X 15 42 Ataque Inato F X Variável 42 Atirador M — 25 43 Atribulação F X 10/nível 43 Audição Aguçada F — 2/nível 88 Audição Discriminatória F X 15 44 Audição Parabólica F X 4/nível 44 Audição Subsônica F X 0 ou 5 44 Autotranse M — 1 100 Boa Forma F — 5 45 Boca Adicional F X 5/boca 45 Bom de Sono F — 1 100 Bom Senso M — 10 45 Braços Adicionais F X Variável 45 Cabeça Adicional F X 15/cabeça 46 Cálculos Instantâneos M — 2 46 Camaleão F X 5/nível 46 Camaleão Social M — 5 46 Caminhar no Ar F X 20 46 Caminhar sobre Líquidos F X 15 46 Canalização M Sob 10 46 Carga Útil F X 1/nível 47 Carisma M — 5/nível 47 Cibernética F — Variável 47 Clarissenciência M Sob 50 47 Clericato Soc — 5 47 Companheiro Animal M — 5/nível 90 Consumo Reduzido F — 2/nível 48 Contatos Soc — Variável 48"
   },
   {
     "id": "agente_cativante",
@@ -171,7 +171,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem está adaptado para se mover sob a água sem penalidades, nadando com Deslocamento total. Custa 10 pontos."
+    "descricao": "Antecedentes Incomuns M — Variável 39 Apagado Soc — 10 39 Aparência F — Variável 21 Apetrechos M — 5/apetrecho 39 Aptidão Mágica M Sob 5 + 10/nível 40 Arrebatador M Sob 80 40 Arremedo M X 10 41 Artífice M — 10/nível 90 Artista Talentoso M — 5/nível 90 Ataque Adicional F — 25/nível 42 Ataque Constritivo F X 15 42 Ataque Inato F X Variável 42 Atirador M — 25 43 Atribulação F X 10/nível 43 Audição Aguçada F — 2/nível 88 Audição Discriminatória F X 15 44 Audição Parabólica F X 4/nível 44 Audição Subsônica F X 0 ou 5 44 Autotranse M — 1 100 Boa Forma F — 5 45 Boca Adicional F X 5/boca 45 Bom de Sono F — 1 100 Bom Senso M — 10 45 Braços Adicionais F X Variável 45 Cabeça Adicional F X 15/cabeça 46 Cálculos Instantâneos M — 2 46 Camaleão F X 5/nível 46 Camaleão Social M — 5 46 Caminhar no Ar F X 20 46 Caminhar sobre Líquidos F X 15 46 Canalização M Sob 10 46 Carga Útil F X 1/nível 47 Carisma M — 5/nível 47 Cibernética F — Variável 47 Clarissenciência M Sob 50 47 Clericato Soc — 5 47 Companheiro Animal M — 5/nível 90 Consumo Reduzido F — 2/nível 48 Contatos Soc — Variável 48 Controle da Mente M X 50 49 Controle do Metabolismo F X 5/nível 50 Controle Térmico M/F X 5/nível 50 Crescimento F X 10/nível 50 Cronolocalização M — 5 74Vantagem M/F/Soc X/Sob Custo Pág."
   },
   {
     "id": "antecedentes_incomuns",
@@ -429,7 +429,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +1 por nível em testes de audição. Custa 2 pontos/nível."
+    "descricao": "Audição Discriminatória F X 15 44 Audição Parabólica F X 4/nível 44 Audição Subsônica F X 0 ou 5 44 Autotranse M — 1 100 Boa Forma F — 5 45 Boca Adicional F X 5/boca 45 Bom de Sono F — 1 100 Bom Senso M — 10 45 Braços Adicionais F X Variável 45 Cabeça Adicional F X 15/cabeça 46 Cálculos Instantâneos M — 2 46 Camaleão F X 5/nível 46 Camaleão Social M — 5 46 Caminhar no Ar F X 20 46 Caminhar sobre Líquidos F X 15 46 Canalização M Sob 10 46 Carga Útil F X 1/nível 47 Carisma M — 5/nível 47 Cibernética F — Variável 47 Clarissenciência M Sob 50 47 Clericato Soc — 5 47 Companheiro Animal M — 5/nível 90 Consumo Reduzido F — 2/nível 48 Contatos Soc — Variável 48 Controle da Mente M X 50 49 Controle do Metabolismo F X 5/nível 50 Controle Térmico M/F X 5/nível 50 Crescimento F X 10/nível 50 Cronolocalização M — 5 74Vantagem M/F/Soc X/Sob Custo Pág. Cura M X 30 51 Curandeiro M — 10/nível 90 Dedos Verdes M — 5/nível 90 Defesas Ampliadas M — Variável 51 Dentes F X 0, 1, ou 2 52 Desenvolvedor M — 25 ou 50 52 Deslocamento Ampliado F X 20/nível 52 Destemor M — 2/nível 53 Destino M Sob Variável 53 Destreza Manual Elevada F — 5/nível 53 Detectar M/F X Variável 53 Difícil de Subjugar F — 2/nível 53 Digestão Universal F X 5 54 Dobra M Sob 100 54 Dominação M Sob 20 55"
   },
   {
     "id": "audicao_discriminatoria",
@@ -444,7 +444,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Capacidade sobre-humana de distinguir sons, identificar pessoas pela voz e memorizar sons. Custa 15 pontos. Bônus de +4 em tarefas auditivas. Limitação: Somente sob a Água (-30%)."
+    "descricao": "Audição Parabólica F X 4/nível 44 Audição Subsônica F X 0 ou 5 44 Autotranse M — 1 100 Boa Forma F — 5 45 Boca Adicional F X 5/boca 45 Bom de Sono F — 1 100 Bom Senso M — 10 45 Braços Adicionais F X Variável 45 Cabeça Adicional F X 15/cabeça 46 Cálculos Instantâneos M — 2 46 Camaleão F X 5/nível 46 Camaleão Social M — 5 46 Caminhar no Ar F X 20 46 Caminhar sobre Líquidos F X 15 46 Canalização M Sob 10 46 Carga Útil F X 1/nível 47 Carisma M — 5/nível 47 Cibernética F — Variável 47 Clarissenciência M Sob 50 47 Clericato Soc — 5 47 Companheiro Animal M — 5/nível 90 Consumo Reduzido F — 2/nível 48 Contatos Soc — Variável 48 Controle da Mente M X 50 49 Controle do Metabolismo F X 5/nível 50 Controle Térmico M/F X 5/nível 50 Crescimento F X 10/nível 50 Cronolocalização M — 5 74Vantagem M/F/Soc X/Sob Custo Pág. Cura M X 30 51 Curandeiro M — 10/nível 90 Dedos Verdes M — 5/nível 90 Defesas Ampliadas M — Variável 51 Dentes F X 0, 1, ou 2 52 Desenvolvedor M — 25 ou 50 52 Deslocamento Ampliado F X 20/nível 52 Destemor M — 2/nível 53 Destino M Sob Variável 53 Destreza Manual Elevada F — 5/nível 53 Detectar M/F X Variável 53 Difícil de Subjugar F — 2/nível 53 Digestão Universal F X 5 54 Dobra M Sob 100 54 Dominação M Sob 20 55 Duplicação M/F X 35/cópia 55"
   },
   {
     "id": "audicao_parabolica",
@@ -572,7 +572,8 @@
     "max": null,
     "rawCost": "2",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Capacidade de fazer cálculos mentais rapidamente. Cálculos Instantâneos (aritmética): 2 pontos. Matemático Intuitivo (todo tipo): 5 pontos."
   },
   {
     "id": "camaleao",
@@ -634,7 +635,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode caminhar sobre líquidos como se fossem sólidos. Custa 15 pontos."
+    "descricao": "Canalização M Sob 10 46 Carga Útil F X 1/nível 47 Carisma M — 5/nível 47 Cibernética F — Variável 47 Clarissenciência M Sob 50 47 Clericato Soc — 5 47 Companheiro Animal M — 5/nível 90 Consumo Reduzido F — 2/nível 48 Contatos Soc — Variável 48 Controle da Mente M X 50 49 Controle do Metabolismo F X 5/nível 50 Controle Térmico M/F X 5/nível 50 Crescimento F X 10/nível 50 Cronolocalização M — 5 74Vantagem M/F/Soc X/Sob Custo Pág. Cura M X 30 51 Curandeiro M — 10/nível 90 Dedos Verdes M — 5/nível 90 Defesas Ampliadas M — Variável 51 Dentes F X 0, 1, ou 2 52 Desenvolvedor M — 25 ou 50 52 Deslocamento Ampliado F X 20/nível 52 Destemor M — 2/nível 53 Destino M Sob Variável 53 Destreza Manual Elevada F — 5/nível 53 Detectar M/F X Variável 53 Difícil de Subjugar F — 2/nível 53 Digestão Universal F X 5 54 Dobra M Sob 100 54 Dominação M Sob 20 55 Duplicação M/F X 35/cópia 55 Durabilidade Sobrenatural F Sob 150 56 Duro de Matar F — 2/nível 56 DX Braçal F X 12 ou 16/nível 56 Elasticidade F X 6/nível 56 Elo Mental M Sob Variável 57 Empatia M — 15 57 Empatia com Animais M — 5 57 Empatia com Espíritos M Sob 10 57 Empatia com Plantas M — 5 57 Encolhimento F X 5/nível 57 Equilíbrio Perfeito F — 15 58 Equipamento Característico Soc — Variável 58 Escavação F X 30 + 5/nível 58 Escorregadio F X 2/nível 58"
   },
   {
     "id": "canalizacao",
@@ -792,7 +793,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem controla funções biológicas involuntárias, recebendo +1 por nível em testes de HT relevantes. Custa 2 pontos/nível. Limitação: Hibernação (-60%)."
+    "descricao": "Cura (pág. 51); Detectar (pág. 53), para doenças, envenenamento, etc.; Rege neração (pág. 82); Resistente (pág. 84) contra a maioria dos efeitos físicos no civos; e Restaurar Membros (pág. 85). Modificador de Poder: Cura Psíquica. A vantagem é uma habilidade psíquica relacionada ao poder Cura Psíquica. Qualquer coisa que bloquear a Cura Psíquica, faz o mesmo com a vantagem; por outro lado, ela pode se beneficiar do Talento para Cura Psíquica. -10%. pes A Percepção Extrasensorial (PES) abrange as várias habilidades de “sexto sentido” — esses são os tipos mais comu mente relatados de fenômenos psíquicos. O Mestre deve fazer todos os testes de habilidade de PES em segredo. Quanto melhor o resultado, mais precisa e útil é a informação obtida. No caso de um fra casso, o Mestre deve dizer “Você não des cobriu nada”, mas se um teste de Psico metria ou Precognição fracassar por uma margem de 5 ou mais, ele deve mentir. Talento para PES 5 pontos/nível O personagem tem um talento natu ral para a PES e recebe um bônus de +1 por nível quando usar qualquer habilida de de PES. O personagem pode usar seus pontos de personagem adquiridos para comprar novas habilidades de PES, mes mo que não tenha sido criado com elas.Habilidades de PES As vantagens a seguir também podem ser habilidades de PES: Ca nalização (pág. 46); Clarissenciência (pág. 47); Detectar (pág. 53), para psis, atividade psíquica, etc.; Médium (pág. 69); Memória Racial (pág. 69); Noção do Perigo (pág. 73); Oráculo (pág. 74); Para-Radar (v. Sentido de Monitoramento, pág. 87); Precogni ção (pág. 80); Psicometria (pág. 81);"
   },
   {
     "id": "controle_termico",
@@ -977,7 +978,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Dobra a velocidade máxima em um ambiente (Ar, Solo, Espaço, Água). Custa 20 pontos/nível (meio nível: 10 pts, multiplica por 1,5). Ampliação: Bônus de Manuseio (+5%/nível). Limitações: Limitado a Estradas (-50%), Newtoniana (-50%), Redutor de Manuseio (-5%/nível)."
+    "descricao": "que custa 50 pontos. Todos os membros dessa raça multiplicam sua velocidade aérea máxima por 2 × 2 × 1,5 = 6. Esse Deslocamento multiplicado representa a velocidade máxima do personagem. Anote o resultado entre parênteses depois da característica Des locamento Ampliado; ex., o super men cionado no exemplo anterior escreveria “Deslocamento Básico 4 (Velocidade no Solo 128)”. O jogador sempre pode optar por uma velocidade máxima um pouco inferior se quiser que ela cor responda à velocidade de uma criatura ficcional ou do mundo real ou de um veículo com uma velocidade máxima conhecida. Essa redução não devolve pontos ao personagem. O Deslocamento Ampliado não afeta a Velocidade Básica, o Deslocamento Básico, nem a Esquiva. Seus benefícios só se aplicam quando o personagem está se deslocando em um trajeto rela tivamente reto e plano (v. Disparar, pág. 353). No entanto, ela apresenta sim um valor defensivo; aqueles que atacarem o personagem com ataques à distância devem levar o deslocamento do perso nagem em consideração quando esti verem calculando os modificadores de velocidade/distância (pág. 550). A maioria das formas de Desloca mento Ampliado tem pré-requisitos. Deslocamento Ampliado (Água) exi ge Anfíbio (pág. 38) ou Aquático (pág. 156). O Deslocamento Ampliado (Ar) exige Voo (pág. 98). O Deslocamento Ampliado (Espaço) exige Voo com a am pliação Voo Espacial ou Voo Espacial Newtoniano e afeta o deslocamento no espaço, não a velocidade aérea. Para se deslocar mais rápido no ar e no espaço, compre Deslocamento Ampliado (Ar) e Deslocamento Ampliado (Espaço).Ampliações Especiais"
   },
   {
     "id": "destemor",
@@ -1028,7 +1029,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Bônus de +1 por nível (máx. 4) em tarefas que exigem toque delicado, como Cirurgia, Arrombamento, etc. Custa 5 pontos/nível."
+    "descricao": "também com a perícia Sacar Rápido. Por -5 pontos, a penalidade é de -3; por -10 pontos, de -6. Esta desvantagem não se aplica a tarefas baseadas em IQ, tare fas em grande-escala baseadas em DX ou jogadas de dados relacionadas com o combate, a não ser Sacar Rápido. O personagem também se atrapalha todo para comer, não consegue dar um nó numa gravata e assim por diante. O Mestre também pode aplicar uma pe nalidade adicional de -1 para cada nível dessa desvantagem em qualquer teste de Influência ou reação em locais onde é importante ter boas maneiras. Esta desvantagem é mutuamente ex cludente com Destreza Manual Elevada. Autodestruição 3 1 Assim que o personagem começar a envelhecer (aos 50 anos no caso de hu manos normais), seus órgãos e sistema imunológico passam a falhar. Ele co meça a envelhecer com rapidez, e deve fazer testes de envelhecimento todos os dias com uma penalidade de -3 na HT. Um personagem não pode obter esta desvantagem juntamente com Doente Terminal (pág. 135). Se quiser que o personagem se autodestrua rapidamen te, adquira Doente Terminal. Avareza 2 -10 pontos* O personagem está sempre preocupa do em conservar suas riquezas e sempre busca o melhor acordo possível. Ele deve fazer um teste de autocontrole sempre que tiver que gastar algum dinheiro. Se a despesa for grande, o teste de autocontro le sofre uma penalidade de -5 ou maior (a critério do Mestre). Um fracasso significa que o personagem deve se recusar a gas tar o dinheiro ou, se não houver escapa tória, deve regatear e reclamar intermina -"
   },
   {
     "id": "detectar",
@@ -1078,7 +1079,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode se alimentar de qualquer proteína não-venenosa. Custa 5 pontos."
+    "descricao": "Dobra M Sob 100 54 Dominação M Sob 20 55 Duplicação M/F X 35/cópia 55 Durabilidade Sobrenatural F Sob 150 56 Duro de Matar F — 2/nível 56 DX Braçal F X 12 ou 16/nível 56 Elasticidade F X 6/nível 56 Elo Mental M Sob Variável 57 Empatia M — 15 57 Empatia com Animais M — 5 57 Empatia com Espíritos M Sob 10 57 Empatia com Plantas M — 5 57 Encolhimento F X 5/nível 57 Equilíbrio Perfeito F — 15 58 Equipamento Característico Soc — Variável 58 Escavação F X 30 + 5/nível 58 Escorregadio F X 2/nível 58 Escudo Mental M X 4/nível 58 Espinhos F X 1 a 3 58 Estabilidade no Emprego Soc — 5 59 Estática Psíquica M Sob 30 59 Estilo M/F — 1 101 Expectativa de Vida Ampliada F X 2/nível 59 Experiência-G M — 1 a 10 59 Explorador M — 10/nível 91 Facilidade para Idiomas M — 10 59 Fala Subaquática F X 5 59 Fala Subsônica F X 0 ou 10 59 Fala Ultrassônica F X 0 ou 10 59 Falar com Animais M X 25 60 Falar com Plantas M X 15 60 Familiaridade Cultural Soc — 1 ou 2/cultura 23 Favor Soc — Variável 60 Fé Verdadeira M Sob 15 60 Fleuma M — 15 60 Flexibilidade F — 5 60 Forma Alternativa F X Variável 71 Forma de Sombras F X 50 61 Garras F X Variável 61 Golpeadores F X 5–8 62 Grupo de Contato Soc — Variável 62 Habilidade Matemática M — 10/nível 91 Habilidade Musical M — 5/nível 91"
   },
   {
     "id": "dobra",
@@ -1138,7 +1139,7 @@
     "rawCost": "150",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem ignora a maioria dos ferimentos, imune a choque e nocaute. Custa 150 pontos."
+    "descricao": "válidas estão relacionadas no quadro Defesas Limitadas (pág. 84); o item que pode matar o personagem tem de ter fre quência “Ocasional” ou superior. Se um ferimento causado por esse objeto reduzir o personagem a um número de PV nega tivos que forçaria um humano normal a fazer um teste de HT para sobreviver, então ele deve fazer o mesmo teste para não morrer. Se o item ferir o personagem e reduzi-lo a -5×PVInicial, o personagem morre automaticamente. Se o personagem já estiver com -5×PVInicial por causa de outros ferimentos, qualquer lesão causada pelo objeto escolhido matará o personagem. Objetos ao qual o personagem tem Vulnerabilidade (pág. 161) também o matam da mesma maneira. Duro de Matar 3 2 pontos/nível É incrivelmente difícil matar o perso nagem. Cada nível nesta vantagem con cede um bônus de +1 nos testes de HT feitos para ver se o personagem consegue sobreviver quando seu número de Pontos de Vida é menor que -1×PVInicial e em qualquer teste de HT onde um fracasso resulta na morte instantânea do perso nagem (por parada cardíaca, envenena mento, etc.). Se o bônus desta vantagem fizer a diferença entre a vida e a morte, o personagem entra em colapso e fica aparentemente morto (ou inválido), mas volta ao normal depois do período de tempo normal — consulte Retomando a Consciência (pág. 423). Um sucesso em um teste de Diagnose (ou de Mecânica, no caso de máquinas) revela a verdade.Exemplo: Bruno tem HT 12, 15 PV e Duro de Matar 4. Ele sofre 45 pontos de dano, o que reduz seus PV a -30. Ele precisa obter sucesso em dois testes de HT para sobreviver: um a -15 PV e outro a -30 PV. No primeiro teste, ele obtém um 11, mas no segundo, 14. Esse valor é maior que sua HT"
   },
   {
     "id": "duro_de_matar",
@@ -1248,7 +1249,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Funciona como Empatia com espíritos. Custa 10 pontos? (não especificado)."
+    "descricao": "Empatia com Plantas M — 5 57 Encolhimento F X 5/nível 57 Equilíbrio Perfeito F — 15 58 Equipamento Característico Soc — Variável 58 Escavação F X 30 + 5/nível 58 Escorregadio F X 2/nível 58 Escudo Mental M X 4/nível 58 Espinhos F X 1 a 3 58 Estabilidade no Emprego Soc — 5 59 Estática Psíquica M Sob 30 59 Estilo M/F — 1 101 Expectativa de Vida Ampliada F X 2/nível 59 Experiência-G M — 1 a 10 59 Explorador M — 10/nível 91 Facilidade para Idiomas M — 10 59 Fala Subaquática F X 5 59 Fala Subsônica F X 0 ou 10 59 Fala Ultrassônica F X 0 ou 10 59 Falar com Animais M X 25 60 Falar com Plantas M X 15 60 Familiaridade Cultural Soc — 1 ou 2/cultura 23 Favor Soc — Variável 60 Fé Verdadeira M Sob 15 60 Fleuma M — 15 60 Flexibilidade F — 5 60 Forma Alternativa F X Variável 71 Forma de Sombras F X 50 61 Garras F X Variável 61 Golpeadores F X 5–8 62 Grupo de Contato Soc — Variável 62 Habilidade Matemática M — 10/nível 91 Habilidade Musical M — 5/nível 91"
   },
   {
     "id": "empatia_com_plantas",
@@ -1308,7 +1309,7 @@
     "rawCost": "Variável",
     "specialRule": "equipamento_caracteristico",
     "tags": [],
-    "descricao": "Objetos valiosos que fazem parte da história do personagem. Cada ponto equivale a 50% dos recursos iniciais."
+    "descricao": "Blindagem corporal, um rifle e óculos de visão noturna concedem Resistência a Dano, Ataque Inato e Infravisão, respecti vamente… contudo, uma vez que qualquer pessoa pode comprar esses itens, eles têm um custo em dinheiro, não em pontos. As características concedidas por itens têm seu custo normal em pontos. É pos sível atribuir a eles qualquer combinação lógica de modificadores, assim como uma ou mais das limitações especiais a seguir. Frágil Variável Os inimigos do personagem são ca pazes de destruir o item. Depois disso, ele não concede mais benefícios até ser reparado. Some os elementos a seguir para encontrar o valor final da limitação. Durabilidade: Quanto mais fácil quebrar o objeto, maior o valor da li mitação. Estabeleça o peso e a RD do instrumento. RD Modificador 2 ou menos -20% 3–5 -15% 6–15 -10% 16–25 -5% 26 ou mais 0% Se o objeto for uma máquina que pode quebrar (diferente de um artefato simples, como um anel ou um chapéu), adicione -5%. Consulte Dano a Objetos (pág. 483) para determinar o número de PV e os efeitos do dano.Reparabilidade: O personagem nor malmente é capaz de consertar o instru mento, caso ele quebre; o Mestre deve determinar a(s) perícia(s) necessária(s) para fazer o conserto. Se o personagem não for capaz de repará-lo e precisar de muito tempo, esforço ou um gasto incon veniente para fazê-lo (decisão do MJ), então a limitação vale -15% adicionais. Tamanho: O Modificador de Tama nho do item afeta os testes de Visão"
   },
   {
     "id": "escavacao",
@@ -1386,7 +1387,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem um emprego vitalício do qual não pode ser despedido. Custa 5 pontos."
+    "descricao": "Estática Psíquica M Sob 30 59 Estilo M/F — 1 101 Expectativa de Vida Ampliada F X 2/nível 59 Experiência-G M — 1 a 10 59 Explorador M — 10/nível 91 Facilidade para Idiomas M — 10 59 Fala Subaquática F X 5 59 Fala Subsônica F X 0 ou 10 59 Fala Ultrassônica F X 0 ou 10 59 Falar com Animais M X 25 60 Falar com Plantas M X 15 60 Familiaridade Cultural Soc — 1 ou 2/cultura 23 Favor Soc — Variável 60 Fé Verdadeira M Sob 15 60 Fleuma M — 15 60 Flexibilidade F — 5 60 Forma Alternativa F X Variável 71 Forma de Sombras F X 50 61 Garras F X Variável 61 Golpeadores F X 5–8 62 Grupo de Contato Soc — Variável 62 Habilidade Matemática M — 10/nível 91 Habilidade Musical M — 5/nível 91"
   },
   {
     "id": "estatica_psiquica",
@@ -1416,7 +1417,7 @@
     "rawCost": "1",
     "specialRule": null,
     "tags": [],
-    "descricao": "Dobra a idade de maturidade e envelhecimento por nível. Custa 2 pontos/nível."
+    "descricao": "mansões; serviço de segurança, etc. Ele pagará apenas os $1.200 por mês de Sta tus 1 e o Estado bancará a diferença. Uma pessoa que quisesse apenas ter um estilo de vida semelhante ao de um presidente teria de pagar toda a quantia sozinho! Se o personagem estiver de férias ou viajando por mais de um mês, suas despesas serão ainda maiores (normal mente, seis vezes o seu custo de vida, a menos que ele tenha Reivindicar Hospi talidade, pág. 82).Pousadas, Hotéis e Outras Acomodações Temporárias Quando estiver vivendo longe de casa, o personagem deve arcar com um custo de vida diário equivalente a 20% de seu custo de vida mensal, mas ele pode viver um nível abai xo do seu Status sem causar re percussões muito significativas, se assim desejar. A qualidade de suas acomodações depende diretamente de seu Status. No mundo moder no, Status -1 significa um albergue sujo; Status 0, um hotel ou pousa da típica; Status 1, um bom hotel; Status 2, uma suíte de luxo em um hotel; e Status 3 e superior, um re sort elegante. É possível utilizar essa tabela de preços como base para descobrir quanto custa entreter convidados no nível de Status a que estão acostu mados ou como um guia básico para valores de suborno. Alimentação O cálculo do custo de vida considera que o personagem compra alimentos e os prepara em casa (não importa se isso é feito por ele mesmo, por sua família ou por sua equipe). Se ele sempre come fora, ele o faz em lugares um nível abaixo do seu Status. Utilize as diretrizes que vere -"
   },
   {
     "id": "expectativa_de_vida_ampliada",
@@ -1433,7 +1434,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Um indivíduo com ciclo de vida médio atinge a maturidade aos 18 anos de idade e os efeitos do envelhecimento (pág. 444) aos 50, acelerando aos 70 e 90. Cada nível de Expectativa de Vida Ampliada dobra todos esses valores. Observe que para um personagem que deseja obter mais que sete níveis nesta característica (o que o faria atingir a maturidade aos 2.304 anos de idade e começar a envelhecer a  partir dos 6.400 anos), vale mais a pena comprar Idade Imutável (pág. 63)."
+    "descricao": "Experiência-G M — 1 a 10 59 Explorador M — 10/nível 91 Facilidade para Idiomas M — 10 59 Fala Subaquática F X 5 59 Fala Subsônica F X 0 ou 10 59 Fala Ultrassônica F X 0 ou 10 59 Falar com Animais M X 25 60 Falar com Plantas M X 15 60 Familiaridade Cultural Soc — 1 ou 2/cultura 23 Favor Soc — Variável 60 Fé Verdadeira M Sob 15 60 Fleuma M — 15 60 Flexibilidade F — 5 60 Forma Alternativa F X Variável 71 Forma de Sombras F X 50 61 Garras F X Variável 61 Golpeadores F X 5–8 62 Grupo de Contato Soc — Variável 62 Habilidade Matemática M — 10/nível 91 Habilidade Musical M — 5/nível 91"
   },
   {
     "id": "experiencia_g",
@@ -1463,7 +1464,7 @@
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Talento para perícias de sobrevivência e exploração. Custa 10 pontos/nível."
+    "descricao": "gem, Naturalista, Navegação, Pesca ria, Rastreamento e Sobrevivência. Bônus de reação: exploradores, aman tes da natureza e pessoas do gênero. 10 pontos/nível. Habilidade Matemática: Análise de Mercado, Astronomia, Contabilida de, Criptografia, Engenharia, Finan ças, Física e Matemática. Bônus de reação: engenheiros e cientistas. 10 pontos/nível. Habilidade Musical: Canto, Com posição Musical, Influência Musical, Instrumentos Musicais e Performan ce em Grupo (Condução de Orques tra). Bônus de reação: qualquer pes soa que ouvir ou apreciar o trabalho do personagem. 5 pontos/nível. Perspicácia Comercial: Administra ção, Análise de Mercado, Comércio, Contabilidade, Economia, Finanças, Jogos de Azar e Propaganda. Bônus de reação: qualquer pessoa com quem o personagem faz negócios. 10 pon tos/nível. Talentos Personalizados A critério do Mestre, o jogador pode criar seu próprio Talento a par tir de uma lista personalizada de pe rícias. No entanto, é o Mestre quem determina quais delas estão “relacio nadas” e quantos pontos vale o Talen to. Talentos sempre precisam estar relacionados a uma aptidão inata. Exemplo: o Talento Esportes faz sen tido — alguns atletas realmente pare cem possuir um dom — mas o Mestre deveria proibir Talento Ninja e Talen to com Armas (consulte a vantagem"
   },
   {
     "id": "facilidade_para_idiomas",
@@ -1586,7 +1587,7 @@
     "rawCost": "Variável",
     "specialRule": "favor",
     "tags": [],
-    "descricao": "Um favor que alguém deve ao personagem, usado uma vez. Custo é 1/5 do custo da vantagem subjacente."
+    "descricao": "em questão ajudará(rão) o personagem somente uma vez. Quando o personagem quiser “cobrar” o Favor, o Mestre deve fazer um teste contra a frequência de participação da vantagem subjacente. No caso de um fra casso, o personagem não consegue entrar em contato com seu “amigo” a tempo ou ele não pode atender seu pedido, mas ele ainda deve o Favor. O personagem pode tentar novamente em outra aventura. No caso de um sucesso, o personagem consegue tudo o que queria (sujeito aos limites da vantagem) e elimina a obriga ção: remova o Favor da planilha de per sonagem e reduza o total de pontos do personagem da forma apropriada. Se o Mestre obtiver um resultado de 3 ou 4, o “amigo” do personagem ainda se sente em dívida com ele, e o Favor é mantido… pelo menos até a próxima vez. O personagem pode adquirir um Favor durante a aventura, assim como qualquer outra vantagem similar. O Mestre também pode conceder essa vantagem como parte da recompensa por uma aventura bem-sucedida. Fé Verdadeira 2 5 O personagem tem uma fé religiosa intensa que o protege de seres sobre naturais “malignos”, como demônios e vampiros. Para desfrutar dessa prote ção, ele deve afirmar ativamente sua fé portando um símbolo físico reverencia do por sua religião (ex.: um crucifixo, o Torá ou o Corão), entoando cânticos, dançando ou realizando qualquer ou tro ato apropriado às suas crenças. Se o personagem quiser utilizar esta habi lidade durante o combate para repelir zumbis, por exemplo, deve selecionar a manobra Concentrar a cada turno e não pode fazer mais nada."
   },
   {
     "id": "fe_verdadeira",
@@ -1687,7 +1688,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Garras naturais. Cascos (3 pts), Garras Afiadas (5 pts), Garras Cegas (3 pts), Garras Pontudas (8 pts), Longas Garras Pontudas (11 pts)."
+    "descricao": "ro, etc. — que causa a infecção. Qualquer indivíduo que vier a sofrer dano desse ata que deve jogar 3d vs. o número de PV que perdeu (máximo de uma jogada por dia). Se obtiver um resultado menor ou igual ao dano sofrido, a vítima fica infectada e se transformará numa criatura do tipo que o atacou em 2d dias, ou, se não hou ver influência sobrenatural, talvez mais tempo — a critério do Mestre. O Mestre tem liberdade para impor condições adi cionais para a infecção; ex., a vítima pre cisa sofrer três ataques, ingerir o sangue do agressor ou até mesmo morrer antes de fazer a jogada descrita anteriormente. Depois que a transição estiver com pleta, a vítima adquire o mesmo mode lo de raça sobrenatural do personagem (Vampiro, Lobisomem, etc.), além de Mentalidade de Escravo (pág. 151). A ví -tima fica subordina da ao personagem — e se ela infectar outras vítimas, tam bém as colocará sob controle do perso nagem, com as mes mas características. A Dominação em si custa 20 pontos, mas, para controlar uma nova vítima, o personagem precisa de pontos suficien tes para comprá-la como um Aliado (pág. 35) com a am pliação “Lacaio” (de vido à Mentalidade de Escravo) e “Ha bilidades Especiais” (porque ele pode criar novos lacaios para o personagem). O jogador pode es -"
   },
   {
     "id": "golpeadores",
@@ -1766,7 +1767,7 @@
     "rawCost": "Variável",
     "specialRule": "habilidades_modulares",
     "tags": [],
-    "descricao": "Reserva de pontos que podem ser realocados para perícias ou vantagens mentais. Custo por entrada: Cérebro Eletrônico (6 + 4/ponto), Entradas para Chips (5 + 3/ponto), Poder Cósmico (10/ponto), Supermemorização (5 + 3/ponto). Ampliação: Física (+50% ou +100%). Limitações: Somente Mágicas (-20%), Virtual (-50%)."
+    "descricao": "nagens com cérebros eletrônicos costu mam possuir as duas características. Esta característica é mais adequada a golens, mortos-vivos irracionais, ro bôs e outros autômatos. Incapaz de Falar 3 O personagem tem uma capacidade de fala limitada. Esta característica é dividida em dois níveis: Incapaz de Falar: O personagem é ca paz de emitir sons vocálicos (vociferar, resmungar, cantar, etc.), mas seus ór gãos da fala são incapazes de produzir as modulações sutis necessárias à lin -guagem. Ele ainda poderia adquirir as vantagens Arremedo ou Voz Melodiosa, ou a desvantagem Voz Irritante (mas não Gagueira). A maioria dos animais tem esta característica. -15 pontos. Mudez: O personagem não é capaz de emitir sons. Toda comunicação com os outros deve ser feita sem a fala: por es crito, linguagem de sinais, código Mor se, telepatia, etc. O tempo gasto para se comunicar dessa maneira conta integral mente para o aperfeiçoamento, por meio do estudo, das perícias relacionadas (v. o Capítulo 9). Nenhum teste é preciso (nem permitido) quando o personagem tentar se comunicar com outros PdJs que não conhecem sua linguagem de si nais; interprete isso por sua conta! Não é possível ter quaisquer outras caracte rísticas relacionadas à fala. -25 pontos. Incapaz de Sentir Prazer 3 A parte do cérebro responsável pelo prazer está desgastada ou não existe no personagem. Ele não é capaz de apreciar o sabor de uma boa refeição, o prazer do sexo, a beleza selvagem do combate, etc. Ele pode nem mesmo se lembrar das sen sações causadas por tudo isso. O perso nagem é capaz de fingir, mas sofre uma"
   },
   {
     "id": "hermafromorfo",
@@ -1781,7 +1782,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode alternar entre sexos. Custa 5 pontos."
+    "descricao": "Hierarquia Soc — 5 ou 10/nível 29 Hierarquia Administrativa Soc — 5 ou 10/nível 30 Hierarquia Comercial Soc — 5 ou 10/nível 30 Hierarquia Honorária Soc — 1/nível 29 Hierarquia Militar Soc — 5 ou 10/nível 30 Hierarquia Policial Soc — 5 ou 10/nível 30 Hierarquia Religiosa Soc — 5 ou 10/nível 30 Hipoalgia (Alto Limiar de Dor) F — 10 63 Idade Imutável F X 15 63 Identidade Alternativa Soc — 5 ou 15 63 Iluminado M Sob 15 64 Impossível de Matar F X 50 a 150 64 Imunidade Legal Soc — 5 a 20 64 Indomável M — 15 65 Inércia Temporal M Sob 15 65 Infravisão F X 0 ou 10 65 Insubstancialidade M/F X 80 65 Interposição F X Variável 66 Intuição M — 15 67 Investidura de Poder M Sob 10/nível 67 Invisibilidade M/F X 40 67 Lacrado F X 15 68 Lamentável Soc — 5 22 Leitura da Mente M X 30 68 Língua Ferina M — 5 68 Longevidade F — 2 69 Matemático Intuitivo M — 5 46 Médium M Sob 10 69 Membrana Nictitante F X 1/nível 69 Memória Eidética M — 5 69 Memória Fotográfica M — 10 69 Memória Racial M X 15 ou 40 69 Mente Digital F X 5 69 Mente Segmentada M X 50/nível 70 Mestre de Armas M — Variável 70 Metabolismo Impoluto F X 1 101 Metamorfose F X Variável 70 Mordida de Vampiro F X 30 + 5/nível 72 Morfose F X Variável 72 Não Come nem Bebe F X 10 72 Não Dorme F X 20 72 Não Respira F X 20 73 Neutralizar M X 50 73 Noção do Perigo M — 15 73"
   },
   {
     "id": "hierarquia",
@@ -1821,7 +1822,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Consiste em um cargo dentro de uma burocracia governamental. Quando se está lidando com outros administradores. Num cenário de NT maior ou igual a 5, uma grande burocrata pode apresentar vários tipos de Hierarquia: uma para cada departamento do governo e, possivelmente, categorias adicionais para o senado, para o poder judiciário, etc."
+    "descricao": "taria em um Status total de 5. No entanto, para prevalecer sobre um burocrata experiente com Hierarquia Administrativa 6 e Status 2, o personagem provavel mente teria que usar seus contatos sociais. É possível que o personagem tenha mais influência na alta sociedade (Status 5 vs. Status 2), mas o burocrata terá uma graduação maior que a dele perante a lei (Hierarquia 6 vs. Hierarquia 3). O tempo todo: ×1. De vez em quando (resultado menor ou igual a 10): ×1/2 (arredondado para baixo). Ocasionalmente (resultado menor ou igual a 7): ×1/3 (arredondado para baixo). É claro que a reputação existe somente dentro de uma área limitada. Se o persona gem viajar para um lugar muito distante, o Mestre pode exigir que ele recompre os pontos que recebeu por ter assumido a desvantagem Má Reputação (o mesmo não acontece no caso de perda de uma boa reputação). Aplique os multiplicadores para pessoas afetadas e frequência de reconhecimento, e despreze as frações ao final. Reputações Múltiplas É possível ter mais de uma reputação simultaneamente. O Mestre deve verifi car cada uma delas antes de determinar como um PdM reagirá diante do perso nagem. Qualquer que seja a situação, o modificador de reação total do persona gem gerado pelas reputações não pode ser superior a +4 nem inferior a -4. Reputações Multifacetadas Uma única reputação pode resultar em modificadores de reação diferentes para grupos diferentes, contanto que eles não se sobreponham. Estabeleça o modi ficador de reação para cada grupo, modi fique o custo de acordo com o tamanho do grupo e some os custos resultantes. Modifique esse valor total de acordo com a frequência de reconhecimento. A repu tação será uma vantagem se o custo final em pontos de personagem for positivo e uma desvantagem se for negativo. O custo final em pontos de personagem pode ser nulo, mesmo assim o jogador deve anotar esse valor na planilha de personagem!"
   },
   {
     "id": "hierarquia_comercial",
@@ -1841,7 +1842,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Cargo em organização de comércio. Funciona como Hierarquia. (pág. 30)"
+    "descricao": "cargo dentro de uma organização de co mércio nacional ou multinacional. Essa or ganização pode ser qualquer coisa, desde a cultura mercantil dos astecas (onde a Hie rarquia Comercial era quase um Status) até “marinheiros mercantes” de uma socie dade moderna ou futurista (onde a Hierar quia Comercial normalmente se equipara à Hierarquia Militar em tempos de guerra). Hierarquia Militar: Consiste em um posto dentro de uma organização militar. Cada organização é estruturada de manei ra diferente. Em geral, os membros que não tiverem posições de liderança têm ní vel Hierárquico entre 0 e 2, enquanto os oficiais dos escalões inferiores e veteranos têm um nível Hierárquico que varia entre 3 e 4. Níveis Hierárquicos maiores ou iguais a 5 normalmente são limitados a postos e deveres importantes, tornando o oficial res ponsável por recursos extremamente raros ou valiosos. Oficiais com deveres limitados, especialistas e funcionários com pouca au toridade de comando ou responsabilidade real devem ter um nível Hierárquico mais baixo no GURPS, mesmo que possuam títulos idênticos ao de pessoas com níveis mais altos; represente essa diferença com um ou mais níveis de Hierarquia Honorária (v. Hierarquia Honorária, pág. 29). Hierarquia Policial: Consiste em um cargo dentro de uma força policial. Cada agência tem seu próprio tipo de Hierar quia. É preciso comprar Poderes Legais (pág. 78) para poder comprar Hierarquia Policial; essa é a diferença entre um pa trulheiro (Hierarquia Policial 0, custo 0 ponto) e um cidadão comum (sem Hie rarquia Policial, também 0 ponto). Lem bre-se que em alguns estados autoritários, não existem diferenças entre a Hierarquia Policial e a Hierarquia Militar. Hierarquia Religiosa: Consiste em um cargo dentro de uma hierarquia religiosa. Cada religião tem sua própria diversida -"
   },
   {
     "id": "hierarquia_honoraria",
@@ -1878,7 +1879,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Posto em organização militar. Funciona como Hierarquia. (pág. 30)"
+    "descricao": "Hierarquia Militar: Consiste em um posto dentro de uma organização militar. Cada organização é estruturada de manei ra diferente. Em geral, os membros que não tiverem posições de liderança têm ní vel Hierárquico entre 0 e 2, enquanto os oficiais dos escalões inferiores e veteranos têm um nível Hierárquico que varia entre 3 e 4. Níveis Hierárquicos maiores ou iguais a 5 normalmente são limitados a postos e deveres importantes, tornando o oficial res ponsável por recursos extremamente raros ou valiosos. Oficiais com deveres limitados, especialistas e funcionários com pouca au toridade de comando ou responsabilidade real devem ter um nível Hierárquico mais baixo no GURPS, mesmo que possuam títulos idênticos ao de pessoas com níveis mais altos; represente essa diferença com um ou mais níveis de Hierarquia Honorária (v. Hierarquia Honorária, pág. 29). Hierarquia Policial: Consiste em um cargo dentro de uma força policial. Cada agência tem seu próprio tipo de Hierar quia. É preciso comprar Poderes Legais (pág. 78) para poder comprar Hierarquia Policial; essa é a diferença entre um pa trulheiro (Hierarquia Policial 0, custo 0 ponto) e um cidadão comum (sem Hie rarquia Policial, também 0 ponto). Lem bre-se que em alguns estados autoritários, não existem diferenças entre a Hierarquia Policial e a Hierarquia Militar. Hierarquia Religiosa: Consiste em um cargo dentro de uma hierarquia religiosa. Cada religião tem sua própria diversida de de Hierarquia. É preciso comprar Cle ricato (pág. 47) antes de poder adquirir Hierarquia Religiosa; essa é a diferença entre um noviço (Hierarquia Religiosa 0, 0 ponto) e um fiel (sem Hierarquia Reli giosa, também 0 ponto). Outros requisitos comuns incluem: nível mínimo na perícia Teologia e pertencer a uma determinada raça ou sexo. As diferenças entre os ní -"
   },
   {
     "id": "hierarquia_policial",
@@ -1898,7 +1899,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Cargo em força policial. Exige Poderes Legais. Funciona como Hierarquia. (pág. 30)"
+    "descricao": "cargo dentro de uma força policial. Cada agência tem seu próprio tipo de Hierar quia. É preciso comprar Poderes Legais (pág. 78) para poder comprar Hierarquia Policial; essa é a diferença entre um pa trulheiro (Hierarquia Policial 0, custo 0 ponto) e um cidadão comum (sem Hie rarquia Policial, também 0 ponto). Lem bre-se que em alguns estados autoritários, não existem diferenças entre a Hierarquia Policial e a Hierarquia Militar. Hierarquia Religiosa: Consiste em um cargo dentro de uma hierarquia religiosa. Cada religião tem sua própria diversida de de Hierarquia. É preciso comprar Cle ricato (pág. 47) antes de poder adquirir Hierarquia Religiosa; essa é a diferença entre um noviço (Hierarquia Religiosa 0, 0 ponto) e um fiel (sem Hierarquia Reli giosa, também 0 ponto). Outros requisitos comuns incluem: nível mínimo na perícia Teologia e pertencer a uma determinada raça ou sexo. As diferenças entre os ní veis Hierárquicos funcionam da mesma maneira que o Status (pág. 28) quando se está lidando com correligionários e aque les que respeitam a fé do personagem.privilégio É possível comprar privilégios es peciais na sociedade do personagem, como por exemplo, uma autorização muito difícil de conseguir, permissão para integrar um grupo social influente ou isenção de certas leis que permitem a ele uma maior liberdade de ação. Es sas vantagens não estão diretamente relacionadas à Hierarquia ou ao Status. Por exemplo: um espião de nível Hie rárquico baixo pode ter uma “licença para matar”, enquanto seu comandan te, um burocrata de nível Hierárquico muito mais alto, está sujeito a todas as leis da sociedade civilizada. Entre os Privilégios, incluem-se as vantagens Clericato (pág. 47), Estabili -"
   },
   {
     "id": "hierarquia_religiosa",
@@ -1981,7 +1982,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem reconhece outros Illuminati e tem intuição sobre conspirações. Custa 15 pontos."
+    "descricao": "que está acontecendo ao seu redor. O personagem é capaz de reconhe cer outros Illuminati imediatamente, sem chance de erro. Além disso, sempre que o Mestre pedir um teste de perícias como Análise da Informação, Assuntos Atuais ou Conhecimento Oculto para descobrir se um determinado aconteci mento estranho é realmente uma coin cidência ou resultado de uma conspira ção, o personagem sempre pode fazer um teste de IQ no lugar — o que for maior. Por último, ele é capaz de per ceber criaturas sobrenaturais que estão ligadas a conspirações Illuminati exis tentes no cenário da campanha (a cri tério do Mestre) e de se comunicar com elas. Isso não concede ao personagem o poder de controlar essas criaturas, mas elas o reconhecem e o tratam com cer to respeito: bônus de +3 nos testes de reação. A única desvantagem é que outros Illuminati e criaturas espirituais tam bém conseguem perceber a natureza Iluminada do personagem e nada pode ser feito em relação a isso, a não ser fi car escondido. Esta vantagem é mais apropriada a campanhas místicas ou fantásticas e pouco adequada a campanhas que en volvem conspirações mais “mundanas”. O Mestre deve decidir quem pode ou não possuir essa característica. Impossível de Matar 3 1 O personagem não pode ser morto! No entanto, ele ainda sofre todos os ou tros efeitos causados por ferimentos. Ele sente dor, pode ficar atordoado ou ser nocauteado e suas feridas o deixam mais lento. O personagem perde a ca pacidade de usar qualquer membro que sofrer uma lesão incapacitante e pode"
   },
   {
     "id": "impossivel_de_matar",
@@ -2318,7 +2319,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é um programa de computador senciente. Custa 5 pontos."
+    "descricao": "Telepático: A habilidade do persona gem faz parte do poder psíquico Telepa tia (pág. 257). -10%. Espinhos 3 1 O personagem tem espinhos afia dos, como os de um porco-espinho ou de uma equidna, localizados em par tes estratégicas do corpo. Trata-se de uma arma defensiva com a função de desencorajar possíveis agressores; o personagem não pode usar ativamente seus Espinhos. No entanto, uma vez por rodada, como uma ação livre, ele tem direito a um teste de DX-4 para ver se atinge qualquer inimigo que se encontra em combate corporal com ele. O teste recebe um bônus de +2 para inimigos"
   },
   {
     "id": "mente_segmentada",
@@ -2335,7 +2336,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem múltiplos compartimentos mentais, permitindo manobras mentais extras. Custa 50 pontos/nível."
+    "descricao": "Se perder, o personagem pode tentar novamente, mas sofre uma penalidade cumulativa de -2 para cada outra ten tativa fracassada que realizou contra o mesmo alvo durante a última hora. No caso de uma falha crítica, não será possível ler a mente da mesma pessoa durante 24 horas. Leitura da Mente muitas vezes tem origem psíquica, mas também pode ser uma habilidade mágica, divina ou até mesmo tecnológica. A limitação Base Sensorial (pág. 103) — principalmente Base Tátil — é muito comum. Se o jogador comprar Base Auditiva, o personagem só será capaz de ler os pensamentos de alguém cujas palavras ele consegue ouvir; nesse caso, ele funcionaria como um “detec tor de mentiras” ou (se tiver Universal) como um “tradutor universal”. Ampliações Especiais Cibernética: O personagem é capaz de afetar entidades que têm a característica Mente Digital (pág. 69), incluindo todos os computadores comuns. O teste de IQ do personagem sofre uma penalidade igual à Complexidade do sistema. Um sistema sem inteligência não oferece re sistência; basta um teste de IQ - Comple xidade para obter sucesso. +50%. Sensorial: O personagem também é capaz de invadir os sentidos do alvo e pode sentir tudo o que ele sente. Se o alvo for torturado, nocauteado ou mor to, o Mestre pode exigir um teste de Vontade para ver se o personagem con segue evitar o atordoamento ou talvez uma Verificação de Pânico! +20%. Universal: O personagem compreende automaticamente os pensamentos do alvo, mesmo se ele não for sapiente ou se eles não tiverem um idioma em comum. +50%.Limitações Especiais Racial: A habilidade do personagem"
   },
   {
     "id": "mestre_de_armas",
@@ -2532,7 +2533,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ver Senso de Direção.Esta habilidade é útil no espaço sideral embora não ajude em nada se o personagem estiver viajando entre dimensões. Ele recebe os bônus do Senso de Direção, além de +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço ou Hiperespaço). 10 pontos."
+    "descricao": "ciona como o caso anterior, mas de forma tridimensional. Esta habilidade é útil no espaço sideral embora não ajude em nada se o personagem estiver viajando entre dimensões. Ele recebe os bônus do Senso de Direção, além de +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço ou Hiperespaço). 10 pontos.Limitações Especiais Requer Sinal: O personagem conta com a ajuda de sinais de uma rede de navegação por satélite (como o GPS na Terra) ou de um sistema equivalente. A habilidade não funciona na falta de uma orientação desse tipo e também pode ser bloqueada. -20%. Sentido de Monitoramento 3 1 Variável O personagem é capaz de irradiar energia, fazê-la ricochetear em objetos e analisar o sinal de resposta para cons truir uma “imagem” de seus arredores. Isso permite a ele discernir tamanho e forma, mas não cor ou detalhes finos (como escrita). Isso não tem nada a ver com o sentido da visão comum aos se res humanos e não necessita de ilumi nação. Por isso, durante um combate, o personagem pode ignorar as penalida des relacionadas à escuridão. A percep ção do personagem está limitada a um arco de 120° à sua frente. Esse sentido é “ativo”. Qualquer in divíduo capaz de perceber o sinal emi tido pelo personagem consegue detec tá-lo a uma distância de até duas vezes o alcance. No entanto, ao contrário de outras vantagens sensoriais, o persona gem é capaz de desativar essa habilida de; v. Ativando e Desativando Vantagens (pág. 34). Veremos a seguir, diversas variações do Sentido de Monitoramento. Cada uma delas representa uma vantagem"
   },
   {
     "id": "nt_alto",
@@ -2639,7 +2640,7 @@
     "rawCost": "100/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Percepção do tempo acelerada, permitindo ações extras por turno. Custa 100 pontos/nível."
+    "descricao": "personagem vivencia o tempo com me tade da velocidade normal: um segundo subjetivo para cada dois segundos reais que se passam. O jogador recebe apenas um turno para cada dois segundos de combate (grupos de jogadores que gos tam muito de detalhes podem optar por dar a um personagem com Padrão de Tempo Reduzido “metade de um turno”: dividindo uma manobra Deslocamento em dois turnos, declarando uma mano bra Ataque durante um turno e fazendo o teste para acertar em outro, etc.). Paralisia Frente ao Combate 3 O personagem normalmente fica paralisado quando se encontra numa situação de combate e sofre uma pena lidade de -2 em todas as Verificações de Pânico. Isso não tem nada a ver com Co vardia (pág. 129) — ele pode ser corajo so, mas é traído por seu próprio corpo. Em qualquer situação onde uma le são física parece iminente, o persona gem deve fazer um teste de HT. Contudo, a jogada não deve ser feita até o momen to em que ele tem que lutar, fugir, puxar o gatilho ou tomar alguma outra ação. Qualquer resultado maior que 13 indica um fracasso, mesmo que o personagem tenha uma HT alta. Um sucesso signifi ca que ele consegue agir normalmente. No caso de um fracasso, ele fica mental mente atordoado (v. Efeitos do Atordo amento, pág. 420). O personagem pode fazer outro teste de HT a cada segundo, com um bônus cumulativo de +1 em cada turno, a fim de sair do torpor. Um tapa de um companheiro adiciona +1 ao bônus cumulativo do teste de HT. Depois que sair do estado de torpor, este não retorna enquanto durar o peri go. Mais tarde, ao se deparar com uma nova situação de perigo, ai então ele"
   },
   {
     "id": "paladar_discriminatorio",
@@ -2654,7 +2655,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Paladar superaguçado, analisa substâncias ingeridas. Custa 10 pontos. Bônus de +4 em tarefas gustativas."
+    "descricao": "Paladar/Olfato Apurado F — 2/nível 88 Patronos Soc — Variável 75 Pelagem F X 1 101 Pele Elástica F X 20 77 Pendulear F X 5 77 Permissão de Segurança Soc — Variável 77 Pernas Adicionais F X Variável 77 Perspicácia Comercial M — 10/nível 91 Poderes Legais Soc — 5, 10, ou 15 78 Por Dentro da Moda M — 5 21 Possessão M X 100 78 Pouco Sono F — 2/nível 80 Precognição M Sob 25 80 Prender a Respiração F X 2/nível 80 Propósito Maior M Sob 5 80 Psicometria M Sob 20 81 Pulmões com Filtro F X 5 81Vantagem M/F/Soc X/Sob Custo Pág. Queda de Gato F X 10 81 Rastreamento Ampliado F X 5/nível 81 Reconhecimento Social Soc — 5/nível 81 Recuperação Acelerada F — 5 82 Recuperação da Consciência F X 10 82 Recuperação Muita Acelerada F — 15 82 Redespertar M Sob 10 82 Reflexos em Combate M — 15 82 Regeneração F X Variável 82 Reivindicar Hospitalidade Soc — 1 a 10 82 Renda Própria Soc — 1/nível 26 Reputação Soc — Variável 26 Resistência a Dano F X 5/nível 83 Resistência à Pressão F X 5 a 15 84 Resistência ao Vácuo F X 5 84 Resistente F — Variável 84 Restaurar Membros F X 40 85 Retenção F X 2/nível 85 Riqueza Soc — Variável 25 Rosto Sincero F — 1 101 Saltador M Sob 100 86 Sem Ressaca F — 1 101 Sensível M — 5 57 Senso de Direção M/F — 5 87 Sentido de Monitoramento F X Variável 87 Sentido de Vibração F X 10 88 Sentido Protegido F X 5/sentido 88"
   },
   {
     "id": "paladar_olfato_apurado",
@@ -2669,7 +2670,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Sentido Aguçado para paladar e olfato; +1 por nível em testes. Custa 2 pontos/nível. (pág. 88)"
+    "descricao": "sonagem um bônus para notar um sa bor ou cheiro (veneno em sua bebida, por exemplo). 2 pontos/nível. Tato Apurado: O personagem recebe um bônus toda vez que tentar detectar alguma coisa por meio do tato (uma arma escondida entre as roupas de um suspeito que está sendo revistado, por exemplo). 2 pontos/nível. Visão Aguçada: O personagem rece be um bônus toda vez que tentar per ceber algo visualmente ou estiver pro curando alguma coisa (armadilhas ou pegadas, por exemplo). 2 pontos/nível. Com a permissão do Mestre, o joga dor pode comprar Sentidos Aguçados para sentidos especializados, como o Sentido de Monitoramento e o Sentido de Vibração. Normalmente, um jogador não pode comprar Sentidos Aguçados depois da criação do personagem — em vez disso, ele deve aumentar a Percepção do per sonagem. No entanto, se o personagem perder um sentido, o Mestre pode permi tir que o jogador gaste pontos de perso nagem para adquirir Sentidos Aguçados em outros sentidos, para compensar. Exemplo: quando um personagem fica cego, o jogador pode adquirir Audição Aguçada para compensar a falta de visão. Serendipidade 2 15 pontos/nível O personagem tem uma inclinação para estar no lugar certo na hora certa. Cada nível nesta característica concede o direito de uma coincidência fortuita, embora plausível, a cada sessão de jogo. Os detalhes ficam a cargo do Mestre. Exemplo: o MJ pode declarar que um dos guardas que o personagem precisa convencer a deixá-lo passar é seu primo ou que há um carro esporte parado em frente ao banco no exato momento em"
   },
   {
     "id": "patronos",
@@ -2699,7 +2700,7 @@
     "rawCost": "1",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem pelos; evita queimaduras de sol. 1 ponto. Pode justificar níveis de RD e Tolerância à Temperatura (comprados separadamente). (pág. 101)"
+    "descricao": "menos que esteja úmida. $50, 4 kg. Querosene (NT6). Por litro: $0,50, 1 kg. Ração de Viagem (NT0). Uma refeição com carne seca, queijo, etc. $2, 0,25 kg. Receptor GPS (NT8). Atualizado por satélite; concede Senso de Direção (Re quer Sinal). $200, 1,5 kg, 24 h.Relógio de Pulso (NT6). $20. Saco de Dormir Reforçado (NT7). HT+3 para resistir ao frio. $100, 7,5 kg. Saco de Dormir (NT6). Para condi ções normais. $25, 3,5 kg. Tocha (NT0). Ilumina durante 1 h. $3, 0,5 kg. Vara, 2 m (NT0). Para fixar tendas, pesca ou cutucar objetos. $5, 1,5 kg. Vara, 3 m (NT0). Para coisas que o personagem não tocaria com uma vara de 2 m. $8, 2,5 kg. Vela de Sebo (NT1). Fumacenta! Dura 12 h. $5, 0,5 kg. Equipamentos de Comunicação e Informação Baterias (NT6). $1, desp. Celular (NT8). Funciona apenas em algumas áreas; $20/taxa mensal. $250, 0,125 kg, 10 h. Computador, Laptop (NT8). O modem pode ser ligado a uma linha telefônica. $1.500, 1,5 kg, 2 h. Computador, Acessório (NT8). Óculos-monitor e modem sem fio. $1.000, 1 kg, 8 h. Fone de Ouvido com Rádio (NT8). Com microfone na garganta. Alcance de 1,5 km. Multiplique o custo por 10 no caso da versão segura e criptografada. $500, 0,25 kg, 12 h. Kit de Escriba (NT3). Penas, tintei ros, canivete, papel. $50, 1 kg. Máquina de Escrever (NT6). $200, 5 kg. Minigravador (NT7). Cabe na palma da mão; cada fita grava 3 horas (fitas adicionais custam $5). $200, 0,25 kg."
   },
   {
     "id": "pele_elastica",
@@ -2998,7 +2999,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem acorda muito mais rápido. Custa 10 pontos."
+    "descricao": "Recuperação Muita Acelerada F — 15 82 Redespertar M Sob 10 82 Reflexos em Combate M — 15 82 Regeneração F X Variável 82 Reivindicar Hospitalidade Soc — 1 a 10 82 Renda Própria Soc — 1/nível 26 Reputação Soc — Variável 26 Resistência a Dano F X 5/nível 83 Resistência à Pressão F X 5 a 15 84 Resistência ao Vácuo F X 5 84 Resistente F — Variável 84 Restaurar Membros F X 40 85 Retenção F X 2/nível 85 Riqueza Soc — Variável 25 Rosto Sincero F — 1 101 Saltador M Sob 100 86 Sem Ressaca F — 1 101 Sensível M — 5 57 Senso de Direção M/F — 5 87 Sentido de Monitoramento F X Variável 87 Sentido de Vibração F X 10 88 Sentido Protegido F X 5/sentido 88 Serendipidade M — 15/nível 88 Silêncio F X 5/nível 89 Sonda Mental M X 20 89 Sorte M — Variável 89 ST Braçal F X3, 5, ou 8/nível 89 ST de Golpe F X 5/nível 89 ST de Levantamento F X 3/nível 89 Status Soc — 5/nível 28 Super Escalada F X 3/nível 90 Super Salto F X 10/nível 90 Super Sorte M Sob 100 90 Superaudição F X 0 ou 5 90 Talento M — Variável 90 Talento Instintivo M Sob 20/nível 91 Tato Apurado F — 2/nível 88 Telecinese M/F X 5/nível 92 Telecomunicação M/F X Variável 93 Terror M Sob 30 + 10/nível 94 Títere M X 5 a 10 94 Tolerância a Ferimentos F X Variável 94 Tolerância à Radiação F X Variável 95 Tolerância à Temperatura F — 1/nível 95"
   },
   {
     "id": "recuperacao_muita_acelerada",
@@ -3013,7 +3014,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ver Recuperação Acelerada."
+    "descricao": "Redespertar M Sob 10 82 Reflexos em Combate M — 15 82 Regeneração F X Variável 82 Reivindicar Hospitalidade Soc — 1 a 10 82 Renda Própria Soc — 1/nível 26 Reputação Soc — Variável 26 Resistência a Dano F X 5/nível 83 Resistência à Pressão F X 5 a 15 84 Resistência ao Vácuo F X 5 84 Resistente F — Variável 84 Restaurar Membros F X 40 85 Retenção F X 2/nível 85 Riqueza Soc — Variável 25 Rosto Sincero F — 1 101 Saltador M Sob 100 86 Sem Ressaca F — 1 101 Sensível M — 5 57 Senso de Direção M/F — 5 87 Sentido de Monitoramento F X Variável 87 Sentido de Vibração F X 10 88 Sentido Protegido F X 5/sentido 88 Serendipidade M — 15/nível 88 Silêncio F X 5/nível 89 Sonda Mental M X 20 89 Sorte M — Variável 89 ST Braçal F X3, 5, ou 8/nível 89 ST de Golpe F X 5/nível 89 ST de Levantamento F X 3/nível 89 Status Soc — 5/nível 28 Super Escalada F X 3/nível 90 Super Salto F X 10/nível 90 Super Sorte M Sob 100 90 Superaudição F X 0 ou 5 90 Talento M — Variável 90 Talento Instintivo M Sob 20/nível 91 Tato Apurado F — 2/nível 88 Telecinese M/F X 5/nível 92 Telecomunicação M/F X Variável 93 Terror M Sob 30 + 10/nível 94 Títere M X 5 a 10 94 Tolerância a Ferimentos F X Variável 94 Tolerância à Radiação F X Variável 95 Tolerância à Temperatura F — 1/nível 95 Tolerância ao Álcool F — 1 101"
   },
   {
     "id": "redespertar",
@@ -3080,7 +3081,7 @@
     "rawCost": "1 a 10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode pedir abrigo a membros de seu grupo social. Custo: 1 a 10 pontos."
+    "descricao": "Renda Própria Soc — 1/nível 26 Reputação Soc — Variável 26 Resistência a Dano F X 5/nível 83 Resistência à Pressão F X 5 a 15 84 Resistência ao Vácuo F X 5 84 Resistente F — Variável 84 Restaurar Membros F X 40 85 Retenção F X 2/nível 85 Riqueza Soc — Variável 25 Rosto Sincero F — 1 101 Saltador M Sob 100 86 Sem Ressaca F — 1 101 Sensível M — 5 57 Senso de Direção M/F — 5 87 Sentido de Monitoramento F X Variável 87 Sentido de Vibração F X 10 88 Sentido Protegido F X 5/sentido 88 Serendipidade M — 15/nível 88 Silêncio F X 5/nível 89 Sonda Mental M X 20 89 Sorte M — Variável 89 ST Braçal F X3, 5, ou 8/nível 89 ST de Golpe F X 5/nível 89 ST de Levantamento F X 3/nível 89 Status Soc — 5/nível 28 Super Escalada F X 3/nível 90 Super Salto F X 10/nível 90 Super Sorte M Sob 100 90 Superaudição F X 0 ou 5 90 Talento M — Variável 90 Talento Instintivo M Sob 20/nível 91 Tato Apurado F — 2/nível 88 Telecinese M/F X 5/nível 92 Telecomunicação M/F X Variável 93 Terror M Sob 30 + 10/nível 94 Títere M X 5 a 10 94 Tolerância a Ferimentos F X Variável 94 Tolerância à Radiação F X Variável 95 Tolerância à Temperatura F — 1/nível 95 Tolerância ao Álcool F — 1 101 Tolerância-G Ampliada F — 5 a 25 95 Toque Sensível F X 10 96 Treinado por um Mestre M — 30 96 Ultraflexibilidade das Juntas F — 15 61"
   },
   {
     "id": "renda_propria",
@@ -3095,7 +3096,7 @@
     "rawCost": "1/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Fonte de renda que não exige trabalho; 1% dos recursos iniciais por nível (máx. 20%). Custa 1 ponto/nível. (pág. 26)"
+    "descricao": "mar a renda de ambas as fontes. Se for rico, um personagem pode não traba lhar um período integral (por exemplo, trabalhar apenas 10 horas por semana, em vez de 40, e receber 1/4 do salário usual) e ainda assim viver bem.Dívidas -1 ponto/nível O personagem deve dinheiro. Talvez por causa de um empréstimo, impos tos atrasados, educação de um filho, pensão alimentícia, suborno pago a chantagistas ou dinheiro extorquido por gangsteres para garantir proteção. O personagem tem que fazer um pa gamento mensal equivalente a 1% dos seus recursos iniciais (ajustado de acor do com o nível de riqueza) por nível nessa característica, até um máximo de 20%. A Dívida pode acompanhar qual quer nível de riqueza superior a Falido; existem muitos multimilionários de vendo grandes somas de dinheiro! O pagamento mensal feito pelo per sonagem é deduzido dos ganhos men sais resultantes do seu emprego. Se o salário não for suficiente para cobrir a dívida, o personagem deve fazer uso de suas reservas de dinheiro, arranjar um segundo emprego ou roubar. Se não puder pagar ou decidir não pagar, o personagem terá problemas. No caso de empréstimos bancários, isso significa a retomada dos bens. No caso de pensão alimentícia, educação infan til, multas ou impostos, resulta numa ida ao tribunal. Já se estiver devendo dinheiro para a Máfia, o personagem pode ser obrigado a participar de ativi dades criminosas — ou acabar na fren te do cano de uma arma. O Mestre deve ser criativo! Supõe-se que o personagem não seja capaz de se livrar com facilidade dessa obrigação. É preciso mais que dinhei -"
   },
   {
     "id": "reputacao",
@@ -3292,7 +3293,7 @@
     "rawCost": "1",
     "specialRule": null,
     "tags": [],
-    "descricao": "Nunca fica de ressaca, independente de quanto beba. 1 ponto. (pág. 101)"
+    "descricao": "Sensível M — 5 57 Senso de Direção M/F — 5 87 Sentido de Monitoramento F X Variável 87 Sentido de Vibração F X 10 88 Sentido Protegido F X 5/sentido 88 Serendipidade M — 15/nível 88 Silêncio F X 5/nível 89 Sonda Mental M X 20 89 Sorte M — Variável 89 ST Braçal F X3, 5, ou 8/nível 89 ST de Golpe F X 5/nível 89 ST de Levantamento F X 3/nível 89 Status Soc — 5/nível 28 Super Escalada F X 3/nível 90 Super Salto F X 10/nível 90 Super Sorte M Sob 100 90 Superaudição F X 0 ou 5 90 Talento M — Variável 90 Talento Instintivo M Sob 20/nível 91 Tato Apurado F — 2/nível 88 Telecinese M/F X 5/nível 92 Telecomunicação M/F X Variável 93 Terror M Sob 30 + 10/nível 94 Títere M X 5 a 10 94 Tolerância a Ferimentos F X Variável 94 Tolerância à Radiação F X Variável 95 Tolerância à Temperatura F — 1/nível 95 Tolerância ao Álcool F — 1 101 Tolerância-G Ampliada F — 5 a 25 95 Toque Sensível F X 10 96 Treinado por um Mestre M — 30 96 Ultraflexibilidade das Juntas F — 15 61 Ultravisão F X 0 a 10 96 Venturoso M — 15 96 Ver o Invisível F X 15 96 Versátil M — 5 96 Vida Extra M X 25/vida 96 Vínculo Especial M Sob 5 97 Visão 360 graus F X 25 97 Visão Aguçada F — 2/nível 88 Visão Hiperespectral F X 25 97 Visão Microscópica F X 5/nível 97 Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97"
   },
   {
     "id": "sensivel",
@@ -3340,7 +3341,7 @@
     "rawCost": "20 ou 40",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem um sentido ativo (Radar, Sonar, etc.). Radar (20 pts), Radar de Imagens (20), Radar a Laser (20), Para-Radar (40), Sonar (20). Ampliações: Arco Estendido (+75% a +125%), Intercepção de Baixa Probabilidade (+10%), Mira (+20%), Modo Múltiplo (+50%), Penetrante (+50%). Limitação: Somente Mira (-40%)."
+    "descricao": "de Vibração. Normalmente, um jogador não pode comprar Sentidos Aguçados depois da criação do personagem — em vez disso, ele deve aumentar a Percepção do per sonagem. No entanto, se o personagem perder um sentido, o Mestre pode permi tir que o jogador gaste pontos de perso nagem para adquirir Sentidos Aguçados em outros sentidos, para compensar. Exemplo: quando um personagem fica cego, o jogador pode adquirir Audição Aguçada para compensar a falta de visão. Serendipidade 2 15 pontos/nível O personagem tem uma inclinação para estar no lugar certo na hora certa. Cada nível nesta característica concede o direito de uma coincidência fortuita, embora plausível, a cada sessão de jogo. Os detalhes ficam a cargo do Mestre. Exemplo: o MJ pode declarar que um dos guardas que o personagem precisa convencer a deixá-lo passar é seu primo ou que há um carro esporte parado em frente ao banco no exato momento em que ele precisa de um para perseguir um grupo de ladrões. De vez em quando, o Mestre pode decidir que uma única coin cidência implausível já conta como um ou todos os golpes de sorte do persona gem numa determinada sessão de jogo (ex.: o mecânico local tem todas as peças necessárias para construir um cinturão antigravitacional de alta tecnologia). O jogador tem liberdade para sugerir ocorrências de sorte ao Mestre, mas cabe a este a palavra final. Se rejeitar todas as ideias do jogador, mas não conseguir in cluir Serendipidade naquela sessão de jogo, esses golpes de sorte devem ser guar dados para uma próxima sessão de jogo."
   },
   {
     "id": "sentido_de_vibracao",
@@ -3400,7 +3401,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se move sem ruído, recebendo bônus em Furtividade (+2 imóvel, +1 em movimento) por nível. Custa 5 pontos/nível."
+    "descricao": "sempre que estiver imóvel, ou de +1, se estiver em movimento (até mesmo com armadura, etc.). Esses bônus são úteis apenas na escuridão ou contra disposi tivos de escuta, criaturas cegas e outros seres que dependem da audição para encontrarem o personagem. Sonda Mental 2 1 O personagem é capaz de “sondar” as profundezas da mente. Na verdade, é possível forçar o alvo a responder uma pergunta específica, cuja resposta seja uma frase curta. Para isso, o personagem primeiro precisa tocar a vítima ou ler a mente dela com Leitura da Mente (pág. 68). Também é preciso que o persona gem compartilhe um idioma com o alvo. Para utilizar esta vantagem, o per sonagem precisa se concentrar durante um segundo e fazer uma Disputa Rápi da entre sua IQ (ou seu NH em Inter rogatório, se for maior) e a Vontade do alvo. Se vencer, o personagem arranca a resposta da mente do alvo. A resposta é aquilo que o alvo acredita ser verdade — se não souber nada, ele dirá exatamente isso ao personagem. Se fracassar, o per sonagem pode tentar novamente com uma penalidade cumulativa de -2 para cada nova tentativa de fazer a mesma pergunta (ou outra muito semelhante) dentro de um período de uma hora. No caso de uma falha crítica, não será pos sível sondar a mente da mesma pessoa durante 24 horas. O personagem pode usar Sonda Mental para fazer quantas perguntas desejar, mas cada pergunta exige uma nova utilização da habilidade — ou seja, um novo período de concentração e outra Disputa Rápida. Modificadores Especiais As ampliações e limitações especiais"
   },
   {
     "id": "sonda_mental",
@@ -3455,7 +3456,7 @@
     "rawCost": "3, 5, ou 8/nível",
     "specialRule": "st_bracal",
     "tags": [],
-    "descricao": "ST extra para braços. +1 ST para um braço: 3 pts; dois: 5 pts; três: 8 pts."
+    "descricao": "ST de Golpe F X 5/nível 89 ST de Levantamento F X 3/nível 89 Status Soc — 5/nível 28 Super Escalada F X 3/nível 90 Super Salto F X 10/nível 90 Super Sorte M Sob 100 90 Superaudição F X 0 ou 5 90 Talento M — Variável 90 Talento Instintivo M Sob 20/nível 91 Tato Apurado F — 2/nível 88 Telecinese M/F X 5/nível 92 Telecomunicação M/F X Variável 93 Terror M Sob 30 + 10/nível 94 Títere M X 5 a 10 94 Tolerância a Ferimentos F X Variável 94 Tolerância à Radiação F X Variável 95 Tolerância à Temperatura F — 1/nível 95 Tolerância ao Álcool F — 1 101 Tolerância-G Ampliada F — 5 a 25 95 Toque Sensível F X 10 96 Treinado por um Mestre M — 30 96 Ultraflexibilidade das Juntas F — 15 61 Ultravisão F X 0 a 10 96 Venturoso M — 15 96 Ver o Invisível F X 15 96 Versátil M — 5 96 Vida Extra M X 25/vida 96 Vínculo Especial M Sob 5 97 Visão 360 graus F X 25 97 Visão Aguçada F — 2/nível 88 Visão Hiperespectral F X 25 97 Visão Microscópica F X 5/nível 97 Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97 Visão Penetrante F X 10/nível 97 Visão Periférica F — 15 98 Visão Telescópica F X 5/nível 98 Visualização M Sob 10 98 Voo F X 40 98 Voz Melodiosa F — 10 100 Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "st_de_golpe",
@@ -3567,7 +3568,7 @@
     "rawCost": "0 ou 5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem ouve ultrassom. Custo: 0 pt (só ultrassom) ou 5 pts (também sons normais)."
+    "descricao": "Talento M — Variável 90 Talento Instintivo M Sob 20/nível 91 Tato Apurado F — 2/nível 88 Telecinese M/F X 5/nível 92 Telecomunicação M/F X Variável 93 Terror M Sob 30 + 10/nível 94 Títere M X 5 a 10 94 Tolerância a Ferimentos F X Variável 94 Tolerância à Radiação F X Variável 95 Tolerância à Temperatura F — 1/nível 95 Tolerância ao Álcool F — 1 101 Tolerância-G Ampliada F — 5 a 25 95 Toque Sensível F X 10 96 Treinado por um Mestre M — 30 96 Ultraflexibilidade das Juntas F — 15 61 Ultravisão F X 0 a 10 96 Venturoso M — 15 96 Ver o Invisível F X 15 96 Versátil M — 5 96 Vida Extra M X 25/vida 96 Vínculo Especial M Sob 5 97 Visão 360 graus F X 25 97 Visão Aguçada F — 2/nível 88 Visão Hiperespectral F X 25 97 Visão Microscópica F X 5/nível 97 Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97 Visão Penetrante F X 10/nível 97 Visão Periférica F — 15 98 Visão Telescópica F X 5/nível 98 Visualização M Sob 10 98 Voo F X 40 98 Voz Melodiosa F — 10 100 Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "talento_instintivo",
@@ -3597,7 +3598,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +4 em tarefas que usam o tato (além de Sentidos Aguçados). Custa 10 pontos? (não especificado)."
+    "descricao": "um bônus toda vez que tentar detectar alguma coisa por meio do tato (uma arma escondida entre as roupas de um suspeito que está sendo revistado, por exemplo). 2 pontos/nível. Visão Aguçada: O personagem rece be um bônus toda vez que tentar per ceber algo visualmente ou estiver pro curando alguma coisa (armadilhas ou pegadas, por exemplo). 2 pontos/nível. Com a permissão do Mestre, o joga dor pode comprar Sentidos Aguçados para sentidos especializados, como o Sentido de Monitoramento e o Sentido de Vibração. Normalmente, um jogador não pode comprar Sentidos Aguçados depois da criação do personagem — em vez disso, ele deve aumentar a Percepção do per sonagem. No entanto, se o personagem perder um sentido, o Mestre pode permi tir que o jogador gaste pontos de perso nagem para adquirir Sentidos Aguçados em outros sentidos, para compensar. Exemplo: quando um personagem fica cego, o jogador pode adquirir Audição Aguçada para compensar a falta de visão. Serendipidade 2 15 pontos/nível O personagem tem uma inclinação para estar no lugar certo na hora certa. Cada nível nesta característica concede o direito de uma coincidência fortuita, embora plausível, a cada sessão de jogo. Os detalhes ficam a cargo do Mestre. Exemplo: o MJ pode declarar que um dos guardas que o personagem precisa convencer a deixá-lo passar é seu primo ou que há um carro esporte parado em frente ao banco no exato momento em que ele precisa de um para perseguir um grupo de ladrões. De vez em quando, o Mestre pode decidir que uma única coin cidência implausível já conta como um"
   },
   {
     "id": "telecinese",
@@ -3627,7 +3628,7 @@
     "rawCost": "30, 15, 10",
     "specialRule": "telecomunicacao",
     "tags": [],
-    "descricao": "Comunicação à distância. Comunicação a Laser (15 pts), Infravermelho (10), Diapsiquia (30), Rádio (10). Ampliações: Ondas Curtas (+50%), Transmissão Aberta (+50%), Universal (+50%), Vídeo (+40%). Limitações: Racial (-20%), Somente Envio (-50%), Somente Recepção (-50%), Telepatia (-10%), Vaga (-50%)."
+    "descricao": "fre penalidades devido à distância, mas tem que estar a até duas vezes o alcance do sinal e, se ele for direcional, dentro de sua trajetória. +0%. Precisão: No caso de um sucesso no teste de Sentidos, o personagem tam bém sabe a distância do que quer que ele tenha detectado. +100%. Limitações Especiais Vaga: O personagem é capaz de de tectar apenas a presença ou ausência da substância determinada. A direção e a quantidade são reveladas somente num sucesso decisivo e ele não conse gue analisar o que detecta. Esta limita ção e Preciso são mutuamente exclu dentes. -50%. Difícil de Subjugar 3 2 pontos/nível O personagem é difícil de nocaute ar. Cada nível em Difícil de Subjugar concede um bônus de +1 nos testes de HT feitos para verificar se o persona gem evita a inconsciência — seja por ferimentos, drogas ou o efeito de armas de alta tecnologia — e resistir a habili dades sobrenaturais que provocam in consciência. Numa campanha realista, o Mestre pode decidir limitar aos níveis 1 e 2 o acesso dos personagens a esta vantagem."
   },
   {
     "id": "terror",
@@ -3671,7 +3672,8 @@
     "max": null,
     "rawCost": "100",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "[100]; e Vulnerabilidade (Ataques por Desidratação ×2) [-10]. 175 pontos. Corpo de Ar: O corpo do personagem é composto de gás. ST 0 [-100]; +10 PV [20]; Características Proibidas (ST Fixa) [0]; Imunidade a Danos ao Metabolis mo [30]; Não Respira [20]; Sem Manu seadores [-50]; Sem Pernas (Aéreo) [0]; Tolerância a Ferimentos (Difuso) [100]; Voo (Mais Leve que o Ar, -10%) [36]; e Vulnerabilidade (Vácuo e ataques base ados em vento ×2) [-20] 36 pontos.Corpo de Fogo: O corpo do persona gem é uma chama viva. Se o fogo for exageradamente quente, aumente o Ataque por Queimadura e a RD. ST 0 [-100]; +10 PV [20]; Ataque por Quei madura 1d (Sempre Ativado, -40%; Aura, +80%; Ataque Corpo a corpo, Al cance C, -30%) [6]; Características Proi bidas (ST Fixa) [0]; Fraqueza (Água; 1d/ minuto) [-40]; Imunidade a Danos ao Metabolismo [30]; Não Respira (Com bustão de Oxigênio, -50%) [10]; RD 10 (Limitada: Calor/Fogo, -40%) [30]; Sem Manuseadores [-50]; e Tolerância a Fe rimentos (Difuso) [100]. 6 pontos. Corpo de Gelo: O corpo do perso nagem é feito de gelo. Adaptação ao Terreno (Gelo) [5]; Escorregadio 3 [6]; Fragilidade (Quebradiço) [-15]; Fra queza (Calor normal intenso; 1d/mi nuto; Variável, -40%) [-12]; Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 3 [15]; Re sistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]; e Vul nerabilidade (Ataques por Calor/Fogo ×2) [-30]; 99 pontos. Corpo de Metal: O corpo do persona gem é feito de metal. Imunidade a Da nos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 9 [45]; Resistência à Pressão 3 [15]; Resistência ao Vácuo"
   },
   {
     "id": "tolerancia_a_ferimentos_homogeneo",
@@ -3685,7 +3687,8 @@
     "max": null,
     "rawCost": "40",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Homogêneo: O corpo do personagem não tem órgãos internos vulneráveis, ossos, músculos ou quaisquer outros mecanismos. Por isso, ele é menos suscetível a ataques perfurantes e GdPs; v. Lesões em Alvos Difusos, Homogêneos e Não-Vivos (pág. 380). Homogêneo inclui todos os benefícios de Sem Cérebro e Sem Órgãos Vitais. Esta característica deve ser usada na criação de criaturas como golens de ferro, árvores e mucos. 40 pontos."
   },
   {
     "id": "tolerancia_a_ferimentos_nao_vivo",
@@ -3699,7 +3702,8 @@
     "max": null,
     "rawCost": "20",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "vo) (pág. 94), como a maioria dos mortos-vivos corpóreos, são menos vul neráveis a danos por perfuração e perfurantes. Isso resulta nos seguintes modificador de ferimento: perfuração e extremamente perfurante, ×1; mui to perfurante, ×1/2; perfurante, ×1/3; e pouco perfurante, ×1/5. Homogêneo: Coisas que não possuem órgãos ou mecanismos internos vulneráveis — como objetos uniformemente sólidos ou ocos (ex., armas de combate corpo a corpo, escudos e mobília), veículos não-elétricos, árvores e paredes — são ainda menos vulneráveis! Isso inclui estátuas animadas, bolhas e qualquer coisa com Tolerância a Ferimentos (Homogêneo). Isso resulta nos seguintes modificadores de ferimento: perfuração e extrema mente perfurante, ×1/2; muito perfurante, ×1/3; perfurante, ×1/5; e pouco perfurante, ×1/10. Difuso: Um alvo com Tolerância a Ferimentos (Difuso) é ainda mais difícil de avariar! Isso inclui enxames, elementais de ar, redes, etc. Ataques por perfuração ou perfurantes (de qualquer gravidade) nunca provocam mais que 1 PV de dano, independente do dano penetrante! Outros tipos de ataques também nunca causam mais que 2 PV de dano. Exceção: ataques de área, de cone e explosões causam o dano normal. Exemplo: Edmund Zhang descarrega sua pistola-metralha de 9 mm (2d+2 pa de dano) contra um zumbi que se aproxima. Ele acerta três tiros. Depois de subtrair a RD 1 do zumbi, ele causa 8 pontos de dano perfurante com a primeira bala, 7 com a segunda e 10 com a terceira. O zumbi tem Tolerância a Ferimentos (Não-Vivo), portanto, o modificador de ferimen to normal de ×1 para dano perfurante cai para ×1/3. Arredondando para baixo, os três disparos causaram 2 PV, 2 PV e 3 PV de dano. O zumbi, que tinha 24 PV, agora tem 17 PV. Sem medo, ele continua avançando com seu andar trôpego. Edmund deveria ter trazido um machado ou lança-chamas! • Se estiver com zero ou menos PV, o personagem só consegue se manter cons ciente por pura força de vontade e adrena lina ou, se for uma máquina, ele mal con segue ficar em pé sem se desmantelar. Ele precisa de um sucesso num teste de HT a cada turno para não perder a consciência. Se desmaiar, veja Retomando a Consciência (pág. 423) para descobrir quanto tempo o personagem demora para se recuperar.• Se estiver com um número ne gativo de PV igual ao seu PVInicial (ex., -10 para um personagem com 10 PV), o personagem, está corren do risco de vida! Ele precisa de um sucesso num teste de HT para não morrer. Ele deve refazer esse tes te sempre que alcançar um novo múltiplo negativo desse valor; ou"
   },
   {
     "id": "tolerancia_a_ferimentos_sem_cerebro",
@@ -3713,7 +3717,8 @@
     "max": null,
     "rawCost": "5",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Sem Cérebro: O cérebro do personagem — se ele tiver algum — está distribuído por todo o seu corpo ou não abriga sua consciência. Oponentes não podem usá-lo como alvo para causar dano adicional. Talvez o personagem tenha uma cabeça, mas mesmo assim, um golpe no crânio ou no olho é considerado como um golpe normal no rosto (com a diferença que um ferimento no olho pode mutilar esse órgão). 5 pontos."
   },
   {
     "id": "tolerancia_a_ferimentos_sem_cabeca",
@@ -3729,7 +3734,8 @@
     "specialRule": null,
     "tags": [
       "fisica"
-    ]
+    ],
+    "descricao": "Sem Cabeça: O personagem não tem cabeça. Isso inclui os benefícios de Sem Cérebro. O personagem também não tem os pontos de impacto “crânio” e “rosto” e não tem necessidade de um elmo. Ele ainda é capaz de ver, falar, ouvir, cheirar, degustar, etc., a não ser que adquira as desvantagens apropriadas. O jogador deve especificar como o personagem realiza essas ações (de maneira sobrenatural ou tecnológica, por meio de órgãos em seu tronco, etc.). É comum — mas não obrigatório — que personagens Sem Cabeça também sejam Sem Pescoço, Sem Olhos ou as duas coisas. 7 pontos"
   },
   {
     "id": "tolerancia_a_ferimentos_sem_olho",
@@ -3743,7 +3749,8 @@
     "max": null,
     "rawCost": "5",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Sem Olhos: O personagem não tem olhos nem outros órgãos ópticos vulneráveis, mas, de alguma forma, é capaz de enxergar (a menos, é claro, que ele sofra de Cegueira, pág. 125). Como o personagem não tem olhos, eles não podem ser atacados. Ele também é imune a ataques que produzem cegueira. 5 pontos."
   },
   {
     "id": "tolerancia_a_ferimentos_sem_orgaos_vitais",
@@ -3757,7 +3764,8 @@
     "max": null,
     "rawCost": "5",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Sem Órgãos Vitais: O personagem não tem órgãos vitais (como, por exemplo, um coração ou um motor) que seus oponentes possam usar como alvo para causar dano adicional. Considere todos os golpes em “órgãos vitais” ou na “virilha” como golpes no tronco. 5 pontos."
   },
   {
     "id": "tolerancia_a_ferimentos_sem_sangue",
@@ -3771,7 +3779,8 @@
     "max": null,
     "rawCost": "5",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Sem Sangue: O personagem não depende de fluidos corporais vitais (como o sangue) para sobreviver. Ele não sangra (v. Sangramento, pág. 420), não é afetado por toxinas de origem sanguínea e é imune a ataques que interrompem a circulação de uma parte do sangue do corpo. 5 pontos."
   },
   {
     "id": "tolerancia_a_ferimentos_sem_pescoco",
@@ -3785,7 +3794,8 @@
     "max": null,
     "rawCost": "5",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Sem Pescoço: O personagem não tem pescoço. Por esse motivo, ele não tem o ponto de impacto “pescoço” e não pode ser decapitado, asfixiado nem estrangulado. 5 pontos."
   },
   {
     "id": "tolerancia_a_radiacao",
@@ -3799,7 +3809,8 @@
     "max": 45,
     "rawCost": "5 a 45",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "rância à Temperatura (pág. 95), mas ne nhuma dessas vantagens é obrigatória. Resistente 3 Variável O personagem tem uma resistência (ou até mesmo imunidade) natural contra obje tos ou substâncias nocivas que não são ata ques físicos diretos. Isso concede um bônus nos testes de HT para resistir à incapacita ção ou lesões causadas por esses elementos. O bônus de Resistente se aplica a todos os testes para resistir aos efeitos nocivos de uma determinada categoria — normalmente alguma combinação de do enças, envenenamento e síndromes am bientais (doença da altitude, doença de descompressão, enjoo espacial, etc.). Ele também se aplica aos testes para resistir ataques que utilizam esses efeitos. Isso inclui Atribulações com um dos seguintes modificadores: Agente Sanguíneo, Agente de Contato, Acompanhamento ou Agente Respiratório; assim como Ataques Inatos que têm esses modificadores e causam dano por toxina ou fadiga. Defesas Limitadas Quando adquire Resistência a Dano ou qualquer outra vantagem que evita dano (e não simplesmente que não cause dano), o jogador pode especificar que essa carac terística funciona apenas contra um determinado tipo de dano. Esta é uma limitação que reduz o custo da vanta gem. Nesses casos, os ataques são divididos em 4 classes de raridade: Muito Comum: Uma categoria de dano extrema mente ampla que será encontrada em quase todos os cenários. Exemplos: ataques à distância, ataques corpo a corpo, ataques físicos (proveniente de qualquer subs tância física), ataques energéticos (ex., armas de feixe, eletricidade, fogo, calor, frio e som) ou todos os danos com origem em uma vantagem específica (chi, magia, psiquismo, etc.). -20%. Comum: Uma categoria de dano ampla. Exemplos: um tipo de dano padrão (queimadura, corrosão, contusão, corte, perfuração, toxina ou perfurante), uma classe de"
   },
   {
     "id": "tolerancia_a_temperatura",
@@ -3813,7 +3824,8 @@
     "max": null,
     "rawCost": "1/nível",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "do personagem à sua zona de conforto, distribuídos da maneira que o jogador quiser entre os extremos “frio” e “calor” da zona. A Tolerância à Temperatura não confere resistência especial aos ata ques com fogo ou gelo, a não ser que o único dano seja resultado de um aumento ou queda na temperatura ambiente. Especificamente, esta vantagem não protege o personagem se sua temperatura corporal esti ver sendo manipulada. Em uma campanha realista, o Mestre deve limitar os huma nos normais à Tolerância à Temperatura 1 ou 2. No entanto, personagens não-humanos com pelagem ou uma camada espes sa de gordura podem ter níveis mais elevados. Tolerância-G Ampliada 3 O personagem é capaz de atuar numa grande varie dade de gravidades diferentes. Para um ser humano co mum, as penalidades para atuar numa gravidade diferente da nativa aumentam a cada 0,2G; v. Gravidades Diferentes (pág. 351). Aumentar esse intervalo custa pontos: 5 pontos para 0,3G; 10 pontos para 0,5G; 15 pontos para 1G; 20 pontos para 5G; 25 pontos para 10G. Humanos normais estão limitados a gas tar 10 pontos nesta característica."
   },
   {
     "id": "tolerancia_ao_alcool",
@@ -3827,7 +3839,8 @@
     "max": null,
     "rawCost": "1",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "O corpo do personagem digere o álcool com uma eficiência notável. Ele é capaz de beber durante um período indefinido sem sofrer quaisquer efeitos nocivos, contudo, a bebedeira o afe ta como a qualquer outra pessoa. Ele também recebe um bônus de +2 em todos os testes de HT relacionados ao"
   },
   {
     "id": "tolerancia_g_ampliada",
@@ -3841,7 +3854,8 @@
     "max": 25,
     "rawCost": "5 a 25",
     "specialRule": null,
-    "tags": []
+    "tags": [],
+    "descricao": "Toque Sensível F X 10 96 Treinado por um Mestre M — 30 96 Ultraflexibilidade das Juntas F — 15 61 Ultravisão F X 0 a 10 96 Venturoso M — 15 96 Ver o Invisível F X 15 96 Versátil M — 5 96 Vida Extra M X 25/vida 96 Vínculo Especial M Sob 5 97 Visão 360 graus F X 25 97 Visão Aguçada F — 2/nível 88 Visão Hiperespectral F X 25 97 Visão Microscópica F X 5/nível 97 Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97 Visão Penetrante F X 10/nível 97 Visão Periférica F — 15 98 Visão Telescópica F X 5/nível 98 Visualização M Sob 10 98 Voo F X 40 98 Voz Melodiosa F — 10 100 Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "toque_sensivel",
@@ -3856,7 +3870,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Pontas dos dedos extremamente sensíveis; +4 em tarefas que usam tato (ex.: Perícia Forense, Revistar). Custa 10 pontos. (pág. 96)"
+    "descricao": "Treinado por um Mestre M — 30 96 Ultraflexibilidade das Juntas F — 15 61 Ultravisão F X 0 a 10 96 Venturoso M — 15 96 Ver o Invisível F X 15 96 Versátil M — 5 96 Vida Extra M X 25/vida 96 Vínculo Especial M Sob 5 97 Visão 360 graus F X 25 97 Visão Aguçada F — 2/nível 88 Visão Hiperespectral F X 25 97 Visão Microscópica F X 5/nível 97 Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97 Visão Penetrante F X 10/nível 97 Visão Periférica F — 15 98 Visão Telescópica F X 5/nível 98 Visualização M Sob 10 98 Voo F X 40 98 Voz Melodiosa F — 10 100 Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "treinado_por_um_mestre",
@@ -3886,7 +3900,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ver Flexibilidade."
+    "descricao": "na da mesma maneira que o caso anterior, mas um pouco melhor. O personagem não é capaz de se esticar ou espremer de maneira anormal, mas qualquer parte do seu corpo pode ser dobrada em qualquer direção. O personagem recebe um bônus de +5 nos testes de Escalada, Arte Eróti ca e Fuga e nas tentativas de se libertar. O personagem pode ignorar penalidades de até -5 por trabalhar em espaços aper tados. 15 pontos. Forma de Sombras 3 1 O personagem é capaz de se trans formar numa sombra bi-dimensional. Isso permite que ele deslize pelo solo e pelas paredes e até mesmo através das rachaduras mais estreitas (qualquer coisa com largura suficiente para que seus ombros possam atravessá-la) com seu Deslocamento terrestre normal. O personagem também é capaz de desa fiar a gravidade, escalando paredes e locomovendo-se sobre os tetos com me tade do Deslocamento. Os ataques físicos causam somente metade do dano quando o personagem se encontra nessa forma. Os ataques de energia causam o dano normal, exceto aqueles com base em iluminação, que causam 50% a mais de dano. Magia, psiquismo e outras habilidades pura mente mentais afetam o personagem normalmente. O personagem sofre algumas restri ções importantes quando se encontra na Forma de Sombras. Ele não é capaz de caminhar em um espaço tridimensional e tem de deslizar ao longo de um objeto. Além disso, ele não consegue realizar ações ou ataques puramente físicos nem carregar objetos comuns ou afetá-los de qualquer forma. No entanto, o persona gem consegue utilizar magia, psiquismo e habilidades semelhantes."
   },
   {
     "id": "ultravisao",
@@ -3978,7 +3992,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ligação empática com outra pessoa, independente da distância. Custa 5 pontos."
+    "descricao": "Visão 360 graus F X 25 97 Visão Aguçada F — 2/nível 88 Visão Hiperespectral F X 25 97 Visão Microscópica F X 5/nível 97 Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97 Visão Penetrante F X 10/nível 97 Visão Periférica F — 15 98 Visão Telescópica F X 5/nível 98 Visualização M Sob 10 98 Voo F X 40 98 Voz Melodiosa F — 10 100 Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "visao_360_graus",
@@ -4038,7 +4052,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ampliação visual para detalhes minúsculos. Cada nível aumenta 10×. Custa 5 pontos/nível."
+    "descricao": "Visão no Escuro F X 25 97 Visão Noturna F — 1/nível 97 Visão Penetrante F X 10/nível 97 Visão Periférica F — 15 98 Visão Telescópica F X 5/nível 98 Visualização M Sob 10 98 Voo F X 40 98 Voz Melodiosa F — 10 100 Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "visao_no_escuro",
@@ -4162,7 +4176,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Voz clara e atraente; +2 em Arremeso, Atuação, Canto, Diplomacia, Lábia, Oratória, Política, Sex Appeal, e +2 em reações de quem ouve. Custa 10 pontos. (pág. 100)"
+    "descricao": "Voz Penetrante F — 1 101 Xeno-adaptabilidade M — 20 35"
   },
   {
     "id": "voz_penetrante",
