@@ -1218,19 +1218,6 @@
       "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
     },
     {
-      "id": "artes_marciais_ataque_fura",
-      "nome": "Ataque Fura",
-      "pagina": 89,
-      "paginaRaw": "89",
-      "dificuldadeRaw": "",
-      "preDefinidoRaw": "",
-      "preRequisitoRaw": "",
-      "descricao": "Ataque Furacão é um Ataque Total especial que permite atacar todos os inimigos adjacentes a você com a velocidade da luz! Se você fizer um Ataque Furacão, é tudo o que você pode fazer naquele turno, não importa o quão rápido ou habilidoso você seja. Por ser um Ataque Total, você fica sem defesas ativas. Caso contrário, as regras abaixo substituem as usuais para essa manobra. Quando você lança um Ataque Furacão, você gira no lugar (você não pode dar um passo) e ataca todos os inimigos dentro de um metro. Você deve atacá-los no sentido horário ou anti-horário – sua escolha. Todos os seus ataques devem ser chutes, socos ou golpes com uma arma giratória, e você não pode combinar o Ataque Furacão com outra técnica (como Desarmar, mas veja Desarmar Aprimorado, pág. 84) ou com perícias cinematográficas como Golpe Poderoso. Determine um ponto de impacto aleatório para cada inimigo e depois jogue contra o Ataque Furacão para acertar, com as penalidades habituais no local de acerto. Seus oponentes defendem normalmente. Resolva cada ataque completamente antes de passar para o próximo. Se estiver usando uma arma que pode ficar presa (consulte Picaretas, pág. B406), seu Ataque Furacão termina no primeiro ataque bem-sucedido. Se algum dos ataques for um erro crítico – ou se algum de seus inimigos tiver sucesso crítico em sua defesa – então esse ataque e todos os ataques restantes são erros críticos. Role na Tabela de Erro Crítico (pág. B556) uma vez por ataque! Você pode encerrar um Ataque Furacão de frente para qualquer direção.",
-      "modificadores": "",
-      "sourceBook": "Artes Marciais",
-      "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
-    },
-    {
       "id": "gun_fu_tiro_de_costas",
       "nome": "Tiro de Costas",
       "pagina": 25,
