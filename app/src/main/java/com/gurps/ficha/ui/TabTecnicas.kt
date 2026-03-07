@@ -104,6 +104,7 @@ fun TabTecnicas(viewModel: FichaViewModel) {
 
     editingTecnicaIndex?.let { index ->
         EditarTecnicaDialog(
+            viewModel = viewModel,
             tecnica = personagem.tecnicas[index],
             personagem = personagem,
             onDismiss = { editingTecnicaIndex = null },
