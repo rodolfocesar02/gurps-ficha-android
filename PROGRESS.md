@@ -205,6 +205,19 @@ Passos:
 Critério de aceite:
 - Branch remota atualizada sem artefatos indevidos (`.pdf`/`.xlsx`).
 
+### Lote 12 - Migração de Descrições de Magias (JSON Ativo)
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [ ] Registrar plano de migração e critérios de pareamento (`nome + página` com reconciliação explícita dos casos divergentes).
+2. [ ] Implementar script de merge (`Magias.xlsx` -> `magias2versao.json`) com campo `descricao` e relatório de cobertura em `scripts/reports/`.
+3. [ ] Validar parse/build (`visual` + `pracego`), atualizar evidências no `PROGRESS.md` e publicar push sem `.pdf/.xlsx`.
+
+Critério de aceite:
+- `magias2versao.json` ativo com campo `descricao` preenchido corretamente para todas as magias possíveis.
+- Casos não pareados ou reconciliados manualmente documentados em relatório.
+- Build das duas variantes compilando após a migração.
+
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
 2. Não aceitar correção só por "funcionou no caso X"; incluir teste de regressão.
@@ -235,6 +248,7 @@ Critério de aceite:
 13. [x] Corrigir anúncio prematuro de pré-requisito "atendido" no TalkBack quando o cálculo ainda não terminou.
 14. [x] Rotular explicitamente ações de edição em itens de Perícias e Técnicas na variante `pracego`.
 15. [x] Validar novamente instalação no emulador para `visual` e `pracego` após cada passo do lote 10.
+16. [ ] Iniciar lote 12 para incluir descrições de magias no JSON ativo, com merge auditável da planilha `Magias.xlsx`.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
