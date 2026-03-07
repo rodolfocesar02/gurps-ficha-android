@@ -13,6 +13,7 @@ Feito:
 4. Motor do modo alvo ajustado para tratar alternativas com `ou` usando parser por termo, sem perder dependências compartilhadas.
 5. Prioridade hard-first aplicada na recomendação (`cadeia -> escolas -> alvo`), sem lateral furar bloqueio de cadeia.
 6. Auditoria global de todas as magias estabilizada sem OOM, com relatório gerado em `app/build/reports/`.
+7. Manual curto do Modo Alvo implementado com pop-up automático no primeiro clique e opção persistente `Não mostrar mais`.
 
 Falta:
 1. Nenhuma pendência aberta nos lotes 1-6 deste ciclo.
@@ -137,6 +138,7 @@ Critério de aceite:
 4. [x] Instalar novamente apenas a versão `visual`.
 5. [x] Confirmar abertura de `com.gurps.ficha.visual/com.gurps.ficha.MainActivity` via `am start -W` (Status: ok).
 6. [x] Confirmar ausência de `pracego` e pacote base via `am start -W` (Error type 3).
+7. [x] Adicionar manual curto do Modo Alvo (<=200 caracteres) com abertura automática na primeira ativação e preferência persistida.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`

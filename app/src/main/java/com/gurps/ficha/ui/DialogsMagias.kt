@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -77,6 +78,8 @@ private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
 private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
 private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
+private const val MANUAL_MODO_ALVO_CURTO =
+    "Escolha a magia alvo e adicione só as recomendadas. O Modo Alvo segue os pré-requisitos na ordem e reaproveita as magias que você já conhece."
 
 private fun preReqProvavelmenteLivre(def: MagiaDefinicao): Boolean {
     val raw = def.preRequisitos?.trim().orEmpty()
@@ -155,6 +158,8 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
     var erroAdicionarMagia by remember { mutableStateOf<String?>(null) }
     var modoAlvoAtivo by remember { mutableStateOf(false) }
     var magiaAlvoId by remember { mutableStateOf<String?>(null) }
+    var mostrarManualModoAlvoDialog by remember { mutableStateOf(false) }
+    var naoMostrarManualModoAlvo by remember { mutableStateOf(false) }
     var statusAjudaVoz by remember { mutableStateOf<String?>(null) }
     val modoAlvoAtivoEfetivo = modoAlvoHabilitado && modoAlvoAtivo
 
@@ -505,12 +510,17 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         FilterChip(
                             selected = modoAlvoAtivo,
                             onClick = {
-                                modoAlvoAtivo = !modoAlvoAtivo
-                                if (!modoAlvoAtivo) magiaAlvoId = null
+                                val ativando = !modoAlvoAtivo
+                                modoAlvoAtivo = ativando
+                                if (!ativando) magiaAlvoId = null
                                 else {
                                     viewModel.atualizarBuscaMagia("")
                                     viewModel.atualizarFiltroClasseMagia(null)
                                     viewModel.atualizarFiltroEscolaMagia(null)
+                                    if (viewModel.deveMostrarManualModoAlvo()) {
+                                        naoMostrarManualModoAlvo = false
+                                        mostrarManualModoAlvoDialog = true
+                                    }
                                 }
                             },
                             label = { Text("Modo Alvo") }
@@ -551,6 +561,39 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             }
                         )
                     }
+                }
+                if (mostrarManualModoAlvoDialog) {
+                    AlertDialog(
+                        onDismissRequest = { mostrarManualModoAlvoDialog = false },
+                        title = { Text("Manual Modo Alvo") },
+                        text = {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(MANUAL_MODO_ALVO_CURTO)
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { naoMostrarManualModoAlvo = !naoMostrarManualModoAlvo }
+                                ) {
+                                    Checkbox(
+                                        checked = naoMostrarManualModoAlvo,
+                                        onCheckedChange = { marcado -> naoMostrarManualModoAlvo = marcado }
+                                    )
+                                    Text("Não mostrar mais")
+                                }
+                            }
+                        },
+                        confirmButton = {
+                            TextButton(
+                                onClick = {
+                                    if (naoMostrarManualModoAlvo) {
+                                        viewModel.definirNaoMostrarManualModoAlvo(true)
+                                    }
+                                    mostrarManualModoAlvoDialog = false
+                                }
+                            ) { Text("Entendi") }
+                        }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))

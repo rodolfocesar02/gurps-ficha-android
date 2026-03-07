@@ -183,6 +183,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private var personagemPendenteLimpezaMagias: Personagem? = null
     private val prefCanalDiscordId = "discord_canal_id"
     private val prefCanalDiscordNome = "discord_canal_nome"
+    private val prefNaoMostrarManualModoAlvo = "modo_alvo_manual_nao_mostrar"
 
     var canaisDiscord by mutableStateOf<List<DiscordVoiceChannel>>(emptyList())
         private set
@@ -1569,6 +1570,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         configPrefs.edit()
             .putString(prefCanalDiscordId, canalDiscordSelecionadoId)
             .putString(prefCanalDiscordNome, canalDiscordSelecionadoNome)
+            .apply()
+    }
+
+    fun deveMostrarManualModoAlvo(): Boolean {
+        return !configPrefs.getBoolean(prefNaoMostrarManualModoAlvo, false)
+    }
+
+    fun definirNaoMostrarManualModoAlvo(naoMostrar: Boolean) {
+        configPrefs.edit()
+            .putBoolean(prefNaoMostrarManualModoAlvo, naoMostrar)
             .apply()
     }
 
