@@ -218,6 +218,27 @@ Critério de aceite:
 - Casos não pareados ou reconciliados manualmente documentados em relatório.
 - Build das duas variantes compilando após a migração.
 
+### Lote 13 - Correção de Desvantagens + Descrição em Técnicas (Diálogos)
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Implementar popup de descrição no nome da técnica dentro dos diálogos de **Configurar Técnica** e **Editar Técnica**, com rótulos de acessibilidade no `pracego`.
+Arquivo:
+- `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
+2. [x] Executar reparo em lote de `desvantagens.v2.json` para reduzir artefatos e remover descrições em formato de índice corrompido.
+Arquivos:
+- `app/src/main/assets/desvantagens.v2.json`
+- `scripts/repair_desvantagens_descricao.py`
+- `scripts/reports/desvantagens_descricao_repair_report.json`
+- `scripts/reports/desvantagens_descricao_nullified_report.json`
+3. [x] Validar compilação das variantes `visual` e `pracego`.
+Comando:
+- `./gradlew :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin`
+
+Critério de aceite:
+- Técnica exibe descrição por clique no nome também dentro do diálogo de configuração/edição.
+- Desvantagens deixam de exibir blocos de índice misturado como descrição.
+
 ### Lote 13 - Conciliação Canônica de Descrições de Técnicas (Artes Marciais + Gun Fu)
 Status: `CONCLUIDO`
 

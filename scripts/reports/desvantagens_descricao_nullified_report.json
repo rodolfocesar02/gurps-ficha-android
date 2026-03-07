@@ -1,0 +1,145 @@
+{
+  "cleared": 28,
+  "items": [
+    {
+      "id": "amigavel",
+      "nome": "Amigável",
+      "markers": 5
+    },
+    {
+      "id": "antipatico",
+      "nome": "Antipático",
+      "markers": 5
+    },
+    {
+      "id": "assexuado",
+      "nome": "Assexuado",
+      "markers": 3
+    },
+    {
+      "id": "atrapalhado",
+      "nome": "Atrapalhado",
+      "markers": 2
+    },
+    {
+      "id": "bioquimica_incomum",
+      "nome": "Bioquímica Incomum",
+      "matches": 2
+    },
+    {
+      "id": "chauvinista",
+      "nome": "Chauvinista",
+      "matches": 4
+    },
+    {
+      "id": "cleptomania",
+      "nome": "Cleptomania",
+      "matches": 3
+    },
+    {
+      "id": "confuso",
+      "nome": "Confuso",
+      "matches": 4
+    },
+    {
+      "id": "cuidadoso",
+      "nome": "Cuidadoso",
+      "matches": 4
+    },
+    {
+      "id": "deficiencia_fisica",
+      "nome": "Deficiência Física",
+      "matches": 2
+    },
+    {
+      "id": "desdobramento_de_pers",
+      "nome": "Desdobramento de Pers.",
+      "markers": 2
+    },
+    {
+      "id": "dificuldade_com_numeros",
+      "nome": "Dificuldade com Números",
+      "matches": 5
+    },
+    {
+      "id": "dividas",
+      "nome": "Dívidas",
+      "matches": 3
+    },
+    {
+      "id": "epilepsia",
+      "nome": "Epilepsia",
+      "matches": 3
+    },
+    {
+      "id": "expectativa_de_vida_reduzida",
+      "nome": "Expectativa de Vida Reduzida",
+      "matches": 4
+    },
+    {
+      "id": "fragilidade_em_aceleracao",
+      "nome": "Fragilidade em Aceleração",
+      "matches": 4
+    },
+    {
+      "id": "gigantismo",
+      "nome": "Gigantismo",
+      "matches": 13
+    },
+    {
+      "id": "lunatico",
+      "nome": "Lunático",
+      "markers": 3
+    },
+    {
+      "id": "mentalidade_de_escravo",
+      "nome": "Mentalidade de Escravo",
+      "matches": 3
+    },
+    {
+      "id": "nao_iconografico",
+      "nome": "Não-iconográfico",
+      "matches": 4
+    },
+    {
+      "id": "pacifismo",
+      "nome": "Pacifismo",
+      "matches": 3
+    },
+    {
+      "id": "padrao_de_tempo_reduzido",
+      "nome": "Padrão de Tempo Reduzido",
+      "matches": 4
+    },
+    {
+      "id": "paralisia_frente_ao_combate",
+      "nome": "Paralisia Frente ao Combate",
+      "matches": 5
+    },
+    {
+      "id": "sadismo",
+      "nome": "Sadismo",
+      "matches": 4
+    },
+    {
+      "id": "sem_nocao_de_profundidade",
+      "nome": "Sem Noção de Profundidade",
+      "markers": 3
+    },
+    {
+      "id": "susceptibilidade_a_magia",
+      "nome": "Susceptibilidade à Magia",
+      "matches": 4
+    },
+    {
+      "id": "viciado_em_trabalho",
+      "nome": "Viciado em Trabalho",
+      "matches": 2
+    },
+    {
+      "id": "visao_restrita",
+      "nome": "Visão Restrita",
+      "matches": 3
+    }
+  ]
+}
