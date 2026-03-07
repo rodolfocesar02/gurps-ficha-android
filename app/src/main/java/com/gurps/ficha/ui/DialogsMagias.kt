@@ -1044,6 +1044,7 @@ fun ConfigurarMagiaDialog(
         }
     }
     val dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa ?: "D")
+    val descricaoMagia = definicao.texto?.trim().orEmpty()
     
     // Calcula nível preview
     val previewMagia = MagiaSelecionada(definicao.id, definicao.nome, dificuldade, pontosGastos, definicao.pagina, definicao.texto, definicao.classe, definicao.escola)
@@ -1056,6 +1057,30 @@ fun ConfigurarMagiaDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text("Dificuldade: ${dificuldade.nomeCompleto}", style = MaterialTheme.typography.bodyMedium)
+                if (descricaoMagia.isNotBlank()) {
+                    Card(
+                        colors = appCardColors(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .semantics {
+                                if (isPraCegoVariant) {
+                                    contentDescription = "Descricao da magia. $descricaoMagia"
+                                }
+                            }
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            Text(
+                                "Descrição",
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(
+                                descricaoMagia,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
 
                 Divider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
