@@ -187,7 +187,7 @@ Status: `EM_ANDAMENTO`
 Passos:
 1. [x] Registrar lotes e checklist de execução no `PROGRESS.md`.
 2. [x] Corrigir anúncio de estado "pré-requisito atendido" antes do cálculo finalizar na lista de Magias (TalkBack).
-3. [ ] Rotular explicitamente ação de editar em item de Perícias.
+3. [x] Rotular explicitamente ação de editar em item de Perícias.
 4. [ ] Rotular explicitamente ação de editar em item de Técnicas.
 5. [ ] Validar com build `visual/pracego` + instalação no emulador.
 
