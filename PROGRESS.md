@@ -206,12 +206,12 @@ Critério de aceite:
 - Branch remota atualizada sem artefatos indevidos (`.pdf`/`.xlsx`).
 
 ### Lote 12 - Migração de Descrições de Magias (JSON Ativo)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar plano de migração e critérios de pareamento (`nome + página` com reconciliação explícita dos casos divergentes).
 2. [x] Implementar script de merge (`Magias.xlsx` -> `magias2versao.json`) com campo `descricao` e relatório de cobertura em `scripts/reports/`.
-3. [ ] Validar parse/build (`visual` + `pracego`), atualizar evidências no `PROGRESS.md` e publicar push sem `.pdf/.xlsx`.
+3. [x] Validar parse/build (`visual` + `pracego`), atualizar evidências no `PROGRESS.md` e publicar push sem `.pdf/.xlsx`.
 
 Critério de aceite:
 - `magias2versao.json` ativo com campo `descricao` preenchido corretamente para todas as magias possíveis.
@@ -254,6 +254,10 @@ Critério de aceite:
     - `magias_with_descricao=839`
     - `unresolved_count=0`
     - relatório: `scripts/reports/magias_descricao_merge_report.json`
+18. [x] Validar pós-merge:
+    - parse JSON de `magias2versao.json` (`sem_descricao=0`);
+    - build `visual`: `:app:compileVisualDebugKotlin` (OK);
+    - build `pracego`: `:app:compilePracegoDebugKotlin` (OK).
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
