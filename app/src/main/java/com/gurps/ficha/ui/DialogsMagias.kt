@@ -79,7 +79,7 @@ private const val AJUDA_VOZ_HABILITADA = false
 private const val MAX_OPCOES_MODO_ALVO = 3
 private const val ESCOLA_NUNCA_RECOMENDAR = "tecnologica"
 private const val MANUAL_MODO_ALVO_CURTO =
-    "Escolha a magia alvo e adicione só as recomendadas. O Modo Alvo segue os pré-requisitos na ordem e reaproveita as magias que você já conhece."
+    "Ative Modo Alvo, defina o Alvo e adicione só as recomendadas. O app reaproveita seu repertório e mostra o próximo passo até liberar a magia."
 
 private fun preReqProvavelmenteLivre(def: MagiaDefinicao): Boolean {
     val raw = def.preRequisitos?.trim().orEmpty()
@@ -523,19 +523,29 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     }
                                 }
                             },
+                            modifier = Modifier.semantics {
+                                contentDescription =
+                                    "Alternar Modo Alvo. Quando ativo, mostra a ordem dos pré-requisitos."
+                            },
                             label = { Text("Modo Alvo") }
                         )
                         if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
                             Text(
                                 "Alvo: ${magiaAlvoSelecionada.nome}",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Magia alvo atual: ${magiaAlvoSelecionada.nome}"
+                                }
                             )
                         } else if (modoAlvoAtivoEfetivo) {
                             Text(
                                 "Toque em \"Alvo\" na magia desejada.",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Instrução: toque no botão Alvo na magia desejada."
+                                }
                             )
                         }
                     }
@@ -565,19 +575,43 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 if (mostrarManualModoAlvoDialog) {
                     AlertDialog(
                         onDismissRequest = { mostrarManualModoAlvoDialog = false },
-                        title = { Text("Manual Modo Alvo") },
+                        title = {
+                            Text(
+                                "Manual Modo Alvo",
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Janela do manual do Modo Alvo"
+                                }
+                            )
+                        },
                         text = {
-                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                                Text(MANUAL_MODO_ALVO_CURTO)
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Manual curto: $MANUAL_MODO_ALVO_CURTO"
+                                }
+                            ) {
+                                Text(
+                                    MANUAL_MODO_ALVO_CURTO,
+                                    modifier = Modifier.semantics {
+                                        contentDescription = "Passos do manual do Modo Alvo"
+                                    }
+                                )
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable { naoMostrarManualModoAlvo = !naoMostrarManualModoAlvo }
+                                        .semantics {
+                                            contentDescription =
+                                                "Opção não mostrar mais o manual do Modo Alvo"
+                                        }
                                 ) {
                                     Checkbox(
                                         checked = naoMostrarManualModoAlvo,
-                                        onCheckedChange = { marcado -> naoMostrarManualModoAlvo = marcado }
+                                        onCheckedChange = { marcado -> naoMostrarManualModoAlvo = marcado },
+                                        modifier = Modifier.semantics {
+                                            contentDescription = "Marcar para não mostrar mais"
+                                        }
                                     )
                                     Text("Não mostrar mais")
                                 }
@@ -590,8 +624,19 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                         viewModel.definirNaoMostrarManualModoAlvo(true)
                                     }
                                     mostrarManualModoAlvoDialog = false
+                                },
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Fechar manual do Modo Alvo"
                                 }
                             ) { Text("Entendi") }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = { mostrarManualModoAlvoDialog = false },
+                                modifier = Modifier.semantics {
+                                    contentDescription = "Fechar manual sem salvar preferência"
+                                }
+                            ) { Text("Fechar") }
                         }
                     )
                 }

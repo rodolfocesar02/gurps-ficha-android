@@ -1,6 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,10 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -26,6 +29,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +39,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
@@ -45,6 +50,7 @@ import com.gurps.ficha.model.TecnicaCatalogoItem
 import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 import java.text.Normalizer
+import kotlin.math.abs
 
 private fun normalizarBusca(valor: String): String {
     val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
@@ -170,7 +176,11 @@ fun ConfigurarTecnicaDialog(
     onDismiss: () -> Unit,
     onSave: () -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val pericias = viewModel.personagem.pericias
+    val periciasCompativeis = remember(pericias, definicao.id, definicao.preRequisitoRaw) {
+        pericias.filter { viewModel.tecnicaAtendePreRequisito(definicao, it) }
+    }
     var periciaSelecionadaId by remember { mutableStateOf<String?>(null) }
     var nivelRelativo by remember { mutableStateOf(0) }
     var erro by remember { mutableStateOf<String?>(null) }
@@ -178,6 +188,12 @@ fun ConfigurarTecnicaDialog(
 
     val periciaBase = pericias.firstOrNull { pericia ->
         periciaTecnicaKey(pericia) == periciaSelecionadaId
+    }
+    LaunchedEffect(periciasCompativeis) {
+        val selecionadaAtualValida = periciasCompativeis.any { periciaTecnicaKey(it) == periciaSelecionadaId }
+        if (!selecionadaAtualValida) {
+            periciaSelecionadaId = periciasCompativeis.firstOrNull()?.let { periciaTecnicaKey(it) }
+        }
     }
     val atendePreReq = periciaBase?.let { viewModel.tecnicaAtendePreRequisito(definicao, it) } ?: false
     val limiteMaximo = viewModel.limiteMaximoTecnica(definicao)
@@ -192,13 +208,19 @@ fun ConfigurarTecnicaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar Técnica") },
+        title = null,
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
-                Text(definicao.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(
+                    definicao.nome,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontSize = MaterialTheme.typography.headlineSmall.fontSize * 1.1f,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
                 Text(
                     "${definicao.sourceBook} | ${definicao.dificuldadeRaw}",
                     style = MaterialTheme.typography.bodySmall,
@@ -216,9 +238,14 @@ fun ConfigurarTecnicaDialog(
                         "Adicione ao menos uma perícia antes de configurar técnicas.",
                         color = MaterialTheme.colorScheme.error
                     )
+                } else if (periciasCompativeis.isEmpty()) {
+                    Text(
+                        "Nenhuma perícia da ficha atende ao pré-requisito desta técnica.",
+                        color = MaterialTheme.colorScheme.error
+                    )
                 } else {
                     Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
-                    pericias.forEach { pericia ->
+                    periciasCompativeis.forEach { pericia ->
                         val key = periciaTecnicaKey(pericia)
                         FilterChip(
                             selected = periciaSelecionadaId == key,
@@ -232,34 +259,63 @@ fun ConfigurarTecnicaDialog(
                 }
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(
-                        enabled = nivelRelativo > 0,
-                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
-                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
-                    ) { Text("-") }
+                if (isPraCegoVariant) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(
+                            enabled = nivelRelativo > 0,
+                            onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
+                            modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
+                        ) { Text("-") }
+                        Text(
+                            "+$nivelRelativo",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        TextButton(
+                            enabled = nivelRelativo < nivelMaximo,
+                            onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
+                            modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
+                        ) { Text("+") }
+                    }
+                } else {
                     Text(
-                        "+$nivelRelativo",
+                        text = "+$nivelRelativo",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .width(56.dp)
+                            .pointerInput(nivelRelativo) {
+                                var dragAcumulado = 0f
+                                val passoPx = 24f
+                                detectVerticalDragGestures(
+                                    onVerticalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragAcumulado += dragAmount
+                                        while (abs(dragAcumulado) >= passoPx) {
+                                            nivelRelativo = if (dragAcumulado < 0f) {
+                                                (nivelRelativo + 1).coerceAtMost(nivelMaximo)
+                                            } else {
+                                                (nivelRelativo - 1).coerceAtLeast(0)
+                                            }
+                                            dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                        }
+                                    }
+                                )
+                            },
+                        textAlign = TextAlign.Center
                     )
-                    TextButton(
-                        enabled = nivelRelativo < nivelMaximo,
-                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
-                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
-                    ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
                     Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
                 }
 
                 Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
-                Text(
-                    "Pré-definido base: ${if (predefModificador >= 0) "+$predefModificador" else predefModificador}",
-                    style = MaterialTheme.typography.bodySmall
-                )
                 nhTecnica?.let {
-                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        "${definicao.nome} NH $it",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
                 if (periciaBase != null && !atendePreReq) {
                     Text(
@@ -307,6 +363,7 @@ fun EditarTecnicaDialog(
     onDismiss: () -> Unit,
     onSave: (TecnicaSelecionada) -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var nivelRelativo by remember { mutableStateOf(tecnica.nivelRelativoPredefinido.coerceAtLeast(0)) }
     var periciaSelecionadaId by remember {
         mutableStateOf(
@@ -342,7 +399,13 @@ fun EditarTecnicaDialog(
         title = { Text("Editar Técnica") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(tecnica.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(
+                    tecnica.nome,
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontSize = MaterialTheme.typography.headlineSmall.fontSize * 1.1f,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                )
                 Text("${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
 
                 Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
@@ -356,22 +419,51 @@ fun EditarTecnicaDialog(
                 }
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(
-                        enabled = nivelRelativo > 0,
-                        onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
-                        modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
-                    ) { Text("-") }
+                if (isPraCegoVariant) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(
+                            enabled = nivelRelativo > 0,
+                            onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
+                            modifier = Modifier.semantics { contentDescription = "Diminuir nível da técnica" }
+                        ) { Text("-") }
+                        Text(
+                            "+$nivelRelativo",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                        TextButton(
+                            enabled = nivelRelativo < nivelMaximo,
+                            onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
+                            modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
+                        ) { Text("+") }
+                    }
+                } else {
                     Text(
-                        "+$nivelRelativo",
+                        text = "+$nivelRelativo",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .width(56.dp)
+                            .pointerInput(nivelRelativo) {
+                                var dragAcumulado = 0f
+                                val passoPx = 24f
+                                detectVerticalDragGestures(
+                                    onVerticalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragAcumulado += dragAmount
+                                        while (abs(dragAcumulado) >= passoPx) {
+                                            nivelRelativo = if (dragAcumulado < 0f) {
+                                                (nivelRelativo + 1).coerceAtMost(nivelMaximo)
+                                            } else {
+                                                (nivelRelativo - 1).coerceAtLeast(0)
+                                            }
+                                            dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                        }
+                                    }
+                                )
+                            },
+                        textAlign = TextAlign.Center
                     )
-                    TextButton(
-                        enabled = nivelRelativo < nivelMaximo,
-                        onClick = { nivelRelativo = (nivelRelativo + 1).coerceAtMost(nivelMaximo) },
-                        modifier = Modifier.semantics { contentDescription = "Aumentar nível da técnica" }
-                    ) { Text("+") }
                 }
                 if (limiteMaximo != null) {
                     Text("Limite máximo: predefinido +$limiteMaximo", style = MaterialTheme.typography.bodySmall)
@@ -379,7 +471,11 @@ fun EditarTecnicaDialog(
 
                 Text("Custo automático: $custo ponto(s)", style = MaterialTheme.typography.bodyMedium)
                 nhTecnica?.let {
-                    Text("NH da Técnica: $it", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(
+                        "${tecnica.nome} NH $it",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
             }
         },
