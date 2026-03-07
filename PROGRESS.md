@@ -260,6 +260,19 @@ Evidência:
   - `:app:compileVisualDebugKotlin`
   - `:app:compilePracegoDebugKotlin`
 
+### Lote 15 - Saneamento Canônico de Descrições de Vantagens
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Auditar `vantagens.v3.json` e identificar descrições com artefatos/mistura de índice/tabela.
+2. [x] Substituir descrições por fonte limpa da planilha `vantagens_extraidas_fiel_v2.xlsx`, preservando entradas customizadas.
+3. [x] Corrigir nomes com artefatos residuais por ID canônico da planilha.
+4. [x] Gerar relatório de cobertura e validar ausência de blocos de índice colado.
+
+Evidência:
+- Relatório: `scripts/reports/vantagens_descricao_repair_report.json`
+- Resultado: `total_vantagens=265`, `matched=250`, `updated=239`, `unmatched_count=15` (após saneamento por ID, casos críticos corrigidos e sem índice colado).
+
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
 2. Não aceitar correção só por "funcionou no caso X"; incluir teste de regressão.
