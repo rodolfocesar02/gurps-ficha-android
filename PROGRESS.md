@@ -297,6 +297,19 @@ Critério de aceite:
 - Catálogos ativos de vantagens/desvantagens com `descricao` preenchida quando fonte confiável existir.
 - Diálogos de configuração sem prefixo `Configurar:`, com leitura de descrição por pop-up clicando no nome.
 
+### Lote 14 - Fechamento dos Faltantes de Descrição (Traços)
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Registrar plano de fechamento dos faltantes remanescentes após lote 13.
+2. [ ] Reforçar extração do texto do Módulo Básico com fallback fuzzy seguro para títulos com variação OCR/acentuação.
+3. [ ] Reexecutar merge de descrições e atualizar relatório de cobertura.
+4. [ ] Validar build `visual/pracego`, instalar `visual` no emulador e fechar lote.
+
+Critério de aceite:
+- Redução máxima dos faltantes de descrição em vantagens/desvantagens sem contrariar o texto do PDF.
+- Evidência em relatório versionado e validação de build/instalação concluída.
+
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
