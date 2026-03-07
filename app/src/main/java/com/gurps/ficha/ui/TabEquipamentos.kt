@@ -102,15 +102,20 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         BotaoAdicionarPadrao(texto = "Adicionar Itens", onClick = { showDialog = true })
 
         if (equipamentosManuais.isNotEmpty()) {
-            SectionCard(title = "Equipamentos Manuais") {
-                equipamentosManuais.forEachIndexed { idx, entry ->
-                    EquipamentoItem(
-                        equipamento = entry.value,
-                        onEdit = { editingEquipamento = entry.index to entry.value },
-                        onDelete = { viewModel.removerEquipamento(entry.index) },
-                        viewModel = viewModel
-                    )
-                    if (idx < equipamentosManuais.lastIndex) Divider(modifier = Modifier.padding(vertical = 4.dp))
+            Text("Equipamentos Manuais", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            equipamentosManuais.forEach { entry ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        EquipamentoItem(
+                            equipamento = entry.value,
+                            onEdit = { editingEquipamento = entry.index to entry.value },
+                            onDelete = { viewModel.removerEquipamento(entry.index) },
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }
@@ -118,20 +123,25 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         BotaoAdicionarPadrao(texto = "Adicionar Arma", onClick = { showArmaDialog = true })
 
         if (armasEquipadas.isNotEmpty()) {
-            SectionCard(title = "Armas") {
-                Text(
-                    "Itens equipados: ${armasEquipadas.size}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                armasEquipadas.forEachIndexed { idx, entry ->
-                    EquipamentoArmaItem(
-                        equipamento = entry.value,
-                        onEdit = { editingEquipamento = entry.index to entry.value },
-                        onDelete = { viewModel.removerEquipamento(entry.index) },
-                        viewModel = viewModel
-                    )
-                    if (idx < armasEquipadas.lastIndex) Divider(modifier = Modifier.padding(vertical = 4.dp))
+            Text("Armas", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "Itens equipados: ${armasEquipadas.size}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            armasEquipadas.forEach { entry ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        EquipamentoArmaItem(
+                            equipamento = entry.value,
+                            onEdit = { editingEquipamento = entry.index to entry.value },
+                            onDelete = { viewModel.removerEquipamento(entry.index) },
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }
@@ -139,20 +149,25 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         BotaoAdicionarPadrao(texto = "Adicionar Escudo", onClick = { showEscudoDialog = true })
 
         if (escudosEquipados.isNotEmpty()) {
-            SectionCard(title = "Escudos") {
-                Text(
-                    "Itens equipados: ${escudosEquipados.size}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                escudosEquipados.forEachIndexed { idx, entry ->
-                    EquipamentoItem(
-                        equipamento = entry.value,
-                        onEdit = { editingEquipamento = entry.index to entry.value },
-                        onDelete = { viewModel.removerEquipamento(entry.index) },
-                        viewModel = viewModel
-                    )
-                    if (idx < escudosEquipados.lastIndex) Divider(modifier = Modifier.padding(vertical = 4.dp))
+            Text("Escudos", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "Itens equipados: ${escudosEquipados.size}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            escudosEquipados.forEach { entry ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        EquipamentoItem(
+                            equipamento = entry.value,
+                            onEdit = { editingEquipamento = entry.index to entry.value },
+                            onDelete = { viewModel.removerEquipamento(entry.index) },
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }
@@ -160,25 +175,29 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         BotaoAdicionarPadrao(texto = "Adicionar Armadura", onClick = { showArmaduraDialog = true })
 
         if (armadurasEquipadas.isNotEmpty()) {
-            SectionCard(title = "Armaduras") {
-                Text(
-                    "Itens selecionados: ${armadurasEquipadas.size}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    "Selecao por NT e Local (regra do livro).",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                armadurasEquipadas.forEachIndexed { idx, entry ->
-                    ArmaduraSelecionadaItem(
-                        equipamento = entry.value,
-                        onEdit = { editingEquipamento = entry.index to entry.value },
-                        onDelete = { viewModel.removerEquipamento(entry.index) }
-                    )
-                    if (idx < armadurasEquipadas.lastIndex) Divider(modifier = Modifier.padding(vertical = 4.dp))
+            Text("Armaduras", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(
+                "Itens selecionados: ${armadurasEquipadas.size}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                "Selecao por NT e Local (regra do livro).",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            armadurasEquipadas.forEach { entry ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Column(modifier = Modifier.padding(10.dp)) {
+                        ArmaduraSelecionadaItem(
+                            equipamento = entry.value,
+                            onEdit = { editingEquipamento = entry.index to entry.value },
+                            onDelete = { viewModel.removerEquipamento(entry.index) }
+                        )
+                    }
                 }
             }
         }

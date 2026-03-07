@@ -6,7 +6,7 @@
     "c:\\Users\\Rodolfo\\Desktop\\bachup ficha gurps\\Tecnicas_livro_GunFu.xlsx"
   ],
   "generatedAtUtc": "2026-03-01T09:11:13.456885+00:00",
-  "totalItems": 113,
+  "totalItems": 119,
   "items": [
     {
       "id": "artes_marciais_levantar_acrobatico",
@@ -334,6 +334,19 @@
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
     },
     {
+      "id": "artes_marciais_evasao",
+      "nome": "Evas?o",
+      "pagina": 76,
+      "paginaRaw": "76",
+      "dificuldadeRaw": "M?dia",
+      "preDefinidoRaw": "Acrobacia ou Jud?",
+      "preRequisitoRaw": "Acrobacia ou Jud?; n?o pode exceder a per?cia pr?-requisito +5",
+      "descricao": "Esta t?cnica representa o treinamento para evitar oponentes que desejam obstruir seu movimento. Evas?o (Acrobacia) permite que voc? vire, tombe ou gire em torno de seu inimigo, enquanto Evas?o (Jud?) permite que voc? afaste as m?os do inimigo enquanto voc? passa correndo. Qualquer uma dessas op??es substitui DX ao tentar se evadir (consulte Evadir, p?g. B368). Todas as penalidades normais se aplicam.",
+      "modificadores": "",
+      "sourceBook": "Artes Marciais",
+      "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
+    },
+    {
       "id": "artes_marciais_finta",
       "nome": "Finta",
       "pagina": 73,
@@ -511,6 +524,19 @@
       "preDefinidoRaw": "Briga-2 ou Caratê-2",
       "preRequisitoRaw": "Briga ou Caratê; não pode exceder as perícias pré-requisitos",
       "descricao": "Chute abrange todos os chutes não definidos como técnicas autônomas: chutes crescentes, chutes em gancho, chutes ascendentes, chutes circulares, chutes explosivos etc. Jogadores experientes são livres para embelezar, mas em todos os casos, um chute requer uma jogada de ataque contra Chute e inflige dano GdP por contusão. Use a perícia Briga ou Caratê - não Chute - para determinar o bônus de dano e use apenas o bônus mais alto. Se você errar, jogue contra Chute ou DX para evitar cair. Combine Chute com Ataque Dedicado (págs. 99-100) ou Ataque Total para chutes devastadores como circulares ou chutes laterais, ou com Ataque Defensivo (pág. 100) para chutes curtos e diretos. Adicione Ataque Enganoso (pág. B369) para ganchos rápidos e outros movimentos complicados ou Ataque Telegráfico (pág. 113) para chutes lentos com grandes finalizações.",
+      "modificadores": "",
+      "sourceBook": "Artes Marciais",
+      "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
+    },
+    {
+      "id": "artes_marciais_desarmar",
+      "nome": "Desarmar",
+      "pagina": 75,
+      "paginaRaw": "75",
+      "dificuldadeRaw": "Difícil",
+      "preDefinidoRaw": "Perícia pré-requisito",
+      "preRequisitoRaw": "Qualquer perícia de Arma de Combate Corpo a Corpo ou perícia de combate desarmado; não pode exceder a perícia pré-requisito +5",
+      "descricao": "Se você conhece esta técnica acima do predefinido, você pode usá-la ao invés da perícia subjacente sempre que você atacar para desarmar (consulte Derrubando uma Arma, pág. B401) – tanto para o teste para acertar quanto para a Disputa Rápida subsequente. Por exemplo, se você tiver Espada de Lâmina Larga-14 e Desarmar (Espada de Lâmina Larga)-17, você desarma como se tivesse Espada de Lâmina Larga-17. Penalidades para acertar a arma alvo, incluindo -2 por usar uma arma que não seja de esgrima, e modificadores na Disputa Rápida (como +2 para armas Jitte/Sai e Chicote) se aplicam normalmente.",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
@@ -802,6 +828,19 @@
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
     },
     {
+      "id": "artes_marciais_telefone",
+      "nome": "Telefone",
+      "pagina": 81,
+      "paginaRaw": "81",
+      "dificuldadeRaw": "M?dia",
+      "preDefinidoRaw": "Boxe-3, Briga-3 ou Carat?-3",
+      "preRequisitoRaw": "Boxe, Briga ou Carat?; n?o pode exceder a per?cia pr?-requisito -1",
+      "descricao": "Este ? um ataque ? orelha do seu inimigo usando a m?o em concha ou aberta. O objetivo ? estourar seu t?mpano, atordoando e ensurdecendo-o. Voc? deve estar em combate corpo a corpo e ter pelo menos uma m?o livre e vazia. Jogue contra Telefone para acertar. Seu oponente pode usar qualquer defesa ativa. Se o ataque for bem-sucedido, ele causa GdP-3 de dano por contus?o mais b?nus de per?cia. Al?m disso, fa?a uma Disputa R?pida: Telefone contra o HT da v?tima. Se voc? vencer, seu alvo ficar? fisicamente atordoado (p?g. B420); ele tamb?m ter? -1 DX e surdo em um ouvido (trate como Duro de Ouvido) por 1d segundos. Em uma falha cr?tica no teste de HT ou sucesso cr?tico em Telefone, a v?tima deve jogar como se fosse uma les?o incapacitante para ver quanto tempo ela ficar? parcialmente surda; consulte a p?g. B422. O dano permanente ? poss?vel. O Telefone funciona melhor se voc? acertar as duas orelhas simultaneamente. Para fazer um Telefone duplo, voc? deve ter duas m?os vazias livres e usar o Ataque Total (Duplo) ou outra forma de ataques m?ltiplos. O Ataque com Duas Armas com a per?cia de combate desarmado apropriada ? uma op??o; adicione as penalidades para aquela t?cnica para Telefone ao determinar a per?cia efetiva. Se apenas uma m?o bater, resolva como acima. Se ambas acertarem, fa?a uma Disputa R?pida. Se voc? vencer, sua v?tima ficar? surda em ambos os ouvidos (trate como Surdez) por 2d segundos. Mais uma vez, uma falha cr?tica em HT ou sucesso cr?tico em Telefone indica uma les?o incapacitante que pode se tornar permanente.",
+      "modificadores": "",
+      "sourceBook": "Artes Marciais",
+      "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
+    },
+    {
       "id": "artes_marciais_torcao_membro",
       "nome": "Torção (Membro)",
       "pagina": 82,
@@ -893,6 +932,19 @@
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
     },
     {
+      "id": "artes_marciais_chute_com_vara",
+      "nome": "Chute com Vara",
+      "pagina": 88,
+      "paginaRaw": "88",
+      "dificuldadeRaw": "Dif?cil",
+      "preDefinidoRaw": "Carat?-4",
+      "preRequisitoRaw": "Saltar e Carat?; n?o pode exceder a per?cia Carat?",
+      "descricao": "Esta t?cnica ? uma varia??o do Chute Saltando (p?g. 75) que usa uma vara ? normalmente um bast?o, mas ?s vezes uma espada cravada no ch?o ou at? mesmo um corrim?o conveniente ? para saltar para um chute. Envolve um salto com vara curto para a frente ou para os lados que termina em um chute certeiro. ? uma op??o especial para Ataque Total. Use as seguintes regras em vez da normal para essa manobra. Para tentar um Chute com Vara, voc? deve ter as duas m?os em uma vara, espada ou alavanca vertical semelhante. Voc? deve dar pelo menos dois passos em dire??o ao inimigo; isso efetivamente d? a voc? um metro extra de alcance. Jogue contra Chute com Vara para acertar. Seu alvo defende com -2. Se voc? acertar, voc? causa GdP+3 de dano por contus?o ? ou GdP+1 a +1 por dado, se melhor ? mais seu b?nus de Carat?. Se voc? errar, ou se seu alvo defender com sucesso, voc? cair?, a menos que possa fazer um teste de DX-4 ou Acrobacia-2. Acertando ou errando, voc? n?o tem defesa at? o pr?ximo turno. Por mais estranho que possa parecer, alguns artistas marciais do mundo real praticam esse chute, embora sua efic?cia seja duvidosa. Por op??o do Mestre, guerreiros realistas que praticam estilos especialmente chamativos podem comprar um benef?cio de estilo que os permite melhorar esta t?cnica.",
+      "modificadores": "",
+      "sourceBook": "Artes Marciais",
+      "sourceFile": "Artes Marciais 4? Edi??o.pdf"
+    },
+    {
       "id": "artes_marciais_chute_com_salto_voador_ou_estocada_voadora",
       "nome": "Chute com Salto Voador ou Estocada Voadora",
       "pagina": 83,
@@ -969,6 +1021,19 @@
       "modificadores": "",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
+    },
+    {
+      "id": "artes_marciais_ataque_no_ponto_de_pressao",
+      "nome": "Ataque no Ponto de Press?o",
+      "pagina": 88,
+      "paginaRaw": "88",
+      "dificuldadeRaw": "Dif?cil",
+      "preDefinidoRaw": "Per?cia pr?-requisito de per?cia de combate-2",
+      "preRequisitoRaw": "Pontos de Press?o ou Pontos Secretos e uma per?cia de combate que seja ?til com essas per?cias; n?o pode exceder a per?cia de combate",
+      "descricao": "Ataques com as per?cias Pontos de Press?o e Pontos Secretos normalmente t?m -2 para acertar. Essa t?cnica permite que voc? desconte essa penalidade.",
+      "modificadores": "",
+      "sourceBook": "Artes Marciais",
+      "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
     },
     {
       "id": "artes_marciais_golpe_letal",
@@ -1129,15 +1194,28 @@
     {
       "id": "artes_marciais_defesa_cronometrada",
       "nome": "Defesa Cronometrada",
-      "pagina": 89,
-      "paginaRaw": "89",
+      "pagina": 90,
+      "paginaRaw": "90",
       "dificuldadeRaw": "Difícil",
       "preDefinidoRaw": "Defesa ativa-2",
-      "preRequisitoRaw": "Defesa ativa; não pode exceder a defesa ativa",
-      "descricao": "Essa técnica ajuda você a se defender de oponentes que usam acrobacias ou velocidade para se mover atrás de você e atacar. Ela permite que você desconte o -2 para um ataque de flanco ou \"esquivos\" (pág. B391) para uma defesa ativa. Para Bloquear ou Aparar, você deve se especializar por perícia de combate. Você pode usar a Defesa Cronometrada (Esquivar) apenas uma vez por turno.",
+      "preRequisitoRaw": "Defesa ativa; n?o pode exceder a defesa ativa",
+      "descricao": "Essa t?cnica ajuda voc? a se defender de oponentes que usam acrobacias ou velocidade para se mover atr?s de voc? e atacar. Ela permite que voc? desconte o -2 para um ataque de flanco ou \"esquivos\" (p?g. B391) para uma defesa ativa. Para Bloquear ou Aparar, voc? deve se especializar por per?cia de combate. Voc? pode usar a Defesa Cronometrada (Esquivar) apenas uma vez por turno.",
       "modificadores": "",
       "sourceBook": "Artes Marciais",
       "sourceFile": "Tecnicas_Livro _artes_Marciais.xlsx"
+    },
+    {
+      "id": "artes_marciais_ataque_furacao",
+      "nome": "Ataque Furac?o",
+      "pagina": 90,
+      "paginaRaw": "90",
+      "dificuldadeRaw": "Dif?cil",
+      "preDefinidoRaw": "Per?cia pr?-requisito-5",
+      "preRequisitoRaw": "Boxe, Carat? ou qualquer per?cia de Arma de Combate Corpo a Corpo; n?o pode exceder a per?cia pr?-requisito",
+      "descricao": "Ataque Furac?o ? um Ataque Total especial que permite atacar todos os inimigos adjacentes a voc? com a velocidade da luz! Se voc? fizer um Ataque Furac?o, ? tudo o que voc? pode fazer naquele turno, n?o importa o qu?o r?pido ou habilidoso voc? seja. Por ser um Ataque Total, voc? fica sem defesas ativas. Caso contr?rio, as regras abaixo substituem as usuais para essa manobra. Quando voc? lan?a um Ataque Furac?o, voc? gira no lugar (voc? n?o pode dar um passo) e ataca todos os inimigos dentro de um metro. Voc? deve atac?-los no sentido hor?rio ou anti-hor?rio ? sua escolha. Todos os seus ataques devem ser chutes, socos ou golpes com uma arma girat?ria, e voc? n?o pode combinar o Ataque Furac?o com outra t?cnica (como Desarmar, mas veja Desarmar Aprimorado, p?g. 84) ou com per?cias cinematogr?ficas como Golpe Poderoso. Determine um ponto de impacto aleat?rio para cada inimigo e depois jogue contra o Ataque Furac?o para acertar, com as penalidades habituais no local de acerto. Seus oponentes defendem normalmente. Resolva cada ataque completamente antes de passar para o pr?ximo. Se estiver usando uma arma que pode ficar presa (consulte Picaretas, p?g. B406), seu Ataque Furac?o termina no primeiro ataque bem-sucedido. Se algum dos ataques for um erro cr?tico ? ou se algum de seus inimigos tiver sucesso cr?tico em sua defesa ? ent?o esse ataque e todos os ataques restantes s?o erros cr?ticos. Role na Tabela de Erro Cr?tico (p?g. B556) uma vez por ataque! Voc? pode encerrar um Ataque Furac?o de frente para qualquer dire??o.",
+      "modificadores": "",
+      "sourceBook": "Artes Marciais",
+      "sourceFile": "GURPS 4? Edi??o - Artes Marciais.pdf"
     },
     {
       "id": "artes_marciais_ataque_fura",
