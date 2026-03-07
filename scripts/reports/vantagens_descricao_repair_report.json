@@ -1,0 +1,84 @@
+{
+  "total_vantagens": 265,
+  "xlsx_rows_com_descricao": 264,
+  "matched": 250,
+  "updated": 239,
+  "unmatched_count": 15,
+  "unmatched": [
+    {
+      "id": "aptidao_astral",
+      "nome": "Aptidão Astral",
+      "pagina": 40
+    },
+    {
+      "id": "calculos_instantaneos",
+      "nome": "Clculos Instantneos",
+      "pagina": 46
+    },
+    {
+      "id": "tolerancia_a_ferimentos_difuso",
+      "nome": "Tolerncia a Ferimentos(Difuso)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_homogeneo",
+      "nome": "Tolerncia a Ferimentos(Homogneo)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_nao_vivo",
+      "nome": "Tolerncia a Ferimentos(No-Vivo)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_sem_cerebro",
+      "nome": "Tolerncia a Ferimentos(Sem Crebro)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_sem_cabeca",
+      "nome": "Tolerncia a Ferimentos(Sem Cabea)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_sem_olho",
+      "nome": "Tolerncia a Ferimentos(Sem Olho)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_sem_orgaos_vitais",
+      "nome": "Tolerncia a Ferimentos(Sem rgos Vitais)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_sem_sangue",
+      "nome": "Tolerncia a Ferimentos(Sem Sangue)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_ferimentos_sem_pescoco",
+      "nome": "Tolerncia a Ferimentos(Sem Pescoo)",
+      "pagina": 94
+    },
+    {
+      "id": "tolerancia_a_radiacao",
+      "nome": "Tolerncia  Radiao",
+      "pagina": 95
+    },
+    {
+      "id": "tolerancia_a_temperatura",
+      "nome": "Tolerncia  Temperatura",
+      "pagina": 95
+    },
+    {
+      "id": "tolerancia_ao_alcool",
+      "nome": "Tolerncia ao lcool",
+      "pagina": 101
+    },
+    {
+      "id": "tolerancia_g_ampliada",
+      "nome": "Tolerncia-G Ampliada",
+      "pagina": 95
+    }
+  ]
+}
