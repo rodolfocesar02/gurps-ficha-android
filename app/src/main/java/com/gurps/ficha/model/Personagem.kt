@@ -181,7 +181,8 @@ data class VantagemDefinicao(
     val custo: String = "0",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
-    val tags: List<String> = emptyList()
+    val tags: List<String> = emptyList(),
+    val descricao: String? = ""
 ) {
     fun getCustoBase(): Int {
         val cleaned = custo.replace(Regex("[^0-9-]"), " ").trim()
@@ -247,7 +248,8 @@ data class DesvantagemDefinicao(
     val custo: String = "0",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
-    val tags: List<String> = emptyList()
+    val tags: List<String> = emptyList(),
+    val descricao: String? = ""
 ) {
     fun getCustoBase(): Int {
         val cleaned = custo.replace("?", "").replace("verificar", "").trim()

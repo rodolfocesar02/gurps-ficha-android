@@ -1463,7 +1463,8 @@ private data class VantagemV3(
     val max: Int? = null,
     val rawCost: String? = null,
     val specialRule: String? = null,
-    val tags: List<String>? = null
+    val tags: List<String>? = null,
+    val descricao: String? = null
 ) {
     fun toLegacy(): VantagemDefinicao {
         val tipo = when {
@@ -1509,7 +1510,8 @@ private data class VantagemV3(
             custo = custoLegacy,
             tipoCusto = tipo,
             pagina = pagina ?: 0,
-            tags = tags.orEmpty()
+            tags = tags.orEmpty(),
+            descricao = descricao
         )
     }
 }
@@ -1525,7 +1527,8 @@ private data class DesvantagemV2(
     val min: Int? = null,
     val max: Int? = null,
     val rawCost: String? = null,
-    val tags: List<String>? = null
+    val tags: List<String>? = null,
+    val descricao: String? = null
 ) {
     fun toLegacy(): DesvantagemDefinicao {
         val tipo = when (costKind) {
@@ -1564,7 +1567,8 @@ private data class DesvantagemV2(
             custo = custoLegacy,
             tipoCusto = tipo,
             pagina = pagina ?: 0,
-            tags = tags.orEmpty()
+            tags = tags.orEmpty(),
+            descricao = descricao
         )
     }
 }
@@ -1599,7 +1603,8 @@ private fun JsonElement.asVantagemV3OrNull(): VantagemV3? {
         max = obj.int("max"),
         rawCost = obj.string("rawCost"),
         specialRule = obj.string("specialRule"),
-        tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() }
+        tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() },
+        descricao = obj.string("descricao")
     )
 }
 
@@ -1617,7 +1622,8 @@ private fun JsonElement.asDesvantagemV2OrNull(): DesvantagemV2? {
         min = obj.int("min"),
         max = obj.int("max"),
         rawCost = obj.string("rawCost"),
-        tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() }
+        tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() },
+        descricao = obj.string("descricao")
     )
 }
 
@@ -1676,14 +1682,16 @@ private fun VantagemDefinicao.normalizada(): VantagemDefinicao = copy(
     id = (id as String?).sanitized(),
     nome = (nome as String?).sanitized(),
     custo = (custo as String?).sanitized(),
-    tags = tags.map { (it as String?).sanitized() }.filter { it.isNotBlank() }
+    tags = tags.map { (it as String?).sanitized() }.filter { it.isNotBlank() },
+    descricao = descricao?.sanitized()
 )
 
 private fun DesvantagemDefinicao.normalizada(): DesvantagemDefinicao = copy(
     id = (id as String?).sanitized(),
     nome = (nome as String?).sanitized(),
     custo = (custo as String?).sanitized(),
-    tags = tags.map { (it as String?).sanitized() }.filter { it.isNotBlank() }
+    tags = tags.map { (it as String?).sanitized() }.filter { it.isNotBlank() },
+    descricao = descricao?.sanitized()
 )
 
 private fun PericiaDefinicao.normalizada(): PericiaDefinicao = copy(
