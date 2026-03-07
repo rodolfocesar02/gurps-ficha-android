@@ -23,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
@@ -123,9 +125,15 @@ private fun TecnicaItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) {
+                    contentDescription = "Técnica ${tecnica.nome}. ${nivelTecnica?.let { "NH $it." } ?: "NH indisponível."} Toque para editar."
+                }
+            }
             .clickable { onEdit() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
