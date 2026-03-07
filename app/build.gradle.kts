@@ -37,7 +37,7 @@ android {
         val modoAlvoNexusHabilitado = (firstNonBlank(
             project.findProperty("MODO_ALVO_NEXUS_HABILITADO") as? String,
             localProperties.getProperty("MODO_ALVO_NEXUS_HABILITADO")
-        ) ?: "false")
+        ) ?: "true")
             .lowercase()
             .let { it == "1" || it == "true" || it == "yes" || it == "on" }
 
