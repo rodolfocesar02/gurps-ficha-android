@@ -239,6 +239,24 @@ Critério de aceite:
 - Técnica exibe descrição por clique no nome também dentro do diálogo de configuração/edição.
 - Desvantagens deixam de exibir blocos de índice misturado como descrição.
 
+### Lote 14 - Cobertura de Descrições de Perícias Ativas
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Auditar cobertura entre catálogo ativo (`pericias.json`) e mapa de regras/descrições (`pericias_v2_rules_map.json`).
+2. [x] Completar IDs faltantes no `pericias_v2_rules_map.json` com merge automático por nome (match exato/fuzzy) e fallback de descrição utilitária.
+3. [x] Gerar relatório de cobertura e fonte do preenchimento.
+4. [x] Validar build `visual` e `pracego` após atualização do catálogo.
+
+Arquivos:
+- `app/src/main/assets/pericias_v2_rules_map.json`
+- `scripts/fill_pericias_v2_missing_descriptions.py`
+- `scripts/reports/pericias_v2_missing_descriptions_report.json`
+
+Critério de aceite:
+- Todas as perícias ativas possuem entrada no mapa de regras.
+- Nenhuma perícia ativa fica sem `descricao` no `pericias_v2_rules_map.json`.
+
 ### Lote 13 - Conciliação Canônica de Descrições de Técnicas (Artes Marciais + Gun Fu)
 Status: `CONCLUIDO`
 
