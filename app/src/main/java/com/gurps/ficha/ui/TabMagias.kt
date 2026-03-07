@@ -18,6 +18,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +50,7 @@ fun TabMagias(viewModel: FichaViewModel) {
 
     var showSelecionarMagia by remember { mutableStateOf(false) }
     var editingMagiaIndex by remember { mutableStateOf<Int?>(null) }
+    var magiaDescricaoDialog by remember { mutableStateOf<MagiaSelecionada?>(null) }
 
     StandardTabColumn(contentSpacing = 4.dp) {
 
@@ -73,13 +76,13 @@ fun TabMagias(viewModel: FichaViewModel) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = appCardColors(),
-                    border = if (hasFailure) BorderStroke(2.dp, MaterialTheme.colorScheme.error)
-                    else CardDefaults.outlinedCardBorder()
+                    border = if (hasFailure) BorderStroke(2.dp, MaterialTheme.colorScheme.error) else null
                 ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
+                    Column(modifier = Modifier.padding(10.dp)) {
                         MagiaItem(
                             magia = magia,
                             nivel = magia.calcularNivel(p, nivelAptidaoMagica),
+                            onShowDescription = { magiaDescricaoDialog = magia },
                             onEdit = { editingMagiaIndex = index },
                             onDelete = { viewModel.removerMagia(index) }
                         )
@@ -124,6 +127,24 @@ fun TabMagias(viewModel: FichaViewModel) {
             }
         )
     }
+
+    magiaDescricaoDialog?.let { magia ->
+        AlertDialog(
+            onDismissRequest = { magiaDescricaoDialog = null },
+            title = { Text("Descrição: ${magia.nome}") },
+            text = {
+                Text(
+                    text = magia.texto?.takeIf { it.isNotBlank() } ?: "Sem descrição disponível.",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { magiaDescricaoDialog = null }) {
+                    Text("Fechar")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -139,6 +160,7 @@ private fun ResumoMagiasFooter(totalMagias: Int, pontosMagias: Int, nivelAptidao
 fun MagiaItem(
     magia: MagiaSelecionada,
     nivel: Int,
+    onShowDescription: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -164,7 +186,8 @@ fun MagiaItem(
             Text(
                 nomeExibicao,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable { onShowDescription() }
             )
             val difNome = magia.dificuldade.sigla
             
@@ -182,15 +205,19 @@ fun MagiaItem(
             )
         }
 
-        Text(
-            "Nível $nivel",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Remover magia $nomeExibicao")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "NH $nivel",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Remover magia $nomeExibicao")
+            }
         }
     }
 }

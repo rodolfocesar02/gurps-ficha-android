@@ -244,6 +244,22 @@ Critério de aceite:
 - Todas as técnicas de `Artes Marciais` e `Gun Fu` no catálogo ativo com `descricao` consistente com os `xlsx`.
 - Divergências detectadas contra `pdf` canônico registradas no relatório e priorizadas com texto do `pdf`.
 
+### Lote 14 - Padronização Visual e Abertura de Descrição por Nome (Perícias/Técnicas/Magias)
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Padronizar cards de Técnicas e Magias ao padrão visual de Perícias (nome, subtítulo e bloco de NH à direita).
+2. [x] Habilitar clique no nome para abrir descrição na respectiva aba:
+- Perícias (descrição + pré-requisito/predefinido/modificadores quando houver)
+- Técnicas (descrição do catálogo ativo)
+- Magias (texto da magia selecionada)
+3. [x] Validar compilação das variantes `visual` e `pracego`.
+
+Evidência:
+- Build executado com sucesso:
+  - `:app:compileVisualDebugKotlin`
+  - `:app:compilePracegoDebugKotlin`
+
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
 2. Não aceitar correção só por "funcionou no caso X"; incluir teste de regressão.
