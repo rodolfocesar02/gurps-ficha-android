@@ -163,7 +163,7 @@ Critério de aceite:
 - Visual opera sem botões `+/-` nesses diálogos; PraCego anuncia e opera com `+/-`; rolagens anunciam atributo/defesa + valor.
 
 ### Lote 9 - Coerência de Pré-Requisito de Técnicas
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Melhorar diálogo de configuração/edição para mostrar apenas perícias compatíveis.
@@ -173,7 +173,10 @@ Arquivo: `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 3. [~] Revisar técnica por técnica com base no PDF de Artes Marciais para eliminar incoerências restantes.
    - [x] Passo 3.1: reforçada a classificação para termos ambíguos (`arma apropriada`, `ataque corpo a corpo`) no motor de pré-requisito de técnicas, evitando aceitar perícias de tiro em técnicas de combate corpo a corpo.
    - [x] Passo 3.2: removido `Escudo` da classificação de `arma corpo a corpo` para impedir seleção indevida como perícia base em técnicas de arma.
-4. [ ] Fechar validação final em emulador e testes direcionados.
+4. [x] Fechar validação final em emulador e testes direcionados.
+   - [x] `scripts/validate_tecnicas_prerequisitos.py` executado (`incoerentes=0`, `revisaoManual=0`).
+   - [x] Testes unitários direcionados executados: `PreRequisitoParserTest` e `PericiaJsonParsingTest`.
+   - [x] Build `visual` instalada no emulador (`:app:installVisualDebug`).
 
 Critério de aceite:
 - Técnicas com pré-requisito específico só aceitam perícias compatíveis com a regra textual/canônica.
@@ -198,6 +201,7 @@ Critério de aceite:
 7. [x] Adicionar manual curto do Modo Alvo (<=200 caracteres) com abertura automática na primeira ativação e preferência persistida.
 8. [x] Refinar regra de compatibilidade de perícia base para técnicas com texto ambíguo de pré-requisito (arma apropriada/ataque corpo a corpo).
 9. [x] Instalar build `visual` no emulador após os ajustes de técnicas (task `:app:installVisualDebug`).
+10. [x] Validar consistência final do lote de técnicas com auditoria e testes direcionados.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
