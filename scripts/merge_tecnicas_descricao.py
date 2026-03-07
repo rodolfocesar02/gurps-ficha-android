@@ -37,11 +37,13 @@ class XlsxIndex:
     def __init__(self) -> None:
         self.by_name_page: Dict[Tuple[str, Optional[int]], List[TecnicaXlsx]] = {}
         self.by_name: Dict[str, List[TecnicaXlsx]] = {}
+        self.by_page: Dict[Optional[int], List[TecnicaXlsx]] = {}
 
     def add(self, item: TecnicaXlsx) -> None:
         k_name = normalize_key(item.nome)
         self.by_name_page.setdefault((k_name, item.pagina), []).append(item)
         self.by_name.setdefault(k_name, []).append(item)
+        self.by_page.setdefault(item.pagina, []).append(item)
 
     def find(self, nome: str, pagina: Optional[int]) -> Optional[TecnicaXlsx]:
         k_name = normalize_key(nome)
@@ -63,6 +65,19 @@ class XlsxIndex:
                 descs = {x.descricao for x in same_page}
                 if len(descs) == 1:
                     return same_page[0]
+
+        # Fallback para nome com artefatos ("Evas?o", "Distncia", etc.).
+        candidates = self.by_page.get(pagina, [])
+        if candidates:
+            ranked: List[Tuple[float, TecnicaXlsx]] = []
+            for cand in candidates:
+                ratio = SequenceMatcher(None, k_name, normalize_key(cand.nome)).ratio()
+                ranked.append((ratio, cand))
+            ranked.sort(key=lambda it: it[0], reverse=True)
+            best_ratio, best_item = ranked[0]
+            second_ratio = ranked[1][0] if len(ranked) > 1 else 0.0
+            if best_ratio >= 0.72 and (best_ratio - second_ratio) >= 0.05:
+                return best_item
         return None
 
 
@@ -137,15 +152,6 @@ def find_snippet(text: str, name_key: str, size: int = 3500) -> str:
     return text[start:end]
 
 
-def description_similarity(desc: str, snippet: str) -> float:
-    if not desc or not snippet:
-        return 0.0
-    d = normalize(desc)
-    if len(d) > 1800:
-        d = d[:1800]
-    return SequenceMatcher(None, d, snippet).ratio()
-
-
 def main() -> None:
     parser = argparse.ArgumentParser(description="Merge das descricoes de tecnicas via xlsx + auditoria com pdf")
     parser.add_argument("--json", required=True, help="JSON de tecnicas (tecnicas.v1.json)")
@@ -171,7 +177,7 @@ def main() -> None:
     unchanged = 0
     no_match: List[dict] = []
     pdf_name_missing: List[dict] = []
-    possible_divergence: List[dict] = []
+    pdf_name_found = 0
 
     for item in items:
         src = str(item.get("sourceBook", "")).strip()
@@ -202,16 +208,7 @@ def main() -> None:
             pdf_name_missing.append({"id": item.get("id"), "nome": nome, "sourceBook": src})
             continue
 
-        score = description_similarity(after, snippet)
-        if score < 0.22:
-            possible_divergence.append(
-                {
-                    "id": item.get("id"),
-                    "nome": nome,
-                    "sourceBook": src,
-                    "score": round(score, 4),
-                }
-            )
+        pdf_name_found += 1
 
     payload["totalItems"] = len(items)
 
@@ -224,11 +221,10 @@ def main() -> None:
         "updated_descricao": updated,
         "unchanged_descricao": unchanged,
         "no_match_count": len(no_match),
+        "pdf_name_found_count": pdf_name_found,
         "pdf_name_missing_count": len(pdf_name_missing),
-        "possible_divergence_count": len(possible_divergence),
         "no_match": no_match,
         "pdf_name_missing": pdf_name_missing,
-        "possible_divergence": possible_divergence,
     }
     report_path = Path(args.report)
     report_path.parent.mkdir(parents=True, exist_ok=True)

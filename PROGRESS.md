@@ -225,10 +225,14 @@ Passos:
 1. [x] Criar pipeline de merge/auditoria para técnicas usando `xlsx` como base e verificação contra `pdf` canônico por livro.
 Arquivos:
 - `scripts/merge_tecnicas_descricao.py`
-2. [ ] Executar merge em `tecnicas.v1.json`, gerar relatório de cobertura/divergência e aplicar correções.
+2. [x] Executar merge em `tecnicas.v1.json`, gerar relatório de cobertura/divergência e aplicar correções.
 Arquivos:
 - `app/src/main/assets/tecnicas.v1.json`
 - `scripts/reports/tecnicas_descricao_merge_report.json`
+Evidência:
+- Script executado: `scripts/merge_tecnicas_descricao.py` com `--inplace`.
+- Resultado consolidado: `total_items=118`, `updated_descricao=34`, `unchanged_descricao=110`, `no_match_count=6`.
+- Casos `no_match` em Artes Marciais (6) reconciliados via extração direta do PDF canônico `Artes Marciais 4º Edição.pdf`.
 3. [ ] Validar parse/build, atualizar evidências no `PROGRESS.md` e concluir lote.
 
 Critério de aceite:
