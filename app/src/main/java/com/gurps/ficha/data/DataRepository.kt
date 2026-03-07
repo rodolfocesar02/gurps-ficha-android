@@ -1699,6 +1699,7 @@ private fun PericiaDefinicao.normalizada(): PericiaDefinicao = copy(
 private fun MagiaDefinicao.normalizada(): MagiaDefinicao {
     val magiaId = id.sanitized()
     val textoRaw = texto.sanitized()
+    val descricaoRaw = descricao.sanitized()
     val meta = extrairMetadadosDoTextoMagia(textoRaw)
     val nomeSanitizado = nome.sanitized()
     val nomeCorrigido = if (magiaId == "suspender") {
@@ -1720,7 +1721,7 @@ private fun MagiaDefinicao.normalizada(): MagiaDefinicao {
         preRequisitos = corrigirTextoMagiaCorrompido(
             preRequisitos?.sanitized().takeUnless { it.isNullOrBlank() } ?: meta.preRequisitos.orEmpty()
         ).takeIf { it.isNotBlank() },
-        texto = meta.descricao
+        texto = descricaoRaw.takeUnless { it.isBlank() } ?: meta.descricao
     )
 }
 

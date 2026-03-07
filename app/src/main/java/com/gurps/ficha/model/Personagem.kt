@@ -441,6 +441,7 @@ data class MagiaDefinicao(
     @SerializedName("dificuldade") val dificuldadeFixa: String? = "D",
     val pagina: Int? = 0,
     val texto: String? = "",
+    val descricao: String? = "",
     // Campos novos
     val classe: String? = null,
     val escola: List<String>? = null,
@@ -688,4 +689,3 @@ val PERICIAS_COMBATE = setOf(
     "tonfa",
     "wrestling"
 )
-

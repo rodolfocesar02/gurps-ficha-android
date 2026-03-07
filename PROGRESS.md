@@ -258,6 +258,10 @@ Critério de aceite:
     - parse JSON de `magias2versao.json` (`sem_descricao=0`);
     - build `visual`: `:app:compileVisualDebugKotlin` (OK);
     - build `pracego`: `:app:compilePracegoDebugKotlin` (OK).
+19. [x] Exibir descrição no diálogo de magia ao tocar no card:
+    - `MagiaDefinicao` passou a mapear `descricao` do JSON ativo;
+    - `DataRepository` aplica fallback `descricao -> texto`;
+    - `ConfigurarMagiaDialog` renderiza bloco `Descrição` para `visual/pracego`.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
