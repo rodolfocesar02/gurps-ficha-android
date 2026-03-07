@@ -25,8 +25,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -139,6 +142,7 @@ fun MagiaItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val nomeExibicao = if (magia.especializacaoMagia.isNullOrBlank()) {
         magia.nome
     } else {
@@ -147,6 +151,11 @@ fun MagiaItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) {
+                    contentDescription = "Magia $nomeExibicao. Nível $nivel. Toque para editar."
+                }
+            }
             .clickable { onEdit() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
