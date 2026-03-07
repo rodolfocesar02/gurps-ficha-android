@@ -195,10 +195,10 @@ Critério de aceite:
 - Fluxo de Magias/Perícias/Técnicas na variante `pracego` sem ambiguidade de ação para TalkBack.
 
 ### Lote 11 - Fechamento e Publicação
-Status: `PENDENTE`
+Status: `EM_ANDAMENTO`
 
 Passos:
-1. [ ] Atualizar `PROGRESS.md` com fechamento dos lotes 10/11 e evidências de validação.
+1. [x] Atualizar `PROGRESS.md` com fechamento dos lotes 10/11 e evidências de validação.
 2. [ ] Confirmar árvore de commit sem `pdf/xlsx`.
 3. [ ] Executar push para `origin/main`.
 
@@ -231,6 +231,10 @@ Critério de aceite:
     - remoção do título redundante `Editar Técnica`;
     - filtro de `Perícia base` apenas para perícias compatíveis com o pré-requisito;
     - instalação da build `visual` no emulador após ajuste.
+12. [x] Executar auditoria dirigida de acessibilidade por aba (Geral até Rolagem), com foco em Magias/Modo Alvo na variante `pracego`.
+13. [x] Corrigir anúncio prematuro de pré-requisito "atendido" no TalkBack quando o cálculo ainda não terminou.
+14. [x] Rotular explicitamente ações de edição em itens de Perícias e Técnicas na variante `pracego`.
+15. [x] Validar novamente instalação no emulador para `visual` e `pracego` após cada passo do lote 10.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
