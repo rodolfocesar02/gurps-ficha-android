@@ -1707,7 +1707,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
         val exigeCorpoACorpo =
             prerequisitoNormalizado.contains("arma corpo a corpo") ||
-                prerequisitoNormalizado.contains("arma de combate corpo a corpo")
+                prerequisitoNormalizado.contains("arma de combate corpo a corpo") ||
+                prerequisitoNormalizado.contains("ataque corpo a corpo") ||
+                (
+                    (prerequisitoNormalizado.contains("pericia com arma apropriada") ||
+                        prerequisitoNormalizado.contains("pericia de arma apropriada") ||
+                        prerequisitoNormalizado.contains("arma apropriada")) &&
+                        !prerequisitoNormalizado.contains("tiro") &&
+                        !prerequisitoNormalizado.contains("longo alcance") &&
+                        !prerequisitoNormalizado.contains("arma de fogo") &&
+                        !prerequisitoNormalizado.contains("armas de fogo") &&
+                        !prerequisitoNormalizado.contains("arma de esgrima")
+                    )
         if (exigeCorpoACorpo) {
             val permiteDesarmado =
                 prerequisitoNormalizado.contains("desarmado") ||
@@ -2022,6 +2033,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             termo.contains("arma de corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
             termo.contains("pericia de arma corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
             termo.contains("pericia de arma de corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
+            termo.contains("pericia de ataque corpo a corpo") -> periciaEhCorpoACorpo(pericia)
+            termo.contains("ataque corpo a corpo") -> periciaEhCorpoACorpo(pericia)
             termo.contains("armas de fogo") && termo.contains("pistola") -> periciaEhArmasFogo(pericia) && periciaEhPistola(pericia)
             termo.contains("qualquer pericia de combate") -> periciaEhCombate(pericia)
             termo.contains("qualquer pericia") && termo.contains("tiro") -> periciaEhTiro(pericia)
@@ -2042,9 +2055,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             termo.contains("outra pericia") -> true
             termo.contains("apropriada") && termo.contains("arma") -> {
                 when {
-                    termo.contains("corpo a corpo") -> periciaEhCorpoACorpo(pericia)
+                    termo.contains("corpo a corpo") || termo.contains("ataque corpo a corpo") -> periciaEhCorpoACorpo(pericia)
+                    termo.contains("esgrima") -> periciaEhArmaEsgrima(pericia)
                     termo.contains("tiro") || termo.contains("longo alcance") -> periciaEhTiro(pericia)
-                    else -> periciaEhCorpoACorpo(pericia) || periciaEhTiro(pericia)
+                    termo.contains("arma de fogo") || termo.contains("armas de fogo") -> periciaEhTiro(pericia)
+                    else -> periciaEhCorpoACorpo(pericia)
                 }
             }
             else -> periciaBateNomeLiteral(pericia, termo)

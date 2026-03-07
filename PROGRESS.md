@@ -170,7 +170,8 @@ Passos:
 Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
 2. [x] Reforçar validação por família de requisito (tiro, esgrima, corpo a corpo, defesa ativa) no motor de técnicas.
 Arquivo: `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
-3. [ ] Revisar técnica por técnica com base no PDF de Artes Marciais para eliminar incoerências restantes.
+3. [~] Revisar técnica por técnica com base no PDF de Artes Marciais para eliminar incoerências restantes.
+   - [x] Passo 3.1: reforçada a classificação para termos ambíguos (`arma apropriada`, `ataque corpo a corpo`) no motor de pré-requisito de técnicas, evitando aceitar perícias de tiro em técnicas de combate corpo a corpo.
 4. [ ] Fechar validação final em emulador e testes direcionados.
 
 Critério de aceite:
@@ -194,6 +195,7 @@ Critério de aceite:
 5. [x] Confirmar abertura de `com.gurps.ficha.visual/com.gurps.ficha.MainActivity` via `am start -W` (Status: ok).
 6. [x] Confirmar ausência de `pracego` e pacote base via `am start -W` (Error type 3).
 7. [x] Adicionar manual curto do Modo Alvo (<=200 caracteres) com abertura automática na primeira ativação e preferência persistida.
+8. [x] Refinar regra de compatibilidade de perícia base para técnicas com texto ambíguo de pré-requisito (arma apropriada/ataque corpo a corpo).
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
