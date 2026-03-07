@@ -517,9 +517,15 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     value = viewModel.buscaMagia,
                     onValueChange = { viewModel.atualizarBuscaMagia(it) },
                     label = { Text("Buscar...") },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .semantics {
+                            if (isPraCegoVariant) {
+                                contentDescription = "Busca de magias. Digite para filtrar por nome."
+                            }
+                        },
                     singleLine = true,
-                    leadingIcon = { Icon(Icons.Default.Search, null) }
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar magias") }
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -547,7 +553,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                             },
                             modifier = Modifier.semantics {
                                 contentDescription =
-                                    "Alternar Modo Alvo. Quando ativo, mostra a ordem dos pré-requisitos."
+                                    "Alternar Modo Alvo. Estado atual: ${if (modoAlvoAtivo) "ativado" else "desativado"}."
                             },
                             label = { Text("Modo Alvo") }
                         )
@@ -674,6 +680,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         FilterChip(
                             selected = viewModel.filtroClasseMagia == null,
                             onClick = { viewModel.atualizarFiltroClasseMagia(null) },
+                            modifier = Modifier.semantics {
+                                if (isPraCegoVariant) {
+                                    contentDescription = "Filtro de classe: Todas classes. ${if (viewModel.filtroClasseMagia == null) "Selecionado" else "Não selecionado"}."
+                                }
+                            },
                             label = { Text("Todas classes") }
                         )
                     }
@@ -681,6 +692,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         FilterChip(
                             selected = viewModel.filtroClasseMagia == classe,
                             onClick = { viewModel.atualizarFiltroClasseMagia(classe) },
+                            modifier = Modifier.semantics {
+                                if (isPraCegoVariant) {
+                                    contentDescription = "Filtro de classe: $classe. ${if (viewModel.filtroClasseMagia == classe) "Selecionado" else "Não selecionado"}."
+                                }
+                            },
                             label = { Text(classe) }
                         )
                     }
@@ -697,6 +713,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         FilterChip(
                             selected = viewModel.filtroEscolaMagia == null,
                             onClick = { viewModel.atualizarFiltroEscolaMagia(null) },
+                            modifier = Modifier.semantics {
+                                if (isPraCegoVariant) {
+                                    contentDescription = "Filtro de escola: Todos. ${if (viewModel.filtroEscolaMagia == null) "Selecionado" else "Não selecionado"}."
+                                }
+                            },
                             label = { Text("Todos") }
                         )
                     }
@@ -704,6 +725,11 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         FilterChip(
                             selected = viewModel.filtroEscolaMagia == escola,
                             onClick = { viewModel.atualizarFiltroEscolaMagia(escola) },
+                            modifier = Modifier.semantics {
+                                if (isPraCegoVariant) {
+                                    contentDescription = "Filtro de escola: $escola. ${if (viewModel.filtroEscolaMagia == escola) "Selecionado" else "Não selecionado"}."
+                                }
+                            },
                             label = { Text(escola) }
                         )
                     }
@@ -922,7 +948,14 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text("Fechar") }
+                    TextButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.semantics {
+                            if (isPraCegoVariant) {
+                                contentDescription = "Fechar seletor de magias"
+                            }
+                        }
+                    ) { Text("Fechar") }
                 }
             }
     }
