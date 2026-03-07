@@ -32,6 +32,7 @@ fun TabPericias(viewModel: FichaViewModel) {
     var showPericiasSuplementares by remember { mutableStateOf(false) }
     var showCustomDialog by remember { mutableStateOf(false) }
     var editingPericiaIndex by remember { mutableStateOf<Int?>(null) }
+    var periciaDescricaoDialog by remember { mutableStateOf<PericiaSelecionada?>(null) }
 
     StandardTabColumn(contentSpacing = 4.dp) {
 
@@ -77,6 +78,7 @@ fun TabPericias(viewModel: FichaViewModel) {
                         pericia = pericia,
                         nivel = pericia.calcularNivel(p),
                         nivelRelativo = pericia.getNivelRelativo(p),
+                        onShowDescription = { periciaDescricaoDialog = pericia },
                         onEdit = { editingPericiaIndex = index },
                         onDelete = { viewModel.removerPericia(index) }
                     )
@@ -140,6 +142,37 @@ fun TabPericias(viewModel: FichaViewModel) {
             }
         )
     }
+
+    periciaDescricaoDialog?.let { pericia ->
+        val regraV2 = viewModel.dataRepository.regraPericiaV2(pericia.definicaoId)
+        AlertDialog(
+            onDismissRequest = { periciaDescricaoDialog = null },
+            title = { Text("Descrição: ${pericia.nome}") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        regraV2?.descricao?.takeIf { it.isNotBlank() }
+                            ?: "Sem descrição detalhada disponível.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    regraV2?.preRequisito?.raw?.takeIf { it.isNotBlank() }?.let {
+                        Text("Pré-requisito: $it", style = MaterialTheme.typography.bodySmall)
+                    }
+                    regraV2?.preDefinido?.raw?.takeIf { it.isNotBlank() }?.let {
+                        Text("Pré-definido: $it", style = MaterialTheme.typography.bodySmall)
+                    }
+                    regraV2?.modificadoresRaw?.takeIf { it.isNotBlank() }?.let {
+                        Text("Modificadores: $it", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { periciaDescricaoDialog = null }) {
+                    Text("Fechar")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -159,6 +192,7 @@ fun PericiaItem(
     pericia: PericiaSelecionada,
     nivel: Int,
     nivelRelativo: String,
+    onShowDescription: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -186,7 +220,8 @@ fun PericiaItem(
                             " (${pericia.especializacao})"
                         else "",
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable { onShowDescription() }
             )
             Text(
                 "${pericia.atributoBase.sigla}/${pericia.dificuldade.sigla} • ${pericia.pontosGastos} pts",

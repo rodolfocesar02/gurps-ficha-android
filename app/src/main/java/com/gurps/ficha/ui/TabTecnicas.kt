@@ -15,7 +15,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,13 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
+import java.text.Normalizer
+
+private fun normalizarNomeTecnicaOrdenacao(valor: String): String {
+    val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
+        .replace(Regex("\\p{M}+"), "")
+    return semAcento.lowercase().trim()
+}
 
 @Composable
 fun TabTecnicas(viewModel: FichaViewModel) {
@@ -37,6 +46,13 @@ fun TabTecnicas(viewModel: FichaViewModel) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var showSelecionarTecnica by remember { mutableStateOf(false) }
     var editingTecnicaIndex by remember { mutableStateOf<Int?>(null) }
+    var tecnicaDescricaoDialog by remember { mutableStateOf<TecnicaSelecionada?>(null) }
+    val tecnicasOrdenadas = remember(personagem.tecnicas) {
+        personagem.tecnicas.withIndex().sortedBy { normalizarNomeTecnicaOrdenacao(it.value.nome) }
+    }
+    val descricoesTecnicasPorId = remember(viewModel.tecnicasCatalogo) {
+        viewModel.tecnicasCatalogo.associate { it.id to it.descricao }
+    }
 
     StandardTabColumn(contentSpacing = 4.dp) {
         if (isPraCegoVariant) {
@@ -70,7 +86,9 @@ fun TabTecnicas(viewModel: FichaViewModel) {
             )
         }
 
-        personagem.tecnicas.forEachIndexed { index, tecnica ->
+        tecnicasOrdenadas.forEach { indexed ->
+            val index = indexed.index
+            val tecnica = indexed.value
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 colors = appCardColors()
@@ -79,6 +97,7 @@ fun TabTecnicas(viewModel: FichaViewModel) {
                     TecnicaItem(
                         tecnica = tecnica,
                         nivelTecnica = tecnica.calcularNivel(personagem),
+                        onShowDescription = { tecnicaDescricaoDialog = tecnica },
                         onEdit = { editingTecnicaIndex = index },
                         onDelete = { viewModel.removerTecnica(index) }
                     )
@@ -116,12 +135,32 @@ fun TabTecnicas(viewModel: FichaViewModel) {
             }
         )
     }
+
+    tecnicaDescricaoDialog?.let { tecnica ->
+        val descricao = descricoesTecnicasPorId[tecnica.definicaoId].orEmpty()
+        AlertDialog(
+            onDismissRequest = { tecnicaDescricaoDialog = null },
+            title = { Text("Descrição: ${tecnica.nome}") },
+            text = {
+                Text(
+                    descricao.ifBlank { "Sem descrição detalhada disponível." },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { tecnicaDescricaoDialog = null }) {
+                    Text("Fechar")
+                }
+            }
+        )
+    }
 }
 
 @Composable
 private fun TecnicaItem(
     tecnica: TecnicaSelecionada,
     nivelTecnica: Int?,
+    onShowDescription: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
@@ -144,13 +183,30 @@ private fun TecnicaItem(
                 .padding(end = 6.dp)
         ) {
             Text(
-                "${tecnica.nome}${nivelTecnica?.let { " NH $it" } ?: ""}",
+                tecnica.nome,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.clickable { onShowDescription() }
+            )
+            Text(
+                "${tecnica.periciaBaseNome.ifBlank { "Perícia base não definida" }} • ${tecnica.pontosGastos} pts",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
-        IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Remover técnica ${tecnica.nome}")
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            Text(
+                "NH ${nivelTecnica ?: "-"}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            IconButton(onClick = onDelete) {
+                Icon(Icons.Default.Delete, contentDescription = "Remover técnica ${tecnica.nome}")
+            }
         }
     }
 }
