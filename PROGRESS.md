@@ -267,6 +267,23 @@ Critério de aceite:
     - título mostra apenas nome da magia em azul (sem estilo de botão);
     - clique no título abre pop-up de descrição;
     - descrição removida do corpo do diálogo principal.
+21. [x] Iniciar lote de descrições de Vantagens/Desvantagens:
+    - confirmado: `vantagens.v3.json` e `desvantagens.v2.json` ativos ainda sem campo `descricao`;
+    - confirmado: `vantagens_extraidas_fiel_v2.xlsx` contém descrição de vantagens;
+    - confirmado: `desvantagens de A a Z.xlsx` contém página/nome/custo (sem coluna de descrição), exigindo fallback no texto extraído do PDF do Módulo Básico.
+
+### Lote 13 - Descrições de Vantagens/Desvantagens + UX do Diálogo
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Auditar fontes e confirmar cobertura (`json` ativo + `xlsx` + texto do Módulo Básico).
+2. [ ] Mesclar descrições em `vantagens.v3.json` e `desvantagens.v2.json` com precedência de conteúdo do PDF quando disponível.
+3. [ ] Ajustar diálogos de configurar Vantagens/Desvantagens: remover `Configurar:`, nome azul clicável e pop-up de descrição.
+4. [ ] Validar build `visual/pracego`, instalar `visual` no emulador e fechar lote.
+
+Critério de aceite:
+- Catálogos ativos de vantagens/desvantagens com `descricao` preenchida quando fonte confiável existir.
+- Diálogos de configuração sem prefixo `Configurar:`, com leitura de descrição por pop-up clicando no nome.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
