@@ -860,7 +860,9 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 .padding(vertical = 2.dp)
                                 .semantics {
                                     if (isPraCegoVariant) {
-                                        contentDescription = if (!prereqCalculado || prereqOk) {
+                                        contentDescription = if (!prereqCalculado) {
+                                            "Posição ${indice + 1}. Magia ${definicao.nome}. Analisando pré requisitos. Toque no nome para configurar."
+                                        } else if (prereqOk) {
                                             if (recomendada) {
                                                 "Posição ${indice + 1}. Magia ${definicao.nome}. Recomendação atual para avançar no alvo. Pré requisitos atendidos. Toque no nome para configurar."
                                             } else {
