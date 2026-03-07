@@ -209,8 +209,8 @@ Critério de aceite:
 Status: `EM ANDAMENTO`
 
 Passos:
-1. [ ] Registrar plano de migração e critérios de pareamento (`nome + página` com reconciliação explícita dos casos divergentes).
-2. [ ] Implementar script de merge (`Magias.xlsx` -> `magias2versao.json`) com campo `descricao` e relatório de cobertura em `scripts/reports/`.
+1. [x] Registrar plano de migração e critérios de pareamento (`nome + página` com reconciliação explícita dos casos divergentes).
+2. [x] Implementar script de merge (`Magias.xlsx` -> `magias2versao.json`) com campo `descricao` e relatório de cobertura em `scripts/reports/`.
 3. [ ] Validar parse/build (`visual` + `pracego`), atualizar evidências no `PROGRESS.md` e publicar push sem `.pdf/.xlsx`.
 
 Critério de aceite:
@@ -248,7 +248,12 @@ Critério de aceite:
 13. [x] Corrigir anúncio prematuro de pré-requisito "atendido" no TalkBack quando o cálculo ainda não terminou.
 14. [x] Rotular explicitamente ações de edição em itens de Perícias e Técnicas na variante `pracego`.
 15. [x] Validar novamente instalação no emulador para `visual` e `pracego` após cada passo do lote 10.
-16. [ ] Iniciar lote 12 para incluir descrições de magias no JSON ativo, com merge auditável da planilha `Magias.xlsx`.
+16. [x] Iniciar lote 12 para incluir descrições de magias no JSON ativo, com merge auditável da planilha `Magias.xlsx`.
+17. [x] Executar merge de descrições (`scripts/merge_magias_descricao.py`) com cobertura total:
+    - `magias_total=839`
+    - `magias_with_descricao=839`
+    - `unresolved_count=0`
+    - relatório: `scripts/reports/magias_descricao_merge_report.json`
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
