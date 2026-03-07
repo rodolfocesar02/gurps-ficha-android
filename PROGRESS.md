@@ -271,7 +271,7 @@ Passos:
 
 Evidência:
 - Relatório: `scripts/reports/vantagens_descricao_repair_report.json`
-- Resultado: `total_vantagens=265`, `matched=250`, `updated=239`, `unmatched_count=15` (após saneamento por ID, casos críticos corrigidos e sem índice colado).
+- Resultado final: `total_vantagens=265`, `matched=264`, `unmatched_count=1` (`aptidao_astral`, entrada customizada fora da planilha), sem blocos de índice colado.
 
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
