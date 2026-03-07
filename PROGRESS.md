@@ -262,6 +262,11 @@ Critério de aceite:
     - `MagiaDefinicao` passou a mapear `descricao` do JSON ativo;
     - `DataRepository` aplica fallback `descricao -> texto`;
     - `ConfigurarMagiaDialog` renderiza bloco `Descrição` para `visual/pracego`.
+20. [x] Ajuste de UX no diálogo de magia:
+    - remover prefixo `Configurar:` do título;
+    - título mostra apenas nome da magia em azul (sem estilo de botão);
+    - clique no título abre pop-up de descrição;
+    - descrição removida do corpo do diálogo principal.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
