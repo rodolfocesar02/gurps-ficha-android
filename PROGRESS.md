@@ -14,9 +14,16 @@ Feito:
 5. Prioridade hard-first aplicada na recomendação (`cadeia -> escolas -> alvo`), sem lateral furar bloqueio de cadeia.
 6. Auditoria global de todas as magias estabilizada sem OOM, com relatório gerado em `app/build/reports/`.
 7. Manual curto do Modo Alvo implementado com pop-up automático no primeiro clique e opção persistente `Não mostrar mais`.
+8. Manual do Modo Alvo refinado para UX: pop-up automático no primeiro uso, opção persistente `Não mostrar mais` e rótulos de acessibilidade nos elementos críticos para `pracego`.
+9. Variante `visual`: diálogos de Vantagens/Desvantagens/Técnicas ajustados para controle por gesto vertical (swipe), sem botões `+/-`.
+10. Variante `pracego`: diálogos mantêm botões `+/-` funcionais e rotulados para TalkBack.
+11. Aba Rolagem com rótulos dinâmicos incluindo valor atual de clique (`Rolar ST X`, `Rolar DX X`, `Rolar Esquiva X` etc.).
+12. Diálogo de Técnicas refinado: título removido, nome da técnica em destaque, texto redundante removido e resumo final no formato `Nome da Técnica NH X`.
+13. Motor de pré-requisito de Técnicas reforçado com guarda por família de perícia (tiro/esgrima/corpo a corpo/defesa ativa), reduzindo combinações incoerentes.
 
 Falta:
-1. Nenhuma pendência aberta nos lotes 1-6 deste ciclo.
+1. Revisão sistemática das técnicas de Artes Marciais com pré-requisitos sensíveis contra o PDF (ajuste fino por técnica).
+2. Executar bateria de validação pós-ajuste (build visual/pracego + verificação em emulador).
 
 ## Diagnóstico Confirmado
 1. Divergência de validação rápida vs hierárquica na UI foi eliminada no `FichaViewModel`.
@@ -120,6 +127,54 @@ Arquivo: `app/src/test/java/nexus/arcano/NexusArcanoModoAlvoAuditoriaTodasMagias
 
 Critério de aceite:
 - Suite alvo passa sem OOM e com relatório reproduzível.
+
+### Lote 7 - UX Modo Alvo e Acessibilidade
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Implementar manual curto do Modo Alvo com abertura automática no primeiro uso.
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsMagias.kt`
+2. [x] Persistir preferência `Não mostrar mais`.
+Arquivo: `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
+3. [x] Remover botão manual dedicado e manter somente o pop-up inicial.
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsMagias.kt`
+4. [x] Rotular elementos críticos para TalkBack no fluxo do manual e no toggle do Modo Alvo.
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsMagias.kt`
+
+Critério de aceite:
+- Primeiro clique em Modo Alvo abre manual; após marcar `Não mostrar mais`, não reaparece.
+
+### Lote 8 - Ajustes de Interação (Visual vs PraCego)
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Trocar `+/-` por swipe vertical em Vantagens/Desvantagens na variante `visual`.
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsTracos.kt`
+2. [x] Manter `+/-` na variante `pracego` com rótulos de acessibilidade.
+Arquivos:
+- `app/src/main/java/com/gurps/ficha/ui/DialogsTracos.kt`
+- `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
+3. [x] Aplicar mesmo comportamento em Técnicas (visual swipe, pracego botões).
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
+4. [x] Ajustar semântica de rolagens para anunciar o valor atual no botão.
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/TabRolagem.kt`
+
+Critério de aceite:
+- Visual opera sem botões `+/-` nesses diálogos; PraCego anuncia e opera com `+/-`; rolagens anunciam atributo/defesa + valor.
+
+### Lote 9 - Coerência de Pré-Requisito de Técnicas
+Status: `EM_ANDAMENTO`
+
+Passos:
+1. [x] Melhorar diálogo de configuração/edição para mostrar apenas perícias compatíveis.
+Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
+2. [x] Reforçar validação por família de requisito (tiro, esgrima, corpo a corpo, defesa ativa) no motor de técnicas.
+Arquivo: `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
+3. [ ] Revisar técnica por técnica com base no PDF de Artes Marciais para eliminar incoerências restantes.
+4. [ ] Fechar validação final em emulador e testes direcionados.
+
+Critério de aceite:
+- Técnicas com pré-requisito específico só aceitam perícias compatíveis com a regra textual/canônica.
 
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.

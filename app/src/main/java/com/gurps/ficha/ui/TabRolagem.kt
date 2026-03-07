@@ -982,7 +982,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         text = valor.toString(),
                                         modifier = Modifier
                                             .semantics {
-                                                contentDescription = "Rolagem de $attr $valor"
+                                                contentDescription = "Rolar $attr $valor"
                                             }
                                             .clickable {
                                                 executarRolagem(
@@ -1566,7 +1566,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     (defesa?.finalValue?.toString() ?: "-"),
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .semantics { contentDescription = "Rolar defesa $nomeDefesa" }
+                                        .semantics {
+                                            contentDescription = if (defesa != null) {
+                                                "Rolar $nomeDefesa ${defesa.finalValue}"
+                                            } else {
+                                                "Defesa $nomeDefesa indisponível"
+                                            }
+                                        }
                                         .clickable(enabled = defesa != null) {
                                             executarRolagem(
                                                 tipo = TipoTeste.DEFESA,

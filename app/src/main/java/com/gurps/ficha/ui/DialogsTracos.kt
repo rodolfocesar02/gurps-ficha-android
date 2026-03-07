@@ -1,6 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,15 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -26,7 +27,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
@@ -52,6 +52,7 @@ import com.gurps.ficha.model.TipoCusto
 import com.gurps.ficha.model.VantagemDefinicao
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
+import kotlin.math.abs
 
 private fun vantagemEhAptidaoMagica(definicaoId: String): Boolean {
     return definicaoId.equals("aptidao_magica", ignoreCase = true)
@@ -218,15 +219,32 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
                                 ) { Text("+") }
                             }
                         } else {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(onClick = { if (nivel > nivelMinimo) nivel-- }) {
-                                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível de vantagem")
-                                }
-                                Text("${nivelExibicaoVantagem(definicao.id, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                                IconButton(onClick = { if (nivel < nivelMaximo) nivel++ }) {
-                                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível de vantagem")
-                                }
-                            }
+                            Text(
+                                "${nivelExibicaoVantagem(definicao.id, nivel)}",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .width(56.dp)
+                                    .pointerInput(nivel) {
+                                        var dragAcumulado = 0f
+                                        val passoPx = 24f
+                                        detectVerticalDragGestures(
+                                            onVerticalDrag = { change, dragAmount ->
+                                                change.consume()
+                                                dragAcumulado += dragAmount
+                                                while (abs(dragAcumulado) >= passoPx) {
+                                                    nivel = if (dragAcumulado < 0f) {
+                                                        (nivel + 1).coerceAtMost(nivelMaximo)
+                                                    } else {
+                                                        (nivel - 1).coerceAtLeast(nivelMinimo)
+                                                    }
+                                                    dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                                }
+                                            }
+                                        )
+                                    },
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
                         }
                         Text("Custo: ${custoVantagemPorNivelExibicao(definicao, nivel)} pts", fontWeight = FontWeight.Bold)
                     }
@@ -411,15 +429,32 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                                 ) { Text("+") }
                             }
                         } else {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(onClick = { if (nivel > 1) nivel-- }) {
-                                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível de desvantagem")
-                                }
-                                Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                                IconButton(onClick = { if (nivel < 10) nivel++ }) {
-                                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível de desvantagem")
-                                }
-                            }
+                            Text(
+                                "$nivel",
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier
+                                    .width(56.dp)
+                                    .pointerInput(nivel) {
+                                        var dragAcumulado = 0f
+                                        val passoPx = 24f
+                                        detectVerticalDragGestures(
+                                            onVerticalDrag = { change, dragAmount ->
+                                                change.consume()
+                                                dragAcumulado += dragAmount
+                                                while (abs(dragAcumulado) >= passoPx) {
+                                                    nivel = if (dragAcumulado < 0f) {
+                                                        (nivel + 1).coerceAtMost(10)
+                                                    } else {
+                                                        (nivel - 1).coerceAtLeast(1)
+                                                    }
+                                                    dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                                }
+                                            }
+                                        )
+                                    },
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
                         }
                         Text("Custo: ${definicao.getCustoPorNivel() * nivel} pts", fontWeight = FontWeight.Bold)
                     }
@@ -511,15 +546,32 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, onDismiss: () -> Unit, o
                             ) { Text("+") }
                         }
                     } else {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > nivelMinimo) nivel-- }) {
-                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível da vantagem")
-                            }
-                            Text("${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < nivelMaximo) nivel++ }) {
-                                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível da vantagem")
-                            }
-                        }
+                        Text(
+                            "${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .width(56.dp)
+                                .pointerInput(nivel) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 24f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                nivel = if (dragAcumulado < 0f) {
+                                                    (nivel + 1).coerceAtMost(nivelMaximo)
+                                                } else {
+                                                    (nivel - 1).coerceAtLeast(nivelMinimo)
+                                                }
+                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                            }
+                                        }
+                                    )
+                                },
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
                     }
                 }
                 if (vantagem.tipoCusto == TipoCusto.VARIAVEL || vantagem.tipoCusto == TipoCusto.ESCOLHA) {
@@ -573,15 +625,32 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, onDismiss: () -
                             ) { Text("+") }
                         }
                     } else {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            IconButton(onClick = { if (nivel > 1) nivel-- }) {
-                                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir nível da desvantagem")
-                            }
-                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { if (nivel < 10) nivel++ }) {
-                                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar nível da desvantagem")
-                            }
-                        }
+                        Text(
+                            "$nivel",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier
+                                .width(56.dp)
+                                .pointerInput(nivel) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 24f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                nivel = if (dragAcumulado < 0f) {
+                                                    (nivel + 1).coerceAtMost(10)
+                                                } else {
+                                                    (nivel - 1).coerceAtLeast(1)
+                                                }
+                                                dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
+                                            }
+                                        }
+                                    )
+                                },
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
                     }
                 }
                 if (desvantagem.tipoCusto == TipoCusto.VARIAVEL || desvantagem.tipoCusto == TipoCusto.ESCOLHA) {
