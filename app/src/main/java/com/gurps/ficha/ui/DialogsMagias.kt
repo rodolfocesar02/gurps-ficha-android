@@ -1296,6 +1296,8 @@ fun EditarMagiaDialog(
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     var pontosGastos by remember { mutableStateOf(magia.pontosGastos) }
+    val descricaoMagia = magia.texto?.trim().orEmpty()
+    var mostrarDescricaoMagiaPopup by remember { mutableStateOf(false) }
     
     // Calcula nível preview
     val previewMagia = magia.copy(pontosGastos = pontosGastos)
@@ -1304,7 +1306,25 @@ fun EditarMagiaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar: ${magia.nome}") },
+        title = {
+            Text(
+                magia.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoMagia.isNotBlank()) {
+                            it.clickable { mostrarDescricaoMagiaPopup = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoMagia.isNotBlank()) {
+                            contentDescription = "Nome da magia ${magia.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val difNome = magia.dificuldade.sigla
@@ -1392,6 +1412,22 @@ fun EditarMagiaDialog(
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (mostrarDescricaoMagiaPopup) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricaoMagiaPopup = false },
+            title = { Text(magia.nome, color = MaterialTheme.colorScheme.primary) },
+            text = {
+                Text(
+                    text = descricaoMagia.ifBlank { "Sem descrição disponível." },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { mostrarDescricaoMagiaPopup = false }) { Text("Fechar") }
+            }
+        )
+    }
 }
 
 // === DIALOGS SIMPLES ===

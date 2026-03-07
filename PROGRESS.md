@@ -283,6 +283,10 @@ Critério de aceite:
     - build `visual`: `:app:compileVisualDebugKotlin` (OK);
     - build `pracego`: `:app:compilePracegoDebugKotlin` (OK);
     - instalação no emulador: `:app:installVisualDebug` (OK).
+26. [x] Descrição também disponível nos diálogos de edição de Vantagens, Desvantagens, Perícias e Magias:
+    - título azul clicável em cada diálogo de editar;
+    - pop-up de descrição com conteúdo de catálogo/regra;
+    - build `visual/pracego` e instalação `visual` validadas após ajuste.
 
 ### Lote 13 - Descrições de Vantagens/Desvantagens + UX do Diálogo
 Status: `CONCLUIDO`

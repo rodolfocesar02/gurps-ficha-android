@@ -124,9 +124,15 @@ fun TabPericias(viewModel: FichaViewModel) {
     }
 
     editingPericiaIndex?.let { index ->
+        val pericia = p.pericias[index]
+        val regraV2 = viewModel.dataRepository.regraPericiaV2(pericia.definicaoId)
         EditarPericiaDialog(
-            pericia = p.pericias[index],
+            pericia = pericia,
             personagem = p,
+            descricaoRegra = regraV2?.descricao.orEmpty(),
+            preRequisitoRegra = regraV2?.preRequisito?.raw.orEmpty(),
+            preDefinidoRegra = regraV2?.preDefinido?.raw.orEmpty(),
+            modificadoresRegra = regraV2?.modificadoresRaw.orEmpty(),
             onDismiss = { editingPericiaIndex = null },
             onSave = {
                 viewModel.atualizarPericia(index, it)
