@@ -84,7 +84,7 @@ fun SelecionarTecnicaDialog(
             contemBusca(tecnica.descricao, busca)
         val matchFonte = filtroFonte.isNullOrBlank() || tecnica.sourceBook.equals(filtroFonte, ignoreCase = true)
         matchBusca && matchFonte
-    }
+    }.sortedBy { normalizarBusca(it.nome) }
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -184,6 +184,7 @@ fun ConfigurarTecnicaDialog(
     var periciaSelecionadaId by remember { mutableStateOf<String?>(null) }
     var nivelRelativo by remember { mutableStateOf(0) }
     var erro by remember { mutableStateOf<String?>(null) }
+    var mostrarDescricao by remember { mutableStateOf(false) }
     val preRequisitoExibicao = viewModel.preRequisitoExibicaoTecnica(definicao)
 
     val periciaBase = pericias.firstOrNull { pericia ->
@@ -219,7 +220,21 @@ fun ConfigurarTecnicaDialog(
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontSize = MaterialTheme.typography.headlineSmall.fontSize * 1.1f,
                         fontWeight = FontWeight.ExtraBold
-                    )
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .let {
+                            if (definicao.descricao.isNotBlank()) {
+                                it.clickable { mostrarDescricao = true }
+                            } else {
+                                it
+                            }
+                        }
+                        .semantics {
+                            if (isPraCegoVariant && definicao.descricao.isNotBlank()) {
+                                contentDescription = "Nome da técnica ${definicao.nome}. Toque para abrir descrição."
+                            }
+                        }
                 )
                 Text(
                     "${definicao.sourceBook} | ${definicao.dificuldadeRaw}",
@@ -353,6 +368,38 @@ fun ConfigurarTecnicaDialog(
             TextButton(onClick = onDismiss) { Text("Cancelar") }
         }
     )
+
+    if (mostrarDescricao) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricao = false },
+            title = { Text("Descrição: ${definicao.nome}") },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        definicao.descricao.ifBlank { "Sem descrição detalhada disponível." },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    if (preRequisitoExibicao.isNotBlank()) {
+                        Text("Pré-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (definicao.preDefinidoRaw.isNotBlank()) {
+                        Text("Pré-definido: ${definicao.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { mostrarDescricao = false },
+                    modifier = Modifier.semantics {
+                        if (isPraCegoVariant) contentDescription = "Fechar descrição da técnica"
+                    }
+                ) { Text("Fechar") }
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -370,8 +417,10 @@ fun EditarTecnicaDialog(
     }
     val preRequisitoExibicao = definicaoCatalogo?.let { viewModel.preRequisitoExibicaoTecnica(it) }
         ?: tecnica.preRequisitoRaw
+    val descricaoCatalogo = definicaoCatalogo?.descricao.orEmpty()
 
     var nivelRelativo by remember { mutableStateOf(tecnica.nivelRelativoPredefinido.coerceAtLeast(0)) }
+    var mostrarDescricao by remember { mutableStateOf(false) }
     var periciaSelecionadaId by remember {
         mutableStateOf(
             periciaTecnicaKey(
@@ -428,7 +477,21 @@ fun EditarTecnicaDialog(
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontSize = MaterialTheme.typography.headlineSmall.fontSize * 1.1f,
                         fontWeight = FontWeight.ExtraBold
-                    )
+                    ),
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .let {
+                            if (descricaoCatalogo.isNotBlank()) {
+                                it.clickable { mostrarDescricao = true }
+                            } else {
+                                it
+                            }
+                        }
+                        .semantics {
+                            if (isPraCegoVariant && descricaoCatalogo.isNotBlank()) {
+                                contentDescription = "Nome da técnica ${tecnica.nome}. Toque para abrir descrição."
+                            }
+                        }
                 )
                 Text("${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
                 if (preRequisitoExibicao.isNotBlank()) {
@@ -542,6 +605,38 @@ fun EditarTecnicaDialog(
             TextButton(onClick = onDismiss) { Text("Cancelar") }
         }
     )
+
+    if (mostrarDescricao) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricao = false },
+            title = { Text("Descrição: ${tecnica.nome}") },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.verticalScroll(rememberScrollState())
+                ) {
+                    Text(
+                        descricaoCatalogo.ifBlank { "Sem descrição detalhada disponível." },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    if (preRequisitoExibicao.isNotBlank()) {
+                        Text("Pré-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (tecnica.preDefinidoRaw.isNotBlank()) {
+                        Text("Pré-definido: ${tecnica.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = { mostrarDescricao = false },
+                    modifier = Modifier.semantics {
+                        if (isPraCegoVariant) contentDescription = "Fechar descrição da técnica"
+                    }
+                ) { Text("Fechar") }
+            }
+        )
+    }
 }
 
 @Composable
