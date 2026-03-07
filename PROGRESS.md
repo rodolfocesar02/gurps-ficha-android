@@ -271,14 +271,26 @@ Critério de aceite:
     - confirmado: `vantagens.v3.json` e `desvantagens.v2.json` ativos ainda sem campo `descricao`;
     - confirmado: `vantagens_extraidas_fiel_v2.xlsx` contém descrição de vantagens;
     - confirmado: `desvantagens de A a Z.xlsx` contém página/nome/custo (sem coluna de descrição), exigindo fallback no texto extraído do PDF do Módulo Básico.
+22. [x] Merge de descrições de traços executado (`scripts/merge_tracos_descricao.py`) com precedência do texto do Módulo Básico:
+    - vantagens com descrição: `250/265` (`pdf=191`, `xlsx=59`);
+    - desvantagens com descrição: `188/227` (`pdf=188`);
+    - relatório: `scripts/reports/tracos_descricao_merge_report.json`.
+23. [x] Modelo/repositório de traços atualizado para carregar o novo campo `descricao` em vantagens/desvantagens.
+24. [x] UX dos diálogos de configuração de Vantagens/Desvantagens ajustada:
+    - título sem `Configurar:`;
+    - título em azul com clique para abrir pop-up de descrição.
+25. [x] Validação final do lote 13 concluída:
+    - build `visual`: `:app:compileVisualDebugKotlin` (OK);
+    - build `pracego`: `:app:compilePracegoDebugKotlin` (OK);
+    - instalação no emulador: `:app:installVisualDebug` (OK).
 
 ### Lote 13 - Descrições de Vantagens/Desvantagens + UX do Diálogo
 Status: `CONCLUIDO`
 
 Passos:
 1. [x] Auditar fontes e confirmar cobertura (`json` ativo + `xlsx` + texto do Módulo Básico).
-2. [ ] Mesclar descrições em `vantagens.v3.json` e `desvantagens.v2.json` com precedência de conteúdo do PDF quando disponível.
-3. [ ] Ajustar diálogos de configurar Vantagens/Desvantagens: remover `Configurar:`, nome azul clicável e pop-up de descrição.
+2. [x] Mesclar descrições em `vantagens.v3.json` e `desvantagens.v2.json` com precedência de conteúdo do PDF quando disponível.
+3. [x] Ajustar diálogos de configurar Vantagens/Desvantagens: remover `Configurar:`, nome azul clicável e pop-up de descrição.
 4. [x] Validar build `visual/pracego`, instalar `visual` no emulador e fechar lote.
 
 Critério de aceite:
