@@ -195,12 +195,12 @@ Critério de aceite:
 - Fluxo de Magias/Perícias/Técnicas na variante `pracego` sem ambiguidade de ação para TalkBack.
 
 ### Lote 11 - Fechamento e Publicação
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Atualizar `PROGRESS.md` com fechamento dos lotes 10/11 e evidências de validação.
 2. [x] Confirmar árvore de commit sem `pdf/xlsx`.
-3. [ ] Executar push para `origin/main`.
+3. [x] Executar push para `origin/main`.
 
 Critério de aceite:
 - Branch remota atualizada sem artefatos indevidos (`.pdf`/`.xlsx`).
