@@ -2118,7 +2118,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun periciaEhCorpoACorpo(pericia: PericiaSelecionada): Boolean {
         val idNormalizado = pericia.definicaoId.trim().lowercase()
-        if (PERICIAS_COMBATE.contains(idNormalizado)) return true
+        if (PERICIAS_COMBATE.contains(idNormalizado) && idNormalizado != "escudo") return true
         val termos = termosBuscaPericia(pericia)
         val chaves = listOf(
             "adaga",

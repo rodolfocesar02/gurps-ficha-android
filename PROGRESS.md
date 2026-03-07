@@ -172,6 +172,7 @@ Arquivo: `app/src/main/java/com/gurps/ficha/ui/DialogsTecnicas.kt`
 Arquivo: `app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt`
 3. [~] Revisar técnica por técnica com base no PDF de Artes Marciais para eliminar incoerências restantes.
    - [x] Passo 3.1: reforçada a classificação para termos ambíguos (`arma apropriada`, `ataque corpo a corpo`) no motor de pré-requisito de técnicas, evitando aceitar perícias de tiro em técnicas de combate corpo a corpo.
+   - [x] Passo 3.2: removido `Escudo` da classificação de `arma corpo a corpo` para impedir seleção indevida como perícia base em técnicas de arma.
 4. [ ] Fechar validação final em emulador e testes direcionados.
 
 Critério de aceite:
@@ -196,6 +197,7 @@ Critério de aceite:
 6. [x] Confirmar ausência de `pracego` e pacote base via `am start -W` (Error type 3).
 7. [x] Adicionar manual curto do Modo Alvo (<=200 caracteres) com abertura automática na primeira ativação e preferência persistida.
 8. [x] Refinar regra de compatibilidade de perícia base para técnicas com texto ambíguo de pré-requisito (arma apropriada/ataque corpo a corpo).
+9. [x] Instalar build `visual` no emulador após os ajustes de técnicas (task `:app:installVisualDebug`).
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
