@@ -13,8 +13,7 @@ Feito:
 4. Motor do modo alvo ajustado para tratar alternativas com `ou` usando parser por termo, sem perder dependências compartilhadas.
 
 Falta:
-1. Implementar e validar prioridade canônica hard-first da progressão (Lote 5).
-2. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
+1. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
 
 ## Diagnóstico Confirmado
 1. Divergência de validação rápida vs hierárquica na UI foi eliminada no `FichaViewModel`.
@@ -87,14 +86,14 @@ Critério de aceite:
 - O motor não recomenda cadeia impossível nem ignora restrição de alternativa.
 
 ### Lote 5 - Ordem Canônica de Progressão
-Status: `PENDENTE`
+Status: `CONCLUIDO`
 
 Passos:
-1. Reforçar prioridade hard-first:
+1. [x] Reforçar prioridade hard-first:
 - cadeia nomeada obrigatória
 - depois contagem de escolas
 - depois alvo final
-2. Garantir que recomendação lateral não fure bloqueio de cadeia.
+2. [x] Garantir que recomendação lateral não fure bloqueio de cadeia.
 Arquivo: `motor modo alvo/src/NexusArcanoEngine.kt`
 
 Critério de aceite:

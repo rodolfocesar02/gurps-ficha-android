@@ -921,21 +921,6 @@ class NexusArcanoEngine(
         known: Set<String>,
         estado: ArcanoEstadoPersonagem
     ): List<ArcanoAcao> {
-        val planoGlobal = planejarCaminhoMinimo(alvoId, estado.copy(magiasConhecidasIds = known))
-        if (planoGlobal.trilhaMagiasIds.isNotEmpty()) {
-            return planoGlobal.trilhaMagiasIds
-                .filter { it !in known }
-                .distinct()
-                .take(3)
-                .mapIndexed { idx, magiaId ->
-                    ArcanoAcao(
-                        magiaId = magiaId,
-                        motivo = "Caminho global mínimo",
-                        prioridade = idx
-                    )
-                }
-        }
-
         val cadeiaSemAlvo = construirCadeiaObrigatoriaParaEstado(alvoId, known).filter { it != alvoId }
         val out = mutableListOf<ArcanoAcao>()
 
@@ -949,6 +934,7 @@ class NexusArcanoEngine(
                     motivo = "Cadeia obrigatória",
                     prioridade = 0
                 )
+                return out
             } else if (bloqueioNumericoParaMagia(proximaObrigatoria, estado, known) != null) {
                 // Bloqueio por atributo/AM: não sugerir escola como falso avanço.
             } else {
@@ -969,6 +955,7 @@ class NexusArcanoEngine(
                         motivo = "Alvo liberado",
                         prioridade = 0
                     )
+                    return out
                 } else if (bloqueioNumericoParaMagia(alvoId, estado, known) != null) {
                     // Bloqueio por atributo/AM: sem sugestão de escola.
                 } else {

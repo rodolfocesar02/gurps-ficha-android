@@ -158,6 +158,38 @@ class NexusArcanoEngineLoteBGlobalTest {
     }
 
     @Test
+    fun recomendacao_hard_first_prioriza_cadeia_antes_de_lateral() {
+        val engine = NexusArcanoEngine(catalogoPasso5HardFirst())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = emptySet(),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+
+        val resultado = engine.calcularEstadoAlvo("alvo_hard", estado)
+        assertTrue(resultado.proximasAcoes.isNotEmpty())
+        assertEquals("dep_cadeia", resultado.proximasAcoes.first().magiaId)
+        assertFalse(resultado.proximasAcoes.any { it.magiaId == "lateral_livre" })
+    }
+
+    @Test
+    fun recomendacao_hard_first_prioriza_alvo_quando_cadeia_concluida() {
+        val engine = NexusArcanoEngine(catalogoPasso5HardFirst())
+        val estado = ArcanoEstadoPersonagem(
+            magiasConhecidasIds = setOf("dep_cadeia"),
+            am = 3,
+            iq = 12,
+            dx = 10
+        )
+
+        val resultado = engine.calcularEstadoAlvo("alvo_hard", estado)
+        assertTrue(resultado.proximasAcoes.isNotEmpty())
+        assertEquals("alvo_hard", resultado.proximasAcoes.first().magiaId)
+        assertFalse(resultado.proximasAcoes.any { it.magiaId == "lateral_livre" })
+    }
+
+    @Test
     fun contrato_de_saida_do_plano_retorna_proxima_trilha_e_metas_impactadas() {
         val engine = NexusArcanoEngine(catalogoPasso2SemReducao())
         val estado = ArcanoEstadoPersonagem(
@@ -288,6 +320,23 @@ class NexusArcanoEngineLoteBGlobalTest {
         val magias = listOf(
             M("alvo_misto", "Alvo Misto", listOf("Meta"), "Dep Livre ou IQ 13+ e 1 magica em 3 escolas diferentes"),
             M("dep_livre", "Dep Livre", listOf("Ar"), "")
+        )
+        val byId = magias.associateBy { it.id }
+        return object : ArcanoCatalogo {
+            override fun preRequisitoRaw(magiaId: String): String = byId[magiaId]?.pre.orEmpty()
+            override fun escolas(magiaId: String): List<String> = byId[magiaId]?.escolas.orEmpty()
+            override fun nome(magiaId: String): String = byId[magiaId]?.nome ?: magiaId
+            override fun existe(magiaId: String): Boolean = byId.containsKey(magiaId)
+            override fun todasMagiasIds(): List<String> = byId.keys.sorted()
+        }
+    }
+
+    private fun catalogoPasso5HardFirst(): ArcanoCatalogo {
+        data class M(val id: String, val nome: String, val escolas: List<String>, val pre: String)
+        val magias = listOf(
+            M("alvo_hard", "Alvo Hard", listOf("Meta"), "Dep Cadeia"),
+            M("dep_cadeia", "Dep Cadeia", listOf("Ar"), ""),
+            M("lateral_livre", "Lateral Livre", listOf("Terra"), "")
         )
         val byId = magias.associateBy { it.id }
         return object : ArcanoCatalogo {
