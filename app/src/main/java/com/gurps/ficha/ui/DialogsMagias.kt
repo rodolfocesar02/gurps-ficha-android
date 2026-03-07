@@ -1045,6 +1045,7 @@ fun ConfigurarMagiaDialog(
     }
     val dificuldade = Dificuldade.fromSigla(definicao.dificuldadeFixa ?: "D")
     val descricaoMagia = definicao.texto?.trim().orEmpty()
+    var mostrarDescricaoMagiaPopup by remember { mutableStateOf(false) }
     
     // Calcula nível preview
     val previewMagia = MagiaSelecionada(definicao.id, definicao.nome, dificuldade, pontosGastos, definicao.pagina, definicao.texto, definicao.classe, definicao.escola)
@@ -1053,34 +1054,28 @@ fun ConfigurarMagiaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Configurar: ${definicao.nome}") },
+        title = {
+            Text(
+                text = definicao.nome,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .let {
+                        if (descricaoMagia.isNotBlank()) {
+                            it.clickable { mostrarDescricaoMagiaPopup = true }
+                        } else {
+                            it
+                        }
+                    }
+                    .semantics {
+                        if (isPraCegoVariant && descricaoMagia.isNotBlank()) {
+                            contentDescription = "Nome da magia ${definicao.nome}. Toque para abrir descricao."
+                        }
+                    }
+            )
+        },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text("Dificuldade: ${dificuldade.nomeCompleto}", style = MaterialTheme.typography.bodyMedium)
-                if (descricaoMagia.isNotBlank()) {
-                    Card(
-                        colors = appCardColors(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .semantics {
-                                if (isPraCegoVariant) {
-                                    contentDescription = "Descricao da magia. $descricaoMagia"
-                                }
-                            }
-                    ) {
-                        Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text(
-                                "Descrição",
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                            Text(
-                                descricaoMagia,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                }
 
                 Divider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
@@ -1269,6 +1264,22 @@ fun ConfigurarMagiaDialog(
             },
             dismissButton = {
                 TextButton(onClick = { confirmarAdicaoForcada = false }) { Text("NAO") }
+            }
+        )
+    }
+
+    if (mostrarDescricaoMagiaPopup) {
+        AlertDialog(
+            onDismissRequest = { mostrarDescricaoMagiaPopup = false },
+            title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary) },
+            text = {
+                Text(
+                    text = descricaoMagia.ifBlank { "Sem descrição disponível." },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { mostrarDescricaoMagiaPopup = false }) { Text("Fechar") }
             }
         )
     }
