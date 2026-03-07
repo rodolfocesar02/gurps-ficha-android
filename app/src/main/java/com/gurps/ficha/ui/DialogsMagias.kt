@@ -302,6 +302,17 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         }
 
         recomendacaoEmAnalise = true
+        val alvoJaAdicionada = viewModel.magiaJaAdicionada(magiaAlvoSelecionada.id)
+        val falhaAlvo = withContext(Dispatchers.Default) {
+            viewModel.prereqFailureForMagiaRapida(magiaAlvoSelecionada)
+        }
+        prereqFalhasMap = prereqFalhasMap + (magiaAlvoSelecionada.id to falhaAlvo)
+        if (alvoJaAdicionada || falhaAlvo == null) {
+            proximaSugeridaId = null
+            recomendacaoEmAnalise = false
+            return@LaunchedEffect
+        }
+
         val candidatasIds = (viewModel.modoAlvoProximasAcoesIds + listaExibicao.map { it.id })
             .asSequence()
             .filter { it != magiaAlvoSelecionada.id }
@@ -699,8 +710,21 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
+                val alvoJaAdicionada = magiaAlvoSelecionada?.let { viewModel.magiaJaAdicionada(it.id) } == true
+                val falhaAlvo = magiaAlvoSelecionada?.let { prereqFalhasMap[it.id] }
+                val alvoPrereqCalculado = magiaAlvoSelecionada?.let { prereqFalhasMap.containsKey(it.id) } == true
+                val alvoLiberada = (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) &&
+                    !alvoJaAdicionada &&
+                    alvoPrereqCalculado &&
+                    falhaAlvo == null
                 val textoContagem = if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
-                    "${(listaExibicao.size - 1).coerceAtLeast(0)} opções imediatas"
+                    if (alvoJaAdicionada) {
+                        "Magia alvo já adicionada."
+                    } else if (alvoLiberada) {
+                        "Magia alvo liberada para adicionar."
+                    } else {
+                        "${(listaExibicao.size - 1).coerceAtLeast(0)} opções imediatas"
+                    }
                 } else {
                     "${listaExibicao.size} magias encontradas"
                 }
@@ -730,6 +754,10 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     } ?: false
                     val textoGuia = if (recomendacaoEmAnalise) {
                         "Analisando pré-requisitos..."
+                    } else if (alvoJaAdicionada) {
+                        "Magia alvo já adicionada."
+                    } else if (alvoLiberada) {
+                        "Alvo liberado: você já pode adicionar ${magiaAlvoSelecionada.nome}."
                     } else {
                         proximaSugerida?.let {
                             if (proximaBloqueada) {
