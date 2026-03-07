@@ -182,14 +182,14 @@ Critério de aceite:
 - Técnicas com pré-requisito específico só aceitam perícias compatíveis com a regra textual/canônica.
 
 ### Lote 10 - Auditoria de Rotulagem por Aba (PraCego)
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lotes e checklist de execução no `PROGRESS.md`.
 2. [x] Corrigir anúncio de estado "pré-requisito atendido" antes do cálculo finalizar na lista de Magias (TalkBack).
 3. [x] Rotular explicitamente ação de editar em item de Perícias.
 4. [x] Rotular explicitamente ação de editar em item de Técnicas.
-5. [ ] Validar com build `visual/pracego` + instalação no emulador.
+5. [x] Validar com build `visual/pracego` + instalação no emulador.
 
 Critério de aceite:
 - Fluxo de Magias/Perícias/Técnicas na variante `pracego` sem ambiguidade de ação para TalkBack.
