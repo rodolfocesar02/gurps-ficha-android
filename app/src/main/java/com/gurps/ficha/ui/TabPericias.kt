@@ -8,8 +8,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
 
@@ -153,9 +156,15 @@ fun PericiaItem(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) {
+                    contentDescription = "Perícia ${pericia.nome}. NH $nivel. Toque para editar."
+                }
+            }
             .clickable { onEdit() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
