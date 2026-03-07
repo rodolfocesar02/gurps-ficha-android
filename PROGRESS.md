@@ -219,7 +219,7 @@ Critério de aceite:
 - Build das duas variantes compilando após a migração.
 
 ### Lote 13 - Conciliação Canônica de Descrições de Técnicas (Artes Marciais + Gun Fu)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Criar pipeline de merge/auditoria para técnicas usando `xlsx` como base e verificação contra `pdf` canônico por livro.
@@ -233,7 +233,12 @@ Evidência:
 - Script executado: `scripts/merge_tecnicas_descricao.py` com `--inplace`.
 - Resultado consolidado: `total_items=118`, `updated_descricao=34`, `unchanged_descricao=110`, `no_match_count=6`.
 - Casos `no_match` em Artes Marciais (6) reconciliados via extração direta do PDF canônico `Artes Marciais 4º Edição.pdf`.
-3. [ ] Validar parse/build, atualizar evidências no `PROGRESS.md` e concluir lote.
+3. [x] Validar parse/build, atualizar evidências no `PROGRESS.md` e concluir lote.
+Evidência:
+- Build de validação executado com sucesso:
+  - `:app:compileVisualDebugKotlin`
+  - `:app:compilePracegoDebugKotlin`
+- `tecnicas.v1.json` permanece parseável após merge/auditoria.
 
 Critério de aceite:
 - Todas as técnicas de `Artes Marciais` e `Gun Fu` no catálogo ativo com `descricao` consistente com os `xlsx`.
