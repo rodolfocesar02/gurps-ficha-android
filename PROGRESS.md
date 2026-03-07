@@ -11,16 +11,18 @@ Feito:
 2. Catálogo runtime (`magias2versao.json`) sincronizado com overrides canônicos (`same=36`, `diff=0`).
 3. Pendências com marcador `#` sem override canônico resolvidas (`sem_override_com_hash=0`).
 4. Motor do modo alvo ajustado para tratar alternativas com `ou` usando parser por termo, sem perder dependências compartilhadas.
+5. Prioridade hard-first aplicada na recomendação (`cadeia -> escolas -> alvo`), sem lateral furar bloqueio de cadeia.
+6. Auditoria global de todas as magias estabilizada sem OOM, com relatório gerado em `app/build/reports/`.
 
 Falta:
-1. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
+1. Nenhuma pendência aberta nos lotes 1-6 deste ciclo.
 
 ## Diagnóstico Confirmado
 1. Divergência de validação rápida vs hierárquica na UI foi eliminada no `FichaViewModel`.
 2. Uso de texto bruto sem canônico no runtime foi corrigido para a carga de `MagiaDefinicao`.
 3. Divergências de catálogo runtime vs override canônico foram saneadas para o conjunto mapeado.
-4. Ainda faltam casos combinados avançados no parser do motor (`ou` + regras numéricas/escolas) para cobertura total.
-5. Auditoria global `NexusArcanoModoAlvoAuditoriaTodasMagiasTest` ainda falha por OOM e segue pendente.
+4. Casos combinados avançados de parser/motor foram cobertos com seleção de branch relevante por estado.
+5. Auditoria global `NexusArcanoModoAlvoAuditoriaTodasMagiasTest` executa sem OOM com limites controlados de BFS.
 
 ## Plano de Ação (Lotes)
 
@@ -100,10 +102,10 @@ Critério de aceite:
 - Cenário `Encantar -> Pequeno Desejo -> Desejo` sempre respeitado antes de fechamento final.
 
 ### Lote 6 - Testes, Auditoria e Evidência
-Status: `PENDENTE`
+Status: `CONCLUIDO`
 
 Passos:
-1. Adicionar testes de regressão para:
+1. [x] Adicionar testes de regressão para:
 - `nao pode ser/ter` (cego/cegueira, surdo/surdez)
 - `(DX + IQ):30+`
 - `outras escolas` vs `escolas diferentes`
@@ -111,9 +113,9 @@ Passos:
 Arquivos:
 - `app/src/test/java/com/gurps/ficha/regras_prerequisitos/PreRequisitoParserTest.kt`
 - `app/src/test/java/nexus/arcano/*`
-2. Ajustar auditoria global para não estourar memória (reduzir BFS/estado, limitar amostra ou particionar teste).
+2. [x] Ajustar auditoria global para não estourar memória (limites de BFS/estado aplicados no teste global).
 Arquivo: `app/src/test/java/nexus/arcano/NexusArcanoModoAlvoAuditoriaTodasMagiasTest.kt`
-3. Gerar relatórios em `app/build/reports/` com resumo de sucesso/falha.
+3. [x] Gerar relatórios em `app/build/reports/` com resumo de sucesso/falha.
 
 Critério de aceite:
 - Suite alvo passa sem OOM e com relatório reproduzível.

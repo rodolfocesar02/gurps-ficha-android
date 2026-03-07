@@ -9,6 +9,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class NexusArcanoModoAlvoAuditoriaTodasMagiasTest {
+    private val maxPassosGreedyAuditoria = 45
+    private val maxEstadosBfsAuditoria = 10_000
+    private val maxVizinhosBfsAuditoria = 24
 
     data class Perfil(
         val nome: String,
@@ -42,6 +45,7 @@ class NexusArcanoModoAlvoAuditoriaTodasMagiasTest {
         relatorioLinhas += "PERFIL=${perfil.nome}"
         relatorioLinhas += "TOTAL_MAGIAS=${ids.size}"
         relatorioLinhas += "FORMATO=magiaId|status|passos|bfsStatus|bfsMenorOuIgual|trilha"
+        relatorioLinhas += "LIMITES=maxPassosGreedy=$maxPassosGreedyAuditoria,maxEstadosBfs=$maxEstadosBfsAuditoria,maxVizinhosBfs=$maxVizinhosBfsAuditoria"
         relatorioLinhas += ""
 
         var totalSucesso = 0
@@ -58,7 +62,7 @@ class NexusArcanoModoAlvoAuditoriaTodasMagiasTest {
                 todosIds = ids,
                 alvoId = alvoId,
                 perfil = perfil,
-                maxPassos = 60
+                maxPassos = maxPassosGreedyAuditoria
             )
 
             when {
@@ -79,8 +83,8 @@ class NexusArcanoModoAlvoAuditoriaTodasMagiasTest {
                     alvoId = alvoId,
                     perfil = perfil,
                     profundidadeMax = limite,
-                    maxEstadosVisitados = 25_000,
-                    maxVizinhosPorEstado = 40,
+                    maxEstadosVisitados = maxEstadosBfsAuditoria,
+                    maxVizinhosPorEstado = maxVizinhosBfsAuditoria,
                     learnablesCache = learnablesCache
                 )
                 bfsStatus = bfs.first
