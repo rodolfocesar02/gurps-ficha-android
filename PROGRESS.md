@@ -199,7 +199,7 @@ Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Atualizar `PROGRESS.md` com fechamento dos lotes 10/11 e evidências de validação.
-2. [ ] Confirmar árvore de commit sem `pdf/xlsx`.
+2. [x] Confirmar árvore de commit sem `pdf/xlsx`.
 3. [ ] Executar push para `origin/main`.
 
 Critério de aceite:
