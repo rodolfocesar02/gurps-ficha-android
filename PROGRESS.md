@@ -13,9 +13,8 @@ Feito:
 4. Motor do modo alvo ajustado para tratar alternativas com `ou` usando parser por termo, sem perder dependências compartilhadas.
 
 Falta:
-1. Completar cobertura de casos combinados no parser do motor (`outras escolas` + soma de atributos + nomeadas simultâneas) no Lote 4.
-2. Implementar e validar prioridade canônica hard-first da progressão (Lote 5).
-3. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
+1. Implementar e validar prioridade canônica hard-first da progressão (Lote 5).
+2. Fechar auditoria global sem OOM e consolidar evidências de teste (Lote 6).
 
 ## Diagnóstico Confirmado
 1. Divergência de validação rápida vs hierárquica na UI foi eliminada no `FichaViewModel`.
@@ -76,12 +75,12 @@ Critério de aceite:
 - Mesmo personagem + mesma magia => mesma resposta de bloqueio em lista, diálogo e modo alvo.
 
 ### Lote 4 - Correção Semântica do Parser do Motor (`ou`/alternativas)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Revisar `dependenciasNomeadasGrupos` para preservar corretamente alternativas compostas (`A ou B, C`).
 2. [x] Associar seleção de dependências nomeadas ao parser por termo (vírgulas + `ou`), com fallback heurístico.
-3. [ ] Cobrir casos de `outras escolas`, soma de atributos e requisitos nomeados simultâneos.
+3. [x] Cobrir casos de `outras escolas`, soma de atributos e requisitos nomeados simultâneos (seleção de branch relevante por estado em `magiaAprendivelAgora` e avaliação de candidatas).
 Arquivo: `motor modo alvo/src/NexusArcanoEngine.kt`
 
 Critério de aceite:

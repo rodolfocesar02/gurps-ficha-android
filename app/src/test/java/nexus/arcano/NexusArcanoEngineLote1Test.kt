@@ -49,7 +49,7 @@ class NexusArcanoEngineLote1Test {
     }
 
     @Test
-    fun teleporte_exige_iq_e_escolas() {
+    fun teleporte_aceita_alternativa_voo_sem_exigir_iq_ou_escolas() {
         val catalogo = NexusArcanoTestCatalog.base()
         val engine = NexusArcanoEngine(catalogo)
         val estado = ArcanoEstadoPersonagem(
@@ -61,8 +61,9 @@ class NexusArcanoEngineLote1Test {
 
         val r = engine.calcularEstadoAlvo("teleporte", estado)
 
-        assertTrue(r.chavesFaltantes.any { it.id.startsWith("chave_iq_teleporte_13") })
-        assertTrue(r.motivoCodigo == "NUMERIC_GATE" || r.motivoCodigo == null)
+        assertTrue(r.chavesAtivas.any { it.id == "chave_alvo_teleporte" })
+        assertFalse(r.motivoCodigo == "NUMERIC_GATE")
+        assertTrue(r.proximasAcoes.any { it.magiaId == "teleporte" })
     }
 
     @Test
