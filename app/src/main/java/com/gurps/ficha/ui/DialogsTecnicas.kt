@@ -192,7 +192,7 @@ fun ConfigurarTecnicaDialog(
     LaunchedEffect(periciasCompativeis) {
         val selecionadaAtualValida = periciasCompativeis.any { periciaTecnicaKey(it) == periciaSelecionadaId }
         if (!selecionadaAtualValida) {
-            periciaSelecionadaId = periciasCompativeis.firstOrNull()?.let { periciaTecnicaKey(it) }
+            periciaSelecionadaId = periciasCompativeis.firstOrNull()?.let { periciaTecnicaKey(it) } ?: periciaSelecionadaId
         }
     }
     val atendePreReq = periciaBase?.let { viewModel.tecnicaAtendePreRequisito(definicao, it) } ?: false
@@ -358,12 +358,19 @@ fun ConfigurarTecnicaDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarTecnicaDialog(
+    viewModel: FichaViewModel,
     tecnica: TecnicaSelecionada,
     personagem: Personagem,
     onDismiss: () -> Unit,
     onSave: (TecnicaSelecionada) -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val definicaoCatalogo = remember(viewModel.tecnicasCatalogo, tecnica.definicaoId) {
+        viewModel.tecnicasCatalogo.firstOrNull { it.id.equals(tecnica.definicaoId, ignoreCase = true) }
+    }
+    val preRequisitoExibicao = definicaoCatalogo?.let { viewModel.preRequisitoExibicaoTecnica(it) }
+        ?: tecnica.preRequisitoRaw
+
     var nivelRelativo by remember { mutableStateOf(tecnica.nivelRelativoPredefinido.coerceAtLeast(0)) }
     var periciaSelecionadaId by remember {
         mutableStateOf(
@@ -378,6 +385,20 @@ fun EditarTecnicaDialog(
     }
 
     val pericias = personagem.pericias
+    val periciasCompativeis = remember(pericias, tecnica.definicaoId, definicaoCatalogo, tecnica.preRequisitoRaw) {
+        definicaoCatalogo?.let { definicao ->
+            pericias.filter { viewModel.tecnicaAtendePreRequisito(definicao, it) }
+        } ?: pericias
+    }
+    LaunchedEffect(periciasCompativeis) {
+        val selecionadaAtualValida = periciasCompativeis.any { periciaTecnicaKey(it) == periciaSelecionadaId }
+        if (!selecionadaAtualValida) {
+            val primeiraCompativel = periciasCompativeis.firstOrNull()
+            if (primeiraCompativel != null) {
+                periciaSelecionadaId = periciaTecnicaKey(primeiraCompativel)
+            }
+        }
+    }
     val periciaBase = pericias.firstOrNull { periciaTecnicaKey(it) == periciaSelecionadaId }
     val predefModificador = tecnica.preDefinidoModificador
     val limiteMaximo = tecnica.limiteMaximoRelativo
@@ -396,9 +417,12 @@ fun EditarTecnicaDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Editar Técnica") },
+        title = null,
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
                 Text(
                     tecnica.nome,
                     style = MaterialTheme.typography.headlineSmall.copy(
@@ -407,15 +431,33 @@ fun EditarTecnicaDialog(
                     )
                 )
                 Text("${tecnica.sourceBook} | ${tecnica.dificuldadeRaw}", style = MaterialTheme.typography.bodySmall)
+                if (preRequisitoExibicao.isNotBlank()) {
+                    Text("Pré-requisito: $preRequisitoExibicao", style = MaterialTheme.typography.bodySmall)
+                }
+                if (tecnica.preDefinidoRaw.isNotBlank()) {
+                    Text("Pré-definido: ${tecnica.preDefinidoRaw}", style = MaterialTheme.typography.bodySmall)
+                }
 
-                Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
-                pericias.forEach { pericia ->
-                    val key = periciaTecnicaKey(pericia)
-                    FilterChip(
-                        selected = periciaSelecionadaId == key,
-                        onClick = { periciaSelecionadaId = key },
-                        label = { Text(periciaTecnicaLabel(pericia)) }
+                if (pericias.isEmpty()) {
+                    Text(
+                        "Adicione ao menos uma perícia antes de editar técnicas.",
+                        color = MaterialTheme.colorScheme.error
                     )
+                } else if (periciasCompativeis.isEmpty()) {
+                    Text(
+                        "Nenhuma perícia da ficha atende ao pré-requisito desta técnica.",
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else {
+                    Text("Perícia base:", style = MaterialTheme.typography.labelMedium)
+                    periciasCompativeis.forEach { pericia ->
+                        val key = periciaTecnicaKey(pericia)
+                        FilterChip(
+                            selected = periciaSelecionadaId == key,
+                            onClick = { periciaSelecionadaId = key },
+                            label = { Text(periciaTecnicaLabel(pericia)) }
+                        )
+                    }
                 }
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)

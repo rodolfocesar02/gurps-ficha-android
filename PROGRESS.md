@@ -202,6 +202,11 @@ Critério de aceite:
 8. [x] Refinar regra de compatibilidade de perícia base para técnicas com texto ambíguo de pré-requisito (arma apropriada/ataque corpo a corpo).
 9. [x] Instalar build `visual` no emulador após os ajustes de técnicas (task `:app:installVisualDebug`).
 10. [x] Validar consistência final do lote de técnicas com auditoria e testes direcionados.
+11. [x] Corrigir coerência do diálogo **Editar Técnica** para espelhar o diálogo de seleção/configuração:
+    - mesmo bloco informativo (`Pré-requisito` e `Pré-definido`);
+    - remoção do título redundante `Editar Técnica`;
+    - filtro de `Perícia base` apenas para perícias compatíveis com o pré-requisito;
+    - instalação da build `visual` no emulador após ajuste.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
