@@ -67,6 +67,30 @@ class NexusArcanoModoAlvoAdapterTest {
         assertEquals("Bloqueio: atributo ou aptidao magica insuficiente.", snapshot.bloqueioCurto)
     }
 
+    @Test
+    fun `aviso do modo alvo e falha hierarquica usam mesma mensagem`() {
+        val adapter = NexusArcanoModoAlvoAdapter(catalogoBase())
+        val known = emptySet<String>()
+
+        val snapshot = adapter.calcular(
+            alvoId = "desejo",
+            magiasConhecidasIds = known,
+            iq = 12,
+            dx = 10,
+            am = 3
+        )
+        val falha = adapter.falhaPreRequisitoHierarquica(
+            alvoId = "desejo",
+            magiasConhecidasIds = known,
+            iq = 12,
+            dx = 10,
+            am = 3
+        )
+
+        assertEquals(snapshot.aviso, falha)
+        assertTrue(snapshot.aviso.orEmpty().isNotBlank())
+    }
+
     private fun catalogoBase(): List<MagiaDefinicao> {
         return listOf(
             MagiaDefinicao(

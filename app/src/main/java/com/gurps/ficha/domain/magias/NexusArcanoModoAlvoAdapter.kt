@@ -120,7 +120,7 @@ class NexusArcanoModoAlvoAdapter(
             proximaObrigatoriaId = proximaObrigatoria,
             proximaLateralUtilId = proximaLateralUtil,
             bloqueioCurto = montarBloqueioCurto(resultado),
-            aviso = montarAviso(resultado)
+            aviso = mensagemFalhaHierarquica(alvoId, resultado)
         )
     }
 
@@ -142,7 +142,10 @@ class NexusArcanoModoAlvoAdapter(
                 dx = dx
             )
         )
+        return mensagemFalhaHierarquica(alvoId, resultado)
+    }
 
+    private fun mensagemFalhaHierarquica(alvoId: String, resultado: ArcanoResultado): String? {
         val chaveAlvoId = "chave_alvo_$alvoId"
         val alvoLiberado = resultado.chavesAtivas.any { it.id == chaveAlvoId }
         if (alvoLiberado) return null
@@ -158,17 +161,6 @@ class NexusArcanoModoAlvoAdapter(
 
         if (faltas.isNotEmpty()) return faltas.joinToString(" | ")
         return resultado.motivoBloqueio?.trim()?.takeIf { it.isNotBlank() }
-    }
-
-    private fun montarAviso(resultado: ArcanoResultado): String? {
-        val faltantes = resultado.chavesFaltantes.take(3)
-            .joinToString(" | ") { it.descricao }
-            .trim()
-        return when {
-            !resultado.motivoBloqueio.isNullOrBlank() -> resultado.motivoBloqueio
-            faltantes.isNotBlank() -> "Chaves pendentes: $faltantes"
-            else -> null
-        }
     }
 
     private fun montarProgressoCadeia(alvoId: String, metas: List<ArcanoMetaProgress>): String? {
