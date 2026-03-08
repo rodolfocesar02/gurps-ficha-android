@@ -78,18 +78,26 @@ Criterios de aceite A1:
 3. Checklist de fontes pronto para receber livros em portugues e ingles.
 
 ### Lote A2 - Base de Conhecimento e Ingestao (AGENTE GURPS)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Definir plano tecnico do pipeline de ingestao (raw -> processed -> index).
 2. [x] Criar manifesto inicial de fontes com metadados minimos.
 3. [x] Criar script de validacao do manifesto.
 4. [x] Receber seus livros PT/EN em `AGENTE GURPS/sources/raw/` e registrar no manifesto.
-5. [ ] Rodar ingestao inicial (extracao/chunks) e gerar primeiro relatorio de cobertura.
+5. [x] Rodar ingestao inicial (extracao/chunks) e gerar primeiro relatorio de cobertura.
 6. [x] Definir modo inicial sem conflito: somente fontes em portugues por padrao.
 
 Evidencia parcial A2.5:
 1. Script `AGENTE GURPS/scripts/ingestar_pdf_hibrido.py` criado (pipeline hibrido com layout + fallback OCR).
+2. Ingestao inicial executada com `--max-pages-per-pdf 5`:
+- `pdfs_processados=19`
+- `paginas_processadas=90`
+- `chunks_gerados=378`
+- `paginas_duas_colunas=71`
+- `paginas_suspeitas=14`
+- `ocr_disponivel=false` (fallback OCR ainda nao habilitado no ambiente atual)
+3. Relatorio gerado em `AGENTE GURPS/sources/processed/reports/ingestao_inicial_report.json`.
 
 Criterios de aceite A2:
 1. Manifesto validado sem erros.

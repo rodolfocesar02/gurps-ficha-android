@@ -1,0 +1,4 @@
+*.jsonl
+!reports/
+!reports/*.json
+!.gitkeep
