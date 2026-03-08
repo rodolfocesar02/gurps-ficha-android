@@ -3,6 +3,7 @@ import argparse
 import csv
 import json
 import re
+import shutil
 import unicodedata
 from dataclasses import dataclass
 from pathlib import Path
@@ -14,7 +15,16 @@ import pdfplumber
 try:
     import pytesseract  # type: ignore
     from PIL import Image  # type: ignore
-    OCR_AVAILABLE = True
+    tesseract_cmd = shutil.which("tesseract")
+    if not tesseract_cmd:
+        default_tesseract = Path("C:/Program Files/Tesseract-OCR/tesseract.exe")
+        if default_tesseract.exists():
+            tesseract_cmd = str(default_tesseract)
+    if tesseract_cmd:
+        pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
+        OCR_AVAILABLE = True
+    else:
+        OCR_AVAILABLE = False
 except Exception:
     OCR_AVAILABLE = False
 
