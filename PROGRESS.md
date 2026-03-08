@@ -70,13 +70,13 @@ Status: `CONCLUIDO`
 3. [x] Registrar instruções mínimas de publicação de versão.
 
 ### Lote U2 - UX de Verificação no App
-Status: `EM ANDAMENTO`
-1. [ ] Adicionar ação "Verificar atualização" no menu principal.
-2. [ ] Exibir resultado (atualizado/atualização disponível/erro).
-3. [ ] Abrir link do APK mais novo para instalação manual.
+Status: `CONCLUIDO`
+1. [x] Adicionar ação "Verificar atualização" no menu principal.
+2. [x] Exibir resultado (atualizado/atualização disponível/erro).
+3. [x] Abrir link do APK mais novo para instalação manual.
 
 ### Lote U3 - Validação e Fechamento Operacional
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 1. [ ] Validar build `visual/pracego` após integração.
 2. [ ] Executar testes mínimos de regressão.
 3. [ ] Documentar o que você precisa fazer para publicar cada nova versão.
