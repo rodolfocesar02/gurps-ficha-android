@@ -191,33 +191,43 @@ Evidencias finais A6:
 3. Encerramento técnico: `acionaveis=0`, sem pendência real no lote inicial de 90 páginas.
 
 ### Lote A7 - Indexacao Vetorial (RAG Base)
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote A7 no `PROGRESS` com escopo tecnico.
 2. [x] Criar estrutura de backend (`AGENTE GURPS/backend`) e configuracoes de ambiente.
 3. [x] Implementar script de indexacao de `chunks.jsonl` para ChromaDB.
-4. [ ] Gerar relatorio de indexacao com total de chunks indexados e fonte/pagina.
+4. [x] Gerar relatorio de indexacao com total de chunks indexados e fonte/pagina.
 
 Criterios de aceite A7:
 1. Index vetorial persistido em `AGENTE GURPS/index/chroma/`.
 2. Script reproduzivel para reindexar base (`python .../indexar_chunks_chroma.py`).
 3. Relatorio de indexacao versionado em `sources/processed/reports/`.
 
+Evidencias A7:
+1. Script: `AGENTE GURPS/backend/indexar_chunks_chroma.py`.
+2. Relatorio: `AGENTE GURPS/sources/processed/reports/indexacao_chroma_report.json`.
+3. Resultado atual: `total_chunks_indexados=392` na colecao `gurps_pt_v1`.
+
 ### Lote A8 - API de Consulta (/ask) com Politica PT-BR
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote A8 no `PROGRESS` com regras de resposta.
 2. [x] Implementar API FastAPI com endpoints `/health` e `/ask`.
 3. [x] Implementar recuperacao top-k no indice vetorial + montagem de contexto com citacoes.
 4. [x] Aplicar politica fixa: resposta final em portugues, citando fonte/pagina, e marcar inferencia.
-5. [ ] Validar chamada local da API e documentar comandos de execucao.
+5. [x] Validar chamada local da API e documentar comandos de execucao.
 
 Criterios de aceite A8:
 1. Endpoint `/ask` funcional com retorno em portugues.
 2. Resposta inclui bloco de fontes (`source_id`, `source_title`, `page_number`).
 3. Sem base suficiente, API retorna aviso de baixa confianca (sem inventar regra).
+
+Evidencias A8:
+1. API: `AGENTE GURPS/backend/api_server.py` (`/health`, `/ask`).
+2. Validacao local (TestClient): `health=200`, `ask=200`, `sources=3`.
+3. Guia de execucao atualizado: `AGENTE GURPS/backend/README.md`.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.

@@ -5,8 +5,8 @@ Backend local para consulta RAG com base vetorial (ChromaDB) e resposta final em
 ## 1) Preparacao
 ```bash
 cd "AGENTE GURPS/backend"
-python -m venv .venv
-.venv\Scripts\activate
+py -3.11 -m venv .venv311
+.venv311\Scripts\activate
 pip install -r requirements.txt
 copy .env.example .env
 ```
@@ -24,7 +24,14 @@ Saida:
 
 ## 3) Subir API
 ```bash
-uvicorn app:app --reload --port 8787
+uvicorn api_server:app --reload --port 8787
+```
+
+Teste rapido local:
+```bash
+curl -X POST "http://127.0.0.1:8787/ask" ^
+  -H "Content-Type: application/json" ^
+  -d "{\"question\":\"O que e Aptidao Magica no GURPS?\",\"mode\":\"regras\",\"top_k\":6}"
 ```
 
 Endpoints:
