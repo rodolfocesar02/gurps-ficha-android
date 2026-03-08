@@ -229,6 +229,36 @@ Evidencias A8:
 2. Validacao local (TestClient): `health=200`, `ask=200`, `sources=3`.
 3. Guia de execucao atualizado: `AGENTE GURPS/backend/README.md`.
 
+### Lote A9 - Guardrails de Confianca e Citacoes (Backend AGENTE)
+Status: `EM_ANDAMENTO`
+
+Passos:
+1. [x] Registrar lote A9 no `PROGRESS`.
+2. [ ] Reforcar regra de baixa confianca por score minimo recuperado (sem inventar resposta).
+3. [ ] Garantir secao de fontes consistente no output, mesmo quando houver resposta por LLM.
+4. [ ] Validar cenarios minimo: com contexto e sem contexto, com saida em portugues.
+
+Criterios de aceite A9:
+1. Backend retorna aviso de baixa confianca quando evidencia for fraca.
+2. Resposta final inclui citacoes de fonte/pagina.
+3. Politica PT-BR preservada em todos os cenarios de fallback.
+
+### Lote A10 - Integracao no App Android (Assistente)
+Status: `EM_ANDAMENTO`
+
+Passos:
+1. [x] Registrar lote A10 no `PROGRESS`.
+2. [ ] Adicionar configuracao de URL da API do agente no `BuildConfig`.
+3. [ ] Implementar cliente Android para endpoint `/ask`.
+4. [ ] Adicionar entrada no menu para abrir dialogo "Assistente GURPS".
+5. [ ] Implementar dialogo de consulta com pergunta, resposta e fontes.
+6. [ ] Validar compilacao das variantes `visual` e `pracego`.
+
+Criterios de aceite A10:
+1. Usuario consegue abrir o assistente pelo menu.
+2. Consulta retorna resposta + fontes sem travar a UI.
+3. Funciona nas duas variantes (visual e pracego).
+
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
 2. Relatório principal registra `baseline_relatorio_principal=14`.
