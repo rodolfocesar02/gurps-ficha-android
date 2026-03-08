@@ -4,16 +4,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -66,17 +62,12 @@ fun TabTracos(viewModel: FichaViewModel) {
         if (p.vantagens.isNotEmpty()) {
             Text("Vantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.vantagens.forEachIndexed { index, vantagem ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        VantagemItem(
-                            vantagem = vantagem,
-                            onEdit = { editingVantagemIndex = index },
-                            onDelete = { viewModel.removerVantagem(index) }
-                        )
-                    }
+                AppListItemCard {
+                    VantagemItem(
+                        vantagem = vantagem,
+                        onEdit = { editingVantagemIndex = index },
+                        onDelete = { viewModel.removerVantagem(index) }
+                    )
                 }
             }
         }
@@ -89,18 +80,13 @@ fun TabTracos(viewModel: FichaViewModel) {
             Text("Desvantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.desvantagens.forEachIndexed { index, desvantagem ->
                 val permiteAutocontrole = desvantagensPorId[desvantagem.definicaoId]?.usaAutocontroleMental() ?: false
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        DesvantagemItem(
-                            desvantagem = desvantagem,
-                            exibirAutocontrole = permiteAutocontrole,
-                            onEdit = { editingDesvantagemIndex = index },
-                            onDelete = { viewModel.removerDesvantagem(index) }
-                        )
-                    }
+                AppListItemCard {
+                    DesvantagemItem(
+                        desvantagem = desvantagem,
+                        exibirAutocontrole = permiteAutocontrole,
+                        onEdit = { editingDesvantagemIndex = index },
+                        onDelete = { viewModel.removerDesvantagem(index) }
+                    )
                 }
             }
         }
@@ -112,14 +98,11 @@ fun TabTracos(viewModel: FichaViewModel) {
         if (p.qualidades.isNotEmpty()) {
             Text("Qualidades", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.qualidades.forEachIndexed { index, qualidade ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
+                AppListItemCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(vertical = UiTokens.ItemSpacing),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -139,14 +122,11 @@ fun TabTracos(viewModel: FichaViewModel) {
         if (p.peculiaridades.isNotEmpty()) {
             Text("Peculiaridades", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.peculiaridades.forEachIndexed { index, peculiaridade ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
+                AppListItemCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(vertical = UiTokens.ItemSpacing),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
