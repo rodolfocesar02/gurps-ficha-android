@@ -66,7 +66,7 @@ Status: `PLANEJADO`
 ### Lote U1 - Fundação de Atualização Remota
 Status: `EM ANDAMENTO`
 1. [x] Definir URL de metadados de atualização no `BuildConfig`.
-2. [ ] Criar cliente para baixar e interpretar `update.json`.
+2. [x] Criar cliente para baixar e interpretar `update.json`.
 3. [ ] Registrar instruções mínimas de publicação de versão.
 
 ### Lote U2 - UX de Verificação no App
