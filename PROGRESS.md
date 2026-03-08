@@ -351,6 +351,14 @@ Bloqueio operacional atual (A12 passo 1):
 2. Diagnóstico registrado em `AGENTE GURPS/sources/processed/reports/a12_llm_diagnostico_report.json`.
 3. Enquanto a quota/crédito não for regularizada, o backend permanece em modo offline (fallback por trecho).
 
+Ajuste técnico complementar (A12):
+1. Backend adaptado para provider OpenAI-compatible via `OPENAI_BASE_URL` (ex.: Google AI Studio).
+2. Compatibilidade de chat com fallback `responses.create` -> `chat.completions.create`.
+3. Arquivos atualizados:
+- `AGENTE GURPS/backend/rag_runtime.py`
+- `AGENTE GURPS/backend/.env.example`
+- `AGENTE GURPS/backend/README.md`
+
 ### Lote A13 - Polimento Final de UX no App
 Status: `PLANEJADO`
 

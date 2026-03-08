@@ -33,6 +33,7 @@ class RagSettings:
     collection_name: str
     top_k: int
     openai_api_key: str
+    openai_base_url: str
     openai_embed_model: str
     openai_chat_model: str
 
@@ -58,6 +59,7 @@ def load_settings() -> RagSettings:
         collection_name=os.getenv("RAG_COLLECTION", "gurps_pt_v1"),
         top_k=_safe_int(os.getenv("RAG_TOP_K"), 6),
         openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
+        openai_base_url=os.getenv("OPENAI_BASE_URL", "").strip(),
         openai_embed_model=os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-small"),
         openai_chat_model=os.getenv("OPENAI_CHAT_MODEL", "gpt-4.1-mini"),
     )
@@ -83,7 +85,10 @@ def build_embeddings(settings: RagSettings, texts: List[str]) -> List[List[float
         try:
             from openai import OpenAI
 
-            client = OpenAI(api_key=settings.openai_api_key)
+            client_kwargs = {"api_key": settings.openai_api_key}
+            if settings.openai_base_url:
+                client_kwargs["base_url"] = settings.openai_base_url
+            client = OpenAI(**client_kwargs)
             response = client.embeddings.create(model=settings.openai_embed_model, input=texts)
             return [item.embedding for item in response.data]
         except Exception:
@@ -249,13 +254,29 @@ def answer_with_citations(settings: RagSettings, question: str, mode: str, conte
         try:
             from openai import OpenAI
 
-            client = OpenAI(api_key=settings.openai_api_key)
-            response = client.responses.create(
-                model=settings.openai_chat_model,
-                input=prompt,
-                temperature=0.2,
-            )
-            text = response.output_text.strip()
+            client_kwargs = {"api_key": settings.openai_api_key}
+            if settings.openai_base_url:
+                client_kwargs["base_url"] = settings.openai_base_url
+            client = OpenAI(**client_kwargs)
+
+            text = ""
+            try:
+                # OpenAI native Responses API
+                response = client.responses.create(
+                    model=settings.openai_chat_model,
+                    input=prompt,
+                    temperature=0.2,
+                )
+                text = (response.output_text or "").strip()
+            except Exception:
+                # Compat mode (Google/OpenAI-compatible and similares)
+                completion = client.chat.completions.create(
+                    model=settings.openai_chat_model,
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.2,
+                )
+                msg = completion.choices[0].message if completion.choices else None
+                text = (msg.content or "").strip() if msg else ""
             if text:
                 return ensure_sources_block(text, context_items)
         except Exception:
