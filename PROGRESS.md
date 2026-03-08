@@ -2,6 +2,55 @@
 
 Atualizado em: 2026-03-08
 
+## Plano Macro - Versão 2.0 (sem alterar V1 em uso)
+Status: `ATIVO`
+
+Diretriz:
+1. A V1 atual continua estável e utilizável.
+2. Toda evolução de produto passa a entrar como trilha V2, em lotes independentes.
+3. Cada lote V2 fecha com commit próprio + validação mínima.
+
+### Lote V2.1 - Estrutura Segura de Evolução
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Definir no `PROGRESS.md` a trilha V2 separada da V1.
+2. [x] Garantir que artefatos locais do AGENTE não entrem em commit (`.gitignore`).
+3. [ ] Criar branch de trabalho dedicada (`v2-main`) para desenvolvimento contínuo.
+4. [ ] Criar checklist de "não regressão V1" por release V2.
+
+Critérios de aceite:
+1. Repositório com base limpa para começar V2 sem risco de regressão acidental.
+2. Commits V2 rastreáveis por lote e passo.
+
+### Lote V2.2 - Padronização Visual Global (Visual + PraCego)
+Status: `PLANEJADO`
+
+Passos:
+1. [ ] Congelar tokens de UI globais (espaço, tipografia, raio, tamanhos de toque).
+2. [ ] Aplicar padrão único em cards (Perícias, Técnicas, Magias, Tracos, Equipamentos, Defesas, Rolagem).
+3. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
+4. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
+5. [ ] Validar em emulador visual e pracego.
+
+### Lote V2.3 - Fluxo de Dados e Regras Canônicas
+Status: `PLANEJADO`
+
+Passos:
+1. [ ] Auditoria de JSONs ativos (pré-requisitos, nomes e acentuação).
+2. [ ] Correção orientada por canônico com testes de regressão.
+3. [ ] Varredura automática de artefatos de encoding antes de build.
+4. [ ] Relatório de cobertura por catálogo (vantagens, desvantagens, perícias, técnicas, magias).
+
+### Lote V2.4 - UX de Edição e Intuitividade
+Status: `PLANEJADO`
+
+Passos:
+1. [ ] Revisar textos de ação para consistência (Adicionar/Editar/Remover/Fechar).
+2. [ ] Padronizar feedback pós-ação (snackbar curto + acessível).
+3. [ ] Melhorar estado vazio e mensagens de erro orientadas a solução.
+4. [ ] Definir mapa de foco final para `pracego`.
+
 ## Regra Permanente - Higiene de Texto (acentos/artefatos)
 **Regra fixa para todos os lotes daqui em diante:**
 1. Antes de commit de catálogo/UI, executar varredura de mojibake e acentuação quebrada nos arquivos ativos (`app/src/main/assets/*.json` e textos exibidos pela UI).
