@@ -195,7 +195,7 @@ Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote A7 no `PROGRESS` com escopo tecnico.
-2. [ ] Criar estrutura de backend (`AGENTE GURPS/backend`) e configuracoes de ambiente.
+2. [x] Criar estrutura de backend (`AGENTE GURPS/backend`) e configuracoes de ambiente.
 3. [ ] Implementar script de indexacao de `chunks.jsonl` para ChromaDB.
 4. [ ] Gerar relatorio de indexacao com total de chunks indexados e fonte/pagina.
 
