@@ -40,6 +40,12 @@ android {
         ) ?: "true")
             .lowercase()
             .let { it == "1" || it == "true" || it == "yes" || it == "on" }
+        val updateMetadataUrl = (firstNonBlank(
+            project.findProperty("UPDATE_METADATA_URL") as? String,
+            localProperties.getProperty("UPDATE_METADATA_URL")
+        ) ?: "")
+            .trim()
+            .replace("\"", "\\\"")
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
@@ -53,6 +59,7 @@ android {
             "MODO_ALVO_NEXUS_HABILITADO",
             "Boolean.valueOf(${modoAlvoNexusHabilitado.toString()})"
         )
+        buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
