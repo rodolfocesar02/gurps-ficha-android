@@ -1406,11 +1406,23 @@ fun EditarMagiaDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(magia.copy(pontosGastos = pontosGastos)) }) {
+            TextButton(
+                onClick = { onSave(magia.copy(pontosGastos = pontosGastos)) },
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Salvar edição da magia"
+                }
+            ) {
                 Text("Salvar")
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Cancelar edição da magia"
+                }
+            ) { Text("Cancelar") }
+        }
     )
 
     if (mostrarDescricaoMagiaPopup) {
@@ -1424,7 +1436,12 @@ fun EditarMagiaDialog(
                 )
             },
             confirmButton = {
-                TextButton(onClick = { mostrarDescricaoMagiaPopup = false }) { Text("Fechar") }
+                TextButton(
+                    onClick = { mostrarDescricaoMagiaPopup = false },
+                    modifier = Modifier.semantics {
+                        if (isPraCegoVariant) contentDescription = "Fechar descrição da magia"
+                    }
+                ) { Text("Fechar") }
             }
         )
     }

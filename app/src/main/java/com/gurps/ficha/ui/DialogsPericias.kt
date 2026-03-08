@@ -553,8 +553,22 @@ fun EditarPericiaDialog(
                 Text("NH: $nivelPreview (${pericia.atributoBase.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
             }
         },
-        confirmButton = { TextButton(onClick = { onSave(pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)) }) { Text("Salvar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = {
+            TextButton(
+                onClick = { onSave(pericia.copy(pontosGastos = pontosGastos, especializacao = especializacao)) },
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Salvar edição da perícia"
+                }
+            ) { Text("Salvar") }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Cancelar edição da perícia"
+                }
+            ) { Text("Cancelar") }
+        }
     )
 
     if (mostrarDescricao) {
@@ -581,7 +595,14 @@ fun EditarPericiaDialog(
                     }
                 }
             },
-            confirmButton = { TextButton(onClick = { mostrarDescricao = false }) { Text("Fechar") } }
+            confirmButton = {
+                TextButton(
+                    onClick = { mostrarDescricao = false },
+                    modifier = Modifier.semantics {
+                        if (isPraCegoVariant) contentDescription = "Fechar descrição da perícia"
+                    }
+                ) { Text("Fechar") }
+            }
         )
     }
 }
