@@ -128,13 +128,13 @@ Evidencias A3:
 4. Conclusao tecnica: houve ganho de cobertura (OCR aplicado e mais chunks), sem reducao no total de paginas suspeitas; manter fila de revisao manual das 14 paginas residuais no proximo lote.
 
 ### Lote A4 - Revisao Dirigida de Paginas Suspeitas (AGENTE GURPS)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote de revisão dirigida com meta de listar páginas exatas suspeitas.
 2. [x] Gerar relatório detalhado com `source_id`, título, página, tamanho de texto e uso de OCR.
 3. [x] Validar contagem final das suspeitas e cruzar com relatório A3.
-4. [ ] Publicar instrução de revisão manual por prioridade.
+4. [x] Publicar instrução de revisão manual por prioridade.
 
 Criterios de aceite A4:
 1. Lista exata das 14 páginas suspeitas disponível em arquivo versionado.
