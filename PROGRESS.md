@@ -209,9 +209,9 @@ Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote A8 no `PROGRESS` com regras de resposta.
-2. [ ] Implementar API FastAPI com endpoints `/health` e `/ask`.
-3. [ ] Implementar recuperacao top-k no indice vetorial + montagem de contexto com citacoes.
-4. [ ] Aplicar politica fixa: resposta final em portugues, citando fonte/pagina, e marcar inferencia.
+2. [x] Implementar API FastAPI com endpoints `/health` e `/ask`.
+3. [x] Implementar recuperacao top-k no indice vetorial + montagem de contexto com citacoes.
+4. [x] Aplicar politica fixa: resposta final em portugues, citando fonte/pagina, e marcar inferencia.
 5. [ ] Validar chamada local da API e documentar comandos de execucao.
 
 Criterios de aceite A8:
