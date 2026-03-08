@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from rag_runtime import (
     answer_with_citations,
     build_low_confidence_answer,
+    ensure_collection_ready,
     evaluate_evidence,
     load_settings,
     retrieve_context,
@@ -38,14 +39,24 @@ class AskResponse(BaseModel):
 
 app = FastAPI(title="AGENTE GURPS API", version="0.1.0")
 
+
+@app.on_event("startup")
+def startup_prepare_index():
+    settings = load_settings()
+    app.state.rag_status = ensure_collection_ready(settings)
+
+
 @app.get("/health")
 def health():
     settings = load_settings()
+    rag_status = getattr(app.state, "rag_status", {})
     return {
         "status": "ok",
         "collection": settings.collection_name,
         "chroma_dir": str(settings.chroma_dir),
         "has_openai_key": bool(settings.openai_api_key),
+        "rag_ready": bool(rag_status.get("ready", False)),
+        "indexed_chunks": int(rag_status.get("count", 0)),
     }
 
 

@@ -5,6 +5,8 @@ import hashlib
 import json
 import os
 import re
+from collections import defaultdict
+from datetime import datetime, timezone
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -135,6 +137,79 @@ def load_chunks(chunks_file: Path) -> List[Dict[str, Any]]:
                 continue
             items.append(row)
     return items
+
+
+def _batched(items: List[Dict[str, Any]], batch_size: int = 128):
+    for start in range(0, len(items), batch_size):
+        end = min(len(items), start + batch_size)
+        yield items[start:end]
+
+
+def reindex_collection(settings: RagSettings) -> Dict[str, Any]:
+    collection = reset_collection(settings)
+    chunks = load_chunks(settings.chunks_file)
+
+    source_counter = defaultdict(int)
+    total = 0
+
+    for batch in _batched(chunks, batch_size=128):
+        ids = [row["chunk_id"] for row in batch]
+        docs = [row["text"] for row in batch]
+        metas = []
+        for row in batch:
+            source_id = row.get("source_id", "")
+            source_counter[source_id] += 1
+            metas.append(
+                {
+                    "chunk_id": row.get("chunk_id", ""),
+                    "source_id": source_id,
+                    "source_title": row.get("source_title", ""),
+                    "page_number": int(row.get("page_number", 0)),
+                    "language": row.get("language", "pt"),
+                }
+            )
+
+        embs = build_embeddings(settings, docs)
+        collection.upsert(ids=ids, documents=docs, metadatas=metas, embeddings=embs)
+        total += len(batch)
+
+    report = {
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "collection_name": settings.collection_name,
+        "chunks_file": str(settings.chunks_file),
+        "chroma_dir": str(settings.chroma_dir),
+        "total_chunks_indexados": total,
+        "fontes_indexadas": dict(sorted(source_counter.items())),
+    }
+
+    settings.reports_dir.mkdir(parents=True, exist_ok=True)
+    report_path = settings.reports_dir / "indexacao_chroma_report.json"
+    with report_path.open("w", encoding="utf-8", newline="\n") as f:
+        json.dump(report, f, ensure_ascii=False, indent=2)
+
+    return report
+
+
+def ensure_collection_ready(settings: RagSettings) -> Dict[str, Any]:
+    collection = get_chroma_collection(settings)
+    try:
+        count = int(collection.count())
+    except Exception:
+        count = 0
+
+    auto_index = os.getenv("RAG_AUTO_INDEX_ON_STARTUP", "1").strip().lower() not in {"0", "false", "no"}
+    if count > 0 or not auto_index:
+        return {"ready": count > 0, "auto_index": auto_index, "count": count}
+    if not settings.chunks_file.exists():
+        return {
+            "ready": False,
+            "auto_index": auto_index,
+            "count": 0,
+            "error": f"chunks_file nao encontrado: {settings.chunks_file}",
+        }
+
+    report = reindex_collection(settings)
+    return {"ready": True, "auto_index": auto_index, "count": report.get("total_chunks_indexados", 0), "reindexed": True}
 
 
 def retrieve_context(settings: RagSettings, question: str, top_k: Optional[int] = None) -> Dict[str, Any]:
