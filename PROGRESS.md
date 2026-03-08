@@ -18,6 +18,7 @@ Atualizado em: 2026-03-08
 - relatório em `app/build/reports/` ou `scripts/reports/`
 - atualização deste `PROGRESS.md`
 5. Commit por lote com mensagem objetiva (`lote-N: ...`).
+6. No pipeline do AGENTE GURPS, páginas de abertura (capa/sumário) devem ser classificadas separadamente para não contaminar a métrica de suspeitas acionáveis.
 
 ## Situação de Lotes
 1. Lotes históricos concluídos e já validados foram arquivados deste arquivo para evitar ruído operacional.
@@ -167,13 +168,13 @@ Evidencias A5:
 4. Checklist final de revisao restante: `AGENTE GURPS/docs/A5_REVISAO_RESTANTE_5_PAGINAS.md`.
 
 ### Lote A6 - Fechamento de Suspeitas Operacionais (Capas/Sumarios)
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote A6 com criterio de separacao entre suspeita tecnica e suspeita operacional.
 2. [x] Implementar classificador de paginas residuais para identificar capas/sumarios de abertura.
 3. [x] Gerar relatorio de suspeitas operacionais (acionaveis) apos classificacao.
-4. [ ] Fechar lote com evidencias e regra permanente para evitar falso positivo de capa.
+4. [x] Fechar lote com evidencias e regra permanente para evitar falso positivo de capa.
 
 Criterios de aceite A6:
 1. Relatorio com duas classes: `aceitas_contexto` (capa/sumario) e `acionaveis`.
@@ -183,6 +184,11 @@ Criterios de aceite A6:
 Evidencia parcial A6.3:
 1. Relatorio gerado: `AGENTE GURPS/sources/processed/reports/suspeitas_operacionais_report.json`.
 2. Resultado: `total_suspeitas_entrada=5`, `aceitas_contexto=5`, `acionaveis=0`.
+
+Evidencias finais A6:
+1. Classificador versionado: `AGENTE GURPS/scripts/classificar_suspeitas_operacionais.py`.
+2. Relatório operacional versionado: `AGENTE GURPS/sources/processed/reports/suspeitas_operacionais_report.{json,md}`.
+3. Encerramento técnico: `acionaveis=0`, sem pendência real no lote inicial de 90 páginas.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
