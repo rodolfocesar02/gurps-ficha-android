@@ -378,7 +378,7 @@ Criterios de aceite A13:
 3. Acessibilidade preservada na variante pra cego.
 
 ### Lote A14 - Deploy Cloud do AGENTE na Railway
-Status: `CONCLUIDO`
+Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Preparar entrypoint de execucao para cloud sem comando complexo.
@@ -396,6 +396,18 @@ Evidencias A14:
 2. Auto-index em startup: `AGENTE GURPS/backend/rag_runtime.py` + `AGENTE GURPS/backend/api_server.py`.
 3. Documentacao de deploy: `AGENTE GURPS/backend/README.md`.
 4. Config de ambiente atualizada: `AGENTE GURPS/backend/.env.example`.
+5. Dominio publico ativo: `https://gurpsagent-production.up.railway.app`.
+6. Health atual em cloud: `status=ok`, `has_openai_key=true`, `rag_ready=false`, `indexed_chunks=0`.
+
+Pendencia operacional A14 (Railway):
+1. Ajustar `Root Directory` para raiz do repositorio (vazio).
+2. Garantir comandos:
+- Build: `python -m pip install -r "AGENTE GURPS/backend/requirements.txt"`
+- Start: `python "AGENTE GURPS/backend/start_railway.py"`
+3. Redeploy manual e validar `/health` com:
+- `rag_ready=true`
+- `indexed_chunks > 0` (esperado ~`17971`)
+4. Apos validacao do `/health`, validar `POST /ask` e atualizar status do A14 para `CONCLUIDO`.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
