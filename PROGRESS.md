@@ -64,8 +64,8 @@ Status: `PLANEJADO`
 
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
-Status: `PENDENTE`
-1. [ ] Definir URL de metadados de atualização no `BuildConfig`.
+Status: `EM ANDAMENTO`
+1. [x] Definir URL de metadados de atualização no `BuildConfig`.
 2. [ ] Criar cliente para baixar e interpretar `update.json`.
 3. [ ] Registrar instruções mínimas de publicação de versão.
 
