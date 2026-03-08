@@ -1,0 +1,108 @@
+{
+  "target_pages": 14,
+  "improved_pages": 13,
+  "before_suspects": 14,
+  "after_suspects": 5,
+  "delta_suspects": 9,
+  "delta_chunks_total": 392,
+  "pages": [
+    {
+      "source_id": "pt_gurps_4a_edicao_artes_marciais",
+      "page_number": 2,
+      "old_len": 35,
+      "new_len": 196,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_fantasy",
+      "page_number": 1,
+      "old_len": 78,
+      "new_len": 137,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_high_tech",
+      "page_number": 1,
+      "old_len": 119,
+      "new_len": 230,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_low_tech",
+      "page_number": 1,
+      "old_len": 30,
+      "new_len": 120,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_magia",
+      "page_number": 2,
+      "old_len": 110,
+      "new_len": 185,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_meta_tech",
+      "page_number": 1,
+      "old_len": 73,
+      "new_len": 183,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_modulo_basico",
+      "page_number": 1,
+      "old_len": 105,
+      "new_len": 178,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_modulo_basico_campanhas",
+      "page_number": 1,
+      "old_len": 102,
+      "new_len": 201,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_modulo_basico_personagens",
+      "page_number": 1,
+      "old_len": 152,
+      "new_len": 154,
+      "improved": false
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_poderes_psiquicos",
+      "page_number": 2,
+      "old_len": 0,
+      "new_len": 149,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_supers",
+      "page_number": 1,
+      "old_len": 72,
+      "new_len": 188,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_ultra_tech",
+      "page_number": 1,
+      "old_len": 99,
+      "new_len": 239,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_viagem_espacial",
+      "page_number": 1,
+      "old_len": 68,
+      "new_len": 209,
+      "improved": true
+    },
+    {
+      "source_id": "pt_gurps_4o_edicao_gun_fu",
+      "page_number": 1,
+      "old_len": 73,
+      "new_len": 234,
+      "improved": true
+    }
+  ]
+}

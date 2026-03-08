@@ -1,34 +1,16 @@
 {
-  "total_suspeitas_detalhado": 14,
+  "total_suspeitas_detalhado": 5,
   "baseline_relatorio_principal": 14,
-  "match_baseline": true,
+  "match_baseline": false,
   "itens": [
-    {
-      "source_id": "pt_gurps_4a_edicao_artes_marciais",
-      "source_title": "GURPS 4ª Edição - Artes Marciais",
-      "page_number": 2,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 35,
-      "page_id": "pt_gurps_4a_edicao_artes_marciais_p2"
-    },
     {
       "source_id": "pt_gurps_4a_edicao_fantasy",
       "source_title": "GURPS 4ª Edição - Fantasy",
       "page_number": 1,
       "layout": "vazio",
       "used_ocr": true,
-      "text_length": 78,
+      "text_length": 137,
       "page_id": "pt_gurps_4a_edicao_fantasy_p1"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_high_tech",
-      "source_title": "GURPS 4ª Edição - High-Tech",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 119,
-      "page_id": "pt_gurps_4a_edicao_high_tech_p1"
     },
     {
       "source_id": "pt_gurps_4a_edicao_low_tech",
@@ -36,26 +18,8 @@
       "page_number": 1,
       "layout": "vazio",
       "used_ocr": true,
-      "text_length": 30,
+      "text_length": 120,
       "page_id": "pt_gurps_4a_edicao_low_tech_p1"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_magia",
-      "source_title": "GURPS 4ª Edição - Magia",
-      "page_number": 2,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 110,
-      "page_id": "pt_gurps_4a_edicao_magia_p2"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_meta_tech",
-      "source_title": "GURPS 4ª Edição - Meta-Tech",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 73,
-      "page_id": "pt_gurps_4a_edicao_meta_tech_p1"
     },
     {
       "source_id": "pt_gurps_4a_edicao_modulo_basico",
@@ -63,17 +27,8 @@
       "page_number": 1,
       "layout": "vazio",
       "used_ocr": true,
-      "text_length": 105,
+      "text_length": 178,
       "page_id": "pt_gurps_4a_edicao_modulo_basico_p1"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_modulo_basico_campanhas",
-      "source_title": "GURPS 4ª Edição - Módulo Básico Campanhas",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 102,
-      "page_id": "pt_gurps_4a_edicao_modulo_basico_campanhas_p1"
     },
     {
       "source_id": "pt_gurps_4a_edicao_modulo_basico_personagens",
@@ -89,45 +44,9 @@
       "source_title": "GURPS 4ª Edição - Poderes Psíquicos",
       "page_number": 2,
       "layout": "vazio",
-      "used_ocr": false,
-      "text_length": 0,
+      "used_ocr": true,
+      "text_length": 149,
       "page_id": "pt_gurps_4a_edicao_poderes_psiquicos_p2"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_supers",
-      "source_title": "GURPS 4ª Edição - Supers",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 72,
-      "page_id": "pt_gurps_4a_edicao_supers_p1"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_ultra_tech",
-      "source_title": "GURPS 4ª Edição - Ultra-Tech",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 99,
-      "page_id": "pt_gurps_4a_edicao_ultra_tech_p1"
-    },
-    {
-      "source_id": "pt_gurps_4a_edicao_viagem_espacial",
-      "source_title": "GURPS 4ª Edição - Viagem Espacial",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 68,
-      "page_id": "pt_gurps_4a_edicao_viagem_espacial_p1"
-    },
-    {
-      "source_id": "pt_gurps_4o_edicao_gun_fu",
-      "source_title": "GURPS 4º Edição - Gun Fu",
-      "page_number": 1,
-      "layout": "vazio",
-      "used_ocr": true,
-      "text_length": 73,
-      "page_id": "pt_gurps_4o_edicao_gun_fu_p1"
     }
   ]
 }

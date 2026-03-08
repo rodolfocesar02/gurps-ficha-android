@@ -142,18 +142,29 @@ Criterios de aceite A4:
 3. Checklist de revisão manual pronto para execução.
 
 ### Lote A5 - Correcao Dirigida das 14 Paginas Suspeitas
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote de correcao dirigida com base no A4.
 2. [x] Implementar refinamento OCR por pagina suspeita (multiplos modos de OCR).
-3. [ ] Reprocessar somente suspeitas e atualizar paginas/chunks derivados.
-4. [ ] Gerar relatorio before/after do lote A5 e validar ganho.
+3. [x] Reprocessar somente suspeitas e atualizar paginas/chunks derivados.
+4. [x] Gerar relatorio before/after do lote A5 e validar ganho.
 
 Criterios de aceite A5:
 1. Relatorio de correcao com comparativo por pagina suspeita.
 2. Numero de suspeitas reduzido ou justificativas tecnicas registradas por pagina.
 3. Saida final preserva regra operacional de resposta em portugues.
+
+Evidencias A5:
+1. Relatorio: `AGENTE GURPS/sources/processed/reports/correcao_suspeitas_report.json`.
+2. Resultado do refinamento dirigido:
+- `target_pages=14`
+- `improved_pages=13`
+- `before_suspects=14`
+- `after_suspects=5`
+- `delta_suspects=9`
+3. Relatorio detalhado atualizado: `paginas_suspeitas_detalhado.json` com 5 remanescentes.
+4. Checklist final de revisao restante: `AGENTE GURPS/docs/A5_REVISAO_RESTANTE_5_PAGINAS.md`.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
