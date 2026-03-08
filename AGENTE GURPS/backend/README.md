@@ -13,6 +13,14 @@ copy .env.example .env
 
 Preencha `OPENAI_API_KEY` no `.env`.
 
+Exemplo Google AI Studio (OpenAI-compatible):
+```env
+OPENAI_API_KEY=(COLE_AQUI_A_SUA_KEY)
+OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/
+OPENAI_CHAT_MODEL=gemini-2.0-flash
+OPENAI_EMBED_MODEL=text-embedding-004
+```
+
 ## 2) Indexar base
 ```bash
 python indexar_chunks_chroma.py
