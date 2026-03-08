@@ -2,12 +2,17 @@ package com.gurps.ficha.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,6 +31,7 @@ import com.gurps.ficha.agent.GurpsAgentSource
 import kotlinx.coroutines.launch
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun AssistenteGurpsDialog(
     onDismiss: () -> Unit
 ) {
@@ -58,11 +64,49 @@ fun AssistenteGurpsDialog(
                     enabled = !loading
                 )
 
+                Text(
+                    "Dica: use Regras para dúvidas de sistema.",
+                    style = MaterialTheme.typography.labelSmall
+                )
+
                 Text("Modo", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TextButton(onClick = { mode = "regras" }, enabled = !loading) { Text(if (mode == "regras") "• Regras" else "Regras") }
-                    TextButton(onClick = { mode = "criacao" }, enabled = !loading) { Text(if (mode == "criacao") "• Criação" else "Criação") }
-                    TextButton(onClick = { mode = "lore" }, enabled = !loading) { Text(if (mode == "lore") "• Lore" else "Lore") }
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(
+                        selected = mode == "regras",
+                        onClick = { mode = "regras" },
+                        enabled = !loading,
+                        label = { Text("Regras") }
+                    )
+                    FilterChip(
+                        selected = mode == "criacao",
+                        onClick = { mode = "criacao" },
+                        enabled = !loading,
+                        label = { Text("Criação") }
+                    )
+                    FilterChip(
+                        selected = mode == "lore",
+                        onClick = { mode = "lore" },
+                        enabled = !loading,
+                        label = { Text("Lore") }
+                    )
+                }
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    AssistChip(
+                        onClick = { question = "Como funciona a perícia Judô?" },
+                        enabled = !loading,
+                        label = { Text("Exemplo Judô") },
+                        colors = AssistChipDefaults.assistChipColors()
+                    )
+                    TextButton(
+                        onClick = {
+                            question = ""
+                            answer = ""
+                            sources = emptyList()
+                            errorMessage = null
+                        },
+                        enabled = !loading
+                    ) { Text("Limpar") }
                 }
 
                 if (loading) {
