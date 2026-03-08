@@ -132,7 +132,7 @@ Status: `EM ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote de revisão dirigida com meta de listar páginas exatas suspeitas.
-2. [ ] Gerar relatório detalhado com `source_id`, título, página, tamanho de texto e uso de OCR.
+2. [x] Gerar relatório detalhado com `source_id`, título, página, tamanho de texto e uso de OCR.
 3. [ ] Validar contagem final das suspeitas e cruzar com relatório A3.
 4. [ ] Publicar instrução de revisão manual por prioridade.
 
