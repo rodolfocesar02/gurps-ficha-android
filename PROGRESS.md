@@ -24,6 +24,23 @@ Atualizado em: 2026-03-08
 2. Lotes em aberto no momento: **nenhum pendente formal registrado**.
 3. Qualquer novo lote deve ser registrado a partir daqui, com passos e evidências mínimas.
 
+## Lotes de Fechamento de Saúde (2026-03-08)
+### Lote S1 - Saneamento de Versionamento
+Status: `EM ANDAMENTO`
+1. [x] Ignorar artefatos locais de release (`release-apks/`) no Git.
+2. [ ] Fechar árvore sem arquivos não rastreados acidentais.
+
+### Lote S2 - Fechamento UI/Acessibilidade
+Status: `PENDENTE`
+1. [ ] Consolidar rótulos de ação nos diálogos de editar (Perícias, Magias, Vantagens e Desvantagens).
+2. [ ] Validar compilação das variantes `visual` e `pracego`.
+
+### Lote S3 - Fechamento Dados/Manual + Verificação Final
+Status: `PENDENTE`
+1. [ ] Consolidar ajustes textuais do catálogo de vantagens e manual.
+2. [ ] Executar testes mínimos de pré-requisito/motor.
+3. [ ] Atualizar status final e meta de saúde acima de 90%.
+
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
