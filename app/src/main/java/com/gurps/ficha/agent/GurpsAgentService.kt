@@ -6,7 +6,9 @@ import com.gurps.ficha.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 import java.net.URL
+import java.net.UnknownHostException
 
 data class GurpsAgentSource(
     val sourceId: String,
@@ -91,6 +93,12 @@ object GurpsAgentService {
                 )
             } finally {
                 connection?.disconnect()
+            }
+        }.recoverCatching { err ->
+            throw when (err) {
+                is SocketTimeoutException -> IllegalStateException("Assistente demorou para responder. Tente novamente.")
+                is UnknownHostException -> IllegalStateException("Não foi possível encontrar o servidor do assistente.")
+                else -> IllegalStateException(err.message ?: "Falha ao consultar o assistente.")
             }
         }
     }

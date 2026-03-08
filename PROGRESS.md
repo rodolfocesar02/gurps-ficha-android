@@ -22,7 +22,7 @@ Atualizado em: 2026-03-08
 
 ## Situação de Lotes
 1. Lotes históricos concluídos e já validados foram arquivados deste arquivo para evitar ruído operacional.
-2. Lotes em aberto no momento: **nenhum pendente formal registrado**.
+2. Lotes em aberto no momento: **A11, A12 e A13 (AGENTE GURPS)**.
 3. Qualquer novo lote deve ser registrado a partir daqui, com passos e evidências mínimas.
 
 ## Lotes de Fechamento de Saúde (2026-03-08)
@@ -273,6 +273,65 @@ Evidencias A10:
 3. UI do assistente: `app/src/main/java/com/gurps/ficha/ui/DialogsAssistente.kt`.
 4. Entrada no menu + abertura do dialogo: `DialogsCommon.kt` e `FichaScreen.kt`.
 5. Validacao build: `:app:compileVisualDebugKotlin` e `:app:compilePracegoDebugKotlin` com `BUILD SUCCESSFUL`.
+
+### Lote A10.1 - UX Intuitiva do Assistente (Ajuste rápido)
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Simplificar seleção de modo para chips (`Regras`, `Criação`, `Lore`).
+2. [x] Adicionar dica de uso e ação rápida (`Exemplo Judô`).
+3. [x] Adicionar botão `Limpar` para reset da consulta.
+4. [x] Melhorar mensagem de erro de rede para texto humano.
+5. [x] Revalidar build/instalação da variante visual.
+
+Evidencias A10.1:
+1. UI atualizada: `app/src/main/java/com/gurps/ficha/ui/DialogsAssistente.kt`.
+2. Mensagens de erro mais claras: `app/src/main/java/com/gurps/ficha/agent/GurpsAgentService.kt`.
+3. Build/instalação visual validados após ajuste.
+4. Arte de botão reservada para próxima implementação: `AGENTE GURPS/IMAGENS!/GURPS AGENT.png`.
+
+### Lote A11 - Reingestão Completa da Base (qualidade de resposta)
+Status: `PLANEJADO`
+
+Passos:
+1. [ ] Reexecutar ingestão sem limite de páginas para todos os PDFs permitidos.
+2. [ ] Regenerar `pages/chunks` e reindexar Chroma com base completa.
+3. [ ] Gerar relatório comparativo (antes/depois) com cobertura por fonte.
+4. [ ] Validar perguntas críticas (ex.: Judô, Aptidão Mágica, custo por nível).
+
+Criterios de aceite A11:
+1. Cobertura deixa de ficar concentrada em capa/sumário.
+2. A maioria das consultas de regras passa a retornar `confiança média/alta`.
+3. Relatório de qualidade versionado.
+
+### Lote A12 - Resposta Inteligente (LLM habilitado)
+Status: `PLANEJADO`
+
+Passos:
+1. [ ] Configurar `OPENAI_API_KEY` no backend do agente.
+2. [ ] Validar geração de resposta natural em PT-BR com citação obrigatória.
+3. [ ] Ajustar prompt final para reduzir resposta bruta/trechos truncados.
+4. [ ] Reexecutar suite de guardrails (`guardrails_report.json`).
+
+Criterios de aceite A12:
+1. Respostas legíveis e objetivas em português.
+2. Fontes e páginas exibidas em todas as respostas.
+3. Sem alucinação em cenário de baixa evidência.
+
+### Lote A13 - Polimento Final de UX no App
+Status: `PLANEJADO`
+
+Passos:
+1. [ ] Aplicar ícone/arte do assistente no menu/botão (imagem já versionada).
+2. [ ] Melhorar layout de resposta longa (quebra, resumo e “ver mais”).
+3. [ ] Exibir fontes em bloco compacto e clicável.
+4. [ ] Ajustar feedback visual por confiança (baixa/média/alta).
+5. [ ] Validar nas variantes `visual` e `pracego`.
+
+Criterios de aceite A13:
+1. Fluxo de pergunta-resposta mais rápido de entender.
+2. UI consistente com o restante do app.
+3. Acessibilidade preservada na variante pra cego.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
