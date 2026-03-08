@@ -64,13 +64,13 @@ Status: `PLANEJADO`
 
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 1. [x] Definir URL de metadados de atualização no `BuildConfig`.
 2. [x] Criar cliente para baixar e interpretar `update.json`.
-3. [ ] Registrar instruções mínimas de publicação de versão.
+3. [x] Registrar instruções mínimas de publicação de versão.
 
 ### Lote U2 - UX de Verificação no App
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 1. [ ] Adicionar ação "Verificar atualização" no menu principal.
 2. [ ] Exibir resultado (atualizado/atualização disponível/erro).
 3. [ ] Abrir link do APK mais novo para instalação manual.
