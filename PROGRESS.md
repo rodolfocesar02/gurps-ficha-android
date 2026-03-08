@@ -296,7 +296,7 @@ Status: `EM_ANDAMENTO`
 Passos:
 1. [x] Reexecutar ingestão sem limite de páginas para todos os PDFs permitidos.
 2. [x] Regenerar `pages/chunks` e reindexar Chroma com base completa.
-3. [ ] Gerar relatório comparativo (antes/depois) com cobertura por fonte.
+3. [x] Gerar relatório comparativo (antes/depois) com cobertura por fonte.
 4. [ ] Validar perguntas críticas (ex.: Judô, Aptidão Mágica, custo por nível).
 
 Criterios de aceite A11:
@@ -313,6 +313,15 @@ Evidência passo 2:
 1. Reindexação executada em `AGENTE GURPS/backend/indexar_chunks_chroma.py`.
 2. Resultado: `total_chunks_indexados=17971` na coleção `gurps_pt_v1`.
 3. Relatório atualizado: `AGENTE GURPS/sources/processed/reports/indexacao_chroma_report.json`.
+
+Evidência passo 3:
+1. Script comparativo criado: `AGENTE GURPS/scripts/gerar_comparativo_a11.py`.
+2. Relatórios gerados:
+- `AGENTE GURPS/sources/processed/reports/a11_comparativo_report.json`
+- `AGENTE GURPS/sources/processed/reports/a11_comparativo_report.md`
+3. Resultado global:
+- `paginas_processadas`: `90 -> 3268`
+- `chunks_gerados`: `391 -> 17971`
 
 ### Lote A12 - Resposta Inteligente (LLM habilitado)
 Status: `PLANEJADO`
