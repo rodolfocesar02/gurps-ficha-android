@@ -54,6 +54,9 @@ fun TabTracos(viewModel: FichaViewModel) {
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
 
     val p = viewModel.personagem
+    val desvantagensPorId = remember(viewModel.dataRepository.desvantagens) {
+        viewModel.dataRepository.desvantagens.associateBy { it.id }
+    }
 
     StandardTabColumn {
         BotaoAcaoTracosPadrao(
@@ -85,6 +88,7 @@ fun TabTracos(viewModel: FichaViewModel) {
         if (p.desvantagens.isNotEmpty()) {
             Text("Desvantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.desvantagens.forEachIndexed { index, desvantagem ->
+                val permiteAutocontrole = desvantagensPorId[desvantagem.definicaoId]?.usaAutocontroleMental() ?: false
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = appCardColors()
@@ -92,6 +96,7 @@ fun TabTracos(viewModel: FichaViewModel) {
                     Column(modifier = Modifier.padding(10.dp)) {
                         DesvantagemItem(
                             desvantagem = desvantagem,
+                            exibirAutocontrole = permiteAutocontrole,
                             onEdit = { editingDesvantagemIndex = index },
                             onDelete = { viewModel.removerDesvantagem(index) }
                         )
@@ -203,8 +208,13 @@ fun TabTracos(viewModel: FichaViewModel) {
             .firstOrNull { it.id == desvantagem.definicaoId }
             ?.descricao
             .orEmpty()
+        val permiteAutocontrole = viewModel.dataRepository.desvantagens
+            .firstOrNull { it.id == desvantagem.definicaoId }
+            ?.usaAutocontroleMental()
+            ?: false
         EditarDesvantagemDialog(
             desvantagem = desvantagem,
+            permiteAutocontrole = permiteAutocontrole,
             descricaoCatalogo = descricaoCatalogo,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->
@@ -251,7 +261,7 @@ fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: ()
 }
 
 @Composable
-fun DesvantagemItem(desvantagem: DesvantagemSelecionada, onEdit: () -> Unit, onDelete: () -> Unit) {
+fun DesvantagemItem(desvantagem: DesvantagemSelecionada, exibirAutocontrole: Boolean, onEdit: () -> Unit, onDelete: () -> Unit) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         Column(modifier = Modifier.weight(1f)) {
             Text(desvantagem.nome + if (desvantagem.descricao.isNotBlank()) " (${desvantagem.descricao})" else "",
@@ -259,8 +269,10 @@ fun DesvantagemItem(desvantagem: DesvantagemSelecionada, onEdit: () -> Unit, onD
             Text("${desvantagem.custoFinal} pts" +
                     if (desvantagem.nivel > 1) " (Nível ${desvantagem.nivel})" else "",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
-            desvantagem.autocontrole?.let { ac ->
+            if (exibirAutocontrole) {
+                desvantagem.autocontrole?.let { ac ->
                 Text("Autocontrole: $ac (${getMultiplicadorAutocontrole(ac)})", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
+                }
             }
         }
         IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = "Editar desvantagem ${desvantagem.nome}") }

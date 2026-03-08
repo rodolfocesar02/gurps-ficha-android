@@ -147,7 +147,7 @@ fun TabPericias(viewModel: FichaViewModel) {
         val regraV2 = viewModel.dataRepository.regraPericiaV2(pericia.definicaoId)
         AlertDialog(
             onDismissRequest = { periciaDescricaoDialog = null },
-            title = { Text("Descrição: ${pericia.nome}") },
+            title = { Text(pericia.nome) },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(

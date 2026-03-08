@@ -131,7 +131,7 @@ fun TabMagias(viewModel: FichaViewModel) {
     magiaDescricaoDialog?.let { magia ->
         AlertDialog(
             onDismissRequest = { magiaDescricaoDialog = null },
-            title = { Text("Descrição: ${magia.nome}") },
+            title = { Text(magia.nome) },
             text = {
                 Text(
                     text = magia.texto?.takeIf { it.isNotBlank() } ?: "Sem descrição disponível.",

@@ -429,6 +429,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     val opcoesEscolha = definicao.getOpcoesEscolha()
+    val permiteAutocontrole = definicao.usaAutocontroleMental()
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -528,15 +529,17 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     }
                 }
 
-                Divider()
-                Text("Autocontrole (opcional):", style = MaterialTheme.typography.labelMedium)
-                Text("GURPS 4Ed pag. 120 - multiplicadores", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    listOf(null to "Nenhum", 6 to "6 (x2)", 9 to "9 (x1.5)", 12 to "12 (x1)", 15 to "15 (x0.5)").forEach { (valor, label) ->
-                        FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label, fontSize = 10.sp) })
+                if (permiteAutocontrole) {
+                    Divider()
+                    Text("Autocontrole (opcional):", style = MaterialTheme.typography.labelMedium)
+                    Text("GURPS 4Ed pag. 120 - multiplicadores", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        listOf(null to "Nenhum", 6 to "6 (x2)", 9 to "9 (x1.5)", 12 to "12 (x1)", 15 to "15 (x0.5)").forEach { (valor, label) ->
+                            FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label, fontSize = 10.sp) })
+                        }
                     }
                 }
 
@@ -551,7 +554,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     TipoCusto.ESCOLHA, TipoCusto.VARIAVEL -> custoEscolhido
                     TipoCusto.FIXO -> definicao.getCustoBase()
                 }
-                onSave(nivel, custoFinal, descricao, autocontrole)
+                onSave(nivel, custoFinal, descricao, if (permiteAutocontrole) autocontrole else null)
             }) { Text("Adicionar") }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
@@ -707,6 +710,7 @@ fun EditarVantagemDialog(
 @Composable
 fun EditarDesvantagemDialog(
     desvantagem: DesvantagemSelecionada,
+    permiteAutocontrole: Boolean = true,
     descricaoCatalogo: String = "",
     onDismiss: () -> Unit,
     onSave: (DesvantagemSelecionada) -> Unit
@@ -715,7 +719,7 @@ fun EditarDesvantagemDialog(
     var nivel by remember { mutableStateOf(desvantagem.nivel) }
     var custoEscolhido by remember { mutableStateOf(desvantagem.custoEscolhido) }
     var descricao by remember { mutableStateOf(desvantagem.descricao) }
-    var autocontrole by remember { mutableStateOf(desvantagem.autocontrole) }
+    var autocontrole by remember { mutableStateOf(if (permiteAutocontrole) desvantagem.autocontrole else null) }
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
 
     AlertDialog(
@@ -797,13 +801,15 @@ fun EditarDesvantagemDialog(
                     OutlinedTextField(value = custoEscolhido.toString(), onValueChange = { custoEscolhido = it.toIntOrNull() ?: custoEscolhido },
                         label = { Text("Custo") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth())
                 }
-                Text("Autocontrole:")
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    listOf(null to "Nenhum", 6 to "6", 9 to "9", 12 to "12", 15 to "15").forEach { (valor, label) ->
-                        FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label) })
+                if (permiteAutocontrole) {
+                    Text("Autocontrole:")
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        listOf(null to "Nenhum", 6 to "6", 9 to "9", 12 to "12", 15 to "15").forEach { (valor, label) ->
+                            FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label) })
+                        }
                     }
                 }
                 OutlinedTextField(value = descricao, onValueChange = { descricao = it },
@@ -812,7 +818,16 @@ fun EditarDesvantagemDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(desvantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, autocontrole = autocontrole)) },
+                onClick = {
+                    onSave(
+                        desvantagem.copy(
+                            nivel = nivel,
+                            custoEscolhido = custoEscolhido,
+                            descricao = descricao,
+                            autocontrole = if (permiteAutocontrole) autocontrole else null
+                        )
+                    )
+                },
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Salvar edição da desvantagem"
                 }
