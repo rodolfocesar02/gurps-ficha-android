@@ -26,6 +26,37 @@ def _safe_int(value: Any, default: int) -> int:
         return default
 
 
+def _resolve_env_path(raw_value: str, backend_dir: Path, must_exist: bool) -> Path:
+    raw = (raw_value or "").strip()
+    candidate = Path(raw)
+    if candidate.is_absolute():
+        return candidate
+
+    trial_paths = [
+        Path.cwd() / raw,
+        backend_dir / raw,
+        backend_dir.parent / raw,
+        backend_dir.parent.parent / raw,
+    ]
+    # Compatibilidade para deploy com subdiretorio na Railway.
+    if raw.startswith("AGENTE GURPS/"):
+        stripped = raw[len("AGENTE GURPS/") :]
+        trial_paths.extend(
+            [
+                Path.cwd() / stripped,
+                backend_dir / stripped,
+                backend_dir.parent / stripped,
+                backend_dir.parent.parent / stripped,
+            ]
+        )
+
+    if must_exist:
+        for path in trial_paths:
+            if path.exists():
+                return path.resolve()
+    return trial_paths[0].resolve()
+
+
 @dataclass
 class RagSettings:
     repo_root: Path
@@ -48,16 +79,15 @@ def load_settings() -> RagSettings:
     else:
         load_dotenv()
 
-    repo_root = backend_dir.parents[1]
     chroma_rel = os.getenv("CHROMA_DIR", "AGENTE GURPS/index/chroma")
     chunks_rel = os.getenv("CHUNKS_FILE", "AGENTE GURPS/sources/processed/chunks.jsonl")
     reports_rel = os.getenv("REPORTS_DIR", "AGENTE GURPS/sources/processed/reports")
 
     return RagSettings(
-        repo_root=repo_root,
-        chroma_dir=(repo_root / chroma_rel),
-        chunks_file=(repo_root / chunks_rel),
-        reports_dir=(repo_root / reports_rel),
+        repo_root=Path.cwd().resolve(),
+        chroma_dir=_resolve_env_path(chroma_rel, backend_dir, must_exist=False),
+        chunks_file=_resolve_env_path(chunks_rel, backend_dir, must_exist=True),
+        reports_dir=_resolve_env_path(reports_rel, backend_dir, must_exist=False),
         collection_name=os.getenv("RAG_COLLECTION", "gurps_pt_v1"),
         top_k=_safe_int(os.getenv("RAG_TOP_K"), 6),
         openai_api_key=os.getenv("OPENAI_API_KEY", "").strip(),
