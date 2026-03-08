@@ -11,17 +11,20 @@ Diretriz:
 3. Cada lote V2 fecha com commit próprio + validação mínima.
 
 ### Lote V2.1 - Estrutura Segura de Evolução
-Status: `EM ANDAMENTO`
+Status: `CONCLUÍDO`
 
 Passos:
 1. [x] Definir no `PROGRESS.md` a trilha V2 separada da V1.
 2. [x] Garantir que artefatos locais do AGENTE não entrem em commit (`.gitignore`).
 3. [x] Criar branch de trabalho dedicada (`v2-main`) para desenvolvimento contínuo.
-4. [ ] Criar checklist de "não regressão V1" por release V2.
+4. [x] Criar checklist de "não regressão V1" por release V2.
 
 Critérios de aceite:
 1. Repositório com base limpa para começar V2 sem risco de regressão acidental.
 2. Commits V2 rastreáveis por lote e passo.
+
+Evidência:
+1. Checklist criado em `docs/v2/NON_REGRESSION_V1_CHECKLIST.md`.
 
 ### Lote V2.2 - Padronização Visual Global (Visual + PraCego)
 Status: `PLANEJADO`
