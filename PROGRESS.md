@@ -141,6 +141,20 @@ Criterios de aceite A4:
 2. Contagem do detalhado igual ao total de `paginas_suspeitas` do relatório principal.
 3. Checklist de revisão manual pronto para execução.
 
+### Lote A5 - Correcao Dirigida das 14 Paginas Suspeitas
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Registrar lote de correcao dirigida com base no A4.
+2. [ ] Implementar refinamento OCR por pagina suspeita (multiplos modos de OCR).
+3. [ ] Reprocessar somente suspeitas e atualizar paginas/chunks derivados.
+4. [ ] Gerar relatorio before/after do lote A5 e validar ganho.
+
+Criterios de aceite A5:
+1. Relatorio de correcao com comparativo por pagina suspeita.
+2. Numero de suspeitas reduzido ou justificativas tecnicas registradas por pagina.
+3. Saida final preserva regra operacional de resposta em portugues.
+
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
 2. Relatório principal registra `baseline_relatorio_principal=14`.
