@@ -62,6 +62,21 @@ Status: `PLANEJADO`
 - Não responder como canônico sem evidência da base.
 4. Situação: apenas registro de produto; implementação ficará para lote futuro dedicado.
 
+### Lote A1 - Escopo e Politicas (AGENTE GURPS)
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Criar pasta isolada `AGENTE GURPS` para nao poluir o app principal.
+2. [x] Definir escopo inicial e politica de confiabilidade do agente.
+3. [x] Definir regra de idioma: fontes PT/EN permitidas, resposta final sempre em portugues (texto e audio quando houver).
+4. [x] Criar checklist de entrada de fontes para livros/material externo.
+5. [ ] Validar com voce o escopo A1 e fechar o lote.
+
+Criterios de aceite A1:
+1. Estrutura inicial criada em `AGENTE GURPS/` (`docs`, `sources`, `scripts`).
+2. Politica de idioma e confiabilidade documentada.
+3. Checklist de fontes pronto para receber livros em portugues e ingles.
+
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
 Status: `CONCLUIDO`
