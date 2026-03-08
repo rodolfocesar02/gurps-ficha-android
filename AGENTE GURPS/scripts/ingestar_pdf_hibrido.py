@@ -192,14 +192,16 @@ def main() -> int:
                 used_ocr = False
                 final_text = native_text
 
-                suspect = len(native_text) < 180
-                if suspect and OCR_AVAILABLE:
+                suspect_native = len(native_text) < 180
+                if suspect_native and OCR_AVAILABLE:
                     ocr_text = ocr_page(fitz_doc, page_idx)
                     if len(ocr_text) > len(native_text):
                         final_text = ocr_text
                         used_ocr = True
 
-                if suspect:
+                # Pagina suspeita e avaliada pelo texto final apos fallback.
+                suspect_final = len(final_text) < 180
+                if suspect_final:
                     report["paginas_suspeitas"] += 1
                     src_stats["suspeitas"] += 1
 
