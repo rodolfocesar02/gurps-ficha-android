@@ -166,6 +166,20 @@ Evidencias A5:
 3. Relatorio detalhado atualizado: `paginas_suspeitas_detalhado.json` com 5 remanescentes.
 4. Checklist final de revisao restante: `AGENTE GURPS/docs/A5_REVISAO_RESTANTE_5_PAGINAS.md`.
 
+### Lote A6 - Fechamento de Suspeitas Operacionais (Capas/Sumarios)
+Status: `EM_ANDAMENTO`
+
+Passos:
+1. [x] Registrar lote A6 com criterio de separacao entre suspeita tecnica e suspeita operacional.
+2. [ ] Implementar classificador de paginas residuais para identificar capas/sumarios de abertura.
+3. [ ] Gerar relatorio de suspeitas operacionais (acionaveis) apos classificacao.
+4. [ ] Fechar lote com evidencias e regra permanente para evitar falso positivo de capa.
+
+Criterios de aceite A6:
+1. Relatorio com duas classes: `aceitas_contexto` (capa/sumario) e `acionaveis`.
+2. Paginas residuais atuais classificadas de forma objetiva e rastreavel.
+3. Se `acionaveis=0`, lote encerrado com justificativa tecnica.
+
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
 2. Relatório principal registra `baseline_relatorio_principal=14`.
