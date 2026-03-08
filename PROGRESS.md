@@ -252,7 +252,7 @@ Evidencias A9:
 - `contexto_fraco_esperado`: `confidence=baixa`, `has_fontes=true`, `has_inferencia=true`.
 
 ### Lote A10 - Integracao no App Android (Assistente)
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote A10 no `PROGRESS`.
@@ -260,12 +260,19 @@ Passos:
 3. [x] Implementar cliente Android para endpoint `/ask`.
 4. [x] Adicionar entrada no menu para abrir dialogo "Assistente GURPS".
 5. [x] Implementar dialogo de consulta com pergunta, resposta e fontes.
-6. [ ] Validar compilacao das variantes `visual` e `pracego`.
+6. [x] Validar compilacao das variantes `visual` e `pracego`.
 
 Criterios de aceite A10:
 1. Usuario consegue abrir o assistente pelo menu.
 2. Consulta retorna resposta + fontes sem travar a UI.
 3. Funciona nas duas variantes (visual e pracego).
+
+Evidencias A10:
+1. URL da API no app: `BuildConfig.GURPS_AGENT_API_BASE_URL` em `app/build.gradle.kts`.
+2. Cliente Android: `app/src/main/java/com/gurps/ficha/agent/GurpsAgentService.kt`.
+3. UI do assistente: `app/src/main/java/com/gurps/ficha/ui/DialogsAssistente.kt`.
+4. Entrada no menu + abertura do dialogo: `DialogsCommon.kt` e `FichaScreen.kt`.
+5. Validacao build: `:app:compileVisualDebugKotlin` e `:app:compilePracegoDebugKotlin` com `BUILD SUCCESSFUL`.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
