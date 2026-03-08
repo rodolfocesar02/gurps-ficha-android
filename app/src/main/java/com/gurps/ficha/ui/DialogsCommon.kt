@@ -37,7 +37,6 @@ fun MenuDialog(
     onExportarCompativel: () -> Unit,
     onExportarVersionado: () -> Unit,
     onImportar: () -> Unit,
-    onAbrirAssistente: () -> Unit,
     onVerificarAtualizacao: () -> Unit
 ) {
     AlertDialog(
@@ -51,7 +50,6 @@ fun MenuDialog(
                 PrimaryActionButton(text = "Exportar JSON Compatível", onClick = onExportarCompativel)
                 PrimaryActionButton(text = "Exportar JSON Versionado", onClick = onExportarVersionado)
                 PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar)
-                PrimaryActionButton(text = "Assistente GURPS", onClick = onAbrirAssistente)
                 PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao)
             }
         },
