@@ -110,7 +110,7 @@ Status: `EM ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote de melhoria de OCR e meta de reducao de paginas suspeitas.
-2. [ ] Instalar dependencias OCR no ambiente (engine + bindings Python).
+2. [x] Instalar dependencias OCR no ambiente (engine + bindings Python).
 3. [ ] Reexecutar ingestao inicial com OCR ativo.
 4. [ ] Comparar metricas antes/depois e registrar ganho de qualidade.
 
