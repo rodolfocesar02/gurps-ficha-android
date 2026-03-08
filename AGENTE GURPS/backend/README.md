@@ -49,12 +49,12 @@ Use este repositorio em um servico dedicado do AGENTE (nao misturar com o bot de
 
 Build Command:
 ```bash
-pip install -r "AGENTE GURPS/backend/requirements.txt"
+pip install -r requirements.txt
 ```
 
 Start Command:
 ```bash
-python "AGENTE GURPS/backend/start_railway.py"
+python -m uvicorn api_server:app --host 0.0.0.0 --port $PORT
 ```
 
 Variaveis obrigatorias na Railway:
@@ -66,11 +66,12 @@ OPENAI_EMBED_MODEL=text-embedding-004
 RAG_TOP_K=6
 RAG_COLLECTION=gurps_pt_v1
 RAG_AUTO_INDEX_ON_STARTUP=1
-CHROMA_DIR=AGENTE GURPS/index/chroma
-CHUNKS_FILE=AGENTE GURPS/sources/processed/chunks.jsonl
+CHROMA_DIR=chroma
+CHUNKS_FILE=chunks.jsonl
 ```
 
 Observacoes:
 1. Em cloud nova, se o indice estiver vazio, o backend reindexa automaticamente no startup.
 2. O primeiro boot pode demorar mais por causa da indexacao inicial.
 3. Healthcheck recomendado: `GET /health`.
+4. Para este setup, configure `Root Directory = AGENTE GURPS/backend`.

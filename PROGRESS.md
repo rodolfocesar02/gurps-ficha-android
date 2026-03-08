@@ -409,6 +409,16 @@ Pendencia operacional A14 (Railway):
 - `indexed_chunks > 0` (esperado ~`17971`)
 4. Apos validacao do `/health`, validar `POST /ask` e atualizar status do A14 para `CONCLUIDO`.
 
+Atualizacao A14 (correcao de contexto de build Railway):
+1. Causa raiz identificada: com `Root Directory=AGENTE GURPS/backend`, o arquivo de base fora da pasta nao entrava no deploy.
+2. Mitigacao aplicada no repositorio: `AGENTE GURPS/backend/chunks.jsonl` versionado para bootstrap direto no backend.
+3. Padrão operacional atualizado:
+- `Root Directory=AGENTE GURPS/backend`
+- `Build Command=pip install -r requirements.txt`
+- `Start Command=python -m uvicorn api_server:app --host 0.0.0.0 --port $PORT`
+- `CHUNKS_FILE=chunks.jsonl`
+- `CHROMA_DIR=chroma`
+
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
 2. Relatório principal registra `baseline_relatorio_principal=14`.
