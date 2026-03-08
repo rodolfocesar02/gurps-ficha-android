@@ -81,6 +81,14 @@ Status: `CONCLUIDO`
 2. [x] Executar testes mínimos de regressão.
 3. [x] Documentar o que você precisa fazer para publicar cada nova versão.
 
+### Lote U4 - Operação de Publicação (Passo a Passo com você)
+Status: `EM ANDAMENTO`
+1. [ ] Definir `UPDATE_METADATA_URL` no `local.properties`.
+2. [ ] Publicar APKs (`Visual` e `PraCego`) com link direto.
+3. [ ] Atualizar/publicar `update.json` com `versionCode` novo.
+4. [ ] Validar no app: Menu > `Verificar atualização`.
+5. [ ] Compartilhar no WhatsApp o link da release atual.
+
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
