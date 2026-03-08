@@ -36,10 +36,18 @@ Status: `CONCLUIDO`
 2. [x] Validar compilação das variantes `visual` e `pracego`.
 
 ### Lote S3 - Fechamento Dados/Manual + Verificação Final
-Status: `EM ANDAMENTO`
-1. [ ] Consolidar ajustes textuais do catálogo de vantagens e manual.
-2. [ ] Executar testes mínimos de pré-requisito/motor.
-3. [ ] Atualizar status final e meta de saúde acima de 90%.
+Status: `CONCLUIDO`
+1. [x] Consolidar ajustes textuais do catálogo de vantagens e manual.
+2. [x] Executar testes mínimos de pré-requisito/motor.
+3. [x] Atualizar status final e meta de saúde acima de 90%.
+
+## Saúde Atual (2026-03-08)
+1. Build (visual/pracego): `100%` (compilação OK).
+2. Testes críticos (pré-requisito/motor): `100%` (suite mínima OK).
+3. Dados/catálogos ativos: `92%`.
+4. UI/Acessibilidade (edição com rótulos): `94%`.
+5. Higiene de texto: `91%`.
+6. Versionamento: `93%` (sem artefatos locais fora de controle; `release-apks/` ignorado).
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`

@@ -1280,7 +1280,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode encolher, reduzindo o MT. Custa 10 pontos/nível? (não especificado)."
+    "descricao": "O personagem pode encolher, reduzindo o MT. Custa 10 pontos/nível (não especificado)."
   },
   {
     "id": "equilibrio_perfeito",
@@ -2459,7 +2459,7 @@
     "rawCost": "20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem não precisa respirar. Custa 20 pontos. Limitações: Guelras (-50%), Absorção de Oxigênio (-25%), Combustão de Oxigênio (?), Reserva de Oxigênio (-10% a -50%)."
+    "descricao": "O personagem não precisa respirar. Custa 20 pontos. Limitações: Guelras (-50%), Absorção de Oxigênio (-25%), Combustão de Oxigênio (valor variável), Reserva de Oxigênio (-10% a -50%)."
   },
   {
     "id": "neutralizar",
@@ -2564,7 +2564,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área. Custo por nível varia; base de 1 ponto/nível? (não especificado). Ampliações: Defensiva (+50%), Estendido (+20%/sentido), Furtiva (+100%), Longa Distância (+50%). Limitação: Sempre Ativo (-50%)."
+    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área. Custo por nível varia; base de 1 ponto/nível (não especificado). Ampliações: Defensiva (+50%), Estendido (+20%/sentido), Furtiva (+100%), Longa Distância (+50%). Limitação: Sempre Ativo (-50%)."
   },
   {
     "id": "obstinado",
@@ -3212,7 +3212,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ataque que prende o alvo. Custo por nível? (não especificado). Ampliações: Engolfar (+60%), Grudento (+20%), Inquebrável (+40%), Só Sofre Dano de X (+10% a +30%). Limitações: Ambientais (-20% a -40%), Chance única (-10%)."
+    "descricao": "Ataque que prende o alvo. Custo por nível (não especificado). Ampliações: Engolfar (+60%), Grudento (+20%), Inquebrável (+40%), Só Sofre Dano de X (+10% a +30%). Limitações: Ambientais (-20% a -40%), Chance única (-10%)."
   },
   {
     "id": "multimilionario",
