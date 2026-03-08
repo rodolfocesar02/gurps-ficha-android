@@ -24,6 +24,7 @@ def main() -> int:
         "openai_api_key_set": bool(key),
         "chat_model": model,
         "llm_call_ok": False,
+        "llm_mode": None,
         "error_type": None,
         "error_message": None,
     }
@@ -32,10 +33,27 @@ def main() -> int:
         try:
             from openai import OpenAI
 
-            client = OpenAI(api_key=key)
-            resp = client.responses.create(model=model, input="Responda apenas OK.")
-            text = (resp.output_text or "").strip()
-            report["llm_call_ok"] = bool(text)
+            base_url = os.getenv("OPENAI_BASE_URL", "").strip()
+            client_kwargs = {"api_key": key}
+            if base_url:
+                client_kwargs["base_url"] = base_url
+            client = OpenAI(**client_kwargs)
+
+            try:
+                resp = client.responses.create(model=model, input="Responda apenas OK.")
+                text = (resp.output_text or "").strip()
+                report["llm_call_ok"] = bool(text)
+                report["llm_mode"] = "responses"
+            except Exception:
+                completion = client.chat.completions.create(
+                    model=model,
+                    messages=[{"role": "user", "content": "Responda apenas OK."}],
+                    temperature=0.2,
+                )
+                msg = completion.choices[0].message if completion.choices else None
+                text = (msg.content or "").strip() if msg else ""
+                report["llm_call_ok"] = bool(text)
+                report["llm_mode"] = "chat.completions"
         except Exception as exc:
             report["error_type"] = type(exc).__name__
             report["error_message"] = str(exc)[:500]
