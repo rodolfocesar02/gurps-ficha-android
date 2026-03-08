@@ -26,17 +26,17 @@ Atualizado em: 2026-03-08
 
 ## Lotes de Fechamento de Saúde (2026-03-08)
 ### Lote S1 - Saneamento de Versionamento
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 1. [x] Ignorar artefatos locais de release (`release-apks/`) no Git.
-2. [ ] Fechar árvore sem arquivos não rastreados acidentais.
+2. [x] Fechar árvore sem arquivos não rastreados acidentais.
 
 ### Lote S2 - Fechamento UI/Acessibilidade
-Status: `PENDENTE`
-1. [ ] Consolidar rótulos de ação nos diálogos de editar (Perícias, Magias, Vantagens e Desvantagens).
-2. [ ] Validar compilação das variantes `visual` e `pracego`.
+Status: `CONCLUIDO`
+1. [x] Consolidar rótulos de ação nos diálogos de editar (Perícias, Magias, Vantagens e Desvantagens).
+2. [x] Validar compilação das variantes `visual` e `pracego`.
 
 ### Lote S3 - Fechamento Dados/Manual + Verificação Final
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 1. [ ] Consolidar ajustes textuais do catálogo de vantagens e manual.
 2. [ ] Executar testes mínimos de pré-requisito/motor.
 3. [ ] Atualizar status final e meta de saúde acima de 90%.

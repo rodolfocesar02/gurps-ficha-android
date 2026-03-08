@@ -668,8 +668,22 @@ fun EditarVantagemDialog(
                     label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
             }
         },
-        confirmButton = { TextButton(onClick = { onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao)) }) { Text("Salvar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = {
+            TextButton(
+                onClick = { onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao)) },
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Salvar edição da vantagem"
+                }
+            ) { Text("Salvar") }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Cancelar edição da vantagem"
+                }
+            ) { Text("Cancelar") }
+        }
     )
 
     if (mostrarDescricaoCatalogo) {
@@ -677,7 +691,14 @@ fun EditarVantagemDialog(
             onDismissRequest = { mostrarDescricaoCatalogo = false },
             title = { Text(vantagem.nome, color = MaterialTheme.colorScheme.primary) },
             text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
-            confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") } }
+            confirmButton = {
+                TextButton(
+                    onClick = { mostrarDescricaoCatalogo = false },
+                    modifier = Modifier.semantics {
+                        if (isPraCegoVariant) contentDescription = "Fechar descrição da vantagem"
+                    }
+                ) { Text("Fechar") }
+            }
         )
     }
 }
@@ -789,8 +810,22 @@ fun EditarDesvantagemDialog(
                     label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
             }
         },
-        confirmButton = { TextButton(onClick = { onSave(desvantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, autocontrole = autocontrole)) }) { Text("Salvar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = {
+            TextButton(
+                onClick = { onSave(desvantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, autocontrole = autocontrole)) },
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Salvar edição da desvantagem"
+                }
+            ) { Text("Salvar") }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.semantics {
+                    if (isPraCegoVariant) contentDescription = "Cancelar edição da desvantagem"
+                }
+            ) { Text("Cancelar") }
+        }
     )
 
     if (mostrarDescricaoCatalogo) {
@@ -798,7 +833,14 @@ fun EditarDesvantagemDialog(
             onDismissRequest = { mostrarDescricaoCatalogo = false },
             title = { Text(desvantagem.nome, color = MaterialTheme.colorScheme.primary) },
             text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
-            confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") } }
+            confirmButton = {
+                TextButton(
+                    onClick = { mostrarDescricaoCatalogo = false },
+                    modifier = Modifier.semantics {
+                        if (isPraCegoVariant) contentDescription = "Fechar descrição da desvantagem"
+                    }
+                ) { Text("Fechar") }
+            }
         )
     }
 }
