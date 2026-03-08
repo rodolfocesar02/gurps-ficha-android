@@ -2,9 +2,9 @@
   "pdfs_processados": 19,
   "paginas_processadas": 90,
   "paginas_duas_colunas": 71,
-  "paginas_ocr_fallback": 0,
+  "paginas_ocr_fallback": 13,
   "paginas_suspeitas": 14,
-  "ocr_disponivel": false,
+  "ocr_disponivel": true,
   "warnings": [],
   "sources": [
     {
@@ -160,7 +160,7 @@
       "suspeitas": 0
     }
   ],
-  "chunks_gerados": 378,
+  "chunks_gerados": 391,
   "pages_output": "AGENTE GURPS\\sources\\processed\\pages.jsonl",
   "chunks_output": "AGENTE GURPS\\sources\\processed\\chunks.jsonl"
 }

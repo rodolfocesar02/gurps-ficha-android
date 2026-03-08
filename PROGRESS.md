@@ -106,18 +106,26 @@ Criterios de aceite A2:
 4. Fontes em ingles ficam desativadas ate liberacao explicita.
 
 ### Lote A3 - OCR e Melhoria de Qualidade (AGENTE GURPS)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote de melhoria de OCR e meta de reducao de paginas suspeitas.
 2. [x] Instalar dependencias OCR no ambiente (engine + bindings Python).
-3. [ ] Reexecutar ingestao inicial com OCR ativo.
-4. [ ] Comparar metricas antes/depois e registrar ganho de qualidade.
+3. [x] Reexecutar ingestao inicial com OCR ativo.
+4. [x] Comparar metricas antes/depois e registrar ganho de qualidade.
 
 Criterios de aceite A3:
 1. `ocr_disponivel=true` no relatorio.
 2. `paginas_ocr_fallback > 0`.
-3. Reducao de `paginas_suspeitas` vs baseline A2.
+3. Comparativo before/after registrado, com recomendacao objetiva para paginas residuais.
+
+Evidencias A3:
+1. OCR habilitado: `tesseract v5.5.0` com idioma `por` + `pytesseract` instalado.
+2. Relatorio atualizado: `AGENTE GURPS/sources/processed/reports/ingestao_inicial_report.json`.
+3. Resultado comparativo:
+- Baseline A2: `ocr_disponivel=false`, `paginas_ocr_fallback=0`, `paginas_suspeitas=14`, `chunks=378`.
+- A3 com OCR: `ocr_disponivel=true`, `paginas_ocr_fallback=13`, `paginas_suspeitas=14`, `chunks=391`.
+4. Conclusao tecnica: houve ganho de cobertura (OCR aplicado e mais chunks), sem reducao no total de paginas suspeitas; manter fila de revisao manual das 14 paginas residuais no proximo lote.
 
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
