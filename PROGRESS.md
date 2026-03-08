@@ -230,18 +230,26 @@ Evidencias A8:
 3. Guia de execucao atualizado: `AGENTE GURPS/backend/README.md`.
 
 ### Lote A9 - Guardrails de Confianca e Citacoes (Backend AGENTE)
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Registrar lote A9 no `PROGRESS`.
-2. [ ] Reforcar regra de baixa confianca por score minimo recuperado (sem inventar resposta).
-3. [ ] Garantir secao de fontes consistente no output, mesmo quando houver resposta por LLM.
-4. [ ] Validar cenarios minimo: com contexto e sem contexto, com saida em portugues.
+2. [x] Reforcar regra de baixa confianca por score minimo recuperado (sem inventar resposta).
+3. [x] Garantir secao de fontes consistente no output, mesmo quando houver resposta por LLM.
+4. [x] Validar cenarios minimo: com contexto e sem contexto, com saida em portugues.
 
 Criterios de aceite A9:
 1. Backend retorna aviso de baixa confianca quando evidencia for fraca.
 2. Resposta final inclui citacoes de fonte/pagina.
 3. Politica PT-BR preservada em todos os cenarios de fallback.
+
+Evidencias A9:
+1. Guardrails em runtime: `AGENTE GURPS/backend/rag_runtime.py` (`evaluate_evidence`, `build_low_confidence_answer`, `ensure_sources_block`).
+2. API com decisao por evidencia: `AGENTE GURPS/backend/api_server.py`.
+3. Relatorio de validacao: `AGENTE GURPS/sources/processed/reports/guardrails_report.json`.
+4. Resultado de validacao:
+- `contexto_forte_esperado`: `confidence=media`, `has_fontes=true`, `has_inferencia=true`.
+- `contexto_fraco_esperado`: `confidence=baixa`, `has_fontes=true`, `has_inferencia=true`.
 
 ### Lote A10 - Integracao no App Android (Assistente)
 Status: `EM_ANDAMENTO`
