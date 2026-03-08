@@ -49,6 +49,38 @@ Status: `CONCLUIDO`
 5. Higiene de texto: `91%`.
 6. Versionamento: `93%` (sem artefatos locais fora de controle; `release-apks/` ignorado).
 
+## Backlog Futuro - Agente IA GURPS (Ideia 1)
+Status: `PLANEJADO`
+1. Objetivo: assistente para dúvidas de regras, custos, níveis, ideias de lore/background e apoio à criação de ficha.
+2. Arquitetura sugerida:
+- Backend online com RAG (base vetorial + API de LLM).
+- Base de conhecimento com material autorizado + regras da mesa + JSONs ativos do app.
+- App Android com aba "Assistente" consumindo API.
+3. Regras de qualidade:
+- Resposta com fonte/página quando houver.
+- Marcar inferência quando não houver citação direta.
+- Não responder como canônico sem evidência da base.
+4. Situação: apenas registro de produto; implementação ficará para lote futuro dedicado.
+
+## Lotes Ativos - Atualização do App (Ideia 2)
+### Lote U1 - Fundação de Atualização Remota
+Status: `PENDENTE`
+1. [ ] Definir URL de metadados de atualização no `BuildConfig`.
+2. [ ] Criar cliente para baixar e interpretar `update.json`.
+3. [ ] Registrar instruções mínimas de publicação de versão.
+
+### Lote U2 - UX de Verificação no App
+Status: `PENDENTE`
+1. [ ] Adicionar ação "Verificar atualização" no menu principal.
+2. [ ] Exibir resultado (atualizado/atualização disponível/erro).
+3. [ ] Abrir link do APK mais novo para instalação manual.
+
+### Lote U3 - Validação e Fechamento Operacional
+Status: `PENDENTE`
+1. [ ] Validar build `visual/pracego` após integração.
+2. [ ] Executar testes mínimos de regressão.
+3. [ ] Documentar o que você precisa fazer para publicar cada nova versão.
+
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
