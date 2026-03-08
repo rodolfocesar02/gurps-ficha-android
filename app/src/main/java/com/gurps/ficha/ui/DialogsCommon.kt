@@ -68,7 +68,7 @@ fun MenuDialog(
                     Icon(Icons.Default.Add, null); Spacer(modifier = Modifier.width(8.dp)); Text("Importar Ficha (JSON)")
                 }
                 TextButton(onClick = onVerificarAtualizacao, modifier = Modifier.fillMaxWidth()) {
-                    Icon(Icons.Default.Refresh, null); Spacer(modifier = Modifier.width(8.dp)); Text("Verificar atualização")
+                    Icon(Icons.Default.Refresh, null); Spacer(modifier = Modifier.width(8.dp)); Text("Atualizar app")
                 }
             }
         },

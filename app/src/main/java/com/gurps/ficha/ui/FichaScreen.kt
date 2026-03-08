@@ -342,7 +342,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                             runCatching { context.startActivity(intent) }
                             showUpdateDialog = false
                         }
-                    ) { Text("Abrir APK") }
+                    ) { Text("Atualizar agora") }
                 } else {
                     TextButton(onClick = { showUpdateDialog = false }) { Text("Fechar") }
                 }
