@@ -32,3 +32,10 @@ UPDATE_METADATA_URL=https://seu-dominio-ou-github/update.json
 ```
 
 Opcionalmente, pode definir por `-PUPDATE_METADATA_URL=...` no build.
+
+## 5. Checklist operacional (o que voce precisa fazer)
+1. Gerar os APKs novos.
+2. Publicar os APKs em um release com link direto (GitHub Releases recomendado).
+3. Atualizar e publicar o `update.json` com os novos links e `versionCode`.
+4. Validar no app: menu `Verificar atualização`.
+5. Compartilhar no WhatsApp o link do release (evite reenviar APK antigo manualmente).
