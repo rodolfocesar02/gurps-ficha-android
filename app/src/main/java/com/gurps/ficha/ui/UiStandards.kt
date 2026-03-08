@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -95,5 +96,26 @@ fun SummaryFooterCard(title: String, content: @Composable ColumnScope.() -> Unit
             )
             content()
         }
+    }
+}
+
+@Composable
+fun AppListItemCard(
+    modifier: Modifier = Modifier,
+    border: BorderStroke? = null,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = appCardColors(),
+        border = border
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = UiTokens.CardPaddingHorizontal,
+                vertical = UiTokens.CardPaddingVertical
+            ),
+            content = content
+        )
     }
 }

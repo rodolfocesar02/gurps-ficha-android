@@ -31,10 +31,11 @@ Status: `EM ANDAMENTO`
 
 Passos:
 1. [x] Congelar tokens de UI globais (espaço, tipografia, raio, tamanhos de toque).
-2. [ ] Aplicar padrão único em cards (Perícias, Técnicas, Magias, Tracos, Equipamentos, Defesas, Rolagem).
-3. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
-4. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
-5. [ ] Validar em emulador visual e pracego.
+2. [x] Aplicar padrão único de card no núcleo (Perícias, Técnicas e Magias).
+3. [ ] Estender padrão único de card para Traços, Equipamentos, Defesas e Rolagem.
+4. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
+5. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
+6. [ ] Validar em emulador visual e pracego.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `PLANEJADO`

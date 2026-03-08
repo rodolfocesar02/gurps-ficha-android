@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,11 +52,11 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         viewModel.tecnicasCatalogo.associate { it.id to it.descricao }
     }
 
-    StandardTabColumn(contentSpacing = 4.dp) {
+    StandardTabColumn {
         if (isPraCegoVariant) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(UiTokens.SectionSpacing)
             ) {
                 PrimaryActionButton(
                     text = "Adicionar Técnica",
@@ -89,19 +87,14 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         tecnicasOrdenadas.forEach { indexed ->
             val index = indexed.index
             val tecnica = indexed.value
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = appCardColors()
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-                    TecnicaItem(
-                        tecnica = tecnica,
-                        nivelTecnica = tecnica.calcularNivel(personagem),
-                        onShowDescription = { tecnicaDescricaoDialog = tecnica },
-                        onEdit = { editingTecnicaIndex = index },
-                        onDelete = { viewModel.removerTecnica(index) }
-                    )
-                }
+            AppListItemCard {
+                TecnicaItem(
+                    tecnica = tecnica,
+                    nivelTecnica = tecnica.calcularNivel(personagem),
+                    onShowDescription = { tecnicaDescricaoDialog = tecnica },
+                    onEdit = { editingTecnicaIndex = index },
+                    onDelete = { viewModel.removerTecnica(index) }
+                )
             }
         }
 
