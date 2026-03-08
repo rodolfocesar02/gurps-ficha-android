@@ -24,20 +24,31 @@ import androidx.compose.ui.unit.dp
 
 private const val COMPACT_SCREEN_MAX_WIDTH_DP = 360
 
+object UiTokens {
+    val ScreenPadding = 12.dp
+    val SectionSpacing = 8.dp
+    val ItemSpacing = 4.dp
+    val CardPaddingHorizontal = 12.dp
+    val CardPaddingVertical = 10.dp
+    val CardElevation = 1.dp
+    val TouchMinHeight = 48.dp
+    val DialogContentSpacing = 10.dp
+}
+
 @Composable
 fun rememberIsCompactScreen(): Boolean = LocalConfiguration.current.screenWidthDp <= COMPACT_SCREEN_MAX_WIDTH_DP
 
 @Composable
 fun StandardTabColumn(
     modifier: Modifier = Modifier,
-    contentSpacing: androidx.compose.ui.unit.Dp = 4.dp,
+    contentSpacing: androidx.compose.ui.unit.Dp = UiTokens.ItemSpacing,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(12.dp),
+            .padding(UiTokens.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(contentSpacing),
         content = content
     )
@@ -67,10 +78,13 @@ fun SummaryFooterCard(title: String, content: @Composable ColumnScope.() -> Unit
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = appCardColors(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = UiTokens.CardElevation)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            modifier = Modifier.padding(
+                horizontal = UiTokens.CardPaddingHorizontal,
+                vertical = UiTokens.CardPaddingVertical
+            ),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(

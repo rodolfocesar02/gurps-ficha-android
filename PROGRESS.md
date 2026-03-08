@@ -27,10 +27,10 @@ Evidência:
 1. Checklist criado em `docs/v2/NON_REGRESSION_V1_CHECKLIST.md`.
 
 ### Lote V2.2 - Padronização Visual Global (Visual + PraCego)
-Status: `PLANEJADO`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. [ ] Congelar tokens de UI globais (espaço, tipografia, raio, tamanhos de toque).
+1. [x] Congelar tokens de UI globais (espaço, tipografia, raio, tamanhos de toque).
 2. [ ] Aplicar padrão único em cards (Perícias, Técnicas, Magias, Tracos, Equipamentos, Defesas, Rolagem).
 3. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
 4. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
