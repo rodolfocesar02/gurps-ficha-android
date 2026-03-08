@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +43,7 @@ fun MenuDialog(
     onExportarCompativel: () -> Unit,
     onExportarVersionado: () -> Unit,
     onImportar: () -> Unit,
+    onAbrirAssistente: () -> Unit,
     onVerificarAtualizacao: () -> Unit
 ) {
     AlertDialog(
@@ -66,6 +68,9 @@ fun MenuDialog(
                 }
                 TextButton(onClick = onImportar, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Add, null); Spacer(modifier = Modifier.width(8.dp)); Text("Importar Ficha (JSON)")
+                }
+                TextButton(onClick = onAbrirAssistente, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Search, null); Spacer(modifier = Modifier.width(8.dp)); Text("Assistente GURPS")
                 }
                 TextButton(onClick = onVerificarAtualizacao, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Refresh, null); Spacer(modifier = Modifier.width(8.dp)); Text("Atualizar app")
