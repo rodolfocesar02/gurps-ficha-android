@@ -104,18 +104,13 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
         if (equipamentosManuais.isNotEmpty()) {
             Text("Equipamentos Manuais", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             equipamentosManuais.forEach { entry ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        EquipamentoItem(
-                            equipamento = entry.value,
-                            onEdit = { editingEquipamento = entry.index to entry.value },
-                            onDelete = { viewModel.removerEquipamento(entry.index) },
-                            viewModel = viewModel
-                        )
-                    }
+                AppListItemCard {
+                    EquipamentoItem(
+                        equipamento = entry.value,
+                        onEdit = { editingEquipamento = entry.index to entry.value },
+                        onDelete = { viewModel.removerEquipamento(entry.index) },
+                        viewModel = viewModel
+                    )
                 }
             }
         }
@@ -130,18 +125,13 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             armasEquipadas.forEach { entry ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        EquipamentoArmaItem(
-                            equipamento = entry.value,
-                            onEdit = { editingEquipamento = entry.index to entry.value },
-                            onDelete = { viewModel.removerEquipamento(entry.index) },
-                            viewModel = viewModel
-                        )
-                    }
+                AppListItemCard {
+                    EquipamentoArmaItem(
+                        equipamento = entry.value,
+                        onEdit = { editingEquipamento = entry.index to entry.value },
+                        onDelete = { viewModel.removerEquipamento(entry.index) },
+                        viewModel = viewModel
+                    )
                 }
             }
         }
@@ -156,18 +146,13 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             escudosEquipados.forEach { entry ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        EquipamentoItem(
-                            equipamento = entry.value,
-                            onEdit = { editingEquipamento = entry.index to entry.value },
-                            onDelete = { viewModel.removerEquipamento(entry.index) },
-                            viewModel = viewModel
-                        )
-                    }
+                AppListItemCard {
+                    EquipamentoItem(
+                        equipamento = entry.value,
+                        onEdit = { editingEquipamento = entry.index to entry.value },
+                        onDelete = { viewModel.removerEquipamento(entry.index) },
+                        viewModel = viewModel
+                    )
                 }
             }
         }
@@ -187,17 +172,12 @@ fun TabEquipamentos(viewModel: FichaViewModel) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             armadurasEquipadas.forEach { entry ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        ArmaduraSelecionadaItem(
-                            equipamento = entry.value,
-                            onEdit = { editingEquipamento = entry.index to entry.value },
-                            onDelete = { viewModel.removerEquipamento(entry.index) }
-                        )
-                    }
+                AppListItemCard {
+                    ArmaduraSelecionadaItem(
+                        equipamento = entry.value,
+                        onEdit = { editingEquipamento = entry.index to entry.value },
+                        onDelete = { viewModel.removerEquipamento(entry.index) }
+                    )
                 }
             }
         }
