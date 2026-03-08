@@ -85,7 +85,7 @@ Status: `CONCLUIDO`
 Status: `EM ANDAMENTO`
 1. [x] Definir `UPDATE_METADATA_URL` no `local.properties`.
 2. [x] Publicar APKs (`Visual` e `PraCego`) com link direto.
-3. [ ] Atualizar/publicar `update.json` com `versionCode` novo.
+3. [x] Atualizar/publicar `update.json` com `versionCode` novo.
 4. [ ] Validar no app: Menu > `Verificar atualização`.
 5. [ ] Compartilhar no WhatsApp o link da release atual.
 
