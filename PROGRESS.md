@@ -256,10 +256,10 @@ Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote A10 no `PROGRESS`.
-2. [ ] Adicionar configuracao de URL da API do agente no `BuildConfig`.
-3. [ ] Implementar cliente Android para endpoint `/ask`.
-4. [ ] Adicionar entrada no menu para abrir dialogo "Assistente GURPS".
-5. [ ] Implementar dialogo de consulta com pergunta, resposta e fontes.
+2. [x] Adicionar configuracao de URL da API do agente no `BuildConfig`.
+3. [x] Implementar cliente Android para endpoint `/ask`.
+4. [x] Adicionar entrada no menu para abrir dialogo "Assistente GURPS".
+5. [x] Implementar dialogo de consulta com pergunta, resposta e fontes.
 6. [ ] Validar compilacao das variantes `visual` e `pracego`.
 
 Criterios de aceite A10:

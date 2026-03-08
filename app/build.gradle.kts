@@ -46,6 +46,12 @@ android {
         ) ?: "")
             .trim()
             .replace("\"", "\\\"")
+        val gurpsAgentApiBaseUrl = (firstNonBlank(
+            project.findProperty("GURPS_AGENT_API_BASE_URL") as? String,
+            localProperties.getProperty("GURPS_AGENT_API_BASE_URL")
+        ) ?: "http://10.0.2.2:8787")
+            .trimEnd('/')
+            .replace("\"", "\\\"")
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
@@ -60,6 +66,7 @@ android {
             "Boolean.valueOf(${modoAlvoNexusHabilitado.toString()})"
         )
         buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
+        buildConfigField("String", "GURPS_AGENT_API_BASE_URL", "\"$gurpsAgentApiBaseUrl\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

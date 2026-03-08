@@ -61,6 +61,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showLoadDialog by remember { mutableStateOf(false) }
     var showImportResultDialog by remember { mutableStateOf(false) }
     var importResultMessage by remember { mutableStateOf("") }
+    var showAssistenteDialog by remember { mutableStateOf(false) }
     var showUpdateDialog by remember { mutableStateOf(false) }
     var updateDialogTitle by remember { mutableStateOf("Atualização") }
     var updateDialogMessage by remember { mutableStateOf("") }
@@ -248,6 +249,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 showMenuDialog = false
                 importLauncher.launch(arrayOf("application/json", "text/plain"))
             },
+            onAbrirAssistente = {
+                showMenuDialog = false
+                showAssistenteDialog = true
+            },
             onVerificarAtualizacao = {
                 showMenuDialog = false
                 coroutineScope.launch {
@@ -325,6 +330,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     Text("Fechar")
                 }
             }
+        )
+    }
+    if (showAssistenteDialog) {
+        AssistenteGurpsDialog(
+            onDismiss = { showAssistenteDialog = false }
         )
     }
     if (showUpdateDialog) {
