@@ -171,14 +171,18 @@ Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote A6 com criterio de separacao entre suspeita tecnica e suspeita operacional.
-2. [ ] Implementar classificador de paginas residuais para identificar capas/sumarios de abertura.
-3. [ ] Gerar relatorio de suspeitas operacionais (acionaveis) apos classificacao.
+2. [x] Implementar classificador de paginas residuais para identificar capas/sumarios de abertura.
+3. [x] Gerar relatorio de suspeitas operacionais (acionaveis) apos classificacao.
 4. [ ] Fechar lote com evidencias e regra permanente para evitar falso positivo de capa.
 
 Criterios de aceite A6:
 1. Relatorio com duas classes: `aceitas_contexto` (capa/sumario) e `acionaveis`.
 2. Paginas residuais atuais classificadas de forma objetiva e rastreavel.
 3. Se `acionaveis=0`, lote encerrado com justificativa tecnica.
+
+Evidencia parcial A6.3:
+1. Relatorio gerado: `AGENTE GURPS/sources/processed/reports/suspeitas_operacionais_report.json`.
+2. Resultado: `total_suspeitas_entrada=5`, `aceitas_contexto=5`, `acionaveis=0`.
 
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
