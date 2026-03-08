@@ -133,13 +133,18 @@ Status: `EM ANDAMENTO`
 Passos:
 1. [x] Registrar lote de revisão dirigida com meta de listar páginas exatas suspeitas.
 2. [x] Gerar relatório detalhado com `source_id`, título, página, tamanho de texto e uso de OCR.
-3. [ ] Validar contagem final das suspeitas e cruzar com relatório A3.
+3. [x] Validar contagem final das suspeitas e cruzar com relatório A3.
 4. [ ] Publicar instrução de revisão manual por prioridade.
 
 Criterios de aceite A4:
 1. Lista exata das 14 páginas suspeitas disponível em arquivo versionado.
 2. Contagem do detalhado igual ao total de `paginas_suspeitas` do relatório principal.
 3. Checklist de revisão manual pronto para execução.
+
+Evidência passo 3:
+1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
+2. Relatório principal registra `baseline_relatorio_principal=14`.
+3. `match_baseline=true` confirmado.
 
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
