@@ -86,11 +86,13 @@ Passos:
 3. [x] Criar script de validacao do manifesto.
 4. [ ] Receber seus livros PT/EN em `AGENTE GURPS/sources/raw/` e registrar no manifesto.
 5. [ ] Rodar ingestao inicial (extracao/chunks) e gerar primeiro relatorio de cobertura.
+6. [x] Definir modo inicial sem conflito: somente fontes em portugues por padrao.
 
 Criterios de aceite A2:
 1. Manifesto validado sem erros.
 2. Estrutura de fontes pronta para receber materiais.
 3. Regras de idioma preservadas (saida final sempre em portugues).
+4. Fontes em ingles ficam desativadas ate liberacao explicita.
 
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
