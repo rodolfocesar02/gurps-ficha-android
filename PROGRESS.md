@@ -377,6 +377,26 @@ Criterios de aceite A13:
 2. UI consistente com o restante do app.
 3. Acessibilidade preservada na variante pra cego.
 
+### Lote A14 - Deploy Cloud do AGENTE na Railway
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Preparar entrypoint de execucao para cloud sem comando complexo.
+2. [x] Habilitar auto-indexacao no startup quando `CHROMA` estiver vazio.
+3. [x] Atualizar documentacao com build/start command para Railway.
+4. [x] Atualizar `.env.example` com modelos e variaveis finais do Gemini.
+
+Criterios de aceite A14:
+1. Backend sobe em cloud com `PORT` dinamico da Railway.
+2. Em ambiente novo, indice e criado automaticamente a partir de `chunks.jsonl`.
+3. Guia de deploy contém comandos e variaveis para publicar servico separado.
+
+Evidencias A14:
+1. Entrypoint cloud: `AGENTE GURPS/backend/start_railway.py`.
+2. Auto-index em startup: `AGENTE GURPS/backend/rag_runtime.py` + `AGENTE GURPS/backend/api_server.py`.
+3. Documentacao de deploy: `AGENTE GURPS/backend/README.md`.
+4. Config de ambiente atualizada: `AGENTE GURPS/backend/.env.example`.
+
 Evidência passo 3:
 1. `paginas_suspeitas_detalhado.json` registrou `total_suspeitas_detalhado=14`.
 2. Relatório principal registra `baseline_relatorio_principal=14`.
