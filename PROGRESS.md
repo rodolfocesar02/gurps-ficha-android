@@ -291,10 +291,10 @@ Evidencias A10.1:
 4. Arte de botão reservada para próxima implementação: `AGENTE GURPS/IMAGENS!/GURPS AGENT.png`.
 
 ### Lote A11 - Reingestão Completa da Base (qualidade de resposta)
-Status: `PLANEJADO`
+Status: `EM_ANDAMENTO`
 
 Passos:
-1. [ ] Reexecutar ingestão sem limite de páginas para todos os PDFs permitidos.
+1. [x] Reexecutar ingestão sem limite de páginas para todos os PDFs permitidos.
 2. [ ] Regenerar `pages/chunks` e reindexar Chroma com base completa.
 3. [ ] Gerar relatório comparativo (antes/depois) com cobertura por fonte.
 4. [ ] Validar perguntas críticas (ex.: Judô, Aptidão Mágica, custo por nível).
@@ -303,6 +303,11 @@ Criterios de aceite A11:
 1. Cobertura deixa de ficar concentrada em capa/sumário.
 2. A maioria das consultas de regras passa a retornar `confiança média/alta`.
 3. Relatório de qualidade versionado.
+
+Evidência passo 1:
+1. Baseline preservado em `AGENTE GURPS/sources/processed/reports/ingestao_baseline_pre_a11.json`.
+2. Nova ingestão completa executada com `--max-pages-per-pdf 10000`.
+3. Resultado: `pdfs_processados=19`, `paginas_processadas=3268`, `chunks_gerados=17971`, `paginas_suspeitas=20`, `ocr_disponivel=true`.
 
 ### Lote A12 - Resposta Inteligente (LLM habilitado)
 Status: `PLANEJADO`
