@@ -1,4 +1,4 @@
-package com.gurps.ficha.agent
+﻿package com.gurps.ficha.agent
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -42,8 +42,8 @@ object GurpsAgentService {
             try {
                 connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
                     requestMethod = "POST"
-                    connectTimeout = 15000
-                    readTimeout = 20000
+                    connectTimeout = 25000
+                    readTimeout = 45000
                     doOutput = true
                     setRequestProperty("Content-Type", "application/json; charset=utf-8")
                 }
@@ -103,3 +103,4 @@ object GurpsAgentService {
         }
     }
 }
+
