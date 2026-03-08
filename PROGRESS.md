@@ -347,7 +347,7 @@ Criterios de aceite A12:
 3. Sem alucinação em cenário de baixa evidência.
 
 Bloqueio operacional atual (A12 passo 1):
-1. `OPENAI_API_KEY` agora está configurada no `.env`, porém chamada ao modelo falha com `RateLimitError` (`insufficient_quota`).
+1. `OPENAI_API_KEY` agora está configurada no `.env`, porém chamada ao modelo falha com `RateLimitError` (quota excedida / limite zero no provedor).
 2. Diagnóstico registrado em `AGENTE GURPS/sources/processed/reports/a12_llm_diagnostico_report.json`.
 3. Enquanto a quota/crédito não for regularizada, o backend permanece em modo offline (fallback por trecho).
 

@@ -1,9 +1,10 @@
 {
-  "generated_at_utc": "2026-03-08T16:48:47.870612+00:00",
+  "generated_at_utc": "2026-03-08T17:28:07.573744+00:00",
   "env_file_found": true,
   "openai_api_key_set": true,
-  "chat_model": "gpt-4.1-mini",
+  "chat_model": "gemini-2.0-flash",
   "llm_call_ok": false,
+  "llm_mode": null,
   "error_type": "RateLimitError",
-  "error_message": "Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.', 'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
+  "error_message": "Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.0-flash\\n* Quota exceeded for metric: generativelanguage.googleapis."
 }
