@@ -41,7 +41,8 @@ fun MenuDialog(
     onCarregar: () -> Unit,
     onExportarCompativel: () -> Unit,
     onExportarVersionado: () -> Unit,
-    onImportar: () -> Unit
+    onImportar: () -> Unit,
+    onVerificarAtualizacao: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -65,6 +66,9 @@ fun MenuDialog(
                 }
                 TextButton(onClick = onImportar, modifier = Modifier.fillMaxWidth()) {
                     Icon(Icons.Default.Add, null); Spacer(modifier = Modifier.width(8.dp)); Text("Importar Ficha (JSON)")
+                }
+                TextButton(onClick = onVerificarAtualizacao, modifier = Modifier.fillMaxWidth()) {
+                    Icon(Icons.Default.Refresh, null); Spacer(modifier = Modifier.width(8.dp)); Text("Verificar atualização")
                 }
             }
         },

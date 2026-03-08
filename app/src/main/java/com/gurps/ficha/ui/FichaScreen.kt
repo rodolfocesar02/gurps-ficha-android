@@ -1,5 +1,6 @@
 ﻿package com.gurps.ficha.ui
 
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -30,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +48,9 @@ import androidx.compose.ui.unit.sp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.R
 import com.gurps.ficha.model.PersonagemInterop
+import com.gurps.ficha.update.AppUpdateService
 import com.gurps.ficha.viewmodel.FichaViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +61,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showLoadDialog by remember { mutableStateOf(false) }
     var showImportResultDialog by remember { mutableStateOf(false) }
     var importResultMessage by remember { mutableStateOf("") }
+    var showUpdateDialog by remember { mutableStateOf(false) }
+    var updateDialogTitle by remember { mutableStateOf("Atualização") }
+    var updateDialogMessage by remember { mutableStateOf("") }
+    var updateApkUrl by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     val temAptidaoMagica = viewModel.temAptidaoMagica
     val configuration = LocalConfiguration.current
@@ -238,6 +247,35 @@ fun FichaScreen(viewModel: FichaViewModel) {
             onImportar = {
                 showMenuDialog = false
                 importLauncher.launch(arrayOf("application/json", "text/plain"))
+            },
+            onVerificarAtualizacao = {
+                showMenuDialog = false
+                coroutineScope.launch {
+                    val result = AppUpdateService.checkForUpdates()
+                    result.onSuccess { state ->
+                        if (state.hasUpdate) {
+                            updateDialogTitle = "Nova versão disponível"
+                            updateDialogMessage = buildString {
+                                append("Atual: ${state.currentVersionName} (${state.currentVersionCode})\n")
+                                append("Nova: ${state.latestVersionName} (${state.latestVersionCode})")
+                                if (!state.notes.isNullOrBlank()) {
+                                    append("\n\nNotas: ${state.notes}")
+                                }
+                            }
+                            updateApkUrl = state.apkUrl
+                        } else {
+                            updateDialogTitle = "App atualizado"
+                            updateDialogMessage = "Você já está na versão mais recente (${state.currentVersionName})."
+                            updateApkUrl = null
+                        }
+                        showUpdateDialog = true
+                    }.onFailure { throwable ->
+                        updateDialogTitle = "Falha ao verificar"
+                        updateDialogMessage = throwable.message ?: "Não foi possível consultar atualização."
+                        updateApkUrl = null
+                        showUpdateDialog = true
+                    }
+                }
             }
         )
     }
@@ -289,6 +327,31 @@ fun FichaScreen(viewModel: FichaViewModel) {
             }
         )
     }
+    if (showUpdateDialog) {
+        AlertDialog(
+            onDismissRequest = { showUpdateDialog = false },
+            title = { Text(updateDialogTitle) },
+            text = { Text(updateDialogMessage) },
+            confirmButton = {
+                if (!updateApkUrl.isNullOrBlank()) {
+                    TextButton(
+                        onClick = {
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateApkUrl)).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                            runCatching { context.startActivity(intent) }
+                            showUpdateDialog = false
+                        }
+                    ) { Text("Abrir APK") }
+                } else {
+                    TextButton(onClick = { showUpdateDialog = false }) { Text("Fechar") }
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showUpdateDialog = false }) { Text("Cancelar") }
+            }
+        )
+    }
 }
 
 @Composable
@@ -335,5 +398,4 @@ fun PontosBar(viewModel: FichaViewModel) {
         }
     }
 }
-
 
