@@ -17,3 +17,6 @@ Thumbs.db
 
 # Local release artifacts (do not version)
 release-apks/
+
+# Local-only AGENTE artifacts (never version)
+AGENTE GURPS/backend/AGENTE GURPS/
