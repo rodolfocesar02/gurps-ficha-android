@@ -8,6 +8,7 @@ Atualizado em: 2026-03-08
 2. Bloquear publicação se houver strings com artefatos típicos (`Ã`, `Â`, `ï¿½`, `�`, `n?o`, `per?cia`, `pr?-requisito` e variantes).
 3. Corrigir no próprio arquivo-fonte canônico antes de gerar APK.
 4. Registrar no `PROGRESS.md` o relatório da varredura em cada lote que tocar texto.
+5. Na rotina de reparo de mojibake, **não** tratar letras portuguesas válidas (ex.: `â`) como marcador de erro; usar apenas sequências típicas quebradas (`Ã`, `Â`, `â€`, `â€“`, `â€”`, `â€œ`, `â€\u009d`, `â€™`, `�`).
 
 ## Regras Operacionais
 1. Sempre editar primeiro a fonte canônica de pré-requisito antes de mexer na UI.
@@ -28,35 +29,7 @@ Atualizado em: 2026-03-08
 5. Higiene de texto: `91%`.
 6. Versionamento: `93%`.
 
-## Lotes Pendentes
-
-### Lote A11 - Reingestão Completa da Base (qualidade de resposta)
-Status: `EM_ANDAMENTO`
-
-Pendências:
-1. [ ] Elevar acerto em perguntas básicas de regras (`Judô`, `ST`, `Aptidão Mágica`, `Acrobacia`) para maioria `confiança média/alta`.
-2. [ ] Revalidar `a11_consultas_criticas_report.json` após ajuste de retrieval.
-3. [ ] Fechar lote com relatório final e critérios atendidos.
-
-### Lote A13 - Polimento Final de UX no App
-Status: `PLANEJADO`
-
-Passos:
-1. [ ] Aplicar ícone/arte do assistente no menu/botão (se assistente voltar ao app futuramente).
-2. [ ] Melhorar layout de resposta longa (quebra, resumo e "ver mais").
-3. [ ] Exibir fontes em bloco compacto e clicável.
-4. [ ] Ajustar feedback visual por confiança (baixa/média/alta).
-5. [ ] Validar nas variantes `visual` e `pracego`.
-
-### Lote A14 - Deploy Cloud do AGENTE na Railway
-Status: `EM_ANDAMENTO`
-
-Situação atual:
-1. [x] Domínio online e API de saúde respondendo.
-2. [ ] Homologar estabilidade funcional (`/ask`) em série longa de testes reais.
-3. [ ] Fechar operação com playbook único (root/build/start/variáveis) sem divergência operacional.
-
-### Lote U5 - Padronização Global de Layout (Visual + PraCego)
+### Lote 1 - Padronização Global de Layout (Visual + PraCego)
 Status: `PLANEJADO`
 
 Objetivo:

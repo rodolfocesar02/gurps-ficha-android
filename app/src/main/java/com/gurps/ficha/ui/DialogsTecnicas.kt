@@ -372,7 +372,7 @@ fun ConfigurarTecnicaDialog(
     if (mostrarDescricao) {
         AlertDialog(
             onDismissRequest = { mostrarDescricao = false },
-            title = { Text("Descrição: ${definicao.nome}") },
+            title = { Text(definicao.nome) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -609,7 +609,7 @@ fun EditarTecnicaDialog(
     if (mostrarDescricao) {
         AlertDialog(
             onDismissRequest = { mostrarDescricao = false },
-            title = { Text("Descrição: ${tecnica.nome}") },
+            title = { Text(tecnica.nome) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),

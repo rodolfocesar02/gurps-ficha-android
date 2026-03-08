@@ -251,6 +251,12 @@ data class DesvantagemDefinicao(
     val tags: List<String> = emptyList(),
     val descricao: String? = ""
 ) {
+    fun usaAutocontroleMental(): Boolean {
+        val ehMental = tags.any { it.equals("mental", ignoreCase = true) }
+        val temMarcadorAutocontrole = custo.contains("*")
+        return ehMental && temMarcadorAutocontrole
+    }
+
     fun getCustoBase(): Int {
         val cleaned = custo.replace("?", "").replace("verificar", "").trim()
         val match = Regex("(-?\\d+)").find(cleaned)

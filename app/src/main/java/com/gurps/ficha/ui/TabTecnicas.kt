@@ -140,7 +140,7 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         val descricao = descricoesTecnicasPorId[tecnica.definicaoId].orEmpty()
         AlertDialog(
             onDismissRequest = { tecnicaDescricaoDialog = null },
-            title = { Text("Descrição: ${tecnica.nome}") },
+            title = { Text(tecnica.nome) },
             text = {
                 Text(
                     descricao.ifBlank { "Sem descrição detalhada disponível." },

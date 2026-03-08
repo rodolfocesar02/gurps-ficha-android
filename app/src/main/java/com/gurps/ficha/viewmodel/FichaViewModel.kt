@@ -554,7 +554,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (personagem.desvantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
             return // Ja existe
         }
-        val desvantagem = dataRepository.criarDesvantagemSelecionada(definicao, nivel, custoEscolhido, descricao, autocontrole)
+        val autocontroleNormalizado = if (definicao.usaAutocontroleMental()) autocontrole else null
+        val desvantagem = dataRepository.criarDesvantagemSelecionada(
+            definicao,
+            nivel,
+            custoEscolhido,
+            descricao,
+            autocontroleNormalizado
+        )
         val lista = personagem.desvantagens.toMutableList()
         lista.add(desvantagem)
         personagem = personagem.copy(desvantagens = lista)
@@ -571,7 +578,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarDesvantagem(index: Int, desvantagem: DesvantagemSelecionada) {
         val lista = personagem.desvantagens.toMutableList()
         if (index in lista.indices) {
-            lista[index] = desvantagem
+            val definicao = dataRepository.desvantagens.firstOrNull { it.id == desvantagem.definicaoId }
+            val autocontroleNormalizado = if (definicao?.usaAutocontroleMental() == true) desvantagem.autocontrole else null
+            lista[index] = desvantagem.copy(autocontrole = autocontroleNormalizado)
             personagem = personagem.copy(desvantagens = lista)
         }
     }

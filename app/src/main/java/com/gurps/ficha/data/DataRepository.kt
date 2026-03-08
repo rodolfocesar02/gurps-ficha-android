@@ -1878,7 +1878,9 @@ private fun String?.sanitized(default: String = ""): String {
 }
 
 private fun String.fixMojibakeIfNeeded(): String {
-    val markers = listOf("Ã", "Â", "â", "�")
+    // Importante: "â" isolado é letra válida em português (ex.: Tolerância).
+    // O detector deve olhar sequências típicas de mojibake, não letras isoladas.
+    val markers = listOf("Ã", "Â", "â€", "â€“", "â€”", "â€œ", "â€\u009d", "â€™", "�")
     var current = this
     repeat(2) {
         if (!markers.any { current.contains(it) }) return current

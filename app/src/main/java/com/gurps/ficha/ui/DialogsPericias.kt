@@ -292,7 +292,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                     }
                 ) {
                     Text(
-                        "Descrição: ${definicao.nome}",
+                        definicao.nome,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -574,7 +574,7 @@ fun EditarPericiaDialog(
     if (mostrarDescricao) {
         AlertDialog(
             onDismissRequest = { mostrarDescricao = false },
-            title = { Text("Descrição: ${pericia.nome}") },
+            title = { Text(pericia.nome) },
             text = {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -618,7 +618,7 @@ private fun PericiaDescricaoDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Descrição: ${definicao.nome}") },
+        title = { Text(definicao.nome) },
         text = {
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
