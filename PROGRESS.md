@@ -34,10 +34,11 @@ Passos:
 2. [x] Aplicar padrão único de card no núcleo (Perícias, Técnicas e Magias).
 3. [x] Estender padrão único de card para Traços.
 4. [x] Estender padrão único de card para Equipamentos.
-5. [ ] Estender padrão único de card para Defesas e Rolagem.
-6. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
-7. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
-8. [ ] Validar em emulador visual e pracego.
+5. [x] Estender padrão único de card para Defesas.
+6. [ ] Estender padrão único de card para Rolagem.
+7. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
+8. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
+9. [ ] Validar em emulador visual e pracego.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `PLANEJADO`
