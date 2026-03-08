@@ -333,7 +333,7 @@ Evidência passo 4:
 4. Conclusão operacional: cobertura melhorou forte (A11), mas o critério de maioria `media/alta` ainda não foi atingido; depende do próximo lote (A12 com LLM habilitado + ajuste fino de retrieval).
 
 ### Lote A12 - Resposta Inteligente (LLM habilitado)
-Status: `PLANEJADO`
+Status: `EM_ANDAMENTO`
 
 Passos:
 1. [ ] Configurar `OPENAI_API_KEY` no backend do agente.
@@ -345,6 +345,11 @@ Criterios de aceite A12:
 1. Respostas legíveis e objetivas em português.
 2. Fontes e páginas exibidas em todas as respostas.
 3. Sem alucinação em cenário de baixa evidência.
+
+Bloqueio operacional atual (A12 passo 1):
+1. `OPENAI_API_KEY` está vazio em `AGENTE GURPS/backend/.env`.
+2. Variável de ambiente global `OPENAI_API_KEY` também ausente no host.
+3. Sem credencial válida, o backend opera em modo offline (fallback por trecho), impedindo validação completa do A12.
 
 ### Lote A13 - Polimento Final de UX no App
 Status: `PLANEJADO`
