@@ -1,0 +1,211 @@
+{
+  "baseline": {
+    "pdfs_processados": 19,
+    "paginas_processadas": 90,
+    "chunks_gerados": 391,
+    "paginas_suspeitas": 14
+  },
+  "atual": {
+    "pdfs_processados": 19,
+    "paginas_processadas": 3268,
+    "chunks_gerados": 17971,
+    "paginas_suspeitas": 20
+  },
+  "delta_global": {
+    "paginas_processadas": 3178,
+    "chunks_gerados": 17580,
+    "paginas_suspeitas": 6
+  },
+  "comparativo_por_fonte": [
+    {
+      "source_id": "pt_gurps_4a_edicao_modulo_basico",
+      "titulo": "GURPS 4ª Edição - Módulo Básico",
+      "paginas_before": 5,
+      "paginas_after": 578,
+      "delta_paginas": 573,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_modulo_basico_personagens",
+      "titulo": "GURPS 4ª Edição - Módulo Básico Personagens",
+      "paginas_before": 5,
+      "paginas_after": 338,
+      "delta_paginas": 333,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_magia",
+      "titulo": "GURPS 4ª Edição - Magia",
+      "paginas_before": 5,
+      "paginas_after": 285,
+      "delta_paginas": 280,
+      "suspeitas_before": 1,
+      "suspeitas_after": 7,
+      "delta_suspeitas": 6
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_artes_marciais",
+      "titulo": "GURPS 4ª Edição - Artes Marciais",
+      "paginas_before": 5,
+      "paginas_after": 265,
+      "delta_paginas": 260,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_high_tech",
+      "titulo": "GURPS 4ª Edição - High-Tech",
+      "paginas_before": 5,
+      "paginas_after": 258,
+      "delta_paginas": 253,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_viagem_espacial",
+      "titulo": "GURPS 4ª Edição - Viagem Espacial",
+      "paginas_before": 5,
+      "paginas_after": 256,
+      "delta_paginas": 251,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_fantasy",
+      "titulo": "GURPS 4ª Edição - Fantasy",
+      "paginas_before": 5,
+      "paginas_after": 242,
+      "delta_paginas": 237,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_modulo_basico_campanhas",
+      "titulo": "GURPS 4ª Edição - Módulo Básico Campanhas",
+      "paginas_before": 5,
+      "paginas_after": 242,
+      "delta_paginas": 237,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_ultra_tech",
+      "titulo": "GURPS 4ª Edição - Ultra-Tech",
+      "paginas_before": 5,
+      "paginas_after": 242,
+      "delta_paginas": 237,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_low_tech",
+      "titulo": "GURPS 4ª Edição - Low-Tech",
+      "paginas_before": 5,
+      "paginas_after": 162,
+      "delta_paginas": 157,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_supers",
+      "titulo": "GURPS 4ª Edição - Supers",
+      "paginas_before": 5,
+      "paginas_after": 152,
+      "delta_paginas": 147,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_poderes_psiquicos",
+      "titulo": "GURPS 4ª Edição - Poderes Psíquicos",
+      "paginas_before": 5,
+      "paginas_after": 87,
+      "delta_paginas": 82,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4o_edicao_gun_fu",
+      "titulo": "GURPS 4º Edição - Gun Fu",
+      "paginas_before": 5,
+      "paginas_after": 50,
+      "delta_paginas": 45,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_criacao_de_personagens_e_atualizacao_gurps",
+      "titulo": "Criação de Personagens e Atualização GURPS",
+      "paginas_before": 5,
+      "paginas_after": 48,
+      "delta_paginas": 43,
+      "suspeitas_before": 0,
+      "suspeitas_after": 0,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_meta_tech",
+      "titulo": "GURPS 4ª Edição - Meta-Tech",
+      "paginas_before": 5,
+      "paginas_after": 44,
+      "delta_paginas": 39,
+      "suspeitas_before": 1,
+      "suspeitas_after": 1,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_categorias_de_pericias",
+      "titulo": "Categorias de Perícias",
+      "paginas_before": 5,
+      "paginas_after": 7,
+      "delta_paginas": 2,
+      "suspeitas_before": 0,
+      "suspeitas_after": 0,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_categorias_de_pericias",
+      "titulo": "GURPS 4ª Edição - Categorias de Perícias",
+      "paginas_before": 5,
+      "paginas_after": 7,
+      "delta_paginas": 2,
+      "suspeitas_before": 0,
+      "suspeitas_after": 0,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_gurps_4a_edicao_ultra_lite",
+      "titulo": "GURPS 4ª Edição - Ultra-Lite",
+      "paginas_before": 4,
+      "paginas_after": 4,
+      "delta_paginas": 0,
+      "suspeitas_before": 0,
+      "suspeitas_after": 0,
+      "delta_suspeitas": 0
+    },
+    {
+      "source_id": "pt_regua_de_distancia_gurps",
+      "titulo": "Régua de Distância GURPS",
+      "paginas_before": 1,
+      "paginas_after": 1,
+      "delta_paginas": 0,
+      "suspeitas_before": 0,
+      "suspeitas_after": 0,
+      "delta_suspeitas": 0
+    }
+  ]
+}
