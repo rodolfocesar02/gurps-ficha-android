@@ -127,6 +127,20 @@ Evidencias A3:
 - A3 com OCR: `ocr_disponivel=true`, `paginas_ocr_fallback=13`, `paginas_suspeitas=14`, `chunks=391`.
 4. Conclusao tecnica: houve ganho de cobertura (OCR aplicado e mais chunks), sem reducao no total de paginas suspeitas; manter fila de revisao manual das 14 paginas residuais no proximo lote.
 
+### Lote A4 - Revisao Dirigida de Paginas Suspeitas (AGENTE GURPS)
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Registrar lote de revisão dirigida com meta de listar páginas exatas suspeitas.
+2. [ ] Gerar relatório detalhado com `source_id`, título, página, tamanho de texto e uso de OCR.
+3. [ ] Validar contagem final das suspeitas e cruzar com relatório A3.
+4. [ ] Publicar instrução de revisão manual por prioridade.
+
+Criterios de aceite A4:
+1. Lista exata das 14 páginas suspeitas disponível em arquivo versionado.
+2. Contagem do detalhado igual ao total de `paginas_suspeitas` do relatório principal.
+3. Checklist de revisão manual pronto para execução.
+
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
 Status: `CONCLUIDO`
