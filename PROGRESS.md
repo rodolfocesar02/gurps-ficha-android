@@ -105,6 +105,20 @@ Criterios de aceite A2:
 3. Regras de idioma preservadas (saida final sempre em portugues).
 4. Fontes em ingles ficam desativadas ate liberacao explicita.
 
+### Lote A3 - OCR e Melhoria de Qualidade (AGENTE GURPS)
+Status: `EM ANDAMENTO`
+
+Passos:
+1. [x] Registrar lote de melhoria de OCR e meta de reducao de paginas suspeitas.
+2. [ ] Instalar dependencias OCR no ambiente (engine + bindings Python).
+3. [ ] Reexecutar ingestao inicial com OCR ativo.
+4. [ ] Comparar metricas antes/depois e registrar ganho de qualidade.
+
+Criterios de aceite A3:
+1. `ocr_disponivel=true` no relatorio.
+2. `paginas_ocr_fallback > 0`.
+3. Reducao de `paginas_suspeitas` vs baseline A2.
+
 ## Lotes Ativos - Atualização do App (Ideia 2)
 ### Lote U1 - Fundação de Atualização Remota
 Status: `CONCLUIDO`
