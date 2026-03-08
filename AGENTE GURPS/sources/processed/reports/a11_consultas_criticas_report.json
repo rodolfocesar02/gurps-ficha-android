@@ -1,0 +1,26 @@
+{
+  "generated_at_utc": "2026-03-08T16:03:06.585156+00:00",
+  "cases": {
+    "judo_funcionamento": {
+      "status_code": 200,
+      "confidence": "baixa",
+      "sources_count": 6,
+      "has_fontes": true,
+      "answer_preview": "Nao encontrei evidencia forte o suficiente para responder com confianca.\nInferencia: consulte os trechos e confirme no livro canonico antes de aplicar na mesa.\nFontes:\n[1] GURPS 4ª Edição - Magia (source_id=pt_gurps_4a_e"
+    },
+    "aptidao_magica": {
+      "status_code": 200,
+      "confidence": "media",
+      "sources_count": 6,
+      "has_fontes": true,
+      "answer_preview": "Resposta provisoria (modo offline, sem LLM):\nTrecho mais proximo da pergunta:\narâmetroS Palavras Apropriadas são chamados Palavras no vernáculo dos m mágicos� Para trabalhar a magia, os ma- As palavras para algumas mágic"
+    },
+    "custo_por_nivel": {
+      "status_code": 200,
+      "confidence": "baixa",
+      "sources_count": 6,
+      "has_fontes": true,
+      "answer_preview": "Nao encontrei evidencia forte o suficiente para responder com confianca.\nInferencia: consulte os trechos e confirme no livro canonico antes de aplicar na mesa.\nFontes:\n[1] GURPS 4ª Edição - Low-Tech (source_id=pt_gurps_4"
+    }
+  }
+}

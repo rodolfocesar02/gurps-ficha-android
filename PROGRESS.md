@@ -297,7 +297,7 @@ Passos:
 1. [x] Reexecutar ingestão sem limite de páginas para todos os PDFs permitidos.
 2. [x] Regenerar `pages/chunks` e reindexar Chroma com base completa.
 3. [x] Gerar relatório comparativo (antes/depois) com cobertura por fonte.
-4. [ ] Validar perguntas críticas (ex.: Judô, Aptidão Mágica, custo por nível).
+4. [x] Validar perguntas críticas (ex.: Judô, Aptidão Mágica, custo por nível).
 
 Criterios de aceite A11:
 1. Cobertura deixa de ficar concentrada em capa/sumário.
@@ -322,6 +322,15 @@ Evidência passo 3:
 3. Resultado global:
 - `paginas_processadas`: `90 -> 3268`
 - `chunks_gerados`: `391 -> 17971`
+
+Evidência passo 4:
+1. Script de validação crítica: `AGENTE GURPS/backend/validar_a11_consultas_criticas.py`.
+2. Relatório gerado: `AGENTE GURPS/sources/processed/reports/a11_consultas_criticas_report.json`.
+3. Resultado atual:
+- `judo_funcionamento`: `confidence=baixa`
+- `aptidao_magica`: `confidence=media`
+- `custo_por_nivel`: `confidence=baixa`
+4. Conclusão operacional: cobertura melhorou forte (A11), mas o critério de maioria `media/alta` ainda não foi atingido; depende do próximo lote (A12 com LLM habilitado + ajuste fino de retrieval).
 
 ### Lote A12 - Resposta Inteligente (LLM habilitado)
 Status: `PLANEJADO`
