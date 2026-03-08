@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import re
+import unicodedata
 from collections import defaultdict
 from datetime import datetime, timezone
 from dataclasses import dataclass
@@ -110,6 +111,27 @@ def _hash_embedding(text: str, dim: int = 256) -> List[float]:
     if norm > 0:
         vec = [x / norm for x in vec]
     return vec
+
+
+def _normalize_text(text: str) -> str:
+    normalized = unicodedata.normalize("NFKD", text.lower())
+    return "".join(ch for ch in normalized if not unicodedata.combining(ch))
+
+
+def _expand_query(question: str) -> str:
+    qn = _normalize_text(question)
+    extras: List[str] = []
+    if "judo" in qn:
+        extras.extend(["queda", "imobilizacao", "arremesso"])
+    if "aptidao magica" in qn:
+        extras.extend(["magi", "nivel", "custo", "pontos"])
+    if "custo" in qn and "magia" in qn:
+        extras.extend(["pontos", "nivel", "aprendizado"])
+    if "pre requisito" in qn or "prerequisito" in qn:
+        extras.extend(["cadeia", "exigencia", "destravar"])
+    if not extras:
+        return question
+    return question + " " + " ".join(extras)
 
 
 def build_embeddings(settings: RagSettings, texts: List[str]) -> List[List[float]]:
@@ -245,7 +267,8 @@ def ensure_collection_ready(settings: RagSettings) -> Dict[str, Any]:
 def retrieve_context(settings: RagSettings, question: str, top_k: Optional[int] = None) -> Dict[str, Any]:
     collection = get_chroma_collection(settings)
     k = top_k or settings.top_k
-    emb = build_embeddings(settings, [question])[0]
+    q = _expand_query(question)
+    emb = build_embeddings(settings, [q])[0]
     result = collection.query(
         query_embeddings=[emb],
         n_results=k,
@@ -272,7 +295,7 @@ def retrieve_context(settings: RagSettings, question: str, top_k: Optional[int] 
     return {"items": items}
 
 
-def _build_prompt(question: str, mode: str, context_items: List[Dict[str, Any]]) -> str:
+def _build_prompt(question: str, mode: str, context_items: List[Dict[str, Any]], evidence: Optional[Dict[str, Any]] = None) -> str:
     context_lines = []
     for idx, item in enumerate(context_items, start=1):
         context_lines.append(
@@ -282,11 +305,13 @@ def _build_prompt(question: str, mode: str, context_items: List[Dict[str, Any]])
     context_block = "\n\n".join(context_lines)
 
     return (
-        "Voce e o AGENTE GURPS. Responda SEMPRE em portugues.\n"
+        "Voce e o AGENTE GURPS. Responda SEMPRE em portugues, em estilo de chatbot util e natural.\n"
+        "Comece com uma resposta direta curta e depois detalhe em ate 6 linhas.\n"
         "Use somente o contexto recuperado. Se faltar evidencia, diga explicitamente.\n"
         "Nao invente regra canonica.\n"
         "Sempre inclua no final uma secao 'Fontes' com os itens usados no formato [n].\n"
-        "Quando houver inferencia, escreva: 'Inferencia: ...'.\n\n"
+        "Quando houver inferencia, escreva: 'Inferencia: ...'.\n"
+        f"Evidencia: {json.dumps(evidence or {}, ensure_ascii=False)}\n\n"
         f"Modo: {mode}\n"
         f"Pergunta: {question}\n\n"
         "Contexto:\n"
@@ -337,7 +362,7 @@ def evaluate_evidence(question: str, context_items: List[Dict[str, Any]]) -> Dic
         if overlap > max_overlap:
             max_overlap = overlap
 
-    enough = (best_score >= 0.35 and max_overlap >= 2) or (max_overlap >= 3)
+    enough = (best_score >= 0.28 and max_overlap >= 1) or (max_overlap >= 2)
     reason = "ok" if enough else "fraca"
     return {
         "enough": enough,
@@ -353,8 +378,14 @@ def ensure_sources_block(answer: str, context_items: List[Dict[str, Any]]) -> st
     return answer.rstrip() + "\n\n" + format_sources_section(context_items)
 
 
-def answer_with_citations(settings: RagSettings, question: str, mode: str, context_items: List[Dict[str, Any]]) -> str:
-    prompt = _build_prompt(question, mode, context_items)
+def answer_with_citations(
+    settings: RagSettings,
+    question: str,
+    mode: str,
+    context_items: List[Dict[str, Any]],
+    evidence: Optional[Dict[str, Any]] = None,
+) -> str:
+    prompt = _build_prompt(question, mode, context_items, evidence)
     if settings.openai_api_key:
         try:
             from openai import OpenAI

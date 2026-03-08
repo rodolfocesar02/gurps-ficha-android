@@ -8,7 +8,6 @@ from pydantic import BaseModel, Field
 
 from rag_runtime import (
     answer_with_citations,
-    build_low_confidence_answer,
     ensure_collection_ready,
     evaluate_evidence,
     load_settings,
@@ -68,16 +67,21 @@ def ask(payload: AskRequest):
     evidence = evaluate_evidence(payload.question, items)
 
     confidence = "baixa"
-    if evidence["enough"]:
-        if evidence["best_score"] >= 0.55 or evidence["max_overlap"] >= 4:
-            confidence = "alta"
-        else:
-            confidence = "media"
+    if evidence["best_score"] >= 0.55 or evidence["max_overlap"] >= 4:
+        confidence = "alta"
+    elif evidence["best_score"] >= 0.32 or evidence["max_overlap"] >= 2:
+        confidence = "media"
 
-    if not evidence["enough"]:
-        answer = build_low_confidence_answer(items)
-    else:
-        answer = answer_with_citations(settings, payload.question, payload.mode, items)
+    answer = answer_with_citations(settings, payload.question, payload.mode, items, evidence)
+    if not answer.strip():
+        answer = "Não consegui montar uma resposta agora. Tente reformular a pergunta em uma frase curta."
+
+    if not items:
+        confidence = "baixa"
+    elif not evidence["enough"] and confidence == "alta":
+        confidence = "media"
+    elif not evidence["enough"] and confidence == "media":
+        confidence = "baixa"
     sources = [
         SourceItem(
             source_id=item["source_id"],
