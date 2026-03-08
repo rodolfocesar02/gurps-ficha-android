@@ -1,0 +1,21 @@
+{
+  "generated_at_utc": "2026-03-08T14:10:17.463535+00:00",
+  "cases": {
+    "contexto_forte_esperado": {
+      "status_code": 200,
+      "confidence": "media",
+      "sources_count": 4,
+      "has_fontes": true,
+      "has_inferencia": true,
+      "answer_preview": "Resposta provisoria (modo offline, sem LLM):\nTrecho mais proximo da pergunta:\n. O custo em pontos 16–18 13 76–81 28 podem variar em até 10% para mais ou para desse ST mudará: ± 10 "
+    },
+    "contexto_fraco_esperado": {
+      "status_code": 200,
+      "confidence": "baixa",
+      "sources_count": 4,
+      "has_fontes": true,
+      "has_inferencia": true,
+      "answer_preview": "Nao encontrei evidencia forte o suficiente para responder com confianca.\nInferencia: consulte os trechos e confirme no livro canonico antes de aplicar na mesa.\nFontes:\n[1] GURPS 4ª"
+    }
+  }
+}

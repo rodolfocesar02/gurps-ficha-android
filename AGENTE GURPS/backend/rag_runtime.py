@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -183,6 +184,65 @@ def _build_prompt(question: str, mode: str, context_items: List[Dict[str, Any]])
     )
 
 
+def format_sources_section(context_items: List[Dict[str, Any]], max_sources: int = 6) -> str:
+    if not context_items:
+        return "Fontes: nenhuma."
+    lines = ["Fontes:"]
+    for idx, item in enumerate(context_items[:max_sources], start=1):
+        lines.append(
+            f"[{idx}] {item['source_title']} (source_id={item['source_id']}), pag. {item['page_number']}."
+        )
+    return "\n".join(lines)
+
+
+def build_low_confidence_answer(context_items: List[Dict[str, Any]]) -> str:
+    return (
+        "Nao encontrei evidencia forte o suficiente para responder com confianca.\n"
+        "Inferencia: consulte os trechos e confirme no livro canonico antes de aplicar na mesa.\n"
+        f"{format_sources_section(context_items)}"
+    )
+
+
+def _significant_tokens(question: str) -> List[str]:
+    stop = {
+        "qual", "quais", "como", "quando", "onde", "porque", "por", "para", "com",
+        "sem", "uma", "um", "uns", "umas", "dos", "das", "de", "do", "da", "no",
+        "na", "nos", "nas", "e", "ou", "que", "o", "a", "os", "as",
+    }
+    tokens = [t for t in re.findall(r"[a-zA-Z0-9áéíóúãõâêîôûç]+", question.lower()) if len(t) >= 3]
+    return [t for t in tokens if t not in stop]
+
+
+def evaluate_evidence(question: str, context_items: List[Dict[str, Any]]) -> Dict[str, Any]:
+    if not context_items:
+        return {"enough": False, "best_score": 0.0, "max_overlap": 0, "reason": "sem_contexto"}
+
+    best_score = float(context_items[0].get("score", 0.0))
+    tokens = _significant_tokens(question)
+    max_overlap = 0
+
+    for item in context_items:
+        txt = (item.get("text") or "").lower()
+        overlap = sum(1 for tok in tokens if tok in txt)
+        if overlap > max_overlap:
+            max_overlap = overlap
+
+    enough = (best_score >= 0.35 and max_overlap >= 2) or (max_overlap >= 3)
+    reason = "ok" if enough else "fraca"
+    return {
+        "enough": enough,
+        "best_score": round(best_score, 4),
+        "max_overlap": max_overlap,
+        "reason": reason,
+    }
+
+
+def ensure_sources_block(answer: str, context_items: List[Dict[str, Any]]) -> str:
+    if "fontes:" in answer.lower():
+        return answer
+    return answer.rstrip() + "\n\n" + format_sources_section(context_items)
+
+
 def answer_with_citations(settings: RagSettings, question: str, mode: str, context_items: List[Dict[str, Any]]) -> str:
     prompt = _build_prompt(question, mode, context_items)
     if settings.openai_api_key:
@@ -197,22 +257,17 @@ def answer_with_citations(settings: RagSettings, question: str, mode: str, conte
             )
             text = response.output_text.strip()
             if text:
-                return text
+                return ensure_sources_block(text, context_items)
         except Exception:
             pass
 
     if not context_items:
-        return (
-            "Nao encontrei base suficiente para responder com confianca nesta etapa.\n"
-            "Inferencia: necessario ampliar indexacao ou revisar fontes.\n"
-            "Fontes: nenhuma."
-        )
+        return build_low_confidence_answer(context_items)
 
     top = context_items[0]
-    return (
+    answer = (
         "Resposta provisoria (modo offline, sem LLM):\n"
         f"Trecho mais proximo da pergunta:\n{top['text'][:700]}\n\n"
         "Inferencia: resposta resumida diretamente do trecho recuperado.\n"
-        "Fontes:\n"
-        f"[1] {top['source_title']} (source_id={top['source_id']}), pag. {top['page_number']}."
     )
+    return ensure_sources_block(answer, context_items)

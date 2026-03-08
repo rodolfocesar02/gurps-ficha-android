@@ -6,7 +6,13 @@ from typing import Literal, Optional
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-from rag_runtime import answer_with_citations, load_settings, retrieve_context
+from rag_runtime import (
+    answer_with_citations,
+    build_low_confidence_answer,
+    evaluate_evidence,
+    load_settings,
+    retrieve_context,
+)
 
 
 class AskRequest(BaseModel):
@@ -32,7 +38,6 @@ class AskResponse(BaseModel):
 
 app = FastAPI(title="AGENTE GURPS API", version="0.1.0")
 
-
 @app.get("/health")
 def health():
     settings = load_settings()
@@ -49,16 +54,19 @@ def ask(payload: AskRequest):
     settings = load_settings()
     ctx = retrieve_context(settings, payload.question, payload.top_k)
     items = ctx["items"]
+    evidence = evaluate_evidence(payload.question, items)
 
     confidence = "baixa"
-    if items:
-        best = items[0]["score"]
-        if best >= 0.72:
+    if evidence["enough"]:
+        if evidence["best_score"] >= 0.55 or evidence["max_overlap"] >= 4:
             confidence = "alta"
-        elif best >= 0.55:
+        else:
             confidence = "media"
 
-    answer = answer_with_citations(settings, payload.question, payload.mode, items)
+    if not evidence["enough"]:
+        answer = build_low_confidence_answer(items)
+    else:
+        answer = answer_with_citations(settings, payload.question, payload.mode, items)
     sources = [
         SourceItem(
             source_id=item["source_id"],
@@ -69,13 +77,6 @@ def ask(payload: AskRequest):
         )
         for item in items
     ]
-
-    if not items:
-        answer = (
-            "Nao encontrei base suficiente para responder com confianca.\n"
-            "Inferencia: consulte os livros indexados e rode nova ingestao se necessario.\n"
-            "Fontes: nenhuma."
-        )
 
     return AskResponse(
         answer=answer,
