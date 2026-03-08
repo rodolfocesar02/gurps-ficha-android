@@ -1,0 +1,3 @@
+id,titulo,idioma,tipo,edicao,arquivo_relativo,permitido_uso,prioridade,observacoes
+exemplo_modulo_basico_pt,GURPS Modulo Basico,pt,pdf,4,raw/gurps_modulo_basico_pt.pdf,sim,1,exemplo
+exemplo_basic_set_en,GURPS Basic Set,en,pdf,4,raw/gurps_basic_set_en.pdf,sim,2,exemplo
