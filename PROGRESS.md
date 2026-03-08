@@ -77,7 +77,7 @@ Status: `CONCLUIDO`
 
 ### Lote U3 - Validação e Fechamento Operacional
 Status: `EM ANDAMENTO`
-1. [ ] Validar build `visual/pracego` após integração.
+1. [x] Validar build `visual/pracego` após integração.
 2. [ ] Executar testes mínimos de regressão.
 3. [ ] Documentar o que você precisa fazer para publicar cada nova versão.
 
