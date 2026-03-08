@@ -16,7 +16,7 @@ Status: `EM ANDAMENTO`
 Passos:
 1. [x] Definir no `PROGRESS.md` a trilha V2 separada da V1.
 2. [x] Garantir que artefatos locais do AGENTE não entrem em commit (`.gitignore`).
-3. [ ] Criar branch de trabalho dedicada (`v2-main`) para desenvolvimento contínuo.
+3. [x] Criar branch de trabalho dedicada (`v2-main`) para desenvolvimento contínuo.
 4. [ ] Criar checklist de "não regressão V1" por release V2.
 
 Critérios de aceite:
