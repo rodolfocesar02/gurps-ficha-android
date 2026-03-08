@@ -34,11 +34,11 @@ fun TabPericias(viewModel: FichaViewModel) {
     var editingPericiaIndex by remember { mutableStateOf<Int?>(null) }
     var periciaDescricaoDialog by remember { mutableStateOf<PericiaSelecionada?>(null) }
 
-    StandardTabColumn(contentSpacing = 4.dp) {
+    StandardTabColumn {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(UiTokens.SectionSpacing)
         ) {
             BotaoAdicionarPericiaPadrao(
                 texto = "Adicionar Perícia",
@@ -68,21 +68,15 @@ fun TabPericias(viewModel: FichaViewModel) {
         // Cards individuais para cada perícia
         p.pericias.forEachIndexed { index, pericia ->
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = appCardColors()
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-
-                    PericiaItem(
-                        pericia = pericia,
-                        nivel = pericia.calcularNivel(p),
-                        nivelRelativo = pericia.getNivelRelativo(p),
-                        onShowDescription = { periciaDescricaoDialog = pericia },
-                        onEdit = { editingPericiaIndex = index },
-                        onDelete = { viewModel.removerPericia(index) }
-                    )
-                }
+            AppListItemCard {
+                PericiaItem(
+                    pericia = pericia,
+                    nivel = pericia.calcularNivel(p),
+                    nivelRelativo = pericia.getNivelRelativo(p),
+                    onShowDescription = { periciaDescricaoDialog = pericia },
+                    onEdit = { editingPericiaIndex = index },
+                    onDelete = { viewModel.removerPericia(index) }
+                )
             }
         }
         ResumoPericiasFooter(

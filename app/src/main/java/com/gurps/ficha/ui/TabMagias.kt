@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -52,7 +50,7 @@ fun TabMagias(viewModel: FichaViewModel) {
     var editingMagiaIndex by remember { mutableStateOf<Int?>(null) }
     var magiaDescricaoDialog by remember { mutableStateOf<MagiaSelecionada?>(null) }
 
-    StandardTabColumn(contentSpacing = 4.dp) {
+    StandardTabColumn {
 
         BotaoAdicionarMagiaPadrao(
             texto = "Adicionar Magia",
@@ -73,27 +71,23 @@ fun TabMagias(viewModel: FichaViewModel) {
                 val failureMsg = definicao?.let { viewModel.prereqFailureForMagia(it) }
                 val hasFailure = failureMsg != null
 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors(),
+                AppListItemCard(
                     border = if (hasFailure) BorderStroke(2.dp, MaterialTheme.colorScheme.error) else null
                 ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        MagiaItem(
-                            magia = magia,
-                            nivel = magia.calcularNivel(p, nivelAptidaoMagica),
-                            onShowDescription = { magiaDescricaoDialog = magia },
-                            onEdit = { editingMagiaIndex = index },
-                            onDelete = { viewModel.removerMagia(index) }
+                    MagiaItem(
+                        magia = magia,
+                        nivel = magia.calcularNivel(p, nivelAptidaoMagica),
+                        onShowDescription = { magiaDescricaoDialog = magia },
+                        onEdit = { editingMagiaIndex = index },
+                        onDelete = { viewModel.removerMagia(index) }
+                    )
+                    if (failureMsg != null) {
+                        Text(
+                            failureMsg,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = UiTokens.ItemSpacing)
                         )
-                        if (failureMsg != null) {
-                            Text(
-                                failureMsg,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
                     }
                 }
             }
