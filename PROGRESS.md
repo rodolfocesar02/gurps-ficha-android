@@ -84,7 +84,7 @@ Passos:
 1. [x] Definir plano tecnico do pipeline de ingestao (raw -> processed -> index).
 2. [x] Criar manifesto inicial de fontes com metadados minimos.
 3. [x] Criar script de validacao do manifesto.
-4. [ ] Receber seus livros PT/EN em `AGENTE GURPS/sources/raw/` e registrar no manifesto.
+4. [x] Receber seus livros PT/EN em `AGENTE GURPS/sources/raw/` e registrar no manifesto.
 5. [ ] Rodar ingestao inicial (extracao/chunks) e gerar primeiro relatorio de cobertura.
 6. [x] Definir modo inicial sem conflito: somente fontes em portugues por padrao.
 
