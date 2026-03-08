@@ -336,7 +336,7 @@ Evidência passo 4:
 Status: `EM_ANDAMENTO`
 
 Passos:
-1. [ ] Configurar `OPENAI_API_KEY` no backend do agente.
+1. [x] Configurar `OPENAI_API_KEY` no backend do agente.
 2. [ ] Validar geração de resposta natural em PT-BR com citação obrigatória.
 3. [ ] Ajustar prompt final para reduzir resposta bruta/trechos truncados.
 4. [ ] Reexecutar suite de guardrails (`guardrails_report.json`).
@@ -347,9 +347,9 @@ Criterios de aceite A12:
 3. Sem alucinação em cenário de baixa evidência.
 
 Bloqueio operacional atual (A12 passo 1):
-1. `OPENAI_API_KEY` está vazio em `AGENTE GURPS/backend/.env`.
-2. Variável de ambiente global `OPENAI_API_KEY` também ausente no host.
-3. Sem credencial válida, o backend opera em modo offline (fallback por trecho), impedindo validação completa do A12.
+1. `OPENAI_API_KEY` agora está configurada no `.env`, porém chamada ao modelo falha com `RateLimitError` (`insufficient_quota`).
+2. Diagnóstico registrado em `AGENTE GURPS/sources/processed/reports/a12_llm_diagnostico_report.json`.
+3. Enquanto a quota/crédito não for regularizada, o backend permanece em modo offline (fallback por trecho).
 
 ### Lote A13 - Polimento Final de UX no App
 Status: `PLANEJADO`
