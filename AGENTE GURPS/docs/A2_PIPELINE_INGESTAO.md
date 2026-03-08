@@ -1,4 +1,4 @@
-# Lote A2 - Base de Conhecimento e Pipeline de Ingestao
+﻿# Lote A2 - Base de Conhecimento e Pipeline de Ingestao
 
 Status: `EM ANDAMENTO`
 
@@ -12,7 +12,7 @@ Preparar o pipeline para receber livros em portugues e ingles, gerar base pesqui
 ## Pipeline previsto
 1. Validar manifesto e permissao de uso.
 2. Extrair texto por pagina (PDF/OCR quando necessario).
-3. Normalizar texto (limpeza de ruído, metadados e idioma).
+3. Normalizar texto (limpeza de ruido, metadados e idioma).
 4. Quebrar em chunks com referencia de pagina.
 5. Gerar embeddings e indexar no vetor DB.
 6. Exportar indice de fontes para auditoria.
@@ -26,3 +26,8 @@ Preparar o pipeline para receber livros em portugues e ingles, gerar base pesqui
 1. Manifesto de fontes com campos minimos.
 2. Script de validacao do manifesto.
 3. Estrutura de pastas `raw/`, `processed/`, `index/`.
+4. Script de ingestao hibrida com:
+- deteccao de layout (uma/duas colunas),
+- reordenacao de leitura por blocos,
+- fallback de OCR em paginas suspeitas (quando OCR disponivel),
+- relatorio de qualidade por fonte/pagina.

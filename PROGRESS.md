@@ -88,6 +88,9 @@ Passos:
 5. [ ] Rodar ingestao inicial (extracao/chunks) e gerar primeiro relatorio de cobertura.
 6. [x] Definir modo inicial sem conflito: somente fontes em portugues por padrao.
 
+Evidencia parcial A2.5:
+1. Script `AGENTE GURPS/scripts/ingestar_pdf_hibrido.py` criado (pipeline hibrido com layout + fallback OCR).
+
 Criterios de aceite A2:
 1. Manifesto validado sem erros.
 2. Estrutura de fontes pronta para receber materiais.
