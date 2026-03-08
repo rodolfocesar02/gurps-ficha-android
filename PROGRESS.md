@@ -295,7 +295,7 @@ Status: `EM_ANDAMENTO`
 
 Passos:
 1. [x] Reexecutar ingestão sem limite de páginas para todos os PDFs permitidos.
-2. [ ] Regenerar `pages/chunks` e reindexar Chroma com base completa.
+2. [x] Regenerar `pages/chunks` e reindexar Chroma com base completa.
 3. [ ] Gerar relatório comparativo (antes/depois) com cobertura por fonte.
 4. [ ] Validar perguntas críticas (ex.: Judô, Aptidão Mágica, custo por nível).
 
@@ -308,6 +308,11 @@ Evidência passo 1:
 1. Baseline preservado em `AGENTE GURPS/sources/processed/reports/ingestao_baseline_pre_a11.json`.
 2. Nova ingestão completa executada com `--max-pages-per-pdf 10000`.
 3. Resultado: `pdfs_processados=19`, `paginas_processadas=3268`, `chunks_gerados=17971`, `paginas_suspeitas=20`, `ocr_disponivel=true`.
+
+Evidência passo 2:
+1. Reindexação executada em `AGENTE GURPS/backend/indexar_chunks_chroma.py`.
+2. Resultado: `total_chunks_indexados=17971` na coleção `gurps_pt_v1`.
+3. Relatório atualizado: `AGENTE GURPS/sources/processed/reports/indexacao_chroma_report.json`.
 
 ### Lote A12 - Resposta Inteligente (LLM habilitado)
 Status: `PLANEJADO`
