@@ -82,12 +82,18 @@ Status: `CONCLUIDO`
 3. [x] Documentar o que você precisa fazer para publicar cada nova versão.
 
 ### Lote U4 - Operação de Publicação (Passo a Passo com você)
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 1. [x] Definir `UPDATE_METADATA_URL` no `local.properties`.
 2. [x] Publicar APKs (`Visual` e `PraCego`) com link direto.
 3. [x] Atualizar/publicar `update.json` com `versionCode` novo.
 4. [x] Validar no app: Menu > `Verificar atualização`.
-5. [ ] Compartilhar no WhatsApp o link da release atual.
+5. [x] Compartilhar no WhatsApp o link da release atual.
+
+Evidências de fechamento:
+1. `gh` instalado e autenticado para automação de release.
+2. Release `V1.3` criada com os dois APKs (`visual` e `pracego`).
+3. `docs/update/update.json` publicado com `versionCode=4` e links da `V1.3`.
+4. Fluxo validado: menu `Atualizar app` e ação `Atualizar agora`.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
