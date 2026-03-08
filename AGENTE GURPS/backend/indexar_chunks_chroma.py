@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-from rag_runtime import build_embeddings, get_chroma_collection, load_chunks, load_settings
+from rag_runtime import build_embeddings, load_chunks, load_settings, reset_collection
 
 
 def batched(items: List[Dict[str, Any]], batch_size: int = 128):
@@ -18,9 +18,8 @@ def batched(items: List[Dict[str, Any]], batch_size: int = 128):
 
 def main() -> int:
     settings = load_settings()
-    collection = get_chroma_collection(settings)
+    collection = reset_collection(settings)
     chunks = load_chunks(settings.chunks_file)
-    collection.delete(where={})
 
     source_counter = defaultdict(int)
     total = 0

@@ -91,8 +91,24 @@ def build_embeddings(settings: RagSettings, texts: List[str]) -> List[List[float
 
 
 def get_chroma_collection(settings: RagSettings):
+    client = get_chroma_client(settings)
+    return client.get_or_create_collection(
+        name=settings.collection_name,
+        metadata={"hnsw:space": "cosine"},
+    )
+
+
+def get_chroma_client(settings: RagSettings):
     settings.chroma_dir.mkdir(parents=True, exist_ok=True)
-    client = chromadb.PersistentClient(path=str(settings.chroma_dir))
+    return chromadb.PersistentClient(path=str(settings.chroma_dir))
+
+
+def reset_collection(settings: RagSettings):
+    client = get_chroma_client(settings)
+    try:
+        client.delete_collection(settings.collection_name)
+    except Exception:
+        pass
     return client.get_or_create_collection(
         name=settings.collection_name,
         metadata={"hnsw:space": "cosine"},
