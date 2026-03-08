@@ -76,10 +76,10 @@ Status: `CONCLUIDO`
 3. [x] Abrir link do APK mais novo para instalação manual.
 
 ### Lote U3 - Validação e Fechamento Operacional
-Status: `EM ANDAMENTO`
+Status: `CONCLUIDO`
 1. [x] Validar build `visual/pracego` após integração.
 2. [x] Executar testes mínimos de regressão.
-3. [ ] Documentar o que você precisa fazer para publicar cada nova versão.
+3. [x] Documentar o que você precisa fazer para publicar cada nova versão.
 
 ## Comandos de Verificação (mínimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
