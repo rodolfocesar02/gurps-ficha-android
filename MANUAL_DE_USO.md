@@ -57,6 +57,7 @@ Use para preencher base do personagem.
 - Nivel relativo ao atributo base
 - Filtros por atributo e dificuldade na selecao
 - Resumo de total de pericias e pontos
+- Clique no **nome da pericia** para abrir popup de descricao (quando disponivel)
 
 ## 6. Aba Tecnicas
 
@@ -66,10 +67,13 @@ Use para preencher base do personagem.
 - Ajuste nivel acima do predefinido
 
 ### Automacoes
+- Lista de tecnicas em ordem alfabetica
 - Valida pre-requisito da tecnica antes de salvar
 - Filtra pericias base coerentes com o pre-requisito
 - Calcula custo e NH automaticamente
 - Aplica limites de tecnica (ex.: predefinido +X)
+- Cards padronizados no mesmo estilo da aba Pericias
+- Clique no **nome da tecnica** para abrir popup de descricao
 - Regra adaptativa Visual/PraCego:
   - Visual: ajuste por swipe vertical
   - PraCego: botoes `+/-` com rotulos TalkBack
@@ -86,7 +90,8 @@ Use para preencher base do personagem.
 - Verificacao de pre-requisitos antes de adicionar
 - Opcao de adicao forcada (quando habilitada no dialogo)
 - Filtros por classe e escola
-- Cards padronizados de lista
+- Cards padronizados no mesmo estilo da aba Pericias
+- Clique no **nome da magia** para abrir popup de descricao
 
 ### Modo Alvo (assistente de progressao)
 - Ative `Modo Alvo` e marque uma magia como `Alvo`
@@ -165,4 +170,5 @@ Use para testes rapidos durante o jogo.
 ## 13. Dicas rapidas
 - Se uma tecnica ou magia nao entra, abra o dialogo e leia a linha de pre-requisito.
 - Em Magia, prefira seguir as recomendacoes do Modo Alvo para chegar mais rapido na magia final.
+- Clique no nome de Pericia/Tecnica/Magia para ler a descricao sem abrir edicao.
 - Salve a ficha com frequencia e exporte JSON para backup.
