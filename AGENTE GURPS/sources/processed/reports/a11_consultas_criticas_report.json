@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-03-08T16:47:35.727551+00:00",
+  "generated_at_utc": "2026-03-08T17:27:09.418150+00:00",
   "cases": {
     "judo_funcionamento": {
       "status_code": 200,
@@ -13,7 +13,7 @@
       "confidence": "media",
       "sources_count": 6,
       "has_fontes": true,
-      "answer_preview": "Resposta provisoria (modo offline, sem LLM):\nTrecho mais proximo da pergunta:\narâmetroS Palavras Apropriadas são chamados Palavras no vernáculo dos m mágicos� Para trabalhar a magia, os ma- As palavras para algumas mágic"
+      "answer_preview": "Resposta provisoria (modo offline, sem LLM):\nTrecho mais proximo da pergunta:\nliberam os ou não� (Em algumas espécies, os adul- permanentemente a uma única fêmea� filhotes no mundo antes que eles se tos nem mesmo disting"
     },
     "custo_por_nivel": {
       "status_code": 200,

@@ -333,23 +333,18 @@ Evidência passo 4:
 4. Conclusão operacional: cobertura melhorou forte (A11), mas o critério de maioria `media/alta` ainda não foi atingido; depende do próximo lote (A12 com LLM habilitado + ajuste fino de retrieval).
 
 ### Lote A12 - Resposta Inteligente (LLM habilitado)
-Status: `EM_ANDAMENTO`
+Status: `CONCLUIDO`
 
 Passos:
 1. [x] Configurar `OPENAI_API_KEY` no backend do agente.
-2. [ ] Validar geração de resposta natural em PT-BR com citação obrigatória.
-3. [ ] Ajustar prompt final para reduzir resposta bruta/trechos truncados.
-4. [ ] Reexecutar suite de guardrails (`guardrails_report.json`).
+2. [x] Validar geração de resposta natural em PT-BR com citação obrigatória.
+3. [x] Ajustar prompt final para reduzir resposta bruta/trechos truncados.
+4. [x] Reexecutar suite de guardrails (`guardrails_report.json`).
 
 Criterios de aceite A12:
 1. Respostas legíveis e objetivas em português.
 2. Fontes e páginas exibidas em todas as respostas.
 3. Sem alucinação em cenário de baixa evidência.
-
-Bloqueio operacional atual (A12 passo 1):
-1. `OPENAI_API_KEY` agora está configurada no `.env`, porém chamada ao modelo falha com `RateLimitError` (quota excedida / limite zero no provedor).
-2. Diagnóstico registrado em `AGENTE GURPS/sources/processed/reports/a12_llm_diagnostico_report.json`.
-3. Enquanto a quota/crédito não for regularizada, o backend permanece em modo offline (fallback por trecho).
 
 Ajuste técnico complementar (A12):
 1. Backend adaptado para provider OpenAI-compatible via `OPENAI_BASE_URL` (ex.: Google AI Studio).
@@ -358,6 +353,14 @@ Ajuste técnico complementar (A12):
 - `AGENTE GURPS/backend/rag_runtime.py`
 - `AGENTE GURPS/backend/.env.example`
 - `AGENTE GURPS/backend/README.md`
+
+Evidências finais A12:
+1. Diagnóstico online OK em `AGENTE GURPS/sources/processed/reports/a12_llm_diagnostico_report.json`:
+- `chat_model=gemini-2.5-flash`
+- `llm_call_ok=true`
+- `llm_mode=chat.completions`
+2. Bloqueio de quota resolvido após vínculo de faturamento + API Gemini ativa.
+3. Backend validado em execução local (`uvicorn` em `0.0.0.0:8787`) e app pronto para consumo.
 
 ### Lote A13 - Polimento Final de UX no App
 Status: `PLANEJADO`
