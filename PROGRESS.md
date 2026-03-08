@@ -146,7 +146,7 @@ Status: `EM ANDAMENTO`
 
 Passos:
 1. [x] Registrar lote de correcao dirigida com base no A4.
-2. [ ] Implementar refinamento OCR por pagina suspeita (multiplos modos de OCR).
+2. [x] Implementar refinamento OCR por pagina suspeita (multiplos modos de OCR).
 3. [ ] Reprocessar somente suspeitas e atualizar paginas/chunks derivados.
 4. [ ] Gerar relatorio before/after do lote A5 e validar ganho.
 
