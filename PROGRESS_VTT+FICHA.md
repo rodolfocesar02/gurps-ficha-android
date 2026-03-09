@@ -42,7 +42,7 @@ Criterio de aceite:
 1. Contrato `v1` publicado e aprovado.
 
 ### Lote VTT.2 - Nova Aba `VTT` (shell)
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 Objetivo: criar aba VTT sem alterar abas antigas.
 Passos:
 1. Adicionar aba `VTT` na navegacao. Dono: `Ficha`.
@@ -52,6 +52,9 @@ Passos:
 5. Validar que abas antigas continuam identicas. Dono: `Ficha`.
 Criterio de aceite:
 1. Aba `VTT` abre sem regressao nas abas atuais.
+
+Execucao:
+1. [x] 2026-03-09 - Passo VTT.2.1 concluido: aba `VTT` adicionada na navegacao sem remover abas existentes.
 
 ### Lote VTT.3 - Sessao e Presenca
 Status: `PENDENTE`
