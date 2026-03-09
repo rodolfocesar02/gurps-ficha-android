@@ -119,6 +119,12 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    lint {
+        // Workaround para bug do lint Compose (MutableCollectionMutableStateDetector)
+        disable += "MutableCollectionMutableState"
+        // Workaround para bug do lint Compose (AutoboxingStateCreationDetector)
+        disable += "AutoboxingStateCreation"
+    }
     sourceSets {
         getByName("main") {
             java.srcDir("../motor modo alvo/src")
