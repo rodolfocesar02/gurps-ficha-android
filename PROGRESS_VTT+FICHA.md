@@ -92,6 +92,7 @@ Criterio de aceite:
 
 Execucao:
 1. [x] 2026-03-09 - Passo VTT.4.1 concluido no app: painel local de acoes contextuais (tipo, nome, alvo, modificador) na aba `VTT`.
+2. [x] 2026-03-09 - Passo VTT.4.3 concluido no app: envio de acao para `/api/v1/roll/request` com envelope `v1` e tratamento de erro por token/sessao.
 
 ### Lote VTT.5 - Voz e Acessibilidade
 Status: `PENDENTE`

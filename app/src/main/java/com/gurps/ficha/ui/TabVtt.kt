@@ -27,6 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import com.gurps.ficha.vtt.VttSessionService
 import com.gurps.ficha.vtt.VttSessionSnapshot
 import com.gurps.ficha.vtt.VttSessionStorage
+import com.gurps.ficha.vtt.VttRollRequest
+import com.gurps.ficha.vtt.VttRollService
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.launch
 
@@ -72,6 +74,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     var acaoNome by remember { mutableStateOf("") }
     var alvoTokenId by remember { mutableStateOf("") }
     var modificadorRaw by remember { mutableStateOf("0") }
+    var sendingAction by remember { mutableStateOf(false) }
 
     LaunchedEffect(context) {
         if (!bootstrapDone) {
@@ -193,6 +196,71 @@ fun TabVtt(viewModel: FichaViewModel) {
         connectionState = VttConnectionState.DISCONNECTED
         statusMessage = "Sessao local limpa. Reconecte para receber novo vinculo."
         Log.i(VTT_UI_LOG, "clearLocalSession roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
+    }
+
+    fun enviarAcaoRolagem() {
+        val room = roomKey.trim()
+        val player = playerId.trim()
+        val token = tokenId?.trim().orEmpty()
+        val nome = acaoNome.trim()
+        val alvo = alvoTokenId.trim().ifBlank { null }
+        val mod = modificadorRaw.trim().toIntOrNull()
+
+        if (room.isBlank() || player.isBlank()) {
+            statusMessage = "Preencha sala e player antes de enviar acao."
+            connectionState = VttConnectionState.ERROR
+            return
+        }
+        if (token.isBlank()) {
+            statusMessage = "Token nao vinculado. Conecte para obter tokenId."
+            connectionState = VttConnectionState.ERROR
+            return
+        }
+        if (nome.isBlank()) {
+            statusMessage = "Informe o nome da acao."
+            connectionState = VttConnectionState.ERROR
+            return
+        }
+        if (mod == null) {
+            statusMessage = "Modificador invalido."
+            connectionState = VttConnectionState.ERROR
+            return
+        }
+
+        sendingAction = true
+        val tipo = actionType.name.lowercase()
+        scope.launch {
+            VttRollService.sendRollRequest(
+                request = VttRollRequest(
+                    roomKey = room,
+                    playerId = player,
+                    tokenId = token,
+                    tipoAcao = tipo,
+                    nomeAcao = nome,
+                    modificador = mod,
+                    alvoTokenId = alvo
+                ),
+                baseUrl = serverUrl.trim()
+            ).onSuccess { result ->
+                statusMessage = buildString {
+                    append(result.message)
+                    if (!result.requestId.isNullOrBlank()) append(" ReqId: ${result.requestId}.")
+                }
+                connectionState = VttConnectionState.CONNECTED
+                Log.i(
+                    VTT_UI_LOG,
+                    "rollRequest success roomKey=$room playerId=$player tokenId=$token tipo=$tipo nome=$nome mod=$mod alvo=${alvo.orEmpty()}"
+                )
+            }.onFailure { err ->
+                statusMessage = err.message ?: "Falha ao enviar acao."
+                connectionState = VttConnectionState.ERROR
+                Log.w(
+                    VTT_UI_LOG,
+                    "rollRequest failure roomKey=$room playerId=$player tokenId=$token tipo=$tipo reason=$statusMessage"
+                )
+            }
+            sendingAction = false
+        }
     }
 
     val statusLabel = when (connectionState) {
@@ -325,7 +393,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             val esquiva = personagem.defesasAtivas.calcularEsquiva(personagem)
 
             Text(
-                text = "Painel contextual para acao no VTT. Envio para backend entra no proximo passo.",
+                text = "Painel contextual para acao no VTT.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -423,6 +491,14 @@ fun TabVtt(viewModel: FichaViewModel) {
                         acaoNome = "Esquiva $esquiva"
                     }
                 ) { Text("Esquiva") }
+            }
+
+            Button(
+                onClick = { enviarAcaoRolagem() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !sendingAction && connectionState != VttConnectionState.CONNECTING
+            ) {
+                Text(if (sendingAction) "Enviando..." else "Enviar acao ao VTT")
             }
         }
 
