@@ -6,12 +6,14 @@ import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -75,6 +77,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     var alvoTokenId by remember { mutableStateOf("") }
     var modificadorRaw by remember { mutableStateOf("0") }
     var sendingAction by remember { mutableStateOf(false) }
+    var confirmActionDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(context) {
         if (!bootstrapDone) {
@@ -272,6 +275,16 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
             sendingAction = false
         }
+    }
+
+    fun solicitarEnvioAcao() {
+        val validationError = validarEnvioAcao()
+        if (validationError != null) {
+            statusMessage = validationError
+            connectionState = VttConnectionState.ERROR
+            return
+        }
+        confirmActionDialog = true
     }
 
     val statusLabel = when (connectionState) {
@@ -505,7 +518,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
 
             Button(
-                onClick = { enviarAcaoRolagem() },
+                onClick = { solicitarEnvioAcao() },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !sendingAction && connectionState != VttConnectionState.CONNECTING
             ) {
@@ -518,5 +531,31 @@ fun TabVtt(viewModel: FichaViewModel) {
             Text(text = "2. Vinculo player e token", style = MaterialTheme.typography.bodySmall)
             Text(text = "3. Rolagem contextual via contrato v1", style = MaterialTheme.typography.bodySmall)
         }
+    }
+
+    if (confirmActionDialog) {
+        AlertDialog(
+            onDismissRequest = { confirmActionDialog = false },
+            title = { Text("Confirmar envio da acao") },
+            text = {
+                Text(
+                    "Tipo: ${actionType.label}\n" +
+                        "Acao: ${acaoNome.trim()}\n" +
+                        "Modificador: ${modificadorRaw.trim()}\n\n" +
+                        "Este envio nao altera os dados canonicos da ficha."
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        confirmActionDialog = false
+                        enviarAcaoRolagem()
+                    }
+                ) { Text("Confirmar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmActionDialog = false }) { Text("Cancelar") }
+            }
+        )
     }
 }
