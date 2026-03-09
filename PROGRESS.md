@@ -43,6 +43,7 @@ Passos:
 11. [x] Subpasso: validar build das variantes visual/pracego após padronização V2.
 12. [x] Subpasso: criar checklist operacional de acessibilidade V2.2 (`docs/v2/A11Y_CHECKLIST_V2_2.md`).
 13. [x] Subpasso: habilitar execução estável do lint (desativando detectores Compose com crash) e gerar relatório de erros reais.
+14. [x] Subpasso: padronizar espaçamento de conteúdo em diálogos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `PLANEJADO`

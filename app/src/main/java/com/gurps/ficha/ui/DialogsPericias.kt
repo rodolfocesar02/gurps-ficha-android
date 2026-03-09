@@ -90,7 +90,7 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     PericiaFiltroChip(
@@ -128,7 +128,7 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 8.dp, vertical = 6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -198,7 +198,7 @@ fun CriarPericiaCustomizadaDialog(
         onDismissRequest = onDismiss,
         title = { Text("Nova Perícia Personalizada") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 OutlinedTextField(
                     value = nome,
                     onValueChange = { nome = it },
@@ -284,7 +284,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
         onDismissRequest = onDismiss,
         title = null,
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 TextButton(
                     onClick = { mostrarDescricao = true },
                     modifier = Modifier.semantics {
@@ -478,7 +478,7 @@ fun EditarPericiaDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 Text("${pericia.atributoBase.sigla}/${pericia.dificuldade.sigla}")
 
                 OutlinedTextField(value = especializacao, onValueChange = {
@@ -577,7 +577,7 @@ fun EditarPericiaDialog(
             title = { Text(pericia.nome) },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
@@ -621,7 +621,7 @@ private fun PericiaDescricaoDialog(
         title = { Text(definicao.nome) },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -642,5 +642,6 @@ private fun PericiaDescricaoDialog(
         confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
     )
 }
+
 
 
