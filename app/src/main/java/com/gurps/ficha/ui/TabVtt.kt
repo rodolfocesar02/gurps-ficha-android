@@ -1,13 +1,14 @@
-package com.gurps.ficha.ui
+﻿package com.gurps.ficha.ui
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -43,11 +44,14 @@ private enum class VttEnvironment(val label: String, val defaultUrl: String) {
     CUSTOM("Custom", "")
 }
 
+private const val VTT_UI_LOG = "VttTab"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabVtt(viewModel: FichaViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+
     var environment by remember { mutableStateOf(VttEnvironment.DEV) }
     var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.defaultUrl) }
     var roomKey by remember { mutableStateOf("") }
@@ -70,7 +74,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             if (snap.sessionId.isNotBlank()) sessionId = snap.sessionId
             if (snap.tokenId.isNotBlank()) tokenId = snap.tokenId
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
-                statusMessage = "Sessão local restaurada. Você pode reconectar."
+                statusMessage = "Sessao local restaurada. Voce pode reconectar."
             }
             bootstrapDone = true
         }
@@ -80,9 +84,10 @@ fun TabVtt(viewModel: FichaViewModel) {
         connectionState = VttConnectionState.CONNECTING
         if (serverUrl.isBlank() || roomKey.isBlank() || playerId.isBlank()) {
             connectionState = VttConnectionState.ERROR
-            statusMessage = "Campos obrigatórios: servidor, sala e player."
+            statusMessage = "Campos obrigatorios: servidor, sala e player."
             return
         }
+
         scope.launch {
             VttSessionService.joinSession(
                 roomKey = roomKey.trim(),
@@ -95,6 +100,10 @@ fun TabVtt(viewModel: FichaViewModel) {
                 connectionState = VttConnectionState.CONNECTED
                 sessionId = result.sessionId
                 tokenId = result.tokenId
+                Log.i(
+                    VTT_UI_LOG,
+                    "joinSession success roomKey=${roomKey.trim()} playerId=${playerId.trim()} sessionId=${sessionId.orEmpty()} tokenId=${tokenId.orEmpty()}"
+                )
                 VttSessionStorage.save(
                     context,
                     VttSessionSnapshot(
@@ -107,12 +116,16 @@ fun TabVtt(viewModel: FichaViewModel) {
                 )
                 statusMessage = buildString {
                     append(result.message)
-                    if (!sessionId.isNullOrBlank()) append(" Sessão: $sessionId.")
+                    if (!sessionId.isNullOrBlank()) append(" Sessao: $sessionId.")
                     if (!tokenId.isNullOrBlank()) append(" Token: $tokenId.")
                 }
             }.onFailure { err ->
                 connectionState = VttConnectionState.ERROR
-                statusMessage = err.message ?: "Falha ao iniciar sessão VTT."
+                statusMessage = err.message ?: "Falha ao iniciar sessao VTT."
+                Log.w(
+                    VTT_UI_LOG,
+                    "joinSession failure roomKey=${roomKey.trim()} playerId=${playerId.trim()} reason=$statusMessage"
+                )
             }
         }
     }
@@ -130,6 +143,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                 tokenId = tokenId.orEmpty()
             )
         )
+        Log.i(VTT_UI_LOG, "disconnect shell roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
     }
 
     fun abrirVttNoNavegador() {
@@ -144,9 +158,11 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
             context.startActivity(intent)
             statusMessage = "VTT aberto no navegador."
+            Log.i(VTT_UI_LOG, "openExternalVtt url=${serverUrl.trim()}")
         }.onFailure {
             connectionState = VttConnectionState.ERROR
             statusMessage = "Falha ao abrir navegador para a URL informada."
+            Log.w(VTT_UI_LOG, "openExternalVtt failure url=${serverUrl.trim()}")
         }
     }
 
@@ -164,7 +180,8 @@ fun TabVtt(viewModel: FichaViewModel) {
             )
         )
         connectionState = VttConnectionState.DISCONNECTED
-        statusMessage = "Sessão local limpa. Reconecte para receber novo vínculo."
+        statusMessage = "Sessao local limpa. Reconecte para receber novo vinculo."
+        Log.i(VTT_UI_LOG, "clearLocalSession roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
     }
 
     val statusLabel = when (connectionState) {
@@ -180,9 +197,9 @@ fun TabVtt(viewModel: FichaViewModel) {
     }
 
     StandardTabColumn {
-        SectionCard(title = "Conexão VTT") {
+        SectionCard(title = "Conexao VTT") {
             Text(
-                text = "Aba VTT (shell) ativa. Integração de sessão e rolagem será ligada pelos próximos lotes.",
+                text = "Aba VTT (shell) ativa. Integracao de sessao e rolagem sera ligada pelos proximos lotes.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -248,7 +265,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             )
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
                 Text(
-                    text = "Sessão: ${sessionId ?: "-"} | Token: ${tokenId ?: "-"}",
+                    text = "Sessao: ${sessionId ?: "-"} | Token: ${tokenId ?: "-"}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -283,24 +300,15 @@ fun TabVtt(viewModel: FichaViewModel) {
                     onClick = { limparSessaoLocal() },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Limpar sessão local")
+                    Text("Limpar sessao local")
                 }
             }
         }
 
-        SummaryFooterCard(title = "Próximos passos") {
-            Text(
-                text = "1. Join de sessão VTT",
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(
-                text = "2. Vínculo player e token",
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(
-                text = "3. Rolagem contextual via contrato v1",
-                style = MaterialTheme.typography.bodySmall
-            )
+        SummaryFooterCard(title = "Proximos passos") {
+            Text(text = "1. Join de sessao VTT", style = MaterialTheme.typography.bodySmall)
+            Text(text = "2. Vinculo player e token", style = MaterialTheme.typography.bodySmall)
+            Text(text = "3. Rolagem contextual via contrato v1", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
