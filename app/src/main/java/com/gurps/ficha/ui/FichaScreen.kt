@@ -141,11 +141,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 input.bufferedReader(Charsets.UTF_8).use { it.readText() }
             }.orEmpty()
             if (json.isBlank()) {
-                "Arquivo vazio."
+                "Arquivo vazio. Selecione um JSON exportado pelo app."
             } else {
                 viewModel.importarFichaJson(json) ?: "Ficha importada com sucesso."
             }
-        }.getOrElse { "Falha ao importar o arquivo selecionado." }
+        }.getOrElse { "Falha ao importar. Verifique se o arquivo é um JSON válido da ficha." }
         coroutineScope.launch {
             snackbarHostState.showSnackbar(
                 message = mensagem,

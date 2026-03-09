@@ -75,7 +75,16 @@ fun CarregarDialog(fichas: List<String>, onDismiss: () -> Unit, onCarregar: (Str
         onDismissRequest = onDismiss,
         title = { Text("Carregar Ficha") },
         text = {
-            if (fichas.isEmpty()) Text("Nenhuma ficha salva")
+            if (fichas.isEmpty()) {
+                StandardDialogColumn {
+                    Text("Nenhuma ficha salva ainda.")
+                    Text(
+                        "Volte ao menu e use \"Salvar Ficha\" para criar seu primeiro slot.",
+                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
             else LazyColumn {
                 itemsIndexed(fichas) { _, nome ->
                     Row(modifier = Modifier.fillMaxWidth().clickable { onCarregar(nome) }.padding(vertical = 8.dp),
