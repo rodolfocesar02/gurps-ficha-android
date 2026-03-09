@@ -36,7 +36,7 @@ Passos:
 4. [x] Estender padrão único de card para Equipamentos.
 5. [x] Estender padrão único de card para Defesas.
 6. [x] Estender padrão único de card para Rolagem (base de cor/container).
-7. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
+7. [x] Unificar diálogos de seleção/edição (título, densidade, ações finais).
 8. [x] Subpasso: padronizar densidade dos diálogos de descrição (Perícias, Técnicas e Magias).
 9. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
 10. [x] Validar instalação e abertura em emulador visual e pracego.
@@ -44,6 +44,10 @@ Passos:
 12. [x] Subpasso: criar checklist operacional de acessibilidade V2.2 (`docs/v2/A11Y_CHECKLIST_V2_2.md`).
 13. [x] Subpasso: habilitar execução estável do lint (desativando detectores Compose com crash) e gerar relatório de erros reais.
 14. [x] Subpasso: padronizar espaçamento de conteúdo em diálogos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
+
+Evidência parcial adicional:
+1. `UiActionLabels` aplicado nos diálogos principais para ações finais consistentes.
+2. `StandardDialogColumn` e `UiTokens.DialogContentSpacing` ativos no corpo dos diálogos de seleção/edição e descrição.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `CONCLUÍDO`
