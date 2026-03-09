@@ -115,8 +115,45 @@ fun TabVtt(viewModel: FichaViewModel) {
     var lastActionRequestId by remember { mutableStateOf("-") }
     var viewMode by remember { mutableStateOf(VttViewMode.PAINEL) }
     var webReloadTick by remember { mutableStateOf(0) }
+    var embeddedWebView by remember { mutableStateOf<WebView?>(null) }
+    var audioAutoJoin by remember { mutableStateOf(true) }
+    var audioCommandStatus by remember { mutableStateOf("Nenhum comando enviado.") }
+    var lastAudioEvent by remember { mutableStateOf("-") }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
+
+    fun enviarComandoAudioEmbed(action: String) {
+        val web = embeddedWebView
+        if (web == null) {
+            audioCommandStatus = "Visual embed nao carregado."
+            return
+        }
+        val js = """
+            (function() {
+              const action = '${'$'}{action}';
+              window.dispatchEvent(new CustomEvent('gurps-android-audio-command', { detail: { action } }));
+              const map = {
+                join: ['[data-testid="join-voice"]', '#join-voice', '.join-voice', '[aria-label*="Entrar"][aria-label*="voz"]'],
+                toggle_mic: ['[data-testid="toggle-mic"]', '#toggle-mic', '.toggle-mic', '[aria-label*="microfone"]'],
+                toggle_deafen: ['[data-testid="toggle-deafen"]', '#toggle-deafen', '.toggle-deafen', '[aria-label*="som"]', '[aria-label*="audio"]']
+              };
+              const selectors = map[action] || [];
+              for (const s of selectors) {
+                const el = document.querySelector(s);
+                if (el) {
+                  el.click();
+                  return 'clicked:' + s;
+                }
+              }
+              return 'dispatched-only';
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            audioCommandStatus = "Comando ${action}: ${result.ifBlank { "ok" }}"
+            Log.i(VTT_UI_LOG, "audioCommand action=$action result=$result")
+        }
+    }
 
     LaunchedEffect(context) {
         if (!bootstrapDone) {
@@ -463,6 +500,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                             .height(360.dp),
                         factory = { ctx ->
                             WebView(ctx).apply {
+                                embeddedWebView = this
                                 settings.javaScriptEnabled = true
                                 settings.domStorageEnabled = true
                                 settings.mediaPlaybackRequiresUserGesture = false
@@ -470,17 +508,34 @@ fun TabVtt(viewModel: FichaViewModel) {
                                     object {
                                         @JavascriptInterface
                                         fun onVttEvent(log: String?) {
+                                            lastAudioEvent = log.orEmpty()
                                             Log.i(VTT_UI_LOG, "vttBridge event=${log.orEmpty()}")
+                                        }
+
+                                        @JavascriptInterface
+                                        fun onAudioStatus(status: String?) {
+                                            lastAudioEvent = status.orEmpty()
+                                            Log.i(VTT_UI_LOG, "vttBridge audioStatus=${status.orEmpty()}")
                                         }
                                     },
                                     "Android"
                                 )
-                                webViewClient = WebViewClient()
+                                webViewClient = object : WebViewClient() {
+                                    override fun onPageFinished(view: WebView?, url: String?) {
+                                        super.onPageFinished(view, url)
+                                        if (audioAutoJoin) {
+                                            view?.postDelayed({
+                                                enviarComandoAudioEmbed("join")
+                                            }, 800)
+                                        }
+                                    }
+                                }
                                 webChromeClient = WebChromeClient()
                                 loadUrl(embedUrl)
                             }
                         },
                         update = { webView ->
+                            embeddedWebView = webView
                             val tagUrl = webView.getTag(android.R.id.primary) as? String
                             val targetUrl = "$embedUrl#$webReloadTick"
                             if (tagUrl != targetUrl) {
@@ -495,6 +550,49 @@ fun TabVtt(viewModel: FichaViewModel) {
                     ) {
                         Text("Recarregar visual VTT")
                     }
+
+                    Text(
+                        text = "Audio (Embed)",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                    ) {
+                        FilterChip(
+                            selected = audioAutoJoin,
+                            onClick = { audioAutoJoin = !audioAutoJoin },
+                            label = { Text(if (audioAutoJoin) "Auto-join ativo" else "Auto-join desligado") }
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                    ) {
+                        Button(
+                            onClick = { enviarComandoAudioEmbed("join") },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("Entrar audio") }
+                        Button(
+                            onClick = { enviarComandoAudioEmbed("toggle_mic") },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("Mic") }
+                        Button(
+                            onClick = { enviarComandoAudioEmbed("toggle_deafen") },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("Som") }
+                    }
+                    Text(
+                        text = audioCommandStatus,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        text = "Evento JS: $lastAudioEvent",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             } else {
                 Text(

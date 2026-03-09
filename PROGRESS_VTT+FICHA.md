@@ -173,5 +173,9 @@ Passos:
 1. Passar `roomKey/playerId/tokenId` para o VTT embutido.
 2. Reutilizar sessao salva e tratar `needsBind`.
 3. Sincronizar status de conexao embed x painel.
+4. Expor comandos de audio (join/mic/som) para o embed com fallback compativel WebView.
 Criterio de aceite:
 1. Fluxo de entrada/sessao funcional sem sair da aba VTT.
+
+Execucao:
+1. [x] 2026-03-09 - Passo APP-VTT.2.4 concluido no app: controles de audio do embed (`Entrar audio`, `Mic`, `Som`) com bridge `gurps-android-audio-command` e tentativa de auto-join no carregamento da pagina.
