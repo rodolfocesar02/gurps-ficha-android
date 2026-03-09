@@ -41,6 +41,7 @@ Passos:
 9. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
 10. [ ] Validar em emulador visual e pracego.
 11. [x] Subpasso: validar build das variantes visual/pracego após padronização V2.
+12. [x] Subpasso: criar checklist operacional de acessibilidade V2.2 (`docs/v2/A11Y_CHECKLIST_V2_2.md`).
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `PLANEJADO`
