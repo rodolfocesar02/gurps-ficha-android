@@ -60,7 +60,7 @@ Execucao:
 4. [x] 2026-03-09 - Passo VTT.2.4 concluido: fallback para abertura externa do VTT via navegador.
 
 ### Lote VTT.3 - Sessao e Presenca
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 Objetivo: entrar na sala e vincular token.
 Passos:
 1. Enviar `playerId + roomKey + snapshot da ficha`. Dono: `Ficha`.
@@ -70,6 +70,9 @@ Passos:
 5. Registrar eventos criticos de entrada/saida. Dono: `VTT`.
 Criterio de aceite:
 1. Jogador entra e retorna com o mesmo token quando possivel.
+
+Execucao:
+1. [x] 2026-03-09 - Passo VTT.3.1 iniciado/concluido no app: envio de `roomKey + playerId + snapshot da ficha` para `/api/v1/session/join`.
 
 ### Lote VTT.4 - Fluxo de Rolagem por Token
 Status: `PENDENTE`

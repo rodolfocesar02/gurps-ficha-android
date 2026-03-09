@@ -15,13 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import com.gurps.ficha.vtt.VttSessionService
 import com.gurps.ficha.viewmodel.FichaViewModel
+import kotlinx.coroutines.launch
 
 private enum class VttConnectionState {
     DISCONNECTED,
@@ -41,12 +44,15 @@ private enum class VttEnvironment(val label: String, val defaultUrl: String) {
 @Composable
 fun TabVtt(viewModel: FichaViewModel) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var environment by remember { mutableStateOf(VttEnvironment.DEV) }
     var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.defaultUrl) }
     var roomKey by remember { mutableStateOf("") }
     var playerId by remember(viewModel.personagem.nome) { mutableStateOf(viewModel.personagem.nome) }
     var connectionState by remember { mutableStateOf(VttConnectionState.DISCONNECTED) }
     var statusMessage by remember { mutableStateOf("Preencha servidor, sala e player para iniciar.") }
+    var sessionId by remember { mutableStateOf<String?>(null) }
+    var tokenId by remember { mutableStateOf<String?>(null) }
 
     fun conectarEmModoShell() {
         connectionState = VttConnectionState.CONNECTING
@@ -55,13 +61,33 @@ fun TabVtt(viewModel: FichaViewModel) {
             statusMessage = "Campos obrigatórios: servidor, sala e player."
             return
         }
-        connectionState = VttConnectionState.CONNECTED
-        statusMessage = "Configuração local validada. Integração de sessão entra no próximo passo."
+        scope.launch {
+            VttSessionService.joinSession(
+                roomKey = roomKey.trim(),
+                playerId = playerId.trim(),
+                fichaJsonRaw = viewModel.exportarFichaJsonCompativel(),
+                baseUrl = serverUrl.trim()
+            ).onSuccess { result ->
+                connectionState = VttConnectionState.CONNECTED
+                sessionId = result.sessionId
+                tokenId = result.tokenId
+                statusMessage = buildString {
+                    append(result.message)
+                    if (!sessionId.isNullOrBlank()) append(" Sessão: $sessionId.")
+                    if (!tokenId.isNullOrBlank()) append(" Token: $tokenId.")
+                }
+            }.onFailure { err ->
+                connectionState = VttConnectionState.ERROR
+                statusMessage = err.message ?: "Falha ao iniciar sessão VTT."
+            }
+        }
     }
 
     fun desconectarEmModoShell() {
         connectionState = VttConnectionState.DISCONNECTED
         statusMessage = "Desconectado (shell)."
+        sessionId = null
+        tokenId = null
     }
 
     fun abrirVttNoNavegador() {
@@ -161,6 +187,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
+                Text(
+                    text = "Sessão: ${sessionId ?: "-"} | Token: ${tokenId ?: "-"}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
