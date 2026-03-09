@@ -35,7 +35,7 @@ Passos:
 3. [x] Estender padrão único de card para Traços.
 4. [x] Estender padrão único de card para Equipamentos.
 5. [x] Estender padrão único de card para Defesas.
-6. [ ] Estender padrão único de card para Rolagem.
+6. [x] Estender padrão único de card para Rolagem (base de cor/container).
 7. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
 8. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
 9. [ ] Validar em emulador visual e pracego.
