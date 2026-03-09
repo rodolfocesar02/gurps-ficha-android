@@ -3,9 +3,14 @@
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +42,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.compose.ui.unit.dp
 
 private enum class VttConnectionState {
     DISCONNECTED,
@@ -57,6 +63,11 @@ private enum class VttActionType(val label: String) {
     PERICIA("Pericia"),
     MAGIA("Magia"),
     DEFESA("Defesa")
+}
+
+private enum class VttViewMode(val label: String) {
+    MAPA("Mapa"),
+    PAINEL("Painel")
 }
 
 private const val VTT_UI_LOG = "VttTab"
@@ -88,6 +99,8 @@ fun TabVtt(viewModel: FichaViewModel) {
     var lastActionSummary by remember { mutableStateOf("Nenhuma acao enviada.") }
     var lastActionWhen by remember { mutableStateOf("-") }
     var lastActionRequestId by remember { mutableStateOf("-") }
+    var viewMode by remember { mutableStateOf(VttViewMode.PAINEL) }
+    var webReloadTick by remember { mutableStateOf(0) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -375,6 +388,73 @@ fun TabVtt(viewModel: FichaViewModel) {
     }
 
     StandardTabColumn {
+        SectionCard(title = "Visual VTT (Embed)") {
+            Text(
+                text = "Modo local: use o visual embutido para ver mapa/grid sem sair do app.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                VttViewMode.entries.forEach { mode ->
+                    FilterChip(
+                        selected = viewMode == mode,
+                        onClick = { viewMode = mode },
+                        label = { Text(mode.label) }
+                    )
+                }
+            }
+
+            if (viewMode == VttViewMode.MAPA) {
+                val embedUrl = serverUrl.trim().trimEnd('/')
+                if (embedUrl.isBlank()) {
+                    Text(
+                        text = "Defina a URL do servidor para abrir o visual embutido.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                } else {
+                    AndroidView(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(360.dp),
+                        factory = { ctx ->
+                            WebView(ctx).apply {
+                                settings.javaScriptEnabled = true
+                                settings.domStorageEnabled = true
+                                settings.mediaPlaybackRequiresUserGesture = false
+                                webViewClient = WebViewClient()
+                                webChromeClient = WebChromeClient()
+                                loadUrl(embedUrl)
+                            }
+                        },
+                        update = { webView ->
+                            val tagUrl = webView.getTag(android.R.id.primary) as? String
+                            val targetUrl = "$embedUrl#$webReloadTick"
+                            if (tagUrl != targetUrl) {
+                                webView.setTag(android.R.id.primary, targetUrl)
+                                webView.loadUrl(embedUrl)
+                            }
+                        }
+                    )
+                    Button(
+                        onClick = { webReloadTick += 1 },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Recarregar visual VTT")
+                    }
+                }
+            } else {
+                Text(
+                    text = "Modo painel ativo. Use os comandos de conexao e rolagem abaixo.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
         SectionCard(title = "Conexao VTT") {
             Text(
                 text = "Aba VTT (shell) ativa. Integracao de sessao e rolagem sera ligada pelos proximos lotes.",

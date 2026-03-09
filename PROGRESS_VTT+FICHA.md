@@ -136,3 +136,40 @@ Criterio de aceite:
 1. Nao alterar regras de calculo da ficha durante integracao VTT.
 2. Toda mudanca de integracao ficara concentrada na aba `VTT` e camada de contrato.
 3. Qualquer impacto em abas atuais exige lote separado e aprovacao explicita.
+
+---
+
+## Fase Embed VTT na Aba (Local Primeiro)
+
+### Lote VTT-EMBED.1 - WebView-ready no projeto VTT
+Status: `PENDENTE (EQUIPE VTT)`
+Objetivo: garantir que o frontend VTT abra dentro do WebView Android.
+Passos:
+1. Ajustar frontend para renderizar em WebView sem bloqueio de embed.
+2. Expor rota de sala estavel para uso embutido.
+3. Confirmar conexao WS correta no modo local.
+Criterio de aceite:
+1. URL do VTT carrega dentro da aba VTT do app sem tela vazia.
+
+### Lote APP-VTT.1 - Base visual embutida na aba VTT
+Status: `EM ANDAMENTO`
+Objetivo: mostrar o visual do VTT dentro do app, sem remover o painel de acoes.
+Passos:
+1. Adicionar WebView embutido na aba VTT.
+2. Adicionar alternancia `Mapa` / `Painel`.
+3. Manter fallback `Abrir no navegador`.
+Criterio de aceite:
+1. Jogador visualiza o VTT dentro da aba, mantendo os controles atuais.
+
+Execucao:
+1. [x] 2026-03-09 - Passo APP-VTT.1.1 concluido no app: estrutura de WebView embutido com alternancia inicial `Mapa/Painel`.
+
+### Lote APP-VTT.2 - Sessao e contexto no embed
+Status: `PENDENTE`
+Objetivo: carregar sala e identidade dentro do VTT embutido.
+Passos:
+1. Passar `roomKey/playerId/tokenId` para o VTT embutido.
+2. Reutilizar sessao salva e tratar `needsBind`.
+3. Sincronizar status de conexao embed x painel.
+Criterio de aceite:
+1. Fluxo de entrada/sessao funcional sem sair da aba VTT.
