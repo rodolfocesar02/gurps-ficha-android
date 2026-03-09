@@ -31,6 +31,7 @@ import com.gurps.ficha.vtt.VttSessionSnapshot
 import com.gurps.ficha.vtt.VttSessionStorage
 import com.gurps.ficha.vtt.VttRollRequest
 import com.gurps.ficha.vtt.VttRollService
+import com.gurps.ficha.vtt.VttTokenBindService
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -74,6 +75,9 @@ fun TabVtt(viewModel: FichaViewModel) {
     var statusMessage by remember { mutableStateOf("Preencha servidor, sala e player para iniciar.") }
     var sessionId by remember { mutableStateOf<String?>(null) }
     var tokenId by remember { mutableStateOf<String?>(null) }
+    var needsBind by remember { mutableStateOf(false) }
+    var tokenIdBindInput by remember { mutableStateOf("") }
+    var bindingToken by remember { mutableStateOf(false) }
     var bootstrapDone by remember { mutableStateOf(false) }
     var actionType by remember { mutableStateOf(VttActionType.PERICIA) }
     var acaoNome by remember { mutableStateOf("") }
@@ -97,7 +101,10 @@ fun TabVtt(viewModel: FichaViewModel) {
             if (snap.roomKey.isNotBlank()) roomKey = snap.roomKey
             if (snap.playerId.isNotBlank()) playerId = snap.playerId
             if (snap.sessionId.isNotBlank()) sessionId = snap.sessionId
-            if (snap.tokenId.isNotBlank()) tokenId = snap.tokenId
+            if (snap.tokenId.isNotBlank()) {
+                tokenId = snap.tokenId
+                tokenIdBindInput = snap.tokenId
+            }
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
                 statusMessage = "Sessao local restaurada. Voce pode reconectar."
             }
@@ -125,9 +132,11 @@ fun TabVtt(viewModel: FichaViewModel) {
                 connectionState = VttConnectionState.CONNECTED
                 sessionId = result.sessionId
                 tokenId = result.tokenId
+                needsBind = result.needsBind || tokenId.isNullOrBlank()
+                if (!result.tokenId.isNullOrBlank()) tokenIdBindInput = result.tokenId
                 Log.i(
                     VTT_UI_LOG,
-                    "joinSession success roomKey=${roomKey.trim()} playerId=${playerId.trim()} sessionId=${sessionId.orEmpty()} tokenId=${tokenId.orEmpty()}"
+                    "joinSession success roomKey=${roomKey.trim()} playerId=${playerId.trim()} sessionId=${sessionId.orEmpty()} tokenId=${tokenId.orEmpty()} needsBind=$needsBind"
                 )
                 VttSessionStorage.save(
                     context,
@@ -143,6 +152,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                     append(result.message)
                     if (!sessionId.isNullOrBlank()) append(" Sessao: $sessionId.")
                     if (!tokenId.isNullOrBlank()) append(" Token: $tokenId.")
+                    if (needsBind) append(" VTT exige vinculo de token.")
                 }
             }.onFailure { err ->
                 connectionState = VttConnectionState.ERROR
@@ -194,6 +204,8 @@ fun TabVtt(viewModel: FichaViewModel) {
     fun limparSessaoLocal() {
         sessionId = null
         tokenId = null
+        needsBind = false
+        tokenIdBindInput = ""
         VttSessionStorage.save(
             context,
             VttSessionSnapshot(
@@ -207,6 +219,52 @@ fun TabVtt(viewModel: FichaViewModel) {
         connectionState = VttConnectionState.DISCONNECTED
         statusMessage = "Sessao local limpa. Reconecte para receber novo vinculo."
         Log.i(VTT_UI_LOG, "clearLocalSession roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
+    }
+
+    fun vincularTokenNoVtt() {
+        val room = roomKey.trim()
+        val player = playerId.trim()
+        val token = tokenIdBindInput.trim()
+        if (connectionState != VttConnectionState.CONNECTED) {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Conecte no VTT antes de vincular token."
+            return
+        }
+        if (room.isBlank() || player.isBlank() || token.isBlank()) {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Preencha sala, player e token para vincular."
+            return
+        }
+        bindingToken = true
+        scope.launch {
+            VttTokenBindService.bindToken(
+                roomKey = room,
+                playerId = player,
+                tokenId = token,
+                baseUrl = serverUrl.trim()
+            ).onSuccess { result ->
+                tokenId = result.tokenId ?: token
+                needsBind = false
+                connectionState = VttConnectionState.CONNECTED
+                statusMessage = result.message
+                VttSessionStorage.save(
+                    context,
+                    VttSessionSnapshot(
+                        serverUrl = serverUrl.trim(),
+                        roomKey = room,
+                        playerId = player,
+                        sessionId = sessionId.orEmpty(),
+                        tokenId = tokenId.orEmpty()
+                    )
+                )
+                Log.i(VTT_UI_LOG, "tokenBind success roomKey=$room playerId=$player tokenId=${tokenId.orEmpty()}")
+            }.onFailure { err ->
+                connectionState = VttConnectionState.ERROR
+                statusMessage = err.message ?: "Falha ao vincular token."
+                Log.w(VTT_UI_LOG, "tokenBind failure roomKey=$room playerId=$player reason=$statusMessage")
+            }
+            bindingToken = false
+        }
     }
 
     fun validarEnvioAcao(): String? {
@@ -223,7 +281,10 @@ fun TabVtt(viewModel: FichaViewModel) {
             return "Preencha sala e player antes de enviar acao."
         }
         if (token.isBlank()) {
-            return "Token nao vinculado. Conecte para obter tokenId."
+            return "Token nao vinculado. Use o campo de vinculo na secao de conexao."
+        }
+        if (needsBind) {
+            return "Sessao exige vinculo de token antes de enviar acao."
         }
         if (nome.isBlank()) {
             return "Informe o nome da acao."
@@ -387,6 +448,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                     color = MaterialTheme.colorScheme.primary
                 )
             }
+            if (connectionState == VttConnectionState.CONNECTED && (needsBind || tokenId.isNullOrBlank())) {
+                Text(
+                    text = "VTT informou needsBind=true. Vincule um token para liberar rolagens.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
@@ -411,6 +479,22 @@ fun TabVtt(viewModel: FichaViewModel) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Abrir VTT no navegador")
+            }
+            if (connectionState == VttConnectionState.CONNECTED && (needsBind || tokenId.isNullOrBlank())) {
+                OutlinedTextField(
+                    value = tokenIdBindInput,
+                    onValueChange = { tokenIdBindInput = it },
+                    label = { Text("Token ID para vincular") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+                Button(
+                    onClick = { vincularTokenNoVtt() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !bindingToken
+                ) {
+                    Text(if (bindingToken) "Vinculando..." else "Vincular token")
+                }
             }
             if (connectionState == VttConnectionState.ERROR) {
                 Button(

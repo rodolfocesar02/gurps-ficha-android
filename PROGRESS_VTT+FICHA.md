@@ -77,6 +77,7 @@ Execucao:
 3. [x] 2026-03-09 - Passo VTT.3.3 concluido no app: reconexao envia `sessionId/tokenId` salvos para tentativa de recuperação de sessão.
 4. [x] 2026-03-09 - Passo VTT.3.4 concluido no app: tratamento guiado de sessão inválida/expirada com ação de limpeza local.
 5. [x] 2026-03-09 - Passo VTT.3.5 concluido no app: logs de eventos críticos de sessão na aba VTT (join, erro, desconexão, limpeza).
+6. [x] 2026-03-09 - Passo VTT.3.6 concluido no app: suporte a `needsBind=true` e vinculo de `tokenId` via `/api/v1/token/bind`.
 
 ### Lote VTT.4 - Fluxo de Rolagem por Token
 Status: `EM ANDAMENTO`
