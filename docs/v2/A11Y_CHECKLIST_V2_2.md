@@ -3,7 +3,7 @@
 Objetivo: confirmar que a padronização visual não quebrou uso com leitor de tela e foco.
 
 ## 1. Ordem de foco e navegação
-- [ ] Foco segue ordem lógica em `Geral`, `Tracos`, `Pericias`, `Tecnicas`, `Magias`, `Equip.`, `Defesas`, `Rolagem`.
+- [ ] Foco segue ordem lógica em `Geral`, `Traços`, `Perícias`, `Técnicas`, `Magias`, `Equip.`, `Defesas`, `Rolagem`.
 - [ ] Em diálogos, foco inicia no título/pergunta e termina nas ações finais sem "saltos".
 - [ ] Botões críticos são alcançáveis sem gesto complexo.
 
