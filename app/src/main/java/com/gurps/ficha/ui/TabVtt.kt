@@ -52,11 +52,23 @@ private enum class VttConnectionState {
     ERROR
 }
 
-private enum class VttEnvironment(val label: String, val defaultUrl: String) {
-    DEV("Dev", "http://10.0.2.2:3001"),
-    HOMOLOG("Homolog", "https://seu-vtt-homolog.exemplo.com"),
-    PROD("Prod", "https://seu-vtt-producao.exemplo.com"),
-    CUSTOM("Custom", "")
+private enum class VttEnvironment(
+    val label: String,
+    val apiDefaultUrl: String,
+    val webDefaultUrl: String
+) {
+    DEV("Dev", "http://10.0.2.2:3001", "http://10.0.2.2:5176"),
+    HOMOLOG(
+        "Homolog",
+        "https://seu-vtt-api-homolog.exemplo.com",
+        "https://seu-vtt-web-homolog.exemplo.com"
+    ),
+    PROD(
+        "Prod",
+        "https://seu-vtt-api-producao.exemplo.com",
+        "https://seu-vtt-web-producao.exemplo.com"
+    ),
+    CUSTOM("Custom", "", "")
 }
 
 private enum class VttActionType(val label: String) {
@@ -80,7 +92,8 @@ fun TabVtt(viewModel: FichaViewModel) {
     val scope = rememberCoroutineScope()
 
     var environment by remember { mutableStateOf(VttEnvironment.DEV) }
-    var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.defaultUrl) }
+    var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.apiDefaultUrl) }
+    var webUrl by remember { mutableStateOf(VttEnvironment.DEV.webDefaultUrl) }
     var roomKey by remember { mutableStateOf("") }
     var playerId by remember(viewModel.personagem.nome) { mutableStateOf(viewModel.personagem.nome) }
     var connectionState by remember { mutableStateOf(VttConnectionState.DISCONNECTED) }
@@ -110,6 +123,10 @@ fun TabVtt(viewModel: FichaViewModel) {
             val snap = VttSessionStorage.load(context)
             if (snap.serverUrl.isNotBlank()) {
                 serverUrl = snap.serverUrl
+                environment = VttEnvironment.CUSTOM
+            }
+            if (snap.webUrl.isNotBlank()) {
+                webUrl = snap.webUrl
                 environment = VttEnvironment.CUSTOM
             }
             if (snap.roomKey.isNotBlank()) roomKey = snap.roomKey
@@ -156,6 +173,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                     context,
                     VttSessionSnapshot(
                         serverUrl = serverUrl.trim(),
+                        webUrl = webUrl.trim(),
                         roomKey = roomKey.trim(),
                         playerId = playerId.trim(),
                         sessionId = sessionId.orEmpty(),
@@ -186,6 +204,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             context,
             VttSessionSnapshot(
                 serverUrl = serverUrl.trim(),
+                webUrl = webUrl.trim(),
                 roomKey = roomKey.trim(),
                 playerId = playerId.trim(),
                 sessionId = sessionId.orEmpty(),
@@ -202,16 +221,26 @@ fun TabVtt(viewModel: FichaViewModel) {
             return
         }
         runCatching {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(serverUrl)).apply {
+            val baseUrl = webUrl.trim().trimEnd('/')
+            val roomParam = Uri.encode(roomKey.trim())
+            val playerParam = Uri.encode(playerId.trim())
+            val target = if (baseUrl.isBlank()) {
+                serverUrl.trim()
+            } else if (roomParam.isBlank() || playerParam.isBlank()) {
+                baseUrl
+            } else {
+                "$baseUrl/?roomKey=$roomParam&playerName=$playerParam"
+            }
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(target)).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
             context.startActivity(intent)
             statusMessage = "VTT aberto no navegador."
-            Log.i(VTT_UI_LOG, "openExternalVtt url=${serverUrl.trim()}")
+            Log.i(VTT_UI_LOG, "openExternalVtt url=$target")
         }.onFailure {
             connectionState = VttConnectionState.ERROR
             statusMessage = "Falha ao abrir navegador para a URL informada."
-            Log.w(VTT_UI_LOG, "openExternalVtt failure url=${serverUrl.trim()}")
+            Log.w(VTT_UI_LOG, "openExternalVtt failure url=${webUrl.trim()}")
         }
     }
 
@@ -224,6 +253,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             context,
             VttSessionSnapshot(
                 serverUrl = serverUrl.trim(),
+                webUrl = webUrl.trim(),
                 roomKey = roomKey.trim(),
                 playerId = playerId.trim(),
                 sessionId = "",
@@ -265,6 +295,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                     context,
                     VttSessionSnapshot(
                         serverUrl = serverUrl.trim(),
+                        webUrl = webUrl.trim(),
                         roomKey = room,
                         playerId = player,
                         sessionId = sessionId.orEmpty(),
@@ -409,7 +440,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
 
             if (viewMode == VttViewMode.MAPA) {
-                val baseUrl = serverUrl.trim().trimEnd('/')
+                val baseUrl = webUrl.trim().trimEnd('/')
                 val roomParam = Uri.encode(roomKey.trim())
                 val playerParam = Uri.encode(playerId.trim())
                 val embedUrl = if (baseUrl.isBlank()) {
@@ -421,7 +452,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                 }
                 if (embedUrl.isBlank()) {
                     Text(
-                        text = "Defina servidor, sala e player para abrir o visual embutido.",
+                        text = "Defina URL do visual, sala e player para abrir o embed.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -483,7 +514,14 @@ fun TabVtt(viewModel: FichaViewModel) {
             OutlinedTextField(
                 value = serverUrl,
                 onValueChange = { serverUrl = it },
-                label = { Text("Servidor (URL)") },
+                label = { Text("Servidor API (URL)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            OutlinedTextField(
+                value = webUrl,
+                onValueChange = { webUrl = it },
+                label = { Text("Visual VTT (Web URL)") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -502,7 +540,8 @@ fun TabVtt(viewModel: FichaViewModel) {
                         onClick = {
                             environment = item
                             if (item != VttEnvironment.CUSTOM) {
-                                serverUrl = item.defaultUrl
+                                serverUrl = item.apiDefaultUrl
+                                webUrl = item.webDefaultUrl
                             }
                         },
                         label = { Text(item.label) }
