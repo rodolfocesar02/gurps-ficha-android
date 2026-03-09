@@ -1,6 +1,6 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-08
+Atualizado em: 2026-03-09
 
 ## Plano Macro - Versão 2.0 (sem alterar V1 em uso)
 Status: `ATIVO`
@@ -46,13 +46,17 @@ Passos:
 14. [x] Subpasso: padronizar espaçamento de conteúdo em diálogos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
-Status: `PLANEJADO`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. [ ] Auditoria de JSONs ativos (pré-requisitos, nomes e acentuação).
+1. [x] Auditoria de JSONs ativos (pré-requisitos, nomes e acentuação).
 2. [ ] Correção orientada por canônico com testes de regressão.
 3. [ ] Varredura automática de artefatos de encoding antes de build.
 4. [ ] Relatório de cobertura por catálogo (vantagens, desvantagens, perícias, técnicas, magias).
+
+Evidência:
+1. `scripts/reports/active_json_audit_v2.json`
+2. `scripts/reports/active_json_audit_v2.md`
 
 ### Lote V2.4 - UX de Edição e Intuitividade
 Status: `PLANEJADO`
