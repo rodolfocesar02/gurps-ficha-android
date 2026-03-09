@@ -198,6 +198,31 @@ fun TabVtt(viewModel: FichaViewModel) {
         Log.i(VTT_UI_LOG, "clearLocalSession roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
     }
 
+    fun validarEnvioAcao(): String? {
+        val room = roomKey.trim()
+        val player = playerId.trim()
+        val token = tokenId?.trim().orEmpty()
+        val nome = acaoNome.trim()
+        val mod = modificadorRaw.trim().toIntOrNull()
+
+        if (connectionState != VttConnectionState.CONNECTED) {
+            return "Conecte no VTT antes de enviar acao."
+        }
+        if (room.isBlank() || player.isBlank()) {
+            return "Preencha sala e player antes de enviar acao."
+        }
+        if (token.isBlank()) {
+            return "Token nao vinculado. Conecte para obter tokenId."
+        }
+        if (nome.isBlank()) {
+            return "Informe o nome da acao."
+        }
+        if (mod == null) {
+            return "Modificador invalido."
+        }
+        return null
+    }
+
     fun enviarAcaoRolagem() {
         val room = roomKey.trim()
         val player = playerId.trim()
@@ -205,24 +230,10 @@ fun TabVtt(viewModel: FichaViewModel) {
         val nome = acaoNome.trim()
         val alvo = alvoTokenId.trim().ifBlank { null }
         val mod = modificadorRaw.trim().toIntOrNull()
+        val validationError = validarEnvioAcao()
 
-        if (room.isBlank() || player.isBlank()) {
-            statusMessage = "Preencha sala e player antes de enviar acao."
-            connectionState = VttConnectionState.ERROR
-            return
-        }
-        if (token.isBlank()) {
-            statusMessage = "Token nao vinculado. Conecte para obter tokenId."
-            connectionState = VttConnectionState.ERROR
-            return
-        }
-        if (nome.isBlank()) {
-            statusMessage = "Informe o nome da acao."
-            connectionState = VttConnectionState.ERROR
-            return
-        }
-        if (mod == null) {
-            statusMessage = "Modificador invalido."
+        if (validationError != null || mod == null) {
+            statusMessage = validationError ?: "Nao foi possivel validar a acao."
             connectionState = VttConnectionState.ERROR
             return
         }
