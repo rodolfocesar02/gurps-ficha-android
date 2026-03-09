@@ -37,8 +37,12 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 // === TAB MAGIAS ===
 
 @Composable
-private fun BotaoAdicionarMagiaPadrao(texto: String, onClick: () -> Unit) {
-    PrimaryActionButton(text = texto, onClick = onClick)
+private fun BotaoAdicionarMagiaPadrao(
+    texto: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    PrimaryActionButton(text = texto, onClick = onClick, modifier = modifier)
 }
 
 @Composable
@@ -54,7 +58,8 @@ fun TabMagias(viewModel: FichaViewModel) {
 
         BotaoAdicionarMagiaPadrao(
             texto = "Adicionar Magia",
-            onClick = { showSelecionarMagia = true }
+            onClick = { showSelecionarMagia = true },
+            modifier = Modifier.pracegoTraversal(1)
         )
 
         // Lista fora do SectionCard

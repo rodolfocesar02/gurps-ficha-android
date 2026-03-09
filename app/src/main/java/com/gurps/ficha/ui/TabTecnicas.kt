@@ -60,7 +60,8 @@ fun TabTecnicas(viewModel: FichaViewModel) {
             ) {
                 PrimaryActionButton(
                     text = "Adicionar Técnica",
-                    onClick = { showSelecionarTecnica = true }
+                    onClick = { showSelecionarTecnica = true },
+                    modifier = Modifier.pracegoTraversal(1)
                 )
             }
         } else {
