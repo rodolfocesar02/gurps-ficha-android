@@ -33,6 +33,9 @@ import com.gurps.ficha.vtt.VttRollRequest
 import com.gurps.ficha.vtt.VttRollService
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private enum class VttConnectionState {
     DISCONNECTED,
@@ -78,6 +81,11 @@ fun TabVtt(viewModel: FichaViewModel) {
     var modificadorRaw by remember { mutableStateOf("0") }
     var sendingAction by remember { mutableStateOf(false) }
     var confirmActionDialog by remember { mutableStateOf(false) }
+    var lastActionSummary by remember { mutableStateOf("Nenhuma acao enviada.") }
+    var lastActionWhen by remember { mutableStateOf("-") }
+    var lastActionRequestId by remember { mutableStateOf("-") }
+
+    fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
     LaunchedEffect(context) {
         if (!bootstrapDone) {
@@ -260,6 +268,9 @@ fun TabVtt(viewModel: FichaViewModel) {
                     append(result.message)
                     if (!result.requestId.isNullOrBlank()) append(" ReqId: ${result.requestId}.")
                 }
+                lastActionSummary = "OK ${actionType.label}: ${nome.take(60)} (mod $mod)"
+                lastActionWhen = nowLabel()
+                lastActionRequestId = result.requestId ?: "-"
                 connectionState = VttConnectionState.CONNECTED
                 Log.i(
                     VTT_UI_LOG,
@@ -267,6 +278,9 @@ fun TabVtt(viewModel: FichaViewModel) {
                 )
             }.onFailure { err ->
                 statusMessage = err.message ?: "Falha ao enviar acao."
+                lastActionSummary = "ERRO ${actionType.label}: ${statusMessage.take(80)}"
+                lastActionWhen = nowLabel()
+                lastActionRequestId = "-"
                 connectionState = VttConnectionState.ERROR
                 Log.w(
                     VTT_UI_LOG,
@@ -530,6 +544,28 @@ fun TabVtt(viewModel: FichaViewModel) {
             Text(text = "1. Join de sessao VTT", style = MaterialTheme.typography.bodySmall)
             Text(text = "2. Vinculo player e token", style = MaterialTheme.typography.bodySmall)
             Text(text = "3. Rolagem contextual via contrato v1", style = MaterialTheme.typography.bodySmall)
+        }
+
+        SectionCard(title = "Diagnostico local") {
+            Text(
+                text = "Ultima acao: $lastActionSummary",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = "Horario: $lastActionWhen | ReqId: $lastActionRequestId",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Button(
+                onClick = {
+                    lastActionSummary = "Nenhuma acao enviada."
+                    lastActionWhen = "-"
+                    lastActionRequestId = "-"
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Limpar diagnostico")
+            }
         }
     }
 
