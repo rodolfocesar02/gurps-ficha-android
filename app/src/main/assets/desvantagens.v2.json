@@ -85,7 +85,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "-5 ou -10 pontos\nO personagem se dá bem com outras pessoas e sempre está à procura de companhia. \nExistem dois níveis desta característica:"
   },
   {
     "id": "amnesia",
@@ -139,7 +139,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "Uma versão menos intensa de Soli tário (pág. 157). O personagem gosta de \nficar sozinho e sempre prefere realizar \nações individuais."
   },
   {
     "id": "aparencia",
@@ -197,7 +197,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "O personagem não tem os órgãos \nsexuais típicos de sua raça, gênero \ne faixa etária ou talvez seja genui namente"
   },
   {
     "id": "assustar_animais",
@@ -290,7 +290,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "-5 ou -10 pontos\nO personagem tem uma coordena ção motora incomumente ruim. Ele sofre uma penalidade em qualquer teste \nbaseado em DX para realizar trabalhos \ndelicados, como as perícias listadas em \nDestreza Manual Elevada (pág. 53) e \ntambém com a perícia Sacar Rápido. \nPor -5 pontos, a penalidade é de -3; por \n-10 pontos, de -6. Esta desvantagem não \nse aplica a tarefas baseadas em IQ, tarefas em grande-escala baseadas em DX \nou jogadas de dados relacionadas com \no combate, a não ser Sacar Rápido.\nO personagem também se atrapalha \ntodo para comer, não consegue dar um \nnó numa gravata e assim por diante. O \nMestre também pode aplicar uma pe nalidade adicional de -1 para cada nível \ndessa desvantagem em qualquer teste \nde Influência ou reação em locais onde \né importante ter boas maneiras.\nEsta desvantagem é mutuamente excludente com Destreza Manual Elevada."
   },
   {
     "id": "autodestruicao",
@@ -444,7 +444,7 @@
     "rawCost": "-5",
     "specialRule": null,
     "tags": [],
-    "descricao": ""
+    "descricao": "1\n-5 pontos\nO personagem é capaz de se manter com \nalimentos típicos dos humanos, mas a sua \ncomposição bioquímica é suficientemente \ndiferente, para que drogas fabricadas para \nhumanos não surtam efeito em seu orga nismo — ou surtam efeitos imprevisíveis. \nAs drogas específicas para sua composição \nbioquímica agem normalmente, mas cus tam 10 vezes mais que o normal.\nSempre que o personagem consumir \numa droga destinada a seres humanos, \njogue 1d:\n1–3 — Efeito normal.\n4–5 — Efeito normal, mais um efeito \nprejudicial à escolha do Mestre: perda \nde 1d PF ("
   },
   {
     "id": "briquento",
@@ -567,7 +567,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "Um nível extremamente baixo de \nIntolerância (pág. 147). O personagem \nestá sempre ciente das diferenças entre \nsexos, raças, etc., mesmo que não re aja mal diante delas. Como resultado, \né possível que indivíduos sensíveis so fram uma penalidade de -1 nos testes \nde reação em relação ao personagem."
   },
   {
     "id": "circunspeccao",
@@ -601,7 +601,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "O personagem se sente compelido a \nroubar, não necessariamente coisas de \nvalor, mas qualquer coisa que ele possa \nlevar. Sempre que tiver uma chance de \nroubar, ele deve fazer um teste de auto controle com uma penalidade de até -3, \nse o objeto tiver algum interesse especial \npara ele (não necessariamente valor, a \nmenos que ele seja pobre ou Ambicioso). \nNo caso de um fracasso, o personagem \ndeve tentar furtar o objeto. As coisas roubadas devem ser mantidas ou vendidas \n— nunca devolvidas ou abandonadas."
   },
   {
     "id": "cobica",
@@ -725,7 +725,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "Para o personagem, o mundo parece \num lugar estranho e incompreensível \npelo menos na maior parte do tempo. Ele \nnão é necessariamente burro, mas demora a entender novos fatos ou situações.\nEm particular, ele reage mal a estímulos em excesso. Quando está sozinho em \nmeio à paz e tranquilidade de seu pró prio lar, o personagem age normalmente. \nNo entanto, em um lugar estranho ou \nagitado, ele deve fazer um teste de auto controle. Se fracassar, ele fica paralisado, \nem vez de tomar uma atitude decidida ou \napropriada. Isso com frequência o impede de ser bem-sucedido em testes de Tá tica e de se envolver com qualquer outro \ntipo de planejamento em longo prazo. O \nMestre deve ajustar o teste de autocon trole de acordo com os estímulos pre sentes no local em que o personagem se \nencontra. Para que ele resista à confusão \ncausada por dois amigos conversando \ndiscretamente em uma sala familiar bastaria um teste sem modificador, mas uma \ndanceteria com luzes brilhantes e música \npulsante poderia impor uma penalidade \nde -5, enquanto uma rebelião ou batalha \nresultariam em -10!\nSe esta desvantagem afligir o perso nagem durante um combate, ele deve \nrealizar a manobra Fazer Nada a cada \nturno. Ele não fica atordoado e, se for"
   },
   {
     "id": "consumo_ampliado",
@@ -844,7 +844,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "Uma vers?o branda de Covardia (p?g. 129). O personagem ? cuidadoso por natureza e est? sempre atento ao perigo. Ele dedica tempo e dinheiro a preparativos antes de se envolver numa situa??o arriscada."
   },
   {
     "id": "curiosidade",
@@ -899,7 +899,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "-10 a -30 pontos\nEsta desvantagem assume que o \npersonagem é um membro de uma raça \nque possui pernas. Se todos os membros \nda raça dele não tiverem pernas, consulte"
   },
   {
     "id": "deficiencias_menores",
@@ -1014,7 +1014,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "-15 pontos*\nO personagem tem duas ou mais personalidades ? cada uma com seu pr?prio padr?o de comportamento, lembran?as distintas ou at? mesmo nomes diferentes.\n\nSelecione um ?pacote? de desvantagens mentais e at? um m?ximo de cinco peculiaridades para cada personalidade. O Mestre tamb?m pode permitir varia??es na IQ, Percep??o, Vontade e desvantagens mentais quando elas fizerem sentido. Todos os pacotes de caracter?sticas mentais devem ter o mesmo custo em pontos. Quando estiver calculando o valor em pontos de personagem, conte uma ?nica vez o ?pre?o do pacote? e n?o uma vez para cada personalidade. Todas as personalidades apresentam as mesmas caracter?sticas e per?cias f?sicas (embora algumas possam n?o utilizar certas per?cias) e compartilham as caracter?sticas mentais que n?o fazem parte desses pacotes.\n\nEm qualquer situa??o de tens?o, ? necess?rio fazer um teste de autocontrole (n?o mais que um teste/hora de jogo). No caso de um fracasso, outra personalidade emerge e se comporta de acordo com suas peculiaridades e desvantagens mentais. Se houver v?rias personalidades, o Mestre deve selecionar uma personalidade apropriada ? situa??o ou escolher aleatoriamente.\n\nTodas as personalidades s?o de alguma forma superficiais e fingidas, o que imp?e uma penalidade de -1 em todos os testes de rea??o. Al?m disso, as pessoas que testemunharem uma mudan?a de personalidade consideram o personagem (provavelmente com raz?o) um louco perigoso e recebem uma penalidade adicional de -3 nos testes de rea??o."
   },
   {
     "id": "despretensioso",
@@ -1126,7 +1126,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "-5 pontos\nO personagem tem pouco ou nenhum dom?nio da matem?tica. Ele n?o ? capaz de aprender Programa??o de Computadores, Economia ou qualquer uma das per?cias que se beneficiam de Habilidade Matem?tica (v. Talento, p?g. 90). Ele ? efetivamente Incompetente (p?g. 164) nessas ?reas e apresenta v?rias limita??es frustrantes: precisa contar nos dedos para fazer opera??es aritm?ticas, n?o tem ideia se os resultados computados por m?quinas calculadoras est?o corretos (tornando-os basicamente in?teis) e ? facilmente enganado por comerciantes desonestos (penalidade de -4 nos testes feitos para perceber uma engana??o).\n\nEm culturas que n?o sabem utilizar n?meros, incluindo aquelas pertencentes a NT4 ou inferior, esta desvantagem ? dominante e o Mestre n?o deveria consider?-la no c?lculo do limite em desvantagens da campanha (se houver). Em sociedades que prezam habilidades tecnol?gicas ou mercantis, indiv?duos com Dificuldade com N?meros muitas vezes tamb?m sofrem um Estigma Social. Isso vale -5 pontos adicionais e resulta em uma penalidade de -1 nos testes de rea??o."
   },
   {
     "id": "dislexia",
@@ -1245,7 +1245,7 @@
     "tags": [
       "social"
     ],
-    "descricao": ""
+    "descricao": "-1 ponto/n?vel\nO personagem deve dinheiro. Talvez por causa de um empr?stimo, impostos atrasados, educa??o de um filho, pens?o aliment?cia, suborno pago a chantagistas ou dinheiro extorquido por gangsteres para garantir prote??o.\n\nO personagem tem que fazer um pagamento mensal equivalente a 1% dos seus recursos iniciais (ajustado de acordo com o n?vel de riqueza) por n?vel nessa caracter?stica, at? um m?ximo de 20%. A D?vida pode acompanhar qualquer n?vel de riqueza superior a Falido; existem muitos multimilion?rios devendo grandes somas de dinheiro!\n\nO pagamento mensal feito pelo personagem ? deduzido dos ganhos mensais resultantes do seu emprego. Se o sal?rio n?o for suficiente para cobrir a d?vida, o personagem deve fazer uso de suas reservas de dinheiro, arranjar um segundo emprego ou roubar.\n\nSe n?o puder pagar ou decidir n?o pagar, o personagem ter? problemas. No caso de empr?stimos banc?rios, isso significa a retomada dos bens. No caso de pens?o aliment?cia, educa??o infantil, multas ou impostos, resulta numa ida ao tribunal. J? se estiver devendo dinheiro para a M?fia, o personagem pode ser obrigado a participar de atividades criminosas ? ou acabar na frente do cano de uma arma. O Mestre deve ser criativo!\n\nSup?e-se que o personagem n?o seja capaz de se livrar com facilidade dessa obriga??o. ? preciso mais que dinheiro para cobrir uma D?vida ? tamb?m s?o necess?rios pontos de personagem e uma explica??o l?gica dentro do jogo (em conjunto com o Mestre)."
   },
   {
     "id": "doenca_contagiosa",
@@ -1539,7 +1539,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "-30 pontos\nO personagem sofre de epilepsia grave e est? sujeito a crises, durante as quais seus membros tremem incontrolavelmente e ele se torna incapaz de falar ou pensar com clareza. Sempre que estiver em uma situa??o de tens?o (principalmente se sua vida, ou a de um companheiro, estiver em perigo), ele deve fazer um teste de HT. Se o personagem tiver qualquer tipo de Fobia, a exposi??o ao motivo do medo tamb?m conta como uma situa??o de tens?o; o teste de HT deve ser refeito a cada 10 minutos.\n\nUm fracasso ativa uma crise que dura 1d minutos e custa 1d pontos de fadiga. ? desnecess?rio dizer que o personagem n?o ? capaz de fazer nada durante esse per?odo.\n\n? poss?vel tentar induzir uma crise por meio da auto-hipnose. Isso exige um minuto de concentra??o e um sucesso em um teste de Vontade ou Auto-Hipnose.\n\nUma crise em uma regi?o com um alto n?vel de mana pode provocar vis?es. Cabe ao Mestre decidir se elas ser?o ?teis.\n\nPor n?o entenderem suas causas, ra?as primitivas podem ficar atemorizadas diante de uma crise e achar que se trata de uma mensagem dos deuses. Nesses casos, fa?a os testes de rea??o com um b?nus de +1. Um resultado melhor ou igual a Muito Bom indica adora??o, enquanto um resultado igual ou pior a Ruim faz com que os primitivos fujam e nunca ataquem (a n?o ser que tenham outro motivo para isso)."
   },
   {
     "id": "estigma_social",
@@ -1611,7 +1611,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "-10 pontos/n?vel\nA expectativa de vida do personagem ? muito menor que o normal para os humanos. Cada n?vel nesta desvantagem reduz pela metade a expectativa de vida (arredondado para baixo).\n\nIsso afeta a idade na qual se atinge a maturidade, a idade em que se iniciam os testes de envelhecimento e o intervalo entre eles; consulte a tabela. N?o ? permitido ter mais que quatro n?veis nesta desvantagem.\n\nExpectativa de Vida Reduzida muitas vezes ? comprada juntamente com Autodestrui??o (p?g. 123)."
   },
   {
     "id": "facil_de_decifrar",
@@ -1822,7 +1822,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "O personagem ? suscet?vel aos efeitos nocivos da acelera??o extrema e seus testes de HT para evit?-los sofrem uma penalidade de -3."
   },
   {
     "id": "fraqueza",
@@ -1877,7 +1877,7 @@
   },
   {
     "id": "gigantismo",
-    "nome": "Gigantismo",
+    "nome": "Gigantismo (+1 MT)",
     "pagina": 144,
     "costKind": "fixed",
     "fixed": -10,
@@ -1890,7 +1890,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "0 pontos\nO personagem tem uma altura anormal em rela??o ? sua esp?cie. Independente da ST, essa dimens?o est? acima do maior valor da Tabela de Constitui??o F?sica ? mais de 2,10 m para um ser humano. Isso imp?e ao personagem um Modificador de Tamanho de +1 e um b?nus no Deslocamento B?sico de +1 (pernas longas), al?m de qualific?-lo para comprar ST e PV a um custo inferior.\n\nConsulte a altura do personagem na ?ltima linha da Tabela de Constitui??o F?sica e aumente-a em 10%.\n\nO personagem sofre uma penalidade de -2 em Disfarce ? ou em Persegui??o, se estiver tentando seguir algu?m no meio da multid?o. Por outro lado, tamanha altura geralmente concede um b?nus na per?cia Intimida??o (v. p?g. 204). Em cen?rios atrasados, o Mestre pode exigir que um personagem com gigantismo compre a desvantagem Estigma Social.\n\nUm membro de qualquer ra?a pode ser um gigante. Aumente a altura a 25% da m?dia racial e modifique o MT racial em +1. Sob todos os outros aspectos, a regra permanece a mesma."
   },
   {
     "id": "gordo",
@@ -2444,7 +2444,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "A lua tem um efeito dramático e \npouco conveniente em sua personalidade. Durante a lua cheia, o personagem \nfica extremamente emotivo e volátil \n(penalidade de -2 em todos os testes de \nVontade e autocontrole) e, na lua nova, \nfica calmo (sofrendo temporariamente \nda desvantagem"
   },
   {
     "id": "luxuria",
@@ -2694,7 +2694,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "(pág. 151), ele \ndeve seguir ao pé da letra as ordens de \nseu Mestre. Se não tiver Mentalidade \nde Escravo, o personagem pode inter pretar suas ordens com criatividade, \ncontanto que atenha às ordens exatas \nou ao que entendeu delas (a critério do \njogador). Se não for inteligente (IQ 0), o \npersonagem não terá qualquer interes se em fazer algo diferente daquilo para \nque foi programado.\nUm personagem pode ter"
   },
   {
     "id": "mente_aberta",
@@ -2828,7 +2828,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "O personagem é incapaz de pro cessar imagens e símbolos abstratos. \nInterfaces gráficas de computador, \nmapas, dispositivos heráldicos e runas \nmágicas não significam nada para ele. \nAssim como acontece com a"
   },
   {
     "id": "no_limite",
@@ -2954,7 +2954,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": ""
+    "descricao": "Variável\nO personagem se opõe à violência. \nEssa oposição pode assumir várias for mas. Escolha uma das seguintes:\nAssassino Relutante: O personagem \nestá psicologicamente despreparado \npara matar. Sempre que fizer um ata que letal (ex.: com uma faca ou arma \nde fogo) contra uma pessoa que possa \nver, ele sofre uma penalidade de -4 para \nacertar o alvo e não pode Apontar. Se ele \nnão puder ver o rosto do inimigo (por \ncausa de uma máscara, escuridão, dis tância ou porque o atacou pelas costas), \na penalidade é de -2, a não ser durante \num combate corporal. O personagem \nnão sofre penalidades ao atacar veículos \n(mesmo que estejam ocupados), opo nentes que ele não acredita serem pes soas (incluindo coisas com"
   },
   {
     "id": "padrao_de_tempo_reduzido",
@@ -2969,7 +2969,7 @@
     "rawCost": "-100",
     "specialRule": null,
     "tags": [],
-    "descricao": ""
+    "descricao": "-100 pontos\nEsta desvantagem ? a contraparte de Padr?o de Tempo Alterado (p?g. 75). O personagem vivencia o tempo com metade da velocidade normal: um segundo subjetivo para cada dois segundos reais que se passam.\n\nO jogador recebe apenas um turno para cada dois segundos de combate (grupos de jogadores que gostam muito de detalhes podem optar por dar a um personagem com Padr?o de Tempo Reduzido ?metade de um turno?: dividindo uma manobra Deslocamento em dois turnos, declarando uma manobra Ataque durante um turno e fazendo o teste para acertar em outro, etc.)."
   },
   {
     "id": "paralisia_frente_ao_combate",
@@ -2986,7 +2986,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": ""
+    "descricao": "-15 pontos\nO personagem normalmente fica paralisado quando se encontra numa situa??o de combate e sofre uma penalidade de -2 em todas as Verifica??es de P?nico. Isso n?o tem nada a ver com Covardia (p?g. 129) ? ele pode ser corajoso, mas ? tra?do por seu pr?prio corpo.\n\nEm qualquer situa??o onde uma les?o f?sica parece iminente, o personagem deve fazer um teste de HT. Contudo, a jogada n?o deve ser feita at? o momento em que ele tem que lutar, fugir, puxar o gatilho ou tomar alguma outra a??o.\n\nQualquer resultado maior que 13 indica um fracasso, mesmo que o personagem tenha uma HT alta. Um sucesso significa que ele consegue agir normalmente.\n\nNo caso de um fracasso, ele fica mentalmente atordoado (v. Efeitos do Atordoamento, p?g. 420). O personagem pode fazer outro teste de HT a cada segundo, com um b?nus cumulativo de +1 em cada turno, a fim de sair do torpor. Um tapa de um companheiro adiciona +1 ao b?nus cumulativo do teste de HT.\n\nDepois que sair do estado de torpor, este n?o retorna enquanto durar o perigo. Mais tarde, ao se deparar com uma nova situa??o de perigo, a? ent?o ele pode se repetir.\n\nEsta caracter?stica ? o oposto de Reflexos em Combate (p?g. 82) ? n?o ? poss?vel adquirir ambos."
   },
   {
     "id": "paranoia",
@@ -3250,7 +3250,7 @@
     "rawCost": "-15*",
     "specialRule": null,
     "tags": [],
-    "descricao": ""
+    "descricao": "O personagem aprecia a crueldade \nmental, física ou as duas. Ele deve fazer \num teste de autocontrole sempre que ti ver a oportunidade de satisfazer seus desejos, mesmo sabendo que não"
   },
   {
     "id": "sangue_frio",
@@ -3361,7 +3361,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "-15 pontos\nO personagem tem dois olhos, mas n?o consegue avaliar profundidade nem dist?ncias. Isso pode ocorrer devido a um dist?rbio visual ou uma peculiaridade da neurologia racial do personagem.\n\nOs efeitos no jogo s?o id?nticos a Zarolho (p?g. 162); n?o ? permitido adquirir as duas desvantagens juntas."
   },
   {
     "id": "sem_pernas",
@@ -3652,7 +3652,7 @@
   },
   {
     "id": "susceptibilidade_a_magia",
-    "nome": "Susceptibilidade à Magia",
+    "nome": "Suscetibilidade ? Magia",
     "pagina": 158,
     "costKind": "perLevel",
     "fixed": null,
@@ -3666,7 +3666,7 @@
       "fisica",
       "magica"
     ],
-    "descricao": ""
+    "descricao": "-3 pontos/n?vel\nA magia tem mais chance de afetar o personagem. Acrescente o n?vel de Suscetibilidade ? Magia do personagem ao NH de qualquer pessoa que estiver fazendo uma m?gica contra ele e subtraia o mesmo valor dos testes para resistir a qualquer m?gica que seja pass?vel de resist?ncia.\n\nExemplo: se o personagem tem Suscetibilidade ? Magia 4, qualquer mago recebe um b?nus de +4 para lan?ar m?gicas contra ele e ele sofre uma penalidade de -4 para resistir.\n\nA Suscetibilidade ? Magia torna o personagem mais vulner?vel ?s m?gicas lan?adas diretamente contra ele. Ela n?o afeta M?gicas de Proj?til, ataques com armas m?gicas ou m?gicas de informa??o que n?o forem lan?adas diretamente contra o personagem.\n\nEsta desvantagem tamb?m n?o surte efeitos sobre outros poderes sobrenaturais; ex.: milagres divinos, psiquismo ou o poder inato dos esp?ritos. A Suscetibilidade ? Magia age normalmente contra m?gicas de ?rea; n?o dobre seus efeitos (como aconteceria com Resist?ncia ? Magia, p?g. 34).\n\nA Suscetibilidade ? Magia e seu n?vel preciso podem ser reconhecidos por qualquer mago que observe a aura do personagem ou por qualquer pessoa que lan?ar uma m?gica contra ele. N?o ? permitido ter mais que cinco n?veis nesta desvantagem.\n\n? poss?vel combinar Suscetibilidade ? Magia com Aptid?o M?gica, mas n?o com Abascanto."
   },
   {
     "id": "suscetivel",
@@ -3828,7 +3828,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": ""
+    "descricao": "O personagem muitas vezes passa dos \nlimites e tem dificuldade para relaxar e \nse desligar do trabalho. Ele sempre trabalha no mínimo o dobro do expediente \nnormal, o que costuma resultar em sono \nperdido (v. Sono Perdido, pág. 426). No \ninício, a maioria das pessoas o trata com \nrespeito (bônus de +1 nos testes de reação), mas depois de algum tempo, ele \nacaba sofrendo uma penalidade de -1 ou \n-2, principalmente por parte dos amigos \ne entes queridos, que raramente conse guem passar algum tempo ao seu lado."
   },
   {
     "id": "vicio",
@@ -3865,7 +3865,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "-15 ou -30 pontos\nO personagem tem um campo de visão incomumente estreito. Uma pessoa \ncomum é capaz de enxergar num arco \nde 120° à sua frente sem virar o rosto \ne tem 30° de visão periférica para cada \nlado, o que confere um “arco de visão” \nde 180° para observação e ataques à \ndistância. Em um mapa hexagonal, \nisso significa que o campo de visão de \numa pessoa normal tem três hexágonos \n“frontais”, dois hexágonos “laterais” \n(“esquerda” e “direita”) e um hexágono \n“nas costas”. Porém, a visão de um in divíduo com esta desvantagem é muito \nmais restrita. Existem dois níveis:\nSem Visão Periférica: O arco de visão \ndo personagem consiste em um triân gulo de 120° à frente. Em um mapa, \nseus hexágonos “direito” e “esquerdo” \nse tornam “nas costas” isto é, ele tem \ntrês hexágonos “nas costas” e não con segue se defender de ataques que vêm \ndessa região. -15 pontos.\nVisão Estreita: O arco de visão do \npersonagem consiste em um triângulo \nde 60° à frente. Em um mapa, seu"
   },
   {
     "id": "voto",

@@ -2,6 +2,19 @@
 
 Atualizado em: 2026-03-09
 
+## Atualização Rápida - 2026-03-09 (Desvantagens)
+Status: `CONCLUÍDO`
+
+Escopo executado:
+1. Preenchidas as descrições faltantes em `app/src/main/assets/desvantagens.v2.json` (cobertura final: `227/227` com descrição).
+2. Corrigido nome canônico no catálogo: `Suscetibilidade à Magia`.
+3. Ajustado carregamento V2 em `DataRepository` para preservar `rawCost` em `costKind=fixed` (mantém marcador `*` e corrige detecção de autocontrole mental).
+4. Criado script de apoio para preenchimento por PDF canônico: `scripts/fill_missing_desvantagens_from_pdf.py`.
+
+Validação registrada:
+1. Varredura final em `desvantagens.v2.json`: `0` itens sem descrição.
+2. Varredura final de mojibake (`Ã`, `Â`, `â€`, `�`): `0` ocorrências.
+
 ## Plano Macro - Versão 2.0 (sem alterar V1 em uso)
 Status: `ATIVO`
 

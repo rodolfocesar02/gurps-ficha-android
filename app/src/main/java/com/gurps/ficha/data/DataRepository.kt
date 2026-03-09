@@ -1527,6 +1527,7 @@ private data class DesvantagemV2(
     val min: Int? = null,
     val max: Int? = null,
     val rawCost: String? = null,
+    val specialRule: String? = null,
     val tags: List<String>? = null,
     val descricao: String? = null
 ) {
@@ -1542,7 +1543,8 @@ private data class DesvantagemV2(
         val optionsList = options?.mapNotNull { it.asIntOrNull() }.orEmpty()
 
         val custoLegacy = when (costKind) {
-            "fixed" -> fixed?.toString().orEmpty()
+            // Preserva sufixos canonicos do rawCost (ex.: "*" de autocontrole mental).
+            "fixed" -> rawCost?.takeIf { it.isNotBlank() } ?: fixed?.toString().orEmpty()
             "perLevel" -> {
                 val base = perLevel ?: fixed ?: extractFirstInt(rawCost)
                 if (base != null) "$base/nível" else (rawCost ?: "0")
@@ -1622,6 +1624,7 @@ private fun JsonElement.asDesvantagemV2OrNull(): DesvantagemV2? {
         min = obj.int("min"),
         max = obj.int("max"),
         rawCost = obj.string("rawCost"),
+        specialRule = obj.string("specialRule"),
         tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() },
         descricao = obj.string("descricao")
     )
