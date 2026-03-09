@@ -10,28 +10,25 @@ import java.net.SocketTimeoutException
 import java.net.URL
 import java.net.UnknownHostException
 
-data class VttJoinSessionResult(
-    val sessionId: String?,
+data class VttTokenBindResult(
+    val playerId: String?,
     val tokenId: String?,
-    val needsBind: Boolean,
     val message: String
 )
 
-object VttSessionService {
+object VttTokenBindService {
     private val gson = Gson()
 
-    suspend fun joinSession(
+    suspend fun bindToken(
         roomKey: String,
         playerId: String,
-        fichaJsonRaw: String,
-        previousSessionId: String? = null,
-        previousTokenId: String? = null,
+        tokenId: String,
         baseUrl: String = BuildConfig.VTT_API_BASE_URL
-    ): Result<VttJoinSessionResult> = withContext(Dispatchers.IO) {
+    ): Result<VttTokenBindResult> = withContext(Dispatchers.IO) {
         runCatching {
             val root = baseUrl.trim().trimEnd('/')
             require(root.isNotBlank()) { "URL do VTT não configurada." }
-            val endpoint = "$root/api/v1/session/join"
+            val endpoint = "$root/api/v1/token/bind"
 
             val envelope = JsonObject().apply {
                 addProperty("contractVersion", "v1")
@@ -39,10 +36,7 @@ object VttSessionService {
                 add("payload", JsonObject().apply {
                     addProperty("roomKey", roomKey)
                     addProperty("playerId", playerId)
-                    addProperty("playerName", playerId)
-                    if (!previousSessionId.isNullOrBlank()) addProperty("sessionId", previousSessionId)
-                    if (!previousTokenId.isNullOrBlank()) addProperty("tokenId", previousTokenId)
-                    add("fichaJson", gson.fromJson(fichaJsonRaw, JsonObject::class.java))
+                    addProperty("tokenId", tokenId)
                 })
             }
 
@@ -65,7 +59,7 @@ object VttSessionService {
                     connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
                 } else {
                     connection.errorStream?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
-                        ?: "Falha HTTP $code no join de sessão."
+                        ?: "Falha HTTP $code ao vincular token."
                 }
 
                 if (code !in 200..299) {
@@ -73,31 +67,33 @@ object VttSessionService {
                     val errorPayload = errorJson?.getAsJsonObject("payload")
                     val errorCode = errorPayload?.get("errorCode")?.asString.orEmpty()
                     val errorMessage = errorPayload?.get("message")?.asString
-                        ?: body.ifBlank { "Falha HTTP $code no join de sessão." }
+                        ?: body.ifBlank { "Falha HTTP $code ao vincular token." }
                     val friendly = when (errorCode) {
-                        "SESSION_EXPIRED" -> "Sessão expirada no VTT. Faça reconexão."
-                        "UNAUTHORIZED_TOKEN" -> "Token não autorizado para este jogador. Refaça o vínculo."
+                        "PLAYER_NOT_FOUND" -> "Player não encontrado na sala."
+                        "INVALID_PARAMS" -> "Parâmetros inválidos para vincular token."
                         else -> errorMessage
                     }
                     error(friendly)
                 }
 
                 val rootJson = gson.fromJson(body, JsonObject::class.java)
-                val payload = rootJson.getAsJsonObject("payload") ?: JsonObject()
-                VttJoinSessionResult(
-                    sessionId = payload.get("sessionId")?.asString,
-                    tokenId = payload.get("tokenId")?.asString ?: payload.get("yourTokenId")?.asString,
-                    needsBind = payload.get("needsBind")?.asBoolean ?: false,
-                    message = payload.get("message")?.asString ?: "Sessão VTT validada."
+                val payload = rootJson.getAsJsonObject("payload")
+                val bound = payload?.getAsJsonObject("bound")
+                val boundPlayerId = bound?.get("playerId")?.asString ?: payload?.get("playerId")?.asString
+                val boundTokenId = bound?.get("tokenId")?.asString ?: payload?.get("tokenId")?.asString
+                VttTokenBindResult(
+                    playerId = boundPlayerId,
+                    tokenId = boundTokenId,
+                    message = payload?.get("message")?.asString ?: "Token vinculado no VTT."
                 )
             } finally {
                 connection?.disconnect()
             }
         }.recoverCatching { err ->
             throw when (err) {
-                is SocketTimeoutException -> IllegalStateException("Timeout ao conectar no VTT.")
+                is SocketTimeoutException -> IllegalStateException("Timeout ao vincular token.")
                 is UnknownHostException -> IllegalStateException("Servidor VTT não encontrado.")
-                else -> IllegalStateException(err.message ?: "Falha ao iniciar sessão VTT.")
+                else -> IllegalStateException(err.message ?: "Falha ao vincular token.")
             }
         }
     }
