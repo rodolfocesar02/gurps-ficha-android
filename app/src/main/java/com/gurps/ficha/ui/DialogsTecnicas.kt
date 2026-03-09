@@ -132,7 +132,7 @@ fun SelecionarTecnicaDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
                         ) {
                             Text(
                                 tecnica.nome,
@@ -212,7 +212,7 @@ fun ConfigurarTecnicaDialog(
         title = null,
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -275,7 +275,7 @@ fun ConfigurarTecnicaDialog(
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 if (isPraCegoVariant) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                         TextButton(
                             enabled = nivelRelativo > 0,
                             onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
@@ -375,7 +375,7 @@ fun ConfigurarTecnicaDialog(
             title = { Text(definicao.nome) },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
@@ -469,7 +469,7 @@ fun EditarTecnicaDialog(
         title = null,
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -525,7 +525,7 @@ fun EditarTecnicaDialog(
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 if (isPraCegoVariant) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                         TextButton(
                             enabled = nivelRelativo > 0,
                             onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
@@ -612,7 +612,7 @@ fun EditarTecnicaDialog(
             title = { Text(tecnica.nome) },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
@@ -736,7 +736,7 @@ private fun PericiaSuplementarDetalhesDialog(
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
             ) {
                 Text(
                     "${item.sourceBook} • ${item.dificuldadeRaw}",
@@ -808,6 +808,7 @@ private fun periciaTecnicaLabel(pericia: PericiaSelecionada): String {
         "${pericia.nome} (${pericia.especializacao})"
     }
 }
+
 
 
 

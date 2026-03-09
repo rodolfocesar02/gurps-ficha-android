@@ -531,7 +531,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (modoAlvoHabilitado) {
@@ -613,7 +613,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                         },
                         text = {
                             Column(
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                                 modifier = Modifier.semantics {
                                     contentDescription = "Manual curto: $MANUAL_MODO_ALVO_CURTO"
                                 }
@@ -1074,7 +1074,7 @@ fun ConfigurarMagiaDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text("Dificuldade: ${dificuldade.nomeCompleto}", style = MaterialTheme.typography.bodyMedium)
 
                 Divider()
@@ -1326,7 +1326,7 @@ fun EditarMagiaDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 val difNome = magia.dificuldade.sigla
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
 
@@ -1448,5 +1448,6 @@ fun EditarMagiaDialog(
 }
 
 // === DIALOGS SIMPLES ===
+
 
 

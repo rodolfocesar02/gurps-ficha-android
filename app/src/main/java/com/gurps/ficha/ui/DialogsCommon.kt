@@ -103,9 +103,9 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
         onDismissRequest = onDismiss,
         title = { Text(if (initialEquipamento != null) "Editar Equipamento" else "Adicionar Equipamento") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                     OutlinedTextField(value = peso, onValueChange = { peso = it }, label = { Text("Peso (kg)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true, modifier = Modifier.weight(1f))
                     OutlinedTextField(value = custo, onValueChange = { custo = it }, label = { Text("Custo (\$)") },
@@ -134,3 +134,4 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
     )
 
 }
+

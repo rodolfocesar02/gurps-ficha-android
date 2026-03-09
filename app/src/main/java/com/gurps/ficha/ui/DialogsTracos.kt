@@ -100,7 +100,7 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
                 ) {
                     FilterChip(
                         selected = filtroTag == null,
@@ -137,7 +137,7 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                     .fillMaxWidth()
                                     .padding(horizontal = 8.dp, vertical = 6.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
@@ -209,7 +209,7 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
 
                 when (definicao.tipoCusto) {
@@ -343,7 +343,7 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
                     modifier = Modifier
                         .fillMaxWidth()
                         .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
                 ) {
                     FilterChip(
                         selected = filtroTag == null,
@@ -380,7 +380,7 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
                                     .fillMaxWidth()
                                     .padding(horizontal = 8.dp, vertical = 6.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
                             ) {
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
@@ -453,7 +453,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
 
                 when (definicao.tipoCusto) {
@@ -608,7 +608,7 @@ fun EditarVantagemDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
                     val nivelMinimo = 1
@@ -744,7 +744,7 @@ fun EditarDesvantagemDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 if (desvantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
                     if (isPraCegoVariant) {
@@ -896,5 +896,6 @@ fun QualidadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
+
 
 
