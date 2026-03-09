@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import re
+import sys
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -146,6 +148,10 @@ def audit_file(path: Path):
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--fail-on-issues", action="store_true")
+    args = parser.parse_args()
+
     rows = [audit_file(ASSETS / name) for name in ACTIVE_FILES]
     summary = {
         "checked_files": len(rows),
@@ -194,8 +200,12 @@ def main():
         lines.append("")
 
     out_md.write_text("\n".join(lines), encoding="utf-8")
-    print(f"OK: relatório salvo em {out_json}")
+    print(f"OK: relatorio salvo em {out_json}")
     print(f"OK: resumo salvo em {out_md}")
+
+    if args.fail_on_issues and summary["files_with_issues"] > 0:
+        print("ERRO: auditoria encontrou issues em JSONs ativos.")
+        sys.exit(2)
 
 
 if __name__ == "__main__":

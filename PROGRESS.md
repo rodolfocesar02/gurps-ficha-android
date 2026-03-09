@@ -46,17 +46,24 @@ Passos:
 14. [x] Subpasso: padronizar espaçamento de conteúdo em diálogos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
-Status: `EM ANDAMENTO`
+Status: `CONCLUÍDO`
 
 Passos:
 1. [x] Auditoria de JSONs ativos (pré-requisitos, nomes e acentuação).
-2. [ ] Correção orientada por canônico com testes de regressão.
-3. [ ] Varredura automática de artefatos de encoding antes de build.
-4. [ ] Relatório de cobertura por catálogo (vantagens, desvantagens, perícias, técnicas, magias).
+2. [x] Correção orientada por canônico com testes de regressão (sem divergências detectadas nesta rodada).
+3. [x] Varredura automática de artefatos de encoding antes de build.
+4. [x] Relatório de cobertura por catálogo (vantagens, desvantagens, perícias, técnicas, magias).
 
 Evidência:
 1. `scripts/reports/active_json_audit_v2.json`
 2. `scripts/reports/active_json_audit_v2.md`
+3. `scripts/reports/catalog_coverage_v2.json`
+4. `scripts/reports/catalog_coverage_v2.md`
+5. `app:preBuild` agora depende de `validateActiveJsonAssets` (bloqueio automático em caso de issues).
+6. Regressão executada:
+   - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
+   - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
+   - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
 
 ### Lote V2.4 - UX de Edição e Intuitividade
 Status: `PLANEJADO`
