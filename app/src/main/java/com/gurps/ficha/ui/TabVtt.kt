@@ -3,6 +3,7 @@
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -408,10 +409,19 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
 
             if (viewMode == VttViewMode.MAPA) {
-                val embedUrl = serverUrl.trim().trimEnd('/')
+                val baseUrl = serverUrl.trim().trimEnd('/')
+                val roomParam = Uri.encode(roomKey.trim())
+                val playerParam = Uri.encode(playerId.trim())
+                val embedUrl = if (baseUrl.isBlank()) {
+                    ""
+                } else if (roomParam.isBlank() || playerParam.isBlank()) {
+                    baseUrl
+                } else {
+                    "$baseUrl/?roomKey=$roomParam&playerName=$playerParam"
+                }
                 if (embedUrl.isBlank()) {
                     Text(
-                        text = "Defina a URL do servidor para abrir o visual embutido.",
+                        text = "Defina servidor, sala e player para abrir o visual embutido.",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -425,6 +435,15 @@ fun TabVtt(viewModel: FichaViewModel) {
                                 settings.javaScriptEnabled = true
                                 settings.domStorageEnabled = true
                                 settings.mediaPlaybackRequiresUserGesture = false
+                                addJavascriptInterface(
+                                    object {
+                                        @JavascriptInterface
+                                        fun onVttEvent(log: String?) {
+                                            Log.i(VTT_UI_LOG, "vttBridge event=${log.orEmpty()}")
+                                        }
+                                    },
+                                    "Android"
+                                )
                                 webViewClient = WebViewClient()
                                 webChromeClient = WebChromeClient()
                                 loadUrl(embedUrl)

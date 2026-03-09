@@ -163,6 +163,7 @@ Criterio de aceite:
 
 Execucao:
 1. [x] 2026-03-09 - Passo APP-VTT.1.1 concluido no app: estrutura de WebView embutido com alternancia inicial `Mapa/Painel`.
+2. [x] 2026-03-09 - Passo APP-VTT.1.2 concluido no app: URL do embed com `roomKey/playerName` e bridge `Android.onVttEvent(...)`.
 
 ### Lote APP-VTT.2 - Sessao e contexto no embed
 Status: `PENDENTE`
