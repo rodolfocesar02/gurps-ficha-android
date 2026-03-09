@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import com.gurps.ficha.vtt.VttSessionService
+import com.gurps.ficha.vtt.VttSessionSnapshot
+import com.gurps.ficha.vtt.VttSessionStorage
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.launch
 
@@ -53,6 +56,25 @@ fun TabVtt(viewModel: FichaViewModel) {
     var statusMessage by remember { mutableStateOf("Preencha servidor, sala e player para iniciar.") }
     var sessionId by remember { mutableStateOf<String?>(null) }
     var tokenId by remember { mutableStateOf<String?>(null) }
+    var bootstrapDone by remember { mutableStateOf(false) }
+
+    LaunchedEffect(context) {
+        if (!bootstrapDone) {
+            val snap = VttSessionStorage.load(context)
+            if (snap.serverUrl.isNotBlank()) {
+                serverUrl = snap.serverUrl
+                environment = VttEnvironment.CUSTOM
+            }
+            if (snap.roomKey.isNotBlank()) roomKey = snap.roomKey
+            if (snap.playerId.isNotBlank()) playerId = snap.playerId
+            if (snap.sessionId.isNotBlank()) sessionId = snap.sessionId
+            if (snap.tokenId.isNotBlank()) tokenId = snap.tokenId
+            if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
+                statusMessage = "Sessão local restaurada. Você pode reconectar."
+            }
+            bootstrapDone = true
+        }
+    }
 
     fun conectarEmModoShell() {
         connectionState = VttConnectionState.CONNECTING
@@ -71,6 +93,16 @@ fun TabVtt(viewModel: FichaViewModel) {
                 connectionState = VttConnectionState.CONNECTED
                 sessionId = result.sessionId
                 tokenId = result.tokenId
+                VttSessionStorage.save(
+                    context,
+                    VttSessionSnapshot(
+                        serverUrl = serverUrl.trim(),
+                        roomKey = roomKey.trim(),
+                        playerId = playerId.trim(),
+                        sessionId = sessionId.orEmpty(),
+                        tokenId = tokenId.orEmpty()
+                    )
+                )
                 statusMessage = buildString {
                     append(result.message)
                     if (!sessionId.isNullOrBlank()) append(" Sessão: $sessionId.")
@@ -86,8 +118,16 @@ fun TabVtt(viewModel: FichaViewModel) {
     fun desconectarEmModoShell() {
         connectionState = VttConnectionState.DISCONNECTED
         statusMessage = "Desconectado (shell)."
-        sessionId = null
-        tokenId = null
+        VttSessionStorage.save(
+            context,
+            VttSessionSnapshot(
+                serverUrl = serverUrl.trim(),
+                roomKey = roomKey.trim(),
+                playerId = playerId.trim(),
+                sessionId = sessionId.orEmpty(),
+                tokenId = tokenId.orEmpty()
+            )
+        )
     }
 
     fun abrirVttNoNavegador() {
