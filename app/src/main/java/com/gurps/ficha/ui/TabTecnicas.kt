@@ -135,10 +135,12 @@ fun TabTecnicas(viewModel: FichaViewModel) {
             onDismissRequest = { tecnicaDescricaoDialog = null },
             title = { Text(tecnica.nome) },
             text = {
-                Text(
-                    descricao.ifBlank { "Sem descrição detalhada disponível." },
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                StandardDialogColumn {
+                    Text(
+                        descricao.ifBlank { "Sem descrição detalhada disponível." },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             },
             confirmButton = {
                 TextButton(onClick = { tecnicaDescricaoDialog = null }) {

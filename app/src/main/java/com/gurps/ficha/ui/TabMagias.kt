@@ -127,10 +127,12 @@ fun TabMagias(viewModel: FichaViewModel) {
             onDismissRequest = { magiaDescricaoDialog = null },
             title = { Text(magia.nome) },
             text = {
-                Text(
-                    text = magia.texto?.takeIf { it.isNotBlank() } ?: "Sem descrição disponível.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                StandardDialogColumn {
+                    Text(
+                        text = magia.texto?.takeIf { it.isNotBlank() } ?: "Sem descrição disponível.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             },
             confirmButton = {
                 TextButton(onClick = { magiaDescricaoDialog = null }) {
