@@ -28,6 +28,16 @@ data class VttRollResult(
 object VttRollService {
     private val gson = Gson()
 
+    private fun JsonObject.stringOrNull(key: String): String? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull) null else element.asString
+    }
+
+    private fun JsonObject.objectOrNull(key: String): JsonObject? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull || !element.isJsonObject) null else element.asJsonObject
+    }
+
     suspend fun sendRollRequest(
         request: VttRollRequest,
         baseUrl: String = BuildConfig.VTT_API_BASE_URL
@@ -79,9 +89,9 @@ object VttRollService {
 
                 if (code !in 200..299) {
                     val errorJson = runCatching { gson.fromJson(body, JsonObject::class.java) }.getOrNull()
-                    val errorPayload = errorJson?.getAsJsonObject("payload")
-                    val errorCode = errorPayload?.get("errorCode")?.asString.orEmpty()
-                    val errorMessage = errorPayload?.get("message")?.asString
+                    val errorPayload = errorJson?.objectOrNull("payload")
+                    val errorCode = errorPayload?.stringOrNull("errorCode").orEmpty()
+                    val errorMessage = errorPayload?.stringOrNull("message")
                         ?: body.ifBlank { "Falha HTTP $code ao enviar rolagem." }
                     val friendly = when (errorCode) {
                         "UNAUTHORIZED_TOKEN" -> "Token nao autorizado para este jogador."
@@ -91,9 +101,9 @@ object VttRollService {
                 }
 
                 val rootJson = gson.fromJson(body, JsonObject::class.java)
-                val requestId = rootJson.get("requestId")?.asString
-                val payload = rootJson.getAsJsonObject("payload")
-                val message = payload?.get("message")?.asString ?: "Acao enviada ao VTT."
+                val requestId = rootJson.stringOrNull("requestId")
+                val payload = rootJson.objectOrNull("payload")
+                val message = payload?.stringOrNull("message") ?: "Acao enviada ao VTT."
                 VttRollResult(message = message, requestId = requestId)
             } finally {
                 connection?.disconnect()
