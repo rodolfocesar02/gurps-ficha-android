@@ -664,7 +664,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 modifier = Modifier.semantics {
                                     contentDescription = "Fechar manual sem salvar preferência"
                                 }
-                            ) { Text("Fechar") }
+                            ) { Text(UiActionLabels.FECHAR) }
                         }
                     )
                 }
@@ -957,7 +957,7 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 contentDescription = "Fechar seletor de magias"
                             }
                         }
-                    ) { Text("Fechar") }
+                    ) { Text(UiActionLabels.FECHAR) }
                 }
             }
     }
@@ -1238,10 +1238,10 @@ fun ConfigurarMagiaDialog(
                 enabled = (prereqFalha.isNullOrBlank() || adicaoForcadaSemPrereq) &&
                     (!exigeEncantamentoAlvo || encantamentoAlvoInput.isNotBlank()) &&
                     (!(exigeEspecializacao || exigeSubEscolaAnimais) || especializacaoMagiaInput.isNotBlank())
-            ) { Text("Adicionar") }
+            ) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = {
-            TextButton(onClick = { onDismiss() }) { Text("Cancelar") }
+            TextButton(onClick = { onDismiss() }) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -1279,7 +1279,7 @@ fun ConfigurarMagiaDialog(
                 )
             },
             confirmButton = {
-                TextButton(onClick = { mostrarDescricaoMagiaPopup = false }) { Text("Fechar") }
+                TextButton(onClick = { mostrarDescricaoMagiaPopup = false }) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -1412,7 +1412,7 @@ fun EditarMagiaDialog(
                     if (isPraCegoVariant) contentDescription = "Salvar edição da magia"
                 }
             ) {
-                Text("Salvar")
+                Text(UiActionLabels.SALVAR)
             }
         },
         dismissButton = {
@@ -1421,7 +1421,7 @@ fun EditarMagiaDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Cancelar edição da magia"
                 }
-            ) { Text("Cancelar") }
+            ) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -1441,13 +1441,14 @@ fun EditarMagiaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da magia"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
 }
 
 // === DIALOGS SIMPLES ===
+
 
 
 

@@ -153,7 +153,7 @@ fun SelecionarTecnicaDialog(
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text("Fechar") }
+                TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
             }
         }
     }
@@ -362,10 +362,10 @@ fun ConfigurarTecnicaDialog(
                         onSave()
                     }
                 }
-            ) { Text("Adicionar") }
+            ) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -396,7 +396,7 @@ fun ConfigurarTecnicaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da técnica"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -599,10 +599,10 @@ fun EditarTecnicaDialog(
                         )
                     )
                 }
-            ) { Text("Salvar") }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -633,7 +633,7 @@ fun EditarTecnicaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da técnica"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -679,7 +679,7 @@ fun PericiasSuplementaresDialog(
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text("Fechar") }
+                TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
             }
         }
     }
@@ -776,7 +776,7 @@ private fun PericiaSuplementarDetalhesDialog(
                 modifier = Modifier.semantics {
                     contentDescription = "Fechar detalhes da perícia ${item.nome}"
                 }
-            ) { Text("Fechar") }
+            ) { Text(UiActionLabels.FECHAR) }
         }
     )
 }
@@ -808,6 +808,7 @@ private fun periciaTecnicaLabel(pericia: PericiaSelecionada): String {
         "${pericia.nome} (${pericia.especializacao})"
     }
 }
+
 
 
 

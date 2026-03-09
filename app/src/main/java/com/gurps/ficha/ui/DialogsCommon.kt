@@ -53,7 +53,7 @@ fun MenuDialog(
                 PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao)
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) } }
     )
 }
 
@@ -64,8 +64,8 @@ fun SalvarDialog(nomeAtual: String, onDismiss: () -> Unit, onSalvar: (String) ->
         onDismissRequest = onDismiss,
         title = { Text("Salvar Ficha") },
         text = { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nome da Ficha") }, singleLine = true) },
-        confirmButton = { TextButton(onClick = { onSalvar(name) }) { Text("Salvar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = { TextButton(onClick = { onSalvar(name) }) { Text(UiActionLabels.SALVAR) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 }
 
@@ -86,7 +86,7 @@ fun CarregarDialog(fichas: List<String>, onDismiss: () -> Unit, onCarregar: (Str
                 }
             }
         },
-        confirmButton = { TextButton(onClick = { onDismiss() }) { Text("Fechar") } }
+        confirmButton = { TextButton(onClick = { onDismiss() }) { Text(UiActionLabels.FECHAR) } }
     )
 }
 
@@ -128,10 +128,11 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
                     )
                     onSave(novo)
                 }
-            }) { Text("Salvar") }
+            }) { Text(UiActionLabels.SALVAR) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
 }
+
 

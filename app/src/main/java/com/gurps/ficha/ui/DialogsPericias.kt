@@ -153,7 +153,7 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text("Fechar") }
+                    TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
                 }
             }
     }
@@ -248,12 +248,12 @@ fun CriarPericiaCustomizadaDialog(
                 },
                 enabled = nome.isNotBlank()
             ) {
-                Text("Adicionar")
+                Text(UiActionLabels.ADICIONAR)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(UiActionLabels.CANCELAR)
             }
         }
     )
@@ -415,9 +415,9 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
             TextButton(
                 onClick = { erroCadastro = onSave(pontosGastos, especializacao, atributoEscolhido, dificuldadeEscolhida) },
                 enabled = !definicao.exigeEspecializacao || especializacao.isNotBlank()
-            ) { Text("Adicionar") }
+            ) { Text(UiActionLabels.ADICIONAR) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
     if (mostrarDescricao) {
@@ -559,7 +559,7 @@ fun EditarPericiaDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Salvar edição da perícia"
                 }
-            ) { Text("Salvar") }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = {
             TextButton(
@@ -567,7 +567,7 @@ fun EditarPericiaDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Cancelar edição da perícia"
                 }
-            ) { Text("Cancelar") }
+            ) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -601,7 +601,7 @@ fun EditarPericiaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da perícia"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -639,9 +639,10 @@ private fun PericiaDescricaoDialog(
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) } }
     )
 }
+
 
 
 

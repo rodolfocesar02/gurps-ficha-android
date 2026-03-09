@@ -160,7 +160,7 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text("Fechar") }
+                    TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
                 }
             }
     }
@@ -299,9 +299,9 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
                     TipoCusto.FIXO -> definicao.getCustoBase()
                 }
                 onSave(nivel, custoFinal, descricao)
-            }) { Text("Adicionar") }
+            }) { Text(UiActionLabels.ADICIONAR) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
     if (mostrarDescricaoCatalogo) {
@@ -310,7 +310,7 @@ fun ConfigurarVantagemDialog(definicao: VantagemDefinicao, onDismiss: () -> Unit
             title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary) },
             text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
             confirmButton = {
-                TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") }
+                TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -403,7 +403,7 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text("Fechar") }
+                    TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
                 }
             }
     }
@@ -555,9 +555,9 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     TipoCusto.FIXO -> definicao.getCustoBase()
                 }
                 onSave(nivel, custoFinal, descricao, if (permiteAutocontrole) autocontrole else null)
-            }) { Text("Adicionar") }
+            }) { Text(UiActionLabels.ADICIONAR) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
     if (mostrarDescricaoCatalogo) {
@@ -566,7 +566,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
             title = { Text(definicao.nome, color = MaterialTheme.colorScheme.primary) },
             text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
             confirmButton = {
-                TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text("Fechar") }
+                TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -677,7 +677,7 @@ fun EditarVantagemDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Salvar edição da vantagem"
                 }
-            ) { Text("Salvar") }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = {
             TextButton(
@@ -685,7 +685,7 @@ fun EditarVantagemDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Cancelar edição da vantagem"
                 }
-            ) { Text("Cancelar") }
+            ) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -700,7 +700,7 @@ fun EditarVantagemDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da vantagem"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -831,7 +831,7 @@ fun EditarDesvantagemDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Salvar edição da desvantagem"
                 }
-            ) { Text("Salvar") }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = {
             TextButton(
@@ -839,7 +839,7 @@ fun EditarDesvantagemDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Cancelar edição da desvantagem"
                 }
-            ) { Text("Cancelar") }
+            ) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -854,7 +854,7 @@ fun EditarDesvantagemDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da desvantagem"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -874,8 +874,8 @@ fun PeculiaridadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
                 OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Peculiaridade") }, modifier = Modifier.fillMaxWidth())
             }
         },
-        confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text("Adicionar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text(UiActionLabels.ADICIONAR) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 }
 
@@ -892,10 +892,11 @@ fun QualidadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
                 OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Qualidade") }, modifier = Modifier.fillMaxWidth())
             }
         },
-        confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text("Adicionar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text(UiActionLabels.ADICIONAR) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 }
+
 
 
 
