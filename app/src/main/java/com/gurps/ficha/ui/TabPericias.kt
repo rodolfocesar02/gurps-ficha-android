@@ -143,7 +143,7 @@ fun TabPericias(viewModel: FichaViewModel) {
             onDismissRequest = { periciaDescricaoDialog = null },
             title = { Text(pericia.nome) },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                StandardDialogColumn {
                     Text(
                         regraV2?.descricao?.takeIf { it.isNotBlank() }
                             ?: "Sem descrição detalhada disponível.",

@@ -37,8 +37,9 @@ Passos:
 5. [x] Estender padrão único de card para Defesas.
 6. [x] Estender padrão único de card para Rolagem (base de cor/container).
 7. [ ] Unificar diálogos de seleção/edição (título, densidade, ações finais).
-8. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
-9. [ ] Validar em emulador visual e pracego.
+8. [x] Subpasso: padronizar densidade dos diálogos de descrição (Perícias, Técnicas e Magias).
+9. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
+10. [ ] Validar em emulador visual e pracego.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `PLANEJADO`

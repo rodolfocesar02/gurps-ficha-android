@@ -119,3 +119,13 @@ fun AppListItemCard(
         )
     }
 }
+
+@Composable
+fun StandardDialogColumn(
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
+        content = content
+    )
+}
