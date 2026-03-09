@@ -53,6 +53,12 @@ android {
         ) ?: "http://10.0.2.2:8787")
             .trimEnd('/')
             .replace("\"", "\\\"")
+        val vttApiBaseUrl = (firstNonBlank(
+            project.findProperty("VTT_API_BASE_URL") as? String,
+            localProperties.getProperty("VTT_API_BASE_URL")
+        ) ?: "http://10.0.2.2:3001")
+            .trimEnd('/')
+            .replace("\"", "\\\"")
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
@@ -68,6 +74,7 @@ android {
         )
         buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
         buildConfigField("String", "GURPS_AGENT_API_BASE_URL", "\"$gurpsAgentApiBaseUrl\"")
+        buildConfigField("String", "VTT_API_BASE_URL", "\"$vttApiBaseUrl\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
