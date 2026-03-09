@@ -30,6 +30,21 @@ object VttSessionService {
         return if (element.isJsonNull) defaultValue else element.asBoolean
     }
 
+    private fun JsonObject.objectOrNull(key: String): JsonObject? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull || !element.isJsonObject) null else element.asJsonObject
+    }
+
+    private fun JsonObject.stringOrNull(key: String): String? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull) null else element.asString
+    }
+
+    private fun JsonObject.boolOrDefault(key: String, defaultValue: Boolean = false): Boolean {
+        val element = get(key) ?: return defaultValue
+        return if (element.isJsonNull) defaultValue else element.asBoolean
+    }
+
     suspend fun joinSession(
         roomKey: String,
         playerId: String,
@@ -80,9 +95,9 @@ object VttSessionService {
 
                 if (code !in 200..299) {
                     val errorJson = runCatching { gson.fromJson(body, JsonObject::class.java) }.getOrNull()
-                    val errorPayload = errorJson?.getAsJsonObject("payload")
-                    val errorCode = errorPayload?.get("errorCode")?.asString.orEmpty()
-                    val errorMessage = errorPayload?.get("message")?.asString
+                    val errorPayload = errorJson?.objectOrNull("payload")
+                    val errorCode = errorPayload?.stringOrNull("errorCode").orEmpty()
+                    val errorMessage = errorPayload?.stringOrNull("message")
                         ?: body.ifBlank { "Falha HTTP $code no join de sessão." }
                     val friendly = when (errorCode) {
                         "SESSION_EXPIRED" -> "Sessão expirada no VTT. Faça reconexão."
@@ -93,7 +108,7 @@ object VttSessionService {
                 }
 
                 val rootJson = gson.fromJson(body, JsonObject::class.java)
-                val payload = rootJson.getAsJsonObject("payload") ?: JsonObject()
+                val payload = rootJson.objectOrNull("payload") ?: JsonObject()
                 VttJoinSessionResult(
                     sessionId = payload.stringOrNull("sessionId"),
                     tokenId = payload.stringOrNull("tokenId")

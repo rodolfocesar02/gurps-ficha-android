@@ -19,6 +19,16 @@ data class VttTokenBindResult(
 object VttTokenBindService {
     private val gson = Gson()
 
+    private fun JsonObject.stringOrNull(key: String): String? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull) null else element.asString
+    }
+
+    private fun JsonObject.objectOrNull(key: String): JsonObject? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull || !element.isJsonObject) null else element.asJsonObject
+    }
+
     suspend fun bindToken(
         roomKey: String,
         playerId: String,
@@ -64,9 +74,9 @@ object VttTokenBindService {
 
                 if (code !in 200..299) {
                     val errorJson = runCatching { gson.fromJson(body, JsonObject::class.java) }.getOrNull()
-                    val errorPayload = errorJson?.getAsJsonObject("payload")
-                    val errorCode = errorPayload?.get("errorCode")?.asString.orEmpty()
-                    val errorMessage = errorPayload?.get("message")?.asString
+                    val errorPayload = errorJson?.objectOrNull("payload")
+                    val errorCode = errorPayload?.stringOrNull("errorCode").orEmpty()
+                    val errorMessage = errorPayload?.stringOrNull("message")
                         ?: body.ifBlank { "Falha HTTP $code ao vincular token." }
                     val friendly = when (errorCode) {
                         "PLAYER_NOT_FOUND" -> "Player não encontrado na sala."
@@ -77,14 +87,14 @@ object VttTokenBindService {
                 }
 
                 val rootJson = gson.fromJson(body, JsonObject::class.java)
-                val payload = rootJson.getAsJsonObject("payload")
-                val bound = payload?.getAsJsonObject("bound")
-                val boundPlayerId = bound?.get("playerId")?.asString ?: payload?.get("playerId")?.asString
-                val boundTokenId = bound?.get("tokenId")?.asString ?: payload?.get("tokenId")?.asString
+                val payload = rootJson.objectOrNull("payload")
+                val bound = payload?.objectOrNull("bound")
+                val boundPlayerId = bound?.stringOrNull("playerId") ?: payload?.stringOrNull("playerId")
+                val boundTokenId = bound?.stringOrNull("tokenId") ?: payload?.stringOrNull("tokenId")
                 VttTokenBindResult(
                     playerId = boundPlayerId,
                     tokenId = boundTokenId,
-                    message = payload?.get("message")?.asString ?: "Token vinculado no VTT."
+                    message = payload?.stringOrNull("message") ?: "Token vinculado no VTT."
                 )
             } finally {
                 connection?.disconnect()
