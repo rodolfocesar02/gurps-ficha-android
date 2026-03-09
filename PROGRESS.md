@@ -44,10 +44,12 @@ Passos:
 12. [x] Subpasso: criar checklist operacional de acessibilidade V2.2 (`docs/v2/A11Y_CHECKLIST_V2_2.md`).
 13. [x] Subpasso: habilitar execução estável do lint (desativando detectores Compose com crash) e gerar relatório de erros reais.
 14. [x] Subpasso: padronizar espaçamento de conteúdo em diálogos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
+15. [x] Subpasso: executar pré-check automatizado de A11Y e registrar relatório (`docs/v2/A11Y_CHECKLIST_V2_2_EXEC.md`).
 
 Evidência parcial adicional:
 1. `UiActionLabels` aplicado nos diálogos principais para ações finais consistentes.
 2. `StandardDialogColumn` e `UiTokens.DialogContentSpacing` ativos no corpo dos diálogos de seleção/edição e descrição.
+3. Pré-check automatizado: `contentDescription=129`, `pracegoTraversal=14`.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `CONCLUÍDO`
