@@ -20,6 +20,16 @@ data class VttJoinSessionResult(
 object VttSessionService {
     private val gson = Gson()
 
+    private fun JsonObject.stringOrNull(key: String): String? {
+        val element = get(key) ?: return null
+        return if (element.isJsonNull) null else element.asString
+    }
+
+    private fun JsonObject.boolOrDefault(key: String, defaultValue: Boolean = false): Boolean {
+        val element = get(key) ?: return defaultValue
+        return if (element.isJsonNull) defaultValue else element.asBoolean
+    }
+
     suspend fun joinSession(
         roomKey: String,
         playerId: String,
@@ -85,10 +95,11 @@ object VttSessionService {
                 val rootJson = gson.fromJson(body, JsonObject::class.java)
                 val payload = rootJson.getAsJsonObject("payload") ?: JsonObject()
                 VttJoinSessionResult(
-                    sessionId = payload.get("sessionId")?.asString,
-                    tokenId = payload.get("tokenId")?.asString ?: payload.get("yourTokenId")?.asString,
-                    needsBind = payload.get("needsBind")?.asBoolean ?: false,
-                    message = payload.get("message")?.asString ?: "Sessão VTT validada."
+                    sessionId = payload.stringOrNull("sessionId"),
+                    tokenId = payload.stringOrNull("tokenId")
+                        ?: payload.stringOrNull("yourTokenId"),
+                    needsBind = payload.boolOrDefault("needsBind", false),
+                    message = payload.stringOrNull("message") ?: "Sessão VTT validada."
                 )
             } finally {
                 connection?.disconnect()
