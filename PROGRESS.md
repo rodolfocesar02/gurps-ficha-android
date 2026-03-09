@@ -66,13 +66,19 @@ Evidência:
    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
 
 ### Lote V2.4 - UX de Edição e Intuitividade
-Status: `PLANEJADO`
+Status: `EM ANDAMENTO`
 
 Passos:
-1. [ ] Revisar textos de ação para consistência (Adicionar/Editar/Remover/Fechar).
+1. [x] Revisar textos de ação para consistência (Adicionar/Editar/Remover/Fechar).
 2. [ ] Padronizar feedback pós-ação (snackbar curto + acessível).
 3. [ ] Melhorar estado vazio e mensagens de erro orientadas a solução.
 4. [ ] Definir mapa de foco final para `pracego`.
+
+Evidência parcial:
+1. Novo arquivo `app/src/main/java/com/gurps/ficha/ui/UiActionLabels.kt` centralizando rótulos de ação.
+2. Diálogos de Perícias/Técnicas/Magias/Traços/Comuns migrados para uso de `UiActionLabels`.
+3. Validação executada:
+   - `./gradlew :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin` (OK)
 
 ## Regra Permanente - Higiene de Texto (acentos/artefatos)
 **Regra fixa para todos os lotes daqui em diante:**
