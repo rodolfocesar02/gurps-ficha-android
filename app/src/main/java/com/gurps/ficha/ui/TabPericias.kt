@@ -43,17 +43,23 @@ fun TabPericias(viewModel: FichaViewModel) {
             BotaoAdicionarPericiaPadrao(
                 texto = "Adicionar Perícia",
                 onClick = { showSelecionarPericia = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pracegoTraversal(1)
             )
             BotaoAdicionarPericiaPadrao(
                 texto = "Criar Perícia",
                 onClick = { showCustomDialog = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pracegoTraversal(2)
             )
             BotaoAdicionarPericiaPadrao(
                 texto = "Perícias Suplementares",
                 onClick = { showPericiasSuplementares = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pracegoTraversal(3)
             )
         }
 

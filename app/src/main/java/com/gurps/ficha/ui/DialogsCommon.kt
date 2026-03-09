@@ -44,16 +44,16 @@ fun MenuDialog(
         title = { Text("Menu") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                PrimaryActionButton(text = "Nova Ficha", onClick = onNovaFicha)
-                PrimaryActionButton(text = "Salvar Ficha", onClick = onSalvar)
-                PrimaryActionButton(text = "Carregar Ficha", onClick = onCarregar)
-                PrimaryActionButton(text = "Exportar JSON Compatível", onClick = onExportarCompativel)
-                PrimaryActionButton(text = "Exportar JSON Versionado", onClick = onExportarVersionado)
-                PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar)
-                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao)
+                PrimaryActionButton(text = "Nova Ficha", onClick = onNovaFicha, modifier = Modifier.pracegoTraversal(1))
+                PrimaryActionButton(text = "Salvar Ficha", onClick = onSalvar, modifier = Modifier.pracegoTraversal(2))
+                PrimaryActionButton(text = "Carregar Ficha", onClick = onCarregar, modifier = Modifier.pracegoTraversal(3))
+                PrimaryActionButton(text = "Exportar JSON Compatível", onClick = onExportarCompativel, modifier = Modifier.pracegoTraversal(4))
+                PrimaryActionButton(text = "Exportar JSON Versionado", onClick = onExportarVersionado, modifier = Modifier.pracegoTraversal(5))
+                PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar, modifier = Modifier.pracegoTraversal(6))
+                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(7))
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) } }
+        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(8)) { Text(UiActionLabels.FECHAR) } }
     )
 }
 
