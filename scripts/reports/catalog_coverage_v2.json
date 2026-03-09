@@ -1,0 +1,66 @@
+{
+  "generated_at_utc": "2026-03-09T00:40:11.737597+00:00",
+  "categories": {
+    "vantagens": {
+      "files_expected": [
+        "vantagens.v3.json",
+        "vantagens_artes_marciais.v1.json"
+      ],
+      "files_found": [
+        "vantagens.v3.json",
+        "vantagens_artes_marciais.v1.json"
+      ],
+      "files_missing": [],
+      "total_items": 289,
+      "has_issues": false
+    },
+    "desvantagens": {
+      "files_expected": [
+        "desvantagens.v2.json"
+      ],
+      "files_found": [
+        "desvantagens.v2.json"
+      ],
+      "files_missing": [],
+      "total_items": 227,
+      "has_issues": false
+    },
+    "pericias": {
+      "files_expected": [
+        "pericias.json",
+        "pericias_v2_rules_map.json",
+        "pericias_artes_marciais.v1.json"
+      ],
+      "files_found": [
+        "pericias.json",
+        "pericias_v2_rules_map.json",
+        "pericias_artes_marciais.v1.json"
+      ],
+      "files_missing": [],
+      "total_items": 661,
+      "has_issues": false
+    },
+    "tecnicas": {
+      "files_expected": [
+        "tecnicas.v1.json"
+      ],
+      "files_found": [
+        "tecnicas.v1.json"
+      ],
+      "files_missing": [],
+      "total_items": 118,
+      "has_issues": false
+    },
+    "magias": {
+      "files_expected": [
+        "magias2versao.json"
+      ],
+      "files_found": [
+        "magias2versao.json"
+      ],
+      "files_missing": [],
+      "total_items": 839,
+      "has_issues": false
+    }
+  }
+}

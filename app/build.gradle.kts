@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.gradle.api.tasks.Exec
 
 plugins {
     id("com.android.application")
@@ -130,6 +131,17 @@ android {
             java.srcDir("../motor modo alvo/src")
         }
     }
+}
+
+val validateActiveJsonAssets by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Valida JSONs ativos do app antes do build."
+    workingDir = rootProject.projectDir
+    commandLine("python", "scripts/audit_active_jsons_v2.py", "--fail-on-issues")
+}
+
+tasks.matching { it.name == "preBuild" }.configureEach {
+    dependsOn(validateActiveJsonAssets)
 }
 
 dependencies {
