@@ -21,6 +21,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,14 +62,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showMenuDialog by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
-    var showImportResultDialog by remember { mutableStateOf(false) }
-    var importResultMessage by remember { mutableStateOf("") }
     var showUpdateDialog by remember { mutableStateOf(false) }
     var updateDialogTitle by remember { mutableStateOf("Atualização") }
     var updateDialogMessage by remember { mutableStateOf("") }
     var updateApkUrl by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val temAptidaoMagica = viewModel.temAptidaoMagica
     val configuration = LocalConfiguration.current
@@ -88,24 +90,46 @@ fun FichaScreen(viewModel: FichaViewModel) {
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
-        runCatching {
+        val exportResult = runCatching {
             context.contentResolver.openOutputStream(uri)?.use { output ->
                 output.writer(Charsets.UTF_8).use { writer ->
                     writer.write(viewModel.exportarFichaJsonCompativel())
                 }
             }
         }
+        coroutineScope.launch {
+            val mensagem = if (exportResult.isSuccess) {
+                "Ficha exportada (JSON compatível)."
+            } else {
+                "Falha ao exportar ficha (JSON compatível)."
+            }
+            snackbarHostState.showSnackbar(
+                message = mensagem,
+                duration = SnackbarDuration.Short
+            )
+        }
     }
     val exportVersionadoLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
-        runCatching {
+        val exportResult = runCatching {
             context.contentResolver.openOutputStream(uri)?.use { output ->
                 output.writer(Charsets.UTF_8).use { writer ->
                     writer.write(viewModel.exportarFichaJsonVersionada())
                 }
             }
+        }
+        coroutineScope.launch {
+            val mensagem = if (exportResult.isSuccess) {
+                "Ficha exportada (JSON versionado)."
+            } else {
+                "Falha ao exportar ficha (JSON versionado)."
+            }
+            snackbarHostState.showSnackbar(
+                message = mensagem,
+                duration = SnackbarDuration.Short
+            )
         }
     }
     val importLauncher = rememberLauncherForActivityResult(
@@ -122,8 +146,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 viewModel.importarFichaJson(json) ?: "Ficha importada com sucesso."
             }
         }.getOrElse { "Falha ao importar o arquivo selecionado." }
-        importResultMessage = mensagem
-        showImportResultDialog = true
+        coroutineScope.launch {
+            snackbarHostState.showSnackbar(
+                message = mensagem,
+                duration = SnackbarDuration.Short
+            )
+        }
     }
 
     LaunchedEffect(maxTabIndex) {
@@ -133,6 +161,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
@@ -229,7 +258,16 @@ fun FichaScreen(viewModel: FichaViewModel) {
     if (showMenuDialog) {
         MenuDialog(
             onDismiss = { showMenuDialog = false },
-            onNovaFicha = { viewModel.novaFicha(); showMenuDialog = false },
+            onNovaFicha = {
+                viewModel.novaFicha()
+                showMenuDialog = false
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Nova ficha criada.",
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            },
             onSalvar = { showMenuDialog = false; showSaveDialog = true },
             onCarregar = { showMenuDialog = false; showLoadDialog = true },
             onExportarCompativel = {
@@ -284,7 +322,16 @@ fun FichaScreen(viewModel: FichaViewModel) {
         SalvarDialog(
             nomeAtual = viewModel.personagem.nome,
             onDismiss = { showSaveDialog = false },
-            onSalvar = { nome -> viewModel.salvarFicha(nome); showSaveDialog = false }
+            onSalvar = { nome ->
+                viewModel.salvarFicha(nome)
+                showSaveDialog = false
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Ficha salva.",
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
         )
     }
 
@@ -292,8 +339,25 @@ fun FichaScreen(viewModel: FichaViewModel) {
         CarregarDialog(
             fichas = viewModel.fichasSalvas,
             onDismiss = { showLoadDialog = false },
-            onCarregar = { nome -> viewModel.carregarFicha(nome); showLoadDialog = false },
-            onExcluir = { nome -> viewModel.excluirFicha(nome) }
+            onCarregar = { nome ->
+                viewModel.carregarFicha(nome)
+                showLoadDialog = false
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Ficha carregada.",
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            },
+            onExcluir = { nome ->
+                viewModel.excluirFicha(nome)
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = "Ficha excluída.",
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
         )
     }
 
@@ -315,18 +379,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
         )
     }
 
-    if (showImportResultDialog) {
-        AlertDialog(
-            onDismissRequest = { showImportResultDialog = false },
-            title = { Text("Importar Ficha") },
-            text = { Text(importResultMessage) },
-            confirmButton = {
-                TextButton(onClick = { showImportResultDialog = false }) {
-                    Text("Fechar")
-                }
-            }
-        )
-    }
     if (showUpdateDialog) {
         AlertDialog(
             onDismissRequest = { showUpdateDialog = false },
