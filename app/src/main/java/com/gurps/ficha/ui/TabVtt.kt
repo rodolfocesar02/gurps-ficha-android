@@ -150,6 +150,23 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
     }
 
+    fun limparSessaoLocal() {
+        sessionId = null
+        tokenId = null
+        VttSessionStorage.save(
+            context,
+            VttSessionSnapshot(
+                serverUrl = serverUrl.trim(),
+                roomKey = roomKey.trim(),
+                playerId = playerId.trim(),
+                sessionId = "",
+                tokenId = ""
+            )
+        )
+        connectionState = VttConnectionState.DISCONNECTED
+        statusMessage = "Sessão local limpa. Reconecte para receber novo vínculo."
+    }
+
     val statusLabel = when (connectionState) {
         VttConnectionState.DISCONNECTED -> "Desconectado"
         VttConnectionState.CONNECTING -> "Conectando"
@@ -260,6 +277,14 @@ fun TabVtt(viewModel: FichaViewModel) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Abrir VTT no navegador")
+            }
+            if (connectionState == VttConnectionState.ERROR) {
+                Button(
+                    onClick = { limparSessaoLocal() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Limpar sessão local")
+                }
             }
         }
 
