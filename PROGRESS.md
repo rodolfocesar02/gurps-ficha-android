@@ -71,14 +71,16 @@ Status: `EM ANDAMENTO`
 Passos:
 1. [x] Revisar textos de ação para consistência (Adicionar/Editar/Remover/Fechar).
 2. [x] Padronizar feedback pós-ação (snackbar curto + acessível).
-3. [ ] Melhorar estado vazio e mensagens de erro orientadas a solução.
+3. [x] Melhorar estado vazio e mensagens de erro orientadas a solução.
 4. [ ] Definir mapa de foco final para `pracego`.
 
 Evidência parcial:
 1. Novo arquivo `app/src/main/java/com/gurps/ficha/ui/UiActionLabels.kt` centralizando rótulos de ação.
 2. Diálogos de Perícias/Técnicas/Magias/Traços/Comuns migrados para uso de `UiActionLabels`.
 3. `FichaScreen` passou a usar `SnackbarHostState` para feedback curto nas ações: nova ficha, salvar, carregar, excluir, exportar e importar.
-4. Validação executada:
+4. Novo componente `GuidedEmptyState` em `UiStandards.kt` aplicado nas abas Perícias, Técnicas e Magias.
+5. Mensagens de fallback orientadas para ação aplicadas em importação e em diálogo de carregamento sem fichas salvas.
+6. Validação executada:
    - `./gradlew :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin` (OK)
 
 ## Regra Permanente - Higiene de Texto (acentos/artefatos)

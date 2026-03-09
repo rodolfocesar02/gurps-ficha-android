@@ -77,10 +77,9 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         }
 
         if (personagem.tecnicas.isEmpty()) {
-            Text(
-                "Nenhuma técnica adicionada",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            GuidedEmptyState(
+                titulo = "Nenhuma técnica adicionada ainda.",
+                orientacao = "Use \"Adicionar Técnica\" e selecione uma perícia base válida para liberar o cadastro."
             )
         }
 
@@ -137,7 +136,7 @@ fun TabTecnicas(viewModel: FichaViewModel) {
             text = {
                 StandardDialogColumn {
                     Text(
-                        descricao.ifBlank { "Sem descrição detalhada disponível." },
+                        descricao.ifBlank { "Descrição não cadastrada para esta técnica." },
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

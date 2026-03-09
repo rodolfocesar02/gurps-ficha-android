@@ -129,3 +129,23 @@ fun StandardDialogColumn(
         content = content
     )
 }
+
+@Composable
+fun GuidedEmptyState(
+    titulo: String,
+    orientacao: String
+) {
+    AppListItemCard {
+        Text(
+            text = titulo,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = orientacao,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}

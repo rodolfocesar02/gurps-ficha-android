@@ -58,10 +58,9 @@ fun TabPericias(viewModel: FichaViewModel) {
         }
 
         if (p.pericias.isEmpty()) {
-            Text(
-                "Nenhuma perícia adicionada",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            GuidedEmptyState(
+                titulo = "Nenhuma perícia adicionada ainda.",
+                orientacao = "Use \"Adicionar Perícia\" para escolher do catálogo ou \"Criar Perícia\" para cadastro manual."
             )
         }
 
@@ -146,7 +145,7 @@ fun TabPericias(viewModel: FichaViewModel) {
                 StandardDialogColumn {
                     Text(
                         regraV2?.descricao?.takeIf { it.isNotBlank() }
-                            ?: "Sem descrição detalhada disponível.",
+                            ?: "Descrição não cadastrada para esta perícia.",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     regraV2?.preRequisito?.raw?.takeIf { it.isNotBlank() }?.let {

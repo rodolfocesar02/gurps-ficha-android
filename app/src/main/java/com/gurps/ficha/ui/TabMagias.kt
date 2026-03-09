@@ -59,10 +59,9 @@ fun TabMagias(viewModel: FichaViewModel) {
 
         // Lista fora do SectionCard
         if (p.magias.isEmpty()) {
-            Text(
-                "Nenhuma magia adicionada",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            GuidedEmptyState(
+                titulo = "Nenhuma magia adicionada ainda.",
+                orientacao = "Use \"Adicionar Magia\" para escolher no catálogo e ajustar os pontos."
             )
         } else {
             p.magias.forEachIndexed { index, magia ->
@@ -129,7 +128,8 @@ fun TabMagias(viewModel: FichaViewModel) {
             text = {
                 StandardDialogColumn {
                     Text(
-                        text = magia.texto?.takeIf { it.isNotBlank() } ?: "Sem descrição disponível.",
+                        text = magia.texto?.takeIf { it.isNotBlank() }
+                            ?: "Descrição não cadastrada para esta magia.",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
