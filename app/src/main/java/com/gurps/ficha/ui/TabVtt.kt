@@ -3,7 +3,7 @@ package com.gurps.ficha.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -14,15 +14,52 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.gurps.ficha.viewmodel.FichaViewModel
+
+private enum class VttConnectionState {
+    DISCONNECTED,
+    CONNECTING,
+    CONNECTED,
+    ERROR
+}
 
 @Composable
 fun TabVtt(viewModel: FichaViewModel) {
     var serverUrl by remember { mutableStateOf("") }
     var roomKey by remember { mutableStateOf("") }
     var playerId by remember(viewModel.personagem.nome) { mutableStateOf(viewModel.personagem.nome) }
-    var statusConexao by remember { mutableStateOf("Desconectado") }
+    var connectionState by remember { mutableStateOf(VttConnectionState.DISCONNECTED) }
+    var statusMessage by remember { mutableStateOf("Preencha servidor, sala e player para iniciar.") }
+
+    fun conectarEmModoShell() {
+        connectionState = VttConnectionState.CONNECTING
+        if (serverUrl.isBlank() || roomKey.isBlank() || playerId.isBlank()) {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Campos obrigatórios: servidor, sala e player."
+            return
+        }
+        connectionState = VttConnectionState.CONNECTED
+        statusMessage = "Configuração local validada. Integração de sessão entra no próximo passo."
+    }
+
+    fun desconectarEmModoShell() {
+        connectionState = VttConnectionState.DISCONNECTED
+        statusMessage = "Desconectado (shell)."
+    }
+
+    val statusLabel = when (connectionState) {
+        VttConnectionState.DISCONNECTED -> "Desconectado"
+        VttConnectionState.CONNECTING -> "Conectando"
+        VttConnectionState.CONNECTED -> "Conectado"
+        VttConnectionState.ERROR -> "Erro"
+    }
+    val statusColor = when (connectionState) {
+        VttConnectionState.CONNECTED -> Color(0xFF2E7D32)
+        VttConnectionState.ERROR -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
 
     StandardTabColumn {
         SectionCard(title = "Conexão VTT") {
@@ -58,15 +95,36 @@ fun TabVtt(viewModel: FichaViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Status: $statusConexao",
+                    text = "Status: $statusLabel",
                     style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    color = statusColor
                 )
             }
-            PrimaryActionButton(
-                text = "Conectar (em breve)",
-                onClick = { statusConexao = "Configuração salva (integração pendente)" }
+            Text(
+                text = statusMessage,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { conectarEmModoShell() },
+                    enabled = connectionState != VttConnectionState.CONNECTING
+                ) {
+                    Text("Conectar")
+                }
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { desconectarEmModoShell() },
+                    enabled = connectionState != VttConnectionState.DISCONNECTED
+                ) {
+                    Text("Desconectar")
+                }
+            }
         }
 
         SummaryFooterCard(title = "Próximos passos") {

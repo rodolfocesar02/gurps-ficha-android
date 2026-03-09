@@ -55,6 +55,7 @@ Criterio de aceite:
 
 Execucao:
 1. [x] 2026-03-09 - Passo VTT.2.1 concluido: aba `VTT` adicionada na navegacao sem remover abas existentes.
+2. [x] 2026-03-09 - Passo VTT.2.2 concluido: estados de tela da aba `VTT` (desconectado, conectando, conectado e erro).
 
 ### Lote VTT.3 - Sessao e Presenca
 Status: `PENDENTE`
