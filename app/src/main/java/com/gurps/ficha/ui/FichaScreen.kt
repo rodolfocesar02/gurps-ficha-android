@@ -80,11 +80,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem", "VTT")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem", "VTT")
     }
-    val rolagemTabIndex = if (temAptidaoMagica) 7 else 6
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -206,6 +205,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 "Equip." -> R.drawable.tab_equipamentos
                                 "Defesas" -> R.drawable.tab_defesas
                                 "Rolagem" -> R.drawable.tab_rolagem
+                                "VTT" -> R.drawable.tab_rolagem
                                 else -> R.drawable.tab_geral
                             }
                             Icon(
@@ -239,18 +239,21 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (selectedTab != rolagemTabIndex) {
+            val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
+            if (selectedTitle != "Rolagem") {
                 PontosBar(viewModel)
             }
-            when (selectedTab) {
-                0 -> TabGeral(viewModel)
-                1 -> TabTracos(viewModel)
-                2 -> TabPericias(viewModel)
-                3 -> TabTecnicas(viewModel)
-                4 -> if (temAptidaoMagica) TabMagias(viewModel) else TabEquipamentos(viewModel)
-                5 -> if (temAptidaoMagica) TabEquipamentos(viewModel) else TabCombate(viewModel)
-                6 -> if (temAptidaoMagica) TabCombate(viewModel) else TabRolagem(viewModel)
-                7 -> TabRolagem(viewModel)
+            when (selectedTitle) {
+                "Geral" -> TabGeral(viewModel)
+                "Traços" -> TabTracos(viewModel)
+                "Perícias" -> TabPericias(viewModel)
+                "Técnicas" -> TabTecnicas(viewModel)
+                "Magia" -> TabMagias(viewModel)
+                "Equip." -> TabEquipamentos(viewModel)
+                "Defesas" -> TabCombate(viewModel)
+                "Rolagem" -> TabRolagem(viewModel)
+                "VTT" -> TabVtt(viewModel)
+                else -> TabGeral(viewModel)
             }
         }
     }
