@@ -44,6 +44,13 @@ private enum class VttEnvironment(val label: String, val defaultUrl: String) {
     CUSTOM("Custom", "")
 }
 
+private enum class VttActionType(val label: String) {
+    TESTE("Teste"),
+    PERICIA("Pericia"),
+    MAGIA("Magia"),
+    DEFESA("Defesa")
+}
+
 private const val VTT_UI_LOG = "VttTab"
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,6 +68,10 @@ fun TabVtt(viewModel: FichaViewModel) {
     var sessionId by remember { mutableStateOf<String?>(null) }
     var tokenId by remember { mutableStateOf<String?>(null) }
     var bootstrapDone by remember { mutableStateOf(false) }
+    var actionType by remember { mutableStateOf(VttActionType.PERICIA) }
+    var acaoNome by remember { mutableStateOf("") }
+    var alvoTokenId by remember { mutableStateOf("") }
+    var modificadorRaw by remember { mutableStateOf("0") }
 
     LaunchedEffect(context) {
         if (!bootstrapDone) {
@@ -302,6 +313,116 @@ fun TabVtt(viewModel: FichaViewModel) {
                 ) {
                     Text("Limpar sessao local")
                 }
+            }
+        }
+
+        SectionCard(title = "Acoes de Rolagem (VTT)") {
+            val personagem = viewModel.personagem
+            val primeiraPericia = personagem.pericias.firstOrNull()?.nome.orEmpty()
+            val primeiraMagia = personagem.magias.firstOrNull()?.nome.orEmpty()
+            val apara = personagem.defesasAtivas.calcularApara(personagem)
+            val bloqueio = personagem.defesasAtivas.calcularBloqueio(personagem)
+            val esquiva = personagem.defesasAtivas.calcularEsquiva(personagem)
+
+            Text(
+                text = "Painel contextual para acao no VTT. Envio para backend entra no proximo passo.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                VttActionType.entries.forEach { tipo ->
+                    FilterChip(
+                        selected = actionType == tipo,
+                        onClick = { actionType = tipo },
+                        label = { Text(tipo.label) }
+                    )
+                }
+            }
+
+            OutlinedTextField(
+                value = acaoNome,
+                onValueChange = { acaoNome = it },
+                label = { Text("Nome da acao") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = alvoTokenId,
+                onValueChange = { alvoTokenId = it },
+                label = { Text("Token alvo (opcional)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            OutlinedTextField(
+                value = modificadorRaw,
+                onValueChange = { modificadorRaw = it },
+                label = { Text("Modificador") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        if (primeiraPericia.isNotBlank()) {
+                            actionType = VttActionType.PERICIA
+                            acaoNome = primeiraPericia
+                        }
+                    },
+                    enabled = primeiraPericia.isNotBlank()
+                ) { Text("Usar 1a pericia") }
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        if (primeiraMagia.isNotBlank()) {
+                            actionType = VttActionType.MAGIA
+                            acaoNome = primeiraMagia
+                        }
+                    },
+                    enabled = primeiraMagia.isNotBlank()
+                ) { Text("Usar 1a magia") }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        actionType = VttActionType.DEFESA
+                        acaoNome = "Apara ${apara ?: "-"}"
+                    },
+                    enabled = apara != null
+                ) { Text("Apara") }
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        actionType = VttActionType.DEFESA
+                        acaoNome = "Bloqueio ${bloqueio ?: "-"}"
+                    },
+                    enabled = bloqueio != null
+                ) { Text("Bloqueio") }
+
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        actionType = VttActionType.DEFESA
+                        acaoNome = "Esquiva $esquiva"
+                    }
+                ) { Text("Esquiva") }
             }
         }
 

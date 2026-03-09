@@ -79,7 +79,7 @@ Execucao:
 5. [x] 2026-03-09 - Passo VTT.3.5 concluido no app: logs de eventos críticos de sessão na aba VTT (join, erro, desconexão, limpeza).
 
 ### Lote VTT.4 - Fluxo de Rolagem por Token
-Status: `PENDENTE`
+Status: `EM ANDAMENTO`
 Objetivo: mover uso da aba de rolagem para acao contextual no VTT.
 Passos:
 1. Clique no proprio token abre painel de acoes da ficha. Dono: `Ficha`.
@@ -89,6 +89,9 @@ Passos:
 5. Garantir que fluxo nao altera dados canonicos sem confirmacao. Dono: `Ficha`.
 Criterio de aceite:
 1. Fluxo de teste e ataque ocorre na aba `VTT` com resultado visivel.
+
+Execucao:
+1. [x] 2026-03-09 - Passo VTT.4.1 concluido no app: painel local de acoes contextuais (tipo, nome, alvo, modificador) na aba `VTT`.
 
 ### Lote VTT.5 - Voz e Acessibilidade
 Status: `PENDENTE`
