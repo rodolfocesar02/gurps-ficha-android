@@ -40,6 +40,7 @@ Passos:
 8. [x] Subpasso: padronizar densidade dos diálogos de descrição (Perícias, Técnicas e Magias).
 9. [ ] Rodar checklist de contraste/foco/rótulos TalkBack.
 10. [ ] Validar em emulador visual e pracego.
+11. [x] Subpasso: validar build das variantes visual/pracego após padronização V2.
 
 ### Lote V2.3 - Fluxo de Dados e Regras Canônicas
 Status: `PLANEJADO`
