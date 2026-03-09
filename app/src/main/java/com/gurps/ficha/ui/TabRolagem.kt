@@ -143,110 +143,110 @@ private data class SoulAspectOption(
 )
 
 private fun atributoNomeCompleto(sigla: String): String = when (sigla.uppercase()) {
-    "ST" -> "Força"
+    "ST" -> "ForÃ§a"
     "DX" -> "Destreza"
-    "IQ" -> "Inteligência"
+    "IQ" -> "InteligÃªncia"
     "HT" -> "Vitalidade"
     "VON" -> "Vontade"
-    "PER" -> "Percepção"
+    "PER" -> "PercepÃ§Ã£o"
     else -> sigla
 }
 
 private val SOUL_ASPECT_OPTIONS = listOf(
     SoulAspectOption(
-        nome = "1º Aspecto - Comunicação empática",
+        nome = "1Âº Aspecto - ComunicaÃ§Ã£o empÃ¡tica",
         descricao = """
             O jogador pode usar magia da alma para se entapizar com um ser, qualquer ser, e se comunicar de uma maneira diferente.
 
-            Em jogo: A magia da alma permite aos jogadores verem as almas e tudo que há relacionado com ela em “cena”. Por exemplo, Salamur, ao usar a magia da alma conseguiu “sentir” a presença de uma entidade maior no deserto. Além disso, ao pegar em suas mãos o equipamento de Meldor, ele conseguiu ver seus últimos momentos antes de morrer, dando uma pista de onde começar a procurar por Meldor e o que aconteceu com ele.
+            Em jogo: A magia da alma permite aos jogadores verem as almas e tudo que hÃ¡ relacionado com ela em â€œcenaâ€. Por exemplo, Salamur, ao usar a magia da alma conseguiu â€œsentirâ€ a presenÃ§a de uma entidade maior no deserto. AlÃ©m disso, ao pegar em suas mÃ£os o equipamento de Meldor, ele conseguiu ver seus Ãºltimos momentos antes de morrer, dando uma pista de onde comeÃ§ar a procurar por Meldor e o que aconteceu com ele.
 
-            César, em outro momento, utilizou a magia “Luz contínua” com um adicional de um ponto em magia da alma, o que o ajudou a revelar uma entrada secreta em uma câmara onde, aparentemente, não havia nada.
+            CÃ©sar, em outro momento, utilizou a magia â€œLuz contÃ­nuaâ€ com um adicional de um ponto em magia da alma, o que o ajudou a revelar uma entrada secreta em uma cÃ¢mara onde, aparentemente, nÃ£o havia nada.
 
-            Em combate: O jogador pode criar um “vínculo” maior com a alma dos inimigos/aliados. Magias que afetam diretamente a mente/sentidos dos inimigos, que precisam de concentração, agora podem ser utilizadas normalmente, sem uma concentração prévia. Por exemplo, César pôde usar a magia Medo em um “Grande Rotmen” sem precisar se concentrar nela. Além disso, caso algum jogador tivesse interesse, poderia usar Intimidação com Magia da Alma e conseguir afetar todos os jogadores. Magias de cura também podem ser afetadas positivamente pela Magia da Alma, quando utilizadas juntas.
+            Em combate: O jogador pode criar um â€œvÃ­nculoâ€ maior com a alma dos inimigos/aliados. Magias que afetam diretamente a mente/sentidos dos inimigos, que precisam de concentraÃ§Ã£o, agora podem ser utilizadas normalmente, sem uma concentraÃ§Ã£o prÃ©via. Por exemplo, CÃ©sar pÃ´de usar a magia Medo em um â€œGrande Rotmenâ€ sem precisar se concentrar nela. AlÃ©m disso, caso algum jogador tivesse interesse, poderia usar IntimidaÃ§Ã£o com Magia da Alma e conseguir afetar todos os jogadores. Magias de cura tambÃ©m podem ser afetadas positivamente pela Magia da Alma, quando utilizadas juntas.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "2º Aspecto - Translocação astral",
+        nome = "2Âº Aspecto - TranslocaÃ§Ã£o astral",
         descricao = """
-            Jogadores conseguem forçar o deslocamento do corpo no mundo real a partir do movimento dele no mundo da alma. (Deslocamento reduzido)
+            Jogadores conseguem forÃ§ar o deslocamento do corpo no mundo real a partir do movimento dele no mundo da alma. (Deslocamento reduzido)
 
-            Em cena: Os jogadores podem “cruzar” lugares utilizando o mundo da alma, é como uma translocação ou teleporte, mas ela permite que os jogadores “vejam/interajam” com o mundo exterior enquanto o fazem.
+            Em cena: Os jogadores podem â€œcruzarâ€ lugares utilizando o mundo da alma, Ã© como uma translocaÃ§Ã£o ou teleporte, mas ela permite que os jogadores â€œvejam/interajamâ€ com o mundo exterior enquanto o fazem.
 
             Em jogo: O jogador pode gastar 1 ponto de magia da alma para fazer um ataque ou uma defesa ativa oculta, utilizando o mundo espiritual antes do mundo real.
 
-            Em caso de ataque: O jogador deve declarar que irá utilizar a magia da alma e fazer um teste de “sentidos”, antes do ataque. O teste de sentidos é baseado em DX ou HT, seja qual for maior. Após o teste de sentido, caso sucesso, o jogador faz o teste de ataque contra o inimigo. O inimigo tem que fazer um teste de percepção com redutor de -4 para poder usar alguma defesa ativa.
+            Em caso de ataque: O jogador deve declarar que irÃ¡ utilizar a magia da alma e fazer um teste de â€œsentidosâ€, antes do ataque. O teste de sentidos Ã© baseado em DX ou HT, seja qual for maior. ApÃ³s o teste de sentido, caso sucesso, o jogador faz o teste de ataque contra o inimigo. O inimigo tem que fazer um teste de percepÃ§Ã£o com redutor de -4 para poder usar alguma defesa ativa.
 
-            Em caso de defesa: O jogador deve declarar que irá utilizar esse ponto de magia da alma como uma defesa ativa e, ao fazer, se esquiva automaticamente do ataque.
+            Em caso de defesa: O jogador deve declarar que irÃ¡ utilizar esse ponto de magia da alma como uma defesa ativa e, ao fazer, se esquiva automaticamente do ataque.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "3º Aspecto - Corrente da alma",
+        nome = "3Âº Aspecto - Corrente da alma",
         descricao = """
             Vincula a alma do jogador com um objeto inanimado.
-            Ainda há a possibilidade de uma entidade poder ser relacionada à vinculação, podendo intervir positivamente, ou negativamente, no processo.
+            Ainda hÃ¡ a possibilidade de uma entidade poder ser relacionada Ã  vinculaÃ§Ã£o, podendo intervir positivamente, ou negativamente, no processo.
 
-            Em cena: O jogador Xing tem um machado que estima muito, há muitos anos utiliza o machado para todo tipo de atividade e não se separa por nada dele. Nesses casos, o jogador pode fazer um vínculo de alma com o objeto, intensificando a sua ligação com o objeto para todos os fins.
-            Xing, portanto, se concentra, pede bênçãos as entidades em que ele acredita e vincula o machado à sua alma, ampliando as suas habilidades de todas as jogadas com o objeto, podendo acertar o arremesso dessa arma em alvos que, normalmente, talvez não pudesse.
+            Em cena: O jogador Xing tem um machado que estima muito, hÃ¡ muitos anos utiliza o machado para todo tipo de atividade e nÃ£o se separa por nada dele. Nesses casos, o jogador pode fazer um vÃ­nculo de alma com o objeto, intensificando a sua ligaÃ§Ã£o com o objeto para todos os fins.
+            Xing, portanto, se concentra, pede bÃªnÃ§Ã£os as entidades em que ele acredita e vincula o machado Ã  sua alma, ampliando as suas habilidades de todas as jogadas com o objeto, podendo acertar o arremesso dessa arma em alvos que, normalmente, talvez nÃ£o pudesse.
 
-            Em jogo: O jogador utiliza 1 ponto de magia da alma e faz um teste de vontade. Se falhar o teste, o jogador tem um período de 24 horas para tentar novamente. Caso o sucesso aconteça, o jogador irá ampliar as suas capacidades com o objeto. No caso de uma arma, o jogador irá aumentar todo NH efetivo com esse equipamento em 2 pontos, sempre que usar essa arma. Além disso, qualquer personagem que pegar a arma e tentar usá-la, terá uma penalidade de 2 de NH efetivo para o fazer. Em relação ao ponto de alma, ele ficará “preso” na arma até o vínculo ser rompido. Portanto, se o jogador tiver 4 pontos de alma, ele terá, depois da vinculação, 3 pontos.
+            Em jogo: O jogador utiliza 1 ponto de magia da alma e faz um teste de vontade. Se falhar o teste, o jogador tem um perÃ­odo de 24 horas para tentar novamente. Caso o sucesso aconteÃ§a, o jogador irÃ¡ ampliar as suas capacidades com o objeto. No caso de uma arma, o jogador irÃ¡ aumentar todo NH efetivo com esse equipamento em 2 pontos, sempre que usar essa arma. AlÃ©m disso, qualquer personagem que pegar a arma e tentar usÃ¡-la, terÃ¡ uma penalidade de 2 de NH efetivo para o fazer. Em relaÃ§Ã£o ao ponto de alma, ele ficarÃ¡ â€œpresoâ€ na arma atÃ© o vÃ­nculo ser rompido. Portanto, se o jogador tiver 4 pontos de alma, ele terÃ¡, depois da vinculaÃ§Ã£o, 3 pontos.
 
-            Se, por qualquer motivo, o vínculo for rompido sem ser pelo próprio jogador, o jogador terá de fazer um teste de vontade para não ser atordoado. As formas de se romper o vínculo são: Algum outro jogador pode fazer uma jogada de vínculo de alma, fazendo um teste de vontade entre os personagens. Se o jogador for desarmado, o inimigo conseguir segurar a arma, e atacar com ela, o vínculo é rompido. Se o personagem, por algum motivo, arremessar a arma e não conseguir recuperá-la, o vínculo será rompido. Se a arma for roubada, em qualquer tipo de cena ou jogada, o vínculo será rompido.
+            Se, por qualquer motivo, o vÃ­nculo for rompido sem ser pelo prÃ³prio jogador, o jogador terÃ¡ de fazer um teste de vontade para nÃ£o ser atordoado. As formas de se romper o vÃ­nculo sÃ£o: Algum outro jogador pode fazer uma jogada de vÃ­nculo de alma, fazendo um teste de vontade entre os personagens. Se o jogador for desarmado, o inimigo conseguir segurar a arma, e atacar com ela, o vÃ­nculo Ã© rompido. Se o personagem, por algum motivo, arremessar a arma e nÃ£o conseguir recuperÃ¡-la, o vÃ­nculo serÃ¡ rompido. Se a arma for roubada, em qualquer tipo de cena ou jogada, o vÃ­nculo serÃ¡ rompido.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "4° Aspecto - Manipulação da alma",
+        nome = "4Â° Aspecto - ManipulaÃ§Ã£o da alma",
         descricao = """
-            O indivíduo consegue manipular a alma, aumentando a sua projeção em aspectos da sua realidade, podendo impulsionar as suas capacidades, sejam físicas ou mentais.
+            O indivÃ­duo consegue manipular a alma, aumentando a sua projeÃ§Ã£o em aspectos da sua realidade, podendo impulsionar as suas capacidades, sejam fÃ­sicas ou mentais.
 
-            Em cena: O jogador pode usar o seu poder da alma para intensificar alguma característica, habilidade, peculiaridade ou perícia, aumentando positivamente suas capacidades.
+            Em cena: O jogador pode usar o seu poder da alma para intensificar alguma caracterÃ­stica, habilidade, peculiaridade ou perÃ­cia, aumentando positivamente suas capacidades.
 
-            Por exemplo: O jogador Xing precisa levantar uma pedra muito pesada, mas não tem ST suficiente, então, pode usar um ponto de magia da alma para ampliar a sua capacidade de carregamento por um breve momento.
-            Ou, o jogador César precisava conseguir enxergar uma particularidade, mas a dificuldade da jogada o impedia, portanto ele usou um ponto de magia da alma para intensificar a sua percepção (visão) e conseguiu enxergar o detalhe necessário.
+            Por exemplo: O jogador Xing precisa levantar uma pedra muito pesada, mas nÃ£o tem ST suficiente, entÃ£o, pode usar um ponto de magia da alma para ampliar a sua capacidade de carregamento por um breve momento.
+            Ou, o jogador CÃ©sar precisava conseguir enxergar uma particularidade, mas a dificuldade da jogada o impedia, portanto ele usou um ponto de magia da alma para intensificar a sua percepÃ§Ã£o (visÃ£o) e conseguiu enxergar o detalhe necessÃ¡rio.
 
             Em jogo: O jogador consegue usar um ponto de magia da alma para ampliar suas capacidades.
-            Tabela: Atributo 1:1, Perícia 1:3. Atributos secundários 1:3. Intensificação de dano: 1 ponto de magia da alma = +1 dano por dado.
+            Tabela: Atributo 1:1, PerÃ­cia 1:3. Atributos secundÃ¡rios 1:3. IntensificaÃ§Ã£o de dano: 1 ponto de magia da alma = +1 dano por dado.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "1º Aspecto - Expiação",
+        nome = "1Âº Aspecto - ExpiaÃ§Ã£o",
         descricao = """
-            O jogador pode usar a magia da alma para “apatizar” um outro ser, ao se conectar, fazendo o canal das emoções do alvo se atrofiar, a ponto dele praticamente não ter mais emoções.
+            O jogador pode usar a magia da alma para â€œapatizarâ€ um outro ser, ao se conectar, fazendo o canal das emoÃ§Ãµes do alvo se atrofiar, a ponto dele praticamente nÃ£o ter mais emoÃ§Ãµes.
 
             Em jogo:.
-            Em combate: O jogador usa a conexão da magia da alma para forçar a remoção de uma ou mais emoções no alvo.
+            Em combate: O jogador usa a conexÃ£o da magia da alma para forÃ§ar a remoÃ§Ã£o de uma ou mais emoÃ§Ãµes no alvo.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "2º Aspecto - Intrusão mental",
+        nome = "2Âº Aspecto - IntrusÃ£o mental",
         descricao = """
-            Jogadores conseguem forçar o deslocamento do corpo alheio a partir da alma do alvo.
+            Jogadores conseguem forÃ§ar o deslocamento do corpo alheio a partir da alma do alvo.
 
             Em cena:.
-            Em jogo: O jogador pode “atrapalhar” o ataque ou a ação do alvo, fazendo o corpo do alvo se movimentar, a partir de uma ação na alma do alvo.
+            Em jogo: O jogador pode â€œatrapalharâ€ o ataque ou a aÃ§Ã£o do alvo, fazendo o corpo do alvo se movimentar, a partir de uma aÃ§Ã£o na alma do alvo.
             Em caso de defesa:.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "3º Aspecto - Corrente da condenação",
+        nome = "3Âº Aspecto - Corrente da condenaÃ§Ã£o",
         descricao = """
-            Vincula uma alma com um objeto inanimado. Também pode vincular a uma entidade, mas depende da Mão da Criação.
-            Em sua versão corrompida, o jogador consegue “amaldiçoar” a alma alheia, a vinculando a um local/item que a prenderá ali eternamente.
+            Vincula uma alma com um objeto inanimado. TambÃ©m pode vincular a uma entidade, mas depende da MÃ£o da CriaÃ§Ã£o.
+            Em sua versÃ£o corrompida, o jogador consegue â€œamaldiÃ§oarâ€ a alma alheia, a vinculando a um local/item que a prenderÃ¡ ali eternamente.
 
             Em cena:.
             Em jogo:.
-            Passando ou não no teste, o jogador usa um ponto de magia da alma para abrir o canal de conexão. Para vincular com a entidade, caso ela aceite, o jogador deverá utilizar outro ponto de magia da alma, caso não seja ele o portador, o portador que deverá utilizar esse ponto em seu lugar.
-            O criado, faz mais um teste com a perícia e, agora sim, o vínculo está feito.
-            *A depender da entidade, mais testes poderão ser exigidos.
+            Passando ou nÃ£o no teste, o jogador usa um ponto de magia da alma para abrir o canal de conexÃ£o. Para vincular com a entidade, caso ela aceite, o jogador deverÃ¡ utilizar outro ponto de magia da alma, caso nÃ£o seja ele o portador, o portador que deverÃ¡ utilizar esse ponto em seu lugar.
+            O criado, faz mais um teste com a perÃ­cia e, agora sim, o vÃ­nculo estÃ¡ feito.
+            *A depender da entidade, mais testes poderÃ£o ser exigidos.
         """.trimIndent()
     ),
     SoulAspectOption(
-        nome = "4° Aspecto - Manipulação da alma",
+        nome = "4Â° Aspecto - ManipulaÃ§Ã£o da alma",
         descricao = """
-            O indivíduo consegue manipular a alma alheia, a fazendo reduzir a capacidade do alvo em algum aspecto, ou característica, sejam elas físicas ou mentais.
+            O indivÃ­duo consegue manipular a alma alheia, a fazendo reduzir a capacidade do alvo em algum aspecto, ou caracterÃ­stica, sejam elas fÃ­sicas ou mentais.
 
             Em cena:.
             Em jogo: O jogador consegue usar um ponto de magia da alma para ampliar suas capacidades.
-            Tabela: Atributo 1:1, Perícia 1:3. Atributos secundários 1:3. Intensificação de dano: 1 ponto de magia da alma = +1 dano por dado.
+            Tabela: Atributo 1:1, PerÃ­cia 1:3. Atributos secundÃ¡rios 1:3. IntensificaÃ§Ã£o de dano: 1 ponto de magia da alma = +1 dano por dado.
         """.trimIndent()
     )
 )
@@ -449,7 +449,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
     val repertorioParaTalisma = p.magias
         .map { it.nome }
-        .filter { !it.equals("Talismã", ignoreCase = true) && !it.equals("Talisma", ignoreCase = true) }
+        .filter { !it.equals("TalismÃ£", ignoreCase = true) && !it.equals("Talisma", ignoreCase = true) }
         .distinct()
         .sorted()
     val opcoesTecnica = p.tecnicas.mapIndexed { index, tecnica ->
@@ -906,7 +906,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            colors = appCardColors()
         ) {
             Column(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
@@ -928,7 +928,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         ) {
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
@@ -945,7 +945,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             }
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 10.dp, vertical = innerCardVerticalPadding),
@@ -966,7 +966,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             val nomeAttr = atributoNomeCompleto(attr)
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1080,7 +1080,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         ) {
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1114,7 +1114,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             }
                             Card(
                                 modifier = Modifier.weight(1f),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Row(
                                     modifier = Modifier
@@ -1156,7 +1156,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                colors = appCardColors()
             ) {
                 Column(
                     modifier = Modifier.padding(horizontal = 10.dp, vertical = outerCardVerticalPadding),
@@ -1287,7 +1287,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .fillMaxHeight(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            colors = appCardColors()
                         ) {
                             Column(
                                 modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -1346,7 +1346,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .fillMaxHeight(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            colors = appCardColors()
                         ) {
                             Column(
                                 modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -1546,7 +1546,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                         Modifier
                                     }
                                 ),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            colors = appCardColors()
                         ) {
                             Column(
                                 modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -1570,7 +1570,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                             contentDescription = if (defesa != null) {
                                                 "Rolar $nomeDefesa ${defesa.finalValue}"
                                             } else {
-                                                "Defesa $nomeDefesa indisponível"
+                                                "Defesa $nomeDefesa indisponÃ­vel"
                                             }
                                         }
                                         .clickable(enabled = defesa != null) {
@@ -1650,7 +1650,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                 Modifier
                             }
                         ),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                    colors = appCardColors()
                 ) {
                     Column(
                         modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -1805,7 +1805,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     val modPericia = if (isPraCegoVariant) 0 else (modificadoresPericia[pericia.id] ?: 0)
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                        colors = appCardColors()
                                     ) {
                                         Column(
                                             modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -1979,7 +1979,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                             Modifier
                                         }
                                     ),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -2019,7 +2019,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                             Modifier
                                         }
                                     ),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -2059,7 +2059,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                             Modifier
                                         }
                                     ),
-                                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                colors = appCardColors()
                             ) {
                                 Column(
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
@@ -2113,10 +2113,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                            colors = appCardColors()
                         ) {
                             Text(
-                                "Expressão: $expressaoPersonalizada",
+                                "ExpressÃ£o: $expressaoPersonalizada",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.SemiBold
@@ -2192,7 +2192,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable { aspectoMagiaAlmaSelecionado = aspecto },
-                                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                    colors = appCardColors()
                                 ) {
                                     Text(
                                         text = aspecto.nome,
@@ -2277,7 +2277,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     val modMagia = if (isPraCegoVariant) 0 else (modificadoresMagia[magia.id] ?: 0)
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                        colors = appCardColors()
                                     ) {
                                         Column(
                                             modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -2453,7 +2453,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     val modTecnica = if (isPraCegoVariant) 0 else (modificadoresTecnica[tecnica.id] ?: 0)
                                     Card(
                                         modifier = Modifier.fillMaxWidth(),
-                                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                                        colors = appCardColors()
                                     ) {
                                         Column(
                                             modifier = Modifier.padding(horizontal = innerCardPadding, vertical = innerCardVerticalPadding),
@@ -2595,7 +2595,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                         }
                         if (exigeVinculoTalisma) {
                             Text(
-                                "Talismã: escolha uma magia do repertório para finalizar a rolagem.",
+                                "TalismÃ£: escolha uma magia do repertÃ³rio para finalizar a rolagem.",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -2608,7 +2608,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     value = talismaMagiaVinculada.orEmpty(),
                                     onValueChange = {},
                                     readOnly = true,
-                                    label = { Text("Talismã: magia vinculada") },
+                                    label = { Text("TalismÃ£: magia vinculada") },
                                     trailingIcon = {
                                         ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuTalismaExpandido)
                                     },
@@ -2905,4 +2905,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 }
+
+
 
