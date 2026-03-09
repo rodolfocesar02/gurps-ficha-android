@@ -67,7 +67,19 @@ object VttSessionService {
                         ?: "Falha HTTP $code no join de sessão."
                 }
 
-                if (code !in 200..299) error(body.ifBlank { "Falha HTTP $code no join de sessão." })
+                if (code !in 200..299) {
+                    val errorJson = runCatching { gson.fromJson(body, JsonObject::class.java) }.getOrNull()
+                    val errorPayload = errorJson?.getAsJsonObject("payload")
+                    val errorCode = errorPayload?.get("errorCode")?.asString.orEmpty()
+                    val errorMessage = errorPayload?.get("message")?.asString
+                        ?: body.ifBlank { "Falha HTTP $code no join de sessão." }
+                    val friendly = when (errorCode) {
+                        "SESSION_EXPIRED" -> "Sessão expirada no VTT. Faça reconexão."
+                        "UNAUTHORIZED_TOKEN" -> "Token não autorizado para este jogador. Refaça o vínculo."
+                        else -> errorMessage
+                    }
+                    error(friendly)
+                }
 
                 val rootJson = gson.fromJson(body, JsonObject::class.java)
                 val payload = rootJson.getAsJsonObject("payload") ?: JsonObject()
