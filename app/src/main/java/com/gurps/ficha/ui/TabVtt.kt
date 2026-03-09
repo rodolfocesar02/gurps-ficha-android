@@ -1,5 +1,7 @@
 package com.gurps.ficha.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import com.gurps.ficha.viewmodel.FichaViewModel
 
@@ -37,6 +40,7 @@ private enum class VttEnvironment(val label: String, val defaultUrl: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabVtt(viewModel: FichaViewModel) {
+    val context = LocalContext.current
     var environment by remember { mutableStateOf(VttEnvironment.DEV) }
     var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.defaultUrl) }
     var roomKey by remember { mutableStateOf("") }
@@ -58,6 +62,24 @@ fun TabVtt(viewModel: FichaViewModel) {
     fun desconectarEmModoShell() {
         connectionState = VttConnectionState.DISCONNECTED
         statusMessage = "Desconectado (shell)."
+    }
+
+    fun abrirVttNoNavegador() {
+        if (serverUrl.isBlank()) {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Defina a URL do servidor para abrir externamente."
+            return
+        }
+        runCatching {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(serverUrl)).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+            statusMessage = "VTT aberto no navegador."
+        }.onFailure {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Falha ao abrir navegador para a URL informada."
+        }
     }
 
     val statusLabel = when (connectionState) {
@@ -157,6 +179,12 @@ fun TabVtt(viewModel: FichaViewModel) {
                 ) {
                     Text("Desconectar")
                 }
+            }
+            Button(
+                onClick = { abrirVttNoNavegador() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Abrir VTT no navegador")
             }
         }
 
