@@ -35,16 +35,6 @@ object VttSessionService {
         return if (element.isJsonNull || !element.isJsonObject) null else element.asJsonObject
     }
 
-    private fun JsonObject.stringOrNull(key: String): String? {
-        val element = get(key) ?: return null
-        return if (element.isJsonNull) null else element.asString
-    }
-
-    private fun JsonObject.boolOrDefault(key: String, defaultValue: Boolean = false): Boolean {
-        val element = get(key) ?: return defaultValue
-        return if (element.isJsonNull) defaultValue else element.asBoolean
-    }
-
     suspend fun joinSession(
         roomKey: String,
         playerId: String,
