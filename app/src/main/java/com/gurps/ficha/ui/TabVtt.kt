@@ -3,7 +3,9 @@ package com.gurps.ficha.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -25,9 +27,18 @@ private enum class VttConnectionState {
     ERROR
 }
 
+private enum class VttEnvironment(val label: String, val defaultUrl: String) {
+    DEV("Dev", "http://10.0.2.2:3001"),
+    HOMOLOG("Homolog", "https://seu-vtt-homolog.exemplo.com"),
+    PROD("Prod", "https://seu-vtt-producao.exemplo.com"),
+    CUSTOM("Custom", "")
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TabVtt(viewModel: FichaViewModel) {
-    var serverUrl by remember { mutableStateOf("") }
+    var environment by remember { mutableStateOf(VttEnvironment.DEV) }
+    var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.defaultUrl) }
     var roomKey by remember { mutableStateOf("") }
     var playerId by remember(viewModel.personagem.nome) { mutableStateOf(viewModel.personagem.nome) }
     var connectionState by remember { mutableStateOf(VttConnectionState.DISCONNECTED) }
@@ -75,6 +86,28 @@ fun TabVtt(viewModel: FichaViewModel) {
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
+            Text(
+                text = "Ambiente",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                VttEnvironment.entries.forEach { item ->
+                    FilterChip(
+                        selected = environment == item,
+                        onClick = {
+                            environment = item
+                            if (item != VttEnvironment.CUSTOM) {
+                                serverUrl = item.defaultUrl
+                            }
+                        },
+                        label = { Text(item.label) }
+                    )
+                }
+            }
             OutlinedTextField(
                 value = roomKey,
                 onValueChange = { roomKey = it },
