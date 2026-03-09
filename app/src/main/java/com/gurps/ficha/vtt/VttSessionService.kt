@@ -23,6 +23,8 @@ object VttSessionService {
         roomKey: String,
         playerId: String,
         fichaJsonRaw: String,
+        previousSessionId: String? = null,
+        previousTokenId: String? = null,
         baseUrl: String = BuildConfig.VTT_API_BASE_URL
     ): Result<VttJoinSessionResult> = withContext(Dispatchers.IO) {
         runCatching {
@@ -37,6 +39,8 @@ object VttSessionService {
                     addProperty("roomKey", roomKey)
                     addProperty("playerId", playerId)
                     addProperty("playerName", playerId)
+                    if (!previousSessionId.isNullOrBlank()) addProperty("sessionId", previousSessionId)
+                    if (!previousTokenId.isNullOrBlank()) addProperty("tokenId", previousTokenId)
                     add("fichaJson", gson.fromJson(fichaJsonRaw, JsonObject::class.java))
                 })
             }
@@ -84,4 +88,3 @@ object VttSessionService {
         }
     }
 }
-
