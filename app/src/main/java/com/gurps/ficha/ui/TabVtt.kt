@@ -88,6 +88,8 @@ fun TabVtt(viewModel: FichaViewModel) {
                 roomKey = roomKey.trim(),
                 playerId = playerId.trim(),
                 fichaJsonRaw = viewModel.exportarFichaJsonCompativel(),
+                previousSessionId = sessionId,
+                previousTokenId = tokenId,
                 baseUrl = serverUrl.trim()
             ).onSuccess { result ->
                 connectionState = VttConnectionState.CONNECTED

@@ -74,6 +74,7 @@ Criterio de aceite:
 Execucao:
 1. [x] 2026-03-09 - Passo VTT.3.1 iniciado/concluido no app: envio de `roomKey + playerId + snapshot da ficha` para `/api/v1/session/join`.
 2. [x] 2026-03-09 - Passo VTT.3.2 concluido no app: persistencia local de `serverUrl`, `roomKey`, `playerId`, `sessionId` e `tokenId`.
+3. [x] 2026-03-09 - Passo VTT.3.3 concluido no app: reconexao envia `sessionId/tokenId` salvos para tentativa de recuperação de sessão.
 
 ### Lote VTT.4 - Fluxo de Rolagem por Token
 Status: `PENDENTE`
