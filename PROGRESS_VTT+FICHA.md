@@ -95,6 +95,7 @@ Execucao:
 2. [x] 2026-03-09 - Passo VTT.4.3 concluido no app: envio de acao para `/api/v1/roll/request` com envelope `v1` e tratamento de erro por token/sessao.
 3. [x] 2026-03-09 - Passo VTT.4.5.1 concluido no app: validacoes obrigatorias e mensagens guiadas antes do envio de acao.
 4. [x] 2026-03-09 - Passo VTT.4.5.2 concluido no app: confirmacao explicita antes do envio com aviso de nao alteracao da ficha canonica.
+5. [x] 2026-03-09 - Passo VTT.4.5.3 concluido no app: painel de diagnostico local com ultima acao enviada, horario e requestId.
 
 ### Lote VTT.5 - Voz e Acessibilidade
 Status: `PENDENTE`
