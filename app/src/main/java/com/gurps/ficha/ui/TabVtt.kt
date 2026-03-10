@@ -141,6 +141,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     var selectedTokenId by remember { mutableStateOf<String?>(null) }
     var selectedTokenName by remember { mutableStateOf<String?>(null) }
     var selectedTokenIsOwn by remember { mutableStateOf(false) }
+    var showTokenActionDialog by remember { mutableStateOf(false) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -255,6 +256,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                     selectedTokenId = payload?.asJsonObject?.get("tokenId")?.asString
                     selectedTokenName = payload?.asJsonObject?.get("name")?.asString
                     selectedTokenIsOwn = payload?.asJsonObject?.get("isOwn")?.asBoolean ?: false
+                    if (!selectedTokenId.isNullOrBlank()) {
+                        // Pré-seleciona o alvo quando for token inimigo.
+                        if (!selectedTokenIsOwn) {
+                            alvoTokenId = selectedTokenId.orEmpty()
+                        }
+                        showTokenActionDialog = true
+                    }
                 }
                 "AUDIO_STATE" -> {
                     audioStateJson = payload?.toString()
@@ -1180,8 +1188,8 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
     }
 
-    if (confirmActionDialog) {
-        AlertDialog(
+        if (confirmActionDialog) {
+            AlertDialog(
             onDismissRequest = { confirmActionDialog = false },
             title = { Text("Confirmar envio da acao") },
             text = {
@@ -1203,6 +1211,49 @@ fun TabVtt(viewModel: FichaViewModel) {
             dismissButton = {
                 TextButton(onClick = { confirmActionDialog = false }) { Text("Cancelar") }
             }
-        )
-    }
+            )
+        }
+
+        if (showTokenActionDialog) {
+            AlertDialog(
+                onDismissRequest = { showTokenActionDialog = false },
+                title = { Text("Ações no VTT") },
+                text = {
+                    StandardDialogColumn {
+                        Text(
+                            text = if (selectedTokenIsOwn)
+                                "Seu token: ${selectedTokenName.orEmpty()}"
+                            else
+                                "Alvo: ${selectedTokenName.orEmpty()}",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        OutlinedTextField(
+                            value = acaoNome,
+                            onValueChange = { acaoNome = it },
+                            label = { Text("Nome da ação") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        OutlinedTextField(
+                            value = modificadorRaw,
+                            onValueChange = { modificadorRaw = it },
+                            label = { Text("Modificador") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showTokenActionDialog = false
+                            confirmActionDialog = true
+                        }
+                    ) { Text("Enviar") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showTokenActionDialog = false }) {
+                        Text("Fechar")
+                    }
+                }
+            )
+        }
 }

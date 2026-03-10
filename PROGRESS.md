@@ -18,6 +18,7 @@ Escopo executado:
 10. HUD parcial: últimos estados/rolagens exibidos na aba; comandos rápidos de ping/zoom/mic/voz dispatchados para o embed.
 11. Build visual debug recompilado (validateActiveJsonAssets OK) após ajuste de HUD/bridge.
 12. Bridge decodifica JSON nativo do VTT (type/payload), extrai participantes e resumo de áudio/rolagens.
+13. Ação de token: diálogo de ações ao receber TOKEN_SELECTED (nome/modificador) com envio via confirmação.
 
 Estado atual:
 1. App compila e instala (visual).
