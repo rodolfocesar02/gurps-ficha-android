@@ -214,6 +214,51 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
     }
 
+    fun enviarAcaoBridgeEmbed(
+        room: String,
+        player: String,
+        token: String,
+        tipo: String,
+        nome: String,
+        mod: Int,
+        alvo: String?
+    ) {
+        val web = embeddedWebView ?: return
+        val safeRoom = room.replace("\\", "\\\\").replace("'", "\\'")
+        val safePlayer = player.replace("\\", "\\\\").replace("'", "\\'")
+        val safeToken = token.replace("\\", "\\\\").replace("'", "\\'")
+        val safeTipo = tipo.replace("\\", "\\\\").replace("'", "\\'")
+        val safeNome = nome.replace("\\", "\\\\").replace("'", "\\'")
+        val safeAlvo = (alvo ?: "").replace("\\", "\\\\").replace("'", "\\'")
+        val js = """
+            (function() {
+              try {
+                const payload = {
+                  roomKey: '$safeRoom',
+                  playerId: '$safePlayer',
+                  tokenId: '$safeToken',
+                  tipoAcao: '$safeTipo',
+                  nomeAcao: '$safeNome',
+                  modificador: $mod,
+                  alvoTokenId: '$safeAlvo' || null
+                };
+                const msg = JSON.stringify({ type: 'APP_ROLL', payload });
+                window.postMessage(msg, '*');
+                window.dispatchEvent(new CustomEvent('gurps-android-command', {
+                  detail: { action: 'APP_ROLL', payload: payload }
+                }));
+                return 'sent';
+              } catch (e) {
+                return 'error:' + (e && e.message ? e.message : 'unknown');
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "embedRollCommand tipo=$tipo nome=$nome result=$result")
+        }
+    }
+
     fun enviarFichaSnapshot() {
         val web = embeddedWebView ?: return
         val fichaJson = viewModel.exportarFichaJsonCompativel()
@@ -605,6 +650,15 @@ fun TabVtt(viewModel: FichaViewModel) {
 
         sendingAction = true
         val tipo = actionType.name.lowercase()
+        enviarAcaoBridgeEmbed(
+            room = room,
+            player = player,
+            token = token,
+            tipo = tipo,
+            nome = nome,
+            mod = mod,
+            alvo = alvo
+        )
         scope.launch {
             VttRollService.sendRollRequest(
                 request = VttRollRequest(
