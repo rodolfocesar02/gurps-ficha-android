@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.webkit.JavascriptInterface
+import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -530,7 +531,21 @@ fun TabVtt(viewModel: FichaViewModel) {
                                         }
                                     }
                                 }
-                                webChromeClient = WebChromeClient()
+                                webChromeClient = object : WebChromeClient() {
+                                    override fun onPermissionRequest(request: PermissionRequest?) {
+                                        if (request == null) return
+                                        val audioResources = request.resources
+                                            ?.filter { it == PermissionRequest.RESOURCE_AUDIO_CAPTURE }
+                                            ?.toTypedArray()
+                                        if (!audioResources.isNullOrEmpty()) {
+                                            request.grant(audioResources)
+                                            Log.i(VTT_UI_LOG, "webview permission granted audio capture")
+                                        } else {
+                                            request.grant(request.resources)
+                                            Log.i(VTT_UI_LOG, "webview permission granted resources=${request.resources?.joinToString()}")
+                                        }
+                                    }
+                                }
                                 loadUrl(embedUrl)
                             }
                         },
