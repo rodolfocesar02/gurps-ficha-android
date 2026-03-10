@@ -282,6 +282,34 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
     }
 
+    fun enviarJoinBridgeEmbed() {
+        val web = embeddedWebView ?: return
+        val room = roomKey.trim()
+        val player = playerId.trim()
+        if (room.isBlank() || player.isBlank()) return
+        val safeRoom = room.replace("\\", "\\\\").replace("'", "\\'")
+        val safePlayer = player.replace("\\", "\\\\").replace("'", "\\'")
+        val js = """
+            (function() {
+              try {
+                const payload = { roomKey: '$safeRoom', playerName: '$safePlayer', isMaster: false };
+                const msg = JSON.stringify({ type: 'VTT_JOIN', payload });
+                window.postMessage(msg, '*');
+                window.dispatchEvent(new CustomEvent('gurps-android-command', {
+                  detail: { action: 'VTT_JOIN', payload: payload }
+                }));
+                return 'sent';
+              } catch (e) {
+                return 'error:' + (e && e.message ? e.message : 'unknown');
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "embedJoinCommand room=$room player=$player result=$result")
+        }
+    }
+
     fun tratarMensagemBridge(raw: String) {
         val msg = raw.trim()
         if (msg.isBlank()) return
@@ -462,6 +490,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                     VTT_UI_LOG,
                     "joinSession success roomKey=${roomKey.trim()} playerId=${playerId.trim()} sessionId=${sessionId.orEmpty()} tokenId=${tokenId.orEmpty()} needsBind=$needsBind"
                 )
+                enviarJoinBridgeEmbed()
                 VttSessionStorage.save(
                     context,
                     VttSessionSnapshot(
@@ -818,6 +847,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
                                     webLoadError = null
+                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 350)
                                     view?.postDelayed({ checarCanvasWebgl() }, 600)
                                     view?.postDelayed({ enviarFichaSnapshot() }, 900)
                                     if (audioAutoJoin) {
