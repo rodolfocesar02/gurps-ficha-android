@@ -269,7 +269,8 @@ fun TabVtt(viewModel: FichaViewModel) {
                     audioSummary = payload?.toString()?.take(80) ?: audioSummary
                 }
                 "FICHA_SYNC" -> {
-                    fichaSyncJson = payload?.toString()
+                    val ficha = payload?.asJsonObject?.get("fichaJson")
+                    fichaSyncJson = ficha?.toString() ?: payload?.toString()
                 }
             }
             lastAudioEvent = msg
@@ -357,6 +358,17 @@ fun TabVtt(viewModel: FichaViewModel) {
                 statusMessage = "Sessao local restaurada. Voce pode reconectar."
             }
             bootstrapDone = true
+        }
+    }
+
+    LaunchedEffect(fichaSyncJson) {
+        val raw = fichaSyncJson?.trim().orEmpty()
+        if (raw.isBlank()) return@LaunchedEffect
+        val result = viewModel.importarFichaJson(raw)
+        if (!result.isNullOrBlank()) {
+            lastSnackbar = result
+        } else {
+            lastSnackbar = "Ficha sincronizada do VTT."
         }
     }
 
