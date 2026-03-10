@@ -125,6 +125,10 @@ fun TabVtt(viewModel: FichaViewModel) {
     var showConfig by remember { mutableStateOf(false) }
     var webLoadError by remember { mutableStateOf<String?>(null) }
     var webConsoleLast by remember { mutableStateOf<String?>(null) }
+    var roomStateJson by remember { mutableStateOf<String?>(null) }
+    var rollResultJson by remember { mutableStateOf<String?>(null) }
+    var audioStateJson by remember { mutableStateOf<String?>(null) }
+    var fichaSyncJson by remember { mutableStateOf<String?>(null) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -158,6 +162,29 @@ fun TabVtt(viewModel: FichaViewModel) {
             val result = raw?.trim('"').orEmpty()
             audioCommandStatus = "Comando ${action}: ${result.ifBlank { "ok" }}"
             Log.i(VTT_UI_LOG, "audioCommand action=$action result=$result")
+        }
+    }
+
+    fun enviarFichaSnapshot() {
+        val web = embeddedWebView ?: return
+        val fichaJson = viewModel.exportarFichaJsonCompativel()
+        val safeJson = fichaJson.replace("\\", "\\\\").replace("'", "\\'")
+        val js = """
+            (function() {
+              try {
+                const payload = ${'"'}$safeJson${'"'};
+                const data = JSON.parse(payload);
+                const evt = new CustomEvent('gurps-android-ficha', { detail: data });
+                window.dispatchEvent(evt);
+                return 'sent';
+              } catch (e) {
+                return 'error:' + e.message;
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "fichaSnapshot sent result=$result length=${fichaJson.length}")
         }
     }
 
@@ -557,6 +584,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                                     fun onVttEvent(log: String?) {
                                         lastAudioEvent = log.orEmpty()
                                         Log.i(VTT_UI_LOG, "vttBridge event=${log.orEmpty()}")
+                                        val msg = log.orEmpty()
+                                        when {
+                                            msg.startsWith("ROOM_STATE:") -> roomStateJson = msg.removePrefix("ROOM_STATE:")
+                                            msg.startsWith("ROLL_RESULT:") -> rollResultJson = msg.removePrefix("ROLL_RESULT:")
+                                            msg.startsWith("AUDIO_STATE:") -> audioStateJson = msg.removePrefix("AUDIO_STATE:")
+                                            msg.startsWith("FICHA_SYNC:") -> fichaSyncJson = msg.removePrefix("FICHA_SYNC:")
+                                        }
                                     }
 
                                     @JavascriptInterface
@@ -602,6 +636,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                                     super.onPageFinished(view, url)
                                     webLoadError = null
                                     view?.postDelayed({ checarCanvasWebgl() }, 600)
+                                    view?.postDelayed({ enviarFichaSnapshot() }, 900)
                                     if (audioAutoJoin) {
                                         view?.postDelayed({
                                             enviarComandoAudioEmbed("join")
@@ -668,6 +703,20 @@ fun TabVtt(viewModel: FichaViewModel) {
                 if (!webConsoleLast.isNullOrBlank()) {
                     Text(
                         text = "Console: ${webConsoleLast}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (!roomStateJson.isNullOrBlank()) {
+                    Text(
+                        text = "Estado: ${roomStateJson}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (!rollResultJson.isNullOrBlank()) {
+                    Text(
+                        text = "Rolagem: ${rollResultJson}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
