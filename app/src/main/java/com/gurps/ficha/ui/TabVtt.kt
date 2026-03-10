@@ -33,9 +33,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +52,8 @@ import com.gurps.ficha.vtt.VttTokenBindService
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.ui.UiTokens
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -133,6 +135,8 @@ fun TabVtt(viewModel: FichaViewModel) {
     var audioStateJson by remember { mutableStateOf<String?>(null) }
     var fichaSyncJson by remember { mutableStateOf<String?>(null) }
     var lastSnackbar by remember { mutableStateOf<String?>(null) }
+    var participantes by remember { mutableStateOf<List<String>>(emptyList()) }
+    var audioSummary by remember { mutableStateOf("Voice off") }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -613,7 +617,10 @@ fun TabVtt(viewModel: FichaViewModel) {
                                                 rollResultJson = msg.removePrefix("ROLL_RESULT:")
                                                 lastSnackbar = "Rolagem: $rollResultJson"
                                             }
-                                            msg.startsWith("AUDIO_STATE:") -> audioStateJson = msg.removePrefix("AUDIO_STATE:")
+                                            msg.startsWith("AUDIO_STATE:") -> {
+                                                audioStateJson = msg.removePrefix("AUDIO_STATE:")
+                                                audioSummary = audioStateJson.orEmpty().take(80)
+                                            }
                                             msg.startsWith("FICHA_SYNC:") -> fichaSyncJson = msg.removePrefix("FICHA_SYNC:")
                                         }
                                     }
@@ -748,7 +755,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                 }
                 if (!audioStateJson.isNullOrBlank()) {
                     Text(
-                        text = "Áudio: ${audioStateJson}",
+                        text = "Áudio: ${audioSummary}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
