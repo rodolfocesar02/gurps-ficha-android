@@ -22,6 +22,7 @@ Escopo executado:
 14. Sync de ficha: aplica `FICHA_SYNC` recebido do VTT usando importador canônico (atualiza ficha local).
 15. Envio direto da ação no VTT (dialogo dispara `roll/request` sem confirmação extra).
 16. Diálogo de token agora lista Perícias/Magias/Defesas da ficha com NH calculado e seleção rápida.
+17. Envio híbrido de rolagem: app dispara `APP_ROLL` na bridge do embed e mantém `roll/request` REST como fallback de compatibilidade.
 
 Estado atual:
 1. App compila e instala (visual).
