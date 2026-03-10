@@ -25,6 +25,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedButton
@@ -102,6 +103,11 @@ private data class DamageSourceOption(
     val contextLabel: String,
     val damageExpression: String
 )
+
+private enum class StDamageMode(val label: String) {
+    GDP("GdP"),
+    GEB("GeB")
+}
 
 private data class PericiaRollOption(
     val id: String,
@@ -363,6 +369,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var talismaMagiaVinculada by remember { mutableStateOf<String?>(null) }
     var aspectoMagiaAlmaSelecionado by remember { mutableStateOf<SoulAspectOption?>(null) }
     var descricaoDialog by remember { mutableStateOf<RollDescricaoDialog?>(null) }
+    var stDamageMode by remember { mutableStateOf(StDamageMode.GDP) }
     var modificadorMagiaAlma by remember { mutableIntStateOf(0) }
     var modificadorGlobalPraCego by remember { mutableIntStateOf(0) }
     var dadosPersonalizadosQuantidade by remember { mutableIntStateOf(1) }
@@ -505,9 +512,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     val fallbackSt = DamageSourceOption(
         id = "st_base",
-        label = "Sem arma (ST base)",
-        contextLabel = "Dano ST base",
-        damageExpression = p.danoGdP
+        label = "Sem arma (${stDamageMode.label})",
+        contextLabel = "Dano ST ${stDamageMode.label}",
+        damageExpression = if (stDamageMode == StDamageMode.GDP) p.danoGdP else p.danoGeB
     )
     val fontesDano = if (armasEquipadas.isNotEmpty()) {
         listOf(fallbackSt) + armasEquipadas
@@ -1383,6 +1390,21 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
+                                if (fonteDanoAtual.id == "st_base") {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        StDamageMode.entries.forEach { mode ->
+                                            FilterChip(
+                                                selected = stDamageMode == mode,
+                                                onClick = { stDamageMode = mode },
+                                                label = { Text(mode.label) }
+                                            )
+                                        }
+                                    }
+                                }
                                 val danos = splitDamageEntries(fonteDanoAtual.damageExpression)
                                 danos.forEach { danoLinha ->
                                     val danoRolavel = parseDamageExpression(danoLinha) != null
