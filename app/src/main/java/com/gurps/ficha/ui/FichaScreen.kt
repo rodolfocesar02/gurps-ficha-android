@@ -80,9 +80,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem", "VTT")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem", "VTT")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
     }
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
@@ -205,7 +205,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                                 "Equip." -> R.drawable.tab_equipamentos
                                 "Defesas" -> R.drawable.tab_defesas
                                 "Rolagem" -> R.drawable.tab_rolagem
-                                "VTT" -> R.drawable.tab_rolagem
                                 else -> R.drawable.tab_geral
                             }
                             Icon(
@@ -252,7 +251,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Equip." -> TabEquipamentos(viewModel)
                 "Defesas" -> TabCombate(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
-                "VTT" -> TabVtt(viewModel)
                 else -> TabGeral(viewModel)
             }
         }
