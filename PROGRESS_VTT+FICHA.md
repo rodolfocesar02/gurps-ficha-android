@@ -179,3 +179,4 @@ Criterio de aceite:
 
 Execucao:
 1. [x] 2026-03-09 - Passo APP-VTT.2.4 concluido no app: controles de audio do embed (`Entrar audio`, `Mic`, `Som`) com bridge `gurps-android-audio-command` e tentativa de auto-join no carregamento da pagina.
+2. [x] 2026-03-10 - Passo APP-VTT.2.5 concluido no app: WebView concede `RESOURCE_AUDIO_CAPTURE` via `onPermissionRequest` para liberar microfone no embed.
