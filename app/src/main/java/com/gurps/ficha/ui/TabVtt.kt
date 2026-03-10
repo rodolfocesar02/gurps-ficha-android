@@ -51,6 +51,7 @@ import com.gurps.ficha.vtt.VttRollService
 import com.gurps.ficha.vtt.VttTokenBindService
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.ui.UiTokens
+import com.google.gson.JsonParser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -137,6 +138,9 @@ fun TabVtt(viewModel: FichaViewModel) {
     var lastSnackbar by remember { mutableStateOf<String?>(null) }
     var participantes by remember { mutableStateOf<List<String>>(emptyList()) }
     var audioSummary by remember { mutableStateOf("Voice off") }
+    var selectedTokenId by remember { mutableStateOf<String?>(null) }
+    var selectedTokenName by remember { mutableStateOf<String?>(null) }
+    var selectedTokenIsOwn by remember { mutableStateOf(false) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -212,6 +216,72 @@ fun TabVtt(viewModel: FichaViewModel) {
             val result = raw?.trim('"').orEmpty()
             Log.i(VTT_UI_LOG, "fichaSnapshot sent result=$result length=${fichaJson.length}")
         }
+    }
+
+    fun tratarMensagemBridge(raw: String) {
+        val msg = raw.trim()
+        if (msg.isBlank()) return
+        // Tentativa 1: JSON com {type, payload}
+        runCatching {
+            val root = JsonParser.parseString(msg).asJsonObject
+            val type = root.get("type")?.asString ?: return@runCatching
+            val payload = root.get("payload")
+            when (type) {
+                "ROOM_STATE" -> {
+                    roomStateJson = payload?.toString()
+                    val participants = payload?.asJsonObject?.get("participants")?.asJsonArray
+                    if (participants != null) {
+                        participantes = participants.mapNotNull { it.asString }
+                    }
+                    val audio = payload?.asJsonObject?.get("audio")?.asJsonObject
+                    if (audio != null) {
+                        val playing = audio.get("playing")?.asBoolean
+                        val speakerOnly = audio.get("speakerOnly")?.asBoolean
+                        val volume = audio.get("volume")?.asNumber
+                        audioSummary = "playing=$playing volume=$volume speakerOnly=$speakerOnly"
+                    }
+                }
+                "ROLL_RESULT" -> {
+                    rollResultJson = payload?.toString()
+                    val label = payload?.asJsonObject?.get("label")?.asString
+                    val resumo = payload?.asJsonObject?.get("textoResumo")?.asString
+                        ?: payload?.asJsonObject?.get("resultadoTexto")?.asString
+                    val summary = listOfNotNull(label, resumo).joinToString(" ")
+                    if (summary.isNotBlank()) {
+                        lastSnackbar = "Rolagem: $summary"
+                    }
+                }
+                "TOKEN_SELECTED" -> {
+                    selectedTokenId = payload?.asJsonObject?.get("tokenId")?.asString
+                    selectedTokenName = payload?.asJsonObject?.get("name")?.asString
+                    selectedTokenIsOwn = payload?.asJsonObject?.get("isOwn")?.asBoolean ?: false
+                }
+                "AUDIO_STATE" -> {
+                    audioStateJson = payload?.toString()
+                    audioSummary = payload?.toString()?.take(80) ?: audioSummary
+                }
+                "FICHA_SYNC" -> {
+                    fichaSyncJson = payload?.toString()
+                }
+            }
+            lastAudioEvent = msg
+            return
+        }
+        // Tentativa 2: legado com prefixo
+        val legacy = msg
+        when {
+            legacy.startsWith("ROOM_STATE:") -> roomStateJson = legacy.removePrefix("ROOM_STATE:")
+            legacy.startsWith("ROLL_RESULT:") -> {
+                rollResultJson = legacy.removePrefix("ROLL_RESULT:")
+                lastSnackbar = "Rolagem: $rollResultJson"
+            }
+            legacy.startsWith("AUDIO_STATE:") -> {
+                audioStateJson = legacy.removePrefix("AUDIO_STATE:")
+                audioSummary = audioStateJson.orEmpty().take(80)
+            }
+            legacy.startsWith("FICHA_SYNC:") -> fichaSyncJson = legacy.removePrefix("FICHA_SYNC:")
+        }
+        lastAudioEvent = legacy
     }
 
     fun checarCanvasWebgl(tentativa: Int = 1) {
@@ -608,21 +678,9 @@ fun TabVtt(viewModel: FichaViewModel) {
                                 object {
                                     @JavascriptInterface
                                     fun onVttEvent(log: String?) {
-                                        lastAudioEvent = log.orEmpty()
-                                        Log.i(VTT_UI_LOG, "vttBridge event=${log.orEmpty()}")
                                         val msg = log.orEmpty()
-                                        when {
-                                            msg.startsWith("ROOM_STATE:") -> roomStateJson = msg.removePrefix("ROOM_STATE:")
-                                            msg.startsWith("ROLL_RESULT:") -> {
-                                                rollResultJson = msg.removePrefix("ROLL_RESULT:")
-                                                lastSnackbar = "Rolagem: $rollResultJson"
-                                            }
-                                            msg.startsWith("AUDIO_STATE:") -> {
-                                                audioStateJson = msg.removePrefix("AUDIO_STATE:")
-                                                audioSummary = audioStateJson.orEmpty().take(80)
-                                            }
-                                            msg.startsWith("FICHA_SYNC:") -> fichaSyncJson = msg.removePrefix("FICHA_SYNC:")
-                                        }
+                                        Log.i(VTT_UI_LOG, "vttBridge event=$msg")
+                                        tratarMensagemBridge(msg)
                                     }
 
                                     @JavascriptInterface
@@ -742,6 +800,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                 if (!roomStateJson.isNullOrBlank()) {
                     Text(
                         text = "Sala: ${roomStateJson}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (participantes.isNotEmpty()) {
+                    Text(
+                        text = "Participantes: ${participantes.joinToString(", ")}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

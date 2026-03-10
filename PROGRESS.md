@@ -17,6 +17,7 @@ Escopo executado:
 9. Bridge parcial app→VTT: ficha JSON enviada automaticamente ao carregar o embed; captura de ROOM_STATE/ROLL_RESULT/AUDIO_STATE/FICHA_SYNC no app para depuração.
 10. HUD parcial: últimos estados/rolagens exibidos na aba; comandos rápidos de ping/zoom/mic/voz dispatchados para o embed.
 11. Build visual debug recompilado (validateActiveJsonAssets OK) após ajuste de HUD/bridge.
+12. Bridge decodifica JSON nativo do VTT (type/payload), extrai participantes e resumo de áudio/rolagens.
 
 Estado atual:
 1. App compila e instala (visual).
