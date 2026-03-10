@@ -101,7 +101,8 @@ Evidência parcial:
 5. Mensagens de fallback orientadas para ação aplicadas em importação e em diálogo de carregamento sem fichas salvas.
 6. Mapa de foco documentado em `docs/v2/PRACEGO_FOCUS_MAP_V2_4.md`.
 7. Novo utilitário `Modifier.pracegoTraversal(...)` aplicado no menu principal e nos pontos de entrada de Perícias/Técnicas/Magias.
-8. Validação executada:
+8. Aba Rolagem: descrição disponível nas listas de Perícias/Técnicas/Magias (toque no nome abre popup).
+9. Validação executada:
    - `./gradlew :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin` (OK)
 
 ## Regra Permanente - Higiene de Texto (acentos/artefatos)
@@ -150,16 +151,6 @@ Critérios de aceite U5:
 1. Nenhuma aba com estilo divergente de card/botão/fonte sem justificativa.
 2. Mesma hierarquia de informação entre `visual` e `pracego`.
 3. Relatório de validação por aba anexado no fechamento do lote.
-
-## Melhorias Prioritárias de Intuitividade (Visual + PraCego)
-1. Cabeçalho de cada aba com subtítulo de objetivo ("o que fazer aqui").
-2. Botões de ação com nomenclatura única (evitar variações de verbo para a mesma ação).
-3. Espaçamento vertical consistente entre seções e cards (ritmo visual único).
-4. Estado vazio guiado (texto + CTA claro em listas sem itens).
-5. Feedback imediato após ação (snackbar curto e acessível).
-6. Rótulos TalkBack explícitos para editar/remover/abrir detalhes.
-7. Ordem de foco previsível em todos os diálogos.
-8. Em `pracego`, reforçar leitura de contexto no topo de cada diálogo (título + estado atual).
 
 ## Evidências de fechamento
 1. `gh` instalado e autenticado para automação de release.

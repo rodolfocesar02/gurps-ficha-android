@@ -108,7 +108,8 @@ private data class PericiaRollOption(
     val nome: String,
     val especializacao: String,
     val contextLabel: String,
-    val target: Int
+    val target: Int,
+    val descricao: String
 )
 
 private data class MagiaRollOption(
@@ -120,7 +121,8 @@ private data class MagiaRollOption(
     val duracao: String?,
     val energia: String?,
     val tempoOperacao: String?,
-    val encantamentoAlvo: String?
+    val encantamentoAlvo: String?,
+    val descricao: String
 )
 
 private data class TecnicaRollOption(
@@ -128,7 +130,8 @@ private data class TecnicaRollOption(
     val nome: String,
     val periciaBaseNome: String,
     val contextLabel: String,
-    val target: Int?
+    val target: Int?,
+    val descricao: String
 )
 
 private data class ParsedDamage(
@@ -140,6 +143,11 @@ private data class ParsedDamage(
 private data class SoulAspectOption(
     val nome: String,
     val descricao: String
+)
+
+private data class RollDescricaoDialog(
+    val titulo: String,
+    val texto: String
 )
 
 private fun atributoNomeCompleto(sigla: String): String = when (sigla.uppercase()) {
@@ -354,6 +362,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var energiaManualInput by remember { mutableStateOf("") }
     var talismaMagiaVinculada by remember { mutableStateOf<String?>(null) }
     var aspectoMagiaAlmaSelecionado by remember { mutableStateOf<SoulAspectOption?>(null) }
+    var descricaoDialog by remember { mutableStateOf<RollDescricaoDialog?>(null) }
     var modificadorMagiaAlma by remember { mutableIntStateOf(0) }
     var modificadorGlobalPraCego by remember { mutableIntStateOf(0) }
     var dadosPersonalizadosQuantidade by remember { mutableIntStateOf(1) }
@@ -422,12 +431,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val basePericiasAtaque = if (periciasCombate.isNotEmpty()) periciasCombate else p.pericias
     val opcoesPericia = p.pericias.mapIndexed { index, pericia ->
         val nivel = pericia.calcularNivel(p)
+        val descricaoRegra = viewModel.dataRepository
+            .regraPericiaV2(pericia.definicaoId)
+            ?.descricao
+            .orEmpty()
         PericiaRollOption(
             id = "pericia_${periciaSelectionKey(pericia, index)}",
             nome = pericia.nome,
             especializacao = pericia.especializacao,
             contextLabel = "Pericia ${periciaLabel(pericia)}",
-            target = nivel
+            target = nivel,
+            descricao = descricaoRegra
         )
     }
     val opcoesMagia = p.magias.mapIndexedNotNull { index, magia ->
@@ -435,6 +449,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // only include if prereqs satisfied
         if (definicaoMagia == null || !viewModel.prereqsSatisfied(definicaoMagia)) return@mapIndexedNotNull null
         val nivel = magia.calcularNivel(p, viewModel.nivelAptidaoMagica)
+        val descricaoMagia = magia.texto?.trim().orEmpty().ifBlank { definicaoMagia.texto?.trim().orEmpty() }
         MagiaRollOption(
             id = "magia_${magia.definicaoId}_$index",
             definicaoId = magia.definicaoId,
@@ -444,7 +459,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             duracao = magia.duracao ?: definicaoMagia.duracao,
             energia = magia.energia ?: definicaoMagia.energia,
             tempoOperacao = magia.tempoOperacao ?: definicaoMagia.tempoOperacao,
-            encantamentoAlvo = magia.encantamentoAlvo
+            encantamentoAlvo = magia.encantamentoAlvo,
+            descricao = descricaoMagia
         )
     }
     val repertorioParaTalisma = p.magias
@@ -453,12 +469,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
         .distinct()
         .sorted()
     val opcoesTecnica = p.tecnicas.mapIndexed { index, tecnica ->
+        val descricaoTecnica = viewModel.tecnicasCatalogo
+            .firstOrNull { it.id.equals(tecnica.definicaoId, ignoreCase = true) }
+            ?.descricao
+            .orEmpty()
         TecnicaRollOption(
             id = "tecnica_${tecnica.definicaoId}_$index",
             nome = tecnica.nome,
             periciaBaseNome = tecnica.periciaBaseNome,
             contextLabel = "Tecnica ${tecnica.nome}",
-            target = tecnica.calcularNivel(p)
+            target = tecnica.calcularNivel(p),
+            descricao = descricaoTecnica
         )
     }
     val nivelMagiaDaAlma = 10 + viewModel.nivelAptidaoAstral
@@ -1821,11 +1842,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     horizontalAlignment = Alignment.Start,
                                                     verticalArrangement = Arrangement.spacedBy(1.dp)
                                                 ) {
+                                                    val descricaoPericia = pericia.descricao.ifBlank { "Sem descrição disponível." }
                                                     Text(
                                                         pericia.nome,
                                                         style = defenseNumberStyle,
                                                         fontWeight = FontWeight.SemiBold,
-                                                        modifier = Modifier.fillMaxWidth(),
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .clickable {
+                                                                descricaoDialog = RollDescricaoDialog(
+                                                                    titulo = "Descrição: ${pericia.nome}",
+                                                                    texto = descricaoPericia
+                                                                )
+                                                            }
+                                                            .semantics {
+                                                                if (isPraCegoVariant) {
+                                                                    contentDescription = "Nome da perícia ${pericia.nome}. Toque para abrir descrição."
+                                                                }
+                                                            },
                                                         textAlign = TextAlign.Start,
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
@@ -2292,7 +2326,20 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     magia.nome,
                                                     style = defenseNumberStyle,
                                                     fontWeight = FontWeight.SemiBold,
-                                                    modifier = Modifier.weight(2f),
+                                                    modifier = Modifier
+                                                        .weight(2f)
+                                                        .clickable {
+                                                            val descricaoMagia = magia.descricao.ifBlank { "Sem descrição disponível." }
+                                                            descricaoDialog = RollDescricaoDialog(
+                                                                titulo = "Descrição: ${magia.nome}",
+                                                                texto = descricaoMagia
+                                                            )
+                                                        }
+                                                        .semantics {
+                                                            if (isPraCegoVariant) {
+                                                                contentDescription = "Nome da magia ${magia.nome}. Toque para abrir descrição."
+                                                            }
+                                                        },
                                                     textAlign = TextAlign.Start,
                                                     maxLines = 1,
                                                     overflow = TextOverflow.Ellipsis
@@ -2469,11 +2516,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                     horizontalAlignment = Alignment.Start,
                                                     verticalArrangement = Arrangement.spacedBy(1.dp)
                                                 ) {
+                                                    val descricaoTecnica = tecnica.descricao.ifBlank { "Sem descrição disponível." }
                                                     Text(
                                                         tecnica.nome,
                                                         style = defenseNumberStyle,
                                                         fontWeight = FontWeight.SemiBold,
-                                                        modifier = Modifier.fillMaxWidth(),
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .clickable {
+                                                                descricaoDialog = RollDescricaoDialog(
+                                                                    titulo = "Descrição: ${tecnica.nome}",
+                                                                    texto = descricaoTecnica
+                                                                )
+                                                            }
+                                                            .semantics {
+                                                                if (isPraCegoVariant) {
+                                                                    contentDescription = "Nome da técnica ${tecnica.nome}. Toque para abrir descrição."
+                                                                }
+                                                            },
                                                         textAlign = TextAlign.Start,
                                                         maxLines = 1,
                                                         overflow = TextOverflow.Ellipsis
@@ -2567,6 +2627,27 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     }
                 }
             }
+        }
+
+        descricaoDialog?.let { dialog ->
+            AlertDialog(
+                onDismissRequest = { descricaoDialog = null },
+                title = { Text(dialog.titulo) },
+                text = {
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = 460.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Text(dialog.texto, style = MaterialTheme.typography.bodyMedium)
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { descricaoDialog = null }) {
+                        Text("Fechar")
+                    }
+                }
+            )
         }
 
         if (showEnergiaManualDialog && magiaPendenteEnergia != null) {
