@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -93,7 +95,22 @@ private enum class VttActionType(val label: String) {
     DEFESA("Defesa")
 }
 
+private data class VttActionOption(
+    val key: String,
+    val type: VttActionType,
+    val nome: String,
+    val label: String
+)
+
 private const val VTT_UI_LOG = "VttTab"
+
+private fun periciaLabel(pericia: com.gurps.ficha.model.PericiaSelecionada): String {
+    return if (pericia.especializacao.isBlank()) {
+        pericia.nome
+    } else {
+        "${pericia.nome} (${pericia.especializacao})"
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,6 +159,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     var selectedTokenName by remember { mutableStateOf<String?>(null) }
     var selectedTokenIsOwn by remember { mutableStateOf(false) }
     var showTokenActionDialog by remember { mutableStateOf(false) }
+    var selectedActionKey by remember { mutableStateOf<String?>(null) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -261,6 +279,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                         if (!selectedTokenIsOwn) {
                             alvoTokenId = selectedTokenId.orEmpty()
                         }
+                        selectedActionKey = null
                         showTokenActionDialog = true
                     }
                 }
@@ -1231,6 +1250,62 @@ fun TabVtt(viewModel: FichaViewModel) {
                 onDismissRequest = { showTokenActionDialog = false },
                 title = { Text("Ações no VTT") },
                 text = {
+                    val personagem = viewModel.personagem
+                    val nivelAptidaoMagica = viewModel.nivelAptidaoMagica
+                    val pericias = personagem.pericias.mapIndexed { index, pericia ->
+                        val nivel = pericia.calcularNivel(personagem)
+                        VttActionOption(
+                            key = "pericia_${pericia.definicaoId}_$index",
+                            type = VttActionType.PERICIA,
+                            nome = periciaLabel(pericia),
+                            label = "${periciaLabel(pericia)} (NH $nivel)"
+                        )
+                    }
+                    val magias = personagem.magias.mapIndexedNotNull { index, magia ->
+                        val definicao = viewModel.dataRepository.getMagiaPorId(magia.definicaoId)
+                        if (definicao != null && !viewModel.prereqsSatisfied(definicao)) return@mapIndexedNotNull null
+                        val nivel = magia.calcularNivel(personagem, nivelAptidaoMagica)
+                        VttActionOption(
+                            key = "magia_${magia.definicaoId}_$index",
+                            type = VttActionType.MAGIA,
+                            nome = magia.nome,
+                            label = "${magia.nome} (NH $nivel)"
+                        )
+                    }
+                    val apara = personagem.defesasAtivas.calcularApara(personagem)
+                    val bloqueio = personagem.defesasAtivas.calcularBloqueio(personagem)
+                    val esquiva = personagem.defesasAtivas.calcularEsquiva(personagem)
+                    val defesas = buildList {
+                        if (apara != null) {
+                            add(
+                                VttActionOption(
+                                    key = "defesa_apara",
+                                    type = VttActionType.DEFESA,
+                                    nome = "Apara",
+                                    label = "Apara ($apara)"
+                                )
+                            )
+                        }
+                        if (bloqueio != null) {
+                            add(
+                                VttActionOption(
+                                    key = "defesa_bloqueio",
+                                    type = VttActionType.DEFESA,
+                                    nome = "Bloqueio",
+                                    label = "Bloqueio ($bloqueio)"
+                                )
+                            )
+                        }
+                        add(
+                            VttActionOption(
+                                key = "defesa_esquiva",
+                                type = VttActionType.DEFESA,
+                                nome = "Esquiva",
+                                label = "Esquiva ($esquiva)"
+                            )
+                        )
+                    }
+
                     StandardDialogColumn {
                         Text(
                             text = if (selectedTokenIsOwn)
@@ -1239,6 +1314,93 @@ fun TabVtt(viewModel: FichaViewModel) {
                                 "Alvo: ${selectedTokenName.orEmpty()}",
                             style = MaterialTheme.typography.bodySmall
                         )
+                        Text(
+                            text = "Toque em uma ação para preparar a rolagem.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                        ) {
+                            VttActionType.entries.forEach { tipo ->
+                                FilterChip(
+                                    selected = actionType == tipo,
+                                    onClick = { actionType = tipo },
+                                    label = { Text(tipo.label) }
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        androidx.compose.foundation.layout.Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 320.dp)
+                                .verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            if (pericias.isNotEmpty()) {
+                                Text(
+                                    text = "Pericias",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                pericias.forEach { option ->
+                                    FilterChip(
+                                        selected = selectedActionKey == option.key,
+                                        onClick = {
+                                            selectedActionKey = option.key
+                                            actionType = option.type
+                                            acaoNome = option.nome
+                                            modificadorRaw = "0"
+                                        },
+                                        label = { Text(option.label) }
+                                    )
+                                }
+                            }
+                            if (magias.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Magias",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                magias.forEach { option ->
+                                    FilterChip(
+                                        selected = selectedActionKey == option.key,
+                                        onClick = {
+                                            selectedActionKey = option.key
+                                            actionType = option.type
+                                            acaoNome = option.nome
+                                            modificadorRaw = "0"
+                                        },
+                                        label = { Text(option.label) }
+                                    )
+                                }
+                            }
+                            if (defesas.isNotEmpty()) {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = "Defesas",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                defesas.forEach { option ->
+                                    FilterChip(
+                                        selected = selectedActionKey == option.key,
+                                        onClick = {
+                                            selectedActionKey = option.key
+                                            actionType = option.type
+                                            acaoNome = option.nome
+                                            modificadorRaw = "0"
+                                        },
+                                        label = { Text(option.label) }
+                                    )
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
                         OutlinedTextField(
                             value = acaoNome,
                             onValueChange = { acaoNome = it },

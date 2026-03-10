@@ -21,6 +21,7 @@ Escopo executado:
 13. Ação de token: diálogo de ações ao receber TOKEN_SELECTED (nome/modificador) com envio via confirmação.
 14. Sync de ficha: aplica `FICHA_SYNC` recebido do VTT usando importador canônico (atualiza ficha local).
 15. Envio direto da ação no VTT (dialogo dispara `roll/request` sem confirmação extra).
+16. Diálogo de token agora lista Perícias/Magias/Defesas da ficha com NH calculado e seleção rápida.
 
 Estado atual:
 1. App compila e instala (visual).
