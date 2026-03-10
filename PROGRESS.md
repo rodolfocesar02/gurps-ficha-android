@@ -23,6 +23,7 @@ Escopo executado:
 15. Envio direto da ação no VTT (dialogo dispara `roll/request` sem confirmação extra).
 16. Diálogo de token agora lista Perícias/Magias/Defesas da ficha com NH calculado e seleção rápida.
 17. Envio híbrido de rolagem: app dispara `APP_ROLL` na bridge do embed e mantém `roll/request` REST como fallback de compatibilidade.
+18. Auto-join reforçado na aba VTT: app envia `VTT_JOIN` via bridge no `onPageFinished` e após sucesso de conexão shell.
 
 Estado atual:
 1. App compila e instala (visual).
