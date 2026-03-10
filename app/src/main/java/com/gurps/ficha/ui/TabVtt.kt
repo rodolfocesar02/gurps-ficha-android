@@ -6,12 +6,19 @@ import android.util.Log
 import android.webkit.JavascriptInterface
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebSettings
+import android.webkit.ConsoleMessage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -33,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import com.gurps.ficha.R
 import com.gurps.ficha.vtt.VttSessionService
 import com.gurps.ficha.vtt.VttSessionSnapshot
 import com.gurps.ficha.vtt.VttSessionStorage
@@ -58,7 +66,7 @@ private enum class VttEnvironment(
     val apiDefaultUrl: String,
     val webDefaultUrl: String
 ) {
-    DEV("Dev", "http://10.0.2.2:3001", "http://10.0.2.2:5176"),
+    DEV("Dev", "http://10.0.2.2:3001", "http://10.0.2.2:5177"),
     HOMOLOG(
         "Homolog",
         "https://seu-vtt-api-homolog.exemplo.com",
@@ -66,8 +74,8 @@ private enum class VttEnvironment(
     ),
     PROD(
         "Prod",
-        "https://seu-vtt-api-producao.exemplo.com",
-        "https://seu-vtt-web-producao.exemplo.com"
+        "https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app",
+        "https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app"
     ),
     CUSTOM("Custom", "", "")
 }
@@ -79,11 +87,6 @@ private enum class VttActionType(val label: String) {
     DEFESA("Defesa")
 }
 
-private enum class VttViewMode(val label: String) {
-    MAPA("Mapa"),
-    PAINEL("Painel")
-}
-
 private const val VTT_UI_LOG = "VttTab"
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,13 +95,13 @@ fun TabVtt(viewModel: FichaViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    var environment by remember { mutableStateOf(VttEnvironment.DEV) }
-    var serverUrl by remember { mutableStateOf(VttEnvironment.DEV.apiDefaultUrl) }
-    var webUrl by remember { mutableStateOf(VttEnvironment.DEV.webDefaultUrl) }
+    var environment by remember { mutableStateOf(VttEnvironment.PROD) }
+    var serverUrl by remember { mutableStateOf(VttEnvironment.PROD.apiDefaultUrl) }
+    var webUrl by remember { mutableStateOf(VttEnvironment.PROD.webDefaultUrl) }
     var roomKey by remember { mutableStateOf("") }
     var playerId by remember(viewModel.personagem.nome) { mutableStateOf(viewModel.personagem.nome) }
     var connectionState by remember { mutableStateOf(VttConnectionState.DISCONNECTED) }
-    var statusMessage by remember { mutableStateOf("Preencha servidor, sala e player para iniciar.") }
+    var statusMessage by remember { mutableStateOf("Informe a sala e toque em Entrar.") }
     var sessionId by remember { mutableStateOf<String?>(null) }
     var tokenId by remember { mutableStateOf<String?>(null) }
     var needsBind by remember { mutableStateOf(false) }
@@ -114,12 +117,14 @@ fun TabVtt(viewModel: FichaViewModel) {
     var lastActionSummary by remember { mutableStateOf("Nenhuma acao enviada.") }
     var lastActionWhen by remember { mutableStateOf("-") }
     var lastActionRequestId by remember { mutableStateOf("-") }
-    var viewMode by remember { mutableStateOf(VttViewMode.PAINEL) }
     var webReloadTick by remember { mutableStateOf(0) }
     var embeddedWebView by remember { mutableStateOf<WebView?>(null) }
     var audioAutoJoin by remember { mutableStateOf(true) }
     var audioCommandStatus by remember { mutableStateOf("Nenhum comando enviado.") }
     var lastAudioEvent by remember { mutableStateOf("-") }
+    var showConfig by remember { mutableStateOf(false) }
+    var webLoadError by remember { mutableStateOf<String?>(null) }
+    var webConsoleLast by remember { mutableStateOf<String?>(null) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -154,6 +159,49 @@ fun TabVtt(viewModel: FichaViewModel) {
             audioCommandStatus = "Comando ${action}: ${result.ifBlank { "ok" }}"
             Log.i(VTT_UI_LOG, "audioCommand action=$action result=$result")
         }
+    }
+
+    fun checarCanvasWebgl(tentativa: Int = 1) {
+        val web = embeddedWebView ?: return
+        val js = """
+            (function() {
+              const canvas = document.querySelector('canvas');
+              if (!canvas) return 'no_canvas';
+              const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
+              if (gl) return 'webgl_ok';
+              return 'canvas_ok';
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            if (result.isBlank() || result == "webgl_ok" || result == "canvas_ok" || result == "no_canvas") {
+                webLoadError = null
+                Log.i(VTT_UI_LOG, "webview probe result=$result tentativa=$tentativa")
+            } else {
+                Log.w(VTT_UI_LOG, "webview probe result=$result tentativa=$tentativa")
+                if (tentativa < 10) {
+                    web.postDelayed({ checarCanvasWebgl(tentativa + 1) }, 1000)
+                } else {
+                    webLoadError = "Canvas/WebGL indisponivel: $result"
+                }
+            }
+        }
+    }
+
+    fun injetarConsoleBridge() {
+        val web = embeddedWebView ?: return
+        val js = """
+            (function() {
+              if (window.__gurpsConsoleHook) return;
+              window.__gurpsConsoleHook = true;
+              window.addEventListener('error', function(e) {
+                if (window.Android && window.Android.onVttEvent) {
+                  window.Android.onVttEvent('js_error:' + (e.message || 'erro') + ' @' + (e.filename || ''));
+                }
+              });
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js, null)
     }
 
     LaunchedEffect(context) {
@@ -458,172 +506,225 @@ fun TabVtt(viewModel: FichaViewModel) {
     }
 
     StandardTabColumn {
-        SectionCard(title = "Visual VTT (Embed)") {
+        SectionCard(title = "VTT") {
             Text(
-                text = "Modo local: use o visual embutido para ver mapa/grid sem sair do app.",
+                text = "Digite a sala e toque em Entrar. O VTT abre embutido.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            Button(
+                onClick = { showConfig = !showConfig },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                VttViewMode.entries.forEach { mode ->
-                    FilterChip(
-                        selected = viewMode == mode,
-                        onClick = { viewMode = mode },
-                        label = { Text(mode.label) }
-                    )
-                }
+                Text(if (showConfig) "Ocultar configuracoes" else "Mostrar configuracoes")
             }
 
-            if (viewMode == VttViewMode.MAPA) {
-                val baseUrl = webUrl.trim().trimEnd('/')
-                val roomParam = Uri.encode(roomKey.trim())
-                val playerParam = Uri.encode(playerId.trim())
-                val embedUrl = if (baseUrl.isBlank()) {
-                    ""
-                } else if (roomParam.isBlank() || playerParam.isBlank()) {
-                    baseUrl
-                } else {
-                    "$baseUrl/?roomKey=$roomParam&playerName=$playerParam"
-                }
-                if (embedUrl.isBlank()) {
-                    Text(
-                        text = "Defina URL do visual, sala e player para abrir o embed.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                } else {
-                    AndroidView(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(360.dp),
-                        factory = { ctx ->
-                            WebView(ctx).apply {
-                                embeddedWebView = this
-                                settings.javaScriptEnabled = true
-                                settings.domStorageEnabled = true
-                                settings.mediaPlaybackRequiresUserGesture = false
-                                addJavascriptInterface(
-                                    object {
-                                        @JavascriptInterface
-                                        fun onVttEvent(log: String?) {
-                                            lastAudioEvent = log.orEmpty()
-                                            Log.i(VTT_UI_LOG, "vttBridge event=${log.orEmpty()}")
-                                        }
-
-                                        @JavascriptInterface
-                                        fun onAudioStatus(status: String?) {
-                                            lastAudioEvent = status.orEmpty()
-                                            Log.i(VTT_UI_LOG, "vttBridge audioStatus=${status.orEmpty()}")
-                                        }
-                                    },
-                                    "Android"
-                                )
-                                webViewClient = object : WebViewClient() {
-                                    override fun onPageFinished(view: WebView?, url: String?) {
-                                        super.onPageFinished(view, url)
-                                        if (audioAutoJoin) {
-                                            view?.postDelayed({
-                                                enviarComandoAudioEmbed("join")
-                                            }, 800)
-                                        }
-                                    }
-                                }
-                                webChromeClient = object : WebChromeClient() {
-                                    override fun onPermissionRequest(request: PermissionRequest?) {
-                                        if (request == null) return
-                                        val audioResources = request.resources
-                                            ?.filter { it == PermissionRequest.RESOURCE_AUDIO_CAPTURE }
-                                            ?.toTypedArray()
-                                        if (!audioResources.isNullOrEmpty()) {
-                                            request.grant(audioResources)
-                                            Log.i(VTT_UI_LOG, "webview permission granted audio capture")
-                                        } else {
-                                            request.grant(request.resources)
-                                            Log.i(VTT_UI_LOG, "webview permission granted resources=${request.resources?.joinToString()}")
-                                        }
-                                    }
-                                }
-                                loadUrl(embedUrl)
-                            }
-                        },
-                        update = { webView ->
-                            embeddedWebView = webView
-                            val tagUrl = webView.getTag(android.R.id.primary) as? String
-                            val targetUrl = "$embedUrl#$webReloadTick"
-                            if (tagUrl != targetUrl) {
-                                webView.setTag(android.R.id.primary, targetUrl)
-                                webView.loadUrl(embedUrl)
-                            }
-                        }
-                    )
-                    Button(
-                        onClick = { webReloadTick += 1 },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Recarregar visual VTT")
-                    }
-
-                    Text(
-                        text = "Audio (Embed)",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-                    ) {
-                        FilterChip(
-                            selected = audioAutoJoin,
-                            onClick = { audioAutoJoin = !audioAutoJoin },
-                            label = { Text(if (audioAutoJoin) "Auto-join ativo" else "Auto-join desligado") }
-                        )
-                    }
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-                    ) {
-                        Button(
-                            onClick = { enviarComandoAudioEmbed("join") },
-                            modifier = Modifier.weight(1f)
-                        ) { Text("Entrar audio") }
-                        Button(
-                            onClick = { enviarComandoAudioEmbed("toggle_mic") },
-                            modifier = Modifier.weight(1f)
-                        ) { Text("Mic") }
-                        Button(
-                            onClick = { enviarComandoAudioEmbed("toggle_deafen") },
-                            modifier = Modifier.weight(1f)
-                        ) { Text("Som") }
-                    }
-                    Text(
-                        text = audioCommandStatus,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "Evento JS: $lastAudioEvent",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+            val baseUrl = webUrl.trim().trimEnd('/')
+            val roomParam = Uri.encode(roomKey.trim())
+            val playerParam = Uri.encode(playerId.trim())
+            val tokenParam = tokenId?.takeIf { it.isNotBlank() }?.let { "&tokenId=${Uri.encode(it)}" }.orEmpty()
+            val embedUrl = if (baseUrl.isBlank()) {
+                ""
+            } else if (roomParam.isBlank() || playerParam.isBlank()) {
+                baseUrl
             } else {
+                "$baseUrl/?embed=1&roomKey=$roomParam&playerName=$playerParam$tokenParam"
+            }
+            if (embedUrl.isBlank()) {
                 Text(
-                    text = "Modo painel ativo. Use os comandos de conexao e rolagem abaixo.",
+                    text = "Informe a sala para abrir o VTT.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            } else {
+                AndroidView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(16f / 9f)
+                        .heightIn(min = 520.dp),
+                    factory = { ctx ->
+                        WebView(ctx).apply {
+                            embeddedWebView = this
+                            WebView.setWebContentsDebuggingEnabled(true)
+                            setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+                            settings.javaScriptEnabled = true
+                            settings.domStorageEnabled = true
+                            settings.mediaPlaybackRequiresUserGesture = false
+                            settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                            addJavascriptInterface(
+                                object {
+                                    @JavascriptInterface
+                                    fun onVttEvent(log: String?) {
+                                        lastAudioEvent = log.orEmpty()
+                                        Log.i(VTT_UI_LOG, "vttBridge event=${log.orEmpty()}")
+                                    }
+
+                                    @JavascriptInterface
+                                    fun onAudioStatus(status: String?) {
+                                        lastAudioEvent = status.orEmpty()
+                                        Log.i(VTT_UI_LOG, "vttBridge audioStatus=${status.orEmpty()}")
+                                    }
+                                },
+                                "Android"
+                            )
+                            webViewClient = object : WebViewClient() {
+                                override fun onReceivedError(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                    error: WebResourceError?
+                                ) {
+                                    super.onReceivedError(view, request, error)
+                                    if (request?.isForMainFrame == true) {
+                                        webLoadError = error?.description?.toString()
+                                        Log.w(
+                                            VTT_UI_LOG,
+                                            "webview error=${error?.description} url=${request.url}"
+                                        )
+                                    }
+                                }
+
+                                override fun onReceivedHttpError(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                    errorResponse: WebResourceResponse?
+                                ) {
+                                    super.onReceivedHttpError(view, request, errorResponse)
+                                    if (request?.isForMainFrame == true) {
+                                        webLoadError = "HTTP ${errorResponse?.statusCode}"
+                                        Log.w(
+                                            VTT_UI_LOG,
+                                            "webview httpError=${errorResponse?.statusCode} url=${request.url}"
+                                        )
+                                    }
+                                }
+
+                                override fun onPageFinished(view: WebView?, url: String?) {
+                                    super.onPageFinished(view, url)
+                                    webLoadError = null
+                                    view?.postDelayed({ checarCanvasWebgl() }, 600)
+                                    if (audioAutoJoin) {
+                                        view?.postDelayed({
+                                            enviarComandoAudioEmbed("join")
+                                        }, 800)
+                                    }
+                                    injetarConsoleBridge()
+                                }
+                            }
+                            webChromeClient = object : WebChromeClient() {
+                                override fun onPermissionRequest(request: PermissionRequest?) {
+                                    if (request == null) return
+                                    val audioResources = request.resources
+                                        ?.filter { it == PermissionRequest.RESOURCE_AUDIO_CAPTURE }
+                                        ?.toTypedArray()
+                                    if (!audioResources.isNullOrEmpty()) {
+                                        request.grant(audioResources)
+                                        Log.i(VTT_UI_LOG, "webview permission granted audio capture")
+                                    } else {
+                                        request.grant(request.resources)
+                                        Log.i(
+                                            VTT_UI_LOG,
+                                            "webview permission granted resources=${request.resources?.joinToString()}"
+                                        )
+                                    }
+                                }
+
+                                override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                                    val msg = consoleMessage?.message()?.take(200).orEmpty()
+                                    webConsoleLast = if (msg.isBlank()) null else msg
+                                    Log.i(VTT_UI_LOG, "webview console=${msg}")
+                                    return super.onConsoleMessage(consoleMessage)
+                                }
+                            }
+                            loadUrl(embedUrl)
+                        }
+                    },
+                    update = { webView ->
+                        embeddedWebView = webView
+                        val tagUrl = webView.getTag(R.id.vtt_webview_tag) as? String
+                        val targetUrl = "$embedUrl#$webReloadTick"
+                        if (tagUrl != targetUrl) {
+                            webView.setTag(R.id.vtt_webview_tag, targetUrl)
+                            webView.loadUrl(embedUrl)
+                        }
+                    }
+                )
+                Button(
+                    onClick = { webReloadTick += 1 },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Recarregar mapa")
+                }
+                if (!webLoadError.isNullOrBlank()) {
+                    val friendly = if (webLoadError?.contains("canvas", ignoreCase = true) == true) {
+                        "Mapa aguardando carregamento pelo mestre."
+                    } else webLoadError.orEmpty()
+                    Text(
+                        text = friendly,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (webLoadError?.contains("canvas", ignoreCase = true) == true)
+                            MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.error
+                    )
+                }
+                if (!webConsoleLast.isNullOrBlank()) {
+                    Text(
+                        text = "Console: ${webConsoleLast}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Text(
+                    text = "Audio (Embed)",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                ) {
+                    FilterChip(
+                        selected = audioAutoJoin,
+                        onClick = { audioAutoJoin = !audioAutoJoin },
+                        label = { Text(if (audioAutoJoin) "Auto-join ativo" else "Auto-join desligado") }
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                ) {
+                    Button(
+                        onClick = { enviarComandoAudioEmbed("join") },
+                        modifier = Modifier.weight(1f)
+                    ) { Text("Entrar audio") }
+                    Button(
+                        onClick = { enviarComandoAudioEmbed("toggle_mic") },
+                        modifier = Modifier.weight(1f)
+                    ) { Text("Mic") }
+                    Button(
+                        onClick = { enviarComandoAudioEmbed("toggle_deafen") },
+                        modifier = Modifier.weight(1f)
+                    ) { Text("Som") }
+                }
+                Text(
+                    text = audioCommandStatus,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "Evento JS: $lastAudioEvent",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
 
-        SectionCard(title = "Conexao VTT") {
-            Text(
-                text = "Aba VTT (shell) ativa. Integracao de sessao e rolagem sera ligada pelos proximos lotes.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        if (showConfig) {
+            SectionCard(title = "Configuracoes VTT") {
+                Text(
+                    text = "Conecte sua sala e defina URLs basicas.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             OutlinedTextField(
                 value = serverUrl,
                 onValueChange = { serverUrl = it },
@@ -754,6 +855,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                 ) {
                     Text("Limpar sessao local")
                 }
+            }
             }
         }
 

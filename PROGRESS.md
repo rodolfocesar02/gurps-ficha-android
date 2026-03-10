@@ -1,6 +1,30 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-09
+Atualizado em: 2026-03-10
+
+## Atualização Rápida - 2026-03-10 (Aba VTT Embed)
+Status: `EM ANDAMENTO`
+
+Escopo executado:
+1. Aba `VTT` reativada na V2 com WebView embed (mapa/grid dentro do app).
+2. WebView com `hardware acceleration` forçado via `setLayerType(HARDWARE)` e `android:hardwareAccelerated="true"` no Manifest.
+3. Permissão adicionada para áudio: `android.permission.MODIFY_AUDIO_SETTINGS`.
+4. Tratamento de erro do WebView no UI (main-frame, HTTP e console).
+5. Diagnóstico WebGL inline: checagem `canvas/webgl` e exibição de erro no app.
+6. WebView debug habilitado (`WebView.setWebContentsDebuggingEnabled(true)`).
+7. Corrigido bloco do `AndroidView`/`WebView` (sintaxe Kotlin) e reinstalado visual no emulador.
+8. Default da aba VTT apontando para produção (API/Web), layout 16:9 full embed, mensagem neutra de carregamento (“aguardando mestre”) e campo de configuração avançada oculto por padrão.
+
+Estado atual:
+1. App compila e instala (visual).
+2. VTT no desktop renderiza mapa/grid normalmente.
+3. No emulador, o embed mostra `Canvas/WebGL indisponível: no_canvas` (tela preta).
+
+Pendências imediatas:
+1. Investigar por que WebView do emulador não expõe Canvas/WebGL (provável limitação de WebView/Emulador).
+2. Implementar fallback 2D (Canvas) no VTT quando `no_canvas`/`no_webgl` for detectado no WebView.
+3. Confirmar logs do WebView via `chrome://inspect` após fallback.
+4. Revalidar render do mapa/grid dentro da Aba VTT.
 
 ## Atualização Rápida - 2026-03-09 (Desvantagens)
 Status: `CONCLUÍDO`
