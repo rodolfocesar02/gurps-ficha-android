@@ -161,6 +161,46 @@ Evidência parcial:
 5. Commit por lote com mensagem objetiva (`lote-N: ...`).
 6. No pipeline do AGENTE GURPS, páginas de abertura (capa/sumário) devem ser classificadas separadamente para não contaminar a métrica de suspeitas acionáveis.
 
+## Regras Operacionais Oficiais - Aba VTT (Fixas)
+1. Regra de execução por lotes: cada lote tem objetivo, passos pequenos, validação e encerramento formal.
+2. Regra de passo atômico: 1 passo = 1 mudança funcional clara + 1 validação + 1 update no `PROGRESS` + 1 commit.
+3. Regra de progresso: ao finalizar cada passo, atualizar `PROGRESS.md` com "feito", "evidência" e "pendência restante".
+4. Regra de commit: mensagem objetiva por passo/lote, sem agrupar mudanças grandes não relacionadas.
+5. Regra de não-regressão: nunca quebrar fluxo já funcional para avançar feature nova.
+6. Regra de fallback: se bridge nova falhar, manter fallback temporário até estabilizar.
+7. Regra de validação técnica mínima (App Android): `:app:assembleVisualDebug -x lint` precisa passar no passo alterado.
+8. Regra de validação técnica mínima (VTT Web): build frontend precisa passar após mudança de bridge/UI.
+9. Regra de validação funcional mínima: testar conexão, join automático, render do mapa, seleção de token e 1 ação de rolagem.
+10. Regra de validação de contrato: payloads `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT` devem ser aceitos sem erro.
+11. Regra de evidência: registrar no `PROGRESS` o que foi testado e resultado objetivo (OK/FALHA + causa).
+12. Regra de comunicação durante execução: reportar sempre "o que estou fazendo agora" e "o que falta para fechar o passo".
+13. Regra de bloqueio: se surgir impedimento externo (ex.: limitação WebView, backend faltando endpoint), parar e registrar bloqueio com estratégia alternativa.
+14. Regra de escopo: não abrir frentes paralelas grandes; concluir lote corrente antes do próximo.
+15. Regra de qualidade: evitar soluções provisórias eternas; cada workaround deve ter plano explícito de remoção.
+
+## Regras de Funcionamento do Projeto - Aba VTT (Fixas)
+1. Regra de negócio principal: o VTT deve abrir dentro do app, em modo imersivo, sem fluxo manual técnico para usuário leigo.
+2. Regra de entrada mínima: usuário entra na aba VTT, informa sala, toca Entrar; nome do personagem vem automático da ficha.
+3. Regra de UX: quando conectado, a tela da aba VTT deve priorizar mapa/token (não "retângulo de navegador" com UI de debug).
+4. Regra de token: não considerar entrega válida sem ciclo completo de token do jogador no mapa (criar/localizar/selecionar/mover).
+5. Regra de integração de ficha: sem import manual da ficha no VTT; snapshot da ficha deve entrar automaticamente no join.
+6. Regra de rolagem: ações de ficha devem sair pelo contrato de integração (bridge/ws), com resultado visível no VTT.
+7. Regra de sincronismo: alterações críticas (PV/PF/status/ação) precisam refletir entre app e VTT.
+8. Regra de validação de contrato: payloads `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT` devem ser aceitos sem erro.
+9. Regra de evidência: registrar no `PROGRESS` o que foi testado e resultado objetivo (OK/FALHA + causa).
+10. Regra de comunicação durante execução: reportar sempre "o que estou fazendo agora" e "o que falta para fechar o passo".
+11. Regra de bloqueio: se surgir impedimento externo (ex.: limitação WebView, backend faltando endpoint), parar e registrar bloqueio com estratégia alternativa.
+12. Regra de escopo: não abrir frentes paralelas grandes; concluir lote corrente antes do próximo.
+13. Regra de qualidade: evitar soluções provisórias eternas; cada workaround deve ter plano explícito de remoção.
+
+### Regra de Aceite - "Aba VTT pronta"
+1. Entrar na sala com 1 botão.
+2. Mapa ocupa área principal da aba.
+3. Token do jogador aparece e interage.
+4. Ações de ficha funcionam no token/alvo.
+5. Estado de combate sincroniza com ficha.
+6. Usuário leigo não precisa configurar rede/manual técnico para uso normal.
+
 ## Saúde Atual (2026-03-08)
 1. Build (visual/pracego): `100%` (compilação OK).
 2. Testes críticos (pré-requisito/motor): `100%` (suite mínima OK).
