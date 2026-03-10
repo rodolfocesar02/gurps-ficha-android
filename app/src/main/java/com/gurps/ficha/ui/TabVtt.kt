@@ -1257,7 +1257,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                     TextButton(
                         onClick = {
                             showTokenActionDialog = false
-                            confirmActionDialog = true
+                            enviarAcaoRolagem()
                         }
                     ) { Text("Enviar") }
                 },
