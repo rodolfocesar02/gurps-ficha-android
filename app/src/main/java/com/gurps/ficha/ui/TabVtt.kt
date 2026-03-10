@@ -160,6 +160,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     var selectedTokenIsOwn by remember { mutableStateOf(false) }
     var showTokenActionDialog by remember { mutableStateOf(false) }
     var selectedActionKey by remember { mutableStateOf<String?>(null) }
+    var immersiveMapMode by remember { mutableStateOf(true) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -749,6 +750,8 @@ fun TabVtt(viewModel: FichaViewModel) {
         VttConnectionState.ERROR -> MaterialTheme.colorScheme.error
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
+    val isConnected = connectionState == VttConnectionState.CONNECTED
+    val showDetails = showConfig || !isConnected || !immersiveMapMode
 
     StandardTabColumn {
         SectionCard(title = "VTT") {
@@ -763,6 +766,11 @@ fun TabVtt(viewModel: FichaViewModel) {
             ) {
                 Text(if (showConfig) "Ocultar configuracoes" else "Mostrar configuracoes")
             }
+            FilterChip(
+                selected = immersiveMapMode,
+                onClick = { immersiveMapMode = !immersiveMapMode },
+                label = { Text(if (immersiveMapMode) "Modo imersivo ativo" else "Modo imersivo desligado") }
+            )
 
             val baseUrl = webUrl.trim().trimEnd('/')
             val roomParam = Uri.encode(roomKey.trim())
@@ -785,8 +793,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                 AndroidView(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                        .heightIn(min = 520.dp),
+                        .then(
+                            if (isConnected && immersiveMapMode) {
+                                Modifier.heightIn(min = 920.dp)
+                            } else {
+                                Modifier.aspectRatio(16f / 9f).heightIn(min = 520.dp)
+                            }
+                        ),
                     factory = { ctx ->
                         WebView(ctx).apply {
                             embeddedWebView = this
@@ -948,69 +961,70 @@ fun TabVtt(viewModel: FichaViewModel) {
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
-                Text(
-                    text = "Audio (Embed)",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                if (!lastSnackbar.isNullOrBlank()) {
+                if (showDetails) {
                     Text(
-                        text = lastSnackbar!!,
+                        text = "Audio (Embed)",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    if (!lastSnackbar.isNullOrBlank()) {
+                        Text(
+                            text = lastSnackbar!!,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                    ) {
+                        FilterChip(
+                            selected = audioAutoJoin,
+                            onClick = { audioAutoJoin = !audioAutoJoin },
+                            label = { Text(if (audioAutoJoin) "Auto-join ativo" else "Auto-join desligado") }
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                    ) {
+                        Button(
+                            onClick = { enviarComandoAudioEmbed("join") },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("Entrar") }
+                        Button(
+                            onClick = { enviarComandoAudioEmbed("toggle_mic") },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("Mic") }
+                        Button(
+                            onClick = { enviarComandoAudioEmbed("toggle_deafen") },
+                            modifier = Modifier.weight(1f)
+                        ) { Text("Som") }
+                    }
+                    Text(
+                        text = audioCommandStatus,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-                ) {
-                    FilterChip(
-                        selected = audioAutoJoin,
-                        onClick = { audioAutoJoin = !audioAutoJoin },
-                        label = { Text(if (audioAutoJoin) "Auto-join ativo" else "Auto-join desligado") }
+                    Text(
+                        text = "Evento JS: $lastAudioEvent",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-                ) {
-                    Button(
-                        onClick = { enviarComandoAudioEmbed("join") },
-                        modifier = Modifier.weight(1f)
-                    ) { Text("Entrar") }
-                    Button(
-                        onClick = { enviarComandoAudioEmbed("toggle_mic") },
-                        modifier = Modifier.weight(1f)
-                    ) { Text("Mic") }
-                    Button(
-                        onClick = { enviarComandoAudioEmbed("toggle_deafen") },
-                        modifier = Modifier.weight(1f)
-                    ) { Text("Som") }
-                }
-                Text(
-                    text = audioCommandStatus,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Text(
-                    text = "Evento JS: $lastAudioEvent",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
 
-                Text(
-                    text = "Controles do mapa",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-                ) {
-                    Button(onClick = { enviarComandoEmbed("ping") }, modifier = Modifier.weight(1f)) { Text("Ping") }
-                    Button(onClick = { enviarComandoEmbed("zoom_in") }, modifier = Modifier.weight(1f)) { Text("Zoom +") }
-                    Button(onClick = { enviarComandoEmbed("zoom_out") }, modifier = Modifier.weight(1f)) { Text("Zoom -") }
+                    Text(
+                        text = "Controles do mapa",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                    ) {
+                        Button(onClick = { enviarComandoEmbed("ping") }, modifier = Modifier.weight(1f)) { Text("Ping") }
+                        Button(onClick = { enviarComandoEmbed("zoom_in") }, modifier = Modifier.weight(1f)) { Text("Zoom +") }
+                        Button(onClick = { enviarComandoEmbed("zoom_out") }, modifier = Modifier.weight(1f)) { Text("Zoom -") }
+                    }
                 }
             }
         }
@@ -1156,7 +1170,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
         }
 
-        SectionCard(title = "Acoes de Rolagem (VTT)") {
+        if (showDetails) SectionCard(title = "Acoes de Rolagem (VTT)") {
             val personagem = viewModel.personagem
             val primeiraPericia = personagem.pericias.firstOrNull()?.nome.orEmpty()
             val primeiraMagia = personagem.magias.firstOrNull()?.nome.orEmpty()
@@ -1274,13 +1288,13 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
         }
 
-        SummaryFooterCard(title = "Proximos passos") {
+        if (showDetails) SummaryFooterCard(title = "Proximos passos") {
             Text(text = "1. Join de sessao VTT", style = MaterialTheme.typography.bodySmall)
             Text(text = "2. Vinculo player e token", style = MaterialTheme.typography.bodySmall)
             Text(text = "3. Rolagem contextual via contrato v1", style = MaterialTheme.typography.bodySmall)
         }
 
-        SectionCard(title = "Diagnostico local") {
+        if (showDetails) SectionCard(title = "Diagnostico local") {
             Text(
                 text = "Ultima acao: $lastActionSummary",
                 style = MaterialTheme.typography.bodySmall
