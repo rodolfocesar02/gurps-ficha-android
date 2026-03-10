@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -48,6 +50,7 @@ import com.gurps.ficha.vtt.VttRollRequest
 import com.gurps.ficha.vtt.VttRollService
 import com.gurps.ficha.vtt.VttTokenBindService
 import com.gurps.ficha.viewmodel.FichaViewModel
+import com.gurps.ficha.ui.UiTokens
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -129,6 +132,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     var rollResultJson by remember { mutableStateOf<String?>(null) }
     var audioStateJson by remember { mutableStateOf<String?>(null) }
     var fichaSyncJson by remember { mutableStateOf<String?>(null) }
+    var lastSnackbar by remember { mutableStateOf<String?>(null) }
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
@@ -162,6 +166,24 @@ fun TabVtt(viewModel: FichaViewModel) {
             val result = raw?.trim('"').orEmpty()
             audioCommandStatus = "Comando ${action}: ${result.ifBlank { "ok" }}"
             Log.i(VTT_UI_LOG, "audioCommand action=$action result=$result")
+        }
+    }
+
+    fun enviarComandoEmbed(action: String) {
+        val web = embeddedWebView ?: return
+        val js = """
+            (function() {
+              try {
+                window.dispatchEvent(new CustomEvent('gurps-android-command', { detail: { action: '${'$'}action' } }));
+                return 'sent';
+              } catch (e) {
+                return 'error:' + e.message;
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "embedCommand action=$action result=$result")
         }
     }
 
@@ -587,7 +609,10 @@ fun TabVtt(viewModel: FichaViewModel) {
                                         val msg = log.orEmpty()
                                         when {
                                             msg.startsWith("ROOM_STATE:") -> roomStateJson = msg.removePrefix("ROOM_STATE:")
-                                            msg.startsWith("ROLL_RESULT:") -> rollResultJson = msg.removePrefix("ROLL_RESULT:")
+                                            msg.startsWith("ROLL_RESULT:") -> {
+                                                rollResultJson = msg.removePrefix("ROLL_RESULT:")
+                                                lastSnackbar = "Rolagem: $rollResultJson"
+                                            }
                                             msg.startsWith("AUDIO_STATE:") -> audioStateJson = msg.removePrefix("AUDIO_STATE:")
                                             msg.startsWith("FICHA_SYNC:") -> fichaSyncJson = msg.removePrefix("FICHA_SYNC:")
                                         }
@@ -709,14 +734,21 @@ fun TabVtt(viewModel: FichaViewModel) {
                 }
                 if (!roomStateJson.isNullOrBlank()) {
                     Text(
-                        text = "Estado: ${roomStateJson}",
+                        text = "Sala: ${roomStateJson}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 if (!rollResultJson.isNullOrBlank()) {
                     Text(
-                        text = "Rolagem: ${rollResultJson}",
+                        text = "Última rolagem: ${rollResultJson}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (!audioStateJson.isNullOrBlank()) {
+                    Text(
+                        text = "Áudio: ${audioStateJson}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -727,6 +759,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.SemiBold
                 )
+                if (!lastSnackbar.isNullOrBlank()) {
+                    Text(
+                        text = lastSnackbar!!,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
@@ -744,7 +783,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                     Button(
                         onClick = { enviarComandoAudioEmbed("join") },
                         modifier = Modifier.weight(1f)
-                    ) { Text("Entrar audio") }
+                    ) { Text("Entrar") }
                     Button(
                         onClick = { enviarComandoAudioEmbed("toggle_mic") },
                         modifier = Modifier.weight(1f)
@@ -764,6 +803,20 @@ fun TabVtt(viewModel: FichaViewModel) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+                Text(
+                    text = "Controles do mapa",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                ) {
+                    Button(onClick = { enviarComandoEmbed("ping") }, modifier = Modifier.weight(1f)) { Text("Ping") }
+                    Button(onClick = { enviarComandoEmbed("zoom_in") }, modifier = Modifier.weight(1f)) { Text("Zoom +") }
+                    Button(onClick = { enviarComandoEmbed("zoom_out") }, modifier = Modifier.weight(1f)) { Text("Zoom -") }
+                }
             }
         }
 
