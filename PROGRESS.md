@@ -102,7 +102,8 @@ Evidência parcial:
 6. Mapa de foco documentado em `docs/v2/PRACEGO_FOCUS_MAP_V2_4.md`.
 7. Novo utilitário `Modifier.pracegoTraversal(...)` aplicado no menu principal e nos pontos de entrada de Perícias/Técnicas/Magias.
 8. Aba Rolagem: descrição disponível nas listas de Perícias/Técnicas/Magias (toque no nome abre popup).
-9. Validação executada:
+9. Aba Rolagem: opção de dano ST alternável entre `GdP` e `GeB` quando não houver arma selecionada.
+10. Validação executada:
    - `./gradlew :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin` (OK)
 
 ## Regra Permanente - Higiene de Texto (acentos/artefatos)
