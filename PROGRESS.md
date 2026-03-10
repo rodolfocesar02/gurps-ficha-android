@@ -16,6 +16,7 @@ Escopo executado:
 8. Default da aba VTT apontando para produção (API/Web), layout 16:9 full embed, mensagem neutra de carregamento (“aguardando mestre”) e campo de configuração avançada oculto por padrão.
 9. Bridge parcial app→VTT: ficha JSON enviada automaticamente ao carregar o embed; captura de ROOM_STATE/ROLL_RESULT/AUDIO_STATE/FICHA_SYNC no app para depuração.
 10. HUD parcial: últimos estados/rolagens exibidos na aba; comandos rápidos de ping/zoom/mic/voz dispatchados para o embed.
+11. Build visual debug recompilado (validateActiveJsonAssets OK) após ajuste de HUD/bridge.
 
 Estado atual:
 1. App compila e instala (visual).
