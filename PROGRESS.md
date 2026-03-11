@@ -439,3 +439,24 @@ Evidencia:
 
 Pendencia restante:
 1. Revalidar smoke manual no aparelho real para confirmar ausencia do erro de console e fluxo de entrada estavel.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.6 Passo 1 - Auditoria de Paridade)
+Status: CONCLUIDO
+
+Feito:
+1. Executada auditoria de paridade entre Aba_VTT (Android) e VTT_Mestre (frontend/backend).
+2. Validacoes tecnicas executadas no passo:
+   - backend VTT 
+pm test: 34/34 OK
+   - frontend VTT 
+pm run build: OK
+   - Android :app:assembleVisualDebug -x lint: OK
+3. Matriz de contratos bridge consolidada com status por evento (OK/GAP).
+4. Gaps objetivos encontrados: listener ausente de gurps-android-ficha no App.tsx e emissao ausente de AUDIO_STATE para o app.
+
+Evidencia:
+1. Relatorio gerado: VTT_FICHA/RELATORIO_PARIDADE_ABA_VTT_X_VTT_MESTRE_2026-03-11.md.
+
+Pendencia restante:
+1. FPAR.6 Passo 2: implementar fechamento dos 2 gaps de bridge identificados.
+2. FPAR.6 Passo 3: smoke manual integrado mestre + Aba_VTT (roteiro guiado).
