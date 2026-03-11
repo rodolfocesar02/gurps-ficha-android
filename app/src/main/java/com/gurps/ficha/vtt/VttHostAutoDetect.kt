@@ -13,7 +13,7 @@ object VttHostAutoDetect {
     )
 
     suspend fun detectLanHostFromArp(timeoutMs: Int = 450): String? = withContext(Dispatchers.IO) {
-        val candidates = readArpCandidates()
+        val candidates = runCatching { readArpCandidates() }.getOrDefault(emptyList())
         if (candidates.isEmpty()) return@withContext null
 
         for (host in candidates) {
@@ -58,15 +58,17 @@ object VttHostAutoDetect {
         if (!arpFile.exists()) return emptyList()
 
         val out = LinkedHashSet<String>()
-        arpFile.forEachLine { line ->
-            val t = line.trim().split(Regex("\\s+"))
-            if (t.size < 6) return@forEachLine
-            val ip = t[0]
-            val flags = t[2]
-            val mac = t[3]
-            if (flags != "0x2") return@forEachLine
-            if (mac.equals("00:00:00:00:00:00", ignoreCase = true)) return@forEachLine
-            if (isPrivateIpv4(ip) && ip != "127.0.0.1") out += ip
+        runCatching {
+            arpFile.forEachLine { line ->
+                val t = line.trim().split(Regex("\\s+"))
+                if (t.size < 6) return@forEachLine
+                val ip = t[0]
+                val flags = t[2]
+                val mac = t[3]
+                if (flags != "0x2") return@forEachLine
+                if (mac.equals("00:00:00:00:00:00", ignoreCase = true)) return@forEachLine
+                if (isPrivateIpv4(ip) && ip != "127.0.0.1") out += ip
+            }
         }
         return out.toList()
     }

@@ -529,20 +529,28 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
 
         scope.launch {
-            if (isLoopbackUrl(serverUrl) || isLoopbackUrl(webUrl)) {
-                statusMessage = "Detectando servidor VTT na rede local..."
-                val detectedHost = VttHostAutoDetect.detectLanHostFromArp()
-                if (detectedHost != null) {
-                    serverUrl = replaceLoopbackHost(serverUrl, detectedHost)
-                    webUrl = replaceLoopbackHost(webUrl, detectedHost)
-                    statusMessage = "Servidor detectado em $detectedHost. Conectando..."
-                    Log.i(VTT_UI_LOG, "autoHostDetect success host=$detectedHost")
-                } else {
-                    connectionState = VttConnectionState.ERROR
-                    statusMessage = "Nao encontrei o servidor na rede. Deixe API/Web com IP do PC (ex.: 192.168.x.x)."
-                    Log.w(VTT_UI_LOG, "autoHostDetect failure")
-                    return@launch
+            val detectResult = runCatching {
+                if (isLoopbackUrl(serverUrl) || isLoopbackUrl(webUrl)) {
+                    statusMessage = "Detectando servidor VTT na rede local..."
+                    val detectedHost = VttHostAutoDetect.detectLanHostFromArp()
+                    if (detectedHost != null) {
+                        serverUrl = replaceLoopbackHost(serverUrl, detectedHost)
+                        webUrl = replaceLoopbackHost(webUrl, detectedHost)
+                        statusMessage = "Servidor detectado em $detectedHost. Conectando..."
+                        Log.i(VTT_UI_LOG, "autoHostDetect success host=$detectedHost")
+                    } else {
+                        connectionState = VttConnectionState.ERROR
+                        statusMessage = "Nao encontrei o servidor na rede. Deixe API/Web com IP do PC (ex.: 192.168.x.x)."
+                        Log.w(VTT_UI_LOG, "autoHostDetect failure")
+                        return@launch
+                    }
                 }
+            }
+            if (detectResult.isFailure) {
+                connectionState = VttConnectionState.ERROR
+                statusMessage = "Falha ao detectar host local. Informe o IP do PC (ex.: 192.168.x.x)."
+                Log.e(VTT_UI_LOG, "autoHostDetect crash-safe fallback", detectResult.exceptionOrNull())
+                return@launch
             }
 
             VttSessionService.joinSession(
