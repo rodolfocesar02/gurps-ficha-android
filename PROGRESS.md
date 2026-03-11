@@ -409,3 +409,18 @@ Evidencia:
 
 Pendencia restante:
 1. FPAR.5 Passo 2: smoke manual assistido (mestre+jogador em sessao real) para fechar itens PARCIAL/BLOQUEADO e emitir aceite 100%.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.5 Passo 2 sincronizado)
+Status: CONCLUIDO (tecnico)
+
+Feito:
+1. VTT_Mestre recebeu teste de regressao automatizado para reconexao sem duplicacao de token.
+2. Revalidacao tecnica concluida:
+   - backend VTT `npm test`: 34/34 OK
+   - frontend VTT `npm run build`: OK
+
+Evidencia:
+1. Caso de teste novo em `backend/tests/rest.test.js` cobrindo reuso de token em `/api/v1/session/join`.
+
+Pendencia restante:
+1. Para aceite final de negocio, executar smoke manual assistido em aparelho real e registrar resultado final no checklist.
