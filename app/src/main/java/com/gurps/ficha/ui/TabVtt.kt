@@ -54,6 +54,7 @@ import com.gurps.ficha.vtt.VttTokenBindService
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.ui.UiTokens
 import com.google.gson.JsonParser
+import org.json.JSONObject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -74,7 +75,7 @@ private enum class VttEnvironment(
     val apiDefaultUrl: String,
     val webDefaultUrl: String
 ) {
-    DEV("Dev", "http://10.0.2.2:3001", "http://10.0.2.2:5177"),
+    DEV("Dev", "http://10.0.2.2:3001", "http://10.0.2.2:5176"),
     HOMOLOG(
         "Homolog",
         "https://seu-vtt-api-homolog.exemplo.com",
@@ -267,11 +268,11 @@ fun TabVtt(viewModel: FichaViewModel) {
     fun enviarFichaSnapshot() {
         val web = embeddedWebView ?: return
         val fichaJson = viewModel.exportarFichaJsonCompativel()
-        val safeJson = fichaJson.replace("\\", "\\\\").replace("'", "\\'")
+        val safeJsonLiteral = JSONObject.quote(fichaJson)
         val js = """
             (function() {
               try {
-                const payload = ${'"'}$safeJson${'"'};
+                const payload = $safeJsonLiteral;
                 const data = JSON.parse(payload);
                 const evt = new CustomEvent('gurps-android-ficha', { detail: data });
                 window.dispatchEvent(evt);

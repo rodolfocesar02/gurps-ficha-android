@@ -424,3 +424,18 @@ Evidencia:
 
 Pendencia restante:
 1. Para aceite final de negocio, executar smoke manual assistido em aparelho real e registrar resultado final no checklist.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.5 Passo 3)
+Status: CONCLUIDO
+
+Feito:
+1. Corrigida serializacao do snapshot de ficha enviado para o VTT embedado no Android.
+2. enviarFichaSnapshot() passou a usar JSONObject.quote(...) para gerar literal JS valido mesmo com aspas/campos como parencia.
+3. Eliminado risco de erro JS Unexpected identifier durante JSON.parse no WebView.
+
+Evidencia:
+1. Arquivo alterado: pp/src/main/java/com/gurps/ficha/ui/TabVtt.kt.
+2. Validacao tecnica minima Android: :app:assembleVisualDebug -x lint (OK em 2026-03-11).
+
+Pendencia restante:
+1. Revalidar smoke manual no aparelho real para confirmar ausencia do erro de console e fluxo de entrada estavel.
