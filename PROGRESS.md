@@ -360,3 +360,20 @@ Evidencia:
 
 Pendencia restante:
 1. Prosseguir FPAR.4 para validacoes de sincronismo e reconexao token-ficha.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.4 Passo 1)
+Status: CONCLUIDO
+
+Feito:
+1. Harden de recepcao `FICHA_SYNC` na Aba VTT Android (`TabVtt.kt`).
+2. Passou a validar alvo do sync por `playerId` e `tokenId` antes de importar, evitando sobrescrita de ficha de outro jogador.
+3. Incluida trilha de metadados do sync (`source`, `playerId`, `tokenId`) e controle de evento (`fichaSyncEventId`) para processamento consistente.
+4. Fallback legado (`FICHA_SYNC:`) mantido com tratamento explicito.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+
+Pendencia restante:
+1. FPAR.4 Passo 2: validar sessao real de reconexao sem duplicacao de token com ficha vinculada.
+2. FPAR.5: rodada final de nao regressao e checklist de aceite completo.
