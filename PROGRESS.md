@@ -460,3 +460,20 @@ Evidencia:
 Pendencia restante:
 1. FPAR.6 Passo 2: implementar fechamento dos 2 gaps de bridge identificados.
 2. FPAR.6 Passo 3: smoke manual integrado mestre + Aba_VTT (roteiro guiado).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.6 Passo 3 - Stress Aba_VTT)
+Status: CONCLUIDO
+
+Feito:
+1. Introduzido codec dedicado para payload de bridge JS: VttBridgeCodec.toJavascriptStringLiteral(...).
+2. Aba_VTT passou a usar o codec no envio de snapshot (TabVtt.kt).
+3. Criado teste de stress unitario: VttBridgeCodecStressTest (300 iteracoes com caracteres especiais, aspas, barra, unicode e emoji).
+4. Falha detectada no ciclo inicial: JSONObject.quote nao era estavel no contexto de teste JVM puro.
+5. Correcao aplicada: substituicao por escape manual deterministico no codec.
+
+Evidencia:
+1. :app:testVisualDebugUnitTest OK apos correcao (119 testes totais, sem falhas).
+2. :app:assembleVisualDebug -x lint OK no mesmo ciclo.
+
+Pendencia restante:
+1. FPAR.6 Passo 4: smoke manual integrado com VTT_Mestre em sessao real (join/mapa/token/roll/sync/audio).

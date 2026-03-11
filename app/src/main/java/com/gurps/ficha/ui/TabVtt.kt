@@ -51,10 +51,10 @@ import com.gurps.ficha.vtt.VttSessionStorage
 import com.gurps.ficha.vtt.VttRollRequest
 import com.gurps.ficha.vtt.VttRollService
 import com.gurps.ficha.vtt.VttTokenBindService
+import com.gurps.ficha.vtt.VttBridgeCodec
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.ui.UiTokens
 import com.google.gson.JsonParser
-import org.json.JSONObject
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -268,7 +268,7 @@ fun TabVtt(viewModel: FichaViewModel) {
     fun enviarFichaSnapshot() {
         val web = embeddedWebView ?: return
         val fichaJson = viewModel.exportarFichaJsonCompativel()
-        val safeJsonLiteral = JSONObject.quote(fichaJson)
+        val safeJsonLiteral = VttBridgeCodec.toJavascriptStringLiteral(fichaJson)
         val js = """
             (function() {
               try {
