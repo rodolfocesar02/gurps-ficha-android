@@ -85,7 +85,7 @@ private enum class VttEnvironment(
     PROD(
         "Prod",
         "https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app",
-        "https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app"
+        "https://surprising-compassion-production-7a88.up.railway.app"
     ),
     CUSTOM("Custom", "", "")
 }
@@ -105,6 +105,17 @@ private data class VttActionOption(
 )
 
 private const val VTT_UI_LOG = "VttTab"
+
+private fun normalizeProdWebUrl(currentWebUrl: String): String {
+    val trimmed = currentWebUrl.trim()
+    if (trimmed.isBlank()) return VttEnvironment.PROD.webDefaultUrl
+    val host = runCatching { Uri.parse(trimmed).host.orEmpty() }.getOrDefault("")
+    return if (host.equals("vttaudiovideo-e-ficha-de-gurps-production.up.railway.app", ignoreCase = true)) {
+        VttEnvironment.PROD.webDefaultUrl
+    } else {
+        currentWebUrl
+    }
+}
 
 private fun periciaLabel(pericia: com.gurps.ficha.model.PericiaSelecionada): String {
     return if (pericia.especializacao.isBlank()) {
@@ -479,7 +490,7 @@ fun TabVtt(viewModel: FichaViewModel) {
                 environment = VttEnvironment.CUSTOM
             }
             if (snap.webUrl.isNotBlank() && !isLoopbackUrl(snap.webUrl)) {
-                webUrl = snap.webUrl
+                webUrl = normalizeProdWebUrl(snap.webUrl)
                 environment = VttEnvironment.CUSTOM
             }
             if (snap.roomKey.isNotBlank()) roomKey = snap.roomKey
@@ -491,6 +502,9 @@ fun TabVtt(viewModel: FichaViewModel) {
             }
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
                 statusMessage = "Sessao local restaurada. Voce pode reconectar."
+            }
+            if (webUrl != normalizeProdWebUrl(webUrl)) {
+                webUrl = normalizeProdWebUrl(webUrl)
             }
             bootstrapDone = true
         }

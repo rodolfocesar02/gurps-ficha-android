@@ -2,6 +2,24 @@
 
 Atualizado em: 2026-03-11
 
+## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Producao Publica, Passo Final)
+Status: `CONCLUIDO`
+
+Feito:
+1. Ambiente `PROD` da Aba VTT atualizado para URLs publicas definitivas:
+- API: `https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app`
+- WEB: `https://surprising-compassion-production-7a88.up.railway.app`
+2. Migração automatica adicionada para sessões antigas:
+- se `webUrl` salvo apontar para dominio antigo do backend, o app troca automaticamente para o frontend publico.
+3. Mantida regra de UX simples: fluxo principal segue `Sala + Entrar`, com ajustes tecnicos apenas em area avancada.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android executada: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+
+Pendencia restante:
+1. Teste manual final no aparelho fisico com VTT publico (sem localhost/IP local), validando entrada por `Sala + Entrar`.
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote UX Simples, Passo 1)
 Status: `CONCLUIDO`
 
