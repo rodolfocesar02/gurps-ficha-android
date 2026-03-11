@@ -2,6 +2,22 @@
 
 Atualizado em: 2026-03-11
 
+## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
+Status: `CONCLUIDO`
+
+Feito:
+1. Aplicado hotfix anti-crash no fluxo de autodeteccao de host LAN.
+2. `VttHostAutoDetect` passou a tratar falhas de leitura de ARP com `runCatching` e fallback seguro.
+3. `TabVtt` passou a encapsular autodeteccao em bloco crash-safe; em excecao, retorna erro orientativo sem fechar app.
+
+Evidencia:
+1. Validacao tecnica minima Android executada: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+2. Fluxo de conexao agora entra em estado `ERROR` com mensagem amigavel em falha de autodeteccao, sem encerramento forcado da Activity.
+
+Pendencia restante:
+1. Validacao manual no aparelho fisico para confirmar ausencia de fechamento do app ao tocar em `Conectar`.
+2. Se a rede nao detectar host por ARP, implementar descoberta ativa por faixa local como Passo 3.
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 1)
 Status: `CONCLUIDO`
 
