@@ -26,6 +26,7 @@ Escopo executado:
 18. Auto-join reforçado na aba VTT: app envia `VTT_JOIN` via bridge no `onPageFinished` e após sucesso de conexão shell.
 19. Modo imersivo na Aba VTT: quando conectado, prioriza mapa (área maior) e oculta painéis auxiliares até o usuário expandir detalhes.
 20. Contrato cruzado concluído no frontend VTT externo: `APP_ROLL` agora é processado via bridge (`postMessage`/`gurps-android-command`) e emitido como `acao_rolagem_dado` v1.
+21. Correção de bridge JS no app: comandos de áudio/mapa agora enviam a `action` correta (interpolação Kotlin), eliminando envio literal incorreto.
 
 Estado atual:
 1. App compila e instala (visual).

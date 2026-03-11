@@ -172,7 +172,7 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
         val js = """
             (function() {
-              const action = '${'$'}{action}';
+              const action = '$action';
               window.dispatchEvent(new CustomEvent('gurps-android-audio-command', { detail: { action } }));
               const map = {
                 join: ['[data-testid="join-voice"]', '#join-voice', '.join-voice', '[aria-label*="Entrar"][aria-label*="voz"]'],
@@ -202,7 +202,7 @@ fun TabVtt(viewModel: FichaViewModel) {
         val js = """
             (function() {
               try {
-                window.dispatchEvent(new CustomEvent('gurps-android-command', { detail: { action: '${'$'}action' } }));
+                window.dispatchEvent(new CustomEvent('gurps-android-command', { detail: { action: '$action' } }));
                 return 'sent';
               } catch (e) {
                 return 'error:' + e.message;
