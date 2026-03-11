@@ -318,3 +318,17 @@ Evidencia:
 Pendencia restante:
 1. FPAR.2 Passo 2: separar melhor UX de Traços/Defesas/Rolagem para aproximar navegacao do Android.
 2. FPAR.3: calibrar formula de NH de tecnica para equivalencia completa com regra canonica do Android.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.2 Passo 2 sincronizado)
+Status: CONCLUIDO
+
+Feito:
+1. VTT_Mestre recebeu ajuste de UX para paridade com Android: `Tecnicas` agora e uma aba dedicada.
+2. Fluxo existente de tecnicas foi preservado sem regressao funcional no componente da ficha web.
+
+Evidencia:
+1. Mudanca aplicada em `frontend/src/components/FichaGurps.tsx` no projeto VTT_Mestre.
+2. Build frontend VTT_Mestre validado em sucesso.
+
+Pendencia restante:
+1. Prosseguir para FPAR.3 (calibracao de NH de tecnicas e validacoes de prerequisitos).
