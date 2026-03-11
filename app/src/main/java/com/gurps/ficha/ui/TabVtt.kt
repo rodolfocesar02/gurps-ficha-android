@@ -532,7 +532,7 @@ fun TabVtt(viewModel: FichaViewModel) {
             val detectResult = runCatching {
                 if (isLoopbackUrl(serverUrl) || isLoopbackUrl(webUrl)) {
                     statusMessage = "Detectando servidor VTT na rede local..."
-                    val detectedHost = VttHostAutoDetect.detectLanHostFromArp()
+                    val detectedHost = VttHostAutoDetect.detectLanHost()
                     if (detectedHost != null) {
                         serverUrl = replaceLoopbackHost(serverUrl, detectedHost)
                         webUrl = replaceLoopbackHost(webUrl, detectedHost)

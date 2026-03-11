@@ -1,8 +1,13 @@
 package com.gurps.ficha.vtt
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.net.Inet4Address
+import java.net.NetworkInterface
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -11,6 +16,11 @@ object VttHostAutoDetect {
         val hasApi: Boolean,
         val hasWeb: Boolean
     )
+
+    suspend fun detectLanHost(timeoutMs: Int = 450): String? = withContext(Dispatchers.IO) {
+        detectLanHostFromArp(timeoutMs)?.let { return@withContext it }
+        detectLanHostByActiveScan(timeoutMs)
+    }
 
     suspend fun detectLanHostFromArp(timeoutMs: Int = 450): String? = withContext(Dispatchers.IO) {
         val candidates = runCatching { readArpCandidates() }.getOrDefault(emptyList())
@@ -25,6 +35,50 @@ object VttHostAutoDetect {
             if (probeHost(host, timeoutMs).hasWeb) return@withContext host
         }
 
+        null
+    }
+
+    suspend fun detectLanHostByActiveScan(timeoutMs: Int = 450): String? = withContext(Dispatchers.IO) {
+        val basePrefixes = localPrivatePrefixes()
+        if (basePrefixes.isEmpty()) return@withContext null
+
+        val localIps = localPrivateIps().toSet()
+        val candidates = mutableListOf<String>()
+        for (prefix in basePrefixes) {
+            for (h in 1..254) {
+                val ip = "$prefix.$h"
+                if (ip !in localIps) candidates += ip
+            }
+        }
+
+        if (candidates.isEmpty()) return@withContext null
+
+        // Fase 1: busca host que responde API+WEB.
+        val both = firstHostMatching(candidates, timeoutMs) { it.hasApi && it.hasWeb }
+        if (both != null) return@withContext both
+
+        // Fase 2: aceita host com WEB disponível (útil quando API está em outra porta/host temporário).
+        val webOnly = firstHostMatching(candidates, timeoutMs) { it.hasWeb }
+        if (webOnly != null) return@withContext webOnly
+
+        null
+    }
+
+    private suspend fun firstHostMatching(
+        candidates: List<String>,
+        timeoutMs: Int,
+        predicate: (ProbeResult) -> Boolean
+    ): String? = coroutineScope {
+        val chunkSize = 20
+        for (chunk in candidates.chunked(chunkSize)) {
+            val results = chunk.map { host ->
+                async(Dispatchers.IO) {
+                    host to probeHost(host, timeoutMs)
+                }
+            }.awaitAll()
+            val hit = results.firstOrNull { (_, probe) -> predicate(probe) }?.first
+            if (hit != null) return@coroutineScope hit
+        }
         null
     }
 
@@ -81,5 +135,32 @@ object VttHostAutoDetect {
         val a = nums[0]
         val b = nums[1]
         return (a == 10) || (a == 172 && b in 16..31) || (a == 192 && b == 168)
+    }
+
+    private fun localPrivateIps(): List<String> {
+        return runCatching {
+            val out = mutableListOf<String>()
+            val interfaces = NetworkInterface.getNetworkInterfaces()?.toList().orEmpty()
+            for (netIf in interfaces) {
+                if (!netIf.isUp || netIf.isLoopback || netIf.isVirtual) continue
+                val addresses = netIf.inetAddresses?.toList().orEmpty()
+                for (addr in addresses) {
+                    if (addr is Inet4Address) {
+                        val ip = addr.hostAddress ?: continue
+                        if (isPrivateIpv4(ip)) out += ip
+                    }
+                }
+            }
+            out.distinct()
+        }.getOrDefault(emptyList())
+    }
+
+    private fun localPrivatePrefixes(): List<String> {
+        return localPrivateIps()
+            .mapNotNull { ip ->
+                val parts = ip.split('.')
+                if (parts.size == 4) "${parts[0]}.${parts[1]}.${parts[2]}" else null
+            }
+            .distinct()
     }
 }
