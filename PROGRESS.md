@@ -391,3 +391,21 @@ Evidencia:
 
 Pendencia restante:
 1. Entrar em FPAR.5 para checklist de aceite final ponta-a-ponta.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.5 Passo 1)
+Status: CONCLUIDO
+
+Feito:
+1. Checklist objetivo de aceite final criado: `VTT_FICHA/CHECKLIST_ACEITE_FPAR5.md`.
+2. Consolidacao de evidencias tecnicas executadas neste passo:
+   - `:app:assembleVisualDebug -x lint` (Android) OK
+   - `npm test` backend VTT (33/33) OK
+   - `npm run build` frontend VTT OK
+3. Consolidado de contrato de integracao validado em codigo: `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT`, `FICHA_SYNC`.
+
+Evidencia:
+1. Arquivo de checklist gerado com status por criterio de aceite (OK/PARCIAL/BLOQUEADO).
+2. Logs de validacao tecnica deste ciclo anexados no historico de execucao.
+
+Pendencia restante:
+1. FPAR.5 Passo 2: smoke manual assistido (mestre+jogador em sessao real) para fechar itens PARCIAL/BLOQUEADO e emitir aceite 100%.
