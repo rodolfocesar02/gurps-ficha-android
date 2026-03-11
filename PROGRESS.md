@@ -332,3 +332,17 @@ Evidencia:
 
 Pendencia restante:
 1. Prosseguir para FPAR.3 (calibracao de NH de tecnicas e validacoes de prerequisitos).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.3 Passo 1 sincronizado)
+Status: CONCLUIDO
+
+Feito:
+1. VTT_Mestre recebeu calibracao de NH de Tecnicas alinhada ao comportamento canonico do Android.
+2. Adicao/edicao de tecnicas na ficha web agora preserva campos de regra necessarios para calculo consistente.
+
+Evidencia:
+1. Mudancas aplicadas em `frontend/src/components/FichaGurps.tsx` no VTT_Mestre.
+2. Build frontend do VTT_Mestre validado com sucesso.
+
+Pendencia restante:
+1. Prosseguir FPAR.3 Passo 2 (gating de pre-requisitos) e depois FPAR.4 (sync real de ficha/token).
