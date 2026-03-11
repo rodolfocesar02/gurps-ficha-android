@@ -27,6 +27,11 @@ Escopo executado:
 19. Modo imersivo na Aba VTT: quando conectado, prioriza mapa (área maior) e oculta painéis auxiliares até o usuário expandir detalhes.
 20. Contrato cruzado concluído no frontend VTT externo: `APP_ROLL` agora é processado via bridge (`postMessage`/`gurps-android-command`) e emitido como `acao_rolagem_dado` v1.
 21. Correção de bridge JS no app: comandos de áudio/mapa agora enviam a `action` correta (interpolação Kotlin), eliminando envio literal incorreto.
+22. Lote Token-Pro (Passo 1): `TokenPopup` ligado ao token ativo no `App.tsx` (tokenId/status/visibilidade/aura/escala) e ajuste de build bloqueado por símbolos não usados (Lore Library) no VTT_Mestre.
+
+Evidência do Passo 1:
+1. Frontend VTT buildado com sucesso após o ajuste: `cmd /c npm run build` (OK).
+2. Pendência restante do lote: corrigir regra de autoridade no `WebGLMap` (`isGM`) para evitar exposição indevida de token oculto para jogador.
 
 Estado atual:
 1. App compila e instala (visual).
