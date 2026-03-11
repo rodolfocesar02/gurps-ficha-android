@@ -186,6 +186,13 @@ fun TabVtt(viewModel: FichaViewModel) {
     var selectedActionKey by remember { mutableStateOf<String?>(null) }
     var immersiveMapMode by remember { mutableStateOf(true) }
 
+    LaunchedEffect(viewModel.personagem.nome) {
+        val nome = viewModel.personagem.nome.trim()
+        if (nome.isNotBlank()) {
+            playerId = nome
+        }
+    }
+
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
     fun enviarComandoAudioEmbed(action: String) {
@@ -467,11 +474,11 @@ fun TabVtt(viewModel: FichaViewModel) {
     LaunchedEffect(context) {
         if (!bootstrapDone) {
             val snap = VttSessionStorage.load(context)
-            if (snap.serverUrl.isNotBlank()) {
+            if (snap.serverUrl.isNotBlank() && !isLoopbackUrl(snap.serverUrl)) {
                 serverUrl = snap.serverUrl
                 environment = VttEnvironment.CUSTOM
             }
-            if (snap.webUrl.isNotBlank()) {
+            if (snap.webUrl.isNotBlank() && !isLoopbackUrl(snap.webUrl)) {
                 webUrl = snap.webUrl
                 environment = VttEnvironment.CUSTOM
             }
@@ -529,6 +536,14 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
 
         scope.launch {
+            if (isLoopbackUrl(serverUrl) || isLoopbackUrl(webUrl)) {
+                serverUrl = VttEnvironment.PROD.apiDefaultUrl
+                webUrl = VttEnvironment.PROD.webDefaultUrl
+                environment = VttEnvironment.PROD
+                statusMessage = "Usei o servidor publico automaticamente."
+                Log.i(VTT_UI_LOG, "loopback overridden to PROD")
+            }
+
             val detectResult = runCatching {
                 if (isLoopbackUrl(serverUrl) || isLoopbackUrl(webUrl)) {
                     statusMessage = "Detectando servidor VTT na rede local..."
@@ -843,12 +858,54 @@ fun TabVtt(viewModel: FichaViewModel) {
                 onClick = { showConfig = !showConfig },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(if (showConfig) "Ocultar configuracoes" else "Mostrar configuracoes")
+                Text(if (showConfig) "Ocultar ajustes avancados" else "Mostrar ajustes avancados")
             }
             FilterChip(
                 selected = immersiveMapMode,
                 onClick = { immersiveMapMode = !immersiveMapMode },
                 label = { Text(if (immersiveMapMode) "Modo imersivo ativo" else "Modo imersivo desligado") }
+            )
+            OutlinedTextField(
+                value = roomKey,
+                onValueChange = { roomKey = it },
+                label = { Text("Sala") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true
+            )
+            Text(
+                text = "Jogador: ${playerId.ifBlank { "nome da ficha" }}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { conectarEmModoShell() },
+                    enabled = connectionState != VttConnectionState.CONNECTING
+                ) {
+                    Text("Entrar")
+                }
+                Button(
+                    modifier = Modifier.weight(1f),
+                    onClick = { desconectarEmModoShell() },
+                    enabled = connectionState != VttConnectionState.DISCONNECTED
+                ) {
+                    Text("Desconectar")
+                }
+            }
+            Text(
+                text = "Status: $statusLabel",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = statusColor
+            )
+            Text(
+                text = statusMessage,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             val baseUrl = webUrl.trim().trimEnd('/')
@@ -1109,9 +1166,9 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
 
         if (showConfig) {
-            SectionCard(title = "Configuracoes VTT") {
+            SectionCard(title = "Ajustes Avancados VTT") {
                 Text(
-                    text = "Conecte sua sala e defina URLs basicas.",
+                    text = "Use apenas se precisar depurar. Em uso normal, basta Sala + Entrar.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -1153,13 +1210,6 @@ fun TabVtt(viewModel: FichaViewModel) {
                 }
             }
             OutlinedTextField(
-                value = roomKey,
-                onValueChange = { roomKey = it },
-                label = { Text("Sala (roomKey)") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-            OutlinedTextField(
                 value = playerId,
                 onValueChange = { playerId = it },
                 label = { Text("Player ID") },
@@ -1196,25 +1246,6 @@ fun TabVtt(viewModel: FichaViewModel) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error
                 )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
-            ) {
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = { conectarEmModoShell() },
-                    enabled = connectionState != VttConnectionState.CONNECTING
-                ) {
-                    Text("Conectar")
-                }
-                Button(
-                    modifier = Modifier.weight(1f),
-                    onClick = { desconectarEmModoShell() },
-                    enabled = connectionState != VttConnectionState.DISCONNECTED
-                ) {
-                    Text("Desconectar")
-                }
             }
             Button(
                 onClick = { abrirVttNoNavegador() },

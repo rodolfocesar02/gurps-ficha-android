@@ -2,6 +2,25 @@
 
 Atualizado em: 2026-03-11
 
+## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote UX Simples, Passo 1)
+Status: `CONCLUIDO`
+
+Feito:
+1. Fluxo principal da Aba VTT simplificado para uso leigo:
+- campo `Sala` sempre visivel;
+- botao `Entrar` sempre visivel;
+- `Player ID` sincronizado automaticamente com nome da ficha.
+2. URLs em loopback (`localhost/127.0.0.1`) agora sao forçadas para `PROD` no conectar, evitando erro tecnico em uso remoto.
+3. Configuracoes tecnicas foram rebaixadas para `Ajustes Avancados` (nao fazem parte do fluxo principal).
+
+Evidencia:
+1. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+2. Regressao unitária Android: `:app:testVisualDebugUnitTest` (OK em 2026-03-11).
+
+Pendencia restante:
+1. Teste manual em aparelho fisico para validar experiencia final `Sala + Entrar` no servidor publico.
+2. Em lote seguinte, ocultar painéis de debug remanescentes quando conectado para deixar tela ainda mais limpa.
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 3)
 Status: `CONCLUIDO`
 
