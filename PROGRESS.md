@@ -346,3 +346,17 @@ Evidencia:
 
 Pendencia restante:
 1. Prosseguir FPAR.3 Passo 2 (gating de pre-requisitos) e depois FPAR.4 (sync real de ficha/token).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.3 Passo 2 sincronizado)
+Status: CONCLUIDO
+
+Feito:
+1. VTT_Mestre recebeu gating de pre-requisitos na selecao de catalogo com foco em Tecnicas e Magias.
+2. Campo de prerequisito usado no web foi alinhado aos campos reais dos dados (`preRequisitoRaw`/`preRequisito`).
+
+Evidencia:
+1. Mudanca aplicada em `frontend/src/components/GURPSSelector.tsx` no VTT_Mestre.
+2. Build frontend do VTT_Mestre validado com sucesso.
+
+Pendencia restante:
+1. Prosseguir FPAR.4 para validacoes de sincronismo e reconexao token-ficha.
