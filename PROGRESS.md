@@ -250,3 +250,55 @@ Critérios de aceite U5:
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
+
+## Atualizacao Rapida - 2026-03-11 (Paridade Ficha Android -> VTT_Mestre)
+Status: EM ANDAMENTO (auditoria ativa)
+
+Escopo desta fase:
+1. Auditar paridade da ficha web do VTT_Mestre versus ficha Android (campos, regras e automacoes).
+2. Dividir implementacao em lotes e passos atomicos sem quebrar implementacoes existentes do VTT.
+3. Executar apenas mudancas com validacao e commit por passo.
+
+Lotes definidos para execucao apos auditoria:
+1. FPAR.1 Auditoria de paridade (matriz de gaps).
+2. FPAR.2 Paridade de UI/edicao (Tracos e Tecnicas + fluxos faltantes).
+3. FPAR.3 Paridade de mecanicas/automacoes (combate, rolagem contextual, prerequisitos).
+4. FPAR.4 Paridade de integracao token-ficha (sync e reconexao).
+5. FPAR.5 Nao regressao e aceite final.
+
+Evidencia de saude coletada no inicio da fase:
+1. VTT frontend build: OK.
+2. VTT backend testes: 33/33 OK.
+
+Pendencia imediata:
+1. Fechar matriz de gaps detalhada por aba para iniciar implementacao incremental no VTT_Mestre.
+
+
+## Atualizacao Rapida - 2026-03-11 (Sincronizacao entre projetos)
+Status: EM ANDAMENTO
+
+Passo atomico concluido neste ciclo:
+1. Sincronizado o plano entre Ficha Android e VTT_Mestre para manter rastreabilidade unica por lotes FPAR.
+2. Confirmado que o VTT_Mestre segue em implementacao ativa e que a Ficha Android deve evoluir sem regressao no contrato de integracao.
+
+Evidencias objetivas registradas:
+1. VTT_Mestre com build frontend e testes backend ja validados no ciclo anterior (build OK, 33/33 testes).
+2. Regras operacionais e de aceite da Aba VTT continuam ativas e passam a ser referencia fixa para todos os proximos passos.
+
+Pendencia restante imediata:
+1. Executar FPAR.1 Passo 1: matriz detalhada de gaps por aba (Android x VTT_Mestre), com classificacao OK/Parcial/Faltando e impacto tecnico.
+2. Em seguida abrir FPAR.2 com a primeira entrega funcional de paridade sem quebrar fluxos atuais.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.1 Passo 1)
+Status: CONCLUIDO
+
+Feito:
+1. Matriz detalhada de gaps Android x VTT_Mestre criada em `VTT_FICHA/MATRIZ_GAPS_PARIDADE_ANDROID_X_VTT_MESTRE.md`.
+2. Classificacao por aba e por contrato em OK/PARCIAL/FALTANDO, com prioridades P0/P1 para execucao.
+
+Evidencia:
+1. Auditoria baseada em codigo real: `FichaScreen.kt`, `TabVtt.kt`, `FichaGurps.tsx`, `App.tsx`, `WebGLMap.tsx`, `backend/app.js`.
+2. Contratos confirmados no levantamento: `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT`, `FICHA_SYNC`.
+
+Pendencia restante:
+1. Iniciar FPAR.2 Passo 1 (Tecnicas visiveis e operacionais na ficha web do VTT_Mestre).
