@@ -20,6 +20,26 @@ Evidencia:
 Pendencia restante:
 1. Teste manual final no aparelho fisico com VTT publico (sem localhost/IP local), validando entrada por `Sala + Entrar`.
 
+## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote AutoToken, Passo 2)
+Status: `CONCLUIDO`
+
+Feito:
+1. `VTT_JOIN` enviado pelo app agora inclui:
+- `playerId`
+- `fichaJson`
+2. Ordem no `onPageFinished` da WebView ajustada para melhorar bootstrap:
+- primeiro envia snapshot da ficha;
+- depois envia comando `VTT_JOIN`.
+3. Objetivo: reduzir dependencia de import manual e permitir token/sessao automatica no VTT embed.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+
+Pendencia restante:
+1. Redeploy backend/frontend no Railway com commits atuais para ativar auto-token em producao.
+2. Smoke final no aparelho para confirmar eliminacao de `needsBind` manual.
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote UX Simples, Passo 1)
 Status: `CONCLUIDO`
 
