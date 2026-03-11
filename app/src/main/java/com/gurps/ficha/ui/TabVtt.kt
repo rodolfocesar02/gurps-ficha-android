@@ -152,6 +152,10 @@ fun TabVtt(viewModel: FichaViewModel) {
     var rollResultJson by remember { mutableStateOf<String?>(null) }
     var audioStateJson by remember { mutableStateOf<String?>(null) }
     var fichaSyncJson by remember { mutableStateOf<String?>(null) }
+    var fichaSyncPlayerId by remember { mutableStateOf<String?>(null) }
+    var fichaSyncTokenId by remember { mutableStateOf<String?>(null) }
+    var fichaSyncSource by remember { mutableStateOf<String?>(null) }
+    var fichaSyncEventId by remember { mutableStateOf(0) }
     var lastSnackbar by remember { mutableStateOf<String?>(null) }
     var participantes by remember { mutableStateOf<List<String>>(emptyList()) }
     var audioSummary by remember { mutableStateOf("Voice off") }
@@ -362,8 +366,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                     audioSummary = payload?.toString()?.take(80) ?: audioSummary
                 }
                 "FICHA_SYNC" -> {
-                    val ficha = payload?.asJsonObject?.get("fichaJson")
+                    val payloadObj = payload?.takeIf { it.isJsonObject }?.asJsonObject
+                    val ficha = payloadObj?.get("fichaJson")
                     fichaSyncJson = ficha?.toString() ?: payload?.toString()
+                    fichaSyncPlayerId = payloadObj?.get("playerId")?.asString
+                    fichaSyncTokenId = payloadObj?.get("tokenId")?.asString
+                    fichaSyncSource = payloadObj?.get("source")?.asString
+                    fichaSyncEventId += 1
                 }
             }
             lastAudioEvent = msg
@@ -381,7 +390,13 @@ fun TabVtt(viewModel: FichaViewModel) {
                 audioStateJson = legacy.removePrefix("AUDIO_STATE:")
                 audioSummary = audioStateJson.orEmpty().take(80)
             }
-            legacy.startsWith("FICHA_SYNC:") -> fichaSyncJson = legacy.removePrefix("FICHA_SYNC:")
+            legacy.startsWith("FICHA_SYNC:") -> {
+                fichaSyncJson = legacy.removePrefix("FICHA_SYNC:")
+                fichaSyncPlayerId = null
+                fichaSyncTokenId = null
+                fichaSyncSource = "legacy"
+                fichaSyncEventId += 1
+            }
         }
         lastAudioEvent = legacy
     }
@@ -454,14 +469,34 @@ fun TabVtt(viewModel: FichaViewModel) {
         }
     }
 
-    LaunchedEffect(fichaSyncJson) {
+    LaunchedEffect(fichaSyncEventId) {
         val raw = fichaSyncJson?.trim().orEmpty()
         if (raw.isBlank()) return@LaunchedEffect
+        val expectedPlayer = playerId.trim()
+        val expectedToken = tokenId?.trim().orEmpty()
+        val source = fichaSyncSource.orEmpty()
+        val syncPlayer = fichaSyncPlayerId?.trim().orEmpty()
+        val syncToken = fichaSyncTokenId?.trim().orEmpty()
+        val matchPlayer = syncPlayer.isBlank() || expectedPlayer.isBlank() || syncPlayer.equals(expectedPlayer, ignoreCase = true)
+        val matchToken = syncToken.isBlank() ||
+            expectedToken.isBlank() ||
+            syncToken.equals(expectedToken, ignoreCase = true) ||
+            syncToken.equals(viewModel.personagem.nome.trim(), ignoreCase = true)
+
+        if (!matchPlayer || !matchToken) {
+            lastSnackbar = "Sync ignorado (alvo diferente). source=${source.ifBlank { "-" }} player=$syncPlayer token=$syncToken"
+            Log.i(
+                VTT_UI_LOG,
+                "fichaSync ignored source=${source.ifBlank { "-" }} expectedPlayer=$expectedPlayer syncPlayer=$syncPlayer expectedToken=$expectedToken syncToken=$syncToken"
+            )
+            return@LaunchedEffect
+        }
+
         val result = viewModel.importarFichaJson(raw)
         if (!result.isNullOrBlank()) {
             lastSnackbar = result
         } else {
-            lastSnackbar = "Ficha sincronizada do VTT."
+            lastSnackbar = "Ficha sincronizada do VTT. source=${source.ifBlank { "-" }}"
         }
     }
 
