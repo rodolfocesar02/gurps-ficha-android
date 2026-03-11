@@ -377,3 +377,17 @@ Evidencia:
 Pendencia restante:
 1. FPAR.4 Passo 2: validar sessao real de reconexao sem duplicacao de token com ficha vinculada.
 2. FPAR.5: rodada final de nao regressao e checklist de aceite completo.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.4 Passo 2 sincronizado)
+Status: CONCLUIDO
+
+Feito:
+1. Reconexao no backend VTT passou a reaproveitar `sessionId/tokenId` quando enviados pelo app.
+2. Fluxo reduz chance de token duplicado em retorno do jogador para a mesma sala.
+
+Evidencia:
+1. Mudanca aplicada em `backend/app.js` no VTT_Mestre.
+2. Validacoes VTT: backend `npm test` (33/33 OK) + frontend `npm run build` (OK).
+
+Pendencia restante:
+1. Entrar em FPAR.5 para checklist de aceite final ponta-a-ponta.
