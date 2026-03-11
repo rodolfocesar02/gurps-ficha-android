@@ -302,3 +302,19 @@ Evidencia:
 
 Pendencia restante:
 1. Iniciar FPAR.2 Passo 1 (Tecnicas visiveis e operacionais na ficha web do VTT_Mestre).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.2 Passo 1)
+Status: CONCLUIDO
+
+Feito:
+1. Ficha web do VTT_Mestre agora possui secao de Tecnicas visivel na aba de pericias.
+2. Fluxo habilitado para Tecnicas: adicionar via catalogo, listar, ajustar pontos, editar/remover e rolar.
+3. Integracao de edicao corrigida para tipo `tecnica` no dialogo (save/delete).
+
+Evidencia:
+1. Arquivo alterado no VTT_Mestre: `frontend/src/components/FichaGurps.tsx`.
+2. Validacao tecnica: `npm run build` no frontend do VTT_Mestre (OK em 2026-03-11).
+
+Pendencia restante:
+1. FPAR.2 Passo 2: separar melhor UX de Traços/Defesas/Rolagem para aproximar navegacao do Android.
+2. FPAR.3: calibrar formula de NH de tecnica para equivalencia completa com regra canonica do Android.
