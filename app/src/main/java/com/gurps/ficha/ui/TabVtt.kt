@@ -332,10 +332,18 @@ fun TabVtt(viewModel: FichaViewModel) {
         if (room.isBlank() || player.isBlank()) return
         val safeRoom = room.replace("\\", "\\\\").replace("'", "\\'")
         val safePlayer = player.replace("\\", "\\\\").replace("'", "\\'")
+        val fichaJson = viewModel.exportarFichaJsonCompativel()
+        val safeFichaLiteral = VttBridgeCodec.toJavascriptStringLiteral(fichaJson)
         val js = """
             (function() {
               try {
-                const payload = { roomKey: '$safeRoom', playerName: '$safePlayer', isMaster: false };
+                const payload = {
+                  roomKey: '$safeRoom',
+                  playerName: '$safePlayer',
+                  playerId: '$safePlayer',
+                  isMaster: false,
+                  fichaJson: JSON.parse($safeFichaLiteral)
+                };
                 const msg = JSON.stringify({ type: 'VTT_JOIN', payload });
                 window.postMessage(msg, '*');
                 window.dispatchEvent(new CustomEvent('gurps-android-command', {
@@ -1010,9 +1018,9 @@ fun TabVtt(viewModel: FichaViewModel) {
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
                                     webLoadError = null
-                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 350)
-                                    view?.postDelayed({ checarCanvasWebgl() }, 600)
-                                    view?.postDelayed({ enviarFichaSnapshot() }, 900)
+                                    view?.postDelayed({ enviarFichaSnapshot() }, 250)
+                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 520)
+                                    view?.postDelayed({ checarCanvasWebgl() }, 780)
                                     if (audioAutoJoin) {
                                         view?.postDelayed({
                                             enviarComandoAudioEmbed("join")
