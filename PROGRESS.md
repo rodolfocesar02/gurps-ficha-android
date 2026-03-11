@@ -2,6 +2,25 @@
 
 Atualizado em: 2026-03-11
 
+## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 3)
+Status: `CONCLUIDO`
+
+Feito:
+1. Expandida deteccao de host para modo hibrido: ARP + varredura ativa da sub-rede local.
+2. Nova estrategia em `VttHostAutoDetect.detectLanHost()`:
+- tenta `detectLanHostFromArp`;
+- se falhar, tenta `detectLanHostByActiveScan` na faixa `/24` da interface local;
+- prioriza host com API+WEB (`3001` + `5176/5179`) e aceita WEB como fallback.
+3. `TabVtt` passou a chamar deteccao hibrida (`detectLanHost`) no fluxo de `Conectar`.
+
+Evidencia:
+1. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+2. Validacao de regressao Android: `:app:testVisualDebugUnitTest` (OK em 2026-03-11).
+
+Pendencia restante:
+1. Validar manualmente no aparelho fisico, na mesma rede do PC, se o app troca `localhost` automaticamente e conecta.
+2. Se a rede tiver isolamento entre clientes Wi-Fi, manter orientacao de IP manual como fallback operacional.
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
 Status: `CONCLUIDO`
 
