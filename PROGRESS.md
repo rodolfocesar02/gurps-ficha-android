@@ -477,3 +477,17 @@ Evidencia:
 
 Pendencia restante:
 1. FPAR.6 Passo 4: smoke manual integrado com VTT_Mestre em sessao real (join/mapa/token/roll/sync/audio).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.6 Passo 4 - Revalidacao Pos-Stress)
+Status: CONCLUIDO
+
+Feito:
+1. Revalidacao completa da Aba_VTT apos ajuste do codec e stress test.
+2. Falha detectada no ciclo de stress foi corrigida (escape JS manual no codec), sem regressao no build da app.
+
+Evidencia:
+1. :app:testVisualDebugUnitTest OK (119 testes, sem falhas).
+2. :app:assembleVisualDebug -x lint OK.
+
+Pendencia restante:
+1. Smoke manual guiado com VTT_Mestre para validacao funcional final ponta-a-ponta.
