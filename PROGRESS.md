@@ -28,10 +28,15 @@ Escopo executado:
 20. Contrato cruzado concluído no frontend VTT externo: `APP_ROLL` agora é processado via bridge (`postMessage`/`gurps-android-command`) e emitido como `acao_rolagem_dado` v1.
 21. Correção de bridge JS no app: comandos de áudio/mapa agora enviam a `action` correta (interpolação Kotlin), eliminando envio literal incorreto.
 22. Lote Token-Pro (Passo 1): `TokenPopup` ligado ao token ativo no `App.tsx` (tokenId/status/visibilidade/aura/escala) e ajuste de build bloqueado por símbolos não usados (Lore Library) no VTT_Mestre.
+23. Lote Token-Pro (Passo 2): autoridade de visibilidade corrigida no `WebGLMap` (`isGM` somente para mestre), removendo condição que elevava jogador quando mapa destravado.
 
 Evidência do Passo 1:
 1. Frontend VTT buildado com sucesso após o ajuste: `cmd /c npm run build` (OK).
-2. Pendência restante do lote: corrigir regra de autoridade no `WebGLMap` (`isGM`) para evitar exposição indevida de token oculto para jogador.
+2. Pendência restante do lote: validar em sessão real mestre/jogador (com token oculto) que o jogador não enxerga token oculto e o mestre mantém visão fantasma.
+
+Evidência do Passo 2:
+1. Frontend VTT buildado: `cmd /c npm run build` (OK).
+2. Backend VTT testado: `cmd /c npm test` (33/33 OK).
 
 Estado atual:
 1. App compila e instala (visual).
