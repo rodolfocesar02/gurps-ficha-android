@@ -1,6 +1,26 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-10
+Atualizado em: 2026-03-11
+
+## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 1)
+Status: `CONCLUIDO`
+
+Feito:
+1. Implementada autodeteccao de host LAN para quando o usuario deixa `localhost` na Aba VTT.
+2. Novo utilitario `VttHostAutoDetect` lendo candidatos em `/proc/net/arp` e testando portas `3001` (API) e `5176/5179` (web).
+3. Fluxo de `Conectar` na `TabVtt` agora:
+- detecta `localhost/127.0.0.1`;
+- tenta descobrir host real na rede;
+- substitui automaticamente host das URLs antes do `joinSession`;
+- bloqueia com mensagem orientativa se nao encontrar host.
+
+Evidencia:
+1. Validacao tecnica minima Android executada: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
+2. Compilacao da Aba VTT com novo passo de autodeteccao concluida sem regressao de build.
+
+Pendencia restante:
+1. Validar em teste manual com celular na mesma rede do PC se a autodeteccao encontra o host sem input tecnico.
+2. Se a rede nao preencher ARP inicialmente, adicionar fallback de descoberta ativa por faixa local no proximo passo.
 
 ## Atualização Rápida - 2026-03-10 (Aba VTT Embed)
 Status: `EM ANDAMENTO`
