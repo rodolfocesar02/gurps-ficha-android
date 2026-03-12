@@ -129,6 +129,8 @@ private fun periciaLabel(pericia: com.gurps.ficha.model.PericiaSelecionada): Str
     }
 }
 
+private fun normalizeRoomKey(raw: String): String = raw.trim()
+
 private fun isLoopbackUrl(url: String): Boolean {
     val host = runCatching { Uri.parse(url.trim()).host.orEmpty() }.getOrDefault("")
     return host.equals("localhost", ignoreCase = true) || host == "127.0.0.1"
@@ -559,11 +561,13 @@ fun TabVtt(
 
     fun conectarEmModoShell() {
         connectionState = VttConnectionState.CONNECTING
-        if (serverUrl.isBlank() || roomKey.isBlank() || playerId.isBlank()) {
+        val normalizedRoomKey = normalizeRoomKey(roomKey)
+        if (serverUrl.isBlank() || normalizedRoomKey.isBlank() || playerId.isBlank()) {
             connectionState = VttConnectionState.ERROR
             statusMessage = "Campos obrigatorios: servidor, sala e player."
             return
         }
+        roomKey = normalizedRoomKey
 
         scope.launch {
             if (isLoopbackUrl(serverUrl) || isLoopbackUrl(webUrl)) {
@@ -598,15 +602,32 @@ fun TabVtt(
                 return@launch
             }
 
+            val snap = VttSessionStorage.load(context)
+            val snapshotRoom = normalizeRoomKey(snap.roomKey)
+            val canReuseSession = snapshotRoom.isNotBlank() && snapshotRoom == normalizedRoomKey
+            val previousSessionForJoin = if (canReuseSession) sessionId else null
+            val previousTokenForJoin = if (canReuseSession) tokenId else null
+            if (!canReuseSession) {
+                sessionId = null
+                tokenId = null
+                needsBind = false
+                tokenIdBindInput = ""
+                Log.i(
+                    VTT_UI_LOG,
+                    "joinSession reset previous session due room change snapshotRoom=$snapshotRoom room=$normalizedRoomKey"
+                )
+            }
+
             VttSessionService.joinSession(
-                roomKey = roomKey.trim(),
+                roomKey = normalizedRoomKey,
                 playerId = playerId.trim(),
                 fichaJsonRaw = viewModel.exportarFichaJsonCompativel(),
-                previousSessionId = sessionId,
-                previousTokenId = tokenId,
+                previousSessionId = previousSessionForJoin,
+                previousTokenId = previousTokenForJoin,
                 baseUrl = serverUrl.trim()
             ).onSuccess { result ->
                 connectionState = VttConnectionState.CONNECTED
+                roomKey = normalizedRoomKey
                 sessionId = result.sessionId
                 tokenId = result.tokenId
                 needsBind = result.needsBind || tokenId.isNullOrBlank()
@@ -621,7 +642,7 @@ fun TabVtt(
                     VttSessionSnapshot(
                         serverUrl = serverUrl.trim(),
                         webUrl = webUrl.trim(),
-                        roomKey = roomKey.trim(),
+                        roomKey = normalizedRoomKey,
                         playerId = playerId.trim(),
                         sessionId = sessionId.orEmpty(),
                         tokenId = tokenId.orEmpty()
