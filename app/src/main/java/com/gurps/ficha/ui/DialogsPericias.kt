@@ -60,14 +60,10 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
 
 private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
+private const val PONTOS_MIN = 1
 
-private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
-    val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
-    return if (incrementar) {
-        PONTOS_PRESETS[(indice + 1).coerceAtMost(PONTOS_PRESETS.lastIndex)]
-    } else {
-        PONTOS_PRESETS[(indice - 1).coerceAtLeast(0)]
-    }
+private fun ajustarPontos(atual: Int, delta: Int): Int {
+    return (atual + delta).coerceAtLeast(PONTOS_MIN)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -354,9 +350,9 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                                         change.consume()
                                         dragAcumulado += dragAmount
                                         while (abs(dragAcumulado) >= passoPx) {
-                                            pontosGastos = ajustarPontosPreset(
+                                            pontosGastos = ajustarPontos(
                                                 atual = pontosGastos,
-                                                incrementar = dragAcumulado < 0f
+                                                delta = if (dragAcumulado < 0f) 1 else -1
                                             )
                                             dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
                                         }
@@ -369,7 +365,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                 if (isPraCegoVariant) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, delta = -1) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da perícia" }
                         ) { Text("-") }
                         Text(
@@ -382,7 +378,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                                 .semantics { contentDescription = "Pontos gastos atuais da perícia: $pontosGastos" }
                         )
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, delta = 1) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da perícia" }
                         ) { Text("+") }
                     }
@@ -504,9 +500,9 @@ fun EditarPericiaDialog(
                                         change.consume()
                                         dragAcumulado += dragAmount
                                         while (abs(dragAcumulado) >= passoPx) {
-                                            pontosGastos = ajustarPontosPreset(
+                                            pontosGastos = ajustarPontos(
                                                 atual = pontosGastos,
-                                                incrementar = dragAcumulado < 0f
+                                                delta = if (dragAcumulado < 0f) 1 else -1
                                             )
                                             dragAcumulado += if (dragAcumulado < 0f) passoPx else -passoPx
                                         }
@@ -519,7 +515,7 @@ fun EditarPericiaDialog(
                 if (isPraCegoVariant) {
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, delta = -1) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da perícia" }
                         ) { Text("-") }
                         Text(
@@ -532,7 +528,7 @@ fun EditarPericiaDialog(
                                 .semantics { contentDescription = "Pontos gastos atuais da perícia: $pontosGastos" }
                         )
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, delta = 1) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da perícia" }
                         ) { Text("+") }
                     }

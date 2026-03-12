@@ -1,6 +1,13 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-08
+Atualizado em: 2026-03-12
+
+## Lote 2026-03-12 - Pericias sem limite de pontos
+Status: `CONCLUIDO`
+
+Passos:
+1. [x] Remover trava de 12 pontos nos ajustes de pericia (seleção e edição).
+2. [x] Manter presets como atalho, mas permitir aumento ilimitado via +/- e swipe.
 
 ## Plano Macro - Versão 2.0 (sem alterar V1 em uso)
 Status: `ATIVO`
