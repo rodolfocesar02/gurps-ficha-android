@@ -1,5 +1,0 @@
-*.jsonl
-!chunks.jsonl
-!reports/
-!reports/*.json
-!.gitkeep
