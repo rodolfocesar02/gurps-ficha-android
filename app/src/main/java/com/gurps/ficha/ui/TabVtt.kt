@@ -145,7 +145,10 @@ private fun replaceLoopbackHost(url: String, newHost: String): String {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TabVtt(viewModel: FichaViewModel) {
+fun TabVtt(
+    viewModel: FichaViewModel,
+    onImmersiveSessionChanged: (Boolean) -> Unit = {}
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
@@ -867,6 +870,10 @@ fun TabVtt(viewModel: FichaViewModel) {
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val isConnected = connectionState == VttConnectionState.CONNECTED
+    val vttOnlyMode = isConnected && immersiveMapMode
+    LaunchedEffect(vttOnlyMode) {
+        onImmersiveSessionChanged(vttOnlyMode)
+    }
     val showDetails = showConfig || !isConnected || !immersiveMapMode
 
     StandardTabColumn {
