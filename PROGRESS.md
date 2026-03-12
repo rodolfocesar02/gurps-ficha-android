@@ -739,3 +739,19 @@ Evidencia:
 
 Pendencia restante:
 1. VTT-APP.4 Passo 1-3: refinamento final de UX para garantir fluxo leigo completo "Sala + Entrar" e evidencia manual ponta-a-ponta.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.4 Passo 1 - Fluxo imersivo simplificado)
+Status: `CONCLUIDO`
+
+Feito:
+1. Quando conecta com imersao ativa, a aba entra em foco total de VTT (sem barras globais do app).
+2. Em foco total, o app mostra apenas o WebView do VTT e o botao de saida confirmada.
+3. Fluxo leigo preservado: sala + entrar continua disponivel fora do foco total.
+
+Evidencia:
+1. Arquivos ja alterados nos passos anteriores:
+- `app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt`
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. Smoke manual final com VTT_Mestre online para validar token real no mapa (nome + imagem) e sincronismo de combate.
