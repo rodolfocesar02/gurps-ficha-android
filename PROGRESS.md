@@ -719,3 +719,23 @@ Pendencia restante:
 1. VTT-APP.3 Passo 1: selecao e persistencia de imagem de token no app.
 2. VTT-APP.3 Passo 2: bloquear troca de imagem durante sessao ativa (exigir sair do VTT).
 3. VTT-APP.3 Passo 3: enviar nome/imagem do token no join REST/bridge.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.3 Passos 1-3 - Imagem e identidade de token)
+Status: `CONCLUIDO`
+
+Feito:
+1. App recebeu seletor de imagem de token com persistencia local (`OpenDocument` + URI persistida).
+2. Troca de imagem foi bloqueada durante sessao ativa; app orienta "sair do VTT" para alterar.
+3. Metadados de token passaram a ser enviados no join:
+- REST (`/api/v1/session/join`): `tokenName`, `avatarUrl`, `tokenImageUrl`
+- Bridge embed (`VTT_JOIN`): `tokenName`, `avatarUrl`, `tokenImageUrl`
+4. Cache de sessao VTT ampliado para guardar `tokenImageUri` entre reaberturas.
+
+Evidencia:
+1. Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+- `app/src/main/java/com/gurps/ficha/vtt/VttSessionStorage.kt`
+- `app/src/main/java/com/gurps/ficha/vtt/VttSessionService.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.4 Passo 1-3: refinamento final de UX para garantir fluxo leigo completo "Sala + Entrar" e evidencia manual ponta-a-ponta.

@@ -1,6 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
 import android.content.Intent
+import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.net.Uri
 import android.util.Log
 import android.webkit.JavascriptInterface
@@ -27,6 +28,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -213,6 +216,18 @@ fun TabVtt(
     var immersiveMapMode by remember { mutableStateOf(true) }
     var showExitVttDialog by remember { mutableStateOf(false) }
     var autoReconnectEnabled by remember { mutableStateOf(false) }
+    var tokenImageUri by remember { mutableStateOf("") }
+
+    val tokenImagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        runCatching {
+            context.contentResolver.takePersistableUriPermission(uri, FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        tokenImageUri = uri.toString()
+        statusMessage = "Imagem do token selecionada."
+    }
 
     LaunchedEffect(viewModel.personagem.nome) {
         val nome = viewModel.personagem.nome.trim()
@@ -349,6 +364,9 @@ fun TabVtt(
         if (room.isBlank() || player.isBlank()) return
         val safeRoom = room.replace("\\", "\\\\").replace("'", "\\'")
         val safePlayer = player.replace("\\", "\\\\").replace("'", "\\'")
+        val tokenName = viewModel.personagem.nome.trim().ifBlank { player }
+        val safeTokenName = tokenName.replace("\\", "\\\\").replace("'", "\\'")
+        val safeTokenImage = tokenImageUri.trim().replace("\\", "\\\\").replace("'", "\\'")
         val fichaJson = viewModel.exportarFichaJsonCompativel()
         val safeFichaLiteral = VttBridgeCodec.toJavascriptStringLiteral(fichaJson)
         val js = """
@@ -358,6 +376,9 @@ fun TabVtt(
                   roomKey: '$safeRoom',
                   playerName: '$safePlayer',
                   playerId: '$safePlayer',
+                  tokenName: '$safeTokenName',
+                  avatarUrl: '$safeTokenImage',
+                  tokenImageUrl: '$safeTokenImage',
                   isMaster: false,
                   fichaJson: JSON.parse($safeFichaLiteral)
                 };
@@ -525,6 +546,9 @@ fun TabVtt(
                 tokenId = snap.tokenId
                 tokenIdBindInput = snap.tokenId
             }
+            if (snap.tokenImageUri.isNotBlank()) {
+                tokenImageUri = snap.tokenImageUri
+            }
             autoReconnectEnabled = snap.autoReconnect
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
                 statusMessage = "Sessao local restaurada. Voce pode reconectar."
@@ -630,6 +654,8 @@ fun TabVtt(
                 roomKey = normalizedRoomKey,
                 playerId = playerId.trim(),
                 fichaJsonRaw = viewModel.exportarFichaJsonCompativel(),
+                tokenImageUri = tokenImageUri.trim().ifBlank { null },
+                tokenDisplayName = viewModel.personagem.nome.trim().ifBlank { playerId.trim() },
                 previousSessionId = previousSessionForJoin,
                 previousTokenId = previousTokenForJoin,
                 baseUrl = serverUrl.trim()
@@ -655,6 +681,7 @@ fun TabVtt(
                         playerId = playerId.trim(),
                         sessionId = sessionId.orEmpty(),
                         tokenId = tokenId.orEmpty(),
+                        tokenImageUri = tokenImageUri.trim(),
                         autoReconnect = true
                     )
                 )
@@ -688,6 +715,7 @@ fun TabVtt(
                 playerId = playerId.trim(),
                 sessionId = sessionId.orEmpty(),
                 tokenId = tokenId.orEmpty(),
+                tokenImageUri = tokenImageUri.trim(),
                 autoReconnect = false
             )
         )
@@ -747,6 +775,7 @@ fun TabVtt(
                 playerId = playerId.trim(),
                 sessionId = "",
                 tokenId = "",
+                tokenImageUri = tokenImageUri.trim(),
                 autoReconnect = false
             )
         )
@@ -791,6 +820,7 @@ fun TabVtt(
                         playerId = player,
                         sessionId = sessionId.orEmpty(),
                         tokenId = tokenId.orEmpty(),
+                        tokenImageUri = tokenImageUri.trim(),
                         autoReconnect = true
                     )
                 )
@@ -1059,6 +1089,50 @@ fun TabVtt(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            Text(
+                text = if (tokenImageUri.isBlank()) {
+                    "Imagem do token: nao definida"
+                } else {
+                    "Imagem do token: definida"
+                },
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            if (!isConnected) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
+                ) {
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = { tokenImagePicker.launch(arrayOf("image/*")) }
+                    ) {
+                        Text("Escolher imagem")
+                    }
+                    Button(
+                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            tokenImageUri = ""
+                            statusMessage = "Imagem do token removida."
+                        },
+                        enabled = tokenImageUri.isNotBlank()
+                    ) {
+                        Text("Remover imagem")
+                    }
+                }
+            } else {
+                Text(
+                    text = "Para trocar a imagem do token, saia do VTT.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+                Button(
+                    onClick = { showExitVttDialog = true },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Sair para trocar imagem")
+                }
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(UiTokens.ItemSpacing)
