@@ -671,3 +671,18 @@ Evidencia:
 
 Pendencia restante:
 1. VTT-APP.1 Passo 3: criar botao "Sair do VTT" com confirmacao.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.1 Passo 3 - Saida do VTT com confirmacao)
+Status: `CONCLUIDO`
+
+Feito:
+1. Implementado modo de foco VTT na aba quando conectado em imersao (WebView ocupando toda a area da aba).
+2. Botao `Sair do VTT` criado com dialogo de confirmacao.
+3. Ao confirmar saida, app desconecta da sessao shell, limpa modo imersivo e descarrega o WebView da cena atual.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.2 Passo 1: corrigir divergencia de sala via normalizacao de `roomKey` e isolamento de sessao/token por sala.
+2. VTT-APP.2 Passo 2: auto-reconexao ao retomar app minimizado.

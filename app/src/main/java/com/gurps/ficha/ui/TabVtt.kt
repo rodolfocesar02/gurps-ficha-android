@@ -14,11 +14,14 @@ import android.webkit.ConsoleMessage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -44,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import com.gurps.ficha.R
 import com.gurps.ficha.vtt.VttSessionService
 import com.gurps.ficha.vtt.VttSessionSnapshot
@@ -199,6 +203,7 @@ fun TabVtt(
     var showTokenActionDialog by remember { mutableStateOf(false) }
     var selectedActionKey by remember { mutableStateOf<String?>(null) }
     var immersiveMapMode by remember { mutableStateOf(true) }
+    var showExitVttDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.personagem.nome) {
         val nome = viewModel.personagem.nome.trim()
@@ -656,6 +661,14 @@ fun TabVtt(
         Log.i(VTT_UI_LOG, "disconnect shell roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
     }
 
+    fun sairDoVtt() {
+        desconectarEmModoShell()
+        immersiveMapMode = false
+        showConfig = false
+        embeddedWebView?.loadUrl("about:blank")
+        statusMessage = "Voce saiu do VTT."
+    }
+
     fun abrirVttNoNavegador() {
         if (serverUrl.isBlank()) {
             connectionState = VttConnectionState.ERROR
@@ -875,8 +888,91 @@ fun TabVtt(
         onImmersiveSessionChanged(vttOnlyMode)
     }
     val showDetails = showConfig || !isConnected || !immersiveMapMode
+    val baseUrl = webUrl.trim().trimEnd('/')
+    val roomParam = Uri.encode(roomKey.trim())
+    val playerParam = Uri.encode(playerId.trim())
+    val tokenParam = tokenId?.takeIf { it.isNotBlank() }?.let { "&tokenId=${Uri.encode(it)}" }.orEmpty()
+    val embedUrl = if (baseUrl.isBlank()) {
+        ""
+    } else if (roomParam.isBlank() || playerParam.isBlank()) {
+        baseUrl
+    } else {
+        "$baseUrl/?embed=1&roomKey=$roomParam&playerName=$playerParam$tokenParam"
+    }
 
-    StandardTabColumn {
+    if (vttOnlyMode) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (embedUrl.isBlank()) {
+                Text(
+                    text = "Informe a sala para abrir o VTT.",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.error
+                )
+            } else {
+                AndroidView(
+                    modifier = Modifier.fillMaxSize(),
+                    factory = { ctx ->
+                        WebView(ctx).apply {
+                            embeddedWebView = this
+                            WebView.setWebContentsDebuggingEnabled(true)
+                            setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
+                            settings.javaScriptEnabled = true
+                            settings.domStorageEnabled = true
+                            settings.mediaPlaybackRequiresUserGesture = false
+                            settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+                            addJavascriptInterface(
+                                object {
+                                    @JavascriptInterface
+                                    fun onVttEvent(log: String?) {
+                                        tratarMensagemBridge(log.orEmpty())
+                                    }
+                                },
+                                "Android"
+                            )
+                            webViewClient = object : WebViewClient() {
+                                override fun onPageFinished(view: WebView?, url: String?) {
+                                    super.onPageFinished(view, url)
+                                    view?.postDelayed({ enviarFichaSnapshot() }, 250)
+                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 520)
+                                    if (audioAutoJoin) {
+                                        view?.postDelayed({ enviarComandoAudioEmbed("join") }, 800)
+                                    }
+                                    injetarConsoleBridge()
+                                }
+                            }
+                            webChromeClient = object : WebChromeClient() {
+                                override fun onPermissionRequest(request: PermissionRequest?) {
+                                    if (request != null) request.grant(request.resources)
+                                }
+                            }
+                            loadUrl(embedUrl)
+                        }
+                    },
+                    update = { webView ->
+                        embeddedWebView = webView
+                        val tagUrl = webView.getTag(R.id.vtt_webview_tag) as? String
+                        val targetUrl = "$embedUrl#$webReloadTick"
+                        if (tagUrl != targetUrl) {
+                            webView.setTag(R.id.vtt_webview_tag, targetUrl)
+                            webView.loadUrl(embedUrl)
+                        }
+                    }
+                )
+            }
+            Button(
+                onClick = { showExitVttDialog = true },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(12.dp)
+            ) {
+                Text("Sair do VTT")
+            }
+        }
+    } else StandardTabColumn {
         SectionCard(title = "VTT") {
             Text(
                 text = "Digite a sala e toque em Entrar. O VTT abre embutido.",
@@ -937,17 +1033,6 @@ fun TabVtt(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            val baseUrl = webUrl.trim().trimEnd('/')
-            val roomParam = Uri.encode(roomKey.trim())
-            val playerParam = Uri.encode(playerId.trim())
-            val tokenParam = tokenId?.takeIf { it.isNotBlank() }?.let { "&tokenId=${Uri.encode(it)}" }.orEmpty()
-            val embedUrl = if (baseUrl.isBlank()) {
-                ""
-            } else if (roomParam.isBlank() || playerParam.isBlank()) {
-                baseUrl
-            } else {
-                "$baseUrl/?embed=1&roomKey=$roomParam&playerName=$playerParam$tokenParam"
-            }
             if (embedUrl.isBlank()) {
                 Text(
                     text = "Informe a sala para abrir o VTT.",
@@ -1479,6 +1564,27 @@ fun TabVtt(
             dismissButton = {
                 TextButton(onClick = { confirmActionDialog = false }) { Text("Cancelar") }
             }
+            )
+        }
+
+        if (showExitVttDialog) {
+            AlertDialog(
+                onDismissRequest = { showExitVttDialog = false },
+                title = { Text("Sair do VTT?") },
+                text = {
+                    Text("Voce sera desconectado da sala atual. Deseja continuar?")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showExitVttDialog = false
+                            sairDoVtt()
+                        }
+                    ) { Text("Sair") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showExitVttDialog = false }) { Text("Cancelar") }
+                }
             )
         }
 
