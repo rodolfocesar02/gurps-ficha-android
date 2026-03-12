@@ -39,6 +39,8 @@ object VttSessionService {
         roomKey: String,
         playerId: String,
         fichaJsonRaw: String,
+        tokenImageUri: String? = null,
+        tokenDisplayName: String? = null,
         previousSessionId: String? = null,
         previousTokenId: String? = null,
         baseUrl: String = BuildConfig.VTT_API_BASE_URL
@@ -55,6 +57,11 @@ object VttSessionService {
                     addProperty("roomKey", roomKey)
                     addProperty("playerId", playerId)
                     addProperty("playerName", playerId)
+                    if (!tokenDisplayName.isNullOrBlank()) addProperty("tokenName", tokenDisplayName)
+                    if (!tokenImageUri.isNullOrBlank()) {
+                        addProperty("avatarUrl", tokenImageUri)
+                        addProperty("tokenImageUrl", tokenImageUri)
+                    }
                     if (!previousSessionId.isNullOrBlank()) addProperty("sessionId", previousSessionId)
                     if (!previousTokenId.isNullOrBlank()) addProperty("tokenId", previousTokenId)
                     add("fichaJson", gson.fromJson(fichaJsonRaw, JsonObject::class.java))
