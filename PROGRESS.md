@@ -636,3 +636,23 @@ Evidencia:
 
 Pendencia restante:
 1. Smoke manual guiado com VTT_Mestre para validacao funcional final ponta-a-ponta.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.1 Passo 1 - Ocultar UI global do app em sessao imersiva)
+Status: `CONCLUIDO`
+
+Feito:
+1. `TabVtt` passou a emitir estado de sessao imersiva ativa para o container da tela.
+2. `FichaScreen` passou a ocultar chrome global do app quando VTT esta em sessao imersiva ativa:
+- TopAppBar ocultada
+- Barra de abas (NavigationBar) ocultada
+- Barra de pontos ocultada
+3. Fluxo fora da aba VTT permanece igual (nao regressao de navegacao geral).
+
+Evidencia:
+1. Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+- `app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.1 Passo 2: forcar orientacao horizontal durante sessao VTT imersiva.
+2. VTT-APP.1 Passo 3: criar botao "Sair do VTT" com confirmacao.

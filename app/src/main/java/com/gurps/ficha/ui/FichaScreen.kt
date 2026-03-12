@@ -59,6 +59,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FichaScreen(viewModel: FichaViewModel) {
     var selectedTab by remember { mutableStateOf(0) }
+    var vttImmersiveUi by remember { mutableStateOf(false) }
     var showMenuDialog by remember { mutableStateOf(false) }
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
@@ -80,10 +81,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem", "VTT")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem", "VTT")
     }
+    val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
+    val hideAppChrome = selectedTitle == "VTT" && vttImmersiveUi
     val maxTabIndex = tabs.lastIndex
     val exportCompativelLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
@@ -158,77 +161,87 @@ fun FichaScreen(viewModel: FichaViewModel) {
             selectedTab = maxTabIndex
         }
     }
+    LaunchedEffect(selectedTitle) {
+        if (selectedTitle != "VTT") {
+            vttImmersiveUi = false
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = viewModel.personagem.nome.ifBlank { "GURPS - Nova Ficha" },
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                actions = {
-                    IconButton(
-                        onClick = { showMenuDialog = true },
-                        modifier = if (isPraCegoVariant) {
-                            Modifier.semantics { contentDescription = "Abrir menu da ficha" }
-                        } else {
-                            Modifier
-                        }
-                    ) {
-                        Icon(
-                            Icons.Default.MoreVert,
-                            contentDescription = "Menu",
-                            tint = MaterialTheme.colorScheme.onPrimary
+            if (!hideAppChrome) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = viewModel.personagem.nome.ifBlank { "GURPS - Nova Ficha" },
+                            fontWeight = FontWeight.Bold
                         )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    actions = {
+                        IconButton(
+                            onClick = { showMenuDialog = true },
+                            modifier = if (isPraCegoVariant) {
+                                Modifier.semantics { contentDescription = "Abrir menu da ficha" }
+                            } else {
+                                Modifier
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = "Menu",
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
                     }
-                }
-            )
+                )
+            }
         },
         bottomBar = {
-            NavigationBar {
-                tabs.forEachIndexed { index, title ->
-                    NavigationBarItem(
-                        icon = {
-                            val iconRes = when (title) {
-                                "Geral" -> R.drawable.tab_geral
-                                "Traços" -> R.drawable.tab_tracos
-                                "Perícias" -> R.drawable.tab_pericias
-                                "Técnicas" -> R.drawable.tab_tecnicas
-                                "Magia" -> R.drawable.tab_magia
-                                "Equip." -> R.drawable.tab_equipamentos
-                                "Defesas" -> R.drawable.tab_defesas
-                                "Rolagem" -> R.drawable.tab_rolagem
-                                else -> R.drawable.tab_geral
-                            }
-                            Icon(
-                                painter = painterResource(id = iconRes),
-                                contentDescription = if (isPraCegoVariant) "Aba $title" else title,
-                                tint = Color.Unspecified,
-                                modifier = Modifier.size(29.dp)
-                            )
-                        },
-                        label = if (usarNavegacaoCompacta) null else {
-                            {
-                                Text(
-                                    title,
-                                    fontSize = 8.sp,
-                                    maxLines = 1,
-                                    softWrap = false,
-                                    style = MaterialTheme.typography.labelSmall
+            if (!hideAppChrome) {
+                NavigationBar {
+                    tabs.forEachIndexed { index, title ->
+                        NavigationBarItem(
+                            icon = {
+                                val iconRes = when (title) {
+                                    "Geral" -> R.drawable.tab_geral
+                                    "Traços" -> R.drawable.tab_tracos
+                                    "Perícias" -> R.drawable.tab_pericias
+                                    "Técnicas" -> R.drawable.tab_tecnicas
+                                    "Magia" -> R.drawable.tab_magia
+                                    "Equip." -> R.drawable.tab_equipamentos
+                                    "Defesas" -> R.drawable.tab_defesas
+                                    "Rolagem" -> R.drawable.tab_rolagem
+                                    "VTT" -> R.drawable.tab_rolagem
+                                    else -> R.drawable.tab_geral
+                                }
+                                Icon(
+                                    painter = painterResource(id = iconRes),
+                                    contentDescription = if (isPraCegoVariant) "Aba $title" else title,
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier.size(29.dp)
                                 )
-                            }
-                        },
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        alwaysShowLabel = false
-                    )
+                            },
+                            label = if (usarNavegacaoCompacta) null else {
+                                {
+                                    Text(
+                                        title,
+                                        fontSize = 8.sp,
+                                        maxLines = 1,
+                                        softWrap = false,
+                                        style = MaterialTheme.typography.labelSmall
+                                    )
+                                }
+                            },
+                            selected = selectedTab == index,
+                            onClick = { selectedTab = index },
+                            alwaysShowLabel = false
+                        )
+                    }
                 }
             }
         }
@@ -238,8 +251,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
-            if (selectedTitle != "Rolagem") {
+            if (!hideAppChrome && selectedTitle != "Rolagem") {
                 PontosBar(viewModel)
             }
             when (selectedTitle) {
@@ -251,6 +263,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Equip." -> TabEquipamentos(viewModel)
                 "Defesas" -> TabCombate(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
+                "VTT" -> TabVtt(
+                    viewModel = viewModel,
+                    onImmersiveSessionChanged = { active -> vttImmersiveUi = active }
+                )
                 else -> TabGeral(viewModel)
             }
         }
