@@ -686,3 +686,18 @@ Evidencia:
 Pendencia restante:
 1. VTT-APP.2 Passo 1: corrigir divergencia de sala via normalizacao de `roomKey` e isolamento de sessao/token por sala.
 2. VTT-APP.2 Passo 2: auto-reconexao ao retomar app minimizado.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.2 Passo 1 - Isolamento de sessao por sala)
+Status: `CONCLUIDO`
+
+Feito:
+1. `roomKey` passou a ser normalizado antes do join.
+2. Reuso de `sessionId/tokenId` agora acontece apenas se a sala atual for a mesma sala do snapshot salvo.
+3. Se a sala mudou, app limpa estado de sessao/token antes do join para evitar entrar em sala errada.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.2 Passo 2: auto-reconexao ao retomar app minimizado.
+2. VTT-APP.3 Passo 1: selecao e persistencia de imagem de token no app.
