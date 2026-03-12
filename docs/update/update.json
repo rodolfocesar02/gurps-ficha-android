@@ -1,7 +1,7 @@
 {
-  "versionCode": 5,
-  "versionName": "2.0",
-  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V2.0/app-visual-release.apk",
-  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V2.0/app-pracego-release.apk",
-  "notes": "Release V2.0: VTT desativado nesta build, descricoes na rolagem, alternancia GdP/GeB sem arma."
+  "versionCode": 6,
+  "versionName": "12/03",
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/12-03/app-visual-release.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/12-03/app-pracego-release.apk",
+  "notes": "12/03: Pericias sem limite de pontos (sem Aba VTT)."
 }
