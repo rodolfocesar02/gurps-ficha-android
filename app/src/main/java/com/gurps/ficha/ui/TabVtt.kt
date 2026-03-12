@@ -36,9 +36,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,6 +65,9 @@ import com.google.gson.JsonParser
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -156,6 +161,7 @@ fun TabVtt(
     onImmersiveSessionChanged: (Boolean) -> Unit = {}
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
     val scope = rememberCoroutineScope()
 
     var environment by remember { mutableStateOf(VttEnvironment.PROD) }
@@ -206,6 +212,7 @@ fun TabVtt(
     var selectedActionKey by remember { mutableStateOf<String?>(null) }
     var immersiveMapMode by remember { mutableStateOf(true) }
     var showExitVttDialog by remember { mutableStateOf(false) }
+    var autoReconnectEnabled by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.personagem.nome) {
         val nome = viewModel.personagem.nome.trim()
@@ -518,6 +525,7 @@ fun TabVtt(
                 tokenId = snap.tokenId
                 tokenIdBindInput = snap.tokenId
             }
+            autoReconnectEnabled = snap.autoReconnect
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
                 statusMessage = "Sessao local restaurada. Voce pode reconectar."
             }
@@ -627,6 +635,7 @@ fun TabVtt(
                 baseUrl = serverUrl.trim()
             ).onSuccess { result ->
                 connectionState = VttConnectionState.CONNECTED
+                autoReconnectEnabled = true
                 roomKey = normalizedRoomKey
                 sessionId = result.sessionId
                 tokenId = result.tokenId
@@ -645,7 +654,8 @@ fun TabVtt(
                         roomKey = normalizedRoomKey,
                         playerId = playerId.trim(),
                         sessionId = sessionId.orEmpty(),
-                        tokenId = tokenId.orEmpty()
+                        tokenId = tokenId.orEmpty(),
+                        autoReconnect = true
                     )
                 )
                 statusMessage = buildString {
@@ -667,6 +677,7 @@ fun TabVtt(
 
     fun desconectarEmModoShell() {
         connectionState = VttConnectionState.DISCONNECTED
+        autoReconnectEnabled = false
         statusMessage = "Desconectado (shell)."
         VttSessionStorage.save(
             context,
@@ -676,7 +687,8 @@ fun TabVtt(
                 roomKey = roomKey.trim(),
                 playerId = playerId.trim(),
                 sessionId = sessionId.orEmpty(),
-                tokenId = tokenId.orEmpty()
+                tokenId = tokenId.orEmpty(),
+                autoReconnect = false
             )
         )
         Log.i(VTT_UI_LOG, "disconnect shell roomKey=${roomKey.trim()} playerId=${playerId.trim()}")
@@ -723,6 +735,7 @@ fun TabVtt(
     fun limparSessaoLocal() {
         sessionId = null
         tokenId = null
+        autoReconnectEnabled = false
         needsBind = false
         tokenIdBindInput = ""
         VttSessionStorage.save(
@@ -733,7 +746,8 @@ fun TabVtt(
                 roomKey = roomKey.trim(),
                 playerId = playerId.trim(),
                 sessionId = "",
-                tokenId = ""
+                tokenId = "",
+                autoReconnect = false
             )
         )
         connectionState = VttConnectionState.DISCONNECTED
@@ -766,6 +780,7 @@ fun TabVtt(
                 tokenId = result.tokenId ?: token
                 needsBind = false
                 connectionState = VttConnectionState.CONNECTED
+                autoReconnectEnabled = true
                 statusMessage = result.message
                 VttSessionStorage.save(
                     context,
@@ -775,7 +790,8 @@ fun TabVtt(
                         roomKey = room,
                         playerId = player,
                         sessionId = sessionId.orEmpty(),
-                        tokenId = tokenId.orEmpty()
+                        tokenId = tokenId.orEmpty(),
+                        autoReconnect = true
                     )
                 )
                 Log.i(VTT_UI_LOG, "tokenBind success roomKey=$room playerId=$player tokenId=${tokenId.orEmpty()}")
@@ -909,6 +925,26 @@ fun TabVtt(
         onImmersiveSessionChanged(vttOnlyMode)
     }
     val showDetails = showConfig || !isConnected || !immersiveMapMode
+    val canAutoReconnect by rememberUpdatedState(
+        autoReconnectEnabled &&
+            !isConnected &&
+            connectionState != VttConnectionState.CONNECTING &&
+            roomKey.trim().isNotBlank() &&
+            playerId.trim().isNotBlank() &&
+            !sessionId.isNullOrBlank()
+    )
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME && canAutoReconnect) {
+                statusMessage = "Retomando sessao VTT..."
+                conectarEmModoShell()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
     val baseUrl = webUrl.trim().trimEnd('/')
     val roomParam = Uri.encode(roomKey.trim())
     val playerParam = Uri.encode(playerId.trim())

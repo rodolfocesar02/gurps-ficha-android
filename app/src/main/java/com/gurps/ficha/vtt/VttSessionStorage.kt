@@ -8,7 +8,8 @@ data class VttSessionSnapshot(
     val roomKey: String = "",
     val playerId: String = "",
     val sessionId: String = "",
-    val tokenId: String = ""
+    val tokenId: String = "",
+    val autoReconnect: Boolean = false
 )
 
 object VttSessionStorage {
@@ -19,6 +20,7 @@ object VttSessionStorage {
     private const val KEY_PLAYER_ID = "player_id"
     private const val KEY_SESSION_ID = "session_id"
     private const val KEY_TOKEN_ID = "token_id"
+    private const val KEY_AUTO_RECONNECT = "auto_reconnect"
 
     fun load(context: Context): VttSessionSnapshot {
         val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -28,7 +30,8 @@ object VttSessionStorage {
             roomKey = pref.getString(KEY_ROOM_KEY, "").orEmpty(),
             playerId = pref.getString(KEY_PLAYER_ID, "").orEmpty(),
             sessionId = pref.getString(KEY_SESSION_ID, "").orEmpty(),
-            tokenId = pref.getString(KEY_TOKEN_ID, "").orEmpty()
+            tokenId = pref.getString(KEY_TOKEN_ID, "").orEmpty(),
+            autoReconnect = pref.getBoolean(KEY_AUTO_RECONNECT, false)
         )
     }
 
@@ -40,6 +43,7 @@ object VttSessionStorage {
             .putString(KEY_PLAYER_ID, snapshot.playerId)
             .putString(KEY_SESSION_ID, snapshot.sessionId)
             .putString(KEY_TOKEN_ID, snapshot.tokenId)
+            .putBoolean(KEY_AUTO_RECONNECT, snapshot.autoReconnect)
             .apply()
     }
 }
