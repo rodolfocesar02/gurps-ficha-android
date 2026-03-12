@@ -701,3 +701,21 @@ Evidencia:
 Pendencia restante:
 1. VTT-APP.2 Passo 2: auto-reconexao ao retomar app minimizado.
 2. VTT-APP.3 Passo 1: selecao e persistencia de imagem de token no app.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.2 Passo 2 - Auto-reconexao ao retomar app)
+Status: `CONCLUIDO`
+
+Feito:
+1. Adicionado controle de auto-reconexao persistente em cache de sessao (`autoReconnect`).
+2. Aba VTT agora tenta retomar conexao automaticamente no `ON_RESUME` quando a sessao estava ativa.
+3. Desconexao manual e limpeza de sessao desativam auto-reconexao para nao reconectar contra vontade do usuario.
+
+Evidencia:
+1. Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/vtt/VttSessionStorage.kt`
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.3 Passo 1: selecao e persistencia de imagem de token no app.
+2. VTT-APP.3 Passo 2: bloquear troca de imagem durante sessao ativa (exigir sair do VTT).
+3. VTT-APP.3 Passo 3: enviar nome/imagem do token no join REST/bridge.
