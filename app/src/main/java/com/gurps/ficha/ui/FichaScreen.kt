@@ -1,5 +1,7 @@
 ﻿package com.gurps.ficha.ui
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +71,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var updateDialogMessage by remember { mutableStateOf("") }
     var updateApkUrl by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
+    val activity = context as? Activity
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -164,6 +168,18 @@ fun FichaScreen(viewModel: FichaViewModel) {
     LaunchedEffect(selectedTitle) {
         if (selectedTitle != "VTT") {
             vttImmersiveUi = false
+        }
+    }
+    DisposableEffect(hideAppChrome) {
+        val previousOrientation = activity?.requestedOrientation
+        if (hideAppChrome && activity != null) {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
+        onDispose {
+            if (activity != null) {
+                activity.requestedOrientation =
+                    previousOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
         }
     }
 
@@ -467,4 +483,6 @@ fun PontosBar(viewModel: FichaViewModel) {
         }
     }
 }
+
+
 
