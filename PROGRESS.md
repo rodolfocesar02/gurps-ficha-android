@@ -1,4 +1,4 @@
-# PROGRESS - GURPS Ficha Android
+Ôªø# PROGRESS - GURPS Ficha Android
 
 Atualizado em: 2026-03-11
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
@@ -42,7 +42,7 @@ Feito:
 1. Ambiente `PROD` da Aba VTT atualizado para URLs publicas definitivas:
 - API: `https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app`
 - WEB: `https://surprising-compassion-production-7a88.up.railway.app`
-2. MigraÁ„o automatica adicionada para sessıes antigas:
+2. Migra√ß√£o automatica adicionada para sess√µes antigas:
 - se `webUrl` salvo apontar para dominio antigo do backend, o app troca automaticamente para o frontend publico.
 3. Mantida regra de UX simples: fluxo principal segue `Sala + Entrar`, com ajustes tecnicos apenas em area avancada.
 
@@ -81,16 +81,16 @@ Feito:
 - campo `Sala` sempre visivel;
 - botao `Entrar` sempre visivel;
 - `Player ID` sincronizado automaticamente com nome da ficha.
-2. URLs em loopback (`localhost/127.0.0.1`) agora sao forÁadas para `PROD` no conectar, evitando erro tecnico em uso remoto.
+2. URLs em loopback (`localhost/127.0.0.1`) agora sao for√ßadas para `PROD` no conectar, evitando erro tecnico em uso remoto.
 3. Configuracoes tecnicas foram rebaixadas para `Ajustes Avancados` (nao fazem parte do fluxo principal).
 
 Evidencia:
 1. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
-2. Regressao unit·ria Android: `:app:testVisualDebugUnitTest` (OK em 2026-03-11).
+2. Regressao unit√°ria Android: `:app:testVisualDebugUnitTest` (OK em 2026-03-11).
 
 Pendencia restante:
 1. Teste manual em aparelho fisico para validar experiencia final `Sala + Entrar` no servidor publico.
-2. Em lote seguinte, ocultar painÈis de debug remanescentes quando conectado para deixar tela ainda mais limpa.
+2. Em lote seguinte, ocultar pain√©is de debug remanescentes quando conectado para deixar tela ainda mais limpa.
 
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 3)
 Status: `CONCLUIDO`
@@ -147,251 +147,251 @@ Pendencia restante:
 1. Validar em teste manual com celular na mesma rede do PC se a autodeteccao encontra o host sem input tecnico.
 2. Se a rede nao preencher ARP inicialmente, adicionar fallback de descoberta ativa por faixa local no proximo passo.
 
-## AtualizaÁ„o R·pida - 2026-03-10 (Aba VTT Embed)
+## Atualiza√ß√£o R√°pida - 2026-03-10 (Aba VTT Embed)
 Status: `EM ANDAMENTO`
 
 Escopo executado:
 1. Aba `VTT` reativada na V2 com WebView embed (mapa/grid dentro do app).
-2. WebView com `hardware acceleration` forÁado via `setLayerType(HARDWARE)` e `android:hardwareAccelerated="true"` no Manifest.
-3. Permiss„o adicionada para ·udio: `android.permission.MODIFY_AUDIO_SETTINGS`.
+2. WebView com `hardware acceleration` for√ßado via `setLayerType(HARDWARE)` e `android:hardwareAccelerated="true"` no Manifest.
+3. Permiss√£o adicionada para √°udio: `android.permission.MODIFY_AUDIO_SETTINGS`.
 4. Tratamento de erro do WebView no UI (main-frame, HTTP e console).
-5. DiagnÛstico WebGL inline: checagem `canvas/webgl` e exibiÁ„o de erro no app.
+5. Diagn√≥stico WebGL inline: checagem `canvas/webgl` e exibi√ß√£o de erro no app.
 6. WebView debug habilitado (`WebView.setWebContentsDebuggingEnabled(true)`).
 7. Corrigido bloco do `AndroidView`/`WebView` (sintaxe Kotlin) e reinstalado visual no emulador.
-8. Default da aba VTT apontando para produÁ„o (API/Web), layout 16:9 full embed, mensagem neutra de carregamento (ìaguardando mestreî) e campo de configuraÁ„o avanÁada oculto por padr„o.
-9. Bridge parcial app?VTT: ficha JSON enviada automaticamente ao carregar o embed; captura de ROOM_STATE/ROLL_RESULT/AUDIO_STATE/FICHA_SYNC no app para depuraÁ„o.
-10. HUD parcial: ˙ltimos estados/rolagens exibidos na aba; comandos r·pidos de ping/zoom/mic/voz dispatchados para o embed.
-11. Build visual debug recompilado (validateActiveJsonAssets OK) apÛs ajuste de HUD/bridge.
-12. Bridge decodifica JSON nativo do VTT (type/payload), extrai participantes e resumo de ·udio/rolagens.
-13. AÁ„o de token: di·logo de aÁıes ao receber TOKEN_SELECTED (nome/modificador) com envio via confirmaÁ„o.
-14. Sync de ficha: aplica `FICHA_SYNC` recebido do VTT usando importador canÙnico (atualiza ficha local).
-15. Envio direto da aÁ„o no VTT (dialogo dispara `roll/request` sem confirmaÁ„o extra).
-16. Di·logo de token agora lista PerÌcias/Magias/Defesas da ficha com NH calculado e seleÁ„o r·pida.
-17. Envio hÌbrido de rolagem: app dispara `APP_ROLL` na bridge do embed e mantÈm `roll/request` REST como fallback de compatibilidade.
-18. Auto-join reforÁado na aba VTT: app envia `VTT_JOIN` via bridge no `onPageFinished` e apÛs sucesso de conex„o shell.
-19. Modo imersivo na Aba VTT: quando conectado, prioriza mapa (·rea maior) e oculta painÈis auxiliares atÈ o usu·rio expandir detalhes.
-20. Contrato cruzado concluÌdo no frontend VTT externo: `APP_ROLL` agora È processado via bridge (`postMessage`/`gurps-android-command`) e emitido como `acao_rolagem_dado` v1.
-21. CorreÁ„o de bridge JS no app: comandos de ·udio/mapa agora enviam a `action` correta (interpolaÁ„o Kotlin), eliminando envio literal incorreto.
-22. Lote Token-Pro (Passo 1): `TokenPopup` ligado ao token ativo no `App.tsx` (tokenId/status/visibilidade/aura/escala) e ajuste de build bloqueado por sÌmbolos n„o usados (Lore Library) no VTT_Mestre.
-23. Lote Token-Pro (Passo 2): autoridade de visibilidade corrigida no `WebGLMap` (`isGM` somente para mestre), removendo condiÁ„o que elevava jogador quando mapa destravado.
+8. Default da aba VTT apontando para produ√ß√£o (API/Web), layout 16:9 full embed, mensagem neutra de carregamento (‚Äúaguardando mestre‚Äù) e campo de configura√ß√£o avan√ßada oculto por padr√£o.
+9. Bridge parcial app?VTT: ficha JSON enviada automaticamente ao carregar o embed; captura de ROOM_STATE/ROLL_RESULT/AUDIO_STATE/FICHA_SYNC no app para depura√ß√£o.
+10. HUD parcial: √∫ltimos estados/rolagens exibidos na aba; comandos r√°pidos de ping/zoom/mic/voz dispatchados para o embed.
+11. Build visual debug recompilado (validateActiveJsonAssets OK) ap√≥s ajuste de HUD/bridge.
+12. Bridge decodifica JSON nativo do VTT (type/payload), extrai participantes e resumo de √°udio/rolagens.
+13. A√ß√£o de token: di√°logo de a√ß√µes ao receber TOKEN_SELECTED (nome/modificador) com envio via confirma√ß√£o.
+14. Sync de ficha: aplica `FICHA_SYNC` recebido do VTT usando importador can√¥nico (atualiza ficha local).
+15. Envio direto da a√ß√£o no VTT (dialogo dispara `roll/request` sem confirma√ß√£o extra).
+16. Di√°logo de token agora lista Per√≠cias/Magias/Defesas da ficha com NH calculado e sele√ß√£o r√°pida.
+17. Envio h√≠brido de rolagem: app dispara `APP_ROLL` na bridge do embed e mant√©m `roll/request` REST como fallback de compatibilidade.
+18. Auto-join refor√ßado na aba VTT: app envia `VTT_JOIN` via bridge no `onPageFinished` e ap√≥s sucesso de conex√£o shell.
+19. Modo imersivo na Aba VTT: quando conectado, prioriza mapa (√°rea maior) e oculta pain√©is auxiliares at√© o usu√°rio expandir detalhes.
+20. Contrato cruzado conclu√≠do no frontend VTT externo: `APP_ROLL` agora √© processado via bridge (`postMessage`/`gurps-android-command`) e emitido como `acao_rolagem_dado` v1.
+21. Corre√ß√£o de bridge JS no app: comandos de √°udio/mapa agora enviam a `action` correta (interpola√ß√£o Kotlin), eliminando envio literal incorreto.
+22. Lote Token-Pro (Passo 1): `TokenPopup` ligado ao token ativo no `App.tsx` (tokenId/status/visibilidade/aura/escala) e ajuste de build bloqueado por s√≠mbolos n√£o usados (Lore Library) no VTT_Mestre.
+23. Lote Token-Pro (Passo 2): autoridade de visibilidade corrigida no `WebGLMap` (`isGM` somente para mestre), removendo condi√ß√£o que elevava jogador quando mapa destravado.
 
-EvidÍncia do Passo 1:
-1. Frontend VTT buildado com sucesso apÛs o ajuste: `cmd /c npm run build` (OK).
-2. PendÍncia restante do lote: validar em sess„o real mestre/jogador (com token oculto) que o jogador n„o enxerga token oculto e o mestre mantÈm vis„o fantasma.
+Evid√™ncia do Passo 1:
+1. Frontend VTT buildado com sucesso ap√≥s o ajuste: `cmd /c npm run build` (OK).
+2. Pend√™ncia restante do lote: validar em sess√£o real mestre/jogador (com token oculto) que o jogador n√£o enxerga token oculto e o mestre mant√©m vis√£o fantasma.
 
-EvidÍncia do Passo 2:
+Evid√™ncia do Passo 2:
 1. Frontend VTT buildado: `cmd /c npm run build` (OK).
 2. Backend VTT testado: `cmd /c npm test` (33/33 OK).
 
 Estado atual:
 1. App compila e instala (visual).
 2. VTT no desktop renderiza mapa/grid normalmente.
-3. No emulador, o embed mostra `Canvas/WebGL indisponÌvel: no_canvas` (tela preta).
+3. No emulador, o embed mostra `Canvas/WebGL indispon√≠vel: no_canvas` (tela preta).
 
-PendÍncias imediatas:
-1. Investigar por que WebView do emulador n„o expıe Canvas/WebGL (prov·vel limitaÁ„o de WebView/Emulador).
+Pend√™ncias imediatas:
+1. Investigar por que WebView do emulador n√£o exp√µe Canvas/WebGL (prov√°vel limita√ß√£o de WebView/Emulador).
 2. Implementar fallback 2D (Canvas) no VTT quando `no_canvas`/`no_webgl` for detectado no WebView.
-3. Confirmar logs do WebView via `chrome://inspect` apÛs fallback.
+3. Confirmar logs do WebView via `chrome://inspect` ap√≥s fallback.
 4. Revalidar render do mapa/grid dentro da Aba VTT.
 
-## AtualizaÁ„o R·pida - 2026-03-09 (Desvantagens)
-Status: `CONCLUÕDO`
+## Atualiza√ß√£o R√°pida - 2026-03-09 (Desvantagens)
+Status: `CONCLU√çDO`
 
 Escopo executado:
-1. Preenchidas as descriÁıes faltantes em `app/src/main/assets/desvantagens.v2.json` (cobertura final: `227/227` com descriÁ„o).
-2. Corrigido nome canÙnico no cat·logo: `Suscetibilidade ‡ Magia`.
-3. Ajustado carregamento V2 em `DataRepository` para preservar `rawCost` em `costKind=fixed` (mantÈm marcador `*` e corrige detecÁ„o de autocontrole mental).
-4. Criado script de apoio para preenchimento por PDF canÙnico: `scripts/fill_missing_desvantagens_from_pdf.py`.
+1. Preenchidas as descri√ß√µes faltantes em `app/src/main/assets/desvantagens.v2.json` (cobertura final: `227/227` com descri√ß√£o).
+2. Corrigido nome can√¥nico no cat√°logo: `Suscetibilidade √† Magia`.
+3. Ajustado carregamento V2 em `DataRepository` para preservar `rawCost` em `costKind=fixed` (mant√©m marcador `*` e corrige detec√ß√£o de autocontrole mental).
+4. Criado script de apoio para preenchimento por PDF can√¥nico: `scripts/fill_missing_desvantagens_from_pdf.py`.
 
-ValidaÁ„o registrada:
-1. Varredura final em `desvantagens.v2.json`: `0` itens sem descriÁ„o.
-2. Varredura final de mojibake (`√`, `¬`, `‚Ä`, `?`): `0` ocorrÍncias.
+Valida√ß√£o registrada:
+1. Varredura final em `desvantagens.v2.json`: `0` itens sem descri√ß√£o.
+2. Varredura final de mojibake (`√É`, `√Ç`, `√¢‚Ç¨`, `?`): `0` ocorr√™ncias.
 
-## Plano Macro - Vers„o 2.0 (sem alterar V1 em uso)
+## Plano Macro - Vers√£o 2.0 (sem alterar V1 em uso)
 Status: `ATIVO`
 
 Diretriz:
-1. A V1 atual continua est·vel e utiliz·vel.
-2. Toda evoluÁ„o de produto passa a entrar como trilha V2, em lotes independentes.
-3. Cada lote V2 fecha com commit prÛprio + validaÁ„o mÌnima.
+1. A V1 atual continua est√°vel e utiliz√°vel.
+2. Toda evolu√ß√£o de produto passa a entrar como trilha V2, em lotes independentes.
+3. Cada lote V2 fecha com commit pr√≥prio + valida√ß√£o m√≠nima.
 
-### Lote V2.1 - Estrutura Segura de EvoluÁ„o
-Status: `CONCLUÕDO`
+### Lote V2.1 - Estrutura Segura de Evolu√ß√£o
+Status: `CONCLU√çDO`
 
 Passos:
 1. [x] Definir no `PROGRESS.md` a trilha V2 separada da V1.
-2. [x] Garantir que artefatos locais do AGENTE n„o entrem em commit (`.gitignore`).
-3. [x] Criar branch de trabalho dedicada (`v2-main`) para desenvolvimento contÌnuo.
-4. [x] Criar checklist de "n„o regress„o V1" por release V2.
+2. [x] Garantir que artefatos locais do AGENTE n√£o entrem em commit (`.gitignore`).
+3. [x] Criar branch de trabalho dedicada (`v2-main`) para desenvolvimento cont√≠nuo.
+4. [x] Criar checklist de "n√£o regress√£o V1" por release V2.
 
-CritÈrios de aceite:
-1. RepositÛrio com base limpa para comeÁar V2 sem risco de regress„o acidental.
-2. Commits V2 rastre·veis por lote e passo.
+Crit√©rios de aceite:
+1. Reposit√≥rio com base limpa para come√ßar V2 sem risco de regress√£o acidental.
+2. Commits V2 rastre√°veis por lote e passo.
 
-EvidÍncia:
+Evid√™ncia:
 1. Checklist criado em `docs/v2/NON_REGRESSION_V1_CHECKLIST.md`.
 
-### Lote V2.2 - PadronizaÁ„o Visual Global (Visual + PraCego)
+### Lote V2.2 - Padroniza√ß√£o Visual Global (Visual + PraCego)
 Status: `EM ANDAMENTO`
 
 Passos:
-1. [x] Congelar tokens de UI globais (espaÁo, tipografia, raio, tamanhos de toque).
-2. [x] Aplicar padr„o ˙nico de card no n˙cleo (PerÌcias, TÈcnicas e Magias).
-3. [x] Estender padr„o ˙nico de card para TraÁos.
-4. [x] Estender padr„o ˙nico de card para Equipamentos.
-5. [x] Estender padr„o ˙nico de card para Defesas.
-6. [x] Estender padr„o ˙nico de card para Rolagem (base de cor/container).
-7. [x] Unificar di·logos de seleÁ„o/ediÁ„o (tÌtulo, densidade, aÁıes finais).
-8. [x] Subpasso: padronizar densidade dos di·logos de descriÁ„o (PerÌcias, TÈcnicas e Magias).
-9. [ ] Rodar checklist de contraste/foco/rÛtulos TalkBack.
-10. [x] Validar instalaÁ„o e abertura em emulador visual e pracego.
-11. [x] Subpasso: validar build das variantes visual/pracego apÛs padronizaÁ„o V2.
+1. [x] Congelar tokens de UI globais (espa√ßo, tipografia, raio, tamanhos de toque).
+2. [x] Aplicar padr√£o √∫nico de card no n√∫cleo (Per√≠cias, T√©cnicas e Magias).
+3. [x] Estender padr√£o √∫nico de card para Tra√ßos.
+4. [x] Estender padr√£o √∫nico de card para Equipamentos.
+5. [x] Estender padr√£o √∫nico de card para Defesas.
+6. [x] Estender padr√£o √∫nico de card para Rolagem (base de cor/container).
+7. [x] Unificar di√°logos de sele√ß√£o/edi√ß√£o (t√≠tulo, densidade, a√ß√µes finais).
+8. [x] Subpasso: padronizar densidade dos di√°logos de descri√ß√£o (Per√≠cias, T√©cnicas e Magias).
+9. [ ] Rodar checklist de contraste/foco/r√≥tulos TalkBack.
+10. [x] Validar instala√ß√£o e abertura em emulador visual e pracego.
+11. [x] Subpasso: validar build das variantes visual/pracego ap√≥s padroniza√ß√£o V2.
 12. [x] Subpasso: criar checklist operacional de acessibilidade V2.2 (`docs/v2/A11Y_CHECKLIST_V2_2.md`).
-13. [x] Subpasso: habilitar execuÁ„o est·vel do lint (desativando detectores Compose com crash) e gerar relatÛrio de erros reais.
-14. [x] Subpasso: padronizar espaÁamento de conte˙do em di·logos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
-15. [x] Subpasso: executar prÈ-check automatizado de A11Y e registrar relatÛrio (`docs/v2/A11Y_CHECKLIST_V2_2_EXEC.md`).
+13. [x] Subpasso: habilitar execu√ß√£o est√°vel do lint (desativando detectores Compose com crash) e gerar relat√≥rio de erros reais.
+14. [x] Subpasso: padronizar espa√ßamento de conte√∫do em di√°logos principais (`Dialogs*.kt`) com `UiTokens.DialogContentSpacing`.
+15. [x] Subpasso: executar pr√©-check automatizado de A11Y e registrar relat√≥rio (`docs/v2/A11Y_CHECKLIST_V2_2_EXEC.md`).
 
-EvidÍncia parcial adicional:
-1. `UiActionLabels` aplicado nos di·logos principais para aÁıes finais consistentes.
-2. `StandardDialogColumn` e `UiTokens.DialogContentSpacing` ativos no corpo dos di·logos de seleÁ„o/ediÁ„o e descriÁ„o.
-3. PrÈ-check automatizado: `contentDescription=129`, `pracegoTraversal=14`.
+Evid√™ncia parcial adicional:
+1. `UiActionLabels` aplicado nos di√°logos principais para a√ß√µes finais consistentes.
+2. `StandardDialogColumn` e `UiTokens.DialogContentSpacing` ativos no corpo dos di√°logos de sele√ß√£o/edi√ß√£o e descri√ß√£o.
+3. Pr√©-check automatizado: `contentDescription=129`, `pracegoTraversal=14`.
 
-### Lote V2.3 - Fluxo de Dados e Regras CanÙnicas
-Status: `CONCLUÕDO`
+### Lote V2.3 - Fluxo de Dados e Regras Can√¥nicas
+Status: `CONCLU√çDO`
 
 Passos:
-1. [x] Auditoria de JSONs ativos (prÈ-requisitos, nomes e acentuaÁ„o).
-2. [x] CorreÁ„o orientada por canÙnico com testes de regress„o (sem divergÍncias detectadas nesta rodada).
-3. [x] Varredura autom·tica de artefatos de encoding antes de build.
-4. [x] RelatÛrio de cobertura por cat·logo (vantagens, desvantagens, perÌcias, tÈcnicas, magias).
+1. [x] Auditoria de JSONs ativos (pr√©-requisitos, nomes e acentua√ß√£o).
+2. [x] Corre√ß√£o orientada por can√¥nico com testes de regress√£o (sem diverg√™ncias detectadas nesta rodada).
+3. [x] Varredura autom√°tica de artefatos de encoding antes de build.
+4. [x] Relat√≥rio de cobertura por cat√°logo (vantagens, desvantagens, per√≠cias, t√©cnicas, magias).
 
-EvidÍncia:
+Evid√™ncia:
 1. `scripts/reports/active_json_audit_v2.json`
 2. `scripts/reports/active_json_audit_v2.md`
 3. `scripts/reports/catalog_coverage_v2.json`
 4. `scripts/reports/catalog_coverage_v2.md`
-5. `app:preBuild` agora depende de `validateActiveJsonAssets` (bloqueio autom·tico em caso de issues).
-6. Regress„o executada:
+5. `app:preBuild` agora depende de `validateActiveJsonAssets` (bloqueio autom√°tico em caso de issues).
+6. Regress√£o executada:
    - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
    - `:app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
    - `:app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
 
-### Lote V2.4 - UX de EdiÁ„o e Intuitividade
-Status: `CONCLUÕDO`
+### Lote V2.4 - UX de Edi√ß√£o e Intuitividade
+Status: `CONCLU√çDO`
 
 Passos:
-1. [x] Revisar textos de aÁ„o para consistÍncia (Adicionar/Editar/Remover/Fechar).
-2. [x] Padronizar feedback pÛs-aÁ„o (snackbar curto + acessÌvel).
-3. [x] Melhorar estado vazio e mensagens de erro orientadas a soluÁ„o.
+1. [x] Revisar textos de a√ß√£o para consist√™ncia (Adicionar/Editar/Remover/Fechar).
+2. [x] Padronizar feedback p√≥s-a√ß√£o (snackbar curto + acess√≠vel).
+3. [x] Melhorar estado vazio e mensagens de erro orientadas a solu√ß√£o.
 4. [x] Definir mapa de foco final para `pracego`.
 
-EvidÍncia parcial:
-1. Novo arquivo `app/src/main/java/com/gurps/ficha/ui/UiActionLabels.kt` centralizando rÛtulos de aÁ„o.
-2. Di·logos de PerÌcias/TÈcnicas/Magias/TraÁos/Comuns migrados para uso de `UiActionLabels`.
-3. `FichaScreen` passou a usar `SnackbarHostState` para feedback curto nas aÁıes: nova ficha, salvar, carregar, excluir, exportar e importar.
-4. Novo componente `GuidedEmptyState` em `UiStandards.kt` aplicado nas abas PerÌcias, TÈcnicas e Magias.
-5. Mensagens de fallback orientadas para aÁ„o aplicadas em importaÁ„o e em di·logo de carregamento sem fichas salvas.
+Evid√™ncia parcial:
+1. Novo arquivo `app/src/main/java/com/gurps/ficha/ui/UiActionLabels.kt` centralizando r√≥tulos de a√ß√£o.
+2. Di√°logos de Per√≠cias/T√©cnicas/Magias/Tra√ßos/Comuns migrados para uso de `UiActionLabels`.
+3. `FichaScreen` passou a usar `SnackbarHostState` para feedback curto nas a√ß√µes: nova ficha, salvar, carregar, excluir, exportar e importar.
+4. Novo componente `GuidedEmptyState` em `UiStandards.kt` aplicado nas abas Per√≠cias, T√©cnicas e Magias.
+5. Mensagens de fallback orientadas para a√ß√£o aplicadas em importa√ß√£o e em di√°logo de carregamento sem fichas salvas.
 6. Mapa de foco documentado em `docs/v2/PRACEGO_FOCUS_MAP_V2_4.md`.
-7. Novo utilit·rio `Modifier.pracegoTraversal(...)` aplicado no menu principal e nos pontos de entrada de PerÌcias/TÈcnicas/Magias.
-8. Aba Rolagem: descriÁ„o disponÌvel nas listas de PerÌcias/TÈcnicas/Magias (toque no nome abre popup).
-9. Aba Rolagem: opÁ„o de dano ST altern·vel entre `GdP` e `GeB` quando n„o houver arma selecionada.
-10. ValidaÁ„o executada:
+7. Novo utilit√°rio `Modifier.pracegoTraversal(...)` aplicado no menu principal e nos pontos de entrada de Per√≠cias/T√©cnicas/Magias.
+8. Aba Rolagem: descri√ß√£o dispon√≠vel nas listas de Per√≠cias/T√©cnicas/Magias (toque no nome abre popup).
+9. Aba Rolagem: op√ß√£o de dano ST altern√°vel entre `GdP` e `GeB` quando n√£o houver arma selecionada.
+10. Valida√ß√£o executada:
    - `./gradlew :app:compileVisualDebugKotlin :app:compilePracegoDebugKotlin` (OK)
 
 ## Regra Permanente - Higiene de Texto (acentos/artefatos)
 **Regra fixa para todos os lotes daqui em diante:**
-1. Antes de commit de cat·logo/UI, executar varredura de mojibake e acentuaÁ„o quebrada nos arquivos ativos (`app/src/main/assets/*.json` e textos exibidos pela UI).
-2. Bloquear publicaÁ„o se houver strings com artefatos tÌpicos (`√`, `¬`, `ÔøΩ`, `?`, `n?o`, `per?cia`, `pr?-requisito` e variantes).
-3. Corrigir no prÛprio arquivo-fonte canÙnico antes de gerar APK.
-4. Registrar no `PROGRESS.md` o relatÛrio da varredura em cada lote que tocar texto.
-5. Na rotina de reparo de mojibake, **n„o** tratar letras portuguesas v·lidas (ex.: `‚`) como marcador de erro; usar apenas sequÍncias tÌpicas quebradas (`√`, `¬`, `‚Ä`, `‚Äì`, `‚Äî`, `‚Äú`, `‚Ä\u009d`, `‚Äô`, `?`).
+1. Antes de commit de cat√°logo/UI, executar varredura de mojibake e acentua√ß√£o quebrada nos arquivos ativos (`app/src/main/assets/*.json` e textos exibidos pela UI).
+2. Bloquear publica√ß√£o se houver strings com artefatos t√≠picos (`√É`, `√Ç`, `√Ø¬ø¬Ω`, `?`, `n?o`, `per?cia`, `pr?-requisito` e variantes).
+3. Corrigir no pr√≥prio arquivo-fonte can√¥nico antes de gerar APK.
+4. Registrar no `PROGRESS.md` o relat√≥rio da varredura em cada lote que tocar texto.
+5. Na rotina de reparo de mojibake, **n√£o** tratar letras portuguesas v√°lidas (ex.: `√¢`) como marcador de erro; usar apenas sequ√™ncias t√≠picas quebradas (`√É`, `√Ç`, `√¢‚Ç¨`, `√¢‚Ç¨‚Äú`, `√¢‚Ç¨‚Äù`, `√¢‚Ç¨≈ì`, `√¢‚Ç¨\u009d`, `√¢‚Ç¨‚Ñ¢`, `?`).
 
 ## Regras Operacionais
-1. Sempre editar primeiro a fonte canÙnica de prÈ-requisito antes de mexer na UI.
-2. N„o aceitar correÁ„o sÛ por "funcionou no caso X"; incluir teste de regress„o.
-3. Quando houver divergÍncia entre JSON e regra canÙnica, corrigir ambos ou documentar exceÁ„o explÌcita.
-4. Cada lote sÛ fecha com:
+1. Sempre editar primeiro a fonte can√¥nica de pr√©-requisito antes de mexer na UI.
+2. N√£o aceitar corre√ß√£o s√≥ por "funcionou no caso X"; incluir teste de regress√£o.
+3. Quando houver diverg√™ncia entre JSON e regra can√¥nica, corrigir ambos ou documentar exce√ß√£o expl√≠cita.
+4. Cada lote s√≥ fecha com:
 - testes passando
-- relatÛrio em `app/build/reports/` ou `scripts/reports/`
-- atualizaÁ„o deste `PROGRESS.md`
+- relat√≥rio em `app/build/reports/` ou `scripts/reports/`
+- atualiza√ß√£o deste `PROGRESS.md`
 5. Commit por lote com mensagem objetiva (`lote-N: ...`).
-6. No pipeline do AGENTE GURPS, p·ginas de abertura (capa/sum·rio) devem ser classificadas separadamente para n„o contaminar a mÈtrica de suspeitas acion·veis.
+6. No pipeline do AGENTE GURPS, p√°ginas de abertura (capa/sum√°rio) devem ser classificadas separadamente para n√£o contaminar a m√©trica de suspeitas acion√°veis.
 
 ## Regras Operacionais Oficiais - Aba VTT (Fixas)
-1. Regra de execuÁ„o por lotes: cada lote tem objetivo, passos pequenos, validaÁ„o e encerramento formal.
-2. Regra de passo atÙmico: 1 passo = 1 mudanÁa funcional clara + 1 validaÁ„o + 1 update no `PROGRESS` + 1 commit.
-3. Regra de progresso: ao finalizar cada passo, atualizar `PROGRESS.md` com "feito", "evidÍncia" e "pendÍncia restante".
-4. Regra de commit: mensagem objetiva por passo/lote, sem agrupar mudanÁas grandes n„o relacionadas.
-5. Regra de n„o-regress„o: nunca quebrar fluxo j· funcional para avanÁar feature nova.
-6. Regra de fallback: se bridge nova falhar, manter fallback tempor·rio atÈ estabilizar.
-7. Regra de validaÁ„o tÈcnica mÌnima (App Android): `:app:assembleVisualDebug -x lint` precisa passar no passo alterado.
-8. Regra de validaÁ„o tÈcnica mÌnima (VTT Web): build frontend precisa passar apÛs mudanÁa de bridge/UI.
-9. Regra de validaÁ„o funcional mÌnima: testar conex„o, join autom·tico, render do mapa, seleÁ„o de token e 1 aÁ„o de rolagem.
-10. Regra de validaÁ„o de contrato: payloads `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT` devem ser aceitos sem erro.
-11. Regra de evidÍncia: registrar no `PROGRESS` o que foi testado e resultado objetivo (OK/FALHA + causa).
-12. Regra de comunicaÁ„o durante execuÁ„o: reportar sempre "o que estou fazendo agora" e "o que falta para fechar o passo".
-13. Regra de bloqueio: se surgir impedimento externo (ex.: limitaÁ„o WebView, backend faltando endpoint), parar e registrar bloqueio com estratÈgia alternativa.
-14. Regra de escopo: n„o abrir frentes paralelas grandes; concluir lote corrente antes do prÛximo.
-15. Regra de qualidade: evitar soluÁıes provisÛrias eternas; cada workaround deve ter plano explÌcito de remoÁ„o.
+1. Regra de execu√ß√£o por lotes: cada lote tem objetivo, passos pequenos, valida√ß√£o e encerramento formal.
+2. Regra de passo at√¥mico: 1 passo = 1 mudan√ßa funcional clara + 1 valida√ß√£o + 1 update no `PROGRESS` + 1 commit.
+3. Regra de progresso: ao finalizar cada passo, atualizar `PROGRESS.md` com "feito", "evid√™ncia" e "pend√™ncia restante".
+4. Regra de commit: mensagem objetiva por passo/lote, sem agrupar mudan√ßas grandes n√£o relacionadas.
+5. Regra de n√£o-regress√£o: nunca quebrar fluxo j√° funcional para avan√ßar feature nova.
+6. Regra de fallback: se bridge nova falhar, manter fallback tempor√°rio at√© estabilizar.
+7. Regra de valida√ß√£o t√©cnica m√≠nima (App Android): `:app:assembleVisualDebug -x lint` precisa passar no passo alterado.
+8. Regra de valida√ß√£o t√©cnica m√≠nima (VTT Web): build frontend precisa passar ap√≥s mudan√ßa de bridge/UI.
+9. Regra de valida√ß√£o funcional m√≠nima: testar conex√£o, join autom√°tico, render do mapa, sele√ß√£o de token e 1 a√ß√£o de rolagem.
+10. Regra de valida√ß√£o de contrato: payloads `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT` devem ser aceitos sem erro.
+11. Regra de evid√™ncia: registrar no `PROGRESS` o que foi testado e resultado objetivo (OK/FALHA + causa).
+12. Regra de comunica√ß√£o durante execu√ß√£o: reportar sempre "o que estou fazendo agora" e "o que falta para fechar o passo".
+13. Regra de bloqueio: se surgir impedimento externo (ex.: limita√ß√£o WebView, backend faltando endpoint), parar e registrar bloqueio com estrat√©gia alternativa.
+14. Regra de escopo: n√£o abrir frentes paralelas grandes; concluir lote corrente antes do pr√≥ximo.
+15. Regra de qualidade: evitar solu√ß√µes provis√≥rias eternas; cada workaround deve ter plano expl√≠cito de remo√ß√£o.
 
 ## Regras de Funcionamento do Projeto - Aba VTT (Fixas)
-1. Regra de negÛcio principal: o VTT deve abrir dentro do app, em modo imersivo, sem fluxo manual tÈcnico para usu·rio leigo.
-2. Regra de entrada mÌnima: usu·rio entra na aba VTT, informa sala, toca Entrar; nome do personagem vem autom·tico da ficha.
-3. Regra de UX: quando conectado, a tela da aba VTT deve priorizar mapa/token (n„o "ret‚ngulo de navegador" com UI de debug).
-4. Regra de token: n„o considerar entrega v·lida sem ciclo completo de token do jogador no mapa (criar/localizar/selecionar/mover).
-5. Regra de integraÁ„o de ficha: sem import manual da ficha no VTT; snapshot da ficha deve entrar automaticamente no join.
-6. Regra de rolagem: aÁıes de ficha devem sair pelo contrato de integraÁ„o (bridge/ws), com resultado visÌvel no VTT.
-7. Regra de sincronismo: alteraÁıes crÌticas (PV/PF/status/aÁ„o) precisam refletir entre app e VTT.
-8. Regra de validaÁ„o de contrato: payloads `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT` devem ser aceitos sem erro.
-9. Regra de evidÍncia: registrar no `PROGRESS` o que foi testado e resultado objetivo (OK/FALHA + causa).
-10. Regra de comunicaÁ„o durante execuÁ„o: reportar sempre "o que estou fazendo agora" e "o que falta para fechar o passo".
-11. Regra de bloqueio: se surgir impedimento externo (ex.: limitaÁ„o WebView, backend faltando endpoint), parar e registrar bloqueio com estratÈgia alternativa.
-12. Regra de escopo: n„o abrir frentes paralelas grandes; concluir lote corrente antes do prÛximo.
-13. Regra de qualidade: evitar soluÁıes provisÛrias eternas; cada workaround deve ter plano explÌcito de remoÁ„o.
+1. Regra de neg√≥cio principal: o VTT deve abrir dentro do app, em modo imersivo, sem fluxo manual t√©cnico para usu√°rio leigo.
+2. Regra de entrada m√≠nima: usu√°rio entra na aba VTT, informa sala, toca Entrar; nome do personagem vem autom√°tico da ficha.
+3. Regra de UX: quando conectado, a tela da aba VTT deve priorizar mapa/token (n√£o "ret√¢ngulo de navegador" com UI de debug).
+4. Regra de token: n√£o considerar entrega v√°lida sem ciclo completo de token do jogador no mapa (criar/localizar/selecionar/mover).
+5. Regra de integra√ß√£o de ficha: sem import manual da ficha no VTT; snapshot da ficha deve entrar automaticamente no join.
+6. Regra de rolagem: a√ß√µes de ficha devem sair pelo contrato de integra√ß√£o (bridge/ws), com resultado vis√≠vel no VTT.
+7. Regra de sincronismo: altera√ß√µes cr√≠ticas (PV/PF/status/a√ß√£o) precisam refletir entre app e VTT.
+8. Regra de valida√ß√£o de contrato: payloads `VTT_JOIN`, `APP_ROLL`, `ROOM_STATE`, `TOKEN_SELECTED`, `ROLL_RESULT` devem ser aceitos sem erro.
+9. Regra de evid√™ncia: registrar no `PROGRESS` o que foi testado e resultado objetivo (OK/FALHA + causa).
+10. Regra de comunica√ß√£o durante execu√ß√£o: reportar sempre "o que estou fazendo agora" e "o que falta para fechar o passo".
+11. Regra de bloqueio: se surgir impedimento externo (ex.: limita√ß√£o WebView, backend faltando endpoint), parar e registrar bloqueio com estrat√©gia alternativa.
+12. Regra de escopo: n√£o abrir frentes paralelas grandes; concluir lote corrente antes do pr√≥ximo.
+13. Regra de qualidade: evitar solu√ß√µes provis√≥rias eternas; cada workaround deve ter plano expl√≠cito de remo√ß√£o.
 
 ### Regra de Aceite - "Aba VTT pronta"
-1. Entrar na sala com 1 bot„o.
-2. Mapa ocupa ·rea principal da aba.
+1. Entrar na sala com 1 bot√£o.
+2. Mapa ocupa √°rea principal da aba.
 3. Token do jogador aparece e interage.
-4. AÁıes de ficha funcionam no token/alvo.
+4. A√ß√µes de ficha funcionam no token/alvo.
 5. Estado de combate sincroniza com ficha.
-6. Usu·rio leigo n„o precisa configurar rede/manual tÈcnico para uso normal.
+6. Usu√°rio leigo n√£o precisa configurar rede/manual t√©cnico para uso normal.
 
-## Sa˙de Atual (2026-03-08)
-1. Build (visual/pracego): `100%` (compilaÁ„o OK).
-2. Testes crÌticos (prÈ-requisito/motor): `100%` (suite mÌnima OK).
-3. Dados/cat·logos ativos: `92%`.
-4. UI/Acessibilidade (ediÁ„o com rÛtulos): `94%`.
+## Sa√∫de Atual (2026-03-08)
+1. Build (visual/pracego): `100%` (compila√ß√£o OK).
+2. Testes cr√≠ticos (pr√©-requisito/motor): `100%` (suite m√≠nima OK).
+3. Dados/cat√°logos ativos: `92%`.
+4. UI/Acessibilidade (edi√ß√£o com r√≥tulos): `94%`.
 5. Higiene de texto: `91%`.
 6. Versionamento: `93%`.
 
-### Lote 1 - PadronizaÁ„o Global de Layout (Visual + PraCego)
+### Lote 1 - Padroniza√ß√£o Global de Layout (Visual + PraCego)
 Status: `PLANEJADO`
 
 Objetivo:
-1. Padronizar cards, botıes, espaÁamentos, tÌtulos e hierarquia visual em todas as abas.
-2. Garantir equivalÍncia de usabilidade entre `visual` e `pracego`.
+1. Padronizar cards, bot√µes, espa√ßamentos, t√≠tulos e hierarquia visual em todas as abas.
+2. Garantir equival√™ncia de usabilidade entre `visual` e `pracego`.
 
 Passos:
-1. [ ] Definir tokens ˙nicos de UI (`spacing`, `corner`, `fontScale`, `buttonHeight`, `cardPadding`) em `UiStandards.kt`.
-2. [ ] Unificar componentes reutiliz·veis para aÁıes principais/secund·rias (mesmo comportamento entre abas).
-3. [ ] Padronizar todos os cards de lista (PerÌcias, TÈcnicas, Magias, Equipamentos, Defesas, Rolagem).
-4. [ ] Padronizar di·logos (tÌtulo, bloco de conte˙do, aÁıes finais, densidade vertical).
-5. [ ] Revisar contraste e tamanho mÌnimo de toque para TalkBack (`pracego`).
+1. [ ] Definir tokens √∫nicos de UI (`spacing`, `corner`, `fontScale`, `buttonHeight`, `cardPadding`) em `UiStandards.kt`.
+2. [ ] Unificar componentes reutiliz√°veis para a√ß√µes principais/secund√°rias (mesmo comportamento entre abas).
+3. [ ] Padronizar todos os cards de lista (Per√≠cias, T√©cnicas, Magias, Equipamentos, Defesas, Rolagem).
+4. [ ] Padronizar di√°logos (t√≠tulo, bloco de conte√∫do, a√ß√µes finais, densidade vertical).
+5. [ ] Revisar contraste e tamanho m√≠nimo de toque para TalkBack (`pracego`).
 6. [ ] Rodar checklist visual por aba + checklist de acessibilidade.
 
-CritÈrios de aceite U5:
-1. Nenhuma aba com estilo divergente de card/bot„o/fonte sem justificativa.
-2. Mesma hierarquia de informaÁ„o entre `visual` e `pracego`.
-3. RelatÛrio de validaÁ„o por aba anexado no fechamento do lote.
+Crit√©rios de aceite U5:
+1. Nenhuma aba com estilo divergente de card/bot√£o/fonte sem justificativa.
+2. Mesma hierarquia de informa√ß√£o entre `visual` e `pracego`.
+3. Relat√≥rio de valida√ß√£o por aba anexado no fechamento do lote.
 
-## EvidÍncias de fechamento
-1. `gh` instalado e autenticado para automaÁ„o de release.
+## Evid√™ncias de fechamento
+1. `gh` instalado e autenticado para automa√ß√£o de release.
 2. Release `V1.3` criada com os dois APKs (`visual` e `pracego`).
 3. `docs/update/update.json` publicado com `versionCode=4` e links da `V1.3`.
-4. Fluxo validado: menu `Atualizar app` e aÁ„o `Atualizar agora`.
+4. Fluxo validado: menu `Atualizar app` e a√ß√£o `Atualizar agora`.
 
-## Comandos de VerificaÁ„o (mÌnimo)
+## Comandos de Verifica√ß√£o (m√≠nimo)
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.regras_prerequisitos.PreRequisitoParserTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapterTest --tests com.gurps.ficha.domain.magias.NexusArcanoLoteFCanonicScenarioTest`
 - `./gradlew :app:testVisualDebugUnitTest --tests nexus.arcano.NexusArcanoEngineLoteAGlobalTest --tests nexus.arcano.NexusArcanoEngineLoteBGlobalTest`
@@ -461,7 +461,7 @@ Evidencia:
 2. Validacao tecnica: `npm run build` no frontend do VTT_Mestre (OK em 2026-03-11).
 
 Pendencia restante:
-1. FPAR.2 Passo 2: separar melhor UX de TraÁos/Defesas/Rolagem para aproximar navegacao do Android.
+1. FPAR.2 Passo 2: separar melhor UX de Tra√ßos/Defesas/Rolagem para aproximar navegacao do Android.
 2. FPAR.3: calibrar formula de NH de tecnica para equivalencia completa com regra canonica do Android.
 
 ## Atualizacao Rapida - 2026-03-11 (FPAR.2 Passo 2 sincronizado)
@@ -656,3 +656,18 @@ Evidencia:
 Pendencia restante:
 1. VTT-APP.1 Passo 2: forcar orientacao horizontal durante sessao VTT imersiva.
 2. VTT-APP.1 Passo 3: criar botao "Sair do VTT" com confirmacao.
+
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.1 Passo 2 - Rotacao horizontal no modo imersivo)
+Status: `CONCLUIDO`
+
+Feito:
+1. Aba VTT imersiva agora for√ßa orientacao horizontal durante sessao ativa.
+2. Ao sair do modo imersivo, a orientacao anterior da Activity e restaurada.
+3. Controle aplicado apenas no contexto da aba VTT para nao impactar outras abas.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.1 Passo 3: criar botao "Sair do VTT" com confirmacao.
