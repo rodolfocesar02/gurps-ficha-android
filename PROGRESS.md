@@ -208,7 +208,7 @@ Objetivo:
 - Evitar tela branca/preta causada por `no_canvas`.
 
 Passo 1.1 — Injetar override de WebGL no WebView
-Feito: nao
+Feito: sim
 Acao:
 - No `onPageFinished`, executar JS que:
   - define `PIXI.settings.PREFER_ENV = PIXI.ENV.CANVAS` (quando existir);
