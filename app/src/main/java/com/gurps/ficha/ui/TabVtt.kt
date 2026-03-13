@@ -150,7 +150,7 @@ private fun normalizeRoomKey(raw: String): String = raw.trim()
 
 private fun isLoopbackUrl(url: String): Boolean {
     val host = runCatching { Uri.parse(url.trim()).host.orEmpty() }.getOrDefault("")
-    return host.equals("localhost", ignoreCase = true) || host == "127.0.0.1"
+    return host.equals("localhost", ignoreCase = true) || host == "127.0.0.1" || host == "10.0.2.2"
 }
 
 private fun replaceLoopbackHost(url: String, newHost: String): String {
