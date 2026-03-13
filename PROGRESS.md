@@ -228,6 +228,15 @@ Validacao:
 Commit:
 - `android(vtt): estabilizar init canvas antes do join`
 
+Passo 1.3 — Evitar loopback no embed (WebView)
+Feito: sim
+Acao:
+- Quando `webUrl`/`serverUrl` for loopback (ex.: `10.0.2.2`), usar PROD no embed.
+Validacao:
+- WebView deve abrir URL pública (não localhost/10.0.2.2).
+Commit:
+- `android(vtt): evitar loopback no embed`
+
 ## Lote VTT-CANVAS.2 - Validacao e APK (2026-03-13)
 Status: `PLANEJADO`
 
