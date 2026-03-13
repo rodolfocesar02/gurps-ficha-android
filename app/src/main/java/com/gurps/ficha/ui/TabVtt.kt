@@ -224,6 +224,7 @@ fun TabVtt(
     var autoReconnectEnabled by remember { mutableStateOf(false) }
     var tokenImageUri by remember { mutableStateOf("") }
     var tokenImagePayload by remember { mutableStateOf<String?>(null) }
+    var externalOpenAttempted by remember { mutableStateOf(false) }
 
     val tokenImagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -701,16 +702,23 @@ fun TabVtt(
         """.trimIndent()
         web.evaluateJavascript(js) { raw ->
             val result = raw?.trim('"').orEmpty()
-            if (result.isBlank() || result == "webgl_ok" || result == "canvas_ok" || result == "no_canvas") {
+            if (result.isBlank() || result == "webgl_ok" || result == "canvas_ok") {
                 webLoadError = null
                 Log.i(VTT_UI_LOG, "webview probe result=$result tentativa=$tentativa")
-            } else {
-                Log.w(VTT_UI_LOG, "webview probe result=$result tentativa=$tentativa")
-                if (tentativa < 10) {
-                    web.postDelayed({ checarCanvasWebgl(tentativa + 1) }, 1000)
-                } else {
-                    webLoadError = "Canvas/WebGL indisponivel: $result"
-                }
+                return@evaluateJavascript
+            }
+
+            Log.w(VTT_UI_LOG, "webview probe result=$result tentativa=$tentativa")
+            if (tentativa < 10) {
+                web.postDelayed({ checarCanvasWebgl(tentativa + 1) }, 1000)
+                return@evaluateJavascript
+            }
+
+            webLoadError = "Canvas/WebGL indisponivel: $result"
+            if (result == "no_canvas" && !externalOpenAttempted) {
+                externalOpenAttempted = true
+                statusMessage = "Sem canvas no WebView. Abrindo VTT no navegador..."
+                abrirVttNoNavegador()
             }
         }
     }
