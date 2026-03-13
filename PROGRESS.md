@@ -219,7 +219,7 @@ Commit:
 - `android(vtt): forcar canvas2d no webview`
 
 Passo 1.2 — Garantir fallback de mapa e tokens no Canvas2D
-Feito: nao
+Feito: sim
 Acao:
 - Ajustar ordem de injection para ocorrer antes de `VTT_JOIN`.
 - Garantir que o canvas exista antes do join (delay ou retry).
