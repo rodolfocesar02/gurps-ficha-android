@@ -448,17 +448,29 @@ fun TabVtt(
             when (type) {
                 "ROOM_STATE" -> {
                     roomStateJson = payload?.toString()
-                    val participants = payload?.asJsonObject?.get("participants")?.asJsonArray
+                    val payloadObj = payload?.takeIf { it.isJsonObject }?.asJsonObject
+                    val participants = payloadObj?.get("participants")?.asJsonArray
                     if (participants != null) {
                         participantes = participants.mapNotNull { it.asString }
                     }
-                    val audio = payload?.asJsonObject?.get("audio")?.asJsonObject
+                    val audio = payloadObj?.get("audio")?.asJsonObject
                     if (audio != null) {
                         val playing = audio.get("playing")?.asBoolean
                         val speakerOnly = audio.get("speakerOnly")?.asBoolean
                         val volume = audio.get("volume")?.asNumber
                         audioSummary = "playing=$playing volume=$volume speakerOnly=$speakerOnly"
                     }
+                    val mapUrl = payloadObj?.get("mapUrl")?.asString
+                    val mapImage = payloadObj?.get("mapImage")?.asString
+                    if (!mapUrl.isNullOrBlank() || !mapImage.isNullOrBlank()) {
+                        enviarMapaParaWebView(mapUrl, mapImage)
+                    }
+                }
+                "MAPA_ATUALIZADO", "MAP_UPDATED" -> {
+                    val payloadObj = payload?.takeIf { it.isJsonObject }?.asJsonObject
+                    val mapUrl = payloadObj?.get("mapUrl")?.asString
+                    val mapImage = payloadObj?.get("mapImage")?.asString
+                    enviarMapaParaWebView(mapUrl, mapImage)
                 }
                 "ROLL_RESULT" -> {
                     rollResultJson = payload?.toString()
@@ -504,6 +516,15 @@ fun TabVtt(
         val legacy = msg
         when {
             legacy.startsWith("ROOM_STATE:") -> roomStateJson = legacy.removePrefix("ROOM_STATE:")
+            legacy.startsWith("MAPA_ATUALIZADO:") -> {
+                val payloadText = legacy.removePrefix("MAPA_ATUALIZADO:")
+                runCatching {
+                    val payloadObj = JsonParser.parseString(payloadText).asJsonObject
+                    val mapUrl = payloadObj.get("mapUrl")?.asString
+                    val mapImage = payloadObj.get("mapImage")?.asString
+                    enviarMapaParaWebView(mapUrl, mapImage)
+                }
+            }
             legacy.startsWith("ROLL_RESULT:") -> {
                 rollResultJson = legacy.removePrefix("ROLL_RESULT:")
                 lastSnackbar = "Rolagem: $rollResultJson"

@@ -45,6 +45,15 @@ Evidencia (log esperado):
 Pendencia:
 - Passo 2.2 (encaminhar payloads recebidos para enviarMapaParaWebView).
 
+Passo 2.2 — Encaminhar payloads de mapa para WebView (prioridade mapUrl)
+Feito: sim
+Evidencia (build):
+- `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~25s)
+Evidencia (log esperado):
+- `mapDispatch result=sent payload={ "mapUrl": "..." }` quando receber `ROOM_STATE`/`MAPA_ATUALIZADO`
+Pendencia:
+- Validar logcat em execução real (device/emulador).
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 
