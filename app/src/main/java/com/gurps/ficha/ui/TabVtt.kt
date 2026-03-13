@@ -1297,10 +1297,10 @@ fun TabVtt(
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
                                     forcarCanvas2D()
-                                    view?.postDelayed({ enviarFichaSnapshot() }, 250)
-                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 520)
+                                    view?.postDelayed({ enviarFichaSnapshot() }, 350)
+                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 900)
                                     if (audioAutoJoin) {
-                                        view?.postDelayed({ enviarComandoAudioEmbed("join") }, 800)
+                                        view?.postDelayed({ enviarComandoAudioEmbed("join") }, 1300)
                                     }
                                     injetarConsoleBridge()
                                 }
@@ -1558,13 +1558,13 @@ fun TabVtt(
                                     super.onPageFinished(view, url)
                                     webLoadError = null
                                     forcarCanvas2D()
-                                    view?.postDelayed({ enviarFichaSnapshot() }, 250)
-                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 520)
-                                    view?.postDelayed({ checarCanvasWebgl() }, 780)
+                                    view?.postDelayed({ enviarFichaSnapshot() }, 350)
+                                    view?.postDelayed({ enviarJoinBridgeEmbed() }, 900)
+                                    view?.postDelayed({ checarCanvasWebgl() }, 1200)
                                     if (audioAutoJoin) {
                                         view?.postDelayed({
                                             enviarComandoAudioEmbed("join")
-                                        }, 800)
+                                        }, 1300)
                                     }
                                     injetarConsoleBridge()
                                 }
