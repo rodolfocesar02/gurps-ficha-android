@@ -102,8 +102,8 @@ private enum class VttEnvironment(
     ),
     PROD(
         "Prod",
-        "https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app",
-        "https://surprising-compassion-production-7a88.up.railway.app"
+        "https://surprising-compassion-production-7a8b.up.railway.app",
+        "https://surprising-compassion-production-7a8b.up.railway.app"
     ),
     CUSTOM("Custom", "", "")
 }
@@ -721,6 +721,23 @@ fun TabVtt(
             (function() {
               if (window.__gurpsConsoleHook) return;
               window.__gurpsConsoleHook = true;
+              const safeSend = function(prefix, args) {
+                try {
+                  if (window.Android && window.Android.onVttEvent) {
+                    const msg = Array.from(args || []).map(a => {
+                      if (typeof a === 'string') return a;
+                      try { return JSON.stringify(a); } catch (e) { return String(a); }
+                    }).join(' ');
+                    window.Android.onVttEvent(prefix + msg);
+                  }
+                } catch (e) {}
+              };
+              const origError = console.error;
+              const origWarn = console.warn;
+              const origLog = console.log;
+              console.error = function() { safeSend('console_error:', arguments); origError && origError.apply(console, arguments); };
+              console.warn = function() { safeSend('console_warn:', arguments); origWarn && origWarn.apply(console, arguments); };
+              console.log = function() { safeSend('console_log:', arguments); origLog && origLog.apply(console, arguments); };
               window.addEventListener('error', function(e) {
                 if (window.Android && window.Android.onVttEvent) {
                   window.Android.onVttEvent('js_error:' + (e.message || 'erro') + ' @' + (e.filename || ''));
@@ -1190,7 +1207,8 @@ fun TabVtt(
     } else if (roomParam.isBlank() || playerParam.isBlank()) {
         baseUrl
     } else {
-        "$baseUrl/?embed=1&roomKey=$roomParam&playerName=$playerParam$tokenParam"
+        val apiParam = Uri.encode(serverUrl.trim())
+        "$baseUrl/?embed=1&roomKey=$roomParam&playerName=$playerParam$tokenParam&apiUrl=$apiParam"
     }
 
     if (vttOnlyMode) {
@@ -1237,10 +1255,50 @@ fun TabVtt(
                                     }
                                     injetarConsoleBridge()
                                 }
+                                override fun onReceivedError(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                    error: WebResourceError?
+                                ) {
+                                    super.onReceivedError(view, request, error)
+                                    if (request?.isForMainFrame == true) {
+                                        webLoadError = error?.description?.toString()
+                                        Log.w(
+                                            VTT_UI_LOG,
+                                            "webview error=${error?.description} url=${request.url}"
+                                        )
+                                    }
+                                }
+
+                                override fun onReceivedHttpError(
+                                    view: WebView?,
+                                    request: WebResourceRequest?,
+                                    errorResponse: WebResourceResponse?
+                                ) {
+                                    super.onReceivedHttpError(view, request, errorResponse)
+                                    if (request?.isForMainFrame == true) {
+                                        webLoadError = "HTTP ${errorResponse?.statusCode}"
+                                        Log.w(
+                                            VTT_UI_LOG,
+                                            "webview http=${errorResponse?.statusCode} url=${request.url}"
+                                        )
+                                    }
+                                }
                             }
                             webChromeClient = object : WebChromeClient() {
                                 override fun onPermissionRequest(request: PermissionRequest?) {
                                     if (request != null) request.grant(request.resources)
+                                }
+                                override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+                                    if (consoleMessage != null) {
+                                        val msg = consoleMessage.message()
+                                        webConsoleLast = msg
+                                        Log.i(
+                                            VTT_UI_LOG,
+                                            "webconsole ${consoleMessage.messageLevel()}: $msg @${consoleMessage.sourceId()}:${consoleMessage.lineNumber()}"
+                                        )
+                                    }
+                                    return true
                                 }
                             }
                             loadUrl(embedUrl)
