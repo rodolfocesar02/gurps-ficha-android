@@ -1,6 +1,20 @@
 ﻿# PROGRESS - GURPS Ficha Android
 
 Atualizado em: 2026-03-11
+## Lote VTT-MAPURL.1 - Verificacao e Bridge JS (2026-03-13)
+Status: `EM ANDAMENTO`
+
+Passo 1.1 — Sanity build (assembleVisualDebug -x lint)
+Feito: sim
+Evidencia (stdout):
+- Primeiro build falhou por lock de diretório no dexBuilder:
+  `Unable to delete directory .../app/build/intermediates/project_dex_archive/.../com/gurps/ficha/ui`
+- Ação corretiva: `./gradlew clean --no-daemon` (OK em ~8s)
+- Build final: `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~44s)
+
+Pendencia:
+- Passo 1.2 (mapear handlers JS/bridge em TabVtt).
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 
