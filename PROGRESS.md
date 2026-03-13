@@ -307,6 +307,16 @@ Validacao:
 Commit:
 - `android(vtt): desativar navegador externo`
 
+Passo 1.5 — Remover botao e funcao de navegador externo
+Feito: sim
+Acao:
+- Remover funcao `openExternalVtt`/`abrirVttNoNavegador`.
+- Remover botao "Abrir VTT no navegador".
+Validacao:
+- Nao existe mais fluxo de navegador externo.
+Commit:
+- `android(vtt): remover acesso ao navegador externo`
+
 Passo 1.4 — Tratamento de erro sem fechar tela
 Feito: sim
 Acao:
