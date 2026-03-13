@@ -932,6 +932,8 @@ fun TabVtt(
                 sessionId = result.sessionId
                 tokenId = result.tokenId
                 needsBind = result.needsBind || tokenId.isNullOrBlank()
+                immersiveMapMode = true
+                showConfig = false
                 if (!result.tokenId.isNullOrBlank()) tokenIdBindInput = result.tokenId
                 Log.i(
                     VTT_UI_LOG,
