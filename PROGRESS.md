@@ -74,6 +74,19 @@ Evidencia (build):
 Evidencia (log esperado):
 - Token local convertido para `data:image/*;base64,...` e enviado no join.
 
+## Lote VTT-MAPURL.4 - Cache local de mapas (2026-03-13)
+Status: `EM ANDAMENTO`
+
+Passo 4.1 — Cache local simples
+Feito: sim
+Evidencia (build):
+- `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~24s)
+Evidencia (log esperado):
+- `mapCache saved uri=content://...` ao baixar mapUrl.
+
+Pendencia:
+- Validar uso offline com reconexao no device.
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 
