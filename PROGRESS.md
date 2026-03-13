@@ -270,6 +270,52 @@ Validacao:
 Commit:
 - `tests: validar canvas2d no webview`
 
+## Lote VTT-LOGIN.1 - Login consistente e sem navegador externo (2026-03-13)
+Status: `PLANEJADO`
+
+Objetivo:
+- Login pela Aba_VTT usando a ficha do app.
+- WebView só abre após login OK.
+- Nunca abrir navegador externo.
+- Tratar erros sem fechar a tela.
+
+Passo 1.1 — Corrigir URLs PROD (API vs WEB)
+Feito: nao
+Acao:
+- API PROD = `vttaudiovideo-e-ficha-de-gurps-production.up.railway.app`
+- WEB PROD = `surprising-compassion-production-7a88.up.railway.app`
+Validacao:
+- Join usa API correta (sem 404).
+Commit:
+- `android(vtt): corrigir urls prod api/web`
+
+Passo 1.2 — WebView somente apos login OK
+Feito: nao
+Acao:
+- Renderizar WebView apenas quando `connectionState == CONNECTED`.
+Validacao:
+- Quando login falhar, nao carrega pagina nem mostra erro de browser.
+Commit:
+- `android(vtt): abrir webview somente conectado`
+
+Passo 1.3 — Remover fallback de navegador externo
+Feito: nao
+Acao:
+- Desativar `openExternalVtt()`; substituir por mensagem interna.
+Validacao:
+- Nunca abre Chrome automaticamente.
+Commit:
+- `android(vtt): desativar navegador externo`
+
+Passo 1.4 — Tratamento de erro sem fechar tela
+Feito: nao
+Acao:
+- Ao erro de login, manter Aba_VTT ativa com botao de reconectar.
+Validacao:
+- Tela nao fecha; usuario decide sair.
+Commit:
+- `android(vtt): erro de login sem fechar sessao`
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
 Status: `CONCLUIDO`
 
