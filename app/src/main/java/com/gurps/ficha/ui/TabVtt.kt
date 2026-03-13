@@ -1497,7 +1497,13 @@ fun TabVtt(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            if (embedUrl.isBlank()) {
+            if (!isConnected) {
+                Text(
+                    text = "Conecte para abrir o VTT.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            } else if (embedUrl.isBlank()) {
                 Text(
                     text = "Informe a sala para abrir o VTT.",
                     style = MaterialTheme.typography.bodySmall,
