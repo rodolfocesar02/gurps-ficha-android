@@ -16,6 +16,7 @@ import android.webkit.ConsoleMessage
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.core.content.FileProvider
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -75,6 +76,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import java.net.HttpURLConnection
 import java.net.URL
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -252,6 +254,55 @@ fun TabVtt(
             .replace("\r", "")
     }
 
+    fun sha1Hex(value: String): String {
+        val digest = MessageDigest.getInstance("SHA-1").digest(value.toByteArray(Charsets.UTF_8))
+        return digest.joinToString("") { "%02x".format(it) }
+    }
+
+    fun inferImageExtension(url: String, contentType: String?): String {
+        val type = contentType?.lowercase().orEmpty()
+        return when {
+            type.contains("image/webp") -> "webp"
+            type.contains("image/png") -> "png"
+            type.contains("image/jpeg") || type.contains("image/jpg") -> "jpg"
+            url.lowercase().endsWith(".webp") -> "webp"
+            url.lowercase().endsWith(".png") -> "png"
+            url.lowercase().endsWith(".jpg") || url.lowercase().endsWith(".jpeg") -> "jpg"
+            else -> "png"
+        }
+    }
+
+    suspend fun cacheMapFromUrl(mapUrl: String): Uri? = withContext(Dispatchers.IO) {
+        val safeUrl = mapUrl.trim()
+        if (safeUrl.isBlank()) return@withContext null
+        runCatching {
+            val conn = (URL(safeUrl).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = 8000
+                readTimeout = 8000
+                instanceFollowRedirects = true
+            }
+            val code = conn.responseCode
+            if (code !in 200..299) {
+                conn.disconnect()
+                return@runCatching null
+            }
+            val extension = inferImageExtension(safeUrl, conn.contentType)
+            val dir = java.io.File(context.filesDir, "maps").apply { mkdirs() }
+            val name = "map_${System.currentTimeMillis()}_${sha1Hex(safeUrl)}.$extension"
+            val file = java.io.File(dir, name)
+            conn.inputStream.use { input ->
+                file.outputStream().use { output -> input.copyTo(output) }
+            }
+            conn.disconnect()
+            FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+        }.getOrNull()
+    }
+
     suspend fun resolveTokenImagePayload(rawUri: String): String? = withContext(Dispatchers.IO) {
         val trimmed = rawUri.trim()
         if (trimmed.isBlank()) return@withContext null
@@ -336,24 +387,20 @@ fun TabVtt(
             return
         }
 
-        if (safeUrl.isNotBlank() && safeImage.isNotBlank()) {
-            scope.launch {
-                val ok = isUrlReachable(safeUrl)
-                if (ok) {
-                    dispatchPayload(buildPayloadForUrl(safeUrl))
-                } else {
-                    showMapError("Mapa por URL indisponivel. Usando fallback local.")
-                    dispatchPayload(buildPayloadForImage(safeImage))
-                }
-            }
-            return
-        }
-
         if (safeUrl.isNotBlank()) {
             scope.launch {
+                val cached = cacheMapFromUrl(safeUrl)
+                if (cached != null) {
+                    dispatchPayload(buildPayloadForUrl(cached.toString()))
+                    Log.i(VTT_UI_LOG, "mapCache saved uri=$cached")
+                    return@launch
+                }
                 val ok = isUrlReachable(safeUrl)
                 if (ok) {
                     dispatchPayload(buildPayloadForUrl(safeUrl))
+                } else if (safeImage.isNotBlank()) {
+                    showMapError("Mapa por URL indisponivel. Usando fallback local.")
+                    dispatchPayload(buildPayloadForImage(safeImage))
                 } else {
                     showMapError("Nao foi possivel carregar o mapa por URL.")
                 }
@@ -1160,6 +1207,7 @@ fun TabVtt(
                             setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
                             settings.javaScriptEnabled = true
                             settings.domStorageEnabled = true
+                            settings.allowContentAccess = true
                             settings.mediaPlaybackRequiresUserGesture = false
                             settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                             addJavascriptInterface(
@@ -1340,6 +1388,7 @@ fun TabVtt(
                             setLayerType(android.view.View.LAYER_TYPE_HARDWARE, null)
                             settings.javaScriptEnabled = true
                             settings.domStorageEnabled = true
+                            settings.allowContentAccess = true
                             settings.mediaPlaybackRequiresUserGesture = false
                             settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
                             addJavascriptInterface(
