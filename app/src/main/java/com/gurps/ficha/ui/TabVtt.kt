@@ -789,6 +789,39 @@ fun TabVtt(
         web.evaluateJavascript(js, null)
     }
 
+    fun forcarCanvas2D() {
+        val web = embeddedWebView ?: return
+        val js = """
+            (function() {
+              try {
+                // Forca Pixi a usar Canvas2D quando disponivel
+                if (window.PIXI && window.PIXI.settings && window.PIXI.ENV) {
+                  window.PIXI.settings.PREFER_ENV = window.PIXI.ENV.CANVAS;
+                }
+                // Bloqueia WebGL para o VTT embedado
+                const originalGetContext = HTMLCanvasElement.prototype.getContext;
+                if (!window.__gurpsWebglDisabled) {
+                  HTMLCanvasElement.prototype.getContext = function(type, attrs) {
+                    const t = (type || '').toString().toLowerCase();
+                    if (t === 'webgl' || t === 'webgl2' || t === 'experimental-webgl') {
+                      return null;
+                    }
+                    return originalGetContext.call(this, type, attrs);
+                  };
+                  window.__gurpsWebglDisabled = true;
+                }
+                return 'canvas2d_forced';
+              } catch (e) {
+                return 'canvas2d_error:' + (e && e.message ? e.message : 'unknown');
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "canvas2d force result=$result")
+        }
+    }
+
     LaunchedEffect(context) {
         if (!bootstrapDone) {
             val snap = VttSessionStorage.load(context)
@@ -1263,6 +1296,7 @@ fun TabVtt(
                             webViewClient = object : WebViewClient() {
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
+                                    forcarCanvas2D()
                                     view?.postDelayed({ enviarFichaSnapshot() }, 250)
                                     view?.postDelayed({ enviarJoinBridgeEmbed() }, 520)
                                     if (audioAutoJoin) {
@@ -1523,6 +1557,7 @@ fun TabVtt(
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
                                     webLoadError = null
+                                    forcarCanvas2D()
                                     view?.postDelayed({ enviarFichaSnapshot() }, 250)
                                     view?.postDelayed({ enviarJoinBridgeEmbed() }, 520)
                                     view?.postDelayed({ checarCanvasWebgl() }, 780)
