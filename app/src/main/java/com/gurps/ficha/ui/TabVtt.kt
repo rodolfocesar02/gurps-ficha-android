@@ -102,7 +102,7 @@ private enum class VttEnvironment(
     ),
     PROD(
         "Prod",
-        "https://surprising-compassion-production-7a88.up.railway.app",
+        "https://vttaudiovideo-e-ficha-de-gurps-production.up.railway.app",
         "https://surprising-compassion-production-7a88.up.railway.app"
     ),
     CUSTOM("Custom", "", "")
