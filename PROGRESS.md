@@ -32,6 +32,19 @@ Evidencia (snippets relevantes):
 Pendencia:
 - Iniciar Lote 2 (mapUrl → WebView).
 
+## Lote VTT-MAPURL.2 - Encaminhar mapUrl para WebView (2026-03-13)
+Status: `EM ANDAMENTO`
+
+Passo 2.1 — enviarMapaParaWebView(mapUrl|mapImage)
+Feito: sim
+Evidencia (build):
+- `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~25s)
+Evidencia (log esperado):
+- `mapDispatch result=sent payload={ "mapUrl": "..." }` (logcat)
+
+Pendencia:
+- Passo 2.2 (encaminhar payloads recebidos para enviarMapaParaWebView).
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 

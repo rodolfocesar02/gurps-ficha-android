@@ -238,6 +238,44 @@ fun TabVtt(
 
     fun nowLabel(): String = SimpleDateFormat("HH:mm:ss", Locale.US).format(Date())
 
+    fun jsEscape(value: String): String {
+        return value
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "")
+    }
+
+    fun enviarMapaParaWebView(mapUrl: String?, mapImage: String?) {
+        val web = embeddedWebView
+        if (web == null) {
+            Log.w(VTT_UI_LOG, "mapDispatch skipped: webview null")
+            return
+        }
+        val safeUrl = mapUrl?.trim().orEmpty()
+        val safeImage = mapImage?.trim().orEmpty()
+        val payloadJson = when {
+            safeUrl.isNotBlank() -> "{ \"mapUrl\": \"${jsEscape(safeUrl)}\" }"
+            safeImage.isNotBlank() -> "{ \"mapImage\": \"${jsEscape(safeImage)}\" }"
+            else -> "{}"
+        }
+        val js = """
+            (function() {
+              try {
+                const ev = new CustomEvent('mapa_atualizado', { detail: $payloadJson });
+                window.dispatchEvent(ev);
+                return 'sent';
+              } catch(e) {
+                return 'error:' + (e && e.message ? e.message : 'unknown');
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "mapDispatch result=$result payload=$payloadJson")
+        }
+    }
+
     fun enviarComandoAudioEmbed(action: String) {
         val web = embeddedWebView
         if (web == null) {
