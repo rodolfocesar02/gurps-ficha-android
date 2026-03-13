@@ -280,7 +280,7 @@ Objetivo:
 - Tratar erros sem fechar a tela.
 
 Passo 1.1 — Corrigir URLs PROD (API vs WEB)
-Feito: nao
+Feito: sim
 Acao:
 - API PROD = `vttaudiovideo-e-ficha-de-gurps-production.up.railway.app`
 - WEB PROD = `surprising-compassion-production-7a88.up.railway.app`
