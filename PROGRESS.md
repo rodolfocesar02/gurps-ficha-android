@@ -83,6 +83,8 @@ Evidencia (build):
 - `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~24s)
 Evidencia (log esperado):
 - `mapCache saved uri=content://...` ao baixar mapUrl.
+Observacao:
+- `mapUrl` relativo agora e convertido usando `serverUrl` antes do download/HEAD.
 
 Pendencia:
 - Validar uso offline com reconexao no device.

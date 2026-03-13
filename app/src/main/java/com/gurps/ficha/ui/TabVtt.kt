@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -275,8 +275,12 @@ fun TabVtt(
     suspend fun cacheMapFromUrl(mapUrl: String): Uri? = withContext(Dispatchers.IO) {
         val safeUrl = mapUrl.trim()
         if (safeUrl.isBlank()) return@withContext null
+        val absoluteUrl = if (safeUrl.startsWith("http")) safeUrl else {
+            val base = serverUrl.trim().trimEnd('/')
+            "$base${if (safeUrl.startsWith("/")) "" else "/"}$safeUrl"
+        }
         runCatching {
-            val conn = (URL(safeUrl).openConnection() as HttpURLConnection).apply {
+            val conn = (URL(absoluteUrl).openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
                 connectTimeout = 8000
                 readTimeout = 8000
@@ -357,8 +361,12 @@ fun TabVtt(
         }
 
         suspend fun isUrlReachable(url: String): Boolean = withContext(Dispatchers.IO) {
+            val absoluteUrl = if (url.startsWith("http")) url else {
+                val base = serverUrl.trim().trimEnd('/')
+                "$base${if (url.startsWith("/")) "" else "/"}$url"
+            }
             runCatching {
-                val headConn = (URL(url).openConnection() as HttpURLConnection).apply {
+                val headConn = (URL(absoluteUrl).openConnection() as HttpURLConnection).apply {
                     requestMethod = "HEAD"
                     connectTimeout = 5000
                     readTimeout = 5000
@@ -368,7 +376,7 @@ fun TabVtt(
                 headConn.disconnect()
                 if (headCode in 200..299) return@runCatching true
                 if (headCode == 405) {
-                    val getConn = (URL(url).openConnection() as HttpURLConnection).apply {
+                    val getConn = (URL(absoluteUrl).openConnection() as HttpURLConnection).apply {
                         requestMethod = "GET"
                         connectTimeout = 5000
                         readTimeout = 5000
