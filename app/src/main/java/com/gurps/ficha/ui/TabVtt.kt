@@ -255,6 +255,36 @@ fun TabVtt(
             .replace("\r", "")
     }
 
+    fun openExternalVtt() {
+        if (serverUrl.isBlank()) {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Defina a URL do servidor para abrir externamente."
+            return
+        }
+        runCatching {
+            val baseUrl = webUrl.trim().trimEnd('/')
+            val roomParam = Uri.encode(roomKey.trim())
+            val playerParam = Uri.encode(playerId.trim())
+            val target = if (baseUrl.isBlank()) {
+                serverUrl.trim()
+            } else if (roomParam.isBlank() || playerParam.isBlank()) {
+                baseUrl
+            } else {
+                "$baseUrl/?roomKey=$roomParam&playerName=$playerParam"
+            }
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(target)).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+            statusMessage = "VTT aberto no navegador."
+            Log.i(VTT_UI_LOG, "openExternalVtt url=$target")
+        }.onFailure {
+            connectionState = VttConnectionState.ERROR
+            statusMessage = "Falha ao abrir navegador para a URL informada."
+            Log.w(VTT_UI_LOG, "openExternalVtt failure url=${webUrl.trim()}")
+        }
+    }
+
     fun sha1Hex(value: String): String {
         val digest = MessageDigest.getInstance("SHA-1").digest(value.toByteArray(Charsets.UTF_8))
         return digest.joinToString("") { "%02x".format(it) }
@@ -718,7 +748,7 @@ fun TabVtt(
             if (result == "no_canvas" && !externalOpenAttempted) {
                 externalOpenAttempted = true
                 statusMessage = "Sem canvas no WebView. Abrindo VTT no navegador..."
-                abrirVttNoNavegador()
+                openExternalVtt()
             }
         }
     }
@@ -962,33 +992,7 @@ fun TabVtt(
     }
 
     fun abrirVttNoNavegador() {
-        if (serverUrl.isBlank()) {
-            connectionState = VttConnectionState.ERROR
-            statusMessage = "Defina a URL do servidor para abrir externamente."
-            return
-        }
-        runCatching {
-            val baseUrl = webUrl.trim().trimEnd('/')
-            val roomParam = Uri.encode(roomKey.trim())
-            val playerParam = Uri.encode(playerId.trim())
-            val target = if (baseUrl.isBlank()) {
-                serverUrl.trim()
-            } else if (roomParam.isBlank() || playerParam.isBlank()) {
-                baseUrl
-            } else {
-                "$baseUrl/?roomKey=$roomParam&playerName=$playerParam"
-            }
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(target)).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            context.startActivity(intent)
-            statusMessage = "VTT aberto no navegador."
-            Log.i(VTT_UI_LOG, "openExternalVtt url=$target")
-        }.onFailure {
-            connectionState = VttConnectionState.ERROR
-            statusMessage = "Falha ao abrir navegador para a URL informada."
-            Log.w(VTT_UI_LOG, "openExternalVtt failure url=${webUrl.trim()}")
-        }
+        openExternalVtt()
     }
 
     fun limparSessaoLocal() {
