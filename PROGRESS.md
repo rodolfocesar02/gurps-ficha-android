@@ -335,6 +335,16 @@ Validacao:
 Commit:
 - `android(vtt): entrar modo imersivo ao conectar`
 
+Passo 1.7 — Travar sessao imersiva ate sair
+Feito: sim
+Acao:
+- Criar `vttSessionLocked` para manter o VTT em tela cheia apos login.
+- Destravar apenas ao clicar em "Sair do VTT".
+Validacao:
+- Aba VTT permanece em modo imersivo mesmo se a conexao oscilar.
+Commit:
+- `android(vtt): travar sessao imersiva ate sair`
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
 Status: `CONCLUIDO`
 
