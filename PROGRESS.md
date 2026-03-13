@@ -237,6 +237,15 @@ Validacao:
 Commit:
 - `android(vtt): evitar loopback no embed`
 
+Passo 1.4 — Tratar 10.0.2.2 como loopback
+Feito: sim
+Acao:
+- `isLoopbackUrl` agora considera `10.0.2.2`.
+Validacao:
+- WebView nao deve abrir `10.0.2.2` no embed.
+Commit:
+- `android(vtt): tratar 10.0.2.2 como loopback`
+
 ## Lote VTT-CANVAS.2 - Validacao e APK (2026-03-13)
 Status: `PLANEJADO`
 
