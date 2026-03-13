@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION
 import android.net.Uri
 import android.util.Log
+import android.util.Base64
 import android.webkit.JavascriptInterface
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
@@ -220,6 +221,7 @@ fun TabVtt(
     var showExitVttDialog by remember { mutableStateOf(false) }
     var autoReconnectEnabled by remember { mutableStateOf(false) }
     var tokenImageUri by remember { mutableStateOf("") }
+    var tokenImagePayload by remember { mutableStateOf<String?>(null) }
 
     val tokenImagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -229,6 +231,7 @@ fun TabVtt(
             context.contentResolver.takePersistableUriPermission(uri, FLAG_GRANT_READ_URI_PERMISSION)
         }
         tokenImageUri = uri.toString()
+        tokenImagePayload = null
         statusMessage = "Imagem do token selecionada."
     }
 
@@ -247,6 +250,24 @@ fun TabVtt(
             .replace("\"", "\\\"")
             .replace("\n", "\\n")
             .replace("\r", "")
+    }
+
+    suspend fun resolveTokenImagePayload(rawUri: String): String? = withContext(Dispatchers.IO) {
+        val trimmed = rawUri.trim()
+        if (trimmed.isBlank()) return@withContext null
+        if (trimmed.startsWith("data:", ignoreCase = true)) return@withContext trimmed
+        if (trimmed.startsWith("http://", ignoreCase = true) || trimmed.startsWith("https://", ignoreCase = true)) {
+            return@withContext trimmed
+        }
+
+        val uri = runCatching { Uri.parse(trimmed) }.getOrNull() ?: return@withContext null
+        val resolver = context.contentResolver
+        val mime = resolver.getType(uri) ?: "image/png"
+        val bytes = runCatching {
+            resolver.openInputStream(uri)?.use { it.readBytes() }
+        }.getOrNull() ?: return@withContext null
+        val base64 = Base64.encodeToString(bytes, Base64.NO_WRAP)
+        "data:$mime;base64,$base64"
     }
 
     fun enviarMapaParaWebView(mapUrl: String?, mapImage: String?) {
@@ -471,7 +492,8 @@ fun TabVtt(
         val safePlayer = player.replace("\\", "\\\\").replace("'", "\\'")
         val tokenName = viewModel.personagem.nome.trim().ifBlank { player }
         val safeTokenName = tokenName.replace("\\", "\\\\").replace("'", "\\'")
-        val safeTokenImage = tokenImageUri.trim().replace("\\", "\\\\").replace("'", "\\'")
+        val tokenImageSend = tokenImagePayload ?: tokenImageUri.trim()
+        val safeTokenImage = tokenImageSend.replace("\\", "\\\\").replace("'", "\\'")
         val fichaJson = viewModel.exportarFichaJsonCompativel()
         val safeFichaLiteral = VttBridgeCodec.toJavascriptStringLiteral(fichaJson)
         val js = """
@@ -674,6 +696,7 @@ fun TabVtt(
             }
             if (snap.tokenImageUri.isNotBlank()) {
                 tokenImageUri = snap.tokenImageUri
+                tokenImagePayload = null
             }
             autoReconnectEnabled = snap.autoReconnect
             if (!sessionId.isNullOrBlank() || !tokenId.isNullOrBlank()) {
@@ -776,11 +799,13 @@ fun TabVtt(
                 )
             }
 
+            tokenImagePayload = resolveTokenImagePayload(tokenImageUri)
+
             VttSessionService.joinSession(
                 roomKey = normalizedRoomKey,
                 playerId = playerId.trim(),
                 fichaJsonRaw = viewModel.exportarFichaJsonCompativel(),
-                tokenImageUri = tokenImageUri.trim().ifBlank { null },
+                tokenImageUri = tokenImagePayload?.trim()?.ifBlank { null },
                 tokenDisplayName = viewModel.personagem.nome.trim().ifBlank { playerId.trim() },
                 previousSessionId = previousSessionForJoin,
                 previousTokenId = previousTokenForJoin,
@@ -1239,6 +1264,7 @@ fun TabVtt(
                         modifier = Modifier.weight(1f),
                         onClick = {
                             tokenImageUri = ""
+                            tokenImagePayload = null
                             statusMessage = "Imagem do token removida."
                         },
                         enabled = tokenImageUri.isNotBlank()

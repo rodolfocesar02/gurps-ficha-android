@@ -67,6 +67,13 @@ Evidencia (log esperado):
 Pendencia:
 - Passo 3.2 (compatibilidade resolveTokenImagePayload).
 
+Passo 3.2 — Compatibilidade resolveTokenImagePayload validada
+Feito: sim
+Evidencia (build):
+- `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~23s)
+Evidencia (log esperado):
+- Token local convertido para `data:image/*;base64,...` e enviado no join.
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 
