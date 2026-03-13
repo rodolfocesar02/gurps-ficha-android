@@ -308,7 +308,7 @@ Commit:
 - `android(vtt): desativar navegador externo`
 
 Passo 1.4 — Tratamento de erro sem fechar tela
-Feito: nao
+Feito: sim
 Acao:
 - Ao erro de login, manter Aba_VTT ativa com botao de reconectar.
 Validacao:
