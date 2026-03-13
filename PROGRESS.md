@@ -15,6 +15,23 @@ Evidencia (stdout):
 Pendencia:
 - Passo 1.2 (mapear handlers JS/bridge em TabVtt).
 
+Passo 1.2 — Mapear handlers JS/bridge (TabVtt)
+Feito: sim
+Evidencia (snippets relevantes):
+- Dispatch comandos/bridge (evaluateJavascript):
+  - `window.dispatchEvent(new CustomEvent('gurps-android-command', { detail: { action: '...'} }))`
+  - `window.postMessage(JSON.stringify({ type: 'APP_ROLL', payload }), '*')`
+  - `window.dispatchEvent(new CustomEvent('gurps-android-ficha', { detail: data }))`
+  - `window.dispatchEvent(new CustomEvent('gurps-android-audio-command', { detail: { action } }))`
+- Bridge de entrada (addJavascriptInterface "Android"):
+  - `onVttEvent(log)` → `tratarMensagemBridge(log)`
+  - `onAudioStatus(status)` → atualiza `lastAudioEvent`
+- Injeção de console (JS error hook):
+  - `window.addEventListener('error', ... window.Android.onVttEvent('js_error:' + ...))`
+
+Pendencia:
+- Iniciar Lote 2 (mapUrl → WebView).
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 
