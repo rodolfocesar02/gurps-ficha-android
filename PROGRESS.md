@@ -345,6 +345,17 @@ Validacao:
 Commit:
 - `android(vtt): travar sessao imersiva ate sair`
 
+Passo 1.8 — Travar paisagem e esconder janelas do mestre
+Feito: sim
+Acao:
+- Forcar orientacao paisagem durante o VTT.
+- Injetar CSS para esconder janelas flutuantes e deixar mapa em tela cheia.
+Validacao:
+- Retrato nao expulsa do VTT.
+- Mapa visivel sem janelas sobrepostas.
+Commit:
+- `android(vtt): travar paisagem e ocultar janelas`
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
 Status: `CONCLUIDO`
 
