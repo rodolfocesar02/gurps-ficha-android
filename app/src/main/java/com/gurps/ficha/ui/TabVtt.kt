@@ -228,6 +228,7 @@ fun TabVtt(
     var tokenImageUri by remember { mutableStateOf("") }
     var tokenImagePayload by remember { mutableStateOf<String?>(null) }
     var externalOpenAttempted by remember { mutableStateOf(false) }
+    var vttSessionLocked by remember { mutableStateOf(false) }
 
     val tokenImagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -934,6 +935,7 @@ fun TabVtt(
                 needsBind = result.needsBind || tokenId.isNullOrBlank()
                 immersiveMapMode = true
                 showConfig = false
+                vttSessionLocked = true
                 if (!result.tokenId.isNullOrBlank()) tokenIdBindInput = result.tokenId
                 Log.i(
                     VTT_UI_LOG,
@@ -994,6 +996,7 @@ fun TabVtt(
         desconectarEmModoShell()
         immersiveMapMode = false
         showConfig = false
+        vttSessionLocked = false
         embeddedWebView?.loadUrl("about:blank")
         statusMessage = "Voce saiu do VTT."
     }
@@ -1004,6 +1007,7 @@ fun TabVtt(
         autoReconnectEnabled = false
         needsBind = false
         tokenIdBindInput = ""
+        vttSessionLocked = false
         VttSessionStorage.save(
             context,
             VttSessionSnapshot(
@@ -1188,7 +1192,7 @@ fun TabVtt(
         else -> MaterialTheme.colorScheme.onSurfaceVariant
     }
     val isConnected = connectionState == VttConnectionState.CONNECTED
-    val vttOnlyMode = isConnected && immersiveMapMode
+    val vttOnlyMode = vttSessionLocked || (isConnected && immersiveMapMode)
     LaunchedEffect(vttOnlyMode) {
         onImmersiveSessionChanged(vttOnlyMode)
     }
