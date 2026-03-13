@@ -14,6 +14,7 @@ import android.webkit.WebSettings
 import android.webkit.ConsoleMessage
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -71,6 +72,8 @@ import kotlinx.coroutines.withContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -254,26 +257,90 @@ fun TabVtt(
         }
         val safeUrl = mapUrl?.trim().orEmpty()
         val safeImage = mapImage?.trim().orEmpty()
-        val payloadJson = when {
-            safeUrl.isNotBlank() -> "{ \"mapUrl\": \"${jsEscape(safeUrl)}\" }"
-            safeImage.isNotBlank() -> "{ \"mapImage\": \"${jsEscape(safeImage)}\" }"
-            else -> "{}"
+
+        fun dispatchPayload(payloadJson: String) {
+            val js = """
+                (function() {
+                  try {
+                    const ev = new CustomEvent('mapa_atualizado', { detail: $payloadJson });
+                    window.dispatchEvent(ev);
+                    return 'sent';
+                  } catch(e) {
+                    return 'error:' + (e && e.message ? e.message : 'unknown');
+                  }
+                })();
+            """.trimIndent()
+            web.evaluateJavascript(js) { raw ->
+                val result = raw?.trim('"').orEmpty()
+                Log.i(VTT_UI_LOG, "mapDispatch result=$result payload=$payloadJson")
+            }
         }
-        val js = """
-            (function() {
-              try {
-                const ev = new CustomEvent('mapa_atualizado', { detail: $payloadJson });
-                window.dispatchEvent(ev);
-                return 'sent';
-              } catch(e) {
-                return 'error:' + (e && e.message ? e.message : 'unknown');
-              }
-            })();
-        """.trimIndent()
-        web.evaluateJavascript(js) { raw ->
-            val result = raw?.trim('"').orEmpty()
-            Log.i(VTT_UI_LOG, "mapDispatch result=$result payload=$payloadJson")
+
+        fun buildPayloadForUrl(url: String): String = "{ \"mapUrl\": \"${jsEscape(url)}\" }"
+        fun buildPayloadForImage(image: String): String = "{ \"mapImage\": \"${jsEscape(image)}\" }"
+
+        fun showMapError(msg: String) {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            Log.w(VTT_UI_LOG, msg)
         }
+
+        suspend fun isUrlReachable(url: String): Boolean = withContext(Dispatchers.IO) {
+            runCatching {
+                val headConn = (URL(url).openConnection() as HttpURLConnection).apply {
+                    requestMethod = "HEAD"
+                    connectTimeout = 5000
+                    readTimeout = 5000
+                    instanceFollowRedirects = true
+                }
+                val headCode = headConn.responseCode
+                headConn.disconnect()
+                if (headCode in 200..299) return@runCatching true
+                if (headCode == 405) {
+                    val getConn = (URL(url).openConnection() as HttpURLConnection).apply {
+                        requestMethod = "GET"
+                        connectTimeout = 5000
+                        readTimeout = 5000
+                        instanceFollowRedirects = true
+                    }
+                    val getCode = getConn.responseCode
+                    getConn.disconnect()
+                    return@runCatching getCode in 200..299
+                }
+                false
+            }.getOrDefault(false)
+        }
+
+        if (safeUrl.isBlank() && safeImage.isBlank()) {
+            dispatchPayload("{}")
+            return
+        }
+
+        if (safeUrl.isNotBlank() && safeImage.isNotBlank()) {
+            scope.launch {
+                val ok = isUrlReachable(safeUrl)
+                if (ok) {
+                    dispatchPayload(buildPayloadForUrl(safeUrl))
+                } else {
+                    showMapError("Mapa por URL indisponivel. Usando fallback local.")
+                    dispatchPayload(buildPayloadForImage(safeImage))
+                }
+            }
+            return
+        }
+
+        if (safeUrl.isNotBlank()) {
+            scope.launch {
+                val ok = isUrlReachable(safeUrl)
+                if (ok) {
+                    dispatchPayload(buildPayloadForUrl(safeUrl))
+                } else {
+                    showMapError("Nao foi possivel carregar o mapa por URL.")
+                }
+            }
+            return
+        }
+
+        dispatchPayload(buildPayloadForImage(safeImage))
     }
 
     fun enviarComandoAudioEmbed(action: String) {

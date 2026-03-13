@@ -54,6 +54,19 @@ Evidencia (log esperado):
 Pendencia:
 - Validar logcat em execução real (device/emulador).
 
+## Lote VTT-MAPURL.3 - Fallback e UX (2026-03-13)
+Status: `EM ANDAMENTO`
+
+Passo 3.1 — Fallback mapUrl -> mapImage e erro amigavel
+Feito: sim
+Evidencia (build):
+- `./gradlew :app:assembleVisualDebug -x lint --no-daemon` (OK em ~23s)
+Evidencia (log esperado):
+- Toast + log `Mapa por URL indisponivel. Usando fallback local.`
+
+Pendencia:
+- Passo 3.2 (compatibilidade resolveTokenImagePayload).
+
 ## Atualizacao Rapida - 2026-03-12 (Aba VTT Imersiva - Planejamento Operacional)
 Status: `CONCLUIDO`
 
