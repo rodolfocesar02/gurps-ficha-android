@@ -265,11 +265,20 @@ fun TabVtt(
             return
         }
         runCatching {
-            val baseUrl = webUrl.trim().trimEnd('/')
+            val effectiveServerUrl = if (isLoopbackUrl(serverUrl)) {
+                VttEnvironment.PROD.apiDefaultUrl
+            } else {
+                serverUrl
+            }
+            val baseUrl = if (isLoopbackUrl(webUrl)) {
+                VttEnvironment.PROD.webDefaultUrl
+            } else {
+                webUrl
+            }.trim().trimEnd('/')
             val roomParam = Uri.encode(roomKey.trim())
             val playerParam = Uri.encode(playerId.trim())
             val target = if (baseUrl.isBlank()) {
-                serverUrl.trim()
+                effectiveServerUrl.trim()
             } else if (roomParam.isBlank() || playerParam.isBlank()) {
                 baseUrl
             } else {
@@ -1246,7 +1255,16 @@ fun TabVtt(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-    val baseUrl = webUrl.trim().trimEnd('/')
+    val effectiveServerUrl = if (isLoopbackUrl(serverUrl)) {
+        VttEnvironment.PROD.apiDefaultUrl
+    } else {
+        serverUrl
+    }
+    val baseUrl = if (isLoopbackUrl(webUrl)) {
+        VttEnvironment.PROD.webDefaultUrl
+    } else {
+        webUrl
+    }.trim().trimEnd('/')
     val roomParam = Uri.encode(roomKey.trim())
     val playerParam = Uri.encode(playerId.trim())
     val tokenParam = tokenId?.takeIf { it.isNotBlank() }?.let { "&tokenId=${Uri.encode(it)}" }.orEmpty()
@@ -1255,7 +1273,7 @@ fun TabVtt(
     } else if (roomParam.isBlank() || playerParam.isBlank()) {
         baseUrl
     } else {
-        val apiParam = Uri.encode(serverUrl.trim())
+        val apiParam = Uri.encode(effectiveServerUrl.trim())
         "$baseUrl/?embed=1&roomKey=$roomParam&playerName=$playerParam$tokenParam&apiUrl=$apiParam"
     }
 
