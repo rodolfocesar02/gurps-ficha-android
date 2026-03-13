@@ -102,8 +102,8 @@ private enum class VttEnvironment(
     ),
     PROD(
         "Prod",
-        "https://surprising-compassion-production-7a8b.up.railway.app",
-        "https://surprising-compassion-production-7a8b.up.railway.app"
+        "https://surprising-compassion-production-7a88.up.railway.app",
+        "https://surprising-compassion-production-7a88.up.railway.app"
     ),
     CUSTOM("Custom", "", "")
 }
@@ -128,7 +128,10 @@ private fun normalizeProdWebUrl(currentWebUrl: String): String {
     val trimmed = currentWebUrl.trim()
     if (trimmed.isBlank()) return VttEnvironment.PROD.webDefaultUrl
     val host = runCatching { Uri.parse(trimmed).host.orEmpty() }.getOrDefault("")
-    return if (host.equals("vttaudiovideo-e-ficha-de-gurps-production.up.railway.app", ignoreCase = true)) {
+    return if (
+        host.equals("vttaudiovideo-e-ficha-de-gurps-production.up.railway.app", ignoreCase = true) ||
+        host.equals("surprising-compassion-production-7a8b.up.railway.app", ignoreCase = true)
+    ) {
         VttEnvironment.PROD.webDefaultUrl
     } else {
         currentWebUrl
