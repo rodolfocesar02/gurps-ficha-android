@@ -1495,6 +1495,14 @@ fun TabVtt(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+            if (connectionState == VttConnectionState.ERROR) {
+                Button(
+                    onClick = { conectarEmModoShell() },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Tentar novamente")
+                }
+            }
 
             if (!isConnected) {
                 Text(
