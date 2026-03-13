@@ -290,7 +290,7 @@ Commit:
 - `android(vtt): corrigir urls prod api/web`
 
 Passo 1.2 — WebView somente apos login OK
-Feito: nao
+Feito: sim
 Acao:
 - Renderizar WebView apenas quando `connectionState == CONNECTED`.
 Validacao:
