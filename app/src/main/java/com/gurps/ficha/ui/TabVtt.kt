@@ -759,8 +759,7 @@ fun TabVtt(
             webLoadError = "Canvas/WebGL indisponivel: $result"
             if (result == "no_canvas" && !externalOpenAttempted) {
                 externalOpenAttempted = true
-                statusMessage = "Sem canvas no WebView. Abrindo VTT no navegador..."
-                openExternalVtt()
+                statusMessage = "Sem canvas no WebView. Tente recarregar ou reconectar."
             }
         }
     }
