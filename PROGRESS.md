@@ -199,6 +199,59 @@ Pendencia restante:
 1. Validar manualmente no aparelho fisico, na mesma rede do PC, se o app troca `localhost` automaticamente e conecta.
 2. Se a rede tiver isolamento entre clientes Wi-Fi, manter orientacao de IP manual como fallback operacional.
 
+## Lote VTT-CANVAS.1 - Forcar Pixi Canvas2D no WebView (2026-03-13)
+Status: `PLANEJADO`
+
+Objetivo:
+- Manter o VTT_Mestre intacto.
+- Fazer o WebView do app renderizar sem WebGL, usando Canvas2D.
+- Evitar tela branca/preta causada por `no_canvas`.
+
+Passo 1.1 — Injetar override de WebGL no WebView
+Feito: nao
+Acao:
+- No `onPageFinished`, executar JS que:
+  - define `PIXI.settings.PREFER_ENV = PIXI.ENV.CANVAS` (quando existir);
+  - bloqueia `getContext('webgl'|'webgl2')` para forcar fallback.
+Validacao:
+- Logcat deve mostrar `webview probe result=canvas_ok` (ou ausencia de `no_canvas`).
+Commit:
+- `android(vtt): forcar canvas2d no webview`
+
+Passo 1.2 — Garantir fallback de mapa e tokens no Canvas2D
+Feito: nao
+Acao:
+- Ajustar ordem de injection para ocorrer antes de `VTT_JOIN`.
+- Garantir que o canvas exista antes do join (delay ou retry).
+Validacao:
+- Tela exibe grid/mapa no emulador e no device.
+Commit:
+- `android(vtt): estabilizar init canvas antes do join`
+
+## Lote VTT-CANVAS.2 - Validacao e APK (2026-03-13)
+Status: `PLANEJADO`
+
+Passo 2.1 — Build Visual Debug
+Feito: nao
+Acao:
+- `./gradlew :app:assembleVisualDebug -x lint --no-daemon`
+Validacao:
+- Build OK (stdout no PROGRESS).
+Commit:
+- `chore: registrar build visual debug`
+
+Passo 2.2 — Teste no emulador + logcat
+Feito: nao
+Acao:
+- Instalar APK.
+- Abrir Aba_VTT.
+- Registrar logcat com `VttTab`.
+Validacao:
+- Sem `no_canvas`.
+- Mapa visivel.
+Commit:
+- `tests: validar canvas2d no webview`
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
 Status: `CONCLUIDO`
 
