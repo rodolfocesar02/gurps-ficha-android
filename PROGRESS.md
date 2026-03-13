@@ -326,6 +326,15 @@ Validacao:
 Commit:
 - `android(vtt): erro de login sem fechar sessao`
 
+Passo 1.6 — Entrar em modo imersivo ao conectar
+Feito: sim
+Acao:
+- Ao `joinSession` OK: `immersiveMapMode = true` e `showConfig = false`.
+Validacao:
+- Aba VTT troca para tela imersiva automaticamente.
+Commit:
+- `android(vtt): entrar modo imersivo ao conectar`
+
 ## Atualizacao Rapida - 2026-03-11 (Aba VTT - Lote Rede Local, Passo 2)
 Status: `CONCLUIDO`
 
