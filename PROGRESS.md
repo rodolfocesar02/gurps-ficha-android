@@ -299,7 +299,7 @@ Commit:
 - `android(vtt): abrir webview somente conectado`
 
 Passo 1.3 — Remover fallback de navegador externo
-Feito: nao
+Feito: sim
 Acao:
 - Desativar `openExternalVtt()`; substituir por mensagem interna.
 Validacao:
