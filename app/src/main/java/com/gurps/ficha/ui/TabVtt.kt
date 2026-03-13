@@ -81,6 +81,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.compose.ui.unit.dp
+import android.app.Activity
+import android.content.pm.ActivityInfo
 
 private enum class VttConnectionState {
     DISCONNECTED,
@@ -792,6 +794,48 @@ fun TabVtt(
         }
     }
 
+    fun ocultarJanelasFlutuantesEmbed() {
+        val web = embeddedWebView ?: return
+        val js = """
+            (function() {
+              try {
+                const styleId = '__gurpsEmbedHideFloats';
+                if (!document.getElementById(styleId)) {
+                  const style = document.createElement('style');
+                  style.id = styleId;
+                  style.textContent = `
+                    .floating-window,
+                    .settings-popover,
+                    .top-bar,
+                    .chat-area,
+                    .status-bar {
+                      display: none !important;
+                    }
+                    .map-area {
+                      width: 100vw !important;
+                      height: 100vh !important;
+                      min-height: 100vh !important;
+                      margin: 0 !important;
+                      padding: 0 !important;
+                    }
+                    body, #root, .app-container {
+                      overflow: hidden !important;
+                    }
+                  `;
+                  document.head.appendChild(style);
+                }
+                return 'embed_css_ok';
+              } catch (e) {
+                return 'embed_css_error:' + (e && e.message ? e.message : 'unknown');
+              }
+            })();
+        """.trimIndent()
+        web.evaluateJavascript(js) { raw ->
+            val result = raw?.trim('"').orEmpty()
+            Log.i(VTT_UI_LOG, "embedCss result=$result")
+        }
+    }
+
     LaunchedEffect(context) {
         if (!bootstrapDone) {
             val snap = VttSessionStorage.load(context)
@@ -1217,6 +1261,18 @@ fun TabVtt(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+    DisposableEffect(vttOnlyMode) {
+        val activity = context as? Activity
+        val previous = activity?.requestedOrientation
+        if (vttOnlyMode) {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
+        onDispose {
+            if (activity != null) {
+                activity.requestedOrientation = previous ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            }
+        }
+    }
     val effectiveServerUrl = if (isLoopbackUrl(serverUrl)) {
         VttEnvironment.PROD.apiDefaultUrl
     } else {
@@ -1277,6 +1333,7 @@ fun TabVtt(
                                 override fun onPageFinished(view: WebView?, url: String?) {
                                     super.onPageFinished(view, url)
                                     forcarCanvas2D()
+                                    ocultarJanelasFlutuantesEmbed()
                                     view?.postDelayed({ enviarFichaSnapshot() }, 350)
                                     view?.postDelayed({ enviarJoinBridgeEmbed() }, 900)
                                     if (audioAutoJoin) {
@@ -1552,6 +1609,7 @@ fun TabVtt(
                                     super.onPageFinished(view, url)
                                     webLoadError = null
                                     forcarCanvas2D()
+                                    ocultarJanelasFlutuantesEmbed()
                                     view?.postDelayed({ enviarFichaSnapshot() }, 350)
                                     view?.postDelayed({ enviarJoinBridgeEmbed() }, 900)
                                     view?.postDelayed({ checarCanvasWebgl() }, 1200)
