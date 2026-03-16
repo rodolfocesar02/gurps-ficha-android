@@ -415,7 +415,72 @@
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ataque que causa efeito nocivo sem dano (ex.: paralisia). Custa 10 pontos/nível. Alvo faz teste de HT+1 com penalidade igual ao nível. Ampliações: Ataque Cardíaco (+300%), Atordoamento (+10%), Coma (+250%), Cumulativo (+400%), Desvantagem (+1%/ponto), Incapacitação (+50% a +200%), Irritante (+10% a +60%), Penalidade em Atributo (+5% a +10% por -1), Vantagem Anulada (+1%/ponto), Vantagem (+10%/ponto)."
+    "descricao": "Ataque que causa efeito nocivo sem dano (ex.: paralisia). Custa 10 pontos/nível. Alvo faz teste de HT+1 com penalidade igual ao nível. Ampliações: Ataque Cardíaco (+300%), Atordoamento (+10%), Coma (+250%), Cumulativo (+400%), Desvantagem (+1%/ponto), Incapacitação (+50% a +200%), Irritante (+10% a +60%), Penalidade em Atributo (+5% a +10% por -1), Vantagem Anulada (+1%/ponto), Vantagem (+10%/ponto).",
+    "modificadores_especificos": [
+      {
+        "id": "ataque_cardiaco",
+        "nome": "Ataque Cardíaco",
+        "tipo": "ampliação",
+        "valor": 300
+      },
+      {
+        "id": "atordoamento_mod",
+        "nome": "Atordoamento",
+        "tipo": "ampliação",
+        "valor": 10
+      },
+      {
+        "id": "coma",
+        "nome": "Coma",
+        "tipo": "ampliação",
+        "valor": 250
+      },
+      {
+        "id": "cumulativo",
+        "nome": "Cumulativo",
+        "tipo": "ampliação",
+        "valor": 400
+      },
+      {
+        "id": "desvantagem_atrib",
+        "nome": "Desvantagem",
+        "tipo": "ampliação",
+        "valor": 1,
+        "por_nivel": true
+      },
+      {
+        "id": "incapacitacao",
+        "nome": "Incapacitação",
+        "tipo": "ampliação",
+        "valor": "Variável"
+      },
+      {
+        "id": "irritante",
+        "nome": "Irritante",
+        "tipo": "ampliação",
+        "valor": "Variável"
+      },
+      {
+        "id": "penalidade_atributo",
+        "nome": "Penalidade em Atributo",
+        "tipo": "ampliação",
+        "valor": "Variável"
+      },
+      {
+        "id": "vantagem_anulada",
+        "nome": "Vantagem Anulada",
+        "tipo": "ampliação",
+        "valor": 1,
+        "por_nivel": true
+      },
+      {
+        "id": "vantagem_atrib",
+        "nome": "Vantagem",
+        "tipo": "ampliação",
+        "valor": 10,
+        "por_nivel": true
+      }
+    ]
   },
   {
     "id": "audicao_agucada",
@@ -542,7 +607,59 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem possui braços extras. Cada braço adicional custa 10 pontos. Ampliações: Comprido (+100%/nível de MT), Extraflexível (+50%). Limitações: Base para Armas (-80%), Curto (-50%), Fraco (-25% ou -50%), Nenhum Ataque Físico (-50%), Pés Manipuladores (-30%)."
+    "descricao": "O personagem possui braços extras. Cada braço adicional custa 10 pontos. Ampliações: Comprido (+100%/nível de MT), Extraflexível (+50%). Limitações: Base para Armas (-80%), Curto (-50%), Fraco (-25% ou -50%), Nenhum Ataque Físico (-50%), Pés Manipuladores (-30%).",
+    "modificadores_especificos": [
+      {
+        "id": "comprido",
+        "nome": "Comprido",
+        "tipo": "ampliação",
+        "valor": 100,
+        "por_nivel": true,
+        "pagina": 45
+      },
+      {
+        "id": "extraflexivel",
+        "nome": "Extraflexível",
+        "tipo": "ampliação",
+        "valor": 50,
+        "pagina": 45
+      },
+      {
+        "id": "base_para_armas",
+        "nome": "Base para Armas",
+        "tipo": "limitação",
+        "valor": -80,
+        "pagina": 45
+      },
+      {
+        "id": "curto",
+        "nome": "Curto",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 45
+      },
+      {
+        "id": "fraco",
+        "nome": "Fraco",
+        "tipo": "limitação",
+        "valor": "Variável",
+        "pagina": 45
+      },
+      {
+        "id": "nenhum_ataque_fisico",
+        "nome": "Nenhum Ataque Físico",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 45
+      },
+      {
+        "id": "pes_manipuladores",
+        "nome": "Pés Manipuladores",
+        "tipo": "limitação",
+        "valor": -30,
+        "pagina": 45
+      }
+    ]
   },
   {
     "id": "cabeca_adicional",
@@ -559,7 +676,16 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem mais de uma cabeça, cada uma com boca e rastreamento ampliado. Custa 15 pontos/cabeça. Limitação: Desconexa (-20%)."
+    "descricao": "O personagem tem mais de uma cabeça, cada uma com boca e rastreamento ampliado. Custa 15 pontos/cabeça. Limitação: Desconexa (-20%).",
+    "modificadores_especificos": [
+      {
+        "id": "desconexa",
+        "nome": "Desconexa",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 46
+      }
+    ]
   },
   {
     "id": "calculos_instantaneos",
@@ -589,7 +715,24 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem muda a aparência para se camuflar, recebendo bônus em Furtividade (+2 por nível imóvel, +1 em movimento). Custa 5 pontos/nível. Ampliação: Estendida (+20% por sentido). Limitação: Sempre Ativo (-10%)."
+    "descricao": "O personagem muda a aparência para se camuflar, recebendo bônus em Furtividade (+2 por nível imóvel, +1 em movimento). Custa 5 pontos/nível. Ampliação: Estendida (+20% por sentido). Limitação: Sempre Ativo (-10%).",
+    "modificadores_especificos": [
+      {
+        "id": "estendida",
+        "nome": "Estendida",
+        "tipo": "ampliação",
+        "valor": 20,
+        "por_nivel": true,
+        "pagina": 46
+      },
+      {
+        "id": "sempre_ativo",
+        "nome": "Sempre Ativo",
+        "tipo": "limitação",
+        "valor": -10,
+        "pagina": 46
+      }
+    ]
   },
   {
     "id": "camaleao_social",
@@ -668,7 +811,16 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem pode transportar carga ou passageiros dentro de si. Cada nível permite carregar até BC/10 kg. Custo: 5 pontos/nível. Limitação: Exposta (-50%)."
+    "descricao": "O personagem pode transportar carga ou passageiros dentro de si. Cada nível permite carregar até BC/10 kg. Custo: 5 pontos/nível. Limitação: Exposta (-50%).",
+    "modificadores_especificos": [
+      {
+        "id": "exposta",
+        "nome": "Exposta",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 47
+      }
+    ]
   },
   {
     "id": "carisma",
@@ -745,7 +897,30 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem precisa de menos água/alimento ou combustível. Níveis: 1 (2/3) 2 pts, 2 (1/3) 4 pts, 3 (semana) 6 pts, 4 (mês) 8 pts. Limitações: Estômago de Ferro (-50%), Somente Água (-50%), Somente Alimentos (-50%)."
+    "descricao": "O personagem precisa de menos água/alimento ou combustível. Níveis: 1 (2/3) 2 pts, 2 (1/3) 4 pts, 3 (semana) 6 pts, 4 (mês) 8 pts. Limitações: Estômago de Ferro (-50%), Somente Água (-50%), Somente Alimentos (-50%).",
+    "modificadores_especificos": [
+      {
+        "id": "estomago_de_ferro",
+        "nome": "Estômago de Ferro",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 48
+      },
+      {
+        "id": "somente_agua",
+        "nome": "Somente Água",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 48
+      },
+      {
+        "id": "somente_alimentos",
+        "nome": "Somente Alimentos",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 48
+      }
+    ]
   },
   {
     "id": "contatos",
@@ -779,7 +954,44 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem pode dominar mentalmente pessoas visíveis ou tocadas. Disputa de IQ vs. Vontade. Custa 50 pontos. Ampliações: Condicionamento (+50%), Sem Memória (+10%). Limitações: Somente Condicionamento (-50%), Telepático (-10%), Titere (-40%)."
+    "descricao": "O personagem pode dominar mentalmente pessoas visíveis ou tocadas. Disputa de IQ vs. Vontade. Custa 50 pontos. Ampliações: Condicionamento (+50%), Sem Memória (+10%). Limitações: Somente Condicionamento (-50%), Telepático (-10%), Titere (-40%).",
+    "modificadores_especificos": [
+      {
+        "id": "condicionamento",
+        "nome": "Condicionamento",
+        "tipo": "ampliação",
+        "valor": 50,
+        "pagina": 49
+      },
+      {
+        "id": "sem_memoria",
+        "nome": "Sem Memória",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 49
+      },
+      {
+        "id": "somente_condicionamento",
+        "nome": "Somente Condicionamento",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 49
+      },
+      {
+        "id": "telepatico",
+        "nome": "Telepático",
+        "tipo": "limitação",
+        "valor": -10,
+        "pagina": 49
+      },
+      {
+        "id": "titere",
+        "nome": "Títere",
+        "tipo": "limitação",
+        "valor": -40,
+        "pagina": 50
+      }
+    ]
   },
   {
     "id": "controle_do_metabolismo",
