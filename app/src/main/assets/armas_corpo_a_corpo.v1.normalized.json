@@ -1622,7 +1622,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "11‡ / 11†",
+        "raw": "11‡ / 11",
         "valor": null,
         "flags": [
           "dagger",
@@ -1699,7 +1699,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "9†",
+        "raw": "9",
         "valor": 9,
         "flags": [
           "dagger"
@@ -1778,7 +1778,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "13‡ / 12†",
+        "raw": "13‡ / 12",
         "valor": null,
         "flags": [
           "dagger",
@@ -2729,7 +2729,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "7†",
+        "raw": "7",
         "valor": 7,
         "flags": [
           "dagger"
@@ -2803,7 +2803,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "9†",
+        "raw": "9",
         "valor": 9,
         "flags": [
           "dagger"
@@ -3162,7 +3162,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "13†",
+        "raw": "13",
         "valor": 13,
         "flags": [
           "dagger"
@@ -3221,7 +3221,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "9†",
+        "raw": "9",
         "valor": 9,
         "flags": [
           "dagger"
@@ -3295,7 +3295,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "9†",
+        "raw": "9",
         "valor": 9,
         "flags": [
           "dagger"
@@ -3369,7 +3369,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "10†",
+        "raw": "10",
         "valor": 10,
         "flags": [
           "dagger"
@@ -3443,7 +3443,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "12†",
+        "raw": "12",
         "valor": 12,
         "flags": [
           "dagger"
@@ -3517,7 +3517,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "10†",
+        "raw": "10",
         "valor": 10,
         "flags": [
           "dagger"
@@ -3586,7 +3586,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "10†",
+        "raw": "10",
         "valor": 10,
         "flags": [
           "dagger"
@@ -3660,7 +3660,7 @@
         ]
       },
       "stMinimo": {
-        "raw": "12†",
+        "raw": "12",
         "valor": 12,
         "flags": [
           "dagger"
