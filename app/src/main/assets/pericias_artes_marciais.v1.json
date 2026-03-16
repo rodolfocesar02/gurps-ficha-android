@@ -85,7 +85,7 @@
     },
     {
       "id": "arte_ou_esporte_de_combate",
-      "nome": "Arte ou Esporte de Combate†",
+      "nome": "Arte ou Esporte de Combate",
       "pagina": 55,
       "paginaRaw": "55-56",
       "dificuldadeRaw": "consulte págs. B181-182",
@@ -98,7 +98,7 @@
     },
     {
       "id": "connoisseur_armas",
-      "nome": "Connoisseur† (Armas)",
+      "nome": "Connoisseur (Armas)",
       "pagina": 56,
       "paginaRaw": "56",
       "dificuldadeRaw": "consulte pág. B191",
@@ -137,7 +137,7 @@
     },
     {
       "id": "sacar_rapido",
-      "nome": "Sacar Rápido†",
+      "nome": "Sacar Rápido",
       "pagina": 56,
       "paginaRaw": "56-57",
       "dificuldadeRaw": "consulte pág. B221",
@@ -189,7 +189,7 @@
     },
     {
       "id": "performance_em_grupo_luta_coreografada",
-      "nome": "Performance em Grupo† (Luta Coreografada)",
+      "nome": "Performance em Grupo (Luta Coreografada)",
       "pagina": 57,
       "paginaRaw": "57",
       "dificuldadeRaw": "consulte pág. B216",
@@ -202,7 +202,7 @@
     },
     {
       "id": "conhecimento_oculto_estilos_secretos",
-      "nome": "Conhecimento Oculto† (Estilos Secretos)",
+      "nome": "Conhecimento Oculto (Estilos Secretos)",
       "pagina": 57,
       "paginaRaw": "57",
       "dificuldadeRaw": "consulte pág. B215",
