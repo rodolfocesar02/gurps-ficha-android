@@ -1,0 +1,701 @@
+[
+  {
+    "id": "acompanhamento",
+    "nome": "Acompanhamento",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 102
+  },
+  {
+    "id": "acurador",
+    "nome": "Acurado",
+    "tipo": "ampliação",
+    "valor": 5,
+    "por_nivel": true,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "afeta_a_materia",
+    "nome": "Afeta a Matéria",
+    "tipo": "ampliação",
+    "valor": 40,
+    "tags": [
+      "insubstancial"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "afeta_insubstancial",
+    "nome": "Afeta Insubstancial",
+    "tipo": "ampliação",
+    "valor": 20,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "agente_de_contato_area",
+    "nome": "Agente de Contato (Área/Cone)",
+    "tipo": "ampliação",
+    "valor": 150,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "agente_respiratorio",
+    "nome": "Agente Respiratório",
+    "tipo": "ampliação",
+    "valor": 50,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "agente_sanguineo_area",
+    "nome": "Agente Sanguíneo (Área/Cone)",
+    "tipo": "ampliação",
+    "valor": 100,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "alcance_ampliado",
+    "nome": "Alcance Ampliado",
+    "tipo": "ampliação",
+    "valor": 10,
+    "por_nivel": true,
+    "tags": [
+      "distancia"
+    ],
+    "pagina": 103
+  },
+  {
+    "id": "area_seletiva",
+    "nome": "Área Seletiva",
+    "tipo": "ampliação",
+    "valor": 20,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "assinatura_discreta",
+    "nome": "Assinatura Discreta",
+    "tipo": "ampliação",
+    "valor": 10,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "assinatura_inexistente",
+    "nome": "Assinatura Inexistente",
+    "tipo": "ampliação",
+    "valor": 20,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "aura",
+    "nome": "Aura",
+    "tipo": "ampliação",
+    "valor": 80,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "barreira",
+    "nome": "Barreira",
+    "tipo": "ampliação",
+    "valor": 30,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "base_sensorial",
+    "nome": "Base Sensorial",
+    "tipo": "ampliação",
+    "valor": 150,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "baseado_em_atributo",
+    "nome": "Baseado em Atributo Diferente",
+    "tipo": "ampliação",
+    "valor": 20,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 104
+  },
+  {
+    "id": "ciclico",
+    "nome": "Cíclico",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 105
+  },
+  {
+    "id": "cone",
+    "nome": "Cone",
+    "tipo": "ampliação",
+    "valor": "50+",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 105
+  },
+  {
+    "id": "cosmica",
+    "nome": "Cósmica",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 106
+  },
+  {
+    "id": "custo_fadiga_reduzido",
+    "nome": "Custo em Pontos de Fadiga Reduzido",
+    "tipo": "ampliação",
+    "valor": 20,
+    "por_nivel": true,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 106
+  },
+  {
+    "id": "de_cima",
+    "nome": "De Cima",
+    "tipo": "ampliação",
+    "valor": 30,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 106
+  },
+  {
+    "id": "divisor_de_armadura",
+    "nome": "Divisor de Armadura",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 106
+  },
+  {
+    "id": "efeito_de_area",
+    "nome": "Efeito de Área",
+    "tipo": "ampliação",
+    "valor": 50,
+    "por_nivel": true,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 105
+  },
+  {
+    "id": "emancipado",
+    "nome": "Emancipação",
+    "tipo": "ampliação",
+    "valor": 50,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "estendido",
+    "nome": "Estendido (Sentido)",
+    "tipo": "ampliação",
+    "valor": 20,
+    "tags": [
+      "sensorial"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "fogo_continuo",
+    "nome": "Fogo Contínuo",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "guiado",
+    "nome": "Guiado",
+    "tipo": "ampliação",
+    "valor": 50,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "imprecacao",
+    "nome": "Imprecação",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 106
+  },
+  {
+    "id": "interligacao",
+    "nome": "Interligação",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "jato",
+    "nome": "Jato",
+    "tipo": "ampliação",
+    "valor": 0,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "longa_distancia",
+    "nome": "Longa Distância",
+    "tipo": "ampliação",
+    "valor": 40,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 107
+  },
+  {
+    "id": "baixo_limite_choque",
+    "nome": "Baixo Limite de Choque",
+    "tipo": "ampliação",
+    "valor": 50,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 108
+  },
+  {
+    "id": "persistente",
+    "nome": "Persistente",
+    "tipo": "ampliação",
+    "valor": 40,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 108
+  },
+  {
+    "id": "prazo_estendido",
+    "nome": "Prazo Estendido",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "retardo",
+    "nome": "Retardo",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "seletividade",
+    "nome": "Seletividade",
+    "tipo": "ampliação",
+    "valor": 10,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "sintomas",
+    "nome": "Sintomas",
+    "tipo": "ampliação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "subaquatico",
+    "nome": "Subaquático",
+    "tipo": "ampliação",
+    "valor": 20,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "teleguiado",
+    "nome": "Teleguiado",
+    "tipo": "ampliação",
+    "valor": 50,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 109
+  },
+  {
+    "id": "tempo_reduzido",
+    "nome": "Tempo Reduzido",
+    "tipo": "ampliação",
+    "valor": 20,
+    "por_nivel": true,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "variavel",
+    "nome": "Variável",
+    "tipo": "ampliação",
+    "valor": 5,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 110
+  },
+  {
+    "id": "acesso",
+    "nome": "Acesso",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 111
+  },
+  {
+    "id": "agente_de_contato",
+    "nome": "Agente de Contato",
+    "tipo": "limitação",
+    "valor": -30,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 111
+  },
+  {
+    "id": "agente_sanguineo",
+    "nome": "Agente Sanguíneo",
+    "tipo": "limitação",
+    "valor": -40,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 111
+  },
+  {
+    "id": "alcance_reduzido",
+    "nome": "Alcance Reduzido",
+    "tipo": "limitação",
+    "valor": -10,
+    "por_nivel": true,
+    "tags": [
+      "distancia"
+    ],
+    "pagina": 111
+  },
+  {
+    "id": "apenas_em_emergencias",
+    "nome": "Apenas em Emergências",
+    "tipo": "limitação",
+    "valor": -30,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 111
+  },
+  {
+    "id": "apenas_inconsciente",
+    "nome": "Apenas Inconsciente",
+    "tipo": "limitação",
+    "valor": -20,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 111
+  },
+  {
+    "id": "ataque_corpo_a_corpo",
+    "nome": "Ataque Corpo a Corpo",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "atraso",
+    "nome": "Atraso",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "base_sensorial_limitacao",
+    "nome": "Base Sensorial (Inata)",
+    "tipo": "limitação",
+    "valor": -20,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "bombardeio",
+    "nome": "Bombardeio",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "custa_fadiga",
+    "nome": "Custa Fadiga",
+    "tipo": "limitação",
+    "valor": -5,
+    "por_nivel": true,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "destreinado",
+    "nome": "Destreinado",
+    "tipo": "limitação",
+    "valor": -40,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "desvantagem_temporaria",
+    "nome": "Desvantagem Temporária",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "dissipacao",
+    "nome": "Dissipação",
+    "tipo": "limitação",
+    "valor": -50,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 113
+  },
+  {
+    "id": "divisor_de_armadura_limitacao",
+    "nome": "Divisor de Armadura (Inverso)",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 113
+  },
+  {
+    "id": "efeito_incomodo",
+    "nome": "Efeito Incômodo",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 113
+  },
+  {
+    "id": "emanacao",
+    "nome": "Emanação",
+    "tipo": "limitação",
+    "valor": -20,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 113
+  },
+  {
+    "id": "gasto_adicional_tempo",
+    "nome": "Gasto Adicional de Tempo",
+    "tipo": "limitação",
+    "valor": -10,
+    "por_nivel": true,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 113
+  },
+  {
+    "id": "gatilho",
+    "nome": "Gatilho",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 113
+  },
+  {
+    "id": "impreciso",
+    "nome": "Impreciso",
+    "tipo": "limitação",
+    "valor": -5,
+    "por_nivel": true,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 114
+  },
+  {
+    "id": "inconstante",
+    "nome": "Inconstante",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 114
+  },
+  {
+    "id": "incontrolavel",
+    "nome": "Incontrolável",
+    "tipo": "limitação",
+    "valor": -10,
+    "tags": [
+      "geral"
+    ],
+    "pagina": 114
+  },
+  {
+    "id": "mal_funcionamento",
+    "nome": "Mau Funcionamento",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 114
+  },
+  {
+    "id": "nao_pode_aparar",
+    "nome": "Não pode aparar",
+    "tipo": "limitação",
+    "valor": -5,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 112
+  },
+  {
+    "id": "preparacao_especial",
+    "nome": "Requer Preparo",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 116
+  },
+  {
+    "id": "sem_geB",
+    "nome": "Sem GeB",
+    "tipo": "limitação",
+    "valor": -40,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 116
+  },
+  {
+    "id": "sem_projeção",
+    "nome": "Sem Projeção",
+    "tipo": "limitação",
+    "valor": -10,
+    "tags": [
+      "ataque"
+    ],
+    "pagina": 116
+  },
+  {
+    "id": "sempre_ativa",
+    "nome": "Sempre Ativa",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 116
+  },
+  {
+    "id": "uso_limitado",
+    "nome": "Uso Limitado",
+    "tipo": "limitação",
+    "valor": "Variável",
+    "tags": [
+      "geral"
+    ],
+    "pagina": 116
+  }
+]
