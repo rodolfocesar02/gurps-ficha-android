@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import android.app.Activity
 import android.content.pm.ActivityInfo
@@ -67,6 +67,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
     var showUpdateDialog by remember { mutableStateOf(false) }
+    var showMestreIADialog by remember { mutableStateOf(false) }
     var updateDialogTitle by remember { mutableStateOf("Atualização") }
     var updateDialogMessage by remember { mutableStateOf("") }
     var updateApkUrl by remember { mutableStateOf<String?>(null) }
@@ -347,6 +348,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
                         showUpdateDialog = true
                     }
                 }
+            },
+            onMestreIA = {
+                showMenuDialog = false
+                showMestreIADialog = true
             }
         )
     }
@@ -434,6 +439,31 @@ fun FichaScreen(viewModel: FichaViewModel) {
             },
             dismissButton = {
                 TextButton(onClick = { showUpdateDialog = false }) { Text("Cancelar") }
+            }
+        )
+    }
+
+    if (showMestreIADialog) {
+        DialogMestreIA(
+            onDismiss = { showMestreIADialog = false },
+            onGerarFicha = { historia ->
+                showMestreIADialog = false
+                coroutineScope.launch {
+                    snackbarHostState.currentSnackbarData?.dismiss()
+                    snackbarHostState.showSnackbar(
+                        message = "Mestre Digital está pensando...",
+                        duration = SnackbarDuration.Indefinite
+                    )
+                }
+                viewModel.gerarFichaComIA(historia) { sucesso, mensagem ->
+                    coroutineScope.launch {
+                        snackbarHostState.currentSnackbarData?.dismiss()
+                        snackbarHostState.showSnackbar(
+                            message = mensagem,
+                            duration = SnackbarDuration.Long
+                        )
+                    }
+                }
             }
         )
     }

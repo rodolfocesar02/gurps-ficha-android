@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.viewmodel
+package com.gurps.ficha.viewmodel
 
 import android.app.Application
 import android.content.Context
@@ -28,6 +28,9 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.domain.MestreIAUseCase
+import android.util.Log
 import java.text.Normalizer
 
 enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
@@ -184,6 +187,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val prefCanalDiscordId = "discord_canal_id"
     private val prefCanalDiscordNome = "discord_canal_nome"
     private val prefNaoMostrarManualModoAlvo = "modo_alvo_manual_nao_mostrar"
+    private val prefIABaseUrl = "ia_base_url"
+    private val prefIAApiKey = "ia_api_key"
 
     var canaisDiscord by mutableStateOf<List<DiscordVoiceChannel>>(emptyList())
         private set
@@ -2195,6 +2200,54 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         val termos = termosBuscaPericia(pericia)
         if (termos.any { it.contains("escudo") }) return true
         return periciaEhCorpoACorpo(pericia) || periciaEhDesarmado(pericia)
+    }
+
+    // === MESTRE IA (BETA) ===
+
+    private val mestreIAUseCase by lazy { MestreIAUseCase(this, dataRepository) }
+
+    fun gerarFichaComIA(historia: String, onResult: (Boolean, String) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val baseUrl = configPrefs.getString(prefIABaseUrl, "http://localhost:3001") ?: "http://localhost:3001"
+                val apiKey = configPrefs.getString(prefIAApiKey, "H3X4RFW-4GX456N-N3AK1ZQ-R1T9GMB") ?: "H3X4RFW-4GX456N-N3AK1ZQ-R1T9GMB"
+
+                // Removida a trava obrigatória de apiKey, pois em testes locais pode funcionar sem auth 
+                // ou o usuário receberá a resposta certa de erro da API.
+
+                // Monta catálogo de nomes reais do App para injetar no prompt da IA
+                val catalogo = MestreIAClient.CatalogoNomes(
+                    vantagens = dataRepository.vantagens.map { it.nome },
+                    desvantagens = dataRepository.desvantagens.map { it.nome },
+                    pericias = dataRepository.pericias.map { it.nome },
+                    magias = dataRepository.magias.map { it.nome }
+                )
+
+                val resposta = MestreIAClient.perguntarAoMestre(baseUrl, apiKey, historia, catalogo)
+                
+                withContext(Dispatchers.Main) {
+                    if (resposta != null) {
+                        mestreIAUseCase.integrarRespostaNaFicha(resposta)
+                        
+                        // Auto-save: salva automaticamente a ficha gerada pela IA
+                        val nomePersonagem = personagem.nome.ifBlank { "Sem_Nome" }
+                        val timestamp = java.text.SimpleDateFormat("dd-MM_HH-mm", java.util.Locale.getDefault()).format(java.util.Date())
+                        val nomeAutoSave = "IA_${nomePersonagem}_$timestamp"
+                        fichaStorage.salvarFicha(nomeAutoSave, personagem.toJson())
+                        carregarListaFichas()
+                        android.util.Log.d("MestreIA", "✅ Auto-save: $nomeAutoSave")
+                        
+                        onResult(true, "Ficha gerada e salva automaticamente como '$nomeAutoSave'!")
+                    } else {
+                        onResult(false, "Mestre Digital: Não consegui interpretar a história. Verifique a conexão.")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    onResult(false, "Erro na IA: ${e.message}")
+                }
+            }
+        }
     }
 
     companion object {

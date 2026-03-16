@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,7 +37,8 @@ fun MenuDialog(
     onExportarCompativel: () -> Unit,
     onExportarVersionado: () -> Unit,
     onImportar: () -> Unit,
-    onVerificarAtualizacao: () -> Unit
+    onVerificarAtualizacao: () -> Unit,
+    onMestreIA: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -51,9 +52,10 @@ fun MenuDialog(
                 PrimaryActionButton(text = "Exportar JSON Versionado", onClick = onExportarVersionado, modifier = Modifier.pracegoTraversal(5))
                 PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar, modifier = Modifier.pracegoTraversal(6))
                 PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(7))
+                PrimaryActionButton(text = "Mestre IA (Beta)", onClick = onMestreIA, modifier = Modifier.pracegoTraversal(8))
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(8)) { Text(UiActionLabels.FECHAR) } }
+        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(9)) { Text(UiActionLabels.FECHAR) } }
     )
 }
 
