@@ -46,22 +46,6 @@
     ]
   },
   {
-    "id": "defesas_ampliadas_esquiva_aparar_bloqueio",
-    "nome": "Defesas Ampliadas (Esquiva, Aparar, Bloqueio)",
-    "pagina": 0,
-    "costKind": "special",
-    "fixed": 52,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "consulte pág. B52",
-    "specialRule": "defesas_ampliadas_esquiva_aparar_bloqueio",
-    "tags": [
-      "combate"
-    ]
-  },
-  {
     "id": "nocao_de_tempo_ampliada",
     "nome": "Noção de Tempo Ampliada",
     "pagina": 44,
