@@ -2129,6 +2129,7 @@ fun SeletorTipoFavorDialog(isContact: Boolean, onDismiss: () -> Unit, onSelect: 
 @Composable
 fun ModeloRacialDialog(current: ModeloRacial, onDismiss: () -> Unit, onSave: (ModeloRacial) -> Unit) {
     var showCatalogo by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    var showPersonalizar by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
     
     androidx.compose.material3.AlertDialog(
         onDismissRequest = onDismiss,
@@ -2143,7 +2144,6 @@ fun ModeloRacialDialog(current: ModeloRacial, onDismiss: () -> Unit, onSave: (Mo
                 
                 com.gurps.ficha.ui.PrimaryActionButton(text = "Selecionar Raca do Catalogo", onClick = { showCatalogo = true })
                 
-                var showPersonalizar by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
                 com.gurps.ficha.ui.PrimaryActionButton(text = "Personalizar Raca", onClick = { showPersonalizar = true })
                 
                 if (showPersonalizar) {
@@ -2199,50 +2199,6 @@ fun SeletorRacaCatalogoDialog(onDismiss: () -> Unit, onSelect: (ModeloRacial) ->
                 VantagemSelecionada(nome = "Visao Noturna 5", custoBase = 5),
                 VantagemSelecionada(nome = "Longevidade", custoBase = 2),
                 VantagemSelecionada(nome = "Talento (Artifice) 1", custoBase = 10)
-            ),
-            desvantagens = listOf(
-                DesvantagemSelecionada(nome = "Paresia (Pernas Curtas)", custoBase = 0)
-            )
-        ),
-        ModeloRacial(
-            nome = "Elfo",
-            modDestreza = 1,
-            modVitalidade = -1,
-            vantagens = listOf(
-                VantagemSelecionada(nome = "Aparencia (Atraente)", custoBase = 4),
-                VantagemSelecionada(nome = "Voz Ressonante", custoBase = 10),
-                VantagemSelecionada(nome = "Sentidos Agucados (Audicao) 1", custoBase = 2),
-                VantagemSelecionada(nome = "Longevidade", custoBase = 2)
-            )
-        ),
-        ModeloRacial(
-            nome = "Orc",
-            modForca = 2,
-            modInteligencia = -2,
-            modVitalidade = 1,
-            modPontosVida = 2,
-            vantagens = listOf(
-                VantagemSelecionada(nome = "Visao Noturna 5", custoBase = 5),
-                VantagemSelecionada(nome = "Resistencia a Dor", custoBase = 10)
-            ),
-            desvantagens = listOf(
-                DesvantagemSelecionada(nome = "Estigma Social (Selvagem)", custoBase = -10),
-                DesvantagemSelecionada(nome = "Opressor", custoBase = -10)
-            )
-        ),
-        ModeloRacial(
-            nome = "Hallefling",
-            modForca = -2,
-            modDestreza = 1,
-            modVitalidade = 1,
-            vantagens = listOf(
-                VantagemSelecionada(nome = "Aparencia (Bom Aspecto)", custoBase = 4),
-                VantagemSelecionada(nome = "Sorte", custoBase = 15),
-                VantagemSelecionada(nome = "Sentido da Direcao", custoBase = 5)
-            ),
-            desvantagens = listOf(
-                DesvantagemSelecionada(nome = "Gula", custoBase = -10),
-                DesvantagemSelecionada(nome = "Apetite Reduzido 1", custoBase = -2)
             )
         )
     )
@@ -2264,20 +2220,6 @@ fun SeletorRacaCatalogoDialog(onDismiss: () -> Unit, onSelect: (ModeloRacial) ->
                         androidx.compose.foundation.layout.Column(modifier = androidx.compose.ui.Modifier.padding(12.dp)) {
                             androidx.compose.material3.Text(r.nome, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = androidx.compose.material3.MaterialTheme.colorScheme.primary)
                             androidx.compose.material3.Text("Custo: ${r.custoTotal} pts", style = androidx.compose.material3.MaterialTheme.typography.bodySmall)
-                            val mods = mutableListOf<String>()
-                            if (r.modForca != 0) mods.add("ST ${if(r.modForca>0) "+" else ""}${r.modForca}")
-                            if (r.modDestreza != 0) mods.add("DX ${if(r.modDestreza>0) "+" else ""}${r.modDestreza}")
-                            if (r.modInteligencia != 0) mods.add("IQ ${if(r.modInteligencia>0) "+" else ""}${r.modInteligencia}")
-                            if (r.modVitalidade != 0) mods.add("HT ${if(r.modVitalidade>0) "+" else ""}${r.modVitalidade}")
-                            if (r.modPontosVida != 0) mods.add("PV ${if(r.modPontosVida>0) "+" else ""}${r.modPontosVida}")
-                            
-                            val tracosDesc = mutableListOf<String>()
-                            r.vantagens.forEach { tracosDesc.add(it.nome) }
-                            r.desvantagens.forEach { tracosDesc.add(it.nome) }
-                            r.pericias.forEach { tracosDesc.add("${it.nome} ${it.baseAtributo}${if(it.nivelRelativo >= 0) "+" else ""}${it.nivelRelativo}") }
-
-                            if (mods.isNotEmpty()) androidx.compose.material3.Text(mods.joinToString(", "), style = androidx.compose.material3.MaterialTheme.typography.bodySmall)
-                            if (tracosDesc.isNotEmpty()) androidx.compose.material3.Text(tracosDesc.joinToString(", "), style = androidx.compose.material3.MaterialTheme.typography.labelSmall, color = androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -2288,7 +2230,7 @@ fun SeletorRacaCatalogoDialog(onDismiss: () -> Unit, onSelect: (ModeloRacial) ->
         }
     )
 }
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 @Composable
 fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave: (ModeloRacial) -> Unit) {
     var nome by remember { mutableStateOf(initial.nome) }
@@ -2344,7 +2286,7 @@ fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave:
                     )
                 }
                 
-                // CARD ATRIBUTOS PRIMARIOS
+                // ATRIBUTOS
                 item {
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
                         Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -2359,7 +2301,6 @@ fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave:
                     }
                 }
 
-                // CARD ATRIBUTOS SECUNDARIOS
                 item {
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
                         Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -2374,7 +2315,6 @@ fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave:
                     }
                 }
 
-                // CARD CARACTERISTICAS DERIVADAS
                 item {
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
                         Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -2401,48 +2341,31 @@ fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave:
                     }
                 }
 
-                // LISTA DE VANTAGENS
                 items(vantagensRacais.size) { index ->
                     val t = vantagensRacais[index]
-                    RacialTraitItem(t.nome, "${if(t.custoFinal>0) "+" else ""}${t.custoFinal} pts") {
-                        vantagensRacais = vantagensRacais.toMutableList().apply { removeAt(index) }
-                    }
+                    RacialTraitItem(t.nome, "${if(t.custoFinal>0) "+" else ""}${t.custoFinal} pts") { vantagensRacais = vantagensRacais.toMutableList().apply { removeAt(index) } }
                 }
 
-                // LISTA DE DESVANTAGENS
                 items(desvantagensRacais.size) { index ->
                     val t = desvantagensRacais[index]
-                    RacialTraitItem(t.nome, "${if(t.custoFinal>0) "+" else ""}${t.custoFinal} pts") {
-                        desvantagensRacais = desvantagensRacais.toMutableList().apply { removeAt(index) }
-                    }
+                    RacialTraitItem(t.nome, "${if(t.custoFinal>0) "+" else ""}${t.custoFinal} pts") { desvantagensRacais = desvantagensRacais.toMutableList().apply { removeAt(index) } }
                 }
 
-                // LISTA DE PERICIAS
                 items(periciasRacais.size) { index ->
                     val p = periciasRacais[index]
-                    RacialTraitItem(p.nome, "${p.baseAtributo}${if(p.nivelRelativo >= 0) "+" else ""}${p.nivelRelativo} [${if(p.custo >= 0) "+" else ""}${p.custo} pts]") {
-                        periciasRacais = periciasRacais.toMutableList().apply { removeAt(index) }
-                    }
+                    RacialTraitItem(p.nome, "${p.baseAtributo}${if(p.nivelRelativo>=0) "+" else ""}${p.nivelRelativo} [${if(p.custo>=0) "+" else ""}${p.custo} pts]") { periciasRacais = periciasRacais.toMutableList().apply { removeAt(index) } }
                 }
                 
                 item {
                     val tempModelo = ModeloRacial(nome, modST, modDX, modIQ, modHT, modHP, modVon, modPer, modPF, modVB, modDB, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial)
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                        Text(
-                            "Resumo com custo total da raça: ${tempModelo.custoTotal} pontos", 
-                            modifier = Modifier.padding(12.dp).fillMaxWidth(), 
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
+                        Text("Resumo com b\u00f4nus racial (+1 lvl free): ${tempModelo.custoTotal} pontos", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
                     }
                 }
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                onSave(ModeloRacial(nome, modST, modDX, modIQ, modHT, modHP, modVon, modPer, modPF, modVB, modDB, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial))
-            }) { Text("Salvar") }
+            TextButton(onClick = { onSave(ModeloRacial(nome, modST, modDX, modIQ, modHT, modHP, modVon, modPer, modPF, modVB, modDB, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial)) }) { Text("Salvar") }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancelar") }
@@ -2450,37 +2373,22 @@ fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave:
     )
 
     if (showVantList && dataRepo != null) {
-        SeletorListaTraitsDialog(
-            catalogo = dataRepo.vantagens.map { VantagemToTrait(it) },
-            titulo = "Adicionar Vantagem Racial",
-            onDismiss = { showVantList = false },
-            onSelect = { trait, level ->
-                vantagensRacais = vantagensRacais + VantagemSelecionada(nome = trait.nome, definicaoId = trait.id, custoBase = trait.custo, nivel = level)
-                showVantList = false
-            }
-        )
+        SeletorListaTraitsDialog(dataRepo.vantagens.map { VantagemToTrait(it) }, "Adicionar Vantagem", { showVantList = false }) { trait, level ->
+            vantagensRacais = vantagensRacais + VantagemSelecionada(nome = trait.nome, definicaoId = trait.id, custoBase = trait.custo, nivel = level)
+            showVantList = false
+        }
     }
-
     if (showDesvList && dataRepo != null) {
-        SeletorListaTraitsDialog(
-            catalogo = dataRepo.desvantagens.map { DesvantagemToTrait(it) },
-            titulo = "Adicionar Desvantagem Racial",
-            onDismiss = { showDesvList = false },
-            onSelect = { trait, level ->
-                desvantagensRacais = desvantagensRacais + DesvantagemSelecionada(nome = trait.nome, definicaoId = trait.id, custoBase = trait.custo, nivel = level)
-                showDesvList = false
-            }
-        )
+        SeletorListaTraitsDialog(dataRepo.desvantagens.map { DesvantagemToTrait(it) }, "Adicionar Desvantagem", { showDesvList = false }) { trait, level ->
+            desvantagensRacais = desvantagensRacais + DesvantagemSelecionada(nome = trait.nome, definicaoId = trait.id, custoBase = trait.custo, nivel = level)
+            showDesvList = false
+        }
     }
-
-    if (showPerList && dataRepo != null) {
-        PericiaRacialSeletorDialog(
-            onDismiss = { showPerList = false },
-            onSave = { p -> 
-                periciasRacais = periciasRacais + p
-                showPerList = false
-            }
-        )
+    if (showPerList) {
+        PericiaRacialSeletorDialog({ showPerList = false }) { p -> 
+            periciasRacais = periciasRacais + p
+            showPerList = false
+        }
     }
 }
 
@@ -2489,12 +2397,10 @@ fun RacialTraitItem(nome: String, ptsExibicao: String, onDelete: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth(0.95f)) {
         Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(nome, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+                Text(nome, fontWeight = FontWeight.Bold)
                 Text(ptsExibicao, style = MaterialTheme.typography.labelSmall)
             }
-            IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
-                Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error)
-            }
+            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
         }
     }
 }
@@ -2503,13 +2409,9 @@ fun RacialTraitItem(nome: String, ptsExibicao: String, onDelete: () -> Unit) {
 fun AjustadorVerticalRacial(rotulo: String, valor: Int, onDelta: (Int) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(rotulo, style = MaterialTheme.typography.labelSmall)
-        IconButton(onClick = { onDelta(1) }, modifier = Modifier.size(32.dp)) {
-            Icon(Icons.Default.KeyboardArrowUp, null)
-        }
+        IconButton(onClick = { onDelta(1) }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowUp, null) }
         Text("${if(valor>0) "+" else ""}$valor", fontWeight = FontWeight.Bold)
-        IconButton(onClick = { onDelta(-1) }, modifier = Modifier.size(32.dp)) {
-            Icon(Icons.Default.KeyboardArrowDown, null)
-        }
+        IconButton(onClick = { onDelta(-1) }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowDown, null) }
     }
 }
 
@@ -2518,83 +2420,55 @@ fun AjustadorVerticalRacial(rotulo: String, valor: Int, onDelta: (Int) -> Unit) 
 fun PericiaRacialSeletorDialog(onDismiss: () -> Unit, onSave: (PericiaRacial) -> Unit) {
     var busca by remember { mutableStateOf("") }
     var periciaSelecionada by remember { mutableStateOf<PericiaDefinicao?>(null) }
-    var level by remember { mutableStateOf(1) }
+    var level by remember { mutableStateOf(1) } // Grau no Ranking de Custo GURPS (0=1pt, 1=2pt, 2=4pt...)
     
     val dataRepo = remember { CharacterRules.DATA_REPOSITORY_INSTANCE }
-    val listaFiltrada = remember(busca) { 
-        dataRepo?.filtrarPericias(busca) ?: emptyList() 
-    }
+    val listFiltrada = remember(busca) { dataRepo?.filtrarPericias(busca) ?: emptyList() }
 
-    // Função de custo seguindo a TABELA OFICIAL enviada pelo usuário
-    fun getCustoTabela(diff: String?, nivel: Int): Int {
-        val absLvl = abs(nivel)
-        val sigla = diff?.uppercase() ?: "M"
-        
-        val tableValue = when(sigla) {
-            "F" -> when {
-                absLvl == 0 -> 1
-                absLvl == 1 -> 2
-                absLvl == 2 -> 4
-                absLvl >= 3 -> 8 + (absLvl - 3) * 4
-                else -> 0
-            }
-            "M" -> when {
-                absLvl == 0 -> 2
-                absLvl == 1 -> 4
-                absLvl == 2 -> 8
-                absLvl >= 3 -> 12 + (absLvl - 3) * 4
-                else -> 0
-            }
-            "D" -> when {
-                absLvl == 0 -> 4
-                absLvl == 1 -> 8
-                absLvl == 2 -> 12
-                absLvl >= 3 -> 16 + (absLvl - 3) * 4
-                else -> 0
-            }
-            "MD", "VH" -> when {
-                absLvl == 0 -> 8
-                absLvl == 1 -> 12
-                absLvl == 2 -> 16
-                absLvl == 3 -> 20
-                absLvl >= 4 -> 24 + (absLvl - 4) * 4
-                else -> 0
-            }
-            else -> 2 // Default Médio Atr+0
+    // GURPS OFFICIAL RACIAL SKILL COST TABLE (1, 2, 4, 8, 12, 16...)
+    // Conforme p\u00e1g. 260+ e exemplos do usuário: 2 pts = DX+1 para Médio
+    fun getCustoTabela(uiLvl: Int): Int {
+        val r = abs(uiLvl)
+        val v = when {
+            r == 0 -> 1
+            r == 1 -> 2
+            r == 2 -> 4
+            r == 3 -> 8
+            r >= 4 -> 8 + (r - 3) * 4
+            else -> 0
         }
-        
-        // Se o nível for negativo, retorna o custo da tabela como um valor negativo (para redutores)
-        return if (nivel < 0) -tableValue else tableValue
+        return if (uiLvl < 0) -v else v
     }
 
-    val custoCalculado = if (periciaSelecionada != null) {
-        getCustoTabela(periciaSelecionada!!.dificuldadeFixa, level)
-    } else 0
+    // Calcula o nível relativo incluindo o bônus racial de +1 para perícias raciais
+    fun getRelativeDisplay(p: PericiaDefinicao, uiLvl: Int): Int {
+        val diffOffset = when(p.dificuldadeFixa?.uppercase()) {
+            "F" -> 0
+            "M" -> -1
+            "D" -> -2
+            "VH", "MD" -> -3
+            else -> -1
+        }
+        // Cada grau na escala de custo (uiLvl) aumenta o nível do personagem.
+        // O Bônus Racial de +1 é o que faz '2 pts = DX+1' para dificuldade Médio.
+        // Sem o bônus, Rank 1 (2 pts) para Médio seria Atrib+0. Com bônus vira Atrib+1.
+        return diffOffset + uiLvl + 1
+    }
+
+    val finalCost = getCustoTabela(level)
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { 
-            Text("Adicionar Pericia Racial", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold) 
-        },
+        title = { Text("Adicionar Pericia Racial", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 if (periciaSelecionada == null) {
-                    OutlinedTextField(
-                        value = busca, 
-                        onValueChange = { busca = it }, 
-                        label = { Text("Buscar Pericia...") }, 
-                        modifier = Modifier.fillMaxWidth(),
-                        leadingIcon = { Icon(Icons.Default.Search, null) },
-                        singleLine = true
-                    )
-                    
-                    LazyColumn(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-                        items(listaFiltrada) { p ->
-                            ListItem(
-                                headlineContent = { Text(p.nome, fontWeight = FontWeight.Bold) },
-                                supportingContent = { Text("${p.atributoBase}/${p.dificuldadeFixa ?: "M"}") },
-                                modifier = Modifier.clickable { periciaSelecionada = p }
-                            )
+                    OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar Pericia...") }, modifier = Modifier.fillMaxWidth(), leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
+                    LazyColumn(modifier = Modifier.height(200.dp)) {
+                        items(listFiltrada) { p ->
+                            ListItem(headlineContent = { Text(p.nome, fontWeight = FontWeight.Bold) }, 
+                                     supportingContent = { Text("${p.atributoBase}/${p.dificuldadeFixa ?: "M"}") },
+                                     modifier = Modifier.clickable { periciaSelecionada = p })
                         }
                     }
                 } else {
@@ -2604,45 +2478,35 @@ fun PericiaRacialSeletorDialog(onDismiss: () -> Unit, onSave: (PericiaRacial) ->
                                 Text(periciaSelecionada!!.nome, fontWeight = FontWeight.Bold)
                                 Text("${periciaSelecionada!!.atributoBase}/${periciaSelecionada!!.dificuldadeFixa ?: "M"}", style = MaterialTheme.typography.labelSmall)
                             }
-                            IconButton(onClick = { periciaSelecionada = null }) {
-                                Icon(Icons.Default.Delete, null)
-                            }
+                            IconButton(onClick = { periciaSelecionada = null }) { Icon(Icons.Default.Delete, null) }
                         }
                     }
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Bonus/Redutor Racial", style = MaterialTheme.typography.labelMedium)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Bonus/Nivel Racial", style = MaterialTheme.typography.labelSmall)
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                            IconButton(onClick = { level -= 1 }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                            Text("${if(level>0) "+" else ""}$level", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { level += 1 }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            IconButton(onClick = { level-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            val rel = getRelativeDisplay(periciaSelecionada!!, level)
+                            Text("${periciaSelecionada!!.atributoBase}${if(rel>=0) "+" else ""}$rel", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+                            IconButton(onClick = { level++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                         }
+                        Text("${if(level>=0) "+" else ""}$level grau(s) na escala de pontos", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
                     }
-
                     Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE0F0))) {
-                        Text(
-                            "Custo: $custoCalculado pontos", 
-                            modifier = Modifier.padding(12.dp).fillMaxWidth(), 
-                            textAlign = TextAlign.Center,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF880E4F)
-                        )
+                        Text("Custo: $finalCost pontos", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, color = Color(0xFF880E4F))
                     }
+                    Text("* Inclui b\u00f4nus racial de +1 para per\u00edcias nativas", style = MaterialTheme.typography.labelSmall, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 }
             }
         },
         confirmButton = {
-            TextButton(
-                enabled = periciaSelecionada != null,
-                onClick = { 
-                    periciaSelecionada?.let { p ->
-                        onSave(PericiaRacial(p.nome, p.dificuldadeFixa ?: "M", p.atributoBase, level, custoCalculado))
-                    }
+            TextButton(enabled = periciaSelecionada != null, onClick = {
+                periciaSelecionada?.let { p ->
+                    val rel = getRelativeDisplay(p, level)
+                    onSave(PericiaRacial(p.nome, p.dificuldadeFixa ?: "M", p.atributoBase, rel, finalCost))
                 }
-            ) { Text("Adicionar") }
+            }) { Text("Adicionar") }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        }
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
+
