@@ -136,6 +136,40 @@ data class Personagem(
         }
     }
 
+    /**
+     * Retorna o nível total de uma vantagem, somando o que está na ficha com o que vem da raça.
+     */
+    fun getVantagemNivel(id: String): Int {
+        val personLevel = vantagens.filter { it.definicaoId.equals(id, ignoreCase = true) }.sumOf { it.nivel }
+        val racialLevel = modeloRacial.vantagens.filter { it.definicaoId.equals(id, ignoreCase = true) }.sumOf { it.nivel }
+        return personLevel + racialLevel
+    }
+
+    /**
+     * Verifica se o personagem possui uma vantagem (na ficha ou na raça).
+     */
+    fun hasVantagem(id: String): Boolean {
+        return vantagens.any { it.definicaoId.equals(id, ignoreCase = true) } ||
+               modeloRacial.vantagens.any { it.definicaoId.equals(id, ignoreCase = true) }
+    }
+
+    /**
+     * Retorna o nível total de uma desvantagem, somando o que está na ficha com o que vem da raça.
+     */
+    fun getDesvantagemNivel(id: String): Int {
+        val personLevel = desvantagens.filter { it.definicaoId.equals(id, ignoreCase = true) }.sumOf { it.nivel }
+        val racialLevel = modeloRacial.desvantagens.filter { it.definicaoId.equals(id, ignoreCase = true) }.sumOf { it.nivel }
+        return personLevel + racialLevel
+    }
+
+    /**
+     * Verifica se o personagem possui uma desvantagem (na ficha ou na raça).
+     */
+    fun hasDesvantagem(id: String): Boolean {
+        return desvantagens.any { it.definicaoId.equals(id, ignoreCase = true) } ||
+               modeloRacial.desvantagens.any { it.definicaoId.equals(id, ignoreCase = true) }
+    }
+
     fun toJson(): String = Gson().toJson(this)
 
     companion object {
