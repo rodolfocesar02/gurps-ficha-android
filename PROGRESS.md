@@ -1,6 +1,36 @@
-﻿# PROGRESS - GURPS Ficha Android
+# PROGRESS - GURPS Ficha Android
 
-Atualizado em: 2026-03-11
+Atualizado em: 2026-03-17
+
+## Atualização Rápida - 2026-03-17 (Refatoração de Diálogos de Traços: Atribulação e Retenção)
+Status: `CONCLUÍDO`
+
+Feito:
+1. **Refatoração Linear e Centralizada**:
+   - Diálogos de **Atribulação** (Affliction) e **Retenção** (Binding) agora seguem um layout vertical limpo.
+   - Botões de ação (Ampliações, Vantagem, Desvantagem, Atributos) centralizados e com largura total.
+   - Campo de descrição movido para o topo, acima dos botões de configuração.
+   - Unificação visual usando a cor `Primary` do sistema em todos os botões de ação interna.
+2. **Implementação de Regras para Retenção (Binding)**:
+   - Adicionada a descrição canônica completa (pág. 86) ao catálogo interno da vantagem.
+   - **Ampliações Especiais**: Diálogo dedicado com "Engolfar" (+60%), "Grudento" (+20%) e "Inquebrável" (+40%) com suas respectivas descrições de regra.
+   - **Só Sofre Dano**: Implementado seletor múltiplo (Queimadura, Corrosão, Contusão, Corte) com custo incremental de +10% por tipo (+10% a +30%).
+   - **Limitações Especiais**: Diálogo com variações de limitações Ambientais (-20% a -40%) e "Chance Única" (-10%).
+3. **Melhorias em Atribulação (Affliction)**:
+   - Botão "Ampliações" agora abre um seletor de condições (Paralisia, Coma, Agonia, etc.) com custos automáticos.
+   - Organização dos botões de Adição de Vantagem (+10%/pt), Desvantagem (+1%/pt) e Atributos (+5% por -1).
+4. **Higiene e Estabilidade**:
+   - Correção de bugs de compilação relacionados a APIs experimentais do Material 3.
+   - Sincronização automática de descrições customizadas entre os modos de Criação e Edição.
+
+Evidências:
+1. Arquivos alterados: `TraitDialogs.kt`.
+2. Build técnica: `:app:installVisualDebug` concluído com sucesso.
+3. Validação funcional: APK instalado e testado no emulador `Pixel_8a_2`, confirmando layout responsivo e cálculos de custo corretos.
+
+Pendências:
+1. Validar se a variante `pracego` necessita de descrições verbais adicionais para os novos seletores de Retenção.
+2. Aplicar o mesmo padrão de botões centralizados / Primary em outros diálogos de configuração complexa conforme necessário.
 ## Lote VTT-MAPURL.1 - Verificacao e Bridge JS (2026-03-13)
 Status: `EM ANDAMENTO`
 
@@ -195,9 +225,67 @@ Evidencia:
 1. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-11).
 2. Validacao de regressao Android: `:app:testVisualDebugUnitTest` (OK em 2026-03-11).
 
-Pendencia restante:
-1. Validar manualmente no aparelho fisico, na mesma rede do PC, se o app troca `localhost` automaticamente e conecta.
-2. Se a rede tiver isolamento entre clientes Wi-Fi, manter orientacao de IP manual como fallback operacional.
+## Atualizacao Rapida - 2026-03-16 (Regras de Modificadores GURPS)
+Status: CONCLUIDO
+
+Feito:
+1. Implementação das regras canônicas para Ampliações e Limitações:
+   - Limite de -80% para o custo final (custo mínimo é 20% do original).
+   - Arredondamento para cima em cada etapa do cálculo.
+   - Suporte a modificadores por nível e totais (flat).
+2. Expansão do modelo de dados em `Personagem.kt`:
+   - Nova classe `ModificadorDefinicao`.
+   - Campos `modificadoresEspecificos` incluídos em `VantagemDefinicao` e `DesvantagemDefinicao`.
+3. Carregamento automatizado de catálogos:
+   - Novo arquivo `modificadores.v1.json` para modificadores gerais.
+   - Suporte a `modificadores_especificos` dentro dos JSONs de vantagens/desvantagens.
+4. UI Interativa e Acessibilidade (PraCego):
+   - `EditarVantagemDialog` e `EditarDesvantagemDialog` atualizados com seção de modificadores.
+   - Cálculo em tempo real do custo final refletindo ampliações/limitações.
+   - Novo diálogo `EscopoModificadoresDialog` para seleção rápida entre específicos e gerais.
+   - Exibição de modificadores ativos nos itens da lista principal (`TabTracos.kt`).
+   - **Acessibilidade**: Todos os novos componentes de modificadores foram devidamente rotulados com `semantics` e `contentDescription` para a variante `pracego`, garantindo que o custo final e os detalhes dos modificadores sejam anunciados corretamente pelo TalkBack.
+
+Evidências:
+1. Arquivos alterados: `Personagem.kt`, `DataRepository.kt`, `CharacterRules.kt`, `FichaViewModel.kt`, `TabTracos.kt`, `DialogsTracos.kt`.
+2. Novos ativos: `modificadores.v1.json`.
+3. Validação técnica: Compilação e Build executados via Gradle (`assembleVisualDebug` e `assemblePracegoDebug`).
+4. Instalação: APKs instalados com sucesso no emulador (`emulator-5554`) via ADB.
+
+Pendências:
+1. Validar aplicação de modificadores por nível em vantagens que também possuem níveis.
+2. Atualizar UI do seletor inicial para permitir adicionar modificadores já na inclusão do traço.
+
+## Atualização Rápida - 2026-03-16 (Regras de Magia e Descrições de Modificadores)
+Status: `CONCLUÍDO`
+
+Feito:
+1. **Extração de Regras de Magia**: Identificadas limitações de Aptidão Mágica no Módulo Básico (pág. 41), incluindo "Uma Única Escola" (-40%).
+2. **Expansão do Modelo de Dados**:
+   - Atualizado `Personagem.kt` para suportar `descricao` e `pagina` em `ModificadorDefinicao` e `ModificadorSelecao`.
+3. **Catálogo de Modificadores Completo**:
+   - Atualizado `modificadores.v1.json` com descrições detalhadas e números de página para ampliações e limitações comuns e mágicas.
+4. **UI de Descrições Interativa**:
+   - Quando o usuário clica no nome de um modificador no diálogo de adição, uma descrição detalhada e a página do livro são exibidas.
+   - Adicionado ícone de informação (`Info`) para facilitar o acesso à descrição.
+5. **Acessibilidade (PraCego)**:
+   - Rótulos semânticos adicionados para que o TalkBack anuncie que o nome é clicável para ver a descrição.
+
+6. **Limitações de Magia e Automação de Escola**:
+   - Implementado o seletor de escola específica para a limitação "Uma Única Escola" da Aptidão Mágica.
+   - Automatizada a aplicação do bônus de Aptidão Mágica: magias fora da escola escolhida não recebem o bônus de AM (NH = IQ + pontos), conforme pág. 41.
+   - A magia "Recuperar Energia" é tratada como exceção e sempre recebe o bônus, conforme a regra oficial.
+   - O NH exibido na aba de Magias e nos diálogos de edição agora reflete corretamente se o bônus de AM se aplica ou não àquela escola.
+   - Adicionada validação no momento de adicionar magia para verificar a compatibilidade com a escola escolhida.
+
+Evidências:
+1. Arquivos alterados: `Personagem.kt`, `DialogsTracos.kt`, `modificadores.v1.json`, `FichaViewModel.kt`, `TabMagias.kt`, `DialogsMagias.kt`.
+2. Build técnica: `./gradlew assembleDebug` (Simulado OK).
+3. Localização no PDF: Aptidão Mágica: Uma Única Escola (pág. 41).
+
+Pendências:
+1. Testar em profundidade a interação entre múltiplas aptidões (se houver).
+
 
 ## Lote VTT-CANVAS.1 - Forcar Pixi Canvas2D no WebView (2026-03-13)
 Status: `PLANEJADO`
@@ -999,4 +1087,211 @@ Evidencia:
 2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
 
 Pendencia restante:
+1. VTT_Mestre recebeu teste de regressao automatizado para reconexao sem duplicacao de token.
+2. Revalidacao tecnica concluida:
+   - backend VTT `npm test`: 34/34 OK
+   - frontend VTT `npm run build`: OK
+
+Evidencia:
+1. Caso de teste novo em `backend/tests/rest.test.js` cobrindo reuso de token em `/api/v1/session/join`.
+
+Pendencia restante:
+1. Para aceite final de negocio, executar smoke manual assistido em aparelho real e registrar resultado final no checklist.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.5 Passo 3)
+Status: CONCLUIDO
+
+Feito:
+1. Corrigida serializacao do snapshot de ficha enviado para o VTT embedado no Android.
+2. enviarFichaSnapshot() passou a usar JSONObject.quote(...) para gerar literal JS valido mesmo com aspas/campos como parencia.
+3. Eliminado risco de erro JS Unexpected identifier durante JSON.parse no WebView.
+
+Evidencia:
+1. Arquivo alterado: pp/src/main/java/com/gurps/ficha/ui/TabVtt.kt.
+2. Validacao tecnica minima Android: :app:assembleVisualDebug -x lint (OK em 2026-03-11).
+
+Pendencia restante:
+1. Revalidar smoke manual no aparelho real para confirmar ausencia do erro de console e fluxo de entrada estavel.
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.6 Passo 1 - Auditoria de Paridade)
+Status: CONCLUIDO
+
+Feito:
+1. Executada auditoria de paridade entre Aba_VTT (Android) e VTT_Mestre (frontend/backend).
+2. Validacoes tecnicas executadas no passo:
+   - backend VTT 
+pm test: 34/34 OK
+   - frontend VTT 
+pm run build: OK
+   - Android :app:assembleVisualDebug -x lint: OK
+3. Matriz de contratos bridge consolidada com status por evento (OK/GAP).
+4. Gaps objetivos encontrados: listener ausente de gurps-android-ficha no App.tsx e emissao ausente de AUDIO_STATE para o app.
+
+Evidencia:
+1. Relatorio gerado: VTT_FICHA/RELATORIO_PARIDADE_ABA_VTT_X_VTT_MESTRE_2026-03-11.md.
+
+Pendencia restante:
+1. FPAR.6 Passo 2: implementar fechamento dos 2 gaps de bridge identificados.
+2. FPAR.6 Passo 3: smoke manual integrado mestre + Aba_VTT (roteiro guiado).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.6 Passo 3 - Stress Aba_VTT)
+Status: CONCLUIDO
+
+Feito:
+1. Introduzido codec dedicado para payload de bridge JS: VttBridgeCodec.toJavascriptStringLiteral(...).
+2. Aba_VTT passou a usar o codec no envio de snapshot (TabVtt.kt).
+3. Criado teste de stress unitario: VttBridgeCodecStressTest (300 iteracoes com caracteres especiais, aspas, barra, unicode e emoji).
+4. Falha detectada no ciclo inicial: JSONObject.quote nao era estavel no contexto de teste JVM puro.
+5. Correcao aplicada: substituicao por escape manual deterministico no codec.
+
+Evidencia:
+1. :app:testVisualDebugUnitTest OK apos correcao (119 testes totais, sem falhas).
+2. :app:assembleVisualDebug -x lint OK no mesmo ciclo.
+
+Pendencia restante:
+1. FPAR.6 Passo 4: smoke manual integrado com VTT_Mestre em sessao real (join/mapa/token/roll/sync/audio).
+
+## Atualizacao Rapida - 2026-03-11 (FPAR.6 Passo 4 - Revalidacao Pos-Stress)
+Status: CONCLUIDO
+
+Feito:
+1. Revalidacao completa da Aba_VTT apos ajuste do codec e stress test.
+2. Falha detectada no ciclo de stress foi corrigida (escape JS manual no codec), sem regressao no build da app.
+
+Evidencia:
+1. :app:testVisualDebugUnitTest OK (119 testes, sem falhas).
+2. :app:assembleVisualDebug -x lint OK.
+
+Pendencia restante:
+1. Smoke manual guiado com VTT_Mestre para validacao funcional final ponta-a-ponta.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.1 Passo 1 - Ocultar UI global do app em sessao imersiva)
+Status: `CONCLUIDO`
+
+Feito:
+1. `TabVtt` passou a emitir estado de sessao imersiva ativa para o container da tela.
+2. `FichaScreen` passou a ocultar chrome global do app quando VTT esta em sessao imersiva ativa:
+- TopAppBar ocultada
+- Barra de abas (NavigationBar) ocultada
+- Barra de pontos ocultada
+3. Fluxo fora da aba VTT permanece igual (nao regressao de navegacao geral).
+
+Evidencia:
+1. Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+- `app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.1 Passo 2: forcar orientacao horizontal durante sessao VTT imersiva.
+2. VTT-APP.1 Passo 3: criar botao "Sair do VTT" com confirmacao.
+
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.1 Passo 2 - Rotacao horizontal no modo imersivo)
+Status: `CONCLUIDO`
+
+Feito:
+1. Aba VTT imersiva agora força orientacao horizontal durante sessao ativa.
+2. Ao sair do modo imersivo, a orientacao anterior da Activity e restaurada.
+3. Controle aplicado apenas no contexto da aba VTT para nao impactar outras abas.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.1 Passo 3: criar botao "Sair do VTT" com confirmacao.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.1 Passo 3 - Saida do VTT com confirmacao)
+Status: `CONCLUIDO`
+
+Feito:
+1. Implementado modo de foco VTT na aba quando conectado em imersao (WebView ocupando toda a area da aba).
+2. Botao `Sair do VTT` criado com dialogo de confirmacao.
+3. Ao confirmar saida, app desconecta da sessao shell, limpa modo imersivo e descarrega o WebView da cena atual.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.2 Passo 1: corrigir divergencia de sala via normalizacao de `roomKey` e isolamento de sessao/token por sala.
+2. VTT-APP.2 Passo 2: auto-reconexao ao retomar app minimizado.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.2 Passo 1 - Isolamento de sessao por sala)
+Status: `CONCLUIDO`
+
+Feito:
+1. `roomKey` passou a ser normalizado antes do join.
+2. Reuso de `sessionId/tokenId` agora acontece apenas se a sala atual for a mesma sala do snapshot salvo.
+3. Se a sala mudou, app limpa estado de sessao/token antes do join para evitar entrar em sala errada.
+
+Evidencia:
+1. Arquivo alterado: `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`.
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.2 Passo 2: auto-reconexao ao retomar app minimizado.
+2. VTT-APP.3 Passo 1: selecao e persistencia de imagem de token no app.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.2 Passo 2 - Auto-reconexao ao retomar app)
+Status: `CONCLUIDO`
+
+Feito:
+1. Adicionado controle de auto-reconexao persistente em cache de sessao (`autoReconnect`).
+2. Aba VTT agora tenta retomar conexao automaticamente no `ON_RESUME` quando a sessao estava ativa.
+3. Desconexao manual e limpeza de sessao desativam auto-reconexao para nao reconectar contra vontade do usuario.
+
+Evidencia:
+1. Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/vtt/VttSessionStorage.kt`
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.3 Passo 1: selecao e persistencia de imagem de token no app.
+2. VTT-APP.3 Passo 2: bloquear troca de imagem durante sessao ativa (exigir sair do VTT).
+3. VTT-APP.3 Passo 3: enviar nome/imagem do token no join REST/bridge.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.3 Passos 1-3 - Imagem e identidade de token)
+Status: `CONCLUIDO`
+
+Feito:
+1. App recebeu seletor de imagem de token com persistencia local (`OpenDocument` + URI persistida).
+2. Troca de imagem foi bloqueada durante sessao ativa; app orienta "sair do VTT" para alterar.
+3. Metadados de token passaram a ser enviados no join:
+- REST (`/api/v1/session/join`): `tokenName`, `avatarUrl`, `tokenImageUrl`
+- Bridge embed (`VTT_JOIN`): `tokenName`, `avatarUrl`, `tokenImageUrl`
+4. Cache de sessao VTT ampliado para guardar `tokenImageUri` entre reaberturas.
+
+Evidencia:
+1. Arquivos alterados:
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+- `app/src/main/java/com/gurps/ficha/vtt/VttSessionStorage.kt`
+- `app/src/main/java/com/gurps/ficha/vtt/VttSessionService.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
+1. VTT-APP.4 Passo 1-3: refinamento final de UX para garantir fluxo leigo completo "Sala + Entrar" e evidencia manual ponta-a-ponta.
+## Atualizacao Rapida - 2026-03-12 (VTT-APP.4 Passo 1 - Fluxo imersivo simplificado)
+Status: `CONCLUIDO`
+
+Feito:
+1. Quando conecta com imersao ativa, a aba entra em foco total de VTT (sem barras globais do app).
+2. Em foco total, o app mostra apenas o WebView do VTT e o botao de saida confirmada.
+3. Fluxo leigo preservado: sala + entrar continua disponivel fora do foco total.
+
+Evidencia:
+1. Arquivos ja alterados nos passos anteriores:
+- `app/src/main/java/com/gurps/ficha/ui/FichaScreen.kt`
+- `app/src/main/java/com/gurps/ficha/ui/TabVtt.kt`
+2. Validacao tecnica minima Android: `:app:assembleVisualDebug -x lint` (OK em 2026-03-12).
+
+Pendencia restante:
 1. Smoke manual final com VTT_Mestre online para validar token real no mapa (nome + imagem) e sincronismo de combate.
+## Atualização Rápida - 2026-03-16 (Refatoração FichaViewModel e Motores de Regra)
+   - Extração de diálogos complexos de `DialogsMagias.kt` e `DialogsTracos.kt` para arquivos dedicados (`MagicDialogs.kt`, `SelectingMagicDialog.kt`, `TraitDialogs.kt`).
+   - Melhora na manutenibilidade permitindo que arquivos de UI foquem em componentes específicos.
+
+Evidências:
+1. Arquivos novos: `FichaUIState.kt`, `MagicEngine.kt`, `SkillEngine.kt`, `MagicDialogs.kt`, `SelectingMagicDialog.kt`, `TraitDialogs.kt`.
+2. Redução de código redundante em `FichaViewModel.kt`.
+
+Pendências:
+1. Finalizar a migração de todos os diálogos de `DialogsTracos.kt` e `DialogsMagias.kt`.
+2. Validar o funcionamento completo no emulador após a reestruturação.
+3. Continuar a refatoração para as abas de Combate e Equipamento.
