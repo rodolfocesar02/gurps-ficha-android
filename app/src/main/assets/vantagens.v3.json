@@ -1328,7 +1328,30 @@
     "rawCost": "5, 10, 20 ou 30",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem detecta uma substância ou condição específica. Custo base: Raro (5), Ocasional (10), Comum (20), Muito Comum (30). Ampliação: Precisão (+100%). Limitação: Vaga (-50%)."
+    "descricao": "O personagem detecta uma substância ou condição específica. Custo base: Raro (5), Ocasional (10), Comum (20), Muito Comum (30). Ampliação: Precisão (+100%). Limitação: Vaga (-50%).",
+    "modificadores_especificos": [
+      {
+        "id": "deteccao_de_sinais",
+        "nome": "Detecção de Sinais",
+        "tipo": "ampliação",
+        "valor": 0,
+        "pagina": 53
+      },
+      {
+        "id": "precisao",
+        "nome": "Precisão",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 53
+      },
+      {
+        "id": "vaga",
+        "nome": "Vaga",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 53
+      }
+    ]
   },
   {
     "id": "dificil_de_subjugar",
