@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.data
+package com.gurps.ficha.data
 
 import android.content.Context
 import com.google.gson.Gson
@@ -16,6 +16,8 @@ import java.text.Normalizer
  * Repositorio para carregar dados de Vantagens, Desvantagens, Pericias e Magias
  * a partir dos arquivos JSON em assets/
  */
+private val gson = Gson()
+
 class DataRepository(private val context: Context) {
     private data class MagiaFiltroIndex(
         val definicao: MagiaDefinicao,
@@ -24,7 +26,6 @@ class DataRepository(private val context: Context) {
         val escolasNorm: Set<String>
     )
 
-    private val gson = Gson()
 
     private var _vantagens: List<VantagemDefinicao>? = null
     private var _vantagensArtesMarciaisIds: Set<String> = emptySet()
@@ -38,6 +39,7 @@ class DataRepository(private val context: Context) {
     private var _armasCatalogo: List<ArmaCatalogoItem>? = null
     private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
+    private var _modificadoresGerais: List<ModificadorDefinicao>? = null
     private val loadErrors = mutableMapOf<String, String>()
 
     val vantagens: List<VantagemDefinicao>
@@ -84,6 +86,9 @@ class DataRepository(private val context: Context) {
 
     val armadurasCatalogo: List<ArmaduraCatalogoItem>
         get() = _armadurasCatalogo ?: carregarArmadurasCatalogo().also { _armadurasCatalogo = it }
+
+    val modificadoresGerais: List<ModificadorDefinicao>
+        get() = _modificadoresGerais ?: carregarModificadoresGerais().also { _modificadoresGerais = it }
 
     fun getCatalogLoadErrors(): Map<String, String> = synchronized(loadErrors) { loadErrors.toMap() }
 
@@ -584,6 +589,18 @@ class DataRepository(private val context: Context) {
         }
     }
 
+    private fun carregarModificadoresGerais(): List<ModificadorDefinicao> {
+        return try {
+            val json = context.assets.open("modificadores.v1.json").bufferedReader().use { it.readText() }
+            val type = object : TypeToken<List<ModificadorDefinicao>>() {}.type
+            gson.fromJson<List<ModificadorDefinicao>>(json, type) ?: emptyList()
+        } catch (e: Exception) {
+            registerLoadError("modificadores", e)
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     // === FILTROS DE VANTAGENS ===
 
     private fun normalizarBusca(valor: String): String {
@@ -831,7 +848,9 @@ class DataRepository(private val context: Context) {
         definicao: VantagemDefinicao,
         nivel: Int = 1,
         custoEscolhido: Int = 0,
-        descricao: String = ""
+        descricao: String = "",
+        modificadores: List<ModificadorSelecao> = emptyList(),
+        metadados: Map<String, String>? = null
     ): VantagemSelecionada {
         // custoBase é sempre o custo unitário (por nível) ou o custo fixo inicial
         val custoBase = if (definicao.tipoCusto == TipoCusto.POR_NIVEL) {
@@ -849,7 +868,9 @@ class DataRepository(private val context: Context) {
             custoEscolhido = if (custoEscolhido != 0) custoEscolhido else custoBase,
             descricao = descricao,
             tipoCusto = definicao.tipoCusto,
-            pagina = definicao.pagina
+            pagina = definicao.pagina,
+            modificadores = modificadores.toMutableList(),
+            metadados = metadados
         )
     }
 
@@ -858,7 +879,9 @@ class DataRepository(private val context: Context) {
         nivel: Int = 1,
         custoEscolhido: Int = 0,
         descricao: String = "",
-        autocontrole: Int? = null
+        autocontrole: Int? = null,
+        modificadores: List<ModificadorSelecao> = emptyList(),
+        metadados: Map<String, String>? = null
     ): DesvantagemSelecionada {
         val custoBase = if (definicao.tipoCusto == TipoCusto.POR_NIVEL) {
             definicao.getCustoPorNivel()
@@ -875,7 +898,9 @@ class DataRepository(private val context: Context) {
             descricao = descricao,
             autocontrole = autocontrole,
             tipoCusto = definicao.tipoCusto,
-            pagina = definicao.pagina
+            pagina = definicao.pagina,
+            modificadores = modificadores.toMutableList(),
+            metadados = metadados
         )
     }
 
@@ -1464,7 +1489,8 @@ private data class VantagemV3(
     val rawCost: String? = null,
     val specialRule: String? = null,
     val tags: List<String>? = null,
-    val descricao: String? = null
+    val descricao: String? = null,
+    val modificadores_especificos: List<ModificadorDefinicao>? = null
 ) {
     fun toLegacy(): VantagemDefinicao {
         val tipo = when {
@@ -1511,7 +1537,8 @@ private data class VantagemV3(
             tipoCusto = tipo,
             pagina = pagina ?: 0,
             tags = tags.orEmpty(),
-            descricao = descricao
+            descricao = descricao,
+            modificadoresEspecificos = modificadores_especificos.orEmpty()
         )
     }
 }
@@ -1529,7 +1556,8 @@ private data class DesvantagemV2(
     val rawCost: String? = null,
     val specialRule: String? = null,
     val tags: List<String>? = null,
-    val descricao: String? = null
+    val descricao: String? = null,
+    val modificadores_especificos: List<ModificadorDefinicao>? = null
 ) {
     fun toLegacy(): DesvantagemDefinicao {
         val tipo = when (costKind) {
@@ -1570,7 +1598,8 @@ private data class DesvantagemV2(
             tipoCusto = tipo,
             pagina = pagina ?: 0,
             tags = tags.orEmpty(),
-            descricao = descricao
+            descricao = descricao,
+            modificadoresEspecificos = modificadores_especificos.orEmpty()
         )
     }
 }
@@ -1606,7 +1635,10 @@ private fun JsonElement.asVantagemV3OrNull(): VantagemV3? {
         rawCost = obj.string("rawCost"),
         specialRule = obj.string("specialRule"),
         tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() },
-        descricao = obj.string("descricao")
+        descricao = obj.string("descricao"),
+        modificadores_especificos = obj.array("modificadores_especificos")?.mapNotNull {
+            gson.fromJson(it, ModificadorDefinicao::class.java)
+        }
     )
 }
 
@@ -1626,7 +1658,10 @@ private fun JsonElement.asDesvantagemV2OrNull(): DesvantagemV2? {
         rawCost = obj.string("rawCost"),
         specialRule = obj.string("specialRule"),
         tags = obj.array("tags")?.mapNotNull { it.asStringOrNull() },
-        descricao = obj.string("descricao")
+        descricao = obj.string("descricao"),
+        modificadores_especificos = obj.array("modificadores_especificos")?.mapNotNull {
+            gson.fromJson(it, ModificadorDefinicao::class.java)
+        }
     )
 }
 

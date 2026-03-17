@@ -31,6 +31,8 @@ import kotlinx.coroutines.withContext
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.domain.MestreIAUseCase
 import android.util.Log
+import com.gurps.ficha.domain.engine.MagicEngine
+import com.gurps.ficha.domain.engine.SkillEngine
 import java.text.Normalizer
 
 enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
@@ -48,20 +50,6 @@ data class RollDispatchStatus(
     val detalhe: String? = null
 )
 
-enum class TecnicaLimiteKind {
-    NENHUM,
-    EXPLICITO_RELATIVO,
-    PERICIA_BASE,
-    PREDEFINIDO_APARAR,
-    PREDEFINIDO_BLOQUEAR,
-    METADE_PENALIDADE
-}
-
-data class TecnicaRegraPerfil(
-    val limiteKind: TecnicaLimiteKind,
-    val limiteRelativo: Int?,
-    val preRequisitoExibicao: String
-)
 
 @OptIn(FlowPreview::class)
 class FichaViewModel(application: Application) : AndroidViewModel(application) {
@@ -76,33 +64,21 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     // Estado de busca e filtros
-    var buscaVantagem by mutableStateOf("")
+    var advantageSearch by mutableStateOf(TraitSearchState())
         private set
-    var filtroTipoCustoVantagem by mutableStateOf<TipoCusto?>(null)
+    var disadvantageSearch by mutableStateOf(TraitSearchState())
         private set
-
-    var buscaDesvantagem by mutableStateOf("")
+    var skillSearch by mutableStateOf(SkillSearchState())
         private set
-    var filtroTipoCustoDesvantagem by mutableStateOf<TipoCusto?>(null)
+    var magicSearch by mutableStateOf(MagicSearchState())
         private set
-
-    var buscaPericia by mutableStateOf("")
+    var techniqueSearch by mutableStateOf(TechniqueSearchState())
         private set
-    var filtroAtributoPericia by mutableStateOf<String?>(null)
+    var equipmentSearch by mutableStateOf(EquipmentSearchState())
         private set
-    var filtroDificuldadePericia by mutableStateOf<String?>(null)
+    var shieldSearchQuery by mutableStateOf("")
         private set
 
-    var buscaMagia by mutableStateOf("")
-        private set
-    var filtroEscolaMagia by mutableStateOf<String?>(null)
-        private set
-    var filtroClasseMagia by mutableStateOf<String?>(null)
-        private set
-    var buscaTecnica by mutableStateOf("")
-        private set
-    var filtroFonteTecnica by mutableStateOf<String?>(null)
-        private set
 
     var modoAlvoRelacionadosIds by mutableStateOf<List<String>>(emptyList())
         private set
@@ -129,7 +105,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     var modoAlvoProximaLateralUtil by mutableStateOf<String?>(null)
         private set
     var modoAlvoBloqueioCurto by mutableStateOf<String?>(null)
-        private set
     private var modoAlvoJob: Job? = null
     private var modoAlvoUltimaChave: String? = null
     private var prereqCacheAssinatura: String? = null
@@ -153,23 +128,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             .distinct()
             .sorted()
     }
-
-    var buscaArmaEquipamento by mutableStateOf("")
-        private set
-    var filtroTipoArmaEquipamento by mutableStateOf<String?>(null) // "corpo_a_corpo" | "distancia" | "armas_de_fogo" | null
-        private set
-    var filtroCategoriaArmaFogoEquipamento by mutableStateOf<String?>(null) // "pistolas_mm" | "rifles_espingardas" | "ultratech" | "pesadas" | null
-        private set
-    var buscaEscudoEquipamento by mutableStateOf("")
-        private set
-    var buscaArmaduraEquipamento by mutableStateOf("")
-        private set
-    var filtroNtArmaduraEquipamento by mutableStateOf<Int?>(null)
-        private set
-    var filtroLocalArmaduraEquipamento by mutableStateOf<String?>(null)
-        private set
-    var filtroTagArmaduraEquipamento by mutableStateOf<String?>(null)
-        private set
 
     private val fichaStorage = FichaStorageRepository.getInstance(application)
     val dataRepository = DataRepository.getInstance(application)
@@ -203,23 +161,23 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // Listas filtradas
     val vantagensFiltradas: List<VantagemDefinicao>
-        get() = dataRepository.filtrarVantagens(buscaVantagem, filtroTipoCustoVantagem, null)
+        get() = dataRepository.filtrarVantagens(advantageSearch.query, advantageSearch.costType, null)
 
     val desvantagensFiltradas: List<DesvantagemDefinicao>
-        get() = dataRepository.filtrarDesvantagens(buscaDesvantagem, filtroTipoCustoDesvantagem)
+        get() = dataRepository.filtrarDesvantagens(disadvantageSearch.query, disadvantageSearch.costType)
 
     val periciasFiltradas: List<PericiaDefinicao>
-        get() = dataRepository.filtrarPericias(buscaPericia, filtroAtributoPericia, filtroDificuldadePericia)
+        get() = dataRepository.filtrarPericias(skillSearch.query, skillSearch.attribute, skillSearch.difficulty)
 
     val periciasSuplementaresArtesMarciais: List<PericiaSuplementarItem>
         get() = dataRepository.periciasSuplementares
 
     val magiasFiltradas: List<MagiaDefinicao>
         get() {
-            val key = "${buscaMagia.trim()}|${filtroEscolaMagia.orEmpty()}|${filtroClasseMagia.orEmpty()}"
+            val key = "${magicSearch.query.trim()}|${magicSearch.school.orEmpty()}|${magicSearch.magicClass.orEmpty()}"
             if (key != magiasFiltradasCacheKey) {
                 magiasFiltradasCacheKey = key
-                magiasFiltradasCache = dataRepository.filtrarMagias(buscaMagia, filtroEscolaMagia, filtroClasseMagia)
+                magiasFiltradasCache = dataRepository.filtrarMagias(magicSearch.query, magicSearch.school, magicSearch.magicClass)
             }
             return magiasFiltradasCache
         }
@@ -228,16 +186,19 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = dataRepository.tecnicasCatalogo
 
     val tecnicasFiltradas: List<TecnicaCatalogoItem>
-        get() = dataRepository.filtrarTecnicasCatalogo(buscaTecnica, filtroFonteTecnica)
+        get() = dataRepository.filtrarTecnicasCatalogo(techniqueSearch.query, techniqueSearch.source)
+
+    val modificadoresGerais: List<ModificadorDefinicao>
+        get() = dataRepository.modificadoresGerais
 
     val armasEquipamentosFiltradas: List<ArmaCatalogoItem>
         get() {
             val base = dataRepository.filtrarArmasCatalogo(
-            busca = buscaArmaEquipamento,
-            tipoCombate = filtroTipoArmaEquipamento,
-            stMaximo = personagem.forca
-        )
-            val categoriaFiltro = filtroCategoriaArmaFogoEquipamento
+                busca = equipmentSearch.query,
+                tipoCombate = equipmentSearch.type,
+                stMaximo = personagem.forca
+            )
+            val categoriaFiltro = equipmentSearch.fireArmCategory
             if (categoriaFiltro.isNullOrBlank()) return base
             return base.filter { arma ->
                 arma.tipoCombate == "armas_de_fogo" &&
@@ -247,16 +208,16 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     val escudosEquipamentosFiltrados: List<EscudoCatalogoItem>
         get() = dataRepository.filtrarEscudosCatalogo(
-            busca = buscaEscudoEquipamento,
+            busca = shieldSearchQuery,
             stMaximo = personagem.forca
         )
 
     val armadurasEquipamentosFiltradas: List<ArmaduraCatalogoItem>
         get() = dataRepository.filtrarArmadurasCatalogo(
-            busca = buscaArmaduraEquipamento,
-            nt = filtroNtArmaduraEquipamento,
-            localFiltro = filtroLocalArmaduraEquipamento,
-            tagFiltro = filtroTagArmaduraEquipamento
+            busca = equipmentSearch.query,
+            nt = equipmentSearch.armorerNt,
+            localFiltro = equipmentSearch.armorerLocation,
+            tagFiltro = equipmentSearch.armorerTag
         )
 
     val tagsArmadurasEquipamentos: List<String>
@@ -291,6 +252,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         get() = todasClassesMagiaCache
 
     init {
+        CharacterRules.DATA_REPOSITORY_INSTANCE = dataRepository
         canalDiscordSelecionadoId = configPrefs.getString(prefCanalDiscordId, null)
         canalDiscordSelecionadoNome = configPrefs.getString(prefCanalDiscordNome, null)
 
@@ -320,96 +282,99 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     // === FILTROS ===
-
     fun atualizarBuscaVantagem(busca: String) {
-        buscaVantagem = busca
+        advantageSearch = advantageSearch.copy(query = busca)
     }
 
     fun atualizarFiltroTipoCustoVantagem(tipo: TipoCusto?) {
-        filtroTipoCustoVantagem = tipo
+        advantageSearch = advantageSearch.copy(costType = tipo)
     }
 
     fun atualizarBuscaDesvantagem(busca: String) {
-        buscaDesvantagem = busca
+        disadvantageSearch = disadvantageSearch.copy(query = busca)
     }
 
     fun atualizarFiltroTipoCustoDesvantagem(tipo: TipoCusto?) {
-        filtroTipoCustoDesvantagem = tipo
+        disadvantageSearch = disadvantageSearch.copy(costType = tipo)
     }
 
     fun atualizarBuscaPericia(busca: String) {
-        buscaPericia = busca
+        skillSearch = skillSearch.copy(query = busca)
     }
 
     fun atualizarFiltroAtributoPericia(atributo: String?) {
-        filtroAtributoPericia = atributo
+        skillSearch = skillSearch.copy(attribute = atributo)
     }
 
     fun atualizarFiltroDificuldadePericia(dificuldade: String?) {
-        filtroDificuldadePericia = dificuldade
+        skillSearch = skillSearch.copy(difficulty = dificuldade)
     }
 
     fun atualizarBuscaMagia(busca: String) {
-        buscaMagia = busca
+        magicSearch = magicSearch.copy(query = busca)
     }
 
     fun atualizarFiltroEscolaMagia(escola: String?) {
-        filtroEscolaMagia = escola
+        magicSearch = magicSearch.copy(school = escola)
     }
 
     fun atualizarFiltroClasseMagia(classe: String?) {
-        filtroClasseMagia = classe
+        magicSearch = magicSearch.copy(magicClass = classe)
     }
 
     fun atualizarBuscaTecnica(busca: String) {
-        buscaTecnica = busca
+        techniqueSearch = techniqueSearch.copy(query = busca)
     }
 
     fun atualizarFiltroFonteTecnica(fonte: String?) {
-        filtroFonteTecnica = fonte
+        techniqueSearch = techniqueSearch.copy(source = fonte)
     }
 
     fun atualizarBuscaArmaEquipamento(busca: String) {
-        buscaArmaEquipamento = busca
+        equipmentSearch = equipmentSearch.copy(query = busca)
     }
 
     fun atualizarFiltroTipoArmaEquipamento(tipo: String?) {
-        filtroTipoArmaEquipamento = tipo
-        if (tipo != "armas_de_fogo") {
-            filtroCategoriaArmaFogoEquipamento = null
+        equipmentSearch = if (tipo != "armas_de_fogo") {
+            equipmentSearch.copy(type = tipo, fireArmCategory = null)
+        } else {
+            equipmentSearch.copy(type = tipo)
         }
     }
 
     fun atualizarFiltroCategoriaArmaFogoEquipamento(categoria: String?) {
-        filtroCategoriaArmaFogoEquipamento = categoria
+        equipmentSearch = equipmentSearch.copy(fireArmCategory = categoria)
     }
 
     fun atualizarBuscaEscudoEquipamento(busca: String) {
-        buscaEscudoEquipamento = busca
+        shieldSearchQuery = busca
     }
 
     fun atualizarBuscaArmaduraEquipamento(busca: String) {
-        buscaArmaduraEquipamento = busca
+        equipmentSearch = equipmentSearch.copy(query = busca)
     }
 
     fun atualizarFiltroNtArmaduraEquipamento(nt: Int?) {
-        filtroNtArmaduraEquipamento = nt
+        equipmentSearch = equipmentSearch.copy(armorerNt = nt)
     }
 
     fun atualizarFiltroLocalArmaduraEquipamento(local: String?) {
-        filtroLocalArmaduraEquipamento = local
+        equipmentSearch = equipmentSearch.copy(armorerLocation = local)
     }
 
     fun atualizarFiltroTagArmaduraEquipamento(tag: String?) {
-        filtroTagArmaduraEquipamento = tag?.trim()?.takeIf { it.isNotBlank() }
+        equipmentSearch = equipmentSearch.copy(armorerTag = tag?.trim()?.takeIf { it.isNotBlank() })
     }
 
     fun limparFiltrosArmaduraEquipamento() {
-        buscaArmaduraEquipamento = ""
-        filtroNtArmaduraEquipamento = null
-        filtroLocalArmaduraEquipamento = null
-        filtroTagArmaduraEquipamento = null
+        equipmentSearch = equipmentSearch.copy(
+            query = "",
+            armorerNt = null,
+            armorerLocation = null,
+            armorerTag = null
+        )
     }
+ 
 
     // === INFORMACOES BASICAS ===
 
@@ -517,13 +482,27 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     // === VANTAGENS ===
 
-    fun adicionarVantagem(definicao: VantagemDefinicao, nivel: Int = 1, custoEscolhido: Int = 0, descricao: String = "") {
+    fun adicionarVantagem(
+        definicao: VantagemDefinicao,
+        nivel: Int = 1,
+        custoEscolhido: Int = 0,
+        descricao: String = "",
+        modificadores: List<ModificadorSelecao> = emptyList(),
+        metadados: Map<String, String>? = null
+    ) {
         // Verifica duplicatas
         if (personagem.vantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
             return // Ja existe
         }
         val nivelNormalizado = normalizarNivelVantagem(definicao.id, nivel)
-        val vantagem = dataRepository.criarVantagemSelecionada(definicao, nivelNormalizado, custoEscolhido, descricao)
+        val vantagem = dataRepository.criarVantagemSelecionada(
+            definicao,
+            nivelNormalizado,
+            custoEscolhido,
+            descricao,
+            modificadores,
+            metadados
+        )
         val lista = personagem.vantagens.toMutableList()
         lista.add(vantagem)
         atualizarVantagensComConfirmacao(lista)
@@ -546,6 +525,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun adicionarModificadorAVantagem(index: Int, mod: ModificadorSelecao) {
+        val lista = personagem.vantagens.toMutableList()
+        if (index in lista.indices) {
+            val vantagem = lista[index]
+            val mods = vantagem.modificadores.toMutableList()
+            mods.add(mod)
+            lista[index] = vantagem.copy(modificadores = mods)
+            atualizarVantagensComConfirmacao(lista)
+        }
+    }
+
+    fun removerModificadorDeVantagem(vantagemIndex: Int, modificadorIndex: Int) {
+        val lista = personagem.vantagens.toMutableList()
+        if (vantagemIndex in lista.indices) {
+            val vantagem = lista[vantagemIndex]
+            val mods = vantagem.modificadores.toMutableList()
+            if (modificadorIndex in mods.indices) {
+                mods.removeAt(modificadorIndex)
+                lista[vantagemIndex] = vantagem.copy(modificadores = mods)
+                atualizarVantagensComConfirmacao(lista)
+            }
+        }
+    }
+
     // === DESVANTAGENS ===
 
     fun adicionarDesvantagem(
@@ -553,7 +556,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         nivel: Int = 1,
         custoEscolhido: Int = 0,
         descricao: String = "",
-        autocontrole: Int? = null
+        autocontrole: Int? = null,
+        modificadores: List<ModificadorSelecao> = emptyList()
     ) {
         // Verifica duplicatas
         if (personagem.desvantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
@@ -565,7 +569,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             nivel,
             custoEscolhido,
             descricao,
-            autocontroleNormalizado
+            autocontroleNormalizado,
+            modificadores
         )
         val lista = personagem.desvantagens.toMutableList()
         lista.add(desvantagem)
@@ -587,6 +592,30 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             val autocontroleNormalizado = if (definicao?.usaAutocontroleMental() == true) desvantagem.autocontrole else null
             lista[index] = desvantagem.copy(autocontrole = autocontroleNormalizado)
             personagem = personagem.copy(desvantagens = lista)
+        }
+    }
+
+    fun adicionarModificadorADesvantagem(index: Int, mod: ModificadorSelecao) {
+        val lista = personagem.desvantagens.toMutableList()
+        if (index in lista.indices) {
+            val desvantagem = lista[index]
+            val mods = desvantagem.modificadores.toMutableList()
+            mods.add(mod)
+            lista[index] = desvantagem.copy(modificadores = mods)
+            personagem = personagem.copy(desvantagens = lista)
+        }
+    }
+
+    fun removerModificadorDeDesvantagem(desvantagemIndex: Int, modificadorIndex: Int) {
+        val lista = personagem.desvantagens.toMutableList()
+        if (desvantagemIndex in lista.indices) {
+            val desvantagem = lista[desvantagemIndex]
+            val mods = desvantagem.modificadores.toMutableList()
+            if (modificadorIndex in mods.indices) {
+                mods.removeAt(modificadorIndex)
+                lista[desvantagemIndex] = desvantagem.copy(modificadores = mods)
+                personagem = personagem.copy(desvantagens = lista)
+            }
         }
     }
 
@@ -683,11 +712,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         especializacaoMagia: String? = null,
         ignorarPreRequisito: Boolean = false
     ): String? {
-        if (!permiteMultiplasInstanciasMagia(definicao.id) && personagem.magias.any { it.definicaoId == definicao.id }) {
+        if (!MagicEngine.permiteMultiplasInstanciasMagia(definicao.id) && personagem.magias.any { it.definicaoId == definicao.id }) {
             return "Magia já adicionada."
         }
 
-        if (permiteMultiplasInstanciasPorEscola(definicao.id)) {
+        if (MagicEngine.permiteMultiplasInstanciasPorEscola(definicao.id)) {
             val escolaNorm = especializacaoMagia?.trim()?.lowercase()
             if (escolaNorm.isNullOrBlank()) return "Informe a escola da magia."
             val duplicadaEscola = personagem.magias.any {
@@ -702,17 +731,34 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         ) {
             return "Informe qual encantamento sera protegido."
         }
-        val especializacaoObrigatoriaErro = validarEspecializacaoObrigatoria(definicao.id, especializacaoMagia)
-        if (especializacaoObrigatoriaErro != null) return especializacaoObrigatoriaErro
 
         if (!ignorarPreRequisito) {
-            val erro = prereqFailureForMagiaRapida(definicao)
-            if (erro != null) {
-                return "Pré‑requisito não atendido: $erro"
-            }
+            val erroEspecializacao = MagicEngine.validarEspecializacaoObrigatoria(definicao.id, especializacaoMagia)
+            if (erroEspecializacao != null) return erroEspecializacao
 
-            val erroRegraEspecial = validarRegrasEspeciaisMagia(definicao, especializacaoMagia)
+            val erroRegraEspecial = MagicEngine.validarRegrasEspeciaisMagia(personagem, definicao, dataRepository, nivelAptidaoMagica)
             if (erroRegraEspecial != null) return erroRegraEspecial
+
+            // Verificação de Uma Única Escola
+            val aptidaoComEscola = personagem.vantagens.firstOrNull { 
+                it.definicaoId.equals("aptidao_magica", ignoreCase = true) && 
+                it.modificadores.any { m -> m.id == "mod_aptidao_escola" }
+            }
+            if (aptidaoComEscola != null) {
+                val modEscola = aptidaoComEscola.modificadores.first { it.id == "mod_aptidao_escola" }
+                val escolaPermitida = modEscola.descricao?.trim()?.lowercase()
+                if (escolaPermitida != null) {
+                    val ehEscolaPermitida = definicao.escola?.any { it.trim().lowercase() == escolaPermitida } == true
+                    val ehRecuperarEnergia = definicao.nome.equals("Recuperar Energia", ignoreCase = true)
+                    
+                    if (!ehEscolaPermitida && !ehRecuperarEnergia) {
+                        // Conforme GURPS p. 41, o personagem pode aprender, mas não recebe bônus de Aptidão.
+                        // Iremos avisar. Retornar uma string aborta a adição na UI atual, mas vamos tratar como bônus.
+                        // Se o usuário quiser impedir, podemos retornar erro. O usuário pediu "impedir... (ou aplica penalidades)".
+                        // Vou aplicar penalidade de AM=0 automaticamente e avisar no log/UI.
+                    }
+                }
+            }
         }
         val magia = dataRepository.criarMagiaSelecionada(
             definicao = definicao,
@@ -739,7 +785,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
         prereqFailureCache[def.id]?.let { return it }
 
-        val regraEspecial = validarRegrasEspeciaisMagia(def, null)
+        val regraEspecial = MagicEngine.validarRegrasEspeciaisMagia(personagem, def, dataRepository, nivelAptidaoMagica)
         if (regraEspecial != null) {
             prereqFailureCache[def.id] = regraEspecial
             return regraEspecial
@@ -869,193 +915,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         requisitarModoAlvo(alvoId, ativo = true)
     }
 
-    private fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
-        return definicaoId.lowercase() in setOf(
-            "criar_elemental",
-            "convocar_elemental",
-            "controle_de_elemental",
-            "anular_possessao",
-            "cavalgar"
-        )
-    }
-
-    private fun permiteMultiplasInstanciasPorEscola(definicaoId: String): Boolean {
-        return definicaoId.lowercase() in setOf("criar_elemental", "convocar_elemental", "controle_de_elemental")
-    }
-
-    private fun validarEspecializacaoObrigatoria(definicaoId: String, especializacaoMagia: String?): String? {
-        val exigeSubEscolaAnimais = definicaoId.equals("controle_de_animal", ignoreCase = true)
-        if (exigeSubEscolaAnimais) {
-            if (especializacaoMagia.isNullOrBlank()) {
-                return "Selecione a sub-escola: Criaturas da Terra, Criaturas do Ar ou Criaturas do Mar."
-            }
-            return null
-        }
-
-        val exigeEspecializacao = definicaoId.lowercase() in setOf(
-            "adivinhacao",
-            "cavalgar",
-            "controle_de_hibrido",
-            "golem",
-            "passageiro_interno",
-            "criar_elemental",
-            "convocar_elemental",
-            "controle_de_elemental"
-        )
-        if (!exigeEspecializacao) return null
-        if (especializacaoMagia.isNullOrBlank()) {
-            return "Informe a especializacao desta magia."
-        }
-        return null
-    }
-
-    private fun validarRegrasEspeciaisMagia(definicao: MagiaDefinicao, especializacaoMagia: String?): String? {
-        val id = definicao.id.lowercase()
-        val magias = personagem.magias
-        val am = nivelAptidaoMagica
-        fun hasMagia(nome: String): Boolean =
-            magias.any { it.nome.equals(nome, ignoreCase = true) }
-        fun nivelMagia(nome: String): Int? =
-            magias.firstOrNull { it.nome.equals(nome, ignoreCase = true) }?.calcularNivel(personagem, am)
-        fun countEscola(escola: String): Int =
-            magias.count { it.escola.orEmpty().any { e -> e.equals(escola, ignoreCase = true) } }
-        fun normalizarTokenAnimal(raw: String): String {
-            return raw
-                .lowercase()
-                .replace("á", "a")
-                .replace("ã", "a")
-                .replace("â", "a")
-                .replace("é", "e")
-                .replace("ê", "e")
-                .replace("í", "i")
-                .replace("ó", "o")
-                .replace("ô", "o")
-                .replace("õ", "o")
-                .replace("ú", "u")
-                .replace(Regex("[^a-z0-9\\s]"), " ")
-                .replace(Regex("\\s+"), " ")
-                .trim()
-        }
-        fun caminhoControleAnimal(magia: MagiaSelecionada): String? {
-            val did = magia.definicaoId.lowercase()
-            return when {
-                did.endsWith("_ar") -> "ar"
-                did.endsWith("_terra") -> "terra"
-                did.endsWith("_mar") -> "mar"
-                did == "controle_de_animal" -> {
-                    val tokens = listOf(
-                        magia.especializacaoMagia.orEmpty(),
-                        magia.nome
-                    ).joinToString(" ")
-                    val norm = normalizarTokenAnimal(tokens)
-                    when {
-                        norm.contains("criaturas do ar") || norm.contains(" do ar") -> "ar"
-                        norm.contains("criaturas da terra") || norm.contains(" da terra") -> "terra"
-                        norm.contains("criaturas do mar") || norm.contains(" do mar") -> "mar"
-                        else -> "generic"
-                    }
-                }
-                else -> null
-            }
-        }
-        fun totalControleAnimal(): Int {
-            return magias.count {
-                val did = it.definicaoId.lowercase()
-                did == "controle_de_animal" || did.startsWith("controle_de_animal_")
-            }
-        }
-        fun caminhosControleAnimalDistintos(): Int {
-            return magias
-                .mapNotNull(::caminhoControleAnimal)
-                .toSet()
-                .size
-        }
-
-        return when (id) {
-            "corpo_de_vento" -> {
-                if (am < 3) "Pré-requisito não atendido: Aptidão Mágica 3."
-                else if ((nivelMagia("Corpo de Ar") ?: 0) < 16) "Pré-requisito não atendido: Corpo de Ar NH 16+."
-                else if ((nivelMagia("Furacão") ?: 0) < 16 && (nivelMagia("Furacao") ?: 0) < 16) "Pré-requisito não atendido: Furacão NH 16+."
-                else null
-            }
-            "criar_elemental" -> {
-                if (am < 2) "Pré-requisito não atendido: Aptidão Mágica 2."
-                else if (!hasMagia("Controle de Elemental")) "Pré-requisito não atendido: Controle de Elemental."
-                else null
-            }
-            "convocar_elemental" -> {
-                if (am < 1) "Pré-requisito não atendido: Aptidão Mágica 1."
-                else null
-            }
-            "controle_de_elemental" -> {
-                if (!hasMagia("Convocar Elemental")) "Pré-requisito não atendido: Convocar Elemental."
-                else null
-            }
-            "adivinhacao" -> {
-                val temHistoria = personagem.pericias.any { it.nome.equals("História", ignoreCase = true) || it.nome.equals("Historia", ignoreCase = true) }
-                if (!temHistoria) "Pré-requisito não atendido: História."
-                else null
-            }
-            "anular_possessao" -> {
-                if (!hasMagia("Passageiro da Alma")) "Pré-requisito não atendido: Passageiro da Alma."
-                else if (!hasMagia("Possessão") && !hasMagia("Possessao")) "Pré-requisito não atendido: Possessão."
-                else null
-            }
-            "cavalgar" -> {
-                if (totalControleAnimal() < 1) "Pré-requisito não atendido: pelo menos 1 magia de Controle de Animal."
-                else null
-            }
-            "controle_de_hibrido" -> {
-                if (caminhosControleAnimalDistintos() < 2) "Pré-requisito não atendido: 2 caminhos distintos de Controle de Animal (Ar/Terra/Mar)."
-                else null
-            }
-            "espantar_zumbi" -> if (!hasMagia("Zumbi")) "Pré-requisito não atendido: Zumbi." else null
-            "golem" -> {
-                if (!hasMagia("Encantar")) "Pré-requisito não atendido: Encantar."
-                else if (!hasMagia("Moldar Terra")) "Pré-requisito não atendido: Moldar Terra."
-                else if (!hasMagia("Animação") && !hasMagia("Animacao")) "Pré-requisito não atendido: Animação."
-                else null
-            }
-            "passageiro_interno" -> {
-                if (caminhosControleAnimalDistintos() < 2) "Pré-requisito não atendido: 2 caminhos distintos de Controle de Animal (Ar/Terra/Mar)."
-                else null
-            }
-            "reconstruirnt" -> {
-                if (am < 3) "Pré-requisito não atendido: Aptidão Mágica 3."
-                else if (!hasMagia("Consertar")) "Pré-requisito não atendido: Consertar."
-                else if (!hasMagia("Criar Objeto")) "Pré-requisito não atendido: Criar Objeto."
-                else {
-                    val escolasOk = listOf("Ar", "Fogo", "Terra", "Água", "Agua").map { countEscola(it) }.chunked(2).map { it.maxOrNull() ?: 0 }
-                    if (escolasOk.any { it < 3 }) "Pré-requisito não atendido: 3 magias de cada escola (Ar/Fogo/Terra/Água)."
-                    else null
-                }
-            }
-            "repelir_animal" -> {
-                if (totalControleAnimal() < 1) "Pré-requisito não atendido: Controle de Animal."
-                else null
-            }
-            "transformar_outro" -> {
-                if (!hasMagia("Metamorfosear Outro")) "Pré-requisito não atendido: Metamorfosear Outro."
-                else if (!hasMagia("Transformar Corpo")) "Pré-requisito não atendido: Transformar Corpo."
-                else null
-            }
-            "restauracao" -> {
-                if (hasMagia("Cura Profunda")) {
-                    null
-                } else {
-                    val temAliviarParalisia = hasMagia("Aliviar Paralisia")
-                    val totalRestaurar = magias.count { it.nome.contains("Restaurar", ignoreCase = true) }
-                    val contagem = (if (temAliviarParalisia) 1 else 0) + totalRestaurar
-                    if (contagem < 2) {
-                        "Pré-requisito não atendido: Cura Profunda ou 2 entre Aliviar Paralisia e mágicas de Restaurar."
-                    } else {
-                        null
-                    }
-                }
-            }
-            else -> null
-        }
-    }
 
     fun removerMagia(index: Int) {
         val lista = personagem.magias.toMutableList()
@@ -1435,6 +1294,25 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun atualizarModeloRacial(novoModelo: ModeloRacial) {
+        // Se a descrição da raça não estiver vazia, sincroniza com a aparência do personagem
+        val novaAparencia = if (novoModelo.descricao.isNotBlank()) {
+            if (personagem.aparencia.isBlank()) {
+                novoModelo.descricao
+            } else {
+                personagem.aparencia // Mantém o que o usuário já escreveu se não estiver vazio
+            }
+        } else {
+            personagem.aparencia
+        }
+        
+        personagem = personagem.copy(
+            modeloRacial = novoModelo,
+            aparencia = novaAparencia
+        )
+        salvarFicha()
+    }
+
     fun carregarFicha(nomeArquivo: String) {
         viewModelScope.launch {
             val json = fichaStorage.carregarFicha(nomeArquivo)
@@ -1649,11 +1527,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun limiteMaximoTecnica(definicao: TecnicaCatalogoItem): Int? {
-        return regraPerfilTecnica(definicao).limiteRelativo
+        return SkillEngine.getRegraPerfilTecnica(definicao, dataRepository).limiteRelativo
     }
 
     fun preRequisitoExibicaoTecnica(definicao: TecnicaCatalogoItem): String {
-        return regraPerfilTecnica(definicao).preRequisitoExibicao
+        return SkillEngine.getRegraPerfilTecnica(definicao, dataRepository).preRequisitoExibicao
     }
 
     fun calcularNivelTecnicaPreview(
@@ -1680,7 +1558,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
         val ancoraPericia = extrairAncoraPericiaNoLimite(prerequisito)
         if (!ancoraPericia.isNullOrBlank()) {
-            val matchAncora = periciaCorrespondeTermo(periciaBase, ancoraPericia)
+            val matchAncora = SkillEngine.periciaCorrespondeTermo(periciaBase, ancoraPericia, tecnicasNomesNormalizados)
             if (matchAncora != null) return matchAncora
         }
 
@@ -1694,7 +1572,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         if (termos.isEmpty()) return true
 
         val avaliacao = termos
-            .mapNotNull { termo -> periciaCorrespondeTermo(periciaBase, termo) }
+            .mapNotNull { termo -> SkillEngine.periciaCorrespondeTermo(periciaBase, termo, tecnicasNomesNormalizados) }
         if (avaliacao.isNotEmpty()) {
             return avaliacao.any { it }
         }
@@ -1709,15 +1587,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             prerequisitoNormalizado.contains("pericia de tiro") ||
                 prerequisitoNormalizado.contains("qualquer pericia de tiro") ||
                 prerequisitoNormalizado.contains("arma de longo alcance")
-        if (exigeTiro && !periciaEhTiro(periciaBase)) return false
+        if (exigeTiro && !SkillEngine.periciaEhTiro(periciaBase)) return false
 
         val exigeEsgrima = prerequisitoNormalizado.contains("arma de esgrima")
-        if (exigeEsgrima && !periciaEhArmaEsgrima(periciaBase)) return false
+        if (exigeEsgrima && !SkillEngine.periciaEhArmaEsgrima(periciaBase)) return false
 
         val exigeDefesaAtiva =
             prerequisitoNormalizado.contains("defesa ativa") ||
                 prerequisitoNormalizado.contains("bloquear ou aparar")
-        if (exigeDefesaAtiva && !periciaEhDefesaAtiva(periciaBase)) return false
+        if (exigeDefesaAtiva && !SkillEngine.periciaEhDefesaAtiva(periciaBase)) return false
 
         val exigeCorpoACorpo =
             prerequisitoNormalizado.contains("arma corpo a corpo") ||
@@ -1742,8 +1620,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     prerequisitoNormalizado.contains("briga") ||
                     prerequisitoNormalizado.contains("boxe")
             val ok =
-                periciaEhCorpoACorpo(periciaBase) ||
-                    (permiteDesarmado && periciaEhDesarmado(periciaBase))
+                SkillEngine.periciaEhCorpoACorpo(periciaBase) ||
+                    (permiteDesarmado && SkillEngine.periciaEhDesarmado(periciaBase))
             if (!ok) return false
         }
 
@@ -1751,10 +1629,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val nivelAptidaoMagica: Int
-        get() = personagem.vantagens
-            .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-            .maxOfOrNull { (it.nivel - 1).coerceAtLeast(0) }
-            ?: 0
+        get() = nivelAptidaoMagicaParaMagia(null)
+
+    fun nivelAptidaoMagicaParaMagia(magia: MagiaDefinicao?): Int {
+        return MagicEngine.getNivelAptidaoMagicaParaMagia(personagem, magia)
+    }
 
     val temAptidaoMagica: Boolean
         get() = personagem.vantagens.any { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
@@ -1983,224 +1862,6 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         return candidataSemBonus.ifBlank { candidata }
     }
 
-    private fun regraPerfilTecnica(definicao: TecnicaCatalogoItem): TecnicaRegraPerfil {
-        val prerequisitoRaw = definicao.preRequisitoRaw
-        val prerequisito = normalizarTexto(prerequisitoRaw)
-        val predefMod = dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
-        val bonusExplicito = Regex("([+-]\\d+)").find(prerequisito)?.groupValues?.getOrNull(1)?.toIntOrNull()
-
-        val kind = when {
-            prerequisito.contains("metade da penalidade") -> TecnicaLimiteKind.METADE_PENALIDADE
-            bonusExplicito != null && prerequisito.contains("nao pode exceder") -> TecnicaLimiteKind.EXPLICITO_RELATIVO
-            prerequisito.contains("nao pode exceder") && prerequisito.contains("pre requisito aparar") -> TecnicaLimiteKind.PREDEFINIDO_APARAR
-            prerequisito.contains("nao pode exceder") && prerequisito.contains("pre requisito bloquear") -> TecnicaLimiteKind.PREDEFINIDO_BLOQUEAR
-            prerequisito.contains("nao pode exceder") -> TecnicaLimiteKind.PERICIA_BASE
-            else -> TecnicaLimiteKind.NENHUM
-        }
-
-        val limiteRelativo = when (kind) {
-            TecnicaLimiteKind.NENHUM -> null
-            TecnicaLimiteKind.METADE_PENALIDADE -> {
-                val penalidade = kotlin.math.abs(predefMod)
-                if (penalidade > 0) penalidade / 2 else null
-            }
-            TecnicaLimiteKind.EXPLICITO_RELATIVO -> bonusExplicito
-            TecnicaLimiteKind.PREDEFINIDO_APARAR,
-            TecnicaLimiteKind.PREDEFINIDO_BLOQUEAR,
-            TecnicaLimiteKind.PERICIA_BASE -> kotlin.math.abs(predefMod).takeIf { it > 0 } ?: 0
-        }
-
-        val preReqExibicao = when (kind) {
-            TecnicaLimiteKind.PREDEFINIDO_APARAR -> {
-                prerequisitoRaw.replace(
-                    Regex("(?i)não\\s+pode\\s+exceder\\s+o\\s+pré-requisito\\s+Aparar"),
-                    "não pode exceder o pré-definido Aparar"
-                )
-            }
-            TecnicaLimiteKind.PREDEFINIDO_BLOQUEAR -> {
-                prerequisitoRaw.replace(
-                    Regex("(?i)não\\s+pode\\s+exceder\\s+o\\s+pré-requisito\\s+Bloquear"),
-                    "não pode exceder o pré-definido Bloquear"
-                )
-            }
-            else -> prerequisitoRaw
-        }
-
-        return TecnicaRegraPerfil(
-            limiteKind = kind,
-            limiteRelativo = limiteRelativo,
-            preRequisitoExibicao = preReqExibicao
-        )
-    }
-
-    private fun periciaCorrespondeTermo(pericia: PericiaSelecionada, termoRaw: String): Boolean? {
-        val termo = normalizarTexto(termoRaw)
-        if (termo.isBlank()) return null
-        if (termo in setOf("st", "dx", "ht", "iq", "per", "von", "aparar", "bloquear")) return null
-
-        return when {
-            termo in tecnicasNomesNormalizados -> null
-            termo.contains("consulte pag") || termo.contains("consulte pg") -> null
-            termo.startsWith("tecnica ") -> null
-            termo.contains("habitos detestaveis") -> null
-            termo.contains("arma corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("arma de corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("pericia de arma corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("pericia de arma de corpo a corpo apropriada") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("pericia de ataque corpo a corpo") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("ataque corpo a corpo") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("armas de fogo") && termo.contains("pistola") -> periciaEhArmasFogo(pericia) && periciaEhPistola(pericia)
-            termo.contains("qualquer pericia de combate") -> periciaEhCombate(pericia)
-            termo.contains("qualquer pericia") && termo.contains("tiro") -> periciaEhTiro(pericia)
-            termo.contains("qualquer pericia de tiro adequada") -> periciaEhTiro(pericia)
-            termo.contains("qualquer pericia de tiro") -> periciaEhTiro(pericia)
-            termo.contains("arma de longo alcance") -> periciaEhTiro(pericia)
-            termo.contains("qualquer pericia de sacar rapido") -> periciaEhSacarRapido(pericia)
-            termo.contains("agarrar desarmado") -> periciaEhAgarrarDesarmado(pericia)
-            termo.contains("combate desarmado") -> periciaEhDesarmado(pericia)
-            termo.contains("qualquer pericia com arma de esgrima") -> periciaEhArmaEsgrima(pericia)
-            termo.contains("arma de esgrima") -> periciaEhArmaEsgrima(pericia)
-            termo.contains("arma de combate corpo a corpo") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("arma corpo a corpo") -> periciaEhCorpoACorpo(pericia)
-            termo.contains("qualquer pericia com arma") -> periciaEhCorpoACorpo(pericia) || periciaEhTiro(pericia)
-            termo.contains("defesa ativa") -> periciaEhDefesaAtiva(pericia)
-            termo.contains("bloquear ou aparar") -> periciaEhDefesaAtiva(pericia)
-            termo.contains("pericia pre requisito") -> true
-            termo.contains("outra pericia") -> true
-            termo.contains("apropriada") && termo.contains("arma") -> {
-                when {
-                    termo.contains("corpo a corpo") || termo.contains("ataque corpo a corpo") -> periciaEhCorpoACorpo(pericia)
-                    termo.contains("esgrima") -> periciaEhArmaEsgrima(pericia)
-                    termo.contains("tiro") || termo.contains("longo alcance") -> periciaEhTiro(pericia)
-                    termo.contains("arma de fogo") || termo.contains("armas de fogo") -> periciaEhTiro(pericia)
-                    else -> periciaEhCorpoACorpo(pericia)
-                }
-            }
-            else -> periciaBateNomeLiteral(pericia, termo)
-        }
-    }
-
-    private fun periciaBateNomeLiteral(pericia: PericiaSelecionada, termoNormalizado: String): Boolean? {
-        val termosPericia = termosBuscaPericia(pericia)
-        if (termosPericia.isEmpty()) return null
-        if (termoNormalizado.length <= 1) return null
-        val match = termosPericia.any { termoPericia ->
-            termoPericia.contains(termoNormalizado) || termoNormalizado.contains(termoPericia)
-        }
-        return match
-    }
-
-    private fun termosBuscaPericia(pericia: PericiaSelecionada): Set<String> {
-        val base = mutableSetOf<String>()
-        val nome = normalizarTexto(pericia.nome)
-        val especializacao = normalizarTexto(pericia.especializacao)
-        if (nome.isNotBlank()) base.add(nome)
-        if (especializacao.isNotBlank()) base.add(especializacao)
-        if (nome.isNotBlank() && especializacao.isNotBlank()) {
-            base.add("$nome ($especializacao)")
-            base.add("$nome $especializacao")
-        }
-
-        fun addAlias(valor: String, vararg aliases: String) {
-            if (!base.contains(valor)) return
-            aliases.map(::normalizarTexto).filter { it.isNotBlank() }.forEach { base.add(it) }
-        }
-
-        addAlias(normalizarTexto("carate"), "karate")
-        addAlias(normalizarTexto("judo"), "judo")
-        addAlias(normalizarTexto("luta greco romana"), "luta-greco romana", "wrestling")
-        addAlias(normalizarTexto("armas de fogo"), "arma de fogo")
-        addAlias(normalizarTexto("arcos"), "arco")
-        addAlias(normalizarTexto("espadas curtas"), "espada curta")
-        addAlias(normalizarTexto("espadas de lamina larga"), "espada de lamina larga", "espada larga")
-        addAlias(normalizarTexto("maca/machado"), "maca", "machado")
-        addAlias(normalizarTexto("maca/machado de duas maos"), "maca de duas maos", "machado de duas maos")
-        return base
-    }
-
-    private fun periciaEhDesarmado(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        val chaves = listOf("briga", "boxe", "carate", "karate", "judo", "sumo", "luta greco romana")
-        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
-    }
-
-    private fun periciaEhAgarrarDesarmado(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        val chaves = listOf("judo", "sumo", "luta greco romana", "briga")
-        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
-    }
-
-    private fun periciaEhCorpoACorpo(pericia: PericiaSelecionada): Boolean {
-        val idNormalizado = pericia.definicaoId.trim().lowercase()
-        if (PERICIAS_COMBATE.contains(idNormalizado) && idNormalizado != "escudo") return true
-        val termos = termosBuscaPericia(pericia)
-        val chaves = listOf(
-            "adaga",
-            "espada",
-            "maca",
-            "machado",
-            "chicote",
-            "kusari",
-            "lanca",
-            "bastao",
-            "capa",
-            "jitte",
-            "sai",
-            "mangual",
-            "arma de haste",
-            "faca"
-        )
-        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } } || periciaEhDesarmado(pericia)
-    }
-
-    private fun periciaEhArmaEsgrima(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        if (termos.any { it.contains("esgrima") }) return true
-        val ids = setOf("adaga_de_esgrima", "rapieira", "sabre")
-        return pericia.definicaoId.trim().lowercase() in ids
-    }
-
-    private fun periciaEhTiro(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        val chaves = listOf(
-            "armas de fogo",
-            "armas de feixe",
-            "arco",
-            "besta",
-            "funda",
-            "arma de arremesso",
-            "arremessador de lanca",
-            "canhoneiro",
-            "artilharia",
-            "arma de longo alcance"
-        )
-        return termos.any { termo -> chaves.any { chave -> termo.contains(chave) } }
-    }
-
-    private fun periciaEhArmasFogo(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        return termos.any { it.contains("armas de fogo") || it.contains("arma de fogo") }
-    }
-
-    private fun periciaEhPistola(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        return termos.any { it.contains("pistola") }
-    }
-
-    private fun periciaEhCombate(pericia: PericiaSelecionada): Boolean {
-        return periciaEhCorpoACorpo(pericia) || periciaEhTiro(pericia) || periciaEhDefesaAtiva(pericia)
-    }
-
-    private fun periciaEhSacarRapido(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        return termos.any { it.contains("sacar rapido") }
-    }
-
-    private fun periciaEhDefesaAtiva(pericia: PericiaSelecionada): Boolean {
-        val termos = termosBuscaPericia(pericia)
-        if (termos.any { it.contains("escudo") }) return true
-        return periciaEhCorpoACorpo(pericia) || periciaEhDesarmado(pericia)
-    }
 
     // === MESTRE IA (BETA) ===
 
@@ -2310,5 +1971,3 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         )
     }
 }
-
-

@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.model
+package com.gurps.ficha.model
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
@@ -55,19 +55,26 @@ data class Personagem(
 
     // Rolagem (estado de sessao salvo por ficha)
     var pontosVidaRolagemAtual: Int? = null,
-    var pontosFadigaRolagemAtual: Int? = null
+    var pontosFadigaRolagemAtual: Int? = null,
+    var modeloRacial: ModeloRacial = ModeloRacial()
 ) {
+    // Atributos combinados (Personagem + Modelo Racial)
+    val st: Int get() = forca + modeloRacial.modForca
+    val dx: Int get() = destreza + modeloRacial.modDestreza
+    val iq: Int get() = inteligencia + modeloRacial.modInteligencia
+    val ht: Int get() = vitalidade + modeloRacial.modVitalidade
+
     // === CALCULOS AUTOMATICOS ===
-    val pontosVida: Int get() = forca + modPontosVida
-    val vontade: Int get() = inteligencia + modVontade
-    val percepcao: Int get() = inteligencia + modPercepcao
-    val pontosFadiga: Int get() = vitalidade + modPontosFadiga
-    val velocidadeBasica: Float get() = (vitalidade + destreza) / 4f + modVelocidadeBasica
-    val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico
+    val pontosVida: Int get() = st + modPontosVida + modeloRacial.modPontosVida
+    val vontade: Int get() = iq + modVontade + modeloRacial.modVontade
+    val percepcao: Int get() = iq + modPercepcao + modeloRacial.modPercepcao
+    val pontosFadiga: Int get() = ht + modPontosFadiga + modeloRacial.modPontosFadiga
+    val velocidadeBasica: Float get() = (ht + dx) / 4f + modVelocidadeBasica + modeloRacial.modVelocidadeBasica
+    val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico + modeloRacial.modDeslocamentoBasico
     val esquiva: Int get() = (velocidadeBasica + 3).toInt() // Esquiva Básica (sem carga)
-    val baseCarga: Float get() = (forca * forca) / 10f
-    val danoGdP: String get() = CharacterRules.calcularDanoGdP(forca)
-    val danoGeB: String get() = CharacterRules.calcularDanoGeB(forca)
+    val baseCarga: Float get() = (st * st) / 10f
+    val danoGdP: String get() = CharacterRules.calcularDanoGdP(st)
+    val danoGeB: String get() = CharacterRules.calcularDanoGeB(st)
 
     val pesoTotal: Float get() = equipamentos.sumOf {
         (it.peso * it.quantidade).toDouble()
@@ -111,17 +118,18 @@ data class Personagem(
 
     val pontosGastos: Int get() =
         pontosAtributos + pontosSecundarios + pontosVantagens +
-        pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosTecnicas + pontosMagias
+        pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosTecnicas + pontosMagias +
+        modeloRacial.custoTotal
 
     val pontosRestantes: Int get() = pontosIniciais - pontosGastos
     val desvantagensExcedemLimite: Boolean get() = pontosDesvantagens < limiteDesvantagens
 
     fun getAtributo(sigla: String): Int {
         return when (sigla.uppercase()) {
-            "ST" -> forca
-            "DX" -> destreza
-            "IQ" -> inteligencia
-            "HT" -> vitalidade
+            "ST" -> st
+            "DX" -> dx
+            "IQ" -> iq
+            "HT" -> ht
             "PER" -> percepcao
             "VON" -> vontade
             else -> 10
@@ -155,6 +163,9 @@ data class Personagem(
             if (!jsonObject.has("vitalidadeBase")) {
                 jsonObject.addProperty("vitalidadeBase", 10)
             }
+            if (!jsonObject.has("modeloRacial")) {
+                jsonObject.add("modeloRacial", com.google.gson.JsonObject())
+            }
             return gson.fromJson(jsonObject, Personagem::class.java)
         }
     }
@@ -172,8 +183,33 @@ enum class TipoCusto {
 }
 
 // ============================================================
+// MODIFICADORES
+// ============================================================
+
+data class ModificadorSelecao(
+    val id: String = "",
+    val nome: String = "",
+    val valor: Int = 0,
+    val porNivel: Boolean = false,
+    val niveis: Int = 1,
+    val descricao: String? = null,
+    val pagina: Int? = null
+)
+
+// ============================================================
 // VANTAGENS
 // ============================================================
+
+data class ModificadorDefinicao(
+    val id: String = "",
+    val nome: String = "",
+    val tipo: String = "", // "ampliação" ou "limitação"
+    val valor: String = "0",
+    val porNivel: Boolean = false,
+    val pagina: Int? = null,
+    val tags: List<String> = emptyList(),
+    val descricao: String? = null
+)
 
 data class VantagemDefinicao(
     val id: String = "",
@@ -182,7 +218,8 @@ data class VantagemDefinicao(
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
     val tags: List<String> = emptyList(),
-    val descricao: String? = ""
+    val descricao: String? = "",
+    val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
 ) {
     fun getCustoBase(): Int {
         val cleaned = custo.replace(Regex("[^0-9-]"), " ").trim()
@@ -221,19 +258,19 @@ data class VantagemSelecionada(
     var custoEscolhido: Int = 0, // Custo total escolhido (para VARIAVEL/ESCOLHA)
     var descricao: String = "",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
-    val pagina: Int = 0
+    val pagina: Int = 0,
+    var modificadores: List<ModificadorSelecao> = emptyList(),
+    var metadados: Map<String, String>? = null // Para regras especiais como Ataque Inato
 ) {
     val custoFinal: Int get() {
-        // Regra Especial: Aptidão Mágica (Magery)
-        // Nível 1 (Magery 0) = 5 pts
-        // Nível 2 (Magery 1) = 15 pts (5 + 10)
-        // Nível 3 (Magery 2) = 25 pts (5 + 20)...
         return CharacterRules.calcularCustoVantagem(
             definicaoId = definicaoId,
             tipoCusto = tipoCusto,
             custoBase = custoBase,
             custoEscolhido = custoEscolhido,
-            nivel = nivel
+            nivel = nivel,
+            modificadores = modificadores,
+            metadados = metadados
         )
     }
 }
@@ -249,7 +286,8 @@ data class DesvantagemDefinicao(
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
     val tags: List<String> = emptyList(),
-    val descricao: String? = ""
+    val descricao: String? = "",
+    val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
 ) {
     fun usaAutocontroleMental(): Boolean {
         val ehMental = tags.any { it.equals("mental", ignoreCase = true) }
@@ -298,7 +336,9 @@ data class DesvantagemSelecionada(
     var descricao: String = "",
     var autocontrole: Int? = null,
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
-    val pagina: Int = 0
+    val pagina: Int = 0,
+    var modificadores: List<ModificadorSelecao> = emptyList(),
+    var metadados: Map<String, String>? = null
 ) {
     val custoFinal: Int get() {
         return CharacterRules.calcularCustoDesvantagem(
@@ -306,7 +346,8 @@ data class DesvantagemSelecionada(
             custoBase = custoBase,
             custoEscolhido = custoEscolhido,
             nivel = nivel,
-            autocontrole = autocontrole
+            autocontrole = autocontrole,
+            modificadores = modificadores
         )
     }
 }
@@ -382,7 +423,13 @@ data class PericiaSelecionada(
     fun calcularNivel(personagem: Personagem): Int {
         val valorAtributo = personagem.getAtributo(atributoBase.sigla)
         val bonus = CharacterRules.calcularBonusPorDificuldade(dificuldade, pontosGastos)
-        return valorAtributo + bonus
+        
+        // Bonus racial (Innate Skill)
+        val bonusRacial = personagem.modeloRacial.pericias.find { 
+            it.nome.equals(nome, ignoreCase = true) 
+        }?.nivelRelativo ?: 0
+        
+        return valorAtributo + bonus + bonusRacial
     }
 
     fun getNivelRelativo(personagem: Personagem): String {
@@ -484,7 +531,13 @@ data class MagiaSelecionada(
     fun calcularNivel(personagem: Personagem, nivelAptidaoMagica: Int): Int {
         val valorAtributo = personagem.inteligencia + nivelAptidaoMagica
         val bonus = CharacterRules.calcularBonusPorDificuldade(dificuldade, pontosGastos)
-        return valorAtributo + bonus
+        
+        // Bonus racial para magias (raro mas possivel)
+        val bonusRacial = personagem.modeloRacial.pericias.find { 
+            it.nome.equals(nome, ignoreCase = true) 
+        }?.nivelRelativo ?: 0
+        
+        return valorAtributo + bonus + bonusRacial
     }
 
     fun getNivelRelativo(personagem: Personagem, nivelAptidaoMagica: Int): String {
@@ -697,3 +750,44 @@ val PERICIAS_COMBATE = setOf(
     "tonfa",
     "wrestling"
 )
+// RACIAL SKILLS
+data class PericiaRacial(
+    val nome: String = "",
+    val diff: String = "M", // F, M, D, MD
+    val baseAtributo: String = "DX",
+    val nivelRelativo: Int = 0, // Ex: DX+1 -> 1, DX-1 -> -1
+    val custo: Int = 0
+)
+
+// ============================================================
+// MODELO RACIAL
+// ============================================================
+
+data class ModeloRacial(
+    val nome: String = "Humano",
+    val modForca: Int = 0,
+    val modDestreza: Int = 0,
+    val modInteligencia: Int = 0,
+    val modVitalidade: Int = 0,
+    val modPontosVida: Int = 0,
+    val modVontade: Int = 0,
+    val modPercepcao: Int = 0,
+    val modPontosFadiga: Int = 0,
+    val modVelocidadeBasica: Float = 0f,
+    val modDeslocamentoBasico: Int = 0,
+    val vantagens: List<VantagemSelecionada> = emptyList(), 
+    val desvantagens: List<DesvantagemSelecionada> = emptyList(),
+    val pericias: List<PericiaRacial> = emptyList(),
+    val descricao: String = ""
+) {
+    val custoTotal: Int get() {
+        val custoAtributos = modForca * 10 + modDestreza * 20 + modInteligencia * 20 + modVitalidade * 10
+        val custoSecundarios = modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 + 
+                               modPontosFadiga * 3 + (modVelocidadeBasica / 0.25f).toInt() * 5 + 
+                               modDeslocamentoBasico * 5
+        val custoVantagens = vantagens.sumOf { it.custoFinal }
+        val custoDesvantagens = desvantagens.sumOf { it.custoFinal }
+        val custoPericias = pericias.sumOf { it.custo }
+        return custoAtributos + custoSecundarios + custoVantagens + custoDesvantagens + custoPericias
+    }
+}

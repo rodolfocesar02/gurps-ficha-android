@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaSelecionada
+import com.gurps.ficha.ui.features.magic.EditarMagiaDialog
+import com.gurps.ficha.ui.features.magic.SelecionarMagiaDialog
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 // === TAB MAGIAS ===
@@ -70,8 +72,8 @@ fun TabMagias(viewModel: FichaViewModel) {
             )
         } else {
             p.magias.forEachIndexed { index, magia ->
-                // retrieve definition to inspect prerequisites
                 val definicao = viewModel.dataRepository.getMagiaPorId(magia.definicaoId)
+                val amParaEstaMagia = definicao?.let { viewModel.nivelAptidaoMagicaParaMagia(it) } ?: nivelAptidaoMagica
                 val failureMsg = definicao?.let { viewModel.prereqFailureForMagia(it) }
                 val hasFailure = failureMsg != null
 
@@ -80,7 +82,7 @@ fun TabMagias(viewModel: FichaViewModel) {
                 ) {
                     MagiaItem(
                         magia = magia,
-                        nivel = magia.calcularNivel(p, nivelAptidaoMagica),
+                        nivel = magia.calcularNivel(p, amParaEstaMagia),
                         onShowDescription = { magiaDescricaoDialog = magia },
                         onEdit = { editingMagiaIndex = index },
                         onDelete = { viewModel.removerMagia(index) }
@@ -117,7 +119,7 @@ fun TabMagias(viewModel: FichaViewModel) {
         EditarMagiaDialog(
             magia = p.magias[index],
             personagem = p,
-            nivelAptidaoMagica = nivelAptidaoMagica,
+            nivelAptidaoMagica = viewModel.nivelAptidaoMagicaParaMagia(viewModel.dataRepository.getMagiaPorId(p.magias[index].definicaoId)),
             onDismiss = { editingMagiaIndex = null },
             onSave = { atualizada ->
                 viewModel.atualizarMagia(index, atualizada)
