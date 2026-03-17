@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -516,8 +516,30 @@ fun TabRolagem(viewModel: FichaViewModel) {
         contextLabel = "Dano ST ${stDamageMode.label}",
         damageExpression = if (stDamageMode == StDamageMode.GDP) p.danoGdP else p.danoGeB
     )
-    val fontesDano = if (armasEquipadas.isNotEmpty()) {
-        listOf(fallbackSt) + armasEquipadas
+    val ataquesInatos = p.vantagens
+        .filter { it.definicaoId == "ataque_inato" }
+        .mapIndexed { index, vantagem ->
+            val diceRaw = vantagem.metadados?.get("dice") ?: "1"
+            val dice = if (diceRaw.endsWith(".0")) diceRaw.substringBefore(".0") else diceRaw
+            val bonus = vantagem.metadados?.get("bonus")?.toIntOrNull() ?: 0
+            val tipo = vantagem.metadados?.get("tipoDano") ?: "cont"
+            val nome = vantagem.metadados?.get("nomePersonalizado")?.takeIf { it.isNotBlank() } ?: vantagem.nome
+            val expr = buildString {
+                append("${dice}d")
+                if (bonus > 0) append("+$bonus")
+                else if (bonus < 0) append(bonus)
+                append(" $tipo")
+            }
+            DamageSourceOption(
+                id = "ataque_inato_$index",
+                label = nome,
+                contextLabel = "Ataque Inato $nome",
+                damageExpression = expr
+            )
+        }
+
+    val fontesDano = if (armasEquipadas.isNotEmpty() || ataquesInatos.isNotEmpty()) {
+        listOf(fallbackSt) + armasEquipadas + ataquesInatos
     } else {
         listOf(fallbackSt)
     }

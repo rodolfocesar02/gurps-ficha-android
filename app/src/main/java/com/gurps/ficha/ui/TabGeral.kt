@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -145,17 +145,17 @@ fun TabGeral(viewModel: FichaViewModel) {
             }
             if (isPraCegoVariant) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    AtributoPrimarioLinearCard("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
-                        viewModel.atualizarForca(delta)
+                    AtributoPrimarioLinearCard("ST", p.st, (p.forca - p.forcaBase) * 10) { delta ->
+                        viewModel.atualizarForca(delta - p.modeloRacial.modForca)
                     }
-                    AtributoPrimarioLinearCard("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
-                        viewModel.atualizarDestreza(delta)
+                    AtributoPrimarioLinearCard("DX", p.dx, (p.destreza - p.destrezaBase) * 20) { delta ->
+                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestreza)
                     }
-                    AtributoPrimarioLinearCard("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                        viewModel.atualizarInteligencia(delta)
+                    AtributoPrimarioLinearCard("IQ", p.iq, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
+                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligencia)
                     }
-                    AtributoPrimarioLinearCard("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                        viewModel.atualizarVitalidade(delta)
+                    AtributoPrimarioLinearCard("HT", p.ht, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
+                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidade)
                     }
                 }
             } else {
@@ -163,17 +163,17 @@ fun TabGeral(viewModel: FichaViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    AtributoEditor("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
-                        viewModel.atualizarForca(delta)
+                    AtributoEditor("ST", p.st, (p.forca - p.forcaBase) * 10) { delta ->
+                        viewModel.atualizarForca(delta - p.modeloRacial.modForca)
                     }
-                    AtributoEditor("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
-                        viewModel.atualizarDestreza(delta)
+                    AtributoEditor("DX", p.dx, (p.destreza - p.destrezaBase) * 20) { delta ->
+                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestreza)
                     }
-                    AtributoEditor("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                        viewModel.atualizarInteligencia(delta)
+                    AtributoEditor("IQ", p.iq, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
+                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligencia)
                     }
-                    AtributoEditor("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                        viewModel.atualizarVitalidade(delta)
+                    AtributoEditor("HT", p.ht, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
+                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidade)
                     }
                 }
             }
@@ -182,16 +182,16 @@ fun TabGeral(viewModel: FichaViewModel) {
         SectionCard(title = "Atributos Secundarios") {
             if (isPraCegoVariant) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    AtributoSecundarioLinearCard("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
+                    AtributoSecundarioLinearCard("PV", p.st, p.modPontosVida, p.pontosVida, 2) { delta ->
                         viewModel.atualizarModPontosVida(delta)
                     }
-                    AtributoSecundarioLinearCard("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
+                    AtributoSecundarioLinearCard("Von", p.iq, p.modVontade, p.vontade, 5) { delta ->
                         viewModel.atualizarModVontade(delta)
                     }
-                    AtributoSecundarioLinearCard("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
+                    AtributoSecundarioLinearCard("Per", p.iq, p.modPercepcao, p.percepcao, 5) { delta ->
                         viewModel.atualizarModPercepcao(delta)
                     }
-                    AtributoSecundarioLinearCard("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
+                    AtributoSecundarioLinearCard("PF", p.ht, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
                         viewModel.atualizarModPontosFadiga(delta)
                     }
                 }
@@ -200,16 +200,16 @@ fun TabGeral(viewModel: FichaViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    AtributoSecundarioEditor("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
+                    AtributoSecundarioEditor("PV", p.st, p.modPontosVida, p.pontosVida, 2) { delta ->
                         viewModel.atualizarModPontosVida(delta)
                     }
-                    AtributoSecundarioEditor("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
+                    AtributoSecundarioEditor("Von", p.iq, p.modVontade, p.vontade, 5) { delta ->
                         viewModel.atualizarModVontade(delta)
                     }
-                    AtributoSecundarioEditor("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
+                    AtributoSecundarioEditor("Per", p.iq, p.modPercepcao, p.percepcao, 5) { delta ->
                         viewModel.atualizarModPercepcao(delta)
                     }
-                    AtributoSecundarioEditor("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
+                    AtributoSecundarioEditor("PF", p.ht, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
                         viewModel.atualizarModPontosFadiga(delta)
                     }
                 }
@@ -328,6 +328,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                     PontosResumoRow("Peculiaridades", p.pontosPeculiaridades)
                     PontosResumoRow("Pericias", p.pontosPericias)
                     PontosResumoRow("Magias", p.pontosMagias)
+                    PontosResumoRow("Modelo Racial (${p.modeloRacial.nome})", p.modeloRacial.custoTotal)
                     Divider(modifier = Modifier.padding(vertical = 4.dp))
                     PontosResumoRow("Total Gasto", p.pontosGastos, fontWeight = FontWeight.Bold)
                 }

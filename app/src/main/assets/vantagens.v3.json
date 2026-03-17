@@ -274,7 +274,73 @@
     "tags": [
       "magica"
     ],
-    "descricao": "O personagem é um adepto da magia. Aptidão Mágica 0: 5 pontos (detecta magia). Níveis 1+: +10 pontos/nível, adicionados à IQ para aprender magias e à Percepção para sentir objetos encantados. Limitações: Canção, Dança, Manifestação Diurna/Noturna/Obscura, Musical, Solitária, Uma Única Escola (-40% a -50%)."
+    "descricao": "O personagem é um adepto da magia. Aptidão Mágica 0: 5 pontos (detecta magia). Níveis 1+: +10 pontos/nível, adicionados à IQ para aprender magias e à Percepção para sentir objetos encantados. Limitações: Canção, Dança, Manifestação Diurna/Noturna/Obscura, Musical, Solitária, Uma Única Escola (-40% a -50%).",
+    "modificadores_especificos": [
+      {
+        "id": "mod_aptidao_cancao",
+        "nome": "Canção",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "O personagem deve cantar em voz alta para usar magia."
+      },
+      {
+        "id": "mod_aptidao_danca",
+        "nome": "Dança",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "O personagem deve dançar para usar magia."
+      },
+      {
+        "id": "mod_aptidao_diurna",
+        "nome": "Manifestação Diurna",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas durante o dia."
+      },
+      {
+        "id": "mod_aptidao_noturna",
+        "nome": "Manifestação Noturna",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas durante a noite."
+      },
+      {
+        "id": "mod_aptidao_obscura",
+        "nome": "Manifestação Obscura",
+        "tipo": "limitação",
+        "valor": "-50%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas na escuridão."
+      },
+      {
+        "id": "mod_aptidao_musical",
+        "nome": "Musical",
+        "tipo": "limitação",
+        "valor": "-50%",
+        "pagina": 41,
+        "descricao": "Exige tocar um instrumento musical para usar magia."
+      },
+      {
+        "id": "mod_aptidao_solitaria",
+        "nome": "Solitária",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas quando o personagem está sozinho."
+      },
+      {
+        "id": "mod_aptidao_escola",
+        "nome": "Uma Única Escola",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "A Aptidão Mágica favorece apenas uma escola de magia específica."
+      }
+    ]
   },
   {
     "id": "arrebatador",

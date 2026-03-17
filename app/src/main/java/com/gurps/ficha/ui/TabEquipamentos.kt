@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -429,7 +429,7 @@ fun SelecionarArmaEquipamentoDialog(
 ) {
     val stAtual = viewModel.personagem.forca
     val armas = viewModel.armasEquipamentosFiltradas
-    val mostrarObsArmaFogo = viewModel.filtroTipoArmaEquipamento == "armas_de_fogo"
+    val mostrarObsArmaFogo = viewModel.equipmentSearch.type == "armas_de_fogo"
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -438,7 +438,7 @@ fun SelecionarArmaEquipamentoDialog(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("ST do personagem: $stAtual")
                 OutlinedTextField(
-                    value = viewModel.buscaArmaEquipamento,
+                    value = viewModel.equipmentSearch.query,
                     onValueChange = { viewModel.atualizarBuscaArmaEquipamento(it) },
                     label = { Text("Buscar por nome") },
                     singleLine = true,
@@ -451,26 +451,26 @@ fun SelecionarArmaEquipamentoDialog(
                 ) {
                     TipoArmaFiltroChip(
                         label = "Todas",
-                        selected = viewModel.filtroTipoArmaEquipamento == null,
+                        selected = viewModel.equipmentSearch.type == null,
                         onClick = { viewModel.atualizarFiltroTipoArmaEquipamento(null) }
                     )
                     TipoArmaFiltroChip(
                         label = "Corpo a corpo",
-                        selected = viewModel.filtroTipoArmaEquipamento == "corpo_a_corpo",
+                        selected = viewModel.equipmentSearch.type == "corpo_a_corpo",
                         onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("corpo_a_corpo") }
                     )
                     TipoArmaFiltroChip(
                         label = "Distancia",
-                        selected = viewModel.filtroTipoArmaEquipamento == "distancia",
+                        selected = viewModel.equipmentSearch.type == "distancia",
                         onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("distancia") }
                     )
                     TipoArmaFiltroChip(
                         label = "Armas de Fogo",
-                        selected = viewModel.filtroTipoArmaEquipamento == "armas_de_fogo",
+                        selected = viewModel.equipmentSearch.type == "armas_de_fogo",
                         onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("armas_de_fogo") }
                     )
                 }
-                if (viewModel.filtroTipoArmaEquipamento == "armas_de_fogo") {
+                if (viewModel.equipmentSearch.type == "armas_de_fogo") {
                     Row(
                         modifier = Modifier.horizontalScroll(rememberScrollState()),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -478,27 +478,27 @@ fun SelecionarArmaEquipamentoDialog(
                     ) {
                         TipoArmaFiltroChip(
                             label = "Todas Fogo",
-                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == null,
+                            selected = viewModel.equipmentSearch.fireArmCategory == null,
                             onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento(null) }
                         )
                         TipoArmaFiltroChip(
                             label = "Pistolas e MM",
-                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "pistolas_mm",
+                            selected = viewModel.equipmentSearch.fireArmCategory == "pistolas_mm",
                             onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pistolas_mm") }
                         )
                         TipoArmaFiltroChip(
                             label = "Rifles e Espingardas",
-                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "rifles_espingardas",
+                            selected = viewModel.equipmentSearch.fireArmCategory == "rifles_espingardas",
                             onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("rifles_espingardas") }
                         )
                         TipoArmaFiltroChip(
                             label = "Ultra-Tech",
-                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "ultratech",
+                            selected = viewModel.equipmentSearch.fireArmCategory == "ultratech",
                             onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("ultratech") }
                         )
                         TipoArmaFiltroChip(
                             label = "Armas Pesadas",
-                            selected = viewModel.filtroCategoriaArmaFogoEquipamento == "pesadas",
+                            selected = viewModel.equipmentSearch.fireArmCategory == "pesadas",
                             onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pesadas") }
                         )
                     }
@@ -646,7 +646,7 @@ private fun SelecionarEscudoEquipamentoDialog(
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("ST do personagem: $stAtual")
                 OutlinedTextField(
-                    value = viewModel.buscaEscudoEquipamento,
+                    value = viewModel.equipmentSearch.query,
                     onValueChange = { viewModel.atualizarBuscaEscudoEquipamento(it) },
                     label = { Text("Buscar escudo") },
                     singleLine = true,
@@ -714,9 +714,9 @@ private fun SelecionarArmaduraEquipamentoDialog(
     onSelect: (ArmaduraCatalogoItem) -> Unit
 ) {
     val armaduras = viewModel.armadurasEquipamentosFiltradas
-    val filtrosAtivos = viewModel.buscaArmaduraEquipamento.isNotBlank() ||
-        viewModel.filtroLocalArmaduraEquipamento != null ||
-        viewModel.filtroNtArmaduraEquipamento != null
+    val filtrosAtivos = viewModel.equipmentSearch.query.isNotBlank() ||
+        viewModel.equipmentSearch.armorerLocation != null ||
+        viewModel.equipmentSearch.armorerNt != null
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecionar Armadura") },
@@ -728,7 +728,7 @@ private fun SelecionarArmaduraEquipamentoDialog(
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 OutlinedTextField(
-                    value = viewModel.buscaArmaduraEquipamento,
+                    value = viewModel.equipmentSearch.query,
                     onValueChange = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
                     label = { Text("Buscar armadura") },
                     singleLine = true,
@@ -743,13 +743,13 @@ private fun SelecionarArmaduraEquipamentoDialog(
                 ) {
                     TipoArmaFiltroChip(
                         label = "Local: Todos",
-                        selected = viewModel.filtroLocalArmaduraEquipamento == null,
+                        selected = viewModel.equipmentSearch.armorerLocation == null,
                         onClick = { viewModel.atualizarFiltroLocalArmaduraEquipamento(null) }
                     )
                     LOCAIS_ARMADURA.forEach { (id, label) ->
                         TipoArmaFiltroChip(
                             label = label,
-                            selected = viewModel.filtroLocalArmaduraEquipamento == id,
+                            selected = viewModel.equipmentSearch.armorerLocation == id,
                             onClick = { viewModel.atualizarFiltroLocalArmaduraEquipamento(id) }
                         )
                     }
@@ -763,13 +763,13 @@ private fun SelecionarArmaduraEquipamentoDialog(
                 ) {
                     TipoArmaFiltroChip(
                         label = "NT: Todas",
-                        selected = viewModel.filtroNtArmaduraEquipamento == null,
+                        selected = viewModel.equipmentSearch.armorerNt == null,
                         onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
                     )
                     for (nt in 0..10) {
                         TipoArmaFiltroChip(
                             label = "NT $nt",
-                            selected = viewModel.filtroNtArmaduraEquipamento == nt,
+                            selected = viewModel.equipmentSearch.armorerNt == nt,
                             onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
                         )
                     }

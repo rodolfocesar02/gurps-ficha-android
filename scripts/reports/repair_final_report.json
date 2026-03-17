@@ -1,0 +1,23 @@
+{
+  "total": 227,
+  "changed": 3,
+  "encoding_fixed": 0,
+  "trimmed": 3,
+  "trimmed_items": [
+    {
+      "id": "acomodado",
+      "nome": "Acomodado",
+      "reason": "cross_name"
+    },
+    {
+      "id": "estomago_sensivel",
+      "nome": "Estômago Sensível",
+      "reason": "cross_name"
+    },
+    {
+      "id": "incompetente",
+      "nome": "Incompetente",
+      "reason": "cross_name"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
+import com.gurps.ficha.BuildConfig
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.gurps.ficha.ui.features.traits.*
 
 private fun nivelExibicaoVantagem(vantagem: VantagemSelecionada): Int {
     return if (vantagem.definicaoId.equals("aptidao_magica", ignoreCase = true)) {
@@ -46,6 +50,7 @@ fun TabTracos(viewModel: FichaViewModel) {
     var showSelecionarDesvantagem by remember { mutableStateOf(false) }
     var showQualidadeDialog by remember { mutableStateOf(false) }
     var showPeculiaridadeDialog by remember { mutableStateOf(false) }
+    var showModeloRacialDialog by remember { mutableStateOf(false) }
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
 
@@ -55,6 +60,10 @@ fun TabTracos(viewModel: FichaViewModel) {
     }
 
     StandardTabColumn {
+        BotaoAcaoTracosPadrao(
+            texto = "Modelo Racial (${p.modeloRacial.nome})",
+            onClick = { showModeloRacialDialog = true }
+        )
         BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",
             onClick = { showSelecionarVantagem = true }
@@ -165,6 +174,17 @@ fun TabTracos(viewModel: FichaViewModel) {
             onSave = { texto -> viewModel.adicionarPeculiaridade(texto); showPeculiaridadeDialog = false })
     }
 
+    if (showModeloRacialDialog) {
+        ModeloRacialDialog(
+            current = p.modeloRacial,
+            onDismiss = { showModeloRacialDialog = false },
+            onSave = { novoModelo ->
+                viewModel.atualizarModeloRacial(novoModelo)
+                showModeloRacialDialog = false
+            }
+        )
+    }
+
     editingVantagemIndex?.let { index ->
         val vantagem = p.vantagens[index]
         val descricaoCatalogo = viewModel.dataRepository.vantagens
@@ -194,7 +214,6 @@ fun TabTracos(viewModel: FichaViewModel) {
             ?: false
         EditarDesvantagemDialog(
             desvantagem = desvantagem,
-            permiteAutocontrole = permiteAutocontrole,
             descricaoCatalogo = descricaoCatalogo,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->
@@ -228,10 +247,34 @@ fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: ()
     } else {
         ""
     }
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val modificadoresTexto = if (vantagem.modificadores.isNotEmpty()) {
+        " com modificadores: " + vantagem.modificadores.joinToString { mod ->
+            "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%)"
+        }
+    } else ""
+    val descricaoAcessivel = "Vantagem ${vantagem.nome}, ${vantagem.custoFinal} pontos$modificadoresTexto"
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) contentDescription = descricaoAcessivel
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(vantagem.nome + if (vantagem.descricao.isNotBlank()) " (${vantagem.descricao})" else "",
                 style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            
+            if (vantagem.modificadores.isNotEmpty()) {
+                val modLabel = vantagem.modificadores.joinToString { mod ->
+                    val nivelStr = if (mod.porNivel && mod.niveis > 1) " x${mod.niveis}" else ""
+                    "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%$nivelStr)"
+                }
+                Text(modLabel, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+            }
+
             Text("${vantagem.custoFinal} pts$sufixoNivel",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
         }
@@ -242,10 +285,35 @@ fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: ()
 
 @Composable
 fun DesvantagemItem(desvantagem: DesvantagemSelecionada, exibirAutocontrole: Boolean, onEdit: () -> Unit, onDelete: () -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val modificadoresTexto = if (desvantagem.modificadores.isNotEmpty()) {
+        " com modificadores: " + desvantagem.modificadores.joinToString { mod ->
+            "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%)"
+        }
+    } else ""
+    val autocontroleTexto = desvantagem.autocontrole?.let { ", autocontrole $it" } ?: ""
+    val descricaoAcessivel = "Desvantagem ${desvantagem.nome}, ${desvantagem.custoFinal} pontos$autocontroleTexto$modificadoresTexto"
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) contentDescription = descricaoAcessivel
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(desvantagem.nome + if (desvantagem.descricao.isNotBlank()) " (${desvantagem.descricao})" else "",
                 style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            
+            if (desvantagem.modificadores.isNotEmpty()) {
+                val modLabel = desvantagem.modificadores.joinToString { mod ->
+                    val nivelStr = if (mod.porNivel && mod.niveis > 1) " x${mod.niveis}" else ""
+                    "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%$nivelStr)"
+                }
+                Text(modLabel, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+            }
+
             Text("${desvantagem.custoFinal} pts" +
                     if (desvantagem.nivel > 1) " (Nível ${desvantagem.nivel})" else "",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)

@@ -1,4 +1,22 @@
-﻿package nexus.arcano
+package nexus.arcano
+
+/**
+ * ==================================================================================
+ * 🛡️ BLINDAGEM DO MOTOR NEXUS ARCANO (MODO ALVO) 🛡️
+ * ==================================================================================
+ * ESTE CÓDIGO CONTÉM A LÓGICA DE "GENIALIDADE" DE BUSCA PROATIVA.
+ * 
+ * DIRETRIZES DE MANUTENÇÃO:
+ * 1. NUNCA remova o Lookahead de Metas (sugerirProximasAcoes): Ele antecipa requisitos
+ *    de magias futuras (ex: 15 escolas para Desejo) mesmo que a magia atual não peça.
+ * 2. NUNCA simplifique 'custoAproximadoDependencia': Ele deve ser recursivo para
+ *    encontrar o caminho REAL mais curto, e não apenas o número de nomes imediatos.
+ * 3. NUNCA desabilite os Caches (cacheResultados, custoAproximadoCache): Eles são
+ *    vitais para a performance em tempo real no Android.
+ * 4. PRIORIDADE 'FASTEST-FIRST': O primeiro item da lista DEVE ser sempre o atalho
+ *    matemático mais curto.
+ * ==================================================================================
+ */
 
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
@@ -157,19 +175,19 @@ class NexusArcanoEngine(
         val regrasNumericas: List<RegraNumerica>
     )
 
-    private val cacheResultados = object : LinkedHashMap<CacheKey, ArcanoResultado>(128, 0.75f, true) {
+    private val cacheResultados = object : LinkedHashMap<CacheKey, ArcanoResultado>(512, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, ArcanoResultado>?): Boolean {
-            return size > 256
+            return size > 2048
         }
     }
-    private val cacheDiagnosticos = object : LinkedHashMap<CacheKey, List<ArcanoRankingDiagnostico>>(128, 0.75f, true) {
+    private val cacheDiagnosticos = object : LinkedHashMap<CacheKey, List<ArcanoRankingDiagnostico>>(512, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, List<ArcanoRankingDiagnostico>>?): Boolean {
-            return size > 256
+            return size > 2048
         }
     }
-    private val cachePlanos = object : LinkedHashMap<CacheKey, ArcanoPlanoResultado>(128, 0.75f, true) {
+    private val cachePlanos = object : LinkedHashMap<CacheKey, ArcanoPlanoResultado>(256, 0.75f, true) {
         override fun removeEldestEntry(eldest: MutableMap.MutableEntry<CacheKey, ArcanoPlanoResultado>?): Boolean {
-            return size > 128
+            return size > 1024
         }
     }
     private var cacheHits: Long = 0
@@ -239,6 +257,8 @@ class NexusArcanoEngine(
         }
         out.mapValues { it.value.toSet() }
     }
+    private val custoAproximadoCache = mutableMapOf<String, Int>()
+    private val cadeiaEstadoCache = mutableMapOf<String, List<String>>()
     private val dependentesTransitivosByMagia: Map<String, Set<String>> by lazy {
         allMagiaIds.associateWith { magiaId ->
             val visit = mutableSetOf<String>()
@@ -255,6 +275,8 @@ class NexusArcanoEngine(
     }
 
     fun calcularEstadoAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): ArcanoResultado {
+        custoAproximadoCache.clear()
+        cadeiaEstadoCache.clear()
         val t0 = System.nanoTime()
         try {
             val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
@@ -363,6 +385,8 @@ class NexusArcanoEngine(
     }
 
     fun diagnosticarRankingAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): List<ArcanoRankingDiagnostico> {
+        custoAproximadoCache.clear()
+        cadeiaEstadoCache.clear()
         val t0 = System.nanoTime()
         try {
             val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
@@ -438,6 +462,8 @@ class NexusArcanoEngine(
     }
 
     fun diagnosticarMetasAlvo(alvoId: String, estado: ArcanoEstadoPersonagem): List<ArcanoMetaProgress> {
+        custoAproximadoCache.clear()
+        cadeiaEstadoCache.clear()
         if (!catalogo.existe(alvoId)) return emptyList()
 
         val known = estado.magiasConhecidasIds
@@ -921,50 +947,33 @@ class NexusArcanoEngine(
         known: Set<String>,
         estado: ArcanoEstadoPersonagem
     ): List<ArcanoAcao> {
-        val cadeiaSemAlvo = construirCadeiaObrigatoriaParaEstado(alvoId, known).filter { it != alvoId }
+        val cadeiaIntegral = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+        val pendentes = cadeiaIntegral.filter { it !in known }
         val out = mutableListOf<ArcanoAcao>()
+        
+        // 1. Prioridade Máxima: Próximas magias da trilha que já podem ser aprendidas agora
+        val imediatas = pendentes.filter { magiaAprendivelAgora(it, known, estado) && !escolaBloqueadaPorPolitica(it) }
+        imediatas.take(2).forEach { id ->
+            out += ArcanoAcao(id, "Cadeia obrigatória (Caminho mais rápido)", 0)
+        }
 
-        val proximaObrigatoria = cadeiaSemAlvo.firstOrNull { it !in known }
-        if (proximaObrigatoria != null) {
-            if (magiaAprendivelAgora(proximaObrigatoria, known, estado) &&
-                !escolaBloqueadaPorPolitica(proximaObrigatoria)
-            ) {
-                out += ArcanoAcao(
-                    magiaId = proximaObrigatoria,
-                    motivo = "Cadeia obrigatória",
-                    prioridade = 0
-                )
-                return out
-            } else if (bloqueioNumericoParaMagia(proximaObrigatoria, estado, known) != null) {
-                // Bloqueio por atributo/AM: não sugerir escola como falso avanço.
-            } else {
-                out += sugerirParaRegraDeEscolas(
-                    magiaId = proximaObrigatoria,
+        // 2. Lookahead: Buscar a primeira meta de escolas pendente em qualquer ponto da cadeia
+        // Ordenamos por proximidade do aprendizado (melhor primeiro)
+        pendentes.forEach { magiaId ->
+            if (out.size >= 5) return@forEach
+            if (bloqueioNumericoParaMagia(magiaId, estado, known) == null) {
+                // Se a magia atual já tem escolas suficientes, não sugerimos mais para ELA, pulamos para a próxima pendente
+                if (atendeRegraEscolas(regrasEscolasRelevantes(magiaId, known, estado).firstOrNull() ?: return@forEach, known)) return@forEach
+
+                val sugestoes = sugerirParaRegraDeEscolas(
+                    magiaId = magiaId,
                     known = known,
                     estado = estado,
-                    idsProibidos = cadeiaSemAlvo.toSet() + alvoId
+                    idsProibidos = pendentes.toSet() + out.map { it.magiaId }.toSet()
                 )
-            }
-        } else {
-            if (alvoId !in known) {
-                if (magiaAprendivelAgora(alvoId, known, estado) &&
-                    !escolaBloqueadaPorPolitica(alvoId)
-                ) {
-                    out += ArcanoAcao(
-                        magiaId = alvoId,
-                        motivo = "Alvo liberado",
-                        prioridade = 0
-                    )
-                    return out
-                } else if (bloqueioNumericoParaMagia(alvoId, estado, known) != null) {
-                    // Bloqueio por atributo/AM: sem sugestão de escola.
-                } else {
-                    out += sugerirParaRegraDeEscolas(
-                        magiaId = alvoId,
-                        known = known,
-                        estado = estado,
-                        idsProibidos = setOf(alvoId)
-                    )
+                if (sugestoes.isNotEmpty()) {
+                    out.addAll(sugestoes)
+                    if (out.size >= 4) return@forEach
                 }
             }
         }
@@ -973,7 +982,7 @@ class NexusArcanoEngine(
             .filter { it.magiaId !in known }
             .distinctBy { it.magiaId }
             .sortedWith(compareBy<ArcanoAcao> { it.prioridade }.thenBy { nomeMagiaNorm(it.magiaId) })
-            .take(3)
+            .take(5)
     }
 
     private fun sugerirParaRegraDeEscolas(
@@ -1203,6 +1212,9 @@ class NexusArcanoEngine(
     }
 
     private fun construirCadeiaObrigatoriaParaEstado(alvoId: String, known: Set<String>): List<String> {
+        val cacheKey = "$alvoId|${known.size}|${known.hashCode()}"
+        cadeiaEstadoCache[cacheKey]?.let { return it }
+
         val visit = mutableSetOf<String>()
         val ordem = mutableListOf<String>()
 
@@ -1213,7 +1225,7 @@ class NexusArcanoEngine(
         }
 
         dfs(alvoId)
-        return ordem
+        return ordem.also { cadeiaEstadoCache[cacheKey] = it }
     }
 
     private fun dependenciasNomeadas(magiaId: String): List<String> {
@@ -1530,13 +1542,21 @@ class NexusArcanoEngine(
 
     private fun custoAproximadoDependencia(magiaId: String, known: Set<String>, visit: MutableSet<String>): Int {
         if (magiaId in known) return 0
+        val cached = custoAproximadoCache[magiaId]
+        if (cached != null) return cached
+        
         if (!visit.add(magiaId)) return 999
         val grupos = dependenciasNomeadasGrupos(magiaId)
-        if (grupos.isEmpty()) return 1
+        if (grupos.isEmpty()) {
+            custoAproximadoCache[magiaId] = 1
+            return 1
+        }
         val melhorGrupo = grupos.minOfOrNull { grupo ->
-            grupo.sumOf { dep -> custoAproximadoDependencia(dep, known, visit.toMutableSet()) }
+            grupo.sumOf { dep -> custoAproximadoDependencia(dep, known, visit) }
         } ?: 0
-        return 1 + melhorGrupo
+        val total = 1 + melhorGrupo
+        custoAproximadoCache[magiaId] = total
+        return total
     }
 
     private fun extrairDependenciasNomeadas(raw: String, magiaId: String): List<String> {
@@ -1545,6 +1565,8 @@ class NexusArcanoEngine(
         nomesNormalizadosPorTamanho.forEach { candidato ->
             val id = candidato.id
             if (id == magiaId || id in out) return@forEach
+            if (!raw.contains(candidato.nome)) return@forEach
+            
             val rgx = Regex("\\b${Regex.escape(candidato.nome)}\\b")
             val match = rgx.find(raw) ?: return@forEach
             val range = match.range

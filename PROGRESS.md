@@ -1295,3 +1295,25 @@ Pendências:
 1. Finalizar a migração de todos os diálogos de `DialogsTracos.kt` e `DialogsMagias.kt`.
 2. Validar o funcionamento completo no emulador após a reestruturação.
 3. Continuar a refatoração para as abas de Combate e Equipamento.
+
+## AtualizaÃ§Ã£o RÃ¡pida - 2026-03-17 (RefatoraÃ§Ã£o de TraÃ§os Sociais: Patrono, Contato, Aliado e Favor)
+Status: CONCLUÃDO
+
+Feito:
+1. **PadronizaÃ§Ã£o Visual (Cards e BotÃµes)**:
+   - RefatoraÃ§Ã£o dos diÃ¡logos de configuraÃ§Ã£o de **Patrono**, **Contato**, **Aliado** e **Favor** para o sistema de botÃµes lineares e centralizados.
+   - UnificacÃ£o de cores e layout seguindo o padrÃ£o da ficha (Primary Color nos botÃµes internos).
+2. **Novos DiÃ¡logos de SeleÃ§Ã£o Detalhados**:
+   - Criados seletores especÃ­ficos para cada parÃ¢metro social (NH de Contato, Poder de Aliado/Patrono, FrequÃªncia, Confiabilidade, Tamanho do Grupo, etc.).
+   - IncluÃ­das as descriÃ§Ãµes literais do MÃ³dulo BÃ¡sico GURPS (pÃ¡g. 30, 44, 60, 72) dentro de cada opÃ§Ã£o de seleÃ§Ã£o para facilitar o uso e garantir acessibilidade.
+3. **CÃ¡lculo de Custo de Favor (pÃ¡g. 60)**:
+   - Implementada a lÃ³gica de custo de Favor como 1/10 do custo de Patrono ou 1/5 do custo de Contato.
+   - AdiÃ§Ãµes automÃ¡ticas do modificador 'Secreto' (-5 pts) conforme as regras oficiais.
+4. **CorreÃ§Ã£o de Build e Estabilidade**:
+   - Resolvidos erros de compilaÃ§Ã£o por uso de APIs experimentais (OptIn adicionado).
+   - Corrigida a duplicaÃ§Ã£o de anotaÃ§Ãµes @Composable.
+
+EvidÃªncias:
+1. Arquivos alterados: TraitDialogs.kt, CharacterRules.kt, vantagens.v3.json.
+2. Build tÃ©cnica: :app:compileVisualDebugKotlin concluÃ­do com sucesso.
+

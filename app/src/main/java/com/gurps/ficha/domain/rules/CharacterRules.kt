@@ -1,9 +1,12 @@
 package com.gurps.ficha.domain.rules
 
 import com.gurps.ficha.model.Dificuldade
+import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.TipoCusto
+import com.gurps.ficha.data.DataRepository
 
 object CharacterRules {
+    var DATA_REPOSITORY_INSTANCE: DataRepository? = null
 
     private val tabelaGdP = mapOf(
         1 to "1d-6", 2 to "1d-6",
@@ -167,20 +170,90 @@ object CharacterRules {
         tipoCusto: TipoCusto,
         custoBase: Int,
         custoEscolhido: Int,
-        nivel: Int
+        nivel: Int,
+        modificadores: List<ModificadorSelecao> = emptyList(),
+        metadados: Map<String, String>? = null
     ): Int {
-        if (
+        if (definicaoId == "ataque_inato" && metadados != null) {
+            return calcularCustoAtaqueInato(metadados, modificadores)
+        }
+
+        val valorBase = if (
             definicaoId.equals("aptidao_magica", ignoreCase = true) ||
             definicaoId.equals("aptidao_astral", ignoreCase = true) ||
             definicaoId.equals("elo_mental", ignoreCase = true)
         ) {
-            return 5 + (nivel - 1) * 10
+            // Aptidão Mágica: AM 0 = 5 pts, Níveis 1+ = 10 pts/nível.
+            // O nível 1 corresponde a AM 0, nível 2 a AM 1, etc.
+            5 + (nivel - 1) * 10
+        } else {
+            when (tipoCusto) {
+                TipoCusto.POR_NIVEL -> custoBase * nivel
+                else -> custoEscolhido
+            }
         }
-        val valor = when (tipoCusto) {
-            TipoCusto.POR_NIVEL -> custoBase * nivel
-            else -> custoEscolhido
+
+        if (modificadores.isEmpty()) {
+            return valorBase
         }
-        return if (valor < 0) 0 else valor
+
+        val somaPercentual = modificadores.sumOf {
+            if (it.porNivel) it.valor * it.niveis else it.valor
+        }
+
+        // Regra canônica: Limite de -80% para modificadores negativos líquidos (pág. 102)
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+
+        val multiplicador = 1.0 + (percentualFinal / 100.0)
+        val custoCalculado = kotlin.math.ceil(valorBase * multiplicador).toInt()
+
+        // Vantagem deve custar no mínimo 1 ponto se o base era positivo e não foi reduzido a zero
+        return if (custoCalculado < 1 && valorBase > 0) 1 else custoCalculado
+    }
+
+    private fun calcularCustoAtaqueInato(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
+        val tipoDano = metadados["tipoDano"] ?: "cont"
+        val dice = metadados["dice"]?.toFloatOrNull() ?: 1.0f
+        val bonus = metadados["bonus"]?.toIntOrNull() ?: 0
+        
+        val custoPorDado = when(tipoDano.lowercase()) {
+            "cont", "queimadura", "qmd" -> 5
+            "corrosao", "cor", "fadiga", "fad" -> 10
+            "corte" -> 7
+            "perfuracao", "perf", "pa++" -> 8
+            "perfurante" -> 3
+            "perfurante_pa", "pa" -> 5
+            "perfurante_pa_plus", "pa+" -> 6
+            "toxina", "tox" -> 4
+            else -> 5
+        }
+
+        // Regra de Dados Parciais (GURPS p\u00e1g. 62):
+        // 1 pt fixo = 0.25 do custo de 1d
+        // 1d-1 = 0.75 do custo de 1d
+        // 1d+1 = 1.25 do custo de 1d
+        // 1d+2 = 1.5 do custo de 1d
+        
+        val multiplicadorDados = if (dice == 0f && (bonus == 1 || bonus == -1)) {
+            0.25f
+        } else {
+            // dice \u00e9 o n\u00famero de dados (ex: 1.0, 2.0)
+            // se tivermos bonus: 
+            // +1 -> +0.25
+            // +2 -> +0.5
+            // -1 -> -0.25
+            dice + (bonus * 0.25f)
+        }
+
+        val valorBase = (multiplicadorDados * custoPorDado).toInt().coerceAtLeast(1)
+
+        val somaPercentual = modificadores.sumOf {
+            if (it.porNivel) it.valor * it.niveis else it.valor
+        }
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+        
+        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt().coerceAtLeast(1)
     }
 
     fun calcularCustoDesvantagem(
@@ -188,7 +261,8 @@ object CharacterRules {
         custoBase: Int,
         custoEscolhido: Int,
         nivel: Int,
-        autocontrole: Int?
+        autocontrole: Int?,
+        modificadores: List<ModificadorSelecao> = emptyList()
     ): Int {
         val custoSemAutocontrole = when (tipoCusto) {
             TipoCusto.POR_NIVEL -> custoBase * nivel
@@ -204,7 +278,24 @@ object CharacterRules {
             }
             (custoSemAutocontrole * multiplicador).toInt()
         } ?: custoSemAutocontrole
-        return if (custoComAutocontrole > 0) -custoComAutocontrole else custoComAutocontrole
+
+        val valorBase = if (custoComAutocontrole > 0) -custoComAutocontrole else custoComAutocontrole
+
+        if (modificadores.isEmpty()) {
+            return valorBase
+        }
+
+        val somaPercentual = modificadores.sumOf {
+            if (it.porNivel) it.valor * it.niveis else it.valor
+        }
+
+        // Regra canônica para desvantagens: limite de -80% também se aplica?
+        // Na prática, limitações em desvantagens reduzem seu bônus.
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+
+        val multiplicador = 1.0 + (percentualFinal / 100.0)
+        // Arredondamento para desvantagem: -22.5 vira -22 (ceil)
+        return kotlin.math.ceil(valorBase * multiplicador).toInt()
     }
 
     fun calcularBonusPorDificuldade(dificuldade: Dificuldade, pontosGastos: Int): Int {
@@ -234,5 +325,38 @@ object CharacterRules {
                 else -> -1 + (pts - 4) / 4
             }
         }
+    }
+
+    fun calcularCustoContato(nh: Int, frequencia: Float, confiabilidade: Float): Int {
+        val custoBase = when (nh) {
+            12 -> 1
+            15 -> 2
+            18 -> 3
+            21 -> 4
+            else -> 1
+        }
+        val finalVal = (custoBase * frequencia * confiabilidade.toDouble())
+        return kotlin.math.ceil(finalVal).toInt().coerceAtLeast(1)
+    }
+
+    fun calcularCustoAliado(basePoints: Int, frequencia: Float, multiplicadorGrupo: Int): Int {
+        val finalVal = (basePoints * frequencia.toDouble() * multiplicadorGrupo)
+        return kotlin.math.ceil(finalVal).toInt().coerceAtLeast(1)
+    }
+
+    fun calcularCustoPatrono(basePoints: Int, frequencia: Float, multiplicadores: Float, custoFixo: Int = 0): Int {
+        val baseModificada = basePoints * multiplicadores + custoFixo
+        val finalVal = baseModificada * frequencia.toDouble()
+        return kotlin.math.ceil(finalVal).toInt().coerceAtLeast(1)
+    }
+
+    fun calcularCustoFavor(basePoints: Int, multiplicadores: Float, custoFixo: Int = 0, isContact: Boolean = false): Int {
+        // Favor (Patrono) = 1/10 do custo de um Patrono com frequ\u00eancia 15- (x3)
+        // Favor (Contato) = 1/5 do custo de um Contato com frequ\u00eancia 15- (x3)
+        val baseModificada = basePoints * multiplicadores + custoFixo
+        val freqBase = 3.0 // Sempre base 15-
+        val divisor = if (isContact) 5.0 else 10.0
+        val finalVal = (baseModificada * freqBase) / divisor
+        return kotlin.math.ceil(finalVal).toInt().coerceAtLeast(1)
     }
 }

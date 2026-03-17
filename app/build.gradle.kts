@@ -135,7 +135,7 @@ android {
     }
     sourceSets {
         getByName("main") {
-            java.srcDir("../motor modo alvo/src")
+            kotlin.srcDir("../motor modo alvo/src")
         }
     }
 }
