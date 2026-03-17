@@ -15,11 +15,14 @@ object MagicEngine {
      * Page 41 of GURPS Basic Set.
      */
     fun getNivelAptidaoMagicaParaMagia(personagem: Personagem, magia: MagiaDefinicao?): Int {
-        val aptidoes = personagem.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
-        if (aptidoes.isEmpty()) return 0
+        val personAptidoes = personagem.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+        val racialAptidoes = personagem.modeloRacial.vantagens.filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+        val todas = personAptidoes + racialAptidoes
+
+        if (todas.isEmpty()) return 0
         
-        return aptidoes.maxOfOrNull { aptidao ->
-            val nivelBase = (aptidao.nivel - 1).coerceAtLeast(0)
+        return todas.sumOf { aptidao ->
+            val nivelBonus = (aptidao.nivel - 1).coerceAtLeast(0)
             val modificadorEscola = aptidao.modificadores.firstOrNull { it.id == "mod_aptidao_escola" }
             if (modificadorEscola != null) {
                 val escolaPermitida = modificadorEscola.descricao?.trim()?.lowercase()
@@ -27,14 +30,14 @@ object MagicEngine {
                     val ehEscolaPermitida = magia.escola?.any { it.trim().lowercase() == escolaPermitida } == true
                     val ehRecuperarEnergia = magia.nome.equals("Recuperar Energia", ignoreCase = true)
                     
-                    if (ehEscolaPermitida || ehRecuperarEnergia) nivelBase else 0
+                    if (ehEscolaPermitida || ehRecuperarEnergia) nivelBonus else 0
                 } else {
-                    nivelBase
+                    nivelBonus
                 }
             } else {
-                nivelBase
+                nivelBonus
             }
-        } ?: 0
+        }
     }
 
     /**

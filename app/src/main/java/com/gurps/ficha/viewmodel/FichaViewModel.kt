@@ -490,9 +490,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         modificadores: List<ModificadorSelecao> = emptyList(),
         metadados: Map<String, String>? = null
     ) {
-        // Verifica duplicatas
+        val ehAcumulativa = definicao.tipoCusto == TipoCusto.POR_NIVEL
+        val jaExiste = personagem.hasVantagem(definicao.id)
+
+        // Se for única (nâo-acumulativa) e já existir (na raça ou na ficha), bloqueia duplicata
+        if (jaExiste && !ehAcumulativa) {
+            return 
+        }
+
+        // Se já existe EXATAMENTE a mesma vantagem com a mesma descrição na ficha comprada, evita duplicar
         if (personagem.vantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
-            return // Ja existe
+            return
         }
         val nivelNormalizado = normalizarNivelVantagem(definicao.id, nivel)
         val vantagem = dataRepository.criarVantagemSelecionada(
@@ -557,11 +565,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         custoEscolhido: Int = 0,
         descricao: String = "",
         autocontrole: Int? = null,
-        modificadores: List<ModificadorSelecao> = emptyList()
+        modificadores: List<ModificadorSelecao> = emptyList(),
+        metadados: Map<String, String>? = null
     ) {
-        // Verifica duplicatas
+        val ehAcumulativa = definicao.tipoCusto == TipoCusto.POR_NIVEL
+        val jaExiste = personagem.hasDesvantagem(definicao.id)
+        
+        if (jaExiste && !ehAcumulativa) {
+            return 
+        }
+
         if (personagem.desvantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
-            return // Ja existe
+            return
         }
         val autocontroleNormalizado = if (definicao.usaAutocontroleMental()) autocontrole else null
         val desvantagem = dataRepository.criarDesvantagemSelecionada(
@@ -1636,16 +1651,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     val temAptidaoMagica: Boolean
-        get() = personagem.vantagens.any { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
+        get() = personagem.hasVantagem("aptidao_magica")
 
     val nivelAptidaoAstral: Int
-        get() = personagem.vantagens
-            .filter { it.definicaoId.equals("aptidao_astral", ignoreCase = true) }
-            .maxOfOrNull { (it.nivel - 1).coerceAtLeast(0) }
-            ?: 0
+        get() {
+            val pAptidoes = personagem.vantagens.filter { it.definicaoId.equals("aptidao_astral", ignoreCase = true) }
+            val rAptidoes = personagem.modeloRacial.vantagens.filter { it.definicaoId.equals("aptidao_astral", ignoreCase = true) }
+            val todas = pAptidoes + rAptidoes
+            return todas.sumOf { (it.nivel - 1).coerceAtLeast(0) }
+        }
 
     val temAptidaoAstral: Boolean
-        get() = personagem.vantagens.any { it.definicaoId.equals("aptidao_astral", ignoreCase = true) }
+        get() = personagem.hasVantagem("aptidao_astral")
 
     // === COMBATE - DEFESAS ATIVAS ===
 
