@@ -2409,9 +2409,9 @@ fun RacialTraitItem(nome: String, ptsExibicao: String, onDelete: () -> Unit) {
 fun AjustadorVerticalRacial(rotulo: String, valor: Int, onDelta: (Int) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(rotulo, style = MaterialTheme.typography.labelSmall)
-        IconButton(onClick = { onDelta(1) }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowUp, null) }
-        Text("${if(valor>0) "+" else ""}$valor", fontWeight = FontWeight.Bold)
-        IconButton(onClick = { onDelta(-1) }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowDown, null) }
+        IconButton(onClick = { onDelta(1) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Aumentar $rotulo" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+        Text("${if(valor>0) "+" else ""}$valor", fontWeight = FontWeight.Bold, modifier = Modifier.semantics { contentDescription = "Valor de $rotulo: $valor" })
+        IconButton(onClick = { onDelta(-1) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Diminuir $rotulo" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
     }
 }
 
@@ -2484,10 +2484,10 @@ fun PericiaRacialSeletorDialog(onDismiss: () -> Unit, onSave: (PericiaRacial) ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("Bonus/Nivel Racial", style = MaterialTheme.typography.labelSmall)
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                            IconButton(onClick = { level-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            IconButton(onClick = { level-- }, modifier = Modifier.semantics { contentDescription = "Diminuir nível racial de perícia" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
                             val rel = getRelativeDisplay(periciaSelecionada!!, level)
-                            Text("${periciaSelecionada!!.atributoBase}${if(rel>=0) "+" else ""}$rel", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { level++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            Text("${periciaSelecionada!!.atributoBase}${if(rel>=0) "+" else ""}$rel", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { contentDescription = "Nível final da perícia: ${periciaSelecionada!!.atributoBase}${if(rel>=0) "+" else ""}$rel" })
+                            IconButton(onClick = { level++ }, modifier = Modifier.semantics { contentDescription = "Aumentar nível racial de perícia" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                         }
                         Text("${if(level>=0) "+" else ""}$level grau(s) na escala de pontos", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
                     }

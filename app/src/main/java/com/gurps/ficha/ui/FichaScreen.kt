@@ -86,9 +86,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem", "VTT")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem", "VTT")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
     }
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
     val hideAppChrome = selectedTitle == "VTT" && vttImmersiveUi
@@ -158,6 +158,43 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 message = mensagem,
                 duration = SnackbarDuration.Short
             )
+        }
+    }
+
+    fun compartilharFicha() {
+        runCatching {
+            val json = viewModel.exportarFichaJsonCompativel()
+            val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
+                .replace(Regex("[^a-zA-Z0-9._-]"), "_")
+            val fileName = "${nomeBase}.json"
+            
+            // Grava em arquivo temporário no cache
+            val cacheDir = context.cacheDir
+            val file = java.io.File(cacheDir, fileName)
+            file.writeText(json)
+            
+            // Obtém URI via FileProvider
+            val contentUri = androidx.core.content.FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.fileprovider",
+                file
+            )
+            
+            // Prepara a Intent
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/json"
+                putExtra(Intent.EXTRA_STREAM, contentUri)
+                putExtra(Intent.EXTRA_SUBJECT, "Ficha GURPS: ${viewModel.personagem.nome}")
+                putExtra(Intent.EXTRA_TEXT, "Segue em anexo a ficha de GURPS de ${viewModel.personagem.nome}.")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            
+            val chooser = Intent.createChooser(intent, "Compartilhar Ficha via...")
+            context.startActivity(chooser)
+        }.onFailure { e ->
+            coroutineScope.launch {
+                snackbarHostState.showSnackbar("Erro ao compartilhar: ${e.message}")
+            }
         }
     }
 
@@ -280,10 +317,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Equip." -> TabEquipamentos(viewModel)
                 "Defesas" -> TabCombate(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
-                "VTT" -> TabVtt(
-                    viewModel = viewModel,
-                    onImmersiveSessionChanged = { active -> vttImmersiveUi = active }
-                )
                 else -> TabGeral(viewModel)
             }
         }
@@ -319,6 +352,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
             onImportar = {
                 showMenuDialog = false
                 importLauncher.launch(arrayOf("application/json", "text/plain"))
+            },
+            onCompartilhar = {
+                showMenuDialog = false
+                compartilharFicha()
             },
             onVerificarAtualizacao = {
                 showMenuDialog = false
@@ -445,26 +482,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
 
     if (showMestreIADialog) {
         DialogMestreIA(
-            onDismiss = { showMestreIADialog = false },
-            onGerarFicha = { historia ->
-                showMestreIADialog = false
-                coroutineScope.launch {
-                    snackbarHostState.currentSnackbarData?.dismiss()
-                    snackbarHostState.showSnackbar(
-                        message = "Mestre Digital está pensando...",
-                        duration = SnackbarDuration.Indefinite
-                    )
-                }
-                viewModel.gerarFichaComIA(historia) { sucesso, mensagem ->
-                    coroutineScope.launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar(
-                            message = mensagem,
-                            duration = SnackbarDuration.Long
-                        )
-                    }
-                }
-            }
+            viewModel = viewModel,
+            onDismiss = { showMestreIADialog = false }
         )
     }
 }

@@ -17,8 +17,16 @@ data class MestreIAResponse(
     val magias: List<String> = emptyList(),
     val qualidades: List<String> = emptyList(),
     val peculiaridades: List<String> = emptyList(),
+    val equipamentos: List<MestreIAEquipamento> = emptyList(),
     val aparencia: String = "",
     val historico: String = ""
+)
+
+data class MestreIAEquipamento(
+    val nome: String = "",
+    val peso: Float = 0f,
+    val custo: Float = 0f,
+    val quantidade: Int = 1
 )
 
 data class MestreIAAtributos(

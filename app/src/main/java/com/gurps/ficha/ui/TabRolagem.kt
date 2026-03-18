@@ -1358,7 +1358,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .semantics {
-                                            contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"}"
+                                            contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"} com nível ${ataqueAtual?.target ?: "-"}"
                                         }
                                         .clickable(enabled = ataqueAtual?.target != null) {
                                             executarRolagem(
@@ -1726,7 +1726,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                             "NH $nivelMagiaDaAlma",
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .semantics { contentDescription = "Rolar Magia da Alma" }
+                                .semantics { contentDescription = "Rolar Magia da Alma com nível $nivelMagiaDaAlma" }
                                 .clickable {
                                     executarRolagem(
                                         tipo = TipoTeste.MAGIA,
@@ -1950,7 +1950,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                             }
                                                         )
                                                         .semantics {
-                                                            contentDescription = "Rolar pericia ${pericia.nome}"
+                                                            contentDescription = "Rolar pericia ${pericia.nome} com nível ${pericia.target}"
                                                         }
                                                         .clickable {
                                                             executarRolagem(
@@ -2419,7 +2419,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                             }
                                                         )
                                                         .semantics {
-                                                            contentDescription = "Rolar magia ${magia.nome}"
+                                                            contentDescription = "Rolar magia ${magia.nome} com nível ${magia.target}"
                                                         }
                                                         .clickable {
                                                             executarRolagem(
@@ -2627,7 +2627,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                                                             contentDescription = if (tecnica.target == null) {
                                                                 "Tecnica ${tecnica.nome} sem nivel disponivel"
                                                             } else {
-                                                                "Rolar tecnica ${tecnica.nome}"
+                                                                "Rolar tecnica ${tecnica.nome} com nível ${tecnica.target}"
                                                             }
                                                         }
                                                         .clickable(enabled = tecnica.target != null) {

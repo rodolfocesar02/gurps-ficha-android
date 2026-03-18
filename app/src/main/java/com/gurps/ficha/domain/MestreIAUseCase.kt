@@ -195,6 +195,20 @@ class MestreIAUseCase(
             android.util.Log.d("MestreIA", "✅ Histórico preenchido")
         }
 
+        // 9. Integrar Equipamentos
+        resposta.equipamentos.forEach { eq ->
+            if (eq.nome.isNotBlank()) {
+                val novoEquipamento = com.gurps.ficha.model.Equipamento(
+                    nome = eq.nome,
+                    peso = eq.peso,
+                    custo = eq.custo,
+                    quantidade = eq.quantidade
+                )
+                viewModel.adicionarEquipamento(novoEquipamento)
+                android.util.Log.d("MestreIA", "✅ Equipamento: ${eq.nome}")
+            }
+        }
+
         android.util.Log.d("MestreIA", "=== Integração concluída ===")
     }
 }

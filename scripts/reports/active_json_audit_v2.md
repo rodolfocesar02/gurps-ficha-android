@@ -3,7 +3,7 @@
 - Arquivos verificados: 13
 - JSON valido: 13
 - Arquivos com issues: 0
-- Total de itens: 2363
+- Total de itens: 2362
 - Itens sem id: 0
 - Itens sem nome: 0
 
@@ -21,7 +21,7 @@
 
 ### vantagens_artes_marciais.v1.json
 - json_valid: True
-- items_count: 24
+- items_count: 23
 - missing_id_count: 0
 - missing_nome_count: 0
 - duplicate_ids: 0
