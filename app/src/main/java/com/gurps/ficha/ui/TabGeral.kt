@@ -366,7 +366,7 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 TextButton(
                     onClick = { onSetValor((valor - 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("-")
@@ -375,12 +375,14 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
                     valor.toString(),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(36.dp),
+                    modifier = Modifier
+                        .width(36.dp)
+                        .semantics { contentDescription = "Valor de $nome: $valor" },
                     textAlign = TextAlign.Center
                 )
                 TextButton(
                     onClick = { onSetValor((valor + 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("+")
@@ -441,7 +443,7 @@ fun AtributoSecundarioEditor(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 TextButton(
                     onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("-")
@@ -450,12 +452,14 @@ fun AtributoSecundarioEditor(
                     valorFinal.toString(),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(34.dp),
+                    modifier = Modifier
+                        .width(34.dp)
+                        .semantics { contentDescription = "Valor de $nome: $valorFinal" },
                     textAlign = TextAlign.Center
                 )
                 TextButton(
                     onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("+")
@@ -540,13 +544,14 @@ private fun AtributoPrimarioLinearCard(sigla: String, valor: Int, custo: Int, on
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(
                     onClick = { onSetValor((valor - 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("-") }
-                Text(valor.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(valor.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.semantics { contentDescription = "Valor de $nome: $valor" })
                 TextButton(
                     onClick = { onSetValor((valor + 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("+") }
             }
@@ -587,13 +592,14 @@ private fun AtributoSecundarioLinearCard(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(
                     onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("-") }
-                Text(valorFinal.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(valorFinal.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.semantics { contentDescription = "Valor de $nome: $valorFinal" })
                 TextButton(
                     onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("+") }
             }

@@ -147,6 +147,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val prefNaoMostrarManualModoAlvo = "modo_alvo_manual_nao_mostrar"
     private val prefIABaseUrl = "ia_base_url"
     private val prefIAApiKey = "ia_api_key"
+    private val prefIAWorkspaceSlug = "ia_workspace_slug"
 
     var canaisDiscord by mutableStateOf<List<DiscordVoiceChannel>>(emptyList())
         private set
@@ -156,7 +157,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     var canalDiscordSelecionadoId by mutableStateOf<String?>(null)
         private set
-    var canalDiscordSelecionadoNome by mutableStateOf<String?>(null)
+    var canalDiscordSelecionadoNome by mutableStateOf(configPrefs.getString(prefCanalDiscordNome, null))
+        private set
+
+    var iaBaseUrl by mutableStateOf(configPrefs.getString(prefIABaseUrl, "https://anything-llm-production-8dc9.up.railway.app") ?: "https://anything-llm-production-8dc9.up.railway.app")
+        private set
+    var iaApiKey by mutableStateOf(configPrefs.getString(prefIAApiKey, "781B4KF-X81M4RB-QTNSSHR-843BQG5") ?: "781B4KF-X81M4RB-QTNSSHR-843BQG5")
+        private set
+    var iaWorkspaceSlug by mutableStateOf(configPrefs.getString(prefIAWorkspaceSlug, "meu-workspace") ?: "meu-workspace")
         private set
 
     // Listas filtradas
@@ -1880,52 +1888,106 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
-    // === MESTRE IA (BETA) ===
-
+    // === MESTRE IA 2.0 ===
+    var mestreIAChatHistory by mutableStateOf<List<MestreIAClient.ChatMessage>>(emptyList())
+        private set
+    
     private val mestreIAUseCase by lazy { MestreIAUseCase(this, dataRepository) }
 
-    fun gerarFichaComIA(historia: String, onResult: (Boolean, String) -> Unit) {
+    fun limparChatMestreIA() {
+        mestreIAChatHistory = emptyList()
+    }
+
+    private fun getCatalogNames() = MestreIAClient.CatalogoNomes(
+        vantagens = dataRepository.vantagens.map { it.nome },
+        desvantagens = dataRepository.desvantagens.map { it.nome },
+        pericias = dataRepository.pericias.map { it.nome },
+        magias = dataRepository.magias.map { it.nome }
+    )
+
+    fun conversarComMestreIA(pergunta: String, modo: String = "conversa", onResult: (Boolean, String) -> Unit) {
+        val baseUrl = configPrefs.getString(prefIABaseUrl, iaBaseUrl) ?: iaBaseUrl
+        val apiKey = configPrefs.getString(prefIAApiKey, iaApiKey) ?: iaApiKey
+        val workspaceSlug = configPrefs.getString(prefIAWorkspaceSlug, iaWorkspaceSlug) ?: iaWorkspaceSlug
+
+        // Adiciona pergunta do usuário ao chat local
+        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("user", pergunta)
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val baseUrl = configPrefs.getString(prefIABaseUrl, "http://localhost:3001") ?: "http://localhost:3001"
-                val apiKey = configPrefs.getString(prefIAApiKey, "H3X4RFW-4GX456N-N3AK1ZQ-R1T9GMB") ?: "H3X4RFW-4GX456N-N3AK1ZQ-R1T9GMB"
+                val contexto = if (modo != "geracao") {
+                    "Ficha de ${personagem.nome}: ${personagem.toJson()}"
+                } else null
 
-                // Removida a trava obrigatória de apiKey, pois em testes locais pode funcionar sem auth 
-                // ou o usuário receberá a resposta certa de erro da API.
-
-                // Monta catálogo de nomes reais do App para injetar no prompt da IA
-                val catalogo = MestreIAClient.CatalogoNomes(
-                    vantagens = dataRepository.vantagens.map { it.nome },
-                    desvantagens = dataRepository.desvantagens.map { it.nome },
-                    pericias = dataRepository.pericias.map { it.nome },
-                    magias = dataRepository.magias.map { it.nome }
+                val respostaTexto = MestreIAClient.perguntarAoMestre(
+                    baseUrl = baseUrl,
+                    apiKey = apiKey,
+                    workspaceSlug = workspaceSlug,
+                    prompt = pergunta,
+                    history = mestreIAChatHistory.dropLast(1), // Histórico real (sem a última pergunta)
+                    contextoPersonagem = contexto,
+                    catalogo = getCatalogNames(),
+                    modo = modo
                 )
 
-                val resposta = MestreIAClient.perguntarAoMestre(baseUrl, apiKey, historia, catalogo)
-                
                 withContext(Dispatchers.Main) {
-                    if (resposta != null) {
-                        mestreIAUseCase.integrarRespostaNaFicha(resposta)
+                    if (respostaTexto != null) {
+                        // Adiciona resposta da IA ao chat
+                        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", respostaTexto)
                         
-                        // Auto-save: salva automaticamente a ficha gerada pela IA
-                        val nomePersonagem = personagem.nome.ifBlank { "Sem_Nome" }
-                        val timestamp = java.text.SimpleDateFormat("dd-MM_HH-mm", java.util.Locale.getDefault()).format(java.util.Date())
-                        val nomeAutoSave = "IA_${nomePersonagem}_$timestamp"
-                        fichaStorage.salvarFicha(nomeAutoSave, personagem.toJson())
-                        carregarListaFichas()
-                        android.util.Log.d("MestreIA", "✅ Auto-save: $nomeAutoSave")
-                        
-                        onResult(true, "Ficha gerada e salva automaticamente como '$nomeAutoSave'!")
+                        // Se for modo geração, tenta extrair JSON e aplicar
+                        if (modo == "geracao") {
+                            val jsonExtraido = MestreIAClient.extrairJsonFicha(respostaTexto)
+                            if (jsonExtraido != null) {
+                                mestreIAUseCase.integrarRespostaNaFicha(jsonExtraido)
+                                autoSaveIA()
+                                onResult(true, "Ficha gerada com sucesso!")
+                            } else {
+                                onResult(true, "Ficha gerada, mas houve erro no formato JSON. Veja a resposta.")
+                            }
+                        } else {
+                            onResult(true, "Resposta recebida.")
+                        }
                     } else {
-                        onResult(false, "Mestre Digital: Não consegui interpretar a história. Verifique a conexão.")
+                        onResult(false, "Mestre Digital está offline ou houve falha na conexão.")
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    onResult(false, "Erro na IA: ${e.message}")
+                    onResult(false, "Erro: ${e.message}")
                 }
             }
         }
+    }
+
+    fun salvarConfiguracaoIA(baseUrl: String, apiKey: String, workspaceSlug: String) {
+        iaBaseUrl = baseUrl.trim()
+        iaApiKey = apiKey.trim()
+        iaWorkspaceSlug = workspaceSlug.trim()
+        configPrefs.edit().apply {
+            putString(prefIABaseUrl, iaBaseUrl)
+            putString(prefIAApiKey, iaApiKey)
+            putString(prefIAWorkspaceSlug, iaWorkspaceSlug)
+            apply()
+        }
+    }
+
+    private fun autoSaveIA() {
+        viewModelScope.launch {
+            val nomePersonagem = personagem.nome.ifBlank { "Sem_Nome" }
+            val timestamp = java.text.SimpleDateFormat("dd-MM_HH-mm", java.util.Locale.getDefault()).format(java.util.Date())
+            val nomeAutoSave = "IA_${nomePersonagem}_$timestamp"
+            fichaStorage.salvarFicha(nomeAutoSave, personagem.toJson())
+            carregarListaFichas()
+        }
+    }
+
+    fun gerarFichaComIA(historia: String, onResult: (Boolean, String) -> Unit) {
+        conversarComMestreIA(historia, "geracao", onResult)
+    }
+
+    fun analisarFichaComIA(onResult: (Boolean, String) -> Unit) {
+        conversarComMestreIA("Analise minha ficha atual e dê sugestões.", "analise", onResult)
     }
 
     companion object {

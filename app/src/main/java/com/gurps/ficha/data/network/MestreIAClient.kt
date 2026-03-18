@@ -17,151 +17,132 @@ object MestreIAClient {
     private val gson = Gson()
 
     /**
-     * Dados do catálogo oficial do App para injetar no prompt.
+     * Resposta textual simples ou JSON de ficha.
      */
-    data class CatalogoNomes(
-        val vantagens: List<String> = emptyList(),
-        val desvantagens: List<String> = emptyList(),
-        val pericias: List<String> = emptyList(),
-        val magias: List<String> = emptyList()
+    data class ChatMessage(
+        val role: String, // "user" ou "model" (ou "assistant")
+        val text: String
     )
 
     fun perguntarAoMestre(
         baseUrl: String,
         apiKey: String,
-        historia: String,
-        catalogo: CatalogoNomes = CatalogoNomes()
-    ): MestreIAResponse? {
+        prompt: String,
+        workspaceSlug: String = "meu-workspace",
+        history: List<ChatMessage> = emptyList(),
+        contextoPersonagem: String? = null,
+        catalogo: CatalogoNomes = CatalogoNomes(),
+        modo: String = "geracao" // "geracao", "conversa" ou "analise"
+    ): String? {
         if (baseUrl.isBlank()) return null
 
-        val endpoint = "${baseUrl.trimEnd('/')}/api/v1/workspace/meu-workspace/chat"
+        val endpoint = "${baseUrl.trimEnd('/')}/chat"
         
-        // Monta as listas de nomes reais do catálogo (separados por vírgula)
-        val listaVantagens = if (catalogo.vantagens.isNotEmpty()) 
-            catalogo.vantagens.joinToString(", ") else "Reflexos de Combate, Tolerância à Dor, Aptidão Mágica, Senso de Perigo"
-        val listaDesvantagens = if (catalogo.desvantagens.isNotEmpty()) 
-            catalogo.desvantagens.joinToString(", ") else "Código de Honra, Fúria, Dever, Honestidade"
-        val listaPericias = if (catalogo.pericias.isNotEmpty()) 
-            catalogo.pericias.joinToString(", ") else "Espada Larga, Escudo, Tática, Liderança"
-        val listaMagias = if (catalogo.magias.isNotEmpty()) 
-            catalogo.magias.joinToString(", ") else "Bola de Fogo, Criar Fogo, Míssil Mágico"
+        // Catálogo de nomes para injeção
+        val listaVantagens = if (catalogo.vantagens.isNotEmpty()) catalogo.vantagens.take(100).joinToString(", ") else ""
+        val listaDesvantagens = if (catalogo.desvantagens.isNotEmpty()) catalogo.desvantagens.take(100).joinToString(", ") else ""
+        val listaPericias = if (catalogo.pericias.isNotEmpty()) catalogo.pericias.take(100).joinToString(", ") else ""
+        val listaMagias = if (catalogo.magias.isNotEmpty()) catalogo.magias.take(100).joinToString(", ") else ""
 
-        val promptCompleto = """
-            Você é um Mestre de GURPS 4ª Edição especialista, usando a tradução oficial da Devir Livraria.
-            Com base na história abaixo, gere uma FICHA COMPLETA em formato JSON.
+        val systemPrompt = when(modo) {
+            "geracao" -> """
+                Você é o 'Mestre Digital GURPS', um especialista em GURPS 4ª Edição (Devir). 
+                Sua missão é gerar uma FICHA COMPLETA em JSON a partir de um conceito.
+                
+                REGRAS:
+                1. Use APENAS nomes REAIS das listas abaixo. Não invente.
+                2. Gere um conjunto REALISTA e ÚTIL de perícias (8-12), vantagens (4-6) e desvantagens (3-5).
+                3. Atributos: Seja coerente (ex: ST 12+ para guerreiros, IQ 12+ para magos).
+                4. Equipamento: Sugira 3-6 itens iniciais (nome, peso em kg, custo em $).
+                5. Formato: JSON puro. Sem explicações.
+                
+                ESTRUTURA JSON EXIGIDA:
+                {
+                  "nome": "...", "atributos": {"st":10,"dx":10,"iq":10,"ht":10},
+                  "vantagens": ["..."], "desvantagens": ["..."],
+                  "pericias": [{"nome":"...", "nivel":12}], "magias": ["..."],
+                  "equipamentos": [{"nome":"...", "peso":1.0, "custo":100, "quantidade":1}],
+                  "aparencia": "...", "historico": "..."
+                }
+                
+                Nomes reais liberados:
+                Vantagens: $listaVantagens
+                Desvantagens: $listaDesvantagens
+                Perícias: $listaPericias
+                Magias: $listaMagias
+            """.trimIndent()
             
-            IMPORTANTE: Você DEVE usar APENAS os nomes que estão na lista abaixo. NÃO invente nomes.
-            Se precisar de algo que não está na lista, escolha o mais próximo que estiver disponível.
+            "analise" -> """
+                Você é um Mestre Consultor de GURPS 4ª Edição. 
+                Analise a FICHA ATUAL abaixo e sugira melhorias mecânicas ou narrativas.
+                Aponte inconsistências (ex: pericia de arma sem a arma, DX baixa para combatente).
+                Seja encorajador e técnico.
+                Ficha Atual: $contextoPersonagem
+            """.trimIndent()
             
-            O JSON deve ter EXATAMENTE esta estrutura (inclua TODOS os campos):
-            {
-              "nome": "Nome do Personagem",
-              "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
-              "vantagens": ["nome exato da lista"],
-              "desvantagens": ["nome exato da lista"],
-              "pericias": [
-                { "nome": "nome exato da lista", "nivel": 14 }
-              ],
-              "magias": ["nome exato da lista"],
-              "qualidades": ["traço de personalidade positivo"],
-              "peculiaridades": ["mania ou hábito particular"],
-              "aparencia": "Descrição física detalhada",
-              "historico": "Resumo da história em 2-3 frases"
-            }
-            
-            REGRAS OBRIGATÓRIAS:
-            1. Use APENAS nomes que estão nas listas abaixo. Copie o nome EXATAMENTE como está escrito.
-            2. Os atributos devem ser coerentes com a história (guerreiros têm ST alta, magos IQ alta).
-            3. Inclua pelo menos 4-6 vantagens e 3-5 desvantagens coerentes com o personagem.
-            4. Inclua pelo menos 6-10 perícias relevantes para o conceito.
-            5. Se o personagem for mago ou tiver poderes mágicos, inclua pelo menos 4-8 magias. Senão, deixe vazia [].
-            6. Inclua 2-3 qualidades e 2-3 peculiaridades.
-            7. Preencha aparência e histórico.
-            8. Retorne APENAS o JSON, sem texto explicativo.
-            
-            === CATÁLOGO DE VANTAGENS DISPONÍVEIS ===
-            $listaVantagens
-            
-            === CATÁLOGO DE DESVANTAGENS DISPONÍVEIS ===
-            $listaDesvantagens
-            
-            === CATÁLOGO DE PERÍCIAS DISPONÍVEIS ===
-            $listaPericias
-            
-            === CATÁLOGO DE MAGIAS DISPONÍVEIS ===
-            $listaMagias
-            
-            História: $historia
-        """.trimIndent()
+            else -> """
+                Você é o 'Mestre Digital GURPS', um assistente prestativo para jogadores e mestre.
+                Conhecimento: GURPS 4ª Edição (Módulo Básico: Personagens e Campanhas).
+                Se for perguntado sobre regras, explique de forma simples citando páginas se possível.
+                Se for perguntado sobre o personagem atual, use este contexto: $contextoPersonagem
+            """.trimIndent()
+        }
 
-        android.util.Log.d("MestreIA", "Tamanho do prompt: ${promptCompleto.length} chars")
-
-        val payload = mapOf(
-            "message" to promptCompleto,
-            "mode" to "chat"
-        )
+        var promptFinal = if (modo == "geracao") "$systemPrompt\n\nConceito: $prompt" else prompt
         
-        val body = gson.toJson(payload).toByteArray(StandardCharsets.UTF_8)
-        var connection: HttpURLConnection? = null
+        if (history.isNotEmpty()) {
+            val historyText = history.joinToString("\n") { "${it.role}: ${it.text}" }
+            promptFinal = "$systemPrompt\n\nContexto anterior:\n$historyText\n\nUsuário: $prompt"
+        }
 
+        // Corpo da requisição no formato FormUrlEncoded (que o Python espera)
         return try {
-            android.util.Log.d("MestreIA", "Conectando em: $endpoint")
-            connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+            val postData = "text=" + java.net.URLEncoder.encode(promptFinal, "UTF-8")
+            val body = postData.toByteArray(StandardCharsets.UTF_8)
+            val connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 doOutput = true
                 connectTimeout = CONNECT_TIMEOUT_MS
                 readTimeout = READ_TIMEOUT_MS
-                setRequestProperty("Content-Type", "application/json")
-                setRequestProperty("Authorization", "Bearer $apiKey")
+                setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
             }
-
-            connection.outputStream.use { it.write(body) }
-
-            val statusCode = connection.responseCode
-            android.util.Log.d("MestreIA", "Status Code: $statusCode")
             
-            if (statusCode in 200..299) {
+            connection.outputStream.use { it.write(body) }
+            
+            if (connection.responseCode in 200..299) {
                 val rawBody = readStreamSafely(connection.inputStream)
-                android.util.Log.d("MestreIA", "Resposta Raw: $rawBody")
-                
-                // O AnythingLLM retorna um JSON que contém o campo 'textResponse'
-                val fullResponse = gson.fromJson(rawBody, Map::class.java)
-                val aiText = fullResponse["textResponse"] as? String ?: rawBody
-                
-                extractJson(aiText)
+                val responseMap = gson.fromJson(rawBody, Map::class.java)
+                responseMap["response"] as? String ?: rawBody
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
-                android.util.Log.e("MestreIA", "Erro: $errorBody")
-                null
+                "Erro do Servidor (${connection.responseCode}): $errorBody"
             }
         } catch (error: Exception) {
-            android.util.Log.e("MestreIA", "Exception: ${error.message}", error)
-            null
-        } finally {
-            connection?.disconnect()
+            "Erro de Conexão: ${error.localizedMessage}"
         }
     }
 
-    private fun extractJson(rawResponse: String): MestreIAResponse? {
+    // Helper para extração de JSON para a FichaViewModel usar
+    fun extrairJsonFicha(texto: String): MestreIAResponse? {
         return try {
-            val jsonStart = rawResponse.indexOf("{")
-            val jsonEnd = rawResponse.lastIndexOf("}") + 1
+            val jsonStart = texto.indexOf("{")
+            val jsonEnd = texto.lastIndexOf("}") + 1
             if (jsonStart >= 0 && jsonEnd > jsonStart) {
-                val jsonString = rawResponse.substring(jsonStart, jsonEnd)
-                android.util.Log.d("MestreIA", "JSON Extraído: $jsonString")
+                val jsonString = texto.substring(jsonStart, jsonEnd)
                 gson.fromJson(jsonString, MestreIAResponse::class.java)
-            } else {
-                android.util.Log.e("MestreIA", "JSON não encontrado no texto da IA")
-                null
-            }
-        } catch (e: Exception) {
-            android.util.Log.e("MestreIA", "Erro ao fazer parse do JSON: ${e.message}")
-            null
-        }
+            } else null
+        } catch (e: Exception) { null }
     }
 
     private fun readStreamSafely(stream: java.io.InputStream?): String {
         if (stream == null) return ""
         return BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8)).use { it.readText() }
     }
+
+    data class CatalogoNomes(
+        val vantagens: List<String> = emptyList(),
+        val desvantagens: List<String> = emptyList(),
+        val pericias: List<String> = emptyList(),
+        val magias: List<String> = emptyList()
+    )
 }

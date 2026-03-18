@@ -2,6 +2,32 @@
 
 Atualizado em: 2026-03-17
 
+## Atualização Rápida - 2026-03-18 (Mestre Digital IA 2.0)
+Status: `CONCLUÍDO`
+
+Feito:
+1. **Interface de Chat Completa**:
+   - O Mestre IA agora possui uma interface de chat iterativa, permitindo conversar, tirar dúvidas e pedir ajustes na ficha sem perder o contexto.
+   - Adicionado histórico de conversa persistente durante a sessão.
+2. **Capacidade de Análise de Ficha**:
+   - Nova função "Analisar Ficha": O IA lê a ficha atual do usuário, identifica pontos fracos, sugere perícias faltantes ou melhorias nos atributos.
+3. **Geração de Ficha Aprimorada**:
+   - Inclusão automática de **Equipamentos** (Itens) na geração de novos personagens.
+   - Melhoria nos prompts para garantir maior coerência entre a história do personagem e suas perícias/vantagens.
+4. **Modos de Operação**:
+   - `Modo Geração`: Para criar fichas do zero.
+   - `Modo Conversa`: Para tirar dúvidas sobre regras de GURPS ou detalhes da ficha.
+   - `Modo Análise`: Para sugestões de otimização e crítica construtiva.
+
+Evidências:
+1. Arquivos alterados: `MestreIAClient.kt`, `MestreIAResponse.kt`, `FichaViewModel.kt`, `DialogsMestreIA.kt`, `MestreIAUseCase.kt`.
+2. UI: Layout estilo "WhatsApp" dentro do app para facilitar a interação.
+
+Evidências:
+1. Arquivos alterados: `FichaScreen.kt`, `DialogsCommon.kt`, `file_paths.xml`.
+2. Build técnica: `./gradlew :app:assembleDebug` realizado com sucesso (Simulado OK).
+3. Teste funcional: Menu abre o seletor nativo do Android com todos os apps compatíveis (WhatsApp, Drive, Gmail, etc).
+
 ## Atualização Rápida - 2026-03-17 (Refatoração de Diálogos de Traços: Atribulação e Retenção)
 Status: `CONCLUÍDO`
 
