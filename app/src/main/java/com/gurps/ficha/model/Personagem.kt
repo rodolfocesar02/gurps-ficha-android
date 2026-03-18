@@ -239,6 +239,7 @@ data class ModificadorDefinicao(
     val nome: String = "",
     val tipo: String = "", // "ampliação" ou "limitação"
     val valor: String = "0",
+    @SerializedName(value = "porNivel", alternate = ["por_nivel"])
     val porNivel: Boolean = false,
     val pagina: Int? = null,
     val tags: List<String> = emptyList(),
@@ -253,6 +254,7 @@ data class VantagemDefinicao(
     val pagina: Int = 0,
     val tags: List<String> = emptyList(),
     val descricao: String? = "",
+    @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
     val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
 ) {
     fun getCustoBase(): Int {
@@ -321,6 +323,7 @@ data class DesvantagemDefinicao(
     val pagina: Int = 0,
     val tags: List<String> = emptyList(),
     val descricao: String? = "",
+    @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
     val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
 ) {
     fun usaAutocontroleMental(): Boolean {

@@ -451,7 +451,69 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Ataque natural ou embutido que causa dano. Custo por nível varia conforme o tipo de dano: contusão (5), corrosão (10), corte (7), fadiga (10), perfuração (8), perfurante (3 a 8), queimadura (5), toxina (4). Dados parciais são proporcionais. Modificadores especiais na pág. 102."
+    "descricao": "Ataque natural ou embutido que causa dano. Custo por nível varia conforme o tipo de dano: contusão (5), corrosão (10), corte (7), fadiga (10), perfuração (8), perfurante (3 a 8), queimadura (5), toxina (4). Dados parciais são proporcionais. Modificadores especiais na pág. 102.",
+    "modificadores_especificos": [
+      {
+        "id": "acurado_ataque",
+        "nome": "Acurado",
+        "tipo": "ampliação",
+        "valor": "+5%",
+        "por_nivel": true,
+        "pagina": 102
+      },
+      {
+        "id": "alcance_ampliado_ataque",
+        "nome": "Alcance Ampliado",
+        "tipo": "ampliação",
+        "valor": "+10%",
+        "por_nivel": true,
+        "pagina": 102
+      },
+      {
+        "id": "divisor_armadura_2",
+        "nome": "Divisor de Armadura (2)",
+        "tipo": "ampliação",
+        "valor": "+50%",
+        "pagina": 105
+      },
+      {
+        "id": "explosao_ataque",
+        "nome": "Explosão",
+        "tipo": "ampliação",
+        "valor": "+50%",
+        "por_nivel": true,
+        "pagina": 108
+      },
+      {
+        "id": "fragmentacao_ataque",
+        "nome": "Fragmentação",
+        "tipo": "ampliação",
+        "valor": "+15%",
+        "por_nivel": true,
+        "pagina": 108
+      },
+      {
+        "id": "incendiario_ataque",
+        "nome": "Incendiário",
+        "tipo": "ampliação",
+        "valor": "+10%",
+        "pagina": 108
+      },
+      {
+        "id": "sobretensao_ataque",
+        "nome": "Sobretensão (Surge)",
+        "tipo": "ampliação",
+        "valor": "+20%",
+        "pagina": 108
+      },
+      {
+        "id": "jato_ataque",
+        "nome": "Jato",
+        "tipo": "ampliação",
+        "valor": "+0%",
+        "pagina": 107
+      }
+    ]
   },
   {
     "id": "atirador",
@@ -484,67 +546,173 @@
     "descricao": "Ataque que causa efeito nocivo sem dano (ex.: paralisia). Custa 10 pontos/nível. Alvo faz teste de HT+1 com penalidade igual ao nível. Ampliações: Ataque Cardíaco (+300%), Atordoamento (+10%), Coma (+250%), Cumulativo (+400%), Desvantagem (+1%/ponto), Incapacitação (+50% a +200%), Irritante (+10% a +60%), Penalidade em Atributo (+5% a +10% por -1), Vantagem Anulada (+1%/ponto), Vantagem (+10%/ponto).",
     "modificadores_especificos": [
       {
-        "id": "ataque_cardiaco",
-        "nome": "Ataque Cardíaco",
-        "tipo": "ampliação",
-        "valor": 300
-      },
-      {
         "id": "atordoamento_mod",
         "nome": "Atordoamento",
         "tipo": "ampliação",
-        "valor": 10
+        "valor": 10,
+        "pagina": 43
       },
       {
         "id": "coma",
         "nome": "Coma",
         "tipo": "ampliação",
-        "valor": 250
+        "valor": 250,
+        "pagina": 43
       },
       {
-        "id": "cumulativo",
-        "nome": "Cumulativo",
+        "id": "ataque_cardiaco",
+        "nome": "Ataque Cardíaco",
         "tipo": "ampliação",
-        "valor": 400
+        "valor": 300,
+        "pagina": 43
+      },
+      {
+        "id": "paralisia",
+        "nome": "Paralisia",
+        "tipo": "ampliação",
+        "valor": 150,
+        "pagina": 43
+      },
+      {
+        "id": "sono",
+        "nome": "Sono",
+        "tipo": "ampliação",
+        "valor": 150,
+        "pagina": 43
+      },
+      {
+        "id": "inconsciencia",
+        "nome": "Inconsciência",
+        "tipo": "ampliação",
+        "valor": 200,
+        "pagina": 43
+      },
+      {
+        "id": "agonia",
+        "nome": "Agonia",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 43
+      },
+      {
+        "id": "engasgo",
+        "nome": "Engasgo",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 43
+      },
+      {
+        "id": "imobilizacao",
+        "nome": "Imobilização",
+        "tipo": "ampliação",
+        "valor": 50,
+        "pagina": 43
+      },
+      {
+        "id": "nausea",
+        "nome": "Náusea",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "tosse_espirro",
+        "nome": "Tosse ou Espirro",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "calafrios",
+        "nome": "Calafrios",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "dor",
+        "nome": "Dor",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "dor_terrivel",
+        "nome": "Dor Terrível",
+        "tipo": "ampliação",
+        "valor": 60,
+        "pagina": 43
+      },
+      {
+        "id": "embriaguez",
+        "nome": "Embriaguez",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "esgotamento",
+        "nome": "Esgotamento",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "vomito",
+        "nome": "Vômito",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "sonolencia",
+        "nome": "Sonolência",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "penalidade_atributo",
+        "nome": "Penalidade em Atributo",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "descricao": "+5% por cada -1 em ST, DX, IQ, HT, PV ou PF. +10% por cada -1 em NH ou Esquiva.",
+        "pagina": 43
       },
       {
         "id": "desvantagem_atrib",
         "nome": "Desvantagem",
         "tipo": "ampliação",
         "valor": 1,
-        "por_nivel": true
-      },
-      {
-        "id": "incapacitacao",
-        "nome": "Incapacitação",
-        "tipo": "ampliação",
-        "valor": "Variável"
-      },
-      {
-        "id": "irritante",
-        "nome": "Irritante",
-        "tipo": "ampliação",
-        "valor": "Variável"
-      },
-      {
-        "id": "penalidade_atributo",
-        "nome": "Penalidade em Atributo",
-        "tipo": "ampliação",
-        "valor": "Variável"
+        "por_nivel": true,
+        "descricao": "+1% por cada ponto que a desvantagem custaria.",
+        "pagina": 43
       },
       {
         "id": "vantagem_anulada",
         "nome": "Vantagem Anulada",
         "tipo": "ampliação",
         "valor": 1,
-        "por_nivel": true
+        "por_nivel": true,
+        "descricao": "+1% por cada ponto que a vantagem anulada custa.",
+        "pagina": 43
       },
       {
         "id": "vantagem_atrib",
         "nome": "Vantagem",
         "tipo": "ampliação",
         "valor": 10,
-        "por_nivel": true
+        "por_nivel": true,
+        "descricao": "+10% por cada ponto que a vantagem concedida custa.",
+        "pagina": 43
+      },
+      {
+        "id": "cumulativo",
+        "nome": "Cumulativo",
+        "tipo": "ampliação",
+        "valor": 400,
+        "pagina": 43
       }
     ]
   },
@@ -1257,7 +1425,39 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Dobra a velocidade máxima em um ambiente (Ar, Solo, Espaço, Água). Custa 20 pontos/nível (meio nível: 10 pts, multiplica por 1,5). Ampliação: Bônus de Manuseio (+5%/nível). Limitações: Limitado a Estradas (-50%), Newtoniana (-50%), Redutor de Manuseio (-5%/nível)."
+    "descricao": "Dobra a velocidade máxima em um ambiente (Ar, Solo, Espaço, Água). Custa 20 pontos/nível (meio nível: 10 pts, multiplica por 1,5). Ampliação: Bônus de Manuseio (+5%/nível). Limitações: Limitado a Estradas (-50%), Newtoniana (-50%), Redutor de Manuseio (-5%/nível).",
+    "modificadores_especificos": [
+      {
+        "id": "bonus_manuseio_move",
+        "nome": "Bônus de Manuseio",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "pagina": 52
+      },
+      {
+        "id": "limitado_estradas",
+        "nome": "Limitado a Estradas",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 52
+      },
+      {
+        "id": "movimento_newtoniano",
+        "nome": "Inércia Newtoniana",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 52
+      },
+      {
+        "id": "redutor_manuseio",
+        "nome": "Redutor de Manuseio",
+        "tipo": "limitação",
+        "valor": -5,
+        "por_nivel": true,
+        "pagina": 52
+      }
+    ]
   },
   {
     "id": "destemor",
@@ -1489,7 +1689,39 @@
     "rawCost": "6/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem estica o corpo, aumentando o MT efetivo em +1 por nível. Custa 6 pontos/nível."
+    "descricao": "O personagem estica o corpo, aumentando o MT efetivo em +1 por nível. Custa 6 pontos/nível.",
+    "modificadores_especificos": [
+      {
+        "id": "bonus_manuseio",
+        "nome": "Bônus de Manuseio",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "pagina": 57
+      },
+      {
+        "id": "membros_forcudos",
+        "nome": "Membros Forçudos",
+        "tipo": "ampliação",
+        "valor": 10,
+        "por_nivel": true,
+        "pagina": 57
+      },
+      {
+        "id": "apenas_bracos",
+        "nome": "Apenas Braços",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 57
+      },
+      {
+        "id": "apenas_pernas",
+        "nome": "Apenas Pernas",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 57
+      }
+    ]
   },
   {
     "id": "elo_mental",
@@ -3432,7 +3664,87 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem RD natural. Custa 5 pontos/nível. Ampliações: Absorção (+80% ou +100%), Campo de Força (+20%), Enrijecido (+20%/nível), Reflexão (+100%). Limitações: Ablativa (-80%), Direcional (-20% a -40%), Flexível (-20%), Limitada (conforme tabela), Parcial (-10% a -70%), Pele Resistente (-40%), Sem Armadura (-40%), Semiablativa (-20%)."
+    "descricao": "O personagem tem RD natural. Custa 5 pontos/nível. Ampliações: Absorção (+80% ou +100%), Campo de Força (+20%), Enrijecido (+20%/nível), Reflexão (+100%). Limitações: Ablativa (-80%), Direcional (-20% a -40%), Flexível (-20%), Limitada (conforme tabela), Parcial (-10% a -70%), Pele Resistente (-40%), Sem Armadura (-40%), Semiablativa (-20%).",
+    "modificadores_especificos": [
+      {
+        "id": "absorcao_pv",
+        "nome": "Absorção (Cura PV)",
+        "tipo": "ampliação",
+        "valor": 80,
+        "pagina": 83
+      },
+      {
+        "id": "absorcao_atrib",
+        "nome": "Absorção (Qualquer Atributo)",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 83
+      },
+      {
+        "id": "campo_de_forca",
+        "nome": "Campo de Força",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 83
+      },
+      {
+        "id": "enrijecido",
+        "nome": "Enrijecido",
+        "tipo": "ampliação",
+        "valor": 20,
+        "por_nivel": true,
+        "pagina": 83
+      },
+      {
+        "id": "reflexao",
+        "nome": "Reflexão",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 83
+      },
+      {
+        "id": "ablativa",
+        "nome": "Ablativa",
+        "tipo": "limitação",
+        "valor": -80,
+        "pagina": 83
+      },
+      {
+        "id": "direcional_c",
+        "nome": "Direcional (Coração/Pequeno)",
+        "tipo": "limitação",
+        "valor": -80,
+        "pagina": 83
+      },
+      {
+        "id": "flexivel",
+        "nome": "Flexível",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 83
+      },
+      {
+        "id": "pele_resistente",
+        "nome": "Pele Resistente",
+        "tipo": "limitação",
+        "valor": -40,
+        "pagina": 83
+      },
+      {
+        "id": "sem_armadura",
+        "nome": "Sem Armadura",
+        "tipo": "limitação",
+        "valor": -40,
+        "pagina": 83
+      },
+      {
+        "id": "semiablativa",
+        "nome": "Semiablativa",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 83
+      }
+    ]
   },
   {
     "id": "resistencia_a_pressao",
