@@ -15,6 +15,7 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 import androidx.compose.runtime.LaunchedEffect
 import android.content.Intent
 import android.net.Uri
+import androidx.core.content.IntentCompat
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
         val uri: Uri? = if (action == Intent.ACTION_VIEW) {
             intent.data
         } else if (action == Intent.ACTION_SEND && type != null) {
-            intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
         } else {
             null
         }

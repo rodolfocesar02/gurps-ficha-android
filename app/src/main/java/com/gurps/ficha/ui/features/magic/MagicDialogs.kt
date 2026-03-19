@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.Divider as _Divider // Unused if possible
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -110,7 +112,7 @@ fun AdicionarMagiaDialog(
                 val difNome = definicao.dificuldadeFixa ?: "D"
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
 
-                Divider()
+                HorizontalDivider()
                 Text("Pontos Gastos:")
                 if (!isPraCegoVariant) {
                     Text(
@@ -173,7 +175,7 @@ fun AdicionarMagiaDialog(
                     }
                 }
 
-                Divider()
+                HorizontalDivider()
                 val erroPreReq = erroPersistente ?: prereqFalha?.let {
                     "Pre-requisito nao atendido: ${formatarFalhaPreReq(it)}"
                 }
@@ -362,7 +364,7 @@ fun EditarMagiaDialog(
                 val difNome = magia.dificuldade.sigla
                 Text("IQ/$difNome", style = MaterialTheme.typography.bodyMedium)
 
-                Divider()
+                HorizontalDivider()
                 Text("Pontos Gastos:")
                 if (!isPraCegoVariant) {
                     Text(
@@ -425,7 +427,7 @@ fun EditarMagiaDialog(
                     }
                 }
 
-                Divider()
+                HorizontalDivider()
                 Card(colors = appCardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text(
