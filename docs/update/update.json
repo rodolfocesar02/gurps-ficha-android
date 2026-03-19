@@ -1,7 +1,7 @@
 {
   "versionCode": 6,
-  "versionName": "12/03",
-  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/12-03/app-visual-release.apk",
-  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/12-03/app-pracego-release.apk",
-  "notes": "12/03: Pericias sem limite de pontos (sem Aba VTT)."
+  "versionName": "1.4.1",
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V1.4.1/app-visual-release.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V1.4.1/app-pracego-release.apk",
+  "notes": "V1.4.1: Mestre Digital 2.0 (Gemini Flash), sem aba VTT."
 }

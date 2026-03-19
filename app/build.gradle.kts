@@ -1,4 +1,5 @@
 import java.util.Properties
+import org.gradle.api.tasks.Exec
 
 plugins {
     id("com.android.application")
@@ -52,12 +53,18 @@ android {
         ) ?: "http://10.0.2.2:8787")
             .trimEnd('/')
             .replace("\"", "\\\"")
+        val vttApiBaseUrl = (firstNonBlank(
+            project.findProperty("VTT_API_BASE_URL") as? String,
+            localProperties.getProperty("VTT_API_BASE_URL")
+        ) ?: "http://10.0.2.2:3001")
+            .trimEnd('/')
+            .replace("\"", "\\\"")
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 6
+        versionName = "1.4.1"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
         buildConfigField("String", "DISCORD_ROLL_API_KEY", "\"$discordApiKey\"")
         buildConfigField(
@@ -67,6 +74,7 @@ android {
         )
         buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
         buildConfigField("String", "GURPS_AGENT_API_BASE_URL", "\"$gurpsAgentApiBaseUrl\"")
+        buildConfigField("String", "VTT_API_BASE_URL", "\"$vttApiBaseUrl\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -119,11 +127,28 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    lint {
+        // Workaround para bug do lint Compose (MutableCollectionMutableStateDetector)
+        disable += "MutableCollectionMutableState"
+        // Workaround para bug do lint Compose (AutoboxingStateCreationDetector)
+        disable += "AutoboxingStateCreation"
+    }
     sourceSets {
         getByName("main") {
-            java.srcDir("../motor modo alvo/src")
+            kotlin.srcDir("../motor modo alvo/src")
         }
     }
+}
+
+val validateActiveJsonAssets by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Valida JSONs ativos do app antes do build."
+    workingDir = rootProject.projectDir
+    commandLine("python", "scripts/audit_active_jsons_v2.py", "--fail-on-issues")
+}
+
+tasks.matching { it.name == "preBuild" }.configureEach {
+    dependsOn(validateActiveJsonAssets)
 }
 
 dependencies {
@@ -140,6 +165,7 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
