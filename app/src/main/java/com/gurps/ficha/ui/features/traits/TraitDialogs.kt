@@ -428,7 +428,7 @@ fun ConfigurarVantagemDialog(
 
 
                 // Se\u00e7\u00e3o de Modificadores (Novo!)
-                Divider()
+                HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) {
@@ -714,7 +714,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                 }
 
 
-                Divider()
+                HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
@@ -867,7 +867,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                 }
 
                 if (permiteAutocontrole) {
-                    Divider()
+                    HorizontalDivider()
                     Text("Autocontrole:", style = MaterialTheme.typography.labelMedium)
                     Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         listOf(null to "Nenhum", 6 to "6 (x2)", 9 to "9 (x1.5)", 12 to "12 (x1)", 15 to "15 (x0.5)").forEach { (valor, label) ->
@@ -878,7 +878,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
 
                 OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
 
-                Divider()
+                HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
@@ -971,7 +971,7 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
                 }
 
                 if (permiteAutocontrole) {
-                    Divider()
+                    HorizontalDivider()
                     Text("Autocontrole:", style = MaterialTheme.typography.labelMedium)
                     Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         listOf(null to "Nenhum", 6 to "6 (x2)", 9 to "9 (x1.5)", 12 to "12 (x1)", 15 to "15 (x0.5)").forEach { (valor, label) ->
@@ -982,7 +982,7 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
 
                 OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
 
-                Divider()
+                HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
                     TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
@@ -1515,7 +1515,7 @@ fun AtribulacaoConfig(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Divider()
+        HorizontalDivider()
         
         // 1. Descri\u00e7\u00e3o no topo (linear)
         descricaoContent()
@@ -1666,7 +1666,7 @@ fun SeletorAtributoPenalidadeDialog(onDismiss: () -> Unit, onSelect: (String, In
                     Text("-$penalidade", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
                     IconButton(onClick = { penalidade++ }) { Text("+") }
                 }
-                Divider()
+                HorizontalDivider()
                 Text("Selecione o atributo:")
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     atributos.forEach { atrib ->
@@ -1694,7 +1694,7 @@ fun RetencaoConfig(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
     ) {
-        Divider()
+        HorizontalDivider()
         
         // 1. Descri\u00e7\u00e3o no topo (linear)
         descricaoContent()

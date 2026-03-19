@@ -20,7 +20,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -329,7 +329,7 @@ fun TabGeral(viewModel: FichaViewModel) {
                     PontosResumoRow("Pericias", p.pontosPericias)
                     PontosResumoRow("Magias", p.pontosMagias)
                     PontosResumoRow("Modelo Racial (${p.modeloRacial.nome})", p.modeloRacial.custoTotal)
-                    Divider(modifier = Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     PontosResumoRow("Total Gasto", p.pontosGastos, fontWeight = FontWeight.Bold)
                 }
             },

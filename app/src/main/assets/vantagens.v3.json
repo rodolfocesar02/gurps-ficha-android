@@ -1335,7 +1335,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "O personagem recebe um bônus de +1 no valor de sua manobra Aparar. O jogador pode comprar essa vantagem para as mãos nuas (5 pontos), para qualquer perícia com Armas de Combate Corpo a Corpo (5 pontos) ou para todas as manobras Aparar (10 pontos). 5 ou 10 pontos"
+    "descricao": "Bônus de +1 no Aparar. Pode ser para mãos nuas (5 pts), uma perícia específica (5 pts) ou todas as manobras Aparar (10 pts)."
   },
   {
     "id": "defesas_ampliadas_bloqueio_ampliado",
@@ -1390,7 +1390,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Qualquer pessoa que tem uma boca tem dentes rombos capazes de morder e causar GdP-1 pontos de dano por contusão. Isso custa 0 ponto e é típico da maioria dos herbívoros. Um personagem com esta vantagem, por outro lado, tem uma mordida que causa mais dano: Bico Afiado: Como o de uma ave de rapina. Causa GdP-1 pontos de dano muito perfurante. 1 ponto. Dentes Afiados: Como os da maioria dos carnívoros. Causa GdP-1 pontos de dano por corte. 1 ponto. Presas: Como as de um Tigre Dente- -de-Sabre. Causa GdP-1 pontos de dano por perfuração. 2 pontos."
+    "descricao": "Dentes naturais que causam dano. Bico Afiado (muito perfurante, 1 pt), Dentes Afiados (corte, 1 pt), Presas (perfuração, 2 pts)."
   },
   {
     "id": "desenvolvedor",
@@ -1596,7 +1596,7 @@
     "rawCost": "100",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se teleporta. Requer teste de IQ com penalidades por distância e tempo de preparo. Custo não especificado com total clareza na fonte; tratar como vantagem de custo variável conforme a mesa."
+    "descricao": "O personagem se teleporta instantaneamente. Requer teste de IQ e gasta 10 de fadiga. Custa 100 pontos."
   },
   {
     "id": "dominacao",
@@ -1939,21 +1939,6 @@
     "descricao": "O personagem é imune a poderes psíquicos. Custo base tratado como não totalmente especificado na fonte. Ampliações: Ativada/Desativada (+100%), Efeito de Área (+50%/nível). Limitação: Resistível (-50%)."
   },
   {
-    "id": "estilo",
-    "nome": "Estilo",
-    "pagina": 101,
-    "costKind": "fixed",
-    "fixed": 1,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "1",
-    "specialRule": null,
-    "tags": [],
-    "descricao": "Dobra a idade de maturidade e envelhecimento por nível. Custa 2 pontos/nível."
-  },
-  {
     "id": "expectativa_de_vida_ampliada",
     "nome": "Expectativa de Vida Ampliada",
     "pagina": 59,
@@ -1968,7 +1953,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Um indivíduo com ciclo de vida médio atinge a maturidade aos 18 anos de idade e os efeitos do envelhecimento (pág. 444) aos 50, acelerando aos 70 e 90. Cada nível de Expectativa de Vida Ampliada dobra todos esses valores. Observe que para um personagem que deseja obter mais que sete níveis nesta característica (o que o faria atingir a maturidade aos 2.304 anos de idade e começar a envelhecer a partir dos 6.400 anos), vale mais a pena comprar Idade Imutável (pág. 63)."
+    "descricao": "Cada nível dobra a idade de maturidade e os patamares de envelhecimento. Custa 2 pontos/nível."
   },
   {
     "id": "experiencia_g",
@@ -2356,7 +2341,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Consiste em um cargo dentro de uma burocracia governamental. Quando se está lidando com outros administradores. Num cenário de NT maior ou igual a 5, uma grande burocrata pode apresentar vários tipos de Hierarquia: uma para cada departamento do governo e, possivelmente, categorias adicionais para o senado, para o poder judiciário, etc."
+    "descricao": "Cargo em burocracia governamental. Funciona como Hierarquia. Útil para lidar com outros administradores e burocratas. (pág. 30)"
   },
   {
     "id": "hierarquia_comercial",
@@ -3067,7 +3052,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ver Senso de Direção.Esta habilidade é útil no espaço sideral embora não ajude em nada se o personagem estiver viajando entre dimensões. Ele recebe os bônus do Senso de Direção, além de +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço ou Hiperespaço). 10 pontos."
+    "descricao": "Bônus do Senso de Direção, +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço). Custa 10 pontos."
   },
   {
     "id": "nt_alto",
@@ -3097,7 +3082,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área. Custo por nível varia; base de 1 ponto/nível (não especificado). Ampliações: Defensiva (+50%), Estendido (+20%/sentido), Furtiva (+100%), Longa Distância (+50%). Limitação: Sempre Ativo (-50%)."
+    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área (2 m de raio). Custa 2 pontos/nível."
   },
   {
     "id": "obstinado",
@@ -3142,7 +3127,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem vê presságios em fenômenos naturais. Custo não especificado com total clareza na fonte."
+    "descricao": "O personagem vê presságios em fenômenos naturais e recebe conselhos do Mestre. Custa 15 pontos."
   },
   {
     "id": "otima_forma",
@@ -4212,7 +4197,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +4 em tarefas que usam o tato (além de Sentidos Aguçados). Custo não especificado com total clareza na fonte."
+    "descricao": "Bônus de +4 em tarefas que usam o tato. Custa 10 pontos."
   },
   {
     "id": "telecinese",

@@ -3,7 +3,7 @@
 - Arquivos verificados: 13
 - JSON valido: 13
 - Arquivos com issues: 0
-- Total de itens: 2362
+- Total de itens: 2361
 - Itens sem id: 0
 - Itens sem nome: 0
 
@@ -11,7 +11,7 @@
 
 ### vantagens.v3.json
 - json_valid: True
-- items_count: 265
+- items_count: 264
 - missing_id_count: 0
 - missing_nome_count: 0
 - duplicate_ids: 0
