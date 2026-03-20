@@ -176,12 +176,8 @@ fun TabTracos(viewModel: FichaViewModel) {
 
     if (showModeloRacialDialog) {
         ModeloRacialDialog(
-            current = p.modeloRacial,
-            onDismiss = { showModeloRacialDialog = false },
-            onSave = { novoModelo ->
-                viewModel.atualizarModeloRacial(novoModelo)
-                showModeloRacialDialog = false
-            }
+            viewModel = viewModel,
+            onDismiss = { showModeloRacialDialog = false }
         )
     }
 
