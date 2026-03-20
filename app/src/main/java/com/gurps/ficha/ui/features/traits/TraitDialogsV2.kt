@@ -131,10 +131,10 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
                         Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("Atributos Primários", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                AjustadorVerticalRacial("ST", modST) { modST += it }
-                                AjustadorVerticalRacial("DX", modDX) { modDX += it }
-                                AjustadorVerticalRacial("IQ", modIQ) { modIQ += it }
-                                AjustadorVerticalRacial("HT", modHT) { modHT += it }
+                                AjustadorVerticalRacial("ST", modST, "Força") { modST += it }
+                                AjustadorVerticalRacial("DX", modDX, "Destreza") { modDX += it }
+                                AjustadorVerticalRacial("IQ", modIQ, "Inteligência") { modIQ += it }
+                                AjustadorVerticalRacial("HT", modHT, "Vitalidade") { modHT += it }
                             }
                         }
                     }
@@ -145,10 +145,10 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
                         Column(modifier = Modifier.padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                             Text("Atributos Secundários", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                AjustadorVerticalRacial("PV", modHP) { modHP += it }
-                                AjustadorVerticalRacial("Von", modVon) { modVon += it }
-                                AjustadorVerticalRacial("Per", modPer) { modPer += it }
-                                AjustadorVerticalRacial("PF", modPF) { modPF += it }
+                                AjustadorVerticalRacial("PV", modHP, "Pontos de Vida") { modHP += it }
+                                AjustadorVerticalRacial("Von", modVon, "Vontade") { modVon += it }
+                                AjustadorVerticalRacial("Per", modPer, "Percepção") { modPer += it }
+                                AjustadorVerticalRacial("PF", modPF, "Pontos de Fadiga") { modPF += it }
                             }
                         }
                     }
@@ -161,11 +161,23 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
                             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                     Text("VEL. Básica", style = MaterialTheme.typography.labelSmall)
-                                    IconButton(onClick = { modVB += 0.25f }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowUp, null) }
-                                    Text(String.format("%.2f", modVB), fontWeight = FontWeight.Bold)
-                                    IconButton(onClick = { modVB -= 0.25f }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                                    IconButton(
+                                        onClick = { modVB += 0.25f },
+                                        modifier = Modifier.size(32.dp).semantics { contentDescription = "Aumentar Velocidade Básica em 0.25" }
+                                    ) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                                    
+                                    Text(
+                                        String.format("%.2f", modVB),
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.semantics { contentDescription = "Bônus de Velocidade Básica atual: ${String.format("%.2f", modVB)}" }
+                                    )
+                                    
+                                    IconButton(
+                                        onClick = { modVB -= 0.25f },
+                                        modifier = Modifier.size(32.dp).semantics { contentDescription = "Diminuir Velocidade Básica em 0.25" }
+                                    ) { Icon(Icons.Default.KeyboardArrowDown, null) }
                                 }
-                                AjustadorVerticalRacial("Desloc.", modDB) { modDB += it }
+                                AjustadorVerticalRacial("Desloc.", modDB, "Deslocamento Básico") { modDB += it }
                             }
                         }
                     }
@@ -279,11 +291,23 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
 }
 
 @Composable
-fun AjustadorVerticalRacial(rotulo: String, valor: Int, onDelta: (Int) -> Unit) {
+fun AjustadorVerticalRacial(rotulo: String, valor: Int, nomeCompleto: String, onDelta: (Int) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(rotulo, style = MaterialTheme.typography.labelSmall)
-        IconButton(onClick = { onDelta(1) }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowUp, null) }
-        Text("${if(valor>0) "+" else ""}$valor", fontWeight = FontWeight.Bold)
-        IconButton(onClick = { onDelta(-1) }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowDown, null) }
+        IconButton(
+            onClick = { onDelta(1) },
+            modifier = Modifier.size(32.dp).semantics { contentDescription = "Aumentar bônus de $nomeCompleto" }
+        ) { Icon(Icons.Default.KeyboardArrowUp, null) }
+        
+        Text(
+            "${if(valor>0) "+" else ""}$valor",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.semantics { contentDescription = "Bônus de $nomeCompleto atual: ${if(valor>0) "+" else ""}$valor" }
+        )
+        
+        IconButton(
+            onClick = { onDelta(-1) },
+            modifier = Modifier.size(32.dp).semantics { contentDescription = "Diminuir bônus de $nomeCompleto" }
+        ) { Icon(Icons.Default.KeyboardArrowDown, null) }
     }
 }

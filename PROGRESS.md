@@ -20,36 +20,6 @@ Feito:
    - `Modo Análise`: Para sugestões de otimização e crítica construtiva.
 
 Evidências:
-1. Arquivos alterados: `MestreIAClient.kt`, `MestreIAResponse.kt`, `FichaViewModel.kt`, `DialogsMestreIA.kt`, `MestreIAUseCase.kt`.
-2. UI: Layout estilo "WhatsApp" dentro do app para facilitar a interação.
-
-Evidências:
-1. Arquivos alterados: `FichaScreen.kt`, `DialogsCommon.kt`, `file_paths.xml`.
-2. Build técnica: `./gradlew :app:assembleDebug` realizado com sucesso (Simulado OK).
-3. Teste funcional: Menu abre o seletor nativo do Android com todos os apps compatíveis (WhatsApp, Drive, Gmail, etc).
-
-## Atualização Rápida - 2026-03-17 (Refatoração de Diálogos de Traços: Atribulação e Retenção)
-Status: `CONCLUÍDO`
-
-Feito:
-1. **Refatoração Linear e Centralizada**:
-   - Diálogos de **Atribulação** (Affliction) e **Retenção** (Binding) agora seguem um layout vertical limpo.
-   - Botões de ação (Ampliações, Vantagem, Desvantagem, Atributos) centralizados e com largura total.
-   - Campo de descrição movido para o topo, acima dos botões de configuração.
-   - Unificação visual usando a cor `Primary` do sistema em todos os botões de ação interna.
-2. **Implementação de Regras para Retenção (Binding)**:
-   - Adicionada a descrição canônica completa (pág. 86) ao catálogo interno da vantagem.
-   - **Ampliações Especiais**: Diálogo dedicado com "Engolfar" (+60%), "Grudento" (+20%) e "Inquebrável" (+40%) com suas respectivas descrições de regra.
-   - **Só Sofre Dano**: Implementado seletor múltiplo (Queimadura, Corrosão, Contusão, Corte) com custo incremental de +10% por tipo (+10% a +30%).
-   - **Limitações Especiais**: Diálogo com variações de limitações Ambientais (-20% a -40%) e "Chance Única" (-10%).
-3. **Melhorias em Atribulação (Affliction)**:
-   - Botão "Ampliações" agora abre um seletor de condições (Paralisia, Coma, Agonia, etc.) com custos automáticos.
-   - Organização dos botões de Adição de Vantagem (+10%/pt), Desvantagem (+1%/pt) e Atributos (+5% por -1).
-4. **Higiene e Estabilidade**:
-   - Correção de bugs de compilação relacionados a APIs experimentais do Material 3.
-   - Sincronização automática de descrições customizadas entre os modos de Criação e Edição.
-
-Evidências:
 1. Arquivos alterados: `TraitDialogs.kt`.
 2. Build técnica: `:app:installVisualDebug` concluído com sucesso.
 3. Validação funcional: APK instalado e testado no emulador `Pixel_8a_2`, confirmando layout responsivo e cálculos de custo corretos.
