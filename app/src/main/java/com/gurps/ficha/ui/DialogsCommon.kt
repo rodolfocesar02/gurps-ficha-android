@@ -34,8 +34,6 @@ fun MenuDialog(
     onNovaFicha: () -> Unit,
     onSalvar: () -> Unit,
     onCarregar: () -> Unit,
-    onExportarCompativel: () -> Unit,
-    onExportarVersionado: () -> Unit,
     onImportar: () -> Unit,
     onCompartilhar: () -> Unit,
     onVerificarAtualizacao: () -> Unit,
@@ -49,15 +47,13 @@ fun MenuDialog(
                 PrimaryActionButton(text = "Nova Ficha", onClick = onNovaFicha, modifier = Modifier.pracegoTraversal(1))
                 PrimaryActionButton(text = "Salvar Ficha", onClick = onSalvar, modifier = Modifier.pracegoTraversal(2))
                 PrimaryActionButton(text = "Carregar Ficha", onClick = onCarregar, modifier = Modifier.pracegoTraversal(3))
-                PrimaryActionButton(text = "Exportar JSON Compatível", onClick = onExportarCompativel, modifier = Modifier.pracegoTraversal(4))
-                PrimaryActionButton(text = "Exportar JSON Versionado", onClick = onExportarVersionado, modifier = Modifier.pracegoTraversal(5))
-                PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar, modifier = Modifier.pracegoTraversal(6))
-                PrimaryActionButton(text = "Compartilhar Ficha", onClick = onCompartilhar, modifier = Modifier.pracegoTraversal(7))
-                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(8))
-                PrimaryActionButton(text = "Mestre IA (Beta)", onClick = onMestreIA, modifier = Modifier.pracegoTraversal(9))
+                PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar, modifier = Modifier.pracegoTraversal(4))
+                PrimaryActionButton(text = "Compartilhar Ficha", onClick = onCompartilhar, modifier = Modifier.pracegoTraversal(5))
+                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(6))
+                PrimaryActionButton(text = "Mestre IA (Beta)", onClick = onMestreIA, modifier = Modifier.pracegoTraversal(7))
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(9)) { Text(UiActionLabels.FECHAR) } }
+        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(8)) { Text(UiActionLabels.FECHAR) } }
     )
 }
 

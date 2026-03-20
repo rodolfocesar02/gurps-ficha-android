@@ -337,18 +337,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
             },
             onSalvar = { showMenuDialog = false; showSaveDialog = true },
             onCarregar = { showMenuDialog = false; showLoadDialog = true },
-            onExportarCompativel = {
-                showMenuDialog = false
-                val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
-                    .replace(Regex("[^a-zA-Z0-9._-]"), "_")
-                exportCompativelLauncher.launch("${nomeBase}.json")
-            },
-            onExportarVersionado = {
-                showMenuDialog = false
-                val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
-                    .replace(Regex("[^a-zA-Z0-9._-]"), "_")
-                exportVersionadoLauncher.launch("${nomeBase}_v${PersonagemInterop.SCHEMA_VERSION_ATUAL}.json")
-            },
             onImportar = {
                 showMenuDialog = false
                 importLauncher.launch(arrayOf("application/json", "text/plain"))
