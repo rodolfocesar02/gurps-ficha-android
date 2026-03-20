@@ -1,7 +1,7 @@
 {
-  "versionCode": 7,
-  "versionName": "1.4.1",
-  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V1.4.1/app-visual-release.apk",
-  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V1.4.1/app-pracego-release.apk",
-  "notes": "V1.4.1 (HF): Mestre Digital 2.0 (Gemini Flash). URL padronizada para HuggingFace."
+  "versionCode": 8,
+  "versionName": "1.4.2",
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.2/Ficha_gurps_Visual.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.2/Ficha_gurps_Pracego.apk",
+  "notes": "V1.4.2 (v8): Acessibilidade Racial (TalkBack), Sistema de Importação Instantânea e Menu Simplificado."
 }
