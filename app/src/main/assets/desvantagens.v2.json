@@ -68,7 +68,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-5 pontos* O personagem é altruísta — ele se sacrifica por outras pessoas e pouco se importa com fama ou riqueza pessoal. Ele precisa de um sucesso em um teste de autocontrole para colocar suas ne cessidades — até mesmo sua própria sobrevivência — na frente de outras pessoas. Uma raça altruísta possui uma “mentalidade de colmeia”. Amigável 2 O personagem se dá bem com outras pes soas e sempre está à procura de companhia. Existem dois níveis desta característica: Amigável: A reação do personagem diante de outras pessoas recebe um bônus de +2 na maioria das vezes. Quando está sozinho, o personagem fica desanimado e confuso e suas perícias baseadas em IQ sofrem uma penalidade de -1. -5 pontos. Gregário: O personagem costuma reagir diante de outras pessoas com um bônus de +4. Ele se sente completamente infeliz quando está sozinho e suas perícias baseadas em IQ sofrem uma penalidade de -2 — ou -1 se ele estiver em um grupo com quatro pessoas ou menos. -10 pontos. Amnésia 2 O personagem perdeu a memória! Ele não consegue se lembrar de nada relacionado à sua vida antes do ocorri do, nem mesmo seu próprio nome. Esta desvantagem é dividida em dois níveis: Amnésia Parcial: O jogador pode ver a planilha de seu personagem, mas o Mestre tem permissão para reservar até -30 pontos da quota de desvantagens do personagem como desvantagens “secretas” à escolha dele. O personagem sabe que é capaz de utilizar certas perícias, mas não tem ideia de onde as aprendeu. É provável que ele tenha inimigos e possivelmente amigos dos quais não consegue se lembrar. Se ele"
+    "descricao": "-5 pontos* O personagem é altruísta — ele se sacrifica por outras pessoas e pouco se importa com fama ou riqueza pessoal. Ele precisa de um sucesso em um teste de autocontrole para colocar suas necessidades — até mesmo sua própria sobrevivência — na frente de outras pessoas. Uma raça altruísta possui uma “mentalidade de colmeia”."
   },
   {
     "id": "amigavel",
@@ -743,13 +743,17 @@
     "id": "consumo_ampliado",
     "nome": "Consumo Ampliado",
     "pagina": 128,
-    "costKind": "perLevel",
+    "costKind": "choice",
     "fixed": null,
-    "perLevel": -10,
-    "options": null,
+    "perLevel": null,
+    "options": [
+      -10,
+      -20,
+      -30
+    ],
     "min": null,
     "max": null,
-    "rawCost": "-10/nível",
+    "rawCost": "-10, -20 ou -30",
     "specialRule": null,
     "tags": [
       "fisica"
@@ -1088,7 +1092,7 @@
     "id": "dever",
     "nome": "Dever",
     "pagina": 133,
-    "costKind": "choice",
+    "costKind": "special",
     "fixed": null,
     "perLevel": null,
     "options": [
@@ -1100,7 +1104,7 @@
     "min": null,
     "max": null,
     "rawCost": "Variável",
-    "specialRule": null,
+    "specialRule": "dever",
     "tags": [
       "social"
     ],
@@ -1650,13 +1654,18 @@
     "id": "expectativa_de_vida_reduzida",
     "nome": "Expectativa de Vida Reduzida",
     "pagina": 139,
-    "costKind": "perLevel",
+    "costKind": "choice",
     "fixed": null,
-    "perLevel": -10,
-    "options": null,
+    "perLevel": null,
+    "options": [
+      -10,
+      -20,
+      -30,
+      -40
+    ],
     "min": null,
     "max": null,
-    "rawCost": "-10/nível",
+    "rawCost": "-10 a -40",
     "specialRule": null,
     "tags": [
       "fisica"
@@ -1678,7 +1687,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "A linguagem corporal do personagem revela suas verdadeiras intenções. Esta desvantagem não é a mesma coisa que Veracidade (pág. 159). O personagem não tem dificuldade para mentir e pode até mesmo ter um nível elevado em Lábia, mas seu rosto e postura entregam o jogo. Fácil de Decifrar concede às outras pessoas um bônus de +4 nos testes de Empatia, Linguagem Corporal e Psi cologia para decifrar as intenções ou a veracidade das palavras do personagem. Elas também recebem o mesmo bônus nos testes de IQ, Detecção de Mentiras e Jogos de Azar durante qualquer Dispu ta Rápida contra o personagem quando ele usa Dissimulação, Lábia ou Jogos de Azar para mentir ou blefar (se ele tam bém tiver Veracidade, sua Lábia sofre uma penalidade de -5). Esta é uma des vantagem incapacitante para um preten so espião, vigarista ou apostador. Apesar de suas manifestações físicas, esta é uma desvantagem mental; com muita prática, é possível recomprá-la. Fácil de Matar 3 -2 pontos/nível O personagem tem um problema de saúde ou fraqueza física que o torna propenso a sofrer um colapso catastró fico se sofrer dano o bastante. Cada ní vel de Fácil de Matar impõe uma pena lidade de -1 nos testes de HT feitos para verificar a sobrevivência do personagem quando ele está com -1×PVInicial ou abaixo, assim como em qualquer teste onde fracassar causaria a morte súbita do personagem (ex. : ataque cardíaco). Isso não afeta a maioria dos testes nor mais de HT — apenas aqueles que ser vem para evitar a morte. Os testes de HT não podem ser reduzidos abaixo de 3. Por exemplo, um personagem com HT"
+    "descricao": "A linguagem corporal do personagem revela suas verdadeiras intenções. Esta desvantagem não é a mesma coisa que Veracidade (pág. 159). O personagem não tem dificuldade para mentir e pode até mesmo ter um nível elevado em Lábia, mas seu rosto e postura entregam o jogo. Fácil de Decifrar concede às outras pessoas um bônus de +4 nos testes de Empatia, Linguagem Corporal e Psicologia para decifrar as intenções ou a veracidade das palavras do personagem. Elas também recebem o mesmo bônus nos testes de IQ, Detecção de Mentiras e Jogos de Azar durante qualquer Disputa Rápida contra o personagem quando ele usa Dissimulação, Lábia ou Jogos de Azar para mentir ou blefar (se ele também tiver Veracidade, sua Lábia sofre uma penalidade de -5). Esta é uma desvantagem incapacitante para um pretenso espião, vigarista ou apostador. Apesar de suas manifestações físicas, esta é uma desvantagem mental; com muita prática, é possível recomprá-la."
   },
   {
     "id": "facil_de_matar",
@@ -1695,7 +1704,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "-2 pontos/nível O personagem tem um problema de saúde ou fraqueza física que o torna propenso a sofrer um colapso catastró fico se sofrer dano o bastante. Cada ní vel de Fácil de Matar impõe uma pena lidade de -1 nos testes de HT feitos para verificar a sobrevivência do personagem quando ele está com -1×PVInicial ou abaixo, assim como em qualquer teste onde fracassar causaria a morte súbita do personagem (ex. : ataque cardíaco). Isso não afeta a maioria dos testes nor mais de HT — apenas aqueles que ser vem para evitar a morte. Os testes de HT não podem ser reduzidos abaixo de 3. Por exemplo, um personagem com HT 10, está limitado a Fácil de Matar 7. Fanatismo 2 O personagem crê intensamente em um país, religião, organização ou filoso -fia, e coloca isso à frente de todo o res to. Talvez ele esteja até mesmo disposto a morrer em nome de sua crença! Se o objeto de sua adoração exigir obediência a um determinado código de comporta mento ou lealdade a um líder, ele seguirá todas as regras e ordens rigidamente. É obrigatório representar seu fanatismo. Observe que fanáticos não precisam ser insensatos ou perversos. Um feroz sa cerdote de Set, brandindo sua adaga en sanguentada, pode ser um fanático. Um kamikaze também o é, dando sua vida para destruir um porta-aviões. Um patrio ta que diz “liberdade ou morte! ” também. Fanatismo é um estado de espírito. O ob jeto de sua adoração é que faz a diferença"
+    "descricao": "O personagem tem um problema de saúde ou fraqueza física que o torna propenso a sofrer um colapso catastrófico se sofrer dano o bastante. Cada nível de Fácil de Matar impõe uma penalidade de -1 nos testes de HT feitos para verificar a sobrevivência do personagem quando ele está com -1×PVInicial ou abaixo, assim como em qualquer teste onde fracassar causaria a morte súbita do personagem (ex. : ataque cardíaco). Isso não afeta a maioria dos testes normais de HT — apenas aqueles que servem para evitar a morte. Os testes de HT não podem ser reduzidos abaixo de 3. Por exemplo, um personagem com HT 10, está limitado a Fácil de Matar 7."
   },
   {
     "id": "fanatismo",
@@ -1712,7 +1721,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem crê intensamente em um país, religião, organização ou filoso -fia, e coloca isso à frente de todo o res to. Talvez ele esteja até mesmo disposto a morrer em nome de sua crença! Se o objeto de sua adoração exigir obediência a um determinado código de comporta mento ou lealdade a um líder, ele seguirá todas as regras e ordens rigidamente. É obrigatório representar seu fanatismo. Observe que fanáticos não precisam ser insensatos ou perversos. Um feroz sa cerdote de Set, brandindo sua adaga en sanguentada, pode ser um fanático. Um kamikaze também o é, dando sua vida para destruir um porta-aviões. Um patrio ta que diz “liberdade ou morte! ” também. Fanatismo é um estado de espírito. O ob jeto de sua adoração é que faz a diferença. Fanatismo Extremista: Este é um caso avançado de Fanatismo. O perso nagem recebe um bônus de +3 nos tes tes de Vontade para resistir à Lavagem Cerebral, Interrogatório e qualquer ten tativa sobrenatural de controle da men te em situações onde um fracasso no teste de resistência fosse levar à traição de seu culto ou organização. Por outro lado, o personagem nunca hesita em morrer pela causa e aceita prontamen te missões suicidas. Apesar disso, a des vantagem continua valendo -15 pontos — a disposição do personagem de se sa crificar é compensada pelo bônus signi ficativo nos testes de Vontade (que será utilizado com bastante frequência se o jogador estiver representando bem). Fantasias 2 O personagem acredita em alguma coisa que simplesmente não é verdade. Isso pode levar os outros a pensarem que ele é maluco. Eles podem ter razão! Se o personagem estiver tendo uma Fantasia,"
+    "descricao": "O personagem crê intensamente em um país, religião, organização ou filosofia, e coloca isso à frente de todo o resto. Talvez ele esteja até mesmo disposto a morrer em nome de sua crença! Se o objeto de sua adoração exigir obediência a um determinado código de comportamento ou lealdade a um líder, ele seguirá todas as regras e ordens rigidamente. É obrigatório representar seu fanatismo. Observe que fanáticos não precisam ser insensatos ou perversos. Um feroz sacerdote de Set, brandindo sua adaga ensanguentada, pode ser um fanático. Um kamikaze também o é, dando sua vida para destruir um porta-aviões. Um patriota que diz “liberdade ou morte!” também. Fanatismo é um estado de espírito. O objeto de sua adoração é que faz a diferença.\n\nFanatismo Extremista: Este é um caso avançado de Fanatismo. O personagem recebe um bônus de +3 nos testes de Vontade para resistir à Lavagem Cerebral, Interrogatório e qualquer tentativa sobrenatural de controle da mente em situações onde um fracasso no teste de resistência fosse levar à traição de seu culto ou organização. Por outro lado, o personagem nunca hesita em morrer pela causa e aceita prontamente missões suicidas. Apesar disso, a desvantagem continua valendo -15 pontos — a disposição do personagem de se sacrificar é compensada pelo bônus significativo nos testes de Vontade."
   },
   {
     "id": "fantasias",
@@ -1777,13 +1786,18 @@
     "id": "fobias",
     "nome": "Fobias",
     "pagina": 140,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -5,
+      -10,
+      -15,
+      -20
+    ],
     "min": null,
     "max": null,
-    "rawCost": "-5, -10, -15 ou -20",
+    "rawCost": "-5, -10, -15 ou -20*",
     "specialRule": "fobias",
     "tags": [
       "mental"
@@ -1829,10 +1843,14 @@
     "id": "fragilidade",
     "nome": "Fragilidade",
     "pagina": 142,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -15,
+      -10,
+      -5
+    ],
     "min": null,
     "max": null,
     "rawCost": "Variável",
@@ -3376,10 +3394,15 @@
     "id": "sem_pernas",
     "nome": "Sem Pernas",
     "pagina": 156,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -30,
+      -20,
+      -10,
+      -5
+    ],
     "min": null,
     "max": null,
     "rawCost": "Variável",
@@ -3576,10 +3599,14 @@
     "id": "sonolento",
     "nome": "Sonolento",
     "pagina": 157,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -30,
+      -20,
+      -10
+    ],
     "min": null,
     "max": null,
     "rawCost": "Variável",
@@ -3593,13 +3620,16 @@
     "id": "status",
     "nome": "Status",
     "pagina": 28,
-    "costKind": "perLevel",
+    "costKind": "choice",
     "fixed": null,
-    "perLevel": -5,
-    "options": null,
+    "perLevel": null,
+    "options": [
+      -5,
+      -10
+    ],
     "min": null,
     "max": null,
-    "rawCost": "-5/nível",
+    "rawCost": "-5 ou -10",
     "specialRule": null,
     "tags": [
       "social"
@@ -3855,7 +3885,7 @@
     "min": null,
     "max": null,
     "rawCost": "Variável",
-    "specialRule": null,
+    "specialRule": "vicio",
     "tags": [
       "mental"
     ],

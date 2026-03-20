@@ -4093,13 +4093,22 @@
     "id": "status",
     "nome": "Status",
     "pagina": 28,
-    "costKind": "perLevel",
+    "costKind": "choice",
     "fixed": null,
-    "perLevel": 5,
-    "options": null,
+    "perLevel": null,
+    "options": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40
+    ],
     "min": null,
     "max": null,
-    "rawCost": "5/nível",
+    "rawCost": "5 a 40",
     "specialRule": null,
     "tags": [
       "social"
