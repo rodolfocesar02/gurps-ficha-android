@@ -229,7 +229,7 @@ fun ConfigurarVantagemDialog(
         )
     } else null
 
-    // Sincroniza\u00e7\u00e3o de custos especiais
+    // Sincronização de custos especiais
     LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
@@ -295,7 +295,7 @@ fun ConfigurarVantagemDialog(
 
                 when (definicao.tipoCusto) {
                     TipoCusto.POR_NIVEL -> {
-                        Text("N\u00edvel:")
+                        Text("Nível:")
                         val nivelMinimo = 1
                         val nivelMaximo = if (vantagemEhAptidaoMagica(definicao.id)) 11 else 20
                         if (isPraCegoVariant) {
@@ -338,7 +338,7 @@ fun ConfigurarVantagemDialog(
                                     OutlinedTextField(
                                         value = descricao,
                                         onValueChange = { descricao = it },
-                                        label = { Text("Descri\u00e7\u00e3o/Especializa\u00e7\u00f5es") },
+                                        label = { Text("Descrição/Especializações") },
                                         modifier = Modifier.fillMaxWidth()
                                     )
                                 }
@@ -425,7 +425,7 @@ fun ConfigurarVantagemDialog(
                                 )
                             }
                             else -> {
-                                Text("Custo Vari\u00e1vel:")
+                                Text("Custo Variável:")
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     TextButton(onClick = { custoEscolhido -= 1 }) { Text("-1") }
                                     Text("$custoEscolhido pts", fontWeight = FontWeight.Bold)
@@ -433,15 +433,15 @@ fun ConfigurarVantagemDialog(
                                 }
                             }
                         }
-                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o/Especializa\u00e7\u00f5e") }, modifier = Modifier.fillMaxWidth())
+                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição/Especialização") }, modifier = Modifier.fillMaxWidth())
                     }
                     TipoCusto.FIXO -> {
-                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o/Especializa\u00e7\u00f5e") }, modifier = Modifier.fillMaxWidth())
+                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição/Especialização") }, modifier = Modifier.fillMaxWidth())
                     }
                 }
 
 
-                // Se\u00e7\u00e3o de Modificadores (Novo!)
+                // Seção de Modificadores
                 HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
@@ -496,7 +496,7 @@ fun ConfigurarVantagemDialog(
     }
 
     if (mostrarDescricaoCatalogo) {
-        AlertDialog(onDismissRequest = { mostrarDescricaoCatalogo = false }, title = { Text(definicao.nome) }, text = { Text(descricaoCatalogo.ifBlank { "Sem descri\u00e7\u00e3o dispon\u00edvel." }) },
+        AlertDialog(onDismissRequest = { mostrarDescricaoCatalogo = false }, title = { Text(definicao.nome) }, text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
             confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text(UiActionLabels.FECHAR) } })
     }
 }
@@ -613,7 +613,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
     var pendingModForSchool by remember { mutableStateOf<ModificadorDefinicao?>(null) }
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
     val descricaoCatalogo = if (vantagem.definicaoId == "retencao") {
-        "O personagem tem um ataque capaz de manter o alvo preso no lugar. O jogador deve descrever os efeitos do ataque quando comprar a vantagem. O personagem pode enroscar sua v\u00edtima com vinhas, prend\u00ea-la com teias, congel\u00e1-la num bloco de gelo, transformar o solo em areia movedi\u00e7a, etc. Se o ataque obtiver sucesso, a v\u00edtima fica agarrada (v. p\u00e1g. 370) e presa no lugar. Ela n\u00e3o pode utilizar as manobras Deslocamento e Mudan\u00e7a de Posi\u00e7\u00e3o nem mudar de dire\u00e7\u00e3o e sua DX sofre uma penalidade de -4. A ST desse efeito \u00e9 igual ao n\u00edvel de Reten\u00e7\u00e3o do agressor, mas ataques adicionais podem se acumular sobre a v\u00edtima retida. Cada nova \u201ccamada\u201d acrescenta um b\u00f4nus de +1 \u00e0 ST. Para se libertar, a v\u00edtima precisa vencer uma Disputa R\u00e1pida de ST, ou de Fuga, contra a ST empregada para ret\u00ea-la. Cada tentativa dura um segundo. Se n\u00e3o conseguir se libertar, o alvo perde 1 PF, mas pode tentar novamente. A v\u00edtima tamb\u00e9m pode tentar destruir o que quer que a esteja prendendo. Nesse caso, Ataques Inatos atingem automaticamente, enquanto outros ataques sofrem uma penalidade de -4. Ataques externos n\u00e3o sofrem essa penalidade, mas se fracassarem, podem ferir a v\u00edtima retida (v. Intervendo em um Combate Corporal, p\u00e1g. 392). A Reten\u00e7\u00e3o tem uma RD de 1/3 do seu n\u00edvel (arredondado para baixo). Cada ponto de dano causado reduz a ST em um ponto. Quando a ST chegar a zero, a Reten\u00e7\u00e3o \u00e9 destru\u00edda e a v\u00edtima libertada."
+        "O personagem tem um ataque capaz de manter o alvo preso no lugar. O jogador deve descrever os efeitos do ataque quando comprar a vantagem. O personagem pode enroscar sua vítima com vinhas, prendê-la com teias, congelá-la num bloco de gelo, transformar o solo em areia movediça, etc. Se o ataque obtiver sucesso, a vítima fica agarrada (v. pág. 370) e presa no lugar. Ela não pode utilizar as manobras Deslocamento e Mudança de Posição nem mudar de direção e sua DX sofre uma penalidade de -4. A ST desse efeito é igual ao nível de Retenção do agressor, mas ataques adicionais podem se acumular sobre a vítima retida. Cada nova “camada” acrescenta um bônus de +1 à ST. Para se libertar, a vítima precisa vencer uma Disputa Rápida de ST, ou de Fuga, contra a ST empregada para retê-la. Cada tentativa dura um segundo. Se não conseguir se libertar, o alvo perde 1 PF, mas pode tentar novamente. A vítima também pode tentar destruir o que quer que a esteja prendendo. Nesse caso, Ataques Inatos atingem automaticamente, enquanto outros ataques sofrem uma penalidade de -4. Ataques externos não sofrem essa penalidade, mas se fracassarem, podem ferir a vítima retida (v. Intervendo em um Combate Corporal, pág. 392). A Retenção tem uma RD de 1/3 do seu nível (arredondado para baixo). Cada ponto de dano causado reduz a ST em um ponto. Quando a ST chegar a zero, a Retenção é destruída e a vítima libertada."
     } else descricaoCatalogo
 
     // Estados para Ataque Inato
@@ -654,8 +654,9 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
+                
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
-                    Text("N\u00edvel:")
+                    Text("Nível:")
                     val nivelMinimo = 1
                     val nivelMaximo = if (vantagemEhAptidaoMagica(vantagem.definicaoId)) 11 else 20
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -672,7 +673,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                                 OutlinedTextField(
                                     value = descricao,
                                     onValueChange = { descricao = it },
-                                    label = { Text("Descri\u00e7\u00e3o") },
+                                    label = { Text("Descrição") },
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
@@ -685,7 +686,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                                 OutlinedTextField(
                                     value = descricao,
                                     onValueChange = { descricao = it },
-                                    label = { Text("Descri\u00e7\u00e3o") },
+                                    label = { Text("Descrição") },
                                     modifier = Modifier.fillMaxWidth()
                                 )
                             }
@@ -694,15 +695,15 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                         OutlinedTextField(
                             value = descricao,
                             onValueChange = { descricao = it },
-                            label = { Text("Descri\u00e7\u00e3o") },
+                            label = { Text("Descrição") },
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
                 } else if (vantagem.tipoCusto == TipoCusto.VARIAVEL) {
-                    // Para vantagens vari??veis, o custoEscolhido j?? est?? sendo rastreado
+                    // Para vantagens variáveis, o custoEscolhido já está sendo rastreado
                     // e atualizado via LaunchedEffect na ConfigurarVantagemDialog.
-                    // Aqui, apenas exibimos o custo e permitimos a descri????o.
-                    Text("Custo Vari\u00e1vel: $custoEscolhido pts")
+                    // Aqui, apenas exibimos o custo e permitimos a descrição.
+                    Text("Custo Variável: $custoEscolhido pts")
                     if (vantagem.definicaoId == "ataque_inato") {
                         AtaqueInatoConfig(
                             nome = nomeAtaque,
@@ -717,14 +718,14 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                             }
                         )
                     }
-                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 } else if (vantagem.tipoCusto == TipoCusto.ESCOLHA) {
-                    // Para vantagens de escolha, o custoEscolhido j?? est?? definido.
-                    // Apenas exibimos e permitimos a descri????o.
+                    // Para vantagens de escolha, o custoEscolhido já está definido.
+                    // Apenas exibimos e permitimos a descrição.
                     Text("Custo Escolhido: $custoEscolhido pts")
-                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 } else { // TipoCusto.FIXO
-                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
+                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 }
 
 
@@ -1992,12 +1993,12 @@ fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: L
             
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.height(300.dp)) {
                 if (especificos.isNotEmpty()) {
-                    item { Text("Espec\u00edficos desta caracter\u00edstica", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                    item { Text("Específicos desta característica", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                     items(especificos) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
                 }
                 if (geraisFiltrados.isNotEmpty()) {
                     item { Spacer(modifier = Modifier.height(16.dp)) }
-                    item { Text("Gerais (Cat\u00e1logo)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                    item { Text("Gerais (Catálogo)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                     items(geraisFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
                 }
             }
@@ -2009,7 +2010,7 @@ fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: L
 
 @Composable
 fun SeletorEscolaMagiaDialog(onDismiss: () -> Unit, onSelect: (String) -> Unit) {
-    val escolas = listOf("Ar", "\u00c1gua", "Alimento", "Animais", "Arremesso", "Comunica\u00e7\u00e3o e Empatia", "Controle da Mente", "Corpo", "Cura", "Deslocamento", "Encantamentos", "Esculpir", "Fogo", "Ilus\u00e3o e Cria\u00e7\u00e3o", "Impregna\u00e7\u00e3o M\u00e1gica", "Inviabiliza\u00e7\u00e3o", "Luz e Trevas", "Meta-M\u00e1gicas", "Necromancia", "Planta", "Prote\u00e7\u00e3o e Advert\u00eancia", "Som", "Tecnomagia", "Terra").sorted()
+    val escolas = listOf("Ar", "Água", "Alimento", "Animais", "Arremesso", "Comunicação e Empatia", "Controle da Mente", "Corpo", "Cura", "Deslocamento", "Encantamentos", "Esculpir", "Fogo", "Ilusão e Criação", "Impregnação Mágica", "Inviabilização", "Luz e Trevas", "Meta-Mágicas", "Necromancia", "Planta", "Proteção e Advertência", "Som", "Tecnomagia", "Terra").sorted()
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Selecione a Escola") },
@@ -2037,7 +2038,7 @@ fun ModificadorItemRow(mod: ModificadorDefinicao, onClick: () -> Unit) {
         Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(mod.nome, fontWeight = FontWeight.Bold)
-                Text("${mod.tipo} | ${mod.valor}" + (if (mod.porNivel) " p/ n\u00edvel" else ""), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                Text("${mod.tipo} | ${mod.valor}" + (if (mod.porNivel) " p/ nível" else ""), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
             }
             if (mod.descricao?.isNotBlank() == true) {
                 IconButton(onClick = { mostrarDescricao = true }) { Icon(Icons.Default.Info, null) }
@@ -2052,13 +2053,13 @@ fun ModificadorItemRow(mod: ModificadorDefinicao, onClick: () -> Unit) {
 @Composable
 fun PeculiaridadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
     var texto by remember { mutableStateOf("") }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Adicionar Peculiaridade") }, text = { Column { Text("Peculiaridades s\u00e3o mini-desvantagens (-1 pt cada, m\u00e1x 5)", style = MaterialTheme.typography.bodySmall); Spacer(modifier = Modifier.height(8.dp)); OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Peculiaridade") }, modifier = Modifier.fillMaxWidth()) } }, confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text(UiActionLabels.ADICIONAR) } }, dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } })
+    AlertDialog(onDismissRequest = onDismiss, title = { Text("Adicionar Peculiaridade") }, text = { Column { Text("Peculiaridades são mini-desvantagens (-1 pt cada, máx 5)", style = MaterialTheme.typography.bodySmall); Spacer(modifier = Modifier.height(8.dp)); OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Peculiaridade") }, modifier = Modifier.fillMaxWidth()) } }, confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text(UiActionLabels.ADICIONAR) } }, dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } })
 }
 
 @Composable
 fun QualidadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
     var texto by remember { mutableStateOf("") }
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Adicionar Qualidade") }, text = { Column { Text("Qualidades s\u00e3o tra\u00e7os positivos (+1 pt cada, m\u00e1x 5)", style = MaterialTheme.typography.bodySmall); Spacer(modifier = Modifier.height(8.dp)); OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Qualidade") }, modifier = Modifier.fillMaxWidth()) } }, confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text(UiActionLabels.ADICIONAR) } }, dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } })
+    AlertDialog(onDismissRequest = onDismiss, title = { Text("Adicionar Qualidade") }, text = { Column { Text("Qualidades são traços positivos (+1 pt cada, máx 5)", style = MaterialTheme.typography.bodySmall); Spacer(modifier = Modifier.height(8.dp)); OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Qualidade") }, modifier = Modifier.fillMaxWidth()) } }, confirmButton = { TextButton(onClick = { if (texto.isNotBlank()) onSave(texto) }) { Text(UiActionLabels.ADICIONAR) } }, dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } })
 }
 
 @Composable
@@ -2083,10 +2084,10 @@ fun ContatosConfig(
             modifier = Modifier.fillMaxWidth().height(48.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
-            Text("Per\u00edcia (NH $currentNh)", style = MaterialTheme.typography.labelLarge)
+            Text("Perícia (NH $currentNh)", style = MaterialTheme.typography.labelLarge)
         }
 
-        // 2. Frequ\u00eancia
+        // 2. Frequência
         Button(
             onClick = { showFreqList = true },
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2099,7 +2100,7 @@ fun ContatosConfig(
                 3f -> "15-"
                 else -> "9-"
             }
-            Text("Frequ\u00eancia de Aparecimento ($freqLabel)", style = MaterialTheme.typography.labelLarge)
+            Text("Frequência de Aparecimento ($freqLabel)", style = MaterialTheme.typography.labelLarge)
         }
 
         // 3. Confiabilidade
@@ -2111,7 +2112,7 @@ fun ContatosConfig(
             Text("Confiabilidade", style = MaterialTheme.typography.labelLarge)
         }
 
-        // Di\u00e1logos
+        // Diálogos
         if (showNhList) {
             SeletorNhContatoDialog(
                 current = currentNh,
@@ -2373,7 +2374,7 @@ fun AtaqueInatoConfig(
         OutlinedTextField(
             value = nome,
             onValueChange = { onChanged(it, tipoDano, dados, bonus) },
-            label = { AdaptiveText("Nome do Ataque (Obrigat\u00f3rio)", style = MaterialTheme.typography.labelMedium) },
+            label = { AdaptiveText("Nome do Ataque (Obrigatório)", style = MaterialTheme.typography.labelMedium) },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
@@ -2434,7 +2435,7 @@ fun ModificadorSelecionadoItem(mod: ModificadorSelecao, onUpdate: (ModificadorSe
                 
                 if (mod.porNivel) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("N\u00edvel: ${mod.niveis}", style = MaterialTheme.typography.labelSmall)
+                        Text("Nível: ${mod.niveis}", style = MaterialTheme.typography.labelSmall)
                         Spacer(modifier = Modifier.width(8.dp))
                         TextButton(onClick = { if (mod.niveis > 1) onUpdate(mod.copy(niveis = mod.niveis - 1)) }, modifier = Modifier.size(24.dp), contentPadding = PaddingValues(0.dp)) { Text("-", fontSize = 14.sp) }
                         TextButton(onClick = { onUpdate(mod.copy(niveis = mod.niveis + 1)) }, modifier = Modifier.size(24.dp), contentPadding = PaddingValues(0.dp)) { Text("+", fontSize = 14.sp) }
@@ -2468,10 +2469,10 @@ fun AtribulacaoConfig(
     ) {
         HorizontalDivider()
         
-        // 1. Descri\u00e7\u00e3o no topo (linear)
+        // 1. Descrição no topo (linear)
         descricaoContent()
 
-        // 2. Bot\u00e3o Amplia\u00e7\u00f5es (abre lista de condi\u00e7\u00f5es)
+        // 2. Botão Ampliações (abre lista de condições)
         Button(
             onClick = { showCondList = true }, 
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2480,7 +2481,7 @@ fun AtribulacaoConfig(
         ) {
             Icon(Icons.Default.Add, null, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Amplia\u00e7\u00f5es", style = MaterialTheme.typography.labelLarge)
+            Text("Ampliações", style = MaterialTheme.typography.labelLarge)
         }
         
         // 3. Bot\u00e3o Vantagem (+10%/pt)
@@ -2505,7 +2506,7 @@ fun AtribulacaoConfig(
             Text("Desvantagem (+1%)", style = MaterialTheme.typography.labelLarge)
         }
 
-        // 5. Bot\u00e3o Atributos (+5% por -1)
+        // 5. Botão Atributos (+5% por -1)
         Button(
             onClick = { showAtribList = true },
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2516,7 +2517,7 @@ fun AtribulacaoConfig(
             Text("Atributos", style = MaterialTheme.typography.labelLarge)
         }
 
-        // Di\u00e1logos de Sele\u00e7\u00e3o
+        // Diálogos de Seleção
         if (showCondList) {
             SeletorCondicoesDialog(
                 modifiers = modifiers,
@@ -2548,7 +2549,7 @@ fun AtribulacaoConfig(
                 onDismiss = { showDesvList = false },
                 onSelect = { trait, level ->
                     val finalPenalidade = (trait.custo * level)
-                    onAddModifier(ModificadorSelecao("atrib_desv_${trait.id}", "Imp\u00f5e ${trait.nome} Lvl $level", finalPenalidade))
+                    onAddModifier(ModificadorSelecao("atrib_desv_${trait.id}", "Impõe ${trait.nome} Lvl $level", finalPenalidade))
                     showDesvList = false
                 }
             )
@@ -2574,14 +2575,14 @@ fun SeletorCondicoesDialog(
     onAddModifier: (ModificadorSelecao) -> Unit
 ) {
     val condicoes = listOf(
-        "Ataque Card\u00edaco" to 300, "Coma" to 250, "Inconsci\u00eancia" to 200, "Paralisia" to 150, "Sono" to 150,
-        "Agonia" to 100, "Dor Terr\u00edvel" to 60, "Dor Intensa" to 40, "N\u00e1usea" to 30, "Mudez" to 25, 
+        "Ataque Cardíaco" to 300, "Coma" to 250, "Inconsciência" to 200, "Paralisia" to 150, "Sono" to 150,
+        "Agonia" to 100, "Dor Terrível" to 60, "Dor Intensa" to 40, "Náusea" to 30, "Mudez" to 25, 
         "Surdez" to 20, "Cegueira" to 50, "Tossem" to 20, "Paranoia" to 10
     )
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Selecionar Condi\u00e7\u00e3o (Amplia\u00e7\u00e3o)") },
+        title = { Text("Selecionar Condição (Ampliação)") },
         text = {
             FlowRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 condicoes.forEach { (nome, valor) ->
@@ -2650,7 +2651,7 @@ fun RetencaoConfig(
         // 1. Descri\u00e7\u00e3o no topo (linear)
         descricaoContent()
 
-        // 2. Bot\u00e3o Amplia\u00e7\u00f5es
+        // 2. Botão Ampliações
         Button(
             onClick = { showAmpList = true }, 
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2659,10 +2660,10 @@ fun RetencaoConfig(
         ) {
             Icon(Icons.Default.Add, null, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Amplia\u00e7\u00f5es", style = MaterialTheme.typography.labelLarge)
+            Text("Ampliações", style = MaterialTheme.typography.labelLarge)
         }
         
-        // 3. Bot\u00e3o Limita\u00e7\u00f5es Especiais
+        // 3. Botão Limitações Especiais
         Button(
             onClick = { showLimList = true },
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2670,7 +2671,7 @@ fun RetencaoConfig(
         ) {
             Icon(Icons.Default.Add, null, modifier = Modifier.size(20.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Limita\u00e7\u00f5es Especiais", style = MaterialTheme.typography.labelLarge)
+            Text("Limitações Especiais", style = MaterialTheme.typography.labelLarge)
         }
 
         // Di\u00e1logos
@@ -2708,9 +2709,9 @@ fun SeletorAmpliacaoRetencaoDialog(
     var showDanoPicker by remember { mutableStateOf(false) }
     
     val ampliacoes = listOf(
-        Triple("Engolfar", 60, "O ataque do personagem imobiliza o alvo. Ele n\u00e3o consegue mover os bra\u00e7os, nem as pernas, nem falar; a \u00fanica op\u00e7\u00e3o dele \u00e9 usar habilidades puramente mentais, utilizar Ataques Inatos ou tentar libertar-se usando a ST (n\u00e3o a per\u00edcia Fuga). Se tentar se libertar e n\u00e3o conseguir, a v\u00edtima poder\u00e1 fazer uma nova tentativa depois de 10 segundos, contudo, com um resultado de 17 ou 18, ela fica t\u00e3o enredada que n\u00e3o conseguir\u00e1 mais escapar sozinha!"),
-        Triple("Grudento", 20, "A Reten\u00e7\u00e3o \u00e9 considerada Persistente (p\u00e1g. 108), mas afeta apenas aqueles que tocarem o alvo original do ataque."),
-        Triple("Inquebr\u00e1vel", 40, "A Reten\u00e7\u00e3o n\u00e3o pode ser destru\u00edda. A \u00fanica maneira de escapar \u00e9 tentando se libertar com a ST.")
+        Triple("Engolfar", 60, "O ataque do personagem imobiliza o alvo. Ele não consegue mover os braços, nem as pernas, nem falar; a única opção dele é usar habilidades puramente mentais, utilizar Ataques Inatos ou tentar libertar-se usando a ST (não a perícia Fuga). Se tentar se libertar e não conseguir, a vítima poderá fazer uma nova tentativa depois de 10 segundos, contudo, com um resultado de 17 ou 18, ela fica tão enredada que não conseguirá mais escapar sozinha!"),
+        Triple("Grudento", 20, "A Retenção é considerada Persistente (pág. 108), mas afeta apenas aqueles que tocarem o alvo original do ataque."),
+        Triple("Inquebrável", 40, "A Retenção não pode ser destruída. A única maneira de escapar é tentando se libertar com a ST.")
     )
 
     AlertDialog(
@@ -2782,10 +2783,10 @@ fun SeletorLimitacaoRetencaoDialog(
     onAddModifier: (ModificadorSelecao) -> Unit
 ) {
     val limitacoes = listOf(
-        Triple("Ambientais (-20%)", -20, "A Reten\u00e7\u00e3o manipula uma condi\u00e7\u00e3o ou objeto existente no ambiente e n\u00e3o funciona na aus\u00eancia dele"),
-        Triple("Ambientais (-40%)", -40, "Se a v\u00edtima tiver que tocar o ch\u00e3o"),
-        Triple("Ambientais (-30%)", -30, "Se a v\u00edtima tiver que estar em meio a vegeta\u00e7\u00e3o densa"),
-        Triple("Chance \u00fanica", -10, "O personagem n\u00e3o pode sobrepor novas Reten\u00e7\u00f5es para aumentar a ST delas.")
+        Triple("Ambientais (-20%)", -20, "A Retenção manipula uma condição ou objeto existente no ambiente e não funciona na ausência dele"),
+        Triple("Ambientais (-40%)", -40, "Se a vítima tiver que tocar o chão"),
+        Triple("Ambientais (-30%)", -30, "Se a vítima tiver que estar em meio a vegetação densa"),
+        Triple("Chance única", -10, "O personagem não pode sobrepor novas Retenções para aumentar a ST delas.")
     )
 
     AlertDialog(
@@ -2845,14 +2846,14 @@ fun AdaptiveText(
 @Composable
 fun SeletorNhContatoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
     val opcoes = listOf(
-        Triple(12, "NH 12 (Boa forma????o)", "Possui um conhecimento justo e pr??tico da sua ??rea. Custo base: 1 pt."),
+        Triple(12, "NH 12 (Boa formação)", "Possui um conhecimento justo e prático da sua área. Custo base: 1 pt."),
         Triple(15, "NH 15 (Especialista)", "Um profissional competente e respeitado. Custo base: 2 pts."),
-        Triple(18, "NH 18 (Mestre)", "Destaque nacional em sua ??rea de expertise. Custo base: 3 pts."),
+        Triple(18, "NH 18 (Mestre)", "Destaque nacional em sua área de expertise. Custo base: 3 pts."),
         Triple(21, "NH 21 (Renome Mundial)", "Uma das maiores autoridades vivas no assunto. Custo base: 4 pts.")
     )
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("N??vel de Per??cia") },
+        title = { Text("Nível de Perícia") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 opcoes.forEach { (nh, titulo, desc) ->
@@ -3060,14 +3061,14 @@ fun SeletorTipoFavorDialog(isContact: Boolean, onDismiss: () -> Unit, onSelect: 
                     colors = if (!isContact) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer) else CardDefaults.cardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text("Favor de Patrono (1/10)", fontWeight = FontWeight.Bold)
-                        Text("Um favor de uso ??nico de uma organiza????o ou indiv??duo poderoso.")
+                        Text("Um favor de uso único de uma organização ou indivíduo poderoso.")
                     }
                 }
                 Card(onClick = { onSelect(true) }, modifier = Modifier.fillMaxWidth(),
                     colors = if (isContact) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer) else CardDefaults.cardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text("Favor de Contato (1/5)", fontWeight = FontWeight.Bold)
-                        Text("O favor de um indiv??duo especialista, usado apenas uma vez.")
+                        Text("O favor de um indivíduo especialista, usado apenas uma vez.")
                     }
                 }
             }
@@ -3076,388 +3077,4 @@ fun SeletorTipoFavorDialog(isContact: Boolean, onDismiss: () -> Unit, onSelect: 
     )
 }
 
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-@Composable
-fun ModeloRacialDialog(current: ModeloRacial, onDismiss: () -> Unit, onSave: (ModeloRacial) -> Unit) {
-    var showCatalogo by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-    var showPersonalizar by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
-    
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { androidx.compose.material3.Text("Modelo Racial") },
-        text = {
-            androidx.compose.foundation.layout.Column(
-                modifier = androidx.compose.ui.Modifier.fillMaxWidth(),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp),
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
-            ) {
-                androidx.compose.material3.Text("Raca Atual: ${current.nome}", style = androidx.compose.material3.MaterialTheme.typography.titleMedium, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                
-                com.gurps.ficha.ui.PrimaryActionButton(text = "Selecionar Raca do Catalogo", onClick = { showCatalogo = true })
-                
-                com.gurps.ficha.ui.PrimaryActionButton(text = "Personalizar Raca", onClick = { showPersonalizar = true })
-                
-                if (showPersonalizar) {
-                    PersonalizarRacaDialog(
-                        initial = current,
-                        onDismiss = { showPersonalizar = false },
-                        onSave = { r ->
-                            onSave(r)
-                            showPersonalizar = false
-                        }
-                    )
-                }
-                
-                androidx.compose.material3.Card(modifier = androidx.compose.ui.Modifier.fillMaxWidth()) {
-                    androidx.compose.foundation.layout.Column(modifier = androidx.compose.ui.Modifier.padding(12.dp)) {
-                        androidx.compose.material3.Text("Resumo do Modelo", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
-                        androidx.compose.material3.Text("Custo: ${current.custoTotal} pontos")
-                        if (current.modForca != 0) androidx.compose.material3.Text("ST ${if(current.modForca>0) "+" else ""}${current.modForca}")
-                        if (current.modDestreza != 0) androidx.compose.material3.Text("DX ${if(current.modDestreza>0) "+" else ""}${current.modDestreza}")
-                        if (current.modInteligencia != 0) androidx.compose.material3.Text("IQ ${if(current.modInteligencia>0) "+" else ""}${current.modInteligencia}")
-                        if (current.modVitalidade != 0) androidx.compose.material3.Text("HT ${if(current.modVitalidade>0) "+" else ""}${current.modVitalidade}")
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) { androidx.compose.material3.Text("Fechar") }
-        }
-    )
-
-    if (showCatalogo) {
-        SeletorRacaCatalogoDialog(
-            onDismiss = { showCatalogo = false },
-            onSelect = { r ->
-                onSave(r)
-                showCatalogo = false
-            }
-        )
-    }
-}
-
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-@Composable
-fun SeletorRacaCatalogoDialog(onDismiss: () -> Unit, onSelect: (ModeloRacial) -> Unit) {
-    val racas = listOf(
-        ModeloRacial(nome = "Humano"),
-        ModeloRacial(
-            nome = "Anao",
-            modVitalidade = 1,
-            modDeslocamentoBasico = -1,
-            vantagens = listOf(
-                VantagemSelecionada(nome = "Resistencia a Venenos", custoBase = 5),
-                VantagemSelecionada(nome = "Visao Noturna 5", custoBase = 5),
-                VantagemSelecionada(nome = "Longevidade", custoBase = 2),
-                VantagemSelecionada(nome = "Talento (Artifice) 1", custoBase = 10)
-            )
-        )
-    )
-
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { androidx.compose.material3.Text("Catalogo de Racas") },
-        text = {
-            androidx.compose.foundation.lazy.LazyColumn(
-                modifier = androidx.compose.ui.Modifier.heightIn(max = 400.dp),
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)
-            ) {
-                items(racas.size) { index ->
-                    val r = racas[index]
-                    androidx.compose.material3.Card(
-                        onClick = { onSelect(r) },
-                        modifier = androidx.compose.ui.Modifier.fillMaxWidth()
-                    ) {
-                        androidx.compose.foundation.layout.Column(modifier = androidx.compose.ui.Modifier.padding(12.dp)) {
-                            androidx.compose.material3.Text(r.nome, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = androidx.compose.material3.MaterialTheme.colorScheme.primary)
-                            androidx.compose.material3.Text("Custo: ${r.custoTotal} pts", style = androidx.compose.material3.MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            androidx.compose.material3.TextButton(onClick = onDismiss) { androidx.compose.material3.Text("Cancelar") }
-        }
-    )
-}
-
-@Composable
-fun PersonalizarRacaDialog(initial: ModeloRacial, onDismiss: () -> Unit, onSave: (ModeloRacial) -> Unit) {
-    var nome by remember { mutableStateOf(initial.nome) }
-    var modST by remember { mutableStateOf(initial.modForca) }
-    var modDX by remember { mutableStateOf(initial.modDestreza) }
-    var modIQ by remember { mutableStateOf(initial.modInteligencia) }
-    var modHT by remember { mutableStateOf(initial.modVitalidade) }
-    var modHP by remember { mutableStateOf(initial.modPontosVida) }
-    var modVon by remember { mutableStateOf(initial.modVontade) }
-    var modPer by remember { mutableStateOf(initial.modPercepcao) }
-    var modPF by remember { mutableStateOf(initial.modPontosFadiga) }
-    var modVB by remember { mutableStateOf(initial.modVelocidadeBasica) }
-    var modDB by remember { mutableStateOf(initial.modDeslocamentoBasico) }
-    var vantagensRacais by remember { mutableStateOf(initial.vantagens) }
-    var desvantagensRacais by remember { mutableStateOf(initial.desvantagens) }
-    var periciasRacais by remember { mutableStateOf(initial.pericias) }
-    var descricaoRacial by remember { mutableStateOf(initial.descricao) }
-
-    var showVantList by remember { mutableStateOf(false) }
-    var showDesvList by remember { mutableStateOf(false) }
-    var showPerList by remember { mutableStateOf(false) }
-    val dataRepo = remember { CharacterRules.DATA_REPOSITORY_INSTANCE }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { 
-            Text("Personalizar Raca", modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, 
-                 style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) 
-        },
-        text = {
-            LazyColumn(
-                modifier = Modifier.fillMaxWidth().heightIn(max = 600.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                item {
-                    OutlinedTextField(
-                        value = nome, 
-                        onValueChange = { nome = it }, 
-                        label = { Text("Nome da Raca") }, 
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
-                    )
-                }
-
-                item {
-                    OutlinedTextField(
-                        value = descricaoRacial, 
-                        onValueChange = { descricaoRacial = it }, 
-                        label = { Text("Descricao da Raca (Aparencia)") }, 
-                        modifier = Modifier.fillMaxWidth(),
-                        minLines = 3
-                    )
-                }
-                
-                // ATRIBUTOS
-                item {
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-                        Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Atributos Primarios", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                AjustadorVerticalRacial("ST", modST) { modST += it }
-                                AjustadorVerticalRacial("DX", modDX) { modDX += it }
-                                AjustadorVerticalRacial("IQ", modIQ) { modIQ += it }
-                                AjustadorVerticalRacial("HT", modHT) { modHT += it }
-                            }
-                        }
-                    }
-                }
-
-                item {
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-                        Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Atributos Secundarios", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                AjustadorVerticalRacial("PV", modHP) { modHP += it }
-                                AjustadorVerticalRacial("Von", modVon) { modVon += it }
-                                AjustadorVerticalRacial("Per", modPer) { modPer += it }
-                                AjustadorVerticalRacial("PF", modPF) { modPF += it }
-                            }
-                        }
-                    }
-                }
-
-                item {
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
-                        Column(modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Caracteristicas Derivadas", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text("VEL. Basica", style = MaterialTheme.typography.labelSmall)
-                                    IconButton(onClick = { modVB += 0.25f }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowUp, null) }
-                                    Text(String.format("%.2f", modVB), fontWeight = FontWeight.Bold)
-                                    IconButton(onClick = { modVB -= 0.25f }, modifier = Modifier.size(32.dp)) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                                }
-                                AjustadorVerticalRacial("Desloc.", modDB) { modDB += it }
-                            }
-                        }
-                    }
-                }
-
-                item {
-                    Text("Tracos Racais", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Button(onClick = { showVantList = true }, modifier = Modifier.fillMaxWidth(0.9f)) { Text("+ Vantagem") }
-                        Button(onClick = { showDesvList = true }, modifier = Modifier.fillMaxWidth(0.9f)) { Text("+ Desvantagem") }
-                        Button(onClick = { showPerList = true }, modifier = Modifier.fillMaxWidth(0.9f)) { Text("+ Pericia") }
-                    }
-                }
-
-                items(vantagensRacais.size) { index ->
-                    val t = vantagensRacais[index]
-                    RacialTraitItem(t.nome, "${if(t.custoFinal>0) "+" else ""}${t.custoFinal} pts") { vantagensRacais = vantagensRacais.toMutableList().apply { removeAt(index) } }
-                }
-
-                items(desvantagensRacais.size) { index ->
-                    val t = desvantagensRacais[index]
-                    RacialTraitItem(t.nome, "${if(t.custoFinal>0) "+" else ""}${t.custoFinal} pts") { desvantagensRacais = desvantagensRacais.toMutableList().apply { removeAt(index) } }
-                }
-
-                items(periciasRacais.size) { index ->
-                    val p = periciasRacais[index]
-                    RacialTraitItem(p.nome, "${p.baseAtributo}${if(p.nivelRelativo>=0) "+" else ""}${p.nivelRelativo} [${if(p.custo>=0) "+" else ""}${p.custo} pts]") { periciasRacais = periciasRacais.toMutableList().apply { removeAt(index) } }
-                }
-                
-                item {
-                    val tempModelo = ModeloRacial(nome, modST, modDX, modIQ, modHT, modHP, modVon, modPer, modPF, modVB, modDB, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial)
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                        Text("Resumo com b\u00f4nus racial (+1 lvl free): ${tempModelo.custoTotal} pontos", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = { onSave(ModeloRacial(nome, modST, modDX, modIQ, modHT, modHP, modVon, modPer, modPF, modVB, modDB, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial)) }) { Text("Salvar") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        }
-    )
-
-    if (showVantList && dataRepo != null) {
-        SeletorListaTraitsDialog(dataRepo.vantagens.map { VantagemToTrait(it) }, "Adicionar Vantagem", { showVantList = false }) { trait, level ->
-            vantagensRacais = vantagensRacais + VantagemSelecionada(nome = trait.nome, definicaoId = trait.id, custoBase = trait.custo, nivel = level)
-            showVantList = false
-        }
-    }
-    if (showDesvList && dataRepo != null) {
-        SeletorListaTraitsDialog(dataRepo.desvantagens.map { DesvantagemToTrait(it) }, "Adicionar Desvantagem", { showDesvList = false }) { trait, level ->
-            desvantagensRacais = desvantagensRacais + DesvantagemSelecionada(nome = trait.nome, definicaoId = trait.id, custoBase = trait.custo, nivel = level)
-            showDesvList = false
-        }
-    }
-    if (showPerList) {
-        PericiaRacialSeletorDialog({ showPerList = false }) { p -> 
-            periciasRacais = periciasRacais + p
-            showPerList = false
-        }
-    }
-}
-
-@Composable
-fun RacialTraitItem(nome: String, ptsExibicao: String, onDelete: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth(0.95f)) {
-        Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(nome, fontWeight = FontWeight.Bold)
-                Text(ptsExibicao, style = MaterialTheme.typography.labelSmall)
-            }
-            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
-        }
-    }
-}
-
-@Composable
-fun AjustadorVerticalRacial(rotulo: String, valor: Int, onDelta: (Int) -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(rotulo, style = MaterialTheme.typography.labelSmall)
-        IconButton(onClick = { onDelta(1) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Aumentar $rotulo" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
-        Text("${if(valor>0) "+" else ""}$valor", fontWeight = FontWeight.Bold, modifier = Modifier.semantics { contentDescription = "Valor de $rotulo: $valor" })
-        IconButton(onClick = { onDelta(-1) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Diminuir $rotulo" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun PericiaRacialSeletorDialog(onDismiss: () -> Unit, onSave: (PericiaRacial) -> Unit) {
-    var busca by remember { mutableStateOf("") }
-    var periciaSelecionada by remember { mutableStateOf<PericiaDefinicao?>(null) }
-    var level by remember { mutableStateOf(1) } // Grau no Ranking de Custo GURPS (0=1pt, 1=2pt, 2=4pt...)
-    
-    val dataRepo = remember { CharacterRules.DATA_REPOSITORY_INSTANCE }
-    val listFiltrada = remember(busca) { dataRepo?.filtrarPericias(busca) ?: emptyList() }
-
-    // GURPS OFFICIAL RACIAL SKILL COST TABLE (1, 2, 4, 8, 12, 16...)
-    // Conforme p\u00e1g. 260+ e exemplos do usuário: 2 pts = DX+1 para Médio
-    fun getCustoTabela(uiLvl: Int): Int {
-        val r = abs(uiLvl)
-        val v = when {
-            r == 0 -> 1
-            r == 1 -> 2
-            r == 2 -> 4
-            r == 3 -> 8
-            r >= 4 -> 8 + (r - 3) * 4
-            else -> 0
-        }
-        return if (uiLvl < 0) -v else v
-    }
-
-    // Calcula o nível relativo incluindo o bônus racial de +1 para perícias raciais
-    fun getRelativeDisplay(p: PericiaDefinicao, uiLvl: Int): Int {
-        val diffOffset = when(p.dificuldadeFixa?.uppercase()) {
-            "F" -> 0
-            "M" -> -1
-            "D" -> -2
-            "VH", "MD" -> -3
-            else -> -1
-        }
-        // Cada grau na escala de custo (uiLvl) aumenta o nível do personagem.
-        // O Bônus Racial de +1 é o que faz '2 pts = DX+1' para dificuldade Médio.
-        // Sem o bônus, Rank 1 (2 pts) para Médio seria Atrib+0. Com bônus vira Atrib+1.
-        return diffOffset + uiLvl + 1
-    }
-
-    val finalCost = getCustoTabela(level)
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Adicionar Pericia Racial", fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                if (periciaSelecionada == null) {
-                    OutlinedTextField(value = busca, onValueChange = { busca = it }, label = { Text("Buscar Pericia...") }, modifier = Modifier.fillMaxWidth(), leadingIcon = { Icon(Icons.Default.Search, null) }, singleLine = true)
-                    LazyColumn(modifier = Modifier.height(200.dp)) {
-                        items(listFiltrada) { p ->
-                            ListItem(headlineContent = { Text(p.nome, fontWeight = FontWeight.Bold) }, 
-                                     supportingContent = { Text("${p.atributoBase}/${p.dificuldadeFixa ?: "M"}") },
-                                     modifier = Modifier.clickable { periciaSelecionada = p })
-                        }
-                    }
-                } else {
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(periciaSelecionada!!.nome, fontWeight = FontWeight.Bold)
-                                Text("${periciaSelecionada!!.atributoBase}/${periciaSelecionada!!.dificuldadeFixa ?: "M"}", style = MaterialTheme.typography.labelSmall)
-                            }
-                            IconButton(onClick = { periciaSelecionada = null }) { Icon(Icons.Default.Delete, null) }
-                        }
-                    }
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Bonus/Nivel Racial", style = MaterialTheme.typography.labelSmall)
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                            IconButton(onClick = { level-- }, modifier = Modifier.semantics { contentDescription = "Diminuir nível racial de perícia" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                            val rel = getRelativeDisplay(periciaSelecionada!!, level)
-                            Text("${periciaSelecionada!!.atributoBase}${if(rel>=0) "+" else ""}$rel", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, modifier = Modifier.semantics { contentDescription = "Nível final da perícia: ${periciaSelecionada!!.atributoBase}${if(rel>=0) "+" else ""}$rel" })
-                            IconButton(onClick = { level++ }, modifier = Modifier.semantics { contentDescription = "Aumentar nível racial de perícia" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
-                        }
-                        Text("${if(level>=0) "+" else ""}$level grau(s) na escala de pontos", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.secondary)
-                    }
-                    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE0F0))) {
-                        Text("Custo: $finalCost pontos", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, fontWeight = FontWeight.Bold, color = Color(0xFF880E4F))
-                    }
-                    Text("* Inclui b\u00f4nus racial de +1 para per\u00edcias nativas", style = MaterialTheme.typography.labelSmall, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(enabled = periciaSelecionada != null, onClick = {
-                periciaSelecionada?.let { p ->
-                    val rel = getRelativeDisplay(p, level)
-                    onSave(PericiaRacial(p.nome, p.dificuldadeFixa ?: "M", p.atributoBase, rel, finalCost))
-                }
-            }) { Text("Adicionar") }
-        },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
-    )
-}
-
+// RACIAL DIALOGS MOVED TO TraitDialogsV2.kt TO IMPROVE MAINTAINABILITY
