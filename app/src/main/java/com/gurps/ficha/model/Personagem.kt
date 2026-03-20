@@ -323,6 +323,7 @@ data class DesvantagemDefinicao(
     val pagina: Int = 0,
     val tags: List<String> = emptyList(),
     val descricao: String? = "",
+    val specialRule: String? = null,
     @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
     val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
 ) {
@@ -374,6 +375,7 @@ data class DesvantagemSelecionada(
     var autocontrole: Int? = null,
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
+    val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
     var metadados: Map<String, String>? = null
 ) {
@@ -384,7 +386,9 @@ data class DesvantagemSelecionada(
             custoEscolhido = custoEscolhido,
             nivel = nivel,
             autocontrole = autocontrole,
-            modificadores = modificadores
+            modificadores = modificadores,
+            specialRule = specialRule,
+            metadados = metadados
         )
     }
 }

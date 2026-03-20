@@ -262,8 +262,17 @@ object CharacterRules {
         custoEscolhido: Int,
         nivel: Int,
         autocontrole: Int?,
-        modificadores: List<ModificadorSelecao> = emptyList()
+        modificadores: List<ModificadorSelecao> = emptyList(),
+        specialRule: String? = null,
+        metadados: Map<String, String>? = null
     ): Int {
+        if (specialRule == "inimigos" && metadados != null) {
+            return calcularCustoInimigo(metadados, modificadores)
+        }
+        if (specialRule == "dependencia" && metadados != null) {
+            return calcularCustoDependencia(metadados, modificadores)
+        }
+
         val custoSemAutocontrole = when (tipoCusto) {
             TipoCusto.POR_NIVEL -> custoBase * nivel
             else -> custoEscolhido
@@ -289,13 +298,38 @@ object CharacterRules {
             if (it.porNivel) it.valor * it.niveis else it.valor
         }
 
-        // Regra canônica para desvantagens: limite de -80% também se aplica?
-        // Na prática, limitações em desvantagens reduzem seu bônus.
         val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
+    }
 
-        val multiplicador = 1.0 + (percentualFinal / 100.0)
-        // Arredondamento para desvantagem: -22.5 vira -22 (ceil)
-        return kotlin.math.ceil(valorBase * multiplicador).toInt()
+    private fun calcularCustoInimigo(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
+        val basePoder = metadados["basePoder"]?.toIntOrNull() ?: -5
+        val multIntencao = metadados["multIntencao"]?.toFloatOrNull() ?: 1.0f
+        val multFrequencia = metadados["multFrequencia"]?.toFloatOrNull() ?: 1.0f
+        
+        val valorBase = (basePoder * multIntencao * multFrequencia).toInt()
+        
+        val somaPercentual = modificadores.sumOf { it.valor }
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+        
+        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
+    }
+
+    private fun calcularCustoDependencia(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
+        val baseRaridade = metadados["baseRaridade"]?.toIntOrNull() ?: -5
+        val multFrequencia = metadados["multFrequencia"]?.toFloatOrNull() ?: 1.0f
+        val ilegal = metadados["ilegal"]?.toBoolean() ?: false
+        
+        var valorBase = (baseRaridade * multFrequencia).toInt()
+        if (ilegal) valorBase -= 5
+        
+        val somaPercentual = modificadores.sumOf { it.valor }
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+        
+        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
     }
 
     fun calcularBonusPorDificuldade(dificuldade: Dificuldade, pontosGastos: Int): Int {

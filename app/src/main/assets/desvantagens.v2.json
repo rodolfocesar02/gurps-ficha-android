@@ -334,18 +334,23 @@
     "id": "aversao",
     "nome": "Aversão",
     "pagina": 123,
-    "costKind": "range",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
-    "min": -20,
-    "max": -10,
-    "rawCost": "-10 a -20",
+    "options": [
+      -20,
+      -15,
+      -10,
+      -5
+    ],
+    "min": null,
+    "max": null,
+    "rawCost": "-5, -10, -15 ou -20",
     "specialRule": null,
     "tags": [
       "magica"
     ],
-    "descricao": "O personagem sente uma aversão sobrenatural a um determinado item ou substância e isso o obriga a manter alguma distância dela."
+    "descricao": "O personagem sente uma aversão sobrenatural a um determinado item ou substância e isso o obriga a manter alguma distância dela. 1 metro (-5), 2 metros (-10), 5 metros (-15) ou 10 metros (-20)."
   },
   {
     "id": "aversoes",
@@ -554,7 +559,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem uma visão no turna limitada. Se a penalidade sobre a visão ou o combate devido à má iluminação estiver entre -1 e -4 para a maioria das pessoas, então a dele será o dobro ou -3, o que for pior. Se a penalidade for de -5 ou pior, então ele deve agir como se fosse comple tamente cego (v. Cegueira, pág. 125). Se o personagem também tiver Visão Aguçada (pág. 88), esta só se aplica a situações onde não haja penalidade por causa da escuridão. Esta desvantagem é mutuamente ex cludente com Visão Noturna (pág. 97) e Visão no Escuro (pág. 97). Circunspecção 2 O personagem nunca entende uma piada e acha que todo mundo está le vando tudo a sério o tempo todo. Por tanto, ele nunca faz piadas e é extre mamente sério. A reação das outras pessoas diante dele sofre uma penalida de de -2 em qualquer situação onde a desvantagem fique evidente. Cleptomania 2 -15 pontos* O personagem se sente compelido a roubar, não necessariamente coisas de valor, mas qualquer coisa que ele possa levar. Sempre que tiver uma chance de roubar, ele deve fazer um teste de auto controle com uma penalidade de até -3, se o objeto tiver algum interesse especial para ele (não necessariamente valor, a menos que ele seja pobre ou Ambicioso). No caso de um fracasso, o personagem deve tentar furtar o objeto. As coisas rou badas devem ser mantidas ou vendidas — nunca devolvidas ou abandonadas. Cobiça 2 -15 pontos* O personagem tem paixão por di -"
+    "descricao": "O personagem tem uma visão no turna limitada. Se a penalidade sobre a visão ou o combate devido à má iluminação estiver entre -1 e -4 para a maioria das pessoas, então a dele será o dobro ou -3, o que for pior. Se a penalidade for de -5 ou pior, então ele deve agir como se fosse comple tamente cego (v. Cegueira, pág. 125). Se o personagem também tiver Visão Aguçada (pág. 88), esta só se aplica a situações onde não haja penalidade por causa da escuridão. Esta desvantagem é mutuamente ex cludente com Visão Noturna (pág. 97) e Visão no Escuro (pág. 97)."
   },
   {
     "id": "chauvinista",
@@ -749,7 +754,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "-10 pontos/nível Uma “refeição” supre as necessi dades do personagem por um período muito menor em comparação com um ser humano normal. Esta desvantagem é adequada para criaturas pequenas que precisam se alimentar com frequ ência ou para máquinas que consomem rapidamente o suprimento de energia ou combustível que carregam. Consumo Ampliado 1: O personagem precisa de seis refeições por dia. Se pos suir a metacaracterística Máquina (pág. 262), terá uma resistência de 4 horas. Consumo Ampliado 2: O personagem precisa de 12 refeições por dia. Se pos suir a metacaracterística Máquina (pág. 262), terá uma resistência de 2 horas. Consumo Ampliado 3: O personagem precisa de 24 refeições por dia. Se pos suir a metacaracterística Máquina (pág. 262), terá uma resistência de 1 hora. …e assim por diante, sempre do brando o consumo e reduzindo a resis tência pela metade a cada nível adicio nal. Um único nível desta característica é apropriado para humanos normais que estão Acima do Peso ou mais pesa dos (v. Constituição Física, pág. 18), ou que têm a desvantagem Gula (pág. 143). Convulsões Pós-Combate 2 -5 pontos* O personagem sofre convulsões e fica doente depois de um combate — mas só quando ele acaba. Ele deve fazer um tes te de autocontrole no final de qualquer batalha — cabe ao Mestre determinar quando uma batalha realmente acaba e ele pode aplicar uma penalidade se o combate for particularmente arriscado ou terrível. No caso de um fracasso, o Mestre deve jogar 3 dados, somar a mar gem de fracasso do teste de autocontro le do personagem ao resultado e consul -"
+    "descricao": "-10 pontos/nível Uma “refeição” supre as necessi dades do personagem por um período muito menor em comparação com um ser humano normal. Esta desvantagem é adequada para criaturas pequenas que precisam se alimentar com frequ ência ou para máquinas que consomem rapidamente o suprimento de energia ou combustível que carregam. Consumo Ampliado 1: O personagem precisa de seis refeições por dia. Se pos suir a metacaracterística Máquina (pág. 262), terá uma resistência de 4 horas. Consumo Ampliado 2: O personagem precisa de 12 refeições por dia. Se pos suir a metacaracterística Máquina (pág. 262), terá uma resistência de 2 horas. Consumo Ampliado 3: O personagem precisa de 24 refeições por dia. Se pos suir a metacaracterística Máquina (pág. 262), terá uma resistência de 1 hora. …e assim por diante, sempre do brando o consumo e reduzindo a resis tência pela metade a cada nível adicio nal. Um único nível desta característica é apropriado para humanos normais que estão Acima do Peso ou mais pesa dos (v. Constituição Física, pág. 18), ou que têm a desvantagem Gula (pág. 143)."
   },
   {
     "id": "convulsoes_pos_combate",
@@ -766,7 +771,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "-5 pontos* O personagem sofre convulsões e fica doente depois de um combate — mas só quando ele acaba. Ele deve fazer um tes te de autocontrole no final de qualquer batalha — cabe ao Mestre determinar quando uma batalha realmente acaba e ele pode aplicar uma penalidade se o combate for particularmente arriscado ou terrível. No caso de um fracasso, o Mestre deve jogar 3 dados, somar a mar gem de fracasso do teste de autocontro le do personagem ao resultado e consul tar o resultado na Tabela de Verificação de Pânico (pág. 360). Por exemplo, se o número de autocontrole do personagem é 12, mas ele obtém um resultado de 14, o Mestre deve jogar 3d+2 e consultar o resultado na tabela. O efeito descrito afeta o personagem imediatamente. Corcunda 3 O personagem tem uma deficiência na coluna que o obriga a assumir uma postu ra inclinada ou curvada — o que normal mente resulta em uma corcunda ou pro tuberância sobre um dos ombros, ou os dois. Isso reduz a altura do personagem em 15 cm sem alterar seu peso ou estrutu ra física. As roupas e armaduras comuns não servem bem nele, impondo uma pe nalidade de -1 sobre a DX; para evitar esse problema, é necessário pagar mais 10% por equipamentos feitos sob medida. A maioria das pessoas se sente incomo dada com a presença do personagem e re age a ele com uma penalidade de -1. Essa penalidade é cumulativa com os modifica dores habituais de aparência (v"
+    "descricao": "-5 pontos* O personagem sofre convulsões e fica doente depois de um combate — mas só quando ele acaba. Ele deve fazer um tes te de autocontrole no final de qualquer batalha — cabe ao Mestre determinar quando uma batalha realmente acaba e ele pode aplicar uma penalidade se o combate for particularmente arriscado ou terrível. No caso de um fracasso, o Mestre deve jogar 3 dados, somar a mar gem de fracasso do teste de autocontro le do personagem ao resultado e consul tar o resultado na Tabela de Verificação de Pânico (pág. 360). Por exemplo, se o número de autocontrole do personagem é 12, mas ele obtém um resultado de 14, o Mestre deve jogar 3d+2 e consultar o resultado na tabela. O efeito descrito afeta o personagem imediatamente."
   },
   {
     "id": "corcunda",
@@ -800,7 +805,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-10 pontos* O personagem é extremamente cui dadoso com relação ao seu bem-estar físico. Sempre que surgir a necessidade de se arriscar fisicamente, ele deve fa zer um teste de autocontrole. Se houver risco de vida, o teste sofre uma penali dade de -5. No caso de um fracasso, ele deve recusar se arriscar, a menos que seja ameaçado com um perigo maior. Covardia impõe uma penalidade nas Verificações de Pânico sempre que hou ver risco de dano físico: Número de AutocontrolePenalidade na Verificação de Pânico 6 -4 9 -3 12 -2 15 -1 Em algumas épocas e lugares, solda dos, policiais, etc. , reagem com a mes ma penalidade quando descobrem que um indivíduo é covarde. Credulidade 2 -10 pontos* Nasce um tolo a cada minuto — e seu personagem é um deles. Ele acredi ta em tudo o que ouve. Engolirá a his tória mais absurda se for contada com convicção. Para não acreditar em uma mentira ou em uma verdade imprová vel, ele deve fazer um teste de autocon trole modificado pela plausibilidade da história. No caso de um fracasso, ele acredita em tudo o que lhe disserem. Uma mentira bem contada ou que envolva algum aspecto com o qual o per sonagem não esteja familiarizado (“Meu pai é o chefe de polícia desta cidade e não vai tolerar isso”) impõe uma penalidade de -6 no teste de autocontrole. Uma men tira envolvendo um tópico com o qual o personagem crédulo está familiarizado"
+    "descricao": "-10 pontos* O personagem é extremamente cui dadoso com relação ao seu bem-estar físico. Sempre que surgir a necessidade de se arriscar fisicamente, ele deve fa zer um teste de autocontrole. Se houver risco de vida, o teste sofre uma penali dade de -5. No caso de um fracasso, ele deve recusar se arriscar, a menos que seja ameaçado com um perigo maior. Covardia impõe uma penalidade nas Verificações de Pânico sempre que hou ver risco de dano físico: Número de AutocontrolePenalidade na Verificação de Pânico 6 -4 9 -3 12 -2 15 -1 Em algumas épocas e lugares, solda dos, policiais, etc. , reagem com a mes ma penalidade quando descobrem que um indivíduo é covarde."
   },
   {
     "id": "credulidade",
@@ -817,7 +822,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-10 pontos* Nasce um tolo a cada minuto — e seu personagem é um deles. Ele acredi ta em tudo o que ouve. Engolirá a his tória mais absurda se for contada com convicção. Para não acreditar em uma mentira ou em uma verdade imprová vel, ele deve fazer um teste de autocon trole modificado pela plausibilidade da história. No caso de um fracasso, ele acredita em tudo o que lhe disserem. Uma mentira bem contada ou que envolva algum aspecto com o qual o per sonagem não esteja familiarizado (“Meu pai é o chefe de polícia desta cidade e não vai tolerar isso”) impõe uma penalidade de -6 no teste de autocontrole. Uma men tira envolvendo um tópico com o qual o personagem crédulo está familiarizado (“Você não sabia que eles criam patos em sua vila, Torg? ”) acarreta em uma pena lidade de -3 — mas até mesmo a história mais bizarra (“É claro que os esquimós descendem dos conquistadores espa nhóis, todo mundo sabe disso”) será en golida se a vítima fracassar em um teste de autocontrole não-modificado. Além disso, um personagem crédulo também sofre uma penalidade de -3 em qualquer teste de Comércio ou em qual quer situação em que sua credulidade possa ser explorada. Um crédulo nunca pode aprender a perícia Detecção de Mentiras. Curiosidade 2 -5 pontos* O personagem é curioso por natu reza. Esta desvantagem não representa a curiosidade que afeta todos os PdJs (“O que há na caverna? De onde saiu aquele disco voador? ”), mas algo muito mais intenso (“O que vai acontecer se eu apertar este botão aqui? ”). O personagem precisa fazer um teste de autocontrole quando se deparar com"
+    "descricao": "-10 pontos* Nasce um tolo a cada minuto — e seu personagem é um deles. Ele acredi ta em tudo o que ouve. Engolirá a his tória mais absurda se for contada com convicção. Para não acreditar em uma mentira ou em uma verdade imprová vel, ele deve fazer um teste de autocon trole modificado pela plausibilidade da história. No caso de um fracasso, ele acredita em tudo o que lhe disserem. Uma mentira bem contada ou que envolva algum aspecto com o qual o per sonagem não esteja familiarizado (“Meu pai é o chefe de polícia desta cidade e não vai tolerar isso”) impõe uma penalidade de -6 no teste de autocontrole. Uma men tira envolvendo um tópico com o qual o personagem crédulo está familiarizado (“Você não sabia que eles criam patos em sua vila, Torg? ”) acarreta em uma pena lidade de -3 — mas até mesmo a história mais bizarra (“É claro que os esquimós descendem dos conquistadores espa nhóis, todo mundo sabe disso”) será en golida se a vítima fracassar em um teste de autocontrole não-modificado. Além disso, um personagem crédulo também sofre uma penalidade de -3 em qualquer teste de Comércio ou em qual quer situação em que sua credulidade possa ser explorada. Um crédulo nunca pode aprender a perícia Detecção de Mentiras."
   },
   {
     "id": "criativo",
@@ -868,7 +873,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-5 pontos* O personagem é curioso por natu reza. Esta desvantagem não representa a curiosidade que afeta todos os PdJs (“O que há na caverna? De onde saiu aquele disco voador? ”), mas algo muito mais intenso (“O que vai acontecer se eu apertar este botão aqui? ”). O personagem precisa fazer um teste de autocontrole quando se deparar com um item ou situação interessante. Se fra cassar, ele terá que examinar tudo ao seu redor — apertar botões, baixar alavan cas, abrir portas e presentes, etc. — mes mo se souber que isso pode ser perigoso. Jogadores bons de interpretação não farão esse teste com muita frequência… Em geral, o personagem faz tudo o que estiver ao seu alcance para inves tigar qualquer situação com a qual não esteja totalmente familiarizado. Quando se deparar com um mistério de verdade, ele não conseguirá simplesmente igno rá-lo. Ele vai tentar racionalizar a situa ção para justificar sua curiosidade para os que tentam convencê-lo do contrário. Nesse caso, não adianta ter Bom Senso — o personagem sabe que está correndo pe rigo, mas continua curioso mesmo assim! Daltonismo 3 O personagem não é capaz de distin guir nenhuma cor (isto é, sofre de acro matopsia). Em situações que exigem a identificação de cores (compra de pedras preciosas, identificação de um uniforme ou apertar o botão vermelho para dar partida num motor), o Mestre deve impor as dificuldades adequadas à situação. Além disso, algumas perícias serão sempre mais difíceis para um dal tônico. Ele sofre uma penalidade de -1 nos testes de Comércio, Condução, Pi lotagem, Química e Rastreamento."
+    "descricao": "-5 pontos* O personagem é curioso por natu reza. Esta desvantagem não representa a curiosidade que afeta todos os PdJs (“O que há na caverna? De onde saiu aquele disco voador? ”), mas algo muito mais intenso (“O que vai acontecer se eu apertar este botão aqui? ”). O personagem precisa fazer um teste de autocontrole quando se deparar com um item ou situação interessante. Se fra cassar, ele terá que examinar tudo ao seu redor — apertar botões, baixar alavan cas, abrir portas e presentes, etc. — mes mo se souber que isso pode ser perigoso. Jogadores bons de interpretação não farão esse teste com muita frequência… Em geral, o personagem faz tudo o que estiver ao seu alcance para inves tigar qualquer situação com a qual não esteja totalmente familiarizado. Quando se deparar com um mistério de verdade, ele não conseguirá simplesmente igno rá-lo. Ele vai tentar racionalizar a situa ção para justificar sua curiosidade para os que tentam convencê-lo do contrário. Nesse caso, não adianta ter Bom Senso — o personagem sabe que está correndo pe rigo, mas continua curioso mesmo assim!"
   },
   {
     "id": "daltonismo",
@@ -1083,16 +1088,41 @@
     "id": "dever",
     "nome": "Dever",
     "pagina": 133,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -15,
+      -10,
+      -5,
+      -2
+    ],
     "min": null,
     "max": null,
     "rawCost": "Variável",
-    "specialRule": "dever",
+    "specialRule": null,
     "tags": [
       "social"
+    ],
+    "modificadores_especificos": [
+      {
+        "id": "extremamente_perigoso",
+        "nome": "Extremamente Perigoso",
+        "valor": "-5",
+        "descricao": "Caso a frequência exija que o personagem enfrente grandes perigos regularmente."
+      },
+      {
+        "id": "involuntario",
+        "nome": "Involuntário",
+        "valor": "-5",
+        "descricao": "O dever é forçado ao personagem."
+      },
+      {
+        "id": "inofensivo",
+        "nome": "Inofensivo",
+        "valor": "5",
+        "descricao": "O dever é puramente social ou burocrático, sem risco. (Mutuamente excludente com Perigoso)"
+      }
     ],
     "descricao": "Frequência: 15- (-15), 12- (-10), 9- (-5), 6- (-2). Modificadores: Extremamente Perigoso (-5), Involuntário (-5), Inofensivo (Mutuamente excludente com Perigoso, +5)."
   },
@@ -1290,7 +1320,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "-50, -75 ou -100 pontos O personagem vai morrer em breve. Na maioria das vezes, isso se deve a algum tipo de doença grave, mas tam bém pode indicar uma maldição pode rosa, um artefato explosivo irremovível implantado na base de seu crânio ou qualquer outra coisa que resulte em sua morte. O custo em pontos da des vantagem é determinado pelo tempo que lhe resta: Tempo de Vida Custo Até um mês -100 pontos Até um ano -75 pontos Até dois anos -50 pontos Mais que dois anos não vale nada — qualquer pessoa pode ser atropelada por um caminhão em dois anos! Se durante o desenrolar de uma campanha o personagem conseguir uma “cura milagrosa”, transportar-se para outro corpo ou qualquer outra coisa que estenda sua vida além de sua data de expiração, ele deve recomprar esta desvantagem. Se não tiver pontos suficientes, o Mestre tem liberdade para cobrir a diferença com novas desvanta gens relacionadas à doença ou sua cura (ex. : Dor Crônica, Dependência, Manu tenção e Suscetível). Se estiver conduzindo uma aventura independente ou uma campanha curta, o Mestre não deve permitir esta desvan tagem pois ela não fará sentido. Dor Crônica 3 Variável O personagem tem um ferimento, distúrbio ou doença que o faz sentir uma dor aguda regularmente — talvez até constantemente. Alguns exemplos são, artrite, câncer nos ossos, enxaque ca e estilhaços dentro do corpo (uma “antiga ferida de guerra”)."
+    "descricao": "-50, -75 ou -100 pontos O personagem vai morrer em breve. Na maioria das vezes, isso se deve a algum tipo de doença grave, mas tam bém pode indicar uma maldição pode rosa, um artefato explosivo irremovível implantado na base de seu crânio ou qualquer outra coisa que resulte em sua morte. O custo em pontos da des vantagem é determinado pelo tempo que lhe resta: Tempo de Vida Custo Até um mês -100 pontos Até um ano -75 pontos Até dois anos -50 pontos Mais que dois anos não vale nada — qualquer pessoa pode ser atropelada por um caminhão em dois anos! Se durante o desenrolar de uma campanha o personagem conseguir uma “cura milagrosa”, transportar-se para outro corpo ou qualquer outra coisa que estenda sua vida além de sua data de expiração, ele deve recomprar esta desvantagem. Se não tiver pontos suficientes, o Mestre tem liberdade para cobrir a diferença com novas desvanta gens relacionadas à doença ou sua cura (ex. : Dor Crônica, Dependência, Manu tenção e Suscetível). Se estiver conduzindo uma aventura independente ou uma campanha curta, o Mestre não deve permitir esta desvantagem pois ela não fará sentido. Dor Crônica 3 Variável O personagem tem um ferimento, distúrbio ou doença que o faz sentir uma dor aguda regularmente — talvez até constantemente. Alguns exemplos são, artrite, câncer nos ossos, enxaque ca e estilhaços dentro do corpo (uma “antiga ferida de guerra”)."
   },
   {
     "id": "dor_cronica",
@@ -1324,7 +1354,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não se dá bem com a “luz do dia”. Até uma hora depois que despertar de uma soneca de mais de uma hora, ele sofre uma penalidade de -2 em todos os testes de autocontrole e -1 em IQ ou nas perícias baseadas em IQ. Além disso, sempre que o Mestre impor penalidades de atributo por sono perdido, o personagem sofre uma pena lidade adicional de -1. Doutrinas Religiosas 2 O personagem vive de acordo com um conjunto rigoroso de regras, a fim de chegar a uma compreensão maior de sua fé. Isso pode ser resultado de uma decisão pessoal ou uma exigên cia da religião. Contudo, essas regras são opcionais em muitas crenças — na verdade, algumas chegam até mesmo a proibi-las, por serem excessivas. Doutri nas Religiosas costuma ser um pré-re quisito de habilidades que canalizam o poder divino: Investidura de Poder, Fé Verdadeira, etc. Entre os exemplos de doutrinas, incluem-se: Asceticismo: O personagem renun ciou ao comodismo oferecido pela so ciedade para viver uma vida de sacrifí cio e autodisciplina. Isso normalmente faz com que ele se isole em algum tipo de local sombrio e austero e pode até mesmo envolver surtos esporádicos de autopunição severa para extirpar a mácula mortal do desejo da carne. Ele deve tentar superar toda e qualquer necessidade de posses materiais e não pode ter Riqueza ou Status superior ao concedido por sua Hierarquia Religiosa (se tiver). -15 pontos. Misticismo: O personagem se entre ga a uma meditação profunda e con templação semelhante ao estado de transe com o objetivo de se unir cada"
+    "descricao": "O personagem não se dá bem com a “luz do dia”. Até uma hora depois que despertar de uma soneca de mais de uma hora, ele sofre uma penalidade de -2 em todos os testes de autocontrole e -1 em IQ ou nas perícias baseadas em IQ. Além disso, sempre que o Mestre impor penalidades de atributo por sono perdido, o personagem sofre uma penalidade adicional de -1."
   },
   {
     "id": "doutrinas_religiosas",
@@ -1343,25 +1373,37 @@
     "rawCost": "-5, -10 ou-15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem vive de acordo com um conjunto rigoroso de regras, a fim de chegar a uma compreensão maior de sua fé. Isso pode ser resultado de uma decisão pessoal ou uma exigên cia da religião. Contudo, essas regras são opcionais em muitas crenças — na verdade, algumas chegam até mesmo a proibi-las, por serem excessivas. Doutri nas Religiosas costuma ser um pré-re quisito de habilidades que canalizam o poder divino: Investidura de Poder, Fé Verdadeira, etc. Entre os exemplos de doutrinas, incluem-se: Asceticismo: O personagem renun ciou ao comodismo oferecido pela so ciedade para viver uma vida de sacrifí cio e autodisciplina. Isso normalmente faz com que ele se isole em algum tipo de local sombrio e austero e pode até mesmo envolver surtos esporádicos de autopunição severa para extirpar a mácula mortal do desejo da carne. Ele deve tentar superar toda e qualquer necessidade de posses materiais e não pode ter Riqueza ou Status superior ao concedido por sua Hierarquia Religiosa (se tiver). -15 pontos. Misticismo: O personagem se entre ga a uma meditação profunda e con templação semelhante ao estado de transe com o objetivo de se unir cada vez mais com o divino. Ele passa gran de parte do seu tempo envolvido com esses rituais, que envolvem cantos e todo o tipo de enfeites. Os indivídu os que não forem devotos da mesma religião que a do personagem o consi deram um pouco louco e reagem a ele com uma penalidade de -2. -10 pontos. Monaquismo: O personagem vive uma vida sem preocupações terrenas e se dedica completamente a buscas reli -"
+    "descricao": "O personagem vive de acordo com um conjunto rigoroso de regras, a fim de chegar a uma compreensão maior de sua fé. Asceticismo (-15), Misticismo (-10) ou Monaquismo (-5)."
   },
   {
     "id": "drenagem",
     "nome": "Drenagem",
     "pagina": 136,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -15,
+      -10,
+      -5
+    ],
     "min": null,
     "max": null,
     "rawCost": "Variável",
-    "specialRule": "drenagem",
+    "specialRule": null,
     "tags": [
       "fisica",
       "magica"
     ],
-    "descricao": "Variável Uma vez por dia, em um momento es pecífico — ao nascer do sol, ao meio-dia, ao pôr-do-sol, à meia-noite, etc. — o per sonagem perde 2 PV. Não é possível fazer nada para evitar isso e nem curar o dano de modo natural (mesmo que o persona gem tenha Regeneração), tecnológica ou sobrenatural. A única maneira de recu perar os PV perdidos é receber uma dose diária de uma determinada substância. O custo em pontos da desvantagem de pende da raridade dessa substância: Rara (ex. : uma poção especial): -15 pontos. Ocasional (ex. : o sangue de uma vir gem): -10 pontos. Comum: (ex. : sangue humano): -5 pontos. Acrescente -5 pontos a esses valores para itens ilegais na campanha. Esta desvantagem não é igual à Depen dência (pág. 130) — é possível ter as duas! Duro de Ouvido 3 O personagem não é surdo, mas per deu parte da audição. Ele sofre uma penalidade de -4 em todos os testes de Audição e nos testes de habilidade em situações em que ele precisa entender o que alguém está dizendo (esta desvan tagem não afeta o personagem quando ele está falando). Egoísmo 2 -5 pontos* O personagem se acha muito impor tante, tem consciência de seu próprio status e passa grande parte do tempo tentando atingir o ápice social. Ele deve fazer um teste de autocontrole sempre que for desprezado ou esnobado em um meio social. Se fracassar, ele começa a ofender a pessoa que o ignorou como se estivesse sofrendo de Irritabilidade (pág."
+    "modificadores_especificos": [
+      {
+        "id": "ilegal",
+        "nome": "Ilegal",
+        "valor": "-5",
+        "descricao": "A substância necessária é ilegal na campanha."
+      }
+    ],
+    "descricao": "Rara (ex.: poção especial): -15 pontos. Ocasional (ex.: sangue de virgem): -10 pontos. Comum (ex.: sangue humano): -5 pontos. Item ilegal: + -5 pontos."
   },
   {
     "id": "duro_de_ouvido",
@@ -1378,7 +1420,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não é surdo, mas per deu parte da audição. Ele sofre uma penalidade de -4 em todos os testes de Audição e nos testes de habilidade em situações em que ele precisa entender o que alguém está dizendo (esta desvan tagem não afeta o personagem quando ele está falando). Egoísmo 2 -5 pontos* O personagem se acha muito impor tante, tem consciência de seu próprio status e passa grande parte do tempo tentando atingir o ápice social. Ele deve fazer um teste de autocontrole sempre que for desprezado ou esnobado em um meio social. Se fracassar, ele começa a ofender a pessoa que o ignorou como se estivesse sofrendo de Irritabilidade (pág. 147) — provavelmente provocando uma reação negativa (penalidade de -3 na rea ção do alvo em relação ao personagem) e se colocando numa situação embaraçosa. PdMs egoístas reagem diante de desfeitos de acordo com a penalidade a seguir. Número de AutocontrolePenalidade 6 -5 9 -4 12 -3 15 -2"
+    "descricao": "O personagem não é surdo, mas perdeu parte da audição. Ele sofre uma penalidade de -4 em todos os testes de Audição e nos testes de habilidade em situações em que ele precisa entender o que alguém está dizendo (esta desvantagem não afeta o personagem quando ele está falando)."
   },
   {
     "id": "egoismo",
@@ -2365,16 +2407,19 @@
     "id": "inveja",
     "nome": "Inveja",
     "pagina": 147,
-    "costKind": "fixed",
-    "fixed": -10,
+    "costKind": "choice",
+    "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -15,
+      -10
+    ],
     "min": null,
     "max": null,
-    "rawCost": "-10",
+    "rawCost": "-10 ou -15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem sente inveja de qualquer um que pareça ser superior ou ter mais sorte que ele."
+    "descricao": "O personagem sente inveja de qualquer um que pareça ser superior ou ter mais sorte que ele. Inveja normal (-10) ou Extraordinária (-15)."
   },
   {
     "id": "invertebrado",
@@ -2474,7 +2519,7 @@
     "rawCost": "-5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pesa aproximadamente 2/3 do normal para sua altura e ST. Sofre penalidades para resistir a ser derrubado."
+    "descricao": "O personagem pesa aproximadamente 2/3 do normal para sua ST. Sofre penalidades para resistir a ser derrubado."
   },
   {
     "id": "maldicao",
@@ -2982,7 +3027,7 @@
     "rawCost": "-1",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem pernas tortas. Isso não costuma afetar o Deslocamen to, mas ele sofre uma penalidade de -1 na perícia Salto. Esta peculiarida de também pode resultar em uma pe nalidade de -1 nos testes de reação de pessoas que acham seu modo de andar engraçado. Ressacas Terríveis O personagem sofre uma penalida de de -3 — além de quaisquer outras penalidades atribuídas pelo Mestre no dia seguinte ao consumir muita bebida alcoólica. Acrescente três horas à dura ção de suas ressacas"
+    "descricao": "O personagem tem pernas tortas. Isso não costuma afetar o Deslocamento, mas ele sofre uma penalidade de -1 na perícia Salto. Esta peculiaridade também pode resultar em uma penalidade de -1 nos testes de reação de pessoas que acham seu modo de andar engraçado."
   },
   {
     "id": "pesadelos",
@@ -3016,7 +3061,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-5 pontos* O personagem adora o fogo! E tam bém gosta de acendê-lo. Para conseguir uma boa atuação, o personagem não deve nunca perder uma oportunidade de começar um incêndio ou apreciar um em andamento. Ele deve fazer um teste de autocontrole sempre que tiver a oportunidade de causar um incêndio. Pouca Empatia 2 O personagem não é capaz de enten der nenhum tipo de emoção. Isso não o impede de ter e demonstrar sentimen tos (a menos que tenha algo como Cir cunspecção), seu problema é não con seguir compreendê-los de verdade. Por causa disso, ele tem dificuldade para interagir socialmente. Ele não pode adquirir a vantagem Empatia e sofre uma penalidade de -3 em todas as perícias que dependem — no todo ou em parte — da compre ensão da motivação emocional de uma pessoa, o que inclui Boemia, Comércio, Criminologia, Deslumbrar, Detecção de Mentiras, Diplomacia, Dissimulação, In terrogatório, Lábia, Liderança, Manha, Política, Psicologia, Sex Appeal, Sociolo gia e Trato Social. O personagem ainda pode ter essas perícias, mas nunca será tão bom nelas quanto uma pessoa que não tem a desvantagem Pouca Empatia. Esta característica é comum entre androides, demônios, golens, mortos - -vivos e alguns alienígenas — e pode ser apropriada a alguns humanos. Ela também é mutuamente excludente com duas desvantagens que, de certa forma, são semelhantes: Insensível (pág. 147) e Oblívio (pág. 151). As duas assumem que existe alguma compreensão das emoções, mesmo que equivocada. Preguiça 2"
+    "descricao": "O personagem adora o fogo! E também gosta de acendê-lo. Para conseguir uma boa atuação, o personagem não deve nunca perder uma oportunidade de começar um incêndio ou apreciar um em andamento. Ele deve fazer um teste de autocontrole sempre que tiver a oportunidade de causar um incêndio."
   },
   {
     "id": "pouca_empatia",
@@ -3033,7 +3078,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem não é capaz de enten der nenhum tipo de emoção. Isso não o impede de ter e demonstrar sentimen tos (a menos que tenha algo como Cir cunspecção), seu problema é não con seguir compreendê-los de verdade. Por causa disso, ele tem dificuldade para interagir socialmente. Ele não pode adquirir a vantagem Empatia e sofre uma penalidade de -3 em todas as perícias que dependem — no todo ou em parte — da compre ensão da motivação emocional de uma pessoa, o que inclui Boemia, Comércio, Criminologia, Deslumbrar, Detecção de Mentiras, Diplomacia, Dissimulação, In terrogatório, Lábia, Liderança, Manha, Política, Psicologia, Sex Appeal, Sociolo gia e Trato Social. O personagem ainda pode ter essas perícias, mas nunca será tão bom nelas quanto uma pessoa que não tem a desvantagem Pouca Empatia. Esta característica é comum entre androides, demônios, golens, mortos - -vivos e alguns alienígenas — e pode ser apropriada a alguns humanos. Ela também é mutuamente excludente com duas desvantagens que, de certa forma, são semelhantes: Insensível (pág. 147) e Oblívio (pág. 151). As duas assumem que existe alguma compreensão das emoções, mesmo que equivocada. Preguiça 2 O personagem tem uma aversão mui to grande ao trabalho físico. Suas chan ces de conseguir um aumento em qual quer emprego são reduzidas à metade. Se ele trabalha por conta própria, sua renda mensal cai para a metade (v. Empregos, pág. 516). O personagem deve evitar o trabalho, principalmente o trabalho pe sado, a qualquer custo. Interprete! Problemas na Coluna 3"
+    "descricao": "O personagem não é capaz de entender nenhum tipo de emoção. Isso não o impede de ter e demonstrar sentimentos (a menos que tenha algo como Circunspeção), seu problema é não conseguir compreendê-los de verdade. Por causa disso, ele tem dificuldade para interagir socialmente. Ele não pode adquirir a vantagem Empatia e sofre uma penalidade de -3 em todas as perícias que dependem — no todo ou em parte — da compreensão da motivação emocional de uma pessoa, o que inclui Boemia, Comércio, Criminologia, Deslumbrar, Detecção de Mentiras, Diplomacia, Dissimulação, Interrogatório, Lábia, Liderança, Manha, Política, Psicologia, Sex Appeal, Sociologia e Trato Social."
   },
   {
     "id": "preferencias",
@@ -3799,16 +3844,46 @@
     "id": "vicio",
     "nome": "Vício",
     "pagina": 159,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      -20,
+      -10,
+      -5
+    ],
     "min": null,
     "max": null,
     "rawCost": "Variável",
-    "specialRule": "vicio",
+    "specialRule": null,
     "tags": [
       "mental"
+    ],
+    "modificadores_especificos": [
+      {
+        "id": "vicio_incapacitante",
+        "nome": "Incapacitante",
+        "valor": "-10",
+        "descricao": "O vício torna o personagem incapaz de agir normalmente."
+      },
+      {
+        "id": "altamente_viciante",
+        "nome": "Altamente viciante",
+        "valor": "-5",
+        "descricao": "A substância é altamente viciante (-5)."
+      },
+      {
+        "id": "totalmente_viciante",
+        "nome": "Totalmente viciante",
+        "valor": "-10",
+        "descricao": "A substância é totalmente viciante (-10)."
+      },
+      {
+        "id": "vicio_legal",
+        "nome": "Substância Legal",
+        "valor": "5",
+        "descricao": "A substância é legalizada (+5)."
+      }
     ],
     "descricao": "Custo Diário: Barato (-5), Caro (-10), Muito Caro (-20). Efeitos: Mínimo (+0), Incapacitante (-10), Altamente viciante (-5), Totalmente viciante (-10). Legalidade: Ilegal (+0), Legal (+5)."
   },

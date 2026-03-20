@@ -813,8 +813,8 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
 
     desvantagemSelecionada?.let { definicao ->
         ConfigurarDesvantagemDialog(definicao = definicao, onDismiss = { desvantagemSelecionada = null },
-            onSave = { nivel, custoEscolhido, descricao, autocontrole, mods ->
-                viewModel.adicionarDesvantagem(definicao, nivel, custoEscolhido, descricao, autocontrole, mods)
+            onSave = { nivel, custoEscolhido, descricao, autocontrole, mods, metadados ->
+                viewModel.adicionarDesvantagem(definicao, nivel, custoEscolhido, descricao, autocontrole, mods, metadados)
                 desvantagemSelecionada = null
             })
     }
@@ -822,7 +822,7 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -> Unit, onSave: (Int, Int, String, Int?, List<ModificadorSelecao>) -> Unit) {
+fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -> Unit, onSave: (Int, Int, String, Int?, List<ModificadorSelecao>, Map<String, String>?) -> Unit) {
     var nivel by remember { mutableStateOf(1) }
     var custoEscolhido by remember { mutableStateOf(definicao.getCustoBase()) }
     var descricao by remember { mutableStateOf("") }
@@ -831,6 +831,29 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     var autocontrole by remember { mutableStateOf<Int?>(null) }
     var mods by remember { mutableStateOf(emptyList<ModificadorSelecao>()) }
     var showAddMod by remember { mutableStateOf(false) }
+
+    // Estados para Inimigos e Dependencia
+    var enemyBasePower by remember { mutableStateOf(-5) }
+    var enemyIntention by remember { mutableStateOf(1.0f) }
+    var enemyFrequency by remember { mutableStateOf(1.0f) }
+    
+    var depRarity by remember { mutableStateOf(-5) }
+    var depFrequency by remember { mutableStateOf(1.0f) }
+    var depIllegal by remember { mutableStateOf(false) }
+
+    val metadados = when (definicao.specialRule) {
+        "inimigos" -> mapOf(
+            "basePoder" to enemyBasePower.toString(),
+            "multIntencao" to enemyIntention.toString(),
+            "multFrequencia" to enemyFrequency.toString()
+        )
+        "dependencia" -> mapOf(
+            "baseRaridade" to depRarity.toString(),
+            "multFrequencia" to depFrequency.toString(),
+            "ilegal" to depIllegal.toString()
+        )
+        else -> null
+    }
 
     val permiteAutocontrole = definicao.usaAutocontroleMental()
 
@@ -852,17 +875,135 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                val custoCalculado = CharacterRules.calcularCustoDesvantagem(definicao.tipoCusto, definicao.getCustoPorNivel().takeIf { it != 0 } ?: definicao.getCustoBase(), custoEscolhido, nivel, autocontrole, mods)
+                val custoCalculado = CharacterRules.calcularCustoDesvantagem(
+                    definicao.tipoCusto, 
+                    definicao.getCustoPorNivel().takeIf { it != 0 } ?: definicao.getCustoBase(), 
+                    custoEscolhido, 
+                    nivel, 
+                    autocontrole, 
+                    mods, 
+                    definicao.specialRule, 
+                    metadados
+                )
                 
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
 
-                if (definicao.tipoCusto == TipoCusto.POR_NIVEL) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
-                        Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        TextButton(onClick = { if (nivel < 10) nivel++ }) { Text("+") }
+                if (definicao.specialRule == "inimigos") {
+                    Text("Poder do Inimigo:", style = MaterialTheme.typography.labelMedium)
+                    val inimigoBaseOptions = listOf(
+                        -5 to "Individual (50% pts)",
+                        -10 to "Indiv. (100%) / Grupo (3-5)",
+                        -20 to "Indiv. (150%) / Grupo (6-20)",
+                        -30 to "Grupo (21-1000)",
+                        -40 to "Governo"
+                    )
+                    inimigoBaseOptions.forEach { (pts, label) ->
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { enemyBasePower = pts }) {
+                            RadioButton(selected = enemyBasePower == pts, onClick = { enemyBasePower = pts })
+                            Text(label, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    
+                    Text("Intenção:", style = MaterialTheme.typography.labelMedium)
+                    val intencaoOptions = listOf(
+                        0.25f to "Observador (x1/4)",
+                        0.5f to "Rival (x1/2)",
+                        1.0f to "Perseguidor (x1)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        intencaoOptions.forEach { (m, label) ->
+                            FilterChip(selected = enemyIntention == m, onClick = { enemyIntention = m }, label = { Text(label, fontSize = 10.sp) })
+                        }
+                    }
+
+                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
+                    val freqOptions = listOf(
+                        0.5f to "6- (x1/2)",
+                        1.0f to "9- (x1)",
+                        2.0f to "12- (x2)",
+                        3.0f to "15- (x3)",
+                        4.0f to "Constante (x4)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        freqOptions.forEach { (m, label) ->
+                            FilterChip(selected = enemyFrequency == m, onClick = { enemyFrequency = m }, label = { Text(label, fontSize = 10.sp) })
+                        }
+                    }
+                    
+                    HorizontalDivider()
+                } else if (definicao.specialRule == "dependencia") {
+                    Text("Raridade:", style = MaterialTheme.typography.labelMedium)
+                    val depRarityOptions = listOf(
+                        -5 to "Muito Comum",
+                        -10 to "Comum",
+                        -20 to "Ocasional",
+                        -30 to "Rara"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        depRarityOptions.forEach { (pts, label) ->
+                            FilterChip(selected = depRarity == pts, onClick = { depRarity = pts }, label = { Text(label, fontSize = 10.sp) })
+                        }
+                    }
+
+                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
+                    val depFreqOptions = listOf(
+                        0.10f to "Anual (x1/10)",
+                        0.33f to "Trimestral (x1/3)",
+                        1.0f to "Mensal (x1)",
+                        2.0f to "Semanal (x2)",
+                        3.0f to "Diária (x3)",
+                        4.0f to "Hora em Hora (x4)",
+                        5.0f to "Constante (x5)"
+                    )
+                    Column {
+                        depFreqOptions.forEach { (m, label) ->
+                             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { depFrequency = m }) {
+                                RadioButton(selected = depFrequency == m, onClick = { depFrequency = m })
+                                Text(label, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = depIllegal, onCheckedChange = { depIllegal = it })
+                        Text("Substância Ilegal (-5 pts)")
+                    }
+                    HorizontalDivider()
+                } else {
+                    val opcoesEscolha = definicao.getOpcoesEscolha()
+
+                    when (definicao.tipoCusto) {
+                        TipoCusto.POR_NIVEL -> {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
+                                Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                TextButton(onClick = { if (nivel < 10) nivel++ }) { Text("+") }
+                            }
+                        }
+                        TipoCusto.ESCOLHA -> {
+                            Text("Selecione o nível de custo:", style = MaterialTheme.typography.labelMedium)
+                            opcoesEscolha.forEach { opcao ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth().clickable { custoEscolhido = opcao }
+                                ) {
+                                    RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
+                                    Text("$opcao pts", style = MaterialTheme.typography.bodyLarge)
+                                }
+                            }
+                        }
+                        TipoCusto.VARIAVEL -> {
+                            Text("Custo Variável:", style = MaterialTheme.typography.labelMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                                TextButton(onClick = { custoEscolhido += 1 }) { Text("+1") }
+                                Text("$custoEscolhido pts", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                                TextButton(onClick = { custoEscolhido -= 1 }) { Text("-1") }
+                            }
+                            Text("Ajuste o custo final conforme a regra na descrição.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
+                        }
+                        else -> {}
                     }
                 }
 
@@ -876,7 +1017,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     }
                 }
 
-                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
 
                 HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -894,7 +1035,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(nivel, custoEscolhido, descricao, autocontrole, mods) }) { Text(UiActionLabels.ADICIONAR) }
+            TextButton(onClick = { onSave(nivel, custoEscolhido, descricao, autocontrole, mods, metadados) }) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
@@ -916,7 +1057,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         AlertDialog(
             onDismissRequest = { mostrarDescricaoCatalogo = false },
             title = { Text(definicao.nome) },
-            text = { Text(descricaoCatalogo.ifBlank { "Sem descri\u00e7\u00e3o dispon\u00edvel." }) },
+            text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
             confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text(UiActionLabels.FECHAR) } }
         )
     }
@@ -934,9 +1075,45 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
 
     val def = remember { CharacterRules.DATA_REPOSITORY_INSTANCE?.getDesvantagemPorId(desvantagem.definicaoId) }
     val permiteAutocontrole = def?.usaAutocontroleMental() == true
+    val specialRule = desvantagem.specialRule ?: def?.specialRule
 
     val descCatalogo = def?.descricao?.trim().orEmpty()
     var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
+
+    // Estados para Inimigos e Dependencia (inicializados com metadados existentes)
+    var enemyBasePower by remember { 
+        mutableStateOf(desvantagem.metadados?.get("basePoder")?.toIntOrNull() ?: -5) 
+    }
+    var enemyIntention by remember { 
+        mutableStateOf(desvantagem.metadados?.get("multIntencao")?.toFloatOrNull() ?: 1.0f) 
+    }
+    var enemyFrequency by remember { 
+        mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f) 
+    }
+    
+    var depRarity by remember { 
+        mutableStateOf(desvantagem.metadados?.get("baseRaridade")?.toIntOrNull() ?: -5) 
+    }
+    var depFrequency by remember { 
+        mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f) 
+    }
+    var depIllegal by remember { 
+        mutableStateOf(desvantagem.metadados?.get("ilegal")?.toBoolean() ?: false) 
+    }
+
+    val metadadosNovo = when (specialRule) {
+        "inimigos" -> mapOf(
+            "basePoder" to enemyBasePower.toString(),
+            "multIntencao" to enemyIntention.toString(),
+            "multFrequencia" to enemyFrequency.toString()
+        )
+        "dependencia" -> mapOf(
+            "baseRaridade" to depRarity.toString(),
+            "multFrequencia" to depFrequency.toString(),
+            "ilegal" to depIllegal.toString()
+        )
+        else -> desvantagem.metadados
+    }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -956,17 +1133,133 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                val custoCalculado = CharacterRules.calcularCustoDesvantagem(desvantagem.tipoCusto, def?.getCustoPorNivel() ?: desvantagem.custoBase, custoEscolhido, nivel, autocontrole, mods)
+                val custoCalculado = CharacterRules.calcularCustoDesvantagem(
+                    desvantagem.tipoCusto, 
+                    def?.getCustoPorNivel() ?: desvantagem.custoBase, 
+                    custoEscolhido, 
+                    nivel, 
+                    autocontrole, 
+                    mods,
+                    specialRule,
+                    metadadosNovo
+                )
                 
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
 
-                if (desvantagem.tipoCusto == TipoCusto.POR_NIVEL) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                        TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
-                        Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                        TextButton(onClick = { if (nivel < 10) nivel++ }) { Text("+") }
+                if (specialRule == "inimigos") {
+                    Text("Poder do Inimigo:", style = MaterialTheme.typography.labelMedium)
+                    val inimigoBaseOptions = listOf(
+                        -5 to "Individual (50% pts)",
+                        -10 to "Indiv. (100%) / Grupo (3-5)",
+                        -20 to "Indiv. (150%) / Grupo (6-20)",
+                        -30 to "Grupo (21-1000)",
+                        -40 to "Governo"
+                    )
+                    inimigoBaseOptions.forEach { (pts, label) ->
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { enemyBasePower = pts }) {
+                            RadioButton(selected = enemyBasePower == pts, onClick = { enemyBasePower = pts })
+                            Text(label, style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    
+                    Text("Intenção:", style = MaterialTheme.typography.labelMedium)
+                    val intencaoOptions = listOf(
+                        0.25f to "Observador (x1/4)",
+                        0.5f to "Rival (x1/2)",
+                        1.0f to "Perseguidor (x1)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        intencaoOptions.forEach { (m, label) ->
+                            FilterChip(selected = enemyIntention == m, onClick = { enemyIntention = m }, label = { Text(label, fontSize = 10.sp) })
+                        }
+                    }
+
+                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
+                    val freqOptions = listOf(
+                        0.5f to "6- (x1/2)",
+                        1.0f to "9- (x1)",
+                        2.0f to "12- (x2)",
+                        3.0f to "15- (x3)",
+                        4.0f to "Constante (x4)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        freqOptions.forEach { (m, label) ->
+                            FilterChip(selected = enemyFrequency == m, onClick = { enemyFrequency = m }, label = { Text(label, fontSize = 10.sp) })
+                        }
+                    }
+                    HorizontalDivider()
+                } else if (specialRule == "dependencia") {
+                    Text("Raridade:", style = MaterialTheme.typography.labelMedium)
+                    val depRarityOptions = listOf(
+                        -5 to "Muito Comum",
+                        -10 to "Comum",
+                        -20 to "Ocasional",
+                        -30 to "Rara"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        depRarityOptions.forEach { (pts, label) ->
+                            FilterChip(selected = depRarity == pts, onClick = { depRarity = pts }, label = { Text(label, fontSize = 10.sp) })
+                        }
+                    }
+
+                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
+                    val depFreqOptions = listOf(
+                        0.10f to "Anual (x1/10)",
+                        0.33f to "Trimestral (x1/3)",
+                        1.0f to "Mensal (x1)",
+                        2.0f to "Semanal (x2)",
+                        3.0f to "Diária (x3)",
+                        4.0f to "Hora em Hora (x4)",
+                        5.0f to "Constante (x5)"
+                    )
+                    Column {
+                        depFreqOptions.forEach { (m, label) ->
+                             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { depFrequency = m }) {
+                                RadioButton(selected = depFrequency == m, onClick = { depFrequency = m })
+                                Text(label, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = depIllegal, onCheckedChange = { depIllegal = it })
+                        Text("Substância Ilegal (-5 pts)")
+                    }
+                    HorizontalDivider()
+                } else {
+                    val opcoesEscolha = def?.getOpcoesEscolha() ?: emptyList()
+
+                    when (desvantagem.tipoCusto) {
+                        TipoCusto.POR_NIVEL -> {
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
+                                Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                                TextButton(onClick = { if (nivel < 10) nivel++ }) { Text("+") }
+                            }
+                        }
+                        TipoCusto.ESCOLHA -> {
+                            Text("Selecione o nível de custo:", style = MaterialTheme.typography.labelMedium)
+                            opcoesEscolha.forEach { opcao ->
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier.fillMaxWidth().clickable { custoEscolhido = opcao }
+                                ) {
+                                    RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
+                                    Text("$opcao pts", style = MaterialTheme.typography.bodyLarge)
+                                }
+                            }
+                        }
+                        TipoCusto.VARIAVEL -> {
+                            Text("Custo Variável:", style = MaterialTheme.typography.labelMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                                TextButton(onClick = { custoEscolhido += 1 }) { Text("+1") }
+                                Text("$custoEscolhido pts", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                                TextButton(onClick = { custoEscolhido -= 1 }) { Text("-1") }
+                            }
+                        }
+                        else -> {}
                     }
                 }
 
@@ -980,7 +1273,7 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
                     }
                 }
 
-                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descri\u00e7\u00e3o") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
 
                 HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -999,7 +1292,15 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
         },
         confirmButton = {
             TextButton(onClick = {
-                onSave(desvantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, autocontrole = autocontrole, modificadores = mods.toMutableList()))
+                onSave(desvantagem.copy(
+                    nivel = nivel, 
+                    custoEscolhido = custoEscolhido, 
+                    descricao = descricao, 
+                    autocontrole = autocontrole, 
+                    modificadores = mods.toMutableList(),
+                    metadados = metadadosNovo,
+                    specialRule = specialRule
+                ))
             }) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
@@ -1022,7 +1323,7 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
         AlertDialog(
             onDismissRequest = { mostrarDescricaoCatalogo = false },
             title = { Text(desvantagem.nome) },
-            text = { Text(descCatalogo.ifBlank { "Sem descri\u00e7\u00e3o dispon\u00edvel." }) },
+            text = { Text(descCatalogo.ifBlank { "Sem descrição disponível." }) },
             confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text(UiActionLabels.FECHAR) } }
         )
     }
