@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -25,7 +25,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -90,7 +90,7 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     PericiaFiltroChip(
@@ -128,7 +128,7 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 8.dp, vertical = 6.dp),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -153,7 +153,7 @@ fun SelecionarPericiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onClick = onDismiss) { Text("Fechar") }
+                    TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
                 }
             }
     }
@@ -198,7 +198,7 @@ fun CriarPericiaCustomizadaDialog(
         onDismissRequest = onDismiss,
         title = { Text("Nova Perícia Personalizada") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 OutlinedTextField(
                     value = nome,
                     onValueChange = { nome = it },
@@ -248,12 +248,12 @@ fun CriarPericiaCustomizadaDialog(
                 },
                 enabled = nome.isNotBlank()
             ) {
-                Text("Adicionar")
+                Text(UiActionLabels.ADICIONAR)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancelar")
+                Text(UiActionLabels.CANCELAR)
             }
         }
     )
@@ -284,7 +284,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
         onDismissRequest = onDismiss,
         title = null,
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 TextButton(
                     onClick = { mostrarDescricao = true },
                     modifier = Modifier.semantics {
@@ -336,8 +336,8 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                 } else {
                     Text("Dificuldade: ${dificuldadeEscolhida.nomeCompleto}", style = MaterialTheme.typography.bodyMedium)
                 }
-
-                Divider()
+                
+                HorizontalDivider()
                 Text("Pontos Gastos:", style = MaterialTheme.typography.labelMedium)
                 if (!isPraCegoVariant) {
                     Text(
@@ -400,7 +400,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                     }
                 }
 
-                Divider()
+                HorizontalDivider()
                 Card(colors = appCardColors()) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         Text("NH: $nivelPreview (${atributoEscolhido.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
@@ -415,9 +415,9 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
             TextButton(
                 onClick = { erroCadastro = onSave(pontosGastos, especializacao, atributoEscolhido, dificuldadeEscolhida) },
                 enabled = !definicao.exigeEspecializacao || especializacao.isNotBlank()
-            ) { Text("Adicionar") }
+            ) { Text(UiActionLabels.ADICIONAR) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
     if (mostrarDescricao) {
@@ -478,7 +478,7 @@ fun EditarPericiaDialog(
             )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 Text("${pericia.atributoBase.sigla}/${pericia.dificuldade.sigla}")
 
                 OutlinedTextField(value = especializacao, onValueChange = {
@@ -559,7 +559,7 @@ fun EditarPericiaDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Salvar edição da perícia"
                 }
-            ) { Text("Salvar") }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = {
             TextButton(
@@ -567,7 +567,7 @@ fun EditarPericiaDialog(
                 modifier = Modifier.semantics {
                     if (isPraCegoVariant) contentDescription = "Cancelar edição da perícia"
                 }
-            ) { Text("Cancelar") }
+            ) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -577,7 +577,7 @@ fun EditarPericiaDialog(
             title = { Text(pericia.nome) },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
@@ -601,7 +601,7 @@ fun EditarPericiaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da perícia"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -621,7 +621,7 @@ private fun PericiaDescricaoDialog(
         title = { Text(definicao.nome) },
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -639,8 +639,10 @@ private fun PericiaDescricaoDialog(
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+        confirmButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) } }
     )
 }
+
+
 
 

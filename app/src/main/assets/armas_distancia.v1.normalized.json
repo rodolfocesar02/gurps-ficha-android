@@ -179,7 +179,7 @@
         "valor": 200.0
       },
       "stMinimo": {
-        "raw": "11†",
+        "raw": "11",
         "valor": 11,
         "flags": [
           "dagger"
@@ -246,7 +246,7 @@
         "valor": 100.0
       },
       "stMinimo": {
-        "raw": "10†",
+        "raw": "10",
         "valor": 10,
         "flags": [
           "dagger"
@@ -313,7 +313,7 @@
         "valor": 50.0
       },
       "stMinimo": {
-        "raw": "7†",
+        "raw": "7",
         "valor": 7,
         "flags": [
           "dagger"
@@ -380,7 +380,7 @@
         "valor": 900.0
       },
       "stMinimo": {
-        "raw": "10†",
+        "raw": "10",
         "valor": 10,
         "flags": [
           "dagger"
@@ -447,7 +447,7 @@
         "valor": 150.0
       },
       "stMinimo": {
-        "raw": "7†",
+        "raw": "7",
         "valor": 7,
         "flags": [
           "dagger"
@@ -579,7 +579,7 @@
         "valor": 150.0
       },
       "stMinimo": {
-        "raw": "7†",
+        "raw": "7",
         "valor": 7,
         "flags": [
           "dagger"
@@ -644,7 +644,7 @@
         "valor": 50.0
       },
       "stMinimo": {
-        "raw": "7†",
+        "raw": "7",
         "valor": 7,
         "flags": [
           "dagger"
@@ -902,7 +902,7 @@
         "valor": 20.0
       },
       "stMinimo": {
-        "raw": "7†",
+        "raw": "7",
         "valor": 7,
         "flags": [
           "dagger"

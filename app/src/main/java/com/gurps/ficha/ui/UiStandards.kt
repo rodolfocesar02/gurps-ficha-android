@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,20 +25,31 @@ import androidx.compose.ui.unit.dp
 
 private const val COMPACT_SCREEN_MAX_WIDTH_DP = 360
 
+object UiTokens {
+    val ScreenPadding = 12.dp
+    val SectionSpacing = 8.dp
+    val ItemSpacing = 4.dp
+    val CardPaddingHorizontal = 12.dp
+    val CardPaddingVertical = 10.dp
+    val CardElevation = 1.dp
+    val TouchMinHeight = 48.dp
+    val DialogContentSpacing = 10.dp
+}
+
 @Composable
 fun rememberIsCompactScreen(): Boolean = LocalConfiguration.current.screenWidthDp <= COMPACT_SCREEN_MAX_WIDTH_DP
 
 @Composable
 fun StandardTabColumn(
     modifier: Modifier = Modifier,
-    contentSpacing: androidx.compose.ui.unit.Dp = 4.dp,
+    contentSpacing: androidx.compose.ui.unit.Dp = UiTokens.ItemSpacing,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(12.dp),
+            .padding(UiTokens.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(contentSpacing),
         content = content
     )
@@ -67,10 +79,13 @@ fun SummaryFooterCard(title: String, content: @Composable ColumnScope.() -> Unit
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = appCardColors(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = UiTokens.CardElevation)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            modifier = Modifier.padding(
+                horizontal = UiTokens.CardPaddingHorizontal,
+                vertical = UiTokens.CardPaddingVertical
+            ),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
@@ -81,5 +96,56 @@ fun SummaryFooterCard(title: String, content: @Composable ColumnScope.() -> Unit
             )
             content()
         }
+    }
+}
+
+@Composable
+fun AppListItemCard(
+    modifier: Modifier = Modifier,
+    border: BorderStroke? = null,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        colors = appCardColors(),
+        border = border
+    ) {
+        Column(
+            modifier = Modifier.padding(
+                horizontal = UiTokens.CardPaddingHorizontal,
+                vertical = UiTokens.CardPaddingVertical
+            ),
+            content = content
+        )
+    }
+}
+
+@Composable
+fun StandardDialogColumn(
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
+        content = content
+    )
+}
+
+@Composable
+fun GuidedEmptyState(
+    titulo: String,
+    orientacao: String
+) {
+    AppListItemCard {
+        Text(
+            text = titulo,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = orientacao,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }

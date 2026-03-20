@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -118,7 +118,7 @@ fun RoladorDadosDialog(
 
                 // Resultado
                 resultado?.let { res ->
-                    Divider(modifier = Modifier.padding(vertical = 8.dp))
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                     // Dados individuais
                     Row(
@@ -462,7 +462,7 @@ fun TrackerRow(
 
         // Barra de progresso
         LinearProgressIndicator(
-            progress = (atual.toFloat() / maximo).coerceIn(0f, 1f),
+            progress = { (atual.toFloat() / maximo).coerceIn(0f, 1f) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(16.dp)

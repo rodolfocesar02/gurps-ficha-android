@@ -274,7 +274,73 @@
     "tags": [
       "magica"
     ],
-    "descricao": "O personagem é um adepto da magia. Aptidão Mágica 0: 5 pontos (detecta magia). Níveis 1+: +10 pontos/nível, adicionados à IQ para aprender magias e à Percepção para sentir objetos encantados. Limitações: Canção, Dança, Manifestação Diurna/Noturna/Obscura, Musical, Solitária, Uma Única Escola (-40% a -50%)."
+    "descricao": "O personagem é um adepto da magia. Aptidão Mágica 0: 5 pontos (detecta magia). Níveis 1+: +10 pontos/nível, adicionados à IQ para aprender magias e à Percepção para sentir objetos encantados. Limitações: Canção, Dança, Manifestação Diurna/Noturna/Obscura, Musical, Solitária, Uma Única Escola (-40% a -50%).",
+    "modificadores_especificos": [
+      {
+        "id": "mod_aptidao_cancao",
+        "nome": "Canção",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "O personagem deve cantar em voz alta para usar magia."
+      },
+      {
+        "id": "mod_aptidao_danca",
+        "nome": "Dança",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "O personagem deve dançar para usar magia."
+      },
+      {
+        "id": "mod_aptidao_diurna",
+        "nome": "Manifestação Diurna",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas durante o dia."
+      },
+      {
+        "id": "mod_aptidao_noturna",
+        "nome": "Manifestação Noturna",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas durante a noite."
+      },
+      {
+        "id": "mod_aptidao_obscura",
+        "nome": "Manifestação Obscura",
+        "tipo": "limitação",
+        "valor": "-50%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas na escuridão."
+      },
+      {
+        "id": "mod_aptidao_musical",
+        "nome": "Musical",
+        "tipo": "limitação",
+        "valor": "-50%",
+        "pagina": 41,
+        "descricao": "Exige tocar um instrumento musical para usar magia."
+      },
+      {
+        "id": "mod_aptidao_solitaria",
+        "nome": "Solitária",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "Magia funciona apenas quando o personagem está sozinho."
+      },
+      {
+        "id": "mod_aptidao_escola",
+        "nome": "Uma Única Escola",
+        "tipo": "limitação",
+        "valor": "-40%",
+        "pagina": 41,
+        "descricao": "A Aptidão Mágica favorece apenas uma escola de magia específica."
+      }
+    ]
   },
   {
     "id": "arrebatador",
@@ -385,7 +451,69 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Ataque natural ou embutido que causa dano. Custo por nível varia conforme o tipo de dano: contusão (5), corrosão (10), corte (7), fadiga (10), perfuração (8), perfurante (3 a 8), queimadura (5), toxina (4). Dados parciais são proporcionais. Modificadores especiais na pág. 102."
+    "descricao": "Ataque natural ou embutido que causa dano. Custo por nível varia conforme o tipo de dano: contusão (5), corrosão (10), corte (7), fadiga (10), perfuração (8), perfurante (3 a 8), queimadura (5), toxina (4). Dados parciais são proporcionais. Modificadores especiais na pág. 102.",
+    "modificadores_especificos": [
+      {
+        "id": "acurado_ataque",
+        "nome": "Acurado",
+        "tipo": "ampliação",
+        "valor": "+5%",
+        "por_nivel": true,
+        "pagina": 102
+      },
+      {
+        "id": "alcance_ampliado_ataque",
+        "nome": "Alcance Ampliado",
+        "tipo": "ampliação",
+        "valor": "+10%",
+        "por_nivel": true,
+        "pagina": 102
+      },
+      {
+        "id": "divisor_armadura_2",
+        "nome": "Divisor de Armadura (2)",
+        "tipo": "ampliação",
+        "valor": "+50%",
+        "pagina": 105
+      },
+      {
+        "id": "explosao_ataque",
+        "nome": "Explosão",
+        "tipo": "ampliação",
+        "valor": "+50%",
+        "por_nivel": true,
+        "pagina": 108
+      },
+      {
+        "id": "fragmentacao_ataque",
+        "nome": "Fragmentação",
+        "tipo": "ampliação",
+        "valor": "+15%",
+        "por_nivel": true,
+        "pagina": 108
+      },
+      {
+        "id": "incendiario_ataque",
+        "nome": "Incendiário",
+        "tipo": "ampliação",
+        "valor": "+10%",
+        "pagina": 108
+      },
+      {
+        "id": "sobretensao_ataque",
+        "nome": "Sobretensão (Surge)",
+        "tipo": "ampliação",
+        "valor": "+20%",
+        "pagina": 108
+      },
+      {
+        "id": "jato_ataque",
+        "nome": "Jato",
+        "tipo": "ampliação",
+        "valor": "+0%",
+        "pagina": 107
+      }
+    ]
   },
   {
     "id": "atirador",
@@ -415,7 +543,178 @@
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ataque que causa efeito nocivo sem dano (ex.: paralisia). Custa 10 pontos/nível. Alvo faz teste de HT+1 com penalidade igual ao nível. Ampliações: Ataque Cardíaco (+300%), Atordoamento (+10%), Coma (+250%), Cumulativo (+400%), Desvantagem (+1%/ponto), Incapacitação (+50% a +200%), Irritante (+10% a +60%), Penalidade em Atributo (+5% a +10% por -1), Vantagem Anulada (+1%/ponto), Vantagem (+10%/ponto)."
+    "descricao": "Ataque que causa efeito nocivo sem dano (ex.: paralisia). Custa 10 pontos/nível. Alvo faz teste de HT+1 com penalidade igual ao nível. Ampliações: Ataque Cardíaco (+300%), Atordoamento (+10%), Coma (+250%), Cumulativo (+400%), Desvantagem (+1%/ponto), Incapacitação (+50% a +200%), Irritante (+10% a +60%), Penalidade em Atributo (+5% a +10% por -1), Vantagem Anulada (+1%/ponto), Vantagem (+10%/ponto).",
+    "modificadores_especificos": [
+      {
+        "id": "atordoamento_mod",
+        "nome": "Atordoamento",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "coma",
+        "nome": "Coma",
+        "tipo": "ampliação",
+        "valor": 250,
+        "pagina": 43
+      },
+      {
+        "id": "ataque_cardiaco",
+        "nome": "Ataque Cardíaco",
+        "tipo": "ampliação",
+        "valor": 300,
+        "pagina": 43
+      },
+      {
+        "id": "paralisia",
+        "nome": "Paralisia",
+        "tipo": "ampliação",
+        "valor": 150,
+        "pagina": 43
+      },
+      {
+        "id": "sono",
+        "nome": "Sono",
+        "tipo": "ampliação",
+        "valor": 150,
+        "pagina": 43
+      },
+      {
+        "id": "inconsciencia",
+        "nome": "Inconsciência",
+        "tipo": "ampliação",
+        "valor": 200,
+        "pagina": 43
+      },
+      {
+        "id": "agonia",
+        "nome": "Agonia",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 43
+      },
+      {
+        "id": "engasgo",
+        "nome": "Engasgo",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 43
+      },
+      {
+        "id": "imobilizacao",
+        "nome": "Imobilização",
+        "tipo": "ampliação",
+        "valor": 50,
+        "pagina": 43
+      },
+      {
+        "id": "nausea",
+        "nome": "Náusea",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "tosse_espirro",
+        "nome": "Tosse ou Espirro",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "calafrios",
+        "nome": "Calafrios",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 43
+      },
+      {
+        "id": "dor",
+        "nome": "Dor",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "dor_terrivel",
+        "nome": "Dor Terrível",
+        "tipo": "ampliação",
+        "valor": 60,
+        "pagina": 43
+      },
+      {
+        "id": "embriaguez",
+        "nome": "Embriaguez",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "esgotamento",
+        "nome": "Esgotamento",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "vomito",
+        "nome": "Vômito",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "sonolencia",
+        "nome": "Sonolência",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 43
+      },
+      {
+        "id": "penalidade_atributo",
+        "nome": "Penalidade em Atributo",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "descricao": "+5% por cada -1 em ST, DX, IQ, HT, PV ou PF. +10% por cada -1 em NH ou Esquiva.",
+        "pagina": 43
+      },
+      {
+        "id": "desvantagem_atrib",
+        "nome": "Desvantagem",
+        "tipo": "ampliação",
+        "valor": 1,
+        "por_nivel": true,
+        "descricao": "+1% por cada ponto que a desvantagem custaria.",
+        "pagina": 43
+      },
+      {
+        "id": "vantagem_anulada",
+        "nome": "Vantagem Anulada",
+        "tipo": "ampliação",
+        "valor": 1,
+        "por_nivel": true,
+        "descricao": "+1% por cada ponto que a vantagem anulada custa.",
+        "pagina": 43
+      },
+      {
+        "id": "vantagem_atrib",
+        "nome": "Vantagem",
+        "tipo": "ampliação",
+        "valor": 10,
+        "por_nivel": true,
+        "descricao": "+10% por cada ponto que a vantagem concedida custa.",
+        "pagina": 43
+      },
+      {
+        "id": "cumulativo",
+        "nome": "Cumulativo",
+        "tipo": "ampliação",
+        "valor": 400,
+        "pagina": 43
+      }
+    ]
   },
   {
     "id": "audicao_agucada",
@@ -542,7 +841,59 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem possui braços extras. Cada braço adicional custa 10 pontos. Ampliações: Comprido (+100%/nível de MT), Extraflexível (+50%). Limitações: Base para Armas (-80%), Curto (-50%), Fraco (-25% ou -50%), Nenhum Ataque Físico (-50%), Pés Manipuladores (-30%)."
+    "descricao": "O personagem possui braços extras. Cada braço adicional custa 10 pontos. Ampliações: Comprido (+100%/nível de MT), Extraflexível (+50%). Limitações: Base para Armas (-80%), Curto (-50%), Fraco (-25% ou -50%), Nenhum Ataque Físico (-50%), Pés Manipuladores (-30%).",
+    "modificadores_especificos": [
+      {
+        "id": "comprido",
+        "nome": "Comprido",
+        "tipo": "ampliação",
+        "valor": 100,
+        "por_nivel": true,
+        "pagina": 45
+      },
+      {
+        "id": "extraflexivel",
+        "nome": "Extraflexível",
+        "tipo": "ampliação",
+        "valor": 50,
+        "pagina": 45
+      },
+      {
+        "id": "base_para_armas",
+        "nome": "Base para Armas",
+        "tipo": "limitação",
+        "valor": -80,
+        "pagina": 45
+      },
+      {
+        "id": "curto",
+        "nome": "Curto",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 45
+      },
+      {
+        "id": "fraco",
+        "nome": "Fraco",
+        "tipo": "limitação",
+        "valor": "Variável",
+        "pagina": 45
+      },
+      {
+        "id": "nenhum_ataque_fisico",
+        "nome": "Nenhum Ataque Físico",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 45
+      },
+      {
+        "id": "pes_manipuladores",
+        "nome": "Pés Manipuladores",
+        "tipo": "limitação",
+        "valor": -30,
+        "pagina": 45
+      }
+    ]
   },
   {
     "id": "cabeca_adicional",
@@ -559,7 +910,16 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem mais de uma cabeça, cada uma com boca e rastreamento ampliado. Custa 15 pontos/cabeça. Limitação: Desconexa (-20%)."
+    "descricao": "O personagem tem mais de uma cabeça, cada uma com boca e rastreamento ampliado. Custa 15 pontos/cabeça. Limitação: Desconexa (-20%).",
+    "modificadores_especificos": [
+      {
+        "id": "desconexa",
+        "nome": "Desconexa",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 46
+      }
+    ]
   },
   {
     "id": "calculos_instantaneos",
@@ -589,7 +949,24 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem muda a aparência para se camuflar, recebendo bônus em Furtividade (+2 por nível imóvel, +1 em movimento). Custa 5 pontos/nível. Ampliação: Estendida (+20% por sentido). Limitação: Sempre Ativo (-10%)."
+    "descricao": "O personagem muda a aparência para se camuflar, recebendo bônus em Furtividade (+2 por nível imóvel, +1 em movimento). Custa 5 pontos/nível. Ampliação: Estendida (+20% por sentido). Limitação: Sempre Ativo (-10%).",
+    "modificadores_especificos": [
+      {
+        "id": "estendida",
+        "nome": "Estendida",
+        "tipo": "ampliação",
+        "valor": 20,
+        "por_nivel": true,
+        "pagina": 46
+      },
+      {
+        "id": "sempre_ativo",
+        "nome": "Sempre Ativo",
+        "tipo": "limitação",
+        "valor": -10,
+        "pagina": 46
+      }
+    ]
   },
   {
     "id": "camaleao_social",
@@ -668,7 +1045,16 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem pode transportar carga ou passageiros dentro de si. Cada nível permite carregar até BC/10 kg. Custo: 5 pontos/nível. Limitação: Exposta (-50%)."
+    "descricao": "O personagem pode transportar carga ou passageiros dentro de si. Cada nível permite carregar até BC/10 kg. Custo: 5 pontos/nível. Limitação: Exposta (-50%).",
+    "modificadores_especificos": [
+      {
+        "id": "exposta",
+        "nome": "Exposta",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 47
+      }
+    ]
   },
   {
     "id": "carisma",
@@ -745,7 +1131,30 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem precisa de menos água/alimento ou combustível. Níveis: 1 (2/3) 2 pts, 2 (1/3) 4 pts, 3 (semana) 6 pts, 4 (mês) 8 pts. Limitações: Estômago de Ferro (-50%), Somente Água (-50%), Somente Alimentos (-50%)."
+    "descricao": "O personagem precisa de menos água/alimento ou combustível. Níveis: 1 (2/3) 2 pts, 2 (1/3) 4 pts, 3 (semana) 6 pts, 4 (mês) 8 pts. Limitações: Estômago de Ferro (-50%), Somente Água (-50%), Somente Alimentos (-50%).",
+    "modificadores_especificos": [
+      {
+        "id": "estomago_de_ferro",
+        "nome": "Estômago de Ferro",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 48
+      },
+      {
+        "id": "somente_agua",
+        "nome": "Somente Água",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 48
+      },
+      {
+        "id": "somente_alimentos",
+        "nome": "Somente Alimentos",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 48
+      }
+    ]
   },
   {
     "id": "contatos",
@@ -779,7 +1188,44 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem pode dominar mentalmente pessoas visíveis ou tocadas. Disputa de IQ vs. Vontade. Custa 50 pontos. Ampliações: Condicionamento (+50%), Sem Memória (+10%). Limitações: Somente Condicionamento (-50%), Telepático (-10%), Titere (-40%)."
+    "descricao": "O personagem pode dominar mentalmente pessoas visíveis ou tocadas. Disputa de IQ vs. Vontade. Custa 50 pontos. Ampliações: Condicionamento (+50%), Sem Memória (+10%). Limitações: Somente Condicionamento (-50%), Telepático (-10%), Titere (-40%).",
+    "modificadores_especificos": [
+      {
+        "id": "condicionamento",
+        "nome": "Condicionamento",
+        "tipo": "ampliação",
+        "valor": 50,
+        "pagina": 49
+      },
+      {
+        "id": "sem_memoria",
+        "nome": "Sem Memória",
+        "tipo": "ampliação",
+        "valor": 10,
+        "pagina": 49
+      },
+      {
+        "id": "somente_condicionamento",
+        "nome": "Somente Condicionamento",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 49
+      },
+      {
+        "id": "telepatico",
+        "nome": "Telepático",
+        "tipo": "limitação",
+        "valor": -10,
+        "pagina": 49
+      },
+      {
+        "id": "titere",
+        "nome": "Títere",
+        "tipo": "limitação",
+        "valor": -40,
+        "pagina": 50
+      }
+    ]
   },
   {
     "id": "controle_do_metabolismo",
@@ -889,7 +1335,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "O personagem recebe um bônus de +1 no valor de sua manobra Aparar. O jogador pode comprar essa vantagem para as mãos nuas (5 pontos), para qualquer perícia com Armas de Combate Corpo a Corpo (5 pontos) ou para todas as manobras Aparar (10 pontos). 5 ou 10 pontos"
+    "descricao": "Bônus de +1 no Aparar. Pode ser para mãos nuas (5 pts), uma perícia específica (5 pts) ou todas as manobras Aparar (10 pts)."
   },
   {
     "id": "defesas_ampliadas_bloqueio_ampliado",
@@ -944,7 +1390,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Qualquer pessoa que tem uma boca tem dentes rombos capazes de morder e causar GdP-1 pontos de dano por contusão. Isso custa 0 ponto e é típico da maioria dos herbívoros. Um personagem com esta vantagem, por outro lado, tem uma mordida que causa mais dano: Bico Afiado: Como o de uma ave de rapina. Causa GdP-1 pontos de dano muito perfurante. 1 ponto. Dentes Afiados: Como os da maioria dos carnívoros. Causa GdP-1 pontos de dano por corte. 1 ponto. Presas: Como as de um Tigre Dente- -de-Sabre. Causa GdP-1 pontos de dano por perfuração. 2 pontos."
+    "descricao": "Dentes naturais que causam dano. Bico Afiado (muito perfurante, 1 pt), Dentes Afiados (corte, 1 pt), Presas (perfuração, 2 pts)."
   },
   {
     "id": "desenvolvedor",
@@ -979,7 +1425,39 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Dobra a velocidade máxima em um ambiente (Ar, Solo, Espaço, Água). Custa 20 pontos/nível (meio nível: 10 pts, multiplica por 1,5). Ampliação: Bônus de Manuseio (+5%/nível). Limitações: Limitado a Estradas (-50%), Newtoniana (-50%), Redutor de Manuseio (-5%/nível)."
+    "descricao": "Dobra a velocidade máxima em um ambiente (Ar, Solo, Espaço, Água). Custa 20 pontos/nível (meio nível: 10 pts, multiplica por 1,5). Ampliação: Bônus de Manuseio (+5%/nível). Limitações: Limitado a Estradas (-50%), Newtoniana (-50%), Redutor de Manuseio (-5%/nível).",
+    "modificadores_especificos": [
+      {
+        "id": "bonus_manuseio_move",
+        "nome": "Bônus de Manuseio",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "pagina": 52
+      },
+      {
+        "id": "limitado_estradas",
+        "nome": "Limitado a Estradas",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 52
+      },
+      {
+        "id": "movimento_newtoniano",
+        "nome": "Inércia Newtoniana",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 52
+      },
+      {
+        "id": "redutor_manuseio",
+        "nome": "Redutor de Manuseio",
+        "tipo": "limitação",
+        "valor": -5,
+        "por_nivel": true,
+        "pagina": 52
+      }
+    ]
   },
   {
     "id": "destemor",
@@ -1050,7 +1528,30 @@
     "rawCost": "5, 10, 20 ou 30",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem detecta uma substância ou condição específica. Custo base: Raro (5), Ocasional (10), Comum (20), Muito Comum (30). Ampliação: Precisão (+100%). Limitação: Vaga (-50%)."
+    "descricao": "O personagem detecta uma substância ou condição específica. Custo base: Raro (5), Ocasional (10), Comum (20), Muito Comum (30). Ampliação: Precisão (+100%). Limitação: Vaga (-50%).",
+    "modificadores_especificos": [
+      {
+        "id": "deteccao_de_sinais",
+        "nome": "Detecção de Sinais",
+        "tipo": "ampliação",
+        "valor": 0,
+        "pagina": 53
+      },
+      {
+        "id": "precisao",
+        "nome": "Precisão",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 53
+      },
+      {
+        "id": "vaga",
+        "nome": "Vaga",
+        "tipo": "limitação",
+        "valor": -50,
+        "pagina": 53
+      }
+    ]
   },
   {
     "id": "dificil_de_subjugar",
@@ -1095,7 +1596,7 @@
     "rawCost": "100",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se teleporta. Requer teste de IQ com penalidades por distância e tempo de preparo. Custo não especificado com total clareza na fonte; tratar como vantagem de custo variável conforme a mesa."
+    "descricao": "O personagem se teleporta instantaneamente. Requer teste de IQ e gasta 10 de fadiga. Custa 100 pontos."
   },
   {
     "id": "dominacao",
@@ -1188,7 +1689,39 @@
     "rawCost": "6/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem estica o corpo, aumentando o MT efetivo em +1 por nível. Custa 6 pontos/nível."
+    "descricao": "O personagem estica o corpo, aumentando o MT efetivo em +1 por nível. Custa 6 pontos/nível.",
+    "modificadores_especificos": [
+      {
+        "id": "bonus_manuseio",
+        "nome": "Bônus de Manuseio",
+        "tipo": "ampliação",
+        "valor": 5,
+        "por_nivel": true,
+        "pagina": 57
+      },
+      {
+        "id": "membros_forcudos",
+        "nome": "Membros Forçudos",
+        "tipo": "ampliação",
+        "valor": 10,
+        "por_nivel": true,
+        "pagina": 57
+      },
+      {
+        "id": "apenas_bracos",
+        "nome": "Apenas Braços",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 57
+      },
+      {
+        "id": "apenas_pernas",
+        "nome": "Apenas Pernas",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 57
+      }
+    ]
   },
   {
     "id": "elo_mental",
@@ -1406,21 +1939,6 @@
     "descricao": "O personagem é imune a poderes psíquicos. Custo base tratado como não totalmente especificado na fonte. Ampliações: Ativada/Desativada (+100%), Efeito de Área (+50%/nível). Limitação: Resistível (-50%)."
   },
   {
-    "id": "estilo",
-    "nome": "Estilo",
-    "pagina": 101,
-    "costKind": "fixed",
-    "fixed": 1,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "1",
-    "specialRule": null,
-    "tags": [],
-    "descricao": "Dobra a idade de maturidade e envelhecimento por nível. Custa 2 pontos/nível."
-  },
-  {
     "id": "expectativa_de_vida_ampliada",
     "nome": "Expectativa de Vida Ampliada",
     "pagina": 59,
@@ -1435,7 +1953,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Um indivíduo com ciclo de vida médio atinge a maturidade aos 18 anos de idade e os efeitos do envelhecimento (pág. 444) aos 50, acelerando aos 70 e 90. Cada nível de Expectativa de Vida Ampliada dobra todos esses valores. Observe que para um personagem que deseja obter mais que sete níveis nesta característica (o que o faria atingir a maturidade aos 2.304 anos de idade e começar a envelhecer a partir dos 6.400 anos), vale mais a pena comprar Idade Imutável (pág. 63)."
+    "descricao": "Cada nível dobra a idade de maturidade e os patamares de envelhecimento. Custa 2 pontos/nível."
   },
   {
     "id": "experiencia_g",
@@ -1823,7 +2341,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Consiste em um cargo dentro de uma burocracia governamental. Quando se está lidando com outros administradores. Num cenário de NT maior ou igual a 5, uma grande burocrata pode apresentar vários tipos de Hierarquia: uma para cada departamento do governo e, possivelmente, categorias adicionais para o senado, para o poder judiciário, etc."
+    "descricao": "Cargo em burocracia governamental. Funciona como Hierarquia. Útil para lidar com outros administradores e burocratas. (pág. 30)"
   },
   {
     "id": "hierarquia_comercial",
@@ -2534,7 +3052,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Ver Senso de Direção.Esta habilidade é útil no espaço sideral embora não ajude em nada se o personagem estiver viajando entre dimensões. Ele recebe os bônus do Senso de Direção, além de +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço ou Hiperespaço). 10 pontos."
+    "descricao": "Bônus do Senso de Direção, +1 em Pilotagem e +2 em Acrobacia, Queda Livre e Navegação (Espaço). Custa 10 pontos."
   },
   {
     "id": "nt_alto",
@@ -2564,7 +3082,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área. Custo por nível varia; base de 1 ponto/nível (não especificado). Ampliações: Defensiva (+50%), Estendido (+20%/sentido), Furtiva (+100%), Longa Distância (+50%). Limitação: Sempre Ativo (-50%)."
+    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área (2 m de raio). Custa 2 pontos/nível."
   },
   {
     "id": "obstinado",
@@ -2609,7 +3127,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem vê presságios em fenômenos naturais. Custo não especificado com total clareza na fonte."
+    "descricao": "O personagem vê presságios em fenômenos naturais e recebe conselhos do Mestre. Custa 15 pontos."
   },
   {
     "id": "otima_forma",
@@ -3131,7 +3649,87 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem RD natural. Custa 5 pontos/nível. Ampliações: Absorção (+80% ou +100%), Campo de Força (+20%), Enrijecido (+20%/nível), Reflexão (+100%). Limitações: Ablativa (-80%), Direcional (-20% a -40%), Flexível (-20%), Limitada (conforme tabela), Parcial (-10% a -70%), Pele Resistente (-40%), Sem Armadura (-40%), Semiablativa (-20%)."
+    "descricao": "O personagem tem RD natural. Custa 5 pontos/nível. Ampliações: Absorção (+80% ou +100%), Campo de Força (+20%), Enrijecido (+20%/nível), Reflexão (+100%). Limitações: Ablativa (-80%), Direcional (-20% a -40%), Flexível (-20%), Limitada (conforme tabela), Parcial (-10% a -70%), Pele Resistente (-40%), Sem Armadura (-40%), Semiablativa (-20%).",
+    "modificadores_especificos": [
+      {
+        "id": "absorcao_pv",
+        "nome": "Absorção (Cura PV)",
+        "tipo": "ampliação",
+        "valor": 80,
+        "pagina": 83
+      },
+      {
+        "id": "absorcao_atrib",
+        "nome": "Absorção (Qualquer Atributo)",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 83
+      },
+      {
+        "id": "campo_de_forca",
+        "nome": "Campo de Força",
+        "tipo": "ampliação",
+        "valor": 20,
+        "pagina": 83
+      },
+      {
+        "id": "enrijecido",
+        "nome": "Enrijecido",
+        "tipo": "ampliação",
+        "valor": 20,
+        "por_nivel": true,
+        "pagina": 83
+      },
+      {
+        "id": "reflexao",
+        "nome": "Reflexão",
+        "tipo": "ampliação",
+        "valor": 100,
+        "pagina": 83
+      },
+      {
+        "id": "ablativa",
+        "nome": "Ablativa",
+        "tipo": "limitação",
+        "valor": -80,
+        "pagina": 83
+      },
+      {
+        "id": "direcional_c",
+        "nome": "Direcional (Coração/Pequeno)",
+        "tipo": "limitação",
+        "valor": -80,
+        "pagina": 83
+      },
+      {
+        "id": "flexivel",
+        "nome": "Flexível",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 83
+      },
+      {
+        "id": "pele_resistente",
+        "nome": "Pele Resistente",
+        "tipo": "limitação",
+        "valor": -40,
+        "pagina": 83
+      },
+      {
+        "id": "sem_armadura",
+        "nome": "Sem Armadura",
+        "tipo": "limitação",
+        "valor": -40,
+        "pagina": 83
+      },
+      {
+        "id": "semiablativa",
+        "nome": "Semiablativa",
+        "tipo": "limitação",
+        "valor": -20,
+        "pagina": 83
+      }
+    ]
   },
   {
     "id": "resistencia_a_pressao",
@@ -3495,13 +4093,22 @@
     "id": "status",
     "nome": "Status",
     "pagina": 28,
-    "costKind": "perLevel",
+    "costKind": "choice",
     "fixed": null,
-    "perLevel": 5,
-    "options": null,
+    "perLevel": null,
+    "options": [
+      5,
+      10,
+      15,
+      20,
+      25,
+      30,
+      35,
+      40
+    ],
     "min": null,
     "max": null,
-    "rawCost": "5/nível",
+    "rawCost": "5 a 40",
     "specialRule": null,
     "tags": [
       "social"
@@ -3599,7 +4206,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +4 em tarefas que usam o tato (além de Sentidos Aguçados). Custo não especificado com total clareza na fonte."
+    "descricao": "Bônus de +4 em tarefas que usam o tato. Custa 10 pontos."
   },
   {
     "id": "telecinese",

@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,15 +52,16 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         viewModel.tecnicasCatalogo.associate { it.id to it.descricao }
     }
 
-    StandardTabColumn(contentSpacing = 4.dp) {
+    StandardTabColumn {
         if (isPraCegoVariant) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(UiTokens.SectionSpacing)
             ) {
                 PrimaryActionButton(
                     text = "Adicionar Técnica",
-                    onClick = { showSelecionarTecnica = true }
+                    onClick = { showSelecionarTecnica = true },
+                    modifier = Modifier.pracegoTraversal(1)
                 )
             }
         } else {
@@ -79,29 +78,23 @@ fun TabTecnicas(viewModel: FichaViewModel) {
         }
 
         if (personagem.tecnicas.isEmpty()) {
-            Text(
-                "Nenhuma técnica adicionada",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            GuidedEmptyState(
+                titulo = "Nenhuma técnica adicionada ainda.",
+                orientacao = "Use \"Adicionar Técnica\" e selecione uma perícia base válida para liberar o cadastro."
             )
         }
 
         tecnicasOrdenadas.forEach { indexed ->
             val index = indexed.index
             val tecnica = indexed.value
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = appCardColors()
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-                    TecnicaItem(
-                        tecnica = tecnica,
-                        nivelTecnica = tecnica.calcularNivel(personagem),
-                        onShowDescription = { tecnicaDescricaoDialog = tecnica },
-                        onEdit = { editingTecnicaIndex = index },
-                        onDelete = { viewModel.removerTecnica(index) }
-                    )
-                }
+            AppListItemCard {
+                TecnicaItem(
+                    tecnica = tecnica,
+                    nivelTecnica = tecnica.calcularNivel(personagem),
+                    onShowDescription = { tecnicaDescricaoDialog = tecnica },
+                    onEdit = { editingTecnicaIndex = index },
+                    onDelete = { viewModel.removerTecnica(index) }
+                )
             }
         }
 
@@ -142,10 +135,12 @@ fun TabTecnicas(viewModel: FichaViewModel) {
             onDismissRequest = { tecnicaDescricaoDialog = null },
             title = { Text(tecnica.nome) },
             text = {
-                Text(
-                    descricao.ifBlank { "Sem descrição detalhada disponível." },
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                StandardDialogColumn {
+                    Text(
+                        descricao.ifBlank { "Descrição não cadastrada para esta técnica." },
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             },
             confirmButton = {
                 TextButton(onClick = { tecnicaDescricaoDialog = null }) {

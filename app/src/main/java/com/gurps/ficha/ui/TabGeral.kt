@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -20,7 +20,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -145,17 +145,17 @@ fun TabGeral(viewModel: FichaViewModel) {
             }
             if (isPraCegoVariant) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    AtributoPrimarioLinearCard("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
-                        viewModel.atualizarForca(delta)
+                    AtributoPrimarioLinearCard("ST", p.st, (p.forca - p.forcaBase) * 10) { delta ->
+                        viewModel.atualizarForca(delta - p.modeloRacial.modForca)
                     }
-                    AtributoPrimarioLinearCard("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
-                        viewModel.atualizarDestreza(delta)
+                    AtributoPrimarioLinearCard("DX", p.dx, (p.destreza - p.destrezaBase) * 20) { delta ->
+                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestreza)
                     }
-                    AtributoPrimarioLinearCard("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                        viewModel.atualizarInteligencia(delta)
+                    AtributoPrimarioLinearCard("IQ", p.iq, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
+                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligencia)
                     }
-                    AtributoPrimarioLinearCard("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                        viewModel.atualizarVitalidade(delta)
+                    AtributoPrimarioLinearCard("HT", p.ht, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
+                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidade)
                     }
                 }
             } else {
@@ -163,17 +163,17 @@ fun TabGeral(viewModel: FichaViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    AtributoEditor("ST", p.forca, (p.forca - p.forcaBase) * 10) { delta ->
-                        viewModel.atualizarForca(delta)
+                    AtributoEditor("ST", p.st, (p.forca - p.forcaBase) * 10) { delta ->
+                        viewModel.atualizarForca(delta - p.modeloRacial.modForca)
                     }
-                    AtributoEditor("DX", p.destreza, (p.destreza - p.destrezaBase) * 20) { delta ->
-                        viewModel.atualizarDestreza(delta)
+                    AtributoEditor("DX", p.dx, (p.destreza - p.destrezaBase) * 20) { delta ->
+                        viewModel.atualizarDestreza(delta - p.modeloRacial.modDestreza)
                     }
-                    AtributoEditor("IQ", p.inteligencia, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
-                        viewModel.atualizarInteligencia(delta)
+                    AtributoEditor("IQ", p.iq, (p.inteligencia - p.inteligenciaBase) * 20) { delta ->
+                        viewModel.atualizarInteligencia(delta - p.modeloRacial.modInteligencia)
                     }
-                    AtributoEditor("HT", p.vitalidade, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
-                        viewModel.atualizarVitalidade(delta)
+                    AtributoEditor("HT", p.ht, (p.vitalidade - p.vitalidadeBase) * 10) { delta ->
+                        viewModel.atualizarVitalidade(delta - p.modeloRacial.modVitalidade)
                     }
                 }
             }
@@ -182,16 +182,16 @@ fun TabGeral(viewModel: FichaViewModel) {
         SectionCard(title = "Atributos Secundarios") {
             if (isPraCegoVariant) {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    AtributoSecundarioLinearCard("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
+                    AtributoSecundarioLinearCard("PV", p.st, p.modPontosVida, p.pontosVida, 2) { delta ->
                         viewModel.atualizarModPontosVida(delta)
                     }
-                    AtributoSecundarioLinearCard("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
+                    AtributoSecundarioLinearCard("Von", p.iq, p.modVontade, p.vontade, 5) { delta ->
                         viewModel.atualizarModVontade(delta)
                     }
-                    AtributoSecundarioLinearCard("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
+                    AtributoSecundarioLinearCard("Per", p.iq, p.modPercepcao, p.percepcao, 5) { delta ->
                         viewModel.atualizarModPercepcao(delta)
                     }
-                    AtributoSecundarioLinearCard("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
+                    AtributoSecundarioLinearCard("PF", p.ht, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
                         viewModel.atualizarModPontosFadiga(delta)
                     }
                 }
@@ -200,16 +200,16 @@ fun TabGeral(viewModel: FichaViewModel) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    AtributoSecundarioEditor("PV", p.forca, p.modPontosVida, p.pontosVida, 2) { delta ->
+                    AtributoSecundarioEditor("PV", p.st, p.modPontosVida, p.pontosVida, 2) { delta ->
                         viewModel.atualizarModPontosVida(delta)
                     }
-                    AtributoSecundarioEditor("Von", p.inteligencia, p.modVontade, p.vontade, 5) { delta ->
+                    AtributoSecundarioEditor("Von", p.iq, p.modVontade, p.vontade, 5) { delta ->
                         viewModel.atualizarModVontade(delta)
                     }
-                    AtributoSecundarioEditor("Per", p.inteligencia, p.modPercepcao, p.percepcao, 5) { delta ->
+                    AtributoSecundarioEditor("Per", p.iq, p.modPercepcao, p.percepcao, 5) { delta ->
                         viewModel.atualizarModPercepcao(delta)
                     }
-                    AtributoSecundarioEditor("PF", p.vitalidade, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
+                    AtributoSecundarioEditor("PF", p.ht, p.modPontosFadiga, p.pontosFadiga, 3) { delta ->
                         viewModel.atualizarModPontosFadiga(delta)
                     }
                 }
@@ -328,7 +328,8 @@ fun TabGeral(viewModel: FichaViewModel) {
                     PontosResumoRow("Peculiaridades", p.pontosPeculiaridades)
                     PontosResumoRow("Pericias", p.pontosPericias)
                     PontosResumoRow("Magias", p.pontosMagias)
-                    Divider(modifier = Modifier.padding(vertical = 4.dp))
+                    PontosResumoRow("Modelo Racial (${p.modeloRacial.nome})", p.modeloRacial.custoTotal)
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
                     PontosResumoRow("Total Gasto", p.pontosGastos, fontWeight = FontWeight.Bold)
                 }
             },
@@ -365,7 +366,7 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 TextButton(
                     onClick = { onSetValor((valor - 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("-")
@@ -374,12 +375,14 @@ fun AtributoEditor(nome: String, valor: Int, custo: Int, onSetValor: (Int) -> Un
                     valor.toString(),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(36.dp),
+                    modifier = Modifier
+                        .width(36.dp)
+                        .semantics { contentDescription = "Valor de $nome: $valor" },
                     textAlign = TextAlign.Center
                 )
                 TextButton(
                     onClick = { onSetValor((valor + 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("+")
@@ -440,7 +443,7 @@ fun AtributoSecundarioEditor(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                 TextButton(
                     onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("-")
@@ -449,12 +452,14 @@ fun AtributoSecundarioEditor(
                     valorFinal.toString(),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.width(34.dp),
+                    modifier = Modifier
+                        .width(34.dp)
+                        .semantics { contentDescription = "Valor de $nome: $valorFinal" },
                     textAlign = TextAlign.Center
                 )
                 TextButton(
                     onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 4.dp, vertical = 0.dp)
                 ) {
                     Text("+")
@@ -539,13 +544,14 @@ private fun AtributoPrimarioLinearCard(sigla: String, valor: Int, custo: Int, on
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(
                     onClick = { onSetValor((valor - 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("-") }
-                Text(valor.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(valor.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.semantics { contentDescription = "Valor de $nome: $valor" })
                 TextButton(
                     onClick = { onSetValor((valor + 1).coerceIn(1, 30)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("+") }
             }
@@ -586,13 +592,14 @@ private fun AtributoSecundarioLinearCard(
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 TextButton(
                     onClick = { onSetModificador((modificador - 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Diminuir $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Diminuir valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("-") }
-                Text(valorFinal.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                Text(valorFinal.toString(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.semantics { contentDescription = "Valor de $nome: $valorFinal" })
                 TextButton(
                     onClick = { onSetModificador((modificador + 1).coerceIn(-20, 20)) },
-                    modifier = Modifier.semantics { contentDescription = "Aumentar $nome" },
+                    modifier = Modifier.semantics { contentDescription = "Aumentar valor de $nome" },
                     contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) { Text("+") }
             }

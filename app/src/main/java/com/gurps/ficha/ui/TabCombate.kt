@@ -15,8 +15,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -247,9 +245,9 @@ private fun EsquivaConfiguradaCard(
     bonusEsquiva: Int,
     onEditar: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = appCardColors()) {
+    AppListItemCard {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(vertical = UiTokens.ItemSpacing),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -338,9 +336,9 @@ private fun AparaConfiguradaCard(
     onEditar: () -> Unit,
     onRemover: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = appCardColors()) {
+    AppListItemCard {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(vertical = UiTokens.ItemSpacing),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -380,9 +378,9 @@ private fun BloqueioConfiguradoCard(
     onEditar: () -> Unit,
     onRemover: () -> Unit
 ) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = appCardColors()) {
+    AppListItemCard {
         Row(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.padding(vertical = UiTokens.ItemSpacing),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

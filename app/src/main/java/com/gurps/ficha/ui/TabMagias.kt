@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,13 +32,19 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.Dificuldade
 import com.gurps.ficha.model.MagiaSelecionada
+import com.gurps.ficha.ui.features.magic.EditarMagiaDialog
+import com.gurps.ficha.ui.features.magic.SelecionarMagiaDialog
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 // === TAB MAGIAS ===
 
 @Composable
-private fun BotaoAdicionarMagiaPadrao(texto: String, onClick: () -> Unit) {
-    PrimaryActionButton(text = texto, onClick = onClick)
+private fun BotaoAdicionarMagiaPadrao(
+    texto: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    PrimaryActionButton(text = texto, onClick = onClick, modifier = modifier)
 }
 
 @Composable
@@ -52,48 +56,44 @@ fun TabMagias(viewModel: FichaViewModel) {
     var editingMagiaIndex by remember { mutableStateOf<Int?>(null) }
     var magiaDescricaoDialog by remember { mutableStateOf<MagiaSelecionada?>(null) }
 
-    StandardTabColumn(contentSpacing = 4.dp) {
+    StandardTabColumn {
 
         BotaoAdicionarMagiaPadrao(
             texto = "Adicionar Magia",
-            onClick = { showSelecionarMagia = true }
+            onClick = { showSelecionarMagia = true },
+            modifier = Modifier.pracegoTraversal(1)
         )
 
         // Lista fora do SectionCard
         if (p.magias.isEmpty()) {
-            Text(
-                "Nenhuma magia adicionada",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            GuidedEmptyState(
+                titulo = "Nenhuma magia adicionada ainda.",
+                orientacao = "Use \"Adicionar Magia\" para escolher no catálogo e ajustar os pontos."
             )
         } else {
             p.magias.forEachIndexed { index, magia ->
-                // retrieve definition to inspect prerequisites
                 val definicao = viewModel.dataRepository.getMagiaPorId(magia.definicaoId)
+                val amParaEstaMagia = definicao?.let { viewModel.nivelAptidaoMagicaParaMagia(it) } ?: nivelAptidaoMagica
                 val failureMsg = definicao?.let { viewModel.prereqFailureForMagia(it) }
                 val hasFailure = failureMsg != null
 
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors(),
+                AppListItemCard(
                     border = if (hasFailure) BorderStroke(2.dp, MaterialTheme.colorScheme.error) else null
                 ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        MagiaItem(
-                            magia = magia,
-                            nivel = magia.calcularNivel(p, nivelAptidaoMagica),
-                            onShowDescription = { magiaDescricaoDialog = magia },
-                            onEdit = { editingMagiaIndex = index },
-                            onDelete = { viewModel.removerMagia(index) }
+                    MagiaItem(
+                        magia = magia,
+                        nivel = magia.calcularNivel(p, amParaEstaMagia),
+                        onShowDescription = { magiaDescricaoDialog = magia },
+                        onEdit = { editingMagiaIndex = index },
+                        onDelete = { viewModel.removerMagia(index) }
+                    )
+                    if (failureMsg != null) {
+                        Text(
+                            failureMsg,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = UiTokens.ItemSpacing)
                         )
-                        if (failureMsg != null) {
-                            Text(
-                                failureMsg,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
                     }
                 }
             }
@@ -119,7 +119,7 @@ fun TabMagias(viewModel: FichaViewModel) {
         EditarMagiaDialog(
             magia = p.magias[index],
             personagem = p,
-            nivelAptidaoMagica = nivelAptidaoMagica,
+            nivelAptidaoMagica = viewModel.nivelAptidaoMagicaParaMagia(viewModel.dataRepository.getMagiaPorId(p.magias[index].definicaoId)),
             onDismiss = { editingMagiaIndex = null },
             onSave = { atualizada ->
                 viewModel.atualizarMagia(index, atualizada)
@@ -133,10 +133,13 @@ fun TabMagias(viewModel: FichaViewModel) {
             onDismissRequest = { magiaDescricaoDialog = null },
             title = { Text(magia.nome) },
             text = {
-                Text(
-                    text = magia.texto?.takeIf { it.isNotBlank() } ?: "Sem descrição disponível.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                StandardDialogColumn {
+                    Text(
+                        text = magia.texto?.takeIf { it.isNotBlank() }
+                            ?: "Descrição não cadastrada para esta magia.",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             },
             confirmButton = {
                 TextButton(onClick = { magiaDescricaoDialog = null }) {

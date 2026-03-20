@@ -1373,14 +1373,28 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun importarFichaJson(json: String): String? {
         return try {
             val resultado = PersonagemInterop.importarJson(json)
-            personagem = resultado.personagem
+            val novoPersonagem = resultado.personagem
+            
+            // Atribuição direta para disparar o mutableStateOf
+            personagem = novoPersonagem
+            
+            // Limpa caches de busca e triggers para forçar recomposição profunda
+            advantageSearch = advantageSearch.copy()
+            disadvantageSearch = disadvantageSearch.copy()
+            skillSearch = skillSearch.copy()
+            magicSearch = magicSearch.copy()
+            
             personagemPendenteLimpezaMagias = null
             mostrarConfirmacaoLimpezaMagias = false
-            resultado.aviso?.let { "Ficha importada com sucesso. $it" }
-        } catch (_: UnsupportedOperationException) {
-            "Versao de arquivo nao suportada por esta versao do app."
-        } catch (_: Exception) {
-            "Arquivo de ficha invalido ou corrompido."
+            
+            // Salva no auto-save para persistência imediata após importação
+            salvarFicha(autoSaveRecuperacaoNome)
+            
+            resultado.aviso?.let { "Ficha importada com sucesso. $it" } ?: "Ficha importada com sucesso."
+        } catch (e: UnsupportedOperationException) {
+            "Versão de arquivo não suportada por esta versão do app."
+        } catch (e: Exception) {
+            "Arquivo de ficha inválido ou corrompido."
         }
     }
 
