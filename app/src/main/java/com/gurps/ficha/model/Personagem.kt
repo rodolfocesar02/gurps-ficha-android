@@ -6,9 +6,12 @@ import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.CombatRules
 import java.text.Normalizer
 
+import androidx.compose.runtime.Stable
+
 /**
- * Modelo de dados para a Ficha de Personagem GURPS 4a Edicao
+ * Modelo de dados do personagem GURPS 4Ed.
  */
+@Stable
 data class Personagem(
     // Informacoes Basicas
     var nome: String = "",
@@ -220,6 +223,7 @@ enum class TipoCusto {
 // MODIFICADORES
 // ============================================================
 
+@Stable
 data class ModificadorSelecao(
     val id: String = "",
     val nome: String = "",
@@ -234,6 +238,7 @@ data class ModificadorSelecao(
 // VANTAGENS
 // ============================================================
 
+@Stable
 data class ModificadorDefinicao(
     val id: String = "",
     val nome: String = "",
@@ -246,6 +251,7 @@ data class ModificadorDefinicao(
     val descricao: String? = null
 )
 
+@Stable
 data class VantagemDefinicao(
     val id: String = "",
     val nome: String = "",
@@ -286,6 +292,7 @@ data class VantagemDefinicao(
     }
 }
 
+@Stable
 data class VantagemSelecionada(
     val definicaoId: String = "",
     val nome: String = "",
@@ -315,6 +322,7 @@ data class VantagemSelecionada(
 // DESVANTAGENS
 // ============================================================
 
+@Stable
 data class DesvantagemDefinicao(
     val id: String = "",
     val nome: String = "",
@@ -365,6 +373,7 @@ data class DesvantagemDefinicao(
     }
 }
 
+@Stable
 data class DesvantagemSelecionada(
     val definicaoId: String = "",
     val nome: String = "",
@@ -421,6 +430,7 @@ enum class AtributoBase(val sigla: String, val nomeCompleto: String) {
     }
 }
 
+@Stable
 data class PericiaDefinicao(
     val id: String = "",
     val nome: String = "",
@@ -443,6 +453,7 @@ data class PericiaDefinicao(
 
 data class PreDefinicao(val atributo: String = "", val modificador: Int = 0)
 
+@Stable
 data class PericiaSelecionada(
     val definicaoId: String = "",
     var nome: String = "",
@@ -479,6 +490,7 @@ data class PericiaSelecionada(
     }
 }
 
+@Stable
 data class TecnicaSelecionada(
     val definicaoId: String = "",
     var nome: String = "",
@@ -531,6 +543,7 @@ data class TecnicaSelecionada(
 // MAGIAS
 // ============================================================
 
+@Stable
 data class MagiaDefinicao(
     val id: String = "",
     val nome: String = "",
@@ -550,6 +563,7 @@ data class MagiaDefinicao(
     val atributoBase: String get() = "IQ"
 }
 
+@Stable
 data class MagiaSelecionada(
     val definicaoId: String = "",
     var nome: String = "",
@@ -600,6 +614,7 @@ enum class TipoEquipamento {
     ARMADURA
 }
 
+@Stable
 data class Equipamento(
     var nome: String = "",
     var peso: Float = 0f,
@@ -638,6 +653,7 @@ data class Equipamento(
 // COMBATE - DEFESAS ATIVAS
 // ============================================================
 
+@Stable
 data class DefesasAtivas(
     // Esquiva
     var bonusManualEsquiva: Int = 0,
@@ -792,6 +808,7 @@ val PERICIAS_COMBATE = setOf(
     "wrestling"
 )
 // RACIAL SKILLS
+@Stable
 data class PericiaRacial(
     val nome: String = "",
     val diff: String = "M", // F, M, D, MD
@@ -804,6 +821,7 @@ data class PericiaRacial(
 // MODELO RACIAL
 // ============================================================
 
+@Stable
 data class ModeloRacial(
     val nome: String = "Humano",
     val modForca: Int = 0,
