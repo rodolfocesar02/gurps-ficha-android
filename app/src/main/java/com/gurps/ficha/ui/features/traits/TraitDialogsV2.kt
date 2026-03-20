@@ -1,7 +1,9 @@
 package com.gurps.ficha.ui.features.traits
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -255,19 +257,38 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
     
     // RESTAURAÇÃO: SELEÇÃO DE PERÍCIA RACIAL
     if (showSelecionarPericia) {
-        SelecionarPericiaDialog(
-            viewModel = viewModel,
-            onDismiss = { showSelecionarPericia = false },
-            onConfirm = { pericia ->
-                periciasRacais = periciasRacais + ItemPericiaRacial(
-                    nome = pericia.nome,
-                    baseAtributo = pericia.atributoBase.sigla,
-                    diff = pericia.dificuldade.sigla,
-                    custo = 1,
-                    descricao = pericia.definicaoId
-                )
-                showSelecionarPericia = false
-            }
+        // DIÁLOGO DE SELEÇÃO RACIAL SIMPLIFICADO
+        AlertDialog(
+            onDismissRequest = { showSelecionarPericia = false },
+            title = { Text("Adicionar Perícia Racial") },
+            text = {
+                val pericias = viewModel.dataRepository.pericias
+                var buscaLocal by remember { mutableStateOf("") }
+                val filtradas = pericias.filter { it.nome.contains(buscaLocal, ignoreCase = true) }
+                
+                Column {
+                    OutlinedTextField(value = buscaLocal, onValueChange = { buscaLocal = it }, label = { Text("Buscar perícia...") }, modifier = Modifier.fillMaxWidth())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    LazyColumn(modifier = Modifier.height(300.dp)) {
+                        items(items = filtradas) { p ->
+                            ListItem(
+                                headlineContent = { Text(p.nome) },
+                                modifier = Modifier.clickable {
+                                    periciasRacais = periciasRacais + PericiaRacial(
+                                        nome = p.nome,
+                                        baseAtributo = p.atributoBase ?: "DX",
+                                        diff = p.dificuldadeFixa ?: "M",
+                                        custo = 1,
+                                        nivelRelativo = 0
+                                    )
+                                    showSelecionarPericia = false
+                                }
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { showSelecionarPericia = false }) { Text("Fechar") } }
         )
     }
 
