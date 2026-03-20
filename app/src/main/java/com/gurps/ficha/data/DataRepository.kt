@@ -899,6 +899,7 @@ class DataRepository(private val context: Context) {
             autocontrole = autocontrole,
             tipoCusto = definicao.tipoCusto,
             pagina = definicao.pagina,
+            specialRule = definicao.specialRule,
             modificadores = modificadores.toMutableList(),
             metadados = metadados
         )
@@ -1599,6 +1600,7 @@ private data class DesvantagemV2(
             pagina = pagina ?: 0,
             tags = tags.orEmpty(),
             descricao = descricao,
+            specialRule = specialRule,
             modificadoresEspecificos = modificadores_especificos.orEmpty()
         )
     }

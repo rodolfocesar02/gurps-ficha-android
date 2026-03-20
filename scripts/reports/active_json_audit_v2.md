@@ -3,7 +3,7 @@
 - Arquivos verificados: 13
 - JSON valido: 13
 - Arquivos com issues: 0
-- Total de itens: 2361
+- Total de itens: 2358
 - Itens sem id: 0
 - Itens sem nome: 0
 
@@ -31,7 +31,7 @@
 
 ### desvantagens.v2.json
 - json_valid: True
-- items_count: 227
+- items_count: 224
 - missing_id_count: 0
 - missing_nome_count: 0
 - duplicate_ids: 0
