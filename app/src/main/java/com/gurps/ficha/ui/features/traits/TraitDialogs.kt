@@ -52,6 +52,20 @@ private fun nivelExibicaoVantagem(definicaoId: String, nivelInterno: Int): Int {
     }
 }
 
+@Composable
+fun TraitRadioButtonOption(label: String, selected: Boolean, onClick: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 2.dp)
+    ) {
+        RadioButton(selected = selected, onClick = { onClick() })
+        Text(text = label, style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
@@ -841,8 +855,38 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     var depFrequency by remember { mutableStateOf(1.0f) }
     var depIllegal by remember { mutableStateOf(false) }
 
+    var repBase by remember { mutableStateOf(-5) }
+    var repGroup by remember { mutableStateOf(1.0f) }
+    var repRecognition by remember { mutableStateOf(1.0f) }
+
+    var dutyBase by remember { mutableStateOf(-5) }
+    var dutyHazard by remember { mutableStateOf(false) }
+    var dutyInvoluntary by remember { mutableStateOf(false) }
+    var dutyHarmless by remember { mutableStateOf(false) }
+
+    var chronicIntensity by remember { mutableStateOf(-5) }
+    var chronicFreq by remember { mutableStateOf(0.5f) }
+
+    var weaknessRarity by remember { mutableStateOf(-5) }
+    var weaknessFreq by remember { mutableStateOf(1.0f) }
+
+    var vulnRarity by remember { mutableStateOf(-5) }
+    var vulnDmgMult by remember { mutableStateOf(2.0f) }
+
+    var maintBase by remember { mutableStateOf(-10) }
+    var maintInterval by remember { mutableStateOf(1.0f) }
+
+    var vicioBase by remember { mutableStateOf(-5) }
+    var vicioBaseLabel by remember { mutableStateOf("Barato (-5 pts)") }
+    var vicioEffect by remember { mutableStateOf(0) }
+    var vicioEffectLabel by remember { mutableStateOf("Mínimo/Estimulante (+0 pts)") }
+    var vicioLegal by remember { mutableStateOf(0) }
+    var vicioLegalLabel by remember { mutableStateOf("Ilegal (+0 pts)") }
+
+    var divineCurseValue by remember { mutableStateOf("0") }
+
     val metadados = when (definicao.specialRule) {
-        "inimigos" -> mapOf(
+        "inimigos", "dependentes" -> mapOf(
             "basePoder" to enemyBasePower.toString(),
             "multIntencao" to enemyIntention.toString(),
             "multFrequencia" to enemyFrequency.toString()
@@ -852,8 +896,54 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
             "multFrequencia" to depFrequency.toString(),
             "ilegal" to depIllegal.toString()
         )
+        "reputacao" -> mapOf(
+            "baseReputacao" to repBase.toString(),
+            "multGrupo" to repGroup.toString(),
+            "multReconhecimento" to repRecognition.toString()
+        )
+        "dever" -> mapOf(
+            "baseDever" to dutyBase.toString(),
+            "perigoso" to dutyHazard.toString(),
+            "involuntario" to dutyInvoluntary.toString(),
+            "inofensivo" to dutyHarmless.toString()
+        )
+        "manutencao" -> mapOf(
+            "baseManutencao" to maintBase.toString(),
+            "multIntervalo" to maintInterval.toString()
+        )
+        "vicio" -> mapOf(
+            "baseVicio" to vicioBase.toString(),
+            "modEfeito" to vicioEffect.toString(),
+            "modLegalidade" to vicioLegal.toString()
+        )
+        "maldicao_divina" -> mapOf(
+            "custoCustom" to divineCurseValue
+        )
+        "dor_cronica" -> mapOf(
+            "baseIntensidade" to chronicIntensity.toString(),
+            "multFrequencia" to chronicFreq.toString()
+        )
+        "fraqueza" -> mapOf(
+            "baseRaridade" to weaknessRarity.toString(),
+            "multFrequencia" to weaknessFreq.toString()
+        )
+        "vulnerabilidade" -> mapOf(
+            "baseRaridade" to vulnRarity.toString(),
+            "multDano" to vulnDmgMult.toString()
+        )
         else -> null
     }
+
+    val custoCalculado = CharacterRules.calcularCustoDesvantagem(
+        definicao.tipoCusto, 
+        definicao.getCustoPorNivel().takeIf { it != 0 } ?: definicao.getCustoBase(), 
+        custoEscolhido, 
+        nivel, 
+        autocontrole, 
+        mods, 
+        definicao.specialRule, 
+        metadados
+    )
 
     val permiteAutocontrole = definicao.usaAutocontroleMental()
 
@@ -875,20 +965,23 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                val custoCalculado = CharacterRules.calcularCustoDesvantagem(
-                    definicao.tipoCusto, 
-                    definicao.getCustoPorNivel().takeIf { it != 0 } ?: definicao.getCustoBase(), 
-                    custoEscolhido, 
-                    nivel, 
-                    autocontrole, 
-                    mods, 
-                    definicao.specialRule, 
-                    metadados
-                )
-                
-                Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                    Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Text(
+                        "Custo: $custoCalculado pts",
+                        modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+
+                Text("Tipo: ${definicao.tipoCusto.name} | Custo base: ${definicao.custo} | Pag. ${definicao.pagina}", style = MaterialTheme.typography.bodySmall)
+
+                HorizontalDivider()
+
 
                 if (definicao.specialRule == "inimigos") {
                     Text("Poder do Inimigo:", style = MaterialTheme.typography.labelMedium)
@@ -971,6 +1064,237 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                         Text("Substância Ilegal (-5 pts)")
                     }
                     HorizontalDivider()
+                } else if (definicao.specialRule == "reputacao") {
+                    Text("Pontos Base:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(-5, -10, -15, -20)
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { pts ->
+                            FilterChip(selected = repBase == pts, onClick = { repBase = pts }, label = { Text("$pts pts") })
+                        }
+                    }
+
+                    Text("Pessoas Afetadas:", style = MaterialTheme.typography.labelMedium)
+                    val groupOptions = listOf(
+                        1.0f to "Quase Todas (x1)",
+                        0.5f to "Grupo Grande (x1/2)",
+                        0.33f to "Grupo Pequeno (x1/3)"
+                    )
+                    Column {
+                        groupOptions.forEach { (m, label) ->
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { repGroup = m }) {
+                                RadioButton(selected = repGroup == m, onClick = { repGroup = m })
+                                Text(label, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+
+                    Text("Frequência de Reconhecimento:", style = MaterialTheme.typography.labelMedium)
+                    val recOptions = listOf(
+                        1.0f to "Todo o Tempo (x1)",
+                        0.5f to "10 ou menos (x1/2)",
+                        0.33f to "7 ou menos (x1/3)"
+                    )
+                    Column {
+                        recOptions.forEach { (m, label) ->
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { repRecognition = m }) {
+                                RadioButton(selected = repRecognition == m, onClick = { repRecognition = m })
+                                Text(label, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+                    HorizontalDivider()
+                } else if (definicao.specialRule == "dever") {
+                    Text("Frequência do Dever:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -2 to "6-",
+                        -5 to "9-",
+                        -10 to "12-",
+                        -15 to "15-"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = dutyBase == pts, onClick = { dutyBase = pts }, label = { Text("$label ($pts)") })
+                        }
+                    }
+
+                    Text("Modificadores Adicionais:", style = MaterialTheme.typography.labelMedium)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = dutyHazard, onCheckedChange = { dutyHazard = it }, enabled = !dutyHarmless)
+                        Text("Extremamente Perigoso (-5 pts)")
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = dutyInvoluntary, onCheckedChange = { dutyInvoluntary = it })
+                        Text("Involuntário (-5 pts)")
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = dutyHarmless, onCheckedChange = { 
+                            dutyHarmless = it 
+                            if (it) dutyHazard = false 
+                        })
+                        Text("Inofensivo (+5 pts)")
+                    }
+                    HorizontalDivider()
+                } else if (definicao.specialRule == "dor_cronica") {
+                    Text("Intensidade:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Leve",
+                        -10 to "Grave",
+                        -15 to "Agonizante"
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = chronicIntensity == pts, onClick = { chronicIntensity = pts }, label = { Text(label) })
+                        }
+                    }
+
+                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
+                    val freqOptions = listOf(
+                        0.5f to "6- (x1/2)",
+                        1.0f to "9- (x1)",
+                        2.0f to "12- (x2)",
+                        3.0f to "15- (x3)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        freqOptions.forEach { (m, label) ->
+                            FilterChip(selected = chronicFreq == m, onClick = { chronicFreq = m }, label = { Text(label) })
+                        }
+                    }
+                    HorizontalDivider()
+                } else if (definicao.specialRule == "fraqueza") {
+                    Text("Raridade da Substância:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Rara",
+                        -10 to "Ocasional",
+                        -20 to "Muito Comum"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = weaknessRarity == pts, onClick = { weaknessRarity = pts }, label = { Text("$label ($pts)") })
+                        }
+                    }
+
+                    Text("Frequência do Dano (1d):", style = MaterialTheme.typography.labelMedium)
+                    val freqOptions = listOf(
+                        0.5f to "30 min (x1/2)",
+                        1.0f to "5 min (x1)",
+                        3.0f to "1 min (x3)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        freqOptions.forEach { (m, label) ->
+                            FilterChip(selected = weaknessFreq == m, onClick = { weaknessFreq = m }, label = { Text(label) })
+                        }
+                    }
+                    HorizontalDivider()
+                } else if (definicao.specialRule == "vulnerabilidade") {
+                    Text("Raridade do Ataque:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Rara",
+                        -10 to "Ocasional",
+                        -15 to "Comum",
+                        -20 to "Muito Comum"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = vulnRarity == pts, onClick = { vulnRarity = pts }, label = { Text("$label ($pts)") })
+                        }
+                    }
+
+                    Text("Multiplicador de Ferimento:", style = MaterialTheme.typography.labelMedium)
+                    val multOptions = listOf(
+                        2.0f to "x2",
+                        3.0f to "x3",
+                        4.0f to "x4"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        multOptions.forEach { (m, label) ->
+                            FilterChip(selected = vulnDmgMult == m, onClick = { vulnDmgMult = m }, label = { Text(label) })
+                        }
+                    }
+                } else if (definicao.specialRule == "manutencao") {
+                    Text("Número de Pessoas:", style = MaterialTheme.typography.labelMedium)
+                    val peopleOptions = listOf(
+                        -10 to "1 pessoa (-10 pts)",
+                        -20 to "2 pessoas (-20 pts)",
+                        -30 to "3–5 pessoas (-30 pts)",
+                        -40 to "6–10 pessoas (-40 pts)",
+                        -50 to "11–20 pessoas (-50 pts)",
+                        -60 to "21–50 pessoas (-60 pts)",
+                        -70 to "51–100 pessoas (-70 pts)"
+                    )
+                    Column {
+                        peopleOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = maintBase == pts, onClick = { maintBase = pts })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Intervalo de Manutenção:", style = MaterialTheme.typography.labelMedium)
+                    val intervalOptions = listOf(
+                        0.2f to "Mensal (x1/5)",
+                        0.33f to "Quinzenal (x1/3)",
+                        0.5f to "Semanal (x1/2)",
+                        0.75f to "Dias intercalados (x3/4)",
+                        1.0f to "Diário (x1)",
+                        2.0f to "2x por dia (x2)",
+                        3.0f to "3-5x por dia (x3)",
+                        5.0f to "Constante (x5)"
+                    )
+                    Column {
+                        intervalOptions.forEach { (m, label) ->
+                            TraitRadioButtonOption(label = label, selected = maintInterval == m, onClick = { maintInterval = m })
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                } else if (definicao.specialRule == "vicio") {
+                    Text("Custo Diário:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Barato (-5 pts)",
+                        -10 to "Caro (-10 pts)",
+                        -20 to "Muito Caro (-20 pts)"
+                    )
+                    Column {
+                        baseOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = vicioBaseLabel == label, onClick = { vicioBase = pts; vicioBaseLabel = label })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Efeitos:", style = MaterialTheme.typography.labelMedium)
+                    val effectOptions = listOf(
+                        0 to "Mínimo/Estimulante (+0 pts)",
+                        -10 to "Incapacitante/Alucinógena (-10 pts)",
+                        -5 to "Altamente Viciante (-5 pts)",
+                        -10 to "Totalmente Viciante (-10 pts)"
+                    )
+                    Column {
+                        effectOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = vicioEffectLabel == label, onClick = { vicioEffect = pts; vicioEffectLabel = label })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Legalidade:", style = MaterialTheme.typography.labelMedium)
+                    val legalOptions = listOf(
+                        0 to "Ilegal (+0 pts)",
+                        5 to "Legal (+5 pts)"
+                    )
+                    Column {
+                        legalOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = vicioLegalLabel == label, onClick = { vicioLegal = pts; vicioLegalLabel = label })
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                } else if (definicao.specialRule == "maldicao_divina") {
+                    Text("Valor da Maldição (Custo):", style = MaterialTheme.typography.labelMedium)
+                    OutlinedTextField(
+                        value = divineCurseValue,
+                        onValueChange = { divineCurseValue = it.filter { c -> c.isDigit() || c == '-' } },
+                        label = { Text("Pontos") },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number)
+                    )
+                    HorizontalDivider()
+                    HorizontalDivider()
                 } else {
                     val opcoesEscolha = definicao.getOpcoesEscolha()
 
@@ -1035,7 +1359,17 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
             }
         },
         confirmButton = {
-            TextButton(onClick = { onSave(nivel, custoEscolhido, descricao, autocontrole, mods, metadados) }) { Text(UiActionLabels.ADICIONAR) }
+            TextButton(onClick = { 
+                var finalCusto = custoEscolhido
+                if (definicao.specialRule == "vicio") {
+                    finalCusto = vicioBase + vicioEffect + vicioLegal
+                } else if (definicao.specialRule == "manutencao") {
+                    finalCusto = (maintBase * maintInterval).toInt()
+                } else if (definicao.specialRule == "maldicao_divina") {
+                    finalCusto = divineCurseValue.toIntOrNull() ?: 0
+                }
+                onSave(nivel, finalCusto, descricao, autocontrole, mods, metadados) 
+            }) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
@@ -1091,18 +1425,46 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
         mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f) 
     }
     
-    var depRarity by remember { 
-        mutableStateOf(desvantagem.metadados?.get("baseRaridade")?.toIntOrNull() ?: -5) 
-    }
-    var depFrequency by remember { 
-        mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f) 
-    }
-    var depIllegal by remember { 
-        mutableStateOf(desvantagem.metadados?.get("ilegal")?.toBoolean() ?: false) 
-    }
+    var depRarity by remember { mutableStateOf(desvantagem.metadados?.get("baseRaridade")?.toIntOrNull() ?: -5) }
+    var depFrequency by remember { mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f) }
+    var depIllegal by remember { mutableStateOf(desvantagem.metadados?.get("ilegal")?.toBoolean() ?: false) }
+
+    var repBase by remember { mutableStateOf(desvantagem.metadados?.get("baseReputacao")?.toIntOrNull() ?: -5) }
+    var repGroup by remember { mutableStateOf(desvantagem.metadados?.get("multGrupo")?.toFloatOrNull() ?: 1.0f) }
+    var repRecognition by remember { mutableStateOf(desvantagem.metadados?.get("multReconhecimento")?.toFloatOrNull() ?: 1.0f) }
+
+    var dutyBase by remember { mutableStateOf(desvantagem.metadados?.get("baseDever")?.toIntOrNull() ?: -5) }
+    var dutyHazard by remember { mutableStateOf(desvantagem.metadados?.get("perigoso")?.toBoolean() ?: false) }
+    var dutyInvoluntary by remember { mutableStateOf(desvantagem.metadados?.get("involuntario")?.toBoolean() ?: false) }
+    var dutyHarmless by remember { mutableStateOf(desvantagem.metadados?.get("inofensivo")?.toBoolean() ?: false) }
+
+    var chronicIntensity by remember { mutableStateOf(desvantagem.metadados?.get("baseIntensidade")?.toIntOrNull() ?: -5) }
+    var chronicFreq by remember { mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 0.5f) }
+
+    var weaknessRarity by remember { mutableStateOf(desvantagem.metadados?.get("baseRaridade")?.toIntOrNull() ?: -5) }
+    var weaknessFreq by remember { mutableStateOf(desvantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f) }
+
+    var vulnRarity by remember { mutableStateOf(desvantagem.metadados?.get("baseRaridade")?.toIntOrNull() ?: -5) }
+    var vulnDmgMult by remember { mutableStateOf(desvantagem.metadados?.get("multDano")?.toFloatOrNull() ?: 2.0f) }
+
+    var maintBase by remember { mutableStateOf(desvantagem.metadados?.get("baseManutencao")?.toIntOrNull() ?: -10) }
+    var maintInterval by remember { mutableStateOf(desvantagem.metadados?.get("multIntervalo")?.toFloatOrNull() ?: 1.0f) }
+
+    var vicioBase by remember { mutableStateOf(desvantagem.metadados?.get("baseVicio")?.toIntOrNull() ?: -5) }
+    var vicioEffect by remember { mutableStateOf(desvantagem.metadados?.get("modEfeito")?.toIntOrNull() ?: 0) }
+    var vicioLegal by remember { mutableStateOf(desvantagem.metadados?.get("modLegalidade")?.toIntOrNull() ?: 0) }
+
+    val vicioBaseOpts = listOf(-5 to "Barato (-5 pts)", -10 to "Caro (-10 pts)", -20 to "Muito Caro (-20 pts)")
+    var vicioBaseLabel by remember { mutableStateOf(vicioBaseOpts.find { it.first == vicioBase }?.second ?: vicioBaseOpts[0].second) }
+    val vicioEffectOpts = listOf(0 to "Mínimo/Estimulante (+0 pts)", -10 to "Incapacitante/Alucinógena (-10 pts)", -5 to "Altamente Viciante (-5 pts)", -10 to "Totalmente Viciante (-10 pts)")
+    var vicioEffectLabel by remember { mutableStateOf(vicioEffectOpts.find { it.first == vicioEffect }?.second ?: vicioEffectOpts[0].second) }
+    val vicioLegalOpts = listOf(0 to "Ilegal (+0 pts)", 5 to "Legal (+5 pts)")
+    var vicioLegalLabel by remember { mutableStateOf(vicioLegalOpts.find { it.first == vicioLegal }?.second ?: vicioLegalOpts[0].second) }
+
+    var divineCurseValue by remember { mutableStateOf(desvantagem.metadados?.get("custoCustom") ?: "0") }
 
     val metadadosNovo = when (specialRule) {
-        "inimigos" -> mapOf(
+        "inimigos", "dependentes" -> mapOf(
             "basePoder" to enemyBasePower.toString(),
             "multIntencao" to enemyIntention.toString(),
             "multFrequencia" to enemyFrequency.toString()
@@ -1112,8 +1474,54 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
             "multFrequencia" to depFrequency.toString(),
             "ilegal" to depIllegal.toString()
         )
+        "reputacao" -> mapOf(
+            "baseReputacao" to repBase.toString(),
+            "multGrupo" to repGroup.toString(),
+            "multReconhecimento" to repRecognition.toString()
+        )
+        "dever" -> mapOf(
+            "baseDever" to dutyBase.toString(),
+            "perigoso" to dutyHazard.toString(),
+            "involuntario" to dutyInvoluntary.toString(),
+            "inofensivo" to dutyHarmless.toString()
+        )
+        "manutencao" -> mapOf(
+            "baseManutencao" to maintBase.toString(),
+            "multIntervalo" to maintInterval.toString()
+        )
+        "vicio" -> mapOf(
+            "baseVicio" to vicioBase.toString(),
+            "modEfeito" to vicioEffect.toString(),
+            "modLegalidade" to vicioLegal.toString()
+        )
+        "maldicao_divina" -> mapOf(
+            "custoCustom" to divineCurseValue
+        )
+        "dor_cronica" -> mapOf(
+            "baseIntensidade" to chronicIntensity.toString(),
+            "multFrequencia" to chronicFreq.toString()
+        )
+        "fraqueza" -> mapOf(
+            "baseRaridade" to weaknessRarity.toString(),
+            "multFrequencia" to weaknessFreq.toString()
+        )
+        "vulnerabilidade" -> mapOf(
+            "baseRaridade" to vulnRarity.toString(),
+            "multDano" to vulnDmgMult.toString()
+        )
         else -> desvantagem.metadados
     }
+
+    val custoCalculado = CharacterRules.calcularCustoDesvantagem(
+        desvantagem.tipoCusto, 
+        def?.getCustoPorNivel() ?: desvantagem.custoBase, 
+        custoEscolhido, 
+        nivel, 
+        autocontrole, 
+        mods,
+        specialRule,
+        metadadosNovo
+    )
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -1133,20 +1541,22 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
-                val custoCalculado = CharacterRules.calcularCustoDesvantagem(
-                    desvantagem.tipoCusto, 
-                    def?.getCustoPorNivel() ?: desvantagem.custoBase, 
-                    custoEscolhido, 
-                    nivel, 
-                    autocontrole, 
-                    mods,
-                    specialRule,
-                    metadadosNovo
-                )
-                
-                Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)) {
-                    Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                ) {
+                    Text(
+                        "Custo: $custoCalculado pts",
+                        modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+
+                Text("Tipo: ${desvantagem.tipoCusto.name} | Custo base: ${desvantagem.custoBase} | Pag. ${desvantagem.pagina ?: def?.pagina ?: 0}", style = MaterialTheme.typography.bodySmall)
+
+                HorizontalDivider()
 
                 if (specialRule == "inimigos") {
                     Text("Poder do Inimigo:", style = MaterialTheme.typography.labelMedium)
@@ -1228,6 +1638,237 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
                         Text("Substância Ilegal (-5 pts)")
                     }
                     HorizontalDivider()
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "reputacao") {
+                    Text("Pontos Base:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(-5, -10, -15, -20)
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { pts ->
+                            FilterChip(selected = repBase == pts, onClick = { repBase = pts }, label = { Text("$pts pts") })
+                        }
+                    }
+
+                    Text("Pessoas Afetadas:", style = MaterialTheme.typography.labelMedium)
+                    val groupOptions = listOf(
+                        1.0f to "Quase Todas (x1)",
+                        0.5f to "Grupo Grande (x1/2)",
+                        0.33f to "Grupo Pequeno (x1/3)"
+                    )
+                    Column {
+                        groupOptions.forEach { (m, label) ->
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { repGroup = m }) {
+                                RadioButton(selected = repGroup == m, onClick = { repGroup = m })
+                                Text(label, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+
+                    Text("Frequência de Reconhecimento:", style = MaterialTheme.typography.labelMedium)
+                    val recOptions = listOf(
+                        1.0f to "Todo o Tempo (x1)",
+                        0.5f to "10 ou menos (x1/2)",
+                        0.33f to "7 ou menos (x1/3)"
+                    )
+                    Column {
+                        recOptions.forEach { (m, label) ->
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { repRecognition = m }) {
+                                RadioButton(selected = repRecognition == m, onClick = { repRecognition = m })
+                                Text(label, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                    }
+                    HorizontalDivider()
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "dever") {
+                    Text("Frequência do Dever:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -2 to "6-",
+                        -5 to "9-",
+                        -10 to "12-",
+                        -15 to "15-"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = dutyBase == pts, onClick = { dutyBase = pts }, label = { Text("$label ($pts)") })
+                        }
+                    }
+
+                    Text("Modificadores Adicionais:", style = MaterialTheme.typography.labelMedium)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = dutyHazard, onCheckedChange = { dutyHazard = it }, enabled = !dutyHarmless)
+                        Text("Extremamente Perigoso (-5 pts)")
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = dutyInvoluntary, onCheckedChange = { dutyInvoluntary = it })
+                        Text("Involuntário (-5 pts)")
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = dutyHarmless, onCheckedChange = { 
+                            dutyHarmless = it 
+                            if (it) dutyHazard = false 
+                        })
+                        Text("Inofensivo (+5 pts)")
+                    }
+                    HorizontalDivider()
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "dor_cronica") {
+                    Text("Intensidade:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Leve",
+                        -10 to "Grave",
+                        -15 to "Agonizante"
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = chronicIntensity == pts, onClick = { chronicIntensity = pts }, label = { Text(label) })
+                        }
+                    }
+
+                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
+                    val freqOptions = listOf(
+                        0.5f to "6- (x1/2)",
+                        1.0f to "9- (x1)",
+                        2.0f to "12- (x2)",
+                        3.0f to "15- (x3)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        freqOptions.forEach { (m, label) ->
+                            FilterChip(selected = chronicFreq == m, onClick = { chronicFreq = m }, label = { Text(label) })
+                        }
+                    }
+                    HorizontalDivider()
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "fraqueza") {
+                    Text("Raridade da Substância:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Rara",
+                        -10 to "Ocasional",
+                        -20 to "Muito Comum"
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = weaknessRarity == pts, onClick = { weaknessRarity = pts }, label = { Text("$label ($pts)") })
+                        }
+                    }
+
+                    Text("Frequência do Dano (1d):", style = MaterialTheme.typography.labelMedium)
+                    val freqOptions = listOf(
+                        0.5f to "30 min (x1/2)",
+                        1.0f to "5 min (x1)",
+                        3.0f to "1 min (x3)"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        freqOptions.forEach { (m, label) ->
+                            FilterChip(selected = weaknessFreq == m, onClick = { weaknessFreq = m }, label = { Text(label) })
+                        }
+                    }
+                    HorizontalDivider()
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "vulnerabilidade") {
+                    Text("Raridade do Ataque:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Rara",
+                        -10 to "Ocasional",
+                        -15 to "Comum",
+                        -20 to "Muito Comum"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        baseOptions.forEach { (pts, label) ->
+                            FilterChip(selected = vulnRarity == pts, onClick = { vulnRarity = pts }, label = { Text("$label ($pts)") })
+                        }
+                    }
+
+                    Text("Multiplicador de Ferimento:", style = MaterialTheme.typography.labelMedium)
+                    val multOptions = listOf(
+                        2.0f to "x2",
+                        3.0f to "x3",
+                        4.0f to "x4"
+                    )
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        multOptions.forEach { (m, label) ->
+                            FilterChip(selected = vulnDmgMult == m, onClick = { vulnDmgMult = m }, label = { Text(label) })
+                        }
+                    }
+                    HorizontalDivider()
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "manutencao") {
+                    Text("Número de Pessoas:", style = MaterialTheme.typography.labelMedium)
+                    val peopleOptions = listOf(
+                        -10 to "1 pessoa (-10 pts)",
+                        -20 to "2 pessoas (-20 pts)",
+                        -30 to "3–5 pessoas (-30 pts)",
+                        -40 to "6–10 pessoas (-40 pts)",
+                        -50 to "11–20 pessoas (-50 pts)",
+                        -60 to "21–50 pessoas (-60 pts)",
+                        -70 to "51–100 pessoas (-70 pts)"
+                    )
+                    Column {
+                        peopleOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = maintBase == pts, onClick = { maintBase = pts })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Intervalo de Manutenção:", style = MaterialTheme.typography.labelMedium)
+                    val intervalOptions = listOf(
+                        0.2f to "Mensal (x1/5)",
+                        0.33f to "Quinzenal (x1/3)",
+                        0.5f to "Semanal (x1/2)",
+                        0.75f to "Dias intercalados (x3/4)",
+                        1.0f to "Diário (x1)",
+                        2.0f to "2x por dia (x2)",
+                        3.0f to "3-5x por dia (x3)",
+                        5.0f to "Constante (x5)"
+                    )
+                    Column {
+                        intervalOptions.forEach { (m, label) ->
+                            TraitRadioButtonOption(label = label, selected = maintInterval == m, onClick = { maintInterval = m })
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "vicio") {
+                    Text("Custo Diário:", style = MaterialTheme.typography.labelMedium)
+                    val baseOptions = listOf(
+                        -5 to "Barato (-5 pts)",
+                        -10 to "Caro (-10 pts)",
+                        -20 to "Muito Caro (-20 pts)"
+                    )
+                    Column {
+                        baseOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = vicioBaseLabel == label, onClick = { vicioBase = pts; vicioBaseLabel = label })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Efeitos:", style = MaterialTheme.typography.labelMedium)
+                    val effectOptions = listOf(
+                        0 to "Mínimo/Estimulante (+0 pts)",
+                        -10 to "Incapacitante/Alucinógena (-10 pts)",
+                        -5 to "Altamente Viciante (-5 pts)",
+                        -10 to "Totalmente Viciante (-10 pts)"
+                    )
+                    Column {
+                        effectOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = vicioEffectLabel == label, onClick = { vicioEffect = pts; vicioEffectLabel = label })
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("Legalidade:", style = MaterialTheme.typography.labelMedium)
+                    val legalOptions = listOf(
+                        0 to "Ilegal (+0 pts)",
+                        5 to "Legal (+5 pts)"
+                    )
+                    Column {
+                        legalOptions.forEach { (pts, label) ->
+                            TraitRadioButtonOption(label = label, selected = vicioLegalLabel == label, onClick = { vicioLegal = pts; vicioLegalLabel = label })
+                        }
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+                } else if ((desvantagem.specialRule ?: def?.specialRule) == "maldicao_divina") {
+                    Text("Valor da Maldição (Custo):", style = MaterialTheme.typography.labelMedium)
+                    OutlinedTextField(
+                        value = divineCurseValue,
+                        onValueChange = { divineCurseValue = it.filter { c -> c.isDigit() || c == '-' } },
+                        label = { Text("Pontos") },
+                        modifier = Modifier.fillMaxWidth(),
+                        keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = androidx.compose.ui.text.input.KeyboardType.Number)
+                    )
+                    HorizontalDivider()
                 } else {
                     val opcoesEscolha = def?.getOpcoesEscolha() ?: emptyList()
 
@@ -1292,6 +1933,15 @@ fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalo
         },
         confirmButton = {
             TextButton(onClick = {
+                var finalCusto = custoEscolhido
+                if (specialRule == "vicio") {
+                    finalCusto = vicioBase + vicioEffect + vicioLegal
+                } else if (specialRule == "manutencao") {
+                    finalCusto = (maintBase * maintInterval).toInt()
+                } else if (specialRule == "maldicao_divina") {
+                    finalCusto = divineCurseValue.toIntOrNull() ?: 0
+                }
+
                 onSave(desvantagem.copy(
                     nivel = nivel, 
                     custoEscolhido = custoEscolhido, 

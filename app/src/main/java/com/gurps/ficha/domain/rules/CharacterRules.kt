@@ -266,11 +266,31 @@ object CharacterRules {
         specialRule: String? = null,
         metadados: Map<String, String>? = null
     ): Int {
-        if (specialRule == "inimigos" && metadados != null) {
-            return calcularCustoInimigo(metadados, modificadores)
-        }
-        if (specialRule == "dependencia" && metadados != null) {
-            return calcularCustoDependencia(metadados, modificadores)
+        if (metadados != null && specialRule != null) {
+            val baseCostForSpecialRule = when (specialRule) {
+                "inimigos", "dependentes" -> calcularCustoInimigo(metadados, modificadores)
+                "dependencia" -> calcularCustoDependencia(metadados)
+                "reputacao" -> calcularCustoReputacao(metadados)
+                "dever" -> calcularCustoDever(metadados)
+                "dor_cronica" -> calcularCustoDorCronica(metadados)
+                "fraqueza" -> calcularCustoFraqueza(metadados)
+                "vulnerabilidade" -> calcularCustoVulnerabilidade(metadados)
+                "manutencao" -> calcularCustoManutencao(metadados)
+                "vicio" -> calcularCustoVicio(metadados)
+                "maldicao_divina" -> calcularCustoMaldicaoDivina(metadados)
+                else -> null
+            }
+            if (baseCostForSpecialRule != null) {
+                // For special rules, the base cost is already calculated,
+                // and modifiers are applied later.
+                // The autocontrole logic is skipped for these special rules.
+                val somaPercentual = modificadores.sumOf {
+                    if (it.porNivel) it.valor * it.niveis else it.valor
+                }
+                val percentualFinal = somaPercentual.coerceAtLeast(-80)
+                val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+                return kotlin.math.ceil(baseCostForSpecialRule * multiplicadorMod).toInt()
+            }
         }
 
         val custoSemAutocontrole = when (tipoCusto) {
@@ -317,19 +337,80 @@ object CharacterRules {
         return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
     }
 
-    private fun calcularCustoDependencia(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
-        val baseRaridade = metadados["baseRaridade"]?.toIntOrNull() ?: -5
-        val multFrequencia = metadados["multFrequencia"]?.toFloatOrNull() ?: 1.0f
-        val ilegal = metadados["ilegal"]?.toBoolean() ?: false
+    private fun calcularCustoDependencia(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseRaridade")?.toIntOrNull() ?: -5
+        val freq = metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f
+        val ilegal = metadados?.get("ilegal")?.toBoolean() ?: false
         
-        var valorBase = (baseRaridade * multFrequencia).toInt()
-        if (ilegal) valorBase -= 5
+        var total = base.toFloat() * freq
+        if (ilegal) total -= 5
         
-        val somaPercentual = modificadores.sumOf { it.valor }
-        val percentualFinal = somaPercentual.coerceAtLeast(-80)
-        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+        return kotlin.math.ceil(total.toDouble()).toInt()
+    }
+
+    private fun calcularCustoReputacao(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseReputacao")?.toIntOrNull() ?: -5
+        val multGrupo = metadados?.get("multGrupo")?.toFloatOrNull() ?: 1.0f
+        val multReconhecimento = metadados?.get("multReconhecimento")?.toFloatOrNull() ?: 1.0f
         
-        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
+        val total = base.toFloat() * multGrupo * multReconhecimento
+        return kotlin.math.ceil(total.toDouble()).toInt()
+    }
+
+    private fun calcularCustoDever(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseDever")?.toIntOrNull() ?: -5
+        val perigoso = metadados?.get("perigoso")?.toBoolean() ?: false
+        val involuntario = metadados?.get("involuntario")?.toBoolean() ?: false
+        val inofensivo = metadados?.get("inofensivo")?.toBoolean() ?: false
+        
+        var total = base.toFloat()
+        if (perigoso) total -= 5
+        if (involuntario) total -= 5
+        if (inofensivo) total += 5
+        
+        return total.toInt()
+    }
+
+    private fun calcularCustoDorCronica(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseIntensidade")?.toIntOrNull() ?: -5
+        val multFreq = metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f
+        
+        val total = base.toFloat() * multFreq
+        return kotlin.math.ceil(total.toDouble()).toInt()
+    }
+
+    private fun calcularCustoFraqueza(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseRaridade")?.toIntOrNull() ?: -5
+        val multFreq = metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f
+        
+        val total = base.toFloat() * multFreq
+        return kotlin.math.ceil(total.toDouble()).toInt()
+    }
+
+    private fun calcularCustoVulnerabilidade(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseRaridade")?.toIntOrNull() ?: -5
+        val multDano = metadados?.get("multDano")?.toFloatOrNull() ?: 2.0f
+        
+        val total = base.toFloat() * multDano
+        return kotlin.math.ceil(total.toDouble()).toInt()
+    }
+
+    private fun calcularCustoManutencao(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseManutencao")?.toIntOrNull() ?: -10
+        val mult = metadados?.get("multIntervalo")?.toFloatOrNull() ?: 1.0f
+        val total = base.toFloat() * mult
+        return kotlin.math.ceil(total.toDouble()).toInt()
+    }
+
+    private fun calcularCustoVicio(metadados: Map<String, String>?): Int {
+        val base = metadados?.get("baseVicio")?.toIntOrNull() ?: -5
+        val efeito = metadados?.get("modEfeito")?.toIntOrNull() ?: 0
+        val legalidade = metadados?.get("modLegalidade")?.toIntOrNull() ?: 0
+        return base + efeito + legalidade
+    }
+
+    private fun calcularCustoMaldicaoDivina(metadados: Map<String, String>?): Int {
+        return metadados?.get("custoCustom")?.toIntOrNull() ?: 0
     }
 
     fun calcularBonusPorDificuldade(dificuldade: Dificuldade, pontosGastos: Int): Int {
