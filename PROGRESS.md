@@ -54,3 +54,13 @@
 
 ---
 *Nota: Este arquivo foi limpo radicalmente em 20/03/2026 para remover logs obsoletos de 2024/2025.*
+
+### 6. Regra de Comunicacao (IA)
+- **Limite de Emojis**: O assistente IA deve usar NO MAXIMO 1 emoji por mensagem para manter a sobriedade e clareza tecnica.
+
+### 7. Regras Operacionais de Ouro (Skills de Elite)
+- **Backend (BFRI)**: Seguir fluxo rigoroso (routes -> controllers -> services -> repositories) para evitar crashes.
+- **Frontend (FFCI)**: Priorizar componentes reusaveis e performance de renderizacao no Compose/React.
+- **Database**: Garantir integridade com validacao de indices e Plano de Rollback em toda migracao.
+- **Contexto (DDD/ACL)**: Proteger as regras de GURPS com camadas de isolamento (ACL) para evitar perda de contexto.
+- **Imagens (Image-Studio)**: Gemini para realismo (NPCs); Stability AI para estilo RPG (Tokens/Mapas).
