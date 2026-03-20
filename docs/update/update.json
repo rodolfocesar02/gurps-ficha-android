@@ -1,7 +1,7 @@
 {
-  "versionCode": 8,
-  "versionName": "1.4.2",
-  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.2/app-visual-release.apk",
-  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.2/app-pracego-release.apk",
-  "notes": "V1.4.2 (v8): Acessibilidade Racial (TalkBack), Sistema de Importação Instantânea e Menu Simplificado."
+  "versionCode": 9,
+  "versionName": "1.4.3",
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.3/app-visual-release.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.3/app-pracego-release.apk",
+  "notes": "V1.4.3 (v9): Restauração de Perícias Raciais, Bônus de Atributos e Acessibilidade TalkBack."
 }
