@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.domain.magias
+package com.gurps.ficha.domain.magias
 
 import com.gurps.ficha.model.MagiaDefinicao
 import nexus.arcano.ArcanoCatalogo
@@ -81,7 +81,7 @@ class NexusArcanoModoAlvoAdapter(
             .map { it.magiaId }
             .filter { magiasById.containsKey(it) }
             .distinct()
-            .take(3)
+            .take(5)
             .toList()
         val idsAcoes = idsAcoesMotor.toMutableList()
 
@@ -98,11 +98,14 @@ class NexusArcanoModoAlvoAdapter(
             .distinct()
             .toList()
 
+        val cadeiasMetas = metas.filter { it.tipo == ArcanoMetaTipo.CADEIA_MAGIA }.map { it.origemMagiaId }
+        cadeiasMetas.forEach { relacionados.add(it) }
+
         rankingElegivel.forEach { candId ->
-            if (idsAcoes.size < 3 && candId !in idsAcoes) {
+            if (idsAcoes.size < 5 && candId !in idsAcoes) {
                 idsAcoes.add(candId)
             }
-            if (relacionados.size < 7) {
+            if (relacionados.size < 20) {
                 relacionados.add(candId)
             }
         }

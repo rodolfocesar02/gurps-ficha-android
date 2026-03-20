@@ -132,7 +132,7 @@ fun SelecionarTecnicaDialog(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 8.dp, vertical = 6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
                         ) {
                             Text(
                                 tecnica.nome,
@@ -153,7 +153,7 @@ fun SelecionarTecnicaDialog(
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text("Fechar") }
+                TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
             }
         }
     }
@@ -212,7 +212,7 @@ fun ConfigurarTecnicaDialog(
         title = null,
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -275,7 +275,7 @@ fun ConfigurarTecnicaDialog(
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 if (isPraCegoVariant) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                         TextButton(
                             enabled = nivelRelativo > 0,
                             onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
@@ -362,10 +362,10 @@ fun ConfigurarTecnicaDialog(
                         onSave()
                     }
                 }
-            ) { Text("Adicionar") }
+            ) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -375,7 +375,7 @@ fun ConfigurarTecnicaDialog(
             title = { Text(definicao.nome) },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
@@ -396,7 +396,7 @@ fun ConfigurarTecnicaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da técnica"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -469,7 +469,7 @@ fun EditarTecnicaDialog(
         title = null,
         text = {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                 modifier = Modifier.verticalScroll(rememberScrollState())
             ) {
                 Text(
@@ -525,7 +525,7 @@ fun EditarTecnicaDialog(
 
                 Text("Nível acima do predefinido:", style = MaterialTheme.typography.labelMedium)
                 if (isPraCegoVariant) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                         TextButton(
                             enabled = nivelRelativo > 0,
                             onClick = { nivelRelativo = (nivelRelativo - 1).coerceAtLeast(0) },
@@ -599,10 +599,10 @@ fun EditarTecnicaDialog(
                         )
                     )
                 }
-            ) { Text("Salvar") }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+            TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) }
         }
     )
 
@@ -612,7 +612,7 @@ fun EditarTecnicaDialog(
             title = { Text(tecnica.nome) },
             text = {
                 Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing),
                     modifier = Modifier.verticalScroll(rememberScrollState())
                 ) {
                     Text(
@@ -633,7 +633,7 @@ fun EditarTecnicaDialog(
                     modifier = Modifier.semantics {
                         if (isPraCegoVariant) contentDescription = "Fechar descrição da técnica"
                     }
-                ) { Text("Fechar") }
+                ) { Text(UiActionLabels.FECHAR) }
             }
         )
     }
@@ -679,7 +679,7 @@ fun PericiasSuplementaresDialog(
                 }
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = onDismiss) { Text("Fechar") }
+                TextButton(onClick = onDismiss) { Text(UiActionLabels.FECHAR) }
             }
         }
     }
@@ -736,7 +736,7 @@ private fun PericiaSuplementarDetalhesDialog(
         text = {
             Column(
                 modifier = Modifier.verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
             ) {
                 Text(
                     "${item.sourceBook} • ${item.dificuldadeRaw}",
@@ -776,7 +776,7 @@ private fun PericiaSuplementarDetalhesDialog(
                 modifier = Modifier.semantics {
                     contentDescription = "Fechar detalhes da perícia ${item.nome}"
                 }
-            ) { Text("Fechar") }
+            ) { Text(UiActionLabels.FECHAR) }
         }
     )
 }
@@ -808,6 +808,8 @@ private fun periciaTecnicaLabel(pericia: PericiaSelecionada): String {
         "${pericia.nome} (${pericia.especializacao})"
     }
 }
+
+
 
 
 

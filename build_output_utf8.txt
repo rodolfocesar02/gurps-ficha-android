@@ -1,0 +1,136 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon JVM discovery is an incubating feature.
+Daemon will be stopped at the end of the build 
+
+> Task :app:validateActiveJsonAssets
+OK: relatorio salvo em C:\Users\Rodolfo\Desktop\bachup ficha gurps\ficha-gurps-feita-do-zero-android-studio\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.json
+OK: resumo salvo em C:\Users\Rodolfo\Desktop\bachup ficha gurps\ficha-gurps-feita-do-zero-android-studio\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.md
+
+> Task :app:preBuild
+> Task :app:preVisualDebugBuild
+> Task :app:mergeVisualDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generateVisualDebugBuildConfig UP-TO-DATE
+> Task :app:checkVisualDebugAarMetadata UP-TO-DATE
+> Task :app:generateVisualDebugResValues UP-TO-DATE
+> Task :app:mapVisualDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateVisualDebugResources UP-TO-DATE
+> Task :app:mergeVisualDebugResources UP-TO-DATE
+> Task :app:packageVisualDebugResources UP-TO-DATE
+> Task :app:parseVisualDebugLocalResources UP-TO-DATE
+> Task :app:createVisualDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksVisualDebug UP-TO-DATE
+> Task :app:processVisualDebugMainManifest UP-TO-DATE
+> Task :app:processVisualDebugManifest UP-TO-DATE
+> Task :app:processVisualDebugManifestForPackage UP-TO-DATE
+> Task :app:processVisualDebugResources UP-TO-DATE
+> Task :app:kspVisualDebugKotlin UP-TO-DATE
+> Task :app:compileVisualDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileVisualDebug UP-TO-DATE
+> Task :app:compileVisualDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeVisualDebugShaders UP-TO-DATE
+> Task :app:compileVisualDebugShaders NO-SOURCE
+> Task :app:generateVisualDebugAssets UP-TO-DATE
+> Task :app:mergeVisualDebugAssets UP-TO-DATE
+> Task :app:compressVisualDebugAssets UP-TO-DATE
+> Task :app:checkVisualDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarVisualDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexVisualDebug UP-TO-DATE
+> Task :app:mergeLibDexVisualDebug UP-TO-DATE
+> Task :app:dexBuilderVisualDebug UP-TO-DATE
+> Task :app:mergeProjectDexVisualDebug UP-TO-DATE
+> Task :app:mergeVisualDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processVisualDebugJavaRes UP-TO-DATE
+> Task :app:mergeVisualDebugJavaResource UP-TO-DATE
+> Task :app:mergeVisualDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeVisualDebugNativeLibs NO-SOURCE
+> Task :app:stripVisualDebugDebugSymbols NO-SOURCE
+> Task :app:validateSigningVisualDebug UP-TO-DATE
+> Task :app:writeVisualDebugAppMetadata UP-TO-DATE
+> Task :app:writeVisualDebugSigningConfigVersions UP-TO-DATE
+> Task :app:packageVisualDebug UP-TO-DATE
+> Task :app:createVisualDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:assembleVisualDebug UP-TO-DATE
+
+BUILD SUCCESSFUL in 9s
+37 actionable tasks: 1 executed, 36 up-to-date
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon JVM discovery is an incubating feature.
+Daemon will be stopped at the end of the build 
+
+> Task :app:validateActiveJsonAssets
+OK: relatorio salvo em C:\Users\Rodolfo\Desktop\bachup ficha gurps\ficha-gurps-feita-do-zero-android-studio\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.json
+OK: resumo salvo em C:\Users\Rodolfo\Desktop\bachup ficha gurps\ficha-gurps-feita-do-zero-android-studio\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.md
+
+> Task :app:preBuild
+> Task :app:prePracegoDebugBuild
+> Task :app:mergePracegoDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generatePracegoDebugBuildConfig
+> Task :app:checkPracegoDebugAarMetadata
+> Task :app:generatePracegoDebugResValues
+> Task :app:mapPracegoDebugSourceSetPaths
+> Task :app:generatePracegoDebugResources
+> Task :app:packagePracegoDebugResources
+> Task :app:createPracegoDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksPracegoDebug
+> Task :app:mergePracegoDebugResources
+> Task :app:parsePracegoDebugLocalResources
+> Task :app:processPracegoDebugMainManifest
+> Task :app:processPracegoDebugManifest
+> Task :app:processPracegoDebugManifestForPackage
+> Task :app:javaPreCompilePracegoDebug
+> Task :app:mergePracegoDebugShaders
+> Task :app:compilePracegoDebugShaders NO-SOURCE
+> Task :app:generatePracegoDebugAssets UP-TO-DATE
+> Task :app:mergePracegoDebugAssets
+> Task :app:compressPracegoDebugAssets
+> Task :app:desugarPracegoDebugFileDependencies
+> Task :app:mergePracegoDebugJniLibFolders
+> Task :app:checkPracegoDebugDuplicateClasses
+> Task :app:mergePracegoDebugNativeLibs NO-SOURCE
+> Task :app:stripPracegoDebugDebugSymbols NO-SOURCE
+> Task :app:mergeLibDexPracegoDebug
+> Task :app:validateSigningPracegoDebug
+> Task :app:writePracegoDebugAppMetadata
+> Task :app:writePracegoDebugSigningConfigVersions
+> Task :app:processPracegoDebugResources
+> Task :app:mergeExtDexPracegoDebug
+> Task :app:kspPracegoDebugKotlin
+
+> Task :app:compilePracegoDebugKotlin
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/MainActivity.kt:49:20 '@Deprecated(...) @Nullable() fun <T : Parcelable!> getParcelableExtra(p0: String!): T?' is deprecated. Deprecated in Java.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/DialogsMestreIA.kt:206:52 '@property:Deprecated(...) val Icons.Filled.Send: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Filled.Send.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/DialogsPericias.kt:340:16 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/DialogsPericias.kt:403:16 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/DiceRoller.kt:121:20 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/DiceRoller.kt:464:8 '@Deprecated(...) @Composable() @ComposableTarget(...) fun LinearProgressIndicator(progress: Float, modifier: Modifier = ..., color: Color = ..., trackColor: Color = ..., strokeCap: StrokeCap = ...): Unit' is deprecated. Use the overload that takes `progress` as a lambda.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/HorizontalDivider.kt:8:5 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt:916:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabGeral.kt:332:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/magic/MagicDialogs.kt:113:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/magic/MagicDialogs.kt:176:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/magic/MagicDialogs.kt:365:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/magic/MagicDialogs.kt:428:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:431:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:717:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:870:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:881:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:974:21 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:985:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:1518:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:1669:17 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+w: file:///C:/Users/Rodolfo/Desktop/bachup%20ficha%20gurps/ficha-gurps-feita-do-zero-android-studio/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogs.kt:1697:9 '@Deprecated(...) @Composable() @ComposableTarget(...) fun Divider(modifier: Modifier = ..., thickness: Dp = ..., color: Color = ...): Unit' is deprecated. Renamed to HorizontalDivider.
+
+> Task :app:compilePracegoDebugJavaWithJavac
+> Task :app:dexBuilderPracegoDebug
+> Task :app:mergePracegoDebugGlobalSynthetics
+> Task :app:processPracegoDebugJavaRes
+> Task :app:mergeProjectDexPracegoDebug
+> Task :app:mergePracegoDebugJavaResource
+> Task :app:packagePracegoDebug
+> Task :app:createPracegoDebugApkListingFileRedirect
+> Task :app:assemblePracegoDebug
+
+BUILD SUCCESSFUL in 51s
+37 actionable tasks: 37 executed

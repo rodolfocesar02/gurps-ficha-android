@@ -34,55 +34,54 @@ fun TabPericias(viewModel: FichaViewModel) {
     var editingPericiaIndex by remember { mutableStateOf<Int?>(null) }
     var periciaDescricaoDialog by remember { mutableStateOf<PericiaSelecionada?>(null) }
 
-    StandardTabColumn(contentSpacing = 4.dp) {
+    StandardTabColumn {
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(UiTokens.SectionSpacing)
         ) {
             BotaoAdicionarPericiaPadrao(
                 texto = "Adicionar Perícia",
                 onClick = { showSelecionarPericia = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pracegoTraversal(1)
             )
             BotaoAdicionarPericiaPadrao(
                 texto = "Criar Perícia",
                 onClick = { showCustomDialog = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pracegoTraversal(2)
             )
             BotaoAdicionarPericiaPadrao(
                 texto = "Perícias Suplementares",
                 onClick = { showPericiasSuplementares = true },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pracegoTraversal(3)
             )
         }
 
         if (p.pericias.isEmpty()) {
-            Text(
-                "Nenhuma perícia adicionada",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+            GuidedEmptyState(
+                titulo = "Nenhuma perícia adicionada ainda.",
+                orientacao = "Use \"Adicionar Perícia\" para escolher do catálogo ou \"Criar Perícia\" para cadastro manual."
             )
         }
 
         // Cards individuais para cada perícia
         p.pericias.forEachIndexed { index, pericia ->
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = appCardColors()
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-
-                    PericiaItem(
-                        pericia = pericia,
-                        nivel = pericia.calcularNivel(p),
-                        nivelRelativo = pericia.getNivelRelativo(p),
-                        onShowDescription = { periciaDescricaoDialog = pericia },
-                        onEdit = { editingPericiaIndex = index },
-                        onDelete = { viewModel.removerPericia(index) }
-                    )
-                }
+            AppListItemCard {
+                PericiaItem(
+                    pericia = pericia,
+                    nivel = pericia.calcularNivel(p),
+                    nivelRelativo = pericia.getNivelRelativo(p),
+                    onShowDescription = { periciaDescricaoDialog = pericia },
+                    onEdit = { editingPericiaIndex = index },
+                    onDelete = { viewModel.removerPericia(index) }
+                )
             }
         }
         ResumoPericiasFooter(
@@ -149,10 +148,10 @@ fun TabPericias(viewModel: FichaViewModel) {
             onDismissRequest = { periciaDescricaoDialog = null },
             title = { Text(pericia.nome) },
             text = {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                StandardDialogColumn {
                     Text(
                         regraV2?.descricao?.takeIf { it.isNotBlank() }
-                            ?: "Sem descrição detalhada disponível.",
+                            ?: "Descrição não cadastrada para esta perícia.",
                         style = MaterialTheme.typography.bodyMedium
                     )
                     regraV2?.preRequisito?.raw?.takeIf { it.isNotBlank() }?.let {

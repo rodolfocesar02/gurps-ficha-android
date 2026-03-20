@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,26 +34,26 @@ fun MenuDialog(
     onNovaFicha: () -> Unit,
     onSalvar: () -> Unit,
     onCarregar: () -> Unit,
-    onExportarCompativel: () -> Unit,
-    onExportarVersionado: () -> Unit,
     onImportar: () -> Unit,
-    onVerificarAtualizacao: () -> Unit
+    onCompartilhar: () -> Unit,
+    onVerificarAtualizacao: () -> Unit,
+    onMestreIA: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Menu") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                PrimaryActionButton(text = "Nova Ficha", onClick = onNovaFicha)
-                PrimaryActionButton(text = "Salvar Ficha", onClick = onSalvar)
-                PrimaryActionButton(text = "Carregar Ficha", onClick = onCarregar)
-                PrimaryActionButton(text = "Exportar JSON Compatível", onClick = onExportarCompativel)
-                PrimaryActionButton(text = "Exportar JSON Versionado", onClick = onExportarVersionado)
-                PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar)
-                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao)
+                PrimaryActionButton(text = "Nova Ficha", onClick = onNovaFicha, modifier = Modifier.pracegoTraversal(1))
+                PrimaryActionButton(text = "Salvar Ficha", onClick = onSalvar, modifier = Modifier.pracegoTraversal(2))
+                PrimaryActionButton(text = "Carregar Ficha", onClick = onCarregar, modifier = Modifier.pracegoTraversal(3))
+                PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar, modifier = Modifier.pracegoTraversal(4))
+                PrimaryActionButton(text = "Compartilhar Ficha", onClick = onCompartilhar, modifier = Modifier.pracegoTraversal(5))
+                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(6))
+                PrimaryActionButton(text = "Mestre IA (Beta)", onClick = onMestreIA, modifier = Modifier.pracegoTraversal(7))
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(8)) { Text(UiActionLabels.FECHAR) } }
     )
 }
 
@@ -64,8 +64,8 @@ fun SalvarDialog(nomeAtual: String, onDismiss: () -> Unit, onSalvar: (String) ->
         onDismissRequest = onDismiss,
         title = { Text("Salvar Ficha") },
         text = { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nome da Ficha") }, singleLine = true) },
-        confirmButton = { TextButton(onClick = { onSalvar(name) }) { Text("Salvar") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        confirmButton = { TextButton(onClick = { onSalvar(name) }) { Text(UiActionLabels.SALVAR) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 }
 
@@ -75,7 +75,16 @@ fun CarregarDialog(fichas: List<String>, onDismiss: () -> Unit, onCarregar: (Str
         onDismissRequest = onDismiss,
         title = { Text("Carregar Ficha") },
         text = {
-            if (fichas.isEmpty()) Text("Nenhuma ficha salva")
+            if (fichas.isEmpty()) {
+                StandardDialogColumn {
+                    Text("Nenhuma ficha salva ainda.")
+                    Text(
+                        "Volte ao menu e use \"Salvar Ficha\" para criar seu primeiro slot.",
+                        style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
+                        color = androidx.compose.material3.MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
             else LazyColumn {
                 itemsIndexed(fichas) { _, nome ->
                     Row(modifier = Modifier.fillMaxWidth().clickable { onCarregar(nome) }.padding(vertical = 8.dp),
@@ -86,7 +95,7 @@ fun CarregarDialog(fichas: List<String>, onDismiss: () -> Unit, onCarregar: (Str
                 }
             }
         },
-        confirmButton = { TextButton(onClick = { onDismiss() }) { Text("Fechar") } }
+        confirmButton = { TextButton(onClick = { onDismiss() }) { Text(UiActionLabels.FECHAR) } }
     )
 }
 
@@ -103,9 +112,9 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
         onDismissRequest = onDismiss,
         title = { Text(if (initialEquipamento != null) "Editar Equipamento" else "Adicionar Equipamento") },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                     OutlinedTextField(value = peso, onValueChange = { peso = it }, label = { Text("Peso (kg)") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal), singleLine = true, modifier = Modifier.weight(1f))
                     OutlinedTextField(value = custo, onValueChange = { custo = it }, label = { Text("Custo (\$)") },
@@ -128,9 +137,11 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
                     )
                     onSave(novo)
                 }
-            }) { Text("Salvar") }
+            }) { Text(UiActionLabels.SALVAR) }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 
 }
+
+

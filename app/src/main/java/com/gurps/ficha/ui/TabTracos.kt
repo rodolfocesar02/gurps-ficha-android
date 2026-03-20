@@ -1,19 +1,15 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.DesvantagemSelecionada
 import com.gurps.ficha.model.VantagemSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
+import com.gurps.ficha.BuildConfig
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import com.gurps.ficha.ui.features.traits.*
 
 private fun nivelExibicaoVantagem(vantagem: VantagemSelecionada): Int {
     return if (vantagem.definicaoId.equals("aptidao_magica", ignoreCase = true)) {
@@ -50,6 +50,7 @@ fun TabTracos(viewModel: FichaViewModel) {
     var showSelecionarDesvantagem by remember { mutableStateOf(false) }
     var showQualidadeDialog by remember { mutableStateOf(false) }
     var showPeculiaridadeDialog by remember { mutableStateOf(false) }
+    var showModeloRacialDialog by remember { mutableStateOf(false) }
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
 
@@ -60,23 +61,22 @@ fun TabTracos(viewModel: FichaViewModel) {
 
     StandardTabColumn {
         BotaoAcaoTracosPadrao(
+            texto = "Modelo Racial (${p.modeloRacial.nome})",
+            onClick = { showModeloRacialDialog = true }
+        )
+        BotaoAcaoTracosPadrao(
             texto = "Adicionar Vantagem",
             onClick = { showSelecionarVantagem = true }
         )
         if (p.vantagens.isNotEmpty()) {
             Text("Vantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.vantagens.forEachIndexed { index, vantagem ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        VantagemItem(
-                            vantagem = vantagem,
-                            onEdit = { editingVantagemIndex = index },
-                            onDelete = { viewModel.removerVantagem(index) }
-                        )
-                    }
+                AppListItemCard {
+                    VantagemItem(
+                        vantagem = vantagem,
+                        onEdit = { editingVantagemIndex = index },
+                        onDelete = { viewModel.removerVantagem(index) }
+                    )
                 }
             }
         }
@@ -89,18 +89,13 @@ fun TabTracos(viewModel: FichaViewModel) {
             Text("Desvantagens", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.desvantagens.forEachIndexed { index, desvantagem ->
                 val permiteAutocontrole = desvantagensPorId[desvantagem.definicaoId]?.usaAutocontroleMental() ?: false
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
-                    Column(modifier = Modifier.padding(10.dp)) {
-                        DesvantagemItem(
-                            desvantagem = desvantagem,
-                            exibirAutocontrole = permiteAutocontrole,
-                            onEdit = { editingDesvantagemIndex = index },
-                            onDelete = { viewModel.removerDesvantagem(index) }
-                        )
-                    }
+                AppListItemCard {
+                    DesvantagemItem(
+                        desvantagem = desvantagem,
+                        exibirAutocontrole = permiteAutocontrole,
+                        onEdit = { editingDesvantagemIndex = index },
+                        onDelete = { viewModel.removerDesvantagem(index) }
+                    )
                 }
             }
         }
@@ -112,14 +107,11 @@ fun TabTracos(viewModel: FichaViewModel) {
         if (p.qualidades.isNotEmpty()) {
             Text("Qualidades", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.qualidades.forEachIndexed { index, qualidade ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
+                AppListItemCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(vertical = UiTokens.ItemSpacing),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -139,14 +131,11 @@ fun TabTracos(viewModel: FichaViewModel) {
         if (p.peculiaridades.isNotEmpty()) {
             Text("Peculiaridades", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             p.peculiaridades.forEachIndexed { index, peculiaridade ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = appCardColors()
-                ) {
+                AppListItemCard {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(vertical = UiTokens.ItemSpacing),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -185,6 +174,13 @@ fun TabTracos(viewModel: FichaViewModel) {
             onSave = { texto -> viewModel.adicionarPeculiaridade(texto); showPeculiaridadeDialog = false })
     }
 
+    if (showModeloRacialDialog) {
+        ModeloRacialDialog(
+            viewModel = viewModel,
+            onDismiss = { showModeloRacialDialog = false }
+        )
+    }
+
     editingVantagemIndex?.let { index ->
         val vantagem = p.vantagens[index]
         val descricaoCatalogo = viewModel.dataRepository.vantagens
@@ -214,7 +210,6 @@ fun TabTracos(viewModel: FichaViewModel) {
             ?: false
         EditarDesvantagemDialog(
             desvantagem = desvantagem,
-            permiteAutocontrole = permiteAutocontrole,
             descricaoCatalogo = descricaoCatalogo,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->
@@ -248,10 +243,34 @@ fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: ()
     } else {
         ""
     }
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val modificadoresTexto = if (vantagem.modificadores.isNotEmpty()) {
+        " com modificadores: " + vantagem.modificadores.joinToString { mod ->
+            "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%)"
+        }
+    } else ""
+    val descricaoAcessivel = "Vantagem ${vantagem.nome}, ${vantagem.custoFinal} pontos$modificadoresTexto"
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) contentDescription = descricaoAcessivel
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(vantagem.nome + if (vantagem.descricao.isNotBlank()) " (${vantagem.descricao})" else "",
                 style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            
+            if (vantagem.modificadores.isNotEmpty()) {
+                val modLabel = vantagem.modificadores.joinToString { mod ->
+                    val nivelStr = if (mod.porNivel && mod.niveis > 1) " x${mod.niveis}" else ""
+                    "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%$nivelStr)"
+                }
+                Text(modLabel, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+            }
+
             Text("${vantagem.custoFinal} pts$sufixoNivel",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
         }
@@ -262,10 +281,35 @@ fun VantagemItem(vantagem: VantagemSelecionada, onEdit: () -> Unit, onDelete: ()
 
 @Composable
 fun DesvantagemItem(desvantagem: DesvantagemSelecionada, exibirAutocontrole: Boolean, onEdit: () -> Unit, onDelete: () -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+    val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val modificadoresTexto = if (desvantagem.modificadores.isNotEmpty()) {
+        " com modificadores: " + desvantagem.modificadores.joinToString { mod ->
+            "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%)"
+        }
+    } else ""
+    val autocontroleTexto = desvantagem.autocontrole?.let { ", autocontrole $it" } ?: ""
+    val descricaoAcessivel = "Desvantagem ${desvantagem.nome}, ${desvantagem.custoFinal} pontos$autocontroleTexto$modificadoresTexto"
+
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .semantics {
+                if (isPraCegoVariant) contentDescription = descricaoAcessivel
+            },
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(desvantagem.nome + if (desvantagem.descricao.isNotBlank()) " (${desvantagem.descricao})" else "",
                 style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+            
+            if (desvantagem.modificadores.isNotEmpty()) {
+                val modLabel = desvantagem.modificadores.joinToString { mod ->
+                    val nivelStr = if (mod.porNivel && mod.niveis > 1) " x${mod.niveis}" else ""
+                    "${mod.nome} (${if (mod.valor >= 0) "+" else ""}${mod.valor}%$nivelStr)"
+                }
+                Text(modLabel, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+            }
+
             Text("${desvantagem.custoFinal} pts" +
                     if (desvantagem.nivel > 1) " (Nível ${desvantagem.nivel})" else "",
                 style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)

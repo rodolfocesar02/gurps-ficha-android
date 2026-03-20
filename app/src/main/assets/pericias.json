@@ -67,7 +67,7 @@
   },
   {
     "id": "adivinhacao",
-    "nome": "Adivinhação†",
+    "nome": "Adivinhação",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -88,8 +88,8 @@
     "preDefinicoes": []
   },
   {
-    "id": "alvenaria ",
-    "nome": "Alvenaria ",
+    "id": "alvenaria",
+    "nome": "Alvenaria",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -122,7 +122,7 @@
   },
   {
     "id": "antropologia",
-    "nome": "Antropologia†",
+    "nome": "Antropologia",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -188,7 +188,7 @@
   },
   {
     "id": "armeiro_nt",
-    "nome": "Armeiro/NT†",
+    "nome": "Armeiro/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -199,7 +199,7 @@
   },
   {
     "id": "armas_de_feixe_nt",
-    "nome": "Armas de Feixe/NT†",
+    "nome": "Armas de Feixe/NT",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -320,7 +320,7 @@
   },
   {
     "id": "arte_de_combate",
-    "nome": "Arte de Combate†",
+    "nome": "Arte de Combate",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": true,
@@ -408,7 +408,7 @@
   },
   {
     "id": "assuntos_atuais_nt",
-    "nome": "Assuntos Atuais/NT†",
+    "nome": "Assuntos Atuais/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -452,7 +452,7 @@
   },
   {
     "id": "ataque_inato",
-    "nome": "Ataque Inato†",
+    "nome": "Ataque Inato",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -474,7 +474,7 @@
   },
   {
     "id": "besta",
-    "nome": "Besta  ",
+    "nome": "Besta",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -485,7 +485,7 @@
   },
   {
     "id": "bioengenharia_nt",
-    "nome": "Bioengenharia/NT†",
+    "nome": "Bioengenharia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -496,7 +496,7 @@
   },
   {
     "id": "biologia_nt",
-    "nome": "Biologia/NT†",
+    "nome": "Biologia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -661,7 +661,7 @@
   },
   {
     "id": "cavalgar",
-    "nome": "Cavalgar†",
+    "nome": "Cavalgar",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -760,7 +760,7 @@
   },
   {
     "id": "conducao_nt",
-    "nome": "Condução/NT†",
+    "nome": "Condução/NT",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -782,7 +782,7 @@
   },
   {
     "id": "conhecimento_do_terreno",
-    "nome": "Conhecimento do Terreno†",
+    "nome": "Conhecimento do Terreno",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -826,7 +826,7 @@
   },
   {
     "id": "conhecimento_oculto",
-    "nome": "Conhecimento Oculto†",
+    "nome": "Conhecimento Oculto",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -837,7 +837,7 @@
   },
   {
     "id": "connoisseur",
-    "nome": "Connoisseur†",
+    "nome": "Connoisseur",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1013,7 +1013,7 @@
   },
   {
     "id": "desenho_de_simbolos",
-    "nome": "Desenho de Símbolos†",
+    "nome": "Desenho de Símbolos",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1024,7 +1024,7 @@
   },
   {
     "id": "deslumbrar",
-    "nome": "Deslumbrar†",
+    "nome": "Deslumbrar",
     "atributoBase": "VON",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1090,7 +1090,7 @@
   },
   {
     "id": "disfarce_nt",
-    "nome": "Disfarce/NT†",
+    "nome": "Disfarce/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1134,7 +1134,7 @@
   },
   {
     "id": "engenharia_nt",
-    "nome": "Engenharia/NT†",
+    "nome": "Engenharia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1189,7 +1189,7 @@
   },
   {
     "id": "escudo",
-    "nome": "Escudo†",
+    "nome": "Escudo",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1244,7 +1244,7 @@
   },
   {
     "id": "esporte_de_combate_nt",
-    "nome": "Esporte de Combate/NT†",
+    "nome": "Esporte de Combate/NT",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": true,
@@ -1255,7 +1255,7 @@
   },
   {
     "id": "esportes",
-    "nome": "Esportes†",
+    "nome": "Esportes",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1299,7 +1299,7 @@
   },
   {
     "id": "explosivos_nt",
-    "nome": "Explosivos/NT†",
+    "nome": "Explosivos/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1354,7 +1354,7 @@
   },
   {
     "id": "farmacia_nt",
-    "nome": "Farmácia/NT†",
+    "nome": "Farmácia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1365,7 +1365,7 @@
   },
   {
     "id": "ferreiro",
-    "nome": "Ferreiro†",
+    "nome": "Ferreiro",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1376,7 +1376,7 @@
   },
   {
     "id": "filosofia",
-    "nome": "Filosofia†",
+    "nome": "Filosofia",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1475,7 +1475,7 @@
   },
   {
     "id": "geografia",
-    "nome": "Geografia†",
+    "nome": "Geografia",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1486,7 +1486,7 @@
   },
   {
     "id": "geologia_nt",
-    "nome": "Geologia/NT†",
+    "nome": "Geologia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1563,7 +1563,7 @@
   },
   {
     "id": "historia",
-    "nome": "História†",
+    "nome": "História",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1651,7 +1651,7 @@
   },
   {
     "id": "jogos_de_entretenimento",
-    "nome": "Jogos de Entretenimento†",
+    "nome": "Jogos de Entretenimento",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1673,7 +1673,7 @@
   },
   {
     "id": "jurisprudencia",
-    "nome": "Jurisprudência†",
+    "nome": "Jurisprudência",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1882,7 +1882,7 @@
   },
   {
     "id": "magia_ritualistica",
-    "nome": "Magia Ritualística†",
+    "nome": "Magia Ritualística",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1893,7 +1893,7 @@
   },
   {
     "id": "manejo_de_barcos_nt",
-    "nome": "Manejo de Barcos/NT†",
+    "nome": "Manejo de Barcos/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1981,7 +1981,7 @@
   },
   {
     "id": "matematica_nt",
-    "nome": "Matemática/NT†",
+    "nome": "Matemática/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1992,7 +1992,7 @@
   },
   {
     "id": "materiais_perigosos_nt",
-    "nome": "Materiais Perigosos/NT†",
+    "nome": "Materiais Perigosos/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2080,7 +2080,7 @@
   },
   {
     "id": "meteorologia_nt",
-    "nome": "Meteorologia/NT†",
+    "nome": "Meteorologia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2135,7 +2135,7 @@
   },
   {
     "id": "navegacao_nt",
-    "nome": "Navegação/NT†",
+    "nome": "Navegação/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2300,7 +2300,7 @@
   },
   {
     "id": "paleontologia_nt",
-    "nome": "Paleontologia/NT†",
+    "nome": "Paleontologia/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2476,7 +2476,7 @@
   },
   {
     "id": "pericia_abrangente",
-    "nome": "Perícia Abrangente†",
+    "nome": "Perícia Abrangente",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2498,7 +2498,7 @@
   },
   {
     "id": "pericia_profissional",
-    "nome": "Perícia Profissional†",
+    "nome": "Perícia Profissional",
     "atributoBase": null,
     "atributosPossiveis": [
       "DX",
@@ -2512,7 +2512,7 @@
   },
   {
     "id": "pericias_de_passatempo",
-    "nome": "Perícias de Passatempo†",
+    "nome": "Perícias de Passatempo",
     "atributoBase": null,
     "atributosPossiveis": [
       "DX",
@@ -2570,7 +2570,7 @@
   },
   {
     "id": "pilotagem_nt",
-    "nome": "Pilotagem/NT†",
+    "nome": "Pilotagem/NT",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2757,7 +2757,7 @@
   },
   {
     "id": "removela_nt",
-    "nome": "Remo/Vela/NT†",
+    "nome": "Remo/Vela/NT",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2779,7 +2779,7 @@
   },
   {
     "id": "ritual_religioso",
-    "nome": "Ritual Religioso†",
+    "nome": "Ritual Religioso",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2801,7 +2801,7 @@
   },
   {
     "id": "sacarrapido",
-    "nome": "Sacar Rápido†",
+    "nome": "Sacar Rápido",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2856,7 +2856,7 @@
   },
   {
     "id": "sobrevivencia",
-    "nome": "Sobrevivência†",
+    "nome": "Sobrevivência",
     "atributoBase": "PER",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2911,7 +2911,7 @@
   },
   {
     "id": "submarino_nt",
-    "nome": "Submarino/NT†",
+    "nome": "Submarino/NT",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2966,7 +2966,7 @@
   },
   {
     "id": "teologia",
-    "nome": "Teologia†",
+    "nome": "Teologia",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -3087,7 +3087,7 @@
   },
   {
     "id": "tratosocial",
-    "nome": "Trato-Social†",
+    "nome": "Trato-Social",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,

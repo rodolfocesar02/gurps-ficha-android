@@ -1,0 +1,1460 @@
+[
+  {
+    "id": "mod_acompanhamento",
+    "nome": "Acompanhamento",
+    "tipo": "ampliação",
+    "valor": "0% ou 50%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "+0% se o ataque portador tem que penetrar a RD. +50% se ignorar a RD (toque)."
+  },
+  {
+    "id": "mod_acurado",
+    "nome": "Acurado",
+    "tipo": "ampliação",
+    "valor": "+5%",
+    "porNivel": true,
+    "pagina": 102,
+    "descricao": "Cada nível concede +1 na Precisão (Prec) da vantagem. Limite: Prec no máximo igual ao NT da campanha."
+  },
+  {
+    "id": "mod_afeta_materia",
+    "nome": "Afeta a Matéria",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "Permite que uma vantagem baseada em PK ou energia afete o mundo material se o personagem for Insubstancial."
+  },
+  {
+    "id": "mod_afeta_insubstancial",
+    "nome": "Afeta Insubstancial",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "A vantagem afeta alvos Insubstanciais com a mesma eficiência que alvos materiais."
+  },
+  {
+    "id": "mod_agente_contato_amp",
+    "nome": "Agente de Contato (Ampliação)",
+    "tipo": "ampliação",
+    "valor": "+150%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "Transforma ataque corporal ou de toque em Agente de Contato (ignora RD normal)."
+  },
+  {
+    "id": "mod_agente_respiratorio",
+    "nome": "Agente Respiratório",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "O alvo precisa respirar a substância. Ignora RD. Pode ser evitado prendendo a respiração ou usando máscaras."
+  },
+  {
+    "id": "mod_agente_sanguineo_amp",
+    "nome": "Agente Sanguíneo (Ampliação)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "O ataque precisa atingir mucosa ou ferida aberta. Ignora RD se houver ferimento anterior."
+  },
+  {
+    "id": "mod_alcance_ampliado",
+    "nome": "Alcance Ampliado",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": true,
+    "pagina": 102,
+    "descricao": "Cada nível aumenta o alcance: x2 (+10%), x5 (+20%), x10 (+30%), x20 (+40%), x50 (+50%), etc."
+  },
+  {
+    "id": "mod_area_seletiva",
+    "nome": "Área Seletiva",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 103,
+    "descricao": "Permite escolher quem ou o que é afetado dentro da Área de Efeito."
+  },
+  {
+    "id": "mod_assinatura_discreta",
+    "nome": "Assinatura Discreta",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 103,
+    "descricao": "Os efeitos sensoriais são abafados (+10%). Dificulta a detecção em -4."
+  },
+  {
+    "id": "mod_assinatura_inexistente",
+    "nome": "Assinatura Inexistente",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 103,
+    "descricao": "A vantagem não produz efeitos sensoriais óbvios. Invisível e silencioso."
+  },
+  {
+    "id": "mod_aura",
+    "nome": "Aura",
+    "tipo": "ampliação",
+    "valor": "+80%",
+    "porNivel": false,
+    "pagina": 103,
+    "descricao": "Transforma toque em aura permanente (requer Sempre Ativa ou Área de Efeito)."
+  },
+  {
+    "id": "mod_barreira",
+    "nome": "Barreira",
+    "tipo": "ampliação",
+    "valor": "+30%",
+    "porNivel": false,
+    "pagina": 103,
+    "descricao": "Cria barreira. +30% (opaca), +60% (transparente). Veja pág. 103."
+  },
+  {
+    "id": "mod_base_sensorial_amp",
+    "nome": "Base Sensorial (Ampliação)",
+    "tipo": "ampliação",
+    "valor": "+150%",
+    "porNivel": true,
+    "pagina": 103,
+    "descricao": "Aura ou ataque funciona através de um sentido. +150% no nível 1, +50% por cada sentido extra."
+  },
+  {
+    "id": "mod_baseado_em_atributo",
+    "nome": "Baseado em (Atributo Diferente)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 103,
+    "descricao": "Muda para qual atributo o alvo resiste (Vontade para HT, etc.). +20% se for para um atributo mais fraco no alvo médio."
+  },
+  {
+    "id": "mod_ciclico_1s",
+    "nome": "Cíclico (1 segundo)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 104,
+    "descricao": "O efeito do ataque se repete a cada 1 segundo."
+  },
+  {
+    "id": "mod_ciclico_10s",
+    "nome": "Cíclico (10 segundos)",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 104,
+    "descricao": "O efeito do ataque se repete a cada 10 segundos."
+  },
+  {
+    "id": "mod_ciclico_1m",
+    "nome": "Cíclico (1 minuto)",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 104,
+    "descricao": "O efeito do ataque se repete a cada 1 minuto."
+  },
+  {
+    "id": "mod_ciclico_1h",
+    "nome": "Cíclico (1 hora)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 104,
+    "descricao": "O efeito do ataque se repete a cada 1 hora."
+  },
+  {
+    "id": "mod_ciclico_1d",
+    "nome": "Cíclico (1 dia)",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 104,
+    "descricao": "O efeito do ataque se repete a cada 1 dia."
+  },
+  {
+    "id": "mod_cone",
+    "nome": "Cone",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": true,
+    "pagina": 104,
+    "descricao": "Afeta forma de cone. +50% no nível 1 (1m largura final), +10% por cada +1m de largura."
+  },
+  {
+    "id": "mod_cosmica_longa_duracao",
+    "nome": "Cósmica: Efeito Especial Prolongado",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "O efeito da vantagem dura muito mais que o normal ou não pode ser dissipado."
+  },
+  {
+    "id": "mod_cosmica_irresistivel",
+    "nome": "Cósmica: Ataque Irresistível",
+    "tipo": "ampliação",
+    "valor": "+300%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "O ataque ignora todas as RD (exceto se também forem Cósmicas)."
+  },
+  {
+    "id": "mod_cosmica_defesa",
+    "nome": "Cósmica: Defesa Absoluta",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "A defesa funciona contra ataques que normalmente a ignorariam."
+  },
+  {
+    "id": "mod_cosmica_contramedida",
+    "nome": "Cósmica: Contramedida",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Evita contramedidas padrão contra a habilidade."
+  },
+  {
+    "id": "mod_cosmica_geral",
+    "nome": "Cósmica: Outros Efeitos",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Adiciona uma regra vantajosa para habilidades que não sejam ataque ou defesa."
+  },
+  {
+    "id": "mod_custo_fadiga_red",
+    "nome": "Custo em Pontos de Fadiga Reduzido",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": true,
+    "pagina": 105,
+    "descricao": "Cada nível reduz o custo da vantagem em 1 PF (mínimo 0)."
+  },
+  {
+    "id": "mod_de_cima",
+    "nome": "De Cima",
+    "tipo": "ampliação",
+    "valor": "+30%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "O ataque atinge o topo do alvo, ignorando coberturas laterais."
+  },
+  {
+    "id": "mod_divisor_armadura_2",
+    "nome": "Divisor de Armadura (2)",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Divide a RD do alvo por 2."
+  },
+  {
+    "id": "mod_divisor_armadura_3",
+    "nome": "Divisor de Armadura (3)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Divide a RD do alvo por 3."
+  },
+  {
+    "id": "mod_divisor_armadura_5",
+    "nome": "Divisor de Armadura (5)",
+    "tipo": "ampliação",
+    "valor": "+150%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Divide a RD do alvo por 5."
+  },
+  {
+    "id": "mod_divisor_armadura_10",
+    "nome": "Divisor de Armadura (10)",
+    "tipo": "ampliação",
+    "valor": "+200%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Divide a RD do alvo por 10."
+  },
+  {
+    "id": "mod_efeito_colateral",
+    "nome": "Efeito Colateral",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": true,
+    "pagina": 105,
+    "descricao": "Dano impõe Aflição. +50% por nível de gravidade sugerido."
+  },
+  {
+    "id": "mod_efeito_area",
+    "nome": "Efeito de Área",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": true,
+    "pagina": 105,
+    "descricao": "Afeta área circular. Cada nível dobra o raio: 2m (+50%), 4m (+100%), 8m (+150%), etc."
+  },
+  {
+    "id": "mod_enfermidade_leve",
+    "nome": "Enfermidade: Levemente Contagiosa",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 43,
+    "descricao": "A doença se espalha através de contato próximo ou fluidos."
+  },
+  {
+    "id": "mod_enfermidade_alta",
+    "nome": "Enfermidade: Altamente Contagiosa",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 43,
+    "descricao": "A doença se espalha rapidamente pelo ar ou contato indireto."
+  },
+  {
+    "id": "mod_explosao",
+    "nome": "Explosão",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": true,
+    "pagina": 108,
+    "descricao": "Dano diminui 1/3 por metro. Máximo de 3 níveis (+150%)."
+  },
+  {
+    "id": "mod_flutuacao",
+    "nome": "Flutuação",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Atributo secundário oscila conforme outro parâmetro. p. 105."
+  },
+  {
+    "id": "mod_fogo_continuo_2",
+    "nome": "Fogo Contínuo (2)",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF 2."
+  },
+  {
+    "id": "mod_fogo_continu_3",
+    "nome": "Fogo Contínuo (3)",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF 3."
+  },
+  {
+    "id": "mod_fogo_continuo_4_7",
+    "nome": "Fogo Contínuo (4-7)",
+    "tipo": "ampliação",
+    "valor": "+70%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF de 4 a 7."
+  },
+  {
+    "id": "mod_fogo_continuo_8_15",
+    "nome": "Fogo Contínuo (8-15)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF de 8 a 15."
+  },
+  {
+    "id": "mod_fogo_continuo_16_30",
+    "nome": "Fogo Contínuo (16-30)",
+    "tipo": "ampliação",
+    "valor": "+150%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF de 16 a 30."
+  },
+  {
+    "id": "mod_fogo_continuo_31_70",
+    "nome": "Fogo Contínuo (31-70)",
+    "tipo": "ampliação",
+    "valor": "+200%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF de 31 a 70."
+  },
+  {
+    "id": "mod_fogo_continuo_71_150",
+    "nome": "Fogo Contínuo (71-150)",
+    "tipo": "ampliação",
+    "valor": "+250%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF de 71 a 150."
+  },
+  {
+    "id": "mod_fogo_continuo_151_300",
+    "nome": "Fogo Contínuo (151-300)",
+    "tipo": "ampliação",
+    "valor": "+300%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite RoF de 151 a 300."
+  },
+  {
+    "id": "mod_fogo_seletivo",
+    "nome": "Fogo Seletivo",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 105,
+    "descricao": "Permite escolher entre tiro único ou fogo contínuo."
+  },
+  {
+    "id": "mod_fragmentacao",
+    "nome": "Fragmentação",
+    "tipo": "ampliação",
+    "valor": "+15%",
+    "porNivel": true,
+    "pagina": 108,
+    "descricao": "Lança estilhaços (+15% por dado de fragmentação)."
+  },
+  {
+    "id": "mod_guiado",
+    "nome": "Guiado",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 106,
+    "descricao": "Ataque é controlado pelo personagem turno a turno."
+  },
+  {
+    "id": "mod_imprecacao_1",
+    "nome": "Imprecação 1 (Vontade)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 106,
+    "descricao": "Ataque exige teste de Vontade do alvo, ignorando RD."
+  },
+  {
+    "id": "mod_imprecacao_2",
+    "nome": "Imprecação 2 (Toque)",
+    "tipo": "ampliação",
+    "valor": "+150%",
+    "porNivel": false,
+    "pagina": 106,
+    "descricao": "Ataque exige toque e ignora RD."
+  },
+  {
+    "id": "mod_imprecacao_3",
+    "nome": "Imprecação 3 (Visão)",
+    "tipo": "ampliação",
+    "valor": "+200%",
+    "porNivel": false,
+    "pagina": 106,
+    "descricao": "Ataque exige visão do alvo e ignora RD."
+  },
+  {
+    "id": "mod_incendiario",
+    "nome": "Incendiário",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "O ataque tem altas chances de iniciar incêndios (+10%)."
+  },
+  {
+    "id": "mod_interligacao_10",
+    "nome": "Interligação (+10%)",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 107,
+    "descricao": "Duas vantagens disparadas juntas (podem ser separadas)."
+  },
+  {
+    "id": "mod_interligacao_20",
+    "nome": "Interligação (+20%)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 107,
+    "descricao": "Duas vantagens disparadas juntas (somente juntas)."
+  },
+  {
+    "id": "mod_jato",
+    "nome": "Jato",
+    "tipo": "ampliação",
+    "valor": "+0%",
+    "porNivel": false,
+    "pagina": 107,
+    "descricao": "O ataque vira um jato contínuo (alcance 5m/10m)."
+  },
+  {
+    "id": "mod_longa_distancia",
+    "nome": "Longa Distância",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 107,
+    "descricao": "Usa tabela de longa distância (p. 241) para penalidades."
+  },
+  {
+    "id": "mod_mobilidade",
+    "nome": "Mobilidade",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": true,
+    "pagina": 108,
+    "descricao": "Permite mover uma Área de Efeito (+40%/nível)."
+  },
+  {
+    "id": "mod_dano_afogamento",
+    "nome": "Efeito de Dano: Afogamento",
+    "tipo": "ampliação",
+    "valor": "+0%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Dano por falta de ar."
+  },
+  {
+    "id": "mod_dano_congelamento",
+    "nome": "Efeito de Dano: Congelamento",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Causa hipotermia severa."
+  },
+  {
+    "id": "mod_dano_desidratacao",
+    "nome": "Efeito de Dano: Desidratação",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Causa perda de fluidos severa."
+  },
+  {
+    "id": "mod_dano_sono_perdido",
+    "nome": "Efeito de Dano: Sono Perdido",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Efeito de fadiga extrema."
+  },
+  {
+    "id": "mod_dano_fome",
+    "nome": "Efeito de Dano: Fome",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Causa inanição instantânea."
+  },
+  {
+    "id": "mod_dano_sufocamento",
+    "nome": "Efeito de Dano: Sufocamento",
+    "tipo": "ampliação",
+    "valor": "+0%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Causa asfixia."
+  },
+  {
+    "id": "mod_perigo",
+    "nome": "Perigo",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Cria perigo persistente no ambiente."
+  },
+  {
+    "id": "mod_persistente",
+    "nome": "Persistente",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "A Área de Efeito dura 10 segundos extras."
+  },
+  {
+    "id": "mod_prazo_estendido_3",
+    "nome": "Prazo Estendido (3x duração)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Triplica a duração padrão."
+  },
+  {
+    "id": "mod_prazo_estendido_10",
+    "nome": "Prazo Estendido (10x duração)",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Multiplica a duração padrão por 10."
+  },
+  {
+    "id": "mod_prazo_estendido_30",
+    "nome": "Prazo Estendido (30x duração)",
+    "tipo": "ampliação",
+    "valor": "+60%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Multiplica a duração padrão por 30."
+  },
+  {
+    "id": "mod_prazo_estendido_100",
+    "nome": "Prazo Estendido (100x duração)",
+    "tipo": "ampliação",
+    "valor": "+80%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Multiplica a duração padrão por 100."
+  },
+  {
+    "id": "mod_prazo_estendido_300",
+    "nome": "Prazo Estendido (300x duração)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Multiplica a duração padrão por 300."
+  },
+  {
+    "id": "mod_prazo_estendido_1000",
+    "nome": "Prazo Estendido (1.000x duração)",
+    "tipo": "ampliação",
+    "valor": "+120%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Multiplica a duração padrão por 1.000."
+  },
+  {
+    "id": "mod_prazo_permanente",
+    "nome": "Prazo Estendido (Permanente)",
+    "tipo": "ampliação",
+    "valor": "+150%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "O efeito é permanente até ser dissipado por meios específicos."
+  },
+  {
+    "id": "mod_projecao_dupla",
+    "nome": "Projeção Dupla",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Afeta planos material e espiritual ao mesmo tempo."
+  },
+  {
+    "id": "mod_radiacao_25",
+    "nome": "Radiação (Baixa)",
+    "tipo": "ampliação",
+    "valor": "+25%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Emite radiação de baixa intensidade (+25%)."
+  },
+  {
+    "id": "mod_radiacao_100",
+    "nome": "Radiação (Alta)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Emite radiação de alta intensidade (+100%)."
+  },
+  {
+    "id": "mod_retardo_2s",
+    "nome": "Retardo (2 segundos)",
+    "tipo": "ampliação",
+    "valor": "+0%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Efeito ocorre com 2s de atraso (+0%)."
+  },
+  {
+    "id": "mod_retardo_2_10s",
+    "nome": "Retardo (2 a 10 segundos)",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Efeito ocorre com atraso entre 2s e 10s (+10%)."
+  },
+  {
+    "id": "mod_retardo_longo",
+    "nome": "Retardo (Minutos/Horas/Dias)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Efeito ocorre com longo atraso (minutos, horas ou dias)."
+  },
+  {
+    "id": "mod_seletividade",
+    "nome": "Seletividade",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Escolha ligar/desligar ampliações individuais ao usar."
+  },
+  {
+    "id": "mod_sintomas",
+    "nome": "Sintomas",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Gera redutores acumulativos conforme a perda de PV do alvo."
+  },
+  {
+    "id": "mod_sobretensao",
+    "nome": "Sobretensão",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Causa curto-circuito em eletrônicos."
+  },
+  {
+    "id": "mod_subaquatico",
+    "nome": "Subaquático",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Trabalha normalmente sob a água (+20%)."
+  },
+  {
+    "id": "mod_teleguiado",
+    "nome": "Teleguiado",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 106,
+    "descricao": "Ataque segue o alvo automaticamente (+50%)."
+  },
+  {
+    "id": "mod_tempo_reduzido",
+    "nome": "Tempo Reduzido",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": true,
+    "pagina": 109,
+    "descricao": "Cada nível divide tempo de ativação por 2."
+  },
+  {
+    "id": "mod_trauma_impacto_duplo",
+    "nome": "Trauma por Impacto Duplo (tid)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 108,
+    "descricao": "Dano de trauma (blunt trauma) \u00e9 dobrado."
+  },
+  {
+    "id": "mod_variavel_amp",
+    "nome": "Variável (Ampliação)",
+    "tipo": "ampliação",
+    "valor": "+5%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Permite ajustar a potência ou uso de pontos na ativação."
+  },
+  {
+    "id": "mod_acesso",
+    "nome": "Acesso",
+    "tipo": "limitação",
+    "valor": "-1% a -80%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Só funciona sob certas condições. Valor depende da raridade da condição. UI: Caixa de texto obrigatória para descrever a limitação."
+  },
+  {
+    "id": "mod_agente_contato_lim",
+    "nome": "Agente de Contato (Limitação)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Exige contato pele-a-pele. RD bloqueia totalmente."
+  },
+  {
+    "id": "mod_agente_sanguineo_lim",
+    "nome": "Agente Sanguíneo (Limitação)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Exige contato com ferida aberta ou mucosa."
+  },
+  {
+    "id": "mod_alcance_reduzido_2",
+    "nome": "Alcance Reduzido (divisor 2)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Divide o alcance máximo por 2."
+  },
+  {
+    "id": "mod_alcance_reduzido_5",
+    "nome": "Alcance Reduzido (divisor 5)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Divide o alcance máximo por 5."
+  },
+  {
+    "id": "mod_alcance_reduzido_10",
+    "nome": "Alcance Reduzido (divisor 10)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Divide o alcance máximo por 10."
+  },
+  {
+    "id": "mod_apenas_emergencias",
+    "nome": "Apenas em Emergências",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Inutilizável em situações que não sejam de urgência máxima."
+  },
+  {
+    "id": "mod_apenas_inconsciente",
+    "nome": "Apenas Inconsciente",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Só funciona quando o personagem está dormindo ou desmaiado."
+  },
+  {
+    "id": "mod_ataque_cc_c",
+    "nome": "Ataque Corpo a Corpo (C)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Alcance apenas de combate próximo (C)."
+  },
+  {
+    "id": "mod_ataque_cc_1_2",
+    "nome": "Ataque Corpo a Corpo (1 ou 2)",
+    "tipo": "limitação",
+    "valor": "-25%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Alcance fixo de 1m ou 2m."
+  },
+  {
+    "id": "mod_ataque_cc_duplo",
+    "nome": "Ataque Corpo a Corpo (C,1 / 1,2 / 2,3)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Alcance versátil de combate curto ou médio."
+  },
+  {
+    "id": "mod_ataque_cc_chicote",
+    "nome": "Ataque Corpo a Corpo (1-4)",
+    "tipo": "limitação",
+    "valor": "-15%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Alcance longo como um chicote (1m a 4m)."
+  },
+  {
+    "id": "mod_ataque_cc_sem_apara",
+    "nome": "Ataque CC: Não pode aparar",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Adiciona -5% de limitação extra por não permitir aparar com a habilidade."
+  },
+  {
+    "id": "mod_atraso_1m",
+    "nome": "Atraso (1 minuto)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Intervalo de 1 min entre ativação e efeito."
+  },
+  {
+    "id": "mod_atraso_1h",
+    "nome": "Atraso (1 hora)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Intervalo de 1 hora entre ativação e efeito."
+  },
+  {
+    "id": "mod_atraso_1d",
+    "nome": "Atraso (1 dia)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Intervalo de 1 dia entre ativação e efeito."
+  },
+  {
+    "id": "mod_atraso_1s",
+    "nome": "Atraso (1 semana ou mais)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Intervalo de 1 semana ou mais entre ativação e efeito."
+  },
+  {
+    "id": "mod_base_sensorial_lim",
+    "nome": "Base Sensorial (Limitação)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Vantagem exige que o alvo sinta o usuário (Audição -20%, etc.)."
+  },
+  {
+    "id": "mod_bombardeio_14",
+    "nome": "Bombardeio (NH 14)",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Ataque impreciso com NH efetivo 14."
+  },
+  {
+    "id": "mod_bombardeio_12",
+    "nome": "Bombardeio (NH 12)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Ataque impreciso com NH efetivo 12."
+  },
+  {
+    "id": "mod_bombardeio_10",
+    "nome": "Bombardeio (NH 10)",
+    "tipo": "limitação",
+    "valor": "-15%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Ataque impreciso com NH efetivo 10."
+  },
+  {
+    "id": "mod_bombardeio_8",
+    "nome": "Bombardeio (NH 8)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Ataque impreciso com NH efetivo 8."
+  },
+  {
+    "id": "mod_custa_fadiga",
+    "nome": "Custa Fadiga",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": true,
+    "pagina": 111,
+    "descricao": "Exige 1 Pontos de Fadiga (PF) por nível de modificador por uso."
+  },
+  {
+    "id": "mod_destreinado",
+    "nome": "Destreinado",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Vantagem usada de forma desastrada, redutores em testes."
+  },
+  {
+    "id": "mod_desvantagem_temporaria",
+    "nome": "Desvantagem Temporária",
+    "tipo": "limitação",
+    "valor": "-1% a -80%",
+    "porNivel": false,
+    "pagina": 111,
+    "descricao": "Ao ligar a vantagem, recebe uma desvantagem fixa (-1% por ponto da desvantagem)."
+  },
+  {
+    "id": "mod_dissipação",
+    "nome": "Dissipação",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Dano cai drasticamente em ralação ao centro (limitação de Área)."
+  },
+  {
+    "id": "mod_divisor_armadura_05",
+    "nome": "Divisor de Armadura (0,5)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Dobra a RD do alvo (Multiplicador 2)."
+  },
+  {
+    "id": "mod_divisor_armadura_02",
+    "nome": "Divisor de Armadura (0,2)",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Multiplica a RD do alvo por 5."
+  },
+  {
+    "id": "mod_divisor_armadura_01",
+    "nome": "Divisor de Armadura (0,1)",
+    "tipo": "limitação",
+    "valor": "-70%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Multiplica a RD do alvo por 10."
+  },
+  {
+    "id": "mod_efeito_incomodo",
+    "nome": "Efeito Incômodo",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": true,
+    "pagina": 112,
+    "descricao": "Inconveniente menor (barulho, brilho, cheiro). -5% por nível de intensidade/inconveniente."
+  },
+  {
+    "id": "mod_emanação",
+    "nome": "Emanação",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Só afeta área envolta do usuário, sem disparo à distância."
+  },
+  {
+    "id": "mod_fragil",
+    "nome": "Frágil",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 117,
+    "descricao": "Item que concede a vantagem ou o usuário quebram f\u00e1cil. Combustível -20%, Explosivo -50%."
+  },
+  {
+    "id": "mod_gasto_adicional_tempo",
+    "nome": "Gasto Adicional de Tempo",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": true,
+    "pagina": 112,
+    "descricao": "Cada nível dobra o tempo necessário de ativação: 2 turnos (-10%), 4 turnos (-20%), etc."
+  },
+  {
+    "id": "mod_gatilho_10",
+    "nome": "Gatilho (Comum)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Exige substância comum para ativar."
+  },
+  {
+    "id": "mod_gatilho_20",
+    "nome": "Gatilho (Incomum)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Exige substância incomum para ativar."
+  },
+  {
+    "id": "mod_gatilho_30",
+    "nome": "Gatilho (Raro)",
+    "tipo": "limitation",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Exige substância rara para ativar."
+  },
+  {
+    "id": "mod_gatilho_40",
+    "nome": "Gatilho (Muito Raro)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 112,
+    "descricao": "Exige substância muito rara para ativar."
+  },
+  {
+    "id": "mod_impreciso",
+    "nome": "Impreciso",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": true,
+    "pagina": 113,
+    "descricao": "Cada nível impõe -1 nos testes de ataque ou ativação."
+  },
+  {
+    "id": "mod_inconstante_14",
+    "nome": "Inconstante (Ativação 14-)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Exige teste de ativação 14 ou menos (-10%)."
+  },
+  {
+    "id": "mod_inconstante_11",
+    "nome": "Inconstante (Ativação 11-)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Exige teste de ativação 11 ou menos (-20%)."
+  },
+  {
+    "id": "mod_inconstante_8",
+    "nome": "Inconstante (Ativação 8-)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Exige teste de ativação 8 ou menos (-40%)."
+  },
+  {
+    "id": "mod_inconstante_5",
+    "nome": "Inconstante (Ativação 5-)",
+    "tipo": "limitação",
+    "valor": "-80%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Exige teste de ativação 5 ou menos (-80%)."
+  },
+  {
+    "id": "mod_inconstante_malf_16",
+    "nome": "Inconstante (Mau Funcionamento 16)",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem falha criticamente num 16+ (-5%)."
+  },
+  {
+    "id": "mod_inconstante_malf_15",
+    "nome": "Inconstante (Mau Funcionamento 15)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem falha criticamente num 15+ (-10%)."
+  },
+  {
+    "id": "mod_inconstante_malf_14",
+    "nome": "Inconstante (Mau Funcionamento 14)",
+    "tipo": "limitação",
+    "valor": "-15%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem falha criticamente num 14+ (-15%)."
+  },
+  {
+    "id": "mod_inconstante_malf_13",
+    "nome": "Inconstante (Mau Funcionamento 13)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem falha criticamente num 13+ (-20%)."
+  },
+  {
+    "id": "mod_inconstante_malf_12",
+    "nome": "Inconstante (Mau Funcionamento 12)",
+    "tipo": "limitação",
+    "valor": "-25%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem falha criticamente num 12+ (-25%)."
+  },
+  {
+    "id": "mod_incontrolavel_10",
+    "nome": "Incontrolável (Sem Perigo)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "A vantagem pode ativar sozinha sem controle (-10%)."
+  },
+  {
+    "id": "mod_incontrolavel_30",
+    "nome": "Incontrolável (Ataque Amigos)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "A vantagem ataca qualquer um próximo se o usuário perder o controle (-30%)."
+  },
+  {
+    "id": "mod_sem_ferimento",
+    "nome": "Dano: Sem Ferimento (sft)",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Ataque não causa dano real, apenas choque."
+  },
+  {
+    "id": "mod_sem_projecao",
+    "nome": "Dano: Sem Projeção (spj)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Não empurra o alvo (+0 knockback)."
+  },
+  {
+    "id": "mod_sem_trauma",
+    "nome": "Dano: Sem Trauma por Impacto (sti)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Ignora trauma através de RD."
+  },
+  {
+    "id": "mod_mitigador_60",
+    "nome": "Mitigador (Medicamento/Item)",
+    "tipo": "limitação",
+    "valor": "-60%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem depende de um item fácil de manter (-60%)."
+  },
+  {
+    "id": "mod_mitigador_65",
+    "nome": "Mitigador (Manutenção Periódica)",
+    "tipo": "limitação",
+    "valor": "-65%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem exige manutenção periódica para funcionar (-65%)."
+  },
+  {
+    "id": "mod_mitigador_70",
+    "nome": "Mitigador (Difícil de Manter)",
+    "tipo": "limitação",
+    "valor": "-70%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "Vantagem depende de algo muito difícil ou raro de manter (-70%)."
+  },
+  {
+    "id": "mod_pacto",
+    "nome": "Pacto",
+    "tipo": "limitação",
+    "valor": "-1% a -80%",
+    "porNivel": false,
+    "pagina": 114,
+    "descricao": "Depende de conduta moral. Valor igual ao custo da desvantagem da conduta."
+  },
+  {
+    "id": "mod_pode_ser_roubado",
+    "nome": "Pode Ser Roubado",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 117,
+    "descricao": "Item pode ser furtado ou tomado em luta. -10% a -40%."
+  },
+  {
+    "id": "mod_potencia_total_emerg",
+    "nome": "Potência Total Apenas em Emergências",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 110,
+    "descricao": "Fora de perigo a vantagem é muito mais fraca (-20%)."
+  },
+  {
+    "id": "mod_requer_preparo_1m",
+    "nome": "Requer Preparo (1 minuto)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 115,
+    "descricao": "Exige 1 min de concentração prévia."
+  },
+  {
+    "id": "mod_requer_preparo_10m",
+    "nome": "Requer Preparo (10 minutos)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 115,
+    "descricao": "Exige 10 min de concentração prévia."
+  },
+  {
+    "id": "mod_requer_preparo_1h",
+    "nome": "Requer Preparo (1 hora)",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 115,
+    "descricao": "Exige 1 hora de concentração prévia."
+  },
+  {
+    "id": "mod_requer_preparo_8h",
+    "nome": "Requer Preparo (8 horas)",
+    "tipo": "limitação",
+    "valor": "-60%",
+    "porNivel": false,
+    "pagina": 115,
+    "descricao": "Exige um dia inteiro (8h) de preparação."
+  },
+  {
+    "id": "mod_requer_recarga_10",
+    "nome": "Requer Recarga (-10%)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Tempo curto de recarga entre usos."
+  },
+  {
+    "id": "mod_requer_recarga_20",
+    "nome": "Requer Recarga (-20%)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Tempo médio/longo de recarga entre usos."
+  },
+  {
+    "id": "mod_requer_recarga_30",
+    "nome": "Requer Recarga (-30%)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Tempo muito longo de recarga entre usos."
+  },
+  {
+    "id": "mod_recuo_adicional",
+    "nome": "Recuo Adicional",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": true,
+    "pagina": 114,
+    "descricao": "Aumenta Recuo (Rcl) em +1 por nível."
+  },
+  {
+    "id": "mod_resistível",
+    "nome": "Resistível",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": true,
+    "pagina": 116,
+    "descricao": "Dá bônus ao teste de resistência do alvo. -5% por +1 no teste."
+  },
+  {
+    "id": "mod_sempre_ativa_10",
+    "nome": "Sempre Ativa (-10%)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Desvantagem moderada por estar sempre ligada."
+  },
+  {
+    "id": "mod_sempre_ativa_20",
+    "nome": "Sempre Ativa (-20%)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Desvantagem severa ou perigosa por estar sempre ligada."
+  },
+  {
+    "id": "mod_sempre_ativa_40",
+    "nome": "Sempre Ativa (-40%)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Desvantagem extrema por estar sempre ligada."
+  },
+  {
+    "id": "mod_unico",
+    "nome": "Único",
+    "tipo": "limitação",
+    "valor": "-25%",
+    "porNivel": false,
+    "pagina": 117,
+    "descricao": "Item insubstituível. Se perder, perde a vantagem."
+  },
+  {
+    "id": "mod_uso_limitado_1",
+    "nome": "Uso Limitado (1 uso/dia)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Apenas 1 utilização por dia."
+  },
+  {
+    "id": "mod_uso_limitado_2",
+    "nome": "Uso Limitado (2 usos/dia)",
+    "tipo": "limitação",
+    "valor": "-30%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Apenas 2 utilizações por dia."
+  },
+  {
+    "id": "mod_uso_limitado_3_4",
+    "nome": "Uso Limitado (3-4 usos/dia)",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Entre 3 e 4 utilizações por dia."
+  },
+  {
+    "id": "mod_uso_limitado_5_10",
+    "nome": "Uso Limitado (5-10 usos/dia)",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Entre 5 e 10 utilizações por dia."
+  }
+]
