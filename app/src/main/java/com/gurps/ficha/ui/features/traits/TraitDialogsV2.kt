@@ -245,9 +245,57 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 
-    // DIALOGS DE SELEÇÃO OFICIAIS
-    if (showSelecionarVantagem) { SelecionarVantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarVantagem = false }) }
-    if (showSelecionarDesvantagem) { SelecionarDesvantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarDesvantagem = false }) }
+    // DIALOGS DE SELEÇÃO E EDIÇÃO
+    if (showSelecionarVantagem) { 
+        SelecionarVantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarVantagem = false }) 
+    }
+    if (showSelecionarDesvantagem) { 
+        SelecionarDesvantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarDesvantagem = false }) 
+    }
+    
+    // RESTAURAÇÃO: SELEÇÃO DE PERÍCIA RACIAL
+    if (showSelecionarPericia) {
+        SelecionarPericiaDialog(
+            viewModel = viewModel,
+            onDismiss = { showSelecionarPericia = false },
+            onConfirm = { pericia ->
+                periciasRacais = periciasRacais + ItemPericiaRacial(
+                    nome = pericia.nome,
+                    baseAtributo = pericia.atributoBase.sigla,
+                    diff = pericia.dificuldade.sigla,
+                    custo = 1,
+                    descricao = pericia.definicaoId
+                )
+                showSelecionarPericia = false
+            }
+        )
+    }
+
+    // RESTAURAÇÃO: EDIÇÃO DE PERÍCIA RACIAL
+    if (editingPericiaIndex != null) {
+        val pr = periciasRacais[editingPericiaIndex!!]
+        var novoCusto by remember { mutableStateOf(pr.custo) }
+        
+        AlertDialog(
+            onDismissRequest = { editingPericiaIndex = null },
+            title = { Text("Editar Bônus Racial: ${pr.nome}") },
+            text = {
+                Column {
+                    Text("Defina o bônus ou custo em pontos para esta perícia racial.")
+                    AjustadorVerticalRacial("Bônus/Custo", novoCusto, pr.nome) { novoCusto = (novoCusto + it).coerceAtLeast(1) }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    periciasRacais = periciasRacais.toMutableList().apply {
+                        this[editingPericiaIndex!!] = pr.copy(custo = novoCusto)
+                    }
+                    editingPericiaIndex = null
+                }) { Text("Confirmar") }
+            },
+            dismissButton = { TextButton(onClick = { editingPericiaIndex = null }) { Text("Cancelar") } }
+        )
+    }
     if (showSelecionarPericia) { SelecionarPericiaDialog(viewModel = viewModel, onDismiss = { showSelecionarPericia = false }) }
 
     // SINCRONIZAÇÃO
