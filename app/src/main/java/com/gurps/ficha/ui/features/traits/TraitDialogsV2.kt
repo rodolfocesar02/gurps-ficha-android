@@ -211,21 +211,19 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
                 if (periciasRacais.isNotEmpty()) {
                     item { Text("Perícias", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary, modifier = Modifier.fillMaxWidth()) }
                     itemsIndexed(periciasRacais) { index, pr ->
-                        // CONVERSÃO TEMPORÁRIA PARA EXIBIÇÃO NO CARD DA FICHA
-                        val ps = PericiaSelecionada(
-                            nome = pr.nome,
-                            dificuldade = Dificuldade.fromSigla(pr.diff),
-                            atributoBase = AtributoBase.fromSigla(pr.baseAtributo),
-                            pontosGastos = pr.custo
-                        )
                         AppListItemCard {
-                            PericiaItem(
-                                pericia = ps,
-                                nivel = ps.calcularNivel(tempPersonagem),
-                                nivelRelativo = ps.getNivelRelativo(tempPersonagem),
-                                onShowDescription = { },
-                                onEdit = { editingPericiaIndex = index },
-                                onDelete = { periciasRacais = periciasRacais.toMutableList().apply { removeAt(index) } }
+                            ListItem(
+                                headlineContent = { Text(pr.nome, fontWeight = FontWeight.Bold) },
+                                supportingContent = { 
+                                    val sinal = if (pr.nivelRelativo >= 0) "+" else ""
+                                    Text("${pr.baseAtributo}${sinal}${pr.nivelRelativo} (${pr.diff}) | Custo: ${pr.custo} pts") 
+                                },
+                                trailingContent = {
+                                    Row {
+                                        IconButton(onClick = { editingPericiaIndex = index }) { Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar") }
+                                        IconButton(onClick = { periciasRacais = periciasRacais.toMutableList().apply { removeAt(index) } }) { Icon(imageVector = Icons.Default.Delete, contentDescription = "Excluir", tint = MaterialTheme.colorScheme.error) }
+                                    }
+                                }
                             )
                         }
                     }
@@ -292,24 +290,55 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
         )
     }
 
-    // RESTAURAÇÃO: EDIÇÃO DE PERÍCIA RACIAL
+    // RESTAURAÇÃO: EDIÇÃO DE PERÍCIA RACIAL (Mecânica de Nível Relativo)
     if (editingPericiaIndex != null) {
         val pr = periciasRacais[editingPericiaIndex!!]
-        var novoCusto by remember { mutableStateOf(pr.custo) }
+        var nivelRelativo by remember { mutableStateOf(pr.nivelRelativo) }
         
         AlertDialog(
             onDismissRequest = { editingPericiaIndex = null },
             title = { Text("Editar Bônus Racial: ${pr.nome}") },
             text = {
-                Column {
-                    Text("Defina o bônus ou custo em pontos para esta perícia racial.")
-                    AjustadorVerticalRacial("Bônus/Custo", novoCusto, pr.nome) { novoCusto = (novoCusto + it).coerceAtLeast(1) }
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+                    Text("Bônus/Penalidade no Nível de Habilidade", style = MaterialTheme.typography.bodyMedium)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+                        IconButton(onClick = { nivelRelativo-- }) { Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "Diminuir") }
+                        Text(
+                            text = if (nivelRelativo >= 0) "+$nivelRelativo" else "$nivelRelativo",
+                            style = MaterialTheme.typography.displaySmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 24.dp)
+                        )
+                        IconButton(onClick = { nivelRelativo++ }) { Icon(imageVector = Icons.Default.KeyboardArrowUp, contentDescription = "Aumentar") }
+                    }
+                    
+                    val custoCalculado = when {
+                        nivelRelativo > 0 -> {
+                            // Cálculo simplificado de custo GURPS: 1, 2, 4, 8, 12...
+                            val base = if (pr.diff == "MD") 4 else if (pr.diff == "D") 2 else 1
+                            if (nivelRelativo == 1) base else base * (nivelRelativo * 2)
+                        }
+                        nivelRelativo < 0 -> nivelRelativo * 2 // Devolve 2 pontos por nível de penalidade
+                        else -> 0
+                    }
+                    
+                    Text("Custo: $custoCalculado pontos", color = if (custoCalculado < 0) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary)
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
+                    val custoFinal = when {
+                        nivelRelativo > 0 -> {
+                            val base = if (pr.diff == "MD") 4 else if (pr.diff == "D") 2 else 1
+                            if (nivelRelativo == 1) base else base * (nivelRelativo * 2)
+                        }
+                        nivelRelativo < 0 -> nivelRelativo * 2
+                        else -> 0
+                    }
                     periciasRacais = periciasRacais.toMutableList().apply {
-                        this[editingPericiaIndex!!] = pr.copy(custo = novoCusto)
+                        this[editingPericiaIndex!!] = pr.copy(nivelRelativo = nivelRelativo, custo = custoFinal)
                     }
                     editingPericiaIndex = null
                 }) { Text("Confirmar") }
@@ -334,15 +363,6 @@ fun PersonalizarRacaDialog(viewModel: FichaViewModel, initial: ModeloRacial, onD
             desvantagensRacais = desvantagensRacais + n
             viewModel.removerDesvantagem(viewModel.personagem.desvantagens.size - 1)
             showSelecionarDesvantagem = false
-        }
-    }
-    LaunchedEffect(viewModel.personagem.pericias.size) {
-        if (showSelecionarPericia && viewModel.personagem.pericias.isNotEmpty()) {
-            val n = viewModel.personagem.pericias.last()
-            val pr = PericiaRacial(n.nome, n.dificuldade.sigla, n.atributoBase.sigla, 0, n.pontosGastos)
-            periciasRacais = periciasRacais + pr
-            viewModel.removerPericia(viewModel.personagem.pericias.size - 1)
-            showSelecionarPericia = false
         }
     }
 

@@ -1,7 +1,7 @@
 {
-  "versionCode": 9,
+  "versionCode": 10,
   "versionName": "1.4.3",
   "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.3/app-visual-release.apk",
   "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.4.3/app-pracego-release.apk",
-  "notes": "V1.4.3 (v9): Restauração de Perícias Raciais, Bônus de Atributos e Acessibilidade TalkBack."
+  "notes": "v1.4.3 (Build 10): Restauracao de Pericias Raciais + Bonus Sinalizado (+1, -2) + Correcao de Build."
 }
