@@ -1,66 +1,48 @@
-# GURPS Ficha Android - Relatorio de Progresso e Regras de Ouro
+# Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Ultima Atualizacao:** 2026-03-20
-**Versao Atual:** v1.4.3 (Build 10)
-**Status do Projeto:** STAVEL - LANCADO
-
----
-
-## Estado Atual (v1.4.3)
-- **Restauracao de Pericias Raciais**: Mecanica de bonus sinalizado (+1, -2) totalmente operacional e desvinculada da ficha principal.
-- **Acessibilidade (TalkBack)**: Sistema de acessorios e rotulos semanticos integrados para usuarios cegos.
-- **Sincronizacao Cloud**: update.json atualizado para apontar para a build v1.4.3 (Build 10).
-- **Estabilidade**: Build via Gradle passando sem erros de compilacao ou conflitos de icones.
+**Última Atualização:** 02 de Abril de 2026
+**Status Atual:** Em estruturação e organização para IAs.
 
 ---
 
-## REGRAS OPERACIONAIS DE OURO (NAO QUEBRAR)
+## O Que Estamos Fazendo Agora? (Abril 2026)
+O aplicativo cresceu bastante! Por causa disso, alguns arquivos ficaram enormes e "pesados" (com mais de 1000 linhas). Nosso objetivo atual é organizar a casa para que o app não quebre e fique mais fácil de dar manutenção.
 
-### 1. Build e Lancamento
-- **Versionamento**: Sempre elevar o versionCode no app/build.gradle (atualmente 10) e sincronizar o versionName (atualmente 1.4.3) no update.json.
-- **APKs de Lote**: Gerar sempre os dois sabores: visual (para videntes) e pracego (com otimizacoes para TalkBack).
-- **Limpeza de Build**: Se o Gradle travar a pasta build, use ./gradlew clean --no-daemon ou mate os processos Java da IDE.
+Acabamos de implementar **As Novas Regras para Agentes Virtuais (IAs)**.
+Eu, como Inteligência Artificial, deixei instruções de ouro em uma pasta especial chama `.agent/skills/` para que **qualquer outra IA que trabalhar com você no futuro saiba o que fazer e como te tratar:**
 
-### 2. Integridade de Dados (JSON)
-- **Auditoria**: Nunca alterar um arquivo .json nos assets sem rodar ./gradlew validateActiveJsonAssets.
-- **Encoding**: Manter arquivos em UTF-8. Evitar caracteres especiais quebrados (mojibake).
-
-### 3. Mecanica de Pericia Racial (A Regra do Mestre)
-- **Nao Bloqueio**: O seletor de pericia na Personalizacao de Raca deve ser INDEPENDENTE. Ele nunca deve impedir a selecao de uma pericia porque ela ja existe na ficha.
-- **Bonus Sinalizado**: Os bonus raciais devem ser salvos como nivelRelativo (ex: +1, -2). 
-- **Calculo de Custo**: O custo em pontos deve ser calculado automaticamente baseado na dificuldade (F, M, D, MD) e no nivel desejado.
-
-### 4. Acessibilidade (PraCego)
-- **Labels Semanticos**: Todo novo botao de acao ou icone deve conter contentDescription explicativo.
-- **Traversal**: Manter a ordem de leitura logica para o TalkBack (Cima para Baixo, Esquerda para Direita).
-
-### 5. Padrao de Interface (UI)
-- **Primary Buttons**: Sempre usar a cor primaria para botoes de acao principal (Adicionar/Salvar).
-- **Densidade**: Dialogos devem respeitar o espacamento DialogContentSpacing para nao ficarem apertados.
-- **Confirmacao**: Acoes destrutivas (Excluir) devem pedir confirmacao antes de apagar.
+1. **Falar Simples:** Qualquer IA tem a obrigação de falar com você em um português normal. Nada de termos técnicos complicados. Se for preciso explicar o que foi feito, que seja em linguagem do dia a dia.
+2. **Entender de Abas:** O agente novo vai ler o mapa `README_AGENTE.md` logo de cara, sabendo que sua ficha é dividida em Geral, Traços, Perícias, Magias, Equipamentos, Defesas e Rolagem, sem você precisar repetir tudo.
+3. **Sempre Testar (Construção do App):** Proibimos qualquer IA de dizer que "terminou" o trabalho sem antes rodar um teste do sistema (um comando chamado `./gradlew build`), que garante que o aplicativo vai abrir no seu emulador sem travar.
 
 ---
 
-## Pendencias Proximas (Backlog)
-- [ ] Validar a aplicacao de bonus raciais negativos no calculo final do NH (Nivel de Habilidade) dentro da aba de Pericias.
-- [ ] Revisao de bonus de atributos secundarios (HP, Per, Von) na personalizacao racial.
-- [ ] Testar a importacao de modelos raciais antigos para compatibilidade com a Build 10.
+## Próximos Passos (A Refatoração)
+Já mapeamos 6 partes do projeto que estão muito grandes e vamos focar nelas *uma etapa de cada vez*, apenas quando você autorizar:
+
+*   **[Pendente] Etapa 1:** Arrumar a gaveta de dados globais (o `DataRepository.kt`, que está com quase 2000 linhas). Vamos separar quem cuida de JSON, quem cuida de leitura e quem cuida de gravação.
+*   **[Pendente] Etapa 2:** Organizar o Motor da Aba Magias (o `NexusArcanoEngine.kt`), deixando o sistema de pré-requisitos em arquivos separados.
+*   **[Pendente] Etapa 3:** Desafogar a Ponte de Controle (o `FichaViewModel.kt`). Ele é o maestro que avisa as abas o que mudou, e precisa ser dividido em partes menores para não se enrolar.
+*   **[Pendente] Etapa 4:** Simplificar a visualização do mapa (o `TabVtt.kt`).
+*   **[Pendente] Etapa 5:** Separar a calculadora da Rolagem (o `TabRolagem.kt`), deixando os bônus e penalidades fáceis de mexer em arquivos próprios.
+*   **[Pendente] Etapa 6:** Componentizar os botões e janelas de Traços (o `TraitDialogs.kt`), para que adicionar Vantagens ou Desvantagens não custe tanta lentidão visual ou peso no arquivo.
 
 ---
 
-## Localizacao de Builds Recentes
-- **Pasta:** app/build/outputs/apk/visual/release
-- **Pasta:** app/build/outputs/apk/pracego/release
+## Lembretes Fixos do Seu Projeto
+
+### 1. Ferramentas Acessíveis
+Nós sempre cuidamos para que toda versão lançada tenha a versão **Visual** (Normal) e a versão **PraCego** (Com botão e navegação de acessibilidade para cegas por meio do programa TalkBack de celular). O emulador costuma focar na visual para seu teste rápido.
+
+### 2. Consistência de Dados
+Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo planilhas, chamados de arquivos **JSON**). IAs que forem alterar algo lá não podem apagar aspas ou colchetes sem cuidado.
 
 ---
-*Nota: Este arquivo foi limpo radicalmente em 20/03/2026 para remover logs obsoletos de 2024/2025.*
 
-### 6. Regra de Comunicacao (IA)
-- **Limite de Emojis**: O assistente IA deve usar NO MAXIMO 1 emoji por mensagem para manter a sobriedade e clareza tecnica.
+## 🕒 Registro de Lotes e Commits (Rede de Segurança)
+*Todo Agente é obrigado a quebrar tarefas maiores em "Lotes Curtos" isolados de um arquivo por vez, efetuando o Commit no final para gerar um Ponto de Retorno seguro para o usuário. Cada nova "Aba" ganha também sua própria pasta.*
 
-### 7. Regras Operacionais de Ouro (Skills de Elite)
-- **Backend (BFRI)**: Seguir fluxo rigoroso (routes -> controllers -> services -> repositories) para evitar crashes.
-- **Frontend (FFCI)**: Priorizar componentes reusaveis e performance de renderizacao no Compose/React.
-- **Database**: Garantir integridade com validacao de indices e Plano de Rollback em toda migracao.
-- **Contexto (DDD/ACL)**: Proteger as regras de GURPS com camadas de isolamento (ACL) para evitar perda de contexto.
-- **Imagens (Image-Studio)**: Gemini para realismo (NPCs); Stability AI para estilo RPG (Tokens/Mapas).
+> Lista de Lotes Realizados a partir de Abril de 2026:
+
+* [A Fazer] Lote 1.0: Limpeza DataRepository (Etapa 1)   | `(Aguardando Início)`
+* [A Fazer] Lote 2.0: ...

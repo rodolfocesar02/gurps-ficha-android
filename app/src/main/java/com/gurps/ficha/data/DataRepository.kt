@@ -10,6 +10,7 @@ import com.google.gson.reflect.TypeToken
 import com.gurps.ficha.model.*
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoChecker
+import com.gurps.ficha.domain.filters.CatalogFilters
 import java.text.Normalizer
 
 /**
@@ -64,12 +65,12 @@ class DataRepository(private val context: Context) {
         get() = _magiasFiltroIndex ?: magias.map { magia ->
             MagiaFiltroIndex(
                 definicao = magia,
-                nomeNorm = normalizarBusca(magia.nome),
-                classeNorm = normalizarBusca(agruparClasseMagia(magia.classe).orEmpty()),
+                nomeNorm = CatalogFilters.normalizarBusca(magia.nome),
+                classeNorm = CatalogFilters.normalizarBusca(agruparClasseMagia(magia.classe).orEmpty()),
                 escolasNorm = magia.escola
                     .orEmpty()
                     .asSequence()
-                    .map { normalizarBusca(it) }
+                    .map { CatalogFilters.normalizarBusca(it) }
                     .filter { it.isNotBlank() }
                     .toSet()
             )
@@ -601,91 +602,26 @@ class DataRepository(private val context: Context) {
         }
     }
 
-    // === FILTROS DE VANTAGENS ===
+    // === FILTROS DE VANTAGENS E OUTROS (Delegados para CatalogFilters) ===
 
-    private fun normalizarBusca(valor: String): String {
-        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-        return semAcento
-            .lowercase()
-            .replace(Regex("\\s+"), " ")
-            .trim()
+    fun filtrarVantagens(busca: String = "", tipoCusto: TipoCusto? = null, tag: String? = null, somenteArtesMarciais: Boolean = false): List<VantagemDefinicao> {
+        return CatalogFilters.filtrarVantagens(vantagens, _vantagensArtesMarciaisIds, busca, tipoCusto, tag, somenteArtesMarciais)
     }
 
-    private fun contemBusca(texto: String, busca: String): Boolean {
-        if (busca.isBlank()) return true
-        val buscaNorm = normalizarBusca(busca)
-        if (buscaNorm.isBlank()) return true
-        return normalizarBusca(texto).contains(buscaNorm)
+    fun filtrarDesvantagens(busca: String = "", tipoCusto: TipoCusto? = null, tag: String? = null): List<DesvantagemDefinicao> {
+        return CatalogFilters.filtrarDesvantagens(desvantagens, busca, tipoCusto, tag)
     }
 
-    private fun igualNormalizado(texto: String, valor: String): Boolean {
-        val textoNorm = normalizarBusca(texto)
-        val valorNorm = normalizarBusca(valor)
-        if (textoNorm.isBlank() || valorNorm.isBlank()) return false
-        return textoNorm == valorNorm
+    fun filtrarPericias(busca: String = "", atributoBase: String? = null, dificuldade: String? = null): List<PericiaDefinicao> {
+        return CatalogFilters.filtrarPericias(pericias, busca, atributoBase, dificuldade)
     }
 
-    fun filtrarVantagens(
-        busca: String = "",
-        tipoCusto: TipoCusto? = null,
-        tag: String? = null,
-        somenteArtesMarciais: Boolean = false
-    ): List<VantagemDefinicao> {
-        return vantagens.filter { v ->
-            val matchBusca = contemBusca(v.nome, busca)
-            val matchTipo = tipoCusto == null || v.tipoCusto == tipoCusto
-            val matchTag = tag.isNullOrBlank() || v.tags.any { contemBusca(it, tag) }
-            val matchArtesMarciais = !somenteArtesMarciais || _vantagensArtesMarciaisIds.contains(v.id.lowercase())
-            matchBusca && matchTipo && matchTag && matchArtesMarciais
-        }
-    }
-
-    // === FILTROS DE DESVANTAGENS ===
-
-    fun filtrarDesvantagens(
-        busca: String = "",
-        tipoCusto: TipoCusto? = null,
-        tag: String? = null
-    ): List<DesvantagemDefinicao> {
-        return desvantagens.filter { d ->
-            val matchBusca = contemBusca(d.nome, busca)
-            val matchTipo = tipoCusto == null || d.tipoCusto == tipoCusto
-            val matchTag = tag.isNullOrBlank() || d.tags.any { contemBusca(it, tag) }
-            matchBusca && matchTipo && matchTag
-        }
-    }
-
-    // === FILTROS DE PERICIAS ===
-
-    fun filtrarPericias(
-        busca: String = "",
-        atributoBase: String? = null,
-        dificuldade: String? = null
-    ): List<PericiaDefinicao> {
-        return pericias.filter { p ->
-            val matchBusca = contemBusca(p.nome, busca)
-            val matchAtributo = atributoBase.isNullOrBlank() ||
-                contemBusca(p.atributoBase, atributoBase) ||
-                p.atributosPossiveis?.any { contemBusca(it, atributoBase) } == true
-            val matchDificuldade = dificuldade.isNullOrBlank() ||
-                contemBusca(p.dificuldadeFixa.orEmpty(), dificuldade)
-            matchBusca && matchAtributo && matchDificuldade
-        }
-    }
-
-    // === FILTROS DE MAGIAS ===
-
-    fun filtrarMagias(
-        busca: String = "",
-        escola: String? = null,
-        classe: String? = null
-    ): List<MagiaDefinicao> {
+    fun filtrarMagias(busca: String = "", escola: String? = null, classe: String? = null): List<MagiaDefinicao> {
         if (busca.isBlank() && escola.isNullOrBlank() && classe.isNullOrBlank()) return magias
 
-        val buscaNorm = normalizarBusca(busca)
-        val escolaNorm = escola?.let(::normalizarBusca).orEmpty()
-        val classeNorm = classe?.let(::normalizarBusca).orEmpty()
+        val buscaNorm = CatalogFilters.normalizarBusca(busca)
+        val escolaNorm = escola?.let(CatalogFilters::normalizarBusca).orEmpty()
+        val classeNorm = classe?.let(CatalogFilters::normalizarBusca).orEmpty()
         return magiasFiltroIndex.asSequence()
             .filter { idx ->
                 val matchBusca = buscaNorm.isBlank() || idx.nomeNorm.contains(buscaNorm)
@@ -697,122 +633,20 @@ class DataRepository(private val context: Context) {
             .toList()
     }
 
-    fun filtrarTecnicasCatalogo(
-        busca: String = "",
-        sourceBook: String? = null
-    ): List<TecnicaCatalogoItem> {
-        val b = busca.trim()
-        return tecnicasCatalogo.filter { t ->
-            val matchBusca = b.isBlank() ||
-                contemBusca(t.nome, b) ||
-                contemBusca(t.descricao, b) ||
-                contemBusca(t.preRequisitoRaw, b)
-            val matchSource = sourceBook.isNullOrBlank() || contemBusca(t.sourceBook, sourceBook)
-            matchBusca && matchSource
-        }.sortedBy { it.nome.lowercase() }
+    fun filtrarTecnicasCatalogo(busca: String = "", sourceBook: String? = null): List<TecnicaCatalogoItem> {
+        return CatalogFilters.filtrarTecnicasCatalogo(tecnicasCatalogo, busca, sourceBook)
     }
 
-    fun filtrarArmasCatalogo(
-        busca: String = "",
-        tipoCombate: String? = null,
-        stMaximo: Int? = null
-    ): List<ArmaCatalogoItem> {
-        val buscaNormalizada = busca.trim()
-        return armasCatalogo.filter { a ->
-            val matchBusca = buscaNormalizada.isBlank() ||
-                contemBusca(a.nome, buscaNormalizada) ||
-                contemBusca(a.grupo, buscaNormalizada) ||
-                contemBusca(a.categoria, buscaNormalizada)
-            val matchTipo = tipoCombate.isNullOrBlank() || contemBusca(a.tipoCombate, tipoCombate)
-            val matchSt = stMaximo == null || a.stMinimo == null || a.stMinimo <= stMaximo
-            matchBusca && matchTipo && matchSt
-        }.sortedBy { it.nome.lowercase() }
+    fun filtrarArmasCatalogo(busca: String = "", tipoCombate: String? = null, stMaximo: Int? = null): List<ArmaCatalogoItem> {
+        return CatalogFilters.filtrarArmasCatalogo(armasCatalogo, busca, tipoCombate, stMaximo)
     }
 
-    fun filtrarEscudosCatalogo(
-        busca: String = "",
-        stMaximo: Int? = null
-    ): List<EscudoCatalogoItem> {
-        val b = busca.trim()
-        return escudosCatalogo.filter { e ->
-            val matchBusca = b.isBlank() || contemBusca(e.nome, b)
-            val matchSt = stMaximo == null || e.stMinimo == null || e.stMinimo <= stMaximo
-            matchBusca && matchSt
-        }.sortedBy { it.nome.lowercase() }
+    fun filtrarEscudosCatalogo(busca: String = "", stMaximo: Int? = null): List<EscudoCatalogoItem> {
+        return CatalogFilters.filtrarEscudosCatalogo(escudosCatalogo, busca, stMaximo)
     }
 
-    fun filtrarArmadurasCatalogo(
-        busca: String = "",
-        nt: Int? = null,
-        localFiltro: String? = null,
-        tagFiltro: String? = null
-    ): List<ArmaduraCatalogoItem> {
-        val b = busca.trim()
-        val tag = tagFiltro?.trim().orEmpty()
-        return armadurasCatalogo.filter { a ->
-            val matchBusca = b.isBlank() ||
-                contemBusca(a.nome, b) ||
-                contemBusca(a.local, b) ||
-                contemBusca(a.rd, b) ||
-                a.tags.any { contemBusca(it, b) } ||
-                a.observacoesDetalhadas.any { contemBusca(it, b) } ||
-                a.componentes.any { c ->
-                    c.tags.any { contemBusca(it, b) } ||
-                        c.observacoesDetalhadas.any { contemBusca(it, b) }
-                }
-            val matchNt = nt == null || a.nt == nt
-            val matchLocal = localFiltro.isNullOrBlank() || armaduraCobreLocal(a, localFiltro)
-            val matchTag = tag.isBlank() || armaduraTemTag(a, tag)
-            matchBusca && matchNt && matchLocal && matchTag
-        }.sortedBy { it.nome.lowercase() }
-    }
-
-    private fun armaduraTemTag(armadura: ArmaduraCatalogoItem, tagFiltro: String): Boolean {
-        if (tagFiltro.isBlank()) return true
-        return armadura.tags.any { contemBusca(it, tagFiltro) } ||
-            armadura.componentes.any { c -> c.tags.any { contemBusca(it, tagFiltro) } }
-    }
-
-    private fun armaduraCobreLocal(armadura: ArmaduraCatalogoItem, localFiltro: String): Boolean {
-        val filtro = normalizarLocal(localFiltro)
-        if (filtro.isBlank()) return true
-        val locaisBrutos = mutableSetOf<String>()
-        locaisBrutos.addAll(extrairLocais(armadura.local))
-        armadura.componentes.forEach { c -> locaisBrutos.addAll(extrairLocais(c.local)) }
-
-        val locaisExpandidos = locaisBrutos
-            .flatMap { expandirLocalMacro(it) }
-            .map { normalizarLocal(it) }
-            .filter { it.isNotBlank() }
-            .toSet()
-
-        val filtroExpandido = expandirLocalMacro(filtro).map { normalizarLocal(it) }.toSet()
-        return filtroExpandido.any { it in locaisExpandidos }
-    }
-
-    private fun extrairLocais(raw: String): List<String> {
-        return raw
-            .split(Regex("[,;/|]"))
-            .map { it.trim() }
-            .filter { it.isNotBlank() }
-    }
-
-    private fun expandirLocalMacro(local: String): List<String> {
-        return when (normalizarLocal(local)) {
-            "cabeca" -> listOf("cranio", "olhos", "rosto")
-            "corpo" -> listOf("pescoco", "tronco", "virilha")
-            "membros" -> listOf("bracos", "pernas")
-            "traje_completo" -> listOf("pescoco", "tronco", "virilha", "bracos", "maos", "pernas", "pes")
-            else -> listOf(local)
-        }
-    }
-
-    private fun normalizarLocal(local: String): String {
-        return Normalizer.normalize(local, Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-            .lowercase()
-            .replace(Regex("\\s+"), "_")
-            .trim()
+    fun filtrarArmadurasCatalogo(busca: String = "", nt: Int? = null, localFiltro: String? = null, tagFiltro: String? = null): List<ArmaduraCatalogoItem> {
+        return CatalogFilters.filtrarArmadurasCatalogo(armadurasCatalogo, busca, nt, localFiltro, tagFiltro)
     }
 
     fun agruparClasseMagia(classe: String?): String? {
