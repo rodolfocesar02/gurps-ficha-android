@@ -44,5 +44,5 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 
 > Lista de Lotes Realizados a partir de Abril de 2026:
 
-* [A Fazer] Lote 1.0: Limpeza DataRepository (Etapa 1)   | `(Aguardando Início)`
-* [A Fazer] Lote 2.0: ...
+* [Feito] Lote 1.1: Extração de Filtros (DataRepository)   | `(Commit: 85495bb)`
+* [A Fazer] Lote 1.2: Extração de Loaders Json (DataRepository)   | `(Aguardando Início)`
