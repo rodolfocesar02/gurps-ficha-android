@@ -2177,7 +2177,7 @@ fun AliadosConfig(
             Text("Tamanho do Grupo", style = MaterialTheme.typography.labelLarge)
         }
 
-        // Di\u00e1logos
+        // Diálogos
         if (showRatioList) {
             SeletorPoderAliadoDialog(
                 current = currentRatio,
@@ -2252,7 +2252,7 @@ fun PatronosConfig(
             Text("Patrono Secreto (-5 pts)", style = MaterialTheme.typography.bodyMedium)
         }
 
-        // Di\u00e1logos
+        // Diálogos
         if (showPowerList) {
             SeletorPoderPatronoDialog(
                 current = currentPower,
@@ -2484,7 +2484,7 @@ fun AtribulacaoConfig(
             Text("Ampliações", style = MaterialTheme.typography.labelLarge)
         }
         
-        // 3. Bot\u00e3o Vantagem (+10%/pt)
+        // 3. Botão Vantagem (+10%/pt)
         Button(
             onClick = { showVantList = true },
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2495,7 +2495,7 @@ fun AtribulacaoConfig(
             Text("Vantagem (+10%)", style = MaterialTheme.typography.labelLarge)
         }
         
-        // 4. Bot\u00e3o Desvantagem (+1%/pt)
+        // 4. Botão Desvantagem (+1%/pt)
         Button(
             onClick = { showDesvList = true },
             modifier = Modifier.fillMaxWidth().height(48.dp),
@@ -2648,7 +2648,7 @@ fun RetencaoConfig(
     ) {
         HorizontalDivider()
         
-        // 1. Descri\u00e7\u00e3o no topo (linear)
+        // 1. Descrição no topo (linear)
         descricaoContent()
 
         // 2. Botão Ampliações
@@ -2674,7 +2674,7 @@ fun RetencaoConfig(
             Text("Limitações Especiais", style = MaterialTheme.typography.labelLarge)
         }
 
-        // Di\u00e1logos
+        // Diálogos
         if (showAmpList) {
             SeletorAmpliacaoRetencaoDialog(
                 modifiers = modifiers,
@@ -2716,7 +2716,7 @@ fun SeletorAmpliacaoRetencaoDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Amplia\u00e7\u00f5es de Reten\u00e7\u00e3o") },
+        title = { Text("Ampliações de Retenção") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ampliacoes.forEach { (nome, valor, desc) ->
@@ -2736,7 +2736,7 @@ fun SeletorAmpliacaoRetencaoDialog(
                 
                 // Op\u00e7\u00e3o Especial: S\u00f3 Sofre Dano
                 Button(onClick = { showDanoPicker = true }, modifier = Modifier.fillMaxWidth()) {
-                    Text("S\u00f3 Sofre Dano (+10%/+20%/+30%)")
+                    Text("Só Sofre Dano (+10%/+20%/+30%)")
                 }
             }
         },
@@ -2749,7 +2749,7 @@ fun SeletorAmpliacaoRetencaoDialog(
         
         AlertDialog(
             onDismissRequest = { showDanoPicker = false },
-            title = { Text("S\u00f3 Sofre Dano") },
+            title = { Text("Só Sofre Dano") },
             text = {
                 Column {
                     tipos.forEach { tipo ->
@@ -2791,7 +2791,7 @@ fun SeletorLimitacaoRetencaoDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Limita\u00e7\u00f5es Especiais") },
+        title = { Text("Limitações Especiais") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.verticalScroll(rememberScrollState())) {
                 limitacoes.forEach { (nome, valor, desc) ->
@@ -2875,14 +2875,14 @@ fun SeletorNhContatoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) 
 @Composable
 fun SeletorFrequenciaAparecimentoDialog(current: Float, onDismiss: () -> Unit, onSelect: (Float) -> Unit) {
     val opcoes = listOf(
-        Triple(0.5f, "6 ou menos (Raramente)", "O tra??o est?? dispon??vel apenas em situa????es excepcionais. Multiplicador: x0.5."),
+        Triple(0.5f, "6 ou menos (Raramente)", "O traço está disponível apenas em situações excepcionais. Multiplicador: x0.5."),
         Triple(1f, "9 ou menos (Ocasionalmente)", "Disponibilidade moderada ao longo da campanha. Multiplicador: x1."),
-        Triple(2f, "12 ou menos (Frequentemente)", "Quase sempre dispon??vel quando solicitado. Multiplicador: x2."),
-        Triple(3f, "15 ou menos (Quase sempre)", "Garante presen??a na maioria absoluta das sess??es. Multiplicador: x3.")
+        Triple(2f, "12 ou menos (Frequentemente)", "Quase sempre disponível quando solicitado. Multiplicador: x2."),
+        Triple(3f, "15 ou menos (Quase sempre)", "Garante presença na maioria absoluta das sessões. Multiplicador: x3.")
     )
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Frequ??ncia de Aparecimento") },
+        title = { Text("Frequência de Aparecimento") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 opcoes.forEach { (freq, titulo, desc) ->
@@ -2904,10 +2904,10 @@ fun SeletorFrequenciaAparecimentoDialog(current: Float, onDismiss: () -> Unit, o
 @Composable
 fun SeletorConfiabilidadeDialog(current: Float, onDismiss: () -> Unit, onSelect: (Float) -> Unit) {
     val opcoes = listOf(
-        Triple(0.5f, "Pode Mentir (N??o confi??vel)", "O contato pode ser enganoso ou falhar propositalmente. Multiplicador: x0.5."),
-        Triple(1f, "Um tanto Confi??vel", "Age com cautela, mas geralmente n??o mente para o PJ. Multiplicador: x1."),
-        Triple(2f, "Geralmente Confi??vel", "Amigo leal que ajuda sem hesita????es comuns. Multiplicador: x2."),
-        Triple(3f, "Totalmente Confi??vel", "Devo????o total; daria a vida pelo personagem. Multiplicador: x3.")
+        Triple(0.5f, "Pode Mentir (Não confiável)", "O contato pode ser enganoso ou falhar propositalmente. Multiplicador: x0.5."),
+        Triple(1f, "Um tanto Confiável", "Age com cautela, mas geralmente não mente para o PJ. Multiplicador: x1."),
+        Triple(2f, "Geralmente Confiável", "Amigo leal que ajuda sem hesitações comuns. Multiplicador: x2."),
+        Triple(3f, "Totalmente Confiável", "Devoção total; daria a vida pelo personagem. Multiplicador: x3.")
     )
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -2933,11 +2933,11 @@ fun SeletorConfiabilidadeDialog(current: Float, onDismiss: () -> Unit, onSelect:
 @Composable
 fun SeletorPoderAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
     val opcoes = listOf(
-        Triple(1, "25% dos Pontos (Muito Fraco)", "O aliado ?? significativamente mais fraco que o PJ. Custo base: 1 pt."),
+        Triple(1, "25% dos Pontos (Muito Fraco)", "O aliado é significativamente mais fraco que o PJ. Custo base: 1 pt."),
         Triple(2, "50% dos Pontos (Fraco)", "Possui metade da capacidade do personagem principal. Custo base: 2 pts."),
-        Triple(3, "75% dos Pontos (Companheiro)", "Um parceiro pr??ximo em termos de poder. Custo base: 3 pts."),
-        Triple(5, "100% dos Pontos (Equivalente)", "Mesmo n??vel de pontos que o personagem. Custo base: 5 pts."),
-        Triple(10, "150% dos Pontos (Superior)", "O aliado ?? mais poderoso que o pr??prio PJ. Custo base: 10 pts.")
+        Triple(3, "75% dos Pontos (Companheiro)", "Um parceiro próximo em termos de poder. Custo base: 3 pts."),
+        Triple(5, "100% dos Pontos (Equivalente)", "Mesmo nível de pontos que o personagem. Custo base: 5 pts."),
+        Triple(10, "150% dos Pontos (Superior)", "O aliado é mais poderoso que o próprio PJ. Custo base: 10 pts.")
     )
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -2963,11 +2963,11 @@ fun SeletorPoderAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int
 @Composable
 fun SeletorGrupoAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
     val opcoes = listOf(
-        Triple(1, "Apenas um", "Um ??nico aliado fiel. Multiplicador: x1."),
-        Triple(6, "Grupo Pequeno (6-10)", "Uma pequena equipe ou esquadr??o. Multiplicador: x6."),
-        Triple(8, "Grupo M??dio (11-20)", "Uma companhia ou grupo organizado. Multiplicador: x8."),
-        Triple(10, "Grupo Grande (21-50)", "Uma tropa ou fac????o local. Multiplicador: x10."),
-        Triple(12, "Batalh??o (51-100)", "Um grande contingente de subordinados. Multiplicador: x12.")
+        Triple(1, "Apenas um", "Um único aliado fiel. Multiplicador: x1."),
+        Triple(6, "Grupo Pequeno (6-10)", "Uma pequena equipe ou esquadrão. Multiplicador: x6."),
+        Triple(8, "Grupo Médio (11-20)", "Uma companhia ou grupo organizado. Multiplicador: x8."),
+        Triple(10, "Grupo Grande (21-50)", "Uma tropa ou facção local. Multiplicador: x10."),
+        Triple(12, "Batalhão (51-100)", "Um grande contingente de subordinados. Multiplicador: x12.")
     )
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -2993,11 +2993,11 @@ fun SeletorGrupoAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int
 @Composable
 fun SeletorPoderPatronoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
     val opcoes = listOf(
-        Triple(5, "Individual (Muito Limitado)", "Um indiv??duo com recursos 10x ou 100x maiores que os iniciais. Custo base: 5 pts."),
-        Triple(10, "Organiza????o Pequena", "Influ??ncia local, como uma pequena cidade ou grande empresa. Custo base: 10 pts."),
-        Triple(15, "Organiza????o Regional/Nacional", "Recursos amplos sob comando (ex: FBI, grande igreja). Custo base: 15 pts."),
-        Triple(20, "Superpot??ncia Mundial", "Influ??ncia multinacional ou governo de uma na????o poderosa. Custo base: 20 pts."),
-        Triple(25, "Organiza????o Interestelar/Gal??ctica", "Dom??nio sobre m??ltiplos sistemas ou planetas. Custo base: 25 pts."),
+        Triple(5, "Individual (Muito Limitado)", "Um indivíduo com recursos 10x ou 100x maiores que os iniciais. Custo base: 5 pts."),
+        Triple(10, "Organização Pequena", "Influência local, como uma pequena cidade ou grande empresa. Custo base: 10 pts."),
+        Triple(15, "Organização Regional/Nacional", "Recursos amplos sob comando (ex: FBI, grande igreja). Custo base: 15 pts."),
+        Triple(20, "Superpotência Mundial", "Influência multinacional ou governo de uma nação poderosa. Custo base: 20 pts."),
+        Triple(25, "Organização Interestelar/Galáctica", "Domínio sobre múltiplos sistemas ou planetas. Custo base: 25 pts."),
         Triple(30, "Entidade Multidimensional/Divina", "Poder para moldar aspectos da realidade. Custo base: 30 pts.")
     )
     AlertDialog(
@@ -3024,14 +3024,14 @@ fun SeletorPoderPatronoDialog(current: Int, onDismiss: () -> Unit, onSelect: (In
 @Composable
 fun SeletorModificadorPatronoDialog(current: Float, onDismiss: () -> Unit, onSelect: (Float) -> Unit) {
     val opcoes = listOf(
-        Triple(0.5f, "Interven????o M??nima", "O Patrono est?? ocupado ou n??o quer se envolver diretamente. Multiplicador: x0.5."),
-        Triple(1.0f, "Interven????o Normal", "Suporte padr??o conforme as regras da vantagem. Multiplicador: x1."),
-        Triple(1.5f, "Interven????o Muito Poderosa", "Recursos extensos e imunidade legal para o grupo. Multiplicador: x1.5."),
-        Triple(2.0f, "Interven????o Extremamente Poderosa", "Pode mudar a vida do personagem completamente. Multiplicador: x2.")
+        Triple(0.5f, "Intervenção Mínima", "O Patrono está ocupado ou não quer se envolver diretamente. Multiplicador: x0.5."),
+        Triple(1.0f, "Intervenção Normal", "Suporte padrão conforme as regras da vantagem. Multiplicador: x1."),
+        Triple(1.5f, "Intervenção Muito Poderosa", "Recursos extensos e imunidade legal para o grupo. Multiplicador: x1.5."),
+        Triple(2.0f, "Intervenção Extremamente Poderosa", "Pode mudar a vida do personagem completamente. Multiplicador: x2.")
     )
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Modificadores de Interven????o") },
+        title = { Text("Modificadores de Intervenção") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 opcoes.forEach { (mod, titulo, desc) ->

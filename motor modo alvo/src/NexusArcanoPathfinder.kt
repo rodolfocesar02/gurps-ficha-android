@@ -44,9 +44,15 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
     }
 
     fun scorePendencias(metas: List<ArcanoMetaProgress>): Int {
-        return metas.sumOf { meta ->
-            if (meta.atendida) 0 else (meta.requerido - meta.atual).coerceAtLeast(1)
-        }
+        val metaEscolaMax = metas
+            .filter { it.tipo == ArcanoMetaTipo.ESCOLAS_DISTINTAS && !it.atendida }
+            .maxOfOrNull { it.requerido - it.atual } ?: 0
+            
+        val outrasMetas = metas
+            .filter { it.tipo != ArcanoMetaTipo.ESCOLAS_DISTINTAS }
+            .sumOf { if (it.atendida) 0 else (it.requerido - it.atual).coerceAtLeast(1) }
+            
+        return metaEscolaMax + outrasMetas
     }
 
     fun reducaoPendencias(known: Set<String>, candId: String): Int {

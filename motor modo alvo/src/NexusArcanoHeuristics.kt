@@ -23,8 +23,10 @@ internal fun NexusArcanoEngine.sugerirProximasAcoes(
     pendentes.forEach { magiaId ->
         if (out.size >= 5) return@forEach
         if (bloqueioNumericoParaMagia(magiaId, estado, known) == null) {
-            // Se a magia atual já tem escolas suficientes, não sugerimos mais para ELA, pulamos para a próxima pendente
-            if (atendeRegraEscolas(regrasEscolasRelevantes(magiaId, known, estado).firstOrNull() ?: return@forEach, known)) return@forEach
+            // Se ainda houver qualquer meta de escola pendente na cadeia de metas do alvo, persistir nas sugestões de escolas
+            val metasGerais = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known))
+            val escolasPendentesNaCadeia = metasGerais.any { it.tipo == ArcanoMetaTipo.ESCOLAS_DISTINTAS && !it.atendida }
+            if (!escolasPendentesNaCadeia) return@forEach
 
             val sugestoes = sugerirParaRegraDeEscolas(
                 magiaId = magiaId,
