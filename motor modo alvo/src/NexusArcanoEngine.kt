@@ -459,172 +459,11 @@ class NexusArcanoEngine(
         )
     }
 
-    internal fun sugerirProximasAcoes(
-        alvoId: String,
-        known: Set<String>,
-        estado: ArcanoEstadoPersonagem
-    ): List<ArcanoAcao> {
-        val cadeiaIntegral = construirCadeiaObrigatoriaParaEstado(alvoId, known)
-        val pendentes = cadeiaIntegral.filter { it !in known }
-        val out = mutableListOf<ArcanoAcao>()
-        
-        // 1. Prioridade Máxima: Próximas magias da trilha que já podem ser aprendidas agora
-        val imediatas = pendentes.filter { magiaAprendivelAgora(it, known, estado) && !escolaBloqueadaPorPolitica(it) }
-        imediatas.take(2).forEach { id ->
-            out += ArcanoAcao(id, "Cadeia obrigatória (Caminho mais rápido)", 0)
-        }
 
-        // 2. Lookahead: Buscar a primeira meta de escolas pendente em qualquer ponto da cadeia
-        // Ordenamos por proximidade do aprendizado (melhor primeiro)
-        pendentes.forEach { magiaId ->
-            if (out.size >= 5) return@forEach
-            if (bloqueioNumericoParaMagia(magiaId, estado, known) == null) {
-                // Se a magia atual já tem escolas suficientes, não sugerimos mais para ELA, pulamos para a próxima pendente
-                if (atendeRegraEscolas(regrasEscolasRelevantes(magiaId, known, estado).firstOrNull() ?: return@forEach, known)) return@forEach
 
-                val sugestoes = sugerirParaRegraDeEscolas(
-                    magiaId = magiaId,
-                    known = known,
-                    estado = estado,
-                    idsProibidos = pendentes.toSet() + out.map { it.magiaId }.toSet()
-                )
-                if (sugestoes.isNotEmpty()) {
-                    out.addAll(sugestoes)
-                    if (out.size >= 4) return@forEach
-                }
-            }
-        }
 
-        return out
-            .filter { it.magiaId !in known }
-            .distinctBy { it.magiaId }
-            .sortedWith(compareBy<ArcanoAcao> { it.prioridade }.thenBy { nomeMagiaNorm(it.magiaId) })
-            .take(5)
-    }
 
-    internal fun sugerirParaRegraDeEscolas(
-        magiaId: String,
-        known: Set<String>,
-        estado: ArcanoEstadoPersonagem,
-        idsProibidos: Set<String>
-    ): List<ArcanoAcao> {
-        val regras = coletarRegrasEscolas(listOf(magiaId))
-        if (regras.isEmpty()) return emptyList()
 
-        val avaliados = avaliarCandidatasParaRegraDeEscolas(
-            magiaId = magiaId,
-            known = known,
-            estado = estado,
-            idsProibidos = idsProibidos
-        ).filter { it.elegivel }
-
-        val escolasUsadasNaRodada = mutableSetOf<String>()
-        val ordenados = avaliados.sortedWith(
-            compareByDescending<AvaliacaoCandidata> { it.escolaNova }
-                .thenBy { it.custo }
-                .thenBy { tieBreakPorAlvo(magiaId, it.id) }
-                .thenBy { nomeMagiaNorm(it.id) }
-        )
-        val temEscolaNovaElegivel = ordenados.any { it.escolaNova }
-        val motivoSemEscolaNova = "Sem escola nova aprendivel agora para ${nomeMagia(magiaId)}"
-
-        val out = mutableListOf<ArcanoAcao>()
-        // Passo 1: escolas novas sem repetição.
-        ordenados.forEach { cand ->
-            if (out.size >= 3) return@forEach
-            if (!cand.escolaNova) return@forEach
-            if (cand.escola in escolasUsadasNaRodada) return@forEach
-            out += ArcanoAcao(
-                magiaId = cand.id,
-                motivo = "Abrir escola para liberar ${nomeMagia(magiaId)}",
-                prioridade = 1 + cand.custo
-            )
-            escolasUsadasNaRodada += cand.escola
-        }
-        // Passo 2: fallback robusto para completar 3 ações (mesmo com escola repetida).
-        ordenados.forEach { cand ->
-            if (out.size >= 3) return@forEach
-            if (out.any { it.magiaId == cand.id }) return@forEach
-            if (cand.escola in escolasUsadasNaRodada) return@forEach
-            out += ArcanoAcao(
-                magiaId = cand.id,
-                motivo = if (temEscolaNovaElegivel) {
-                    "Fallback de progresso para ${nomeMagia(magiaId)}"
-                } else {
-                    "$motivoSemEscolaNova; fallback de progresso"
-                },
-                prioridade = 10 + cand.custo
-            )
-            escolasUsadasNaRodada += cand.escola
-        }
-        // Passo 3: último recurso com repetição permitida.
-        ordenados.forEach { cand ->
-            if (out.size >= 3) return@forEach
-            if (out.any { it.magiaId == cand.id }) return@forEach
-            out += ArcanoAcao(
-                magiaId = cand.id,
-                motivo = if (temEscolaNovaElegivel) {
-                    "Fallback final para ${nomeMagia(magiaId)}"
-                } else {
-                    "$motivoSemEscolaNova; fallback final"
-                },
-                prioridade = 20 + cand.custo
-            )
-        }
-        return out
-    }
-
-    internal fun avaliarCandidatasParaRegraDeEscolas(
-        magiaId: String,
-        known: Set<String>,
-        estado: ArcanoEstadoPersonagem,
-        idsProibidos: Set<String>
-    ): List<AvaliacaoCandidata> {
-        val regras = regrasEscolasRelevantes(magiaId, known, estado)
-        if (regras.isEmpty()) return emptyList()
-
-        val escolasConhecidas = escolasConhecidas(known)
-        val escolasProibidas = regras
-            .asSequence()
-            .filter { it.outrasEscolas }
-            .flatMap { regra -> escolasNorm(regra.magiaOrigemId).asSequence() }
-            .toSet()
-
-        fun custoDesbloqueio(candId: String): Int {
-            val depsMissing = dependenciasMinimasPendentes(candId, known)
-            val regraNum = regrasNumericasRelevantes(candId, known, estado).firstOrNull()
-            val faltaNum = if (regraNum == null) 0 else {
-                if (atendeRegraNumerica(regraNum, estado)) 0 else 1
-            }
-            val regraEsc = regrasEscolasRelevantes(candId, known, estado).firstOrNull()
-            val faltaEsc = if (regraEsc == null) 0 else {
-                val count = escolasConhecidas.size
-                (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
-            }
-            val complexidadeBase = if (preRequisitoSemConteudo(candId)) 0 else 1
-            return depsMissing * pesoDepsMissing +
-                faltaNum * pesoFaltaNumerica +
-                faltaEsc * pesoFaltaEscolas +
-                complexidadeBase * pesoComplexidadeBase
-        }
-
-        return allMagiaIds
-            .asSequence()
-            .filter { it !in known && it != magiaId && it !in idsProibidos }
-            .map { candId ->
-                val escola = escolaPrincipalNorm(candId)
-                val escolaNova = escola.isNotBlank() && escola !in escolasConhecidas
-                AvaliacaoCandidata(
-                    id = candId,
-                    escola = escola,
-                    escolaNova = escolaNova,
-                    custo = custoDesbloqueio(candId),
-                    aprendivelAgora = magiaAprendivelAgora(candId, known, estado),
-                    escolaBloqueadaOrigem = escola in escolasProibidas,
-                    escolaBloqueadaPolitica = escola in escolasNuncaRecomendar
-                )
-            }.toList()
-    }
 
     internal fun magiaAprendivelAgora(magiaId: String, known: Set<String>, estado: ArcanoEstadoPersonagem): Boolean {
         if (magiaId in known) return true
@@ -644,43 +483,11 @@ class NexusArcanoEngine(
         return coletarRegrasNumericas(listOf(magiaId)).all { atendeRegraNumerica(it, estado) }
     }
 
-    internal fun regrasEscolasRelevantes(
-        magiaId: String,
-        known: Set<String>,
-        estado: ArcanoEstadoPersonagem
-    ): List<RegraEscolas> {
-        val branch = escolherBranchRelevante(magiaId, known, estado)
-        if (branch != null && branch.regrasEscolas.isNotEmpty()) return branch.regrasEscolas
-        return coletarRegrasEscolas(listOf(magiaId))
-    }
 
-    internal fun regrasNumericasRelevantes(
-        magiaId: String,
-        known: Set<String>,
-        estado: ArcanoEstadoPersonagem
-    ): List<RegraNumerica> {
-        val branch = escolherBranchRelevante(magiaId, known, estado)
-        if (branch != null && branch.regrasNumericas.isNotEmpty()) return branch.regrasNumericas
-        return coletarRegrasNumericas(listOf(magiaId))
-    }
 
-    internal fun escolherBranchRelevante(
-        magiaId: String,
-        known: Set<String>,
-        estado: ArcanoEstadoPersonagem
-    ): RequisitoBranch? {
-        val branches = requisitoBranchesPorMagia(magiaId)
-        if (branches.isEmpty()) return null
-        return branches.minWithOrNull(
-            compareBy<RequisitoBranch> { branch -> branch.dependencias.count { it !in known } }
-                .thenBy { branch -> branch.regrasEscolas.count { !atendeRegraEscolas(it, known) } }
-                .thenBy { branch -> branch.regrasNumericas.count { !atendeRegraNumerica(it, estado) } }
-                .thenBy { it.dependencias.size }
-                .thenBy { it.regrasEscolas.size }
-                .thenBy { it.regrasNumericas.size }
-                .thenBy { branchKey(it) }
-        )
-    }
+
+
+
 
     internal fun atendeRegraEscolas(regra: RegraEscolas, known: Set<String>): Boolean {
         val set = escolasConhecidas(known).toMutableSet()
@@ -1097,179 +904,27 @@ class NexusArcanoEngine(
         return out.toList()
     }
 
-    internal fun coletarRegrasEscolas(ids: List<String>): List<RegraEscolas> {
-        return ids
-            .distinct()
-            .flatMap { regrasEscolasPorMagia(it) }
-    }
 
-    internal fun coletarRegrasNumericas(ids: List<String>): List<RegraNumerica> {
-        return ids
-            .distinct()
-            .flatMap { regrasNumericasPorMagia(it) }
-    }
 
-    internal fun snapshotAlvo(alvoId: String): SnapshotAlvo {
-        return snapshotCache.getOrPut(alvoId) {
-            val cadeia = construirCadeiaObrigatoria(alvoId)
-            val cadeiaSemAlvo = cadeia.filter { it != alvoId }
-            SnapshotAlvo(
-                alvoId = alvoId,
-                cadeiaSemAlvo = cadeiaSemAlvo,
-                regrasEscolas = coletarRegrasEscolas(cadeia),
-                regrasNumericas = coletarRegrasNumericas(cadeia)
-            )
-        }
-    }
 
-    internal fun chavesEsperadasOrdem(snapshot: SnapshotAlvo): List<String> {
-        val ordem = mutableListOf<String>()
-        snapshot.cadeiaSemAlvo.forEach { ordem += "chave_$it" }
-        snapshot.regrasEscolas.forEach { regra ->
-            ordem += "chave_escolas_${regra.magiaOrigemId}_${regra.quantidadeEscolas}"
-        }
-        snapshot.regrasNumericas.forEach { regra ->
-            regra.minAm?.let { ordem += "chave_am_${regra.magiaOrigemId}_$it" }
-            regra.minIq?.let { ordem += "chave_iq_${regra.magiaOrigemId}_$it" }
-            if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
-                ordem += "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}"
-            }
-        }
-        ordem += "chave_alvo_${snapshot.alvoId}"
-        return ordem
-    }
+
+
+
+
 
     internal fun chavesEsperadasIds(snapshot: SnapshotAlvo): Set<String> = chavesEsperadasOrdem(snapshot).toSet()
 
-    internal fun regrasEscolasPorMagia(magiaId: String): List<RegraEscolas> {
-        return regrasEscolasCache.getOrPut(magiaId) {
-            val raw = preNorm(magiaId)
-            regraEscolasRegex
-                .findAll(raw)
-                .mapNotNull { m ->
-                    val qtd = parseNumeroToken(m.groupValues[2]) ?: return@mapNotNull null
-                    RegraEscolas(
-                        magiaOrigemId = magiaId,
-                        quantidadeEscolas = qtd,
-                        outrasEscolas = m.groupValues[3].isNotBlank()
-                    )
-                }
-                .toList()
-        }
-    }
 
-    internal fun parseNumeroToken(raw: String): Int? {
-        val token = normalize(raw)
-        token.toIntOrNull()?.let { return it }
-        return when (token) {
-            "um", "uma" -> 1
-            "dois", "duas" -> 2
-            "tres" -> 3
-            "quatro" -> 4
-            "cinco" -> 5
-            "seis" -> 6
-            "sete" -> 7
-            "oito" -> 8
-            "nove" -> 9
-            "dez" -> 10
-            "onze" -> 11
-            "doze" -> 12
-            "treze" -> 13
-            "catorze", "quatorze" -> 14
-            "quinze" -> 15
-            "dezesseis" -> 16
-            "dezessete" -> 17
-            "dezoito" -> 18
-            "dezenove" -> 19
-            "vinte" -> 20
-            else -> null
-        }
-    }
 
-    internal fun regrasNumericasPorMagia(magiaId: String): List<RegraNumerica> {
-        return regrasNumericasCache.getOrPut(magiaId) {
-            val rawOriginal = preRaw(magiaId)
-            val raw = preNorm(magiaId)
-            val somaMatch = somaRegex.find(rawOriginal)
-            val somaAtributos = somaMatch
-                ?.groupValues
-                ?.getOrNull(1)
-                ?.split("+")
-                ?.map(::normalize)
-                ?.filter { it in setOf("dx", "iq", "st", "ht", "am") }
-                ?: emptyList()
-            val minSoma = somaMatch?.groupValues?.getOrNull(2)?.toIntOrNull()
-            val rawSemSoma = if (somaMatch != null) {
-                val attrsNorm = somaAtributos.joinToString(" ")
-                if (attrsNorm.isNotBlank() && minSoma != null) {
-                    raw.replace(Regex("\\b${Regex.escape(attrsNorm)}\\s*${Regex.escape(minSoma.toString())}\\b"), " ")
-                } else {
-                    raw
-                }
-            } else {
-                raw
-            }
-            val am = amRegex.find(rawSemSoma)?.groupValues?.getOrNull(1)?.toIntOrNull()
-            val iqEncontrado = iqRegex.find(rawSemSoma)?.groupValues?.getOrNull(1)?.toIntOrNull()
-            val iq = if (somaAtributos.contains("iq") && minSoma != null && iqEncontrado == minSoma) null else iqEncontrado
-            if (am != null || iq != null || (somaAtributos.isNotEmpty() && minSoma != null)) {
-                listOf(
-                    RegraNumerica(
-                        magiaOrigemId = magiaId,
-                        minAm = am,
-                        minIq = iq,
-                        somaAtributos = somaAtributos,
-                        minSoma = minSoma
-                    )
-                )
-            } else {
-                emptyList()
-            }
-        }
-    }
 
-    internal fun bloqueioNumericoParaMagia(
-        magiaId: String,
-        estado: ArcanoEstadoPersonagem,
-        known: Set<String>
-    ): String? {
-        val regra = regrasNumericasRelevantes(magiaId, known, estado).firstOrNull() ?: return null
-        val faltas = mutableListOf<String>()
-        regra.minAm?.let { if (estado.am < it) faltas += "AM >= $it" }
-        regra.minIq?.let { if (estado.iq < it) faltas += "IQ >= $it" }
-        if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
-            val somaAtual = regra.somaAtributos.sumOf { valorAtributo(it, estado) }
-            if (somaAtual < regra.minSoma) {
-                faltas += "${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma}"
-            }
-        }
-        if (faltas.isEmpty()) return null
-        return "Falta ${faltas.joinToString(" e ")} para ${nomeMagia(magiaId)}."
-    }
 
-    internal fun primeiroBloqueioNumerico(
-        alvoId: String,
-        cadeiaSemAlvo: List<String>,
-        estado: ArcanoEstadoPersonagem,
-        known: Set<String>
-    ): String? {
-        val alvoDeBloqueio = cadeiaSemAlvo.firstOrNull { it !in known } ?: alvoId
-        return bloqueioNumericoParaMagia(alvoDeBloqueio, estado, known)
-    }
 
-    internal fun codigoBloqueio(
-        bloqueioNumerico: String?,
-        faltantes: List<ArcanoChave>
-    ): String {
-        if (bloqueioNumerico != null) return "NUMERIC_GATE"
-        val primeiro = faltantes.firstOrNull()?.id.orEmpty()
-        return when {
-            primeiro.startsWith("chave_escolas_") -> "SCHOOL_COUNT_PENDING"
-            primeiro.startsWith("chave_") && !primeiro.startsWith("chave_alvo_") -> "CHAIN_PENDING"
-            primeiro.startsWith("chave_alvo_") -> "TARGET_PENDING"
-            else -> "UNKNOWN_BLOCK"
-        }
-    }
+
+
+
+
+
+
 
     fun limparCache() {
         cacheResultados.clear()
@@ -1410,136 +1065,6 @@ class NexusArcanoEngine(
             .toList()
     }
 
-    internal fun sha256Hex(raw: String): String {
-        val digest = MessageDigest.getInstance("SHA-256").digest(raw.toByteArray(Charsets.UTF_8))
-        return digest.joinToString(separator = "") { byte ->
-            val value = byte.toInt() and 0xff
-            val token = value.toString(16)
-            if (token.length == 1) "0$token" else token
-        }
-    }
 
-    internal fun preRequisitoSemConteudo(magiaId: String): Boolean {
-        val raw = preRaw(magiaId).trim().lowercase()
-        if (raw.isBlank()) return true
-        if (raw in setOf("-", "—", "–", "−", "?", "??", "???", "â€”", "â€“", "âˆ’")) return true
-        val norm = preNorm(magiaId)
-        return norm.isBlank()
-    }
-
-    internal fun nomeMagia(magiaId: String): String = nomeById[magiaId] ?: catalogo.nome(magiaId)
-
-    internal fun nomeMagiaNorm(magiaId: String): String = nomeNormById[magiaId] ?: normalize(nomeMagia(magiaId))
-
-    internal fun preRaw(magiaId: String): String = preRawById[magiaId] ?: catalogo.preRequisitoRaw(magiaId)
-
-    internal fun preNorm(magiaId: String): String = preNormById[magiaId] ?: normalize(preRaw(magiaId))
-
-    internal fun escolasNorm(magiaId: String): List<String> = escolasNormById[magiaId]
-        ?: catalogo.escolas(magiaId).map(::normalize).filter { it.isNotBlank() }
-
-    internal fun escolaPrincipalNorm(magiaId: String): String = escolaPrincipalNormById[magiaId]
-        ?: escolasNorm(magiaId).firstOrNull().orEmpty()
-
-    internal fun escolaBloqueadaPorPolitica(magiaId: String): Boolean {
-        val escola = escolaPrincipalNorm(magiaId)
-        return escola in escolasNuncaRecomendar
-    }
-
-    internal fun variantesSingularPlural(nomeNorm: String): Set<String> {
-        val tokens = nomeNorm
-            .split(" ")
-            .map { it.trim() }
-            .filter { it.isNotBlank() }
-            .toMutableList()
-        if (tokens.isEmpty()) return emptySet()
-        val idx = tokens.indexOfLast { it.length > 2 }.coerceAtLeast(tokens.lastIndex)
-        val tokenBase = tokens[idx]
-        val singular = singularizarTokenPt(tokenBase)
-        val plural = pluralizarTokenPt(singular)
-        val out = linkedSetOf(nomeNorm)
-
-        fun addComToken(novoToken: String) {
-            if (novoToken.isBlank()) return
-            val copia = tokens.toMutableList()
-            copia[idx] = novoToken
-            out += copia.joinToString(" ")
-        }
-
-        addComToken(singular)
-        addComToken(plural)
-        return out
-    }
-
-    internal fun singularizarTokenPt(token: String): String {
-        if (token.length <= 3) return token
-        return when {
-            token.endsWith("oes") && token.length > 4 -> token.dropLast(3) + "ao"
-            token.endsWith("aes") && token.length > 4 -> token.dropLast(3) + "ao"
-            token.endsWith("ais") && token.length > 4 -> token.dropLast(3) + "al"
-            token.endsWith("eis") && token.length > 4 -> token.dropLast(3) + "el"
-            token.endsWith("ois") && token.length > 4 -> token.dropLast(3) + "ol"
-            token.endsWith("uis") && token.length > 4 -> token.dropLast(3) + "ul"
-            token.endsWith("ns") && token.length > 3 -> token.dropLast(2) + "m"
-            token.endsWith("s") && !token.endsWith("ss") -> token.dropLast(1)
-            else -> token
-        }
-    }
-
-    internal fun pluralizarTokenPt(token: String): String {
-        if (token.isBlank()) return token
-        return when {
-            token.endsWith("s") -> token
-            token.endsWith("m") && token.length > 2 -> token.dropLast(1) + "ns"
-            token.endsWith("al") && token.length > 3 -> token.dropLast(2) + "ais"
-            token.endsWith("el") && token.length > 3 -> token.dropLast(2) + "eis"
-            token.endsWith("ol") && token.length > 3 -> token.dropLast(2) + "ois"
-            token.endsWith("ul") && token.length > 3 -> token.dropLast(2) + "uis"
-            token.endsWith("ao") && token.length > 3 -> token.dropLast(2) + "oes"
-            token.endsWith("r") || token.endsWith("z") -> token + "es"
-            else -> token + "s"
-        }
-    }
-
-    internal fun normalize(raw: String): String {
-        val semAcento = Normalizer.normalize(raw, Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-        return semAcento
-            .lowercase()
-            .replace(Regex("[^a-z0-9\\s]"), " ")
-            .replace(Regex("\\s+"), " ")
-            .trim()
-    }
-
-    internal fun pareceReferenciaDeEscola(raw: String, start: Int, endExclusive: Int): Boolean {
-        val antes = raw.substring(0, start).takeLast(24)
-        val depois = raw.substring(endExclusive).take(24)
-        val contextoAntes = normalize(antes)
-        val contextoDepois = normalize(depois)
-        val padroesAntes = listOf(
-            "magica de",
-            "magicas de",
-            "magica em",
-            "magicas em",
-            "de",
-            "em"
-        )
-        val padroesDepois = listOf(
-            "escola",
-            "escolas",
-            "outras escolas"
-        )
-        val forteAntes = padroesAntes.any { contextoAntes.endsWith(it) }
-        val forteDepois = padroesDepois.any { contextoDepois.startsWith(it) }
-        return forteAntes || forteDepois
-    }
-
-    internal fun valorAtributo(nome: String, estado: ArcanoEstadoPersonagem): Int {
-        return when (normalize(nome)) {
-            "am" -> estado.am
-            "iq" -> estado.iq
-            "dx" -> estado.dx
-            else -> 0
-        }
-    }
 }
+

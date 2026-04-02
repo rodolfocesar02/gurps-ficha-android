@@ -1,0 +1,232 @@
+package nexus.arcano
+
+import nexus.arcano.NexusArcanoEngine.AvaliacaoCandidata
+import nexus.arcano.NexusArcanoEngine.RequisitoBranch
+
+internal fun NexusArcanoEngine.sugerirProximasAcoes(
+    alvoId: String,
+    known: Set<String>,
+    estado: ArcanoEstadoPersonagem
+): List<ArcanoAcao> {
+    val cadeiaIntegral = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+    val pendentes = cadeiaIntegral.filter { it !in known }
+    val out = mutableListOf<ArcanoAcao>()
+    
+    // 1. Prioridade Máxima: Próximas magias da trilha que já podem ser aprendidas agora
+    val imediatas = pendentes.filter { magiaAprendivelAgora(it, known, estado) && !escolaBloqueadaPorPolitica(it) }
+    imediatas.take(2).forEach { id ->
+        out += ArcanoAcao(id, "Cadeia obrigatória (Caminho mais rápido)", 0)
+    }
+
+    // 2. Lookahead: Buscar a primeira meta de escolas pendente em qualquer ponto da cadeia
+    // Ordenamos por proximidade do aprendizado (melhor primeiro)
+    pendentes.forEach { magiaId ->
+        if (out.size >= 5) return@forEach
+        if (bloqueioNumericoParaMagia(magiaId, estado, known) == null) {
+            // Se a magia atual já tem escolas suficientes, não sugerimos mais para ELA, pulamos para a próxima pendente
+            if (atendeRegraEscolas(regrasEscolasRelevantes(magiaId, known, estado).firstOrNull() ?: return@forEach, known)) return@forEach
+
+            val sugestoes = sugerirParaRegraDeEscolas(
+                magiaId = magiaId,
+                known = known,
+                estado = estado,
+                idsProibidos = pendentes.toSet() + out.map { it.magiaId }.toSet()
+            )
+            if (sugestoes.isNotEmpty()) {
+                out.addAll(sugestoes)
+                if (out.size >= 4) return@forEach
+            }
+        }
+    }
+
+    return out
+        .filter { it.magiaId !in known }
+        .distinctBy { it.magiaId }
+        .sortedWith(compareBy<ArcanoAcao> { it.prioridade }.thenBy { nomeMagiaNorm(it.magiaId) })
+        .take(5)
+}
+
+internal fun NexusArcanoEngine.sugerirParaRegraDeEscolas(
+    magiaId: String,
+    known: Set<String>,
+    estado: ArcanoEstadoPersonagem,
+    idsProibidos: Set<String>
+): List<ArcanoAcao> {
+    val regras = coletarRegrasEscolas(listOf(magiaId))
+    if (regras.isEmpty()) return emptyList()
+
+    val avaliados = avaliarCandidatasParaRegraDeEscolas(
+        magiaId = magiaId,
+        known = known,
+        estado = estado,
+        idsProibidos = idsProibidos
+    ).filter { it.elegivel }
+
+    val escolasUsadasNaRodada = mutableSetOf<String>()
+    val ordenados = avaliados.sortedWith(
+        compareByDescending<AvaliacaoCandidata> { it.escolaNova }
+            .thenBy { it.custo }
+            .thenBy { tieBreakPorAlvo(magiaId, it.id) }
+            .thenBy { nomeMagiaNorm(it.id) }
+    )
+    val temEscolaNovaElegivel = ordenados.any { it.escolaNova }
+    val motivoSemEscolaNova = "Sem escola nova aprendivel agora para ${nomeMagia(magiaId)}"
+
+    val out = mutableListOf<ArcanoAcao>()
+    // Passo 1: escolas novas sem repetição.
+    ordenados.forEach { cand ->
+        if (out.size >= 3) return@forEach
+        if (!cand.escolaNova) return@forEach
+        if (cand.escola in escolasUsadasNaRodada) return@forEach
+        out += ArcanoAcao(
+            magiaId = cand.id,
+            motivo = "Abrir escola para liberar ${nomeMagia(magiaId)}",
+            prioridade = 1 + cand.custo
+        )
+        escolasUsadasNaRodada += cand.escola
+    }
+    // Passo 2: fallback robusto para completar 3 ações (mesmo com escola repetida).
+    ordenados.forEach { cand ->
+        if (out.size >= 3) return@forEach
+        if (out.any { it.magiaId == cand.id }) return@forEach
+        if (cand.escola in escolasUsadasNaRodada) return@forEach
+        out += ArcanoAcao(
+            magiaId = cand.id,
+            motivo = if (temEscolaNovaElegivel) {
+                "Fallback de progresso para ${nomeMagia(magiaId)}"
+            } else {
+                "$motivoSemEscolaNova; fallback de progresso"
+            },
+            prioridade = 10 + cand.custo
+        )
+        escolasUsadasNaRodada += cand.escola
+    }
+    // Passo 3: último recurso com repetição permitida.
+    ordenados.forEach { cand ->
+        if (out.size >= 3) return@forEach
+        if (out.any { it.magiaId == cand.id }) return@forEach
+        out += ArcanoAcao(
+            magiaId = cand.id,
+            motivo = if (temEscolaNovaElegivel) {
+                "Fallback final para ${nomeMagia(magiaId)}"
+            } else {
+                "$motivoSemEscolaNova; fallback final"
+            },
+            prioridade = 20 + cand.custo
+        )
+    }
+    return out
+}
+
+internal fun NexusArcanoEngine.avaliarCandidatasParaRegraDeEscolas(
+    magiaId: String,
+    known: Set<String>,
+    estado: ArcanoEstadoPersonagem,
+    idsProibidos: Set<String>
+): List<AvaliacaoCandidata> {
+    val regras = regrasEscolasRelevantes(magiaId, known, estado)
+    if (regras.isEmpty()) return emptyList()
+
+    val escolasConhecidas = escolasConhecidas(known)
+    val escolasProibidas = regras
+        .asSequence()
+        .filter { it.outrasEscolas }
+        .flatMap { regra -> escolasNorm(regra.magiaOrigemId).asSequence() }
+        .toSet()
+
+    fun custoDesbloqueio(candId: String): Int {
+        val depsMissing = dependenciasMinimasPendentes(candId, known)
+        val regraNum = regrasNumericasRelevantes(candId, known, estado).firstOrNull()
+        val faltaNum = if (regraNum == null) 0 else {
+            if (atendeRegraNumerica(regraNum, estado)) 0 else 1
+        }
+        val regraEsc = regrasEscolasRelevantes(candId, known, estado).firstOrNull()
+        val faltaEsc = if (regraEsc == null) 0 else {
+            val count = escolasConhecidas.size
+            (regraEsc.quantidadeEscolas - count).coerceAtLeast(0)
+        }
+        val complexidadeBase = if (preRequisitoSemConteudo(candId)) 0 else 1
+        return depsMissing * pesoDepsMissing +
+            faltaNum * pesoFaltaNumerica +
+            faltaEsc * pesoFaltaEscolas +
+            complexidadeBase * pesoComplexidadeBase
+    }
+
+    return allMagiaIds
+        .asSequence()
+        .filter { it !in known && it != magiaId && it !in idsProibidos }
+        .map { candId ->
+            val escola = escolaPrincipalNorm(candId)
+            val escolaNova = escola.isNotBlank() && escola !in escolasConhecidas
+            AvaliacaoCandidata(
+                id = candId,
+                escola = escola,
+                escolaNova = escolaNova,
+                custo = custoDesbloqueio(candId),
+                aprendivelAgora = magiaAprendivelAgora(candId, known, estado),
+                escolaBloqueadaOrigem = escola in escolasProibidas,
+                escolaBloqueadaPolitica = escola in escolasNuncaRecomendar
+            )
+        }.toList()
+}
+
+internal fun NexusArcanoEngine.escolherBranchRelevante(
+    magiaId: String,
+    known: Set<String>,
+    estado: ArcanoEstadoPersonagem
+): RequisitoBranch? {
+    val branches = requisitoBranchesPorMagia(magiaId)
+    if (branches.isEmpty()) return null
+    return branches.minWithOrNull(
+        compareBy<RequisitoBranch> { branch -> branch.dependencias.count { it !in known } }
+            .thenBy { branch -> branch.regrasEscolas.count { !atendeRegraEscolas(it, known) } }
+            .thenBy { branch -> branch.regrasNumericas.count { !atendeRegraNumerica(it, estado) } }
+            .thenBy { it.dependencias.size }
+            .thenBy { it.regrasEscolas.size }
+            .thenBy { it.regrasNumericas.size }
+            .thenBy { branchKey(it) }
+    )
+}
+
+internal fun NexusArcanoEngine.bloqueioNumericoParaMagia(
+    magiaId: String,
+    estado: ArcanoEstadoPersonagem,
+    known: Set<String>
+): String? {
+    val regra = regrasNumericasRelevantes(magiaId, known, estado).firstOrNull() ?: return null
+    val faltas = mutableListOf<String>()
+    regra.minAm?.let { if (estado.am < it) faltas += "AM >= $it" }
+    regra.minIq?.let { if (estado.iq < it) faltas += "IQ >= $it" }
+    if (regra.somaAtributos.isNotEmpty() && regra.minSoma != null) {
+        val somaAtual = regra.somaAtributos.sumOf { valorAtributo(it, estado) }
+        if (somaAtual < regra.minSoma) {
+            faltas += "${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma}"
+        }
+    }
+    if (faltas.isEmpty()) return null
+    return "Falta ${faltas.joinToString(" e ")} para ${nomeMagia(magiaId)}."
+}
+
+internal fun NexusArcanoEngine.primeiroBloqueioNumerico(
+    alvoId: String,
+    cadeiaSemAlvo: List<String>,
+    estado: ArcanoEstadoPersonagem,
+    known: Set<String>
+): String? {
+    val alvoDeBloqueio = cadeiaSemAlvo.firstOrNull { it !in known } ?: alvoId
+    return bloqueioNumericoParaMagia(alvoDeBloqueio, estado, known)
+}
+
+internal fun NexusArcanoEngine.codigoBloqueio(
+    bloqueioNumerico: String?,
+    faltantes: List<ArcanoChave>
+): String {
+    if (bloqueioNumerico != null) return "NUMERIC_GATE"
+    val primeiro = faltantes.firstOrNull()?.id.orEmpty()
+    return when {
+        primeiro.startsWith("chave_escolas_") -> "SCHOOL_COUNT_PENDING"
+        primeiro.startsWith("chave_") && !primeiro.startsWith("chave_alvo_") -> "CHAIN_PENDING"
+        primeiro.startsWith("chave_alvo_") -> "TARGET_PENDING"
+        else -> "UNKNOWN_BLOCK"
+    }
+}
