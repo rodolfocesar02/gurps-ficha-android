@@ -45,4 +45,6 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 > Lista de Lotes Realizados a partir de Abril de 2026:
 
 * [Feito] Lote 1.1: Extração de Filtros (DataRepository)   | `(Commit: 85495bb)`
-* [A Fazer] Lote 1.2: Extração de Loaders Json (DataRepository)   | `(Aguardando Início)`
+* [Feito] Lote 1.2: Extração de Loaders Json (DataRepository)   | `(Commit: 7c52e26)`
+
+> O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
