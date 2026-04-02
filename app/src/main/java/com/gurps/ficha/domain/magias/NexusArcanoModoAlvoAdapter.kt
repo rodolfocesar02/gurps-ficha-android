@@ -8,6 +8,8 @@ import nexus.arcano.ArcanoMetaProgress
 import nexus.arcano.ArcanoMetaTipo
 import nexus.arcano.ArcanoResultado
 import nexus.arcano.NexusArcanoEngine
+import nexus.arcano.diagnosticarMetasAlvo
+import nexus.arcano.diagnosticarRankingAlvo
 
 data class NexusArcanoModoAlvoSnapshot(
     val relacionadosIds: List<String>,

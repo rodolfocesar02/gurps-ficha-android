@@ -46,6 +46,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 
 * [Feito] Lote 1.2: Extração de Loaders Json (DataRepository)   | `(Commit: 7c52e26)`
 * [Feito] Lote 2.1: Separação de Peças do Nexus (Modelos)       | `(Commit: a6992f1)`
-* [A Fazer] Lote 2.2: O Cérebro A* (Planejador de Caminho)      | `(Aguardando)`
+* [Feito] Lote 2.2: O Cérebro A* (Planejador de Caminho)        | `(Commit: 113b540)`
+* [A Fazer] Lote 2.3: O Motor de Diagnóstico (Raio-X)           | `(Aguardando)`
 
 > O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
