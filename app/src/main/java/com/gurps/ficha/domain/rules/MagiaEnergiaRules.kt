@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.domain.rules
+package com.gurps.ficha.domain.rules
 
 object MagiaEnergiaRules {
 
@@ -13,5 +13,12 @@ object MagiaEnergiaRules {
     fun custoAjustadoPorNh(custoBase: Int, nhBasico: Int): Int {
         val reduzido = custoBase - reducaoPorNh(nhBasico)
         return reduzido.coerceAtLeast(0)
+    }
+
+    fun parseCusto(energiaStr: String?): Int? {
+        if (energiaStr.isNullOrBlank()) return null
+        val cleans = energiaStr.replace("ponto ", "").replace("pontos", "").trim()
+        val fixed = cleans.split(' ')[0].split('/')[0].split('-')[0].trim()
+        return fixed.toIntOrNull()
     }
 }

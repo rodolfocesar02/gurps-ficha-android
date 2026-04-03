@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-04-03T14:06:29.744664+00:00",
+  "generated_at_utc": "2026-04-03T20:22:53.832346+00:00",
   "summary": {
     "checked_files": 13,
     "json_valid_files": 13,
     "files_with_issues": 0,
-    "total_items": 2358,
+    "total_items": 2396,
     "total_missing_id": 0,
     "total_missing_nome": 0
   },
@@ -65,7 +65,7 @@
       "exists": true,
       "json_valid": true,
       "top_level": "list",
-      "items_count": 290,
+      "items_count": 328,
       "missing_id_count": 0,
       "missing_nome_count": 0,
       "duplicate_ids": [],

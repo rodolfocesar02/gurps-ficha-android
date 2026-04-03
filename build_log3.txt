@@ -1,0 +1,110 @@
+
+> Task :app:validateActiveJsonAssets
+OK: relatorio salvo em C:\Users\Rodolfo\Desktop\ficha gurps\ficha-gurps\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.json
+OK: resumo salvo em C:\Users\Rodolfo\Desktop\ficha gurps\ficha-gurps\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.md
+
+> Task :app:preBuild
+> Task :app:prePracegoDebugBuild
+> Task :app:mergePracegoDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:generatePracegoDebugBuildConfig UP-TO-DATE
+> Task :app:checkPracegoDebugAarMetadata UP-TO-DATE
+> Task :app:generatePracegoDebugResValues UP-TO-DATE
+> Task :app:mapPracegoDebugSourceSetPaths UP-TO-DATE
+> Task :app:generatePracegoDebugResources UP-TO-DATE
+> Task :app:mergePracegoDebugResources UP-TO-DATE
+> Task :app:packagePracegoDebugResources UP-TO-DATE
+> Task :app:parsePracegoDebugLocalResources UP-TO-DATE
+> Task :app:createPracegoDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksPracegoDebug UP-TO-DATE
+> Task :app:processPracegoDebugMainManifest UP-TO-DATE
+> Task :app:processPracegoDebugManifest UP-TO-DATE
+> Task :app:processPracegoDebugManifestForPackage UP-TO-DATE
+> Task :app:processPracegoDebugResources UP-TO-DATE
+> Task :app:javaPreCompilePracegoDebug UP-TO-DATE
+> Task :app:mergePracegoDebugShaders UP-TO-DATE
+> Task :app:compilePracegoDebugShaders NO-SOURCE
+> Task :app:generatePracegoDebugAssets UP-TO-DATE
+> Task :app:mergePracegoDebugAssets UP-TO-DATE
+> Task :app:compressPracegoDebugAssets UP-TO-DATE
+> Task :app:checkPracegoDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarPracegoDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexPracegoDebug UP-TO-DATE
+> Task :app:mergeLibDexPracegoDebug UP-TO-DATE
+> Task :app:mergePracegoDebugJniLibFolders UP-TO-DATE
+> Task :app:mergePracegoDebugNativeLibs NO-SOURCE
+> Task :app:stripPracegoDebugDebugSymbols NO-SOURCE
+> Task :app:validateSigningPracegoDebug UP-TO-DATE
+> Task :app:writePracegoDebugAppMetadata UP-TO-DATE
+> Task :app:writePracegoDebugSigningConfigVersions UP-TO-DATE
+> Task :app:preVisualDebugBuild
+> Task :app:mergeVisualDebugNativeDebugMetadata NO-SOURCE
+> Task :app:generateVisualDebugBuildConfig UP-TO-DATE
+> Task :app:checkVisualDebugAarMetadata UP-TO-DATE
+> Task :app:generateVisualDebugResValues UP-TO-DATE
+> Task :app:mapVisualDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateVisualDebugResources UP-TO-DATE
+> Task :app:mergeVisualDebugResources UP-TO-DATE
+> Task :app:packageVisualDebugResources UP-TO-DATE
+> Task :app:parseVisualDebugLocalResources UP-TO-DATE
+> Task :app:createVisualDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksVisualDebug UP-TO-DATE
+> Task :app:processVisualDebugMainManifest UP-TO-DATE
+> Task :app:processVisualDebugManifest UP-TO-DATE
+> Task :app:processVisualDebugManifestForPackage UP-TO-DATE
+> Task :app:processVisualDebugResources UP-TO-DATE
+> Task :app:javaPreCompileVisualDebug UP-TO-DATE
+> Task :app:mergeVisualDebugShaders UP-TO-DATE
+> Task :app:compileVisualDebugShaders NO-SOURCE
+> Task :app:generateVisualDebugAssets UP-TO-DATE
+> Task :app:mergeVisualDebugAssets UP-TO-DATE
+> Task :app:compressVisualDebugAssets UP-TO-DATE
+> Task :app:checkVisualDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarVisualDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexVisualDebug UP-TO-DATE
+> Task :app:mergeLibDexVisualDebug UP-TO-DATE
+> Task :app:mergeVisualDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeVisualDebugNativeLibs NO-SOURCE
+> Task :app:stripVisualDebugDebugSymbols NO-SOURCE
+> Task :app:validateSigningVisualDebug UP-TO-DATE
+> Task :app:writeVisualDebugAppMetadata UP-TO-DATE
+> Task :app:writeVisualDebugSigningConfigVersions UP-TO-DATE
+
+> Task :app:kspPracegoDebugKotlin FAILED
+e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabRolagem.kt:1463:2 Expecting '}'
+
+> Task :app:kspVisualDebugKotlin FAILED
+e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabRolagem.kt:1463:2 Expecting '}'
+
+FAILURE: Build completed with 2 failures.
+
+1: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:kspPracegoDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':app:kspVisualDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+==============================================================================
+
+BUILD FAILED in 2s
+55 actionable tasks: 3 executed, 52 up-to-date
