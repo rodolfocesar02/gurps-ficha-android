@@ -11,11 +11,24 @@ internal fun NexusArcanoEngine.sugerirProximasAcoes(
     val cadeiaIntegral = construirCadeiaObrigatoriaParaEstado(alvoId, known)
     val pendentes = cadeiaIntegral.filter { it !in known }
     val out = mutableListOf<ArcanoAcao>()
+    val escolasSugeridasGlobal = escolasConhecidas(known).toMutableSet()
     
     // 1. Prioridade Máxima: Próximas magias da trilha que já podem ser aprendidas agora
-    val imediatas = pendentes.filter { magiaAprendivelAgora(it, known, estado) && !escolaBloqueadaPorPolitica(it) }
+    // Blindagem V5: Filtramos magias que repetem escola se ainda houver metas de escola pendentes no futuro
+    val metasGerais = diagnosticarMetasAlvo(alvoId, estado.copy(magiasConhecidasIds = known))
+    val metaEscolaPendente = metasGerais.any { it.tipo == ArcanoMetaTipo.ESCOLAS_DISTINTAS && !it.atendida }
+    
+    val imediatas = pendentes.filter { id ->
+        if (!magiaAprendivelAgora(id, known, estado)) return@filter false
+        if (escolaBloqueadaPorPolitica(id)) return@filter false
+        if (metaEscolaPendente && escolaPrincipalNorm(id) in escolasSugeridasGlobal) {
+            // Se já conhecemos essa escola e precisamos de novas, não sugerimos agora (a menos que seja a única opção)
+            false 
+        } else true
+    }
     imediatas.take(2).forEach { id ->
         out += ArcanoAcao(id, "Cadeia obrigatória (Caminho mais rápido)", 0)
+        escolasSugeridasGlobal.addAll(escolasNorm(id))
     }
 
     // 2. Lookahead: Buscar a primeira meta de escolas pendente em qualquer ponto da cadeia
@@ -32,11 +45,21 @@ internal fun NexusArcanoEngine.sugerirProximasAcoes(
                 magiaId = magiaId,
                 known = known,
                 estado = estado,
-                idsProibidos = pendentes.toSet() + out.map { it.magiaId }.toSet()
+                idsProibidos = pendentes.toSet() + out.map { it.magiaId }.toSet(),
+                escolasProibidasGlobal = escolasSugeridasGlobal
             )
             if (sugestoes.isNotEmpty()) {
+                sugestoes.forEach { acao ->
+                    escolasSugeridasGlobal.addAll(escolasNorm(acao.magiaId))
+                }
                 out.addAll(sugestoes)
-                if (out.size >= 4) return@forEach
+                // OTIMIZAÇÃO V5: Se já encontramos sugestões para a primeira meta pendente,
+                // paramos aqui para evitar "ansiedade" e sobreposição de escolas futuras.
+                return out
+                    .filter { it.magiaId !in known }
+                    .distinctBy { it.magiaId }
+                    .sortedWith(compareBy<ArcanoAcao> { it.prioridade }.thenBy { nomeMagiaNorm(it.magiaId) })
+                    .take(5)
             }
         }
     }
@@ -52,7 +75,8 @@ internal fun NexusArcanoEngine.sugerirParaRegraDeEscolas(
     magiaId: String,
     known: Set<String>,
     estado: ArcanoEstadoPersonagem,
-    idsProibidos: Set<String>
+    idsProibidos: Set<String>,
+    escolasProibidasGlobal: Set<String>
 ): List<ArcanoAcao> {
     val regras = coletarRegrasEscolas(listOf(magiaId))
     if (regras.isEmpty()) return emptyList()
@@ -62,7 +86,7 @@ internal fun NexusArcanoEngine.sugerirParaRegraDeEscolas(
         known = known,
         estado = estado,
         idsProibidos = idsProibidos
-    ).filter { it.elegivel }
+    ).filter { it.elegivel && it.escola !in escolasProibidasGlobal }
 
     val escolasUsadasNaRodada = mutableSetOf<String>()
     val ordenados = avaliados.sortedWith(

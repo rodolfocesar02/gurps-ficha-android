@@ -9895,7 +9895,7 @@
   },
   {
     "id": "regeneracao_instantanea",
-    "nome": "Regenerao Instantnea",
+    "nome": "Regeneração Instantânea",
     "dificuldade": "MD",
     "pagina": 93,
     "classe": "Comum",
@@ -10331,7 +10331,7 @@
     "duracao": "Perm.",
     "energia": "300",
     "tempoOperacao": "2 horas",
-    "preRequisitos": "Regenerao Instantnea, Convocar Esprito",
+    "preRequisitos": "Regeneração Instantânea, Convocar Espírito",
     "descricao": "Traz o objetivo de volta à vida, desde que o corpo, ou a maior parte dele, esteja disponível. Esta também é uma mágica de Necromancia."
   },
   {
