@@ -38,7 +38,8 @@ fun RolagemConfigurarAtaqueDialog(
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 ExposedDropdownMenuBox(
                     expanded = expandedAtaque,
-                    onExpandedChange = { expandedAtaque = !expandedAtaque }
+                    onExpandedChange = { expandedAtaque = !expandedAtaque },
+                    modifier = Modifier.semantics { contentDescription = "Selecionar perícia de combate" }
                 ) {
                     OutlinedTextField(
                         value = ataqueAtual?.label ?: "Selecionar perícia",
@@ -91,7 +92,8 @@ fun RolagemConfigurarDanoDialog(
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 ExposedDropdownMenuBox(
                     expanded = expandedFonteDano,
-                    onExpandedChange = { expandedFonteDano = !expandedFonteDano }
+                    onExpandedChange = { expandedFonteDano = !expandedFonteDano },
+                    modifier = Modifier.semantics { contentDescription = "Selecionar fonte de dano ou arma" }
                 ) {
                     OutlinedTextField(
                         value = fonteDanoAtual.label,

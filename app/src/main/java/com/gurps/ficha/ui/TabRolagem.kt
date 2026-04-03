@@ -82,10 +82,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     val armas = p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA }
     val periciasCombate = p.pericias.filter { per -> 
-        PERICIAS_COMBATE.any { it.equals(per.nome, ignoreCase = true) }
+        PERICIAS_COMBATE.contains(per.definicaoId.lowercase()) || 
+        PERICIAS_COMBATE.any { it.equals(per.nome.replace(" ", "_"), ignoreCase = true) }
     }
 
-    val opcoesAtaque = remember(periciasCombate) {
+    val opcoesAtaque = remember(periciasCombate, p.vantagens) {
         val list = mutableListOf<RollMappedOption>()
         periciasCombate.forEach { per ->
             list.add(RollMappedOption(
@@ -93,6 +94,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 label = periciaLabel(per),
                 contextLabel = "Ataque ${periciaLabel(per)}",
                 target = per.calcularNivel(p)
+            ))
+        }
+
+        p.vantagens.filter { it.definicaoId == "ataque_inato" }.forEach { vant ->
+            val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
+            val periciaCorrespondente = p.pericias.find { 
+                it.definicaoId == "ataque_inato" && 
+                (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
+            } ?: p.pericias.find { it.definicaoId == "ataque_inato" }
+
+            val nh = periciaCorrespondente?.calcularNivel(p) ?: (p.destreza - 4)
+
+            list.add(RollMappedOption(
+                id = "vant_inato_${nomePers}", 
+                label = nomePers,
+                contextLabel = "Ataque $nomePers",
+                target = nh
             ))
         }
         list
@@ -103,9 +121,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
         opcoesAtaque.find { it.id == ataqueSelecionadoKey } ?: opcoesAtaque.firstOrNull()
     }
 
-    val fontesDano = remember(armas) {
+    val fontesDano = remember(armas, p.vantagens) {
         val list = mutableListOf<DamageSourceOption>()
         list.add(DamageSourceOption(id = "st_base", label = "Dano ST", contextLabel = "Dano ST", damageExpression = ""))
+        
         armas.forEach { arma ->
             if (!arma.armaDanoRaw.isNullOrBlank()) {
                 list.add(DamageSourceOption(
@@ -115,6 +134,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     damageExpression = arma.armaDanoRaw ?: ""
                 ))
             }
+        }
+
+        p.vantagens.filter { it.definicaoId == "ataque_inato" }.forEach { vant ->
+            val dice = vant.metadados?.get("dice") ?: "1"
+            val bonus = vant.metadados?.get("bonus")?.toIntOrNull() ?: 0
+            val tipo = vant.metadados?.get("tipoDano") ?: "cont"
+            val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
+            
+            val bonusStr = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
+            val expr = "${dice}d${bonusStr} $tipo"
+            
+            list.add(DamageSourceOption(
+                id = "vant_inato_${nomePers}",
+                label = nomePers,
+                contextLabel = "Dano $nomePers",
+                damageExpression = expr
+            ))
         }
         list
     }
@@ -550,7 +586,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
         RolagemConfigurarAtaqueDialog(
             opcoesAtaque = opcoesAtaque,
             ataqueAtual = ataqueAtual,
-            onAtaqueSelecionado = { id -> ataqueSelecionadoKey = id },
+            onAtaqueSelecionado = { id -> 
+                ataqueSelecionadoKey = id
+                if (id?.startsWith("vant_inato_") == true) {
+                    fonteDanoSelecionadaId = id
+                }
+                showConfigAtaqueDialog = false 
+            },
             onDismiss = { showConfigAtaqueDialog = false }
         )
     }

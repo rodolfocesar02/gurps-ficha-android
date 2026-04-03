@@ -434,9 +434,7 @@ fun AtaqueDanoQuickArea(
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                textAlign = TextAlign.Center
                             )
                             Text(
                                 "NH ${ataqueAtual?.target ?: "-"}",
@@ -458,8 +456,7 @@ fun AtaqueDanoQuickArea(
                                     "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",
                                     style = compactLabelStyle,
                                     modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }
@@ -469,13 +466,10 @@ fun AtaqueDanoQuickArea(
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Card(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
+                            .fillMaxWidth(),
                         colors = appCardColors()
                     ) {
                         Column(
@@ -488,21 +482,20 @@ fun AtaqueDanoQuickArea(
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold,
                                 modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
+                                textAlign = TextAlign.Center
                             )
                             if (fonteDanoAtual.id == "st_base") {
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                    horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     StDamageMode.entries.forEach { mode ->
                                         FilterChip(
                                             selected = stDamageMode == mode,
                                             onClick = { onUpdateStDamageMode(mode) },
-                                            label = { Text(mode.label) }
+                                            label = { Text(mode.label, style = compactLabelStyle) },
+                                            modifier = Modifier.padding(horizontal = 2.dp)
                                         )
                                     }
                                 }
@@ -522,9 +515,7 @@ fun AtaqueDanoQuickArea(
                                         },
                                     style = cardTitleStyle,
                                     color = if (danoRolavel) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    textAlign = TextAlign.Center
                                 )
                             }
                             if (!isPraCegoVariant && modAtaqueAtual != 0) {
@@ -532,8 +523,7 @@ fun AtaqueDanoQuickArea(
                                     "mod ${if (modAtaqueAtual >= 0) "+$modAtaqueAtual" else "$modAtaqueAtual"}",
                                     style = compactLabelStyle,
                                     modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    maxLines = 1
+                                    textAlign = TextAlign.Center
                                 )
                             }
                         }

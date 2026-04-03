@@ -217,13 +217,13 @@ object CharacterRules {
         val bonus = metadados["bonus"]?.toIntOrNull() ?: 0
         
         val custoPorDado = when(tipoDano.lowercase()) {
-            "cont", "queimadura", "qmd" -> 5
-            "corrosao", "cor", "fadiga", "fad" -> 10
-            "corte" -> 7
-            "perfuracao", "perf", "pa++" -> 8
-            "perfurante" -> 3
-            "perfurante_pa", "pa" -> 5
-            "perfurante_pa_plus", "pa+" -> 6
+            "cont", "contusao", "contusão", "queimadura", "queim", "qmd", "cr", "burn" -> 5
+            "corrosao", "corrosão", "cor", "fadiga", "fad", "fat" -> 10
+            "corte", "cut" -> 7
+            "perfuracao", "perfuração", "imp", "pa++", "huge_piercing", "huge piercing" -> 8
+            "perfurante-", "pi-", "piercing-", "perfurante_minus" -> 3
+            "perfurante", "pa", "pi", "piercing" -> 5
+            "perfurante+", "pa+", "pi+", "large_piercing", "large piercing" -> 6
             "toxina", "tox" -> 4
             else -> 5
         }
@@ -438,6 +438,37 @@ object CharacterRules {
                 pts == 1 -> -3
                 pts in 2..3 -> -2
                 else -> -1 + (pts - 4) / 4
+            }
+        }
+    }
+
+    /**
+     * Calcula quantos pontos (pts) são necessários para atingir um determinado nível (NH).
+     * Útil para o Mestre IA integrar fichas sugeridas de forma honesta com as regras.
+     */
+    fun calcularPontosParaNivel(dificuldade: Dificuldade, atributoValor: Int, nivelAlvo: Int): Int {
+        val bonusDesejado = nivelAlvo - atributoValor
+        
+        return when (dificuldade) {
+            Dificuldade.FACIL -> when {
+                bonusDesejado <= 0 -> 1
+                bonusDesejado == 1 -> 2
+                else -> 4 + (bonusDesejado - 2) * 4
+            }
+            Dificuldade.MEDIA -> when {
+                bonusDesejado <= -1 -> 1
+                bonusDesejado == 0 -> 2
+                else -> 4 + (bonusDesejado - 1) * 4
+            }
+            Dificuldade.DIFICIL -> when {
+                bonusDesejado <= -2 -> 1
+                bonusDesejado == -1 -> 2
+                else -> 4 + bonusDesejado * 4
+            }
+            Dificuldade.MUITO_DIFICIL -> when {
+                bonusDesejado <= -3 -> 1
+                bonusDesejado == -2 -> 2
+                else -> 4 + (bonusDesejado + 1) * 4
             }
         }
     }

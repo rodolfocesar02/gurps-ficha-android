@@ -2,6 +2,8 @@ package com.gurps.ficha.domain
 
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAResponse
+import com.gurps.ficha.domain.rules.CharacterRules
+import com.gurps.ficha.model.AtributoBase
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 /**
@@ -128,9 +130,23 @@ class MestreIAUseCase(
                 }
             }
             if (definicaoOficial != null) {
-                viewModel.adicionarPericia(definicaoOficial)
+                // BUGFIX: Agora calculamos os pontos necessários para atingir o nível NH sugerido
+                // em vez de apenas adicionar 1 ponto fixo.
+                val attrValor = when (definicaoOficial.atributoBase.uppercase()) {
+                    "ST" -> resposta.atributos.st
+                    "DX" -> resposta.atributos.dx
+                    "IQ" -> resposta.atributos.iq
+                    "HT" -> resposta.atributos.ht
+                    else -> 10
+                }
+                val pontos = CharacterRules.calcularPontosParaNivel(
+                    com.gurps.ficha.model.Dificuldade.fromSigla(definicaoOficial.dificuldadeFixa),
+                    attrValor,
+                    periciaSugerida.nivel
+                )
+                viewModel.adicionarPericia(definicaoOficial, pontosGastos = pontos)
                 periciasAceitas++
-                android.util.Log.d("MestreIA", "✅ Perícia aceita: ${definicaoOficial.nome}")
+                android.util.Log.d("MestreIA", "✅ Perícia aceita: ${definicaoOficial.nome} (NH ${periciaSugerida.nivel} = $pontos pts)")
             } else {
                 android.util.Log.w("MestreIA", "❌ Perícia rejeitada: ${periciaSugerida.nome}")
             }
@@ -195,17 +211,29 @@ class MestreIAUseCase(
             android.util.Log.d("MestreIA", "✅ Histórico preenchido")
         }
 
-        // 9. Integrar Equipamentos
+        // 9. Integrar Equipamentos (Agora com busca básica no catálogo se disponível)
         resposta.equipamentos.forEach { eq ->
             if (eq.nome.isNotBlank()) {
-                val novoEquipamento = com.gurps.ficha.model.Equipamento(
-                    nome = eq.nome,
-                    peso = eq.peso,
-                    custo = eq.custo,
-                    quantidade = eq.quantidade
-                )
-                viewModel.adicionarEquipamento(novoEquipamento)
-                android.util.Log.d("MestreIA", "✅ Equipamento: ${eq.nome}")
+                // Tenta achar no catálogo de Armas/Armaduras primeiro
+                val armaMatch = repository.armasCatalogo.firstOrNull { similaridade(it.nome, eq.nome) >= 0.85 }
+                val armaduraMatch = repository.armadurasCatalogo.firstOrNull { similaridade(it.nome, eq.nome) >= 0.85 }
+                
+                if (armaMatch != null) {
+                    viewModel.adicionarEquipamentoArma(armaMatch)
+                    android.util.Log.d("MestreIA", "✅ Arma do Catálogo: ${armaMatch.nome}")
+                } else if (armaduraMatch != null) {
+                    viewModel.adicionarEquipamentoArmadura(armaduraMatch)
+                    android.util.Log.d("MestreIA", "✅ Armadura do Catálogo: ${armaduraMatch.nome}")
+                } else {
+                    val novoEquipamento = com.gurps.ficha.model.Equipamento(
+                        nome = eq.nome,
+                        peso = eq.peso,
+                        custo = eq.custo,
+                        quantidade = eq.quantidade
+                    )
+                    viewModel.adicionarEquipamento(novoEquipamento)
+                    android.util.Log.d("MestreIA", "✅ Equipamento Geral: ${eq.nome}")
+                }
             }
         }
 

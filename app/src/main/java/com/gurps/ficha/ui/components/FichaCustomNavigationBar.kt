@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
@@ -17,12 +18,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.R
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun FichaCustomNavigationBar(
     tabs: List<String>,
@@ -80,6 +85,7 @@ fun FichaCustomNavigationBar(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RPGNavigationItem(
     label: String,
@@ -130,6 +136,9 @@ fun RPGNavigationItem(
     Box(
         modifier = Modifier
             .wrapContentSize()
+            .semantics { 
+                contentDescription = if (isSelected) "$label (Aba Selecionada)" else "Aba $label"
+            }
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -164,10 +173,10 @@ fun RPGNavigationItem(
             modifier = Modifier.size(animatedSize),
             contentAlignment = Alignment.Center
         ) {
-            // O Ícone propriamente dito
+            // O Ícone propriamente dito (agora decorativo, pois o pai já descreve)
             Image(
                 painter = painterResource(id = iconRes),
-                contentDescription = label,
+                contentDescription = null,
                 modifier = Modifier.fillMaxSize()
             )
 
@@ -184,6 +193,7 @@ fun RPGNavigationItem(
                     modifier = Modifier
                         .wrapContentSize(align = if (labelOnRight) Alignment.CenterStart else Alignment.CenterEnd, unbounded = true)
                         .offset(x = if (labelOnRight) lateralOffset else -lateralOffset, y = (-23).dp) // Baixado 10% para economizar tela
+                        .semantics { invisibleToUser() } // Evitar leitura redundante do texto
                 ) {
                     TabNameLabel(label)
                 }

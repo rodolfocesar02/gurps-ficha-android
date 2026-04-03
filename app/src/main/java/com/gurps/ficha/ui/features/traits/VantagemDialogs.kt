@@ -657,13 +657,95 @@ fun FavorConfig(currentPower: Int, currentMod: Float, isSecret: Boolean, isConta
 
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AtaqueInatoConfig(nome: String, tipoDano: String, dados: Int, bonus: Int, onChanged: (String, String, Int, Int) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(value = nome, onValueChange = { onChanged(it, tipoDano, dados, bonus) }, label = { Text("Nome do Ataque") }, modifier = Modifier.fillMaxWidth())
-        Text("Dano: ${dados}d${if(bonus>0) "+$bonus" else if(bonus<0) bonus else ""} ($tipoDano)")
-        Row {
-            TextButton(onClick = { if (dados > 1) onChanged(nome, tipoDano, dados - 1, bonus) }) { Text("-1d") }
-            TextButton(onClick = { onChanged(nome, tipoDano, dados + 1, bonus) }) { Text("+1d") }
+fun AtaqueInatoConfig(
+    nome: String,
+    tipoDano: String,
+    dados: Int,
+    bonus: Int,
+    onChanged: (String, String, Int, Int) -> Unit
+) {
+    val tiposDano = listOf(
+        "cont" to "Contusão",
+        "queimadura" to "Queimadura",
+        "corte" to "Corte",
+        "perfuracao" to "Perfuração",
+        "pa-" to "Perfurante-",
+        "pa" to "Perfurante",
+        "pa+" to "Perfurante+",
+        "pa++" to "Perfurante++",
+        "corrosao" to "Corrosão",
+        "fadiga" to "Fadiga",
+        "toxina" to "Toxina"
+    )
+
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        OutlinedTextField(
+            value = nome,
+            onValueChange = { onChanged(it, tipoDano, dados, bonus) },
+            label = { Text("Nome do Ataque (ex: Bola de Fogo)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Text("Tipo de Dano:", style = MaterialTheme.typography.labelMedium)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            tiposDano.forEach { (id, label) ->
+                FilterChip(
+                    selected = tipoDano == id,
+                    onClick = { onChanged(nome, id, dados, bonus) },
+                    label = { Text(label, fontSize = 11.sp) }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text("Dados:", style = MaterialTheme.typography.labelMedium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { if (dados > 0) onChanged(nome, tipoDano, dados - 1, bonus) }) {
+                        Text("-", style = MaterialTheme.typography.titleLarge)
+                    }
+                    Text("${dados}d", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = { if (dados < 100) onChanged(nome, tipoDano, dados + 1, bonus) }) {
+                        Icon(Icons.Default.Add, "Mais dados")
+                    }
+                }
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text("Bônus:", style = MaterialTheme.typography.labelMedium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { if (bonus > -1) onChanged(nome, tipoDano, dados, bonus - 1) }) {
+                        Text("-", style = MaterialTheme.typography.titleLarge)
+                    }
+                    val bonusStr = if (bonus >= 0) "+$bonus" else "$bonus"
+                    Text(bonusStr, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = { if (bonus < 2) onChanged(nome, tipoDano, dados, bonus + 1) }) {
+                        Icon(Icons.Default.Add, "Mais bônus")
+                    }
+                }
+            }
+        }
+
+        val bonusDisplay = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
+        ) {
+            Text(
+                "Dano: ${dados}d${bonusDisplay} ${tiposDano.find { it.first == tipoDano }?.second ?: tipoDano}",
+                modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }

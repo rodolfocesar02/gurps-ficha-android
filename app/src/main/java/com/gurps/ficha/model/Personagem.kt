@@ -821,7 +821,8 @@ val PERICIAS_COMBATE = setOf(
     "shuriken",
     "pericia_de_arma_de_fogo",
     "pericia_de_arco",
-    "pericia_de_besta"
+    "pericia_de_besta",
+    "ataque_inato"
 )
 // RACIAL SKILLS
 @Stable

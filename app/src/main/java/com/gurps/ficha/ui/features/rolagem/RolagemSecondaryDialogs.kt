@@ -101,7 +101,11 @@ fun RolagemPersonalizadaDialog(
                         colors = appCardColors()
                     ) {
                         Column(
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 8.dp)
+                                .semantics(mergeDescendants = true) { 
+                                    contentDescription = "Quantidade de dados: $dadosPersonalizadosQuantidade. Deslize para ajustar." 
+                                },
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text("Qtd", style = MaterialTheme.typography.labelSmall)
@@ -571,7 +575,8 @@ fun RolagemEditarCanalDialog(
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 ExposedDropdownMenuBox(
                     expanded = expandedCanal,
-                    onExpandedChange = { expandedCanal = !expandedCanal }
+                    onExpandedChange = { expandedCanal = !expandedCanal },
+                    modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Selecionar canal do Discord" }
                 ) {
                     val canalLabel = when {
                         canaisCarregando -> "Carregando canais..."

@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.Equipamento
 import com.gurps.ficha.model.PericiaSelecionada
@@ -245,7 +247,11 @@ private fun EsquivaConfiguradaCard(
     bonusEsquiva: Int,
     onEditar: () -> Unit
 ) {
-    AppListItemCard {
+    AppListItemCard(
+        modifier = Modifier.semantics(mergeDescendants = true) {
+            contentDescription = "Esquiva: $valorEsquiva. Base de Deslocamento mais 3, com bônus de $bonusEsquiva."
+        }
+    ) {
         Row(
             modifier = Modifier.padding(vertical = UiTokens.ItemSpacing),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -330,13 +336,18 @@ private fun EditarEsquivaBonusDialog(
 
 @Composable
 private fun AparaConfiguradaCard(
-    personagem: Personagem,
-    pericia: PericiaSelecionada,
+    personagem: com.gurps.ficha.model.Personagem,
+    pericia: com.gurps.ficha.model.PericiaSelecionada,
     valorApara: Int?,
     onEditar: () -> Unit,
     onRemover: () -> Unit
 ) {
-    AppListItemCard {
+    val nivel = pericia.calcularNivel(personagem)
+    AppListItemCard(
+        modifier = Modifier.semantics(mergeDescendants = true) {
+            contentDescription = "Apara com ${pericia.nome}: nível $valorApara. (Baseado em nível de perícia $nivel)"
+        }
+    ) {
         Row(
             modifier = Modifier.padding(vertical = UiTokens.ItemSpacing),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -345,7 +356,7 @@ private fun AparaConfiguradaCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(pericia.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                 Text(
-                    "NH ${pericia.calcularNivel(personagem)}",
+                    "NH $nivel",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -371,14 +382,19 @@ private fun AparaConfiguradaCard(
 
 @Composable
 private fun BloqueioConfiguradoCard(
-    personagem: Personagem,
-    pericia: PericiaSelecionada,
-    escudo: Equipamento,
+    personagem: com.gurps.ficha.model.Personagem,
+    pericia: com.gurps.ficha.model.PericiaSelecionada,
+    escudo: com.gurps.ficha.model.Equipamento,
     valorBloqueio: Int?,
     onEditar: () -> Unit,
     onRemover: () -> Unit
 ) {
-    AppListItemCard {
+    val nivel = pericia.calcularNivel(personagem)
+    AppListItemCard(
+        modifier = Modifier.semantics(mergeDescendants = true) {
+            contentDescription = "Bloqueio com ${pericia.nome}: nível $valorBloqueio. Usando ${escudo.nome} com bônus de defesa ${escudo.bonusDefesa}. (Baseado em nível de perícia $nivel)"
+        }
+    ) {
         Row(
             modifier = Modifier.padding(vertical = UiTokens.ItemSpacing),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -387,7 +403,7 @@ private fun BloqueioConfiguradoCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(pericia.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
                 Text(
-                    "NH ${pericia.calcularNivel(personagem)}",
+                    "NH $nivel",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

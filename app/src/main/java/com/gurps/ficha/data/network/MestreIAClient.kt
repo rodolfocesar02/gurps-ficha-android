@@ -111,8 +111,13 @@ object MestreIAClient {
             
             if (connection.responseCode in 200..299) {
                 val rawBody = readStreamSafely(connection.inputStream)
-                val responseMap = gson.fromJson(rawBody, Map::class.java)
-                responseMap["response"] as? String ?: rawBody
+                try {
+                    val responseMap = gson.fromJson(rawBody, Map::class.java)
+                    responseMap["response"] as? String ?: rawBody
+                } catch (e: Exception) {
+                    // Fallback: se não for JSON, retorna o texto bruto
+                    rawBody
+                }
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
                 "Erro do Servidor (${connection.responseCode}): $errorBody"
