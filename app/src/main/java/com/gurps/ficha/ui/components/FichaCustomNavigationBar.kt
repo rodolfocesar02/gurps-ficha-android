@@ -71,7 +71,10 @@ fun FichaCustomNavigationBar(
                     onClick = { onTabClick(index) }
                 )
                 
-                // Margem de 2px entre ícones (1dp de cada lado no padding horizontal do item)
+                // Espaçamento total de 12dp entre os itens (4 + 4 + 4)
+                if (index < tabs.size - 1) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
             }
         }
     }
@@ -132,7 +135,7 @@ fun RPGNavigationItem(
                 indication = null,
                 onClick = onClick
             )
-            .padding(horizontal = 2.dp) // Aumentado em 2px o distanciamento total entre itens
+            .padding(horizontal = 4.dp) // Parte do cálculo dos 12dp totais entre ícones
             .offset(y = bobbingOffset),
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -180,7 +183,7 @@ fun RPGNavigationItem(
                 Box(
                     modifier = Modifier
                         .wrapContentSize(align = if (labelOnRight) Alignment.CenterStart else Alignment.CenterEnd, unbounded = true)
-                        .offset(x = if (labelOnRight) lateralOffset else -lateralOffset, y = (-2).dp) // Subindo 2dp o texto
+                        .offset(x = if (labelOnRight) lateralOffset else -lateralOffset, y = (-31).dp) // Alinhado com a ponta de cima (raio do ícone)
                 ) {
                     TabNameLabel(label)
                 }
