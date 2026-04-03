@@ -38,35 +38,16 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 
 > Lista de Lotes Realizados a partir de Abril de 2026:
 
-* [Feito] Lote 1.2: Extração de Loaders Json (DataRepository)   | `(Commit: 7c52e26)`
-* [Feito] Lote 2.1: Separação de Peças do Nexus (Modelos)       | `(Commit: a6992f1)`
-* [Feito] Lote 2.2: O Cérebro A* (Planejador de Caminho)        | `(Commit: 113b540)`
-* [Feito] Lote 2.3: O Motor de Diagnóstico (Raio-X)             | `(Commit: 105949a)`
-* [Feito] Lote 2.4: Limpeza final (Helpers & Parser)            | `(Commit: aab9ff2)`
-* [Feito] Lote 3: Modularização do FichaViewModel               | `(Commit: 20414fd)`
-* [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo          | `(Commit: 0912746)`
-* [Feito] Lote 6: Modularização do TraitDialogs                 | `(Commit: 3d186e9)`
-* [Feito] Lote 6.1: Correção de Seleção e Regras Especiais      | `(Commit: 0e9aee5)`
-* [Feito] Lote 7: Refatoração da UI de Rolagem (TabRolagem.kt)  | `(Commit: 042cd2d)`
-* [Feito] Lote 7.1: Correções de Discord, UI de Ataque e Mojibake  | `(Commit: 6c3f773)`
-* [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação)     | `(Commit: 8f2a1b3)`
-
-> A `TabRolagem.kt` foi modernizada com layout vertical e espaçamento uniforme.
-> O limite de 12 pontos para perícias e magias foi removido, permitindo progressão infinita.
-> O catálogo de perícias foi sincronizado, restaurando 41 perícias (como Dissimulação e Arco) e organizado em ordem alfabética.
-
-- [x] Criar `RolagemPrimaryDialogs.kt`
-- [x] Criar `RolagemSecondaryDialogs.kt`
-- [x] Transferir Diálogos Principais (**Perícias, Técnicas, Magias, Ataque, Dano**)
-- [x] Transferir Diálogos Secundários (**Personalizada, Alma, Descrição, PV, PF, Canal, Energia**)
-- [x] Remover arquivo original `RolagemDialogs.kt`
-- [x] Validar compilação (`assembleVisualDebug`)
-- [x] Testar no emulador
-
-> O `TraitDialogs.kt` foi reduzido com sucesso de +3000 linhas para apenas 1499 linhas, finalizando a Etapa 6!
-> O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
-> O `NexusArcanoEngine.kt` foi reduzido com sucesso de +2000 linhas para apenas 938 linhas, finalizando a Etapa 2!
-> O `FichaViewModel.kt` foi reduzido com sucesso de +2000 linhas para ~915 linhas, finalizando a Etapa 3!
-> O `TabRolagem.kt` foi reduzido com sucesso de +1400 linhas para ~720 linhas, finalizando a Etapa 7!
-> Corrigido erro 400 no Discord (envio de channelId), removidas armas da seleção de Ataque e limpo todo "mojibake" de encoding.
-> O `RolagemDialogs.kt` (1300 linhas) foi fragmentado com sucesso em `RolagemPrimaryDialogs.kt` e `RolagemSecondaryDialogs.kt`.
+* [Feito] Lote 1.2: Extração de Loaders Json (DataRepository)       | `(Commit: 7c52e26)`
+* [Feito] Lote 2.1: Separação de Peças do Nexus (Modelos)           | `(Commit: a6992f1)`
+* [Feito] Lote 2.2: O Cérebro A* (Planejador de Caminho)            | `(Commit: 113b540)`
+* [Feito] Lote 2.3: O Motor de Diagnóstico (Raio-X)                 | `(Commit: 105949a)`
+* [Feito] Lote 2.4: Limpeza final (Helpers & Parser)                | `(Commit: aab9ff2)`
+* [Feito] Lote 3: Modularização do FichaViewModel                   | `(Commit: 20414fd)`
+* [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo              | `(Commit: 0912746)`
+* [Feito] Lote 6: Modularização do TraitDialogs                     | `(Commit: 3d186e9)`
+* [Feito] Lote 6.1: Correção de Seleção e Regras Especiais          | `(Commit: 0e9aee5)`
+* [Feito] Lote 7: Refatoração da UI de Rolagem (TabRolagem.kt)      | `(Commit: 042cd2d)`
+* [Feito] Lote 7.1: Correções de Discord, UI de Ataque e Mojibake   | `(Commit: 6c3f773)`
+* [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação) | `(Commit: c6a800c)`
+* [Feito] Lote 8: Atualização Estética dos Ícones das Abas          | `(Commit: pending)`
