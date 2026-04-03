@@ -163,7 +163,7 @@ fun RolagemPericiasDialog(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    "Pericias",
+                    "Perícias",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                 )
@@ -336,7 +336,7 @@ fun RolagemTecnicasDialog(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    "Tecnicas",
+                    "Técnicas",
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
                 )
@@ -555,13 +555,13 @@ fun RolagemMagiasDialog(
                                             modifier = Modifier
                                                 .weight(2f)
                                                 .clickable {
-                                                    val descricaoMagia = magia.descricao.ifBlank { "Sem descrição disponível." }
-                                                    onShowDescricao(
-                                                        RollDescricaoDialog(
-                                                            titulo = "Descrição: ${magia.nome}",
-                                                            texto = descricaoMagia
-                                                        )
-                                                    )
+                                            val descriçãoMagia = magia.descricao.ifBlank { "Sem descrição disponível." }
+                                            onShowDescricao(
+                                                RollDescricaoDialog(
+                                                    titulo = "Descrição: ${magia.nome}",
+                                                    texto = descriçãoMagia
+                                                )
+                                            )
                                                 }
                                                 .semantics {
                                                     if (isPraCegoVariant) {
@@ -618,12 +618,12 @@ fun RolagemMagiasDialog(
                                     }
                                     magia.duracao?.takeIf { it.isNotBlank() }?.let { duracao ->
                                         Text(
-                                            "Duracao: $duracao",
+                                            "Duração: $duracao",
                                             style = compactLabelStyle,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .semantics {
-                                                    if (isPraCegoVariant) contentDescription = "Duracao da magia ${magia.nome}: $duracao"
+                                                    if (isPraCegoVariant) contentDescription = "Duração da magia ${magia.nome}: $duracao"
                                                 },
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
@@ -644,12 +644,12 @@ fun RolagemMagiasDialog(
                                     }
                                     magia.tempoOperacao?.takeIf { it.isNotBlank() }?.let { tempo ->
                                         Text(
-                                            "Tempo de operacao: $tempo",
+                                            "Tempo de operação: $tempo",
                                             style = compactLabelStyle,
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .semantics {
-                                                    if (isPraCegoVariant) contentDescription = "Tempo de operacao da magia ${magia.nome}: $tempo"
+                                                    if (isPraCegoVariant) contentDescription = "Tempo de operação da magia ${magia.nome}: $tempo"
                                                 },
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis

@@ -85,16 +85,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         PERICIAS_COMBATE.any { it.equals(per.nome, ignoreCase = true) }
     }
 
-    val opcoesAtaque = remember(armas, periciasCombate) {
+    val opcoesAtaque = remember(periciasCombate) {
         val list = mutableListOf<RollMappedOption>()
-        armas.forEach { arma ->
-            list.add(RollMappedOption(
-                id = "arma_${arma.nome}",
-                label = arma.nome,
-                contextLabel = "Ataque ${arma.nome}",
-                target = null
-            ))
-        }
         periciasCombate.forEach { per ->
             list.add(RollMappedOption(
                 id = "pericia_${per.definicaoId}_${per.especializacao}",
@@ -266,7 +258,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             modifier = modEfetivo,
             target = alvoEfetivo,
             outcome = outcome,
-            margin = margin
+            margin = margin,
+            channelId = viewModel.canalDiscordSelecionadoId
         )
         registrarResultado(textoHist, payload)
     }
@@ -289,7 +282,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             modifier = parsed.modifier,
             target = null,
             outcome = "dano",
-            margin = null
+            margin = null,
+            channelId = viewModel.canalDiscordSelecionadoId
         )
         registrarResultado(textoHist, payload)
     }
@@ -312,7 +306,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             modifier = mod,
             target = null,
             outcome = "livre",
-            margin = null
+            margin = null,
+            channelId = viewModel.canalDiscordSelecionadoId
         )
         registrarResultado(textoHist, payload)
         ultimaRolagemPersonalizadaMs = System.currentTimeMillis()

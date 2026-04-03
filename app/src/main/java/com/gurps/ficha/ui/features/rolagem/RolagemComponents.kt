@@ -443,7 +443,7 @@ fun AtaqueDanoQuickArea(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .semantics {
-                                        contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"} com nÃ­vel ${ataqueAtual?.target ?: "-"}"
+                                        contentDescription = "Rolar ${ataqueAtual?.contextLabel ?: "Ataque"} com nível ${ataqueAtual?.target ?: "-"}"
                                     }
                                     .clickable(enabled = ataqueAtual?.target != null) {
                                         ataqueAtual?.let { onExecutarAtaque(it, modAtaqueAtual) }
@@ -562,7 +562,7 @@ fun MenuBotoesNavegacaoRolagem(
             modifier = Modifier.fillMaxWidth().height(52.dp)
         ) {
             Text(
-                "PerÃ­cias",
+                "Perícias",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -575,7 +575,7 @@ fun MenuBotoesNavegacaoRolagem(
                 modifier = Modifier.fillMaxWidth().height(52.dp)
             ) {
                 Text(
-                    "TÃ©cnicas",
+                    "Técnicas",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
@@ -616,7 +616,7 @@ fun HistoricoRolagemPanel(
     historico: List<HistoricoRolagemItem>,
     onReenviar: (Int, HistoricoRolagemItem) -> Unit
 ) {
-    SectionCard(title = "Historico da Sessao") {
+    SectionCard(title = "Histórico da Sessão") {
         if (historico.isEmpty()) {
             Text(
                 "Nenhuma rolagem ainda.",

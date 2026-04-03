@@ -47,7 +47,8 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo          | `(Commit: 0912746)`
 * [Feito] Lote 6: Modularização do TraitDialogs                 | `(Commit: 3d186e9)`
 * [Feito] Lote 6.1: Correção de Seleção e Regras Especiais      | `(Commit: 0e9aee5)`
-* [Feito] Lote 7: Refatoração da UI de Rolagem e Sincronização de Catálogos | `(Commit: pending)`
+* [Feito] Lote 7: Refatoração da UI de Rolagem (TabRolagem.kt)  | `(Commit: 042cd2d)`
+* [Feito] Lote 7.1: Correções de Discord, UI de Ataque e Mojibake  | `(Commit: pending)`
 
 > A `TabRolagem.kt` foi modernizada com layout vertical e espaçamento uniforme.
 > O limite de 12 pontos para perícias e magias foi removido, permitindo progressão infinita.
@@ -57,3 +58,5 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 > O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
 > O `NexusArcanoEngine.kt` foi reduzido com sucesso de +2000 linhas para apenas 938 linhas, finalizando a Etapa 2!
 > O `FichaViewModel.kt` foi reduzido com sucesso de +2000 linhas para ~915 linhas, finalizando a Etapa 3!
+> O `TabRolagem.kt` foi reduzido com sucesso de +1400 linhas para ~720 linhas, finalizando a Etapa 7!
+> Corrigido erro 400 no Discord (envio de channelId), removidas armas da seleção de Ataque e limpo todo "mojibake" de encoding.
