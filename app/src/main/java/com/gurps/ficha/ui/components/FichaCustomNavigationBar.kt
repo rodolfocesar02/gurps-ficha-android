@@ -183,7 +183,7 @@ fun RPGNavigationItem(
                 Box(
                     modifier = Modifier
                         .wrapContentSize(align = if (labelOnRight) Alignment.CenterStart else Alignment.CenterEnd, unbounded = true)
-                        .offset(x = if (labelOnRight) lateralOffset else -lateralOffset, y = (-29).dp) // Alinhado levemente abaixo da ponta (ajuste fino)
+                        .offset(x = if (labelOnRight) lateralOffset else -lateralOffset, y = (-23).dp) // Baixado 10% para economizar tela
                 ) {
                     TabNameLabel(label)
                 }
