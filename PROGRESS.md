@@ -1,6 +1,6 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 02 de Abril de 2026
+**Última Atualização:** 03 de Abril de 2026
 **Status Atual:** Em estruturação e organização para IAs.
 
 ---
@@ -20,12 +20,8 @@ Eu, como Inteligência Artificial, deixei instruções de ouro em uma pasta espe
 ## Próximos Passos (A Refatoração)
 Já mapeamos 6 partes do projeto que estão muito grandes e vamos focar nelas *uma etapa de cada vez*, apenas quando você autorizar:
 
-*   **[Pendente] Etapa 1:** Arrumar a gaveta de dados globais (o `DataRepository.kt`, que está com quase 2000 linhas). Vamos separar quem cuida de JSON, quem cuida de leitura e quem cuida de gravação.
-*   **[Pendente] Etapa 2:** Organizar o Motor da Aba Magias (o `NexusArcanoEngine.kt`), deixando o sistema de pré-requisitos em arquivos separados.
-*   **[Feito] Etapa 3:** Desafogar a Ponte de Controle (o `FichaViewModel.kt`). Ele foi transformado em um orquestrador leve que delega a lógica para componentes especializados (Trait, Skill, Magic, Equipment, Persistence, Network, Search, Attribute e Combat).
-*   **[Pendente] Etapa 4:** Simplificar a visualização do mapa (o `TabVtt.kt`).
-*   **[Pendente] Etapa 5:** Separar a calculadora da Rolagem (o `TabRolagem.kt`), deixando os bônus e penalidades fáceis de mexer em arquivos próprios.
-*   **[Pendente] Etapa 6:** Componentizar os botões e janelas de Traços (o `TraitDialogs.kt`), para que adicionar Vantagens ou Desvantagens não custe tanta lentidão visual ou peso no arquivo.
+*   **[Feito] Etapa 6:** Componentizar os botões e janelas de Traços (o `TraitDialogs.kt`), para que adicionar Vantagens ou Desvantagens não custe tanta lentidão visual ou peso no arquivo. Extraído para `VantagemDialogs`, `DesvantagemDialogs` e `TraitCommonComponents`.
+*   **[Pendente] Etapa 1:** Arrumar a gaveta de dados globais (o `DataRepository.kt`, que está com quase 2000 linhas). Vamos separar quem cuida de JSON, quem cuida de leitura e quem cuida de gravação. (Nota: Uma refatoração parcial já foi feita, falta consolidar a redução final para < 1000 linhas).
 
 ---
 
@@ -51,7 +47,9 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 2.4: Limpeza final (Helpers & Parser)            | `(Commit: aab9ff2)`
 * [Feito] Lote 3: Modularização do FichaViewModel               | `(Commit: 20414fd)`
 * [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo          | `(Commit: 0912746)`
+* [Feito] Lote 6: Modularização do TraitDialogs                | `(Commit: Em andamento)`
 
+> O `TraitDialogs.kt` foi reduzido com sucesso de +3000 linhas para apenas 1499 linhas, finalizando a Etapa 6!
 > O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
 > O `NexusArcanoEngine.kt` foi reduzido com sucesso de +2000 linhas para apenas 938 linhas, finalizando a Etapa 2!
 > O `FichaViewModel.kt` foi reduzido com sucesso de +2000 linhas para ~915 linhas, finalizando a Etapa 3!
