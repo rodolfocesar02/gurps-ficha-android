@@ -50,4 +50,5 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 7: Refatoração da UI de Rolagem (TabRolagem.kt)      | `(Commit: 042cd2d)`
 * [Feito] Lote 7.1: Correções de Discord, UI de Ataque e Mojibake   | `(Commit: 6c3f773)`
 * [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação) | `(Commit: c6a800c)`
-* [Feito] Lote 8: Atualização Estética dos Ícones das Abas          | `(Commit: pending)`
+* [Feito] Lote 8: Atualização Estética dos Ícones das Abas          | `(Commit: 1cec435)`
+* [Feito] Lote 9: Interface de Navegação RPGística (Ultra-Premium) | `(Commit: 2e8b9f1)`

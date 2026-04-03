@@ -20,9 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import com.gurps.ficha.ui.components.FichaCustomNavigationBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -257,46 +256,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
         },
         bottomBar = {
             if (!hideAppChrome) {
-                NavigationBar {
-                    tabs.forEachIndexed { index, title ->
-                        NavigationBarItem(
-                            icon = {
-                                val iconRes = when (title) {
-                                    "Geral" -> R.drawable.tab_geral
-                                    "Traços" -> R.drawable.tab_tracos
-                                    "Perícias" -> R.drawable.tab_pericias
-                                    "Técnicas" -> R.drawable.tab_tecnicas
-                                    "Magia" -> R.drawable.tab_magia
-                                    "Equip." -> R.drawable.tab_equipamentos
-                                    "Defesas" -> R.drawable.tab_defesas
-                                    "Rolagem" -> R.drawable.tab_rolagem
-                                    "VTT" -> R.drawable.tab_rolagem
-                                    else -> R.drawable.tab_geral
-                                }
-                                Icon(
-                                    painter = painterResource(id = iconRes),
-                                    contentDescription = if (isPraCegoVariant) "Aba $title" else title,
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(29.dp)
-                                )
-                            },
-                            label = if (usarNavegacaoCompacta) null else {
-                                {
-                                    Text(
-                                        title,
-                                        fontSize = 8.sp,
-                                        maxLines = 1,
-                                        softWrap = false,
-                                        style = MaterialTheme.typography.labelSmall
-                                    )
-                                }
-                            },
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
-                            alwaysShowLabel = false
-                        )
-                    }
-                }
+                FichaCustomNavigationBar(
+                    tabs = tabs,
+                    currentIndex = selectedTab,
+                    onTabClick = { index -> selectedTab = index },
+                    isPraCegoVariant = isPraCegoVariant
+                )
             }
         }
     ) { paddingValues ->
