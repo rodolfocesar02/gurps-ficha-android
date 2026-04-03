@@ -82,11 +82,13 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
         return cadeiaPend + defEscolas + alvoPend
     }
 
-    fun custoAcaoPlano(known: Set<String>, candId: String): Int {
+    fun custoAcaoPlano(known: Set<String>, candId: String, cadeiaPendente: Set<String>): Int {
         val escolasAtuais = escolasConhecidas(known)
         val escolaCand = escolaPrincipalNorm(candId)
         val escolaRepetida = escolaCand.isNotBlank() && escolaCand in escolasAtuais
-        val penalidadeEscola = if (existeMetaEscolaPendente(known) && escolaRepetida) {
+        
+        // Se a magia é OBRIGATÓRIA para o alvo, não penalizamos escola repetida
+        val penalidadeEscola = if (existeMetaEscolaPendente(known) && escolaRepetida && candId !in cadeiaPendente) {
             penalidadePlanoEscolaRepetida
         } else {
             0
@@ -115,6 +117,10 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
 
     fun candidatasExpandiveis(known: Set<String>, path: List<String>): List<CandidataExpansao> {
         val escolasAtuais = escolasConhecidas(known)
+        val cadeiaPendente = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+            .filter { it !in known }
+            .toSet()
+            
         val base = allMagiaIds.asSequence()
             .filter { it !in known }
             .filterNot { escolaBloqueadaPorPolitica(it) }
@@ -125,7 +131,7 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
                 CandidataExpansao(
                     id = id,
                     escola = escola,
-                    custoAcao = custoAcaoPlano(known, id),
+                    custoAcao = custoAcaoPlano(known, id, cadeiaPendente),
                     reducao = reducaoPendencias(known, id),
                     escolaNova = escolaNova
                 )
@@ -134,9 +140,6 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
 
         val metaEscolaPendente = existeMetaEscolaPendente(known)
         val ultimaEscola = path.lastOrNull()?.let { escolaPrincipalNorm(it) }.orEmpty()
-        val cadeiaPendente = construirCadeiaObrigatoriaParaEstado(alvoId, known)
-            .filter { it !in known }
-            .toSet()
         val semRepeticaoSequencial = if (metaEscolaPendente && ultimaEscola.isNotBlank()) {
             base.filterNot { cand ->
                 cand.escola == ultimaEscola && cand.id !in cadeiaPendente
@@ -181,10 +184,14 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
         }
         if (atual.g >= profundidadeMax) continue
 
+        val cadeiaPendente = construirCadeiaObrigatoriaParaEstado(alvoId, atual.known)
+            .filter { it !in atual.known }
+            .toSet()
+            
         val expandiveis = candidatasExpandiveis(atual.known, atual.path)
         expandiveis.forEach { cand ->
             val novoKnown = atual.known + cand.id
-            val g2 = atual.g + cand.custoAcao
+            val g2 = atual.g + custoAcaoPlano(atual.known, cand.id, cadeiaPendente)
             val sig = assinatura(novoKnown)
             val prev = bestG[sig]
             if (prev != null && prev <= g2) return@forEach

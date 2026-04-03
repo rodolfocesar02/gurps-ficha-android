@@ -50,6 +50,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 2.3: O Motor de Diagnóstico (Raio-X)             | `(Commit: 105949a)`
 * [Feito] Lote 2.4: Limpeza final (Helpers & Parser)            | `(Commit: aab9ff2)`
 * [Feito] Lote 3: Modularização do FichaViewModel               | `(Commit: 20414fd)`
+* [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo          | `(Commit: 0912746)`
 
 > O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
 > O `NexusArcanoEngine.kt` foi reduzido com sucesso de +2000 linhas para apenas 938 linhas, finalizando a Etapa 2!

@@ -139,8 +139,8 @@ class NexusArcanoEngine(
     internal val pesoFaltaEscolas = 3
     internal val pesoComplexidadeBase = 4
     internal val custoBasePlano = 1
-    internal val penalidadePlanoEscolaRepetida = 4
-    internal val penalidadePlanoSemReducaoMeta = 12
+    internal val penalidadePlanoEscolaRepetida = 1
+    internal val penalidadePlanoSemReducaoMeta = 4
     internal val escolasNuncaRecomendar = setOf("tecnologica")
     internal val maxGruposDependencias = 96
 
