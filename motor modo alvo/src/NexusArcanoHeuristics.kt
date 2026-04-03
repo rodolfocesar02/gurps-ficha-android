@@ -68,6 +68,7 @@ internal fun NexusArcanoEngine.sugerirParaRegraDeEscolas(
     val ordenados = avaliados.sortedWith(
         compareByDescending<AvaliacaoCandidata> { it.escolaNova }
             .thenBy { it.custo }
+            .thenBy { if (preRequisitoSemConteudo(it.id)) 0 else 1 } // Prioriza magias raiz
             .thenBy { tieBreakPorAlvo(magiaId, it.id) }
             .thenBy { nomeMagiaNorm(it.id) }
     )
@@ -87,36 +88,8 @@ internal fun NexusArcanoEngine.sugerirParaRegraDeEscolas(
         )
         escolasUsadasNaRodada += cand.escola
     }
-    // Passo 2: fallback robusto para completar 3 ações (mesmo com escola repetida).
-    ordenados.forEach { cand ->
-        if (out.size >= 3) return@forEach
-        if (out.any { it.magiaId == cand.id }) return@forEach
-        if (cand.escola in escolasUsadasNaRodada) return@forEach
-        out += ArcanoAcao(
-            magiaId = cand.id,
-            motivo = if (temEscolaNovaElegivel) {
-                "Fallback de progresso para ${nomeMagia(magiaId)}"
-            } else {
-                "$motivoSemEscolaNova; fallback de progresso"
-            },
-            prioridade = 10 + cand.custo
-        )
-        escolasUsadasNaRodada += cand.escola
-    }
-    // Passo 3: último recurso com repetição permitida.
-    ordenados.forEach { cand ->
-        if (out.size >= 3) return@forEach
-        if (out.any { it.magiaId == cand.id }) return@forEach
-        out += ArcanoAcao(
-            magiaId = cand.id,
-            motivo = if (temEscolaNovaElegivel) {
-                "Fallback final para ${nomeMagia(magiaId)}"
-            } else {
-                "$motivoSemEscolaNova; fallback final"
-            },
-            prioridade = 20 + cand.custo
-        )
-    }
+    // Passo 2 (Fallback Removido): Não sugerimos mais escolas repetidas como fallback
+    // para evitar que o usuário aprenda magias redundantes sem necessidade.
     return out
 }
 
