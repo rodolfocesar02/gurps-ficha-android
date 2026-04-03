@@ -702,7 +702,12 @@ fun SeletorPoderAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int
 
 @Composable
 fun SeletorGrupoAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
-    val opcoes = listOf("Único" to 1, "Grupo (2-5)" to 2, "Grupo (6-10)" to 6, "Grupo (11-20)" to 12)
+    val opcoes = listOf(
+        "Único | x1" to 1,
+        "Grupo (2-5) | x2" to 2,
+        "Grupo (6-10) | x6" to 6,
+        "Grupo (11-20) | x12" to 12
+    )
     AlertDialog(onDismissRequest = onDismiss, title = { Text("Tamanho do Grupo") }, text = {
         Column {
             opcoes.forEach { (label, mult) ->

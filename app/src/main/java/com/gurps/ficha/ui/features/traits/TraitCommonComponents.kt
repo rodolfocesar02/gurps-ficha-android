@@ -130,17 +130,29 @@ fun TraitRadioButtonOption(label: String, selected: Boolean, onClick: () -> Unit
 
 @Composable
 fun SeletorNhContatoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
-    val opcoes = listOf(12, 15, 18, 21)
+    val opcoes = listOf(
+        12 to 1,
+        15 to 2,
+        18 to 3,
+        21 to 5
+    )
     AlertDialog(onDismissRequest = onDismiss, title = { Text("NH do Contato") }, text = {
         Column {
-            opcoes.forEach { nh -> ListItem(headlineContent = { Text("NH $nh") }, modifier = Modifier.clickable { onSelect(nh) }) }
+            opcoes.forEach { (nh, custo) -> 
+                ListItem(headlineContent = { Text("NH $nh ($custo pts de base)") }, modifier = Modifier.clickable { onSelect(nh) }) 
+            }
         }
     }, confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } })
 }
 
 @Composable
 fun SeletorFrequenciaAparecimentoDialog(current: Float, onDismiss: () -> Unit, onSelect: (Float) -> Unit) {
-    val opcoes = listOf("Quase nunca (6-)" to 0.5f, "Às vezes (9-)" to 1f, "Frequentemente (12-)" to 2f, "Sempre (15-)" to 3f)
+    val opcoes = listOf(
+        "Quase nunca (6-) | x1/2" to 0.5f,
+        "Às vezes (9-) | x1" to 1f,
+        "Frequentemente (12-) | x2" to 2f,
+        "Sempre (15-) | x3" to 3f
+    )
     AlertDialog(onDismissRequest = onDismiss, title = { Text("Frequência de Aparecimento") }, text = {
         Column {
             opcoes.forEach { (label, mult) ->
@@ -153,10 +165,10 @@ fun SeletorFrequenciaAparecimentoDialog(current: Float, onDismiss: () -> Unit, o
 @Composable
 fun SeletorConfiabilidadeDialog(current: Float, onDismiss: () -> Unit, onSelect: (Float) -> Unit) {
     val opcoes = listOf(
-        "Não Confiável (Pode mentir)" to 0.5f,
-        "Geralmente Confiável" to 1f,
-        "Totalmente Confiável" to 2f,
-        "Mestre (Vantagem Especial)" to 3f
+        "Não Confiável (Pode mentir) | x1/2" to 0.5f,
+        "Geralmente Confiável | x1" to 1f,
+        "Totalmente Confiável | x2" to 2f,
+        "Mestre (Vantagem Especial) | x3" to 3f
     )
     AlertDialog(onDismissRequest = onDismiss, title = { Text("Confiabilidade") }, text = {
         Column {

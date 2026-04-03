@@ -20,9 +20,7 @@ Eu, como Inteligência Artificial, deixei instruções de ouro em uma pasta espe
 ## Próximos Passos (A Refatoração)
 Já mapeamos 6 partes do projeto que estão muito grandes e vamos focar nelas *uma etapa de cada vez*, apenas quando você autorizar:
 
-*   **[Feito] Etapa 6:** Componentizar os botões e janelas de Traços (o `TraitDialogs.kt`), para que adicionar Vantagens ou Desvantagens não custe tanta lentidão visual ou peso no arquivo. Extraído para `VantagemDialogs`, `DesvantagemDialogs` e `TraitCommonComponents`.
-*   **[Pendente] Etapa 1:** Arrumar a gaveta de dados globais (o `DataRepository.kt`, que está com quase 2000 linhas). Vamos separar quem cuida de JSON, quem cuida de leitura e quem cuida de gravação. (Nota: Uma refatoração parcial já foi feita, falta consolidar a redução final para < 1000 linhas).
-
+*   **[Feito] Etapa 6:** Componentizar os botões e janelas de Traços (o `TraitDialogs.kt`), para que adicionar Vantagens ou Desvantagens não custe tanta lentidão visual ou peso no arquivo.
 ---
 
 ## Lembretes Fixos do Seu Projeto
@@ -47,7 +45,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 2.4: Limpeza final (Helpers & Parser)            | `(Commit: aab9ff2)`
 * [Feito] Lote 3: Modularização do FichaViewModel               | `(Commit: 20414fd)`
 * [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo          | `(Commit: 0912746)`
-* [Feito] Lote 6: Modularização do TraitDialogs                | `(Commit: Em andamento)`
+* [Feito] Lote 6: Modularização do TraitDialogs                 | `(Commit: 3d186e9)`
 
 > O `TraitDialogs.kt` foi reduzido com sucesso de +3000 linhas para apenas 1499 linhas, finalizando a Etapa 6!
 > O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!
