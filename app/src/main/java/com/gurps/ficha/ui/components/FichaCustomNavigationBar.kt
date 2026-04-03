@@ -34,7 +34,7 @@ fun FichaCustomNavigationBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 12.dp, top = 8.dp),
+            .padding(bottom = 1.dp, top = 4.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(
@@ -89,9 +89,9 @@ fun RPGNavigationItem(
     val interactionSource = remember { MutableInteractionSource() }
     
     // Animação de Tamanho (Zoom 2x ao selecionar)
-    // Base: 32dp + 10% (conforme solicitado) = ~35dp. Selecionado: ~70dp.
-    val baseSize = 35.dp
-    val targetSize = if (isSelected) 70.dp else baseSize
+    // Reduzido em 10% conforme solicitado (Base: ~31dp, Selecionado: ~62dp)
+    val baseSize = 31.dp
+    val targetSize = if (isSelected) 62.dp else baseSize
     val animatedSize by animateDpAsState(
         targetValue = targetSize,
         animationSpec = spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessLow),
@@ -102,7 +102,7 @@ fun RPGNavigationItem(
     val infiniteTransition = rememberInfiniteTransition(label = "RPGAction")
     val bobbingOffset by infiniteTransition.animateValue(
         initialValue = 0.dp,
-        targetValue = if (isSelected) (-8).dp else 0.dp,
+        targetValue = if (isSelected) (-6).dp else 0.dp,
         typeConverter = Dp.VectorConverter,
         animationSpec = infiniteRepeatable(
             animation = tween(1500, easing = LinearOutSlowInEasing),
@@ -132,7 +132,7 @@ fun RPGNavigationItem(
                 indication = null,
                 onClick = onClick
             )
-            .padding(horizontal = 1.dp) // Margem de 2px total entre itens
+            .padding(horizontal = 2.dp) // Aumentado em 2px o distanciamento total entre itens
             .offset(y = bobbingOffset),
         contentAlignment = Alignment.BottomCenter
     ) {
@@ -157,39 +157,33 @@ fun RPGNavigationItem(
         }
 
         // Layout de Label + Ícone
-        // O nome aparece ACIMA dos outros ícones
-        Column(
-            horizontalAlignment = if (labelOnRight) Alignment.Start else Alignment.End,
-            verticalArrangement = Arrangement.Bottom
+        Box(
+            modifier = Modifier.size(animatedSize),
+            contentAlignment = Alignment.Center
         ) {
-            // Área da Label (Acima do ícone)
-            Box(
-                modifier = Modifier.height(30.dp),
-                contentAlignment = if (labelOnRight) Alignment.BottomStart else Alignment.BottomEnd
-            ) {
-                if (isSelected) {
-                    val labelOffset = if (labelOnRight) 75.dp else (-75).dp
-                    
-                    Row(
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .offset(x = labelOffset)
-                    ) {
-                        TabNameLabel(label)
-                    }
-                }
-            }
+            // O Ícone propriamente dito
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = label,
+                modifier = Modifier.fillMaxSize()
+            )
 
-            // Ícone
-            Box(
-                modifier = Modifier.size(animatedSize),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = iconRes),
-                    contentDescription = label,
-                    modifier = Modifier.fillMaxSize()
-                )
+            // Nome da Aba (Apenas se selecionado)
+            if (isSelected) {
+                // Cálculo Matemático p/ Fora do Ícone:
+                // O texto começa no centro (0), então precisamos pular o raio (size/2) 
+                // e mais a outra metade para sair do ícone totalmente, mais o gap.
+                // Total = animatedSize + gap.
+                val gap = 15.dp
+                val lateralOffset = animatedSize + gap
+                
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize(align = if (labelOnRight) Alignment.CenterStart else Alignment.CenterEnd, unbounded = true)
+                        .offset(x = if (labelOnRight) lateralOffset else -lateralOffset, y = (-2).dp) // Subindo 2dp o texto
+                ) {
+                    TabNameLabel(label)
+                }
             }
         }
     }
