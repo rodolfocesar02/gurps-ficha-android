@@ -11,8 +11,9 @@ internal fun NexusArcanoEngine.regrasEscolasRelevantes(
     estado: ArcanoEstadoPersonagem
 ): List<RegraEscolas> {
     val branch = escolherBranchRelevante(magiaId, known, estado)
-    if (branch != null && branch.regrasEscolas.isNotEmpty()) return branch.regrasEscolas
-    return coletarRegrasEscolas(listOf(magiaId))
+    // Se temos um ramo identificado, usamos as regras dele. 
+    // Magias sem regras de escola retornarão lista vazia aqui, o que é o correto para o ramo escolhido.
+    return branch?.regrasEscolas ?: emptyList()
 }
 
 internal fun NexusArcanoEngine.regrasNumericasRelevantes(
@@ -21,20 +22,27 @@ internal fun NexusArcanoEngine.regrasNumericasRelevantes(
     estado: ArcanoEstadoPersonagem
 ): List<RegraNumerica> {
     val branch = escolherBranchRelevante(magiaId, known, estado)
-    if (branch != null && branch.regrasNumericas.isNotEmpty()) return branch.regrasNumericas
-    return coletarRegrasNumericas(listOf(magiaId))
+    return branch?.regrasNumericas ?: emptyList()
 }
 
-internal fun NexusArcanoEngine.coletarRegrasEscolas(ids: List<String>): List<RegraEscolas> {
+internal fun NexusArcanoEngine.coletarRegrasEscolasParaEstado(
+    ids: List<String>,
+    known: Set<String>,
+    estado: ArcanoEstadoPersonagem
+): List<RegraEscolas> {
     return ids
         .distinct()
-        .flatMap { regrasEscolasPorMagia(it) }
+        .flatMap { regrasEscolasRelevantes(it, known, estado) }
 }
 
-internal fun NexusArcanoEngine.coletarRegrasNumericas(ids: List<String>): List<RegraNumerica> {
+internal fun NexusArcanoEngine.coletarRegrasNumericasParaEstado(
+    ids: List<String>,
+    known: Set<String>,
+    estado: ArcanoEstadoPersonagem
+): List<RegraNumerica> {
     return ids
         .distinct()
-        .flatMap { regrasNumericasPorMagia(it) }
+        .flatMap { regrasNumericasRelevantes(it, known, estado) }
 }
 
 internal fun NexusArcanoEngine.snapshotAlvo(alvoId: String): SnapshotAlvo {
@@ -44,10 +52,22 @@ internal fun NexusArcanoEngine.snapshotAlvo(alvoId: String): SnapshotAlvo {
         SnapshotAlvo(
             alvoId = alvoId,
             cadeiaSemAlvo = cadeiaSemAlvo,
-            regrasEscolas = coletarRegrasEscolas(cadeia),
-            regrasNumericas = coletarRegrasNumericas(cadeia)
+            regrasEscolas = coletarRegrasEscolasGlobais(cadeia),
+            regrasNumericas = coletarRegrasNumericasGlobais(cadeia)
         )
     }
+}
+
+internal fun NexusArcanoEngine.coletarRegrasEscolasGlobais(ids: List<String>): List<RegraEscolas> {
+    return ids
+        .distinct()
+        .flatMap { regrasEscolasPorMagia(it) }
+}
+
+internal fun NexusArcanoEngine.coletarRegrasNumericasGlobais(ids: List<String>): List<RegraNumerica> {
+    return ids
+        .distinct()
+        .flatMap { regrasNumericasPorMagia(it) }
 }
 
 internal fun NexusArcanoEngine.chavesEsperadasOrdem(snapshot: SnapshotAlvo): List<String> {

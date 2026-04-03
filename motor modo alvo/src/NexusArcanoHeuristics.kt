@@ -78,7 +78,7 @@ internal fun NexusArcanoEngine.sugerirParaRegraDeEscolas(
     idsProibidos: Set<String>,
     escolasProibidasGlobal: Set<String>
 ): List<ArcanoAcao> {
-    val regras = coletarRegrasEscolas(listOf(magiaId))
+    val regras = coletarRegrasEscolasParaEstado(listOf(magiaId), known, estado)
     if (regras.isEmpty()) return emptyList()
 
     val avaliados = avaliarCandidatasParaRegraDeEscolas(

@@ -102,7 +102,7 @@ fun NexusArcanoEngine.diagnosticarMetasAlvo(alvoId: String, estado: ArcanoEstado
         )
     }
 
-    coletarRegrasEscolas(cadeia).forEach { regra ->
+    coletarRegrasEscolasParaEstado(cadeia, known, estado).forEach { regra ->
         val escolasAtuais = escolasConhecidas(known).toMutableSet().also { set ->
             if (regra.outrasEscolas) {
                 set.removeAll(escolasNorm(regra.magiaOrigemId).toSet())
@@ -120,7 +120,7 @@ fun NexusArcanoEngine.diagnosticarMetasAlvo(alvoId: String, estado: ArcanoEstado
         )
     }
 
-    coletarRegrasNumericas(cadeia).forEach { regra ->
+    coletarRegrasNumericasParaEstado(cadeia, known, estado).forEach { regra ->
         regra.minAm?.let { minAm ->
             metas += ArcanoMetaProgress(
                 id = "meta_am_${regra.magiaOrigemId}_$minAm",

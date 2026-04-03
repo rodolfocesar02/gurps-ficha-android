@@ -479,8 +479,8 @@ class NexusArcanoEngine(
         val gruposDeps = dependenciasNomeadasGrupos(magiaId)
         val depsOk = if (gruposDeps.isEmpty()) true else gruposDeps.any { grupo -> grupo.all { it in known } }
         if (!depsOk) return false
-        if (!coletarRegrasEscolas(listOf(magiaId)).all { atendeRegraEscolas(it, known) }) return false
-        return coletarRegrasNumericas(listOf(magiaId)).all { atendeRegraNumerica(it, estado) }
+        if (!coletarRegrasEscolasGlobais(listOf(magiaId)).all { atendeRegraEscolas(it, known) }) return false
+        return coletarRegrasNumericasGlobais(listOf(magiaId)).all { atendeRegraNumerica(it, estado) }
     }
 
 

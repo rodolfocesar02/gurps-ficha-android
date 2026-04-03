@@ -71,7 +71,7 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
         if (magiaAprendivelAgora(alvoId, known, estado) || alvoId in known) return 0
         val cadeiaPend = construirCadeiaObrigatoriaParaEstado(alvoId, known)
             .count { it != alvoId && it !in known }
-        val defEscolas = coletarRegrasEscolas(construirCadeiaObrigatoriaParaEstado(alvoId, known))
+        val defEscolas = coletarRegrasEscolasParaEstado(construirCadeiaObrigatoriaParaEstado(alvoId, known), known, estado)
             .maxOfOrNull { regra ->
                 val set = escolasConhecidas(known).toMutableSet().also {
                     if (regra.outrasEscolas) it.removeAll(escolasNorm(regra.magiaOrigemId).toSet())
