@@ -46,6 +46,12 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 3: Modularização do FichaViewModel               | `(Commit: 20414fd)`
 * [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo          | `(Commit: 0912746)`
 * [Feito] Lote 6: Modularização do TraitDialogs                 | `(Commit: 3d186e9)`
+* [Feito] Lote 6.1: Correção de Seleção e Regras Especiais      | `(Commit: 0e9aee5)`
+* [Feito] Lote 7: Refatoração da UI de Rolagem e Sincronização de Catálogos | `(Commit: pending)`
+
+> A `TabRolagem.kt` foi modernizada com layout vertical e espaçamento uniforme.
+> O limite de 12 pontos para perícias e magias foi removido, permitindo progressão infinita.
+> O catálogo de perícias foi sincronizado, restaurando 41 perícias (como Dissimulação e Arco) e organizado em ordem alfabética.
 
 > O `TraitDialogs.kt` foi reduzido com sucesso de +3000 linhas para apenas 1499 linhas, finalizando a Etapa 6!
 > O `DataRepository.kt` foi refatorado com sucesso de 1934 linhas para em torno de ~800 linhas, finalizando a Etapa 1!

@@ -11,17 +11,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "acrobacia_aerea",
-    "nome": "Acrobacia Aérea",
-    "atributoBase": "DX",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "acrobacia_aquática",
     "nome": "Acrobacia Aquática",
     "atributoBase": "DX",
@@ -33,12 +22,18 @@
     "preDefinicoes": []
   },
   {
-    "id": "adestramento_de_animais",
-    "nome": "Adestramento de Animais",
-    "atributoBase": "IQ",
+    "id": "acrobacia_aquatica",
+    "nome": "Acrobacia Aquática",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "D"
+  },
+  {
+    "id": "acrobacia_aerea",
+    "nome": "Acrobacia Aérea",
+    "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
+    "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
@@ -55,8 +50,8 @@
     "preDefinicoes": []
   },
   {
-    "id": "administracao",
-    "nome": "Administração",
+    "id": "adestramento_de_animais",
+    "nome": "Adestramento de Animais",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -74,6 +69,17 @@
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
+    "id": "administracao",
+    "nome": "Administração",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
     "preDefinicoes": []
   },
   {
@@ -110,17 +116,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "analise_da_informacao_nt",
-    "nome": "Análise da Informação/NT",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "antropologia",
     "nome": "Antropologia",
     "atributoBase": "IQ",
@@ -129,6 +124,17 @@
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
+    "id": "analise_da_informacao_nt",
+    "nome": "Análise da Informação/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
     "preDefinicoes": []
   },
   {
@@ -143,9 +149,9 @@
     "preDefinicoes": []
   },
   {
-    "id": "arquitetura_nt",
-    "nome": "Arquitetura/NT",
-    "atributoBase": "IQ",
+    "id": "arco",
+    "nome": "Arcos",
+    "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
@@ -157,12 +163,7 @@
     "id": "arcos",
     "nome": "Arcos",
     "atributoBase": "DX",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "dificuldadeFixa": "M"
   },
   {
     "id": "arma_de_arremesso",
@@ -187,15 +188,10 @@
     "preDefinicoes": []
   },
   {
-    "id": "armeiro_nt",
-    "nome": "Armeiro/NT",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "id": "armas_de_combate_corpo_a_corpo_varias",
+    "nome": "Armas de Combate Corpo a Corpo (várias)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": null
   },
   {
     "id": "armas_de_feixe_nt",
@@ -231,6 +227,17 @@
     "preDefinicoes": []
   },
   {
+    "id": "armeiro_nt",
+    "nome": "Armeiro/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
     "id": "arqueiro_zen",
     "nome": "Arqueiro Zen",
     "atributoBase": "IQ",
@@ -248,6 +255,17 @@
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "arquitetura_nt",
+    "nome": "Arquitetura/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
@@ -275,8 +293,14 @@
     "preDefinicoes": []
   },
   {
-    "id": "arremesso",
-    "nome": "Arremesso",
+    "id": "arremedo",
+    "nome": "Arremedo (†)",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "D"
+  },
+  {
+    "id": "arremessador_de_lanca",
+    "nome": "Arremessador de Lança",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -286,8 +310,8 @@
     "preDefinicoes": []
   },
   {
-    "id": "arremessador_de_lanca",
-    "nome": "Arremessador de Lança",
+    "id": "arremesso",
+    "nome": "Arremesso",
     "atributoBase": "DX",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -352,6 +376,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "arte_ou_esporte_de_combate",
+    "nome": "Arte ou Esporte de Combate (†)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": null
+  },
+  {
     "id": "artilharia_nt",
     "nome": "Artilharia/NT",
     "atributoBase": "IQ",
@@ -371,6 +401,17 @@
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "assuntos_atuais_nt",
+    "nome": "Assuntos Atuais/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -407,17 +448,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "assuntos_atuais_nt",
-    "nome": "Assuntos Atuais/NT",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "F",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
-  },
-  {
     "id": "astronomia_nt",
     "nome": "Astronomia/NT",
     "atributoBase": "IQ",
@@ -426,6 +456,17 @@
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "ataque_inato",
+    "nome": "Ataque Inato",
+    "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -448,17 +489,6 @@
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
-    "id": "ataque_inato",
-    "nome": "Ataque Inato",
-    "atributoBase": "DX",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "F",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -616,6 +646,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "captacao",
+    "nome": "Captação",
+    "atributoBase": "PER",
+    "dificuldadeFixa": "F"
+  },
+  {
     "id": "carate",
     "nome": "Caratê",
     "atributoBase": "DX",
@@ -625,6 +661,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "carpintaria",
+    "nome": "Carpintaria",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "F"
   },
   {
     "id": "carregamento",
@@ -715,17 +757,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "ciencia_estranha",
-    "nome": "Ciência Estranha",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "MD",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "cirurgia_nt",
     "nome": "Cirurgia/NT",
     "atributoBase": "IQ",
@@ -737,12 +768,12 @@
     "preDefinicoes": []
   },
   {
-    "id": "comercio",
-    "nome": "Comércio",
+    "id": "ciencia_estranha",
+    "nome": "Ciência Estranha",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
+    "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
@@ -754,6 +785,17 @@
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "comercio",
+    "nome": "Comércio",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
@@ -792,6 +834,17 @@
     "preDefinicoes": []
   },
   {
+    "id": "conhecimento_oculto",
+    "nome": "Conhecimento Oculto",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
     "id": "conhecimento_oculto_conhecimento_demoniaco",
     "nome": "Conhecimento Oculto (Conhecimento Demoníaco)",
     "atributoBase": "IQ",
@@ -825,17 +878,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "conhecimento_oculto",
-    "nome": "Conhecimento Oculto",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
-  },
-  {
     "id": "connoisseur",
     "nome": "Connoisseur",
     "atributoBase": "IQ",
@@ -845,6 +887,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
     "preDefinicoes": []
+  },
+  {
+    "id": "conserto_de_equipamento_eletronico_nt",
+    "nome": "Conserto de Equipamento Eletrônico/NT (†)",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "conserto_de_equipamentos_eletronicos",
@@ -946,6 +994,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "costura_nt",
+    "nome": "Costura/NT",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "F"
+  },
+  {
     "id": "criminologia_nt",
     "nome": "Criminologia/NT",
     "atributoBase": "IQ",
@@ -1034,6 +1088,30 @@
     "preDefinicoes": []
   },
   {
+    "id": "deslumbrar_cativar",
+    "nome": "Deslumbrar (Cativar)",
+    "atributoBase": "VON",
+    "dificuldadeFixa": "D"
+  },
+  {
+    "id": "deslumbrar_despertar_emocao",
+    "nome": "Deslumbrar (Despertar Emoção)",
+    "atributoBase": "VON",
+    "dificuldadeFixa": "D"
+  },
+  {
+    "id": "deslumbrar_persuadir",
+    "nome": "Deslumbrar (Persuadir)",
+    "atributoBase": "VON",
+    "dificuldadeFixa": "D"
+  },
+  {
+    "id": "deslumbrar_sugerir",
+    "nome": "Deslumbrar (Sugerir)",
+    "atributoBase": "VON",
+    "dificuldadeFixa": "D"
+  },
+  {
     "id": "desviar",
     "nome": "Desviar",
     "atributoBase": "DX",
@@ -1098,6 +1176,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
     "preDefinicoes": []
+  },
+  {
+    "id": "dissimulacao",
+    "nome": "Dissimulação",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "economia",
@@ -1197,6 +1281,30 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
     "preDefinicoes": []
+  },
+  {
+    "id": "esgrima_adaga_de_esgrima",
+    "nome": "Esgrima (Adaga de Esgrima)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "M"
+  },
+  {
+    "id": "esgrima_rapieira",
+    "nome": "Esgrima (Rapieira)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "M"
+  },
+  {
+    "id": "esgrima_sabre",
+    "nome": "Esgrima (Sabre)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "M"
+  },
+  {
+    "id": "esgrima_tercado",
+    "nome": "Esgrima (Terçado)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "espada_de_duas_maos",
@@ -1331,19 +1439,14 @@
     "preDefinicoes": []
   },
   {
-    "id": "falsificacao_nt",
-    "nome": "Falsificação/NT",
+    "id": "falsificacao_de_dinheiro_nt",
+    "nome": "Falsificação de Dinheiro/NT",
     "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "dificuldadeFixa": "D"
   },
   {
-    "id": "farmaciant_herbanario",
-    "nome": "Farmácia/NT (Herbanário)",
+    "id": "falsificacao_nt",
+    "nome": "Falsificação/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -1364,6 +1467,17 @@
     "preDefinicoes": []
   },
   {
+    "id": "farmaciant_herbanario",
+    "nome": "Farmácia/NT (Herbanário)",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
     "id": "ferreiro",
     "nome": "Ferreiro",
     "atributoBase": "IQ",
@@ -1373,6 +1487,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
     "preDefinicoes": []
+  },
+  {
+    "id": "ferreiro_nt",
+    "nome": "Ferreiro/NT (†)",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "filosofia",
@@ -1397,17 +1517,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "fisica",
-    "nome": "Física",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "MD",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "fisiologia_nt",
     "nome": "Fisiologia/NT",
     "atributoBase": "IQ",
@@ -1417,6 +1526,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "forca_mental",
+    "nome": "Força Mental",
+    "atributoBase": "VON",
+    "dificuldadeFixa": "F"
   },
   {
     "id": "fotografia_nt",
@@ -1461,6 +1576,23 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "fisica",
+    "nome": "Física",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "MD",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "fisica_nt",
+    "nome": "Física/NT",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "MD"
   },
   {
     "id": "garrote",
@@ -1595,6 +1727,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "instrumentos_musicais",
+    "nome": "Instrumentos Musicais (†)",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "D"
+  },
+  {
     "id": "interrogatorio",
     "nome": "Interrogatório",
     "atributoBase": "IQ",
@@ -1637,6 +1775,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "joalheiro_nt",
+    "nome": "Joalheiro/NT",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "D"
   },
   {
     "id": "jogos_de_azar",
@@ -1705,28 +1849,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "labia",
-    "nome": "Lábia",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
-    "id": "laco",
-    "nome": "Laço",
-    "atributoBase": "DX",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "lanca",
     "nome": "Lança",
     "atributoBase": "DX",
@@ -1760,6 +1882,17 @@
     "preDefinicoes": []
   },
   {
+    "id": "laco",
+    "nome": "Laço",
+    "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
     "id": "leitura_dinamica",
     "nome": "Leitura Dinmica",
     "atributoBase": "IQ",
@@ -1769,6 +1902,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "leitura_labial",
+    "nome": "Leitura Labial",
+    "atributoBase": "PER",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "levantamento",
@@ -1837,17 +1976,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "lutar_as_cegas",
-    "nome": "Lutar às Cegas",
-    "atributoBase": "PER",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "MD",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "luta_grecoromana",
     "nome": "Luta Greco-Romana",
     "atributoBase": "DX",
@@ -1859,20 +1987,26 @@
     "preDefinicoes": []
   },
   {
-    "id": "macamachado",
-    "nome": "Maça/Machado",
+    "id": "luta_greco_romana",
+    "nome": "Luta Greco-Romana",
     "atributoBase": "DX",
+    "dificuldadeFixa": "M"
+  },
+  {
+    "id": "lutar_as_cegas",
+    "nome": "Lutar às Cegas",
+    "atributoBase": "PER",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
+    "dificuldadeFixa": "MD",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
   },
   {
-    "id": "macamachado_de_duas_maos",
-    "nome": "Maça/Machado de Duas Mãos",
-    "atributoBase": "DX",
+    "id": "labia",
+    "nome": "Lábia",
+    "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
@@ -1958,6 +2092,23 @@
     "preDefinicoes": []
   },
   {
+    "id": "marinhagem_nt",
+    "nome": "Marinhagem/NT (†)",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "F"
+  },
+  {
+    "id": "matematica_nt",
+    "nome": "Matemática/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
     "id": "matematicant_estatistica",
     "nome": "Matemática/NT (Estatística)",
     "atributoBase": "IQ",
@@ -1980,17 +2131,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "matematica_nt",
-    "nome": "Matemática/NT",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
-  },
-  {
     "id": "materiais_perigosos_nt",
     "nome": "Materiais Perigosos/NT",
     "atributoBase": "IQ",
@@ -1999,6 +2139,28 @@
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
+    "id": "macamachado",
+    "nome": "Maça/Machado",
+    "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "macamachado_de_duas_maos",
+    "nome": "Maça/Machado de Duas Mãos",
+    "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
     "preDefinicoes": []
   },
   {
@@ -2057,7 +2219,7 @@
     "preDefinicoes": []
   },
   {
-    "id": "mergulho_nt",
+    "id": "mergulho",
     "nome": "Mergulho/NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
@@ -2066,6 +2228,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "mergulho_nt",
+    "nome": "Mergulho/NT",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "metalurgia_nt",
@@ -2090,17 +2258,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "mimicapantomima",
-    "nome": "Mímica/Pantomima",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "F",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "montaria",
     "nome": "Montaria",
     "atributoBase": "DX",
@@ -2112,15 +2269,21 @@
     "preDefinicoes": []
   },
   {
-    "id": "naturalista",
-    "nome": "Naturalista",
+    "id": "mimicapantomima",
+    "nome": "Mímica/Pantomima",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
+    "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "mimica_pantomima",
+    "nome": "Mímica/Pantomima",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "F"
   },
   {
     "id": "natacao",
@@ -2129,6 +2292,17 @@
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "naturalista",
+    "nome": "Naturalista",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
@@ -2148,6 +2322,28 @@
     "id": "nocao_do_clima",
     "nome": "Noção do Clima",
     "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "observador_avancado_nt",
+    "nome": "Observador Avançado/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "observacao",
+    "nome": "Observação",
+    "atributoBase": "PER",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
     "dificuldadeFixa": "M",
@@ -2178,19 +2374,8 @@
     "preDefinicoes": []
   },
   {
-    "id": "observacao",
-    "nome": "Observação",
-    "atributoBase": "PER",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
-    "id": "observador_avancado_nt",
-    "nome": "Observador Avançado/NT",
+    "id": "operacao_de_aparelhos_eletronicosnt_vigilancia",
+    "nome": "Operao de Aparelhos Eletrnicos/NT (Vigilncia)",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2244,19 +2429,14 @@
     "preDefinicoes": []
   },
   {
-    "id": "operacao_de_aparelhos_eletronicosnt_vigilancia",
-    "nome": "Operao de Aparelhos Eletrnicos/NT (Vigilncia)",
+    "id": "operacao_de_aparelhos_eletronicos_nt",
+    "nome": "Operação de Aparelhos Eletrônicos/NT (†)",
     "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
+    "dificuldadeFixa": "M"
   },
   {
     "id": "operacao_de_computadores",
-    "nome": "Operação de Computadores",
+    "nome": "Operação de Computadores / NT",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -2264,6 +2444,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "operacao_de_computadores_nt",
+    "nome": "Operação de Computadores/NT",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "F"
   },
   {
     "id": "oratoria",
@@ -2274,6 +2460,17 @@
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "paleontologia_nt",
+    "nome": "Paleontologia/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -2296,17 +2493,6 @@
     "dificuldadeFixa": "D",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
-    "id": "paleontologia_nt",
-    "nome": "Paleontologia/NT",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -2354,6 +2540,17 @@
     "preDefinicoes": []
   },
   {
+    "id": "percepcao_do_corpo",
+    "nome": "Percepção do Corpo",
+    "atributoBase": "DX",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
     "id": "performance_em_grupo",
     "nome": "Performance em Grupo",
     "atributoBase": "IQ",
@@ -2362,6 +2559,28 @@
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "perseguicao",
+    "nome": "Perseguição",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "pericia_abrangente",
+    "nome": "Perícia Abrangente",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -2475,17 +2694,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "pericia_abrangente",
-    "nome": "Perícia Abrangente",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
-  },
-  {
     "id": "pericia_forense_nt",
     "nome": "Perícia Forense/NT",
     "atributoBase": "IQ",
@@ -2522,28 +2730,6 @@
     "dificuldadeFixa": "F",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
-    "preDefinicoes": []
-  },
-  {
-    "id": "percepcao_do_corpo",
-    "nome": "Percepção do Corpo",
-    "atributoBase": "DX",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
-    "id": "perseguicao",
-    "nome": "Perseguição",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
     "preDefinicoes": []
   },
   {
@@ -2690,6 +2876,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "propaganda_nt",
+    "nome": "Propaganda/NT",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "M"
+  },
+  {
     "id": "prospeccao_nt",
     "nome": "Prospecção/NT",
     "atributoBase": "IQ",
@@ -2712,6 +2904,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "punga",
+    "nome": "Punga",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "D"
+  },
+  {
     "id": "queda_livre",
     "nome": "Queda Livre",
     "atributoBase": "DX",
@@ -2721,6 +2919,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
     "preDefinicoes": []
+  },
+  {
+    "id": "quimica_nt",
+    "nome": "Química/NT",
+    "atributoBase": "IQ",
+    "dificuldadeFixa": "D"
   },
   {
     "id": "rapieira",
@@ -2765,6 +2969,12 @@
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
     "preDefinicoes": []
+  },
+  {
+    "id": "remo_vela_nt",
+    "nome": "Remo/Vela/NT (†)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "M"
   },
   {
     "id": "revistar",
@@ -2844,17 +3054,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "sobrevivencia_urbana",
-    "nome": "Sobrevivência Urbana",
-    "atributoBase": "PER",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "M",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "sobrevivencia",
     "nome": "Sobrevivência",
     "atributoBase": "PER",
@@ -2863,6 +3062,17 @@
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": true,
+    "preDefinicoes": []
+  },
+  {
+    "id": "sobrevivencia_urbana",
+    "nome": "Sobrevivência Urbana",
+    "atributoBase": "PER",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "M",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
     "preDefinicoes": []
   },
   {
@@ -2943,17 +3153,6 @@
     "preDefinicoes": []
   },
   {
-    "id": "tatica",
-    "nome": "Tática",
-    "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "D",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": false,
-    "preDefinicoes": []
-  },
-  {
     "id": "taumatologia",
     "nome": "Taumatologia",
     "atributoBase": "IQ",
@@ -2998,6 +3197,12 @@
     "preDefinicoes": []
   },
   {
+    "id": "trabalhos_em_couro",
+    "nome": "Trabalhos em Couro",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "F"
+  },
+  {
     "id": "traje_de_combate_nt",
     "nome": "Traje de Combate/NT",
     "atributoBase": "DX",
@@ -3039,6 +3244,17 @@
     "dificuldadeFixa": "M",
     "dificuldadeVariavel": false,
     "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "trato_social",
+    "nome": "Trato-Social",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "F",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": true,
     "preDefinicoes": []
   },
   {
@@ -3087,14 +3303,9 @@
   },
   {
     "id": "tratosocial",
-    "nome": "Trato-Social",
+    "nome": "Trato-Social†",
     "atributoBase": "IQ",
-    "atributosPossiveis": null,
-    "atributoEscolhaObrigatoria": false,
-    "dificuldadeFixa": "F",
-    "dificuldadeVariavel": false,
-    "exigeEspecializacao": true,
-    "preDefinicoes": []
+    "dificuldadeFixa": "F"
   },
   {
     "id": "tripulante_aereo_nt",
@@ -3141,8 +3352,8 @@
     "preDefinicoes": []
   },
   {
-    "id": "ventriloquismo",
-    "nome": "Ventriloquismo",
+    "id": "tatica",
+    "nome": "Tática",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,
@@ -3152,8 +3363,25 @@
     "preDefinicoes": []
   },
   {
+    "id": "utilizacao_de_traje_especial_nt",
+    "nome": "Utilização de Traje Especial/NT (†)",
+    "atributoBase": "DX",
+    "dificuldadeFixa": "M"
+  },
+  {
     "id": "veneficio_nt",
     "nome": "Venefício/NT",
+    "atributoBase": "IQ",
+    "atributosPossiveis": null,
+    "atributoEscolhaObrigatoria": false,
+    "dificuldadeFixa": "D",
+    "dificuldadeVariavel": false,
+    "exigeEspecializacao": false,
+    "preDefinicoes": []
+  },
+  {
+    "id": "ventriloquismo",
+    "nome": "Ventriloquismo",
     "atributoBase": "IQ",
     "atributosPossiveis": null,
     "atributoEscolhaObrigatoria": false,

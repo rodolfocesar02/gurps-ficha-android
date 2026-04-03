@@ -59,14 +59,29 @@ import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlin.math.abs
 
-private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-
-private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
-    val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
+private fun ajustarPontos(atual: Int, incrementar: Boolean): Int {
     return if (incrementar) {
-        PONTOS_PRESETS[(indice + 1).coerceAtMost(PONTOS_PRESETS.lastIndex)]
+        when {
+            atual < 1 -> 1
+            atual == 1 -> 2
+            atual == 2 -> 4
+            else -> {
+                // Se atual for múltiplo de 4, sobe mais 4.
+                // Se não for (manualmente digitado?), vai para o próximo múltiplo de 4.
+                val resto = atual % 4
+                if (resto == 0) atual + 4 else atual + (4 - resto)
+            }
+        }
     } else {
-        PONTOS_PRESETS[(indice - 1).coerceAtLeast(0)]
+        when {
+            atual <= 1 -> 1
+            atual == 2 -> 1
+            atual <= 4 -> 2
+            else -> {
+                val resto = atual % 4
+                if (resto == 0) (atual - 4).coerceAtLeast(4) else (atual - resto).coerceAtLeast(4)
+            }
+        }
     }
 }
 
@@ -354,7 +369,7 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                                         change.consume()
                                         dragAcumulado += dragAmount
                                         while (abs(dragAcumulado) >= passoPx) {
-                                            pontosGastos = ajustarPontosPreset(
+                                            pontosGastos = ajustarPontos(
                                                 atual = pontosGastos,
                                                 incrementar = dragAcumulado < 0f
                                             )
@@ -367,9 +382,9 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                     )
                 }
                 if (isPraCegoVariant) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = false) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da perícia" }
                         ) { Text("-") }
                         Text(
@@ -382,14 +397,14 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                                 .semantics { contentDescription = "Pontos gastos atuais da perícia: $pontosGastos" }
                         )
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = true) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da perícia" }
                         ) { Text("+") }
                     }
                 }
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    PONTOS_PRESETS.forEach { pts ->
+                Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf(1, 2, 4, 8, 12, 16, 20, 24, 32).forEach { pts ->
                         TextButton(
                             onClick = { pontosGastos = pts },
                             modifier = Modifier.padding(horizontal = 1.dp),
@@ -504,7 +519,7 @@ fun EditarPericiaDialog(
                                         change.consume()
                                         dragAcumulado += dragAmount
                                         while (abs(dragAcumulado) >= passoPx) {
-                                            pontosGastos = ajustarPontosPreset(
+                                            pontosGastos = ajustarPontos(
                                                 atual = pontosGastos,
                                                 incrementar = dragAcumulado < 0f
                                             )
@@ -517,9 +532,9 @@ fun EditarPericiaDialog(
                     )
                 }
                 if (isPraCegoVariant) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = false) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da perícia" }
                         ) { Text("-") }
                         Text(
@@ -532,14 +547,14 @@ fun EditarPericiaDialog(
                                 .semantics { contentDescription = "Pontos gastos atuais da perícia: $pontosGastos" }
                         )
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = true) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da perícia" }
                         ) { Text("+") }
                     }
                 }
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    PONTOS_PRESETS.forEach { pts ->
+                Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf(1, 2, 4, 8, 12, 16, 20, 24, 32).forEach { pts ->
                         TextButton(
                             onClick = { pontosGastos = pts },
                             modifier = Modifier.padding(horizontal = 1.dp),

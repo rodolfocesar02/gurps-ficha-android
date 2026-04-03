@@ -805,7 +805,23 @@ val PERICIAS_COMBATE = setOf(
     "sabre",
     "sai",
     "tonfa",
-    "wrestling"
+    "wrestling",
+    // Pericias de Ataque a Distancia
+    "arco",
+    "arcos",
+    "besta",
+    "zarabatana",
+    "funda",
+    "arma_de_fogo_pistola",
+    "arma_de_fogo_fuzil",
+    "arma_de_fogo_espingarda",
+    "arma_de_fogo_submetralhadora",
+    "arremesso",
+    "facas_de_arremesso",
+    "shuriken",
+    "pericia_de_arma_de_fogo",
+    "pericia_de_arco",
+    "pericia_de_besta"
 )
 // RACIAL SKILLS
 @Stable
