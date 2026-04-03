@@ -103,13 +103,15 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
         val escola: String,
         val custoAcao: Int,
         val reducao: Int,
-        val escolaNova: Boolean
+        val escolaNova: Boolean,
+        val complexidade: Int
     )
 
     fun ordenarCandidatas(cands: List<CandidataExpansao>): List<CandidataExpansao> {
         return cands.sortedWith(
             compareByDescending<CandidataExpansao> { it.reducao }
                 .thenByDescending { it.escolaNova }
+                .thenBy { it.complexidade }  // Prefere magias "raiz" (custo 0 ou baixo)
                 .thenBy { it.custoAcao }
                 .thenBy { nomeMagiaNorm(it.id) }
         )
@@ -133,22 +135,34 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
                     escola = escola,
                     custoAcao = custoAcaoPlano(known, id, cadeiaPendente),
                     reducao = reducaoPendencias(known, id),
-                    escolaNova = escolaNova
+                    escolaNova = escolaNova,
+                    complexidade = custoAproximadoDependencia(id, known, mutableSetOf())
                 )
             }
             .toList()
 
         val metaEscolaPendente = existeMetaEscolaPendente(known)
+        val filtered = base.filter { cand ->
+                // Se ainda precisamos de escolas, NÃO aceitamos repetir uma escola já conhecida
+                // a menos que a magia seja um pré-requisito obrigatório nomeado.
+                if (metaEscolaPendente && !cand.escolaNova) {
+                    cand.id in cadeiaPendente
+                } else {
+                    true
+                }
+            }
+            .toList()
+
         val ultimaEscola = path.lastOrNull()?.let { escolaPrincipalNorm(it) }.orEmpty()
         val semRepeticaoSequencial = if (metaEscolaPendente && ultimaEscola.isNotBlank()) {
-            base.filterNot { cand ->
+            filtered.filterNot { cand ->
                 cand.escola == ultimaEscola && cand.id !in cadeiaPendente
             }
         } else {
-            base
+            filtered
         }
-        val efetivas = if (semRepeticaoSequencial.isNotEmpty()) semRepeticaoSequencial else base
-        return ordenarCandidatas(efetivas).take(larguraExpansao)
+        
+        return ordenarCandidatas(semRepeticaoSequencial).take(larguraExpansao)
     }
 
     val open = java.util.PriorityQueue<Node>(compareBy<Node> { it.f }.thenBy { it.g })
