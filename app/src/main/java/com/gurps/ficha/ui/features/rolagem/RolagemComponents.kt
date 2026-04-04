@@ -654,3 +654,124 @@ fun HistoricoRolagemPanel(
         }
     }
 }
+
+@Composable
+fun DefesasAtivasQuickRollPanel(
+    defesasAtivas: List<com.gurps.ficha.viewmodel.ActiveDefense>,
+    modificadoresDefesa: MutableMap<com.gurps.ficha.viewmodel.DefenseType, Int>,
+    isPraCegoVariant: Boolean,
+    cardTitleStyle: androidx.compose.ui.text.TextStyle,
+    defenseNumberStyle: androidx.compose.ui.text.TextStyle,
+    compactLabelStyle: androidx.compose.ui.text.TextStyle,
+    innerCardVerticalPadding: androidx.compose.ui.unit.Dp,
+    onExecutarRolagem: (com.gurps.ficha.viewmodel.ActiveDefense, Int) -> Unit
+) {
+    if (defesasAtivas.isEmpty()) {
+        Text(
+            "Nenhuma defesa ativa configurada (Apara/Bloqueio). Configure na aba Combate.",
+            style = compactLabelStyle,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+        return
+    }
+
+    if (isPraCegoVariant) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            defesasAtivas.forEach { defesa ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = appCardColors()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 10.dp, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(defesa.name, style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            text = defesa.finalValue.toString(),
+                            modifier = Modifier
+                                .semantics {
+                                    contentDescription = "Rolar ${defesa.name} nível ${defesa.finalValue}"
+                                }
+                                .clickable {
+                                    onExecutarRolagem(defesa, 0)
+                                },
+                            textAlign = TextAlign.Center,
+                            style = defenseNumberStyle,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+        }
+    } else {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            defesasAtivas.forEach { defesa ->
+                val modDef = modificadoresDefesa[defesa.type] ?: 0
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = innerCardVerticalPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Text(
+                        text = defesa.name,
+                        textAlign = TextAlign.Center,
+                        style = cardTitleStyle,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Text(
+                        text = defesa.finalValue.toString(),
+                        modifier = Modifier
+                            .pointerInput(defesa.type, modDef) {
+                                var dragAcumulado = 0f
+                                val passoPx = 20f
+                                detectVerticalDragGestures(
+                                    onVerticalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragAcumulado += dragAmount
+                                        while (abs(dragAcumulado) >= passoPx) {
+                                            val atual = modificadoresDefesa[defesa.type] ?: 0
+                                            if (dragAcumulado < 0f) {
+                                                modificadoresDefesa[defesa.type] = (atual + 1).coerceIn(-20, 20)
+                                                dragAcumulado += passoPx
+                                            } else {
+                                                modificadoresDefesa[defesa.type] = (atual - 1).coerceIn(-20, 20)
+                                                dragAcumulado -= passoPx
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                            .clickable {
+                                onExecutarRolagem(defesa, modDef)
+                            },
+                        textAlign = TextAlign.Center,
+                        style = defenseNumberStyle,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    if (modDef != 0) {
+                        Text(
+                            text = "mod ${if (modDef >= 0) "+$modDef" else modDef}",
+                            style = compactLabelStyle,
+                            maxLines = 1
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

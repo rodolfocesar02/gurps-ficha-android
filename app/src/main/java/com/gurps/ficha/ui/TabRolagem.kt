@@ -69,6 +69,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     // --- State ---
     val atributosRapidos = listOf("ST", "DX", "IQ", "HT", "VON", "PER")
     val modificadoresAtributo = remember { mutableStateMapOf<String, Int>() }
+    val modificadoresDefesa = remember { mutableStateMapOf<com.gurps.ficha.viewmodel.DefenseType, Int>() }
     val modificadoresPericia = remember { mutableStateMapOf<String, Int>() }
     val modificadoresMagia = remember { mutableStateMapOf<String, Int>() }
     val modificadoresTecnica = remember { mutableStateMapOf<String, Int>() }
@@ -115,6 +116,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
         list
     }
+
+    val defesasAtivas = viewModel.defesasAtivasVisiveis
 
     var ataqueSelecionadoKey by remember { mutableStateOf<String?>(null) }
     val ataqueAtual = remember(ataqueSelecionadoKey, opcoesAtaque) {
@@ -458,6 +461,26 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     onEditPf = { showEditarPfRolagemDialog = true },
                     onAjustarPv = { inc -> ajustarPvRolagemPorSwipe(incrementar = inc) },
                     onAjustarPf = { inc -> ajustarPfRolagemPorSwipe(incrementar = inc) }
+                )
+
+                HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
+
+                DefesasAtivasQuickRollPanel(
+                    defesasAtivas = defesasAtivas,
+                    modificadoresDefesa = modificadoresDefesa,
+                    isPraCegoVariant = isPraCegoVariant,
+                    cardTitleStyle = cardTitleStyle,
+                    defenseNumberStyle = defenseNumberStyle,
+                    compactLabelStyle = compactLabelStyle,
+                    innerCardVerticalPadding = innerCardVerticalPadding,
+                    onExecutarRolagem = { defesa, mod ->
+                        executarRolagem(
+                            tipo = TipoTeste.DEFESA,
+                            contextoLabel = defesa.name,
+                            alvo = defesa.finalValue,
+                            mod = mod
+                        )
+                    }
                 )
             }
         }
