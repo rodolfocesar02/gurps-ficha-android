@@ -207,8 +207,6 @@ fun DialogMestreIA(
             TextButton(onClick = onDismiss) { Text("Fechar", fontWeight = FontWeight.Bold) }
         }
     )
-
-    }
 }
 
 
