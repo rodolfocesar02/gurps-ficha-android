@@ -316,6 +316,8 @@ fun AtaqueDanoQuickArea(
     opcoesAtaque: List<RollMappedOption>,
     ataqueAtual: RollMappedOption?,
     fonteDanoAtual: DamageSourceOption,
+    gdp: String,
+    geb: String,
     stDamageMode: StDamageMode,
     modificadorAtaque: Int,
     isPraCegoVariant: Boolean,
@@ -407,8 +409,7 @@ fun AtaqueDanoQuickArea(
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(IntrinsicSize.Min),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(rowSpacing),
                 verticalAlignment = Alignment.Top
             ) {
@@ -502,20 +503,25 @@ fun AtaqueDanoQuickArea(
                             }
                             val danos = splitDamageEntries(fonteDanoAtual.damageExpression)
                             danos.forEach { danoLinha ->
-                                val danoRolavel = parseDamageExpression(danoLinha) != null
+                                // Resolve GdP/GeB apenas para a verificação de "rolável" e execução
+                                val danoResolvido = resolveStDamage(danoLinha, gdp, geb)
+                                val danoRolavel = parseDamageExpression(danoResolvido) != null
+                                
                                 Text(
                                     danoLinha,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .semantics {
-                                            contentDescription = "Rolar dano ${fonteDanoAtual.contextLabel}: $danoLinha"
+                                            contentDescription = "Rolar dano $danoLinha"
                                         }
                                         .clickable(enabled = danoRolavel) {
-                                            onExecutarDano(danoLinha)
-                                        },
+                                            onExecutarDano(danoResolvido)
+                                        }
+                                        .padding(vertical = 2.dp),
                                     style = cardTitleStyle,
-                                    color = if (danoRolavel) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurfaceVariant,
-                                    textAlign = TextAlign.Center
+                                    color = if (danoRolavel) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                    textAlign = TextAlign.Center,
+                                    fontWeight = if (danoRolavel) FontWeight.Bold else FontWeight.Normal
                                 )
                             }
                             if (!isPraCegoVariant && modAtaqueAtual != 0) {

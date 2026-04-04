@@ -510,6 +510,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
             opcoesAtaque = opcoesAtaque,
             ataqueAtual = ataqueAtual,
             fonteDanoAtual = fonteDanoAtual,
+            gdp = p.danoGdP,
+            geb = p.danoGeB,
             stDamageMode = stDamageMode,
             modificadorAtaque = modificadorAtaque,
             isPraCegoVariant = isPraCegoVariant,

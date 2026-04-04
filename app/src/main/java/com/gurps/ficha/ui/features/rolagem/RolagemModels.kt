@@ -120,7 +120,6 @@ fun parseDamageExpression(expr: String): ParsedDamage? {
     if (diceCount <= 0) return null
     return ParsedDamage(diceCount = diceCount, modifier = modifier, suffix = suffix)
 }
-
 fun formatDamageCore(parsed: ParsedDamage): String {
     val mod = when {
         parsed.modifier > 0 -> "+${parsed.modifier}"
@@ -130,19 +129,42 @@ fun formatDamageCore(parsed: ParsedDamage): String {
     return "${parsed.diceCount}d$mod"
 }
 
+fun resolveStDamage(rawExpr: String, gdp: String, geb: String): String {
+    var result = rawExpr
+        .replace("GdP", gdp, ignoreCase = true)
+        .replace("StP", gdp, ignoreCase = true)
+        .replace("GeB", geb, ignoreCase = true)
+        .replace("StB", geb, ignoreCase = true)
+    
+    // Se a expressão resolvida começar com algo como "1d-2+5", o parseDamageExpression
+    // já lida com a soma de múltiplos modificadores no RolagemComponents ou TabRolagem.
+    return result
+}
+
 fun splitDamageEntries(expression: String): List<String> {
-    val rawParts = expression.split("/").map { it.trim() }.filter { it.isNotBlank() }
-    if (rawParts.isEmpty()) return listOf(expression.trim()).filter { it.isNotBlank() }
+    // Suporta separação por / ou ,
+    val parts = expression.split(Regex("[/,]"))
+        .map { it.trim() }
+        .filter { it.isNotBlank() }
+    
+    if (parts.isEmpty()) return emptyList()
 
     var lastCore: String? = null
-    return rawParts.map { part ->
+    return parts.map { part ->
+        // Tenta parsear como um dano completo (ex: 2d+1)
         val parsed = parseDamageExpression(part)
         if (parsed != null) {
             lastCore = formatDamageCore(parsed)
             part
         } else {
+            // Se for apenas o tipo ou bônus (ex: "corte" ou "+2"), tenta anexar ao lastCore
             val core = lastCore
-            if (core != null) "$core $part" else part
+            if (core != null && !part.contains("d", ignoreCase = true)) {
+                "$core $part"
+            } else {
+                // Se não tem lastCore ou parece ser uma expressão ST (como GeB+1), mantém original
+                part
+            }
         }
     }
 }
