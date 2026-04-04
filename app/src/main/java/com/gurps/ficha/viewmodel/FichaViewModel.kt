@@ -849,6 +849,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     var mestreIAChatHistory by mutableStateOf<List<MestreIAClient.ChatMessage>>(emptyList())
         private set
     
+    var fichaGeradaPendente by mutableStateOf<MestreIAResponse?>(null)
+        private set
+    
     private val mestreIAUseCase by lazy { MestreIAUseCase(this, dataRepository) }
 
     fun limparChatMestreIA() {
@@ -879,14 +882,24 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
             if (respostaTexto != null) {
                 mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", respostaTexto)
                 if (modo == "geracao") {
-                    MestreIAClient.extrairJsonFicha(respostaTexto)?.let { json ->
-                        mestreIAUseCase.integrarRespostaNaFicha(json)
-                        autoSaveIA()
-                        onResult(true, "Ficha gerada com sucesso!")
-                    } ?: onResult(true, "Ficha gerada, mas houve erro no formato JSON.")
+                    fichaGeradaPendente = MestreIAClient.extrairJsonFicha(respostaTexto)
+                    onResult(true, if (fichaGeradaPendente != null) "Ficha pronta para revisão!" else "Ficha gerada em texto.")
                 } else onResult(true, "Resposta recebida.")
             } else onResult(false, "Falha na conexão com Mestre Digital.")
         }
+    }
+
+    fun confirmarIntegracaoFicha() {
+        val ficha = fichaGeradaPendente ?: return
+        viewModelScope.launch {
+            mestreIAUseCase.integrarRespostaNaFicha(ficha)
+            autoSaveIA()
+            fichaGeradaPendente = null
+        }
+    }
+
+    fun descartarFichaPendente() {
+        fichaGeradaPendente = null
     }
 
     fun salvarConfiguracaoIA(baseUrl: String, apiKey: String, workspaceSlug: String) {

@@ -179,14 +179,13 @@ fun DialogMestreIA(
                         if (isAguardando) {
                             CircularProgressIndicator(modifier = Modifier.size(24.dp).padding(4.dp), strokeWidth = 2.dp)
                         } else {
-                            IconButton(
+                               IconButton(
                                 onClick = {
                                     if (prompt.isNotBlank()) {
-                                        val m = if (prompt.lowercase().contains("gere") || prompt.lowercase().contains("ficha")) "geracao" else "conversa"
                                         isAguardando = true
                                         val userPrompt = prompt
                                         prompt = ""
-                                        viewModel.conversarComMestreIA(userPrompt, m) { _, _ -> isAguardando = false }
+                                        viewModel.conversarComMestreIA(userPrompt, "conversa") { _, _ -> isAguardando = false }
                                     }
                                 },
                                 enabled = prompt.isNotBlank(),
@@ -207,6 +206,30 @@ fun DialogMestreIA(
             TextButton(onClick = onDismiss) { Text("Fechar", fontWeight = FontWeight.Bold) }
         }
     )
+
+    // Diálogo de Confirmação para Integrar Ficha Gerada
+    viewModel.fichaGeradaPendente?.let { fichaPendente ->
+        AlertDialog(
+            onDismissRequest = { viewModel.descartarFichaPendente() },
+            title = { Text("Ficha Gerada detectada") },
+            text = { 
+                Text("O Mestre IA gerou uma ficha completa para '${fichaPendente.nome}'. Deseja aplicar estes dados à sua ficha atual? Esta ação não pode ser desfeita.") 
+            },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.confirmarIntegracaoFicha() },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Aplicar Ficha")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.descartarFichaPendente() }) {
+                    Text("Descartar")
+                }
+            }
+        )
+    }
 }
 
 

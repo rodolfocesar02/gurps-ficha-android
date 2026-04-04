@@ -268,26 +268,32 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val labelComMod = if (modStr.isEmpty()) contextoLabel else "$contextoLabel ($modStr)"
         val statusText = if (alvoEfetivo != null) {
             val dist = alvoEfetivo - soma
+            val marginPart = "(por ${abs(dist)})"
             when {
-                soma <= 4 -> "Sucesso Crítico!"
-                soma >= 17 -> "Falha Crítica!"
-                dist >= 0 -> "Sucesso (por $dist)"
-                else -> "Falha (por ${abs(dist)})"
+                soma <= 4 -> "Sucesso Crítico! $marginPart"
+                soma >= 17 -> "Falha Crítica! $marginPart"
+                dist >= 0 -> "Sucesso $marginPart"
+                else -> "Falha $marginPart"
             }
         } else ""
 
         val outcome = if (alvoEfetivo != null) {
             val dist = alvoEfetivo - soma
+            val marginPart = " (por ${abs(dist)})"
             when {
-                soma <= 4 -> "crítico"
-                soma >= 17 -> "falha_crítica"
-                dist >= 0 -> "sucesso"
-                else -> "falha"
+                soma <= 4 -> "crítico$marginPart"
+                soma >= 17 -> "falha_crítica$marginPart"
+                dist >= 0 -> "sucesso$marginPart"
+                else -> "falha$marginPart"
             }
         } else "sucesso"
         val margin = if (alvoEfetivo != null) alvoEfetivo - soma else null
 
-        val textoHist = "[$timestamp] $labelComMod: $soma $statusText"
+        val textoHist = if (alvoEfetivo != null) {
+            "[$timestamp] $labelComMod (NH $alvoEfetivo): $soma $statusText"
+        } else {
+            "[$timestamp] $labelComMod: $soma $statusText"
+        }
         val payload = DiscordRollPayload(
             character = p.nome,
             testType = tipo.label,
