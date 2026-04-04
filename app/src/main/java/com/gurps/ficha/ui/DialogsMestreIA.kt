@@ -78,12 +78,18 @@ fun DialogMestreIA(
                 if (chatHistory.isEmpty()) {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                                contentDescription = null,
+                            Box(
                                 modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.Face,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(48.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
                             Spacer(Modifier.height(16.dp))
                             Text("Saudações, Viajante!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                             Text("Como posso ajudar com sua ficha hoje?", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
