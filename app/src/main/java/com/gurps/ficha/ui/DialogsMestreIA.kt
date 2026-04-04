@@ -63,9 +63,7 @@ fun DialogMestreIA(
                     Text("Mestre Digital 2.0", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
                 }
                 Row {
-                    IconButton(onClick = { showConfig = true }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Configurações", modifier = Modifier.size(20.dp))
-                    }
+
                     IconButton(onClick = { viewModel.limparChatMestreIA() }) {
                         Icon(Icons.Default.Delete, contentDescription = "Limpar", modifier = Modifier.size(20.dp))
                     }
@@ -210,69 +208,9 @@ fun DialogMestreIA(
         }
     )
 
-    if (showConfig) {
-        MestreIAConfigDialog(
-            viewModel = viewModel,
-            onDismiss = { showConfig = false }
-        )
     }
 }
 
-@Composable
-fun MestreIAConfigDialog(
-    viewModel: FichaViewModel,
-    onDismiss: () -> Unit
-) {
-    var baseUrl by remember { mutableStateOf(viewModel.iaBaseUrl) }
-    var apiKey by remember { mutableStateOf(viewModel.iaApiKey) }
-    var workspaceSlug by remember { mutableStateOf(viewModel.iaWorkspaceSlug) }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Configurações do Servidor de IA", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Base URL do AnythingLLM (ex: Railway):", style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(
-                    value = baseUrl,
-                    onValueChange = { baseUrl = it },
-                    placeholder = { Text("https://seu-mestre-ia.up.railway.app") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text("Chave de API do AnythingLLM:", style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(
-                    value = apiKey,
-                    onValueChange = { apiKey = it },
-                    placeholder = { Text("Bearer ...") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text("Nome do Workspace (Slug):", style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(
-                    value = workspaceSlug,
-                    onValueChange = { workspaceSlug = it },
-                    placeholder = { Text("meu-workspace") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    "Dica: O Workspace Slug é o nome que aparece na URL do AnythingLLM após /workspace/.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    viewModel.salvarConfiguracaoIA(baseUrl, apiKey, workspaceSlug)
-                    onDismiss()
-                }
-            ) { Text("Salvar") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
-        }
-    )
-}
 
 @Composable
 fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean) {
