@@ -79,11 +79,15 @@ data class Personagem(
     val danoGdP: String get() = CharacterRules.calcularDanoGdP(st)
     val danoGeB: String get() = CharacterRules.calcularDanoGeB(st)
 
-    val pesoTotal: Float get() = equipamentos.sumOf {
+    val pesoTotalEquipamentos: Float get() = equipamentos.sumOf {
         (it.peso * it.quantidade).toDouble()
     }.toFloat()
 
-    val nivelCarga: Int get() = CharacterRules.calcularNivelCarga(baseCarga, pesoTotal)
+    val custoTotalEquipamentos: Float get() = equipamentos.sumOf {
+        (it.custo * it.quantidade).toDouble()
+    }.toFloat()
+
+    val nivelCarga: Int get() = CharacterRules.calcularNivelCarga(baseCarga, pesoTotalEquipamentos)
 
     val deslocamentoAtual: Int get() = CharacterRules.calcularDeslocamentoAtual(
         deslocamentoBasico = deslocamentoBasico,

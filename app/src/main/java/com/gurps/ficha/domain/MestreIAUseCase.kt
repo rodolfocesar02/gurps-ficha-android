@@ -144,7 +144,7 @@ class MestreIAUseCase(
                     attrValor,
                     periciaSugerida.nivel
                 )
-                viewModel.adicionarPericia(definicaoOficial, pontosGastos = pontos)
+                viewModel.adicionarPericia(definicaoOficial, pts = pontos)
                 periciasAceitas++
                 android.util.Log.d("MestreIA", "✅ Perícia aceita: ${definicaoOficial.nome} (NH ${periciaSugerida.nivel} = $pontos pts)")
             } else {
@@ -170,7 +170,7 @@ class MestreIAUseCase(
                 }
             }
             if (definicaoOficial != null) {
-                val erro = viewModel.adicionarMagia(definicaoOficial, ignorarPreRequisito = true)
+                val erro = viewModel.adicionarMagia(definicaoOficial, ignora = true)
                 if (erro == null) {
                     magiasAceitas++
                     android.util.Log.d("MestreIA", "✅ Magia aceita: ${definicaoOficial.nome}")
@@ -238,5 +238,48 @@ class MestreIAUseCase(
         }
 
         android.util.Log.d("MestreIA", "=== Integração concluída ===")
+    }
+
+    // --- MÉTODOS PARA AÇÕES INDIVIDUAIS (USADOS PELO VIEWMODEL NAS SUGESTÕES CLICÁVEIS) ---
+
+    fun adicionarVantagem(nomeSugerido: String) {
+        val def = repository.vantagens.firstOrNull { it.nome.equals(nomeSugerido, true) }
+            ?: repository.vantagens.map { it to similaridade(it.nome, nomeSugerido) }
+                .filter { it.second >= 0.80 }
+                .maxByOrNull { it.second }?.first
+        
+        if (def != null) {
+            viewModel.adicionarVantagem(def)
+        }
+    }
+
+    fun adicionarPericia(nomeSugerido: String, nhSugerido: Int) {
+        val def = repository.pericias.firstOrNull { it.nome.equals(nomeSugerido, true) }
+            ?: repository.pericias.map { it to similaridade(it.nome, nomeSugerido) }
+                .filter { it.second >= 0.80 }
+                .maxByOrNull { it.second }?.first
+        
+        if (def != null) {
+            val attrValor = viewModel.personagem.getAtributo(def.atributoBase)
+            val pontos = CharacterRules.calcularPontosParaNivel(
+                com.gurps.ficha.model.Dificuldade.fromSigla(def.dificuldadeFixa),
+                attrValor,
+                nhSugerido
+            )
+            viewModel.adicionarPericia(def, pontos)
+        }
+    }
+
+    fun adicionarEquipamento(nomeSugerido: String) {
+        val arma = repository.armasCatalogo.firstOrNull { similaridade(it.nome, nomeSugerido) >= 0.85 }
+        val armadura = repository.armadurasCatalogo.firstOrNull { similaridade(it.nome, nomeSugerido) >= 0.85 }
+        
+        if (arma != null) {
+            viewModel.adicionarEquipamentoArma(arma)
+        } else if (armadura != null) {
+            viewModel.adicionarEquipamentoArmadura(armadura)
+        } else {
+            viewModel.adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nomeSugerido))
+        }
     }
 }

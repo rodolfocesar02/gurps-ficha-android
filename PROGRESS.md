@@ -48,5 +48,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 9: Interface de Navegação RPGística (Ultra-Premium)  | `(Commit: 9f13f43)`
 * [Feito] Lote 10: Melhoria do Ataque Inato e Skill Project Map     | `(Commit: e1c1a1b)`
 * [Feito] Lote 11: Modernização da UI do Mestre IA (ChatGPT)        | `(Commit: e42cce6)`
-* [Feito] Lote 12: Card de Dano Adaptativo e Soma de ST (GdP/GeB)   | `(Commit: 783c295)`
-* [Feito] Lote 13: Restauracao das Defesas Ativas na Aba de Rolagem | `(Commit: 5c7c369)`
+* [Feito] Lote 12: Card de dano adaptativo e soma automática de ST. | `(Commit: 783c295)`
+* [Feito] Lote 13: Fluxo de Mestre IA com confirmação e análise consultiva. | `(Commit: a104632)`
+* [Feito] Lote 14: Mestre IA Interativo (Antigravity-style) com botões de ação e tom inquisitivo. | `(Commit: a104632)`
+* [Feito] Lote 15: Restauracao das Defesas Ativas na Aba de Rolagem | `(Commit: 5c7c369)`

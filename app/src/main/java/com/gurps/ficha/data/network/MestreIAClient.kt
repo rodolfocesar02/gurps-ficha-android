@@ -73,33 +73,55 @@ object MestreIAClient {
             """.trimIndent()
             
             "analise" -> """
-                Você é um 'Mestre Consultor' de GURPS 4ª Edição. 
-                Sua tarefa é ANALISAR a ficha técnica abaixo e dar SUGESTÕES de melhoria no chat.
+                Você é um 'Mestre Consultor' de GURPS 4ª Edição experiente (Módulo Básico). 
+                Sua tarefa é ANALISAR a ficha e sugerir melhorias de forma INTERATIVA e INQUISITIVA.
                 
-                REGRAS DE ANÁLISE:
-                1. NÃO gere códigos JSON. Responda apenas em texto formatado com bullet points.
-                2. Foque em: Pontos sobrando, pré-requisitos não atendidos, sugestões de equipamentos e melhorias táticas.
-                3. Exemplo: "Notei que você tem 5 pontos. Que tal subir sua DX ou comprar a vantagem Reflexos de Combate?"
-                4. Seja técnico e encorajador.
+                PROTOCOLO DE INTERAÇÃO (IMPORTANTE):
+                1. SE o personagem não tiver profissão ou conceito claro (ex: guerreiro, ladrão, mago), NÃO dê sugestões técnicas ainda. 
+                   PERGUNTE primeiro qual o objetivo/conceito do jogador para "afunilar" as sugestões e ser útil.
+                2. SE o conceito estiver claro, ofereça sugestões que realmente façam sentido para aquele estilo de jogo.
+                
+                PROTOCOLO DE SUGESTÃO CLICÁVEL:
+                Para cada pergunta ou opção que o usuário possa responder, use o formato: [SUGESTAO: Texto da Resposta]
+                Exemplo: "Qual sua profissão? [SUGESTAO: Guerreiro] [SUGESTAO: Mago] [SUGESTAO: Ladrão]"
+                
+                PROTOCOLO DE AÇÃO TÉCNICA (Aplicação na ficha):
+                - Atributos: [ACAO: ATRIBUTO:NOME VALOR] -> Ex: [ACAO: ATRIBUTO:ST 12]
+                - Vantagens: [ACAO: VANTAGEM:NOME] -> Ex: [ACAO: VANTAGEM:Reflexos de Combate]
+                - Perícias: [ACAO: PERICIA:NOME:NIVEL] -> Ex: [ACAO: PERICIA:Espada de Uma Mão:14]
+                - Equipamento: [ACAO: EQUIPAMENTO:NOME] -> Ex: [ACAO: EQUIPAMENTO:Escudo Médio]
+                
+                REGRAS DE OURO: 
+                - NUNCA envie blocos de código JSON ou texto técnico puro no modo análise.
+                - Use APENAS as tags [SUGESTAO: ...] para opções de diálogo.
+                - Use APENAS as tags [ACAO: ...] para propor mudanças na ficha.
+                - Se você sugerir adicionar algo (ex: perícias), NÃO diga "já adicionei". Diga: "Deseja que eu adicione [nome da perícia]? [SUGESTAO: Sim, adicionar]"
+                - Mantenha o texto amigável e focado no conceito do RPG.
                 
                 FICHA ATUAL DO PERSONAGEM:
                 $contextoPersonagem
             """.trimIndent()
             
             else -> """
-                Você é o 'Mestre Digital GURPS', um assistente prestativo para jogadores e mestre.
-                Conhecimento: GURPS 4ª Edição (Módulo Básico: Personagens e Campanhas).
-                Se for perguntado sobre o personagem atual, use este contexto: $contextoPersonagem
-                Se for perguntado sobre regras, explique citando o Personagens ou Campanhas.
+                Você é o 'Mestre Digital GURPS', um assistente prestativo.
+                Pode usar [ACAO: ...] se o usuário pedir para mudar algo na ficha.
+                Pode usar [SUGESTAO: Resposta] para opções de diálogo rápidas.
+                
+                REGRAS: 
+                - NUNCA envie JSON bruto. 
+                - Use este contexto para responder dúvidas: $contextoPersonagem
             """.trimIndent()
         }
 
-        var promptFinal = if (modo == "geracao") "$systemPrompt\n\nConceito: $prompt" else prompt
+        // Construção do prompt seguindo a hierarquia Sistema -> Contexto -> Histórico -> Usuário
+        var promptFinal = "$systemPrompt\n\n"
         
         if (history.isNotEmpty()) {
             val historyText = history.joinToString("\n") { "${it.role}: ${it.text}" }
-            promptFinal = "$systemPrompt\n\nContexto anterior:\n$historyText\n\nUsuário: $prompt"
+            promptFinal += "Contexto Histórico:\n$historyText\n\n"
         }
+        
+        promptFinal += if (modo == "geracao") "Conceito: $prompt" else "Usuário: $prompt"
 
         // Corpo da requisição no formato JSON
         return try {
@@ -111,6 +133,8 @@ object MestreIAClient {
                 connectTimeout = CONNECT_TIMEOUT_MS
                 readTimeout = READ_TIMEOUT_MS
                 setRequestProperty("Content-Type", "application/json")
+                setRequestProperty("Accept", "application/json")
+                setRequestProperty("User-Agent", "GURPSFichaAndroid/1.0")
                 if (apiKey.isNotBlank() && apiKey != "EMPTY") {
                     setRequestProperty("Authorization", if (apiKey.startsWith("Bearer ")) apiKey else "Bearer $apiKey")
                 }
@@ -132,7 +156,7 @@ object MestreIAClient {
                 "Erro do Servidor (${connection.responseCode}): $errorBody"
             }
         } catch (error: Exception) {
-            "Erro de Conexão: ${error.localizedMessage}"
+            "Erro de Conexão (${error.javaClass.simpleName}): ${error.message ?: "Sem detalhes adicionais"}"
         }
     }
 

@@ -32,6 +32,9 @@ class FichaSkillDelegate(private val dataRepository: DataRepository) {
         val pericia = dataRepository.criarPericiaSelecionada(definicao, pontosGastos, especializacao, atributoEscolhido, dificuldadeEscolhida)
         return Result.success(personagem.pericias + pericia)
     }
+    fun adicionarPericiaCustomizada(personagem: Personagem, pericia: PericiaSelecionada): List<PericiaSelecionada> {
+        return personagem.pericias + pericia
+    }
 
     fun removerPericia(personagem: Personagem, index: Int): List<PericiaSelecionada> {
         val lista = personagem.pericias.toMutableList()

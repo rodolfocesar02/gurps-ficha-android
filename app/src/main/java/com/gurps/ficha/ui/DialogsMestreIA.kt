@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import androidx.compose.ui.res.painterResource
 import com.gurps.ficha.R
 import com.gurps.ficha.BuildConfig
@@ -102,7 +103,7 @@ fun DialogMestreIA(
                     ) {
                         items(chatHistory) { msg ->
                             val isUser = msg.role == "user"
-                            ChatBubble(msg, isUser)
+                            ChatBubble(msg, isUser, viewModel)
                         }
                     }
                 }
@@ -234,7 +235,7 @@ fun DialogMestreIA(
 
 
 @Composable
-fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean) {
+fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: FichaViewModel) {
     val align = if (isUser) Alignment.End else Alignment.Start
     val bubbleColor = if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
     val textColor = if (isUser) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
@@ -272,31 +273,99 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean) {
                 shadowElevation = 1.dp
             ) {
                 val fullMessage = msg.text
+                
+                // Regex para imagens, ações e sugestões
                 val imageRegex = "(https?://[^\\s]+(?:pollinations\\.ai|\\.png|\\.jpg|\\.jpeg)[^\\s]*)".toRegex()
+                val actionRegex = "\\[ACAO:[^\\]]+\\]".toRegex()
+                val suggestionRegex = "\\[SUGESTAO:[^\\]]+\\]".toRegex()
+                
                 val matchResult = imageRegex.find(fullMessage)
                 val imageUrl = matchResult?.value
-                val textContent = if (imageUrl != null) fullMessage.replace(imageUrl, "").trim() else fullMessage
+                
+                // Extrai todas as ações e sugestões
+                val actions = actionRegex.findAll(fullMessage).map { it.value }.toList()
+                val suggestions = suggestionRegex.findAll(fullMessage).map { it.value }.toList()
+                
+                // Limpa o texto das tags técnicas
+                var textContent = if (imageUrl != null) fullMessage.replace(imageUrl, "") else fullMessage
+                actions.forEach { textContent = textContent.replace(it, "") }
+                suggestions.forEach { textContent = textContent.replace(it, "") }
+                textContent = textContent.trim()
 
                 Column(modifier = Modifier.padding(12.dp)) {
                     if (textContent.isNotEmpty()) {
-                        Text(
-                            text = textContent,
-                            color = textColor,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
+                        Text(text = textContent, color = textColor, style = MaterialTheme.typography.bodyMedium)
                     }
                     
                     if (imageUrl != null) {
-                        if (textContent.isNotEmpty()) Spacer(Modifier.height(8.dp))
-                        AsyncImage(
+                        Spacer(Modifier.height(8.dp))
+                        SubcomposeAsyncImage(
                             model = imageUrl,
-                            contentDescription = "Imagem da IA",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(max = 300.dp)
-                                .clip(RoundedCornerShape(12.dp)),
-                            contentScale = ContentScale.Fit
+                            contentDescription = "IA Gen",
+                            modifier = Modifier.fillMaxWidth().heightIn(max = 250.dp).clip(RoundedCornerShape(12.dp)),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
                         )
+                    }
+
+                    if (actions.isNotEmpty() && !isUser) {
+                        Spacer(Modifier.height(12.dp))
+                        @OptIn(ExperimentalLayoutApi::class)
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            for (actionTag in actions) {
+                                val label = actionTag
+                                    .removePrefix("[ACAO:")
+                                    .removeSuffix("]")
+                                    .replace(":", " ")
+                                    .trim()
+                                
+                                AssistChip(
+                                    onClick = { viewModel.executarAcaoIA(actionTag) },
+                                    label = { Text("✅ $label", fontSize = 11.sp) },
+                                    colors = AssistChipDefaults.assistChipColors(
+                                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        labelColor = MaterialTheme.colorScheme.primary
+                                    ),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+                                )
+                            }
+                        }
+                    }
+
+                    if (suggestions.isNotEmpty() && !isUser) {
+                        Spacer(Modifier.height(8.dp))
+                        @OptIn(ExperimentalLayoutApi::class)
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            for (suggestionTag in suggestions) {
+                                val label = suggestionTag
+                                    .removePrefix("[SUGESTAO:")
+                                    .removeSuffix("]")
+                                    .trim()
+                                
+                                SuggestionChip(
+                                    onClick = { 
+                                        // Envia a sugestão como uma nova mensagem
+                                        viewModel.conversarComMestreIA(label, "conversa") { _, _ -> }
+                                    },
+                                    label = { Text(label, fontSize = 11.sp) },
+                                    colors = SuggestionChipDefaults.suggestionChipColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                    ),
+                                    border = SuggestionChipDefaults.suggestionChipBorder(
+                                        enabled = true,
+                                        borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                                    )
+                                )
+                            }
+                        }
                     }
                 }
             }
