@@ -10,7 +10,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from dotenv import load_dotenv
 
@@ -39,18 +39,6 @@ def _resolve_env_path(raw_value: str, backend_dir: Path, must_exist: bool) -> Pa
         backend_dir.parent / raw,
         backend_dir.parent.parent / raw,
     ]
-    # Compatibilidade para deploy com subdiretorio na Railway.
-    if raw.startswith("AGENTE GURPS/"):
-        stripped = raw[len("AGENTE GURPS/") :]
-        trial_paths.extend(
-            [
-                Path.cwd() / stripped,
-                backend_dir / stripped,
-                backend_dir.parent / stripped,
-                backend_dir.parent.parent / stripped,
-            ]
-        )
-
     if must_exist:
         for path in trial_paths:
             if path.exists():
@@ -80,14 +68,18 @@ def load_settings() -> RagSettings:
     else:
         load_dotenv()
 
-    chroma_rel = os.getenv("CHROMA_DIR", "AGENTE GURPS/index/chroma")
-    chunks_rel = os.getenv("CHUNKS_FILE", "AGENTE GURPS/sources/processed/chunks.jsonl")
-    reports_rel = os.getenv("REPORTS_DIR", "AGENTE GURPS/sources/processed/reports")
+    chroma_rel = os.getenv("CHROMA_DIR", "chroma")
+    chunks_rel = os.getenv("CHUNKS_FILE", "chunks.jsonl")
+    reports_rel = os.getenv("REPORTS_DIR", "reports")
+
+    chunks_path = _resolve_env_path(chunks_rel, backend_dir, must_exist=False)
+    if not chunks_path.exists() and Path("chunks.jsonl").exists():
+        chunks_path = Path("chunks.jsonl").resolve()
 
     return RagSettings(
         repo_root=Path.cwd().resolve(),
         chroma_dir=_resolve_env_path(chroma_rel, backend_dir, must_exist=False),
-        chunks_file=_resolve_env_path(chunks_rel, backend_dir, must_exist=True),
+        chunks_file=chunks_path,
         reports_dir=_resolve_env_path(reports_rel, backend_dir, must_exist=False),
         collection_name=os.getenv("RAG_COLLECTION", "gurps_pt_v1"),
         top_k=_safe_int(os.getenv("RAG_TOP_K"), 6),
@@ -138,11 +130,7 @@ def build_embeddings(settings: RagSettings, texts: List[str]) -> List[List[float
     if settings.openai_api_key:
         try:
             from openai import OpenAI
-
-            client_kwargs = {"api_key": settings.openai_api_key}
-            if settings.openai_base_url:
-                client_kwargs["base_url"] = settings.openai_base_url
-            client = OpenAI(**client_kwargs)
+            client = OpenAI(api_key=settings.openai_api_key, base_url=settings.openai_base_url or None)
             response = client.embeddings.create(model=settings.openai_embed_model, input=texts)
             return [item.embedding for item in response.data]
         except Exception:
@@ -151,28 +139,8 @@ def build_embeddings(settings: RagSettings, texts: List[str]) -> List[List[float
 
 
 def get_chroma_collection(settings: RagSettings):
-    client = get_chroma_client(settings)
-    return client.get_or_create_collection(
-        name=settings.collection_name,
-        metadata={"hnsw:space": "cosine"},
-    )
-
-
-def get_chroma_client(settings: RagSettings):
-    settings.chroma_dir.mkdir(parents=True, exist_ok=True)
-    return chromadb.PersistentClient(path=str(settings.chroma_dir))
-
-
-def reset_collection(settings: RagSettings):
-    client = get_chroma_client(settings)
-    try:
-        client.delete_collection(settings.collection_name)
-    except Exception:
-        pass
-    return client.get_or_create_collection(
-        name=settings.collection_name,
-        metadata={"hnsw:space": "cosine"},
-    )
+    client = chromadb.PersistentClient(path=str(settings.chroma_dir))
+    return client.get_or_create_collection(name=settings.collection_name, metadata={"hnsw:space": "cosine"})
 
 
 def load_chunks(chunks_file: Path) -> List[Dict[str, Any]]:
@@ -182,64 +150,42 @@ def load_chunks(chunks_file: Path) -> List[Dict[str, Any]]:
     with chunks_file.open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-            if not line:
-                continue
+            if not line: continue
             row = json.loads(line)
-            if not row.get("text"):
-                continue
-            items.append(row)
+            if row.get("text"): items.append(row)
     return items
 
 
 def _batched(items: List[Dict[str, Any]], batch_size: int = 128):
     for start in range(0, len(items), batch_size):
-        end = min(len(items), start + batch_size)
-        yield items[start:end]
+        yield items[start : start + batch_size]
 
 
 def reindex_collection(settings: RagSettings) -> Dict[str, Any]:
-    collection = reset_collection(settings)
+    print(f"--- INICIANDO REINDEXAÇÃO DA COLEÇÃO: {settings.collection_name} ---")
+    client = chromadb.PersistentClient(path=str(settings.chroma_dir))
+    try:
+        client.delete_collection(settings.collection_name)
+        print("Coleção antiga removida.")
+    except Exception:
+        pass
+    collection = client.get_or_create_collection(name=settings.collection_name, metadata={"hnsw:space": "cosine"})
+    
+    print(f"Carregando chunks de: {settings.chunks_file}")
     chunks = load_chunks(settings.chunks_file)
-
-    source_counter = defaultdict(int)
     total = 0
-
-    for batch in _batched(chunks, batch_size=128):
+    batch_idx = 0
+    for batch in _batched(chunks):
+        batch_idx += 1
+        print(f"Processando lote #{batch_idx} ({len(batch)} chunks)...")
         ids = [row["chunk_id"] for row in batch]
         docs = [row["text"] for row in batch]
-        metas = []
-        for row in batch:
-            source_id = row.get("source_id", "")
-            source_counter[source_id] += 1
-            metas.append(
-                {
-                    "chunk_id": row.get("chunk_id", ""),
-                    "source_id": source_id,
-                    "source_title": row.get("source_title", ""),
-                    "page_number": int(row.get("page_number", 0)),
-                    "language": row.get("language", "pt"),
-                }
-            )
-
+        metas = [{"chunk_id": r["chunk_id"], "source_id": r["source_id"], "source_title": r["source_title"], "page_number": int(r["page_number"])} for r in batch]
         embs = build_embeddings(settings, docs)
         collection.upsert(ids=ids, documents=docs, metadatas=metas, embeddings=embs)
         total += len(batch)
-
-    report = {
-        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "collection_name": settings.collection_name,
-        "chunks_file": str(settings.chunks_file),
-        "chroma_dir": str(settings.chroma_dir),
-        "total_chunks_indexados": total,
-        "fontes_indexadas": dict(sorted(source_counter.items())),
-    }
-
-    settings.reports_dir.mkdir(parents=True, exist_ok=True)
-    report_path = settings.reports_dir / "indexacao_chroma_report.json"
-    with report_path.open("w", encoding="utf-8", newline="\n") as f:
-        json.dump(report, f, ensure_ascii=False, indent=2)
-
-    return report
+    print(f"--- REINDEXAÇÃO CONCLUÍDA: {total} chunks indexados ---")
+    return {"total_chunks_indexados": total}
 
 
 def ensure_collection_ready(settings: RagSettings) -> Dict[str, Any]:
@@ -252,6 +198,7 @@ def ensure_collection_ready(settings: RagSettings) -> Dict[str, Any]:
     auto_index = os.getenv("RAG_AUTO_INDEX_ON_STARTUP", "1").strip().lower() not in {"0", "false", "no"}
     if count > 0 or not auto_index:
         return {"ready": count > 0, "auto_index": auto_index, "count": count}
+    
     if not settings.chunks_file.exists():
         return {
             "ready": False,
@@ -264,167 +211,155 @@ def ensure_collection_ready(settings: RagSettings) -> Dict[str, Any]:
     return {"ready": True, "auto_index": auto_index, "count": report.get("total_chunks_indexados", 0), "reindexed": True}
 
 
+
 def retrieve_context(settings: RagSettings, question: str, top_k: Optional[int] = None) -> Dict[str, Any]:
     collection = get_chroma_collection(settings)
-    k = top_k or settings.top_k
     q = _expand_query(question)
     emb = build_embeddings(settings, [q])[0]
-    result = collection.query(
-        query_embeddings=[emb],
-        n_results=k,
-        include=["documents", "metadatas", "distances"],
-    )
-
-    docs = result.get("documents", [[]])[0]
-    metas = result.get("metadatas", [[]])[0]
-    distances = result.get("distances", [[]])[0]
-
+    result = collection.query(query_embeddings=[emb], n_results=top_k or settings.top_k, include=["documents", "metadatas", "distances"])
     items = []
-    for doc, meta, distance in zip(docs, metas, distances):
-        score = 1.0 - float(distance) if distance is not None else 0.0
-        row = {
-            "text": doc or "",
-            "score": round(score, 4),
-            "source_id": (meta or {}).get("source_id", ""),
-            "source_title": (meta or {}).get("source_title", ""),
-            "page_number": int((meta or {}).get("page_number", 0)),
-            "chunk_id": (meta or {}).get("chunk_id", ""),
-        }
-        items.append(row)
-
+    for doc, meta, dist in zip(result["documents"][0], result["metadatas"][0], result["distances"][0]):
+        items.append({
+            "text": doc, 
+            "score": round(1.0 - float(dist), 4),
+            "source_id": meta["source_id"],
+            "source_title": meta["source_title"],
+            "page_number": meta["page_number"],
+            "chunk_id": meta["chunk_id"]
+        })
     return {"items": items}
 
 
-def _build_prompt(question: str, mode: str, context_items: List[Dict[str, Any]], evidence: Optional[Dict[str, Any]] = None) -> str:
-    context_lines = []
-    for idx, item in enumerate(context_items, start=1):
-        context_lines.append(
-            f"[{idx}] source_id={item['source_id']} | titulo={item['source_title']} | "
-            f"pagina={item['page_number']} | score={item['score']}\n{item['text']}"
-        )
-    context_block = "\n\n".join(context_lines)
-
-    return (
-        "Voce e o AGENTE GURPS. Responda SEMPRE em portugues, em estilo de chatbot util e natural.\n"
-        "Comece com uma resposta direta curta e depois detalhe em ate 6 linhas.\n"
-        "Use somente o contexto recuperado. Se faltar evidencia, diga explicitamente.\n"
-        "Nao invente regra canonica.\n"
-        "Sempre inclua no final uma secao 'Fontes' com os itens usados no formato [n].\n"
-        "Quando houver inferencia, escreva: 'Inferencia: ...'.\n"
-        f"Evidencia: {json.dumps(evidence or {}, ensure_ascii=False)}\n\n"
-        f"Modo: {mode}\n"
-        f"Pergunta: {question}\n\n"
-        "Contexto:\n"
-        f"{context_block}\n"
-    )
-
-
-def format_sources_section(context_items: List[Dict[str, Any]], max_sources: int = 6) -> str:
-    if not context_items:
-        return "Fontes: nenhuma."
-    lines = ["Fontes:"]
-    for idx, item in enumerate(context_items[:max_sources], start=1):
-        lines.append(
-            f"[{idx}] {item['source_title']} (source_id={item['source_id']}), pag. {item['page_number']}."
-        )
-    return "\n".join(lines)
-
-
-def build_low_confidence_answer(context_items: List[Dict[str, Any]]) -> str:
-    return (
-        "Nao encontrei evidencia forte o suficiente para responder com confianca.\n"
-        "Inferencia: consulte os trechos e confirme no livro canonico antes de aplicar na mesa.\n"
-        f"{format_sources_section(context_items)}"
-    )
-
-
 def _significant_tokens(question: str) -> List[str]:
-    stop = {
-        "qual", "quais", "como", "quando", "onde", "porque", "por", "para", "com",
-        "sem", "uma", "um", "uns", "umas", "dos", "das", "de", "do", "da", "no",
-        "na", "nos", "nas", "e", "ou", "que", "o", "a", "os", "as",
-    }
-    tokens = [t for t in re.findall(r"[a-zA-Z0-9áéíóúãõâêîôûç]+", question.lower()) if len(t) >= 3]
-    return [t for t in tokens if t not in stop]
+    stop = {"qual", "como", "quando", "onde", "porque", "para", "com", "uma", "um", "dos", "das", "que", "os", "as"}
+    return [t for t in re.findall(r"[a-z0-9áéíóúãõâêîôûç]+", question.lower()) if len(t) >= 3 and t not in stop]
 
 
 def evaluate_evidence(question: str, context_items: List[Dict[str, Any]]) -> Dict[str, Any]:
-    if not context_items:
-        return {"enough": False, "best_score": 0.0, "max_overlap": 0, "reason": "sem_contexto"}
-
-    best_score = float(context_items[0].get("score", 0.0))
+    if not context_items: return {"enough": False, "best_score": 0.0, "max_overlap": 0}
+    best_score = float(context_items[0]["score"])
     tokens = _significant_tokens(question)
     max_overlap = 0
-
     for item in context_items:
-        txt = (item.get("text") or "").lower()
-        overlap = sum(1 for tok in tokens if tok in txt)
-        if overlap > max_overlap:
-            max_overlap = overlap
-
+        overlap = sum(1 for tok in tokens if tok in item["text"].lower())
+        if overlap > max_overlap: max_overlap = overlap
     enough = (best_score >= 0.28 and max_overlap >= 1) or (max_overlap >= 2)
-    reason = "ok" if enough else "fraca"
-    return {
-        "enough": enough,
-        "best_score": round(best_score, 4),
-        "max_overlap": max_overlap,
-        "reason": reason,
-    }
+    return {"enough": enough, "best_score": best_score, "max_overlap": max_overlap}
 
 
-def ensure_sources_block(answer: str, context_items: List[Dict[str, Any]]) -> str:
-    if "fontes:" in answer.lower():
-        return answer
-    return answer.rstrip() + "\n\n" + format_sources_section(context_items)
-
-
-def answer_with_citations(
-    settings: RagSettings,
-    question: str,
-    mode: str,
-    context_items: List[Dict[str, Any]],
-    evidence: Optional[Dict[str, Any]] = None,
-) -> str:
-    prompt = _build_prompt(question, mode, context_items, evidence)
-    if settings.openai_api_key:
+def get_catalog_names(tipo: str) -> str:
+    """Carrega a lista de nomes oficiais do catálogo txt. Busca na raiz do projeto."""
+    backend_dir = Path(__file__).resolve().parent
+    # Busca na mesma pasta que o script (Estrutura Plana do HF Space)
+    catalog_path = backend_dir / f"{tipo}_nomes.txt"
+    if catalog_path.exists():
         try:
-            from openai import OpenAI
-
-            client_kwargs = {"api_key": settings.openai_api_key}
-            if settings.openai_base_url:
-                client_kwargs["base_url"] = settings.openai_base_url
-            client = OpenAI(**client_kwargs)
-
-            text = ""
-            try:
-                # OpenAI native Responses API
-                response = client.responses.create(
-                    model=settings.openai_chat_model,
-                    input=prompt,
-                    temperature=0.2,
-                )
-                text = (response.output_text or "").strip()
-            except Exception:
-                # Compat mode (Google/OpenAI-compatible and similares)
-                completion = client.chat.completions.create(
-                    model=settings.openai_chat_model,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0.2,
-                )
-                msg = completion.choices[0].message if completion.choices else None
-                text = (msg.content or "").strip() if msg else ""
-            if text:
-                return ensure_sources_block(text, context_items)
+            return catalog_path.read_text(encoding="utf-8")
         except Exception:
-            pass
+            return ""
+    return ""
 
-    if not context_items:
-        return build_low_confidence_answer(context_items)
 
-    top = context_items[0]
-    answer = (
-        "Resposta provisoria (modo offline, sem LLM):\n"
-        f"Trecho mais proximo da pergunta:\n{top['text'][:700]}\n\n"
-        "Inferencia: resposta resumida diretamente do trecho recuperado.\n"
-    )
-    return ensure_sources_block(answer, context_items)
+def answer_with_citations(settings: RagSettings, question: str, mode: str, context_items: List[Dict[str, Any]], evidence: Optional[Dict[str, Any]] = None) -> str:
+    from openai import OpenAI
+    
+    # 1. Definir Configurações de Provedores (Prioridade: DeepSeek Pago -> OpenRouter Backup)
+    providers = []
+    
+    # Adiciona Provedor DeepSeek Direto se houver chave
+    ds_key = os.getenv("DEEPSEEK_API_KEY", "").strip()
+    if ds_key:
+        providers.append({
+            "name": "DeepSeek-Direct",
+            "client": OpenAI(base_url="https://api.deepseek.com", api_key=ds_key),
+            "models": ["deepseek-reasoner", "deepseek-chat"]
+        })
+    
+    # Adiciona Provedor Gemini Direto se houver chave
+    gem_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if gem_key:
+        providers.append({
+            "name": "Gemini-Direct",
+            "client": OpenAI(base_url="https://generativelanguage.googleapis.com/v1beta/openai", api_key=gem_key),
+            "models": ["gemini-1.5-pro", "gemini-1.5-flash"]
+        })
+
+    # Backup final: OpenRouter (com a lista de modelos resiliente)
+    or_key = os.getenv("OPENROUTER_API_KEY", settings.openai_api_key).strip()
+    if or_key:
+        providers.append({
+            "name": "OpenRouter",
+            "client": OpenAI(base_url="https://openrouter.ai/api/v1", api_key=or_key),
+            "models": [
+                "meta-llama/llama-3.3-70b-instruct:free",
+                "deepseek/deepseek-r1:free",
+                "qwen/qwen-2-72b-instruct:free",
+                "google/gemini-2.0-flash-exp:free"
+            ]
+        })
+
+    if not providers:
+        return "Erro Crítico: Nenhuma chave API (DeepSeek, Gemini ou OpenRouter) configurada no Hugging Face."
+
+    last_error = ""
+    rag_info = "\n\n--- LIVROS GURPS ---\n" + "\n".join([f"Ref {i+1} (Pag {item['page_number']}): {item['text']}" for i, item in enumerate(context_items)])
+
+    # 2. Ciclo de Tentativas em Cascata
+    for provider in providers:
+        for model_id in provider["models"]:
+            try:
+                # Ajusta instruções baseadas no modo
+                if mode in ["criacao", "geracao", "personagem"]:
+                    # Carregar nomes oficiais para injetar no prompt
+                    p_nomes = get_catalog_names("pericias")
+                    m_nomes = get_catalog_names("magias")
+                    v_nomes = get_catalog_names("vantagens")
+                    t_nomes = get_catalog_names("tecnicas")
+
+                    instr = (
+                        "Você é o MESTRE AUDITOR GURPS 4ª Edição especializado em JSON estruturado.\n"
+                        "Sua missão é criar fichas 100% compatíveis com o banco de dados do App.\n\n"
+                        "--- REGRAS DE OURO ---\n"
+                        "1. NOMES OFICIAIS: Use APENAS os nomes contidos nos catálogos abaixo.\n"
+                        "2. PRÉ-REQUISITOS: Antes de adicionar uma Magia ou Técnica, consulte o RAG para ver os requisitos (AM, IQ, Magias anteriores).\n"
+                        "3. CADEIA DE PENSAMENTO: Se uma magia exige outra, adicione AMBAS à ficha.\n"
+                        "4. ATRIBUTOS: Base 10. Calcule os custos corretamente (+/- 10/20 pts).\n\n"
+                        "--- CATÁLOGO DE NOMES (Sincronizado com o App) ---\n"
+                        f"PERÍCIAS: {p_nomes[:2000]}...\n"
+                        f"MAGIAS: {m_nomes[:2000]}...\n"
+                        f"VANTAGENS: {v_nomes[:2000]}...\n"
+                        f"TÉCNICAS: {t_nomes[:2000]}...\n\n"
+                        "--- OUTPUT SCHEMA ---\n"
+                        "Responda EXCLUSIVAMENTE com o JSON da ficha. Não use Markdown blocks (```json) se possível, apenas o texto do objeto.\n"
+                        "Estrutura: {'nome':'', 'atributos':{'st':10...}, 'pericias':[{'nome','pontos','nh'}], 'vantagens':[], 'magias':[]}\n"
+                    )
+                elif mode == "analise":
+                    instr = "Você é um AUDITOR TÉCNICO de GURPS. Analise a ficha enviada, verifique erros de pontuação e sugira melhorias baseadas nos livros anexados (RAG)."
+                else:
+                    instr = "Você é um MESTRE DE GURPS prestativo. Use as referências dos livros para tirar dúvidas de regras ou ambientação."
+
+                # Chamada da API
+                completion = provider["client"].chat.completions.create(
+                    model=model_id,
+                    messages=[{"role": "system", "content": instr}, {"role": "user", "content": f"{question}\n{rag_info}"}],
+                    timeout=120.0
+                )
+                return completion.choices[0].message.content
+
+            except Exception as e:
+                err_msg = str(e).lower()
+                # LOG DE DEPURAÇÃO PARA O USUÁRIO
+                print(f"--- DEBUG: Falha no Provedor {provider['name']} (Modelo: {model_id}) ---")
+                print(f"Mensagem de Erro: {str(e)}")
+                
+                last_error = f"Provedor {provider['name']} Model {model_id}: {str(e)}"
+                
+                # Se for erro de autenticação fatal, pula o provedor inteiro
+                if "api key" in err_msg or "authentication" in err_msg:
+                    print(f"Erro Fatal de Autenticação no provedor {provider['name']}. Verifique a Secret no HF.")
+                    break 
+                
+                print(f"Tentando próximo modelo do mesmo provedor ou próximo provedor...")
+                continue
+
+    return f"Erro Mestre Digital (Todos os provedores e modelos falharam): {last_error}"

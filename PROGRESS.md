@@ -17,12 +17,6 @@ Eu, como Inteligência Artificial, deixei instruções de ouro em uma pasta espe
 
 ---
 
-## Próximos Passos (A Refatoração)
-Já mapeamos 6 partes do projeto que estão muito grandes e vamos focar nelas *uma etapa de cada vez*, apenas quando você autorizar:
-
-*   **[Feito] Etapa 6:** Componentizar os botões e janelas de Traços (o `TraitDialogs.kt`), para que adicionar Vantagens ou Desvantagens não custe tanta lentidão visual ou peso no arquivo.
----
-
 ## Lembretes Fixos do Seu Projeto
 
 ### 1. Ferramentas Acessíveis
@@ -52,3 +46,5 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação) | `(Commit: c6a800c)`
 * [Feito] Lote 8: Atualização Estética dos Ícones das Abas          | `(Commit: 1cec435)`
 * [Feito] Lote 9: Interface de Navegação RPGística (Ultra-Premium)  | `(Commit: 9f13f43)`
+* [Feito] Lote 10: Melhoria do Ataque Inato e Skill Project Map     | `(Commit: e1c1a1b)`
+* [Em Andamento] Lote 11: Modernização da UI do Mestre IA (ChatGPT) | `(Commit: em_progresso)`

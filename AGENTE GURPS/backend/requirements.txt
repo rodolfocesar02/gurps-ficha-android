@@ -4,3 +4,7 @@ chromadb==0.5.5
 openai==1.101.0
 pydantic==2.11.7
 python-dotenv==1.1.1
+python-multipart==0.0.20
+pymupdf==1.24.1
+pdfplumber==0.11.0
+Pillow==10.3.0

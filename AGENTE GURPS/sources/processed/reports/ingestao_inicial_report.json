@@ -1,11 +1,26 @@
 {
-  "pdfs_processados": 19,
-  "paginas_processadas": 3268,
-  "paginas_duas_colunas": 3094,
-  "paginas_ocr_fallback": 13,
-  "paginas_suspeitas": 20,
-  "ocr_disponivel": true,
-  "warnings": [],
+  "pdfs_processados": 5,
+  "paginas_processadas": 1178,
+  "paginas_duas_colunas": 1117,
+  "paginas_ocr_fallback": 0,
+  "paginas_suspeitas": 10,
+  "ocr_disponivel": false,
+  "warnings": [
+    "arquivo ausente: raw/Criação de Personagens e Atualização GURPS.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Categorias de Perícias.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Fantasy.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - High-Tech.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Low-Tech.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Meta-Tech.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Módulo Básico Campanhas.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Módulo Básico Personagens.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Poderes Psíquicos.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Supers.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Ultra-Lite.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Ultra-Tech.pdf",
+    "arquivo ausente: raw/GURPS 4ª Edição - Viagem Espacial.pdf",
+    "arquivo ausente: raw/Régua de Distância GURPS.pdf"
+  ],
   "sources": [
     {
       "id": "pt_categorias_de_pericias",
@@ -16,51 +31,11 @@
       "suspeitas": 0
     },
     {
-      "id": "pt_criacao_de_personagens_e_atualizacao_gurps",
-      "titulo": "Criação de Personagens e Atualização GURPS",
-      "arquivo": "raw/Criação de Personagens e Atualização GURPS.pdf",
-      "paginas_lidas": 48,
-      "paginas_total_pdf": 48,
-      "suspeitas": 0
-    },
-    {
       "id": "pt_gurps_4a_edicao_artes_marciais",
       "titulo": "GURPS 4ª Edição - Artes Marciais",
       "arquivo": "raw/GURPS 4ª Edição - Artes Marciais.pdf",
-      "paginas_lidas": 265,
-      "paginas_total_pdf": 265,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_categorias_de_pericias",
-      "titulo": "GURPS 4ª Edição - Categorias de Perícias",
-      "arquivo": "raw/GURPS 4ª Edição - Categorias de Perícias.pdf",
-      "paginas_lidas": 7,
-      "paginas_total_pdf": 7,
-      "suspeitas": 0
-    },
-    {
-      "id": "pt_gurps_4a_edicao_fantasy",
-      "titulo": "GURPS 4ª Edição - Fantasy",
-      "arquivo": "raw/GURPS 4ª Edição - Fantasy.pdf",
-      "paginas_lidas": 242,
-      "paginas_total_pdf": 242,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_high_tech",
-      "titulo": "GURPS 4ª Edição - High-Tech",
-      "arquivo": "raw/GURPS 4ª Edição - High-Tech.pdf",
       "paginas_lidas": 258,
       "paginas_total_pdf": 258,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_low_tech",
-      "titulo": "GURPS 4ª Edição - Low-Tech",
-      "arquivo": "raw/GURPS 4ª Edição - Low-Tech.pdf",
-      "paginas_lidas": 162,
-      "paginas_total_pdf": 162,
       "suspeitas": 1
     },
     {
@@ -72,75 +47,11 @@
       "suspeitas": 7
     },
     {
-      "id": "pt_gurps_4a_edicao_meta_tech",
-      "titulo": "GURPS 4ª Edição - Meta-Tech",
-      "arquivo": "raw/GURPS 4ª Edição - Meta-Tech.pdf",
-      "paginas_lidas": 44,
-      "paginas_total_pdf": 44,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_modulo_basico_campanhas",
-      "titulo": "GURPS 4ª Edição - Módulo Básico Campanhas",
-      "arquivo": "raw/GURPS 4ª Edição - Módulo Básico Campanhas.pdf",
-      "paginas_lidas": 242,
-      "paginas_total_pdf": 242,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_modulo_basico_personagens",
-      "titulo": "GURPS 4ª Edição - Módulo Básico Personagens",
-      "arquivo": "raw/GURPS 4ª Edição - Módulo Básico Personagens.pdf",
-      "paginas_lidas": 338,
-      "paginas_total_pdf": 338,
-      "suspeitas": 1
-    },
-    {
       "id": "pt_gurps_4a_edicao_modulo_basico",
       "titulo": "GURPS 4ª Edição - Módulo Básico",
       "arquivo": "raw/GURPS 4ª Edição - Módulo Básico.pdf",
       "paginas_lidas": 578,
       "paginas_total_pdf": 578,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_poderes_psiquicos",
-      "titulo": "GURPS 4ª Edição - Poderes Psíquicos",
-      "arquivo": "raw/GURPS 4ª Edição - Poderes Psíquicos.pdf",
-      "paginas_lidas": 87,
-      "paginas_total_pdf": 87,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_supers",
-      "titulo": "GURPS 4ª Edição - Supers",
-      "arquivo": "raw/GURPS 4ª Edição - Supers.pdf",
-      "paginas_lidas": 152,
-      "paginas_total_pdf": 152,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_ultra_lite",
-      "titulo": "GURPS 4ª Edição - Ultra-Lite",
-      "arquivo": "raw/GURPS 4ª Edição - Ultra-Lite.pdf",
-      "paginas_lidas": 4,
-      "paginas_total_pdf": 4,
-      "suspeitas": 0
-    },
-    {
-      "id": "pt_gurps_4a_edicao_ultra_tech",
-      "titulo": "GURPS 4ª Edição - Ultra-Tech",
-      "arquivo": "raw/GURPS 4ª Edição - Ultra-Tech.pdf",
-      "paginas_lidas": 242,
-      "paginas_total_pdf": 242,
-      "suspeitas": 1
-    },
-    {
-      "id": "pt_gurps_4a_edicao_viagem_espacial",
-      "titulo": "GURPS 4ª Edição - Viagem Espacial",
-      "arquivo": "raw/GURPS 4ª Edição - Viagem Espacial.pdf",
-      "paginas_lidas": 256,
-      "paginas_total_pdf": 256,
       "suspeitas": 1
     },
     {
@@ -150,17 +61,9 @@
       "paginas_lidas": 50,
       "paginas_total_pdf": 50,
       "suspeitas": 1
-    },
-    {
-      "id": "pt_regua_de_distancia_gurps",
-      "titulo": "Régua de Distância GURPS",
-      "arquivo": "raw/Régua de Distância GURPS.pdf",
-      "paginas_lidas": 1,
-      "paginas_total_pdf": 1,
-      "suspeitas": 0
     }
   ],
-  "chunks_gerados": 17971,
+  "chunks_gerados": 6433,
   "pages_output": "AGENTE GURPS\\sources\\processed\\pages.jsonl",
   "chunks_output": "AGENTE GURPS\\sources\\processed\\chunks.jsonl"
 }

@@ -95,20 +95,23 @@ object MestreIAClient {
             promptFinal = "$systemPrompt\n\nContexto anterior:\n$historyText\n\nUsuário: $prompt"
         }
 
-        // Corpo da requisição no formato FormUrlEncoded (que o Python espera)
+        // Corpo da requisição no formato JSON
         return try {
-            val postData = "text=" + java.net.URLEncoder.encode(promptFinal, "UTF-8")
-            val body = postData.toByteArray(StandardCharsets.UTF_8)
+            val payload = mapOf("text" to promptFinal)
+            val body = gson.toJson(payload).toByteArray(StandardCharsets.UTF_8)
             val connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 doOutput = true
                 connectTimeout = CONNECT_TIMEOUT_MS
                 readTimeout = READ_TIMEOUT_MS
-                setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+                setRequestProperty("Content-Type", "application/json")
+                if (apiKey.isNotBlank() && apiKey != "EMPTY") {
+                    setRequestProperty("Authorization", if (apiKey.startsWith("Bearer ")) apiKey else "Bearer $apiKey")
+                }
             }
             
             connection.outputStream.use { it.write(body) }
-            
+
             if (connection.responseCode in 200..299) {
                 val rawBody = readStreamSafely(connection.inputStream)
                 try {

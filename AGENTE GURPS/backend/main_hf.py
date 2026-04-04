@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import os
 from typing import Literal, Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Form, Request
 from pydantic import BaseModel, Field
 
 from rag_runtime import (
@@ -36,13 +37,18 @@ class AskResponse(BaseModel):
     sources: list[SourceItem]
 
 
-app = FastAPI(title="AGENTE GURPS API", version="0.1.0")
+app = FastAPI(title="AGENTE GURPS API HF", version="0.1.0")
 
 
 @app.on_event("startup")
 def startup_prepare_index():
     settings = load_settings()
     app.state.rag_status = ensure_collection_ready(settings)
+
+
+@app.get("/")
+def home():
+    return {"status": "online", "message": "AGENTE GURPS RAG API on Hugging Face"}
 
 
 @app.get("/health")
@@ -52,8 +58,7 @@ def health():
     return {
         "status": "ok",
         "collection": settings.collection_name,
-        "chroma_dir": str(settings.chroma_dir),
-        "has_openai_key": bool(settings.openai_api_key),
+        "region": os.getenv("SPACE_ID", "local"),
         "rag_ready": bool(rag_status.get("ready", False)),
         "indexed_chunks": int(rag_status.get("count", 0)),
     }
@@ -66,23 +71,36 @@ def ask(payload: AskRequest):
 
 class ChatRequest(BaseModel):
     text: str
+    mode: Optional[str] = None
 
 
 @app.post("/chat")
-def chat(payload: ChatRequest):
-    text = payload.text
-    # O App Android envia o prompt completo.
-    # Extraímos uma 'pergunta curta' se possível para melhorar a recuperação vetorial.
-    query = text.split("\n\n")[-1].replace("Usuário: ", "").replace("Conceito: ", "").strip()
-    if not query or len(query) < 5:
-        query = text
+async def chat(request: Request):
+    # Tenta ler como JSON primeiro (Padrão novo do App)
+    prompt = None
+    explicit_mode = None
+    try:
+        data = await request.json()
+        prompt = data.get("text")
+        explicit_mode = data.get("mode")
+    except:
+        # Fallback para formulário (Padrão antigo)
+        form_data = await request.form()
+        prompt = form_data.get("text")
+        explicit_mode = form_data.get("mode")
 
-    # Tenta inferir o modo
-    mode: Literal["regras", "criacao", "lore"] = "regras"
-    if "geracao" in text.lower() or "ficha" in text.lower():
-        mode = "criacao"
+    if not prompt:
+        return {"response": "Erro: Nenhum texto recebido pelo servidor."}
 
-    result = process_query(query, mode)
+    # Tenta inferir o modo se não for explícito
+    mode = explicit_mode
+    if not mode:
+        mode = "regras"
+        if any(w in prompt.lower() for w in ["gerar", "criacao", "ficha", "personagem", "build"]):
+            mode = "criacao"
+
+    # O process_query agora recebe o prompt completo do Android
+    result = process_query(prompt, mode)
     return {"response": result.answer}
 
 

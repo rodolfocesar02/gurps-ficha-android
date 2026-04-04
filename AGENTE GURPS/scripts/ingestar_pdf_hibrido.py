@@ -132,7 +132,7 @@ def load_manifest(manifest_path: Path) -> List[SourceEntry]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Ingestao hibrida de PDFs para AGENTE GURPS.")
-    parser.add_argument("--max-pages-per-pdf", type=int, default=5, help="Limite de paginas por PDF na ingestao inicial.")
+    parser.add_argument("--max-pages-per-pdf", type=int, default=9999, help="Limite de paginas por PDF (0 = todas as paginas).")
     parser.add_argument("--max-pdfs", type=int, default=0, help="Limite de PDFs (0 = todos).")
     args = parser.parse_args()
 
@@ -173,7 +173,7 @@ def main() -> int:
 
         with pdfplumber.open(str(pdf_path)) as plumb, fitz.open(str(pdf_path)) as fitz_doc:
             total_pages = len(plumb.pages)
-            max_pages = min(total_pages, args.max_pages_per_pdf)
+            max_pages = min(total_pages, args.max_pages_per_pdf) if args.max_pages_per_pdf > 0 else total_pages
             src_stats = {
                 "id": entry.source_id,
                 "titulo": entry.title,

@@ -147,7 +147,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     var canalDiscordSelecionadoNome by mutableStateOf(configPrefs.getString(prefCanalDiscordNome, null))
         private set
 
-    var iaBaseUrl by mutableStateOf(configPrefs.getString(prefIABaseUrl, "http://10.0.2.2:3001") ?: "http://10.0.2.2:3001")
+    var iaBaseUrl by mutableStateOf(configPrefs.getString(prefIABaseUrl, "https://rodolfocesar02-mestre-gurps-ia.hf.space") ?: "https://rodolfocesar02-mestre-gurps-ia.hf.space")
         private set
     var iaApiKey by mutableStateOf(configPrefs.getString(prefIAApiKey, "EMPTY") ?: "EMPTY")
         private set
