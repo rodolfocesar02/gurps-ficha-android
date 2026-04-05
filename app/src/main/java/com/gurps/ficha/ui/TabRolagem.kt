@@ -462,30 +462,29 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     onAjustarPf = { inc -> ajustarPfRolagemPorSwipe(incrementar = inc) }
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(vertical = 2.dp))
-
-                DefesasAtivasQuickRollPanel(
-                    defesasAtivas = defesasAtivas,
-                    modificadoresDefesa = modificadoresDefesa,
-                    isPraCegoVariant = isPraCegoVariant,
-                    cardTitleStyle = cardTitleStyle,
-                    defenseNumberStyle = defenseNumberStyle,
-                    compactLabelStyle = compactLabelStyle,
-                    innerCardVerticalPadding = innerCardVerticalPadding,
-                    onConfigEsquiva = { showEditarEsquivaDialog = true },
-                    onConfigApara = { showEditarAparaDialog = true },
-                    onConfigBloqueio = { showEditarBloqueioDialog = true },
-                    onExecutarRolagem = { defesa, mod ->
-                        executarRolagem(
-                            tipo = TipoTeste.DEFESA,
-                            contextoLabel = defesa.name,
-                            alvo = defesa.finalValue,
-                            mod = mod
-                        )
-                    }
-                )
             }
         }
+
+        DefesasAtivasQuickRollPanel(
+            defesasAtivas = defesasAtivas,
+            modificadoresDefesa = modificadoresDefesa,
+            isPraCegoVariant = isPraCegoVariant,
+            cardTitleStyle = cardTitleStyle,
+            defenseNumberStyle = defenseNumberStyle,
+            compactLabelStyle = compactLabelStyle,
+            innerCardVerticalPadding = innerCardVerticalPadding,
+            onConfigEsquiva = { showEditarEsquivaDialog = true },
+            onConfigApara = { showEditarAparaDialog = true },
+            onConfigBloqueio = { showEditarBloqueioDialog = true },
+            onExecutarRolagem = { defesa, mod ->
+                executarRolagem(
+                    tipo = TipoTeste.DEFESA,
+                    contextoLabel = defesa.name,
+                    alvo = defesa.finalValue,
+                    mod = mod
+                )
+            }
+        )
 
         if (isPraCegoVariant) {
             Card(

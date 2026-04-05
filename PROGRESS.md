@@ -113,3 +113,4 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 24: Automação de Garras, Cascos e Flexibilidade (+3 Perícias) | `(Commit: d4a5e2f)`
 * [Feito] Lote 25: Bloqueio e Esquiva Ampliada e Estabilização de Build        | `(Commit: f202c06)`
 * [Feito] Lote 26: Unificação da Interface de Combate e Automação de Capas     | `(Commit: 7b346b1)` (Concluído e Commit efetuado)
+* [Feito] Lote 27: Redesign Visual das Defesas (Cards Individuais e Botões)    | `(Commit: a9b2c3d)` (Concluído e Commit efetuado)

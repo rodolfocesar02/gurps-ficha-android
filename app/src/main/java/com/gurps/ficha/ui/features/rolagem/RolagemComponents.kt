@@ -740,7 +740,7 @@ fun DefesasAtivasQuickRollPanel(
     } else {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             defesasAtivas.forEach { defesa ->
                 val modDef = modificadoresDefesa[defesa.type] ?: 0
@@ -749,71 +749,87 @@ fun DefesasAtivasQuickRollPanel(
                     com.gurps.ficha.viewmodel.DefenseType.APARA -> onConfigApara
                     com.gurps.ficha.viewmodel.DefenseType.BLOQUEIO -> onConfigBloqueio
                 }
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = innerCardVerticalPadding),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                Card(
+                    modifier = Modifier.weight(1f),
+                    colors = appCardColors()
                 ) {
-                    Text(
-                        text = defesa.name.uppercase(),
-                        textAlign = TextAlign.Center,
-                        style = compactLabelStyle,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary,
+                    Column(
                         modifier = Modifier
-                            .clickable { configClick() }
-                            .padding(horizontal = 4.dp, vertical = 2.dp)
-                    )
-                    Text(
-                        text = defesa.finalValue.toString(),
-                        modifier = Modifier
-                            .pointerInput(defesa.type, modDef) {
-                                var dragAcumulado = 0f
-                                val passoPx = 20f
-                                detectVerticalDragGestures(
-                                    onVerticalDrag = { change, dragAmount ->
-                                        change.consume()
-                                        dragAcumulado += dragAmount
-                                        while (abs(dragAcumulado) >= passoPx) {
-                                            val atual = modificadoresDefesa[defesa.type] ?: 0
-                                            if (dragAcumulado < 0f) {
-                                                modificadoresDefesa[defesa.type] = (atual + 1).coerceIn(-20, 20)
-                                                dragAcumulado += passoPx
-                                            } else {
-                                                modificadoresDefesa[defesa.type] = (atual - 1).coerceIn(-20, 20)
-                                                dragAcumulado -= passoPx
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        Button(
+                            onClick = configClick,
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .fillMaxWidth()
+                                .height(32.dp),
+                            contentPadding = PaddingValues(horizontal = 2.dp, vertical = 0.dp),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Text(
+                                text = defesa.name.uppercase(),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Text(
+                            text = defesa.finalValue.toString(),
+                            modifier = Modifier
+                                .pointerInput(defesa.type, modDef) {
+                                    var dragAcumulado = 0f
+                                    val passoPx = 20f
+                                    detectVerticalDragGestures(
+                                        onVerticalDrag = { change, dragAmount ->
+                                            change.consume()
+                                            dragAcumulado += dragAmount
+                                            while (abs(dragAcumulado) >= passoPx) {
+                                                val atual = modificadoresDefesa[defesa.type] ?: 0
+                                                if (dragAcumulado < 0f) {
+                                                    modificadoresDefesa[defesa.type] = (atual + 1).coerceIn(-20, 20)
+                                                    dragAcumulado += passoPx
+                                                } else {
+                                                    modificadoresDefesa[defesa.type] = (atual - 1).coerceIn(-20, 20)
+                                                    dragAcumulado -= passoPx
+                                                }
                                             }
                                         }
-                                    }
-                                )
-                            }
-                            .clickable {
-                                onExecutarRolagem(defesa, modDef)
-                            },
-                        textAlign = TextAlign.Center,
-                        style = defenseNumberStyle,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                    
-                    val lblAtivo = when {
-                        modDef != 0 -> "mod ${if (modDef >= 0) "+$modDef" else modDef}"
-                        !defesa.detail.isNullOrBlank() -> defesa.detail!!
-                        else -> ""
-                    }
-                    
-                    if (lblAtivo.isNotBlank()) {
-                        Text(
-                            text = lblAtivo,
-                            style = compactLabelStyle,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            textAlign = TextAlign.Center
+                                    )
+                                }
+                                .clickable {
+                                    onExecutarRolagem(defesa, modDef)
+                                },
+                            textAlign = TextAlign.Center,
+                            style = defenseNumberStyle,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
                         )
+                        
+                        val lblAtivo = when {
+                            modDef != 0 -> "mod ${if (modDef >= 0) "+$modDef" else modDef}"
+                            !defesa.detail.isNullOrBlank() -> defesa.detail!!
+                            else -> ""
+                        }
+                        
+                        if (lblAtivo.isNotBlank()) {
+                            Text(
+                                text = lblAtivo,
+                                style = compactLabelStyle,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
