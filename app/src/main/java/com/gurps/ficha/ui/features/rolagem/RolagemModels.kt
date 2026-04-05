@@ -129,6 +129,17 @@ fun formatDamageCore(parsed: ParsedDamage): String {
     return "${parsed.diceCount}d$mod"
 }
 
+fun formatDamageTypeLabel(damageType: String): String = when (damageType.lowercase().trim()) {
+    "cont" -> "Contus\u00e3o (cont)"
+    "cort" -> "Corte (cort)"
+    "perf" -> "Perfura\u00e3o (perf)"
+    "pa-" -> "Pouco Perfurante (pa-)"
+    "pa" -> "Perfurante (pa)"
+    "pa+" -> "Muito Perfurante (pa+)"
+    "pa++" -> "Extremamente Perfurante (pa++)"
+    else -> damageType
+}
+
 fun resolveStDamage(rawExpr: String, gdp: String, geb: String): String {
     var result = rawExpr
         .replace("GdP", gdp, ignoreCase = true)

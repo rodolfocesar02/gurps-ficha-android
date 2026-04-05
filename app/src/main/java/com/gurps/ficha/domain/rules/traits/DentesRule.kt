@@ -78,7 +78,7 @@ class DentesRule : TraitRule {
         val tipoDano = when (tipoDentes.lowercase()) {
             "rombo" -> "cont"
             "bico_afiado" -> "pa+"
-            "dentes_afiados" -> "corte"
+            "dentes_afiados" -> "cort"
             "presas" -> "perf"
             else -> "cont"
         }

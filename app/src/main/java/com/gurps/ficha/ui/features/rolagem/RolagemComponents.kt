@@ -505,10 +505,20 @@ fun AtaqueDanoQuickArea(
                             danos.forEach { danoLinha ->
                                 // Resolve GdP/GeB apenas para a verificação de "rolável" e execução
                                 val danoResolvido = resolveStDamage(danoLinha, gdp, geb)
-                                val danoRolavel = parseDamageExpression(danoResolvido) != null
+                                val parsed = parseDamageExpression(danoResolvido)
+                                val danoRolavel = parsed != null
                                 
+                                // Formata o texto para exibir o nome completo do dano se for rolável
+                                val textoExibicao = if (parsed != null) {
+                                    val core = formatDamageCore(parsed)
+                                    val label = formatDamageTypeLabel(parsed.suffix)
+                                    "$core $label"
+                                } else {
+                                    danoLinha
+                                }
+
                                 Text(
-                                    danoLinha,
+                                    textoExibicao,
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .semantics {

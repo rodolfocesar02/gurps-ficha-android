@@ -1032,23 +1032,21 @@ fun ContatosConfig(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun DentesConfig(
     currentType: String,
     onChanged: (String) -> Unit
 ) {
-    val tipos = listOf(
-        "rombo" to "Dentes Rombos (0 pts)",
-        "bico_afiado" to "Bico Afiado (1 pt)",
-        "dentes_afiados" to "Dentes Afiados (1 pt)",
-        "presas" to "Presas (2 pts)"
+    val options = listOf(
+        "rombo" to "Rombos (Contus\u00e3o: cont) - 0 pts",
+        "bico_afiado" to "Bico Afiado (Muito Perfurante: pa+) - 1 pt",
+        "dentes_afiados" to "Dentes Afiados (Corte: cort) - 1 pt",
+        "presas" to "Presas (Perfura\u00e3o: perf) - 2 pts"
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Tipo de Dentição:", style = MaterialTheme.typography.labelLarge)
-        
-        tipos.forEach { (id, label) ->
+        Text("Tipo de Dentes:", style = MaterialTheme.typography.titleSmall)
+        options.forEach { (id, label) ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -1064,11 +1062,11 @@ fun DentesConfig(
                 else null
             ) {
                 Row(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     RadioButton(selected = currentType == id, onClick = { onChanged(id) })
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(12.dp))
                     Text(label, style = MaterialTheme.typography.bodyMedium)
                 }
             }
