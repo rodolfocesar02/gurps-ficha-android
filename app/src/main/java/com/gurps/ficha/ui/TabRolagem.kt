@@ -117,9 +117,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
         list
     }
 
-    var ataqueSelecionadoKey by remember { mutableStateOf<String?>(null) }
-    val ataqueAtual = remember(ataqueSelecionadoKey, opcoesAtaque) {
-        opcoesAtaque.find { it.id == ataqueSelecionadoKey } ?: opcoesAtaque.firstOrNull()
+    // Validação de segurança: Se o ID selecionado sumir da lista (ex: vantagem excluída), limpa a seleção.
+    LaunchedEffect(opcoesAtaque) {
+        if (viewModel.ataqueSelecionadoId != null && opcoesAtaque.none { it.id == viewModel.ataqueSelecionadoId }) {
+            viewModel.atualizarAtaqueSelecionado(null)
+        }
+    }
+
+    val ataqueAtual = remember(viewModel.ataqueSelecionadoId, opcoesAtaque) {
+        opcoesAtaque.find { it.id == viewModel.ataqueSelecionadoId } ?: opcoesAtaque.firstOrNull()
     }
 
     val fontesDano = remember(armas, p.vantagens) {
@@ -144,12 +150,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
         list
     }
 
-    var fonteDanoSelecionadaId by remember { mutableStateOf("st_base") }
-    var stDamageMode by remember { mutableStateOf(StDamageMode.GDP) }
-    val fonteDanoAtual = remember(fonteDanoSelecionadaId, fontesDano, stDamageMode, p.st) {
-        val base = fontesDano.find { it.id == fonteDanoSelecionadaId } ?: fontesDano.first()
+    // Validação de segurança para Dano
+    LaunchedEffect(fontesDano) {
+        if (viewModel.fonteDanoSelecionadaId != "st_base" && fontesDano.none { it.id == viewModel.fonteDanoSelecionadaId }) {
+            viewModel.atualizarFonteDanoSelecionada("st_base")
+        }
+    }
+
+    val fonteDanoAtual = remember(viewModel.fonteDanoSelecionadaId, fontesDano, viewModel.stDamageMode, p.st) {
+        val base = fontesDano.find { it.id == viewModel.fonteDanoSelecionadaId } ?: fontesDano.first()
         if (base.id == "st_base") {
-            val expr = if (stDamageMode == StDamageMode.GDP) p.danoGdP else p.danoGeB
+            val expr = if (viewModel.stDamageMode == StDamageMode.GDP) p.danoGdP else p.danoGeB
             base.copy(damageExpression = expr)
         } else {
             base
@@ -527,7 +538,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             fonteDanoAtual = fonteDanoAtual,
             gdp = p.danoGdP,
             geb = p.danoGeB,
-            stDamageMode = stDamageMode,
+            stDamageMode = viewModel.stDamageMode,
             modificadorAtaque = modificadorAtaque,
             isPraCegoVariant = isPraCegoVariant,
             isVerySmallScreen = isVerySmallScreen,
@@ -539,7 +550,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             innerCardVerticalPadding = innerCardVerticalPadding,
             onConfigAtaque = { showConfigAtaqueDialog = true },
             onConfigDano = { showConfigDanoDialog = true },
-            onUpdateStDamageMode = { stDamageMode = it },
+            onUpdateStDamageMode = { viewModel.atualizarStDamageMode(it) },
             onModificarAtaque = { modificadorAtaque = it },
             onExecutarAtaque = { att, mod ->
                 executarRolagem(
@@ -604,10 +615,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             opcoesAtaque = opcoesAtaque,
             ataqueAtual = ataqueAtual,
             onAtaqueSelecionado = { id -> 
-                ataqueSelecionadoKey = id
-                if (id?.startsWith("vant_inato_") == true) {
-                    fonteDanoSelecionadaId = id
-                }
+                viewModel.atualizarAtaqueSelecionado(id)
                 showConfigAtaqueDialog = false 
             },
             onDismiss = { showConfigAtaqueDialog = false }
@@ -617,8 +625,11 @@ fun TabRolagem(viewModel: FichaViewModel) {
     if (showConfigDanoDialog) {
         RolagemConfigurarDanoDialog(
             fontesDano = fontesDano,
-            fonteDanoAtual = fonteDanoAtual,
-            onFonteDanoSelecionada = { id -> fonteDanoSelecionadaId = id },
+            fonteDanoAtual = fonteDanoAtual ?: fontesDano.first(),
+            onFonteDanoSelecionada = { id -> 
+                viewModel.atualizarFonteDanoSelecionada(id)
+                showConfigDanoDialog = false
+            },
             onDismiss = { showConfigDanoDialog = false }
         )
     }

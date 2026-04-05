@@ -21,6 +21,7 @@ import com.gurps.ficha.domain.MestreIAUseCase
 import com.gurps.ficha.domain.engine.MagicEngine
 import com.gurps.ficha.domain.engine.SkillEngine
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoSnapshot
+import com.gurps.ficha.ui.features.rolagem.StDamageMode
 
 enum class DefenseType { ESQUIVA, APARA, BLOQUEIO }
 
@@ -98,6 +99,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
+
+    // Estados de Sess\u00e3o (Interface) - N\u00e3o salvos no JSON
+    var ataqueSelecionadoId by mutableStateOf<String?>(null)
+    var fonteDanoSelecionadaId by mutableStateOf<String?>("st_base")
+    var stDamageMode by mutableStateOf(StDamageMode.GDP)
+
+    fun atualizarAtaqueSelecionado(id: String?) { ataqueSelecionadoId = id }
+    fun atualizarFonteDanoSelecionada(id: String?) { fonteDanoSelecionadaId = id }
+    fun atualizarStDamageMode(mode: StDamageMode) { stDamageMode = mode }
 
     // Outros caches
     private val magiasByIdCache by lazy { dataRepository.magias.associateBy { it.id } }
