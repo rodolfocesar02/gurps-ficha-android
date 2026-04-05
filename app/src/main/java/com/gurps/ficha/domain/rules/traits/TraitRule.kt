@@ -48,6 +48,31 @@ interface TraitRule {
     ): List<DamageSourceOption> = emptyList()
 
     /**
+     * Retorna o bônus de Esquiva (Dodge) concedido pela vantagem.
+     */
+    fun getDodgeModifier(
+        personagem: Personagem,
+        selection: VantagemSelecionada
+    ): Int = 0
+
+    /**
+     * Retorna o bônus de Bloqueio (Block) concedido pela vantagem.
+     */
+    fun getBlockModifier(
+        personagem: Personagem,
+        selection: VantagemSelecionada
+    ): Int = 0
+
+    /**
+     * Retorna o bônus de bônus de Aparar (Parry) concedido pela vantagem.
+     */
+    fun getParryModifier(
+        personagem: Personagem,
+        selection: VantagemSelecionada,
+        periciaId: String?
+    ): Int = 0
+
+    /**
      * Retorna bônus em perícias que esta vantagem concede.
      * Ex: mapOf("Escalada" to 3)
      */

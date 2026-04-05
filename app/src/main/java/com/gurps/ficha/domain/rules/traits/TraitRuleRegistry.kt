@@ -16,6 +16,9 @@ object TraitRuleRegistry {
         register(DentesRule())
         register(FlexibilidadeRule())
         register(GarrasRule())
+        register(ApararAmpliadoRule())
+        register(BloqueioAmpliadoRule())
+        register(EsquivaAmpliadaRule())
     }
 
     private fun register(rule: TraitRule) {
@@ -45,6 +48,48 @@ object TraitRuleRegistry {
                 val bonuses = rule.getSkillModifiers(personagem, selection)
                 val bonus = bonuses[skillName] ?: 0
                 total += bonus
+            }
+        }
+        return total
+    }
+
+    /**
+     * Retorna a soma de bônus em Aparar (Parry) vindo de todas as vantagens do personagem.
+     */
+    fun getParryBonus(personagem: Personagem, periciaId: String?): Int {
+        var total = 0
+        personagem.vantagens.forEach { selection ->
+            val rule = rules[selection.definicaoId]
+            if (rule != null) {
+                total += rule.getParryModifier(personagem, selection, periciaId)
+            }
+        }
+        return total
+    }
+
+    /**
+     * Retorna a soma de bônus em Esquiva (Dodge) vindo de todas as vantagens do personagem.
+     */
+    fun getDodgeBonus(personagem: Personagem): Int {
+        var total = 0
+        personagem.vantagens.forEach { selection ->
+            val rule = rules[selection.definicaoId]
+            if (rule != null) {
+                total += rule.getDodgeModifier(personagem, selection)
+            }
+        }
+        return total
+    }
+
+    /**
+     * Retorna a soma de bônus em Bloqueio (Block) vindo de todas as vantagens do personagem.
+     */
+    fun getBlockBonus(personagem: Personagem): Int {
+        var total = 0
+        personagem.vantagens.forEach { selection ->
+            val rule = rules[selection.definicaoId]
+            if (rule != null) {
+                total += rule.getBlockModifier(personagem, selection)
             }
         }
         return total

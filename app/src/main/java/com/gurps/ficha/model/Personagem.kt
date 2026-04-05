@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.CombatRules
+import com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
 import java.text.Normalizer
 
 import androidx.compose.runtime.Stable
@@ -679,11 +680,13 @@ data class DefesasAtivas(
      * GURPS 4Ed: Esquiva básica = floor(Velocidade Básica + 3)
      */
     fun calcularEsquiva(personagem: Personagem): Int {
-        return CombatRules.calcularEsquiva(
+        val base = CombatRules.calcularEsquiva(
             esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga,
             bonusManual = bonusManualEsquiva
         )
+        val traitBonus = TraitRuleRegistry.getDodgeBonus(personagem)
+        return base + traitBonus
     }
 
     fun getEsquivaBase(personagem: Personagem): Int {
@@ -703,7 +706,10 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        return CombatRules.calcularApara(nh, bonusManualApara)
+        val baseApara = CombatRules.calcularApara(nh, bonusManualApara)
+        val traitBonus = TraitRuleRegistry.getParryBonus(personagem, pericia.definicaoId)
+        
+        return baseApara + traitBonus
     }
 
     fun getAparaBase(personagem: Personagem): Int? {
@@ -733,7 +739,10 @@ data class DefesasAtivas(
 
         val nh = pericia.calcularNivel(personagem)
         val bonusEscudo = getBonusEscudo(personagem)
-        return CombatRules.calcularBloqueio(nh, bonusEscudo, bonusManualBloqueio)
+        val baseBloqueio = CombatRules.calcularBloqueio(nh, bonusEscudo, bonusManualBloqueio)
+        val traitBonus = TraitRuleRegistry.getBlockBonus(personagem)
+        
+        return baseBloqueio + traitBonus
     }
 
     fun getBloqueioBase(personagem: Personagem): Int? {
