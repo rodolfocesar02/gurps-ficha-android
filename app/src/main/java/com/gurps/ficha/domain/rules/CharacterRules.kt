@@ -461,8 +461,8 @@ object CharacterRules {
     }
 
     fun calcularCustoFavor(basePoints: Int, multiplicadores: Float, custoFixo: Int = 0, isContact: Boolean = false): Int {
-        // Favor (Patrono) = 1/10 do custo de um Patrono com frequ\u00eancia 15- (x3)
-        // Favor (Contato) = 1/5 do custo de um Contato com frequ\u00eancia 15- (x3)
+        // Favor (Patrono) = 1/10 do custo de um Patrono com frequência 15- (x3)
+        // Favor (Contato) = 1/5 do custo de um Contato com frequência 15- (x3)
         val baseModificada = basePoints * multiplicadores + custoFixo
         val freqBase = 3.0 // Sempre base 15-
         val divisor = if (isContact) 5.0 else 10.0

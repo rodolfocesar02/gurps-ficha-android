@@ -130,9 +130,9 @@ fun formatDamageCore(parsed: ParsedDamage): String {
 }
 
 fun formatDamageTypeLabel(damageType: String): String = when (damageType.lowercase().trim()) {
-    "cont" -> "Contus\u00e3o (cont)"
+    "cont" -> "Contusão (cont)"
     "cort" -> "Corte (cort)"
-    "perf" -> "Perfura\u00e3o (perf)"
+    "perf" -> "Perfuração (perf)"
     "pa-" -> "Pouco Perfurante (pa-)"
     "pa" -> "Perfurante (pa)"
     "pa+" -> "Muito Perfurante (pa+)"

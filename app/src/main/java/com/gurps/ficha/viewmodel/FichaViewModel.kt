@@ -100,7 +100,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
 
-    // Estados de Sess\u00e3o (Interface) - N\u00e3o salvos no JSON
+    // Estados de Sessão (Interface) - Não salvos no JSON
     var ataqueSelecionadoId by mutableStateOf<String?>(null)
     var fonteDanoSelecionadaId by mutableStateOf<String?>("st_base")
     var stDamageMode by mutableStateOf(StDamageMode.GDP)

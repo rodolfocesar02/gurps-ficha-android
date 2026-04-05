@@ -212,7 +212,7 @@ fun ConfigurarVantagemDialog(
         else -> null
     }
 
-    // Sincroniza\u00e7\u00e3o de custos especiais
+    // Sincronização de custos especiais
     LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
@@ -641,7 +641,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
 
 
 
-// --- Configura\u00e7\u00f5es Espec??ficas (Special Rules) ---
+// --- Configurações Específicas (Special Rules) ---
 
 @Composable
 fun AliadosConfig(currentRatio: Int, currentFreq: Float, currentGroup: Int, onChanged: (Int, Float, Int) -> Unit) {
@@ -899,7 +899,7 @@ fun RetencaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (Modifica
     }
 }
 
-// --- Seletores Gen\u00e9ricos ---
+// --- Seletores Genéricos ---
 
 @Composable
 fun SeletorPoderAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
@@ -1038,10 +1038,10 @@ fun DentesConfig(
     onChanged: (String) -> Unit
 ) {
     val options = listOf(
-        "rombo" to "Rombos (Contus\u00e3o: cont) - 0 pts",
+        "rombo" to "Rombos (Contusão: cont) - 0 pts",
         "bico_afiado" to "Bico Afiado (Muito Perfurante: pa+) - 1 pt",
         "dentes_afiados" to "Dentes Afiados (Corte: cort) - 1 pt",
-        "presas" to "Presas (Perfura\u00e3o: perf) - 2 pts"
+        "presas" to "Presas (Perfuração: perf) - 2 pts"
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
