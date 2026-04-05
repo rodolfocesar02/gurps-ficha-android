@@ -22,6 +22,7 @@ Responsável pelo acesso a dados persistentes e assets.
 ### ⚙️ 3. Domain & Rules (`/domain/rules` e `/regras_prerequisitos`)
 A lógica do sistema GURPS 4ª Edição.
 - **[CharacterRules.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/domain/rules/CharacterRules.kt):** Cálculo de custos gerais. Utiliza o `TraitRuleRegistry` para delegar cálculos complexos.
+- **[CombatRules.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/domain/rules/CombatRules.kt):** Lógica pura de combate (Esquiva, Apara, Bloqueio, Dano). Inclui a regra de BD do Escudo.
 - **[traits/](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/domain/rules/traits/):** Pasta com a nova arquitetura modular.
     - **TraitRule.kt:** Interface base para automação.
     - **TraitRuleRegistry.kt:** Mapeia IDs de vantagens para seus arquivos de regra.
@@ -30,12 +31,14 @@ A lógica do sistema GURPS 4ª Edição.
 
 ### 📱 4. UI Layout (`/ui`)
 Componentes visuais organizados por abas (`Tab*.kt`) e diálogos (`Dialogs*.kt`).
-- **[TabRolagem.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabRolagem.kt):** Aba principal de combate. Gerencia ataques, defesas e danos.
+- **[TabRolagem.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabRolagem.kt):** Aba principal de combate. 
+- **[RolagemSecondaryDialogs.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/rolagem/RolagemSecondaryDialogs.kt):** Diálogos de edição de Esquiva, Apara e Bloqueio (Inclui notas explicativas de BD).
 - **[VantagemDialogs.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/features/traits/VantagemDialogs.kt):** Configuração detalhada de vantagens (modificadores, metadados).
 - **[TabVtt.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/ui/TabVtt.kt):** Integração massiva com mesas virtuais (Discord, etc).
 
-### 🧠 5. ViewModel (`/viewmodel`)
-- **[FichaViewModel.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt):** O controlador principal. Mantém o `FichaUIState` e coordena salvamento/carregamento.
+### 🧠 5. ViewModel & Delegates (`/viewmodel`)
+- **[FichaViewModel.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/viewmodel/FichaViewModel.kt):** O controlador principal. Mantém o `FichaUIState`.
+- **[FichaCombatDelegate.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/viewmodel/delegates/FichaCombatDelegate.kt):** Delegado que gerencia a lógica de exibição e cálculo de NH de combate (Ataque e Defesa).
 
 ---
 
@@ -56,4 +59,4 @@ Arquivos para memória e inteligência dos assistentes de codificação.
 
 > [!TIP]
 > **Fluxo de Dados Típico:**
-> Se o usuário muda um valor na UI (`TabRolagem`), a ação é enviada para o `FichaViewModel`, que utiliza `CharacterRules` para validar/recalcular e atualiza o `Personagem` (Model), que por fim é persistido via `DataRepository`.
+> Se o usuário muda um valor na UI (`TabRolagem`), a ação é enviada para o `FichaViewModel`, que utiliza delegates (como `FichaCombatDelegate`) e classes de regra (`CombatRules`, `CharacterRules`) para recalcular e atualizar o `Personagem` (Model).
