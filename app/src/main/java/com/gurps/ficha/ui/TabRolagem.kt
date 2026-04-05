@@ -138,7 +138,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 ))
             }
         }
-
         p.vantagens.filter { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }.forEach { vant ->
             val dice = vant.metadados?.get("dice") ?: "1"
             val bonus = vant.metadados?.get("bonus")?.toIntOrNull() ?: 0
