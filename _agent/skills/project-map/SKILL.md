@@ -21,8 +21,12 @@ Responsável pelo acesso a dados persistentes e assets.
 
 ### ⚙️ 3. Domain & Rules (`/domain/rules` e `/regras_prerequisitos`)
 A lógica do sistema GURPS 4ª Edição.
-- **[CharacterRules.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/domain/rules/CharacterRules.kt):** Cálculo de custos de PV, PF, Atributos e Vantagens Especiais (como **Ataque Inato**).
-- **[PreRequisitoParser.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/regras_prerequisitos/PreRequisitoParser.kt):** Analisa strings complexas de pré-requisitos (ex: "AM1, IQ 12+, 5 magias de Fogo").
+- **[CharacterRules.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/domain/rules/CharacterRules.kt):** Cálculo de custos gerais. Utiliza o `TraitRuleRegistry` para delegar cálculos complexos.
+- **[traits/](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/domain/rules/traits/):** Pasta com a nova arquitetura modular.
+    - **TraitRule.kt:** Interface base para automação.
+    - **TraitRuleRegistry.kt:** Mapeia IDs de vantagens para seus arquivos de regra.
+    - **[Nome]Rule.kt:** Cada arquivo isola a lógica de uma vantagem específica (ex: `AtaqueInatoRule.kt`).
+- **[PreRequisitoParser.kt](file:///c:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps/ficha/regras_prerequisitos/PreRequisitoParser.kt):** Analisa strings complexas de pré-requisitos.
 
 ### 📱 4. UI Layout (`/ui`)
 Componentes visuais organizados por abas (`Tab*.kt`) e diálogos (`Dialogs*.kt`).

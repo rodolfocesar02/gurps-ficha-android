@@ -98,39 +98,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ))
         }
 
-        p.vantagens.filter { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }.forEach { vant ->
-            val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
-            
-            val nh = if (vant.definicaoId == "golpeadores") {
-                // Golpeadores usa DX ou Briga (pág 62)
-                val periciaBriga = p.pericias.find { it.definicaoId == "briga" }
-                val nivelBriga = periciaBriga?.calcularNivel(p) ?: 0
-                val nivelDx = p.destreza
-                
-                // Também verifica se existe uma perícia específica (ex: Golpeadores (Cauda))
-                val periciaEspecífica = p.pericias.find { 
-                    it.definicaoId == "golpeadores" && 
-                    (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
-                }
-                val nivelEspecifica = periciaEspecífica?.calcularNivel(p) ?: 0
-                
-                maxOf(nivelDx, nivelBriga, nivelEspecifica)
-            } else {
-                // Ataque Inato usa perícia de Ataque Inato ou DX-4
-                val periciaInata = p.pericias.find { 
-                    it.definicaoId == "ataque_inato" && 
-                    (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
-                } ?: p.pericias.find { it.definicaoId == "ataque_inato" }
-                
-                periciaInata?.calcularNivel(p) ?: (p.destreza - 4)
+        p.vantagens.forEach { vant ->
+            com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(vant.definicaoId)?.let { rule ->
+                list.addAll(rule.getAttackOptions(p, vant))
             }
-
-            list.add(RollMappedOption(
-                id = "vant_${vant.definicaoId}_${nomePers}", 
-                label = nomePers,
-                contextLabel = "Ataque $nomePers",
-                target = nh
-            ))
         }
         list
     }
@@ -138,23 +109,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val defesasAtivas = remember(viewModel.defesasAtivasVisiveis, p.vantagens, p.pericias) {
         val list = viewModel.defesasAtivasVisiveis.toMutableList()
         
-        // Adicionar Aparar de Golpeadores (pág. 62: maior entre DX/2 + 3 ou Aparar da Briga)
-        p.vantagens.filter { it.definicaoId == "golpeadores" }.forEach { vant ->
-            val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
-            
-            val periciaBriga = p.pericias.find { it.definicaoId == "briga" }
-            val nhBriga = periciaBriga?.calcularNivel(p) ?: 0
-            val aparaBriga = if (nhBriga > 0) (nhBriga / 2) + 3 else 0
-            val aparaDx = (p.destreza / 2) + 3
-            val aparaBase = maxOf(aparaBriga, aparaDx)
-            
-            list.add(com.gurps.ficha.viewmodel.ActiveDefense(
-                type = com.gurps.ficha.viewmodel.DefenseType.APARA,
-                name = "Apara ($nomePers)",
-                baseValue = aparaBase,
-                bonus = 0, // Bônus manuais de Aparar geral poderiam ser aplicados aqui se desejado
-                finalValue = aparaBase
-            ))
+        p.vantagens.forEach { vant ->
+            com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(vant.definicaoId)?.let { rule ->
+                list.addAll(rule.getDefenseOptions(p, vant))
+            }
         }
         list
     }
@@ -178,27 +136,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 ))
             }
         }
-        p.vantagens.filter { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }.forEach { vant ->
-            val dice = vant.metadados?.get("dice") ?: "1"
-            val bonus = vant.metadados?.get("bonus")?.toIntOrNull() ?: 0
-            val tipo = vant.metadados?.get("tipoDano") ?: "cont"
-            val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
-            
-            val bonusStr = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
-            
-            // Se for Golpeador e não houver dados, o dano é "baseado em ST" (tokens GdP/GeB)
-            val expr = if (vant.definicaoId == "golpeadores" && dice == "0" && bonus == 0) {
-               "GdP $tipo" // Default para Golpeadores sem dados extras é o dano por ST (GdP)
-            } else {
-               "${dice}d${bonusStr} $tipo"
+        p.vantagens.forEach { vant ->
+            com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(vant.definicaoId)?.let { rule ->
+                list.addAll(rule.getDamageOptions(p, vant))
             }
-            
-            list.add(DamageSourceOption(
-                id = "vant_${vant.definicaoId}_${nomePers}",
-                label = nomePers,
-                contextLabel = "Dano $nomePers",
-                damageExpression = expr
-            ))
         }
         list
     }
