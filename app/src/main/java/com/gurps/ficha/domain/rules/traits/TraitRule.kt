@@ -46,4 +46,13 @@ interface TraitRule {
         personagem: Personagem,
         selection: VantagemSelecionada
     ): List<DamageSourceOption> = emptyList()
+
+    /**
+     * Retorna bônus em perícias que esta vantagem concede.
+     * Ex: mapOf("Escalada" to 3)
+     */
+    fun getSkillModifiers(
+        personagem: Personagem,
+        selection: VantagemSelecionada
+    ): Map<String, Int> = emptyMap()
 }

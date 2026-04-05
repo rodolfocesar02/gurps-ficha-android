@@ -1,5 +1,7 @@
 package com.gurps.ficha.domain.rules.traits
 
+import com.gurps.ficha.model.Personagem
+
 /**
  * Registro central de regras de vantagens.
  * Permite localizar rapidamente qual regra se aplica a cada ID.
@@ -12,6 +14,8 @@ object TraitRuleRegistry {
         register(AtaqueInatoRule())
         register(GolpeadoresRule())
         register(DentesRule())
+        register(FlexibilidadeRule())
+        register(GarrasRule())
     }
 
     private fun register(rule: TraitRule) {
@@ -29,4 +33,20 @@ object TraitRuleRegistry {
      * Retorna se a vantagem tem regras complexas/especiais.
      */
     fun hasSpecialRule(traitId: String): Boolean = rules.containsKey(traitId)
+
+    /**
+     * Retorna a soma de bônus em perícia vindo de todas as vantagens do personagem.
+     */
+    fun getSkillBonus(personagem: Personagem, skillName: String): Int {
+        var total = 0
+        personagem.vantagens.forEach { selection ->
+            val rule = rules[selection.definicaoId]
+            if (rule != null) {
+                val bonuses = rule.getSkillModifiers(personagem, selection)
+                val bonus = bonuses[skillName] ?: 0
+                total += bonus
+            }
+        }
+        return total
+    }
 }

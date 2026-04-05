@@ -485,7 +485,10 @@ data class PericiaSelecionada(
             it.nome.equals(nome, ignoreCase = true) 
         }?.nivelRelativo ?: 0
         
-        return valorAtributo + bonus + bonusRacial
+        // Bônus de vantagens automatizadas
+        val bonusVantagens = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getSkillBonus(personagem, nome)
+        
+        return valorAtributo + bonus + bonusRacial + bonusVantagens
     }
 
     fun getNivelRelativo(personagem: Personagem): String {

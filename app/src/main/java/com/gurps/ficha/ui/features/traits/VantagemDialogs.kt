@@ -200,6 +200,7 @@ fun ConfigurarVantagemDialog(
     var dadosAtaque by remember { mutableStateOf(1) }
     var bonusAtaque by remember { mutableStateOf(0) }
     var tipoDentes by remember { mutableStateOf("rombo") }
+    var tipoGarras by remember { mutableStateOf("afiadas") }
 
     val metadados = when (definicao.id) {
         "ataque_inato", "golpeadores" -> mapOf(
@@ -209,16 +210,26 @@ fun ConfigurarVantagemDialog(
             "nomePersonalizado" to nomeAtaque
         )
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
+        "garras" -> mapOf("tipoGarras" to tipoGarras)
         else -> null
     }
 
     // Sincronização de custos especiais
-    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor) {
+    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
             "patronos" -> custoEscolhido = CharacterRules.calcularCustoPatrono(powerPatrono, freqPatrono, modPatrono, if (secretoPatrono) -5 else 0)
             "favor" -> custoEscolhido = CharacterRules.calcularCustoFavor(powerFavor, modFavor, if (secretoFavor) -5 else 0, isContactFavor)
+            "garras" -> {
+                custoEscolhido = when (tipoGarras) {
+                    "cegas" -> 3
+                    "afiadas" -> 5
+                    "pontudas" -> 8
+                    "longas_pontudas" -> 11
+                    else -> 5
+                }
+            }
         }
     }
 
@@ -347,10 +358,16 @@ fun ConfigurarVantagemDialog(
                         }
                     }
                     TipoCusto.ESCOLHA -> {
-                        opcoesEscolha.forEach { opcao ->
-                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { custoEscolhido = opcao }) {
-                                RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
-                                Text("$opcao pts")
+                        if (definicao.id == "dentes") {
+                            DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
+                        } else if (definicao.id == "garras") {
+                            GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                        } else {
+                            opcoesEscolha.forEach { opcao ->
+                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { custoEscolhido = opcao }) {
+                                    RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
+                                    Text("$opcao pts")
+                                }
                             }
                         }
                         OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição/Especializações") }, modifier = Modifier.fillMaxWidth())
@@ -397,6 +414,12 @@ fun ConfigurarVantagemDialog(
                                 DentesConfig(
                                     currentType = tipoDentes,
                                     onChanged = { tipoDentes = it }
+                                )
+                            }
+                            "garras" -> {
+                                GarrasConfig(
+                                    currentType = tipoGarras,
+                                    onChanged = { tipoGarras = it }
                                 )
                             }
                             "contatos" -> {
@@ -521,6 +544,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
     var dadosAtaque by remember { mutableStateOf(vantagem.metadados?.get("dice")?.toIntOrNull() ?: 1) }
     var bonusAtaque by remember { mutableStateOf(vantagem.metadados?.get("bonus")?.toIntOrNull() ?: 0) }
     var tipoDentes by remember { mutableStateOf(vantagem.metadados?.get("tipoDentes") ?: "rombo") }
+    var tipoGarras by remember { mutableStateOf(vantagem.metadados?.get("tipoGarras") ?: "afiadas") }
 
     val metadados = when (vantagem.definicaoId) {
         "ataque_inato", "golpeadores" -> mapOf(
@@ -530,6 +554,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
             "nomePersonalizado" to nomeAtaque
         )
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
+        "garras" -> mapOf("tipoGarras" to tipoGarras)
         else -> null
     }
 
@@ -575,14 +600,32 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                     } else {
                         OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                     }
+                } else if (vantagem.tipoCusto == TipoCusto.ESCOLHA) {
+                    if (vantagem.definicaoId == "dentes") {
+                        DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
+                    } else if (vantagem.definicaoId == "garras") {
+                        GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                    } else {
+                        val opcoes = def?.custo?.split(" ou ")?.mapNotNull { it.trim().toIntOrNull() } ?: emptyList()
+                        opcoes.forEach { opcao ->
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { custoEscolhido = opcao }) {
+                                RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
+                                Text("$opcao pts")
+                            }
+                        }
+                    }
+                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 } else if (vantagem.tipoCusto == TipoCusto.VARIAVEL) {
                     Text("Custo Variável: $custoEscolhido pts")
-                    if (vantagem.definicaoId == "ataque_inato") {
+                    if (vantagem.definicaoId == "dentes") {
+                        DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
+                    } else if (vantagem.definicaoId == "garras") {
+                        GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                    } else if (vantagem.definicaoId == "ataque_inato") {
                         AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
                     } else if (vantagem.definicaoId == "golpeadores") {
                         GolpeadoresConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
-                    } else if (vantagem.definicaoId == "dentes") {
-                        DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
+                        GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
                     }
                     OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 } else {
@@ -1046,6 +1089,49 @@ fun DentesConfig(
 
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Tipo de Dentes:", style = MaterialTheme.typography.titleSmall)
+        options.forEach { (id, label) ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onChanged(id) },
+                colors = CardDefaults.cardColors(
+                    containerColor = if (currentType == id) 
+                        MaterialTheme.colorScheme.primaryContainer 
+                    else 
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ),
+                border = if (currentType == id) 
+                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary) 
+                else null
+            ) {
+                Row(
+                    modifier = Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(selected = currentType == id, onClick = { onChanged(id) })
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(label, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun GarrasConfig(
+    currentType: String,
+    onChanged: (String) -> Unit
+) {
+    val options = listOf(
+        "cascos" to "Cascos (GdP +1 por dado, Contusão) - 3 pts",
+        "cegas" to "Garras Cegas (GdP +1 por dado, Contusão) - 3 pts",
+        "afiadas" to "Garras Afiadas (GdP, Corte) - 5 pts",
+        "pontudas" to "Garras Pontudas (GdP, Corte ou Perfuração) - 8 pts",
+        "longas_pontudas" to "Longas Garras Pontudas (GdP +1 por dado, Corte ou Perfuração) - 11 pts"
+    )
+
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text("Tipo de Garras:", style = MaterialTheme.typography.titleSmall)
         options.forEach { (id, label) ->
             Card(
                 modifier = Modifier
