@@ -85,9 +85,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Rolagem")
     }
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
     val hideAppChrome = selectedTitle == "VTT" && vttImmersiveUi
@@ -280,7 +280,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Técnicas" -> TabTecnicas(viewModel)
                 "Magia" -> TabMagias(viewModel)
                 "Equip." -> TabEquipamentos(viewModel)
-                "Defesas" -> TabCombate(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
                 else -> TabGeral(viewModel)
             }

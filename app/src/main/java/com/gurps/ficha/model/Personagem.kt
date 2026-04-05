@@ -619,7 +619,8 @@ enum class TipoEquipamento {
     GERAL,
     ARMA,
     ESCUDO,
-    ARMADURA
+    ARMADURA,
+    CAPA
 }
 
 @Stable
@@ -755,7 +756,7 @@ data class DefesasAtivas(
     }
 
     fun getBonusEscudo(personagem: Personagem): Int {
-        val escudos = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO }
+        val escudos = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO || it.tipo == TipoEquipamento.CAPA }
         if (escudos.isEmpty()) return 0
 
         val nomeSelecionado = escudoSelecionadoNome

@@ -46,18 +46,21 @@ class FichaCombatDelegate {
             name = "Esquiva",
             baseValue = personagem.defesasAtivas.getEsquivaBase(personagem),
             bonus = personagem.defesasAtivas.bonusManualEsquiva,
-            finalValue = personagem.defesasAtivas.calcularEsquiva(personagem)
+            finalValue = personagem.defesasAtivas.calcularEsquiva(personagem),
+            detail = if (personagem.defesasAtivas.bonusManualEsquiva != 0) "ajustado" else null
         ))
         
         // Apara
         personagem.defesasAtivas.calcularApara(personagem)?.let { finalVal ->
             personagem.defesasAtivas.getAparaBase(personagem)?.let { baseVal ->
+                val periciaNome = personagem.pericias.find { it.definicaoId == personagem.defesasAtivas.periciaAparaId }?.nome ?: ""
                 lista.add(ActiveDefense(
                     type = DefenseType.APARA,
                     name = "Apara",
                     baseValue = baseVal,
                     bonus = personagem.defesasAtivas.bonusManualApara,
-                    finalValue = finalVal
+                    finalValue = finalVal,
+                    detail = periciaNome
                 ))
             }
         }
@@ -65,13 +68,16 @@ class FichaCombatDelegate {
         // Bloqueio
         personagem.defesasAtivas.calcularBloqueio(personagem)?.let { finalVal ->
             personagem.defesasAtivas.getBloqueioBase(personagem)?.let { baseVal ->
+                val periciaNome = personagem.pericias.find { it.definicaoId == personagem.defesasAtivas.periciaBloqueioId }?.nome ?: ""
+                val escudoNome = personagem.defesasAtivas.escudoSelecionadoNome ?: ""
                 val db = personagem.defesasAtivas.getBonusEscudo(personagem)
                 lista.add(ActiveDefense(
                     type = DefenseType.BLOQUEIO,
                     name = "Bloqueio",
                     baseValue = baseVal + db,
                     bonus = personagem.defesasAtivas.bonusManualBloqueio,
-                    finalValue = finalVal
+                    finalValue = finalVal,
+                    detail = if (escudoNome.isNotBlank()) "$periciaNome ($escudoNome)" else periciaNome
                 ))
             }
         }

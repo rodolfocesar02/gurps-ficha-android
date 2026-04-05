@@ -30,7 +30,8 @@ data class ActiveDefense(
     val name: String,
     val baseValue: Int,
     val bonus: Int,
-    val finalValue: Int
+    val finalValue: Int,
+    val detail: String? = null
 )
 
 data class RollDispatchStatus(val enviado: Boolean, val detalhe: String? = null)
@@ -105,7 +106,23 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     var fonteDanoSelecionadaId by mutableStateOf<String?>("st_base")
     var stDamageMode by mutableStateOf(StDamageMode.GDP)
 
-    fun atualizarAtaqueSelecionado(id: String?) { ataqueSelecionadoId = id }
+    fun atualizarAtaqueSelecionado(id: String?) {
+        ataqueSelecionadoId = id
+        // Sincronia Automática com Apara
+        id?.let { selectedId ->
+            if (selectedId.startsWith("pericia_")) {
+                val parts = selectedId.split("_")
+                if (parts.size >= 2) {
+                    val skillId = parts[1].lowercase()
+                    if (PERICIAS_COMBATE.contains(skillId) && skillId != "escudo") {
+                        atualizarPericiaApara(skillId)
+                    } else if (skillId == "escudo" || skillId == "capa") {
+                        atualizarPericiaBloqueio(skillId)
+                    }
+                }
+            }
+        }
+    }
     fun atualizarFonteDanoSelecionada(id: String?) { fonteDanoSelecionadaId = id }
     fun atualizarStDamageMode(mode: StDamageMode) { stDamageMode = mode }
 
@@ -347,9 +364,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val aparaCalculada get() = personagem.defesasAtivas.calcularApara(personagem)
     val bloqueioCalculado get() = personagem.defesasAtivas.calcularBloqueio(personagem)
     val defesasAtivasVisiveis get() = combatDelegate.calcularDefesasVisiveis(personagem)
-    val escudosEquipados get() = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO }.sortedBy { it.nome.lowercase() }
+    val escudosEquipados get() = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO || it.tipo == TipoEquipamento.CAPA }.sortedBy { it.nome.lowercase() }
     val periciasParaApara get() = personagem.pericias.filter { it.definicaoId.lowercase() in PERICIAS_COMBATE && it.definicaoId.lowercase() != "escudo" }
-    val periciasParaBloqueio get() = personagem.pericias.filter { it.definicaoId.lowercase() == "escudo" }
+    val periciasParaBloqueio get() = personagem.pericias.filter { it.definicaoId.lowercase() == "escudo" || it.definicaoId.lowercase() == "capa" }
     
     fun atualizarBonusManualEsquiva(b: Int) { personagem = combatDelegate.atualizarBonusManualEsquiva(personagem, b) }
     fun atualizarPericiaApara(id: String?) { personagem = combatDelegate.atualizarPericiaApara(personagem, id) }

@@ -674,11 +674,14 @@ fun DefesasAtivasQuickRollPanel(
     defenseNumberStyle: androidx.compose.ui.text.TextStyle,
     compactLabelStyle: androidx.compose.ui.text.TextStyle,
     innerCardVerticalPadding: androidx.compose.ui.unit.Dp,
+    onConfigEsquiva: () -> Unit,
+    onConfigApara: () -> Unit,
+    onConfigBloqueio: () -> Unit,
     onExecutarRolagem: (com.gurps.ficha.viewmodel.ActiveDefense, Int) -> Unit
 ) {
     if (defesasAtivas.isEmpty()) {
         Text(
-            "Nenhuma defesa ativa configurada (Apara/Bloqueio). Configure na aba Combate.",
+            "Nenhuma defesa ativa configurada.",
             style = compactLabelStyle,
             color = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier.padding(vertical = 4.dp)
@@ -689,6 +692,11 @@ fun DefesasAtivasQuickRollPanel(
     if (isPraCegoVariant) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
             defesasAtivas.forEach { defesa ->
+                val configClick = when (defesa.type) {
+                    com.gurps.ficha.viewmodel.DefenseType.ESQUIVA -> onConfigEsquiva
+                    com.gurps.ficha.viewmodel.DefenseType.APARA -> onConfigApara
+                    com.gurps.ficha.viewmodel.DefenseType.BLOQUEIO -> onConfigBloqueio
+                }
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = appCardColors()
@@ -700,7 +708,17 @@ fun DefesasAtivasQuickRollPanel(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(defesa.name, style = cardTitleStyle, fontWeight = FontWeight.SemiBold)
+                        Column {
+                            Text(
+                                defesa.name,
+                                style = cardTitleStyle,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.clickable { configClick() }
+                            )
+                            if (!defesa.detail.isNullOrBlank()) {
+                                Text(defesa.detail!!, style = compactLabelStyle)
+                            }
+                        }
                         Text(
                             text = defesa.finalValue.toString(),
                             modifier = Modifier
@@ -726,6 +744,11 @@ fun DefesasAtivasQuickRollPanel(
         ) {
             defesasAtivas.forEach { defesa ->
                 val modDef = modificadoresDefesa[defesa.type] ?: 0
+                val configClick = when (defesa.type) {
+                    com.gurps.ficha.viewmodel.DefenseType.ESQUIVA -> onConfigEsquiva
+                    com.gurps.ficha.viewmodel.DefenseType.APARA -> onConfigApara
+                    com.gurps.ficha.viewmodel.DefenseType.BLOQUEIO -> onConfigBloqueio
+                }
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -734,13 +757,16 @@ fun DefesasAtivasQuickRollPanel(
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     Text(
-                        text = defesa.name,
+                        text = defesa.name.uppercase(),
                         textAlign = TextAlign.Center,
-                        style = cardTitleStyle,
+                        style = compactLabelStyle,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .clickable { configClick() }
+                            .padding(horizontal = 4.dp, vertical = 2.dp)
                     )
                     Text(
                         text = defesa.finalValue.toString(),
@@ -771,13 +797,22 @@ fun DefesasAtivasQuickRollPanel(
                         textAlign = TextAlign.Center,
                         style = defenseNumberStyle,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
                     )
-                    if (modDef != 0) {
+                    
+                    val lblAtivo = when {
+                        modDef != 0 -> "mod ${if (modDef >= 0) "+$modDef" else modDef}"
+                        !defesa.detail.isNullOrBlank() -> defesa.detail!!
+                        else -> ""
+                    }
+                    
+                    if (lblAtivo.isNotBlank()) {
                         Text(
-                            text = "mod ${if (modDef >= 0) "+$modDef" else modDef}",
+                            text = lblAtivo,
                             style = compactLabelStyle,
-                            maxLines = 1
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
