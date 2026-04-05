@@ -100,12 +100,30 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
         p.vantagens.filter { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }.forEach { vant ->
             val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
-            val periciaCorrespondente = p.pericias.find { 
-                (it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores") && 
-                (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
-            } ?: p.pericias.find { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }
-
-            val nh = periciaCorrespondente?.calcularNivel(p) ?: (p.destreza - 4)
+            
+            val nh = if (vant.definicaoId == "golpeadores") {
+                // Golpeadores usa DX ou Briga (pág 62)
+                val periciaBriga = p.pericias.find { it.definicaoId == "briga" }
+                val nivelBriga = periciaBriga?.calcularNivel(p) ?: 0
+                val nivelDx = p.destreza
+                
+                // Também verifica se existe uma perícia específica (ex: Golpeadores (Cauda))
+                val periciaEspecífica = p.pericias.find { 
+                    it.definicaoId == "golpeadores" && 
+                    (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
+                }
+                val nivelEspecifica = periciaEspecífica?.calcularNivel(p) ?: 0
+                
+                maxOf(nivelDx, nivelBriga, nivelEspecifica)
+            } else {
+                // Ataque Inato usa perícia de Ataque Inato ou DX-4
+                val periciaInata = p.pericias.find { 
+                    it.definicaoId == "ataque_inato" && 
+                    (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
+                } ?: p.pericias.find { it.definicaoId == "ataque_inato" }
+                
+                periciaInata?.calcularNivel(p) ?: (p.destreza - 4)
+            }
 
             list.add(RollMappedOption(
                 id = "vant_${vant.definicaoId}_${nomePers}", 
@@ -117,7 +135,29 @@ fun TabRolagem(viewModel: FichaViewModel) {
         list
     }
 
-    val defesasAtivas = viewModel.defesasAtivasVisiveis
+    val defesasAtivas = remember(viewModel.defesasAtivasVisiveis, p.vantagens, p.pericias) {
+        val list = viewModel.defesasAtivasVisiveis.toMutableList()
+        
+        // Adicionar Aparar de Golpeadores (pág. 62: maior entre DX/2 + 3 ou Aparar da Briga)
+        p.vantagens.filter { it.definicaoId == "golpeadores" }.forEach { vant ->
+            val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
+            
+            val periciaBriga = p.pericias.find { it.definicaoId == "briga" }
+            val nhBriga = periciaBriga?.calcularNivel(p) ?: 0
+            val aparaBriga = if (nhBriga > 0) (nhBriga / 2) + 3 else 0
+            val aparaDx = (p.destreza / 2) + 3
+            val aparaBase = maxOf(aparaBriga, aparaDx)
+            
+            list.add(com.gurps.ficha.viewmodel.ActiveDefense(
+                type = com.gurps.ficha.viewmodel.DefenseType.APARA,
+                name = "Apara ($nomePers)",
+                baseValue = aparaBase,
+                bonus = 0, // Bônus manuais de Aparar geral poderiam ser aplicados aqui se desejado
+                finalValue = aparaBase
+            ))
+        }
+        list
+    }
 
     var ataqueSelecionadoKey by remember { mutableStateOf<String?>(null) }
     val ataqueAtual = remember(ataqueSelecionadoKey, opcoesAtaque) {
