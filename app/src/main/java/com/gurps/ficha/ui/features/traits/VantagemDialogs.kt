@@ -194,20 +194,23 @@ fun ConfigurarVantagemDialog(
     var secretoFavor by remember { mutableStateOf(false) }
     var isContactFavor by remember { mutableStateOf(false) }
 
-    // Estados para Ataque Inato
+    // Estados para Ataque Inato / Golpeadores / Dentes
     var nomeAtaque by remember { mutableStateOf("") }
     var tipoDanoAtaque by remember { mutableStateOf("cont") }
     var dadosAtaque by remember { mutableStateOf(1) }
     var bonusAtaque by remember { mutableStateOf(0) }
+    var tipoDentes by remember { mutableStateOf("rombo") }
 
-    val metadadosAtaque = if (definicao.id == "ataque_inato" || definicao.id == "golpeadores") {
-        mapOf(
+    val metadados = when (definicao.id) {
+        "ataque_inato", "golpeadores" -> mapOf(
             "tipoDano" to tipoDanoAtaque,
             "dice" to dadosAtaque.toString(),
             "bonus" to bonusAtaque.toString(),
             "nomePersonalizado" to nomeAtaque
         )
-    } else null
+        "dentes" -> mapOf("tipoDentes" to tipoDentes)
+        else -> null
+    }
 
     // Sincroniza\u00e7\u00e3o de custos especiais
     LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor) {
@@ -248,13 +251,14 @@ fun ConfigurarVantagemDialog(
                 verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)
             ) {
                 val custoCalculado = CharacterRules.calcularCustoVantagem(
+                    personagem = null,
                     definicaoId = definicao.id,
                     tipoCusto = definicao.tipoCusto,
-                    custoBase = definicao.getCustoPorNivel().takeIf { it != 0 } ?: definicao.getCustoBase(),
+                    custoBase = definicao.getCustoBase(),
                     custoEscolhido = custoEscolhido,
                     nivel = nivel,
                     modificadores = mods,
-                    metadados = metadadosAtaque
+                    metadados = metadados
                 )
 
                 Card(
@@ -389,6 +393,12 @@ fun ConfigurarVantagemDialog(
                                     }
                                 )
                             }
+                            "dentes" -> {
+                                DentesConfig(
+                                    currentType = tipoDentes,
+                                    onChanged = { tipoDentes = it }
+                                )
+                            }
                             "contatos" -> {
                                 ContatosConfig(
                                     currentNh = nhContato,
@@ -451,7 +461,7 @@ fun ConfigurarVantagemDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(nivel, custoEscolhido, descricao, mods, metadadosAtaque) },
+                onClick = { onSave(nivel, custoEscolhido, descricao, mods, metadados) },
                 enabled = (definicao.id != "ataque_inato" && definicao.id != "golpeadores") || nomeAtaque.isNotBlank()
             ) { Text(UiActionLabels.ADICIONAR) }
         },
@@ -510,10 +520,18 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
     var tipoDanoAtaque by remember { mutableStateOf(vantagem.metadados?.get("tipoDano") ?: "cont") }
     var dadosAtaque by remember { mutableStateOf(vantagem.metadados?.get("dice")?.toIntOrNull() ?: 1) }
     var bonusAtaque by remember { mutableStateOf(vantagem.metadados?.get("bonus")?.toIntOrNull() ?: 0) }
+    var tipoDentes by remember { mutableStateOf(vantagem.metadados?.get("tipoDentes") ?: "rombo") }
 
-    val metadadosAtaque = if (vantagem.definicaoId == "ataque_inato" || vantagem.definicaoId == "golpeadores") {
-        mapOf("tipoDano" to tipoDanoAtaque, "dice" to dadosAtaque.toString(), "bonus" to bonusAtaque.toString(), "nomePersonalizado" to nomeAtaque)
-    } else null
+    val metadados = when (vantagem.definicaoId) {
+        "ataque_inato", "golpeadores" -> mapOf(
+            "tipoDano" to tipoDanoAtaque,
+            "dice" to dadosAtaque.toString(),
+            "bonus" to bonusAtaque.toString(),
+            "nomePersonalizado" to nomeAtaque
+        )
+        "dentes" -> mapOf("tipoDentes" to tipoDentes)
+        else -> null
+    }
 
     val def = remember { CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(vantagem.definicaoId) }
 
@@ -526,13 +544,14 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                 val custoCalculado = CharacterRules.calcularCustoVantagem(
+                    personagem = null,
                     definicaoId = vantagem.definicaoId,
                     tipoCusto = vantagem.tipoCusto,
-                    custoBase = def?.getCustoPorNivel() ?: vantagem.custoBase,
+                    custoBase = def?.getCustoBase() ?: vantagem.custoBase,
                     custoEscolhido = custoEscolhido,
                     nivel = nivel,
                     modificadores = mods,
-                    metadados = metadadosAtaque
+                    metadados = metadados
                 )
                 
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
@@ -562,6 +581,8 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                         AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
                     } else if (vantagem.definicaoId == "golpeadores") {
                         GolpeadoresConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
+                    } else if (vantagem.definicaoId == "dentes") {
+                        DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
                     }
                     OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 } else {
@@ -580,9 +601,11 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
             }
         },
         confirmButton = {
-            TextButton(onClick = {
-                onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, modificadores = mods.toMutableList(), metadados = metadadosAtaque))
-            }) { Text(UiActionLabels.SALVAR) }
+            TextButton(
+                onClick = {
+                    onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, modificadores = mods, metadados = metadados))
+                }
+            ) { Text(UiActionLabels.SALVAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
@@ -1005,6 +1028,50 @@ fun ContatosConfig(
                 onDismiss = { showConfList = false },
                 onSelect = { newVal: Float -> onChanged(currentNh, currentFreq, newVal); showConfList = false }
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun DentesConfig(
+    currentType: String,
+    onChanged: (String) -> Unit
+) {
+    val tipos = listOf(
+        "rombo" to "Dentes Rombos (0 pts)",
+        "bico_afiado" to "Bico Afiado (1 pt)",
+        "dentes_afiados" to "Dentes Afiados (1 pt)",
+        "presas" to "Presas (2 pts)"
+    )
+
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text("Tipo de Dentição:", style = MaterialTheme.typography.labelLarge)
+        
+        tipos.forEach { (id, label) ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onChanged(id) },
+                colors = CardDefaults.cardColors(
+                    containerColor = if (currentType == id) 
+                        MaterialTheme.colorScheme.primaryContainer 
+                    else 
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ),
+                border = if (currentType == id) 
+                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary) 
+                else null
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(selected = currentType == id, onClick = { onChanged(id) })
+                    Spacer(Modifier.width(8.dp))
+                    Text(label, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
         }
     }
 }

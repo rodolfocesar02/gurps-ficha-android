@@ -11,6 +11,7 @@ object TraitRuleRegistry {
         // Registro de REGRAS COMPLEXAS (Alfabeto e migrações atuais)
         register(AtaqueInatoRule())
         register(GolpeadoresRule())
+        register(DentesRule())
     }
 
     private fun register(rule: TraitRule) {
