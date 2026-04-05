@@ -33,7 +33,7 @@ fun RolagemHeader(
         onClick = onEditCanal,
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(50.dp),
         contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (backendOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
@@ -350,7 +350,7 @@ fun AtaqueDanoQuickArea(
                 onClick = onConfigAtaque,
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp),
+                    .height(36.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             ) {
                 Text(
@@ -363,7 +363,7 @@ fun AtaqueDanoQuickArea(
                 onClick = onConfigDano,
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp),
+                    .height(36.dp),
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
             ) {
                 Text(
@@ -565,7 +565,8 @@ fun MenuBotoesNavegacaoRolagem(
     ) {
         Button(
             onClick = onShowPericias,
-            modifier = Modifier.fillMaxWidth().height(52.dp)
+            modifier = Modifier.fillMaxWidth().height(42.dp),
+            contentPadding = PaddingValues(vertical = 2.dp)
         ) {
             Text(
                 "Perícias",
@@ -578,7 +579,8 @@ fun MenuBotoesNavegacaoRolagem(
         if (showTecnicas) {
             Button(
                 onClick = onShowTecnicas,
-                modifier = Modifier.fillMaxWidth().height(52.dp)
+                modifier = Modifier.fillMaxWidth().height(42.dp),
+                contentPadding = PaddingValues(vertical = 2.dp)
             ) {
                 Text(
                     "Técnicas",
@@ -592,7 +594,8 @@ fun MenuBotoesNavegacaoRolagem(
         if (showMagias) {
             Button(
                 onClick = onShowMagias,
-                modifier = Modifier.fillMaxWidth().height(52.dp)
+                modifier = Modifier.fillMaxWidth().height(42.dp),
+                contentPadding = PaddingValues(vertical = 2.dp)
             ) {
                 Text(
                     "Magias",
@@ -605,7 +608,8 @@ fun MenuBotoesNavegacaoRolagem(
 
         Button(
             onClick = onShowRolagemLivre,
-            modifier = Modifier.fillMaxWidth().height(52.dp)
+            modifier = Modifier.fillMaxWidth().height(42.dp),
+            contentPadding = PaddingValues(vertical = 2.dp)
         ) {
             Text(
                 "Rolagem Livre",
@@ -654,9 +658,11 @@ fun HistoricoRolagemPanel(
                         color = MaterialTheme.colorScheme.error
                     )
                     OutlinedButton(
-                        onClick = { onReenviar(index, item) }
+                        onClick = { onReenviar(index, item) },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                     ) {
-                        Text("Reenviar")
+                        Text("Reenviar", style = MaterialTheme.typography.labelSmall)
                     }
                 }
                 Spacer(modifier = Modifier.height(4.dp))

@@ -244,7 +244,8 @@ fun RolagemPersonalizadaDialog(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(42.dp)
+                        .height(36.dp),
+                    contentPadding = PaddingValues(vertical = 2.dp)
                 ) {
                     Text(
                         "Rolar $expressaoPersonalizada",
@@ -612,7 +613,8 @@ fun RolagemEditarCanalDialog(
                 Button(
                     onClick = onAtualizarCanais,
                     enabled = !canaisCarregando,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().height(36.dp),
+                    contentPadding = PaddingValues(vertical = 2.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (backendOnline) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                     )
@@ -655,7 +657,7 @@ fun EditarEsquivaBonusDialog(
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    "A Esquiva usa Deslocamento + 3 como base. Ajuste apenas o bônus manual.",
+                    "A Esquiva usa Deslocamento + 3 como base. O Bônus de Defesa (BD) do seu escudo já é adicionado automaticamente.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -677,14 +679,22 @@ fun EditarEsquivaBonusDialog(
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = {
-                        bonus = (bonus - 1).coerceIn(-20, 20)
-                        texto = if (bonus >= 0) "+$bonus" else "$bonus"
-                    }) { Text("-1") }
-                    Button(onClick = {
-                        bonus = (bonus + 1).coerceIn(-20, 20)
-                        texto = if (bonus >= 0) "+$bonus" else "$bonus"
-                    }) { Text("+1") }
+                    Button(
+                        onClick = {
+                            bonus = (bonus - 1).coerceIn(-20, 20)
+                            texto = if (bonus >= 0) "+$bonus" else "$bonus"
+                        },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) { Text("-1") }
+                    Button(
+                        onClick = {
+                            bonus = (bonus + 1).coerceIn(-20, 20)
+                            texto = if (bonus >= 0) "+$bonus" else "$bonus"
+                        },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) { Text("+1") }
                 }
             }
         },
@@ -715,6 +725,11 @@ fun EditarAparaDialog(
         title = { Text("Editar Apara") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    "O Apara é calculado como (Perícia / 2) + 3. O BD do escudo e vantagens também são somados automaticamente.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 ExposedDropdownMenuBox(
                     expanded = expandedPericia,
                     onExpandedChange = { expandedPericia = !expandedPericia }
@@ -769,14 +784,22 @@ fun EditarAparaDialog(
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = {
-                        bonus = (bonus - 1).coerceIn(-20, 20)
-                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
-                    }) { Text("-1") }
-                    Button(onClick = {
-                        bonus = (bonus + 1).coerceIn(-20, 20)
-                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
-                    }) { Text("+1") }
+                    Button(
+                        onClick = {
+                            bonus = (bonus - 1).coerceIn(-20, 20)
+                            textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                        },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) { Text("-1") }
+                    Button(
+                        onClick = {
+                            bonus = (bonus + 1).coerceIn(-20, 20)
+                            textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                        },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) { Text("+1") }
                 }
             }
         },
@@ -812,6 +835,11 @@ fun EditarBloqueioDialog(
         title = { Text("Editar Bloqueio") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    "O Bloqueio é calculado como (Perícia / 2) + 3. O BD do escudo e vantagens também são somados automaticamente.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 ExposedDropdownMenuBox(
                     expanded = expandedPericia,
                     onExpandedChange = { expandedPericia = !expandedPericia }
@@ -901,14 +929,22 @@ fun EditarBloqueioDialog(
                 )
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(onClick = {
-                        bonus = (bonus - 1).coerceIn(-20, 20)
-                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
-                    }) { Text("-1") }
-                    Button(onClick = {
-                        bonus = (bonus + 1).coerceIn(-20, 20)
-                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
-                    }) { Text("+1") }
+                    Button(
+                        onClick = {
+                            bonus = (bonus - 1).coerceIn(-20, 20)
+                            textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                        },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) { Text("-1") }
+                    Button(
+                        onClick = {
+                            bonus = (bonus + 1).coerceIn(-20, 20)
+                            textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                        },
+                        modifier = Modifier.height(32.dp),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                    ) { Text("+1") }
                 }
             }
         },

@@ -41,26 +41,33 @@ class FichaCombatDelegate {
         val lista = mutableListOf<ActiveDefense>()
         
         // Esquiva
+        val db = personagem.defesasAtivas.getBonusEscudo(personagem)
         lista.add(ActiveDefense(
             type = DefenseType.ESQUIVA,
             name = "Esquiva",
             baseValue = personagem.defesasAtivas.getEsquivaBase(personagem),
             bonus = personagem.defesasAtivas.bonusManualEsquiva,
             finalValue = personagem.defesasAtivas.calcularEsquiva(personagem),
-            detail = if (personagem.defesasAtivas.bonusManualEsquiva != 0) "ajustado" else null
+            detail = when {
+                db > 0 && personagem.defesasAtivas.bonusManualEsquiva != 0 -> "ajustado (BD+$db)"
+                db > 0 -> "BD+$db"
+                personagem.defesasAtivas.bonusManualEsquiva != 0 -> "ajustado"
+                else -> null
+            }
         ))
         
         // Apara
         personagem.defesasAtivas.calcularApara(personagem)?.let { finalVal ->
             personagem.defesasAtivas.getAparaBase(personagem)?.let { baseVal ->
                 val periciaNome = personagem.pericias.find { it.definicaoId == personagem.defesasAtivas.periciaAparaId }?.nome ?: ""
+                val dbApara = personagem.defesasAtivas.getBonusEscudo(personagem)
                 lista.add(ActiveDefense(
                     type = DefenseType.APARA,
                     name = "Apara",
                     baseValue = baseVal,
                     bonus = personagem.defesasAtivas.bonusManualApara,
                     finalValue = finalVal,
-                    detail = periciaNome
+                    detail = if (dbApara > 0) "$periciaNome (BD+$dbApara)" else periciaNome
                 ))
             }
         }

@@ -681,9 +681,11 @@ data class DefesasAtivas(
      * GURPS 4Ed: Esquiva básica = floor(Velocidade Básica + 3)
      */
     fun calcularEsquiva(personagem: Personagem): Int {
+        val bonusEscudo = getBonusEscudo(personagem)
         val base = CombatRules.calcularEsquiva(
             esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga,
+            bonusEscudo = bonusEscudo,
             bonusManual = bonusManualEsquiva
         )
         val traitBonus = TraitRuleRegistry.getDodgeBonus(personagem)
@@ -691,10 +693,11 @@ data class DefesasAtivas(
     }
 
     fun getEsquivaBase(personagem: Personagem): Int {
+        val bonusEscudo = getBonusEscudo(personagem)
         return CombatRules.calcularEsquivaBase(
             esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga
-        )
+        ) + bonusEscudo
     }
 
     /**
@@ -707,7 +710,8 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        val baseApara = CombatRules.calcularApara(nh, bonusManualApara)
+        val bonusEscudo = getBonusEscudo(personagem)
+        val baseApara = CombatRules.calcularApara(nh, bonusEscudo, bonusManualApara)
         val traitBonus = TraitRuleRegistry.getParryBonus(personagem, pericia.definicaoId)
         
         return baseApara + traitBonus
@@ -719,7 +723,8 @@ data class DefesasAtivas(
         } ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        return CombatRules.calcularAparaBase(nh)
+        val bonusEscudo = getBonusEscudo(personagem)
+        return CombatRules.calcularAparaBase(nh) + bonusEscudo
     }
 
     fun getPericiaApara(personagem: Personagem): PericiaSelecionada? {
