@@ -19,6 +19,7 @@ object TraitRuleRegistry {
         register(ApararAmpliadoRule())
         register(BloqueioAmpliadoRule())
         register(EsquivaAmpliadaRule())
+        register(MestreDeArmasRule())
     }
 
     private fun register(rule: TraitRule) {
@@ -90,6 +91,20 @@ object TraitRuleRegistry {
             val rule = rules[selection.definicaoId]
             if (rule != null) {
                 total += rule.getBlockModifier(personagem, selection)
+            }
+        }
+        return total
+    }
+
+    /**
+     * Retorna a soma de bônus de dano por dado (ex: Mestre de Armas) acumulado.
+     */
+    fun getDamageBonusPerDie(personagem: Personagem, periciaId: String?): Int {
+        var total = 0
+        personagem.vantagens.forEach { selection ->
+            val rule = rules[selection.definicaoId]
+            if (rule != null) {
+                total += rule.getDamageBonusPerDie(personagem, selection, periciaId)
             }
         }
         return total

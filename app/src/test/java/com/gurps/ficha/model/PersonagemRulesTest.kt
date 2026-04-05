@@ -40,7 +40,7 @@ class PersonagemRulesTest {
         )
 
         assertEquals(10f, personagem.baseCarga)
-        assertEquals(25f, personagem.pesoTotal)
+        assertEquals(25f, personagem.pesoTotalEquipamentos)
         assertEquals(2, personagem.nivelCarga) // ate 3x BC
         assertEquals(3, personagem.deslocamentoAtual) // 5 * 0.6
         assertEquals(8, personagem.esquiva) // esquiva base sem penalidade
@@ -187,8 +187,8 @@ class PersonagemRulesTest {
             )
         )
 
-        // Esquiva base 8, carga 2, bonus +1
-        assertEquals(7, personagem.defesasAtivas.calcularEsquiva(personagem))
+        // Esquiva base 8, carga 2, bonus manual +1, DB escudo +2 = 9
+        assertEquals(9, personagem.defesasAtivas.calcularEsquiva(personagem))
         // NH 11 -> (11/2)+3 = 8
         assertEquals(8, personagem.defesasAtivas.calcularApara(personagem))
         // Base 8 + DB 2 + bonus manual 1
@@ -264,8 +264,8 @@ class PersonagemRulesTest {
             equipamentos = base.equipamentos + Equipamento(nome = "Carga", peso = 25f)
         )
 
-        assertEquals(8, base.defesasAtivas.calcularEsquiva(base))
-        assertEquals(6, comCarga.defesasAtivas.calcularEsquiva(comCarga))
+        assertEquals(10, base.defesasAtivas.calcularEsquiva(base))
+        assertEquals(8, comCarga.defesasAtivas.calcularEsquiva(comCarga))
 
         assertEquals(base.defesasAtivas.calcularApara(base), comCarga.defesasAtivas.calcularApara(comCarga))
         assertEquals(base.defesasAtivas.calcularBloqueio(base), comCarga.defesasAtivas.calcularBloqueio(comCarga))

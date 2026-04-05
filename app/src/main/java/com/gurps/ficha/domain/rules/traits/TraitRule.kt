@@ -80,4 +80,13 @@ interface TraitRule {
         personagem: Personagem,
         selection: VantagemSelecionada
     ): Map<String, Int> = emptyMap()
+
+    /**
+     * Retorna o bônus de dano por dado (ex: Mestre de Armas).
+     */
+    fun getDamageBonusPerDie(
+        personagem: Personagem,
+        selection: VantagemSelecionada,
+        periciaId: String?
+    ): Int = 0
 }

@@ -302,14 +302,21 @@ fun TabRolagem(viewModel: FichaViewModel) {
         registrarResultado(textoHist, payload)
     }
 
-    fun executarRolagemDano(contextoLabel: String, danoExpr: String) {
+    fun executarRolagemDano(contextoLabel: String, danoExpr: String, periciaId: String? = null) {
         val parsed = parseDamageExpression(danoExpr) ?: return
+        
+        // Aplicar bônus global (ex: Mestre de Armas)
+        val bonusPorDado = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getDamageBonusPerDie(p, periciaId)
+        val bonusTotalExtra = bonusPorDado * parsed.diceCount
+        val totalModificador = parsed.modifier + bonusTotalExtra
+        
         val rolagens = List(parsed.diceCount) { Random.nextInt(1, 7) }
         val somaDados = rolagens.sum()
-        val total = (somaDados + parsed.modifier).coerceAtLeast(1)
+        val total = (somaDados + totalModificador).coerceAtLeast(1)
         
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val textoHist = "[$timestamp] Dano $contextoLabel ($danoExpr): $total"
+        val extraInfo = if (bonusTotalExtra != 0) " [+$bonusTotalExtra Mestre]" else ""
+        val textoHist = "[$timestamp] Dano $contextoLabel ($danoExpr): $total$extraInfo"
         
         val payload = DiscordRollPayload(
             character = p.nome,
@@ -317,7 +324,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             context = "Dano $contextoLabel",
             dice = rolagens,
             total = total,
-            modifier = parsed.modifier,
+            modifier = totalModificador,
             target = null,
             outcome = "dano",
             margin = null,
@@ -559,9 +566,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 )
             },
             onExecutarDano = { dano ->
+                val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
+                    ataqueAtual.id.split("_").getOrNull(1)
+                } else null
+                
                 executarRolagemDano(
                     contextoLabel = fonteDanoAtual.contextLabel,
-                    danoExpr = dano
+                    danoExpr = dano,
+                    periciaId = perId
                 )
             }
         )

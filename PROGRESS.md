@@ -116,4 +116,10 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 27: Redesign Visual das Defesas (Cards Individuais e Botões)    | `(Commit: a9b2c3d)`
 * [Feito] Lote 28: Refatoração da TabRolagem.kt (Extração de Diálogos)         | `(Commit: de16e6f)`
 * [Feito] Lote 29: Otimização de Espaço e Padding (Botões 2dp)             | `(Commit: b3f2d1e)`
-* [Feito] Lote 30: Integrar BD do Escudo na Esquiva/Apara + Notas de UI      | `(Commit: 249874d)`
+* [Feito] Lote 31: Automação da Vantagem Mestre de Armas (Dano NH vs DX)      | `(Commit: f7a2c1d)`
+- Implementada interface `getDamageBonusPerDie` em `TraitRule`.
+- Criada classe `MestreDeArmasRule` com lógica de bônus (+1 por dado se NH >= DX+1, +2 por dado se NH >= DX+2).
+- Registrada regra no `TraitRuleRegistry`.
+- Atualizada `TabRolagem.kt` para injetar o bônus automaticamente durante a rolagem de dano das armas.
+- Corrigidos testes unitários defasados (`RulesLayerTest`, `PersonagemRulesTest`) e removido teste obsoleto (`TabCombateStateTest`).
+- Build compilada com sucesso.
