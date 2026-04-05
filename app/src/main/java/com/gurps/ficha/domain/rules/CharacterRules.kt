@@ -177,6 +177,9 @@ object CharacterRules {
         if (definicaoId == "ataque_inato" && metadados != null) {
             return calcularCustoAtaqueInato(metadados, modificadores)
         }
+        if (definicaoId == "golpeadores" && metadados != null) {
+            return calcularCustoGolpeador(metadados, modificadores)
+        }
 
         val valorBase = if (
             definicaoId.equals("aptidao_magica", ignoreCase = true) ||
@@ -209,6 +212,40 @@ object CharacterRules {
 
         // Vantagem deve custar no mínimo 1 ponto se o base era positivo e não foi reduzido a zero
         return if (custoCalculado < 1 && valorBase > 0) 1 else custoCalculado
+    }
+
+    private fun calcularCustoGolpeador(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
+        val tipoDano = metadados["tipoDano"] ?: "cont"
+        val dice = metadados["dice"]?.toFloatOrNull() ?: 0f
+        val bonus = metadados["bonus"]?.toIntOrNull() ?: 0
+
+        val custoPorTipo = when(tipoDano.lowercase()) {
+            "cont", "contusao", "contusão", "perfurante-", "pi-", "piercing-", "perfurante", "pa", "pi", "piercing" -> 5
+            "perfurante+", "pa+", "pi+", "large_piercing", "large piercing" -> 6
+            "corte", "cut" -> 7
+            "perfuracao", "perfuração", "imp", "pa++", "huge_piercing", "huge piercing" -> 8
+            else -> 5
+        }
+
+        // Se o usuário configurar dados (como o Ataque Inato), usamos a mesma lógica de multiplicador,
+        // mas se for apenas o Golpeador básico (0 dados, 0 bônus), o custo é o custoPorTipo.
+        val multiplicadorDados = if (dice == 0f && bonus == 0) {
+            1.0f 
+        } else if (dice == 0f && (bonus == 1 || bonus == -1)) {
+            0.25f
+        } else {
+            dice + (bonus * 0.25f)
+        }
+
+        val valorBase = (multiplicadorDados * custoPorTipo).toInt().coerceAtLeast(1)
+
+        val somaPercentual = modificadores.sumOf {
+            if (it.porNivel) it.valor * it.niveis else it.valor
+        }
+        val percentualFinal = somaPercentual.coerceAtLeast(-80)
+        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
+        
+        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt().coerceAtLeast(1)
     }
 
     private fun calcularCustoAtaqueInato(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {

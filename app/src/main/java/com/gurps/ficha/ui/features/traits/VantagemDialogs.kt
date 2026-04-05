@@ -200,7 +200,7 @@ fun ConfigurarVantagemDialog(
     var dadosAtaque by remember { mutableStateOf(1) }
     var bonusAtaque by remember { mutableStateOf(0) }
 
-    val metadadosAtaque = if (definicao.id == "ataque_inato") {
+    val metadadosAtaque = if (definicao.id == "ataque_inato" || definicao.id == "golpeadores") {
         mapOf(
             "tipoDano" to tipoDanoAtaque,
             "dice" to dadosAtaque.toString(),
@@ -375,6 +375,20 @@ fun ConfigurarVantagemDialog(
                                     }
                                 )
                             }
+                            "golpeadores" -> {
+                                GolpeadoresConfig(
+                                    nome = nomeAtaque,
+                                    tipoDano = tipoDanoAtaque,
+                                    dados = dadosAtaque,
+                                    bonus = bonusAtaque,
+                                    onChanged = { n, t, d, b ->
+                                        nomeAtaque = n
+                                        tipoDanoAtaque = t
+                                        dadosAtaque = d
+                                        bonusAtaque = b
+                                    }
+                                )
+                            }
                             "contatos" -> {
                                 ContatosConfig(
                                     currentNh = nhContato,
@@ -438,7 +452,7 @@ fun ConfigurarVantagemDialog(
         confirmButton = {
             TextButton(
                 onClick = { onSave(nivel, custoEscolhido, descricao, mods, metadadosAtaque) },
-                enabled = definicao.id != "ataque_inato" || nomeAtaque.isNotBlank()
+                enabled = (definicao.id != "ataque_inato" && definicao.id != "golpeadores") || nomeAtaque.isNotBlank()
             ) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
@@ -497,7 +511,7 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
     var dadosAtaque by remember { mutableStateOf(vantagem.metadados?.get("dice")?.toIntOrNull() ?: 1) }
     var bonusAtaque by remember { mutableStateOf(vantagem.metadados?.get("bonus")?.toIntOrNull() ?: 0) }
 
-    val metadadosAtaque = if (vantagem.definicaoId == "ataque_inato") {
+    val metadadosAtaque = if (vantagem.definicaoId == "ataque_inato" || vantagem.definicaoId == "golpeadores") {
         mapOf("tipoDano" to tipoDanoAtaque, "dice" to dadosAtaque.toString(), "bonus" to bonusAtaque.toString(), "nomePersonalizado" to nomeAtaque)
     } else null
 
@@ -546,6 +560,8 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                     Text("Custo Variável: $custoEscolhido pts")
                     if (vantagem.definicaoId == "ataque_inato") {
                         AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
+                    } else if (vantagem.definicaoId == "golpeadores") {
+                        GolpeadoresConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
                     }
                     OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 } else {
@@ -749,6 +765,100 @@ fun AtaqueInatoConfig(
         }
     }
 }
+
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@Composable
+fun GolpeadoresConfig(
+    nome: String,
+    tipoDano: String,
+    dados: Int,
+    bonus: Int,
+    onChanged: (String, String, Int, Int) -> Unit
+) {
+    val tiposDano = listOf(
+        "cont" to "Contusão",
+        "corte" to "Corte",
+        "perfuracao" to "Perfuração",
+        "pa-" to "Perfurante-",
+        "pa" to "Perfurante",
+        "pa+" to "Perfurante+",
+        "pa++" to "Perfurante++"
+    )
+
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        OutlinedTextField(
+            value = nome,
+            onValueChange = { onChanged(it, tipoDano, dados, bonus) },
+            label = { Text("Nome do Golpeador (ex: Cauda Espinhosa)") },
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+
+        Text("Tipo de Dano:", style = MaterialTheme.typography.labelMedium)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            tiposDano.forEach { (id, label) ->
+                FilterChip(
+                    selected = tipoDano == id,
+                    onClick = { onChanged(nome, id, dados, bonus) },
+                    label = { Text(label, fontSize = 11.sp) }
+                )
+            }
+        }
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column {
+                Text("Dados/Bônus extras (opcional):", style = MaterialTheme.typography.labelMedium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { if (dados > 0) onChanged(nome, tipoDano, dados - 1, bonus) }) {
+                        Text("-", style = MaterialTheme.typography.titleLarge)
+                    }
+                    Text("${dados}d", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = { if (dados < 20) onChanged(nome, tipoDano, dados + 1, bonus) }) {
+                        Icon(Icons.Default.Add, "Mais dados")
+                    }
+                }
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                Text("Bônus:", style = MaterialTheme.typography.labelMedium)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = { if (bonus > -5) onChanged(nome, tipoDano, dados, bonus - 1) }) {
+                        Text("-", style = MaterialTheme.typography.titleLarge)
+                    }
+                    val bonusStr = if (bonus >= 0) "+$bonus" else "$bonus"
+                    Text(bonusStr, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    IconButton(onClick = { if (bonus < 5) onChanged(nome, tipoDano, dados, bonus + 1) }) {
+                        Icon(Icons.Default.Add, "Mais bônus")
+                    }
+                }
+            }
+        }
+
+        val bonusDisplay = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
+        val danoFinalDesc = if (dados == 0 && bonus == 0) "Dano baseado em ST" else "${dados}d${bonusDisplay}"
+        
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
+        ) {
+            Text(
+                "Dano Final: $danoFinalDesc ${tiposDano.find { it.first == tipoDano }?.second ?: tipoDano}",
+                modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
 
 @Composable
 fun AtribulacaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (ModificadorSelecao) -> Unit, descricaoContent: @Composable () -> Unit = {}) {

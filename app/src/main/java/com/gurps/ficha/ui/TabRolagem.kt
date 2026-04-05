@@ -98,17 +98,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
             ))
         }
 
-        p.vantagens.filter { it.definicaoId == "ataque_inato" }.forEach { vant ->
+        p.vantagens.filter { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }.forEach { vant ->
             val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
             val periciaCorrespondente = p.pericias.find { 
-                it.definicaoId == "ataque_inato" && 
+                (it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores") && 
                 (it.especializacao.contains(nomePers, ignoreCase = true) || nomePers.contains(it.especializacao, ignoreCase = true))
-            } ?: p.pericias.find { it.definicaoId == "ataque_inato" }
+            } ?: p.pericias.find { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }
 
             val nh = periciaCorrespondente?.calcularNivel(p) ?: (p.destreza - 4)
 
             list.add(RollMappedOption(
-                id = "vant_inato_${nomePers}", 
+                id = "vant_${vant.definicaoId}_${nomePers}", 
                 label = nomePers,
                 contextLabel = "Ataque $nomePers",
                 target = nh
@@ -139,17 +139,23 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
-        p.vantagens.filter { it.definicaoId == "ataque_inato" }.forEach { vant ->
+        p.vantagens.filter { it.definicaoId == "ataque_inato" || it.definicaoId == "golpeadores" }.forEach { vant ->
             val dice = vant.metadados?.get("dice") ?: "1"
             val bonus = vant.metadados?.get("bonus")?.toIntOrNull() ?: 0
             val tipo = vant.metadados?.get("tipoDano") ?: "cont"
             val nomePers = vant.metadados?.get("nomePersonalizado") ?: vant.nome
             
             val bonusStr = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
-            val expr = "${dice}d${bonusStr} $tipo"
+            
+            // Se for Golpeador e não houver dados, o dano é "baseado em ST" (tokens GdP/GeB)
+            val expr = if (vant.definicaoId == "golpeadores" && dice == "0" && bonus == 0) {
+               "GdP $tipo" // Default para Golpeadores sem dados extras é o dano por ST (GdP)
+            } else {
+               "${dice}d${bonusStr} $tipo"
+            }
             
             list.add(DamageSourceOption(
-                id = "vant_inato_${nomePers}",
+                id = "vant_${vant.definicaoId}_${nomePers}",
                 label = nomePers,
                 contextLabel = "Dano $nomePers",
                 damageExpression = expr

@@ -745,7 +745,7 @@
     "id": "golpeadores",
     "nome": "Golpeadores",
     "custo": "5–8",
-    "tipoCusto": "fixo",
+    "tipoCusto": "variavel",
     "pagina": 62
   },
   {
