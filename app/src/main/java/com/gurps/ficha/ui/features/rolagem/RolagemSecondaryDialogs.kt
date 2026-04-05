@@ -22,6 +22,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.ui.appCardColors
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
+import com.gurps.ficha.model.*
 import kotlin.math.abs
 
 @Composable
@@ -363,7 +364,7 @@ fun RolagemEnergiaManualDialog(
     repertorioParaTalisma: List<String>,
     isPraCegoVariant: Boolean,
     onInputMudou: (String) -> Unit,
-    onTalismaVinculadoMudou: (String) -> Unit,
+    onTalismaVinculadoMudou: (String?) -> Unit,
     onAplicar: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -636,5 +637,282 @@ fun RolagemEditarCanalDialog(
                 Text("Fechar")
             }
         }
+    )
+}
+
+@Composable
+fun EditarEsquivaBonusDialog(
+    bonusAtual: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit
+) {
+    var bonus by remember(bonusAtual) { mutableIntStateOf(bonusAtual.coerceIn(-20, 20)) }
+    var texto by remember(bonusAtual) { mutableStateOf(if (bonusAtual >= 0) "+$bonusAtual" else "$bonusAtual") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar Esquiva") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text(
+                    "A Esquiva usa Deslocamento + 3 como base. Ajuste apenas o bônus manual.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                OutlinedTextField(
+                    value = texto,
+                    onValueChange = { novo ->
+                        val filtrado = novo.filterIndexed { index, c -> c.isDigit() || ((c == '+' || c == '-') && index == 0) }
+                        if (filtrado.isBlank() || filtrado == "+" || filtrado == "-") {
+                            texto = filtrado
+                        } else {
+                            val valor = filtrado.replace("+", "").toIntOrNull() ?: return@OutlinedTextField
+                            bonus = valor.coerceIn(-20, 20)
+                            texto = if (bonus >= 0) "+$bonus" else "$bonus"
+                        }
+                    },
+                    singleLine = true,
+                    label = { Text("Bônus") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = {
+                        bonus = (bonus - 1).coerceIn(-20, 20)
+                        texto = if (bonus >= 0) "+$bonus" else "$bonus"
+                    }) { Text("-1") }
+                    Button(onClick = {
+                        bonus = (bonus + 1).coerceIn(-20, 20)
+                        texto = if (bonus >= 0) "+$bonus" else "$bonus"
+                    }) { Text("+1") }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = { onConfirm(bonus) }) { Text("Salvar") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditarAparaDialog(
+    personagem: Personagem,
+    pericias: List<PericiaSelecionada>,
+    periciaSelecionadaId: String?,
+    bonusAtual: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (String?, Int) -> Unit
+) {
+    var selectedPericiaId by remember(periciaSelecionadaId) { mutableStateOf(periciaSelecionadaId) }
+    var expandedPericia by remember { mutableStateOf(false) }
+    var bonus by remember(bonusAtual) { mutableIntStateOf(bonusAtual.coerceIn(-20, 20)) }
+    var textoBonus by remember(bonusAtual) { mutableStateOf(if (bonusAtual >= 0) "+$bonusAtual" else "$bonusAtual") }
+
+    val periciaAtual = pericias.find { it.definicaoId == selectedPericiaId }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar Apara") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                ExposedDropdownMenuBox(
+                    expanded = expandedPericia,
+                    onExpandedChange = { expandedPericia = !expandedPericia }
+                ) {
+                    OutlinedTextField(
+                        value = periciaAtual?.let { "${it.nome} (${it.calcularNivel(personagem)})" } ?: "Nenhuma",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Perícia de combate") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPericia) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedPericia,
+                        onDismissRequest = { expandedPericia = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Nenhuma") },
+                            onClick = {
+                                selectedPericiaId = null
+                                expandedPericia = false
+                            }
+                        )
+                        pericias.forEach { pericia ->
+                            DropdownMenuItem(
+                                text = { Text("${pericia.nome} (${pericia.calcularNivel(personagem)})") },
+                                onClick = {
+                                    selectedPericiaId = pericia.definicaoId
+                                    expandedPericia = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = textoBonus,
+                    onValueChange = { novo ->
+                        val filtrado = novo.filterIndexed { index, c -> c.isDigit() || ((c == '+' || c == '-') && index == 0) }
+                        if (filtrado.isBlank() || filtrado == "+" || filtrado == "-") {
+                            textoBonus = filtrado
+                        } else {
+                            val valor = filtrado.replace("+", "").toIntOrNull() ?: return@OutlinedTextField
+                            bonus = valor.coerceIn(-20, 20)
+                            textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                        }
+                    },
+                    singleLine = true,
+                    label = { Text("Bônus") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = {
+                        bonus = (bonus - 1).coerceIn(-20, 20)
+                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                    }) { Text("-1") }
+                    Button(onClick = {
+                        bonus = (bonus + 1).coerceIn(-20, 20)
+                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                    }) { Text("+1") }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = { onConfirm(selectedPericiaId, bonus) }) { Text("Salvar") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EditarBloqueioDialog(
+    personagem: Personagem,
+    pericias: List<PericiaSelecionada>,
+    escudos: List<Equipamento>,
+    periciaSelecionadaId: String?,
+    escudoSelecionadoNome: String?,
+    bonusAtual: Int,
+    onDismiss: () -> Unit,
+    onConfirm: (String?, String?, Int) -> Unit
+) {
+    var selectedPericiaId by remember(periciaSelecionadaId) { mutableStateOf(periciaSelecionadaId) }
+    var selectedEscudoNome by remember(escudoSelecionadoNome) { mutableStateOf(escudoSelecionadoNome) }
+    var expandedPericia by remember { mutableStateOf(false) }
+    var expandedEscudo by remember { mutableStateOf(false) }
+    var bonus by remember(bonusAtual) { mutableIntStateOf(bonusAtual.coerceIn(-20, 20)) }
+    var textoBonus by remember(bonusAtual) { mutableStateOf(if (bonusAtual >= 0) "+$bonusAtual" else "$bonusAtual") }
+
+    val periciaAtual = pericias.find { it.definicaoId == selectedPericiaId }
+    val escudoAtual = escudos.find { it.nome.equals(selectedEscudoNome ?: "", ignoreCase = true) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Editar Bloqueio") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                ExposedDropdownMenuBox(
+                    expanded = expandedPericia,
+                    onExpandedChange = { expandedPericia = !expandedPericia }
+                ) {
+                    OutlinedTextField(
+                        value = periciaAtual?.let { "${it.nome} (${it.calcularNivel(personagem)})" } ?: "Nenhuma",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Perícia de Escudo") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPericia) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedPericia,
+                        onDismissRequest = { expandedPericia = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Nenhuma") },
+                            onClick = {
+                                selectedPericiaId = null
+                                expandedPericia = false
+                            }
+                        )
+                        pericias.forEach { pericia ->
+                            DropdownMenuItem(
+                                text = { Text("${pericia.nome} (${pericia.calcularNivel(personagem)})") },
+                                onClick = {
+                                    selectedPericiaId = pericia.definicaoId
+                                    expandedPericia = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedEscudo,
+                    onExpandedChange = { expandedEscudo = !expandedEscudo }
+                ) {
+                    OutlinedTextField(
+                        value = escudoAtual?.let { "${it.nome} (DB ${it.bonusDefesa ?: 0})" } ?: "Nenhum",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Escudo") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedEscudo) },
+                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(
+                        expanded = expandedEscudo,
+                        onDismissRequest = { expandedEscudo = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Nenhum") },
+                            onClick = {
+                                selectedEscudoNome = null
+                                expandedEscudo = false
+                            }
+                        )
+                        escudos.forEach { escudo ->
+                            DropdownMenuItem(
+                                text = { Text("${escudo.nome} (DB ${escudo.bonusDefesa ?: 0})") },
+                                onClick = {
+                                    selectedEscudoNome = escudo.nome
+                                    expandedEscudo = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = textoBonus,
+                    onValueChange = { novo ->
+                        val filtrado = novo.filterIndexed { index, c -> c.isDigit() || ((c == '+' || c == '-') && index == 0) }
+                        if (filtrado.isBlank() || filtrado == "+" || filtrado == "-") {
+                            textoBonus = filtrado
+                        } else {
+                            val valor = filtrado.replace("+", "").toIntOrNull() ?: return@OutlinedTextField
+                            bonus = valor.coerceIn(-20, 20)
+                            textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                        }
+                    },
+                    singleLine = true,
+                    label = { Text("Bônus") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(onClick = {
+                        bonus = (bonus - 1).coerceIn(-20, 20)
+                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                    }) { Text("-1") }
+                    Button(onClick = {
+                        bonus = (bonus + 1).coerceIn(-20, 20)
+                        textoBonus = if (bonus >= 0) "+$bonus" else "$bonus"
+                    }) { Text("+1") }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = { onConfirm(selectedPericiaId, selectedEscudoNome, bonus) }) { Text("Salvar") } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
 }
