@@ -54,6 +54,7 @@ import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.R
 import com.gurps.ficha.model.PersonagemInterop
 import com.gurps.ficha.update.AppUpdateService
+import com.gurps.ficha.update.AppUpdateHelper
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.launch
 
@@ -74,6 +75,26 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val activity = context as? Activity
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Check automático de atualização na inicialização
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            AppUpdateService.checkForUpdates().onSuccess { state ->
+                if (state.hasUpdate) {
+                    updateDialogTitle = "Nova versão disponível"
+                    updateDialogMessage = buildString {
+                        append("Atual: ${state.currentVersionName} (${state.currentVersionCode})\n")
+                        append("Nova: ${state.latestVersionName} (${state.latestVersionCode})")
+                        if (!state.notes.isNullOrBlank()) {
+                            append("\n\nNotas: ${state.notes}")
+                        }
+                    }
+                    updateApkUrl = state.apkUrl
+                    showUpdateDialog = true
+                }
+            }
+        }
+    }
 
     val temAptidaoMagica = viewModel.temAptidaoMagica
     val configuration = LocalConfiguration.current
@@ -300,7 +321,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 }
             },
             onSalvar = { showMenuDialog = false; showSaveDialog = true },
-            onCarregar = { showMenuDialog = false; showLoadDialog = true },
+            onCarregar = { 
+                showMenuDialog = false
+                viewModel.atualizarListaFichasUnificada()
+                showLoadDialog = true 
+            },
             onImportar = {
                 showMenuDialog = false
                 importLauncher.launch(arrayOf("application/json", "text/plain"))
@@ -348,6 +373,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     if (showSaveDialog) {
         SalvarDialog(
             nomeAtual = viewModel.personagem.nome,
+            viewModel = viewModel,
             onDismiss = { showSaveDialog = false },
             onSalvar = { nome ->
                 viewModel.salvarFicha(nome)
@@ -364,7 +390,8 @@ fun FichaScreen(viewModel: FichaViewModel) {
 
     if (showLoadDialog) {
         CarregarDialog(
-            fichas = viewModel.fichasSalvas,
+            fichasLocais = viewModel.fichasSalvas,
+            fichasNuvem = viewModel.fichasNuvem,
             onDismiss = { showLoadDialog = false },
             onCarregar = { nome ->
                 viewModel.carregarFicha(nome)
@@ -374,6 +401,17 @@ fun FichaScreen(viewModel: FichaViewModel) {
                         message = "Ficha carregada.",
                         duration = SnackbarDuration.Short
                     )
+                }
+            },
+            onCarregarNuvem = { nome ->
+                showLoadDialog = false
+                viewModel.restaurarDaNuvem(nome) { sucesso, msg ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = msg,
+                            duration = SnackbarDuration.Short
+                        )
+                    }
                 }
             },
             onExcluir = { nome ->
@@ -415,11 +453,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 if (!updateApkUrl.isNullOrBlank()) {
                     TextButton(
                         onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateApkUrl)).apply {
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-                            runCatching { context.startActivity(intent) }
+                            val url = updateApkUrl ?: return@TextButton
+                            val fileName = "gurps_update_v${updateDialogMessage.substringAfter("Nova: ").substringBefore(" ")}.apk"
+                            AppUpdateHelper.downloadAndInstall(context, url, fileName)
                             showUpdateDialog = false
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Baixando atualização... Acompanhe na barra de notificações.")
+                            }
                         }
                     ) { Text("Atualizar agora") }
                 } else {

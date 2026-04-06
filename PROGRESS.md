@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 06 de Abril de 2026 (22:30)
-**Status Atual:** Estabilização da Validação Contínua (Sincro V16: Aro Vermelho e Filtro de Rolagem).
+**Última Atualização:** 06 de Abril de 2026 (23:10)
+**Status Atual:** Biblioteca Unificada em Nuvem e Proteção de Conflitos Concluída (Sincro V19).
 
 ---
 
@@ -79,4 +79,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 40: Atualização das Regras Operacionais (Commits e PraCego) | `(Commit: 4f63b8a)`
 * [Feito] Lote 41: Atualização das Regras de RPG GURPS (Combat Context) | `(Commit: d26daad)`
 * [Feito] Lote 45: Restauracao do Aro Vermelho e Filtro de Invisibilidade (Sincro V16) | `(Commit: f604490)`
+* [Feito] Lote 46: Pente Fino de Acessibilidade (TalkBack) em Pre-requisitos (Sincro V17) | `(Commit: bab709c)`
+* [Feito] Lote 47: Sincronização em Nuvem Invisível (Railway + DeviceID) (Sincro V18) | `(Manual: Antigravity)`
+* [Feito] Lote 48: Biblioteca Unificada e Proteção contra Conflitos de Nomes (Sincro V19) | `(Manual: Antigravity)`
 

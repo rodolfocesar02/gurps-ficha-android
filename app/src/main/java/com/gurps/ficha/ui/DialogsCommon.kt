@@ -24,9 +24,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.model.Equipamento
+import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
 fun MenuDialog(
@@ -58,39 +61,119 @@ fun MenuDialog(
 }
 
 @Composable
-fun SalvarDialog(nomeAtual: String, onDismiss: () -> Unit, onSalvar: (String) -> Unit) {
+fun SalvarDialog(
+    nomeAtual: String,
+    viewModel: FichaViewModel,
+    onDismiss: () -> Unit,
+    onSalvar: (String) -> Unit
+) {
     var name by remember { mutableStateOf(nomeAtual) }
+    var showConflictWarning by remember { mutableStateOf(false) }
+    var suggestedName by remember { mutableStateOf("") }
+
+    if (showConflictWarning) {
+        AlertDialog(
+            onDismissRequest = { showConflictWarning = false },
+            title = { Text("Ficha já existente") },
+            text = { Text("Já existe uma ficha chamada '$name'. Deseja sobrescrevê-la ou criar uma cópia?") },
+            confirmButton = {
+                TextButton(onClick = { onSalvar(name); showConflictWarning = false }) {
+                    Text("Sobrescrever")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { 
+                    val n = viewModel.gerarSugeridoComIndice(name)
+                    onSalvar(n)
+                    showConflictWarning = false 
+                }) {
+                    Text("Criar cópia")
+                }
+            }
+        )
+    }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Salvar Ficha") },
         text = { OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nome da Ficha") }, singleLine = true) },
-        confirmButton = { TextButton(onClick = { onSalvar(name) }) { Text(UiActionLabels.SALVAR) } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
+        confirmButton = { 
+            TextButton(
+                onClick = { 
+                    if (viewModel.verificarConflitoNome(name)) {
+                        showConflictWarning = true
+                    } else {
+                        onSalvar(name) 
+                    }
+                },
+                modifier = Modifier.pracegoTraversal(2)
+            ) { Text(UiActionLabels.SALVAR) } 
+        },
+        dismissButton = { 
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.pracegoTraversal(3)
+            ) { Text(UiActionLabels.CANCELAR) } 
+        }
     )
 }
 
 @Composable
-fun CarregarDialog(fichas: List<String>, onDismiss: () -> Unit, onCarregar: (String) -> Unit, onExcluir: (String) -> Unit) {
+fun CarregarDialog(
+    fichasLocais: List<String>,
+    fichasNuvem: List<String>,
+    onDismiss: () -> Unit,
+    onCarregar: (String) -> Unit,
+    onCarregarNuvem: (String) -> Unit,
+    onExcluir: (String) -> Unit
+) {
+    val todasFichas = (fichasLocais + fichasNuvem).distinct().sortedBy { it.lowercase() }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Carregar Ficha") },
         text = {
-            if (fichas.isEmpty()) {
+            if (todasFichas.isEmpty()) {
                 StandardDialogColumn {
-                    Text("Nenhuma ficha salva ainda.")
+                    Text("Nenhuma ficha encontrada.")
                     Text(
-                        "Volte ao menu e use \"Salvar Ficha\" para criar seu primeiro slot.",
+                        "Use 'Salvar Ficha' para criar seu primeiro slot.",
                         style = androidx.compose.material3.MaterialTheme.typography.bodySmall,
                         color = androidx.compose.material3.MaterialTheme.colorScheme.primary
                     )
                 }
             }
             else LazyColumn {
-                itemsIndexed(fichas) { _, nome ->
-                    Row(modifier = Modifier.fillMaxWidth().clickable { onCarregar(nome) }.padding(vertical = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text(nome.replace("_", " "))
-                        IconButton(onClick = { onExcluir(nome) }) { Icon(Icons.Default.Delete, contentDescription = "Excluir") }
+                itemsIndexed(todasFichas) { _, nome ->
+                    val estaLocal = fichasLocais.contains(nome)
+                    val estaNuvem = fichasNuvem.contains(nome)
+                    
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { if (estaLocal) onCarregar(nome) else onCarregarNuvem(nome) }
+                        .padding(vertical = 8.dp)
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = buildString {
+                                append(nome.replace("_", " "))
+                                if (estaLocal && estaNuvem) append(". Disponível localmente e sincronizado na nuvem.")
+                                else if (estaLocal) append(". Disponível apenas neste aparelho.")
+                                else if (estaNuvem) append(". Disponível apenas na nuvem. Clique para baixar.")
+                            }
+                        },
+                        horizontalArrangement = Arrangement.SpaceBetween, 
+                        verticalAlignment = Alignment.CenterVertically) {
+                        
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
+                            Text(if (estaLocal) "📱" else "☁️")
+                            Text(" " + nome.replace("_", " "), modifier = Modifier.padding(start = 4.dp))
+                            if (estaLocal && estaNuvem) {
+                                Text(" ✨", color = androidx.compose.material3.MaterialTheme.colorScheme.tertiary)
+                            }
+                        }
+                        
+                        if (estaLocal) {
+                            IconButton(onClick = { onExcluir(nome) }) { Icon(Icons.Default.Delete, contentDescription = "Excluir") }
+                        }
                     }
                 }
             }

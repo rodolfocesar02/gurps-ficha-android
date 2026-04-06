@@ -1,0 +1,7 @@
+{
+  "latestVersion": "1.4.4",
+  "versionCode": 10,
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/raw/refs/heads/feat/vtt-mapurl-lote4/apks/GURPS_Ficha_Visual.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/raw/refs/heads/feat/vtt-mapurl-lote4/apks/GURPS_Ficha_PraCego.apk",
+  "releaseNotes": "Sincro V19: Biblioteca na Nuvem, Proteção contra Nomes Duplicados e Pente-fino PraCego."
+}

@@ -72,4 +72,37 @@ class FichaNetworkDelegate {
             )
         }
     }
+
+    suspend fun salvarFichaNuvem(deviceId: String, characterName: String, fichaJson: Any): Boolean {
+        return withContext(Dispatchers.IO) {
+            DiscordRollApiClient.postFicha(
+                baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
+                deviceId = deviceId,
+                characterName = characterName,
+                fichaJson = fichaJson
+            )
+        }
+    }
+
+    suspend fun buscarFichasNuvem(deviceId: String): List<String> {
+        return withContext(Dispatchers.IO) {
+            DiscordRollApiClient.fetchFichaList(
+                baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
+                deviceId = deviceId
+            )
+        }
+    }
+
+    suspend fun baixarFichaNuvem(deviceId: String, characterName: String): String? {
+        return withContext(Dispatchers.IO) {
+            DiscordRollApiClient.fetchFicha(
+                baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
+                deviceId = deviceId,
+                characterName = characterName
+            )
+        }
+    }
 }

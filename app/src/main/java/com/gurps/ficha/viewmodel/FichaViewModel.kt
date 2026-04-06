@@ -2,6 +2,7 @@ package com.gurps.ficha.viewmodel
 
 import android.app.Application
 import android.content.Context
+import android.provider.Settings
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshotFlow
@@ -46,6 +47,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     var fichasSalvas by mutableStateOf<List<String>>(emptyList())
         private set
+    var fichasNuvem by mutableStateOf<List<String>>(emptyList())
+        private set
 
     var nomeFichaAtual by mutableStateOf<String?>(null)
         private set
@@ -72,6 +75,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // Novos Delegados (Refatoração Lote 15)
     private val iaDelegate = FichaIADelegate(this, dataRepository, viewModelScope)
     private val socialDelegate = FichaSocialDelegate(networkDelegate, configPrefs, viewModelScope)
+    private val deviceId by lazy { Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID) ?: "DESCONHECIDO" }
 
     // Propriedades Estáticas/Config
     private val prefCanalDiscordId = "discord_canal_id"
@@ -159,9 +163,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
                     if (nome != autoSaveRecuperacaoNome) {
                         fichaStorage.salvarFicha(nome, json)
                     }
+                    // Sincronização Invisível com a Nuvem Railway
+                    sincronizarComNuvem()
                 }
             }
         }
+        atualizarListaFichasUnificada()
     }
 
     // === MÉTODOS DE FILTRO ===
@@ -329,7 +336,33 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch { persistenceDelegate.carregarFicha(nome)?.let { personagem = it } } 
     }
     fun excluirFicha(nome: String) { viewModelScope.launch { fichasSalvas = persistenceDelegate.excluirFicha(nome) } }
-    fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false }
+    fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false; nomeFichaAtual = null }
+    
+    fun atualizarListaFichasUnificada() {
+        viewModelScope.launch {
+            fichasSalvas = persistenceDelegate.listarFichas()
+            fichasNuvem = networkDelegate.buscarFichasNuvem(deviceId)
+        }
+    }
+
+    fun verificarConflitoNome(nome: String): Boolean {
+        val nomeSanitizado = nome.trim()
+        val existeLocal = fichasSalvas.any { it.equals(nomeSanitizado, ignoreCase = true) }
+        val existeNuvem = fichasNuvem.any { it.equals(nomeSanitizado, ignoreCase = true) }
+        // Se houver conflito mas for o nome da ficha que JÁ estamos editando, não é conflito
+        if (nomeSanitizado.equals(nomeFichaAtual, ignoreCase = true)) return false
+        return existeLocal || existeNuvem
+    }
+
+    fun gerarSugeridoComIndice(nomeOriginal: String): String {
+        var indice = 2
+        var novoNome = "$nomeOriginal ($indice)"
+        while (verificarConflitoNome(novoNome)) {
+            indice++
+            novoNome = "$nomeOriginal ($indice)"
+        }
+        return novoNome
+    }
     fun exportarFichaJsonCompativel() = persistenceDelegate.exportarJsonCompativel(personagem)
     fun exportarFichaJsonVersionada() = persistenceDelegate.exportarJsonVersionado(personagem)
     fun importarFichaJson(json: String): String? {
@@ -377,6 +410,31 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val periciasParaApara get() = personagem.pericias.filter { it.definicaoId.lowercase() in PERICIAS_COMBATE && it.definicaoId.lowercase() != "escudo" }
     val periciasParaBloqueio get() = personagem.pericias.filter { it.definicaoId.lowercase() == "escudo" || it.definicaoId.lowercase() == "capa" }
     
+    // === NUVEM INVISÍVEL (SINCRO V19: Múltiplas Fichas) ===
+    fun sincronizarComNuvem() {
+        val nomeFicha = personagem.nome.ifBlank { return }
+        viewModelScope.launch {
+            networkDelegate.salvarFichaNuvem(deviceId, nomeFicha, personagem)
+            fichasNuvem = networkDelegate.buscarFichasNuvem(deviceId)
+        }
+    }
+
+    fun restaurarDaNuvem(nome: String, onRes: (Boolean, String) -> Unit) {
+        viewModelScope.launch {
+            val json = networkDelegate.baixarFichaNuvem(deviceId, nome)
+            if (json != null) {
+                val resMsg = importarFichaJson(json)
+                if (resMsg == "Sucesso") {
+                    nomeFichaAtual = nome
+                    onRes(true, "Ficha '$nome' restaurada da nuvem!")
+                }
+                else onRes(false, "Erro ao processar dados da nuvem: $resMsg")
+            } else {
+                onRes(false, "Ficha '$nome' não encontrada na nuvem.")
+            }
+        }
+    }
+
     fun atualizarBonusManualEsquiva(b: Int) { personagem = combatDelegate.atualizarBonusManualEsquiva(personagem, b) }
     fun atualizarPericiaApara(id: String?) { personagem = combatDelegate.atualizarPericiaApara(personagem, id) }
     fun atualizarBonusManualApara(b: Int) { personagem = combatDelegate.atualizarBonusManualApara(personagem, b) }

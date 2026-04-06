@@ -1,5 +1,7 @@
-﻿const express = require('express');
+const express = require('express');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 
 dotenv.config();
 
@@ -10,6 +12,12 @@ const port = Number(process.env.PORT || 8787);
 const apiKey = process.env.API_KEY || '';
 const botToken = process.env.DISCORD_BOT_TOKEN || '';
 const defaultChannelId = process.env.DISCORD_CHANNEL_ID || '';
+const DATA_DIR = path.join(__dirname, '..', 'data');
+const FICHAS_DIR = path.join(DATA_DIR, 'fichas');
+
+// Garantir que as pastas existam
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
+if (!fs.existsSync(FICHAS_DIR)) fs.mkdirSync(FICHAS_DIR);
 const DISCORD_TYPE_GUILD_VOICE = 2;
 const CHANNEL_CACHE_TTL_MS = 30 * 60 * 1000;
 const CHANNEL_CACHE_TTL_SECONDS = Math.floor(CHANNEL_CACHE_TTL_MS / 1000);
@@ -208,32 +216,99 @@ app.get('/api/channels', async (req, res) => {
 });
 
 app.post('/api/rolls', async (req, res) => {
-  if (!requireConfigured()) {
-    return jsonError(res, 500, 'service_not_configured');
-  }
+    if (!requireConfigured()) {
+        return jsonError(res, 500, 'service_not_configured');
+    }
 
-  if (!hasValidApiKey(req)) {
-    return unauthorized(res);
-  }
+    if (!hasValidApiKey(req)) {
+        return unauthorized(res);
+    }
 
-  const payload = req.body || {};
-  const targetChannelId = sanitizeChannelId(payload.channelId) || sanitizeChannelId(defaultChannelId);
-  if (!targetChannelId) {
-    return jsonError(res, 400, 'channel_id_missing');
-  }
+    const payload = req.body || {};
+    const targetChannelId = sanitizeChannelId(payload.channelId) || sanitizeChannelId(defaultChannelId);
+    if (!targetChannelId) {
+        return jsonError(res, 400, 'channel_id_missing');
+    }
 
-  const message = formatRollMessage(payload);
+    const message = formatRollMessage(payload);
 
-  try {
-    const discordMessage = await sendToDiscord(message, targetChannelId);
-    return res.json({
-      ok: true,
-      discordMessageId: discordMessage.id,
-      channelId: targetChannelId
-    });
-  } catch (error) {
-    return jsonError(res, 502, 'discord_send_failed', error.message);
-  }
+    try {
+        const discordMessage = await sendToDiscord(message, targetChannelId);
+        return res.json({
+            ok: true,
+            discordMessageId: discordMessage.id,
+            channelId: targetChannelId
+        });
+    } catch (error) {
+        return jsonError(res, 502, 'discord_send_failed', error.message);
+    }
+});
+
+// --- NOVAS ROTAS DE FICHA (V19: Biblioteca por Aparelho) ---
+app.post('/api/fichas', (req, res) => {
+    if (!hasValidApiKey(req)) return unauthorized(res);
+
+    const { deviceId, characterName, fichaJson } = req.body;
+    if (!deviceId || !characterName || !fichaJson) {
+        return jsonError(res, 400, 'missing_params', 'deviceId, characterName and fichaJson are required');
+    }
+
+    // Sanitizar IDs para evitar ataques de diretório
+    const safeDeviceId = String(deviceId).replace(/[^a-zA-Z0-9_-]/g, '');
+    const safeFileName = String(characterName).replace(/[^a-zA-Z0-9_-]/g, '_');
+    
+    const devicePath = path.join(FICHAS_DIR, safeDeviceId);
+    if (!fs.existsSync(devicePath)) fs.mkdirSync(devicePath, { recursive: true });
+
+    const filePath = path.join(devicePath, `${safeFileName}.json`);
+
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(fichaJson));
+        return res.json({ ok: true, message: 'ficha_saved_cloud' });
+    } catch (error) {
+        return jsonError(res, 500, 'save_failed', error.message);
+    }
+});
+
+// LISTAR fichas de um aparelho
+app.get('/api/fichas/:deviceId', (req, res) => {
+    if (!hasValidApiKey(req)) return unauthorized(res);
+
+    const safeDeviceId = String(req.params.deviceId).replace(/[^a-zA-Z0-9_-]/g, '');
+    const devicePath = path.join(FICHAS_DIR, safeDeviceId);
+
+    if (!fs.existsSync(devicePath)) {
+        return res.json({ ok: true, fichas: [] }); // Aparelho novo, sem fichas ainda
+    }
+
+    try {
+        const files = fs.readdirSync(devicePath)
+            .filter(f => f.endsWith('.json'))
+            .map(f => f.replace('.json', ''));
+        return res.json({ ok: true, fichas: files });
+    } catch (error) {
+        return jsonError(res, 500, 'list_failed', error.message);
+    }
+});
+
+// BUSCAR uma ficha específica por nome
+app.get('/api/fichas/:deviceId/:characterName', (req, res) => {
+    if (!hasValidApiKey(req)) return unauthorized(res);
+
+    const safeDeviceId = String(req.params.deviceId).replace(/[^a-zA-Z0-9_-]/g, '');
+    const safeFileName = String(req.params.characterName).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filePath = path.join(FICHAS_DIR, safeDeviceId, `${safeFileName}.json`);
+
+    if (!fs.existsSync(filePath)) {
+        return jsonError(res, 404, 'ficha_not_found');
+    }
+
+    try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        return res.json({ ok: true, ficha: JSON.parse(content) });
+    } catch (error) {
+        return jsonError(res, 500, 'load_failed', error.message);
+    }
 });
 
 app.listen(port, () => {

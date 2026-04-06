@@ -2,4 +2,5 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <files-path name="maps" path="maps/" />
     <cache-path name="shared_fichas" path="." />
+    <external-files-path name="external_download" path="Download" />
 </paths>
