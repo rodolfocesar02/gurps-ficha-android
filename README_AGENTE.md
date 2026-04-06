@@ -26,6 +26,7 @@ Todo Agente deve seguir o sistema de segurança do Rodolfo:
 3. **Variante PraCego:** Toda mudança na UI deve suportar o modo acessibilidade (`isPraCegoVariant`). Verifique os rótulos de TalkBack!
 4. **Fonte da Verdade:** SEMPRE consulte o `.agent/skills/Project_map_SKILL.md` para entender a arquitetura antes de sugerir mudanças.
 
+
 ---
 
 ## 📉 Dívida Técnica (Arquivos em Refatoração)

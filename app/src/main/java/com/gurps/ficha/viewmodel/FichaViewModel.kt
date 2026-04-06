@@ -14,6 +14,8 @@ import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
+import com.gurps.ficha.regras_prerequisitos.ConditionStatus
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import com.gurps.ficha.viewmodel.delegates.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -235,6 +237,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun adicionarPericia(def: PericiaDefinicao, pts: Int = 1, esp: String = "", attr: AtributoBase? = null, dif: Dificuldade? = null): String? {
         val res = skillDelegate.adicionarPericia(personagem, def, pts, esp, attr, dif)
         return res.fold(onSuccess = { personagem = personagem.copy(pericias = it); null }, onFailure = { it.message })
+    }
+
+    fun validarPreRequisitosPericia(def: PericiaDefinicao): String? {
+        return dataRepository.validarPreRequisitosPericia(def, personagem)
+    }
+
+    fun validarPreRequisitosPericiaDetailed(definicaoId: String): List<ConditionStatus> {
+        return dataRepository.validarPreRequisitosPericiaDetailed(definicaoId, personagem)
     }
     fun adicionarPericiaCustomizada(p: PericiaSelecionada) { personagem = personagem.copy(pericias = skillDelegate.adicionarPericiaCustomizada(personagem, p)) }
     fun removerPericia(i: Int) { personagem = personagem.copy(pericias = skillDelegate.removerPericia(personagem, i)) }

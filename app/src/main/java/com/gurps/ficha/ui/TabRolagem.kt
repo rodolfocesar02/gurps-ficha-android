@@ -83,8 +83,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     val armas = p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA }
     val periciasCombate = p.pericias.filter { per -> 
-        PERICIAS_COMBATE.contains(per.definicaoId.lowercase()) || 
-        PERICIAS_COMBATE.any { it.equals(per.nome.replace(" ", "_"), ignoreCase = true) }
+        val idNorm = per.definicaoId.lowercase()
+        val correspondenteCombate = PERICIAS_COMBATE.contains(idNorm) || 
+                                   PERICIAS_COMBATE.any { it.equals(per.nome.replace(" ", "_"), ignoreCase = true) }
+        
+        if (correspondenteCombate) {
+            val def = viewModel.dataRepository.getPericiaPorId(per.definicaoId)
+            def == null || viewModel.validarPreRequisitosPericia(def) == null
+        } else false
     }
 
     val opcoesAtaque = remember(periciasCombate, p.vantagens) {
@@ -167,7 +173,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     var modificadorAtaque by remember { mutableIntStateOf(0) }
 
-    val opcoesPericia = p.pericias.map { per ->
+    val opcoesPericia = p.pericias.filter { per ->
+        val def = viewModel.dataRepository.getPericiaPorId(per.definicaoId)
+        def == null || viewModel.validarPreRequisitosPericia(def) == null
+    }.map { per ->
         PericiaRollOption(
             id = periciaSelectionKey(per, 0),
             nome = per.nome,
@@ -179,7 +188,10 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     val aptMagica = p.getVantagemNivel("aptidao_magica")
-    val opcoesMagia = p.magias.map { mag ->
+    val opcoesMagia = p.magias.filter { mag ->
+        val def = viewModel.dataRepository.magias.find { it.id == mag.definicaoId }
+        def == null || viewModel.prereqsSatisfied(def)
+    }.map { mag ->
         MagiaRollOption(
             id = mag.definicaoId,
             definicaoId = mag.definicaoId,
@@ -194,7 +206,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    val opcoesTecnica = p.tecnicas.map { tec ->
+    val opcoesTecnica = p.tecnicas.filter { tec ->
+        val periciaBase = p.pericias.find { it.definicaoId == tec.periciaBaseDefinicaoId }
+        periciaBase?.let { pb ->
+            val def = viewModel.dataRepository.getPericiaPorId(pb.definicaoId)
+            def == null || viewModel.validarPreRequisitosPericia(def) == null
+        } ?: true
+    }.map { tec ->
         TecnicaRollOption(
             id = tec.nome,
             nome = tec.nome,

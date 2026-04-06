@@ -21,7 +21,13 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.size
+import com.gurps.ficha.regras_prerequisitos.ConditionStatus
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -421,8 +427,53 @@ fun ConfigurarPericiaDialog(viewModel: FichaViewModel, definicao: PericiaDefinic
                         Text("NH: $nivelPreview (${atributoEscolhido.sigla}$nivelRelativo)", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     }
                 }
+                val statusPrerequisitos = remember(personagem.pericias.size) {
+                    viewModel.validarPreRequisitosPericiaDetailed(definicao.id)
+                }
+                if (statusPrerequisitos.isNotEmpty()) {
+                    Text("REQUISITOS:", style = MaterialTheme.typography.labelMedium)
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            statusPrerequisitos.forEach { status ->
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = if (status.isMet) Icons.Default.CheckCircle else Icons.Default.Warning,
+                                        contentDescription = null,
+                                        tint = if (status.isMet) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    val detail = if (status.required.isNotEmpty() && status.required != "0") {
+                                        " (${status.current}/${status.required})"
+                                    } else ""
+                                    
+                                    Text(
+                                        text = status.label + detail,
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = if (status.isMet) Color(0xFF2E7D32) else MaterialTheme.colorScheme.error,
+                                        fontWeight = if (status.isMet) FontWeight.Normal else FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
                 erroCadastro?.let {
-                    Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = it,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
                 }
             }
         },

@@ -8,8 +8,10 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.reflect.TypeToken
 import com.gurps.ficha.model.*
+import com.gurps.ficha.regras_prerequisitos.ConditionStatus
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoParser
 import com.gurps.ficha.regras_prerequisitos.PreRequisitoChecker
+import com.gurps.ficha.regras_prerequisitos.PreRequisitoType
 import com.gurps.ficha.domain.filters.CatalogFilters
 import com.gurps.ficha.domain.loaders.sanitized
 import com.gurps.ficha.domain.loaders.fixMojibakeIfNeeded
@@ -272,17 +274,28 @@ class DataRepository(private val context: Context) {
 
     fun validarPreRequisitosPericia(definicao: PericiaDefinicao, personagem: Personagem): String? {
         val regra = periciasV2Rules[definicao.id] ?: return null
-        val andGroups = regra.preRequisito.andGroups
-        if (andGroups.isEmpty() || regra.preRequisito.allowWithoutPrerequisite) return null
+        if (regra.preRequisito.allowWithoutPrerequisite) return null
 
-        val gruposFalhos = andGroups.filter { grupo ->
-            grupo.none { condicao -> atendeCondicaoPreReqPericia(condicao, personagem) }
-        }
-        if (gruposFalhos.isEmpty()) return null
+        val raw = regra.preRequisito.raw
+        if (raw.isBlank() || isSemPreRequisitoRaw(raw)) return null
 
-        return regra.preRequisito.raw
-            .takeIf { it.isNotBlank() }
-            ?: "Pré-requisito não atendido."
+        val parsed = PreRequisitoParser.parse(raw)
+        if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
+
+        val mapa = buildPreReqContext(personagem)
+        val report = PreRequisitoChecker.checkParseResult(mapa, parsed)
+
+        return if (report.contains("faltando")) report.removePrefix("faltando:").trim() else null
+    }
+
+    fun validarPreRequisitosPericiaDetailed(definicaoId: String, personagem: Personagem): List<ConditionStatus> {
+        val regra = periciasV2Rules[definicaoId] ?: return emptyList()
+        val raw = regra.preRequisito.raw
+        if (raw.isBlank() || isSemPreRequisitoRaw(raw)) return emptyList()
+
+        val parsed = PreRequisitoParser.parse(raw)
+        val mapa = buildPreReqContext(personagem)
+        return PreRequisitoChecker.checkDetailed(mapa, parsed)
     }
 
     fun regraPericiaV2(id: String): PericiaV2RuleMapItem? = periciasV2Rules[id]
@@ -506,10 +519,10 @@ class DataRepository(private val context: Context) {
 
     private fun buildPreReqContext(personagem: Personagem): MutableMap<String, Any> {
         val mapa = mutableMapOf<String, Any>()
-        mapa["ST"] = personagem.forca
-        mapa["DX"] = personagem.destreza
-        mapa["IQ"] = personagem.inteligencia
-        mapa["HT"] = personagem.vitalidade
+        mapa["ST"] = personagem.st
+        mapa["DX"] = personagem.dx
+        mapa["IQ"] = personagem.iq
+        mapa["HT"] = personagem.ht
 
         val nivelAptidaoMagica = personagem.vantagens
             .filter { it.definicaoId.equals("aptidao_magica", ignoreCase = true) }
@@ -547,11 +560,26 @@ class DataRepository(private val context: Context) {
             .toSet()
         mapa["vantagens_conhecidas_normalizadas"] = vantagensConhecidasNormalizadas
 
-        val periciasConhecidasNormalizadas = personagem.pericias
-            .map { p -> normalizarNomeRequisito(p.nome) }
-            .filter { it.isNotBlank() }
-            .toSet()
+        val periciasConhecidasNormalizadas = mutableSetOf<String>()
+        val periciasNiveisNormalizadas = mutableMapOf<String, Int>()
+        personagem.pericias.forEach { p ->
+            val nomeNorm = normalizarNomeRequisito(p.nome)
+            if (nomeNorm.isNotBlank()) {
+                val nivel = p.calcularNivel(personagem)
+                // Mapeamento triplo por segurança: Original, Normalizado e ID
+                periciasNiveisNormalizadas[p.nome] = maxOf(periciasNiveisNormalizadas[p.nome] ?: 0, nivel)
+                periciasNiveisNormalizadas[nomeNorm] = maxOf(periciasNiveisNormalizadas[nomeNorm] ?: 0, nivel)
+                
+                if (p.definicaoId.isNotBlank()) {
+                    val idNorm = p.definicaoId.lowercase().trim()
+                    periciasNiveisNormalizadas[idNorm] = maxOf(periciasNiveisNormalizadas[idNorm] ?: 0, nivel)
+                }
+                periciasConhecidasNormalizadas.add(nomeNorm)
+            }
+        }
+        mapa["pericias_normalizadas"] = periciasConhecidasNormalizadas
         mapa["pericias_conhecidas_normalizadas"] = periciasConhecidasNormalizadas
+        mapa["pericias_niveis_normalizadas"] = periciasNiveisNormalizadas
 
         val condicoesEstado = mutableSetOf<String>()
         personagem.desvantagens.forEach { condicoesEstado.add(normalizarNomeRequisito(it.nome)) }
@@ -563,14 +591,7 @@ class DataRepository(private val context: Context) {
     }
 
     private fun normalizarNomeRequisito(valor: String): String {
-        val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-        return semAcento
-            .lowercase()
-            .replace("-", " ")
-            .replace(Regex("[^a-z0-9\\s]"), " ")
-            .replace(Regex("\\s+"), " ")
-            .trim()
+        return PreRequisitoChecker.normalizar(valor)
     }
 
     // === BUSCA POR ID ===

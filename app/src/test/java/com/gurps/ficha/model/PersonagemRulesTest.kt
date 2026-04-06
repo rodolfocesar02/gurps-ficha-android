@@ -189,8 +189,8 @@ class PersonagemRulesTest {
 
         // Esquiva base 8, carga 2, bonus manual +1, DB escudo +2 = 9
         assertEquals(9, personagem.defesasAtivas.calcularEsquiva(personagem))
-        // NH 11 -> (11/2)+3 = 8
-        assertEquals(8, personagem.defesasAtivas.calcularApara(personagem))
+        // NH 11 -> (11/2)+3 = 8; + DB Escudo (2) = 10
+        assertEquals(10, personagem.defesasAtivas.calcularApara(personagem))
         // Base 8 + DB 2 + bonus manual 1
         assertEquals(11, personagem.defesasAtivas.calcularBloqueio(personagem))
     }

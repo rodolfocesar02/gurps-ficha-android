@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 06 de Abril de 2026 (16:25)
-**Status Atual:** Estabilização de Regras de Combate e Acessibilidade (TalkBack).
+**Última Atualização:** 06 de Abril de 2026 (16:30)
+**Status Atual:** Automação de Pré-requisitos de Perícias e Unificação do Motor de Regras.
 
 ---
 
@@ -78,5 +78,6 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 39: Atualização da Skill de Vantagens (TraitRule API) | `(Commit: d5768dd)`
 * [Feito] Lote 40: Atualização das Regras Operacionais (Commits e PraCego) | `(Commit: 4f63b8a)`
 * [Feito] Lote 41: Atualização das Regras de RPG GURPS (Combat Context) | `(Commit: d26daad)`
-* [Feito] Lote 42: Atualização do README_AGENTE (Estado da Arquitetura) | `(Commit: 39588d1)`
+* [Feito] Lote 44: Diagnóstico Visual V7 e Mapeamento Triplo de NH | `(Commit: Antigravity)`
+* [Em Andamento] Lote 45: Automação de Pré-requisitos de Vantagens (T.P.M.) | `(Foco: Atual)`
 

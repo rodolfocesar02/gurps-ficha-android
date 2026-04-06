@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.regras_prerequisitos
+package com.gurps.ficha.regras_prerequisitos
 
 object PreRequisitoParser {
 
@@ -30,7 +30,7 @@ object PreRequisitoParser {
         }
 
         val segments = normalized
-            .split(",")
+            .split(Regex("[,;]"))
             .map { cleanupConnectorPrefix(it.trim()) }
             .filter { it.isNotEmpty() }
 
@@ -64,11 +64,8 @@ object PreRequisitoParser {
             }
         }
 
-        if (allTipos.none { it is PreRequisitoType.AptidaoMagica }) {
-            val base = PreRequisitoType.AptidaoMagica(0)
-            terms.add(0, PreRequisitoTerm(alternatives = listOf(listOf(base)), raw = "Aptidao Magica 0+"))
-            allTipos.add(base)
-        }
+        // Removido o bloco de inclusão automática de AptidaoMagica(0)
+        // para evitar poluir perícias que não utilizam o sistema de magia.
 
         return ParseResult(tipos = allTipos, terms = terms)
     }
@@ -104,8 +101,10 @@ object PreRequisitoParser {
         val attrMatch = Regex("^([A-Za-zÀ-ú]+)\\s*(\\d+)\\+").find(tok)
         if (attrMatch != null) {
             val atributo = attrMatch.groupValues[1]
-            val valor = attrMatch.groupValues[2].toIntOrNull() ?: return null
-            return PreRequisitoType.AttributeMin(atributo, valor)
+            if (isAttribute(atributo)) {
+                val valor = attrMatch.groupValues[2].toIntOrNull() ?: return null
+                return PreRequisitoType.AttributeMin(atributo, valor)
+            }
         }
 
         val amMatch = Regex("^AM\\s*\\+?\\s*(\\d+)", RegexOption.IGNORE_CASE).find(tok)
@@ -213,17 +212,31 @@ object PreRequisitoParser {
             return PreRequisitoType.MagiaInclusaNaContagem(magiaNome, lastSchool)
         }
 
-        val vantagemMatch = Regex("^(?:a\\s+)?vantagem\\s+(.+)$", RegexOption.IGNORE_CASE).find(tok)
-        if (vantagemMatch != null) {
-            return PreRequisitoType.VantagemConhecida(cleanupNomeTema(vantagemMatch.groupValues[1]))
+        val cleanTok = tok.trim()
+        if (cleanTok.isEmpty()) return PreRequisitoType.MagiaConhecida("")
+
+        // Lógica Brutal: Se termina com número+, é nível de perícia
+        if (cleanTok.endsWith("+")) {
+            val semPlus = cleanTok.removeSuffix("+").trim()
+            val partes = semPlus.split(Regex("\\s+"))
+            if (partes.size >= 2) {
+                val nivelStr = partes.last()
+                val nivelInt = nivelStr.toIntOrNull()
+                if (nivelInt != null) {
+                    val nomeRemanescente = partes.dropLast(1).joinToString(" ").replace(Regex("(?i)^pericia de "), "").trim()
+                    return PreRequisitoType.SkillMinLevel(cleanupNomeTema(nomeRemanescente), nivelInt)
+                }
+            }
         }
 
-        val periciaMatch = Regex("^(?:a\\s+)?per[ií]cia\\s+(.+)$", RegexOption.IGNORE_CASE).find(tok)
-        if (periciaMatch != null) {
-            return PreRequisitoType.PericiaConhecida(cleanupNomeTema(periciaMatch.groupValues[1]))
-        }
+        // Fallback: Tenta como Vantagem ou Magia (nomes simples)
+        val nomeSimples = cleanupNomeTema(cleanTok).trim()
+        return PreRequisitoType.VantagemConhecida(nomeSimples)
+    }
 
-        return PreRequisitoType.MagiaConhecida(cleanupNomeTema(tok))
+    private fun isAttribute(name: String): Boolean {
+        val n = name.uppercase()
+        return n == "ST" || n == "DX" || n == "IQ" || n == "HT" || n == "PER" || n == "VON" || n == "VONTADE" || n == "PERCEPCAO"
     }
 
     private fun splitAlternatives(segment: String): List<String> {
