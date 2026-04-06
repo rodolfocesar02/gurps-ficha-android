@@ -84,6 +84,7 @@ fun TabPericias(viewModel: FichaViewModel) {
                         pericia = pericia,
                         nivel = pericia.calcularNivel(p),
                         nivelRelativo = pericia.getNivelRelativo(p),
+                        failureMsg = failureMsg,
                         onShowDescription = { periciaDescricaoDialog = pericia },
                         onEdit = { editingPericiaIndex = index },
                         onDelete = { viewModel.removerPericia(index) }
@@ -206,17 +207,20 @@ fun PericiaItem(
     pericia: PericiaSelecionada,
     nivel: Int,
     nivelRelativo: String,
+    failureMsg: String? = null,
     onShowDescription: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val hasFailure = failureMsg != null
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .semantics {
                 if (isPraCegoVariant) {
-                    contentDescription = "Perícia ${pericia.nome}. NH $nivel. Toque para editar."
+                    val statusPart = if (hasFailure) ". AVISO: $failureMsg" else ""
+                    contentDescription = "Perícia ${pericia.nome}. NH $nivel$statusPart. Toque para editar."
                 }
             }
             .clickable { onEdit() },

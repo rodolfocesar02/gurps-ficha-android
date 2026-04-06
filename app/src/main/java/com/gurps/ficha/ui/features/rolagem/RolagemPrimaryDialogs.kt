@@ -165,9 +165,10 @@ fun RolagemPericiasDialog(
                 )
                 if (opcoesPericia.isEmpty()) {
                     Text(
-                        "Sem perícias configuradas na aba Perícias.",
+                        "Sem perícias disponíveis. Verifique no catálogo ou na aba de Perícias se todos os pré-requisitos foram atendidos.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 } else {
                     Column(
@@ -338,9 +339,10 @@ fun RolagemTecnicasDialog(
                 )
                 if (opcoesTecnica.isEmpty()) {
                     Text(
-                        "Sem técnicas configuradas na aba Técnicas.",
+                        "Sem técnicas disponíveis. Verifique se a perícia base está correta e se os pré-requisitos foram atendidos.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 } else {
                     Column(
@@ -517,9 +519,10 @@ fun RolagemMagiasDialog(
                 )
                 if (opcoesMagia.isEmpty()) {
                     Text(
-                        "Sem magias configuradas na aba Magia.",
+                        "Sem magias disponíveis. Verifique se possui Aptidão Mágica e se os pré-requisitos foram atendidos.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 4.dp)
                     )
                 } else {
                     Column(

@@ -338,9 +338,10 @@ fun AtaqueDanoQuickArea(
 ) {
     if (opcoesAtaque.isEmpty()) {
         Text(
-            "Sem pericias para ataque. Adicione pericias de combate na aba Pericias.",
+            "Sem ataques disponíveis. Verifique se as perícias de combate estão na aba Perícias e se todos os pré-requisitos foram atendidos.",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(vertical = 8.dp)
         )
     } else {
         Row(
