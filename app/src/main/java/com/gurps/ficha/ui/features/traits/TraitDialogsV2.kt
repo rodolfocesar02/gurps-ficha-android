@@ -278,9 +278,16 @@ fun ModeloRacialDialog(
 
     // EDIÇÃO DE TRAÇOS (V2 utiliza os diálogos originais do TraitDialogs.kt)
     editingVantagemIndex?.let { i ->
-        EditarVantagemDialog(vantagensRacais[i], "", { editingVantagemIndex = null }, { n -> 
-            vantagensRacais = vantagensRacais.toList().mapIndexed { idx, v -> if (idx == i) n else v }; editingVantagemIndex = null 
-        })
+        EditarVantagemDialog(
+            vantagem = vantagensRacais[i],
+            descricaoCatalogo = "",
+            weaponSuggestions = emptyList(),
+            onDismiss = { editingVantagemIndex = null },
+            onSave = { n -> 
+                vantagensRacais = vantagensRacais.toList().mapIndexed { idx, v -> if (idx == i) n else v }
+                editingVantagemIndex = null 
+            }
+        )
     }
     editingDesvantagemIndex?.let { i ->
         EditarDesvantagemDialog(desvantagensRacais[i], "", { editingDesvantagemIndex = null }, { n -> 

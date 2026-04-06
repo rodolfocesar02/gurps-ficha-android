@@ -87,6 +87,8 @@ interface TraitRule {
     fun getDamageBonusPerDie(
         personagem: Personagem,
         selection: VantagemSelecionada,
-        periciaId: String?
+        periciaId: String?,
+        weaponName: String? = null,
+        armaGrupo: String? = null
     ): Int = 0
 }

@@ -107,6 +107,8 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
     var custo by remember { mutableStateOf(initialEquipamento?.custo?.toString() ?: "0") }
     var quantidade by remember { mutableStateOf(initialEquipamento?.quantidade?.toString() ?: "1") }
     var notas by remember { mutableStateOf(initialEquipamento?.notas ?: "") }
+    var dano by remember { mutableStateOf(initialEquipamento?.armaDanoRaw ?: "") }
+    var stMin by remember { mutableStateOf(initialEquipamento?.armaStMinimo?.toString() ?: "") }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -123,6 +125,26 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
                 OutlinedTextField(value = quantidade, onValueChange = { quantidade = it }, label = { Text("Quantidade") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), singleLine = true, modifier = Modifier.fillMaxWidth())
                 OutlinedTextField(value = notas, onValueChange = { notas = it }, label = { Text("Notas") }, modifier = Modifier.fillMaxWidth())
+
+                // Novos campos para armas customizadas
+                Text("Opcional: Automação de Combate", style = androidx.compose.material3.MaterialTheme.typography.labelMedium, color = androidx.compose.material3.MaterialTheme.colorScheme.primary)
+                Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
+                    OutlinedTextField(
+                        value = dano, 
+                        onValueChange = { dano = it }, 
+                        label = { Text("Dano (ex: GeB+1)") }, 
+                        singleLine = true, 
+                        modifier = Modifier.weight(1f)
+                    )
+                    OutlinedTextField(
+                        value = stMin,
+                        onValueChange = { stMin = it },
+                        label = { Text("ST Mín") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        singleLine = true,
+                        modifier = Modifier.weight(0.6f)
+                    )
+                }
             }
         },
         confirmButton = {
@@ -133,7 +155,9 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
                         peso = peso.toFloatOrNull() ?: 0f,
                         custo = custo.toFloatOrNull() ?: 0f,
                         quantidade = quantidade.toIntOrNull()?.coerceAtLeast(1) ?: 1,
-                        notas = notas
+                        notas = notas,
+                        armaDanoRaw = dano.ifBlank { null },
+                        armaStMinimo = stMin.toIntOrNull()
                     )
                     onSave(novo)
                 }

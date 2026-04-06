@@ -132,36 +132,39 @@ class MestreDeArmasRule : TraitRule {
         // 3. IDENTIFICAÇÃO DA PERÍCIA (Strict Mapping)
         val periciaAlvoDoGrupo = MAPA_GRUPOS_PERICIAS[grupoArmaN]
 
-        // Função auxiliar para verificar se uma perícia é compatível com esta arma/grupo
+        // Função auxiliar robusta para verificar compatibilidade
         fun isSkillCompatible(pNome: String, pDefinicaoId: String): Boolean {
             val pNomeN = normalize(pNome)
             
-            // Se temos um mapeamento oficial para este grupo de arma, usamos ele de forma estrita!
-            // Isso evita que a perícia "Arcos" seja associada à "Espada Larga".
+            // 1. Prioridade Máxima: Mapeamento Direto
+            // Se o grupo da arma é conhecido, a perícia DEVE ser a correta para aquele grupo.
             if (periciaAlvoDoGrupo != null) {
-                return pNomeN == periciaAlvoDoGrupo || 
-                       pNomeN.contains(periciaAlvoDoGrupo) || 
-                       periciaAlvoDoGrupo.contains(pNomeN)
+                // Ex: "espada de lamina larga" deve ser a perícia para o grupo "espada de lamina larga"
+                return pNomeN == periciaAlvoDoGrupo || pNomeN.contains(periciaAlvoDoGrupo)
             }
             
-            // Fallback de segurança para quando não há mapeamento oficial (ex: armas customizadas)
-            // IMPORTANTE: Aqui NÃO comparamos pIdN == periciaIdN para evitar o vazamento do UI
-            return (nomeArmaN.isNotBlank() && (pNomeN.contains(nomeArmaN) || nomeArmaN.contains(pNomeN))) ||
-                   (grupoArmaN.isNotBlank() && (pNomeN.contains(grupoArmaN) || grupoArmaN.contains(pNomeN))) ||
-                   (nomeArmaN.isNotBlank() && pNomeN.split(" ").containsAll(nomeArmaN.split(" "))) ||
-                   (grupoArmaN.isNotBlank() && pNomeN.split(" ").containsAll(grupoArmaN.split(" ")))
+            // 2. Fallback por Nome (apenas se não houver mapeamento oficial)
+            // Usamos comparação de conjuntos de palavras (com > 3 letras) para evitar bônus cruzados.
+            // Ex: "Arco" ([arco]) não intersecta com "Espada Larga" ([espada, larga])
+            val skillWords = pNomeN.split(" ").filter { it.length > 3 }.toSet()
+            val weaponWords = nomeArmaN.split(" ").filter { it.length > 3 }.toSet()
+            val groupWords = grupoArmaN.split(" ").filter { it.length > 2 }.toSet() // grupo costuma ter ids curtos
+            
+            return (skillWords.intersect(weaponWords).isNotEmpty()) || 
+                   (skillWords.intersect(groupWords).isNotEmpty())
         }
 
-        // Encontrar a perícia mais apropriada do personagem que seja compatível
+        // Encontrar a perícia que está sendo usada
         val pericia = if (periciaIdN.isNotBlank()) {
             // Se uma perícia foi selecionada no UI, ela SÓ será usada se for compatível com a arma atual
             personagem.pericias.find { p -> 
                 val pIdN = normalize(p.definicaoId)
                 pIdN == periciaIdN && isSkillCompatible(p.nome, p.definicaoId)
-            } ?: personagem.pericias.find { p -> isSkillCompatible(p.nome, p.definicaoId) }
+            }
         } else {
-            // Busca geral pela melhor perícia compatível na lista do personagem
-            personagem.pericias.find { p -> isSkillCompatible(p.nome, p.definicaoId) }
+            // Busca geral pela melhor perícia compatível (apenas em visualização de ficha/inventário)
+            personagem.pericias.filter { p -> isSkillCompatible(p.nome, p.definicaoId) }
+                .maxByOrNull { it.calcularNivel(personagem) }
         } ?: return 0
 
         val nh = pericia.calcularNivel(personagem)

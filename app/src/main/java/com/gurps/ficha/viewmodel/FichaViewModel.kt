@@ -111,14 +111,13 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         // Sincronia Automática com Apara
         id?.let { selectedId ->
             if (selectedId.startsWith("pericia_")) {
-                val parts = selectedId.split("_")
-                if (parts.size >= 2) {
-                    val skillId = parts[1].lowercase()
-                    if (PERICIAS_COMBATE.contains(skillId) && skillId != "escudo") {
-                        atualizarPericiaApara(skillId)
-                    } else if (skillId == "escudo" || skillId == "capa") {
-                        atualizarPericiaBloqueio(skillId)
-                    }
+                // Extração precisa do ID: remove o prefixo e tudo após o último sublinhado (que separa a especialização)
+                val skillId = selectedId.removePrefix("pericia_").substringBeforeLast("_").lowercase()
+                
+                if (PERICIAS_COMBATE.contains(skillId) && skillId != "escudo") {
+                    atualizarPericiaApara(skillId)
+                } else if (skillId == "escudo" || skillId == "capa") {
+                    atualizarPericiaBloqueio(skillId)
                 }
             }
         }

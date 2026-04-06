@@ -54,6 +54,7 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             tipo = if (arma.nome.contains("escudo", ignoreCase = true)) TipoEquipamento.ESCUDO else TipoEquipamento.ARMA,
             bonusDefesa = 0,
             armaCatalogoId = arma.id,
+            armaGrupo = arma.grupo?.substringBefore("(")?.trim(), // Mestre de Armas (Limpo)
             armaTipoCombate = arma.tipoCombate,
             armaDanoRaw = arma.danoRaw,
             armaStMinimo = arma.stMinimo

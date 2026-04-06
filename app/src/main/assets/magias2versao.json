@@ -5997,7 +5997,7 @@
   },
   {
     "id": "giralaminas",
-    "nome": "Gira-Lminas",
+    "nome": "Gira-Lâminas",
     "dificuldade": "D",
     "pagina": 168,
     "classe": "Comum/ R-Especial",
@@ -6007,12 +6007,12 @@
     "duracao": "1 min.",
     "energia": "02/02",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Escudo ou Girar Lmina",
+    "preRequisitos": "Escudo ou Girar Lâmina",
     "descricao": "Uma versão contínua de Girar Lâmina — todas as lâminas que atacam o objetivo são viradas, causando apenas um dano por contusão e se tornando despreparadas. Útil apenas contra ataques de lâmina."
   },
   {
     "id": "girar_lamina",
-    "nome": "Girar Lmina",
+    "nome": "Girar Lâmina",
     "dificuldade": "D",
     "pagina": 167,
     "classe": "Bloqueio/R-DX",

@@ -406,7 +406,7 @@ class DataRepository(private val context: Context) {
         val trimmed = raw.trim()
         if (trimmed.isEmpty()) return true
         if (trimmed == "-" || trimmed == "—" || trimmed == "–" || trimmed == "−") return true
-        if (trimmed == "â€”" || trimmed == "â€“" || trimmed == "âˆ’") return true
+        if (trimmed == "—" || trimmed == "–" || trimmed == "âˆ’") return true
         if (trimmed == "?" || trimmed == "??" || trimmed == "???") return true
 
         val normalizado = normalizarNomeRequisito(trimmed)

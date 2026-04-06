@@ -204,7 +204,12 @@ fun ConfigurarVantagemDialog(
     var tipoAparar by remember { mutableStateOf("global") }
     var periciaAparar by remember { mutableStateOf("desarmado") }
 
+    // Estados para Mestre de Armas
+    var classMestre by remember { mutableStateOf("todas") }
+    var periciasMestre by remember { mutableStateOf("") }
+
     val metadados = when (definicao.id) {
+        "mestre_de_armas" -> mapOf("classId" to classMestre, "pericias_cobertas" to periciasMestre)
         "ataque_inato", "golpeadores" -> mapOf(
             "tipoDano" to tipoDanoAtaque,
             "dice" to dadosAtaque.toString(),
@@ -236,6 +241,17 @@ fun ConfigurarVantagemDialog(
             }
             "defesas_ampliadas_aparar_ampliado" -> {
                 custoEscolhido = if (tipoAparar == "global") 10 else 5
+            }
+            "mestre_de_armas" -> {
+                custoEscolhido = when (classMestre) {
+                    "todas" -> 45
+                    "amp_laminas", "amp_uma_mao" -> 40
+                    "int_espadas", "int_ninja" -> 35
+                    "peq_esgrima", "peq_cavaleiro" -> 30
+                    "set_two" -> 25
+                    "single" -> 20
+                    else -> 45
+                }
             }
         }
     }
@@ -375,6 +391,12 @@ fun ConfigurarVantagemDialog(
                                 currentSkill = periciaAparar,
                                 onChanged = { t, s -> tipoAparar = t; periciaAparar = s }
                             )
+                        } else if (definicao.id == "mestre_de_armas") {
+                            MestreDeArmasConfig(
+                                currentClass = classMestre,
+                                currentSkills = periciasMestre,
+                                onChanged = { c, s -> classMestre = c; periciasMestre = s }
+                            )
                         } else {
                             opcoesEscolha.forEach { opcao ->
                                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { custoEscolhido = opcao }) {
@@ -440,6 +462,13 @@ fun ConfigurarVantagemDialog(
                                     currentType = tipoAparar,
                                     currentSkill = periciaAparar,
                                     onChanged = { t, s -> tipoAparar = t; periciaAparar = s }
+                                )
+                            }
+                            "mestre_de_armas" -> {
+                                MestreDeArmasConfig(
+                                    currentClass = classMestre,
+                                    currentSkills = periciasMestre,
+                                    onChanged = { c, s -> classMestre = c; periciasMestre = s }
                                 )
                             }
                             "contatos" -> {
@@ -544,7 +573,13 @@ fun ConfigurarVantagemDialog(
 }
 
 @Composable
-fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: String = "", onDismiss: () -> Unit, onSave: (VantagemSelecionada) -> Unit) {
+fun EditarVantagemDialog(
+    vantagem: VantagemSelecionada,
+    descricaoCatalogo: String = "",
+    weaponSuggestions: List<String> = emptyList(),
+    onDismiss: () -> Unit,
+    onSave: (VantagemSelecionada) -> Unit
+) {
     var nivel by remember { mutableStateOf(vantagem.nivel) }
     var custoEscolhido by remember { mutableStateOf(vantagem.custoEscolhido) }
     var descricao by remember { mutableStateOf(vantagem.descricao) }
@@ -568,7 +603,42 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
     var tipoAparar by remember { mutableStateOf(vantagem.metadados?.get("tipo") ?: "global") }
     var periciaAparar by remember { mutableStateOf(vantagem.metadados?.get("skillId") ?: "desarmado") }
 
+    // Estados para Mestre de Armas
+    var classMestre by remember { mutableStateOf(vantagem.metadados?.get("classId") ?: "todas") }
+    var periciasMestre by remember { mutableStateOf(vantagem.metadados?.get("pericias_cobertas") ?: "") }
+
+    // Sincronização de custos para Editar
+    LaunchedEffect(vantagem.definicaoId, tipoGarras, tipoAparar, classMestre) {
+        when (vantagem.definicaoId) {
+            "garras" -> {
+                custoEscolhido = when (tipoGarras) {
+                    "cascos" -> 3
+                    "cegas" -> 3
+                    "afiadas" -> 5
+                    "pontudas" -> 8
+                    "longas_pontudas" -> 11
+                    else -> 5
+                }
+            }
+            "defesas_ampliadas_aparar_ampliado" -> {
+                custoEscolhido = if (tipoAparar == "global") 10 else 5
+            }
+            "mestre_de_armas" -> {
+                custoEscolhido = when (classMestre) {
+                    "todas" -> 45
+                    "amp_classe" -> 40
+                    "int_classe" -> 35
+                    "peq_classe" -> 30
+                    "set_two" -> 25
+                    "single" -> 20
+                    else -> 45
+                }
+            }
+        }
+    }
+
     val metadados = when (vantagem.definicaoId) {
+        "mestre_de_armas" -> mapOf("classId" to classMestre, "pericias_cobertas" to periciasMestre)
         "ataque_inato", "golpeadores" -> mapOf(
             "tipoDano" to tipoDanoAtaque,
             "dice" to dadosAtaque.toString(),
@@ -632,6 +702,13 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                             currentSkill = periciaAparar,
                             onChanged = { t, s -> tipoAparar = t; periciaAparar = s }
                         )
+                        "mestre_de_armas" -> {
+                            MestreDeArmasConfig(
+                                currentClass = classMestre,
+                                currentSkills = periciasMestre,
+                                onChanged = { c, s -> classMestre = c; periciasMestre = s }
+                            )
+                        }
                         else -> {
                             val opcoes = def?.custo?.split(" ou ")?.mapNotNull { it.trim().toIntOrNull() } ?: emptyList()
                             opcoes.forEach { opcao ->
@@ -647,7 +724,16 @@ fun EditarVantagemDialog(vantagem: VantagemSelecionada, descricaoCatalogo: Strin
                     Text("Custo Variável: $custoEscolhido pts")
                     when (vantagem.definicaoId) {
                         "dentes" -> DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
-                        "garras" -> GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                        "garras" -> {
+                            GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                        }
+                        "mestre_de_armas" -> {
+                            MestreDeArmasConfig(
+                                currentClass = classMestre,
+                                currentSkills = periciasMestre,
+                                onChanged = { c, s -> classMestre = c; periciasMestre = s }
+                            )
+                        }
                         "ataque_inato" -> AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
                         "golpeadores" -> GolpeadoresConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
                         "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(currentType = tipoAparar, currentSkill = periciaAparar, onChanged = { t, s -> tipoAparar = t; periciaAparar = s })
@@ -1243,6 +1329,206 @@ fun ApararAmpliadoConfig(
                 modifier = Modifier.padding(start = 8.dp),
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+    }
+}
+@Composable
+fun MestreDeArmasConfig(
+    currentClass: String,
+    currentSkills: String,
+    weaponSuggestions: List<String> = emptyList(),
+    onChanged: (String, String) -> Unit
+) {
+    val classes = listOf(
+        Triple("todas", "Todas as Armas Motoras", "45 pts (Exclui Desarmado/Fogo)"),
+        Triple("amp_classe", "Classe Ampla de Armas", "40 pts (Ex: Todas as Lâminas)"),
+        Triple("int_classe", "Classe Intermediária", "35 pts (Ex: Todas as Espadas)"),
+        Triple("peq_classe", "Classe Pequena", "30 pts (Ex: Armas de Esgrima)"),
+        Triple("set_two", "Duas Armas Específicas", "25 pts (Ex: Faca e Espada Larga)"),
+        Triple("single", "Uma Arma Específica", "20 pts (Ex: Apenas Espada Larga)")
+    )
+
+    // Extrair e limpar grupos do catálogo
+    val repo = com.gurps.ficha.domain.rules.CharacterRules.DATA_REPOSITORY_INSTANCE
+    val allGroups: List<String> = remember(repo) {
+        if (repo == null) {
+            emptyList<String>()
+        } else {
+            val validTypes = listOf("corpo_a_corpo", "distancia")
+            val forbiddenKeywords = listOf("BRIGA", "BOXE", "CARATÊ", "KARATE", "JUDO", "LUTA", "DESARMADO", "SUMO", "KRAV", "AIKIDO")
+            
+            repo.armasCatalogo
+                .filter { it.tipoCombate in validTypes }
+                .mapNotNull { it.grupo }
+                .map { g -> g.substringBefore("(").trim().uppercase() }
+                .filter { g -> 
+                    g.length >= 3 && 
+                    forbiddenKeywords.none { k -> g.contains(k) } &&
+                    !g.contains("FOGO")
+                }
+                .distinct()
+                .sorted()
+        }
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("Categoria de Armas:", style = MaterialTheme.typography.titleSmall)
+        
+        classes.forEach { (id, label, sub) ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { 
+                        if (currentClass != id) {
+                            // Se mudar de categoria, limpa a seleção anterior para evitar confusão
+                            onChanged(id, "")
+                        }
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = if (currentClass == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+                ),
+                border = if (currentClass == id) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null
+            ) {
+                Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = currentClass == id, onClick = { onChanged(id, "") })
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+                        Text(sub, style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+            }
+        }
+
+        // Seleção de Grupos para níveis Intermediários/Amplos
+        if (currentClass.endsWith("_classe")) {
+            Spacer(modifier = Modifier.height(8.dp))
+            val selectedGroupsList: List<String> = currentSkills
+                .split(",")
+                .map { it.trim().uppercase() }
+                .filter { it.isNotBlank() }
+
+            // DEFINIÇÃO DOS LIMITES POR CATEGORIA
+            val maxSelections = when (currentClass) {
+                "single" -> 1
+                "set_two" -> 2
+                "peq_classe" -> 3
+                "int_classe" -> 6
+                "amp_classe" -> 12
+                else -> allGroups.size // "todas" não tem limite
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    "Grupos Cobertos (Selecione):",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    "${selectedGroupsList.size}/$maxSelections",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = if (selectedGroupsList.size >= maxSelections) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
+                )
+            }
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                items(allGroups) { group: String ->
+                    val isSelected: Boolean = selectedGroupsList.contains(group)
+                    val atLimit = selectedGroupsList.size >= maxSelections
+                    
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(enabled = isSelected || !atLimit) {
+                                val newList: List<String> = if (isSelected) {
+                                    selectedGroupsList.filter { it != group }
+                                } else {
+                                    selectedGroupsList + listOf(group)
+                                }
+                                onChanged(currentClass, newList.joinToString(", "))
+                            }
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Checkbox(
+                            checked = isSelected,
+                            onCheckedChange = null,
+                            enabled = isSelected || !atLimit
+                        )
+                        Text(
+                            group, 
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (!isSelected && atLimit) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f) else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            }
+        }
+
+        if (currentClass == "set_two" || currentClass == "single") {
+            var searchQuery by remember { mutableStateOf("") }
+            val filteredSuggestions = remember(searchQuery) {
+                if (searchQuery.length < 2) emptyList()
+                else weaponSuggestions.filter { it.contains(searchQuery, ignoreCase = true) }.take(5)
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            OutlinedTextField(
+                value = currentSkills,
+                onValueChange = { onChanged(currentClass, it) },
+                label = { Text(if (currentClass == "single") "Nome da Arma" else "Nomes das Armas (separados por vírgula)") },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Ex: espada_larga, faca") }
+            )
+            
+            // Campo de busca assistida (Sugerir do catálogo)
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                label = { Text("Buscar no Catálogo") },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Digite para sugerir...") },
+                singleLine = true,
+                leadingIcon = { Icon(androidx.compose.material.icons.Icons.Default.Search, null) }
+            )
+
+            if (filteredSuggestions.isNotEmpty()) {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                ) {
+                    Column {
+                        filteredSuggestions.forEach { suggestion ->
+                            Text(
+                                text = suggestion,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { 
+                                        val currentList = currentSkills.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                                        val newVal = if (currentClass == "single") suggestion 
+                                                     else (currentList + suggestion).distinct().joinToString(", ")
+                                        onChanged(currentClass, newVal)
+                                        searchQuery = ""
+                                    }
+                                    .padding(12.dp),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }

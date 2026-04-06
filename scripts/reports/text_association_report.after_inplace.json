@@ -531,22 +531,6 @@
       "occurrenceFilesCount": 3
     },
     {
-      "norm": "lmina",
-      "forms": [
-        "LMINA",
-        "Lmina",
-        "lmina"
-      ],
-      "files": [
-        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-        "app/src/main/assets/magias.json",
-        "app/src/main/assets/magias2versao.json",
-        "app/src/main/assets/pericias.json",
-        "app/src/main/assets/tecnicas.v1.json"
-      ],
-      "occurrenceFilesCount": 5
-    },
-    {
       "norm": "magica",
       "forms": [
         "Mágica",

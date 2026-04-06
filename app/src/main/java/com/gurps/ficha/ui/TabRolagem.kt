@@ -121,17 +121,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
         opcoesAtaque.find { it.id == viewModel.ataqueSelecionadoId } ?: opcoesAtaque.firstOrNull()
     }
 
-    val fontesDano = remember(armas, p.vantagens) {
+    val fontesDano = remember(armas, p.vantagens, viewModel.ataqueSelecionadoId) {
         val list = mutableListOf<DamageSourceOption>()
         list.add(DamageSourceOption(id = "st_base", label = "Dano ST", contextLabel = "Dano ST", damageExpression = ""))
         
+        val selectedSkillId = viewModel.ataqueSelecionadoId?.let { id ->
+            if (id.startsWith("pericia_")) id.removePrefix("pericia_") else id
+        }
+
         armas.forEach { arma ->
-            if (!arma.armaDanoRaw.isNullOrBlank()) {
+            val danoExibicao = arma.danoCalculadoComSt(p, selectedSkillId)
+            if (!danoExibicao.isNullOrBlank()) {
                 list.add(DamageSourceOption(
                     id = "arma_${arma.nome}",
                     label = arma.nome,
                     contextLabel = "Dano ${arma.nome}",
-                    damageExpression = arma.armaDanoRaw ?: ""
+                    damageExpression = danoExibicao
                 ))
             }
         }
@@ -305,18 +310,12 @@ fun TabRolagem(viewModel: FichaViewModel) {
     fun executarRolagemDano(contextoLabel: String, danoExpr: String, periciaId: String? = null) {
         val parsed = parseDamageExpression(danoExpr) ?: return
         
-        // Aplicar bônus global (ex: Mestre de Armas)
-        val bonusPorDado = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getDamageBonusPerDie(p, periciaId)
-        val bonusTotalExtra = bonusPorDado * parsed.diceCount
-        val totalModificador = parsed.modifier + bonusTotalExtra
-        
         val rolagens = List(parsed.diceCount) { Random.nextInt(1, 7) }
         val somaDados = rolagens.sum()
-        val total = (somaDados + totalModificador).coerceAtLeast(1)
+        val total = (somaDados + parsed.modifier).coerceAtLeast(1)
         
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val extraInfo = if (bonusTotalExtra != 0) " [+$bonusTotalExtra Mestre]" else ""
-        val textoHist = "[$timestamp] Dano $contextoLabel ($danoExpr): $total$extraInfo"
+        val textoHist = "[$timestamp] Dano $contextoLabel ($danoExpr): $total"
         
         val payload = DiscordRollPayload(
             character = p.nome,
@@ -324,7 +323,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             context = "Dano $contextoLabel",
             dice = rolagens,
             total = total,
-            modifier = totalModificador,
+            modifier = parsed.modifier,
             target = null,
             outcome = "dano",
             margin = null,
@@ -567,7 +566,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             },
             onExecutarDano = { dano ->
                 val perId = if (ataqueAtual?.id?.startsWith("pericia_") == true) {
-                    ataqueAtual.id.split("_").getOrNull(1)
+                    ataqueAtual.id.removePrefix("pericia_")
                 } else null
                 
                 executarRolagemDano(

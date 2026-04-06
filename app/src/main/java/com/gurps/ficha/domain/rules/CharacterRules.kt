@@ -111,29 +111,42 @@ object CharacterRules {
         return tabelaGeB[st] ?: calcularDanoGeBExtrapolado(st)
     }
 
-    fun resolverDanoPorSt(danoRaw: String, st: Int): String {
+    fun resolverDanoPorSt(danoRaw: String, st: Int, bonusPorDado: Int = 0): String {
         var resolved = danoRaw
             .replace("Ã—", "×")
-            .replace("â€”", "—")
+            .replace("—", "—")
 
-        // Resolve tokens baseados em ST (GdP/GeB), preservando o restante da expressão.
+        // 1. Resolve tokens baseados em ST (GdP/GeB), preservando o restante da expressão.
         resolved = resolved.replace(Regex("\\bGdP\\b", RegexOption.IGNORE_CASE), calcularDanoGdP(st))
         resolved = resolved.replace(Regex("\\bGeB\\b", RegexOption.IGNORE_CASE), calcularDanoGeB(st))
 
-        // Caso simples: soma modificadores mantendo notacao intuitiva (ex.: 1d+3 em vez de 2d-3).
-        val simple = Regex("^\\s*(\\d+)d(?:\\s*([+-]\\d+))?\\s*([+-]\\d+)\\s*(.*)$").find(resolved)
-        if (simple != null) {
-            val dados = simple.groupValues[1].toInt()
-            val modBase = simple.groupValues[2].toIntOrNull() ?: 0
-            val modExtra = simple.groupValues[3].toIntOrNull() ?: 0
-            val sufixo = simple.groupValues[4]
-            val modFinal = modBase + modExtra
-            val danoIntuitivo = when {
+        // 2. Aplicar Bônus por Dado (Mestre de Armas)
+        if (bonusPorDado > 0) {
+            val diceMatch = Regex("(\\d+)d").find(resolved)
+            if (diceMatch != null) {
+                val numDice = diceMatch.groupValues[1].toInt()
+                val totalExtra = numDice * bonusPorDado
+                // Inserir o bônus extra na string antes de simplificar
+                resolved = resolved.replace("${numDice}d", "${numDice}d+$totalExtra")
+            }
+        }
+
+        // 3. Simplificar expressões (ex: 1d+2+2 -> 1d+4)
+        // Regex para capturar: (dados)d (mod1) (mod2) (tipo)
+        val fullRegex = Regex("^\\s*(\\d+)d(?:\\s*([+-]\\d+))?\\s*([+-]\\d+)\\s*(.*)$")
+        val match = fullRegex.find(resolved)
+        if (match != null) {
+            val dados = match.groupValues[1].toInt()
+            val mod1 = match.groupValues[2].toIntOrNull() ?: 0
+            val mod2 = match.groupValues[3].toIntOrNull() ?: 0
+            val sufixo = match.groupValues[4]
+            val modFinal = mod1 + mod2
+            val danoFormatado = when {
                 modFinal > 0 -> "${dados}d+$modFinal"
                 modFinal < 0 -> "${dados}d$modFinal"
                 else -> "${dados}d"
             }
-            return (danoIntuitivo + " " + sufixo).trim()
+            return (danoFormatado + " " + sufixo).trim()
         }
         return resolved
     }

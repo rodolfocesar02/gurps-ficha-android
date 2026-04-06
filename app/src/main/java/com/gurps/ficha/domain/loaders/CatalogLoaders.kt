@@ -120,9 +120,12 @@ class CatalogLoaders(private val context: Context) {
             val parsed = (gson.fromJson<List<PericiaDefinicao>>(json, type) ?: emptyList())
                 .map { it.normalizada() }
                 .map { DataRepository.getInstance(context).aplicarRegraPericiaV2(it, DataRepository.getInstance(context).regraPericiaV2(it.id)) }
+            
+            android.util.Log.d("CatalogLoaders", "Pericias carregadas: ${parsed.size}")
             clearLoadError("pericias")
             parsed
         } catch (e: Exception) {
+            android.util.Log.e("CatalogLoaders", "Erro loading pericias: ${e.message}")
             registerLoadError("pericias", e)
             e.printStackTrace()
             emptyList()
@@ -134,6 +137,7 @@ class CatalogLoaders(private val context: Context) {
             val json = context.assets.open("pericias_v2_rules_map.json")
                 .bufferedReader()
                 .use { it.readText() }
+            android.util.Log.d("CatalogLoaders", "Rules map JSON size: ${json.length}")
             val root = JsonParser.parseString(json)
             if (!root.isJsonObject) return emptyMap()
             val items = root.asJsonObject.array("items") ?: return emptyMap()
@@ -973,9 +977,15 @@ fun String?.sanitized(default: String = ""): String {
 }
 
 fun String.fixMojibakeIfNeeded(): String {
+    // Agora que todos os assets foram limpos e convertidos para UTF-8 nativo,
+    // retornamos 'this' diretamente para evitar corrupção de acentos legítimos.
+    return this
+}
+
+/*
     // Importante: "â" isolado é letra válida em português (ex.: Tolerância).
     // O detector deve olhar sequências típicas de mojibake, não letras isoladas.
-    val markers = listOf("Ã", "Â", "â€", "â€“", "â€”", "â€œ", "â€\u009d", "â€™", "�")
+    val markers = listOf("Ã", "", "â€", "–", "—", "“", "â€\u009d", "’", "�")
     var current = this
     repeat(2) {
         if (!markers.any { current.contains(it) }) return current
@@ -987,3 +997,4 @@ fun String.fixMojibakeIfNeeded(): String {
     }
     return current
 }
+*/

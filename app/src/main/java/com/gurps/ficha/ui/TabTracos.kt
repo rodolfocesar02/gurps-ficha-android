@@ -187,9 +187,13 @@ fun TabTracos(viewModel: FichaViewModel) {
             .firstOrNull { it.id == vantagem.definicaoId }
             ?.descricao
             .orEmpty()
+        val weaponSuggestions = remember {
+            viewModel.dataRepository.armasCatalogo.map { it.nome }.distinct()
+        }
         EditarVantagemDialog(
             vantagem = vantagem,
             descricaoCatalogo = descricaoCatalogo,
+            weaponSuggestions = weaponSuggestions,
             onDismiss = { editingVantagemIndex = null },
             onSave = { novaVantagem ->
                 viewModel.atualizarVantagem(index, novaVantagem)

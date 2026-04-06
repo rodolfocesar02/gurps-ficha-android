@@ -99,12 +99,17 @@ object TraitRuleRegistry {
     /**
      * Retorna a soma de bônus de dano por dado (ex: Mestre de Armas) acumulado.
      */
-    fun getDamageBonusPerDie(personagem: Personagem, periciaId: String?): Int {
+    fun getDamageBonusPerDie(
+        personagem: Personagem,
+        periciaId: String?,
+        weaponName: String? = null,
+        armaGrupo: String? = null
+    ): Int {
         var total = 0
         personagem.vantagens.forEach { selection ->
             val rule = rules[selection.definicaoId]
             if (rule != null) {
-                total += rule.getDamageBonusPerDie(personagem, selection, periciaId)
+                total += rule.getDamageBonusPerDie(personagem, selection, periciaId, weaponName, armaGrupo)
             }
         }
         return total

@@ -1,5 +1,7 @@
 import os
 
+import os
+
 def fix_mojibake(content):
     # Comprehensive replacements for common UTF-8 Mojibake in Brazil/Portuguese
     replacements = {
@@ -15,7 +17,7 @@ def fix_mojibake(content):
         'Ã“': 'Ó', 'Ã”': 'Ô', 'Ã•': 'Õ',
         'Ãš': 'Ú',
         'Ã‡': 'Ç',
-        'â€œ': '“', 'â€': '”', 'â€˜': '‘', 'â€™': '’',
+        'â€œ': '“', 'â€ ': '”', 'â€˜': '‘', 'â€™': '’',
         'â€“': '–', 'â€”': '—',
         'Âº': 'º', 'Âª': 'ª', 'Â°': '°',
         'â€¦': '...',
@@ -25,37 +27,34 @@ def fix_mojibake(content):
         content = content.replace(old, new)
     return content
 
-files_to_fix = [
-    r'app/src/main/java/com/gurps/ficha/ui/features/rolagem/RolagemComponents.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/features/rolagem/RolagemDialogs.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/features/rolagem/RolagemModels.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/TabRolagem.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/features/traits/TraitDialogsV2.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/features/magic/MagicDialogs.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/TabEquipamentos.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/DialogsAssistente.kt',
-    r'app/src/main/java/com/gurps/ficha/ui/TabGeral.kt'
+# Agora o script varre tudo automaticamente
+base_path = os.getcwd()
+folders_to_scan = [
+    os.path.join(base_path, 'app', 'src', 'main', 'assets'),
+    os.path.join(base_path, 'app', 'src', 'main', 'java')
 ]
 
-base_path = r'C:\Users\Rodolfo\Desktop\ficha gurps\ficha-gurps\gurps_app\gurps-ficha-android'
+print("Iniciando Limpeza Global de Mojibake...")
 
-for rel_path in files_to_fix:
-    abs_path = os.path.join(base_path, rel_path)
-    if os.path.exists(abs_path):
-        print(f"Fixing {rel_path}...")
-        try:
-            with open(abs_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            
-            fixed_content = fix_mojibake(content)
-            
-            if content != fixed_content:
-                with open(abs_path, 'w', encoding='utf-8') as f:
-                    f.write(fixed_content)
-                print(f"  Fixed!")
-            else:
-                print(f"  No changes needed.")
-        except Exception as e:
-            print(f"  Error reading file: {e}")
-    else:
-        print(f"File not found: {rel_path}")
+for folder in folders_to_scan:
+    if not os.path.exists(folder):
+        continue
+    
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            if file.endswith(('.json', '.kt')):
+                abs_path = os.path.join(root, file)
+                try:
+                    with open(abs_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    fixed_content = fix_mojibake(content)
+                    
+                    if content != fixed_content:
+                        with open(abs_path, 'w', encoding='utf-8') as f:
+                            f.write(fixed_content)
+                        print(f" Corrigido: {os.path.relpath(abs_path, base_path)}")
+                except Exception as e:
+                    print(f" Erro em {file}: {e}")
+
+print("\nLimpeza concluida!")
