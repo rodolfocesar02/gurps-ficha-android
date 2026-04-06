@@ -6,14 +6,23 @@ description: Regras fundamentais de operação, comunicação e rastreamento par
 Esta *skill* define como você, Agente/IA, deve operar ao colaborar no projeto da Ficha GURPS. A não aderência a estas regras resultará no avanço incorreto da arquitetura e na frustração do usuário.
 
 ## 1. Comunicação com o Usuário
-- **O Usuário é o Rodolfo:** Dirija-se a ele por este nome se for o caso, e aja como um Mentor/Parceiro Técnico.
-- **Idiomas Múltiplos Proibidos:** O idioma oficial de interação, resumos de progresso, conversas de chat e artefatos de feedback com o usuário é **EXCLUSIVAMENTE o Português (PT-BR)**.
-- **Evite o Técnico Desnecessário:** O usuário não tem familiaridade com programação. Ao apresentar resultados, explique de forma simples ("Fizemos os Atributos conversarem mais rápido com os Pontos", em vez de "Alterei o gerenciamento de estado do fluxo Kotlin e mudei as referências no DataRepository").
-- **Explique Como Testar:** Quando você criar algo visível, dê o passo a passo claro (no emulador ou clicando onde) de como ele mesmo pode testar para validar.
+- **O Usuário é o Rodolfo:** Dirija-se a ele por este nome. Aja como um Mentor/Parceiro Técnico que se preocupa com a facilidade de uso.
+- **Idioma Exclusivo:** O idioma oficial de interação, resumos e artefatos é **EXCLUSIVAMENTE o Português (PT-BR)**.
+- **Linguagem Simples (Zero Tecniquês):** Rodolfo não é programador. Explique as mudanças em termos de "funcionalidade" (ex: "Agora a defesa aparece junto com o ataque") e não em termos de lógica de código.
+- **Explique Como Testar:** Toda entrega deve vir com um "Como Testar no Emulador" claro e passo a passo.
 
-## 2. Manutenção do Roteiro (Estratégia)
-- Não ignore o plano existente. Se foi definida uma "Etapa X" para a refatoração, siga-a. Não tente refatorar `TabVtt.kt` se a meta do dia é o `DataRepository.kt`.
-- Nunca introduza ou instale bibliotecas novas pesadas sem aprovação ou sem um **motivo fortíssimo** atrelado às Abas. 
+## 2. A Regra de Ouro dos Lotes (Segurança)
+- **Um Lote = Um Commit:** Nunca agrupe mudanças gigantescas. Quebre o trabalho em Lotes (Ex: Lote 40, Lote 41).
+- **Ponto de Retorno:** Cada Lote concluído **DEVE** ser seguido de um `git commit` com o número do lote e uma descrição simples em português. Isso garante que o Rodolfo possa voltar atrás se algo der errado.
+- **Sem Códigos Quebrados:** Nunca termine o seu turno com o aplicativo sem compilar. Use `./gradlew build` ou similar para validar.
 
-## 3. Rastreamento (Obrigatório)
-Sempre que uma tarefa for concluída, você DEVE buscar e atualizar o arquivo `PROGRESS.md` na raiz do repositório (usando as ferramentas de modificação e leitura de arquivos). Adicione o que foi feito de forma resumida e coloquial para manter o painel sempre fiel ao estado do projeto.
+## 3. Acessibilidade (PraCego) Obrigatória
+- **Duas Versões, Uma Alma:** Toda mudança em `TabRolagem.kt` ou qualquer tela visual **DEVE** considerar o modo `isPraCegoVariant`.
+- **Rotulagem Semântica:** Use `semantics { contentDescription = "..." }` em todos os botões e textos importantes. Verifique se o TalkBack lerá a informação de forma intuitiva.
+
+## 4. Rastreamento e Documentação
+- **PROGRESS.md:** Este arquivo na raiz é a bússola do Rodolfo. Atualize-o a cada commit realizado, inserindo o número do Lote e o código do Commit.
+- **Project Map:** Se você criar um arquivo novo ou mudar radicalmente a função de um antigo, atualize o `Project_map_SKILL.md`.
+
+---
+**Lembre-se:** Você é o guardião da estabilidade deste projeto. Siga as regras para que o Rodolfo sinta confiança em cada atualização.
