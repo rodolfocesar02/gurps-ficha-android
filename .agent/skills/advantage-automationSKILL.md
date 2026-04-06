@@ -1,57 +1,56 @@
 ---
 name: advantage-automation
-description: Guia para automatizar novas vantagens de forma modular no GURPS Ficha Android.
+description: Guia técnico para automatizar vantagens de forma modular no GURPS Ficha Android.
 ---
 
-# 🤖 Automação Modular de Vantagens
+# 🤖 Automação Modular de Vantagens (Trait Rules)
 
-Para evitar que o arquivo `CharacterRules.kt` ou `TabRolagem.kt` cresçam indefinidamente, usamos o padrão **Modular Trait Rules**.
+Para manter o código limpo e evitar que arquivos de regras globais cresçam demais, usamos o padrão **Modular Trait Rules**. Toda vantagem com lógica complexa deve ter seu próprio arquivo em `domain/rules/traits/`.
 
-## 🚀 Como Adicionar uma Nova Automação
+## 🚀 Como Criar uma Nova Automação
 
-Se você for automatizar uma vantagem (ex: *Amplitute de Combate* ou *Visão Noturna*), siga estes passos:
+### 1. Implementar a Interface `TraitRule`
+Crie `[NomeDaVantagem]Rule.kt`. Abaixo estão os métodos disponíveis na interface atual para atingir 100% de automação:
 
-### 1. Criar o Arquivo de Regra
-Crie um novo arquivo em `app/src/main/java/com/gurps/ficha/domain/rules/traits/` com o nome `[NomeDaVantagem]Rule.kt`.
-
-Exemplo:
 ```kotlin
 class MinhaVantagemRule : TraitRule {
-    override val traitId: String = "id_no_json"
+    override val traitId: String = "id_no_json" // Ex: "mestre_de_armas"
 
-    // Opcional: Se o custo depender de lógica complexa (Metadados)
-    override fun calculateCost(selection: VantagemSelecionada, modifiers: List<ModificadorSelecao>): Int? {
-        return null // ou o calculo
-    }
+    // 💰 Custo customizado (se não for fixo ou por nível padrão)
+    override fun calculateCost(selection: VantagemSelecionada, modifiers: List<ModificadorSelecao>): Int? = null
 
-    // Opcional: Se adicionar uma linha de NH na Aba de Rolagem
-    override fun getAttackOptions(...) : List<RollMappedOption> { ... }
+    // ⚔️ Adicionar novo Ataque (NH) na Aba de Rolagem (Ex: Ataque Inato, Mordida)
+    override fun getAttackOptions(personagem: Personagem, selection: VantagemSelecionada): List<RollMappedOption> = emptyList()
 
-    // Opcional: Se adicionar Aparar/Bloqueio
-    override fun getDefenseOptions(...) : List<ActiveDefense> { ... }
-    
-    // Opcional: Se adicionar uma opção de Dano
-    override fun getDamageOptions(...) : List<DamageSourceOption> { ... }
+    // 🛡️ Adicionar nova Defesa (Apara/Bloqueio) (Ex: Garras Longas permitindo Apara)
+    override fun getDefenseOptions(personagem: Personagem, selection: VantagemSelecionada): List<ActiveDefense> = emptyList()
+
+    // 💥 Adicionar nova Fonte de Dano (Ex: Dano de Mordida, Sopro)
+    override fun getDamageOptions(personagem: Personagem, selection: VantagemSelecionada): List<DamageSourceOption> = emptyList()
+
+    // 🏃 Modificadores de Defesa (Esquiva, Bloqueio, Apara)
+    override fun getDodgeModifier(p: Personagem, s: VantagemSelecionada): Int = 0
+    override fun getBlockModifier(p: Personagem, s: VantagemSelecionada): Int = 0
+    override fun getParryModifier(p: Personagem, s: VantagemSelecionada, periciaId: String?): Int = 0
+
+    // 🎓 Bônus em Perícias Existentes (Ex: +1 em Karatê por ter Golpeadores)
+    override fun getSkillModifiers(p: Personagem, s: VantagemSelecionada): Map<String, Int> = emptyMap()
+
+    // 🔨 Bônus de Dano por Dado (Ex: Mestre de Armas)
+    // periciaId é a perícia selecionada no botão de Ataque da UI.
+    override fun getDamageBonusPerDie(p: Personagem, s: VantagemSelecionada, periciaId: String?, weaponName: String?, armaGrupo: String?): Int = 0
 }
 ```
 
-### 2. Registrar a Regra
-Abra o arquivo `TraitRuleRegistry.kt` e adicione sua regra no bloco `init`:
+### 2. Registro Obrigatório
+Adicione a nova instância no `TraitRuleRegistry.kt`. Sem isso, o motor de regras não encontrará sua automação.
 
-```diff
-init {
-    register(AtaqueInatoRule())
-    register(GolpeadoresRule())
-+   register(MinhaVantagemRule())
-}
-```
-
-### 3. Verificar o JSON
-Certifique-se de que no `vantagens.json` o campo `tipoCusto` está como `variavel` se você for usar diálogos de configuração customizados.
+### 3. Sincronização com o JSON
+A automação só funciona se o `definicaoId` da vantagem no `vantagens.json` for **exatamente igual** ao `traitId` definido na classe Kotlin.
 
 ---
 
 ## ⚠️ Regras de Ouro
-- **Não altere `TabRolagem.kt`** para adicionar ataques de vantagens. Use o método `getAttackOptions` na sua regra.
-- **Não altere o `CharacterRules.kt`** para custos específicos. Use `calculateCost`.
-- **Mantenha o fallback:** Se a vantagem não precisa de lógica (é apenas custo fixo), **NÃO** crie um arquivo de regra. Deixe o sistema usar o padrão.
+1. **Contexto de Perícia:** Sempre use o `periciaId` fornecido nos métodos de bônus para garantir que o bônus só se aplique à arma/estilo selecionado pelo usuário na UI.
+2. **Modularização:** Nunca coloque lógica de uma vantagem específica dentro da `TabRolagem.kt`. Use `getAttackOptions` para injetar a UI dinamicamente.
+3. **Escudo/BD:** Se a vantagem interage com o Bônus de Defesa do escudo, certifique-se de usar os métodos do `CombatRules` ou `Personagem` para obter o valor atualizado.
