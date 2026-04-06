@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -672,6 +673,20 @@ fun HistoricoRolagemPanel(
 }
 
 @Composable
+fun SectionHeaderPraCego(titulo: String) {
+    Text(
+        text = "Sessão: $titulo",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 4.dp)
+            .semantics { heading() },
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.Bold,
+        color = MaterialTheme.colorScheme.primary
+    )
+}
+
+@Composable
 fun DefesasAtivasQuickRollPanel(
     defesasAtivas: List<com.gurps.ficha.viewmodel.ActiveDefense>,
     modificadoresDefesa: MutableMap<com.gurps.ficha.viewmodel.DefenseType, Int>,
@@ -686,6 +701,7 @@ fun DefesasAtivasQuickRollPanel(
     onExecutarRolagem: (com.gurps.ficha.viewmodel.ActiveDefense, Int) -> Unit
 ) {
     if (defesasAtivas.isEmpty()) {
+        if (isPraCegoVariant) SectionHeaderPraCego("Defesas Ativas")
         Text(
             "Nenhuma defesa ativa configurada.",
             style = compactLabelStyle,
@@ -697,6 +713,7 @@ fun DefesasAtivasQuickRollPanel(
 
     if (isPraCegoVariant) {
         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            SectionHeaderPraCego("Defesas Ativas")
             defesasAtivas.forEach { defesa ->
                 val configClick = when (defesa.type) {
                     com.gurps.ficha.viewmodel.DefenseType.ESQUIVA -> onConfigEsquiva
@@ -707,6 +724,7 @@ fun DefesasAtivasQuickRollPanel(
                     modifier = Modifier.fillMaxWidth(),
                     colors = appCardColors()
                 ) {
+                    val detailSuffix = if (!defesa.detail.isNullOrBlank()) " atual ${defesa.detail}" else ""
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -714,12 +732,17 @@ fun DefesasAtivasQuickRollPanel(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column {
+                        Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 defesa.name,
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.clickable { configClick() }
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .semantics {
+                                        contentDescription = "Configurar ${defesa.name}$detailSuffix"
+                                    }
+                                    .clickable { configClick() }
                             )
                             if (!defesa.detail.isNullOrBlank()) {
                                 Text(defesa.detail!!, style = compactLabelStyle)
@@ -729,7 +752,7 @@ fun DefesasAtivasQuickRollPanel(
                             text = defesa.finalValue.toString(),
                             modifier = Modifier
                                 .semantics {
-                                    contentDescription = "Rolar ${defesa.name} nível ${defesa.finalValue}"
+                                    contentDescription = "Rolar ${defesa.name} nível base ${defesa.finalValue}"
                                 }
                                 .clickable {
                                     onExecutarRolagem(defesa, 0)

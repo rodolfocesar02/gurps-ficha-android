@@ -417,6 +417,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onEditCanal = { showEditarCanalDialog = true }
         )
 
+        if (isPraCegoVariant) SectionHeaderPraCego("Atributos e Status")
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -493,6 +494,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
 
         if (isPraCegoVariant) {
+            SectionHeaderPraCego("Modificador Global")
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -503,7 +505,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        "Modificador Global: ${if (modificadorGlobalPraCego >= 0) "+$modificadorGlobalPraCego" else "$modificadorGlobalPraCego"}",
+                        "Modificador para a próxima rolagem: ${if (modificadorGlobalPraCego >= 0) "+$modificadorGlobalPraCego" else "$modificadorGlobalPraCego"}",
                         style = cardTitleStyle,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -536,6 +538,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             }
         }
 
+        if (isPraCegoVariant) SectionHeaderPraCego("Combate: Ataque e Dano")
         AtaqueDanoQuickArea(
             opcoesAtaque = opcoesAtaque,
             ataqueAtual = ataqueAtual,
