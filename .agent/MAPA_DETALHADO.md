@@ -15,7 +15,8 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 - **`rules/CharacterRules.kt`**: Define limites de atributos, PV (Pontos de Vida) e PF (Pontos de Fadiga).
 - **`rules/CombatRules.kt`**: Onde moram as regras de defesa ativa, bônus de escudo (BD) e bônus de Mestre de Armas.
 - **`rules/MagiaEnergiaRules.kt`**: Regras específicas para recuperação de energia e custos extras.
-- **`regras_prerequisitos/PreRequisitoChecker.kt`**: O motor que valida se um personagem pode ter certas magias ou perícias.
+- **`motor modo alvo/src/NexusArcanoEngine.kt`**: O Maestro do sistema "Modo Alvo". Orquestra o parser, o avaliador de regras e o buscador de caminhos para liberar magias complexas.
+- **`regras_prerequisitos/PreRequisitoChecker.kt`**: O motor legado/base que valida se um personagem pode ter certas magias ou perícias de forma isolada.
 ---
 ## 3. UI - Telas e Abas (O Corpo)
 *Componentes visuais e interações do usuário.*
@@ -98,6 +99,7 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 *Onde as regras de RPG são validadas automaticamente (Pasta `app/src/test/`).*
 
 - **`rules/RulesLayerTest.kt`**: Onde as regras de Combate e Atributos são estressadas para garantir que 1+1 sempre seja 2.
+- **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`**: Suíte de testes de "Cenário Ouro" (Desejo) que valida a progressão incremental de metas.
 - **`domain/magias/NexusArcano*Test.kt`**: Uma suíte massiva de testes para o motor de magias (Nexus Arcano). Garante que pré-requisitos e custos de mana nunca quebrem.
 - **`PersonagemRulesTest.kt`**: Valida a criação de personagens e limites de pontos.
 - **`vtt/VttBridgeCodecStressTest.kt`**: Testa a robustez da conexão com o Foundry/VTT.
@@ -107,6 +109,17 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 
 - **`AndroidManifest.xml`**: Onde as permissões de Internet (para IA/Discord) e Acesso a Arquivos são declaradas.
 - **`build.gradle(.kts)`**: Define a versão do app (como a V1.4.5), as bibliotecas usadas e as variantes (Visual vs Pracego).
+##  16. Detalhamento: Motor Nexus Arcano (Complexidade de Magia)
+*Onde a resolução de dependências pesadas do GURPS 4E reside (Pasta `motor modo alvo/src/`).*
+
+- **`NexusArcanoEngine.kt`**: Interface principal e orquestrador.
+- **`ArcanoModels.kt`**: Dados básicos (Metas, Snapshots para a UI e Estados de Evolução).
+- **`NexusArcanoHeuristics.kt`**: O especialista em regras (Avalia quantas magias de que escola o personagem tem).
+- **`NexusArcanoParser.kt`**: Interpretador de texto bruto dos caminhos de magia (Separa perícias de magias).
+- **`NexusArcanoPathfinder.kt`**: Algoritmo de Busca (DFS) para encontrar o caminho mais curto/lógico para uma magia alvo.
+- **`NexusArcanoStrings.kt`**: Formatação de textos para a interface (Mensagens de erro e trilhas de aprendizado).
+- **`domain/magias/NexusArcanoModoAlvoAdapter.kt`**: Faz o "de-para" entre o motor puramente lógico e a lista reativa que o usuário vê na tela.
+
 ---
 > [!TIP]
-> **DICA PARA O AGENTE**: Antes de finalizar qualquer mudança em regras de combate ou magias, **RODE OS TESTS**. Se um teste do Nexus Arcano falhar, sua alteração causou um bug de regressão!
+> **DICA PARA O AGENTE**: Antes de finalizar qualquer mudança em regras de combate ou magias, **RODE OS TESTS** (Especialmente o `NexusArcanoLoteFCanonicScenarioTest.kt`). Se um teste do Nexus Arcano falhar, sua alteração causou um bug de regressão na resolução de dependências!

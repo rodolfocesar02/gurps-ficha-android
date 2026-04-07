@@ -282,4 +282,17 @@ class MestreIAUseCase(
             viewModel.adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nomeSugerido))
         }
     }
+
+    /**
+     * Gera um catálogo de nomes reais filtrados via RAG Local para injetar no prompt.
+     */
+    fun gerarCatalogoLocal(userPrompt: String): com.gurps.ficha.data.network.MestreIAClient.CatalogoNomes {
+        val rag = MestreIARagEngine.buscarContexto(userPrompt, repository)
+        return com.gurps.ficha.data.network.MestreIAClient.CatalogoNomes(
+            vantagens = rag.vantagens,
+            desvantagens = rag.desvantagens,
+            pericias = rag.pericias,
+            magias = rag.magias
+        )
+    }
 }
