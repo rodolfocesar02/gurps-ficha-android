@@ -15,15 +15,20 @@ O projeto é um aplicativo Android (Kotlin/Compose) para fichas de GURPS 4ª Edi
 
 ### 🏗️ Estrutura de Pastas
 - **`app/src/main/java/com/gurps/ficha/`**
-    - `model/`: Classes de dados puras (Personagem, Atributo, Vantagem).
-    - `data/`: Repositórios (Room/Database) e Preferências.
-    - `ui/`: Telas e Componentes (Jetpack Compose).
-    - `viewmodel/`: Lógica reativa e Delegates para isolar cálculos.
+    - `model/`: Classes de dados puras (Personagem, Atributos).
+    - `ui/`: Telas (FichaScreen, TabRolagem, TabCombate).
+    - `viewmodel/`:
+        - `FichaViewModel.kt`: Central de Inteligência (Combate, Atributos, Magias e IA).
+        - `delegates/`: Persistência e suporte.
 - **`.agent/skills/`**: Este arquivo mestre.
-- **`docs/update/`**: Sistema de metadados para o atualizador in-app.
 
-### 🛡️ Hub de Combate Unificado
-Toda a lógica de ataque e defesa reside agora na **`TabRolagem.kt`**. Não existem abas separadas para defesa; tudo é compacto e adaptativo (padding 2dp).
+### 📍 Mapa de Funções VIP (Versão Sincro V22)
+Para manutenção rápida, os pontos de controle são:
+- **Cálculo de Defesas Ativas**: `FichaViewModel.kt` -> Métodos integrados de cálculo de defesa.
+- **Regras de Mestre de Armas**: `FichaViewModel.kt` -> Métodos de cálculo de dano.
+- **Gestão de Persistência**: `FichaPersistenceDelegate.kt` -> `carregarFicha()` e `salvarFicha()`.
+- **Validação de Pré-requisitos**: `FichaViewModel.kt` -> integrando com `SkillEngine.kt`.
+- **Ações da IA**: `MestreIAUseCase.kt` -> Processamento de comandos verbais/texto.
 
 ---
 
