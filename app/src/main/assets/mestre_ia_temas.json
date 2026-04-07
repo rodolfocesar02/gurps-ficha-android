@@ -1,0 +1,44 @@
+{
+  "temas": [
+    {
+      "id": "fogo",
+      "canonical": "fogo",
+      "keywords": ["chamas", "calor", "incêndio", "queimadura", "térmico", "explosivo", "fogueira", "lava", "quente"]
+    },
+    {
+      "id": "agua",
+      "canonical": "água",
+      "keywords": ["gelo", "frio", "umidade", "líquido", "neve", "geada", "chuva", "mar", "oceano", "vapor"]
+    },
+    {
+      "id": "espada",
+      "canonical": "espada",
+      "keywords": ["lâmina", "corte", "sabre", "florete", "katana", "cimitarra", "rapieira", "cutelo", "esgrima"]
+    },
+    {
+      "id": "lanca",
+      "canonical": "lança",
+      "keywords": ["pique", "alabarda", "haste", "tridente", "estoque", "arremesso", "projétil"]
+    },
+    {
+      "id": "guerreiro",
+      "canonical": "guerreiro",
+      "keywords": ["luta", "combate", "soldado", "gladiador", "bárbaro", "cavaleiro", "mercenário", "armadura", "escudo"]
+    },
+    {
+      "id": "mago",
+      "canonical": "mago",
+      "keywords": ["magia", "arcano", "feitiço", "encantamento", "bruxo", "feiticeiro", "mana", "espiritual", "sobrenatural"]
+    },
+    {
+      "id": "ladrao",
+      "canonical": "ladrão",
+      "keywords": ["furtividade", "sombra", "esconder", "silencioso", "roubo", "armadilha", "gazua", "veneno", "agilidade"]
+    },
+    {
+      "id": "cura",
+      "canonical": "cura",
+      "keywords": ["saúde", "recuperação", "medicina", "primeiros socorros", "vitalicidade", "regeneração", "bênção"]
+    }
+  ]
+}

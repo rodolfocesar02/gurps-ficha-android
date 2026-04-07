@@ -23,6 +23,16 @@ import java.text.Normalizer
  */
 private val gson = Gson()
 
+data class MestreIaTema(
+    val id: String,
+    val canonical: String,
+    val keywords: List<String>
+)
+
+data class MestreIaTemasWrapper(
+    val temas: List<MestreIaTema>
+)
+
 class DataRepository(private val context: Context) {
     private data class MagiaFiltroIndex(
         val definicao: MagiaDefinicao,
@@ -45,6 +55,7 @@ class DataRepository(private val context: Context) {
     private var _escudosCatalogo: List<EscudoCatalogoItem>? = null
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
     private var _modificadoresGerais: List<ModificadorDefinicao>? = null
+    private var _temasMestreIA: List<MestreIaTema>? = null
 
     val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
@@ -60,9 +71,6 @@ class DataRepository(private val context: Context) {
 
     val periciasSuplementares: List<PericiaSuplementarItem>
         get() = _periciasSuplementares ?: carregarPericiasSuplementares().also { _periciasSuplementares = it }
-
-    val magias: List<MagiaDefinicao>
-        get() = _magias ?: carregarMagias().also { _magias = it }
 
     private val magiasFiltroIndex: List<MagiaFiltroIndex>
         get() = _magiasFiltroIndex ?: magias.map { magia ->
@@ -94,6 +102,12 @@ class DataRepository(private val context: Context) {
     val modificadoresGerais: List<ModificadorDefinicao>
         get() = _modificadoresGerais ?: carregarModificadoresGerais().also { _modificadoresGerais = it }
 
+    val magias: List<MagiaDefinicao>
+        get() = _magias ?: carregarMagias().also { _magias = it }
+
+    val temasMestreIA: List<MestreIaTema>
+        get() = _temasMestreIA ?: carregarTemasMestreIA().also { _temasMestreIA = it }
+
     private val catalogLoaders = com.gurps.ficha.domain.loaders.CatalogLoaders(context)
 
     fun getCatalogLoadErrors(): Map<String, String> {
@@ -111,6 +125,15 @@ class DataRepository(private val context: Context) {
     private fun carregarEscudosCatalogo(): List<EscudoCatalogoItem> = catalogLoaders.carregarEscudosCatalogo()
     private fun carregarArmadurasCatalogo(): List<ArmaduraCatalogoItem> = catalogLoaders.carregarArmadurasCatalogo()
     private fun carregarModificadoresGerais(): List<ModificadorDefinicao> = catalogLoaders.carregarModificadoresGerais()
+
+    private fun carregarTemasMestreIA(): List<MestreIaTema> {
+        return try {
+            val json = context.assets.open("mestre_ia_temas.json").bufferedReader().use { it.readText() }
+            gson.fromJson(json, MestreIaTemasWrapper::class.java).temas
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 
     // === FILTROS DE VANTAGENS E OUTROS (Delegados para CatalogFilters) ===
 

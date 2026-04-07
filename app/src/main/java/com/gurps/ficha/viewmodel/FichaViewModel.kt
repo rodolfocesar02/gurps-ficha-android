@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.*
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.data.storage.FichaStorageRepository
 import com.gurps.ficha.domain.rules.CharacterRules
@@ -82,14 +83,11 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // Propriedades Estáticas/Config
     private val prefCanalDiscordId = "discord_canal_id"
     private val prefCanalDiscordNome = "discord_canal_nome"
-    private val prefIABaseUrl = "ia_base_url"
-    private val prefIAApiKey = "ia_api_key"
-    private val prefIAWorkspaceSlug = "ia_workspace_slug"
+    // MESTRE IA PRIME (Configurações Mascaradas via BuildConfig)
+    val iaBaseUrl get() = BuildConfig.MESTRE_IA_URL
+    val iaApiKey get() = BuildConfig.MESTRE_IA_KEY
+    val iaWorkspaceSlug get() = BuildConfig.MESTRE_IA_MODEL
     private val prefNaoMostrarManualModoAlvo = "modo_alvo_manual_nao_mostrar"
-
-    var iaBaseUrl by mutableStateOf(configPrefs.getString(prefIABaseUrl, "https://rodolfocesar02-mestre-gurps-ia.hf.space") ?: "")
-    var iaApiKey by mutableStateOf(configPrefs.getString(prefIAApiKey, "EMPTY") ?: "EMPTY")
-    var iaWorkspaceSlug by mutableStateOf(configPrefs.getString(prefIAWorkspaceSlug, "meu-workspace") ?: "meu-workspace")
 
     // Getters Delegados
     val advantageSearch get() = searchDelegate.advantageSearch
@@ -406,9 +404,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
     fun descartarFichaPendente() = iaDelegate.descartarPendente()
     fun limparChatMestreIA() = iaDelegate.limparChat()
-    fun salvarConfiguracaoIA(url: String, key: String, slug: String) {
-        iaBaseUrl = url; iaApiKey = key; iaWorkspaceSlug = slug
-        configPrefs.edit().putString(prefIABaseUrl, url).putString(prefIAApiKey, key).putString(prefIAWorkspaceSlug, slug).apply()
+    /**
+     * Função desabilitada na arquitetura PRIME (Segurança Sete Chaves).
+     * As chaves agora são injetadas via BuildConfig.
+     */
+    fun salvarConfiguracaoIA(baseUrl: String, apiKey: String, workspaceSlug: String) {
+        // Log ou ação de segurança se necessário
     }
     fun autoSaveIA() { viewModelScope.launch { fichaStorage.salvarFicha("IA_${personagem.nome}_${System.currentTimeMillis()}", personagem.toJson()); carregarListaFichas() } }
     fun gerarFichaComIA(h: String, onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(h, "geracao", iaBaseUrl, iaApiKey, iaWorkspaceSlug, onRes)

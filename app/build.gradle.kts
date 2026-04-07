@@ -60,6 +60,11 @@ android {
             .trimEnd('/')
             .replace("\"", "\\\"")
 
+        // FATOR PRIME: Chaves Mascaradas
+        val mestreIaKey = (localProperties.getProperty("mestre.ia.key") ?: "").replace("\"", "\\\"")
+        val mestreIaUrl = (localProperties.getProperty("mestre.ia.url") ?: "https://generativelanguage.googleapis.com/v1beta/openai").replace("\"", "\\\"")
+        val mestreIaModel = (localProperties.getProperty("mestre.ia.model") ?: "gemini-1.5-flash").replace("\"", "\\\"")
+
         applicationId = "com.gurps.ficha"
         minSdk = 24
         targetSdk = 34
@@ -75,6 +80,11 @@ android {
         buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
         buildConfigField("String", "GURPS_AGENT_API_BASE_URL", "\"$gurpsAgentApiBaseUrl\"")
         buildConfigField("String", "VTT_API_BASE_URL", "\"$vttApiBaseUrl\"")
+        
+        // REGISTRO NO COFRE
+        buildConfigField("String", "MESTRE_IA_KEY", "\"$mestreIaKey\"")
+        buildConfigField("String", "MESTRE_IA_URL", "\"$mestreIaUrl\"")
+        buildConfigField("String", "MESTRE_IA_MODEL", "\"$mestreIaModel\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
