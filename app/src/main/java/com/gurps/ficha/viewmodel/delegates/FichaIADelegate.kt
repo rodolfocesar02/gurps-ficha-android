@@ -39,25 +39,27 @@ class FichaIADelegate(
         mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("user", pergunta)
 
         scope.launch {
-            val contexto = if (modo != "geracao") "Ficha de ${viewModel.personagem.nome}: ${viewModel.personagem.toJson()}" else null
-            
-            // RAG LOCAL: Busca apenas o que é relevante para o prompt atual
-            val catalogoFiltrado = mestreIAUseCase.gerarCatalogoLocal(pergunta)
-
-            val respostaTexto: String? = withContext(Dispatchers.IO) {
-                MestreIAClient.perguntarAoMestre(
-                    baseUrl, apiKey, pergunta, workspaceSlug, mestreIAChatHistory.dropLast(1),
-                    contexto, catalogoFiltrado, modo
+            mestreIAUseCase.conversarComMestreIA(
+                prompt = pergunta,
+                modo = modo,
+                baseUrl = baseUrl,
+                apiKey = apiKey,
+                workspaceSlug = workspaceSlug
+            ) { isRagUsed, response ->
+                mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
+                    role = "model",
+                    text = response.text,
+                    modelName = response.modelName ?: workspaceSlug,
+                    isRagUsed = isRagUsed
                 )
-            }
 
-            if (respostaTexto != null) {
-                mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", respostaTexto)
                 if (modo == "geracao") {
-                    fichaGeradaPendente = MestreIAClient.extrairJsonFicha(respostaTexto)
+                    fichaGeradaPendente = MestreIAClient.extrairJsonFicha(response.text)
                     onResult(true, if (fichaGeradaPendente != null) "Ficha pronta para revisão!" else "Ficha gerada em texto.")
-                } else onResult(true, "Resposta recebida.")
-            } else onResult(false, "Falha na conexão com Mestre Digital.")
+                } else {
+                    onResult(true, "Resposta recebida.")
+                }
+            }
         }
     }
 

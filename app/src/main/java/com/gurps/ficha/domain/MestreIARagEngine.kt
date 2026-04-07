@@ -28,23 +28,40 @@ object MestreIARagEngine {
      * Varre o repositório em busca de termos que combinem com o prompt.
      */
     fun buscarContexto(prompt: String, repository: DataRepository): RagResult {
-        val keywords = extrairKeywords(prompt)
-        if (keywords.isEmpty()) return RagResult()
+        val keywordsBase = extrairKeywordsBase(prompt)
+        if (keywordsBase.isEmpty()) return RagResult()
+        
+        // Expansão Semântica (Fase 5)
+        val keywordsExpandidas = expandirKeywords(keywordsBase, repository.temasMestreIA)
 
         return RagResult(
-            vantagens = buscarVantagens(keywords, repository.vantagens),
-            desvantagens = buscarDesvantagens(keywords, repository.desvantagens),
-            pericias = buscarPericias(keywords, repository.pericias),
-            magias = buscarMagias(keywords, repository.magias)
+            vantagens = buscarVantagens(keywordsExpandidas, repository.vantagens),
+            desvantagens = buscarDesvantagens(keywordsExpandidas, repository.desvantagens),
+            pericias = buscarPericias(keywordsExpandidas, repository.pericias),
+            magias = buscarMagias(keywordsExpandidas, repository.magias)
         )
     }
 
-    private fun extrairKeywords(prompt: String): List<String> {
+    private fun extrairKeywordsBase(prompt: String): List<String> {
         return prompt.lowercase(Locale.ROOT)
             .replace(Regex("[^a-z\\s]"), " ")
             .split(Regex("\\s+"))
             .filter { it.length > 2 && it !in STOP_WORDS }
             .distinct()
+    }
+
+    private fun expandirKeywords(base: List<String>, temas: List<com.gurps.ficha.data.MestreIaTema>): List<String> {
+        val resultado = base.toMutableSet()
+        base.forEach { kw ->
+            val temaEncontrado = temas.find { 
+                CatalogFilters.igualNormalizado(it.canonical, kw) || 
+                CatalogFilters.igualNormalizado(it.id, kw) 
+            }
+            temaEncontrado?.let { 
+                resultado.addAll(it.keywords) 
+            }
+        }
+        return resultado.toList()
     }
 
     private fun buscarVantagens(keywords: List<String>, lista: List<VantagemDefinicao>): List<String> {

@@ -1,12 +1,10 @@
 package com.gurps.ficha.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -17,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import androidx.compose.ui.res.painterResource
-import com.gurps.ficha.R
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -36,7 +32,6 @@ fun DialogMestreIA(
 ) {
     var prompt by remember { mutableStateOf("") }
     var isAguardando by remember { mutableStateOf(false) }
-    var showConfig by remember { mutableStateOf(false) }
     val chatHistory = viewModel.mestreIAChatHistory
     val scrollState = rememberLazyListState()
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
@@ -64,7 +59,6 @@ fun DialogMestreIA(
                     Text("Mestre Digital 2.0", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
                 }
                 Row {
-
                     IconButton(onClick = { viewModel.limparChatMestreIA() }) {
                         Icon(Icons.Default.Delete, contentDescription = "Limpar", modifier = Modifier.size(20.dp))
                     }
@@ -72,7 +66,6 @@ fun DialogMestreIA(
             }
         },
         text = {
-            var showPlusMenu by remember { mutableStateOf(false) }
             Column(modifier = Modifier.fillMaxWidth().heightIn(max = 600.dp)) {
                 if (chatHistory.isEmpty()) {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -121,49 +114,6 @@ fun DialogMestreIA(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // BOTÃO "+" COM MENU
-                        Box {
-                            IconButton(onClick = { showPlusMenu = true }) {
-                                Icon(Icons.Default.Add, contentDescription = "Mais opções", tint = MaterialTheme.colorScheme.primary)
-                            }
-                            DropdownMenu(
-                                expanded = showPlusMenu,
-                                onDismissRequest = { showPlusMenu = false },
-                                modifier = Modifier.clip(RoundedCornerShape(16.dp))
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text("🛠️  Analisar Ficha") },
-                                    onClick = { 
-                                        showPlusMenu = false
-                                        isAguardando = true
-                                        viewModel.analisarFichaComIA { _, _ -> isAguardando = false }
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("👤  Criar Personagem") },
-                                    onClick = { 
-                                        showPlusMenu = false
-                                        prompt = "Gere uma ficha completa de um personagem de GURPS equilibrado (150 pts)."
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("🎨  Gerar Arte") },
-                                    onClick = { 
-                                        showPlusMenu = false
-                                        prompt = "Me dê uma descrição visual épica para meu personagem e gere a arte."
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("⚔️  Sugerir Equipamento") },
-                                    onClick = { 
-                                        showPlusMenu = false
-                                        isAguardando = true
-                                        viewModel.conversarComMestreIA("Sugira equipamentos úteis para minha ficha atual.", "conversa") { _, _ -> isAguardando = false }
-                                    }
-                                )
-                            }
-                        }
-
                         androidx.compose.foundation.text.BasicTextField(
                             value = prompt,
                             onValueChange = { prompt = it },
@@ -367,6 +317,49 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                             }
                         }
                     }
+
+                    // ETIQUETAS DE RASTREABILIDADE PRIME (Fase 5)
+                    if (!isUser && (msg.modelName != null || msg.isRagUsed)) {
+                        Spacer(Modifier.height(8.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth().graphicsLayer(alpha = 0.6f)
+                        ) {
+                            if (msg.isRagUsed) {
+                                Surface(
+                                    color = Color(0xFF4CAF50).copy(alpha = 0.2f),
+                                    shape = RoundedCornerShape(4.dp)
+                                ) {
+                                    Text(
+                                        text = "RAG LOCAL",
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF2E7D32),
+                                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                                    )
+                                }
+                                Spacer(Modifier.width(6.dp))
+                            }
+                            
+                            if (msg.modelName != null) {
+                                Icon(
+                                    Icons.Default.Build, // Representa motor/tecnologia
+                                    contentDescription = null,
+                                    modifier = Modifier.size(10.dp),
+                                    tint = textColor.copy(alpha = 0.7f)
+                                )
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    text = msg.modelName,
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    letterSpacing = 0.5.sp,
+                                    color = textColor.copy(alpha = 0.7f)
+                                )
+                            }
+                        }
+                    }
                 }
             }
 
@@ -378,11 +371,9 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                     color = MaterialTheme.colorScheme.secondary
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSecondary)
                     }
                 }
             }
         }
     }
 }
-

@@ -21,8 +21,16 @@ object MestreIAClient {
      */
     data class ChatMessage(
         val role: String, // "user" ou "model" (ou "assistant")
-        val text: String
-    )    fun perguntarAoMestre(
+        val text: String,
+        val modelName: String? = null,
+        val isRagUsed: Boolean = false
+    )
+
+    data class ChatResponse(
+        val text: String,
+        val modelName: String? = null
+    )
+    fun perguntarAoMestre(
         baseUrl: String,
         apiKey: String,
         prompt: String,
@@ -31,8 +39,8 @@ object MestreIAClient {
         contextoPersonagem: String? = null,
         catalogo: CatalogoNomes = CatalogoNomes(),
         modo: String = "geracao"
-    ): String? {
-        if (baseUrl.isBlank()) return null
+    ): ChatResponse {
+        if (baseUrl.isBlank()) return ChatResponse("URL base inválida")
 
         // URL Universal ou específica do provedor
         val endpoint = if (baseUrl.endsWith("/chat/completions")) baseUrl 
@@ -107,16 +115,19 @@ object MestreIAClient {
                     val choices = responseMap["choices"] as? List<*>
                     val firstChoice = choices?.firstOrNull() as? Map<*, *>
                     val message = firstChoice?.get("message") as? Map<*, *>
-                    message?.get("content") as? String ?: rawBody
+                    val content = message?.get("content") as? String ?: rawBody
+                    val modelName = responseMap["model"] as? String // Captura o ID real do modelo
+                    
+                    ChatResponse(content, modelName)
                 } catch (e: Exception) {
-                    rawBody
+                    ChatResponse(rawBody)
                 }
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
-                "Erro (${connection.responseCode}): $errorBody"
+                ChatResponse("Erro (${connection.responseCode}): $errorBody")
             }
         } catch (error: Exception) {
-            "Erro de Conexão: ${error.message}"
+            ChatResponse("Erro de Conexão: ${error.message}")
         }
     }
 
