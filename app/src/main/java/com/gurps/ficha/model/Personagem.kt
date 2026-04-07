@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.rules.CombatRules
+import com.gurps.ficha.domain.rules.traits.TraitRuleRegistry
 import java.text.Normalizer
 
 import androidx.compose.runtime.Stable
@@ -79,11 +80,15 @@ data class Personagem(
     val danoGdP: String get() = CharacterRules.calcularDanoGdP(st)
     val danoGeB: String get() = CharacterRules.calcularDanoGeB(st)
 
-    val pesoTotal: Float get() = equipamentos.sumOf {
+    val pesoTotalEquipamentos: Float get() = equipamentos.sumOf {
         (it.peso * it.quantidade).toDouble()
     }.toFloat()
 
-    val nivelCarga: Int get() = CharacterRules.calcularNivelCarga(baseCarga, pesoTotal)
+    val custoTotalEquipamentos: Float get() = equipamentos.sumOf {
+        (it.custo * it.quantidade).toDouble()
+    }.toFloat()
+
+    val nivelCarga: Int get() = CharacterRules.calcularNivelCarga(baseCarga, pesoTotalEquipamentos)
 
     val deslocamentoAtual: Int get() = CharacterRules.calcularDeslocamentoAtual(
         deslocamentoBasico = deslocamentoBasico,
@@ -435,19 +440,13 @@ data class PericiaDefinicao(
     val id: String = "",
     val nome: String = "",
     val atributoBase: String = "IQ",
-    @SerializedName(
-        value = "atributosPossiveis",
-        alternate = ["atributosPossíveis", "atributosPossÃ­veis"]
-    )
+    @SerializedName(value = "atributosPossiveis", alternate = ["atributosPossíveis"])
     val atributosPossiveis: List<String>? = null,
     val atributoEscolhaObrigatoria: Boolean = false,
     val dificuldadeFixa: String? = "M",
     val dificuldadeVariavel: Boolean = false,
     val exigeEspecializacao: Boolean = false,
-    @SerializedName(
-        value = "preDefinicoes",
-        alternate = ["preDefinições", "preDefiniÃ§Ãµes"]
-    )
+    @SerializedName(value = "preDefinicoes", alternate = ["preDefinições"])
     val preDefinicoes: List<PreDefinicao> = emptyList()
 )
 
@@ -481,7 +480,10 @@ data class PericiaSelecionada(
             it.nome.equals(nome, ignoreCase = true) 
         }?.nivelRelativo ?: 0
         
-        return valorAtributo + bonus + bonusRacial
+        // Bônus de vantagens automatizadas
+        val bonusVantagens = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getSkillBonus(personagem, nome)
+        
+        return valorAtributo + bonus + bonusRacial + bonusVantagens
     }
 
     fun getNivelRelativo(personagem: Personagem): String {
@@ -611,7 +613,8 @@ enum class TipoEquipamento {
     GERAL,
     ARMA,
     ESCUDO,
-    ARMADURA
+    ARMADURA,
+    CAPA
 }
 
 @Stable
@@ -624,16 +627,26 @@ data class Equipamento(
     var tipo: TipoEquipamento = TipoEquipamento.GERAL,
     var bonusDefesa: Int = 0, // Para escudos (DB - Defense Bonus)
     var armaCatalogoId: String? = null,
+    var armaGrupo: String? = null, // Novo campo para Mestre de Armas
     var armaTipoCombate: String? = null,
     var armaDanoRaw: String? = null,
     var armaStMinimo: Int? = null,
     var armaduraLocal: String? = null,
     var armaduraRd: String? = null
-){
-    fun danoCalculadoComSt(personagem: Personagem): String? {
+) {
+    fun danoCalculadoComSt(personagem: Personagem, periciaId: String? = null): String? {
         val raw = armaDanoRaw?.trim().orEmpty()
         if (raw.isBlank()) return null
-        return CharacterRules.resolverDanoPorSt(raw, personagem.forca)
+        
+        // Consulta bônus de vantagens (ex: Mestre de Armas)
+        val bonusPorDado = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getDamageBonusPerDie(
+            personagem,
+            periciaId, 
+            nome,
+            armaGrupo
+        )
+        
+        return CharacterRules.resolverDanoPorSt(raw, personagem.forca, bonusPorDado)
     }
 
     fun rdArmaduraExibicao(): String? {
@@ -672,18 +685,23 @@ data class DefesasAtivas(
      * GURPS 4Ed: Esquiva básica = floor(Velocidade Básica + 3)
      */
     fun calcularEsquiva(personagem: Personagem): Int {
-        return CombatRules.calcularEsquiva(
+        val bonusEscudo = getBonusEscudo(personagem)
+        val base = CombatRules.calcularEsquiva(
             esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga,
+            bonusEscudo = bonusEscudo,
             bonusManual = bonusManualEsquiva
         )
+        val traitBonus = TraitRuleRegistry.getDodgeBonus(personagem)
+        return base + traitBonus
     }
 
     fun getEsquivaBase(personagem: Personagem): Int {
+        val bonusEscudo = getBonusEscudo(personagem)
         return CombatRules.calcularEsquivaBase(
             esquivaBase = (personagem.deslocamentoBasico + 3).coerceAtLeast(1),
             nivelCarga = personagem.nivelCarga
-        )
+        ) + bonusEscudo
     }
 
     /**
@@ -691,27 +709,35 @@ data class DefesasAtivas(
      * GURPS 4Ed pag. 376: Apara = 3 + (metade do NH da arma ou pericia de combate)
      */
     fun calcularApara(personagem: Personagem): Int? {
-        val pericia = periciaAparaId?.let { id ->
-            personagem.pericias.find { it.definicaoId == id }
-        } ?: return null
+        val pericia = getPericiaApara(personagem) ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        return CombatRules.calcularApara(nh, bonusManualApara)
+        val bonusEscudo = getBonusEscudo(personagem)
+        val baseApara = CombatRules.calcularApara(nh, bonusEscudo, bonusManualApara)
+        val traitBonus = TraitRuleRegistry.getParryBonus(personagem, pericia.definicaoId)
+        
+        return baseApara + traitBonus
     }
 
     fun getAparaBase(personagem: Personagem): Int? {
-        val pericia = periciaAparaId?.let { id ->
-            personagem.pericias.find { it.definicaoId == id }
-        } ?: return null
+        val pericia = getPericiaApara(personagem) ?: return null
 
         val nh = pericia.calcularNivel(personagem)
-        return CombatRules.calcularAparaBase(nh)
+        val bonusEscudo = getBonusEscudo(personagem)
+        return CombatRules.calcularAparaBase(nh) + bonusEscudo
     }
 
     fun getPericiaApara(personagem: Personagem): PericiaSelecionada? {
-        return periciaAparaId?.let { id ->
+        // 1. Tenta a perícia sincronizada (selecionada no Ataque)
+        val selecionada = periciaAparaId?.let { id ->
             personagem.pericias.find { it.definicaoId == id }
         }
+        if (selecionada != null) return selecionada
+
+        // 2. Fallback: Busca automática pela melhor perícia de combate (exceto escudo que é bloqueio)
+        return personagem.pericias
+            .filter { it.definicaoId.lowercase() in PERICIAS_COMBATE && it.definicaoId.lowercase() != "escudo" }
+            .maxByOrNull { it.calcularNivel(personagem) }
     }
 
     /**
@@ -720,26 +746,25 @@ data class DefesasAtivas(
      * O DB do escudo e somado ao bloqueio
      */
     fun calcularBloqueio(personagem: Personagem): Int? {
-        val pericia = periciaBloqueioId?.let { id ->
-            personagem.pericias.find { it.definicaoId == id }
-        } ?: return null
+        val pericia = getPericiaBloqueio(personagem) ?: return null
 
         val nh = pericia.calcularNivel(personagem)
         val bonusEscudo = getBonusEscudo(personagem)
-        return CombatRules.calcularBloqueio(nh, bonusEscudo, bonusManualBloqueio)
+        val baseBloqueio = CombatRules.calcularBloqueio(nh, bonusEscudo, bonusManualBloqueio)
+        val traitBonus = TraitRuleRegistry.getBlockBonus(personagem)
+        
+        return baseBloqueio + traitBonus
     }
 
     fun getBloqueioBase(personagem: Personagem): Int? {
-        val pericia = periciaBloqueioId?.let { id ->
-            personagem.pericias.find { it.definicaoId == id }
-        } ?: return null
+        val pericia = getPericiaBloqueio(personagem) ?: return null
 
         val nh = pericia.calcularNivel(personagem)
         return CombatRules.calcularBloqueioBase(nh)
     }
 
     fun getBonusEscudo(personagem: Personagem): Int {
-        val escudos = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO }
+        val escudos = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO || it.tipo == TipoEquipamento.CAPA }
         if (escudos.isEmpty()) return 0
 
         val nomeSelecionado = escudoSelecionadoNome
@@ -754,9 +779,16 @@ data class DefesasAtivas(
     }
 
     fun getPericiaBloqueio(personagem: Personagem): PericiaSelecionada? {
-        return periciaBloqueioId?.let { id ->
+        // 1. Tenta a perícia sincronizada
+        val selecionada = periciaBloqueioId?.let { id ->
             personagem.pericias.find { it.definicaoId == id }
         }
+        if (selecionada != null) return selecionada
+
+        // 2. Fallback: Melhor perícia de escudo ou capa
+        return personagem.pericias
+            .filter { it.definicaoId.lowercase() == "escudo" || it.definicaoId.lowercase() == "capa" }
+            .maxByOrNull { it.calcularNivel(personagem) }
     }
 }
 
@@ -805,7 +837,24 @@ val PERICIAS_COMBATE = setOf(
     "sabre",
     "sai",
     "tonfa",
-    "wrestling"
+    "wrestling",
+    // Pericias de Ataque a Distancia
+    "arco",
+    "arcos",
+    "besta",
+    "zarabatana",
+    "funda",
+    "arma_de_fogo_pistola",
+    "arma_de_fogo_fuzil",
+    "arma_de_fogo_espingarda",
+    "arma_de_fogo_submetralhadora",
+    "arremesso",
+    "facas_de_arremesso",
+    "shuriken",
+    "pericia_de_arma_de_fogo",
+    "pericia_de_arco",
+    "pericia_de_besta",
+    "ataque_inato"
 )
 // RACIAL SKILLS
 @Stable

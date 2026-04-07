@@ -257,7 +257,7 @@ private fun corrigirTextoQuebrado(texto: String): String {
     val reparado = texto
         .replace("cr?nio", "cranio", ignoreCase = true)
         .replace("cr�nio", "cranio", ignoreCase = true)
-        .replace("crÃ¢nio", "cranio", ignoreCase = true)
+        .replace("crânio", "cranio", ignoreCase = true)
         .replace("pesco?o", "pescoco", ignoreCase = true)
         .replace("pesco�o", "pescoco", ignoreCase = true)
         .replace("bra?os", "bracos", ignoreCase = true)

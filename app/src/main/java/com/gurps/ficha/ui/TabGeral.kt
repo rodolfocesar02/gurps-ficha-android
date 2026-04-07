@@ -218,14 +218,14 @@ fun TabGeral(viewModel: FichaViewModel) {
 
         SectionCard(title = "Caracteristicas Derivadas") {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                CaracteristicaDisplay("Vel. Basica", String.format("%.2f", p.velocidadeBasica))
-                CaracteristicaDisplay("Desloc.", "${p.deslocamentoBasico} m/s")
-                CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga))
+                CaracteristicaDisplay("Vel. Basica", String.format("%.2f", p.velocidadeBasica), "Velocidade Básica: ${String.format("%.2f", p.velocidadeBasica)}")
+                CaracteristicaDisplay("Desloc.", "${p.deslocamentoBasico} m/s", "Deslocamento: ${p.deslocamentoBasico} metros por segundo")
+                CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga), "Carga Básica: ${String.format("%.1f", p.baseCarga)} quilos")
             }
             Spacer(modifier = Modifier.height(6.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                CaracteristicaDisplay("Dano GdP", p.danoGdP)
-                CaracteristicaDisplay("Dano GeB", p.danoGeB)
+                CaracteristicaDisplay("Dano GdP", p.danoGdP, "Dano de Golpe de Ponta: ${p.danoGdP}")
+                CaracteristicaDisplay("Dano GeB", p.danoGeB, "Dano de Golpe de Balanço: ${p.danoGeB}")
             }
         }
 
@@ -608,12 +608,17 @@ private fun AtributoSecundarioLinearCard(
 }
 
 @Composable
-fun CaracteristicaDisplay(nome: String, valor: String) {
+fun CaracteristicaDisplay(nome: String, valor: String, descricaoAcessivel: String = "") {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.secondaryContainer)
+            .semantics {
+                if (descricaoAcessivel.isNotBlank()) {
+                    contentDescription = descricaoAcessivel
+                }
+            }
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         Text(nome, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer)

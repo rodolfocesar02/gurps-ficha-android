@@ -3,7 +3,7 @@
 - Arquivos verificados: 13
 - JSON valido: 13
 - Arquivos com issues: 0
-- Total de itens: 2358
+- Total de itens: 2396
 - Itens sem id: 0
 - Itens sem nome: 0
 
@@ -41,7 +41,7 @@
 
 ### pericias.json
 - json_valid: True
-- items_count: 290
+- items_count: 328
 - missing_id_count: 0
 - missing_nome_count: 0
 - duplicate_ids: 0

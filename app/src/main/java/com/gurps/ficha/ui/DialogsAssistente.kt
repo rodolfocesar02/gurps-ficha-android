@@ -59,13 +59,13 @@ fun AssistenteGurpsDialog(
                     value = question,
                     onValueChange = { question = it },
                     label = { Text("Pergunta") },
-                    placeholder = { Text("Ex.: Qual o custo de AptidÃ£o MÃ¡gica?") },
+                    placeholder = { Text("Ex.: Qual o custo de Aptidão Mágica?") },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !loading
                 )
 
                 Text(
-                    "Dica: use Regras para dÃºvidas de sistema.",
+                    "Dica: use Regras para dúvidas de sistema.",
                     style = MaterialTheme.typography.labelSmall
                 )
 
@@ -81,7 +81,7 @@ fun AssistenteGurpsDialog(
                         selected = mode == "criacao",
                         onClick = { mode = "criacao" },
                         enabled = !loading,
-                        label = { Text("CriaÃ§Ã£o") }
+                        label = { Text("Criação") }
                     )
                     FilterChip(
                         selected = mode == "lore",
@@ -93,9 +93,9 @@ fun AssistenteGurpsDialog(
 
                 Row(horizontalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
                     AssistChip(
-                        onClick = { question = "Como funciona a perÃ­cia JudÃ´?" },
+                        onClick = { question = "Como funciona a perícia Judô?" },
                         enabled = !loading,
-                        label = { Text("Exemplo JudÃ´") },
+                        label = { Text("Exemplo Judô") },
                         colors = AssistChipDefaults.assistChipColors()
                     )
                     TextButton(
@@ -118,7 +118,7 @@ fun AssistenteGurpsDialog(
                 }
 
                 if (answer.isNotBlank()) {
-                    Text("ConfianÃ§a: $confidence", style = MaterialTheme.typography.labelMedium)
+                    Text("Confiança: $confidence", style = MaterialTheme.typography.labelMedium)
                     Text(answer, style = MaterialTheme.typography.bodyMedium)
                 }
 
@@ -126,7 +126,7 @@ fun AssistenteGurpsDialog(
                     Text("Fontes", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
                     sources.forEachIndexed { idx, src ->
                         Text(
-                            "${idx + 1}. ${src.sourceTitle} (pÃ¡g. ${src.pageNumber}) [score ${"%.2f".format(src.score)}]",
+                            "${idx + 1}. ${src.sourceTitle} (pág. ${src.pageNumber}) [score ${"%.2f".format(src.score)}]",
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(start = 4.dp)
                         )

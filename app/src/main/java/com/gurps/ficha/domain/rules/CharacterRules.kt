@@ -111,29 +111,42 @@ object CharacterRules {
         return tabelaGeB[st] ?: calcularDanoGeBExtrapolado(st)
     }
 
-    fun resolverDanoPorSt(danoRaw: String, st: Int): String {
+    fun resolverDanoPorSt(danoRaw: String, st: Int, bonusPorDado: Int = 0): String {
         var resolved = danoRaw
             .replace("Ã—", "×")
-            .replace("â€”", "—")
+            .replace("—", "—")
 
-        // Resolve tokens baseados em ST (GdP/GeB), preservando o restante da expressão.
+        // 1. Resolve tokens baseados em ST (GdP/GeB), preservando o restante da expressão.
         resolved = resolved.replace(Regex("\\bGdP\\b", RegexOption.IGNORE_CASE), calcularDanoGdP(st))
         resolved = resolved.replace(Regex("\\bGeB\\b", RegexOption.IGNORE_CASE), calcularDanoGeB(st))
 
-        // Caso simples: soma modificadores mantendo notacao intuitiva (ex.: 1d+3 em vez de 2d-3).
-        val simple = Regex("^\\s*(\\d+)d(?:\\s*([+-]\\d+))?\\s*([+-]\\d+)\\s*(.*)$").find(resolved)
-        if (simple != null) {
-            val dados = simple.groupValues[1].toInt()
-            val modBase = simple.groupValues[2].toIntOrNull() ?: 0
-            val modExtra = simple.groupValues[3].toIntOrNull() ?: 0
-            val sufixo = simple.groupValues[4]
-            val modFinal = modBase + modExtra
-            val danoIntuitivo = when {
+        // 2. Aplicar Bônus por Dado (Mestre de Armas)
+        if (bonusPorDado > 0) {
+            val diceMatch = Regex("(\\d+)d").find(resolved)
+            if (diceMatch != null) {
+                val numDice = diceMatch.groupValues[1].toInt()
+                val totalExtra = numDice * bonusPorDado
+                // Inserir o bônus extra na string antes de simplificar
+                resolved = resolved.replace("${numDice}d", "${numDice}d+$totalExtra")
+            }
+        }
+
+        // 3. Simplificar expressões (ex: 1d+2+2 -> 1d+4)
+        // Regex para capturar: (dados)d (mod1) (mod2) (tipo)
+        val fullRegex = Regex("^\\s*(\\d+)d(?:\\s*([+-]\\d+))?\\s*([+-]\\d+)\\s*(.*)$")
+        val match = fullRegex.find(resolved)
+        if (match != null) {
+            val dados = match.groupValues[1].toInt()
+            val mod1 = match.groupValues[2].toIntOrNull() ?: 0
+            val mod2 = match.groupValues[3].toIntOrNull() ?: 0
+            val sufixo = match.groupValues[4]
+            val modFinal = mod1 + mod2
+            val danoFormatado = when {
                 modFinal > 0 -> "${dados}d+$modFinal"
                 modFinal < 0 -> "${dados}d$modFinal"
                 else -> "${dados}d"
             }
-            return (danoIntuitivo + " " + sufixo).trim()
+            return (danoFormatado + " " + sufixo).trim()
         }
         return resolved
     }
@@ -166,6 +179,7 @@ object CharacterRules {
     }
 
     fun calcularCustoVantagem(
+        personagem: com.gurps.ficha.model.Personagem? = null, // Tornar opcional para compatibilidade
         definicaoId: String,
         tipoCusto: TipoCusto,
         custoBase: Int,
@@ -174,8 +188,16 @@ object CharacterRules {
         modificadores: List<ModificadorSelecao> = emptyList(),
         metadados: Map<String, String>? = null
     ): Int {
-        if (definicaoId == "ataque_inato" && metadados != null) {
-            return calcularCustoAtaqueInato(metadados, modificadores)
+        // Tenta usar regra modular se existir
+        val rule = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getRuleFor(definicaoId)
+        if (rule != null) {
+            val s = com.gurps.ficha.model.VantagemSelecionada(
+                definicaoId = definicaoId,
+                nivel = nivel,
+                metadados = metadados
+            )
+            val custoModular = rule.calculateCost(s, modificadores)
+            if (custoModular != null) return custoModular
         }
 
         val valorBase = if (
@@ -209,51 +231,6 @@ object CharacterRules {
 
         // Vantagem deve custar no mínimo 1 ponto se o base era positivo e não foi reduzido a zero
         return if (custoCalculado < 1 && valorBase > 0) 1 else custoCalculado
-    }
-
-    private fun calcularCustoAtaqueInato(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
-        val tipoDano = metadados["tipoDano"] ?: "cont"
-        val dice = metadados["dice"]?.toFloatOrNull() ?: 1.0f
-        val bonus = metadados["bonus"]?.toIntOrNull() ?: 0
-        
-        val custoPorDado = when(tipoDano.lowercase()) {
-            "cont", "queimadura", "qmd" -> 5
-            "corrosao", "cor", "fadiga", "fad" -> 10
-            "corte" -> 7
-            "perfuracao", "perf", "pa++" -> 8
-            "perfurante" -> 3
-            "perfurante_pa", "pa" -> 5
-            "perfurante_pa_plus", "pa+" -> 6
-            "toxina", "tox" -> 4
-            else -> 5
-        }
-
-        // Regra de Dados Parciais (GURPS p\u00e1g. 62):
-        // 1 pt fixo = 0.25 do custo de 1d
-        // 1d-1 = 0.75 do custo de 1d
-        // 1d+1 = 1.25 do custo de 1d
-        // 1d+2 = 1.5 do custo de 1d
-        
-        val multiplicadorDados = if (dice == 0f && (bonus == 1 || bonus == -1)) {
-            0.25f
-        } else {
-            // dice \u00e9 o n\u00famero de dados (ex: 1.0, 2.0)
-            // se tivermos bonus: 
-            // +1 -> +0.25
-            // +2 -> +0.5
-            // -1 -> -0.25
-            dice + (bonus * 0.25f)
-        }
-
-        val valorBase = (multiplicadorDados * custoPorDado).toInt().coerceAtLeast(1)
-
-        val somaPercentual = modificadores.sumOf {
-            if (it.porNivel) it.valor * it.niveis else it.valor
-        }
-        val percentualFinal = somaPercentual.coerceAtLeast(-80)
-        val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
-        
-        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt().coerceAtLeast(1)
     }
 
     fun calcularCustoDesvantagem(
@@ -442,6 +419,37 @@ object CharacterRules {
         }
     }
 
+    /**
+     * Calcula quantos pontos (pts) são necessários para atingir um determinado nível (NH).
+     * Útil para o Mestre IA integrar fichas sugeridas de forma honesta com as regras.
+     */
+    fun calcularPontosParaNivel(dificuldade: Dificuldade, atributoValor: Int, nivelAlvo: Int): Int {
+        val bonusDesejado = nivelAlvo - atributoValor
+        
+        return when (dificuldade) {
+            Dificuldade.FACIL -> when {
+                bonusDesejado <= 0 -> 1
+                bonusDesejado == 1 -> 2
+                else -> 4 + (bonusDesejado - 2) * 4
+            }
+            Dificuldade.MEDIA -> when {
+                bonusDesejado <= -1 -> 1
+                bonusDesejado == 0 -> 2
+                else -> 4 + (bonusDesejado - 1) * 4
+            }
+            Dificuldade.DIFICIL -> when {
+                bonusDesejado <= -2 -> 1
+                bonusDesejado == -1 -> 2
+                else -> 4 + bonusDesejado * 4
+            }
+            Dificuldade.MUITO_DIFICIL -> when {
+                bonusDesejado <= -3 -> 1
+                bonusDesejado == -2 -> 2
+                else -> 4 + (bonusDesejado + 1) * 4
+            }
+        }
+    }
+
     fun calcularCustoContato(nh: Int, frequencia: Float, confiabilidade: Float): Int {
         val custoBase = when (nh) {
             12 -> 1
@@ -466,8 +474,8 @@ object CharacterRules {
     }
 
     fun calcularCustoFavor(basePoints: Int, multiplicadores: Float, custoFixo: Int = 0, isContact: Boolean = false): Int {
-        // Favor (Patrono) = 1/10 do custo de um Patrono com frequ\u00eancia 15- (x3)
-        // Favor (Contato) = 1/5 do custo de um Contato com frequ\u00eancia 15- (x3)
+        // Favor (Patrono) = 1/10 do custo de um Patrono com frequência 15- (x3)
+        // Favor (Contato) = 1/5 do custo de um Contato com frequência 15- (x3)
         val baseModificada = basePoints * multiplicadores + custoFixo
         val freqBase = 3.0 // Sempre base 15-
         val divisor = if (isContact) 5.0 else 10.0

@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -72,16 +72,32 @@ fun TabPericias(viewModel: FichaViewModel) {
 
         // Cards individuais para cada perícia
         p.pericias.forEachIndexed { index, pericia ->
+            val definicao = viewModel.dataRepository.getPericiaPorId(pericia.definicaoId)
+            val failureMsg = definicao?.let { viewModel.validarPreRequisitosPericia(it) }
+            val hasFailure = failureMsg != null
 
-            AppListItemCard {
-                PericiaItem(
-                    pericia = pericia,
-                    nivel = pericia.calcularNivel(p),
-                    nivelRelativo = pericia.getNivelRelativo(p),
-                    onShowDescription = { periciaDescricaoDialog = pericia },
-                    onEdit = { editingPericiaIndex = index },
-                    onDelete = { viewModel.removerPericia(index) }
-                )
+            AppListItemCard(
+                border = if (hasFailure) androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.error) else null
+            ) {
+                Column {
+                    PericiaItem(
+                        pericia = pericia,
+                        nivel = pericia.calcularNivel(p),
+                        nivelRelativo = pericia.getNivelRelativo(p),
+                        failureMsg = failureMsg,
+                        onShowDescription = { periciaDescricaoDialog = pericia },
+                        onEdit = { editingPericiaIndex = index },
+                        onDelete = { viewModel.removerPericia(index) }
+                    )
+                    if (hasFailure) {
+                        Text(
+                            text = failureMsg ?: "",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
             }
         }
         ResumoPericiasFooter(
@@ -191,17 +207,20 @@ fun PericiaItem(
     pericia: PericiaSelecionada,
     nivel: Int,
     nivelRelativo: String,
+    failureMsg: String? = null,
     onShowDescription: () -> Unit,
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+    val hasFailure = failureMsg != null
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .semantics {
                 if (isPraCegoVariant) {
-                    contentDescription = "Perícia ${pericia.nome}. NH $nivel. Toque para editar."
+                    val statusPart = if (hasFailure) ". AVISO: $failureMsg" else ""
+                    contentDescription = "Perícia ${pericia.nome}. NH $nivel$statusPart. Toque para editar."
                 }
             }
             .clickable { onEdit() },

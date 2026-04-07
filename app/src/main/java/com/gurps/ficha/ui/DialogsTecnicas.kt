@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.ui
+package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -198,7 +198,7 @@ fun ConfigurarTecnicaDialog(
     }
     val atendePreReq = periciaBase?.let { viewModel.tecnicaAtendePreRequisito(definicao, it) } ?: false
     val limiteMaximo = viewModel.limiteMaximoTecnica(definicao)
-    val nivelMaximo = limiteMaximo ?: 12
+    val nivelMaximo = limiteMaximo ?: 24
     if (nivelRelativo > nivelMaximo) nivelRelativo = nivelMaximo
 
     val predefModificador = viewModel.dataRepository.extrairModificadorPredefinido(definicao.preDefinidoRaw)
@@ -451,7 +451,7 @@ fun EditarTecnicaDialog(
     val periciaBase = pericias.firstOrNull { periciaTecnicaKey(it) == periciaSelecionadaId }
     val predefModificador = tecnica.preDefinidoModificador
     val limiteMaximo = tecnica.limiteMaximoRelativo
-    val nivelMaximo = limiteMaximo ?: 12
+    val nivelMaximo = limiteMaximo ?: 24
     if (nivelRelativo > nivelMaximo) nivelRelativo = nivelMaximo
     val dificuldadeDificil = tecnica.dificuldadeRaw.lowercase().contains("dif")
     val custo = if (nivelRelativo == 0) 0 else if (dificuldadeDificil) nivelRelativo + 1 else nivelRelativo

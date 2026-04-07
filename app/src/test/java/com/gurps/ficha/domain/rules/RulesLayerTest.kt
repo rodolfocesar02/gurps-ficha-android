@@ -42,14 +42,14 @@ class RulesLayerTest {
     @Test
     fun `calcula bonus por dificuldade e combate na camada de regras`() {
         assertEquals(1, CharacterRules.calcularBonusPorDificuldade(Dificuldade.DIFICIL, 8))
-        assertEquals(7, CombatRules.calcularEsquiva(esquivaBase = 8, nivelCarga = 2, bonusManual = 1))
+        assertEquals(7, CombatRules.calcularEsquiva(esquivaBase = 8, nivelCarga = 2, bonusEscudo = 0, bonusManual = 1))
         assertEquals(11, CombatRules.calcularBloqueio(nh = 11, bonusEscudo = 2, bonusManual = 1))
     }
 
     @Test
     fun `aplica arredondamento e limites nas defesas ativas`() {
         // Esquiva nunca menor que 1
-        assertEquals(1, CombatRules.calcularEsquiva(esquivaBase = 5, nivelCarga = 5, bonusManual = -3))
+        assertEquals(1, CombatRules.calcularEsquiva(esquivaBase = 5, nivelCarga = 5, bonusEscudo = 0, bonusManual = -3))
         assertEquals(1, CombatRules.calcularEsquivaBase(esquivaBase = 4, nivelCarga = 5))
 
         // Apara/Bloqueio usam floor(NH/2)+3

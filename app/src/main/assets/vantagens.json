@@ -409,7 +409,7 @@
     "id": "dentes",
     "nome": "Dentes",
     "custo": "0, 1, ou 2",
-    "tipoCusto": "escolha",
+    "tipoCusto": "variavel",
     "pagina": 52
   },
   {
@@ -745,7 +745,7 @@
     "id": "golpeadores",
     "nome": "Golpeadores",
     "custo": "5–8",
-    "tipoCusto": "fixo",
+    "tipoCusto": "variavel",
     "pagina": 62
   },
   {
