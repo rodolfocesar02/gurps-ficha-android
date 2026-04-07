@@ -20,19 +20,21 @@ Use when optimizing Compose performance (recomposition counts, stability).
 Use when setting up Navigation with type safety.
 Step-by-Step Guide
 1. Project Setup & Dependencies
-Ensure your libs.versions.toml includes the necessary Compose BOM and libraries.
+As dependencias do Jetpack Compose estão configuradas diretamente no seu `app/build.gradle.kts`. Certifique-se de usar o BOM (Bill of Materials) para garantir compatibilidade entre versões.
 
-[versions]
-composeBom = "2024.02.01"
-activityCompose = "1.8.2"
+```kotlin
+dependencies {
+    // Importa o Compose BOM
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
 
-[libraries]
-androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-androidx-ui = { group = "androidx.compose.ui", name = "ui" }
-androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+    // Adiciona as bibliotecas sem especificar versões (serão herdadas do BOM)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.8.1")
+}
+```
 2. State Management Pattern (MVI/MVVM)
 Use ViewModel with StateFlow to expose UI state. Avoid exposing MutableStateFlow.
 
