@@ -22,6 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
+import androidx.compose.ui.res.painterResource
+import com.gurps.ficha.R
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -47,6 +50,8 @@ fun DialogMestreIA(
 
     AlertDialog(
         onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false),
+        modifier = Modifier.fillMaxWidth().padding(16.dp).clip(RoundedCornerShape(28.dp)),
         title = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -54,26 +59,38 @@ fun DialogMestreIA(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                    Icon(Icons.Default.Star, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Mestre Digital GURPS 2.0")
+                    Text("Mestre Digital 2.0", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { showConfig = true }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Configurações da IA")
-                    }
+                Row {
+
                     IconButton(onClick = { viewModel.limparChatMestreIA() }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Limpar Conversa")
+                        Icon(Icons.Default.Delete, contentDescription = "Limpar", modifier = Modifier.size(20.dp))
                     }
                 }
             }
         },
         text = {
-            Column(modifier = Modifier.fillMaxWidth().heightIn(max = 500.dp)) {
+            var showPlusMenu by remember { mutableStateOf(false) }
+            Column(modifier = Modifier.fillMaxWidth().heightIn(max = 600.dp)) {
                 if (chatHistory.isEmpty()) {
                     Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Icon(Icons.Default.Email, contentDescription = null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.outline)
+                            Box(
+                                modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    Icons.Default.Face,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(48.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+
+                            Spacer(Modifier.height(16.dp))
+                            Text("Saudações, Viajante!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                             Text("Como posso ajudar com sua ficha hoje?", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
                         }
                     }
@@ -81,202 +98,291 @@ fun DialogMestreIA(
                     LazyColumn(
                         state = scrollState,
                         modifier = Modifier.weight(1f).fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(vertical = 8.dp)
                     ) {
                         items(chatHistory) { msg ->
                             val isUser = msg.role == "user"
-                            val align = if (isUser) Alignment.End else Alignment.Start
-                            val color = if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
-                            val textColor = if (isUser) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
-                            
-                            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = align) {
-                                Text(
-                                    text = if (isUser) "Você" else "Mestre",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.outline
-                                )
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(color)
-                                        .padding(8.dp)
-                                ) {
-                                    val fullMessage = msg.text
-                                    val imageRegex = "(https?://[^\\s]+(?:pollinations\\.ai|\\.png|\\.jpg|\\.jpeg)[^\\s]*)".toRegex()
-                                    val matchResult = imageRegex.find(fullMessage)
-                                    val imageUrl = matchResult?.value
-                                    val textContent = if (imageUrl != null) fullMessage.replace(imageUrl, "").trim() else fullMessage
-
-                                    Column {
-                                        if (textContent.isNotEmpty()) {
-                                            Text(
-                                                text = textContent,
-                                                color = textColor,
-                                                style = MaterialTheme.typography.bodySmall,
-                                                modifier = Modifier.padding(bottom = if (imageUrl != null) 8.dp else 0.dp)
-                                            )
-                                        }
-                                        
-                                        if (imageUrl != null) {
-                                            AsyncImage(
-                                                model = imageUrl,
-                                                contentDescription = "Imagem da IA",
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .heightIn(max = 300.dp)
-                                                    .clip(RoundedCornerShape(8.dp)),
-                                                contentScale = ContentScale.Fit
-                                            )
-                                            Text(
-                                                text = "Arte gerada pelo Mestre",
-                                                color = textColor.copy(alpha = 0.7f),
-                                                style = MaterialTheme.typography.labelSmall,
-                                                modifier = Modifier.padding(top = 4.dp)
-                                            )
-                                        }
-                                    }
-                                }
-                            }
+                            ChatBubble(msg, isUser, viewModel)
                         }
                     }
                 }
 
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(12.dp))
 
-                // Sugestões rápidas
-                Row(
-                    modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    SuggestionChip(
-                        onClick = { 
-                            isAguardando = true
-                            viewModel.analisarFichaComIA { _, _ -> isAguardando = false } 
-                        },
-                        label = { Text("Analisar Ficha", fontSize = 10.sp) },
-                        enabled = !isAguardando
-                    )
-                    SuggestionChip(
-                        onClick = { 
-                            prompt = "Gere uma arte épica do meu personagem atual. Estilo pintura de fantasia."
-                        },
-                        label = { Text("Gerar Arte", fontSize = 10.sp) },
-                        icon = { Icon(Icons.Default.Face, null, modifier = Modifier.size(16.dp)) },
-                        enabled = !isAguardando
-                    )
-                    SuggestionChip(
-                        onClick = { 
-                            prompt = "Gere uma ficha de Guerreiro Nórdico sobrevivente."
-                        },
-                        label = { Text("Novo Personagem", fontSize = 10.sp) },
-                        enabled = !isAguardando
-                    )
-                    SuggestionChip(
-                        onClick = { 
-                            isAguardando = true
-                            viewModel.conversarComMestreIA("Sugira 5 itens de equipamento úteis para meu personagem.", "conversa") { _, _ -> isAguardando = false }
-                        },
-                        label = { Text("Sugerir Equipamento", fontSize = 10.sp) },
-                        enabled = !isAguardando
-                    )
-                }
-
-                Spacer(Modifier.height(8.dp))
-
-                OutlinedTextField(
-                    value = prompt,
-                    onValueChange = { prompt = it },
-                    placeholder = { Text("Pergunte algo ou descreva um novo conceito...", fontSize = 12.sp) },
+                // BARRA DE INPUT ESTILO CHATGPT
+                Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    trailingIcon = {
+                    shape = RoundedCornerShape(32.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // BOTÃO "+" COM MENU
+                        Box {
+                            IconButton(onClick = { showPlusMenu = true }) {
+                                Icon(Icons.Default.Add, contentDescription = "Mais opções", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            DropdownMenu(
+                                expanded = showPlusMenu,
+                                onDismissRequest = { showPlusMenu = false },
+                                modifier = Modifier.clip(RoundedCornerShape(16.dp))
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("🛠️  Analisar Ficha") },
+                                    onClick = { 
+                                        showPlusMenu = false
+                                        isAguardando = true
+                                        viewModel.analisarFichaComIA { _, _ -> isAguardando = false }
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("👤  Criar Personagem") },
+                                    onClick = { 
+                                        showPlusMenu = false
+                                        prompt = "Gere uma ficha completa de um personagem de GURPS equilibrado (150 pts)."
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("🎨  Gerar Arte") },
+                                    onClick = { 
+                                        showPlusMenu = false
+                                        prompt = "Me dê uma descrição visual épica para meu personagem e gere a arte."
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("⚔️  Sugerir Equipamento") },
+                                    onClick = { 
+                                        showPlusMenu = false
+                                        isAguardando = true
+                                        viewModel.conversarComMestreIA("Sugira equipamentos úteis para minha ficha atual.", "conversa") { _, _ -> isAguardando = false }
+                                    }
+                                )
+                            }
+                        }
+
+                        androidx.compose.foundation.text.BasicTextField(
+                            value = prompt,
+                            onValueChange = { prompt = it },
+                            modifier = Modifier.weight(1f).padding(horizontal = 8.dp),
+                            textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
+                            decorationBox = { innerTextField ->
+                                if (prompt.isEmpty()) {
+                                    Text("Mensagem...", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodyMedium)
+                                }
+                                innerTextField()
+                            }
+                        )
+
                         if (isAguardando) {
-                            CircularProgressIndicator(modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+                            CircularProgressIndicator(modifier = Modifier.size(24.dp).padding(4.dp), strokeWidth = 2.dp)
                         } else {
-                            IconButton(
+                               IconButton(
                                 onClick = {
                                     if (prompt.isNotBlank()) {
-                                        val m = if (prompt.lowercase().contains("gere") || prompt.lowercase().contains("ficha")) "geracao" else "conversa"
                                         isAguardando = true
                                         val userPrompt = prompt
                                         prompt = ""
-                                        viewModel.conversarComMestreIA(userPrompt, m) { _, _ -> isAguardando = false }
+                                        viewModel.conversarComMestreIA(userPrompt, "conversa") { _, _ -> isAguardando = false }
                                     }
                                 },
-                                enabled = prompt.isNotBlank()
+                                enabled = prompt.isNotBlank(),
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = if (prompt.isNotBlank()) MaterialTheme.colorScheme.primary else Color.Transparent,
+                                    contentColor = if (prompt.isNotBlank()) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline
+                                ),
+                                modifier = Modifier.size(36.dp)
                             ) {
-                                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Enviar")
+                                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Enviar", modifier = Modifier.size(18.dp))
                             }
                         }
-                    },
-                    maxLines = 3
-                )
+                    }
+                }
             }
         },
         confirmButton = {
-            TextButton(onClick = onDismiss) { Text("Fechar") }
+            TextButton(onClick = onDismiss) { Text("Fechar", fontWeight = FontWeight.Bold) }
         }
     )
 
-    if (showConfig) {
-        MestreIAConfigDialog(
-            viewModel = viewModel,
-            onDismiss = { showConfig = false }
+    // Diálogo de Confirmação para Integrar Ficha Gerada
+    viewModel.fichaGeradaPendente?.let { fichaPendente ->
+        AlertDialog(
+            onDismissRequest = { viewModel.descartarFichaPendente() },
+            title = { Text("Ficha Gerada detectada") },
+            text = { 
+                Text("O Mestre IA gerou uma ficha completa para '${fichaPendente.nome}'. Deseja aplicar estes dados à sua ficha atual? Esta ação não pode ser desfeita.") 
+            },
+            confirmButton = {
+                Button(
+                    onClick = { viewModel.confirmarIntegracaoFicha() },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text("Aplicar Ficha")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.descartarFichaPendente() }) {
+                    Text("Descartar")
+                }
+            }
         )
     }
 }
 
-@Composable
-fun MestreIAConfigDialog(
-    viewModel: FichaViewModel,
-    onDismiss: () -> Unit
-) {
-    var baseUrl by remember { mutableStateOf(viewModel.iaBaseUrl) }
-    var apiKey by remember { mutableStateOf(viewModel.iaApiKey) }
-    var workspaceSlug by remember { mutableStateOf(viewModel.iaWorkspaceSlug) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Configurações do Servidor de IA", fontSize = 16.sp, fontWeight = FontWeight.Bold) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Base URL do AnythingLLM (ex: Railway):", style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(
-                    value = baseUrl,
-                    onValueChange = { baseUrl = it },
-                    placeholder = { Text("https://seu-mestre-ia.up.railway.app") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text("Chave de API do AnythingLLM:", style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(
-                    value = apiKey,
-                    onValueChange = { apiKey = it },
-                    placeholder = { Text("Bearer ...") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text("Nome do Workspace (Slug):", style = MaterialTheme.typography.labelSmall)
-                OutlinedTextField(
-                    value = workspaceSlug,
-                    onValueChange = { workspaceSlug = it },
-                    placeholder = { Text("meu-workspace") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Text(
-                    "Dica: O Workspace Slug é o nome que aparece na URL do AnythingLLM após /workspace/.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.outline
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    viewModel.salvarConfiguracaoIA(baseUrl, apiKey, workspaceSlug)
-                    onDismiss()
+@Composable
+fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: FichaViewModel) {
+    val align = if (isUser) Alignment.End else Alignment.Start
+    val bubbleColor = if (isUser) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer
+    val textColor = if (isUser) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
+    val shape = if (isUser) {
+        RoundedCornerShape(20.dp, 20.dp, 4.dp, 20.dp)
+    } else {
+        RoundedCornerShape(20.dp, 20.dp, 20.dp, 4.dp)
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
+        horizontalAlignment = align
+    ) {
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = if (isUser) Arrangement.End else Arrangement.Start,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (!isUser) {
+                Surface(
+                    modifier = Modifier.size(28.dp),
+                    shape = androidx.compose.foundation.shape.CircleShape,
+                    color = MaterialTheme.colorScheme.primary
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text("M", color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.labelSmall)
+                    }
                 }
-            ) { Text("Salvar") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar") }
+                Spacer(Modifier.width(8.dp))
+            }
+
+            Surface(
+                color = bubbleColor,
+                shape = shape,
+                shadowElevation = 1.dp
+            ) {
+                val fullMessage = msg.text
+                
+                // Regex para imagens, ações e sugestões
+                val imageRegex = "(https?://[^\\s]+(?:pollinations\\.ai|\\.png|\\.jpg|\\.jpeg)[^\\s]*)".toRegex()
+                val actionRegex = "\\[ACAO:[^\\]]+\\]".toRegex()
+                val suggestionRegex = "\\[SUGESTAO:[^\\]]+\\]".toRegex()
+                
+                val matchResult = imageRegex.find(fullMessage)
+                val imageUrl = matchResult?.value
+                
+                // Extrai todas as ações e sugestões
+                val actions = actionRegex.findAll(fullMessage).map { it.value }.toList()
+                val suggestions = suggestionRegex.findAll(fullMessage).map { it.value }.toList()
+                
+                // Limpa o texto das tags técnicas
+                var textContent = if (imageUrl != null) fullMessage.replace(imageUrl, "") else fullMessage
+                actions.forEach { textContent = textContent.replace(it, "") }
+                suggestions.forEach { textContent = textContent.replace(it, "") }
+                textContent = textContent.trim()
+
+                Column(modifier = Modifier.padding(12.dp)) {
+                    if (textContent.isNotEmpty()) {
+                        Text(text = textContent, color = textColor, style = MaterialTheme.typography.bodyMedium)
+                    }
+                    
+                    if (imageUrl != null) {
+                        Spacer(Modifier.height(8.dp))
+                        SubcomposeAsyncImage(
+                            model = imageUrl,
+                            contentDescription = "IA Gen",
+                            modifier = Modifier.fillMaxWidth().heightIn(max = 250.dp).clip(RoundedCornerShape(12.dp)),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                    }
+
+                    if (actions.isNotEmpty() && !isUser) {
+                        Spacer(Modifier.height(12.dp))
+                        @OptIn(ExperimentalLayoutApi::class)
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            for (actionTag in actions) {
+                                val label = actionTag
+                                    .removePrefix("[ACAO:")
+                                    .removeSuffix("]")
+                                    .replace(":", " ")
+                                    .trim()
+                                
+                                AssistChip(
+                                    onClick = { viewModel.executarAcaoIA(actionTag) },
+                                    label = { Text("✅ $label", fontSize = 11.sp) },
+                                    colors = AssistChipDefaults.assistChipColors(
+                                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                        labelColor = MaterialTheme.colorScheme.primary
+                                    ),
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+                                )
+                            }
+                        }
+                    }
+
+                    if (suggestions.isNotEmpty() && !isUser) {
+                        Spacer(Modifier.height(8.dp))
+                        @OptIn(ExperimentalLayoutApi::class)
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            for (suggestionTag in suggestions) {
+                                val label = suggestionTag
+                                    .removePrefix("[SUGESTAO:")
+                                    .removeSuffix("]")
+                                    .trim()
+                                
+                                SuggestionChip(
+                                    onClick = { 
+                                        // Envia a sugestão como uma nova mensagem
+                                        viewModel.conversarComMestreIA(label, "conversa") { _, _ -> }
+                                    },
+                                    label = { Text(label, fontSize = 11.sp) },
+                                    colors = SuggestionChipDefaults.suggestionChipColors(
+                                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f),
+                                        labelColor = MaterialTheme.colorScheme.onSecondaryContainer
+                                    ),
+                                    border = SuggestionChipDefaults.suggestionChipBorder(
+                                        enabled = true,
+                                        borderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (isUser) {
+                Spacer(Modifier.width(8.dp))
+                Surface(
+                    modifier = Modifier.size(28.dp),
+                    shape = androidx.compose.foundation.shape.CircleShape,
+                    color = MaterialTheme.colorScheme.secondary
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(Icons.Default.Person, contentDescription = null, modifier = Modifier.size(16.dp), tint = MaterialTheme.colorScheme.onSecondary)
+                    }
+                }
+            }
         }
-    )
+    }
 }
+

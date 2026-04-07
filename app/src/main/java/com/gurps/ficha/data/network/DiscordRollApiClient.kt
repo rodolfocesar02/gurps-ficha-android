@@ -40,6 +40,23 @@ data class DiscordChannelsFetchResult(
     val error: String?
 )
 
+data class FichaCloudPayload(
+    val deviceId: String,
+    val fichaJson: Any
+)
+
+data class FichaCloudResponse(
+    val ok: Boolean,
+    val ficha: Any? = null,
+    val error: String? = null
+)
+
+data class DiscordFichasListResponse(
+    val ok: Boolean,
+    val fichas: List<String>? = null,
+    val error: String? = null
+)
+
 object DiscordRollApiClient {
     private const val CONNECT_TIMEOUT_MS = 5000
     private const val READ_TIMEOUT_MS = 5000
@@ -139,6 +156,70 @@ object DiscordRollApiClient {
         } finally {
             connection?.disconnect()
         }
+    }
+
+    fun postFicha(baseUrl: String, apiKey: String, deviceId: String, characterName: String, fichaJson: Any): Boolean {
+        if (baseUrl.isBlank() || apiKey.isBlank()) return false
+        val endpoint = "${baseUrl.trimEnd('/')}/api/fichas"
+        val body = gson.toJson(mapOf(
+            "deviceId" to deviceId, 
+            "characterName" to characterName,
+            "fichaJson" to fichaJson
+        )).toByteArray(StandardCharsets.UTF_8)
+        var connection: HttpURLConnection? = null
+        return try {
+            connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+                requestMethod = "POST"
+                doOutput = true
+                connectTimeout = CONNECT_TIMEOUT_MS
+                readTimeout = READ_TIMEOUT_MS
+                setRequestProperty("Content-Type", "application/json; charset=utf-8")
+                setRequestProperty("x-api-key", apiKey)
+            }
+            connection.outputStream.use { it.write(body) }
+            connection.responseCode in 200..299
+        } catch (e: Exception) { false } finally { connection?.disconnect() }
+    }
+
+    fun fetchFichaList(baseUrl: String, apiKey: String, deviceId: String): List<String> {
+        if (baseUrl.isBlank() || apiKey.isBlank()) return emptyList()
+        val endpoint = "${baseUrl.trimEnd('/')}/api/fichas/$deviceId"
+        var connection: HttpURLConnection? = null
+        return try {
+            connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = CONNECT_TIMEOUT_MS
+                readTimeout = READ_TIMEOUT_MS
+                setRequestProperty("x-api-key", apiKey)
+            }
+            if (connection.responseCode in 200..299) {
+                val rawBody = readStreamSafely(connection.inputStream)
+                val response = gson.fromJson(rawBody, DiscordFichasListResponse::class.java)
+                response?.fichas ?: emptyList()
+            } else emptyList()
+        } catch (e: Exception) { emptyList() } finally { connection?.disconnect() }
+    }
+
+    fun fetchFicha(baseUrl: String, apiKey: String, deviceId: String, characterName: String): String? {
+        if (baseUrl.isBlank() || apiKey.isBlank()) return null
+        val safeName = characterName.replace("[^a-zA-Z0-9_-]".toRegex(), "_")
+        val endpoint = "${baseUrl.trimEnd('/')}/api/fichas/$deviceId/$safeName"
+        var connection: HttpURLConnection? = null
+        return try {
+            connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+                requestMethod = "GET"
+                connectTimeout = CONNECT_TIMEOUT_MS
+                readTimeout = READ_TIMEOUT_MS
+                setRequestProperty("x-api-key", apiKey)
+            }
+            if (connection.responseCode in 200..299) {
+                val rawBody = readStreamSafely(connection.inputStream)
+                val response = gson.fromJson(rawBody, FichaCloudResponse::class.java)
+                if (response?.ok == true && response.ficha != null) {
+                    gson.toJson(response.ficha) 
+                } else null
+            } else null
+        } catch (e: Exception) { null } finally { connection?.disconnect() }
     }
 
     private fun readStreamSafely(stream: java.io.InputStream?): String {

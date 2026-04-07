@@ -2,6 +2,7 @@ package com.gurps.ficha.ui.features.magic
 
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.clickable
@@ -25,14 +26,27 @@ import com.gurps.ficha.ui.UiTokens
 import com.gurps.ficha.ui.appCardColors
 import kotlin.math.abs
 
-private val PONTOS_PRESETS = listOf(1, 2, 4, 8, 12)
-
-private fun ajustarPontosPreset(atual: Int, incrementar: Boolean): Int {
-    val indice = PONTOS_PRESETS.indexOf(atual).let { if (it == -1) 0 else it }
+private fun ajustarPontos(atual: Int, incrementar: Boolean): Int {
     return if (incrementar) {
-        PONTOS_PRESETS[(indice + 1).coerceAtMost(PONTOS_PRESETS.lastIndex)]
+        when {
+            atual < 1 -> 1
+            atual == 1 -> 2
+            atual == 2 -> 4
+            else -> {
+                val resto = atual % 4
+                if (resto == 0) atual + 4 else atual + (4 - resto)
+            }
+        }
     } else {
-        PONTOS_PRESETS[(indice - 1).coerceAtLeast(0)]
+        when {
+            atual <= 1 -> 1
+            atual == 2 -> 1
+            atual <= 4 -> 2
+            else -> {
+                val resto = atual % 4
+                if (resto == 0) (atual - 4).coerceAtLeast(4) else (atual - resto).coerceAtLeast(4)
+            }
+        }
     }
 }
 
@@ -129,7 +143,7 @@ fun AdicionarMagiaDialog(
                                         change.consume()
                                         dragAcumulado += dragAmount
                                         while (abs(dragAcumulado) >= passoPx) {
-                                            pontosGastos = ajustarPontosPreset(
+                                            pontosGastos = ajustarPontos(
                                                 atual = pontosGastos,
                                                 incrementar = dragAcumulado < 0f
                                             )
@@ -142,9 +156,9 @@ fun AdicionarMagiaDialog(
                     )
                 }
                 if (isPraCegoVariant) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = false) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da magia" }
                         ) { Text("-") }
                         Text(
@@ -157,14 +171,14 @@ fun AdicionarMagiaDialog(
                                 .semantics { contentDescription = "Pontos gastos atuais da magia: $pontosGastos" }
                         )
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = true) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da magia" }
                         ) { Text("+") }
                     }
                 }
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    PONTOS_PRESETS.forEach { pts ->
+                Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf(1, 2, 4, 8, 12, 16, 20, 24).forEach { pts ->
                         TextButton(
                             onClick = { pontosGastos = pts },
                             modifier = Modifier.padding(horizontal = 1.dp),
@@ -381,7 +395,7 @@ fun EditarMagiaDialog(
                                         change.consume()
                                         dragAcumulado += dragAmount
                                         while (abs(dragAcumulado) >= passoPx) {
-                                            pontosGastos = ajustarPontosPreset(
+                                            pontosGastos = ajustarPontos(
                                                 atual = pontosGastos,
                                                 incrementar = dragAcumulado < 0f
                                             )
@@ -394,9 +408,9 @@ fun EditarMagiaDialog(
                     )
                 }
                 if (isPraCegoVariant) {
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = false) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = false) },
                             modifier = Modifier.semantics { contentDescription = "Diminuir pontos gastos da magia" }
                         ) { Text("-") }
                         Text(
@@ -409,14 +423,14 @@ fun EditarMagiaDialog(
                                 .semantics { contentDescription = "Pontos gastos atuais da magia: $pontosGastos" }
                         )
                         TextButton(
-                            onClick = { pontosGastos = ajustarPontosPreset(pontosGastos, incrementar = true) },
+                            onClick = { pontosGastos = ajustarPontos(pontosGastos, incrementar = true) },
                             modifier = Modifier.semantics { contentDescription = "Aumentar pontos gastos da magia" }
                         ) { Text("+") }
                     }
                 }
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                    PONTOS_PRESETS.forEach { pts ->
+                Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    listOf(1, 2, 4, 8, 12, 16, 20, 24).forEach { pts ->
                         TextButton(
                             onClick = { pontosGastos = pts },
                             modifier = Modifier.padding(horizontal = 1.dp),

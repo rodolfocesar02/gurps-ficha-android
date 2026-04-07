@@ -40,7 +40,7 @@ class PersonagemRulesTest {
         )
 
         assertEquals(10f, personagem.baseCarga)
-        assertEquals(25f, personagem.pesoTotal)
+        assertEquals(25f, personagem.pesoTotalEquipamentos)
         assertEquals(2, personagem.nivelCarga) // ate 3x BC
         assertEquals(3, personagem.deslocamentoAtual) // 5 * 0.6
         assertEquals(8, personagem.esquiva) // esquiva base sem penalidade

@@ -1,6 +1,13 @@
-﻿package com.gurps.ficha.regras_prerequisitos
+package com.gurps.ficha.regras_prerequisitos
 
 import java.text.Normalizer
+
+data class ConditionStatus(
+    val label: String,
+    val isMet: Boolean,
+    val current: String,
+    val required: String
+)
 
 object PreRequisitoChecker {
 
@@ -53,6 +60,69 @@ object PreRequisitoChecker {
         } else {
             "faltando: ${faltandoTermos.joinToString(", ")}"
         }
+    }
+
+    fun checkDetailed(personagem: Map<String, Any>, parsed: PreRequisitoParser.ParseResult): List<ConditionStatus> {
+        val results = mutableListOf<ConditionStatus>()
+        if (parsed.bypassValidation) return results
+
+        parsed.terms.forEach { term ->
+            // Para simplificar na UI, vamos mostrar o status do primeiro conjunto de alternativas.
+            // Se houver "OU", a lógica de "isMet" será verdadeira se qualquer alternativa for atendida.
+            
+            val alternativesStatus = term.alternatives.map { alt ->
+                alt.map { req ->
+                    val failure = requirementFailure(personagem, req)
+                    val isMet = failure == null
+                    val currentVal = when (req) {
+                        is PreRequisitoType.SkillMinLevel -> {
+                            val periciasNiveis = periciasNiveis(personagem)
+                            val alvo = normalizar(req.nomePericia)
+                            // Busca robusta
+                            var valAtual = periciasNiveis[alvo] ?: 0
+                            if (valAtual == 0) {
+                                val key = periciasNiveis.keys.find { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                                if (key != null) valAtual = periciasNiveis[key] ?: 0
+                            }
+                            valAtual.toString()
+                        }
+                        is PreRequisitoType.AttributeMin -> valorAtributo(personagem, req.atributo).toString()
+                        is PreRequisitoType.AptidaoMagica -> (personagem["aptidao_magica"] as? Int ?: 0).toString()
+                        is PreRequisitoType.VantagemConhecida -> if (isMet) "Sim" else "Não"
+                        is PreRequisitoType.MagiaConhecida -> if (isMet) "Sim" else "Não"
+                        else -> if (isMet) "Sim" else "Não"
+                    }
+                    val requiredVal = when (req) {
+                        is PreRequisitoType.SkillMinLevel -> req.nivelMin.toString()
+                        is PreRequisitoType.AttributeMin -> req.minimo.toString()
+                        is PreRequisitoType.AptidaoMagica -> req.nivel.toString()
+                        is PreRequisitoType.NivelMin -> req.nivel.toString()
+                        is PreRequisitoType.VantagemConhecida -> "Sim"
+                        else -> ""
+                    }
+                    
+                    val label = when (req) {
+                        is PreRequisitoType.VantagemConhecida, is PreRequisitoType.PericiaConhecida -> {
+                            val nome = if (req is PreRequisitoType.VantagemConhecida) req.nomeVantagem else (req as PreRequisitoType.PericiaConhecida).nomePericia
+                            val alvo = normalizar(nome)
+                            val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                            val prefixo = if (emPericias) "Perícia" else "Vantagem"
+                            "$prefixo: $nome"
+                        }
+                        else -> req.readableName()
+                    }
+                    
+                    ConditionStatus(label, isMet, currentVal, requiredVal)
+                }
+            }
+
+            // Se qualquer alternativa (OR) for atendida, o termo está OK.
+            // Mas para exibição, vamos achatar os requisitos.
+            alternativesStatus.forEach { alt ->
+                results.addAll(alt)
+            }
+        }
+        return results
     }
 
     private fun requirementFailure(personagem: Map<String, Any>, requisito: PreRequisitoType): String? {
@@ -157,17 +227,22 @@ object PreRequisitoChecker {
                 } else null
             }
             is PreRequisitoType.VantagemConhecida -> {
-                val vantagens = vantagensConhecidas(personagem)
                 val alvo = normalizar(requisito.nomeVantagem)
-                if (alvo !in vantagens) {
-                    "Vantagem conhecida: ${requisito.nomeVantagem}"
+                val emVantagens = vantagensConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                val emMagias = magiasNomes(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                
+                if (!emVantagens && !emPericias && !emMagias) {
+                    "Falta requisito: ${requisito.nomeVantagem}"
                 } else null
             }
             is PreRequisitoType.PericiaConhecida -> {
-                val pericias = periciasConhecidas(personagem)
                 val alvo = normalizar(requisito.nomePericia)
-                if (alvo !in pericias) {
-                    "Pericia conhecida: ${requisito.nomePericia}"
+                val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                val emVantagens = vantagensConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                
+                if (!emPericias && !emVantagens) {
+                    "Falta requisito: ${requisito.nomePericia}"
                 } else null
             }
             is PreRequisitoType.MagiaConhecida -> {
@@ -185,10 +260,13 @@ object PreRequisitoChecker {
                 }
 
                 val vantagens = vantagensConhecidas(personagem)
-                if (alvo in vantagens) return null
-
                 val pericias = periciasConhecidas(personagem)
-                if (alvo in pericias) return null
+                
+                // Busca por similaridade (contains) para evitar erros de prefixo
+                val encontrouEmVantagens = vantagens.any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                val encontrouEmPericias = pericias.any { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                
+                if (encontrouEmVantagens || encontrouEmPericias) return null
 
                 "Conhecimento requerido: ${requisito.nomeMagia}"
             }
@@ -196,6 +274,22 @@ object PreRequisitoChecker {
                 val nivel = personagem["nivel_personagem"] as? Int ?: 0
                 if (nivel < requisito.nivel) {
                     "Nivel >= ${requisito.nivel} (atual $nivel)"
+                } else null
+            }
+            is PreRequisitoType.SkillMinLevel -> {
+                val periciasNiveis = periciasNiveis(personagem)
+                val alvo = normalizar(requisito.nomePericia)
+                // Prioriza busca pelo nome normalizado, depois por ID, depois por "contains"
+                var atualValue = periciasNiveis[alvo] ?: 0
+                
+                if (atualValue == 0) {
+                    val key = periciasNiveis.keys.find { it == alvo || it.contains(alvo) || alvo.contains(it) }
+                    if (key != null) atualValue = periciasNiveis[key] ?: 0
+                }
+                
+                val atual = atualValue
+                if (atual < requisito.nivelMin) {
+                    "NH ${requisito.nomePericia} >= ${requisito.nivelMin} (atual $atual)"
                 } else null
             }
         }
@@ -232,11 +326,16 @@ object PreRequisitoChecker {
     }
 
     @Suppress("UNCHECKED_CAST")
+    private fun periciasNiveis(personagem: Map<String, Any>): Map<String, Int> {
+        return personagem["pericias_niveis_normalizadas"] as? Map<String, Int> ?: emptyMap()
+    }
+
+    @Suppress("UNCHECKED_CAST")
     private fun condicoesEstado(personagem: Map<String, Any>): Set<String> {
         return personagem["condicoes_estado_normalizadas"] as? Set<String> ?: emptySet()
     }
 
-    private fun normalizar(valor: String): String {
+    fun normalizar(valor: String): String {
         val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
             .replace(Regex("\\p{M}+"), "")
         return semAcento
