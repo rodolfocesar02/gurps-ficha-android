@@ -18,12 +18,18 @@ O projeto é um aplicativo Android (Kotlin/Compose) para fichas de GURPS 4ª Edi
     - `model/`: Classes de dados puras (Personagem, Atributo, Vantagem).
     - `data/`: Repositórios (Room/Database) e Preferências.
     - `ui/`: Telas e Componentes (Jetpack Compose).
-    - `viewmodel/`: Lógica reativa e Delegates para isolar cálculos.
+    - `viewmodel/`:
+        - `FichaViewModel.kt`: Controlador Principal (State Holder).
+        - `delegates/`: Onde mora a lógica de negócio (Combate, Persistência, etc).
 - **`.agent/skills/`**: Este arquivo mestre.
-- **`docs/update/`**: Sistema de metadados para o atualizador in-app.
 
-### 🛡️ Hub de Combate Unificado
-Toda a lógica de ataque e defesa reside agora na **`TabRolagem.kt`**. Não existem abas separadas para defesa; tudo é compacto e adaptativo (padding 2dp).
+### 📍 Mapa de Funções VIP (Localização Rápida)
+Para economizar tokens e tempo, vá direto aos endereços abaixo:
+- **Cálculo de Defesas (Esquiva/Apara/Bloqueio)**: `FichaCombatDelegate.kt` -> `calcularDefesasVisiveis()`.
+- **Trava Anti-Corrupção (Auto-Save)**: `FichaViewModel.kt` -> variável `estaCarregando` (bloqueia o save no `init`).
+- **Importação de Fichas Antigas/Nuvem**: `FichaPersistenceDelegate.kt` -> `carregarFicha()` que chama `PersonagemInterop.importarJson()`.
+- **Auto-Ajuste de Escudos**: `FichaCombatDelegate.kt` -> `ajustarEscudoAutomatico()`.
+- **Busca e Filtros**: `FichaSearchDelegate.kt` -> `filtrarVantagens()`, `filtrarPericias()`, etc.
 
 ---
 
