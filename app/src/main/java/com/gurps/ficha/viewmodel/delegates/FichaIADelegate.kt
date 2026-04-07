@@ -41,10 +41,13 @@ class FichaIADelegate(
         scope.launch {
             val contexto = if (modo != "geracao") "Ficha de ${viewModel.personagem.nome}: ${viewModel.personagem.toJson()}" else null
             
+            // RAG LOCAL: Busca apenas o que é relevante para o prompt atual
+            val catalogoFiltrado = mestreIAUseCase.gerarCatalogoLocal(pergunta)
+
             val respostaTexto: String? = withContext(Dispatchers.IO) {
                 MestreIAClient.perguntarAoMestre(
                     baseUrl, apiKey, pergunta, workspaceSlug, mestreIAChatHistory.dropLast(1),
-                    contexto, getCatalogNames(), modo
+                    contexto, catalogoFiltrado, modo
                 )
             }
 
@@ -116,10 +119,5 @@ class FichaIADelegate(
         }
     }
 
-    private fun getCatalogNames() = MestreIAClient.CatalogoNomes(
-        vantagens = dataRepository.vantagens.map { it.nome },
-        desvantagens = dataRepository.desvantagens.map { it.nome },
-        pericias = dataRepository.pericias.map { it.nome },
-        magias = dataRepository.magias.map { it.nome }
-    )
+    private fun getCatalogNames() = MestreIAClient.CatalogoNomes()
 }

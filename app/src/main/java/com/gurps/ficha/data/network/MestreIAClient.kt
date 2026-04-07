@@ -22,122 +22,80 @@ object MestreIAClient {
     data class ChatMessage(
         val role: String, // "user" ou "model" (ou "assistant")
         val text: String
-    )
-
-    fun perguntarAoMestre(
+    )    fun perguntarAoMestre(
         baseUrl: String,
         apiKey: String,
         prompt: String,
-        workspaceSlug: String = "meu-workspace",
+        workspaceSlug: String = "gemini-1.5-flash", // Nome do modelo por padrão
         history: List<ChatMessage> = emptyList(),
         contextoPersonagem: String? = null,
         catalogo: CatalogoNomes = CatalogoNomes(),
-        modo: String = "geracao" // "geracao", "conversa" ou "analise"
+        modo: String = "geracao"
     ): String? {
         if (baseUrl.isBlank()) return null
 
-        val endpoint = "${baseUrl.trimEnd('/')}/chat"
+        // URL Universal ou específica do provedor
+        val endpoint = if (baseUrl.endsWith("/chat/completions")) baseUrl 
+                       else "${baseUrl.trimEnd('/')}/chat/completions"
         
-        // Catálogo de nomes para injeção
-        val listaVantagens = if (catalogo.vantagens.isNotEmpty()) catalogo.vantagens.take(100).joinToString(", ") else ""
-        val listaDesvantagens = if (catalogo.desvantagens.isNotEmpty()) catalogo.desvantagens.take(100).joinToString(", ") else ""
-        val listaPericias = if (catalogo.pericias.isNotEmpty()) catalogo.pericias.take(100).joinToString(", ") else ""
-        val listaMagias = if (catalogo.magias.isNotEmpty()) catalogo.magias.take(100).joinToString(", ") else ""
+        // Injeção de RAG Local no Prompt de Sistema
+        val listaVantagens = catalogo.vantagens.joinToString(", ")
+        val listaDesvantagens = catalogo.desvantagens.joinToString(", ")
+        val listaPericias = catalogo.pericias.joinToString(", ")
+        val listaMagias = catalogo.magias.joinToString(", ")
 
         val systemPrompt = when(modo) {
             "geracao" -> """
-                Você é o 'Mestre Digital GURPS', um especialista em GURPS 4ª Edição (Devir). 
-                Sua missão é gerar uma FICHA COMPLETA em JSON a partir de um conceito.
+                Você é o 'Mestre Digital GURPS 4E'. Gere uma FICHA COMPLETA em JSON.
+                USE APENAS ESTES NOMES REAIS NAS LISTAS:
+                - Vantagens: $listaVantagens
+                - Desvantagens: $listaDesvantagens
+                - Perícias: $listaPericias
+                - Magias: $listaMagias
                 
-                REGRAS:
-                1. Use APENAS nomes REAIS das listas abaixo. Não invente.
-                2. Gere um conjunto REALISTA e ÚTIL de perícias (8-12), vantagens (4-6) e desvantagens (3-5).
-                3. Atributos: Seja coerente (ex: ST 12+ para guerreiros, IQ 12+ para magos).
-                4. Equipamento: Sugira 3-6 itens iniciais (nome, peso em kg, custo em $).
-                5. Formato: JSON puro. Sem explicações.
-                
-                ESTRUTURA JSON EXIGIDA:
-                {
-                  "nome": "...", "atributos": {"st":10,"dx":10,"iq":10,"ht":10},
-                  "vantagens": ["..."], "desvantagens": ["..."],
-                  "pericias": [{"nome":"...", "nivel":12}], "magias": ["..."],
-                  "equipamentos": [{"nome":"...", "peso":1.0, "custo":100, "quantidade":1}],
-                  "aparencia": "...", "historico": "..."
-                }
-                
-                Nomes reais liberados:
-                Vantagens: $listaVantagens
-                Desvantagens: $listaDesvantagens
-                Perícias: $listaPericias
-                Magias: $listaMagias
+                Se o catálogo estiver vazio, use nomes do Módulo Básico.
+                Responda APENAS com o JSON.
             """.trimIndent()
             
             "analise" -> """
-                Você é um 'Mestre Consultor' de GURPS 4ª Edição experiente (Módulo Básico). 
-                Sua tarefa é ANALISAR a ficha e sugerir melhorias de forma INTERATIVA e INQUISITIVA.
+                Você é um 'Mestre Consultor' GURPS 4E. Analise a ficha e sugira melhorias.
+                Contexto sugerido pelo RAG Local:
+                - Vantagens: $listaVantagens
+                - Perícias: $listaPericias
                 
-                PROTOCOLO DE INTERAÇÃO (IMPORTANTE):
-                1. SE o personagem não tiver profissão ou conceito claro (ex: guerreiro, ladrão, mago), NÃO dê sugestões técnicas ainda. 
-                   PERGUNTE primeiro qual o objetivo/conceito do jogador para "afunilar" as sugestões e ser útil.
-                2. SE o conceito estiver claro, ofereça sugestões que realmente façam sentido para aquele estilo de jogo.
-                
-                PROTOCOLO DE SUGESTÃO CLICÁVEL:
-                Para cada pergunta ou opção que o usuário possa responder, use o formato: [SUGESTAO: Texto da Resposta]
-                Exemplo: "Qual sua profissão? [SUGESTAO: Guerreiro] [SUGESTAO: Mago] [SUGESTAO: Ladrão]"
-                
-                PROTOCOLO DE AÇÃO TÉCNICA (Aplicação na ficha):
-                - Atributos: [ACAO: ATRIBUTO:NOME VALOR] -> Ex: [ACAO: ATRIBUTO:ST 12]
-                - Vantagens: [ACAO: VANTAGEM:NOME] -> Ex: [ACAO: VANTAGEM:Reflexos de Combate]
-                - Perícias: [ACAO: PERICIA:NOME:NIVEL] -> Ex: [ACAO: PERICIA:Espada de Uma Mão:14]
-                - Equipamento: [ACAO: EQUIPAMENTO:NOME] -> Ex: [ACAO: EQUIPAMENTO:Escudo Médio]
-                
-                REGRAS DE OURO: 
-                - NUNCA envie blocos de código JSON ou texto técnico puro no modo análise.
-                - Use APENAS as tags [SUGESTAO: ...] para opções de diálogo.
-                - Use APENAS as tags [ACAO: ...] para propor mudanças na ficha.
-                - Se você sugerir adicionar algo (ex: perícias), NÃO diga "já adicionei". Diga: "Deseja que eu adicione [nome da perícia]? [SUGESTAO: Sim, adicionar]"
-                - Mantenha o texto amigável e focado no conceito do RPG.
-                
-                FICHA ATUAL DO PERSONAGEM:
-                $contextoPersonagem
+                Use [SUGESTAO: Texto] e [ACAO: TIPO:NOME VALOR].
+                FICHA ATUAL: $contextoPersonagem
             """.trimIndent()
             
-            else -> """
-                Você é o 'Mestre Digital GURPS', um assistente prestativo.
-                Pode usar [ACAO: ...] se o usuário pedir para mudar algo na ficha.
-                Pode usar [SUGESTAO: Resposta] para opções de diálogo rápidas.
-                
-                REGRAS: 
-                - NUNCA envie JSON bruto. 
-                - Use este contexto para responder dúvidas: $contextoPersonagem
-            """.trimIndent()
+            else -> "Você é um assistente prestativo de GURPS 4E. Contexto: $contextoPersonagem"
         }
 
-        // Construção do prompt seguindo a hierarquia Sistema -> Contexto -> Histórico -> Usuário
-        var promptFinal = "$systemPrompt\n\n"
+        // Construção do Payload Padrão (messages array)
+        val messages = mutableListOf<Map<String, String>>()
+        messages.add(mapOf("role" to "system", "content" to systemPrompt))
         
-        if (history.isNotEmpty()) {
-            val historyText = history.joinToString("\n") { "${it.role}: ${it.text}" }
-            promptFinal += "Contexto Histórico:\n$historyText\n\n"
+        history.forEach {
+            messages.add(mapOf("role" to it.role, "content" to it.text))
         }
         
-        promptFinal += if (modo == "geracao") "Conceito: $prompt" else "Usuário: $prompt"
+        messages.add(mapOf("role" to "user", "content" to prompt))
 
-        // Corpo da requisição no formato JSON
+        val bodyMap = mapOf(
+            "model" to workspaceSlug,
+            "messages" to messages,
+            "temperature" to 0.7,
+            "stream" to false
+        )
+
         return try {
-            val payload = mapOf("text" to promptFinal)
-            val body = gson.toJson(payload).toByteArray(StandardCharsets.UTF_8)
+            val body = gson.toJson(bodyMap).toByteArray(StandardCharsets.UTF_8)
             val connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 doOutput = true
                 connectTimeout = CONNECT_TIMEOUT_MS
                 readTimeout = READ_TIMEOUT_MS
                 setRequestProperty("Content-Type", "application/json")
-                setRequestProperty("Accept", "application/json")
-                setRequestProperty("User-Agent", "GURPSFichaAndroid/1.0")
-                if (apiKey.isNotBlank() && apiKey != "EMPTY") {
-                    setRequestProperty("Authorization", if (apiKey.startsWith("Bearer ")) apiKey else "Bearer $apiKey")
-                }
+                setRequestProperty("Authorization", "Bearer $apiKey")
             }
             
             connection.outputStream.use { it.write(body) }
@@ -146,17 +104,19 @@ object MestreIAClient {
                 val rawBody = readStreamSafely(connection.inputStream)
                 try {
                     val responseMap = gson.fromJson(rawBody, Map::class.java)
-                    responseMap["response"] as? String ?: rawBody
+                    val choices = responseMap["choices"] as? List<*>
+                    val firstChoice = choices?.firstOrNull() as? Map<*, *>
+                    val message = firstChoice?.get("message") as? Map<*, *>
+                    message?.get("content") as? String ?: rawBody
                 } catch (e: Exception) {
-                    // Fallback: se não for JSON, retorna o texto bruto
                     rawBody
                 }
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
-                "Erro do Servidor (${connection.responseCode}): $errorBody"
+                "Erro (${connection.responseCode}): $errorBody"
             }
         } catch (error: Exception) {
-            "Erro de Conexão (${error.javaClass.simpleName}): ${error.message ?: "Sem detalhes adicionais"}"
+            "Erro de Conexão: ${error.message}"
         }
     }
 

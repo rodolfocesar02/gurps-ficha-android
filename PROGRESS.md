@@ -57,7 +57,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 6.1: Correção de Seleção e Regras Especiais          | `(Commit: 0e9aee5)`
 * [Feito] Lote 7: Refatoração da UI de Rolagem (TabRolagem.kt)      | `(Commit: 042cd2d)`
 * [Feito] Lote 7.1: Correções de Discord, UI de Ataque e Mojibake   | `(Commit: 6c3f773)`
-* [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação) | `(Commit: c6a800c)`
+* [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação) | `(Commit: 6c8a800c)`
 * [Feito] Lote 8: Atualização Estética dos Ícones das Abas          | `(Commit: 1cec435)`
 * [Feito] Lote 9: Interface de Navegação RPGística (Ultra-Premium)  | `(Commit: 9f13f43)`
 * [Feito] Lote 10: Melhoria do Ataque Inato e Skill Project Map     | `(Commit: e1c1a1b)`
@@ -97,5 +97,4 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 47: Sincronização em Nuvem Invisível (Railway + DeviceID) (Sincro V18) | `(Manual: Antigravity)`
 * [Feito] Lote 48: Biblioteca Unificada e Proteção contra Conflitos de Nomes (Sincro V19) | `(Manual: Antigravity)`
 * [Feito] Lote 49: Restauração Sistêmica e Unificação de Branches (Integridade Total) | `(Commit: 7b346b1)`
-* [Feito] Lote 50: Unificação de requisitos redundantes no motor Nexus Arcano (Refactor incremental de metas) | `(Commit: 7b346b1)`
-* [ ] Lote 51: Verificação de consistência em magias de encantamento e metamágica
+* [Feito] Lote 50: Motor Nexus Arcano Estabilizado (Resolução Desejo + Metas Incrementais) | `(Commit: a2e2820)`
