@@ -20,9 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import com.gurps.ficha.ui.components.FichaCustomNavigationBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -55,6 +54,7 @@ import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.R
 import com.gurps.ficha.model.PersonagemInterop
 import com.gurps.ficha.update.AppUpdateService
+import com.gurps.ficha.update.AppUpdateHelper
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.launch
 
@@ -76,6 +76,26 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Check automático de atualização na inicialização
+    LaunchedEffect(Unit) {
+        coroutineScope.launch {
+            AppUpdateService.checkForUpdates().onSuccess { state ->
+                if (state.hasUpdate) {
+                    updateDialogTitle = "Nova versão disponível"
+                    updateDialogMessage = buildString {
+                        append("Atual: ${state.currentVersionName} (${state.currentVersionCode})\n")
+                        append("Nova: ${state.latestVersionName} (${state.latestVersionCode})")
+                        if (!state.notes.isNullOrBlank()) {
+                            append("\n\nNotas: ${state.notes}")
+                        }
+                    }
+                    updateApkUrl = state.apkUrl
+                    showUpdateDialog = true
+                }
+            }
+        }
+    }
+
     val temAptidaoMagica = viewModel.temAptidaoMagica
     val configuration = LocalConfiguration.current
     val density = LocalDensity.current
@@ -86,9 +106,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
         configuration.screenWidthDp < 390 || density.fontScale > 1.1f
     }
     val tabs = if (temAptidaoMagica) {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Magia", "Equip.", "Rolagem")
     } else {
-        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Defesas", "Rolagem")
+        listOf("Geral", "Traços", "Perícias", "Técnicas", "Equip.", "Rolagem")
     }
     val selectedTitle = tabs.getOrNull(selectedTab).orEmpty()
     val hideAppChrome = selectedTitle == "VTT" && vttImmersiveUi
@@ -257,46 +277,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
         },
         bottomBar = {
             if (!hideAppChrome) {
-                NavigationBar {
-                    tabs.forEachIndexed { index, title ->
-                        NavigationBarItem(
-                            icon = {
-                                val iconRes = when (title) {
-                                    "Geral" -> R.drawable.tab_geral
-                                    "Traços" -> R.drawable.tab_tracos
-                                    "Perícias" -> R.drawable.tab_pericias
-                                    "Técnicas" -> R.drawable.tab_tecnicas
-                                    "Magia" -> R.drawable.tab_magia
-                                    "Equip." -> R.drawable.tab_equipamentos
-                                    "Defesas" -> R.drawable.tab_defesas
-                                    "Rolagem" -> R.drawable.tab_rolagem
-                                    "VTT" -> R.drawable.tab_rolagem
-                                    else -> R.drawable.tab_geral
-                                }
-                                Icon(
-                                    painter = painterResource(id = iconRes),
-                                    contentDescription = if (isPraCegoVariant) "Aba $title" else title,
-                                    tint = Color.Unspecified,
-                                    modifier = Modifier.size(29.dp)
-                                )
-                            },
-                            label = if (usarNavegacaoCompacta) null else {
-                                {
-                                    Text(
-                                        title,
-                                        fontSize = 8.sp,
-                                        maxLines = 1,
-                                        softWrap = false,
-                                        style = MaterialTheme.typography.labelSmall
-                                    )
-                                }
-                            },
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
-                            alwaysShowLabel = false
-                        )
-                    }
-                }
+                FichaCustomNavigationBar(
+                    tabs = tabs,
+                    currentIndex = selectedTab,
+                    onTabClick = { index -> selectedTab = index },
+                    isPraCegoVariant = isPraCegoVariant
+                )
             }
         }
     ) { paddingValues ->
@@ -315,7 +301,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 "Técnicas" -> TabTecnicas(viewModel)
                 "Magia" -> TabMagias(viewModel)
                 "Equip." -> TabEquipamentos(viewModel)
-                "Defesas" -> TabCombate(viewModel)
                 "Rolagem" -> TabRolagem(viewModel)
                 else -> TabGeral(viewModel)
             }
@@ -336,7 +321,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 }
             },
             onSalvar = { showMenuDialog = false; showSaveDialog = true },
-            onCarregar = { showMenuDialog = false; showLoadDialog = true },
+            onCarregar = { 
+                showMenuDialog = false
+                viewModel.atualizarListaFichasUnificada()
+                showLoadDialog = true 
+            },
             onImportar = {
                 showMenuDialog = false
                 importLauncher.launch(arrayOf("application/json", "text/plain"))
@@ -384,6 +373,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     if (showSaveDialog) {
         SalvarDialog(
             nomeAtual = viewModel.personagem.nome,
+            viewModel = viewModel,
             onDismiss = { showSaveDialog = false },
             onSalvar = { nome ->
                 viewModel.salvarFicha(nome)
@@ -400,16 +390,29 @@ fun FichaScreen(viewModel: FichaViewModel) {
 
     if (showLoadDialog) {
         CarregarDialog(
-            fichas = viewModel.fichasSalvas,
+            fichasLocais = viewModel.fichasSalvas,
+            fichasNuvem = viewModel.fichasNuvem,
             onDismiss = { showLoadDialog = false },
             onCarregar = { nome ->
-                viewModel.carregarFicha(nome)
+                viewModel.carregarFicha(nome) { sucesso, msg ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = msg,
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
                 showLoadDialog = false
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(
-                        message = "Ficha carregada.",
-                        duration = SnackbarDuration.Short
-                    )
+            },
+            onCarregarNuvem = { nome ->
+                showLoadDialog = false
+                viewModel.restaurarDaNuvem(nome) { sucesso, msg ->
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(
+                            message = msg,
+                            duration = SnackbarDuration.Short
+                        )
+                    }
                 }
             },
             onExcluir = { nome ->
@@ -451,11 +454,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 if (!updateApkUrl.isNullOrBlank()) {
                     TextButton(
                         onClick = {
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateApkUrl)).apply {
-                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            }
-                            runCatching { context.startActivity(intent) }
+                            val url = updateApkUrl ?: return@TextButton
+                            val fileName = "gurps_update_v${updateDialogMessage.substringAfter("Nova: ").substringBefore(" ")}.apk"
+                            AppUpdateHelper.downloadAndInstall(context, url, fileName)
                             showUpdateDialog = false
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar("Baixando atualização... Acompanhe na barra de notificações.")
+                            }
                         }
                     ) { Text("Atualizar agora") }
                 } else {
