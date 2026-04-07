@@ -23,6 +23,10 @@ android {
     namespace = "com.gurps.ficha"
     compileSdk = 34
 
+    // FATOR PRIME: Chaves Mascaradas Multi-Flavor (Lidas no topo para visibilidade global)
+    val geminiKey = (localProperties.getProperty("mestre.ia.gemini.key") ?: "").replace("\"", "\\\"")
+    val deepseekKey = (localProperties.getProperty("mestre.ia.deepseek.key") ?: "").replace("\"", "\\\"")
+
     defaultConfig {
         val discordApiBaseUrl = (firstNonBlank(
             project.findProperty("DISCORD_ROLL_API_BASE_URL") as? String,
@@ -60,10 +64,6 @@ android {
             .trimEnd('/')
             .replace("\"", "\\\"")
 
-        // FATOR PRIME: Chaves Mascaradas
-        val mestreIaKey = (localProperties.getProperty("mestre.ia.key") ?: "").replace("\"", "\\\"")
-        val mestreIaUrl = (localProperties.getProperty("mestre.ia.url") ?: "https://generativelanguage.googleapis.com/v1beta/openai").replace("\"", "\\\"")
-        val mestreIaModel = (localProperties.getProperty("mestre.ia.model") ?: "gemini-1.5-flash").replace("\"", "\\\"")
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
@@ -80,19 +80,29 @@ android {
         buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
         buildConfigField("String", "GURPS_AGENT_API_BASE_URL", "\"$gurpsAgentApiBaseUrl\"")
         buildConfigField("String", "VTT_API_BASE_URL", "\"$vttApiBaseUrl\"")
-        
-        // REGISTRO NO COFRE
-        buildConfigField("String", "MESTRE_IA_KEY", "\"$mestreIaKey\"")
-        buildConfigField("String", "MESTRE_IA_URL", "\"$mestreIaUrl\"")
-        buildConfigField("String", "MESTRE_IA_MODEL", "\"$mestreIaModel\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
     }
-    flavorDimensions += "ui"
+    flavorDimensions += listOf("provider", "ui")
     productFlavors {
+        // --- DIMENSÃO: PROVEDOR DE IA ---
+        create("gemini") {
+            dimension = "provider"
+            buildConfigField("String", "MESTRE_IA_KEY", "\"$geminiKey\"")
+            buildConfigField("String", "MESTRE_IA_URL", "\"https://generativelanguage.googleapis.com/v1beta/openai\"")
+            buildConfigField("String", "MESTRE_IA_MODEL", "\"gemini-1.5-flash\"")
+        }
+        create("deepseek") {
+            dimension = "provider"
+            buildConfigField("String", "MESTRE_IA_KEY", "\"$deepseekKey\"")
+            buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com\"")
+            buildConfigField("String", "MESTRE_IA_MODEL", "\"deepseek-chat\"")
+        }
+
+        // --- DIMENSÃO: INTERFACE (UI) ---
         create("visual") {
             dimension = "ui"
             applicationIdSuffix = ".visual"

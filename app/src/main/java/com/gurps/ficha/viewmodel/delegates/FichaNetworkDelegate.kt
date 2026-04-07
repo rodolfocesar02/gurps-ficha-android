@@ -58,7 +58,7 @@ class FichaNetworkDelegate {
         contextoPersonagem: String?,
         catalogo: MestreIAClient.CatalogoNomes,
         modo: String
-    ): String? {
+    ): MestreIAClient.ChatResponse {
         return withContext(Dispatchers.IO) {
             MestreIAClient.perguntarAoMestre(
                 baseUrl = baseUrl,

@@ -1,0 +1,61 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+
+> Task :app:validateActiveJsonAssets
+OK: relatorio salvo em C:\Users\Rodolfo\Desktop\ficha gurps\ficha-gurps\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.json
+OK: resumo salvo em C:\Users\Rodolfo\Desktop\ficha gurps\ficha-gurps\gurps_app\gurps-ficha-android\scripts\reports\active_json_audit_v2.md
+
+> Task :app:preBuild
+> Task :app:preGeminiVisualDebugBuild
+> Task :app:generateGeminiVisualDebugBuildConfig
+> Task :app:checkGeminiVisualDebugAarMetadata
+> Task :app:generateGeminiVisualDebugResValues
+> Task :app:mapGeminiVisualDebugSourceSetPaths
+> Task :app:generateGeminiVisualDebugResources
+> Task :app:packageGeminiVisualDebugResources
+> Task :app:createGeminiVisualDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksGeminiVisualDebug
+> Task :app:mergeGeminiVisualDebugResources
+> Task :app:parseGeminiVisualDebugLocalResources
+> Task :app:processGeminiVisualDebugMainManifest
+> Task :app:processGeminiVisualDebugManifest
+> Task :app:processGeminiVisualDebugManifestForPackage
+> Task :app:processGeminiVisualDebugResources
+> Task :app:kspGeminiVisualDebugKotlin
+
+> Task :app:compileGeminiVisualDebugKotlin FAILED
+./gradlew : e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/ja
+va/com/gurps/ficha/viewmodel/delegates/FichaIADelegate.kt:107:45 Unresolved reference 'adicionarPericia'.
+At line:1 char:1
++ ./gradlew compileGeminiVisualDebugKotlin --no-daemon > build_error.tx ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (e: file:///C:/U...cionarPericia'.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps
+/ficha/viewmodel/delegates/FichaIADelegate.kt:109:45 Unresolved reference 'adicionarPericia'.
+e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps
+/ficha/viewmodel/delegates/FichaIADelegate.kt:112:51 Unresolved reference 'adicionarVantagem'.
+e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps
+/ficha/viewmodel/delegates/FichaIADelegate.kt:113:54 Unresolved reference 'adicionarEquipamento'.
+e: file:///C:/Users/Rodolfo/Desktop/ficha%20gurps/ficha-gurps/gurps_app/gurps-ficha-android/app/src/main/java/com/gurps
+/ficha/viewmodel/delegates/FichaNetworkDelegate.kt:63:13 Argument type mismatch: actual type is 
+'com.gurps.ficha.data.network.MestreIAClient.ChatResponse', but 'kotlin.String?' was expected.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileGeminiVisualDebugKotlin'.
+> A failure occurred while executing 
+org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 12s
+17 actionable tasks: 17 executed
