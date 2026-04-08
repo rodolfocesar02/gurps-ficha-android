@@ -5,6 +5,7 @@ import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.model.*
 import com.gurps.ficha.domain.filters.CatalogFilters
+import com.gurps.ficha.data.storage.ManualChunkEntity
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.Locale
@@ -23,7 +24,7 @@ object MestreIARagEngine {
     )
     
     // LOTE 56: Variável configurável para limite de contexto
-    private var CHUNK_LIMIT = 10 
+    private var CHUNK_LIMIT = 15 
 
     data class RagResult(
         val vantagens: List<String> = emptyList(),
@@ -69,13 +70,55 @@ object MestreIARagEngine {
         // Usamos uma combinação de palavras-chave para o MATCH
         val keywordsBaseNorm = keywordsBase.map { CatalogFilters.normalizarBusca(it) }
         if (keywordsBaseNorm.isEmpty()) return emptyList()
+
+        // Melhora a Query FTS para suportar bigramas e termos compostos
+        val queryParts = mutableListOf<String>()
+        keywordsBaseNorm.forEach { queryParts.add("$it*") }
         
-        val ftsQuery = keywordsBaseNorm.joinToString(" ") { "$it*" }
+        // Se houver mais de uma palavra, tenta criar pares (bigramas)
+        if (keywordsBaseNorm.size >= 2) {
+            for (i in 0 until keywordsBaseNorm.size - 1) {
+                queryParts.add("\"${keywordsBaseNorm[i]} ${keywordsBaseNorm[i+1]}\"")
+            }
+        }
+        
+        val ftsQuery = queryParts.joinToString(" OR ")
+        android.util.Log.d("MestreIA_RAG", "Final FTS Query: $ftsQuery")
 
         return try {
-            val resultados = dao.buscarRegras(ftsQuery, CHUNK_LIMIT)
-            resultados.map { entity ->
+            val resultadosRaw = dao.buscarRegras(ftsQuery, 100) // Busca estendida para garantir diversidade
+            
+            // FILTRAGEM DE RUÍDO
+            val filtrados = resultadosRaw.filter { entity ->
+                val hasTooManyDots = entity.text.count { it == '.' } > entity.text.length / 10
+                val isTooShort = entity.text.length < 50
+                !hasTooManyDots && !isTooShort
+            }
+
+            // ALGORITMO DE DIVERSIDADE (Round-Robin por Fonte)
+            val gruposPorFonte = filtrados.groupBy { it.source_title }
+            val resultadosFinais = mutableListOf<ManualChunkEntity>()
+            
+            // Pega o top 1 de cada fonte, depois o top 2, até chegar no CHUNK_LIMIT
+            var i = 0
+            while (resultadosFinais.size < CHUNK_LIMIT) {
+                var adicionouNestaRodada = false
+                for (fonte in gruposPorFonte.keys) {
+                    val listaDaFonte = gruposPorFonte[fonte]!!
+                    if (i < listaDaFonte.size && resultadosFinais.size < CHUNK_LIMIT) {
+                        resultadosFinais.add(listaDaFonte[i])
+                        adicionouNestaRodada = true
+                    }
+                }
+                if (!adicionouNestaRodada) break
+                i++
+            }
+
+            android.util.Log.d("MestreIA_RAG", "Resultados após algoritmos de diversidade: ${resultadosFinais.size} (Fontes: ${gruposPorFonte.size})")
+            
+            resultadosFinais.map { entity ->
                 MestreIAChunk(
+                    chunk_id = entity.chunk_id,
                     source_title = entity.source_title,
                     page_number = entity.page_number,
                     text = entity.text
@@ -93,6 +136,7 @@ object MestreIARagEngine {
             .split(Regex("\\s+"))
             .filter { it.length > 2 && it !in STOP_WORDS }
             .distinct()
+        
         android.util.Log.d("MestreIA_RAG", "Keywords extraídas: $kws")
         return kws
     }

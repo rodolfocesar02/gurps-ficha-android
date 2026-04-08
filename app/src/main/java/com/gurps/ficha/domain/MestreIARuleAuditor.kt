@@ -2,6 +2,7 @@ package com.gurps.ficha.domain
 
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
+import com.gurps.ficha.data.network.*
 import java.util.Locale
 
 /**
@@ -24,11 +25,11 @@ object MestreIARuleAuditor {
         val notas = mutableListOf<AuditNote>()
 
         // 1. Auditoria de Atributos (Custo)
-        sugerido.atributos?.let { sugeridos ->
-            val stAI = sugeridos.st
-            val dxAI = sugeridos.dx
-            val iqAI = sugeridos.iq
-            val htAI = sugeridos.ht
+        val sugeridos = sugerido.atributos
+        val stAI = sugeridos.st
+        val dxAI = sugeridos.dx
+        val iqAI = sugeridos.iq
+        val htAI = sugeridos.ht
 
             val custoReal = CharacterRules.calcularPontosAtributos(
                 forca = stAI,
@@ -43,10 +44,10 @@ object MestreIARuleAuditor {
 
             // Como a IA não envia o custo total no JSON geralmente, 
             // essa auditoria serve para preparar futuras expansões.
-        }
+        
 
         // 2. Auditoria de Perícias (Dificuldade vs Nível)
-        sugerido.pericias?.forEach { pAI ->
+        sugerido.pericias.forEach { pAI ->
             // Procura a definição original da perícia para saber o atributo e dificuldade
             val definicao = CharacterRules.DATA_REPOSITORY_INSTANCE?.pericias?.find { 
                 it.nome.lowercase() == pAI.nome.lowercase() 

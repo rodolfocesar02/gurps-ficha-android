@@ -11,7 +11,9 @@ import androidx.room.PrimaryKey
 @Fts4
 @Entity(tableName = "manual_chunks")
 data class ManualChunkEntity(
+    val chunk_id: String,
     val source_title: String,
     val page_number: Int?,
-    val text: String
+    val text: String,        // Texto original para contexto da IA
+    val search_text: String  // Texto normalizado para busca FTS
 )
