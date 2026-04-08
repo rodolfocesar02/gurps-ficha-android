@@ -21,6 +21,9 @@ object MestreIARagEngine {
         "para", "por", "que", "se", "seu", "sua", "como", "fazer", "criar",
         "quero", "me", "ajude", "personagem", "ficha", "gurps", "edicao"
     )
+    
+    // LOTE 56: Variável configurável para limite de contexto
+    private var CHUNK_LIMIT = 10 
 
     data class RagResult(
         val vantagens: List<String> = emptyList(),
@@ -34,7 +37,7 @@ object MestreIARagEngine {
     /**
      * Varre o repositório em busca de termos que combinem com o prompt.
      */
-    fun buscarContexto(prompt: String, repository: DataRepository): RagResult {
+    suspend fun buscarContexto(prompt: String, repository: DataRepository): RagResult {
         val keywordsBase = extrairKeywordsBase(prompt)
         if (keywordsBase.isEmpty()) return RagResult()
         
@@ -52,47 +55,34 @@ object MestreIARagEngine {
     }
 
     /**
-     * Busca por streaming no chunks.jsonl (8.3MB) sem travar a memória.
+     * BUSCA INDEXADA (Lote 56): Substitui o linear scan pelo SQLite FTS.
      */
-    private fun buscarEmChunks(keywordsBase: List<String>, keywordsExpandidas: List<String>, repository: DataRepository): List<MestreIAChunk> {
-        val gson = Gson()
-        val keywordsBaseNorm = keywordsBase.map { CatalogFilters.normalizarBusca(it) }
-        val keywordsExpandidasNorm = keywordsExpandidas.map { CatalogFilters.normalizarBusca(it) }
-        val fullPhrase = keywordsBaseNorm.joinToString(" ")
-        
-        return try {
-            val inputStream = repository.context.assets.open("chunks.jsonl")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            
-            reader.useLines { lines ->
-                lines.asSequence()
-                    .mapNotNull { line ->
-                        try {
-                            gson.fromJson(line, MestreIAChunk::class.java)
-                        } catch (e: Exception) { null }
-                    }
-                    .map { chunk ->
-                        val textNorm = CatalogFilters.normalizarBusca(chunk.text)
-                        var score = 0
-                        
-                        // BÔNUS MASSIVO: Frase Exata (Lote 55 IMPROVED)
-                        if (fullPhrase.length > 3 && textNorm.contains(fullPhrase)) {
-                            score += 100
-                        }
+    private suspend fun buscarEmChunks(keywordsBase: List<String>, keywordsExpandidas: List<String>, repository: DataRepository): List<MestreIAChunk> {
+        val context = repository.context
+        val database = com.gurps.ficha.data.storage.FichaDatabase.getInstance(context)
+        val dao = database.manualChunkDao()
 
-                        // Bônus por palavras individuais
-                        keywordsExpandidasNorm.forEach { kw ->
-                            if (textNorm.contains(kw)) score += 2
-                        }
-                        chunk to score
-                    }
-                    .filter { it.second > 0 }
-                    .sortedByDescending { it.second }
-                    .take(5) // Limite de 5 fragmentos para não estourar o contexto da IA
-                    .map { it.first }
-                    .toList()
+        // Garante indexação inicial
+        MestreIAIndexer.indexarSeNecessario(context)
+
+        // Prepara a query para o FTS (Full-Text Search)
+        // Usamos uma combinação de palavras-chave para o MATCH
+        val keywordsBaseNorm = keywordsBase.map { CatalogFilters.normalizarBusca(it) }
+        if (keywordsBaseNorm.isEmpty()) return emptyList()
+        
+        val ftsQuery = keywordsBaseNorm.joinToString(" ") { "$it*" }
+
+        return try {
+            val resultados = dao.buscarRegras(ftsQuery, CHUNK_LIMIT)
+            resultados.map { entity ->
+                MestreIAChunk(
+                    source_title = entity.source_title,
+                    page_number = entity.page_number,
+                    text = entity.text
+                )
             }
         } catch (e: Exception) {
+            android.util.Log.e("MestreIA_RAG", "Erro na busca FTS: ${e.message}")
             emptyList()
         }
     }

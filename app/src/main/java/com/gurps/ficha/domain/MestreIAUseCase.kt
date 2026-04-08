@@ -69,7 +69,7 @@ class MestreIAUseCase(
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) {
         viewModelScope.launch {
-            val catalogoLocal = withContext(Dispatchers.IO) { gerarCatalogoLocal(prompt) }
+            val catalogoLocal = gerarCatalogoLocal(prompt)
             val isRagUsed = catalogoLocal.isRagSuccess
             android.util.Log.d("MestreIA", "Modo: $modo | RAG Ativo: $isRagUsed")
 
@@ -343,7 +343,7 @@ class MestreIAUseCase(
         }
     }
 
-    fun gerarCatalogoLocal(userPrompt: String): CatalogoLocalResult {
+    suspend fun gerarCatalogoLocal(userPrompt: String): CatalogoLocalResult {
         val rag = MestreIARagEngine.buscarContexto(userPrompt, repository)
         
         // No modo GERAÇÃO, somos mais generosos com o catálogo para evitar que a IA invente nomes.
