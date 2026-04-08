@@ -46,7 +46,7 @@ object MestreIARagEngine {
         val p = buscarPericias(keywordsExpandidas, repository.pericias)
         val t = buscarTecnicas(keywordsExpandidas, repository.tecnicasCatalogo)
         val m = buscarMagias(keywordsExpandidas, repository.magias)
-        val chunksEncontrados = buscarEmChunks(keywordsExpandidas, repository)
+        val chunksEncontrados = buscarEmChunks(keywordsBase, keywordsExpandidas, repository)
 
         return RagResult(v, d, p, t, m, chunksEncontrados)
     }
@@ -54,9 +54,11 @@ object MestreIARagEngine {
     /**
      * Busca por streaming no chunks.jsonl (8.3MB) sem travar a memória.
      */
-    private fun buscarEmChunks(keywords: List<String>, repository: DataRepository): List<MestreIAChunk> {
+    private fun buscarEmChunks(keywordsBase: List<String>, keywordsExpandidas: List<String>, repository: DataRepository): List<MestreIAChunk> {
         val gson = Gson()
-        val keywordsNorm = keywords.map { CatalogFilters.normalizarBusca(it) }
+        val keywordsBaseNorm = keywordsBase.map { CatalogFilters.normalizarBusca(it) }
+        val keywordsExpandidasNorm = keywordsExpandidas.map { CatalogFilters.normalizarBusca(it) }
+        val fullPhrase = keywordsBaseNorm.joinToString(" ")
         
         return try {
             val inputStream = repository.context.assets.open("chunks.jsonl")
@@ -72,8 +74,15 @@ object MestreIARagEngine {
                     .map { chunk ->
                         val textNorm = CatalogFilters.normalizarBusca(chunk.text)
                         var score = 0
-                        keywordsNorm.forEach { kw ->
-                            if (textNorm.contains(kw)) score += 1
+                        
+                        // BÔNUS MASSIVO: Frase Exata (Lote 55 IMPROVED)
+                        if (fullPhrase.length > 3 && textNorm.contains(fullPhrase)) {
+                            score += 100
+                        }
+
+                        // Bônus por palavras individuais
+                        keywordsExpandidasNorm.forEach { kw ->
+                            if (textNorm.contains(kw)) score += 2
                         }
                         chunk to score
                     }
