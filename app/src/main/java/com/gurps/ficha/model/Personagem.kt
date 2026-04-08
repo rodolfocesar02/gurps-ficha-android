@@ -19,6 +19,7 @@ data class Personagem(
     var jogador: String = "",
     var campanha: String = "",
     var pontosIniciais: Int = 150,
+    var xpGanhos: Int = 0, // Pontos ganhos durante a campanha
     var limiteDesvantagens: Int = -75, // Limite padrao GURPS 4Ed
 
     // Atributos Primarios (valor 10 = media humana, gratuito)
@@ -129,7 +130,8 @@ data class Personagem(
         pontosDesvantagens + pontosQualidades + pontosPeculiaridades + pontosPericias + pontosTecnicas + pontosMagias +
         modeloRacial.custoTotal
 
-    val pontosRestantes: Int get() = pontosIniciais - pontosGastos
+    val pontosTotaisDisponiveis: Int get() = pontosIniciais + xpGanhos
+    val pontosRestantes: Int get() = pontosTotaisDisponiveis - pontosGastos
     val desvantagensExcedemLimite: Boolean get() = pontosDesvantagens < limiteDesvantagens
 
     fun getAtributo(sigla: String): Int {

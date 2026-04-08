@@ -97,7 +97,8 @@ Melhoria: Implementar um "JSON Repair" (como uma limpeza agressiva de caracteres
 * [Feito] Lote 53: Contexto Diferencial (Token Economy) | `(Commit: fbdb0da)`
 .(Problema: Enviar o personagem inteiro em cada mensagem gasta muitos tokens e pode confundir a IA com dados irrelevantes.
 Melhoria: No processarPrompt, implementar uma lógica que identifique o que mudou na ficha ou o que é relevante para a pergunta atual. Se o usuário pergunta sobre "Dano", não precisamos enviar a lista de "Equipamento de Camping".)
-* [ ] Lote 54: Streaming de Resposta (SSE/UX) | Implementação de feedback visual em tempo real, permitindo que o usuário veja a IA "escrevendo" a resposta para uma experiência mais fluida.(Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptível na UI (Latência).
+* [Feito] Lote 54: Streaming de Resposta (SSE/UX) | `(Commit: 89ab389)`
+(Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptível na UI (Latência).
 Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Events (SSE). Ver o Mestre IA "escrevendo" em tempo real melhora drasticamente a percepção de performance.)
 * [ ] Lote 55: Auditoria de Regras (Fiscal Ativo) | Criação de um simulador de impacto que valida as sugestões da IA contra o motor de regras (CharacterRules) antes de exibi-las ao usuário.(Problema: A IA pode sugerir uma perícia que o personagem não tem os pré-requisitos, e o CharacterRules.kt só percebe isso na hora de salvar.
 Melhoria: Criar um "Simulador de Integração". Antes de exibir a sugestão para o usuário, o MestreIAUseCase passa os dados pelo CharacterRules. Se houver erro de regra (ex: "Custo de vantagem errado"), o app injeta um aviso no balão de fala: "IA sugeriu ST 15 por 40pts, mas o correto seria 50pts".)

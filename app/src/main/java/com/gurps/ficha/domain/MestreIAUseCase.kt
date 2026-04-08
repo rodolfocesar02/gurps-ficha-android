@@ -130,6 +130,12 @@ class MestreIAUseCase(
                         val thematicModel = traduzirModeloParaMestre(resposta.modelName ?: model)
                         val textoLimpo = limparRascunhoIA(resposta.text, catalogoLocal.catalogo.chunks)
                         
+                        // LOTE 55: Auditoria de Regras (Fiscal Ativo)
+                        // O fiscal analisa o texto limpo e injeta notas se houver erros de custo/NH
+                        val textoAuditado = if (modo == "conversa") {
+                            MestreIARuleAuditor.auditarTextoPorContexto(textoLimpo, viewModel.personagem)
+                        } else textoLimpo
+                        
                         // NOTA DE DEPURACAO RAG: Bibliografia (NÃO adicionar em modo geração para não quebrar o JSON)
                         val bibliografia = if (isRagUsed && catalogoLocal.catalogo.chunks.isNotEmpty() && modo == "conversa") {
                             val chunks = catalogoLocal.catalogo.chunks
@@ -139,7 +145,7 @@ class MestreIAUseCase(
                             "\n\n_Ref. Manual: ${refs}_"
                         } else ""
                         
-                        onResultado(isRagUsed, resposta.copy(text = textoLimpo + bibliografia, modelName = thematicModel, latencyMs = latency))
+                        onResultado(isRagUsed, resposta.copy(text = textoAuditado + bibliografia, modelName = thematicModel, latencyMs = latency))
                         sucesso = true
                         break
                     } else {
