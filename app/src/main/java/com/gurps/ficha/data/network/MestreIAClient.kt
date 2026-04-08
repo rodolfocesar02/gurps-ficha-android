@@ -132,6 +132,7 @@ object MestreIAClient {
                 1. Use nomes em português (Módulo Básico: Personagens / Campanhas).
                 2. NUNCA invente números de página. Use apenas os que o CODEX fornecer.
                 3. Se o CODEX trouxer uma página irrelevante para a pergunta, ignore-a e diga que não encontrou a regra.
+                4. LIMITE DE HISTÓRIA: O campo de história do personagem tem um limite técnico de 1000 caracteres. Se o jogador pedir para você escrever uma história longa ou se você atingir esse limite, informe amigavelmente que o espaço na ficha chegou ao fim e você não pode adicionar mais texto por segurança.
                 
                 HISTÓRICO DO PERSONAGEM:
                 $contextoPersonagem
