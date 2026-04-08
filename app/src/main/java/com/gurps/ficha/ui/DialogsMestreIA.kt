@@ -114,6 +114,49 @@ fun DialogMestreIA(
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        var showMenu by remember { mutableStateOf(false) }
+                        
+                        Box {
+                            IconButton(onClick = { showMenu = true }, modifier = Modifier.size(36.dp)) {
+                                Icon(
+                                    imageVector = if (viewModel.mestreIAMode == "conversa") Icons.Default.Add else Icons.Default.Settings,
+                                    contentDescription = "Modos",
+                                    tint = if (viewModel.mestreIAMode == "conversa") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                            
+                            DropdownMenu(
+                                expanded = showMenu,
+                                onDismissRequest = { showMenu = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("📖 Tirar Dúvida (Free)") },
+                                    leadingIcon = { Icon(Icons.Default.Info, null) },
+                                    onClick = { 
+                                        viewModel.mestreIAMode = "conversa"
+                                        showMenu = false 
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("🏗️ Criar Ficha (PRO)") },
+                                    leadingIcon = { Icon(Icons.Default.AddCircle, null) },
+                                    onClick = { 
+                                        viewModel.mestreIAMode = "geracao"
+                                        showMenu = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("🔍 Analisar Ficha (PRO)") },
+                                    leadingIcon = { Icon(Icons.Default.Search, null) },
+                                    onClick = { 
+                                        viewModel.mestreIAMode = "analise"
+                                        showMenu = false
+                                    }
+                                )
+                            }
+                        }
+
                         androidx.compose.foundation.text.BasicTextField(
                             value = prompt,
                             onValueChange = { prompt = it },
@@ -121,7 +164,12 @@ fun DialogMestreIA(
                             textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
                             decorationBox = { innerTextField ->
                                 if (prompt.isEmpty()) {
-                                    Text("Mensagem...", color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodyMedium)
+                                    val hint = when(viewModel.mestreIAMode) {
+                                        "geracao" -> "Descreva o personagem para criar..."
+                                        "analise" -> "O que quer analisar nesta ficha?"
+                                        else -> "Tire sua dúvida de regras..."
+                                    }
+                                    Text(hint, color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodyMedium)
                                 }
                                 innerTextField()
                             }
@@ -131,14 +179,14 @@ fun DialogMestreIA(
                             CircularProgressIndicator(modifier = Modifier.size(24.dp).padding(4.dp), strokeWidth = 2.dp)
                         } else {
                                IconButton(
-                                onClick = {
-                                    if (prompt.isNotBlank()) {
-                                        isAguardando = true
-                                        val userPrompt = prompt
-                                        prompt = ""
-                                        viewModel.conversarComMestreIA(userPrompt, "conversa") { _, _ -> isAguardando = false }
-                                    }
-                                },
+                                        onClick = {
+                                            if (prompt.isNotBlank()) {
+                                                isAguardando = true
+                                                val userPrompt = prompt
+                                                prompt = ""
+                                                viewModel.conversarComMestreIA(userPrompt, viewModel.mestreIAMode) { _, _ -> isAguardando = false }
+                                            }
+                                        },
                                 enabled = prompt.isNotBlank(),
                                 colors = IconButtonDefaults.iconButtonColors(
                                     containerColor = if (prompt.isNotBlank()) MaterialTheme.colorScheme.primary else Color.Transparent,
@@ -343,6 +391,8 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                             }
                             
                             if (msg.modelName != null) {
+                                val latencySec = if (msg.latencyMs > 0) String.format("%.1fs", msg.latencyMs / 1000.0) else ""
+                                
                                 Icon(
                                     Icons.Default.Build, // Representa motor/tecnologia
                                     contentDescription = null,
@@ -351,7 +401,7 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                                 )
                                 Spacer(Modifier.width(4.dp))
                                 Text(
-                                    text = msg.modelName,
+                                    text = if (latencySec.isNotEmpty()) "${msg.modelName} • $latencySec" else msg.modelName,
                                     fontSize = 9.sp,
                                     fontWeight = FontWeight.Medium,
                                     letterSpacing = 0.5.sp,

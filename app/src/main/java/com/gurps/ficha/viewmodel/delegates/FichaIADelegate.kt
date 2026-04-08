@@ -23,6 +23,7 @@ class FichaIADelegate(
 
     var mestreIAChatHistory by mutableStateOf<List<MestreIAClient.ChatMessage>>(emptyList())
     var fichaGeradaPendente by mutableStateOf<MestreIAResponse?>(null)
+    var mestreIAMode by mutableStateOf("conversa") // Default: Dúvidas/Free
 
     fun limparChat() {
         mestreIAChatHistory = emptyList()
@@ -31,9 +32,6 @@ class FichaIADelegate(
     fun conversar(
         pergunta: String,
         modo: String,
-        baseUrl: String,
-        apiKey: String,
-        workspaceSlug: String,
         onResult: (Boolean, String) -> Unit
     ) {
         mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("user", pergunta)
@@ -41,23 +39,28 @@ class FichaIADelegate(
         scope.launch {
             mestreIAUseCase.conversarComMestreIA(
                 prompt = pergunta,
-                modo = modo,
-                baseUrl = baseUrl,
-                apiKey = apiKey,
-                workspaceSlug = workspaceSlug
+                modo = mestreIAMode
             ) { isRagUsed, response ->
                 mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
                     role = "model",
                     text = response.text,
-                    modelName = response.modelName ?: workspaceSlug,
-                    isRagUsed = isRagUsed
+                    modelName = response.modelName,
+                    isRagUsed = isRagUsed,
+                    latencyMs = response.latencyMs
                 )
 
+                // Sempre tenta extrair JSON, independente do modo
+                fichaGeradaPendente = MestreIAClient.extrairJsonFicha(response.text)
+
                 if (modo == "geracao") {
-                    fichaGeradaPendente = MestreIAClient.extrairJsonFicha(response.text)
                     onResult(true, if (fichaGeradaPendente != null) "Ficha pronta para revisão!" else "Ficha gerada em texto.")
                 } else {
                     onResult(true, "Resposta recebida.")
+                }
+                
+                // RESET AUTOMÁTICO
+                if (mestreIAMode != "conversa") {
+                    mestreIAMode = "conversa"
                 }
             }
         }

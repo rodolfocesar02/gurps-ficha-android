@@ -55,7 +55,7 @@ class FichaNetworkDelegate {
         workspaceSlug: String,
         prompt: String,
         history: List<MestreIAClient.ChatMessage>,
-        contextoPersonagem: String?,
+        contextoPersonagem: String,
         catalogo: MestreIAClient.CatalogoNomes,
         modo: String
     ): MestreIAClient.ChatResponse {
@@ -65,7 +65,7 @@ class FichaNetworkDelegate {
                 apiKey = apiKey,
                 workspaceSlug = workspaceSlug,
                 prompt = prompt,
-                history = history,
+                history = history.map { it.role to it.text },
                 contextoPersonagem = contextoPersonagem,
                 catalogo = catalogo,
                 modo = modo

@@ -33,7 +33,7 @@ data class MestreIaTemasWrapper(
     val temas: List<MestreIaTema>
 )
 
-class DataRepository(private val context: Context) {
+class DataRepository(internal val context: Context) {
     private data class MagiaFiltroIndex(
         val definicao: MagiaDefinicao,
         val nomeNorm: String,
