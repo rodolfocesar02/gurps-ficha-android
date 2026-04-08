@@ -46,6 +46,15 @@ class FichaIADelegate(
             mestreIAUseCase.conversarComMestreIA(
                 prompt = pergunta,
                 modo = mestreIAMode,
+                onStatusUpdate = { status ->
+                    scope.launch(Dispatchers.Main) {
+                        val history = mestreIAChatHistory.toMutableList()
+                        if (assistantIndex >= 0 && assistantIndex < history.size) {
+                            history[assistantIndex] = history[assistantIndex].copy(modelName = status)
+                            mestreIAChatHistory = history
+                        }
+                    }
+                },
                 onChunk = { chunk ->
                     scope.launch(Dispatchers.Main) {
                         val history = mestreIAChatHistory.toMutableList()

@@ -65,6 +65,7 @@ class MestreIAUseCase(
     fun conversarComMestreIA(
         prompt: String,
         modo: String = "conversa",
+        onStatusUpdate: (String) -> Unit = {},
         onChunk: (String) -> Unit = {},
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) {
@@ -80,8 +81,10 @@ class MestreIAUseCase(
 
             for ((index, config) in filaFallback.withIndex()) {
                 val (url, key, model) = config
+                val amigavel = traduzirModeloParaMestre(model)
                 val modoLabel = if (url.contains("openrouter")) "LITE-${index+1}" else "PRO"
                 
+                onStatusUpdate("Tentando $amigavel...")
                 android.util.Log.d("MestreIA", "Tentativa ${index+1}: Usando [$modoLabel] | Model: $model")
 
                 try {
@@ -157,6 +160,12 @@ class MestreIAUseCase(
                             onResultado(false, resposta.copy(text = "FALHA NO MODELO PRO: ${resposta.text}\n(Não houve fallback para manter a integridade da ficha)"))
                             sucesso = true // Interrompe o loop
                             break
+                        } else {
+                            // Se for erro de limite, espera um pouco para dar visibilidade ao usuário
+                            if (resposta.text.contains("429")) {
+                                onStatusUpdate("Limite atingido no $amigavel. Pulando...")
+                                kotlinx.coroutines.delay(1500)
+                            }
                         }
                     }
                 } catch (e: Exception) {
