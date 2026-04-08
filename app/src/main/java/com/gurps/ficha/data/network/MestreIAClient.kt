@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
  */
 object MestreIAClient {
     private const val CONNECT_TIMEOUT_MS = 30000
-    private const val READ_TIMEOUT_MS = 60000 
+    private const val READ_TIMEOUT_MS = 90000 
     private val gson = Gson()
 
     data class ChatMessage(
@@ -54,13 +54,14 @@ object MestreIAClient {
         history: List<Pair<String, String>> = emptyList(),
         contextoPersonagem: String = "",
         catalogo: CatalogoNomes? = null,
-        modo: String = "conversa"
+        modo: String = "conversa",
+        onChunk: ((String) -> Unit)? = null
     ): ChatResponse = withContext(Dispatchers.IO) {
         try {
             val isGoogleNative = baseUrl.contains("generativelanguage.googleapis.com")
             
             val urlStr = if (isGoogleNative) {
-                "$baseUrl/models/$workspaceSlug:generateContent?key=$apiKey"
+                "$baseUrl/models/$workspaceSlug:streamGenerateContent?key=$apiKey"
             } else {
                 "$baseUrl/chat/completions"
             }.trim()
@@ -148,16 +149,49 @@ object MestreIAClient {
 
             val responseCode = connection.responseCode
             if (responseCode in 200..299) {
-                val responseBody = readStreamSafely(connection.inputStream)
+                var fullText = ""
                 var returnedModel = workspaceSlug
-                val textoFinal = if (isGoogleNative) {
-                    parseGoogleNativeResponse(responseBody)
-                } else {
-                    val (content, model) = parseOpenAIResponseWithModel(responseBody)
-                    if (model != null) returnedModel = model
-                    content
+                
+                BufferedReader(InputStreamReader(connection.inputStream, StandardCharsets.UTF_8)).use { reader ->
+                    if (isGoogleNative) {
+                        // O Google envia um stream de objetos JSON em uma lista
+                        var line: String?
+                        while (reader.readLine().also { line = it } != null) {
+                            val chunkText = parseGoogleStreamingChunk(line ?: "")
+                            if (chunkText.isNotEmpty()) {
+                                fullText += chunkText
+                                onChunk?.invoke(chunkText)
+                            }
+                        }
+                    } else {
+                        // OpenAI / DeepSeek enviam via Server-Sent Events (SSE)
+                        var line: String?
+                        while (reader.readLine().also { line = it } != null) {
+                            if (line!!.startsWith("data: ")) {
+                                val data = line!!.substring(6).trim()
+                                if (data == "[DONE]") break
+                                try {
+                                    val json = JSONObject(data)
+                                    val model = json.optString("model", null)
+                                    if (model != null) returnedModel = model
+                                    
+                                    val choices = json.optJSONArray("choices")
+                                    if (choices != null && choices.length() > 0) {
+                                        val delta = choices.getJSONObject(0).optJSONObject("delta")
+                                        val content = delta?.optString("content", "") ?: ""
+                                        if (content.isNotEmpty()) {
+                                            fullText += content
+                                            onChunk?.invoke(content)
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    // Pula linhas malformadas do stream
+                                }
+                            }
+                        }
+                    }
                 }
-                ChatResponse(textoFinal, returnedModel)
+                ChatResponse(fullText, returnedModel)
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
                 ChatResponse("Erro de API ($responseCode): ${errorBody.take(150)}")
@@ -210,6 +244,7 @@ object MestreIAClient {
         
         root.put("messages", messages)
         root.put("temperature", 0.7)
+        root.put("stream", true)
         
         return root.toString()
     }
@@ -229,7 +264,7 @@ object MestreIAClient {
     private fun parseOpenAIResponseWithModel(body: String): Pair<String, String?> {
         return try {
             val json = JSONObject(body)
-            val model = json.optString("model", null)
+            val model = if (json.has("model")) json.getString("model") else null
             val content = json.getJSONArray("choices")
                 .getJSONObject(0)
                 .getJSONObject("message")
@@ -276,6 +311,18 @@ object MestreIAClient {
         // 3. Limpeza de caracteres de controle que podem invalidar o JSON
         // Mantém caracteres imprimíveis e quebras de linha comuns
         return limpo.filter { it.code == 10 || it.code == 13 || (it.code >= 32) }
+    }
+
+    private fun parseGoogleStreamingChunk(line: String): String {
+        return try {
+            val json = JSONObject(line.trim().removePrefix(",").removeSuffix("[").removeSuffix("]"))
+            json.getJSONArray("candidates")
+                .getJSONObject(0)
+                .getJSONObject("content")
+                .getJSONArray("parts")
+                .getJSONObject(0)
+                .getString("text")
+        } catch (e: Exception) { "" }
     }
 
     private fun readStreamSafely(stream: java.io.InputStream?): String {
