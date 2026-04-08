@@ -94,7 +94,7 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 52: Robustez no Parsing de JSON (Auto-Healing) | `(Commit: f59f90b)`
 (Problema: O uso de Regex para capturar JSON no MestreIAClient é eficiente, mas frágil se a IA enviar um JSON malformado ou truncado.
 Melhoria: Implementar um "JSON Repair" (como uma limpeza agressiva de caracteres de controle) e validar a estrutura contra o MestreIAResponse usando KotlinX.Serialization antes de chegar ao UseCase. Se o JSON falhar, o sistema deve pedir automaticamente uma re-formatação para a IA (Auto-Healing).)
-* [ ] Lote 53: Contexto Diferencial (Token Economy) | Otimização do processamento de prompt para enviar apenas dados relevantes ao turno da conversa, reduzindo latência e custo de tokens
+* [Feito] Lote 53: Contexto Diferencial (Token Economy) | `(Commit: fbdb0da)`
 .(Problema: Enviar o personagem inteiro em cada mensagem gasta muitos tokens e pode confundir a IA com dados irrelevantes.
 Melhoria: No processarPrompt, implementar uma lógica que identifique o que mudou na ficha ou o que é relevante para a pergunta atual. Se o usuário pergunta sobre "Dano", não precisamos enviar a lista de "Equipamento de Camping".)
 * [ ] Lote 54: Streaming de Resposta (SSE/UX) | Implementação de feedback visual em tempo real, permitindo que o usuário veja a IA "escrevendo" a resposta para uma experiência mais fluida.(Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptível na UI (Latência).

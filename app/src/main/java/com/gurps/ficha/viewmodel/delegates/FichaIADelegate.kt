@@ -34,33 +34,54 @@ class FichaIADelegate(
         modo: String,
         onResult: (Boolean, String) -> Unit
     ) {
-        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("user", pergunta)
+        val userMsg = MestreIAClient.ChatMessage("user", pergunta)
+        mestreIAChatHistory = mestreIAChatHistory + userMsg
+
+        // LOTE 54: Adiciona mensagem vazia para ser preenchida via stream
+        val assistantMsg = MestreIAClient.ChatMessage("model", "", modelName = "Mestre IA...")
+        mestreIAChatHistory = mestreIAChatHistory + assistantMsg
+        val assistantIndex = mestreIAChatHistory.size - 1
 
         scope.launch {
             mestreIAUseCase.conversarComMestreIA(
                 prompt = pergunta,
-                modo = mestreIAMode
-            ) { isRagUsed, response ->
-                mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
-                    role = "model",
-                    text = response.text,
-                    modelName = response.modelName,
-                    isRagUsed = isRagUsed,
-                    latencyMs = response.latencyMs
-                )
-
-                // Sempre tenta extrair JSON, independente do modo
-                fichaGeradaPendente = MestreIAClient.extrairJsonFicha(response.text)
-
-                if (modo == "geracao") {
-                    onResult(true, if (fichaGeradaPendente != null) "Ficha pronta para revisão!" else "Ficha gerada em texto.")
-                } else {
-                    onResult(true, "Resposta recebida.")
+                modo = mestreIAMode,
+                onChunk = { chunk ->
+                    scope.launch(Dispatchers.Main) {
+                        val history = mestreIAChatHistory.toMutableList()
+                        if (assistantIndex >= 0 && assistantIndex < history.size) {
+                            val currentMsg = history[assistantIndex]
+                            history[assistantIndex] = currentMsg.copy(text = currentMsg.text + chunk)
+                            mestreIAChatHistory = history
+                        }
+                    }
                 }
-                
-                // RESET AUTOMÁTICO
-                if (mestreIAMode != "conversa") {
-                    mestreIAMode = "conversa"
+            ) { isRagUsed, response ->
+                scope.launch(Dispatchers.Main) {
+                    val history = mestreIAChatHistory.toMutableList()
+                    if (assistantIndex >= 0 && assistantIndex < history.size) {
+                        history[assistantIndex] = history[assistantIndex].copy(
+                            text = response.text, // Texto final com limpeza e bibliografia
+                            modelName = response.modelName,
+                            isRagUsed = isRagUsed,
+                            latencyMs = response.latencyMs
+                        )
+                        mestreIAChatHistory = history
+                    }
+
+                    // Sempre tenta extrair JSON ao final
+                    fichaGeradaPendente = MestreIAClient.extrairJsonFicha(response.text)
+
+                    if (modo == "geracao") {
+                        onResult(true, if (fichaGeradaPendente != null) "Ficha pronta para revisão!" else "Ficha gerada em texto.")
+                    } else {
+                        onResult(true, "Resposta recebida.")
+                    }
+                    
+                    // RESET AUTOMÁTICO
+                    if (mestreIAMode != "conversa") {
+                        mestreIAMode = "conversa"
+                    }
                 }
             }
         }

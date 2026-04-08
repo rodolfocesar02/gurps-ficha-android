@@ -65,6 +65,7 @@ class MestreIAUseCase(
     fun conversarComMestreIA(
         prompt: String,
         modo: String = "conversa",
+        onChunk: (String) -> Unit = {},
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) {
         viewModelScope.launch {
@@ -93,7 +94,8 @@ class MestreIAUseCase(
                         history = viewModel.mestreIAChatHistory.map { it.role to it.text },
                         contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, modo),
                         catalogo = catalogoLocal.catalogo,
-                        modo = modo
+                        modo = modo,
+                        onChunk = onChunk
                     )
                     val latency = System.currentTimeMillis() - startTime
 
@@ -114,7 +116,8 @@ class MestreIAUseCase(
                                     history = viewModel.mestreIAChatHistory.map { it.role to it.text },
                                     contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, modo),
                                     catalogo = catalogoLocal.catalogo,
-                                    modo = modo
+                                    modo = modo,
+                                    onChunk = onChunk
                                 )
                                 
                                 // Se a correção funcionar, usamos ela. Caso contrário, mantemos a original (que falhará no parse final)
