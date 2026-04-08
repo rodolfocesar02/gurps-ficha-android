@@ -1,19 +1,16 @@
 package com.gurps.ficha.data.network
 
 /**
- * Modelo de dados recebido do Mestre IA (Gemini).
- * Expandido para suportar fichas mais completas:
- * - Atributos, Vantagens, Desvantagens, Perícias
- * - Magias (para personagens magos)
- * - Qualidades e Peculiaridades (traços de personalidade)
- * - Aparência, Histórico e Notas
+ * Modelo de dados completo recebido do Mestre IA (Gemini/DeepSeek).
+ * Fidelidade Total (Lote 53) - Suporta Técnicas, Magias e Equipamentos reais.
  */
 data class MestreIAResponse(
     val nome: String = "",
     val atributos: MestreIAAtributos = MestreIAAtributos(),
     val vantagens: List<String> = emptyList(),
     val desvantagens: List<String> = emptyList(),
-    val pericias: List<MestreIAPericia> = emptyList(),
+    val pericias: List<MestreIAPericiaIA> = emptyList(),
+    val tecnicas: List<MestreIAPericiaIA> = emptyList(),
     val magias: List<String> = emptyList(),
     val qualidades: List<String> = emptyList(),
     val peculiaridades: List<String> = emptyList(),
@@ -36,7 +33,7 @@ data class MestreIAAtributos(
     val ht: Int = 10
 )
 
-data class MestreIAPericia(
+data class MestreIAPericiaIA(
     val nome: String = "",
     val nivel: Int = 0
 )

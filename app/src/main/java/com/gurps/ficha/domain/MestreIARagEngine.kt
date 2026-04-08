@@ -1,9 +1,14 @@
 package com.gurps.ficha.domain
 
+import com.google.gson.Gson
 import com.gurps.ficha.data.DataRepository
-import com.gurps.ficha.domain.filters.CatalogFilters
+import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.model.*
+import com.gurps.ficha.domain.filters.CatalogFilters
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import java.util.Locale
+
 
 /**
  * O motor de RAG Local (Retrieval-Augmented Generation).
@@ -21,7 +26,9 @@ object MestreIARagEngine {
         val vantagens: List<String> = emptyList(),
         val desvantagens: List<String> = emptyList(),
         val pericias: List<String> = emptyList(),
-        val magias: List<String> = emptyList()
+        val tecnicas: List<String> = emptyList(),
+        val magias: List<String> = emptyList(),
+        val chunks: List<MestreIAChunk> = emptyList()
     )
 
     /**
@@ -34,20 +41,61 @@ object MestreIARagEngine {
         // Expansão Semântica (Fase 5)
         val keywordsExpandidas = expandirKeywords(keywordsBase, repository.temasMestreIA)
 
-        return RagResult(
-            vantagens = buscarVantagens(keywordsExpandidas, repository.vantagens),
-            desvantagens = buscarDesvantagens(keywordsExpandidas, repository.desvantagens),
-            pericias = buscarPericias(keywordsExpandidas, repository.pericias),
-            magias = buscarMagias(keywordsExpandidas, repository.magias)
-        )
+        val v = buscarVantagens(keywordsExpandidas, repository.vantagens)
+        val d = buscarDesvantagens(keywordsExpandidas, repository.desvantagens)
+        val p = buscarPericias(keywordsExpandidas, repository.pericias)
+        val t = buscarTecnicas(keywordsExpandidas, repository.tecnicasCatalogo)
+        val m = buscarMagias(keywordsExpandidas, repository.magias)
+        val chunksEncontrados = buscarEmChunks(keywordsExpandidas, repository)
+
+        return RagResult(v, d, p, t, m, chunksEncontrados)
+    }
+
+    /**
+     * Busca por streaming no chunks.jsonl (8.3MB) sem travar a memória.
+     */
+    private fun buscarEmChunks(keywords: List<String>, repository: DataRepository): List<MestreIAChunk> {
+        val gson = Gson()
+        val keywordsNorm = keywords.map { CatalogFilters.normalizarBusca(it) }
+        
+        return try {
+            val inputStream = repository.context.assets.open("chunks.jsonl")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            
+            reader.useLines { lines ->
+                lines.asSequence()
+                    .mapNotNull { line ->
+                        try {
+                            gson.fromJson(line, MestreIAChunk::class.java)
+                        } catch (e: Exception) { null }
+                    }
+                    .map { chunk ->
+                        val textNorm = CatalogFilters.normalizarBusca(chunk.text)
+                        var score = 0
+                        keywordsNorm.forEach { kw ->
+                            if (textNorm.contains(kw)) score += 1
+                        }
+                        chunk to score
+                    }
+                    .filter { it.second > 0 }
+                    .sortedByDescending { it.second }
+                    .take(5) // Limite de 5 fragmentos para não estourar o contexto da IA
+                    .map { it.first }
+                    .toList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     private fun extrairKeywordsBase(prompt: String): List<String> {
-        return prompt.lowercase(Locale.ROOT)
-            .replace(Regex("[^a-z\\s]"), " ")
+        val normalizado = CatalogFilters.normalizarBusca(prompt)
+        val kws = normalizado
             .split(Regex("\\s+"))
             .filter { it.length > 2 && it !in STOP_WORDS }
             .distinct()
+        android.util.Log.d("MestreIA_RAG", "Keywords extraídas: $kws")
+        return kws
     }
 
     private fun expandirKeywords(base: List<String>, temas: List<com.gurps.ficha.data.MestreIaTema>): List<String> {
@@ -100,6 +148,16 @@ object MestreIARagEngine {
             .filter { it.second > 0 }
             .sortedByDescending { it.second }
             .take(30)
+            .map { it.first.nome }
+            .toList()
+    }
+
+    private fun buscarTecnicas(keywords: List<String>, lista: List<TecnicaCatalogoItem>): List<String> {
+        return lista.asSequence()
+            .map { item -> item to calcularScore(keywords, item.nome, item.preRequisitoRaw) }
+            .filter { it.second > 0 }
+            .sortedByDescending { it.second }
+            .take(20)
             .map { it.first.nome }
             .toList()
     }

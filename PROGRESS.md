@@ -98,4 +98,17 @@ Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo plan
 * [Feito] Lote 48: Biblioteca Unificada e Proteção contra Conflitos de Nomes (Sincro V19) | `(Manual: Antigravity)`
 * [Feito] Lote 49: Restauração Sistêmica e Unificação de Branches (Integridade Total) | `(Commit: 7b346b1)`
 * [Feito] Lote 50: Motor Nexus Arcano Estabilizado (Resolução Desejo + Metas Incrementais) | `(Commit: a2e2820)`
-* [Feito] Lote 51: Mestre IA PRIME ✨ - Injeção Sete Chaves (Vault) + Soberania Digital (Direct API) + Rastreabilidade Técnica (Model + RAG) | `(Commit: 39ff1ae)`
+* [Feito] Lote 51: Mestre IA PRIME ✨ - Soberania Multi-Flavor (Gemini/DeepSeek) + Segurança Sete Chaves (Vault) + Rastreabilidade Técnica | `(Commit: babc20a)`
+"Cole o nome do Commit aqui"
+* [ ] Lote 52: Robustez no Parsing de JSON (Auto-Healing) | Implementação de limpeza agressiva, validação de schema e solicitação automática de re-formatação para a IA em caso de erro de sintaxe.
+(Problema: O uso de Regex para capturar JSON no MestreIAClient é eficiente, mas frágil se a IA enviar um JSON malformado ou truncado.
+Melhoria: Implementar um "JSON Repair" (como uma limpeza agressiva de caracteres de controle) e validar a estrutura contra o MestreIAResponse usando KotlinX.Serialization antes de chegar ao UseCase. Se o JSON falhar, o sistema deve pedir automaticamente uma re-formatação para a IA (Auto-Healing).)
+* [ ] Lote 53: Contexto Diferencial (Token Economy) | Otimização do processamento de prompt para enviar apenas dados relevantes ao turno da conversa, reduzindo latência e custo de tokens
+.(Problema: Enviar o personagem inteiro em cada mensagem gasta muitos tokens e pode confundir a IA com dados irrelevantes.
+Melhoria: No processarPrompt, implementar uma lógica que identifique o que mudou na ficha ou o que é relevante para a pergunta atual. Se o usuário pergunta sobre "Dano", não precisamos enviar a lista de "Equipamento de Camping".)
+* [ ] Lote 54: Streaming de Resposta (SSE/UX) | Implementação de feedback visual em tempo real, permitindo que o usuário veja a IA "escrevendo" a resposta para uma experiência mais fluida.(Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptível na UI (Latência).
+Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Events (SSE). Ver o Mestre IA "escrevendo" em tempo real melhora drasticamente a percepção de performance.)
+* [ ] Lote 55: Auditoria de Regras (Fiscal Ativo) | Criação de um simulador de impacto que valida as sugestões da IA contra o motor de regras (CharacterRules) antes de exibi-las ao usuário.(Problema: A IA pode sugerir uma perícia que o personagem não tem os pré-requisitos, e o CharacterRules.kt só percebe isso na hora de salvar.
+Melhoria: Criar um "Simulador de Integração". Antes de exibir a sugestão para o usuário, o MestreIAUseCase passa os dados pelo CharacterRules. Se houver erro de regra (ex: "Custo de vantagem errado"), o app injeta um aviso no balão de fala: "IA sugeriu ST 15 por 40pts, mas o correto seria 50pts".)
+* [ ] Lote 56: Local-First RAG (Busca Vetorial) | Otimização do motor de busca semântica em manuais usando indexação local para consultas instantâneas e maior precisão técnica.(Problema: O buscador semântico no MestreIARagEngine pode ser pesado para buscas em muitos arquivos JSON.
+Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index pré-calculado) para que o findRelevantChunks seja instantâneo, mesmo com manuais extensos.)

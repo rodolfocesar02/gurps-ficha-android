@@ -26,6 +26,8 @@ android {
     // FATOR PRIME: Chaves Mascaradas Multi-Flavor (Lidas no topo para visibilidade global)
     val geminiKey = (localProperties.getProperty("mestre.ia.gemini.key") ?: "").replace("\"", "\\\"")
     val deepseekKey = (localProperties.getProperty("mestre.ia.deepseek.key") ?: "").replace("\"", "\\\"")
+    val openRouter1Key = (localProperties.getProperty("mestre.ia.openrouter.1.key") ?: "").replace("\"", "\\\"")
+    val openRouter2Key = (localProperties.getProperty("mestre.ia.openrouter.2.key") ?: "").replace("\"", "\\\"")
 
     defaultConfig {
         val discordApiBaseUrl = (firstNonBlank(
@@ -79,7 +81,27 @@ android {
         )
         buildConfigField("String", "UPDATE_METADATA_URL", "\"$updateMetadataUrl\"")
         buildConfigField("String", "GURPS_AGENT_API_BASE_URL", "\"$gurpsAgentApiBaseUrl\"")
+        // --- MESTRE IA PRIME (CONFIGURAÇÕES BLOQUEADAS: NÃO ALTERAR SEM TESTE DE CONEXÃO) ---
+        // REGRA OPERACIONAL: Estas URLs e IDs foram validados via script. 
+        // Proibida a alteração sem validação prévia de conectividade (Success 200).
+        
         buildConfigField("String", "VTT_API_BASE_URL", "\"$vttApiBaseUrl\"")
+        
+        // --- MESTRE IA PRIME (CHAVES GLOBAIS) ---
+        buildConfigField("String", "MESTRE_IA_GEMINI_KEY", "\"$geminiKey\"")
+        buildConfigField("String", "MESTRE_IA_DEEPSEEK_KEY", "\"$deepseekKey\"")
+        buildConfigField("String", "MESTRE_IA_OPENROUTER_1_KEY", "\"$openRouter1Key\"")
+        buildConfigField("String", "MESTRE_IA_OPENROUTER_2_KEY", "\"$openRouter2Key\"")
+        
+        buildConfigField("String", "MESTRE_IA_OPENROUTER_URL", "\"https://openrouter.ai/api/v1\"")
+        buildConfigField("String", "MESTRE_IA_OPENROUTER_MODEL_1", "\"meta-llama/llama-3.3-70b-instruct\"")
+
+        buildConfigField("String", "MESTRE_IA_LITE_1_KEY", "\"$geminiKey\"") // Legado/Flash
+        buildConfigField("String", "MESTRE_IA_LITE_1_URL", "\"https://generativelanguage.googleapis.com/v1beta\"")
+        buildConfigField("String", "MESTRE_IA_LITE_1_MODEL", "\"gemini-flash-latest\"")
+
+        buildConfigField("String", "MESTRE_IA_DEEPSEEK_URL", "\"https://api.deepseek.com/v1\"")
+        buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-chat\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -92,13 +114,13 @@ android {
         create("gemini") {
             dimension = "provider"
             buildConfigField("String", "MESTRE_IA_KEY", "\"$geminiKey\"")
-            buildConfigField("String", "MESTRE_IA_URL", "\"https://generativelanguage.googleapis.com/v1beta/openai\"")
-            buildConfigField("String", "MESTRE_IA_MODEL", "\"gemini-1.5-flash\"")
+            buildConfigField("String", "MESTRE_IA_URL", "\"https://generativelanguage.googleapis.com/v1beta\"")
+            buildConfigField("String", "MESTRE_IA_MODEL", "\"gemini-flash-latest\"")
         }
         create("deepseek") {
             dimension = "provider"
             buildConfigField("String", "MESTRE_IA_KEY", "\"$deepseekKey\"")
-            buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com\"")
+            buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com/v1\"")
             buildConfigField("String", "MESTRE_IA_MODEL", "\"deepseek-chat\"")
         }
 

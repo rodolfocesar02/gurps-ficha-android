@@ -106,6 +106,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
+    var mestreIAMode 
+        get() = iaDelegate.mestreIAMode
+        set(value) { iaDelegate.mestreIAMode = value }
 
     // Estados de Sessão (Interface) - Não salvos no JSON
     var ataqueSelecionadoId by mutableStateOf<String?>(null)
@@ -399,7 +402,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun restaurarAutoSaveSeExistir() { persistenceDelegate.restaurarAutoSave(autoSaveRecuperacaoNome)?.let { personagem = it } }
 
     // === MESTRE IA / DISCORD ===
-    fun conversarComMestreIA(p: String, m: String = "conversa", onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(p, m, iaBaseUrl, iaApiKey, iaWorkspaceSlug, onRes)
+    fun conversarComMestreIA(p: String, m: String = "conversa", onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(p, m, onRes)
     fun executarAcaoIA(c: String) = iaDelegate.executarAcao(c)
     fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
     fun descartarFichaPendente() = iaDelegate.descartarPendente()
@@ -412,8 +415,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         // Log ou ação de segurança se necessário
     }
     fun autoSaveIA() { viewModelScope.launch { fichaStorage.salvarFicha("IA_${personagem.nome}_${System.currentTimeMillis()}", personagem.toJson()); carregarListaFichas() } }
-    fun gerarFichaComIA(h: String, onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(h, "geracao", iaBaseUrl, iaApiKey, iaWorkspaceSlug, onRes)
-    fun analisarFichaComIA(onRes: (Boolean, String) -> Unit) = iaDelegate.conversar("Analise minha ficha atual e dê sugestões.", "analise", iaBaseUrl, iaApiKey, iaWorkspaceSlug, onRes)
+    fun gerarFichaComIA(h: String, onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(h, "geracao", onRes)
+    fun analisarFichaComIA(onRes: (Boolean, String) -> Unit) = iaDelegate.conversar("Analise minha ficha atual e dê sugestões.", "analise", onRes)
 
     fun atualizarCanaisDiscord() = socialDelegate.atualizarCanais()
     fun selecionarCanalDiscord(c: DiscordVoiceChannel?) = socialDelegate.selecionarCanal(c)

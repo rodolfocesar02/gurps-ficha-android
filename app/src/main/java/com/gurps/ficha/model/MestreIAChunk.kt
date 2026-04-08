@@ -1,0 +1,12 @@
+package com.gurps.ficha.model
+
+/**
+ * Fragmento de regra oficial extraído do Codex (GURPS 4e Brasil).
+ * Centralizado para visibilidade total do sistema.
+ */
+data class MestreIAChunk(
+    val chunk_id: String,
+    val text: String,
+    val source_title: String,
+    val page_number: Int? = null
+)

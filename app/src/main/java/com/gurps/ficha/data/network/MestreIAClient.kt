@@ -1,144 +1,253 @@
 package com.gurps.ficha.data.network
 
 import com.google.gson.Gson
+import com.gurps.ficha.model.*
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
- * Cliente para comunicação com o AnythingLLM (Gemini).
- * Agora recebe os nomes reais do catálogo do App para injetar no prompt.
+ * Cliente de Rede Híbrido (Lote 53 - Estabilizador PRIME)
+ * Suporta protocolo Nativo Gemini (REST) e protocolo OpenAI (compatibilidade).
  */
 object MestreIAClient {
-    private const val CONNECT_TIMEOUT_MS = 15000
-    private const val READ_TIMEOUT_MS = 90000  // Prompt maior = mais tempo de resposta
+    private const val CONNECT_TIMEOUT_MS = 30000
+    private const val READ_TIMEOUT_MS = 60000 
     private val gson = Gson()
 
-    /**
-     * Resposta textual simples ou JSON de ficha.
-     */
     data class ChatMessage(
-        val role: String, // "user" ou "model" (ou "assistant")
+        val role: String, // "user" ou "model"
         val text: String,
         val modelName: String? = null,
-        val isRagUsed: Boolean = false
+        val isRagUsed: Boolean = false,
+        val latencyMs: Long = 0
     )
 
     data class ChatResponse(
         val text: String,
-        val modelName: String? = null
+        val modelName: String? = null,
+        val latencyMs: Long = 0
     )
-    fun perguntarAoMestre(
+
+    data class CatalogoNomes(
+        val vantagens: List<String> = emptyList(),
+        val desvantagens: List<String> = emptyList(),
+        val pericias: List<String> = emptyList(),
+        val tecnicas: List<String> = emptyList(),
+        val magias: List<String> = emptyList(),
+        val chunks: List<com.gurps.ficha.model.MestreIAChunk> = emptyList()
+    ) {
+        fun toJson(): String = Gson().toJson(this)
+    }
+
+    suspend fun perguntarAoMestre(
         baseUrl: String,
         apiKey: String,
+        workspaceSlug: String,
         prompt: String,
-        workspaceSlug: String = "gemini-1.5-flash", // Nome do modelo por padrão
-        history: List<ChatMessage> = emptyList(),
-        contextoPersonagem: String? = null,
-        catalogo: CatalogoNomes = CatalogoNomes(),
-        modo: String = "geracao"
-    ): ChatResponse {
-        if (baseUrl.isBlank()) return ChatResponse("URL base inválida")
-
-        // URL Universal ou específica do provedor
-        val endpoint = if (baseUrl.endsWith("/chat/completions")) baseUrl 
-                       else "${baseUrl.trimEnd('/')}/chat/completions"
-        
-        // Injeção de RAG Local no Prompt de Sistema
-        val listaVantagens = catalogo.vantagens.joinToString(", ")
-        val listaDesvantagens = catalogo.desvantagens.joinToString(", ")
-        val listaPericias = catalogo.pericias.joinToString(", ")
-        val listaMagias = catalogo.magias.joinToString(", ")
-
-        val systemPrompt = when(modo) {
-            "geracao" -> """
-                Você é o 'Mestre Digital GURPS 4E'. Gere uma FICHA COMPLETA em JSON.
-                USE APENAS ESTES NOMES REAIS NAS LISTAS:
-                - Vantagens: $listaVantagens
-                - Desvantagens: $listaDesvantagens
-                - Perícias: $listaPericias
-                - Magias: $listaMagias
-                
-                Se o catálogo estiver vazio, use nomes do Módulo Básico.
-                Responda APENAS com o JSON.
-            """.trimIndent()
+        history: List<Pair<String, String>> = emptyList(),
+        contextoPersonagem: String = "",
+        catalogo: CatalogoNomes? = null,
+        modo: String = "conversa"
+    ): ChatResponse = withContext(Dispatchers.IO) {
+        try {
+            val isGoogleNative = baseUrl.contains("generativelanguage.googleapis.com")
             
-            "analise" -> """
-                Você é um 'Mestre Consultor' GURPS 4E. Analise a ficha e sugira melhorias.
-                Contexto sugerido pelo RAG Local:
-                - Vantagens: $listaVantagens
-                - Perícias: $listaPericias
-                
-                Use [SUGESTAO: Texto] e [ACAO: TIPO:NOME VALOR].
-                FICHA ATUAL: $contextoPersonagem
-            """.trimIndent()
+            val urlStr = if (isGoogleNative) {
+                "$baseUrl/models/$workspaceSlug:generateContent?key=$apiKey"
+            } else {
+                "$baseUrl/chat/completions"
+            }.trim()
+
+            val url = URL(urlStr)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.doOutput = true
+            connection.connectTimeout = CONNECT_TIMEOUT_MS
+            connection.readTimeout = READ_TIMEOUT_MS
+            connection.setRequestProperty("Content-Type", "application/json")
             
-            else -> "Você é um assistente prestativo de GURPS 4E. Contexto: $contextoPersonagem"
-        }
-
-        // Construção do Payload Padrão (messages array)
-        val messages = mutableListOf<Map<String, String>>()
-        messages.add(mapOf("role" to "system", "content" to systemPrompt))
-        
-        history.forEach {
-            messages.add(mapOf("role" to it.role, "content" to it.text))
-        }
-        
-        messages.add(mapOf("role" to "user", "content" to prompt))
-
-        val bodyMap = mapOf(
-            "model" to workspaceSlug,
-            "messages" to messages,
-            "temperature" to 0.7,
-            "stream" to false
-        )
-
-        return try {
-            val body = gson.toJson(bodyMap).toByteArray(StandardCharsets.UTF_8)
-            val connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
-                requestMethod = "POST"
-                doOutput = true
-                connectTimeout = CONNECT_TIMEOUT_MS
-                readTimeout = READ_TIMEOUT_MS
-                setRequestProperty("Content-Type", "application/json")
-                setRequestProperty("Authorization", "Bearer $apiKey")
+            if (!isGoogleNative) {
+                connection.setRequestProperty("Authorization", "Bearer $apiKey")
+                connection.setRequestProperty("HTTP-Referer", "https://github.com/rodolfocesar02/gurps-ficha-android")
+                connection.setRequestProperty("X-Title", "Mestre IA GURPS App")
             }
-            
-            connection.outputStream.use { it.write(body) }
 
-            if (connection.responseCode in 200..299) {
-                val rawBody = readStreamSafely(connection.inputStream)
-                try {
-                    val responseMap = gson.fromJson(rawBody, Map::class.java)
-                    val choices = responseMap["choices"] as? List<*>
-                    val firstChoice = choices?.firstOrNull() as? Map<*, *>
-                    val message = firstChoice?.get("message") as? Map<*, *>
-                    val content = message?.get("content") as? String ?: rawBody
-                    val modelName = responseMap["model"] as? String // Captura o ID real do modelo
-                    
-                    ChatResponse(content, modelName)
-                } catch (e: Exception) {
-                    ChatResponse(rawBody)
+            val listaVantagens = catalogo?.vantagens?.joinToString(", ") ?: ""
+            val listaDesvantagens = catalogo?.desvantagens?.joinToString(", ") ?: ""
+            val listaPericias = catalogo?.pericias?.joinToString(", ") ?: ""
+            val listaMagias = catalogo?.magias?.joinToString(", ") ?: ""
+            
+            val fragmentosRegras = if (catalogo?.chunks?.isNotEmpty() == true) {
+                "\nREGRAS DO CÓDEX (Siga estas regras à risca):\n" +
+                catalogo.chunks.joinToString("\n") { "[${it.source_title} Pág. ${it.page_number}]: ${it.text}" }
+            } else ""
+
+                val instrucaoModo = when(modo) {
+                    "geracao" -> """
+                        Gere uma FICHA COMPLETA em JSON seguindo o modelo GURPS 4E BR.
+                        Utilize APENAS os nomes contidos no CATÁLOGO LOCAL abaixo para garantir fidelidade técnica.
+                        CAMPOS OBRIGATÓRIOS (Não omita nenhum):
+                        - nome, historico, aparencia.
+                        - atributos: { st, dx, iq, ht }
+                        - vantagens: [ string ], desvantagens: [ string ]
+                        - pericias: [ { nome, nivel } ]
+                        - tecnicas: [ { nome, nivel } ] (Crucial para artes marciais)
+                        - magias: [ string ] (se houver)
+                        - qualidades: [ string ], peculiaridades: [ string ]
+                        - equipamentos: [ { nome, peso, custo, quantidade } ]
+                        NÃO escreva nada fora do JSON. Use apenas termos oficiais em Português-BR.
+                        
+                        CATÁLOGO LOCAL (Siga estes nomes):
+                        - Vantagens/Desvantagens: $listaVantagens, $listaDesvantagens
+                        - Perícias: $listaPericias
+                        - Técnicas: ${catalogo?.tecnicas?.joinToString(", ")}
+                        - Magias: $listaMagias
+                    """.trimIndent()
+                else -> """
+                    Siga estritamente estas diretrizes:
+                    1. RESPONDA 100% EM PORTUGUÊS (BRASIL).
+                    2. PROIBIDO o uso de termos em inglês (ex: NUNCA escreva "Power Blow", use APENAS "Golpe Fulminante").
+                    3. FIDELIDADE AO CODEX: Use APENAS as informações dos parágrafos do CODEX abaixo. Se o CODEX não mencionar a regra, admita que não encontrou nos manuais locais.
+                    4. SEJA DIRETO E OBJETIVO (máximo 3 parágrafos). 
+                    5. NUNCA exiba planos de escrita ou rascunhos.
+                    6. NUNCA escreva referências bibliográficas ao final (o sistema inserirá o rodapé oficial automaticamente).
+                    7. Use [SUGESTAO: Texto] para sugerir perguntas.
+                """.trimIndent()
+            }
+
+            val systemPulse = """
+                Você é o Mestre Digital 2.0, assistente de GURPS 4ª Edição.
+                $instrucaoModo
+                
+                $fragmentosRegras
+                
+                REGRAS DE OURO:
+                1. Use nomes em português (Módulo Básico: Personagens / Campanhas).
+                2. NUNCA invente números de página. Use apenas os que o CODEX fornecer.
+                3. Se o CODEX trouxer uma página irrelevante para a pergunta, ignore-a e diga que não encontrou a regra.
+                
+                HISTÓRICO DO PERSONAGEM:
+                $contextoPersonagem
+            """.trimIndent()
+
+            val jsonOutput = if (isGoogleNative) {
+                gerarJsonGoogleNative(prompt, history, systemPulse)
+            } else {
+                gerarJsonOpenAI(workspaceSlug, prompt, history, systemPulse)
+            }
+
+            connection.outputStream.use { it.write(jsonOutput.toByteArray(StandardCharsets.UTF_8)) }
+
+            val responseCode = connection.responseCode
+            if (responseCode in 200..299) {
+                val responseBody = readStreamSafely(connection.inputStream)
+                var returnedModel = workspaceSlug
+                val textoFinal = if (isGoogleNative) {
+                    parseGoogleNativeResponse(responseBody)
+                } else {
+                    val (content, model) = parseOpenAIResponseWithModel(responseBody)
+                    if (model != null) returnedModel = model
+                    content
                 }
+                ChatResponse(textoFinal, returnedModel)
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
-                ChatResponse("Erro (${connection.responseCode}): $errorBody")
+                ChatResponse("Erro de API ($responseCode): ${errorBody.take(150)}")
             }
-        } catch (error: Exception) {
-            ChatResponse("Erro de Conexão: ${error.message}")
+        } catch (e: Exception) {
+            ChatResponse("Erro de Conexão: ${e.message}")
         }
     }
 
-    // Helper para extração de JSON para a FichaViewModel usar
-    fun extrairJsonFicha(texto: String): MestreIAResponse? {
+    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, systemInstruction: String): String {
+        val root = JSONObject()
+        
+        // ASGURAR ORDEM: system_instruction deve vir antes conforme teste 200 OK do Python
+        root.put("system_instruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", systemInstruction))))
+
+        val contents = JSONArray()
+        // Histórico
+        history.forEach { (role, text) ->
+            contents.put(JSONObject().apply {
+                put("role", if (role == "user") "user" else "model")
+                put("parts", JSONArray().put(JSONObject().put("text", text)))
+            })
+        }
+        // Pergunta atual
+        contents.put(JSONObject().apply {
+            put("role", "user")
+            put("parts", JSONArray().put(JSONObject().put("text", prompt)))
+        })
+
+        root.put("contents", contents)
+        root.put("generationConfig", JSONObject().put("temperature", 0.7).put("maxOutputTokens", 2048))
+        
+        return root.toString()
+    }
+
+    private fun gerarJsonOpenAI(model: String, prompt: String, history: List<Pair<String, String>>, systemPulse: String): String {
+        val root = JSONObject()
+        root.put("model", model)
+        val messages = JSONArray()
+        
+        // Mensagem de SISTEMA (Importante para modelos de elite como DeepSeek)
+        messages.put(JSONObject().put("role", "system").put("content", systemPulse))
+
+        history.forEach { (u, b) ->
+            // Normalizar papéis (OpenAI aceita system, user, assistant)
+            messages.put(JSONObject().put("role", "user").put("content", u))
+            messages.put(JSONObject().put("role", "assistant").put("content", b))
+        }
+        messages.put(JSONObject().put("role", "user").put("content", prompt))
+        
+        root.put("messages", messages)
+        root.put("temperature", 0.7)
+        
+        return root.toString()
+    }
+
+    private fun parseGoogleNativeResponse(body: String): String {
         return try {
-            val jsonStart = texto.indexOf("{")
-            val jsonEnd = texto.lastIndexOf("}") + 1
-            if (jsonStart >= 0 && jsonEnd > jsonStart) {
-                val jsonString = texto.substring(jsonStart, jsonEnd)
-                gson.fromJson(jsonString, MestreIAResponse::class.java)
+            val json = JSONObject(body)
+            json.getJSONArray("candidates")
+                .getJSONObject(0)
+                .getJSONObject("content")
+                .getJSONArray("parts")
+                .getJSONObject(0)
+                .getString("text")
+        } catch (e: Exception) { "Falha no parse Nativo: $body" }
+    }
+
+    private fun parseOpenAIResponseWithModel(body: String): Pair<String, String?> {
+        return try {
+            val json = JSONObject(body)
+            val model = json.optString("model", null)
+            val content = json.getJSONArray("choices")
+                .getJSONObject(0)
+                .getJSONObject("message")
+                .getString("content")
+            Pair(content, model)
+        } catch (e: Exception) { Pair("Falha no parse OpenAI: $body", null) }
+    }
+
+    private fun parseOpenAIResponse(body: String): String {
+        return parseOpenAIResponseWithModel(body).first
+    }
+
+    fun extrairJsonFicha(texto: String): com.gurps.ficha.data.network.MestreIAResponse? {
+        return try {
+            // Regex para capturar o maior bloco entre {}
+            val match = Regex("\\{([\\s\\S]*)\\}").find(texto)
+            if (match != null) {
+                val jsonString = match.value
+                gson.fromJson(jsonString, com.gurps.ficha.data.network.MestreIAResponse::class.java)
             } else null
         } catch (e: Exception) { null }
     }
@@ -147,11 +256,4 @@ object MestreIAClient {
         if (stream == null) return ""
         return BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8)).use { it.readText() }
     }
-
-    data class CatalogoNomes(
-        val vantagens: List<String> = emptyList(),
-        val desvantagens: List<String> = emptyList(),
-        val pericias: List<String> = emptyList(),
-        val magias: List<String> = emptyList()
-    )
 }
