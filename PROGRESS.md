@@ -100,7 +100,6 @@ Melhoria: No processarPrompt, implementar uma lógica que identifique o que mudo
 * [Feito] Lote 54: Streaming de Resposta (SSE/UX) | `(Commit: 89ab389)`
 (Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptível na UI (Latência).
 Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Events (SSE). Ver o Mestre IA "escrevendo" em tempo real melhora drasticamente a percepção de performance.)
-* [ ] Lote 55: Auditoria de Regras (Fiscal Ativo) | Criação de um simulador de impacto que valida as sugestões da IA contra o motor de regras (CharacterRules) antes de exibi-las ao usuário.(Problema: A IA pode sugerir uma perícia que o personagem não tem os pré-requisitos, e o CharacterRules.kt só percebe isso na hora de salvar.
-Melhoria: Criar um "Simulador de Integração". Antes de exibir a sugestão para o usuário, o MestreIAUseCase passa os dados pelo CharacterRules. Se houver erro de regra (ex: "Custo de vantagem errado"), o app injeta um aviso no balão de fala: "IA sugeriu ST 15 por 40pts, mas o correto seria 50pts".)
+* [Feito] Lote 55: Auditoria de Regras (Fiscal Ativo) | `(Commit: fc1f47c)`
 * [ ] Lote 56: Local-First RAG (Busca Vetorial) | Otimização do motor de busca semântica em manuais usando indexação local para consultas instantâneas e maior precisão técnica.(Problema: O buscador semântico no MestreIARagEngine pode ser pesado para buscas em muitos arquivos JSON.
 Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index pré-calculado) para que o findRelevantChunks seja instantâneo, mesmo com manuais extensos.)

@@ -6,12 +6,13 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [FichaEntity::class],
-    version = 1,
+    entities = [FichaEntity::class, ManualChunkEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
     abstract fun fichaDao(): FichaDao
+    abstract fun manualChunkDao(): ManualChunkDao
 
     companion object {
         @Volatile
@@ -23,7 +24,9 @@ abstract class FichaDatabase : RoomDatabase() {
                     context.applicationContext,
                     FichaDatabase::class.java,
                     "gurps_fichas.db"
-                ).build().also { INSTANCE = it }
+                )
+                .fallbackToDestructiveMigration() // Facilita desenvolvimento durante Lote 56
+                .build().also { INSTANCE = it }
             }
         }
     }
