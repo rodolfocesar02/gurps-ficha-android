@@ -14,7 +14,7 @@ interface ManualChunkDao {
      * Busca usando o operador MATCH do SQLite FTS.
      * Esta busca é ordens de magnitude mais rápida que um 'LIKE'.
      */
-    @Query("SELECT * FROM manual_chunks WHERE manual_chunks MATCH :query LIMIT :limit")
+    @Query("SELECT * FROM manual_chunks WHERE search_text MATCH :query LIMIT :limit")
     suspend fun buscarRegras(query: String, limit: Int): List<ManualChunkEntity>
 
     @Query("SELECT COUNT(*) FROM manual_chunks")

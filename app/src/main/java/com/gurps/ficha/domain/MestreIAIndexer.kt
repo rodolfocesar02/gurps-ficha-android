@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.gurps.ficha.data.storage.FichaDatabase
 import com.gurps.ficha.data.storage.ManualChunkEntity
 import com.gurps.ficha.model.MestreIAChunk
+import com.gurps.ficha.domain.filters.CatalogFilters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -28,7 +29,7 @@ object MestreIAIndexer {
         val gson = Gson()
         try {
             val inputStream = context.assets.open("chunks.jsonl")
-            val reader = BufferedReader(InputStreamReader(inputStream))
+            val reader = BufferedReader(InputStreamReader(inputStream, "UTF-8"))
             
             val batchSize = 100
             val buffer = mutableListOf<ManualChunkEntity>()
@@ -37,9 +38,11 @@ object MestreIAIndexer {
                 try {
                     val chunk = gson.fromJson(line, MestreIAChunk::class.java)
                     buffer.add(ManualChunkEntity(
+                        chunk_id = chunk.chunk_id,
                         source_title = chunk.source_title,
                         page_number = chunk.page_number,
-                        text = chunk.text
+                        text = chunk.text,
+                        search_text = CatalogFilters.normalizarBusca(chunk.text)
                     ))
                     
                     if (buffer.size >= batchSize) {

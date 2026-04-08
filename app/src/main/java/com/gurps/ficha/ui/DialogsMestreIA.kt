@@ -380,7 +380,7 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                                     shape = RoundedCornerShape(4.dp)
                                 ) {
                                     Text(
-                                        text = "RAG LOCAL",
+                                        text = "RAG ATIVO",
                                         fontSize = 8.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = Color(0xFF2E7D32),
@@ -400,8 +400,9 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                                     tint = textColor.copy(alpha = 0.7f)
                                 )
                                 Spacer(Modifier.width(4.dp))
+                                val modelLabel = if (msg.isRagUsed) "📚 ${msg.modelName}" else msg.modelName
                                 Text(
-                                    text = if (latencySec.isNotEmpty()) "${msg.modelName} • $latencySec" else msg.modelName,
+                                    text = if (latencySec.isNotEmpty()) "$modelLabel • $latencySec" else modelLabel ?: "",
                                     fontSize = 9.sp,
                                     fontWeight = FontWeight.Medium,
                                     letterSpacing = 0.5.sp,

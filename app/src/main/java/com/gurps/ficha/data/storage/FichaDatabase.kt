@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class],
-    version = 2,
+    version = 10,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {

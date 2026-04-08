@@ -189,17 +189,32 @@ class MestreIAUseCase(
         val fila = mutableListOf<Triple<String, String, String>>()
 
         if (isComplexo) {
-            // 1. DeepSeek Chat (Mestre Sábio - API OFICIAL)
+            // --- MODO PRO (Alta Fidelidade) ---
+            // 1. DeepSeek Chat (Mestre Sábio - API OFICIAL / PRO)
             fila.add(Triple(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
-            // 2. Llama 3.3 (OpenRouter 1) - Backup de Elite Validado
-            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1))
+            
+            // 2. Llama 3.3 (OpenRouter) - Backup de Elite
+            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, "meta-llama/llama-3.3-70b-instruct"))
+            
             // 3. Gemini Pro (Backup Supremo)
             fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-1.5-pro"))
         } else {
-            // 1. Llama 3.3 (OpenRouter 1) - Ágil e Validado
-            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1))
-            // 2. DeepSeek Chat (Mestre Sábio)
-            fila.add(Triple(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
+            // --- MODO FREE (Zero Custo / 600 usos totais com 3 chaves) ---
+            val url = BuildConfig.MESTRE_IA_OPENROUTER_URL
+            val keys = listOf(
+                BuildConfig.MESTRE_IA_OPENROUTER_1_KEY,
+                BuildConfig.MESTRE_IA_OPENROUTER_2_KEY,
+                BuildConfig.MESTRE_IA_OPENROUTER_3_KEY
+            ).filter { it.isNotEmpty() }
+
+            // 1. DeepSeek R1 Free (Tenta as 3 chaves sequencialmente se houver erro de limite)
+            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1:free")) }
+            
+            // 2. Qwen 2.5 72B Free (Tenta as 3 chaves)
+            keys.forEach { fila.add(Triple(url, it, "qwen/qwen-2.5-72b-instruct:free")) }
+            
+            // 3. Llama 3.3 70B Free (Tenta as 3 chaves)
+            keys.forEach { fila.add(Triple(url, it, "meta-llama/llama-3.3-70b-instruct:free")) }
         }
 
         return fila.filter { it.second.isNotEmpty() }
@@ -208,10 +223,11 @@ class MestreIAUseCase(
     private fun traduzirModeloParaMestre(id: String): String {
         return when {
             id.contains("gemini-1.5-pro") -> "Mestre Supremo (Gemini Pro)"
-            id.contains("gemini-2.0-flash") -> "Mestre Flash (Gemini 2.0)"
-            id.contains("deepseek-chat") -> "Mestre Sábio (DeepSeek)"
-            id.contains("llama-3.3") -> "Mestre Brutamontes (Llama 3.3)"
-            id.contains("openrouter/free") -> "Mestre Errante (Free Search)"
+            id.contains("deepseek-r1:free") -> "Mestre Sábio (R1 Free)"
+            id.contains("deepseek-chat") -> "Mestre Sábio (DeepSeek PRO)"
+            id.contains("qwen") -> "Mestre Estrategista (Qwen Free)"
+            id.contains("llama-3.3") && id.contains(":free") -> "Mestre Brutamontes (Llama Free)"
+            id.contains("llama-3.3") -> "Mestre Brutamontes (Llama PRO)"
             else -> "Mestre IA ($id)"
         }
     }
