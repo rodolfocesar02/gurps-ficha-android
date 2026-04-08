@@ -91,7 +91,7 @@ class MestreIAUseCase(
                         workspaceSlug = model,
                         prompt = prompt,
                         history = viewModel.mestreIAChatHistory.map { it.role to it.text },
-                        contextoPersonagem = viewModel.personagem.toJson(),
+                        contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, modo),
                         catalogo = catalogoLocal.catalogo,
                         modo = modo
                     )
@@ -112,7 +112,7 @@ class MestreIAUseCase(
                                     workspaceSlug = model,
                                     prompt = promptCorrecao,
                                     history = viewModel.mestreIAChatHistory.map { it.role to it.text },
-                                    contextoPersonagem = viewModel.personagem.toJson(),
+                                    contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, modo),
                                     catalogo = catalogoLocal.catalogo,
                                     modo = modo
                                 )
