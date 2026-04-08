@@ -33,7 +33,7 @@ data class MestreIaTemasWrapper(
     val temas: List<MestreIaTema>
 )
 
-class DataRepository(internal val context: Context) {
+open class DataRepository(internal val context: Context) {
     private data class MagiaFiltroIndex(
         val definicao: MagiaDefinicao,
         val nomeNorm: String,
@@ -57,13 +57,13 @@ class DataRepository(internal val context: Context) {
     private var _modificadoresGerais: List<ModificadorDefinicao>? = null
     private var _temasMestreIA: List<MestreIaTema>? = null
 
-    val vantagens: List<VantagemDefinicao>
+    open val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
 
-    val desvantagens: List<DesvantagemDefinicao>
+    open val desvantagens: List<DesvantagemDefinicao>
         get() = _desvantagens ?: carregarDesvantagens().also { _desvantagens = it }
 
-    val pericias: List<PericiaDefinicao>
+    open val pericias: List<PericiaDefinicao>
         get() = _pericias ?: carregarPericias().also { _pericias = it }
 
     val periciasV2Rules: Map<String, PericiaV2RuleMapItem>
@@ -102,10 +102,10 @@ class DataRepository(internal val context: Context) {
     val modificadoresGerais: List<ModificadorDefinicao>
         get() = _modificadoresGerais ?: carregarModificadoresGerais().also { _modificadoresGerais = it }
 
-    val magias: List<MagiaDefinicao>
+    open val magias: List<MagiaDefinicao>
         get() = _magias ?: carregarMagias().also { _magias = it }
 
-    val temasMestreIA: List<MestreIaTema>
+    open val temasMestreIA: List<MestreIaTema>
         get() = _temasMestreIA ?: carregarTemasMestreIA().also { _temasMestreIA = it }
 
     private val catalogLoaders = com.gurps.ficha.domain.loaders.CatalogLoaders(context)

@@ -243,13 +243,38 @@ object MestreIAClient {
 
     fun extrairJsonFicha(texto: String): com.gurps.ficha.data.network.MestreIAResponse? {
         return try {
-            // Regex para capturar o maior bloco entre {}
-            val match = Regex("\\{([\\s\\S]*)\\}").find(texto)
-            if (match != null) {
-                val jsonString = match.value
-                gson.fromJson(jsonString, com.gurps.ficha.data.network.MestreIAResponse::class.java)
+            val jsonLimpo = limparJsonPuro(texto)
+            if (jsonLimpo.isNotBlank()) {
+                gson.fromJson(jsonLimpo, com.gurps.ficha.data.network.MestreIAResponse::class.java)
             } else null
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            android.util.Log.e("MestreIA", "Erro ao parsear JSON: ${e.message}\nTexto: ${texto.take(100)}...")
+            null
+        }
+    }
+
+    private fun limparJsonPuro(texto: String): String {
+        var limpo = texto.trim()
+        
+        // 1. Remover blocos Markdown se existirem
+        if (limpo.contains("```json")) {
+            limpo = limpo.substringAfter("```json").substringBeforeLast("```")
+        } else if (limpo.contains("```")) {
+            limpo = limpo.substringAfter("```").substringBeforeLast("```")
+        }
+        
+        // 2. Extrair apenas o conteúdo entre a primeira '{' e a última '}'
+        val start = limpo.indexOf('{')
+        val end = limpo.lastIndexOf('}')
+        if (start != -1 && end != -1 && end > start) {
+            limpo = limpo.substring(start, end + 1)
+        } else {
+            return ""
+        }
+
+        // 3. Limpeza de caracteres de controle que podem invalidar o JSON
+        // Mantém caracteres imprimíveis e quebras de linha comuns
+        return limpo.filter { it.code == 10 || it.code == 13 || (it.code >= 32) }
     }
 
     private fun readStreamSafely(stream: java.io.InputStream?): String {

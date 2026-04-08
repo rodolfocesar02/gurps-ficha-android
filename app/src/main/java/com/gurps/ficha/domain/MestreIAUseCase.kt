@@ -85,7 +85,7 @@ class MestreIAUseCase(
 
                 try {
                     val startTime = System.currentTimeMillis()
-                    val resposta = MestreIAClient.perguntarAoMestre(
+                    var resposta = MestreIAClient.perguntarAoMestre(
                         baseUrl = url,
                         apiKey = key,
                         workspaceSlug = model,
@@ -98,6 +98,32 @@ class MestreIAUseCase(
                     val latency = System.currentTimeMillis() - startTime
 
                     if (!resposta.text.startsWith("Erro de API") && !resposta.text.startsWith("Erro de Conexão")) {
+                        
+                        // --- LOTE 52: LOGICA DE AUTO-HEALING ---
+                        if (modo == "geracao" || modo == "analise") {
+                            val fichaTeste = MestreIAClient.extrairJsonFicha(resposta.text)
+                            if (fichaTeste == null) {
+                                android.util.Log.w("MestreIA", "Auto-Healing Ativado: JSON malformado detectado no provedor $modoLabel")
+                                val promptCorrecao = prompt + "\n\n⚠️ AVISO TÉCNICO: Sua resposta anterior continha um JSON malformado ou incompleto. Por favor, envie APENAS o bloco JSON válido, sem textos explicativos antes ou depois, garantindo que todas as chaves e aspas estejam fechadas."
+                                
+                                val respostaCorrigida = MestreIAClient.perguntarAoMestre(
+                                    baseUrl = url,
+                                    apiKey = key,
+                                    workspaceSlug = model,
+                                    prompt = promptCorrecao,
+                                    history = viewModel.mestreIAChatHistory.map { it.role to it.text },
+                                    contextoPersonagem = viewModel.personagem.toJson(),
+                                    catalogo = catalogoLocal.catalogo,
+                                    modo = modo
+                                )
+                                
+                                // Se a correção funcionar, usamos ela. Caso contrário, mantemos a original (que falhará no parse final)
+                                if (!respostaCorrigida.text.startsWith("Erro")) {
+                                    resposta = respostaCorrigida
+                                }
+                            }
+                        }
+
                         val thematicModel = traduzirModeloParaMestre(resposta.modelName ?: model)
                         val textoLimpo = limparRascunhoIA(resposta.text, catalogoLocal.catalogo.chunks)
                         
