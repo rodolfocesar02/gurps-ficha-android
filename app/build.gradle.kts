@@ -105,27 +105,18 @@ android {
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_URL", "\"https://api.deepseek.com/v1\"")
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-chat\"")
 
+        // Legado / Valores Padrão (DeepSeek por padrão no MESTRE_IA_KEY)
+        buildConfigField("String", "MESTRE_IA_KEY", "\"$deepseekKey\"") 
+        buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com/v1\"")
+        buildConfigField("String", "MESTRE_IA_MODEL", "\"deepseek-chat\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
     }
-    flavorDimensions += listOf("provider", "ui")
+    flavorDimensions += listOf("ui")
     productFlavors {
-        // --- DIMENSÃO: PROVEDOR DE IA ---
-        create("gemini") {
-            dimension = "provider"
-            buildConfigField("String", "MESTRE_IA_KEY", "\"$geminiKey\"")
-            buildConfigField("String", "MESTRE_IA_URL", "\"https://generativelanguage.googleapis.com/v1beta\"")
-            buildConfigField("String", "MESTRE_IA_MODEL", "\"gemini-flash-latest\"")
-        }
-        create("deepseek") {
-            dimension = "provider"
-            buildConfigField("String", "MESTRE_IA_KEY", "\"$deepseekKey\"")
-            buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com/v1\"")
-            buildConfigField("String", "MESTRE_IA_MODEL", "\"deepseek-chat\"")
-        }
-
         // --- DIMENSÃO: INTERFACE (UI) ---
         create("visual") {
             dimension = "ui"
