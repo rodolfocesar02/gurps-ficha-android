@@ -76,7 +76,7 @@ object MestreIAClient {
             val isGoogleNative = baseUrl.contains("generativelanguage.googleapis.com")
             
             val urlStr = if (isGoogleNative) {
-                "$baseUrl/models/$workspaceSlug:streamGenerateContent?key=$apiKey"
+                "$baseUrl/models/$workspaceSlug:streamGenerateContent?key=$apiKey&alt=sse"
             } else {
                 "$baseUrl/chat/completions"
             }.trim()
@@ -150,9 +150,9 @@ object MestreIAClient {
             """.trimIndent()
 
             val jsonOutput = if (isGoogleNative) {
-                gerarJsonGoogleNative(prompt, history, systemPulse)
+                gerarJsonGoogleNative(prompt, history, systemPulse, modo)
             } else {
-                gerarJsonOpenAI(workspaceSlug, prompt, history, systemPulse)
+                gerarJsonOpenAI(workspaceSlug, prompt, history, systemPulse, modo)
             }
 
             connection.outputStream.use { it.write(jsonOutput.toByteArray(StandardCharsets.UTF_8)) }
@@ -163,24 +163,20 @@ object MestreIAClient {
                 var returnedModel = workspaceSlug
                 
                 BufferedReader(InputStreamReader(connection.inputStream, StandardCharsets.UTF_8)).use { reader ->
-                    if (isGoogleNative) {
-                        // O Google envia um stream de objetos JSON em uma lista
-                        var line: String?
-                        while (reader.readLine().also { line = it } != null) {
-                            val chunkText = parseGoogleStreamingChunk(line ?: "")
-                            if (chunkText.isNotEmpty()) {
-                                fullText += chunkText
-                                onChunk?.invoke(chunkText)
-                            }
-                        }
-                    } else {
-                        // OpenAI / DeepSeek enviam via Server-Sent Events (SSE)
-                        var line: String?
-                        while (reader.readLine().also { line = it } != null) {
-                            if (line!!.startsWith("data: ")) {
-                                val data = line!!.substring(6).trim()
-                                if (data == "[DONE]") break
-                                try {
+                    // Ambas as APIs agora usam Server-Sent Events (SSE) (Gemini via &alt=sse)
+                    var line: String?
+                    while (reader.readLine().also { line = it } != null) {
+                        if (line!!.startsWith("data: ")) {
+                            val data = line!!.substring(6).trim()
+                            if (data == "[DONE]") break
+                            try {
+                                if (isGoogleNative) {
+                                    val chunkText = parseGoogleStreamingChunk(data)
+                                    if (chunkText.isNotEmpty()) {
+                                        fullText += chunkText
+                                        onChunk?.invoke(chunkText)
+                                    }
+                                } else {
                                     val json = JSONObject(data)
                                     val model = json.optString("model", "")
                                     if (model.isNotEmpty()) returnedModel = model
@@ -194,9 +190,9 @@ object MestreIAClient {
                                             onChunk?.invoke(content)
                                         }
                                     }
-                                } catch (e: Exception) {
-                                    // Pula linhas malformadas do stream
                                 }
+                            } catch (e: Exception) {
+                                // Pula linhas malformadas do stream
                             }
                         }
                     }
@@ -211,7 +207,7 @@ object MestreIAClient {
         }
     }
 
-    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, systemInstruction: String): String {
+    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, systemInstruction: String, modo: String): String {
         val root = JSONObject()
         
         // ASGURAR ORDEM: system_instruction deve vir antes conforme teste 200 OK do Python
@@ -232,12 +228,13 @@ object MestreIAClient {
         })
 
         root.put("contents", contents)
-        root.put("generationConfig", JSONObject().put("temperature", 0.7).put("maxOutputTokens", 2048))
+        root.put("tools", MestreIATools.getGeminiTools(modo))
+        root.put("generationConfig", JSONObject().put("temperature", 0.7).put("maxOutputTokens", 8192))
         
         return root.toString()
     }
 
-    private fun gerarJsonOpenAI(model: String, prompt: String, history: List<Pair<String, String>>, systemPulse: String): String {
+    private fun gerarJsonOpenAI(model: String, prompt: String, history: List<Pair<String, String>>, systemPulse: String, modo: String): String {
         val root = JSONObject()
         root.put("model", model)
         val messages = JSONArray()
@@ -253,6 +250,7 @@ object MestreIAClient {
         messages.put(JSONObject().put("role", "user").put("content", prompt))
         
         root.put("messages", messages)
+        root.put("tools", MestreIATools.getOpenAITools(modo))
         root.put("temperature", 0.7)
         root.put("stream", true)
         
@@ -294,7 +292,7 @@ object MestreIAClient {
                 gson.fromJson(jsonLimpo, com.gurps.ficha.data.network.MestreIAResponse::class.java)
             } else null
         } catch (e: Exception) {
-            android.util.Log.e("MestreIA", "Erro ao parsear JSON: ${e.message}\nTexto: ${texto.take(100)}...")
+            println("MestreIA - Erro ao parsear JSON: ${e.message}\nTexto: ${texto.take(100)}...")
             null
         }
     }
@@ -318,13 +316,16 @@ object MestreIAClient {
 
     /**
      * Tenta salvar o JSON caso ele tenha sido cortado ou contenha comentários.
+     * Agora fecha strings abertas e remove lixo pós-JSON.
      */
     private fun repararJsonTruncado(json: String): String {
         val stack = mutableListOf<Char>()
         var inString = false
         var escape = false
+        var lastValidIndex = -1
 
-        for (c in json) {
+        for (i in json.indices) {
+            val c = json[i]
             if (c == '"' && !escape) inString = !inString
             if (inString) {
                 escape = if (c == '\\') !escape else false
@@ -332,31 +333,52 @@ object MestreIAClient {
             }
             if (c == '{' || c == '[') {
                 stack.add(c)
-            } else if (c == '}' && stack.isNotEmpty() && stack.last() == '{') {
-                stack.removeAt(stack.size - 1)
-            } else if (c == ']' && stack.isNotEmpty() && stack.last() == '[') {
-                stack.removeAt(stack.size - 1)
+            } else if (c == '}') {
+                if (stack.isNotEmpty() && stack.last() == '{') stack.removeAt(stack.size - 1)
+                // Se a pilha esvaziou, achamos o fim do objeto raiz
+                if (stack.isEmpty()) {
+                    lastValidIndex = i
+                    break
+                }
+            } else if (c == ']') {
+                if (stack.isNotEmpty() && stack.last() == '[') stack.removeAt(stack.size - 1)
             }
         }
 
-        var finalJson = json.trim()
-        // REMOVER VÍRGULAS PENDENTES
-        while (finalJson.endsWith(",") || finalJson.endsWith(" ")) {
-            finalJson = finalJson.dropLast(1).trim()
+        // Se encontrou o fim natural do JSON, ignora tudo que vier depois
+        var finalJson = if (lastValidIndex != -1) {
+            json.substring(0, lastValidIndex + 1)
+        } else {
+            json
         }
 
-        // FECHAR TUDO NA ORDEM INVERSA
-        while (stack.isNotEmpty()) {
-            val opener = stack.removeAt(stack.size - 1)
-            finalJson += if (opener == '{') "}" else "]"
+        finalJson = finalJson.trim()
+
+        // SE O JSON FOI TRUNCADO:
+        if (lastValidIndex == -1) {
+            // FECHAR STRING ABERTA
+            if (inString) {
+                finalJson += "\""
+            }
+
+            // REMOVER VÍRGULAS PENDENTES
+            while (finalJson.endsWith(",") || finalJson.endsWith(" ")) {
+                finalJson = finalJson.dropLast(1).trim()
+            }
+
+            // FECHAR PILHA NA ORDEM INVERSA
+            while (stack.isNotEmpty()) {
+                val opener = stack.removeAt(stack.size - 1)
+                finalJson += if (opener == '{') "}" else "]"
+            }
         }
 
         return finalJson.replace(Regex("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]"), "").trim()
     }
 
-    private fun parseGoogleStreamingChunk(line: String): String {
+    private fun parseGoogleStreamingChunk(data: String): String {
         return try {
-            val json = JSONObject(line.trim().removePrefix(",").removeSuffix("[").removeSuffix("]"))
+            val json = JSONObject(data)
             json.getJSONArray("candidates")
                 .getJSONObject(0)
                 .getJSONObject("content")
