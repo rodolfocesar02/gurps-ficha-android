@@ -71,7 +71,7 @@ class FichaIADelegate(
                     if (assistantIndex >= 0 && assistantIndex < history.size) {
                     // LOTE 15: Extração Inteligente de Narrativa
                     val rawText = response.text
-                    val jsonExtraido = mestreIAUseCase.extrairJsonDeNarrativa(rawText)
+                    val jsonExtraido = response.rawJson ?: mestreIAUseCase.extrairJsonDeNarrativa(rawText)
                     val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
                     
                     // Tenta converter o JSON extraído

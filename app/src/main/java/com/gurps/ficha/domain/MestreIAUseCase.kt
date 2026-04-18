@@ -104,8 +104,30 @@ class MestreIAUseCase(
 
                     if (!resposta.text.startsWith("Erro de API") && !resposta.text.startsWith("Erro de Conexão")) {
                         
-                        // --- LOTE 52: LOGICA DE AUTO-HEALING ---
-                        if (modo == "geracao" || modo == "analise") {
+                        // --- LOTE 61: ORQUESTRADOR REACT (TOOL CALLING) ---
+                        if (resposta.toolCalls.isNotEmpty()) {
+                            val fillSheetCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }
+                            if (fillSheetCall != null) {
+                                android.util.Log.i("MestreIA", "Agent disparou ferramenta fill_character_sheet!")
+                                // Usamos os argumentos nativos da API como o JSON garantido, escapando de Regex e Auto-Healing!
+                                resposta = resposta.copy(
+                                    text = "📦 Ficha preenchida com sucesso pelo Forjador Nativo (Tool Calling).",
+                                    rawJson = fillSheetCall.args.toString()
+                                )
+                            }
+                            
+                            val searchCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_SEARCH_RULES }
+                            if (searchCall != null) {
+                                android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules para: ${searchCall.args.optString("query")}")
+                                // Para Lote 61, como o contexto RAG já foi pré-alimentado pelo Android de forma estática antes do prompt, 
+                                // e a ferramenta foi fornecida como fallback, se a IA chamou é porque precisava de mais.
+                                // Idealmente faríamos uma recursão aqui chamando o RagEngine novamente e fazendo um novo POST.
+                                // Para não quebrar o fluxo de UI, se a IA retornar text, mantemos.
+                            }
+                        }
+
+                        // --- LOTE 52: LOGICA DE AUTO-HEALING (FALLBACK PARA QUANDO NÃO USOU TOOL) ---
+                        if ((modo == "geracao" || modo == "analise") && resposta.rawJson == null && resposta.toolCalls.isEmpty()) {
                             val fichaTeste = MestreIAClient.extrairJsonFicha(resposta.text)
                             if (fichaTeste == null) {
                                 android.util.Log.w("MestreIA", "Auto-Healing Ativado: JSON malformado detectado no provedor $modoLabel")
@@ -125,7 +147,18 @@ class MestreIAUseCase(
                                 
                                 // Se a correção funcionar, usamos ela. Caso contrário, mantemos a original (que falhará no parse final)
                                 if (!respostaCorrigida.text.startsWith("Erro")) {
-                                    resposta = respostaCorrigida
+                                    var limpo = respostaCorrigida.text
+                                    val vazamentos = listOf(
+                                        "Regras e Fatos do Mundo que o App extraiu",
+                                        "REGRAS ENCONTRADAS PARA ESTA SITUAÇÃO",
+                                        "Contexto RAG",
+                                        "--- REGRAS ENCONTRADAS PARA ESTA SITUAÇÃO ---",
+                                        "---------------------------------------------"
+                                    )
+                                    vazamentos.forEach { vazamento ->
+                                        limpo = limpo.replace(vazamento, "").trim()
+                                    }
+                                    resposta = respostaCorrigida.copy(text = limpo)
                                 }
                             }
                         }
@@ -142,8 +175,9 @@ class MestreIAUseCase(
                         // NOTA DE DEPURACAO RAG: Bibliografia (NÃO adicionar em modo geração para não quebrar o JSON)
                         val bibliografia = if (isRagUsed && catalogoLocal.catalogo.chunks.isNotEmpty() && modo == "conversa") {
                             val chunks = catalogoLocal.catalogo.chunks
-                            val refs = chunks.take(2).joinToString(", ") { chunk -> 
-                                "[${chunk.source_title}: Pág. ${chunk.page_number ?: "???"}]" 
+                            val refs = chunks.take(2).joinToString(", ") { chunk ->
+                                val abrev = if (chunk.source_title.contains("Módulo Básico")) "MB" else chunk.source_title
+                                "[$abrev pág. ${chunk.page_number ?: "???"}]" 
                             }
                             "\n\n_Ref. Manual: ${refs}_"
                         } else ""
@@ -223,11 +257,11 @@ class MestreIAUseCase(
                 BuildConfig.MESTRE_IA_OPENROUTER_3_KEY
             ).filter { it.isNotEmpty() }
 
-            // 1. DeepSeek R1 Free (OpenRouter)
-            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1:free")) }
-            
-            // 2. Gemini 2.5 Flash (O mais confiável - Nativo)
+            // 1. Gemini 2.5 Flash (O mais confiável, rápido e nativo - Prioridade Máxima agora)
             fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
+
+            // 2. DeepSeek R1 Free (OpenRouter) - Rebaixado por instabilidade 404
+            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1:free")) }
             
             // 3. Llama 3.3 70B Free (OpenRouter)
             keys.forEach { fila.add(Triple(url, it, "meta-llama/llama-3.3-70b-instruct:free")) }
@@ -324,8 +358,8 @@ class MestreIAUseCase(
         viewModel.atualizarVitalidade(ficha.atributos.ht)
 
         // 3. VANTAGENS E DESVANTAGENS
-        ficha.vantagens.forEach { adicionarVantagem(it) }
-        ficha.desvantagens.forEach { adicionarVantagem(it) } // Reutiliza lógica de busca semântica
+        ficha.vantagens.forEach { adicionarVantagem(it.nome) }
+        ficha.desvantagens.forEach { adicionarVantagem(it.nome) } // Reutiliza lógica de busca semântica
 
         // 4. PERÍCIAS
         ficha.pericias.forEach { adicionarPericia(it.nome, it.nivel) }
@@ -348,8 +382,8 @@ class MestreIAUseCase(
         }
 
         // 6. MAGIAS
-        ficha.magias.forEach { nomeMagia ->
-            val def = repository.magias.firstOrNull { it.nome.equals(nomeMagia, true) }
+        ficha.magias.forEach { magiaIA ->
+            val def = repository.magias.firstOrNull { it.nome.equals(magiaIA.nome, true) }
             if (def != null) {
                 viewModel.adicionarMagia(def)
             }
