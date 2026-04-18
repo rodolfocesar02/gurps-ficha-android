@@ -112,7 +112,8 @@ class MestreIAUseCase(
                             if (searchCall != null) {
                                 val query = searchCall.args.optString("query", "")
                                 android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules para: $query")
-                                val extraContext = MestreIARagEngine.buscarContexto(query)
+                                val ragResult = MestreIARagEngine.buscarContexto(query, repository)
+                                val extraContext = ragResult.chunks.joinToString("\n\n") { "Regra: ${it.source_title} (pág. ${it.page_number}) - ${it.text}" }
                                 
                                 val novoPrompt = "[SISTEMA AUTOMÁTICO] Resultado da busca por regras ('$query'):\n$extraContext\n\nPor favor, com base nessas regras, continue sua tarefa."
                                 
