@@ -20,3 +20,7 @@ release-apks/
 
 # Local-only AGENTE artifacts (never version)
 AGENTE GURPS/backend/AGENTE GURPS/
+
+# MemPalace per-project files (issue #185)
+mempalace.yaml
+entities.json
