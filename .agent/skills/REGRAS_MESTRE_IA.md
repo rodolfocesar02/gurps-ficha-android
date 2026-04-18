@@ -41,6 +41,10 @@ Para economizar tokens e tempo, vá direto aos endereços abaixo:
 - **Tom:** Mentor amigável e parceiro técnico.
 - **Nível Técnico:** Explique mudanças em termos de funcionalidade, não lógica de código (evite "tecniquês").
 
+### 🧠 Uso do MemPalace (Memória de Contexto)
+- **Consulta:** Antes de tomar decisões arquiteturais, de design de UI ou de resolver bugs históricos, a IA (Antigravity) DEVE usar o terminal para rodar `mempalace search "assunto"` ou `mempalace wake-up`.
+- **Objetivo:** Recuperar o contexto de conversas passadas e decisões do projeto de forma autônoma, reduzindo o custo de tokens no prompt principal e evitando "alucinações" sobre como o projeto foi estruturado.
+
 ### 📦 A Regra dos Lotes (Segurança)
 - **1 Lote = 1 Commit:** Nunca faça mudanças gigantescas sem salvar.
 - **PROGRESS.md:** Atualize este arquivo a cada commit com o número do Lote.
