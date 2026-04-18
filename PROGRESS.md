@@ -104,10 +104,41 @@ Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Eve
 * [Feito] Lote 56: Local-First RAG (Busca Vetorial) | `(Commit: c110272)`.(Problema: O buscador semântico no MestreIARagEngine pode ser pesado para buscas em muitos arquivos JSON.
 Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index pré-calculado) para que o findRelevantChunks seja instantâneo, mesmo com manuais extensos.)
 * [Feito] Lote 57: Reconstrução de Elite (RAG 1194 Chunks) e Triplo Fallback (600 Usos) | `(Manual: Antigravity)`
-* [Feito] Lote 19: Estabilização do Mestre IA (Motor de Reparo por Pilha) | `(Commit: bf9b73c)`
+* [Feito] Lote 58: Estabilização do Mestre IA (Motor de Reparo por Pilha) | `(Commit: bf9b73c)`
     * Implementação de algoritmo de fechamento de JSON baseado em Pilha (Stack) e Botões de Diagnóstico UI.
-* [Feito] Lote 20: IA Master Laboratory (Suite de Auditoria Python) | `(Commit: bf9b73c)`
+* [Feito] Lote 59: IA Master Laboratory (Suite de Auditoria Python) | `(Commit: bf9b73c)`
     * Criação do validador de fidelidade ao catálogo e simulador de stress offline em Python.
+* [Feito] Lote 60: Stress Test do Motor de Pilha e Sync do Gabarito de Ouro | `(Manual: Antigravity)`
+
+
+
+
+
+
+    * Refatoração do `MestreIAResponse` para aceitar Objetos em vez de Strings para Vantagens e Magias (alinhado com o Gabarito de Ouro).
+    * Evolução do `repararJsonTruncado` para fechar Strings `"` abertas e ignorar sufixos nocivos.
+    * Teste Unitário criado: `testStressReparoJsonTruncado` com aninhamento de 500pts aprovado.
+
+### Lote 60: Definição de Schemas Nativos (Tool Builder)
+*   **Commit:** `d025cc1 feat(ia): Lote 60 - define schemas nativos de Function Calling para Gemini e OpenAI`
+*   **Melhorias Implementadas:**
+    *   Criação da classe `MestreIATools.kt` para orquestrar as ferramentas.
+    *   Definição rigorosa de Schemas JSON (`fill_character_sheet` e `search_rules`) que forçam a IA a obedecer o layout da ficha.
+    *   Fim da Engenharia de Prompt (Regex) para requisição de criação de fichas.
+
+### Lote 61: O Motor ReAct (Orquestrador Assíncrono)
+*   **Commit:** `a353efe feat(ia): Lote 61 - Orquestrador ReAct intercepta Tool Calls para preenchimento de ficha sem regex`
+*   **Melhorias Implementadas:**
+    *   Refatoração profunda em `MestreIAClient` e `MestreIAUseCase` para capturar chamadas assíncronas no protocolo SSE.
+    *   Interceptação da ferramenta nativa `fill_character_sheet`.
+    *   Passagem direta do JSON estrito e perfeito para a `FichaIADelegate`, eliminando completamente os riscos de JSON malformado e ativando instantaneamente o botão de Integração.
+
+### Fix Estrutural do RAG (Cérebro Local de Busca)
+*   **Commit:** `6d1d531 fix(rag): implementa busca multi-camada (exata + flexivel) no SQLite FTS4 para tolerância a erros e maior precisao`
+*   **Melhorias Implementadas:**
+    *   Substituição da busca engessada FTS4 (`AND` total) por uma "Busca em Cascata" inteligente.
+    *   Tolerância a Erros: Se o usuário digitar "descricoa", a busca flexível garante o Ranqueamento através de outras palavras corretas ("Perícia", "Furtividade"), evitando a devolução de resultados vazios e mitigando as temidas "alucinações da IA".
+
 
  Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
