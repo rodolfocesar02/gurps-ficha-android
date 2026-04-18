@@ -69,31 +69,62 @@ class FichaIADelegate(
                 scope.launch(Dispatchers.Main) {
                     val history = mestreIAChatHistory.toMutableList()
                     if (assistantIndex >= 0 && assistantIndex < history.size) {
-                        history[assistantIndex] = history[assistantIndex].copy(
-                            text = response.text, // Texto final com limpeza e bibliografia
-                            modelName = response.modelName,
-                            isRagUsed = isRagUsed,
-                            latencyMs = response.latencyMs
-                        )
-                        mestreIAChatHistory = history
+                    // LOTE 15: Extração Inteligente de Narrativa
+                    val rawText = response.text
+                    val jsonExtraido = mestreIAUseCase.extrairJsonDeNarrativa(rawText)
+                    val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
+                    
+                    // Tenta converter o JSON extraído
+                    var erroParse = false
+                    val fichaObjeto = jsonExtraido?.let { 
+                        try {
+                            com.google.gson.Gson().fromJson(it, MestreIAResponse::class.java)
+                        } catch (e: Exception) {
+                            erroParse = true
+                            null
+                        }
                     }
 
-                    // Sempre tenta extrair JSON ao final
-                    fichaGeradaPendente = MestreIAClient.extrairJsonFicha(response.text)
+                    // LOTE 18: Feedback Honesto
+                    val textoFinal = when {
+                        erroParse -> "⚠️ O Mestre gerou a ficha, mas o código contém um erro técnico. Peça para ele: 'Corrija o código JSON da ficha'."
+                        fichaObjeto != null && narrativaLimpa.isBlank() -> "📦 Ficha pronta com sucesso! Clique no botão abaixo para integrar."
+                        else -> narrativaLimpa
+                    }
+
+                    history[assistantIndex] = history[assistantIndex].copy(
+                        text = if (jsonExtraido != null) textoFinal else rawText,
+                        modelName = response.modelName,
+                        isRagUsed = isRagUsed,
+                        latencyMs = response.latencyMs,
+                        data = fichaObjeto,
+                        rawJson = jsonExtraido
+                    )
+                    mestreIAChatHistory = history
+                    fichaGeradaPendente = fichaObjeto
 
                     if (modo == "geracao") {
-                        onResult(true, if (fichaGeradaPendente != null) "Ficha pronta para revisão!" else "Ficha gerada em texto.")
+                        val msgResultado = when {
+                            erroParse -> "Falha técnica no código do Mestre."
+                            fichaGeradaPendente != null -> "Ficha disponível no balão do chat!"
+                            else -> "Mestre IA ainda está processando..."
+                        }
+                        onResult(true, msgResultado)
                     } else {
                         onResult(true, "Resposta recebida.")
                     }
-                    
-                    // RESET AUTOMÁTICO
-                    if (mestreIAMode != "conversa") {
-                        mestreIAMode = "conversa"
-                    }
                 }
+                
+                // LOTE 17: REMOVIDO RESET AUTOMÁTICO
+                // O modo só muda se o usuário quiser ou ao fechar a ficha.
+                /*
+                if (mestreIAMode != "conversa") {
+                    mestreIAMode = "conversa"
+                }
+                */
             }
         }
+    }
     }
 
     fun confirmarIntegracao() {
@@ -143,7 +174,7 @@ class FichaIADelegate(
                         }
                     }
                     "VANTAGEM" -> mestreIAUseCase.adicionarVantagem(detalhe)
-                    "EQUIPAMENTO" -> mestreIAUseCase.adicionarEquipamento(detalhe)
+                    "EQUIPAMENTO" -> mestreIAUseCase.adicionarEquipamento(com.gurps.ficha.data.network.MestreIAEquipamento(nome = detalhe))
                 }
                 
                 mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", "✅ Ação executada: $detalhe")

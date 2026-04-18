@@ -21,12 +21,27 @@ object MestreIAClient {
     private const val READ_TIMEOUT_MS = 90000 
     private val gson = Gson()
 
+    private const val GOLD_TEMPLATE = """
+{
+  "nome": "Nome do Personagem",
+  "historia": "Breve biografia narrativa (max 1000 chars)",
+  "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10, "hp": 10, "vontade": 10, "percepcao": 10, "fp": 10 },
+  "vantagens": [ { "nome": "Nome Exato do Catálogo", "custo": 10, "descricao": "..." } ],
+  "desvantagens": [ { "nome": "Nome Exato do Catálogo", "custo": -10, "descricao": "..." } ],
+  "pericias": [ { "nome": "Nome Exato do Catálogo", "nivel": 12, "base": "DX", "pts": 4 } ],
+  "magias": [ { "nome": "Nome Exato do Catálogo", "custo": "1 fp", "tempo": "1 s" } ],
+  "equipamentos": [ { "nome": "Nome", "peso": 1.0, "custo": 100, "quantidade": 1, "rd": 0, "dano": "1d cut", "st_min": 10, "aparar": "0" } ]
+}
+"""
+
     data class ChatMessage(
         val role: String, // "user" ou "model"
         val text: String,
         val modelName: String? = null,
         val isRagUsed: Boolean = false,
-        val latencyMs: Long = 0
+        val latencyMs: Long = 0,
+        val data: com.gurps.ficha.data.network.MestreIAResponse? = null,
+        val rawJson: String? = null
     )
 
     data class ChatResponse(
@@ -92,20 +107,19 @@ object MestreIAClient {
 
                 val instrucaoModo = when(modo) {
                     "geracao" -> """
-                        Gere uma FICHA COMPLETA em JSON seguindo o modelo GURPS 4E BR.
-                        Utilize APENAS os nomes contidos no CATÁLOGO LOCAL abaixo para garantir fidelidade técnica.
-                        CAMPOS OBRIGATÓRIOS (Não omita nenhum):
-                        - nome, historico, aparencia.
-                        - atributos: { st, dx, iq, ht }
-                        - vantagens: [ string ], desvantagens: [ string ]
-                        - pericias: [ { nome, nivel } ]
-                        - tecnicas: [ { nome, nivel } ] (Crucial para artes marciais)
-                        - magias: [ string ] (se houver)
-                        - qualidades: [ string ], peculiaridades: [ string ]
-                        - equipamentos: [ { nome, peso, custo, quantidade } ]
-                        NÃO escreva nada fora do JSON. Use apenas termos oficiais em Português-BR.
+                        Você é o MESTRE CONSULTOR de GURPS 4E BR (Sistema Oficial).
+                        REGRAS DE OURO DA GERAÇÃO:
+                        1. FIDELIDADE ABSOLUTA: Use EXATAMENTE os nomes contidos no "CATÁLOGO LOCAL". Não invente nomes! 
+                        2. PRÉ-REQUISITOS: Magias e perícias avançadas EXIGEM que você adicione os requisitos automaticamente.
                         
-                        CATÁLOGO LOCAL (Siga estes nomes):
+                        GABARITO DE OURO (Siga esta estrutura JSON estritamente):
+                        $GOLD_TEMPLATE
+                        
+                        MÉTODO DE RESPOSTA:
+                        - Escreva a introdução narrativa no chat.
+                        - Insira o JSON INTEGRAL dentro de um bloco de código markdown (```json { ... } ```) no FIM da mensagem.
+                        
+                        CATÁLOGO LOCAL (Priorize estes nomes exatos para as automações funcionarem):
                         - Vantagens/Desvantagens: $listaVantagens, $listaDesvantagens
                         - Perícias: $listaPericias
                         - Técnicas: ${catalogo?.tecnicas?.joinToString(", ")}
@@ -114,12 +128,9 @@ object MestreIAClient {
                 else -> """
                     Siga estritamente estas diretrizes prioritárias:
                     1. RESPONDA 100% EM PORTUGUÊS (BRASIL). Use termos oficiais da Devir/Steve Jackson Games.
-                    2. PRIORIDADE TÉCNICA (CODEX): Se houver uma seção "REGRAS DO CÓDEX" abaixo, utilize-a como sua FONTE ABSOLUTA DE VERDADE. Ignore o seu treinamento prévio se ele contradizer o CÓDEX.
-                    3. CITAÇÃO OBRIGATÓRIA: Sempre cite o nome do manual e a página fornecida no CÓDEX (ex: "Módulo Básico pág. 430").
-                    4. SE NÃO ENCONTRAR: Se o CÓDEX for irrelevante ou vazio, admita que não encontrou a regra nos manuais locais e use seu conhecimento geral, mas avise que é uma "estimativa do mestre".
-                    5. DIFERENCIE FONTES: Fragmentos de "Categorias de Perícias" são apenas glossários de nomes. Para cálculos (dano, fadiga, tempo), priorize SEMPRE o "Módulo Básico". Se o CÓDEX tiver apenas Categorias de Perícias e a pergunta for sobre uma regra complexa, diga que não encontrou a regra oficial mas que pode dar uma estimativa.
-                    6. SEJA DIRETO: Responda em no máximo 3 parágrafos focados na regra.
-                    7. Use [SUGESTAO: Texto] para sugerir perguntas relacionadas à regra encontrada.
+                    2. PRIORIDADE TÉCNICA (CODEX): Use as regras abaixo como FONTE ABSOLUTA.
+                    3. CITAÇÃO OBRIGATÓRIA: Sempre cite o nome do manual e a página (ex: "Módulo Básico pág. 430").
+                    4. Use [SUGESTAO: Texto] para sugerir perguntas.
                 """.trimIndent()
             }
 
@@ -129,13 +140,12 @@ object MestreIAClient {
                 
                 $fragmentosRegras
                 
-                REGRAS DE OURO:
-                1. Use nomes em português (Módulo Básico: Personagens / Campanhas).
-                2. NUNCA invente números de página. Use apenas os que o CODEX fornecer.
-                3. Se o CODEX trouxer uma página irrelevante para a pergunta, ignore-a e diga que não encontrou a regra.
-                4. LIMITE DE HISTÓRIA: O campo de história do personagem tem um limite técnico de 1000 caracteres. Se o jogador pedir para você escrever uma história longa ou se você atingir esse limite, informe amigavelmente que o espaço na ficha chegou ao fim e você não pode adicionar mais texto por segurança.
+                NARRATIVA E INTERATIVIDADE:
+                1. Use nomes em português (Módulo Básico).
+                2. LIMITE DE TEXTO: Mantenha as histórias na ficha em até 1000 caracteres.
+                3. ANTI-VÁCUO: Em modo de geração de ficha, você DEVE sempre escrever uma pequena introdução narrativa no chat antes de abrir o bloco ```json.
                 
-                HISTÓRICO DO PERSONAGEM:
+                HISTÓRICO DO PERSONAGEM (Use como contexto):
                 $contextoPersonagem
             """.trimIndent()
 
@@ -172,8 +182,8 @@ object MestreIAClient {
                                 if (data == "[DONE]") break
                                 try {
                                     val json = JSONObject(data)
-                                    val model = json.optString("model", null)
-                                    if (model != null) returnedModel = model
+                                    val model = json.optString("model", "")
+                                    if (model.isNotEmpty()) returnedModel = model
                                     
                                     val choices = json.optJSONArray("choices")
                                     if (choices != null && choices.length() > 0) {
@@ -292,25 +302,56 @@ object MestreIAClient {
     private fun limparJsonPuro(texto: String): String {
         var limpo = texto.trim()
         
-        // 1. Remover blocos Markdown se existirem
-        if (limpo.contains("```json")) {
-            limpo = limpo.substringAfter("```json").substringBeforeLast("```")
-        } else if (limpo.contains("```")) {
-            limpo = limpo.substringAfter("```").substringBeforeLast("```")
-        }
-        
-        // 2. Extrair apenas o conteúdo entre a primeira '{' e a última '}'
-        val start = limpo.indexOf('{')
-        val end = limpo.lastIndexOf('}')
-        if (start != -1 && end != -1 && end > start) {
-            limpo = limpo.substring(start, end + 1)
-        } else {
-            return ""
+        // 1. Localização do Início do JSON
+        val firstBrace = limpo.indexOf('{')
+        if (firstBrace == -1) return ""
+        limpo = limpo.substring(firstBrace)
+
+        // 2. Remoção inteligente de blocos de comentários Markdown (se houver lixo após o JSON)
+        if (limpo.contains("```")) {
+            limpo = limpo.substringBeforeLast("```").trim()
         }
 
-        // 3. Limpeza de caracteres de controle que podem invalidar o JSON
-        // Mantém caracteres imprimíveis e quebras de linha comuns
-        return limpo.filter { it.code == 10 || it.code == 13 || (it.code >= 32) }
+        // 3. Auto-Reparo de Truncamento e Comentários
+        return repararJsonTruncado(limpo)
+    }
+
+    /**
+     * Tenta salvar o JSON caso ele tenha sido cortado ou contenha comentários.
+     */
+    private fun repararJsonTruncado(json: String): String {
+        val stack = mutableListOf<Char>()
+        var inString = false
+        var escape = false
+
+        for (c in json) {
+            if (c == '"' && !escape) inString = !inString
+            if (inString) {
+                escape = if (c == '\\') !escape else false
+                continue
+            }
+            if (c == '{' || c == '[') {
+                stack.add(c)
+            } else if (c == '}' && stack.isNotEmpty() && stack.last() == '{') {
+                stack.removeAt(stack.size - 1)
+            } else if (c == ']' && stack.isNotEmpty() && stack.last() == '[') {
+                stack.removeAt(stack.size - 1)
+            }
+        }
+
+        var finalJson = json.trim()
+        // REMOVER VÍRGULAS PENDENTES
+        while (finalJson.endsWith(",") || finalJson.endsWith(" ")) {
+            finalJson = finalJson.dropLast(1).trim()
+        }
+
+        // FECHAR TUDO NA ORDEM INVERSA
+        while (stack.isNotEmpty()) {
+            val opener = stack.removeAt(stack.size - 1)
+            finalJson += if (opener == '{') "}" else "]"
+        }
+
+        return finalJson.replace(Regex("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]"), "").trim()
     }
 
     private fun parseGoogleStreamingChunk(line: String): String {
