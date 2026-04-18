@@ -20,7 +20,9 @@ object MestreIARagEngine {
     private val STOP_WORDS = setOf(
         "um", "uma", "o", "a", "de", "do", "da", "em", "com", "no", "na", 
         "para", "por", "que", "se", "seu", "sua", "como", "fazer", "criar",
-        "quero", "me", "ajude", "personagem", "ficha", "gurps", "edicao"
+        "quero", "me", "ajude", "personagem", "ficha", "gurps", "edicao", "edição",
+        "explique", "diga", "fale", "mostre", "regras", "sobre", "qual", "quais", 
+        "é", "são", "tudo", "mim", "funciona", "funcionar"
     )
     
     // LOTE 56: Variável configurável para limite de contexto
@@ -71,22 +73,45 @@ object MestreIARagEngine {
         val keywordsBaseNorm = keywordsBase.map { CatalogFilters.normalizarBusca(it) }
         if (keywordsBaseNorm.isEmpty()) return emptyList()
 
-        // Melhora a Query FTS para suportar bigramas e termos compostos
-        val queryParts = mutableListOf<String>()
-        keywordsBaseNorm.forEach { queryParts.add("$it*") }
-        
-        // Se houver mais de uma palavra, tenta criar pares (bigramas)
-        if (keywordsBaseNorm.size >= 2) {
-            for (i in 0 until keywordsBaseNorm.size - 1) {
-                queryParts.add("\"${keywordsBaseNorm[i]} ${keywordsBaseNorm[i+1]}\"")
-            }
-        }
-        
-        val ftsQuery = queryParts.joinToString(" OR ")
-        android.util.Log.d("MestreIA_RAG", "Final FTS Query: $ftsQuery")
-
         return try {
-            val resultadosRaw = dao.buscarRegras(ftsQuery, 100) // Busca estendida para garantir diversidade
+            val resultadosRaw = mutableListOf<ManualChunkEntity>()
+            
+            // Tentativa 1: Busca Rigorosa (Frase Exata OU Bigramas)
+            val queryRigorosaParts = mutableListOf<String>()
+            if (keywordsBaseNorm.size >= 2) {
+                queryRigorosaParts.add("\"" + keywordsBaseNorm.joinToString(" ") + "\"")
+                for (i in 0 until keywordsBaseNorm.size - 1) {
+                    queryRigorosaParts.add("\"${keywordsBaseNorm[i]} ${keywordsBaseNorm[i+1]}\"")
+                }
+            } else {
+                queryRigorosaParts.add("${keywordsBaseNorm[0]}*")
+            }
+            
+            val queryRigorosa = queryRigorosaParts.joinToString(" OR ")
+            android.util.Log.d("MestreIA_RAG", "Busca Rigorosa: $queryRigorosa")
+            val rigorosaRes = dao.buscarRegras(queryRigorosa, 50)
+            resultadosRaw.addAll(rigorosaRes)
+            
+            // Tentativa 2: Busca Flexível (Qualquer palavra importante, ordenada por relevância)
+            val palavrasImportantes = keywordsBaseNorm.filter { it.length >= 4 }
+            if (palavrasImportantes.isNotEmpty()) {
+                val queryFlexivel = palavrasImportantes.joinToString(" OR ") { "$it*" }
+                android.util.Log.d("MestreIA_RAG", "Busca Flexivel: $queryFlexivel")
+                val flexivelRes = dao.buscarRegras(queryFlexivel, 200)
+                
+                // Ordenar por relevância (quantas keywords diferentes aparecem no texto)
+                val flexivelOrdenada = flexivelRes.sortedByDescending { entity ->
+                    val textoNorm = CatalogFilters.normalizarBusca(entity.text)
+                    palavrasImportantes.count { textoNorm.contains(it) }
+                }
+                
+                val idsExistentes = resultadosRaw.map { it.chunk_id }.toSet()
+                for (item in flexivelOrdenada.take(40)) {
+                    if (item.chunk_id !in idsExistentes) {
+                        resultadosRaw.add(item)
+                    }
+                }
+            }
             
             // FILTRAGEM DE RUÍDO
             val filtrados = resultadosRaw.filter { entity ->
