@@ -44,10 +44,17 @@ object MestreIAClient {
         val rawJson: String? = null
     )
 
+    data class MestreIAToolCall(
+        val name: String,
+        val args: JSONObject
+    )
+
     data class ChatResponse(
         val text: String,
         val modelName: String? = null,
-        val latencyMs: Long = 0
+        val latencyMs: Long = 0,
+        val toolCalls: List<MestreIAToolCall> = emptyList(),
+        val rawJson: String? = null
     )
 
     data class CatalogoNomes(
@@ -161,6 +168,11 @@ object MestreIAClient {
             if (responseCode in 200..299) {
                 var fullText = ""
                 var returnedModel = workspaceSlug
+                val capturedToolCalls = mutableListOf<MestreIAToolCall>()
+                
+                // Variáveis para acumular Tool Calls do OpenAI (que chegam fragmentadas)
+                var openAIToolName = ""
+                var openAIToolArgs = ""
                 
                 BufferedReader(InputStreamReader(connection.inputStream, StandardCharsets.UTF_8)).use { reader ->
                     // Ambas as APIs agora usam Server-Sent Events (SSE) (Gemini via &alt=sse)
@@ -171,10 +183,14 @@ object MestreIAClient {
                             if (data == "[DONE]") break
                             try {
                                 if (isGoogleNative) {
-                                    val chunkText = parseGoogleStreamingChunk(data)
+                                    val parsed = parseGoogleStreamingChunk(data)
+                                    val chunkText = parsed.first
                                     if (chunkText.isNotEmpty()) {
                                         fullText += chunkText
                                         onChunk?.invoke(chunkText)
+                                    }
+                                    if (parsed.second != null) {
+                                        capturedToolCalls.add(parsed.second!!)
                                     }
                                 } else {
                                     val json = JSONObject(data)
@@ -189,6 +205,16 @@ object MestreIAClient {
                                             fullText += content
                                             onChunk?.invoke(content)
                                         }
+                                        val toolCallsArr = delta?.optJSONArray("tool_calls")
+                                        if (toolCallsArr != null && toolCallsArr.length() > 0) {
+                                            val tc = toolCallsArr.getJSONObject(0)
+                                            val func = tc.optJSONObject("function")
+                                            if (func != null) {
+                                                val name = func.optString("name", "")
+                                                if (name.isNotEmpty()) openAIToolName = name
+                                                openAIToolArgs += func.optString("arguments", "")
+                                            }
+                                        }
                                     }
                                 }
                             } catch (e: Exception) {
@@ -197,7 +223,16 @@ object MestreIAClient {
                         }
                     }
                 }
-                ChatResponse(fullText, returnedModel)
+                
+                if (openAIToolName.isNotEmpty()) {
+                    try {
+                        capturedToolCalls.add(MestreIAToolCall(openAIToolName, JSONObject(openAIToolArgs)))
+                    } catch (e: Exception) {
+                        android.util.Log.e("MestreIA", "Erro ao parsear argumentos do tool do OpenAI: $openAIToolArgs")
+                    }
+                }
+                
+                ChatResponse(fullText, returnedModel, 0, capturedToolCalls)
             } else {
                 val errorBody = readStreamSafely(connection.errorStream)
                 ChatResponse("Erro de API ($responseCode): ${errorBody.take(150)}")
@@ -376,16 +411,27 @@ object MestreIAClient {
         return finalJson.replace(Regex("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]"), "").trim()
     }
 
-    private fun parseGoogleStreamingChunk(data: String): String {
+    private fun parseGoogleStreamingChunk(data: String): Pair<String, MestreIAToolCall?> {
         return try {
             val json = JSONObject(data)
-            json.getJSONArray("candidates")
+            val part = json.getJSONArray("candidates")
                 .getJSONObject(0)
                 .getJSONObject("content")
                 .getJSONArray("parts")
                 .getJSONObject(0)
-                .getString("text")
-        } catch (e: Exception) { "" }
+                
+            val text = part.optString("text", "")
+            val functionCall = part.optJSONObject("functionCall")
+            
+            val toolCall = if (functionCall != null) {
+                MestreIAToolCall(
+                    name = functionCall.getString("name"),
+                    args = functionCall.getJSONObject("args")
+                )
+            } else null
+            
+            Pair(text, toolCall)
+        } catch (e: Exception) { Pair("", null) }
     }
 
     private fun readStreamSafely(stream: java.io.InputStream?): String {
