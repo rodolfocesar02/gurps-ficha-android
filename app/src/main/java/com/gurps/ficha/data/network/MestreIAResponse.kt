@@ -23,7 +23,11 @@ data class MestreIAEquipamento(
     val nome: String = "",
     val peso: Float = 0f,
     val custo: Float = 0f,
-    val quantidade: Int = 1
+    val quantidade: Int = 1,
+    val rd: Int? = null,
+    val dano: String? = null,
+    val st_min: Int? = null,
+    val aparar: String? = null
 )
 
 data class MestreIAAtributos(

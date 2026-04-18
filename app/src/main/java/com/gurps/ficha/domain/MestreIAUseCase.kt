@@ -156,15 +156,16 @@ class MestreIAUseCase(
                         ultimaResposta = resposta
                         
                         // FIDELIDADE: Em modos PRO, não falha silenciosamente se o modelo de elite falhar
-                        if (modo == "geracao" || modo == "analise") {
+                        // LOTE 16: Permitir fallback se for erro de limite (429), para não deixar o usuário na mão
+                        if ((modo == "geracao" || modo == "analise") && !resposta.text.contains("429")) {
                             onResultado(false, resposta.copy(text = "FALHA NO MODELO PRO: ${resposta.text}\n(Não houve fallback para manter a integridade da ficha)"))
                             sucesso = true // Interrompe o loop
                             break
                         } else {
                             // Se for erro de limite, espera um pouco para dar visibilidade ao usuário
                             if (resposta.text.contains("429")) {
-                                onStatusUpdate("Limite atingido no $amigavel. Pulando...")
-                                kotlinx.coroutines.delay(1500)
+                                onStatusUpdate("Limite atingido no $amigavel. Tentando salvamento...")
+                                kotlinx.coroutines.delay(2000)
                             }
                         }
                     }
@@ -189,6 +190,9 @@ class MestreIAUseCase(
     /**
      * Gera a ordem de tentativa dos "cérebros".
      * LITE 1 -> LITE 2 -> PRO.
+     * 
+     * 🛑 REGRA CRÍTICA (Lote 16.6): NÃO altere esta lista de modelos sem confirmação do Rodolfo.
+     * Estes nomes (Gemini 2.5, Llama 3.3, etc) foram validados via API e são essenciais.
      */
     private fun gerarFilaDeFallback(prompt: String, modo: String): List<Triple<String, String, String>> {
         val p = prompt.lowercase()
@@ -202,13 +206,16 @@ class MestreIAUseCase(
             // 1. DeepSeek Chat (Mestre Sábio - API OFICIAL / PRO)
             fila.add(Triple(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
             
-            // 2. Llama 3.3 (OpenRouter) - Backup de Elite
-            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, "meta-llama/llama-3.3-70b-instruct"))
+            // 2. Gemini 2.5 Flash (Fronteira Tecnológica Nativa)
+            fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
             
-            // 3. Gemini Pro (Backup Supremo)
-            fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-1.5-pro"))
+            // 3. Llama 3.3 70B (OpenRouter - Reserva de Elite)
+            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, "meta-llama/llama-3.3-70b-instruct"))
+
+            // 4. Gemini Pro Latest (Backup de Segurança Nativo)
+            fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-pro-latest"))
         } else {
-            // --- MODO FREE (Zero Custo / 600 usos totais com 3 chaves) ---
+            // --- MODO FREE ---
             val url = BuildConfig.MESTRE_IA_OPENROUTER_URL
             val keys = listOf(
                 BuildConfig.MESTRE_IA_OPENROUTER_1_KEY,
@@ -216,21 +223,31 @@ class MestreIAUseCase(
                 BuildConfig.MESTRE_IA_OPENROUTER_3_KEY
             ).filter { it.isNotEmpty() }
 
-            // 1. DeepSeek R1 Free (Tenta as 3 chaves sequencialmente se houver erro de limite)
+            // 1. DeepSeek R1 Free (OpenRouter)
             keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1:free")) }
             
-            // 2. Qwen 2.5 72B Free (Tenta as 3 chaves)
-            keys.forEach { fila.add(Triple(url, it, "qwen/qwen-2.5-72b-instruct:free")) }
+            // 2. Gemini 2.5 Flash (O mais confiável - Nativo)
+            fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
             
-            // 3. Llama 3.3 70B Free (Tenta as 3 chaves)
+            // 3. Llama 3.3 70B Free (OpenRouter)
             keys.forEach { fila.add(Triple(url, it, "meta-llama/llama-3.3-70b-instruct:free")) }
+            
+            // 4. Qwen 2.5 72B Free (OpenRouter)
+            keys.forEach { fila.add(Triple(url, it, "qwen/qwen-2.5-72b-instruct:free")) }
         }
 
         return fila.filter { it.second.isNotEmpty() }
     }
 
+    /** 
+     * Converte o ID técnico no nome temático do Mestre.
+     * 🛑 NÃO remova mapeamentos sem confirmação do usuário.
+     */
     private fun traduzirModeloParaMestre(id: String): String {
         return when {
+            id.contains("gemini-2.0-flash") -> "Mestre Mensageiro (Gemini 2.0 Flash)"
+            id.contains("gemini-2.0-pro") -> "Mestre Supremo (Gemini 2.0 Pro)"
+            id.contains("gemini-1.5-flash") -> "Mestre Mensageiro (Gemini Flash)"
             id.contains("gemini-1.5-pro") -> "Mestre Supremo (Gemini Pro)"
             id.contains("deepseek-r1:free") -> "Mestre Sábio (R1 Free)"
             id.contains("deepseek-chat") -> "Mestre Sábio (DeepSeek PRO)"
@@ -239,6 +256,23 @@ class MestreIAUseCase(
             id.contains("llama-3.3") -> "Mestre Brutamontes (Llama PRO)"
             else -> "Mestre IA ($id)"
         }
+    }
+
+    fun extrairJsonDeNarrativa(texto: String): String? {
+        val regex = Regex("```json(.*?)```", RegexOption.DOT_MATCHES_ALL)
+        val match = regex.find(texto)
+        return if (match != null) {
+            match.groupValues[1].trim()
+        } else if (texto.trim().startsWith("{")) {
+            texto.trim()
+        } else {
+            null
+        }
+    }
+
+    fun limparNarrativaParaChat(texto: String): String {
+        // LOTE 16: Só remove se for explicitamente JSON. Mantém blocos genéricos de código.
+        return texto.replace(Regex("```json.*?```", RegexOption.DOT_MATCHES_ALL), "").trim()
     }
 
     private fun limparRascunhoIA(texto: String, chunks: List<com.gurps.ficha.model.MestreIAChunk>? = null): String {
@@ -321,9 +355,9 @@ class MestreIAUseCase(
             }
         }
 
-        // 7. EQUIPAMENTOS
+        // 7. EQUIPAMENTOS (Fidelidade 9/10: Suporte a Armas e Armaduras reais do Mestre)
         ficha.equipamentos.forEach { eq ->
-            adicionarEquipamento(eq.nome)
+            adicionarEquipamento(eq)
         }
     }
 
@@ -355,16 +389,52 @@ class MestreIAUseCase(
         }
     }
 
-    fun adicionarEquipamento(nomeSugerido: String) {
-        val arma = repository.armasCatalogo.firstOrNull { similaridade(it.nome, nomeSugerido) >= 0.85 }
-        val armadura = repository.armadurasCatalogo.firstOrNull { similaridade(it.nome, nomeSugerido) >= 0.85 }
+    fun adicionarEquipamento(eqIA: com.gurps.ficha.data.network.MestreIAEquipamento) {
+        val nomeSugerido = eqIA.nome
+        val armaMatch = repository.armasCatalogo.firstOrNull { similaridade(it.nome, nomeSugerido) >= 0.85 }
+        val armaduraMatch = repository.armadurasCatalogo.firstOrNull { similaridade(it.nome, nomeSugerido) >= 0.85 }
         
-        if (arma != null) {
-            viewModel.adicionarEquipamentoArma(arma)
-        } else if (armadura != null) {
-            viewModel.adicionarEquipamentoArmadura(armadura)
-        } else {
-            viewModel.adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nomeSugerido))
+        when {
+            // É uma Arma (ou a IA forneceu dados de dano)
+            eqIA.dano != null || armaMatch != null -> {
+                val def = armaMatch ?: com.gurps.ficha.model.ArmaCatalogoItem(
+                    id = "ia_${nomeSugerido.lowercase().replace(" ", "_")}",
+                    nome = nomeSugerido,
+                    tipoCombate = if (nomeSugerido.contains("arco", true) || nomeSugerido.contains("pistola", true)) "distancia" else "corpo_a_corpo",
+                    categoria = "IA",
+                    grupo = "IA",
+                    stMinimo = eqIA.st_min ?: 10,
+                    danoRaw = eqIA.dano ?: "1d-2",
+                    custoBase = eqIA.custo,
+                    pesoBaseKg = eqIA.peso,
+                    aparar = eqIA.aparar ?: "0",
+                    observacoes = "Forjado pelo Mestre IA"
+                )
+                viewModel.adicionarEquipamentoArma(def)
+            }
+            // É uma Armadura (ou a IA forneceu RD)
+            eqIA.rd != null || armaduraMatch != null -> {
+                val def = armaduraMatch ?: com.gurps.ficha.model.ArmaduraCatalogoItem(
+                    id = "ia_${nomeSugerido.lowercase().replace(" ", "_")}",
+                    nome = nomeSugerido,
+                    nt = 4,
+                    local = "corpo",
+                    rd = eqIA.rd?.toString() ?: "1",
+                    custoBase = eqIA.custo,
+                    pesoBaseKg = eqIA.peso,
+                    observacoes = "Forjado pelo Mestre IA"
+                )
+                viewModel.adicionarEquipamentoArmadura(def)
+            }
+            // É um Equipamento Genérico
+            else -> {
+                viewModel.adicionarEquipamento(com.gurps.ficha.model.Equipamento(
+                    nome = nomeSugerido,
+                    peso = eqIA.peso.toFloat(),
+                    custo = eqIA.custo.toFloat(),
+                    quantidade = eqIA.quantidade
+                ))
+            }
         }
     }
 
