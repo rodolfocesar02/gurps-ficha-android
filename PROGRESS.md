@@ -104,6 +104,10 @@ Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Eve
 * [Feito] Lote 56: Local-First RAG (Busca Vetorial) | `(Commit: c110272)`.(Problema: O buscador semântico no MestreIARagEngine pode ser pesado para buscas em muitos arquivos JSON.
 Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index pré-calculado) para que o findRelevantChunks seja instantâneo, mesmo com manuais extensos.)
 * [Feito] Lote 57: Reconstrução de Elite (RAG 1194 Chunks) e Triplo Fallback (600 Usos) | `(Manual: Antigravity)`
+* [Feito] Lote 19: Estabilização do Mestre IA (Motor de Reparo por Pilha) | `(Commit: bf9b73c)`
+    * Implementação de algoritmo de fechamento de JSON baseado em Pilha (Stack) e Botões de Diagnóstico UI.
+* [Feito] Lote 20: IA Master Laboratory (Suite de Auditoria Python) | `(Commit: bf9b73c)`
+    * Criação do validador de fidelidade ao catálogo e simulador de stress offline em Python.
 
  Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
