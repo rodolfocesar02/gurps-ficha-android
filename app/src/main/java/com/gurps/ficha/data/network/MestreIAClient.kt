@@ -191,6 +191,8 @@ object MestreIAClient {
                                     }
                                     if (parsed.second != null) {
                                         capturedToolCalls.add(parsed.second!!)
+                                        val nomeAmigavel = if (parsed.second!!.name == MestreIATools.TOOL_FILL_SHEET) "Forjador de Fichas" else "Pesquisador de Regras"
+                                        onChunk?.invoke("\n\n⚙️ *Iniciando $nomeAmigavel...*")
                                     }
                                 } else {
                                     val json = JSONObject(data)
@@ -211,7 +213,11 @@ object MestreIAClient {
                                             val func = tc.optJSONObject("function")
                                             if (func != null) {
                                                 val name = func.optString("name", "")
-                                                if (name.isNotEmpty()) openAIToolName = name
+                                                if (name.isNotEmpty()) {
+                                                    openAIToolName = name
+                                                    val nomeAmigavel = if (name == MestreIATools.TOOL_FILL_SHEET) "Forjador de Fichas" else "Pesquisador de Regras"
+                                                    onChunk?.invoke("\n\n⚙️ *Iniciando $nomeAmigavel...*")
+                                                }
                                                 openAIToolArgs += func.optString("arguments", "")
                                             }
                                         }
