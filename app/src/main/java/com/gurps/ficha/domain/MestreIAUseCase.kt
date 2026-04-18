@@ -5,6 +5,7 @@ import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAResponse
 import com.gurps.ficha.data.network.MestreIAPericiaIA
 import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.data.network.MestreIATools
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -106,23 +107,44 @@ class MestreIAUseCase(
                         
                         // --- LOTE 61: ORQUESTRADOR REACT (TOOL CALLING) ---
                         if (resposta.toolCalls.isNotEmpty()) {
-                            val fillSheetCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }
-                            if (fillSheetCall != null) {
-                                android.util.Log.i("MestreIA", "Agent disparou ferramenta fill_character_sheet!")
-                                // Usamos os argumentos nativos da API como o JSON garantido, escapando de Regex e Auto-Healing!
-                                resposta = resposta.copy(
-                                    text = "📦 Ficha preenchida com sucesso pelo Forjador Nativo (Tool Calling).",
-                                    rawJson = fillSheetCall.args.toString()
-                                )
-                            }
                             
                             val searchCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_SEARCH_RULES }
                             if (searchCall != null) {
-                                android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules para: ${searchCall.args.optString("query")}")
-                                // Para Lote 61, como o contexto RAG já foi pré-alimentado pelo Android de forma estática antes do prompt, 
-                                // e a ferramenta foi fornecida como fallback, se a IA chamou é porque precisava de mais.
-                                // Idealmente faríamos uma recursão aqui chamando o RagEngine novamente e fazendo um novo POST.
-                                // Para não quebrar o fluxo de UI, se a IA retornar text, mantemos.
+                                val query = searchCall.args.optString("query", "")
+                                android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules para: $query")
+                                val extraContext = MestreIARagEngine.buscarContexto(query)
+                                
+                                val novoPrompt = "[SISTEMA AUTOMÁTICO] Resultado da busca por regras ('$query'):\n$extraContext\n\nPor favor, com base nessas regras, continue sua tarefa."
+                                
+                                val historicoAtualizado = viewModel.mestreIAChatHistory.map { it.role to it.text }.toMutableList()
+                                if (resposta.text.isNotBlank()) {
+                                    historicoAtualizado.add("model" to resposta.text)
+                                }
+                                
+                                val respostaRecursiva = MestreIAClient.perguntarAoMestre(
+                                    baseUrl = url,
+                                    apiKey = key,
+                                    workspaceSlug = model,
+                                    prompt = novoPrompt,
+                                    history = historicoAtualizado,
+                                    contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, modo),
+                                    catalogo = catalogoLocal.catalogo,
+                                    modo = modo,
+                                    onChunk = onChunk
+                                )
+                                
+                                if (!respostaRecursiva.text.startsWith("Erro")) {
+                                    resposta = respostaRecursiva.copy(text = resposta.text + "\n" + respostaRecursiva.text)
+                                }
+                            }
+
+                            val fillSheetCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }
+                            if (fillSheetCall != null) {
+                                android.util.Log.i("MestreIA", "Agent disparou ferramenta fill_character_sheet!")
+                                resposta = resposta.copy(
+                                    text = resposta.text + "\n📦 Ficha preenchida com sucesso pelo Forjador Nativo (Tool Calling).",
+                                    rawJson = fillSheetCall.args.toString()
+                                )
                             }
                         }
 

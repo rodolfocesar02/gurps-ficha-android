@@ -35,13 +35,11 @@ object MestreIATools {
         })
 
         // Ferramenta 2: Criação de Fichas (Apenas modo Geração)
-        if (modo == "geracao") {
-            functionDeclarations.put(JSONObject().apply {
-                put("name", TOOL_FILL_SHEET)
-                put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
-                put("parameters", getSheetSchemaGemini())
-            })
-        }
+        functionDeclarations.put(JSONObject().apply {
+            put("name", TOOL_FILL_SHEET)
+            put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
+            put("parameters", getSheetSchemaGemini())
+        })
 
         return JSONArray().put(JSONObject().put("functionDeclarations", functionDeclarations))
     }
@@ -70,16 +68,14 @@ object MestreIATools {
             })
         })
 
-        if (modo == "geracao") {
-            tools.put(JSONObject().apply {
-                put("type", "function")
-                put("function", JSONObject().apply {
-                    put("name", TOOL_FILL_SHEET)
-                    put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
-                    put("parameters", getSheetSchemaOpenAI())
-                })
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_FILL_SHEET)
+                put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
+                put("parameters", getSheetSchemaOpenAI())
             })
-        }
+        })
 
         return tools
     }
