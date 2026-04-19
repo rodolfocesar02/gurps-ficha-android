@@ -142,6 +142,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     *   Substituição da busca engessada FTS4 (`AND` total) por uma "Busca em Cascata" inteligente.
     *   Tolerância a Erros: Se o usuário digitar "descricoa", a busca flexível garante o Ranqueamento através de outras palavras corretas ("Perícia", "Furtividade"), evitando a devolução de resultados vazios e mitigando as temidas "alucinações da IA".
 
+### Lote 62: Migração para GraphRAG (NanoGraphRAG)
+*   **Commit (Setup):** `setup: instalação da biblioteca nano-graphrag e criação de branch`
+*   **Commit (Limpeza):** `cleanup: remoção de arquivos obsoletos do motor RAG vetorial`
+*   **Melhorias Implementadas:**
+    *   Criação da branch `feature/mestre-ia-graphrag` e instalação da engine NanoGraphRAG via PIP.
+    *   Delete permanente do antigo motor heurístico RAG (`MestreIARagEngine`, etc) para dar lugar ao grafo!
+
 
  Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
