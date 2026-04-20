@@ -184,9 +184,10 @@ open class DataRepository(internal val context: Context) {
     suspend fun buscarRecortesManual(query: String): List<com.gurps.ficha.model.MestreIAChunk> {
         return manualChunkDao.buscarRegras(query, 10).map { entity ->
             com.gurps.ficha.model.MestreIAChunk(
+                chunk_id = entity.chunk_id,
+                text = entity.text,
                 source_title = entity.source_title,
-                page_number = entity.page_number,
-                text = entity.text
+                page_number = entity.page_number
             )
         }
     }

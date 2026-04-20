@@ -8,7 +8,10 @@ import androidx.room.Query
 @Dao
 interface GraphNodeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(nodes: List<GraphNodeEntity>)
+    suspend fun insertNode(node: GraphNodeEntity)
+
+    @Query("SELECT COUNT(*) FROM graph_nodes")
+    suspend fun countNodes(): Int
 
     @Query("DELETE FROM graph_nodes")
     suspend fun clearAll()
@@ -19,7 +22,7 @@ interface GraphNodeDao {
     @Query("""
         SELECT * FROM graph_nodes 
         WHERE graph_nodes MATCH :query 
-        ORDER BY level ASC, rank DESC 
+        ORDER BY level ASC 
         LIMIT 10
     """)
     suspend fun searchGraph(query: String): List<GraphNodeEntity>
