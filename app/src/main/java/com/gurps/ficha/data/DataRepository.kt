@@ -109,6 +109,9 @@ open class DataRepository(internal val context: Context) {
         get() = _temasMestreIA ?: carregarTemasMestreIA().also { _temasMestreIA = it }
 
     private val catalogLoaders = com.gurps.ficha.domain.loaders.CatalogLoaders(context)
+    private val database by lazy { com.gurps.ficha.data.storage.FichaDatabase.getInstance(context) }
+    private val graphNodeDao by lazy { database.graphNodeDao() }
+    private val manualChunkDao by lazy { database.manualChunkDao() }
 
     fun getCatalogLoadErrors(): Map<String, String> {
         return synchronized(catalogLoaders.loadErrors) { catalogLoaders.loadErrors.toMap() }
@@ -164,6 +167,28 @@ open class DataRepository(internal val context: Context) {
             }
             .map { it.definicao }
             .toList()
+    }
+
+    // --- MÉTODOS PARA GRAPHRAG (LOTE 62) ---
+
+    /**
+     * Busca nos resumos de comunidades e entidades do Grafo.
+     */
+    suspend fun buscarResumosGrafo(query: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
+        return graphNodeDao.searchGraph(query)
+    }
+
+    /**
+     * Busca nos recortes manuais brutos (FTS4).
+     */
+    suspend fun buscarRecortesManual(query: String): List<com.gurps.ficha.model.MestreIAChunk> {
+        return manualChunkDao.buscarRegras(query, 10).map { entity ->
+            com.gurps.ficha.model.MestreIAChunk(
+                source_title = entity.source_title,
+                page_number = entity.page_number,
+                text = entity.text
+            )
+        }
     }
 
     fun filtrarTecnicasCatalogo(busca: String = "", sourceBook: String? = null): List<TecnicaCatalogoItem> {

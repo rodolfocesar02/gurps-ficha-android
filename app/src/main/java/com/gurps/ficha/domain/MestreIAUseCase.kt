@@ -111,11 +111,13 @@ class MestreIAUseCase(
                             val searchCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_SEARCH_RULES }
                             if (searchCall != null) {
                                 val query = searchCall.args.optString("query", "")
-                                android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules para: $query")
-                                val ragResult = MestreIARagEngine.buscarContexto(query, repository)
-                                val extraContext = ragResult.chunks.joinToString("\n\n") { "Regra: ${it.source_title} (pág. ${it.page_number}) - ${it.text}" }
+                                android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules (GraphRAG) para: $query")
                                 
-                                val novoPrompt = "[SISTEMA AUTOMÁTICO] Resultado da busca por regras ('$query'):\n$extraContext\n\nPor favor, com base nessas regras, continue sua tarefa."
+                                // --- LOTE 62: CONSULTA AO GRAFO ---
+                                val graphResult = MestreIAGraphEngine.buscarNoGrafo(query, repository)
+                                val extraContext = MestreIAGraphEngine.formatarParaIA(graphResult)
+                                
+                                val novoPrompt = "[SISTEMA AUTOMÁTICO] Resultado da busca no Grafo de Conhecimento GURPS ('$query'):\n$extraContext\n\nPor favor, com base nessas relações e regras, continue sua tarefa."
                                 
                                 val historicoAtualizado = viewModel.mestreIAChatHistory.map { it.role to it.text }.toMutableList()
                                 if (resposta.text.isNotBlank()) {
@@ -496,21 +498,21 @@ class MestreIAUseCase(
     }
 
     suspend fun gerarCatalogoLocal(userPrompt: String): CatalogoLocalResult {
-        val rag = MestreIARagEngine.buscarContexto(userPrompt, repository)
+        val graphResult = MestreIAGraphEngine.buscarNoGrafo(userPrompt, repository)
         
         // No modo GERAÇÃO, somos mais generosos com o catálogo para evitar que a IA invente nomes.
-        val vantSugestao = (rag.vantagens + repository.vantagens.take(30).map { it.nome }).distinct()
-        val periSugestao = (rag.pericias + repository.pericias.take(30).map { it.nome }).distinct()
-        val tecSugestao = (rag.tecnicas + repository.tecnicasCatalogo.take(20).map { it.nome }).distinct()
+        val vantSugestao = (repository.vantagens.take(30).map { it.nome }).distinct()
+        val periSugestao = (repository.pericias.take(30).map { it.nome }).distinct()
+        val tecSugestao = (repository.tecnicasCatalogo.take(20).map { it.nome }).distinct()
 
         val catalogo = MestreIAClient.CatalogoNomes(
             vantagens = vantSugestao,
-            desvantagens = rag.desvantagens,
+            desvantagens = emptyList(), // Será preenchido pelo grafo se necessário
             pericias = periSugestao,
             tecnicas = tecSugestao,
-            magias = rag.magias,
-            chunks = rag.chunks
+            magias = emptyList(),
+            chunks = graphResult.relatedChunks
         )
-        return CatalogoLocalResult(catalogo, rag.chunks.isNotEmpty())
+        return CatalogoLocalResult(catalogo, graphResult.relatedChunks.isNotEmpty() || graphResult.summaries.isNotEmpty())
     }
 }
