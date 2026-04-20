@@ -7,6 +7,7 @@ import com.gurps.ficha.data.network.MestreIAPericiaIA
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.data.network.MestreIATools
 import com.gurps.ficha.domain.rules.CharacterRules
+import com.gurps.ficha.domain.MestreIAContextFilter
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.withContext
@@ -111,7 +112,8 @@ class MestreIAUseCase(
                             val searchCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_SEARCH_RULES }
                             if (searchCall != null) {
                                 val query = searchCall.args.optString("query", "")
-                                android.util.Log.i("MestreIA", "Agent disparou ferramenta search_rules (GraphRAG) para: $query")
+                                android.util.Log.d("MESTRE_IA", "Busca no Grafo iniciada para: $query")
+                                android.util.Log.i("MestreIA", "Agent disparou ferramenta ${MestreIATools.TOOL_SEARCH_RULES} (GraphRAG) para: $query")
                                 
                                 // --- LOTE 62: CONSULTA AO GRAFO ---
                                 val graphResult = MestreIAGraphEngine.buscarNoGrafo(query, repository)
@@ -285,14 +287,14 @@ class MestreIAUseCase(
             // 1. Gemini 2.5 Flash (O mais confiável, rápido e nativo - Prioridade Máxima agora)
             fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
 
-            // 2. DeepSeek R1 Free (OpenRouter) - Rebaixado por instabilidade 404
-            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1:free")) }
+            // 2. DeepSeek R1 (OpenRouter) - Estabilizado (Sem sufixo :free)
+            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1")) }
             
-            // 3. Llama 3.3 70B Free (OpenRouter)
-            keys.forEach { fila.add(Triple(url, it, "meta-llama/llama-3.3-70b-instruct:free")) }
+            // 3. Llama 3.3 70B (OpenRouter)
+            keys.forEach { fila.add(Triple(url, it, "meta-llama/llama-3.3-70b-instruct")) }
             
-            // 4. Qwen 2.5 72B Free (OpenRouter)
-            keys.forEach { fila.add(Triple(url, it, "qwen/qwen-2.5-72b-instruct:free")) }
+            // 4. Qwen 2.5 72B (OpenRouter)
+            keys.forEach { fila.add(Triple(url, it, "qwen/qwen-2.5-72b-instruct")) }
         }
 
         return fila.filter { it.second.isNotEmpty() }
@@ -308,11 +310,10 @@ class MestreIAUseCase(
             id.contains("gemini-2.0-pro") -> "Mestre Supremo (Gemini 2.0 Pro)"
             id.contains("gemini-1.5-flash") -> "Mestre Mensageiro (Gemini Flash)"
             id.contains("gemini-1.5-pro") -> "Mestre Supremo (Gemini Pro)"
-            id.contains("deepseek-r1:free") -> "Mestre Sábio (R1 Free)"
+            id.contains("deepseek-r1") -> "Mestre Sábio (R1)"
             id.contains("deepseek-chat") -> "Mestre Sábio (DeepSeek PRO)"
-            id.contains("qwen") -> "Mestre Estrategista (Qwen Free)"
-            id.contains("llama-3.3") && id.contains(":free") -> "Mestre Brutamontes (Llama Free)"
-            id.contains("llama-3.3") -> "Mestre Brutamontes (Llama PRO)"
+            id.contains("qwen") -> "Mestre Estrategista (Qwen)"
+            id.contains("llama-3.3") -> "Mestre Brutamontes (Llama)"
             else -> "Mestre IA ($id)"
         }
     }
@@ -383,8 +384,8 @@ class MestreIAUseCase(
         viewModel.atualizarVitalidade(ficha.atributos.ht)
 
         // 3. VANTAGENS E DESVANTAGENS
-        ficha.vantagens.forEach { adicionarVantagem(it.nome) }
-        ficha.desvantagens.forEach { adicionarVantagem(it.nome) } // Reutiliza lógica de busca semântica
+        ficha.vantagens.forEach { adicionarVantagem(it) }
+        ficha.desvantagens.forEach { adicionarVantagem(it) } // Reutiliza lógica de busca semântica
 
         // 4. PERÍCIAS
         ficha.pericias.forEach { adicionarPericia(it.nome, it.nivel) }
@@ -408,7 +409,7 @@ class MestreIAUseCase(
 
         // 6. MAGIAS
         ficha.magias.forEach { magiaIA ->
-            val def = repository.magias.firstOrNull { it.nome.equals(magiaIA.nome, true) }
+            val def = repository.magias.firstOrNull { it.nome.equals(magiaIA, true) }
             if (def != null) {
                 viewModel.adicionarMagia(def)
             }

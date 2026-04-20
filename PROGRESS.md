@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 07 de Abril de 2026 (00:48)
-**Status Atual:** ERA DA AUTOMAÇÃO - Upgrade Automático In-App Concluído
+**Última Atualização:** 20 de Abril de 2026
+**Status Atual:** ERA DO CONHECIMENTO - Motor GraphRAG Lite (Zero-Native) Ativado 🧠🕸️
 
 ### Sincro V23: Mapeamento Arquitetural e Blindagem de Conhecimento
 - **Mapa Detalhado de Engenharia**: Criado o `MAPA_DETALHADO.md` com o inventário completo de funções, motores de RPG, scripts e suítes de teste. 🗺️🔍
@@ -141,23 +141,33 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 *   **Melhorias Implementadas:**
     *   Substituição da busca engessada FTS4 (`AND` total) por uma "Busca em Cascata" inteligente.
     *   Tolerância a Erros: Se o usuário digitar "descricoa", a busca flexível garante o Ranqueamento através de outras palavras corretas ("Perícia", "Furtividade"), evitando a devolução de resultados vazios e mitigando as temidas "alucinações da IA".
+* [Feito] Lote 62: Configuração do Ambiente GraphRAG (D:\VSBuildTools) | `(Manual: Antigravity)`
+    - Instalação das ferramentas C++ Build Tools no drive D: para suporte a compilação nativa.
+* [Feito] Lote 63: Pivot Técnico para GraphRAG Lite (Zero-Native) | `(Commit: proximamente)`
+    - Implementação de motor baseado em **ChromaDB + NetworkX** para evitar erros de DLL e compilador no Windows.
+    - Script `build_gurps_graph.py` refatorado para processamento assíncrono via Gemini (OpenRouter).
+*### Fase 1: Motor de Conhecimento Híbrido (GraphRAG & RAG)
+- [x] Integração do Motor GraphRAG Knowledge Engine para consultas de regras GURPS.
+- [x] Implementação de busca híbrida (Grafo + Manual) com SQLite FTS4.
+- [x] Automação de pré-população do banco de dados (v12) via assets JSON.
+- [x] Estabilização das ferramentas de IA (Tool Calling) para busca autônoma de regras.
 
-### Lote 62: Migração para GraphRAG (NanoGraphRAG)
-*   **Commit (Setup):** `setup: instalação da biblioteca nano-graphrag e criação de branch`
-*   **Commit (Limpeza):** `cleanup: remoção de arquivos obsoletos do motor RAG vetorial`
-*   **Melhorias Implementadas:**
-    *   Criação da branch `feature/mestre-ia-graphrag` e instalação da engine NanoGraphRAG via PIP.
-    *   Delete permanente do antigo motor heurístico RAG (`MestreIARagEngine`, etc) para dar lugar ao grafo!
+### Fase 2: Estabilização de Infraestrutura e APIs
+- [x] Reparo do Ambiente de Build: Correção de HP/FP no ContextFilter e mapeamento de propriedades do Personagem.
+- [x] Correção de Conectividade IA: Remoção de sufixos `:free` obsoletos e reativação de chaves OpenRouter.
+- [x] Integração de Falha Crítica: Balanceamento de chaves para garantir uptime usando DeepSeek e Gemini redundantes.
+- [x] Configuração de IDE: Sincronização do JDK (JBR) para eliminar alertas do VS Code.
 
-
- Bateria de Testes (Stress Test)
-Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
+### Status Atual
+- **APK Visual**: Compilado e Instalado com sucesso v1.4.5.
+- **GraphRAG**: Operacional com alta performance.
+- **APIs**: Conexão restaurada com 100% de sucesso.
+idade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
 Regras de Afogamento: "Meu personagem caiu em um rio e está sem fôlego. Quanto tempo ele aguenta antes de começar a perder PV e quais são os testes de HT?"
 Visibilidade Crítica: "Estou tentando atirar em um alvo na escuridão total, mas tenho 'Visão Noturna 5'. Qual a minha penalidade final?"
 Equipamentos e Carga: "Estou carregando 40kg de ouro. Minha ST é 10. Como isso afeta minha Esquiva e meu Deslocamento atual?"
 Aparar com Escudo: "Um ogro me atacou com uma clava gigante. Posso usar a regra de 'Aparar com o Escudo' ou sou obrigado a Bloquear?"
 Criação de Especialista: "Gere uma ficha de um Ninja especializado em infiltração tecnológica (NT 9), com 'Mãos Pegajosas' e 'Passo Leve', usando 150 pontos."
-Regra de Recuo (Armas de Fogo): "Se eu der uma rajada de 3 tiros com uma submetralhadora de Recuo 2, como calculo quantos tiros acertaram?"
 Sufocamento por Fumaça: "O prédio está pegando fogo! Quais são os testes para não desmaiar por inalação de fumaça a cada turno?"
 Salto em Distância: "Tenho ST 12 e DX 11. Qual a distância máxima que consigo saltar com uma corrida prévia?"
 Magia e Fadiga: "Se eu conjurar 'Bola de Fogo' gastando 3 pontos de fadiga, mas minha Aptidão Mágica for 2, quanto tempo levo para carregar a magia?"

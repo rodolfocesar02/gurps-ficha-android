@@ -9,7 +9,7 @@ import org.json.JSONObject
  */
 object MestreIATools {
 
-    const val TOOL_SEARCH_RULES = "search_rules"
+    const val TOOL_SEARCH_RULES = "consultar_grafo_regras"
     const val TOOL_FILL_SHEET = "fill_character_sheet"
 
     /**
@@ -21,13 +21,13 @@ object MestreIATools {
         // Ferramenta 1: Pesquisa de Regras (Sempre disponível)
         functionDeclarations.put(JSONObject().apply {
             put("name", TOOL_SEARCH_RULES)
-            put("description", "Busca regras oficiais de GURPS 4E no banco de dados local. Use esta ferramenta sempre que tiver dúvida sobre uma regra, modificador ou página do manual antes de responder.")
+            put("description", "Consulta o Grafo de Conhecimento oficial de GURPS 4E. Use esta ferramenta para obter resumos inteligentes sobre regras, vantagens, perícias e como elas se relacionam mecanicamente.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
                     put("query", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Palavras-chave para a busca. Ex: 'Ataque Total', 'Furtividade', 'Dano de Queda'.")
+                        put("description", "Termo de busca ou dúvida técnica. Ex: 'Como funciona o Recuo?', 'Tabela de Dano por Queda'.")
                     })
                 })
                 put("required", JSONArray().put("query"))
@@ -54,13 +54,13 @@ object MestreIATools {
             put("type", "function")
             put("function", JSONObject().apply {
                 put("name", TOOL_SEARCH_RULES)
-                put("description", "Busca regras oficiais de GURPS 4E no banco de dados local. Use esta ferramenta sempre que tiver dúvida sobre uma regra, modificador ou página do manual antes de responder.")
+                put("description", "Consulta o Grafo de Conhecimento oficial de GURPS 4E. Use esta ferramenta para obter resumos inteligentes sobre regras, vantagens, perícias e como elas se relacionam mecanicamente.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {
                         put("query", JSONObject().apply {
                             put("type", "string")
-                            put("description", "Palavras-chave para a busca. Ex: 'Ataque Total', 'Furtividade'.")
+                            put("description", "Termo de busca ou dúvida técnica. Ex: 'Como funciona o Recuo?', 'Tabela de Dano por Queda'.")
                         })
                     })
                     put("required", JSONArray().put("query"))

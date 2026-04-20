@@ -9,7 +9,7 @@ import androidx.room.*
 @Fts4
 @Entity(tableName = "graph_nodes")
 data class GraphNodeEntity(
-    val entity_id: String,
+    val entityId: String,  // ID único
     val title: String,
     val level: Int,       // Nível da comunidade no grafo
     val summary: String,  // Conhecimento destilado
