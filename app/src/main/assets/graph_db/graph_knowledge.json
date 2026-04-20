@@ -1,0 +1,26 @@
+[
+  {
+    "entity_id": "gurps4e",
+    "title": "GURPS 4ª Edição: Personagens",
+    "summary": "O trecho descreve a equipe de criação e revisão do Módulo Básico: Personagens de GURPS 4ª Edição. Ele fornece informações sobre os autores, editores, artistas e revisores, bem como o ISBN e um link para atualizações e outros livros.",
+    "category": "Geral"
+  },
+  {
+    "entity_id": "Pericias",
+    "title": "Perícias",
+    "summary": "Perícias representam o conhecimento e habilidades de um personagem. Sua proficiência em uma perícia é determinada rolando 3d6 e tentando obter um resultado menor ou igual ao nível da perícia. O nível da perícia é baseado no atributo dominante da perícia mais ou menos um modificador, ou pode ser comprado usando pontos de personagem. Cada perícia tem um nível de dificuldade (Fácil, Médio, Difícil ou Muito Difícil) que afeta o custo para aumentar o nível da perícia.",
+    "category": "Exploração"
+  },
+  {
+    "entity_id": "skill",
+    "title": "Perícias",
+    "summary": "Perícias representam o conhecimento e a aptidão de um personagem numa área específica. Elas são classificadas por dificuldade e atributo base, e a rolagem de perícia envolve rolar 3d6 tentando obter um resultado menor ou igual ao nível da perícia. Sucesso indica proficiência na tarefa, enquanto um fracasso pode ter consequências. Perícias podem ser complementares, permitindo bônus em testes relacionados, e o manual explora regras para nivelamento de perícia através de custo em Pontos de Experiência. O uso de Perícias Curinga também é abordado como regra opcional.",
+    "category": "Atributo"
+  },
+  {
+    "entity_id": "GURPS",
+    "title": "Generic Universal RolePlaying System",
+    "summary": "GURPS é um sistema de RPG genérico e universal que visa simular personagens e cenários de forma flexível e coerente. O sistema prioriza a organização das regras e a facilidade de jogo, com cálculos complexos realizados previamente e registrados na ficha do personagem. Sua universalidade permite adaptar aventuras de diversos jogos, utilizando métricas e unidades de medida padrão, garantindo compatibilidade entre diferentes mundos e estilos de jogo.",
+    "category": "Sistema"
+  }
+]

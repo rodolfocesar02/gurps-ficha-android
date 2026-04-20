@@ -6,13 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [FichaEntity::class, ManualChunkEntity::class],
-    version = 10,
+    entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class],
+    version = 11,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
     abstract fun fichaDao(): FichaDao
     abstract fun manualChunkDao(): ManualChunkDao
+    abstract fun graphNodeDao(): GraphNodeDao
 
     companion object {
         @Volatile
