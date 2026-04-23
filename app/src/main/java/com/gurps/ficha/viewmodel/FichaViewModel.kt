@@ -407,6 +407,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
     fun descartarFichaPendente() = iaDelegate.descartarPendente()
     fun limparChatMestreIA() = iaDelegate.limparChat()
+    val mestreIASavedSessions get() = iaDelegate.savedSessions
+    fun carregarHistoricoMestreIA() = iaDelegate.carregarHistorico()
+    fun carregarSessaoMestreIA(id: Long) = iaDelegate.carregarSessao(id)
     /**
      * Função desabilitada na arquitetura PRIME (Segurança Sete Chaves).
      * As chaves agora são injetadas via BuildConfig.

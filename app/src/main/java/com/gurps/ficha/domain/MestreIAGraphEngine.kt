@@ -23,8 +23,12 @@ object MestreIAGraphEngine {
      */
     suspend fun buscarNoGrafo(query: String, repository: DataRepository): GraphSearchResult = withContext(Dispatchers.IO) {
         // 1. Buscar nos Resumos do Grafo (Entidades e Comunidades)
-        // Usamos FTS4 para encontrar os caminhos lógicos mais prováveis
-        val nodesFound = repository.buscarResumosGrafo(query)
+        // Buscamos os essenciais (fixos) + os específicos da query
+        val essentialNodes = repository.buscarResumosEssenciais()
+        val dynamicNodes = repository.buscarResumosGrafo(query)
+        
+        // Unificar sem duplicatas
+        val nodesFound = (essentialNodes + dynamicNodes).distinctBy { it.entityId }
 
         // 2. Buscar chunks específicos que dão suporte a esses nós (Busca Legada como Fallback/Suporte)
         val chunksFound = repository.buscarRecortesManual(query)

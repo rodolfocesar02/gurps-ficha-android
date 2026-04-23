@@ -63,7 +63,8 @@ object MestreIAClient {
         val pericias: List<String> = emptyList(),
         val tecnicas: List<String> = emptyList(),
         val magias: List<String> = emptyList(),
-        val chunks: List<com.gurps.ficha.model.MestreIAChunk> = emptyList()
+        val chunks: List<com.gurps.ficha.model.MestreIAChunk> = emptyList(),
+        val summaries: List<com.gurps.ficha.data.storage.GraphNodeEntity> = emptyList()
     ) {
         fun toJson(): String = Gson().toJson(this)
     }
@@ -112,6 +113,11 @@ object MestreIAClient {
                 catalogo.chunks.joinToString("\n") { "[${it.source_title} Pág. ${it.page_number}]: ${it.text}" }
             } else ""
 
+            val resumosGrafo = if (catalogo?.summaries?.isNotEmpty() == true) {
+                "\nCONHECIMENTO DO GRAFO (Contexto Macro e Relações):\n" +
+                catalogo.summaries.joinToString("\n") { "Tópico: ${it.title} | Resumo: ${it.summary}" }
+            } else ""
+
                 val instrucaoModo = when(modo) {
                     "geracao" -> """
                         Você é o MESTRE CONSULTOR de GURPS 4E BR (Sistema Oficial).
@@ -144,6 +150,8 @@ object MestreIAClient {
             val systemPulse = """
                 Você é o Mestre Digital 2.0, assistente de GURPS 4ª Edição.
                 $instrucaoModo
+                
+                $resumosGrafo
                 
                 $fragmentosRegras
                 

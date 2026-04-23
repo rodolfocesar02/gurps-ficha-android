@@ -178,6 +178,10 @@ open class DataRepository(internal val context: Context) {
         return graphNodeDao.searchGraph(query)
     }
 
+    suspend fun buscarResumosEssenciais(): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
+        return graphNodeDao.getEssentialNodes()
+    }
+
     /**
      * Busca nos recortes manuais brutos (FTS4).
      */

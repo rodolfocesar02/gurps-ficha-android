@@ -149,10 +149,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Migração do Banco de Dados SQLite para suporte à tabela `graph_nodes` e busca híbrida.
 * [Feito] Lote 65: Estabilização de APIs e Chaves (OpenRouter/DeepSeek) | `(Commit: 8f45a91)`
     - Remoção de sufixos :free obsoletos e rotação de credenciais ativas.
-* [Feito] Lote 66: Auditoria de Dados e Injeção de Regras Mestre | `(Commit: pendente)`
+* [Feito] Lote 66: Auditoria de Dados e Injeção de Regras Mestre | `(Commit: 92b4cdd)`
     - Limpeza de 284 duplicatas no manual (Magia).
     - Padronização de referências: `[MB]`, `[Mág]`, `[AM]`.
     - Injeção de Tabelas Fundamentais (Distância, MT, Escuridão, Cobertura) no Grafo.
+* [Feito] Lote 67: UX de Elite - Botão de Copiar e Histórico Persistente | `(Commit: pendente)`
+    - Implementação do LocalClipboardManager para cópia rápida de respostas.
+    - Criação de tabelas `chat_sessions` e `chat_messages` no SQLite (V13).
+    - Interface de seletor de histórico para recuperação de conversas passadas.
 
 
 
