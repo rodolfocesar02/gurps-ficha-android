@@ -3,42 +3,47 @@
     {
       "id": "fogo",
       "canonical": "fogo",
-      "keywords": ["chamas", "calor", "incêndio", "queimadura", "térmico", "explosivo", "fogueira", "lava", "quente"]
+      "keywords": ["chamas", "calor", "incendio", "queimadura", "termico", "explosivo", "fogueira", "lava", "quente"]
     },
     {
       "id": "agua",
-      "canonical": "água",
-      "keywords": ["gelo", "frio", "umidade", "líquido", "neve", "geada", "chuva", "mar", "oceano", "vapor"]
+      "canonical": "agua",
+      "keywords": ["gelo", "frio", "umidade", "liquido", "neve", "geada", "chuva", "mar", "oceano", "vapor", "submerso", "nadar", "mergulho", "natacao", "profundidade", "liquidos"]
+    },
+    {
+      "id": "arma_distancia",
+      "canonical": "arma de fogo",
+      "keywords": ["pistola", "rifle", "projetil", "disparo", "tiro", "balistica", "alcance", "municao", "calibre", "bala", "atirando", "precisao"]
     },
     {
       "id": "espada",
       "canonical": "espada",
-      "keywords": ["lâmina", "corte", "sabre", "florete", "katana", "cimitarra", "rapieira", "cutelo", "esgrima"]
+      "keywords": ["lamina", "corte", "sabre", "florete", "katana", "cimitarra", "rapieira", "cutelo", "esgrima"]
     },
     {
       "id": "lanca",
-      "canonical": "lança",
-      "keywords": ["pique", "alabarda", "haste", "tridente", "estoque", "arremesso", "projétil"]
+      "canonical": "lanca",
+      "keywords": ["pique", "alabarda", "haste", "tridente", "estoque", "arremesso", "projetil"]
     },
     {
       "id": "guerreiro",
       "canonical": "guerreiro",
-      "keywords": ["luta", "combate", "soldado", "gladiador", "bárbaro", "cavaleiro", "mercenário", "armadura", "escudo"]
+      "keywords": ["luta", "combate", "soldado", "gladiador", "barbaro", "cavaleiro", "mercenario", "armadura", "escudo"]
     },
     {
       "id": "mago",
       "canonical": "mago",
-      "keywords": ["magia", "arcano", "feitiço", "encantamento", "bruxo", "feiticeiro", "mana", "espiritual", "sobrenatural"]
+      "keywords": ["magia", "arcano", "feitico", "encantamento", "bruxo", "feiticeiro", "mana", "espiritual", "sobrenatural"]
     },
     {
       "id": "ladrao",
-      "canonical": "ladrão",
+      "canonical": "ladrao",
       "keywords": ["furtividade", "sombra", "esconder", "silencioso", "roubo", "armadilha", "gazua", "veneno", "agilidade"]
     },
     {
       "id": "cura",
       "canonical": "cura",
-      "keywords": ["saúde", "recuperação", "medicina", "primeiros socorros", "vitalicidade", "regeneração", "bênção"]
+      "keywords": ["saude", "recuperacao", "medicina", "primeiros socorros", "vitalicidade", "regeneracao", "bencao"]
     }
   ]
 }

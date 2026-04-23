@@ -157,10 +157,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Implementação do LocalClipboardManager para cópia rápida de respostas.
     - Criação de tabelas `chat_sessions` e `chat_messages` no SQLite (V13).
     - Interface de seletor de histórico para recuperação de conversas passadas.
+* [Feito] Lote 68: Motor Investigador (Expansão Semântica) | `(Commit: pendente)`
+    - Implementação de Expansão de Query no `MestreIAGraphEngine.kt`.
+    - Enriquecimento do dicionário `mestre_ia_temas.json` com termos de balística e combate subaquático.
+    - Atualização da `TOOL_SEARCH_RULES` para induzir investigação profunda e reporte de progresso.
+    - Protocolo de Auditoria e Investigação (RAG) adicionado às regras do sistema.
 
-
-
- Bateria de Testes (Stress Test)
+### Próximos Passos (Desejos do Usuário):
+- Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
 Regras de Afogamento: "Meu personagem caiu em um rio e está sem fôlego. Quanto tempo ele aguenta antes de começar a perder PV e quais são os testes de HT?"
 Visibilidade Crítica: "Estou tentando atirar em um alvo na escuridão total, mas tenho 'Visão Noturna 5'. Qual a minha penalidade final?"

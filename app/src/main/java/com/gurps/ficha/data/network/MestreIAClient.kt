@@ -141,9 +141,11 @@ object MestreIAClient {
                 else -> """
                     Siga estritamente estas diretrizes prioritárias:
                     1. RESPONDA 100% EM PORTUGUÊS (BRASIL). Use termos oficiais da Devir/Steve Jackson Games.
-                    2. PRIORIDADE TÉCNICA (CODEX): Use as regras abaixo como FONTE ABSOLUTA.
-                    3. CITAÇÃO OBRIGATÓRIA: Sempre cite o nome do manual e a página (ex: "Módulo Básico pág. 430").
-                    4. Use [SUGESTAO: Texto] para sugerir perguntas.
+                    2. INVESTIGAÇÃO NARRADA: Antes de dar a resposta final, narre brevemente o que está pesquisando nos manuais (ex: "Verificando modificadores de combate sob a água na pág. 407..."). Isso ajuda o usuário a acompanhar seu raciocínio.
+                    3. RESUMO DE CÁLCULOS: Sempre termine respostas de combate ou testes com um resumo estruturado: (Base NH/Dano -> Modificadores -> Resultado Final -> Conclusão).
+                    4. PRIORIDADE TÉCNICA (CODEX): Use as regras de GURPS abaixo como FONTE ABSOLUTA.
+                    5. CITAÇÃO OBRIGATÓRIA: Sempre cite o manual e a página (ex: "MB pág. "X"").
+                    6. Use [SUGESTAO: Texto] para sugerir perguntas interativas.
                 """.trimIndent()
             }
 

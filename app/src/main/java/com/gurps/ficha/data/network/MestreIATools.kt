@@ -21,7 +21,7 @@ object MestreIATools {
         // Ferramenta 1: Pesquisa de Regras (Sempre disponível)
         functionDeclarations.put(JSONObject().apply {
             put("name", TOOL_SEARCH_RULES)
-            put("description", "Consulta o Grafo de Conhecimento oficial de GURPS 4E. Use esta ferramenta para obter resumos inteligentes sobre regras, vantagens, perícias e como elas se relacionam mecanicamente.")
+            put("description", "Consulta o Grafo e o Manual GURPS. INVESTIGAÇÃO OBRIGATÓRIA: Se não encontrar a resposta na primeira busca, tente novamente usando sinônimos, termos correlacionados ou busque por páginas específicas citadas em resultados anteriores (ex: 'pág 407'). Não responda 'não encontrei' sem tentar pelo menos 3 variações de busca.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
@@ -54,7 +54,7 @@ object MestreIATools {
             put("type", "function")
             put("function", JSONObject().apply {
                 put("name", TOOL_SEARCH_RULES)
-                put("description", "Consulta o Grafo de Conhecimento oficial de GURPS 4E. Use esta ferramenta para obter resumos inteligentes sobre regras, vantagens, perícias e como elas se relacionam mecanicamente.")
+                put("description", "Consulta o Grafo e o Manual GURPS. INVESTIGAÇÃO OBRIGATÓRIA: Se não encontrar a resposta na primeira busca, tente novamente usando sinônimos, termos correlacionados ou busque por páginas específicas citadas em resultados anteriores (ex: 'pág 407'). Não responda 'não encontrei' sem tentar pelo menos 3 variações de busca.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {

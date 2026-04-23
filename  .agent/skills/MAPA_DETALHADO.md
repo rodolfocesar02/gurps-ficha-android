@@ -36,8 +36,10 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 ---
 ## 5. Data, Network & Social (Conectividade)
 *Persistência de dados, serviços externos e integração social.*
-- **`DataRepository.kt`**: Ponto único de acesso aos catálogos oficiais e aos IDs de canais do Discord salvos.
-- **`storage/FichaDatabase.kt`**: Configuração do SQLite (Room).
+- **`DataRepository.kt`**: Ponto único de acesso aos catálogos oficiais, aos IDs de canais do Discord e agora ao DAO de Histórico do Mestre IA.
+- **`storage/FichaDatabase.kt`**: Configuração do SQLite (Room). Atualizado para v13 para suportar tabelas de histórico de chat.
+- **`storage/ChatHistoryEntity.kt`**: Define as tabelas `chat_sessions` (títulos e datas) e `chat_messages` (mensagens individuais).
+- **`storage/ChatHistoryDao.kt`**: Interface de persistência para salvar, carregar e atualizar o timestamp das conversas da IA.
 - **`network/DiscordRollApiClient.kt`**: O motor de envio. Transfere os resultados das rolagens para o Discord via Webhook.
 - **`viewmodel/delegates/FichaSocialDelegate.kt`**: Gerencia a ativação/desativação do envio automático e as preferências de rede.
 - **`network/MestreIAClient.kt`**: Interface de comunicação com o backend da IA.
@@ -84,8 +86,8 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 - **`network/MestreIATools.kt`**: Catálogo de Ferramentas da IA. Fornece os esquemas validados (Schemas nativo Gemini / padrão OpenAI) de "Functions" que permitem à IA "Preencher Ficha" ou executar a "Busca de Regra".
 - **`domain/MestreIARagEngine.kt`**: O motor RAG (Retrieval-Augmented Generation). Injeta as lógicas de pesquisa de regras baseada nas invocações (Tools) da IA.
 - **`domain/MestreIAUseCase.kt`**: O tradutor. Orquestra as chamadas da IA e usa **Busca Fuzzy** (similaridade) para mapear decisões da IA para as perícias/magias reais do banco de dados local.
-- **`ui/DialogsMestreIA.kt`**: A interface de chat. Onde o usuário digita as perguntas e vê as sugestões da IA.
-- **`viewmodel/delegates/FichaIADelegate.kt`**: O gerente. Controla o histórico das conversas e a execução de **[AÇÕES]** instantâneas sugeridas pela IA.
+- **`ui/DialogsMestreIA.kt`**: A interface de chat. Inclui balões de mensagens com **Botão de Copiar** (LocalClipboardManager) e o **Seletor de Histórico** (HistorySelectorDialog).
+- **`viewmodel/delegates/FichaIADelegate.kt`**: O gerente de inteligência. Controla o histórico das conversas (persistência via Room), o gerenciamento de sessões e a execução de **[AÇÕES]** instantâneas sugeridas pela IA.
 
 **Recursos de IA suportados:**
 1.  **Geração de Personagem**: Fluxo completo de transformar descrição em atributos e habilidades usando Schemas estruturados (Function Calling).
@@ -110,7 +112,7 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 *A base técnica que permite o app rodar no telefone.*
 
 - **`AndroidManifest.xml`**: Onde as permissões de Internet (para IA/Discord) e Acesso a Arquivos são declaradas.
-- **`build.gradle(.kts)`**: Define a versão do app (como a V1.4.5), as bibliotecas usadas e as variantes (Visual vs Pracego).
+- **`build.gradle(.kts)`**: Define a versão do app (como a V1.4.5) e as bibliotecas usadas. Incluída a dependência `material-icons-extended` para suporte a ícones de UX avançada.
 ##  16. Detalhamento: Motor Nexus Arcano (Complexidade de Magia)
 *Onde a resolução de dependências pesadas do GURPS 4E reside (Pasta `motor modo alvo/src/`).*
 

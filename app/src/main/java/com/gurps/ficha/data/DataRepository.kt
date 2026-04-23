@@ -112,6 +112,7 @@ open class DataRepository(internal val context: Context) {
     private val database by lazy { com.gurps.ficha.data.storage.FichaDatabase.getInstance(context) }
     private val graphNodeDao by lazy { database.graphNodeDao() }
     private val manualChunkDao by lazy { database.manualChunkDao() }
+    fun chatHistoryDao() = database.chatHistoryDao()
 
     fun getCatalogLoadErrors(): Map<String, String> {
         return synchronized(catalogLoaders.loadErrors) { catalogLoaders.loadErrors.toMap() }
