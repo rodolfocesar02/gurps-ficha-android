@@ -149,6 +149,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Migração do Banco de Dados SQLite para suporte à tabela `graph_nodes` e busca híbrida.
 * [Feito] Lote 65: Estabilização de APIs e Chaves (OpenRouter/DeepSeek) | `(Commit: 8f45a91)`
     - Remoção de sufixos :free obsoletos e rotação de credenciais ativas.
+* [Feito] Lote 66: Auditoria de Dados e Injeção de Regras Mestre | `(Commit: pendente)`
+    - Limpeza de 284 duplicatas no manual (Magia).
+    - Padronização de referências: `[MB]`, `[Mág]`, `[AM]`.
+    - Injeção de Tabelas Fundamentais (Distância, MT, Escuridão, Cobertura) no Grafo.
+
 
 
  Bateria de Testes (Stress Test)
