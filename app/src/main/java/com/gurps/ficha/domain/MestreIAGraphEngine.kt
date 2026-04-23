@@ -57,9 +57,20 @@ object MestreIAGraphEngine {
         // 3. Buscar chunks específicos no manual usando a Query Expandida
         val chunksFound = repository.buscarRecortesManual(queryFts)
 
+        // 4. INVESTIGAÇÃO DE VIZINHANÇA (Lote 69 - O Toque do Mestre)
+        // Se achamos resultados, pegamos os chunks vizinhos (anterior e próximo)
+        // para garantir que a regra não venha "cortada".
+        val chunksComContexto = mutableSetOf<MestreIAChunk>()
+        chunksComContexto.addAll(chunksFound)
+        
+        chunksFound.take(5).forEach { chunk ->
+            repository.getChunkById(chunk.chunk_id - 1)?.let { chunksComContexto.add(it) }
+            repository.getChunkById(chunk.chunk_id + 1)?.let { chunksComContexto.add(it) }
+        }
+
         GraphSearchResult(
             summaries = nodesFound,
-            relatedChunks = chunksFound
+            relatedChunks = chunksComContexto.toList().sortedBy { it.chunk_id }
         )
     }
 
@@ -79,7 +90,7 @@ object MestreIAGraphEngine {
 
         if (result.relatedChunks.isNotEmpty()) {
             sb.append("--- DETALHES TÉCNICOS (MANUAL) ---\n")
-            result.relatedChunks.take(3).forEach { chunk ->
+            result.relatedChunks.take(15).forEach { chunk ->
                 sb.append("[${chunk.source_title} pág. ${chunk.page_number}] ${chunk.text}\n")
             }
         }

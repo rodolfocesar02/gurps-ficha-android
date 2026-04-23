@@ -157,11 +157,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Implementação do LocalClipboardManager para cópia rápida de respostas.
     - Criação de tabelas `chat_sessions` e `chat_messages` no SQLite (V13).
     - Interface de seletor de histórico para recuperação de conversas passadas.
-* [Feito] Lote 68: Motor Investigador (Expansão Semântica) | `(Commit: pendente)`
-    - Implementação de Expansão de Query no `MestreIAGraphEngine.kt`.
-    - Enriquecimento do dicionário `mestre_ia_temas.json` com termos de balística e combate subaquático.
-    - Atualização da `TOOL_SEARCH_RULES` para induzir investigação profunda e reporte de progresso.
-    - Protocolo de Auditoria e Investigação (RAG) adicionado às regras do sistema.
+* [Feito] Lote 68: Motor Investigador (Expansão Semântica) | `(Commit: c2e2491)`
+* [Feito] Lote 69: O Toque do Mestre (Contexto Adjacente) | `(Commit: pendente)`
+    - Implementação de Busca por Vizinhança (chunks adjacentes) no `MestreIAGraphEngine.kt`.
+    - Novos métodos `buscarPorPagina` e `getChunkById` no DAO e Repositório.
+    - Expansão do buffer de contexto técnico de 3 para 15 chunks para a IA.
 
 ### Próximos Passos (Desejos do Usuário):
 - Bateria de Testes (Stress Test)
