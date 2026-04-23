@@ -107,50 +107,68 @@ class MestreIAUseCase(
                     if (!resposta.text.startsWith("Erro de API") && !resposta.text.startsWith("Erro de Conexão")) {
                         
                         // --- LOTE 61: ORQUESTRADOR REACT (TOOL CALLING) ---
-                        if (resposta.toolCalls.isNotEmpty()) {
-                            
+                        // --- LOTE 70: MOTOR REACT MULTI-STAGE (O Mestre Investigador) ---
+                        // Permite que a IA faça várias buscas seguidas para "seguir pistas".
+                        var iteracoes = 0
+                        val maxIteracoes = 3
+                        
+                        while (resposta.toolCalls.isNotEmpty() && iteracoes < maxIteracoes) {
+                            iteracoes++
                             val searchCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_SEARCH_RULES }
+                            
                             if (searchCall != null) {
                                 val query = searchCall.args.optString("query", "")
-                                android.util.Log.d("MESTRE_IA", "Busca no Grafo iniciada para: $query")
-                                android.util.Log.i("MestreIA", "Agent disparou ferramenta ${MestreIATools.TOOL_SEARCH_RULES} (GraphRAG) para: $query")
-                                
-                                // --- LOTE 62: CONSULTA AO GRAFO ---
+                                android.util.Log.i("MestreIA", "Investigação Stage $iteracoes: $query")
+                                onStatusUpdate("Investigando $query...")
+
+                                // Consulta ao Grafo com o novo motor expandido
                                 val graphResult = MestreIAGraphEngine.buscarNoGrafo(query, repository)
                                 val extraContext = MestreIAGraphEngine.formatarParaIA(graphResult)
                                 
-                                val novoPrompt = "[SISTEMA AUTOMÁTICO] Resultado da busca no Grafo de Conhecimento GURPS ('$query'):\n$extraContext\n\nPor favor, com base nessas relações e regras, continue sua tarefa."
+                                val novoPrompt = "[SISTEMA AUTOMÁTICO] Resultado da investigação ('$query'):\n$extraContext\n\nPor favor, analise e continue. Se precisar de mais detalhes, pode usar a ferramenta novamente."
                                 
-                                val historicoAtualizado = viewModel.mestreIAChatHistory.map { it.role to it.text }.toMutableList()
+                                val historicoLoop = viewModel.mestreIAChatHistory.map { it.role to it.text }.toMutableList()
                                 if (resposta.text.isNotBlank()) {
-                                    historicoAtualizado.add("model" to resposta.text)
+                                    historicoLoop.add("model" to resposta.text)
                                 }
-                                
-                                val respostaRecursiva = MestreIAClient.perguntarAoMestre(
-                                    baseUrl = url,
-                                    apiKey = key,
-                                    workspaceSlug = model,
+
+                                val respostaProxima = MestreIAClient.perguntarAoMestre(
+                                    baseUrl = url, apiKey = key, workspaceSlug = model,
                                     prompt = novoPrompt,
-                                    history = historicoAtualizado,
+                                    history = historicoLoop,
                                     contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, modo),
                                     catalogo = catalogoLocal.catalogo,
                                     modo = modo,
                                     onChunk = onChunk
                                 )
-                                
-                                if (!respostaRecursiva.text.startsWith("Erro")) {
-                                    resposta = respostaRecursiva.copy(text = resposta.text + "\n" + respostaRecursiva.text)
-                                }
-                            }
 
-                            val fillSheetCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }
-                            if (fillSheetCall != null) {
-                                android.util.Log.i("MestreIA", "Agent disparou ferramenta fill_character_sheet!")
-                                resposta = resposta.copy(
-                                    text = resposta.text + "\n📦 Ficha preenchida com sucesso pelo Forjador Nativo (Tool Calling).",
-                                    rawJson = fillSheetCall.args.toString()
-                                )
+                                if (!respostaProxima.text.isNullOrBlank() && !respostaProxima.text.startsWith("Erro")) {
+                                    // Acumula o texto para o usuário ver o raciocínio, filtrando o que for inútil
+                                    val textoAnterior = if (resposta.text.contains("Verificando") || resposta.text.contains("null")) "" else resposta.text
+                                    val novoTexto = respostaProxima.text
+                                    
+                                    resposta = respostaProxima.copy(
+                                        text = (if (textoAnterior.isNotBlank()) "$textoAnterior\n\n" else "") + novoTexto,
+                                        toolCalls = respostaProxima.toolCalls
+                                    )
+                                } else if (respostaProxima.toolCalls.isNotEmpty()) {
+                                    // Se a IA só mandou uma ferramenta (sem texto), apenas atualizamos as ferramentas para o próximo loop
+                                    resposta = resposta.copy(toolCalls = respostaProxima.toolCalls)
+                                } else {
+                                    break // Resposta vazia e sem ferramentas, interrompe
+                                }
+                            } else {
+                                break // Nenhuma ferramenta de busca encontrada neste estágio
                             }
+                        }
+
+                        val fillSheetCall = resposta.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }
+                        if (fillSheetCall != null) {
+                            android.util.Log.i("MestreIA", "Agent disparou ferramenta fill_character_sheet!")
+                            resposta = resposta.copy(
+                                text = resposta.text + "\n📦 Ficha preenchida com sucesso pelo Forjador Nativo (Tool Calling).",
+                                rawJson = fillSheetCall.args.toString()
+                            )
                         }
 
                         // --- LOTE 52: LOGICA DE AUTO-HEALING (FALLBACK PARA QUANDO NÃO USOU TOOL) ---
@@ -276,7 +294,7 @@ class MestreIAUseCase(
             // 4. Gemini Pro Latest (Backup de Segurança Nativo)
             fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-pro-latest"))
         } else {
-            // --- MODO FREE ---
+            // --- MODO FREE (Prioridade para APIs Gratuitas/OpenRouter) ---
             val url = BuildConfig.MESTRE_IA_OPENROUTER_URL
             val keys = listOf(
                 BuildConfig.MESTRE_IA_OPENROUTER_1_KEY,
@@ -284,17 +302,20 @@ class MestreIAUseCase(
                 BuildConfig.MESTRE_IA_OPENROUTER_3_KEY
             ).filter { it.isNotEmpty() }
 
-            // 1. Gemini 2.5 Flash (O mais confiável, rápido e nativo - Prioridade Máxima agora)
-            fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
+            // 1. NVIDIA Nemotron 3 Super (O novo rei dos gratuitos - Alta Precisão)
+            keys.forEach { fila.add(Triple(url, it, "nvidia/nemotron-3-super")) }
 
-            // 2. DeepSeek R1 (OpenRouter) - Estabilizado (Sem sufixo :free)
-            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1")) }
+            // 2. DeepSeek R1 (OpenRouter Free) - Inteligência de Raciocínio
+            keys.forEach { fila.add(Triple(url, it, "deepseek/deepseek-r1:free")) }
             
-            // 3. Llama 3.3 70B (OpenRouter)
+            // 3. Llama 3.3 70B (OpenRouter) - Versatilidade
             keys.forEach { fila.add(Triple(url, it, "meta-llama/llama-3.3-70b-instruct")) }
             
-            // 4. Qwen 2.5 72B (OpenRouter)
-            keys.forEach { fila.add(Triple(url, it, "qwen/qwen-2.5-72b-instruct")) }
+            // 4. Gemini 2.5 Flash (Reserva de Segurança Nativa)
+            fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
+
+            // 5. OpenRouter Auto-Free (Roteador Universal - O melhor do momento)
+            keys.forEach { fila.add(Triple(url, it, "openrouter/free")) }
         }
 
         return fila.filter { it.second.isNotEmpty() }
@@ -314,6 +335,8 @@ class MestreIAUseCase(
             id.contains("deepseek-chat") -> "Mestre Sábio (DeepSeek PRO)"
             id.contains("qwen") -> "Mestre Estrategista (Qwen)"
             id.contains("llama-3.3") -> "Mestre Brutamontes (Llama)"
+            id.contains("nemotron") -> "Mestre Cibernético (Nemotron)"
+            id.contains("openrouter/free") -> "Mestre Nômade (Auto-Free)"
             else -> "Mestre IA ($id)"
         }
     }

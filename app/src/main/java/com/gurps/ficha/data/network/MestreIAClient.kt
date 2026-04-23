@@ -195,7 +195,7 @@ object MestreIAClient {
                                 if (isGoogleNative) {
                                     val parsed = parseGoogleStreamingChunk(data)
                                     val chunkText = parsed.first
-                                    if (chunkText.isNotEmpty()) {
+                                    if (chunkText.isNotEmpty() && chunkText != "null") {
                                         fullText += chunkText
                                         onChunk?.invoke(chunkText)
                                     }
@@ -213,7 +213,7 @@ object MestreIAClient {
                                     if (choices != null && choices.length() > 0) {
                                         val delta = choices.getJSONObject(0).optJSONObject("delta")
                                         val content = delta?.optString("content", "") ?: ""
-                                        if (content.isNotEmpty()) {
+                                        if (content.isNotEmpty() && content != "null") {
                                             fullText += content
                                             onChunk?.invoke(content)
                                         }
