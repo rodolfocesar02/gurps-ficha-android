@@ -16,6 +16,41 @@
       "keywords": ["pistola", "rifle", "projetil", "disparo", "tiro", "balistica", "alcance", "municao", "calibre", "bala", "atirando", "precisao"]
     },
     {
+      "id": "visibilidade",
+      "canonical": "visibilidade",
+      "keywords": ["escuridao", "penumbra", "cegueira", "iluminacao", "nevoa", "fumaca", "invisibilidade", "infravermelho", "visao noturna", "opacidade", "sombra", "escuro", "luz"]
+    },
+    {
+      "id": "postura",
+      "canonical": "postura",
+      "keywords": ["deitado", "ajoelhado", "caido", "sentado", "agachado", "prostrado", "inclinado", "posicao", "derrubado", "pe", "combate no chao"]
+    },
+    {
+      "id": "saude_critica",
+      "canonical": "saude",
+      "keywords": ["atordoado", "desmaiado", "inconsciente", "sangramento", "hemorragia", "choque", "dor", "agonia", "asfixia", "folego", "exaustao", "fadiga", "desmaio", "morte"]
+    },
+    {
+      "id": "atracado",
+      "canonical": "combate proximo",
+      "keywords": ["agarrar", "luta livre", "imobilizar", "chave", "estrangular", "derrubar", "preso", "desarmar", "corpo a corpo", "curta distancia", "abrazo", "presa"]
+    },
+    {
+      "id": "defesa",
+      "canonical": "defesa ativa",
+      "keywords": ["esquiva", "apara", "bloqueio", "escudo", "cobertura", "abrigo", "protecao", "retrair", "recuar", "defesa ativa", "esconder", "trincheira"]
+    },
+    {
+      "id": "alcance",
+      "canonical": "distancia",
+      "keywords": ["distancia", "longe", "perto", "metros", "velocidade", "deslocamento", "tamanho", "escala", "tabela", "modificador", "yardas", "jardas"]
+    },
+    {
+      "id": "tecnologia",
+      "canonical": "tecnologia",
+      "keywords": ["computador", "hacking", "eletricidade", "circuito", "sensor", "radar", "radio", "bateria", "energia", "gadget", "ferramenta", "nt", "nivel tecnologico"]
+    },
+    {
       "id": "espada",
       "canonical": "espada",
       "keywords": ["lamina", "corte", "sabre", "florete", "katana", "cimitarra", "rapieira", "cutelo", "esgrima"]
