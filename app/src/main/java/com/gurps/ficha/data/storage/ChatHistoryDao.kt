@@ -22,6 +22,9 @@ interface ChatHistoryDao {
     @Query("DELETE FROM chat_messages WHERE sessionId = :sessionId")
     suspend fun deleteMessagesForSession(sessionId: Long)
 
+    @Query("UPDATE chat_sessions SET lastUpdate = :timestamp WHERE id = :sessionId")
+    suspend fun updateSessionTimestamp(sessionId: Long, timestamp: Long)
+
     @Transaction
     suspend fun deleteFullSession(sessionId: Long) {
         deleteMessagesForSession(sessionId)

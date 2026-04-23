@@ -20,18 +20,42 @@ object MestreIAGraphEngine {
 
     /**
      * Realiza uma busca híbrida no Grafo: Resumos de Comunidade + Chunks Relacionados.
+     * AGORA COM EXPANSÃO SEMÂNTICA (Lote 56): Busca palavras correlacionadas.
      */
     suspend fun buscarNoGrafo(query: String, repository: DataRepository): GraphSearchResult = withContext(Dispatchers.IO) {
-        // 1. Buscar nos Resumos do Grafo (Entidades e Comunidades)
-        // Buscamos os essenciais (fixos) + os específicos da query
+        // 1. EXPANSÃO DE QUERY (Pensamento de Investigador)
+        val palavrasOriginais = query.lowercase().split(" ").filter { it.length >= 2 }
+        val termosExpandidos = mutableSetOf<String>()
+        termosExpandidos.addAll(palavrasOriginais)
+
+        // Suporte a Busca por Página (ex: "pág. 407" ou apenas "407")
+        val paginaDetectada = Regex("(\\d+)").find(query)?.groupValues?.get(1)
+
+        // Cruzar com o dicionário de temas do app
+        repository.temasMestreIA.forEach { tema ->
+            val match = palavrasOriginais.any { it == tema.id || it == tema.canonical || tema.keywords.contains(it) }
+            if (match) {
+                termosExpandidos.addAll(tema.keywords)
+            }
+        }
+
+        // Criar a query final formatada para SQLite FTS (MATCH)
+        // Se houver página, damos um peso enorme para ela na busca
+        val queryFts = if (paginaDetectada != null && query.contains("pág", ignoreCase = true)) {
+            "\"$paginaDetectada\" OR \"pág $paginaDetectada\""
+        } else {
+            termosExpandidos.take(20).joinToString(" OR ") { "\"$it\"" }
+        }
+        android.util.Log.d("MestreIA", "Query Expandida: $queryFts")
+
+        // 2. Buscar nos Resumos do Grafo (Entidades e Comunidades)
         val essentialNodes = repository.buscarResumosEssenciais()
-        val dynamicNodes = repository.buscarResumosGrafo(query)
+        val dynamicNodes = repository.buscarResumosGrafo(query) // Busca original no grafo para manter precisão
         
-        // Unificar sem duplicatas
         val nodesFound = (essentialNodes + dynamicNodes).distinctBy { it.entityId }
 
-        // 2. Buscar chunks específicos que dão suporte a esses nós (Busca Legada como Fallback/Suporte)
-        val chunksFound = repository.buscarRecortesManual(query)
+        // 3. Buscar chunks específicos no manual usando a Query Expandida
+        val chunksFound = repository.buscarRecortesManual(queryFts)
 
         GraphSearchResult(
             summaries = nodesFound,

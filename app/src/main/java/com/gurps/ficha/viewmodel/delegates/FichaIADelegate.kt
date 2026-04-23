@@ -38,13 +38,13 @@ class FichaIADelegate(
 
     fun carregarHistorico() {
         scope.launch {
-            savedSessions = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao().getAllSessions()
+            savedSessions = dataRepository.chatHistoryDao().getAllSessions()
         }
     }
 
     fun carregarSessao(sessionId: Long) {
         scope.launch {
-            val messages = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao().getMessagesForSession(sessionId)
+            val messages = dataRepository.chatHistoryDao().getMessagesForSession(sessionId)
             mestreIAChatHistory = messages.map { 
                 MestreIAClient.ChatMessage(it.role, it.text, modelName = it.modelName) 
             }
@@ -53,7 +53,7 @@ class FichaIADelegate(
     }
 
     private suspend fun garantirSessao(primeiraMensagem: String): Long {
-        val dao = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao()
+        val dao = dataRepository.chatHistoryDao()
         val sid = currentSessionId ?: run {
             val title = if (primeiraMensagem.length > 30) primeiraMensagem.take(30) + "..." else primeiraMensagem
             val newId = dao.insertSession(ChatSessionEntity(title = title, lastUpdate = System.currentTimeMillis()))
@@ -66,7 +66,7 @@ class FichaIADelegate(
     private fun salvarMensagemNoBanco(role: String, text: String, modelName: String? = null) {
         val sid = currentSessionId ?: return
         scope.launch(Dispatchers.IO) {
-            val dao = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao()
+            val dao = dataRepository.chatHistoryDao()
             dao.insertMessage(ChatMessageEntity(
                 sessionId = sid,
                 role = role,
@@ -75,10 +75,7 @@ class FichaIADelegate(
                 modelName = modelName
             ))
             // Atualiza timestamp da sessão
-            val session = dao.getAllSessions().find { it.id == sid }
-            session?.let {
-                dao.insertSession(it.copy(lastUpdate = System.currentTimeMillis()))
-            }
+            dao.updateSessionTimestamp(sid, System.currentTimeMillis())
         }
     }
 
