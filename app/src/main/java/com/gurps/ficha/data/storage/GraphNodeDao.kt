@@ -32,4 +32,10 @@ interface GraphNodeDao {
      */
     @Query("SELECT * FROM graph_nodes WHERE category = :category ORDER BY level ASC")
     suspend fun findByCategory(category: String): List<GraphNodeEntity>
+
+    /**
+     * Busca os nós essenciais (Nível 1) que devem estar sempre no prompt.
+     */
+    @Query("SELECT * FROM graph_nodes WHERE level <= 1")
+    suspend fun getEssentialNodes(): List<GraphNodeEntity>
 }

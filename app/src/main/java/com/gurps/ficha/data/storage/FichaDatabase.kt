@@ -9,14 +9,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class],
-    version = 12,
+    entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class],
+    version = 13,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
     abstract fun fichaDao(): FichaDao
     abstract fun manualChunkDao(): ManualChunkDao
     abstract fun graphNodeDao(): GraphNodeDao
+    abstract fun chatHistoryDao(): ChatHistoryDao
 
     companion object {
         @Volatile
@@ -36,6 +37,7 @@ abstract class FichaDatabase : RoomDatabase() {
                         // Lógica de pré-população assíncrona
                         kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
                             prePopulateGraph(context, getInstance(context))
+                            prePopulateManual(context, getInstance(context))
                         }
                     }
                 })
@@ -65,6 +67,45 @@ abstract class FichaDatabase : RoomDatabase() {
                 }
             } catch (e: Exception) {
                 android.util.Log.e("FichaDatabase", "Erro ao pré-popular Grafo", e)
+            }
+        }
+
+        private suspend fun prePopulateManual(context: Context, database: FichaDatabase) {
+            try {
+                val dao = database.manualChunkDao()
+                if (dao.getCount() == 0) {
+                    android.util.Log.i("FichaDatabase", "Iniciando importação do manual (Chunks)...")
+                    val assets = context.assets
+                    val inputStream = assets.open("chunks.jsonl")
+                    val reader = inputStream.bufferedReader()
+                    
+                    val chunks = mutableListOf<ManualChunkEntity>()
+                    reader.useLines { lines ->
+                        lines.forEach { line ->
+                            if (line.isNotBlank()) {
+                                val obj = org.json.JSONObject(line)
+                                chunks.add(ManualChunkEntity(
+                                    chunk_id = obj.getString("chunk_id"),
+                                    source_title = obj.getString("source_title"),
+                                    page_number = obj.optInt("page_number", 0),
+                                    text = obj.getString("text"),
+                                    search_text = obj.getString("text") // FTS4 field
+                                ))
+                                
+                                if (chunks.size >= 100) {
+                                    dao.insertAll(chunks.toList())
+                                    chunks.clear()
+                                }
+                            }
+                        }
+                    }
+                    if (chunks.isNotEmpty()) {
+                        dao.insertAll(chunks)
+                    }
+                    android.util.Log.i("FichaDatabase", "Manual importado com sucesso!")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("FichaDatabase", "Erro ao importar manual", e)
             }
         }
     }

@@ -13,6 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.gurps.ficha.data.storage.ChatSessionEntity
+import com.gurps.ficha.data.storage.ChatMessageEntity
+import java.util.Date
 
 class FichaIADelegate(
     private val viewModel: FichaViewModel,
@@ -25,8 +28,58 @@ class FichaIADelegate(
     var fichaGeradaPendente by mutableStateOf<MestreIAResponse?>(null)
     var mestreIAMode by mutableStateOf("conversa") // Default: Dúvidas/Free
 
+    var currentSessionId by mutableStateOf<Long?>(null)
+    var savedSessions by mutableStateOf<List<ChatSessionEntity>>(emptyList())
+
     fun limparChat() {
         mestreIAChatHistory = emptyList()
+        currentSessionId = null
+    }
+
+    fun carregarHistorico() {
+        scope.launch {
+            savedSessions = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao().getAllSessions()
+        }
+    }
+
+    fun carregarSessao(sessionId: Long) {
+        scope.launch {
+            val messages = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao().getMessagesForSession(sessionId)
+            mestreIAChatHistory = messages.map { 
+                MestreIAClient.ChatMessage(it.role, it.text, modelName = it.modelName) 
+            }
+            currentSessionId = sessionId
+        }
+    }
+
+    private suspend fun garantirSessao(primeiraMensagem: String): Long {
+        val dao = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao()
+        val sid = currentSessionId ?: run {
+            val title = if (primeiraMensagem.length > 30) primeiraMensagem.take(30) + "..." else primeiraMensagem
+            val newId = dao.insertSession(ChatSessionEntity(title = title, lastUpdate = System.currentTimeMillis()))
+            currentSessionId = newId
+            newId
+        }
+        return sid
+    }
+
+    private fun salvarMensagemNoBanco(role: String, text: String, modelName: String? = null) {
+        val sid = currentSessionId ?: return
+        scope.launch(Dispatchers.IO) {
+            val dao = viewModel.dataRepository.getDatabase(viewModel.getApplication()).chatHistoryDao()
+            dao.insertMessage(ChatMessageEntity(
+                sessionId = sid,
+                role = role,
+                text = text,
+                timestamp = System.currentTimeMillis(),
+                modelName = modelName
+            ))
+            // Atualiza timestamp da sessão
+            val session = dao.getAllSessions().find { it.id == sid }
+            session?.let {
+                dao.insertSession(it.copy(lastUpdate = System.currentTimeMillis()))
+            }
+        }
     }
 
     fun conversar(
@@ -37,12 +90,17 @@ class FichaIADelegate(
         val userMsg = MestreIAClient.ChatMessage("user", pergunta)
         mestreIAChatHistory = mestreIAChatHistory + userMsg
 
-        // LOTE 54: Adiciona mensagem vazia para ser preenchida via stream
-        val assistantMsg = MestreIAClient.ChatMessage("model", "", modelName = "Mestre IA...")
-        mestreIAChatHistory = mestreIAChatHistory + assistantMsg
-        val assistantIndex = mestreIAChatHistory.size - 1
-
         scope.launch {
+            val sid = garantirSessao(pergunta)
+            salvarMensagemNoBanco("user", pergunta)
+
+            // LOTE 54: Adiciona mensagem vazia para ser preenchida via stream
+            val assistantMsg = MestreIAClient.ChatMessage("model", "", modelName = "Mestre IA...")
+            withContext(Dispatchers.Main) {
+                mestreIAChatHistory = mestreIAChatHistory + assistantMsg
+            }
+            val assistantIndex = mestreIAChatHistory.size - 1
+
             mestreIAUseCase.conversarComMestreIA(
                 prompt = pergunta,
                 modo = mestreIAMode,
@@ -69,62 +127,53 @@ class FichaIADelegate(
                 scope.launch(Dispatchers.Main) {
                     val history = mestreIAChatHistory.toMutableList()
                     if (assistantIndex >= 0 && assistantIndex < history.size) {
-                    // LOTE 15: Extração Inteligente de Narrativa
-                    val rawText = response.text
-                    val jsonExtraido = response.rawJson ?: mestreIAUseCase.extrairJsonDeNarrativa(rawText)
-                    val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
-                    
-                    // Tenta converter o JSON extraído
-                    var erroParse = false
-                    val fichaObjeto = jsonExtraido?.let { 
-                        try {
-                            com.google.gson.Gson().fromJson(it, MestreIAResponse::class.java)
-                        } catch (e: Exception) {
-                            erroParse = true
-                            null
+                        val rawText = response.text
+                        val jsonExtraido = response.rawJson ?: mestreIAUseCase.extrairJsonDeNarrativa(rawText)
+                        val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
+                        
+                        var erroParse = false
+                        val fichaObjeto = jsonExtraido?.let { 
+                            try {
+                                com.google.gson.Gson().fromJson(it, MestreIAResponse::class.java)
+                            } catch (e: Exception) {
+                                erroParse = true
+                                null
+                            }
                         }
-                    }
 
-                    // LOTE 18: Feedback Honesto
-                    val textoFinal = when {
-                        erroParse -> "⚠️ O Mestre gerou a ficha, mas o código contém um erro técnico. Peça para ele: 'Corrija o código JSON da ficha'."
-                        fichaObjeto != null && narrativaLimpa.isBlank() -> "📦 Ficha pronta com sucesso! Clique no botão abaixo para integrar."
-                        else -> narrativaLimpa
-                    }
-
-                    history[assistantIndex] = history[assistantIndex].copy(
-                        text = if (jsonExtraido != null) textoFinal else rawText,
-                        modelName = response.modelName,
-                        isRagUsed = isRagUsed,
-                        latencyMs = response.latencyMs,
-                        data = fichaObjeto,
-                        rawJson = jsonExtraido
-                    )
-                    mestreIAChatHistory = history
-                    fichaGeradaPendente = fichaObjeto
-
-                    if (modo == "geracao") {
-                        val msgResultado = when {
-                            erroParse -> "Falha técnica no código do Mestre."
-                            fichaGeradaPendente != null -> "Ficha disponível no balão do chat!"
-                            else -> "Mestre IA ainda está processando..."
+                        val textoFinal = when {
+                            erroParse -> "⚠️ O Mestre gerou a ficha, mas o código contém um erro técnico. Peça para ele: 'Corrija o código JSON da ficha'."
+                            fichaObjeto != null && narrativaLimpa.isBlank() -> "📦 Ficha pronta com sucesso! Clique no botão abaixo para integrar."
+                            else -> narrativaLimpa
                         }
-                        onResult(true, msgResultado)
-                    } else {
-                        onResult(true, "Resposta recebida.")
+
+                        history[assistantIndex] = history[assistantIndex].copy(
+                            text = if (jsonExtraido != null) textoFinal else rawText,
+                            modelName = response.modelName,
+                            isRagUsed = isRagUsed,
+                            latencyMs = response.latencyMs,
+                            data = fichaObjeto,
+                            rawJson = jsonExtraido
+                        )
+                        mestreIAChatHistory = history
+                        fichaGeradaPendente = fichaObjeto
+
+                        if (modo == "geracao") {
+                            val msgResultado = when {
+                                erroParse -> "Falha técnica no código do Mestre."
+                                fichaGeradaPendente != null -> "Ficha disponível no balão do chat!"
+                                else -> "Mestre IA ainda está processando..."
+                            }
+                            onResult(true, msgResultado)
+                        } else {
+                            onResult(true, "Resposta recebida.")
+                        }
+
+                        salvarMensagemNoBanco("model", response.text, response.modelName)
                     }
                 }
-                
-                // LOTE 17: REMOVIDO RESET AUTOMÁTICO
-                // O modo só muda se o usuário quiser ou ao fechar a ficha.
-                /*
-                if (mestreIAMode != "conversa") {
-                    mestreIAMode = "conversa"
-                }
-                */
             }
         }
-    }
     }
 
     fun confirmarIntegracao() {

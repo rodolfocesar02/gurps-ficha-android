@@ -512,7 +512,8 @@ class MestreIAUseCase(
             pericias = periSugestao,
             tecnicas = tecSugestao,
             magias = emptyList(),
-            chunks = graphResult.relatedChunks
+            chunks = graphResult.relatedChunks,
+            summaries = graphResult.summaries
         )
         return CatalogoLocalResult(catalogo, graphResult.relatedChunks.isNotEmpty() || graphResult.summaries.isNotEmpty())
     }

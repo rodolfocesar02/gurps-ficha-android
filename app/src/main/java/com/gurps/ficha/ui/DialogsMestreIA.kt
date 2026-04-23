@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -57,8 +59,20 @@ fun DialogMestreIA(
                     Spacer(Modifier.width(8.dp))
                     Text("Mestre Digital 2.0", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
                 }
-                IconButton(onClick = { viewModel.limparChatMestreIA() }) {
-                    Icon(Icons.Default.Delete, null, modifier = Modifier.size(20.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    var showHistory by remember { mutableStateOf(false) }
+                    IconButton(onClick = { 
+                        viewModel.carregarHistoricoMestreIA()
+                        showHistory = true 
+                    }) {
+                        Icon(Icons.Default.History, null, modifier = Modifier.size(20.dp))
+                    }
+                    if (showHistory) {
+                        HistorySelectorDialog(viewModel) { showHistory = false }
+                    }
+                    IconButton(onClick = { viewModel.limparChatMestreIA() }) {
+                        Icon(Icons.Default.Delete, null, modifier = Modifier.size(20.dp))
+                    }
                 }
             }
         },
@@ -148,6 +162,26 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                     }
 
                     if (!isUser) {
+                        val clipboardManager = LocalClipboardManager.current
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                            if (msg.modelName != null) {
+                                Text(msg.modelName, fontSize = 8.sp, color = textColor.copy(0.6f), modifier = Modifier.padding(end = 8.dp))
+                            }
+                            IconButton(
+                                onClick = { 
+                                    clipboardManager.setText(AnnotatedString(textContent))
+                                },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = "Copiar",
+                                    tint = textColor.copy(0.6f),
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                        
                         if (msg.data != null) {
                             Spacer(Modifier.height(8.dp))
                             Button(onClick = { viewModel.confirmarIntegracaoFicha() }, modifier = Modifier.fillMaxWidth()) { Text("INTEGRAR") }
@@ -157,9 +191,6 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                                 OutlinedButton(onClick = { showRaw = !showRaw }, modifier = Modifier.weight(1f)) { Text(if (showRaw) "Fechar" else "Código") }
                                 Button(onClick = { viewModel.conversarComMestreIA("Corrija o JSON.", "geracao") { _, _ -> } }, modifier = Modifier.weight(1f)) { Text("Corrigir") }
                             }
-                        }
-                        if (msg.modelName != null) {
-                            Text(msg.modelName, fontSize = 8.sp, color = textColor.copy(0.6f), modifier = Modifier.align(Alignment.End))
                         }
                     }
                 }
@@ -187,3 +218,41 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
 
 fun rawTagExists(text: String, tag: String): Boolean = text.contains(tag)
 fun rawTextFromMsg(msg: MestreIAClient.ChatMessage): String = msg.text
+
+@Composable
+fun HistorySelectorDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Histórico de Conversas", style = MaterialTheme.typography.titleLarge) },
+        text = {
+            val sessions = viewModel.mestreIASavedSessions
+            if (sessions.isEmpty()) {
+                Text("Nenhuma conversa salva ainda.")
+            } else {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp)) {
+                    items(sessions) { session ->
+                        Surface(
+                            onClick = { 
+                                viewModel.carregarSessaoMestreIA(session.id)
+                                onDismiss()
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Text(session.title, fontWeight = FontWeight.Bold, maxLines = 1)
+                                Text(
+                                    java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(java.util.Date(session.lastUpdate)),
+                                    fontSize = 10.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+    )
+}

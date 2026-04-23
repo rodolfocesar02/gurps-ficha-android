@@ -6,7 +6,8 @@ import kotlinx.coroutines.withContext
 
 class FichaStorageRepository private constructor(
     private val context: Context,
-    private val dao: FichaDao
+    private val dao: FichaDao,
+    val chatHistoryDao: ChatHistoryDao
 ) {
     suspend fun migrarDeSharedPreferencesSeNecessario() = withContext(Dispatchers.IO) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -73,7 +74,8 @@ class FichaStorageRepository private constructor(
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: FichaStorageRepository(
                     context = context.applicationContext,
-                    dao = FichaDatabase.getInstance(context).fichaDao()
+                    dao = FichaDatabase.getInstance(context).fichaDao(),
+                    chatHistoryDao = FichaDatabase.getInstance(context).chatHistoryDao()
                 ).also { INSTANCE = it }
             }
         }
