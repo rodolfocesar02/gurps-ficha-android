@@ -197,6 +197,28 @@ open class DataRepository(internal val context: Context) {
         }
     }
 
+    suspend fun buscarPorPagina(pagina: Int): List<com.gurps.ficha.model.MestreIAChunk> {
+        return manualChunkDao.buscarPorPagina(pagina).map { entity ->
+            com.gurps.ficha.model.MestreIAChunk(
+                chunk_id = entity.chunk_id,
+                text = entity.text,
+                source_title = entity.source_title,
+                page_number = entity.page_number
+            )
+        }
+    }
+
+    suspend fun getChunkById(id: Int): com.gurps.ficha.model.MestreIAChunk? {
+        return manualChunkDao.getChunkById(id)?.let { entity ->
+            com.gurps.ficha.model.MestreIAChunk(
+                chunk_id = entity.chunk_id,
+                text = entity.text,
+                source_title = entity.source_title,
+                page_number = entity.page_number
+            )
+        }
+    }
+
     fun filtrarTecnicasCatalogo(busca: String = "", sourceBook: String? = null): List<TecnicaCatalogoItem> {
         return CatalogFilters.filtrarTecnicasCatalogo(tecnicasCatalogo, busca, sourceBook)
     }
