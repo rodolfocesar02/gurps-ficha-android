@@ -208,7 +208,7 @@ open class DataRepository(internal val context: Context) {
         }
     }
 
-    suspend fun getChunkById(id: Int): com.gurps.ficha.model.MestreIAChunk? {
+    suspend fun getChunkById(id: String): com.gurps.ficha.model.MestreIAChunk? {
         return manualChunkDao.getChunkById(id)?.let { entity ->
             com.gurps.ficha.model.MestreIAChunk(
                 chunk_id = entity.chunk_id,

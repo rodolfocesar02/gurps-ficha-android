@@ -64,8 +64,9 @@ object MestreIAGraphEngine {
         chunksComContexto.addAll(chunksFound)
         
         chunksFound.take(5).forEach { chunk ->
-            repository.getChunkById(chunk.chunk_id - 1)?.let { chunksComContexto.add(it) }
-            repository.getChunkById(chunk.chunk_id + 1)?.let { chunksComContexto.add(it) }
+            val currentId = chunk.chunk_id.toIntOrNull() ?: return@forEach
+            repository.getChunkById((currentId - 1).toString())?.let { chunksComContexto.add(it) }
+            repository.getChunkById((currentId + 1).toString())?.let { chunksComContexto.add(it) }
         }
 
         GraphSearchResult(

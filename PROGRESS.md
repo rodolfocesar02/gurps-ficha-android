@@ -158,10 +158,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Criação de tabelas `chat_sessions` e `chat_messages` no SQLite (V13).
     - Interface de seletor de histórico para recuperação de conversas passadas.
 * [Feito] Lote 68: Motor Investigador (Expansão Semântica) | `(Commit: c2e2491)`
-* [Feito] Lote 69: O Toque do Mestre (Contexto Adjacente) | `(Commit: pendente)`
-    - Implementação de Busca por Vizinhança (chunks adjacentes) no `MestreIAGraphEngine.kt`.
-    - Novos métodos `buscarPorPagina` e `getChunkById` no DAO e Repositório.
-    - Expansão do buffer de contexto técnico de 3 para 15 chunks para a IA.
+* [Feito] Lote 69: O Toque do Mestre (Contexto Adjacente) | `(Commit: ca18212)`
+* [Feito] Lote 70: Motor ReAct Multi-Stage (O Mestre Investigador) | `(Commit: pendente)`
+    - Implementação de Loop de Investigação (While) em `MestreIAUseCase.kt`.
+    - Suporte a até 3 iterações consecutivas de busca por resposta.
+    - Acumulação inteligente de contexto entre buscas para evitar perda de raciocínio.
 
 ### Próximos Passos (Desejos do Usuário):
 - Bateria de Testes (Stress Test)

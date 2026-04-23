@@ -21,7 +21,7 @@ interface ManualChunkDao {
     suspend fun buscarPorPagina(page: Int): List<ManualChunkEntity>
 
     @Query("SELECT * FROM manual_chunks WHERE chunk_id = :id")
-    suspend fun getChunkById(id: Int): ManualChunkEntity?
+    suspend fun getChunkById(id: String): ManualChunkEntity?
 
     @Query("SELECT COUNT(*) FROM manual_chunks")
     suspend fun getCount(): Int
