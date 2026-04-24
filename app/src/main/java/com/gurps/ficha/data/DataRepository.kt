@@ -176,18 +176,35 @@ open class DataRepository(internal val context: Context) {
      * Busca nos resumos de comunidades e entidades do Grafo.
      */
     suspend fun buscarResumosGrafo(query: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
-        return graphNodeDao.searchGraph(query)
+        return graphNodeDao.buscarNodes(query)
+    }
+
+    suspend fun buscarNodesPorTitulo(query: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
+        return graphNodeDao.findByTitleLike(query)
+    }
+
+    suspend fun buscarResumoNode(entityId: String): com.gurps.ficha.data.storage.GraphNodeEntity? {
+        return graphNodeDao.getNodeById(entityId)
     }
 
     suspend fun buscarResumosEssenciais(): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
         return graphNodeDao.getEssentialNodes()
     }
 
+    suspend fun findByCategory(category: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
+        return graphNodeDao.findByCategory(category)
+    }
+
+    suspend fun forçarSincronizacaoGrafo() {
+        graphNodeDao.clearAll()
+        com.gurps.ficha.data.storage.FichaDatabase.prePopulateGraph(context, database)
+    }
+
     /**
      * Busca nos recortes manuais brutos (FTS4).
      */
-    suspend fun buscarRecortesManual(query: String): List<com.gurps.ficha.model.MestreIAChunk> {
-        return manualChunkDao.buscarRegras(query, 10).map { entity ->
+    suspend fun buscarRecortesManual(query: String, limit: Int = 30): List<com.gurps.ficha.model.MestreIAChunk> {
+        return manualChunkDao.buscarRegras(query, limit).map { entity ->
             com.gurps.ficha.model.MestreIAChunk(
                 chunk_id = entity.chunk_id,
                 text = entity.text,

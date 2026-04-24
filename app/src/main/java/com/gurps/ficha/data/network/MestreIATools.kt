@@ -21,7 +21,7 @@ object MestreIATools {
         // Ferramenta 1: Pesquisa de Regras (Sempre disponível)
         functionDeclarations.put(JSONObject().apply {
             put("name", TOOL_SEARCH_RULES)
-            put("description", "Consulta o Grafo e o Manual GURPS. INVESTIGAÇÃO OBRIGATÓRIA: Se não encontrar a resposta na primeira busca, tente novamente usando sinônimos, termos correlacionados ou busque por páginas específicas citadas em resultados anteriores (ex: 'pág 407'). Não responda 'não encontrei' sem tentar pelo menos 3 variações de busca.")
+            put("description", "OBRIGATÓRIO: Use esta ferramenta para QUALQUER dúvida de regras, cálculos ou manuais. PROIBIDO responder de cabeça sem consultar o Codex primeiro. Se não encontrar de primeira, tente sinônimos ou páginas específicas.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
@@ -54,7 +54,7 @@ object MestreIATools {
             put("type", "function")
             put("function", JSONObject().apply {
                 put("name", TOOL_SEARCH_RULES)
-                put("description", "Consulta o Grafo e o Manual GURPS. INVESTIGAÇÃO OBRIGATÓRIA: Se não encontrar a resposta na primeira busca, tente novamente usando sinônimos, termos correlacionados ou busque por páginas específicas citadas em resultados anteriores (ex: 'pág 407'). Não responda 'não encontrei' sem tentar pelo menos 3 variações de busca.")
+                put("description", "OBRIGATÓRIO: Use esta ferramenta para QUALQUER dúvida de regras, cálculos ou manuais. PROIBIDO responder de cabeça sem consultar o Codex primeiro. Se não encontrar de primeira, tente sinônimos ou páginas específicas.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {

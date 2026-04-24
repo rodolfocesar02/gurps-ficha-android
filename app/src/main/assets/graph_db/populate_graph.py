@@ -59,9 +59,12 @@ def format_summary(item, category):
         escola = item.get('escola')
         custo = item.get('custo')
         tempo = item.get('tempoConjuracao')
+        prereq = item.get('preRequisitos')
+        
         if escola: summary_parts.append(f"Escola: {escola}")
         if custo: summary_parts.append(f"Custo: {custo}")
         if tempo: summary_parts.append(f"Tempo: {tempo}")
+        if prereq: summary_parts.append(f"Pré-requisitos: {prereq}")
         
         desc = item.get('descricao')
         if desc: summary_parts.append(desc)

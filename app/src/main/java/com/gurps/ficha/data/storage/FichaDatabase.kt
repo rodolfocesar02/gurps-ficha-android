@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class],
-    version = 13,
+    version = 16,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -45,7 +45,7 @@ abstract class FichaDatabase : RoomDatabase() {
             }
         }
 
-        private suspend fun prePopulateGraph(context: Context, database: FichaDatabase) {
+        suspend fun prePopulateGraph(context: Context, database: FichaDatabase) {
             try {
                 val dao = database.graphNodeDao()
                 if (dao.countNodes() == 0) {

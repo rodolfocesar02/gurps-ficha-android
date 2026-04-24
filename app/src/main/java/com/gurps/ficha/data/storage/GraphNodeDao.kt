@@ -22,10 +22,15 @@ interface GraphNodeDao {
     @Query("""
         SELECT * FROM graph_nodes 
         WHERE graph_nodes MATCH :query 
-        ORDER BY level ASC 
-        LIMIT 10
+        LIMIT 500
     """)
-    suspend fun searchGraph(query: String): List<GraphNodeEntity>
+    suspend fun buscarNodes(query: String): List<GraphNodeEntity>
+
+    /**
+     * Busca um nó específico pelo seu entityId.
+     */
+    @Query("SELECT * FROM graph_nodes WHERE entityId = :id LIMIT 1")
+    suspend fun getNodeById(id: String): GraphNodeEntity?
 
     /**
      * Busca simples por categoria (Fallback)
@@ -38,4 +43,7 @@ interface GraphNodeDao {
      */
     @Query("SELECT * FROM graph_nodes WHERE level <= 1")
     suspend fun getEssentialNodes(): List<GraphNodeEntity>
+
+    @Query("SELECT * FROM graph_nodes WHERE title LIKE '%' || :query || '%' LIMIT 100")
+    suspend fun findByTitleLike(query: String): List<GraphNodeEntity>
 }
