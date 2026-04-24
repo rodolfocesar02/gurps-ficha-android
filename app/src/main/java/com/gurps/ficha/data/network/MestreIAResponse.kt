@@ -7,16 +7,25 @@ package com.gurps.ficha.data.network
 data class MestreIAResponse(
     val nome: String = "",
     val atributos: MestreIAAtributos = MestreIAAtributos(),
-    val vantagens: List<String> = emptyList(),
-    val desvantagens: List<String> = emptyList(),
+    val vantagens: List<MestreIAItem> = emptyList(),
+    val desvantagens: List<MestreIAItem> = emptyList(),
     val pericias: List<MestreIAPericiaIA> = emptyList(),
     val tecnicas: List<MestreIAPericiaIA> = emptyList(),
-    val magias: List<String> = emptyList(),
-    val qualidades: List<String> = emptyList(),
-    val peculiaridades: List<String> = emptyList(),
+    val magias: List<MestreIAItem> = emptyList(),
+    val qualidades: List<MestreIAItem> = emptyList(),
+    val peculiaridades: List<MestreIAItem> = emptyList(),
     val equipamentos: List<MestreIAEquipamento> = emptyList(),
     val aparencia: String = "",
     val historico: String = ""
+)
+
+/**
+ * Representa um item genérico (Vantagem, Magia, etc) que pode vir com custo e descrição.
+ */
+data class MestreIAItem(
+    val nome: String = "",
+    val custo: Int? = null,
+    val descricao: String? = null
 )
 
 data class MestreIAEquipamento(
