@@ -183,6 +183,17 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Tratamento de exceções interno no parse para evitar interrupção do fluxo do app.
     - Sincronização de motores GSON entre `Client`, `Delegate` e `Generator`.
 
+* [Feito] Lote 84.5: Cérebro Mestre (Regras de Ouro e Injeção de Catálogo Técnico) | `(Commit: Lote84.5)`
+    - IA agora recebe lista oficial de nomes de Armas e Equipamentos.
+    - Regra estrita: Magias exigem Aptidão Mágica e inclusão de pré-requisitos.
+* [Feito] Lote 84.6: Separação Arquitetural (Prompts Isolados) | `(Commit: Lote84.6)`
+    - Prompts movidos para `MestreIAPrompts.kt`, limpando o cliente de rede.
+* [Feito] Lote 84.7: Alinhamento Técnico (NT, Dano PT-BR e RAG Expansivo) | `(Commit: Lote84.7)`
+    - Proibição de termos em inglês (cut/pi) e exigência de sufixos /NT.
+    - Expansão automática do RAG para garantir catálogo técnico em personagens novos.
+* [Feito] Lote 84.8: Consciência de App (IA entende a automação do sistema) | `(Commit: Lote84.8)`
+    - IA agora entende que o app automatiza cálculos se os nomes estiverem corretos.
+
 
 
 ### Próximos Passos (Desejos do Usuário):

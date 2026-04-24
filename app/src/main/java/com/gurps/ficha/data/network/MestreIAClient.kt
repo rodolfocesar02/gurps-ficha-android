@@ -23,43 +23,7 @@ object MestreIAClient {
         .registerTypeAdapter(MestreIAItem::class.java, MestreIAItemDeserializer())
         .create()
 
-    private const val GOLD_TEMPLATE = """
-{
-  "nome": "Nome do Personagem",
-  "historia": "Breve biografia narrativa (max 1000 chars)",
-  "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
-  "vantagens": [ { "nome": "Nome Exato do Catálogo", "custo": 10, "descricao": "..." } ],
-  "desvantagens": [ { "nome": "Nome Exato do Catálogo", "custo": -10, "descricao": "..." } ],
-  "pericias": [ { "nome": "Nome Exato do Catálogo", "nivel": 12 } ],
-  "tecnicas": [ { "nome": "Nome Exato do Catálogo", "nivel": 14 } ],
-  "magias": [ { "nome": "Nome Exato do Catálogo", "custo": "1 fp" } ],
-  "equipamentos": [ { "nome": "Nome", "peso": 1.0, "custo": 100, "quantidade": 1, "rd": 0, "dano": "1d cut", "st_min": 10, "aparar": "0" } ]
-}
-"""
-
-    private const val PROMPT_FORJADOR = """
-        VOCÊ É O FORJADOR DE GURPS (ESPECIALISTA EM GERAÇÃO).
-        OBJETIVO: Criar ou Analisar personagens seguindo estritamente as regras da 4ª Edição Brasil.
-        
-        DIRETRIZES DE FORJA:
-        1. FIDELIDADE AOS NOMES: Use APENAS nomes de vantagens/perícias presentes no Catálogo Local fornecido.
-        2. ESTRUTURA JSON: Sua resposta deve conter uma breve introdução narrativa e OBRIGATORIAMENTE o bloco JSON no gabarito abaixo.
-        3. PRÉ-REQUISITOS: Se adicionar uma perícia ou magia avançada, você DEVE adicionar os pré-requisitos necessários automaticamente.
-        
-        GABARITO DE OURO:
-        $GOLD_TEMPLATE
-    """
-
-    private const val PROMPT_AUDITOR = """
-        VOCÊ É O AUDITOR DO CÓDEX (ESPECIALISTA EM REGRAS).
-        OBJETIVO: Responder dúvidas, explicar mecânicas e auditar a legalidade das ações.
-        
-        DIRETRIZES DE AUDITORIA:
-        1. CONCISÃO: Máximo 3 parágrafos curtos.
-        2. PROPORCIONALIDADE: Se pedirem uma lista, responda com uma lista (Nome + Página). Se pedirem explicação, detalhe a mecânica.
-        3. SEM INVENÇÃO: Use apenas os fragmentos de regras fornecidos. Se não souber a página real, não invente.
-        4. TOOL CALLING: Use 'search_rules' sempre que precisar de dados técnicos que não estão no contexto imediato.
-    """
+    // Nota: Prompts e Gabaritos movidos para MestreIAPrompts.kt
 
     data class ChatMessage(
         val role: String, // "user" ou "model"
@@ -90,6 +54,8 @@ object MestreIAClient {
         val pericias: List<String> = emptyList(),
         val tecnicas: List<String> = emptyList(),
         val magias: List<String> = emptyList(),
+        val equipamentos: List<String> = emptyList(),
+        val armas: List<String> = emptyList(),
         val chunks: List<com.gurps.ficha.model.MestreIAChunk> = emptyList(),
         val summaries: List<com.gurps.ficha.data.storage.GraphNodeEntity> = emptyList(),
         val ponteDeFerro: String = ""
@@ -151,7 +117,7 @@ object MestreIAClient {
             android.util.Log.d("MestreIA_C", "TAMANHOS -> Vant: ${listaVantagens.length} | Peri: ${listaPericias.length} | Magia: ${listaMagias.length} | Grafo: ${resumosGrafo.length} | Manual: ${fragmentosRegras.length} | Ponte: ${ponteDeFerro.length}")
 
             val systemPulse = """
-                ${if (modo == "geracao" || modo == "analise") PROMPT_FORJADOR else PROMPT_AUDITOR}
+                ${if (modo == "geracao" || modo == "analise") MestreIAPrompts.FORJADOR else MestreIAPrompts.AUDITOR}
                 
                 CONTEXTO ATUAL:
                 - Ficha do Personagem: $contextoPersonagem
@@ -275,7 +241,11 @@ object MestreIAClient {
         })
 
         root.put("contents", contents)
-        root.put("tools", MestreIATools.getGeminiTools(modo))
+        
+        // No modo geração/análise, desativamos tools para forçar o JSON no texto (mais estável)
+        if (modo != "geracao" && modo != "analise") {
+            root.put("tools", MestreIATools.getGeminiTools(modo))
+        }
         root.put("generationConfig", JSONObject().put("temperature", 0.7).put("maxOutputTokens", 8192))
         
         return root.toString()
@@ -298,7 +268,12 @@ object MestreIAClient {
         messages.put(JSONObject().put("role", "user").put("content", prompt))
         
         root.put("messages", messages)
-        root.put("tools", MestreIATools.getOpenAITools(modo))
+        
+        // No modo geração/análise, desativamos tools para forçar o JSON no texto (mais estável)
+        if (modo != "geracao" && modo != "analise") {
+            root.put("tools", MestreIATools.getOpenAITools(modo))
+        }
+        
         root.put("temperature", 0.7)
         root.put("stream", true)
         
