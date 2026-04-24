@@ -172,7 +172,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Expansão do contexto RAG com "Essential Nodes" (Atributos e Regras Base) e Radar de RAM.
     - Rotação de Chaves: Mapeamento de `MESTRE_IA_OPENROUTER_2_KEY` e `.3_KEY` no `MestreIAUseCase.kt` para garantir continuidade após expiração da chave anterior.
 
-* [Feito] Lote 82: Refatoração Mestre IA (Especialistas) | `(Commit: pendente)`
+* [Feito] Lote 82: Refatoração Mestre IA (Especialistas) | `(Commit: 86d7e4f)`
     - Divisão do UseCase em Auditor (Regras/RAG) e Forjador (Geração/Análise).
     - Refatoração do `MestreIAResponse` para aceitar objetos complexos em Vantagens/Desvantagens/Magias (Correção Crash GSON).
     - Implementação de fallbacks especializados (Elite para Forja, Lite para Auditoria).
