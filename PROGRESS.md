@@ -178,7 +178,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Implementação de fallbacks especializados (Elite para Forja, Lite para Auditoria).
     - Limpeza de sintaxe e remoção de redundâncias no `FichaIADelegate`.
 
-* [Feito] Lote 83: Blindagem Ultra-Resiliente (Zero-Crash JSON) | `(Commit: pendente)`
+* [Feito] Lote 83: Blindagem Ultra-Resiliente (Zero-Crash JSON) | `(Commit: f93da21)`
     - Implementação do `MestreIAItemDeserializer` com suporte a aliases (`nh`, `desc`, `id`).
     - Tratamento de exceções interno no parse para evitar interrupção do fluxo do app.
     - Sincronização de motores GSON entre `Client`, `Delegate` e `Generator`.
