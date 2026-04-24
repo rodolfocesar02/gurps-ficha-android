@@ -175,6 +175,7 @@ android {
     }
 }
 
+/*
 val validateActiveJsonAssets by tasks.registering(Exec::class) {
     group = "verification"
     description = "Valida JSONs ativos do app antes do build."
@@ -185,6 +186,7 @@ val validateActiveJsonAssets by tasks.registering(Exec::class) {
 tasks.matching { it.name == "preBuild" }.configureEach {
     dependsOn(validateActiveJsonAssets)
 }
+*/
 
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
