@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.data.network.MestreIAResponse
+import com.gurps.ficha.data.network.MestreIAItem
+import com.gurps.ficha.data.network.MestreIAItemDeserializer
 import com.gurps.ficha.domain.MestreIAUseCase
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -178,6 +180,7 @@ class FichaIADelegate(
                 .registerTypeAdapter(MestreIAItem::class.java, MestreIAItemDeserializer())
                 .create()
 
+            android.util.Log.d("MestreIA", "Iniciando Parse - Versao Alvo: v1.5.0-Lote84")
             val fichaObjeto = if (jsonExtraido != null) {
                 try {
                     gsonIA.fromJson(jsonExtraido, MestreIAResponse::class.java)
