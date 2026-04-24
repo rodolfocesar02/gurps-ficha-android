@@ -174,9 +174,13 @@ class FichaIADelegate(
             val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
             
             var erroParse = false
+            val gsonIA = com.google.gson.GsonBuilder()
+                .registerTypeAdapter(com.gurps.ficha.data.network.MestreIAItem::class.java, com.gurps.ficha.data.network.MestreIAItemDeserializer())
+                .create()
+
             val fichaObjeto = if (jsonExtraido != null) {
                 try {
-                    com.google.gson.Gson().fromJson(jsonExtraido, MestreIAResponse::class.java)
+                    gsonIA.fromJson(jsonExtraido, MestreIAResponse::class.java)
                 } catch (e: Exception) {
                     android.util.Log.e("MestreIA", "Erro de Parse JSON: ${e.message}")
                     erroParse = true

@@ -19,7 +19,9 @@ import kotlinx.coroutines.withContext
 object MestreIAClient {
     private const val CONNECT_TIMEOUT_MS = 30000
     private const val READ_TIMEOUT_MS = 90000 
-    private val gson = Gson()
+    private val gson = com.google.gson.GsonBuilder()
+        .registerTypeAdapter(com.gurps.ficha.data.network.MestreIAItem::class.java, com.gurps.ficha.data.network.MestreIAItemDeserializer())
+        .create()
 
     private const val GOLD_TEMPLATE = """
 {
