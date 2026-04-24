@@ -20,7 +20,8 @@ data class MestreIAResponse(
     val peculiaridades: List<MestreIAItem> = emptyList(),
     val equipamentos: List<MestreIAEquipamento> = emptyList(),
     val aparencia: String = "",
-    val historico: String = ""
+    val historico: String = "",
+    val versaoApp: String = "v1.5.0-Lote84" // Assinatura para Debug
 )
 
 /**
