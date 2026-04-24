@@ -64,7 +64,8 @@ object MestreIAClient {
         val tecnicas: List<String> = emptyList(),
         val magias: List<String> = emptyList(),
         val chunks: List<com.gurps.ficha.model.MestreIAChunk> = emptyList(),
-        val summaries: List<com.gurps.ficha.data.storage.GraphNodeEntity> = emptyList()
+        val summaries: List<com.gurps.ficha.data.storage.GraphNodeEntity> = emptyList(),
+        val ponteDeFerro: String = ""
     ) {
         fun toJson(): String = Gson().toJson(this)
     }
@@ -99,8 +100,8 @@ object MestreIAClient {
             
             if (!isGoogleNative) {
                 connection.setRequestProperty("Authorization", "Bearer $apiKey")
-                connection.setRequestProperty("HTTP-Referer", "https://github.com/rodolfocesar02/gurps-ficha-android")
-                connection.setRequestProperty("X-Title", "Mestre IA GURPS App")
+                connection.setRequestProperty("HTTP-Referer", "https://github.com/mestre-ia-gurps")
+                connection.setRequestProperty("X-Title", "GURPS Ficha Android")
             }
 
             val listaVantagens = catalogo?.vantagens?.joinToString(", ") ?: ""
@@ -117,13 +118,23 @@ object MestreIAClient {
                 "\nCONHECIMENTO DO GRAFO (Contexto Macro e Relações):\n" +
                 catalogo.summaries.joinToString("\n") { "Tópico: ${it.title} | Resumo: ${it.summary}" }
             } else ""
+            
+            val ponteDeFerro = catalogo?.ponteDeFerro ?: ""
 
-                val instrucaoModo = when(modo) {
-                    "geracao" -> """
-                        Você é o MESTRE CONSULTOR de GURPS 4E BR (Sistema Oficial).
-                        REGRAS DE OURO DA GERAÇÃO:
-                        1. FIDELIDADE ABSOLUTA: Use EXATAMENTE os nomes contidos no "CATÁLOGO LOCAL". Não invente nomes! 
-                        2. PRÉ-REQUISITOS: Magias e perícias avançadas EXIGEM que você adicione os requisitos automaticamente.
+            android.util.Log.d("MestreIA_C", "TAMANHOS -> Vant: ${listaVantagens.length} | Peri: ${listaPericias.length} | Magia: ${listaMagias.length} | Grafo: ${resumosGrafo.length} | Manual: ${fragmentosRegras.length} | Ponte: ${ponteDeFerro.length}")
+
+            val instrucaoModo = when(modo) {
+                "geracao" -> """
+                    Você é o MESTRE CONSULTOR de GURPS 4E BR (Sistema Oficial).
+                    REGRAS DE OURO (Princípio da Fidelidade Proporcional):
+                    1. RESPOSTA PROPORCIONAL À INTENÇÃO:
+                       - Se o usuário pede LISTAS: Nomes e Páginas consolidadas no final.
+                       - Se o usuário pede REGRAS: Explique o conteúdo INTEGRAL.
+                       - MULTI-QUESTÕES: Se houver mais de uma pergunta, responda a TODAS de forma organizada e separada.
+                    2. PROIBIÇÃO DE SPAM DE REFERÊNCIAS: Não coloque [Pág. X] em cada frase ou item de lista. Consolide as referências de página apenas no FINAL de cada tópico ou no rodapé da mensagem. A fluidez da leitura é PRIORIDADE.
+                    3. VIABILIDADE DE PRÉ-REQUISITOS: Priorize magias iniciais (sem requisitos) para diversidade.
+                    4. PRECISÃO TÉCNICA: Se o contexto mencionar uma página mas não detalhar a regra, admita que não tem o texto completo em vez de apenas dar o número da página.
+                    4. PRÉ-REQUISITOS: Magias e perícias avançadas EXIGEM que você adicione os requisitos automaticamente.
                         
                         GABARITO DE OURO (Siga esta estrutura JSON estritamente):
                         $GOLD_TEMPLATE
@@ -132,38 +143,65 @@ object MestreIAClient {
                         - Escreva a introdução narrativa no chat.
                         - Insira o JSON INTEGRAL dentro de um bloco de código markdown (```json { ... } ```) no FIM da mensagem.
                         
-                        CATÁLOGO LOCAL (Priorize estes nomes exatos para as automações funcionarem):
+                        CATÁLOGO LOCAL:
+                        $ponteDeFerro
                         - Vantagens/Desvantagens: $listaVantagens, $listaDesvantagens
                         - Perícias: $listaPericias
                         - Técnicas: ${catalogo?.tecnicas?.joinToString(", ")}
                         - Magias: $listaMagias
-                    """.trimIndent()
+                """.trimIndent()
                 else -> """
-                    Siga estritamente estas diretrizes prioritárias:
-                    1. RESPONDA 100% EM PORTUGUÊS (BRASIL). Use termos oficiais da Devir/Steve Jackson Games.
-                    2. INVESTIGAÇÃO NARRADA: Antes de dar a resposta final, narre brevemente o que está pesquisando nos manuais (ex: "Verificando modificadores de combate sob a água na pág. 407..."). Isso ajuda o usuário a acompanhar seu raciocínio.
-                    3. RESUMO DE CÁLCULOS: Sempre termine respostas de combate ou testes com um resumo estruturado: (Base NH/Dano -> Modificadores -> Resultado Final -> Conclusão).
-                    4. PRIORIDADE TÉCNICA (CODEX): Use as regras de GURPS abaixo como FONTE ABSOLUTA.
-                    5. CITAÇÃO OBRIGATÓRIA: Sempre cite o manual e a página (ex: "MB pág. "X"").
-                    6. Use [SUGESTAO: Texto] para sugerir perguntas interativas.
+                    VOCÊ É O AUDITOR DO CODEX (GURPS 4ª EDIÇÃO BRASIL).
+                    DIRETRIZ SUPREMA: Sua resposta deve ser proporcional à pergunta.
+                    
+                    [EXEMPLO DE RESPOSTA CORRETA (LISTA)]
+                    User: "Quais magias preciso para Desejo?"
+                    Auditor: "Para a magia Desejo, você precisa de:
+                    - Pequeno Desejo [Pág. 61]
+                    - 1 magia em 15 escolas diferentes (ex: Atear Fogo [Pág. 72], Localizar Água [Pág. 182]...)"
+                    
+                    [EXEMPLO DE RESPOSTA INCORRETA (EVITE ISSO!)]
+                    User: "Quais magias..."
+                    Auditor: "Desejo [ID: desejo, Pág: 61, Descrição: A magia desejo permite... Requisitos: ...]" <-- PROIBIDO DESPEJAR DADOS TÉCNICOS EM LISTAS!
+                    
+                    REGRAS DE OURO:
+                    1. LISTAS LIMPAS: Pedidos de "quais", "liste" ou "nomes" recebem apenas NOME e PÁGINA.
+                    2. DETALHAMENTO TÉCNICO: Só descreva "como funciona", IDs ou requisitos de nível se o usuário pedir "detalhes" ou "ficha técnica".
+                    3. VIABILIDADE DE PRÉ-REQUISITOS: Ao sugerir magias para cumprir requisitos (ex: "10 escolas"), priorize MAGIAS INICIAIS (sem pré-requisitos ou apenas AM1).
+                    4. CONSULTA INTERNA: Use a "BASE DE DADOS TÉCNICA" abaixo para garantir que você não invente nomes, mas NÃO copie e cole o bloco de descrição inteiro.
+                    
+                    BASE DE DADOS TÉCNICA (Uso Interno para Precisão):
+                    ${catalogo?.ponteDeFerro ?: ""}
+                    
+                    CATÁLOGO DE NOMES:
+                    - Vantagens/Desvantagens: $listaVantagens, $listaDesvantagens
+                    - Perícias: $listaPericias
+                    - Técnicas: ${catalogo?.tecnicas?.joinToString(", ")}
+                    - MAGIAS: $listaMagias
+                    
+                    $resumosGrafo
+                    $fragmentosRegras
                 """.trimIndent()
             }
 
             val systemPulse = """
-                Você é o Mestre Digital 2.0, assistente de GURPS 4ª Edição.
+                VOCÊ É O MESTRE IA - AUDITOR TÉCNICO DE GURPS 4ª EDIÇÃO.
+                
                 $instrucaoModo
+                
+                PROTOCOLO DE AUDITORIA (Prioridade Máxima):
+                1. CONCISÃO EXTREMA: Vá direto ao ponto. O jogador quer a regra, não um artigo. Responda em no máximo 2 ou 3 parágrafos curtos.
+                2. ACESSIBILIDADE (TalkBack): EVITE TABELAS. Use listas simples com marcadores (•).
+                3. EXECUÇÃO TÉCNICA: Se a pergunta for sobre pré-requisitos, liste TODOS que encontrar na trilha de conhecimento fornecida.
+                4. CITAÇÃO PRECISA: Cite apenas as páginas reais encontradas nos fragmentos (ex: [MA pág. 65]). PROIBIDO usar números genéricos como [MB pág. 10] se a informação não estiver lá. Se o recorte não tiver página, não invente.
+                CONTEXTO:
+                - Ficha Atual: $contextoPersonagem
+                - Catálogo Local: $listaVantagens, $listaPericias, $listaMagias
                 
                 $resumosGrafo
                 
                 $fragmentosRegras
                 
-                NARRATIVA E INTERATIVIDADE:
-                1. Use nomes em português (Módulo Básico).
-                2. LIMITE DE TEXTO: Mantenha as histórias na ficha em até 1000 caracteres.
-                3. ANTI-VÁCUO: Em modo de geração de ficha, você DEVE sempre escrever uma pequena introdução narrativa no chat antes de abrir o bloco ```json.
-                
-                HISTÓRICO DO PERSONAGEM (Use como contexto):
-                $contextoPersonagem
             """.trimIndent()
 
             val jsonOutput = if (isGoogleNative) {
@@ -293,10 +331,11 @@ object MestreIAClient {
         // Mensagem de SISTEMA (Importante para modelos de elite como DeepSeek)
         messages.put(JSONObject().put("role", "system").put("content", systemPulse))
 
-        history.forEach { (u, b) ->
-            // Normalizar papéis (OpenAI aceita system, user, assistant)
-            messages.put(JSONObject().put("role", "user").put("content", u))
-            messages.put(JSONObject().put("role", "assistant").put("content", b))
+        history.forEach { (role, content) ->
+            val roleNormalized = if (role == "model" || role == "assistant") "assistant" else "user"
+            if (content.isNotBlank()) {
+                messages.put(JSONObject().put("role", roleNormalized).put("content", content))
+            }
         }
         messages.put(JSONObject().put("role", "user").put("content", prompt))
         
@@ -306,6 +345,28 @@ object MestreIAClient {
         root.put("stream", true)
         
         return root.toString()
+    }
+
+    private fun getSystemPrompt(fichaContext: String): String {
+        return """
+        Você é o Mestre Digital 2.0. Seu objetivo é ser um auditor de regras de GURPS 4ª Edição INFALÍVEL.
+        
+        DIRETRIZES DE BLINDAGEM:
+        1. PROIBIÇÃO DE INFERÊNCIA: Você está terminantemente proibido de usar lógica interna para calcular atributos derivados (como Deslocamento, Esquiva ou NH).
+        2. FONTE ÚNICA: Se o valor não está na FICHA fornecida e a FÓRMULA EXATA não está no CODEX, você NÃO PODE responder o cálculo. 
+        3. PROTOCOLO DE VÁCUO: Se faltar um dado necessário para uma regra, responda: "A regra diz [Citação], mas o valor de [Atributo] não foi fornecido. Qual o valor de [Atributo] na sua ficha?"
+        4. CITAÇÃO LITERAL OBRIGATÓRIA: Toda regra usada deve ser precedida por uma citação literal entre aspas: "Segundo o manual: '...'".
+        5. LÍNGUA: Responda sempre em Português do Brasil.
+
+        --- FICHA DO PERSONAGEM (FONTE DE DADOS) ---
+        $fichaContext
+
+        --- INSTRUÇÕES DE FORMATO (JSON) ---
+        Sua resposta final DEVE ser um JSON válido com os campos:
+        - "texto": A explicação técnica detalhada seguindo os protocolos acima.
+        - "acoes": Lista de modificações sugeridas (se houver).
+        - "sugestoes": Lista de strings para botões de sugestão.
+        """.trimIndent()
     }
 
     private fun parseGoogleNativeResponse(body: String): String {
@@ -452,6 +513,10 @@ object MestreIAClient {
 
     private fun readStreamSafely(stream: java.io.InputStream?): String {
         if (stream == null) return ""
-        return BufferedReader(InputStreamReader(stream, StandardCharsets.UTF_8)).use { it.readText() }
+        return try {
+            stream.bufferedReader().use { it.readText() }
+        } catch (e: Exception) {
+            "Erro ao ler stream: ${e.message}"
+        }
     }
 }

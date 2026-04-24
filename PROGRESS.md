@@ -105,6 +105,9 @@ Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Eve
 Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index pré-calculado) para que o findRelevantChunks seja instantâneo, mesmo com manuais extensos.)
 * [Feito] Lote 57: Reconstrução de Elite (RAG 1194 Chunks) e Triplo Fallback (600 Usos) | `(Manual: Antigravity)`
 * [Feito] Lote 58: Estabilização do Mestre IA (Motor de Reparo por Pilha) | `(Commit: bf9b73c)`
+    - [x] **Estabilização IA 2026**: Migração total para Gemini 3.0 e 2.5 (resolvendo 404 de modelos antigos).
+    - [x] **Restauração Nexus**: Motor de investigação multi-estágio e trilhas de pré-requisitos universalizado.
+    - [x] **Blindagem de Conexão**: Correção de headers OpenRouter e normalização de histórico de chat.
     * Implementação de algoritmo de fechamento de JSON baseado em Pilha (Stack) e Botões de Diagnóstico UI.
 * [Feito] Lote 59: IA Master Laboratory (Suite de Auditoria Python) | `(Commit: bf9b73c)`
     * Criação do validador de fidelidade ao catálogo e simulador de stress offline em Python.
@@ -160,9 +163,17 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 * [Feito] Lote 68: Motor Investigador (Expansão Semântica) | `(Commit: c2e2491)`
 * [Feito] Lote 69: O Toque do Mestre (Contexto Adjacente) | `(Commit: ca18212)`
 * [Feito] Lote 70: Motor ReAct Multi-Stage (O Mestre Investigador) | `(Commit: pendente)`
+
+
     - Implementação de Loop de Investigação (While) em `MestreIAUseCase.kt`.
     - Suporte a até 3 iterações consecutivas de busca por resposta.
     - Acumulação inteligente de contexto entre buscas para evitar perda de raciocínio.
+* [Feito] Lote 81: Restauração Nano-GraphRAG e Memória de Agente | `(Commit: 51c0d3b)`
+    - Implementação de Busca Relacional em Dois Saltos (Multi-Hop) no `MestreIAGraphEngine.kt`.
+    - Integração com o sistema MemPalace (ChromaDB local) para memória de longo prazo do agente.
+    - Criação do "Palácio da Memória" (Knowledge Item) com mapa detalhado de engenharia e regras SSOT.
+    - Expansão do contexto RAG com "Essential Nodes" (Atributos e Regras Base) e Radar de RAM.
+
 
 ### Próximos Passos (Desejos do Usuário):
 - Bateria de Testes (Stress Test)
@@ -174,7 +185,7 @@ Aparar com Escudo: "Um ogro me atacou com uma clava gigante. Posso usar a regra 
 Criação de Especialista: "Gere uma ficha de um Ninja especializado em infiltração tecnológica (NT 9), com 'Mãos Pegajosas' e 'Passo Leve', usando 150 pontos."
 Regra de Recuo (Armas de Fogo): "Se eu der uma rajada de 3 tiros com uma submetralhadora de Recuo 2, como calculo quantos tiros acertaram?"
 Sufocamento por Fumaça: "O prédio está pegando fogo! Quais são os testes para não desmaiar por inalação de fumaça a cada turno?"
-Salto em Distância: "Tenho ST 12 e DX 11. Qual a distância máxima que consigo saltar com uma corrida prévia?"
+Salto em Distância: "Tenho ST 12 e DX 11 e HT 10. Qual a distância máxima que consigo saltar com uma corrida prévia?"
 Magia e Fadiga: "Se eu conjurar 'Bola de Fogo' gastando 3 pontos de fadiga, mas minha Aptidão Mágica for 2, quanto tempo levo para carregar a magia?"
 
 "Segundo Cérebro" (O Validador de Regras).(vamos pensar niisso!)
