@@ -6,7 +6,24 @@ import sys
 # Força o console a usar UTF-8
 sys.stdout.reconfigure(encoding='utf-8')
 
-API_KEY = os.getenv("OPENROUTER_API_KEY")
+def load_keys():
+    keys = {}
+    if os.path.exists("../local.properties"):
+        with open("../local.properties", "r") as f:
+            for line in f:
+                if "=" in line:
+                    k, v = line.strip().split("=", 1)
+                    keys[k] = v
+    elif os.path.exists("local.properties"):
+        with open("local.properties", "r") as f:
+            for line in f:
+                if "=" in line:
+                    k, v = line.strip().split("=", 1)
+                    keys[k] = v
+    return keys
+
+KEYS = load_keys()
+API_KEY = KEYS.get("mestre.ia.openrouter.2.key") or os.getenv("OPENROUTER_API_KEY")
 MODEL_NAME = "meta-llama/llama-3.3-70b-instruct" 
 GRAPH_PATH = r"c:\Users\Rodolfo\Desktop\ficha gurps\ficha-gurps\gurps_app\gurps-ficha-android\app\src\main\assets\graph_db\graph_knowledge.json"
 

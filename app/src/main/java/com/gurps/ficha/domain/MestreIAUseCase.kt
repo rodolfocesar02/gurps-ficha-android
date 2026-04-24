@@ -176,8 +176,9 @@ class MestreIAUseCase(
             fila.add(Triple(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
             fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-3.0-pro"))
         } else {
-            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, "qwen/qwen-2.5-72b-instruct"))
-            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, "google/gemini-2.5-flash"))
+            // Fila de Fallback (Modo Conversa/LITE)
+            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_2_KEY, "qwen/qwen-2.5-72b-instruct"))
+            fila.add(Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_3_KEY, "google/gemini-2.5-flash"))
             fila.add(Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.5-flash"))
         }
         return fila.filter { it.second.isNotBlank() }

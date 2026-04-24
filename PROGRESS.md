@@ -173,6 +173,8 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Integração com o sistema MemPalace (ChromaDB local) para memória de longo prazo do agente.
     - Criação do "Palácio da Memória" (Knowledge Item) com mapa detalhado de engenharia e regras SSOT.
     - Expansão do contexto RAG com "Essential Nodes" (Atributos e Regras Base) e Radar de RAM.
+    - Rotação de Chaves: Mapeamento de `MESTRE_IA_OPENROUTER_2_KEY` e `.3_KEY` no `MestreIAUseCase.kt` para garantir continuidade após expiração da chave anterior.
+
 
 
 ### Próximos Passos (Desejos do Usuário):
