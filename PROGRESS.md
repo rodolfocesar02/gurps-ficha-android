@@ -115,9 +115,6 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
-
-
-
     * Refatoração do `MestreIAResponse` para aceitar Objetos em vez de Strings para Vantagens e Magias (alinhado com o Gabarito de Ouro).
     * Evolução do `repararJsonTruncado` para fechar Strings `"` abertas e ignorar sufixos nocivos.
     * Teste Unitário criado: `testStressReparoJsonTruncado` com aninhamento de 500pts aprovado.
@@ -174,6 +171,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Criação do "Palácio da Memória" (Knowledge Item) com mapa detalhado de engenharia e regras SSOT.
     - Expansão do contexto RAG com "Essential Nodes" (Atributos e Regras Base) e Radar de RAM.
     - Rotação de Chaves: Mapeamento de `MESTRE_IA_OPENROUTER_2_KEY` e `.3_KEY` no `MestreIAUseCase.kt` para garantir continuidade após expiração da chave anterior.
+
+* [Feito] Lote 82: Refatoração Mestre IA (Especialistas) | `(Commit: pendente)`
+    - Divisão do UseCase em Auditor (Regras/RAG) e Forjador (Geração/Análise).
+    - Refatoração do `MestreIAResponse` para aceitar objetos complexos em Vantagens/Desvantagens/Magias (Correção Crash GSON).
+    - Implementação de fallbacks especializados (Elite para Forja, Lite para Auditoria).
+    - Limpeza de sintaxe e remoção de redundâncias no `FichaIADelegate`.
 
 
 

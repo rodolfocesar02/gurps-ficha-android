@@ -23,6 +23,7 @@ class FichaIADelegate(
     private val scope: CoroutineScope
 ) {
     private val mestreIAUseCase by lazy { MestreIAUseCase(viewModel, dataRepository) }
+    private val mestreIAGeneratorUseCase by lazy { MestreIAGeneratorUseCase(viewModel, dataRepository) }
 
     var mestreIAChatHistory by mutableStateOf<List<MestreIAClient.ChatMessage>>(emptyList())
     var fichaGeradaPendente by mutableStateOf<MestreIAResponse?>(null)
@@ -98,85 +99,127 @@ class FichaIADelegate(
             }
             val assistantIndex = mestreIAChatHistory.size - 1
 
-            mestreIAUseCase.conversarComMestreIA(
-                prompt = pergunta,
-                modo = mestreIAMode,
-                onStatusUpdate = { status ->
-                    scope.launch(Dispatchers.Main) {
-                        val history = mestreIAChatHistory.toMutableList()
-                        if (assistantIndex >= 0 && assistantIndex < history.size) {
-                            history[assistantIndex] = history[assistantIndex].copy(modelName = status)
-                            mestreIAChatHistory = history
-                        }
-                    }
-                },
-                onChunk = { chunk ->
-                    scope.launch(Dispatchers.Main) {
-                        val history = mestreIAChatHistory.toMutableList()
-                        if (assistantIndex >= 0 && assistantIndex < history.size) {
-                            val currentMsg = history[assistantIndex]
-                            history[assistantIndex] = currentMsg.copy(text = currentMsg.text + chunk)
-                            mestreIAChatHistory = history
-                        }
-                    }
-                }
-            ) { isRagUsed, response ->
-                scope.launch(Dispatchers.Main) {
-                    val history = mestreIAChatHistory.toMutableList()
-                    if (assistantIndex >= 0 && assistantIndex < history.size) {
-                        val rawText = response.text
-                        val jsonExtraido = response.rawJson ?: mestreIAUseCase.extrairJsonDeNarrativa(rawText)
-                        val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
-                        
-                        var erroParse = false
-                        val fichaObjeto = jsonExtraido?.let { 
-                            try {
-                                com.google.gson.Gson().fromJson(it, MestreIAResponse::class.java)
-                            } catch (e: Exception) {
-                                erroParse = true
-                                null
+            if (modo == "geracao" || modo == "analise") {
+                mestreIAGeneratorUseCase.gerarOuAnalisarFicha(
+                    prompt = pergunta,
+                    modo = modo,
+                    onStatusUpdate = { status ->
+                        scope.launch(Dispatchers.Main) {
+                            val history = mestreIAChatHistory.toMutableList()
+                            if (assistantIndex >= 0 && assistantIndex < history.size) {
+                                history[assistantIndex] = history[assistantIndex].copy(modelName = status)
+                                mestreIAChatHistory = history
                             }
                         }
-
-                        val textoFinal = when {
-                            erroParse -> "⚠️ O Mestre gerou a ficha, mas o código contém um erro técnico. Peça para ele: 'Corrija o código JSON da ficha'."
-                            fichaObjeto != null && narrativaLimpa.isBlank() -> "📦 Ficha pronta com sucesso! Clique no botão abaixo para integrar."
-                            else -> narrativaLimpa
-                        }
-
-                        history[assistantIndex] = history[assistantIndex].copy(
-                            text = if (jsonExtraido != null) textoFinal else rawText,
-                            modelName = response.modelName,
-                            isRagUsed = isRagUsed,
-                            latencyMs = response.latencyMs,
-                            data = fichaObjeto,
-                            rawJson = jsonExtraido
-                        )
-                        mestreIAChatHistory = history
-                        fichaGeradaPendente = fichaObjeto
-
-                        if (modo == "geracao") {
-                            val msgResultado = when {
-                                erroParse -> "Falha técnica no código do Mestre."
-                                fichaGeradaPendente != null -> "Ficha disponível no balão do chat!"
-                                else -> "Mestre IA ainda está processando..."
+                    },
+                    onChunk = { chunk ->
+                        scope.launch(Dispatchers.Main) {
+                            val history = mestreIAChatHistory.toMutableList()
+                            if (assistantIndex >= 0 && assistantIndex < history.size) {
+                                val currentMsg = history[assistantIndex]
+                                history[assistantIndex] = currentMsg.copy(text = currentMsg.text + chunk)
+                                mestreIAChatHistory = history
                             }
-                            onResult(true, msgResultado)
-                        } else {
-                            onResult(true, "Resposta recebida.")
                         }
-
-                        salvarMensagemNoBanco("model", response.text, response.modelName)
+                    },
+                    onResultado = { success, response ->
+                        scope.launch(Dispatchers.Main) {
+                            processarRespostaIA(modo, assistantIndex, false, response, onResult)
+                        }
+                    }
+                )
+            } else {
+                mestreIAUseCase.conversarComMestreIA(
+                    prompt = pergunta,
+                    modo = mestreIAMode,
+                    onStatusUpdate = { status ->
+                        scope.launch(Dispatchers.Main) {
+                            val history = mestreIAChatHistory.toMutableList()
+                            if (assistantIndex >= 0 && assistantIndex < history.size) {
+                                history[assistantIndex] = history[assistantIndex].copy(modelName = status)
+                                mestreIAChatHistory = history
+                            }
+                        }
+                    },
+                    onChunk = { chunk ->
+                        scope.launch(Dispatchers.Main) {
+                            val history = mestreIAChatHistory.toMutableList()
+                            if (assistantIndex >= 0 && assistantIndex < history.size) {
+                                val currentMsg = history[assistantIndex]
+                                history[assistantIndex] = currentMsg.copy(text = currentMsg.text + chunk)
+                                mestreIAChatHistory = history
+                            }
+                        }
+                    }
+                ) { isRagUsed, response ->
+                    scope.launch(Dispatchers.Main) {
+                        processarRespostaIA(modo, assistantIndex, isRagUsed, response, onResult)
                     }
                 }
             }
         }
     }
 
+    private fun processarRespostaIA(
+        modo: String,
+        assistantIndex: Int,
+        isRagUsed: Boolean,
+        response: MestreIAClient.ChatResponse,
+        onResult: (Boolean, String) -> Unit
+    ) {
+        val history = mestreIAChatHistory.toMutableList()
+        if (assistantIndex >= 0 && assistantIndex < history.size) {
+            val rawText = response.text
+            val jsonExtraido = response.rawJson ?: MestreIAClient.extrairJsonFicha(rawText)?.let { rawText.substring(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1) }
+            val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
+            
+            var erroParse = false
+            val fichaObjeto = if (jsonExtraido != null) {
+                try {
+                    com.google.gson.Gson().fromJson(jsonExtraido, MestreIAResponse::class.java)
+                } catch (e: Exception) {
+                    android.util.Log.e("MestreIA", "Erro de Parse JSON: ${e.message}")
+                    erroParse = true
+                    null
+                }
+            } else null
+
+            val textoFinal = when {
+                erroParse -> "⚠️ O Mestre gerou a ficha, mas o código contém um erro técnico. Peça para ele: 'Corrija o código JSON da ficha'."
+                fichaObjeto != null && narrativaLimpa.isBlank() -> "📦 Ficha pronta com sucesso! Clique no botão abaixo para integrar."
+                else -> narrativaLimpa
+            }
+
+            history[assistantIndex] = history[assistantIndex].copy(
+                text = if (jsonExtraido != null) textoFinal else rawText,
+                modelName = response.modelName,
+                isRagUsed = isRagUsed,
+                latencyMs = response.latencyMs,
+                data = fichaObjeto,
+                rawJson = jsonExtraido
+            )
+            mestreIAChatHistory = history
+            fichaGeradaPendente = fichaObjeto
+
+            if (modo == "geracao") {
+                val msgResultado = when {
+                    erroParse -> "Falha técnica no código do Mestre."
+                    fichaGeradaPendente != null -> "Ficha disponível no balão do chat!"
+                    else -> "Mestre IA ainda está processando..."
+                }
+                onResult(true, msgResultado)
+            } else {
+                onResult(true, "Resposta recebida.")
+            }
+
+            salvarMensagemNoBanco("model", response.text, response.modelName)
+        }
+    }
+
     fun confirmarIntegracao() {
         val ficha = fichaGeradaPendente ?: return
         scope.launch {
-            mestreIAUseCase.integrarRespostaNaFicha(ficha)
+            mestreIAGeneratorUseCase.integrarRespostaNaFicha(ficha)
             viewModel.autoSaveIA()
             fichaGeradaPendente = null
         }

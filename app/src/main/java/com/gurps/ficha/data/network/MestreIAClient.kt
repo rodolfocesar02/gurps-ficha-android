@@ -25,14 +25,39 @@ object MestreIAClient {
 {
   "nome": "Nome do Personagem",
   "historia": "Breve biografia narrativa (max 1000 chars)",
-  "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10, "hp": 10, "vontade": 10, "percepcao": 10, "fp": 10 },
+  "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
   "vantagens": [ { "nome": "Nome Exato do Catálogo", "custo": 10, "descricao": "..." } ],
   "desvantagens": [ { "nome": "Nome Exato do Catálogo", "custo": -10, "descricao": "..." } ],
-  "pericias": [ { "nome": "Nome Exato do Catálogo", "nivel": 12, "base": "DX", "pts": 4 } ],
-  "magias": [ { "nome": "Nome Exato do Catálogo", "custo": "1 fp", "tempo": "1 s" } ],
+  "pericias": [ { "nome": "Nome Exato do Catálogo", "nivel": 12 } ],
+  "tecnicas": [ { "nome": "Nome Exato do Catálogo", "nivel": 14 } ],
+  "magias": [ { "nome": "Nome Exato do Catálogo", "custo": "1 fp" } ],
   "equipamentos": [ { "nome": "Nome", "peso": 1.0, "custo": 100, "quantidade": 1, "rd": 0, "dano": "1d cut", "st_min": 10, "aparar": "0" } ]
 }
 """
+
+    private const val PROMPT_FORJADOR = """
+        VOCÊ É O FORJADOR DE GURPS (ESPECIALISTA EM GERAÇÃO).
+        OBJETIVO: Criar ou Analisar personagens seguindo estritamente as regras da 4ª Edição Brasil.
+        
+        DIRETRIZES DE FORJA:
+        1. FIDELIDADE AOS NOMES: Use APENAS nomes de vantagens/perícias presentes no Catálogo Local fornecido.
+        2. ESTRUTURA JSON: Sua resposta deve conter uma breve introdução narrativa e OBRIGATORIAMENTE o bloco JSON no gabarito abaixo.
+        3. PRÉ-REQUISITOS: Se adicionar uma perícia ou magia avançada, você DEVE adicionar os pré-requisitos necessários automaticamente.
+        
+        GABARITO DE OURO:
+        $GOLD_TEMPLATE
+    """
+
+    private const val PROMPT_AUDITOR = """
+        VOCÊ É O AUDITOR DO CÓDEX (ESPECIALISTA EM REGRAS).
+        OBJETIVO: Responder dúvidas, explicar mecânicas e auditar a legalidade das ações.
+        
+        DIRETRIZES DE AUDITORIA:
+        1. CONCISÃO: Máximo 3 parágrafos curtos.
+        2. PROPORCIONALIDADE: Se pedirem uma lista, responda com uma lista (Nome + Página). Se pedirem explicação, detalhe a mecânica.
+        3. SEM INVENÇÃO: Use apenas os fragmentos de regras fornecidos. Se não souber a página real, não invente.
+        4. TOOL CALLING: Use 'search_rules' sempre que precisar de dados técnicos que não estão no contexto imediato.
+    """
 
     data class ChatMessage(
         val role: String, // "user" ou "model"
@@ -123,85 +148,16 @@ object MestreIAClient {
 
             android.util.Log.d("MestreIA_C", "TAMANHOS -> Vant: ${listaVantagens.length} | Peri: ${listaPericias.length} | Magia: ${listaMagias.length} | Grafo: ${resumosGrafo.length} | Manual: ${fragmentosRegras.length} | Ponte: ${ponteDeFerro.length}")
 
-            val instrucaoModo = when(modo) {
-                "geracao" -> """
-                    Você é o MESTRE CONSULTOR de GURPS 4E BR (Sistema Oficial).
-                    REGRAS DE OURO (Princípio da Fidelidade Proporcional):
-                    1. RESPOSTA PROPORCIONAL À INTENÇÃO:
-                       - Se o usuário pede LISTAS: Nomes e Páginas consolidadas no final.
-                       - Se o usuário pede REGRAS: Explique o conteúdo INTEGRAL.
-                       - MULTI-QUESTÕES: Se houver mais de uma pergunta, responda a TODAS de forma organizada e separada.
-                    2. PROIBIÇÃO DE SPAM DE REFERÊNCIAS: Não coloque [Pág. X] em cada frase ou item de lista. Consolide as referências de página apenas no FINAL de cada tópico ou no rodapé da mensagem. A fluidez da leitura é PRIORIDADE.
-                    3. VIABILIDADE DE PRÉ-REQUISITOS: Priorize magias iniciais (sem requisitos) para diversidade.
-                    4. PRECISÃO TÉCNICA: Se o contexto mencionar uma página mas não detalhar a regra, admita que não tem o texto completo em vez de apenas dar o número da página.
-                    4. PRÉ-REQUISITOS: Magias e perícias avançadas EXIGEM que você adicione os requisitos automaticamente.
-                        
-                        GABARITO DE OURO (Siga esta estrutura JSON estritamente):
-                        $GOLD_TEMPLATE
-                        
-                        MÉTODO DE RESPOSTA:
-                        - Escreva a introdução narrativa no chat.
-                        - Insira o JSON INTEGRAL dentro de um bloco de código markdown (```json { ... } ```) no FIM da mensagem.
-                        
-                        CATÁLOGO LOCAL:
-                        $ponteDeFerro
-                        - Vantagens/Desvantagens: $listaVantagens, $listaDesvantagens
-                        - Perícias: $listaPericias
-                        - Técnicas: ${catalogo?.tecnicas?.joinToString(", ")}
-                        - Magias: $listaMagias
-                """.trimIndent()
-                else -> """
-                    VOCÊ É O AUDITOR DO CODEX (GURPS 4ª EDIÇÃO BRASIL).
-                    DIRETRIZ SUPREMA: Sua resposta deve ser proporcional à pergunta.
-                    
-                    [EXEMPLO DE RESPOSTA CORRETA (LISTA)]
-                    User: "Quais magias preciso para Desejo?"
-                    Auditor: "Para a magia Desejo, você precisa de:
-                    - Pequeno Desejo [Pág. 61]
-                    - 1 magia em 15 escolas diferentes (ex: Atear Fogo [Pág. 72], Localizar Água [Pág. 182]...)"
-                    
-                    [EXEMPLO DE RESPOSTA INCORRETA (EVITE ISSO!)]
-                    User: "Quais magias..."
-                    Auditor: "Desejo [ID: desejo, Pág: 61, Descrição: A magia desejo permite... Requisitos: ...]" <-- PROIBIDO DESPEJAR DADOS TÉCNICOS EM LISTAS!
-                    
-                    REGRAS DE OURO:
-                    1. LISTAS LIMPAS: Pedidos de "quais", "liste" ou "nomes" recebem apenas NOME e PÁGINA.
-                    2. DETALHAMENTO TÉCNICO: Só descreva "como funciona", IDs ou requisitos de nível se o usuário pedir "detalhes" ou "ficha técnica".
-                    3. VIABILIDADE DE PRÉ-REQUISITOS: Ao sugerir magias para cumprir requisitos (ex: "10 escolas"), priorize MAGIAS INICIAIS (sem pré-requisitos ou apenas AM1).
-                    4. CONSULTA INTERNA: Use a "BASE DE DADOS TÉCNICA" abaixo para garantir que você não invente nomes, mas NÃO copie e cole o bloco de descrição inteiro.
-                    
-                    BASE DE DADOS TÉCNICA (Uso Interno para Precisão):
-                    ${catalogo?.ponteDeFerro ?: ""}
-                    
-                    CATÁLOGO DE NOMES:
-                    - Vantagens/Desvantagens: $listaVantagens, $listaDesvantagens
-                    - Perícias: $listaPericias
-                    - Técnicas: ${catalogo?.tecnicas?.joinToString(", ")}
-                    - MAGIAS: $listaMagias
-                    
-                    $resumosGrafo
-                    $fragmentosRegras
-                """.trimIndent()
-            }
-
             val systemPulse = """
-                VOCÊ É O MESTRE IA - AUDITOR TÉCNICO DE GURPS 4ª EDIÇÃO.
+                ${if (modo == "geracao" || modo == "analise") PROMPT_FORJADOR else PROMPT_AUDITOR}
                 
-                $instrucaoModo
-                
-                PROTOCOLO DE AUDITORIA (Prioridade Máxima):
-                1. CONCISÃO EXTREMA: Vá direto ao ponto. O jogador quer a regra, não um artigo. Responda em no máximo 2 ou 3 parágrafos curtos.
-                2. ACESSIBILIDADE (TalkBack): EVITE TABELAS. Use listas simples com marcadores (•).
-                3. EXECUÇÃO TÉCNICA: Se a pergunta for sobre pré-requisitos, liste TODOS que encontrar na trilha de conhecimento fornecida.
-                4. CITAÇÃO PRECISA: Cite apenas as páginas reais encontradas nos fragmentos (ex: [MA pág. 65]). PROIBIDO usar números genéricos como [MB pág. 10] se a informação não estiver lá. Se o recorte não tiver página, não invente.
-                CONTEXTO:
-                - Ficha Atual: $contextoPersonagem
+                CONTEXTO ATUAL:
+                - Ficha do Personagem: $contextoPersonagem
                 - Catálogo Local: $listaVantagens, $listaPericias, $listaMagias
+                - Ponte de Ferro (RAG): $ponteDeFerro
                 
                 $resumosGrafo
-                
                 $fragmentosRegras
-                
             """.trimIndent()
 
             val jsonOutput = if (isGoogleNative) {
