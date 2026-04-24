@@ -4,8 +4,9 @@ import com.google.gson.*
 import java.lang.reflect.Type
 
 /**
- * MestreIAResponse - Lote 82: Flexibilidade Total.
- * Suporta deserialização de itens como String ou Objeto.
+ * MestreIAResponse - Lote 83: Blindagem Ultra-Resiliente.
+ * Resolve o erro "Expected a string but was BEGIN_OBJECT" ao permitir que 
+ * listas de Traços e Perícias aceitem tanto Texto quanto Objetos.
  */
 data class MestreIAResponse(
     val nome: String = "",
@@ -22,36 +23,45 @@ data class MestreIAResponse(
     val historico: String = ""
 )
 
+/**
+ * Item flexível que se auto-ajusta ao formato enviado pela IA.
+ */
 data class MestreIAItem(
     val nome: String = "",
     val custo: Int? = null,
     val descricao: String? = null,
-    val nivel: Int = 0 // Usado para perícias e técnicas
+    val nivel: Int = 0
 )
 
 /**
- * Deserializador que permite que MestreIAItem seja uma String simples ou um Objeto JSON.
+ * O "Tradutor" Universal: Converte qualquer lixo da IA em um MestreIAItem válido.
  */
 class MestreIAItemDeserializer : JsonDeserializer<MestreIAItem> {
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): MestreIAItem {
-        return if (json.isJsonPrimitive) {
-            val raw = json.asString
-            if (raw.contains(":")) {
-                val partes = raw.split(":")
-                val nome = partes[0].trim()
-                val nivel = partes[1].trim().filter { it.isDigit() }.toIntOrNull() ?: 0
-                MestreIAItem(nome = nome, nivel = nivel)
+        return try {
+            if (json.isJsonPrimitive) {
+                val raw = json.asString
+                if (raw.contains(":")) {
+                    val partes = raw.split(":")
+                    val nome = partes[0].trim()
+                    val nivel = partes[1].trim().filter { it.isDigit() }.toIntOrNull() ?: 0
+                    MestreIAItem(nome = nome, nivel = nivel)
+                } else {
+                    MestreIAItem(nome = raw)
+                }
+            } else if (json.isJsonObject) {
+                val obj = json.asJsonObject
+                MestreIAItem(
+                    nome = obj.get("nome")?.asString ?: obj.get("id")?.asString ?: "Item sem nome",
+                    custo = obj.get("custo")?.asInt,
+                    descricao = obj.get("descricao")?.asString ?: obj.get("desc")?.asString,
+                    nivel = obj.get("nivel")?.asInt ?: obj.get("nh")?.asInt ?: 0
+                )
             } else {
-                MestreIAItem(nome = raw)
+                MestreIAItem(nome = "Erro de Formato")
             }
-        } else {
-            val obj = json.asJsonObject
-            MestreIAItem(
-                nome = obj.get("nome")?.asString ?: obj.get("id")?.asString ?: "Desconhecido",
-                custo = obj.get("custo")?.asInt,
-                descricao = obj.get("descricao")?.asString,
-                nivel = obj.get("nivel")?.asInt ?: 0
-            )
+        } catch (e: Exception) {
+            MestreIAItem(nome = "Erro no Parse: ${e.message}")
         }
     }
 }

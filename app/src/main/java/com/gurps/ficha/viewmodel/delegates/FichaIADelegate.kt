@@ -175,7 +175,7 @@ class FichaIADelegate(
             
             var erroParse = false
             val gsonIA = com.google.gson.GsonBuilder()
-                .registerTypeAdapter(com.gurps.ficha.data.network.MestreIAItem::class.java, com.gurps.ficha.data.network.MestreIAItemDeserializer())
+                .registerTypeAdapter(MestreIAItem::class.java, MestreIAItemDeserializer())
                 .create()
 
             val fichaObjeto = if (jsonExtraido != null) {
