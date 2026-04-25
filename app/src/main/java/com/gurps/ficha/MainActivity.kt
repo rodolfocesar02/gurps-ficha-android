@@ -13,15 +13,24 @@ import com.gurps.ficha.ui.theme.GURPSFichaTheme
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import android.content.Intent
 import android.net.Uri
 import androidx.core.content.IntentCompat
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
+    // Estado para rastrear a intenção atual e forçar re-processamento no Compose
+    private val currentIntent = mutableStateOf<Intent?>(null)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        currentIntent.value = intent
+
         setContent {
             GURPSFichaTheme {
                 Surface(
@@ -29,16 +38,27 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val viewModel: FichaViewModel = viewModel()
+                    val intentToProcess by currentIntent
                     
                     // Trata intent recebido (ACTION_VIEW ou ACTION_SEND)
-                    LaunchedEffect(intent) {
-                        tratarIntentRecebido(intent, viewModel)
+                    LaunchedEffect(intentToProcess) {
+                        intentToProcess?.let {
+                            tratarIntentRecebido(it, viewModel)
+                            // Limpa a intenção após processar para evitar re-processamento em recomposições
+                            currentIntent.value = null
+                        }
                     }
 
                     AppUiEntry(viewModel = viewModel)
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        currentIntent.value = intent
     }
 
     private fun tratarIntentRecebido(intent: Intent, viewModel: FichaViewModel) {
@@ -53,14 +73,23 @@ class MainActivity : ComponentActivity() {
         }
 
         uri?.let {
-            runCatching {
-                contentResolver.openInputStream(it)?.use { input ->
-                    input.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            lifecycleScope.launch {
+                val result = runCatching {
+                    withContext(Dispatchers.IO) {
+                        contentResolver.openInputStream(it)?.use { input ->
+                            input.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                        }
+                    }
                 }
-            }.onSuccess { json ->
-                if (!json.isNullOrBlank()) {
-                    val msg = viewModel.importarFichaJson(json) ?: "Ficha importada com sucesso!"
-                    android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show()
+                
+                result.onSuccess { json ->
+                    if (!json.isNullOrBlank()) {
+                        val msg = viewModel.importarFichaJson(json) ?: "Ficha importada com sucesso!"
+                        val toastMsg = if (msg == "Sucesso") "Ficha importada com sucesso!" else msg
+                        android.widget.Toast.makeText(this@MainActivity, toastMsg, android.widget.Toast.LENGTH_LONG).show()
+                    }
+                }.onFailure { error ->
+                    android.widget.Toast.makeText(this@MainActivity, "Erro ao ler arquivo: ${error.message}", android.widget.Toast.LENGTH_LONG).show()
                 }
             }
         }
