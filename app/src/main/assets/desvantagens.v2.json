@@ -3016,7 +3016,7 @@
 
     ],
 
-    "descricao": "O personagem fica em um estado de plorável sempre que estiver em um veículo em movimento, seja um automóvel, trem, avião, balão, navio ou nave espacial. Ele é incapaz de aprender qualquer perícia que envolva a operação de um veículo. Sempre que entrar em um veículo em movimento, o personagem precisa fazer um teste con tra a HT. Um fracasso indica que o perso nagem vomita e sofre uma penalidade de -5 em todos os testes de habilidade, DX e IQ durante o resto da viagem. Um sucesso indica que ele está apenas muito enjoado e sofre uma penalidade de -2 nos testes de habilidade, DX e IQ. Ele deve fazer um tes te por dia no caso de viagens longas. Enjoo Espacial 3 O personagem se sente muito mal quando está em queda livre. Ele nunca poderá aprender a perícia Queda Livre e sempre fará os testes dessa perícia usan do o valor predefinido. Além disso, ele sofre uma penalidade de -4 no teste de HT para evitar a “síndrome de adaptação no espaço” (pág. 433). Se fracassar no primeiro teste de HT, o personagem pre cisa voltar à gravidade normal (essa será a única maneira de ele se recuperar). Esta característica só é permitida em campanhas que envolvem viagens espaciais regulares. Enjoo Temporal 3 O personagem fica enjoado quando viaja no tempo, entre dimensões ou duran te um teleporte. Ele não pode ter poderes psíquicos, mágicas ou perícias tecnoló gicas que estejam relacionadas com esse tipo de viagem, nem aprender a perícia Percepção do Corpo. O personagem tem que fazer um teste de HT sempre que via jar no tempo ou entre dimensões e durante teleportes. No caso de um fracasso, ele fica"
+    "descricao": "O personagem fica em um estado de plorável sempre que estiver em um veículo em movimento, seja um automóvel, trem, avião, balão, navio ou nave espacial. Ele é incapaz de aprender qualquer perícia que envolva a operação de um veículo. Sempre que entrar em um veículo em movimento, o personagem precisa fazer um teste con tra a HT. Um fracasso indica que o perso nagem vomita e sofre uma penalidade de -5 em todos os testes de habilidade, DX e IQ durante o resto da viagem. Um sucesso indica que ele está apenas muito enjoado e sofre uma penalidade de -2 nos testes de habilidade, DX e IQ. Ele deve fazer um tes te por dia no caso de viagens longas. Enjoo Espacial 3 O personagem se sente muito mal quando está em queda livre. Ele nunca poderá aprender a perícia Queda Livre e sempre fará os testes dessa perícia usan do o valor pré-definido. Além disso, ele sofre uma penalidade de -4 no teste de HT para evitar a “síndrome de adaptação no espaço” (pág. 433). Se fracassar no primeiro teste de HT, o personagem pre cisa voltar à gravidade normal (essa será a única maneira de ele se recuperar). Esta característica só é permitida em campanhas que envolvem viagens espaciais regulares. Enjoo Temporal 3 O personagem fica enjoado quando viaja no tempo, entre dimensões ou duran te um teleporte. Ele não pode ter poderes psíquicos, mágicas ou perícias tecnoló gicas que estejam relacionadas com esse tipo de viagem, nem aprender a perícia Percepção do Corpo. O personagem tem que fazer um teste de HT sempre que via jar no tempo ou entre dimensões e durante teleportes. No caso de um fracasso, ele fica"
 
   },
 
@@ -3050,7 +3050,7 @@
 
     ],
 
-    "descricao": "O personagem se sente muito mal quando está em queda livre. Ele nunca poderá aprender a perícia Queda Livre e sempre fará os testes dessa perícia usan do o valor predefinido. Além disso, ele sofre uma penalidade de -4 no teste de HT para evitar a “síndrome de adaptação no espaço” (pág. 433). Se fracassar no primeiro teste de HT, o personagem pre cisa voltar à gravidade normal (essa será a única maneira de ele se recuperar). Esta característica só é permitida em campanhas que envolvem viagens espaciais regulares"
+    "descricao": "O personagem se sente muito mal quando está em queda livre. Ele nunca poderá aprender a perícia Queda Livre e sempre fará os testes dessa perícia usan do o valor pré-definido. Além disso, ele sofre uma penalidade de -4 no teste de HT para evitar a “síndrome de adaptação no espaço” (pág. 433). Se fracassar no primeiro teste de HT, o personagem pre cisa voltar à gravidade normal (essa será a única maneira de ele se recuperar). Esta característica só é permitida em campanhas que envolvem viagens espaciais regulares"
 
   },
 
@@ -4446,7 +4446,7 @@
 
     ],
 
-    "descricao": "O personagem é inapto em uma de terminada perícia, não consegue apren dê-la e seu valor predefinido sofre uma penalidade adicional de -4. Ele não pode ser incompetente em uma única especialização; por exemplo, uma pes soa incompetente com Armas de Fogo é incompetente com qualquer tipo de arma de fogo. O Mestre pode proibir esta peculiaridade se a perícia for irre levante para o personagem ou indife rente para a campanha"
+    "descricao": "O personagem é inapto em uma de terminada perícia, não consegue apren dê-la e seu valor pré-definido sofre uma penalidade adicional de -4. Ele não pode ser incompetente em uma única especialização; por exemplo, uma pes soa incompetente com Armas de Fogo é incompetente com qualquer tipo de arma de fogo. O Mestre pode proibir esta peculiaridade se a perícia for irre levante para o personagem ou indife rente para a campanha"
 
   },
 

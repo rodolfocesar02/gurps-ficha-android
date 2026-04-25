@@ -1,4 +1,4 @@
-package com.gurps.ficha.domain
+﻿package com.gurps.ficha.domain
 
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.DataRepository

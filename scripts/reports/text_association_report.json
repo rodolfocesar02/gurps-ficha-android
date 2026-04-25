@@ -1,0 +1,3406 @@
+{
+  "summary": {
+    "filesScanned": 22,
+    "mojibakeFindings": 15,
+    "variantGroups": 1754,
+    "criticalCanonicalConflicts": 0
+  },
+  "criticalCanonicalConflicts": [],
+  "canonicalTerms": [
+    {
+      "id": "carate",
+      "canonical": "Caratê",
+      "observedForms": [
+        "CARATÊ",
+        "Caratê",
+        "caratê"
+      ],
+      "observedFiles": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "needsNormalization": false
+    },
+    {
+      "id": "judo",
+      "canonical": "Judô",
+      "observedForms": [
+        "Judô",
+        "judô"
+      ],
+      "observedFiles": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "needsNormalization": false
+    },
+    {
+      "id": "luta_greco_romana",
+      "canonical": "Luta Greco-Romana",
+      "observedForms": [],
+      "observedFiles": [],
+      "needsNormalization": false
+    },
+    {
+      "id": "sacar_rapido",
+      "canonical": "Sacar Rápido",
+      "observedForms": [],
+      "observedFiles": [],
+      "needsNormalization": false
+    },
+    {
+      "id": "pre_requisito",
+      "canonical": "pré-requisito",
+      "observedForms": [
+        "pré-requisito",
+        "Pré-requisito"
+      ],
+      "observedFiles": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "needsNormalization": false
+    },
+    {
+      "id": "pre_definido",
+      "canonical": "pré-definido",
+      "observedForms": [
+        "pré-definido",
+        "Pré-definido"
+      ],
+      "observedFiles": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "needsNormalization": false
+    },
+    {
+      "id": "pericia",
+      "canonical": "perícia",
+      "observedForms": [
+        "Pericia",
+        "pericia",
+        "perícia",
+        "Perícia"
+      ],
+      "observedFiles": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "needsNormalization": true
+    }
+  ],
+  "mojibakeFindings": [
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2) (DX-5, Armas de Haste-4, ou Lança-2)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2) (DX-5, Armas de Haste-4, ou Lança-2)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
+    },
+    {
+      "path": "app/src/main/assets/armas_distancia.v1.normalized.json",
+      "snippet": "ARMA DE ARREMESSO (ARPÃO) (DX-4 ou Arma de Arremesso (Lança)-2)"
+    }
+  ],
+  "topVariantGroups": [
+    {
+      "norm": "100",
+      "forms": [
+        "10/0",
+        "100",
+        "100/",
+        "100×",
+        "×100"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/escudos.v1.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 15
+    },
+    {
+      "norm": "faca",
+      "forms": [
+        "FACA",
+        "Faca",
+        "Faça",
+        "faca",
+        "faça"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "lamina",
+      "forms": [
+        "LAMINA",
+        "Lamina",
+        "Lâmina",
+        "lamina",
+        "lâmina"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "agua",
+      "forms": [
+        "Agua",
+        "agua",
+        "Água",
+        "água"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "bastao",
+      "forms": [
+        "BASTÃO",
+        "Bastão",
+        "bastao",
+        "bastão"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "bonus",
+      "forms": [
+        "Bônus",
+        "bonus",
+        "bónus",
+        "bônus"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "cabeca",
+      "forms": [
+        "Cabeca",
+        "Cabeça",
+        "cabeca",
+        "cabeça"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "lanca",
+      "forms": [
+        "LANÇA",
+        "Lança",
+        "lanca",
+        "lança"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "magica",
+      "forms": [
+        "Magica",
+        "Mágica",
+        "magica",
+        "mágica"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "maos",
+      "forms": [
+        "MÃOS",
+        "Mãos",
+        "maos",
+        "mãos"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "mas",
+      "forms": [
+        "MAS",
+        "Mas",
+        "mas",
+        "más"
+      ],
+      "files": [
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "nos",
+      "forms": [
+        "Nos",
+        "Nós",
+        "nos",
+        "nós"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "pericia",
+      "forms": [
+        "Pericia",
+        "Perícia",
+        "pericia",
+        "perícia"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 12
+    },
+    {
+      "norm": "pes",
+      "forms": [
+        "PES",
+        "Pés",
+        "pes",
+        "pés"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "projetil",
+      "forms": [
+        "Projetil",
+        "Projétil",
+        "projetil",
+        "projétil"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "110",
+      "forms": [
+        "1/10",
+        "11/0",
+        "110"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "125",
+      "forms": [
+        "1/25",
+        "12/5",
+        "125"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "acao",
+      "forms": [
+        "Ação",
+        "acao",
+        "ação"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "alem",
+      "forms": [
+        "Além",
+        "alem",
+        "além"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "animacao",
+      "forms": [
+        "Animacao",
+        "Animação",
+        "animação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "aparencia",
+      "forms": [
+        "Aparência",
+        "aparencia",
+        "aparência"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "aquatico",
+      "forms": [
+        "Aquático",
+        "aquatico",
+        "aquático"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "arco",
+      "forms": [
+        "ARCO",
+        "Arco",
+        "arco"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "arma",
+      "forms": [
+        "ARMA",
+        "Arma",
+        "arma"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 11
+    },
+    {
+      "norm": "armas",
+      "forms": [
+        "ARMAS",
+        "Armas",
+        "armas"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 15
+    },
+    {
+      "norm": "arremessador",
+      "forms": [
+        "ARREMESSADOR",
+        "Arremessador",
+        "arremessador"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "arremesso",
+      "forms": [
+        "ARREMESSO",
+        "Arremesso",
+        "arremesso"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "ate",
+      "forms": [
+        "Até",
+        "ate",
+        "até"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "bencao",
+      "forms": [
+        "Bênção",
+        "bencao",
+        "bênção"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "boxe",
+      "forms": [
+        "BOXE",
+        "Boxe",
+        "boxe"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "bracos",
+      "forms": [
+        "Braços",
+        "bracos",
+        "braços"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "carate",
+      "forms": [
+        "CARATÊ",
+        "Caratê",
+        "caratê"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "chicote",
+      "forms": [
+        "CHICOTE",
+        "Chicote",
+        "chicote"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "comum",
+      "forms": [
+        "Comum",
+        "Comum/",
+        "comum"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "consciencia",
+      "forms": [
+        "Consciência",
+        "consciencia",
+        "consciência"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "continua",
+      "forms": [
+        "Contínua",
+        "continua",
+        "contínua"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "corpo",
+      "forms": [
+        "Corpo",
+        "Corpo/",
+        "corpo"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 13
+    },
+    {
+      "norm": "cranio",
+      "forms": [
+        "Crânio",
+        "cranio",
+        "crânio"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "critico",
+      "forms": [
+        "Crítico",
+        "critico",
+        "crítico"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "curtas",
+      "forms": [
+        "CURTAS",
+        "Curtas",
+        "curtas"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "direcao",
+      "forms": [
+        "Direção",
+        "direcao",
+        "direção"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "distancia",
+      "forms": [
+        "Distância",
+        "distancia",
+        "distância"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "duas",
+      "forms": [
+        "DUAS",
+        "Duas",
+        "duas"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "duplicacao",
+      "forms": [
+        "Duplicação",
+        "duplicacao",
+        "duplicação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "eletrica",
+      "forms": [
+        "Eletrica",
+        "Elétrica",
+        "elétrica"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "encantamento",
+      "forms": [
+        "Encantamento",
+        "Encantamento/",
+        "encantamento"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "energia",
+      "forms": [
+        "ENERGIA",
+        "Energia",
+        "energia"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/escudos.v1.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 13
+    },
+    {
+      "norm": "escudo",
+      "forms": [
+        "ESCUDO",
+        "Escudo",
+        "escudo"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/escudos.v1.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 12
+    },
+    {
+      "norm": "escuridao",
+      "forms": [
+        "Escuridão",
+        "escuridao",
+        "escuridão"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "espada",
+      "forms": [
+        "ESPADA",
+        "Espada",
+        "espada"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "espadas",
+      "forms": [
+        "ESPADAS",
+        "Espadas",
+        "espadas"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "especifica",
+      "forms": [
+        "Específica",
+        "especifica",
+        "específica"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "especifico",
+      "forms": [
+        "Específico",
+        "especifico",
+        "específico"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "esta",
+      "forms": [
+        "Esta",
+        "esta",
+        "está"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "feitico",
+      "forms": [
+        "Feitiço",
+        "feitico",
+        "feitiço"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "fisica",
+      "forms": [
+        "Física",
+        "fisica",
+        "física"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "flexivel",
+      "forms": [
+        "Flexível",
+        "flexivel",
+        "flexível"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "fumaca",
+      "forms": [
+        "Fumaça",
+        "fumaca",
+        "fumaça"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "funcao",
+      "forms": [
+        "Funcao",
+        "Função",
+        "função"
+      ],
+      "files": [
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "funda",
+      "forms": [
+        "FUNDA",
+        "Funda",
+        "funda"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "furacao",
+      "forms": [
+        "Furacao",
+        "Furacão",
+        "furacão"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "haste",
+      "forms": [
+        "HASTE",
+        "Haste",
+        "haste"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "historia",
+      "forms": [
+        "Historia",
+        "História",
+        "história"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "influencia",
+      "forms": [
+        "Influencia",
+        "Influência",
+        "influência"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "informacao",
+      "forms": [
+        "Informação",
+        "Informação/",
+        "informação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "intimidacao",
+      "forms": [
+        "Intimidação",
+        "intimidacao",
+        "intimidação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "justa",
+      "forms": [
+        "JUSTA",
+        "Justa",
+        "justa"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "kusari",
+      "forms": [
+        "KUSARI",
+        "Kusari",
+        "kusari"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "larga",
+      "forms": [
+        "LARGA",
+        "Larga",
+        "larga"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "lesao",
+      "forms": [
+        "Lesão",
+        "lesao",
+        "lesão"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "liquidos",
+      "forms": [
+        "Líquidos",
+        "liquidos",
+        "líquidos"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "magicas",
+      "forms": [
+        "Mágicas",
+        "magicas",
+        "mágicas"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "mangual",
+      "forms": [
+        "MANGUAL",
+        "Mangual",
+        "mangual"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "manutencao",
+      "forms": [
+        "Manutenção",
+        "manutencao",
+        "manutenção"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "mao",
+      "forms": [
+        "Mão",
+        "mao",
+        "mão"
+      ],
+      "files": [
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "matematica",
+      "forms": [
+        "Matemática",
+        "matematica",
+        "matemática"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "materia",
+      "forms": [
+        "Matéria",
+        "materia",
+        "matéria"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "max",
+      "forms": [
+        "Max",
+        "max",
+        "máx"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.schema.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens.v3.schema.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "mentira",
+      "forms": [
+        "Mentira",
+        "mentira",
+        "mentirá"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "mes",
+      "forms": [
+        "Mes",
+        "mes",
+        "mês"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "modificadores",
+      "forms": [
+        "Modificadores",
+        "modifiCadores",
+        "modificadores"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "municao",
+      "forms": [
+        "Munição",
+        "municao",
+        "munição"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "musica",
+      "forms": [
+        "Música",
+        "musica",
+        "música"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "nao",
+      "forms": [
+        "Não",
+        "nao",
+        "não"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 13
+    },
+    {
+      "norm": "navegacao",
+      "forms": [
+        "Navegação",
+        "navegacao",
+        "navegação"
+      ],
+      "files": [
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "niveis",
+      "forms": [
+        "Níveis",
+        "niveis",
+        "níveis"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "nivel",
+      "forms": [
+        "Nível",
+        "nivel",
+        "nível"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "nt8",
+      "forms": [
+        "NT-8",
+        "NT8",
+        "nt8"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "operacao",
+      "forms": [
+        "Operação",
+        "operacao",
+        "operação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "oratoria",
+      "forms": [
+        "Oratória",
+        "oratoria",
+        "oratória"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "per",
+      "forms": [
+        "PER",
+        "Per",
+        "per"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "pericias",
+      "forms": [
+        "Perícias",
+        "pericias",
+        "perícias"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "pescoco",
+      "forms": [
+        "Pescoço",
+        "pescoco",
+        "pescoço"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "portal",
+      "forms": [
+        "Portal",
+        "Portal/",
+        "portal"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "posicao",
+      "forms": [
+        "Posição",
+        "posicao",
+        "posição"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "possessao",
+      "forms": [
+        "Possessao",
+        "Possessão",
+        "possessão"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "precisao",
+      "forms": [
+        "Precisão",
+        "precisao",
+        "precisão"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "pressao",
+      "forms": [
+        "Pressão",
+        "pressao",
+        "pressão"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 11
+    },
+    {
+      "norm": "projeteis",
+      "forms": [
+        "Projeteis",
+        "Projéteis",
+        "projéteis"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "protecao",
+      "forms": [
+        "Proteção",
+        "protecao",
+        "proteção"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "proximo",
+      "forms": [
+        "Próximo",
+        "proximo",
+        "próximo"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "radio",
+      "forms": [
+        "Rádio",
+        "radio",
+        "rádio"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "rapida",
+      "forms": [
+        "Rápida",
+        "rapida",
+        "rápida"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "rapieira",
+      "forms": [
+        "RAPIEIRA",
+        "Rapieira",
+        "rapieira"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "reconhecimento",
+      "forms": [
+        "Reconhecimento",
+        "Reconhecimento/",
+        "reconhecimento"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "recuperacao",
+      "forms": [
+        "Recuperação",
+        "recuperacao",
+        "recuperação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 8
+    },
+    {
+      "norm": "rede",
+      "forms": [
+        "REDE",
+        "Rede",
+        "rede"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "relampago",
+      "forms": [
+        "Relampago",
+        "Relâmpago",
+        "relâmpago"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "relampagos",
+      "forms": [
+        "Relampagos",
+        "Relâmpagos",
+        "relâmpagos"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "reputacao",
+      "forms": [
+        "Reputação",
+        "reputacao",
+        "reputação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "respiracao",
+      "forms": [
+        "Respiração",
+        "respiracao",
+        "respiração"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "sabre",
+      "forms": [
+        "SABRE",
+        "Sabre",
+        "sabre"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "sao",
+      "forms": [
+        "São",
+        "sao",
+        "são"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "tambem",
+      "forms": [
+        "Também",
+        "tambem",
+        "também"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "tecnologica",
+      "forms": [
+        "Tecnológica",
+        "Tecnológica/",
+        "tecnológica"
+      ],
+      "files": [
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "tecnologico",
+      "forms": [
+        "Tecnológico",
+        "tecnologico",
+        "tecnológico"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "tem",
+      "forms": [
+        "Tem",
+        "tem",
+        "têm"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "termico",
+      "forms": [
+        "Térmico",
+        "termico",
+        "térmico"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "titere",
+      "forms": [
+        "Titere",
+        "Títere",
+        "titere"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "tras",
+      "forms": [
+        "Trás",
+        "tras",
+        "trás"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "util",
+      "forms": [
+        "util",
+        "Útil",
+        "útil"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "variavel",
+      "forms": [
+        "Variável",
+        "variavel",
+        "variável"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "vicio",
+      "forms": [
+        "Vício",
+        "vicio",
+        "vício"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "visao",
+      "forms": [
+        "Visão",
+        "visao",
+        "visão"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 13
+    },
+    {
+      "norm": "voce",
+      "forms": [
+        "Você",
+        "voce",
+        "você"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "zarabatana",
+      "forms": [
+        "ZARABATANA",
+        "Zarabatana",
+        "zarabatana"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "112",
+      "forms": [
+        "1/12",
+        "112"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "115",
+      "forms": [
+        "1/15",
+        "115"
+      ],
+      "files": [
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "123",
+      "forms": [
+        "12/3",
+        "123"
+      ],
+      "files": [
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "124",
+      "forms": [
+        "12/4",
+        "124"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/desvantagens.v2.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "126",
+      "forms": [
+        "12/6",
+        "126"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/desvantagens.v2.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "1min",
+      "forms": [
+        "1/min",
+        "1min"
+      ],
+      "files": [
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "200",
+      "forms": [
+        "20/0",
+        "200"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "20m",
+      "forms": [
+        "20/M",
+        "20M"
+      ],
+      "files": [
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "210",
+      "forms": [
+        "2/10",
+        "210"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "250",
+      "forms": [
+        "25/0",
+        "250"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "2am",
+      "forms": [
+        "2AM",
+        "2×AM"
+      ],
+      "files": [
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "510",
+      "forms": [
+        "5-10",
+        "5/-10"
+      ],
+      "files": [
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "520",
+      "forms": [
+        "5/20",
+        "520"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json",
+        "app/src/main/assets/escudos.v1.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "650",
+      "forms": [
+        "65/0",
+        "650"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "750",
+      "forms": [
+        "75/0",
+        "750"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_fogo.v1.normalized.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "950",
+      "forms": [
+        "95/0",
+        "950"
+      ],
+      "files": [
+        "app/src/main/assets/armas_fogo.v1.normalized.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "abaixo",
+      "forms": [
+        "Abaixo",
+        "abaixo"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "abanar",
+      "forms": [
+        "Abanar",
+        "abanar"
+      ],
+      "files": [
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "abencoado",
+      "forms": [
+        "Abençoado",
+        "abencoado"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "abencoar",
+      "forms": [
+        "Abençoar",
+        "abençoar"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "aberta",
+      "forms": [
+        "Aberta",
+        "aberta"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "abordagem",
+      "forms": [
+        "Abordagem",
+        "abordagem"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "abrangente",
+      "forms": [
+        "Abrangente",
+        "abrangente"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "abre",
+      "forms": [
+        "Abre",
+        "abre"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "abrir",
+      "forms": [
+        "Abrir",
+        "abrir"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "absoluto",
+      "forms": [
+        "Absoluto",
+        "absoluto"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "acelera",
+      "forms": [
+        "Acelera",
+        "acelera"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "aceleracao",
+      "forms": [
+        "Aceleração",
+        "aceleração"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "acelerada",
+      "forms": [
+        "Acelerada",
+        "acelerada"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "acelerar",
+      "forms": [
+        "Acelerar",
+        "acelerar"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "acertar",
+      "forms": [
+        "Acertar",
+        "acertar"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "acertos",
+      "forms": [
+        "Acertos",
+        "acertos"
+      ],
+      "files": [
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "acesso",
+      "forms": [
+        "Acesso",
+        "acesso"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "achar",
+      "forms": [
+        "Achar",
+        "achar"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "acido",
+      "forms": [
+        "Ácido",
+        "ácido"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "acima",
+      "forms": [
+        "Acima",
+        "acima"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "aco",
+      "forms": [
+        "Aço",
+        "aço"
+      ],
+      "files": [
+        "app/src/main/assets/armaduras.v2.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "acoes",
+      "forms": [
+        "Ações",
+        "ações"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "acompanhamento",
+      "forms": [
+        "Acompanhamento",
+        "acompanhamento"
+      ],
+      "files": [
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "acrobacia",
+      "forms": [
+        "Acrobacia",
+        "acrobacia"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "acrobacias",
+      "forms": [
+        "Acrobacias",
+        "acrobacias"
+      ],
+      "files": [
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "adaga",
+      "forms": [
+        "Adaga",
+        "adaga"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 9
+    },
+    {
+      "norm": "adaptacao",
+      "forms": [
+        "Adaptação",
+        "adaptação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "adestramento",
+      "forms": [
+        "Adestramento",
+        "adestramento"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "adiciona",
+      "forms": [
+        "Adiciona",
+        "adiciona"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "adicionais",
+      "forms": [
+        "Adicionais",
+        "adicionais"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "adicional",
+      "forms": [
+        "Adicional",
+        "adicional"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json",
+        "app/src/main/assets/vantagens_artes_marciais.v1.json"
+      ],
+      "occurrenceFilesCount": 10
+    },
+    {
+      "norm": "adicione",
+      "forms": [
+        "Adicione",
+        "adicione"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "adivinhacao",
+      "forms": [
+        "Adivinhação",
+        "adivinhação"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 5
+    },
+    {
+      "norm": "administrativa",
+      "forms": [
+        "Administrativa",
+        "administrativa"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "afasta",
+      "forms": [
+        "Afasta",
+        "afasta"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "afeta",
+      "forms": [
+        "Afeta",
+        "afeta"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "afetadas",
+      "forms": [
+        "Afetadas",
+        "afetadas"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "afetar",
+      "forms": [
+        "Afetar",
+        "afetar"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "afiadas",
+      "forms": [
+        "Afiadas",
+        "afiadas"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "afiado",
+      "forms": [
+        "Afiado",
+        "afiado"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "aflicao",
+      "forms": [
+        "Aflição",
+        "aflição"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "afogamento",
+      "forms": [
+        "Afogamento",
+        "afogamento"
+      ],
+      "files": [
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "agarrar",
+      "forms": [
+        "Agarrar",
+        "agarrar"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "agente",
+      "forms": [
+        "Agente",
+        "agente"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/vantagens.json",
+        "app/src/main/assets/vantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 6
+    },
+    {
+      "norm": "agir",
+      "forms": [
+        "Agir",
+        "agir"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/pericias_v2_rules_map.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "agonia",
+      "forms": [
+        "Agonia",
+        "agonia"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "aguda",
+      "forms": [
+        "Aguda",
+        "aguda"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias.json",
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "ajuda",
+      "forms": [
+        "Ajuda",
+        "ajuda"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "ajusta",
+      "forms": [
+        "Ajusta",
+        "ajusta"
+      ],
+      "files": [
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/pericias_v2_rules_map.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "alabarda",
+      "forms": [
+        "Alabarda",
+        "alabarda"
+      ],
+      "files": [
+        "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
+        "app/src/main/assets/mestre_ia_temas.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "alavanca",
+      "forms": [
+        "Alavanca",
+        "alavanca"
+      ],
+      "files": [
+        "app/src/main/assets/armas_distancia.v1.normalized.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 2
+    },
+    {
+      "norm": "alcance",
+      "forms": [
+        "Alcance",
+        "alcance"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/mestre_ia_temas.json",
+        "app/src/main/assets/modificadores.v1.json",
+        "app/src/main/assets/pericias_artes_marciais.v1.json",
+        "app/src/main/assets/tecnicas.v1.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 7
+    },
+    {
+      "norm": "alcool",
+      "forms": [
+        "Álcool",
+        "álcool"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 4
+    },
+    {
+      "norm": "alcoolismo",
+      "forms": [
+        "Alcoolismo",
+        "alcoolismo"
+      ],
+      "files": [
+        "app/src/main/assets/catalogo_nomes_ia.json",
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "alerta",
+      "forms": [
+        "Alerta",
+        "alerta"
+      ],
+      "files": [
+        "app/src/main/assets/magias2versao.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "algemar",
+      "forms": [
+        "Algemar",
+        "algemar"
+      ],
+      "files": [
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 1
+    },
+    {
+      "norm": "alguma",
+      "forms": [
+        "Alguma",
+        "alguma"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/vantagens.v3.json"
+      ],
+      "occurrenceFilesCount": 3
+    },
+    {
+      "norm": "algumas",
+      "forms": [
+        "Algumas",
+        "algumas"
+      ],
+      "files": [
+        "app/src/main/assets/desvantagens.v2.json",
+        "app/src/main/assets/magias2versao.json",
+        "app/src/main/assets/tecnicas.v1.json"
+      ],
+      "occurrenceFilesCount": 3
+    }
+  ]
+}
