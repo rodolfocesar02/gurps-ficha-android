@@ -64,8 +64,23 @@ class MainActivity : ComponentActivity() {
     private fun tratarIntentRecebido(intent: Intent, viewModel: FichaViewModel) {
         val action = intent.action
         val type = intent.type
+        val data: Uri? = intent.data
+
+        // Mesa Virtual: Link Mágico do Discord (gurpsapp://conectar?id=...&token=...)
+        if (action == Intent.ACTION_VIEW && data?.scheme == "gurpsapp" && data.host == "conectar") {
+            val discordId = data.getQueryParameter("id")
+            val token = data.getQueryParameter("token")
+            
+            if (discordId != null) {
+                // TODO: Salvar no DataStore ou SharedPreferences para uso na Mesa Virtual
+                android.widget.Toast.makeText(this, "Conectado ao Discord: $discordId", android.widget.Toast.LENGTH_LONG).show()
+            }
+            return
+        }
+
+        // Importação de Arquivos JSON (WhatsApp/Explorador)
         val uri: Uri? = if (action == Intent.ACTION_VIEW) {
-            intent.data
+            data
         } else if (action == Intent.ACTION_SEND && type != null) {
             IntentCompat.getParcelableExtra(intent, Intent.EXTRA_STREAM, Uri::class.java)
         } else {

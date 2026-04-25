@@ -194,6 +194,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 * [Feito] Lote 84.8: Consciência de App (IA entende a automação do sistema) | `(Commit: Lote84.8)`
     - IA agora entende que o app automatiza cálculos se os nomes estiverem corretos.
 
+* [Feito] Lote 85: Mesa Virtual (Lote 1) - Console do Narrador e Automações | `(Commit: Lote85)`
+    - Criação do Console Web (`index.html`) com suporte a visualização de múltiplas fichas JSON simultâneas.
+    - Implementação de Calculadora de Dano Localizado com multiplicadores oficiais (Crânio x4, Vitais x3) e limites de membros (PV/2 e PV/3).
+    - Adição de controles interativos de PV/PF e ajuste manual de bônus de RD por localização.
+    - Automação de características derivadas na interface: PER, VON, Velocidade, Deslocamento e Dano de ST (GdP/GeB).
+    - Preparação do App Android com `intent-filter` para o protocolo `gurpsapp://conectar`.
+
+
 
 
 ### Próximos Passos (Desejos do Usuário):
