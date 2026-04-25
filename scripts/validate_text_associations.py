@@ -10,7 +10,7 @@ from typing import Dict, Iterable, List, Set, Tuple
 
 
 TOKEN_RE = re.compile(r"[\wÀ-ÿ][\wÀ-ÿ'/-]*", re.UNICODE)
-MOJIBAKE_RE = re.compile(r"[ÃÂ�]")
+MOJIBAKE_RE = re.compile(r"[\ufffd]")
 SKIP_KEYS = {
     "id",
     "kind",
