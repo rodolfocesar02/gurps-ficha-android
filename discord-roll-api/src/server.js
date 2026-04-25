@@ -284,9 +284,19 @@ app.post('/api/fichas', (req, res) => {
     cloudFichas.set(deviceId, new Map());
   }
   
-  cloudFichas.get(deviceId).set(safeName, fichaJson);
+  // Tenta converter a string JSON em objeto para evitar double-encoding no retorno
+  let dataToSave = fichaJson;
+  if (typeof fichaJson === 'string') {
+    try {
+      dataToSave = JSON.parse(fichaJson);
+    } catch (e) {
+      console.error(`[cloud] Erro ao parsear fichaJson para ${safeName}:`, e.message);
+    }
+  }
   
-  console.log(`[cloud] Ficha salva: ${safeName} para o dispositivo ${deviceId}`);
+  cloudFichas.get(deviceId).set(safeName, dataToSave);
+  
+  console.log(`[cloud] Ficha salva e processada: ${safeName} para o dispositivo ${deviceId}`);
   res.json({ ok: true });
 });
 

@@ -3313,7 +3313,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_orgaos_vitais",
-    "nome": "Tolerncia a Ferimentos(Sem rgos Vitais)",
+    "nome": "Tolerncia a Ferimentos(Sem Órgãos Vitais)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
@@ -3341,7 +3341,7 @@
   },
   {
     "id": "tolerancia_a_ferimentos_sem_pescoco",
-    "nome": "Tolerncia a Ferimentos(Sem Pescoo)",
+    "nome": "Tolerncia a Ferimentos(Sem Pescoço)",
     "pagina": 94,
     "costKind": "fixed",
     "fixed": 5,
