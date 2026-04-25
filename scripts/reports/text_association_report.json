@@ -1,7 +1,7 @@
 {
   "summary": {
     "filesScanned": 22,
-    "mojibakeFindings": 15,
+    "mojibakeFindings": 0,
     "variantGroups": 1754,
     "criticalCanonicalConflicts": 0
   },
@@ -112,68 +112,7 @@
       "needsNormalization": true
     }
   ],
-  "mojibakeFindings": [
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2) (DX-5, Armas de Haste-4, ou Lança-2)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "BASTÃO (DX-5, Armas de Haste-4, ou Lança-2) (DX-5, Armas de Haste-4, ou Lança-2)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "MAÇA/MACHADO DE DUAS MÃOS (DX-5, Armas de Haste-4, Maça/Machado-3, ou Mangual de Duas Mãos-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_corpo_a_corpo.v1.normalized.json",
-      "snippet": "ESPADA DE DUAS MÃOS (DX-5, Espada de Energia-4, ou Espadas de Lamina Larga-4)"
-    },
-    {
-      "path": "app/src/main/assets/armas_distancia.v1.normalized.json",
-      "snippet": "ARMA DE ARREMESSO (ARPÃO) (DX-4 ou Arma de Arremesso (Lança)-2)"
-    }
-  ],
+  "mojibakeFindings": [],
   "topVariantGroups": [
     {
       "norm": "100",
