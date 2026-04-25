@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -17,6 +17,10 @@ const channelsCache = {
   items: [],
   fetchedAt: 0
 };
+
+// Armazenamento em nuvem para fichas (In-memory para persistência rápida nesta sessão)
+// Estrutura: deviceId -> { characterName -> fichaJson }
+const cloudFichas = new Map();
 
 function requireConfigured() {
   return Boolean(apiKey && botToken);
@@ -234,6 +238,56 @@ app.post('/api/rolls', async (req, res) => {
   } catch (error) {
     return jsonError(res, 502, 'discord_send_failed', error.message);
   }
+});
+
+// --- NOVAS ROTAS PARA PERSISTÊNCIA DE FICHAS EM NUVEM ---
+
+// Listar fichas de um dispositivo
+app.get('/api/fichas/:deviceId', (req, res) => {
+  if (!hasValidApiKey(req)) return unauthorized(res);
+  
+  const deviceId = req.params.deviceId;
+  const userFichas = cloudFichas.get(deviceId) || new Map();
+  const names = Array.from(userFichas.keys());
+  
+  res.json({ ok: true, fichas: names });
+});
+
+// Baixar uma ficha específica
+app.get('/api/fichas/:deviceId/:characterName', (req, res) => {
+  if (!hasValidApiKey(req)) return unauthorized(res);
+  
+  const { deviceId, characterName } = req.params;
+  const userFichas = cloudFichas.get(deviceId);
+  
+  if (!userFichas || !userFichas.has(characterName)) {
+    return jsonError(res, 404, 'ficha_nao_encontrada');
+  }
+  
+  res.json({ ok: true, ficha: userFichas.get(characterName) });
+});
+
+// Salvar/Atualizar uma ficha
+app.post('/api/fichas', (req, res) => {
+  if (!hasValidApiKey(req)) return unauthorized(res);
+  
+  const { deviceId, characterName, fichaJson } = req.body;
+  
+  if (!deviceId || !characterName || !fichaJson) {
+    return jsonError(res, 400, 'dados_insuficientes');
+  }
+
+  // Sanitização simples do nome para evitar problemas de URL (mesma lógica do App)
+  const safeName = characterName.replace(/[^a-zA-Z0-9_-]/g, '_');
+  
+  if (!cloudFichas.has(deviceId)) {
+    cloudFichas.set(deviceId, new Map());
+  }
+  
+  cloudFichas.get(deviceId).set(safeName, fichaJson);
+  
+  console.log(`[cloud] Ficha salva: ${safeName} para o dispositivo ${deviceId}`);
+  res.json({ ok: true });
 });
 
 app.listen(port, () => {

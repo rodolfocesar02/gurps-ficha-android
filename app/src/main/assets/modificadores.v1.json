@@ -324,6 +324,15 @@
     "descricao": "A doença se espalha rapidamente pelo ar ou contato indireto."
   },
   {
+    "id": "mod_engolfar",
+    "nome": "Engolfar",
+    "tipo": "ampliação",
+    "valor": "+60%",
+    "porNivel": false,
+    "pagina": 85,
+    "descricao": "O ataque do personagem imobiliza o alvo. Ele não consegue mover os braços, nem as pernas, nem falar; a única opção dele é usar habilidades puramente mentais, utilizar Ataques Inatos ou tentar libertar-se usando a ST (não a perícia Fuga). Se tentar se libertar e não conseguir, a vítima poderá fazer  uma nova tentativa depois de 10 segundos — contudo, com um resultado de 17 ou 18, ela fica tão enredada que não conseguirá mais escapar sozinha!"
+  },
+  {
     "id": "mod_explosao",
     "nome": "Explosão",
     "tipo": "ampliação",
@@ -439,6 +448,24 @@
     "porNivel": false,
     "pagina": 106,
     "descricao": "Ataque é controlado pelo personagem turno a turno."
+  },
+  {
+    "id": "mod_grudento",
+    "nome": "Grudento",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 85,
+    "descricao": "A Retenção é considerada Persistente (pág. 108), mas afeta apenas aqueles que tocarem o alvo original do ataque."
+  },
+  {
+    "id": "mod_inquebravel",
+    "nome": "Inquebrável",
+    "tipo": "ampliação",
+    "valor": "+40%",
+    "porNivel": false,
+    "pagina": 85,
+    "descricao": "A Retenção não pode ser destruída. A única maneira de escapar é tentando se libertar com a ST."
   },
   {
     "id": "mod_imprecacao_1",
@@ -736,6 +763,33 @@
     "porNivel": false,
     "pagina": 108,
     "descricao": "Causa curto-circuito em eletrônicos."
+  },
+  {
+    "id": "mod_so_sofre_dano_de_x_1",
+    "nome": "Só Sofre Dano de X",
+    "tipo": "ampliação",
+    "valor": "+30%",
+    "porNivel": false,
+    "pagina": 85,
+    "descricao": "Apenas alguns tipos específicos de dano conseguem afetar a Retenção, no caso de um único tipo. Ex: Queimadura, corrosão, contusão ou corte."
+  },
+  {
+    "id": "mod_so_sofre_dano_de_x_2",
+    "nome": "Só Sofre Dano de X",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 85,
+    "descricao": "Apenas alguns tipos específicos de dano conseguem afetar a Retenção, no caso de até dois tipos. Ex: Queimadura, corrosão, contusão ou corte."
+  },
+  {
+    "id": "mod_so_sofre_dano_de_x_3",
+    "nome": "Só Sofre Dano de X",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 85,
+    "descricao": "Apenas alguns tipos específicos de dano conseguem afetar a Retenção, no caso de até três tipos. Ex: Queimadura, corrosão, contusão ou corte."
   },
   {
     "id": "mod_subaquatico",

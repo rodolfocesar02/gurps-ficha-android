@@ -1039,17 +1039,54 @@ fun GolpeadoresConfig(
 
 @Composable
 fun AtribulacaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (ModificadorSelecao) -> Unit, descricaoContent: @Composable () -> Unit = {}) {
+    var showCondList by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
         descricaoContent()
-        Button(onClick = { /* showCondList = true */ }, modifier = Modifier.fillMaxWidth()) { Text("Condições (Ampliação)") }
+        Button(onClick = { showCondList = true }, modifier = Modifier.fillMaxWidth()) { Text("Condições (Ampliação)") }
+    }
+    
+    if (showCondList) {
+        val repo = com.gurps.ficha.domain.rules.CharacterRules.DATA_REPOSITORY_INSTANCE
+        val todasAmp = repo?.modificadoresGerais ?: emptyList()
+        val ampCond = todasAmp.filter { it.id.startsWith("mod_condicao_") || it.id.startsWith("mod_vantagem_") || it.id.startsWith("mod_desvantagem_") }
+        
+        EscopoModificadoresDialog(
+            especificos = ampCond,
+            gerais = emptyList(),
+            onDismiss = { showCondList = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina))
+                showCondList = false
+            }
+        )
     }
 }
 
 @Composable
 fun RetencaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (ModificadorSelecao) -> Unit, descricaoContent: @Composable () -> Unit = {}) {
+    var showAmpList by remember { mutableStateOf(false) }
     Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
         descricaoContent()
-        Button(onClick = { /* showAmpList = true */ }, modifier = Modifier.fillMaxWidth()) { Text("Ampliações de Retenção") }
+        Button(onClick = { showAmpList = true }, modifier = Modifier.fillMaxWidth()) { Text("Ampliações de Retenção") }
+    }
+    
+    if (showAmpList) {
+        val repo = com.gurps.ficha.domain.rules.CharacterRules.DATA_REPOSITORY_INSTANCE
+        val todasAmp = repo?.modificadoresGerais ?: emptyList()
+        val ampIds = listOf("mod_engolfar", "mod_grudento", "mod_inquebravel")
+        val ampRetencao = todasAmp.filter { it.id in ampIds || it.id.startsWith("mod_so_sofre_dano") }
+        
+        EscopoModificadoresDialog(
+            especificos = ampRetencao,
+            gerais = emptyList(),
+            onDismiss = { showAmpList = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina))
+                showAmpList = false
+            }
+        )
     }
 }
 
