@@ -186,6 +186,7 @@ object CharacterRules {
         custoEscolhido: Int,
         nivel: Int,
         modificadores: List<ModificadorSelecao> = emptyList(),
+        specialRule: String? = null,
         metadados: Map<String, String>? = null
     ): Int {
         // Tenta usar regra modular se existir
@@ -194,6 +195,9 @@ object CharacterRules {
             val s = com.gurps.ficha.model.VantagemSelecionada(
                 definicaoId = definicaoId,
                 nivel = nivel,
+                custoBase = custoBase,
+                tipoCusto = tipoCusto,
+                specialRule = specialRule,
                 metadados = metadados
             )
             val custoModular = rule.calculateCost(s, modificadores)
@@ -258,15 +262,15 @@ object CharacterRules {
                 else -> null
             }
             if (baseCostForSpecialRule != null) {
-                // For special rules, the base cost is already calculated,
-                // and modifiers are applied later.
-                // The autocontrole logic is skipped for these special rules.
                 val somaPercentual = modificadores.sumOf {
                     if (it.porNivel) it.valor * it.niveis else it.valor
                 }
                 val percentualFinal = somaPercentual.coerceAtLeast(-80)
                 val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
-                return kotlin.math.ceil(baseCostForSpecialRule * multiplicadorMod).toInt()
+                
+                // Truncar frações (Eliminar frações como pedido em Resistente)
+                val total = (baseCostForSpecialRule * multiplicadorMod).toInt()
+                return if (total == 0 && baseCostForSpecialRule < 0) -1 else total
             }
         }
 
@@ -297,7 +301,8 @@ object CharacterRules {
 
         val percentualFinal = somaPercentual.coerceAtLeast(-80)
         val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
-        return kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
+        val custoFinal = kotlin.math.ceil(valorBase * multiplicadorMod).toInt()
+        return if (custoFinal == 0 && valorBase < 0) -1 else custoFinal
     }
 
     private fun calcularCustoInimigo(metadados: Map<String, String>, modificadores: List<ModificadorSelecao>): Int {
@@ -315,14 +320,14 @@ object CharacterRules {
     }
 
     private fun calcularCustoDependencia(metadados: Map<String, String>?): Int {
-        val base = metadados?.get("baseRaridade")?.toIntOrNull() ?: -5
+        val base = metadados?.get("baseRaridade")?.toIntOrNull() ?: metadados?.get("base")?.toIntOrNull() ?: -5
         val freq = metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1.0f
         val ilegal = metadados?.get("ilegal")?.toBoolean() ?: false
         
         var total = base.toFloat() * freq
         if (ilegal) total -= 5
         
-        return kotlin.math.ceil(total.toDouble()).toInt()
+        return total.toInt()
     }
 
     private fun calcularCustoReputacao(metadados: Map<String, String>?): Int {
@@ -481,5 +486,48 @@ object CharacterRules {
         val divisor = if (isContact) 5.0 else 10.0
         val finalVal = (baseModificada * freqBase) / divisor
         return kotlin.math.ceil(finalVal).toInt().coerceAtLeast(1)
+    }
+
+    fun calcularCustoResistente(baseRaridade: Int, multiplicadorGrau: Float): Int {
+        val finalVal = baseRaridade * multiplicadorGrau.toDouble()
+        // GURPS: "Elimine todas as frações" -> Truncar/Floor
+        return kotlin.math.floor(finalVal).toInt().coerceAtLeast(1)
+    }
+
+    fun calcularCustoPericiaRacial(dificuldade: String, nivelRelativo: Int): Int {
+        if (nivelRelativo == 0) {
+            return when (dificuldade.uppercase()) {
+                "F" -> 1
+                "M" -> 2
+                "D" -> 4
+                "MD" -> 8
+                else -> 2
+            }
+        }
+        
+        // GURPS 4e p. 170: 
+        // 1 pt = F/Atr, M/Atr-1, D/Atr-2, MD/Atr-3
+        // 2 pts = F/Atr+1, M/Atr, D/Atr-1, MD/Atr-2
+        // 4 pts = F/Atr+2, M/Atr+1, D/Atr, MD/Atr-1
+        // 8 pts = F/Atr+3, M/Atr+2, D/Atr+1, MD/Atr
+        // +4 pts per level after that
+        
+        val offset = when (dificuldade.uppercase()) {
+            "F" -> 0
+            "M" -> 1
+            "D" -> 2
+            "MD" -> 3
+            else -> 1
+        }
+        
+        val totalLevels = nivelRelativo + offset
+        
+        return when {
+            totalLevels <= 0 -> 1 // Mínimo 1 pt para ter a perícia
+            totalLevels == 1 -> 2
+            totalLevels == 2 -> 4
+            totalLevels == 3 -> 8
+            else -> 8 + (totalLevels - 3) * 4
+        }
     }
 }

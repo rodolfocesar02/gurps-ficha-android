@@ -1,12 +1,16 @@
 package com.gurps.ficha.ui.features.traits
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,22 +28,44 @@ import com.gurps.ficha.ui.UiActionLabels
 
 @Composable
 fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: List<ModificadorDefinicao>, onDismiss: () -> Unit, onSelect: (ModificadorDefinicao) -> Unit) {
+    var busca by remember { mutableStateOf("") }
+    
+    val especificosFiltrados = especificos.filter { it.nome.contains(busca, ignoreCase = true) }
+    val especificosIds = especificos.map { it.id }.toSet()
+    val geraisFiltrados = gerais.filter { it.id !in especificosIds && it.nome.contains(busca, ignoreCase = true) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("Adicionar Modificador") },
         text = {
-            val especificosIds = especificos.map { it.id }.toSet()
-            val geraisFiltrados = gerais.filter { it.id !in especificosIds }
-            
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.height(300.dp)) {
-                if (especificos.isNotEmpty()) {
-                    item { Text("Específicos desta característica", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
-                    items(especificos) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
-                }
-                if (geraisFiltrados.isNotEmpty()) {
-                    item { Spacer(modifier = Modifier.height(16.dp)) }
-                    item { Text("Gerais (Catálogo)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
-                    items(geraisFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = busca,
+                    onValueChange = { busca = it },
+                    label = { Text("Buscar...") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true,
+                    leadingIcon = { Icon(Icons.Default.Search, null) },
+                    trailingIcon = { if (busca.isNotEmpty()) IconButton(onClick = { busca = "" }) { Icon(Icons.Default.Close, null) } }
+                )
+                
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.height(300.dp)) {
+                    if (especificosFiltrados.isNotEmpty()) {
+                        item { Text("Específicos desta característica", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        items(especificosFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
+                    }
+                    if (geraisFiltrados.isNotEmpty()) {
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
+                        item { Text("Gerais (Catálogo)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        items(geraisFiltrados) { mod -> ModificadorItemRow(mod) { onSelect(mod) } }
+                    }
+                    if (especificosFiltrados.isEmpty() && geraisFiltrados.isEmpty()) {
+                        item { 
+                            Box(modifier = Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) {
+                                Text("Nenhum modificador encontrado", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -180,25 +206,41 @@ fun SeletorConfiabilidadeDialog(current: Float, onDismiss: () -> Unit, onSelect:
 }
 
 @Composable
-fun PeculiaridadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
-    var texto by remember { mutableStateOf("") }
+fun PeculiaridadeDialog(textoInicial: String = "", onDismiss: () -> Unit, onSave: (String) -> Unit) {
+    var texto by remember { mutableStateOf(textoInicial) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Adicionar Peculiaridade (-1 pt)") },
+        title = { Text(if (textoInicial.isEmpty()) "Adicionar Peculiaridade (-1 pt)" else "Editar Peculiaridade") },
         text = { OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Descreva a peculiaridade") }, modifier = Modifier.fillMaxWidth()) },
-        confirmButton = { TextButton(onClick = { onSave(texto); onDismiss() }, enabled = texto.isNotBlank()) { Text(UiActionLabels.ADICIONAR) } },
+        confirmButton = { TextButton(onClick = { onSave(texto); onDismiss() }, enabled = texto.isNotBlank()) { Text(if (textoInicial.isEmpty()) UiActionLabels.ADICIONAR else "Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
 }
 
 @Composable
-fun QualidadeDialog(onDismiss: () -> Unit, onSave: (String) -> Unit) {
-    var texto by remember { mutableStateOf("") }
+fun QualidadeDialog(textoInicial: String = "", onDismiss: () -> Unit, onSave: (String) -> Unit) {
+    var texto by remember { mutableStateOf(textoInicial) }
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Adicionar Qualidade (1 pt)") },
+        title = { Text(if (textoInicial.isEmpty()) "Adicionar Qualidade (1 pt)" else "Editar Qualidade") },
         text = { OutlinedTextField(value = texto, onValueChange = { texto = it }, label = { Text("Descreva a qualidade") }, modifier = Modifier.fillMaxWidth()) },
-        confirmButton = { TextButton(onClick = { onSave(texto); onDismiss() }, enabled = texto.isNotBlank()) { Text(UiActionLabels.ADICIONAR) } },
+        confirmButton = { TextButton(onClick = { onSave(texto); onDismiss() }, enabled = texto.isNotBlank()) { Text(if (textoInicial.isEmpty()) UiActionLabels.ADICIONAR else "Salvar") } },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
+    )
+}
+
+@Composable
+fun CatalogoDescricaoDialog(nome: String, descricao: String, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(nome, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold) },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                Text(descricao, style = MaterialTheme.typography.bodyMedium)
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
     )
 }

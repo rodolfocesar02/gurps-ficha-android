@@ -640,7 +640,7 @@
     "dificuldadeVariavel": false,
 
 
-    "exigeEspecializacao": false,
+    "exigeEspecializacao": true,
 
 
     "preDefinicoes": []

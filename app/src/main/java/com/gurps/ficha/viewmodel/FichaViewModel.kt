@@ -225,25 +225,46 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarModeloRacial(novo: ModeloRacial) { personagem = attributeDelegate.atualizarModeloRacial(personagem, novo); salvarFicha() }
 
     // === VANTAGENS ===
-    fun adicionarVantagem(def: VantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null) {
-        val lista = traitDelegate.adicionarVantagem(personagem, def, nivel, custo, desc, mods, meta)
-        atualizarVantagensComConfirmacao(lista)
+    fun adicionarVantagem(def: VantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null): String? {
+        val res = traitDelegate.adicionarVantagem(personagem, def, nivel, custo, desc, mods, meta)
+        return res.fold(
+            onSuccess = { 
+                atualizarVantagensComConfirmacao(it)
+                null
+            },
+            onFailure = { it.message }
+        )
     }
     fun removerVantagem(index: Int) { atualizarVantagensComConfirmacao(traitDelegate.removerVantagem(personagem, index)) }
-    fun atualizarVantagem(index: Int, v: VantagemSelecionada) { atualizarVantagensComConfirmacao(traitDelegate.atualizarVantagem(personagem, index, v)) }
+    fun atualizarVantagem(index: Int, v: VantagemSelecionada) { 
+        atualizarVantagensComConfirmacao(traitDelegate.atualizarVantagem(personagem, index, v))
+        salvarFicha()
+    }
     
     // === DESVANTAGENS ===
-    fun adicionarDesvantagem(def: DesvantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", ctrl: Int? = null, mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null) {
-        personagem = personagem.copy(desvantagens = traitDelegate.adicionarDesvantagem(personagem, def, nivel, custo, desc, ctrl, mods, meta))
+    fun adicionarDesvantagem(def: DesvantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", ctrl: Int? = null, mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null): String? {
+        val res = traitDelegate.adicionarDesvantagem(personagem, def, nivel, custo, desc, ctrl, mods, meta)
+        return res.fold(
+            onSuccess = { 
+                personagem = personagem.copy(desvantagens = it)
+                null
+            },
+            onFailure = { it.message }
+        )
     }
     fun removerDesvantagem(index: Int) { personagem = personagem.copy(desvantagens = traitDelegate.removerDesvantagem(personagem, index)) }
-    fun atualizarDesvantagem(index: Int, d: DesvantagemSelecionada) { personagem = personagem.copy(desvantagens = traitDelegate.atualizarDesvantagem(personagem, index, d)) }
+    fun atualizarDesvantagem(index: Int, d: DesvantagemSelecionada) { 
+        personagem = personagem.copy(desvantagens = traitDelegate.atualizarDesvantagem(personagem, index, d))
+        salvarFicha()
+    }
 
     // === QUALIDADES / PECULIARIDADES ===
-    fun adicionarQualidade(q: String) { personagem = personagem.copy(qualidades = traitDelegate.adicionarQualidade(personagem, q)) }
-    fun removerQualidade(i: Int) { personagem = personagem.copy(qualidades = traitDelegate.removerQualidade(personagem, i)) }
-    fun adicionarPeculiaridade(p: String) { personagem = personagem.copy(peculiaridades = traitDelegate.adicionarPeculiaridade(personagem, p)) }
-    fun removerPeculiaridade(i: Int) { personagem = personagem.copy(peculiaridades = traitDelegate.removerPeculiaridade(personagem, i)) }
+    fun adicionarQualidade(q: String) { personagem = personagem.copy(qualidades = traitDelegate.adicionarQualidade(personagem, q)); salvarFicha() }
+    fun removerQualidade(index: Int) { personagem = personagem.copy(qualidades = traitDelegate.removerQualidade(personagem, index)); salvarFicha() }
+    fun atualizarQualidade(index: Int, q: String) { personagem = personagem.copy(qualidades = traitDelegate.atualizarQualidade(personagem, index, q)); salvarFicha() }
+    fun adicionarPeculiaridade(p: String) { personagem = personagem.copy(peculiaridades = traitDelegate.adicionarPeculiaridade(personagem, p)); salvarFicha() }
+    fun removerPeculiaridade(index: Int) { personagem = personagem.copy(peculiaridades = traitDelegate.removerPeculiaridade(personagem, index)); salvarFicha() }
+    fun atualizarPeculiaridade(index: Int, p: String) { personagem = personagem.copy(peculiaridades = traitDelegate.atualizarPeculiaridade(personagem, index, p)); salvarFicha() }
 
     // === PERÍCIAS ===
     fun adicionarPericia(def: PericiaDefinicao, pts: Int = 1, esp: String = "", attr: AtributoBase? = null, dif: Dificuldade? = null): String? {

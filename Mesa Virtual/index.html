@@ -36,22 +36,27 @@
         .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
 
         .sheet-body { flex: 1; overflow-y: auto; padding: 15px; font-size: 11px; scrollbar-width: none; }
-        .section-header { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; margin: 15px 0 5px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
+        .section-header { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; margin: 1px 0 1px; border-bottom: 1px solid #eee; padding-bottom: 2px; }
         
         .attr-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
         .attr-box { background: #fdfdfd; border: 1px solid #eee; border-radius: 6px; text-align: center; padding: 5px 0; }
         .attr-val { font-size: 18px; font-weight: 700; color: var(--primary); }
 
-        .list-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #eee; align-items: center; }
+        .def-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 5px; }
+        .def-box { background: #fff; border: 2px solid var(--primary); border-radius: 10px; text-align: center; padding: 8px 0; }
+        .def-val { font-size: 22px; font-weight: 900; color: #333; }
+        .def-label { font-size: 8px; font-weight: 700; color: var(--primary); }
+
+        .list-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dotted #eee; align-items: center; }
         .nh-tag { background: var(--primary); color: white; padding: 2px 8px; border-radius: 4px; font-weight: 700; min-width: 25px; text-align: center; }
         .tag { background: #eee; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; color: #666; }
 
         .controls { display: flex; gap: 5px; align-items: center; }
         .c-btn { width: 22px; height: 22px; border-radius: 4px; border: none; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .c-plus { background: var(--green); }
-        .c-minus { background: var(--red); }
+        .c-plus { background: var(--primary); }
+        .c-minus { background: var(--primary); }
 
-        .rd-card { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 10px; margin-bottom: 8px; border-left: 4px solid var(--primary); }
+        .rd-card { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 8px; margin-bottom: 4px; border-left: 4px solid var(--primary); }
         .rd-card.special { border-left-color: var(--red); }
         .rd-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; }
         .rd-badge { display: flex; align-items: center; gap: 5px; background: white; padding: 2px 5px; border-radius: 4px; border: 1px solid #ddd; }
@@ -76,8 +81,8 @@
         let deviceCount = 0;
         
         const DAMAGE_RULES = {
-            'cont': { n: 'Contusão (cr)', m: 1.0 },
-            'corte': { n: 'Corte (cut)', m: 1.5 },
+            'cont': { n: 'Contusão (cont)', m: 1.0 },
+            'cort': { n: 'Corte (cort)', m: 1.5 },
             'pi-': { n: 'Perfurante- (pi-)', m: 0.5 },
             'pi': { n: 'Perfurante (pi)', m: 1.0 },
             'pi+': { n: 'Perfurante+ (pi+)', m: 1.5 },
@@ -103,7 +108,7 @@
                 const reader = new FileReader();
                 reader.onload = ev => {
                     const f = JSON.parse(ev.target.result);
-                    f.rdMods = {}; // Inicializa bônus de RD manuais
+                    f.rdMods = f.rdMods || {};
                     createEmulator(f);
                 };
                 reader.readAsText(file);
@@ -124,7 +129,7 @@
                         <button class="tab-btn" onclick="setTab('${id}', 'traits', this)">Traços</button>
                         <button class="tab-btn" onclick="setTab('${id}', 'skills', this)">Perícias</button>
                         <button class="tab-btn" onclick="setTab('${id}', 'magia', this)">Magia</button>
-                        <button class="tab-btn" onclick="setTab('${id}', 'itens', this)">Itens</button>
+                        <button class="tab-btn" onclick="setTab('${id}', 'equip', this)">Equip.</button>
                         <button class="tab-btn" onclick="setTab('${id}', 'combate', this)">Combate</button>
                     </div>
                     <div class="sheet-body" id="${id}-body"></div>
@@ -135,6 +140,20 @@
             renderContent(id, f, 'geral');
         }
 
+        function getNH(attr, diff, pts, f, spell = false) {
+            let b = (attr === 'DX') ? f.destreza : (attr === 'IQ' ? f.inteligencia : (attr === 'HT' ? f.vitalidade : f.forca));
+            if (attr === 'PER') b = f.inteligencia + (f.modPercepcao || 0);
+            if (attr === 'VONT') b = f.inteligencia + (f.modVontade || 0);
+            if (spell) {
+                const magery = (f.vantagens || []).find(v => v.definicaoId === 'aptidao_magica');
+                if (magery) b += (magery.nivel || 0);
+            }
+            let m = (diff === "FACIL") ? (pts>=8?3 : pts>=4?2 : pts>=2?1 : 0) : 
+                    (diff === "MEDIA") ? (pts>=8?2 : pts>=4?1 : pts>=2?0 : -1) : 
+                    (pts>=8?1 : pts>=4?0 : pts>=2?-1 : -2);
+            return b + m;
+        }
+
         function renderContent(deviceId, f, tab) {
             const body = document.getElementById(`${deviceId}-body`);
             let html = "";
@@ -142,29 +161,51 @@
             const stats = (l, r, s) => `<div class="list-row"><span>${l}</span> <div class="controls"><button class="c-btn c-minus" onclick="updateStat('${deviceId}', '${s}', -1)">-</button><span style="width:40px;text-align:center;font-weight:bold">${r}</span><button class="c-btn c-plus" onclick="updateStat('${deviceId}', '${s}', 1)">+</button></div></div>`;
 
             let sMap = {};
-            (f.pericias || []).forEach(p => {
-                let b = (p.atributoBase === 'DX') ? f.destreza : (p.atributoBase === 'IQ' ? f.inteligencia : (p.atributoBase === 'HT' ? f.vitalidade : f.forca));
-                let m = (p.dificuldade === "FACIL") ? (p.pontosGastos>=8?3 : p.pontosGastos>=4?2 : p.pontosGastos>=2?1 : 0) : 
-                        (p.dificuldade === "MEDIA") ? (p.pontosGastos>=8?2 : p.pontosGastos>=4?1 : p.pontosGastos>=2?0 : -1) : 
-                        (p.pontosGastos>=8?1 : p.pontosGastos>=4?0 : p.pontosGastos>=2?-1 : -2);
-                sMap[p.definicaoId] = b + m;
-            });
+            (f.pericias || []).forEach(p => sMap[p.definicaoId] = getNH(p.atributoBase, p.dificuldade, p.pontosGastos, f));
 
             if (tab === 'geral') {
+                const bl = (f.forca * f.forca) / 10;
+                const totalWeight = (f.equipamentos || []).reduce((acc, e) => acc + ((parseFloat(e.peso) || 0) * (e.quantidade || 1)), 0);
+                let enc = 0;
+                let encName = "Nenhuma (0)";
+                if (totalWeight > bl) { enc = 1; encName = "Leve (1)"; }
+                if (totalWeight > bl * 2) { enc = 2; encName = "Média (2)"; }
+                if (totalWeight > bl * 3) { enc = 3; encName = "Pesada (3)"; }
+                if (totalWeight > bl * 6) { enc = 4; encName = "M. Pesada (4)"; }
+
                 const spd = (f.destreza + f.vitalidade) / 4 + (f.modVelocidadeBasica || 0);
+                const moveMult = [1, 0.8, 0.6, 0.4, 0.2];
+                const finalMove = Math.floor(Math.floor(spd) * moveMult[enc]) + (f.modDeslocamentoBasico || 0);
                 const [gdp, geb] = getStDmg(f.forca);
+
+                const esq = Math.floor(spd) + 3 - enc + (f.defesasAtivas.bonusManualEsquiva || 0);
+                const apNH = sMap[f.defesasAtivas.periciaAparaId] || 0;
+                const ap = apNH > 0 ? Math.floor(apNH / 2) + 3 + (f.defesasAtivas.bonusManualApara || 0) : "-";
+                const blqNH = sMap[f.defesasAtivas.periciaBloqueioId] || 0;
+                const blq = blqNH > 0 ? Math.floor(blqNH / 2) + 3 + (f.defesasAtivas.bonusManualBloqueio || 0) : "-";
+
                 html = `<div class="attr-grid">
                     <div class="attr-box"><div class="attr-val">${f.forca}</div><div style="font-size:8px">ST</div></div>
                     <div class="attr-box"><div class="attr-val">${f.destreza}</div><div style="font-size:8px">DX</div></div>
                     <div class="attr-box"><div class="attr-val">${f.inteligencia}</div><div style="font-size:8px">IQ</div></div>
                     <div class="attr-box"><div class="attr-val">${f.vitalidade}</div><div style="font-size:8px">HT</div></div>
                 </div>
-                <div class="section-header">Derivados</div>
+                <div class="section-header">Derivados e Carga</div>
                 ${row('Vontade (VON)', f.inteligencia + (f.modVontade || 0))}
                 ${row('Percepção (PER)', f.inteligencia + (f.modPercepcao || 0))}
                 ${row('Velocidade Básica', spd.toFixed(2))}
-                ${row('Deslocamento', Math.floor(spd) + (f.modDeslocamentoBasico || 0))}
+                ${row('Deslocamento (Final)', `<strong>${finalMove}</strong>`)}
                 ${row('Dano GdP / GeB', `<strong>${gdp} / ${geb}</strong>`)}
+                ${row('Carga Básica (BL)', `${bl.toFixed(1)} kg`)}
+                ${row('Peso Total / Nível', `<strong>${totalWeight.toFixed(1)} kg</strong> (${encName})`)}
+                
+                <div class="section-header">Defesas Ativas</div>
+                <div class="def-grid">
+                    <div class="def-box"><div class="def-val">${esq}</div><div class="def-label">ESQUIVA</div></div>
+                    <div class="def-box"><div class="def-val">${ap}</div><div class="def-label">APARA</div></div>
+                    <div class="def-box"><div class="def-val">${blq}</div><div class="def-label">BLOQUEIO</div></div>
+                </div>
+
                 <div class="section-header">Status</div>
                 ${stats('Vida', `${f.pontosVidaRolagemAtual}/${f.vitalidade}`, 'vi')}
                 ${stats('Fadiga', `${f.pontosFadigaRolagemAtual}/${f.vitalidade}`, 'fa')}`;
@@ -179,46 +220,30 @@
                            return row(t.nome, `<span class="nh-tag">${b + (t.preDefinidoModificador || 0) + (t.pontosGastos || 0)}</span>`);
                        }).join('');
             } else if (tab === 'magia') {
-                html = `<div class="section-header">Grimório</div>` + (f.magias || []).map(m => row(m.nome, "NH ?")).join('');
-            } else if (tab === 'itens') {
+                html = `<div class="section-header">Grimório</div>` + (f.magias || []).map(m => row(m.nome, `<span class="nh-tag" style="background:var(--purple)">${getNH('IQ', m.dificuldade, m.pontosGastos, f, true)}</span>`)).join('');
+            } else if (tab === 'equip') {
                 html = `<div class="section-header">Armas</div>` + (f.equipamentos || []).filter(e => e.tipo === 'ARMA').map(e => row(e.nome, `<strong>${e.armaDanoRaw || ''}</strong>`)).join('') +
                        `<div class="section-header">Inventário</div>` + (f.equipamentos || []).filter(e => e.tipo !== 'ARMA').map(e => row(e.nome, `${e.quantidade || 1}x`)).join('');
             } else if (tab === 'combate') {
-                html = `<div class="section-header">Status de Combate</div>` + stats('Vida', `${f.pontosVidaRolagemAtual}/${f.vitalidade}`, 'vi') + `<div class="section-header">Calculadora de Dano</div>`;
+                html = `<div class="section-header">Status</div>` + stats('Vida', `${f.pontosVidaRolagemAtual}/${f.vitalidade}`, 'vi') + `<div class="section-header">Calculadora de Dano</div>`;
                 const BODY = [{id:'cranio',n:'Crânio',r:2,m:4},{id:'rosto',n:'Rosto',r:0,m:1},{id:'corpo',n:'Torso',r:0,m:1},{id:'vitals',n:'Vitais',r:0,m:3},{id:'bracos',n:'Braços',r:0,m:1,l:0.5},{id:'pernas',n:'Pernas',r:0,m:1,l:0.5},{id:'maos',n:'Mãos',r:0,m:1,l:0.33},{id:'pes',n:'Pés',r:0,m:1,l:0.33}];
                 BODY.forEach(loc => {
                     const arm = (f.equipamentos || []).find(e => e.armaduraLocal && e.armaduraLocal.toLowerCase().includes(loc.id.substring(0,3))) || { armaduraRd: 0 };
-                    const mod = f.rdMods[loc.id] || 0;
-                    const totalRD = loc.r + (parseInt(arm.armaduraRd) || 0) + mod;
-                    html += `<div class="rd-card ${loc.m > 1 ? 'special' : ''}">
-                        <div class="rd-info">
-                            <span>${loc.n}</span> 
-                            <div class="rd-badge">
-                                <button class="c-btn c-minus" style="width:18px;height:18px" onclick="updateRD('${deviceId}','${loc.id}',-1)">-</button>
-                                <span style="font-size:12px">RD ${totalRD}</span>
-                                <button class="c-btn c-plus" style="width:18px;height:18px" onclick="updateRD('${deviceId}','${loc.id}',1)">+</button>
-                            </div>
-                        </div>
-                        <div class="dmg-ctrl">
-                            <input type="number" id="dmg-${deviceId}-${loc.id}" class="dmg-input" placeholder="D">
-                            <select id="t-${deviceId}-${loc.id}" class="dmg-select">${Object.keys(DAMAGE_RULES).map(k => `<option value="${k}">${DAMAGE_RULES[k].n}</option>`).join('')}</select>
-                            <button class="apply-btn" onclick="applySmartDmg('${deviceId}','${loc.id}',${totalRD},${loc.m},${loc.l || 0})">Ok</button>
-                        </div>
-                    </div>`;
+                    const mod = (f.rdMods || {})[loc.id] || 0;
+                    const rd = loc.r + (parseInt(arm.armaduraRd) || 0) + mod;
+                    html += `<div class="rd-card ${loc.m > 1 ? 'special' : ''}"><div class="rd-info"><span>${loc.n}</span> <div class="rd-badge"><button class="c-btn c-minus" style="width:16px;height:16px" onclick="updateRD('${deviceId}','${loc.id}',-1)">-</button><span>RD ${rd}</span><button class="c-btn c-plus" style="width:16px;height:16px" onclick="updateRD('${deviceId}','${loc.id}',1)">+</button></div></div><div class="dmg-ctrl"><input type="number" id="dmg-${deviceId}-${loc.id}" class="dmg-input" placeholder="D"><select id="t-${deviceId}-${loc.id}" class="dmg-select">${Object.keys(DAMAGE_RULES).map(k => `<option value="${k}">${DAMAGE_RULES[k].n}</option>`).join('')}</select><button class="apply-btn" onclick="applySmartDmg('${deviceId}','${loc.id}',${rd})">Ok</button></div></div>`;
                 });
             }
             body.innerHTML = html;
         }
 
         function updateRD(devId, locId, delta) {
-            const dev = document.getElementById(devId);
-            const f = JSON.parse(dev.dataset.ficha);
-            f.rdMods[locId] = (f.rdMods[locId] || 0) + delta;
-            dev.dataset.ficha = JSON.stringify(f);
-            renderContent(devId, f, 'combate');
+            const dev = document.getElementById(devId); const f = JSON.parse(dev.dataset.ficha);
+            f.rdMods = f.rdMods || {}; f.rdMods[locId] = (f.rdMods[locId] || 0) + delta;
+            dev.dataset.ficha = JSON.stringify(f); renderContent(devId, f, 'combate');
         }
 
-        function applySmartDmg(devId, locId, rd, m, limit) {
+        function applySmartDmg(devId, locId, rd) {
             const dev = document.getElementById(devId); const f = JSON.parse(dev.dataset.ficha);
             const val = parseInt(document.getElementById(`dmg-${devId}-${locId}`).value) || 0;
             const typeKey = document.getElementById(`t-${devId}-${locId}`).value;
@@ -226,8 +251,9 @@
             let mult = DAMAGE_RULES[typeKey].m;
             if (locId === 'cranio') mult = 4.0;
             if (locId === 'vitals' && (typeKey.startsWith('pi') || typeKey === 'perf')) mult = 3.0;
+            const locLimit = [{id:'bracos',l:0.5},{id:'pernas',l:0.5},{id:'maos',l:0.33},{id:'pes',l:0.33}].find(l => l.id === locId);
             let final = Math.floor(penetrating * mult);
-            if (limit) { const max = Math.ceil(f.vitalidade * limit); if (final > max) final = max; }
+            if (locLimit) { const max = Math.ceil(f.vitalidade * locLimit.l); if (final > max) final = max; }
             if (final > 0) updateStat(devId, 'vi', -final);
             document.getElementById(`dmg-${devId}-${locId}`).value = "";
         }
@@ -237,7 +263,7 @@
             if (stat === 'vi') f.pontosVidaRolagemAtual += delta; if (stat === 'fa') f.pontosFadigaRolagemAtual += delta;
             dev.dataset.ficha = JSON.stringify(f);
             const active = dev.querySelector('.tab-btn.active').innerText.toLowerCase();
-            const tabMap = { 'geral': 'geral', 'traços': 'traits', 'perícias': 'skills', 'magia': 'magia', 'itens': 'itens', 'combate': 'combate' };
+            const tabMap = { 'geral': 'geral', 'traços': 'traits', 'perícias': 'skills', 'magia': 'magia', 'equip': 'equip', 'combate': 'combate' };
             renderContent(devId, f, tabMap[active] || 'geral');
         }
 

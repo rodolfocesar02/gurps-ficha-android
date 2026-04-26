@@ -10,6 +10,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,11 +25,16 @@ import com.gurps.ficha.domain.rules.CharacterRules
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
+fun SelecionarDesvantagemDialog(
+    viewModel: FichaViewModel,
+    onDismiss: () -> Unit,
+    onSelect: ((DesvantagemSelecionada) -> Unit)? = null
+) {
     var busca by remember { mutableStateOf("") }
     var filtroTipo by remember { mutableStateOf<TipoCusto?>(null) }
     var filtroTag by remember { mutableStateOf<String?>(null) }
     var desvantagemSelecionada by remember { mutableStateOf<DesvantagemDefinicao?>(null) }
+    val contextForToast = LocalContext.current
 
     val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
     val listaFiltrada = viewModel.dataRepository.filtrarDesvantagens(busca, filtroTipo, filtroTag)
@@ -63,8 +70,30 @@ fun SelecionarDesvantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit
 
     desvantagemSelecionada?.let { definicao ->
         ConfigurarDesvantagemDialog(definicao = definicao, onDismiss = { desvantagemSelecionada = null },
-            onSave = { nivel, custoEscolhido, descricao, autocontrole, mods, metadados ->
-                viewModel.adicionarDesvantagem(definicao, nivel, custoEscolhido, descricao, autocontrole, mods, metadados)
+            onSave = { nível, custoEsc, desc, ac, ms, meta ->
+                val novaDesvantagem = DesvantagemSelecionada(
+                    definicaoId = definicao.id,
+                    nome = definicao.nome,
+                    custoBase = if (definicao.tipoCusto == com.gurps.ficha.model.TipoCusto.POR_NIVEL) definicao.getCustoPorNivel() else definicao.getCustoBase(),
+                    nivel = nível,
+                    custoEscolhido = custoEsc,
+                    descricao = desc,
+                    tipoCusto = definicao.tipoCusto,
+                    pagina = definicao.pagina,
+                    autocontrole = ac,
+                    specialRule = definicao.specialRule,
+                    modificadores = ms,
+                    metadados = meta
+                )
+                val context = contextForToast
+                if (onSelect != null) {
+                    onSelect(novaDesvantagem)
+                } else {
+                    val erro = viewModel.adicionarDesvantagem(definicao, nível, custoEsc, desc, ac, ms, meta)
+                    if (erro != null) {
+                        Toast.makeText(context, erro, Toast.LENGTH_SHORT).show()
+                    }
+                }
                 desvantagemSelecionada = null
             })
     }
@@ -181,100 +210,77 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                                 Text("$custoEscolhido pts", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
                                 TextButton(onClick = { custoEscolhido -= 1 }) { Text("-1") }
                             }
-                            HorizontalDivider()
                         }
                     }
                     else -> {}
                 }
 
+                // Regras Especiais (UI Compartilhada)
                 if (definicao.specialRule == "inimigos" || definicao.specialRule == "dependentes") {
-                    Text(if (definicao.specialRule == "inimigos") "Poder do Inimigo:" else "Poder do Dependente:", style = MaterialTheme.typography.labelMedium)
-                    val inimOpcoes = if (definicao.specialRule == "inimigos") listOf(-5 to "Individual (50% pts)", -10 to "Indiv. (100%) / Grupo (3-5)", -20 to "Indiv. (150%) / Grupo (6-20)", -30 to "Grupo (21-1000)", -40 to "Governo")
-                                     else listOf(-2 to "Indiv. (25% pts)", -5 to "Indiv. (50%)", -10 to "Indiv. (75%)", -15 to "Indiv. (100% ou mais)")
-                    inimOpcoes.forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { enemyBasePower = pts }) {
-                            RadioButton(selected = enemyBasePower == pts, onClick = { enemyBasePower = pts })
-                            Text(label, style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                    Text("Intenção/Vizinhança:", style = MaterialTheme.typography.labelMedium)
-                    listOf(0.25f to "Observador/Vizinho (x1/4)", 0.5f to "Rival (x1/2)", 1.0f to "Perseguidor (x1)").forEach { (m, label) ->
-                        FilterChip(selected = enemyIntention == m, onClick = { enemyIntention = m }, label = { Text(label, fontSize = 10.sp) })
-                    }
-                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
-                    listOf(0.5f to "6- (x1/2)", 1.0f to "9- (x1)", 2.0f to "12- (x2)", 3.0f to "15- (x3)", 4.0f to "Constante (x4)").forEach { (m, label) ->
-                        FilterChip(selected = enemyFrequency == m, onClick = { enemyFrequency = m }, label = { Text(label, fontSize = 10.sp) })
-                    }
+                    InimigosConfig(
+                        basePower = enemyBasePower,
+                        intention = enemyIntention,
+                        frequency = enemyFrequency,
+                        isEnemy = definicao.specialRule == "inimigos",
+                        onChanged = { p, i, f -> enemyBasePower = p; enemyIntention = i; enemyFrequency = f }
+                    )
                     HorizontalDivider()
                 }
 
                 if (definicao.specialRule == "vicio") {
-                    Text("Custo Base do Vício:", style = MaterialTheme.typography.labelMedium)
-                    listOf(-5 to "Barato (-5 pts)", -10 to "Caro (-10 pts)", -20 to "Muito Caro (-20 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { vicioBase = pts; vicioBaseLabel = label }) {
-                            RadioButton(selected = vicioBase == pts, onClick = { vicioBase = pts; vicioBaseLabel = label })
-                            Text(label, style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                    Text("Efeito Extra:", style = MaterialTheme.typography.labelMedium)
-                    listOf(0 to "Estimulante/Mínimo (+0 pts)", -5 to "Incidência (x1.5 ou -5 pts)", -10 to "Efeito Grave (-10 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { vicioEffect = pts; vicioEffectLabel = label }) {
-                            RadioButton(selected = vicioEffect == pts, onClick = { vicioEffect = pts; vicioEffectLabel = label })
-                            Text(label, style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
-                    Text("Legalidade:", style = MaterialTheme.typography.labelMedium)
-                    listOf(0 to "Legal (+0 pts)", -5 to "Ilegal (-5 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { vicioLegal = pts; vicioLegalLabel = label }) {
-                            RadioButton(selected = vicioLegal == pts, onClick = { vicioLegal = pts; vicioLegalLabel = label })
-                            Text(label, style = MaterialTheme.typography.bodySmall)
-                        }
-                    }
+                    VicioConfig(
+                        base = vicioBase,
+                        effect = vicioEffect,
+                        legality = vicioLegal,
+                        onChanged = { b, e, l -> vicioBase = b; vicioEffect = e; vicioLegal = l }
+                    )
                     HorizontalDivider()
                 }
 
                 if (definicao.specialRule == "dependencia") {
-                    Text("Raridade da Substância:", style = MaterialTheme.typography.labelMedium)
-                    listOf(-5 to "Comum (-5 pts)", -10 to "Incomum (-10 pts)", -20 to "Rara (-20 pts)", -30 to "Muito Rara (-30 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { depRarity = pts }) { RadioButton(selected = depRarity == pts, onClick = { depRarity = pts }); Text(label) }
-                    }
-                    Text("Tempo sem Substância:", style = MaterialTheme.typography.labelMedium)
-                    listOf(1.0f to "Diário (x1)", 2.0f to "Hora em Hora (x2)", 3.0f to "Minuto em Minuto (x3)").forEach { (m, label) -> FilterChip(selected = depFrequency == m, onClick = { depFrequency = m }, label = { Text(label) }) }
-                    Row(verticalAlignment = Alignment.CenterVertically) { Checkbox(checked = depIllegal, onCheckedChange = { depIllegal = it }); Text("Substância Ilegal (-5 pts)") }
+                    DependenciaConfig(
+                        rarity = depRarity,
+                        frequency = depFrequency,
+                        isIllegal = depIllegal,
+                        onChanged = { r, f, i -> depRarity = r; depFrequency = f; depIllegal = i }
+                    )
                     HorizontalDivider()
                 }
 
                 if (definicao.specialRule == "reputacao") {
-                    Text("Tipo de Reputação:", style = MaterialTheme.typography.labelMedium)
-                    listOf(-5 to "Ruim (-5 pts)", -10 to "Muito Ruim (-10 pts)", -15 to "Péssima (-15 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { repBase = pts }) { RadioButton(selected = repBase == pts, onClick = { repBase = pts }); Text(label) }
-                    }
-                    Text("Grupo que Reconhece:", style = MaterialTheme.typography.labelMedium)
-                    listOf(0.33f to "Pequeno (x1/3)", 0.5f to "Médio (x1/2)", 1.0f to "Grande (x1)").forEach { (m, label) -> FilterChip(selected = repGroup == m, onClick = { repGroup = m }, label = { Text(label) }) }
+                    ReputacaoConfig(
+                        base = repBase,
+                        group = repGroup,
+                        onChanged = { b, g -> repBase = b; repGroup = g }
+                    )
                     HorizontalDivider()
                 }
 
                 if (definicao.specialRule == "dever") {
-                    Text("Custo Base (Perigo):", style = MaterialTheme.typography.labelMedium)
-                    listOf(-5 to "Mínimo (-5 pts)", -10 to "Moderado (-10 pts)", -15 to "Extremo (-15 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { dutyBase = pts }) { RadioButton(selected = dutyBase == pts, onClick = { dutyBase = pts }); Text(label) }
-                    }
-                    Row {
-                        Checkbox(checked = dutyHazard, onCheckedChange = { dutyHazard = it }); Text("Perigoso (+5 pts)")
-                    }
-                    Row {
-                        Checkbox(checked = dutyInvoluntary, onCheckedChange = { dutyInvoluntary = it }); Text("Involuntário (+5 pts)")
-                    }
+                    DeverConfig(
+                        base = dutyBase,
+                        isHazardous = dutyHazard,
+                        isInvoluntary = dutyInvoluntary,
+                        onChanged = { b, h, i -> dutyBase = b; dutyHazard = h; dutyInvoluntary = i }
+                    )
                     HorizontalDivider()
-                }                // [NOTE: Outras regras especiais omitidas por brevidade, mas mantidas no TraitDialogs original até migrate final]
-                
+                }
+
                 if (definicao.specialRule == "manutencao") {
-                    Text("Custo Base (Pessoas):", style = MaterialTheme.typography.labelMedium)
-                    listOf(-2 to "1 pessoa (-2 pts)", -5 to "2-5 pessoas (-5 pts)", -10 to "6-10 pessoas (-10 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { maintBase = pts }) { RadioButton(selected = maintBase == pts, onClick = { maintBase = pts }); Text(label) }
-                    }
-                    Text("Intervalo:", style = MaterialTheme.typography.labelMedium)
-                    listOf(1.0f to "Semanal (x1)", 2.0f to "Diário (x2)", 5.0f to "Hora em Hora (x5)").forEach { (m, label) -> FilterChip(selected = maintInterval == m, onClick = { maintInterval = m }, label = { Text(label) }) }
+                    ManutencaoConfig(
+                        base = maintBase,
+                        interval = maintInterval,
+                        onChanged = { b, i -> maintBase = b; maintInterval = i }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (definicao.specialRule == "dor_cronica") {
+                    DorCronicaConfig(
+                        intensity = chronicIntensity,
+                        frequency = chronicFreq,
+                        onChanged = { i, f -> chronicIntensity = i; chronicFreq = f }
+                    )
                     HorizontalDivider()
                 }
 
@@ -284,33 +290,21 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                     HorizontalDivider()
                 }
 
-                if (definicao.specialRule == "dor_cronica") {
-                    Text("Intensidade:", style = MaterialTheme.typography.labelMedium)
-                    listOf(-5 to "Leve (-5 pts)", -10 to "Severa (-10 pts)", -15 to "Agonizante (-15 pts)").forEach { (pts, label) ->
-                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { chronicIntensity = pts }) { RadioButton(selected = chronicIntensity == pts, onClick = { chronicIntensity = pts }); Text(label) }
-                    }
-                    Text("Frequência:", style = MaterialTheme.typography.labelMedium)
-                    listOf(0.5f to "6- (x1/2)", 1.0f to "9- (x1)", 2.0f to "12- (x2)", 3.0f to "15- (x3)").forEach { (m, label) -> FilterChip(selected = chronicFreq == m, onClick = { chronicFreq = m }, label = { Text(label) }) }
-                    HorizontalDivider()
-                }
-
                 if (definicao.specialRule == "fraqueza") {
-                    Text("Raridade:", style = MaterialTheme.typography.labelMedium)
-                    listOf(-1 to "Muito Comum (-1 pts)", -2 to "Comum (-2 pts)", -5 to "Incomum (-5 pts)", -10 to "Raro (-10 pts)").forEach { (pts, label) ->
-                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { weaknessRarity = pts }) { RadioButton(selected = weaknessRarity == pts, onClick = { weaknessRarity = pts }); Text(label) }
-                    }
-                    Text("Dano por Minuto:", style = MaterialTheme.typography.labelMedium)
-                    listOf(1.0f to "1d/min (x1)", 2.0f to "1d/5s (x2)", 3.0f to "1d/s (x3)").forEach { (m, label) -> FilterChip(selected = weaknessFreq == m, onClick = { weaknessFreq = m }, label = { Text(label) }) }
+                    FraquezaConfig(
+                        rarity = weaknessRarity,
+                        frequency = weaknessFreq,
+                        onChanged = { r, f -> weaknessRarity = r; weaknessFreq = f }
+                    )
                     HorizontalDivider()
                 }
 
                 if (definicao.specialRule == "vulnerabilidade") {
-                    Text("Raridade:", style = MaterialTheme.typography.labelMedium)
-                    listOf(-5 to "Muito Comum (-5 pts)", -10 to "Comum (-10 pts)", -15 to "Incomum (-15 pts)", -20 to "Raro (-20 pts)").forEach { (pts, label) ->
-                         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { vulnRarity = pts }) { RadioButton(selected = vulnRarity == pts, onClick = { vulnRarity = pts }); Text(label) }
-                    }
-                    Text("Multiplicador de Dano:", style = MaterialTheme.typography.labelMedium)
-                    listOf(2.0f to "x2 (x2)", 3.0f to "x3 (x3)", 4.0f to "x4 (x4)").forEach { (m, label) -> FilterChip(selected = vulnDmgMult == m, onClick = { vulnDmgMult = m }, label = { Text(label) }) }
+                    VulnerabilidadeConfig(
+                        rarity = vulnRarity,
+                        dmgMult = vulnDmgMult,
+                        onChanged = { r, m -> vulnRarity = r; vulnDmgMult = m }
+                    )
                     HorizontalDivider()
                 }
 
@@ -329,11 +323,7 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
         },
         confirmButton = {
             TextButton(onClick = { 
-                var finalCusto = custoEscolhido
-                if (definicao.specialRule == "vicio") finalCusto = vicioBase + vicioEffect + vicioLegal
-                else if (definicao.specialRule == "manutencao") finalCusto = (maintBase * maintInterval).toInt()
-                else if (definicao.specialRule == "maldicao_divina") finalCusto = divineCurseValue.toIntOrNull() ?: 0
-                onSave(nivel, finalCusto, descricao, autocontrole, mods, metadados) 
+                onSave(nivel, custoCalculado, descricao, autocontrole, mods, metadados) 
             }) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
@@ -341,9 +331,277 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
     // ... logic for showAddMod etc
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarDesvantagemDialog(desvantagem: DesvantagemSelecionada, descricaoCatalogo: String = "", onDismiss: () -> Unit, onSave: (DesvantagemSelecionada) -> Unit) {
-    // [Logic for editing moved from original]
+fun EditarDesvantagemDialog(
+    desvantagem: DesvantagemSelecionada,
+    permiteAutocontrole: Boolean = false,
+    descricaoCatalogo: String = "",
+    onDismiss: () -> Unit,
+    onSave: (DesvantagemSelecionada) -> Unit
+) {
+    var nivel by remember { mutableIntStateOf(desvantagem.nivel) }
+    var custoEscolhido by remember { mutableIntStateOf(desvantagem.custoEscolhido) }
+    var descricao by remember { mutableStateOf(desvantagem.descricao) }
+    var autocontrole by remember { mutableStateOf(desvantagem.autocontrole) }
+    var mods by remember { mutableStateOf(desvantagem.modificadores) }
+    var showAddMod by remember { mutableStateOf(false) }
+    var mostrarDescricaoCatalogo by remember { mutableStateOf(false) }
+    val descricaoCatalogoFinal = descricaoCatalogo.trim()
+
+    // Reconstruir metadados se necessário (caso venham nulos mas a regra exija)
+    var metadadosState by remember { mutableStateOf(desvantagem.metadados ?: emptyMap()) }
+
+    // Estados para Regras Especiais (inicializados dos metadados)
+    var enemyBasePower by remember { mutableIntStateOf(metadadosState["basePoder"]?.toIntOrNull() ?: -5) }
+    var enemyIntention by remember { mutableFloatStateOf(metadadosState["multIntencao"]?.toFloatOrNull() ?: 1.0f) }
+    var enemyFrequency by remember { mutableFloatStateOf(metadadosState["multFrequencia"]?.toFloatOrNull() ?: 1.0f) }
+    
+    var depRarity by remember { mutableIntStateOf(metadadosState["baseRaridade"]?.toIntOrNull() ?: -5) }
+    var depFrequency by remember { mutableFloatStateOf(metadadosState["multFrequencia"]?.toFloatOrNull() ?: 1.0f) }
+    var depIllegal by remember { mutableStateOf(metadadosState["ilegal"]?.toBoolean() ?: false) }
+
+    var repBase by remember { mutableIntStateOf(metadadosState["baseReputacao"]?.toIntOrNull() ?: -5) }
+    var repGroup by remember { mutableFloatStateOf(metadadosState["multGrupo"]?.toFloatOrNull() ?: 1.0f) }
+    var repRecognition by remember { mutableFloatStateOf(metadadosState["multReconhecimento"]?.toFloatOrNull() ?: 1.0f) }
+
+    var dutyBase by remember { mutableIntStateOf(metadadosState["baseDever"]?.toIntOrNull() ?: -5) }
+    var dutyHazard by remember { mutableStateOf(metadadosState["perigoso"]?.toBoolean() ?: false) }
+    var dutyInvoluntary by remember { mutableStateOf(metadadosState["involuntario"]?.toBoolean() ?: false) }
+    var dutyHarmless by remember { mutableStateOf(metadadosState["inofensivo"]?.toBoolean() ?: false) }
+
+    var chronicIntensity by remember { mutableIntStateOf(metadadosState["baseIntensidade"]?.toIntOrNull() ?: -5) }
+    var chronicFreq by remember { mutableFloatStateOf(metadadosState["multFrequencia"]?.toFloatOrNull() ?: 0.5f) }
+
+    var weaknessRarity by remember { mutableIntStateOf(metadadosState["baseRaridade"]?.toIntOrNull() ?: -5) }
+    var weaknessFreq by remember { mutableFloatStateOf(metadadosState["multFrequencia"]?.toFloatOrNull() ?: 1.0f) }
+
+    var vulnRarity by remember { mutableIntStateOf(metadadosState["baseRaridade"]?.toIntOrNull() ?: -5) }
+    var vulnDmgMult by remember { mutableFloatStateOf(metadadosState["multDano"]?.toFloatOrNull() ?: 2.0f) }
+
+    var maintBase by remember { mutableIntStateOf(metadadosState["baseManutencao"]?.toIntOrNull() ?: -10) }
+    var maintInterval by remember { mutableFloatStateOf(metadadosState["multIntervalo"]?.toFloatOrNull() ?: 1.0f) }
+
+    var vicioBase by remember { mutableIntStateOf(metadadosState["baseVicio"]?.toIntOrNull() ?: -5) }
+    var vicioEffect by remember { mutableIntStateOf(metadadosState["modEfeito"]?.toIntOrNull() ?: 0) }
+    var vicioLegal by remember { mutableIntStateOf(metadadosState["modLegalidade"]?.toIntOrNull() ?: 0) }
+
+    var divineCurseValue by remember { mutableStateOf(metadadosState["custoCustom"] ?: "0") }
+
+    val def = remember { CharacterRules.DATA_REPOSITORY_INSTANCE?.getDesvantagemPorId(desvantagem.definicaoId) }
+    val specialRule = desvantagem.specialRule ?: def?.specialRule ?: ""
+
+    val currentMetadados = when (specialRule) {
+        "inimigos", "dependentes" -> mapOf("basePoder" to enemyBasePower.toString(), "multIntencao" to enemyIntention.toString(), "multFrequencia" to enemyFrequency.toString())
+        "dependencia" -> mapOf("baseRaridade" to depRarity.toString(), "multFrequencia" to depFrequency.toString(), "ilegal" to depIllegal.toString())
+        "reputacao" -> mapOf("baseReputacao" to repBase.toString(), "multGrupo" to repGroup.toString(), "multReconhecimento" to repRecognition.toString())
+        "dever" -> mapOf("baseDever" to dutyBase.toString(), "perigoso" to dutyHazard.toString(), "involuntario" to dutyInvoluntary.toString(), "inofensivo" to dutyHarmless.toString())
+        "manutencao" -> mapOf("baseManutencao" to maintBase.toString(), "multIntervalo" to maintInterval.toString())
+        "vicio" -> mapOf("baseVicio" to vicioBase.toString(), "modEfeito" to vicioEffect.toString(), "modLegalidade" to vicioLegal.toString())
+        "maldicao_divina" -> mapOf("custoCustom" to divineCurseValue)
+        "dor_cronica" -> mapOf("baseIntensidade" to chronicIntensity.toString(), "multFrequencia" to chronicFreq.toString())
+        "fraqueza" -> mapOf("baseRaridade" to weaknessRarity.toString(), "multFrequencia" to weaknessFreq.toString())
+        "vulnerabilidade" -> mapOf("baseRaridade" to vulnRarity.toString(), "multDano" to vulnDmgMult.toString())
+        else -> null
+    }
+
+    val custoCalculado = CharacterRules.calcularCustoDesvantagem(
+        desvantagem.tipoCusto, 
+        desvantagem.custoBase, 
+        custoEscolhido, 
+        nivel, 
+        autocontrole, 
+        mods, 
+        specialRule, 
+        currentMetadados
+    )
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { 
+            Text(desvantagem.nome, color = MaterialTheme.colorScheme.primary, 
+                modifier = Modifier.clickable { if (descricaoCatalogoFinal.isNotBlank()) mostrarDescricaoCatalogo = true }) 
+        },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(UiTokens.DialogContentSpacing)) {
+                Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                    Text("Custo Final: $custoCalculado pts", modifier = Modifier.padding(12.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                }
+                
+                Text("Tipo: ${desvantagem.tipoCusto.name} | Custo base: ${def?.custo ?: desvantagem.custoBase} | Pag. ${def?.pagina ?: desvantagem.pagina}", style = MaterialTheme.typography.bodySmall)
+                
+                HorizontalDivider()
+
+                when (desvantagem.tipoCusto) {
+                    TipoCusto.POR_NIVEL -> {
+                        Text("Nível:", style = MaterialTheme.typography.labelMedium)
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                            TextButton(onClick = { if (nivel > 1) nivel-- }) { Text("-") }
+                            Text("$nivel", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            TextButton(onClick = { if (nivel < 20) nivel++ }) { Text("+") }
+                        }
+                    }
+                    TipoCusto.ESCOLHA -> {
+                        if (specialRule != "vicio") {
+                            Text("Ajuste Manual de Custo:", style = MaterialTheme.typography.labelMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                                TextButton(onClick = { custoEscolhido++ }) { Text("+1") }
+                                Text("$custoEscolhido pts", fontWeight = FontWeight.Bold)
+                                TextButton(onClick = { custoEscolhido-- }) { Text("-1") }
+                            }
+                        }
+                    }
+                    TipoCusto.VARIAVEL -> {
+                        if (specialRule.isEmpty() || specialRule == "maldicao_divina") {
+                            Text("Ajuste de Custo:", style = MaterialTheme.typography.labelMedium)
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                                TextButton(onClick = { custoEscolhido++ }) { Text("+1") }
+                                Text("$custoEscolhido pts", fontWeight = FontWeight.Bold)
+                                TextButton(onClick = { custoEscolhido-- }) { Text("-1") }
+                            }
+                        }
+                    }
+                    else -> {}
+                }
+
+                // Regras Especiais (UI Compartilhada)
+                if (specialRule == "inimigos" || specialRule == "dependentes") {
+                    InimigosConfig(
+                        basePower = enemyBasePower,
+                        intention = enemyIntention,
+                        frequency = enemyFrequency,
+                        isEnemy = specialRule == "inimigos",
+                        onChanged = { p, i, f -> enemyBasePower = p; enemyIntention = i; enemyFrequency = f }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "vicio") {
+                    VicioConfig(
+                        base = vicioBase,
+                        effect = vicioEffect,
+                        legality = vicioLegal,
+                        onChanged = { b, e, l -> vicioBase = b; vicioEffect = e; vicioLegal = l }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "dependencia") {
+                    DependenciaConfig(
+                        rarity = depRarity,
+                        frequency = depFrequency,
+                        isIllegal = depIllegal,
+                        onChanged = { r, f, i -> depRarity = r; depFrequency = f; depIllegal = i }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "reputacao") {
+                    ReputacaoConfig(
+                        base = repBase,
+                        group = repGroup,
+                        onChanged = { b, g -> repBase = b; repGroup = g }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "dever") {
+                    DeverConfig(
+                        base = dutyBase,
+                        isHazardous = dutyHazard,
+                        isInvoluntary = dutyInvoluntary,
+                        onChanged = { b, h, i -> dutyBase = b; dutyHazard = h; dutyInvoluntary = i }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "manutencao") {
+                    ManutencaoConfig(
+                        base = maintBase,
+                        interval = maintInterval,
+                        onChanged = { b, i -> maintBase = b; maintInterval = i }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "dor_cronica") {
+                    DorCronicaConfig(
+                        intensity = chronicIntensity,
+                        frequency = chronicFreq,
+                        onChanged = { i, f -> chronicIntensity = i; chronicFreq = f }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "fraqueza") {
+                    FraquezaConfig(
+                        rarity = weaknessRarity,
+                        frequency = weaknessFreq,
+                        onChanged = { r, f -> weaknessRarity = r; weaknessFreq = f }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "vulnerabilidade") {
+                    VulnerabilidadeConfig(
+                        rarity = vulnRarity,
+                        dmgMult = vulnDmgMult,
+                        onChanged = { r, m -> vulnRarity = r; vulnDmgMult = m }
+                    )
+                    HorizontalDivider()
+                }
+
+                if (specialRule == "maldicao_divina") {
+                    Text("Custo Customizado:", style = MaterialTheme.typography.labelMedium)
+                    OutlinedTextField(value = divineCurseValue, onValueChange = { divineCurseValue = it }, label = { Text("Valor em pontos (ex: -10)") }, modifier = Modifier.fillMaxWidth())
+                    HorizontalDivider()
+                }
+
+                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição Personalizada") }, modifier = Modifier.fillMaxWidth())
+
+                if (permiteAutocontrole || desvantagem.autocontrole != null) {
+                    HorizontalDivider()
+                    Text("Autocontrole:", style = MaterialTheme.typography.labelMedium)
+                    Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        listOf(null to "Nenhum", 6 to "6 (x2)", 9 to "9 (x1.5)", 12 to "12 (x1)", 15 to "15 (x0.5)").forEach { (valor, label) ->
+                            FilterChip(selected = autocontrole == valor, onClick = { autocontrole = valor }, label = { Text(label) })
+                        }
+                    }
+                }
+
+                HorizontalDivider()
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
+                }
+
+                mods.forEachIndexed { idx, mod ->
+                    ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = { 
+                onSave(desvantagem.copy(
+                    nivel = nivel,
+                    custoEscolhido = if (specialRule == "vicio") (vicioBase + vicioEffect + vicioLegal) else custoEscolhido,
+                    descricao = descricao,
+                    autocontrole = autocontrole,
+                    modificadores = mods,
+                    metadados = currentMetadados
+                )) 
+            }) { Text("Salvar") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
+    )
+
+    if (mostrarDescricaoCatalogo) {
+        CatalogoDescricaoDialog(
+            nome = desvantagem.nome,
+            descricao = descricaoCatalogoFinal,
+            onDismiss = { mostrarDescricaoCatalogo = false }
+        )
+    }
 }
 
 

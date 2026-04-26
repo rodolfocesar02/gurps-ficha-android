@@ -53,6 +53,8 @@ fun TabTracos(viewModel: FichaViewModel) {
     var showModeloRacialDialog by remember { mutableStateOf(false) }
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
+    var editingQualidadeIndex by remember { mutableStateOf<Int?>(null) }
+    var editingPeculiaridadeIndex by remember { mutableStateOf<Int?>(null) }
 
     val p = viewModel.personagem
     val desvantagensPorId = remember(viewModel.dataRepository.desvantagens) {
@@ -116,8 +118,13 @@ fun TabTracos(viewModel: FichaViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(qualidade, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-                        IconButton(onClick = { viewModel.removerQualidade(index) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Remover qualidade $qualidade")
+                        Row {
+                            IconButton(onClick = { editingQualidadeIndex = index }) {
+                                Icon(Icons.Default.Edit, contentDescription = "Editar qualidade $qualidade")
+                            }
+                            IconButton(onClick = { viewModel.removerQualidade(index) }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Remover qualidade $qualidade")
+                            }
                         }
                     }
                 }
@@ -140,8 +147,13 @@ fun TabTracos(viewModel: FichaViewModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(peculiaridade, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
-                        IconButton(onClick = { viewModel.removerPeculiaridade(index) }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Remover peculiaridade $peculiaridade")
+                        Row {
+                            IconButton(onClick = { editingPeculiaridadeIndex = index }) {
+                                Icon(Icons.Default.Edit, contentDescription = "Editar peculiaridade $peculiaridade")
+                            }
+                            IconButton(onClick = { viewModel.removerPeculiaridade(index) }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Remover peculiaridade $peculiaridade")
+                            }
                         }
                     }
                 }
@@ -181,6 +193,28 @@ fun TabTracos(viewModel: FichaViewModel) {
         )
     }
 
+    editingQualidadeIndex?.let { index ->
+        QualidadeDialog(
+            textoInicial = p.qualidades[index],
+            onDismiss = { editingQualidadeIndex = null },
+            onSave = { novoTexto ->
+                viewModel.atualizarQualidade(index, novoTexto)
+                editingQualidadeIndex = null
+            }
+        )
+    }
+
+    editingPeculiaridadeIndex?.let { index ->
+        PeculiaridadeDialog(
+            textoInicial = p.peculiaridades[index],
+            onDismiss = { editingPeculiaridadeIndex = null },
+            onSave = { novoTexto ->
+                viewModel.atualizarPeculiaridade(index, novoTexto)
+                editingPeculiaridadeIndex = null
+            }
+        )
+    }
+
     editingVantagemIndex?.let { index ->
         val vantagem = p.vantagens[index]
         val descricaoCatalogo = viewModel.dataRepository.vantagens
@@ -214,6 +248,7 @@ fun TabTracos(viewModel: FichaViewModel) {
             ?: false
         EditarDesvantagemDialog(
             desvantagem = desvantagem,
+            permiteAutocontrole = permiteAutocontrole,
             descricaoCatalogo = descricaoCatalogo,
             onDismiss = { editingDesvantagemIndex = null },
             onSave = { novaDesvantagem ->

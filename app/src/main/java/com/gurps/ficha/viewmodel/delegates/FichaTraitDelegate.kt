@@ -13,18 +13,15 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         descricao: String = "",
         modificadores: List<ModificadorSelecao> = emptyList(),
         metadados: Map<String, String>? = null
-    ): List<VantagemSelecionada> {
+    ): Result<List<VantagemSelecionada>> {
         val ehAcumulativa = definicao.tipoCusto == TipoCusto.POR_NIVEL
-        val jaExiste = personagem.hasVantagem(definicao.id)
-
-        // Se for única (nâo-acumulativa) e já existir (na raça ou na ficha), bloqueia duplicata
-        if (jaExiste && !ehAcumulativa) {
-            return personagem.vantagens
+        
+        val jaExisteIdentica = personagem.vantagens.any { 
+            it.definicaoId.equals(definicao.id, true) && it.descricao.equals(descricao, true) 
         }
 
-        // Se já existe EXATAMENTE a mesma vantagem com a mesma descrição na ficha comprada, evita duplicar
-        if (personagem.vantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
-            return personagem.vantagens
+        if (jaExisteIdentica && !ehAcumulativa) {
+            return Result.failure(Exception("Você já possui esta Vantagem com esta descrição."))
         }
 
         val nivelNormalizado = normalizarNivelVantagem(definicao.id, nivel)
@@ -36,7 +33,7 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
             modificadores,
             metadados
         )
-        return personagem.vantagens + vantagem
+        return Result.success(personagem.vantagens + vantagem)
     }
 
     fun removerVantagem(personagem: Personagem, index: Int): List<VantagemSelecionada> {
@@ -89,16 +86,15 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         autocontrole: Int? = null,
         modificadores: List<ModificadorSelecao> = emptyList(),
         metadados: Map<String, String>? = null
-    ): List<DesvantagemSelecionada> {
+    ): Result<List<DesvantagemSelecionada>> {
         val ehAcumulativa = definicao.tipoCusto == TipoCusto.POR_NIVEL
-        val jaExiste = personagem.hasDesvantagem(definicao.id)
         
-        if (jaExiste && !ehAcumulativa) {
-            return personagem.desvantagens
+        val jaExisteIdentica = personagem.desvantagens.any { 
+            it.definicaoId.equals(definicao.id, true) && it.descricao.equals(descricao, true) 
         }
 
-        if (personagem.desvantagens.any { it.definicaoId == definicao.id && it.descricao == descricao }) {
-            return personagem.desvantagens
+        if (jaExisteIdentica && !ehAcumulativa) {
+            return Result.failure(Exception("Você já possui esta Desvantagem com esta descrição."))
         }
 
         val autocontroleNormalizado = if (definicao.usaAutocontroleMental()) autocontrole else null
@@ -110,7 +106,7 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
             autocontroleNormalizado,
             modificadores
         )
-        return personagem.desvantagens + desvantagem
+        return Result.success(personagem.desvantagens + desvantagem)
     }
 
     fun removerDesvantagem(personagem: Personagem, index: Int): List<DesvantagemSelecionada> {
@@ -169,6 +165,14 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         return lista
     }
 
+    fun atualizarQualidade(personagem: Personagem, index: Int, novoTexto: String): List<String> {
+        val lista = personagem.qualidades.toMutableList()
+        if (index in lista.indices) {
+            lista[index] = novoTexto
+        }
+        return lista
+    }
+
     fun adicionarPeculiaridade(personagem: Personagem, peculiaridade: String): List<String> {
         if (personagem.peculiaridades.size >= 5) return personagem.peculiaridades
         if (personagem.peculiaridades.contains(peculiaridade)) return personagem.peculiaridades
@@ -179,6 +183,14 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         val lista = personagem.peculiaridades.toMutableList()
         if (index in lista.indices) {
             lista.removeAt(index)
+        }
+        return lista
+    }
+
+    fun atualizarPeculiaridade(personagem: Personagem, index: Int, novoTexto: String): List<String> {
+        val lista = personagem.peculiaridades.toMutableList()
+        if (index in lista.indices) {
+            lista[index] = novoTexto
         }
         return lista
     }
