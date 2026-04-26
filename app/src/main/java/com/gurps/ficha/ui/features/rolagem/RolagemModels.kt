@@ -26,7 +26,8 @@ data class RollMappedOption(
     val id: String,
     val label: String,
     val contextLabel: String,
-    val target: Int?
+    val target: Int?,
+    val descricao: String = ""
 )
 
 data class DamageSourceOption(

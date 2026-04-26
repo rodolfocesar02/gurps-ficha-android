@@ -101,7 +101,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 id = "pericia_${per.definicaoId}_${per.especializacao}",
                 label = periciaLabel(per),
                 contextLabel = "Ataque ${periciaLabel(per)}",
-                target = per.calcularNivel(p)
+                target = per.calcularNivel(p),
+                descricao = viewModel.dataRepository.regraPericiaV2(per.definicaoId)?.descricao.orEmpty()
             ))
         }
 
@@ -185,7 +186,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             especializacao = per.especializacao,
             contextLabel = periciaLabel(per),
             target = per.calcularNivel(p),
-            descricao = ""
+            descricao = viewModel.dataRepository.regraPericiaV2(per.definicaoId)?.descricao.orEmpty()
         )
     }
 
@@ -204,7 +205,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             energia = mag.energia,
             tempoOperacao = mag.tempoOperacao,
             encantamentoAlvo = mag.encantamentoAlvo,
-            descricao = ""
+            descricao = mag.texto.orEmpty()
         )
     }
 
@@ -221,7 +222,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             periciaBaseNome = tec.periciaBaseNome,
             contextLabel = tec.nome,
             target = tec.calcularNivel(p),
-            descricao = ""
+            descricao = viewModel.dataRepository.tecnicasCatalogo.find { it.id == tec.definicaoId }?.descricao.orEmpty()
         )
     }
 
@@ -579,6 +580,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onConfigDano = { showConfigDanoDialog = true },
             onUpdateStDamageMode = { viewModel.atualizarStDamageMode(it) },
             onModificarAtaque = { modificadorAtaque = it },
+            onShowDescricao = { descricaoDialog = it },
             onExecutarAtaque = { att, mod ->
                 executarRolagem(
                     tipo = TipoTeste.ATAQUE,

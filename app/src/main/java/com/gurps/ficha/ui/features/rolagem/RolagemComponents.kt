@@ -333,6 +333,7 @@ fun AtaqueDanoQuickArea(
     onConfigDano: () -> Unit,
     onUpdateStDamageMode: (StDamageMode) -> Unit,
     onModificarAtaque: (Int) -> Unit,
+    onShowDescricao: (RollDescricaoDialog) -> Unit,
     onExecutarAtaque: (RollMappedOption, Int) -> Unit,
     onExecutarDano: (String) -> Unit
 ) {
@@ -436,7 +437,18 @@ fun AtaqueDanoQuickArea(
                                 ataqueAtual?.contextLabel?.removePrefix("Ataque ") ?: "Ataque",
                                 style = cardTitleStyle,
                                 fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable(enabled = ataqueAtual != null) {
+                                        ataqueAtual?.let {
+                                            onShowDescricao(
+                                                RollDescricaoDialog(
+                                                    titulo = "Descrição: ${it.label}",
+                                                    texto = it.descricao.ifBlank { "Sem descrição disponível." }
+                                                )
+                                            )
+                                        }
+                                    },
                                 textAlign = TextAlign.Center
                             )
                             Text(
