@@ -212,7 +212,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Correção da persistência de regras especiais (Aliados, Patronos, Dependência, Inimigos, etc.).
     - Blindagem de cálculo de custo para traços legados (fallback de `specialRule` via catálogo).
     - Ativação de salvamento automático (`salvarFicha()`) após qualquer edição de traços.
-[Feito] Lote 87: Exibição de descrições de perícias/magias na Aba de Rolagem | `(Manual: Antigravity)`
+[Feito] Lote 87: Exibição de descrições de perícias/magias na Aba de Rolagem | `(Commit: c3e3859)`
 
 ### Próximos Passos (Desejos do Usuário):
 - Bateria de Testes (Stress Test)
