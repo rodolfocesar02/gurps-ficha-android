@@ -1,7 +1,12 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 20 de Abril de 2026
-**Status Atual:** ERA DO CONHECIMENTO - Motor GraphRAG Lite (Zero-Native) Ativado 🧠🕸️
+**Última Atualização:** 26 de Abril de 2026
+**Status Atual:** ERA DO CONHECIMENTO - Motor GraphRAG Lite (Zero-Native) Ativado 🧠🕸️ | RELEASE 1.5.0 PRONTA 🚀
+
+### Sincro V24: Release 1.5.0 (Lote 86)
+- **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
+- **Unificação de Traços e Busca Inteligente**: Finalização do Lote 86 com todas as melhorias de interface e blindagem de cálculo integradas.
+- **Preparação de Update**: Arquivo `update.json` atualizado para notificar os usuários sobre a nova versão. 🔔🛡️
 
 ### Sincro V23: Mapeamento Arquitetural e Blindagem de Conhecimento
 - **Mapa Detalhado de Engenharia**: Criado o `MAPA_DETALHADO.md` com o inventário completo de funções, motores de RPG, scripts e suítes de teste. 🗺️🔍

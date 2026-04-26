@@ -1,7 +1,7 @@
 {
-  "versionCode": 11,
-  "versionName": "1.4.5",
-  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V1.4.5/GURPS_Ficha_Visual.apk",
-  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/V1.4.5/GURPS_Ficha_PraCego.apk",
-  "notes": "Sincro V22: Blindagem de Dados e Correção Crítica de Carregamento! Suas fichas seguras como nunca! 🏹🛡️💎🏗️"
+  "versionCode": 12,
+  "versionName": "1.5.0",
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.5.0/GURPS_Ficha_Visual.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v1.5.0/GURPS_Ficha_PraCego.apk",
+  "notes": "Lote 86: Unificação de Traços, Busca de Modificadores e Blindagem de Cálculo. 🏹🛡️💎"
 }
