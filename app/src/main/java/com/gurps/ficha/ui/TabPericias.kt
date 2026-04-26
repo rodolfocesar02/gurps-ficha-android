@@ -63,7 +63,7 @@ fun TabPericias(viewModel: FichaViewModel) {
             )
         }
 
-        if (p.pericias.isEmpty()) {
+        if (p.periciasTotais.isEmpty()) {
             GuidedEmptyState(
                 titulo = "Nenhuma perícia adicionada ainda.",
                 orientacao = "Use \"Adicionar Perícia\" para escolher do catálogo ou \"Criar Perícia\" para cadastro manual."
@@ -71,7 +71,8 @@ fun TabPericias(viewModel: FichaViewModel) {
         }
 
         // Cards individuais para cada perícia
-        p.pericias.forEachIndexed { index, pericia ->
+        p.periciasTotais.forEachIndexed { index, pericia ->
+            val isRacial = pericia.definicaoId.startsWith("racial_")
             val definicao = viewModel.dataRepository.getPericiaPorId(pericia.definicaoId)
             val failureMsg = definicao?.let { viewModel.validarPreRequisitosPericia(it) }
             val hasFailure = failureMsg != null
@@ -86,8 +87,8 @@ fun TabPericias(viewModel: FichaViewModel) {
                         nivelRelativo = pericia.getNivelRelativo(p),
                         failureMsg = failureMsg,
                         onShowDescription = { periciaDescricaoDialog = pericia },
-                        onEdit = { editingPericiaIndex = index },
-                        onDelete = { viewModel.removerPericia(index) }
+                        onEdit = { if (!isRacial) editingPericiaIndex = index },
+                        onDelete = { if (!isRacial) viewModel.removerPericia(index) }
                     )
                     if (hasFailure) {
                         Text(
@@ -101,7 +102,7 @@ fun TabPericias(viewModel: FichaViewModel) {
             }
         }
         ResumoPericiasFooter(
-            totalPericias = p.pericias.size,
+            totalPericias = p.periciasTotais.size,
             pontosPericias = p.pontosPericias
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -257,8 +258,10 @@ fun PericiaItem(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Remover perícia ${pericia.nome}")
+            if (!pericia.definicaoId.startsWith("racial_")) {
+                IconButton(onClick = onDelete) {
+                    Icon(Icons.Default.Delete, contentDescription = "Remover perícia ${pericia.nome}")
+                }
             }
         }
     }

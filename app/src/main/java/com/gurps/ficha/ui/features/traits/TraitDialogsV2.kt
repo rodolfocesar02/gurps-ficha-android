@@ -186,8 +186,26 @@ fun ModeloRacialDialog(
     }
 
     // DIÁLOGOS DE APOIO (Vantagens/Desvantagens usam a lógica do ViewModel)
-    if (showSelecionarVantagem) { SelecionarVantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarVantagem = false }) }
-    if (showSelecionarDesvantagem) { SelecionarDesvantagemDialog(viewModel = viewModel, onDismiss = { showSelecionarDesvantagem = false }) }
+    if (showSelecionarVantagem) { 
+        SelecionarVantagemDialog(
+            viewModel = viewModel, 
+            onDismiss = { showSelecionarVantagem = false },
+            onSelect = { v -> 
+                vantagensRacais = vantagensRacais + v
+                showSelecionarVantagem = false
+            }
+        ) 
+    }
+    if (showSelecionarDesvantagem) { 
+        SelecionarDesvantagemDialog(
+            viewModel = viewModel, 
+            onDismiss = { showSelecionarDesvantagem = false },
+            onSelect = { d ->
+                desvantagensRacais = desvantagensRacais + d
+                showSelecionarDesvantagem = false
+            }
+        ) 
+    }
     
     // PERÍCIA RACIAL (Lógica integrada e segura)
     var periciaEmCriacao by remember { mutableStateOf<PericiaRacial?>(null) }
@@ -229,27 +247,13 @@ fun ModeloRacialDialog(
                         Text("${if(nivelRelativo>=0) "+" else ""}$nivelRelativo", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp))
                         IconButton(onClick = { nivelRelativo++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                     }
-                    val custoFinal = when {
-                        nivelRelativo > 0 -> {
-                            val base = if (prParaEditar.diff == "MD") 4 else if (prParaEditar.diff == "D") 2 else 1
-                            if (nivelRelativo == 1) base else base * (nivelRelativo * 2)
-                        }
-                        nivelRelativo < 0 -> nivelRelativo * 2
-                        else -> 0
-                    }
+                    val custoFinal = com.gurps.ficha.domain.rules.CharacterRules.calcularCustoPericiaRacial(prParaEditar.diff, nivelRelativo)
                     Text("Custo: $custoFinal pontos", color = MaterialTheme.colorScheme.primary)
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
-                    val custoFinal = when {
-                        nivelRelativo > 0 -> {
-                            val base = if (prParaEditar.diff == "MD") 4 else if (prParaEditar.diff == "D") 2 else 1
-                            if (nivelRelativo == 1) base else base * (nivelRelativo * 2)
-                        }
-                        nivelRelativo < 0 -> nivelRelativo * 2
-                        else -> 0
-                    }
+                    val custoFinal = com.gurps.ficha.domain.rules.CharacterRules.calcularCustoPericiaRacial(prParaEditar.diff, nivelRelativo)
                     val novaPericia = prParaEditar.copy(nivelRelativo = nivelRelativo, custo = custoFinal)
                     if (periciaEmCriacao != null) periciasRacais = periciasRacais + novaPericia
                     else if (editingPericiaIndex != null) periciasRacais = periciasRacais.toMutableList().apply { this[editingPericiaIndex!!] = novaPericia }
@@ -260,27 +264,17 @@ fun ModeloRacialDialog(
         )
     }
 
-    // SINCRONIZAÇÃO COM O VIEWMODEL (Manteve segunça contra null e nomes corretos)
-    LaunchedEffect(viewModel.personagem.vantagens.size) {
-        if (showSelecionarVantagem && viewModel.personagem.vantagens.isNotEmpty()) {
-            vantagensRacais = vantagensRacais + viewModel.personagem.vantagens.last()
-            viewModel.removerVantagem(viewModel.personagem.vantagens.size - 1)
-            showSelecionarVantagem = false
-        }
-    }
-    LaunchedEffect(viewModel.personagem.desvantagens.size) {
-        if (showSelecionarDesvantagem && viewModel.personagem.desvantagens.isNotEmpty()) {
-            desvantagensRacais = desvantagensRacais + viewModel.personagem.desvantagens.last()
-            viewModel.removerDesvantagem(viewModel.personagem.desvantagens.size - 1)
-            showSelecionarDesvantagem = false
-        }
-    }
 
-    // EDIÇÃO DE TRAÇOS (V2 utiliza os diálogos originais do TraitDialogs.kt)
+    // EDIÇÃO DE TRAÇOS (V2 utiliza os diálogos unificados)
     editingVantagemIndex?.let { i ->
+        val vantagem = vantagensRacais[i]
+        val descricaoCatalogo = viewModel.dataRepository.vantagens
+            .find { it.id == vantagem.definicaoId }
+            ?.descricao ?: ""
+            
         EditarVantagemDialog(
-            vantagem = vantagensRacais[i],
-            descricaoCatalogo = "",
+            vantagem = vantagem,
+            descricaoCatalogo = descricaoCatalogo,
             weaponSuggestions = emptyList(),
             onDismiss = { editingVantagemIndex = null },
             onSave = { n -> 
@@ -290,9 +284,25 @@ fun ModeloRacialDialog(
         )
     }
     editingDesvantagemIndex?.let { i ->
-        EditarDesvantagemDialog(desvantagensRacais[i], "", { editingDesvantagemIndex = null }, { n -> 
-            desvantagensRacais = desvantagensRacais.toList().mapIndexed { idx, d -> if (idx == i) n else d }; editingDesvantagemIndex = null 
-        })
+        val desvantagem = desvantagensRacais[i]
+        val descricaoCatalogo = viewModel.dataRepository.desvantagens
+            .find { it.id == desvantagem.definicaoId }
+            ?.descricao ?: ""
+            
+        val permiteAutocontrole = viewModel.dataRepository.desvantagens
+            .find { it.id == desvantagem.definicaoId }
+            ?.usaAutocontroleMental() ?: false
+            
+        EditarDesvantagemDialog(
+            desvantagem = desvantagem, 
+            permiteAutocontrole = permiteAutocontrole,
+            descricaoCatalogo = descricaoCatalogo, 
+            onDismiss = { editingDesvantagemIndex = null }, 
+            onSave = { n -> 
+                desvantagensRacais = desvantagensRacais.toList().mapIndexed { idx, d -> if (idx == i) n else d }
+                editingDesvantagemIndex = null 
+            }
+        )
     }
 }
 

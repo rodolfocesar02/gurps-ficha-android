@@ -82,13 +82,14 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val maxPvRolagem = p.pontosVida
 
     val armas = p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA }
-    val periciasCombate = p.pericias.filter { per -> 
-        val idNorm = per.definicaoId.lowercase()
+    val periciasCombate = p.periciasTotais.filter { per -> 
+        val idNorm = per.definicaoId.lowercase().removePrefix("racial_")
         val correspondenteCombate = PERICIAS_COMBATE.contains(idNorm) || 
                                    PERICIAS_COMBATE.any { it.equals(per.nome.replace(" ", "_"), ignoreCase = true) }
         
         if (correspondenteCombate) {
-            val def = viewModel.dataRepository.getPericiaPorId(per.definicaoId)
+            val defId = if (per.definicaoId.startsWith("racial_")) idNorm else per.definicaoId
+            val def = viewModel.dataRepository.getPericiaPorId(defId)
             def == null || viewModel.validarPreRequisitosPericia(def) == null
         } else false
     }
@@ -173,8 +174,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
 
     var modificadorAtaque by remember { mutableIntStateOf(0) }
 
-    val opcoesPericia = p.pericias.filter { per ->
-        val def = viewModel.dataRepository.getPericiaPorId(per.definicaoId)
+    val opcoesPericia = p.periciasTotais.filter { per ->
+        val defId = if (per.definicaoId.startsWith("racial_")) per.definicaoId.removePrefix("racial_") else per.definicaoId
+        val def = viewModel.dataRepository.getPericiaPorId(defId)
         def == null || viewModel.validarPreRequisitosPericia(def) == null
     }.map { per ->
         PericiaRollOption(

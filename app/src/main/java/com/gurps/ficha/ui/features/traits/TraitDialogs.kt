@@ -116,11 +116,11 @@ interface TraitDefinicaoInterface {
 class VantagemToTrait(val v: VantagemDefinicao) : TraitDefinicaoInterface {
     override val id = v.id
     override val nome = v.nome
-    override val custo: Int = v.getCustoBase()
+    override val custo: Int = if (v.tipoCusto == TipoCusto.POR_NIVEL) v.getCustoPorNivel() else v.getCustoBase()
 }
 
 class DesvantagemToTrait(val d: DesvantagemDefinicao) : TraitDefinicaoInterface {
     override val id = d.id
     override val nome = d.nome
-    override val custo: Int = d.getCustoBase()
+    override val custo: Int = if (d.tipoCusto == TipoCusto.POR_NIVEL) d.getCustoPorNivel() else d.getCustoBase()
 }

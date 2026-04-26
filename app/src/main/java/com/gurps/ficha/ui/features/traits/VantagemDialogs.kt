@@ -11,6 +11,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -48,11 +50,16 @@ internal fun nivelExibicaoVantagem(definicaoId: String, nivelInterno: Int): Int 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
+fun SelecionarVantagemDialog(
+    viewModel: FichaViewModel,
+    onDismiss: () -> Unit,
+    onSelect: ((VantagemSelecionada) -> Unit)? = null
+) {
     var busca by remember { mutableStateOf("") }
     var filtroTipo by remember { mutableStateOf<TipoCusto?>(null) }
     var filtroTag by remember { mutableStateOf<String?>(null) }
     var vantagemSelecionada by remember { mutableStateOf<VantagemDefinicao?>(null) }
+    val contextForToast = LocalContext.current
 
     val tagsDisponiveis = listOf("combate", "social", "fisica", "mental", "magica")
     val listaFiltrada = viewModel.dataRepository.filtrarVantagens(busca, filtroTipo, filtroTag)
@@ -146,8 +153,29 @@ fun SelecionarVantagemDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         ConfigurarVantagemDialog(
             definicao = definicao,
             onDismiss = { vantagemSelecionada = null },
-            onSave = { nivel, custoEscolhido, descricao, mods, metadados ->
-                viewModel.adicionarVantagem(definicao, nivel, custoEscolhido, descricao, mods, metadados)
+            onSave = { nivel, custoEscolhido, desc, mods, metadados ->
+                val novaVantagem = VantagemSelecionada(
+                    definicaoId = definicao.id,
+                    nome = definicao.nome,
+                    custoBase = if (definicao.tipoCusto == com.gurps.ficha.model.TipoCusto.POR_NIVEL) definicao.getCustoPorNivel() else definicao.getCustoBase(),
+                    nivel = nivel,
+                    custoEscolhido = custoEscolhido,
+                    descricao = desc,
+                    tipoCusto = definicao.tipoCusto,
+                    pagina = definicao.pagina,
+                    specialRule = definicao.specialRule,
+                    modificadores = mods,
+                    metadados = metadados
+                )
+                val context = contextForToast
+                if (onSelect != null) {
+                    onSelect(novaVantagem)
+                } else {
+                    val erro = viewModel.adicionarVantagem(definicao, nivel, custoEscolhido, desc, mods, metadados)
+                    if (erro != null) {
+                        Toast.makeText(context, erro, Toast.LENGTH_SHORT).show()
+                    }
+                }
                 vantagemSelecionada = null
             }
         )
@@ -208,6 +236,11 @@ fun ConfigurarVantagemDialog(
     var classMestre by remember { mutableStateOf("todas") }
     var periciasMestre by remember { mutableStateOf("") }
 
+    // Estados para Resistente
+    var raridadeResistente by remember { mutableStateOf(10) } // Ocasional (Default)
+    var grauResistente by remember { mutableStateOf(1f) } // Imunidade (Default)
+    var atributoResistente by remember { mutableStateOf("HT") }
+
     val metadados = when (definicao.id) {
         "mestre_de_armas" -> mapOf("classId" to classMestre, "pericias_cobertas" to periciasMestre)
         "ataque_inato", "golpeadores" -> mapOf(
@@ -219,11 +252,16 @@ fun ConfigurarVantagemDialog(
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
         "garras" -> mapOf("tipoGarras" to tipoGarras)
         "defesas_ampliadas_aparar_ampliado" -> mapOf("tipo" to tipoAparar, "skillId" to periciaAparar)
+        "resistente" -> mapOf(
+            "raridade" to raridadeResistente.toString(),
+            "grau" to grauResistente.toString(),
+            "atributo" to atributoResistente
+        )
         else -> null
     }
 
     // Sincronização de custos especiais
-    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoAparar) {
+    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoAparar, raridadeResistente, grauResistente) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -252,6 +290,9 @@ fun ConfigurarVantagemDialog(
                     "single" -> 20
                     else -> 45
                 }
+            }
+            "resistente" -> {
+                custoEscolhido = CharacterRules.calcularCustoResistente(raridadeResistente, grauResistente)
             }
         }
     }
@@ -288,7 +329,7 @@ fun ConfigurarVantagemDialog(
                     personagem = null,
                     definicaoId = definicao.id,
                     tipoCusto = definicao.tipoCusto,
-                    custoBase = definicao.getCustoBase(),
+                    custoBase = if (definicao.tipoCusto == com.gurps.ficha.model.TipoCusto.POR_NIVEL) definicao.getCustoPorNivel() else definicao.getCustoBase(),
                     custoEscolhido = custoEscolhido,
                     nivel = nivel,
                     modificadores = mods,
@@ -497,6 +538,14 @@ fun ConfigurarVantagemDialog(
                                     onChanged = { p, m, s, c -> powerFavor = p; modFavor = m; secretoFavor = s; isContactFavor = c }
                                 )
                             }
+                            "resistente" -> {
+                                ResistenteConfig(
+                                    currentRarity = raridadeResistente,
+                                    currentDegree = grauResistente,
+                                    currentAttr = atributoResistente,
+                                    onChanged = { r, g, a -> raridadeResistente = r; grauResistente = g; atributoResistente = a }
+                                )
+                            }
                             else -> {
                                 Text("Custo Variável:")
                                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -607,9 +656,36 @@ fun EditarVantagemDialog(
     var classMestre by remember { mutableStateOf(vantagem.metadados?.get("classId") ?: "todas") }
     var periciasMestre by remember { mutableStateOf(vantagem.metadados?.get("pericias_cobertas") ?: "") }
 
+    // Estados para Resistente (Edição)
+    var raridadeResistente by remember { mutableStateOf(vantagem.metadados?.get("raridade")?.toIntOrNull() ?: 10) }
+    var grauResistente by remember { mutableStateOf(vantagem.metadados?.get("grau")?.toFloatOrNull() ?: 1f) }
+    var atributoResistente by remember { mutableStateOf(vantagem.metadados?.get("atributo") ?: "HT") }
+
+    var freqAliado by remember { mutableStateOf(vantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1f) }
+    var ratioAliado by remember { mutableStateOf(vantagem.metadados?.get("basePoder")?.toIntOrNull() ?: 5) }
+    var grupoAliado by remember { mutableStateOf(vantagem.metadados?.get("multGrupo")?.toIntOrNull() ?: 1) }
+
+    var nhContato by remember { mutableStateOf(vantagem.metadados?.get("nhContato")?.toIntOrNull() ?: 12) }
+    var freqContato by remember { mutableStateOf(vantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1f) }
+    var confContato by remember { mutableStateOf(vantagem.metadados?.get("multConfiabilidade")?.toFloatOrNull() ?: 1f) }
+
+    var powerPatrono by remember { mutableStateOf(vantagem.metadados?.get("basePoder")?.toIntOrNull() ?: 10) }
+    var freqPatrono by remember { mutableStateOf(vantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1f) }
+    var modPatrono by remember { mutableStateOf(vantagem.metadados?.get("multModificador")?.toFloatOrNull() ?: 1.0f) }
+    var secretoPatrono by remember { mutableStateOf(vantagem.metadados?.get("bonusSecreto")?.toIntOrNull() == -5) }
+
+    var powerFavor by remember { mutableStateOf(vantagem.metadados?.get("basePoder")?.toIntOrNull() ?: 10) }
+    var modFavor by remember { mutableStateOf(vantagem.metadados?.get("multModificador")?.toFloatOrNull() ?: 1.0f) }
+    var secretoFavor by remember { mutableStateOf(vantagem.metadados?.get("bonusSecreto")?.toIntOrNull() == -5) }
+    var isContactFavor by remember { mutableStateOf(vantagem.metadados?.get("isContact")?.toBoolean() ?: false) }
+
     // Sincronização de custos para Editar
-    LaunchedEffect(vantagem.definicaoId, tipoGarras, tipoAparar, classMestre) {
+    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoAparar, classMestre, raridadeResistente, grauResistente) {
         when (vantagem.definicaoId) {
+            "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
+            "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
+            "patronos" -> custoEscolhido = CharacterRules.calcularCustoPatrono(powerPatrono, freqPatrono, modPatrono, if (secretoPatrono) -5 else 0)
+            "favor" -> custoEscolhido = CharacterRules.calcularCustoFavor(powerFavor, modFavor, if (secretoFavor) -5 else 0, isContactFavor)
             "garras" -> {
                 custoEscolhido = when (tipoGarras) {
                     "cascos" -> 3
@@ -634,10 +710,17 @@ fun EditarVantagemDialog(
                     else -> 45
                 }
             }
+            "resistente" -> {
+                custoEscolhido = CharacterRules.calcularCustoResistente(raridadeResistente, grauResistente)
+            }
         }
     }
 
     val metadados = when (vantagem.definicaoId) {
+        "aliados" -> mapOf("basePoder" to ratioAliado.toString(), "multFrequencia" to freqAliado.toString(), "multGrupo" to grupoAliado.toString())
+        "contatos" -> mapOf("nhContato" to nhContato.toString(), "multFrequencia" to freqContato.toString(), "multConfiabilidade" to confContato.toString())
+        "patronos" -> mapOf("basePoder" to powerPatrono.toString(), "multFrequencia" to freqPatrono.toString(), "multModificador" to modPatrono.toString(), "bonusSecreto" to (if (secretoPatrono) "-5" else "0"))
+        "favor" -> mapOf("basePoder" to powerFavor.toString(), "multModificador" to modFavor.toString(), "bonusSecreto" to (if (secretoFavor) "-5" else "0"), "isContact" to isContactFavor.toString())
         "mestre_de_armas" -> mapOf("classId" to classMestre, "pericias_cobertas" to periciasMestre)
         "ataque_inato", "golpeadores" -> mapOf(
             "tipoDano" to tipoDanoAtaque,
@@ -648,10 +731,16 @@ fun EditarVantagemDialog(
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
         "garras" -> mapOf("tipoGarras" to tipoGarras)
         "defesas_ampliadas_aparar_ampliado" -> mapOf("tipo" to tipoAparar, "skillId" to periciaAparar)
+        "resistente" -> mapOf(
+            "raridade" to raridadeResistente.toString(),
+            "grau" to grauResistente.toString(),
+            "atributo" to atributoResistente
+        )
         else -> null
     }
 
     val def = remember { CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(vantagem.definicaoId) }
+    val specialRule = vantagem.specialRule ?: def?.specialRule ?: ""
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -675,6 +764,8 @@ fun EditarVantagemDialog(
                 Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                     Text("Custo: $custoCalculado pts", modifier = Modifier.padding(12.dp), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
+
+                Text("Tipo: ${vantagem.tipoCusto.name} | Custo base: ${def?.custo ?: vantagem.custoBase} | Pag. ${def?.pagina ?: vantagem.pagina}", style = MaterialTheme.typography.bodySmall)
                 
                 if (vantagem.tipoCusto == TipoCusto.POR_NIVEL) {
                     Text("Nível:")
@@ -685,63 +776,34 @@ fun EditarVantagemDialog(
                         Text("${nivelExibicaoVantagem(vantagem.definicaoId, nivel)}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         TextButton(onClick = { if (nivel < nivelMaximo) nivel++ }) { Text("+") }
                     }
-                    
-                    if (vantagem.definicaoId == "atribulacao") {
-                        AtribulacaoConfig(modifiers = mods, onAddModifier = { m -> mods = mods.toMutableList().apply { add(m) } }, descricaoContent = { OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth()) })
-                    } else if (vantagem.definicaoId == "retencao") {
-                        RetencaoConfig(modifiers = mods, onAddModifier = { m -> mods = mods.toMutableList().apply { add(m) } }, descricaoContent = { OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth()) })
-                    } else {
-                        OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-                    }
                 } else if (vantagem.tipoCusto == TipoCusto.ESCOLHA) {
-                    when (vantagem.definicaoId) {
-                        "dentes" -> DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
-                        "garras" -> GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
-                        "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(
-                            currentType = tipoAparar,
-                            currentSkill = periciaAparar,
-                            onChanged = { t, s -> tipoAparar = t; periciaAparar = s }
-                        )
-                        "mestre_de_armas" -> {
-                            MestreDeArmasConfig(
-                                currentClass = classMestre,
-                                currentSkills = periciasMestre,
-                                onChanged = { c, s -> classMestre = c; periciasMestre = s }
-                            )
-                        }
-                        else -> {
-                            val opcoes = def?.custo?.split(" ou ")?.mapNotNull { it.trim().toIntOrNull() } ?: emptyList()
-                            opcoes.forEach { opcao ->
-                                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { custoEscolhido = opcao }) {
-                                    RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
-                                    Text("$opcao pts")
-                                }
+                    val opcoes = def?.custo?.split(" ou ")?.mapNotNull { it.trim().toIntOrNull() } ?: emptyList()
+                    if (opcoes.isNotEmpty()) {
+                        opcoes.forEach { opcao ->
+                            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { custoEscolhido = opcao }) {
+                                RadioButton(selected = custoEscolhido == opcao, onClick = { custoEscolhido = opcao })
+                                Text("$opcao pts")
                             }
                         }
                     }
-                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-                } else if (vantagem.tipoCusto == TipoCusto.VARIAVEL) {
-                    Text("Custo Variável: $custoEscolhido pts")
-                    when (vantagem.definicaoId) {
-                        "dentes" -> DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
-                        "garras" -> {
-                            GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
-                        }
-                        "mestre_de_armas" -> {
-                            MestreDeArmasConfig(
-                                currentClass = classMestre,
-                                currentSkills = periciasMestre,
-                                onChanged = { c, s -> classMestre = c; periciasMestre = s }
-                            )
-                        }
-                        "ataque_inato" -> AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
-                        "golpeadores" -> GolpeadoresConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
-                        "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(currentType = tipoAparar, currentSkill = periciaAparar, onChanged = { t, s -> tipoAparar = t; periciaAparar = s })
-                    }
-                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
-                } else {
-                    OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
                 }
+
+                // Regras Especiais (UI Compartilhada)
+                when (specialRule) {
+                    "aliados" -> AliadosConfig(currentRatio = ratioAliado, currentFreq = freqAliado, currentGroup = grupoAliado, onChanged = { r, f, g -> ratioAliado = r; freqAliado = f; grupoAliado = g })
+                    "contatos" -> ContatosConfig(currentNh = nhContato, currentFreq = freqContato, currentConf = confContato, onChanged = { h, f, c -> nhContato = h; freqContato = f; confContato = c })
+                    "patronos" -> PatronosConfig(currentPower = powerPatrono, currentFreq = freqPatrono, currentMod = modPatrono, isSecret = secretoPatrono, onChanged = { p, f, m, s -> powerPatrono = p; freqPatrono = f; modPatrono = m; secretoPatrono = s })
+                    "favor" -> FavorConfig(currentPower = powerFavor, currentMod = modFavor, isSecret = secretoFavor, isContact = isContactFavor, onChanged = { p, m, s, c -> powerFavor = p; modFavor = m; secretoFavor = s; isContactFavor = c })
+                    "resistente" -> ResistenteConfig(currentRarity = raridadeResistente, currentDegree = grauResistente, currentAttr = atributoResistente, onChanged = { r, g, a -> raridadeResistente = r; grauResistente = g; atributoResistente = a })
+                    "ataque_inato", "golpeadores" -> AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
+                    "dentes" -> DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
+                    "garras" -> GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                    "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(currentType = tipoAparar, currentSkill = periciaAparar, onChanged = { t, s -> tipoAparar = t; periciaAparar = s })
+                    "mestre_de_armas" -> MestreDeArmasConfig(currentClass = classMestre, currentSkills = periciasMestre, onChanged = { c, s -> classMestre = c; periciasMestre = s })
+                }
+
+                OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())
+
 
                 HorizontalDivider()
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
@@ -789,783 +851,13 @@ fun EditarVantagemDialog(
             showAddMod = false
         })
     }
-}
 
-// --- Diálogos Menores ---
-
-
-
-// --- Configurações Específicas (Special Rules) ---
-
-@Composable
-fun AliadosConfig(currentRatio: Int, currentFreq: Float, currentGroup: Int, onChanged: (Int, Float, Int) -> Unit) {
-    var showRatioList by remember { mutableStateOf(false) }
-    var showFreqList by remember { mutableStateOf(false) }
-    var showGroupList by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Button(onClick = { showRatioList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Poder do Aliado") }
-        Button(onClick = { showFreqList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Frequência") }
-        Button(onClick = { showGroupList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Tamanho do Grupo") }
-        
-        if (showRatioList) SeletorPoderAliadoDialog(current = currentRatio, onDismiss = { showRatioList = false }, onSelect = { onChanged(it, currentFreq, currentGroup); showRatioList = false })
-        if (showFreqList) SeletorFrequenciaAparecimentoDialog(current = currentFreq, onDismiss = { showFreqList = false }, onSelect = { onChanged(currentRatio, it, currentGroup); showFreqList = false })
-        if (showGroupList) SeletorGrupoAliadoDialog(current = currentGroup, onDismiss = { showGroupList = false }, onSelect = { onChanged(currentRatio, currentFreq, it); showGroupList = false })
-    }
-}
-
-@Composable
-fun PatronosConfig(currentPower: Int, currentFreq: Float, currentMod: Float, isSecret: Boolean, onChanged: (Int, Float, Float, Boolean) -> Unit) {
-    var showPowerList by remember { mutableStateOf(false) }
-    var showFreqList by remember { mutableStateOf(false) }
-    var showModList by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Button(onClick = { showPowerList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Poder do Patrono") }
-        Button(onClick = { showFreqList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Frequência") }
-        Button(onClick = { showModList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text("Modificadores") }
-        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onChanged(currentPower, currentFreq, currentMod, !isSecret) }) {
-            Checkbox(checked = isSecret, onCheckedChange = { it -> onChanged(currentPower, currentFreq, currentMod, it) })
-            Text("Patrono Secreto (-5 pts)")
-        }
-        if (showPowerList) SeletorPoderPatronoDialog(current = currentPower, onDismiss = { showPowerList = false }, onSelect = { onChanged(it, currentFreq, currentMod, isSecret); showPowerList = false })
-        if (showFreqList) SeletorFrequenciaAparecimentoDialog(current = currentFreq, onDismiss = { showFreqList = false }, onSelect = { onChanged(currentPower, it, currentMod, isSecret); showFreqList = false })
-        if (showModList) SeletorModificadorPatronoDialog(current = currentMod, onDismiss = { showModList = false }, onSelect = { onChanged(currentPower, currentFreq, it, isSecret); showModList = false })
-    }
-}
-
-@Composable
-fun FavorConfig(currentPower: Int, currentMod: Float, isSecret: Boolean, isContact: Boolean, onChanged: (Int, Float, Boolean, Boolean) -> Unit) {
-    var showTypeList by remember { mutableStateOf(false) }
-    var showPowerList by remember { mutableStateOf(false) }
-    var showModList by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Button(onClick = { showTypeList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text(if (isContact) "Tipo: Contato" else "Tipo: Patrono") }
-        Button(onClick = { showPowerList = true }, modifier = Modifier.fillMaxWidth().height(48.dp)) { Text(if (isContact) "Perícia" else "Poder") }
-        if (showTypeList) SeletorTipoFavorDialog(isContact = isContact, onDismiss = { showTypeList = false }, onSelect = { onChanged(currentPower, currentMod, isSecret, it); showTypeList = false })
-        if (showPowerList) {
-            if (isContact) SeletorNhContatoDialog(current = currentPower, onDismiss = { showPowerList = false }, onSelect = { onChanged(it, currentMod, isSecret, isContact); showPowerList = false })
-            else SeletorPoderPatronoDialog(current = currentPower, onDismiss = { showPowerList = false }, onSelect = { onChanged(it, currentMod, isSecret, isContact); showPowerList = false })
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun AtaqueInatoConfig(
-    nome: String,
-    tipoDano: String,
-    dados: Int,
-    bonus: Int,
-    onChanged: (String, String, Int, Int) -> Unit
-) {
-    val tiposDano = listOf(
-        "cont" to "Contusão",
-        "queimadura" to "Queimadura",
-        "corte" to "Corte",
-        "perfuracao" to "Perfuração",
-        "pa-" to "Perfurante-",
-        "pa" to "Perfurante",
-        "pa+" to "Perfurante+",
-        "pa++" to "Perfurante++",
-        "corrosao" to "Corrosão",
-        "fadiga" to "Fadiga",
-        "toxina" to "Toxina"
-    )
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OutlinedTextField(
-            value = nome,
-            onValueChange = { onChanged(it, tipoDano, dados, bonus) },
-            label = { Text("Nome do Ataque (ex: Bola de Fogo)") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Text("Tipo de Dano:", style = MaterialTheme.typography.labelMedium)
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            tiposDano.forEach { (id, label) ->
-                FilterChip(
-                    selected = tipoDano == id,
-                    onClick = { onChanged(nome, id, dados, bonus) },
-                    label = { Text(label, fontSize = 11.sp) }
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text("Dados:", style = MaterialTheme.typography.labelMedium)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { if (dados > 0) onChanged(nome, tipoDano, dados - 1, bonus) }) {
-                        Text("-", style = MaterialTheme.typography.titleLarge)
-                    }
-                    Text("${dados}d", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    IconButton(onClick = { if (dados < 100) onChanged(nome, tipoDano, dados + 1, bonus) }) {
-                        Icon(Icons.Default.Add, "Mais dados")
-                    }
-                }
-            }
-
-            Column(horizontalAlignment = Alignment.End) {
-                Text("Bônus:", style = MaterialTheme.typography.labelMedium)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { if (bonus > -1) onChanged(nome, tipoDano, dados, bonus - 1) }) {
-                        Text("-", style = MaterialTheme.typography.titleLarge)
-                    }
-                    val bonusStr = if (bonus >= 0) "+$bonus" else "$bonus"
-                    Text(bonusStr, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    IconButton(onClick = { if (bonus < 2) onChanged(nome, tipoDano, dados, bonus + 1) }) {
-                        Icon(Icons.Default.Add, "Mais bônus")
-                    }
-                }
-            }
-        }
-
-        val bonusDisplay = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
-        ) {
-            Text(
-                "Dano: ${dados}d${bonusDisplay} ${tiposDano.find { it.first == tipoDano }?.second ?: tipoDano}",
-                modifier = Modifier.padding(12.dp).fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun GolpeadoresConfig(
-    nome: String,
-    tipoDano: String,
-    dados: Int,
-    bonus: Int,
-    onChanged: (String, String, Int, Int) -> Unit
-) {
-    val tiposDano = listOf(
-        "cont" to "Contusão",
-        "corte" to "Corte",
-        "perfuracao" to "Perfuração",
-        "pa-" to "Perfurante-",
-        "pa" to "Perfurante",
-        "pa+" to "Perfurante+",
-        "pa++" to "Perfurante++"
-    )
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        OutlinedTextField(
-            value = nome,
-            onValueChange = { onChanged(it, tipoDano, dados, bonus) },
-            label = { Text("Nome do Golpeador (ex: Cauda Espinhosa)") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
-
-        Text("Tipo de Dano:", style = MaterialTheme.typography.labelMedium)
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            tiposDano.forEach { (id, label) ->
-                FilterChip(
-                    selected = tipoDano == id,
-                    onClick = { onChanged(nome, id, dados, bonus) },
-                    label = { Text(label, fontSize = 11.sp) }
-                )
-            }
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Column {
-                Text("Dados/Bônus extras (opcional):", style = MaterialTheme.typography.labelMedium)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { if (dados > 0) onChanged(nome, tipoDano, dados - 1, bonus) }) {
-                        Text("-", style = MaterialTheme.typography.titleLarge)
-                    }
-                    Text("${dados}d", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    IconButton(onClick = { if (dados < 20) onChanged(nome, tipoDano, dados + 1, bonus) }) {
-                        Icon(Icons.Default.Add, "Mais dados")
-                    }
-                }
-            }
-
-            Column(horizontalAlignment = Alignment.End) {
-                Text("Bônus:", style = MaterialTheme.typography.labelMedium)
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = { if (bonus > -5) onChanged(nome, tipoDano, dados, bonus - 1) }) {
-                        Text("-", style = MaterialTheme.typography.titleLarge)
-                    }
-                    val bonusStr = if (bonus >= 0) "+$bonus" else "$bonus"
-                    Text(bonusStr, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                    IconButton(onClick = { if (bonus < 5) onChanged(nome, tipoDano, dados, bonus + 1) }) {
-                        Icon(Icons.Default.Add, "Mais bônus")
-                    }
-                }
-            }
-        }
-
-        val bonusDisplay = if (bonus > 0) "+$bonus" else if (bonus < 0) "$bonus" else ""
-        val danoFinalDesc = if (dados == 0 && bonus == 0) "Dano baseado em ST" else "${dados}d${bonusDisplay}"
-        
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f))
-        ) {
-            Text(
-                "Dano Final: $danoFinalDesc ${tiposDano.find { it.first == tipoDano }?.second ?: tipoDano}",
-                modifier = Modifier.padding(12.dp).fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
-
-@Composable
-fun AtribulacaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (ModificadorSelecao) -> Unit, descricaoContent: @Composable () -> Unit = {}) {
-    var showCondList by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-        descricaoContent()
-        Button(onClick = { showCondList = true }, modifier = Modifier.fillMaxWidth()) { Text("Condições (Ampliação)") }
-    }
-    
-    if (showCondList) {
-        val repo = com.gurps.ficha.domain.rules.CharacterRules.DATA_REPOSITORY_INSTANCE
-        val todasAmp = repo?.modificadoresGerais ?: emptyList()
-        val ampCond = todasAmp.filter { it.id.startsWith("mod_condicao_") || it.id.startsWith("mod_vantagem_") || it.id.startsWith("mod_desvantagem_") }
-        
-        EscopoModificadoresDialog(
-            especificos = ampCond,
-            gerais = emptyList(),
-            onDismiss = { showCondList = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina))
-                showCondList = false
-            }
+    if (mostrarDescricaoCatalogo) {
+        CatalogoDescricaoDialog(
+            nome = vantagem.nome,
+            descricao = descricaoCatalogoFinal,
+            onDismiss = { mostrarDescricaoCatalogo = false }
         )
     }
 }
 
-@Composable
-fun RetencaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (ModificadorSelecao) -> Unit, descricaoContent: @Composable () -> Unit = {}) {
-    var showAmpList by remember { mutableStateOf(false) }
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-        descricaoContent()
-        Button(onClick = { showAmpList = true }, modifier = Modifier.fillMaxWidth()) { Text("Ampliações de Retenção") }
-    }
-    
-    if (showAmpList) {
-        val repo = com.gurps.ficha.domain.rules.CharacterRules.DATA_REPOSITORY_INSTANCE
-        val todasAmp = repo?.modificadoresGerais ?: emptyList()
-        val ampIds = listOf("mod_engolfar", "mod_grudento", "mod_inquebravel")
-        val ampRetencao = todasAmp.filter { it.id in ampIds || it.id.startsWith("mod_so_sofre_dano") }
-        
-        EscopoModificadoresDialog(
-            especificos = ampRetencao,
-            gerais = emptyList(),
-            onDismiss = { showAmpList = false },
-            onSelect = { modDef ->
-                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina))
-                showAmpList = false
-            }
-        )
-    }
-}
-
-// --- Seletores Genéricos ---
-
-@Composable
-fun SeletorPoderAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
-    val opcoes = listOf(25 to 1, 50 to 2, 75 to 3, 100 to 5, 150 to 10)
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Poder do Aliado") }, text = {
-        Column {
-            opcoes.forEach { (pts, custo) ->
-                ListItem(headlineContent = { Text("$pts% dos pts ($custo pts)") }, modifier = Modifier.clickable { onSelect(custo) })
-            }
-        }
-    }, confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } })
-}
-
-
-
-@Composable
-fun SeletorGrupoAliadoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
-    val opcoes = listOf(
-        "Único | x1" to 1,
-        "Grupo (2-5) | x2" to 2,
-        "Grupo (6-10) | x6" to 6,
-        "Grupo (11-20) | x12" to 12
-    )
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Tamanho do Grupo") }, text = {
-        Column {
-            opcoes.forEach { (label, mult) ->
-                ListItem(headlineContent = { Text(label) }, modifier = Modifier.clickable { onSelect(mult) })
-            }
-        }
-    }, confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } })
-}
-
-@Composable
-fun SeletorPoderPatronoDialog(current: Int, onDismiss: () -> Unit, onSelect: (Int) -> Unit) {
-    val opcoes = listOf(10 to "Menor", 15 to "Médio", 20 to "Poderoso", 25 to "Muito Poderoso")
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Poder do Patrono") }, text = {
-        Column { opcoes.forEach { (pts, label) -> ListItem(headlineContent = { Text("$label ($pts pts)") }, modifier = Modifier.clickable { onSelect(pts) }) } }
-    }, confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } })
-}
-
-@Composable
-fun SeletorModificadorPatronoDialog(current: Float, onDismiss: () -> Unit, onSelect: (Float) -> Unit) {
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Modificadores") }, text = { Text("Opções de modificadores especiais...") }, confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } })
-}
-
-@Composable
-fun SeletorTipoFavorDialog(isContact: Boolean, onDismiss: () -> Unit, onSelect: (Boolean) -> Unit) {
-    AlertDialog(onDismissRequest = onDismiss, title = { Text("Tipo de Favor") }, text = {
-        Column {
-            ListItem(headlineContent = { Text("Como Contato") }, modifier = Modifier.clickable { onSelect(true) })
-            ListItem(headlineContent = { Text("Como Patrono") }, modifier = Modifier.clickable { onSelect(false) })
-        }
-    }, confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } })
-}
-
-
-
-@Composable
-fun ContatosConfig(
-    currentNh: Int,
-    currentFreq: Float,
-    currentConf: Float,
-    onChanged: (Int, Float, Float) -> Unit
-) {
-    var showNhList by remember { mutableStateOf(false) }
-    var showFreqList by remember { mutableStateOf(false) }
-    var showConfList by remember { mutableStateOf(false) }
-
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        // 1. NH do Contato
-        Button(
-            onClick = { showNhList = true },
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Text("Perícia (NH $currentNh)", style = MaterialTheme.typography.labelLarge)
-        }
-
-        // 2. Frequência
-        Button(
-            onClick = { showFreqList = true },
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            val freqLabel = when(currentFreq) {
-                0.5f -> "6-"
-                1f -> "9-"
-                2f -> "12-"
-                3f -> "15-"
-                else -> "9-"
-            }
-            Text("Frequência de Aparecimento ($freqLabel)", style = MaterialTheme.typography.labelLarge)
-        }
-
-        // 3. Confiabilidade
-        Button(
-            onClick = { showConfList = true },
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-        ) {
-            Text("Confiabilidade", style = MaterialTheme.typography.labelLarge)
-        }
-
-        // Diálogos
-        if (showNhList) {
-            SeletorNhContatoDialog(
-                current = currentNh,
-                onDismiss = { showNhList = false },
-                onSelect = { newVal: Int -> onChanged(newVal, currentFreq, currentConf); showNhList = false }
-            )
-        }
-        if (showFreqList) {
-            SeletorFrequenciaAparecimentoDialog(
-                current = currentFreq,
-                onDismiss = { showFreqList = false },
-                onSelect = { newVal: Float -> onChanged(currentNh, newVal, currentConf); showFreqList = false }
-            )
-        }
-        if (showConfList) {
-            SeletorConfiabilidadeDialog(
-                current = currentConf,
-                onDismiss = { showConfList = false },
-                onSelect = { newVal: Float -> onChanged(currentNh, currentFreq, newVal); showConfList = false }
-            )
-        }
-    }
-}
-
-@Composable
-fun DentesConfig(
-    currentType: String,
-    onChanged: (String) -> Unit
-) {
-    val options = listOf(
-        "rombo" to "Rombos (Contusão: cont) - 0 pts",
-        "bico_afiado" to "Bico Afiado (Muito Perfurante: pa+) - 1 pt",
-        "dentes_afiados" to "Dentes Afiados (Corte: cort) - 1 pt",
-        "presas" to "Presas (Perfuração: perf) - 2 pts"
-    )
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Tipo de Dentes:", style = MaterialTheme.typography.titleSmall)
-        options.forEach { (id, label) ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onChanged(id) },
-                colors = CardDefaults.cardColors(
-                    containerColor = if (currentType == id) 
-                        MaterialTheme.colorScheme.primaryContainer 
-                    else 
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                ),
-                border = if (currentType == id) 
-                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary) 
-                else null
-            ) {
-                Row(
-                    modifier = Modifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(selected = currentType == id, onClick = { onChanged(id) })
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(label, style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun GarrasConfig(
-    currentType: String,
-    onChanged: (String) -> Unit
-) {
-    val options = listOf(
-        "cascos" to "Cascos (GdP +1 por dado, Contusão) - 3 pts",
-        "cegas" to "Garras Cegas (GdP +1 por dado, Contusão) - 3 pts",
-        "afiadas" to "Garras Afiadas (GdP, Corte) - 5 pts",
-        "pontudas" to "Garras Pontudas (GdP, Corte ou Perfuração) - 8 pts",
-        "longas_pontudas" to "Longas Garras Pontudas (GdP +1 por dado, Corte ou Perfuração) - 11 pts"
-    )
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Tipo de Garras:", style = MaterialTheme.typography.titleSmall)
-        options.forEach { (id, label) ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onChanged(id) },
-                colors = CardDefaults.cardColors(
-                    containerColor = if (currentType == id) 
-                        MaterialTheme.colorScheme.primaryContainer 
-                    else 
-                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                ),
-                border = if (currentType == id) 
-                    BorderStroke(2.dp, MaterialTheme.colorScheme.primary) 
-                else null
-            ) {
-                Row(
-                    modifier = Modifier.padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(selected = currentType == id, onClick = { onChanged(id) })
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(label, style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun ApararAmpliadoConfig(
-    currentType: String,
-    currentSkill: String,
-    onChanged: (String, String) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text("Tipo de Bônus:", style = MaterialTheme.typography.titleSmall)
-        
-        // Opção Global
-        Card(
-            modifier = Modifier.fillMaxWidth().clickable { onChanged("global", currentSkill) },
-            colors = CardDefaults.cardColors(
-                containerColor = if (currentType == "global") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            )
-        ) {
-            Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = currentType == "global", onClick = { onChanged("global", currentSkill) })
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text("Todas as Manobras Aparar", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                    Text("Bônus de +1 em todos os Aparar (10 pts)", style = MaterialTheme.typography.bodySmall)
-                }
-            }
-        }
-
-        // Opção Específica
-        Card(
-            modifier = Modifier.fillMaxWidth().clickable { onChanged("especifica", currentSkill) },
-            colors = CardDefaults.cardColors(
-                containerColor = if (currentType == "especifica") MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            )
-        ) {
-            Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                RadioButton(selected = currentType == "especifica", onClick = { onChanged("especifica", currentSkill) })
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text("Perícia Específica / Desarmado", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
-                    Text("Bônus de +1 em uma perícia (5 pts)", style = MaterialTheme.typography.bodySmall)
-                }
-            }
-        }
-
-        if (currentType == "especifica") {
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(
-                value = currentSkill,
-                onValueChange = { onChanged("especifica", it) },
-                label = { Text("Nome da Perícia ou 'Desarmado'") },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Ex: Briga, Karatê, Espada...") }
-            )
-            Text(
-                "Use 'Desarmado' para todas as perícias de luta desarmada.", 
-                style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(start = 8.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-    }
-}
-@Composable
-fun MestreDeArmasConfig(
-    currentClass: String,
-    currentSkills: String,
-    weaponSuggestions: List<String> = emptyList(),
-    onChanged: (String, String) -> Unit
-) {
-    val classes = listOf(
-        Triple("todas", "Todas as Armas Motoras", "45 pts (Exclui Desarmado/Fogo)"),
-        Triple("amp_classe", "Classe Ampla de Armas", "40 pts (Ex: Todas as Lâminas)"),
-        Triple("int_classe", "Classe Intermediária", "35 pts (Ex: Todas as Espadas)"),
-        Triple("peq_classe", "Classe Pequena", "30 pts (Ex: Armas de Esgrima)"),
-        Triple("set_two", "Duas Armas Específicas", "25 pts (Ex: Faca e Espada Larga)"),
-        Triple("single", "Uma Arma Específica", "20 pts (Ex: Apenas Espada Larga)")
-    )
-
-    // Extrair e limpar grupos do catálogo
-    val repo = com.gurps.ficha.domain.rules.CharacterRules.DATA_REPOSITORY_INSTANCE
-    val allGroups: List<String> = remember(repo) {
-        if (repo == null) {
-            emptyList<String>()
-        } else {
-            val validTypes = listOf("corpo_a_corpo", "distancia")
-            val forbiddenKeywords = listOf("BRIGA", "BOXE", "CARATÊ", "KARATE", "JUDO", "LUTA", "DESARMADO", "SUMO", "KRAV", "AIKIDO")
-            
-            repo.armasCatalogo
-                .filter { it.tipoCombate in validTypes }
-                .mapNotNull { it.grupo }
-                .map { g -> g.substringBefore("(").trim().uppercase() }
-                .filter { g -> 
-                    g.length >= 3 && 
-                    forbiddenKeywords.none { k -> g.contains(k) } &&
-                    !g.contains("FOGO")
-                }
-                .distinct()
-                .sorted()
-        }
-    }
-
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Categoria de Armas:", style = MaterialTheme.typography.titleSmall)
-        
-        classes.forEach { (id, label, sub) ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { 
-                        if (currentClass != id) {
-                            // Se mudar de categoria, limpa a seleção anterior para evitar confusão
-                            onChanged(id, "")
-                        }
-                    },
-                colors = CardDefaults.cardColors(
-                    containerColor = if (currentClass == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                ),
-                border = if (currentClass == id) androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null
-            ) {
-                Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                    RadioButton(selected = currentClass == id, onClick = { onChanged(id, "") })
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column {
-                        Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
-                        Text(sub, style = MaterialTheme.typography.labelSmall)
-                    }
-                }
-            }
-        }
-
-        // Seleção de Grupos para níveis Intermediários/Amplos
-        if (currentClass.endsWith("_classe")) {
-            Spacer(modifier = Modifier.height(8.dp))
-            val selectedGroupsList: List<String> = currentSkills
-                .split(",")
-                .map { it.trim().uppercase() }
-                .filter { it.isNotBlank() }
-
-            // DEFINIÇÃO DOS LIMITES POR CATEGORIA
-            val maxSelections = when (currentClass) {
-                "single" -> 1
-                "set_two" -> 2
-                "peq_classe" -> 3
-                "int_classe" -> 6
-                "amp_classe" -> 12
-                else -> allGroups.size // "todas" não tem limite
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "Grupos Cobertos (Selecione):",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    "${selectedGroupsList.size}/$maxSelections",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = if (selectedGroupsList.size >= maxSelections) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.secondary
-                )
-            }
-            
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                items(allGroups) { group: String ->
-                    val isSelected: Boolean = selectedGroupsList.contains(group)
-                    val atLimit = selectedGroupsList.size >= maxSelections
-                    
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(enabled = isSelected || !atLimit) {
-                                val newList: List<String> = if (isSelected) {
-                                    selectedGroupsList.filter { it != group }
-                                } else {
-                                    selectedGroupsList + listOf(group)
-                                }
-                                onChanged(currentClass, newList.joinToString(", "))
-                            }
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Checkbox(
-                            checked = isSelected,
-                            onCheckedChange = null,
-                            enabled = isSelected || !atLimit
-                        )
-                        Text(
-                            group, 
-                            style = MaterialTheme.typography.bodySmall,
-                            color = if (!isSelected && atLimit) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f) else MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                }
-            }
-        }
-
-        if (currentClass == "set_two" || currentClass == "single") {
-            var searchQuery by remember { mutableStateOf("") }
-            val filteredSuggestions = remember(searchQuery) {
-                if (searchQuery.length < 2) emptyList()
-                else weaponSuggestions.filter { it.contains(searchQuery, ignoreCase = true) }.take(5)
-            }
-
-            Spacer(modifier = Modifier.height(4.dp))
-            OutlinedTextField(
-                value = currentSkills,
-                onValueChange = { onChanged(currentClass, it) },
-                label = { Text(if (currentClass == "single") "Nome da Arma" else "Nomes das Armas (separados por vírgula)") },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Ex: espada_larga, faca") }
-            )
-            
-            // Campo de busca assistida (Sugerir do catálogo)
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                label = { Text("Buscar no Catálogo") },
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Digite para sugerir...") },
-                singleLine = true,
-                leadingIcon = { Icon(androidx.compose.material.icons.Icons.Default.Search, null) }
-            )
-
-            if (filteredSuggestions.isNotEmpty()) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Column {
-                        filteredSuggestions.forEach { suggestion ->
-                            Text(
-                                text = suggestion,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { 
-                                        val currentList = currentSkills.split(",").map { it.trim() }.filter { it.isNotBlank() }
-                                        val newVal = if (currentClass == "single") suggestion 
-                                                     else (currentList + suggestion).distinct().joinToString(", ")
-                                        onChanged(currentClass, newVal)
-                                        searchQuery = ""
-                                    }
-                                    .padding(12.dp),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}

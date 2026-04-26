@@ -63,6 +63,30 @@ data class Personagem(
     var pontosFadigaRolagemAtual: Int? = null,
     var modeloRacial: ModeloRacial = ModeloRacial()
 ) {
+    /**
+     * Lista consolidada de todas as perícias (pessoais + raciais).
+     * Permite que perícias da raça apareçam automaticamente para rolagens.
+     */
+    val periciasTotais: List<PericiaSelecionada> get() {
+        val raciais = modeloRacial.pericias.map { pr ->
+            PericiaSelecionada(
+                definicaoId = "racial_${pr.nome.lowercase()}",
+                nome = pr.nome,
+                atributoBase = AtributoBase.valueOf(pr.baseAtributo.uppercase()),
+                dificuldade = when(pr.diff.uppercase()) {
+                    "F" -> Dificuldade.FACIL
+                    "M" -> Dificuldade.MEDIA
+                    "D" -> Dificuldade.DIFICIL
+                    "MD" -> Dificuldade.MUITO_DIFICIL
+                    else -> Dificuldade.MEDIA
+                },
+                pontosGastos = 1, // Valor simbólico, o nível já vem do racial
+                especializacao = "(Racial)"
+            )
+        }
+        return pericias + raciais
+    }
+
     // Atributos combinados (Personagem + Modelo Racial)
     val st: Int get() = forca + modeloRacial.modForca
     val dx: Int get() = destreza + modeloRacial.modDestreza
@@ -267,6 +291,7 @@ data class VantagemDefinicao(
     val pagina: Int = 0,
     val tags: List<String> = emptyList(),
     val descricao: String? = "",
+    val specialRule: String? = null,
     @SerializedName(value = "modificadoresEspecificos", alternate = ["modificadores_especificos"])
     val modificadoresEspecificos: List<ModificadorDefinicao> = emptyList()
 ) {
@@ -277,7 +302,7 @@ data class VantagemDefinicao(
     }
 
     fun getCustoPorNivel(): Int {
-        val match = Regex("(\\d+)/n").find(custo.lowercase())
+        val match = Regex("(\\d+)/(n|nivel|nível)").find(custo.lowercase())
         return match?.groupValues?.get(1)?.toIntOrNull() ?: getCustoBase()
     }
 
@@ -309,10 +334,12 @@ data class VantagemSelecionada(
     var descricao: String = "",
     val tipoCusto: TipoCusto = TipoCusto.FIXO,
     val pagina: Int = 0,
+    val specialRule: String? = null,
     var modificadores: List<ModificadorSelecao> = emptyList(),
     var metadados: Map<String, String>? = null // Para regras especiais como Ataque Inato
 ) {
     val custoFinal: Int get() {
+        val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(definicaoId)?.specialRule
         return CharacterRules.calcularCustoVantagem(
             definicaoId = definicaoId,
             tipoCusto = tipoCusto,
@@ -320,6 +347,7 @@ data class VantagemSelecionada(
             custoEscolhido = custoEscolhido,
             nivel = nivel,
             modificadores = modificadores,
+            specialRule = rule,
             metadados = metadados
         )
     }
@@ -396,6 +424,7 @@ data class DesvantagemSelecionada(
     var metadados: Map<String, String>? = null
 ) {
     val custoFinal: Int get() {
+        val rule = specialRule ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getDesvantagemPorId(definicaoId)?.specialRule
         return CharacterRules.calcularCustoDesvantagem(
             tipoCusto = tipoCusto,
             custoBase = custoBase,
@@ -403,7 +432,7 @@ data class DesvantagemSelecionada(
             nivel = nivel,
             autocontrole = autocontrole,
             modificadores = modificadores,
-            specialRule = specialRule,
+            specialRule = rule,
             metadados = metadados
         )
     }
@@ -732,12 +761,12 @@ data class DefesasAtivas(
     fun getPericiaApara(personagem: Personagem): PericiaSelecionada? {
         // 1. Tenta a perícia sincronizada (selecionada no Ataque)
         val selecionada = periciaAparaId?.let { id ->
-            personagem.pericias.find { it.definicaoId == id }
+            personagem.periciasTotais.find { it.definicaoId == id }
         }
         if (selecionada != null) return selecionada
 
         // 2. Fallback: Busca automática pela melhor perícia de combate (exceto escudo que é bloqueio)
-        return personagem.pericias
+        return personagem.periciasTotais
             .filter { it.definicaoId.lowercase() in PERICIAS_COMBATE && it.definicaoId.lowercase() != "escudo" }
             .maxByOrNull { it.calcularNivel(personagem) }
     }
@@ -783,12 +812,12 @@ data class DefesasAtivas(
     fun getPericiaBloqueio(personagem: Personagem): PericiaSelecionada? {
         // 1. Tenta a perícia sincronizada
         val selecionada = periciaBloqueioId?.let { id ->
-            personagem.pericias.find { it.definicaoId == id }
+            personagem.periciasTotais.find { it.definicaoId == id }
         }
         if (selecionada != null) return selecionada
 
         // 2. Fallback: Melhor perícia de escudo ou capa
-        return personagem.pericias
+        return personagem.periciasTotais
             .filter { it.definicaoId.lowercase() == "escudo" || it.definicaoId.lowercase() == "capa" }
             .maxByOrNull { it.calcularNivel(personagem) }
     }
@@ -804,6 +833,7 @@ val PERICIAS_COMBATE = setOf(
     "briga",
     "capa",
     "carate",
+    "caratê",
     "chicote",
     "escudo",
     "espada_curta",
@@ -813,14 +843,23 @@ val PERICIAS_COMBATE = setOf(
     "faca",
     "jittesai",
     "judo",
+    "judô",
     "kusari",
     "lanca",
     "lanca_de_justa",
     "luta_grecoromana",
+    "luta_greco_romana",
     "macamachado",
     "macamachado_de_duas_maos",
     "mangual",
     "mangual_de_duas_maos",
+    "sumo",
+    "sumô",
+    "luta_de_sumo",
+    "garrote",
+    "sopro",
+    "lancador_de_lancas",
+    "projetor_de_pressao",
     // Aliases legados para fichas antigas
     "adaga",
     "alabarda",
@@ -830,6 +869,7 @@ val PERICIAS_COMBATE = setOf(
     "espada_larga",
     "kama",
     "karate",
+    "karatê",
     "kusarigama",
     "maca",
     "machado_de_duas_maos",
@@ -846,6 +886,14 @@ val PERICIAS_COMBATE = setOf(
     "besta",
     "zarabatana",
     "funda",
+    "armas_de_fogo_nt",
+    "armas_de_feixe_nt",
+    "artilharia_nt",
+    "artilheiro_nt",
+    "projetor_de_liquidos_nt",
+    "bolas",
+    "laco",
+    "rede",
     "arma_de_fogo_pistola",
     "arma_de_fogo_fuzil",
     "arma_de_fogo_espingarda",
@@ -893,7 +941,7 @@ data class ModeloRacial(
     val custoTotal: Int get() {
         val custoAtributos = modForca * 10 + modDestreza * 20 + modInteligencia * 20 + modVitalidade * 10
         val custoSecundarios = modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 + 
-                               modPontosFadiga * 3 + (modVelocidadeBasica / 0.25f).toInt() * 5 + 
+                               modPontosFadiga * 3 + kotlin.math.round(modVelocidadeBasica / 0.25f).toInt() * 5 + 
                                modDeslocamentoBasico * 5
         val custoVantagens = vantagens.sumOf { it.custoFinal }
         val custoDesvantagens = desvantagens.sumOf { it.custoFinal }
