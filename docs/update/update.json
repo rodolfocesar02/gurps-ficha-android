@@ -1,7 +1,7 @@
 {
-  "versionCode": 20,
-  "versionName": "2.0",
-  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v2.0/GURPS_Ficha_Visual.apk",
-  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v2.0/GURPS_Ficha_PraCego.apk",
-  "notes": "SUPER UPDATE v2.0: Reset de Versão e Estabilização de Lote 86! 🏹🛡️💎🚀"
+  "versionCode": 100,
+  "versionName": "2.1-FIX",
+  "visualApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v2.1-FIX/GURPS_Ficha_Visual.apk",
+  "pracegoApkUrl": "https://github.com/rodolfocesar02/gurps-ficha-android/releases/download/v2.1-FIX/GURPS_Ficha_PraCego.apk",
+  "notes": "FIX CRÍTICO 2.1: Bypassing version conflicts! Se você ver isso, a atualização deve aparecer agora! 🚀🛡️💎"
 }
