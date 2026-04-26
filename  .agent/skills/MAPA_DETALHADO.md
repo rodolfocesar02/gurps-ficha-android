@@ -4,7 +4,7 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 ---
 ## 1. ViewModels e Controle de Estado (O Cérebro)
 *Onde a lógica de negócio e o estado da UI residem.*
-- **`FichaViewModel.kt`**: O controlador central. Gerencia o personagem ativo, coordena salvamentos, e delega cálculos para os especialistas.
+- **`FichaViewModel.kt`**: O controlador central. Gerencia o personagem ativo, coordena salvamentos (incluindo salvamento automático em edições de traços), e delega cálculos para os especialistas.
 - **`FichaUIState.kt`**: Define os estados reativos da interface (carregando, sincronizando, erros).
 - **`delegates/FichaPersistenceDelegate.kt`**: Especialista em salvar e carregar arquivos JSON do disco e gerenciar o Auto-Save.
 ---
@@ -25,7 +25,10 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 - **`TabGeral.kt`**: Exibe Atributos, PV, PF e informações básicas.
 - **`TabCombate.kt`**: Visão detalhada de armas, defesas e equipamentos de proteção.
 - **`TabPericias.kt` / `TabMagias.kt`**: Listagem e edição de habilidades do personagem.
-- **`TabTracos.kt`**: Vantagens e Desvantagens.
+- **`TabTracos.kt`**: Vantagens e Desvantagens. Ponto de entrada para os diálogos de edição.
+- **`ui/features/traits/TraitSpecialRuleComponents.kt`**: Novo Hub Unificado de Regras Especiais. Contém as UIs compartilhadas para Aliados, Patronos, Dependência, Inimigos e Mestre de Armas.
+- **`ui/features/traits/TraitCommonComponents.kt`**: Componentes genéricos de traços, incluindo o Seletor de Modificadores com Busca.
+- **`ui/features/traits/VantagemDialogs.kt` / `DesvantagemDialogs.kt`**: Diálogos de Adição e Edição Unificados. Utilizam a mesma lógica de configuração e regras especiais.
 - **`TabEquipamentos.kt`**: Gerenciamento de itens e peso.
 ---
 ## 4. Model (Os Dados)
@@ -69,6 +72,8 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 - **Bônus de Mestre de Armas**: `CombatRules.kt` -> `calcularDanoArma()`.
 - **Consumo de FP/HP**: `CharacterRules.kt` -> `processarCustoRecurso()`.
 - **Trava de Salvamento**: `FichaPersistenceDelegate.kt` -> `estaCarregando`.
+- **Busca de Modificadores**: `TraitCommonComponents.kt` -> `EscopoModificadoresDialog`.
+- **Fallback de Cálculo (Traços)**: `Personagem.kt` -> `VantagemSelecionada.custoFinal` / `DesvantagemSelecionada.custoFinal`.
 ---
 ##  10. Scripts e Automação (Ferramentas de Suporte)
 *Onde as ferramentas de manutenção de dados residem (Pasta `scripts/`).*
