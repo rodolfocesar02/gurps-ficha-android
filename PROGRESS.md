@@ -201,7 +201,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Automação de características derivadas na interface: PER, VON, Velocidade, Deslocamento e Dano de ST (GdP/GeB).
     - Preparação do App Android com `intent-filter` para o protocolo `gurpsapp://conectar`.
 
-* [Feito] Lote 86: Unificação de Traços e Busca Inteligente (Modificadores) | `(Commit: f72a1e0)`
+* [Feito] Lote 86: Unificação de Traços e Busca Inteligente (Modificadores) | `(Commit: 5ce593b)`
     - Implementação de barra de busca no diálogo de modificadores (catálogo geral + específicos).
     - Unificação das interfaces de Adição e Edição de Vantagens e Desvantagens (Ficha e Modelo Racial).
     - Correção da persistência de regras especiais (Aliados, Patronos, Dependência, Inimigos, etc.).
