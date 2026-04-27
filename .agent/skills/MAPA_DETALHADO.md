@@ -88,9 +88,9 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 *Onde a "mágica" de conversar, criar histórias e gerar fichas acontece.*
 
 - **`network/MestreIAClient.kt`**: O mensageiro. Faz a chamada técnica para os servidores (Gemini, OpenRouter, DeepSeek) e extrai o JSON da resposta da IA processando chamadas de Tools.
-- **`network/MestreIATools.kt`**: Catálogo de Ferramentas da IA. Fornece os esquemas validados (Schemas nativo Gemini / padrão OpenAI) de "Functions" que permitem à IA "Preencher Ficha" ou executar a "Busca de Regra".
-- **`domain/MestreIARagEngine.kt`**: O motor RAG (Retrieval-Augmented Generation). Injeta as lógicas de pesquisa de regras baseada nas invocações (Tools) da IA.
-- **`domain/MestreIAUseCase.kt`**: O tradutor. Orquestra as chamadas da IA e usa **Busca Fuzzy** (similaridade) para mapear decisões da IA para as perícias/magias reais do banco de dados local.
+- **`network/MestreIATools.kt`**: Catálogo de Ferramentas da IA. Fornece os esquemas validados (Schemas nativo Gemini / padrão OpenAI) de "Functions" que permitem à IA "Preencher Ficha" ou executar a "Busca de Regra". Agora suporta paginação (`pagina=2`).
+- **`domain/MestreIAGraphEngine.kt`**: O motor RAG (Retrieval-Augmented Generation). Injeta as lógicas de pesquisa de regras. Agora com **Calibragem de Precisão** (Pesos: Original +10, Expandido +2) e **Ponte de Página**.
+- **`domain/MestreIAUseCase.kt`**: O tradutor. Orquestra as chamadas da IA e o Loop de Investigação de até 3 estágios.
 - **`ui/DialogsMestreIA.kt`**: A interface de chat. Inclui balões de mensagens com **Botão de Copiar** (LocalClipboardManager) e o **Seletor de Histórico** (HistorySelectorDialog).
 - **`viewmodel/delegates/FichaIADelegate.kt`**: O gerente de inteligência. Controla o histórico das conversas (persistência via Room), o gerenciamento de sessões e a execução de **[AÇÕES]** instantâneas sugeridas pela IA.
 

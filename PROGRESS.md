@@ -212,8 +212,28 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Correção da persistência de regras especiais (Aliados, Patronos, Dependência, Inimigos, etc.).
     - Blindagem de cálculo de custo para traços legados (fallback de `specialRule` via catálogo).
     - Ativação de salvamento automático (`salvarFicha()`) após qualquer edição de traços.
-[Feito] Lote 87: Exibição de descrições de perícias/magias na Aba de Rolagem | `(Commit: c3e3859)`
 
+[Feito] Lote 87: Exibição de descrições de perícias/magias na Aba de Rolagem | `(Commit: c3e3859)`
+* [Feito] Lote 88: Blindagem do Mestre IA (Rastro de Provas) | `(Manual: Antigravity)`
+    - Implementação do protocolo de citação obrigatória `[Livro, Pág. X]`.
+    - Bloqueio de memória externa para evitar alucinações de regras não documentadas no Códex.
+    - Exigência de uso de ferramentas de busca para dúvidas técnicas.
+    - Análise profunda do sistema e identificação de 5 vulnerabilidades críticas de alucinação.
+* [Feito] Lote 89: Higienização de Ativos (Assets Cleanup) | `(Manual: Antigravity)`
+    - Remoção de banco de dados residual `chroma.sqlite3` (Legado Lote 63).
+    - Exclusão de `catalogo_nomes_ia.json` obsoleto (substituído pelo GraphRAG dinâmico).
+    - Faxina de arquivos JSON legados (`vantagens.v1`, `v2`, `magias.json`, etc.) para reduzir tamanho do APK.
+    - Realocação de scripts de pré-processamento (`populate_graph.py`) para fora da pasta de assets do App.
+
+* [Feito] Lote 98: Paginação de Resultados (Página 2) e Calibragem de Precisão (Peso de Ouro) | `(Commit: Lote98)`
+    - Implementação de parâmetro `pagina` na ferramenta de busca para evitar loops infinitos.
+    - Sistema de Pesos: Termos originais da pergunta valem +10, sinônimos automáticos valem +2.
+    - Bônus Massivo de Título (+35) para match exato com a dúvida do usuário.
+    - Fim do problema de "Sangramento" ser enterrado por magias de cura ou outros termos genéricos.
+* [Feito] Lote 100: Consciência Bibliográfica (Source-Aware RAG) e Dicionário Técnico | `(Commit: Lote100)`
+    - Implementação de Busca Filtrada: O sistema agora distingue entre livros diferentes que possuem o mesmo número de página, eliminando colisões (ex: Pág 117 de Magia vs Artes Marciais).
+    - Dicionário Técnico Mestre: Injeção de sinônimos de alta fidelidade (ex: "Cavar" remete automaticamente a "Escavação") para garantir que o motor de busca encontre a regra correta mesmo com linguagem comum.
+    - Regex de Precisão: Captura automática da fonte bibliográfica `[Livro]` a partir dos resumos do grafo para direcionar a carga de recortes manuais.
 ### Próximos Passos (Desejos do Usuário):
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"

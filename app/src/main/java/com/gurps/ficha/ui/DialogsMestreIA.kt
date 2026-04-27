@@ -163,21 +163,37 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
 
                     if (!isUser) {
                         val clipboardManager = LocalClipboardManager.current
-                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(top = 4.dp), 
+                            horizontalArrangement = Arrangement.End, 
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             if (msg.modelName != null) {
-                                Text(msg.modelName, fontSize = 8.sp, color = textColor.copy(0.6f), modifier = Modifier.padding(end = 8.dp))
+                                Surface(
+                                    color = textColor.copy(alpha = 0.15f),
+                                    shape = RoundedCornerShape(4.dp),
+                                    modifier = Modifier.padding(end = 8.dp)
+                                ) {
+                                    Text(
+                                        "AUDITOR: " + msg.modelName.substringAfterLast("/").uppercase(),
+                                        fontSize = 7.sp,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = textColor.copy(0.8f),
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                }
                             }
                             IconButton(
                                 onClick = { 
                                     clipboardManager.setText(AnnotatedString(textContent))
                                 },
-                                modifier = Modifier.size(24.dp)
+                                modifier = Modifier.size(20.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.ContentCopy,
                                     contentDescription = "Copiar",
                                     tint = textColor.copy(0.6f),
-                                    modifier = Modifier.size(16.dp)
+                                    modifier = Modifier.size(14.dp)
                                 )
                             }
                         }

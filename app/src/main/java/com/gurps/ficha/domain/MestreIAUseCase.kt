@@ -1,4 +1,4 @@
-﻿package com.gurps.ficha.domain
+package com.gurps.ficha.domain
 
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.DataRepository
@@ -27,38 +27,98 @@ class MestreIAUseCase(
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) {
         viewModelScope.launch {
-            val catalogoLocal = gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory)
-            val isRagUsed = catalogoLocal.isRagSuccess
+            val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
             
-            // Fila de Fallback (Lote 82: Focada em Modelos LITE para velocidade)
+            // LOTE 91.5: COMANDO DE DESENVOLVEDOR - FORÇAR RECARGA DO JSON
+            if (prompt.trim().lowercase() == "forçar sincronização do grafo") {
+                onStatusUpdate("Limpando banco e recarregando graph_knowledge.json...")
+                repository.forçarSincronizacaoGrafo()
+                onResultado(true, MestreIAClient.ChatResponse("AUDITORIA: Grafo sincronizado com sucesso a partir do arquivo JSON! Você já pode testar as novas regras."))
+                return@launch
+            }
+            
+            val catalogoLocal = if (isCasual) {
+                CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
+            } else {
+                gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory)
+            }
+            val isRagUsed = catalogoLocal.isRagSuccess
+            //Esse recado foi fixado pelo Rodolfo, voc~e nao tem mais permissão pra trocar modelos sem minha permissão!
+            // Fila de Auditores (DETERMINÍSTICO: MODELOS ATIVOS 2026)
             val fila = listOf(
-                Triple(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_2_KEY, "qwen/qwen-2.5-72b-instruct"),
-                Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-2.0-flash")
+                // 1. TENTATIVA 1: O modelo atual e ativo (Flash Lite)
+                Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-3.1-flash-lite-preview"),
+                // 2. TENTATIVA 2: Versão estável da Família 3 (Substituto do antigo 1.5)
+                Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-3-flash-preview")
             )
 
             var sucesso = false
+            val errosAcumulados = mutableListOf<String>()
+
             for (config in fila) {
-                if (config.second.isBlank()) continue
-                onStatusUpdate("Consultando Auditor ${traduzirModeloParaMestre(config.third)}...")
-
+                if (config.second.isBlank()) {
+                    errosAcumulados.add("${config.third}: Chave Vazia")
+                    continue
+                }
+                val modelId = config.third
                 try {
-                    val historicoLimitado = viewModel.mestreIAChatHistory.takeLast(6).map { it.role to it.text }
-                    var resposta = MestreIAClient.perguntarAoMestre(
-                        baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                        prompt = prompt, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
-                        catalogo = catalogoLocal.catalogo, modo = modo, onChunk = onChunk
-                    )
+                    val historicoLimitado = viewModel.mestreIAChatHistory.map { it.role to it.text }.takeLast(10)
+                    // LOTE 89.15: LOOP DE INVESTIGAÇÃO AGÊNTICA (Mini-Antigravity)
+                    var loopsRestantes = 3
+                    var promptInvestigacao = prompt
+                    var iteracao = 1
+                    
+                    while (loopsRestantes > 0) {
+                        onStatusUpdate(if (iteracao == 1) "Iniciando Auditor $modelId..." else "Refinando busca (Iteração $iteracao)...")
+                        
+                        val resposta = MestreIAClient.perguntarAoMestre(
+                            baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
+                            prompt = promptInvestigacao, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
+                            catalogo = catalogoLocal.catalogo, modo = modo, onChunk = if (loopsRestantes == 1) onChunk else null 
+                        )
 
-                    if (!resposta.text.contains("Erro de API")) {
-                        onResultado(isRagUsed, resposta)
-                        sucesso = true
+                        if (resposta.toolCalls.isNotEmpty()) {
+                            val toolCall = resposta.toolCalls[0]
+                            if (toolCall.name == "consultar_grafo_regras") {
+                                val queryTool = toolCall.args.optString("query", prompt)
+                                val paginaTool = toolCall.args.optInt("pagina", 1)
+                                val offset = (paginaTool - 1).coerceAtLeast(0)
+                                
+                                onStatusUpdate("Pesquisando no Códex: $queryTool (Pág. $paginaTool)...")
+                                
+                                val resTool = graphEngine.buscarNoGrafo(queryTool, offset)
+                                val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
+                                    resTool.relatedChunks.take(5).joinToString("\n") { "[Pág. ${it.page_number}]: ${it.text}" }.take(5000) // Reduzido para 5k
+                                } else {
+                                    "NENHUMA REGRA ENCONTRADA para '$queryTool'. Tente termos diferentes do manual GURPS 4e."
+                                }
+                                
+                                promptInvestigacao = "Pergunta Original: $prompt\n\nResultado da busca por '$queryTool':\n$contextoExtra\n\nContinue a investigação ou dê a resposta final se já tiver dados suficientes."
+                                loopsRestantes--
+                                iteracao++
+                                continue
+                            }
+                        }
+
+                        if (resposta.text.isNotBlank() && !resposta.text.startsWith("Erro")) {
+                            onResultado(isRagUsed, resposta.copy(modelName = modelId))
+                            sucesso = true
+                        } else {
+                            errosAcumulados.add("${modelId.takeLast(10)}: ${resposta.text.take(30)}")
+                        }
                         break
                     }
+
+                    if (sucesso) break
+
                 } catch (e: Exception) {
-                    android.util.Log.e("MestreIA", "Falha no Auditor: ${e.message}")
+                    errosAcumulados.add("${modelId.takeLast(10)}: ${e.message?.take(20)}")
                 }
             }
-            if (!sucesso) onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com os auditores."))
+            if (!sucesso) {
+                val msgErro = "Falha Geral. Detalhes: " + errosAcumulados.joinToString(" | ")
+                onResultado(false, MestreIAClient.ChatResponse(msgErro))
+            }
         }
     }
 
@@ -68,14 +128,63 @@ class MestreIAUseCase(
         
         var res = graphEngine.buscarNoGrafo(promptExpandido)
         
-        // LOTE 84.7: Se o catálogo técnico estiver vazio (comum em personagens novos), 
-        // fazemos uma busca secundária por termos técnicos gerais para dar referência à IA.
-        if (res.summaries.none { it.category.contains("Perícia", true) || it.category.contains("Vantagem", true) }) {
-            val resTecnico = graphEngine.buscarNoGrafo("GURPS Perícias Vantagens NT3 NT4")
-            res = res.copy(
-                summaries = (res.summaries + resTecnico.summaries).distinctBy { it.title },
-                relatedChunks = (res.relatedChunks + resTecnico.relatedChunks).distinctBy { it.chunk_id }
-            )
+        // LOTE 94: Fallback genérico desativado para evitar inchaço no prompt (Erro 503).
+        // A busca agora confia exclusivamente no mapeamento do Grafo e na Ponte de Página.
+
+        val detalhesItens = mutableListOf<String>()
+        
+        // LOTE 89.28: FUNIL DE CATÁLOGOS (Roteamento para os JSONs oficiais)
+        res.summaries.forEach { node ->
+            when {
+                node.category.contains("Perícia", true) -> {
+                    repository.periciasSuplementares.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[PERÍCIA: ${it.nome}]: Dific: ${it.dificuldadeRaw}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    }
+                }
+                node.category.contains("Vantagem", true) -> {
+                    repository.vantagens.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[VANTAGEM: ${it.nome}]: Custo: ${it.getCustoBase()}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    }
+                }
+                node.category.contains("Desvantagem", true) -> {
+                    repository.desvantagens.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[DESVANTAGEM: ${it.nome}]: Custo: ${it.getCustoBase()}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    }
+                }
+                node.category.contains("Magia", true) -> {
+                    repository.magias.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[MAGIA: ${it.nome}]: Energia: ${it.energia}, Tempo: ${it.tempoOperacao}, Duração: ${it.duracao}, Pág. ${it.pagina}\nDesc: ${it.texto ?: it.descricao}")
+                    }
+                }
+                node.category.contains("Técnica", true) -> {
+                    repository.tecnicasCatalogo.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[TÉCNICA: ${it.nome}]: Dific: ${it.dificuldadeRaw}, PreDef: ${it.preDefinidoRaw}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    }
+                }
+                node.category.contains("Arma", true) -> {
+                    repository.armasCatalogo.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[ARMA: ${it.nome}]: Dano: ${it.danoRaw}, StMin: ${it.stMinimo}\nObs: ${it.observacoes}")
+                    }
+                }
+                node.category.contains("Armadura", true) || node.category.contains("Escudo", true) -> {
+                    repository.armadurasCatalogo.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[ARMADURA: ${it.nome}]: RD: ${it.rd}, Peso: ${it.pesoBaseKg}kg\nObs: ${it.observacoes}")
+                    }
+                }
+                node.category.contains("Modificador", true) || node.category.contains("Ampliação", true) || node.category.contains("Limitação", true) -> {
+                    repository.modificadoresGerais.find { it.nome.equals(node.title, true) }?.let {
+                        detalhesItens.add("[MODIFICADOR: ${it.nome}]: Valor: ${it.valor}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    }
+                }
+                node.category.contains("Equipamento", true) -> {
+                    val item = repository.armasCatalogo.find { it.nome.equals(node.title, true) } 
+                        ?: repository.armadurasCatalogo.find { it.nome.equals(node.title, true) }
+                    item?.let { detalhesItens.add("[EQUIPAMENTO: ${node.title}]: Encontrado nos catálogos técnicos.") }
+                }
+                node.category.contains("Regra", true) -> {
+                    detalhesItens.add("[REGRA: ${node.title}]: ${node.summary}")
+                }
+            }
         }
 
         val cat = MestreIAClient.CatalogoNomes(
@@ -85,9 +194,10 @@ class MestreIAUseCase(
             magias = res.summaries.filter { it.category.contains("Magia", true) }.map { it.title },
             equipamentos = res.summaries.filter { it.category.contains("Equipamento", true) }.map { it.title },
             armas = res.summaries.filter { it.category.contains("Arma", true) }.map { it.title },
+            itensDetalhes = detalhesItens,
             chunks = res.relatedChunks,
             summaries = res.summaries,
-            ponteDeFerro = graphEngine.formatarParaIA(res)
+            ponteDeFerro = graphEngine.formatarParaIA(res).take(5000) // LIMITE DE SEGURANÇA: 5k chars
         )
         return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty() || res.summaries.isNotEmpty())
     }

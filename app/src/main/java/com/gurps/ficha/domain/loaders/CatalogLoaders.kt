@@ -977,9 +977,20 @@ fun String?.sanitized(default: String = ""): String {
 }
 
 fun String.fixMojibakeIfNeeded(): String {
-    // Agora que todos os assets foram limpos e convertidos para UTF-8 nativo,
-    // retornamos 'this' diretamente para evitar corrupção de acentos legítimos.
-    return this
+    if (this.isBlank()) return this
+    // LOTE 91.10: Detector de Mojibake (UTF-8 lido como ISO-8859-1 ou vice-versa)
+    val markers = listOf("Ã", "â€", "–", "—", "“", "”", "’", "Pǭg")
+    var current = this
+    
+    if (!markers.any { current.contains(it) }) return current
+    
+    return try {
+        val bytes = current.toByteArray(Charsets.ISO_8859_1)
+        val repaired = String(bytes, Charsets.UTF_8)
+        repaired
+    } catch (e: Exception) {
+        current
+    }
 }
 
 /*

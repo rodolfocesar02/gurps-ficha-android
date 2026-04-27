@@ -10,6 +10,9 @@ interface GraphNodeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNode(node: GraphNodeEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(nodes: List<GraphNodeEntity>)
+
     @Query("SELECT COUNT(*) FROM graph_nodes")
     suspend fun countNodes(): Int
 

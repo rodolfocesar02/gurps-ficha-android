@@ -225,6 +225,17 @@ open class DataRepository(internal val context: Context) {
         }
     }
 
+    suspend fun buscarPorPaginaESource(pagina: Int, source: String): List<com.gurps.ficha.model.MestreIAChunk> {
+        return manualChunkDao.buscarPorPaginaESource(pagina, source).map { entity ->
+            com.gurps.ficha.model.MestreIAChunk(
+                chunk_id = entity.chunk_id,
+                text = entity.text,
+                source_title = entity.source_title,
+                page_number = entity.page_number
+            )
+        }
+    }
+
     suspend fun getChunkById(id: String): com.gurps.ficha.model.MestreIAChunk? {
         return manualChunkDao.getChunkById(id)?.let { entity ->
             com.gurps.ficha.model.MestreIAChunk(

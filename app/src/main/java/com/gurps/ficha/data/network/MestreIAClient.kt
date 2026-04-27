@@ -13,20 +13,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * Cliente de Rede Híbrido (Lote 53 - Estabilizador PRIME)
- * Suporta protocolo Nativo Gemini (REST) e protocolo OpenAI (compatibilidade).
+ * Cliente de Rede Híbrido (Lote 89.12 - Motor Sincronizado com Python)
  */
 object MestreIAClient {
-    private const val CONNECT_TIMEOUT_MS = 30000
+    private const val CONNECT_TIMEOUT_MS = 90000
     private const val READ_TIMEOUT_MS = 90000 
-    private val gson = com.google.gson.GsonBuilder()
-        .registerTypeAdapter(MestreIAItem::class.java, MestreIAItemDeserializer())
-        .create()
-
-    // Nota: Prompts e Gabaritos movidos para MestreIAPrompts.kt
+    private val gson = Gson()
 
     data class ChatMessage(
-        val role: String, // "user" ou "model"
+        val role: String,
         val text: String,
         val modelName: String? = null,
         val isRagUsed: Boolean = false,
@@ -45,6 +40,10 @@ object MestreIAClient {
         val modelName: String? = null,
         val latencyMs: Long = 0,
         val toolCalls: List<MestreIAToolCall> = emptyList(),
+        val promptTokens: Int = 0,
+        val completionTokens: Int = 0,
+        val totalTokens: Int = 0,
+        val data: com.gurps.ficha.data.network.MestreIAResponse? = null,
         val rawJson: String? = null
     )
 
@@ -56,12 +55,11 @@ object MestreIAClient {
         val magias: List<String> = emptyList(),
         val equipamentos: List<String> = emptyList(),
         val armas: List<String> = emptyList(),
-        val chunks: List<com.gurps.ficha.model.MestreIAChunk> = emptyList(),
+        val itensDetalhes: List<String> = emptyList(), // LOTE 89.25: Detalhes completos dos JSONs
+        val chunks: List<MestreIAChunk> = emptyList(),
         val summaries: List<com.gurps.ficha.data.storage.GraphNodeEntity> = emptyList(),
         val ponteDeFerro: String = ""
-    ) {
-        fun toJson(): String = Gson().toJson(this)
-    }
+    )
 
     suspend fun perguntarAoMestre(
         baseUrl: String,
@@ -74,14 +72,22 @@ object MestreIAClient {
         modo: String = "conversa",
         onChunk: ((String) -> Unit)? = null
     ): ChatResponse = withContext(Dispatchers.IO) {
+        val startTime = System.currentTimeMillis()
         try {
             val isGoogleNative = baseUrl.contains("generativelanguage.googleapis.com")
             
-            val urlStr = if (isGoogleNative) {
-                "$baseUrl/models/$workspaceSlug:streamGenerateContent?key=$apiKey&alt=sse"
+            val cleanBaseUrl = if (isGoogleNative && !baseUrl.contains("/v1beta")) {
+                baseUrl.replace("/v1", "/v1beta").trimEnd('/')
             } else {
-                "$baseUrl/chat/completions"
-            }.trim()
+                baseUrl.trimEnd('/')
+            }
+
+            val urlStr = if (isGoogleNative) {
+                // LOTE 89.50: Removido 'stream' e 'alt=sse' para receber JSON puro e estável
+                "$cleanBaseUrl/models/$workspaceSlug:generateContent?key=$apiKey"
+            } else {
+                "$cleanBaseUrl/chat/completions"
+            }
 
             val url = URL(urlStr)
             val connection = url.openConnection() as HttpURLConnection
@@ -92,364 +98,254 @@ object MestreIAClient {
             connection.setRequestProperty("Content-Type", "application/json")
             
             if (!isGoogleNative) {
-                connection.setRequestProperty("Authorization", "Bearer $apiKey")
-                connection.setRequestProperty("HTTP-Referer", "https://github.com/mestre-ia-gurps")
+                connection.setRequestProperty("Authorization", "Bearer ${apiKey.trim()}")
                 connection.setRequestProperty("X-Title", "GURPS Ficha Android")
             }
 
-            val listaVantagens = catalogo?.vantagens?.joinToString(", ") ?: ""
-            val listaDesvantagens = catalogo?.desvantagens?.joinToString(", ") ?: ""
-            val listaPericias = catalogo?.pericias?.joinToString(", ") ?: ""
-            val listaMagias = catalogo?.magias?.joinToString(", ") ?: ""
-            
-            val fragmentosRegras = if (catalogo?.chunks?.isNotEmpty() == true) {
-                "\nREGRAS DO CÓDEX (Siga estas regras à risca):\n" +
-                catalogo.chunks.joinToString("\n") { "[${it.source_title} Pág. ${it.page_number}]: ${it.text}" }
+            // LOTE 90: Consolidação de Contexto. 
+            // Agora usamos apenas a 'ponteDeFerro' que já vem formatada do GraphEngine,
+            // evitando duplicar os mesmos dados (Summaries e Chunks) no prompt.
+
+            val detalhesItens = if (catalogo?.itensDetalhes?.isNotEmpty() == true) {
+                "\n=== DETALHES TÉCNICOS (CATÁLOGOS) ===\n" +
+                catalogo.itensDetalhes.joinToString("\n")
             } else ""
 
-            val resumosGrafo = if (catalogo?.summaries?.isNotEmpty() == true) {
-                "\nCONHECIMENTO DO GRAFO (Contexto Macro e Relações):\n" +
-                catalogo.summaries.joinToString("\n") { "Tópico: ${it.title} | Resumo: ${it.summary}" }
-            } else ""
-            
             val ponteDeFerro = catalogo?.ponteDeFerro ?: ""
+            val useStream = false // ALINHAMENTO PYTHON: Modo estático por padrão
 
-            android.util.Log.d("MestreIA_C", "TAMANHOS -> Vant: ${listaVantagens.length} | Peri: ${listaPericias.length} | Magia: ${listaMagias.length} | Grafo: ${resumosGrafo.length} | Manual: ${fragmentosRegras.length} | Ponte: ${ponteDeFerro.length}")
+            val fullPrompt = buildString {
+                append("HISTÓRICO:\n")
+                history.forEach { append("${it.first}: ${it.second}\n") }
+                append("USUÁRIO: $prompt\n")
+                append("\n=== CONTEXTO HIERÁRQUICO (GraphRAG) ===\n")
+                append("- Ficha do Personagem: $contextoPersonagem\n")
+                append(detalhesItens)
+                append("\n")
+                append("- Contexto Técnico: $ponteDeFerro")
+            }
 
-            val systemPulse = """
-                ${if (modo == "geracao" || modo == "analise") MestreIAPrompts.FORJADOR else MestreIAPrompts.AUDITOR}
+            // LOTE 89.45: LOG DE AUDITORIA DE PROMPT (TRANSPARÊNCIA TOTAL)
+            android.util.Log.i("MestreIA_Prompt", """
+                [CONTEÚDO DO PROMPT ENVIADO]
+                - Pergunta: ${prompt.take(100)}...
+                - Modelo Alvo: $workspaceSlug
+                - Tamanho Total: ${fullPrompt.length} chars
+                - Personagem: ${contextoPersonagem.length} chars
+                - Ponte de Ferro: ${ponteDeFerro.length} chars
+            """.trimIndent())
+
+            val systemPulse = when (modo) {
+                "geracao", "analise" -> MestreIAPrompts.FORJADOR
+                else -> MestreIAPrompts.AUDITOR
+            } + """
                 
-                CONTEXTO ATUAL:
+                === CONTEXTO HIERÁRQUICO (GraphRAG) ===
                 - Ficha do Personagem: $contextoPersonagem
-                - Catálogo Local: $listaVantagens, $listaPericias, $listaMagias
-                - Ponte de Ferro (RAG): $ponteDeFerro
-                
-                $resumosGrafo
-                $fragmentosRegras
+                $detalhesItens
+                - Contexto Técnico: $ponteDeFerro
             """.trimIndent()
 
             val jsonOutput = if (isGoogleNative) {
                 gerarJsonGoogleNative(prompt, history, systemPulse, modo)
             } else {
-                gerarJsonOpenAI(workspaceSlug, prompt, history, systemPulse, modo)
+                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream)
             }
+
+            // LOTE 89.60: DEBUG TOTAL - IMPRIMIR JSON COMPLETO NO LOGCAT (EM PEDAÇOS)
+            logLongString("MestreIA_FullJSON", jsonOutput)
 
             connection.outputStream.use { it.write(jsonOutput.toByteArray(StandardCharsets.UTF_8)) }
 
             val responseCode = connection.responseCode
-            if (responseCode in 200..299) {
-                var fullText = ""
-                var returnedModel = workspaceSlug
-                val capturedToolCalls = mutableListOf<MestreIAToolCall>()
+            
+            var fullText = ""
+            val capturedToolCalls = mutableListOf<MestreIAToolCall>()
+
+            if (responseCode !in 200..299) {
+                val error = connection.errorStream?.bufferedReader()?.readText() ?: "Erro desconhecido"
+                android.util.Log.e("MestreIA", "Erro $responseCode: $error")
+                return@withContext ChatResponse("Erro $responseCode: $error")
+            }
+
+            if (!useStream) {
+                val responseText = connection.inputStream.bufferedReader().readText()
                 
-                // Variáveis para acumular Tool Calls do OpenAI (que chegam fragmentadas)
-                var openAIToolName = ""
-                var openAIToolArgs = ""
+                // LOTE 89.70: DEBUG DA RESPOSTA (Ver formato da ferramenta)
+                logLongString("MestreIA_Response", responseText)
                 
-                BufferedReader(InputStreamReader(connection.inputStream, StandardCharsets.UTF_8)).use { reader ->
-                    // Ambas as APIs agora usam Server-Sent Events (SSE) (Gemini via &alt=sse)
-                    var line: String?
-                    while (reader.readLine().also { line = it } != null) {
-                        if (line!!.startsWith("data: ")) {
-                            val data = line!!.substring(6).trim()
-                            if (data == "[DONE]") break
-                            try {
-                                if (isGoogleNative) {
-                                    val parsed = parseGoogleStreamingChunk(data)
-                                    val chunkText = parsed.first
-                                    if (chunkText.isNotEmpty() && chunkText != "null") {
-                                        fullText += chunkText
-                                        onChunk?.invoke(chunkText)
-                                    }
-                                    if (parsed.second != null) {
-                                        capturedToolCalls.add(parsed.second!!)
-                                        val nomeAmigavel = if (parsed.second!!.name == MestreIATools.TOOL_FILL_SHEET) "Forjador de Fichas" else "Pesquisador de Regras"
-                                        onChunk?.invoke("\n\n⚙️ *Iniciando $nomeAmigavel...*")
-                                    }
-                                } else {
-                                    val json = JSONObject(data)
-                                    val model = json.optString("model", "")
-                                    if (model.isNotEmpty()) returnedModel = model
+                val json = JSONObject(responseText)
+                if (isGoogleNative) {
+                    val candidates = json.optJSONArray("candidates")
+                    if (candidates != null) {
+                        for (j in 0 until candidates.length()) {
+                            val candidate = candidates.getJSONObject(j)
+                            val content = candidate.optJSONObject("content")
+                            val parts = content?.optJSONArray("parts")
+                            if (parts != null) {
+                                for (i in 0 until parts.length()) {
+                                    val part = parts.getJSONObject(i)
                                     
-                                    val choices = json.optJSONArray("choices")
-                                    if (choices != null && choices.length() > 0) {
-                                        val delta = choices.getJSONObject(0).optJSONObject("delta")
-                                        val content = delta?.optString("content", "") ?: ""
-                                        if (content.isNotEmpty() && content != "null") {
-                                            fullText += content
-                                            onChunk?.invoke(content)
-                                        }
-                                        val toolCallsArr = delta?.optJSONArray("tool_calls")
-                                        if (toolCallsArr != null && toolCallsArr.length() > 0) {
-                                            val tc = toolCallsArr.getJSONObject(0)
-                                            val func = tc.optJSONObject("function")
-                                            if (func != null) {
-                                                val name = func.optString("name", "")
-                                                if (name.isNotEmpty()) {
-                                                    openAIToolName = name
-                                                    val nomeAmigavel = if (name == MestreIATools.TOOL_FILL_SHEET) "Forjador de Fichas" else "Pesquisador de Regras"
-                                                    onChunk?.invoke("\n\n⚙️ *Iniciando $nomeAmigavel...*")
-                                                }
-                                                openAIToolArgs += func.optString("arguments", "")
-                                            }
-                                        }
+                                    // Captura Texto
+                                    val textPart = part.optString("text", "")
+                                    if (textPart.isNotBlank()) {
+                                        fullText += textPart
+                                    }
+
+                                    // Captura Tool Calls (Function Calls)
+                                    val functionCall = part.optJSONObject("functionCall")
+                                    if (functionCall != null) {
+                                        capturedToolCalls.add(MestreIAToolCall(
+                                            name = functionCall.getString("name"),
+                                            args = functionCall.getJSONObject("args")
+                                        ))
                                     }
                                 }
-                            } catch (e: Exception) {
-                                // Pula linhas malformadas do stream
+                            }
+                        }
+                    }
+                } else {
+                    val choices = json.optJSONArray("choices")
+                    if (choices != null && choices.length() > 0) {
+                        val choice = choices.getJSONObject(0)
+                        val message = choice.optJSONObject("message")
+                        fullText = message?.optString("content", "") ?: ""
+                        
+                        val toolCalls = message?.optJSONArray("tool_calls")
+                        if (toolCalls != null) {
+                            for (i in 0 until toolCalls.length()) {
+                                val tc = toolCalls.getJSONObject(i)
+                                val func = tc.getJSONObject("function")
+                                capturedToolCalls.add(MestreIAToolCall(
+                                    name = func.getString("name"),
+                                    args = JSONObject(func.getString("arguments"))
+                                ))
                             }
                         }
                     }
                 }
+
+                // --- CAPTURA DE TOKENS (LOTE 89.26) ---
+                var pTokens = 0
+                var cTokens = 0
+                var tTokens = 0
                 
-                if (openAIToolName.isNotEmpty()) {
-                    try {
-                        capturedToolCalls.add(MestreIAToolCall(openAIToolName, JSONObject(openAIToolArgs)))
-                    } catch (e: Exception) {
-                        android.util.Log.e("MestreIA", "Erro ao parsear argumentos do tool do OpenAI: $openAIToolArgs")
-                    }
+                if (isGoogleNative) {
+                    val usage = json.optJSONObject("usageMetadata")
+                    pTokens = usage?.optInt("promptTokenCount") ?: 0
+                    cTokens = usage?.optInt("candidatesTokenCount") ?: 0
+                    tTokens = usage?.optInt("totalTokenCount") ?: 0
+                } else {
+                    val usage = json.optJSONObject("usage")
+                    pTokens = usage?.optInt("prompt_tokens") ?: 0
+                    cTokens = usage?.optInt("completion_tokens") ?: 0
+                    tTokens = usage?.optInt("total_tokens") ?: 0
                 }
-                
-                ChatResponse(fullText, returnedModel, 0, capturedToolCalls)
+
+                val finalLatency = System.currentTimeMillis() - startTime
+                android.util.Log.d("MestreIA_Tokens", """
+                    [PAINEL DE CONSUMO]
+                    Modelo: $workspaceSlug
+                    Tokens Prompt: $pTokens
+                    Tokens Resposta: $cTokens
+                    Total: $tTokens
+                    Latência: ${finalLatency}ms
+                """.trimIndent())
+
+                if (fullText.trim().lowercase() == "null" || (fullText.isBlank() && capturedToolCalls.isEmpty())) {
+                    ChatResponse("Erro: Resposta vazia ou inválida da API")
+                } else {
+                    ChatResponse(
+                        text = fullText,
+                        modelName = workspaceSlug,
+                        latencyMs = finalLatency,
+                        toolCalls = capturedToolCalls,
+                        promptTokens = pTokens,
+                        completionTokens = cTokens,
+                        totalTokens = tTokens
+                    )
+                }
             } else {
-                val errorBody = readStreamSafely(connection.errorStream)
-                ChatResponse("Erro de API ($responseCode): ${errorBody.take(150)}")
+                ChatResponse("Erro: Modo Stream não implementado nesta versão")
             }
         } catch (e: Exception) {
             ChatResponse("Erro de Conexão: ${e.message}")
         }
     }
 
-    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, systemInstruction: String, modo: String): String {
+    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, system: String, modo: String): String {
         val root = JSONObject()
+        root.put("system_instruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", system))))
         
-        // ASGURAR ORDEM: system_instruction deve vir antes conforme teste 200 OK do Python
-        root.put("system_instruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", systemInstruction))))
-
         val contents = JSONArray()
-        // Histórico
-        history.forEach { (role, text) ->
-            contents.put(JSONObject().apply {
-                put("role", if (role == "user") "user" else "model")
-                put("parts", JSONArray().put(JSONObject().put("text", text)))
-            })
-        }
-        // Pergunta atual
-        contents.put(JSONObject().apply {
-            put("role", "user")
-            put("parts", JSONArray().put(JSONObject().put("text", prompt)))
-        })
-
-        root.put("contents", contents)
         
-        // No modo geração/análise, desativamos tools para forçar o JSON no texto (mais estável)
+        // LOTE 89.75: FILTRO DE HISTÓRICO (Limpeza de Duplicidade e Ruído de UI)
+        val cleanPrompt = prompt.trim()
+        history.forEach { (role, text) ->
+            val cleanText = text.trim()
+            // Não envia "Pensando..." nem duplica a pergunta que já vamos enviar no final
+            if (cleanText != "Pensando..." && cleanText != cleanPrompt) {
+                val contentObj = JSONObject()
+                contentObj.put("role", if (role == "user") "user" else "model")
+                contentObj.put("parts", JSONArray().put(JSONObject().put("text", cleanText)))
+                contents.put(contentObj)
+            }
+        }
+
+        // Adiciona a mensagem atual (Pergunta ou Resultado de Busca)
+        contents.put(JSONObject().put("role", "user").put("parts", JSONArray().put(JSONObject().put("text", cleanPrompt))))
+        root.put("contents", contents)
+
+        // Disponibiliza ferramentas para Auditoria e Investigação
         if (modo != "geracao" && modo != "analise") {
             root.put("tools", MestreIATools.getGeminiTools(modo))
         }
-        root.put("generationConfig", JSONObject().put("temperature", 0.7).put("maxOutputTokens", 8192))
-        
+
+        root.put("generationConfig", JSONObject().put("temperature", 0.1))
         return root.toString()
     }
 
-    private fun gerarJsonOpenAI(model: String, prompt: String, history: List<Pair<String, String>>, systemPulse: String, modo: String): String {
+    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean): String {
         val root = JSONObject()
-        root.put("model", model)
+        root.put("model", modelId)
         val messages = JSONArray()
-        
-        // Mensagem de SISTEMA (Importante para modelos de elite como DeepSeek)
-        messages.put(JSONObject().put("role", "system").put("content", systemPulse))
-
-        history.forEach { (role, content) ->
-            val roleNormalized = if (role == "model" || role == "assistant") "assistant" else "user"
-            if (content.isNotBlank()) {
-                messages.put(JSONObject().put("role", roleNormalized).put("content", content))
-            }
+        messages.put(JSONObject().put("role", "system").put("content", system))
+        history.forEach { (role, text) ->
+            messages.put(JSONObject().put("role", if (role == "user") "user" else "assistant").put("content", text))
         }
         messages.put(JSONObject().put("role", "user").put("content", prompt))
-        
         root.put("messages", messages)
-        
-        // No modo geração/análise, desativamos tools para forçar o JSON no texto (mais estável)
+
+        // RESTAURANDO FERRAMENTAS PARA O MODO CONVERSA
         if (modo != "geracao" && modo != "analise") {
             root.put("tools", MestreIATools.getOpenAITools(modo))
         }
-        
-        root.put("temperature", 0.7)
-        root.put("stream", true)
-        
+
+        root.put("temperature", 0.1)
+        root.put("max_tokens", 2048) // TRAVA DE SEGURANÇA PARA CONTA GRÁTIS
+        root.put("stream", stream)
         return root.toString()
     }
 
-    private fun getSystemPrompt(fichaContext: String): String {
-        return """
-        Você é o Mestre Digital 2.0. Seu objetivo é ser um auditor de regras de GURPS 4ª Edição INFALÍVEL.
-        
-        DIRETRIZES DE BLINDAGEM:
-        1. PROIBIÇÃO DE INFERÊNCIA: Você está terminantemente proibido de usar lógica interna para calcular atributos derivados (como Deslocamento, Esquiva ou NH).
-        2. FONTE ÚNICA: Se o valor não está na FICHA fornecida e a FÓRMULA EXATA não está no CODEX, você NÃO PODE responder o cálculo. 
-        3. PROTOCOLO DE VÁCUO: Se faltar um dado necessário para uma regra, responda: "A regra diz [Citação], mas o valor de [Atributo] não foi fornecido. Qual o valor de [Atributo] na sua ficha?"
-        4. CITAÇÃO LITERAL OBRIGATÓRIA: Toda regra usada deve ser precedida por uma citação literal entre aspas: "Segundo o manual: '...'".
-        5. LÍNGUA: Responda sempre em Português do Brasil.
-
-        --- FICHA DO PERSONAGEM (FONTE DE DADOS) ---
-        $fichaContext
-
-        --- INSTRUÇÕES DE FORMATO (JSON) ---
-        Sua resposta final DEVE ser um JSON válido com os campos:
-        - "texto": A explicação técnica detalhada seguindo os protocolos acima.
-        - "acoes": Lista de modificações sugeridas (se houver).
-        - "sugestoes": Lista de strings para botões de sugestão.
-        """.trimIndent()
-    }
-
-    private fun parseGoogleNativeResponse(body: String): String {
-        return try {
-            val json = JSONObject(body)
-            json.getJSONArray("candidates")
-                .getJSONObject(0)
-                .getJSONObject("content")
-                .getJSONArray("parts")
-                .getJSONObject(0)
-                .getString("text")
-        } catch (e: Exception) { "Falha no parse Nativo: $body" }
-    }
-
-    private fun parseOpenAIResponseWithModel(body: String): Pair<String, String?> {
-        return try {
-            val json = JSONObject(body)
-            val model = if (json.has("model")) json.getString("model") else null
-            val content = json.getJSONArray("choices")
-                .getJSONObject(0)
-                .getJSONObject("message")
-                .getString("content")
-            Pair(content, model)
-        } catch (e: Exception) { Pair("Falha no parse OpenAI: $body", null) }
-    }
-
-    private fun parseOpenAIResponse(body: String): String {
-        return parseOpenAIResponseWithModel(body).first
-    }
-
+    // Mantido para compatibilidade com a UI de parsing de fichas
     fun extrairJsonFicha(texto: String): com.gurps.ficha.data.network.MestreIAResponse? {
         return try {
-            val jsonLimpo = limparJsonPuro(texto)
-            if (jsonLimpo.isNotBlank()) {
-                gson.fromJson(jsonLimpo, com.gurps.ficha.data.network.MestreIAResponse::class.java)
-            } else null
-        } catch (e: Exception) {
-            println("MestreIA - Erro ao parsear JSON: ${e.message}\nTexto: ${texto.take(100)}...")
-            null
-        }
+            val firstBrace = texto.indexOf('{')
+            if (firstBrace == -1) return null
+            val jsonPart = texto.substring(firstBrace).trim()
+            val finalJson = if (jsonPart.contains("```")) jsonPart.substringBeforeLast("```").trim() else jsonPart
+            Gson().fromJson(finalJson, com.gurps.ficha.data.network.MestreIAResponse::class.java)
+        } catch (e: Exception) { null }
     }
 
-    private fun limparJsonPuro(texto: String): String {
-        var limpo = texto.trim()
-        
-        // 1. Localização do Início do JSON
-        val firstBrace = limpo.indexOf('{')
-        if (firstBrace == -1) return ""
-        limpo = limpo.substring(firstBrace)
-
-        // 2. Remoção inteligente de blocos de comentários Markdown (se houver lixo após o JSON)
-        if (limpo.contains("```")) {
-            limpo = limpo.substringBeforeLast("```").trim()
-        }
-
-        // 3. Auto-Reparo de Truncamento e Comentários
-        return repararJsonTruncado(limpo)
-    }
-
-    /**
-     * Tenta salvar o JSON caso ele tenha sido cortado ou contenha comentários.
-     * Agora fecha strings abertas e remove lixo pós-JSON.
-     */
-    private fun repararJsonTruncado(json: String): String {
-        val stack = mutableListOf<Char>()
-        var inString = false
-        var escape = false
-        var lastValidIndex = -1
-
-        for (i in json.indices) {
-            val c = json[i]
-            if (c == '"' && !escape) inString = !inString
-            if (inString) {
-                escape = if (c == '\\') !escape else false
-                continue
-            }
-            if (c == '{' || c == '[') {
-                stack.add(c)
-            } else if (c == '}') {
-                if (stack.isNotEmpty() && stack.last() == '{') stack.removeAt(stack.size - 1)
-                // Se a pilha esvaziou, achamos o fim do objeto raiz
-                if (stack.isEmpty()) {
-                    lastValidIndex = i
-                    break
-                }
-            } else if (c == ']') {
-                if (stack.isNotEmpty() && stack.last() == '[') stack.removeAt(stack.size - 1)
-            }
-        }
-
-        // Se encontrou o fim natural do JSON, ignora tudo que vier depois
-        var finalJson = if (lastValidIndex != -1) {
-            json.substring(0, lastValidIndex + 1)
-        } else {
-            json
-        }
-
-        finalJson = finalJson.trim()
-
-        // SE O JSON FOI TRUNCADO:
-        if (lastValidIndex == -1) {
-            // FECHAR STRING ABERTA
-            if (inString) {
-                finalJson += "\""
-            }
-
-            // REMOVER VÍRGULAS PENDENTES
-            while (finalJson.endsWith(",") || finalJson.endsWith(" ")) {
-                finalJson = finalJson.dropLast(1).trim()
-            }
-
-            // FECHAR PILHA NA ORDEM INVERSA
-            while (stack.isNotEmpty()) {
-                val opener = stack.removeAt(stack.size - 1)
-                finalJson += if (opener == '{') "}" else "]"
-            }
-        }
-
-        return finalJson.replace(Regex("[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]"), "").trim()
-    }
-
-    private fun parseGoogleStreamingChunk(data: String): Pair<String, MestreIAToolCall?> {
-        return try {
-            val json = JSONObject(data)
-            val part = json.getJSONArray("candidates")
-                .getJSONObject(0)
-                .getJSONObject("content")
-                .getJSONArray("parts")
-                .getJSONObject(0)
-                
-            val text = part.optString("text", "")
-            val functionCall = part.optJSONObject("functionCall")
-            
-            val toolCall = if (functionCall != null) {
-                MestreIAToolCall(
-                    name = functionCall.getString("name"),
-                    args = functionCall.getJSONObject("args")
-                )
-            } else null
-            
-            Pair(text, toolCall)
-        } catch (e: Exception) { Pair("", null) }
-    }
-
-    private fun readStreamSafely(stream: java.io.InputStream?): String {
-        if (stream == null) return ""
-        return try {
-            stream.bufferedReader().use { it.readText() }
-        } catch (e: Exception) {
-            "Erro ao ler stream: ${e.message}"
+    // LOTE 89.65: HELPER PARA LOGS GIGANTES (Evita cortes do Android Logcat)
+    private fun logLongString(tag: String, content: String) {
+        val maxLogSize = 4000
+        for (i in 0..content.length / maxLogSize) {
+            val start = i * maxLogSize
+            var end = (i + 1) * maxLogSize
+            end = if (end > content.length) content.length else end
+            android.util.Log.d(tag, content.substring(start, end))
         }
     }
 }

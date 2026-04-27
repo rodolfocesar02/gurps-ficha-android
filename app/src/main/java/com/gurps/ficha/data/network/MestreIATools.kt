@@ -29,6 +29,10 @@ object MestreIATools {
                         put("type", "STRING")
                         put("description", "Termo de busca ou dúvida técnica. Ex: 'Como funciona o Recuo?', 'Tabela de Dano por Queda'.")
                     })
+                    put("pagina", JSONObject().apply {
+                        put("type", "INTEGER")
+                        put("description", "Página de resultados (cada página traz 5 recortes novos). Use pagina=2 se os primeiros resultados não forem suficientes.")
+                    })
                 })
                 put("required", JSONArray().put("query"))
             })
@@ -61,6 +65,10 @@ object MestreIATools {
                         put("query", JSONObject().apply {
                             put("type", "string")
                             put("description", "Termo de busca ou dúvida técnica. Ex: 'Como funciona o Recuo?', 'Tabela de Dano por Queda'.")
+                        })
+                        put("pagina", JSONObject().apply {
+                            put("type", "integer")
+                            put("description", "Página de resultados (cada página traz 5 recortes novos). Use pagina=2 se os primeiros resultados não forem suficientes.")
                         })
                     })
                     put("required", JSONArray().put("query"))

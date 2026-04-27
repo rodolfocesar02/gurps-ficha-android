@@ -20,6 +20,9 @@ interface ManualChunkDao {
     @Query("SELECT * FROM manual_chunks WHERE page_number = :page ORDER BY chunk_id")
     suspend fun buscarPorPagina(page: Int): List<ManualChunkEntity>
 
+    @Query("SELECT * FROM manual_chunks WHERE page_number = :page AND source_title LIKE '%' || :source || '%' ORDER BY chunk_id")
+    suspend fun buscarPorPaginaESource(page: Int, source: String): List<ManualChunkEntity>
+
     @Query("SELECT * FROM manual_chunks WHERE chunk_id = :id")
     suspend fun getChunkById(id: String): ManualChunkEntity?
 

@@ -8,7 +8,7 @@
     {
       "id": "agua",
       "canonical": "agua",
-      "keywords": ["gelo", "frio", "umidade", "liquido", "neve", "geada", "chuva", "mar", "oceano", "vapor", "submerso", "nadar", "mergulho", "natacao", "profundidade", "liquidos"]
+      "keywords": ["gelo", "frio", "umidade", "liquido", "neve", "geada", "chuva", "mar", "oceano", "vapor", "submerso", "nadar", "mergulho", "natacao", "profundidade", "liquidos", "piscina", "rio", "lago", "tanque", "aquatico"]
     },
     {
       "id": "arma_distancia",
@@ -28,7 +28,7 @@
     {
       "id": "saude_critica",
       "canonical": "saude",
-      "keywords": ["atordoado", "desmaiado", "inconsciente", "sangramento", "hemorragia", "choque", "dor", "agonia", "asfixia", "folego", "exaustao", "fadiga", "desmaio", "morte"]
+      "keywords": ["atordoado", "desmaiado", "inconsciente", "sangramento", "hemorragia", "choque", "dor", "agonia", "asfixia", "folego", "exaustao", "fadiga", "desmaio", "morte", "veneno", "toxina", "toxico", "envenenado", "gas", "fumaca"]
     },
     {
       "id": "atracado",
@@ -38,7 +38,12 @@
     {
       "id": "defesa",
       "canonical": "defesa ativa",
-      "keywords": ["esquiva", "apara", "bloqueio", "escudo", "cobertura", "abrigo", "protecao", "retrair", "recuar", "defesa ativa", "esconder", "trincheira"]
+      "keywords": ["esquiva", "apara", "bloqueio", "escudo", "cobertura", "abrigo", "protecao", "retrair", "recuar", "defesa ativa", "esconder", "trincheira", "queda", "gravidade", "impacto", "atropelar", "colisao", "acidente", "chao"]
+    },
+    {
+      "id": "regras_especiais",
+      "canonical": "regras especiais",
+      "keywords": ["explosao", "fragmento", "fresta", "armadura", "ponto fraco", "precisao", "mirando", "apontar", "especial", "tecnica", "manobra"]
     },
     {
       "id": "alcance",

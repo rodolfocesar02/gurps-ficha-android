@@ -69,7 +69,7 @@ O aplicativo possui uma variante detectada por `BuildConfig.UI_VARIANT`.
 
 ---
 
-## 🧪 5. ferramentas de teste
+# 🧪 5. ferramentas de teste
 
 Para validar a integridade da "Mecânica Blindada":
 ```powershell

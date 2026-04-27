@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.gurps.ficha.domain.loaders.fixMojibakeIfNeeded
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -48,14 +49,19 @@ abstract class FichaDatabase : RoomDatabase() {
         suspend fun prePopulateGraph(context: Context, database: FichaDatabase) {
             try {
                 val dao = database.graphNodeDao()
-                if (dao.countNodes() == 0) {
-                    android.util.Log.i("FichaDatabase", "Iniciando pré-população do Grafo de Conhecimento...")
+                val count = dao.countNodes()
+                android.util.Log.i("MestreIA_Auditoria", "ESTADO DO CÓDEX: $count nós carregados no banco de dados.")
+                
+                if (count == 0) {
+                    android.util.Log.i("MestreIA_Auditoria", "AUDITORIA: Banco de dados vazio. Iniciando leitura de 'assets/graph_db/graph_knowledge.json'...")
                     val jsonString = context.assets.open("graph_db/graph_knowledge.json").bufferedReader().use { it.readText() }
+                        .fixMojibakeIfNeeded()
                     val jsonArray = org.json.JSONArray(jsonString)
+                    val nodes = mutableListOf<GraphNodeEntity>()
                     
                     for (i in 0 until jsonArray.length()) {
                         val obj = jsonArray.getJSONObject(i)
-                        dao.insertNode(GraphNodeEntity(
+                        nodes.add(GraphNodeEntity(
                             entityId = obj.getString("entity_id"),
                             title = obj.getString("title"),
                             summary = obj.getString("summary"),
@@ -63,7 +69,8 @@ abstract class FichaDatabase : RoomDatabase() {
                             level = obj.optInt("level", 0)
                         ))
                     }
-                    android.util.Log.i("FichaDatabase", "Grafo pré-populado com sucesso!")
+                    dao.insertAll(nodes)
+                    android.util.Log.i("MestreIA_Auditoria", "AUDITORIA: Carga concluída com sucesso! ${nodes.size} nós inseridos via Bulk Insert.")
                 }
             } catch (e: Exception) {
                 android.util.Log.e("FichaDatabase", "Erro ao pré-popular Grafo", e)
@@ -73,7 +80,10 @@ abstract class FichaDatabase : RoomDatabase() {
         private suspend fun prePopulateManual(context: Context, database: FichaDatabase) {
             try {
                 val dao = database.manualChunkDao()
-                if (dao.getCount() == 0) {
+                val totalChunks = dao.getCount()
+                android.util.Log.i("MestreIA_Auditoria", "ESTADO DO MANUAL: $totalChunks recortes de páginas (Chunks) carregados.")
+
+                if (totalChunks == 0) {
                     android.util.Log.i("FichaDatabase", "Iniciando importação do manual (Chunks)...")
                     val assets = context.assets
                     val inputStream = assets.open("chunks.jsonl")
@@ -102,7 +112,7 @@ abstract class FichaDatabase : RoomDatabase() {
                     if (chunks.isNotEmpty()) {
                         dao.insertAll(chunks)
                     }
-                    android.util.Log.i("FichaDatabase", "Manual importado com sucesso!")
+                    android.util.Log.i("MestreIA_Auditoria", "AUDITORIA: Manual importado com sucesso! ${dao.getCount()} chunks ativos.")
                 }
             } catch (e: Exception) {
                 android.util.Log.e("FichaDatabase", "Erro ao importar manual", e)

@@ -3,7 +3,10 @@ package com.gurps.ficha.model
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import java.time.Instant
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 data class PersonagemImportMetadata(
     val schema: String,
@@ -33,10 +36,13 @@ object PersonagemInterop {
     private val gson = Gson()
 
     fun exportarJson(personagem: Personagem, appVersion: String? = null, uiVariant: String? = null): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }
         val envelope = PersonagemInteropEnvelope(
             schema = SCHEMA,
             schemaVersion = SCHEMA_VERSION_ATUAL,
-            exportedAtUtc = Instant.now().toString(),
+            exportedAtUtc = sdf.format(Date()),
             appVersion = appVersion?.trim()?.takeIf { it.isNotBlank() },
             uiVariant = uiVariant?.trim()?.takeIf { it.isNotBlank() },
             character = personagem
