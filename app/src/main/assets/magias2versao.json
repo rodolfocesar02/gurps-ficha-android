@@ -11159,7 +11159,7 @@
     "duracao": "1 seg.",
     "energia": "1 a 4",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "AM3, Jato de Ácido, Imunidade a Ácido",
+    "preRequisitos": "AM3, Jato de Ácido, Resistência a Ácido",
     "descricao": "Semelhante ao Jato de Ácido, exceto que o ácido sai da boca do operador."
   },
   {
@@ -11174,7 +11174,7 @@
     "duracao": "Instant.",
     "energia": "1 a 4",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "AM1, Jato de Neve, Imunidade ao Frio",
+    "preRequisitos": "AM1, Jato de Neve, Resistência ao Frio",
     "descricao": "O operador expulsa uma saraivada mortal de gelo e ar frio de sua boca."
   },
   {
@@ -11189,7 +11189,7 @@
     "duracao": "Instant.",
     "energia": "1 a 4",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "AM1, Jato de Chamas, Imunidade ao Fogo",
+    "preRequisitos": "AM1, Jato de Chamas, Resistência ao Fogo",
     "descricao": "Semelhante ao Jato de Chamas, exceto que a chama sai da boca do operador."
   },
   {

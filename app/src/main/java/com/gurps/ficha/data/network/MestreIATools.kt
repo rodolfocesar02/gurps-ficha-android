@@ -11,6 +11,7 @@ object MestreIATools {
 
     const val TOOL_SEARCH_RULES = "consultar_grafo_regras"
     const val TOOL_FILL_SHEET = "fill_character_sheet"
+    const val TOOL_NEXUS_ARCANO = "consultar_nexus_arcano"
 
     /**
      * Retorna a lista de Function Declarations no formato nativo do Gemini.
@@ -43,6 +44,22 @@ object MestreIATools {
             put("name", TOOL_FILL_SHEET)
             put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
             put("parameters", getSheetSchemaGemini())
+        })
+
+        // Ferramenta 3: Nexus Arcano (Modo Alvo / Gabarito Técnico)
+        functionDeclarations.put(JSONObject().apply {
+            put("name", TOOL_NEXUS_ARCANO)
+            put("description", "OBRIGATÓRIO: Use esta ferramenta para obter o gabarito técnico exato de pré-requisitos de magias. Ela calcula o caminho mais curto de dependências (incluindo requisitos de escolas). Use SEMPRE que o usuário perguntar 'o que preciso para aprender X' ou 'como chego na magia Y'.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("magia_alvo", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "O nome ou ID da magia alvo desejada.")
+                    })
+                })
+                put("required", JSONArray().put("magia_alvo"))
+            })
         })
 
         return JSONArray().put(JSONObject().put("functionDeclarations", functionDeclarations))
@@ -82,6 +99,24 @@ object MestreIATools {
                 put("name", TOOL_FILL_SHEET)
                 put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
                 put("parameters", getSheetSchemaOpenAI())
+            })
+        })
+
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_NEXUS_ARCANO)
+                put("description", "OBRIGATÓRIO: Use esta ferramenta para obter o gabarito técnico exato de pré-requisitos de magias. Ela calcula o caminho mais curto de dependências (incluindo requisitos de escolas). Use SEMPRE que o usuário perguntar 'o que preciso para aprender X' ou 'como chego na magia Y'.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("magia_alvo", JSONObject().apply {
+                            put("type", "string")
+                            put("description", "O nome ou ID da magia alvo desejada.")
+                        })
+                    })
+                    put("required", JSONArray().put("magia_alvo"))
+                })
             })
         })
 

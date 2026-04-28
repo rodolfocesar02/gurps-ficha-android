@@ -1346,4 +1346,64 @@ class NexusArcanoEngine(
             "${r.magiaOrigemId}:${r.minAm}:${r.minIq}:${r.minSoma}:$soma"
         }
     }
+
+    /**
+     * Gera um resumo técnico (Gabarito) de pré-requisitos para consumo pela IA.
+     * Roda o motor em modo "Consultor" (Estado Zero) para entregar o caminho universal.
+     */
+    fun formatarGabaritoParaIA(magiaAlvoId: String): String {
+        val idLimpo = normalize(magiaAlvoId).replace(" ", "_")
+        val idReal = allMagiaIds.find { it == idLimpo || it == magiaAlvoId }
+            ?: allMagiaIds.find { nomeNormById[it] == idLimpo }
+            ?: return "ERRO: Magia '$magiaAlvoId' não encontrada no catálogo oficial."
+
+        val estadoZero = ArcanoEstadoPersonagem(magiasConhecidasIds = emptySet(), am = 0, iq = 10)
+        val snapshot = snapshotAlvo(idReal)
+        
+        return buildString {
+            appendLine("=== GABARITO TÉCNICO NEXUS: ${nomeById[idReal]?.uppercase() ?: idReal.uppercase()} ===")
+            appendLine("ID: $idReal")
+            appendLine("PRÉ-REQUISITOS (LITERAL NO LIVRO): ${preRawById[idReal]}")
+            appendLine("\n--- ÁRVORE DE DEPENDÊNCIAS (CAMINHO COMPLETO) ---")
+            
+            val cadeia = snapshot.cadeiaSemAlvo
+            if (cadeia.isEmpty()) {
+                appendLine("- Nenhuma magia pré-requisito necessária.")
+            } else {
+                cadeia.forEachIndexed { index, id ->
+                    appendLine("${index + 1}. ${nomeById[id] ?: id}")
+                }
+            }
+
+            if (snapshot.regrasEscolas.isNotEmpty()) {
+                appendLine("\n--- REQUISITOS DE ESCOLAS ---")
+                snapshot.regrasEscolas.forEach { regra ->
+                    appendLine("- Requisito: ${regra.quantidadeEscolas} mágicas em escolas diferentes.")
+                    appendLine("  Sugestão de Ativação: ${sugerirMagiasParaEscolas(regra.quantidadeEscolas).joinToString(", ")}")
+                }
+            }
+
+            if (snapshot.regrasNumericas.isNotEmpty()) {
+                appendLine("\n--- REQUISITOS DE ATRIBUTOS ---")
+                snapshot.regrasNumericas.forEach { regra ->
+                    regra.minAm?.let { appendLine("- Aptidão Mágica mínima: $it") }
+                    regra.minIq?.let { appendLine("- IQ mínimo: $it") }
+                    if (regra.somaAtributos.isNotEmpty()) {
+                        appendLine("- Soma de ${regra.somaAtributos.joinToString("+").uppercase()} mínima: ${regra.minSoma}")
+                    }
+                }
+            }
+            appendLine("\n[FIM DO GABARITO - NÃO ALUCINE SOBRE ESTES DADOS]")
+        }
+    }
+
+    private fun sugerirMagiasParaEscolas(quantidade: Int): List<String> {
+        val sugestoes = listOf(
+            "Localizar Alimento", "Localizar Ar", "Localizar Planta", "Apressar", 
+            "Atrofiar (Sentido)", "Criação Inspirada", "Debilitar", "Endurecer", 
+            "Hora Certa", "Localizar Fogo", "Localizar Terra", "Luz", "Purificar Ar",
+            "Som", "Tatear"
+        )
+        return sugestoes.take(quantidade)
+    }
 }

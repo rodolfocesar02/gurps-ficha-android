@@ -1,8 +1,9 @@
 package com.gurps.ficha.domain
 
 import com.gurps.ficha.BuildConfig
-import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.model.*
+import nexus.arcano.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +19,16 @@ class MestreIAUseCase(
 ) {
     private val viewModelScope = CoroutineScope(Dispatchers.IO)
     private val graphEngine = MestreIAGraphEngine(repository)
+    
+    // Adaptador para o Motor Nexus ler do repositório oficial
+    private val arcanoCatalogo = object : ArcanoCatalogo {
+        override fun preRequisitoRaw(magiaId: String) = repository.magias.find { it.id == magiaId }?.preRequisitos ?: ""
+        override fun escolas(magiaId: String) = repository.magias.find { it.id == magiaId }?.escola ?: emptyList()
+        override fun nome(magiaId: String) = repository.magias.find { it.id == magiaId }?.nome ?: magiaId
+        override fun existe(magiaId: String) = repository.magias.any { it.id == magiaId }
+        override fun todasMagiasIds() = repository.magias.map { it.id }
+    }
+    private val nexusEngine = NexusArcanoEngine(arcanoCatalogo)
 
     fun conversarComMestreIA(
         prompt: String,
@@ -100,6 +111,22 @@ class MestreIAUseCase(
                                 }
                                 
                                 promptInvestigacao = "Pergunta Original: $prompt\n\nUse APENAS este contexto para responder:\n$contextoExtra\n\nSe a resposta estiver no contexto, responda citando a página. Se não, diga que não encontrou."
+                                loopsRestantes--
+                                iteracao++
+                                continue
+                            }
+
+                            if (toolCall.name == MestreIATools.TOOL_NEXUS_ARCANO) {
+                                val magiaAlvo = toolCall.args.optString("magia_alvo", prompt)
+                                updateStatus("Consultando Motor Nexus para: $magiaAlvo...")
+                                
+                                val gabarito = nexusEngine.formatarGabaritoParaIA(magiaAlvo)
+                                val contextoNexus = "\n<GABARITO_TECNICO_NEXUS>\n$gabarito\n</GABARITO_TECNICO_NEXUS>"
+                                
+                                promptInvestigacao = "Pergunta Original: $prompt\n" +
+                                        "Use este GABARITO TÉCNICO OFICIAL para responder com 100% de precisão:\n" +
+                                        contextoNexus
+                                        
                                 loopsRestantes--
                                 iteracao++
                                 continue
