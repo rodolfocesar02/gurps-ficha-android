@@ -108,7 +108,12 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
     var mestreIAMode 
         get() = iaDelegate.mestreIAMode
-        set(value) { iaDelegate.mestreIAMode = value }
+        set(value) { 
+            iaDelegate.mestreIAMode = value 
+            if (value != "fechado") { // Se estiver abrindo qualquer modo de IA
+                iaDelegate.verificarSincroniaAutomatica()
+            }
+        }
 
     // Estados de Sessão (Interface) - Não salvos no JSON
     var ataqueSelecionadoId by mutableStateOf<String?>(null)
@@ -145,6 +150,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     init {
         CharacterRules.DATA_REPOSITORY_INSTANCE = dataRepository
         socialDelegate.atualizarCanais()
+        iaDelegate.verificarSincroniaAutomatica()
         
         viewModelScope.launch(Dispatchers.Default) {
             runCatching { dataRepository.magias; dataRepository.filtrarMagias() }

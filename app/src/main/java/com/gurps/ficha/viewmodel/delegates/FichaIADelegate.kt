@@ -31,6 +31,17 @@ class FichaIADelegate(
 
     var currentSessionId by mutableStateOf<Long?>(null)
     var savedSessions by mutableStateOf<List<ChatSessionEntity>>(emptyList())
+    private var sincroniaExecutadaNestaSessao = false
+
+    fun verificarSincroniaAutomatica() {
+        if (sincroniaExecutadaNestaSessao) return
+        sincroniaExecutadaNestaSessao = true
+        
+        scope.launch(Dispatchers.IO) {
+            android.util.Log.i("MestreIA_Auditoria", "DISPARANDO SINCRONIZAÇÃO AUTOMÁTICA (Início de Sessão)")
+            dataRepository.forçarSincronizacaoManual()
+        }
+    }
 
     fun limparChat() {
         mestreIAChatHistory = emptyList()

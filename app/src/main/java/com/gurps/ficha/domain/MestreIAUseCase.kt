@@ -215,7 +215,7 @@ class MestreIAUseCase(
             itensDetalhes = detalhesItens,
             chunks = res.relatedChunks,
             summaries = res.summaries,
-            ponteDeFerro = graphEngine.formatarParaIA(res).take(15000) // LOTE 103: Aumentado para 15k chars para suportar o Parent Document Retrieval
+            ponteDeFerro = graphEngine.formatarParaIA(res).take(60000) // LOTE 104: Liberado para 60k chars para contexto total de regras subaquáticas/complexas
         )
         return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty() || res.summaries.isNotEmpty())
     }

@@ -200,6 +200,11 @@ open class DataRepository(internal val context: Context) {
         com.gurps.ficha.data.storage.FichaDatabase.prePopulateGraph(context, database)
     }
 
+    suspend fun forçarSincronizacaoManual() {
+        manualChunkDao.clearAll()
+        com.gurps.ficha.data.storage.FichaDatabase.prePopulateManual(context, database)
+    }
+
     /**
      * Busca nos recortes manuais brutos (FTS4).
      */

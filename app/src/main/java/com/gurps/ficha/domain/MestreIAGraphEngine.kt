@@ -90,11 +90,14 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
         
-        // Mantém busca OR genérica para os termos expandidos (para não perder sinônimos)
-        if (termosExpandidos.isNotEmpty()) {
+        // LOTE 104: Redução de Ruído. 
+        // Termos expandidos (sinônimos) agora servem APENAS para encontrar o Nó do Grafo inicial.
+        // A busca de texto bruto (Chunks) deve ser cirúrgica nos termos ORIGINAIS do usuário.
+        // Se o usuário falou 'piscina', não queremos recortes de 'gladiador'.
+        /* if (termosExpandidos.isNotEmpty()) {
             val queryExpandida = termosExpandidos.take(15).joinToString(" OR ") { "$it*" }
             chunksCandidatos.addAll(repository.buscarRecortesManual(queryExpandida, 30))
-        }
+        } */
         
         // Ponte de Página: Força a carga das páginas reais indicadas no Grafo com filtro de fonte
         paginasAlvo.forEach { (pag, livro) ->
@@ -198,10 +201,10 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
         // 4. PARENT DOCUMENT RETRIEVAL (Lote 103)
         // Ao invés de trazer apenas o parágrafo atual, nós identificamos as páginas vencedoras
-        // e buscamos a PÁGINA INTEIRA (Documento Pai) no banco de dados. Isso impede que
-        // tabelas críticas de dano ou modificadores sejam cortadas por estarem no parágrafo de baixo.
+        // e buscamos a PÁGINA INTEIRA (Documento Pai) no banco de dados. 
+        // LOTE 104: Aumentamos para Top 8. Com o limite de 15k chars, cabem ~3 a 4 páginas completas.
         val chunksFinais = mutableSetOf<MestreIAChunk>()
-        chunksPaginados.take(3).forEach { (chunk, _) ->
+        chunksRRF.take(8).forEach { (chunk, _) ->
             val pagina = chunk.page_number
             val fonte = chunk.source_title
             
@@ -221,8 +224,8 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             summaries = topNodes.toList().sortedByDescending { it.level }.take(5),
             // CRÍTICO: Ordenar por SCORE (Relevância) e NÃO por ID Alfabético!
             relatedChunks = chunksFinais.toList().sortedByDescending { chunk -> 
-                chunksPontuados.find { it.first.chunk_id == chunk.chunk_id }?.second ?: 0 
-            }.take(5)
+                chunksRRF.find { it.first.chunk_id == chunk.chunk_id }?.second ?: 0.0
+            }.take(10)
         )
     }
 

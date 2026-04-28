@@ -77,7 +77,7 @@ abstract class FichaDatabase : RoomDatabase() {
             }
         }
 
-        private suspend fun prePopulateManual(context: Context, database: FichaDatabase) {
+        suspend fun prePopulateManual(context: Context, database: FichaDatabase) {
             try {
                 val dao = database.manualChunkDao()
                 val totalChunks = dao.getCount()
@@ -94,12 +94,13 @@ abstract class FichaDatabase : RoomDatabase() {
                         lines.forEach { line ->
                             if (line.isNotBlank()) {
                                 val obj = org.json.JSONObject(line)
+                                val textLimpo = obj.getString("text").fixMojibakeIfNeeded()
                                 chunks.add(ManualChunkEntity(
                                     chunk_id = obj.getString("chunk_id"),
                                     source_title = obj.getString("source_title"),
                                     page_number = obj.optInt("page_number", 0),
-                                    text = obj.getString("text"),
-                                    search_text = obj.getString("text") // FTS4 field
+                                    text = textLimpo,
+                                    search_text = textLimpo // FTS4 field
                                 ))
                                 
                                 if (chunks.size >= 100) {
