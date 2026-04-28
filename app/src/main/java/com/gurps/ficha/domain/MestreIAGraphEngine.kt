@@ -57,19 +57,20 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         // O sistema agora foca apenas nos nós diretos encontrados pela busca.
 
         // 2. Busca de Text Units (Chunks)
-        val paginasAlvo = mutableSetOf<Pair<Int, String?>>()
+        data class PaginaAlvo(val numero: Int, val tituloLivro: String?, val sourceId: String?)
+        val paginasAlvo = mutableSetOf<PaginaAlvo>()
         topNodes.forEach { node ->
             // LOTE 100: Regex para capturar [Nome do Livro Pág. X] (Captura a primeira menção completa)
             val matchLivro = Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).find(node.summary)
             if (matchLivro != null) {
                 val livro = matchLivro.groupValues[1].trim()
                 val pag = matchLivro.groupValues[2].toIntOrNull()
-                if (pag != null) paginasAlvo.add(pag to livro)
+                if (pag != null) paginasAlvo.add(PaginaAlvo(pag, livro, node.source_id))
             } else {
                 // Fallback para quando só tem o número da página (compatibilidade)
                 // LOTE 112: Usa findAll para capturar MÚLTIPLAS páginas (ex: [Pág. 353, 354, 388])
                 Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
-                    m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(it to null) }
+                    m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(PaginaAlvo(it, null, node.source_id)) }
                 }
             }
             // NOVO: Capturar também números de página simples que estão no meio da string ex: [Pág. 353, 354, 388]
@@ -80,9 +81,9 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 Regex("""(\d+)""").findAll(listPaginas).forEach { p ->
                     p.groupValues[1].toIntOrNull()?.let { 
                         if (matchLivro != null) {
-                            paginasAlvo.add(it to matchLivro.groupValues[1].trim())
+                            paginasAlvo.add(PaginaAlvo(it, matchLivro.groupValues[1].trim(), node.source_id))
                         } else {
-                            paginasAlvo.add(it to null)
+                            paginasAlvo.add(PaginaAlvo(it, null, node.source_id))
                         }
                     }
                 }
@@ -117,10 +118,17 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         } */
         
         // Ponte de Página: Força a carga das páginas reais indicadas no Grafo com filtro de fonte
-        paginasAlvo.forEach { (pag, livro) ->
-            if (livro != null) {
-                android.util.Log.d("MestreIA_Auditoria", "PONTE DE PÁGINA: Forçando carga da Pág. $pag do livro '$livro' indicada pelo Grafo.")
-                chunksCandidatos.addAll(repository.buscarPorPaginaESource(pag, livro))
+        paginasAlvo.forEach { alvo ->
+            val pag = alvo.numero
+            val livro = alvo.tituloLivro
+            val sourceId = alvo.sourceId
+            
+            if (sourceId != null) {
+                android.util.Log.d("MestreIA_Auditoria", "PONTE DE PÁGINA: Forçando carga da Pág. $pag ($sourceId) indicada pelo Grafo.")
+                chunksCandidatos.addAll(repository.buscarPorPaginaESource(pag, sourceId))
+            } else if (livro != null) {
+                android.util.Log.d("MestreIA_Auditoria", "PONTE DE PÁGINA: Forçando carga da Pág. $pag ($livro) indicada pelo Grafo.")
+                chunksCandidatos.addAll(repository.buscarPorPagina(pag))
             } else {
                 android.util.Log.d("MestreIA_Auditoria", "PONTE DE PÁGINA: Forçando carga da Pág. $pag indicada pelo Grafo.")
                 chunksCandidatos.addAll(repository.buscarPorPagina(pag))
@@ -165,13 +173,28 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             if (topNodes.any { it.category.lowercase() in texto }) score += 5
             
             // LOTE 111: BÔNUS CRÍTICO DE PÁGINA RECOMENDADA PELO GRAFO (Prioridade Absoluta)
-            if (paginasAlvo.any { it.first == chunk.page_number && (it.second == null || chunk.source_title.contains(it.second!!, true)) }) {
+            val isRecomendada = paginasAlvo.any { alvo -> 
+                alvo.numero == chunk.page_number && 
+                (alvo.sourceId == chunk.source_id || 
+                 (alvo.sourceId == null && (alvo.tituloLivro == null || chunk.source_title.contains(alvo.tituloLivro, true))))
+            }
+            if (isRecomendada) {
                 score += 1000 // Aumentado de 50 para 1000 para garantir Top 1
             }
 
             // LOTE 112: HIERARQUIA DE AUTORIDADE (Módulo Básico é a lei mãe)
             if (chunk.source_id == "pt_modulo_basico") {
                 score += 50
+            }
+            
+            // LOTE 112.3: BÔNUS DE AUTORIDADE PARA MAGIA E ARTES MARCIAIS
+            val isMagiaQuery = termosBase.any { it.matches(Regex("magia|magias|feitiço|feitiços|grimório|encantamento|praga|maldição|desejo")) } || topNodes.any { it.category.lowercase() == "magia" }
+            if (isMagiaQuery && chunk.source_id == "pt_gurps_magia") {
+                score += 60 // Ultrapassa Módulo Básico em questões exclusivas de Magia!
+            }
+            val isArtesMarciaisQuery = termosBase.any { it.matches(Regex("artes marciais|técnica|golpe|chute|soco|estilo|katá")) } || topNodes.any { it.category.lowercase() == "artes marciais" || it.category.lowercase() == "manobra" }
+            if (isArtesMarciaisQuery && chunk.source_id == "pt_artes_marciais") {
+                score += 60 
             }
 
             // NOVO: Bônus de "Regra Geral" (Tabelas e Cálculos Técnicos)
@@ -188,20 +211,26 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         
         // LOTE 103: RRF (Reciprocal Rank Fusion) - O Casamento Perfeito (Grafo + Semântica)
         // Mapeia o ranking de cada página segundo o Grafo de Conhecimento
-        val paginasGrafoRanking = paginasAlvo.mapIndexed { index, (page, _) -> page to (index + 1) }.toMap()
+        val paginasGrafoRanking = paginasAlvo.mapIndexed { index, alvo -> alvo to (index + 1) }.toMap()
 
         // Aplica a fórmula matemática RRF para fundir as duas listas
         val chunksRRF = chunksPontuados.mapIndexed { textIndex, (chunk, lexicalScore) ->
             val textRank = textIndex + 1
             val textRrfScore = 1.0 / (textRank + 60)
             
+            val inGraph = paginasAlvo.any { alvo ->
+                alvo.numero == chunk.page_number && 
+                (alvo.sourceId == chunk.source_id || 
+                 (alvo.sourceId == null && (alvo.tituloLivro == null || chunk.source_title.contains(alvo.tituloLivro, true))))
+            }
+            
             // LOTE 112.2: Todas as páginas do Grafo são IGUALMENTE importantes. 
             // Não devemos penalizar a Pág 388 só porque ela apareceu depois da Pág 353 na lista.
-            val graphRank = if (paginasGrafoRanking.containsKey(chunk.page_number)) 1 else 1000 
+            val graphRank = if (inGraph) 1 else 1000 
             val graphRrfScore = 1.0 / (graphRank + 60)
             
             // LOTE 105: Bônus de Autoridade do Grafo (Multiplicador de 5x para páginas sugeridas pelo Grafo)
-            val graphMultiplier = if (paginasGrafoRanking.containsKey(chunk.page_number)) 5.0 else 1.0
+            val graphMultiplier = if (inGraph) 5.0 else 1.0
             
             val finalRrfScore = textRrfScore + (graphRrfScore * graphMultiplier)
             chunk to finalRrfScore
@@ -210,12 +239,12 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         // LOTE 105: Filtro de Diversidade (Anti-Monopólio)
         // Impede que uma única página (ex: Pág 16) ocupe todas as vagas do contexto.
         // Permitimos no máximo 2 recortes da mesma página no Top 8.
-        val contadorPaginas = mutableMapOf<Int, Int>()
+        val contadorPaginas = mutableMapOf<String, Int>()
         val chunksDiversos = chunksRRF.filter { (chunk, _) ->
-            val page = chunk.page_number ?: -1
-            val total = contadorPaginas.getOrDefault(page, 0)
+            val pageKey = "${chunk.source_id}_${chunk.page_number ?: -1}"
+            val total = contadorPaginas.getOrDefault(pageKey, 0)
             if (total < 2) {
-                contadorPaginas[page] = total + 1
+                contadorPaginas[pageKey] = total + 1
                 true
             } else {
                 false
@@ -224,10 +253,18 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
         // LOTE 111: Priorização de Páginas Recomendadas (Garante que a 433 entre no Top 8)
         val chunksRecomendados = chunksDiversos.filter { (chunk, _) ->
-            paginasAlvo.any { it.first == chunk.page_number }
+            paginasAlvo.any { alvo ->
+                alvo.numero == chunk.page_number && 
+                (alvo.sourceId == chunk.source_id || 
+                 (alvo.sourceId == null && (alvo.tituloLivro == null || chunk.source_title.contains(alvo.tituloLivro, true))))
+            }
         }
         val outrosChunks = chunksDiversos.filter { (chunk, _) ->
-            paginasAlvo.none { it.first == chunk.page_number }
+            !paginasAlvo.any { alvo ->
+                alvo.numero == chunk.page_number && 
+                (alvo.sourceId == chunk.source_id || 
+                 (alvo.sourceId == null && (alvo.tituloLivro == null || chunk.source_title.contains(alvo.tituloLivro, true))))
+            }
         }
         
         val chunksPaginados = (chunksRecomendados + outrosChunks).take(8)
@@ -288,7 +325,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             "como", "funciona", "regra", "regras", "quais", "preciso", "para", "sobre", "qual",
             "uma", "um", "com", "dos", "das", "pela", "pelo", "onde", "quando", "quem", "são", "sao",
             "gurps", "edicao", "edição", "calculo", "calcular", "lista", "tabela", "me", "de", "da", "do",
-            "nos", "nas", "aos", "para", "pelo", "pela", "traga", "atender", "requisitos", "pre", "pra", "me", "fale",
+            "nos", "nas", "aos", "para", "pelo", "pela", "traga", "atender", "pra", "me", "fale",
             "meu", "meus", "minha", "minhas", "seu", "seus", "sua", "suas", "esta", "está", "estou", "estamos",
             "queria", "quero", "saber", "ajuda", "ajude", "tem", "temos", "existe", "existem", "por", "sobre",
             "fale", "diga", "explique", "mostre", "então", "entao", "você", "voce", "está", "isso", "esse", "essa",
