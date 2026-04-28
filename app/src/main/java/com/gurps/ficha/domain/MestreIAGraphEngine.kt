@@ -169,11 +169,27 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             chunk to score
         }.sortedByDescending { it.second }
         
-        // LOTE 98: Paginação de Chunks (Pula os primeiros 'offset * 5' resultados)
+        // LOTE 103: RRF (Reciprocal Rank Fusion) - O Casamento Perfeito (Grafo + Semântica)
+        // Mapeia o ranking de cada página segundo o Grafo de Conhecimento
+        val paginasGrafoRanking = paginasAlvo.mapIndexed { index, (page, _) -> page to (index + 1) }.toMap()
+
+        // Aplica a fórmula matemática RRF para fundir as duas listas
+        val chunksRRF = chunksPontuados.mapIndexed { textIndex, (chunk, lexicalScore) ->
+            val textRank = textIndex + 1
+            val textRrfScore = 1.0 / (textRank + 60)
+            
+            val graphRank = paginasGrafoRanking[chunk.page_number] ?: 1000 // Penalidade se o Grafo não recomendou
+            val graphRrfScore = 1.0 / (graphRank + 60)
+            
+            val finalRrfScore = textRrfScore + graphRrfScore
+            chunk to finalRrfScore
+        }.sortedByDescending { it.second }
+        
+        // Paginação de Chunks (Pula os primeiros 'offset * 5' resultados)
         val chunksPaginados = if (offset > 0) {
-            chunksPontuados.drop(offset * 5).take(8)
+            chunksRRF.drop(offset * 5).take(8)
         } else {
-            chunksPontuados.take(8)
+            chunksRRF.take(8)
         }
         
         chunksPaginados.take(3).forEach { (chunk, score) ->
