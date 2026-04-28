@@ -90,11 +90,11 @@ class MestreIAUseCase(
                                 updateStatus("Pesquisando no Códex: $queryTool (Pág. $paginaTool)...")
                                 
                                 val resTool = graphEngine.buscarNoGrafo(queryTool, offset)
-                                val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
-                                    "<CONTEXTO_TECNICO>\n" + 
-                                    resTool.relatedChunks.take(5).joinToString("\n") { 
-                                        "[${it.source_title}, Pág. ${it.page_number}]: ${it.text}" 
-                                    } + "\n</CONTEXTO_TECNICO>"
+                                    val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
+                                        "<CONTEXTO_TECNICO>\n" + 
+                                        resTool.relatedChunks.take(25).joinToString("\n") { 
+                                            "[${it.source_title}, Pág. ${it.page_number}]: ${it.text}" 
+                                        } + "\n</CONTEXTO_TECNICO>"
                                 } else {
                                     "NENHUMA REGRA ENCONTRADA no manual para '$queryTool'. Não tente inventar a regra."
                                 }

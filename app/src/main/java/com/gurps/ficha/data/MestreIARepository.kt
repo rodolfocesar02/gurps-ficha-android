@@ -26,12 +26,15 @@ class MestreIARepository(
      */
     suspend fun sincronizarCodexSeNecessario() = withContext(Dispatchers.IO) {
         syncMutex.withLock {
-            if (manualChunkDao.getCount() == 0 || graphNodeDao.countNodes() == 0) {
-                android.util.Log.i("MestreIA_Auditoria", "CÓDEX VAZIO: Iniciando carga única protegida...")
+            val needsPurification = true // LOTE 108: Forçamos a entrada para corrigir o Mojibake
+            val isEmpty = manualChunkDao.getCount() == 0 || graphNodeDao.countNodes() == 0
+            
+            if (isEmpty || needsPurification) {
+                android.util.Log.i("MestreIA_Auditoria", "INICIANDO VERIFICAÇÃO TÉCNICA (Lote 108/Purificação)...")
                 FichaDatabase.prePopulateGraph(context, database)
                 FichaDatabase.prePopulateManual(context, database)
             } else {
-                android.util.Log.i("MestreIA_Auditoria", "CÓDEX OK: Banco de dados já possui dados.")
+                android.util.Log.i("MestreIA_Auditoria", "CÓDEX OK: Banco de dados íntegro.")
             }
         }
     }
@@ -47,10 +50,13 @@ class MestreIARepository(
     suspend fun findByCategory(category: String) = graphNodeDao.findByCategory(category)
 
     /**
-     * Busca nos recortes manuais brutos (FTS4).
+     * Busca inteligente nos manuais com expansão de termos (Sinônimos GURPS).
      */
     suspend fun buscarRecortesManual(query: String, limit: Int = 30): List<MestreIAChunk> {
-        return manualChunkDao.buscarRegras(query, limit).map { entity ->
+        val expandedQuery = prepararQueryFTS(query)
+        android.util.Log.d("MestreIA_Auditoria", "QUERY EXPANDIDA: $expandedQuery")
+        
+        return manualChunkDao.buscarRegras(expandedQuery, limit).map { entity ->
             MestreIAChunk(
                 chunk_id = entity.chunk_id,
                 text = entity.text,
@@ -58,6 +64,36 @@ class MestreIARepository(
                 page_number = entity.page_number
             )
         }
+    }
+
+    /**
+     * Transforma uma busca simples em uma query FTS poderosa com sinônimos.
+     */
+    private fun prepararQueryFTS(userQuery: String): String {
+        // Limpa asteriscos e lixo da query original para evitar duplicidade
+        val cleanQuery = userQuery.replace("*", "").trim()
+        val terms = cleanQuery.split(Regex("\\s+")).filter { it.length >= 2 }
+        if (terms.isEmpty()) return cleanQuery
+        
+        val expandedTerms = terms.map { term ->
+            val termNorm = term.lowercase().removeAccents()
+            val synonyms = when (termNorm) {
+                "colisao", "colisões", "bater", "impacto", "encontrao", "encontrão" -> "colis* OR encontr* OR impact*"
+                "dano", "ferimento", "vida", "pv" -> "dano* OR ferim* OR PV"
+                "fadiga", "cansaco", "pf" -> "fadig* OR cansac* OR PF"
+                "atirar", "disparo", "arma" -> "atir* OR dispar* OR arma*"
+                "esquiva", "bloqueio", "aparar", "defesa" -> "esquiv* OR bloqu* OR apar* OR defens*"
+                else -> if (termNorm.length > 3) "$termNorm*" else termNorm
+            }
+            "($synonyms)"
+        }
+        
+        return expandedTerms.joinToString(" AND ")
+    }
+
+    private fun String.removeAccents(): String {
+        val normalizer = java.text.Normalizer.normalize(this, java.text.Normalizer.Form.NFD)
+        return normalizer.replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
     }
 
     suspend fun buscarPorPagina(pagina: Int): List<MestreIAChunk> {

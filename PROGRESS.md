@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 26 de Abril de 2026
-**Status Atual:** ERA DO CONHECIMENTO - Motor GraphRAG Lite (Zero-Native) Ativado 🧠🕸️ | RELEASE 2.0 PRONTA 🚀
+**Status Atual:** ERA DO RACIOCÍNIO - Motor de Decomposição por Pilares Ativado 🧠⚙️ | Lote 112 CONCLUÍDO 🚀
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -275,6 +275,18 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Isolamento de Repositório:** Criado o `MestreIARepository` para separar a lógica de regras da lógica de ficha (`DataRepository`).
     - **Delegação Limpa:** O `DataRepository` agora apenas delega as chamadas de busca, reduzindo seu tamanho e complexidade.
     - **Estabilidade de Testes:** Ajustados Stubs e inicialização `lazy` para permitir testes unitários sem dependência de Contexto.
+
+* [Finalizado] Lote 111: Otimização de RAG e Cura de Contexto (Dano por Colisão) | `(Commit: Lote111)`
+    - **Diagnóstico de Carga:** Remoção de limitações de código que truncavam regras vitais.
+    - **Prioridade VIP:** Bônus de score +1000 para páginas recomendadas pelo Grafo (Garante Pág 433).
+    - **Abertura de Gargalo:** Entrega de até 25 recortes de contexto ao Gemini no CaseUse.
+    - **Validação de Dados:** Verificação da integridade da regra de Colisão no banco SQLite.
+
+* [Finalizado] Lote 112: Motor de Raciocínio e Hierarquia (Plan Systemic Evolution) | `(Commit: Lote112)`
+    - **Janela Deslizante (N-1, N, N+1):** Recuperação automática da página anterior para integridade de regras.
+    - **Hierarquia de Autoridade:** Bônus (+50) para o Módulo Básico, garantindo soberania da "Lei Mãe".
+    - **Prompt de Raciocínio (Pilares):** IA agora decompõe problemas em Ação, Atributo, Ambiente e Estado.
+    - **Purificação do Grafo:** Injeção de source_id em todos os 2476 nós e unificação de Nós Mestres (Ataque Total).
 
 ### Próximos Passos (Desejos do Usuário & Planejamento Arquitetural Avançado):
 **[PLANEJAMENTO RAG: State-of-the-Art]**

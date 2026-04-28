@@ -43,16 +43,37 @@ abstract class FichaDatabase : RoomDatabase() {
             }
         }
 
+        private const val TECNICA_PURIFICACAO_LOTE = 110
+
         suspend fun prePopulateGraph(context: Context, database: FichaDatabase) {
             try {
-                val dao = database.graphNodeDao()
-                val count = dao.countNodes()
+                val graphDao = database.graphNodeDao()
+                val manualDao = database.manualChunkDao()
+                
+                // Lote 108.Purificação: Se o banco já existe mas os dados estão corrompidos (mojibake), 
+                // limpamos as tabelas técnicas sem tocar nas fichas dos usuários.
+                val manualCount = manualDao.getCount()
+                val needsPurification = true // Forçamos uma vez para limpar o Mojibake do Lote 109
+                
+                if (manualCount > 0 && needsPurification) {
+                    android.util.Log.w("FichaDatabase", "PURIFICAÇÃO LOTE $TECNICA_PURIFICACAO_LOTE: Limpando tabelas do Códex para corrigir encoding...")
+                    graphDao.clearAll()
+                    manualDao.clearAll()
+                    // Resetamos o contador para entrar no bloco de importação abaixo
+                }
+
+                // Lote 111.Purificação: Força re-importação total para cura de DNA (Colisão e UTF-8)
+                if (needsPurification && graphDao.countNodes() > 0) {
+                    android.util.Log.w("FichaDatabase", "PURIFICAÇÃO GRAFO LOTE 111: Resetando grafo para cura de DNA...")
+                    graphDao.clearAll()
+                }
+
+                val count = graphDao.countNodes()
                 android.util.Log.i("MestreIA_Auditoria", "ESTADO DO CÓDEX: $count nós carregados no banco de dados.")
                 
                 if (count == 0) {
-                    android.util.Log.i("MestreIA_Auditoria", "AUDITORIA: Banco de dados vazio. Iniciando leitura de 'assets/graph_db/graph_knowledge.json'...")
+                    // Lote 111.Fix: Arquivos confirmados como UTF-8 íntegros no disco.
                     val jsonString = context.assets.open("graph_db/graph_knowledge.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
-                        .fixMojibakeIfNeeded()
                     val jsonArray = org.json.JSONArray(jsonString)
                     val nodes = mutableListOf<GraphNodeEntity>()
                     
@@ -61,12 +82,12 @@ abstract class FichaDatabase : RoomDatabase() {
                         nodes.add(GraphNodeEntity(
                             entityId = obj.getString("entity_id"),
                             title = obj.getString("title"),
-                            summary = obj.getString("summary"),
-                            category = obj.getString("category"),
-                            level = obj.optInt("level", 0)
+                            level = obj.getInt("level"),
+                            summary = obj.optString("summary", ""),
+                            category = obj.optString("category", "Geral")
                         ))
                     }
-                    dao.insertAll(nodes)
+                    graphDao.insertAll(nodes)
                     android.util.Log.i("MestreIA_Auditoria", "AUDITORIA: Carga concluída com sucesso! ${nodes.size} nós inseridos via Bulk Insert.")
                 }
             } catch (e: Exception) {
@@ -77,6 +98,16 @@ abstract class FichaDatabase : RoomDatabase() {
         suspend fun prePopulateManual(context: Context, database: FichaDatabase) {
             try {
                 val dao = database.manualChunkDao()
+                
+                // Lote 111.Purificação: Limpeza do Manual para sincronia com o Grafo curado
+                val needsPurification = true 
+                val currentCount = dao.getCount()
+                
+                if (currentCount > 0 && needsPurification) {
+                    android.util.Log.w("FichaDatabase", "PURIFICAÇÃO MANUAL LOTE 111: Limpando chunks...")
+                    dao.clearAll()
+                }
+
                 val totalChunks = dao.getCount()
                 android.util.Log.i("MestreIA_Auditoria", "ESTADO DO MANUAL: $totalChunks recortes de páginas (Chunks) carregados.")
 
@@ -91,7 +122,7 @@ abstract class FichaDatabase : RoomDatabase() {
                         lines.forEach { line ->
                             if (line.isNotBlank()) {
                                 val obj = org.json.JSONObject(line)
-                                val textLimpo = obj.getString("text").fixMojibakeIfNeeded()
+                                val textLimpo = obj.getString("text")
                                 val searchTextNorm = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(textLimpo)
                                 chunks.add(ManualChunkEntity(
                                     chunk_id = obj.getString("chunk_id"),

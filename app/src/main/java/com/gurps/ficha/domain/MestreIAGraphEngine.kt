@@ -143,11 +143,19 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 }
             }
             
+            // LOTE 112: Prioridade para Nós Mestres (Índices Gerais)
+            if (it.level == 0) score += 40
+
             // Bônus por categoria (Peso 5)
             if (topNodes.any { it.category.lowercase() in texto }) score += 5
             
-            // LOTE 101: BÔNUS MASSIVO DE PÁGINA RECOMENDADA (Peso 50)
+            // LOTE 111: BÔNUS CRÍTICO DE PÁGINA RECOMENDADA PELO GRAFO (Prioridade Absoluta)
             if (paginasAlvo.any { it.first == chunk.page_number && (it.second == null || chunk.source_title.contains(it.second!!, true)) }) {
+                score += 1000 // Aumentado de 50 para 1000 para garantir Top 1
+            }
+
+            // LOTE 112: HIERARQUIA DE AUTORIDADE (Módulo Básico é a lei mãe)
+            if (chunk.source_id == "pt_modulo_basico") {
                 score += 50
             }
 
@@ -197,39 +205,48 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        // Paginação de Chunks (Pula os primeiros 'offset * 5' resultados)
-        val chunksPaginados = if (offset > 0) {
-            chunksDiversos.drop(offset * 5).take(8)
-        } else {
-            chunksDiversos.take(8)
+        // LOTE 111: Priorização de Páginas Recomendadas (Garante que a 433 entre no Top 8)
+        val chunksRecomendados = chunksDiversos.filter { (chunk, _) ->
+            paginasAlvo.any { it.first == chunk.page_number }
         }
+        val outrosChunks = chunksDiversos.filter { (chunk, _) ->
+            paginasAlvo.none { it.first == chunk.page_number }
+        }
+        
+        val chunksPaginados = (chunksRecomendados + outrosChunks).take(8)
         
         chunksPaginados.take(5).forEach { (chunk, score) ->
             android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK (Offset $offset): Pág ${chunk.page_number} | Score: $score | Texto: ${chunk.text.take(60)}...")
         }
 
-        // 4. PARENT DOCUMENT RETRIEVAL (Lote 103) + CONTEXTO ADJACENTE (Lote 106)
+        // 4. PARENT DOCUMENT RETRIEVAL (Lote 103) + CONTEXTO ADJACENTE (Lote 106/112)
         // Ao invés de trazer apenas o parágrafo atual, nós identificamos as páginas vencedoras
-        // e buscamos a PÁGINA INTEIRA (Documento Pai) + A PÁGINA SEGUINTE (Suporte).
-        // LOTE 106: Isso resolve o problema de tabelas e fórmulas que terminam na página seguinte.
+        // e buscamos a PÁGINA INTEIRA (Documento Pai) + ADJACENTES (N-1 e N+1).
+        // LOTE 112: Adição da página anterior (N-1) para capturar inícios de regras.
         val chunksFinais = mutableSetOf<MestreIAChunk>()
         chunksPaginados.forEach { (chunk, _) ->
             val pagina = chunk.page_number
             val fonte = chunk.source_title
             
             if (pagina != null && fonte != null) {
-                // 1. Traz a página inteira de impacto
+                // 1. Página Anterior (N-1) - LOTE 112
+                if (pagina > 1) {
+                    val paginaAnterior = repository.buscarPorPaginaESource(pagina - 1, fonte)
+                    if (paginaAnterior.isNotEmpty()) {
+                        chunksFinais.addAll(paginaAnterior)
+                    }
+                }
+
+                // 2. Página de Impacto (N)
                 val paginaImpacto = repository.buscarPorPaginaESource(pagina, fonte)
                 chunksFinais.addAll(paginaImpacto)
                 
-                // 2. Traz a página seguinte (Contexto Adjacente)
+                // 3. Página Seguinte (N+1)
                 val paginaSeguinte = repository.buscarPorPaginaESource(pagina + 1, fonte)
                 if (paginaSeguinte.isNotEmpty()) {
                     chunksFinais.addAll(paginaSeguinte)
-                    android.util.Log.d("MestreIA_G", "LOTE 106: Injetada Pág. ${pagina + 1} como suporte à Pág. $pagina ($fonte).")
                 }
             } else {
-                // Fallback seguro caso falte metadados
                 chunksFinais.add(chunk)
             }
         }
@@ -239,9 +256,13 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         return GraphSearchResult(
             summaries = topNodes.toList().sortedByDescending { it.level }.take(5),
             // LOTE 106: Aumentamos para 20 recortes para garantir que as páginas adjacentes não sejam cortadas.
-            relatedChunks = chunksFinais.toList().sortedByDescending { chunk -> 
+            relatedChunks = chunksFinais.toList().sortedWith(compareByDescending<MestreIAChunk> { chunk ->
+                // Prioridade 1: Estar nas páginas recomendadas pelo Grafo
+                if (paginasAlvo.any { it.first == chunk.page_number }) 1000.0 else 0.0
+            }.thenByDescending { chunk ->
+                // Prioridade 2: Score RRF original
                 chunksRRF.find { it.first.chunk_id == chunk.chunk_id }?.second ?: 0.0
-            }.take(20)
+            }).take(40) // Aumentado para 40 para garantir que o contexto adjacente caiba
         )
     }
 
