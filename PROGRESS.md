@@ -244,10 +244,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 ### Próximos Passos (Desejos do Usuário & Planejamento Arquitetural Avançado):
 **[PLANEJAMENTO RAG: State-of-the-Art]**
-- **LLM Query Formulation (HyDE/Pré-Filtro Inteligente):** Estudar delegar a extração de palavras-chave da busca para um modelo rápido (como Gemini Flash) antes de acionar o SQLite. Ao invés do código Kotlin tentar adivinhar a regra, uma IA traduz "Como nadar com peso?" para as chaves oficiais: `["natação", "estorvo", "base de carga", "água"]`.
-- **Parent Document Retrieval:** Ao localizar uma regra em um *chunk* pequeno (para garantir velocidade/precisão na busca FTS), o sistema deve recuperar e enviar para a IA o "Documento Pai" inteiro (a seção/capítulo completo) para que ela não perca tabelas adjacentes ou exceções vitais.
-- **SQLite FTS5 + BM25 Nativo:** Migrar o banco local `FichaDatabase` (Room) para suportar/utilizar FTS5, permitindo que a busca e ordenação por TF-IDF ocorram no nível do banco de dados (C++) ao invés da memória Kotlin (reduz complexidade manual).
-- **RRF (Reciprocal Rank Fusion):** Criar algoritmo matemático para mesclar as listas de resultados vindas do Knowledge Graph com as listas do Full-Text Search, criando um super-ranking definitivo.
+- Artefato criado: `[plan_rag_state_of_the_art.md]` (Plano de arquitetura State-of-the-Art para o motor de busca do Mestre IA, englobando HyDE, RRF e Parent Document Retrieval).
 
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
