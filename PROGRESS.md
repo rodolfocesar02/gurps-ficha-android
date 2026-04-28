@@ -276,7 +276,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Delegação Limpa:** O `DataRepository` agora apenas delega as chamadas de busca, reduzindo seu tamanho e complexidade.
     - **Estabilidade de Testes:** Ajustados Stubs e inicialização `lazy` para permitir testes unitários sem dependência de Contexto.
 
-* [Finalizado] Lote 111: Otimização de RAG e Cura de Contexto (Dano por Colisão) | `(Commit: Lote111)`
+* [Finalizado] Lote 111: Otimização de RAG e Cura de Contexto (Dano por Colisão) | `(Commit: ce531eb)`
     - **Diagnóstico de Carga:** Remoção de limitações de código que truncavam regras vitais.
     - **Prioridade VIP:** Bônus de score +1000 para páginas recomendadas pelo Grafo (Garante Pág 433).
     - **Abertura de Gargalo:** Entrega de até 25 recortes de contexto ao Gemini no CaseUse.
@@ -287,10 +287,6 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Hierarquia de Autoridade:** Bônus (+50) para o Módulo Básico, garantindo soberania da "Lei Mãe".
     - **Prompt de Raciocínio (Pilares):** IA agora decompõe problemas em Ação, Atributo, Ambiente e Estado.
     - **Purificação do Grafo:** Injeção de source_id em todos os 2476 nós e unificação de Nós Mestres (Ataque Total).
-
-### Próximos Passos (Desejos do Usuário & Planejamento Arquitetural Avançado):
-**[PLANEJAMENTO RAG: State-of-the-Art]**
-- Artefato criado: `[plan_rag_state_of_the_art.md]` (Plano de arquitetura State-of-the-Art para o motor de busca do Mestre IA, englobando HyDE, RRF e Parent Document Retrieval).
 
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
