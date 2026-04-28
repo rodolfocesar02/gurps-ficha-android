@@ -303,6 +303,10 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Bônus Lexical Especializado:** Adicionado Bônus +60 Lexical se os "Termos Base" ou o "Nó do Grafo" pertencerem ao grupo semântico de "Magia" (pt_gurps_magia) ou "Artes Marciais" (pt_artes_marciais), superando artificialmente o bônus de Autoridade do Módulo Básico para buscas ultra-especializadas.
     - **Stop Words:** Removidas palavras cruciais como "requisitos" e "pre" do limpador lexical no `extrairPalavrasChave`.
 
+* [Planejado] Lote 113: Integração Nexus-IA (O Consultor Arcano) | `(Commit: Pendente)`
+    - **Status:** Plano de implementação detalhado criado (ver artefato `plan_nexus_arcano_ia_integration.md`).
+    - **Meta:** Transformar o Motor Nexus em ferramenta oficial de consulta técnica da IA.
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
