@@ -195,7 +195,9 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             val textRank = textIndex + 1
             val textRrfScore = 1.0 / (textRank + 60)
             
-            val graphRank = paginasGrafoRanking[chunk.page_number] ?: 1000 // Penalidade se o Grafo não recomendou
+            // LOTE 112.2: Todas as páginas do Grafo são IGUALMENTE importantes. 
+            // Não devemos penalizar a Pág 388 só porque ela apareceu depois da Pág 353 na lista.
+            val graphRank = if (paginasGrafoRanking.containsKey(chunk.page_number)) 1 else 1000 
             val graphRrfScore = 1.0 / (graphRank + 60)
             
             // LOTE 105: Bônus de Autoridade do Grafo (Multiplicador de 5x para páginas sugeridas pelo Grafo)
