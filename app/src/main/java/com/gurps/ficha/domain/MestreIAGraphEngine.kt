@@ -53,30 +53,8 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        val entidadesRelacionadas = mutableSetOf<String>()
-        topNodes.forEach { node ->
-            // Extrai conceitos em CamelCase ou específicos do resumo
-            Regex("([A-ZÀ-Ú][A-ZÀ-Úa-zà-ú]{3,})").findAll(node.summary).forEach { 
-                val conceito = it.value.trim()
-                if (conceito.length > 3) entidadesRelacionadas.add(conceito) 
-            }
-            // Só adiciona a categoria como semente se não for uma categoria genérica (LOTE 94: Filtro rígido)
-            val categoriasGenericas = listOf(
-                "Regra", "Vantagem", "Desvantagem", "Perícia", "Pericia", "Magia", "Equipamento", 
-                "Sistema", "Arma", "Armadura", "Técnica", "Tecnica", "Atributo"
-            )
-            val cat = node.category.trim()
-            if (cat !in categoriasGenericas && cat.length > 3) {
-                entidadesRelacionadas.add(cat)
-            }
-        }
-
-        // LOTE 96: Busca de vizinhos apenas se a semente for POBRE (evita trazer lixo)
-        if (topNodes.size < 3 && entidadesRelacionadas.isNotEmpty()) {
-            val queryVizinhos = entidadesRelacionadas.take(3).joinToString(" OR ") { "$it*" }
-            val vizinhos = repository.buscarResumosGrafo(queryVizinhos).take(3)
-            topNodes.addAll(vizinhos)
-        }
+        // LOTE 101: Remoção de 'vizinhos semânticos' para evitar ruído.
+        // O sistema agora foca apenas nos nós diretos encontrados pela busca.
 
         // 2. Busca de Text Units (Chunks)
         val paginasAlvo = mutableSetOf<Pair<Int, String?>>()
@@ -95,9 +73,28 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        val termosBusca = (todosOsTermos + entidadesRelacionadas.take(5)).distinct()
-        val queryManual = termosBusca.joinToString(" OR ") { "$it*" }
-        chunksCandidatos.addAll(repository.buscarRecortesManual(queryManual, 30)) // Reduzido de 50 para 30
+        // LOTE 102: Layering de Busca com TF-IDF Proxy (Inteligência Real)
+        val termoWeights = mutableMapOf<String, Int>()
+        
+        // Fazemos buscas independentes para cada termo e calculamos sua raridade no livro.
+        termosBase.forEach { termo ->
+            if (termo.length >= 3) { 
+                val encontradas = repository.buscarRecortesManual("$termo*", 50)
+                chunksCandidatos.addAll(encontradas)
+                
+                // CÁLCULO DE RARIDADE: Se achou 50 recortes (bateu no limite), é palavra comum (peso baixo).
+                // Se achou 2 recortes, é palavra raríssima e central para a dúvida (peso alto).
+                val ocorrencias = encontradas.size.coerceAtLeast(1)
+                val pesoRaridade = (50 / ocorrencias).coerceIn(1, 50)
+                termoWeights[termo.lowercase()] = pesoRaridade
+            }
+        }
+        
+        // Mantém busca OR genérica para os termos expandidos (para não perder sinônimos)
+        if (termosExpandidos.isNotEmpty()) {
+            val queryExpandida = termosExpandidos.take(15).joinToString(" OR ") { "$it*" }
+            chunksCandidatos.addAll(repository.buscarRecortesManual(queryExpandida, 30))
+        }
         
         // Ponte de Página: Força a carga das páginas reais indicadas no Grafo com filtro de fonte
         paginasAlvo.forEach { (pag, livro) ->
@@ -110,31 +107,60 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        // 3. RE-RANKING PROFUNDO (O "Coração" do GraphRAG)
+        // 3. RE-RANKING PROFUNDO COM PESO DE RARIDADE
         val chunksPontuados = chunksCandidatos.map { chunk ->
             var score = 0
             val texto = chunk.text.lowercase()
+            var rareMatchBonus = 0
             
-            // Pontua por termos da query (Peso 10 para originais, 2 para expandidos)
-            termosBase.forEach { if (texto.contains(it.lowercase())) score += 10 }
-            (termosExpandidos - termosBase.toSet()).forEach { if (texto.contains(it.lowercase())) score += 2 }
+            // Prioridade baseada na raridade da palavra (TF-IDF Proxy)
+            termosBase.forEach { termo ->
+                val termLower = termo.lowercase()
+                val pesoRaridade = termoWeights[termLower] ?: 1
+                
+                val termRadical = if (termLower.length >= 5 && termLower.endsWith("r")) {
+                    termLower.dropLast(1)
+                } else if (termLower.length >= 5 && termLower.endsWith("s")) {
+                    termLower.dropLast(1)
+                } else if (termLower.length >= 6 && termLower.endsWith("ção")) {
+                    termLower.dropLast(3)
+                } else {
+                    termLower
+                }
+                
+                if (texto.contains(termRadical)) {
+                    score += (100 * pesoRaridade) // Palavra rara dá pontuação massiva!
+                    rareMatchBonus += pesoRaridade
+                } 
+            }
             
-            // Pontua por entidades do grafo (Peso 20 - CRÍTICO: Prioriza o que está no seu JSON!)
+            // Co-ocorrência agora multiplica o bônus de raridade (palavras raras juntas explodem o score)
+            if (rareMatchBonus > 1) {
+                score += (rareMatchBonus * 50)
+            }
+            
+            (termosExpandidos - termosBase.toSet()).forEach { if (texto.contains(it.lowercase())) score += 10 }
+            
+            // LOTE 101: Grafo agora é secundário (Peso reduzido para 5)
             topNodes.forEach { 
                 if (texto.contains(it.title.lowercase())) {
-                    score += 20
-                    // Bônus extra se o título do nó for exatamente uma palavra da query original
-                    if (termosBase.any { base -> base.equals(it.title, true) }) score += 15
-                    android.util.Log.v("MestreIA_Auditoria", "BÔNUS DE TÍTULO: Chunk pág ${chunk.page_number} contém '${it.title}' (+15)")
+                    score += 5
+                    if (termosBase.any { base -> base.equals(it.title, true) }) score += 20
                 }
             }
             
             // Bônus por categoria (Peso 5)
             if (topNodes.any { it.category.lowercase() in texto }) score += 5
             
-            // LOTE 95/100: BÔNUS MASSIVO DE PÁGINA (Peso 30) - Prioriza a página E LIVRO corretos
+            // LOTE 101: BÔNUS MASSIVO DE PÁGINA RECOMENDADA (Peso 50)
             if (paginasAlvo.any { it.first == chunk.page_number && (it.second == null || chunk.source_title.contains(it.second!!, true)) }) {
-                score += 30
+                score += 50
+            }
+
+            // NOVO: Bônus de "Regra Geral" (Tabelas e Cálculos Técnicos)
+            val termosRegraGeral = listOf("tabela", "ritmo", "m³", "calculo", "bc", "base de carga", "m3", "m/h")
+            if (termosRegraGeral.any { texto.contains(it) }) {
+                score += 60
             }
             
             // Penalidade para páginas muito baixas (Índice/Introdução)
@@ -210,10 +236,10 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         expandidas.addAll(palavrasOriginais)
 
         val dicionarioTecnico = mapOf(
-            "cavar" to listOf("escavação", "trabalho", "braçal", "escavar"),
-            "buraco" to listOf("escavação", "fender", "valeta"),
             "sangramento" to listOf("hemorragia", "ferimento", "saúde", "perda"),
-            "pular" to listOf("salto", "distância", "altura")
+            "pular" to listOf("salto", "distância", "altura"),
+            "impacto" to listOf("colisão", "batida", "queda"),
+            "asfixia" to listOf("afogamento", "sufocamento", "respiração")
         )
         palavrasOriginais.forEach { p ->
             dicionarioTecnico[p]?.let { expandidas.addAll(it) }

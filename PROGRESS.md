@@ -18,12 +18,12 @@
 - **Feedback de Carga**: Sistema de Notificação atualizado para reportar erros reais de desserialização, eliminando falsos positivos de "Ficha Carregada". 
 - **Rebuild V22**: APKs reconstruídos com logs de diagnóstico para rastrear falhas remanescentes em fichas corrompidas. 
 
-Acabamos de implementar **As Novas Regras para Agentes Virtuais (IAs)**.
-Eu, como Inteligência Artificial, deixei instruções de ouro em uma pasta especial chama `.agent/skills/` para que **qualquer outra IA que trabalhar com você no futuro saiba o que fazer e como te tratar:**
-
-1. **Falar Simples:** Qualquer IA tem a obrigação de falar com você em um português normal. Nada de termos técnicos complicados. Se for preciso explicar o que foi feito, que seja em linguagem do dia a dia.
-2. **Entender de Abas:** O agente novo vai ler o mapa `README_AGENTE.md` logo de cara, sabendo que sua ficha é dividida em Geral, Traços, Perícias, Magias, Equipamentos, Defesas e Rolagem, sem você precisar repetir tudo.
-3. **Sempre Testar (Construção do App):** Proibimos qualquer IA de dizer que "terminou" o trabalho sem antes rodar um teste do sistema (um comando chamado `./gradlew build`), que garante que o aplicativo vai abrir no seu emulador sem travar.
+### Lote 101: O Retorno ao Códex (Precisão Literal) - CONCLUÍDO
+- **Motor Determinístico**: Inversão de prioridade (Manual-First) com bônus de 100 pontos para termos literais. 🎯
+- **Fim do Chute**: Implementada a "Prisão de Contexto" no Auditor. Se não está no livro, a IA não inventa. 🛡️
+- **Sincro Automática**: Sincronização de manuais agora ocorre sozinha ao abrir o Mestre IA, garantindo paridade total. ⚙️
+- **Correção Mojibake**: Limpeza de símbolos técnicos (m³, ×) no banco de dados. 🧹
+- **Bônus de Tabela**: Motor calibrado para priorizar tabelas técnicas sobre descrições de vantagens. 📊
 
 ---
 
@@ -234,7 +234,22 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - Implementação de Busca Filtrada: O sistema agora distingue entre livros diferentes que possuem o mesmo número de página, eliminando colisões (ex: Pág 117 de Magia vs Artes Marciais).
     - Dicionário Técnico Mestre: Injeção de sinônimos de alta fidelidade (ex: "Cavar" remete automaticamente a "Escavação") para garantir que o motor de busca encontre a regra correta mesmo com linguagem comum.
     - Regex de Precisão: Captura automática da fonte bibliográfica `[Livro]` a partir dos resumos do grafo para direcionar a carga de recortes manuais.
-### Próximos Passos (Desejos do Usuário):
+* [Feito] Lote 101: Motor RAG Semântico Híbrido & Anti-Diluição (FTS4 Layering) | `(Commit: Lote101)`
+    - Desativação de "blindagem" (stopWords genéricas de RPG como 'ataque' e 'dano'), devolvendo a capacidade do motor de interpretar frases naturais cruas sem falhas.
+    - Implementação de Busca por Camadas (Layering): Garantia matemática de que palavras raras (ex: 'piscina') não sejam engolidas do limite do FTS4 por palavras comuns (ex: 'dano') através de iterações individuais na base de recortes.
+* [Feito] Lote 102: Algoritmo de Raridade (TF-IDF Proxy local em Kotlin) | `(Commit: Lote102)`
+    - Implementação de heurística inspirada no TF-IDF (Inverse Document Frequency) diretamente no re-ranking local.
+    - Cálculo de peso por raridade: Palavras com muitos resultados no SQLite (peso 1) não pontuam alto; palavras com poucos recortes exatos (peso até 50) geram multiplicadores explosivos (ex: 'Combate Aquático' supera 100% 'Dano de Arma').
+    - O motor agora filtra o ruído de perguntas longas através de matemática pura, sem depender de injeções rígidas.
+
+### Próximos Passos (Desejos do Usuário & Planejamento Arquitetural Avançado):
+**[PLANEJAMENTO RAG: State-of-the-Art]**
+- **LLM Query Formulation (HyDE/Pré-Filtro Inteligente):** Estudar delegar a extração de palavras-chave da busca para um modelo rápido (como Gemini Flash) antes de acionar o SQLite. Ao invés do código Kotlin tentar adivinhar a regra, uma IA traduz "Como nadar com peso?" para as chaves oficiais: `["natação", "estorvo", "base de carga", "água"]`.
+- **Parent Document Retrieval:** Ao localizar uma regra em um *chunk* pequeno (para garantir velocidade/precisão na busca FTS), o sistema deve recuperar e enviar para a IA o "Documento Pai" inteiro (a seção/capítulo completo) para que ela não perca tabelas adjacentes ou exceções vitais.
+- **SQLite FTS5 + BM25 Nativo:** Migrar o banco local `FichaDatabase` (Room) para suportar/utilizar FTS5, permitindo que a busca e ordenação por TF-IDF ocorram no nível do banco de dados (C++) ao invés da memória Kotlin (reduz complexidade manual).
+- **RRF (Reciprocal Rank Fusion):** Criar algoritmo matemático para mesclar as listas de resultados vindas do Knowledge Graph com as listas do Full-Text Search, criando um super-ranking definitivo.
+
+**[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST do cavalo?"
 Regras de Afogamento: "Meu personagem caiu em um rio e está sem fôlego. Quanto tempo ele aguenta antes de começar a perder PV e quais são os testes de HT?"
