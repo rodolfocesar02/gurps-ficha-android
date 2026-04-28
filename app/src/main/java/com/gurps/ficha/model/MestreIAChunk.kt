@@ -8,5 +8,6 @@ data class MestreIAChunk(
     val chunk_id: String,
     val text: String,
     val source_title: String,
+    val source_id: String? = null, // LOTE 112: Identificador único da fonte (Ex: pt_modulo_basico)
     val page_number: Int? = null
 )

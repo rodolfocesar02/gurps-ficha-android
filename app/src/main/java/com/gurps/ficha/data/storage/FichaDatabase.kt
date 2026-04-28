@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class],
-    version = 19,
+    version = 20,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -84,7 +84,8 @@ abstract class FichaDatabase : RoomDatabase() {
                             title = obj.getString("title"),
                             level = obj.getInt("level"),
                             summary = obj.optString("summary", ""),
-                            category = obj.optString("category", "Geral")
+                            category = obj.optString("category", "Geral"),
+                            source_id = obj.optString("source_id", "pt_modulo_basico")
                         ))
                     }
                     graphDao.insertAll(nodes)
@@ -127,6 +128,7 @@ abstract class FichaDatabase : RoomDatabase() {
                                 chunks.add(ManualChunkEntity(
                                     chunk_id = obj.getString("chunk_id"),
                                     source_title = obj.getString("source_title"),
+                                    source_id = obj.optString("source_id", "pt_modulo_basico"),
                                     page_number = obj.optInt("page_number", 0),
                                     text = textLimpo,
                                     search_text = searchTextNorm // FTS4 field blindado contra acentos

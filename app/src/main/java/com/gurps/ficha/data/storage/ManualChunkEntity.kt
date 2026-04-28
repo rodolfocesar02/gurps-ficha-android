@@ -13,6 +13,7 @@ import androidx.room.PrimaryKey
 data class ManualChunkEntity(
     val chunk_id: String,
     val source_title: String,
+    val source_id: String? = null, // Identificador da fonte (Ex: pt_modulo_basico)
     val page_number: Int?,
     val text: String,        // Texto original para contexto da IA
     val search_text: String  // Texto normalizado para busca FTS

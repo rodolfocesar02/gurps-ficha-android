@@ -13,5 +13,6 @@ data class GraphNodeEntity(
     val title: String,
     val level: Int,       // Nível da comunidade no grafo
     val summary: String,  // Conhecimento destilado
-    val category: String  // Categoria (Regra, Equipamento, Vantagem, etc)
+    val category: String, // Categoria (Regra, Equipamento, Vantagem, etc)
+    val source_id: String? = null // LOTE 112: Identificador da fonte bibliográfica
 )

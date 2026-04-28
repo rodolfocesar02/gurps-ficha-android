@@ -140,11 +140,10 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 if (texto.contains(it.title.lowercase())) {
                     score += 5
                     if (termosBase.any { base -> base.equals(it.title, true) }) score += 20
+                    // LOTE 112: Prioridade para Nós Mestres (Índices Gerais)
+                    if (it.level == 0) score += 40
                 }
             }
-            
-            // LOTE 112: Prioridade para Nós Mestres (Índices Gerais)
-            if (it.level == 0) score += 40
 
             // Bônus por categoria (Peso 5)
             if (topNodes.any { it.category.lowercase() in texto }) score += 5

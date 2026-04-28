@@ -61,6 +61,7 @@ class MestreIARepository(
                 chunk_id = entity.chunk_id,
                 text = entity.text,
                 source_title = entity.source_title,
+                source_id = entity.source_id,
                 page_number = entity.page_number
             )
         }
@@ -102,6 +103,7 @@ class MestreIARepository(
                 chunk_id = entity.chunk_id,
                 text = entity.text,
                 source_title = entity.source_title,
+                source_id = entity.source_id,
                 page_number = entity.page_number
             )
         }
@@ -113,6 +115,7 @@ class MestreIARepository(
                 chunk_id = entity.chunk_id,
                 text = entity.text,
                 source_title = entity.source_title,
+                source_id = entity.source_id,
                 page_number = entity.page_number
             )
         }
@@ -124,6 +127,7 @@ class MestreIARepository(
                 chunk_id = entity.chunk_id,
                 text = entity.text,
                 source_title = entity.source_title,
+                source_id = entity.source_id,
                 page_number = entity.page_number
             )
         }
