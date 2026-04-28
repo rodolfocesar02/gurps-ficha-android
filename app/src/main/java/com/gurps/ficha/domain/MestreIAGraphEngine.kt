@@ -180,19 +180,26 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK (Offset $offset): Pág ${chunk.page_number} | Score: $score | Texto: ${chunk.text.take(60)}...")
         }
 
-        // 4. EXPANSÃO DE CONTEXTO
+        // 4. PARENT DOCUMENT RETRIEVAL (Lote 103)
+        // Ao invés de trazer apenas o parágrafo atual, nós identificamos as páginas vencedoras
+        // e buscamos a PÁGINA INTEIRA (Documento Pai) no banco de dados. Isso impede que
+        // tabelas críticas de dano ou modificadores sejam cortadas por estarem no parágrafo de baixo.
         val chunksFinais = mutableSetOf<MestreIAChunk>()
-        chunksPaginados.forEach { (chunk, _) ->
-            chunksFinais.add(chunk)
-            val idBase = chunk.chunk_id.substringBeforeLast("_c")
-            val currentIdx = chunk.chunk_id.substringAfterLast("_c").toIntOrNull() ?: return@forEach
+        chunksPaginados.take(3).forEach { (chunk, _) ->
+            val pagina = chunk.page_number
+            val fonte = chunk.source_title
             
-            // Traz o parágrafo anterior e o próximo para profundidade técnica
-            repository.getChunkById("${idBase}_c${currentIdx - 1}")?.let { chunksFinais.add(it) }
-            repository.getChunkById("${idBase}_c${currentIdx + 1}")?.let { chunksFinais.add(it) }
+            if (pagina != null && fonte != null) {
+                // Traz a página inteira
+                val paginaInteira = repository.buscarPorPaginaESource(pagina, fonte)
+                chunksFinais.addAll(paginaInteira)
+            } else {
+                // Fallback seguro caso falte metadados
+                chunksFinais.add(chunk)
+            }
         }
 
-        android.util.Log.i("MestreIA_G", "Busca Profunda: ${chunksFinais.size} recortes filtrados.")
+        android.util.Log.i("MestreIA_G", "Parent Document Retrieval: ${chunksFinais.size} recortes da mesma página recuperados.")
 
         return GraphSearchResult(
             summaries = topNodes.toList().sortedByDescending { it.level }.take(5),

@@ -29,11 +29,19 @@ class MestreIAUseCase(
         viewModelScope.launch {
             val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
             
-            // LOTE 91.5: COMANDO DE DESENVOLVEDOR - FORÇAR RECARGA DO JSON
-            if (prompt.trim().lowercase() == "forçar sincronização do grafo") {
+            // LOTE 91.5: COMANDOS DE DESENVOLVEDOR - FORÇAR RECARGA DO JSON
+            val cmd = prompt.trim().lowercase()
+            if (cmd == "forçar sincronização do grafo") {
                 onStatusUpdate("Limpando banco e recarregando graph_knowledge.json...")
                 repository.forçarSincronizacaoGrafo()
-                onResultado(true, MestreIAClient.ChatResponse("AUDITORIA: Grafo sincronizado com sucesso a partir do arquivo JSON! Você já pode testar as novas regras."))
+                onResultado(true, MestreIAClient.ChatResponse("AUDITORIA: Mapa de Nós sincronizado!"))
+                return@launch
+            }
+            if (cmd == "forçar sincronização completa" || cmd == "forçar sincronização do codex") {
+                onStatusUpdate("Resetando Códex Total (Nós + Recortes)...")
+                repository.forçarSincronizacaoGrafo()
+                repository.forçarSincronizacaoManual()
+                onResultado(true, MestreIAClient.ChatResponse("AUDITORIA: Sincronização Completa concluída! O Códex está 100% atualizado."))
                 return@launch
             }
             
@@ -88,12 +96,15 @@ class MestreIAUseCase(
                                 
                                 val resTool = graphEngine.buscarNoGrafo(queryTool, offset)
                                 val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
-                                    resTool.relatedChunks.take(5).joinToString("\n") { "[Pág. ${it.page_number}]: ${it.text}" }.take(5000) // Reduzido para 5k
+                                    "<CONTEXTO_TECNICO>\n" + 
+                                    resTool.relatedChunks.take(5).joinToString("\n") { 
+                                        "[${it.source_title}, Pág. ${it.page_number}]: ${it.text}" 
+                                    } + "\n</CONTEXTO_TECNICO>"
                                 } else {
-                                    "NENHUMA REGRA ENCONTRADA para '$queryTool'. Tente termos diferentes do manual GURPS 4e."
+                                    "NENHUMA REGRA ENCONTRADA no manual para '$queryTool'. Não tente inventar a regra."
                                 }
                                 
-                                promptInvestigacao = "Pergunta Original: $prompt\n\nResultado da busca por '$queryTool':\n$contextoExtra\n\nContinue a investigação ou dê a resposta final se já tiver dados suficientes."
+                                promptInvestigacao = "Pergunta Original: $prompt\n\nUse APENAS este contexto para responder:\n$contextoExtra\n\nSe a resposta estiver no contexto, responda citando a página. Se não, diga que não encontrou."
                                 loopsRestantes--
                                 iteracao++
                                 continue
@@ -101,7 +112,14 @@ class MestreIAUseCase(
                         }
 
                         if (resposta.text.isNotBlank() && !resposta.text.startsWith("Erro")) {
-                            onResultado(isRagUsed, resposta.copy(modelName = modelId))
+                            // LOTE 101: Validador de Citações (O "X9" da IA)
+                            val temCitacao = resposta.text.contains("[") && (resposta.text.contains("Pág", true) || resposta.text.contains("Pg", true))
+                            val respostaFinal = if (!temCitacao && iteracao > 1) {
+                                resposta.text + "\n\n⚠️ _[AUDITORIA: Esta resposta não citou fontes do manual e pode conter imprecisões]_"
+                            } else {
+                                resposta.text
+                            }
+                            onResultado(isRagUsed, resposta.copy(text = respostaFinal, modelName = modelId))
                             sucesso = true
                         } else {
                             errosAcumulados.add("${modelId.takeLast(10)}: ${resposta.text.take(30)}")
@@ -197,7 +215,7 @@ class MestreIAUseCase(
             itensDetalhes = detalhesItens,
             chunks = res.relatedChunks,
             summaries = res.summaries,
-            ponteDeFerro = graphEngine.formatarParaIA(res).take(5000) // LIMITE DE SEGURANÇA: 5k chars
+            ponteDeFerro = graphEngine.formatarParaIA(res).take(15000) // LOTE 103: Aumentado para 15k chars para suportar o Parent Document Retrieval
         )
         return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty() || res.summaries.isNotEmpty())
     }
