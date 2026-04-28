@@ -59,16 +59,32 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         // 2. Busca de Text Units (Chunks)
         val paginasAlvo = mutableSetOf<Pair<Int, String?>>()
         topNodes.forEach { node ->
-            // LOTE 100: Regex para capturar [Nome do Livro Pág. X]
-            val match = Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).find(node.summary)
-            if (match != null) {
-                val livro = match.groupValues[1].trim()
-                val pag = match.groupValues[2].toIntOrNull()
+            // LOTE 100: Regex para capturar [Nome do Livro Pág. X] (Captura a primeira menção completa)
+            val matchLivro = Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).find(node.summary)
+            if (matchLivro != null) {
+                val livro = matchLivro.groupValues[1].trim()
+                val pag = matchLivro.groupValues[2].toIntOrNull()
                 if (pag != null) paginasAlvo.add(pag to livro)
             } else {
                 // Fallback para quando só tem o número da página (compatibilidade)
-                Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).find(node.summary)?.let { m ->
+                // LOTE 112: Usa findAll para capturar MÚLTIPLAS páginas (ex: [Pág. 353, 354, 388])
+                Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
                     m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(it to null) }
+                }
+            }
+            // NOVO: Capturar também números de página simples que estão no meio da string ex: [Pág. 353, 354, 388]
+            // O código acima captura o "Pág. 353". Para "354, 388", a regex anterior pode não pegar.
+            // Vamos fazer uma regex mais abrangente para a lista.
+            Regex("""\[.*?P[ágǭg\uFFFD\s.]+(.*?)\]""", RegexOption.IGNORE_CASE).find(node.summary)?.let { m ->
+                val listPaginas = m.groupValues[1]
+                Regex("""(\d+)""").findAll(listPaginas).forEach { p ->
+                    p.groupValues[1].toIntOrNull()?.let { 
+                        if (matchLivro != null) {
+                            paginasAlvo.add(it to matchLivro.groupValues[1].trim())
+                        } else {
+                            paginasAlvo.add(it to null)
+                        }
+                    }
                 }
             }
         }
