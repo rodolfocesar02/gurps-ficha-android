@@ -184,18 +184,36 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             val graphRank = paginasGrafoRanking[chunk.page_number] ?: 1000 // Penalidade se o Grafo não recomendou
             val graphRrfScore = 1.0 / (graphRank + 60)
             
-            val finalRrfScore = textRrfScore + graphRrfScore
+            // LOTE 105: Bônus de Autoridade do Grafo (Multiplicador de 5x para páginas sugeridas pelo Grafo)
+            val graphMultiplier = if (paginasGrafoRanking.containsKey(chunk.page_number)) 5.0 else 1.0
+            
+            val finalRrfScore = textRrfScore + (graphRrfScore * graphMultiplier)
             chunk to finalRrfScore
         }.sortedByDescending { it.second }
         
+        // LOTE 105: Filtro de Diversidade (Anti-Monopólio)
+        // Impede que uma única página (ex: Pág 16) ocupe todas as vagas do contexto.
+        // Permitimos no máximo 2 recortes da mesma página no Top 8.
+        val contadorPaginas = mutableMapOf<Int, Int>()
+        val chunksDiversos = chunksRRF.filter { (chunk, _) ->
+            val page = chunk.page_number ?: -1
+            val total = contadorPaginas.getOrDefault(page, 0)
+            if (total < 2) {
+                contadorPaginas[page] = total + 1
+                true
+            } else {
+                false
+            }
+        }
+
         // Paginação de Chunks (Pula os primeiros 'offset * 5' resultados)
         val chunksPaginados = if (offset > 0) {
-            chunksRRF.drop(offset * 5).take(8)
+            chunksDiversos.drop(offset * 5).take(8)
         } else {
-            chunksRRF.take(8)
+            chunksDiversos.take(8)
         }
         
-        chunksPaginados.take(3).forEach { (chunk, score) ->
+        chunksPaginados.take(5).forEach { (chunk, score) ->
             android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK (Offset $offset): Pág ${chunk.page_number} | Score: $score | Texto: ${chunk.text.take(60)}...")
         }
 
@@ -204,7 +222,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         // e buscamos a PÁGINA INTEIRA (Documento Pai) no banco de dados. 
         // LOTE 104: Aumentamos para Top 8. Com o limite de 15k chars, cabem ~3 a 4 páginas completas.
         val chunksFinais = mutableSetOf<MestreIAChunk>()
-        chunksRRF.take(8).forEach { (chunk, _) ->
+        chunksPaginados.forEach { (chunk, _) ->
             val pagina = chunk.page_number
             val fonte = chunk.source_title
             
