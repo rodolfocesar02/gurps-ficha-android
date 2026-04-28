@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 26 de Abril de 2026
-**Status Atual:** ERA DO RACIOCÍNIO - Motor de Decomposição por Pilares Ativado 🧠⚙️ | Lote 112 CONCLUÍDO 🚀
+**Última Atualização:** 28 de Abril de 2026
+**Status Atual:** ERA DO RACIOCÍNIO - Conectividade Estabilizada 🌐🛡️ | Lote 114 CONCLUÍDO 🚀
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -304,6 +304,10 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Stop Words:** Removidas palavras cruciais como "requisitos" e "pre" do limpador lexical no `extrairPalavrasChave`.
 
 * [Feito] Lote 113: Integração Nexus-IA (O Consultor Arcano) | `(Commit: c4a1b2d)`
+* [Feito] Lote 114: Blindagem de Conectividade & Contexto Arcano | `(Commit: pendente)`
+    - **Fix Conectividade:** Resolução do Erro 400 através da segregação de URLs e Chaves por provedor (Gemini vs DeepSeek).
+    - **Enriquecimento Arcano:** Injeção automática de Escolas e Pré-requisitos no contexto de magias para o Mestre IA.
+    - **Estabilização de Build:** Correção de inferência de tipos no ranking RRF do GraphEngine.
     - **Conexão de Motores:** Implementação da ferramenta nativa `consultar_nexus_arcano` no Mestre IA, permitindo que a IA invoque o Motor Nexus em milissegundos.
     - **Gabarito Técnico:** O motor agora gera um "Gabarito de Ouro" determinístico (Estado Zero) com árvore de dependências completa e sugestões para metas de escolas.
     - **Fidelidade Bibliográfica:** Correção de dados no `magias2versao.json` (Sopro de Fogo/Ácido/Frio) alinhando "Resistência" com o Módulo Básico.

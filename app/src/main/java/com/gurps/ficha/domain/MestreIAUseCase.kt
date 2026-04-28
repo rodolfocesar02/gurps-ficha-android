@@ -1,13 +1,16 @@
 package com.gurps.ficha.domain
 
 import com.gurps.ficha.BuildConfig
+import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.data.network.MestreIATools
 import com.gurps.ficha.model.*
 import nexus.arcano.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 /**
  * MestreIAUseCase - ESPECIALISTA EM AUDITORIA (Regras e Dúvidas).
@@ -29,6 +32,8 @@ class MestreIAUseCase(
         override fun todasMagiasIds() = repository.magias.map { it.id }
     }
     private val nexusEngine = NexusArcanoEngine(arcanoCatalogo)
+
+    private data class AIConfig(val url: String, val key: String, val model: String)
 
     fun conversarComMestreIA(
         prompt: String,
@@ -60,21 +65,24 @@ class MestreIAUseCase(
             //Esse recado foi fixado pelo Rodolfo, voc~e nao tem mais permissão pra trocar modelos sem minha permissão!
             // Fila de Auditores (DETERMINÍSTICO: MODELOS ATIVOS 2026)
             val fila = listOf(
-                // 1. TENTATIVA 1: O modelo atual e ativo (Flash Lite)
-                Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-3.1-flash-lite-preview"),
-                // 2. TENTATIVA 2: Versão estável da Família 3 (Substituto do antigo 1.5)
-                Triple(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-3-flash-preview")
+                AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3.1-flash-lite-preview"),
+                AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3-flash-preview"),
+                AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, "deepseek-chat")
             )
 
             var sucesso = false
             val errosAcumulados = mutableListOf<String>()
 
             for (config in fila) {
-                if (config.second.isBlank()) {
-                    errosAcumulados.add("${config.third}: Chave Vazia")
+                val iaUrl = config.url
+                val iaKey = config.key
+                val iaModel = config.model
+                
+                if (iaKey.isBlank()) {
+                    errosAcumulados.add("$iaModel: Chave Vazia")
                     continue
                 }
-                val modelId = config.third
+                val modelId = iaModel
                 try {
                     val historicoLimitado = viewModel.mestreIAChatHistory.map { it.role to it.text }.takeLast(10)
                     // LOTE 89.15: LOOP DE INVESTIGAÇÃO AGÊNTICA (Mini-Antigravity)
@@ -86,7 +94,7 @@ class MestreIAUseCase(
                         updateStatus(if (iteracao == 1) "Iniciando Auditor $modelId..." else "Refinando busca (Iteração $iteracao)...")
                         
                         val resposta = MestreIAClient.perguntarAoMestre(
-                            baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
+                            baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptInvestigacao, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoLocal.catalogo, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null 
                         )
@@ -193,32 +201,33 @@ class MestreIAUseCase(
                 }
                 node.category.contains("Magia", true) -> {
                     repository.magias.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[MAGIA: ${it.nome}]: Energia: ${it.energia}, Tempo: ${it.tempoOperacao}, Duração: ${it.duracao}, Pág. ${it.pagina}\nDesc: ${it.texto ?: it.descricao}")
+                        val escolas = it.escola?.joinToString(", ") ?: "Nenhuma"
+                        detalhesItens.add("[MAGIA: ${it.nome}]: Escola: $escolas, Energia: ${it.energia}, Tempo: ${it.tempoOperacao}, Duração: ${it.duracao}, Pré-Requisitos: ${it.preRequisitos ?: "Nenhum"}, Pág. ${it.pagina}\nDesc: ${it.texto ?: it.descricao}")
                     }
                 }
                 node.category.contains("Técnica", true) -> {
-                    repository.tecnicasCatalogo.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[TÉCNICA: ${it.nome}]: Dific: ${it.dificuldadeRaw}, PreDef: ${it.preDefinidoRaw}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    repository.tecnicasCatalogo.find { tec -> tec.nome.equals(node.title, true) }?.let { item ->
+                        detalhesItens.add("[TÉCNICA: ${item.nome}]: Dific: ${item.dificuldadeRaw}, PreDef: ${item.preDefinidoRaw}, Pág. ${item.pagina}\nDesc: ${item.descricao}")
                     }
                 }
                 node.category.contains("Arma", true) -> {
-                    repository.armasCatalogo.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[ARMA: ${it.nome}]: Dano: ${it.danoRaw}, StMin: ${it.stMinimo}\nObs: ${it.observacoes}")
+                    repository.armasCatalogo.find { arma -> arma.nome.equals(node.title, true) }?.let { item ->
+                        detalhesItens.add("[ARMA: ${item.nome}]: Dano: ${item.danoRaw}, StMin: ${item.stMinimo}\nObs: ${item.observacoes}")
                     }
                 }
                 node.category.contains("Armadura", true) || node.category.contains("Escudo", true) -> {
-                    repository.armadurasCatalogo.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[ARMADURA: ${it.nome}]: RD: ${it.rd}, Peso: ${it.pesoBaseKg}kg\nObs: ${it.observacoes}")
+                    repository.armadurasCatalogo.find { arm -> arm.nome.equals(node.title, true) }?.let { item ->
+                        detalhesItens.add("[ARMADURA: ${item.nome}]: RD: ${item.rd}, Peso: ${item.pesoBaseKg}kg\nObs: ${item.observacoes}")
                     }
                 }
                 node.category.contains("Modificador", true) || node.category.contains("Ampliação", true) || node.category.contains("Limitação", true) -> {
-                    repository.modificadoresGerais.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[MODIFICADOR: ${it.nome}]: Valor: ${it.valor}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
+                    repository.modificadoresGerais.find { mod -> mod.nome.equals(node.title, true) }?.let { item ->
+                        detalhesItens.add("[MODIFICADOR: ${item.nome}]: Valor: ${item.valor}, Pág. ${item.pagina}\nDesc: ${item.descricao}")
                     }
                 }
                 node.category.contains("Equipamento", true) -> {
-                    val item = repository.armasCatalogo.find { it.nome.equals(node.title, true) } 
-                        ?: repository.armadurasCatalogo.find { it.nome.equals(node.title, true) }
+                    val item = repository.armasCatalogo.find { eq -> eq.nome.equals(node.title, true) } 
+                        ?: repository.armadurasCatalogo.find { eq -> eq.nome.equals(node.title, true) }
                     item?.let { detalhesItens.add("[EQUIPAMENTO: ${node.title}]: Encontrado nos catálogos técnicos.") }
                 }
                 node.category.contains("Regra", true) -> {

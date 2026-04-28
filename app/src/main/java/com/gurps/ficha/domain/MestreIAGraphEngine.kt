@@ -312,7 +312,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             // LOTE 106: Aumentamos para 20 recortes para garantir que as páginas adjacentes não sejam cortadas.
             relatedChunks = chunksFinais.toList().sortedWith(compareByDescending<MestreIAChunk> { chunk ->
                 // Prioridade 1: Estar nas páginas recomendadas pelo Grafo
-                if (paginasAlvo.any { it.first == chunk.page_number }) 1000.0 else 0.0
+                if (paginasAlvo.any { it.numero == chunk.page_number }) 1000.0 else 0.0
             }.thenByDescending { chunk ->
                 // Prioridade 2: Score RRF original
                 chunksRRF.find { it.first.chunk_id == chunk.chunk_id }?.second ?: 0.0
