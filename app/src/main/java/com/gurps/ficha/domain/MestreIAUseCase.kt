@@ -67,7 +67,7 @@ class MestreIAUseCase(
             val fila = listOf(
                 AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3.1-flash-lite-preview"),
                 AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3-flash-preview"),
-                AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, "deepseek-chat")
+                AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1)
             )
 
             var sucesso = false
