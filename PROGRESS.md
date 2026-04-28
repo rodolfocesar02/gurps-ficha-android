@@ -264,14 +264,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Busca Agnóstica:** Os termos de busca são normalizados antes da consulta, permitindo que "colisao" encontre "Colisão" e vice-versa.
     - **Unificação de Scoring:** O re-ranking TF-IDF agora utiliza os mesmos termos normalizados, garantindo precisão matemática no Top 3.
 
-* [Finalizado] Lote 108: Sincronia Automática e Limpeza de Legado | `(Manual: Antigravity)`
+* [Finalizado] Lote 108: Sincronia Automática e Limpeza de Legado | `(Commit: 2e59eba)`
     - **Remoção de Gatilhos Manuais:** Extintos os comandos "forçar sincronização" via chat.
     - **Sincronia Inteligente:** Implementado **Mutex** no `MestreIARepository` para garantir carga única e atômica.
     - **Performance & Background:** UseCase migrado para `Dispatchers.IO`, eliminando lag na UI.
     - **Encoding UTF-8 (Fim do Mojibake):** Forçada leitura de assets em UTF-8, corrigindo acentos corrompidos.
     - **v19 do Banco:** Incrementada versão do DB para forçar reset limpo dos índices.
 
-* [Finalizado] Lote 109: Purificação Arquitetural | `(Manual: Antigravity)`
+* [Finalizado] Lote 109: Purificação Arquitetural | `(Commit: 2e59eba)`
     - **Isolamento de Repositório:** Criado o `MestreIARepository` para separar a lógica de regras da lógica de ficha (`DataRepository`).
     - **Delegação Limpa:** O `DataRepository` agora apenas delega as chamadas de busca, reduzindo seu tamanho e complexidade.
     - **Estabilidade de Testes:** Ajustados Stubs e inicialização `lazy` para permitir testes unitários sem dependência de Contexto.
