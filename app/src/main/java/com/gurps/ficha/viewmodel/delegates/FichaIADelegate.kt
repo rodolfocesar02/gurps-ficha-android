@@ -38,8 +38,8 @@ class FichaIADelegate(
         sincroniaExecutadaNestaSessao = true
         
         scope.launch(Dispatchers.IO) {
-            android.util.Log.i("MestreIA_Auditoria", "DISPARANDO SINCRONIZAÇÃO AUTOMÁTICA (Início de Sessão)")
-            dataRepository.forçarSincronizacaoManual()
+            android.util.Log.i("MestreIA_Auditoria", "VERIFICANDO INTEGRIDADE DO CÓDEX (Início de Sessão)")
+            dataRepository.sincronizarCodexSeNecessario()
         }
     }
 

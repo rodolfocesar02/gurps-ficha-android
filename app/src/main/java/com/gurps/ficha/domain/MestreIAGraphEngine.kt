@@ -78,15 +78,16 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         
         // Fazemos buscas independentes para cada termo e calculamos sua raridade no livro.
         termosBase.forEach { termo ->
-            if (termo.length >= 3) { 
-                val encontradas = repository.buscarRecortesManual("$termo*", 50)
+            val termoNorm = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(termo)
+            if (termoNorm.length >= 3) { 
+                val encontradas = repository.buscarRecortesManual("$termoNorm*", 50)
                 chunksCandidatos.addAll(encontradas)
                 
                 // CÁLCULO DE RARIDADE: Se achou 50 recortes (bateu no limite), é palavra comum (peso baixo).
                 // Se achou 2 recortes, é palavra raríssima e central para a dúvida (peso alto).
                 val ocorrencias = encontradas.size.coerceAtLeast(1)
                 val pesoRaridade = (50 / ocorrencias).coerceIn(1, 50)
-                termoWeights[termo.lowercase()] = pesoRaridade
+                termoWeights[termoNorm] = pesoRaridade
             }
         }
         
@@ -118,20 +119,10 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             
             // Prioridade baseada na raridade da palavra (TF-IDF Proxy)
             termosBase.forEach { termo ->
-                val termLower = termo.lowercase()
+                val termLower = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(termo)
                 val pesoRaridade = termoWeights[termLower] ?: 1
                 
-                val termRadical = if (termLower.length >= 5 && termLower.endsWith("r")) {
-                    termLower.dropLast(1)
-                } else if (termLower.length >= 5 && termLower.endsWith("s")) {
-                    termLower.dropLast(1)
-                } else if (termLower.length >= 6 && termLower.endsWith("ção")) {
-                    termLower.dropLast(3)
-                } else {
-                    termLower
-                }
-                
-                if (texto.contains(termRadical)) {
+                if (texto.contains(termLower)) {
                     score += (100 * pesoRaridade) // Palavra rara dá pontuação massiva!
                     rareMatchBonus += pesoRaridade
                 } 
@@ -217,33 +208,40 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK (Offset $offset): Pág ${chunk.page_number} | Score: $score | Texto: ${chunk.text.take(60)}...")
         }
 
-        // 4. PARENT DOCUMENT RETRIEVAL (Lote 103)
+        // 4. PARENT DOCUMENT RETRIEVAL (Lote 103) + CONTEXTO ADJACENTE (Lote 106)
         // Ao invés de trazer apenas o parágrafo atual, nós identificamos as páginas vencedoras
-        // e buscamos a PÁGINA INTEIRA (Documento Pai) no banco de dados. 
-        // LOTE 104: Aumentamos para Top 8. Com o limite de 15k chars, cabem ~3 a 4 páginas completas.
+        // e buscamos a PÁGINA INTEIRA (Documento Pai) + A PÁGINA SEGUINTE (Suporte).
+        // LOTE 106: Isso resolve o problema de tabelas e fórmulas que terminam na página seguinte.
         val chunksFinais = mutableSetOf<MestreIAChunk>()
         chunksPaginados.forEach { (chunk, _) ->
             val pagina = chunk.page_number
             val fonte = chunk.source_title
             
             if (pagina != null && fonte != null) {
-                // Traz a página inteira
-                val paginaInteira = repository.buscarPorPaginaESource(pagina, fonte)
-                chunksFinais.addAll(paginaInteira)
+                // 1. Traz a página inteira de impacto
+                val paginaImpacto = repository.buscarPorPaginaESource(pagina, fonte)
+                chunksFinais.addAll(paginaImpacto)
+                
+                // 2. Traz a página seguinte (Contexto Adjacente)
+                val paginaSeguinte = repository.buscarPorPaginaESource(pagina + 1, fonte)
+                if (paginaSeguinte.isNotEmpty()) {
+                    chunksFinais.addAll(paginaSeguinte)
+                    android.util.Log.d("MestreIA_G", "LOTE 106: Injetada Pág. ${pagina + 1} como suporte à Pág. $pagina ($fonte).")
+                }
             } else {
                 // Fallback seguro caso falte metadados
                 chunksFinais.add(chunk)
             }
         }
 
-        android.util.Log.i("MestreIA_G", "Parent Document Retrieval: ${chunksFinais.size} recortes da mesma página recuperados.")
+        android.util.Log.i("MestreIA_G", "Parent Document Retrieval (Lote 106): ${chunksFinais.size} recortes totais (Impacto + Adjacente) recuperados.")
 
         return GraphSearchResult(
             summaries = topNodes.toList().sortedByDescending { it.level }.take(5),
-            // CRÍTICO: Ordenar por SCORE (Relevância) e NÃO por ID Alfabético!
+            // LOTE 106: Aumentamos para 20 recortes para garantir que as páginas adjacentes não sejam cortadas.
             relatedChunks = chunksFinais.toList().sortedByDescending { chunk -> 
                 chunksRRF.find { it.first.chunk_id == chunk.chunk_id }?.second ?: 0.0
-            }.take(10)
+            }.take(20)
         )
     }
 
@@ -280,13 +278,31 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         expandidas.addAll(palavrasOriginais)
 
         val dicionarioTecnico = mapOf(
-            "sangramento" to listOf("hemorragia", "ferimento", "saúde", "perda"),
-            "pular" to listOf("salto", "distância", "altura"),
-            "impacto" to listOf("colisão", "batida", "queda"),
-            "asfixia" to listOf("afogamento", "sufocamento", "respiração")
+            "sangramento" to listOf("hemorragia", "ferimento", "saúde", "saude", "perda"),
+            "hemorragia" to listOf("sangramento"),
+            "pular" to listOf("salto", "distância", "altura", "salto em comprimento", "salto em altura"),
+            "impacto" to listOf("colisão", "colisao", "batida", "queda", "atropelamento", "dano por colisão"),
+            "colisão" to listOf("impacto", "queda", "atropelamento"),
+            "colisao" to listOf("impacto", "queda", "atropelamento"),
+            "queda" to listOf("impacto", "colisão", "dano de queda"),
+            "asfixia" to listOf("afogamento", "sufocamento", "respiração", "fôlego", "folego", "ar"),
+            "afogamento" to listOf("asfixia", "sufocamento", "agua", "água"),
+            "st" to listOf("força", "forca", "levantamento", "carga", "dano", "gdp", "geb"),
+            "força" to listOf("st", "levantamento", "carga"),
+            "forca" to listOf("st", "levantamento", "carga"),
+            "dx" to listOf("destreza", "agilidade", "coordenação"),
+            "iq" to listOf("inteligência", "inteligencia", "vontade", "percepção", "percepcao"),
+            "ht" to listOf("vitalidade", "saúde", "saude", "fadiga", "pf", "sobrevivência"),
+            "velocidade" to listOf("deslocamento", "esquiva", "movimento", "m/s", "km/h")
         )
         palavrasOriginais.forEach { p ->
             dicionarioTecnico[p]?.let { expandidas.addAll(it) }
+            // Busca parcial para termos compostos
+            dicionarioTecnico.entries.forEach { entry ->
+                if (p.contains(entry.key) || entry.key.contains(p)) {
+                    expandidas.addAll(entry.value)
+                }
+            }
         }
 
         repository.temasMestreIA.forEach { tema ->

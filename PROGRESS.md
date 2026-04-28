@@ -254,6 +254,28 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Filtro Anti-Monopólio:** Implementada trava algorítmica que limita a 2 recortes por página no Top 8. Isso obriga o motor a trazer diversidade de regras (ex: Pág 16 + Pág 430 + Pág 397) em vez de inundar o contexto com uma única página genérica.
     - **Bônus de Grafo (5x):** Páginas sugeridas pelo Knowledge Graph agora recebem um multiplicador de relevância de 500%, garantindo que a inteligência estrutural prevaleça sobre a mera repetição de palavras-chave.
 
+* [Feito] Lote 106: Contexto Adjacente (Página Suporte) | `(Manual: Antigravity)`
+    - **Página n+1:** O motor `MestreIAGraphEngine` agora recupera automaticamente a página seguinte para cada página de impacto encontrada, garantindo integridade de tabelas e fórmulas longas.
+    - **Expansão de Contexto:** Aumentado o limite de recortes finais de 10 para **20** para acomodar o suporte adjacente sem cortes.
+    - **Validação de Colisão:** Confirmada a recuperação da fórmula de dano (Pág 432) ao buscar por termos na Pág 431.
+
+* [Feito] Lote 107: Blindagem de FTS4 (Normalização de Acentos) | `(Manual: Antigravity)`
+    - **Indexação Normalizada:** A coluna `search_text` agora é povoada sem acentos e em lowercase, blindando o motor contra encoding corrompido (Mojibake).
+    - **Busca Agnóstica:** Os termos de busca são normalizados antes da consulta, permitindo que "colisao" encontre "Colisão" e vice-versa.
+    - **Unificação de Scoring:** O re-ranking TF-IDF agora utiliza os mesmos termos normalizados, garantindo precisão matemática no Top 3.
+
+* [Finalizado] Lote 108: Sincronia Automática e Limpeza de Legado | `(Manual: Antigravity)`
+    - **Remoção de Gatilhos Manuais:** Extintos os comandos "forçar sincronização" via chat.
+    - **Sincronia Inteligente:** Implementado **Mutex** no `MestreIARepository` para garantir carga única e atômica.
+    - **Performance & Background:** UseCase migrado para `Dispatchers.IO`, eliminando lag na UI.
+    - **Encoding UTF-8 (Fim do Mojibake):** Forçada leitura de assets em UTF-8, corrigindo acentos corrompidos.
+    - **v19 do Banco:** Incrementada versão do DB para forçar reset limpo dos índices.
+
+* [Finalizado] Lote 109: Purificação Arquitetural | `(Manual: Antigravity)`
+    - **Isolamento de Repositório:** Criado o `MestreIARepository` para separar a lógica de regras da lógica de ficha (`DataRepository`).
+    - **Delegação Limpa:** O `DataRepository` agora apenas delega as chamadas de busca, reduzindo seu tamanho e complexidade.
+    - **Estabilidade de Testes:** Ajustados Stubs e inicialização `lazy` para permitir testes unitários sem dependência de Contexto.
+
 ### Próximos Passos (Desejos do Usuário & Planejamento Arquitetural Avançado):
 **[PLANEJAMENTO RAG: State-of-the-Art]**
 - Artefato criado: `[plan_rag_state_of_the_art.md]` (Plano de arquitetura State-of-the-Art para o motor de busca do Mestre IA, englobando HyDE, RRF e Parent Document Retrieval).

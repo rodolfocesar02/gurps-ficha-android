@@ -1,0 +1,72 @@
+wing: gurps-ficha-android
+rooms:
+- name: app_android
+  description: Código fonte do aplicativo Kotlin/Compose
+  keywords:
+  - android
+  - kotlin
+  - ui
+- name: auditoria_rag
+  description: Motor de Busca e Inteligência de Regras
+  keywords:
+  - rag
+  - mestre_ia
+  - busca
+- name: nexus_arcano
+  description: Motor de Magias e Requisitos
+  keywords:
+  - magia
+  - nexus
+- name: app
+  description: Files from app/
+  keywords:
+  - app
+  - app
+- name: discord_roll_api
+  description: Files from discord-roll-api/
+  keywords:
+  - discord_roll_api
+  - discord-roll-api
+- name: documentation
+  description: Files from docs/
+  keywords:
+  - documentation
+  - docs
+- name: gradle
+  description: Files from gradle/
+  keywords:
+  - gradle
+  - gradle
+- name: motor_modo_alvo
+  description: Files from motor modo alvo/
+  keywords:
+  - motor_modo_alvo
+  - motor modo alvo
+- name: release_apks
+  description: Files from release-apks/
+  keywords:
+  - release_apks
+  - release-apks
+- name: scratch
+  description: Files from scratch/
+  keywords:
+  - scratch
+  - scratch
+- name: scripts
+  description: Files from scripts/
+  keywords:
+  - scripts
+  - scripts
+- name: vtt_ficha
+  description: Files from VTT_FICHA/
+  keywords:
+  - vtt_ficha
+  - vtt_ficha
+- name: backend
+  description: Files from backend/
+  keywords:
+  - backend
+  - backend
+- name: general
+  description: Files that don't fit other rooms
+  keywords: []

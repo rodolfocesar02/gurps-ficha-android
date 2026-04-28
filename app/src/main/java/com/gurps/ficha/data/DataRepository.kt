@@ -16,6 +16,10 @@ import com.gurps.ficha.domain.filters.CatalogFilters
 import com.gurps.ficha.domain.loaders.sanitized
 import com.gurps.ficha.domain.loaders.fixMojibakeIfNeeded
 import java.text.Normalizer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * Repositorio para carregar dados de Vantagens, Desvantagens, Pericias e Magias
@@ -56,6 +60,8 @@ open class DataRepository(internal val context: Context) {
     private var _armadurasCatalogo: List<ArmaduraCatalogoItem>? = null
     private var _modificadoresGerais: List<ModificadorDefinicao>? = null
     private var _temasMestreIA: List<MestreIaTema>? = null
+    
+    val mestreIARepository by lazy { MestreIARepository(context, database) }
 
     open val vantagens: List<VantagemDefinicao>
         get() = _vantagens ?: carregarVantagens().also { _vantagens = it }
@@ -170,87 +176,19 @@ open class DataRepository(internal val context: Context) {
             .toList()
     }
 
-    // --- MÉTODOS PARA GRAPHRAG (LOTE 62) ---
-
-    /**
-     * Busca nos resumos de comunidades e entidades do Grafo.
-     */
-    suspend fun buscarResumosGrafo(query: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
-        return graphNodeDao.buscarNodes(query)
-    }
-
-    suspend fun buscarNodesPorTitulo(query: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
-        return graphNodeDao.findByTitleLike(query)
-    }
-
-    suspend fun buscarResumoNode(entityId: String): com.gurps.ficha.data.storage.GraphNodeEntity? {
-        return graphNodeDao.getNodeById(entityId)
-    }
-
-    suspend fun buscarResumosEssenciais(): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
-        return graphNodeDao.getEssentialNodes()
-    }
-
-    suspend fun findByCategory(category: String): List<com.gurps.ficha.data.storage.GraphNodeEntity> {
-        return graphNodeDao.findByCategory(category)
-    }
-
-    suspend fun forçarSincronizacaoGrafo() {
-        graphNodeDao.clearAll()
-        com.gurps.ficha.data.storage.FichaDatabase.prePopulateGraph(context, database)
-    }
-
-    suspend fun forçarSincronizacaoManual() {
-        manualChunkDao.clearAll()
-        com.gurps.ficha.data.storage.FichaDatabase.prePopulateManual(context, database)
-    }
-
-    /**
-     * Busca nos recortes manuais brutos (FTS4).
-     */
-    suspend fun buscarRecortesManual(query: String, limit: Int = 30): List<com.gurps.ficha.model.MestreIAChunk> {
-        return manualChunkDao.buscarRegras(query, limit).map { entity ->
-            com.gurps.ficha.model.MestreIAChunk(
-                chunk_id = entity.chunk_id,
-                text = entity.text,
-                source_title = entity.source_title,
-                page_number = entity.page_number
-            )
-        }
-    }
-
-    suspend fun buscarPorPagina(pagina: Int): List<com.gurps.ficha.model.MestreIAChunk> {
-        return manualChunkDao.buscarPorPagina(pagina).map { entity ->
-            com.gurps.ficha.model.MestreIAChunk(
-                chunk_id = entity.chunk_id,
-                text = entity.text,
-                source_title = entity.source_title,
-                page_number = entity.page_number
-            )
-        }
-    }
-
-    suspend fun buscarPorPaginaESource(pagina: Int, source: String): List<com.gurps.ficha.model.MestreIAChunk> {
-        return manualChunkDao.buscarPorPaginaESource(pagina, source).map { entity ->
-            com.gurps.ficha.model.MestreIAChunk(
-                chunk_id = entity.chunk_id,
-                text = entity.text,
-                source_title = entity.source_title,
-                page_number = entity.page_number
-            )
-        }
-    }
-
-    suspend fun getChunkById(id: String): com.gurps.ficha.model.MestreIAChunk? {
-        return manualChunkDao.getChunkById(id)?.let { entity ->
-            com.gurps.ficha.model.MestreIAChunk(
-                chunk_id = entity.chunk_id,
-                text = entity.text,
-                source_title = entity.source_title,
-                page_number = entity.page_number
-            )
-        }
-    }
+    // --- MÉTODOS DELEGADOS AO MESTRE IA REPOSITORY (LEGADO/COMPATIBILIDADE) ---
+    open suspend fun sincronizarCodexSeNecessario() = mestreIARepository.sincronizarCodexSeNecessario()
+    open suspend fun buscarResumosGrafo(query: String) = mestreIARepository.buscarResumosGrafo(query)
+    open suspend fun buscarNodesPorTitulo(query: String) = mestreIARepository.buscarNodesPorTitulo(query)
+    open suspend fun buscarRecortesManual(query: String, limit: Int = 30) = mestreIARepository.buscarRecortesManual(query, limit)
+    open suspend fun buscarPorPagina(pagina: Int) = mestreIARepository.buscarPorPagina(pagina)
+    open suspend fun buscarPorPaginaESource(pagina: Int, source: String) = mestreIARepository.buscarPorPaginaESource(pagina, source)
+    open suspend fun getChunkById(id: String) = mestreIARepository.getChunkById(id)
+    open suspend fun buscarResumoNode(id: String) = mestreIARepository.buscarResumoNode(id)
+    open suspend fun buscarResumosEssenciais() = mestreIARepository.buscarResumosEssenciais()
+    open suspend fun findByCategory(category: String) = mestreIARepository.findByCategory(category)
+    open suspend fun forçarSincronizacaoGrafo() = mestreIARepository.forçarSincronizacaoGrafo()
+    open suspend fun forçarSincronizacaoManual() = mestreIARepository.forçarSincronizacaoManual()
 
     fun filtrarTecnicasCatalogo(busca: String = "", sourceBook: String? = null): List<TecnicaCatalogoItem> {
         return CatalogFilters.filtrarTecnicasCatalogo(tecnicasCatalogo, busca, sourceBook)

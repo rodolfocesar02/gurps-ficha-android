@@ -16,7 +16,7 @@ class MestreIAUseCase(
     private val viewModel: FichaViewModel,
     private val repository: DataRepository
 ) {
-    private val viewModelScope = CoroutineScope(Dispatchers.Main)
+    private val viewModelScope = CoroutineScope(Dispatchers.IO)
     private val graphEngine = MestreIAGraphEngine(repository)
 
     fun conversarComMestreIA(
@@ -27,23 +27,18 @@ class MestreIAUseCase(
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) {
         viewModelScope.launch {
+            val updateStatus: (String) -> Unit = { status ->
+                CoroutineScope(Dispatchers.Main).launch { onStatusUpdate(status) }
+            }
+            val sendChunk: (String) -> Unit = { chunk ->
+                CoroutineScope(Dispatchers.Main).launch { onChunk(chunk) }
+            }
+            val sendResult: (Boolean, MestreIAClient.ChatResponse) -> Unit = { success, resp ->
+                CoroutineScope(Dispatchers.Main).launch { onResultado(success, resp) }
+            }
+
             val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
             
-            // LOTE 91.5: COMANDOS DE DESENVOLVEDOR - FORÇAR RECARGA DO JSON
-            val cmd = prompt.trim().lowercase()
-            if (cmd == "forçar sincronização do grafo") {
-                onStatusUpdate("Limpando banco e recarregando graph_knowledge.json...")
-                repository.forçarSincronizacaoGrafo()
-                onResultado(true, MestreIAClient.ChatResponse("AUDITORIA: Mapa de Nós sincronizado!"))
-                return@launch
-            }
-            if (cmd == "forçar sincronização completa" || cmd == "forçar sincronização do codex") {
-                onStatusUpdate("Resetando Códex Total (Nós + Recortes)...")
-                repository.forçarSincronizacaoGrafo()
-                repository.forçarSincronizacaoManual()
-                onResultado(true, MestreIAClient.ChatResponse("AUDITORIA: Sincronização Completa concluída! O Códex está 100% atualizado."))
-                return@launch
-            }
             
             val catalogoLocal = if (isCasual) {
                 CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
@@ -77,12 +72,12 @@ class MestreIAUseCase(
                     var iteracao = 1
                     
                     while (loopsRestantes > 0) {
-                        onStatusUpdate(if (iteracao == 1) "Iniciando Auditor $modelId..." else "Refinando busca (Iteração $iteracao)...")
+                        updateStatus(if (iteracao == 1) "Iniciando Auditor $modelId..." else "Refinando busca (Iteração $iteracao)...")
                         
                         val resposta = MestreIAClient.perguntarAoMestre(
                             baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
                             prompt = promptInvestigacao, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
-                            catalogo = catalogoLocal.catalogo, modo = modo, onChunk = if (loopsRestantes == 1) onChunk else null 
+                            catalogo = catalogoLocal.catalogo, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null 
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {
@@ -92,7 +87,7 @@ class MestreIAUseCase(
                                 val paginaTool = toolCall.args.optInt("pagina", 1)
                                 val offset = (paginaTool - 1).coerceAtLeast(0)
                                 
-                                onStatusUpdate("Pesquisando no Códex: $queryTool (Pág. $paginaTool)...")
+                                updateStatus("Pesquisando no Códex: $queryTool (Pág. $paginaTool)...")
                                 
                                 val resTool = graphEngine.buscarNoGrafo(queryTool, offset)
                                 val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
@@ -119,7 +114,7 @@ class MestreIAUseCase(
                             } else {
                                 resposta.text
                             }
-                            onResultado(isRagUsed, resposta.copy(text = respostaFinal, modelName = modelId))
+                            sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = modelId))
                             sucesso = true
                         } else {
                             errosAcumulados.add("${modelId.takeLast(10)}: ${resposta.text.take(30)}")
@@ -135,7 +130,7 @@ class MestreIAUseCase(
             }
             if (!sucesso) {
                 val msgErro = "Falha Geral. Detalhes: " + errosAcumulados.joinToString(" | ")
-                onResultado(false, MestreIAClient.ChatResponse(msgErro))
+                sendResult(false, MestreIAClient.ChatResponse(msgErro))
             }
         }
     }

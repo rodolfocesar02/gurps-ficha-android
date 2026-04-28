@@ -39,8 +39,9 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 ---
 ## 5. Data, Network & Social (Conectividade)
 *Persistência de dados, serviços externos e integração social.*
-- **`DataRepository.kt`**: Ponto único de acesso aos catálogos oficiais, aos IDs de canais do Discord e agora ao DAO de Histórico do Mestre IA.
-- **`storage/FichaDatabase.kt`**: Configuração do SQLite (Room). Atualizado para v13 para suportar tabelas de histórico de chat.
+- **`DataRepository.kt`**: Ponto único de acesso aos catálogos oficiais e aos IDs de canais do Discord. Agora delega as lógicas de RAG ao repositório especializado.
+- **`MestreIARepository.kt`**: Especialista em persistência e sincronização do Códex (Chunks e Grafo). Gerencia o Mutex de carga única.
+- **`storage/FichaDatabase.kt`**: Configuração do SQLite (Room). Atualizado para v19 para suportar codificação UTF-8 nativa e tabelas de Códex (FTS4).
 - **`storage/ChatHistoryEntity.kt`**: Define as tabelas `chat_sessions` (títulos e datas) e `chat_messages` (mensagens individuais).
 - **`storage/ChatHistoryDao.kt`**: Interface de persistência para salvar, carregar e atualizar o timestamp das conversas da IA.
 - **`network/DiscordRollApiClient.kt`**: O motor de envio. Transfere os resultados das rolagens para o Discord via Webhook.
@@ -89,8 +90,9 @@ Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-
 
 - **`network/MestreIAClient.kt`**: O mensageiro. Faz a chamada técnica para os servidores (Gemini, OpenRouter, DeepSeek) e extrai o JSON da resposta da IA processando chamadas de Tools.
 - **`network/MestreIATools.kt`**: Catálogo de Ferramentas da IA. Fornece os esquemas validados (Schemas nativo Gemini / padrão OpenAI) de "Functions" que permitem à IA "Preencher Ficha" ou executar a "Busca de Regra". Agora suporta paginação (`pagina=2`).
-- **`domain/MestreIAGraphEngine.kt`**: O motor RAG (Retrieval-Augmented Generation). Injeta as lógicas de pesquisa de regras. Agora com **Calibragem de Precisão** (Pesos: Original +10, Expandido +2) e **Ponte de Página**.
-- **`domain/MestreIAUseCase.kt`**: O tradutor. Orquestra as chamadas da IA e o Loop de Investigação de até 3 estágios.
+- **`domain/MestreIAGraphEngine.kt`**: O motor RAG (Retrieval-Augmented Generation). Injeta as lógicas de pesquisa de regras. Agora com **Calibragem de Precisão** (Pesos: Original +10, Expandido +2) e dicionário técnico de sinônimos.
+- **`domain/MestreIAUseCase.kt`**: O tradutor. Orquestra as chamadas da IA e o Loop de Investigação. Agora roda 100% em **Dispatchers.IO** para não travar a UI.
+- **`data/MestreIARepository.kt`**: O guardião dos dados do Códex. Garante que a sincronização seja atômica via **Mutex**.
 - **`ui/DialogsMestreIA.kt`**: A interface de chat. Inclui balões de mensagens com **Botão de Copiar** (LocalClipboardManager) e o **Seletor de Histórico** (HistorySelectorDialog).
 - **`viewmodel/delegates/FichaIADelegate.kt`**: O gerente de inteligência. Controla o histórico das conversas (persistência via Room), o gerenciamento de sessões e a execução de **[AÇÕES]** instantâneas sugeridas pela IA.
 

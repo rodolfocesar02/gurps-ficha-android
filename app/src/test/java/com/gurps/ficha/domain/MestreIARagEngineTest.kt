@@ -19,6 +19,10 @@ class MestreIARagEngineTest {
         override val desvantagens = emptyList<com.gurps.ficha.model.DesvantagemDefinicao>()
         override val pericias = emptyList<com.gurps.ficha.model.PericiaDefinicao>()
         override val magias = emptyList<com.gurps.ficha.model.MagiaDefinicao>()
+        
+        override suspend fun buscarResumosGrafo(query: String) = emptyList<com.gurps.ficha.data.storage.GraphNodeEntity>()
+        override suspend fun buscarNodesPorTitulo(query: String) = emptyList<com.gurps.ficha.data.storage.GraphNodeEntity>()
+        override suspend fun buscarRecortesManual(query: String, limit: Int) = emptyList<com.gurps.ficha.model.MestreIAChunk>()
     }
 
     @Test
@@ -29,8 +33,12 @@ class MestreIARagEngineTest {
         val startTime = System.currentTimeMillis()
         val repeticoes = 100
         
-        repeat(repeticoes) {
-            MestreIARagEngine.buscarContexto("Preciso de um guerreiro forte com espada e fogo", repository)
+        val engine = MestreIAGraphEngine(repository)
+        
+        kotlinx.coroutines.runBlocking {
+            repeat(repeticoes) {
+                engine.buscarNoGrafo("Preciso de um guerreiro forte com espada e fogo")
+            }
         }
         
         val totalTime = System.currentTimeMillis() - startTime

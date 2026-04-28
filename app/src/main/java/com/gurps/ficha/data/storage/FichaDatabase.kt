@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class],
-    version = 16,
+    version = 19,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -35,11 +35,8 @@ abstract class FichaDatabase : RoomDatabase() {
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {
                         super.onOpen(db)
-                        // Lógica de pré-população assíncrona
-                        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-                            prePopulateGraph(context, getInstance(context))
-                            prePopulateManual(context, getInstance(context))
-                        }
+                        // A pré-população agora é gerenciada pelo FichaIADelegate
+                        // para evitar condições de corrida e duplicação.
                     }
                 })
                 .build().also { INSTANCE = it }
@@ -54,7 +51,7 @@ abstract class FichaDatabase : RoomDatabase() {
                 
                 if (count == 0) {
                     android.util.Log.i("MestreIA_Auditoria", "AUDITORIA: Banco de dados vazio. Iniciando leitura de 'assets/graph_db/graph_knowledge.json'...")
-                    val jsonString = context.assets.open("graph_db/graph_knowledge.json").bufferedReader().use { it.readText() }
+                    val jsonString = context.assets.open("graph_db/graph_knowledge.json").bufferedReader(Charsets.UTF_8).use { it.readText() }
                         .fixMojibakeIfNeeded()
                     val jsonArray = org.json.JSONArray(jsonString)
                     val nodes = mutableListOf<GraphNodeEntity>()
@@ -87,7 +84,7 @@ abstract class FichaDatabase : RoomDatabase() {
                     android.util.Log.i("FichaDatabase", "Iniciando importação do manual (Chunks)...")
                     val assets = context.assets
                     val inputStream = assets.open("chunks.jsonl")
-                    val reader = inputStream.bufferedReader()
+                    val reader = inputStream.bufferedReader(Charsets.UTF_8)
                     
                     val chunks = mutableListOf<ManualChunkEntity>()
                     reader.useLines { lines ->
@@ -95,12 +92,13 @@ abstract class FichaDatabase : RoomDatabase() {
                             if (line.isNotBlank()) {
                                 val obj = org.json.JSONObject(line)
                                 val textLimpo = obj.getString("text").fixMojibakeIfNeeded()
+                                val searchTextNorm = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(textLimpo)
                                 chunks.add(ManualChunkEntity(
                                     chunk_id = obj.getString("chunk_id"),
                                     source_title = obj.getString("source_title"),
                                     page_number = obj.optInt("page_number", 0),
                                     text = textLimpo,
-                                    search_text = textLimpo // FTS4 field
+                                    search_text = searchTextNorm // FTS4 field blindado contra acentos
                                 ))
                                 
                                 if (chunks.size >= 100) {
