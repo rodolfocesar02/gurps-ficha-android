@@ -334,10 +334,13 @@
   {
     "entity_id": "combate_aquatico",
     "title": "Combate Aquático e Alvos Submersos",
-    "summary": "[Pág. 355, 388, 415] Penalidades de movimento, fôlego e dispersão de projéteis sob a água.",
+    "summary": "[Pág. 355, 388, 415, 424] Penalidades de movimento, fôlego e dispersão de projéteis sob a água.",
     "category": "Regra",
     "level": 1,
-    "source_id": "pt_modulo_basico"
+    "source_id": "pt_modulo_basico",
+    "SEE_ALSO": [
+      "regra_combate_subaquatico"
+    ]
   },
   {
     "entity_id": "colisoes_quedas",
@@ -19910,5 +19913,13 @@
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
+  },
+  {
+    "entity_id": "regra_combate_subaquatico",
+    "title": "Combate Subaquático",
+    "summary": "Alvos Submersos e Regras oficiais do Pyramid #3/26 para combate sob a água. 1. Armas de Fogo: Divida todos os alcances (1/2D e Máximo) por 1.000. 2. Armas Corpo a Corpo (Estocada): -1 de dano por metro de alcance máximo. 3. Armas Corpo a Corpo (Balanço): -1 de dano POR DADO de dano por metro de alcance. 4. Armas de Energia: Sofrem efeito 'Steam-Blast' (explosão de vapor) e dividem alcance por 1.000. 5. Explosões: Alcance do dano de impacto é AUMENTADO (divida o dano pela distância linear em metros, não pelo triplo). 6. Superfície: Tiros que atravessam a superfície da água sofrem penalidade de -4 devido à refração.",
+    "category": "Regra",
+    "level": 1,
+    "source_id": "pyramid_3_26"
   }
 ]
