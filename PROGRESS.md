@@ -314,6 +314,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **IndependÃªncia de Ficha:** A ferramenta funciona de forma isolada, permitindo planejar magias mesmo sem uma ficha ativa ou iniciada.
 
 * [Feito] Lote 115: Consolidação de Arquitetura e Auditoria Subaquática | `(Commit: 8faf742)`
+* [Feito] Lote 116: Auditoria e Restauração do Mestre IA | `(Commit: d403148)`
+
+### Lote 116: Auditoria e Restauração do Mestre IA
+*   **Commit:** `d403148 Diagnostico e Restauracao: Reversao de mudancas antecipadas e consolidacao da logica de busca do Codex.`
+*   **Melhorias Implementadas:**
+    *   **Reversão Sistêmica:** Restauração do projeto ao estado original estável após diagnóstico de falhas em mudanças antecipadas.
+    *   **Diagnóstico de Precisão:** Identificado que o limite de 5 itens no catálogo estava deletando regras vitais (como Combate Subaquático) em favor de detalhes menos relevantes.
+    *   **Diagnóstico de Carga:** Confirmada a necessidade de um carregador multi-fonte para incluir o suplemento Pyramid #3/26 na base de Chunks.
+    *   **Otimização de Performance:** Consolidação de melhorias internas no motor de busca (Map para scores e dicionário técnico refinado) que foram mantidas por serem seguras e necessárias.
     - **MestreIAClient.kt**: Identificada arquitetura leve baseada em `HttpURLConnection` (sem Retrofit).
     - **ARQUITETURA_MESTRE_IA.md**: Criada documentação completa do ecossistema da IA para manutenção futura.
     - **Auditoria de Regras**: Diagnosticada falha de busca no Grafo por falta de sinônimos/tags nos nós (Match de Prefixo).

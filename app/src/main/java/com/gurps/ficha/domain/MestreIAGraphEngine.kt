@@ -29,53 +29,54 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
         val topNodes = mutableSetOf<GraphNodeEntity>()
         val chunksCandidatos = mutableListOf<MestreIAChunk>()
-        android.util.Log.i("MestreIA_Auditoria", "🔍 TERMOS DE BUSCA (Total): $todosOsTermos")
-        
+        android.util.Log.i("MestreIA_Auditoria", "🔍 TERMOS DE BUSCA (Total): $todosOsTermos")        
         // 1. Navegação de Grafo (Seed + Neighbors)
         android.util.Log.i("MestreIA_Auditoria", "--- INICIANDO BUSCA NO CÓDEX (Origem: graph_knowledge.json) ---")
         
-        // 2. Busca de Text Units (Chunks)
+        val allNodesFound = mutableListOf<GraphNodeEntity>()
+        todosOsTermos.forEach { termo ->
+            val encontrados = repository.buscarNodesPorTitulo(termo).toMutableList()
+            val matchesNoResumo = repository.buscarResumosGrafo("$termo*")
+            encontrados.addAll(matchesNoResumo.filter { res -> encontrados.none { it.entityId == res.entityId } })
+            allNodesFound.addAll(encontrados)
+        }
+
+        // LOTE 117: Priorização e Re-Ranking
+        // Regras e Perícias sempre sobem, Equipamentos descem.
+        val prioritizedNodes = allNodesFound.distinctBy { it.entityId }
+            .sortedWith(compareByDescending<GraphNodeEntity> { 
+                when (it.category) {
+                    "Regra", "Perícia", "Técnica" -> 3
+                    "Vantagem", "Desvantagem" -> 2
+                    else -> 1
+                }
+            }.thenBy { it.level })
+            .take(15) // Expandido de 5 para 15 para evitar silenciamento
+
+        topNodes.addAll(prioritizedNodes)
+        
+        // 2. Extração de Páginas Alvo do Grafo
         data class PaginaAlvo(val numero: Int, val tituloLivro: String?, val sourceId: String?, val isOriginal: Boolean)
         val paginasAlvo = mutableSetOf<PaginaAlvo>()
-        
-        todosOsTermos.forEach { termo ->
-            val termoMinusculo = termo.lowercase()
-            val queryIndividual = "$termo*"
-            val isBase = termo in termosBase
-            
-            // Busca priorizando título para termos originais
-            val encontrados = repository.buscarNodesPorTitulo(termo).toMutableList()
-            val matchesNoResumo = repository.buscarResumosGrafo(queryIndividual)
-            encontrados.addAll(matchesNoResumo.filter { res -> encontrados.none { it.entityId == res.entityId } })
-            
-            val pesoTermo = if (isBase) 5 else 2
-            val nodesParaProcessar = if (offset > 0) encontrados.drop(offset * pesoTermo).take(pesoTermo) else encontrados.take(pesoTermo)
-            
-            topNodes.addAll(nodesParaProcessar)
 
-            nodesParaProcessar.forEach { node ->
-                val titleNorm = node.title.lowercase()
-                
-                // LOTE 115: Blacklist de termos genéricos que causam ruído se encontrados apenas no resumo
-                val termosGenericos = emptySet<String>()
-                
-                // UM NÓ SÓ É ORIGINAL SE: match no título OU (termo é técnico/longo E não é genérico)
-                val realmenteOriginal = isBase && (
-                    titleNorm.contains(termoMinusculo) || 
-                    (termoMinusculo.length > 5 && termoMinusculo !in termosGenericos)
-                )
+        prioritizedNodes.forEach { node ->
+            val titleNorm = node.title.lowercase()
+            
+            // Determinamos se o nó é original baseado nos termos base
+            val realmenteOriginal = termosBase.any { termo -> 
+                titleNorm.contains(termo.lowercase()) || (termo.length > 5)
+            }
 
-                // Extração de páginas do resumo do nó
-                Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
-                    val livro = m.groupValues[1].trim()
-                    val pag = m.groupValues[2].toIntOrNull()
-                    if (pag != null) paginasAlvo.add(PaginaAlvo(pag, livro, node.source_id, realmenteOriginal))
-                }
-                
-                // Fallback para listas de páginas
-                Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
-                    m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(PaginaAlvo(it, null, node.source_id, realmenteOriginal)) }
-                }
+            // Extração de páginas do resumo do nó (Ex: [Módulo Básico Pág. 100])
+            Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
+                val livro = m.groupValues[1].trim()
+                val pag = m.groupValues[2].toIntOrNull()
+                if (pag != null) paginasAlvo.add(PaginaAlvo(pag, livro, node.source_id, realmenteOriginal))
+            }
+            
+            // Fallback para citações simples de páginas (Ex: Pág. 45)
+            Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
+                m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(PaginaAlvo(it, null, node.source_id, realmenteOriginal)) }
             }
         }
         

@@ -202,58 +202,74 @@ class MestreIAUseCase(
 
         val detalhesItens = mutableListOf<String>()
         
-        // LOTE 89.28: FUNIL DE CATÁLOGOS (Roteamento para os JSONs oficiais)
+        // LOTE 117: FUNIL DE CATÁLOGOS (Roteamento para os JSONs oficiais)
         res.summaries.forEach { node ->
-            when {
+            val jaAdicionado = when {
+                node.category.contains("Regra", true) -> {
+                    detalhesItens.add("[REGRA: ${node.title}]:\n${node.summary}")
+                    true
+                }
                 node.category.contains("Perícia", true) -> {
                     repository.periciasSuplementares.find { it.nome.equals(node.title, true) }?.let {
                         detalhesItens.add("[PERÍCIA: ${it.nome}]: Dific: ${it.dificuldadeRaw}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Vantagem", true) -> {
                     repository.vantagens.find { it.nome.equals(node.title, true) }?.let {
                         detalhesItens.add("[VANTAGEM: ${it.nome}]: Custo: ${it.getCustoBase()}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Desvantagem", true) -> {
                     repository.desvantagens.find { it.nome.equals(node.title, true) }?.let {
                         detalhesItens.add("[DESVANTAGEM: ${it.nome}]: Custo: ${it.getCustoBase()}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Magia", true) -> {
                     repository.magias.find { it.nome.equals(node.title, true) }?.let {
                         val escolas = it.escola?.joinToString(", ") ?: "Nenhuma"
                         detalhesItens.add("[MAGIA: ${it.nome}]: Escola: $escolas, Energia: ${it.energia}, Tempo: ${it.tempoOperacao}, Duração: ${it.duracao}, Pré-Requisitos: ${it.preRequisitos ?: "Nenhum"}, Pág. ${it.pagina}\nDesc: ${it.texto ?: it.descricao}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Técnica", true) -> {
                     repository.tecnicasCatalogo.find { tec -> tec.nome.equals(node.title, true) }?.let { item ->
                         detalhesItens.add("[TÉCNICA: ${item.nome}]: Dific: ${item.dificuldadeRaw}, PreDef: ${item.preDefinidoRaw}, Pág. ${item.pagina}\nDesc: ${item.descricao}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Arma", true) -> {
                     repository.armasCatalogo.find { arma -> arma.nome.equals(node.title, true) }?.let { item ->
                         detalhesItens.add("[ARMA: ${item.nome}]: Dano: ${item.danoRaw}, StMin: ${item.stMinimo}\nObs: ${item.observacoes}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Armadura", true) || node.category.contains("Escudo", true) -> {
                     repository.armadurasCatalogo.find { arm -> arm.nome.equals(node.title, true) }?.let { item ->
                         detalhesItens.add("[ARMADURA: ${item.nome}]: RD: ${item.rd}, Peso: ${item.pesoBaseKg}kg\nObs: ${item.observacoes}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Modificador", true) || node.category.contains("Ampliação", true) || node.category.contains("Limitação", true) -> {
                     repository.modificadoresGerais.find { mod -> mod.nome.equals(node.title, true) }?.let { item ->
                         detalhesItens.add("[MODIFICADOR: ${item.nome}]: Valor: ${item.valor}, Pág. ${item.pagina}\nDesc: ${item.descricao}")
-                    }
+                        true
+                    } ?: false
                 }
                 node.category.contains("Equipamento", true) -> {
-                    val item = repository.armasCatalogo.find { eq -> eq.nome.equals(node.title, true) } 
-                        ?: repository.armadurasCatalogo.find { eq -> eq.nome.equals(node.title, true) }
-                    item?.let { detalhesItens.add("[EQUIPAMENTO: ${node.title}]: Encontrado nos catálogos técnicos.") }
+                    repository.armasCatalogo.find { eq -> eq.nome.equals(node.title, true) }?.let { item ->
+                        detalhesItens.add("[EQUIPAMENTO: ${item.nome}]: Obs: ${item.observacoes}")
+                        true
+                    } ?: false
                 }
-                node.category.contains("Regra", true) -> {
-                    detalhesItens.add("[REGRA: ${node.title}]: ${node.summary}")
-                }
+                else -> false
+            }
+
+            // Fallback: Se não encontrou no catálogo específico, usa o resumo do Grafo (Vital para Regras Customizadas)
+            if (!jaAdicionado) {
+                detalhesItens.add("[${node.category.uppercase()}: ${node.title}]:\n${node.summary}")
             }
         }
 
