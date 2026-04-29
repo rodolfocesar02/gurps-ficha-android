@@ -55,20 +55,25 @@ class MestreIAUseCase(
 
             val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
             
-            
-            val catalogoLocal = if (isCasual) {
-                CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
-            } else {
-                gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory)
-            }
-            val isRagUsed = catalogoLocal.isRagSuccess
-            //Esse recado foi fixado pelo Rodolfo, voc~e nao tem mais permissão pra trocar modelos sem minha permissão!
-            // Fila de Auditores (DETERMINÍSTICO: MODELOS ATIVOS 2026)
+             //Esse recado foi fixado pelo Rodolfo, voc~e nao tem mais permissão pra trocar modelos sem minha permissão!
+             // Fila de Auditores (DETERMINÍSTICO: MODELOS ATIVOS 2026)
             val fila = listOf(
                 AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3.1-flash-lite-preview"),
                 AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3-flash-preview"),
                 AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1)
             )
+
+            val catalogoLocal = if (isCasual) {
+                CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
+            } else {
+                // Fila de Planejadores (Usa o primeiro modelo disponível para planejar)
+                val configPlanejador = fila.first()
+                updateStatus("Planejando estratégia de busca...")
+                val plano = MestreIAPlanner.planejarBusca(prompt, configPlanejador.url, configPlanejador.key, configPlanejador.model)
+                
+                gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory, plano.termos)
+            }
+            val isRagUsed = catalogoLocal.isRagSuccess
 
             var sucesso = false
             val errosAcumulados = mutableListOf<String>()
@@ -93,6 +98,8 @@ class MestreIAUseCase(
                     while (loopsRestantes > 0) {
                         updateStatus(if (iteracao == 1) "Iniciando Auditor $modelId..." else "Refinando busca (Iteração $iteracao)...")
                         
+                        android.util.Log.i("MestreIA_Auditoria", "📤 ENVIANDO PROMPT (Iteração $iteracao) | Contexto: ${promptInvestigacao.take(150)}...")
+
                         val resposta = MestreIAClient.perguntarAoMestre(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptInvestigacao, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
@@ -101,6 +108,8 @@ class MestreIAUseCase(
 
                         if (resposta.toolCalls.isNotEmpty()) {
                             val toolCall = resposta.toolCalls[0]
+                            android.util.Log.i("MestreIA_Auditoria", "🔍 INVESTIGAÇÃO: A IA chamou a ferramenta ${toolCall.name} com os termos: ${toolCall.args}")
+
                             if (toolCall.name == "consultar_grafo_regras") {
                                 val queryTool = toolCall.args.optString("query", prompt)
                                 val paginaTool = toolCall.args.optInt("pagina", 1)
@@ -108,17 +117,18 @@ class MestreIAUseCase(
                                 
                                 updateStatus("Pesquisando no Códex: $queryTool (Pág. $paginaTool)...")
                                 
-                                val resTool = graphEngine.buscarNoGrafo(queryTool, offset)
+                                val resTool = graphEngine.buscarNoGrafo(queryTool, offset, emptyList())
                                     val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
                                         "<CONTEXTO_TECNICO>\n" + 
-                                        resTool.relatedChunks.take(25).joinToString("\n") { 
-                                            "[${it.source_title}, Pág. ${it.page_number}]: ${it.text}" 
-                                        } + "\n</CONTEXTO_TECNICO>"
+                                        resTool.relatedChunks.take(15).joinToString("\n") { 
+                                             "[${it.source_title}, Pág. ${it.page_number}]: ${it.text}" 
+                                         } + "\n</CONTEXTO_TECNICO>"
                                 } else {
                                     "NENHUMA REGRA ENCONTRADA no manual para '$queryTool'. Não tente inventar a regra."
                                 }
                                 
-                                promptInvestigacao = "Pergunta Original: $prompt\n\nUse APENAS este contexto para responder:\n$contextoExtra\n\nSe a resposta estiver no contexto, responda citando a página. Se não, diga que não encontrou."
+                                // LOTE 90.2: Prompt Limpo (O contexto já vai na 'ponteDeFerro' do cliente)
+                                promptInvestigacao = "Com base no contexto técnico fornecido nas instruções de sistema, responda: $prompt\n\n(Nota: Se a informação não estiver no contexto, diga explicitamente que não encontrou nos manuais)."
                                 loopsRestantes--
                                 iteracao++
                                 continue
@@ -142,6 +152,17 @@ class MestreIAUseCase(
                         }
 
                         if (resposta.text.isNotBlank() && !resposta.text.startsWith("Erro")) {
+                            val lowerRes = resposta.text.lowercase()
+                            val naoEncontrou = lowerRes.contains("lamento") || lowerRes.contains("não encontrei") || lowerRes.contains("não consta")
+                            
+                            if (naoEncontrou && loopsRestantes > 1) {
+                                android.util.Log.w("MestreIA_Auditoria", "⚠️ IA não encontrou resposta. Forçando nova rodada de investigação...")
+                                promptInvestigacao = "Pergunta Original: $prompt\n\nVocê disse que não encontrou a resposta. Tente buscar novamente no Códex usando termos mais técnicos ou sinônimos diferentes através da ferramenta 'consultar_grafo_regras'."
+                                loopsRestantes--
+                                iteracao++
+                                continue
+                            }
+
                             // LOTE 101: Validador de Citações (O "X9" da IA)
                             val temCitacao = resposta.text.contains("[") && (resposta.text.contains("Pág", true) || resposta.text.contains("Pg", true))
                             val respostaFinal = if (!temCitacao && iteracao > 1) {
@@ -170,11 +191,11 @@ class MestreIAUseCase(
         }
     }
 
-    suspend fun gerarCatalogoLocal(prompt: String, history: List<MestreIAClient.ChatMessage>): CatalogoLocalResult {
+    suspend fun gerarCatalogoLocal(prompt: String, history: List<MestreIAClient.ChatMessage>, termosExtras: List<String> = emptyList()): CatalogoLocalResult {
         val contextoRecente = history.takeLast(3).joinToString(" ") { if (it.role == "user") it.text else "" }
         val promptExpandido = "$prompt $contextoRecente".take(500)
         
-        var res = graphEngine.buscarNoGrafo(promptExpandido)
+        var res = graphEngine.buscarNoGrafo(promptExpandido, 0, termosExtras)
         
         // LOTE 94: Fallback genérico desativado para evitar inchaço no prompt (Erro 503).
         // A busca agora confia exclusivamente no mapeamento do Grafo e na Ponte de Página.
@@ -246,7 +267,7 @@ class MestreIAUseCase(
             itensDetalhes = detalhesItens,
             chunks = res.relatedChunks,
             summaries = res.summaries,
-            ponteDeFerro = graphEngine.formatarParaIA(res).take(60000) // LOTE 104: Liberado para 60k chars para contexto total de regras subaquáticas/complexas
+            ponteDeFerro = graphEngine.formatarParaIA(res).take(30000) // LOTE 104: Reduzido para 30k para maior precisão e economia de tokens
         )
         return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty() || res.summaries.isNotEmpty())
     }

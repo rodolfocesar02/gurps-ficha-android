@@ -84,6 +84,8 @@ class MestreIARepository(
                 "fadiga", "cansaco", "pf" -> "fadig* OR cansac* OR PF"
                 "atirar", "disparo", "arma" -> "atir* OR dispar* OR arma*"
                 "esquiva", "bloqueio", "aparar", "defesa" -> "esquiv* OR bloqu* OR apar* OR defens*"
+                "agua", "água", "piscina", "mar", "rio", "submerso", "subaquatico", "subaquático" -> "agua* OR águ* OR submers* OR subaquat*"
+                "redutor", "penalidade", "modificador" -> "redut* OR penal* OR modif*"
                 else -> if (termNorm.length > 3) "$termNorm*" else termNorm
             }
             "($synonyms)"

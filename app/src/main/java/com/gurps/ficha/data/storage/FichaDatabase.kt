@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class],
-    version = 20,
+    version = 21,
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -85,7 +85,8 @@ abstract class FichaDatabase : RoomDatabase() {
                             level = obj.getInt("level"),
                             summary = obj.optString("summary", ""),
                             category = obj.optString("category", "Geral"),
-                            source_id = obj.optString("source_id", "pt_modulo_basico")
+                            source_id = obj.optString("source_id", "pt_modulo_basico"),
+                            search_text = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca("${obj.getString("title")} ${obj.optString("summary", "")}")
                         ))
                     }
                     graphDao.insertAll(nodes)
@@ -105,7 +106,7 @@ abstract class FichaDatabase : RoomDatabase() {
                 val currentCount = dao.getCount()
                 
                 if (currentCount > 0 && needsPurification) {
-                    android.util.Log.w("FichaDatabase", "PURIFICAÇÃO MANUAL LOTE 111: Limpando chunks...")
+                    android.util.Log.w("FichaDatabase", "PURIFICAÇÃO MANUAL LOTE 110: Limpando chunks...")
                     dao.clearAll()
                 }
 

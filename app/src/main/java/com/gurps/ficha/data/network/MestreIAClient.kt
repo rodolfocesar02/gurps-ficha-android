@@ -137,14 +137,17 @@ object MestreIAClient {
 
             val systemPulse = when (modo) {
                 "geracao", "analise" -> MestreIAPrompts.FORJADOR
+                "planejamento" -> "Você é um assistente técnico de GURPS focado em extração de termos."
                 else -> MestreIAPrompts.AUDITOR
-            } + """
+            } + if (modo != "planejamento") {
+                """
                 
                 === CONTEXTO HIERÁRQUICO (GraphRAG) ===
                 - Ficha do Personagem: $contextoPersonagem
                 $detalhesItens
                 - Contexto Técnico: $ponteDeFerro
-            """.trimIndent()
+                """.trimIndent()
+            } else ""
 
             val jsonOutput = if (isGoogleNative) {
                 gerarJsonGoogleNative(prompt, history, systemPulse, modo)
@@ -279,25 +282,44 @@ object MestreIAClient {
         
         val contents = JSONArray()
         
-        // LOTE 89.75: FILTRO DE HISTÓRICO (Limpeza de Duplicidade e Ruído de UI)
+        // LOTE 90.1: Fusão de Mensagens e Blindagem de Protocolo
         val cleanPrompt = prompt.trim()
+        val formattedHistory = mutableListOf<JSONObject>()
+        
         history.forEach { (role, text) ->
             val cleanText = text.trim()
-            // Não envia "Pensando..." nem duplica a pergunta que já vamos enviar no final
-            if (cleanText != "Pensando..." && cleanText != cleanPrompt) {
+            if (cleanText.isBlank() || cleanText == "Pensando..." || cleanText == cleanPrompt) return@forEach
+            
+            val currentRole = if (role == "user") "user" else "model"
+            
+            // Se o último papel for igual ao atual, funde os textos (Exigência Gemini 3.1)
+            if (formattedHistory.isNotEmpty() && formattedHistory.last().getString("role") == currentRole) {
+                val lastObj = formattedHistory.last()
+                val lastParts = lastObj.getJSONArray("parts")
+                val lastText = lastParts.getJSONObject(0).getString("text")
+                lastParts.put(0, JSONObject().put("text", "$lastText\n\n$cleanText"))
+            } else {
                 val contentObj = JSONObject()
-                contentObj.put("role", if (role == "user") "user" else "model")
+                contentObj.put("role", currentRole)
                 contentObj.put("parts", JSONArray().put(JSONObject().put("text", cleanText)))
-                contents.put(contentObj)
+                formattedHistory.add(contentObj)
             }
         }
+
+        // Garante a alternância final: Se o último do histórico for 'user', o prompt atual vira 'model' (não pode)
+        // Então removemos o último 'user' do histórico se ele for muito parecido com o prompt atual
+        if (formattedHistory.isNotEmpty() && formattedHistory.last().getString("role") == "user") {
+            formattedHistory.removeAt(formattedHistory.size - 1)
+        }
+
+        formattedHistory.forEach { contents.put(it) }
 
         // Adiciona a mensagem atual (Pergunta ou Resultado de Busca)
         contents.put(JSONObject().put("role", "user").put("parts", JSONArray().put(JSONObject().put("text", cleanPrompt))))
         root.put("contents", contents)
 
-        // Disponibiliza ferramentas para Auditoria e Investigação
-        if (modo != "geracao" && modo != "analise") {
+        // Disponibiliza ferramentas apenas para Auditoria (Investigação)
+        if (modo != "geracao" && modo != "analise" && modo != "planejamento") {
             root.put("tools", MestreIATools.getGeminiTools(modo))
         }
 
@@ -317,7 +339,7 @@ object MestreIAClient {
         root.put("messages", messages)
 
         // RESTAURANDO FERRAMENTAS PARA O MODO CONVERSA
-        if (modo != "geracao" && modo != "analise") {
+        if (modo != "geracao" && modo != "analise" && modo != "planejamento") {
             root.put("tools", MestreIATools.getOpenAITools(modo))
         }
 

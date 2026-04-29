@@ -2,7 +2,7 @@
   {
     "entity_id": "success_roll",
     "title": "Teste de Sucesso (3d6)",
-    "summary": "Mecânica básica: Role 3d6 <= NH (Atributo + Perícia + Modificadores).",
+    "summary": "Mecânica básica: Role 3d6 <= NH (Atributo + Perícia + Modificadores). [TAGS: teste, dado, 3d6, rolar, probabilidade, chance, falha, sucesso]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -10,7 +10,7 @@
   {
     "entity_id": "abelhas_enxames",
     "title": "Abelhas e Enxames",
-    "summary": "[Pág. 461] Regras para ataques de enxame, pânico e dispersão.",
+    "summary": "[Pág. 461] Regras para ataques de enxame, pânico e dispersão. [TAGS: abelha, inseto, ferrão, enxame, dispersão, veneno, picada, colmeia]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -18,7 +18,7 @@
   {
     "entity_id": "acido_dano",
     "title": "Ácido",
-    "summary": "[Pág. 428] Dano corrosivo contínuo e efeitos em equipamentos.",
+    "summary": "[Pág. 428] Dano corrosivo contínuo e efeitos em equipamentos. [TAGS: acido, corrosivo, queimar, equipamento, derreter, quimico, corrosao]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -26,7 +26,7 @@
   {
     "entity_id": "acoes_livres",
     "title": "Ações Livres",
-    "summary": "[Pág. 363] Ações que não consomem o turno (ex: soltar objeto, falar frases curtas).",
+    "summary": "[Pág. 363] Ações que não consomem o turno (ex: soltar objeto, falar frases curtas). [TAGS: turno, tempo, falar, soltar, acao rapida, acao livre]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -34,7 +34,7 @@
   {
     "entity_id": "acoes_prolongadas",
     "title": "Ações Prolongadas",
-    "summary": "[Pág. 383] Tarefas que exigem vários turnos ou horas de concentração.",
+    "summary": "[Pág. 383] Tarefas que exigem vários turnos ou horas de concentração. [TAGS: acao prolongada, tempo, concentracao, demora, turnos, horas]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -42,7 +42,7 @@
   {
     "entity_id": "agarrar_segurar",
     "title": "Agarrar e Segurar",
-    "summary": "[Pág. 370, 399] Regras de combate corporal, imobilização e ponto de impacto.",
+    "summary": "[Pág. 370, 399] Regras de combate corporal, imobilização e ponto de impacto. [TAGS: luta, agarrar, judo, imobilizar, grappling, segurar, combate corporal]",
     "category": "Regra",
     "level": 1,
     "RULES_FOR": [
@@ -55,7 +55,7 @@
   {
     "entity_id": "alcool_intoxicacao",
     "title": "Álcool e Intoxicação",
-    "summary": "[Pág. 122, 439-440] Efeitos de embriaguez, ressacas e resistência (HT).",
+    "summary": "[Pág. 122, 439-440] Efeitos de embriaguez, ressacas e resistência (HT). [TAGS: alcool, bebida, bebado, embriaguez, ressaca, ht, resistencia, veneno]",
     "category": "Regra",
     "level": 1,
     "SEE_ALSO": [
@@ -68,7 +68,7 @@
   {
     "entity_id": "alfabetizacao",
     "title": "Alfabetização",
-    "summary": "[Pág. 24] Nível de leitura e escrita do personagem conforme NT e cultura.",
+    "summary": "[Pág. 24] Nível de leitura e escrita do personagem conforme NT e cultura. [TAGS: alfabetizacao, ler, escrever, idioma, nt, cultura, leitura, escrita]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -76,7 +76,7 @@
   {
     "entity_id": "alucinacoes_efeitos",
     "title": "Alucinações",
-    "summary": "[Pág. 428, 440] Efeitos psicológicos de drogas ou venenos no combate.",
+    "summary": "[Pág. 428, 440] Efeitos psicológicos de drogas ou venenos no combate. [TAGS: alucinacoes, droga, veneno, ilusao, visao, mente, confusao, delirio]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -84,7 +84,7 @@
   {
     "entity_id": "amigos_inimigos",
     "title": "Amigos e Inimigos",
-    "summary": "[Pág. 31] Identificação e distinção de alvos em combate tático.",
+    "summary": "[Pág. 31] Identificação e distinção de alvos em combate tático. [TAGS: aliados, inimigos, oponente, combate, tatico, alvo, inimigo]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -92,7 +92,7 @@
   {
     "entity_id": "ampliacoes_limitadores",
     "title": "Ampliações e Limitadores",
-    "summary": "[Pág. 101, 102, 111] Modificadores percentuais para vantagens e poderes.",
+    "summary": "[Pág. 101, 102, 111] Modificadores percentuais para vantagens e poderes. [TAGS: modificador, custo, porcentagem, incremento, reducao, ajuste de vantagem]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -100,7 +100,7 @@
   {
     "entity_id": "animais_regras",
     "title": "Animais (Feras e Montarias)",
-    "summary": "[Pág. 455-460] Atributos, pânico e combate envolvendo animais.",
+    "summary": "[Pág. 455-460] Atributos, pânico e combate envolvendo animais. [TAGS: montaria, cavalo, cachorro, adestramento, fera, bicho, criatura]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -108,7 +108,7 @@
   {
     "entity_id": "antecedentes_sociais",
     "title": "Antecedentes Sociais",
-    "summary": "[Pág. 22] Riqueza, Status, NT e Idiomas iniciais.",
+    "summary": "[Pág. 22] Riqueza, Status, NT e Idiomas iniciais. [TAGS: berco, origem, riqueza inicial, status, nascido, classe social]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -116,7 +116,7 @@
   {
     "entity_id": "armadilhas_regras",
     "title": "Armadilhas",
-    "summary": "[Pág. 503] Detecção, desarme e tipos de mecanismos.",
+    "summary": "[Pág. 503] Detecção, desarme e tipos de mecanismos. [TAGS: detectar, desarmar, mecanismo, perigo escondido, contra-pericia]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -124,7 +124,7 @@
   {
     "entity_id": "armaduras_regras",
     "title": "Armaduras e Proteção",
-    "summary": "[Pág. 282-286] RD, tipos de cobertura e penalidades de carga.",
+    "summary": "[Pág. 282-286] RD, tipos de cobertura e penalidades de carga. [TAGS: rd, protecao, cobertura, defesa passiva, peso da armadura]",
     "category": "Regra",
     "level": 1,
     "SEE_ALSO": [
@@ -137,7 +137,7 @@
   {
     "entity_id": "armas_regras",
     "title": "Armas (Brancas e de Fogo)",
-    "summary": "[Pág. 267-281] Estatísticas de dano, alcance, CdF e recuo.",
+    "summary": "[Pág. 267-281] Estatísticas de dano, alcance, CdF e recuo. [TAGS: combate, ataque, equipamento, cdf, recuo, calibre, tiro]",
     "category": "Regra",
     "level": 1,
     "SEE_ALSO": [
@@ -150,7 +150,7 @@
   {
     "entity_id": "arremessar_objetos",
     "title": "Arremessar Objetos",
-    "summary": "[Pág. 349, 357] Distância e dano baseado em ST e peso do objeto.",
+    "summary": "[Pág. 349, 357] Distância e dano baseado em ST e peso do objeto. [TAGS: jogar, tacar, lancamento, distancia, peso, objeto improvisado]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -158,7 +158,7 @@
   {
     "entity_id": "atordoamento_regras",
     "title": "Atordoamento (Físico e Mental)",
-    "summary": "[Pág. 44, 420] Testes de HT/IQ para recuperar a consciência/ação.",
+    "summary": "[Pág. 44, 420] Testes de HT/IQ para recuperar a consciência/ação. [TAGS: tontura, choque, recuperar acao, nocaute, ht, iq]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -166,7 +166,7 @@
   {
     "entity_id": "atributos_basicos",
     "title": "Atributos Básicos e Secundários",
-    "summary": "[Pág. 14-19] ST, DX, IQ, HT, PV, PF, Vontade e Percepção.",
+    "summary": "[Pág. 14-19] ST, DX, IQ, HT, PV, PF, Vontade e Percepção. [TAGS: st, dx, iq, ht, pv, pf, força, destreza, inteligencia, saude, vontade, percepção, vida, fadiga]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -174,7 +174,7 @@
   {
     "entity_id": "automoveis_veiculos",
     "title": "Automóveis e Veículos",
-    "summary": "[Pág. 464-465] Estatísticas de direção, tabelas de colisão e danos.",
+    "summary": "[Pág. 464-465] Estatísticas de direção, tabelas de colisão e danos. [TAGS: direção, carro, colisão, acidente, pilotagem, transporte, estrada, veículo]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -182,7 +182,7 @@
   {
     "entity_id": "autoridade_social",
     "title": "Autoridade e Status Social",
-    "summary": "[Pág. 31] Influência de Hierarquia e Status na reação de PdMs.",
+    "summary": "[Pág. 31] Influência de Hierarquia e Status na reação de PdMs. [TAGS: cargo, liderança, respeito, hierarquia, poder civil, influência]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -190,7 +190,7 @@
   {
     "entity_id": "avaliacao_manobra",
     "title": "Avaliação (Manobra)",
-    "summary": "[Pág. 364] Turnos gastos observando o alvo para ganhar bônus no ataque.",
+    "summary": "[Pág. 364] Turnos gastos observando o alvo para ganhar bônus no ataque. [TAGS: observar alvo, bônus no acerto, preparação, foco, mira corporal]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -198,7 +198,7 @@
   {
     "entity_id": "bloqueio_regras",
     "title": "Bloqueio (Defesa Ativa)",
-    "summary": "[Pág. 51, 377, 401] Uso de escudo ou capa para anular ataques inimigos.",
+    "summary": "[Pág. 51, 377, 401] Uso de escudo ou capa para anular ataques inimigos. [TAGS: escudo, capa, aparar, defesa passiva, anular ataque]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -206,7 +206,7 @@
   {
     "entity_id": "bonus_dano_st",
     "title": "Bônus de Dano (Força)",
-    "summary": "[Pág. 16] Cálculo de Golpe de Ponta (Gpd) e Balanço (Bal) baseado na ST.",
+    "summary": "[Pág. 16] Cálculo de Golpe de Ponta (Gpd) e Balanço (Bal) baseado na ST. [TAGS: gpd, bal, golpe de ponta, balanço, dano por st, força bruta]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -214,7 +214,7 @@
   {
     "entity_id": "bonus_reacao_regras",
     "title": "Bônus de Reação",
-    "summary": "[Pág. 10, 21, 513] Modificadores sociais que afetam a atitude de PdMs.",
+    "summary": "[Pág. 10, 21, 513] Modificadores sociais que afetam a atitude de PdMs. [TAGS: diplomacia, lábia, amigável, hostil, atitude de pdm, carisma social]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -222,7 +222,7 @@
   {
     "entity_id": "briga_pericia_regras",
     "title": "Briga (Combate Corporal)",
-    "summary": "[Pág. 184, 391] Uso da perícia Briga para socos, chutes e bônus de dano.",
+    "summary": "[Pág. 184, 391] Uso da perícia Briga para socos, chutes e bônus de dano. [TAGS: soco, chute, luta de rua, brigar, combate desarmado, bônus de dano]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -230,7 +230,7 @@
   {
     "entity_id": "busca_manobra",
     "title": "Busca (Manobra)",
-    "summary": "[Pág. 383] Manobra para localizar itens ou inimigos escondidos em combate.",
+    "summary": "[Pág. 383] Manobra para localizar itens ou inimigos escondidos em combate. [TAGS: procurar, localizar, encontrar, detecção, escondido, percepção tática]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -238,7 +238,7 @@
   {
     "entity_id": "direitos_sociais_regras",
     "title": "Direitos Sociais",
-    "summary": "[Pág. 471] Regras sobre o status legal e direitos civis do personagem na sociedade.",
+    "summary": "[Pág. 471] Regras sobre o status legal e direitos civis do personagem na sociedade. [TAGS: cidadania, lei, justiça, direitos civis, status legal, tribunal]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -246,7 +246,7 @@
   {
     "entity_id": "embriaguez_regras_gerais",
     "title": "Embriaguez",
-    "summary": "[Pág. 433] Efeitos do álcool, penalidades de IQ/DX e tempo de recuperação.",
+    "summary": "[Pág. 433] Efeitos do álcool, penalidades de IQ/DX e tempo de recuperação. [TAGS: álcool, bebado, ressaca, tontura, intoxicação, bebida, ht, iq]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -254,7 +254,7 @@
   {
     "entity_id": "envelhecimento_regras_gerais",
     "title": "Envelhecimento",
-    "summary": "[Pág. 433] Testes periódicos de HT para evitar declínio de atributos com a idade.",
+    "summary": "[Pág. 433] Testes periódicos de HT para evitar declínio de atributos com a idade. [TAGS: idade, velhice, tempo, declínio de atributos, anos, morte natural]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -262,7 +262,7 @@
   {
     "entity_id": "equipamento_qualidade_regras",
     "title": "Qualidade do Equipamento",
-    "summary": "[Pág. 345] Bônus/penalidades baseados na fabricação do item (Barato, Bom, Muito Bom, etc).",
+    "summary": "[Pág. 345] Bônus/penalidades baseados na fabricação do item (Barato, Bom, Muito Bom, etc). [TAGS: item barato, item bom, fabricação, bônus de equipamento, manutenção]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -270,7 +270,7 @@
   {
     "entity_id": "escudos_regras_combate",
     "title": "Escudos (Combate)",
-    "summary": "[Pág. 374, 563] Uso defensivo, bônus na DB e regras de dano ao escudo.",
+    "summary": "[Pág. 374, 563] Uso defensivo, bônus na DB e regras de dano ao escudo. [TAGS: db, defesa passiva, bloquear, proteção de braço, escudo quebrado]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -278,7 +278,7 @@
   {
     "entity_id": "explosoes_danos_regras",
     "title": "Explosões",
-    "summary": "[Pág. 414] Dano de concussão por distância e regras de fragmentação.",
+    "summary": "[Pág. 414] Dano de concussão por distância e regras de fragmentação. [TAGS: bomba, granada, concussão, fragmentação, estilhaço, onda de choque]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -286,7 +286,7 @@
   {
     "entity_id": "doencas_regras",
     "title": "Doenças",
-    "summary": "[Pág. 432] Contágio, período de incubação e testes de resistência.",
+    "summary": "[Pág. 432] Contágio, período de incubação e testes de resistência. [TAGS: contágio, vírus, bactéria, incubação, febre, praga, resistência ht]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -294,7 +294,7 @@
   {
     "entity_id": "drogas_intoxicacao",
     "title": "Drogas e Intoxicação",
-    "summary": "[Pág. 440, 441] Efeitos de substâncias químicas e testes de resistência (HT).",
+    "summary": "[Pág. 440, 441] Efeitos de substâncias químicas e testes de resistência (HT). [TAGS: substância química, narcótico, pílula, overdose, efeito colateral]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -302,7 +302,7 @@
   {
     "entity_id": "economia_riqueza_regras",
     "title": "Economia e Riqueza",
-    "summary": "[Pág. 25, 513] Regras para custo de vida, compra de equipamentos e níveis de riqueza.",
+    "summary": "[Pág. 25, 513] Regras para custo de vida, compra de equipamentos e níveis de riqueza. [TAGS: dinheiro, custo de vida, salário, comprar item, mercado, preço]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -310,7 +310,7 @@
   {
     "entity_id": "envelhecimento_regras",
     "title": "Envelhecimento",
-    "summary": "[Pág. 444] Testes de saúde e perda gradual de atributos com o passar dos anos.",
+    "summary": "[Pág. 444] Testes de saúde e perda gradual de atributos com o passar dos anos. [TAGS: idade, velhice, tempo, declínio de atributos, anos, morte natural]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -318,7 +318,7 @@
   {
     "entity_id": "equipamento_qualidade",
     "title": "Equipamento e Qualidade",
-    "summary": "[Pág. 345, 484] Bônus e penalidades por qualidade de itens (Baratos, Bons, Muito Bons).",
+    "summary": "[Pág. 345, 484] Bônus e penalidades por qualidade de itens (Baratos, Bons, Muito Bons). [TAGS: item barato, item bom, fabricação, bônus de equipamento, manutenção]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -326,7 +326,7 @@
   {
     "entity_id": "esquiva_defesa_ativa",
     "title": "Esquiva (Defesa Ativa)",
-    "summary": "[Pág. 17, 374, 377] Movimento de esquiva para evitar ataques e projéteis.",
+    "summary": "[Pág. 17, 374, 377] Movimento de esquiva para evitar ataques e projéteis. [TAGS: desviar, fugir do golpe, agilidade, dx, defesa sem arma, projétil]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -334,7 +334,7 @@
   {
     "entity_id": "combate_aquatico",
     "title": "Combate Aquático e Alvos Submersos",
-    "summary": "[Pág. 355, 388, 415, 424] Penalidades de movimento, fôlego e dispersão de projéteis sob a água.",
+    "summary": "[Pág. 355, 388, 415, 424] Penalidades de movimento, fôlego e dispersão de projéteis sob a água. [TAGS: subaquático, piscina, rio, mar, mergulho, natação, tiro na água, oxigênio, fôlego]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico",
@@ -345,7 +345,7 @@
   {
     "entity_id": "colisoes_quedas",
     "title": "Colisões e Quedas",
-    "summary": "[Pág. 433] Regra oficial de Dano por Colisão. Fórmula: (PV x Velocidade) / 100. Velocidade em m/s. PV do objeto/ser que colidiu.",
+    "summary": "[Pág. 433] Regra oficial de Dano por Colisão. Fórmula: (PV x Velocidade) / 100. Velocidade em m/s. PV do objeto/ser que colidiu. [TAGS: bater, queda de altura, impacto, velocidade, atropelamento, colidir, fórmula de dano]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -353,7 +353,7 @@
   {
     "entity_id": "combate_montado_regras",
     "title": "Combate Montado",
-    "summary": "[Pág. 396] Regras para lutar em cima de cavalos ou outras montarias.",
+    "summary": "[Pág. 396] Regras para lutar em cima de cavalos ou outras montarias. [TAGS: cavaleiro, sela, montaria, combate a cavalo, direção animal]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -361,7 +361,7 @@
   {
     "entity_id": "combate_tatico_regras",
     "title": "Combate Tático",
-    "summary": "[Pág. 384] Regras para uso de mapas, hexágonos e posicionamento em luta.",
+    "summary": "[Pág. 384] Regras para uso de mapas, hexágonos e posicionamento em luta. [TAGS: hexágonos, mapa, miniatura, posicionamento, grade de combate]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -369,7 +369,7 @@
   {
     "entity_id": "carga_regras_gerais",
     "title": "Carga e Sobrecarga",
-    "summary": "[Pág. 17, 563] Regras sobre peso carregado, níveis de carga e impacto no Deslocamento/Esquiva.",
+    "summary": "[Pág. 17, 563] Regras sobre peso carregado, níveis de carga e impacto no Deslocamento/Esquiva. [TAGS: peso, carregar itens, mochila, estamina física, penalidade de esquiva, força de carga]",
     "category": "Regra",
     "level": 1,
     "RULES_FOR": [
@@ -382,7 +382,7 @@
   {
     "entity_id": "choque_efeitos_combate",
     "title": "Choque (Penalidade)",
-    "summary": "[Pág. 381, 419] Penalidade temporária no NH de perícias e atributos no turno após sofrer dano.",
+    "summary": "[Pág. 381, 419] Penalidade temporária no NH de perícias e atributos no turno após sofrer dano. [TAGS: dor, reação ao dano, penalidade de nh, tontura rápida, recuo de dor]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -390,7 +390,7 @@
   {
     "entity_id": "clima_efeitos_regras",
     "title": "Clima e Ambiente",
-    "summary": "[Pág. 434] Efeitos de temperatura, visibilidade e condições climáticas extremas.",
+    "summary": "[Pág. 434] Efeitos de temperatura, visibilidade e condições climáticas extremas. [TAGS: tempestade, chuva, vento, temperatura, visibilidade, clima extremo]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -398,7 +398,7 @@
   {
     "entity_id": "cobertura_modificadores_regras",
     "title": "Cobertura e Ocultamento",
-    "summary": "[Pág. 407] Modificadores de precisão e defesa baseados na proteção de obstáculos.",
+    "summary": "[Pág. 407] Modificadores de precisão e defesa baseados na proteção de obstáculos. [TAGS: esconder, atrás da parede, proteção, obstáculo, barricada, abrigo]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -406,7 +406,7 @@
   {
     "entity_id": "combate_regras_gerais",
     "title": "Combate (Sistema Geral)",
-    "summary": "[Pág. 363-413] Regras básicas, avançadas e táticas de combate corporal e à distância.",
+    "summary": "[Pág. 363-413] Regras básicas, avançadas e táticas de combate corporal e à distância. [TAGS: luta, guerra, confronto, mecânica de combate, turno de ação]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -414,7 +414,7 @@
   {
     "entity_id": "concentracao_manobra",
     "title": "Concentração (Manobra)",
-    "summary": "[Pág. 364] Manobra para realizar magias ou perícias que exigem foco total.",
+    "summary": "[Pág. 364] Manobra para realizar magias ou perícias que exigem foco total. [TAGS: focar mente, conjurar magia, meditação, silêncio, foco ininterrupto, leitura, rituais]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -422,7 +422,7 @@
   {
     "entity_id": "contusao_dano_regras",
     "title": "Dano por Contusão (Esmagamento)",
-    "summary": "[Pág. 269] Regras para danos de impacto, RD e efeitos de nocaute.",
+    "summary": "[Pág. 269] Regras para danos de impacto, RD e efeitos de nocaute. [TAGS: impacto, pancada, trauma físico, hematoma, soco, chute, clava, martelo]",
     "category": "Regra",
     "level": 1,
     "RULES_FOR": [
@@ -437,7 +437,7 @@
   {
     "entity_id": "correr_deslocamento",
     "title": "Correr (Movimento)",
-    "summary": "[Pág. 17, 353, 362] Velocidade máxima de corrida e consumo de fadiga.",
+    "summary": "[Pág. 17, 353, 362] Velocidade máxima de corrida e consumo de fadiga. [TAGS: velocidade máxima, pique, atletismo, fadiga por corrida, fugir rápido, deslocamento]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -445,7 +445,7 @@
   {
     "entity_id": "danos_tipos_regras",
     "title": "Danos (Tipos e Efeitos)",
-    "summary": "[Pág. 268, 432] Classificação de danos: Contusão, Corrosão, Corte, Perfuração, etc.",
+    "summary": "[Pág. 268, 432] Classificação de danos: Contusão, Corrosão, Corte, Perfuração, etc. [TAGS: corrosão, corte, perfuração, queimadura, ferimento, tipos de ataque]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -453,7 +453,7 @@
   {
     "entity_id": "defesas_ativas_regras",
     "title": "Defesas Ativas",
-    "summary": "[Pág. 374] Esquiva, Aparar e Bloqueio: como funcionam e quando usar.",
+    "summary": "[Pág. 374] Esquiva, Aparar e Bloqueio: como funcionam e quando usar. [TAGS: esquiva, aparar, bloqueio, anular ataque, reação de combate, defesa física]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -461,7 +461,7 @@
   {
     "entity_id": "atropelamento",
     "title": "Atropelamento",
-    "summary": "Dano causado por veículos ou criaturas grandes em movimento. Pág. 432.",
+    "summary": "[Pág. 432] Dano causado por veículos ou criaturas grandes em movimento.  [TAGS: veículo, colisão, atropelar, impacto de massa, acidente, atropelada]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -469,7 +469,7 @@
   {
     "entity_id": "sufocamento_asfixia",
     "title": "Sufocamento e Asfixia",
-    "summary": "Regras para falta de ar, estrangulamento e ambientes sem oxigênio. Pág. 437.",
+    "summary": "[Pág. 437] Regras para falta de ar, estrangulamento e ambientes sem oxigênio. [TAGS: falta de ar, estrangulamento, afogamento, sem oxigênio, gás tóxico, prender respiração]",
     "category": "Regra",
     "level": 1,
     "RULES_FOR": [
@@ -480,7 +480,7 @@
   {
     "entity_id": "fogo_chamas",
     "title": "Fogo e Chamas",
-    "summary": "Dano por queimadura, incêndios e resistência ao calor. Pág. 429.",
+    "summary": "[Pág. 429] Dano por queimadura, incêndios e resistência ao calor. [TAGS: incêndio, queimadura, temperatura alta, calor, tocha, lava, queimar]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -488,7 +488,7 @@
   {
     "entity_id": "venenos_toxinas",
     "title": "Venenos e Toxinas",
-    "summary": "Tipos de transmissão, efeitos e testes de resistência. Pág. 437-439.",
+    "summary": "[Pág. 437-439] Tipos de transmissão, efeitos e testes de resistência. [TAGS: envenenamento, antídoto, letal, dose, ferimento químico, toxina líquida]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -496,7 +496,7 @@
   {
     "entity_id": "explosões",
     "title": "Explosões",
-    "summary": "Dano de fragmentação, onda de choque e distância. Pág. 414.",
+    "summary": "[Pág. 414] Dano de fragmentação, onda de choque e distância. [TAGS: bomba, granada, concussão, fragmentação, estilhaço, onda de choque, raio de explosão]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -504,7 +504,7 @@
   {
     "entity_id": "inconsciencia_regras_gerais",
     "title": "Inconsciência",
-    "summary": "[Pág. 423] Regras para desmaio, testes de recuperação e despertar.",
+    "summary": "[Pág. 423] Regras para desmaio, testes de recuperação e despertar. [TAGS: desmaio, nocaute, dormir, coma, acordar, despertar, ht, iq]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -512,7 +512,7 @@
   {
     "entity_id": "infeccao_regras_gerais",
     "title": "Infecção",
-    "summary": "[Pág. 444] Evolução de ferimentos para estados infecciosos e testes de HT.",
+    "summary": "[Pág. 444] Evolução de ferimentos para estados infecciosos e testes de HT. [TAGS: bactéria, doença, ferimento sujo, gangrena, cura, ht, medicina]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -520,7 +520,7 @@
   {
     "entity_id": "iniciativa_combate_regras",
     "title": "Iniciativa e Surpresa",
-    "summary": "[Pág. 393] Determinação da ordem de ação em combate e efeitos de surpresa.",
+    "summary": "[Pág. 393] Determinação da ordem de ação em combate e efeitos de surpresa. [TAGS: reagir, ordem de turno, emboscada, susto, pânico repentino, rapidez]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -528,7 +528,7 @@
   {
     "entity_id": "insanidade_regras_gerais",
     "title": "Insanidade e Distúrbios",
-    "summary": "[Pág. 428] Efeitos mentais de longo prazo e Verificações de Pânico críticas.",
+    "summary": "[Pág. 428] Efeitos mentais de longo prazo e Verificações de Pânico críticas. [TAGS: loucura, trauma mental, verificação de pânico, medo, fobia, mente]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -536,7 +536,7 @@
   {
     "entity_id": "paralisia_regras_gerais",
     "title": "Paralisia e Atordoamento",
-    "summary": "[Pág. 420, 423] Regras para estados incapacitantes físicos e mentais e testes de recuperação.",
+    "summary": "[Pág. 420, 423] Regras para estados incapacitantes físicos e mentais e testes de recuperação. [TAGS: imóvel, choque, tontura, nocaute, paralisado, incapacitado]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -544,7 +544,7 @@
   {
     "entity_id": "passagem_tempo_regras",
     "title": "Passagem do Tempo",
-    "summary": "[Pág. 434] Regras para gestão do tempo cronológico em jogo (Combate vs Viagem).",
+    "summary": "[Pág. 434] Regras para gestão do tempo cronológico em jogo (Combate vs Viagem). [TAGS: horas, dias, cronômetro, tempo de viagem, turno, escala temporal]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -552,7 +552,7 @@
   {
     "entity_id": "peculiaridades_regras_gerais",
     "title": "Peculiaridades",
-    "summary": "[Pág. 163] Definição de traços menores de 1 ponto e limites de aquisição.",
+    "summary": "[Pág. 163] Definição de traços menores de 1 ponto e limites de aquisição. [TAGS: hábito mental, detalhe, 1 ponto, mania, traço menor, personalidade]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -560,7 +560,7 @@
   {
     "entity_id": "posicao_postura_tabela",
     "title": "Tabela de Posturas",
-    "summary": "[Pág. 364, 551] Modificadores de combate baseados na posição física do personagem.",
+    "summary": "[Pág. 364, 551] Modificadores de combate baseados na posição física do personagem. [TAGS: deitado, agachado, ajoelhado, em pé, modificador de defesa, posição de tiro]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -568,7 +568,7 @@
   {
     "entity_id": "prontidao_manobra_regras",
     "title": "Prontidão (Aguardar)",
-    "summary": "[Pág. 365] Regras para a manobra de aguardar e reagir a ações de oponentes.",
+    "summary": "[Pág. 365] Regras para a manobra de aguardar e reagir a ações de oponentes. [TAGS: esperar, reação, interceptar, gatilho de ação, turno de espera]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -576,7 +576,7 @@
   {
     "entity_id": "sentidos_regras_gerais",
     "title": "Sentidos e Percepção",
-    "summary": "[Pág. 15, 358] Regras para testes de Visão, Audição, Tato e Olfato/Paladar.",
+    "summary": "[Pág. 15, 358] Regras para testes de Visão, Audição, Tato e Olfato/Paladar. [TAGS: visão, audição, tato, olfato, paladar, per, notar, observar]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -760,7 +760,7 @@
   {
     "entity_id": "frestas_armadura",
     "title": "Ataque em Frestas na Armadura",
-    "summary": "Penalidades para ignorar a RD do alvo visando pontos fracos. Pág. 400.",
+    "summary": "[Pág. 400] Penalidades para ignorar a RD do alvo visando pontos fracos. [TAGS: ignorar rd, ponto fraco, precisão letal, articulação, fresta, dano crítico]",
     "category": "Regra",
     "level": 1,
     "RULES_FOR": [
@@ -775,7 +775,7 @@
   {
     "entity_id": "familiaridade_pericia_regras",
     "title": "Familiaridade com Perícia",
-    "summary": "[Pág. 169, 171] Penalidades por usar equipamentos desconhecidos e tempo de adaptação.",
+    "summary": "[Pág. 169, 171] Penalidades por usar equipamentos desconhecidos e tempo de adaptação. [TAGS: equipamento novo, adaptação, treino, desconhecido, penalidade técnica]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -783,7 +783,7 @@
   {
     "entity_id": "ferimentos_regras",
     "title": "Ferimentos e Recuperação",
-    "summary": "[Pág. 419] Efeitos de perda de PV, sangramento e cura natural/médica.",
+    "summary": "[Pág. 419] Efeitos de perda de PV, sangramento e cura natural/médica. [TAGS: pontos de vida, pv, sangramento, cura, hospital, medicina, primeiros socorros]",
     "category": "Regra",
     "level": 1,
     "RULES_FOR": [
@@ -798,7 +798,7 @@
   {
     "entity_id": "fuga_manobra_regras",
     "title": "Fuga (Combate)",
-    "summary": "[Pág. 371, 391] Manobras para se desvencilhar de um combate corporal ou agarrão.",
+    "summary": "[Pág. 371, 391] Manobras para se desvencilhar de um combate corporal ou agarrão. [TAGS: escapar, agarrão, soltar-se, retirada, sair de combate]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -806,7 +806,7 @@
   {
     "entity_id": "fumaca_visibilidade_regras",
     "title": "Fumaça e Visibilidade",
-    "summary": "[Pág. 438] Penalidades de visão e efeitos de sufocamento em ambientes com fumaça.",
+    "summary": "[Pág. 438] Penalidades de visão e efeitos de sufocamento em ambientes com fumaça. [TAGS: incêndio, sufocamento, penalidade de visão, gás, nevoeiro, obscuridade]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -814,7 +814,7 @@
   {
     "entity_id": "furtividade_pericia_regras",
     "title": "Furtividade em Combate",
-    "summary": "[Pág. 201, 381, 396] Uso da perícia para ataques surpresa e movimento oculto.",
+    "summary": "[Pág. 201, 381, 396] Uso da perícia para ataques surpresa e movimento oculto. [TAGS: esconder, emboscada, ataque surpresa, silêncio, camuflagem, rastro]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -822,7 +822,7 @@
   {
     "entity_id": "iniciativa_combate",
     "title": "Iniciativa e Ordem de Ação",
-    "summary": "[Pág. 328, 393] Determinação de quem age primeiro baseada na Velocidade Básica.",
+    "summary": "[Pág. 328, 393] Determinação de quem age primeiro baseada na Velocidade Básica. [TAGS: velocidade básica, turno, quem age primeiro, rapidez, reação]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -830,7 +830,7 @@
   {
     "entity_id": "interrupcao_manobra",
     "title": "Interrupção de Ações",
-    "summary": "[Pág. 363] Regras para interromper manobras ou reagir a ações inimigas.",
+    "summary": "[Pág. 363] Regras para interromper manobras ou reagir a ações inimigas. [TAGS: reagir, cancelar manobra, intervir, ação instantânea, resposta de combate]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -838,7 +838,7 @@
   {
     "entity_id": "lideranca_regras",
     "title": "Liderança e Moral",
-    "summary": "[Pág. 205] Uso da perícia Liderança para bônus em testes de pânico e organização.",
+    "summary": "[Pág. 205] Uso da perícia Liderança para bônus em testes de pânico e organização. [TAGS: comando, bônus de pânico, moral das tropas, autoridade, carisma tático]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -846,7 +846,7 @@
   {
     "entity_id": "localizacao_dano_tabela",
     "title": "Localização de Dano (Tabela)",
-    "summary": "[Pág. 398] Efeitos de atingir partes específicas do corpo (Crânio, Membros, etc).",
+    "summary": "[Pág. 398] Efeitos de atingir partes específicas do corpo (Crânio, Membros, etc). [TAGS: cabeça, membros, olhos, pontos vitais, ferimento incapacitante, acerto direcionado]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -854,7 +854,7 @@
   {
     "entity_id": "manobras_combate_lista",
     "title": "Manobras de Combate",
-    "summary": "Lista de opções de ação por turno. [MB Pág. 363]: Ataque, Defesa Total, Movimento, Finta, Concentrar, etc. [AM Pág. 97-98]: Manobras de Combate avançadas (fintas complexas, transições).",
+    "summary": "Lista de opções de ação por turno. [MB Pág. 363]: Ataque, Defesa Total, Movimento, Finta, Concentrar, etc. [AM Pág. 97-98]: Manobras de Combate avançadas (fintas complexas, transições). [TAGS: finta, ataque total, defesa total, avaliar, esperar, manobras avançadas, opções de turno]",
     "category": "Regra",
     "level": 0,
     "SEE_ALSO": [
@@ -868,7 +868,7 @@
   {
     "entity_id": "nh_nivel_habilidade",
     "title": "Nível de Habilidade (NH)",
-    "summary": "[Pág. 10, 171] O valor final para o teste de sucesso (Atributo + Perícia + Modificadores).",
+    "summary": "[Pág. 10, 171] O valor final para o teste de sucesso (Atributo + Perícia + Modificadores). [TAGS: chance de acerto, probabilidade, teste de sucesso, valor final, modificador de perícia]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -876,7 +876,7 @@
   {
     "entity_id": "nt_nivel_tecnologico_regras",
     "title": "Nível Tecnológico (NT)",
-    "summary": "[Pág. 22, 27] Classificação do progresso tecnológico e seu impacto em perícias e itens.",
+    "summary": "[Pág. 22, 27] Classificação do progresso tecnológico e seu impacto em perícias e itens. [TAGS: progresso, ferramentas, modernidade, época, anacronismo, equipamento avançado]",
     "category": "Sistema",
     "level": 1,
     "RULES_FOR": [
@@ -890,7 +890,7 @@
   {
     "entity_id": "resistencia_teste_regras",
     "title": "Testes de Resistência",
-    "summary": "[Pág. 348] Disputas rápidas para resistir a venenos, magias e influências mentais.",
+    "summary": "[Pág. 348] Disputas rápidas para resistir a venenos, magias e influências mentais. [TAGS: resistir veneno, resistir magia, mente, disputa rápida, imunidade, resistência física]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -898,7 +898,7 @@
   {
     "entity_id": "surpresa_combate_regras",
     "title": "Surpresa em Combate",
-    "summary": "[Pág. 393] Efeitos de emboscadas e testes de IQ/Vontade para sair da paralisia.",
+    "summary": "[Pág. 393] Efeitos de emboscadas e testes de IQ/Vontade para sair da paralisia. [TAGS: emboscada, susto, pânico, congelar, reação lenta, combate inesperado, iq, vontade]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -906,7 +906,7 @@
   {
     "entity_id": "sono_descanso_regras",
     "title": "Sono e Privação",
-    "summary": "[Pág. 426] Efeitos da falta de sono e tempo necessário para recuperação total.",
+    "summary": "[Pág. 426] Efeitos da falta de sono e tempo necessário para recuperação total. [TAGS: dormir, cansaço, exaustão, vigília, pontos de fadiga, sono interrompido]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -914,7 +914,7 @@
   {
     "entity_id": "tabela_tamanho_velocidade",
     "title": "Tabela de Tamanho e Velocidade/Distância",
-    "summary": "[Pág. 534] Modificadores universais para atingir alvos baseados no tamanho e distância.",
+    "summary": "[Pág. 534] Modificadores universais para atingir alvos baseados no tamanho e distância. [TAGS: mt, bônus de tamanho, penalidade de distância, precisão de tiro, escala universal]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -922,7 +922,7 @@
   {
     "entity_id": "tecnicas_pericias_regras",
     "title": "Técnicas de Perícia",
-    "summary": "[Pág. 229] Especializações que aumentam o NH de tarefas específicas dentro de uma perícia.",
+    "summary": "[Pág. 229] Especializações que aumentam o NH de tarefas específicas dentro de uma perícia. [TAGS: especialização, manobra técnica, aumento de nh, treino específico, truque de perícia]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -930,7 +930,7 @@
   {
     "entity_id": "terreno_modificadores_regras",
     "title": "Modificadores de Terreno",
-    "summary": "[Pág. 353, 354, 388] Penalidades de deslocamento e defesa para terrenos difíceis (lama, gelo, etc).",
+    "summary": "[Pág. 353, 354, 388] Penalidades de deslocamento e defesa para terrenos difíceis (lama, gelo, etc). [TAGS: lama, gelo, pântano, neve, areia, deslocamento reduzido, equilíbrio]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -938,7 +938,7 @@
   {
     "entity_id": "vacuo_efeitos_regras",
     "title": "Vácuo e Seus Efeitos",
-    "summary": "[Pág. 435] Dano por descompressão, sufocamento e sobrevivência no vácuo espacial.",
+    "summary": "[Pág. 435] Dano por descompressão, sufocamento e sobrevivência no vácuo espacial. [TAGS: espaço sideral, falta de ar, descompressão, pressão zero, radiação, sobrevivência espacial]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -946,7 +946,7 @@
   {
     "entity_id": "veiculos_regras_gerais",
     "title": "Veículos (Regras Gerais)",
-    "summary": "[Pág. 462-470] Condução, combate veicular, danos e tabelas de colisão.",
+    "summary": "[Pág. 462-470] Condução, combate veicular, danos e tabelas de colisão. [TAGS: direção, pilotagem, combate veicular, atropelamento, carro, navio, avião, colisão]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -954,7 +954,7 @@
   {
     "entity_id": "vento_efeitos_regras",
     "title": "Vento e Seus Efeitos",
-    "summary": "[Pág. 434] Modificadores de precisão para projéteis e impacto no movimento.",
+    "summary": "[Pág. 434] Modificadores de precisão para projéteis e impacto no movimento. [TAGS: tempestade, vendaval, furacão, penalidade de tiro, desvio de projétil, clima]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -962,7 +962,7 @@
   {
     "entity_id": "sucesso_margem_regras",
     "title": "Margem de Sucesso/Vitória",
-    "summary": "[Pág. 347, 348] O impacto da diferença entre o NH e o resultado dos dados.",
+    "summary": "[Pág. 347, 348] O impacto da diferença entre o NH e o resultado dos dados. [TAGS: diferença de nh, resultado do dado, sucesso crítico, qualidade da ação, disputa de perícia]",
     "category": "Sistema",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -970,7 +970,7 @@
   {
     "entity_id": "nado_movimento_regras",
     "title": "Natação e Movimento Aquático",
-    "summary": "[Pág. 193, 354] Regras para nadar, testes de HT para evitar afogamento e fadiga.",
+    "summary": "[Pág. 193, 354] Regras para nadar, testes de HT para evitar afogamento e fadiga. [TAGS: mergulho, subaquático, mar, rio, piscina, afogamento, prender respiração, fadiga na água]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -978,7 +978,7 @@
   {
     "entity_id": "magia_regras_basicas",
     "title": "Magia (Regras Gerais)",
-    "summary": "[Pág. 233-242] Sistemas de mana, rituais, custos de energia e manutenção de feitiços.",
+    "summary": "[Pág. 233-242] Sistemas de mana, rituais, custos de energia e manutenção de feitiços. [TAGS: feitiço, mana, ritual, conjuração, custo de energia, manutenção mágica]",
     "category": "Sistema",
     "level": 1,
     "RULES_FOR": [
@@ -989,7 +989,7 @@
   {
     "entity_id": "choque_eletrico",
     "title": "Choque Elétrico",
-    "summary": "[Pág. 432] Efeitos de eletricidade no corpo e testes de atordoamento.",
+    "summary": "[Pág. 432] Efeitos de eletricidade no corpo e testes de atordoamento. [TAGS: raio, eletricidade, voltagem, atordoamento elétrico, dano por energia, curto-circuito]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -997,7 +997,7 @@
   {
     "entity_id": "combate_corporal",
     "title": "Combate Corporal (Luta Livre)",
-    "summary": "Regras para lutar dentro do mesmo hexágono, agarrar e imobilizar. Pág. 391.",
+    "summary": "[Pág. 391] Regras para lutar dentro do mesmo hexágono, agarrar e imobilizar. [TAGS: agarrar, imobilizar, chave de braço, queda, lutar no chão, hexágono próximo]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1005,7 +1005,7 @@
   {
     "entity_id": "acoes_agarrado",
     "title": "Ações Depois de ser Agarrado",
-    "summary": "Opções de fuga, contra-ataque e penalidades quando imobilizado. Pág. 371.",
+    "summary": "[Pág. 371] Opções de fuga, contra-ataque e penalidades quando imobilizado. [TAGS: soltar-se, contra-atacar, imobilizado, penalidade de dx, luta de chão, escapar de presa]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1013,7 +1013,7 @@
   {
     "entity_id": "munição_recarga",
     "title": "Munição e Recarga",
-    "summary": "Tempo necessário para recarregar armas de fogo e projéteis. Pág. 373.",
+    "summary": "[Pág. 373] Tempo necessário para recarregar armas de fogo e projéteis. [TAGS: balas, pentes, flechas, carregar arma, tempo de recarga, munição esgotada]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1021,7 +1021,7 @@
   {
     "entity_id": "fome_sede",
     "title": "Fome e Desidratação",
-    "summary": "Perda de PF e PV por falta de suprimentos e regras de sobrevivência. Pág. 426.",
+    "summary": "[Pág. 426] Perda de PF e PV por falta de suprimentos e regras de sobrevivência. [TAGS: sede, falta de água, sobrevivência, deserto, ração, perda de pf, inanição]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1029,7 +1029,7 @@
   {
     "entity_id": "escuridao_visibilidade",
     "title": "Visibilidade e Escuridão",
-    "summary": "Penalidades de combate e perícias baseadas na iluminação. Pág. 394.",
+    "summary": "[Pág. 394] Penalidades de combate e perícias baseadas na iluminação. [TAGS: breu, penumbra, lanterna, luz, tocha, penalidade de visão, noite, caverna]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1037,7 +1037,7 @@
   {
     "entity_id": "erros_criticos",
     "title": "Sucessos e Falhas Críticas",
-    "summary": "Efeitos automáticos de resultados 3, 4, 17 e 18 nos dados. Pág. 381-382.",
+    "summary": "[Pág. 381-382] Efeitos automáticos de resultados 3, 4, 17 e 18 nos dados. [TAGS: erro crítico, 17 ou 18, desastre, sorte, azar, tabela de erros, automática]",
     "category": "Regra",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1045,7 +1045,7 @@
   {
     "entity_id": "st_atributo",
     "title": "Força (ST)",
-    "summary": "Atributo de poder físico. Afeta Dano (Gpd/Bal), Carga e PV. Pág. 14.",
+    "summary": "[Pág. 14] Atributo de poder físico. Afeta Dano (Gpd/Bal), Carga e PV. [TAGS: poder físico, carregar peso, dano de golpe, pv, pontos de vida, levantamento, musculatura]",
     "category": "Atributo",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1053,7 +1053,7 @@
   {
     "entity_id": "dx_atributo",
     "title": "Destreza (DX)",
-    "summary": "Atributo de agilidade e coordenação. Base para combate. Pág. 15.",
+    "summary": "[Pág. 15] Atributo de agilidade e coordenação. Base para combate. [TAGS: agilidade, coordenação, reflexos, precisão, base de combate, perícia física, equilíbrio]",
     "category": "Atributo",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1061,7 +1061,7 @@
   {
     "entity_id": "iq_atributo",
     "title": "Inteligência (IQ)",
-    "summary": "Atributo mental e percepção. Base para magias. Pág. 15.",
+    "summary": "[Pág. 15] Atributo mental e percepção. Base para magias. [TAGS: mente, raciocínio, percepção, força de vontade, base de magia, perícia mental, memória]",
     "category": "Atributo",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1069,7 +1069,7 @@
   {
     "entity_id": "ht_atributo",
     "title": "Vitalidade (HT)",
-    "summary": "Atributo de saúde e vigor. Afeta PF e sobrevivência. Pág. 15.",
+    "summary": "[Pág. 15] Atributo de saúde e vigor. Afeta PF e sobrevivência. [TAGS: saúde, vigor, resistência física, pf, pontos de fadiga, sobrevivência, recuperação, fôlego]",
     "category": "Atributo",
     "level": 1,
     "source_id": "pt_modulo_basico"
@@ -1077,7 +1077,7 @@
   {
     "entity_id": "vantagem_abafador_de_mana",
     "title": "Abafador de Mana",
-    "summary": "[Pág. 34] Anula energia mágica e mana ao redor. Veja detalhes no catálogo.",
+    "summary": "[Pág. 34] Anula energia mágica e mana ao redor. Veja detalhes no catálogo. [TAGS: anular magia, zona sem mana, resistência mágica, neutralizar energia, vácuo místico]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1085,7 +1085,7 @@
   {
     "entity_id": "vantagem_abascanto",
     "title": "Abascanto",
-    "summary": "[Pág. 34] Resistência aumentada contra magia. Veja detalhes no catálogo.",
+    "summary": "[Pág. 34] Resistência aumentada contra magia. Veja detalhes no catálogo. [TAGS: anti-magia, proteção mística, resistir feitiço, defense sobrenatural, amuleto natural]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1093,7 +1093,7 @@
   {
     "entity_id": "vantagem_abencoado",
     "title": "Abençoado",
-    "summary": "[Pág. 35] Sintonia sobrenatural (visões, feitos heróicos). Ver Catálogo Técnico.",
+    "summary": "[Pág. 35] Sintonia sobrenatural (visões, feitos heróicos). Ver Catálogo Técnico. [TAGS: divindade, visões divinas, ajuda sagrada, fé, herói sagrado, poder religioso]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1101,7 +1101,7 @@
   {
     "entity_id": "vantagem_adaptabilidade_cultural",
     "title": "Adaptabilidade Cultural",
-    "summary": "[Pág. 35] Familiaridade com diversas culturas e raças. Veja detalhes no catálogo.",
+    "summary": "[Pág. 35] Familiaridade com diversas culturas e raças. Veja detalhes no catálogo. [TAGS: poliglota cultural, costumes, etiqueta estrangeira, diplomata, sociabilidade, sem choque cultural]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1109,7 +1109,7 @@
   {
     "entity_id": "vantagem_adaptacao_ao_terreno",
     "title": "Adaptação ao Terreno",
-    "summary": "[Pág. 35] Ignora penalidades em terrenos específicos (areia, gelo, etc). Ver Catálogo Técnico.",
+    "summary": "[Pág. 35] Ignora penalidades em terrenos específicos (areia, gelo, etc). Ver Catálogo Técnico. [TAGS: caminhar no gelo, andar na areia, pântano, neve, ignorar penalidade de solo, equilíbrio em terreno difícil]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1117,7 +1117,7 @@
   {
     "entity_id": "vantagem_aderencia",
     "title": "Aderência",
-    "summary": "[Pág. 35] Capacidade de andar em paredes e tetos. Veja detalhes no catálogo.",
+    "summary": "[Pág. 35] Capacidade de andar em paredes e tetos. Veja detalhes no catálogo. [TAGS: escalar paredes, homem-aranha, superfícies verticais, ventosa, patinhas colantes, andar no teto]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1125,7 +1125,7 @@
   {
     "entity_id": "vantagem_agente_cativante",
     "title": "Agente Cativante",
-    "summary": "[Pág. 90] Talento social (políticos, enganadores). Ver Catálogo Técnico.",
+    "summary": "[Pág. 90] Talento social (políticos, enganadores). Ver Catálogo Técnico. [TAGS: lábia, carisma, sedução, política, diplomata, persuasão, enganação, talento social]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1133,7 +1133,7 @@
   {
     "entity_id": "vantagem_aliados",
     "title": "Aliados",
-    "summary": "[Pág. 35] PdM auxiliar. Custo por poder e frequência. Ver Catálogo Técnico.",
+    "summary": "[Pág. 35] PdM auxiliar. Custo por poder e frequência. Ver Catálogo Técnico. [TAGS: parceiro, ajudante, pdm amigável, lacaio, suporte de combate, frequência de aparição]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1141,7 +1141,7 @@
   {
     "entity_id": "vantagem_ambidestria",
     "title": "Ambidestria",
-    "summary": "[Pág. 38] Usa ambas as mãos sem penalidade de mão inábil. Ver Catálogo Técnico.",
+    "summary": "[Pág. 38] Usa ambas as mãos sem penalidade de mão inábil. Ver Catálogo Técnico. [TAGS: duas mãos, mão esquerda, mão direita, sem penalidade de mão inábil, combate com duas armas]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1149,7 +1149,7 @@
   {
     "entity_id": "vantagem_ampliador_de_mana",
     "title": "Ampliador de Mana",
-    "summary": "[Pág. 38] Aumenta nível de mana local ao redor do personagem. Ver Catálogo Técnico.",
+    "summary": "[Pág. 38] Aumenta nível de mana local ao redor do personagem. Ver Catálogo Técnico. [TAGS: aura mágica, fonte de mana, aumentar energia, canalizador místico, zona mágica portátil]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1157,7 +1157,7 @@
   {
     "entity_id": "vantagem_anfibio",
     "title": "Anfíbio",
-    "summary": "[Pág. 38] Movimento total e combate normal sob a água. Ver Catálogo Técnico.",
+    "summary": "[Pág. 38] Movimento total e combate normal sob a água. Ver Catálogo Técnico. [TAGS: nadar rápido, combate subaquático, homem-peixe, oceano, rio, mar, agilidade na água, movimento aquático]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1165,7 +1165,7 @@
   {
     "entity_id": "vantagem_antecedentes_incomuns",
     "title": "Antecedentes Incomuns",
-    "summary": "[Pág. 39] Vantagem abrangente para justificar habilidades especiais não comuns na campanha. Custo variável definido pelo Mestre.",
+    "summary": "[Pág. 39] Vantagem abrangente para justificar habilidades especiais não comuns na campanha. Custo variável definido pelo Mestre. [TAGS: permissão especial, justificativa de poder, origem exótica, custo de mestre, lore especial]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1173,7 +1173,7 @@
   {
     "entity_id": "vantagem_apagado",
     "title": "Apagado",
-    "summary": "[Pág. 39] Inexistente em registros oficiais e imune a adivinhações. Ver Catálogo Técnico.",
+    "summary": "[Pág. 39] Inexistente em registros oficiais e imune a adivinhações. Ver Catálogo Técnico. [TAGS: invisibilidade burocrática, sem rastro digital, fantasma social, imune a vigilância, segredo total]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1181,7 +1181,7 @@
   {
     "entity_id": "vantagem_aparencia",
     "title": "Aparência",
-    "summary": "[Pág. 21] Níveis de beleza/feiura e seus modificadores de reação. Ver Catálogo Técnico.",
+    "summary": "[Pág. 21] Níveis de beleza/feiura e seus modificadores de reação. Ver Catálogo Técnico. [TAGS: beleza, feiura, modificador de reação, atração física, charme visual, horroroso, bonito]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1189,7 +1189,7 @@
   {
     "entity_id": "vantagem_apetrechos",
     "title": "Apetrechos",
-    "summary": "[Pág. 39] Disponibilidade de itens úteis por sessão. Ver Catálogo Técnico.",
+    "summary": "[Pág. 39] Disponibilidade de itens úteis por sessão. Ver Catálogo Técnico. [TAGS: gizmos, itens de emergência, ferramenta certa, utilitários, inventário dinâmico, bolso sem fundo]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1197,7 +1197,7 @@
   {
     "entity_id": "vantagem_aptidao_astral",
     "title": "Aptidão Astral",
-    "summary": "[Pág. 40] Bônus no atributo Alma e interação com matéria escura. Ver Catálogo Técnico.",
+    "summary": "[Pág. 40] Bônus no atributo Alma e interação com matéria escura. Ver Catálogo Técnico. [TAGS: projeção astral, mundo dos espíritos, alma, sensibilidade etérea, fantasma, plano astral]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1205,7 +1205,7 @@
   {
     "entity_id": "vantagem_aptidao_magica",
     "title": "Aptidão Mágica",
-    "summary": "[Pág. 40] Sensibilidade e bônus para aprender/sentir magia. Ver Catálogo Técnico.",
+    "summary": "[Pág. 40] Sensibilidade e bônus para aprender/sentir magia. Ver Catálogo Técnico. [TAGS: magery, talento mágico, sentir magia, aprender feitiços, bônus de iq para magia, faísca mística]",
     "category": "Vantagem",
     "level": 2,
     "SEE_ALSO": [
@@ -1216,7 +1216,7 @@
   {
     "entity_id": "vantagem_arrebatador",
     "title": "Arrebatador",
-    "summary": "[Pág. 40] Coleta itens de universos paralelos. Ver Catálogo Técnico.",
+    "summary": "[Pág. 40] Coleta itens de universos paralelos. Ver Catálogo Técnico. [TAGS: salto dimensional, multiverso, coletar itens, viagem entre mundos, explorador paralelo]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1224,7 +1224,7 @@
   {
     "entity_id": "vantagem_arremedo",
     "title": "Arremedo",
-    "summary": "[Pág. 41] Imitação de sons e vozes. Ver Catálogo Técnico.",
+    "summary": "[Pág. 41] Imitação de sons e vozes. Ver Catálogo Técnico. [TAGS: imitar voz, ventríloquo, sons da natureza, disfarce auditivo, mimetismo sonoro, paródia]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1232,7 +1232,7 @@
   {
     "entity_id": "vantagem_artifice",
     "title": "Artífice",
-    "summary": "[Pág. 90] Talento para conserto e engenharia. Ver Catálogo Técnico.",
+    "summary": "[Pág. 90] Talento para conserto e engenharia. Ver Catálogo Técnico. [TAGS: mecânico, engenheiro, consertar tudo, eletrônica, talento técnico, mestre de obras, manutenção]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1240,7 +1240,7 @@
   {
     "entity_id": "vantagem_artista_talentoso",
     "title": "Artista Talentoso",
-    "summary": "[Pág. 90] Talento para perícias artísticas. Ver Catálogo Técnico.",
+    "summary": "[Pág. 90] Talento para perícias artísticas. Ver Catálogo Técnico. [TAGS: pintura, escultura, música, dança, talento criativo, bônus de perícia artística]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1248,7 +1248,7 @@
   {
     "entity_id": "vantagem_ataque_adicional",
     "title": "Ataque Adicional",
-    "summary": "[Pág. 42] Permite um ataque extra por turno. Ver Catálogo Técnico.",
+    "summary": "[Pág. 42] Permite um ataque extra por turno. Ver Catálogo Técnico. [TAGS: múltiplos ataques, rapidez de combate, extra attack, ofensiva dupla, combo físico]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1256,7 +1256,7 @@
   {
     "entity_id": "vantagem_ataque_constritivo",
     "title": "Ataque Constritivo",
-    "summary": "[Pág. 42] Esmaga oponentes após agarrar. Ver Catálogo Técnico.",
+    "summary": "[Pág. 42] Esmaga oponentes após agarrar. Ver Catálogo Técnico. [TAGS: esmagar, cobra, abraço de urso, asfixia mecânica, força de aperto, dano por turno]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -1264,7 +1264,7 @@
   {
     "entity_id": "vantagem_ataque_inato",
     "title": "Ataque Inato",
-    "summary": "[Pág. 42] Poder de ataque natural (fogo, raio, etc). Ver Catálogo Técnico.",
+    "summary": "[Pág. 42] Poder de ataque natural (fogo, raio, etc). Ver Catálogo Técnico. [TAGS: sopro de fogo, raio de energia, projétil natural, poder de destruição, vantagem de ataque, dano místico]",
     "category": "Vantagem",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -4961,7 +4961,7 @@
   {
     "entity_id": "perícia_acrobacia",
     "title": "Acrobacia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 174] Habilidade de realizar proezas de ginástica, cambalhotas, rolar, andar na corda bamba, etc. Um sucesso reduz a distância efetiva de qualquer queda em 5m.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -4969,7 +4969,7 @@
   {
     "entity_id": "perícia_acrobacia_aquática",
     "title": "Acrobacia Aquática",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 174] Habilidade de realizar acrobacias debaixo d'água.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -4977,7 +4977,7 @@
   {
     "entity_id": "perícia_acrobacia_aerea",
     "title": "Acrobacia Aérea",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 174] Habilidade de executar giros e piruetas no ar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -4985,7 +4985,7 @@
   {
     "entity_id": "perícia_adaga_de_esgrima",
     "title": "Adaga de Esgrima",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "É permitido usar Adaga de Esgrima com sua mão hábil para receber os benefícios de um aparar de esgrima enquanto empunha uma faca.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -4993,7 +4993,7 @@
   {
     "entity_id": "perícia_adestramento_de_animais",
     "title": "Adestramento de Animais",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 174] Treinar e trabalhar com uma categoria específica de animais (ex.: Cães, Equinos, Aves de Rapina).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5001,7 +5001,7 @@
   {
     "entity_id": "perícia_adivinhacao",
     "title": "Adivinhação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 174] Arte de dar palpites sobre o futuro usando métodos como astrologia, quiromancia, tarô, etc. Pode substituir Lábia, Interrogatório ou Psicologia se o consulente acreditar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5009,7 +5009,7 @@
   {
     "entity_id": "perícia_administracao",
     "title": "Administração",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 175] Habilidade de dirigir uma grande organização. Concede +2 ao lidar com burocratas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5017,7 +5017,7 @@
   {
     "entity_id": "perícia_alquimia_nt",
     "title": "Alquimia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 175] Estudo das transmutações mágicas e preparo de elixires.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5025,7 +5025,7 @@
   {
     "entity_id": "perícia_alvenaria",
     "title": "Alvenaria",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 175] Habilidade de construir coisas com tijolo ou pedra.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5033,7 +5033,7 @@
   {
     "entity_id": "perícia_analise_de_mercado",
     "title": "Analise de Mercado",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 176] Prever o comportamento de curto prazo do mercado de ações e taxas de câmbio.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5041,7 +5041,7 @@
   {
     "entity_id": "perícia_antropologia",
     "title": "Antropologia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 176] Estudo da cultura e evolução de uma espécie.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5049,7 +5049,7 @@
   {
     "entity_id": "perícia_analise_da_informacao_nt",
     "title": "Análise da Informação/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 175] Analisar e interpretar dados de inteligência para deduzir planos e capacidades do inimigo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5057,7 +5057,7 @@
   {
     "entity_id": "perícia_aparar_armas_de_projetil",
     "title": "Aparar Armas de Projétil",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 176] Aparar armas de arremesso ou projéteis com arma corpo a corpo ou mãos (com proteção).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5065,7 +5065,7 @@
   {
     "entity_id": "perícia_arcos",
     "title": "Arcos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 176] Uso de arcos longos, curtos e compostos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5073,7 +5073,7 @@
   {
     "entity_id": "perícia_arma_de_arremesso",
     "title": "Arma de Arremesso",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 176] Arremessar um tipo específico de arma (Faca, Lança, Machado, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5089,7 +5089,7 @@
   {
     "entity_id": "perícia_armas_de_combate_corpo_a_corpo_varias",
     "title": "Armas de Combate Corpo a Corpo (várias)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 177] Grupo de perícias para usar categorias específicas de armas (Espadas, Hastes, Manguais, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5097,7 +5097,7 @@
   {
     "entity_id": "perícia_armas_de_feixe_nt",
     "title": "Armas de Feixe/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 177] Uso de armas de feixe pequenas (Rifle, Pistola, Projetor).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5105,7 +5105,7 @@
   {
     "entity_id": "perícia_armas_de_fogo_nt",
     "title": "Armas de Fogo/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 178] Uso de armas de fogo por tipo (Pistola, Rifle, Espingarda, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5113,7 +5113,7 @@
   {
     "entity_id": "perícia_armas_de_haste",
     "title": "Armas de Haste",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Uso de armas de haste (Alabarda, Glaive, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5121,7 +5121,7 @@
   {
     "entity_id": "perícia_armeiro_nt",
     "title": "Armeiro/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 179] Fabricar e consertar armas e armaduras de um NT específico.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5129,7 +5129,7 @@
   {
     "entity_id": "perícia_arqueiro_zen",
     "title": "Arqueiro Zen",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 179] Atingir alvos distantes com um arco. Divide penalidades de tamanho/velocidade por 3.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5137,7 +5137,7 @@
   {
     "entity_id": "perícia_arqueologia",
     "title": "Arqueologia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 179] Estudo de civilizações antigas. Identificar artefatos, idiomas mortos, etc.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5145,7 +5145,7 @@
   {
     "entity_id": "perícia_arquitetura_nt",
     "title": "Arquitetura/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 179] Projetar edifícios e encontrar passagens secretas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5153,7 +5153,7 @@
   {
     "entity_id": "perícia_arremedo_chamado_dos_passaros",
     "title": "Arremedo (Chamado dos Pássaros)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 180] Imitar vozes e chamados de pássaros.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5161,7 +5161,7 @@
   {
     "entity_id": "perícia_arremedo_sons_dos_animais",
     "title": "Arremedo (Sons dos Animais)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 180] Imitar vozes e sons de animais diversos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5169,7 +5169,7 @@
   {
     "entity_id": "perícia_arremedo",
     "title": "Arremedo (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 180] Imitar vozes (Fala, Sons de Animais, Chamados de Pássaros).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5177,7 +5177,7 @@
   {
     "entity_id": "perícia_arremessador_de_lanca",
     "title": "Arremessador de Lança",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 180] Uso do arremessador de lança (atlatl).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5185,7 +5185,7 @@
   {
     "entity_id": "perícia_arremesso",
     "title": "Arremesso",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 180] Arremessar objetos pequenos e lisos que cabem na palma da mão.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5193,7 +5193,7 @@
   {
     "entity_id": "perícia_arrombamento_nt",
     "title": "Arrombamento/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Abrir fechaduras sem a chave. Leva 1 minuto por tentativa.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5201,7 +5201,7 @@
   {
     "entity_id": "perícia_arte_da_invisibilidade",
     "title": "Arte da Invisibilidade",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Permanecer imóvel em campo aberto sem ser visto (Disputa por segundo vs. Visão).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5209,7 +5209,7 @@
   {
     "entity_id": "perícia_arte_de_combate",
     "title": "Arte de Combate",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Versão não-letal de uma perícia de combate para demonstrações.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5217,7 +5217,7 @@
   {
     "entity_id": "perícia_arte_do_arremesso",
     "title": "Arte do Arremesso",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Arremessar qualquer coisa que o personagem consiga erguer, com bônus de dano.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5225,7 +5225,7 @@
   {
     "entity_id": "perícia_arte_erotica",
     "title": "Arte Erótica",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Conhecimento de técnicas sexuais avançadas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5233,7 +5233,7 @@
   {
     "entity_id": "perícia_arte_ou_esporte_de_combate",
     "title": "Arte ou Esporte de Combate (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Versões não-letais de perícias de combate para apresentações ou competições.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5241,7 +5241,7 @@
   {
     "entity_id": "perícia_artilharia_nt",
     "title": "Artilharia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 181] Usar arma pesada para tiro indireto.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5249,7 +5249,7 @@
   {
     "entity_id": "perícia_artista",
     "title": "Artista",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 182] Talento para uma arte visual (Pintura, Escultura, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5257,7 +5257,7 @@
   {
     "entity_id": "perícia_assuntos_atuais_nt",
     "title": "Assuntos Atuais/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 182] Conhecimento de notícias e informações sobre uma área específica (Política, Esportes, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5265,7 +5265,7 @@
   {
     "entity_id": "perícia_assuntos_atuaisnt_alta_cultura",
     "title": "Assuntos Atuais/NT (Alta Cultura)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 182] Conhecimento de notícias e informações sobre a área de Alta Cultura.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5273,7 +5273,7 @@
   {
     "entity_id": "perícia_assuntos_atuaisnt_cultura_popular",
     "title": "Assuntos Atuais/NT (Cultura Popular)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 182] Conhecimento de notícias e informações sobre a área de Cultura Popular.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5281,7 +5281,7 @@
   {
     "entity_id": "perícia_assuntos_atuaisnt_negocios",
     "title": "Assuntos Atuais/NT (Negócios)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 182] Conhecimento de notícias e informações sobre a área de Negócios.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5289,7 +5289,7 @@
   {
     "entity_id": "perícia_astronomia_nt",
     "title": "Astronomia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 183] Estudo dos corpos celestes.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5297,7 +5297,7 @@
   {
     "entity_id": "perícia_ataque_inato",
     "title": "Ataque Inato",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 183] Aumentar a precisão de um ataque à distância embutido (Feixe, Olhar, Projétil, Sopro).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5305,7 +5305,7 @@
   {
     "entity_id": "perícia_atuacao",
     "title": "Atuação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 183] Atuar em um palco ou tela.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5313,7 +5313,7 @@
   {
     "entity_id": "perícia_auto_hipnose",
     "title": "Auto Hipnose",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 183] Entrar em transe para acessar reservas de força. Pode anular dor/fadiga, aumentar Vontade ou melhorar concentração.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5321,7 +5321,7 @@
   {
     "entity_id": "perícia_bastao",
     "title": "Bastão",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Uso do bastão longo como arma de combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5329,7 +5329,7 @@
   {
     "entity_id": "perícia_besta",
     "title": "Besta",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 184] Uso de bestas de todos os tipos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5337,7 +5337,7 @@
   {
     "entity_id": "perícia_bioengenharia_nt",
     "title": "Bioengenharia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 184] Criar organismos vivos ou produtos biotecnológicos (Clonagem, Eng. Genética, Eng. de Tecidos).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5345,7 +5345,7 @@
   {
     "entity_id": "perícia_biologia_nt",
     "title": "Biologia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 184] Estudo científico da vida em um tipo de planeta.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5353,7 +5353,7 @@
   {
     "entity_id": "perícia_bloqueio_mental",
     "title": "Bloqueio Mental",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 184] Erguer um bloqueio mundano contra leitura da mente. Disputa vs. habilidade de leitura.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5361,7 +5361,7 @@
   {
     "entity_id": "perícia_boemia",
     "title": "Boemia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 184] Socializar, festejar. Um sucesso pode dar +2 em testes de reação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5369,7 +5369,7 @@
   {
     "entity_id": "perícia_boleadeira",
     "title": "Boleadeira",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 185] Lançar boleadeiras para caça ou combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5377,7 +5377,7 @@
   {
     "entity_id": "perícia_boxe",
     "title": "Boxe",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 185] Perícia de socos. Aumenta o dano em +1/+2 por dado. Permite aparar com as mãos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5385,7 +5385,7 @@
   {
     "entity_id": "perícia_briga",
     "title": "Briga",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 185] Combate desarmado não científico (socos, chutes, mordidas). Aumenta o dano em +1 por dado se DX+2.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5393,7 +5393,7 @@
   {
     "entity_id": "perícia_caminhada",
     "title": "Caminhada",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 185] Treino para provas de resistência, marchas. Um sucesso aumenta distância percorrida em 20%.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5401,7 +5401,7 @@
   {
     "entity_id": "perícia_camuflagem",
     "title": "Camuflagem",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 185] Usar materiais para se disfarçar e esconder. Disputa vs. Visão ou Observação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5409,7 +5409,7 @@
   {
     "entity_id": "perícia_canhoneiro_nt",
     "title": "Canhoneiro/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 186] Operar arma pesada em fogo direto.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5417,7 +5417,7 @@
   {
     "entity_id": "perícia_canto",
     "title": "Canto",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 186] Cantar de modo agradável.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5425,7 +5425,7 @@
   {
     "entity_id": "perícia_capa",
     "title": "Capa",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 186] Usar capa como arma defensiva (bônus de defesa +1/+2) ou para enredar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5433,7 +5433,7 @@
   {
     "entity_id": "perícia_captacao",
     "title": "Captação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 186] Encontrar, recuperar ou improvisar objetos úteis. Leva 1 hora.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5441,7 +5441,7 @@
   {
     "entity_id": "perícia_carate",
     "title": "Caratê",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 186] Combate desarmado avançado. Aumenta dano em +1/+2 por dado. Permite aparar armas sem penalidade.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5449,7 +5449,7 @@
   {
     "entity_id": "perícia_carpintaria",
     "title": "Carpintaria",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 187] Fabricar e consertar objetos de madeira.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5457,7 +5457,7 @@
   {
     "entity_id": "perícia_carregamento",
     "title": "Carregamento",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 187] Carregar e descarregar animais com eficiência.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5465,7 +5465,7 @@
   {
     "entity_id": "perícia_carroceiro",
     "title": "Carroceiro",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 187] Conduzir juntas de animais puxando veículos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5473,7 +5473,7 @@
   {
     "entity_id": "perícia_cartografia_nt",
     "title": "Cartografia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 187] Criar e interpretar mapas e gráficos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5481,7 +5481,7 @@
   {
     "entity_id": "perícia_cavalgar",
     "title": "Cavalgar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 187] Montar e controlar animais (Cavalos, camelos, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5489,7 +5489,7 @@
   {
     "entity_id": "perícia_chicote",
     "title": "Chicote",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Uso de chicotes comuns em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5497,7 +5497,7 @@
   {
     "entity_id": "perícia_chicote_de_energia",
     "title": "Chicote de Energia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Uso de chicotes de energia em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5505,7 +5505,7 @@
   {
     "entity_id": "perícia_chicote_monofio",
     "title": "Chicote Monofio",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Uso de chicotes monofio em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5513,7 +5513,7 @@
   {
     "entity_id": "perícia_ciclismo",
     "title": "Ciclismo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 188] Pedalar longas distâncias em alta velocidade. Teste de IQ para pequenos consertos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5521,7 +5521,7 @@
   {
     "entity_id": "perícia_cirurgia_nt",
     "title": "Cirurgia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 188] Realizar procedimentos cirúrgicos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5529,7 +5529,7 @@
   {
     "entity_id": "perícia_ciencia_estranha",
     "title": "Ciência Estranha",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 188] Criar teorias além do tempo. Dá +5 em invenções ou +2 para investigar tecnologia incomum.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5537,7 +5537,7 @@
   {
     "entity_id": "perícia_composicao_musical",
     "title": "Composição Musical",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 188] Compor peças musicais.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5545,7 +5545,7 @@
   {
     "entity_id": "perícia_comercio",
     "title": "Comércio",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 188] Comprar e vender, barganhar. Disputa define ±10% do preço. Dá +1 em reações ao comprar/vender.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5553,7 +5553,7 @@
   {
     "entity_id": "perícia_conducao_nt",
     "title": "Condução/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 189] Conduzir um tipo específico de veículo terrestre.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5561,7 +5561,7 @@
   {
     "entity_id": "perícia_conhecimento_das_ervas_nt",
     "title": "Conhecimento das Ervas/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 189] Identificar e usar ervas para fins medicinais ou outros.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5569,7 +5569,7 @@
   {
     "entity_id": "perícia_conhecimento_do_terreno",
     "title": "Conhecimento do Terreno",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 189] Conhecimento geográfico e social de uma região específica (Bairro, Cidade, Estado).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5577,7 +5577,7 @@
   {
     "entity_id": "perícia_conhecimento_oculto",
     "title": "Conhecimento Oculto",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 191] Conhecimento perdido ou deliberadamente oculto (ex.: Conspirações, Conhecimento Demoníaco).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5585,7 +5585,7 @@
   {
     "entity_id": "perícia_conhecimento_oculto_conhecimento_demoniaco",
     "title": "Conhecimento Oculto (Conhecimento Demoníaco)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 191] Conhecimento sobre demônios e planos infernais.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5593,7 +5593,7 @@
   {
     "entity_id": "perícia_conhecimento_oculto_conhecimento_espiritual",
     "title": "Conhecimento Oculto (Conhecimento Espiritual)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 191] Conhecimento sobre espíritos e o mundo espiritual.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5601,7 +5601,7 @@
   {
     "entity_id": "perícia_conhecimento_oculto_conhecimento_feerico",
     "title": "Conhecimento Oculto (Conhecimento Feérico)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 191] Conhecimento sobre o povo das fadas e seus reinos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5609,7 +5609,7 @@
   {
     "entity_id": "perícia_connoisseur",
     "title": "Connoisseur",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 192] Compreensão elevada de arte e assuntos de sofisticação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5617,7 +5617,7 @@
   {
     "entity_id": "perícia_conserto_de_equipamento_eletronico_nt",
     "title": "Conserto de Equipamento Eletrônico/NT (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 192] Diagnosticar e consertar aparelhos eletrônicos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5625,7 +5625,7 @@
   {
     "entity_id": "perícia_conserto_de_equipamentos_eletronicos",
     "title": "Conserto de Equipamentos Eletrônicos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 192] Diagnosticar e consertar aparelhos eletrônicos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5633,7 +5633,7 @@
   {
     "entity_id": "perícia_conserto_de_equipamentos_eletronicos_guerra_eletronica",
     "title": "Conserto de Equipamentos Eletrônicos (Guerra Eletrônica)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 192] Conserto de aparelhos de Guerra Eletrônica.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5641,7 +5641,7 @@
   {
     "entity_id": "perícia_contabilidade",
     "title": "Contabilidade",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 192] Manipular e analisar registros financeiros. Teste de IQ para detectar erros.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5649,7 +5649,7 @@
   {
     "entity_id": "perícia_contrabando",
     "title": "Contrabando",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 192] Esconder e transportar mercadorias ilegais ou restritas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5657,7 +5657,7 @@
   {
     "entity_id": "perícia_controle_da_respiracao",
     "title": "Controle da Respiração",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Respirar com máxima eficiência. Aumenta tempo de fôlego em 50% ou recupera 1 PF em 2 minutos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5665,7 +5665,7 @@
   {
     "entity_id": "perícia_controle_das_funcoes_involuntarias",
     "title": "Controle das Funções Involuntárias",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Controlar funções involuntárias (transe, eliminar venenos, resistir a ataques baseados em HT).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5673,7 +5673,7 @@
   {
     "entity_id": "perícia_controle_de_carregamento_nt",
     "title": "Controle de Carregamento/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Supervisionar carga/descarga de veículos. Sucesso reduz tempo em 20%.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5681,7 +5681,7 @@
   {
     "entity_id": "perícia_corrida",
     "title": "Corrida",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Treino para corridas de curta e longa distância. Disputa para determinar vencedor.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5689,7 +5689,7 @@
   {
     "entity_id": "perícia_costura",
     "title": "Costura",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Trabalhar com tecidos, consertar/modificar roupas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5697,7 +5697,7 @@
   {
     "entity_id": "perícia_costura_nt",
     "title": "Costura/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Trabalhar com tecidos e máquinas de costura modernas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5705,7 +5705,7 @@
   {
     "entity_id": "perícia_criminologia_nt",
     "title": "Criminologia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 193] Estudo do crime e da mente criminosa. Encontrar pistas em cenas de crime.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5713,7 +5713,7 @@
   {
     "entity_id": "perícia_criptografia_nt",
     "title": "Criptografia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Criar e quebrar códigos e cifras.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5721,7 +5721,7 @@
   {
     "entity_id": "perícia_cuidados_com_a_casa",
     "title": "Cuidados com a Casa",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Cuidar de uma casa, limpeza, pequenos consertos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5729,7 +5729,7 @@
   {
     "entity_id": "perícia_culinaria",
     "title": "Culinária",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Preparar refeições saborosas e seguras para consumo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5737,7 +5737,7 @@
   {
     "entity_id": "perícia_cultivo_nt",
     "title": "Cultivo/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Cultivo de plantas em larga escala.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5745,7 +5745,7 @@
   {
     "entity_id": "perícia_danca",
     "title": "Dança",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Executar danças da própria cultura e aprender novas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5753,7 +5753,7 @@
   {
     "entity_id": "perícia_desenho_de_simbolos",
     "title": "Desenho de Símbolos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Traçar símbolos mágicos para auxiliar rituais ou conceder poderes.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5761,7 +5761,7 @@
   {
     "entity_id": "perícia_deslumbrar",
     "title": "Deslumbrar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Contar história para tornar o público intensamente leal por 30min. Custa 8 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5769,7 +5769,7 @@
   {
     "entity_id": "perícia_deslumbrar_cativar",
     "title": "Deslumbrar (Cativar)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 194] Contar história para tornar o público intensamente leal por 30min. Custa 8 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5777,7 +5777,7 @@
   {
     "entity_id": "perícia_deslumbrar_despertar_emocao",
     "title": "Deslumbrar (Despertar Emoção)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 195] Despertar uma emoção específica no público. Dura 1h. Custa 4 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5785,7 +5785,7 @@
   {
     "entity_id": "perícia_deslumbrar_persuadir",
     "title": "Deslumbrar (Persuadir)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 195] Convencer o público de um ponto de vista, dando bônus em reações. Dura 1min. Custa 2 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5793,7 +5793,7 @@
   {
     "entity_id": "perícia_deslumbrar_sugerir",
     "title": "Deslumbrar (Sugerir)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 195] Fazer uma sugestão simples ao público. Dura 20min. Custa 6 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5801,7 +5801,7 @@
   {
     "entity_id": "perícia_desviar",
     "title": "Desviar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 195] Canalizar chi para afastar um adversário. Dano de GeB dobrado causa projeção, não lesão.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5809,7 +5809,7 @@
   {
     "entity_id": "perícia_deteccao_de_mentiras",
     "title": "Detecção de Mentiras",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 195] Dizer se alguém está mentindo. Disputa vs. IQ, Lábia ou Dissimulação do alvo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5817,7 +5817,7 @@
   {
     "entity_id": "perícia_diagnose_nt",
     "title": "Diagnose/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 196] Identificar doenças e causas de morte.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5825,7 +5825,7 @@
   {
     "entity_id": "perícia_digitacao",
     "title": "Digitação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 196] Usar máquina de escrever ou teclado. Velocidade = NH × 3 (manual) ou ×5 (elétrico) ppm.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5833,7 +5833,7 @@
   {
     "entity_id": "perícia_diplomacia",
     "title": "Diplomacia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 196] Negociar, fazer acordos. Pode substituir testes de reação sem risco de piorar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5841,7 +5841,7 @@
   {
     "entity_id": "perícia_disfarce_nt",
     "title": "Disfarce/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 196] Alterar a aparência para se passar por outra pessoa/raça/animal. Disputa vs. Percepção.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5849,7 +5849,7 @@
   {
     "entity_id": "perícia_dissimulacao",
     "title": "Dissimulação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 196] Simular estados de espírito, emoções e mentir de modo convincente.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5857,7 +5857,7 @@
   {
     "entity_id": "perícia_economia",
     "title": "Economia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 197] Estudo de mercados, comércio e sistemas financeiros em larga escala.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5865,7 +5865,7 @@
   {
     "entity_id": "perícia_eletricista_nt",
     "title": "Eletricista/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 197] Projetar, construir e consertar fiação e equipamentos elétricos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5873,7 +5873,7 @@
   {
     "entity_id": "perícia_encenacao_de_combate",
     "title": "Encenação de Combate",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 197] Simular lutas para entretenimento (filmes, teatro).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5881,7 +5881,7 @@
   {
     "entity_id": "perícia_engenharia_nt",
     "title": "Engenharia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 197] Projetar e construir estruturas e máquinas complexas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5889,7 +5889,7 @@
   {
     "entity_id": "perícia_engolidor_de_fogo",
     "title": "Engolidor de Fogo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 197] Exibição artística engolindo e cuspindo fogo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5897,7 +5897,7 @@
   {
     "entity_id": "perícia_entrada_forcada",
     "title": "Entrada Forçada",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Arrombar portas/destruir objetos com impacto. Dá +1/+2 por dado ao dano contra objetos inanimados.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5905,7 +5905,7 @@
   {
     "entity_id": "perícia_escalada",
     "title": "Escalada",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Escalar montanhas, paredes, árvores.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5913,7 +5913,7 @@
   {
     "entity_id": "perícia_escrita",
     "title": "Escrita",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Escrever de maneira clara e/ou divertida.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5921,7 +5921,7 @@
   {
     "entity_id": "perícia_escudo",
     "title": "Escudo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Usar escudo (Broquel, Escudo, Escudo de Energia) para defesa e ataque.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5929,7 +5929,7 @@
   {
     "entity_id": "perícia_esgrima_adaga_de_esgrima",
     "title": "Esgrima (Adaga de Esgrima)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Usar arma de esgrima na mão inábil para defesa.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5937,7 +5937,7 @@
   {
     "entity_id": "perícia_esgrima_rapieira",
     "title": "Esgrima (Rapieira)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Uso de armas longas e leves de estocar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5945,7 +5945,7 @@
   {
     "entity_id": "perícia_esgrima_sabre",
     "title": "Esgrima (Sabre)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Uso de armas leves de cortar e estocar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5953,7 +5953,7 @@
   {
     "entity_id": "perícia_esgrima_tercado",
     "title": "Esgrima (Terçado)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Uso de armas curtas e leves de estocar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5961,7 +5961,7 @@
   {
     "entity_id": "perícia_espada_de_duas_maos",
     "title": "Espada de Duas Mãos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Treinamento no uso de Espada de Duas Mãos em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5969,7 +5969,7 @@
   {
     "entity_id": "perícia_espada_de_energia",
     "title": "Espada de Energia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Treinamento no uso de Espada de Energia em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5977,7 +5977,7 @@
   {
     "entity_id": "perícia_espada_curta",
     "title": "Espadas Curtas",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Treinamento no uso de Espadas Curtas em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5985,7 +5985,7 @@
   {
     "entity_id": "perícia_espada_de_lamina_larga",
     "title": "Espadas de Lâmina Larga",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Treinamento no uso de Espadas de Lâmina Larga em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -5993,7 +5993,7 @@
   {
     "entity_id": "perícia_esporte_de_combate_nt",
     "title": "Esporte de Combate/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Versões não-letais de perícias de combate para apresentações ou competições.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6001,7 +6001,7 @@
   {
     "entity_id": "perícia_esportes",
     "title": "Esportes",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Praticar um esporte específico.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6009,7 +6009,7 @@
   {
     "entity_id": "perícia_esqui",
     "title": "Esqui",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 198] Esquiar em velocidade ou travessia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6017,7 +6017,7 @@
   {
     "entity_id": "perícia_estrategia",
     "title": "Estratégia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 199] Planejar ações militares em larga escala. Disputa vs. líder inimigo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6025,7 +6025,7 @@
   {
     "entity_id": "perícia_exorcismo",
     "title": "Exorcismo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 199] Expulsar um espírito de uma pessoa ou lugar. Disputa vs. espírito.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6033,7 +6033,7 @@
   {
     "entity_id": "perícia_explosivos_nt",
     "title": "Explosivos/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 199] Lidar com explosivos (Demolição, DDE, DDN, Fogos de Artifício).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6041,7 +6041,7 @@
   {
     "entity_id": "perícia_faca",
     "title": "Faca",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Treinamento no uso de Faca em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6049,7 +6049,7 @@
   {
     "entity_id": "perícia_falcoaria",
     "title": "Falcoaria",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Caçar com falcão treinado.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6057,7 +6057,7 @@
   {
     "entity_id": "perícia_falsificacao_de_dinheiro_nt",
     "title": "Falsificação de Dinheiro/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Duplicar notas e moedas. Teste por fornada.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6065,7 +6065,7 @@
   {
     "entity_id": "perícia_falsificacao_nt",
     "title": "Falsificação/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Falsificar documentos. Teste a cada inspeção.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6073,7 +6073,7 @@
   {
     "entity_id": "perícia_farmacia_nt",
     "title": "Farmácia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Preparar remédios (Herbanário ou Sintética).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6081,7 +6081,7 @@
   {
     "entity_id": "perícia_farmaciant_herbanario",
     "title": "Farmácia/NT (Herbanário)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Preparar remédios (Herbanário ou Sintética).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6089,7 +6089,7 @@
   {
     "entity_id": "perícia_ferreiro",
     "title": "Ferreiro",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Trabalhar manualmente com metais (Cobre, Chumbo/Estanho, Ferro).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6097,7 +6097,7 @@
   {
     "entity_id": "perícia_ferreiro_nt",
     "title": "Ferreiro/NT (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Trabalhar manualmente com metais (Cobre, Chumbo/Estanho, Ferro).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6105,7 +6105,7 @@
   {
     "entity_id": "perícia_filosofia",
     "title": "Filosofia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 200] Estudo de um sistema de princípios filosóficos. Pode prever comportamento de seguidores.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6113,7 +6113,7 @@
   {
     "entity_id": "perícia_financas",
     "title": "Finanças",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Administrar dinheiro, firmar acordos comerciais, levantar capital.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6121,7 +6121,7 @@
   {
     "entity_id": "perícia_fisiologia_nt",
     "title": "Fisiologia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Estudo do corpo e funções de uma raça.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6129,7 +6129,7 @@
   {
     "entity_id": "perícia_forca_mental",
     "title": "Força Mental",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Concentrar-se para resistir a ataques mentais. Substitui Vontade para resistir a magias, psiquismo, etc.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6137,7 +6137,7 @@
   {
     "entity_id": "perícia_fotografia_nt",
     "title": "Fotografia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Usar máquina fotográfica e equipamentos de revelação/edição.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6145,7 +6145,7 @@
   {
     "entity_id": "perícia_fuga",
     "title": "Fuga",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Soltar-se de cordas, algemas, etc.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6153,7 +6153,7 @@
   {
     "entity_id": "perícia_funda",
     "title": "Funda",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Uso da funda ou fustíbalo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6161,7 +6161,7 @@
   {
     "entity_id": "perícia_furtividade",
     "title": "Furtividade",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Esconder-se e mover-se silenciosamente. Disputa vs. Percepção.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6169,7 +6169,7 @@
   {
     "entity_id": "perícia_fisica",
     "title": "Física",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Estudo das propriedades e interações da matéria e energia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6177,7 +6177,7 @@
   {
     "entity_id": "perícia_fisica_nt",
     "title": "Física/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 201] Estudo das propriedades e interações da matéria e energia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6185,7 +6185,7 @@
   {
     "entity_id": "perícia_garrote",
     "title": "Garrote",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Estrangular a vítima com corda ou fio.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6193,7 +6193,7 @@
   {
     "entity_id": "perícia_geografia",
     "title": "Geografia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Estudo das divisões físicas, políticas e econômicas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6201,7 +6201,7 @@
   {
     "entity_id": "perícia_geologia_nt",
     "title": "Geologia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Estudo da estrutura de um tipo de planeta.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6209,7 +6209,7 @@
   {
     "entity_id": "perícia_golpe_debilitante",
     "title": "Golpe Debilitante",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Achar ponto fraco de objeto inanimado. Dá divisor de armadura (5). Custa 1 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6217,7 +6217,7 @@
   {
     "entity_id": "perícia_golpe_poderoso",
     "title": "Golpe Poderoso",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Usar força interior para dobrar (ou triplicar) ST no próximo ataque. Custa 1 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6225,7 +6225,7 @@
   {
     "entity_id": "perícia_habilidade_com_nos",
     "title": "Habilidade com Nós",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Atar nós com rapidez e eficiência. Disputa vs. Fuga.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6233,7 +6233,7 @@
   {
     "entity_id": "perícia_hacking_de_computador_nt",
     "title": "Hacking de Computador/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 202] Obter acesso ilegal a sistemas de computador (cinematográfico).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6241,7 +6241,7 @@
   {
     "entity_id": "perícia_heraldica",
     "title": "Heráldica",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 203] Projetar e reconhecer brasões, emblemas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6249,7 +6249,7 @@
   {
     "entity_id": "perícia_hipnotismo",
     "title": "Hipnotismo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 203] Afetar a mente de outro por meios mecânicos ou verbais. Disputa vs. Vontade.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6257,7 +6257,7 @@
   {
     "entity_id": "perícia_historia",
     "title": "História",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 203] Estudo do passado registrado de uma região ou era.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6265,7 +6265,7 @@
   {
     "entity_id": "perícia_influencia_musical",
     "title": "Influência Musical",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 203] Influenciar emoções ao tocar/cantar. Ajusta reações em até ±3.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6273,7 +6273,7 @@
   {
     "entity_id": "perícia_instrumento_musical",
     "title": "Instrumento Musical",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 203] Tocar um instrumento musical específico.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6281,7 +6281,7 @@
   {
     "entity_id": "perícia_instrumentos_musicais",
     "title": "Instrumentos Musicais (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 203] Tocar um instrumento musical específico.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6289,7 +6289,7 @@
   {
     "entity_id": "perícia_interrogatorio",
     "title": "Interrogatório",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 204] Questionar um prisioneiro. Disputa vs. Vontade por pergunta.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6297,7 +6297,7 @@
   {
     "entity_id": "perícia_intimidacao",
     "title": "Intimidação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 204] Persuadir por meio de ameaças. Pode substituir teste de reação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6305,7 +6305,7 @@
   {
     "entity_id": "perícia_jardinagem",
     "title": "Jardinagem",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 204] Cuidar de plantas em pequena escala.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6313,7 +6313,7 @@
   {
     "entity_id": "perícia_jittesai",
     "title": "Jitte/Sai",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 204] Conhecimento prático de Jitte/Sai em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6321,7 +6321,7 @@
   {
     "entity_id": "perícia_joalheiro_nt",
     "title": "Joalheiro/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 204] Trabalhar com metais preciosos, fabricar joias, identificar valor.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6329,7 +6329,7 @@
   {
     "entity_id": "perícia_jogos_de_azar",
     "title": "Jogos de Azar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 204] Habilidade com jogos de azar. Disputa entre jogadores.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6337,7 +6337,7 @@
   {
     "entity_id": "perícia_jogos_de_entretenimento",
     "title": "Jogos de Entretenimento",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 205] Jogar bem um jogo (tabuleiro, cartas, guerra, esportes como juiz).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6345,7 +6345,7 @@
   {
     "entity_id": "perícia_judo",
     "title": "Judô",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 205] Arte de arremessar e agarrar. Permite aparar armas e arremessar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6353,7 +6353,7 @@
   {
     "entity_id": "perícia_jurisprudencia",
     "title": "Jurisprudência",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 205] Conhecimento das leis de uma região ou área específica.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6361,7 +6361,7 @@
   {
     "entity_id": "perícia_kiai",
     "title": "Kiai",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Grito poderoso que paralisa um inimigo (atordoa mentalmente). Custa 1 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6369,7 +6369,7 @@
   {
     "entity_id": "perícia_kusari",
     "title": "Kusari",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Conhecimento prático de Kusari em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6377,7 +6377,7 @@
   {
     "entity_id": "perícia_lanca",
     "title": "Lança",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Treinamento no uso de Lança em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6385,7 +6385,7 @@
   {
     "entity_id": "perícia_lanca_de_justa",
     "title": "Lança de Justa",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Uso de lança de justa montado. Não pode aparar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6393,7 +6393,7 @@
   {
     "entity_id": "perícia_lavagem_cerebral_nt",
     "title": "Lavagem Cerebral/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Causar mudança de personalidade por meio de tecnologia. Disputa prolongada.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6401,7 +6401,7 @@
   {
     "entity_id": "perícia_laco",
     "title": "Laço",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Arremessar soga para laçar animais ou imobilizar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6409,7 +6409,7 @@
   {
     "entity_id": "perícia_leitura_dinamica",
     "title": "Leitura Dinmica",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 207] Ler muito mais rápido. Teste de IQ para reter informação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6417,7 +6417,7 @@
   {
     "entity_id": "perícia_leitura_labial",
     "title": "Leitura Labial",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 207] Entender o que outros dizem observando seus lábios. Teste de Percepção.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6425,7 +6425,7 @@
   {
     "entity_id": "perícia_levantamento",
     "title": "Levantamento",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 207] Usar a força para erguer objetos. Aumenta BC em 5% por margem de sucesso.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6433,7 +6433,7 @@
   {
     "entity_id": "perícia_lideranca",
     "title": "Liderança",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 207] Coordenar um grupo. Em combate, dá +1 em testes para quem ouvir.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6441,7 +6441,7 @@
   {
     "entity_id": "perícia_linguagem_corporal",
     "title": "Linguagem Corporal",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 207] Interpretar expressões e postura para determinar sentimentos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6449,7 +6449,7 @@
   {
     "entity_id": "perícia_linguistica",
     "title": "Linguística",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Estudo dos princípios da linguagem. Identificar idiomas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6457,7 +6457,7 @@
   {
     "entity_id": "perícia_lip_reading",
     "title": "Lip Reading",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 207] Entender o que outros dizem observando seus lábios. Teste de Percepção.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6465,7 +6465,7 @@
   {
     "entity_id": "perícia_literatura",
     "title": "Literatura",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Estudo de grandes obras literárias.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6473,7 +6473,7 @@
   {
     "entity_id": "perícia_luta_greco_romana",
     "title": "Luta Greco-Romana",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Treino em agarrar e imobilizar. Dá +1/+2 à ST para manobras de agarramento.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6481,7 +6481,7 @@
   {
     "entity_id": "perícia_lutar_as_cegas",
     "title": "Lutar às Cegas",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Sentir alvos sem vê-los. Elimina penalidades por escuridão/cegueira.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6489,7 +6489,7 @@
   {
     "entity_id": "perícia_labia",
     "title": "Lábia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 206] Persuadir os outros a fazerem algo contra seu bom senso.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6497,7 +6497,7 @@
   {
     "entity_id": "perícia_magia_ritualistica",
     "title": "Magia Ritualística",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Compreensão dos processos místicos em rituais para invocar espíritos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_magia"
@@ -6505,7 +6505,7 @@
   {
     "entity_id": "perícia_manejo_de_barcos_nt",
     "title": "Manejo de Barcos/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Capitanear um grande navio (Dirigível, Espaçonave, Navio, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6513,7 +6513,7 @@
   {
     "entity_id": "perícia_mangual",
     "title": "Mangual",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Treinamento no uso de Mangual em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6521,7 +6521,7 @@
   {
     "entity_id": "perícia_mangual_de_duas_maos",
     "title": "Mangual de Duas Mãos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Treinamento no uso de Mangual de Duas Mãos em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6529,7 +6529,7 @@
   {
     "entity_id": "perícia_manha",
     "title": "Manha",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Conhecer o submundo e a \"vida nas ruas\". Pode substituir teste de reação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6537,7 +6537,7 @@
   {
     "entity_id": "perícia_maquiagem_nt",
     "title": "Maquiagem/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Usar maquiagem teatral para modificar a aparência.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6545,7 +6545,7 @@
   {
     "entity_id": "perícia_maquinista_nt",
     "title": "Maquinista/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Fabricar e modificar peças mecânicas e ferramentas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6553,7 +6553,7 @@
   {
     "entity_id": "perícia_marinhagem_nt",
     "title": "Marinhagem/NT (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Servir como tripulante a bordo de uma grande nau/aeronave.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6561,7 +6561,7 @@
   {
     "entity_id": "perícia_matematica_nt",
     "title": "Matemática/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Estudo científico da matemática (Pura, Aplicada, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6569,7 +6569,7 @@
   {
     "entity_id": "perícia_matematicant_estatistica",
     "title": "Matemática/NT (Estatística)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Estudo científico da matemática aplicada à estatística.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6577,7 +6577,7 @@
   {
     "entity_id": "perícia_matematicant_topografia",
     "title": "Matemática/NT (Topografia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Estudo científico da matemática aplicada à topografia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6585,7 +6585,7 @@
   {
     "entity_id": "perícia_materiais_perigosos_nt",
     "title": "Materiais Perigosos/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 211] Transportar, armazenar e lidar com materiais perigosos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6593,7 +6593,7 @@
   {
     "entity_id": "perícia_macamachado",
     "title": "Maça/Machado",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Treinamento no uso de Maça/Machado em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6601,7 +6601,7 @@
   {
     "entity_id": "perícia_macamachado_de_duas_maos",
     "title": "Maça/Machado de Duas Mãos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 208] Treinamento no uso de Maça/Machado de Duas Mãos em combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6609,7 +6609,7 @@
   {
     "entity_id": "perícia_mecanica_nt",
     "title": "Mecnica/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 211] Diagnosticar e reparar problemas mecânicos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6617,7 +6617,7 @@
   {
     "entity_id": "perícia_medicina_alternativa",
     "title": "Medicina Alternativa",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 211] Tratar doenças com técnicas esotéricas (acupuntura, ervas, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6625,7 +6625,7 @@
   {
     "entity_id": "perícia_medicina_nt",
     "title": "Medicina/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 211] Socorrer doentes, prescrever tratamentos, acelerar cura.",
     "category": "Perícia",
     "level": 2,
     "SEE_ALSO": [
@@ -6637,7 +6637,7 @@
   {
     "entity_id": "perícia_meditacao",
     "title": "Meditação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 211] Controlar emoções e relaxar. Entrar em transe.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6645,7 +6645,7 @@
   {
     "entity_id": "perícia_mendicancia",
     "title": "Mendicncia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 211] Pedir esmolas. Ganha $2 × margem de sucesso por hora.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6653,7 +6653,7 @@
   {
     "entity_id": "perícia_mergulho_nt",
     "title": "Mergulho/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Usar equipamento de respiração subaquática. Teste a cada 30 min.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6661,7 +6661,7 @@
   {
     "entity_id": "perícia_metalurgia_nt",
     "title": "Metalurgia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Estudo dos metais e suas propriedades.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6669,7 +6669,7 @@
   {
     "entity_id": "perícia_meteorologia_nt",
     "title": "Meteorologia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Estudar e prever o clima. Teste por dia de previsão.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6677,7 +6677,7 @@
   {
     "entity_id": "perícia_montaria",
     "title": "Montaria",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Habilidade treinada de um animal para servir de montaria.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6685,7 +6685,7 @@
   {
     "entity_id": "perícia_mimica_pantomima",
     "title": "Mímica/Pantomima",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Comunicar-se por linguagem de sinais improvisada.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6693,7 +6693,7 @@
   {
     "entity_id": "perícia_natacao",
     "title": "Natação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Nadar, boiar, salvar de afogamento. Disputa para competir.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6701,7 +6701,7 @@
   {
     "entity_id": "perícia_naturalista",
     "title": "Naturalista",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Conhecimento prático da natureza em um tipo de planeta/terreno.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6709,7 +6709,7 @@
   {
     "entity_id": "perícia_navegacao_nt",
     "title": "Navegação/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Determinar posição e estabelecer percurso (Ar, Espaço, Mar, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6717,7 +6717,7 @@
   {
     "entity_id": "perícia_nocao_do_clima",
     "title": "Noção do Clima",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 212] Conhecimento prático para prever o tempo sem instrumentos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6725,7 +6725,7 @@
   {
     "entity_id": "perícia_observador_avancado_nt",
     "title": "Observador Avançado/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 213] Orientar fogo de artilharia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6733,7 +6733,7 @@
   {
     "entity_id": "perícia_observacao",
     "title": "Observação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 213] Observar situações perigosas ou detalhes escondidos à distância.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6741,7 +6741,7 @@
   {
     "entity_id": "perícia_ocultamento",
     "title": "Ocultamento",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 213] Esconder objetos no corpo. Disputa vs. Revistar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6749,7 +6749,7 @@
   {
     "entity_id": "perícia_ocultismo",
     "title": "Ocultismo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Estudo do inexplicável e sobrenatural.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6757,7 +6757,7 @@
   {
     "entity_id": "perícia_operacao_de_aparelhos_eletronicosnt_vigilancia",
     "title": "Operao de Aparelhos Eletrnicos/NT (Vigilncia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Utilizar equipamento eletrônico especializado em vigilância.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6765,7 +6765,7 @@
   {
     "entity_id": "perícia_operacao_de_aparelhos_eletronicos_guerra_eletronica",
     "title": "Operação de Aparelhos Eletrônicos (Guerra Eletrônica)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Utilizar equipamento eletrônico para guerra eletrônica e interferência.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6773,7 +6773,7 @@
   {
     "entity_id": "perícia_operacao_de_aparelhos_eletronicos_midia",
     "title": "Operação de Aparelhos Eletrônicos (Mídia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Utilizar equipamento eletrônico de mídia (câmeras, gravadores, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6781,7 +6781,7 @@
   {
     "entity_id": "perícia_operacao_de_aparelhos_eletronicosnt_medicos",
     "title": "Operação de Aparelhos Eletrônicos/NT (Médicos)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Utilizar equipamento eletrônico médico especializado.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6789,7 +6789,7 @@
   {
     "entity_id": "perícia_operacao_de_aparelhos_eletronicosnt_sistemas_de_seguranca",
     "title": "Operação de Aparelhos Eletrônicos/NT (Sistemas de Segurança)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Utilizar equipamento eletrônico de sistemas de segurança.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6797,7 +6797,7 @@
   {
     "entity_id": "perícia_operacao_de_aparelhos_eletronicos_nt",
     "title": "Operação de Aparelhos Eletrônicos/NT (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Utilizar equipamento eletrônico especializado (Comunicações, Sensores, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6805,7 +6805,7 @@
   {
     "entity_id": "perícia_operacao_de_computadores_nt",
     "title": "Operação de Computadores/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 214] Operar um computador, extrair dados, executar programas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6813,7 +6813,7 @@
   {
     "entity_id": "perícia_oratoria",
     "title": "Oratória",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Falar em público, fazer discursos, entreter.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6821,7 +6821,7 @@
   {
     "entity_id": "perícia_paleontologia_nt",
     "title": "Paleontologia/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Estudo de fósseis (Micropaleontologia, Paleozoologia, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6829,7 +6829,7 @@
   {
     "entity_id": "perícia_paleontologiant_paleoantropologia",
     "title": "Paleontologia/NT (Paleoantropologia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Estudo de fósseis humanos e de ancestrais.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6837,7 +6837,7 @@
   {
     "entity_id": "perícia_paleontologiant_paleobotanica",
     "title": "Paleontologia/NT (Paleobotnica)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Estudo de fósseis vegetais.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6845,7 +6845,7 @@
   {
     "entity_id": "perícia_paraquedismo_nt",
     "title": "Paraquedismo/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Saltar de paraquedas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6853,7 +6853,7 @@
   {
     "entity_id": "perícia_passos_leves",
     "title": "Passos Leves",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Andar sem deixar rastros ou sobre superfícies frágeis. Dá bônus à Furtividade.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6861,7 +6861,7 @@
   {
     "entity_id": "perícia_patinacao",
     "title": "Patinação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Locomover-se sobre patins.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6869,7 +6869,7 @@
   {
     "entity_id": "perícia_pedagogia",
     "title": "Pedagogia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Ensinar outras pessoas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6877,7 +6877,7 @@
   {
     "entity_id": "perícia_percepcao_do_corpo",
     "title": "Percepção do Corpo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 215] Ajustar-se rapidamente após teleporte ou movimento instantâneo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6885,7 +6885,7 @@
   {
     "entity_id": "perícia_performance_em_grupo",
     "title": "Performance em Grupo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Dirigir um grupo de artistas (Condução de Orquestra, Coreografia, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6893,7 +6893,7 @@
   {
     "entity_id": "perícia_perseguicao",
     "title": "Perseguição",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 217] Seguir alguém em uma multidão. Disputas periódicas vs. vítima.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6901,7 +6901,7 @@
   {
     "entity_id": "perícia_perícia_abrangente",
     "title": "Perícia Abrangente",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre um tema específico. Pode substituir outras perícias.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6909,7 +6909,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_ciencia_militar",
     "title": "Perícia Abrangente (Ciência Militar)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Ciência Militar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6917,7 +6917,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_ciencia_politica",
     "title": "Perícia Abrangente (Ciência Política)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Ciência Política.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6925,7 +6925,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_egiptologia",
     "title": "Perícia Abrangente (Egiptologia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Egiptologia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6933,7 +6933,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_epidemiologia",
     "title": "Perícia Abrangente (Epidemiologia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Epidemiologia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6941,7 +6941,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_filosofia_natural",
     "title": "Perícia Abrangente (Filosofia Natural)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Filosofia Natural.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6949,7 +6949,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_hidrologia",
     "title": "Perícia Abrangente (Hidrologia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Hidrologia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6957,7 +6957,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_psiquismo",
     "title": "Perícia Abrangente (Psiquismo)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Psiquismo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6965,7 +6965,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_seguranca_de_computadores",
     "title": "Perícia Abrangente (Segurança de Computadores)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Segurança de Computadores.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6973,7 +6973,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_tanatologia",
     "title": "Perícia Abrangente (Tanatologia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Tanatologia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6981,7 +6981,7 @@
   {
     "entity_id": "perícia_perícia_abrangente_xenologia",
     "title": "Perícia Abrangente (Xenologia)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Conhecimento interdisciplinar sobre Xenologia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6989,7 +6989,7 @@
   {
     "entity_id": "perícia_perícia_forense_nt",
     "title": "Perícia Forense/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Aplicar princípios de criminologia laboratorial.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -6997,7 +6997,7 @@
   {
     "entity_id": "perícia_perícia_profissional",
     "title": "Perícia Profissional",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 216] Perícias para ganhar a vida (ex.: Jornalismo, Taverneiro, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7005,7 +7005,7 @@
   {
     "entity_id": "perícia_perícias_de_passatempo",
     "title": "Perícias de Passatempo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 217] Áreas de conhecimento sem aplicação prática em aventuras.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7013,7 +7013,7 @@
   {
     "entity_id": "perícia_pescaria",
     "title": "Pescaria",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 217] Pescar com equipamento adequado.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7021,7 +7021,7 @@
   {
     "entity_id": "perícia_pesquisa_nt",
     "title": "Pesquisa/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 217] Fazer investigação em bibliotecas/arquivos. Pode substituir outras perícias com -2.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7029,7 +7029,7 @@
   {
     "entity_id": "perícia_pilotagem_nt",
     "title": "Pilotagem/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 217] Pilotar aeronaves ou espaçonaves.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7037,7 +7037,7 @@
   {
     "entity_id": "perícia_poesia",
     "title": "Poesia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 218] Compor poesia.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7045,7 +7045,7 @@
   {
     "entity_id": "perícia_politica",
     "title": "Política",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 218] Atuar em partidos e relações políticas. Dá +2 em reações de outros políticos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7053,7 +7053,7 @@
   {
     "entity_id": "perícia_pontos_de_pressao",
     "title": "Pontos de Pressão",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 218] Atacar pontos de pressão para enfraquecer o oponente (paralisia, asfixia, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7061,7 +7061,7 @@
   {
     "entity_id": "perícia_pontos_secretos",
     "title": "Pontos Secretos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 219] Conhecer pontos vitais para ataques letais. Dobre/triplique o dano que penetra a RD.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7069,7 +7069,7 @@
   {
     "entity_id": "perícia_postura_imovel",
     "title": "Postura Imóvel",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 219] Ancorar-se ao solo para evitar projeção ou queda.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7077,7 +7077,7 @@
   {
     "entity_id": "perícia_prestidigitacao",
     "title": "Prestidigitação",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 219] \"Empalmar\" objetos, fazer truques. Disputa vs. Visão para roubar.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7085,7 +7085,7 @@
   {
     "entity_id": "perícia_primeiros_socorros_nt",
     "title": "Primeiros Socorros/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 219] Fazer curativos rápidos, RCP, etc.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7093,7 +7093,7 @@
   {
     "entity_id": "perícia_programacao_de_computadores_nt",
     "title": "Programação de Computadores/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 219] Escrever e depurar programas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7101,7 +7101,7 @@
   {
     "entity_id": "perícia_projetor_de_liquidos_nt",
     "title": "Projetor de Líquidos/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 220] Usar armas que projetam líquidos (lança-chamas, mangueiras, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7109,7 +7109,7 @@
   {
     "entity_id": "perícia_propaganda_nt",
     "title": "Propaganda/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 220] Persuadir indiretamente através da mídia. Afeta grupos, não indivíduos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7117,7 +7117,7 @@
   {
     "entity_id": "perícia_prospeccao_nt",
     "title": "Prospecção/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 220] Descobrir minerais valiosos no campo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7125,7 +7125,7 @@
   {
     "entity_id": "perícia_psicologia",
     "title": "Psicologia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 220] Psicologia aplicada. Prever comportamento de indivíduos/grupos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7133,7 +7133,7 @@
   {
     "entity_id": "perícia_punga",
     "title": "Punga",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 220] Bater carteiras ou \"plantar\" objetos. Disputa vs. Percepção/Manha.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7141,7 +7141,7 @@
   {
     "entity_id": "perícia_queda_livre",
     "title": "Queda Livre",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 220] Agir em gravidade zero. Limita perícias físicas em ambiente 0G.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7149,7 +7149,7 @@
   {
     "entity_id": "perícia_quimica_nt",
     "title": "Química/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 221] Estudo da matéria, análises e sínteses.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7157,7 +7157,7 @@
   {
     "entity_id": "perícia_rapieira",
     "title": "Rapieira",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Usar a Rapieira (arma de estocada leve).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7165,7 +7165,7 @@
   {
     "entity_id": "perícia_rastreamento",
     "title": "Rastreamento",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 221] Seguir pistas de animais ou pessoas.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7173,7 +7173,7 @@
   {
     "entity_id": "perícia_rede",
     "title": "Rede",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 221] Usar a rede para enredar oponentes.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7181,7 +7181,7 @@
   {
     "entity_id": "perícia_remo_vela_nt",
     "title": "Remo/Vela/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 221] Manusear embarcações pequenas (Barco a Motor, Lancha, Veleiro, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7189,7 +7189,7 @@
   {
     "entity_id": "perícia_revistar",
     "title": "Revistar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 221] Procurar itens escondidos em pessoas/bagagem. Disputa vs. Ocultamento.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7197,7 +7197,7 @@
   {
     "entity_id": "perícia_ritual_religioso",
     "title": "Ritual Religioso",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 221] Realizar ritos religiosos (missas, funerais, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7205,7 +7205,7 @@
   {
     "entity_id": "perícia_sabre",
     "title": "Sabre",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Usar o Sabre (arma de esgrima).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7213,7 +7213,7 @@
   {
     "entity_id": "perícia_sacarrapido",
     "title": "Sacar Rápido",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 222] Sacar arma rapidamente para atacar no mesmo turno.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7221,7 +7221,7 @@
   {
     "entity_id": "perícia_salto",
     "title": "Salto",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 222] Saltar com treinamento. Pode usar metade do NH para calcular distância.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7229,7 +7229,7 @@
   {
     "entity_id": "perícia_salto_voador",
     "title": "Salto Voador",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 222] Dar saltos incríveis, triplicando a distância. Custa 1 PF.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7237,7 +7237,7 @@
   {
     "entity_id": "perícia_sex_appeal",
     "title": "Sex Appeal",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 222] Impressionar o sexo oposto. Pode substituir teste de reação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7245,7 +7245,7 @@
   {
     "entity_id": "perícia_sobrevivencia",
     "title": "Sobrevivência",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 222] Viver da terra em um tipo de terreno. Encontrar água/comida.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7253,7 +7253,7 @@
   {
     "entity_id": "perícia_sobrevivencia_urbana",
     "title": "Sobrevivência Urbana",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 223] Sobreviver em ambiente urbano (encontrar água, rotas, abrigo).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7261,7 +7261,7 @@
   {
     "entity_id": "perícia_sociologia",
     "title": "Sociologia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 223] Estudo das sociedades e relações sociais.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7269,7 +7269,7 @@
   {
     "entity_id": "perícia_soldado_nt",
     "title": "Soldado/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 223] Treinamento militar básico e experiência. Pode substituir outras perícias.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7277,7 +7277,7 @@
   {
     "entity_id": "perícia_soltar",
     "title": "Soltar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 223] Soltar objetos pesados sobre inimigos durante o voo.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7285,7 +7285,7 @@
   {
     "entity_id": "perícia_sonhos",
     "title": "Sonhos",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 223] Controlar e lembrar dos sonhos. Pode revelar informações inconscientes.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7293,7 +7293,7 @@
   {
     "entity_id": "perícia_submarino_nt",
     "title": "Submarino/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 224] Operar veículos subaquáticos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7301,7 +7301,7 @@
   {
     "entity_id": "perícia_sumo",
     "title": "Sumô",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 224] Treino em agarrar, empurrar e derrubar. Bônus em ST e encontrão.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7309,7 +7309,7 @@
   {
     "entity_id": "perícia_surrupiar",
     "title": "Surrupiar",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 225] Roubar objetos à vista. Disputa vs. Visão/Observação.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7317,7 +7317,7 @@
   {
     "entity_id": "perícia_taumatologia",
     "title": "Taumatologia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 225] Estudo acadêmico da teoria mágica. Usada para pesquisa de novas magias.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7325,7 +7325,7 @@
   {
     "entity_id": "perícia_teologia",
     "title": "Teologia",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 225] Estudo das religiões e sistemas de crenças.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7333,7 +7333,7 @@
   {
     "entity_id": "perícia_tercado",
     "title": "Terçado",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 209] Usar o Terçado (espada curta de lâmina larga).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7341,7 +7341,7 @@
   {
     "entity_id": "perícia_tonfa",
     "title": "Tonfa",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Usar o Tonfa (bastão com cabo lateral).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7349,7 +7349,7 @@
   {
     "entity_id": "perícia_trabalhos_em_couro",
     "title": "Trabalhos em Couro",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Trabalhar com couro para fazer cintos, selas, armaduras.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7357,7 +7357,7 @@
   {
     "entity_id": "perícia_traje_de_combate_nt",
     "title": "Traje de Combate/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Vestir, operar e se movimentar com Trajes de Combate.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7365,7 +7365,7 @@
   {
     "entity_id": "perícia_traje_de_mergulho_nt",
     "title": "Traje de Mergulho/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Vestir, operar e se movimentar com Trajes de Mergulho.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7373,7 +7373,7 @@
   {
     "entity_id": "perícia_traje_nbq_nt",
     "title": "Traje NBQ/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Vestir, operar e se movimentar com Trajes NBQ (Nuclear, Biológico, Químico).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7381,7 +7381,7 @@
   {
     "entity_id": "perícia_traje_pressurizado",
     "title": "Traje Pressurizado",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Vestir, operar e se movimentar com Trajes Pressurizados.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7389,7 +7389,7 @@
   {
     "entity_id": "perícia_trato_social",
     "title": "Trato-Social",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Conhecer as boas maneiras em uma subcultura (Alta Sociedade, Exército, etc.).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7397,7 +7397,7 @@
   {
     "entity_id": "perícia_tripulante_aereo_nt",
     "title": "Tripulante Aéreo/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Trabalhar como membro da tripulação de uma aeronave.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7405,7 +7405,7 @@
   {
     "entity_id": "perícia_tripulante_de_navio_nt",
     "title": "Tripulante de Navio/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Trabalhar como membro da tripulação de um navio.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7413,7 +7413,7 @@
   {
     "entity_id": "perícia_tripulante_de_submarino_nt",
     "title": "Tripulante de Submarino/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Trabalhar como membro da tripulação de um submarino.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7421,7 +7421,7 @@
   {
     "entity_id": "perícia_tripulante_espacial_nt",
     "title": "Tripulante Espacial/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 226] Trabalhar como membro da tripulação de uma nave espacial.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7429,7 +7429,7 @@
   {
     "entity_id": "perícia_tatica",
     "title": "Tática",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 225] Adivinhar intenções do inimigo. Dá vantagem posicional se testada antes.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7437,7 +7437,7 @@
   {
     "entity_id": "perícia_utilizacao_de_traje_especial_nt",
     "title": "Utilização de Traje Especial/NT (†)",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 227] Vestir e operar trajes complexos (Combate, Mergulho, NBQ).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7445,7 +7445,7 @@
   {
     "entity_id": "perícia_veneficio_nt",
     "title": "Venefício/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 227] Conhecimento prático de venenos: reconhecer, destilar, aplicar antídotos.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7453,7 +7453,7 @@
   {
     "entity_id": "perícia_ventriloquismo",
     "title": "Ventriloquismo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 227] Projetar a voz para enganar a audiência.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7461,7 +7461,7 @@
   {
     "entity_id": "perícia_veterinaria_nt",
     "title": "Veterinária/NT",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 227] Cuidar de animais feridos ou doentes.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7469,7 +7469,7 @@
   {
     "entity_id": "perícia_voo",
     "title": "Voo",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 227] Treino para voo de resistência. Aumenta distância em 20%.",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"
@@ -7477,7 +7477,7 @@
   {
     "entity_id": "perícia_zarabatana",
     "title": "Zarabatana",
-    "summary": "Item catalogado. Consulte o manual para detalhes.",
+    "summary": "[Pág. 210] Usar a Zarabatana (arma de sopro).",
     "category": "Perícia",
     "level": 2,
     "source_id": "pt_modulo_basico"

@@ -15,11 +15,11 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val relatedChunks: List<MestreIAChunk>
     )
 
-    suspend fun buscarNoGrafo(query: String, offset: Int = 0): GraphSearchResult {
+    suspend fun buscarNoGrafo(query: String, offset: Int = 0, termosExtras: List<String> = emptyList()): GraphSearchResult {
         // LOTE 91: Busca Profunda com Re-Ranking (Inspirado em Nano-GraphRAG Local Query)
         // LOTE 97: Separação de Termos (Original vs Expandido) para evitar poluição
-        val termosBase = extrairPalavrasChave(query, apenasOriginais = true)
-        val termosExpandidos = extrairPalavrasChave(query, apenasOriginais = false)
+        val termosBase = (extrairPalavrasChave(query, apenasOriginais = true) + termosExtras).distinct()
+        val termosExpandidos = (extrairPalavrasChave(query, apenasOriginais = false) + termosExtras).distinct()
         val todosOsTermos = (termosBase + termosExpandidos).distinct()
         
         android.util.Log.i("MestreIA_Auditoria", "TERMOS ORIGINAIS: $termosBase")
@@ -29,66 +29,60 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
         val topNodes = mutableSetOf<GraphNodeEntity>()
         val chunksCandidatos = mutableListOf<MestreIAChunk>()
-
+        android.util.Log.i("MestreIA_Auditoria", "🔍 TERMOS DE BUSCA (Total): $todosOsTermos")
+        
         // 1. Navegação de Grafo (Seed + Neighbors)
         android.util.Log.i("MestreIA_Auditoria", "--- INICIANDO BUSCA NO CÓDEX (Origem: graph_knowledge.json) ---")
         
-        todosOsTermos.forEach { termo ->
-            val queryIndividual = "$termo*"
-            var encontrados = repository.buscarResumosGrafo(queryIndividual)
-            
-            // LOTE 91.8: FALLBACK PARA BUSCA 'LIKE'
-            if (encontrados.isEmpty()) {
-                encontrados = repository.buscarNodesPorTitulo(termo)
-            }
-            
-            // Prioriza nós que dão match com termos BASE (Originais)
-            val pesoTermo = if (termo in termosBase) 5 else 2
-            
-            // LOTE 98: Paginação de Nós (Se offset > 0, pula os primeiros e pega os próximos)
-            if (offset > 0) {
-                topNodes.addAll(encontrados.drop(offset * 2).take(pesoTermo))
-            } else {
-                topNodes.addAll(encontrados.take(pesoTermo))
-            }
-        }
-
-        // LOTE 101: Remoção de 'vizinhos semânticos' para evitar ruído.
-        // O sistema agora foca apenas nos nós diretos encontrados pela busca.
-
         // 2. Busca de Text Units (Chunks)
-        data class PaginaAlvo(val numero: Int, val tituloLivro: String?, val sourceId: String?)
+        data class PaginaAlvo(val numero: Int, val tituloLivro: String?, val sourceId: String?, val isOriginal: Boolean)
         val paginasAlvo = mutableSetOf<PaginaAlvo>()
-        topNodes.forEach { node ->
-            // LOTE 100: Regex para capturar [Nome do Livro Pág. X] (Captura a primeira menção completa)
-            val matchLivro = Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).find(node.summary)
-            if (matchLivro != null) {
-                val livro = matchLivro.groupValues[1].trim()
-                val pag = matchLivro.groupValues[2].toIntOrNull()
-                if (pag != null) paginasAlvo.add(PaginaAlvo(pag, livro, node.source_id))
-            } else {
-                // Fallback para quando só tem o número da página (compatibilidade)
-                // LOTE 112: Usa findAll para capturar MÚLTIPLAS páginas (ex: [Pág. 353, 354, 388])
-                Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
-                    m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(PaginaAlvo(it, null, node.source_id)) }
+        
+        todosOsTermos.forEach { termo ->
+            val termoMinusculo = termo.lowercase()
+            val queryIndividual = "$termo*"
+            val isBase = termo in termosBase
+            
+            // Busca priorizando título para termos originais
+            val encontrados = repository.buscarNodesPorTitulo(termo).toMutableList()
+            val matchesNoResumo = repository.buscarResumosGrafo(queryIndividual)
+            encontrados.addAll(matchesNoResumo.filter { res -> encontrados.none { it.entityId == res.entityId } })
+            
+            val pesoTermo = if (isBase) 5 else 2
+            val nodesParaProcessar = if (offset > 0) encontrados.drop(offset * pesoTermo).take(pesoTermo) else encontrados.take(pesoTermo)
+            
+            topNodes.addAll(nodesParaProcessar)
+
+            nodesParaProcessar.forEach { node ->
+                val titleNorm = node.title.lowercase()
+                
+                // LOTE 115: Blacklist de termos genéricos que causam ruído se encontrados apenas no resumo
+                val termosGenericos = emptySet<String>()
+                
+                // UM NÓ SÓ É ORIGINAL SE: match no título OU (termo é técnico/longo E não é genérico)
+                val realmenteOriginal = isBase && (
+                    titleNorm.contains(termoMinusculo) || 
+                    (termoMinusculo.length > 5 && termoMinusculo !in termosGenericos)
+                )
+
+                // Extração de páginas do resumo do nó
+                Regex("""\[([^\]]*?)\s+P[ágǭg\uFFFD\s.]+(\d+)\]""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
+                    val livro = m.groupValues[1].trim()
+                    val pag = m.groupValues[2].toIntOrNull()
+                    if (pag != null) paginasAlvo.add(PaginaAlvo(pag, livro, node.source_id, realmenteOriginal))
                 }
-            }
-            // NOVO: Capturar também números de página simples que estão no meio da string ex: [Pág. 353, 354, 388]
-            // O código acima captura o "Pág. 353". Para "354, 388", a regex anterior pode não pegar.
-            // Vamos fazer uma regex mais abrangente para a lista.
-            Regex("""\[.*?P[ágǭg\uFFFD\s.]+(.*?)\]""", RegexOption.IGNORE_CASE).find(node.summary)?.let { m ->
-                val listPaginas = m.groupValues[1]
-                Regex("""(\d+)""").findAll(listPaginas).forEach { p ->
-                    p.groupValues[1].toIntOrNull()?.let { 
-                        if (matchLivro != null) {
-                            paginasAlvo.add(PaginaAlvo(it, matchLivro.groupValues[1].trim(), node.source_id))
-                        } else {
-                            paginasAlvo.add(PaginaAlvo(it, null, node.source_id))
-                        }
-                    }
+                
+                // Fallback para listas de páginas
+                Regex("""P[ágǭg\uFFFD\s.]+(\d+)""", RegexOption.IGNORE_CASE).findAll(node.summary).forEach { m ->
+                    m.groupValues[1].toIntOrNull()?.let { paginasAlvo.add(PaginaAlvo(it, null, node.source_id, realmenteOriginal)) }
                 }
             }
         }
+        
+        android.util.Log.i("MestreIA_Auditoria", "NÓS ATIVADOS (Grafo): ${topNodes.map { it.title }}")
+
+        // Log das páginas encontradas
+        android.util.Log.i("MestreIA_Auditoria", "PÁGINAS ALVO: ${paginasAlvo.map { "${it.numero} (Orig=${it.isOriginal})" }}")
 
         // LOTE 102: Layering de Busca com TF-IDF Proxy (Inteligência Real)
         val termoWeights = mutableMapOf<String, Int>()
@@ -173,13 +167,14 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             if (topNodes.any { it.category.lowercase() in texto }) score += 5
             
             // LOTE 111: BÔNUS CRÍTICO DE PÁGINA RECOMENDADA PELO GRAFO (Prioridade Absoluta)
-            val isRecomendada = paginasAlvo.any { alvo -> 
+            val alvoCorrespondente = paginasAlvo.find { alvo -> 
                 alvo.numero == chunk.page_number && 
                 (alvo.sourceId == chunk.source_id || 
                  (alvo.sourceId == null && (alvo.tituloLivro == null || chunk.source_title.contains(alvo.tituloLivro, true))))
             }
-            if (isRecomendada) {
-                score += 1000 // Aumentado de 50 para 1000 para garantir Top 1
+            if (alvoCorrespondente != null) {
+                // Se a página veio de um termo ORIGINAL, bônus máximo. Se veio de SINÔNIMO, bônus menor.
+                score += if (alvoCorrespondente.isOriginal) 1000 else 150
             }
 
             // LOTE 112: HIERARQUIA DE AUTORIDADE (Módulo Básico é a lei mãe)
@@ -236,6 +231,9 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             chunk to finalRrfScore
         }.sortedByDescending { it.second }
         
+        // LOTE 120: Otimização de Performance - Map para busca rápida de score no sorting final
+        val chunksRRFMap = chunksRRF.associate { it.first.chunk_id to it.second }
+        
         // LOTE 105: Filtro de Diversidade (Anti-Monopólio)
         // Impede que uma única página (ex: Pág 16) ocupe todas as vagas do contexto.
         // Permitimos no máximo 2 recortes da mesma página no Top 8.
@@ -267,7 +265,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
         
-        val chunksPaginados = (chunksRecomendados + outrosChunks).take(8)
+        val chunksPaginados = (chunksRecomendados + outrosChunks).take(5)
         
         chunksPaginados.take(5).forEach { (chunk, score) ->
             android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK (Offset $offset): Pág ${chunk.page_number} | Score: $score | Texto: ${chunk.text.take(60)}...")
@@ -314,13 +312,13 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 // Prioridade 1: Estar nas páginas recomendadas pelo Grafo
                 if (paginasAlvo.any { it.numero == chunk.page_number }) 1000.0 else 0.0
             }.thenByDescending { chunk ->
-                // Prioridade 2: Score RRF original
-                chunksRRF.find { it.first.chunk_id == chunk.chunk_id }?.second ?: 0.0
-            }).take(40) // Aumentado para 40 para garantir que o contexto adjacente caiba
+                // Prioridade 2: Score RRF original (Busca otimizada via Map)
+                chunksRRFMap[chunk.chunk_id] ?: 0.0
+            }).take(20) // Reduzido para 20 para evitar ruído e respeitar limite de 30k
         )
     }
 
-    private fun extrairPalavrasChave(texto: String, apenasOriginais: Boolean = false): List<String> {
+    private fun extrairPalavrasChave(texto: String, apenasOriginais: Boolean = false, termosExtras: List<String> = emptyList()): List<String> {
         val stopWords = listOf(
             "como", "funciona", "regra", "regras", "quais", "preciso", "para", "sobre", "qual",
             "uma", "um", "com", "dos", "das", "pela", "pelo", "onde", "quando", "quem", "são", "sao",
@@ -339,8 +337,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         )
         val siglasGurps = listOf("st", "dx", "iq", "ht", "gdp", "geb", "pv", "pf", "rd", "nh")
         
-        val palavrasOriginais = texto.trim().lowercase()
-            .replace(Regex("[^a-zA-Z0-9\\sà-úÀ-Ú]"), " ")
+        val palavrasOriginais = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(texto)
             .split(" ")
             .filter { 
                 val isNumber = it.all { c -> c.isDigit() } && it.length in 1..4
@@ -353,29 +350,34 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         expandidas.addAll(palavrasOriginais)
 
         val dicionarioTecnico = mapOf(
-            "sangramento" to listOf("hemorragia", "ferimento", "saúde", "saude", "perda"),
+            "sangramento" to listOf("hemorragia", "ferimento", "saude", "perda"),
             "hemorragia" to listOf("sangramento"),
-            "pular" to listOf("salto", "distância", "altura", "salto em comprimento", "salto em altura"),
-            "impacto" to listOf("colisão", "colisao", "batida", "queda", "atropelamento", "dano por colisão"),
-            "colisão" to listOf("impacto", "queda", "atropelamento"),
+            "pular" to listOf("salto", "distancia", "altura"),
+            "impacto" to listOf("colisao", "batida", "queda", "atropelamento"),
             "colisao" to listOf("impacto", "queda", "atropelamento"),
-            "queda" to listOf("impacto", "colisão", "dano de queda"),
-            "asfixia" to listOf("afogamento", "sufocamento", "respiração", "fôlego", "folego", "ar"),
-            "afogamento" to listOf("asfixia", "sufocamento", "agua", "água"),
-            "st" to listOf("força", "forca", "levantamento", "carga", "dano", "gdp", "geb"),
-            "força" to listOf("st", "levantamento", "carga"),
+            "queda" to listOf("impacto", "colisao"),
+            "asfixia" to listOf("afogamento", "sufocamento", "respiracao", "folego", "ar"),
+            "afogamento" to listOf("asfixia", "sufocamento", "agua", "submerso", "piscina"),
+            "st" to listOf("forca", "levantamento", "carga", "dano", "gdp", "geb"),
             "forca" to listOf("st", "levantamento", "carga"),
-            "dx" to listOf("destreza", "agilidade", "coordenação"),
-            "iq" to listOf("inteligência", "inteligencia", "vontade", "percepção", "percepcao"),
-            "ht" to listOf("vitalidade", "saúde", "saude", "fadiga", "pf", "sobrevivência"),
-            "velocidade" to listOf("deslocamento", "esquiva", "movimento", "m/s", "km/h")
+            "dx" to listOf("destreza", "agilidade", "coordenacao"),
+            "iq" to listOf("inteligencia", "vontade", "percepcao"),
+            "ht" to listOf("vitalidade", "saude", "fadiga", "pf", "sobrevivencia"),
+            "velocidade" to listOf("deslocamento", "esquiva", "movimento", "m/s", "km/h"),
+            "submerso" to listOf("agua", "aquatico", "mergulho", "piscina", "mar", "subaquatico"),
+            "aquatico" to listOf("submerso", "agua", "subaquatico"),
+            "piscina" to listOf("agua", "submerso", "aquatico", "subaquatico", "mergulho"),
+            "agua" to listOf("submerso", "aquatico", "subaquatico", "piscina", "mar"),
+            "redutor" to listOf("penalidade", "modificador", "subtracao", "decremento")
         )
         palavrasOriginais.forEach { p ->
             dicionarioTecnico[p]?.let { expandidas.addAll(it) }
-            // Busca parcial para termos compostos
-            dicionarioTecnico.entries.forEach { entry ->
-                if (p.contains(entry.key) || entry.key.contains(p)) {
-                    expandidas.addAll(entry.value)
+            // Busca parcial APENAS para termos técnicos longos (>4 letras) para evitar ruído (ex: 'ar')
+            if (p.length > 4) {
+                dicionarioTecnico.entries.forEach { entry ->
+                    if (p.contains(entry.key) || entry.key.contains(p)) {
+                        expandidas.addAll(entry.value)
+                    }
                 }
             }
         }
