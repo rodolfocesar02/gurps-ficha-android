@@ -26,6 +26,7 @@ android {
     // FATOR PRIME: Chaves Mascaradas Multi-Flavor (Lidas no topo para visibilidade global)
     val geminiKey = (localProperties.getProperty("mestre.ia.gemini.key") ?: "").replace("\"", "\\\"")
     val deepseekKey = (localProperties.getProperty("mestre.ia.deepseek.key") ?: "").replace("\"", "\\\"")
+    val deepseek2Key = (localProperties.getProperty("mestre.ia.deepseek.2.key") ?: "").replace("\"", "\\\"")
     val openRouter1Key = (localProperties.getProperty("mestre.ia.openrouter.1.key") ?: "").replace("\"", "\\\"")
     val openRouter2Key = (localProperties.getProperty("mestre.ia.openrouter.2.key") ?: "").replace("\"", "\\\"")
     val openRouter3Key = (localProperties.getProperty("mestre.ia.openrouter.3.key") ?: "").replace("\"", "\\\"")
@@ -91,6 +92,7 @@ android {
         // --- MESTRE IA PRIME (CHAVES GLOBAIS) ---
         buildConfigField("String", "MESTRE_IA_GEMINI_KEY", "\"$geminiKey\"")
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_KEY", "\"$deepseekKey\"")
+        buildConfigField("String", "MESTRE_IA_DEEPSEEK_2_KEY", "\"$deepseek2Key\"")
         buildConfigField("String", "MESTRE_IA_OPENROUTER_1_KEY", "\"$openRouter1Key\"")
         buildConfigField("String", "MESTRE_IA_OPENROUTER_2_KEY", "\"$openRouter2Key\"")
         buildConfigField("String", "MESTRE_IA_OPENROUTER_3_KEY", "\"$openRouter3Key\"")

@@ -29,7 +29,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
         val topNodes = mutableSetOf<GraphNodeEntity>()
         val chunksCandidatos = mutableListOf<MestreIAChunk>()
-        android.util.Log.i("MestreIA_Auditoria", "🔍 TERMOS DE BUSCA (Total): $todosOsTermos")        
+        android.util.Log.i("MestreIA_Auditoria", "TERMOS DE BUSCA (Total): $todosOsTermos")        
         // 1. Navegação de Grafo (Seed + Neighbors)
         android.util.Log.i("MestreIA_Auditoria", "--- INICIANDO BUSCA NO CÓDEX (Origem: graph_knowledge.json) ---")
         
@@ -266,56 +266,42 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
         
-        val chunksPaginados = (chunksRecomendados + outrosChunks).take(5)
+        val chunksPaginados = (chunksRecomendados + outrosChunks).take(8) // Expandido para 8 recortes para maior cobertura
         
-        chunksPaginados.take(5).forEach { (chunk, score) ->
-            android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK (Offset $offset): Pág ${chunk.page_number} | Score: $score | Texto: ${chunk.text.take(60)}...")
+        chunksPaginados.forEach { (chunk, score) ->
+            android.util.Log.i("MestreIA_Auditoria", "TOP CHUNK: Pág ${chunk.page_number} | Score: $score")
         }
 
-        // 4. PARENT DOCUMENT RETRIEVAL (Lote 103) + CONTEXTO ADJACENTE (Lote 106/112)
-        // Ao invés de trazer apenas o parágrafo atual, nós identificamos as páginas vencedoras
-        // e buscamos a PÁGINA INTEIRA (Documento Pai) + ADJACENTES (N-1 e N+1).
-        // LOTE 112: Adição da página anterior (N-1) para capturar inícios de regras.
+        // 4. PARENT DOCUMENT RETRIEVAL CIRÚRGICO (Lote 123)
         val chunksFinais = mutableSetOf<MestreIAChunk>()
         chunksPaginados.forEach { (chunk, _) ->
             val pagina = chunk.page_number
-            val fonte = chunk.source_title
+            val fonte = chunk.source_id // Usar ID para precisão total
             
             if (pagina != null && fonte != null) {
-                // 1. Página Anterior (N-1) - LOTE 112
-                if (pagina > 1) {
-                    val paginaAnterior = repository.buscarPorPaginaESource(pagina - 1, fonte)
-                    if (paginaAnterior.isNotEmpty()) {
-                        chunksFinais.addAll(paginaAnterior)
-                    }
-                }
-
-                // 2. Página de Impacto (N)
+                // 1. Página de Impacto (N)
                 val paginaImpacto = repository.buscarPorPaginaESource(pagina, fonte)
                 chunksFinais.addAll(paginaImpacto)
                 
-                // 3. Página Seguinte (N+1)
-                val paginaSeguinte = repository.buscarPorPaginaESource(pagina + 1, fonte)
-                if (paginaSeguinte.isNotEmpty()) {
+                // 2. Verificação de Continuidade (Pág N+1)
+                // Se a página atual termina de forma que sugira continuidade (vírgula, dois pontos, ou tabela), trazemos a próxima.
+                val textoFim = paginaImpacto.lastOrNull()?.text?.trim()?.lowercase() ?: ""
+                val continua = textoFim.endsWith(",") || textoFim.endsWith(":") || 
+                               textoFim.contains("tabela") || textoFim.contains("continua") || textoFim.contains("vide")
+                
+                if (continua) {
+                    val paginaSeguinte = repository.buscarPorPaginaESource(pagina + 1, fonte)
                     chunksFinais.addAll(paginaSeguinte)
+                    android.util.Log.d("MestreIA_Auditoria", "CONTINUIDADE: Detectada na Pág $pagina, anexando Pág ${pagina+1}")
                 }
             } else {
                 chunksFinais.add(chunk)
             }
         }
 
-        android.util.Log.i("MestreIA_G", "Parent Document Retrieval (Lote 106): ${chunksFinais.size} recortes totais (Impacto + Adjacente) recuperados.")
-
         return GraphSearchResult(
             summaries = topNodes.toList().sortedByDescending { it.level }.take(5),
-            // LOTE 106: Aumentamos para 20 recortes para garantir que as páginas adjacentes não sejam cortadas.
-            relatedChunks = chunksFinais.toList().sortedWith(compareByDescending<MestreIAChunk> { chunk ->
-                // Prioridade 1: Estar nas páginas recomendadas pelo Grafo
-                if (paginasAlvo.any { it.numero == chunk.page_number }) 1000.0 else 0.0
-            }.thenByDescending { chunk ->
-                // Prioridade 2: Score RRF original (Busca otimizada via Map)
-                chunksRRFMap[chunk.chunk_id] ?: 0.0
-            }).take(20) // Reduzido para 20 para evitar ruído e respeitar limite de 30k
+            relatedChunks = chunksFinais.toList().distinctBy { it.chunk_id }.take(25) // Limite de 25 recortes (Aprox 15k a 20k tokens)
         )
     }
 

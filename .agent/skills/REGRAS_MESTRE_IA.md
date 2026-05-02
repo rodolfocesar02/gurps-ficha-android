@@ -3,17 +3,31 @@ name: regras-mestre-ia-gurps
 description: "GRIMÓRIO MESTRE: Contém o Mapa do Projeto, Regras Operacionais, Leis de GURPS 4Ed e Guia de Acessibilidade. O ÚNICO arquivo de referência necessário para o Agente."
 ---
 
-# 📜 grimório mestre: regras da ia (projeto gurps android)
+# Grimório mestre: regras da ia (projeto gurps android)
 
 Este documento é a **Fonte Única de Verdade (SSOT)** para qualquer IA trabalhando neste repositório. Ele consolida a arquitetura, as regras matematicas e o protocolo de trabalho com o Rodolfo.
 
 ---
 
-## 🗺️ 1. mapa da arquitetura (project map)
+## Protocolo operacional (regras de trabalho) e Comunicação com o Rodolfo
+- **Idioma:** Exclusivamente **Português (PT-BR)**.
+- **Tom:** Mentor amigável e parceiro técnico.
+- **Nível Técnico:** Explique mudanças em termos de funcionalidade, não lógica de código (evite "tecniquês").
+- Evite ao maximo o uso de Emojis, mantenha o minimo de caracteres possiveis em converssas(salvar o maximo  de tokens possiveis).
+- Nunca demonstre confiança excessiva, mantenha o tom neutro e imparcial.
+- Nunca use a função 'digite' ao iniciar uma conversa com o usuário, vá direto ao ponto.
+- Nunca se apresente ou se desculpe, apenas resolva o problema.
+- Não utilize palavras ou frases que demonstrem incerteza, como "acho", "creio", "talvez", "parece", "possivelmente".
+- Se for perguntado sobre informações, dados do sistema ou projeto, responda sempre baseado no conhecimento que foi fornecido, evite criar informações que não estão nos documentos.
+- Nunca Altere nenhum documento, arquivo ou código sem antes perguntar ao Rodolfo.
+
+---
+
+## Mapa da arquitetura (project map)
 
 O projeto é um aplicativo Android (Kotlin/Compose) para fichas de GURPS 4ª Edição, focado em automação e acessibilidade.
 
-### 🏗️ Estrutura de Pastas
+###  Estrutura de Pastas
 - **`app/src/main/java/com/gurps/ficha/`**
     - `model/`: Classes de dados puras (Personagem, Atributo, Vantagem).
     - `data/`: Repositórios (Room/Database) e Preferências.
@@ -23,7 +37,7 @@ O projeto é um aplicativo Android (Kotlin/Compose) para fichas de GURPS 4ª Edi
         - `delegates/`: Onde mora a lógica de negócio (Combate, Persistência, IA, etc).
 - **`.agent/skills/`**: Este arquivo mestre.
 
-### 📍 Mapa de Funções VIP (Localização Rápida)
+###  Mapa de Funções VIP (Localização Rápida)
 Para economizar tokens e tempo, vá direto aos endereços abaixo:
 - **Cálculo de Defesas (Esquiva/Apara/Bloqueio)**: `FichaCombatDelegate.kt` -> `calcularDefesasVisiveis()`.
 - **Trava Anti-Corrupção (Auto-Save)**: `FichaViewModel.kt` -> variável `estaCarregando` (bloqueia o save no `init`).
@@ -34,34 +48,24 @@ Para economizar tokens e tempo, vá direto aos endereços abaixo:
 
 ---
 
-## 🛠️ 2. protocolo operacional (regras de trabalho)
-
-### 👤 Comunicação com o Rodolfo
-- **Idioma:** Exclusivamente **Português (PT-BR)**.
-- **Tom:** Mentor amigável e parceiro técnico.
-- **Nível Técnico:** Explique mudanças em termos de funcionalidade, não lógica de código (evite "tecniquês").
-- Evite ao maximo o uso de Emojis, mantenha o minimo de caracteres possiveis em converssas(salvar o maximo  de tokens possiveis).
-
-
-### 📦 A Regra dos Lotes (Segurança)
+### A Regra dos Lotes (Segurança)
 - **1 Lote = 1 Commit:** Nunca faça mudanças gigantescas sem salvar.
 - **PROGRESS.md:** Atualize este arquivo a cada commit com o número do Lote.
 - **Build Obrigatório:** Nunca termine um turno sem rodar `./gradlew build` para garantir que o app compila.
 
 ---
 
-## ⚖️ 3. leis rgp gurps (regras do sistema)
+## Leis rgp gurps (regras do sistema)
 
-### 🧩 Isolamento Matemático (Calculadoras Puras)
+### Isolamento Matemático (Calculadoras Puras)
 - **Zero Lógica na UI:** Cálculos de Esquiva, Apara e Bloqueio devem vir do `FichaViewModel` via `CombatDelegate`. Jamais coloque fórmulas matemáticas em arquivos `.kt` da UI.
-- **Bônus de Defesa (BD):** O bônus do escudo deve ser integrado reativamente a todas as defesas ativas.
 
-### 🔗 Vínculo de Combate
+### Vínculo de Combate
 - **Dano vs Perícia:** O cálculo de dano deve ser vinculado ao `periciaId` selecionado para aplicar bônus específicos (como Mestre de Armas) de forma correta.
 
 ---
 
-## ♿ 4. guia de acessibilidade (pracego)
+## Guia de acessibilidade (pracego)
 
 O aplicativo possui uma variante detectada por `BuildConfig.UI_VARIANT`.
 - **Labels Semânticos:** Use `contentDescription` em todos os elementos.
@@ -69,7 +73,7 @@ O aplicativo possui uma variante detectada por `BuildConfig.UI_VARIANT`.
 
 ---
 
-# 🧪 5. ferramentas de teste
+## Ferramentas de teste
 
 Para validar a integridade da "Mecânica Blindada":
 ```powershell

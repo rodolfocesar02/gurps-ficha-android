@@ -315,9 +315,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 * [Feito] Lote 115: Consolidação de Arquitetura e Auditoria Subaquática | `(Commit: 8faf742)`
 * [Feito] Lote 116: Auditoria e Restauração do Mestre IA | `(Commit: d403148)`
+* [Feito] Lote 117: Correção de Precisão RAG (O Nó de Ouro) | `(Commit: db16362)`
 
-### Lote 116: Auditoria e Restauração do Mestre IA
-*   **Commit:** `d403148 Diagnostico e Restauracao: Reversao de mudancas antecipadas e consolidacao da logica de busca do Codex.`
+### Lote 117: Correção de Precisão RAG (O Nó de Ouro)
+*   **Commit:** `db16362 Lote 117: Correção de Precisão RAG - Priorização de Regras e Expansão de Funil no Motor de Busca`
+*   **Ação:** Resolvido o problema de "silenciamento de regras" onde termos genéricos de equipamentos expulsavam regras cruciais do prompt da IA.
+*   **Mudanças Técnicas:**
+    - **GraphEngine:** Funil de busca expandido de 5 para 15 nós. Implementado Re-Ranking por categoria (Regras/Perícias > Equipamentos).
+    - **UseCase:** Adicionado suporte nativo para a categoria `Regra`. Agora o sistema injeta o resumo técnico do Grafo diretamente no contexto caso o item não exista nos catálogos JSON.
+    - **Resiliência:** Implementado fallback universal para garantir que qualquer informação do Grafo chegue à IA, independente da categoria.
 *   **Melhorias Implementadas:**
     *   **Reversão Sistêmica:** Restauração do projeto ao estado original estável após diagnóstico de falhas em mudanças antecipadas.
     *   **Diagnóstico de Precisão:** Identificado que o limite de 5 itens no catálogo estava deletando regras vitais (como Combate Subaquático) em favor de detalhes menos relevantes.

@@ -16,8 +16,8 @@ import kotlinx.coroutines.withContext
  * Cliente de Rede Híbrido (Lote 89.12 - Motor Sincronizado com Python)
  */
 object MestreIAClient {
-    private const val CONNECT_TIMEOUT_MS = 90000
-    private const val READ_TIMEOUT_MS = 90000 
+    private const val CONNECT_TIMEOUT_MS = 120000
+    private const val READ_TIMEOUT_MS = 120000 
     private val gson = Gson()
 
     data class ChatMessage(
@@ -136,9 +136,9 @@ object MestreIAClient {
             """.trimIndent())
 
             val systemPulse = when (modo) {
-                "geracao", "analise" -> MestreIAPrompts.FORJADOR
+                "geracao", "analise" -> MestreIAPromptsForjador.PROMPT
                 "planejamento" -> "Você é um assistente técnico de GURPS focado em extração de termos."
-                else -> MestreIAPrompts.AUDITOR
+                else -> MestreIAPromptsAuditor.PROMPT
             } + if (modo != "planejamento") {
                 """
                 
@@ -255,7 +255,7 @@ object MestreIAClient {
                     Latência: ${finalLatency}ms
                 """.trimIndent())
 
-                if (fullText.trim().lowercase() == "null" || (fullText.isBlank() && capturedToolCalls.isEmpty())) {
+                if ((fullText.trim().lowercase() == "null" || fullText.isBlank()) && capturedToolCalls.isEmpty()) {
                     ChatResponse("Erro: Resposta vazia ou inválida da API")
                 } else {
                     ChatResponse(

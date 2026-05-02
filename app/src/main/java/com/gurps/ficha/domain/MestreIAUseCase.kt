@@ -55,13 +55,14 @@ class MestreIAUseCase(
 
             val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
             
-             //Esse recado foi fixado pelo Rodolfo, voc~e nao tem mais permissão pra trocar modelos sem minha permissão!
-             // Fila de Auditores (DETERMINÍSTICO: MODELOS ATIVOS 2026)
-            val fila = listOf(
-                AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3.1-flash-lite-preview"),
-                AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_LITE_1_KEY, "gemini-3-flash-preview"),
-                AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1)
-            )
+            // LOTE 126: TESTE DE ISOLAMENTO (DeepSeek Only - Sem Fallback)
+            val fila = if (modo == "geracao" || modo == "analise") {
+                // Modo Criar: Chave PAGA (sk-f1e7...)
+                listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, "deepseek-chat"))
+            } else {
+                // Modo Dúvida: Chave GRATUITA/TESTE (sk-a6c4...)
+                listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, "deepseek-chat"))
+            }
 
             val catalogoLocal = if (isCasual) {
                 CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
@@ -74,9 +75,13 @@ class MestreIAUseCase(
                 gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory, plano.termos)
             }
             val isRagUsed = catalogoLocal.isRagSuccess
-
             var sucesso = false
             val errosAcumulados = mutableListOf<String>()
+            
+            // LOTE 122: ESTADO DE INVESTIGAÇÃO PERSISTENTE (Fora do loop de modelos)
+            var catalogoDinamico = catalogoLocal.catalogo
+            var promptAtual = prompt
+            var historicoInvestigacao = mutableListOf<Pair<String, String>>()
 
             for (config in fila) {
                 val iaUrl = config.url
@@ -87,48 +92,57 @@ class MestreIAUseCase(
                     errosAcumulados.add("$iaModel: Chave Vazia")
                     continue
                 }
-                val modelId = iaModel
+
                 try {
-                    val historicoLimitado = viewModel.mestreIAChatHistory.map { it.role to it.text }.takeLast(10)
-                    // LOTE 89.15: LOOP DE INVESTIGAÇÃO AGÊNTICA (Mini-Antigravity)
+                    // Mescla o histórico do chat com as descobertas da investigação atual
+                    val historicoLimitado = (viewModel.mestreIAChatHistory.map { it.role to it.text } + historicoInvestigacao).takeLast(12)
+                    
                     var loopsRestantes = 3
-                    var promptInvestigacao = prompt
                     var iteracao = 1
                     
                     while (loopsRestantes > 0) {
-                        updateStatus(if (iteracao == 1) "Iniciando Auditor $modelId..." else "Refinando busca (Iteração $iteracao)...")
+                        updateStatus(if (iteracao == 1) "Acionando Auditor $iaModel..." else "Refinando busca ($iaModel - iteração $iteracao)...")
                         
-                        android.util.Log.i("MestreIA_Auditoria", "📤 ENVIANDO PROMPT (Iteração $iteracao) | Contexto: ${promptInvestigacao.take(150)}...")
+                        android.util.Log.i("MestreIA_Auditoria", "📤 ENVIANDO PROMPT ($iaModel | Iteração $iteracao) | Contexto: ${promptAtual.take(100)}...")
 
                         val resposta = MestreIAClient.perguntarAoMestre(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
-                            prompt = promptInvestigacao, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
-                            catalogo = catalogoLocal.catalogo, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null 
+                            prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
+                            catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null 
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {
                             val toolCall = resposta.toolCalls[0]
-                            android.util.Log.i("MestreIA_Auditoria", "🔍 INVESTIGAÇÃO: A IA chamou a ferramenta ${toolCall.name} com os termos: ${toolCall.args}")
+                            android.util.Log.i("MestreIA_Auditoria", "🔍 INVESTIGAÇÃO: A IA chamou ${toolCall.name} com: ${toolCall.args}")
 
                             if (toolCall.name == "consultar_grafo_regras") {
                                 val queryTool = toolCall.args.optString("query", prompt)
                                 val paginaTool = toolCall.args.optInt("pagina", 1)
                                 val offset = (paginaTool - 1).coerceAtLeast(0)
                                 
-                                updateStatus("Pesquisando no Códex: $queryTool (Pág. $paginaTool)...")
-                                
+                                updateStatus("Lendo Códex: $queryTool...")
                                 val resTool = graphEngine.buscarNoGrafo(queryTool, offset, emptyList())
-                                    val contextoExtra = if (resTool.relatedChunks.isNotEmpty()) {
-                                        "<CONTEXTO_TECNICO>\n" + 
-                                        resTool.relatedChunks.take(15).joinToString("\n") { 
-                                             "[${it.source_title}, Pág. ${it.page_number}]: ${it.text}" 
-                                         } + "\n</CONTEXTO_TECNICO>"
+                                
+                                if (resTool.relatedChunks.isNotEmpty()) {
+                                    val novoTextoRegras = graphEngine.formatarParaIA(resTool)
+                                    val ponteAtualizada = (catalogoDinamico.ponteDeFerro + "\n\n=== REGRAS ADICIONAIS ===\n" + novoTextoRegras).take(35000)
+                                    
+                                    android.util.Log.i("MestreIA_Auditoria", "📖 CÓDEX: Encontrados ${resTool.relatedChunks.size} recortes. Injetando na memória...")
+                                    
+                                    catalogoDinamico = catalogoDinamico.copy(
+                                        ponteDeFerro = ponteAtualizada,
+                                        chunks = (catalogoDinamico.chunks + resTool.relatedChunks).distinctBy { it.chunk_id }
+                                    )
+                                    
+                                    android.util.Log.d("MestreIA_Auditoria", "🧠 MEMÓRIA ATUALIZADA: Ponte de Ferro agora com ${ponteAtualizada.length} caracteres.")
+                                    
+                                    historicoInvestigacao.add("assistant" to "Consultando manual sobre '$queryTool'...")
+                                    historicoInvestigacao.add("system" to "RESULTADO DA BUSCA: $novoTextoRegras")
+                                    promptAtual = "Com base nas novas regras injetadas no contexto, responda: $prompt"
                                 } else {
-                                    "NENHUMA REGRA ENCONTRADA no manual para '$queryTool'. Não tente inventar a regra."
+                                    android.util.Log.w("MestreIA_Auditoria", "❌ CÓDEX: Nenhuma regra encontrada para '$queryTool'.")
                                 }
                                 
-                                // LOTE 90.2: Prompt Limpo (O contexto já vai na 'ponteDeFerro' do cliente)
-                                promptInvestigacao = "Com base no contexto técnico fornecido nas instruções de sistema, responda: $prompt\n\n(Nota: Se a informação não estiver no contexto, diga explicitamente que não encontrou nos manuais)."
                                 loopsRestantes--
                                 iteracao++
                                 continue
@@ -136,15 +150,11 @@ class MestreIAUseCase(
 
                             if (toolCall.name == MestreIATools.TOOL_NEXUS_ARCANO) {
                                 val magiaAlvo = toolCall.args.optString("magia_alvo", prompt)
-                                updateStatus("Consultando Motor Nexus para: $magiaAlvo...")
-                                
+                                updateStatus("Nexus: $magiaAlvo...")
                                 val gabarito = nexusEngine.formatarGabaritoParaIA(magiaAlvo)
-                                val contextoNexus = "\n<GABARITO_TECNICO_NEXUS>\n$gabarito\n</GABARITO_TECNICO_NEXUS>"
-                                
-                                promptInvestigacao = "Pergunta Original: $prompt\n" +
-                                        "Use este GABARITO TÉCNICO OFICIAL para responder com 100% de precisão:\n" +
-                                        contextoNexus
-                                        
+                                catalogoDinamico = catalogoDinamico.copy(
+                                    ponteDeFerro = (catalogoDinamico.ponteDeFerro + "\n\n=== NEXUS ===\n" + gabarito).take(35000)
+                                )
                                 loopsRestantes--
                                 iteracao++
                                 continue
@@ -153,27 +163,24 @@ class MestreIAUseCase(
 
                         if (resposta.text.isNotBlank() && !resposta.text.startsWith("Erro")) {
                             val lowerRes = resposta.text.lowercase()
-                            val naoEncontrou = lowerRes.contains("lamento") || lowerRes.contains("não encontrei") || lowerRes.contains("não consta")
-                            
-                            if (naoEncontrou && loopsRestantes > 1) {
-                                android.util.Log.w("MestreIA_Auditoria", "⚠️ IA não encontrou resposta. Forçando nova rodada de investigação...")
-                                promptInvestigacao = "Pergunta Original: $prompt\n\nVocê disse que não encontrou a resposta. Tente buscar novamente no Códex usando termos mais técnicos ou sinônimos diferentes através da ferramenta 'consultar_grafo_regras'."
+                            if ((lowerRes.contains("lamento") || lowerRes.contains("não encontrei")) && loopsRestantes > 1) {
+                                promptAtual = "Pergunta: $prompt\n\nNão desista. Tente buscar termos mais genéricos no manual usando 'consultar_grafo_regras'."
                                 loopsRestantes--
                                 iteracao++
                                 continue
                             }
 
-                            // LOTE 101: Validador de Citações (O "X9" da IA)
                             val temCitacao = resposta.text.contains("[") && (resposta.text.contains("Pág", true) || resposta.text.contains("Pg", true))
                             val respostaFinal = if (!temCitacao && iteracao > 1) {
-                                resposta.text + "\n\n⚠️ _[AUDITORIA: Esta resposta não citou fontes do manual e pode conter imprecisões]_"
+                                resposta.text + "\n\n⚠️ _[AUDITORIA: Sem citações diretas do manual]_"
                             } else {
                                 resposta.text
                             }
-                            sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = modelId))
+                            
+                            sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = iaModel))
                             sucesso = true
                         } else {
-                            errosAcumulados.add("${modelId.takeLast(10)}: ${resposta.text.take(30)}")
+                            errosAcumulados.add("${iaModel.takeLast(10)}: ${resposta.text.take(30)}")
                         }
                         break
                     }
@@ -181,7 +188,7 @@ class MestreIAUseCase(
                     if (sucesso) break
 
                 } catch (e: Exception) {
-                    errosAcumulados.add("${modelId.takeLast(10)}: ${e.message?.take(20)}")
+                    errosAcumulados.add("${iaModel.takeLast(10)}: ${e.message?.take(20)}")
                 }
             }
             if (!sucesso) {
