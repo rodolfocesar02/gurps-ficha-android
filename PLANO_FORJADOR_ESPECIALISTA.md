@@ -15,7 +15,7 @@
 | A | IDs reais no JSON | ✅ Concluído | forjador(lote-a) · 89f26ca |
 | D | Budget de pontos | ✅ Concluído | forjador(lote-d) · 395c055 |
 | C | Validação pré-integração (UI) | ✅ Concluído | forjador(lote-c) · 0b5ad4b |
-| E | Forjador Agêntico — Tools + GPS | ⬜ Pendente | — |
+| E | Forjador Agêntico — Tools + GPS | ✅ Concluído | forjador(lote-e) · 27dcb42 |
 
 **Legenda:** ⬜ Pendente · 🔄 Em andamento · ✅ Concluído
 
