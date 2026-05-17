@@ -1,340 +1,328 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 28 de Abril de 2026
-**Status Atual:** ERA DO RACIOCÍNIO - Conectividade Estabilizada Ã°Å¸Å’ï¿½Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½ | Lote 114 CONCLUÃƒï¿½DO Ã°Å¸Å¡â‚¬
+**Última Atualização:** 17 de Maio de 2026
+**Status Atual:** ERA DO RACIOCÍNIO - Lote 133 CONCLUÍDO
 
-### Lote 133: Handoff de Contexto + Remove Fast Answerer - CONCLUÍDO (commit f59c299)
-- **Handoff de Contexto**: ao cair para o próximo modelo da fila, `catalogoDinamico` e `historicoInvestigacao` são preservados — novo modelo recebe todos os chunks e pesquisas do anterior sem refazer buscas do zero. Log: `HANDOFF → gemini: 4 entradas | ctx=35000chars`
-- **Remove Fast Answerer**: revertido o switch para Gemini Flash-Lite (era 3× mais lento que DeepSeek).
-
-### Lote 132: Fast Answerer + Múltiplas Armas - CONCLUÍDO (commit d94517e)
-- **Múltiplas armas**: com possessivo ("minha arma") e várias armas no inventário, inclui TODAS no contexto — a IA apresenta stats de cada uma e o jogador decide qual usar.
-- **Fast Answerer**: conceito implementado mas revertido no Lote 133 (Gemini era mais lento).
-
-### Lote 131: Velocidade e UX Seguras - CONCLUÍDO (commit 94b6163)
-- **Desativa tools na última iteração**: `desativarTools=true` impede fisicamente tool calls na iteração final, eliminando loops infinitos do DeepSeek/MiMo.
-- **Pré-stats paralelos**: buscas de stats de equipamentos rodam em paralelo com `coroutineScope { async/awaitAll }`.
-- **Feedback visual granular**: mensagens de status por fase ("Consultando X...", "Buscando no manual...", "Compilando resposta...").
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
-- **LanÃƒÂ§amento Oficial V1.5.0**: Build de produÃƒÂ§ÃƒÂ£o gerada para as variantes Visual e PraCego.
-- **UnificaÃƒÂ§ÃƒÂ£o de TraÃƒÂ§os e Busca Inteligente**: FinalizaÃƒÂ§ÃƒÂ£o do Lote 86 com todas as melhorias de interface e blindagem de cÃƒÂ¡lculo integradas.
-- **PreparaÃƒÂ§ÃƒÂ£o de Update**: Arquivo `update.json` atualizado para notificar os usuÃƒÂ¡rios sobre a nova versÃƒÂ£o. Ã°Å¸â€�â€�Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½
+- **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
+- **Unificação de Traços e Busca Inteligente**: Finalização do Lote 86 com todas as melhorias de interface e blindagem de cálculo integradas.
+- **Preparação de Update**: Arquivo `update.json` atualizado para notificar os usuários sobre a nova versão. Ã°Å¸â€â€Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½
 
 ### Sincro V23: Mapeamento Arquitetural e Blindagem de Conhecimento
-- **Mapa Detalhado de Engenharia**: Criado o `MAPA_DETALHADO.md` com o inventÃƒÂ¡rio completo de funÃƒÂ§ÃƒÂµes, motores de RPG, scripts e suÃƒÂ­tes de teste. Ã°Å¸â€”ÂºÃ¯Â¸ï¿½Ã°Å¸â€�ï¿½
-- **EstabilizaÃƒÂ§ÃƒÂ£o de Arquitetura**: VerificaÃƒÂ§ÃƒÂ£o e confirmaÃƒÂ§ÃƒÂ£o da integridade do cÃƒÂ³digo pÃƒÂ³s-sincronia, garantindo paridade total entre o ambiente de desenvolvimento e o dispositivo funcional do usuÃƒÂ¡rio. Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½Ã¢Å“Â¨
-- **Nexus Arcano & Qualidade**: Mapeamento explÃƒÂ­cito das ferramentas de auditoria e testes automatizados para prevenir regressÃƒÂµes em futuras intervenÃƒÂ§ÃƒÂµes de IA. Ã°Å¸Â§ÂªÃ°Å¸Å½Â¯
+- **Mapa Detalhado de Engenharia**: Criado o `MAPA_DETALHADO.md` com o inventário completo de funções, motores de RPG, scripts e suítes de teste. Ã°Å¸â€”ÂºÃ¯Â¸ï¿½Ã°Å¸â€ï¿½
+- **Estabilização de Arquitetura**: Verificação e confirmação da integridade do código pós-sincronia, garantindo paridade total entre o ambiente de desenvolvimento e o dispositivo funcional do usuário. Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½Ã¢Å“Â¨
+- **Nexus Arcano & Qualidade**: Mapeamento explícito das ferramentas de auditoria e testes automatizados para prevenir regressões em futuras intervenções de IA. Ã°Å¸Â§ÂªÃ°Å¸Å½Â¯
 
 ### Sincro V22: Blindagem de Dados (V1.4.5 - Final)
-- **Trava de Auto-Save**: Implementada barreira de proteÃƒÂ§ÃƒÂ£o que bloqueia o salvamento automÃƒÂ¡tico durante o carregamento de fichas, prevenindo a sobrescrita acidental de arquivos com dados vazios. 
-- **Feedback de Carga**: Sistema de NotificaÃƒÂ§ÃƒÂ£o atualizado para reportar erros reais de desserializaÃƒÂ§ÃƒÂ£o, eliminando falsos positivos de "Ficha Carregada". 
-- **Rebuild V22**: APKs reconstruÃƒÂ­dos com logs de diagnÃƒÂ³stico para rastrear falhas remanescentes em fichas corrompidas. 
+- **Trava de Auto-Save**: Implementada barreira de proteção que bloqueia o salvamento automático durante o carregamento de fichas, prevenindo a sobrescrita acidental de arquivos com dados vazios. 
+- **Feedback de Carga**: Sistema de Notificação atualizado para reportar erros reais de desserialização, eliminando falsos positivos de "Ficha Carregada". 
+- **Rebuild V22**: APKs reconstruídos com logs de diagnóstico para rastrear falhas remanescentes em fichas corrompidas. 
 
-### Lote 101: O Retorno ao CÃƒÂ³dex (PrecisÃƒÂ£o Literal) - CONCLUÃƒï¿½DO
-- **Motor DeterminÃƒÂ­stico**: InversÃƒÂ£o de prioridade (Manual-First) com bÃƒÂ´nus de 100 pontos para termos literais. Ã°Å¸Å½Â¯
-- **Fim do Chute**: Implementada a "PrisÃƒÂ£o de Contexto" no Auditor. Se nÃƒÂ£o estÃƒÂ¡ no livro, a IA nÃƒÂ£o inventa. Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½
-- **Sincro AutomÃƒÂ¡tica**: SincronizaÃƒÂ§ÃƒÂ£o de manuais agora ocorre sozinha ao abrir o Mestre IA, garantindo paridade total. Ã¢Å¡â„¢Ã¯Â¸ï¿½
-- **CorreÃƒÂ§ÃƒÂ£o Mojibake**: Limpeza de sÃƒÂ­mbolos tÃƒÂ©cnicos (mÃ‚Â³, Ãƒâ€”) no banco de dados. Ã°Å¸Â§Â¹
-- **BÃƒÂ´nus de Tabela**: Motor calibrado para priorizar tabelas tÃƒÂ©cnicas sobre descriÃƒÂ§ÃƒÂµes de vantagens. Ã°Å¸â€œÅ 
+### Lote 101: O Retorno ao Códex (Precisão Literal) - CONCLUÍDO
+- **Motor Determinístico**: Inversão de prioridade (Manual-First) com bônus de 100 pontos para termos literais. 🎯
+- **Fim do Chute**: Implementada a "Prisão de Contexto" no Auditor. Se não está no livro, a IA não inventa. ðŸ›¡ï¸�
+- **Sincro Automática**: Sincronização de manuais agora ocorre sozinha ao abrir o Mestre IA, garantindo paridade total. âš™ï¸�
+- **Correção Mojibake**: Limpeza de símbolos técnicos (m³, ×) no banco de dados. 🧹
+- **Bônus de Tabela**: Motor calibrado para priorizar tabelas técnicas sobre descrições de vantagens. 📊
 
 ---
 
 ## Lembretes Fixos do Seu Projeto
 
-### 1. Ferramentas AcessÃƒÂ­veis
-NÃƒÂ³s sempre cuidamos para que toda versÃƒÂ£o lanÃƒÂ§ada tenha a versÃƒÂ£o **Visual** (Normal) e a versÃƒÂ£o **PraCego** (Com botÃƒÂ£o e navegaÃƒÂ§ÃƒÂ£o de acessibilidade para cegas por meio do programa TalkBack de celular). O emulador costuma focar na visual para seu teste rÃƒÂ¡pido.
+### 1. Ferramentas Acessíveis
+Nós sempre cuidamos para que toda versão lançada tenha a versão **Visual** (Normal) e a versão **PraCego** (Com botão e navegação de acessibilidade para cegas por meio do programa TalkBack de celular). O emulador costuma focar na visual para seu teste rápido.
 
-### 2. ConsistÃƒÂªncia de Dados
-Os dados das magias, vantagens e perÃƒÂ­cias moram em arquivos de texto (tipo planilhas, chamados de arquivos **JSON**). IAs que forem alterar algo lÃƒÂ¡ nÃƒÂ£o podem apagar aspas ou colchetes sem cuidado.
+### 2. Consistência de Dados
+Os dados das magias, vantagens e perícias moram em arquivos de texto (tipo planilhas, chamados de arquivos **JSON**). IAs que forem alterar algo lá não podem apagar aspas ou colchetes sem cuidado.
 
 ---
 
-##  Registro de Lotes e Commits (Rede de SeguranÃƒÂ§a)
-*Todo Agente ÃƒÂ© obrigado a quebrar tarefas maiores em "Lotes Curtos" isolados de um arquivo por vez, efetuando o Commit no final para gerar um Ponto de Retorno seguro para o usuÃƒÂ¡rio. Cada nova "Aba" ganha tambÃƒÂ©m sua prÃƒÂ³pria pasta.*
+##  Registro de Lotes e Commits (Rede de Segurança)
+*Todo Agente é obrigado a quebrar tarefas maiores em "Lotes Curtos" isolados de um arquivo por vez, efetuando o Commit no final para gerar um Ponto de Retorno seguro para o usuário. Cada nova "Aba" ganha também sua própria pasta.*
 
 > Lista de Lotes Realizados a partir de Abril de 2026:
 
-* [Feito] Lote 1.2: ExtraÃƒÂ§ÃƒÂ£o de Loaders Json (DataRepository)       | `(Commit: 7c52e26)`
-* [Feito] Lote 2.1: SeparaÃƒÂ§ÃƒÂ£o de PeÃƒÂ§as do Nexus (Modelos)           | `(Commit: a6992f1)`
-* [Feito] Lote 2.2: O CÃƒÂ©rebro A* (Planejador de Caminho)            | `(Commit: 113b540)`
-* [Feito] Lote 2.3: O Motor de DiagnÃƒÂ³stico (Raio-X)                 | `(Commit: 105949a)`
+* [Feito] Lote 1.2: Extração de Loaders Json (DataRepository)       | `(Commit: 7c52e26)`
+* [Feito] Lote 2.1: Separação de Peças do Nexus (Modelos)           | `(Commit: a6992f1)`
+* [Feito] Lote 2.2: O Cérebro A* (Planejador de Caminho)            | `(Commit: 113b540)`
+* [Feito] Lote 2.3: O Motor de Diagnóstico (Raio-X)                 | `(Commit: 105949a)`
 * [Feito] Lote 2.4: Limpeza final (Helpers & Parser)                | `(Commit: aab9ff2)`
-* [Feito] Lote 3: ModularizaÃƒÂ§ÃƒÂ£o do FichaViewModel                   | `(Commit: 20414fd)`
-* [Feito] Lote 4: PadronizaÃƒÂ§ÃƒÂ£o UTF-8 e Motor Modo Alvo              | `(Commit: 0912746)`
-* [Feito] Lote 6: ModularizaÃƒÂ§ÃƒÂ£o do TraitDialogs                     | `(Commit: 3d186e9)`
-* [Feito] Lote 6.1: CorreÃƒÂ§ÃƒÂ£o de SeleÃƒÂ§ÃƒÂ£o e Regras Especiais          | `(Commit: 0e9aee5)`
-* [Feito] Lote 7: RefatoraÃƒÂ§ÃƒÂ£o da UI de Rolagem (TabRolagem.kt)      | `(Commit: 042cd2d)`
-* [Feito] Lote 7.1: CorreÃƒÂ§ÃƒÂµes de Discord, UI de Ataque e Mojibake   | `(Commit: 6c3f773)`
-* [Feito] Lote 7.2: RefatoraÃƒÂ§ÃƒÂ£o do RolagemDialogs.kt (FragmentaÃƒÂ§ÃƒÂ£o) | `(Commit: 6c8a800c)`
-* [Feito] Lote 8: AtualizaÃƒÂ§ÃƒÂ£o EstÃƒÂ©tica dos Ãƒï¿½cones das Abas          | `(Commit: 1cec435)`
-* [Feito] Lote 9: Interface de NavegaÃƒÂ§ÃƒÂ£o RPGÃƒÂ­stica (Ultra-Premium)  | `(Commit: 9f13f43)`
+* [Feito] Lote 3: Modularização do FichaViewModel                   | `(Commit: 20414fd)`
+* [Feito] Lote 4: Padronização UTF-8 e Motor Modo Alvo              | `(Commit: 0912746)`
+* [Feito] Lote 6: Modularização do TraitDialogs                     | `(Commit: 3d186e9)`
+* [Feito] Lote 6.1: Correção de Seleção e Regras Especiais          | `(Commit: 0e9aee5)`
+* [Feito] Lote 7: Refatoração da UI de Rolagem (TabRolagem.kt)      | `(Commit: 042cd2d)`
+* [Feito] Lote 7.1: Correções de Discord, UI de Ataque e Mojibake   | `(Commit: 6c3f773)`
+* [Feito] Lote 7.2: Refatoração do RolagemDialogs.kt (Fragmentação) | `(Commit: 6c8a800c)`
+* [Feito] Lote 8: Atualização Estética dos Ícones das Abas          | `(Commit: 1cec435)`
+* [Feito] Lote 9: Interface de Navegação RPGística (Ultra-Premium)  | `(Commit: 9f13f43)`
 * [Feito] Lote 10: Melhoria do Ataque Inato e Skill Project Map     | `(Commit: e1c1a1b)`
-* [Feito] Lote 11: ModernizaÃƒÂ§ÃƒÂ£o da UI do Mestre IA (ChatGPT)        | `(Commit: e42cce6)`
-* [Feito] Lote 12: Card de dano adaptativo e soma automÃƒÂ¡tica de ST. | `(Commit: 783c295)`
-* [Feito] Lote 13: Fluxo de Mestre IA com confirmaÃƒÂ§ÃƒÂ£o e anÃƒÂ¡lise consultiva. | `(Commit: a104632)`
-* [Feito] Lote 14: Mestre IA Interativo (Antigravity-style) com botÃƒÂµes de aÃƒÂ§ÃƒÂ£o e tom inquisitivo. | `(Commit: a104632)`
-* [Feito] Lote 15: RestauraÃƒÂ§ÃƒÂ£o das Defesas Ativas na Aba de Rolagem | `(Commit: 5c7c369)`
-* [Feito] Lote 16: ModularizaÃƒÂ§ÃƒÂ£o da FichaViewModel e ProtÃƒÂ³tipo de SugestÃƒÂµes ClicÃƒÂ¡veis (Mestre IA) | `(Commit: c279b87)`
-* [Feito] Lote 17: AutomaÃƒÂ§ÃƒÂ£o da vantagem Golpeadores (Strikers) | `(Commit: 65ec4ef)`
-* [Feito] Lote 18: InteligÃƒÂªncia de NH e Aparar para Golpeadores/Ataque Inato | `(Commit: 687b8d9)`
-* [Feito] Lote 19: Arquitetura Modular de Vantagens e DocumentaÃƒÂ§ÃƒÂ£o de IA | `(Commit: 6132f9b)`
-* [Feito] Lote 20: AutomaÃƒÂ§ÃƒÂ£o da Vantagem Dentes (GdP-1 e Tipos) | `(Commit: 5fd613d)`
-* [Feito] Lote 21: PersistÃƒÂªncia de SeleÃƒÂ§ÃƒÂ£o de Ataque/Dano na SessÃƒÂ£o | `(Commit: 217eaf4)`
+* [Feito] Lote 11: Modernização da UI do Mestre IA (ChatGPT)        | `(Commit: e42cce6)`
+* [Feito] Lote 12: Card de dano adaptativo e soma automática de ST. | `(Commit: 783c295)`
+* [Feito] Lote 13: Fluxo de Mestre IA com confirmação e análise consultiva. | `(Commit: a104632)`
+* [Feito] Lote 14: Mestre IA Interativo (Antigravity-style) com botões de ação e tom inquisitivo. | `(Commit: a104632)`
+* [Feito] Lote 15: Restauração das Defesas Ativas na Aba de Rolagem | `(Commit: 5c7c369)`
+* [Feito] Lote 16: Modularização da FichaViewModel e Protótipo de Sugestões Clicáveis (Mestre IA) | `(Commit: c279b87)`
+* [Feito] Lote 17: Automação da vantagem Golpeadores (Strikers) | `(Commit: 65ec4ef)`
+* [Feito] Lote 18: Inteligência de NH e Aparar para Golpeadores/Ataque Inato | `(Commit: 687b8d9)`
+* [Feito] Lote 19: Arquitetura Modular de Vantagens e Documentação de IA | `(Commit: 6132f9b)`
+* [Feito] Lote 20: Automação da Vantagem Dentes (GdP-1 e Tipos) | `(Commit: 5fd613d)`
+* [Feito] Lote 21: Persistência de Seleção de Ataque/Dano na Sessão | `(Commit: 217eaf4)`
 * [Feito] Lote 22: Ajuste Vantagem Dentes e Nomeclatura de Dano PT-BR | `(Commit: ada9efd)`
-* [Feito] Lote 23: Limpeza de Unicode Mojibake (\uXXXX) no CÃƒÂ³digo Fonte | `(Commit: 33c771f)`
-* [Feito] Lote 24: AutomaÃƒÂ§ÃƒÂ£o de Garras, Cascos e Flexibilidade (+3 PerÃƒÂ­cias) | `(Commit: d4a5e2f)`
-* [Feito] Lote 25: Bloqueio e Esquiva Ampliada e EstabilizaÃƒÂ§ÃƒÂ£o de Build        | `(Commit: f202c06)`
+* [Feito] Lote 23: Limpeza de Unicode Mojibake (\uXXXX) no Código Fonte | `(Commit: 33c771f)`
+* [Feito] Lote 24: Automação de Garras, Cascos e Flexibilidade (+3 Perícias) | `(Commit: d4a5e2f)`
+* [Feito] Lote 25: Bloqueio e Esquiva Ampliada e Estabilização de Build        | `(Commit: f202c06)`
 
-* [Feito] Lote 27: Redesign Visual das Defesas (Cards Individuais e BotÃƒÂµes)    | `(Commit: a9b2c3d)`
-* [Feito] Lote 28: RefatoraÃƒÂ§ÃƒÂ£o da TabRolagem.kt (ExtraÃƒÂ§ÃƒÂ£o de DiÃƒÂ¡logos)         | `(Commit: de16e6f)`
-* [Feito] Lote 29: OtimizaÃƒÂ§ÃƒÂ£o de EspaÃƒÂ§o e Padding (BotÃƒÂµes 2dp)             | `(Commit: b3f2d1e)`
+* [Feito] Lote 27: Redesign Visual das Defesas (Cards Individuais e Botões)    | `(Commit: a9b2c3d)`
+* [Feito] Lote 28: Refatoração da TabRolagem.kt (Extração de Diálogos)         | `(Commit: de16e6f)`
+* [Feito] Lote 29: Otimização de Espaço e Padding (Botões 2dp)             | `(Commit: b3f2d1e)`
 * [Feito] Lote 30: Integrar BD do Escudo na Esquiva/Apara + Notas de UI      | `(Commit: 249874d)`
-* [Feito] Lote 31: AutomaÃƒÂ§ÃƒÂ£o da Vantagem Mestre de Armas (Dano NH vs DX)      | `(Commit: c5a16f0)`
-* [Feito] Lote 32: CategorizaÃƒÂ§ÃƒÂ£o e Filtragem Estrita do Mestre de Armas     | `(Commit: e8f9a2c)`
-* [Feito] Lote 33: Mapeamento Estrito e CorreÃƒÂ§ÃƒÂ£o de Vazamento (Mestre de Armas) | `(Manual: Antigravity)`
-* [Feito] Lote 34: RestauraÃƒÂ§ÃƒÂ£o da Apara/Bloqueio e IDs de PerÃƒÂ­cia Sublinhados | `(Commit: f3c3e9a)`
-* [Feito] Lote 35: Visibilidade Permanente de Defesas (Fallback AutomÃƒÂ¡tico) | `(Commit: 2d1948b)`
-* [Feito] Lote 36: VÃƒÂ­nculo Estrito do Dano com o Ataque Selecionado (Final) | `(Commit: 194f5d1)`
+* [Feito] Lote 31: Automação da Vantagem Mestre de Armas (Dano NH vs DX)      | `(Commit: c5a16f0)`
+* [Feito] Lote 32: Categorização e Filtragem Estrita do Mestre de Armas     | `(Commit: e8f9a2c)`
+* [Feito] Lote 33: Mapeamento Estrito e Correção de Vazamento (Mestre de Armas) | `(Manual: Antigravity)`
+* [Feito] Lote 34: Restauração da Apara/Bloqueio e IDs de Perícia Sublinhados | `(Commit: f3c3e9a)`
+* [Feito] Lote 35: Visibilidade Permanente de Defesas (Fallback Automático) | `(Commit: 2d1948b)`
+* [Feito] Lote 36: Vínculo Estrito do Dano com o Ataque Selecionado (Final) | `(Commit: 194f5d1)`
 * [Feito] Lote 37: Acessibilidade Ultra na Aba de Rolagem (TalkBack) | `(Commit: 51dbd9f)`
-* [Feito] Lote 38: AtualizaÃƒÂ§ÃƒÂ£o do Mapa do Projeto (100% PrecisÃƒÂ£o) | `(Commit: 53b1f89)`
-* [Feito] Lote 39: AtualizaÃƒÂ§ÃƒÂ£o da Skill de Vantagens (TraitRule API) | `(Commit: d5768dd)`
-* [Feito] Lote 40: AtualizaÃƒÂ§ÃƒÂ£o das Regras Operacionais (Commits e PraCego) | `(Commit: 4f63b8a)`
-* [Feito] Lote 41: AtualizaÃƒÂ§ÃƒÂ£o das Regras de RPG GURPS (Combat Context) | `(Commit: d26daad)`
+* [Feito] Lote 38: Atualização do Mapa do Projeto (100% Precisão) | `(Commit: 53b1f89)`
+* [Feito] Lote 39: Atualização da Skill de Vantagens (TraitRule API) | `(Commit: d5768dd)`
+* [Feito] Lote 40: Atualização das Regras Operacionais (Commits e PraCego) | `(Commit: 4f63b8a)`
+* [Feito] Lote 41: Atualização das Regras de RPG GURPS (Combat Context) | `(Commit: d26daad)`
 * [Feito] Lote 45: Restauracao do Aro Vermelho e Filtro de Invisibilidade (Sincro V16) | `(Commit: f604490)`
 * [Feito] Lote 46: Pente Fino de Acessibilidade (TalkBack) em Pre-requisitos (Sincro V17) | `(Commit: bab709c)`
-* [Feito] Lote 47: SincronizaÃƒÂ§ÃƒÂ£o em Nuvem InvisÃƒÂ­vel (Railway + DeviceID) (Sincro V18) | `(Manual: Antigravity)`
-* [Feito] Lote 48: Biblioteca Unificada e ProteÃƒÂ§ÃƒÂ£o contra Conflitos de Nomes (Sincro V19) | `(Manual: Antigravity)`
-* [Feito] Lote 49: RestauraÃƒÂ§ÃƒÂ£o SistÃƒÂªmica e UnificaÃƒÂ§ÃƒÂ£o de Branches (Integridade Total) | `(Commit: 7b346b1)`
-* [Feito] Lote 50: Motor Nexus Arcano Estabilizado (ResoluÃƒÂ§ÃƒÂ£o Desejo + Metas Incrementais) | `(Commit: a2e2820)`
-* [Feito] Lote 51: Mestre IA PRIME  - Soberania Multi-Flavor (Gemini/DeepSeek) + SeguranÃƒÂ§a Sete Chaves (Vault) + Rastreabilidade TÃƒÂ©cnica | `(Commit: babc20a)`
+* [Feito] Lote 47: Sincronização em Nuvem Invisível (Railway + DeviceID) (Sincro V18) | `(Manual: Antigravity)`
+* [Feito] Lote 48: Biblioteca Unificada e Proteção contra Conflitos de Nomes (Sincro V19) | `(Manual: Antigravity)`
+* [Feito] Lote 49: Restauração Sistêmica e Unificação de Branches (Integridade Total) | `(Commit: 7b346b1)`
+* [Feito] Lote 50: Motor Nexus Arcano Estabilizado (Resolução Desejo + Metas Incrementais) | `(Commit: a2e2820)`
+* [Feito] Lote 51: Mestre IA PRIME  - Soberania Multi-Flavor (Gemini/DeepSeek) + Segurança Sete Chaves (Vault) + Rastreabilidade Técnica | `(Commit: babc20a)`
 * [Feito] Sincronia de Roadmap: Roadmap do Mestre IA atualizado com novos lotes | `(Commit: d63158d)`
 * [Feito] Lote 52: Robustez no Parsing de JSON (Auto-Healing) | `(Commit: f59f90b)`
-(Problema: O uso de Regex para capturar JSON no MestreIAClient ÃƒÂ© eficiente, mas frÃƒÂ¡gil se a IA enviar um JSON malformado ou truncado.
-Melhoria: Implementar um "JSON Repair" (como uma limpeza agressiva de caracteres de controle) e validar a estrutura contra o MestreIAResponse usando KotlinX.Serialization antes de chegar ao UseCase. Se o JSON falhar, o sistema deve pedir automaticamente uma re-formataÃƒÂ§ÃƒÂ£o para a IA (Auto-Healing).)
+(Problema: O uso de Regex para capturar JSON no MestreIAClient é eficiente, mas frágil se a IA enviar um JSON malformado ou truncado.
+Melhoria: Implementar um "JSON Repair" (como uma limpeza agressiva de caracteres de controle) e validar a estrutura contra o MestreIAResponse usando KotlinX.Serialization antes de chegar ao UseCase. Se o JSON falhar, o sistema deve pedir automaticamente uma re-formatação para a IA (Auto-Healing).)
 * [Feito] Lote 53: Contexto Diferencial (Token Economy) | `(Commit: fbdb0da)`
 .(Problema: Enviar o personagem inteiro em cada mensagem gasta muitos tokens e pode confundir a IA com dados irrelevantes.
-Melhoria: No processarPrompt, implementar uma lÃƒÂ³gica que identifique o que mudou na ficha ou o que ÃƒÂ© relevante para a pergunta atual. Se o usuÃƒÂ¡rio pergunta sobre "Dano", nÃƒÂ£o precisamos enviar a lista de "Equipamento de Camping".)
+Melhoria: No processarPrompt, implementar uma lógica que identifique o que mudou na ficha ou o que é relevante para a pergunta atual. Se o usuário pergunta sobre "Dano", não precisamos enviar a lista de "Equipamento de Camping".)
 * [Feito] Lote 54: Streaming de Resposta (SSE/UX) | `(Commit: 89ab389)`
-(Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptÃƒÂ­vel na UI (LatÃƒÂªncia).
-Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Events (SSE). Ver o Mestre IA "escrevendo" em tempo real melhora drasticamente a percepÃƒÂ§ÃƒÂ£o de performance.)
+(Problema: Esperar a resposta completa da API pode gerar um "atraso" perceptível na UI (Latência).
+Melhoria: Se as APIs (OpenRouter/Gemini) suportarem, implementar Server-Sent Events (SSE). Ver o Mestre IA "escrevendo" em tempo real melhora drasticamente a percepção de performance.)
 * [Feito] Lote 55: Auditoria de Regras (Fiscal Ativo) | `(Commit: fc1f47c)`
-* [Feito] Lote 56: Local-First RAG (Busca Vetorial) | `(Commit: c110272)`.(Problema: O buscador semÃƒÂ¢ntico no MestreIARagEngine pode ser pesado para buscas em muitos arquivos JSON.
-Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index prÃƒÂ©-calculado) para que o findRelevantChunks seja instantÃƒÂ¢neo, mesmo com manuais extensos.)
-* [Feito] Lote 57: ReconstruÃƒÂ§ÃƒÂ£o de Elite (RAG 1194 Chunks) e Triplo Fallback (600 Usos) | `(Manual: Antigravity)`
-* [Feito] Lote 58: EstabilizaÃƒÂ§ÃƒÂ£o do Mestre IA (Motor de Reparo por Pilha) | `(Commit: bf9b73c)`
-    - [x] **EstabilizaÃƒÂ§ÃƒÂ£o IA 2026**: MigraÃƒÂ§ÃƒÂ£o total para Gemini 3.0 e 2.5 (resolvendo 404 de modelos antigos).
-    - [x] **RestauraÃƒÂ§ÃƒÂ£o Nexus**: Motor de investigaÃƒÂ§ÃƒÂ£o multi-estÃƒÂ¡gio e trilhas de prÃƒÂ©-requisitos universalizado.
-    - [x] **Blindagem de ConexÃƒÂ£o**: CorreÃƒÂ§ÃƒÂ£o de headers OpenRouter e normalizaÃƒÂ§ÃƒÂ£o de histÃƒÂ³rico de chat.
-    * ImplementaÃƒÂ§ÃƒÂ£o de algoritmo de fechamento de JSON baseado em Pilha (Stack) e BotÃƒÂµes de DiagnÃƒÂ³stico UI.
+* [Feito] Lote 56: Local-First RAG (Busca Vetorial) | `(Commit: c110272)`.(Problema: O buscador semântico no MestreIARagEngine pode ser pesado para buscas em muitos arquivos JSON.
+Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um index pré-calculado) para que o findRelevantChunks seja instantâneo, mesmo com manuais extensos.)
+* [Feito] Lote 57: Reconstrução de Elite (RAG 1194 Chunks) e Triplo Fallback (600 Usos) | `(Manual: Antigravity)`
+* [Feito] Lote 58: Estabilização do Mestre IA (Motor de Reparo por Pilha) | `(Commit: bf9b73c)`
+    - [x] **Estabilização IA 2026**: Migração total para Gemini 3.0 e 2.5 (resolvendo 404 de modelos antigos).
+    - [x] **Restauração Nexus**: Motor de investigação multi-estágio e trilhas de pré-requisitos universalizado.
+    - [x] **Blindagem de Conexão**: Correção de headers OpenRouter e normalização de histórico de chat.
+    * Implementação de algoritmo de fechamento de JSON baseado em Pilha (Stack) e Botões de Diagnóstico UI.
 * [Feito] Lote 59: IA Master Laboratory (Suite de Auditoria Python) | `(Commit: bf9b73c)`
-    * CriaÃƒÂ§ÃƒÂ£o do validador de fidelidade ao catÃƒÂ¡logo e simulador de stress offline em Python.
+    * Criação do validador de fidelidade ao catálogo e simulador de stress offline em Python.
 * [Feito] Lote 60: Stress Test do Motor de Pilha e Sync do Gabarito de Ouro | `(Manual: Antigravity)`
 
 
 
-    * RefatoraÃƒÂ§ÃƒÂ£o do `MestreIAResponse` para aceitar Objetos em vez de Strings para Vantagens e Magias (alinhado com o Gabarito de Ouro).
-    * EvoluÃƒÂ§ÃƒÂ£o do `repararJsonTruncado` para fechar Strings `"` abertas e ignorar sufixos nocivos.
-    * Teste UnitÃƒÂ¡rio criado: `testStressReparoJsonTruncado` com aninhamento de 500pts aprovado.
+    * Refatoração do `MestreIAResponse` para aceitar Objetos em vez de Strings para Vantagens e Magias (alinhado com o Gabarito de Ouro).
+    * Evolução do `repararJsonTruncado` para fechar Strings `"` abertas e ignorar sufixos nocivos.
+    * Teste Unitário criado: `testStressReparoJsonTruncado` com aninhamento de 500pts aprovado.
 
-### Lote 60: DefiniÃƒÂ§ÃƒÂ£o de Schemas Nativos (Tool Builder)
+### Lote 60: Definição de Schemas Nativos (Tool Builder)
 *   **Commit:** `d025cc1 feat(ia): Lote 60 - define schemas nativos de Function Calling para Gemini e OpenAI`
 *   **Melhorias Implementadas:**
-    *   CriaÃƒÂ§ÃƒÂ£o da classe `MestreIATools.kt` para orquestrar as ferramentas.
-    *   DefiniÃƒÂ§ÃƒÂ£o rigorosa de Schemas JSON (`fill_character_sheet` e `search_rules`) que forÃƒÂ§am a IA a obedecer o layout da ficha.
-    *   Fim da Engenharia de Prompt (Regex) para requisiÃƒÂ§ÃƒÂ£o de criaÃƒÂ§ÃƒÂ£o de fichas.
+    *   Criação da classe `MestreIATools.kt` para orquestrar as ferramentas.
+    *   Definição rigorosa de Schemas JSON (`fill_character_sheet` e `search_rules`) que forçam a IA a obedecer o layout da ficha.
+    *   Fim da Engenharia de Prompt (Regex) para requisição de criação de fichas.
 
-### Lote 61: O Motor ReAct (Orquestrador AssÃƒÂ­ncrono)
+### Lote 61: O Motor ReAct (Orquestrador Assíncrono)
 *   **Commit:** `a353efe feat(ia): Lote 61 - Orquestrador ReAct intercepta Tool Calls para preenchimento de ficha sem regex`
 *   **Commit:** `161fb58 feat(ia): implementa ReAct loop real no MestreIAUseCase para pesquisa de regras e ativa criacao em todos os modos`
 *   **Melhorias Implementadas:**
-    *   RefatoraÃƒÂ§ÃƒÂ£o profunda em `MestreIAClient` e `MestreIAUseCase` para capturar chamadas assÃƒÂ­ncronas no protocolo SSE.
-    *   InterceptaÃƒÂ§ÃƒÂ£o da ferramenta nativa `fill_character_sheet`.
-    *   Passagem direta do JSON estrito e perfeito para a `FichaIADelegate`, eliminando completamente os riscos de JSON malformado e ativando instantaneamente o botÃƒÂ£o de IntegraÃƒÂ§ÃƒÂ£o.
-    *   **Loop ReAct Verdadeiro:** Implementada a recursÃƒÂ£o nativa. Se a IA solicitar `search_rules`, o sistema intercepta, busca as regras via RAG, e faz uma chamada recursiva devolvendo o texto para a IA automaticamente para que ela conclua sua tarefa.
-    *   Desbloqueio de Ferramentas: `fill_character_sheet` agora estÃƒÂ¡ sempre disponÃƒÂ­vel, mesmo no modo PadrÃƒÂ£o/Conversa, permitindo que a IA forje fichas em qualquer cenÃƒÂ¡rio.
+    *   Refatoração profunda em `MestreIAClient` e `MestreIAUseCase` para capturar chamadas assíncronas no protocolo SSE.
+    *   Interceptação da ferramenta nativa `fill_character_sheet`.
+    *   Passagem direta do JSON estrito e perfeito para a `FichaIADelegate`, eliminando completamente os riscos de JSON malformado e ativando instantaneamente o botão de Integração.
+    *   **Loop ReAct Verdadeiro:** Implementada a recursão nativa. Se a IA solicitar `search_rules`, o sistema intercepta, busca as regras via RAG, e faz uma chamada recursiva devolvendo o texto para a IA automaticamente para que ela conclua sua tarefa.
+    *   Desbloqueio de Ferramentas: `fill_character_sheet` agora está sempre disponível, mesmo no modo Padrão/Conversa, permitindo que a IA forje fichas em qualquer cenário.
 
-### Fix Estrutural do RAG (CÃƒÂ©rebro Local de Busca)
-*   **Commit:** `6d1d531 fix(rag): implementa busca multi-camada (exata + flexivel) no SQLite FTS4 para tolerÃƒÂ¢ncia a erros e maior precisao`
+### Fix Estrutural do RAG (Cérebro Local de Busca)
+*   **Commit:** `6d1d531 fix(rag): implementa busca multi-camada (exata + flexivel) no SQLite FTS4 para tolerância a erros e maior precisao`
 *   **Melhorias Implementadas:**
-    *   SubstituiÃƒÂ§ÃƒÂ£o da busca engessada FTS4 (`AND` total) por uma "Busca em Cascata" inteligente.
-    *   TolerÃƒÂ¢ncia a Erros: Se o usuÃƒÂ¡rio digitar "descricoa", a busca flexÃƒÂ­vel garante o Ranqueamento atravÃƒÂ©s de outras palavras corretas ("PerÃƒÂ­cia", "Furtividade"), evitando a devoluÃƒÂ§ÃƒÂ£o de resultados vazios e mitigando as temidas "alucinaÃƒÂ§ÃƒÂµes da IA".
-* [Feito] Lote 62: ConfiguraÃƒÂ§ÃƒÂ£o do Ambiente GraphRAG (D:\VSBuildTools) | `(Manual: Antigravity)`
-    - InstalaÃƒÂ§ÃƒÂ£o das ferramentas C++ Build Tools no drive D: para suporte a compilaÃƒÂ§ÃƒÂ£o nativa.
-* [Feito] Lote 63: Pivot TÃƒÂ©cnico para GraphRAG Lite (Zero-Native) | `(Commit: 8f45a91)`
-    - ImplementaÃƒÂ§ÃƒÂ£o de motor baseado em **ChromaDB + NetworkX** para evitar erros de DLL e compilador no Windows.
-* [Feito] Lote 64: IntegraÃƒÂ§ÃƒÂ£o Kotlin e DB VersÃƒÂ£o 12 (GraphRAG) | `(Commit: 8f45a91)`
-    - MigraÃƒÂ§ÃƒÂ£o do Banco de Dados SQLite para suporte ÃƒÂ  tabela `graph_nodes` e busca hÃƒÂ­brida.
-* [Feito] Lote 65: EstabilizaÃƒÂ§ÃƒÂ£o de APIs e Chaves (OpenRouter/DeepSeek) | `(Commit: 8f45a91)`
-    - RemoÃƒÂ§ÃƒÂ£o de sufixos :free obsoletos e rotaÃƒÂ§ÃƒÂ£o de credenciais ativas.
-* [Feito] Lote 66: Auditoria de Dados e InjeÃƒÂ§ÃƒÂ£o de Regras Mestre | `(Commit: 92b4cdd)`
+    *   Substituição da busca engessada FTS4 (`AND` total) por uma "Busca em Cascata" inteligente.
+    *   Tolerância a Erros: Se o usuário digitar "descricoa", a busca flexível garante o Ranqueamento através de outras palavras corretas ("Perícia", "Furtividade"), evitando a devolução de resultados vazios e mitigando as temidas "alucinações da IA".
+* [Feito] Lote 62: Configuração do Ambiente GraphRAG (D:\VSBuildTools) | `(Manual: Antigravity)`
+    - Instalação das ferramentas C++ Build Tools no drive D: para suporte a compilação nativa.
+* [Feito] Lote 63: Pivot Técnico para GraphRAG Lite (Zero-Native) | `(Commit: 8f45a91)`
+    - Implementação de motor baseado em **ChromaDB + NetworkX** para evitar erros de DLL e compilador no Windows.
+* [Feito] Lote 64: Integração Kotlin e DB Versão 12 (GraphRAG) | `(Commit: 8f45a91)`
+    - Migração do Banco de Dados SQLite para suporte à tabela `graph_nodes` e busca híbrida.
+* [Feito] Lote 65: Estabilização de APIs e Chaves (OpenRouter/DeepSeek) | `(Commit: 8f45a91)`
+    - Remoção de sufixos :free obsoletos e rotação de credenciais ativas.
+* [Feito] Lote 66: Auditoria de Dados e Injeção de Regras Mestre | `(Commit: 92b4cdd)`
     - Limpeza de 284 duplicatas no manual (Magia).
-    - PadronizaÃƒÂ§ÃƒÂ£o de referÃƒÂªncias: `[MB]`, `[MÃƒÂ¡g]`, `[AM]`.
-    - InjeÃƒÂ§ÃƒÂ£o de Tabelas Fundamentais (DistÃƒÂ¢ncia, MT, EscuridÃƒÂ£o, Cobertura) no Grafo.
-* [Feito] Lote 67: UX de Elite - BotÃƒÂ£o de Copiar e HistÃƒÂ³rico Persistente | `(Commit: pendente)`
-    - ImplementaÃƒÂ§ÃƒÂ£o do LocalClipboardManager para cÃƒÂ³pia rÃƒÂ¡pida de respostas.
-    - CriaÃƒÂ§ÃƒÂ£o de tabelas `chat_sessions` e `chat_messages` no SQLite (V13).
-    - Interface de seletor de histÃƒÂ³rico para recuperaÃƒÂ§ÃƒÂ£o de conversas passadas.
-* [Feito] Lote 68: Motor Investigador (ExpansÃƒÂ£o SemÃƒÂ¢ntica) | `(Commit: c2e2491)`
+    - Padronização de referências: `[MB]`, `[Mág]`, `[AM]`.
+    - Injeção de Tabelas Fundamentais (Distância, MT, Escuridão, Cobertura) no Grafo.
+* [Feito] Lote 67: UX de Elite - Botão de Copiar e Histórico Persistente | `(Commit: pendente)`
+    - Implementação do LocalClipboardManager para cópia rápida de respostas.
+    - Criação de tabelas `chat_sessions` e `chat_messages` no SQLite (V13).
+    - Interface de seletor de histórico para recuperação de conversas passadas.
+* [Feito] Lote 68: Motor Investigador (Expansão Semântica) | `(Commit: c2e2491)`
 * [Feito] Lote 69: O Toque do Mestre (Contexto Adjacente) | `(Commit: ca18212)`
 * [Feito] Lote 70: Motor ReAct Multi-Stage (O Mestre Investigador) | `(Commit: pendente)`
 
 
-    - ImplementaÃƒÂ§ÃƒÂ£o de Loop de InvestigaÃƒÂ§ÃƒÂ£o (While) em `MestreIAUseCase.kt`.
-    - Suporte a atÃƒÂ© 3 iteraÃƒÂ§ÃƒÂµes consecutivas de busca por resposta.
-    - AcumulaÃƒÂ§ÃƒÂ£o inteligente de contexto entre buscas para evitar perda de raciocÃƒÂ­nio.
-* [Feito] Lote 81: RestauraÃƒÂ§ÃƒÂ£o Nano-GraphRAG e MemÃƒÂ³ria de Agente | `(Commit: 51c0d3b)`
-    - ImplementaÃƒÂ§ÃƒÂ£o de Busca Relacional em Dois Saltos (Multi-Hop) no `MestreIAGraphEngine.kt`.
-    - IntegraÃƒÂ§ÃƒÂ£o com o sistema MemPalace (ChromaDB local) para memÃƒÂ³ria de longo prazo do agente.
-    - CriaÃƒÂ§ÃƒÂ£o do "PalÃƒÂ¡cio da MemÃƒÂ³ria" (Knowledge Item) com mapa detalhado de engenharia e regras SSOT.
-    - ExpansÃƒÂ£o do contexto RAG com "Essential Nodes" (Atributos e Regras Base) e Radar de RAM.
-    - RotaÃƒÂ§ÃƒÂ£o de Chaves: Mapeamento de `MESTRE_IA_OPENROUTER_2_KEY` e `.3_KEY` no `MestreIAUseCase.kt` para garantir continuidade apÃƒÂ³s expiraÃƒÂ§ÃƒÂ£o da chave anterior.
+    - Implementação de Loop de Investigação (While) em `MestreIAUseCase.kt`.
+    - Suporte a até 3 iterações consecutivas de busca por resposta.
+    - Acumulação inteligente de contexto entre buscas para evitar perda de raciocínio.
+* [Feito] Lote 81: Restauração Nano-GraphRAG e Memória de Agente | `(Commit: 51c0d3b)`
+    - Implementação de Busca Relacional em Dois Saltos (Multi-Hop) no `MestreIAGraphEngine.kt`.
+    - Integração com o sistema MemPalace (ChromaDB local) para memória de longo prazo do agente.
+    - Criação do "Palácio da Memória" (Knowledge Item) com mapa detalhado de engenharia e regras SSOT.
+    - Expansão do contexto RAG com "Essential Nodes" (Atributos e Regras Base) e Radar de RAM.
+    - Rotação de Chaves: Mapeamento de `MESTRE_IA_OPENROUTER_2_KEY` e `.3_KEY` no `MestreIAUseCase.kt` para garantir continuidade após expiração da chave anterior.
 
-* [Feito] Lote 82: RefatoraÃƒÂ§ÃƒÂ£o Mestre IA (Especialistas) | `(Commit: 86d7e4f)`
-    - DivisÃƒÂ£o do UseCase em Auditor (Regras/RAG) e Forjador (GeraÃƒÂ§ÃƒÂ£o/AnÃƒÂ¡lise).
-    - RefatoraÃƒÂ§ÃƒÂ£o do `MestreIAResponse` para aceitar objetos complexos em Vantagens/Desvantagens/Magias (CorreÃƒÂ§ÃƒÂ£o Crash GSON).
-    - ImplementaÃƒÂ§ÃƒÂ£o de fallbacks especializados (Elite para Forja, Lite para Auditoria).
-    - Limpeza de sintaxe e remoÃƒÂ§ÃƒÂ£o de redundÃƒÂ¢ncias no `FichaIADelegate`.
+* [Feito] Lote 82: Refatoração Mestre IA (Especialistas) | `(Commit: 86d7e4f)`
+    - Divisão do UseCase em Auditor (Regras/RAG) e Forjador (Geração/Análise).
+    - Refatoração do `MestreIAResponse` para aceitar objetos complexos em Vantagens/Desvantagens/Magias (Correção Crash GSON).
+    - Implementação de fallbacks especializados (Elite para Forja, Lite para Auditoria).
+    - Limpeza de sintaxe e remoção de redundâncias no `FichaIADelegate`.
 
 * [Feito] Lote 83: Blindagem Ultra-Resiliente (Zero-Crash JSON) | `(Commit: f93da21)`
-    - ImplementaÃƒÂ§ÃƒÂ£o do `MestreIAItemDeserializer` com suporte a aliases (`nh`, `desc`, `id`).
-    - Tratamento de exceÃƒÂ§ÃƒÂµes interno no parse para evitar interrupÃƒÂ§ÃƒÂ£o do fluxo do app.
-    - SincronizaÃƒÂ§ÃƒÂ£o de motores GSON entre `Client`, `Delegate` e `Generator`.
+    - Implementação do `MestreIAItemDeserializer` com suporte a aliases (`nh`, `desc`, `id`).
+    - Tratamento de exceções interno no parse para evitar interrupção do fluxo do app.
+    - Sincronização de motores GSON entre `Client`, `Delegate` e `Generator`.
 
-* [Feito] Lote 84.5: CÃƒÂ©rebro Mestre (Regras de Ouro e InjeÃƒÂ§ÃƒÂ£o de CatÃƒÂ¡logo TÃƒÂ©cnico) | `(Commit: Lote84.5)`
+* [Feito] Lote 84.5: Cérebro Mestre (Regras de Ouro e Injeção de Catálogo Técnico) | `(Commit: Lote84.5)`
     - IA agora recebe lista oficial de nomes de Armas e Equipamentos.
-    - Regra estrita: Magias exigem AptidÃƒÂ£o MÃƒÂ¡gica e inclusÃƒÂ£o de prÃƒÂ©-requisitos.
-* [Feito] Lote 84.6: SeparaÃƒÂ§ÃƒÂ£o Arquitetural (Prompts Isolados) | `(Commit: Lote84.6)`
+    - Regra estrita: Magias exigem Aptidão Mágica e inclusão de pré-requisitos.
+* [Feito] Lote 84.6: Separação Arquitetural (Prompts Isolados) | `(Commit: Lote84.6)`
     - Prompts movidos para `MestreIAPrompts.kt`, limpando o cliente de rede.
-* [Feito] Lote 84.7: Alinhamento TÃƒÂ©cnico (NT, Dano PT-BR e RAG Expansivo) | `(Commit: Lote84.7)`
-    - ProibiÃƒÂ§ÃƒÂ£o de termos em inglÃƒÂªs (cut/pi) e exigÃƒÂªncia de sufixos /NT.
-    - ExpansÃƒÂ£o automÃƒÂ¡tica do RAG para garantir catÃƒÂ¡logo tÃƒÂ©cnico em personagens novos.
-* [Feito] Lote 84.8: ConsciÃƒÂªncia de App (IA entende a automaÃƒÂ§ÃƒÂ£o do sistema) | `(Commit: Lote84.8)`
-    - IA agora entende que o app automatiza cÃƒÂ¡lculos se os nomes estiverem corretos.
+* [Feito] Lote 84.7: Alinhamento Técnico (NT, Dano PT-BR e RAG Expansivo) | `(Commit: Lote84.7)`
+    - Proibição de termos em inglês (cut/pi) e exigência de sufixos /NT.
+    - Expansão automática do RAG para garantir catálogo técnico em personagens novos.
+* [Feito] Lote 84.8: Consciência de App (IA entende a automação do sistema) | `(Commit: Lote84.8)`
+    - IA agora entende que o app automatiza cálculos se os nomes estiverem corretos.
 
-* [Feito] Lote 85: Mesa Virtual (Lote 1) - Console do Narrador e AutomaÃƒÂ§ÃƒÂµes | `(Commit: Lote85)`
-    - CriaÃƒÂ§ÃƒÂ£o do Console Web (`index.html`) com suporte a visualizaÃƒÂ§ÃƒÂ£o de mÃƒÂºltiplas fichas JSON simultÃƒÂ¢neas.
-    - ImplementaÃƒÂ§ÃƒÂ£o de Calculadora de Dano Localizado com multiplicadores oficiais (CrÃƒÂ¢nio x4, Vitais x3) e limites de membros (PV/2 e PV/3).
-    - AdiÃƒÂ§ÃƒÂ£o de controles interativos de PV/PF e ajuste manual de bÃƒÂ´nus de RD por localizaÃƒÂ§ÃƒÂ£o.
-    - AutomaÃƒÂ§ÃƒÂ£o de caracterÃƒÂ­sticas derivadas na interface: PER, VON, Velocidade, Deslocamento e Dano de ST (GdP/GeB).
-    - PreparaÃƒÂ§ÃƒÂ£o do App Android com `intent-filter` para o protocolo `gurpsapp://conectar`.
+* [Feito] Lote 85: Mesa Virtual (Lote 1) - Console do Narrador e Automações | `(Commit: Lote85)`
+    - Criação do Console Web (`index.html`) com suporte a visualização de múltiplas fichas JSON simultâneas.
+    - Implementação de Calculadora de Dano Localizado com multiplicadores oficiais (Crânio x4, Vitais x3) e limites de membros (PV/2 e PV/3).
+    - Adição de controles interativos de PV/PF e ajuste manual de bônus de RD por localização.
+    - Automação de características derivadas na interface: PER, VON, Velocidade, Deslocamento e Dano de ST (GdP/GeB).
+    - Preparação do App Android com `intent-filter` para o protocolo `gurpsapp://conectar`.
 
-* [Feito] Lote 86: UnificaÃƒÂ§ÃƒÂ£o de TraÃƒÂ§os e Busca Inteligente (Modificadores) | `(Commit: 5ce593b)`
-    - ImplementaÃƒÂ§ÃƒÂ£o de barra de busca no diÃƒÂ¡logo de modificadores (catÃƒÂ¡logo geral + especÃƒÂ­ficos).
-    - UnificaÃƒÂ§ÃƒÂ£o das interfaces de AdiÃƒÂ§ÃƒÂ£o e EdiÃƒÂ§ÃƒÂ£o de Vantagens e Desvantagens (Ficha e Modelo Racial).
-    - CorreÃƒÂ§ÃƒÂ£o da persistÃƒÂªncia de regras especiais (Aliados, Patronos, DependÃƒÂªncia, Inimigos, etc.).
-    - Blindagem de cÃƒÂ¡lculo de custo para traÃƒÂ§os legados (fallback de `specialRule` via catÃƒÂ¡logo).
-    - AtivaÃƒÂ§ÃƒÂ£o de salvamento automÃƒÂ¡tico (`salvarFicha()`) apÃƒÂ³s qualquer ediÃƒÂ§ÃƒÂ£o de traÃƒÂ§os.
+* [Feito] Lote 86: Unificação de Traços e Busca Inteligente (Modificadores) | `(Commit: 5ce593b)`
+    - Implementação de barra de busca no diálogo de modificadores (catálogo geral + específicos).
+    - Unificação das interfaces de Adição e Edição de Vantagens e Desvantagens (Ficha e Modelo Racial).
+    - Correção da persistência de regras especiais (Aliados, Patronos, Dependência, Inimigos, etc.).
+    - Blindagem de cálculo de custo para traços legados (fallback de `specialRule` via catálogo).
+    - Ativação de salvamento automático (`salvarFicha()`) após qualquer edição de traços.
 
-[Feito] Lote 87: ExibiÃƒÂ§ÃƒÂ£o de descriÃƒÂ§ÃƒÂµes de perÃƒÂ­cias/magias na Aba de Rolagem | `(Commit: c3e3859)`
+[Feito] Lote 87: Exibição de descrições de perícias/magias na Aba de Rolagem | `(Commit: c3e3859)`
 * [Feito] Lote 88: Blindagem do Mestre IA (Rastro de Provas) | `(Manual: Antigravity)`
-    - ImplementaÃƒÂ§ÃƒÂ£o do protocolo de citaÃƒÂ§ÃƒÂ£o obrigatÃƒÂ³ria `[Livro, PÃƒÂ¡g. X]`.
-    - Bloqueio de memÃƒÂ³ria externa para evitar alucinaÃƒÂ§ÃƒÂµes de regras nÃƒÂ£o documentadas no CÃƒÂ³dex.
-    - ExigÃƒÂªncia de uso de ferramentas de busca para dÃƒÂºvidas tÃƒÂ©cnicas.
-    - AnÃƒÂ¡lise profunda do sistema e identificaÃƒÂ§ÃƒÂ£o de 5 vulnerabilidades crÃƒÂ­ticas de alucinaÃƒÂ§ÃƒÂ£o.
-* [Feito] Lote 89: HigienizaÃƒÂ§ÃƒÂ£o de Ativos (Assets Cleanup) | `(Manual: Antigravity)`
-    - RemoÃƒÂ§ÃƒÂ£o de banco de dados residual `chroma.sqlite3` (Legado Lote 63).
-    - ExclusÃƒÂ£o de `catalogo_nomes_ia.json` obsoleto (substituÃƒÂ­do pelo GraphRAG dinÃƒÂ¢mico).
+    - Implementação do protocolo de citação obrigatória `[Livro, Pág. X]`.
+    - Bloqueio de memória externa para evitar alucinações de regras não documentadas no Códex.
+    - Exigência de uso de ferramentas de busca para dúvidas técnicas.
+    - Análise profunda do sistema e identificação de 5 vulnerabilidades críticas de alucinação.
+* [Feito] Lote 89: Higienização de Ativos (Assets Cleanup) | `(Manual: Antigravity)`
+    - Remoção de banco de dados residual `chroma.sqlite3` (Legado Lote 63).
+    - Exclusão de `catalogo_nomes_ia.json` obsoleto (substituído pelo GraphRAG dinâmico).
     - Faxina de arquivos JSON legados (`vantagens.v1`, `v2`, `magias.json`, etc.) para reduzir tamanho do APK.
-    - RealocaÃƒÂ§ÃƒÂ£o de scripts de prÃƒÂ©-processamento (`populate_graph.py`) para fora da pasta de assets do App.
+    - Realocação de scripts de pré-processamento (`populate_graph.py`) para fora da pasta de assets do App.
 
-* [Feito] Lote 98: PaginaÃƒÂ§ÃƒÂ£o de Resultados (PÃƒÂ¡gina 2) e Calibragem de PrecisÃƒÂ£o (Peso de Ouro) | `(Commit: Lote98)`
-    - ImplementaÃƒÂ§ÃƒÂ£o de parÃƒÂ¢metro `pagina` na ferramenta de busca para evitar loops infinitos.
-    - Sistema de Pesos: Termos originais da pergunta valem +10, sinÃƒÂ´nimos automÃƒÂ¡ticos valem +2.
-    - BÃƒÂ´nus Massivo de TÃƒÂ­tulo (+35) para match exato com a dÃƒÂºvida do usuÃƒÂ¡rio.
-    - Fim do problema de "Sangramento" ser enterrado por magias de cura ou outros termos genÃƒÂ©ricos.
-* [Feito] Lote 100: ConsciÃƒÂªncia BibliogrÃƒÂ¡fica (Source-Aware RAG) e DicionÃƒÂ¡rio TÃƒÂ©cnico | `(Commit: Lote100)`
-    - ImplementaÃƒÂ§ÃƒÂ£o de Busca Filtrada: O sistema agora distingue entre livros diferentes que possuem o mesmo nÃƒÂºmero de pÃƒÂ¡gina, eliminando colisÃƒÂµes (ex: PÃƒÂ¡g 117 de Magia vs Artes Marciais).
-    - DicionÃƒÂ¡rio TÃƒÂ©cnico Mestre: InjeÃƒÂ§ÃƒÂ£o de sinÃƒÂ´nimos de alta fidelidade (ex: "Cavar" remete automaticamente a "EscavaÃƒÂ§ÃƒÂ£o") para garantir que o motor de busca encontre a regra correta mesmo com linguagem comum.
-    - Regex de PrecisÃƒÂ£o: Captura automÃƒÂ¡tica da fonte bibliogrÃƒÂ¡fica `[Livro]` a partir dos resumos do grafo para direcionar a carga de recortes manuais.
-* [Feito] Lote 101: Motor RAG SemÃƒÂ¢ntico HÃƒÂ­brido & Anti-DiluiÃƒÂ§ÃƒÂ£o (FTS4 Layering) | `(Commit: Lote101)`
-    - DesativaÃƒÂ§ÃƒÂ£o de "blindagem" (stopWords genÃƒÂ©ricas de RPG como 'ataque' e 'dano'), devolvendo a capacidade do motor de interpretar frases naturais cruas sem falhas.
-    - ImplementaÃƒÂ§ÃƒÂ£o de Busca por Camadas (Layering): Garantia matemÃƒÂ¡tica de que palavras raras (ex: 'piscina') nÃƒÂ£o sejam engolidas do limite do FTS4 por palavras comuns (ex: 'dano') atravÃƒÂ©s de iteraÃƒÂ§ÃƒÂµes individuais na base de recortes.
+* [Feito] Lote 98: Paginação de Resultados (Página 2) e Calibragem de Precisão (Peso de Ouro) | `(Commit: Lote98)`
+    - Implementação de parâmetro `pagina` na ferramenta de busca para evitar loops infinitos.
+    - Sistema de Pesos: Termos originais da pergunta valem +10, sinônimos automáticos valem +2.
+    - Bônus Massivo de Título (+35) para match exato com a dúvida do usuário.
+    - Fim do problema de "Sangramento" ser enterrado por magias de cura ou outros termos genéricos.
+* [Feito] Lote 100: Consciência Bibliográfica (Source-Aware RAG) e Dicionário Técnico | `(Commit: Lote100)`
+    - Implementação de Busca Filtrada: O sistema agora distingue entre livros diferentes que possuem o mesmo número de página, eliminando colisões (ex: Pág 117 de Magia vs Artes Marciais).
+    - Dicionário Técnico Mestre: Injeção de sinônimos de alta fidelidade (ex: "Cavar" remete automaticamente a "Escavação") para garantir que o motor de busca encontre a regra correta mesmo com linguagem comum.
+    - Regex de Precisão: Captura automática da fonte bibliográfica `[Livro]` a partir dos resumos do grafo para direcionar a carga de recortes manuais.
+* [Feito] Lote 101: Motor RAG Semântico Híbrido & Anti-Diluição (FTS4 Layering) | `(Commit: Lote101)`
+    - Desativação de "blindagem" (stopWords genéricas de RPG como 'ataque' e 'dano'), devolvendo a capacidade do motor de interpretar frases naturais cruas sem falhas.
+    - Implementação de Busca por Camadas (Layering): Garantia matemática de que palavras raras (ex: 'piscina') não sejam engolidas do limite do FTS4 por palavras comuns (ex: 'dano') através de iterações individuais na base de recortes.
 * [Feito] Lote 102: Algoritmo de Raridade (TF-IDF Proxy local em Kotlin) | `(Commit: Lote102)`
-    - ImplementaÃƒÂ§ÃƒÂ£o de heurÃƒÂ­stica inspirada no TF-IDF (Inverse Document Frequency) diretamente no re-ranking local.
-    - CÃƒÂ¡lculo de peso por raridade: Palavras com muitos resultados no SQLite (peso 1) nÃƒÂ£o pontuam alto; palavras com poucos recortes exatos (peso atÃƒÂ© 50) geram multiplicadores explosivos (ex: 'Combate AquÃƒÂ¡tico' supera 100% 'Dano de Arma').
-    - O motor agora filtra o ruÃƒÂ­do de perguntas longas atravÃƒÂ©s de matemÃƒÂ¡tica pura, sem depender de injeÃƒÂ§ÃƒÂµes rÃƒÂ­gidas.
+    - Implementação de heurística inspirada no TF-IDF (Inverse Document Frequency) diretamente no re-ranking local.
+    - Cálculo de peso por raridade: Palavras com muitos resultados no SQLite (peso 1) não pontuam alto; palavras com poucos recortes exatos (peso até 50) geram multiplicadores explosivos (ex: 'Combate Aquático' supera 100% 'Dano de Arma').
+    - O motor agora filtra o ruído de perguntas longas através de matemática pura, sem depender de injeções rígidas.
 * [Feito] Lote 103: RAG State-of-the-Art (RRF & Parent Document) | `(Commits: 6a059ea, a43a88e)`
-    - **Parent Document Retrieval:** O motor agora busca a pÃƒÂ¡gina inteira em que o recorte se encontra, resolvendo perdas de contexto onde regras importantes ou tabelas continuavam no prÃƒÂ³ximo parÃƒÂ¡grafo. O limite do prompt saltou para 15000 chars.
-    - **RRF (Reciprocal Rank Fusion):** Implementada a fÃƒÂ³rmula matemÃƒÂ¡tica padrÃƒÂ£o da indÃƒÂºstria `(1 / Rank + 60)` para fundir de forma justa o ranking de palavras-chave da busca textual (FTS) com as sugestÃƒÂµes de pÃƒÂ¡gina vindas do Knowledge Graph, gerando um Top 3 infalÃƒÂ­vel.
+    - **Parent Document Retrieval:** O motor agora busca a página inteira em que o recorte se encontra, resolvendo perdas de contexto onde regras importantes ou tabelas continuavam no próximo parágrafo. O limite do prompt saltou para 15000 chars.
+    - **RRF (Reciprocal Rank Fusion):** Implementada a fórmula matemática padrão da indústria `(1 / Rank + 60)` para fundir de forma justa o ranking de palavras-chave da busca textual (FTS) com as sugestões de página vindas do Knowledge Graph, gerando um Top 3 infalível.
 
-* [Feito] Lote 104: Filtro de RuÃƒÂ­do & Mega-Contexto (60k) | `(Commit: de125e6)`
-    - **Filtro de RuÃƒÂ­do:** ExpansÃƒÂ£o de termos por sinÃƒÂ´nimos (gladiador, luta) agora afeta apenas o Grafo. A busca de texto bruto (Chunks) foca 100% nos termos reais do usuÃƒÂ¡rio para evitar poluiÃƒÂ§ÃƒÂ£o.
-    - **Janela de 60k Chars:** Limite da `PonteDeFerro` expandido de 15k para 60k caracteres. Isso permite enviar atÃƒÂ© 10 pÃƒÂ¡ginas completas (Documento Pai) sem cortes.
-    - **Top 8 Retrieval:** Motor agora coleta as 8 melhores pÃƒÂ¡ginas encontradas, garantindo que regras especÃƒÂ­ficas entrem no prompt mesmo que nÃƒÂ£o sejam o Top 1 de score.
+* [Feito] Lote 104: Filtro de Ruído & Mega-Contexto (60k) | `(Commit: de125e6)`
+    - **Filtro de Ruído:** Expansão de termos por sinônimos (gladiador, luta) agora afeta apenas o Grafo. A busca de texto bruto (Chunks) foca 100% nos termos reais do usuário para evitar poluição.
+    - **Janela de 60k Chars:** Limite da `PonteDeFerro` expandido de 15k para 60k caracteres. Isso permite enviar até 10 páginas completas (Documento Pai) sem cortes.
+    - **Top 8 Retrieval:** Motor agora coleta as 8 melhores páginas encontradas, garantindo que regras específicas entrem no prompt mesmo que não sejam o Top 1 de score.
 
-* [Feito] Lote 105: Diversidade de Elite & BÃƒÂ´nus de Autoridade | `(Commit: c8bcfe6)`
-    - **Filtro Anti-MonopÃƒÂ³lio:** Implementada trava algorÃƒÂ­tmica que limita a 2 recortes por pÃƒÂ¡gina no Top 8. Isso obriga o motor a trazer diversidade de regras (ex: PÃƒÂ¡g 16 + PÃƒÂ¡g 430 + PÃƒÂ¡g 397) em vez de inundar o contexto com uma ÃƒÂºnica pÃƒÂ¡gina genÃƒÂ©rica.
-    - **BÃƒÂ´nus de Grafo (5x):** PÃƒÂ¡ginas sugeridas pelo Knowledge Graph agora recebem um multiplicador de relevÃƒÂ¢ncia de 500%, garantindo que a inteligÃƒÂªncia estrutural prevaleÃƒÂ§a sobre a mera repetiÃƒÂ§ÃƒÂ£o de palavras-chave.
+* [Feito] Lote 105: Diversidade de Elite & Bônus de Autoridade | `(Commit: c8bcfe6)`
+    - **Filtro Anti-Monopólio:** Implementada trava algorítmica que limita a 2 recortes por página no Top 8. Isso obriga o motor a trazer diversidade de regras (ex: Pág 16 + Pág 430 + Pág 397) em vez de inundar o contexto com uma única página genérica.
+    - **Bônus de Grafo (5x):** Páginas sugeridas pelo Knowledge Graph agora recebem um multiplicador de relevância de 500%, garantindo que a inteligência estrutural prevaleça sobre a mera repetição de palavras-chave.
 
-* [Feito] Lote 106: Contexto Adjacente (PÃƒÂ¡gina Suporte) | `(Manual: Antigravity)`
-    - **PÃƒÂ¡gina n+1:** O motor `MestreIAGraphEngine` agora recupera automaticamente a pÃƒÂ¡gina seguinte para cada pÃƒÂ¡gina de impacto encontrada, garantindo integridade de tabelas e fÃƒÂ³rmulas longas.
-    - **ExpansÃƒÂ£o de Contexto:** Aumentado o limite de recortes finais de 10 para **20** para acomodar o suporte adjacente sem cortes.
-    - **ValidaÃƒÂ§ÃƒÂ£o de ColisÃƒÂ£o:** Confirmada a recuperaÃƒÂ§ÃƒÂ£o da fÃƒÂ³rmula de dano (PÃƒÂ¡g 432) ao buscar por termos na PÃƒÂ¡g 431.
+* [Feito] Lote 106: Contexto Adjacente (Página Suporte) | `(Manual: Antigravity)`
+    - **Página n+1:** O motor `MestreIAGraphEngine` agora recupera automaticamente a página seguinte para cada página de impacto encontrada, garantindo integridade de tabelas e fórmulas longas.
+    - **Expansão de Contexto:** Aumentado o limite de recortes finais de 10 para **20** para acomodar o suporte adjacente sem cortes.
+    - **Validação de Colisão:** Confirmada a recuperação da fórmula de dano (Pág 432) ao buscar por termos na Pág 431.
 
-* [Feito] Lote 107: Blindagem de FTS4 (NormalizaÃƒÂ§ÃƒÂ£o de Acentos) | `(Manual: Antigravity)`
-    - **IndexaÃƒÂ§ÃƒÂ£o Normalizada:** A coluna `search_text` agora ÃƒÂ© povoada sem acentos e em lowercase, blindando o motor contra encoding corrompido (Mojibake).
-    - **Busca AgnÃƒÂ³stica:** Os termos de busca sÃƒÂ£o normalizados antes da consulta, permitindo que "colisao" encontre "ColisÃƒÂ£o" e vice-versa.
-    - **UnificaÃƒÂ§ÃƒÂ£o de Scoring:** O re-ranking TF-IDF agora utiliza os mesmos termos normalizados, garantindo precisÃƒÂ£o matemÃƒÂ¡tica no Top 3.
+* [Feito] Lote 107: Blindagem de FTS4 (Normalização de Acentos) | `(Manual: Antigravity)`
+    - **Indexação Normalizada:** A coluna `search_text` agora é povoada sem acentos e em lowercase, blindando o motor contra encoding corrompido (Mojibake).
+    - **Busca Agnóstica:** Os termos de busca são normalizados antes da consulta, permitindo que "colisao" encontre "Colisão" e vice-versa.
+    - **Unificação de Scoring:** O re-ranking TF-IDF agora utiliza os mesmos termos normalizados, garantindo precisão matemática no Top 3.
 
-* [Finalizado] Lote 108: Sincronia AutomÃƒÂ¡tica e Limpeza de Legado | `(Commit: 2e59eba)`
-    - **RemoÃƒÂ§ÃƒÂ£o de Gatilhos Manuais:** Extintos os comandos "forÃƒÂ§ar sincronizaÃƒÂ§ÃƒÂ£o" via chat.
-    - **Sincronia Inteligente:** Implementado **Mutex** no `MestreIARepository` para garantir carga ÃƒÂºnica e atÃƒÂ´mica.
+* [Finalizado] Lote 108: Sincronia Automática e Limpeza de Legado | `(Commit: 2e59eba)`
+    - **Remoção de Gatilhos Manuais:** Extintos os comandos "forçar sincronização" via chat.
+    - **Sincronia Inteligente:** Implementado **Mutex** no `MestreIARepository` para garantir carga única e atômica.
     - **Performance & Background:** UseCase migrado para `Dispatchers.IO`, eliminando lag na UI.
-    - **Encoding UTF-8 (Fim do Mojibake):** ForÃƒÂ§ada leitura de assets em UTF-8, corrigindo acentos corrompidos.
-    - **v19 do Banco:** Incrementada versÃƒÂ£o do DB para forÃƒÂ§ar reset limpo dos ÃƒÂ­ndices.
+    - **Encoding UTF-8 (Fim do Mojibake):** Forçada leitura de assets em UTF-8, corrigindo acentos corrompidos.
+    - **v19 do Banco:** Incrementada versão do DB para forçar reset limpo dos índices.
 
-* [Finalizado] Lote 109: PurificaÃƒÂ§ÃƒÂ£o Arquitetural | `(Commit: 2e59eba)`
-    - **Isolamento de RepositÃƒÂ³rio:** Criado o `MestreIARepository` para separar a lÃƒÂ³gica de regras da lÃƒÂ³gica de ficha (`DataRepository`).
-    - **DelegaÃƒÂ§ÃƒÂ£o Limpa:** O `DataRepository` agora apenas delega as chamadas de busca, reduzindo seu tamanho e complexidade.
-    - **Estabilidade de Testes:** Ajustados Stubs e inicializaÃƒÂ§ÃƒÂ£o `lazy` para permitir testes unitÃƒÂ¡rios sem dependÃƒÂªncia de Contexto.
+* [Finalizado] Lote 109: Purificação Arquitetural | `(Commit: 2e59eba)`
+    - **Isolamento de Repositório:** Criado o `MestreIARepository` para separar a lógica de regras da lógica de ficha (`DataRepository`).
+    - **Delegação Limpa:** O `DataRepository` agora apenas delega as chamadas de busca, reduzindo seu tamanho e complexidade.
+    - **Estabilidade de Testes:** Ajustados Stubs e inicialização `lazy` para permitir testes unitários sem dependência de Contexto.
 
-* [Finalizado] Lote 111: OtimizaÃƒÂ§ÃƒÂ£o de RAG e Cura de Contexto (Dano por ColisÃƒÂ£o) | `(Commit: ce531eb)`
-    - **DiagnÃƒÂ³stico de Carga:** RemoÃƒÂ§ÃƒÂ£o de limitaÃƒÂ§ÃƒÂµes de cÃƒÂ³digo que truncavam regras vitais.
-    - **Prioridade VIP:** BÃƒÂ´nus de score +1000 para pÃƒÂ¡ginas recomendadas pelo Grafo (Garante PÃƒÂ¡g 433).
-    - **Abertura de Gargalo:** Entrega de atÃƒÂ© 25 recortes de contexto ao Gemini no CaseUse.
-    - **ValidaÃƒÂ§ÃƒÂ£o de Dados:** VerificaÃƒÂ§ÃƒÂ£o da integridade da regra de ColisÃƒÂ£o no banco SQLite.
+* [Finalizado] Lote 111: Otimização de RAG e Cura de Contexto (Dano por Colisão) | `(Commit: ce531eb)`
+    - **Diagnóstico de Carga:** Remoção de limitações de código que truncavam regras vitais.
+    - **Prioridade VIP:** Bônus de score +1000 para páginas recomendadas pelo Grafo (Garante Pág 433).
+    - **Abertura de Gargalo:** Entrega de até 25 recortes de contexto ao Gemini no CaseUse.
+    - **Validação de Dados:** Verificação da integridade da regra de Colisão no banco SQLite.
 
-* [Finalizado] Lote 112: Motor de RaciocÃƒÂ­nio e Hierarquia (Plan Systemic Evolution) | `(Commit: Lote112)`
-    - **Janela Deslizante (N-1, N, N+1):** RecuperaÃƒÂ§ÃƒÂ£o automÃƒÂ¡tica da pÃƒÂ¡gina anterior para integridade de regras.
-    - **Hierarquia de Autoridade:** BÃƒÂ´nus (+50) para o MÃƒÂ³dulo BÃƒÂ¡sico, garantindo soberania da "Lei MÃƒÂ£e".
-    - **Prompt de RaciocÃƒÂ­nio (Pilares):** IA agora decompÃƒÂµe problemas em AÃƒÂ§ÃƒÂ£o, Atributo, Ambiente e Estado.
-    - **PurificaÃƒÂ§ÃƒÂ£o do Grafo:** InjeÃƒÂ§ÃƒÂ£o de source_id em todos os 2476 nÃƒÂ³s e unificaÃƒÂ§ÃƒÂ£o de NÃƒÂ³s Mestres (Ataque Total).
+* [Finalizado] Lote 112: Motor de Raciocínio e Hierarquia (Plan Systemic Evolution) | `(Commit: Lote112)`
+    - **Janela Deslizante (N-1, N, N+1):** Recuperação automática da página anterior para integridade de regras.
+    - **Hierarquia de Autoridade:** Bônus (+50) para o Módulo Básico, garantindo soberania da "Lei Mãe".
+    - **Prompt de Raciocínio (Pilares):** IA agora decompõe problemas em Ação, Atributo, Ambiente e Estado.
+    - **Purificação do Grafo:** Injeção de source_id em todos os 2476 nós e unificação de Nós Mestres (Ataque Total).
 
-* [Finalizado] Lote 112.1: CorreÃƒÂ§ÃƒÂ£o do Gargalo de Regex no RAG | `(Commit: 6dc456c)`
-    - **DiagnÃƒÂ³stico:** O Grafo corretamente identificava mÃƒÂºltiplas pÃƒÂ¡ginas (ex: [PÃƒÂ¡g. 353, 354, 388] para Terreno), mas a Regex capturava apenas a primeira.
-    - **CorreÃƒÂ§ÃƒÂ£o MatemÃƒÂ¡tica:** SubstituiÃƒÂ§ÃƒÂ£o de `Regex.find()` por `Regex.findAll()` no `MestreIAGraphEngine.kt`, iterando sobre todas as ocorrÃƒÂªncias de pÃƒÂ¡ginas no resumo.
-    - **Resultado PrÃƒÂ¡tico:** A "Ponte de PÃƒÂ¡gina" agora enfileira todas as pÃƒÂ¡ginas listadas (353, 354 e 388), permitindo que a IA aplique a regra matemÃƒÂ¡tica de Lama no combate.
+* [Finalizado] Lote 112.1: Correção do Gargalo de Regex no RAG | `(Commit: 6dc456c)`
+    - **Diagnóstico:** O Grafo corretamente identificava múltiplas páginas (ex: [Pág. 353, 354, 388] para Terreno), mas a Regex capturava apenas a primeira.
+    - **Correção Matemática:** Substituição de `Regex.find()` por `Regex.findAll()` no `MestreIAGraphEngine.kt`, iterando sobre todas as ocorrências de páginas no resumo.
+    - **Resultado Prático:** A "Ponte de Página" agora enfileira todas as páginas listadas (353, 354 e 388), permitindo que a IA aplique a regra matemática de Lama no combate.
 
 * [Finalizado] Lote 112.2: RRF Rank Normalization (Reciprocal Rank Fusion) | `(Commit: Pending)`
-    - **DiagnÃƒÂ³stico:** O Algoritmo de Ranking Lexical RRF penalizava as pÃƒÂ¡ginas extras do Grafo. Se o Grafo apontava 3 pÃƒÂ¡ginas, a segunda e terceira ganhavam pontuaÃƒÂ§ÃƒÂ£o decrescente, impedindo regras secundÃƒÂ¡rias (Lama) de chegarem ao Top 8.
-    - **CorreÃƒÂ§ÃƒÂ£o:** Alterado o `graphRank` para tratar **todas** as pÃƒÂ¡ginas apontadas pelo Grafo com pontuaÃƒÂ§ÃƒÂ£o absoluta (Rank = 1). A responsabilidade do desempate ÃƒÂ© agora puramente lexical.
+    - **Diagnóstico:** O Algoritmo de Ranking Lexical RRF penalizava as páginas extras do Grafo. Se o Grafo apontava 3 páginas, a segunda e terceira ganhavam pontuação decrescente, impedindo regras secundárias (Lama) de chegarem ao Top 8.
+    - **Correção:** Alterado o `graphRank` para tratar **todas** as páginas apontadas pelo Grafo com pontuação absoluta (Rank = 1). A responsabilidade do desempate é agora puramente lexical.
 
-* [Finalizado] Lote 112.3: CorreÃƒÂ§ÃƒÂ£o do Anti-MonopÃƒÂ³lio e Autenticidade de Fonte BibliogrÃƒÂ¡fica | `(Commit: Pending)`
-    - **DiagnÃƒÂ³stico de Magias:** Consultas como "Magia Desejo" recuperavam o nÃƒÂ³ correto, mas a pÃƒÂ¡gina (PÃƒÂ¡g 61) era carregada de 3 livros diferentes simultaneamente (MÃƒÂ³dulo BÃƒÂ¡sico, Artes Marciais e Magia). O filtro "Anti-MonopÃƒÂ³lio" as considerava idÃƒÂªnticas (PÃƒÂ¡g 61) e cortava o livro Magia (por ter prioridade menor no desempate), ocultando a regra real. A lista de *stop words* tambÃƒÂ©m estava bloqueando palavras tÃƒÂ©cnicas vitais (ex: "prÃƒÂ©", "requisitos").
-    - **RefatoraÃƒÂ§ÃƒÂ£o da Ponte de PÃƒÂ¡gina (`PaginaAlvo`):** Implementada amarraÃƒÂ§ÃƒÂ£o com `sourceId` nos metadados da base. Agora, o sistema exige que a pÃƒÂ¡gina 61 do Grafo corresponda exclusivamente ÃƒÂ  PÃƒÂ¡g 61 do suplemento correto (Magia).
-    - **BÃƒÂ´nus Lexical Especializado:** Adicionado BÃƒÂ´nus +60 Lexical se os "Termos Base" ou o "NÃƒÂ³ do Grafo" pertencerem ao grupo semÃƒÂ¢ntico de "Magia" (pt_gurps_magia) ou "Artes Marciais" (pt_artes_marciais), superando artificialmente o bÃƒÂ´nus de Autoridade do MÃƒÂ³dulo BÃƒÂ¡sico para buscas ultra-especializadas.
+* [Finalizado] Lote 112.3: Correção do Anti-Monopólio e Autenticidade de Fonte Bibliográfica | `(Commit: Pending)`
+    - **Diagnóstico de Magias:** Consultas como "Magia Desejo" recuperavam o nó correto, mas a página (Pág 61) era carregada de 3 livros diferentes simultaneamente (Módulo Básico, Artes Marciais e Magia). O filtro "Anti-Monopólio" as considerava idênticas (Pág 61) e cortava o livro Magia (por ter prioridade menor no desempate), ocultando a regra real. A lista de *stop words* também estava bloqueando palavras técnicas vitais (ex: "pré", "requisitos").
+    - **Refatoração da Ponte de Página (`PaginaAlvo`):** Implementada amarração com `sourceId` nos metadados da base. Agora, o sistema exige que a página 61 do Grafo corresponda exclusivamente à Pág 61 do suplemento correto (Magia).
+    - **Bônus Lexical Especializado:** Adicionado Bônus +60 Lexical se os "Termos Base" ou o "Nó do Grafo" pertencerem ao grupo semântico de "Magia" (pt_gurps_magia) ou "Artes Marciais" (pt_artes_marciais), superando artificialmente o bônus de Autoridade do Módulo Básico para buscas ultra-especializadas.
     - **Stop Words:** Removidas palavras cruciais como "requisitos" e "pre" do limpador lexical no `extrairPalavrasChave`.
 
-* [Feito] Lote 113: IntegraÃƒÂ§ÃƒÂ£o Nexus-IA (O Consultor Arcano) | `(Commit: c4a1b2d)`
+* [Feito] Lote 113: Integração Nexus-IA (O Consultor Arcano) | `(Commit: c4a1b2d)`
 * [Feito] Lote 114: Blindagem de Conectividade & Contexto Arcano | `(Commit: 9cb6448)`
-    - **Fix Conectividade:** ResoluÃƒÂ§ÃƒÂ£o do Erro 400 atravÃƒÂ©s da segregaÃƒÂ§ÃƒÂ£o de URLs e Chaves por provedor (Gemini vs DeepSeek).
-    - **Enriquecimento Arcano:** InjeÃƒÂ§ÃƒÂ£o automÃƒÂ¡tica de Escolas e PrÃƒÂ©-requisitos no contexto de magias para o Mestre IA.
-    - **EstabilizaÃƒÂ§ÃƒÂ£o de Build:** CorreÃƒÂ§ÃƒÂ£o de inferÃƒÂªncia de tipos no ranking RRF do GraphEngine.
-    - **ConexÃƒÂ£o de Motores:** ImplementaÃƒÂ§ÃƒÂ£o da ferramenta nativa `consultar_nexus_arcano` no Mestre IA, permitindo que a IA invoque o Motor Nexus em milissegundos.
-    - **Gabarito TÃƒÂ©cnico:** O motor agora gera um "Gabarito de Ouro" determinÃƒÂ­stico (Estado Zero) com ÃƒÂ¡rvore de dependÃƒÂªncias completa e sugestÃƒÂµes para metas de escolas.
-    - **Fidelidade BibliogrÃƒÂ¡fica:** CorreÃƒÂ§ÃƒÂ£o de dados no `magias2versao.json` (Sopro de Fogo/Ãƒcido/Frio) alinhando "ResistÃƒÂªncia" com o MÃƒÂ³dulo BÃƒÂ¡sico.
-    - **IndependÃƒÂªncia de Ficha:** A ferramenta funciona de forma isolada, permitindo planejar magias mesmo sem uma ficha ativa ou iniciada.
+    - **Fix Conectividade:** Resolução do Erro 400 através da segregação de URLs e Chaves por provedor (Gemini vs DeepSeek).
+    - **Enriquecimento Arcano:** Injeção automática de Escolas e Pré-requisitos no contexto de magias para o Mestre IA.
+    - **Estabilização de Build:** Correção de inferência de tipos no ranking RRF do GraphEngine.
+    - **Conexão de Motores:** Implementação da ferramenta nativa `consultar_nexus_arcano` no Mestre IA, permitindo que a IA invoque o Motor Nexus em milissegundos.
+    - **Gabarito Técnico:** O motor agora gera um "Gabarito de Ouro" determinístico (Estado Zero) com árvore de dependências completa e sugestões para metas de escolas.
+    - **Fidelidade Bibliográfica:** Correção de dados no `magias2versao.json` (Sopro de Fogo/Ãcido/Frio) alinhando "Resistência" com o Módulo Básico.
+    - **Independência de Ficha:** A ferramenta funciona de forma isolada, permitindo planejar magias mesmo sem uma ficha ativa ou iniciada.
 
-* [Feito] Lote 115: ConsolidaÃ§Ã£o de Arquitetura e Auditoria SubaquÃ¡tica | `(Commit: 8faf742)`
-* [Feito] Lote 116: Auditoria e RestauraÃ§Ã£o do Mestre IA | `(Commit: d403148)`
-* [Feito] Lote 117: CorreÃ§Ã£o de PrecisÃ£o RAG (O NÃ³ de Ouro) | `(Commit: db16362)`
-* [Feito] Lote 118: DiagnÃ³stico de Falha na ExtraÃ§Ã£o de PÃ¡ginas e PreparaÃ§Ã£o para CorreÃ§Ã£o | `(Commit: f3576eb)`
+* [Feito] Lote 115: Consolidação de Arquitetura e Auditoria Subaquática | `(Commit: 8faf742)`
+* [Feito] Lote 116: Auditoria e Restauração do Mestre IA | `(Commit: d403148)`
+* [Feito] Lote 117: Correção de Precisão RAG (O Nó de Ouro) | `(Commit: db16362)`
+* [Feito] Lote 118: Diagnóstico de Falha na Extração de Páginas e Preparação para Correção | `(Commit: f3576eb)`
 
-### Lote 117: CorreÃ§Ã£o de PrecisÃ£o RAG (O NÃ³ de Ouro)
-*   **Commit:** `db16362 Lote 117: CorreÃ§Ã£o de PrecisÃ£o RAG - PriorizaÃ§Ã£o de Regras e ExpansÃ£o de Funil no Motor de Busca`
+### Lote 117: Correção de Precisão RAG (O Nó de Ouro)
+*   **Commit:** `db16362 Lote 117: Correção de Precisão RAG - Priorização de Regras e Expansão de Funil no Motor de Busca`
 
-[Feito] Lote 118: DiagnÃ³stico de Falha na ExtraÃ§Ã£o de PÃ¡ginas e PreparaÃ§Ã£o para CorreÃ§Ã£o (`f3576eb`)
+[Feito] Lote 118: Diagnóstico de Falha na Extração de Páginas e Preparação para Correção (`f3576eb`)
 
 
 * [Feito] Lote 119: Estabilização de Infraestrutura e Busca Direta (RAG) | (Commit: Pending)
@@ -395,6 +383,9 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Múltiplas armas**: quando o jogador diz "minha arma" com várias armas no inventário, todas são injetadas no contexto — a IA apresenta stats de todas e o jogador decide qual usar.
 - Log mostra `FAST ANSWERER: deepseek-chat → gemini-flash` quando o switch ocorre.
 
+### Lote 133: Handoff de Contexto + Remove Fast Answerer - CONCLUÍDO (commit f59c299)
+- **Handoff de Contexto**: ao cair para o próximo modelo da fila, `catalogoDinamico` e `historicoInvestigacao` são preservados — novo modelo recebe todos os chunks e pesquisas do anterior sem refazer buscas do zero. Log: `HANDOFF → gemini: 4 entradas | ctx=35000chars`
+- **Remove Fast Answerer**: revertido o switch para Gemini Flash-Lite (era 3× mais lento que DeepSeek).
 
 
 **[Bateria de Testes a Realizar]**
