@@ -12,7 +12,7 @@
 | Lote | Nome | Status | Commit |
 |:---:|---|:---:|---|
 | B | Prompt GURPS real | ✅ Concluído | forjador(lote-b) |
-| A | IDs reais no JSON | ⬜ Pendente | — |
+| A | IDs reais no JSON | ✅ Concluído | forjador(lote-a) |
 | D | Budget de pontos | ⬜ Pendente | — |
 | C | Validação pré-integração (UI) | ⬜ Pendente | — |
 | E | Forjador Agêntico — Tools + GPS | ⬜ Pendente | — |
@@ -118,7 +118,7 @@ ${"$"}{GOLD_TEMPLATE}
 ```
 
 ### Checkpoint do Lote B
-Após implementar, **commitar** com:
+Após implementar, **commitar** com:636f4bb
 ```
 git commit -m "forjador(lote-b): reescreve prompt com regras GURPS reais e blacklist D&D"
 ```

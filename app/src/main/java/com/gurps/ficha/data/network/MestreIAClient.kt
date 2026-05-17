@@ -70,6 +70,7 @@ object MestreIAClient {
         contextoPersonagem: String = "",
         catalogo: CatalogoNomes? = null,
         modo: String = "conversa",
+        promptSistema: String? = null,
         onChunk: ((String) -> Unit)? = null,
         desativarTools: Boolean = false
     ): ChatResponse = withContext(Dispatchers.IO) {
@@ -136,11 +137,11 @@ object MestreIAClient {
                 - Ponte de Ferro: ${ponteDeFerro.length} chars
             """.trimIndent())
 
-            val systemPulse = when (modo) {
+            val systemPulse = (promptSistema ?: when (modo) {
                 "geracao", "analise" -> MestreIAPromptsForjador.PROMPT
                 "planejamento" -> "Você é um assistente técnico de GURPS focado em extração de termos."
                 else -> MestreIAPromptsAuditor.PROMPT
-            } + if (modo != "planejamento") {
+            }) + if (modo != "planejamento") {
                 """
                 
                 === CONTEXTO HIERÁRQUICO (GraphRAG) ===

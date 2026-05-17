@@ -1,14 +1,16 @@
 package com.gurps.ficha.domain
 
+import android.util.Log
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.data.network.MestreIAItem
+import com.gurps.ficha.data.network.MestreIAPromptsForjador
 import com.gurps.ficha.data.network.MestreIAResponse
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import android.util.Log
 
 class MestreIAGeneratorUseCase(
     private val viewModel: FichaViewModel,
@@ -22,11 +24,22 @@ class MestreIAGeneratorUseCase(
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) = withContext(Dispatchers.IO) {
         onStatusUpdate("Consultando o Códex para $modo...")
-        val catalogoLocal = MestreIAUseCase(viewModel, repository).gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory)
-        
+        val catalogoLocal = MestreIAUseCase(viewModel, repository).gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory)
+
+        // Lote A: injeta catálogo real de IDs no prompt do Forjador
+        // vantagens já inclui as de Artes Marciais (merge feito no CatalogLoaders)
+        // periciasSuplementares (AM) são tipo diferente — incluídas só no catálogo textual
+        val promptForjador = MestreIAPromptsForjador.gerarPromptComCatalogo(
+            vantagens    = repository.vantagens.map { it.id to it.nome },
+            desvantagens = repository.desvantagens.map { it.id to it.nome },
+            pericias     = repository.pericias.map { it.id to it.nome } +
+                           repository.periciasSuplementares.map { it.id to it.nome },
+            magias       = repository.magias.map { it.id to it.nome }
+        )
+
         val fila = listOf(
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
-            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, "gemini-1.5-pro")
+            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_PRO)
         )
 
         var sucesso = false
@@ -37,9 +50,13 @@ class MestreIAGeneratorUseCase(
             try {
                 val response = MestreIAClient.perguntarAoMestre(
                     baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                    prompt = prompt, history = viewModel.mestreIAChatHistory.takeLast(5).map { it.role to it.text },
-                    contextoPersonagem = viewModel.personagem.toJson(), catalogo = catalogoLocal.catalogo,
-                    modo = modo, onChunk = onChunk
+                    prompt = prompt,
+                    history = viewModel.mestreIAChatHistory.takeLast(5).map { it.role to it.text },
+                    contextoPersonagem = viewModel.personagem.toJson(),
+                    catalogo = catalogoLocal.catalogo,
+                    modo = modo,
+                    promptSistema = promptForjador,
+                    onChunk = onChunk
                 )
 
                 if (!response.text.contains("Erro de API")) {
@@ -48,7 +65,7 @@ class MestreIAGeneratorUseCase(
                     break
                 }
             } catch (e: Exception) {
-                Log.e("MestreIA", "Falha no Gerador: ${e.message}")
+                Log.e("MestreIA_Forjador", "Falha no Gerador: ${e.message}")
             }
         }
         if (!sucesso) onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com os forjadores."))
@@ -58,83 +75,119 @@ class MestreIAGeneratorUseCase(
         viewModel.atualizarNome(ficha.nome)
         viewModel.atualizarHistorico(ficha.historico)
         viewModel.atualizarAparencia(ficha.aparencia ?: "")
-        
+
         viewModel.atualizarForca(ficha.atributos.st)
         viewModel.atualizarDestreza(ficha.atributos.dx)
         viewModel.atualizarInteligencia(ficha.atributos.iq)
         viewModel.atualizarVitalidade(ficha.atributos.ht)
 
-        ficha.vantagens.forEach { v -> adicionarVantagem(v.nome, v.descricao ?: "", v.custo ?: 0) }
-        ficha.desvantagens.forEach { d -> adicionarVantagem(d.nome, d.descricao ?: "", d.custo ?: 0) }
-
-        ficha.pericias.forEach { p -> adicionarPericia(p.nome, p.nivel) }
-        
-        ficha.magias.forEach { m -> 
-            val nomeLimpo = limparNome(m.nome)
-            val def = repository.magias.find { limparNome(it.nome) == nomeLimpo }
-            if (def != null) {
-                viewModel.adicionarMagia(def)
-            } else {
-                viewModel.adicionarQualidade("Magia: ${m.nome} (${m.custo ?: 0} fp)")
-            }
-        }
+        ficha.vantagens.forEach    { v -> adicionarVantagem(v, v.descricao ?: "", v.custo ?: 0) }
+        ficha.desvantagens.forEach { d -> adicionarVantagem(d, d.descricao ?: "", d.custo ?: 0) }
+        ficha.pericias.forEach     { p -> adicionarPericia(p, p.nivel) }
+        ficha.magias.forEach       { m -> adicionarMagia(m) }
 
         ficha.equipamentos.forEach { eq ->
             viewModel.adicionarEquipamento(Equipamento(
-                nome = eq.nome, peso = eq.peso, custo = eq.custo, 
+                nome = eq.nome, peso = eq.peso, custo = eq.custo,
                 quantidade = eq.quantidade, armaDanoRaw = eq.dano,
-                armaStMinimo = eq.st_min, notas = if ((eq.rd ?: 0) > 0) "RD: ${eq.rd}" else ""
+                armaStMinimo = eq.st_min,
+                notas = if ((eq.rd ?: 0) > 0) "RD: ${eq.rd}" else ""
             ))
         }
     }
 
-    private fun adicionarVantagem(nomeFull: String, desc: String, custo: Int) {
-        val nomeLimpo = limparNome(nomeFull)
-        
-        // 1. Tenta achar no catálogo de vantagens
-        val vDef = repository.vantagens.find { limparNome(it.nome) == nomeLimpo }
-        if (vDef != null) {
-            viewModel.adicionarVantagem(vDef, custo = if (custo != 0) custo else vDef.getCustoBase(), desc = desc)
+    private fun adicionarVantagem(item: MestreIAItem, desc: String, custo: Int) {
+        // 1. Lookup por ID direto — caminho feliz (Lote A)
+        if (!item.id.isNullOrBlank()) {
+            repository.vantagens.find { it.id == item.id }?.let {
+                Log.d("MestreIA_Forjador", "Vantagem por ID: ${item.id}")
+                viewModel.adicionarVantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+                return
+            }
+            repository.desvantagens.find { it.id == item.id }?.let {
+                Log.d("MestreIA_Forjador", "Desvantagem por ID: ${item.id}")
+                viewModel.adicionarDesvantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+                return
+            }
+        }
+
+        // 2. Fallback: fuzzy match por nome (comportamento legado)
+        val nomeLimpo = limparNome(item.nome)
+        repository.vantagens.find { limparNome(it.nome) == nomeLimpo }?.let {
+            Log.d("MestreIA_Forjador", "Vantagem por nome fuzzy: ${item.nome}")
+            viewModel.adicionarVantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+            return
+        }
+        repository.desvantagens.find { limparNome(it.nome) == nomeLimpo }?.let {
+            Log.d("MestreIA_Forjador", "Desvantagem por nome fuzzy: ${item.nome}")
+            viewModel.adicionarDesvantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
             return
         }
 
-        // 2. Tenta achar no catálogo de desvantagens
-        val dDef = repository.desvantagens.find { limparNome(it.nome) == nomeLimpo }
-        if (dDef != null) {
-            viewModel.adicionarDesvantagem(dDef, custo = if (custo != 0) custo else dDef.getCustoBase(), desc = desc)
-            return
-        }
-
-        // 3. Se não achou, adiciona como Qualidade (Vantagem Customizada) ou Peculiaridade (Desvantagem Customizada)
-        if (custo >= 0) {
-            viewModel.adicionarQualidade("$nomeFull ($custo pts): $desc")
-        } else {
-            viewModel.adicionarPeculiaridade("$nomeFull ($custo pts): $desc")
-        }
+        // 3. Não achou — Qualidade ou Peculiaridade
+        Log.w("MestreIA_Forjador", "Não encontrado no catálogo, fallback: ${item.id ?: item.nome}")
+        if (custo >= 0) viewModel.adicionarQualidade("${item.nome.ifBlank { item.id ?: "?" }} ($custo pts): $desc")
+        else            viewModel.adicionarPeculiaridade("${item.nome.ifBlank { item.id ?: "?" }} ($custo pts): $desc")
     }
 
-    private fun adicionarPericia(nomeFull: String, nivel: Int) {
-        val nomeLimpo = limparNome(nomeFull)
-        val def = repository.pericias.find { limparNome(it.nome) == nomeLimpo }
-        
-        if (def != null) {
+    private fun adicionarPericia(item: MestreIAItem, nivel: Int) {
+        // 1. Lookup por ID direto (Lote A)
+        if (!item.id.isNullOrBlank()) {
+            repository.pericias.find { it.id == item.id }?.let { def ->
+                Log.d("MestreIA_Forjador", "Perícia por ID: ${item.id}")
+                val pts = CharacterRules.calcularPontosParaNivel(
+                    Dificuldade.fromSigla(def.dificuldadeFixa),
+                    viewModel.personagem.getAtributo(def.atributoBase),
+                    nivel
+                )
+                viewModel.adicionarPericia(def, pts)
+                return
+            }
+        }
+
+        // 2. Fallback: fuzzy match por nome
+        val nomeLimpo = limparNome(item.nome)
+        repository.pericias.find { limparNome(it.nome) == nomeLimpo }?.let { def ->
+            Log.d("MestreIA_Forjador", "Perícia por nome fuzzy: ${item.nome}")
             val pts = CharacterRules.calcularPontosParaNivel(
                 Dificuldade.fromSigla(def.dificuldadeFixa),
                 viewModel.personagem.getAtributo(def.atributoBase),
                 nivel
             )
             viewModel.adicionarPericia(def, pts)
-        } else {
-            // Perícia Customizada (Adiciona como Qualidade para não perder a info)
-            viewModel.adicionarQualidade("Perícia: $nomeFull (NH $nivel)")
+            return
         }
+
+        Log.w("MestreIA_Forjador", "Perícia não encontrada, fallback Qualidade: ${item.id ?: item.nome}")
+        viewModel.adicionarQualidade("Perícia: ${item.nome.ifBlank { item.id ?: "?" }} (NH $nivel)")
     }
 
-    private fun limparNome(nome: String): String {
-        return nome.lowercase()
-            .replace(Regex("\\(.*?\\)"), "") // Remove parênteses
-            .replace(Regex("\\d+"), "")      // Remove números
+    private fun adicionarMagia(item: MestreIAItem) {
+        // 1. Lookup por ID direto (Lote A)
+        if (!item.id.isNullOrBlank()) {
+            repository.magias.find { it.id == item.id }?.let {
+                Log.d("MestreIA_Forjador", "Magia por ID: ${item.id}")
+                viewModel.adicionarMagia(it)
+                return
+            }
+        }
+
+        // 2. Fallback: fuzzy match por nome
+        val nomeLimpo = limparNome(item.nome)
+        repository.magias.find { limparNome(it.nome) == nomeLimpo }?.let {
+            Log.d("MestreIA_Forjador", "Magia por nome fuzzy: ${item.nome}")
+            viewModel.adicionarMagia(it)
+            return
+        }
+
+        Log.w("MestreIA_Forjador", "Magia não encontrada, fallback Qualidade: ${item.id ?: item.nome}")
+        viewModel.adicionarQualidade("Magia: ${item.nome.ifBlank { item.id ?: "?" }} (${item.custo ?: 0} fp)")
+    }
+
+    private fun limparNome(nome: String): String =
+        nome.lowercase()
+            .replace(Regex("\\(.*?\\)"), "")
+            .replace(Regex("\\d+"), "")
             .trim()
             .replace(" ", "")
-    }
 }

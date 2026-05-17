@@ -26,8 +26,11 @@ data class MestreIAResponse(
 
 /**
  * Item flexível que se auto-ajusta ao formato enviado pela IA.
+ * Campo [id] é preferido para lookup direto no catálogo (Lote A).
+ * Campo [nome] mantido para fallback e equipamentos.
  */
 data class MestreIAItem(
+    val id: String? = null,
     val nome: String = "",
     val custo: Int? = null,
     val descricao: String? = null,
@@ -52,11 +55,16 @@ class MestreIAItemDeserializer : JsonDeserializer<MestreIAItem> {
                 }
             } else if (json.isJsonObject) {
                 val obj = json.asJsonObject
+                val id = obj.get("id")?.takeIf { !it.isJsonNull }?.asString
+                val nome = obj.get("nome")?.takeIf { !it.isJsonNull }?.asString ?: id ?: "Item sem nome"
                 MestreIAItem(
-                    nome = obj.get("nome")?.asString ?: obj.get("id")?.asString ?: "Item sem nome",
-                    custo = obj.get("custo")?.asInt,
-                    descricao = obj.get("descricao")?.asString ?: obj.get("desc")?.asString,
-                    nivel = obj.get("nivel")?.asInt ?: obj.get("nh")?.asInt ?: 0
+                    id = id,
+                    nome = nome,
+                    custo = obj.get("custo")?.takeIf { !it.isJsonNull }?.asInt,
+                    descricao = obj.get("descricao")?.takeIf { !it.isJsonNull }?.asString
+                        ?: obj.get("desc")?.takeIf { !it.isJsonNull }?.asString,
+                    nivel = obj.get("nivel")?.takeIf { !it.isJsonNull }?.asInt
+                        ?: obj.get("nh")?.takeIf { !it.isJsonNull }?.asInt ?: 0
                 )
             } else {
                 MestreIAItem(nome = "Erro de Formato")

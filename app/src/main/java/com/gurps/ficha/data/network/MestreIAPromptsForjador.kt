@@ -7,11 +7,11 @@ object MestreIAPromptsForjador {
   "historico": "Biografia narrativa (max 800 chars)",
   "aparencia": "Descrição física breve",
   "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
-  "vantagens":    [ { "nome": "Nome Exato", "custo": 10,  "descricao": "Breve efeito técnico" } ],
-  "desvantagens": [ { "nome": "Nome Exato", "custo": -10, "descricao": "Breve efeito técnico" } ],
-  "pericias":     [ { "nome": "Nome Exato", "nivel": 12 } ],
-  "magias":       [ { "nome": "Nome Exato", "custo": "1 fp" } ],
-  "equipamentos": [ { "nome": "Nome Real", "peso": 1.0, "custo": 100, "quantidade": 1,
+  "vantagens":    [ { "id": "aptidao_magica",  "custo": 15,  "descricao": "Nível 3 de aptidão mágica" } ],
+  "desvantagens": [ { "id": "codigo_de_honra", "custo": -10, "descricao": "Código do Samurai" } ],
+  "pericias":     [ { "id": "espada_longa",    "nivel": 14 } ],
+  "magias":       [ { "id": "criar_fogo",      "custo": "1 fp" } ],
+  "equipamentos": [ { "nome": "Espada Longa", "peso": 1.5, "custo": 500, "quantidade": 1,
                       "rd": 0, "dano": "1d+1 corte", "st_min": 10, "aparar": "0" } ]
 }
 """
@@ -105,25 +105,31 @@ ${"$"}{GOLD_TEMPLATE}
 """
 
     fun gerarPromptComCatalogo(
-        idsVantagens: List<String>,
-        idsDesvantagens: List<String>,
-        idsPericias: List<String>,
-        idsMagias: List<String>
-    ): String = PROMPT + """
+        vantagens: List<Pair<String, String>>,
+        desvantagens: List<Pair<String, String>>,
+        pericias: List<Pair<String, String>>,
+        magias: List<Pair<String, String>>
+    ): String {
+        fun formatarLista(lista: List<Pair<String, String>>) =
+            lista.joinToString(", ") { (id, nome) -> "$id ($nome)" }
 
-=== CATÁLOGO LOCAL DE NOMES VÁLIDOS ===
-Use APENAS estes nomes nos campos "nome" do JSON. Qualquer outro será rejeitado.
+        return PROMPT + """
 
-VANTAGENS (${idsVantagens.size} disponíveis):
-${idsVantagens.joinToString(", ")}
+=== CATÁLOGO LOCAL — IDs VÁLIDOS ===
+Use APENAS estes IDs nos campos "id" do JSON. Formato de cada entrada: id (Nome Legível).
+Qualquer ID fora desta lista será rejeitado pelo sistema.
 
-DESVANTAGENS (${idsDesvantagens.size} disponíveis):
-${idsDesvantagens.joinToString(", ")}
+VANTAGENS (${vantagens.size}):
+${formatarLista(vantagens)}
 
-PERÍCIAS (${idsPericias.size} disponíveis):
-${idsPericias.joinToString(", ")}
+DESVANTAGENS (${desvantagens.size}):
+${formatarLista(desvantagens)}
 
-MAGIAS (${idsMagias.size} disponíveis):
-${idsMagias.joinToString(", ")}
+PERÍCIAS (${pericias.size}):
+${formatarLista(pericias)}
+
+MAGIAS (${magias.size}):
+${formatarLista(magias)}
 """
+    }
 }
