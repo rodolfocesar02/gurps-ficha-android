@@ -1,6 +1,7 @@
 package com.gurps.ficha.domain
 
 import com.gurps.ficha.domain.filters.CatalogFilters
+import com.gurps.ficha.model.Equipamento
 
 /**
  * MestreIAPlanner - Extração local de termos técnicos de GURPS.
@@ -11,7 +12,8 @@ object MestreIAPlanner {
     data class PlanoDeBusca(
         val termos: List<String>,
         val categorias: List<String>,
-        val subQueriesStats: List<String> = emptyList()
+        val subQueriesStats: List<String> = emptyList(),
+        val contextoEquipamentos: String = ""  // Stats reais do inventário do personagem
     )
 
     // Detector de itens com stats em tabela → gera query de pré-busca específica
@@ -171,8 +173,9 @@ object MestreIAPlanner {
         "rd" to listOf("armadura", "resistencia", "protecao", "reducao de dano")
     )
 
-    fun planejarBusca(pergunta: String): PlanoDeBusca {
-        val termosBrutos = CatalogFilters.normalizarBusca(pergunta)
+    fun planejarBusca(pergunta: String, equipamentos: List<Equipamento> = emptyList()): PlanoDeBusca {
+        val perguntaNorm = CatalogFilters.normalizarBusca(pergunta)
+        val termosBrutos = perguntaNorm
             .split(Regex("\\s+"))
             .filter { it.length >= 2 && it !in stopWords }
 
@@ -190,22 +193,88 @@ object MestreIAPlanner {
 
         val categorias = inferirCategorias(termosBrutos)
 
-        // Detecta itens com stats em tabela e gera sub-queries de pré-busca
+        // LOTE 130: Cruzamento com inventário do personagem
+        val temPossessivo = listOf("meu", "minha", "meus", "minhas").any { perguntaNorm.contains(it) }
+        val equipamentosMatchados = mutableListOf<Equipamento>()
+
+        for (equip in equipamentos) {
+            val nomeNorm = CatalogFilters.normalizarBusca(equip.nome)
+            val nomeParts = nomeNorm.split(Regex("\\s+")).filter { it.length >= 3 }
+            val grupoNorm = equip.armaGrupo?.let { CatalogFilters.normalizarBusca(it) } ?: ""
+
+            val matchNome = nomeParts.any { part -> termosBrutos.any { it.contains(part) || part.contains(it) } }
+            val matchGrupo = grupoNorm.isNotEmpty() && termosBrutos.any { it.contains(grupoNorm) || grupoNorm.contains(it) }
+
+            if (matchNome || matchGrupo) {
+                equipamentosMatchados.add(equip)
+            }
+        }
+
+        // Possessivo + apenas 1 arma/armadura no inventário → match automático
+        if (temPossessivo && equipamentosMatchados.isEmpty()) {
+            val armas = equipamentos.filter { it.armaTipoCombate != null }
+            val armaduras = equipamentos.filter { it.armaduraRd != null }
+            if (armas.size == 1) equipamentosMatchados.add(armas[0])
+            else if (armaduras.size == 1) equipamentosMatchados.add(armaduras[0])
+        }
+
+        // Formata contexto legível dos equipamentos matchados
+        val contextoEquipamentos = if (equipamentosMatchados.isNotEmpty()) {
+            android.util.Log.i("MestreIA_Planner", "INVENTÁRIO MATCH: ${equipamentosMatchados.map { it.nome }}")
+            equipamentosMatchados.joinToString("\n") { equip ->
+                buildString {
+                    append("• ${equip.nome}")
+                    equip.armaTipoCombate?.let { append(" | Tipo: $it") }
+                    equip.armaDanoRaw?.let { append(" | Dano: $it") }
+                    equip.armaGrupo?.let { append(" | Grupo: $it") }
+                    equip.armaStMinimo?.let { append(" | ST mín: $it") }
+                    equip.armaduraRd?.let { append(" | RD: $it") }
+                    equip.armaduraLocal?.let { append(" | Local: $it") }
+                }
+            }
+        } else ""
+
+        // subQueriesStats: itens do inventário têm prioridade (query específica com nome real)
         val subQueriesStats = mutableListOf<String>()
-        termosBrutos.forEach { termo ->
-            itemDetector.entries.forEach { (chave, query) ->
-                if (termo == chave || (termo.length > 3 && (termo.contains(chave) || chave.contains(termo)))) {
-                    if (!subQueriesStats.contains(query)) subQueriesStats.add(query)
+        val tiposJaCobertos = mutableSetOf<String>()
+
+        equipamentosMatchados.forEach { equip ->
+            val nomeReal = equip.nome
+            val grupo = equip.armaGrupo ?: ""
+            when {
+                equip.armaTipoCombate == "distancia" -> {
+                    subQueriesStats.add("$nomeReal $grupo alcance dano tabela armas")
+                    tiposJaCobertos.add("distancia")
+                }
+                equip.armaTipoCombate == "corpo_a_corpo" -> {
+                    subQueriesStats.add("$nomeReal $grupo dano alcance tabela armas corpo")
+                    tiposJaCobertos.add("corpo_a_corpo")
+                }
+                equip.armaduraRd != null -> {
+                    subQueriesStats.add("$nomeReal RD armadura tabela protecao")
+                    tiposJaCobertos.add("armadura")
                 }
             }
         }
+
+        // Fallback: itemDetector para itens que não vieram do inventário
+        if (equipamentosMatchados.isEmpty()) {
+            termosBrutos.forEach { termo ->
+                itemDetector.entries.forEach { (chave, query) ->
+                    if (termo == chave || (termo.length > 3 && termo.contains(chave))) {
+                        if (!subQueriesStats.contains(query)) subQueriesStats.add(query)
+                    }
+                }
+            }
+        }
+
         if (subQueriesStats.isNotEmpty()) {
-            android.util.Log.i("MestreIA_Planner", "PRÉ-STATS detectados: $subQueriesStats")
+            android.util.Log.i("MestreIA_Planner", "PRÉ-STATS: $subQueriesStats")
         }
 
         android.util.Log.i("MestreIA_Planner", "TERMOS EXTRAÍDOS (local): $termosExpandidos | Categorias: $categorias")
 
-        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats)
+        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats, contextoEquipamentos)
     }
 
     private fun inferirCategorias(termos: List<String>): List<String> {

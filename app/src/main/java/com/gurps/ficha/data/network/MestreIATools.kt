@@ -9,9 +9,11 @@ import org.json.JSONObject
  */
 object MestreIATools {
 
-    const val TOOL_SEARCH_RULES = "consultar_grafo_regras"
+    const val TOOL_MANUAL_DIRETO = "consultar_manual_direto"
     const val TOOL_FILL_SHEET = "fill_character_sheet"
     const val TOOL_NEXUS_ARCANO = "consultar_nexus_arcano"
+    const val TOOL_INSPECT_CHARACTER = "inspecionar_personagem"
+    const val TOOL_ANALYZE_ENV = "analisar_ambiente"
 
     /**
      * Retorna a lista de Function Declarations no formato nativo do Gemini.
@@ -19,104 +21,120 @@ object MestreIATools {
     fun getGeminiTools(modo: String): JSONArray {
         val functionDeclarations = JSONArray()
 
-        // Ferramenta 1: Pesquisa de Regras (Sempre disponível)
+        // Ferramenta 1: Busca Direta (NOVO LOTE 119)
         functionDeclarations.put(JSONObject().apply {
-            put("name", TOOL_SEARCH_RULES)
-            put("description", "OBRIGATÓRIO: Use esta ferramenta para QUALQUER dúvida de regras, cálculos ou manuais. PROIBIDO responder de cabeça sem consultar o Codex primeiro. Se não encontrar de primeira, tente sinônimos ou páginas específicas.")
+            put("name", TOOL_MANUAL_DIRETO)
+            put("description", "PREFERENCIAL: Use para buscas técnicas profundas. Ignora o índice e vai direto ao texto do manual. Use quando 'consultar_grafo_regras' falhar ou para dúvidas muito específicas de combate.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
                     put("query", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Termo de busca ou dúvida técnica. Ex: 'Como funciona o Recuo?', 'Tabela de Dano por Queda'.")
-                    })
-                    put("pagina", JSONObject().apply {
-                        put("type", "INTEGER")
-                        put("description", "Página de resultados (cada página traz 5 recortes novos). Use pagina=2 se os primeiros resultados não forem suficientes.")
+                        put("description", "Dúvida técnica exata. Ex: 'penalidade por atirar dentro d'água'.")
                     })
                 })
                 put("required", JSONArray().put("query"))
             })
         })
 
-        // Ferramenta 2: Criação de Fichas (Apenas modo Geração)
+        // Ferramenta 2: Inspeção de Ficha
         functionDeclarations.put(JSONObject().apply {
-            put("name", TOOL_FILL_SHEET)
-            put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
-            put("parameters", getSheetSchemaGemini())
-        })
-
-        // Ferramenta 3: Nexus Arcano (Modo Alvo / Gabarito Técnico)
-        functionDeclarations.put(JSONObject().apply {
-            put("name", TOOL_NEXUS_ARCANO)
-            put("description", "OBRIGATÓRIO: Use esta ferramenta para obter o gabarito técnico exato de pré-requisitos de magias. Ela calcula o caminho mais curto de dependências (incluindo requisitos de escolas). Use SEMPRE que o usuário perguntar 'o que preciso para aprender X' ou 'como chego na magia Y'.")
+            put("name", TOOL_INSPECT_CHARACTER)
+            put("description", "Lê detalhes da ficha do jogador. Use 'armas' para ver as armas do inventário com dano e tipo, 'armaduras' para ver RD e localização, 'pericias' para NHs, 'status' para PV/PF, 'atributos' para ST/DX/IQ/HT.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
-                    put("magia_alvo", JSONObject().apply {
+                    put("secao", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "O nome ou ID da magia alvo desejada.")
+                        put("description", "Seção: 'atributos', 'vantagens', 'pericias', 'status', 'armas', 'armaduras'.")
                     })
+                })
+            })
+        })
+
+        // Ferramenta 3: Nexus Arcano
+        functionDeclarations.put(JSONObject().apply {
+            put("name", TOOL_NEXUS_ARCANO)
+            put("description", "Gabarito técnico de pré-requisitos de magias.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("magia_alvo", JSONObject().put("type", "STRING"))
                 })
                 put("required", JSONArray().put("magia_alvo"))
             })
+        })
+
+        // Ferramenta 4: Criação de Fichas
+        functionDeclarations.put(JSONObject().apply {
+            put("name", TOOL_FILL_SHEET)
+            put("description", "Preenche a ficha completa.")
+            put("parameters", getSheetSchemaGemini())
         })
 
         return JSONArray().put(JSONObject().put("functionDeclarations", functionDeclarations))
     }
 
     /**
-     * Retorna a lista de Tools no formato OpenAI.
+     * Retorna a lista de Tools no formato OpenAI/DeepSeek.
      */
     fun getOpenAITools(modo: String): JSONArray {
         val tools = JSONArray()
 
+        // Manual Direto
         tools.put(JSONObject().apply {
             put("type", "function")
             put("function", JSONObject().apply {
-                put("name", TOOL_SEARCH_RULES)
-                put("description", "OBRIGATÓRIO: Use esta ferramenta para QUALQUER dúvida de regras, cálculos ou manuais. PROIBIDO responder de cabeça sem consultar o Codex primeiro. Se não encontrar de primeira, tente sinônimos ou páginas específicas.")
+                put("name", TOOL_MANUAL_DIRETO)
+                put("description", "PREFERENCIAL: Busca técnica direta no texto bruto dos manuais. Use para dúvidas complexas de combate ou ambiente.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {
-                        put("query", JSONObject().apply {
-                            put("type", "string")
-                            put("description", "Termo de busca ou dúvida técnica. Ex: 'Como funciona o Recuo?', 'Tabela de Dano por Queda'.")
-                        })
-                        put("pagina", JSONObject().apply {
-                            put("type", "integer")
-                            put("description", "Página de resultados (cada página traz 5 recortes novos). Use pagina=2 se os primeiros resultados não forem suficientes.")
-                        })
+                        put("query", JSONObject().put("type", "string"))
                     })
                     put("required", JSONArray().put("query"))
                 })
             })
         })
 
+        // Inspecionar Personagem
         tools.put(JSONObject().apply {
             put("type", "function")
             put("function", JSONObject().apply {
-                put("name", TOOL_FILL_SHEET)
-                put("description", "Preenche a ficha de personagem completa e estruturada. Use esta ferramenta quando o usuário pedir para criar um personagem.")
-                put("parameters", getSheetSchemaOpenAI())
+                put("name", TOOL_INSPECT_CHARACTER)
+                put("description", "Lê dados da ficha atual para contextualizar a resposta.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("secao", JSONObject().put("type", "string").put("enum", JSONArray().put("atributos").put("vantagens").put("pericias").put("status").put("armas").put("armaduras")))
+                    })
+                })
             })
         })
 
+        // Nexus
         tools.put(JSONObject().apply {
             put("type", "function")
             put("function", JSONObject().apply {
                 put("name", TOOL_NEXUS_ARCANO)
-                put("description", "OBRIGATÓRIO: Use esta ferramenta para obter o gabarito técnico exato de pré-requisitos de magias. Ela calcula o caminho mais curto de dependências (incluindo requisitos de escolas). Use SEMPRE que o usuário perguntar 'o que preciso para aprender X' ou 'como chego na magia Y'.")
+                put("description", "Trilha técnica de magias.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {
-                        put("magia_alvo", JSONObject().apply {
-                            put("type", "string")
-                            put("description", "O nome ou ID da magia alvo desejada.")
-                        })
+                        put("magia_alvo", JSONObject().put("type", "string"))
                     })
                     put("required", JSONArray().put("magia_alvo"))
                 })
+            })
+        })
+
+        // Fill Sheet
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_FILL_SHEET)
+                put("description", "Preenche a ficha completa.")
+                put("parameters", getSheetSchemaOpenAI())
             })
         })
 

@@ -90,9 +90,21 @@ class MestreIAUseCase(
                 android.util.Log.i("MestreIA_RAG", "║  RAG: pulado (mensagem casual)")
                 CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
             } else {
-                val plano = MestreIAPlanner.planejarBusca(prompt)
+                // LOTE 130: passa inventário do personagem para o Planner cruzar com a pergunta
+                val plano = MestreIAPlanner.planejarBusca(prompt, viewModel.personagem.equipamentos)
                 android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)}")
                 var resultado = gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
+
+                // Injeta contexto do inventário do personagem antes do RAG geral
+                if (plano.contextoEquipamentos.isNotEmpty()) {
+                    val secaoInventario = "=== EQUIPAMENTO DO PERSONAGEM (inventário) ===\n${plano.contextoEquipamentos}\n"
+                    val ponteComInventario = (secaoInventario + resultado.catalogo.ponteDeFerro).take(35000)
+                    resultado = CatalogoLocalResult(
+                        resultado.catalogo.copy(ponteDeFerro = ponteComInventario),
+                        resultado.isRagSuccess
+                    )
+                    android.util.Log.i("MestreIA_RAG", "║  INVENTÁRIO: equipamento(s) do personagem injetado(s) no contexto")
+                }
 
                 // LOTE 129 (Solução B): Pré-busca de stats de equipamentos detectados
                 if (plano.subQueriesStats.isNotEmpty()) {
@@ -103,7 +115,7 @@ class MestreIAUseCase(
                         val statsRes = graphEngine.buscarDiretoNoCodex(statsQuery, emptyList())
                         if (statsRes.relatedChunks.isNotEmpty()) {
                             val statsTxt = graphEngine.formatarParaIA(statsRes)
-                            ponte = (ponte + "\n\n=== STATS DO EQUIPAMENTO (pré-carregado) ===\n" + statsTxt).take(35000)
+                            ponte = (ponte + "\n\n=== STATS DO EQUIPAMENTO (tabela) ===\n" + statsTxt).take(35000)
                             chunks = (chunks + statsRes.relatedChunks).distinctBy { it.chunk_id }.toMutableList()
                             android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS OK: \"${statsQuery.take(50)}\" → ${statsRes.relatedChunks.size} chunks")
                         } else {
@@ -227,6 +239,30 @@ class MestreIAUseCase(
                                     "status" -> "PV: ${viewModel.personagem.pontosVidaRolagemAtual ?: viewModel.personagem.pontosVida}/${viewModel.personagem.pontosVida} | PF: ${viewModel.personagem.pontosFadigaRolagemAtual ?: viewModel.personagem.pontosFadiga}/${viewModel.personagem.pontosFadiga}"
                                     "vantagens" -> "Vantagens: " + viewModel.personagem.vantagens.joinToString { it.nome }
                                     "pericias" -> "Perícias: " + viewModel.personagem.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(viewModel.personagem)})" }
+                                    "armas" -> {
+                                        val armas = viewModel.personagem.equipamentos.filter { it.armaTipoCombate != null }
+                                        if (armas.isEmpty()) "Nenhuma arma no inventário."
+                                        else armas.joinToString("\n") { e ->
+                                            buildString {
+                                                append("• ${e.nome}")
+                                                e.armaTipoCombate?.let { append(" | Tipo: $it") }
+                                                e.armaDanoRaw?.let { append(" | Dano: $it") }
+                                                e.armaGrupo?.let { append(" | Grupo: $it") }
+                                                e.armaStMinimo?.let { append(" | ST mín: $it") }
+                                            }
+                                        }
+                                    }
+                                    "armaduras" -> {
+                                        val armaduras = viewModel.personagem.equipamentos.filter { it.armaduraRd != null }
+                                        if (armaduras.isEmpty()) "Nenhuma armadura no inventário."
+                                        else armaduras.joinToString("\n") { e ->
+                                            buildString {
+                                                append("• ${e.nome}")
+                                                e.armaduraRd?.let { append(" | RD: $it") }
+                                                e.armaduraLocal?.let { append(" | Local: $it") }
+                                            }
+                                        }
+                                    }
                                     else -> "Atributos: ST ${viewModel.personagem.st}, DX ${viewModel.personagem.dx}, IQ ${viewModel.personagem.iq}, HT ${viewModel.personagem.ht}"
                                 }
                                 
