@@ -1,12 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**ÃƒÅ¡ltima AtualizaÃƒÂ§ÃƒÂ£o:** 28 de Abril de 2026
-**Status Atual:** ERA DO RACIOCÃƒï¿½NIO - Conectividade Estabilizada Ã°Å¸Å’ï¿½Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½ | Lote 114 CONCLUÃƒï¿½DO Ã°Å¸Å¡â‚¬
-
-### Lote 131: Velocidade e UX Seguras - CONCLUÍDO (commit 94b6163)
-- **Desativar Tools na Última Iteração**: `desativarTools = true` é passado para `perguntarAoMestre` na iteração final — tools não são injetadas no JSON, impedindo fisicamente que DeepSeek/MiMo chamem ferramentas quando deveriam responder.
-- **Pré-stats em Paralelo**: Loop sequencial de pré-busca de equipamentos substituído por `coroutineScope { async/awaitAll }` — múltiplas buscas de stats rodam simultaneamente.
-- **Feedback Visual Granular**: Mensagens de status descritivas por fase ("Consultando X...", "Buscando no manual: Y...", "Verificando stats...", "Compilando resposta final...").
+**Última Atualização:** 28 de Abril de 2026
+**Status Atual:** ERA DO RACIOCÍNIO - Conectividade Estabilizada Ã°Å¸Å’ï¿½Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½ | Lote 114 CONCLUÃƒï¿½DO Ã°Å¸Å¡â‚¬
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **LanÃƒÂ§amento Oficial V1.5.0**: Build de produÃƒÂ§ÃƒÂ£o gerada para as variantes Visual e PraCego.
@@ -375,6 +370,18 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Solução B — itemDetector no Planner (MestreIAPlanner.kt):** 50+ itens catalogados em 6 categorias com queries de stats específicas: armas de fogo (revólver, pistola, rifle, espingarda, metralhadora, carabina, fuzil, submetralhadora, garrucha), armas de arco/besta/funda (arco, besta, funda, zarabatana, bodoque), armas de arremesso (shuriken, kunai, dardo), armas C/C — espadas/facas (espada, sabre, florete, katana, cimitarra, faca, adaga, punhal), armas C/C — contundentes (machado, clava, maça, porrete, martelo, mangual), armas C/C — haste (lança, alabarda, naginata, cajado, bordão, tridente, arpão, chicote), armaduras (armadura, colete, elmo, capacete, cota, lorica, brigantina, placa), escudos (broquel, rodela). PlanoDeBusca retorna subQueriesStats: List<String>.
     - **Solução B — Execução no UseCase (MestreIAUseCase.kt):** Antes de chamar a IA, executa buscarDiretoNoCodex para cada subQueryStats. Chunks de stats injetados no contexto inicial com cabeçalho "=== STATS DO EQUIPAMENTO (pré-carregado) ===". IA recebe os números prontos antes da iteração 1.
     - **Solução A — Protocolo de Variáveis no Prompt (MestreIAPromptsAuditor.kt):** Novo bloco instrui a IA a distinguir stat de equipamento de valor cênico: "alcance da arma na tabela (½D=50m) ≠ distância até o alvo (4m)". 3 exemplos de distinção crítica. Se não tiver os stats, deve chamar tool call antes de calcular.
+
+### Lote 132: Fast Answerer + Múltiplas Armas - CONCLUÍDO (commit d94517e)
+- **Fast Answerer**: na última iteração, o modelo "pesquisador" (ex: DeepSeek) passa o contexto acumulado para o Gemini Flash-Lite responder — elimina ~9s de geração lenta no final do fluxo.
+- **Múltiplas armas**: quando o jogador diz "minha arma" com várias armas no inventário, todas são injetadas no contexto — a IA apresenta stats de todas e o jogador decide qual usar.
+- Log mostra `FAST ANSWERER: deepseek-chat → gemini-flash` quando o switch ocorre.
+
+### Lote 131: Velocidade e UX Seguras - CONCLUÍDO (commit 94b6163)
+- **Desativar Tools na Última Iteração**: `desativarTools = true` é passado para `perguntarAoMestre` na iteração final — tools não são injetadas no JSON, impedindo fisicamente que DeepSeek/MiMo chamem ferramentas quando deveriam responder.
+- **Pré-stats em Paralelo**: Loop sequencial de pré-busca de equipamentos substituído por `coroutineScope { async/awaitAll }` — múltiplas buscas de stats rodam simultaneamente.
+- **Feedback Visual Granular**: Mensagens de status descritivas por fase ("Consultando X...", "Buscando no manual: Y...", "Verificando stats...", "Compilando resposta final...").
+
+
 
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
