@@ -29,12 +29,15 @@ class MestreIAGeneratorUseCase(
         // Lote A: injeta catálogo real de IDs no prompt do Forjador
         // vantagens já inclui as de Artes Marciais (merge feito no CatalogLoaders)
         // periciasSuplementares (AM) são tipo diferente — incluídas só no catálogo textual
+        // Lote D: inclui budget de pontos para o modelo respeitar o limite
+        val pontosIniciais = viewModel.personagem.pontosIniciais
         val promptForjador = MestreIAPromptsForjador.gerarPromptComCatalogo(
             vantagens    = repository.vantagens.map { it.id to it.nome },
             desvantagens = repository.desvantagens.map { it.id to it.nome },
             pericias     = repository.pericias.map { it.id to it.nome } +
                            repository.periciasSuplementares.map { it.id to it.nome },
-            magias       = repository.magias.map { it.id to it.nome }
+            magias       = repository.magias.map { it.id to it.nome },
+            pontosIniciais = pontosIniciais
         )
 
         val fila = listOf(
@@ -69,6 +72,24 @@ class MestreIAGeneratorUseCase(
             }
         }
         if (!sucesso) onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com os forjadores."))
+    }
+
+    fun validarBudget(ficha: MestreIAResponse): String? {
+        val st = ficha.atributos.st; val dx = ficha.atributos.dx
+        val iq = ficha.atributos.iq; val ht = ficha.atributos.ht
+        val custoAtributos = ((st - 10).coerceAtLeast(0) * 10) +
+                             ((dx - 10).coerceAtLeast(0) * 20) +
+                             ((iq - 10).coerceAtLeast(0) * 20) +
+                             ((ht - 10).coerceAtLeast(0) * 10)
+        val custoVantagens    = ficha.vantagens.sumOf    { it.custo ?: 0 }
+        val custoDesvantagens = ficha.desvantagens.sumOf { it.custo ?: 0 } // já negativo
+        val custoPericias     = ficha.pericias.sumOf     { it.nivel * 2 }  // estimativa
+        val total = custoAtributos + custoVantagens + custoDesvantagens + custoPericias
+        val max = viewModel.personagem.pontosIniciais
+        return if (total > max) {
+            Log.w("MestreIA_Forjador", "Budget excedido: $total pts (máximo: $max pts)")
+            "⚠️ Ficha usa ~$total pts (máximo: $max pts)"
+        } else null
     }
 
     fun integrarRespostaNaFicha(ficha: MestreIAResponse) {

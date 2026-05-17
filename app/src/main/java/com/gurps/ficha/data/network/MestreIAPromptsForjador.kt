@@ -108,15 +108,21 @@ ${"$"}{GOLD_TEMPLATE}
         vantagens: List<Pair<String, String>>,
         desvantagens: List<Pair<String, String>>,
         pericias: List<Pair<String, String>>,
-        magias: List<Pair<String, String>>
+        magias: List<Pair<String, String>>,
+        pontosIniciais: Int = 150
     ): String {
         fun formatarLista(lista: List<Pair<String, String>>) =
             lista.joinToString(", ") { (id, nome) -> "$id ($nome)" }
 
         return PROMPT + """
 
+=== BUDGET DO PERSONAGEM ===
+Este personagem tem $pontosIniciais pontos para gastar.
+A soma final DEVE ser ≤ $pontosIniciais pts:
+  Total = atributos + vantagens - |desvantagens| + perícias + magias ≤ $pontosIniciais
+
 === CATÁLOGO LOCAL — IDs VÁLIDOS ===
-Use APENAS estes IDs nos campos "id" do JSON. Formato de cada entrada: id (Nome Legível).
+Use APENAS estes IDs nos campos "id" do JSON. Formato: id (Nome Legível).
 Qualquer ID fora desta lista será rejeitado pelo sistema.
 
 VANTAGENS (${vantagens.size}):
