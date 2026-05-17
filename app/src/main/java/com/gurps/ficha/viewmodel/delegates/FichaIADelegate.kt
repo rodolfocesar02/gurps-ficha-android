@@ -195,7 +195,8 @@ class FichaIADelegate(
                     // Modo leniente: aceita quebras de linha literais em strings JSON (gerado por LLMs)
                     val reader = com.google.gson.stream.JsonReader(java.io.StringReader(jsonReal))
                     reader.isLenient = true
-                    gsonIA.fromJson(reader, MestreIAResponse::class.java)
+                    val type = object : com.google.gson.reflect.TypeToken<MestreIAResponse>() {}.type
+                    gsonIA.fromJson<MestreIAResponse>(reader, type)
                 } catch (e: Exception) {
                     android.util.Log.e("MestreIA", "Erro de Parse JSON: ${e.message}")
                     null
