@@ -210,12 +210,12 @@ object MestreIAPlanner {
             }
         }
 
-        // Possessivo + apenas 1 arma/armadura no inventário → match automático
+        // Possessivo + nenhum match por nome → inclui TODAS as armas/armaduras para o jogador decidir
         if (temPossessivo && equipamentosMatchados.isEmpty()) {
             val armas = equipamentos.filter { it.armaTipoCombate != null }
             val armaduras = equipamentos.filter { it.armaduraRd != null }
-            if (armas.size == 1) equipamentosMatchados.add(armas[0])
-            else if (armaduras.size == 1) equipamentosMatchados.add(armaduras[0])
+            if (armas.isNotEmpty()) equipamentosMatchados.addAll(armas)
+            else if (armaduras.isNotEmpty()) equipamentosMatchados.addAll(armaduras)
         }
 
         // Formata contexto legível dos equipamentos matchados
