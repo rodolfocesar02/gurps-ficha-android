@@ -44,6 +44,7 @@ class MestreIAGeneratorUseCase(
             pontosIniciais = pontosIniciais
         )
 
+        // Forjador: DeepSeek paga como primário, Gemini Pro como fallback
         val fila = listOf(
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_PRO)
@@ -99,9 +100,13 @@ class MestreIAGeneratorUseCase(
                     }
                     Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
 
-                    localHistory.add("model" to "[usou ferramentas: ${forjadorCalls.map { it.name }.joinToString()}]")
-                    localHistory.add("user" to "Resultado das ferramentas (iteração $iteracao):\n$resultados\n\nAgora continue sua análise.")
-                    promptAtual = "Continue com base nos dados coletados. Se tiver todos os dados necessários, finalize sua resposta."
+                    localHistory.add("model" to "Dados coletados com sucesso.")
+                    localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados")
+                    promptAtual = if (iteracao >= 3) {
+                        "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. Responda APENAS com o JSON, sem texto adicional."
+                    } else {
+                        "Dados coletados acima. Continue a análise — use mais ferramentas se necessário, ou finalize se já tiver tudo."
+                    }
                     onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao)...")
                 }
 
