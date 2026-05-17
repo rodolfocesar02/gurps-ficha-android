@@ -3,6 +3,11 @@
 **ÃƒÅ¡ltima AtualizaÃƒÂ§ÃƒÂ£o:** 28 de Abril de 2026
 **Status Atual:** ERA DO RACIOCÃƒï¿½NIO - Conectividade Estabilizada Ã°Å¸Å’ï¿½Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½ | Lote 114 CONCLUÃƒï¿½DO Ã°Å¸Å¡â‚¬
 
+### Lote 131: Velocidade e UX Seguras - CONCLUÍDO (commit 94b6163)
+- **Desativar Tools na Última Iteração**: `desativarTools = true` é passado para `perguntarAoMestre` na iteração final — tools não são injetadas no JSON, impedindo fisicamente que DeepSeek/MiMo chamem ferramentas quando deveriam responder.
+- **Pré-stats em Paralelo**: Loop sequencial de pré-busca de equipamentos substituído por `coroutineScope { async/awaitAll }` — múltiplas buscas de stats rodam simultaneamente.
+- **Feedback Visual Granular**: Mensagens de status descritivas por fase ("Consultando X...", "Buscando no manual: Y...", "Verificando stats...", "Compilando resposta final...").
+
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **LanÃƒÂ§amento Oficial V1.5.0**: Build de produÃƒÂ§ÃƒÂ£o gerada para as variantes Visual e PraCego.
 - **UnificaÃƒÂ§ÃƒÂ£o de TraÃƒÂ§os e Busca Inteligente**: FinalizaÃƒÂ§ÃƒÂ£o do Lote 86 com todas as melhorias de interface e blindagem de cÃƒÂ¡lculo integradas.
