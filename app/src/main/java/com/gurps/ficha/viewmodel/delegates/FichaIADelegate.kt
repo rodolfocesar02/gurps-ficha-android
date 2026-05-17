@@ -7,6 +7,7 @@ import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.*
 import com.gurps.ficha.domain.MestreIAUseCase
 import com.gurps.ficha.domain.MestreIAGeneratorUseCase
+import com.gurps.ficha.domain.RelatorioValidacao
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +28,7 @@ class FichaIADelegate(
 
     var mestreIAChatHistory by mutableStateOf<List<MestreIAClient.ChatMessage>>(emptyList())
     var fichaGeradaPendente by mutableStateOf<MestreIAResponse?>(null)
+    var relatorioValidacao by mutableStateOf<RelatorioValidacao?>(null)
     var mestreIAMode by mutableStateOf("conversa") // Default: Dúvidas/Free
 
     var currentSessionId by mutableStateOf<Long?>(null)
@@ -198,6 +200,7 @@ class FichaIADelegate(
 
             if (fichaObjeto != null && (modo == "geracao" || modo == "analise")) {
                 fichaGeradaPendente = fichaObjeto
+                relatorioValidacao = mestreIAGeneratorUseCase.gerarRelatorio(fichaObjeto)
             }
             
             salvarSessaoChat()
@@ -243,6 +246,7 @@ class FichaIADelegate(
         fichaGeradaPendente?.let {
             mestreIAGeneratorUseCase.integrarRespostaNaFicha(it)
             fichaGeradaPendente = null
+            relatorioValidacao = null
             mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", "✅ Ficha integrada com sucesso!")
             viewModel.autoSaveIA()
         }
@@ -250,6 +254,7 @@ class FichaIADelegate(
 
     fun descartarPendente() {
         fichaGeradaPendente = null
+        relatorioValidacao = null
     }
 
     fun executarAcao(comando: String) {

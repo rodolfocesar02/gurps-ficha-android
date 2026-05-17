@@ -74,6 +74,54 @@ class MestreIAGeneratorUseCase(
         if (!sucesso) onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com os forjadores."))
     }
 
+    fun gerarRelatorio(ficha: MestreIAResponse): RelatorioValidacao {
+        fun validarItem(id: String?, nome: String, isMagia: Boolean = false): ItemValidacao {
+            val entrada = id ?: nome
+            if (!id.isNullOrBlank()) {
+                val achouV = repository.vantagens.find { it.id == id }
+                if (achouV != null) return ItemValidacao(entrada, id, achouV.nome, StatusValidacao.OK, "✅ ${achouV.nome}")
+                val achouD = repository.desvantagens.find { it.id == id }
+                if (achouD != null) return ItemValidacao(entrada, id, achouD.nome, StatusValidacao.OK, "✅ ${achouD.nome}")
+                val achouP = repository.pericias.find { it.id == id }
+                if (achouP != null) return ItemValidacao(entrada, id, achouP.nome, StatusValidacao.OK, "✅ ${achouP.nome}")
+                val achouM = repository.magias.find { it.id == id }
+                if (achouM != null) return ItemValidacao(entrada, id, achouM.nome, StatusValidacao.OK, "✅ ${achouM.nome}")
+                return ItemValidacao(entrada, null, null, StatusValidacao.FALLBACK, "⚠️ ID '$id' não encontrado → virará Qualidade")
+            }
+            if (nome.isNotBlank()) {
+                val nomeLimpo = limparNome(nome)
+                val fuzzyV = repository.vantagens.find { limparNome(it.nome) == nomeLimpo }
+                if (fuzzyV != null) return ItemValidacao(nome, fuzzyV.id, fuzzyV.nome, StatusValidacao.FUZZY, "〰️ Nome fuzzy → ${fuzzyV.nome}")
+                val fuzzyD = repository.desvantagens.find { limparNome(it.nome) == nomeLimpo }
+                if (fuzzyD != null) return ItemValidacao(nome, fuzzyD.id, fuzzyD.nome, StatusValidacao.FUZZY, "〰️ Nome fuzzy → ${fuzzyD.nome}")
+                val fuzzyP = repository.pericias.find { limparNome(it.nome) == nomeLimpo }
+                if (fuzzyP != null) return ItemValidacao(nome, fuzzyP.id, fuzzyP.nome, StatusValidacao.FUZZY, "〰️ Nome fuzzy → ${fuzzyP.nome}")
+                val fuzzyM = repository.magias.find { limparNome(it.nome) == nomeLimpo }
+                if (fuzzyM != null) return ItemValidacao(nome, fuzzyM.id, fuzzyM.nome, StatusValidacao.FUZZY, "〰️ Nome fuzzy → ${fuzzyM.nome}")
+            }
+            return ItemValidacao(entrada, null, null, StatusValidacao.FALLBACK, "⚠️ Não encontrado → virará Qualidade/Peculiaridade")
+        }
+
+        val itensV = ficha.vantagens.map    { validarItem(it.id, it.nome) }
+        val itensD = ficha.desvantagens.map { validarItem(it.id, it.nome) }
+        val itensP = ficha.pericias.map     { validarItem(it.id, it.nome) }
+        val itensM = ficha.magias.map       { validarItem(it.id, it.nome, isMagia = true) }
+
+        val todosItens = itensV + itensD + itensP + itensM
+        val totalOk = todosItens.count { it.status == StatusValidacao.OK || it.status == StatusValidacao.FUZZY }
+        val totalFallback = todosItens.count { it.status == StatusValidacao.FALLBACK }
+
+        return RelatorioValidacao(
+            vantagens    = itensV,
+            desvantagens = itensD,
+            pericias     = itensP,
+            magias       = itensM,
+            totalOk      = totalOk,
+            totalFallback= totalFallback,
+            alertaBudget = validarBudget(ficha)
+        )
+    }
+
     fun validarBudget(ficha: MestreIAResponse): String? {
         val st = ficha.atributos.st; val dx = ficha.atributos.dx
         val iq = ficha.atributos.iq; val ht = ficha.atributos.ht
