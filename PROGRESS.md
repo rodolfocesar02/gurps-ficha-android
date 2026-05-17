@@ -3,6 +3,19 @@
 **Última Atualização:** 28 de Abril de 2026
 **Status Atual:** ERA DO RACIOCÍNIO - Conectividade Estabilizada Ã°Å¸Å’ï¿½Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½ | Lote 114 CONCLUÃƒï¿½DO Ã°Å¸Å¡â‚¬
 
+### Lote 133: Handoff de Contexto + Remove Fast Answerer - CONCLUÍDO (commit f59c299)
+- **Handoff de Contexto**: ao cair para o próximo modelo da fila, `catalogoDinamico` e `historicoInvestigacao` são preservados — novo modelo recebe todos os chunks e pesquisas do anterior sem refazer buscas do zero. Log: `HANDOFF → gemini: 4 entradas | ctx=35000chars`
+- **Remove Fast Answerer**: revertido o switch para Gemini Flash-Lite (era 3× mais lento que DeepSeek).
+
+### Lote 132: Fast Answerer + Múltiplas Armas - CONCLUÍDO (commit d94517e)
+- **Múltiplas armas**: com possessivo ("minha arma") e várias armas no inventário, inclui TODAS no contexto — a IA apresenta stats de cada uma e o jogador decide qual usar.
+- **Fast Answerer**: conceito implementado mas revertido no Lote 133 (Gemini era mais lento).
+
+### Lote 131: Velocidade e UX Seguras - CONCLUÍDO (commit 94b6163)
+- **Desativa tools na última iteração**: `desativarTools=true` impede fisicamente tool calls na iteração final, eliminando loops infinitos do DeepSeek/MiMo.
+- **Pré-stats paralelos**: buscas de stats de equipamentos rodam em paralelo com `coroutineScope { async/awaitAll }`.
+- **Feedback visual granular**: mensagens de status por fase ("Consultando X...", "Buscando no manual...", "Compilando resposta...").
+
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **LanÃƒÂ§amento Oficial V1.5.0**: Build de produÃƒÂ§ÃƒÂ£o gerada para as variantes Visual e PraCego.
 - **UnificaÃƒÂ§ÃƒÂ£o de TraÃƒÂ§os e Busca Inteligente**: FinalizaÃƒÂ§ÃƒÂ£o do Lote 86 com todas as melhorias de interface e blindagem de cÃƒÂ¡lculo integradas.
@@ -371,15 +384,16 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
     - **Solução B — Execução no UseCase (MestreIAUseCase.kt):** Antes de chamar a IA, executa buscarDiretoNoCodex para cada subQueryStats. Chunks de stats injetados no contexto inicial com cabeçalho "=== STATS DO EQUIPAMENTO (pré-carregado) ===". IA recebe os números prontos antes da iteração 1.
     - **Solução A — Protocolo de Variáveis no Prompt (MestreIAPromptsAuditor.kt):** Novo bloco instrui a IA a distinguir stat de equipamento de valor cênico: "alcance da arma na tabela (½D=50m) ≠ distância até o alvo (4m)". 3 exemplos de distinção crítica. Se não tiver os stats, deve chamar tool call antes de calcular.
 
-### Lote 132: Fast Answerer + Múltiplas Armas - CONCLUÍDO (commit d94517e)
-- **Fast Answerer**: na última iteração, o modelo "pesquisador" (ex: DeepSeek) passa o contexto acumulado para o Gemini Flash-Lite responder — elimina ~9s de geração lenta no final do fluxo.
-- **Múltiplas armas**: quando o jogador diz "minha arma" com várias armas no inventário, todas são injetadas no contexto — a IA apresenta stats de todas e o jogador decide qual usar.
-- Log mostra `FAST ANSWERER: deepseek-chat → gemini-flash` quando o switch ocorre.
 
 ### Lote 131: Velocidade e UX Seguras - CONCLUÍDO (commit 94b6163)
 - **Desativar Tools na Última Iteração**: `desativarTools = true` é passado para `perguntarAoMestre` na iteração final — tools não são injetadas no JSON, impedindo fisicamente que DeepSeek/MiMo chamem ferramentas quando deveriam responder.
 - **Pré-stats em Paralelo**: Loop sequencial de pré-busca de equipamentos substituído por `coroutineScope { async/awaitAll }` — múltiplas buscas de stats rodam simultaneamente.
 - **Feedback Visual Granular**: Mensagens de status descritivas por fase ("Consultando X...", "Buscando no manual: Y...", "Verificando stats...", "Compilando resposta final...").
+
+### Lote 132: Fast Answerer + Múltiplas Armas - CONCLUÍDO (commit d94517e)
+- **Fast Answerer**: na última iteração, o modelo "pesquisador" (ex: DeepSeek) passa o contexto acumulado para o Gemini Flash-Lite responder — elimina ~9s de geração lenta no final do fluxo.
+- **Múltiplas armas**: quando o jogador diz "minha arma" com várias armas no inventário, todas são injetadas no contexto — a IA apresenta stats de todas e o jogador decide qual usar.
+- Log mostra `FAST ANSWERER: deepseek-chat → gemini-flash` quando o switch ocorre.
 
 
 
