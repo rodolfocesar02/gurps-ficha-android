@@ -257,6 +257,10 @@ class FichaIADelegate(
         relatorioValidacao = null
     }
 
+    fun injetarEvento(texto: String) {
+        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", texto)
+    }
+
     fun executarAcao(comando: String) {
         try {
             val partes = comando.split("|")

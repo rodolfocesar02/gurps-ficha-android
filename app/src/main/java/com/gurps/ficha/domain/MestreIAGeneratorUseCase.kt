@@ -6,7 +6,11 @@ import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.data.network.MestreIAItem
 import com.gurps.ficha.data.network.MestreIAPromptsForjador
 import com.gurps.ficha.data.network.MestreIAResponse
+import com.gurps.ficha.data.network.MestreIATools
+import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.rules.CharacterRules
+import com.gurps.ficha.domain.tools.ForjadorToolExecutor
+import com.gurps.ficha.domain.tools.ForjadorTools
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.Dispatchers
@@ -45,25 +49,65 @@ class MestreIAGeneratorUseCase(
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_PRO)
         )
 
+        // Lote E: executor de tools do Forjador Agêntico
+        val nexusAdapter = NexusArcanoModoAlvoAdapter(repository.magias)
+        val toolExecutor = ForjadorToolExecutor(viewModel, repository, nexusAdapter)
+
         var sucesso = false
         for (config in fila) {
             if (config.second.isBlank()) continue
-            onStatusUpdate("Mestre ${if (config.third.contains("gemini")) "Arcano" else "Forjador"} está criando...")
+            val nomeModelo = if (config.third.contains("gemini")) "Arcano" else "Forjador"
+            onStatusUpdate("Mestre $nomeModelo está analisando...")
 
             try {
-                val response = MestreIAClient.perguntarAoMestre(
-                    baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                    prompt = prompt,
-                    history = viewModel.mestreIAChatHistory.takeLast(5).map { it.role to it.text },
-                    contextoPersonagem = viewModel.personagem.toJson(),
-                    catalogo = catalogoLocal.catalogo,
-                    modo = modo,
-                    promptSistema = promptForjador,
-                    onChunk = onChunk
-                )
+                // Lote E: Loop agêntico — até 4 iterações de uso de ferramentas
+                val localHistory = mutableListOf<Pair<String, String>>()
+                var promptAtual = prompt
+                var response: MestreIAClient.ChatResponse? = null
 
-                if (!response.text.contains("Erro de API")) {
-                    onResultado(true, response)
+                for (iteracao in 1..4) {
+                    val histBase = viewModel.mestreIAChatHistory.takeLast(4).map { it.role to it.text }
+                    val histCompleto = histBase + localHistory
+
+                    response = MestreIAClient.perguntarAoMestre(
+                        baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
+                        prompt = promptAtual,
+                        history = histCompleto,
+                        contextoPersonagem = viewModel.personagem.toJson(),
+                        catalogo = catalogoLocal.catalogo,
+                        modo = modo,
+                        promptSistema = promptForjador,
+                        onChunk = if (iteracao == 1) onChunk else null,
+                        desativarTools = iteracao >= 4
+                    )
+
+                    if (response.text.contains("Erro de API") || response.text.startsWith("Erro")) break
+
+                    // Filtra tool calls do Forjador (exclui fill_character_sheet — esse é final)
+                    val forjadorCalls = response.toolCalls.filter { tc ->
+                        tc.name == ForjadorTools.TOOL_LER_FICHA ||
+                        tc.name == ForjadorTools.TOOL_BUSCAR     ||
+                        tc.name == ForjadorTools.TOOL_GPS_MAGIA
+                    }
+
+                    if (forjadorCalls.isEmpty()) break  // Resposta final — sai do loop
+
+                    // Executa tools e injeta resultados no histórico local
+                    val resultados = forjadorCalls.joinToString("\n\n") { tc ->
+                        onStatusUpdate("${tc.name.replace("forjador_", "")}...")
+                        "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
+                    }
+                    Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
+
+                    localHistory.add("model" to "[usou ferramentas: ${forjadorCalls.map { it.name }.joinToString()}]")
+                    localHistory.add("user" to "Resultado das ferramentas (iteração $iteracao):\n$resultados\n\nAgora continue sua análise.")
+                    promptAtual = "Continue com base nos dados coletados. Se tiver todos os dados necessários, finalize sua resposta."
+                    onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao)...")
+                }
+
+                val finalResponse = response ?: continue
+                if (!finalResponse.text.contains("Erro de API") && !finalResponse.text.startsWith("Erro")) {
+                    onResultado(true, finalResponse)
                     sucesso = true
                     break
                 }

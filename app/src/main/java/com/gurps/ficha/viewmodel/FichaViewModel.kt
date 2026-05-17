@@ -230,12 +230,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarPontosFadigaRolagemAtual(v: Int?) { personagem = attributeDelegate.atualizarPontosFadigaRolagemAtual(personagem, v) }
     fun atualizarModeloRacial(novo: ModeloRacial) { personagem = attributeDelegate.atualizarModeloRacial(personagem, novo); salvarFicha() }
 
+    fun injetarEventoMestreIA(texto: String) = iaDelegate.injetarEvento(texto)
+
     // === VANTAGENS ===
     fun adicionarVantagem(def: VantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null): String? {
         val res = traitDelegate.adicionarVantagem(personagem, def, nivel, custo, desc, mods, meta)
         return res.fold(
-            onSuccess = { 
+            onSuccess = {
                 atualizarVantagensComConfirmacao(it)
+                injetarEventoMestreIA("[SISTEMA] '${def.nome}' adicionada à ficha ($custo pts).")
                 null
             },
             onFailure = { it.message }
@@ -251,8 +254,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun adicionarDesvantagem(def: DesvantagemDefinicao, nivel: Int = 1, custo: Int = 0, desc: String = "", ctrl: Int? = null, mods: List<ModificadorSelecao> = emptyList(), meta: Map<String, String>? = null): String? {
         val res = traitDelegate.adicionarDesvantagem(personagem, def, nivel, custo, desc, ctrl, mods, meta)
         return res.fold(
-            onSuccess = { 
+            onSuccess = {
                 personagem = personagem.copy(desvantagens = it)
+                injetarEventoMestreIA("[SISTEMA] Desvantagem '${def.nome}' adicionada à ficha ($custo pts).")
                 null
             },
             onFailure = { it.message }
@@ -275,7 +279,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // === PERÍCIAS ===
     fun adicionarPericia(def: PericiaDefinicao, pts: Int = 1, esp: String = "", attr: AtributoBase? = null, dif: Dificuldade? = null): String? {
         val res = skillDelegate.adicionarPericia(personagem, def, pts, esp, attr, dif)
-        return res.fold(onSuccess = { personagem = personagem.copy(pericias = it); null }, onFailure = { it.message })
+        return res.fold(
+            onSuccess = {
+                personagem = personagem.copy(pericias = it)
+                injetarEventoMestreIA("[SISTEMA] Perícia '${def.nome}' adicionada à ficha ($pts pts).")
+                null
+            },
+            onFailure = { it.message }
+        )
     }
 
     fun validarPreRequisitosPericia(def: PericiaDefinicao): String? {
@@ -292,7 +303,14 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     // === MAGIAS ===
     fun adicionarMagia(def: MagiaDefinicao, pts: Int = 1, alvo: String? = null, esp: String? = null, ignora: Boolean = false): String? {
         val res = magicDelegate.adicionarMagia(personagem, def, pts, alvo, esp, ignora, nivelAptidaoMagica)
-        return res.fold(onSuccess = { personagem = personagem.copy(magias = it); null }, onFailure = { it.message })
+        return res.fold(
+            onSuccess = {
+                personagem = personagem.copy(magias = it)
+                injetarEventoMestreIA("[SISTEMA] Magia '${def.nome}' adicionada à ficha ($pts pts).")
+                null
+            },
+            onFailure = { it.message }
+        )
     }
     fun removerMagia(i: Int) { personagem = personagem.copy(magias = magicDelegate.removerMagia(personagem, i)) }
     fun atualizarMagia(i: Int, m: MagiaSelecionada) { personagem = personagem.copy(magias = magicDelegate.atualizarMagia(personagem, i, m)) }
