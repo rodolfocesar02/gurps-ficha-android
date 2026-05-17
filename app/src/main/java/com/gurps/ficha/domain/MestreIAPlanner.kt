@@ -10,7 +10,72 @@ object MestreIAPlanner {
 
     data class PlanoDeBusca(
         val termos: List<String>,
-        val categorias: List<String>
+        val categorias: List<String>,
+        val subQueriesStats: List<String> = emptyList()
+    )
+
+    // Detector de itens com stats em tabela → gera query de pré-busca específica
+    // Chave: palavra normalizada detectada na pergunta | Valor: query para buscar os stats
+    private val itemDetector = mapOf(
+        // ARMAS DE FOGO (regra: alcance ÷ 1.000 subaquático, precisam de ½D e Max da tabela)
+        "revolver"       to "revolver pistola alcance dano tabela armas fogo",
+        "pistola"        to "pistola revolver alcance dano tabela armas fogo",
+        "rifle"          to "rifle carabina alcance dano tabela armas fogo",
+        "espingarda"     to "espingarda shotgun alcance dano tabela armas fogo",
+        "metralhadora"   to "metralhadora smg alcance dano cadencia tabela armas",
+        "carabina"       to "carabina rifle alcance dano tabela armas fogo",
+        "fuzil"          to "fuzil rifle alcance dano tabela armas fogo",
+        "submetralhadora" to "submetralhadora smg alcance dano tabela armas",
+        "garrucha"       to "garrucha pistola alcance dano tabela armas fogo",
+        // ARMAS DE ARCO E BESTA (regra: metade do dano subaquático, precisam de ½D e Max)
+        "arco"           to "arco flecha alcance dano tabela armas distancia",
+        "besta"          to "besta virote alcance dano tabela armas distancia",
+        "funda"          to "funda pedra alcance dano tabela armas arremesso",
+        "zarabatana"     to "zarabatana dardo alcance dano tabela armas",
+        "bodoque"        to "bodoque funda alcance dano tabela armas",
+        // ARMAS DE ARREMESSO
+        "shuriken"       to "shuriken estrela arremesso alcance dano tabela armas",
+        "kunai"          to "kunai faca arremesso alcance dano tabela armas",
+        "dardo"          to "dardo arremesso alcance dano tabela armas",
+        // ARMAS CORPO A CORPO — espadas e facas (precisam de dano e alcance)
+        "espada"         to "espada dano alcance tabela armas corpo combate",
+        "sabre"          to "sabre espada dano tabela armas corpo",
+        "florete"        to "florete estoque dano tabela armas corpo",
+        "estoque"        to "estoque florete dano tabela armas corpo",
+        "katana"         to "katana espada dano tabela armas corpo",
+        "cimitarra"      to "cimitarra espada sabre dano tabela armas corpo",
+        "cutelo"         to "cutelo machado dano tabela armas corpo",
+        "faca"           to "faca adaga dano alcance tabela armas corpo",
+        "adaga"          to "adaga faca dano tabela armas corpo",
+        "punhal"         to "punhal adaga dano tabela armas corpo",
+        // ARMAS CORPO A CORPO — contundentes
+        "machado"        to "machado dano alcance tabela armas corpo",
+        "clava"          to "clava porrete dano tabela armas corpo",
+        "maca"           to "maca porrete dano tabela armas corpo",
+        "porrete"        to "porrete clava dano tabela armas corpo",
+        "martelo"        to "martelo guerra dano tabela armas corpo",
+        "mangual"        to "mangual corrente dano tabela armas corpo",
+        // ARMAS CORPO A CORPO — haste (têm alcance especial)
+        "lanca"          to "lanca alabarda dano alcance haste tabela armas corpo",
+        "alabarda"       to "alabarda lanca dano alcance haste tabela armas corpo",
+        "naginata"       to "naginata lanca dano alcance haste tabela armas",
+        "cajado"         to "cajado bordao dano alcance haste tabela armas",
+        "bordao"         to "bordao cajado dano alcance tabela armas corpo",
+        "tridente"       to "tridente lanca dano alcance haste tabela armas",
+        "arpao"          to "arpao lanca arremesso dano alcance tabela armas",
+        "chicote"        to "chicote dano alcance tabela armas corpo",
+        // ARMADURAS (precisam de RD e peso para cálculo de carga/penalidade)
+        "armadura"       to "armadura RD resistencia dano peso tabela armaduras",
+        "colete"         to "colete armadura RD peso tabela armaduras",
+        "elmo"           to "elmo capacete armadura RD tabela armaduras",
+        "capacete"       to "capacete elmo armadura RD tabela armaduras",
+        "cota"           to "cota malha armadura RD peso tabela armaduras",
+        "lorica"         to "lorica segmentata armadura RD tabela armaduras",
+        "brigantina"     to "brigantina armadura RD peso tabela armaduras",
+        "placa"          to "placa armadura RD peso tabela armaduras",
+        // ESCUDOS (precisam de DB e bônus de bloqueio)
+        "broquel"        to "broquel escudo DB bloqueio tabela escudos",
+        "rodela"         to "rodela escudo DB bloqueio tabela escudos"
     )
 
     private val stopWords = setOf(
@@ -125,9 +190,22 @@ object MestreIAPlanner {
 
         val categorias = inferirCategorias(termosBrutos)
 
+        // Detecta itens com stats em tabela e gera sub-queries de pré-busca
+        val subQueriesStats = mutableListOf<String>()
+        termosBrutos.forEach { termo ->
+            itemDetector.entries.forEach { (chave, query) ->
+                if (termo == chave || (termo.length > 3 && (termo.contains(chave) || chave.contains(termo)))) {
+                    if (!subQueriesStats.contains(query)) subQueriesStats.add(query)
+                }
+            }
+        }
+        if (subQueriesStats.isNotEmpty()) {
+            android.util.Log.i("MestreIA_Planner", "PRÉ-STATS detectados: $subQueriesStats")
+        }
+
         android.util.Log.i("MestreIA_Planner", "TERMOS EXTRAÍDOS (local): $termosExpandidos | Categorias: $categorias")
 
-        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias)
+        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats)
     }
 
     private fun inferirCategorias(termos: List<String>): List<String> {

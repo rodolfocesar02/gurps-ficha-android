@@ -92,7 +92,30 @@ class MestreIAUseCase(
             } else {
                 val plano = MestreIAPlanner.planejarBusca(prompt)
                 android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)}")
-                gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
+                var resultado = gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
+
+                // LOTE 129 (Solução B): Pré-busca de stats de equipamentos detectados
+                if (plano.subQueriesStats.isNotEmpty()) {
+                    android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS: ${plano.subQueriesStats.size} equipamento(s) detectado(s)")
+                    var ponte = resultado.catalogo.ponteDeFerro
+                    var chunks = resultado.catalogo.chunks.toMutableList()
+                    for (statsQuery in plano.subQueriesStats) {
+                        val statsRes = graphEngine.buscarDiretoNoCodex(statsQuery, emptyList())
+                        if (statsRes.relatedChunks.isNotEmpty()) {
+                            val statsTxt = graphEngine.formatarParaIA(statsRes)
+                            ponte = (ponte + "\n\n=== STATS DO EQUIPAMENTO (pré-carregado) ===\n" + statsTxt).take(35000)
+                            chunks = (chunks + statsRes.relatedChunks).distinctBy { it.chunk_id }.toMutableList()
+                            android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS OK: \"${statsQuery.take(50)}\" → ${statsRes.relatedChunks.size} chunks")
+                        } else {
+                            android.util.Log.w("MestreIA_RAG", "║  PRÉ-STATS VAZIO: \"${statsQuery.take(50)}\"")
+                        }
+                    }
+                    resultado = CatalogoLocalResult(
+                        resultado.catalogo.copy(ponteDeFerro = ponte, chunks = chunks),
+                        resultado.isRagSuccess
+                    )
+                }
+                resultado
             }
             val isRagUsed = catalogoLocal.isRagSuccess
             val ctxChars = catalogoLocal.catalogo.ponteDeFerro.length
