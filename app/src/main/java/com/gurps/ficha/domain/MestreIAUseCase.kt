@@ -63,20 +63,21 @@ class MestreIAUseCase(
                 listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
             } else {
                 // MODO MESTRE/DÚVIDA: Fila de Falha Crítica (Failover)
+                // LOTE 127: Reordenado com base em análise de logcat — MiMo loopava sem responder
                 listOf(
-                    // 1. MiMo Pro (Main - Xiaomi)
-                    AIConfig(BuildConfig.MESTRE_IA_MIMO_URL, BuildConfig.MESTRE_IA_MIMO_KEY, BuildConfig.MESTRE_IA_MIMO_MODEL_PRO),
-                    // 2. MiMo Flash (Backup 1 - Xiaomi, fallback do Pro)
-                    AIConfig(BuildConfig.MESTRE_IA_MIMO_URL, BuildConfig.MESTRE_IA_MIMO_KEY, BuildConfig.MESTRE_IA_MIMO_MODEL_FLASH),
-                    // 3. DeepSeek (Backup 2 - Gratuito)
+                    // 1. DeepSeek Gratuito (Main — confiável, responde diretamente)
                     AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
-                    // 4. Gemini 3.1 Flash-Lite (Backup 3 - Rápido e Econômico)
+                    // 2. Gemini 3.1 Flash-Lite (Backup 1 — rápido e econômico)
                     AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE),
-                    // 5. NVIDIA (Backup 4 - Llama 3.1)
+                    // 3. MiMo Pro (Backup 2 — Xiaomi, loop-prone)
+                    AIConfig(BuildConfig.MESTRE_IA_MIMO_URL, BuildConfig.MESTRE_IA_MIMO_KEY, BuildConfig.MESTRE_IA_MIMO_MODEL_PRO),
+                    // 4. MiMo Flash (Backup 3 — Xiaomi, loop-prone)
+                    AIConfig(BuildConfig.MESTRE_IA_MIMO_URL, BuildConfig.MESTRE_IA_MIMO_KEY, BuildConfig.MESTRE_IA_MIMO_MODEL_FLASH),
+                    // 5. NVIDIA (Backup 4 — Llama 3.3 70B)
                     AIConfig(BuildConfig.MESTRE_IA_NVIDIA_URL, BuildConfig.MESTRE_IA_NVIDIA_KEY, BuildConfig.MESTRE_IA_NVIDIA_MODEL),
-                    // 6. OpenRouter (Backup 5 - Chave 1)
+                    // 6. OpenRouter (Backup 5 — Chave 1)
                     AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1),
-                    // 7. OpenRouter (Backup 6 - Chave 2)
+                    // 7. OpenRouter (Backup 6 — Chave 2)
                     AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_2_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1)
                 )
             }
@@ -151,6 +152,20 @@ class MestreIAUseCase(
 
                             if (toolCall.name == MestreIATools.TOOL_MANUAL_DIRETO) {
                                 val queryTool = toolCall.args.optString("query", prompt)
+
+                                // Detecta query duplicada — evita loops de MiMo repetindo a mesma busca
+                                val queryNorm = queryTool.lowercase().trim().take(40)
+                                val jaFoiBuscado = historicoInvestigacao
+                                    .filter { it.first == "assistant" }
+                                    .any { it.second.lowercase().contains(queryNorm) }
+                                if (jaFoiBuscado) {
+                                    android.util.Log.w("MestreIA_RAG", "║  QUERY DUPLICADA: '$queryNorm' — forçando resposta com contexto atual")
+                                    historicoInvestigacao.add("system" to "AVISO: A busca por '$queryTool' já foi realizada. O contexto necessário já está no Códex. Responda agora sem chamar ferramentas.")
+                                    promptAtual = "[RESPOSTA OBRIGATÓRIA] Você já pesquisou '$queryTool' e o resultado está no contexto disponível. Responda agora com base no que encontrou. NÃO repita a mesma busca."
+                                    loopsRestantes--
+                                    iteracao++
+                                    continue
+                                }
 
                                 updateStatus("Vasculhando Códex: $queryTool...")
                                 val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
