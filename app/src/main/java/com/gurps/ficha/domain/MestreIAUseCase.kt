@@ -153,19 +153,20 @@ class MestreIAUseCase(
             var promptAtual = prompt
             var historicoInvestigacao = mutableListOf<Pair<String, String>>()
 
-            // LOTE 132: Fast answerer — Gemini Flash-Lite responde na última iteração (mais rápido que pesquisadores)
-            val fastAnswererConfig = if (!isCasual && BuildConfig.MESTRE_IA_GEMINI_KEY.isNotBlank()) {
-                AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE)
-            } else null
-
             for (config in fila) {
                 val iaUrl = config.url
                 val iaKey = config.key
                 val iaModel = config.model
-                
+
                 if (iaKey.isBlank()) {
                     errosAcumulados.add("$iaModel: Chave Vazia")
                     continue
+                }
+
+                // LOTE 133: Handoff de contexto — novo modelo recebe tudo que o anterior pesquisou
+                if (historicoInvestigacao.isNotEmpty()) {
+                    android.util.Log.i("MestreIA_RAG", "║  HANDOFF → $iaModel: ${historicoInvestigacao.size} entradas preservadas | ctx=${catalogoDinamico.ponteDeFerro.length}chars / ${catalogoDinamico.chunks.size}chunks")
+                    promptAtual = prompt  // reset para pergunta original — histórico já tem todas as pesquisas
                 }
 
                 try {
@@ -178,15 +179,7 @@ class MestreIAUseCase(
                     while (loopsRestantes > 0) {
                         val isUltimaIteracao = loopsRestantes == 1 && iteracao > 1
 
-                        // LOTE 132: última iteração → fast answerer (Gemini Flash-Lite) se disponível e diferente do atual
-                        val callConfig: AIConfig = if (isUltimaIteracao && fastAnswererConfig != null && iaModel != fastAnswererConfig.model) {
-                            fastAnswererConfig
-                        } else {
-                            config
-                        }
-                        val callModel = callConfig.model
-
-                        val modeloCurto = callModel.substringAfterLast("/").take(20)
+                        val modeloCurto = iaModel.substringAfterLast("/").take(20)
                         updateStatus(when {
                             iteracao == 1 -> "Consultando $modeloCurto..."
                             isUltimaIteracao -> "Compilando resposta com $modeloCurto..."
@@ -195,17 +188,16 @@ class MestreIAUseCase(
 
                         val ctxAtual = catalogoDinamico.ponteDeFerro.length
                         val chunksAtual = catalogoDinamico.chunks.size
-                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $callModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks | desativarTools=$isUltimaIteracao")
+                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks | desativarTools=$isUltimaIteracao")
 
                         // Última iteração: força resposta final sem tool calls
                         if (isUltimaIteracao) {
-                            if (callModel != iaModel) android.util.Log.i("MestreIA_RAG", "║  FAST ANSWERER: $iaModel → $callModel (pesquisador→respondedor)")
                             promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $promptAtual\n\nATENÇÃO: Esta é sua ÚLTIMA oportunidade de responder. Apresente sua conclusão agora com base no contexto já disponível. NÃO chame ferramentas. Se a regra encontrada for indireta (ex: uma fórmula, divisor ou modificador que implique o resultado), calcule e apresente o resultado para o jogador com a fonte [Livro, Pág]."
                             android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: tools desativados + resposta forçada")
                         }
 
                         val resposta = MestreIAClient.perguntarAoMestre(
-                            baseUrl = callConfig.url, apiKey = callConfig.key, workspaceSlug = callConfig.model,
+                            baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
                             desativarTools = isUltimaIteracao
@@ -331,11 +323,11 @@ class MestreIAUseCase(
                                 resposta.text
                             }
                             
-                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$callModel] | iter=$iteracao | ${respostaFinal.length}chars | citação=${temCitacao}")
-                            sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = callModel))
+                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$iaModel] | iter=$iteracao | ${respostaFinal.length}chars | citação=${temCitacao}")
+                            sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = iaModel))
                             sucesso = true
                         } else {
-                            android.util.Log.e("MestreIA_RAG", "╠── MODELO FALHOU: $callModel | resposta=\"${resposta.text.take(50)}\"")
+                            android.util.Log.e("MestreIA_RAG", "╠── MODELO FALHOU: $iaModel | resposta=\"${resposta.text.take(50)}\"")
                             errosAcumulados.add("${iaModel.takeLast(10)}: ${resposta.text.take(30)}")
                         }
                         break
