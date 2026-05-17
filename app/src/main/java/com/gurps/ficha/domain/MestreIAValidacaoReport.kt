@@ -22,8 +22,9 @@ data class RelatorioValidacao(
     val magias: List<ItemValidacao>,
     val totalOk: Int,
     val totalFallback: Int,
-    val alertaBudget: String?
+    val alertaBudget: String?,
+    val tecnicas: List<ItemValidacao> = emptyList()
 ) {
-    val totalItens: Int get() = vantagens.size + desvantagens.size + pericias.size + magias.size
+    val totalItens: Int get() = vantagens.size + desvantagens.size + pericias.size + magias.size + tecnicas.size
     val temProblemas: Boolean get() = totalFallback > 0 || alertaBudget != null
 }

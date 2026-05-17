@@ -34,7 +34,7 @@ object ForjadorTools {
                 put("properties", JSONObject().apply {
                     put("tipo", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Tipo a buscar: 'vantagem', 'desvantagem', 'pericia', 'magia'")
+                        put("description", "Tipo a buscar: 'vantagem', 'desvantagem', 'pericia', 'magia', 'tecnica'")
                     })
                     put("query", JSONObject().apply {
                         put("type", "STRING")
@@ -95,7 +95,7 @@ object ForjadorTools {
                     put("properties", JSONObject().apply {
                         put("tipo", JSONObject().apply {
                             put("type", "string")
-                            put("enum", JSONArray().put("vantagem").put("desvantagem").put("pericia").put("magia"))
+                            put("enum", JSONArray().put("vantagem").put("desvantagem").put("pericia").put("magia").put("tecnica"))
                         })
                         put("query", JSONObject().put("type", "string"))
                     })

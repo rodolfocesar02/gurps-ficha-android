@@ -4,15 +4,36 @@ object MestreIAPromptsForjador {
     private const val GOLD_TEMPLATE = """
 {
   "nome": "Nome do Personagem",
+  "pontosIniciais": 150,
   "historico": "Biografia narrativa (max 800 chars)",
   "aparencia": "Descrição física breve",
+  "notas": "Anotações livres: poderes especiais, regras de mesa, etc.",
   "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
-  "vantagens":    [ { "id": "aptidao_magica",  "custo": 15,  "descricao": "Nível 3 de aptidão mágica" } ],
-  "desvantagens": [ { "id": "codigo_de_honra", "custo": -10, "descricao": "Código do Samurai" } ],
-  "pericias":     [ { "id": "espada_longa",    "nivel": 14 } ],
-  "magias":       [ { "id": "criar_fogo",      "custo": "1 fp" } ],
-  "equipamentos": [ { "nome": "Espada Longa", "peso": 1.5, "custo": 500, "quantidade": 1,
-                      "rd": 0, "dano": "1d+1 corte", "st_min": 10, "aparar": "0" } ]
+  "vantagens": [
+    { "id": "aptidao_magica", "nivel": 3, "custo": 15, "descricao": "Aptidão mágica nível 3" },
+    { "id": "ataque_inato", "nivel": 5, "custo": 50, "descricao": "Lança de fogo",
+      "modificadores": [ { "id": "explosao", "niveis": 1 } ] }
+  ],
+  "desvantagens": [
+    { "id": "codigo_de_honra", "custo": -10, "descricao": "Código do Samurai" },
+    { "id": "fobia", "custo": -10, "autocontrole": 12, "descricao": "Fogo" }
+  ],
+  "pericias": [
+    { "id": "espada_longa", "nivel": 14 },
+    { "id": "sobrevivencia", "nivel": 13, "especializacao": "Florestas" }
+  ],
+  "tecnicas": [
+    { "id": "finta", "nivel": 2, "periciaBaseId": "espada_longa" }
+  ],
+  "magias":  [ { "id": "criar_fogo", "custo": 1 } ],
+  "qualidades":     [ { "nome": "Treinamento com Arma na Mão Inábil" } ],
+  "peculiaridades": [ { "nome": "Fala pausadamente" } ],
+  "equipamentos": [
+    { "nome": "Espada Longa", "tipo": "ARMA", "tipoCombate": "corpo_a_corpo",
+      "peso": 1.5, "custo": 500, "quantidade": 1, "dano": "1d+1 corte", "st_min": 10 },
+    { "nome": "Cota de Malha", "tipo": "ARMADURA", "peso": 20, "custo": 150, "quantidade": 1, "rd": 4 },
+    { "nome": "Escudo Médio", "tipo": "ESCUDO", "peso": 6, "custo": 60, "quantidade": 1, "bonusDefesa": 2 }
+  ]
 }
 """
 
@@ -95,6 +116,38 @@ REGRAS DE OURO DA FORJA
 7. CUSTO de vantagem = custo total gasto (nível × custo/nível para vantagens por nível).
 
 ══════════════════════════════════════════════
+SCHEMA RICO — CAMPOS PARA FICHAS COMPLEXAS
+══════════════════════════════════════════════
+
+Para fichas complexas e completas, use estes campos quando fizerem sentido:
+
+• "nivel": nível da vantagem/desvantagem (ex: Ataque Inato nível 5). Para vantagem
+  por-nível, "custo" = nível × custo unitário. Sempre inclua "nivel" quando > 1.
+
+• "especializacao": perícias como Sobrevivência, Conhecimento do Terreno, Naturalista
+  exigem especialização. Ex: { "id": "sobrevivencia", "nivel": 13, "especializacao": "Florestas" }
+
+• "autocontrole": desvantagens mentais (Fobia, Compulsão, Cleptomania) têm número de
+  autocontrole (6, 9, 12 ou 15). Ex: { "id": "fobia", "custo": -10, "autocontrole": 12 }
+
+• "modificadores": ampliações/limitações de uma vantagem. Use APENAS os modificadores
+  que existem no catálogo daquela vantagem (forjador_buscar_catalogo mostra os IDs).
+  Ex: { "id": "ataque_inato", "nivel": 5, "modificadores": [ { "id": "explosao" } ] }
+
+• "tecnicas": manobras treinadas sobre uma perícia já presente na ficha. SEMPRE informe
+  "periciaBaseId" apontando para o id de uma perícia que você incluiu em "pericias".
+  Ex: { "id": "finta", "nivel": 2, "periciaBaseId": "espada_longa" }
+
+• "qualidades" / "peculiaridades": traços narrativos sem ID de catálogo. Use objetos
+  com "nome" (e "descricao" opcional). Qualidade = +1 pt, Peculiaridade = -1 pt.
+
+• Equipamento: informe "tipo" ("ARMA","ARMADURA","ESCUDO","CAPA","GERAL").
+  ARMA → adicione "tipoCombate" ("corpo_a_corpo"|"distancia") e "dano".
+  ARMADURA → "rd". ESCUDO → "bonusDefesa".
+
+• "pontosIniciais": total de pontos do personagem (respeite o budget informado).
+
+══════════════════════════════════════════════
 FERRAMENTAS DISPONÍVEIS (use antes de responder)
 ══════════════════════════════════════════════
 
@@ -134,6 +187,7 @@ ${"$"}{GOLD_TEMPLATE}
         desvantagens: List<Pair<String, String>>,
         pericias: List<Pair<String, String>>,
         magias: List<Pair<String, String>>,
+        tecnicas: List<Pair<String, String>> = emptyList(),
         pontosIniciais: Int = 150
     ): String {
         fun formatarLista(lista: List<Pair<String, String>>) =
@@ -161,6 +215,9 @@ ${formatarLista(pericias)}
 
 MAGIAS (${magias.size}):
 ${formatarLista(magias)}
+
+TÉCNICAS (${tecnicas.size}):
+${formatarLista(tecnicas)}
 """
     }
 }

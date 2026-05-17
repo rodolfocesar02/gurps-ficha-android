@@ -70,14 +70,28 @@ class ForjadorToolExecutor(
                     it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma vantagem encontrada para '$query'."
-                else resultados.joinToString("\n") { "• ${it.id} | ${it.nome} | ${it.getCustoBase()} pts" }
+                else resultados.joinToString("\n") { v ->
+                    val mods = v.modificadoresEspecificos.take(8)
+                        .joinToString(", ") { "${it.id}(${it.nome})" }
+                    buildString {
+                        append("• ${v.id} | ${v.nome} | ${v.getCustoBase()} pts | tipoCusto:${v.tipoCusto}")
+                        if (mods.isNotBlank()) append(" | modificadores: $mods")
+                    }
+                }
             }
             "desvantagem" -> {
                 val resultados = repository.desvantagens.filter {
                     it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma desvantagem encontrada para '$query'."
-                else resultados.joinToString("\n") { "• ${it.id} | ${it.nome} | ${it.getCustoBase()} pts" }
+                else resultados.joinToString("\n") { d ->
+                    val mods = d.modificadoresEspecificos.take(8)
+                        .joinToString(", ") { "${it.id}(${it.nome})" }
+                    buildString {
+                        append("• ${d.id} | ${d.nome} | ${d.getCustoBase()} pts | tipoCusto:${d.tipoCusto}")
+                        if (mods.isNotBlank()) append(" | modificadores: $mods")
+                    }
+                }
             }
             "pericia" -> {
                 val resultados = (repository.pericias + repository.periciasSuplementares.map {
@@ -98,7 +112,16 @@ class ForjadorToolExecutor(
                     "• ${m.id} | ${m.nome} | escola:${m.escola?.joinToString() ?: "?"} | pré:${m.preRequisitos?.take(60) ?: "—"}"
                 }
             }
-            else -> """{"erro": "tipo inválido: $tipo. Use: vantagem, desvantagem, pericia, magia"}"""
+            "tecnica" -> {
+                val resultados = repository.tecnicasCatalogo.filter {
+                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+                }.take(10)
+                if (resultados.isEmpty()) "Nenhuma técnica encontrada para '$query'."
+                else resultados.joinToString("\n") { t ->
+                    "• ${t.id} | ${t.nome} | dif:${t.dificuldadeRaw} | predef:${t.preDefinidoRaw} | pré:${t.preRequisitoRaw.take(60)}"
+                }
+            }
+            else -> """{"erro": "tipo inválido: $tipo. Use: vantagem, desvantagem, pericia, magia, tecnica"}"""
         }
     }
 

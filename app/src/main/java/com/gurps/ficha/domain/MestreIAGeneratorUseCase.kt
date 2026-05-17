@@ -43,6 +43,7 @@ class MestreIAGeneratorUseCase(
             pericias     = repository.pericias.map { it.id to it.nome } +
                            repository.periciasSuplementares.map { it.id to it.nome },
             magias       = repository.magias.map { it.id to it.nome },
+            tecnicas     = repository.tecnicasCatalogo.map { it.id to it.nome },
             pontosIniciais = pontosIniciais
         )
 
@@ -196,12 +197,27 @@ class MestreIAGeneratorUseCase(
             return ItemValidacao(entrada, null, null, StatusValidacao.FALLBACK, "⚠️ Não encontrado → virará Qualidade/Peculiaridade")
         }
 
+        fun validarTecnica(id: String?, nome: String): ItemValidacao {
+            val entrada = id ?: nome
+            if (!id.isNullOrBlank()) {
+                repository.tecnicasCatalogo.find { it.id == id }?.let {
+                    return ItemValidacao(entrada, id, it.nome, StatusValidacao.OK, "✅ ${it.nome}")
+                }
+            }
+            val alvo = limparNome(nome)
+            repository.tecnicasCatalogo.find { limparNome(it.nome) == alvo }?.let {
+                return ItemValidacao(nome, it.id, it.nome, StatusValidacao.FUZZY, "〰️ Técnica fuzzy → ${it.nome}")
+            }
+            return ItemValidacao(entrada, null, null, StatusValidacao.FALLBACK, "⚠️ Técnica não encontrada → virará Qualidade")
+        }
+
         val itensV = ficha.vantagens.map    { validarItem(it.id, it.nome) }
         val itensD = ficha.desvantagens.map { validarItem(it.id, it.nome) }
         val itensP = ficha.pericias.map     { validarItem(it.id, it.nome) }
         val itensM = ficha.magias.map       { validarItem(it.id, it.nome, isMagia = true) }
+        val itensT = ficha.tecnicas.map     { validarTecnica(it.id, it.nome) }
 
-        val todosItens = itensV + itensD + itensP + itensM
+        val todosItens = itensV + itensD + itensP + itensM + itensT
         val totalOk = todosItens.count { it.status == StatusValidacao.OK || it.status == StatusValidacao.FUZZY }
         val totalFallback = todosItens.count { it.status == StatusValidacao.FALLBACK }
 
@@ -212,7 +228,8 @@ class MestreIAGeneratorUseCase(
             magias       = itensM,
             totalOk      = totalOk,
             totalFallback= totalFallback,
-            alertaBudget = validarBudget(ficha)
+            alertaBudget = validarBudget(ficha),
+            tecnicas     = itensT
         )
     }
 
@@ -238,52 +255,111 @@ class MestreIAGeneratorUseCase(
         viewModel.atualizarNome(ficha.nome)
         viewModel.atualizarHistorico(ficha.historico)
         viewModel.atualizarAparencia(ficha.aparencia ?: "")
+        if (ficha.notas.isNotBlank()) viewModel.atualizarNotas(ficha.notas)
+        if (ficha.pontosIniciais > 0) viewModel.atualizarPontosIniciais(ficha.pontosIniciais)
 
         viewModel.atualizarForca(ficha.atributos.st)
         viewModel.atualizarDestreza(ficha.atributos.dx)
         viewModel.atualizarInteligencia(ficha.atributos.iq)
         viewModel.atualizarVitalidade(ficha.atributos.ht)
 
+        // Ordem importa: perícias antes de técnicas (técnica precisa da perícia-base já na ficha)
         ficha.vantagens.forEach    { v -> adicionarVantagem(v, v.descricao ?: "", v.custo ?: 0) }
         ficha.desvantagens.forEach { d -> adicionarVantagem(d, d.descricao ?: "", d.custo ?: 0) }
         ficha.pericias.forEach     { p -> adicionarPericia(p, p.nivel) }
+        ficha.tecnicas.forEach     { t -> adicionarTecnica(t) }
         ficha.magias.forEach       { m -> adicionarMagia(m) }
 
+        ficha.qualidades.forEach     { q -> viewModel.adicionarQualidade(textoLivre(q)) }
+        ficha.peculiaridades.forEach { p -> viewModel.adicionarPeculiaridade(textoLivre(p)) }
+
         ficha.equipamentos.forEach { eq ->
+            val tipoEnum = when (eq.tipo?.uppercase()) {
+                "ARMA"     -> TipoEquipamento.ARMA
+                "ARMADURA" -> TipoEquipamento.ARMADURA
+                "ESCUDO"   -> TipoEquipamento.ESCUDO
+                "CAPA"     -> TipoEquipamento.CAPA
+                else       -> TipoEquipamento.GERAL
+            }
             viewModel.adicionarEquipamento(Equipamento(
                 nome = eq.nome, peso = eq.peso, custo = eq.custo,
-                quantidade = eq.quantidade, armaDanoRaw = eq.dano,
+                quantidade = eq.quantidade,
+                tipo = tipoEnum,
+                bonusDefesa = eq.bonusDefesa ?: 0,
+                armaCatalogoId = eq.catalogoId,
+                armaTipoCombate = eq.tipoCombate,
+                armaDanoRaw = eq.dano,
                 armaStMinimo = eq.st_min,
-                notas = if ((eq.rd ?: 0) > 0) "RD: ${eq.rd}" else ""
+                notas = eq.notas?.takeIf { it.isNotBlank() }
+                    ?: if ((eq.rd ?: 0) > 0) "RD: ${eq.rd}" else ""
             ))
         }
     }
 
+    private fun textoLivre(item: MestreIAItem): String {
+        val base = item.nome.ifBlank { item.id ?: "?" }
+        return item.descricao?.takeIf { it.isNotBlank() }?.let { "$base: $it" } ?: base
+    }
+
+    /** Converte os modificadores da IA em ModificadorSelecao casando com o catálogo da definição. */
+    private fun construirMods(
+        item: MestreIAItem,
+        defMods: List<ModificadorDefinicao>
+    ): List<ModificadorSelecao> {
+        if (item.modificadores.isEmpty() || defMods.isEmpty()) return emptyList()
+        return item.modificadores.mapNotNull { m ->
+            val def = (m.id?.let { id -> defMods.find { it.id == id } })
+                ?: defMods.find { limparNome(it.nome) == limparNome(m.nome) }
+                ?: return@mapNotNull null
+            ModificadorSelecao(
+                id = def.id,
+                nome = def.nome,
+                valor = Regex("-?\\d+").find(def.valor)?.value?.toIntOrNull() ?: 0,
+                porNivel = def.porNivel,
+                niveis = m.niveis.coerceAtLeast(1),
+                descricao = def.descricao,
+                pagina = def.pagina
+            )
+        }
+    }
+
     private fun adicionarVantagem(item: MestreIAItem, desc: String, custo: Int) {
-        // 1. Lookup por ID direto — caminho feliz (Lote A)
+        val nivel = item.nivel.coerceAtLeast(1)
+
+        // 1. Lookup por ID direto — caminho feliz
         if (!item.id.isNullOrBlank()) {
             repository.vantagens.find { it.id == item.id }?.let {
                 Log.d("MestreIA_Forjador", "Vantagem por ID: ${item.id}")
-                viewModel.adicionarVantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+                viewModel.adicionarVantagem(it, nivel = nivel,
+                    custo = if (custo != 0) custo else it.getCustoBase(), desc = desc,
+                    mods = construirMods(item, it.modificadoresEspecificos))
                 return
             }
             repository.desvantagens.find { it.id == item.id }?.let {
                 Log.d("MestreIA_Forjador", "Desvantagem por ID: ${item.id}")
-                viewModel.adicionarDesvantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+                viewModel.adicionarDesvantagem(it, nivel = nivel,
+                    custo = if (custo != 0) custo else it.getCustoBase(), desc = desc,
+                    ctrl = item.autocontrole,
+                    mods = construirMods(item, it.modificadoresEspecificos))
                 return
             }
         }
 
-        // 2. Fallback: fuzzy match por nome (comportamento legado)
+        // 2. Fallback: fuzzy match por nome
         val nomeLimpo = limparNome(item.nome)
         repository.vantagens.find { limparNome(it.nome) == nomeLimpo }?.let {
             Log.d("MestreIA_Forjador", "Vantagem por nome fuzzy: ${item.nome}")
-            viewModel.adicionarVantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+            viewModel.adicionarVantagem(it, nivel = nivel,
+                custo = if (custo != 0) custo else it.getCustoBase(), desc = desc,
+                mods = construirMods(item, it.modificadoresEspecificos))
             return
         }
         repository.desvantagens.find { limparNome(it.nome) == nomeLimpo }?.let {
             Log.d("MestreIA_Forjador", "Desvantagem por nome fuzzy: ${item.nome}")
-            viewModel.adicionarDesvantagem(it, custo = if (custo != 0) custo else it.getCustoBase(), desc = desc)
+            viewModel.adicionarDesvantagem(it, nivel = nivel,
+                custo = if (custo != 0) custo else it.getCustoBase(), desc = desc,
+                ctrl = item.autocontrole,
+                mods = construirMods(item, it.modificadoresEspecificos))
             return
         }
 
@@ -294,7 +370,9 @@ class MestreIAGeneratorUseCase(
     }
 
     private fun adicionarPericia(item: MestreIAItem, nivel: Int) {
-        // 1. Lookup por ID direto (Lote A)
+        val esp = item.especializacao ?: ""
+
+        // 1. Lookup por ID direto
         if (!item.id.isNullOrBlank()) {
             repository.pericias.find { it.id == item.id }?.let { def ->
                 Log.d("MestreIA_Forjador", "Perícia por ID: ${item.id}")
@@ -303,7 +381,7 @@ class MestreIAGeneratorUseCase(
                     viewModel.personagem.getAtributo(def.atributoBase),
                     nivel
                 )
-                viewModel.adicionarPericia(def, pts)
+                viewModel.adicionarPericia(def, pts, esp)
                 return
             }
         }
@@ -317,12 +395,55 @@ class MestreIAGeneratorUseCase(
                 viewModel.personagem.getAtributo(def.atributoBase),
                 nivel
             )
-            viewModel.adicionarPericia(def, pts)
+            viewModel.adicionarPericia(def, pts, esp)
             return
         }
 
         Log.w("MestreIA_Forjador", "Perícia não encontrada, fallback Qualidade: ${item.id ?: item.nome}")
         viewModel.adicionarQualidade("Perícia: ${item.nome.ifBlank { item.id ?: "?" }} (NH $nivel)")
+    }
+
+    private fun adicionarTecnica(item: MestreIAItem) {
+        val def = (item.id?.takeIf { it.isNotBlank() }
+            ?.let { id -> repository.tecnicasCatalogo.find { it.id == id } })
+            ?: repository.tecnicasCatalogo.find { limparNome(it.nome) == limparNome(item.nome) }
+
+        if (def == null) {
+            Log.w("MestreIA_Forjador", "Técnica não encontrada, fallback Qualidade: ${item.id ?: item.nome}")
+            viewModel.adicionarQualidade("Técnica: ${item.nome.ifBlank { item.id ?: "?" }}")
+            return
+        }
+
+        val periciaBase = encontrarPericiaBase(item)
+        if (periciaBase == null) {
+            Log.w("MestreIA_Forjador", "Perícia-base ausente para técnica '${def.nome}'")
+            viewModel.adicionarQualidade("Técnica: ${def.nome} (perícia-base ausente)")
+            return
+        }
+
+        val erro = viewModel.adicionarTecnica(def, periciaBase, item.nivel.coerceAtLeast(0))
+        if (erro != null) {
+            Log.w("MestreIA_Forjador", "Falha ao adicionar técnica ${def.nome}: $erro")
+            viewModel.adicionarQualidade("Técnica: ${def.nome} ($erro)")
+        } else {
+            Log.d("MestreIA_Forjador", "Técnica adicionada: ${def.nome} sobre ${periciaBase.nome}")
+        }
+    }
+
+    private fun encontrarPericiaBase(item: MestreIAItem): PericiaSelecionada? {
+        val pericias = viewModel.personagem.pericias
+        if (pericias.isEmpty()) return null
+        val pid = item.periciaBaseId?.takeIf { it.isNotBlank() }
+        if (pid != null) {
+            pericias.firstOrNull {
+                it.definicaoId == pid &&
+                    (item.periciaBaseEspecializacao.isNullOrBlank() ||
+                     it.especializacao.equals(item.periciaBaseEspecializacao, ignoreCase = true))
+            }?.let { return it }
+            pericias.firstOrNull { it.definicaoId == pid }?.let { return it }
+        }
+        // Fallback: perícia de combate com mais pontos investidos
+        return pericias.maxByOrNull { it.pontosGastos }
     }
 
     private fun adicionarMagia(item: MestreIAItem) {
