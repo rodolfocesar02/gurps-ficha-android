@@ -73,7 +73,8 @@ object MestreIAClient {
         modo: String = "conversa",
         promptSistema: String? = null,
         onChunk: ((String) -> Unit)? = null,
-        desativarTools: Boolean = false
+        desativarTools: Boolean = false,
+        maxTokens: Int = 2048
     ): ChatResponse = withContext(Dispatchers.IO) {
         val startTime = System.currentTimeMillis()
         try {
@@ -155,7 +156,7 @@ object MestreIAClient {
             val jsonOutput = if (isGoogleNative) {
                 gerarJsonGoogleNative(prompt, history, systemPulse, modo, desativarTools)
             } else {
-                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools)
+                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens)
             }
 
             android.util.Log.i("MestreIA_RAG", "║  REQUEST: ${jsonOutput.length}chars → $workspaceSlug")
@@ -332,7 +333,7 @@ object MestreIAClient {
         return root.toString()
     }
 
-    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false): String {
+    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048): String {
         val root = JSONObject()
         root.put("model", modelId)
         val messages = JSONArray()
@@ -353,7 +354,7 @@ object MestreIAClient {
         }
 
         root.put("temperature", 0.1)
-        root.put("max_tokens", 2048) // TRAVA DE SEGURANÇA PARA CONTA GRÁTIS
+        root.put("max_tokens", maxTokens)
         root.put("stream", stream)
         return root.toString()
     }

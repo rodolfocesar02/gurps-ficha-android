@@ -164,14 +164,26 @@ class FichaIADelegate(
 
             android.util.Log.d("MestreIA", "Iniciando Parse - Versao Alvo: v1.5.0-Lote84")
             
-            // 1. Tentar extrair do Texto (Modo Clássico/Auditor)
-            val jsonNoTexto = if (rawText.contains("{") && rawText.contains("}")) {
-                rawText.substring(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1)
-            } else null
-
-            // 2. Tentar extrair de Tool Calls (Modo Moderno/Forjador)
+            // 1. Tool Call (Auditor com fill_character_sheet)
             val toolCallJson = response.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }?.args?.toString()
             if (toolCallJson != null) android.util.Log.d("MestreIA", "Ficha detectada via Tool Call!")
+
+            // 2. JSON no texto — busca pelo objeto que começa com "nome" (campo raiz da MestreIAResponse)
+            // Procura da ÚLTIMA ocorrência de '{"nome"' para ignorar narrativa combinada antes do JSON
+            val jsonNoTexto = run {
+                val marcadores = listOf("""{"nome"""", """{ "nome"""")
+                val inicio = marcadores.mapNotNull { m ->
+                    val idx = rawText.lastIndexOf(m)
+                    if (idx >= 0) idx else null
+                }.minOrNull()
+                if (inicio != null) {
+                    val fim = rawText.lastIndexOf("}")
+                    if (fim > inicio) rawText.substring(inicio, fim + 1) else null
+                } else if (rawText.contains("{") && rawText.contains("}")) {
+                    // Fallback clássico
+                    rawText.substring(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1)
+                } else null
+            }
 
             val jsonReal = toolCallJson ?: jsonNoTexto
 
