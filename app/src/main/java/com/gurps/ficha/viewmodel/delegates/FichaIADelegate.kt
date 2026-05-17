@@ -79,17 +79,12 @@ class FichaIADelegate(
         mestreIAChatHistory = mestreIAChatHistory + assistantMsg
         val assistantIndex = mestreIAChatHistory.size - 1
 
-        val intentGeracao = pergunta.lowercase().let { 
-            it.contains("crie") || it.contains("gerar") || it.contains("gera a ficha") || 
-            it.contains("faça a ficha") || it.contains("ficha do") || it.contains("ficha de")
-        }
-        val modoFinal = if (intentGeracao && modo == "conversa") "geracao" else modo
-
+        // Modo é definido exclusivamente pelo botão "+" na UI — nunca auto-detectado
         scope.launch(Dispatchers.IO) {
-            if (modoFinal == "geracao" || modoFinal == "analise") {
+            if (modo == "geracao" || modo == "analise") {
                 mestreIAGeneratorUseCase.gerarOuAnalisarFicha(
                     prompt = pergunta,
-                    modo = modoFinal,
+                    modo = modo,
                     onStatusUpdate = { status ->
                         scope.launch(Dispatchers.Main) {
                             val history = mestreIAChatHistory.toMutableList()

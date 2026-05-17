@@ -1,6 +1,7 @@
 package com.gurps.ficha.data.network
 
 import com.google.gson.Gson
+import com.gurps.ficha.domain.tools.ForjadorTools
 import com.gurps.ficha.model.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -318,9 +319,13 @@ object MestreIAClient {
         contents.put(JSONObject().put("role", "user").put("parts", JSONArray().put(JSONObject().put("text", cleanPrompt))))
         root.put("contents", contents)
 
-        // Disponibiliza ferramentas apenas para Auditoria (Investigação) e quando não é última iteração
-        if (!desativarTools && modo != "geracao" && modo != "analise" && modo != "planejamento") {
-            root.put("tools", MestreIATools.getGeminiTools(modo))
+        // Forjador (geracao/analise) usa ForjadorTools; Auditor (conversa) usa MestreIATools
+        if (!desativarTools && modo != "planejamento") {
+            if (modo == "geracao" || modo == "analise") {
+                root.put("tools", ForjadorTools.getGeminiTools())
+            } else {
+                root.put("tools", MestreIATools.getGeminiTools(modo))
+            }
         }
 
         root.put("generationConfig", JSONObject().put("temperature", 0.1))
@@ -338,9 +343,13 @@ object MestreIAClient {
         messages.put(JSONObject().put("role", "user").put("content", prompt))
         root.put("messages", messages)
 
-        // Disponibiliza ferramentas apenas para Auditoria e quando não é última iteração
-        if (!desativarTools && modo != "geracao" && modo != "analise" && modo != "planejamento") {
-            root.put("tools", MestreIATools.getOpenAITools(modo))
+        // Forjador (geracao/analise) usa ForjadorTools; Auditor (conversa) usa MestreIATools
+        if (!desativarTools && modo != "planejamento") {
+            if (modo == "geracao" || modo == "analise") {
+                root.put("tools", ForjadorTools.getOpenAITools())
+            } else {
+                root.put("tools", MestreIATools.getOpenAITools(modo))
+            }
         }
 
         root.put("temperature", 0.1)
