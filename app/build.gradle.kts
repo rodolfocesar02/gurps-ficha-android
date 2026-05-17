@@ -29,7 +29,8 @@ android {
     val deepseek2Key = (localProperties.getProperty("mestre.ia.deepseek.2.key") ?: "").replace("\"", "\\\"")
     val openRouter1Key = (localProperties.getProperty("mestre.ia.openrouter.1.key") ?: "").replace("\"", "\\\"")
     val openRouter2Key = (localProperties.getProperty("mestre.ia.openrouter.2.key") ?: "").replace("\"", "\\\"")
-    val openRouter3Key = (localProperties.getProperty("mestre.ia.openrouter.3.key") ?: "").replace("\"", "\\\"")
+    val nvidiaKey = (localProperties.getProperty("mestre.ia.nvidia.key") ?: "").replace("\"", "\\\"")
+    val mimoKey = (localProperties.getProperty("mestre.ia.xiaomi.key") ?: "").replace("\"", "\\\"")
 
     defaultConfig {
         val discordApiBaseUrl = (firstNonBlank(
@@ -95,14 +96,27 @@ android {
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_2_KEY", "\"$deepseek2Key\"")
         buildConfigField("String", "MESTRE_IA_OPENROUTER_1_KEY", "\"$openRouter1Key\"")
         buildConfigField("String", "MESTRE_IA_OPENROUTER_2_KEY", "\"$openRouter2Key\"")
-        buildConfigField("String", "MESTRE_IA_OPENROUTER_3_KEY", "\"$openRouter3Key\"")
         
         buildConfigField("String", "MESTRE_IA_OPENROUTER_URL", "\"https://openrouter.ai/api/v1\"")
         buildConfigField("String", "MESTRE_IA_OPENROUTER_MODEL_1", "\"meta-llama/llama-3.3-70b-instruct\"")
 
+        buildConfigField("String", "MESTRE_IA_NVIDIA_KEY", "\"$nvidiaKey\"")
+        buildConfigField("String", "MESTRE_IA_NVIDIA_URL", "\"https://integrate.api.nvidia.com/v1\"")
+        buildConfigField("String", "MESTRE_IA_NVIDIA_MODEL", "\"meta/llama-3.3-70b-instruct\"")
+
+        buildConfigField("String", "MESTRE_IA_MIMO_KEY", "\"$mimoKey\"")
+        buildConfigField("String", "MESTRE_IA_MIMO_URL", "\"https://api.xiaomimimo.com/v1\"")
+        buildConfigField("String", "MESTRE_IA_MIMO_MODEL_PRO", "\"mimo-v2.5-pro\"")
+        buildConfigField("String", "MESTRE_IA_MIMO_MODEL_FLASH", "\"mimo-v2-flash\"")
+
+
+        buildConfigField("String", "MESTRE_IA_GEMINI_3_1_PRO", "\"gemini-3.1-pro-preview\"")
+        buildConfigField("String", "MESTRE_IA_GEMINI_3_FLASH", "\"gemini-3-flash-preview\"")
+        buildConfigField("String", "MESTRE_IA_GEMINI_3_1_FLASH_LITE", "\"gemini-3.1-flash-lite-preview\"")
+
         buildConfigField("String", "MESTRE_IA_LITE_1_KEY", "\"$geminiKey\"") // Legado/Flash
         buildConfigField("String", "MESTRE_IA_LITE_1_URL", "\"https://generativelanguage.googleapis.com/v1beta\"")
-        buildConfigField("String", "MESTRE_IA_LITE_1_MODEL", "\"gemini-flash-latest\"")
+        buildConfigField("String", "MESTRE_IA_LITE_1_MODEL", "\"gemini-3.1-flash-lite-preview\"")
 
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_URL", "\"https://api.deepseek.com/v1\"")
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-chat\"")

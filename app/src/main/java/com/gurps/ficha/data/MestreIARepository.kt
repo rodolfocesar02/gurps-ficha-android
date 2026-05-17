@@ -17,46 +17,49 @@ class MestreIARepository(
     private val database: FichaDatabase
 ) {
     private val manualChunkDao = database.manualChunkDao()
-    private val graphNodeDao = database.graphNodeDao()
     private val syncMutex = Mutex()
 
+    // Versão do formato de search_text. Bump aqui + em CODEX_VERSION_CURRENT para forçar re-importação.
+    // v1: apenas texto do chunk. v2: texto + source_title (permite buscar "subaquatico" → chunks do Pyramid).
+    private val CODEX_VERSION_KEY = "codex_search_text_version"
+    private val CODEX_VERSION_CURRENT = 2
+
     /**
-     * Sincroniza o Códex (Chunks e Grafo) se estiverem vazios.
+     * Sincroniza o Códex (chunks.jsonl) se o banco estiver vazio ou desatualizado.
      * Operação atômica e idempotente protegida por Mutex.
      */
     suspend fun sincronizarCodexSeNecessario() = withContext(Dispatchers.IO) {
         syncMutex.withLock {
-            val needsPurification = true // LOTE 108: Forçamos a entrada para corrigir o Mojibake
-            val isEmpty = manualChunkDao.getCount() == 0 || graphNodeDao.countNodes() == 0
-            
-            if (isEmpty || needsPurification) {
-                android.util.Log.i("MestreIA_Auditoria", "INICIANDO VERIFICAÇÃO TÉCNICA (Lote 108/Purificação)...")
-                FichaDatabase.prePopulateGraph(context, database)
+            val prefs = context.getSharedPreferences("mestre_ia_prefs", android.content.Context.MODE_PRIVATE)
+            val versaoSalva = prefs.getInt(CODEX_VERSION_KEY, 1)
+            val count = manualChunkDao.getCount()
+            val isEmpty = count == 0
+            val desatualizado = versaoSalva < CODEX_VERSION_CURRENT
+
+            if (isEmpty || desatualizado) {
+                if (desatualizado && !isEmpty) {
+                    android.util.Log.i("MestreIA_Auditoria", "CÓDEX DESATUALIZADO (v$versaoSalva → v$CODEX_VERSION_CURRENT): Limpando e re-importando...")
+                    manualChunkDao.clearAll()
+                } else {
+                    android.util.Log.i("MestreIA_Auditoria", "CÓDEX VAZIO: Importando chunks.jsonl...")
+                }
                 FichaDatabase.prePopulateManual(context, database)
+                prefs.edit().putInt(CODEX_VERSION_KEY, CODEX_VERSION_CURRENT).apply()
             } else {
-                android.util.Log.i("MestreIA_Auditoria", "CÓDEX OK: Banco de dados íntegro.")
+                android.util.Log.i("MestreIA_Auditoria", "CÓDEX OK v$versaoSalva: ${manualChunkDao.getCount()} chunks no banco.")
             }
         }
     }
 
-    suspend fun buscarResumosGrafo(query: String) = graphNodeDao.buscarNodes(query)
-    
-    suspend fun buscarNodesPorTitulo(query: String) = graphNodeDao.findByTitleLike(query)
-    
-    suspend fun buscarResumoNode(entityId: String) = graphNodeDao.getNodeById(entityId)
-    
-    suspend fun buscarResumosEssenciais() = graphNodeDao.getEssentialNodes()
-    
-    suspend fun findByCategory(category: String) = graphNodeDao.findByCategory(category)
-
     /**
-     * Busca inteligente nos manuais com expansão de termos (Sinônimos GURPS).
+     * LOTE 119: Busca DIRETA no Códex (Pula o Grafo).
+     * Usa uma combinação de OR para abrangência e AND para precisão.
      */
-    suspend fun buscarRecortesManual(query: String, limit: Int = 30): List<MestreIAChunk> {
-        val expandedQuery = prepararQueryFTS(query)
-        android.util.Log.d("MestreIA_Auditoria", "QUERY EXPANDIDA: $expandedQuery")
-        
-        return manualChunkDao.buscarRegras(expandedQuery, limit).map { entity ->
+    suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 30): List<MestreIAChunk> {
+        val ftsQuery = prepararQueryFTSAgressiva(query, termosTecnicos)
+        android.util.Log.i("MestreIA_RAG", "┌─ FTS QUERY: $ftsQuery")
+
+        val resultados = manualChunkDao.buscarRegras(ftsQuery, limit).map { entity ->
             MestreIAChunk(
                 chunk_id = entity.chunk_id,
                 text = entity.text,
@@ -65,33 +68,30 @@ class MestreIARepository(
                 page_number = entity.page_number
             )
         }
+
+        if (resultados.isEmpty()) {
+            android.util.Log.w("MestreIA_RAG", "└─ FTS: NENHUM chunk encontrado — query muito específica ou termos ausentes no banco")
+        } else {
+            val paginas = resultados.mapNotNull { it.page_number }.distinct().sorted().joinToString()
+            android.util.Log.i("MestreIA_RAG", "└─ FTS: ${resultados.size} chunks encontrados | páginas: [$paginas]")
+        }
+
+        return resultados
     }
 
     /**
      * Transforma uma busca simples em uma query FTS poderosa com sinônimos.
      */
     private fun prepararQueryFTS(userQuery: String): String {
-        // Limpa asteriscos e lixo da query original para evitar duplicidade
-        val cleanQuery = userQuery.replace("*", "").trim()
-        val terms = cleanQuery.split(Regex("\\s+")).filter { it.length >= 2 }
-        if (terms.isEmpty()) return cleanQuery
-        
-        val expandedTerms = terms.map { term ->
-            val termNorm = term.lowercase().removeAccents()
-            val synonyms = when (termNorm) {
-                "colisao", "colisões", "bater", "impacto", "encontrao", "encontrão" -> "colis* OR encontr* OR impact*"
-                "dano", "ferimento", "vida", "pv" -> "dano* OR ferim* OR PV"
-                "fadiga", "cansaco", "pf" -> "fadig* OR cansac* OR PF"
-                "atirar", "disparo", "arma" -> "atir* OR dispar* OR arma*"
-                "esquiva", "bloqueio", "aparar", "defesa" -> "esquiv* OR bloqu* OR apar* OR defens*"
-                "agua", "água", "piscina", "mar", "rio", "submerso", "subaquatico", "subaquático" -> "agua* OR águ* OR submers* OR subaquat*"
-                "redutor", "penalidade", "modificador" -> "redut* OR penal* OR modif*"
-                else -> if (termNorm.length > 3) "$termNorm*" else termNorm
-            }
-            "($synonyms)"
-        }
-        
-        return expandedTerms.joinToString(" AND ")
+        return prepararQueryFTSAgressiva(userQuery, emptyList())
+    }
+
+    /**
+     * LOTE 126: Query FTS Otimizada.
+     * Delegada para o MestreIAQueryEngine para testabilidade pura.
+     */
+    internal fun prepararQueryFTSAgressiva(userQuery: String, termosTecnicos: List<String>): String {
+        return MestreIAQueryEngine.prepararQueryFTSAgressiva(userQuery, termosTecnicos)
     }
 
     private fun String.removeAccents(): String {
@@ -133,11 +133,6 @@ class MestreIARepository(
                 page_number = entity.page_number
             )
         }
-    }
-
-    suspend fun forçarSincronizacaoGrafo() {
-        graphNodeDao.clearAll()
-        FichaDatabase.prePopulateGraph(context, database)
     }
 
     suspend fun forçarSincronizacaoManual() {

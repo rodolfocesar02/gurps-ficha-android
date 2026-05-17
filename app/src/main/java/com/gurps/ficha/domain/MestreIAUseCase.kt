@@ -43,6 +43,8 @@ class MestreIAUseCase(
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) {
         viewModelScope.launch {
+            // LOTE 126: Garante que o Códex esteja carregado e purificado antes de qualquer busca
+            repository.sincronizarCodexSeNecessario()
             val updateStatus: (String) -> Unit = { status ->
                 CoroutineScope(Dispatchers.Main).launch { onStatusUpdate(status) }
             }
@@ -55,26 +57,50 @@ class MestreIAUseCase(
 
             val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
             
-            // LOTE 126: TESTE DE ISOLAMENTO (DeepSeek Only - Sem Fallback)
+            // LOTE 126: FILA DE CONTINGÊNCIA PRIME (Multi-Cloud)
             val fila = if (modo == "geracao" || modo == "analise") {
-                // Modo Criar: Chave PAGA (sk-f1e7...)
-                listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, "deepseek-chat"))
+                // MODO FORJADOR: Apenas DeepSeek Paga (Conforme solicitado)
+                listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
             } else {
-                // Modo Dúvida: Chave GRATUITA/TESTE (sk-a6c4...)
-                listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, "deepseek-chat"))
+                // MODO MESTRE/DÚVIDA: Fila de Falha Crítica (Failover)
+                listOf(
+                    // 1. MiMo Pro (Main - Xiaomi)
+                    AIConfig(BuildConfig.MESTRE_IA_MIMO_URL, BuildConfig.MESTRE_IA_MIMO_KEY, BuildConfig.MESTRE_IA_MIMO_MODEL_PRO),
+                    // 2. MiMo Flash (Backup 1 - Xiaomi, fallback do Pro)
+                    AIConfig(BuildConfig.MESTRE_IA_MIMO_URL, BuildConfig.MESTRE_IA_MIMO_KEY, BuildConfig.MESTRE_IA_MIMO_MODEL_FLASH),
+                    // 3. DeepSeek (Backup 2 - Gratuito)
+                    AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
+                    // 4. Gemini 3.1 Flash-Lite (Backup 3 - Rápido e Econômico)
+                    AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE),
+                    // 5. NVIDIA (Backup 4 - Llama 3.1)
+                    AIConfig(BuildConfig.MESTRE_IA_NVIDIA_URL, BuildConfig.MESTRE_IA_NVIDIA_KEY, BuildConfig.MESTRE_IA_NVIDIA_MODEL),
+                    // 6. OpenRouter (Backup 5 - Chave 1)
+                    AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_1_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1),
+                    // 7. OpenRouter (Backup 6 - Chave 2)
+                    AIConfig(BuildConfig.MESTRE_IA_OPENROUTER_URL, BuildConfig.MESTRE_IA_OPENROUTER_2_KEY, BuildConfig.MESTRE_IA_OPENROUTER_MODEL_1)
+                )
             }
 
+            android.util.Log.i("MestreIA_RAG", "╔══ MESTRE IA INICIADO ══════════════════════════════")
+            android.util.Log.i("MestreIA_RAG", "║  Pergunta: \"${prompt.take(100)}\"")
+            android.util.Log.i("MestreIA_RAG", "║  Modo: $modo | Casual: $isCasual")
+
             val catalogoLocal = if (isCasual) {
+                android.util.Log.i("MestreIA_RAG", "║  RAG: pulado (mensagem casual)")
                 CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
             } else {
-                // Fila de Planejadores (Usa o primeiro modelo disponível para planejar)
-                val configPlanejador = fila.first()
-                updateStatus("Planejando estratégia de busca...")
-                val plano = MestreIAPlanner.planejarBusca(prompt, configPlanejador.url, configPlanejador.key, configPlanejador.model)
-                
-                gerarCatalogoLocal(prompt, viewModel.mestreIAChatHistory, plano.termos)
+                val plano = MestreIAPlanner.planejarBusca(prompt)
+                android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)}")
+                gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
             }
             val isRagUsed = catalogoLocal.isRagSuccess
+            val ctxChars = catalogoLocal.catalogo.ponteDeFerro.length
+            val ctxChunks = catalogoLocal.catalogo.chunks.size
+            if (isRagUsed) {
+                android.util.Log.i("MestreIA_RAG", "║  RAG OK: $ctxChunks chunks | $ctxChars chars de contexto")
+            } else {
+                android.util.Log.e("MestreIA_RAG", "║  RAG VAZIO: contexto=0 chars — IA responderá SEM base no manual!")
+            }
             var sucesso = false
             val errosAcumulados = mutableListOf<String>()
             
@@ -102,8 +128,16 @@ class MestreIAUseCase(
                     
                     while (loopsRestantes > 0) {
                         updateStatus(if (iteracao == 1) "Acionando Auditor $iaModel..." else "Refinando busca ($iaModel - iteração $iteracao)...")
-                        
-                        android.util.Log.i("MestreIA_Auditoria", "📤 ENVIANDO PROMPT ($iaModel | Iteração $iteracao) | Contexto: ${promptAtual.take(100)}...")
+
+                        val ctxAtual = catalogoDinamico.ponteDeFerro.length
+                        val chunksAtual = catalogoDinamico.chunks.size
+                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks")
+
+                        // Última iteração: força resposta final sem tool calls
+                        if (loopsRestantes == 1 && iteracao > 1) {
+                            promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $promptAtual\n\nATENÇÃO: Esta é sua ÚLTIMA oportunidade de responder. Apresente sua conclusão agora com base no contexto já disponível. NÃO chame ferramentas. Se a regra encontrada for indireta (ex: uma fórmula, divisor ou modificador que implique o resultado), calcule e apresente o resultado para o jogador com a fonte [Livro, Pág]."
+                            android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: forçando resposta final")
+                        }
 
                         val resposta = MestreIAClient.perguntarAoMestre(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
@@ -113,36 +147,52 @@ class MestreIAUseCase(
 
                         if (resposta.toolCalls.isNotEmpty()) {
                             val toolCall = resposta.toolCalls[0]
-                            android.util.Log.i("MestreIA_Auditoria", "🔍 INVESTIGAÇÃO: A IA chamou ${toolCall.name} com: ${toolCall.args}")
+                            android.util.Log.i("MestreIA_RAG", "║  TOOL CALL: IA chamou [${toolCall.name}] query=\"${toolCall.args.optString("query","").take(70)}\"")
 
-                            if (toolCall.name == "consultar_grafo_regras") {
+                            if (toolCall.name == MestreIATools.TOOL_MANUAL_DIRETO) {
                                 val queryTool = toolCall.args.optString("query", prompt)
-                                val paginaTool = toolCall.args.optInt("pagina", 1)
-                                val offset = (paginaTool - 1).coerceAtLeast(0)
-                                
-                                updateStatus("Lendo Códex: $queryTool...")
-                                val resTool = graphEngine.buscarNoGrafo(queryTool, offset, emptyList())
-                                
+
+                                updateStatus("Vasculhando Códex: $queryTool...")
+                                val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
+
                                 if (resTool.relatedChunks.isNotEmpty()) {
                                     val novoTextoRegras = graphEngine.formatarParaIA(resTool)
-                                    val ponteAtualizada = (catalogoDinamico.ponteDeFerro + "\n\n=== REGRAS ADICIONAIS ===\n" + novoTextoRegras).take(35000)
-                                    
-                                    android.util.Log.i("MestreIA_Auditoria", "📖 CÓDEX: Encontrados ${resTool.relatedChunks.size} recortes. Injetando na memória...")
-                                    
+                                    val ponteAtualizada = (catalogoDinamico.ponteDeFerro + "\n\n=== NOVAS REGRAS ENCONTRADAS ===\n" + novoTextoRegras).take(35000)
+                                    val paginasTool = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
+                                    android.util.Log.i("MestreIA_RAG", "║  TOOL OK: ${resTool.relatedChunks.size} chunks adicionados | páginas: [$paginasTool] | ctx total: ${ponteAtualizada.length}chars")
+
                                     catalogoDinamico = catalogoDinamico.copy(
                                         ponteDeFerro = ponteAtualizada,
                                         chunks = (catalogoDinamico.chunks + resTool.relatedChunks).distinctBy { it.chunk_id }
                                     )
-                                    
-                                    android.util.Log.d("MestreIA_Auditoria", "🧠 MEMÓRIA ATUALIZADA: Ponte de Ferro agora com ${ponteAtualizada.length} caracteres.")
-                                    
-                                    historicoInvestigacao.add("assistant" to "Consultando manual sobre '$queryTool'...")
-                                    historicoInvestigacao.add("system" to "RESULTADO DA BUSCA: $novoTextoRegras")
-                                    promptAtual = "Com base nas novas regras injetadas no contexto, responda: $prompt"
+
+                                    historicoInvestigacao.add("assistant" to "Consultando manuais diretamente sobre '$queryTool'...")
+                                    // CRÍTICO: guardar apenas resumo no histórico — contexto completo já está em catalogoDinamico.ponteDeFerro
+                                    historicoInvestigacao.add("system" to "RESULTADO DA BUSCA DIRETA (resumo): ${novoTextoRegras.take(2000)}\n[Contexto completo já incorporado ao Códex disponível]")
+                                    promptAtual = "Com base nestas regras encontradas, responda à dúvida. Se a regra for parcial ou analógica, deixe isso explícito. Se não houver nada útil, admita que não localizou nos manuais."
                                 } else {
-                                    android.util.Log.w("MestreIA_Auditoria", "❌ CÓDEX: Nenhuma regra encontrada para '$queryTool'.")
+                                    android.util.Log.e("MestreIA_RAG", "║  TOOL VAZIO: nenhum chunk para \"${queryTool.take(60)}\" — IA sem contexto extra")
+                                    historicoInvestigacao.add("system" to "Não foram encontrados resultados técnicos para '$queryTool' no Códex.")
+                                    promptAtual = "Auditoria: Não localizei '$queryTool' nos manuais. INFORME ISSO AO JOGADOR. É terminantemente PROIBIDO usar conhecimento geral ou inventar regras. Diga que não achou e sugira que ele use outros termos de busca."
                                 }
                                 
+                                loopsRestantes--
+                                iteracao++
+                                continue
+                            }
+
+                            if (toolCall.name == MestreIATools.TOOL_INSPECT_CHARACTER) {
+                                val secao = toolCall.args.optString("secao", "atributos")
+                                updateStatus("Lendo ficha ($secao)...")
+                                
+                                val infoFicha = when(secao) {
+                                    "status" -> "PV: ${viewModel.personagem.pontosVidaRolagemAtual ?: viewModel.personagem.pontosVida}/${viewModel.personagem.pontosVida} | PF: ${viewModel.personagem.pontosFadigaRolagemAtual ?: viewModel.personagem.pontosFadiga}/${viewModel.personagem.pontosFadiga}"
+                                    "vantagens" -> "Vantagens: " + viewModel.personagem.vantagens.joinToString { it.nome }
+                                    "pericias" -> "Perícias: " + viewModel.personagem.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(viewModel.personagem)})" }
+                                    else -> "Atributos: ST ${viewModel.personagem.st}, DX ${viewModel.personagem.dx}, IQ ${viewModel.personagem.iq}, HT ${viewModel.personagem.ht}"
+                                }
+                                
+                                historicoInvestigacao.add("system" to "DADOS DA FICHA ($secao): $infoFicha")
                                 loopsRestantes--
                                 iteracao++
                                 continue
@@ -164,7 +214,7 @@ class MestreIAUseCase(
                         if (resposta.text.isNotBlank() && !resposta.text.startsWith("Erro")) {
                             val lowerRes = resposta.text.lowercase()
                             if ((lowerRes.contains("lamento") || lowerRes.contains("não encontrei")) && loopsRestantes > 1) {
-                                promptAtual = "Pergunta: $prompt\n\nNão desista. Tente buscar termos mais genéricos no manual usando 'consultar_grafo_regras'."
+                                promptAtual = "Pergunta: $prompt\n\nNão desista. Tente buscar termos mais genéricos no manual usando '${MestreIATools.TOOL_MANUAL_DIRETO}'."
                                 loopsRestantes--
                                 iteracao++
                                 continue
@@ -172,14 +222,16 @@ class MestreIAUseCase(
 
                             val temCitacao = resposta.text.contains("[") && (resposta.text.contains("Pág", true) || resposta.text.contains("Pg", true))
                             val respostaFinal = if (!temCitacao && iteracao > 1) {
-                                resposta.text + "\n\n⚠️ _[AUDITORIA: Sem citações diretas do manual]_"
+                                resposta.text + "\n\n _[AUDITORIA: Sem citações diretas do manual]_"
                             } else {
                                 resposta.text
                             }
                             
+                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$iaModel] | iter=$iteracao | ${respostaFinal.length}chars | citação=${temCitacao}")
                             sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = iaModel))
                             sucesso = true
                         } else {
+                            android.util.Log.e("MestreIA_RAG", "╠── MODELO FALHOU: $iaModel | resposta=\"${resposta.text.take(50)}\"")
                             errosAcumulados.add("${iaModel.takeLast(10)}: ${resposta.text.take(30)}")
                         }
                         break
@@ -192,108 +244,34 @@ class MestreIAUseCase(
                 }
             }
             if (!sucesso) {
-                val msgErro = "Falha Geral. Detalhes: " + errosAcumulados.joinToString(" | ")
-                sendResult(false, MestreIAClient.ChatResponse(msgErro))
+                android.util.Log.e("MestreIA_RAG", "╚══ FALHA TOTAL: esgotou ${fila.size} modelos | erros: ${errosAcumulados.joinToString(" | ")}")
+                val resumoErro = buildString {
+                    append(" O Mestre IA esgotou todas as tentativas de conexão.\n\n")
+                    append("DETALHES DO FRACASSO:\n")
+                    errosAcumulados.forEach { append("- $it\n") }
+                    append("\nIsso geralmente ocorre por falta de créditos (402) ou limite de cota (429) em modelos gratuitos. Por favor, tente novamente mais tarde ou recarregue seus créditos nas APIs.")
+                }
+                sendResult(false, MestreIAClient.ChatResponse(resumoErro))
             }
         }
     }
 
-    suspend fun gerarCatalogoLocal(prompt: String, history: List<MestreIAClient.ChatMessage>, termosExtras: List<String> = emptyList()): CatalogoLocalResult {
-        val contextoRecente = history.takeLast(3).joinToString(" ") { if (it.role == "user") it.text else "" }
-        val promptExpandido = "$prompt $contextoRecente".take(500)
+    /**
+     * LOTE 119: Gerador de Catálogo via Busca Direta (Pula o Grafo).
+     */
+    suspend fun gerarCatalogoDireto(prompt: String, history: List<MestreIAClient.ChatMessage>, termosExtras: List<String> = emptyList()): CatalogoLocalResult {
+        // LOTE 126: Simplificamos a busca para evitar duplicação de termos no FTS
+        val promptExpandido = prompt.take(500)
         
-        var res = graphEngine.buscarNoGrafo(promptExpandido, 0, termosExtras)
+        val res = graphEngine.buscarDiretoNoCodex(promptExpandido, termosExtras)
         
-        // LOTE 94: Fallback genérico desativado para evitar inchaço no prompt (Erro 503).
-        // A busca agora confia exclusivamente no mapeamento do Grafo e na Ponte de Página.
-
-        val detalhesItens = mutableListOf<String>()
-        
-        // LOTE 117: FUNIL DE CATÁLOGOS (Roteamento para os JSONs oficiais)
-        res.summaries.forEach { node ->
-            val jaAdicionado = when {
-                node.category.contains("Regra", true) -> {
-                    detalhesItens.add("[REGRA: ${node.title}]:\n${node.summary}")
-                    true
-                }
-                node.category.contains("Perícia", true) -> {
-                    repository.periciasSuplementares.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[PERÍCIA: ${it.nome}]: Dific: ${it.dificuldadeRaw}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Vantagem", true) -> {
-                    repository.vantagens.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[VANTAGEM: ${it.nome}]: Custo: ${it.getCustoBase()}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Desvantagem", true) -> {
-                    repository.desvantagens.find { it.nome.equals(node.title, true) }?.let {
-                        detalhesItens.add("[DESVANTAGEM: ${it.nome}]: Custo: ${it.getCustoBase()}, Pág. ${it.pagina}\nDesc: ${it.descricao}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Magia", true) -> {
-                    repository.magias.find { it.nome.equals(node.title, true) }?.let {
-                        val escolas = it.escola?.joinToString(", ") ?: "Nenhuma"
-                        detalhesItens.add("[MAGIA: ${it.nome}]: Escola: $escolas, Energia: ${it.energia}, Tempo: ${it.tempoOperacao}, Duração: ${it.duracao}, Pré-Requisitos: ${it.preRequisitos ?: "Nenhum"}, Pág. ${it.pagina}\nDesc: ${it.texto ?: it.descricao}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Técnica", true) -> {
-                    repository.tecnicasCatalogo.find { tec -> tec.nome.equals(node.title, true) }?.let { item ->
-                        detalhesItens.add("[TÉCNICA: ${item.nome}]: Dific: ${item.dificuldadeRaw}, PreDef: ${item.preDefinidoRaw}, Pág. ${item.pagina}\nDesc: ${item.descricao}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Arma", true) -> {
-                    repository.armasCatalogo.find { arma -> arma.nome.equals(node.title, true) }?.let { item ->
-                        detalhesItens.add("[ARMA: ${item.nome}]: Dano: ${item.danoRaw}, StMin: ${item.stMinimo}\nObs: ${item.observacoes}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Armadura", true) || node.category.contains("Escudo", true) -> {
-                    repository.armadurasCatalogo.find { arm -> arm.nome.equals(node.title, true) }?.let { item ->
-                        detalhesItens.add("[ARMADURA: ${item.nome}]: RD: ${item.rd}, Peso: ${item.pesoBaseKg}kg\nObs: ${item.observacoes}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Modificador", true) || node.category.contains("Ampliação", true) || node.category.contains("Limitação", true) -> {
-                    repository.modificadoresGerais.find { mod -> mod.nome.equals(node.title, true) }?.let { item ->
-                        detalhesItens.add("[MODIFICADOR: ${item.nome}]: Valor: ${item.valor}, Pág. ${item.pagina}\nDesc: ${item.descricao}")
-                        true
-                    } ?: false
-                }
-                node.category.contains("Equipamento", true) -> {
-                    repository.armasCatalogo.find { eq -> eq.nome.equals(node.title, true) }?.let { item ->
-                        detalhesItens.add("[EQUIPAMENTO: ${item.nome}]: Obs: ${item.observacoes}")
-                        true
-                    } ?: false
-                }
-                else -> false
-            }
-
-            // Fallback: Se não encontrou no catálogo específico, usa o resumo do Grafo (Vital para Regras Customizadas)
-            if (!jaAdicionado) {
-                detalhesItens.add("[${node.category.uppercase()}: ${node.title}]:\n${node.summary}")
-            }
-        }
-
         val cat = MestreIAClient.CatalogoNomes(
-            vantagens = res.summaries.filter { it.category.contains("Vantagem", true) }.map { it.title },
-            pericias = res.summaries.filter { it.category.contains("Perícia", true) }.map { it.title },
-            tecnicas = res.summaries.filter { it.category.contains("Técnica", true) }.map { it.title },
-            magias = res.summaries.filter { it.category.contains("Magia", true) }.map { it.title },
-            equipamentos = res.summaries.filter { it.category.contains("Equipamento", true) }.map { it.title },
-            armas = res.summaries.filter { it.category.contains("Arma", true) }.map { it.title },
-            itensDetalhes = detalhesItens,
             chunks = res.relatedChunks,
-            summaries = res.summaries,
-            ponteDeFerro = graphEngine.formatarParaIA(res).take(30000) // LOTE 104: Reduzido para 30k para maior precisão e economia de tokens
+            ponteDeFerro = graphEngine.formatarParaIA(res).take(35000)
         )
-        return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty() || res.summaries.isNotEmpty())
+        return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty())
     }
+
 
     private fun traduzirModeloParaMestre(id: String): String = when {
         id.contains("qwen") -> "Estrategista"
