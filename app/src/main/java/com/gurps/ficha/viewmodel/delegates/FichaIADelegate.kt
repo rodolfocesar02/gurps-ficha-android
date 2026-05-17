@@ -168,21 +168,24 @@ class FichaIADelegate(
             val toolCallJson = response.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }?.args?.toString()
             if (toolCallJson != null) android.util.Log.d("MestreIA", "Ficha detectada via Tool Call!")
 
-            // 2. JSON no texto — busca pelo objeto que começa com "nome" (campo raiz da MestreIAResponse)
-            // Procura da ÚLTIMA ocorrência de '{"nome"' para ignorar narrativa combinada antes do JSON
+            // 2. JSON no texto — estratégia em 3 camadas para ser robusto a formatação variada
             val jsonNoTexto = run {
-                val marcadores = listOf("""{"nome"""", """{ "nome"""")
-                val inicio = marcadores.mapNotNull { m ->
-                    val idx = rawText.lastIndexOf(m)
-                    if (idx >= 0) idx else null
-                }.minOrNull()
-                if (inicio != null) {
-                    val fim = rawText.lastIndexOf("}")
-                    if (fim > inicio) rawText.substring(inicio, fim + 1) else null
-                } else if (rawText.contains("{") && rawText.contains("}")) {
-                    // Fallback clássico
-                    rawText.substring(rawText.indexOf("{"), rawText.lastIndexOf("}") + 1)
-                } else null
+                val fim = rawText.lastIndexOf("}")
+                if (fim < 0) return@run null
+
+                // Camada 1: Regex que detecta {"nome": em qualquer formatação (inline ou indentado)
+                val regexNome = Regex("""\{\s*"nome"\s*:""")
+                val inicioPorNome = regexNome.findAll(rawText).lastOrNull()?.range?.first
+
+                // Camada 2: Detecta código ```json ... ``` e pega o { dentro dele
+                val inicioPorFence = rawText.lastIndexOf("```json").let { fence ->
+                    if (fence >= 0) rawText.indexOf("{", fence).takeIf { it in 0..fim } else null
+                }
+
+                val inicio = inicioPorNome ?: inicioPorFence
+                    ?: rawText.indexOf("{").takeIf { it in 0..fim }
+
+                if (inicio != null && fim > inicio) rawText.substring(inicio, fim + 1) else null
             }
 
             val jsonReal = toolCallJson ?: jsonNoTexto
