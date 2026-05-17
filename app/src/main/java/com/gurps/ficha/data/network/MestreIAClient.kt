@@ -70,7 +70,8 @@ object MestreIAClient {
         contextoPersonagem: String = "",
         catalogo: CatalogoNomes? = null,
         modo: String = "conversa",
-        onChunk: ((String) -> Unit)? = null
+        onChunk: ((String) -> Unit)? = null,
+        desativarTools: Boolean = false
     ): ChatResponse = withContext(Dispatchers.IO) {
         val startTime = System.currentTimeMillis()
         try {
@@ -150,13 +151,12 @@ object MestreIAClient {
             } else ""
 
             val jsonOutput = if (isGoogleNative) {
-                gerarJsonGoogleNative(prompt, history, systemPulse, modo)
+                gerarJsonGoogleNative(prompt, history, systemPulse, modo, desativarTools)
             } else {
-                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream)
+                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools)
             }
 
-            // LOTE 89.60: DEBUG TOTAL - IMPRIMIR JSON COMPLETO NO LOGCAT (EM PEDAÇOS)
-            logLongString("MestreIA_FullJSON", jsonOutput)
+            android.util.Log.i("MestreIA_RAG", "║  REQUEST: ${jsonOutput.length}chars → $workspaceSlug")
 
             connection.outputStream.use { it.write(jsonOutput.toByteArray(StandardCharsets.UTF_8)) }
 
@@ -174,8 +174,7 @@ object MestreIAClient {
             if (!useStream) {
                 val responseText = connection.inputStream.bufferedReader().readText()
                 
-                // LOTE 89.70: DEBUG DA RESPOSTA (Ver formato da ferramenta)
-                logLongString("MestreIA_Response", responseText)
+                android.util.Log.i("MestreIA_RAG", "║  RESPONSE: ${responseText.length}chars (HTTP $responseCode)")
                 
                 val json = JSONObject(responseText)
                 if (isGoogleNative) {
@@ -276,7 +275,7 @@ object MestreIAClient {
         }
     }
 
-    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, system: String, modo: String): String {
+    private fun gerarJsonGoogleNative(prompt: String, history: List<Pair<String, String>>, system: String, modo: String, desativarTools: Boolean = false): String {
         val root = JSONObject()
         root.put("system_instruction", JSONObject().put("parts", JSONArray().put(JSONObject().put("text", system))))
         
@@ -318,8 +317,8 @@ object MestreIAClient {
         contents.put(JSONObject().put("role", "user").put("parts", JSONArray().put(JSONObject().put("text", cleanPrompt))))
         root.put("contents", contents)
 
-        // Disponibiliza ferramentas apenas para Auditoria (Investigação)
-        if (modo != "geracao" && modo != "analise" && modo != "planejamento") {
+        // Disponibiliza ferramentas apenas para Auditoria (Investigação) e quando não é última iteração
+        if (!desativarTools && modo != "geracao" && modo != "analise" && modo != "planejamento") {
             root.put("tools", MestreIATools.getGeminiTools(modo))
         }
 
@@ -327,7 +326,7 @@ object MestreIAClient {
         return root.toString()
     }
 
-    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean): String {
+    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false): String {
         val root = JSONObject()
         root.put("model", modelId)
         val messages = JSONArray()
@@ -338,8 +337,8 @@ object MestreIAClient {
         messages.put(JSONObject().put("role", "user").put("content", prompt))
         root.put("messages", messages)
 
-        // RESTAURANDO FERRAMENTAS PARA O MODO CONVERSA
-        if (modo != "geracao" && modo != "analise" && modo != "planejamento") {
+        // Disponibiliza ferramentas apenas para Auditoria e quando não é última iteração
+        if (!desativarTools && modo != "geracao" && modo != "analise" && modo != "planejamento") {
             root.put("tools", MestreIATools.getOpenAITools(modo))
         }
 

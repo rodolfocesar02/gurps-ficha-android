@@ -9,6 +9,9 @@ import nexus.arcano.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -106,13 +109,18 @@ class MestreIAUseCase(
                     android.util.Log.i("MestreIA_RAG", "║  INVENTÁRIO: equipamento(s) do personagem injetado(s) no contexto")
                 }
 
-                // LOTE 129 (Solução B): Pré-busca de stats de equipamentos detectados
+                // LOTE 131 (Paralelo): Pré-busca de stats de equipamentos em paralelo
                 if (plano.subQueriesStats.isNotEmpty()) {
-                    android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS: ${plano.subQueriesStats.size} equipamento(s) detectado(s)")
+                    android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS: ${plano.subQueriesStats.size} equipamento(s) detectado(s) — buscando em paralelo")
+                    updateStatus("Verificando stats: ${plano.subQueriesStats.joinToString { it.take(20) }}...")
+                    val statsResultados = coroutineScope {
+                        plano.subQueriesStats.map { statsQuery ->
+                            async { statsQuery to graphEngine.buscarDiretoNoCodex(statsQuery, emptyList()) }
+                        }.awaitAll()
+                    }
                     var ponte = resultado.catalogo.ponteDeFerro
                     var chunks = resultado.catalogo.chunks.toMutableList()
-                    for (statsQuery in plano.subQueriesStats) {
-                        val statsRes = graphEngine.buscarDiretoNoCodex(statsQuery, emptyList())
+                    for ((statsQuery, statsRes) in statsResultados) {
                         if (statsRes.relatedChunks.isNotEmpty()) {
                             val statsTxt = graphEngine.formatarParaIA(statsRes)
                             ponte = (ponte + "\n\n=== STATS DO EQUIPAMENTO (tabela) ===\n" + statsTxt).take(35000)
@@ -163,22 +171,29 @@ class MestreIAUseCase(
                     var iteracao = 1
                     
                     while (loopsRestantes > 0) {
-                        updateStatus(if (iteracao == 1) "Acionando Auditor $iaModel..." else "Refinando busca ($iaModel - iteração $iteracao)...")
+                        val modeloCurto = iaModel.substringAfterLast("/").take(20)
+                        val isUltimaIteracao = loopsRestantes == 1 && iteracao > 1
+                        updateStatus(when {
+                            iteracao == 1 -> "Consultando $modeloCurto..."
+                            isUltimaIteracao -> "Compilando resposta final..."
+                            else -> "Aprofundando pesquisa (iteração $iteracao)..."
+                        })
 
                         val ctxAtual = catalogoDinamico.ponteDeFerro.length
                         val chunksAtual = catalogoDinamico.chunks.size
-                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks")
+                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks | desativarTools=$isUltimaIteracao")
 
                         // Última iteração: força resposta final sem tool calls
-                        if (loopsRestantes == 1 && iteracao > 1) {
+                        if (isUltimaIteracao) {
                             promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $promptAtual\n\nATENÇÃO: Esta é sua ÚLTIMA oportunidade de responder. Apresente sua conclusão agora com base no contexto já disponível. NÃO chame ferramentas. Se a regra encontrada for indireta (ex: uma fórmula, divisor ou modificador que implique o resultado), calcule e apresente o resultado para o jogador com a fonte [Livro, Pág]."
-                            android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: forçando resposta final")
+                            android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: tools desativados + resposta forçada")
                         }
 
                         val resposta = MestreIAClient.perguntarAoMestre(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
-                            catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null 
+                            catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
+                            desativarTools = isUltimaIteracao
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {
@@ -202,7 +217,7 @@ class MestreIAUseCase(
                                     continue
                                 }
 
-                                updateStatus("Vasculhando Códex: $queryTool...")
+                                updateStatus("Buscando no manual: \"${queryTool.take(40)}\"...")
                                 val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
 
                                 if (resTool.relatedChunks.isNotEmpty()) {
