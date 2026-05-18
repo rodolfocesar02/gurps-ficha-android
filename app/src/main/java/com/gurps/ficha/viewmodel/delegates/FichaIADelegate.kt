@@ -156,6 +156,41 @@ class FichaIADelegate(
             val rawText = response.text
             android.util.Log.d("MestreIA", "Resposta Bruta: $rawText")
             android.util.Log.d("MestreIA", "Tool Calls: ${response.toolCalls.size}")
+
+            // BLINDAGEM: qualquer exceção no parse (regex/JSON/reparo sobre
+            // texto grande) NÃO pode mais matar a coroutine em silêncio e
+            // deixar o chat vazio. Se algo falhar, o texto da IA aparece
+            // mesmo assim (limpo do bloco ```json```).
+            try {
+                processarRespostaIAInterno(modo, assistantIndex, isRagUsed, response, onResult, history)
+            } catch (e: Throwable) {
+                android.util.Log.e("MestreIA", "Falha no processamento — exibindo texto bruto: ${e.message}", e)
+                val textoSeguro = mestreIAUseCase.limparNarrativaParaChat(rawText)
+                    .ifBlank { rawText.ifBlank { "⚠️ A resposta chegou vazia. Tente reformular o pedido." } }
+                val h = mestreIAChatHistory.toMutableList()
+                if (assistantIndex in h.indices) {
+                    h[assistantIndex] = h[assistantIndex].copy(
+                        text = textoSeguro,
+                        modelName = response.modelName ?: "Mestre Sábio"
+                    )
+                    mestreIAChatHistory = h
+                }
+                salvarSessaoChat()
+                onResult(true, textoSeguro)
+            }
+        }
+    }
+
+    private fun processarRespostaIAInterno(
+        modo: String,
+        assistantIndex: Int,
+        isRagUsed: Boolean,
+        response: MestreIAClient.ChatResponse,
+        onResult: (Boolean, String) -> Unit,
+        history: MutableList<MestreIAClient.ChatMessage>
+    ) {
+        run {
+            val rawText = response.text
             
             val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
             
