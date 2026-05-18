@@ -72,13 +72,31 @@ class FichaIADelegate(
         }
     }
 
+    /**
+     * Atualiza ATOMICAMENTE a mensagem do assistente na lista VIVA.
+     * Acha por identidade de objeto (===) — robusto a [SISTEMA] injetadas
+     * durante o loop agêntico (antes: índice fixo + sobrescrita com cópia
+     * velha descartava as mensagens injetadas e a resposta final sumia).
+     * Retorna a nova referência da mensagem (a lista é imutável/recriada).
+     */
+    private fun atualizarMsgAssistente(
+        ref: MestreIAClient.ChatMessage,
+        transform: (MestreIAClient.ChatMessage) -> MestreIAClient.ChatMessage
+    ): MestreIAClient.ChatMessage {
+        val atual = mestreIAChatHistory
+        val idx = atual.indexOfFirst { it === ref }
+        if (idx < 0) return ref
+        val nova = transform(atual[idx])
+        mestreIAChatHistory = atual.toMutableList().also { it[idx] = nova }
+        return nova
+    }
+
     fun conversar(pergunta: String, modo: String, onResult: (Boolean, String) -> Unit) {
         val userMsg = MestreIAClient.ChatMessage("user", pergunta)
         mestreIAChatHistory = mestreIAChatHistory + userMsg
-        
-        val assistantMsg = MestreIAClient.ChatMessage("model", "Pensando...", "Mestre IA")
-        mestreIAChatHistory = mestreIAChatHistory + assistantMsg
-        val assistantIndex = mestreIAChatHistory.size - 1
+
+        var assistantRef = MestreIAClient.ChatMessage("model", "Pensando...", "Mestre IA")
+        mestreIAChatHistory = mestreIAChatHistory + assistantRef
 
         // Modo é definido exclusivamente pelo botão "+" na UI — nunca auto-detectado
         scope.launch(Dispatchers.IO) {
@@ -88,26 +106,19 @@ class FichaIADelegate(
                     modo = modo,
                     onStatusUpdate = { status ->
                         scope.launch(Dispatchers.Main) {
-                            val history = mestreIAChatHistory.toMutableList()
-                            if (assistantIndex >= 0 && assistantIndex < history.size) {
-                                history[assistantIndex] = history[assistantIndex].copy(modelName = status)
-                                mestreIAChatHistory = history
-                            }
+                            assistantRef = atualizarMsgAssistente(assistantRef) { it.copy(modelName = status) }
                         }
                     },
                     onChunk = { chunk ->
                         scope.launch(Dispatchers.Main) {
-                            val history = mestreIAChatHistory.toMutableList()
-                            if (assistantIndex >= 0 && assistantIndex < history.size) {
-                                val currentText = history[assistantIndex].text.replace("Pensando...", "")
-                                history[assistantIndex] = history[assistantIndex].copy(text = currentText + chunk)
-                                mestreIAChatHistory = history
+                            assistantRef = atualizarMsgAssistente(assistantRef) {
+                                it.copy(text = it.text.replace("Pensando...", "") + chunk)
                             }
                         }
                     },
                     onResultado = { success, response ->
                         scope.launch(Dispatchers.Main) {
-                            processarRespostaIA(modo, assistantIndex, false, response, onResult)
+                            processarRespostaIA(modo, assistantRef, false, response, onResult)
                         }
                     }
                 )
@@ -117,26 +128,19 @@ class FichaIADelegate(
                     modo = modo,
                     onStatusUpdate = { status ->
                         scope.launch(Dispatchers.Main) {
-                            val history = mestreIAChatHistory.toMutableList()
-                            if (assistantIndex >= 0 && assistantIndex < history.size) {
-                                history[assistantIndex] = history[assistantIndex].copy(modelName = status)
-                                mestreIAChatHistory = history
-                            }
+                            assistantRef = atualizarMsgAssistente(assistantRef) { it.copy(modelName = status) }
                         }
                     },
                     onChunk = { chunk ->
                         scope.launch(Dispatchers.Main) {
-                            val history = mestreIAChatHistory.toMutableList()
-                            if (assistantIndex >= 0 && assistantIndex < history.size) {
-                                val currentText = history[assistantIndex].text.replace("Pensando...", "")
-                                history[assistantIndex] = history[assistantIndex].copy(text = currentText + chunk)
-                                mestreIAChatHistory = history
+                            assistantRef = atualizarMsgAssistente(assistantRef) {
+                                it.copy(text = it.text.replace("Pensando...", "") + chunk)
                             }
                         }
                     },
                     onResultado = { isRagUsed, response ->
                         scope.launch(Dispatchers.Main) {
-                            processarRespostaIA(modo, assistantIndex, isRagUsed, response, onResult)
+                            processarRespostaIA(modo, assistantRef, isRagUsed, response, onResult)
                         }
                     }
                 )
@@ -146,13 +150,12 @@ class FichaIADelegate(
 
     private fun processarRespostaIA(
         modo: String,
-        assistantIndex: Int,
+        ref: MestreIAClient.ChatMessage,
         isRagUsed: Boolean,
         response: MestreIAClient.ChatResponse,
         onResult: (Boolean, String) -> Unit
     ) {
-        val history = mestreIAChatHistory.toMutableList()
-        if (assistantIndex >= 0 && assistantIndex < history.size) {
+        run {
             val rawText = response.text
             android.util.Log.d("MestreIA", "Resposta Bruta: $rawText")
             android.util.Log.d("MestreIA", "Tool Calls: ${response.toolCalls.size}")
@@ -162,18 +165,13 @@ class FichaIADelegate(
             // deixar o chat vazio. Se algo falhar, o texto da IA aparece
             // mesmo assim (limpo do bloco ```json```).
             try {
-                processarRespostaIAInterno(modo, assistantIndex, isRagUsed, response, onResult, history)
+                processarRespostaIAInterno(modo, ref, isRagUsed, response, onResult)
             } catch (e: Throwable) {
                 android.util.Log.e("MestreIA", "Falha no processamento — exibindo texto bruto: ${e.message}", e)
                 val textoSeguro = mestreIAUseCase.limparNarrativaParaChat(rawText)
                     .ifBlank { rawText.ifBlank { "⚠️ A resposta chegou vazia. Tente reformular o pedido." } }
-                val h = mestreIAChatHistory.toMutableList()
-                if (assistantIndex in h.indices) {
-                    h[assistantIndex] = h[assistantIndex].copy(
-                        text = textoSeguro,
-                        modelName = response.modelName ?: "Mestre Sábio"
-                    )
-                    mestreIAChatHistory = h
+                atualizarMsgAssistente(ref) {
+                    it.copy(text = textoSeguro, modelName = response.modelName ?: "Mestre Sábio")
                 }
                 salvarSessaoChat()
                 onResult(true, textoSeguro)
@@ -183,11 +181,10 @@ class FichaIADelegate(
 
     private fun processarRespostaIAInterno(
         modo: String,
-        assistantIndex: Int,
+        ref: MestreIAClient.ChatMessage,
         isRagUsed: Boolean,
         response: MestreIAClient.ChatResponse,
-        onResult: (Boolean, String) -> Unit,
-        history: MutableList<MestreIAClient.ChatMessage>
+        onResult: (Boolean, String) -> Unit
     ) {
         run {
             val rawText = response.text
@@ -269,14 +266,18 @@ class FichaIADelegate(
                     }
                 } ?: narrativaLimpa
 
-            history[assistantIndex] = history[assistantIndex].copy(
-                text = textoChat,
-                modelName = response.modelName ?: "Mestre Sábio",
-                isRagUsed = isRagUsed,
-                data = fichaObjeto,
-                rawJson = jsonReal
-            )
-            mestreIAChatHistory = history
+            // Atualiza na lista VIVA (preserva as [SISTEMA] injetadas
+            // durante o loop). Antes: sobrescrevia com cópia velha → a
+            // resposta final e as msgs [SISTEMA] sumiam do chat.
+            atualizarMsgAssistente(ref) {
+                it.copy(
+                    text = textoChat,
+                    modelName = response.modelName ?: "Mestre Sábio",
+                    isRagUsed = isRagUsed,
+                    data = fichaObjeto,
+                    rawJson = jsonReal
+                )
+            }
 
             // "geracao" sempre integra. "analise" (Consultor) é conversa
             // fluida: quando o usuário só pergunta, a IA responde texto (sem
