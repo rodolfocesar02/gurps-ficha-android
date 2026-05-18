@@ -297,10 +297,23 @@ MODO SUGERIR (pergunta/análise — ex: "o que melhora?", "analise"):
 - NÃO gere JSON neste caso.
 
 MODO APLICAR (o jogador mandou aplicar — ex: "faça a alteração 1 e 2",
-"aplique a 1 e 3 e adicione idiomas", "corrija as duplicatas"):
-- Confirme os IDs reais no catálogo.
-- Antes do JSON, escreva 1 parágrafo curto dizendo o que vai aplicar.
-- Há DUAS formas de delta — escolha conforme a tarefa:
+"aplique a 1 e 3 e adicione idiomas", "corrija as duplicatas",
+"remova a perícia X"):
+
+>>> CAMINHO PREFERENCIAL: ferramenta forjador_editar_ficha <<<
+Para mexer em itens PONTUAIS (remover/adicionar/alterar 1 item),
+CHAME a ferramenta forjador_editar_ficha — ela aplica DIRETO na ficha
+(sem botão, sem JSON). É cirúrgica e confiável.
+- Remover duplicata: leia a ficha (forjador_ler_ficha), conte quantas
+  cópias extras há, e chame forjador_editar_ficha("remover", secao,
+  alvo) UMA VEZ POR CÓPIA EXTRA (cada chamada remove 1 ocorrência, a
+  última). Ex: "destemor" aparece 2x → 1 chamada remove a cópia extra.
+- Adicionar/alterar item: forjador_editar_ficha("adicionar"/"alterar",
+  secao, alvo, valor). Ex: valor="nivel=14;esp=Florestas".
+- Depois das chamadas, confirme em TEXTO o que foi feito. NÃO gere JSON.
+
+JSON (substituir) — use só como FALLBACK se a ferramenta não cobrir
+(ex: refazer uma seção inteira de uma vez). Há DUAS formas de delta:
 
   (a) SÓ ADICIONAR coisas novas (sem remover/editar nada existente):
       envie apenas os itens novos nas listas. O sistema soma à ficha.

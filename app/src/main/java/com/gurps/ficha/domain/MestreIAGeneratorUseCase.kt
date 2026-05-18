@@ -145,7 +145,8 @@ class MestreIAGeneratorUseCase(
                         val forjadorCalls = response.toolCalls.filter { tc ->
                             tc.name == ForjadorTools.TOOL_LER_FICHA ||
                             tc.name == ForjadorTools.TOOL_BUSCAR     ||
-                            tc.name == ForjadorTools.TOOL_GPS_MAGIA
+                            tc.name == ForjadorTools.TOOL_GPS_MAGIA   ||
+                            tc.name == ForjadorTools.TOOL_EDITAR
                         }
 
                         if (forjadorCalls.isEmpty()) break

@@ -7,6 +7,7 @@ object ForjadorTools {
     const val TOOL_LER_FICHA     = "forjador_ler_ficha"
     const val TOOL_BUSCAR        = "forjador_buscar_catalogo"
     const val TOOL_GPS_MAGIA     = "forjador_gps_magia"
+    const val TOOL_EDITAR        = "forjador_editar_ficha"
 
     fun getGeminiTools(): JSONArray {
         val decls = JSONArray()
@@ -57,6 +58,33 @@ object ForjadorTools {
                     })
                 })
                 put("required", JSONArray().put("magia_alvo"))
+            })
+        })
+
+        decls.put(JSONObject().apply {
+            put("name", TOOL_EDITAR)
+            put("description", "Edita a ficha DIRETAMENTE (aplica na hora, sem confirmação). Use para remover, adicionar ou alterar UM item específico que o jogador pediu. Para remover duplicata, chame uma vez por cópia extra — remove só a última ocorrência do alvo.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("operacao", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "remover | adicionar | alterar")
+                    })
+                    put("secao", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "vantagens | desvantagens | pericias | tecnicas | magias | equipamentos | qualidades | peculiaridades")
+                    })
+                    put("alvo", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "ID (preferido) ou nome do item alvo. Ex: 'destemor', 'Arco Longo'")
+                    })
+                    put("valor", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "Opcional. Para 'adicionar'/'alterar': nível e/ou custo, ex: 'nivel=14' ou 'nivel=3;custo=15'. Para 'adicionar' perícia: 'nivel=14;esp=Florestas'.")
+                    })
+                })
+                put("required", JSONArray().put("operacao").put("secao").put("alvo"))
             })
         })
 
@@ -115,6 +143,37 @@ object ForjadorTools {
                         put("magia_alvo", JSONObject().put("type", "string"))
                     })
                     put("required", JSONArray().put("magia_alvo"))
+                })
+            })
+        })
+
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_EDITAR)
+                put("description", "Edita a ficha DIRETAMENTE (aplica na hora). remover/adicionar/alterar UM item. Para remover duplicata, chame 1x por cópia extra (remove só a última ocorrência).")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("operacao", JSONObject().apply {
+                            put("type", "string")
+                            put("enum", JSONArray().put("remover").put("adicionar").put("alterar"))
+                        })
+                        put("secao", JSONObject().apply {
+                            put("type", "string")
+                            put("enum", JSONArray().put("vantagens").put("desvantagens").put("pericias")
+                                .put("tecnicas").put("magias").put("equipamentos").put("qualidades").put("peculiaridades"))
+                        })
+                        put("alvo", JSONObject().apply {
+                            put("type", "string")
+                            put("description", "ID ou nome do item. Ex: 'destemor', 'Arco Longo'")
+                        })
+                        put("valor", JSONObject().apply {
+                            put("type", "string")
+                            put("description", "Opcional. 'nivel=14' ou 'nivel=3;custo=15' ou 'nivel=14;esp=Florestas'")
+                        })
+                    })
+                    put("required", JSONArray().put("operacao").put("secao").put("alvo"))
                 })
             })
         })

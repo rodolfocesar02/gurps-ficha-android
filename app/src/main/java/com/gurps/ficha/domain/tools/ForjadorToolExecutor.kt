@@ -19,6 +19,7 @@ class ForjadorToolExecutor(
             ForjadorTools.TOOL_LER_FICHA    -> lerFicha(toolCall.args)
             ForjadorTools.TOOL_BUSCAR       -> buscarCatalogo(toolCall.args)
             ForjadorTools.TOOL_GPS_MAGIA    -> gpsMagia(toolCall.args)
+            ForjadorTools.TOOL_EDITAR       -> editarFicha(toolCall.args)
             else -> """{"erro": "ferramenta desconhecida: ${toolCall.name}"}"""
         }
     }
@@ -151,6 +152,99 @@ class ForjadorToolExecutor(
             snapshot.aviso?.let { appendLine("Aviso: $it") }
             appendLine("Magias já conhecidas: ${magiasConhecidas.size}")
         }.trim()
+    }
+
+    /**
+     * Edita a ficha DIRETAMENTE (aplica na hora, sem botão).
+     * remover → tira a ÚLTIMA ocorrência do alvo (seguro p/ dedup).
+     * adicionar/alterar → lookup por ID/nome no catálogo.
+     */
+    private fun editarFicha(args: JSONObject): String {
+        val op    = args.optString("operacao").lowercase().trim()
+        val secao = args.optString("secao").lowercase().trim()
+        val alvo  = args.optString("alvo").trim()
+        val valor = args.optString("valor", "").trim()
+        if (op.isBlank() || secao.isBlank() || alvo.isBlank())
+            return """{"erro":"operacao, secao e alvo são obrigatórios"}"""
+
+        fun norm(s: String) = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "").lowercase()
+            .replace(Regex("\\(.*?\\)"), "").replace(Regex("[^a-z0-9]"), "").trim()
+        val alvoN = norm(alvo)
+        val p = viewModel.personagem
+
+        // Acha o índice da ÚLTIMA ocorrência cujo id OU nome casa com o alvo
+        fun <T> ultimoIndice(lista: List<T>, id: (T) -> String, nome: (T) -> String): Int =
+            lista.indexOfLast { norm(id(it)) == alvoN || norm(nome(it)) == alvoN }
+
+        if (op == "remover") {
+            val idx = when (secao) {
+                "vantagens"      -> ultimoIndice(p.vantagens, { it.definicaoId }, { it.nome })
+                    .also { if (it >= 0) viewModel.removerVantagem(it) }
+                "desvantagens"   -> ultimoIndice(p.desvantagens, { it.definicaoId }, { it.nome })
+                    .also { if (it >= 0) viewModel.removerDesvantagem(it) }
+                "pericias"       -> ultimoIndice(p.pericias, { it.definicaoId }, { it.nome })
+                    .also { if (it >= 0) viewModel.removerPericia(it) }
+                "tecnicas"       -> ultimoIndice(p.tecnicas, { it.definicaoId }, { it.nome })
+                    .also { if (it >= 0) viewModel.removerTecnica(it) }
+                "magias"         -> ultimoIndice(p.magias, { it.definicaoId }, { it.nome })
+                    .also { if (it >= 0) viewModel.removerMagia(it) }
+                "equipamentos"   -> ultimoIndice(p.equipamentos, { "" }, { it.nome })
+                    .also { if (it >= 0) viewModel.removerEquipamento(it) }
+                "qualidades"     -> ultimoIndice(p.qualidades, { "" }, { it })
+                    .also { if (it >= 0) viewModel.removerQualidade(it) }
+                "peculiaridades" -> ultimoIndice(p.peculiaridades, { "" }, { it })
+                    .also { if (it >= 0) viewModel.removerPeculiaridade(it) }
+                else -> return """{"erro":"seção inválida: $secao"}"""
+            }
+            return if (idx >= 0) {
+                viewModel.autoSaveIA()
+                "OK: removida 1 ocorrência de '$alvo' em $secao (índice $idx)."
+            } else "Nada removido: '$alvo' não encontrado em $secao."
+        }
+
+        // adicionar / alterar — só para itens com catálogo (id real)
+        fun parseValor(k: String): Int? =
+            Regex("$k\\s*=\\s*(-?\\d+)").find(valor)?.groupValues?.get(1)?.toIntOrNull()
+        val nivel = parseValor("nivel") ?: 1
+        val custo = parseValor("custo") ?: 0
+        val esp   = Regex("esp\\s*=\\s*([^;]+)").find(valor)?.groupValues?.get(1)?.trim() ?: ""
+
+        when (secao) {
+            "vantagens", "desvantagens" -> {
+                val v = repository.vantagens.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                val d = repository.desvantagens.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                if (op == "alterar") {
+                    val iv = ultimoIndice(p.vantagens, { it.definicaoId }, { it.nome })
+                    if (iv >= 0) {
+                        viewModel.atualizarVantagem(iv, p.vantagens[iv].copy(
+                            nivel = nivel, custoEscolhido = if (custo != 0) custo else p.vantagens[iv].custoEscolhido))
+                        viewModel.autoSaveIA(); return "OK: vantagem '$alvo' alterada (nivel=$nivel)."
+                    }
+                    return "Nada alterado: '$alvo' não está na ficha."
+                }
+                when {
+                    v != null -> viewModel.adicionarVantagem(v, nivel = nivel,
+                        custo = if (custo != 0) custo else v.getCustoBase())
+                    d != null -> viewModel.adicionarDesvantagem(d, nivel = nivel,
+                        custo = if (custo != 0) custo else d.getCustoBase())
+                    else -> return "Não encontrado no catálogo: '$alvo'."
+                }
+                viewModel.autoSaveIA(); return "OK: '$alvo' adicionada em $secao."
+            }
+            "pericias" -> {
+                val def = repository.pericias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                    ?: return "Perícia não encontrada no catálogo: '$alvo'."
+                val pts = com.gurps.ficha.domain.rules.CharacterRules.calcularPontosParaNivel(
+                    com.gurps.ficha.model.Dificuldade.fromSigla(def.dificuldadeFixa),
+                    p.getAtributo(def.atributoBase), if (nivel > 1) nivel else 12)
+                viewModel.adicionarPericia(def, pts, esp)
+                viewModel.autoSaveIA(); return "OK: perícia '$alvo' ${if (op=="alterar") "ajustada" else "adicionada"} (NH $nivel)."
+            }
+            "qualidades"     -> { viewModel.adicionarQualidade(alvo); viewModel.autoSaveIA(); return "OK: qualidade adicionada." }
+            "peculiaridades" -> { viewModel.adicionarPeculiaridade(alvo); viewModel.autoSaveIA(); return "OK: peculiaridade adicionada." }
+            else -> return """{"erro":"$op em $secao não suportado por esta ferramenta"}"""
+        }
     }
 
     private fun calcularPontosGastos(): Int {
