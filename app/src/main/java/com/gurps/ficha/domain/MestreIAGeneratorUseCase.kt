@@ -293,6 +293,25 @@ class MestreIAGeneratorUseCase(
             viewModel.atualizarVitalidade(attr.ht)
         }
 
+        // SUBSTITUIÇÃO DE SEÇÃO: a IA enviou a lista COMPLETA e final de
+        // certas seções (ex: corrigir duplicatas → manda as 16 vantagens
+        // certas). Zeramos essas seções ANTES de reaplicar — é o único
+        // caminho de remoção/edição (o resto do fluxo só soma).
+        val subs = ficha.substituir.map { it.lowercase().trim() }.toSet()
+        fun limpar(secao: String, tamanho: () -> Int, remover: (Int) -> Unit) {
+            if (secao !in subs) return
+            for (i in tamanho() - 1 downTo 0) remover(i)
+            Log.d("MestreIA_Forjador", "Seção '$secao' substituída (zerada antes de reaplicar)")
+        }
+        limpar("vantagens",     { viewModel.personagem.vantagens.size })     { viewModel.removerVantagem(it) }
+        limpar("desvantagens",  { viewModel.personagem.desvantagens.size })  { viewModel.removerDesvantagem(it) }
+        limpar("pericias",      { viewModel.personagem.pericias.size })      { viewModel.removerPericia(it) }
+        limpar("tecnicas",      { viewModel.personagem.tecnicas.size })      { viewModel.removerTecnica(it) }
+        limpar("magias",        { viewModel.personagem.magias.size })        { viewModel.removerMagia(it) }
+        limpar("equipamentos",  { viewModel.personagem.equipamentos.size })  { viewModel.removerEquipamento(it) }
+        limpar("qualidades",    { viewModel.personagem.qualidades.size })    { viewModel.removerQualidade(it) }
+        limpar("peculiaridades",{ viewModel.personagem.peculiaridades.size }){ viewModel.removerPeculiaridade(it) }
+
         // Dedup defensivo: LLMs (DeepSeek) às vezes geram a mesma lista 2x
         // dentro do JSON. Sem isto, vantagens por-nível e equipamentos
         // (que não têm dedup no app) entram duplicados na ficha.

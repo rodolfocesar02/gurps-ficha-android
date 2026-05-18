@@ -23,6 +23,10 @@ data class MestreIAResponse(
     val historico: String = "",
     val notas: String = "",
     val pontosIniciais: Int = 0,
+    // Seções que vêm COMPLETAS e devem SUBSTITUIR (não somar) a ficha atual.
+    // Ex: ["vantagens","equipamentos"] → o tradutor zera essas listas e
+    // aplica só o que está no JSON. Resolve remoção/dedup/edição.
+    val substituir: List<String> = emptyList(),
     // Tolerância: a IA às vezes emite atributos soltos no formato Personagem
     // ("forca": 14, "destreza": 14, ...) ou em inglês ("st": 14) em vez de
     // "atributos": { "st": 14, ... }. Estes campos capturam esse caso.

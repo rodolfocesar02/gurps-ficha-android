@@ -298,6 +298,24 @@ class FichaIADelegate(
         fichaGeradaPendente = null
         relatorioValidacao = null
         try {
+            // Delta inócuo: JSON sem nenhuma lista e sem "substituir" (ex: a
+            // IA mandou "removerVantagens" inventado). Antes isso dizia
+            // "integrada com sucesso" sem mudar nada — feedback enganoso.
+            val temConteudo = ficha.substituir.isNotEmpty() ||
+                ficha.vantagens.isNotEmpty() || ficha.desvantagens.isNotEmpty() ||
+                ficha.pericias.isNotEmpty() || ficha.tecnicas.isNotEmpty() ||
+                ficha.magias.isNotEmpty() || ficha.equipamentos.isNotEmpty() ||
+                ficha.qualidades.isNotEmpty() || ficha.peculiaridades.isNotEmpty() ||
+                ficha.nome.isNotBlank() || ficha.historico.isNotBlank()
+            if (!temConteudo) {
+                mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
+                    "model",
+                    "⚠️ Nada foi aplicado: o JSON não trouxe itens válidos nem o campo \"substituir\". " +
+                    "Para remover/corrigir duplicatas, eu preciso reenviar a lista COMPLETA da seção com \"substituir\". " +
+                    "Peça novamente, ex: \"reaplique corrigindo as duplicatas de vantagens e equipamentos\"."
+                )
+                return
+            }
             mestreIAGeneratorUseCase.integrarRespostaNaFicha(ficha)
             mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", "✅ Ficha integrada com sucesso!")
             viewModel.autoSaveIA()
