@@ -580,6 +580,17 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - `limparNarrativaParaChat`: removido `Regex("```json.*?```", DOTALL)` (o `.*?` DOTALL também faz backtracking) → varredura linear com `indexOf`.
 - **Verificação:** clean build OK (APK 19:58); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 
+### Lote 158: Instrumentação (logs ponto-a-ponto) - CONCLUÍDO (commit e784602)
+- Após 5+ rodadas atacando causas deduzidas, adicionada instrumentação `MestreIA_Trace [P0..P6]/[I0,I1]/[PX]` em cada etapa do processamento — para o log dizer **exatamente** onde trava, em vez de dedução. Sem mudança de lógica.
+
+### Lote 159: Causa Raiz CONFIRMADA por Trace + Cadeia Completa Sem Perguntar - CONCLUÍDO (commit 41a4ff4)
+- **Trace provou:** o backend agora vai até o fim (`[P0]→[I0]→[I1]→[P1] temSinalJson=false →[P2] jsonReal=-1 →[P3] null →[P4] →[P5] →[P6] FIM ok`). A mensagem **aparece no chat** (confirmado pelo usuário nas imagens). **A causa raiz era o ReDoS (Lote 157)** — os testes anteriores "iguais" eram **APK velho** sem a instrumentação. **Bug crônico da mensagem sumindo: RESOLVIDO.**
+- **Problema restante (comportamental, apontado pelo usuário):**
+  - Loop curto: `ITER_MAX=12` mas a cadeia do Desejo precisa de ~15-20 ciclos → parava no meio. → `ITER_MAX` 12→**25** (mantém anti-loop: só estende se adicionou itens; sem progresso encerra). Decisão do usuário.
+  - Modelo **parava pra perguntar** "quer que eu aplique?" mesmo com ordem direta. Prompt intermediário reescrito: ordem direta = **executa inteira**, não pergunta no meio, só finaliza quando a magia-alvo está na ficha. `[RESPOSTA FINAL]` do modo análise não finge que terminou — reporta o que falta.
+  - **Status ao vivo descritivo** (decisão do usuário — não deixar tela em branco): "✏️ Aplicando: X", "🧭 Calculando pré-requisitos: Y", "🔎 Buscando: Z" + passo N, como um editor mostrando a ação.
+- **Verificação:** clean build OK (APK 20:40); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+
 
 
 **[Bateria de Testes a Realizar]**
