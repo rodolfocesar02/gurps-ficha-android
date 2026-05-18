@@ -616,6 +616,16 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 163: Modo Alvo (Pathfinder) CORRIGIDO — contagem de escolas + atalho guloso - CONCLUÍDO (commit 9b9d2dd)
+- **Testado com o MOTOR REAL** (`planejarCaminhoMinimo` + `magias2versao.json` via JUnit temporário). Dois bugs no Pathfinder:
+- **Bug 1 (raiz):** `escolasConhecidas()` fazia `flatMap` de TODAS as escolas de cada magia. Magias multi-escola (ex: `convocar_elemental`=Ar/Fogo/Terra/Água) inflavam: 4 magias viravam "10 escolas" → Encantar/Desejo liberavam cedo demais e com trilha ERRADA. Fix: conta a escola **principal** (1 magia = 1 escola), alinhado à regra GURPS "1 mágica em N escolas diferentes".
+- **Bug 2 (explosão):** com a contagem correta, "10/15 escolas distintas" tornava a busca combinatória → OutOfMemory / 1800 nós / trilha vazia. Fix: **atalho guloso** antes do A* (pega 1 magia aprendível que é pré-req obrigatório pendente OU abre escola nova barata; repete até o alvo liberar; O(passos×catálogo)). A* vira fallback. `ordenarCandidatas`: escola nova vira critério dominante c/ meta de escola.
+- **Resultado (motor real):** encantar 10 magias/10 escolas; pequeno_desejo 11; **desejo 16 magias/15 escolas em 10ms** (antes estourava memória).
+- **Verificação:** clean build (APK 21:47); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** ligar o Pathfinder em produção (adapter/GPS) — ele estava DESLIGADO (ver [[diagnostico-modo-alvo-pathfinder]]); depois o anti-loop ([[plano-forjador-cadeia-desejo]]).
+
+
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"
