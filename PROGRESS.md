@@ -607,6 +607,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 162: Consultor — Regra de 2 Passos Explícita - CONCLUÍDO (commit b754325)
+- **Reposicionamento (pergunta do usuário):** estamos no modo **Analisar**, não Criar. Logo, a IA sugerir+perguntar na 1ª msg **não é bug — é o correto**. Os Lotes 159-160 atacaram isso achando ser bug do modo Criar; reposicionado.
+- **Decisão do usuário:** no Analisar, SEMPRE sugerir primeiro; aplicar só após 2º ok explícito (mesmo que o 1º pedido pareça ordem direta).
+- **`gerarPromptConsultor` reescrito — REGRA DE 2 PASSOS:** PASSO 1 (toda 1ª msg, incl. "ordem direta") = pedido de PLANO; só ferramentas de leitura; mostra a cadeia em texto; não chama editar_ficha nem gera JSON; pede confirmação. PASSO 2 (só quando a última msg REAL do usuário é aceite claro — "sim/pode aplicar/ok") = executa o plano inteiro sem re-perguntar. Proibido presumir confirmação; sugestão não respondida ≠ aceita (resolve a alucinação "você aceitou").
+- Lotes 159-160 mantidos (estagnação/teto 30 servem ao passo 2).
+- **Verificação:** clean build OK (APK 20:59); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+
+
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"
