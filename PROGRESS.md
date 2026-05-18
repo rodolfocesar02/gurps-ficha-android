@@ -572,6 +572,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Problema 2 — fallback morto:** a fila usava Gemini 3.1 Pro, cuja chave está com quota 0 (free tier zerado). **Corrigido:** fallback agora é `MESTRE_IA_DEEPSEEK_2_KEY` (chave DeepSeek gratuita, já no BuildConfig). Fila: DeepSeek → DeepSeek 2.
 - **Verificação:** clean build OK (APK 19:35); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 
+### Lote 157: CAUSA RAIZ REAL — ReDoS (Catastrophic Backtracking) Trava o Parse - CONCLUÍDO (commit 59fca74)
+- **Avaliação concreta (5+ ocorrências do mesmo fenômeno):** o log SEMPRE para exatamente em `Iniciando Parse` quando a resposta de análise é grande (4000+ chars de markdown). Não loga `Falha no processamento` (try/catch do 152) nem escreve no chat → não é exceção nem sucesso: é **trava** (loop de CPU).
+- **Causa raiz isolada:** o regex `\{\s*"nome"\s*:` rodando com `containsMatchIn` sobre 4000+ chars de markdown (tabelas, `{`, `**`) sofre **catastrophic backtracking (ReDoS)**. A coroutine congela no regex — por isso o log morria em "Iniciando Parse" (a linha seguinte é o regex) e nenhum try/catch pegava (não há exceção). **Os Lotes 152-156 não resolveram porque atacavam sintomas; este é o defeito real.**
+- **Correção definitiva (zero regex sobre resposta livre da IA no caminho do parse):**
+  - Gate de JSON: `rawText.contains("\"nome\"")` literal O(n) em vez de regex; início localizado por `indexOf`/`lastIndexOf`.
+  - `limparNarrativaParaChat`: removido `Regex("```json.*?```", DOTALL)` (o `.*?` DOTALL também faz backtracking) → varredura linear com `indexOf`.
+- **Verificação:** clean build OK (APK 19:58); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+
 
 
 **[Bateria de Testes a Realizar]**
