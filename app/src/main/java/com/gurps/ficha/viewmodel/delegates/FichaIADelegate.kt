@@ -238,11 +238,12 @@ class FichaIADelegate(
             )
             mestreIAChatHistory = history
 
-            // Só "geracao" integra (botão INTEGRAR). "analise" é o modo
-            // CONSULTOR: lê a ficha e responde só com texto/sugestões — nunca
-            // gera JSON nem oferece integração. O usuário aplica pedindo em
-            // linguagem natural (vira "geracao" com a ficha atual no contexto).
-            if (fichaObjeto != null && modo == "geracao") {
+            // "geracao" sempre integra. "analise" (Consultor) é conversa
+            // fluida: quando o usuário só pergunta, a IA responde texto (sem
+            // JSON → fichaObjeto null → sem botão). Quando o usuário manda
+            // aplicar, a IA devolve um DELTA em JSON → aí sim mostra INTEGRAR.
+            // O tradutor mescla o delta sem apagar o resto (dedup do Lote 140).
+            if (fichaObjeto != null && (modo == "geracao" || modo == "analise")) {
                 fichaGeradaPendente = fichaObjeto
                 relatorioValidacao = mestreIAGeneratorUseCase.gerarRelatorio(fichaObjeto)
             }

@@ -269,17 +269,29 @@ class MestreIAGeneratorUseCase(
     }
 
     fun integrarRespostaNaFicha(ficha: MestreIAResponse) {
-        viewModel.atualizarNome(ficha.nome)
-        viewModel.atualizarHistorico(ficha.historico)
-        viewModel.atualizarAparencia(ficha.aparencia ?: "")
-        if (ficha.notas.isNotBlank()) viewModel.atualizarNotas(ficha.notas)
-        if (ficha.pontosIniciais > 0) viewModel.atualizarPontosIniciais(ficha.pontosIniciais)
+        // Delta-safe: ao aplicar só um DELTA (Consultor), o JSON não traz
+        // nome/historico/atributos — não pode apagar/zerar o que já existe.
+        // Campos descritivos só sobrescrevem se vierem preenchidos.
+        if (ficha.nome.isNotBlank())      viewModel.atualizarNome(ficha.nome)
+        if (ficha.historico.isNotBlank()) viewModel.atualizarHistorico(ficha.historico)
+        if (ficha.aparencia.isNotBlank()) viewModel.atualizarAparencia(ficha.aparencia)
+        if (ficha.notas.isNotBlank())     viewModel.atualizarNotas(ficha.notas)
+        if (ficha.pontosIniciais > 0)     viewModel.atualizarPontosIniciais(ficha.pontosIniciais)
 
-        val attr = ficha.atributosEfetivos()
-        viewModel.atualizarForca(attr.st)
-        viewModel.atualizarDestreza(attr.dx)
-        viewModel.atualizarInteligencia(attr.iq)
-        viewModel.atualizarVitalidade(attr.ht)
+        // Atributos só são aplicados se o JSON realmente os trouxe (≠ default
+        // 10 vindo de objeto ausente). Num delta sem atributos, preserva os atuais.
+        val temAtributos = ficha.atributos.st != 10 || ficha.atributos.dx != 10 ||
+            ficha.atributos.iq != 10 || ficha.atributos.ht != 10 ||
+            ficha.forca != null || ficha.destreza != null ||
+            ficha.inteligencia != null || ficha.vitalidade != null ||
+            ficha.st != null || ficha.dx != null || ficha.iq != null || ficha.ht != null
+        if (temAtributos) {
+            val attr = ficha.atributosEfetivos()
+            viewModel.atualizarForca(attr.st)
+            viewModel.atualizarDestreza(attr.dx)
+            viewModel.atualizarInteligencia(attr.iq)
+            viewModel.atualizarVitalidade(attr.ht)
+        }
 
         // Dedup defensivo: LLMs (DeepSeek) às vezes geram a mesma lista 2x
         // dentro do JSON. Sem isto, vantagens por-nível e equipamentos
