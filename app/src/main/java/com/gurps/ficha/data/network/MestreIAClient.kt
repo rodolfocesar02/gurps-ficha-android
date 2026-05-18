@@ -28,7 +28,11 @@ object MestreIAClient {
         val isRagUsed: Boolean = false,
         val latencyMs: Long = 0,
         val data: com.gurps.ficha.data.network.MestreIAResponse? = null,
-        val rawJson: String? = null
+        val rawJson: String? = null,
+        // ID estável: sobrevive aos .copy() (status/chunk). Permite achar
+        // a mensagem na lista viva sem depender de === (que quebrava: cada
+        // .copy() cria nova referência) nem de índice fixo.
+        val uid: String = java.util.UUID.randomUUID().toString()
     )
 
     data class MestreIAToolCall(
