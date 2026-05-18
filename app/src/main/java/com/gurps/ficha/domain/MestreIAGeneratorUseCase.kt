@@ -174,11 +174,17 @@ class MestreIAGeneratorUseCase(
                             }
                             verificacao = "\n\n=== VERIFICAÇÃO PÓS-EDIÇÃO (read-back automático) ===\n" +
                                 "$leitura\n\n" +
-                                "CONFIRA item por item: cada alteração que você pediu CONSTA acima na ficha relida? " +
-                                "Se ALGUMA não aplicou (ex: técnica recusada por pré-requisito), tente corrigir UMA vez " +
-                                "(ex: adicione a perícia-base que falta e re-aplique). " +
-                                "Só afirme ao usuário que algo foi aplicado se ele REALMENTE aparecer na ficha relida acima. " +
-                                "Reporte com honestidade o que aplicou e o que (e por quê) não aplicou."
+                                "CONFIRA item por item na ficha relida acima:\n" +
+                                "1) Cada alteração que você pediu CONSTA? Se alguma NÃO aplicou, " +
+                                "CHAME forjador_editar_ficha de novo agora para resolver (NÃO pergunte ao " +
+                                "usuário — corrija você mesmo, 1 tentativa).\n" +
+                                "2) Há DUPLICATAS ou itens ÓRFÃOS resultantes desta edição? " +
+                                "(ex: duas técnicas com mesmo nome; técnica cuja perícia-base sumiu — " +
+                                "aparece como 'ÓRFÃ' no read-back). Se sim, CHAME forjador_editar_ficha " +
+                                "('remover') para limpar AGORA, sem perguntar. Você causou, você corrige.\n" +
+                                "3) Só depois de limpo, afirme ao usuário SOMENTE o que REALMENTE consta " +
+                                "na ficha. Reporte com honestidade o que aplicou, o que corrigiu e o que " +
+                                "(e por quê) não foi possível."
                             Log.d("MestreIA_Forjador", "Read-back: ${secoes.joinToString()} (${leitura.length} chars)")
                         }
 

@@ -48,6 +48,15 @@ class ForjadorToolExecutor(
                 p.pericias.joinToString("\n") { "• ${it.definicaoId} | ${it.nome} | NH ${it.calcularNivel(p)} | ${it.pontosGastos} pts" }
             "magias" -> if (p.magias.isEmpty()) "Nenhuma magia." else
                 p.magias.joinToString("\n") { "• ${it.definicaoId} | ${it.nome} | escola:${it.escola?.joinToString() ?: "?"}" }
+            "tecnicas" -> if (p.tecnicas.isEmpty()) "Nenhuma técnica." else
+                p.tecnicas.joinToString("\n") { t ->
+                    val nh = t.calcularNivel(p)?.toString() ?: "ÓRFÃ (perícia-base ausente)"
+                    "• ${t.definicaoId} | ${t.nome} | base:${t.periciaBaseDefinicaoId.ifBlank { "?" }} | NH $nh | ${t.pontosGastos} pts"
+                }
+            "qualidades" -> if (p.qualidades.isEmpty()) "Nenhuma qualidade." else
+                p.qualidades.joinToString("\n") { "• $it" }
+            "peculiaridades" -> if (p.peculiaridades.isEmpty()) "Nenhuma peculiaridade." else
+                p.peculiaridades.joinToString("\n") { "• $it" }
             "equipamentos" -> if (p.equipamentos.isEmpty()) "Nenhum equipamento." else
                 p.equipamentos.joinToString("\n") { e ->
                     buildString {
@@ -62,7 +71,7 @@ class ForjadorToolExecutor(
                 val max = p.pontosIniciais
                 "Pontos gastos: $gastos / $max pts disponíveis. Livres: ${max - gastos} pts."
             }
-            else -> """{"erro": "seção inválida: $secao. Use: atributos, vantagens, desvantagens, pericias, magias, equipamentos, pontos"}"""
+            else -> """{"erro": "seção inválida: $secao. Use: atributos, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, qualidades, peculiaridades, pontos"}"""
         }
     }
 
@@ -259,12 +268,21 @@ class ForjadorToolExecutor(
             "pericias" -> {
                 val def = repository.pericias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
                     ?: return "Perícia não encontrada no catálogo: '$alvo'."
+                // Idempotente: se já existe (ou é "alterar"), remove a antiga
+                // antes de re-adicionar — atualiza no lugar, nunca duplica.
+                var substituiu = false
+                while (true) {
+                    val i = ultimoIndice(p.pericias, { it.definicaoId }, { it.nome })
+                    if (i < 0) break
+                    viewModel.removerPericia(i); substituiu = true
+                }
                 val nhAlvo = if (nivel > 1) nivel else 12
                 val pts = com.gurps.ficha.domain.rules.CharacterRules.calcularPontosParaNivel(
                     com.gurps.ficha.model.Dificuldade.fromSigla(def.dificuldadeFixa),
-                    p.getAtributo(def.atributoBase), nhAlvo)
+                    viewModel.personagem.getAtributo(def.atributoBase), nhAlvo)
                 viewModel.adicionarPericia(def, pts, esp)
-                viewModel.autoSaveIA(); return "OK: perícia '$alvo' ${if (op=="alterar") "ajustada" else "adicionada"} (NH $nhAlvo, $pts pts)."
+                viewModel.autoSaveIA()
+                return "OK: perícia '$alvo' ${if (substituiu) "atualizada" else "adicionada"} (NH $nhAlvo, $pts pts)."
             }
             "tecnicas" -> {
                 // Técnica precisa de uma PERÍCIA-BASE que já esteja na ficha e
@@ -275,28 +293,50 @@ class ForjadorToolExecutor(
                     .find(valor)?.groupValues?.get(1)?.trim()
                 val baseN = baseRaw?.let { norm(it) }
 
+                // Idempotente: remove TODAS as ocorrências dessa técnica (inclui
+                // a órfã de perícia-base removida) antes de re-vincular.
+                var substituiu = false
+                while (true) {
+                    val i = viewModel.personagem.tecnicas.indexOfLast {
+                        norm(it.definicaoId) == alvoN || norm(it.nome) == alvoN
+                    }
+                    if (i < 0) break
+                    viewModel.removerTecnica(i); substituiu = true
+                }
+
                 // Candidatas: a perícia indicada (se válida) OU todas as que
                 // atendem o pré-requisito — escolhe a de maior NH (auto-base).
-                val candidatas = p.pericias.filter { per ->
+                val pp = viewModel.personagem
+                val candidatas = pp.pericias.filter { per ->
                     viewModel.tecnicaAtendePreRequisito(tec, per)
                 }
                 if (candidatas.isEmpty())
-                    return "Não foi possível adicionar '${tec.nome}': nenhuma perícia da ficha atende o pré-requisito (${tec.preRequisitoRaw.take(80)}). Adicione antes uma perícia compatível."
+                    return "Não foi possível adicionar '${tec.nome}': nenhuma perícia da ficha atende o pré-requisito (${tec.preRequisitoRaw.take(80)}). Adicione antes uma perícia compatível." +
+                        if (substituiu) " (a(s) ocorrência(s) antiga(s) órfã(s) foram removidas)" else ""
                 val base = (baseN?.let { b -> candidatas.firstOrNull { norm(it.definicaoId) == b || norm(it.nome) == b } })
-                    ?: candidatas.maxByOrNull { it.calcularNivel(p) }!!
+                    ?: candidatas.maxByOrNull { it.calcularNivel(pp) }!!
 
                 val erro = viewModel.adicionarTecnica(tec, base, nivel.coerceAtLeast(0))
                 viewModel.autoSaveIA()
                 return if (erro == null)
-                    "OK: técnica '${tec.nome}' adicionada sobre a perícia-base '${base.nome}' (predef +${nivel.coerceAtLeast(0)})."
+                    "OK: técnica '${tec.nome}' ${if (substituiu) "re-vinculada" else "adicionada"} sobre a perícia-base '${base.nome}' (predef +${nivel.coerceAtLeast(0)})."
                 else "Falha ao adicionar técnica '${tec.nome}': $erro"
             }
             "magias" -> {
                 val mag = repository.magias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
                     ?: return "Magia não encontrada no catálogo: '$alvo'."
+                // Idempotente: remove ocorrência existente antes de re-adicionar.
+                var substituiu = false
+                while (true) {
+                    val i = viewModel.personagem.magias.indexOfLast {
+                        norm(it.definicaoId) == alvoN || norm(it.nome) == alvoN
+                    }
+                    if (i < 0) break
+                    viewModel.removerMagia(i); substituiu = true
+                }
                 val erro = viewModel.adicionarMagia(mag, pts = if (custo > 0) custo else 1)
                 viewModel.autoSaveIA()
-                return if (erro == null) "OK: magia '${mag.nome}' adicionada."
+                return if (erro == null) "OK: magia '${mag.nome}' ${if (substituiu) "atualizada" else "adicionada"}."
                        else "Falha ao adicionar magia '${mag.nome}': $erro"
             }
             "qualidades"     -> { viewModel.adicionarQualidade(alvo); viewModel.autoSaveIA(); return "OK: qualidade adicionada." }

@@ -20,7 +20,7 @@ object ForjadorTools {
                 put("properties", JSONObject().apply {
                     put("secao", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Seção a ler: 'atributos', 'vantagens', 'desvantagens', 'pericias', 'magias', 'equipamentos', 'pontos'")
+                        put("description", "Seção a ler: 'atributos', 'vantagens', 'desvantagens', 'pericias', 'tecnicas', 'magias', 'equipamentos', 'qualidades', 'peculiaridades', 'pontos'")
                     })
                 })
                 put("required", JSONArray().put("secao"))
@@ -105,7 +105,8 @@ object ForjadorTools {
                         put("secao", JSONObject().apply {
                             put("type", "string")
                             put("enum", JSONArray().put("atributos").put("vantagens").put("desvantagens")
-                                .put("pericias").put("magias").put("equipamentos").put("pontos"))
+                                .put("pericias").put("tecnicas").put("magias").put("equipamentos")
+                                .put("qualidades").put("peculiaridades").put("pontos"))
                         })
                     })
                     put("required", JSONArray().put("secao"))
