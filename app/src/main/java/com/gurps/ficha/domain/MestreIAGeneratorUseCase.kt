@@ -62,9 +62,14 @@ class MestreIAGeneratorUseCase(
         val nexusAdapter = NexusArcanoModoAlvoAdapter(repository.magias)
         val toolExecutor = ForjadorToolExecutor(viewModel, repository, nexusAdapter)
 
-        // Extrai o nome do personagem do prompt para usar na narrativa paralela
-        val nomePersonagem = Regex("""chamado\s+([^,—\-\n]+)""", RegexOption.IGNORE_CASE)
-            .find(prompt)?.groupValues?.get(1)?.trim() ?: "o personagem"
+        // Nome só para mensagens de status. A narrativa usa o PEDIDO INTEIRO
+        // (prompt) — extrair "nome" por regex falhava em "crie o Aragorn de
+        // senhor dos aneis" (sem "chamado") e a IA inventava um personagem.
+        val nomePersonagem = Regex(
+            """(?:chamad[oa]|nome(?:ad[oa])?|ficha d[eoa]|crie?\s+[oa]?)\s+([\p{L} .'-]{2,40})""",
+            RegexOption.IGNORE_CASE
+        ).find(prompt)?.groupValues?.get(1)?.trim()?.trimEnd('.', ',')
+            ?.takeIf { it.isNotBlank() } ?: "o personagem solicitado"
 
         var sucesso = false
         for (config in fila) {
@@ -80,7 +85,7 @@ class MestreIAGeneratorUseCase(
                     val narrativaDeferred = async {
                         MestreIAClient.perguntarAoMestre(
                             baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                            prompt = "Escreva a história de origem e aparência física de $nomePersonagem em 2 parágrafos evocativos para RPG. Seja imersivo e cinematográfico. Não mencione atributos numéricos ou mecânicas de jogo.",
+                            prompt = "PEDIDO DO JOGADOR: \"$prompt\"\n\nCom base EXATAMENTE no pedido acima, escreva a história de origem e a aparência física do personagem solicitado em 2 parágrafos evocativos para RPG. Se for um personagem conhecido (livro/filme/jogo), seja fiel ao personagem original — NÃO invente outro. Seja imersivo e cinematográfico. Não mencione atributos numéricos ou mecânicas de jogo.",
                             history = emptyList(),
                             contextoPersonagem = "",
                             catalogo = null,
@@ -239,8 +244,9 @@ class MestreIAGeneratorUseCase(
     }
 
     fun validarBudget(ficha: MestreIAResponse): String? {
-        val st = ficha.atributos.st; val dx = ficha.atributos.dx
-        val iq = ficha.atributos.iq; val ht = ficha.atributos.ht
+        val attr = ficha.atributosEfetivos()
+        val st = attr.st; val dx = attr.dx
+        val iq = attr.iq; val ht = attr.ht
         val custoAtributos = ((st - 10).coerceAtLeast(0) * 10) +
                              ((dx - 10).coerceAtLeast(0) * 20) +
                              ((iq - 10).coerceAtLeast(0) * 20) +
@@ -263,10 +269,11 @@ class MestreIAGeneratorUseCase(
         if (ficha.notas.isNotBlank()) viewModel.atualizarNotas(ficha.notas)
         if (ficha.pontosIniciais > 0) viewModel.atualizarPontosIniciais(ficha.pontosIniciais)
 
-        viewModel.atualizarForca(ficha.atributos.st)
-        viewModel.atualizarDestreza(ficha.atributos.dx)
-        viewModel.atualizarInteligencia(ficha.atributos.iq)
-        viewModel.atualizarVitalidade(ficha.atributos.ht)
+        val attr = ficha.atributosEfetivos()
+        viewModel.atualizarForca(attr.st)
+        viewModel.atualizarDestreza(attr.dx)
+        viewModel.atualizarInteligencia(attr.iq)
+        viewModel.atualizarVitalidade(attr.ht)
 
         // Ordem importa: perícias antes de técnicas (técnica precisa da perícia-base já na ficha)
         ficha.vantagens.forEach    { v -> adicionarVantagem(v, v.descricao ?: "", v.custo ?: 0) }

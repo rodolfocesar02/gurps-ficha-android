@@ -23,8 +23,38 @@ data class MestreIAResponse(
     val historico: String = "",
     val notas: String = "",
     val pontosIniciais: Int = 0,
-    val versaoApp: String = "v1.6.0-Complexo" // Assinatura para Debug
-)
+    // Tolerância: a IA às vezes emite atributos soltos no formato Personagem
+    // ("forca": 14, "destreza": 14, ...) ou em inglês ("st": 14) em vez de
+    // "atributos": { "st": 14, ... }. Estes campos capturam esse caso.
+    val forca: Int? = null,
+    val destreza: Int? = null,
+    val inteligencia: Int? = null,
+    val vitalidade: Int? = null,
+    val st: Int? = null,
+    val dx: Int? = null,
+    val iq: Int? = null,
+    val ht: Int? = null,
+    val versaoApp: String = "v1.6.1-Complexo" // Assinatura para Debug
+) {
+    /**
+     * Atributos efetivos resolvendo qualquer formato que a IA tenha usado:
+     * 1) objeto "atributos" (formato canônico); 2) campos soltos PT
+     * (forca/destreza/...); 3) campos soltos EN (st/dx/...). Default 10.
+     */
+    fun atributosEfetivos(): MestreIAAtributos {
+        val a = atributos
+        fun pick(canon: Int, vararg alts: Int?): Int {
+            if (canon != 10) return canon            // veio do objeto "atributos"
+            return alts.firstOrNull { it != null && it != 0 } ?: canon
+        }
+        return MestreIAAtributos(
+            st = pick(a.st, forca, st),
+            dx = pick(a.dx, destreza, dx),
+            iq = pick(a.iq, inteligencia, iq),
+            ht = pick(a.ht, vitalidade, ht)
+        )
+    }
+}
 
 /**
  * Modificador de uma vantagem/desvantagem (ampliação ou limitação).
