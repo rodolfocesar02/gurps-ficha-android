@@ -29,8 +29,13 @@ class MestreIAGeneratorUseCase(
         onChunk: (String) -> Unit,
         onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
     ) = withContext(Dispatchers.IO) {
-        onStatusUpdate("Consultando o Códex para $modo...")
-        val catalogoLocal = MestreIAUseCase(viewModel, repository).gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory)
+        // Lote 136: Forjador NÃO usa RAG do manual. O texto bruto do livro
+        // (Ponte de Ferro ~35k) só servia ao Auditor de regras e era ruído puro
+        // aqui — competia com o JSON pelo limite de tokens e causava truncamento.
+        // O Forjador precisa de IDs do catálogo (injetados via promptForjador) e
+        // das ferramentas forjador_buscar_catalogo, não do texto do manual.
+        // O modo Dúvidas (MestreIAUseCase.conversarComMestreIA) segue intacto.
+        val catalogoVazio = MestreIAClient.CatalogoNomes()
 
         // Lote A: injeta catálogo real de IDs no prompt do Forjador
         // vantagens já inclui as de Artes Marciais (merge feito no CatalogLoaders)
@@ -101,7 +106,7 @@ class MestreIAGeneratorUseCase(
                                 prompt = promptAtual,
                                 history = histCompleto,
                                 contextoPersonagem = viewModel.personagem.toJson(),
-                                catalogo = catalogoLocal.catalogo,
+                                catalogo = catalogoVazio,
                                 modo = modo,
                                 promptSistema = promptForjador,
                                 onChunk = null,
