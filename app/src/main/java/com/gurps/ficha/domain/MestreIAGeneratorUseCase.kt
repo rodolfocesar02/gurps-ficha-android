@@ -75,15 +75,39 @@ class MestreIAGeneratorUseCase(
             val nomeModelo = if (config.third.contains("gemini")) "Arcano" else "Forjador"
 
             try {
-                // Fonte única: só o loop agêntico da ficha. A história mostrada
-                // no chat vem do campo "historico"/"aparencia" do próprio JSON
-                // (resolvido em FichaIADelegate) — não há mais narrativa paralela
-                // que podia divergir do que foi pra ficha.
                 var sheetResponse: MestreIAClient.ChatResponse? = null
 
                 run {
+                    // ITERAÇÃO 0 — História primeiro. O agente decide se o usuário
+                    // trouxe história pronta (preserva + enriquece) ou só um
+                    // conceito (escreve fiel). A história sai aqui, aparece no
+                    // chat na hora (onChunk) e vira BASE para construir a ficha
+                    // coerente — e é reusada nos campos historico/aparencia do JSON.
+                    onStatusUpdate("Mestre $nomeModelo concebendo a história...")
+                    val narrativaResp = MestreIAClient.perguntarAoMestre(
+                        baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
+                        prompt = MestreIAPromptsForjador.gerarPromptHistoria(prompt),
+                        history = emptyList(),
+                        contextoPersonagem = "",
+                        catalogo = catalogoVazio,
+                        modo = "conversa",
+                        promptSistema = MestreIAPromptsForjador.PROMPT_HISTORIA_SISTEMA,
+                        onChunk = null,
+                        desativarTools = true,
+                        maxTokens = 1500
+                    )
+                    val historiaBase = narrativaResp.text
+                        .takeIf { it.isNotBlank() && !it.startsWith("Erro") }
+                        ?.trim()
+                        .orEmpty()
+                    if (historiaBase.isNotBlank()) onChunk(historiaBase)
+
                     onStatusUpdate("Mestre $nomeModelo forjando a ficha de $nomePersonagem...")
                     val localHistory = mutableListOf<Pair<String, String>>()
+                    if (historiaBase.isNotBlank()) {
+                        localHistory.add("model" to historiaBase)
+                        localHistory.add("user" to "Esta é a história/aparência DEFINITIVA do personagem (acima). Agora construa a ficha GURPS COERENTE com ela: as perícias, vantagens e desvantagens devem refletir o que a história descreve. No JSON final, use EXATAMENTE esta história no campo \"historico\" e a descrição física no campo \"aparencia\" — não reescreva.")
+                    }
                     var promptAtual = prompt
                     var response: MestreIAClient.ChatResponse? = null
 
@@ -123,7 +147,7 @@ class MestreIAGeneratorUseCase(
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados")
                         promptAtual = if (iteracao >= 3) {
-                            "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. Inclua um campo \"historico\" com a biografia narrativa e \"aparencia\" com a descrição física. Responda APENAS com o JSON, sem texto adicional."
+                            "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
                         } else {
                             "Dados coletados acima. Continue a análise — use mais ferramentas se necessário, ou finalize se já tiver tudo."
                         }

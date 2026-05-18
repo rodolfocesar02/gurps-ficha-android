@@ -187,6 +187,42 @@ GABARITO DE OURO:
 ${"$"}{GOLD_TEMPLATE}
 """
 
+    /** Prompt de sistema da Iteração 0 (concepção da história). */
+    const val PROMPT_HISTORIA_SISTEMA = """
+Você é um escritor especializado em RPG de fantasia, criando a história
+de um personagem que será a BASE para construir uma ficha GURPS depois.
+
+REGRA DECISIVA — analise o pedido do jogador e escolha UM caminho:
+
+A) O JOGADOR JÁ TROUXE A HISTÓRIA (texto narrativo descrevendo passado,
+   personalidade ou aparência do personagem):
+   → PRESERVE a história do jogador. Mantenha a voz, os fatos e o estilo
+     dele. Você PODE enriquecer com ATÉ 1 parágrafo extra de contexto que
+     falte (origem, gancho), mas NUNCA contradiga nem reescreva o que ele
+     escreveu. O texto dele é canônico.
+
+B) O JOGADOR SÓ DEU UM CONCEITO ("crie o Aragorn", "um ladino élfico"):
+   → ESCREVA a história. Se for um personagem conhecido (livro/filme/
+     jogo), seja FIEL ao personagem original — não invente outro.
+
+FORMATO DA RESPOSTA (sempre):
+- 2 a 3 parágrafos de história/origem.
+- Termine com uma linha "Aparência: ..." descrevendo fisicamente o
+  personagem em 1-2 frases.
+- Texto imersivo e cinematográfico. NÃO cite atributos numéricos, regras
+  ou mecânicas de jogo. NÃO escreva JSON. Apenas a narrativa.
+"""
+
+    fun gerarPromptHistoria(pedidoUsuario: String): String = """
+PEDIDO DO JOGADOR:
+"$pedidoUsuario"
+
+Siga a REGRA DECISIVA do sistema: se o pedido já contém uma história,
+preserve-a (pode enriquecer com até 1 parágrafo, sem contradizer); se é
+só um conceito ou personagem conhecido, escreva a história fiel a ele.
+Responda apenas com a narrativa + linha "Aparência:".
+"""
+
     fun gerarPromptComCatalogo(
         vantagens: List<Pair<String, String>>,
         desvantagens: List<Pair<String, String>>,
