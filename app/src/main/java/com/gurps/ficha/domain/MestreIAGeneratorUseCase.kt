@@ -123,7 +123,24 @@ class MestreIAGeneratorUseCase(
                     var promptAtual = prompt
                     var response: MestreIAClient.ChatResponse? = null
 
-                    for (iteracao in 1..4) {
+                    // Teto DINÂMICO: base 4 iterações, mas estende até ITER_MAX
+                    // ENQUANTO cada iteração faz progresso real (adiciona itens
+                    // novos via forjador_editar_ficha). Cadeias longas (ex:
+                    // Desejo) precisam de muitos ciclos "adiciona base → rechama
+                    // GPS → sobe um nível". Anti-loop: se uma iteração não
+                    // progride (0 itens novos), o limite NÃO estende → encerra.
+                    val ITER_MIN = 4
+                    val ITER_MAX = 12
+                    fun totalItens() = viewModel.personagem.let {
+                        it.magias.size + it.vantagens.size + it.desvantagens.size +
+                        it.pericias.size + it.tecnicas.size + it.equipamentos.size
+                    }
+                    var limiteIter = ITER_MIN
+                    var iteracao = 0
+                    while (iteracao < limiteIter) {
+                        iteracao++
+                        val itensAntes = totalItens()
+                        val ultima = iteracao >= limiteIter
                         val histBase = viewModel.mestreIAChatHistory.takeLast(4).map { it.role to it.text }
                         val histCompleto = histBase + localHistory
 
@@ -136,8 +153,8 @@ class MestreIAGeneratorUseCase(
                             modo = modo,
                             promptSistema = promptForjador,
                             onChunk = null,
-                            desativarTools = iteracao >= 4,
-                            maxTokens = if (iteracao >= 4) 8192 else 2048
+                            desativarTools = ultima,
+                            maxTokens = if (ultima) 8192 else 2048
                         )
 
                         if (response.text.contains("Erro de API") || response.text.startsWith("Erro")) break
@@ -188,18 +205,30 @@ class MestreIAGeneratorUseCase(
                             Log.d("MestreIA_Forjador", "Read-back: ${secoes.joinToString()} (${leitura.length} chars)")
                         }
 
+                        // TETO DINÂMICO: se esta iteração ADICIONOU itens novos
+                        // (progresso real montando a cadeia) e ainda não bateu
+                        // o máximo, estende o limite — dá mais ciclos para
+                        // cadeias longas. Sem progresso → não estende → o loop
+                        // caminha para a síntese final (anti-loop).
+                        val progrediu = totalItens() > itensAntes
+                        if (progrediu && limiteIter < ITER_MAX) {
+                            limiteIter = (limiteIter + 1).coerceAtMost(ITER_MAX)
+                            Log.d("MestreIA_Forjador", "Progresso (+${totalItens() - itensAntes} itens) → limite estendido p/ $limiteIter")
+                        }
+                        val proximaEhFinal = iteracao >= limiteIter - 1
+
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados$verificacao")
-                        promptAtual = if (iteracao >= 3) {
+                        promptAtual = if (proximaEhFinal) {
                             if (modo == "analise") {
-                                "[RESPOSTA FINAL] Você já leu a ficha e o catálogo. NÃO chame ferramentas e NÃO gere JSON. Responda em TEXTO ao usuário: análise objetiva da ficha + sugestões priorizadas (cite o ID real de cada vantagem/perícia/magia sugerida e o porquê, ligado ao conceito do personagem). Termine perguntando se ele quer que você aplique alguma das sugestões."
+                                "[RESPOSTA FINAL] Você já leu a ficha e o catálogo. NÃO chame ferramentas e NÃO gere JSON. Responda em TEXTO ao usuário: análise objetiva da ficha + sugestões priorizadas (cite o ID real de cada vantagem/perícia/magia sugerida e o porquê, ligado ao conceito do personagem). Se ainda faltou aplicar parte de uma cadeia pedida, diga claramente o que falta e ofereça continuar. Termine perguntando se ele quer que você aplique alguma das sugestões."
                             } else {
                                 "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
                             }
                         } else {
-                            "Dados coletados acima. Continue a análise — use mais ferramentas se necessário, ou finalize se já tiver tudo."
+                            "Dados coletados acima. Continue executando o que o usuário pediu — se ainda faltam magias da cadeia (ex: pré-requisitos para a magia-alvo), CONTINUE adicionando via forjador_editar_ficha e rechame forjador_gps_magia até a magia-alvo entrar. Não pare no meio da cadeia."
                         }
-                        onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao)...")
+                        onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao/$limiteIter)...")
                     }
                     sheetResponse = response
                 }
