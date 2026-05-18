@@ -150,7 +150,7 @@ class MestreIAGeneratorUseCase(
                     // GPS → sobe um nível". Anti-loop: se uma iteração não
                     // progride (0 itens novos), o limite NÃO estende → encerra.
                     val ITER_MIN = 4
-                    val ITER_MAX = 12
+                    val ITER_MAX = 25 // cadeia do Desejo precisa de ~15-20 ciclos
                     fun totalItens() = viewModel.personagem.let {
                         it.magias.size + it.vantagens.size + it.desvantagens.size +
                         it.pericias.size + it.tecnicas.size + it.equipamentos.size
@@ -189,7 +189,21 @@ class MestreIAGeneratorUseCase(
                         if (forjadorCalls.isEmpty()) break
 
                         val resultados = forjadorCalls.joinToString("\n\n") { tc ->
-                            onStatusUpdate("${tc.name.replace("forjador_", "")}...")
+                            // Status AO VIVO descritivo (não "tela em branco"):
+                            // diz exatamente a ação, como um editor mostrando
+                            // "abrindo arquivo / aplicando mudança".
+                            val alvo = tc.args.optString("alvo", "")
+                                .ifBlank { tc.args.optString("magia_alvo", "") }
+                                .ifBlank { tc.args.optString("query", "") }
+                                .ifBlank { tc.args.optString("secao", "") }
+                            val acao = when (tc.name) {
+                                ForjadorTools.TOOL_EDITAR    -> "✏️ Aplicando: $alvo"
+                                ForjadorTools.TOOL_GPS_MAGIA -> "🧭 Calculando pré-requisitos: $alvo"
+                                ForjadorTools.TOOL_BUSCAR    -> "🔎 Buscando no catálogo: $alvo"
+                                ForjadorTools.TOOL_LER_FICHA -> "📖 Lendo a ficha: $alvo"
+                                else -> tc.name.replace("forjador_", "")
+                            }
+                            onStatusUpdate("$acao  (passo $iteracao)")
                             "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
                         }
                         Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
@@ -241,12 +255,12 @@ class MestreIAGeneratorUseCase(
                         localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados$verificacao")
                         promptAtual = if (proximaEhFinal) {
                             if (modo == "analise") {
-                                "[RESPOSTA FINAL] Você já leu a ficha e o catálogo. NÃO chame ferramentas e NÃO gere JSON. Responda em TEXTO ao usuário: análise objetiva da ficha + sugestões priorizadas (cite o ID real de cada vantagem/perícia/magia sugerida e o porquê, ligado ao conceito do personagem). Se ainda faltou aplicar parte de uma cadeia pedida, diga claramente o que falta e ofereça continuar. Termine perguntando se ele quer que você aplique alguma das sugestões."
+                                "[RESPOSTA FINAL] NÃO chame mais ferramentas. Se o usuário tinha pedido para APLICAR algo e a cadeia ficou incompleta (ex: ainda falta a magia-alvo ou pré-requisitos), diga com clareza e honestidade O QUE JÁ FOI APLICADO e O QUE AINDA FALTA — NÃO finja que terminou. Caso contrário, faça a análise + sugestões com IDs reais. Só pergunte se quer aplicar quando o pedido NÃO era uma ordem direta de aplicar."
                             } else {
                                 "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
                             }
                         } else {
-                            "Dados coletados acima. Continue executando o que o usuário pediu — se ainda faltam magias da cadeia (ex: pré-requisitos para a magia-alvo), CONTINUE adicionando via forjador_editar_ficha e rechame forjador_gps_magia até a magia-alvo entrar. Não pare no meio da cadeia."
+                            "Dados coletados acima. O usuário deu uma ORDEM DIRETA — EXECUTE-A INTEIRA, NÃO PARE para perguntar. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha. NÃO responda texto pedindo confirmação no meio da execução — só finalize quando a cadeia toda (incluindo a magia-alvo) estiver aplicada."
                         }
                         onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao/$limiteIter)...")
                     }
