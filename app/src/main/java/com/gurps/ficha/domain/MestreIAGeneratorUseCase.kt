@@ -20,6 +20,24 @@ class MestreIAGeneratorUseCase(
     private val viewModel: FichaViewModel,
     private val repository: DataRepository
 ) {
+    /**
+     * Erro REAL de infra (vindo do MestreIAClient), não texto da IA que
+     * por acaso começa com "Erro". Antes, `startsWith("Erro")` confundia
+     * uma análise legítima ("Erro comum em magos...") com falha de API e
+     * disparava o fallback indevido. Casa só os padrões emitidos pelo
+     * client: "Erro <código>:", "Erro de Conexão:", "Erro: Resposta
+     * vazia...", "Erro: Modo Stream...", "Erro: Falha na conexão...".
+     */
+    private fun ehErroDeApi(texto: String): Boolean {
+        val t = texto.trimStart()
+        return Regex("^Erro \\d{3}:").containsMatchIn(t) ||
+            t.startsWith("Erro de Conexão:") ||
+            t.startsWith("Erro de API") ||
+            t.startsWith("Erro: Resposta vazia") ||
+            t.startsWith("Erro: Modo Stream") ||
+            t.startsWith("Erro: Falha na conexão")
+    }
+
     suspend fun gerarOuAnalisarFicha(
         prompt: String,
         modo: String,
@@ -56,10 +74,12 @@ class MestreIAGeneratorUseCase(
             )
         }
 
-        // Forjador: DeepSeek paga como primário, Gemini Pro como fallback
+        // Forjador: DeepSeek primário; fallback = DeepSeek 2 (chave gratuita).
+        // Antes o fallback era Gemini 3.1 Pro, mas a chave está com quota 0
+        // (free tier zerado) → qualquer fallback derrubava tudo com 429.
         val fila = listOf(
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
-            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_PRO)
+            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL)
         )
 
         // Lote E: executor de tools do Forjador Agêntico
@@ -106,7 +126,7 @@ class MestreIAGeneratorUseCase(
                             maxTokens = 1500
                         )
                         val historiaBase = narrativaResp.text
-                            .takeIf { it.isNotBlank() && !it.startsWith("Erro") }
+                            .takeIf { it.isNotBlank() && !ehErroDeApi(it) }
                             ?.trim()
                             .orEmpty()
                         if (historiaBase.isNotBlank()) onChunk(historiaBase)
@@ -157,7 +177,7 @@ class MestreIAGeneratorUseCase(
                             maxTokens = if (ultima) 8192 else 2048
                         )
 
-                        if (response.text.contains("Erro de API") || response.text.startsWith("Erro")) break
+                        if (ehErroDeApi(response.text)) break
 
                         val forjadorCalls = response.toolCalls.filter { tc ->
                             tc.name == ForjadorTools.TOOL_LER_FICHA ||
@@ -234,7 +254,7 @@ class MestreIAGeneratorUseCase(
                 }
 
                 val finalResponse = sheetResponse ?: continue
-                if (!finalResponse.text.contains("Erro de API") && !finalResponse.text.startsWith("Erro")) {
+                if (!ehErroDeApi(finalResponse.text)) {
                     onResultado(true, finalResponse)
                     sucesso = true
                     break
