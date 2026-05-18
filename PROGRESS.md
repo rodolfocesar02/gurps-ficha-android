@@ -591,6 +591,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - **Status ao vivo descritivo** (decisão do usuário — não deixar tela em branco): "✏️ Aplicando: X", "🧭 Calculando pré-requisitos: Y", "🔎 Buscando: Z" + passo N, como um editor mostrando a ação.
 - **Verificação:** clean build OK (APK 20:40); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 
+### Lote 160: Parada por ESTAGNAÇÃO (não contador) — Cadeia Longa Não Corta no Meio - CONCLUÍDO (commit 30d1fa8)
+- **Trace [P0..P6] provou de novo:** backend 100% ok, `[P6] FIM ok`, mensagem aparece no chat. **Não há bug técnico.** O problema é lógico.
+- **Diagnóstico:** o Lote 159 (`ITER_MAX=25`) não surtiu efeito — o log mostrou parada em **4 iterações**. Causa: `limiteIter` começava em 4 e só estendia +1 **se progrediu**. Iterações 1-2 só usaram `gps_magia` (0 itens novos) → não estenderam → iteração 4 já virou `[RESPOSTA FINAL]`. O teto de 25 era inalcançável porque o contador rígido estourava antes.
+- **Correção de lógica:** removido `limiteIter`/`ITER_MIN`/`ITER_MAX`. Parada agora por **estagnação**: conta iterações consecutivas que chamaram ferramenta mas não adicionaram item; progresso **zera** o contador; 2× seguidas sem progresso → encerra. Teto duro de segurança = 30. Cadeia longa continua o quanto precisar enquanto progride.
+- **Verificação:** clean build OK (APK 20:50); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+
 
 
 **[Bateria de Testes a Realizar]**
