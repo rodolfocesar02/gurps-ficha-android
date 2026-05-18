@@ -132,7 +132,7 @@ class MestreIAGeneratorUseCase(
                         if (historiaBase.isNotBlank()) onChunk(historiaBase)
                         if (historiaBase.isNotBlank()) {
                             localHistory.add("model" to historiaBase)
-                            localHistory.add("user" to "Esta é a história/aparência DEFINITIVA do personagem (acima). Agora construa a ficha GURPS COERENTE com ela: as perícias, vantagens e desvantagens devem refletir o que a história descreve. No JSON final, use EXATAMENTE esta história no campo \"historico\" e a descrição física no campo \"aparencia\" — não reescreva.")
+                            localHistory.add("user" to "[SISTEMA — instrução de orquestração, NÃO é mensagem do usuário]\nEsta é a história/aparência DEFINITIVA do personagem (acima). Agora construa a ficha GURPS COERENTE com ela: as perícias, vantagens e desvantagens devem refletir o que a história descreve. No JSON final, use EXATAMENTE esta história no campo \"historico\" e a descrição física no campo \"aparencia\" — não reescreva.")
                         }
                     }
 
@@ -140,7 +140,17 @@ class MestreIAGeneratorUseCase(
                         if (ehConsultor) "Mestre $nomeModelo analisando a ficha..."
                         else "Mestre $nomeModelo forjando a ficha de $nomePersonagem..."
                     )
-                    var promptAtual = prompt
+                    // PEDIDO ORIGINAL fixo. Reafirmado a cada iteração para
+                    // o modelo NUNCA confundir instrução do sistema (ou
+                    // sugestão dele mesmo) com o que o usuário pediu.
+                    val pedidoUsuario = prompt
+                    fun comAncora(instrucaoSistema: String): String =
+                        "═══ ÚNICO PEDIDO REAL DO USUÁRIO (não invente outro, " +
+                        "não trate suas próprias sugestões como aceitas) ═══\n" +
+                        "\"$pedidoUsuario\"\n\n" +
+                        "═══ INSTRUÇÃO INTERNA DO SISTEMA (orquestração — NÃO é " +
+                        "fala do usuário) ═══\n$instrucaoSistema"
+                    var promptAtual = pedidoUsuario
                     var response: MestreIAClient.ChatResponse? = null
 
                     // Parada por ESTAGNAÇÃO, não por contador. O loop continua
@@ -254,16 +264,20 @@ class MestreIAGeneratorUseCase(
                         val proximaEhFinal = semProgresso >= 2 || iteracao >= ITER_HARD_CAP - 1
 
                         localHistory.add("model" to "Dados coletados com sucesso.")
-                        localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados$verificacao")
-                        promptAtual = if (proximaEhFinal) {
+                        // Resultado de ferramenta = dado do SISTEMA, não fala
+                        // do usuário. Rótulo explícito evita o modelo achar
+                        // que o usuário "pediu/aceitou" o que está aqui.
+                        localHistory.add("user" to "[SISTEMA — resultado de ferramenta, NÃO é mensagem do usuário]\n=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados$verificacao")
+                        val instrucao = if (proximaEhFinal) {
                             if (modo == "analise") {
-                                "[RESPOSTA FINAL] NÃO chame mais ferramentas. Se o usuário tinha pedido para APLICAR algo e a cadeia ficou incompleta (ex: ainda falta a magia-alvo ou pré-requisitos), diga com clareza e honestidade O QUE JÁ FOI APLICADO e O QUE AINDA FALTA — NÃO finja que terminou. Caso contrário, faça a análise + sugestões com IDs reais. Só pergunte se quer aplicar quando o pedido NÃO era uma ordem direta de aplicar."
+                                "[RESPOSTA FINAL] NÃO chame mais ferramentas. Se o usuário tinha pedido para APLICAR algo e a cadeia ficou incompleta (ex: ainda falta a magia-alvo ou pré-requisitos), diga com clareza e honestidade O QUE JÁ FOI APLICADO e O QUE AINDA FALTA — NÃO finja que terminou. NÃO afirme que o usuário aceitou ou pediu algo que não está no PEDIDO REAL acima. Caso contrário, faça a análise + sugestões com IDs reais."
                             } else {
                                 "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
                             }
                         } else {
-                            "Dados coletados acima. O usuário deu uma ORDEM DIRETA — EXECUTE-A INTEIRA, NÃO PARE para perguntar. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha. NÃO responda texto pedindo confirmação no meio da execução — só finalize quando a cadeia toda (incluindo a magia-alvo) estiver aplicada."
+                            "Continue executando ESTRITAMENTE o PEDIDO REAL do usuário acima — nada além dele. NÃO trate sugestões que você fez antes como aceitas; o usuário só pediu o que está em PEDIDO REAL. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha, sem parar para perguntar."
                         }
+                        promptAtual = comAncora(instrucao)
                         onStatusUpdate("Mestre $nomeModelo montando a cadeia (passo $iteracao)...")
                     }
                     sheetResponse = response
