@@ -626,6 +626,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 164: Liga Pathfinder em Produção + Corrige Anti-Loop - CONCLUÍDO (commit 061a956)
+- **(1) Pathfinder LIGADO:** `NexusArcanoModoAlvoAdapter.calcular()` agora chama `planejarCaminhoMinimo` (estava desligado/código morto desde sempre — diagnóstico). Novo campo `snapshot.trilhaOtimaIds` (runCatching → falha cai no comportamento antigo, nunca quebra o GPS). `ForjadorToolExecutor.gpsMagia` imprime "TRILHA MAIS RÁPIDA (adicione NESTA ORDEM)" — a IA segue o roteiro pronto do A*/guloso (Lote 163) em vez de tatear. Faltava `import nexus.arcano.planejarCaminhoMinimo` (extension function).
+- **(2) Anti-loop corrigido (bug Lote 160):** iteração só com `forjador_gps_magia` (descobrir a trilha) era contada como estagnação → loop morria exatamente quando o GPS liberava o que adicionar. Agora: `progrediu`(itens) zera tudo; `pesquisou`(GPS/buscar) zera `semProgresso` mas conta `pesquisaSeguida`; estagnação real (nada útil) incrementa. Encerra se `semProgresso>=2` OU `pesquisaSeguida>=4` OU teto 30. Cadeia longa avança; loop de pesquisa pura ainda barrado.
+- **Verificação:** clean build (APK 21:54); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device do usuário — pedir "adicione a magia Desejo e as necessárias" no modo Analisar; confirmar GPS mostra TRILHA, IA segue na ordem, cadeia completa até Desejo entrar.
+
+
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"
