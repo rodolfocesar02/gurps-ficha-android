@@ -268,11 +268,17 @@ class ForjadorToolExecutor(
             "pericias" -> {
                 val def = repository.pericias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
                     ?: return "Perícia não encontrada no catálogo: '$alvo'."
-                // Idempotente: se já existe (ou é "alterar"), remove a antiga
-                // antes de re-adicionar — atualiza no lugar, nunca duplica.
+                // Idempotente por (perícia + ESPECIALIZAÇÃO): re-adicionar a
+                // MESMA perícia/especialização atualiza no lugar. Mas
+                // Sobrevivência/Florestas e Sobrevivência/Montanhas são
+                // perícias DISTINTAS — não apaga a outra especialização.
+                val espN = norm(esp)
                 var substituiu = false
                 while (true) {
-                    val i = ultimoIndice(p.pericias, { it.definicaoId }, { it.nome })
+                    val i = viewModel.personagem.pericias.indexOfLast {
+                        (norm(it.definicaoId) == alvoN || norm(it.nome) == alvoN) &&
+                        norm(it.especializacao) == espN
+                    }
                     if (i < 0) break
                     viewModel.removerPericia(i); substituiu = true
                 }
@@ -293,28 +299,38 @@ class ForjadorToolExecutor(
                     .find(valor)?.groupValues?.get(1)?.trim()
                 val baseN = baseRaw?.let { norm(it) }
 
-                // Idempotente: remove TODAS as ocorrências dessa técnica (inclui
-                // a órfã de perícia-base removida) antes de re-vincular.
+                // 1) Resolve a perícia-base ALVO ANTES de remover nada.
+                // Candidatas: perícias da ficha que atendem o pré-requisito.
+                val pp0 = viewModel.personagem
+                val candidatas = pp0.pericias.filter { per ->
+                    viewModel.tecnicaAtendePreRequisito(tec, per)
+                }
+                if (candidatas.isEmpty())
+                    return "Não foi possível adicionar '${tec.nome}': nenhuma perícia da ficha atende o pré-requisito (${tec.preRequisitoRaw.take(80)}). Adicione antes uma perícia compatível."
+                val base = (baseN?.let { b -> candidatas.firstOrNull { norm(it.definicaoId) == b || norm(it.nome) == b } })
+                    ?: candidatas.maxByOrNull { it.calcularNivel(pp0) }!!
+                val baseAlvoN = norm(base.definicaoId)
+
+                // 2) Remoção SELETIVA. Técnica é única por (técnica +
+                // perícia-base): Contra-Ataque de Espada ≠ de Machado, ambas
+                // coexistem. Só removemos:
+                //   (a) mesma técnica + MESMA perícia-base alvo (re-aplicar);
+                //   (b) mesma técnica ÓRFÃ (perícia-base não existe na ficha).
+                // Técnicas da mesma técnica com OUTRA base válida = preservadas.
+                val idsPericiasFicha = pp0.pericias.map { norm(it.definicaoId) }.toSet()
                 var substituiu = false
                 while (true) {
-                    val i = viewModel.personagem.tecnicas.indexOfLast {
-                        norm(it.definicaoId) == alvoN || norm(it.nome) == alvoN
+                    val i = viewModel.personagem.tecnicas.indexOfLast { t ->
+                        val mesmaTec = norm(t.definicaoId) == alvoN || norm(t.nome) == alvoN
+                        if (!mesmaTec) return@indexOfLast false
+                        val baseT = norm(t.periciaBaseDefinicaoId)
+                        val mesmaBase = baseT == baseAlvoN
+                        val orfa = baseT.isBlank() || baseT !in idsPericiasFicha
+                        mesmaBase || orfa
                     }
                     if (i < 0) break
                     viewModel.removerTecnica(i); substituiu = true
                 }
-
-                // Candidatas: a perícia indicada (se válida) OU todas as que
-                // atendem o pré-requisito — escolhe a de maior NH (auto-base).
-                val pp = viewModel.personagem
-                val candidatas = pp.pericias.filter { per ->
-                    viewModel.tecnicaAtendePreRequisito(tec, per)
-                }
-                if (candidatas.isEmpty())
-                    return "Não foi possível adicionar '${tec.nome}': nenhuma perícia da ficha atende o pré-requisito (${tec.preRequisitoRaw.take(80)}). Adicione antes uma perícia compatível." +
-                        if (substituiu) " (a(s) ocorrência(s) antiga(s) órfã(s) foram removidas)" else ""
-                val base = (baseN?.let { b -> candidatas.firstOrNull { norm(it.definicaoId) == b || norm(it.nome) == b } })
-                    ?: candidatas.maxByOrNull { it.calcularNivel(pp) }!!
 
                 val erro = viewModel.adicionarTecnica(tec, base, nivel.coerceAtLeast(0))
                 viewModel.autoSaveIA()
