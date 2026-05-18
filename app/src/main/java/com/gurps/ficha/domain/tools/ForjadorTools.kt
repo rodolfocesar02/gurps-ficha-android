@@ -81,7 +81,7 @@ object ForjadorTools {
                     })
                     put("valor", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Para atributos: o novo valor (ex: '14'). Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=macamachado_de_duas_maos' (periciaBase opcional — auto-escolhe a melhor perícia que atende o pré-requisito).")
+                        put("description", "Atributos: novo valor ('14'). Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=<id>' (auto-escolhe se omitir). Magia: a ferramenta BARRA se faltar pré-requisito (igual ao app) — adicione a cadeia antes; só 'forcar=true' adiciona sem pré-requisito (gatilho narrativo).")
                     })
                 })
                 put("required", JSONArray().put("operacao").put("secao").put("alvo"))
@@ -171,7 +171,7 @@ object ForjadorTools {
                         })
                         put("valor", JSONObject().apply {
                             put("type", "string")
-                            put("description", "Atributo: '14'. Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=<id>' (periciaBase opcional, auto-escolhe)")
+                            put("description", "Atributo: '14'. Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=<id>'. Magia: barra se faltar pré-requisito; 'forcar=true' p/ adicionar sem (narrativo)")
                         })
                     })
                     put("required", JSONArray().put("operacao").put("secao").put("alvo"))

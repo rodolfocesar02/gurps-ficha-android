@@ -109,7 +109,19 @@ REGRAS DE OURO DA FORJA
 
 1. USE APENAS nomes do Catálogo Local fornecido no contexto. Nenhum outro é válido.
 2. APTIDÃO MÁGICA: qualquer personagem com magias DEVE ter esta vantagem na lista.
-3. PRÉ-REQUISITOS: magias avançadas exigem magias básicas — respeite a cadeia.
+3. PRÉ-REQUISITOS DE MAGIA — PROTOCOLO OBRIGATÓRIO (não confie na sua memória):
+   O app valida a cadeia igual faz com o usuário e BLOQUEIA magia sem
+   pré-requisito. Para CADA magia que você for adicionar via
+   forjador_editar_ficha:
+   a) Se ela tem pré-requisitos, chame forjador_gps_magia(id) ANTES —
+      ele retorna a cadeia REAL de magias necessárias.
+   b) Adicione TODAS as magias da cadeia primeiro, na ordem (das básicas
+      para a avançada), depois a magia-alvo.
+   c) Se o app responder "BLOQUEADO: falta X", NÃO ignore — adicione X
+      (e a cadeia de X) e tente de novo. Só use forcar=true se for um
+      gatilho narrativo que você/o usuário decidiu conscientemente.
+   Ex: pediram "Desejo" → gps_magia("desejo") → adicione cada pré-req na
+   ordem → por fim "Desejo".
 4. SEM SUFIXOS DESCRITIVOS no campo "nome": use "Adaga" não "Adaga (Faca de caça)".
 5. DANO EM PORTUGUÊS: "cont", "perf", "corte", "imp", "esm". NUNCA "cut", "pi", "cr".
 6. NÍVEL de perícia = NH final (ex: DX 12, perícia Média, 2 pts → NH 11).
@@ -310,6 +322,11 @@ CHAME a ferramenta forjador_editar_ficha — ela aplica DIRETO na ficha
   última). Ex: "destemor" aparece 2x → 1 chamada remove a cópia extra.
 - Adicionar/alterar item: forjador_editar_ficha("adicionar"/"alterar",
   secao, alvo, valor). Ex: valor="nivel=14;esp=Florestas".
+- MAGIA com pré-requisito: o app BLOQUEIA (igual à tela do usuário).
+  Chame forjador_gps_magia(id) para ver a cadeia, adicione TODAS as
+  magias necessárias na ordem (básicas → avançada) e só então a alvo.
+  Se vier "BLOQUEADO: falta X", adicione X (e a cadeia de X) antes.
+  Só use valor="forcar=true" se for gatilho narrativo consciente.
 - Depois das chamadas, confirme em TEXTO o que foi feito. NÃO gere JSON.
 
 JSON (substituir) — use só como FALLBACK se a ferramenta não cobrir

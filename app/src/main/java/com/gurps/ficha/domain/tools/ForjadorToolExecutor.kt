@@ -125,7 +125,11 @@ class ForjadorToolExecutor(
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma magia encontrada para '$query'."
                 else resultados.joinToString("\n") { m ->
-                    "• ${m.id} | ${m.nome} | escola:${m.escola?.joinToString() ?: "?"} | pré:${m.preRequisitos?.take(60) ?: "—"}"
+                    // Status igual ao que o USUÁRIO vê na tela de magias:
+                    // "✓ Requisitos Atendidos" ou o motivo do bloqueio.
+                    val status = viewModel.prereqFailureForMagia(m)
+                        ?.let { "⚠ FALTA: $it" } ?: "✓ requisitos atendidos"
+                    "• ${m.id} | ${m.nome} | escola:${m.escola?.joinToString() ?: "?"} | $status | pré:${m.preRequisitos?.take(60) ?: "—"}"
                 }
             }
             "tecnica" -> {
@@ -350,9 +354,21 @@ class ForjadorToolExecutor(
                     if (i < 0) break
                     viewModel.removerMagia(i); substituiu = true
                 }
-                val erro = viewModel.adicionarMagia(mag, pts = if (custo > 0) custo else 1)
+                // Validação de pré-requisito — MESMA do app (a tela mostra
+                // "✓ Requisitos Atendidos" / "Pré-requisito não atendido").
+                // Por padrão BARRA, igual o botão bloqueado para o usuário.
+                val forcar = Regex("forcar\\s*=\\s*(true|sim|1)", RegexOption.IGNORE_CASE).containsMatchIn(valor)
+                val faltaPrereq = viewModel.prereqFailureForMagia(mag)
+                if (faltaPrereq != null && !forcar) {
+                    return "BLOQUEADO: '${mag.nome}' não pode ser adicionada — $faltaPrereq. " +
+                        "Use forjador_gps_magia(\"${mag.id}\") para ver a cadeia completa de " +
+                        "pré-requisitos e adicione cada magia faltante (na ordem) ANTES desta. " +
+                        "Só se for gatilho narrativo intencional, repita com valor=\"forcar=true\"."
+                }
+                val erro = viewModel.adicionarMagia(mag, pts = if (custo > 0) custo else 1, ignora = forcar)
                 viewModel.autoSaveIA()
-                return if (erro == null) "OK: magia '${mag.nome}' ${if (substituiu) "atualizada" else "adicionada"}."
+                val sufixoForca = if (faltaPrereq != null && forcar) " (ADIÇÃO FORÇADA, sem pré-requisito — gatilho narrativo)" else ""
+                return if (erro == null) "OK: magia '${mag.nome}' ${if (substituiu) "atualizada" else "adicionada"}$sufixoForca."
                        else "Falha ao adicionar magia '${mag.nome}': $erro"
             }
             "qualidades"     -> { viewModel.adicionarQualidade(alvo); viewModel.autoSaveIA(); return "OK: qualidade adicionada." }
