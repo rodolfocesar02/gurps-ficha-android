@@ -13,8 +13,6 @@ import com.gurps.ficha.domain.tools.ForjadorToolExecutor
 import com.gurps.ficha.domain.tools.ForjadorTools
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -77,98 +75,66 @@ class MestreIAGeneratorUseCase(
             val nomeModelo = if (config.third.contains("gemini")) "Arcano" else "Forjador"
 
             try {
-                var narrativaTexto = ""
+                // Fonte única: só o loop agêntico da ficha. A história mostrada
+                // no chat vem do campo "historico"/"aparencia" do próprio JSON
+                // (resolvido em FichaIADelegate) — não há mais narrativa paralela
+                // que podia divergir do que foi pra ficha.
                 var sheetResponse: MestreIAClient.ChatResponse? = null
 
-                coroutineScope {
-                    // Job 1: Narrativa rápida — sem tools, sem RAG, aparece primeiro na tela
-                    val narrativaDeferred = async {
-                        MestreIAClient.perguntarAoMestre(
+                run {
+                    onStatusUpdate("Mestre $nomeModelo forjando a ficha de $nomePersonagem...")
+                    val localHistory = mutableListOf<Pair<String, String>>()
+                    var promptAtual = prompt
+                    var response: MestreIAClient.ChatResponse? = null
+
+                    for (iteracao in 1..4) {
+                        val histBase = viewModel.mestreIAChatHistory.takeLast(4).map { it.role to it.text }
+                        val histCompleto = histBase + localHistory
+
+                        response = MestreIAClient.perguntarAoMestre(
                             baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                            prompt = "PEDIDO DO JOGADOR: \"$prompt\"\n\nCom base EXATAMENTE no pedido acima, escreva a história de origem e a aparência física do personagem solicitado em 2 parágrafos evocativos para RPG. Se for um personagem conhecido (livro/filme/jogo), seja fiel ao personagem original — NÃO invente outro. Seja imersivo e cinematográfico. Não mencione atributos numéricos ou mecânicas de jogo.",
-                            history = emptyList(),
-                            contextoPersonagem = "",
-                            catalogo = null,
-                            modo = "conversa",
-                            promptSistema = "Você é um escritor especializado em RPG de fantasia. Crie histórias de personagens ricas, dramáticas e imersivas.",
-                            desativarTools = true
+                            prompt = promptAtual,
+                            history = histCompleto,
+                            contextoPersonagem = viewModel.personagem.toJson(),
+                            catalogo = catalogoVazio,
+                            modo = modo,
+                            promptSistema = promptForjador,
+                            onChunk = null,
+                            desativarTools = iteracao >= 4,
+                            maxTokens = if (iteracao >= 4) 8192 else 2048
                         )
-                    }
 
-                    // Job 2: Ficha via loop agêntico — roda em paralelo com a narrativa
-                    val fichaDeferred = async {
-                        onStatusUpdate("Mestre $nomeModelo forjando a ficha...")
-                        val localHistory = mutableListOf<Pair<String, String>>()
-                        var promptAtual = prompt
-                        var response: MestreIAClient.ChatResponse? = null
+                        if (response.text.contains("Erro de API") || response.text.startsWith("Erro")) break
 
-                        for (iteracao in 1..4) {
-                            val histBase = viewModel.mestreIAChatHistory.takeLast(4).map { it.role to it.text }
-                            val histCompleto = histBase + localHistory
-
-                            response = MestreIAClient.perguntarAoMestre(
-                                baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                                prompt = promptAtual,
-                                history = histCompleto,
-                                contextoPersonagem = viewModel.personagem.toJson(),
-                                catalogo = catalogoVazio,
-                                modo = modo,
-                                promptSistema = promptForjador,
-                                onChunk = null,
-                                desativarTools = iteracao >= 4,
-                                maxTokens = if (iteracao >= 4) 8192 else 2048
-                            )
-
-                            if (response.text.contains("Erro de API") || response.text.startsWith("Erro")) break
-
-                            val forjadorCalls = response.toolCalls.filter { tc ->
-                                tc.name == ForjadorTools.TOOL_LER_FICHA ||
-                                tc.name == ForjadorTools.TOOL_BUSCAR     ||
-                                tc.name == ForjadorTools.TOOL_GPS_MAGIA
-                            }
-
-                            if (forjadorCalls.isEmpty()) break
-
-                            val resultados = forjadorCalls.joinToString("\n\n") { tc ->
-                                onStatusUpdate("${tc.name.replace("forjador_", "")}...")
-                                "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
-                            }
-                            Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
-
-                            localHistory.add("model" to "Dados coletados com sucesso.")
-                            localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados")
-                            promptAtual = if (iteracao >= 3) {
-                                "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. Responda APENAS com o JSON, sem texto adicional."
-                            } else {
-                                "Dados coletados acima. Continue a análise — use mais ferramentas se necessário, ou finalize se já tiver tudo."
-                            }
-                            onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao)...")
+                        val forjadorCalls = response.toolCalls.filter { tc ->
+                            tc.name == ForjadorTools.TOOL_LER_FICHA ||
+                            tc.name == ForjadorTools.TOOL_BUSCAR     ||
+                            tc.name == ForjadorTools.TOOL_GPS_MAGIA
                         }
-                        response
-                    }
 
-                    // Narrativa chega em ~2s → aparece imediatamente no chat
-                    onStatusUpdate("Escrevendo a história de $nomePersonagem...")
-                    val narrativaResp = narrativaDeferred.await()
-                    if (narrativaResp.text.isNotBlank() && !narrativaResp.text.startsWith("Erro")) {
-                        narrativaTexto = narrativaResp.text
-                        onChunk(narrativaTexto)
-                    }
+                        if (forjadorCalls.isEmpty()) break
 
-                    // Ficha demora mais — aguarda enquanto usuário já lê a história
-                    onStatusUpdate("Finalizando a ficha de $nomePersonagem...")
-                    sheetResponse = fichaDeferred.await()
+                        val resultados = forjadorCalls.joinToString("\n\n") { tc ->
+                            onStatusUpdate("${tc.name.replace("forjador_", "")}...")
+                            "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
+                        }
+                        Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
+
+                        localHistory.add("model" to "Dados coletados com sucesso.")
+                        localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados")
+                        promptAtual = if (iteracao >= 3) {
+                            "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. Inclua um campo \"historico\" com a biografia narrativa e \"aparencia\" com a descrição física. Responda APENAS com o JSON, sem texto adicional."
+                        } else {
+                            "Dados coletados acima. Continue a análise — use mais ferramentas se necessário, ou finalize se já tiver tudo."
+                        }
+                        onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao)...")
+                    }
+                    sheetResponse = response
                 }
 
                 val finalResponse = sheetResponse ?: continue
                 if (!finalResponse.text.contains("Erro de API") && !finalResponse.text.startsWith("Erro")) {
-                    // Combina narrativa + JSON: o chat exibe a história e o parser extrai o JSON
-                    val respostaCombinada = if (narrativaTexto.isNotBlank()) {
-                        finalResponse.copy(text = narrativaTexto + "\n\n" + finalResponse.text)
-                    } else {
-                        finalResponse
-                    }
-                    onResultado(true, respostaCombinada)
+                    onResultado(true, finalResponse)
                     sucesso = true
                     break
                 }

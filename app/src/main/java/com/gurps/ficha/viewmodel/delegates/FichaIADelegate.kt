@@ -213,8 +213,23 @@ class FichaIADelegate(
                 }
             } else null
 
+            // Fonte única: se a ficha foi parseada, o chat mostra a história
+            // DELA (historico + aparencia do JSON), não uma narrativa gerada
+            // à parte que podia divergir. Fallback: narrativa limpa do texto.
+            val textoChat = fichaObjeto
+                ?.takeIf { it.historico.isNotBlank() || it.aparencia.isNotBlank() }
+                ?.let { f ->
+                    buildString {
+                        if (f.historico.isNotBlank()) append(f.historico.trim())
+                        if (f.aparencia.isNotBlank()) {
+                            if (isNotEmpty()) append("\n\n")
+                            append("**Aparência:** ${f.aparencia.trim()}")
+                        }
+                    }
+                } ?: narrativaLimpa
+
             history[assistantIndex] = history[assistantIndex].copy(
-                text = narrativaLimpa,
+                text = textoChat,
                 modelName = response.modelName ?: "Mestre Sábio",
                 isRagUsed = isRagUsed,
                 data = fichaObjeto,
