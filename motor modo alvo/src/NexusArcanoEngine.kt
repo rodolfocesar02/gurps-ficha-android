@@ -510,9 +510,16 @@ class NexusArcanoEngine(
     }
 
     internal fun escolasConhecidas(known: Set<String>): Set<String> {
+        // REGRA GURPS: "1 mágica EM N escolas diferentes" → cada magia
+        // conta como UMA escola (a principal dela). Antes usava flatMap
+        // de TODAS as escolas da magia: magias multi-escola (ex:
+        // convocar_elemental = Ar/Fogo/Terra/Água) inflavam a contagem
+        // (4 magias viravam "10 escolas" falsamente), liberando
+        // Encantar/Desejo cedo demais e com trilha errada.
         return known
             .asSequence()
-            .flatMap { id -> escolasNorm(id).asSequence() }
+            .map { id -> escolaPrincipalNorm(id) }
+            .filter { it.isNotBlank() }
             .toSet()
     }
 

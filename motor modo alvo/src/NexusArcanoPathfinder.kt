@@ -107,14 +107,29 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
         val complexidade: Int
     )
 
-    fun ordenarCandidatas(cands: List<CandidataExpansao>): List<CandidataExpansao> {
-        return cands.sortedWith(
-            compareByDescending<CandidataExpansao> { it.reducao }
-                .thenByDescending { it.escolaNova }
-                .thenBy { it.complexidade }  // Prefere magias "raiz" (custo 0 ou baixo)
+    fun ordenarCandidatas(
+        cands: List<CandidataExpansao>,
+        metaEscolaPendente: Boolean
+    ): List<CandidataExpansao> {
+        // Com meta de N escolas distintas (Desejo=15), TODA magia de escola
+        // nova reduz a pendência igualmente — desempatar por 'reducao' não
+        // diferencia e o A* se perde. Aqui, escola nova vira o critério
+        // DOMINANTE e preferimos magias "raiz" baratas (complexidade baixa):
+        // é o caminho mais curto p/ fechar muitas escolas.
+        val cmp = if (metaEscolaPendente) {
+            compareByDescending<CandidataExpansao> { it.escolaNova }
+                .thenByDescending { it.reducao }
+                .thenBy { it.complexidade }
                 .thenBy { it.custoAcao }
                 .thenBy { nomeMagiaNorm(it.id) }
-        )
+        } else {
+            compareByDescending<CandidataExpansao> { it.reducao }
+                .thenByDescending { it.escolaNova }
+                .thenBy { it.complexidade }
+                .thenBy { it.custoAcao }
+                .thenBy { nomeMagiaNorm(it.id) }
+        }
+        return cands.sortedWith(cmp)
     }
 
     fun candidatasExpandiveis(known: Set<String>, path: List<String>): List<CandidataExpansao> {
@@ -162,9 +177,61 @@ fun NexusArcanoEngine.planejarCaminhoMinimo(
             filtered
         }
         
-        return ordenarCandidatas(semRepeticaoSequencial).take(larguraExpansao)
+        // Com meta grande de escolas, alargar a expansão p/ caber magias
+        // de escolas variadas (senão o A* nunca vê escolas suficientes).
+        return ordenarCandidatas(semRepeticaoSequencial, metaEscolaPendente).take(larguraExpansao)
     }
 
+    // ── ATALHO GULOSO ───────────────────────────────────────────────
+    // Metas de "N escolas distintas" (Encantar=10, Desejo=15) tornam o
+    // espaço de busca do A* combinatório → estoura memória/limite. Mas o
+    // problema é GULOSO-ótimo: a cada passo basta pegar UMA magia
+    // aprendível que (a) seja pré-requisito obrigatório pendente, ou
+    // (b) abra uma escola NOVA barata. Repete até o alvo liberar.
+    // O(passos × catálogo), determinístico, sem explosão. Se falhar,
+    // cai no A* original (fallback abaixo).
+    run {
+        val known = estado.magiasConhecidasIds.toMutableSet()
+        val trilha = mutableListOf<String>()
+        val maxPassos = 40
+        var passos = 0
+        while (passos < maxPassos && !(magiaAprendivelAgora(alvoId, known, estado) || alvoId in known)) {
+            passos++
+            val cadeiaPend = construirCadeiaObrigatoriaParaEstado(alvoId, known)
+                .filter { it != alvoId && it !in known }.toSet()
+            val escolasAtuais = escolasConhecidas(known)
+            val aprendiveis = allMagiaIds.asSequence()
+                .filter { it !in known }
+                .filterNot { escolaBloqueadaPorPolitica(it) }
+                .filter { magiaAprendivelAgora(it, known, estado) }
+            // 1) prioridade: pré-requisito obrigatório nomeado pendente
+            val obrig = aprendiveis.firstOrNull { it in cadeiaPend }
+            val escolha = obrig ?: run {
+                // 2) magia que abre escola NOVA, a mais barata (raiz)
+                aprendiveis
+                    .map { it to escolaPrincipalNorm(it) }
+                    .filter { (_, esc) -> esc.isNotBlank() && esc !in escolasAtuais }
+                    .minByOrNull { (id, _) -> custoAproximadoDependencia(id, known, mutableSetOf()) }
+                    ?.first
+            }
+            if (escolha == null) break // guloso travou → usa A*
+            known.add(escolha); trilha.add(escolha)
+        }
+        if (magiaAprendivelAgora(alvoId, known, estado) || alvoId in known) {
+            val proxima = trilha.firstOrNull()
+            val plano = ArcanoPlanoResultado(
+                trilhaMagiasIds = trilha,
+                explorados = passos,
+                proximaAcaoMagiaId = proxima,
+                metasImpactadasProximaAcao = proxima
+                    ?.let { metasImpactadasPorAcao(alvoId, estado, estado.magiasConhecidasIds, it) }
+                    .orEmpty()
+            )
+            cachePlanos[key] = plano
+            return plano
+        }
+    }
+    // ── FALLBACK: A* (cadeias com OU lógico / casos que o guloso não fecha)
     val open = java.util.PriorityQueue<Node>(compareBy<Node> { it.f }.thenBy { it.g })
     val bestG = HashMap<String, Int>()
     val startKnown = estado.magiasConhecidasIds
