@@ -36,6 +36,12 @@ class FichaIADelegate(
     private var sincroniaExecutadaNestaSessao = false
     @Volatile private var integracaoEmAndamento = false
 
+    // uid da bolha [SISTEMA] agregadora ativa. Eventos consecutivos
+    // (cada item aplicado pelo Forjador) viram LINHAS na MESMA bolha em
+    // vez de N bolhas separadas — chat limpo, feedback ao vivo mantido.
+    // Reinicia quando outra coisa (resposta da IA) é escrita no chat.
+    private var sistemaBatchUid: String? = null
+
     fun verificarSincroniaAutomatica() {
         if (sincroniaExecutadaNestaSessao) return
         sincroniaExecutadaNestaSessao = true
@@ -49,6 +55,7 @@ class FichaIADelegate(
     fun limparChat() {
         mestreIAChatHistory = emptyList()
         currentSessionId = null
+        sistemaBatchUid = null
     }
 
     fun carregarHistorico() {
@@ -109,6 +116,9 @@ class FichaIADelegate(
         uid: String,
         transform: (MestreIAClient.ChatMessage) -> MestreIAClient.ChatMessage
     ) {
+        // Resposta da IA encerra o lote [SISTEMA]: próximo evento abre
+        // uma bolha agregadora nova (não anexa nesta resposta).
+        sistemaBatchUid = null
         val atual = mestreIAChatHistory
         val idx = atual.indexOfFirst { it.uid == uid }
         if (idx < 0) {
@@ -130,6 +140,7 @@ class FichaIADelegate(
     }
 
     fun conversar(pergunta: String, modo: String, onResult: (Boolean, String) -> Unit) {
+        sistemaBatchUid = null  // novo turno = novo lote [SISTEMA]
         val userMsg = MestreIAClient.ChatMessage("user", pergunta)
         mestreIAChatHistory = mestreIAChatHistory + userMsg
 
@@ -425,7 +436,27 @@ class FichaIADelegate(
     }
 
     fun injetarEvento(texto: String) {
-        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", texto)
+        // Linha do item, sem o prefixo [SISTEMA] repetido (vira bullet).
+        val linha = "• " + texto.removePrefix("[SISTEMA]").trim()
+        val atual = mestreIAChatHistory
+        val ultima = atual.lastOrNull()
+
+        // Continua a bolha agregadora SE ela ainda é a última do chat
+        // (nada da IA foi escrito depois). Senão, abre uma bolha nova.
+        val batchUid = sistemaBatchUid
+        if (batchUid != null && ultima != null && ultima.uid == batchUid) {
+            mestreIAChatHistory = atual.toMutableList().also { lista ->
+                val idx = lista.lastIndex
+                lista[idx] = lista[idx].copy(text = lista[idx].text + "\n" + linha)
+            }
+        } else {
+            val nova = MestreIAClient.ChatMessage(
+                "model",
+                "[SISTEMA] Aplicando à ficha...\n" + linha
+            )
+            sistemaBatchUid = nova.uid
+            mestreIAChatHistory = atual + nova
+        }
     }
 
     fun executarAcao(comando: String) {

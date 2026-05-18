@@ -639,6 +639,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device — repetir a cadeia Desejo no modo Analisar e confirmar que a mensagem de fechamento aparece NO FIM do chat, abaixo das [SISTEMA].
 
+### Lote 166: Agrupa mensagens [SISTEMA] numa bolha única atualizável - CONCLUÍDO
+- **Motivo (decisão do usuário):** em cadeia longa, cada item aplicado virava uma bolha [SISTEMA] separada (N bolhas: 'Magia X adicionada', 'Magia Y adicionada'...) — poluía o chat e foi o que escondia a resposta final (Lote 165). Confirmado que [SISTEMA] NÃO atrapalha o que vai ao modelo (caminho separado: bolha visual ≠ histórico de tool-results enviado).
+- **Correção:** `injetarEvento` em `FichaIADelegate.kt` agora agrega — campo `sistemaBatchUid` guarda a bolha [SISTEMA] ativa; se ela ainda é a última do chat, o evento vira mais uma LINHA (bullet) nela; senão abre bolha nova "[SISTEMA] Aplicando à ficha..." com o 1º item. Resposta da IA (`finalizarMsgAssistente`), novo turno (`conversar`) e `limparChat` zeram `sistemaBatchUid` → próximo lote começa bolha nova (não anexa em bolha velha).
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device — cadeia Desejo modo Analisar; confirmar UMA bolha [SISTEMA] com todos os itens em linhas + resposta final no fim.
+
 
 
 **[Bateria de Testes a Realizar]**
