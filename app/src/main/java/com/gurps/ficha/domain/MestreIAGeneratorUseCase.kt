@@ -143,24 +143,24 @@ class MestreIAGeneratorUseCase(
                     var promptAtual = prompt
                     var response: MestreIAClient.ChatResponse? = null
 
-                    // Teto DINÂMICO: base 4 iterações, mas estende até ITER_MAX
-                    // ENQUANTO cada iteração faz progresso real (adiciona itens
-                    // novos via forjador_editar_ficha). Cadeias longas (ex:
-                    // Desejo) precisam de muitos ciclos "adiciona base → rechama
-                    // GPS → sobe um nível". Anti-loop: se uma iteração não
-                    // progride (0 itens novos), o limite NÃO estende → encerra.
-                    val ITER_MIN = 4
-                    val ITER_MAX = 25 // cadeia do Desejo precisa de ~15-20 ciclos
+                    // Parada por ESTAGNAÇÃO, não por contador. O loop continua
+                    // enquanto o modelo chama ferramentas E progride. Vira
+                    // final quando: para de chamar ferramentas (já existe o
+                    // break), OU 2 iterações seguidas sem adicionar nada novo
+                    // (anti-loop real), OU teto de segurança absoluto.
+                    val ITER_HARD_CAP = 30
                     fun totalItens() = viewModel.personagem.let {
                         it.magias.size + it.vantagens.size + it.desvantagens.size +
                         it.pericias.size + it.tecnicas.size + it.equipamentos.size
                     }
-                    var limiteIter = ITER_MIN
                     var iteracao = 0
-                    while (iteracao < limiteIter) {
+                    var semProgresso = 0
+                    while (iteracao < ITER_HARD_CAP) {
                         iteracao++
                         val itensAntes = totalItens()
-                        val ultima = iteracao >= limiteIter
+                        // "final" = próxima já deve ser síntese: estagnou (2x
+                        // sem progresso) ou bateu o teto duro de segurança.
+                        val ultima = semProgresso >= 2 || iteracao >= ITER_HARD_CAP
                         val histBase = viewModel.mestreIAChatHistory.takeLast(4).map { it.role to it.text }
                         val histCompleto = histBase + localHistory
 
@@ -239,17 +239,19 @@ class MestreIAGeneratorUseCase(
                             Log.d("MestreIA_Forjador", "Read-back: ${secoes.joinToString()} (${leitura.length} chars)")
                         }
 
-                        // TETO DINÂMICO: se esta iteração ADICIONOU itens novos
-                        // (progresso real montando a cadeia) e ainda não bateu
-                        // o máximo, estende o limite — dá mais ciclos para
-                        // cadeias longas. Sem progresso → não estende → o loop
-                        // caminha para a síntese final (anti-loop).
+                        // Estagnação: conta iterações consecutivas que
+                        // chamaram ferramenta mas NÃO adicionaram item novo.
+                        // Progresso zera o contador → cadeia longa continua
+                        // o quanto precisar. 2x sem progresso → encerra.
                         val progrediu = totalItens() > itensAntes
-                        if (progrediu && limiteIter < ITER_MAX) {
-                            limiteIter = (limiteIter + 1).coerceAtMost(ITER_MAX)
-                            Log.d("MestreIA_Forjador", "Progresso (+${totalItens() - itensAntes} itens) → limite estendido p/ $limiteIter")
+                        if (progrediu) {
+                            semProgresso = 0
+                            Log.d("MestreIA_Forjador", "Progresso (+${totalItens() - itensAntes} itens) na iteração $iteracao")
+                        } else {
+                            semProgresso++
+                            Log.d("MestreIA_Forjador", "Sem progresso ($semProgresso/2) na iteração $iteracao")
                         }
-                        val proximaEhFinal = iteracao >= limiteIter - 1
+                        val proximaEhFinal = semProgresso >= 2 || iteracao >= ITER_HARD_CAP - 1
 
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados$verificacao")
@@ -262,7 +264,7 @@ class MestreIAGeneratorUseCase(
                         } else {
                             "Dados coletados acima. O usuário deu uma ORDEM DIRETA — EXECUTE-A INTEIRA, NÃO PARE para perguntar. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha. NÃO responda texto pedindo confirmação no meio da execução — só finalize quando a cadeia toda (incluindo a magia-alvo) estiver aplicada."
                         }
-                        onStatusUpdate("Mestre $nomeModelo processando dados (iteração $iteracao/$limiteIter)...")
+                        onStatusUpdate("Mestre $nomeModelo montando a cadeia (passo $iteracao)...")
                     }
                     sheetResponse = response
                 }
