@@ -223,6 +223,36 @@ só um conceito ou personagem conhecido, escreva a história fiel a ele.
 Responda apenas com a narrativa + linha "Aparência:".
 """
 
+    private fun blocoCatalogo(
+        vantagens: List<Pair<String, String>>,
+        desvantagens: List<Pair<String, String>>,
+        pericias: List<Pair<String, String>>,
+        magias: List<Pair<String, String>>,
+        tecnicas: List<Pair<String, String>>
+    ): String {
+        fun fmt(l: List<Pair<String, String>>) = l.joinToString(", ") { (id, n) -> "$id ($n)" }
+        return """
+=== CATÁLOGO LOCAL — IDs VÁLIDOS ===
+Use APENAS estes IDs. Formato: id (Nome Legível).
+Qualquer ID fora desta lista será rejeitado pelo sistema.
+
+VANTAGENS (${vantagens.size}):
+${fmt(vantagens)}
+
+DESVANTAGENS (${desvantagens.size}):
+${fmt(desvantagens)}
+
+PERÍCIAS (${pericias.size}):
+${fmt(pericias)}
+
+MAGIAS (${magias.size}):
+${fmt(magias)}
+
+TÉCNICAS (${tecnicas.size}):
+${fmt(tecnicas)}
+"""
+    }
+
     fun gerarPromptComCatalogo(
         vantagens: List<Pair<String, String>>,
         desvantagens: List<Pair<String, String>>,
@@ -231,9 +261,6 @@ Responda apenas com a narrativa + linha "Aparência:".
         tecnicas: List<Pair<String, String>> = emptyList(),
         pontosIniciais: Int = 150
     ): String {
-        fun formatarLista(lista: List<Pair<String, String>>) =
-            lista.joinToString(", ") { (id, nome) -> "$id ($nome)" }
-
         return PROMPT + """
 
 === BUDGET DO PERSONAGEM ===
@@ -241,24 +268,44 @@ Este personagem tem $pontosIniciais pontos para gastar.
 A soma final DEVE ser ≤ $pontosIniciais pts:
   Total = atributos + vantagens - |desvantagens| + perícias + magias ≤ $pontosIniciais
 
-=== CATÁLOGO LOCAL — IDs VÁLIDOS ===
-Use APENAS estes IDs nos campos "id" do JSON. Formato: id (Nome Legível).
-Qualquer ID fora desta lista será rejeitado pelo sistema.
+""" + blocoCatalogo(vantagens, desvantagens, pericias, magias, tecnicas)
+    }
 
-VANTAGENS (${vantagens.size}):
-${formatarLista(vantagens)}
+    /** Prompt de sistema do modo CONSULTOR (analise): lê a ficha e sugere, NUNCA gera JSON. */
+    fun gerarPromptConsultor(
+        vantagens: List<Pair<String, String>>,
+        desvantagens: List<Pair<String, String>>,
+        pericias: List<Pair<String, String>>,
+        magias: List<Pair<String, String>>,
+        tecnicas: List<Pair<String, String>> = emptyList()
+    ): String {
+        return """
+VOCÊ É O CONSULTOR DE FICHAS GURPS 4ª EDIÇÃO BRASIL.
 
-DESVANTAGENS (${desvantagens.size}):
-${formatarLista(desvantagens)}
+Seu papel é ANALISAR a ficha que JÁ EXISTE e ACONSELHAR — como um mestre
+de RPG experiente revisando o personagem de um jogador. Você NÃO cria
+personagem do zero e NÃO modifica a ficha.
 
-PERÍCIAS (${pericias.size}):
-${formatarLista(pericias)}
+PROTOCOLO:
+1. Use forjador_ler_ficha para ler as seções relevantes da ficha atual
+   (atributos, vantagens, desvantagens, pericias, magias, equipamentos, pontos).
+2. Use forjador_buscar_catalogo para confirmar os IDs reais do que for sugerir.
+3. Responda em TEXTO claro e organizado:
+   - Diagnóstico: pontos fortes e fraquezas da ficha atual.
+   - Sugestões priorizadas: cada uma com o ID real entre parênteses, o
+     custo aproximado e o PORQUÊ ligado ao conceito do personagem.
+   - O que está sobrando/incoerente, se houver.
+4. Termine perguntando: "Quer que eu aplique alguma dessas sugestões?"
 
-MAGIAS (${magias.size}):
-${formatarLista(magias)}
+REGRAS ABSOLUTAS:
+- NUNCA gere JSON. NUNCA produza uma ficha completa. Apenas texto consultivo.
+- Não invente IDs — só os do catálogo abaixo.
+- Seja objetivo: priorize as 3-6 mudanças de maior impacto, não uma lista
+  interminável.
+- Se o usuário pedir explicitamente para APLICAR algo, instrua-o a trocar
+  para o modo "Criar" e descrever o que quer adicionar — você (Consultor)
+  não integra nada.
 
-TÉCNICAS (${tecnicas.size}):
-${formatarLista(tecnicas)}
-"""
+""" + blocoCatalogo(vantagens, desvantagens, pericias, magias, tecnicas)
     }
 }

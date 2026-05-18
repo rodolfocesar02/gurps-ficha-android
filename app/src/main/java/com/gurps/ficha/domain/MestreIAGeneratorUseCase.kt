@@ -40,15 +40,21 @@ class MestreIAGeneratorUseCase(
         // periciasSuplementares (AM) são tipo diferente — incluídas só no catálogo textual
         // Lote D: inclui budget de pontos para o modelo respeitar o limite
         val pontosIniciais = viewModel.personagem.pontosIniciais
-        val promptForjador = MestreIAPromptsForjador.gerarPromptComCatalogo(
-            vantagens    = repository.vantagens.map { it.id to it.nome },
-            desvantagens = repository.desvantagens.map { it.id to it.nome },
-            pericias     = repository.pericias.map { it.id to it.nome } +
-                           repository.periciasSuplementares.map { it.id to it.nome },
-            magias       = repository.magias.map { it.id to it.nome },
-            tecnicas     = repository.tecnicasCatalogo.map { it.id to it.nome },
-            pontosIniciais = pontosIniciais
-        )
+        val vantagensCat = repository.vantagens.map { it.id to it.nome }
+        val desvantagensCat = repository.desvantagens.map { it.id to it.nome }
+        val periciasCat = repository.pericias.map { it.id to it.nome } +
+            repository.periciasSuplementares.map { it.id to it.nome }
+        val magiasCat = repository.magias.map { it.id to it.nome }
+        val tecnicasCat = repository.tecnicasCatalogo.map { it.id to it.nome }
+        val promptForjador = if (modo == "analise") {
+            MestreIAPromptsForjador.gerarPromptConsultor(
+                vantagensCat, desvantagensCat, periciasCat, magiasCat, tecnicasCat
+            )
+        } else {
+            MestreIAPromptsForjador.gerarPromptComCatalogo(
+                vantagensCat, desvantagensCat, periciasCat, magiasCat, tecnicasCat, pontosIniciais
+            )
+        }
 
         // Forjador: DeepSeek paga como primário, Gemini Pro como fallback
         val fila = listOf(
@@ -78,36 +84,42 @@ class MestreIAGeneratorUseCase(
                 var sheetResponse: MestreIAClient.ChatResponse? = null
 
                 run {
-                    // ITERAÇÃO 0 — História primeiro. O agente decide se o usuário
-                    // trouxe história pronta (preserva + enriquece) ou só um
-                    // conceito (escreve fiel). A história sai aqui, aparece no
-                    // chat na hora (onChunk) e vira BASE para construir a ficha
-                    // coerente — e é reusada nos campos historico/aparencia do JSON.
-                    onStatusUpdate("Mestre $nomeModelo concebendo a história...")
-                    val narrativaResp = MestreIAClient.perguntarAoMestre(
-                        baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
-                        prompt = MestreIAPromptsForjador.gerarPromptHistoria(prompt),
-                        history = emptyList(),
-                        contextoPersonagem = "",
-                        catalogo = catalogoVazio,
-                        modo = "conversa",
-                        promptSistema = MestreIAPromptsForjador.PROMPT_HISTORIA_SISTEMA,
-                        onChunk = null,
-                        desativarTools = true,
-                        maxTokens = 1500
-                    )
-                    val historiaBase = narrativaResp.text
-                        .takeIf { it.isNotBlank() && !it.startsWith("Erro") }
-                        ?.trim()
-                        .orEmpty()
-                    if (historiaBase.isNotBlank()) onChunk(historiaBase)
-
-                    onStatusUpdate("Mestre $nomeModelo forjando a ficha de $nomePersonagem...")
+                    val ehConsultor = modo == "analise"
                     val localHistory = mutableListOf<Pair<String, String>>()
-                    if (historiaBase.isNotBlank()) {
-                        localHistory.add("model" to historiaBase)
-                        localHistory.add("user" to "Esta é a história/aparência DEFINITIVA do personagem (acima). Agora construa a ficha GURPS COERENTE com ela: as perícias, vantagens e desvantagens devem refletir o que a história descreve. No JSON final, use EXATAMENTE esta história no campo \"historico\" e a descrição física no campo \"aparencia\" — não reescreva.")
+
+                    // ITERAÇÃO 0 — só no modo CRIAR. O agente escreve/preserva a
+                    // história e ela vira base da ficha. No modo CONSULTOR
+                    // (analise) NÃO há história: ele lê a ficha existente e
+                    // sugere, sem criar personagem novo.
+                    if (!ehConsultor) {
+                        onStatusUpdate("Mestre $nomeModelo concebendo a história...")
+                        val narrativaResp = MestreIAClient.perguntarAoMestre(
+                            baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
+                            prompt = MestreIAPromptsForjador.gerarPromptHistoria(prompt),
+                            history = emptyList(),
+                            contextoPersonagem = "",
+                            catalogo = catalogoVazio,
+                            modo = "conversa",
+                            promptSistema = MestreIAPromptsForjador.PROMPT_HISTORIA_SISTEMA,
+                            onChunk = null,
+                            desativarTools = true,
+                            maxTokens = 1500
+                        )
+                        val historiaBase = narrativaResp.text
+                            .takeIf { it.isNotBlank() && !it.startsWith("Erro") }
+                            ?.trim()
+                            .orEmpty()
+                        if (historiaBase.isNotBlank()) onChunk(historiaBase)
+                        if (historiaBase.isNotBlank()) {
+                            localHistory.add("model" to historiaBase)
+                            localHistory.add("user" to "Esta é a história/aparência DEFINITIVA do personagem (acima). Agora construa a ficha GURPS COERENTE com ela: as perícias, vantagens e desvantagens devem refletir o que a história descreve. No JSON final, use EXATAMENTE esta história no campo \"historico\" e a descrição física no campo \"aparencia\" — não reescreva.")
+                        }
                     }
+
+                    onStatusUpdate(
+                        if (ehConsultor) "Mestre $nomeModelo analisando a ficha..."
+                        else "Mestre $nomeModelo forjando a ficha de $nomePersonagem..."
+                    )
                     var promptAtual = prompt
                     var response: MestreIAClient.ChatResponse? = null
 
@@ -147,7 +159,11 @@ class MestreIAGeneratorUseCase(
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados")
                         promptAtual = if (iteracao >= 3) {
-                            "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
+                            if (modo == "analise") {
+                                "[RESPOSTA FINAL] Você já leu a ficha e o catálogo. NÃO chame ferramentas e NÃO gere JSON. Responda em TEXTO ao usuário: análise objetiva da ficha + sugestões priorizadas (cite o ID real de cada vantagem/perícia/magia sugerida e o porquê, ligado ao conceito do personagem). Termine perguntando se ele quer que você aplique alguma das sugestões."
+                            } else {
+                                "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
+                            }
                         } else {
                             "Dados coletados acima. Continue a análise — use mais ferramentas se necessário, ou finalize se já tiver tudo."
                         }

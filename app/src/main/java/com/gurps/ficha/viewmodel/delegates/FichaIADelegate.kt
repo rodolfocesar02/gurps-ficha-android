@@ -238,7 +238,11 @@ class FichaIADelegate(
             )
             mestreIAChatHistory = history
 
-            if (fichaObjeto != null && (modo == "geracao" || modo == "analise")) {
+            // Só "geracao" integra (botão INTEGRAR). "analise" é o modo
+            // CONSULTOR: lê a ficha e responde só com texto/sugestões — nunca
+            // gera JSON nem oferece integração. O usuário aplica pedindo em
+            // linguagem natural (vira "geracao" com a ficha atual no contexto).
+            if (fichaObjeto != null && modo == "geracao") {
                 fichaGeradaPendente = fichaObjeto
                 relatorioValidacao = mestreIAGeneratorUseCase.gerarRelatorio(fichaObjeto)
             }

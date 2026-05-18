@@ -111,6 +111,7 @@ fun ChatInputBar(value: String, onValueChange: (String) -> Unit, isAguardando: B
             IconButton(onClick = { showMenu = true }) { Icon(if (mode == "conversa") Icons.Default.Add else Icons.Default.Settings, null) }
             DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
                 DropdownMenuItem(text = { Text("📖 Dúvida") }, onClick = { onModeChange("conversa"); showMenu = false })
+                DropdownMenuItem(text = { Text("🔍 Analisar ficha") }, onClick = { onModeChange("analise"); showMenu = false })
                 DropdownMenuItem(text = { Text("🏗️ Criar") }, onClick = { onModeChange("geracao"); showMenu = false })
             }
             androidx.compose.foundation.text.BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier.weight(1f).padding(8.dp), decorationBox = { if (value.isEmpty()) Text("Fale com o mestre..."); it() })
