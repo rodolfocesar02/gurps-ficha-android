@@ -156,11 +156,26 @@ class ForjadorToolExecutor(
         val snapshot = nexusAdapter.calcular(alvoId, magiasConhecidas, p.iq, p.dx, am)
         val alvoNome = repository.magias.find { it.id == alvoId }?.nome ?: alvoId
 
+        // VEREDITO determinístico: o alvo já é aprendível AGORA?
+        val jaTem = alvoId in magiasConhecidas
+        val faltaPrereq = repository.magias.find { it.id == alvoId }
+            ?.let { viewModel.prereqFailureForMagia(it) }
+        val aprendivel = !jaTem && faltaPrereq == null
+
         return buildString {
             appendLine("=== GPS de Magias: $alvoNome ($alvoId) ===")
-            snapshot.progressoCadeia?.let { appendLine("Cadeia: $it") }
-            if (snapshot.progressoEscolas.isNotEmpty()) appendLine("Escolas: ${snapshot.progressoEscolas.joinToString()}")
-            appendLine("Próximas ações: ${snapshot.proximasAcoesIds.mapNotNull { id ->
+            // Veredito CLARO no topo — não recalcule, obedeça este resultado.
+            when {
+                jaTem -> appendLine("VEREDITO: ✅ '$alvoNome' JÁ ESTÁ na ficha. Nada a fazer.")
+                aprendivel -> appendLine("VEREDITO: ✅ PODE ADICIONAR '$alvoNome' AGORA — pré-requisitos atendidos. Chame forjador_editar_ficha adicionar magias \"$alvoId\".")
+                else -> appendLine("VEREDITO: ⛔ AINDA NÃO pode adicionar '$alvoNome'. Falta: $faltaPrereq")
+            }
+            // Os campos abaixo são CONTEXTO. NÃO recalcule escolas/contagens
+            // de cabeça — o número do app é a verdade.
+            snapshot.progressoCadeia?.let { appendLine(if (it.startsWith("Cadeia")) it else "Cadeia: $it") }
+            if (snapshot.progressoEscolas.isNotEmpty())
+                appendLine(snapshot.progressoEscolas.joinToString().let { if (it.startsWith("Escola")) it else "Escolas: $it" })
+            appendLine("Próximas magias a aprender: ${snapshot.proximasAcoesIds.mapNotNull { id ->
                 repository.magias.find { it.id == id }?.nome?.let { "$id ($it)" }
             }.joinToString().ifBlank { "—" }}")
             snapshot.proximaObrigatoriaId?.let { id ->
