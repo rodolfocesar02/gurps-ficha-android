@@ -73,15 +73,15 @@ object ForjadorTools {
                     })
                     put("secao", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "vantagens | desvantagens | pericias | tecnicas | magias | equipamentos | qualidades | peculiaridades")
+                        put("description", "atributos | vantagens | desvantagens | pericias | tecnicas | magias | equipamentos | qualidades | peculiaridades")
                     })
                     put("alvo", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "ID (preferido) ou nome do item alvo. Ex: 'destemor', 'Arco Longo'")
+                        put("description", "ID/nome do item, OU o atributo (forca/destreza/inteligencia/vitalidade). Ex: 'destemor', 'forca', 'Arco Longo'")
                     })
                     put("valor", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Opcional. Para 'adicionar'/'alterar': nível e/ou custo, ex: 'nivel=14' ou 'nivel=3;custo=15'. Para 'adicionar' perícia: 'nivel=14;esp=Florestas'.")
+                        put("description", "Para atributos: o novo valor (ex: '14'). Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=macamachado_de_duas_maos' (periciaBase opcional — auto-escolhe a melhor perícia que atende o pré-requisito).")
                     })
                 })
                 put("required", JSONArray().put("operacao").put("secao").put("alvo"))
@@ -161,16 +161,16 @@ object ForjadorTools {
                         })
                         put("secao", JSONObject().apply {
                             put("type", "string")
-                            put("enum", JSONArray().put("vantagens").put("desvantagens").put("pericias")
+                            put("enum", JSONArray().put("atributos").put("vantagens").put("desvantagens").put("pericias")
                                 .put("tecnicas").put("magias").put("equipamentos").put("qualidades").put("peculiaridades"))
                         })
                         put("alvo", JSONObject().apply {
                             put("type", "string")
-                            put("description", "ID ou nome do item. Ex: 'destemor', 'Arco Longo'")
+                            put("description", "ID/nome do item OU atributo (forca/destreza/inteligencia/vitalidade)")
                         })
                         put("valor", JSONObject().apply {
                             put("type", "string")
-                            put("description", "Opcional. 'nivel=14' ou 'nivel=3;custo=15' ou 'nivel=14;esp=Florestas'")
+                            put("description", "Atributo: '14'. Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=<id>' (periciaBase opcional, auto-escolhe)")
                         })
                     })
                     put("required", JSONArray().put("operacao").put("secao").put("alvo"))

@@ -15,13 +15,16 @@ class ForjadorToolExecutor(
 ) {
     fun execute(toolCall: MestreIAClient.MestreIAToolCall): String {
         Log.d("Forjador_Tools", "Executando tool: ${toolCall.name} | args: ${toolCall.args}")
-        return when (toolCall.name) {
+        val resultado = when (toolCall.name) {
             ForjadorTools.TOOL_LER_FICHA    -> lerFicha(toolCall.args)
             ForjadorTools.TOOL_BUSCAR       -> buscarCatalogo(toolCall.args)
             ForjadorTools.TOOL_GPS_MAGIA    -> gpsMagia(toolCall.args)
             ForjadorTools.TOOL_EDITAR       -> editarFicha(toolCall.args)
             else -> """{"erro": "ferramenta desconhecida: ${toolCall.name}"}"""
         }
+        // Loga o RESULTADO (não só a entrada) — auditoria real no logcat.
+        Log.d("Forjador_Tools", "Resultado ${toolCall.name}: ${resultado.take(300)}")
+        return resultado
     }
 
     private fun lerFicha(args: JSONObject): String {
@@ -173,6 +176,24 @@ class ForjadorToolExecutor(
         val alvoN = norm(alvo)
         val p = viewModel.personagem
 
+        // ATRIBUTOS — caso especial: só "alterar", valor = novo valor base.
+        // Aceita "ST", "forca", "for", etc. valor pode vir solto ("14") ou "valor=14".
+        if (secao == "atributos" || secao == "atributo") {
+            val novo = (Regex("-?\\d+").find(valor)?.value
+                ?: Regex("-?\\d+").find(alvo)?.value)?.toIntOrNull()
+                ?: return """{"erro":"valor numérico do atributo ausente (ex: valor=\"14\")"}"""
+            val antes: Int
+            when {
+                alvoN.startsWith("for") || alvoN == "st" -> { antes = p.forca;       viewModel.atualizarForca(novo) }
+                alvoN.startsWith("des") || alvoN == "dx" -> { antes = p.destreza;    viewModel.atualizarDestreza(novo) }
+                alvoN.startsWith("int") || alvoN.startsWith("iq") || alvoN.startsWith("ig") -> { antes = p.inteligencia; viewModel.atualizarInteligencia(novo) }
+                alvoN.startsWith("vit") || alvoN.startsWith("ht") || alvoN.startsWith("sau") -> { antes = p.vitalidade; viewModel.atualizarVitalidade(novo) }
+                else -> return """{"erro":"atributo desconhecido: '$alvo'. Use forca/destreza/inteligencia/vitalidade ou ST/DX/IQ/HT"}"""
+            }
+            viewModel.autoSaveIA()
+            return "OK: atributo '$alvo' alterado de $antes para $novo."
+        }
+
         // Acha o índice da ÚLTIMA ocorrência cujo id OU nome casa com o alvo
         fun <T> ultimoIndice(lista: List<T>, id: (T) -> String, nome: (T) -> String): Int =
             lista.indexOfLast { norm(id(it)) == alvoN || norm(nome(it)) == alvoN }
@@ -235,11 +256,45 @@ class ForjadorToolExecutor(
             "pericias" -> {
                 val def = repository.pericias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
                     ?: return "Perícia não encontrada no catálogo: '$alvo'."
+                val nhAlvo = if (nivel > 1) nivel else 12
                 val pts = com.gurps.ficha.domain.rules.CharacterRules.calcularPontosParaNivel(
                     com.gurps.ficha.model.Dificuldade.fromSigla(def.dificuldadeFixa),
-                    p.getAtributo(def.atributoBase), if (nivel > 1) nivel else 12)
+                    p.getAtributo(def.atributoBase), nhAlvo)
                 viewModel.adicionarPericia(def, pts, esp)
-                viewModel.autoSaveIA(); return "OK: perícia '$alvo' ${if (op=="alterar") "ajustada" else "adicionada"} (NH $nivel)."
+                viewModel.autoSaveIA(); return "OK: perícia '$alvo' ${if (op=="alterar") "ajustada" else "adicionada"} (NH $nhAlvo, $pts pts)."
+            }
+            "tecnicas" -> {
+                // Técnica precisa de uma PERÍCIA-BASE que já esteja na ficha e
+                // atenda o pré-requisito. valor pode trazer periciaBase=<id>.
+                val tec = repository.tecnicasCatalogo.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                    ?: return "Técnica não encontrada no catálogo: '$alvo'."
+                val baseRaw = Regex("periciaBase(?:DefinicaoId)?\\s*=\\s*([^;]+)")
+                    .find(valor)?.groupValues?.get(1)?.trim()
+                val baseN = baseRaw?.let { norm(it) }
+
+                // Candidatas: a perícia indicada (se válida) OU todas as que
+                // atendem o pré-requisito — escolhe a de maior NH (auto-base).
+                val candidatas = p.pericias.filter { per ->
+                    viewModel.tecnicaAtendePreRequisito(tec, per)
+                }
+                if (candidatas.isEmpty())
+                    return "Não foi possível adicionar '${tec.nome}': nenhuma perícia da ficha atende o pré-requisito (${tec.preRequisitoRaw.take(80)}). Adicione antes uma perícia compatível."
+                val base = (baseN?.let { b -> candidatas.firstOrNull { norm(it.definicaoId) == b || norm(it.nome) == b } })
+                    ?: candidatas.maxByOrNull { it.calcularNivel(p) }!!
+
+                val erro = viewModel.adicionarTecnica(tec, base, nivel.coerceAtLeast(0))
+                viewModel.autoSaveIA()
+                return if (erro == null)
+                    "OK: técnica '${tec.nome}' adicionada sobre a perícia-base '${base.nome}' (predef +${nivel.coerceAtLeast(0)})."
+                else "Falha ao adicionar técnica '${tec.nome}': $erro"
+            }
+            "magias" -> {
+                val mag = repository.magias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                    ?: return "Magia não encontrada no catálogo: '$alvo'."
+                val erro = viewModel.adicionarMagia(mag, pts = if (custo > 0) custo else 1)
+                viewModel.autoSaveIA()
+                return if (erro == null) "OK: magia '${mag.nome}' adicionada."
+                       else "Falha ao adicionar magia '${mag.nome}': $erro"
             }
             "qualidades"     -> { viewModel.adicionarQualidade(alvo); viewModel.autoSaveIA(); return "OK: qualidade adicionada." }
             "peculiaridades" -> { viewModel.adicionarPeculiaridade(alvo); viewModel.autoSaveIA(); return "OK: peculiaridade adicionada." }
