@@ -204,8 +204,14 @@ class FichaIADelegate(
             val toolCallJson = response.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }?.args?.toString()
             if (toolCallJson != null) android.util.Log.d("MestreIA", "Ficha detectada via Tool Call!")
 
-            // 2. JSON no texto — localiza a RAIZ (primeiro '{' do bloco) e repara truncamento
-            val jsonNoTexto = run {
+            // 2. JSON no texto — localiza a RAIZ e repara truncamento.
+            // GATE: só tenta se houver SINAL REAL de JSON de ficha (bloco
+            // ```json``` OU {"nome":). Resposta de análise/consultor é texto
+            // markdown (com '{' em exemplos/tabelas) — sem este gate o
+            // repararJsonTruncado mastiga markdown e TRAVA a coroutine.
+            val regexNome = Regex("""\{\s*"nome"\s*:""")
+            val temSinalJson = rawText.contains("```json") || regexNome.containsMatchIn(rawText)
+            val jsonNoTexto = if (!temSinalJson) null else run {
                 // Camada 1: bloco ```json ... ``` — pega o PRIMEIRO { após a cerca (raiz)
                 val fence = rawText.indexOf("```json")
                 val inicioPorFence = if (fence >= 0) {
@@ -213,7 +219,6 @@ class FichaIADelegate(
                 } else null
 
                 // Camada 2: primeiro {"nome": do texto (objeto raiz começa pela chave nome)
-                val regexNome = Regex("""\{\s*"nome"\s*:""")
                 val inicioPorNome = regexNome.find(rawText)?.range?.first
 
                 // Camada 3: primeiro { do texto
@@ -424,6 +429,9 @@ class FichaIADelegate(
      * Ignora chaves/aspas dentro de strings e respeita escapes.
      */
     private fun repararJsonTruncado(bruto: String): String {
+        // Defesa: JSON de ficha não passa de ~50k chars. Acima disso é
+        // texto que vazou (markdown) — não reparar, devolver como veio.
+        if (bruto.length > 50000) return bruto
         val s = bruto.trimEnd().trimEnd(',')
         val pilha = ArrayDeque<Char>()
         var emString = false
