@@ -163,9 +163,11 @@ class FichaIADelegate(
             // texto grande) NÃO pode mais matar a coroutine em silêncio e
             // deixar o chat vazio. Se algo falhar, o texto da IA aparece
             // mesmo assim (limpo do bloco ```json```).
+            android.util.Log.d("MestreIA_Trace", "[P0] entrou no try, chamando Interno")
             try {
                 processarRespostaIAInterno(modo, uid, isRagUsed, response, onResult)
             } catch (e: Throwable) {
+                android.util.Log.e("MestreIA_Trace", "[PX] EXCEÇÃO no Interno: ${e.message}", e)
                 android.util.Log.e("MestreIA", "Falha no processamento — exibindo texto bruto: ${e.message}", e)
                 val textoSeguro = mestreIAUseCase.limparNarrativaParaChat(rawText)
                     .ifBlank { rawText.ifBlank { "⚠️ A resposta chegou vazia. Tente reformular o pedido." } }
@@ -187,9 +189,11 @@ class FichaIADelegate(
     ) {
         run {
             val rawText = response.text
-            
+            android.util.Log.d("MestreIA_Trace", "[I0] Interno entrou, rawText=${rawText.length} chars")
+
             val narrativaLimpa = mestreIAUseCase.limparNarrativaParaChat(rawText)
-            
+            android.util.Log.d("MestreIA_Trace", "[I1] narrativaLimpa=${narrativaLimpa.length} chars")
+
             val gsonIA = com.google.gson.GsonBuilder()
                 .registerTypeAdapter(MestreIAItem::class.java, MestreIAItemDeserializer())
                 .create()
@@ -240,7 +244,9 @@ class FichaIADelegate(
                 repararJsonTruncado(candidato)
             }
 
+            android.util.Log.d("MestreIA_Trace", "[P1] gate JSON ok, temSinalJson=$temSinalJson")
             val jsonReal = toolCallJson ?: jsonNoTexto
+            android.util.Log.d("MestreIA_Trace", "[P2] jsonReal=${jsonReal?.length ?: -1} chars")
 
             val fichaObjeto = if (jsonReal != null) {
                 try {
@@ -254,6 +260,7 @@ class FichaIADelegate(
                     null
                 }
             } else null
+            android.util.Log.d("MestreIA_Trace", "[P3] fichaObjeto=${if (fichaObjeto==null) "null" else "ok"}")
 
             // Fonte única: se a ficha foi parseada, o chat mostra a história
             // DELA (historico + aparencia do JSON), não uma narrativa gerada
@@ -269,6 +276,7 @@ class FichaIADelegate(
                         }
                     }
                 } ?: narrativaLimpa
+            android.util.Log.d("MestreIA_Trace", "[P4] textoChat=${textoChat.length} chars, escrevendo no chat")
 
             // Atualiza na lista VIVA (preserva as [SISTEMA] injetadas
             // durante o loop). Antes: sobrescrevia com cópia velha → a
@@ -293,8 +301,10 @@ class FichaIADelegate(
                 relatorioValidacao = mestreIAGeneratorUseCase.gerarRelatorio(fichaObjeto)
             }
             
+            android.util.Log.d("MestreIA_Trace", "[P5] chat atualizado, salvando sessão")
             salvarSessaoChat()
             onResult(true, narrativaLimpa)
+            android.util.Log.d("MestreIA_Trace", "[P6] FIM ok")
         }
     }
 
