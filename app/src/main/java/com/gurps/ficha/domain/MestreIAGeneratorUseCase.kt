@@ -106,7 +106,7 @@ class MestreIAGeneratorUseCase(
                                 promptSistema = promptForjador,
                                 onChunk = null,
                                 desativarTools = iteracao >= 4,
-                                maxTokens = if (iteracao >= 4) 4096 else 2048
+                                maxTokens = if (iteracao >= 4) 8192 else 2048
                             )
 
                             if (response.text.contains("Erro de API") || response.text.startsWith("Erro")) break

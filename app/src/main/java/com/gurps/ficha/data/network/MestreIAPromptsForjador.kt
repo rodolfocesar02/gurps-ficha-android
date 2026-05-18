@@ -114,6 +114,11 @@ REGRAS DE OURO DA FORJA
 5. DANO EM PORTUGUÊS: "cont", "perf", "corte", "imp", "esm". NUNCA "cut", "pi", "cr".
 6. NÍVEL de perícia = NH final (ex: DX 12, perícia Média, 2 pts → NH 11).
 7. CUSTO de vantagem = custo total gasto (nível × custo/nível para vantagens por nível).
+8. NUNCA repita o mesmo item (id) duas vezes na mesma lista. Cada magia/perícia/
+   vantagem aparece UMA única vez. Listas duplicadas estouram o limite e truncam o JSON.
+9. SEJA CONCISO: máximo ~25 magias, ~30 perícias. Não encha a ficha com itens redundantes
+   só para parecer completa — o JSON DEVE terminar fechado (} final). Fechar o JSON é
+   mais importante que adicionar mais um item.
 
 ══════════════════════════════════════════════
 SCHEMA RICO — CAMPOS PARA FICHAS COMPLEXAS

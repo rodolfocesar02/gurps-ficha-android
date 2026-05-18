@@ -168,24 +168,34 @@ class FichaIADelegate(
             val toolCallJson = response.toolCalls.find { it.name == MestreIATools.TOOL_FILL_SHEET }?.args?.toString()
             if (toolCallJson != null) android.util.Log.d("MestreIA", "Ficha detectada via Tool Call!")
 
-            // 2. JSON no texto — estratégia em 3 camadas para ser robusto a formatação variada
+            // 2. JSON no texto — localiza a RAIZ (primeiro '{' do bloco) e repara truncamento
             val jsonNoTexto = run {
-                val fim = rawText.lastIndexOf("}")
-                if (fim < 0) return@run null
+                // Camada 1: bloco ```json ... ``` — pega o PRIMEIRO { após a cerca (raiz)
+                val fence = rawText.indexOf("```json")
+                val inicioPorFence = if (fence >= 0) {
+                    rawText.indexOf("{", fence).takeIf { it >= 0 }
+                } else null
 
-                // Camada 1: Regex que detecta {"nome": em qualquer formatação (inline ou indentado)
+                // Camada 2: primeiro {"nome": do texto (objeto raiz começa pela chave nome)
                 val regexNome = Regex("""\{\s*"nome"\s*:""")
-                val inicioPorNome = regexNome.findAll(rawText).lastOrNull()?.range?.first
+                val inicioPorNome = regexNome.find(rawText)?.range?.first
 
-                // Camada 2: Detecta código ```json ... ``` e pega o { dentro dele
-                val inicioPorFence = rawText.lastIndexOf("```json").let { fence ->
-                    if (fence >= 0) rawText.indexOf("{", fence).takeIf { it in 0..fim } else null
+                // Camada 3: primeiro { do texto
+                val inicio = inicioPorFence ?: inicioPorNome
+                    ?: rawText.indexOf("{").takeIf { it >= 0 }
+                    ?: return@run null
+
+                // Corta o sufixo após a cerca de fechamento, se houver
+                val corpoBruto = run {
+                    val fechaFence = rawText.indexOf("```", inicio)
+                    if (fechaFence >= 0) rawText.substring(inicio, fechaFence)
+                    else rawText.substring(inicio)
                 }
 
-                val inicio = inicioPorNome ?: inicioPorFence
-                    ?: rawText.indexOf("{").takeIf { it in 0..fim }
-
-                if (inicio != null && fim > inicio) rawText.substring(inicio, fim + 1) else null
+                // Tenta fechar normalmente; se truncado, repara balanceando chaves/colchetes
+                val fim = corpoBruto.lastIndexOf("}")
+                val candidato = if (fim > 0) corpoBruto.substring(0, fim + 1) else corpoBruto
+                repararJsonTruncado(candidato)
             }
 
             val jsonReal = toolCallJson ?: jsonNoTexto
@@ -323,5 +333,53 @@ class FichaIADelegate(
             if (def is VantagemDefinicao) viewModel.adicionarVantagem(def)
             else if (def is DesvantagemDefinicao) viewModel.adicionarDesvantagem(def)
         }
+    }
+
+    /**
+     * Repara JSON cortado pelo limite de tokens da IA: remove o último item
+     * incompleto e fecha strings, arrays e objetos abertos balanceando a pilha.
+     * Ignora chaves/aspas dentro de strings e respeita escapes.
+     */
+    private fun repararJsonTruncado(bruto: String): String {
+        val s = bruto.trimEnd().trimEnd(',')
+        val pilha = ArrayDeque<Char>()
+        var emString = false
+        var escape = false
+        var ultimoSeguro = -1 // índice (exclusivo) após o último ',' ou '{'/'[' em nível seguro
+
+        for (i in s.indices) {
+            val c = s[i]
+            if (escape) { escape = false; continue }
+            if (c == '\\' && emString) { escape = true; continue }
+            if (c == '"') { emString = !emString; continue }
+            if (emString) continue
+            when (c) {
+                '{', '[' -> { pilha.addLast(if (c == '{') '}' else ']'); ultimoSeguro = i + 1 }
+                '}', ']' -> { if (pilha.isNotEmpty()) pilha.removeLast(); ultimoSeguro = i + 1 }
+                ',' -> ultimoSeguro = i + 1
+            }
+        }
+
+        // Se cortou no meio de uma string ou de um valor, volta ao último ponto seguro
+        var corpo = if (emString && ultimoSeguro in 0..s.length) s.substring(0, ultimoSeguro)
+                    else s
+        corpo = corpo.trimEnd().trimEnd(',')
+
+        // Recalcula a pilha sobre o corpo já podado e fecha o que restou
+        pilha.clear()
+        emString = false; escape = false
+        for (c in corpo) {
+            if (escape) { escape = false; continue }
+            if (c == '\\' && emString) { escape = true; continue }
+            if (c == '"') { emString = !emString; continue }
+            if (emString) continue
+            when (c) {
+                '{' -> pilha.addLast('}')
+                '[' -> pilha.addLast(']')
+                '}', ']' -> if (pilha.isNotEmpty()) pilha.removeLast()
+            }
+        }
+        val fechamento = buildString { while (pilha.isNotEmpty()) append(pilha.removeLast()) }
+        return corpo + fechamento
     }
 }
