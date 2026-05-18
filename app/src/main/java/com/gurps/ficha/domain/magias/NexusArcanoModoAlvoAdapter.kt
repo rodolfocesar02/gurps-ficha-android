@@ -8,6 +8,7 @@ import nexus.arcano.ArcanoMetaProgress
 import nexus.arcano.ArcanoMetaTipo
 import nexus.arcano.ArcanoResultado
 import nexus.arcano.NexusArcanoEngine
+import nexus.arcano.planejarCaminhoMinimo
 
 data class NexusArcanoModoAlvoSnapshot(
     val relacionadosIds: List<String>,
@@ -19,7 +20,10 @@ data class NexusArcanoModoAlvoSnapshot(
     val proximaObrigatoriaId: String? = null,
     val proximaLateralUtilId: String? = null,
     val bloqueioCurto: String? = null,
-    val aviso: String? = null
+    val aviso: String? = null,
+    // TRILHA ÓTIMA (Pathfinder A*/guloso): sequência mínima de magias
+    // a aprender ANTES do alvo. Vazia se o alvo já é aprendível agora.
+    val trilhaOtimaIds: List<String> = emptyList()
 )
 
 class NexusArcanoModoAlvoAdapter(
@@ -113,6 +117,14 @@ class NexusArcanoModoAlvoAdapter(
             ?.takeIf { magiasById.containsKey(it) }
         val proximaLateralUtil = idsAcoes.firstOrNull { it != proximaObrigatoria } ?: idsAcoes.firstOrNull()
 
+        // TRILHA ÓTIMA: Pathfinder (Lote 163, agora LIGADO em produção).
+        // Antes era código morto — só ranking míope. Falha silenciosa
+        // (catch) cai no comportamento antigo, nunca quebra o GPS.
+        val trilhaOtima = runCatching {
+            engine.planejarCaminhoMinimo(alvoId, estado).trilhaMagiasIds
+                .filter { magiasById.containsKey(it) }
+        }.getOrDefault(emptyList())
+
         return NexusArcanoModoAlvoSnapshot(
             relacionadosIds = relacionados.toList(),
             chavesAtivas = resultado.chavesAtivas,
@@ -123,7 +135,8 @@ class NexusArcanoModoAlvoAdapter(
             proximaObrigatoriaId = proximaObrigatoria,
             proximaLateralUtilId = proximaLateralUtil,
             bloqueioCurto = montarBloqueioCurto(resultado),
-            aviso = mensagemFalhaHierarquica(alvoId, resultado)
+            aviso = mensagemFalhaHierarquica(alvoId, resultado),
+            trilhaOtimaIds = trilhaOtima
         )
     }
 

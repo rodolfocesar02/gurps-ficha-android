@@ -165,6 +165,7 @@ class MestreIAGeneratorUseCase(
                     }
                     var iteracao = 0
                     var semProgresso = 0
+                    var pesquisaSeguida = 0
                     while (iteracao < ITER_HARD_CAP) {
                         iteracao++
                         val itensAntes = totalItens()
@@ -253,15 +254,34 @@ class MestreIAGeneratorUseCase(
                         // chamaram ferramenta mas NÃO adicionaram item novo.
                         // Progresso zera o contador → cadeia longa continua
                         // o quanto precisar. 2x sem progresso → encerra.
+                        // PROGRESSO = adicionou item OU pesquisou (GPS/buscar).
+                        // Bug Lote 160: iteração só com forjador_gps_magia
+                        // (descobrir a trilha) era contada como "estagnação"
+                        // e o loop morria EXATAMENTE quando o GPS acabava de
+                        // liberar o que adicionar. Pesquisar é trabalho real.
+                        // Estagnação de verdade = iteração sem nada útil.
+                        val pesquisou = forjadorCalls.any {
+                            it.name == ForjadorTools.TOOL_GPS_MAGIA ||
+                            it.name == ForjadorTools.TOOL_BUSCAR
+                        }
                         val progrediu = totalItens() > itensAntes
                         if (progrediu) {
+                            // Adicionou algo: zera tudo, cadeia avançando.
                             semProgresso = 0
-                            Log.d("MestreIA_Forjador", "Progresso (+${totalItens() - itensAntes} itens) na iteração $iteracao")
+                            pesquisaSeguida = 0
+                            Log.d("MestreIA_Forjador", "Progresso (+${totalItens() - itensAntes} itens) it.$iteracao")
+                        } else if (pesquisou) {
+                            // Pesquisou mas não adicionou: trabalho válido,
+                            // mas limita pesquisa-sem-aplicar p/ não loopar.
+                            semProgresso = 0
+                            pesquisaSeguida++
+                            Log.d("MestreIA_Forjador", "Pesquisa s/ aplicar ($pesquisaSeguida/4) it.$iteracao")
                         } else {
                             semProgresso++
-                            Log.d("MestreIA_Forjador", "Sem progresso ($semProgresso/2) na iteração $iteracao")
+                            Log.d("MestreIA_Forjador", "Sem avanço ($semProgresso/2) na iteração $iteracao")
                         }
-                        val proximaEhFinal = semProgresso >= 2 || iteracao >= ITER_HARD_CAP - 1
+                        val proximaEhFinal = semProgresso >= 2 ||
+                            pesquisaSeguida >= 4 || iteracao >= ITER_HARD_CAP - 1
 
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         // Resultado de ferramenta = dado do SISTEMA, não fala

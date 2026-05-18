@@ -170,6 +170,17 @@ class ForjadorToolExecutor(
                 aprendivel -> appendLine("VEREDITO: ✅ PODE ADICIONAR '$alvoNome' AGORA — pré-requisitos atendidos. Chame forjador_editar_ficha adicionar magias \"$alvoId\".")
                 else -> appendLine("VEREDITO: ⛔ AINDA NÃO pode adicionar '$alvoNome'. Falta: $faltaPrereq")
             }
+            // TRILHA ÓTIMA (Pathfinder) — o ROTEIRO PRONTO. Adicione as
+            // magias EXATAMENTE nesta ordem; é o caminho mais curto. NÃO
+            // invente outra ordem nem tateie.
+            if (snapshot.trilhaOtimaIds.isNotEmpty()) {
+                appendLine("TRILHA MAIS RÁPIDA (adicione NESTA ORDEM, depois o alvo):")
+                snapshot.trilhaOtimaIds.forEachIndexed { i, id ->
+                    val nome = repository.magias.find { it.id == id }?.nome ?: id
+                    appendLine("  ${i + 1}. $id ($nome)")
+                }
+                appendLine("  → por fim: $alvoId ($alvoNome)")
+            }
             // Os campos abaixo são CONTEXTO. NÃO recalcule escolas/contagens
             // de cabeça — o número do app é a verdade.
             snapshot.progressoCadeia?.let { appendLine(if (it.startsWith("Cadeia")) it else "Cadeia: $it") }
