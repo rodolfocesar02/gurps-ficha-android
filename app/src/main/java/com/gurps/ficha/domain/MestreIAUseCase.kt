@@ -376,7 +376,21 @@ class MestreIAUseCase(
     }
 
     fun extrairJsonDeNarrativa(texto: String): String? = MestreIAClient.extrairJsonFicha(texto)?.let { "..." } 
-    fun limparNarrativaParaChat(texto: String): String = texto.replace(Regex("```json.*?```", RegexOption.DOT_MATCHES_ALL), "").trim()
+    // Remove blocos ```json ... ``` SEM regex (o .*? com DOTALL sobre
+    // texto grande pode sofrer backtracking e travar). Varredura linear.
+    fun limparNarrativaParaChat(texto: String): String {
+        if (!texto.contains("```json")) return texto.trim()
+        val sb = StringBuilder()
+        var i = 0
+        while (i < texto.length) {
+            val ini = texto.indexOf("```json", i)
+            if (ini < 0) { sb.append(texto, i, texto.length); break }
+            sb.append(texto, i, ini)
+            val fim = texto.indexOf("```", ini + 7)
+            i = if (fim < 0) texto.length else fim + 3
+        }
+        return sb.toString().trim()
+    }
 
     data class CatalogoLocalResult(val catalogo: MestreIAClient.CatalogoNomes, val isRagSuccess: Boolean)
 }

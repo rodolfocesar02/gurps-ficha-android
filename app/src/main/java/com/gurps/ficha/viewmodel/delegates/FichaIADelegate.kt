@@ -201,12 +201,15 @@ class FichaIADelegate(
             if (toolCallJson != null) android.util.Log.d("MestreIA", "Ficha detectada via Tool Call!")
 
             // 2. JSON no texto — localiza a RAIZ e repara truncamento.
-            // GATE: só tenta se houver SINAL REAL de JSON de ficha (bloco
-            // ```json``` OU {"nome":). Resposta de análise/consultor é texto
-            // markdown (com '{' em exemplos/tabelas) — sem este gate o
-            // repararJsonTruncado mastiga markdown e TRAVA a coroutine.
-            val regexNome = Regex("""\{\s*"nome"\s*:""")
-            val temSinalJson = rawText.contains("```json") || regexNome.containsMatchIn(rawText)
+            // GATE: só tenta se houver SINAL de JSON de ficha.
+            // CAUSA RAIZ (Lote 157): o regex \{\s*"nome"\s*: rodando com
+            // containsMatchIn sobre 4000+ chars de markdown sofre
+            // catastrophic backtracking (ReDoS) → a coroutine TRAVA (não
+            // exceção, loop de CPU; o try/catch do 152 não pega). Por isso
+            // o log parava em "Iniciando Parse". Substituído por checagem
+            // LITERAL O(n) (indexOf), sem regex sobre texto livre grande.
+            val temSinalJson = rawText.contains("```json") ||
+                rawText.contains("\"nome\"") // barato, sem backtracking
             val jsonNoTexto = if (!temSinalJson) null else run {
                 // Camada 1: bloco ```json ... ``` — pega o PRIMEIRO { após a cerca (raiz)
                 val fence = rawText.indexOf("```json")
@@ -214,8 +217,10 @@ class FichaIADelegate(
                     rawText.indexOf("{", fence).takeIf { it >= 0 }
                 } else null
 
-                // Camada 2: primeiro {"nome": do texto (objeto raiz começa pela chave nome)
-                val inicioPorNome = regexNome.find(rawText)?.range?.first
+                // Camada 2: primeiro { que precede "nome" (literal, sem regex)
+                val posNome = rawText.indexOf("\"nome\"")
+                val inicioPorNome = if (posNome >= 0)
+                    rawText.lastIndexOf("{", posNome).takeIf { it >= 0 } else null
 
                 // Camada 3: primeiro { do texto
                 val inicio = inicioPorFence ?: inicioPorNome
