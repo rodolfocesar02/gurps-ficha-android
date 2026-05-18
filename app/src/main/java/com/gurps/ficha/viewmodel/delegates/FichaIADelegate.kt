@@ -89,6 +89,46 @@ class FichaIADelegate(
         mestreIAChatHistory = atual.toMutableList().also { it[idx] = transform(atual[idx]) }
     }
 
+    /**
+     * Finaliza a resposta do assistente.
+     *
+     * CAUSA RAIZ (loop longo do Forjador / Pathfinder ligado): existe UMA
+     * só bolha placeholder (uid=assistantUid). Numa cadeia longa o modelo
+     * responde texto MAIS DE UMA VEZ (ex.: "Perfeito! Vamos analisar..."
+     * na 1ª iteração; "Tudo certo!" no fim) e entre elas o loop injeta
+     * mensagens [SISTEMA]. Atualizar SEMPRE por uid sobrescrevia a bolha
+     * original — que ficou ACIMA de todas as [SISTEMA] — então a resposta
+     * final substituía silenciosamente a 1ª no topo e NÃO aparecia no fim
+     * do chat (o trace ia até [P6] FIM ok, pois a escrita "funcionava").
+     *
+     * Regra: se a bolha-alvo ainda é a ÚLTIMA da lista, atualiza no lugar
+     * (caso simples). Se já há mensagens depois dela (loop injetou texto),
+     * anexa a resposta final como NOVA bolha no fim, visível para o usuário.
+     */
+    private fun finalizarMsgAssistente(
+        uid: String,
+        transform: (MestreIAClient.ChatMessage) -> MestreIAClient.ChatMessage
+    ) {
+        val atual = mestreIAChatHistory
+        val idx = atual.indexOfFirst { it.uid == uid }
+        if (idx < 0) {
+            // Placeholder some por completo: garante que a resposta apareça.
+            mestreIAChatHistory = atual + transform(
+                MestreIAClient.ChatMessage("model", "")
+            )
+            return
+        }
+        if (idx == atual.lastIndex) {
+            mestreIAChatHistory = atual.toMutableList().also { it[idx] = transform(atual[idx]) }
+        } else {
+            // Bolha NOVA (uid próprio gerado pelo construtor) para não
+            // colidir com o uid da bolha velha do topo.
+            mestreIAChatHistory = atual + transform(
+                MestreIAClient.ChatMessage("model", "")
+            )
+        }
+    }
+
     fun conversar(pergunta: String, modo: String, onResult: (Boolean, String) -> Unit) {
         val userMsg = MestreIAClient.ChatMessage("user", pergunta)
         mestreIAChatHistory = mestreIAChatHistory + userMsg
@@ -281,7 +321,7 @@ class FichaIADelegate(
             // Atualiza na lista VIVA (preserva as [SISTEMA] injetadas
             // durante o loop). Antes: sobrescrevia com cópia velha → a
             // resposta final e as msgs [SISTEMA] sumiam do chat.
-            atualizarMsgAssistente(uid) {
+            finalizarMsgAssistente(uid) {
                 it.copy(
                     text = textoChat,
                     modelName = response.modelName ?: "Mestre Sábio",

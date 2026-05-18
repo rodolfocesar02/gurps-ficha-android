@@ -632,6 +632,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build (APK 21:54); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device do usuário — pedir "adicione a magia Desejo e as necessárias" no modo Analisar; confirmar GPS mostra TRILHA, IA segue na ordem, cadeia completa até Desejo entrar.
 
+### Lote 165: Resposta final do Forjador some do chat em cadeia longa - CONCLUÍDO
+- **Sintoma (relato do usuário, teste 22:01):** "meia vitória" — a magia Desejo + cadeia completa (17 magias) entraram OK, mas a última mensagem da IA não apareceu no chat, só no logcat.
+- **CAUSA RAIZ (por trace, não suposição):** logcat mostra a resposta final indo até `[P4] escrevendo no chat` → `[P5]` → `[P6] FIM ok` — a escrita "funcionava". Existe UMA só bolha placeholder (uid=assistantUid). Em cadeia longa o modelo respondeu texto DUAS vezes (22:00:07 "Perfeito! Vamos analisar..." na 1ª iteração; 22:01:50 "Tudo certo!" no fim) e entre elas o loop injetou mensagens [SISTEMA]. `atualizarMsgAssistente(uid)` sobrescrevia SEMPRE a mesma bolha — que ficou ACIMA das [SISTEMA] — então a resposta final substituía silenciosamente a 1ª no topo e não aparecia no fim do chat. (Não era a classe de bug do ReDoS/parse dos Lotes 152-157 — aquele estava resolvido; este é da bolha única em loop multi-resposta.)
+- **Correção:** novo `finalizarMsgAssistente(uid)` em `FichaIADelegate.kt`: se a bolha-alvo ainda é a ÚLTIMA da lista, atualiza no lugar (caso simples); se já há mensagens depois dela (loop injetou [SISTEMA]/texto), anexa a resposta final como NOVA bolha no fim (uid próprio do construtor, sem colidir com a bolha velha). O write final em `processarRespostaIAInterno` passa a usar `finalizarMsgAssistente` em vez de `atualizarMsgAssistente`.
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device — repetir a cadeia Desejo no modo Analisar e confirmar que a mensagem de fechamento aparece NO FIM do chat, abaixo das [SISTEMA].
+
 
 
 **[Bateria de Testes a Realizar]**
