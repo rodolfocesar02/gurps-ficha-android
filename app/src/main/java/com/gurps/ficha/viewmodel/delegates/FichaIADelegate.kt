@@ -34,6 +34,7 @@ class FichaIADelegate(
     var currentSessionId by mutableStateOf<Long?>(null)
     var savedSessions by mutableStateOf<List<ChatSessionEntity>>(emptyList())
     private var sincroniaExecutadaNestaSessao = false
+    @Volatile private var integracaoEmAndamento = false
 
     fun verificarSincroniaAutomatica() {
         if (sincroniaExecutadaNestaSessao) return
@@ -282,12 +283,21 @@ class FichaIADelegate(
     }
 
     fun confirmarIntegracao() {
-        fichaGeradaPendente?.let {
-            mestreIAGeneratorUseCase.integrarRespostaNaFicha(it)
-            fichaGeradaPendente = null
-            relatorioValidacao = null
+        // Idempotente: duplo-clique / recomposição do Compose disparava
+        // integrarRespostaNaFicha 2x → vantagens por-nível e equipamentos
+        // (que não têm dedup) eram duplicados. Captura a ficha, zera o
+        // pendente ANTES de integrar e trava reentrada.
+        if (integracaoEmAndamento) return
+        val ficha = fichaGeradaPendente ?: return
+        integracaoEmAndamento = true
+        fichaGeradaPendente = null
+        relatorioValidacao = null
+        try {
+            mestreIAGeneratorUseCase.integrarRespostaNaFicha(ficha)
             mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("model", "✅ Ficha integrada com sucesso!")
             viewModel.autoSaveIA()
+        } finally {
+            integracaoEmAndamento = false
         }
     }
 

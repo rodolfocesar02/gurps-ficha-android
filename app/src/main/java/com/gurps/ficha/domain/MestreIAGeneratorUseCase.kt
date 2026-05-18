@@ -265,17 +265,31 @@ class MestreIAGeneratorUseCase(
         viewModel.atualizarInteligencia(attr.iq)
         viewModel.atualizarVitalidade(attr.ht)
 
+        // Dedup defensivo: LLMs (DeepSeek) às vezes geram a mesma lista 2x
+        // dentro do JSON. Sem isto, vantagens por-nível e equipamentos
+        // (que não têm dedup no app) entram duplicados na ficha.
+        fun chave(it: MestreIAItem) = (it.id ?: it.nome).lowercase().trim() +
+            "|" + (it.especializacao ?: "").lowercase().trim()
+        val vantagensU    = ficha.vantagens.distinctBy(::chave)
+        val desvantagensU = ficha.desvantagens.distinctBy(::chave)
+        val periciasU     = ficha.pericias.distinctBy(::chave)
+        val tecnicasU     = ficha.tecnicas.distinctBy(::chave)
+        val magiasU       = ficha.magias.distinctBy(::chave)
+        val equipamentosU = ficha.equipamentos.distinctBy {
+            it.nome.lowercase().trim() + "|" + (it.tipo ?: "")
+        }
+
         // Ordem importa: perícias antes de técnicas (técnica precisa da perícia-base já na ficha)
-        ficha.vantagens.forEach    { v -> adicionarVantagem(v, v.descricao ?: "", v.custo ?: 0) }
-        ficha.desvantagens.forEach { d -> adicionarVantagem(d, d.descricao ?: "", d.custo ?: 0) }
-        ficha.pericias.forEach     { p -> adicionarPericia(p, p.nivel) }
-        ficha.tecnicas.forEach     { t -> adicionarTecnica(t) }
-        ficha.magias.forEach       { m -> adicionarMagia(m) }
+        vantagensU.forEach    { v -> adicionarVantagem(v, v.descricao ?: "", v.custo ?: 0) }
+        desvantagensU.forEach { d -> adicionarVantagem(d, d.descricao ?: "", d.custo ?: 0) }
+        periciasU.forEach     { p -> adicionarPericia(p, p.nivel) }
+        tecnicasU.forEach     { t -> adicionarTecnica(t) }
+        magiasU.forEach       { m -> adicionarMagia(m) }
 
-        ficha.qualidades.forEach     { q -> viewModel.adicionarQualidade(textoLivre(q)) }
-        ficha.peculiaridades.forEach { p -> viewModel.adicionarPeculiaridade(textoLivre(p)) }
+        ficha.qualidades.distinctBy(::chave).forEach { q -> viewModel.adicionarQualidade(textoLivre(q)) }
+        ficha.peculiaridades.distinctBy(::chave).forEach { p -> viewModel.adicionarPeculiaridade(textoLivre(p)) }
 
-        ficha.equipamentos.forEach { eq ->
+        equipamentosU.forEach { eq ->
             val tipoEnum = when (eq.tipo?.uppercase()) {
                 "ARMA"     -> TipoEquipamento.ARMA
                 "ARMADURA" -> TipoEquipamento.ARMADURA
