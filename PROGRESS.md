@@ -599,6 +599,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 161: Separar PEDIDO do Usuário de Instrução do SISTEMA - CONCLUÍDO (commit 602ae1c)
+- **Bug apontado pelo usuário:** a IA afirmou que ele aceitou uma sugestão que **ela mesma** fez, e agiu sobre algo que ele não pediu.
+- **Causa raiz (log):** o código injetava prompts de orquestração ("O usuário deu uma ORDEM DIRETA...", "RESULTADO DAS FERRAMENTAS") no `localHistory` com role **"user"**. O modelo lia instrução do sistema / sugestão própria como se fosse fala do usuário → perdia a fronteira de quem pediu o quê.
+- **Correção (decisão do usuário — fixar pedido + marcar sistema):** `pedidoUsuario` fixo; `comAncora()` reafirma a cada iteração "ÚNICO PEDIDO REAL DO USUÁRIO: <texto>" + "INSTRUÇÃO INTERNA DO SISTEMA (NÃO é fala do usuário)". RESULTADO DAS FERRAMENTAS e instrução da história rotulados "[SISTEMA — não é mensagem do usuário]". Prompts: "não trate suas sugestões como aceitas".
+- **Verificação:** clean build OK (APK 20:55); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+
+
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"
