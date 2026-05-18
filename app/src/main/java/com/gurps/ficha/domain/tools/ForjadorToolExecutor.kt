@@ -27,6 +27,9 @@ class ForjadorToolExecutor(
         return resultado
     }
 
+    /** Read-back: relê uma seção pelo nome (reusa lerFicha). Usado na verificação pós-edição. */
+    fun lerSecao(secao: String): String = lerFicha(JSONObject().put("secao", secao))
+
     private fun lerFicha(args: JSONObject): String {
         val p = viewModel.personagem
         val secao = args.optString("secao", "atributos")

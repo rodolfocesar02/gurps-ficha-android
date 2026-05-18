@@ -157,8 +157,33 @@ class MestreIAGeneratorUseCase(
                         }
                         Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
 
+                        // READ-BACK: se houve edição, relê AUTOMATICAMENTE as
+                        // seções tocadas (estado real pós-edição) e força a IA
+                        // a verificar item por item — não pode mais "presumir"
+                        // que aplicou. Mapeia atributos→ pontos juntos.
+                        val edicoes = forjadorCalls.filter { it.name == ForjadorTools.TOOL_EDITAR }
+                        var verificacao = ""
+                        if (edicoes.isNotEmpty()) {
+                            onStatusUpdate("Verificando as alterações na ficha...")
+                            val secoes = edicoes.mapNotNull {
+                                it.args.optString("secao", "").lowercase().trim().ifBlank { null }
+                            }.toMutableSet()
+                            if ("atributos" in secoes) secoes.add("pontos")
+                            val leitura = secoes.joinToString("\n\n") { s ->
+                                "--- $s (estado ATUAL na ficha) ---\n${toolExecutor.lerSecao(s)}"
+                            }
+                            verificacao = "\n\n=== VERIFICAÇÃO PÓS-EDIÇÃO (read-back automático) ===\n" +
+                                "$leitura\n\n" +
+                                "CONFIRA item por item: cada alteração que você pediu CONSTA acima na ficha relida? " +
+                                "Se ALGUMA não aplicou (ex: técnica recusada por pré-requisito), tente corrigir UMA vez " +
+                                "(ex: adicione a perícia-base que falta e re-aplique). " +
+                                "Só afirme ao usuário que algo foi aplicado se ele REALMENTE aparecer na ficha relida acima. " +
+                                "Reporte com honestidade o que aplicou e o que (e por quê) não aplicou."
+                            Log.d("MestreIA_Forjador", "Read-back: ${secoes.joinToString()} (${leitura.length} chars)")
+                        }
+
                         localHistory.add("model" to "Dados coletados com sucesso.")
-                        localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados")
+                        localHistory.add("user" to "=== RESULTADO DAS FERRAMENTAS (iteração $iteracao) ===\n$resultados$verificacao")
                         promptAtual = if (iteracao >= 3) {
                             if (modo == "analise") {
                                 "[RESPOSTA FINAL] Você já leu a ficha e o catálogo. NÃO chame ferramentas e NÃO gere JSON. Responda em TEXTO ao usuário: análise objetiva da ficha + sugestões priorizadas (cite o ID real de cada vantagem/perícia/magia sugerida e o porquê, ligado ao conceito do personagem). Termine perguntando se ele quer que você aplique alguma das sugestões."
