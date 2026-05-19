@@ -761,6 +761,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE B device — 7 raças do Lote 181 (agora Gigante deve fechar 122, SEM aviso). Regressão das 7 anteriores. Espírito do Manancial segue pendente (lote futuro: Metacaracterística).
 
+### Lote 183: Metacaracterísticas reusando ModeloRacial (sem over-engineering) - CONCLUÍDO
+- **Correção de rumo (usuário cortou over-engineering):** eu estava criando catálogo separado + Room novo + migration. Usuário apontou: ModeloRacial JÁ salva na ficha; meta é o MESMO pacote, só muda nome e onde grava. GURPS p.262 confirma: "funciona quase da mesma maneira que vantagem/desvantagem"; "anote a metacaracterística, NÃO seus componentes"; "Mestre pode modificar os elementos, alterando o custo".
+- **Decisões do usuário:** dialog renomeado "Raça e Metacaracterísticas"; ao Salvar → escolhe Raça (ficha, como hoje) ou Metacaracterística (reutilizável); meta guarda componentes (reabrir/editar); embutida numa raça = 1 item de custo único (não expande).
+- **Implementação enxuta (sem Room/migration):** `ModeloRacial` ganhou `tipo: TipoModeloRacial{RACA,METACARACTERISTICA}` + `metacaracteristicas: List<MetacaracteristicaRef>` (id/nome/custo/desc, soma 1× no custoTotal). Storage LEVE: `MetacaracteristicaStore` grava lista de ModeloRacial(tipo=META) em `filesDir/metacaracteristicas_usuario.json` (padrão filesDir já usado p/ maps; zero migration, zero FichaDatabase). UI: título novo; botão "Salvar" abre AlertDialog Raça|Metacaracterística; botão "Adicionar Metacaracterística" + chips removíveis; seletor lista metas salvas (clica → vira MetacaracteristicaRef com custoTotal). Construtores ModeloRacial todos named-arg (RacaCatalogo:209 incluso) — campos novos default, sem regressão.
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — montar um conjunto, Salvar→Metacaracterística (confirmar grava), reabrir Raça e "Adicionar Metacaracterística" (chip +custo). Depois isso destrava Espírito do Manancial (Metacaracterística Espírito 261 como item). Regressão: 14 raças do catálogo seguem fechando.
+
 
 
 **[Bateria de Testes a Realizar]**

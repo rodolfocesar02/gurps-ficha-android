@@ -981,6 +981,21 @@ data class LimitacaoAtributo(
     val percentual: Int = 0 // negativo: -10, -40, -80...
 )
 
+/** Um ModeloRacial pode ser uma RAÇA (pacote racial da ficha) ou uma
+ *  METACARACTERÍSTICA (mesmo pacote salvo como traço reutilizável). */
+enum class TipoModeloRacial { RACA, METACARACTERISTICA }
+
+/** Referência a uma metacaracterística embutida numa raça: UM item de
+ *  custo único (não expande componentes — GURPS p.262). O custo é o
+ *  valor final (pode ter sido ajustado pelo Mestre). */
+@Stable
+data class MetacaracteristicaRef(
+    val id: String = "",
+    val nome: String = "",
+    val custo: Int = 0,
+    val descricao: String = ""
+)
+
 @Stable
 data class ModeloRacial(
     val nome: String = "Humano",
@@ -1009,6 +1024,15 @@ data class ModeloRacial(
     // limitação (comportamento idêntico ao anterior). Cada item
     // afeta SÓ o atributo nomeado.
     val limitacoesAtributo: List<LimitacaoAtributo> = emptyList(),
+    // Metacaracterísticas embutidas (GURPS p.262). Cada uma entra como
+    // UM item de custo único — NÃO expande componentes ("anote a
+    // metacaracterística, não seus componentes"). Ex.: Espírito = +261.
+    val metacaracteristicas: List<MetacaracteristicaRef> = emptyList(),
+    // RACA = pacote racial normal; METACARACTERISTICA = este mesmo
+    // pacote, mas salvo como traço reutilizável (mesma estrutura, só
+    // muda o rótulo e onde é gravado). GURPS: "funciona quase da mesma
+    // maneira que uma vantagem/desvantagem".
+    val tipo: TipoModeloRacial = TipoModeloRacial.RACA,
     val descricao: String = ""
 ) {
     /** % total de limitação aplicável a um atributo (soma, piso −80). */
@@ -1038,7 +1062,9 @@ data class ModeloRacial(
         val custoPericias = pericias.sumOf { it.custo }
         val custoQualidades = qualidades.size            // +1 cada (GURPS)
         val custoPeculiaridades = peculiaridades.size * -1 // -1 cada (GURPS)
+        val custoMeta = metacaracteristicas.sumOf { it.custo } // 1 item, valor final
         return custoAtributos + custoSecundarios + custoVantagens +
-               custoDesvantagens + custoPericias + custoQualidades + custoPeculiaridades
+               custoDesvantagens + custoPericias + custoQualidades +
+               custoPeculiaridades + custoMeta
     }
 }

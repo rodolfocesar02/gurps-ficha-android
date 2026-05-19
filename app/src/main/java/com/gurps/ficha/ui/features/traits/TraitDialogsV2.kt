@@ -60,11 +60,30 @@ fun ModeloRacialDialog(
     var showSelecionarDesvantagem by remember { mutableStateOf(false) }
     var showSelecionarPericia by remember { mutableStateOf(false) }
     var showSelecionarRaca by remember { mutableStateOf(false) }
+    var showSalvarComo by remember { mutableStateOf(false) }
+    var showSelecionarMeta by remember { mutableStateOf(false) }
 
     // Catálogo de raças (racas.v1.json). Carregado uma vez.
     val ctxRaca = androidx.compose.ui.platform.LocalContext.current
     val catalogoRacas = remember { com.gurps.ficha.domain.loaders.RacaCatalogo.carregar(ctxRaca) }
+    val metaStore = remember { com.gurps.ficha.data.storage.MetacaracteristicaStore(ctxRaca) }
+    var metasSalvas by remember { mutableStateOf(metaStore.listar()) }
+    var metacaracteristicas by remember { mutableStateOf(modeloOriginal.metacaracteristicas) }
     var avisoRaca by remember { mutableStateOf<String?>(null) }
+
+    // Monta o ModeloRacial a partir do estado atual do dialog.
+    fun montarModelo(tipo: com.gurps.ficha.model.TipoModeloRacial) = ModeloRacial(
+        nome = nome, modForca = modForca, modDestreza = modDestreza,
+        modInteligencia = modInteligencia, modVitalidade = modVitalidade,
+        modPontosVida = modPontosVida, modVontade = modVontade,
+        modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga,
+        modVelocidadeBasica = modVelocidadeBasica,
+        modDeslocamentoBasico = modDeslocamentoBasico,
+        vantagens = vantagensRacais, desvantagens = desvantagensRacais,
+        pericias = periciasRacais, qualidades = qualidadesRacais,
+        peculiaridades = peculiaridadesRacais, limitacoesAtributo = limitacoesAtributo,
+        metacaracteristicas = metacaracteristicas, tipo = tipo, descricao = descricaoRacial
+    )
     
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
@@ -84,7 +103,7 @@ fun ModeloRacialDialog(
                     modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface).padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Personalizar Modelo Racial", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                    Text("Raça e Metacaracterísticas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     IconButton(onClick = onDismiss, modifier = Modifier.align(Alignment.CenterStart)) { Icon(Icons.Default.Close, "Fechar") }
                 }
 
@@ -106,6 +125,24 @@ fun ModeloRacialDialog(
                             avisoRaca?.let {
                                 Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 4.dp))
                             }
+                        }
+                    }
+
+                    // METACARACTERÍSTICAS embutidas nesta raça (1 item de
+                    // custo único cada — não expande componentes, GURPS p.262)
+                    item {
+                        if (metasSalvas.isNotEmpty()) {
+                            OutlinedButton(
+                                onClick = { showSelecionarMeta = true },
+                                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Adicionar metacaracterística salva" }
+                            ) { Icon(Icons.Default.Add, null); Spacer(Modifier.width(8.dp)); Text("Adicionar Metacaracterística") }
+                        }
+                        metacaracteristicas.forEachIndexed { idx, m ->
+                            AssistChip(
+                                onClick = { metacaracteristicas = metacaracteristicas.toMutableList().apply { removeAt(idx) } },
+                                label = { Text("${m.nome}: ${m.custo} pts  ✕") },
+                                modifier = Modifier.padding(end = 4.dp, top = 4.dp)
+                            )
                         }
                     }
 
@@ -260,16 +297,9 @@ fun ModeloRacialDialog(
                     Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Cancelar") }
                         Button(
-                            onClick = { 
-                                val novoModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, limitacoesAtributo = limitacoesAtributo, descricao = descricaoRacial)
-                                if (onSave != null) onSave(novoModelo)
-                                else {
-                                    viewModel.atualizarModeloRacial(novoModelo)
-                                    onDismiss()
-                                }
-                            }, 
+                            onClick = { showSalvarComo = true },
                             modifier = Modifier.weight(1f)
-                        ) { Text("Salvar Modelo") }
+                        ) { Text("Salvar") }
                     }
                 }
             }
@@ -320,6 +350,62 @@ fun ModeloRacialDialog(
                 }) { Text("Adicionar") }
             },
             dismissButton = { TextButton(onClick = { showLimitacaoDialog = false }) { Text("Cancelar") } }
+        )
+    }
+
+    // SALVAR COMO: o pacote montado é o mesmo; muda só o que vira e
+    // onde grava (Raça → ficha; Metacaracterística → store reutilizável).
+    if (showSalvarComo) {
+        AlertDialog(
+            onDismissRequest = { showSalvarComo = false },
+            title = { Text("Salvar como") },
+            text = { Text("Este conjunto (atributos + traços) pode ser salvo como a RAÇA do personagem, ou como uma METACARACTERÍSTICA reutilizável (vira 1 item de custo único para usar em raças).") },
+            confirmButton = {
+                TextButton(onClick = {
+                    val m = montarModelo(com.gurps.ficha.model.TipoModeloRacial.RACA)
+                    showSalvarComo = false
+                    if (onSave != null) onSave(m) else { viewModel.atualizarModeloRacial(m); onDismiss() }
+                }) { Text("Raça") }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    val m = montarModelo(com.gurps.ficha.model.TipoModeloRacial.METACARACTERISTICA)
+                    metaStore.salvar(m)
+                    metasSalvas = metaStore.listar()
+                    showSalvarComo = false
+                    onDismiss()
+                }) { Text("Metacaracterística") }
+            }
+        )
+    }
+
+    // SELECIONAR METACARACTERÍSTICA SALVA — entra como 1 item de custo
+    // único (custoTotal dela), NÃO expande componentes (GURPS p.262).
+    if (showSelecionarMeta) {
+        AlertDialog(
+            onDismissRequest = { showSelecionarMeta = false },
+            title = { Text("Metacaracterísticas Salvas") },
+            text = {
+                if (metasSalvas.isEmpty()) Text("Nenhuma metacaracterística salva ainda.")
+                else LazyColumn(modifier = Modifier.height(300.dp)) {
+                    items(metasSalvas) { meta ->
+                        ListItem(
+                            headlineContent = { Text(meta.nome) },
+                            supportingContent = { Text("${meta.custoTotal} pts") },
+                            modifier = Modifier.clickable {
+                                metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
+                                    id = meta.nome.lowercase().replace(" ", "_"),
+                                    nome = meta.nome,
+                                    custo = meta.custoTotal,
+                                    descricao = meta.descricao
+                                )
+                                showSelecionarMeta = false
+                            }
+                        )
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { showSelecionarMeta = false }) { Text("Fechar") } }
         )
     }
 
