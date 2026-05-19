@@ -835,6 +835,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **PENDENTE:** adicionar `racial` (limitação -20%) ao modificadores.v1.json — destrava 2 Insetos. Medusas em análise pelo usuário (Ataque Inato + Atribulação).
 - **Próximo:** TESTE device — Kobolds fechar -60; Insetos darão custo errado até `racial` ser adicionado.
 
+### Lote 193: Insetos destravados — racial id corrigido (mod_racial) - CONCLUÍDO
+- **Resolução do pendente Lote 192:** usuário adicionou ao modificadores.v1.json com id `mod_racial` (com prefixo); eu havia posto `"racial"` no racas.v1.json. Corrigido para `mod_racial`.
+- **Insetos fecham EXATO:** Homens-Inseto 29 (10+10 +15+10+10 +**39**(Diapsiquia trans+50% racial-20%) −5−10−25−5−4−10−5 −1); Guerreiros Insetos 25 (30−20+20 +25+20+**39**+15 −10−10−40−25−5−4−10).
+- **Catálogo de raças: 17 fechando** — só Espírito do Manancial (lote 181, destravado pela meta Espírito) e Medusas (em análise pelo usuário) pendentes.
+- **Verificação:** JSON válido (17 raças); clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — Kobolds -60, Homens-Inseto 29, Guerreiros Insetos 25 sem "Não resolvidos". Diapsiquia mostra 39 quando os mods são aplicados.
+
 
 
 **[Bateria de Testes a Realizar]**

@@ -477,7 +477,7 @@
         { "id": "memoria_racial", "descricao": "Passiva", "custoEscolhido": 15 },
         { "id": "resistencia_a_dano", "nivel": 2 },
         { "id": "silencio", "nivel": 2 },
-        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "racial"] }
+        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "mod_racial"] }
       ],
       "desvantagens": [
         { "id": "amigavel", "custoEscolhido": -5 },
@@ -504,7 +504,7 @@
       "vantagens": [
         { "id": "ataque_adicional", "descricao": "Um", "nivel": 1 },
         { "id": "bracos_adicionais", "descricao": "Dois", "nivel": 2 },
-        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "racial"] },
+        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "mod_racial"] },
         { "id": "resistencia_a_dano", "nivel": 3 }
       ],
       "desvantagens": [
