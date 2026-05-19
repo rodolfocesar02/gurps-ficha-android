@@ -72,7 +72,13 @@ data class Personagem(
             PericiaSelecionada(
                 definicaoId = "racial_${pr.nome.lowercase()}",
                 nome = pr.nome,
-                atributoBase = AtributoBase.valueOf(pr.baseAtributo.uppercase()),
+                // BLINDAGEM: baseAtributo inválido (ex: ficha salva com "M"
+                // por bug de construtor com args trocados) NÃO pode derrubar
+                // o app. valueOf lança IllegalArgumentException -> crash ao
+                // abrir Perícias/Rolagem. Fallback seguro = DX.
+                atributoBase = runCatching {
+                    AtributoBase.valueOf(pr.baseAtributo.uppercase())
+                }.getOrDefault(AtributoBase.DX),
                 dificuldade = when(pr.diff.uppercase()) {
                     "F" -> Dificuldade.FACIL
                     "M" -> Dificuldade.MEDIA

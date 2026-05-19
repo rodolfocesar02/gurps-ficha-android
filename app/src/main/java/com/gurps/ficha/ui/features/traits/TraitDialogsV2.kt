@@ -274,7 +274,18 @@ fun ModeloRacialDialog(
                     LazyColumn(modifier = Modifier.height(300.dp)) {
                         items(listaFiltrada) { p ->
                             ListItem(headlineContent = { Text(p.nome) }, modifier = Modifier.clickable {
-                                periciaEmCriacao = PericiaRacial(p.nome, p.atributoBase, p.dificuldadeFixa ?: "M", 1, 0)
+                                // Args NOMEADOS: a ordem do construtor é
+                                // (nome, diff, baseAtributo, ...). Posicional
+                                // trocava diff<->baseAtributo: baseAtributo
+                                // virava "M" -> AtributoBase.valueOf("M")
+                                // crashava ao abrir Perícias/Rolagem.
+                                periciaEmCriacao = PericiaRacial(
+                                    nome = p.nome,
+                                    diff = p.dificuldadeFixa ?: "M",
+                                    baseAtributo = p.atributoBase,
+                                    nivelRelativo = 1,
+                                    custo = 0
+                                )
                                 showSelecionarPericia = false
                             })
                         }

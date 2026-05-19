@@ -659,6 +659,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device — Avareza ac15 deve dar -5 na lista, no total e ao reeditar; conferir Cobiça (ac12) segue -15.
 
+### Lote 169: CRASH ao abrir Perícias/Rolagem (perícia racial) - CONCLUÍDO
+- **Sintoma (relato do usuário + logcat):** app fecha sozinho ao clicar na aba Perícias OU Rolagem. FATAL EXCEPTION: `IllegalArgumentException: No enum constant com.gurps.ficha.model.AtributoBase.M` em `Personagem.getPericiasTotais` (Personagem.kt:75) ← `TabPericias`.
+- **CAUSA RAIZ (provada pelo stacktrace + Anao.json, não suposição):** `PericiaRacial(nome, diff, baseAtributo, nivelRelativo, custo)`. Em TraitDialogsV2 o construtor era POSICIONAL com args 2/3 trocados: `PericiaRacial(p.nome, p.atributoBase, p.dificuldadeFixa ?: "M", ...)` → `diff` recebia "IQ", `baseAtributo` recebia "M". `periciasTotais` faz `AtributoBase.valueOf(baseAtributo.uppercase())`; "M" não é atributo → exception não tratada derruba o app. Bug pré-existente que só passou a disparar quando perícia racial virou usável (Lote 167, criação do Anão pelo usuário).
+- **Correção (2 pontas):** (1) Defensivo em `Personagem.periciasTotais` (Personagem.kt:75): `AtributoBase.valueOf(...)` agora em `runCatching{}.getOrDefault(AtributoBase.DX)` — ficha já salva com dado ruim NÃO crasha mais. (2) Causa: construtor em TraitDialogsV2 reescrito com ARGS NOMEADOS (`nome=`, `diff=p.dificuldadeFixa`, `baseAtributo=p.atributoBase`, ...) — impossível trocar de novo. (`PericiaDefinicao.atributoBase:String="IQ"`, `dificuldadeFixa:String?="M"` confirmados.)
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device — abrir Perícias e Rolagem (não pode fechar); recriar perícia racial do Anão e confirmar baseAtributo correto (IQ p/ Comércio, DX p/ Maça/Machado).
+
 
 
 **[Bateria de Testes a Realizar]**
