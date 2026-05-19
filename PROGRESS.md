@@ -717,6 +717,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** TESTE B device (Centauro 100, Garras=Cascos via metadados). Fase IA futura usará esse schema no prompt p/ a IA preencher regras especiais sem chutar.
 
+### Lote 177: TESTE B — Elfo (41 pts) - CONCLUÍDO (aguarda device)
+- **Contexto:** Centauro validado no device (100 pts, info correta — Teste B do Centauro PASSOU). 3ª raça: Elfo (Cataclismo 189, 41 pts), gerado só do texto cru (simula IA).
+- **Achados (a IA enfrentaria os mesmos — análise estática antes de escrever, lição do Lote 175):** (1) "Atraente" não é vantagem solta → id `aparencia` (choice, opções 4/12/16/20; Atraente=4). (2) "Arco" → perícia id `arco` nome "Arcos", DX, dificuldadeFixa M; bônus racial +1 → calcularCustoPericiaRacial("M",1)=2 ✅ (1º teste com NR≠0). (3) Aptidão Mágica 0 → `aptidao_magica`, loader força TipoCusto.POR_NIVEL (CatalogLoaders:557) + caso especial em calcularCustoVantagem `5+(nivel-1)*10` → nível 1 = 5 ✅ (1º teste de costKind special). (4) Código de Honra/Senso do Dever = escolha, valor do livro via custoEscolhido (padrão Intolerância).
+- **Conta confere 41:** −10(ST)+20(DX)+20(IQ)+5(AptMágica)+5(Artista)+4(Atraente)+5(Hab.Musical)+15(Idade Imutável)−10(Cód.Honra)−15(Senso Dever)+2(Arco NR+1) = 41.
+- **Elfo adicionado ao racas.v1.json.** Verificação: clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — carregar Elfo, confirmar 41 pts, Aptidão Mágica 5, Atraente 4, Arco NH=DX+1 / custo 2, sem "Não resolvidos". (Anão 35 e Centauro 100 = regressão.)
+
 
 
 **[Bateria de Testes a Realizar]**

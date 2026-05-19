@@ -142,6 +142,30 @@
         "Considera os equipamentos para cavalos domesticados (selas, arreios, estábulos) uma ofensa"
       ],
       "pericias": []
+    },
+    {
+      "id": "elfo",
+      "nome": "Elfos",
+      "pagina": "Cataclismo 189",
+      "descricao": "Elfos são humanoides esguios com orelhas pontudas. Sua pele pode ser de qualquer cor encontrada em humanos. O cabelo geralmente é dourado, prateado, preto ou vermelho e os olhos geralmente dourados, verdes ou azuis. Existem poucos elfos ativos com mais de 700 anos; alguns magos permaneceram ativos por milhares de anos.",
+      "atributos": { "st": -1, "dx": 1, "iq": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "aptidao_magica", "nivel": 1 },
+        { "id": "artista_talentoso", "nivel": 1 },
+        { "id": "aparencia", "descricao": "Atraente", "custoEscolhido": 4 },
+        { "id": "habilidade_musical", "nivel": 1 },
+        { "id": "idade_imutavel" }
+      ],
+      "desvantagens": [
+        { "id": "codigo_de_honra", "descricao": "Élfico", "custoEscolhido": -10 },
+        { "id": "senso_do_dever", "descricao": "Natureza", "custoEscolhido": -15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": [
+        { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1 }
+      ]
     }
   ]
 }
