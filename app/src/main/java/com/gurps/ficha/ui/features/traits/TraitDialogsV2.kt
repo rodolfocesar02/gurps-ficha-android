@@ -157,13 +157,13 @@ fun ModeloRacialDialog(
                     if (vantagensRacais.isNotEmpty()) {
                         item { Text("Vantagens", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         itemsIndexed(vantagensRacais) { index, v ->
-                            ItemTraitRacial(nome = v.nome, detalhes = "${v.nivel} lvl | ${v.custoFinal} pts", onEdit = { editingVantagemIndex = index }, onDelete = { vantagensRacais = vantagensRacais.toMutableList().apply { removeAt(index) } })
+                            ItemTraitRacial(nome = if (v.descricao.isNotBlank()) "${v.nome} (${v.descricao})" else v.nome, detalhes = "${v.nivel} lvl | ${v.custoFinal} pts", onEdit = { editingVantagemIndex = index }, onDelete = { vantagensRacais = vantagensRacais.toMutableList().apply { removeAt(index) } })
                         }
                     }
                     if (desvantagensRacais.isNotEmpty()) {
                         item { Text("Desvantagens", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         itemsIndexed(desvantagensRacais) { index, d ->
-                            ItemTraitRacial(nome = d.nome, detalhes = "${d.nivel} lvl | ${d.custoFinal} pts", onEdit = { editingDesvantagemIndex = index }, onDelete = { desvantagensRacais = desvantagensRacais.toMutableList().apply { removeAt(index) } })
+                            ItemTraitRacial(nome = if (d.descricao.isNotBlank()) "${d.nome} (${d.descricao})" else d.nome, detalhes = "${d.nivel} lvl | ${d.custoFinal} pts", onEdit = { editingDesvantagemIndex = index }, onDelete = { desvantagensRacais = desvantagensRacais.toMutableList().apply { removeAt(index) } })
                         }
                     }
                     if (periciasRacais.isNotEmpty()) {

@@ -118,12 +118,30 @@ object RacaCatalogo {
                         )
                     } ?: run { naoResolvidos.add("modificador: $modId (${def.id})"); null }
             }
+            // Resistente: o custo vem de raridade×grau (calculado pelo
+            // app, igual ao dialog) — a IA/catálogo só fornece os
+            // metadados do texto do livro, sem custo hardcoded. Demais
+            // tipos especiais (variável/escolha) usam o custoEscolhido
+            // informado; por_nivel/fixo derivam do catálogo.
+            val custoEsc = run {
+                val md = ref.metadados
+                if (md != null && def.id.equals("resistente", ignoreCase = true)) {
+                    val rar = md["raridade"]?.toIntOrNull()
+                    val grau = md["grau"]?.toFloatOrNull()
+                    if (rar != null && grau != null)
+                        com.gurps.ficha.domain.rules.CharacterRules
+                            .calcularCustoResistente(rar, grau)
+                    else ref.custoEscolhido ?: def.getCustoBase()
+                } else {
+                    ref.custoEscolhido ?: def.getCustoBase()
+                }
+            }
             VantagemSelecionada(
                 definicaoId = def.id,
                 nome = def.nome,
                 custoBase = if (def.tipoCusto == TipoCusto.POR_NIVEL) def.getCustoPorNivel() else def.getCustoBase(),
                 nivel = ref.nivel,
-                custoEscolhido = ref.custoEscolhido ?: def.getCustoBase(),
+                custoEscolhido = custoEsc,
                 descricao = ref.descricao ?: "",
                 tipoCusto = def.tipoCusto,
                 pagina = def.pagina,

@@ -20,7 +20,7 @@
       "desvantagens": [
         { "id": "avareza", "autocontrole": 15 },
         { "id": "cobica", "autocontrole": 12 },
-        { "id": "intolerancia", "descricao": "Inimigos Raciais" },
+        { "id": "intolerancia", "descricao": "Inimigos Raciais", "custoEscolhido": -5 },
         { "id": "teimosia" }
       ],
       "qualidades": [],

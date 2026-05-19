@@ -681,6 +681,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; compile-check do loader/resolver OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** TESTE A (device) — abrir Modelo Racial → "Carregar Raça do Catálogo" → Anão → confirmar custo 35 e nenhum "Não resolvidos". Se passar: TESTE B — usuário cola texto cru de outra raça do livro → eu gero schema (simula IA) → adiciona ao racas.v1.json → confere custo no app.
 
+### Lote 172: TESTE A falhou parcial — Resistente 0 / Intolerância -10 + bug descrição não exibida - CONCLUÍDO
+- **Sintoma (Teste A no device):** Carregar Anão do catálogo deu Resistente 0 pts (devia 5) e Intolerância -10 (devia -5). Além disso, a descrição ("Veneno"/"Inimigos Raciais") não aparecia na frente do nome na lista — bug pré-existente da UI, não desse modelo.
+- **CAUSA RAIZ (provada vs Anao(2).json, não suposição):** erro de DADO do meu racas.v1.json + resolver, não do app. (1) Resistente: custo vem de raridade×grau (calculado pelo app igual ao dialog); o resolver usava `custoEscolhido` fallback = catálogo getCustoBase = 0 (Resistente é `variavel`, custo "0" no catálogo). (2) Intolerância (`escolha`): catálogo getCustoBase = -10, mas a opção do livro é -5; eu não informei `custoEscolhido` no JSON.
+- **Correção:** (1) Resolver: quando há `metadados` de resistente (raridade/grau), calcula `custoEscolhido` via `CharacterRules.calcularCustoResistente` — a IA/catálogo só fornece raridade/grau do texto do livro, SEM custo hardcoded (sustentável p/ modo IA). (2) `racas.v1.json`: Intolerância ganhou `"custoEscolhido": -5` (o valor da opção vem do texto do livro "[-5]"). (3) Bug UI pré-existente: `ItemTraitRacial` da listagem só passava `v.nome`/`d.nome`; agora `"$nome ($descricao)"` quando há descrição (vant+desv raciais).
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** repetir TESTE A no device — Anão do catálogo deve fechar 35 com Resistente 5, Intolerância -5, e "(Veneno)"/"(Inimigos Raciais)" visíveis. Se ok → TESTE B.
+
 
 
 **[Bateria de Testes a Realizar]**
