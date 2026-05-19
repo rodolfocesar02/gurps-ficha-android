@@ -121,19 +121,35 @@ fun ModificadorItemRow(mod: ModificadorDefinicao, onClick: () -> Unit) {
 @Composable
 fun ModificadorSelecionadoItem(mod: ModificadorSelecao, onUpdate: (ModificadorSelecao) -> Unit, onDelete: () -> Unit) {
     Card(modifier = Modifier.fillMaxWidth()) {
-        Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(mod.nome, fontWeight = FontWeight.Bold)
-                Text("${if (mod.valor >= 0) "+" else ""}${mod.valor}%", style = MaterialTheme.typography.bodySmall)
-            }
-            if (mod.porNivel) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = { if (mod.niveis > 1) onUpdate(mod.copy(niveis = mod.niveis - 1)) }) { Text("-") }
-                    Text("${mod.niveis}")
-                    TextButton(onClick = { onUpdate(mod.copy(niveis = mod.niveis + 1)) }) { Text("+") }
+        Column(modifier = Modifier.padding(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(mod.nome, fontWeight = FontWeight.Bold)
+                    Text("${if (mod.valor >= 0) "+" else ""}${mod.valor}%", style = MaterialTheme.typography.bodySmall)
                 }
+                if (mod.porNivel) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(onClick = { if (mod.niveis > 1) onUpdate(mod.copy(niveis = mod.niveis - 1)) }) { Text("-") }
+                        Text("${mod.niveis}")
+                        TextButton(onClick = { onUpdate(mod.copy(niveis = mod.niveis + 1)) }) { Text("+") }
+                    }
+                }
+                IconButton(onClick = onDelete) { Icon(androidx.compose.material.icons.Icons.Default.Delete, null) }
             }
-            IconButton(onClick = onDelete) { Icon(androidx.compose.material.icons.Icons.Default.Delete, null) }
+            // GURPS p.262/B102: vários modificadores (Cíclico, Acompanhamento,
+            // Curável, Imprecação, etc.) exigem que o jogador especifique uma
+            // condição/detalhe. Campo livre opcional pra qualquer modificador
+            // — usuário preenche quando precisa, deixa vazio quando não.
+            OutlinedTextField(
+                value = mod.descricao.orEmpty(),
+                onValueChange = { onUpdate(mod.copy(descricao = it)) },
+                label = { Text("Descrição/Especificação (opcional)") },
+                placeholder = { Text("ex.: interrompido por cuidados médicos") },
+                modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                singleLine = false,
+                maxLines = 2,
+                textStyle = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }

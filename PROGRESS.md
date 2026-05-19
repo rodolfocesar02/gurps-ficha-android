@@ -816,6 +816,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — abrir Telecomunicação: 3 cards "Comunicação a Laser/Diapsiquia/Rádio" com custo certo; criar uma Diapsiquia com modificadores Transmissão Aberta+50% e Racial-20% deve dar 39. Depois usuário add Sem Atrativos e eu monto Kobolds/Homens-Inseto/Guerreiros Insetos.
 
+### Lote 191: Modificador ganha campo livre de Descrição/Especificação - CONCLUÍDO
+- **Pedido (usuário):** modificadores como Cíclico exigem que o jogador especifique uma condição (ex: "interrompido por cuidados médicos"). O app não permitia.
+- **Diagnóstico:** modelo `ModificadorSelecao` JÁ tinha `descricao: String?`; UI (`ModificadorSelecionadoItem`) só mostrava nome/%/níveis/lixeira, sem editar. Faltou só a UI.
+- **Correção:** `ModificadorSelecionadoItem` (TraitCommonComponents.kt:122) virou Card com Column: linha 1 (nome/%/níveis/lixeira como antes) + linha 2 OutlinedTextField "Descrição/Especificação (opcional)" ligado a `mod.descricao` via `onUpdate(mod.copy(descricao=it))`. Decisão (usuário): campo livre em TODOS os modificadores (não só uns específicos) — mais simples e cobre qualquer caso.
+- **Sem ajuste no resolver:** descrição é só texto livre, não afeta custo. Persistência via `ModificadorSelecao.descricao` já existente.
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — adicionar um modificador (ex: Cíclico no Ataque Tóxico) → campo "Descrição/Especificação" aparece editável; texto persiste ao salvar e reabrir.
+
 
 
 **[Bateria de Testes a Realizar]**
