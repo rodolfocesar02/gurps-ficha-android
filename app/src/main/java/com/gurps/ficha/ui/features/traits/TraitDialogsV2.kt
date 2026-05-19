@@ -76,9 +76,20 @@ fun ModeloRacialDialog(
     var editandoMetaIdx by remember { mutableStateOf<Int?>(null) }
     var avisoRaca by remember { mutableStateOf<String?>(null) }
 
+    // Nome efetivo = nome-base + metacaracterística(s) entre parênteses.
+    // Ex.: "Humano (Espírito)". Derivado (NÃO sobrescreve o campo), então
+    // remover a metacaracterística limpa o parêntese automaticamente.
+    fun nomeEfetivo(): String {
+        if (metacaracteristicas.isEmpty()) return nome
+        // remove qualquer "(...)" antigo p/ não acumular ao reabrir.
+        val base = nome.replace(Regex("\\s*\\([^)]*\\)\\s*$"), "").trim()
+        val metas = metacaracteristicas.joinToString(", ") { it.nome }
+        return "$base ($metas)"
+    }
+
     // Monta o ModeloRacial a partir do estado atual do dialog.
     fun montarModelo(tipo: com.gurps.ficha.model.TipoModeloRacial) = ModeloRacial(
-        nome = nome, modForca = modForca, modDestreza = modDestreza,
+        nome = nomeEfetivo(), modForca = modForca, modDestreza = modDestreza,
         modInteligencia = modInteligencia, modVitalidade = modVitalidade,
         modPontosVida = modPontosVida, modVontade = modVontade,
         modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga,
@@ -117,7 +128,17 @@ fun ModeloRacialDialog(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 24.dp)
                 ) {
-                    item { OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome da Raça") }, modifier = Modifier.fillMaxWidth(), singleLine = true) }
+                    item {
+                        OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome da Raça") }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+                        if (metacaracteristicas.isNotEmpty()) {
+                            Text(
+                                "Será salvo como: ${nomeEfetivo()}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                            )
+                        }
+                    }
                     item { OutlinedTextField(value = descricaoRacial, onValueChange = { descricaoRacial = it }, label = { Text("Descrição (Aparência, Hábitos)") }, modifier = Modifier.fillMaxWidth(), minLines = 2) }
 
                     // CARREGAR RAÇA DO CATÁLOGO (racas.v1.json)

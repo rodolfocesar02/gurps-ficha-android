@@ -781,6 +781,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — "Adicionar Metacaracterística" → Espírito; conferir chip 261; TOCAR nela → abre dialog recursivo com os 7 componentes (Idade Imutável, Resistente=Imunidade Metabolismo 30, Insubstancialidade 128, Invisibilidade 38, Não Come/Dorme/Respira); editar um componente e ver custo recalcular. Astral=171, Máquina=25. Sem "Não resolvidos".
 
+### Lote 186: Nome da raça mostra metacaracterística entre parênteses - CONCLUÍDO
+- **Pedido do usuário:** ao selecionar metacaracterística, o "Nome da Raça" deve virar "Humano (Espírito)" / "Anão (Entidade Astral)".
+- **Implementação (derivado, não destrutivo):** `nomeEfetivo()` = nome-base + "(Meta1, Meta2)" quando há metacaracterísticas; regex remove "(...)" antigo do fim p/ não acumular ao reabrir. `montarModelo` salva `nomeEfetivo()` (campo `nome` editável continua só o base — remover a meta limpa o parêntese automaticamente, sem prender texto). UI: abaixo do campo "Nome da Raça" aparece "Será salvo como: <nomeEfetivo>" quando há meta. `tempModelo` (só custo na tela) intacto — nome irrelevante ali.
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Pendente:** usuário disse "DUAS COISAS IMPORTANTES" mas só descreveu a 1ª (esta). 2ª coisa ainda não informada — perguntar.
+- **Próximo:** TESTE device — adicionar meta → conferir "Nome da Raça" / "Será salvo como" mostra "Base (Meta)"; remover meta → parêntese some; salvar e ver na ficha.
+
 
 
 **[Bateria de Testes a Realizar]**
