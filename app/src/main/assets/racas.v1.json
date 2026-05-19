@@ -109,8 +109,7 @@
       "vantagens": [
         {
           "id": "garras",
-          "descricao": "Cascos",
-          "custoEscolhido": 3
+          "metadados": { "tipoGarras": "cascos" }
         },
         {
           "id": "deslocamento_ampliado",

@@ -703,6 +703,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** TESTE B no device — Centauro do catálogo = 100 pts, chip "ST: Tamanho -10%", ST custando 72, sem "Não resolvidos". Conferir Anão (sem limitação) segue 35 (regressão).
 
+### Lote 175: Garras no catálogo via metadados.tipoGarras (forma correta) - CONCLUÍDO
+- **Achado (usuário corrigiu no device + trouxe Centauro.json):** eu havia posto Garras como `{id:garras, descricao:"Cascos", custoEscolhido:3}`. O custo até batia por acaso, mas a forma CORRETA que o app usa (confirmado em VantagemDialogs.kt:253 `"garras"->mapOf("tipoGarras" to ...)` e GarrasRule.kt:20-23 `metadados["tipoGarras"]; "cascos"->3`) é `metadados:{tipoGarras:"cascos"}` — o app DERIVA o custo 3 da regra modular, sem custo hardcoded. Centauro.json salvo confirmou: `{definicaoId:garras, custoBase:3, metadados:{tipoGarras:"cascos"}, tipoCusto:escolha}`.
+- **Correção:** `racas.v1.json` Garra do Centauro → `{id:"garras", metadados:{tipoGarras:"cascos"}}` (removido `descricao`/`custoEscolhido` manuais). Resolver já propaga `metadados` (RacaCatalogo:163) → `calcularCustoVantagem` → `GarrasRule` deriva 3. Nenhuma mudança de código necessária, só o dado do catálogo.
+- **REGRA P/ MODO IA (importante):** vantagem tipo "escolha" com opções nomeadas (Garras: cascos/garras_cegas/afiadas/pontudas...) deve usar `metadados:{<chave>:<opcao>}` (chave por vantagem: `tipoGarras`, etc.), NÃO `custoEscolhido` cru. O app deriva o custo pela regra modular. Isso vai pro prompt da IA quando chegar a fase IA.
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** TESTE B no device (mesmo de antes) — Centauro 100 pts, Garras=Cascos 3 via metadados.
+
 
 
 **[Bateria de Testes a Realizar]**
