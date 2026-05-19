@@ -68,6 +68,9 @@ fun ModeloRacialDialog(
     val catalogoRacas = remember { com.gurps.ficha.domain.loaders.RacaCatalogo.carregar(ctxRaca) }
     val metaStore = remember { com.gurps.ficha.data.storage.MetacaracteristicaStore(ctxRaca) }
     var metasSalvas by remember { mutableStateOf(metaStore.listar()) }
+    // Catálogo PRONTO do livro (read-only). O seletor mostra catálogo +
+    // criadas pelo usuário.
+    val catalogoMetas = remember { com.gurps.ficha.domain.loaders.MetacaracteristicaCatalogo.carregar(ctxRaca) }
     var metacaracteristicas by remember { mutableStateOf(modeloOriginal.metacaracteristicas) }
     var avisoRaca by remember { mutableStateOf<String?>(null) }
 
@@ -131,10 +134,10 @@ fun ModeloRacialDialog(
                     // METACARACTERÍSTICAS embutidas nesta raça (1 item de
                     // custo único cada — não expande componentes, GURPS p.262)
                     item {
-                        if (metasSalvas.isNotEmpty()) {
+                        if (metasSalvas.isNotEmpty() || catalogoMetas.isNotEmpty()) {
                             OutlinedButton(
                                 onClick = { showSelecionarMeta = true },
-                                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Adicionar metacaracterística salva" }
+                                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Adicionar metacaracterística" }
                             ) { Icon(Icons.Default.Add, null); Spacer(Modifier.width(8.dp)); Text("Adicionar Metacaracterística") }
                         }
                         metacaracteristicas.forEachIndexed { idx, m ->
@@ -384,24 +387,44 @@ fun ModeloRacialDialog(
     if (showSelecionarMeta) {
         AlertDialog(
             onDismissRequest = { showSelecionarMeta = false },
-            title = { Text("Metacaracterísticas Salvas") },
+            title = { Text("Metacaracterísticas") },
             text = {
-                if (metasSalvas.isEmpty()) Text("Nenhuma metacaracterística salva ainda.")
-                else LazyColumn(modifier = Modifier.height(300.dp)) {
-                    items(metasSalvas) { meta ->
-                        ListItem(
-                            headlineContent = { Text(meta.nome) },
-                            supportingContent = { Text("${meta.custoTotal} pts") },
-                            modifier = Modifier.clickable {
-                                metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
-                                    id = meta.nome.lowercase().replace(" ", "_"),
-                                    nome = meta.nome,
-                                    custo = meta.custoTotal,
-                                    descricao = meta.descricao
-                                )
-                                showSelecionarMeta = false
-                            }
-                        )
+                if (catalogoMetas.isEmpty() && metasSalvas.isEmpty()) Text("Nenhuma metacaracterística disponível.")
+                else LazyColumn(modifier = Modifier.height(360.dp)) {
+                    // Catálogo do livro (read-only)
+                    if (catalogoMetas.isNotEmpty()) {
+                        item { Text("Do livro", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        items(catalogoMetas) { cm ->
+                            ListItem(
+                                headlineContent = { Text(cm.nome) },
+                                supportingContent = { Text("${cm.custo} pts · ${cm.pagina}") },
+                                modifier = Modifier.clickable {
+                                    metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
+                                        id = cm.id, nome = cm.nome, custo = cm.custo, descricao = cm.descricao
+                                    )
+                                    showSelecionarMeta = false
+                                }
+                            )
+                        }
+                    }
+                    // Criadas pelo usuário (filesDir)
+                    if (metasSalvas.isNotEmpty()) {
+                        item { Text("Minhas", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        items(metasSalvas) { meta ->
+                            ListItem(
+                                headlineContent = { Text(meta.nome) },
+                                supportingContent = { Text("${meta.custoTotal} pts") },
+                                modifier = Modifier.clickable {
+                                    metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
+                                        id = meta.nome.lowercase().replace(" ", "_"),
+                                        nome = meta.nome,
+                                        custo = meta.custoTotal,
+                                        descricao = meta.descricao
+                                    )
+                                    showSelecionarMeta = false
+                                }
+                            )
+                        }
                     }
                 }
             },

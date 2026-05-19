@@ -768,6 +768,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE B device — montar um conjunto, Salvar→Metacaracterística (confirmar grava), reabrir Raça e "Adicionar Metacaracterística" (chip +custo). Depois isso destrava Espírito do Manancial (Metacaracterística Espírito 261 como item). Regressão: 14 raças do catálogo seguem fechando.
 
+### Lote 184: Catálogo PRONTO de metacaracterísticas (Espírito, Entidade Astral, Máquina) - CONCLUÍDO
+- **Decisão do usuário:** as 3 do livro (Módulo Básico p.263) são PRONTAS → asset read-only, igual racas.v1.json (não filesDir, que é do usuário). Conferido que a soma dos componentes bate o total: Espírito 15+30+128+38+10+20+20=261; Entidade Astral 15+30+40+36+10+20+20=171; Máquina 30+25−30=25.
+- **Implementação:** `assets/metacaracteristicas.v1.json` (id/nome/custo/pagina/descricao/componentes — componentes só texto informativo, GURPS p.262 "anote a meta, não os componentes") + `MetacaracteristicaCatalogo.kt` loader (mesmo padrão de RacaCatalogo). UI: `catalogoMetas` carregado; botão "Adicionar Metacaracterística" aparece se há catálogo OU salvas; seletor mostra 2 seções: "Do livro" (catálogo, custo fixo) + "Minhas" (filesDir do Lote 183). Clicar → MetacaracteristicaRef com o custo (1 item, não expande).
+- **Verificação:** JSON válido (3 metas); clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — abrir Raça e Metacaracterísticas → "Adicionar Metacaracterística" → secção "Do livro" lista Espírito 261/Astral 171/Máquina 25 → clicar vira chip somando no custo. Isso destrava o Espírito do Manancial (raça pendente: agora "Metacaracterística Espírito [261]" = adicionar a meta Espírito do catálogo).
+
 
 
 **[Bateria de Testes a Realizar]**
