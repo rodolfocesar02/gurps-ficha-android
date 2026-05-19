@@ -826,6 +826,17 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 192: +3 raças Cataclismo p.196 (Kobolds, Homens-Inseto, Guerreiros Insetos) - PARCIAL
+- **Adicionadas 3 raças ao racas.v1.json** (catálogo 14→17). Ids/contas conferidas via script.
+- **Kobolds (-60) ✅ FECHA EXATO:** −20+20−40−5 +2(Consumo Reduzido 2 c/ Estômago de Ferro=2*2*(1-0.5)) +5(Resistente Doenças=10×0.5) −15(Desatento ac9=−10×1.5) −5(Estigma Inculto) −2(2 pec) = −60.
+- **Homens-Inseto (29) e Guerreiros Insetos (25):** ainda NÃO fecham. Diapsiquia = telecomunicacao tipoDiapsiquia (30) + mods Transmissão Aberta +50% + Racial −20% = 30×1,3=39. `mod_transmissao_aberta` ✅ existe. **`racial` AUSENTE** no modificadores.v1.json — usuário adiciona, fecha automático no próximo build (racas.v1.json já referencia "racial").
+- **Confirmações de catálogo:** Memória Racial Passiva = choice 15; Senso Dever Colônia = choice -10; Timidez Suave = choice -5; Sem Atrativos = aparencia(desv) -4; Amigável = choice -5; Desatento ac9 (autocontrole); Expectativa Vida Reduzida 1 nível = choice -10; Resistente a Doenças = resistente (raridade 10 ocasional, grau 0.5 = +8 no teste) = 5.
+- **Verificação:** JSON válido (17 raças); clean build OK; 19/19; 5/5.
+- **PENDENTE:** adicionar `racial` (limitação -20%) ao modificadores.v1.json — destrava 2 Insetos. Medusas em análise pelo usuário (Ataque Inato + Atribulação).
+- **Próximo:** TESTE device — Kobolds fechar -60; Insetos darão custo errado até `racial` ser adicionado.
+
+
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"

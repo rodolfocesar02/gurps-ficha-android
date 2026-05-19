@@ -443,6 +443,82 @@
       "qualidades": [],
       "peculiaridades": [],
       "pericias": []
+    },
+    {
+      "id": "kobold",
+      "nome": "Kobolds",
+      "pagina": "Cataclismo 196",
+      "descricao": "Pequenos, azuis e agressivos. Sozinhos não são grande ameaça, mas viajam em gangues de 12 a 20. Andarilhos, fazem trabalhos simples ou roubam. Adoram piadas e travessuras grosseiras. Rápidos em se ofender e em esquecer.",
+      "atributos": { "st": -2, "dx": 1, "iq": -2 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "consumo_reduzido", "nivel": 2, "mods": ["estomago_de_ferro"] },
+        { "id": "resistente", "descricao": "Doenças (+8)", "metadados": { "raridade": "10", "grau": "0.5", "atributo": "HT" } }
+      ],
+      "desvantagens": [
+        { "id": "desatento", "autocontrole": 9 },
+        { "id": "estigma_social", "descricao": "Inculto", "custoEscolhido": -5 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Adora pregar peças",
+        "Se sente insultado facilmente"
+      ],
+      "pericias": []
+    },
+    {
+      "id": "homem_inseto",
+      "nome": "Homens-Inseto",
+      "pagina": "Cataclismo 196",
+      "descricao": "Bizarros homens-inseto vivem no subsolo perto da fronteira Zarak/Grande Deserto. Pele dura, quitinosa, cor de bronze, olhos pretos facetados, longas antenas. Castas: os inteligentes guias da colônia + guerreiros (servos). Reprodução pela rainha e seus consortes (não-inteligentes). NT 2.",
+      "atributos": { "st": 1, "ht": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "memoria_racial", "descricao": "Passiva", "custoEscolhido": 15 },
+        { "id": "resistencia_a_dano", "nivel": 2 },
+        { "id": "silencio", "nivel": 2 },
+        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "racial"] }
+      ],
+      "desvantagens": [
+        { "id": "amigavel", "custoEscolhido": -5 },
+        { "id": "duro_de_ouvido" },
+        { "id": "mudez" },
+        { "id": "nt_baixo", "nivel": 1 },
+        { "id": "aparencia", "descricao": "Sem Atrativos", "custoEscolhido": -4 },
+        { "id": "senso_do_dever", "descricao": "Colônia", "custoEscolhido": -10 },
+        { "id": "timidez", "descricao": "Suave", "custoEscolhido": -5 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Despretensioso"
+      ],
+      "pericias": []
+    },
+    {
+      "id": "guerreiro_inseto",
+      "nome": "Guerreiros Insetos",
+      "pagina": "Cataclismo 196",
+      "descricao": "Casta guerreira dos homens-inseto: mais altos, mais fortes, quatro braços; servos e lutadores da colônia. Sem sexo, mente subordinada.",
+      "atributos": { "st": 3, "iq": -1, "ht": 2 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "ataque_adicional", "descricao": "Um", "nivel": 1 },
+        { "id": "bracos_adicionais", "descricao": "Dois", "nivel": 2 },
+        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "racial"] },
+        { "id": "resistencia_a_dano", "nivel": 3 }
+      ],
+      "desvantagens": [
+        { "id": "duro_de_ouvido" },
+        { "id": "expectativa_de_vida_reduzida", "nivel": 1, "custoEscolhido": -10 },
+        { "id": "mentalidade_de_escravo" },
+        { "id": "mudez" },
+        { "id": "nt_baixo", "nivel": 1 },
+        { "id": "aparencia", "descricao": "Sem Atrativos", "custoEscolhido": -4 },
+        { "id": "senso_do_dever", "descricao": "Colônia", "custoEscolhido": -10 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": []
     }
   ]
 }
