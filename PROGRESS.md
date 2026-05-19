@@ -673,6 +673,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device — perícia racial NR 0 deve dar NH = atributo (Comércio IQ10 → NH 10). ATENÇÃO: conferir no dialog "Configurar Bônus Racial" se o nivelRelativo salvo é 0 (custo 2 p/ Média); se estiver −1 (custo 1) ajustar p/ 0 — é dado do usuário, não bug de código.
 
+### Lote 171: Catálogo de raças (racas.v1.json) + loader + resolver + UI - CONCLUÍDO
+- **Contexto:** Anão validado nos 35 pts (Anao(2).json confere 100% com o livro). Estratégia acordada: 1 raça (Anão) → testar mecanismo → depois Teste B (texto cru do livro → schema, simulando IA). Formato escolhido: ENXUTO/recalculado.
+- **Passo 1 — `app/src/main/assets/racas.v1.json`:** Anão como 1ª semente, formato enxuto (id/nível/autocontrole/modificador/NR; SEM custos — app recalcula via CharacterRules). É também o "schema da IA" do modo híbrido.
+- **Passo 2/3 — `domain/loaders/RacaCatalogo.kt`:** modelos RacaDefinicao/RacaTracoRef/RacaPericiaRef + `carregar(context)` (assets.open→Gson, padrão CatalogLoaders) + `resolver(raca, repo)` que casa ids contra `repo.vantagens`/`repo.desvantagens` (id preferido; fallback nome normalizado/fuzzy — o que torna o modo IA viável). Modificador (ex: pele_resistente) resolvido via `modificadoresEspecificos` da própria vantagem do catálogo. Traço não encontrado é PULADO + reportado em `naoResolvidos` (diagnóstico do Teste B). custoTotal/custoFinal recalculam pela regra.
+- **Passo 4 — UI:** botão "Carregar Raça do Catálogo" no `ModeloRacialDialog` + AlertDialog listando raças; clicar resolve e popula TODOS os states (atributos+secundários+vant+desv+perícias+qual/pec). Aviso em vermelho se houver `naoResolvidos`.
+- **Verificação:** clean build OK; compile-check do loader/resolver OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** TESTE A (device) — abrir Modelo Racial → "Carregar Raça do Catálogo" → Anão → confirmar custo 35 e nenhum "Não resolvidos". Se passar: TESTE B — usuário cola texto cru de outra raça do livro → eu gero schema (simula IA) → adiciona ao racas.v1.json → confere custo no app.
+
 
 
 **[Bateria de Testes a Realizar]**

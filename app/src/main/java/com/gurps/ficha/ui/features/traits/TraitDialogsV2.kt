@@ -57,6 +57,12 @@ fun ModeloRacialDialog(
     var showSelecionarVantagem by remember { mutableStateOf(false) }
     var showSelecionarDesvantagem by remember { mutableStateOf(false) }
     var showSelecionarPericia by remember { mutableStateOf(false) }
+    var showSelecionarRaca by remember { mutableStateOf(false) }
+
+    // Catálogo de raças (racas.v1.json). Carregado uma vez.
+    val ctxRaca = androidx.compose.ui.platform.LocalContext.current
+    val catalogoRacas = remember { com.gurps.ficha.domain.loaders.RacaCatalogo.carregar(ctxRaca) }
+    var avisoRaca by remember { mutableStateOf<String?>(null) }
     
     var editingVantagemIndex by remember { mutableStateOf<Int?>(null) }
     var editingDesvantagemIndex by remember { mutableStateOf<Int?>(null) }
@@ -87,6 +93,19 @@ fun ModeloRacialDialog(
                 ) {
                     item { OutlinedTextField(value = nome, onValueChange = { nome = it }, label = { Text("Nome da Raça") }, modifier = Modifier.fillMaxWidth(), singleLine = true) }
                     item { OutlinedTextField(value = descricaoRacial, onValueChange = { descricaoRacial = it }, label = { Text("Descrição (Aparência, Hábitos)") }, modifier = Modifier.fillMaxWidth(), minLines = 2) }
+
+                    // CARREGAR RAÇA DO CATÁLOGO (racas.v1.json)
+                    if (catalogoRacas.isNotEmpty()) {
+                        item {
+                            Button(
+                                onClick = { showSelecionarRaca = true },
+                                modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Carregar raça do catálogo" }
+                            ) { Icon(Icons.Default.Add, null); Spacer(Modifier.width(8.dp)); Text("Carregar Raça do Catálogo") }
+                            avisoRaca?.let {
+                                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 4.dp))
+                            }
+                        }
+                    }
 
                     // ATRIBUTOS
                     item {
@@ -237,8 +256,49 @@ fun ModeloRacialDialog(
         }
     }
 
+    // SELETOR DE RAÇA DO CATÁLOGO — clicar no nome resolve e preenche
+    // todos os campos do dialog (atributos + traços) via RacaCatalogo.
+    if (showSelecionarRaca) {
+        AlertDialog(
+            onDismissRequest = { showSelecionarRaca = false },
+            title = { Text("Selecionar Raça") },
+            text = {
+                LazyColumn(modifier = Modifier.height(300.dp)) {
+                    items(catalogoRacas) { raca ->
+                        ListItem(
+                            headlineContent = { Text(raca.nome) },
+                            supportingContent = { Text("Pág. ${raca.pagina}") },
+                            modifier = Modifier.clickable {
+                                val res = com.gurps.ficha.domain.loaders.RacaCatalogo
+                                    .resolver(raca, viewModel.dataRepository)
+                                val m = res.modelo
+                                nome = m.nome
+                                descricaoRacial = m.descricao
+                                modForca = m.modForca; modDestreza = m.modDestreza
+                                modInteligencia = m.modInteligencia; modVitalidade = m.modVitalidade
+                                modPontosVida = m.modPontosVida; modVontade = m.modVontade
+                                modPercepcao = m.modPercepcao; modPontosFadiga = m.modPontosFadiga
+                                modVelocidadeBasica = m.modVelocidadeBasica
+                                modDeslocamentoBasico = m.modDeslocamentoBasico
+                                vantagensRacais = m.vantagens
+                                desvantagensRacais = m.desvantagens
+                                periciasRacais = m.pericias
+                                qualidadesRacais = m.qualidades
+                                peculiaridadesRacais = m.peculiaridades
+                                avisoRaca = if (res.naoResolvidos.isEmpty()) null
+                                    else "Não resolvidos: ${res.naoResolvidos.joinToString("; ")}"
+                                showSelecionarRaca = false
+                            }
+                        )
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { showSelecionarRaca = false }) { Text("Fechar") } }
+        )
+    }
+
     // DIÁLOGOS DE APOIO (Vantagens/Desvantagens usam a lógica do ViewModel)
-    if (showSelecionarVantagem) { 
+    if (showSelecionarVantagem) {
         SelecionarVantagemDialog(
             viewModel = viewModel, 
             onDismiss = { showSelecionarVantagem = false },
