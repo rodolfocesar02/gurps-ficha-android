@@ -274,10 +274,15 @@ object CharacterRules {
             }
         }
 
-        val custoSemAutocontrole = when (tipoCusto) {
-            TipoCusto.POR_NIVEL -> custoBase * nivel
-            else -> custoEscolhido
-        }
+        // BUG da DUPLA APLICAÇÃO de autocontrole (universal p/ qualquer
+        // desvantagem com autocontrole 6 ou 15): o dialog calcula e PERSISTE
+        // em `custoEscolhido` o valor JÁ multiplicado pelo autocontrole
+        // (ex: Avareza -10 -> -5). Se o autocontrole fosse reaplicado sobre
+        // `custoEscolhido`, viraria -5*0.5 = -2 na lista/edição. Por isso,
+        // QUANDO há autocontrole, a base do multiplicador é o `custoBase`
+        // CRU (-10), nunca o `custoEscolhido` (pós-autocontrole). Sem
+        // autocontrole, mantém `custoEscolhido` (preserva escolha/variável,
+        // ex: Intolerância custoBase=-10 mas custoEscolhido=-5 é a verdade).
         val custoComAutocontrole = autocontrole?.let { ac ->
             val multiplicador = when (ac) {
                 6 -> 2.0
@@ -286,8 +291,15 @@ object CharacterRules {
                 15 -> 0.5
                 else -> 1.0
             }
-            (custoSemAutocontrole * multiplicador).toInt()
-        } ?: custoSemAutocontrole
+            val baseCrua = when (tipoCusto) {
+                TipoCusto.POR_NIVEL -> custoBase * nivel
+                else -> custoBase
+            }
+            (baseCrua * multiplicador).toInt()
+        } ?: when (tipoCusto) {
+            TipoCusto.POR_NIVEL -> custoBase * nivel
+            else -> custoEscolhido
+        }
 
         val valorBase = if (custoComAutocontrole > 0) -custoComAutocontrole else custoComAutocontrole
 

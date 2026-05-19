@@ -652,6 +652,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK (compilou → construtores positionais corrigidos); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device — recriar Anão (agora com as 2 peculiaridades) e confirmar custo 35; conferir Resistente (Comum ×1/3) = 5 pts. Depois: extrair o padrão do JSON → `racas.v1.json` (catálogo de raças, Anão como semente) + schema/prompt da IA.
 
+### Lote 168: Dupla aplicação de autocontrole nas desvantagens - CONCLUÍDO
+- **Sintoma (relato do usuário, Avareza):** dialog de seleção mostra -5 (correto: -10 ×0.5 p/ autocontrole 15), mas na lista e ao reabrir a edição mostra -2; o -2 entrava no total da ficha.
+- **CAUSA RAIZ (provada via Anao.json + leitura, não suposição):** `calcularCustoDesvantagem` (CharacterRules.kt:277) usava `custoEscolhido` como base do multiplicador de autocontrole p/ tipos não-POR_NIVEL. Mas o dialog PERSISTE em `custoEscolhido` o valor JÁ multiplicado (Anao.json: `custoBase:-10, custoEscolhido:-5, autocontrole:15`). Lista/edição reaplicavam o ×0.5 sobre -5 → -2. **Universal:** qualquer desvantagem `fixo`/`escolha`/`variavel` com autocontrole 6 (×2) ou 15 (×0.5); autocontrole 9/12 não quebrava só porque ×1.5 dava inteiro / ×1.0 é idempotente (ex: Cobiça -15 ac12 ficava -15).
+- **Correção:** quando HÁ autocontrole, a base do multiplicador passa a ser o `custoBase` CRU (-10), nunca `custoEscolhido` (pós-autocontrole) — aplica o multiplicador exatamente 1×. Sem autocontrole, mantém `custoEscolhido` (preserva escolha/variável, ex: Intolerância custoBase=-10 mas custoEscolhido=-5 correto). Seguro: autocontrole exige marcador `*` no custo (`usaAutocontroleMental`), que é mutuamente exclusivo com opções de `escolha` → `custoBase` é sempre o valor cru certo quando há autocontrole. Criação (DesvantagemDialogs:167 passa `getCustoBase()`) continua correta.
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device — Avareza ac15 deve dar -5 na lista, no total e ao reeditar; conferir Cobiça (ac12) segue -15.
+
 
 
 **[Bateria de Testes a Realizar]**
