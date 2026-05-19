@@ -32,11 +32,16 @@ data class RacaTracoRef(
     val metadados: Map<String, String>? = null
 )
 
+// tipo: "CONCEDIDA" (p.454, tabela p.170 — diff importa; ex. Anão
+// "Comércio (M) IQ [2]-10") | "BONUS" (p.453, +1=2/+2=4/+3=6 linear,
+// não concede a perícia; ex. Elfo "+1 em Arco [2]"). nivelRelativo é
+// o NR (CONCEDIDA) ou o bônus +N ao NH (BONUS).
 data class RacaPericiaRef(
     val nome: String = "",
     val diff: String = "M",
     val baseAtributo: String = "DX",
-    val nivelRelativo: Int = 0
+    val nivelRelativo: Int = 0,
+    val tipo: String = "CONCEDIDA"
 )
 
 // JSON: { "atributo":"ST", "tipo":"TAMANHO", "percentual":-10 }
@@ -182,13 +187,22 @@ object RacaCatalogo {
         }
 
         val pericias = raca.pericias.map { p ->
+            val tipoP = runCatching {
+                com.gurps.ficha.model.TipoPericiaRacial.valueOf(p.tipo.uppercase())
+            }.getOrDefault(com.gurps.ficha.model.TipoPericiaRacial.CONCEDIDA)
+            val custoP = if (tipoP == com.gurps.ficha.model.TipoPericiaRacial.BONUS)
+                com.gurps.ficha.domain.rules.CharacterRules
+                    .calcularCustoBonusPericiaRacial(p.nivelRelativo)   // p.453
+            else
+                com.gurps.ficha.domain.rules.CharacterRules
+                    .calcularCustoPericiaRacial(p.diff, p.nivelRelativo) // p.454/170
             PericiaRacial(
                 nome = p.nome,
                 diff = p.diff,
                 baseAtributo = p.baseAtributo,
                 nivelRelativo = p.nivelRelativo,
-                custo = com.gurps.ficha.domain.rules.CharacterRules
-                    .calcularCustoPericiaRacial(p.diff, p.nivelRelativo)
+                custo = custoP,
+                tipo = tipoP
             )
         }
 

@@ -555,4 +555,15 @@ object CharacterRules {
             else -> 8 + (totalLevels - 3) * 4
         }
     }
+
+    /**
+     * BÔNUS racial à perícia (Módulo Básico p.453). Tabela LINEAR, NÃO
+     * depende da dificuldade: +1 ao NH = 2 pts, +2 = 4, +3 = 6. Máximo
+     * permitido +3. Não concede a perícia — só dá o bônus ao usá-la.
+     * Ex.: Elfo "+1 em Arco [2]".
+     */
+    fun calcularCustoBonusPericiaRacial(bonusNH: Int): Int {
+        val b = bonusNH.coerceIn(1, 3)
+        return b * 2 // +1=2, +2=4, +3=6
+    }
 }

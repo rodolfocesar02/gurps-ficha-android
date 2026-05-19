@@ -722,7 +722,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Achados (a IA enfrentaria os mesmos — análise estática antes de escrever, lição do Lote 175):** (1) "Atraente" não é vantagem solta → id `aparencia` (choice, opções 4/12/16/20; Atraente=4). (2) "Arco" → perícia id `arco` nome "Arcos", DX, dificuldadeFixa M; bônus racial +1 → calcularCustoPericiaRacial("M",1)=2 ✅ (1º teste com NR≠0). (3) Aptidão Mágica 0 → `aptidao_magica`, loader força TipoCusto.POR_NIVEL (CatalogLoaders:557) + caso especial em calcularCustoVantagem `5+(nivel-1)*10` → nível 1 = 5 ✅ (1º teste de costKind special). (4) Código de Honra/Senso do Dever = escolha, valor do livro via custoEscolhido (padrão Intolerância).
 - **Conta confere 41:** −10(ST)+20(DX)+20(IQ)+5(AptMágica)+5(Artista)+4(Atraente)+5(Hab.Musical)+15(Idade Imutável)−10(Cód.Honra)−15(Senso Dever)+2(Arco NR+1) = 41.
 - **Elfo adicionado ao racas.v1.json.** Verificação: clean build OK; 19/19; 5/5.
-- **Próximo:** TESTE B device — carregar Elfo, confirmar 41 pts, Aptidão Mágica 5, Atraente 4, Arco NH=DX+1 / custo 2, sem "Não resolvidos". (Anão 35 e Centauro 100 = regressão.)
+### Lote 178: Dois sistemas de perícia racial (Bônus p.453 vs Concedida p.454) - CONCLUÍDO
+- **Achado (usuário foi à fonte primária — Módulo Básico p.453-454 + Cataclismo p.189 via PDF):** "+1 em Arco [2]" do Elfo dava custo 4 (errado). Causa NÃO era ambiguidade do livro nem bug de conta — o app só modelava UM dos DOIS sistemas GURPS de perícia racial:
+  - **CONCEDIDA (p.454):** raça já sabe a perícia; custo pela Tabela p.170 (dificuldade importa). Ex.: Anão "Comércio (M) IQ [2]-10". (era o único que o app tinha)
+  - **BÔNUS (p.453):** só um dom/+N no NH ao usar a perícia; NÃO concede a perícia; tabela LINEAR `+1=2, +2=4, +3=6` (máx +3), independente da dificuldade. Ex.: Elfo "+1 em Arco [2]". (NÃO existia no app → "+1 Arco" caía na tabela p.170 e dava 4)
+- **Implementação:** `enum TipoPericiaRacial{CONCEDIDA,BONUS}` + campo `tipo` em `PericiaRacial`. `CharacterRules.calcularCustoBonusPericiaRacial(N)= N.coerceIn(1,3)*2` (p.453). Resolver (`RacaCatalogo`): `RacaPericiaRef.tipo`, calcula custo conforme o tipo. `periciasTotais` lista só CONCEDIDA (BONUS não vira perícia própria — p.453 "não concede a perícia"); `calcularNivel` já somava o bônus por nome → cobre os dois. `racas.v1.json`: Arco do Elfo → `tipo:"BONUS", nivelRelativo:1` → custo 2.
+- **Conta Elfo = 41 exatos** (Arco BONUS = 2). Anão/Centauro intactos (default CONCEDIDA).
+- **REGRA P/ MODO IA:** "+N em <perícia> [N×2]" no texto do livro = BÔNUS (p.453); "<Perícia> (Dif) Attr [pts]-NH" = CONCEDIDA (p.454). Distinção pelo formato do texto.
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — Elfo 41 (Arco BONUS custo 2, +1 no NH só quando usa Arco, NÃO aparece como perícia própria na aba Perícias); Aptidão Mágica 5, Atraente 4. Anão 35 / Centauro 100 = regressão.
 
 
 

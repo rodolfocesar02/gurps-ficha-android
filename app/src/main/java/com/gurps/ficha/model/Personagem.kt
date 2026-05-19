@@ -68,7 +68,12 @@ data class Personagem(
      * Permite que perícias da raça apareçam automaticamente para rolagens.
      */
     val periciasTotais: List<PericiaSelecionada> get() {
-        val raciais = modeloRacial.pericias.map { pr ->
+        // Só CONCEDIDA entra como perícia própria (p.454). BONUS (p.453)
+        // NÃO concede a perícia — é só +N no NH quando o personagem usa
+        // a perícia (aplicado em calcularNivel via bonusRacial).
+        val raciais = modeloRacial.pericias
+            .filter { it.tipo == TipoPericiaRacial.CONCEDIDA }
+            .map { pr ->
             PericiaSelecionada(
                 definicaoId = "racial_${pr.nome.lowercase()}",
                 nome = pr.nome,
@@ -922,13 +927,28 @@ val PERICIAS_COMBATE = setOf(
     "ataque_inato"
 )
 // RACIAL SKILLS
+/**
+ * GURPS Módulo Básico tem DOIS sistemas distintos de perícia racial:
+ *
+ * - CONCEDIDA (p.454): a raça JÁ SABE a perícia num nível. Custo pela
+ *   Tabela de Perícias normal (p.170 — dificuldade importa).
+ *   Ex.: Anão "Comércio (M) IQ [2]-10" (2 pts = NH no atributo).
+ *
+ * - BONUS (p.453): a raça tem um DOM, só um bônus no NH quando usa a
+ *   perícia. NÃO concede a perícia. Tabela LINEAR própria, NÃO depende
+ *   da dificuldade: +1=2, +2=4, +3=6 pts (máx +3).
+ *   Ex.: Elfo "+1 em Arco [2]".
+ */
+enum class TipoPericiaRacial { CONCEDIDA, BONUS }
+
 @Stable
 data class PericiaRacial(
     val nome: String = "",
     val diff: String = "M", // F, M, D, MD
     val baseAtributo: String = "DX",
     val nivelRelativo: Int = 0, // Ex: DX+1 -> 1, DX-1 -> -1
-    val custo: Int = 0
+    val custo: Int = 0,
+    val tipo: TipoPericiaRacial = TipoPericiaRacial.CONCEDIDA
 )
 
 // ============================================================

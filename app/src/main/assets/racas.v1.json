@@ -164,7 +164,7 @@
       "qualidades": [],
       "peculiaridades": [],
       "pericias": [
-        { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1 }
+        { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
       ]
     }
   ]
