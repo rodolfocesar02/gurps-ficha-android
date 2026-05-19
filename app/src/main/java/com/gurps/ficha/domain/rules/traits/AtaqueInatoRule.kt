@@ -44,7 +44,8 @@ class AtaqueInatoRule : TraitRule {
         val valorBase = (multiplicadorDados * custoPorDado).toInt().coerceAtLeast(1)
 
         val somaPercentual = modifiers.sumOf {
-            if (it.porNivel) it.valor * it.niveis else it.valor
+            // bonusBase fixo + (valor*niveis se porNivel) — cobre Cone (+50%+10%/m)
+            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
         }
         val percentualFinal = somaPercentual.coerceAtLeast(-80)
         val multiplicadorMod = 1.0 + (percentualFinal / 100.0)

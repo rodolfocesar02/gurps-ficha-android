@@ -273,7 +273,12 @@ data class ModificadorSelecao(
     val porNivel: Boolean = false,
     val niveis: Int = 1,
     val descricao: String? = null,
-    val pagina: Int? = null
+    val pagina: Int? = null,
+    // Bônus FIXO (base) somado UMA vez, independente de níveis.
+    // Pra modificadores com "+X% base + Y%/nível" (ex: Cone = +50%
+    // base + 10%/m). Default 0 = comportamento antigo (só valor*níveis).
+    // No FIM da lista pra não quebrar call sites posicionais antigos.
+    val bonusBase: Int = 0
 )
 
 // ============================================================
@@ -288,6 +293,9 @@ data class ModificadorDefinicao(
     val valor: String = "0",
     @SerializedName(value = "porNivel", alternate = ["por_nivel"])
     val porNivel: Boolean = false,
+    // Bônus FIXO (base) — ex: Cone = +50% base + 10%/m.
+    @SerializedName(value = "bonusBase", alternate = ["bonus_base"])
+    val bonusBase: Int = 0,
     val pagina: Int? = null,
     val tags: List<String> = emptyList(),
     val descricao: String? = null

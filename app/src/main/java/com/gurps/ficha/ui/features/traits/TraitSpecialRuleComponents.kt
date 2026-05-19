@@ -319,7 +319,7 @@ fun AtribulacaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (Modif
             onDismiss = { showCondList = false },
             onSelect = { modDef ->
                 val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina))
+                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase))
                 showCondList = false
             }
         )
@@ -346,7 +346,7 @@ fun RetencaoConfig(modifiers: List<ModificadorSelecao>, onAddModifier: (Modifica
             onDismiss = { showAmpList = false },
             onSelect = { modDef ->
                 val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina))
+                onAddModifier(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase))
                 showAmpList = false
             }
         )

@@ -219,10 +219,11 @@
     "id": "mod_cone",
     "nome": "Cone",
     "tipo": "ampliação",
-    "valor": "+50%",
+    "valor": "+10%",
     "porNivel": true,
+    "bonusBase": 50,
     "pagina": 104,
-    "descricao": "Afeta forma de cone. +50% no nível 1 (1m largura final), +10% por cada +1m de largura."
+    "descricao": "Ataque em forma de cone. +50% base + 10% por metro de largura máxima (use os níveis = largura em metros). Ex.: Cone 15m de largura = 50 + 10*15 = +200%. Não combina com Acurado, Ataque Corpo a Corpo, Aura, Efeito de Área, Emanação, Fogo Contínuo, Impreciso ou Jato."
   },
   {
     "id": "mod_cosmica_longa_duracao",

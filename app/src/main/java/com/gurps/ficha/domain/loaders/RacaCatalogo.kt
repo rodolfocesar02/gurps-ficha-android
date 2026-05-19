@@ -133,7 +133,8 @@ object RacaCatalogo {
                     return@mapNotNull ModificadorSelecao(
                         id = esp.id, nome = esp.nome,
                         valor = esp.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
-                        porNivel = false, niveis = 1, pagina = esp.pagina
+                        porNivel = false, niveis = 1, pagina = esp.pagina,
+                        bonusBase = 0 // mods_especificos não têm base fixa hoje
                     )
                 }
                 // 2) fallback: catálogo GLOBAL de modificadores
@@ -149,7 +150,11 @@ object RacaCatalogo {
                     ModificadorSelecao(
                         id = ger.id, nome = ger.nome,
                         valor = ger.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
-                        porNivel = false, niveis = 1, pagina = ger.pagina
+                        // Propaga porNivel do catálogo (Lote 194: Cíclico
+                        // é porNivel=true; antes era hardcoded false).
+                        porNivel = ger.porNivel, niveis = 1,
+                        pagina = ger.pagina,
+                        bonusBase = ger.bonusBase
                     )
                 } else { naoResolvidos.add("modificador: $modId (${def.id})"); null }
             }

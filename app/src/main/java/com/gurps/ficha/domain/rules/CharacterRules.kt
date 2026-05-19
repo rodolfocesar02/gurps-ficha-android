@@ -224,7 +224,10 @@ object CharacterRules {
         }
 
         val somaPercentual = modificadores.sumOf {
-            if (it.porNivel) it.valor * it.niveis else it.valor
+            // bonusBase (fixo) + (valor*níveis se porNivel, senão valor).
+            // Cobre modificadores tipo Cone (+50% base + 10%/metro);
+            // bonusBase=0 (default) preserva comportamento anterior.
+            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
         }
 
         // Regra canônica: Limite de -80% para modificadores negativos líquidos (pág. 102)
@@ -263,7 +266,10 @@ object CharacterRules {
             }
             if (baseCostForSpecialRule != null) {
                 val somaPercentual = modificadores.sumOf {
-                    if (it.porNivel) it.valor * it.niveis else it.valor
+                    // bonusBase (fixo) + (valor*níveis se porNivel, senão valor).
+            // Cobre modificadores tipo Cone (+50% base + 10%/metro);
+            // bonusBase=0 (default) preserva comportamento anterior.
+            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
                 }
                 val percentualFinal = somaPercentual.coerceAtLeast(-80)
                 val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
@@ -308,7 +314,10 @@ object CharacterRules {
         }
 
         val somaPercentual = modificadores.sumOf {
-            if (it.porNivel) it.valor * it.niveis else it.valor
+            // bonusBase (fixo) + (valor*níveis se porNivel, senão valor).
+            // Cobre modificadores tipo Cone (+50% base + 10%/metro);
+            // bonusBase=0 (default) preserva comportamento anterior.
+            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
         }
 
         val percentualFinal = somaPercentual.coerceAtLeast(-80)

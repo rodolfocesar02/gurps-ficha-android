@@ -851,6 +851,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — ao escolher Cíclico (qualquer intervalo) em Ataque Inato, aparecem botões +/− pra ajustar ciclos; nível 2 do Cíclico 1m = +80%. Destrava parte da Medusa (resta Atribulação composta e Golpeadores).
 
+### Lote 195: Modificador com `bonusBase` + `porNivel` (Cone +50% base + 10%/m) - CONCLUÍDO
+- **Pedido (usuário, trouxe regra MB):** Cone é "+50% base + 10% por metro de largura". Catálogo tinha valor:+50% porNivel:true → cálculo daria 50×N (Cone 15m=750%) em vez de 50+10×15=200%. Estrutura "valor×níveis" não cobre "base + por nível".
+- **Decisão (usuário):** novo campo `bonusBase` no `ModificadorDefinicao`/`Selecao` — modelagem estruturalmente correta.
+- **Implementação:** (1) Modelo: `ModificadorDefinicao.bonusBase: Int = 0` (com @SerializedName alternate `bonus_base`) e `ModificadorSelecao.bonusBase: Int = 0` (no FIM do data class p/ não quebrar 6 call sites posicionais existentes). (2) Cálculo em 5 lugares (CharacterRules ×3 + AtaqueInato/Dentes/Garras/Golpeadores/Telecomunicacao Rules): `bonusBase + (if porNivel valor*niveis else valor)`. bonusBase=0 default = comportamento idêntico ao anterior. (3) Catálogo `mod_cone`: bonusBase:50, valor:10, porNivel:true. (4) Propagação no resolver de raça: ModificadorSelecao a partir de modDef recebe `bonusBase = modDef.bonusBase` (4 call sites na UI + 1 no RacaCatalogo global; mods_especificos ficam com 0). (5) **BUG colateral corrigido:** o resolver de raça (catálogo global) hardcodava `porNivel:false` — significava que Cíclico (Lote 194 porNivel:true) NÃO funcionava por nível quando vinha via raça. Agora propaga `ger.porNivel` também.
+- **Conta Cone Medusa:** Cone 15m = bonusBase 50 + valor 10 × niveis 15 = **+200%** ✅ (livro [+200%]).
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — Cone com níveis=15 deve dar +200%; Cíclico via raça (Insetos) também deve respeitar níveis (era bug latente). Destrava Atribulação da Medusa (que tem Cone +200% como 1 dos 6 mods).
+
 
 
 **[Bateria de Testes a Realizar]**

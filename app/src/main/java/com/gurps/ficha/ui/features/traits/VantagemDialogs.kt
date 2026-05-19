@@ -616,7 +616,7 @@ fun ConfigurarVantagemDialog(
                 if (modDef.id == "mod_aptidao_escola") { pendingModForSchool = modDef; showSchoolPicker = true; showAddMod = false }
                 else {
                     val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                    mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina)) }
+                    mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
                     showAddMod = false
                 }
             }
@@ -864,7 +864,7 @@ fun EditarVantagemDialog(
                 if (modDef.id == "mod_aptidao_escola") { pendingModForSchool = modDef; showSchoolPicker = true }
                 else {
                     val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
-                    mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina)) }
+                    mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
                     showAddMod = false
                 }
             }

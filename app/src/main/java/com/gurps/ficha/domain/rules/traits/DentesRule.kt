@@ -29,7 +29,7 @@ class DentesRule : TraitRule {
 
         // Modificadores em Dentes são raros mas possíveis
         val somaPercentual = modifiers.sumOf {
-            if (it.porNivel) it.valor * it.niveis else it.valor
+            it.bonusBase + if (it.porNivel) it.valor * it.niveis else it.valor
         }
         val percentualFinal = somaPercentual.coerceAtLeast(-80)
         val multiplicadorMod = 1.0 + (percentualFinal / 100.0)
