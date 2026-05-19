@@ -234,6 +234,215 @@
       "pericias": [
         { "nome": "Rede", "diff": "D", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
       ]
+    },
+    {
+      "id": "esfinge_leonina",
+      "nome": "Esfinges (Leonina/Panterina)",
+      "pagina": "Cataclismo 190",
+      "descricao": "Cabeças humanas em corpos de felinos gigantes; podem ser de qualquer sexo. Leoninas têm corpo de leão e asas de águia; panterinas têm corpo de pantera negra e asas de morcego. Patas dianteiras com dedo parcialmente opositor. Muito raras, inteligentes, sanguinárias.",
+      "atributos": { "st": 6, "dx": 3, "iq": 2, "ht": 1 },
+      "limitacoesAtributo": [
+        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -10 }
+      ],
+      "secundarios": {},
+      "vantagens": [
+        { "id": "garras", "metadados": { "tipoGarras": "garras_afiadas" } },
+        { "id": "resistencia_a_dano", "nivel": 1 },
+        { "id": "tolerancia_a_temperatura", "nivel": 1 },
+        { "id": "visao_noturna", "nivel": 5 },
+        { "id": "voo", "descricao": "Alado", "custoEscolhido": 30 }
+      ],
+      "desvantagens": [
+        { "id": "curiosidade", "autocontrole": 12 },
+        { "id": "habitos_detestaveis", "descricao": "Come outros seres sapientes", "custoEscolhido": -15 },
+        { "id": "horizontal" },
+        { "id": "mao_fraca", "nivel": 3 },
+        { "id": "sanguinolencia", "autocontrole": 15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Particularmente intelectualmente curiosa",
+        "Solitário"
+      ],
+      "pericias": [
+        { "nome": "Briga", "diff": "F", "baseAtributo": "DX", "nivelRelativo": 2, "tipo": "CONCEDIDA" },
+        { "nome": "Corrida", "diff": "M", "baseAtributo": "HT", "nivelRelativo": 2, "tipo": "CONCEDIDA" }
+      ]
+    },
+    {
+      "id": "esfinge_tigrina",
+      "nome": "Esfinges (Tigrina)",
+      "pagina": "Cataclismo 190",
+      "descricao": "Corpos de tigre, sem asas; listras continuam no cabelo, mas não no rosto. Patas dianteiras com dedo parcialmente opositor. Muito raras, inteligentes, sanguinárias.",
+      "atributos": { "st": 6, "dx": 3, "iq": 2, "ht": 1 },
+      "limitacoesAtributo": [
+        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -10 }
+      ],
+      "secundarios": {},
+      "vantagens": [
+        { "id": "garras", "metadados": { "tipoGarras": "garras_afiadas" } },
+        { "id": "resistencia_a_dano", "nivel": 1 },
+        { "id": "tolerancia_a_temperatura", "nivel": 1 },
+        { "id": "visao_noturna", "nivel": 5 }
+      ],
+      "desvantagens": [
+        { "id": "curiosidade", "autocontrole": 12 },
+        { "id": "habitos_detestaveis", "descricao": "Come outros seres sapientes", "custoEscolhido": -15 },
+        { "id": "horizontal" },
+        { "id": "mao_fraca", "nivel": 3 },
+        { "id": "sanguinolencia", "autocontrole": 15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Particularmente intelectualmente curiosa",
+        "Solitário"
+      ],
+      "pericias": [
+        { "nome": "Briga", "diff": "F", "baseAtributo": "DX", "nivelRelativo": 2, "tipo": "CONCEDIDA" },
+        { "nome": "Corrida", "diff": "M", "baseAtributo": "HT", "nivelRelativo": 2, "tipo": "CONCEDIDA" }
+      ]
+    },
+    {
+      "id": "gargula",
+      "nome": "Gárgulas",
+      "pagina": "Cataclismo 191",
+      "descricao": "Humanoides alados com pele rígida e acinzentada que lembra pedra; parecem humanos grotescamente deformados. Originários de Gabrook; vivem em montanhas ou telhados. Crescem a vida toda; as jovens têm ~1,20 m.",
+      "atributos": { "st": -1, "iq": -1, "ht": 2 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "expectativa_de_vida_ampliada", "nivel": 1 },
+        { "id": "garras", "metadados": { "tipoGarras": "garras_cegas" } },
+        { "id": "resistencia_a_dano", "nivel": 2 },
+        { "id": "visao_noturna", "nivel": 5 },
+        { "id": "voo", "descricao": "Alado", "custoEscolhido": 30 }
+      ],
+      "desvantagens": [
+        { "id": "estigma_social", "descricao": "Praga Inculta", "custoEscolhido": -5 },
+        { "id": "aparencia", "descricao": "Feio", "custoEscolhido": -8 },
+        { "id": "gula", "autocontrole": 12 },
+        { "id": "riqueza", "descricao": "Pobre", "custoEscolhido": -15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Moderadamente preguiçosa",
+        "Nenhum respeito para o aprendizado"
+      ],
+      "pericias": []
+    },
+    {
+      "id": "gigante",
+      "nome": "Gigantes",
+      "pagina": "Cataclismo 192",
+      "descricao": "Parecem humanos de três metros ou mais. Variam muito (alguns com um olho ou duas cabeças). Geralmente reclusos; perigosos se despertados. Ressentem ser comparados a ogros.",
+      "atributos": { "st": 15, "dx": -1, "ht": 2 },
+      "limitacoesAtributo": [
+        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -20 }
+      ],
+      "secundarios": { "velocidadeBasica": -0.25 },
+      "vantagens": [
+        { "id": "deslocamento_ampliado", "nivel": 1, "descricao": "Solo" },
+        { "id": "hipoalgia" },
+        { "id": "paladar_olfato_apurado", "nivel": 3 },
+        { "id": "resistencia_a_dano", "nivel": 2, "mods": ["pele_resistente"] }
+      ],
+      "desvantagens": [
+        { "id": "irritabilidade", "autocontrole": 12 },
+        { "id": "timidez", "descricao": "Grave", "custoEscolhido": -10 },
+        { "id": "estigma_social", "descricao": "Bárbaro gigantesco", "custoEscolhido": -10 },
+        { "id": "teimosia" }
+      ],
+      "qualidades": [
+        "Voz Penetrante"
+      ],
+      "peculiaridades": [
+        "Odeia ogros, e ser confundido com ogros"
+      ],
+      "pericias": []
+    },
+    {
+      "id": "gnomo",
+      "nome": "Gnomos",
+      "pagina": "Cataclismo 193",
+      "descricao": "Menores e mais esguios que anões; machos usam barbas curtas. Amam a natureza como os elfos. Raça marginalizada, talento sutil para lidar com pessoas. Gostam de pastoreio e bom artesanato.",
+      "atributos": {},
+      "secundarios": { "pf": 1, "deslocamentoBasico": -1 },
+      "vantagens": [
+        { "id": "dedos_verdes", "nivel": 1 },
+        { "id": "longevidade" },
+        { "id": "resistencia_a_dano", "nivel": 1, "mods": ["pele_resistente"] }
+      ],
+      "desvantagens": [
+        { "id": "senso_do_dever", "descricao": "Natureza", "custoEscolhido": -15 }
+      ],
+      "qualidades": [
+        "Rosto Sincero"
+      ],
+      "peculiaridades": [
+        "Não gosta de viver no subsolo"
+      ],
+      "pericias": []
+    },
+    {
+      "id": "goblin",
+      "nome": "Goblins",
+      "pagina": "Cataclismo 193",
+      "descricao": "Pele verde, orelhas pontudas, dentes pequenos e brancos. A magia os fascina. Grandes negociantes e mercadores; viajam para todos os lugares.",
+      "atributos": { "st": -2, "dx": 1, "iq": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "visao_noturna", "nivel": 9 }
+      ],
+      "desvantagens": [
+        { "id": "impulsividade", "autocontrole": 12 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": []
+    },
+    {
+      "id": "hobgoblin",
+      "nome": "Hobgoblins",
+      "pagina": "Cataclismo 194",
+      "descricao": "Ancestrais parentes dos goblins: grandes, brutais e selvagens. Brutais e diretos, mas não tão cruéis quanto orcs. Gostos simples — comer e saquear.",
+      "atributos": { "st": 1, "dx": 1, "iq": -2 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "visao_noturna", "nivel": 9 }
+      ],
+      "desvantagens": [
+        { "id": "irritabilidade", "autocontrole": 12 },
+        { "id": "teimosia" }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": [
+        { "nome": "Briga", "diff": "F", "baseAtributo": "DX", "nivelRelativo": 0, "tipo": "CONCEDIDA" }
+      ]
+    },
+    {
+      "id": "homem_tubarao",
+      "nome": "Homens-Tubarão",
+      "pagina": "Cataclismo 194",
+      "descricao": "Habitantes do mar humanoides de pele cinza com cabeças de tubarão. Dentes afiados; olhos grandes com visão excelente. Pragmáticos e diretos. Não se dão com o povo do mar nem elfos do mar.",
+      "atributos": { "st": 6, "dx": 2 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "anfibio" },
+        { "id": "fala_subaquatica" },
+        { "id": "membrana_nictitante", "nivel": 1 },
+        { "id": "nao_respira", "descricao": "Guelras", "custoEscolhido": 10 },
+        { "id": "dentes", "descricao": "Presas", "custoEscolhido": 2 },
+        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
+        { "id": "resistencia_a_dano", "nivel": 1 },
+        { "id": "visao_agucada", "nivel": 3 },
+        { "id": "visao_noturna", "nivel": 6 }
+      ],
+      "desvantagens": [
+        { "id": "dependencia", "descricao": "Água, Muito Comum, Diária", "custoEscolhido": -15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": []
     }
   ]
 }

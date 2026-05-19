@@ -746,6 +746,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE B device — carregar as 3, conferir 31/27/51, sem "Não resolvidos". Regressão: Anão 35, Centauro 100, Elfo 41.
 
+### Lote 181: +7 raças Cataclismo p.190-194 (Esfinges x2, Gárgula, Gigante, Gnomo, Goblin, Hobgoblin, Homem-Tubarão) - CONCLUÍDO
+- **Processo:** texto limpo .md do usuário; ids resolvidos via script de match exato por nome (não chute); avisei o usuário dos casos novos ANTES de escrever.
+- **Espírito do Manancial PULADO** (decisão do usuário): Metacaracterística Espírito [261] não existe no app + mods compostos + Dependência [-120]. Vira lote próprio futuro (modelar Metacaracterística).
+- **Casos novos resolvidos por análise (não chute):** Garras Afiadas/Cegas = opção de `garras` via metadados.tipoGarras (garras_afiadas/garras_cegas); Presas = vantagem `dentes` choice opção 2; Pobre = `riqueza` choice -15; Feio = `aparencia`(desv) choice -8; Hábito Detestável = `habitos_detestaveis`; Não Respira (Guelras) custoEscolhido 10.
+- **⚠ AVISO AO USUÁRIO — Gigante (122) NÃO fecha:** `Hipoalgia` NÃO existe no catálogo de vantagens. Gigante entra com aviso "Não resolvido: hipoalgia", custo ~112 (falta 10). Decisão pendente: adicionar Hipoalgia ao catálogo ou tratar de outro jeito. As outras 6 devem fechar (Esfinge Leonina 170, Tigrina 140, Gárgula 5, Gnomo -7, Goblin 19, Hobgoblin -15, Homem-Tubarão 145).
+- **Verificação:** JSON válido (14 raças total); clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — carregar as 7; conferir totais; Gigante vai dar aviso Hipoalgia (esperado). Decidir o que fazer com Hipoalgia.
+
 
 
 **[Bateria de Testes a Realizar]**
