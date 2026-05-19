@@ -489,8 +489,21 @@ object CharacterRules {
     }
 
     fun calcularCustoResistente(baseRaridade: Int, multiplicadorGrau: Float): Int {
-        val finalVal = baseRaridade * multiplicadorGrau.toDouble()
-        // GURPS: "Elimine todas as frações" -> Truncar/Floor
+        // O grau x1/3 era hardcoded como 0.33f (e 0.3333f noutro dialog) e
+        // persistido assim no JSON. 15 * 0.33 = 4.95 -> floor -> 4, quando
+        // GURPS manda 15 * (1/3) = 5.0 -> 5. Normalizamos para a fração
+        // EXATA antes de calcular: qualquer valor ~1/3 vira 1.0/3.0,
+        // ~1/2 vira 0.5, ~1 vira 1.0 — robusto a fichas já salvas.
+        val grau = multiplicadorGrau.toDouble()
+        val grauExato = when {
+            kotlin.math.abs(grau - (1.0 / 3.0)) < 0.02 -> 1.0 / 3.0
+            kotlin.math.abs(grau - 0.5) < 0.02 -> 0.5
+            kotlin.math.abs(grau - 1.0) < 0.02 -> 1.0
+            else -> grau
+        }
+        val finalVal = baseRaridade * grauExato
+        // GURPS: "Elimine todas as frações" -> Truncar/Floor (1/3 exato já
+        // dá inteiro nos casos tabelados; floor só morde graus baixos).
         return kotlin.math.floor(finalVal).toInt().coerceAtLeast(1)
     }
 

@@ -933,19 +933,28 @@ data class ModeloRacial(
     val modPontosFadiga: Int = 0,
     val modVelocidadeBasica: Float = 0f,
     val modDeslocamentoBasico: Int = 0,
-    val vantagens: List<VantagemSelecionada> = emptyList(), 
+    val vantagens: List<VantagemSelecionada> = emptyList(),
     val desvantagens: List<DesvantagemSelecionada> = emptyList(),
     val pericias: List<PericiaRacial> = emptyList(),
+    // Espelham o padrão da ficha normal (Personagem.qualidades/
+    // peculiaridades): texto livre. Custo fixo GURPS: qualidade = +1,
+    // peculiaridade = -1 (igual a pontosQualidades/pontosPeculiaridades).
+    // Ex.: Anão tem 2 peculiaridades = -2 pts, antes sem onde entrar.
+    val qualidades: List<String> = emptyList(),
+    val peculiaridades: List<String> = emptyList(),
     val descricao: String = ""
 ) {
     val custoTotal: Int get() {
         val custoAtributos = modForca * 10 + modDestreza * 20 + modInteligencia * 20 + modVitalidade * 10
-        val custoSecundarios = modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 + 
-                               modPontosFadiga * 3 + kotlin.math.round(modVelocidadeBasica / 0.25f).toInt() * 5 + 
+        val custoSecundarios = modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 +
+                               modPontosFadiga * 3 + kotlin.math.round(modVelocidadeBasica / 0.25f).toInt() * 5 +
                                modDeslocamentoBasico * 5
         val custoVantagens = vantagens.sumOf { it.custoFinal }
         val custoDesvantagens = desvantagens.sumOf { it.custoFinal }
         val custoPericias = pericias.sumOf { it.custo }
-        return custoAtributos + custoSecundarios + custoVantagens + custoDesvantagens + custoPericias
+        val custoQualidades = qualidades.size            // +1 cada (GURPS)
+        val custoPeculiaridades = peculiaridades.size * -1 // -1 cada (GURPS)
+        return custoAtributos + custoSecundarios + custoVantagens +
+               custoDesvantagens + custoPericias + custoQualidades + custoPeculiaridades
     }
 }

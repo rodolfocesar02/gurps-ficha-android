@@ -49,6 +49,10 @@ fun ModeloRacialDialog(
     var vantagensRacais by remember { mutableStateOf(modeloOriginal.vantagens) }
     var desvantagensRacais by remember { mutableStateOf(modeloOriginal.desvantagens) }
     var periciasRacais by remember { mutableStateOf(modeloOriginal.pericias) }
+    var qualidadesRacais by remember { mutableStateOf(modeloOriginal.qualidades) }
+    var peculiaridadesRacais by remember { mutableStateOf(modeloOriginal.peculiaridades) }
+    var novaQualidadeTexto by remember { mutableStateOf("") }
+    var novaPeculiaridadeTexto by remember { mutableStateOf("") }
 
     var showSelecionarVantagem by remember { mutableStateOf(false) }
     var showSelecionarDesvantagem by remember { mutableStateOf(false) }
@@ -155,9 +159,57 @@ fun ModeloRacialDialog(
                         }
                     }
 
+                    // QUALIDADES RACIAIS (texto livre, +1 cada)
+                    item {
+                        Text("Qualidades Raciais (+1 pt cada)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            OutlinedTextField(
+                                value = novaQualidadeTexto,
+                                onValueChange = { novaQualidadeTexto = it },
+                                label = { Text("Descrição da qualidade") },
+                                modifier = Modifier.weight(1f),
+                                singleLine = true
+                            )
+                            IconButton(
+                                onClick = {
+                                    val t = novaQualidadeTexto.trim()
+                                    if (t.isNotEmpty()) { qualidadesRacais = qualidadesRacais + t; novaQualidadeTexto = "" }
+                                },
+                                modifier = Modifier.semantics { contentDescription = "Adicionar Qualidade Racial" }
+                            ) { Icon(Icons.Default.Add, "Adicionar Qualidade") }
+                        }
+                    }
+                    itemsIndexed(qualidadesRacais) { index, q ->
+                        ItemTraitRacial(nome = q, detalhes = "+1 pt", onEdit = {}, onDelete = { qualidadesRacais = qualidadesRacais.toMutableList().apply { removeAt(index) } })
+                    }
+
+                    // PECULIARIDADES RACIAIS (texto livre, -1 cada)
+                    item {
+                        Text("Peculiaridades Raciais (-1 pt cada)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary)
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            OutlinedTextField(
+                                value = novaPeculiaridadeTexto,
+                                onValueChange = { novaPeculiaridadeTexto = it },
+                                label = { Text("Descrição da peculiaridade") },
+                                modifier = Modifier.weight(1f),
+                                singleLine = true
+                            )
+                            IconButton(
+                                onClick = {
+                                    val t = novaPeculiaridadeTexto.trim()
+                                    if (t.isNotEmpty()) { peculiaridadesRacais = peculiaridadesRacais + t; novaPeculiaridadeTexto = "" }
+                                },
+                                modifier = Modifier.semantics { contentDescription = "Adicionar Peculiaridade Racial" }
+                            ) { Icon(Icons.Default.Add, "Adicionar Peculiaridade") }
+                        }
+                    }
+                    itemsIndexed(peculiaridadesRacais) { index, pec ->
+                        ItemTraitRacial(nome = pec, detalhes = "-1 pt", onEdit = {}, onDelete = { peculiaridadesRacais = peculiaridadesRacais.toMutableList().apply { removeAt(index) } })
+                    }
+
                     // RESUMO DE CUSTO
                     item {
-                        val tempModelo = ModeloRacial(nome, modForca, modDestreza, modInteligencia, modVitalidade, modPontosVida, modVontade, modPercepcao, modPontosFadiga, modVelocidadeBasica, modDeslocamentoBasico, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial)
+                        val tempModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, descricao = descricaoRacial)
                         Card(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                             Text("Custo Total Racial: ${tempModelo.custoTotal} pontos", modifier = Modifier.padding(16.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         }
@@ -170,7 +222,7 @@ fun ModeloRacialDialog(
                         OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Cancelar") }
                         Button(
                             onClick = { 
-                                val novoModelo = ModeloRacial(nome, modForca, modDestreza, modInteligencia, modVitalidade, modPontosVida, modVontade, modPercepcao, modPontosFadiga, modVelocidadeBasica, modDeslocamentoBasico, vantagensRacais, desvantagensRacais, periciasRacais, descricaoRacial)
+                                val novoModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, descricao = descricaoRacial)
                                 if (onSave != null) onSave(novoModelo)
                                 else {
                                     viewModel.atualizarModeloRacial(novoModelo)

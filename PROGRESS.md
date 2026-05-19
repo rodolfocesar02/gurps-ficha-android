@@ -645,6 +645,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device — cadeia Desejo modo Analisar; confirmar UMA bolha [SISTEMA] com todos os itens em linhas + resposta final no fim.
 
+### Lote 167: Bugs do Modelo Racial (rumo ao catálogo de raças) - CONCLUÍDO
+- **Contexto:** preparando suporte a raça (cobaia = Anão 35 pts). Usuário criou o Anão na mão e exportou o JSON real (Anao.json) — fonte da verdade do schema do `modeloRacial`. Achados, todos com causa raiz provada (não suposição):
+- **Bug 1 — ModeloRacial sem Qualidades/Peculiaridades:** data class `ModeloRacial` (Personagem.kt:924) só tinha vantagens/desvantagens/pericias; o dialog `ModeloRacialDialog` idem. As 2 peculiaridades do Anão (−2 pts) não tinham onde entrar. **Fix:** adicionados campos `qualidades: List<String>` e `peculiaridades: List<String>` (espelha `Personagem.qualidades/peculiaridades`, texto livre), com custo no `custoTotal` igual ao padrão do app (`qualidades.size` +1 cada; `peculiaridades.size * -1`). UI: duas seções texto-livre (campo + botão + lista) no `ModeloRacialDialog`. Os 2 construtores positionais de `ModeloRacial(...)` no dialog viraram named-args (a mudança do data class os quebrava de propósito — compilador pegou). `custoTotal` já é consumido em Personagem.kt:155 → −2 do Anão entra no total automaticamente.
+- **Bug 2 — arredondamento do "Resistente":** `calcularCustoResistente` (CharacterRules.kt:491) fazia `15 * 0.33 = 4.95 → floor → 4`; GURPS manda `15 * (1/3) = 5.0 → 5`. Causa: grau x1/3 hardcoded como `0.33f` (e `0.3333f` noutro dialog — Bug 3, inconsistência interna) e persistido no JSON. **Fix:** `calcularCustoResistente` normaliza o grau para a fração EXATA (~1/3 → 1.0/3.0, ~1/2 → 0.5, ~1 → 1.0) antes de `floor` — robusto a fichas já salvas com 0.33. Literais da UI unificados para `1f/3f` (linhas 142, 238 de TraitSpecialRuleComponents.kt) e seleção de chip tolerante (`abs(grau-m)<0.02`) p/ ficha antiga ainda marcar certo.
+- **Verificação:** clean build OK (compilou → construtores positionais corrigidos); `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device — recriar Anão (agora com as 2 peculiaridades) e confirmar custo 35; conferir Resistente (Comum ×1/3) = 5 pts. Depois: extrair o padrão do JSON → `racas.v1.json` (catálogo de raças, Anão como semente) + schema/prompt da IA.
+
 
 
 **[Bateria de Testes a Realizar]**

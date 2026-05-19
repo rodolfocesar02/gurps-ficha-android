@@ -139,8 +139,8 @@ fun ReputacaoConfig(
         Spacer(modifier = Modifier.height(8.dp))
         Text("Grupo que Reconhece:", style = MaterialTheme.typography.labelMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            listOf(0.33f to "Pequeno (x1/3)", 0.5f to "Médio (x1/2)", 1.0f to "Grande (x1)").forEach { (m, label) ->
-                FilterChip(selected = group == m, onClick = { onChanged(base, m) }, label = { Text(label) })
+            listOf(1f / 3f to "Pequeno (x1/3)", 0.5f to "Médio (x1/2)", 1.0f to "Grande (x1)").forEach { (m, label) ->
+                FilterChip(selected = kotlin.math.abs(group - m) < 0.02f, onClick = { onChanged(base, m) }, label = { Text(label) })
             }
         }
     }
@@ -235,8 +235,9 @@ fun ResistenteConfig(
         Spacer(modifier = Modifier.height(8.dp))
         Text("Grau de Resistência:", style = MaterialTheme.typography.labelMedium)
         FlowRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            listOf(1.0f to "Imunidade (x1)", 0.5f to "+8 no teste (x1/2)", 0.33f to "+3 no teste (x1/3)").forEach { (m, label) ->
-                FilterChip(selected = currentDegree == m, onClick = { onChanged(currentRarity, m, currentAttr) }, label = { Text(label, fontSize = 10.sp) })
+            listOf(1.0f to "Imunidade (x1)", 0.5f to "+8 no teste (x1/2)", 1f / 3f to "+3 no teste (x1/3)").forEach { (m, label) ->
+                // Tolerância: ficha salva com 0.33f não é == a 1f/3f (0.3333).
+                FilterChip(selected = kotlin.math.abs(currentDegree - m) < 0.02f, onClick = { onChanged(currentRarity, m, currentAttr) }, label = { Text(label, fontSize = 10.sp) })
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
