@@ -985,16 +985,26 @@ data class LimitacaoAtributo(
  *  METACARACTERÍSTICA (mesmo pacote salvo como traço reutilizável). */
 enum class TipoModeloRacial { RACA, METACARACTERISTICA }
 
-/** Referência a uma metacaracterística embutida numa raça: UM item de
- *  custo único (não expande componentes — GURPS p.262). O custo é o
- *  valor final (pode ter sido ajustado pelo Mestre). */
+/**
+ * Metacaracterística embutida numa raça (GURPS p.262).
+ *
+ * NA FICHA aparece como UMA linha (nome + custo) — "anote a
+ * metacaracterística, não seus componentes". MAS os componentes
+ * EXISTEM, estruturados, em [conteudo] (um ModeloRacial interno): o
+ * Mestre pode abrir, ver e MODIFICAR os elementos — "é possível
+ * modificar os elementos, alterando o custo". O custo efetivo é o
+ * `conteudo.custoTotal` (recalcula sozinho ao editar um componente).
+ */
 @Stable
 data class MetacaracteristicaRef(
     val id: String = "",
     val nome: String = "",
-    val custo: Int = 0,
-    val descricao: String = ""
-)
+    val descricao: String = "",
+    val conteudo: ModeloRacial = ModeloRacial()
+) {
+    /** Custo efetivo = soma dos componentes (recalcula ao editar). */
+    val custo: Int get() = conteudo.custoTotal
+}
 
 @Stable
 data class ModeloRacial(
@@ -1062,7 +1072,7 @@ data class ModeloRacial(
         val custoPericias = pericias.sumOf { it.custo }
         val custoQualidades = qualidades.size            // +1 cada (GURPS)
         val custoPeculiaridades = peculiaridades.size * -1 // -1 cada (GURPS)
-        val custoMeta = metacaracteristicas.sumOf { it.custo } // 1 item, valor final
+        val custoMeta = metacaracteristicas.sumOf { it.custo } // = soma dos componentes de cada meta
         return custoAtributos + custoSecundarios + custoVantagens +
                custoDesvantagens + custoPericias + custoQualidades +
                custoPeculiaridades + custoMeta

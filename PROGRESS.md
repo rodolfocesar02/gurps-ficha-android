@@ -774,6 +774,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (3 metas); clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — abrir Raça e Metacaracterísticas → "Adicionar Metacaracterística" → secção "Do livro" lista Espírito 261/Astral 171/Máquina 25 → clicar vira chip somando no custo. Isso destrava o Espírito do Manancial (raça pendente: agora "Metacaracterística Espírito [261]" = adicionar a meta Espírito do catálogo).
 
+### Lote 185: Metacaracterística editável (componentes estruturados + dialog recursivo) - CONCLUÍDO
+- **Pedido do usuário:** clicar na metacaracterística e EDITAR os traços (GURPS p.262 "modificar os elementos, alterando o custo"), não só apagar; e ver todos os traços que ela tem. Usuário adicionou no modificadores.v1.json os mods que faltavam (corrigiu id duplicado mod_normalmente_ativa → _ampliação/_limitação; add mod_somente_materia -10%, mod_sempre_ativa_50 -50%); confirmou Imunidade a Danos ao Metabolismo = vantagem `resistente` Muito Comum ×1 = 30.
+- **3 partes de código:** (1) `RacaCatalogo.resolver` ganhou FALLBACK: modificador não achado em `def.modificadoresEspecificos` é buscado no catálogo GLOBAL `repo.modificadoresGerais` (modificadores.v1.json) por id/nome — necessário p/ Insubstancialidade+"Afeta a Matéria". (2) `metacaracteristicas.v1.json` reestruturado: componentes = vantagens/desvantagens com ids reais (formato de raça), não string; `MetacaracteristicaCatalogo.carregar(ctx,repo)` resolve cada uma num ModeloRacial(tipo=META) reusando RacaCatalogo.resolver. (3) `MetacaracteristicaRef` agora carrega `conteudo: ModeloRacial` (custo = conteudo.custoTotal, recalcula); UI: meta vira ItemTraitRacial (toque=editar via ModeloRacialDialog RECURSIVO, lixeira=remover).
+- **Contas conferidas (componentes):** Espírito 15+30+128+38+10+20+20=261; Entidade Astral 15+30+40+36+10+20+20=171; Máquina 30+5+20−30=25. Insubst 80×(1+1−0,4)=128; Invis 40×(1−0,1+0,05)=38; etc.
+- **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — "Adicionar Metacaracterística" → Espírito; conferir chip 261; TOCAR nela → abre dialog recursivo com os 7 componentes (Idade Imutável, Resistente=Imunidade Metabolismo 30, Insubstancialidade 128, Invisibilidade 38, Não Come/Dorme/Respira); editar um componente e ver custo recalcular. Astral=171, Máquina=25. Sem "Não resolvidos".
+
 
 
 **[Bateria de Testes a Realizar]**

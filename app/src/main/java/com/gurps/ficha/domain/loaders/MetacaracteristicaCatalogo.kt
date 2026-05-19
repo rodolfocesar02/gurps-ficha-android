@@ -3,27 +3,30 @@ package com.gurps.ficha.domain.loaders
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonParser
+import com.gurps.ficha.data.DataRepository
+import com.gurps.ficha.model.ModeloRacial
+import com.gurps.ficha.model.TipoModeloRacial
 
 /**
  * Catálogo PRONTO de metacaracterísticas (metacaracteristicas.v1.json,
- * asset read-only — mesmo padrão de racas.v1.json). GURPS p.262/B262:
- * a metacaracterística é UM traço de custo único; `componentes` é só
- * informativo (o Mestre pode ajustar elementos/custo ao usar).
- *
- * O seletor da UI combina ISTO (do livro) com as criadas pelo usuário
- * (MetacaracteristicaStore, filesDir).
+ * read-only). GURPS p.262: na ficha aparece como UM traço (nome+custo),
+ * mas os componentes EXISTEM estruturados (mesmo formato de raça:
+ * vantagens/desvantagens com ids). O resolver reconstrói um ModeloRacial
+ * interno (custoTotal recalcula ao editar) — reusa RacaCatalogo.resolver.
  */
 data class MetacaracteristicaCatalogoItem(
     val id: String = "",
     val nome: String = "",
-    val custo: Int = 0,
     val pagina: String = "",
     val descricao: String = "",
     val componentes: String = ""
 )
 
 object MetacaracteristicaCatalogo {
-    fun carregar(context: Context): List<MetacaracteristicaCatalogoItem> {
+
+    /** Lê o catálogo cru (cada item já no formato RacaDefinicao para os
+     *  componentes — vantagens/desvantagens/etc). */
+    fun carregarBruto(context: Context): List<RacaDefinicao> {
         return try {
             val texto = context.assets.open("metacaracteristicas.v1.json")
                 .bufferedReader().use { it.readText() }
@@ -33,13 +36,21 @@ object MetacaracteristicaCatalogo {
                 ?: return emptyList()
             val gson = Gson()
             arr.mapNotNull { el ->
-                runCatching {
-                    gson.fromJson(el, MetacaracteristicaCatalogoItem::class.java)
-                }.getOrNull()
+                runCatching { gson.fromJson(el, RacaDefinicao::class.java) }.getOrNull()
             }
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    /** Resolve cada metacaracterística em um ModeloRacial completo
+     *  (tipo = METACARACTERISTICA), com os componentes estruturados e
+     *  custoTotal recalculável. Reusa o resolver de raça. */
+    fun carregar(context: Context, repo: DataRepository): List<ModeloRacial> {
+        return carregarBruto(context).map { def ->
+            val res = RacaCatalogo.resolver(def, repo)
+            res.modelo.copy(tipo = TipoModeloRacial.METACARACTERISTICA)
         }
     }
 }

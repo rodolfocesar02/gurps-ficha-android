@@ -127,14 +127,31 @@ object RacaCatalogo {
             val def = casar(ref, repo.vantagens, { it.id }, { it.nome })
             if (def == null) { naoResolvidos.add("vantagem: ${ref.id ?: ref.nome}"); return@mapNotNull null }
             val mods = ref.mods.mapNotNull { modId ->
-                def.modificadoresEspecificos.firstOrNull { it.id.equals(modId, ignoreCase = true) }
-                    ?.let { md ->
-                        ModificadorSelecao(
-                            id = md.id, nome = md.nome,
-                            valor = md.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
-                            porNivel = false, niveis = 1, pagina = md.pagina
-                        )
-                    } ?: run { naoResolvidos.add("modificador: $modId (${def.id})"); null }
+                // 1) modificador específico DA vantagem (ex: pele_resistente)
+                val esp = def.modificadoresEspecificos.firstOrNull { it.id.equals(modId, ignoreCase = true) }
+                if (esp != null) {
+                    return@mapNotNull ModificadorSelecao(
+                        id = esp.id, nome = esp.nome,
+                        valor = esp.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
+                        porNivel = false, niveis = 1, pagina = esp.pagina
+                    )
+                }
+                // 2) fallback: catálogo GLOBAL de modificadores
+                // (modificadores.v1.json) — necessário p/ metacaracterísticas
+                // (ex: Insubstancialidade + "Afeta a Matéria +100%"). Casa
+                // por id; senão por nome normalizado.
+                val ger = repo.modificadoresGerais.firstOrNull {
+                    it.id.equals(modId, ignoreCase = true)
+                } ?: repo.modificadoresGerais.firstOrNull {
+                    norm(it.nome) == norm(modId)
+                }
+                if (ger != null) {
+                    ModificadorSelecao(
+                        id = ger.id, nome = ger.nome,
+                        valor = ger.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
+                        porNivel = false, niveis = 1, pagina = ger.pagina
+                    )
+                } else { naoResolvidos.add("modificador: $modId (${def.id})"); null }
             }
             // Resistente: o custo vem de raridade×grau (calculado pelo
             // app, igual ao dialog) — a IA/catálogo só fornece os

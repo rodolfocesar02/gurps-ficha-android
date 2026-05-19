@@ -1,29 +1,52 @@
 {
-  "_formato": "metacaracteristicas.v1 — catálogo PRONTO do livro (read-only, como racas.v1.json). GURPS p.262/B262: a metacaracterística é anotada como UM traço de custo único, NÃO seus componentes. custo = valor do livro (a soma dos componentes confere). componentes = texto informativo (o Mestre pode modificar elementos e ajustar o custo ao usar, p.262).",
+  "_formato": "metacaracteristicas.v1 — catálogo PRONTO do livro (read-only). GURPS p.262: a meta é anotada como UM traço (na ficha = 1 linha nome+custo), MAS os componentes EXISTEM estruturados (vantagens/desvantagens com ids reais) — o Mestre pode abrir/editar e o custo recalcula. 'componentes' (texto) é só referência humana. Modificadores referenciam ids do catálogo global modificadores.v1.json (resolver tem fallback p/ ele).",
   "metacaracteristicas": [
     {
       "id": "espirito",
       "nome": "Espírito",
-      "custo": 261,
       "pagina": "Módulo Básico 263",
       "descricao": "Entidade incorpórea (fantasma, ser de puro pensamento). Invisível e intangível, exceto para outros com a mesma metacaracterística. Pode tornar-se visível/sólido temporariamente (muito desgastante). Sentidos percebem o mundo material; magia/psi também o afetam.",
-      "componentes": "Idade Imutável [15], Imunidade a Danos ao Metabolismo [30], Insubstancialidade (Afeta a Matéria, +100%; Normalmente Ativa, -40%) [128], Invisibilidade (Somente Matéria, -10%; Normalmente Ativa, +5%) [38], Não Come nem Bebe [10], Não Dorme [20], Não Respira [20]"
+      "componentes": "Idade Imutável [15], Imunidade a Danos ao Metabolismo [30], Insubstancialidade (Afeta a Matéria, +100%; Normalmente Ativa, -40%) [128], Invisibilidade (Somente Matéria, -10%; Normalmente Ativa, +5%) [38], Não Come nem Bebe [10], Não Dorme [20], Não Respira [20]",
+      "vantagens": [
+        { "id": "idade_imutavel" },
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "insubstancialidade", "mods": ["mod_afeta_materia_vantagem", "mod_normalmente_ativa_limitação"] },
+        { "id": "invisibilidade", "mods": ["mod_somente_materia", "mod_normalmente_ativa_ampliação"] },
+        { "id": "nao_come_nem_bebe" },
+        { "id": "nao_dorme" },
+        { "id": "nao_respira" }
+      ]
     },
     {
       "id": "entidade_astral",
       "nome": "Entidade Astral",
-      "custo": 171,
       "pagina": "Módulo Básico 263",
       "descricao": "Um espírito incapaz de se materializar, tornar-se visível ou usar poderes sobrenaturais no mundo físico.",
-      "componentes": "Idade Imutável [15], Imunidade a Danos ao Metabolismo [30], Insubstancialidade (Sempre Ativa, -50%) [40], Invisibilidade (Somente Matéria, -10%) [36], Não Come nem Bebe [10], Não Dorme [20], Não Respira [20]"
+      "componentes": "Idade Imutável [15], Imunidade a Danos ao Metabolismo [30], Insubstancialidade (Sempre Ativa, -50%) [40], Invisibilidade (Somente Matéria, -10%) [36], Não Come nem Bebe [10], Não Dorme [20], Não Respira [20]",
+      "vantagens": [
+        { "id": "idade_imutavel" },
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "insubstancialidade", "mods": ["mod_sempre_ativa_50"] },
+        { "id": "invisibilidade", "mods": ["mod_somente_materia"] },
+        { "id": "nao_come_nem_bebe" },
+        { "id": "nao_dorme" },
+        { "id": "nao_respira" }
+      ]
     },
     {
       "id": "maquina",
       "nome": "Máquina",
-      "custo": 25,
       "pagina": "Módulo Básico 263",
       "descricao": "Corpo quase ou completamente mecânico, de materiais artificiais (metal, plástico, compostos), podendo ter partes orgânicas (pele, cérebro). Ex.: robôs, veículos, ciborgues.",
-      "componentes": "Imunidade a Danos ao Metabolismo [30], Tolerância a Ferimentos (Sem Sangue, Não-Vivo) [25], Sem Recuperação (Total) [-30]"
+      "componentes": "Imunidade a Danos ao Metabolismo [30], Tolerância a Ferimentos (Sem Sangue, Não-Vivo) [25], Sem Recuperação (Total) [-30]",
+      "vantagens": [
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "tolerancia_a_ferimentos_sem_sangue" },
+        { "id": "tolerancia_a_ferimentos_nao_vivo" }
+      ],
+      "desvantagens": [
+        { "id": "sem_recuperacao", "descricao": "Total", "custoEscolhido": -30 }
+      ]
     }
   ]
 }

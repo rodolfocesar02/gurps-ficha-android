@@ -70,8 +70,10 @@ fun ModeloRacialDialog(
     var metasSalvas by remember { mutableStateOf(metaStore.listar()) }
     // Catálogo PRONTO do livro (read-only). O seletor mostra catálogo +
     // criadas pelo usuário.
-    val catalogoMetas = remember { com.gurps.ficha.domain.loaders.MetacaracteristicaCatalogo.carregar(ctxRaca) }
+    val catalogoMetas = remember { com.gurps.ficha.domain.loaders.MetacaracteristicaCatalogo.carregar(ctxRaca, viewModel.dataRepository) }
     var metacaracteristicas by remember { mutableStateOf(modeloOriginal.metacaracteristicas) }
+    // Índice da metacaracterística sendo editada (dialog recursivo).
+    var editandoMetaIdx by remember { mutableStateOf<Int?>(null) }
     var avisoRaca by remember { mutableStateOf<String?>(null) }
 
     // Monta o ModeloRacial a partir do estado atual do dialog.
@@ -141,10 +143,14 @@ fun ModeloRacialDialog(
                             ) { Icon(Icons.Default.Add, null); Spacer(Modifier.width(8.dp)); Text("Adicionar Metacaracterística") }
                         }
                         metacaracteristicas.forEachIndexed { idx, m ->
-                            AssistChip(
-                                onClick = { metacaracteristicas = metacaracteristicas.toMutableList().apply { removeAt(idx) } },
-                                label = { Text("${m.nome}: ${m.custo} pts  ✕") },
-                                modifier = Modifier.padding(end = 4.dp, top = 4.dp)
+                            // Clicar no NOME = abrir/editar os componentes
+                            // (dialog recursivo, GURPS p.262 "modificar os
+                            // elementos"). Lixeira = remover.
+                            ItemTraitRacial(
+                                nome = "${m.nome} (metacaracterística)",
+                                detalhes = "${m.custo} pts — toque para ver/editar os traços",
+                                onEdit = { editandoMetaIdx = idx },
+                                onDelete = { metacaracteristicas = metacaracteristicas.toMutableList().apply { removeAt(idx) } }
                             )
                         }
                     }
@@ -391,16 +397,17 @@ fun ModeloRacialDialog(
             text = {
                 if (catalogoMetas.isEmpty() && metasSalvas.isEmpty()) Text("Nenhuma metacaracterística disponível.")
                 else LazyColumn(modifier = Modifier.height(360.dp)) {
-                    // Catálogo do livro (read-only)
+                    // Catálogo do livro (componentes estruturados)
                     if (catalogoMetas.isNotEmpty()) {
                         item { Text("Do livro", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         items(catalogoMetas) { cm ->
                             ListItem(
                                 headlineContent = { Text(cm.nome) },
-                                supportingContent = { Text("${cm.custo} pts · ${cm.pagina}") },
+                                supportingContent = { Text("${cm.custoTotal} pts · ${cm.descricao.take(40)}") },
                                 modifier = Modifier.clickable {
                                     metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
-                                        id = cm.id, nome = cm.nome, custo = cm.custo, descricao = cm.descricao
+                                        id = cm.nome.lowercase().replace(" ", "_"),
+                                        nome = cm.nome, descricao = cm.descricao, conteudo = cm
                                     )
                                     showSelecionarMeta = false
                                 }
@@ -417,9 +424,7 @@ fun ModeloRacialDialog(
                                 modifier = Modifier.clickable {
                                     metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
                                         id = meta.nome.lowercase().replace(" ", "_"),
-                                        nome = meta.nome,
-                                        custo = meta.custoTotal,
-                                        descricao = meta.descricao
+                                        nome = meta.nome, descricao = meta.descricao, conteudo = meta
                                     )
                                     showSelecionarMeta = false
                                 }
@@ -429,6 +434,24 @@ fun ModeloRacialDialog(
                 }
             },
             confirmButton = { TextButton(onClick = { showSelecionarMeta = false }) { Text("Fechar") } }
+        )
+    }
+
+    // EDITAR METACARACTERÍSTICA — abre o MESMO dialog (recursivo) sobre
+    // o conteudo (ModeloRacial interno). O Mestre vê/edita TODOS os
+    // traços; ao salvar, o custo recalcula via custoTotal (GURPS p.262).
+    editandoMetaIdx?.let { idx ->
+        val ref = metacaracteristicas.getOrNull(idx) ?: return@let
+        ModeloRacialDialog(
+            viewModel = viewModel,
+            modeloAtual = ref.conteudo,
+            onDismiss = { editandoMetaIdx = null },
+            onSave = { editado ->
+                metacaracteristicas = metacaracteristicas.toMutableList().apply {
+                    this[idx] = ref.copy(conteudo = editado)
+                }
+                editandoMetaIdx = null
+            }
         )
     }
 
