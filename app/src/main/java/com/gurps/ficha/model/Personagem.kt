@@ -510,16 +510,25 @@ data class PericiaSelecionada(
      */
     fun calcularNivel(personagem: Personagem): Int {
         val valorAtributo = personagem.getAtributo(atributoBase.sigla)
-        val bonus = CharacterRules.calcularBonusPorDificuldade(dificuldade, pontosGastos)
-        
-        // Bonus racial (Innate Skill)
-        val bonusRacial = personagem.modeloRacial.pericias.find { 
-            it.nome.equals(nome, ignoreCase = true) 
+
+        // Perícia RACIAL (Innate Skill): o nível vem DIRETO da raça como
+        // atributo + nivelRelativo. Ela não tem "pontos gastos" no sentido
+        // normal — periciasTotais a converte com pontosGastos=1 só por
+        // exigência do data class. Aplicar o bônus-por-pontos injetava um
+        // -1 parasita (Média, 1 pt) -> Comércio IQ10 vinha NH9 em vez de
+        // NH10 (NR 0 da planilha do livro).
+        val ehRacial = definicaoId.startsWith("racial_")
+        val bonus = if (ehRacial) 0
+                    else CharacterRules.calcularBonusPorDificuldade(dificuldade, pontosGastos)
+
+        // Bonus racial (Innate Skill) — o nivelRelativo definido na raça
+        val bonusRacial = personagem.modeloRacial.pericias.find {
+            it.nome.equals(nome, ignoreCase = true)
         }?.nivelRelativo ?: 0
-        
+
         // Bônus de vantagens automatizadas
         val bonusVantagens = com.gurps.ficha.domain.rules.traits.TraitRuleRegistry.getSkillBonus(personagem, nome)
-        
+
         return valorAtributo + bonus + bonusRacial + bonusVantagens
     }
 

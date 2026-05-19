@@ -666,6 +666,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** teste de device — abrir Perícias e Rolagem (não pode fechar); recriar perícia racial do Anão e confirmar baseAtributo correto (IQ p/ Comércio, DX p/ Maça/Machado).
 
+### Lote 170: Perícia racial com NH errado (atributo-1 parasita) - CONCLUÍDO
+- **Sintoma (relato + print):** Comércio/Maça-Machado raciais do Anão apareciam NH 9 (= atributo 10 − 1) em vez de NH 10 (NR 0 da planilha do livro `[2]-10`).
+- **CAUSA RAIZ (provada por leitura, não suposição):** `periciasTotais` (Personagem.kt:89) converte a `PericiaRacial` em `PericiaSelecionada` com `pontosGastos = 1` fixo. Em `PericiaSelecionada.calcularNivel`, o NH = `atributo + calcularBonusPorDificuldade(dif, pontos) + bonusRacial(nivelRelativo) + bonusVantagens`. O `bonusRacial` (nivelRelativo) já estava certo, MAS o termo `calcularBonusPorDificuldade(Média, 1pt)` = **−1** era somado por cima — um −1 parasita: perícia racial (Innate Skill) tem o nível definido DIRETO por atributo+nivelRelativo, não tem "pontos gastos" no sentido normal.
+- **Correção:** em `calcularNivel`, detecta perícia racial via `definicaoId.startsWith("racial_")` (id que o próprio `periciasTotais` cria) e zera o `bonus` por pontos só nesse caso. Perícia normal intacta. NH racial = atributo + nivelRelativo (+ vantagens).
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** teste de device — perícia racial NR 0 deve dar NH = atributo (Comércio IQ10 → NH 10). ATENÇÃO: conferir no dialog "Configurar Bônus Racial" se o nivelRelativo salvo é 0 (custo 2 p/ Média); se estiver −1 (custo 1) ajustar p/ 0 — é dado do usuário, não bug de código.
+
 
 
 **[Bateria de Testes a Realizar]**
