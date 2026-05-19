@@ -808,6 +808,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (16); clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — as 16 metas; foco nas 4 novas (Ictioide -50, Vermiforme -35, Veículo Terrestre -100, IA 32) sem "Não resolvidos". Catálogo de metacaracterísticas COMPLETO.
 
+### Lote 190: Telecomunicação — regra modular (3 opções nomeadas) - CONCLUÍDO
+- **Diagnóstico (print do usuário):** dialog de Telecomunicação mostrava "Custo Variável -1/30/+1" genérico (não as 3 opções). Causa: `specialRule:"telecomunicacao"` declarada no JSON sem implementação no CharacterRules. Padrão de Garras/Resistente (regra modular) é o caminho consistente — usuário escolheu.
+- **Implementação:** novo `TelecomunicacaoRule.kt` em `domain/rules/traits/` (espelha GarrasRule): lê `metadados.tipoTelecomunicacao` → laser=15, diapsiquia=30, radio=10; aplica modificadores % por cima (ceil, piso -80). Registrado em `TraitRuleRegistry`. UI: `TelecomunicacaoConfig` em TraitSpecialRuleComponents (3 cards radio) + state `tipoTelecomunicacao` em `VantagemDialogs` (criação + edição) + ligado nos 3 sites (when por id criação 438, when por id criação 507, when por specialRule edição 828) + LaunchedEffects (cálculo de custo nos 2 dialogs) + load metadados na edição (669).
+- **Atenção (usuário corrigiu):** removi "Infravermelho" — o livro/livro do usuário tem só 3 opções (Laser/Diapsiquia/Rádio), não 4.
+- **Desbloqueia:** Homens-Inseto/Guerreiros Insetos do raças.md (têm "Diapsiquia (Transmissão Aberta +50%; Racial -20%) [39]"); 30×1,3=39 ✅. Ainda falta "Sem Atrativos" -4 no catálogo p/ fechar essas raças. Medusas (139) segue pendente decisão.
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — abrir Telecomunicação: 3 cards "Comunicação a Laser/Diapsiquia/Rádio" com custo certo; criar uma Diapsiquia com modificadores Transmissão Aberta+50% e Racial-20% deve dar 39. Depois usuário add Sem Atrativos e eu monto Kobolds/Homens-Inseto/Guerreiros Insetos.
+
 
 
 **[Bateria de Testes a Realizar]**

@@ -229,6 +229,7 @@ fun ConfigurarVantagemDialog(
     var bonusAtaque by remember { mutableStateOf(0) }
     var tipoDentes by remember { mutableStateOf("rombo") }
     var tipoGarras by remember { mutableStateOf("afiadas") }
+    var tipoTelecomunicacao by remember { mutableStateOf("radio") }
     var tipoAparar by remember { mutableStateOf("global") }
     var periciaAparar by remember { mutableStateOf("desarmado") }
 
@@ -251,6 +252,7 @@ fun ConfigurarVantagemDialog(
         )
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
         "garras" -> mapOf("tipoGarras" to tipoGarras)
+        "telecomunicacao" -> mapOf("tipoTelecomunicacao" to tipoTelecomunicacao)
         "defesas_ampliadas_aparar_ampliado" -> mapOf("tipo" to tipoAparar, "skillId" to periciaAparar)
         "resistente" -> mapOf(
             "raridade" to raridadeResistente.toString(),
@@ -261,7 +263,7 @@ fun ConfigurarVantagemDialog(
     }
 
     // Sincronização de custos especiais
-    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoAparar, raridadeResistente, grauResistente) {
+    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, raridadeResistente, grauResistente) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -275,6 +277,14 @@ fun ConfigurarVantagemDialog(
                     "pontudas" -> 8
                     "longas_pontudas" -> 11
                     else -> 5
+                }
+            }
+            "telecomunicacao" -> {
+                custoEscolhido = when (tipoTelecomunicacao) {
+                    "laser" -> 15
+                    "diapsiquia" -> 30
+                    "radio" -> 10
+                    else -> 10
                 }
             }
             "defesas_ampliadas_aparar_ampliado" -> {
@@ -426,6 +436,8 @@ fun ConfigurarVantagemDialog(
                             DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
                         } else if (definicao.id == "garras") {
                             GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                        } else if (definicao.id == "telecomunicacao") {
+                            TelecomunicacaoConfig(currentType = tipoTelecomunicacao, onChanged = { tipoTelecomunicacao = it })
                         } else if (definicao.id == "defesas_ampliadas_aparar_ampliado") {
                             ApararAmpliadoConfig(
                                 currentType = tipoAparar,
@@ -496,6 +508,12 @@ fun ConfigurarVantagemDialog(
                                 GarrasConfig(
                                     currentType = tipoGarras,
                                     onChanged = { tipoGarras = it }
+                                )
+                            }
+                            "telecomunicacao" -> {
+                                TelecomunicacaoConfig(
+                                    currentType = tipoTelecomunicacao,
+                                    onChanged = { tipoTelecomunicacao = it }
                                 )
                             }
                             "defesas_ampliadas_aparar_ampliado" -> {
@@ -649,6 +667,7 @@ fun EditarVantagemDialog(
     var bonusAtaque by remember { mutableStateOf(vantagem.metadados?.get("bonus")?.toIntOrNull() ?: 0) }
     var tipoDentes by remember { mutableStateOf(vantagem.metadados?.get("tipoDentes") ?: "rombo") }
     var tipoGarras by remember { mutableStateOf(vantagem.metadados?.get("tipoGarras") ?: "afiadas") }
+    var tipoTelecomunicacao by remember { mutableStateOf(vantagem.metadados?.get("tipoTelecomunicacao") ?: "radio") }
     var tipoAparar by remember { mutableStateOf(vantagem.metadados?.get("tipo") ?: "global") }
     var periciaAparar by remember { mutableStateOf(vantagem.metadados?.get("skillId") ?: "desarmado") }
 
@@ -680,7 +699,7 @@ fun EditarVantagemDialog(
     var isContactFavor by remember { mutableStateOf(vantagem.metadados?.get("isContact")?.toBoolean() ?: false) }
 
     // Sincronização de custos para Editar
-    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoAparar, classMestre, raridadeResistente, grauResistente) {
+    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, classMestre, raridadeResistente, grauResistente) {
         when (vantagem.definicaoId) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -694,6 +713,14 @@ fun EditarVantagemDialog(
                     "pontudas" -> 8
                     "longas_pontudas" -> 11
                     else -> 5
+                }
+            }
+            "telecomunicacao" -> {
+                custoEscolhido = when (tipoTelecomunicacao) {
+                    "laser" -> 15
+                    "diapsiquia" -> 30
+                    "radio" -> 10
+                    else -> 10
                 }
             }
             "defesas_ampliadas_aparar_ampliado" -> {
@@ -730,6 +757,7 @@ fun EditarVantagemDialog(
         )
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
         "garras" -> mapOf("tipoGarras" to tipoGarras)
+        "telecomunicacao" -> mapOf("tipoTelecomunicacao" to tipoTelecomunicacao)
         "defesas_ampliadas_aparar_ampliado" -> mapOf("tipo" to tipoAparar, "skillId" to periciaAparar)
         "resistente" -> mapOf(
             "raridade" to raridadeResistente.toString(),
@@ -798,6 +826,7 @@ fun EditarVantagemDialog(
                     "ataque_inato", "golpeadores" -> AtaqueInatoConfig(nome = nomeAtaque, tipoDano = tipoDanoAtaque, dados = dadosAtaque, bonus = bonusAtaque, onChanged = { n, t, d, b -> nomeAtaque = n; tipoDanoAtaque = t; dadosAtaque = d; bonusAtaque = b })
                     "dentes" -> DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
                     "garras" -> GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
+                    "telecomunicacao" -> TelecomunicacaoConfig(currentType = tipoTelecomunicacao, onChanged = { tipoTelecomunicacao = it })
                     "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(currentType = tipoAparar, currentSkill = periciaAparar, onChanged = { t, s -> tipoAparar = t; periciaAparar = s })
                     "mestre_de_armas" -> MestreDeArmasConfig(currentClass = classMestre, currentSkills = periciasMestre, onChanged = { c, s -> classMestre = c; periciasMestre = s })
                 }

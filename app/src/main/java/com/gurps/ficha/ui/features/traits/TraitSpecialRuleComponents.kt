@@ -148,7 +148,7 @@ fun ReputacaoConfig(
 
 @Composable
 fun DeverConfig(
-    base: Int,
+    base: Int,   
     isHazardous: Boolean,
     isInvoluntary: Boolean,
     onChanged: (Int, Boolean, Boolean) -> Unit
@@ -524,6 +524,26 @@ fun GarrasConfig(currentType: String, onChanged: (String) -> Unit) {
     val options = listOf("cascos" to "Cascos (+1 dps, Cont) - 3 pts", "cegas" to "Garras Cegas (+1 dps, Cont) - 3 pts", "afiadas" to "Garras Afiadas (cort) - 5 pts", "pontudas" to "Garras Pontudas (cort/perf) - 8 pts", "longas_pontudas" to "Longas Garras Pontudas (+1 dps, cort/perf) - 11 pts")
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Tipo de Garras:", style = MaterialTheme.typography.titleSmall)
+        options.forEach { (id, label) ->
+            Card(modifier = Modifier.fillMaxWidth().clickable { onChanged(id) }, colors = CardDefaults.cardColors(containerColor = if (currentType == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)), border = if (currentType == id) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null) {
+                Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = currentType == id, onClick = { onChanged(id) })
+                    Spacer(modifier = Modifier.width(12.dp)); Text(label, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TelecomunicacaoConfig(currentType: String, onChanged: (String) -> Unit) {
+    val options = listOf(
+        "laser" to "Comunicação a Laser - 15 pts",
+        "diapsiquia" to "Diapsiquia (Transmissão Telepática) - 30 pts",
+        "radio" to "Rádio - 10 pts"
+    )
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Text("Tipo de Telecomunicação:", style = MaterialTheme.typography.titleSmall)
         options.forEach { (id, label) ->
             Card(modifier = Modifier.fillMaxWidth().clickable { onChanged(id) }, colors = CardDefaults.cardColors(containerColor = if (currentType == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)), border = if (currentType == id) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null) {
                 Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
