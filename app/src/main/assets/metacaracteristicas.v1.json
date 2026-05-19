@@ -47,6 +47,161 @@
       "desvantagens": [
         { "id": "sem_recuperacao", "descricao": "Total", "custoEscolhido": -30 }
       ]
+    },
+    {
+      "id": "corpo_de_agua",
+      "nome": "Corpo de Água",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é feito de líquido.",
+      "componentes": "Anfíbio [10]; Ataque Constritivo [15]; Camaleão 1 [5]; Escorregadio 5 [10]; Imunidade a Danos ao Metabolismo [30]; Invertebrado [-20]; Não Respira [20]; Resistência à Pressão 3 [15]; Tolerância a Ferimentos (Difuso) [100]; Vulnerabilidade (Ataques por Desidratação ×2) [-10]",
+      "vantagens": [
+        { "id": "anfibio" },
+        { "id": "ataque_constritivo" },
+        { "id": "camaleao", "nivel": 1 },
+        { "id": "escorregadio", "nivel": 5 },
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "nao_respira" },
+        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
+        { "id": "tolerancia_a_ferimentos_difuso" }
+      ],
+      "desvantagens": [
+        { "id": "invertebrado" },
+        { "id": "vulnerabilidade", "descricao": "Ataques por Desidratação ×2", "custoEscolhido": -10 }
+      ]
+    },
+    {
+      "id": "corpo_de_gelo",
+      "nome": "Corpo de Gelo",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é feito de gelo.",
+      "componentes": "Adaptação ao Terreno (Gelo) [5]; Escorregadio 3 [6]; Fragilidade (Quebradiço) [-15]; Fraqueza (Calor normal intenso; 1d/minuto; Variável, -40%) [-12]; Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 3 [15]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]; Vulnerabilidade (Ataques por Calor/Fogo ×2) [-30]",
+      "vantagens": [
+        { "id": "adaptacao_ao_terreno", "descricao": "Gelo", "custoEscolhido": 5 },
+        { "id": "escorregadio", "nivel": 3 },
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "lacrado" },
+        { "id": "nao_respira" },
+        { "id": "resistencia_a_dano", "nivel": 3 },
+        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
+        { "id": "resistencia_ao_vacuo" },
+        { "id": "tolerancia_a_ferimentos_homogeneo" },
+        { "id": "tolerancia_a_ferimentos_sem_sangue" }
+      ],
+      "desvantagens": [
+        { "id": "fragilidade", "descricao": "Quebradiço", "custoEscolhido": -15 },
+        { "id": "fraqueza", "descricao": "Calor normal intenso; 1d/minuto; Variável, -40%", "custoEscolhido": -12 },
+        { "id": "vulnerabilidade", "descricao": "Ataques por Calor/Fogo ×2", "custoEscolhido": -30 }
+      ]
+    },
+    {
+      "id": "corpo_de_metal",
+      "nome": "Corpo de Metal",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é feito de metal.",
+      "componentes": "Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 9 [45]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]",
+      "vantagens": [
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "lacrado" },
+        { "id": "nao_respira" },
+        { "id": "resistencia_a_dano", "nivel": 9 },
+        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
+        { "id": "resistencia_ao_vacuo" },
+        { "id": "tolerancia_a_ferimentos_homogeneo" },
+        { "id": "tolerancia_a_ferimentos_sem_sangue" }
+      ]
+    },
+    {
+      "id": "corpo_de_pedra",
+      "nome": "Corpo de Pedra",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é feito de pedra.",
+      "componentes": "Fragilidade (Quebradiço) [-15]; Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 5 [25]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]",
+      "vantagens": [
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "lacrado" },
+        { "id": "nao_respira" },
+        { "id": "resistencia_a_dano", "nivel": 5 },
+        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
+        { "id": "resistencia_ao_vacuo" },
+        { "id": "tolerancia_a_ferimentos_homogeneo" },
+        { "id": "tolerancia_a_ferimentos_sem_sangue" }
+      ],
+      "desvantagens": [
+        { "id": "fragilidade", "descricao": "Quebradiço", "custoEscolhido": -15 }
+      ]
+    },
+    {
+      "id": "corpo_de_terra",
+      "nome": "Corpo de Terra",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é feito de terra ou areia.",
+      "componentes": "Imunidade a Danos ao Metabolismo [30]; Invertebrado [-20]; Lacrado [15]; Não Respira [20]; RD 2 [10]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Difuso) [100]",
+      "vantagens": [
+        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
+        { "id": "lacrado" },
+        { "id": "nao_respira" },
+        { "id": "resistencia_a_dano", "nivel": 2 },
+        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
+        { "id": "resistencia_ao_vacuo" },
+        { "id": "tolerancia_a_ferimentos_difuso" }
+      ],
+      "desvantagens": [
+        { "id": "invertebrado" }
+      ]
+    },
+    {
+      "id": "quadrupede",
+      "nome": "Quadrúpede",
+      "pagina": "Módulo Básico 265",
+      "descricao": "Criatura com quatro patas e nenhum braço (um 'centauroide' necessitaria apenas de Pernas Adicionais e Cascos, se for um equino).",
+      "componentes": "Horizontal [-10]; Manuseadores Precários [-30]; Pernas Adicionais (Quatro Pernas) [5]",
+      "vantagens": [
+        { "id": "pernas_adicionais", "descricao": "Quatro Pernas", "custoEscolhido": 5 }
+      ],
+      "desvantagens": [
+        { "id": "horizontal" },
+        { "id": "manuseadores_precarios" }
+      ]
+    },
+    {
+      "id": "animal_domestico",
+      "nome": "Animal Doméstico",
+      "pagina": "Módulo Básico 264",
+      "descricao": "Um animal de fazenda, bichinho de estimação ou animal selvagem treinado.",
+      "componentes": "Características Proibidas (IQ Fixa) [0]; Estigma Social (Propriedade Valiosa) [-10]; Incapaz de Falar [-15]; Sem Imaginação [-5]",
+      "desvantagens": [
+        { "id": "caracteristicas_proibidas", "descricao": "IQ Fixa" },
+        { "id": "estigma_social", "descricao": "Propriedade Valiosa", "custoEscolhido": -10 },
+        { "id": "incapaz_de_falar" },
+        { "id": "sem_imaginacao" }
+      ]
+    },
+    {
+      "id": "animal_selvagem",
+      "nome": "Animal Selvagem",
+      "pagina": "Módulo Básico 264",
+      "descricao": "Um animal comum encontrado na natureza.",
+      "componentes": "Bestial [-10]; Características Proibidas (IQ Fixa) [0]; Incapaz de Falar [-15]; Sem Imaginação [-5]",
+      "desvantagens": [
+        { "id": "bestial", "descricao": "", "custoEscolhido": -10 },
+        { "id": "caracteristicas_proibidas", "descricao": "IQ Fixa" },
+        { "id": "incapaz_de_falar" },
+        { "id": "sem_imaginacao" }
+      ]
+    },
+    {
+      "id": "automato",
+      "nome": "Autômato",
+      "pagina": "Módulo Básico 264",
+      "descricao": "Uma mente sem autoconsciência nem criatividade. Comum em criaturas de bando, constructos mágicos, mortos-vivos e IAs simples. Pode ser combinada com a metacaracterística IA.",
+      "componentes": "Circunspecção [-10]; Indiferente (6) [-10]; Mentalidade de Escravo [-40]; Pouca Empatia [-20]; Sem Imaginação [-5]",
+      "desvantagens": [
+        { "id": "circunspeccao" },
+        { "id": "indiferente", "autocontrole": 6 },
+        { "id": "mentalidade_de_escravo" },
+        { "id": "pouca_empatia" },
+        { "id": "sem_imaginacao" }
+      ]
     }
   ]
 }

@@ -794,6 +794,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — botão da aba Traços agora "Raça e Metacaracterísticas (<nome>)". Junto: testes pendentes dos Lotes 185/186 (meta editável recursiva; nome com parêntese).
 
+### Lote 188: +9 metacaracterísticas do Módulo Básico (catálogo 3→12) - CONCLUÍDO
+- **Processo:** usuário pôs as 18 do MB no metacaracterisca.md; eu mapeei TODOS os componentes vs catálogo via script (não chute), avisei ausências, montei só as que fecham. Usuário adicionou Matemático Intuitivo (matematico_intuitivo, fixed 5) e Características Proibidas (caracteristicas_proibidas, 0) ao catálogo.
+- **9 adicionadas e conferidas (conta bate exata):** Corpo de Água 175, Corpo de Gelo 99, Corpo de Metal 175, Corpo de Pedra 140, Corpo de Terra 175, Quadrúpede -35, Animal Doméstico -30, Animal Selvagem -30, Autômato -85. Padrões reusados: ImunMetab = `resistente` MuitoComum×1 (Lote 185); Tol.Ferim "Homog,SemSangue"=_homogeneo(40)+_sem_sangue(5); RD=resistencia_a_dano perLevel5; invertebrado=desv -20; Indiferente(6)=autocontrole; custoEscolhido do livro p/ specialRule/choice (Fraqueza/Vulnerab/Fragilidade/Estigma/Bestial — padrão Lotes 172/177).
+- **🛑 PENDENTE — faltam no catálogo (usuário adiciona, eu fecho depois):** (1) "Sem Pernas" com variantes Aquático[0]/Desliza[0]/Esteiras-Rodas[-20] → trava Ictioide -50, Vermiforme -35, Veículo Terrestre -100. (2) "Reprogramável" [-10] → trava só IA 32 (Matemático Intuitivo já ok). Essas 4 metas NÃO foram adicionadas.
+- **Verificação:** JSON válido (12 metas); clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — carregar as 9 metas novas (totais acima); usuário adiciona Sem Pernas + Reprogramável p/ destravar as 4 restantes.
+
 
 
 **[Bateria de Testes a Realizar]**
