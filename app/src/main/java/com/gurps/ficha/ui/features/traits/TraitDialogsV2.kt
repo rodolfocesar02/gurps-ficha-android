@@ -184,11 +184,14 @@ fun ModeloRacialDialog(
                         }
                     }
                     if (periciasRacais.isNotEmpty()) {
-                        item { Text("Perícias Raciais (Bônus)", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
+                        item { Text("Perícias Raciais", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.primary) }
                         itemsIndexed(periciasRacais) { index, pr ->
                             ItemTraitRacial(
-                                nome = pr.nome, 
-                                detalhes = "${pr.baseAtributo}${if(pr.nivelRelativo >= 0) "+" else ""}${pr.nivelRelativo} (${pr.diff}) | Custo: ${pr.custo} pts", 
+                                nome = if (pr.tipo == TipoPericiaRacial.BONUS) "${pr.nome} [Bônus]" else pr.nome,
+                                detalhes = if (pr.tipo == TipoPericiaRacial.BONUS)
+                                    "+${pr.nivelRelativo} no NH (só ao usar) | Custo: ${pr.custo} pts"
+                                else
+                                    "${pr.baseAtributo}${if(pr.nivelRelativo >= 0) "+" else ""}${pr.nivelRelativo} (${pr.diff}) | Custo: ${pr.custo} pts",
                                 onEdit = { editingPericiaIndex = index }, 
                                 onDelete = { periciasRacais = periciasRacais.toMutableList().apply { removeAt(index) } }
                             )
@@ -424,25 +427,56 @@ fun ModeloRacialDialog(
     val prParaEditar = periciaEmCriacao ?: if (editingPericiaIndex != null) periciasRacais[editingPericiaIndex!!] else null
     if (prParaEditar != null) {
         var nivelRelativo by remember(prParaEditar) { mutableIntStateOf(prParaEditar.nivelRelativo) }
+        var tipoPR by remember(prParaEditar) { mutableStateOf(prParaEditar.tipo) }
+        // Custo depende do TIPO (GURPS): CONCEDIDA = tabela p.170 (diff
+        // importa); BONUS = linear p.453 (+1=2,+2=4,+3=6, máx +3).
+        val custoFinal = if (tipoPR == TipoPericiaRacial.BONUS)
+            com.gurps.ficha.domain.rules.CharacterRules.calcularCustoBonusPericiaRacial(nivelRelativo)
+        else
+            com.gurps.ficha.domain.rules.CharacterRules.calcularCustoPericiaRacial(prParaEditar.diff, nivelRelativo)
         AlertDialog(
             onDismissRequest = { periciaEmCriacao = null; editingPericiaIndex = null },
-            title = { Text("Configurar Bônus Racial: ${prParaEditar.nome}") },
+            title = { Text("Perícia Racial: ${prParaEditar.nome}") },
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-                    Text("Pontos de bônus no Nível de Habilidade", style = MaterialTheme.typography.bodyMedium)
+                    Text("Tipo (GURPS):", style = MaterialTheme.typography.labelMedium)
+                    Row {
+                        FilterChip(
+                            selected = tipoPR == TipoPericiaRacial.CONCEDIDA,
+                            onClick = { tipoPR = TipoPericiaRacial.CONCEDIDA },
+                            label = { Text("Concedida") },
+                            modifier = Modifier.padding(end = 6.dp)
+                        )
+                        FilterChip(
+                            selected = tipoPR == TipoPericiaRacial.BONUS,
+                            onClick = { tipoPR = TipoPericiaRacial.BONUS },
+                            label = { Text("Bônus") }
+                        )
+                    }
+                    Text(
+                        if (tipoPR == TipoPericiaRacial.BONUS)
+                            "Bônus (p.453): a raça NÃO sabe a perícia; só +N no NH ao usá-la. +1=2, +2=4, +3=6."
+                        else
+                            "Concedida (p.454): a raça JÁ sabe a perícia. Custo pela tabela (a dificuldade importa).",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        if (tipoPR == TipoPericiaRacial.BONUS) "Bônus no NH" else "Nível relativo ao atributo",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = { nivelRelativo-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
                         Text("${if(nivelRelativo>=0) "+" else ""}$nivelRelativo", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp))
                         IconButton(onClick = { nivelRelativo++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                     }
-                    val custoFinal = com.gurps.ficha.domain.rules.CharacterRules.calcularCustoPericiaRacial(prParaEditar.diff, nivelRelativo)
                     Text("Custo: $custoFinal pontos", color = MaterialTheme.colorScheme.primary)
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
-                    val custoFinal = com.gurps.ficha.domain.rules.CharacterRules.calcularCustoPericiaRacial(prParaEditar.diff, nivelRelativo)
-                    val novaPericia = prParaEditar.copy(nivelRelativo = nivelRelativo, custo = custoFinal)
+                    val novaPericia = prParaEditar.copy(nivelRelativo = nivelRelativo, custo = custoFinal, tipo = tipoPR)
                     if (periciaEmCriacao != null) periciasRacais = periciasRacais + novaPericia
                     else if (editingPericiaIndex != null) periciasRacais = periciasRacais.toMutableList().apply { this[editingPericiaIndex!!] = novaPericia }
                     periciaEmCriacao = null; editingPericiaIndex = null

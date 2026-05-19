@@ -730,7 +730,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Conta Elfo = 41 exatos** (Arco BONUS = 2). Anão/Centauro intactos (default CONCEDIDA).
 - **REGRA P/ MODO IA:** "+N em <perícia> [N×2]" no texto do livro = BÔNUS (p.453); "<Perícia> (Dif) Attr [pts]-NH" = CONCEDIDA (p.454). Distinção pelo formato do texto.
 - **Verificação:** clean build OK; 19/19; 5/5.
-- **Próximo:** TESTE B device — Elfo 41 (Arco BONUS custo 2, +1 no NH só quando usa Arco, NÃO aparece como perícia própria na aba Perícias); Aptidão Mágica 5, Atraente 4. Anão 35 / Centauro 100 = regressão.
+### Lote 179: UI do ModeloRacialDialog — seletor Concedida/Bônus na perícia racial - CONCLUÍDO
+- **Buraco apontado pelo usuário:** Lote 178 corrigiu motor+catálogo, mas a UI manual ficou pra trás. O dialog de configurar perícia racial só fazia CONCEDIDA (sempre `calcularCustoPericiaRacial`, sem campo tipo) → jogador que montasse "+1 em Arco" Bônus na mão obteria 4 pts (errado) e Arco listado como perícia própria. Catálogo funcionava só porque o JSON traz `tipo`.
+- **Correção:** dialog "Perícia Racial" agora tem FilterChip Concedida|Bônus com explicação curta de cada (p.454 vs p.453); custo recalcula ao vivo conforme o tipo (`calcularCustoBonusPericiaRacial` p/ BONUS, `calcularCustoPericiaRacial` p/ CONCEDIDA); o `tipo` é gravado na `PericiaRacial`. Listagem mostra "[Bônus]" + "+N no NH (só ao usar)" vs "Attr+NR (Dif)"; título corrigido ("Perícias Raciais", não "(Bônus)").
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — Elfo 41 (Arco BONUS custo 2, +1 NH só ao usar, NÃO vira perícia própria); criar perícia racial MANUAL e conferir o seletor Concedida/Bônus muda o custo certo. Anão 35 / Centauro 100 = regressão.
 
 
 
