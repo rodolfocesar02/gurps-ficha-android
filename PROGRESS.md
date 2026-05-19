@@ -754,6 +754,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (14 raças total); clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE B device — carregar as 7; conferir totais; Gigante vai dar aviso Hipoalgia (esperado). Decidir o que fazer com Hipoalgia.
 
+### Lote 182: Gigante — Hipoalgia id corrigido (fecha 122) - CONCLUÍDO
+- **Resolução do aviso do Lote 181:** o usuário corrigiu/confirmou o id real no catálogo: `hipoalgia_alto_limiar_de_dor` (não `hipoalgia`). É `costKind:fixed, fixed:10` = bate com livro "Hipoalgia [10]". racas.v1.json Gigante atualizado.
+- **Bônus:** confirmado que `pele_resistente` (valor -40) existe em `modificadores_especificos` de `resistencia_a_dano` (chave snake_case; data class lê via @SerializedName alternate — por isso Anão sempre fechou). Falso alarme de leitura do meu script Python, app está correto.
+- **Conta Gigante = 122:** ST+15 Tam-20% (150×0.8=120) −20(DX) +20(HT) −5(Vel-0,25) +20(Desl.Ampl) +10(Hipoalgia) +6(Paladar3=2×3) +6(RD2 Pele Resist=10×0.6) +1(Voz Penetrante qual) −10−10−10−5(desv) −1(pec) = 122 ✅.
+- **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — 7 raças do Lote 181 (agora Gigante deve fechar 122, SEM aviso). Regressão das 7 anteriores. Espírito do Manancial segue pendente (lote futuro: Metacaracterística).
+
 
 
 **[Bateria de Testes a Realizar]**

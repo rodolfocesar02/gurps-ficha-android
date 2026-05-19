@@ -341,7 +341,7 @@
       "secundarios": { "velocidadeBasica": -0.25 },
       "vantagens": [
         { "id": "deslocamento_ampliado", "nivel": 1, "descricao": "Solo" },
-        { "id": "hipoalgia" },
+        { "id": "hipoalgia_alto_limiar_de_dor" },
         { "id": "paladar_olfato_apurado", "nivel": 3 },
         { "id": "resistencia_a_dano", "nivel": 2, "mods": ["pele_resistente"] }
       ],
