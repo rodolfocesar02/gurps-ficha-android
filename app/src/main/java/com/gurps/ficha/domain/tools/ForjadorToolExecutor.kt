@@ -89,9 +89,11 @@ class ForjadorToolExecutor(
                 else resultados.joinToString("\n") { v ->
                     val mods = v.modificadoresEspecificos.take(8)
                         .joinToString(", ") { "${it.id}(${it.nome})" }
+                    val schema = RegrasEspeciaisSchema.para(v.specialRule, v.id)
                     buildString {
                         append("• ${v.id} | ${v.nome} | ${v.getCustoBase()} pts | tipoCusto:${v.tipoCusto}")
                         if (mods.isNotBlank()) append(" | modificadores: $mods")
+                        if (schema != null) append("\n   ⚙ REGRA ESPECIAL — $schema")
                     }
                 }
             }
@@ -103,9 +105,11 @@ class ForjadorToolExecutor(
                 else resultados.joinToString("\n") { d ->
                     val mods = d.modificadoresEspecificos.take(8)
                         .joinToString(", ") { "${it.id}(${it.nome})" }
+                    val schema = RegrasEspeciaisSchema.para(d.specialRule, d.id)
                     buildString {
                         append("• ${d.id} | ${d.nome} | ${d.getCustoBase()} pts | tipoCusto:${d.tipoCusto}")
                         if (mods.isNotBlank()) append(" | modificadores: $mods")
+                        if (schema != null) append("\n   ⚙ REGRA ESPECIAL — $schema")
                     }
                 }
             }

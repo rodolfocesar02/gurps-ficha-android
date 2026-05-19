@@ -710,6 +710,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** TESTE B no device (mesmo de antes) — Centauro 100 pts, Garras=Cascos 3 via metadados.
 
+### Lote 176: forjador_buscar_catalogo expõe schema das regras especiais - CONCLUÍDO
+- **Problema (apontado pelo usuário):** a tool de busca só retornava "id | nome | custo | tipoCusto". Traços com regra especial (Aliado, Inimigo, Vício, Dependência, Reputação, Dever, Garras, Resistente, ~40 specialRule) têm o custo derivado de CAMPOS de `metadados` — o modelo ficava CEGO a eles e CHUTAVA (exatamente o que aconteceu com Garras, Lote 175). Problema sistêmico, raiz da fase IA.
+- **Correção:** novo `domain/tools/RegrasEspeciaisSchema.kt` — mapa specialRule/id → schema dos metadados, EXTRAÍDO da fonte de verdade (CharacterRules.calcularCusto* linhas 320-407: inimigos/dependencia/reputacao/dever/dor_cronica/fraqueza/vulnerabilidade/manutencao/vicio + aliados/contatos via VantagemDialogs:266-267 + garras/resistente regras modulares). `buscarCatalogo` (vantagem+desvantagem) agora anexa "⚙ REGRA ESPECIAL — <campos/valores válidos/fórmula>" quando há specialRule ou id modular. O modelo deixa de adivinhar.
+- **Decisão do usuário:** atacar a raiz (enriquecer a busca), não só o que o teste de raça precisa.
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** TESTE B device (Centauro 100, Garras=Cascos via metadados). Fase IA futura usará esse schema no prompt p/ a IA preencher regras especiais sem chutar.
+
 
 
 **[Bateria de Testes a Realizar]**
