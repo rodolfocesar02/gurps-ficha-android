@@ -801,6 +801,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (12 metas); clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — carregar as 9 metas novas (totais acima); usuário adiciona Sem Pernas + Reprogramável p/ destravar as 4 restantes.
 
+### Lote 189: Últimas 4 metacaracterísticas — catálogo COMPLETO (16, todo o Módulo Básico) - CONCLUÍDO
+- **Correção minha:** eu errei o levantamento do Lote 188 — `reprogramavel` (DESV fixed -10) e `sem_pernas` (DESV choice [-30,-20,-10,-5]) JÁ existiam; minha busca por nome exato falhou (encoding). Usuário apontou reprogramavel; reconferi por id e achei os dois.
+- **Detalhe Sem Pernas:** catálogo não tem opção [0]. Ictioide/Vermiforme usam "Sem Pernas (Aquático/Desliza) [0]" → `custoEscolhido: 0` (resolver respeita 0 pois é Int? não-null, `?:` não cai no fallback — confirmado por leitura RacaCatalogo:197). Veículo Terrestre "Esteiras/Rodas [-20]" → custoEscolhido -20.
+- **4 adicionadas (conta exata):** Ictioide -50, Vermiforme -35, Veículo Terrestre -100, IA 32. Catálogo metacaracteristicas.v1.json = **16 metas (todas as do Módulo Básico)**.
+- **Verificação:** JSON válido (16); clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — as 16 metas; foco nas 4 novas (Ictioide -50, Vermiforme -35, Veículo Terrestre -100, IA 32) sem "Não resolvidos". Catálogo de metacaracterísticas COMPLETO.
+
 
 
 **[Bateria de Testes a Realizar]**

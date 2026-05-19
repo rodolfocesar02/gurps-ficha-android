@@ -202,6 +202,61 @@
         { "id": "pouca_empatia" },
         { "id": "sem_imaginacao" }
       ]
+    },
+    {
+      "id": "ictioide",
+      "nome": "Ictioide",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O personagem tem o corpo semelhante ao de um peixe (um 'tritão' eliminaria apenas Sem Manuseadores).",
+      "componentes": "Sem Manuseadores [-50]; Sem Pernas (Aquático) [0]",
+      "desvantagens": [
+        { "id": "sem_manuseadores" },
+        { "id": "sem_pernas", "descricao": "Aquático", "custoEscolhido": 0 }
+      ]
+    },
+    {
+      "id": "vermiforme",
+      "nome": "Vermiforme",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é semelhante ao de uma cobra ou verme (um homem-cobra com tronco superior humanoide cancelaria Sem Manuseadores).",
+      "componentes": "Sem Manuseadores [-50]; Sem Pernas (Desliza) [0]; Ultraflexibilidade das Juntas [15]",
+      "vantagens": [
+        { "id": "ultraflexibilidade_das_juntas" }
+      ],
+      "desvantagens": [
+        { "id": "sem_manuseadores" },
+        { "id": "sem_pernas", "descricao": "Desliza", "custoEscolhido": 0 }
+      ]
+    },
+    {
+      "id": "veiculo_terrestre",
+      "nome": "Veículo Terrestre",
+      "pagina": "Módulo Básico 264",
+      "descricao": "O corpo do personagem é como um carro, tanque, etc.",
+      "componentes": "Entorpecido [-20]; Horizontal [-10]; Sem Manuseadores [-50]; Sem Pernas (Com Esteiras ou Rodas) [-20]",
+      "desvantagens": [
+        { "id": "entorpecido" },
+        { "id": "horizontal" },
+        { "id": "sem_manuseadores" },
+        { "id": "sem_pernas", "descricao": "Com Esteiras ou Rodas", "custoEscolhido": -20 }
+      ]
+    },
+    {
+      "id": "ia",
+      "nome": "IA",
+      "pagina": "Módulo Básico 264",
+      "descricao": "Uma mente digital.",
+      "componentes": "Matemático Intuitivo [5]; Mente Digital [5]; Memória Fotográfica [10]; Não Dorme [20]; Noção Exata do Tempo [2]; Reprogramável [-10]",
+      "vantagens": [
+        { "id": "matematico_intuitivo" },
+        { "id": "mente_digital" },
+        { "id": "memoria_fotografica" },
+        { "id": "nao_dorme" },
+        { "id": "nocao_exata_do_tempo" }
+      ],
+      "desvantagens": [
+        { "id": "reprogramavel" }
+      ]
     }
   ]
 }
