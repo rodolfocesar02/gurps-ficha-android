@@ -4,24 +4,70 @@
     {
       "id": "anao",
       "nome": "Anões",
-      "pagina": 262,
+      "pagina": "Cataclismo 189",
       "descricao": "Os anões são mineradores baixinhos, atarracados e rudes, e habitantes de cavernas. Todos os anões masculinos são barbudos. Anões são temperamentais: alguns são grosseiros, outros alegres, rudes, cruéis ou honrados, mas suas personalidades são sempre categóricas. Poucos anões são introvertidos.",
-      "atributos": { "st": 2, "ht": 1 },
-      "secundarios": { "pf": 3, "deslocamentoBasico": -1 },
+      "atributos": {
+        "st": 2,
+        "ht": 1
+      },
+      "secundarios": {
+        "pf": 3,
+        "deslocamentoBasico": -1
+      },
       "vantagens": [
-        { "id": "artifice", "nivel": 1 },
-        { "id": "equipamento_caracteristico", "custoEscolhido": 1 },
-        { "id": "expectativa_de_vida_ampliada", "nivel": 1 },
-        { "id": "longevidade" },
-        { "id": "resistencia_a_dano", "nivel": 1, "mods": ["pele_resistente"] },
-        { "id": "st_de_levantamento", "nivel": 2 },
-        { "id": "resistente", "descricao": "Veneno", "metadados": { "raridade": "15", "grau": "0.33333334", "atributo": "HT" } }
+        {
+          "id": "artifice",
+          "nivel": 1
+        },
+        {
+          "id": "equipamento_caracteristico",
+          "custoEscolhido": 1
+        },
+        {
+          "id": "expectativa_de_vida_ampliada",
+          "nivel": 1
+        },
+        {
+          "id": "longevidade"
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1,
+          "mods": [
+            "pele_resistente"
+          ]
+        },
+        {
+          "id": "st_de_levantamento",
+          "nivel": 2
+        },
+        {
+          "id": "resistente",
+          "descricao": "Veneno",
+          "metadados": {
+            "raridade": "15",
+            "grau": "0.33333334",
+            "atributo": "HT"
+          }
+        }
       ],
       "desvantagens": [
-        { "id": "avareza", "autocontrole": 15 },
-        { "id": "cobica", "autocontrole": 12 },
-        { "id": "intolerancia", "descricao": "Inimigos Raciais", "custoEscolhido": -5 },
-        { "id": "teimosia" }
+        {
+          "id": "avareza",
+          "autocontrole": 15
+        },
+        {
+          "id": "cobica",
+          "autocontrole": 12
+        },
+        {
+          "id": "intolerancia",
+          "descricao": "Inimigos Raciais",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "teimosia"
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
@@ -29,9 +75,44 @@
         "Prefere ouro a outros metais preciosos"
       ],
       "pericias": [
-        { "nome": "Comércio", "diff": "M", "baseAtributo": "IQ", "nivelRelativo": 0 },
-        { "nome": "Maça/Machado", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 0 }
+        {
+          "nome": "Comércio",
+          "diff": "M",
+          "baseAtributo": "IQ",
+          "nivelRelativo": 0
+        },
+        {
+          "nome": "Maça/Machado",
+          "diff": "M",
+          "baseAtributo": "DX",
+          "nivelRelativo": 0
+        }
       ]
+    },
+    {
+      "id": "centauro",
+      "nome": "Centauros",
+      "pagina": "Cataclismo ???",
+      "descricao": "Modificador de Tamanho +1 (2 hexes).",
+      "atributos": { "st": 8, "iq": -1, "ht": 2 },
+      "stLimitacaoPct": -10,
+      "secundarios": { "deslocamentoBasico": 2, "percepcao": 1 },
+      "vantagens": [
+        { "id": "garras", "descricao": "Cascos", "custoEscolhido": 3 },
+        { "id": "deslocamento_ampliado", "nivel": 1, "descricao": "Solo" },
+        { "id": "destemor", "nivel": 1 },
+        { "id": "pernas_adicionais", "descricao": "Quatro no total", "custoEscolhido": 5 }
+      ],
+      "desvantagens": [
+        { "id": "excesso_de_confianca", "autocontrole": 12 },
+        { "id": "impulsividade", "autocontrole": 12 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Boemia compulsiva",
+        "Considera os equipamentos para cavalos domesticados (selas, arreios, estábulos) uma ofensa"
+      ],
+      "pericias": []
     }
   ]
 }

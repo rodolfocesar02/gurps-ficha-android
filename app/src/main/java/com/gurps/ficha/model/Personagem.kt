@@ -957,10 +957,23 @@ data class ModeloRacial(
     // Ex.: Anão tem 2 peculiaridades = -2 pts, antes sem onde entrar.
     val qualidades: List<String> = emptyList(),
     val peculiaridades: List<String> = emptyList(),
+    // Limitação percentual SOBRE o custo da ST racial (GURPS p.19/B262).
+    // Ex.: "Tamanho, -10%" (Centauro ST+8 → 80×0.9 = 72); "Manuseadores
+    // Precários, -40%". Valor negativo (-10, -40...), 0 = sem limitação.
+    // Só afeta ST; demais atributos não têm essa redução.
+    val modForcaLimitacaoPct: Int = 0,
     val descricao: String = ""
 ) {
     val custoTotal: Int get() {
-        val custoAtributos = modForca * 10 + modDestreza * 20 + modInteligencia * 20 + modVitalidade * 10
+        // ST com limitação percentual (Tamanho/Manuseadores). Sem
+        // limitação, pct=0 → comportamento idêntico ao anterior
+        // (modForca*10). GURPS "elimine frações": arredonda p/ baixo.
+        val custoForcaBruto = modForca * 10
+        val custoForca = if (modForcaLimitacaoPct == 0) custoForcaBruto
+            else kotlin.math.floor(
+                custoForcaBruto * (1.0 + modForcaLimitacaoPct.coerceAtLeast(-80) / 100.0)
+            ).toInt()
+        val custoAtributos = custoForca + modDestreza * 20 + modInteligencia * 20 + modVitalidade * 10
         val custoSecundarios = modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 +
                                modPontosFadiga * 3 + kotlin.math.round(modVelocidadeBasica / 0.25f).toInt() * 5 +
                                modDeslocamentoBasico * 5

@@ -688,6 +688,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
 - **Próximo:** repetir TESTE A no device — Anão do catálogo deve fechar 35 com Resistente 5, Intolerância -5, e "(Veneno)"/"(Inimigos Raciais)" visíveis. Se ok → TESTE B.
 
+### Lote 173: TESTE B (Centauro) — limitação de Tamanho na ST + lacunas do catálogo - CONCLUÍDO
+- **Contexto:** TESTE A passou (Anão = 35 no device, screenshots). Iniciado TESTE B: usuário passou texto cru do Centauro (Cataclismo, 100 pts). Eu gero o schema só com o texto (simula IA).
+- **Achado 1 — ST com limitação % não existia no app:** `ModeloRacial.custoTotal` fazia `modForca*10` puro; não havia como representar "ST+8 (Tamanho, -10%) [72]". GURPS p.19/B262: ST pode ter limitação % (Tamanho −10%×ModTam até −80%; Manuseadores Precários −40%). **Fix (decisão do usuário: campo de %):** `ModeloRacial` ganhou `modForcaLimitacaoPct: Int = 0`; custoTotal calcula ST = `floor(modForca*10 * (1+pct/100))` (pct=0 → idêntico ao anterior, sem regressão). `RacaDefinicao.stLimitacaoPct` + resolver propaga. UI: linha "Limitação ST" no card de atributos (passo 10%, 0..−80) + carrega/salva o campo (2 construtores named-arg + handler do catálogo). Centauro ST+8 −10% = 80×0.9 = **72** ✅.
+- **Achado 2 — "Cascos" não é vantagem solta:** grep deu 0; usuário indicou que é OPÇÃO da vantagem `garras` (costKind choice; Cascos = 3 pts, confirmado no dialog). Schema corrigido: `{id:"garras", descricao:"Cascos", custoEscolhido:3}`. (Valor da lição p/ modo IA: a IA precisará saber que sub-traços viram opção de uma vantagem-mãe.)
+- **Centauro adicionado ao racas.v1.json.** Conta confere 100 pts exatos (72−20+20+10+5+3+20+2+5−5−10−2). MT+1 é descritivo (sem custo, vai na descrição).
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **PENDENTE (pedido do usuário):** criar a limitação "Tamanho" em `assets/modificadores.v1.json` com uso EXCLUSIVO de ST. Fazer depois.
+- **Próximo:** TESTE B no device — carregar Centauro do catálogo, confirmar 100 pts, ST mostrando 72 (limitação −10%), Garras=Cascos 3, e nenhum "Não resolvidos".
+
 
 
 **[Bateria de Testes a Realizar]**

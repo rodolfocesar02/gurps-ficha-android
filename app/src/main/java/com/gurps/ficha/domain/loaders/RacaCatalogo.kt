@@ -42,9 +42,14 @@ data class RacaPericiaRef(
 data class RacaDefinicao(
     val id: String = "",
     val nome: String = "",
-    val pagina: Int = 0,
+    // String livre: o livro/edição varia ("Cataclismo 189"), não é só
+    // número. Int quebrava o parse Gson e a raça sumia silenciosamente.
+    val pagina: String = "",
     val descricao: String = "",
     val atributos: Map<String, Int> = emptyMap(),
+    // Limitação % sobre o custo da ST (Tamanho -10%×ModTam, Manuseadores
+    // -40%). A IA informa só o %, lido do texto do livro ("Tamanho, -10%").
+    val stLimitacaoPct: Int = 0,
     val secundarios: Map<String, Int> = emptyMap(),
     val vantagens: List<RacaTracoRef> = emptyList(),
     val desvantagens: List<RacaTracoRef> = emptyList(),
@@ -196,6 +201,7 @@ object RacaCatalogo {
             pericias = pericias,
             qualidades = raca.qualidades,
             peculiaridades = raca.peculiaridades,
+            modForcaLimitacaoPct = raca.stLimitacaoPct,
             descricao = raca.descricao
         )
         return ResultadoResolucao(modelo, naoResolvidos)

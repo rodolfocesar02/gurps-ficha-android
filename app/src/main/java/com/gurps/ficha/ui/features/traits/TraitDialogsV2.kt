@@ -36,6 +36,7 @@ fun ModeloRacialDialog(
     
     // Atributos baseados no modelo ModeloRacial.kt
     var modForca by remember { mutableIntStateOf(modeloOriginal.modForca) }
+    var modForcaLimitacaoPct by remember { mutableIntStateOf(modeloOriginal.modForcaLimitacaoPct) }
     var modDestreza by remember { mutableIntStateOf(modeloOriginal.modDestreza) }
     var modInteligencia by remember { mutableIntStateOf(modeloOriginal.modInteligencia) }
     var modVitalidade by remember { mutableIntStateOf(modeloOriginal.modVitalidade) }
@@ -121,6 +122,17 @@ fun ModeloRacialDialog(
                                     AjustadorVerticalRacial("DX", modDestreza, "Ajuste de Destreza (DX)") { modDestreza += it }
                                     AjustadorVerticalRacial("IQ", modInteligencia, "Ajuste de Inteligência (IQ)") { modInteligencia += it }
                                     AjustadorVerticalRacial("HT", modVitalidade, "Ajuste de Vitalidade (HT)") { modVitalidade += it }
+                                }
+                                // Limitação % sobre o custo da ST (Tamanho/
+                                // Manuseadores Precários). Passo 10%, 0..-80.
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text("Limitação ST:", style = MaterialTheme.typography.labelSmall)
+                                    Spacer(Modifier.width(8.dp))
+                                    IconButton(onClick = { modForcaLimitacaoPct = (modForcaLimitacaoPct - 10).coerceAtLeast(-80) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Reduzir limitação de ST" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                                    Text("$modForcaLimitacaoPct%", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp))
+                                    IconButton(onClick = { modForcaLimitacaoPct = (modForcaLimitacaoPct + 10).coerceAtMost(0) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Aumentar limitação de ST" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                                    Text("(Tamanho/Manuseadores)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -228,7 +240,7 @@ fun ModeloRacialDialog(
 
                     // RESUMO DE CUSTO
                     item {
-                        val tempModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, descricao = descricaoRacial)
+                        val tempModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, modForcaLimitacaoPct = modForcaLimitacaoPct, descricao = descricaoRacial)
                         Card(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                             Text("Custo Total Racial: ${tempModelo.custoTotal} pontos", modifier = Modifier.padding(16.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         }
@@ -241,7 +253,7 @@ fun ModeloRacialDialog(
                         OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Cancelar") }
                         Button(
                             onClick = { 
-                                val novoModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, descricao = descricaoRacial)
+                                val novoModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, modForcaLimitacaoPct = modForcaLimitacaoPct, descricao = descricaoRacial)
                                 if (onSave != null) onSave(novoModelo)
                                 else {
                                     viewModel.atualizarModeloRacial(novoModelo)
@@ -267,14 +279,15 @@ fun ModeloRacialDialog(
                     items(catalogoRacas) { raca ->
                         ListItem(
                             headlineContent = { Text(raca.nome) },
-                            supportingContent = { Text("Pág. ${raca.pagina}") },
+                            supportingContent = { if (raca.pagina.isNotBlank()) Text(raca.pagina) },
                             modifier = Modifier.clickable {
                                 val res = com.gurps.ficha.domain.loaders.RacaCatalogo
                                     .resolver(raca, viewModel.dataRepository)
                                 val m = res.modelo
                                 nome = m.nome
                                 descricaoRacial = m.descricao
-                                modForca = m.modForca; modDestreza = m.modDestreza
+                                modForca = m.modForca; modForcaLimitacaoPct = m.modForcaLimitacaoPct
+                                modDestreza = m.modDestreza
                                 modInteligencia = m.modInteligencia; modVitalidade = m.modVitalidade
                                 modPontosVida = m.modPontosVida; modVontade = m.modVontade
                                 modPercepcao = m.modPercepcao; modPontosFadiga = m.modPontosFadiga
