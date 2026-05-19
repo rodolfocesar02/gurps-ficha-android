@@ -736,6 +736,16 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE B device — Elfo 41 (Arco BONUS custo 2, +1 NH só ao usar, NÃO vira perícia própria); criar perícia racial MANUAL e conferir o seletor Concedida/Bônus muda o custo certo. Anão 35 / Centauro 100 = regressão.
 
+### Lote 180: +3 raças do Cataclismo p.190 (Elfos Negros, Meio-Elfos, Elfos do Mar) - CONCLUÍDO
+- **Processo definido com usuário:** ele manda texto LIMPO em .md (sala de criação/raças.md); eu monto conferindo nº a nº + valido ids no catálogo antes de escrever (lição Lote 175); paro e pergunto se engasgar. PDF cru é inviável (2-3 colunas intercaladas → custo errado silencioso).
+- **3 raças adicionadas ao racas.v1.json** (pág. "Cataclismo 190", confirmada pelo usuário). Ids todos validados no catálogo (insensivel, obsessao, nt_baixo, anfibio, membrana_nictitante, resistencia_a_pressao, perícia rede=D/DX, aptidao_magica special, aparencia choice Atraente=4):
+  - **Elfos Negros 31:** −10+20+20 +5(AptMág)+4(Atraente)+15(IdadeImut) −5(Insensível)−10(Intol.Total)−10(Obsessão ac12) +2(Arco BONUS) = 31 ✅
+  - **Meio-Elfos 27:** +20(IQ) +5(AptMág)+2(Expect.Vida) = 27 ✅
+  - **Elfos do Mar 51:** +20+20 +10(Anfíbio)+5(AptMág)+5(Artista)+4(Atraente)+15(IdadeImut)+1(Membrana)+5(Resist.Pressão) −10(Cód.Honra)−10(NT Baixo 2 = perLevel-5×2)−15(Senso Dever) −1(pec) +2(Rede BONUS) = 51 ✅
+- **Confirmado por leitura:** resolver passa `nivel` p/ desvantagem + `calcularCustoDesvantagem` faz POR_NIVEL=custoBase*nivel → NT Baixo 2 = −10 sem custoEscolhido. Rede "+1 [2]" = BONUS (p.453, ignora dificuldade D).
+- **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE B device — carregar as 3, conferir 31/27/51, sem "Não resolvidos". Regressão: Anão 35, Centauro 100, Elfo 41.
+
 
 
 **[Bateria de Testes a Realizar]**

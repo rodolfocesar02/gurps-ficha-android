@@ -166,6 +166,74 @@
       "pericias": [
         { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
       ]
+    },
+    {
+      "id": "elfo_negro",
+      "nome": "Elfos Negros",
+      "pagina": "Cataclismo 190",
+      "descricao": "Os “elfos negros” não são uma raça separada; são um ramo xenófobo da cultura élfica. Acham que orcs em particular representam uma aberração e que outras raças devem ser domesticadas ou destruídas. Muitos vivem na Floresta Negra.",
+      "atributos": { "st": -1, "dx": 1, "iq": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "aptidao_magica", "nivel": 1 },
+        { "id": "aparencia", "descricao": "Atraente", "custoEscolhido": 4 },
+        { "id": "idade_imutavel" }
+      ],
+      "desvantagens": [
+        { "id": "insensivel" },
+        { "id": "intolerancia", "descricao": "Total", "custoEscolhido": -10 },
+        { "id": "obsessao", "descricao": "Destruir ou controlar completamente os não-elfos", "autocontrole": 12, "custoEscolhido": -10 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": [
+        { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
+      ]
+    },
+    {
+      "id": "meio_elfo",
+      "nome": "Meio-Elfos",
+      "pagina": "Cataclismo 190",
+      "descricao": "Relações entre humanos e elfos por vezes produzem meio-elfos. Têm constituição esguia e uma ponta suave nas orelhas. São bem-vindos em vilas élficas (exceto entre elfos negros) e em terras humanas.",
+      "atributos": { "iq": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "aptidao_magica", "nivel": 1 },
+        { "id": "expectativa_de_vida_ampliada", "nivel": 1 }
+      ],
+      "desvantagens": [],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": []
+    },
+    {
+      "id": "elfo_do_mar",
+      "nome": "Elfos do Mar",
+      "pagina": "Cataclismo 190",
+      "descricao": "Semelhantes aos primos terrestres, mas a maioria é puramente aquática. Têm guelras, pés palmados, mãos ligeiramente palmadas e poucos pelos. Devoção primária ao mar.",
+      "atributos": { "dx": 1, "iq": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "anfibio" },
+        { "id": "aptidao_magica", "nivel": 1 },
+        { "id": "artista_talentoso", "nivel": 1 },
+        { "id": "aparencia", "descricao": "Atraente", "custoEscolhido": 4 },
+        { "id": "idade_imutavel" },
+        { "id": "membrana_nictitante", "nivel": 1 },
+        { "id": "resistencia_a_pressao", "nivel": 1, "custoEscolhido": 5 }
+      ],
+      "desvantagens": [
+        { "id": "codigo_de_honra", "descricao": "Élfico", "custoEscolhido": -10 },
+        { "id": "nt_baixo", "nivel": 2 },
+        { "id": "senso_do_dever", "descricao": "Natureza", "custoEscolhido": -15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Não gosta dos elfos negros"
+      ],
+      "pericias": [
+        { "nome": "Rede", "diff": "D", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
+      ]
     }
   ]
 }
