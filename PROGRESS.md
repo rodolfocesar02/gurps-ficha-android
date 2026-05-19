@@ -788,6 +788,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Pendente:** usuário disse "DUAS COISAS IMPORTANTES" mas só descreveu a 1ª (esta). 2ª coisa ainda não informada — perguntar.
 - **Próximo:** TESTE device — adicionar meta → conferir "Nome da Raça" / "Será salvo como" mostra "Base (Meta)"; remover meta → parêntese some; salvar e ver na ficha.
 
+### Lote 187: Botão da aba Traços renomeado p/ "Raça e Metacaracterísticas" - CONCLUÍDO
+- **Pedido:** o botão "Modelo Racial (Humano)" na aba Traços deve se chamar "Raça e Metacaracterísticas".
+- **Correção:** TabTracos.kt:66 `texto = "Raça e Metacaracterísticas (${p.modeloRacial.nome})"` (mantém o nome entre parênteses — que já vem com a metacaracterística via Lote 186, ex: "Humano (Espírito)"). TabGeral.kt:331 (linha do resumo de pontos "Modelo Racial (nome)") deixado como está — é rótulo do somatório de pontos, não o botão.
+- **Verificação:** clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — botão da aba Traços agora "Raça e Metacaracterísticas (<nome>)". Junto: testes pendentes dos Lotes 185/186 (meta editável recursiva; nome com parêntese).
+
 
 
 **[Bateria de Testes a Realizar]**

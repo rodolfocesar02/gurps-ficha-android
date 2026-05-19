@@ -63,7 +63,7 @@ fun TabTracos(viewModel: FichaViewModel) {
 
     StandardTabColumn {
         BotaoAcaoTracosPadrao(
-            texto = "Modelo Racial (${p.modeloRacial.nome})",
+            texto = "Raça e Metacaracterísticas (${p.modeloRacial.nome})",
             onClick = { showModeloRacialDialog = true }
         )
         BotaoAcaoTracosPadrao(
