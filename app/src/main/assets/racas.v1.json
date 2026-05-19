@@ -92,20 +92,50 @@
     {
       "id": "centauro",
       "nome": "Centauros",
-      "pagina": "Cataclismo ???",
-      "descricao": "Modificador de Tamanho +1 (2 hexes).",
-      "atributos": { "st": 8, "iq": -1, "ht": 2 },
-      "stLimitacaoPct": -10,
-      "secundarios": { "deslocamentoBasico": 2, "percepcao": 1 },
+      "pagina": "Cataclismo 189",
+      "descricao": "Os centauros combinam o torso, os braços e a cabeça de um humano com o corpo de um cavalo. A parte superior do corpo é geralmente — mas nem sempre — pálida. A parte inferior do corpo pode ser preta, marrom, cinza, rajada, roseada ou até mesmo palomino. Suas armas preferidas são a lança e o arco curto.",
+      "atributos": {
+        "st": 8,
+        "iq": -1,
+        "ht": 2
+      },
+      "limitacoesAtributo": [
+        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -10 }
+      ],
+      "secundarios": {
+        "deslocamentoBasico": 2,
+        "percepcao": 1
+      },
       "vantagens": [
-        { "id": "garras", "descricao": "Cascos", "custoEscolhido": 3 },
-        { "id": "deslocamento_ampliado", "nivel": 1, "descricao": "Solo" },
-        { "id": "destemor", "nivel": 1 },
-        { "id": "pernas_adicionais", "descricao": "Quatro no total", "custoEscolhido": 5 }
+        {
+          "id": "garras",
+          "descricao": "Cascos",
+          "custoEscolhido": 3
+        },
+        {
+          "id": "deslocamento_ampliado",
+          "nivel": 1,
+          "descricao": "Solo"
+        },
+        {
+          "id": "destemor",
+          "nivel": 1
+        },
+        {
+          "id": "pernas_adicionais",
+          "descricao": "Quatro no total",
+          "custoEscolhido": 5
+        }
       ],
       "desvantagens": [
-        { "id": "excesso_de_confianca", "autocontrole": 12 },
-        { "id": "impulsividade", "autocontrole": 12 }
+        {
+          "id": "excesso_de_confianca",
+          "autocontrole": 12
+        },
+        {
+          "id": "impulsividade",
+          "autocontrole": 12
+        }
       ],
       "qualidades": [],
       "peculiaridades": [

@@ -935,6 +935,32 @@ data class PericiaRacial(
 // MODELO RACIAL
 // ============================================================
 
+/** Atributos que aceitam limitação percentual de custo (GURPS p.19). */
+enum class AtributoLimitavel { ST, DX, PV }
+
+/**
+ * Limitação de custo de atributo (GURPS p.19/B262). São poucas e
+ * fixas — hardcoded (não vão em modificadores.v1.json, que é catálogo
+ * de modificador de VANTAGEM; poluiria toda vantagem e nem se aplica
+ * a atributo). `aceitaEm` define onde cada uma pode ser usada.
+ */
+enum class TipoLimitacaoAtributo(
+    val rotulo: String,
+    val aceitaEm: Set<AtributoLimitavel>
+) {
+    // Tamanho: −10% × Modificador de Tamanho, máx −80%. ST e PV.
+    TAMANHO("Tamanho", setOf(AtributoLimitavel.ST, AtributoLimitavel.PV)),
+    // Manuseadores Precários: −40%. ST ou DX.
+    MANUSEADORES_PRECARIOS("Manuseadores Precários", setOf(AtributoLimitavel.ST, AtributoLimitavel.DX))
+}
+
+@Stable
+data class LimitacaoAtributo(
+    val atributo: AtributoLimitavel = AtributoLimitavel.ST,
+    val tipo: TipoLimitacaoAtributo = TipoLimitacaoAtributo.TAMANHO,
+    val percentual: Int = 0 // negativo: -10, -40, -80...
+)
+
 @Stable
 data class ModeloRacial(
     val nome: String = "Humano",
@@ -957,24 +983,34 @@ data class ModeloRacial(
     // Ex.: Anão tem 2 peculiaridades = -2 pts, antes sem onde entrar.
     val qualidades: List<String> = emptyList(),
     val peculiaridades: List<String> = emptyList(),
-    // Limitação percentual SOBRE o custo da ST racial (GURPS p.19/B262).
-    // Ex.: "Tamanho, -10%" (Centauro ST+8 → 80×0.9 = 72); "Manuseadores
-    // Precários, -40%". Valor negativo (-10, -40...), 0 = sem limitação.
-    // Só afeta ST; demais atributos não têm essa redução.
-    val modForcaLimitacaoPct: Int = 0,
+    // Limitações percentuais SOBRE o custo de um atributo racial
+    // (GURPS p.19/B262). Tamanho: ST e PV (−10%×ModTam, até −80%);
+    // Manuseadores Precários: ST e DX (−40%). Lista vazia = sem
+    // limitação (comportamento idêntico ao anterior). Cada item
+    // afeta SÓ o atributo nomeado.
+    val limitacoesAtributo: List<LimitacaoAtributo> = emptyList(),
     val descricao: String = ""
 ) {
+    /** % total de limitação aplicável a um atributo (soma, piso −80). */
+    private fun pctLimitacao(attr: AtributoLimitavel): Int =
+        limitacoesAtributo.filter { it.atributo == attr }
+            .sumOf { it.percentual }
+            .coerceAtLeast(-80)
+
+    /** Aplica a limitação % ao custo bruto do atributo. GURPS
+     *  "elimine frações" → arredonda p/ baixo. Sem limitação → bruto. */
+    private fun custoComLimite(bruto: Int, attr: AtributoLimitavel): Int {
+        val pct = pctLimitacao(attr)
+        return if (pct == 0) bruto
+            else kotlin.math.floor(bruto * (1.0 + pct / 100.0)).toInt()
+    }
+
     val custoTotal: Int get() {
-        // ST com limitação percentual (Tamanho/Manuseadores). Sem
-        // limitação, pct=0 → comportamento idêntico ao anterior
-        // (modForca*10). GURPS "elimine frações": arredonda p/ baixo.
-        val custoForcaBruto = modForca * 10
-        val custoForca = if (modForcaLimitacaoPct == 0) custoForcaBruto
-            else kotlin.math.floor(
-                custoForcaBruto * (1.0 + modForcaLimitacaoPct.coerceAtLeast(-80) / 100.0)
-            ).toInt()
-        val custoAtributos = custoForca + modDestreza * 20 + modInteligencia * 20 + modVitalidade * 10
-        val custoSecundarios = modPontosVida * 2 + modVontade * 5 + modPercepcao * 5 +
+        val custoForca = custoComLimite(modForca * 10, AtributoLimitavel.ST)
+        val custoDestrezaV = custoComLimite(modDestreza * 20, AtributoLimitavel.DX)
+        val custoAtributos = custoForca + custoDestrezaV + modInteligencia * 20 + modVitalidade * 10
+        val custoPV = custoComLimite(modPontosVida * 2, AtributoLimitavel.PV)
+        val custoSecundarios = custoPV + modVontade * 5 + modPercepcao * 5 +
                                modPontosFadiga * 3 + kotlin.math.round(modVelocidadeBasica / 0.25f).toInt() * 5 +
                                modDeslocamentoBasico * 5
         val custoVantagens = vantagens.sumOf { it.custoFinal }

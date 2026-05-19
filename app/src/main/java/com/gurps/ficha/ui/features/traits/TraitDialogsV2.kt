@@ -36,7 +36,8 @@ fun ModeloRacialDialog(
     
     // Atributos baseados no modelo ModeloRacial.kt
     var modForca by remember { mutableIntStateOf(modeloOriginal.modForca) }
-    var modForcaLimitacaoPct by remember { mutableIntStateOf(modeloOriginal.modForcaLimitacaoPct) }
+    var limitacoesAtributo by remember { mutableStateOf(modeloOriginal.limitacoesAtributo) }
+    var showLimitacaoDialog by remember { mutableStateOf(false) }
     var modDestreza by remember { mutableIntStateOf(modeloOriginal.modDestreza) }
     var modInteligencia by remember { mutableIntStateOf(modeloOriginal.modInteligencia) }
     var modVitalidade by remember { mutableIntStateOf(modeloOriginal.modVitalidade) }
@@ -123,16 +124,20 @@ fun ModeloRacialDialog(
                                     AjustadorVerticalRacial("IQ", modInteligencia, "Ajuste de Inteligência (IQ)") { modInteligencia += it }
                                     AjustadorVerticalRacial("HT", modVitalidade, "Ajuste de Vitalidade (HT)") { modVitalidade += it }
                                 }
-                                // Limitação % sobre o custo da ST (Tamanho/
-                                // Manuseadores Precários). Passo 10%, 0..-80.
+                                // Limitações de custo de atributo (Tamanho/
+                                // Manuseadores). Botão + chips: vazio = nada
+                                // na tela, não polui; aplicado = visível.
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text("Limitação ST:", style = MaterialTheme.typography.labelSmall)
-                                    Spacer(Modifier.width(8.dp))
-                                    IconButton(onClick = { modForcaLimitacaoPct = (modForcaLimitacaoPct - 10).coerceAtLeast(-80) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Reduzir limitação de ST" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
-                                    Text("$modForcaLimitacaoPct%", fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 12.dp))
-                                    IconButton(onClick = { modForcaLimitacaoPct = (modForcaLimitacaoPct + 10).coerceAtMost(0) }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Aumentar limitação de ST" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
-                                    Text("(Tamanho/Manuseadores)", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                                TextButton(
+                                    onClick = { showLimitacaoDialog = true },
+                                    modifier = Modifier.semantics { contentDescription = "Adicionar limitação de atributo" }
+                                ) { Icon(Icons.Default.Add, null); Spacer(Modifier.width(4.dp)); Text("Limitação de Atributo") }
+                                limitacoesAtributo.forEachIndexed { idx, lim ->
+                                    AssistChip(
+                                        onClick = { limitacoesAtributo = limitacoesAtributo.toMutableList().apply { removeAt(idx) } },
+                                        label = { Text("${lim.atributo.name}: ${lim.tipo.rotulo} ${lim.percentual}%  ✕") },
+                                        modifier = Modifier.padding(end = 4.dp)
+                                    )
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -240,7 +245,7 @@ fun ModeloRacialDialog(
 
                     // RESUMO DE CUSTO
                     item {
-                        val tempModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, modForcaLimitacaoPct = modForcaLimitacaoPct, descricao = descricaoRacial)
+                        val tempModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, limitacoesAtributo = limitacoesAtributo, descricao = descricaoRacial)
                         Card(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                             Text("Custo Total Racial: ${tempModelo.custoTotal} pontos", modifier = Modifier.padding(16.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         }
@@ -253,7 +258,7 @@ fun ModeloRacialDialog(
                         OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Cancelar") }
                         Button(
                             onClick = { 
-                                val novoModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, modForcaLimitacaoPct = modForcaLimitacaoPct, descricao = descricaoRacial)
+                                val novoModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, limitacoesAtributo = limitacoesAtributo, descricao = descricaoRacial)
                                 if (onSave != null) onSave(novoModelo)
                                 else {
                                     viewModel.atualizarModeloRacial(novoModelo)
@@ -266,6 +271,53 @@ fun ModeloRacialDialog(
                 }
             }
         }
+    }
+
+    // DIALOG: adicionar limitação de atributo (Tamanho / Manuseadores).
+    // Tipo define quais atributos são válidos (aceitaEm) — não polui
+    // com combinações inválidas.
+    if (showLimitacaoDialog) {
+        var tipoSel by remember { mutableStateOf(TipoLimitacaoAtributo.TAMANHO) }
+        var attrSel by remember { mutableStateOf(AtributoLimitavel.ST) }
+        var pctSel by remember { mutableIntStateOf(-10) }
+        // Mantém o atributo coerente com o tipo escolhido.
+        if (attrSel !in tipoSel.aceitaEm) attrSel = tipoSel.aceitaEm.first()
+        AlertDialog(
+            onDismissRequest = { showLimitacaoDialog = false },
+            title = { Text("Limitação de Atributo") },
+            text = {
+                Column {
+                    Text("Tipo:", style = MaterialTheme.typography.labelMedium)
+                    TipoLimitacaoAtributo.values().forEach { t ->
+                        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth().clickable { tipoSel = t }) {
+                            RadioButton(selected = tipoSel == t, onClick = { tipoSel = t })
+                            Text("${t.rotulo} (${t.aceitaEm.joinToString("/") { it.name }})", style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Text("Atributo:", style = MaterialTheme.typography.labelMedium)
+                    Row {
+                        tipoSel.aceitaEm.forEach { a ->
+                            FilterChip(selected = attrSel == a, onClick = { attrSel = a }, label = { Text(a.name) }, modifier = Modifier.padding(end = 6.dp))
+                        }
+                    }
+                    Spacer(Modifier.height(8.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Limitação:", style = MaterialTheme.typography.labelMedium)
+                        IconButton(onClick = { pctSel = (pctSel - 10).coerceAtLeast(-80) }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                        Text("$pctSel%", fontWeight = FontWeight.Bold)
+                        IconButton(onClick = { pctSel = (pctSel + 10).coerceAtMost(-10) }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    limitacoesAtributo = limitacoesAtributo + LimitacaoAtributo(attrSel, tipoSel, pctSel)
+                    showLimitacaoDialog = false
+                }) { Text("Adicionar") }
+            },
+            dismissButton = { TextButton(onClick = { showLimitacaoDialog = false }) { Text("Cancelar") } }
+        )
     }
 
     // SELETOR DE RAÇA DO CATÁLOGO — clicar no nome resolve e preenche
@@ -286,7 +338,7 @@ fun ModeloRacialDialog(
                                 val m = res.modelo
                                 nome = m.nome
                                 descricaoRacial = m.descricao
-                                modForca = m.modForca; modForcaLimitacaoPct = m.modForcaLimitacaoPct
+                                modForca = m.modForca; limitacoesAtributo = m.limitacoesAtributo
                                 modDestreza = m.modDestreza
                                 modInteligencia = m.modInteligencia; modVitalidade = m.modVitalidade
                                 modPontosVida = m.modPontosVida; modVontade = m.modVontade

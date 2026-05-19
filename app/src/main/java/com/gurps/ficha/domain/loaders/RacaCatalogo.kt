@@ -39,6 +39,13 @@ data class RacaPericiaRef(
     val nivelRelativo: Int = 0
 )
 
+// JSON: { "atributo":"ST", "tipo":"TAMANHO", "percentual":-10 }
+data class RacaLimitacaoRef(
+    val atributo: String = "ST",
+    val tipo: String = "TAMANHO",
+    val percentual: Int = 0
+)
+
 data class RacaDefinicao(
     val id: String = "",
     val nome: String = "",
@@ -47,9 +54,10 @@ data class RacaDefinicao(
     val pagina: String = "",
     val descricao: String = "",
     val atributos: Map<String, Int> = emptyMap(),
-    // Limitação % sobre o custo da ST (Tamanho -10%×ModTam, Manuseadores
-    // -40%). A IA informa só o %, lido do texto do livro ("Tamanho, -10%").
-    val stLimitacaoPct: Int = 0,
+    // Limitações % de custo de atributo (Tamanho ST/PV; Manuseadores
+    // Precários ST/DX). A IA informa atributo+tipo+% lidos do texto
+    // do livro ("ST+8 (Tamanho, -10%)"). Vazio = sem limitação.
+    val limitacoesAtributo: List<RacaLimitacaoRef> = emptyList(),
     val secundarios: Map<String, Int> = emptyMap(),
     val vantagens: List<RacaTracoRef> = emptyList(),
     val desvantagens: List<RacaTracoRef> = emptyList(),
@@ -201,7 +209,19 @@ object RacaCatalogo {
             pericias = pericias,
             qualidades = raca.qualidades,
             peculiaridades = raca.peculiaridades,
-            modForcaLimitacaoPct = raca.stLimitacaoPct,
+            limitacoesAtributo = raca.limitacoesAtributo.mapNotNull { ref ->
+                val attr = runCatching {
+                    com.gurps.ficha.model.AtributoLimitavel.valueOf(ref.atributo.uppercase())
+                }.getOrNull()
+                val tipo = runCatching {
+                    com.gurps.ficha.model.TipoLimitacaoAtributo.valueOf(ref.tipo.uppercase())
+                }.getOrNull()
+                if (attr == null || tipo == null || ref.percentual == 0) {
+                    naoResolvidos.add("limitação: ${ref.atributo}/${ref.tipo}"); null
+                } else if (attr !in tipo.aceitaEm) {
+                    naoResolvidos.add("limitação ${tipo.rotulo} não vale p/ ${attr.name}"); null
+                } else com.gurps.ficha.model.LimitacaoAtributo(attr, tipo, ref.percentual)
+            },
             descricao = raca.descricao
         )
         return ResultadoResolucao(modelo, naoResolvidos)

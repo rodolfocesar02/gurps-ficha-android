@@ -694,8 +694,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Achado 2 — "Cascos" não é vantagem solta:** grep deu 0; usuário indicou que é OPÇÃO da vantagem `garras` (costKind choice; Cascos = 3 pts, confirmado no dialog). Schema corrigido: `{id:"garras", descricao:"Cascos", custoEscolhido:3}`. (Valor da lição p/ modo IA: a IA precisará saber que sub-traços viram opção de uma vantagem-mãe.)
 - **Centauro adicionado ao racas.v1.json.** Conta confere 100 pts exatos (72−20+20+10+5+3+20+2+5−5−10−2). MT+1 é descritivo (sem custo, vai na descrição).
 - **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
-- **PENDENTE (pedido do usuário):** criar a limitação "Tamanho" em `assets/modificadores.v1.json` com uso EXCLUSIVO de ST. Fazer depois.
+- **PENDENTE (pedido do usuário):** criar a limitação "Tamanho" em `assets/modificadores.v1.json` com uso EXCLUSIVO de ST. Fazer depois. → RESOLVIDO no Lote 174 (de forma diferente: NÃO foi p/ modificadores.v1.json — ver abaixo).
 - **Próximo:** TESTE B no device — carregar Centauro do catálogo, confirmar 100 pts, ST mostrando 72 (limitação −10%), Garras=Cascos 3, e nenhum "Não resolvidos".
+
+### Lote 174: Limitação de atributo genérica (Tamanho ST/PV; Manuseadores ST/DX) - CONCLUÍDO
+- **Decisão de design (com o usuário):** o usuário perguntou onde pôr a limitação sem poluir/esconder. Conclusão: `modificadores.v1.json` é catálogo de modificador de VANTAGEM (poluiria toda vantagem e nem se aplica a atributo) — NÃO usar. Limitações são poucas e fixas → hardcoded como enum. Escopo escolhido: SÓ Modelo Racial. UI escolhida: botão "+ Limitação de Atributo" + chips (vazio = nada na tela).
+- **Implementação:** enum `AtributoLimitavel{ST,DX,PV}` + enum `TipoLimitacaoAtributo` (TAMANHO→ST/PV; MANUSEADORES_PRECARIOS→ST/DX, com `aceitaEm`) + `data class LimitacaoAtributo`. `ModeloRacial`: trocado `modForcaLimitacaoPct:Int` (Lote 173, só ST) por `limitacoesAtributo: List<LimitacaoAtributo>` (genérico ST/DX/PV); `custoTotal` aplica % por atributo via `custoComLimite` (floor; soma piso −80; vazio = idêntico ao anterior, sem regressão). Resolver (`RacaCatalogo`): `RacaLimitacaoRef` + mapeia com enum tolerante, rejeita combinação inválida p/ `naoResolvidos`. `racas.v1.json`: Centauro migrado `stLimitacaoPct:-10` → `limitacoesAtributo:[{ST,TAMANHO,-10}]`. UI: botão + chips removíveis + AlertDialog (tipo→atributos válidos→%); state migrado nos 2 construtores named-arg + handler do catálogo.
+- **Verificação:** clean build OK; `test_forjador_complexo.py` 19/19; `test_json_repair.py` 5/5.
+- **Próximo:** TESTE B no device — Centauro do catálogo = 100 pts, chip "ST: Tamanho -10%", ST custando 72, sem "Não resolvidos". Conferir Anão (sem limitação) segue 35 (regressão).
 
 
 
