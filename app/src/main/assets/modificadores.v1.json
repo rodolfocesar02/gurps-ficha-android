@@ -4,7 +4,7 @@
     "nome": "Acompanhamento",
     "tipo": "ampliação",
     "valor": "0% ou 50%",
-    "porNivel": false,
+    "porNivel": true,
     "pagina": 102,
     "descricao": "+0% se o ataque portador tem que penetrar a RD. +50% se ignorar a RD (toque)."
   },
@@ -18,13 +18,31 @@
     "descricao": "Cada nível concede +1 na Precisão (Prec) da vantagem. Limite: Prec no máximo igual ao NT da campanha."
   },
   {
-    "id": "mod_afeta_materia",
-    "nome": "Afeta a Matéria",
+    "id": "mod_afeta_materia_ataque_innato",
+    "nome": "Afeta a Matéria (Ataque Inato)",
     "tipo": "ampliação",
     "valor": "+40%",
     "porNivel": false,
     "pagina": 102,
     "descricao": "Permite que uma vantagem baseada em PK ou energia afete o mundo material se o personagem for Insubstancial."
+  },
+  {
+    "id": "mod_afeta_maquinas_vantagem",
+    "nome": "Afeta Máquinas(vantagem)",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 67,
+    "descricao": "O personagem é invisível até mesmo para máquinas. Ele não pode ser fotografado e não aparece em câmeras ou outros detectores. Dispositivos como placas de pressão ainda percebem sua presença, mas o personagem consegue passar por um robô sentinela sem ser detectado. Armas com mira eletrônica não recebem bônus para atingi-lo."
+  },
+  {
+    "id": "mod_afeta_materia_vantagem",
+    "nome": "Afeta a Matéria (Vantagem)",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 102,
+    "descricao": "Afeta o mundo material se o personagem for Insubstancial."
   },
   {
     "id": "mod_afeta_insubstancial",
@@ -81,6 +99,15 @@
     "descricao": "Permite escolher quem ou o que é afetado dentro da Área de Efeito."
   },
   {
+    "id": "mod_ativada_ou_desativada",
+    "nome": "Ativada ou Desativada à Vontade",
+    "tipo": "ampliação",
+    "valor": "+10%",
+    "porNivel": false,
+    "pagina": 67,
+    "descricao": "O personagem é normalmente visível, mas pode se tornar invisível quando quiser"
+  },
+  {
     "id": "mod_assinatura_discreta",
     "nome": "Assinatura Discreta",
     "tipo": "ampliação",
@@ -135,49 +162,58 @@
     "descricao": "Muda para qual atributo o alvo resiste (Vontade para HT, etc.). +20% se for para um atributo mais fraco no alvo médio."
   },
   {
+    "id": "mod_capaz_de_carregar_objetos",
+    "nome": "Capaz de Carregar Objetos",
+    "tipo": "ampliação",
+    "valor": "+10%,+20%,+50%,100%",
+    "porNivel": true,
+    "pagina": 68,
+    "descricao": "Os objetos que o personagem estiver carregando, incluindo roupas e armaduras, se tornam invisíveis. Eles voltam a ser visíveis quando colocados no solo. Objetos que pesam até o valor de Nenhuma Carga do personagem custam +10%; até Leve, +20%; até Média, +50%; até Pesada, +100%."
+  },
+  {
     "id": "mod_ciclico_1s",
     "nome": "Cíclico (1 segundo)",
     "tipo": "ampliação",
     "valor": "+100%",
-    "porNivel": false,
+    "porNivel": true,
     "pagina": 104,
-    "descricao": "O efeito do ataque se repete a cada 1 segundo."
+    "descricao": "O efeito do ataque se repete a cada 1 segundo. Multiplique pelo número de ciclos após o primeiro (use o ajuste de níveis)."
   },
   {
     "id": "mod_ciclico_10s",
     "nome": "Cíclico (10 segundos)",
     "tipo": "ampliação",
     "valor": "+50%",
-    "porNivel": false,
+    "porNivel": true,
     "pagina": 104,
-    "descricao": "O efeito do ataque se repete a cada 10 segundos."
+    "descricao": "O efeito do ataque se repete a cada 10 segundos. Multiplique pelo número de ciclos após o primeiro (use o ajuste de níveis)."
   },
   {
     "id": "mod_ciclico_1m",
     "nome": "Cíclico (1 minuto)",
     "tipo": "ampliação",
     "valor": "+40%",
-    "porNivel": false,
+    "porNivel": true,
     "pagina": 104,
-    "descricao": "O efeito do ataque se repete a cada 1 minuto."
+    "descricao": "O efeito do ataque se repete a cada 1 minuto. Multiplique pelo número de ciclos após o primeiro (use o ajuste de níveis)."
   },
   {
     "id": "mod_ciclico_1h",
     "nome": "Cíclico (1 hora)",
     "tipo": "ampliação",
     "valor": "+20%",
-    "porNivel": false,
+    "porNivel": true,
     "pagina": 104,
-    "descricao": "O efeito do ataque se repete a cada 1 hora."
+    "descricao": "O efeito do ataque se repete a cada 1 hora. Multiplique pelo número de ciclos após o primeiro (use o ajuste de níveis)."
   },
   {
     "id": "mod_ciclico_1d",
     "nome": "Cíclico (1 dia)",
     "tipo": "ampliação",
     "valor": "+10%",
-    "porNivel": false,
+    "porNivel": true,
     "pagina": 104,
-    "descricao": "O efeito do ataque se repete a cada 1 dia."
+    "descricao": "O efeito do ataque se repete a cada 1 dia. Multiplique pelo número de ciclos após o primeiro (use o ajuste de níveis)."
   },
   {
     "id": "mod_cone",
@@ -331,6 +367,15 @@
     "porNivel": false,
     "pagina": 85,
     "descricao": "O ataque do personagem imobiliza o alvo. Ele não consegue mover os braços, nem as pernas, nem falar; a única opção dele é usar habilidades puramente mentais, utilizar Ataques Inatos ou tentar libertar-se usando a ST (não a perícia Fuga). Se tentar se libertar e não conseguir, a vítima poderá fazer  uma nova tentativa depois de 10 segundos — contudo, com um resultado de 17 ou 18, ela fica tão enredada que não conseguirá mais escapar sozinha!"
+  },
+  {
+    "id": "mod_Estendida",
+    "nome": "Estendida",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "O personagem é invisível para mais de um tipo de visão (ex., visão eletromagnética e campos magnéticos). +20% por tipo adicional de visão."
   },
   {
     "id": "mod_explosao",
@@ -549,6 +594,24 @@
     "descricao": "Permite mover uma Área de Efeito (+40%/nível)."
   },
   {
+    "id": "mod_normalmente_ativa_ampliação",
+    "nome": "Normalmente Ativa",
+    "tipo": "ampliação",
+    "valor": "+5%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "O personagem normalmente é invisível, mas ele é capaz de se tornar visível por curtos períodos de tempo fazendo um grande esforço — 1 PF por segundo."
+  },
+  {
+    "id": "mod_normalmente_ativa_limitação",
+    "nome": "Normalmente Ativa",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 67,
+    "descricao": "Similar a Sempre Ativa, mas o personagem é capaz de se materializar por curtos períodos de tempo fazendo um grande esforço —1 PF por segundo."
+  },
+  {
     "id": "mod_dano_afogamento",
     "nome": "Efeito de Dano: Afogamento",
     "tipo": "ampliação",
@@ -601,6 +664,15 @@
     "porNivel": false,
     "pagina": 108,
     "descricao": "Causa asfixia."
+  },
+  {
+    "id": "mod_ondas_curtas",
+    "nome": "Ondas Curtas",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 93,
+    "descricao": "Esta ampliação está disponível apenas para Rádio. O personagem consegue fazer o sinal ultrapassar a ionosfera (se houver) de um planeta. Isso permite que ele transmita (ou receba) mensagens em qualquer parte daquele mundo. Lembre-se que raios solares, o clima, etc., podem interromper a comunicação por meio de ondas curtas."
   },
   {
     "id": "mod_perigo",
@@ -801,6 +873,15 @@
     "descricao": "Trabalha normalmente sob a água (+20%)."
   },
   {
+    "id": "mod_transmissao_aberta",
+    "nome": "Transmissão Aberta",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 93,
+    "descricao": "Esta ampliação está disponível apenas para Diapsiquia e permite que o personagem envie seus pensamentos para todas as pessoas que se encontram numa área determinada ao seu redor. Isso exige um teste de IQ modificado pela distância para o raio desejado, além de uma penalidade adicional de -4."
+  },
+  {
     "id": "mod_teleguiado",
     "nome": "Teleguiado",
     "tipo": "ampliação",
@@ -825,7 +906,16 @@
     "valor": "+20%",
     "porNivel": false,
     "pagina": 108,
-    "descricao": "Dano de trauma (blunt trauma) \u00e9 dobrado."
+    "descricao": "Dano de trauma (blunt trauma) é dobrado."
+  },
+  {
+    "id": "mod_universal",
+    "nome": "Universal",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 93,
+    "descricao": "As mensagens do personagem são automaticamente traduzidas para o idioma do alvo. O Mestre pode limitar esta ampliação a pessoas de níveis tecnológicos avançados ou restri-la à Diapsiquia."
   },
   {
     "id": "mod_variavel_amp",
@@ -1359,6 +1449,15 @@
     "descricao": "Fora de perigo a vantagem é muito mais fraca (-20%)."
   },
   {
+    "id": "mod_racial",
+    "nome": "Racial",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 67,
+    "descricao": "A habilidade do personagem só funciona com seres da mesma raça que ele ou de raças muito semelhantes (os humanos, por exemplo, são semelhantes aos elfos, mas não aos cães, nem aos trolls). Combine esta limitação com a limitação Base Sensorial (Toque ou Cheiro) para representar uma raça que compartilha pensamentos por meios bioquímicos."
+  },
+  {
     "id": "mod_requer_preparo_1m",
     "nome": "Requer Preparo (1 minuto)",
     "tipo": "limitação",
@@ -1467,7 +1566,61 @@
     "descricao": "Desvantagem extrema por estar sempre ligada."
   },
   {
-    "id": "mod_unico",
+    "id": "mod_sempre_ativa_50",
+    "nome": "Sempre Ativa (-50%)",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 116,
+    "descricao": "Desvantagem extrema por estar sempre ligada."
+  },
+  {
+    "id": "mod_somente_cibernetica",
+    "nome": "Somente Cibernética",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "Funciona da mesma maneira que Cibernética, mas o personagem só é capaz de ler Mentes Digitais."
+  },
+  {
+    "id": "mod_somente_materia",
+    "nome": "Somente Matéria",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "A invisibilidade do personagem o oculta apenas no mundo material. Criaturas insubstanciais (fantasmas, etc.) s"
+  },
+  {
+    "id": "mod_somente_sensorial",
+    "nome": "Somente Sensorial",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "Funciona da mesma maneira que Sensorial, mas o personagem não é capaz de ler pensamentos."
+  },
+  {
+    "id": "mod_telecomunicacao",
+    "nome": "Telecomunicação",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "A habilidade do personagem só funciona com pessoas com quem ele está em contato por meio da Telecomunicação."
+  },
+  {
+    "id": "mod_telepatico",
+    "nome": "Telepático",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": false,
+    "pagina": 69,
+    "descricao": "A habilidade do personagem faz parte do poder psíquico Telepatia (pág. 257)."
+  },
+  {
+    "id": "mod_único",
     "nome": "Único",
     "tipo": "limitação",
     "valor": "-25%",

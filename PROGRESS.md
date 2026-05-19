@@ -842,6 +842,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (17 raças); clean build OK; 19/19; 5/5.
 - **Próximo:** TESTE device — Kobolds -60, Homens-Inseto 29, Guerreiros Insetos 25 sem "Não resolvidos". Diapsiquia mostra 39 quando os mods são aplicados.
 
+### Lote 194: Cíclico (5 intervalos) torna-se porNivel=true (regra real do livro) - CONCLUÍDO
+- **Achado (usuário trouxe o trecho do livro, MB p.103-104):** o "Cíclico, 1 minuto, +80%" da Medusa NÃO é erro de edição como eu havia respondido — o livro manda **"Multiplique o custo acima pelo número de ciclos após o primeiro"**. 1 minuto = +40% × 2 ciclos = +80% ✅. Eu errei na resposta anterior (tinha dito que "2 ciclos" era descritivo).
+- **Bug do app:** todos os 5 Cíclicos (1s/10s/1m/1h/1d) estavam `porNivel:false` → não permitiam multiplicar por ciclos.
+- **Correção:** os 5 viraram `porNivel:true` no modificadores.v1.json + descrição esclarece "(use o ajuste de níveis)". UI já suporta níveis (`ModificadorSelecionadoItem` tem +/− níveis quando porNivel=true, vimos no Lote 191). Cálculo no resolver: `valor*niveis` (CharacterRules linha 227/266/311 — código já trata).
+- **Validação matemática:** Medusa Ataque Tóxico 4 × (1 + 0 + 0,4×2) = 4 × 1,8 = 7,2 → ceil 8 ✅ — bate com livro [8]! O livro do Cataclismo está consistente com as regras do MB; quem estava errado era eu (e o app).
+- **"interrompido por cuidados médicos"** — usuário tinha razão também: puramente descritivo, sem %. Usar campo descrição do modificador (Lote 191).
+- **Verificação:** JSON válido; clean build OK; 19/19; 5/5.
+- **Próximo:** TESTE device — ao escolher Cíclico (qualquer intervalo) em Ataque Inato, aparecem botões +/− pra ajustar ciclos; nível 2 do Cíclico 1m = +80%. Destrava parte da Medusa (resta Atribulação composta e Golpeadores).
+
 
 
 **[Bateria de Testes a Realizar]**
