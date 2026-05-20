@@ -533,13 +533,13 @@
           "id": "ataque_inato",
           "descricao": "Veneno de cobra",
           "metadados": { "tipoDano": "tox", "dice": "1", "bonus": "0", "nomePersonalizado": "Ataque Tóxico" },
-          "mods": ["mod_acompanhamento", "mod_ciclico_1m"],
+          "mods": ["mod_acompanhamento", "mod_ciclico_1m:2"],
           "custoEscolhido": 0
         },
         {
           "id": "atribulacao",
           "descricao": "Olhar Petrificante",
-          "mods": ["mod_cone", "mod_prazo_permanente", "mod_area_seletiva", "mod_imprecacao_2", "paralisia", "mod_base_sensorial_lim"]
+          "mods": ["mod_cone:15", "mod_prazo_permanente", "mod_area_seletiva", "mod_imprecacao_2", "paralisia", "mod_base_sensorial_lim"]
         },
         {
           "id": "golpeadores",

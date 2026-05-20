@@ -126,14 +126,19 @@ object RacaCatalogo {
         val vantagens = raca.vantagens.mapNotNull { ref ->
             val def = casar(ref, repo.vantagens, { it.id }, { it.nome })
             if (def == null) { naoResolvidos.add("vantagem: ${ref.id ?: ref.nome}"); return@mapNotNull null }
-            val mods = ref.mods.mapNotNull { modId ->
+            val mods = ref.mods.mapNotNull { modRaw ->
+                // Formato estendido: "id:N" → N níveis (ex: "mod_cone:15" =
+                // Cone com largura 15m). Sem ":" = nível 1 (compat antiga).
+                val parts = modRaw.split(":", limit = 2)
+                val modId = parts[0]
+                val modNiveis = parts.getOrNull(1)?.toIntOrNull() ?: 1
                 // 1) modificador específico DA vantagem (ex: pele_resistente)
                 val esp = def.modificadoresEspecificos.firstOrNull { it.id.equals(modId, ignoreCase = true) }
                 if (esp != null) {
                     return@mapNotNull ModificadorSelecao(
                         id = esp.id, nome = esp.nome,
                         valor = esp.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
-                        porNivel = false, niveis = 1, pagina = esp.pagina,
+                        porNivel = false, niveis = modNiveis, pagina = esp.pagina,
                         bonusBase = 0 // mods_especificos não têm base fixa hoje
                     )
                 }
@@ -152,7 +157,7 @@ object RacaCatalogo {
                         valor = ger.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
                         // Propaga porNivel do catálogo (Lote 194: Cíclico
                         // é porNivel=true; antes era hardcoded false).
-                        porNivel = ger.porNivel, niveis = 1,
+                        porNivel = ger.porNivel, niveis = modNiveis,
                         pagina = ger.pagina,
                         bonusBase = ger.bonusBase
                     )
