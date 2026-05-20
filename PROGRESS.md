@@ -861,6 +861,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 196: Correção exibição do total do modificador Cone (bonusBase não aparecia no label) - CONCLUÍDO
+- **Bug (usuário reportou via screenshot):** ao adicionar o modificador Cone, o item selecionado exibia só `+10% p/ nível` — o `bonusBase` de 50 não aparecia no label. O cálculo de custo (CharacterRules) já estava correto desde o Lote 195; só a exibição estava errada.
+- **Causa:** `ModificadorSelecionadoItem` (TraitCommonComponents.kt linha 128) mostrava `${mod.valor}%` sem considerar `bonusBase` nem `niveis`.
+- **Correção:** linha 128 substituída por `val totalMod = mod.bonusBase + if (mod.porNivel) mod.valor * mod.niveis else mod.valor` → exibe o total real (ex: Cone nível 6 = 50+10×6 = +110%). Cálculo de custo não foi tocado (já correto).
+- **Verificação:** clean build OK em 17s.
+- **Próximo:** TESTE device — Cone nível 1 deve exibir +60% (50+10); Cone nível 6 deve exibir +110% (50+60). Custo calculado já batia antes, agora a exibição confirma.
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"

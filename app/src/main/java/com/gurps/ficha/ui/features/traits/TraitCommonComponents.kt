@@ -125,7 +125,8 @@ fun ModificadorSelecionadoItem(mod: ModificadorSelecao, onUpdate: (ModificadorSe
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(mod.nome, fontWeight = FontWeight.Bold)
-                    Text("${if (mod.valor >= 0) "+" else ""}${mod.valor}%", style = MaterialTheme.typography.bodySmall)
+                    val totalMod = mod.bonusBase + if (mod.porNivel) mod.valor * mod.niveis else mod.valor
+                    Text("${if (totalMod >= 0) "+" else ""}${totalMod}%", style = MaterialTheme.typography.bodySmall)
                 }
                 if (mod.porNivel) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
