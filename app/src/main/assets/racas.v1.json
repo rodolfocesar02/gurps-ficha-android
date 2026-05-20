@@ -519,6 +519,49 @@
       "qualidades": [],
       "peculiaridades": [],
       "pericias": []
+    },
+    {
+      "id": "medusa",
+      "nome": "Medusas",
+      "pagina": "Cataclismo 196",
+      "descricao": "As medusas parecem mulheres de uma das raças humanoides, com cobras na cabeça em vez de cabelos. Pele normal ou com padrões exóticos combinando com a coloração das cobras. Têm dois ataques inatos: a picada venenosa das cobras e a capacidade de transformar pessoas em pedra (Olhar Petrificante). Não existem medusas masculinas; para reproduzir, fêmeas devem acasalar com humano, elfo ou orc.",
+      "atributos": { "dx": 1, "iq": 1, "ht": 1 },
+      "secundarios": {},
+      "vantagens": [
+        { "id": "aptidao_magica", "nivel": 2, "custoEscolhido": 5 },
+        {
+          "id": "ataque_inato",
+          "descricao": "Veneno de cobra",
+          "metadados": { "tipoDano": "tox", "dice": "1", "bonus": "0", "nomePersonalizado": "Ataque Tóxico" },
+          "mods": ["mod_acompanhamento", "mod_ciclico_1m"],
+          "custoEscolhido": 0
+        },
+        {
+          "id": "atribulacao",
+          "descricao": "Olhar Petrificante",
+          "mods": ["mod_cone", "mod_prazo_permanente", "mod_area_seletiva", "mod_imprecacao_2", "paralisia", "mod_base_sensorial_lim"]
+        },
+        {
+          "id": "golpeadores",
+          "metadados": { "tipoDano": "pa++", "dice": "1", "bonus": "0", "nomePersonalizado": "Mordida de cobra" },
+          "mods": ["mod_incapaz_de_aparar", "mod_fraco"],
+          "custoEscolhido": 5
+        },
+        {
+          "id": "resistente",
+          "descricao": "Ao Olhar de qualquer medusa",
+          "metadados": { "raridade": "5", "grau": "1.0", "atributo": "HT" },
+          "custoEscolhido": 5
+        }
+      ],
+      "desvantagens": [
+        { "id": "estigma_social", "descricao": "Monstro", "custoEscolhido": -15 }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Aversão a outras raças"
+      ],
+      "pericias": []
     }
   ]
 }

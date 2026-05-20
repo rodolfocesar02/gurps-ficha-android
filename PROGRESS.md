@@ -868,6 +868,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** clean build OK em 17s.
 - **Próximo:** TESTE device — Cone nível 1 deve exibir +60% (50+10); Cone nível 6 deve exibir +110% (50+60). Custo calculado já batia antes, agora a exibição confirma.
 
+### Lote 197: Medusa (139 pts) adicionada ao catálogo de raças - CONCLUÍDO
+- **Pedido (usuário):** montar a Medusa no `racas.v1.json` usando o JSON de ficha (`ficha_gurps(1).json`) que ele já validou no app como fonte da verdade — assim os custos batem com o livro Cataclismo p.196.
+- **Componentes mapeados (todos no catálogo):** Aptidão Mágica nível 2 (custoEscolhido 5); Ataque Inato Veneno de cobra (tox 1d, mods Acompanhamento+Cíclico 1m); Atribulação Olhar Petrificante (mods Cone+Prazo Permanente+Área Seletiva+Imprecação 2+paralisia+Base Sensorial Lim); Golpeadores Mordida (mods Incapaz de Aparar+Fraco, custoEscolhido 5); Resistente ao Olhar de medusa (raridade 5, grau 1.0=Imunidade, =5 pts).
+- **Decisões:** `paralisia` entra como modificador específico da Atribulação (specialRule registrada, sem prefixo `mod_`); `mod_base_sensorial_lim` (já existente, -20%) cobre o "Base Visual -20%" do livro — mesma mecânica, é base sensorial limitada. `mod_paralisia` standalone e `mod_base_visual` standalone NÃO foram necessários porque a Atribulação já tem `paralisia` como ampliação especial dela e `mod_base_sensorial_lim` cobre o caso.
+- **Catálogo de raças: 18 fechando** — restou só Espírito do Manancial (raça pulada Lote 181, agora destravada pela meta Espírito 261) pendente de montar quando o usuário pedir.
+- **Verificação:** JSON válido (18 raças); clean build OK (7s).
+- **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
+
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
 Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"
