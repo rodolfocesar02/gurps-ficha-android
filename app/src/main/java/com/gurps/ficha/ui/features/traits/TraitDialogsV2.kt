@@ -22,6 +22,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
+import com.gurps.ficha.ui.AppListItemCard
 
 @Composable
 fun ModeloRacialDialog(
@@ -702,17 +703,19 @@ fun ModeloRacialDialog(
 
 @Composable
 fun ItemTraitRacial(nome: String, detalhes: String, onEdit: () -> Unit, onDelete: () -> Unit) {
-    Card(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))) {
-        ListItem(
-            headlineContent = { Text(nome, fontWeight = FontWeight.Bold) },
-            supportingContent = { Text(detalhes) },
-            trailingContent = {
-                Row {
-                    IconButton(onClick = onEdit, modifier = Modifier.semantics { contentDescription = "Editar $nome" }) { Icon(Icons.Default.Edit, null) }
-                    IconButton(onClick = onDelete, modifier = Modifier.semantics { contentDescription = "Remover $nome" }) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
-                }
+    AppListItemCard {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                Text(detalhes, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
             }
-        )
+            IconButton(onClick = onEdit, modifier = Modifier.semantics { contentDescription = "Editar $nome" }) { Icon(Icons.Default.Edit, null) }
+            IconButton(onClick = onDelete, modifier = Modifier.semantics { contentDescription = "Remover $nome" }) { Icon(Icons.Default.Delete, null) }
+        }
     }
 }
 
