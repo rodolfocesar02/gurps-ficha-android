@@ -876,6 +876,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 213: fix Não Respira (Guelras) Povo do Mar - CONCLUÍDO
+- **Bug:** `custoEscolhido: 10` era o valor pós-modificador. O app aplicava `-50%` em cima → `floor(10×0.5) = 5` em vez de 10. Correto: `custoEscolhido` deve ser o custo **base** (20); app calcula `floor(20×0.5) = 10` ✓.
+- **Regra geral:** para vantagens FIXO com mods no catálogo racial, `custoEscolhido` = custo base do catálogo (não o valor já calculado).
+- **Commit:** `5f95cab`
+
 ### Lote 211: Povo do Mar (52 pts, Cataclismo 200) + mod_guelras - CONCLUÍDO
 - **Povo do Mar:** sem mod. atributos. Vantagens: Deslocamento Ampliado 1 (Água), Escorregadio 1, Fala Subaquática, Membrana Nictitante 5, Não Respira (Guelras -50% = 10 pts), Resistência à Pressão 1 (5 pts), Sentido de Monitoramento Sonar (20 pts). Desvantagem: Dependência Água Muito Comum Diária (-15). Qualidade: Aquático (traço inerente, sem custo).
 - **modificadores.v1.json:** adicionado `mod_guelras` (-50%, p.352) — limitação de Não Respira: só funciona na água ou em ar úmido.
