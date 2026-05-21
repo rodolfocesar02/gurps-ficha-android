@@ -1511,6 +1511,23 @@
     "descricao": "Bônus de +1 por nível (máx. 4) em tarefas que exigem toque delicado, como Cirurgia, Arrombamento, etc. Custa 5 pontos/nível."
   },
   {
+    "id": "deslocamento_aquatico",
+    "nome": "Deslocamento Aquático",
+    "pagina": 19,
+    "costKind": "perLevel",
+    "fixed": null,
+    "perLevel": 5,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "5/nível",
+    "specialRule": null,
+    "tags": [
+      "fisica"
+    ],
+    "descricao": "O Deslocamento aquático normalmente é igual ao Deslocamento Básico/5, arredondado para baixo. É possível aumentar o Deslocamento aquático diretamente a um custo de 5 pontos de personagem por metro/segundo ou reduzi-lo por -5 pontos para cada metro/segundo. Os membros de raças terrestres precisam ter a perícia Natação (pág. 212) para aumentar seu Deslocamento aquático e não podem comprar mais que +2 metros/segundo. Personagens anfíbios (pág. 39) têm um Deslocamento aquático e terrestre iguais ao Deslocamento Básico, e quaisquer alterações no valor do Deslocamento Básico ajustam os dois valores. Personagens Aquáticos (pág. 156) têm um Deslocamento aquático igual ao Deslocamento Básico e um Deslocamento terrestre de zero. Sem nenhuma vantagem especial, o Deslocamento aéreo de um personagem é sempre zero. Personagens com Voo (pág. 98) têm um Deslocamento aéreo igual à Velocidade Básica × 2 (não Deslocamento Básico × 2). É possível aumentar o Deslocamento aéreo diretamente a um custo de 2 pontos de personagem por metro/segundo ou reduzi-lo por -2 pontos de personagem para cada metro/segundo. Personagens com Caminhar no Ar (pág. 46) têm um Deslocamento aéreo igual ao terrestre, pois nesses casos, o ar funciona como terra sólida sob os pés do personagem."
+  },
+  {
     "id": "detectar",
     "nome": "Detectar",
     "pagina": 53,

@@ -221,6 +221,9 @@ fun TabGeral(viewModel: FichaViewModel) {
                 CaracteristicaDisplay("Vel. Basica", String.format("%.2f", p.velocidadeBasica), "Velocidade Básica: ${String.format("%.2f", p.velocidadeBasica)}")
                 CaracteristicaDisplay("Desloc.", "${p.deslocamentoBasico} m/s", "Deslocamento: ${p.deslocamentoBasico} metros por segundo")
                 CaracteristicaDisplay("BC", String.format("%.1f kg", p.baseCarga), "Carga Básica: ${String.format("%.1f", p.baseCarga)} quilos")
+                if (p.bonusDeslocamentoAquatico > 0) {
+                    CaracteristicaDisplay("Desloc. Aq.", "${p.deslocamentoAquatico} m/s", "Deslocamento Aquático: ${p.deslocamentoAquatico} m/s (padrão ${p.deslocamentoBasico / 5} + bônus ${p.bonusDeslocamentoAquatico})")
+                }
                 if (p.modificadorTamanho != 0) {
                     val mtLabel = if (p.modificadorTamanho > 0) "+${p.modificadorTamanho}" else "${p.modificadorTamanho}"
                     CaracteristicaDisplay("MT", mtLabel, "Modificador de Tamanho: $mtLabel (bônus para ser acertado em combate)")

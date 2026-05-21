@@ -8,13 +8,41 @@
       "descricao": "Entidade incorpórea (fantasma, ser de puro pensamento). Invisível e intangível, exceto para outros com a mesma metacaracterística. Pode tornar-se visível/sólido temporariamente (muito desgastante). Sentidos percebem o mundo material; magia/psi também o afetam.",
       "componentes": "Idade Imutável [15], Imunidade a Danos ao Metabolismo [30], Insubstancialidade (Afeta a Matéria, +100%; Normalmente Ativa, -40%) [128], Invisibilidade (Somente Matéria, -10%; Normalmente Ativa, +5%) [38], Não Come nem Bebe [10], Não Dorme [20], Não Respira [20]",
       "vantagens": [
-        { "id": "idade_imutavel" },
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "insubstancialidade", "mods": ["mod_afeta_materia_vantagem", "mod_normalmente_ativa_limitação"] },
-        { "id": "invisibilidade", "mods": ["mod_somente_materia", "mod_normalmente_ativa_ampliação"] },
-        { "id": "nao_come_nem_bebe" },
-        { "id": "nao_dorme" },
-        { "id": "nao_respira" }
+        {
+          "id": "idade_imutavel"
+        },
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "insubstancialidade",
+          "mods": [
+            "mod_afeta_materia_vantagem",
+            "mod_normalmente_ativa_limitação"
+          ]
+        },
+        {
+          "id": "invisibilidade",
+          "mods": [
+            "mod_somente_materia",
+            "mod_normalmente_ativa_ampliação"
+          ]
+        },
+        {
+          "id": "nao_come_nem_bebe"
+        },
+        {
+          "id": "nao_dorme"
+        },
+        {
+          "id": "nao_respira"
+        }
       ]
     },
     {
@@ -24,13 +52,39 @@
       "descricao": "Um espírito incapaz de se materializar, tornar-se visível ou usar poderes sobrenaturais no mundo físico.",
       "componentes": "Idade Imutável [15], Imunidade a Danos ao Metabolismo [30], Insubstancialidade (Sempre Ativa, -50%) [40], Invisibilidade (Somente Matéria, -10%) [36], Não Come nem Bebe [10], Não Dorme [20], Não Respira [20]",
       "vantagens": [
-        { "id": "idade_imutavel" },
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "insubstancialidade", "mods": ["mod_sempre_ativa_50"] },
-        { "id": "invisibilidade", "mods": ["mod_somente_materia"] },
-        { "id": "nao_come_nem_bebe" },
-        { "id": "nao_dorme" },
-        { "id": "nao_respira" }
+        {
+          "id": "idade_imutavel"
+        },
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "insubstancialidade",
+          "mods": [
+            "mod_sempre_ativa_50"
+          ]
+        },
+        {
+          "id": "invisibilidade",
+          "mods": [
+            "mod_somente_materia"
+          ]
+        },
+        {
+          "id": "nao_come_nem_bebe"
+        },
+        {
+          "id": "nao_dorme"
+        },
+        {
+          "id": "nao_respira"
+        }
       ]
     },
     {
@@ -40,12 +94,28 @@
       "descricao": "Corpo quase ou completamente mecânico, de materiais artificiais (metal, plástico, compostos), podendo ter partes orgânicas (pele, cérebro). Ex.: robôs, veículos, ciborgues.",
       "componentes": "Imunidade a Danos ao Metabolismo [30], Tolerância a Ferimentos (Sem Sangue, Não-Vivo) [25], Sem Recuperação (Total) [-30]",
       "vantagens": [
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "tolerancia_a_ferimentos_sem_sangue" },
-        { "id": "tolerancia_a_ferimentos_nao_vivo" }
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "tolerancia_a_ferimentos_sem_sangue"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_nao_vivo"
+        }
       ],
       "desvantagens": [
-        { "id": "sem_recuperacao", "descricao": "Total", "custoEscolhido": -30 }
+        {
+          "id": "sem_recuperacao",
+          "descricao": "Total",
+          "custoEscolhido": -30
+        }
       ]
     },
     {
@@ -55,18 +125,50 @@
       "descricao": "O corpo do personagem é feito de líquido.",
       "componentes": "Anfíbio [10]; Ataque Constritivo [15]; Camaleão 1 [5]; Escorregadio 5 [10]; Imunidade a Danos ao Metabolismo [30]; Invertebrado [-20]; Não Respira [20]; Resistência à Pressão 3 [15]; Tolerância a Ferimentos (Difuso) [100]; Vulnerabilidade (Ataques por Desidratação ×2) [-10]",
       "vantagens": [
-        { "id": "anfibio" },
-        { "id": "ataque_constritivo" },
-        { "id": "camaleao", "nivel": 1 },
-        { "id": "escorregadio", "nivel": 5 },
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "nao_respira" },
-        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
-        { "id": "tolerancia_a_ferimentos_difuso" }
+        {
+          "id": "anfibio"
+        },
+        {
+          "id": "ataque_constritivo"
+        },
+        {
+          "id": "camaleao",
+          "nivel": 1
+        },
+        {
+          "id": "escorregadio",
+          "nivel": 5
+        },
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "nao_respira"
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 3,
+          "custoEscolhido": 15
+        },
+        {
+          "id": "tolerancia_a_ferimentos_difuso"
+        }
       ],
       "desvantagens": [
-        { "id": "invertebrado" },
-        { "id": "vulnerabilidade", "descricao": "Ataques por Desidratação ×2", "custoEscolhido": -10 }
+        {
+          "id": "invertebrado"
+        },
+        {
+          "id": "vulnerabilidade",
+          "descricao": "Ataques por Desidratação ×2",
+          "custoEscolhido": -10
+        }
       ]
     },
     {
@@ -76,21 +178,65 @@
       "descricao": "O corpo do personagem é feito de gelo.",
       "componentes": "Adaptação ao Terreno (Gelo) [5]; Escorregadio 3 [6]; Fragilidade (Quebradiço) [-15]; Fraqueza (Calor normal intenso; 1d/minuto; Variável, -40%) [-12]; Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 3 [15]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]; Vulnerabilidade (Ataques por Calor/Fogo ×2) [-30]",
       "vantagens": [
-        { "id": "adaptacao_ao_terreno", "descricao": "Gelo", "custoEscolhido": 5 },
-        { "id": "escorregadio", "nivel": 3 },
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "lacrado" },
-        { "id": "nao_respira" },
-        { "id": "resistencia_a_dano", "nivel": 3 },
-        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
-        { "id": "resistencia_ao_vacuo" },
-        { "id": "tolerancia_a_ferimentos_homogeneo" },
-        { "id": "tolerancia_a_ferimentos_sem_sangue" }
+        {
+          "id": "adaptacao_ao_terreno",
+          "descricao": "Gelo",
+          "custoEscolhido": 5
+        },
+        {
+          "id": "escorregadio",
+          "nivel": 3
+        },
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "lacrado"
+        },
+        {
+          "id": "nao_respira"
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 3
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 3,
+          "custoEscolhido": 15
+        },
+        {
+          "id": "resistencia_ao_vacuo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_homogeneo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_sem_sangue"
+        }
       ],
       "desvantagens": [
-        { "id": "fragilidade", "descricao": "Quebradiço", "custoEscolhido": -15 },
-        { "id": "fraqueza", "descricao": "Calor normal intenso; 1d/minuto; Variável, -40%", "custoEscolhido": -12 },
-        { "id": "vulnerabilidade", "descricao": "Ataques por Calor/Fogo ×2", "custoEscolhido": -30 }
+        {
+          "id": "fragilidade",
+          "descricao": "Quebradiço",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "fraqueza",
+          "descricao": "Calor normal intenso; 1d/minuto; Variável, -40%",
+          "custoEscolhido": -12
+        },
+        {
+          "id": "vulnerabilidade",
+          "descricao": "Ataques por Calor/Fogo ×2",
+          "custoEscolhido": -30
+        }
       ]
     },
     {
@@ -100,14 +246,39 @@
       "descricao": "O corpo do personagem é feito de metal.",
       "componentes": "Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 9 [45]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]",
       "vantagens": [
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "lacrado" },
-        { "id": "nao_respira" },
-        { "id": "resistencia_a_dano", "nivel": 9 },
-        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
-        { "id": "resistencia_ao_vacuo" },
-        { "id": "tolerancia_a_ferimentos_homogeneo" },
-        { "id": "tolerancia_a_ferimentos_sem_sangue" }
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "lacrado"
+        },
+        {
+          "id": "nao_respira"
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 9
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 3,
+          "custoEscolhido": 15
+        },
+        {
+          "id": "resistencia_ao_vacuo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_homogeneo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_sem_sangue"
+        }
       ]
     },
     {
@@ -117,17 +288,46 @@
       "descricao": "O corpo do personagem é feito de pedra.",
       "componentes": "Fragilidade (Quebradiço) [-15]; Imunidade a Danos ao Metabolismo [30]; Lacrado [15]; Não Respira [20]; RD 5 [25]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Homogêneo, Sem Sangue) [45]",
       "vantagens": [
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "lacrado" },
-        { "id": "nao_respira" },
-        { "id": "resistencia_a_dano", "nivel": 5 },
-        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
-        { "id": "resistencia_ao_vacuo" },
-        { "id": "tolerancia_a_ferimentos_homogeneo" },
-        { "id": "tolerancia_a_ferimentos_sem_sangue" }
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "lacrado"
+        },
+        {
+          "id": "nao_respira"
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 5
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 3,
+          "custoEscolhido": 15
+        },
+        {
+          "id": "resistencia_ao_vacuo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_homogeneo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_sem_sangue"
+        }
       ],
       "desvantagens": [
-        { "id": "fragilidade", "descricao": "Quebradiço", "custoEscolhido": -15 }
+        {
+          "id": "fragilidade",
+          "descricao": "Quebradiço",
+          "custoEscolhido": -15
+        }
       ]
     },
     {
@@ -137,16 +337,41 @@
       "descricao": "O corpo do personagem é feito de terra ou areia.",
       "componentes": "Imunidade a Danos ao Metabolismo [30]; Invertebrado [-20]; Lacrado [15]; Não Respira [20]; RD 2 [10]; Resistência à Pressão 3 [15]; Resistência ao Vácuo [5]; Tolerância a Ferimentos (Difuso) [100]",
       "vantagens": [
-        { "id": "resistente", "descricao": "Imunidade a Danos ao Metabolismo", "metadados": { "raridade": "30", "grau": "1.0", "atributo": "HT" } },
-        { "id": "lacrado" },
-        { "id": "nao_respira" },
-        { "id": "resistencia_a_dano", "nivel": 2 },
-        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
-        { "id": "resistencia_ao_vacuo" },
-        { "id": "tolerancia_a_ferimentos_difuso" }
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "lacrado"
+        },
+        {
+          "id": "nao_respira"
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 3,
+          "custoEscolhido": 15
+        },
+        {
+          "id": "resistencia_ao_vacuo"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_difuso"
+        }
       ],
       "desvantagens": [
-        { "id": "invertebrado" }
+        {
+          "id": "invertebrado"
+        }
       ]
     },
     {
@@ -156,11 +381,19 @@
       "descricao": "Criatura com quatro patas e nenhum braço (um 'centauroide' necessitaria apenas de Pernas Adicionais e Cascos, se for um equino).",
       "componentes": "Horizontal [-10]; Manuseadores Precários [-30]; Pernas Adicionais (Quatro Pernas) [5]",
       "vantagens": [
-        { "id": "pernas_adicionais", "descricao": "Quatro Pernas", "custoEscolhido": 5 }
+        {
+          "id": "pernas_adicionais",
+          "descricao": "Quatro Pernas",
+          "custoEscolhido": 5
+        }
       ],
       "desvantagens": [
-        { "id": "horizontal" },
-        { "id": "manuseadores_precarios" }
+        {
+          "id": "horizontal"
+        },
+        {
+          "id": "manuseadores_precarios"
+        }
       ]
     },
     {
@@ -170,10 +403,21 @@
       "descricao": "Um animal de fazenda, bichinho de estimação ou animal selvagem treinado.",
       "componentes": "Características Proibidas (IQ Fixa) [0]; Estigma Social (Propriedade Valiosa) [-10]; Incapaz de Falar [-15]; Sem Imaginação [-5]",
       "desvantagens": [
-        { "id": "caracteristicas_proibidas", "descricao": "IQ Fixa" },
-        { "id": "estigma_social", "descricao": "Propriedade Valiosa", "custoEscolhido": -10 },
-        { "id": "incapaz_de_falar" },
-        { "id": "sem_imaginacao" }
+        {
+          "id": "caracteristicas_proibidas",
+          "descricao": "IQ Fixa"
+        },
+        {
+          "id": "estigma_social",
+          "descricao": "Propriedade Valiosa",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "incapaz_de_falar"
+        },
+        {
+          "id": "sem_imaginacao"
+        }
       ]
     },
     {
@@ -183,10 +427,21 @@
       "descricao": "Um animal comum encontrado na natureza.",
       "componentes": "Bestial [-10]; Características Proibidas (IQ Fixa) [0]; Incapaz de Falar [-15]; Sem Imaginação [-5]",
       "desvantagens": [
-        { "id": "bestial", "descricao": "", "custoEscolhido": -10 },
-        { "id": "caracteristicas_proibidas", "descricao": "IQ Fixa" },
-        { "id": "incapaz_de_falar" },
-        { "id": "sem_imaginacao" }
+        {
+          "id": "bestial",
+          "descricao": "",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "caracteristicas_proibidas",
+          "descricao": "IQ Fixa"
+        },
+        {
+          "id": "incapaz_de_falar"
+        },
+        {
+          "id": "sem_imaginacao"
+        }
       ]
     },
     {
@@ -196,11 +451,22 @@
       "descricao": "Uma mente sem autoconsciência nem criatividade. Comum em criaturas de bando, constructos mágicos, mortos-vivos e IAs simples. Pode ser combinada com a metacaracterística IA.",
       "componentes": "Circunspecção [-10]; Indiferente (6) [-10]; Mentalidade de Escravo [-40]; Pouca Empatia [-20]; Sem Imaginação [-5]",
       "desvantagens": [
-        { "id": "circunspeccao" },
-        { "id": "indiferente", "autocontrole": 6 },
-        { "id": "mentalidade_de_escravo" },
-        { "id": "pouca_empatia" },
-        { "id": "sem_imaginacao" }
+        {
+          "id": "circunspeccao"
+        },
+        {
+          "id": "indiferente",
+          "autocontrole": 6
+        },
+        {
+          "id": "mentalidade_de_escravo"
+        },
+        {
+          "id": "pouca_empatia"
+        },
+        {
+          "id": "sem_imaginacao"
+        }
       ]
     },
     {
@@ -210,8 +476,14 @@
       "descricao": "O personagem tem o corpo semelhante ao de um peixe (um 'tritão' eliminaria apenas Sem Manuseadores).",
       "componentes": "Sem Manuseadores [-50]; Sem Pernas (Aquático) [0]",
       "desvantagens": [
-        { "id": "sem_manuseadores" },
-        { "id": "sem_pernas", "descricao": "Aquático", "custoEscolhido": 0 }
+        {
+          "id": "sem_manuseadores"
+        },
+        {
+          "id": "sem_pernas",
+          "descricao": "Aquático",
+          "custoEscolhido": 0
+        }
       ]
     },
     {
@@ -221,11 +493,19 @@
       "descricao": "O corpo do personagem é semelhante ao de uma cobra ou verme (um homem-cobra com tronco superior humanoide cancelaria Sem Manuseadores).",
       "componentes": "Sem Manuseadores [-50]; Sem Pernas (Desliza) [0]; Ultraflexibilidade das Juntas [15]",
       "vantagens": [
-        { "id": "ultraflexibilidade_das_juntas" }
+        {
+          "id": "ultraflexibilidade_das_juntas"
+        }
       ],
       "desvantagens": [
-        { "id": "sem_manuseadores" },
-        { "id": "sem_pernas", "descricao": "Desliza", "custoEscolhido": 0 }
+        {
+          "id": "sem_manuseadores"
+        },
+        {
+          "id": "sem_pernas",
+          "descricao": "Desliza",
+          "custoEscolhido": 0
+        }
       ]
     },
     {
@@ -235,10 +515,20 @@
       "descricao": "O corpo do personagem é como um carro, tanque, etc.",
       "componentes": "Entorpecido [-20]; Horizontal [-10]; Sem Manuseadores [-50]; Sem Pernas (Com Esteiras ou Rodas) [-20]",
       "desvantagens": [
-        { "id": "entorpecido" },
-        { "id": "horizontal" },
-        { "id": "sem_manuseadores" },
-        { "id": "sem_pernas", "descricao": "Com Esteiras ou Rodas", "custoEscolhido": -20 }
+        {
+          "id": "entorpecido"
+        },
+        {
+          "id": "horizontal"
+        },
+        {
+          "id": "sem_manuseadores"
+        },
+        {
+          "id": "sem_pernas",
+          "descricao": "Com Esteiras ou Rodas",
+          "custoEscolhido": -20
+        }
       ]
     },
     {
@@ -248,15 +538,78 @@
       "descricao": "Uma mente digital.",
       "componentes": "Matemático Intuitivo [5]; Mente Digital [5]; Memória Fotográfica [10]; Não Dorme [20]; Noção Exata do Tempo [2]; Reprogramável [-10]",
       "vantagens": [
-        { "id": "matematico_intuitivo" },
-        { "id": "mente_digital" },
-        { "id": "memoria_fotografica" },
-        { "id": "nao_dorme" },
-        { "id": "nocao_exata_do_tempo" }
+        {
+          "id": "matematico_intuitivo"
+        },
+        {
+          "id": "mente_digital"
+        },
+        {
+          "id": "memoria_fotografica"
+        },
+        {
+          "id": "nao_dorme"
+        },
+        {
+          "id": "nocao_exata_do_tempo"
+        }
       ],
       "desvantagens": [
-        { "id": "reprogramavel" }
+        {
+          "id": "reprogramavel"
+        }
       ]
+    },
+    {
+      "id": "corpo_de_madeira",
+      "nome": "Corpo de Madeira",
+      "pagina": "Criação própria",
+      "descricao": "O corpo do personagem é feito de madeira. Resistente, imune a processos biológicos, mas lento e sensível a fogo e magia sobre plantas.",
+      "componentes": "Velocidade Básica -1 [-20]; ST de Levantamento +5 [15]; Garras Cegas [3]; RD 2 (Semi-ablativa, -20%) [8]; Não Respira [20]; Imunidade a Danos ao Metabolismo [30]; Tolerância a Ferimentos (Homogêneo) [40]; Entorpecido [-20]; Afetado por Mágicas sobre Plantas [0]",
+      "secundarios": {
+        "velocidadeBasica": -1
+      },
+      "vantagens": [
+        {
+          "id": "st_de_levantamento",
+          "nivel": 5
+        },
+        {
+          "id": "garras",
+          "descricao": "Cegas",
+          "metadados": {
+            "tipoGarras": "cegas"
+          }
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2,
+          "mods": [
+            "mod_semiablativa"
+          ]
+        },
+        {
+          "id": "nao_respira"
+        },
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Danos ao Metabolismo",
+          "metadados": {
+            "raridade": "30",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "tolerancia_a_ferimentos_homogeneo"
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "entorpecido"
+        }
+      ],
+      "qualidades": []
     }
   ]
 }

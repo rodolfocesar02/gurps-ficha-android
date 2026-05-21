@@ -112,6 +112,14 @@ data class Personagem(
     val velocidadeBasica: Float get() = (ht + dx) / 4f + modVelocidadeBasica + modeloRacial.modVelocidadeBasica
     val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico + modeloRacial.modDeslocamentoBasico
     val esquiva: Int get() = (velocidadeBasica + 3).toInt() // Esquiva Básica (sem carga)
+
+    // Deslocamento Aquático: floor(desloc/5) + bônus da vantagem deslocamento_aquatico (racial + pessoal)
+    val bonusDeslocamentoAquatico: Int get() {
+        val racial = modeloRacial.vantagens.filter { it.definicaoId == "deslocamento_aquatico" }.sumOf { it.nivel }
+        val pessoal = vantagens.filter { it.definicaoId == "deslocamento_aquatico" }.sumOf { it.nivel }
+        return racial + pessoal
+    }
+    val deslocamentoAquatico: Int get() = deslocamentoBasico / 5 + bonusDeslocamentoAquatico
     val baseCarga: Float get() = (st * st) / 10f
     val modificadorTamanho: Int get() = modeloRacial.modificadorTamanho
     val danoGdP: String get() = CharacterRules.calcularDanoGdP(st)

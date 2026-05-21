@@ -376,7 +376,7 @@
         {
           "id": "garras",
           "metadados": {
-            "tipoGarras": "garras_afiadas"
+            "tipoGarras": "afiadas"
           }
         },
         {
@@ -465,7 +465,7 @@
         {
           "id": "garras",
           "metadados": {
-            "tipoGarras": "garras_afiadas"
+            "tipoGarras": "afiadas"
           }
         },
         {
@@ -545,7 +545,7 @@
         {
           "id": "garras",
           "metadados": {
-            "tipoGarras": "garras_cegas"
+            "tipoGarras": "cegas"
           }
         },
         {
@@ -1141,7 +1141,7 @@
           "nivel": 2,
           "descricao": "Apenas o Crânio",
           "mods": [
-            "mod_apenas_o_cranio:7"
+            "mod_parcial:7"
           ]
         },
         {
@@ -1522,6 +1522,302 @@
           "nome": "Sobrevivência (Deserto)",
           "diff": "M",
           "baseAtributo": "Per",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        }
+      ]
+    },
+    {
+      "id": "troll",
+      "nome": "Trolls",
+      "pagina": "Cataclismo 200",
+      "descricao": "Grandes humanoides monstruosos de pele verrucosa e esverdeada. Predadores furtivos de sentidos aguçados. Solitários, misantropos e melancólicos. Regeneram rapidamente ferimentos não fatais, exceto os causados por fogo, ácido ou eletricidade.",
+      "mt": 1,
+      "atributos": {
+        "st": 8,
+        "dx": 1,
+        "iq": -1,
+        "ht": 2
+      },
+      "limitacoesAtributo": [
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
+      ],
+      "secundarios": {
+        "pv": 4,
+        "percepcao": 3,
+        "deslocamentoBasico": 1
+      },
+      "limitacoesSecundario": [
+        {
+          "secundario": "PV",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
+      ],
+      "vantagens": [
+        {
+          "id": "bracos_adicionais",
+          "descricao": "Compridos (+1 MT)",
+          "nivel": 1,
+          "mods": [
+            "mod_comprido"
+          ]
+        },
+        {
+          "id": "deslocamento_aquatico",
+          "nivel": 1
+        },
+        {
+          "id": "dentes",
+          "descricao": "Afiados",
+          "metadados": {
+            "tipoDentes": "dentes_afiados"
+          },
+          "custoEscolhido": 1
+        },
+        {
+          "id": "digestao_universal"
+        },
+        {
+          "id": "fleuma"
+        },
+        {
+          "id": "garras",
+          "descricao": "Cegas",
+          "metadados": {
+            "tipoGarras": "cegas"
+          }
+        },
+        {
+          "id": "hipoalgia_alto_limiar_de_dor"
+        },
+        {
+          "id": "resistente",
+          "descricao": "Doenças (Imunidade)",
+          "metadados": {
+            "raridade": "10",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "oflato_discriminatorio"
+        },
+        {
+          "id": "paladar_olfato_apurado",
+          "nivel": 1
+        },
+        {
+          "id": "prender_a_respiracao",
+          "nivel": 3
+        },
+        {
+          "id": "recuperacao_da_consciencia"
+        },
+        {
+          "id": "regeneracao",
+          "descricao": "Lenta (Exceto Fogo ou Ácido, -20%)",
+          "mods": [
+            "mod_gatilho_20"
+          ],
+          "custoEscolhido": 10
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 1,
+          "custoEscolhido": 5
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2
+        },
+        {
+          "id": "tolerancia_a_temperatura",
+          "nivel": 3,
+          "descricao": "Em relação a 10 °C"
+        },
+        {
+          "id": "tolerancia_a_ferimentos_sem_orgaos_vitais"
+        },
+        {
+          "id": "visao_no_escuro"
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "curiosidade",
+          "autocontrole": 15
+        },
+        {
+          "id": "gula",
+          "autocontrole": 9
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Come outros seres sapientes",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "insensivel"
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Monstruoso",
+          "custoEscolhido": -20
+        },
+        {
+          "id": "sanguinolencia",
+          "autocontrole": 12
+        },
+        {
+          "id": "solitario",
+          "autocontrole": 12,
+          "custoEscolhido": -5
+        },
+        {
+          "id": "vulnerabilidade",
+          "descricao": "Calor ou sede, ×2; Somente Fadiga",
+          "mods": [
+            "mod_somente_fadiga_vantagem_vulnerabilidade"
+          ],
+          "custoEscolhido": -30
+        },
+        {
+          "id": "vulnerabilidade",
+          "descricao": "Fogo ou Desidratação, ×2",
+          "custoEscolhido": -30
+        }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Aversão intensa à luz solar e condições secas"
+      ],
+      "pericias": [
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        },
+        {
+          "nome": "Furtividade",
+          "diff": "M",
+          "baseAtributo": "DX",
+          "nivelRelativo": -1,
+          "tipo": "CONCEDIDA"
+        },
+        {
+          "nome": "Natação",
+          "diff": "F",
+          "baseAtributo": "HT",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        }
+      ]
+    },
+    {
+      "id": "carnical",
+      "nome": "Carniçais",
+      "pagina": "Cataclismo 202",
+      "descricao": "Humanoides pálidos, sem pelos e esguios, de olhos negros e dentes afiados, normalmente cobertos de sujeira e restos de cadáveres. Alimentam-se principalmente de carniça e vivem em cavernas próximas a cemitérios ou nas margens da civilização.",
+      "atributos": {
+        "st": 2,
+        "iq": -1,
+        "ht": 2
+      },
+      "secundarios": {
+        "velocidadeBasica": -0.5
+      },
+      "vantagens": [
+        {
+          "id": "consumo_reduzido",
+          "nivel": 1,
+          "mods": [
+            "estomago_de_ferro"
+          ]
+        },
+        {
+          "id": "dentes",
+          "descricao": "Afiados",
+          "metadados": {
+            "tipoDentes": "dentes_afiados"
+          }
+        },
+        {
+          "id": "garras",
+          "descricao": "Afiadas",
+          "metadados": {
+            "tipoGarras": "afiadas"
+          }
+        },
+        {
+          "id": "resistente",
+          "descricao": "Imunidade a Doenças",
+          "metadados": {
+            "raridade": "10",
+            "grau": "1.0",
+            "atributo": "HT"
+          }
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1,
+          "mods": [
+            "pele_resistente"
+          ]
+        },
+        {
+          "id": "silencio",
+          "nivel": 1
+        },
+        {
+          "id": "visao_no_escuro"
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "dieta_restrita",
+          "descricao": "Carne crua de seres sapientes, Comum; Substituição",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Feio",
+          "custoEscolhido": -8
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Come outros seres sapientes",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Imundo, sujeira incrustada",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "voz_irritante"
+        }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": [
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        },
+        {
+          "nome": "Furtividade",
+          "diff": "M",
+          "baseAtributo": "DX",
           "nivelRelativo": 0,
           "tipo": "CONCEDIDA"
         }
