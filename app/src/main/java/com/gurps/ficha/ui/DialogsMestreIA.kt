@@ -1,7 +1,10 @@
 package com.gurps.ficha.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.res.painterResource
+import com.gurps.ficha.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -57,9 +60,9 @@ fun DialogMestreIA(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Star, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                    Image(painter = painterResource(id = R.drawable.tab_mestre_ia), contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Mestre Digital 2.0", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
+                    Text("Mestre IA", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     var showHistory by remember { mutableStateOf(false) }
@@ -84,7 +87,7 @@ fun DialogMestreIA(
                     Box(modifier = Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Box(modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
-                                Icon(Icons.Default.Face, null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.primary)
+                                Image(painter = painterResource(id = R.drawable.tab_mestre_ia), contentDescription = null, modifier = Modifier.size(48.dp))
                             }
                             Spacer(Modifier.height(16.dp)); Text("Saudações!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                         }
