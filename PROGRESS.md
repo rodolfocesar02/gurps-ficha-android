@@ -973,6 +973,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
+### Lote 199: Pente fino acessibilidade Pracego — diálogos de traços e Mestre IA - CONCLUÍDO
+- **Escopo:** 11 fixes em TraitDialogsV2.kt (ModeloRacialDialog completo), + fixes em TraitCommonComponents.kt, TraitDialogs.kt, DialogsMestreIA.kt e DialogsCommon.kt.
+- **Fixes principais:** ItemTraitRacial com labels por nome, FilterChip tipo perícia (Concedida/Bônus) com descrição do que significa cada opção, botão limpar busca, info modificador, remover modificador, menu modo Mestre IA, botão enviar mensagem, excluir ficha com nome.
+- **Verificação:** assemblePracegoDebug + assembleVisualDebug OK.
+- **Commit:** `85cdbbd`
 
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
