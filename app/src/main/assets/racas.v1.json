@@ -1280,6 +1280,56 @@
       "qualidades": [],
       "peculiaridades": [],
       "pericias": []
+    },
+    {
+      "id": "orc",
+      "nome": "Orcs",
+      "pagina": "Cataclismo 199",
+      "descricao": "Orcs são humanoides atarracados e peludos com olhos pequenos e bocas largas dominadas por caninos aumentados. A maioria é brutal e traiçoeira, e respeita apenas a força. A altura é 5 cm menor do que o normal para a ST; o peso é 5 kg acima da média humana para sua altura.",
+      "atributos": {
+        "iq": -1,
+        "ht": 2
+      },
+      "secundarios": {
+        "pv": 3
+      },
+      "vantagens": [
+        {
+          "id": "audicao_agucada",
+          "nivel": 2
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "briquento",
+          "autocontrole": 12
+        },
+        {
+          "id": "estigma_social",
+          "descricao": "Bárbaro",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "intolerancia",
+          "descricao": "Total",
+          "custoEscolhido": -10
+        }
+      ],
+      "peculiaridades": [
+        "Curvam-se a seres mais fortes",
+        "Medem a posição social pelas coisas que controlam",
+        "Não consideram a traição uma coisa errada"
+      ],
+      "qualidades": [],
+      "pericias": [
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        }
+      ]
     }
   ]
 }
