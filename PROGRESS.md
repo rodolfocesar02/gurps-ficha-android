@@ -876,6 +876,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 215: fix Dentes Afiados Reptante — 0 pts em vez de 1 - CONCLUÍDO
+- **Causa:** `DentesRule` usa `metadados["tipoDentes"]`. Sem o campo, usa default `"rombo"` = 0 pts. JSON da raça não tinha metadados.
+- **Fix:** adicionado `"metadados": {"tipoDentes": "dentes_afiados"}` na entrada de dentes do Reptante. `DentesRule` agora retorna 1 pt corretamente.
+- **Regra para futuras raças com Dentes:** sempre incluir `metadados: {tipoDentes: "rombo"|"bico_afiado"|"dentes_afiados"|"presas"}`.
+- **Commit:** `ba95481`
+
 ### Lote 214: Reptantes (58 pts, Cataclismo 200) adicionado ao catálogo - CONCLUÍDO
 - **Reptante:** ST+4 (Tamanho -10%), IQ-1, HT+2. MT+1. Vantagens: Dentes Afiados (1), Garras Afiadas (5), Longevidade, Membrana Nictitante 3, RD 1 (Pele Resistente -40% = 3), Tolerância à Temperatura 5, Visão Periférica. Desvantagens: Estigma Social Bárbaro (-10), Timidez Suave (-5). Perícias: Camuflagem (F) IQ+0 [1], Sobrevivência Deserto (M) Per+0 [2]. Qualidade: traço inerente idiomas Com Sotaque.
 - **Verificação:** 36(atrib)+34(vant)-15(desv)+3(perícias) = 58 pts ✓
