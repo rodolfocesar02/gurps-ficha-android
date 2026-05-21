@@ -876,6 +876,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 205: campo MT (Modificador de Tamanho) racial - CONCLUÍDO
+- **Novo campo:** `ModeloRacial.modificadorTamanho: Int = 0` (GURPS B19). Bônus de ataque para acertar a criatura; afeta testes de Visão.
+- **`Personagem`**: propriedade computada `modificadorTamanho` lida do modelo racial.
+- **`RacaCatalogo.kt`**: `RacaDefinicao` ganha campo `mt: Int = 0`; resolver propaga para `ModeloRacial.modificadorTamanho`.
+- **`TabGeral.kt`**: exibe "MT: ±N" nas Características Derivadas, **após BC, oculto se 0** (personagens humanos não veem o campo).
+- **`racas.v1.json`**: preenchido `"mt"` em 4 raças já no catálogo: Esfinge Leonina/Panterina +1, Esfinge Tigrina +1, Gigante +2, Kobold -1.
+- **Build:** 13s OK.
+- **Commit:** `53eb210`
+
 ### Lote 204: modificadores em desvantagens (Configurar + Editar) - CONCLUÍDO
 - **Bug:** `ConfigurarDesvantagemDialog` nunca exibia a seção de modificadores (estava com comentário `// ... logic for showAddMod etc`). `EditarDesvantagemDialog` tinha o botão "Add" mas nunca instanciava o `EscopoModificadoresDialog` — clicar não abria nada.
 - **Correção:** `ConfigurarDesvantagemDialog` ganhou a seção "Modificadores (%)" com botão Add + lista `ModificadorSelecionadoItem` + `EscopoModificadoresDialog`. `EditarDesvantagemDialog` ganhou o `EscopoModificadoresDialog` que faltava. Lógica idêntica à das vantagens, sem `mod_aptidao_escola` (que não existe em desvantagens).
