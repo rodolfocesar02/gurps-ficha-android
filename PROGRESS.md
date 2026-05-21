@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 17 de Maio de 2026
-**Status Atual:** ERA DO RACIOCÍNIO - Lote 133 CONCLUÍDO
+**Última Atualização:** 22 de Maio de 2026
+**Status Atual:** UI/UX - Lote 234 CONCLUÍDO
 
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -971,12 +971,29 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Próximo:** TESTE device — Cone da Medusa deve mostrar +200% e Cíclico +80%; soma da Atribulação deve fechar 75 pts. Catálogo continua com 18 raças.
 
 
-
-
 ### Lote 231: Pente fino acessibilidade Pracego — diálogos de traços e Mestre IA - CONCLUÍDO - **Commit:** `85cdbbd`
 - **Escopo:** 11 fixes em TraitDialogsV2.kt (ModeloRacialDialog completo), + fixes em TraitCommonComponents.kt, TraitDialogs.kt, DialogsMestreIA.kt e DialogsCommon.kt.
 - **Fixes principais:** ItemTraitRacial com labels por nome, FilterChip tipo perícia (Concedida/Bônus) com descrição do que significa cada opção, botão limpar busca, info modificador, remover modificador, menu modo Mestre IA, botão enviar mensagem, excluir ficha com nome.
 - **Verificação:** assemblePracegoDebug + assembleVisualDebug OK.
+
+### Lote 232: Mestre IA no rodapé + ícone real + renomear — CONCLUÍDO - **Commits:** `e61cd2b`, `59d061f`, `eacbad9`, `6fb073a`, `baa5f5b`
+- **Ícone no rodapé:** `FichaCustomNavigationBar` ganhou `RPGNavigationItem` fixo à esquerda para o Mestre IA com ícone `tab_mestre_ia.png` (hexágono com olho/pirâmide); aba ficou com mesma animação zoom/glow dos outros ícones quando selecionado; abas restantes empurradas para a direita.
+- **`FichaScreen`:** `onMestreIAClick` e `mestreIAAberto` conectados — ícone anima quando o dialog está aberto.
+- **Dialog Mestre IA:** emoji de estrela → imagem `tab_mestre_ia`, "Mestre Digital 2.0" → "Mestre IA", emoji de rosto no estado vazio → imagem do ícone.
+- **Padronização de diálogos de seleção:** ItemTraitRacial segue padrão `AppListItemCard` igual Tab Traços; diálogo de magias migrado para `FullscreenDialogContainer` (igual vantagens/perícias); diálogos de arma, escudo e armadura também migrados para fullscreen.
+
+### Lote 233: Campo Motivo na Rolagem Livre - CONCLUÍDO - **Commit:** `09092f8`
+- **Pedido:** usuário queria digitar o motivo da rolagem livre (ex: "Pânico") para aparecer no Discord em vez do genérico "Livre".
+- **`RolagemPersonalizadaDialog`:** novos parâmetros `motivo: String` e `onUpdateMotivo`; `OutlinedTextField` "Motivo (opcional)" com placeholder adicionado entre o card de expressão e o botão Rolar.
+- **`TabRolagem`:** estado `dadosPersonalizadosMotivo`; `executarRolagemPersonalizada` usa `label.ifBlank{"Livre"}` — texto do histórico e contexto Discord refletem o motivo digitado.
+- **Verificação:** assembleVisualDebug OK (30s).
+
+### Lote 234: Remove botão "Mestre IA (Beta)" do MenuDialog - CONCLUÍDO - **Commit:** `09092f8`
+- **Motivo:** com o ícone no rodapé (Lote 232) o botão do menu ficou redundante.
+- **`DialogsCommon`:** parâmetro `onMestreIA` e botão "Mestre IA (Beta)" removidos; `pracegoTraversal` do Fechar atualizado de 8→7.
+- **`FichaScreen`:** bloco `onMestreIA = { ... }` removido do call site.
+- **Verificação:** assembleVisualDebug OK (20s).
+
 
 
 **[Bateria de Testes a Realizar]**
