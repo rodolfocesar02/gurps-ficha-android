@@ -234,7 +234,13 @@ object CharacterRules {
         val percentualFinal = somaPercentual.coerceAtLeast(-80)
 
         val multiplicador = 1.0 + (percentualFinal / 100.0)
-        val custoCalculado = kotlin.math.ceil(valorBase * multiplicador).toInt()
+        // GURPS p.102: ampliações arredondam para cima (ceil); limitações
+        // eliminam frações (floor). Quando o resultado líquido é redução,
+        // floor evita pagar mais do que o esperado.
+        val custoCalculado = if (percentualFinal < 0)
+            kotlin.math.floor(valorBase * multiplicador).toInt()
+        else
+            kotlin.math.ceil(valorBase * multiplicador).toInt()
 
         // Vantagem deve custar no mínimo 1 ponto se o base era positivo e não foi reduzido a zero
         return if (custoCalculado < 1 && valorBase > 0) 1 else custoCalculado
