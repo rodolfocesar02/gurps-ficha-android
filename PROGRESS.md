@@ -876,6 +876,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 206: Ogro (28 pts, Cataclismo 198) adicionado ao catálogo - CONCLUÍDO
+- **Ogro:** ST+10 (Tamanho -10%), DX-1, IQ-3, HT+3. MT+1. Vantagens: Abascanto 2, Hipoalgia, Paladar/Olfato Apurado 1, RD 3 (Pele Resistente -40%), Visão Noturna 9. Desvantagens: Estigma Social Bárbaro (-10), Estigma Social Inculto (-5), Hábito Detestável Come sapientes (-15), Hediondo/Aparência (-16). Sem perícias/qualidades/peculiaridades (não mencionadas no texto).
+- **Verificação:** 40(atrib) + 34(vant) - 46(desv) = 28 pts ✓
+- **Commit:** `41c1829`
+
 ### Lote 205: campo MT (Modificador de Tamanho) racial - CONCLUÍDO
 - **Novo campo:** `ModeloRacial.modificadorTamanho: Int = 0` (GURPS B19). Bônus de ataque para acertar a criatura; afeta testes de Visão.
 - **`Personagem`**: propriedade computada `modificadorTamanho` lida do modelo racial.
