@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -431,105 +432,48 @@ fun SelecionarArmaEquipamentoDialog(
     val armas = viewModel.armasEquipamentosFiltradas
     val mostrarObsArmaFogo = viewModel.equipmentSearch.type == "armas_de_fogo"
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Selecionar Arma") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("ST do personagem: $stAtual")
-                OutlinedTextField(
-                    value = viewModel.equipmentSearch.query,
-                    onValueChange = { viewModel.atualizarBuscaArmaEquipamento(it) },
-                    label = { Text("Buscar por nome") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Row(
-                    modifier = Modifier.horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TipoArmaFiltroChip(
-                        label = "Todas",
-                        selected = viewModel.equipmentSearch.type == null,
-                        onClick = { viewModel.atualizarFiltroTipoArmaEquipamento(null) }
-                    )
-                    TipoArmaFiltroChip(
-                        label = "Corpo a corpo",
-                        selected = viewModel.equipmentSearch.type == "corpo_a_corpo",
-                        onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("corpo_a_corpo") }
-                    )
-                    TipoArmaFiltroChip(
-                        label = "Distancia",
-                        selected = viewModel.equipmentSearch.type == "distancia",
-                        onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("distancia") }
-                    )
-                    TipoArmaFiltroChip(
-                        label = "Armas de Fogo",
-                        selected = viewModel.equipmentSearch.type == "armas_de_fogo",
-                        onClick = { viewModel.atualizarFiltroTipoArmaEquipamento("armas_de_fogo") }
-                    )
-                }
-                if (viewModel.equipmentSearch.type == "armas_de_fogo") {
-                    Row(
-                        modifier = Modifier.horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TipoArmaFiltroChip(
-                            label = "Todas Fogo",
-                            selected = viewModel.equipmentSearch.fireArmCategory == null,
-                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento(null) }
-                        )
-                        TipoArmaFiltroChip(
-                            label = "Pistolas e MM",
-                            selected = viewModel.equipmentSearch.fireArmCategory == "pistolas_mm",
-                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pistolas_mm") }
-                        )
-                        TipoArmaFiltroChip(
-                            label = "Rifles e Espingardas",
-                            selected = viewModel.equipmentSearch.fireArmCategory == "rifles_espingardas",
-                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("rifles_espingardas") }
-                        )
-                        TipoArmaFiltroChip(
-                            label = "Ultra-Tech",
-                            selected = viewModel.equipmentSearch.fireArmCategory == "ultratech",
-                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("ultratech") }
-                        )
-                        TipoArmaFiltroChip(
-                            label = "Armas Pesadas",
-                            selected = viewModel.equipmentSearch.fireArmCategory == "pesadas",
-                            onClick = { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pesadas") }
-                        )
-                    }
-                }
-                if (armas.isEmpty()) {
-                    Text(
-                        "Nenhuma arma disponivel para o ST atual e filtros aplicados.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(320.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        items(armas, key = { it.id }) { arma ->
-                            ArmaItemSelecao(
-                                arma = arma,
-                                danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw),
-                                mostrarObsArmaFogo = mostrarObsArmaFogo,
-                                onClick = { onSelect(arma) }
-                            )
-                        }
-                    }
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+        Text("Selecionar Arma", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Text("ST do personagem: $stAtual", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.equipmentSearch.query,
+            onValueChange = { viewModel.atualizarBuscaArmaEquipamento(it) },
+            label = { Text("Buscar por nome") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(4.dp))
+        Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            TipoArmaFiltroChip("Todas", viewModel.equipmentSearch.type == null) { viewModel.atualizarFiltroTipoArmaEquipamento(null) }
+            TipoArmaFiltroChip("Corpo a corpo", viewModel.equipmentSearch.type == "corpo_a_corpo") { viewModel.atualizarFiltroTipoArmaEquipamento("corpo_a_corpo") }
+            TipoArmaFiltroChip("Distancia", viewModel.equipmentSearch.type == "distancia") { viewModel.atualizarFiltroTipoArmaEquipamento("distancia") }
+            TipoArmaFiltroChip("Armas de Fogo", viewModel.equipmentSearch.type == "armas_de_fogo") { viewModel.atualizarFiltroTipoArmaEquipamento("armas_de_fogo") }
+        }
+        if (viewModel.equipmentSearch.type == "armas_de_fogo") {
+            Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                TipoArmaFiltroChip("Todas Fogo", viewModel.equipmentSearch.fireArmCategory == null) { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento(null) }
+                TipoArmaFiltroChip("Pistolas e MM", viewModel.equipmentSearch.fireArmCategory == "pistolas_mm") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pistolas_mm") }
+                TipoArmaFiltroChip("Rifles e Espingardas", viewModel.equipmentSearch.fireArmCategory == "rifles_espingardas") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("rifles_espingardas") }
+                TipoArmaFiltroChip("Ultra-Tech", viewModel.equipmentSearch.fireArmCategory == "ultratech") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("ultratech") }
+                TipoArmaFiltroChip("Armas Pesadas", viewModel.equipmentSearch.fireArmCategory == "pesadas") { viewModel.atualizarFiltroCategoriaArmaFogoEquipamento("pesadas") }
+            }
+        }
+        Spacer(Modifier.height(4.dp))
+        if (armas.isEmpty()) {
+            Text("Nenhuma arma disponivel para o ST atual e filtros aplicados.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                items(armas, key = { it.id }) { arma ->
+                    ArmaItemSelecao(arma = arma, danoCalculado = viewModel.calcularDanoArmaComSt(arma.danoRaw), mostrarObsArmaFogo = mostrarObsArmaFogo, onClick = { onSelect(arma) })
                 }
             }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
-    )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
+    }
 }
 
 @Composable
@@ -639,58 +583,37 @@ private fun SelecionarEscudoEquipamentoDialog(
 ) {
     val escudos = viewModel.escudosEquipamentosFiltrados
     val stAtual = viewModel.personagem.forca
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Selecionar Escudo") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("ST do personagem: $stAtual")
-                OutlinedTextField(
-                    value = viewModel.equipmentSearch.query,
-                    onValueChange = { viewModel.atualizarBuscaEscudoEquipamento(it) },
-                    label = { Text("Buscar escudo") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (escudos.isEmpty()) {
-                    Text(
-                        "Nenhum escudo disponivel para o ST atual.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(260.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        items(escudos, key = { it.id }) { escudo ->
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onSelect(escudo) },
-                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-                                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                                ) {
-                                    Text(escudo.nome, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
-                                    Text(
-                                        "DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+        Text("Selecionar Escudo", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Text("ST do personagem: $stAtual", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.equipmentSearch.query,
+            onValueChange = { viewModel.atualizarBuscaEscudoEquipamento(it) },
+            label = { Text("Buscar escudo") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(4.dp))
+        if (escudos.isEmpty()) {
+            Text("Nenhum escudo disponivel para o ST atual.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                items(escudos, key = { it.id }) { escudo ->
+                    Card(modifier = Modifier.fillMaxWidth().clickable { onSelect(escudo) }, elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+                        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(escudo.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Text("DB ${escudo.db} | Custo: $${escudo.custo ?: 0f} | Peso: ${escudo.pesoKg ?: 0f} kg", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
             }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
-    )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
+    }
 }
 
 private val LOCAIS_ARMADURA = listOf(
@@ -717,129 +640,60 @@ private fun SelecionarArmaduraEquipamentoDialog(
     val filtrosAtivos = viewModel.equipmentSearch.query.isNotBlank() ||
         viewModel.equipmentSearch.armorerLocation != null ||
         viewModel.equipmentSearch.armorerNt != null
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Selecionar Armadura") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text(
-                    "Use Local e NT para refinar mais rapido.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlinedTextField(
-                    value = viewModel.equipmentSearch.query,
-                    onValueChange = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
-                    label = { Text("Buscar armadura") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TipoArmaFiltroChip(
-                        label = "Local: Todos",
-                        selected = viewModel.equipmentSearch.armorerLocation == null,
-                        onClick = { viewModel.atualizarFiltroLocalArmaduraEquipamento(null) }
-                    )
-                    LOCAIS_ARMADURA.forEach { (id, label) ->
-                        TipoArmaFiltroChip(
-                            label = label,
-                            selected = viewModel.equipmentSearch.armorerLocation == id,
-                            onClick = { viewModel.atualizarFiltroLocalArmaduraEquipamento(id) }
-                        )
-                    }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TipoArmaFiltroChip(
-                        label = "NT: Todas",
-                        selected = viewModel.equipmentSearch.armorerNt == null,
-                        onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
-                    )
-                    for (nt in 0..10) {
-                        TipoArmaFiltroChip(
-                            label = "NT $nt",
-                            selected = viewModel.equipmentSearch.armorerNt == nt,
-                            onClick = { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
-                        )
-                    }
-                }
-                if (filtrosAtivos) {
-                    TextButton(
-                        onClick = { viewModel.limparFiltrosArmaduraEquipamento() },
-                        modifier = Modifier.align(Alignment.End)
-                    ) { Text("Limpar filtros") }
-                }
-                Text(
-                    "Resultados: ${armaduras.size}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                if (armaduras.isEmpty()) {
-                    Text(
-                        "Nenhuma armadura encontrada para o filtro aplicado.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(280.dp),
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        items(armaduras, key = { it.id }) { armadura ->
-                            Card(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { onSelect(armadura) },
-                                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-                            ) {
-                                Column(
-                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
-                                    verticalArrangement = Arrangement.spacedBy(2.dp)
-                                ) {
-                                    Text(corrigirTextoQuebrado(armadura.nome), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
-                                    Text(
-                                        "NT ${armadura.nt ?: "-"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-                                    Text(
-                                        "Local: ${corrigirTextoQuebrado(armadura.local)}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    val observacoes = observacoesFormatadas(armadura)
-                                    if (observacoes.isNotEmpty()) {
-                                        observacoes.forEach { linha ->
-                                            Text(
-                                                linha,
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.tertiary
-                                            )
-                                        }
-                                    }
-                                }
+    FullscreenDialogContainer(onDismiss = onDismiss) {
+        Text("Selecionar Armadura", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+        Text("Use Local e NT para refinar mais rapido.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.height(8.dp))
+        OutlinedTextField(
+            value = viewModel.equipmentSearch.query,
+            onValueChange = { viewModel.atualizarBuscaArmaduraEquipamento(it) },
+            label = { Text("Buscar armadura") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(4.dp))
+        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            TipoArmaFiltroChip("Local: Todos", viewModel.equipmentSearch.armorerLocation == null) { viewModel.atualizarFiltroLocalArmaduraEquipamento(null) }
+            LOCAIS_ARMADURA.forEach { (id, label) ->
+                TipoArmaFiltroChip(label, viewModel.equipmentSearch.armorerLocation == id) { viewModel.atualizarFiltroLocalArmaduraEquipamento(id) }
+            }
+        }
+        Row(modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            TipoArmaFiltroChip("NT: Todas", viewModel.equipmentSearch.armorerNt == null) { viewModel.atualizarFiltroNtArmaduraEquipamento(null) }
+            for (nt in 0..10) {
+                TipoArmaFiltroChip("NT $nt", viewModel.equipmentSearch.armorerNt == nt) { viewModel.atualizarFiltroNtArmaduraEquipamento(nt) }
+            }
+        }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("Resultados: ${armaduras.size}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (filtrosAtivos) {
+                TextButton(onClick = { viewModel.limparFiltrosArmaduraEquipamento() }) { Text("Limpar filtros") }
+            }
+        }
+        if (armaduras.isEmpty()) {
+            Text("Nenhuma armadura encontrada para o filtro aplicado.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        } else {
+            LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                items(armaduras, key = { it.id }) { armadura ->
+                    Card(modifier = Modifier.fillMaxWidth().clickable { onSelect(armadura) }, elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+                        Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text(corrigirTextoQuebrado(armadura.nome), style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                            Text("NT ${armadura.nt ?: "-"} | RD ${armadura.rd} | Peso ${armadura.pesoBaseKg ?: 0f} kg | Custo $${armadura.custoBase ?: 0f}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                            Text("Local: ${corrigirTextoQuebrado(armadura.local)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            val observacoes = observacoesFormatadas(armadura)
+                            if (observacoes.isNotEmpty()) {
+                                observacoes.forEach { linha -> Text(linha, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary) }
                             }
                         }
                     }
                 }
             }
-        },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
-    )
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
+    }
 }
 
 @Composable
