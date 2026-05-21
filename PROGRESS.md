@@ -876,6 +876,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 208: Pequeninos/Halfling (0 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
+- **Pequenino:** ST-3, DX+1, HT+1. MT-1. PV+1, Deslocamento-1. Vantagens: Reconhecimento Social 1 (Bom Vizinho), Silêncio 1, Talento dos Pequeninos para Armas de Longa Distância 2. Desvantagens: Amigável (-5), Código de Honra Pequeninos (-5), Gula (auto12, -5). Peculiaridades (2, = -2): Aversão a grandes corpos d'água; Acomodado.
+- **Verificação:** 0(atrib)-3(sec)+20(vant)-15(desv)-2(peculiaridades) = 0 pts ✓
+- **Commit:** `37ae2aa`
+
 ### Lote 207: Orc (-22 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
 - **Orc:** IQ-1, HT+2. PV+3. Audição Aguçada 2. Desvantagens: Briquento (auto12, -10), Estigma Social Bárbaro (-10), Intolerância Total (-10). Perícia: Briga (F) DX+0 [1]. Peculiaridades (3, = -3 pts): curvam-se a seres mais fortes; medem posição social pelas coisas que controlam; não consideram traição errada.
 - **Verificação:** 0(atrib)+6(PV+3)+4(vant)-30(desv)+1(perícia)-3(peculiaridades) = -22 pts ✓
