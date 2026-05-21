@@ -876,12 +876,40 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 203: mods em desvantagens raciais + mod_furia_em_combate + fix Minotauro - CONCLUÍDO
+- **Bug:** `RacaCatalogo.kt` resolver de desvantagens NÃO processava o array `mods` — só vantagens tinham esse tratamento. Resultado: `furia` do Minotauro ficava com `modificadores:[]`, sem o `+50%` Fúria em Combate, então o app calculava `-10×1.5(auto9) = -15` em vez de `-22`. Total aparecia 19 pts em vez de 13.
+- **Correção:** Extendido o resolver de desvantagens para processar `mods` com a mesma lógica das vantagens (incluindo formato `id:N` para níveis e fallback no catálogo global de modificadores).
+- **modificadores.v1.json:** adicionado `mod_furia_em_combate` (+50%, p.143) — indica que a Fúria só é ativada em combate.
+- **Verificação de cálculo:** Fúria: `-10 × 1.5(auto9) = -15`, depois `ceil(-15 × 1.5) = ceil(-22.5) = -22` ✓. Total: 40(atributos)+57(vantagens)-88(desvantagens)+4(perícias) = 13 pts ✓
+- **Commit:** `ac41dc3`
+
+### Lote 202: arredondamento correto para vantagens com limitações (floor, não ceil) - CONCLUÍDO
+- **Bug:** `calcularCustoVantagem` usava `ceil` para todos os modificadores. GURPS p.102 diz: ampliações arredondam para cima (ceil), limitações **eliminam frações** (floor). Com só limitações o custo podia ficar 1 pt acima do correto (ex: RD 1 crânio = `ceil(5×0.3) = ceil(1.5) = 2` em vez do correto `floor(1.5) = 1`).
+- **Correção:** `calcularCustoVantagem` agora usa `floor` quando `percentualFinal < 0` e `ceil` quando positivo/misto.
+- **Casos Minotauro verificados:** RD crânio: `floor(10×0.30)=3` ✓ | RD pele: `floor(15×0.60)=9` ✓.
+- **Commit:** `c1be581`
+
+### Lote 201: corrige tipoDano Chifres Minotauro pa → pa++ - CONCLUÍDO
+- **Bug:** `tipoDano` dos Chifres estava `pa` (5 pts base) em vez de `pa++` (8 pts base). Com `pa` o custo calculado seria 8 pts, não 13. `pa++` × (1-40%+100%) = 8×1.6 = 12.8 ≈ 13 ✓
+- **Commit:** `645edea`
+
+### Lote 199+200: Minotauro no catálogo + mod_comprido + RD múltipla permitida - CONCLUÍDO
+- **Minotauro (13 pts, Cataclismo 198)** adicionado ao `racas.v1.json`: ST+3/DX+1/IQ-2/HT+3. Vantagens: Audição Aguçada 3, Golpeadores (Chifres pa, Arco Limitado + Comprido 1MT, custoEscolhido:13), Abascanto 3, RD 2 crânio (`mod_apenas_o_cranio:7` = -70%), RD 3 pele (`pele_resistente`), Senso de Direção, Visão Periférica. Briga DX+2 concedida. Desvantagens: Fúria em Combate (auto9, -22), Sanguinolência (auto9), Hediondo (aparencia -16), Intolerância Total (-10), Hábito Detestável Come sapientes (-15), Estigma Social Inculto (-5), Solitário (auto12, -5). Peculiaridade: "Odeia ogros, e ser confundido com ogros".
+- **modificadores.v1.json:** adicionado `mod_comprido` (+100%/nível, ampliação, p.62) — antes não existia no catálogo global.
+- **FichaTraitDelegate.kt:** `resistencia_a_dano` agora entra na lista `permiteMultiplas` — usuário pode adicionar RD crânio + RD pele + RD tronco etc. com descrições diferentes, igual ao ataque_inato.
+- **Commit:** `f294e42`
+- **Build:** OK (16s).
+
 ### Lote 198: mods de raça aceitam "id:N" (níveis) + Medusa Cone:15 / Cíclico:2 - CONCLUÍDO
 - **Bug (usuário viu na ficha):** raças não tinham como expressar "Cone 15 níveis" ou "Cíclico 1m 2 ciclos" — o resolver hardcodava `niveis=1` em todos os mods das raças. Cone da Medusa ficaria +60% (50+10×1) em vez de +200% (50+10×15).
 - **Solução (mínima, retrocompatível):** id estendido no array `mods` aceita formato `"id:N"`. Resolver (RacaCatalogo.kt linha 129) faz split em `:` — pré:colon = modId, pós:colon = níveis. Sem colon = 1 (compat antiga, todas as 17 raças continuam funcionando).
 - **Medusa corrigida:** `mod_cone:15` (Cone 15m de largura, +200%) e `mod_ciclico_1m:2` (Cíclico 1m com 2 ciclos = +80%). Aptidão Mágica 1 ficou com `nivel:2 custoEscolhido:5` no JSON da ficha — questionei, mas é o valor que o usuário validou no app.
 - **Verificação:** clean build OK (9s).
 - **Próximo:** TESTE device — Cone da Medusa deve mostrar +200% e Cíclico +80%; soma da Atribulação deve fechar 75 pts. Catálogo continua com 18 raças.
+
+
+
+
 
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
