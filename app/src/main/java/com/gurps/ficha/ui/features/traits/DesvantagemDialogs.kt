@@ -319,16 +319,37 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
                         }
                     }
                 }
+
+                HorizontalDivider()
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Modificadores (%)", style = MaterialTheme.typography.labelLarge)
+                    TextButton(onClick = { showAddMod = true }) { Icon(Icons.Default.Add, null); Text("Add") }
+                }
+                mods.forEachIndexed { idx, mod ->
+                    ModificadorSelecionadoItem(mod, onUpdate = { m -> mods = mods.toMutableList().apply { this[idx] = m } }, onDelete = { mods = mods.toMutableList().apply { removeAt(idx) } })
+                }
             }
         },
         confirmButton = {
-            TextButton(onClick = { 
-                onSave(nivel, custoCalculado, descricao, autocontrole, mods, metadados) 
+            TextButton(onClick = {
+                onSave(nivel, custoCalculado, descricao, autocontrole, mods, metadados)
             }) { Text(UiActionLabels.ADICIONAR) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(UiActionLabels.CANCELAR) } }
     )
-    // ... logic for showAddMod etc
+
+    if (showAddMod) {
+        EscopoModificadoresDialog(
+            especificos = definicao.modificadoresEspecificos ?: emptyList(),
+            gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+            onDismiss = { showAddMod = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                showAddMod = false
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -594,6 +615,19 @@ fun EditarDesvantagemDialog(
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text("Cancelar") } }
     )
+
+    if (showAddMod) {
+        EscopoModificadoresDialog(
+            especificos = def?.modificadoresEspecificos ?: emptyList(),
+            gerais = CharacterRules.DATA_REPOSITORY_INSTANCE?.modificadoresGerais ?: emptyList(),
+            onDismiss = { showAddMod = false },
+            onSelect = { modDef ->
+                val valorInt = Regex("-?\\d+").find(modDef.valor)?.value?.toIntOrNull() ?: 0
+                mods = mods.toMutableList().apply { add(ModificadorSelecao(modDef.id, modDef.nome, valorInt, modDef.porNivel, 1, modDef.descricao, modDef.pagina, bonusBase = modDef.bonusBase)) }
+                showAddMod = false
+            }
+        )
+    }
 
     if (mostrarDescricaoCatalogo) {
         CatalogoDescricaoDialog(
