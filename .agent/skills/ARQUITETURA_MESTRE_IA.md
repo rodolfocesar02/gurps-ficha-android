@@ -2,6 +2,8 @@
 
 Este documento descreve todos os arquivos que compõem o ecossistema da Inteligência Artificial do aplicativo, divididos por sua função técnica e responsabilidade.
 
+*Para o mapa completo de todos os arquivos do projeto, ver `MAPA_DETALHADO.md`.*
+
 ---
 
 ## 1. O "Cérebro" (Lógica e Orquestração)

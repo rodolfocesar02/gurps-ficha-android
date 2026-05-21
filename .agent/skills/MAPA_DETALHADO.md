@@ -131,6 +131,8 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 ## 11. Domain — MestreIA (Núcleo da IA)
 
+*Para detalhes técnicos do fluxo de IA (prompts, loop de tool-use, FTS, decisões de arquitetura), ver `ARQUITETURA_MESTRE_IA.md`.*
+
 - **`domain/MestreIAContextFilter.kt`** — Gera a string de contexto da ficha enviada para a IA: nome, atributos, HP/FP atual, vantagens, desvantagens, principais perícias. No modo `conversa` inclui aparência e histórico. Filtra metadados técnicos.
 
 - **`domain/MestreIAGeneratorUseCase.kt`** — Orquestra o fluxo FORJADOR (criação de personagem). Usa `MestreIAClient` com modo `geracao`/`analise`, executa `ForjadorToolExecutor` a cada tool call recebida (ler ficha, buscar catálogo, GPS magia, editar ficha), faz até N iterações do loop de tool-use. Valida resposta final via `MestreIAValidacaoReport`.
