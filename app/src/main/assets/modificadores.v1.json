@@ -991,6 +991,15 @@
     "descricao": "Inutilizável em situações que não sejam de urgência máxima."
   },
   {
+    "id": "mod_apenas_o_cranio",
+    "nome": "Apenas o Crânio",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": true,
+    "pagina": 84,
+    "descricao": "A RD do personagem protege apenas um ponto de impacto específico, vale -10% para cada redutor de -1 para acertar a parte do corpo em questão (v. pág. 398). Exemplo: um animal com chifres sem ponta e um crânio espesso pode ter “Apenas o Crânio”, por -70%.“Apenas o Tronco” vale -10% e também protege os órgãos vitais. Quando o jogador adquire essa limitação para os braços, pernas, mãos ou pés, a RD protege todos os membros desse tipo.Se ele quiser proteger apenas um membro, o valor da limitação dobra (ex., a penalidade para atingir os braços é de -2, portanto, se quiser proteger apenas um braço, o jogador pagaria -40%). Se o personagem tiver braços, pernas, etc., com penalidades distintas, utilize a menor para calcular o valor da limitação."
+  },
+  {
     "id": "mod_apenas_inconsciente",
     "nome": "Apenas Inconsciente",
     "tipo": "limitação",
@@ -998,6 +1007,15 @@
     "porNivel": false,
     "pagina": 110,
     "descricao": "Só funciona quando o personagem está dormindo ou desmaiado."
+  },
+  {
+    "id": "mod_arco_limitado",
+    "nome": "Arco Limitado",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 63,
+    "descricao": "O Golpeador do personagem só é capaz de atacar numa única direção; diretamente à frente, para trás, etc. Especifique a direção quando adquirir a vantagem. Se o alvo não estiver no lugar correto e o personagem não conseguir manobrar para colocá-lo lá, não será possível atacá-lo."
   },
   {
     "id": "mod_ataque_cc_c",
@@ -1135,6 +1153,15 @@
     "descricao": "Exige 1 Pontos de Fadiga (PF) por nível de modificador por uso."
   },
   {
+    "id": "mod_desajeitado",
+    "nome": "Desajeitado",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": true,
+    "pagina": 63,
+    "descricao": "O Golpeador do personagem é extremamente impreciso. Isso é comum em caudas e Golpeadores similares que são capazes de alvejar pontos fora de seu campo de visão. -20% para cada redutor de -1 na jogada de ataque."
+  },
+  {
     "id": "mod_destreinado",
     "nome": "Destreinado",
     "tipo": "limitação",
@@ -1207,6 +1234,15 @@
     "descricao": "Só afeta área envolta do usuário, sem disparo à distância."
   },
   {
+    "id": "mod_fraco",
+    "nome": "Fraco",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 117,
+    "descricao": "O Golpeador do personagem é muito rombudo ou leve ou simplesmente incapaz de tirar proveito de toda a ST do personagem. Ele causa apenas o dano por GdP básico, sem o bônus de +1 para cada dado."
+  },
+  {
     "id": "mod_fragil",
     "nome": "Frágil",
     "tipo": "limitação",
@@ -1268,6 +1304,15 @@
     "porNivel": true,
     "pagina": 113,
     "descricao": "Cada nível impõe -1 nos testes de ataque ou ativação."
+  },
+  {
+    "id": "mod_incapaz_de_aparar",
+    "nome": "Incapaz de Aparar",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 113,
+    "descricao": "O personagem não pode aparar com seu Golpeadores."
   },
   {
     "id": "mod_inconstante_14",
@@ -1664,5 +1709,14 @@
     "porNivel": false,
     "pagina": 116,
     "descricao": "Entre 5 e 10 utilizações por dia."
+  },
+  {
+    "id": "mod_comprido",
+    "nome": "Comprido",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": true,
+    "pagina": 62,
+    "descricao": "Cada nível aumenta o alcance do Golpeador em +1 MT. Disponível para Golpeadores e Braços Adicionais. Golpeadores: +100%/nível. Braços Adicionais: +75%/nível."
   }
 ]

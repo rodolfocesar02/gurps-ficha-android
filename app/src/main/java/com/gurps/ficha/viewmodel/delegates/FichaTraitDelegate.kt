@@ -15,12 +15,16 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         metadados: Map<String, String>? = null
     ): Result<List<VantagemSelecionada>> {
         val ehAcumulativa = definicao.tipoCusto == TipoCusto.POR_NIVEL
-        
-        val jaExisteIdentica = personagem.vantagens.any { 
-            it.definicaoId.equals(definicao.id, true) && it.descricao.equals(descricao, true) 
+        // Vantagens que permitem múltiplas instâncias com descrições distintas (localização, tipo de ataque, etc.)
+        val permiteMultiplas = definicao.id.equals("ataque_inato", ignoreCase = true)
+            || definicao.id.equals("golpeadores", ignoreCase = true)
+            || definicao.id.equals("resistencia_a_dano", ignoreCase = true)
+
+        val jaExisteIdentica = personagem.vantagens.any {
+            it.definicaoId.equals(definicao.id, true) && it.descricao.equals(descricao, true)
         }
 
-        if (jaExisteIdentica && !ehAcumulativa) {
+        if (jaExisteIdentica && !ehAcumulativa && !permiteMultiplas) {
             return Result.failure(Exception("Você já possui esta Vantagem com esta descrição."))
         }
 

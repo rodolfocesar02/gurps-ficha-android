@@ -100,7 +100,11 @@
         "ht": 2
       },
       "limitacoesAtributo": [
-        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -10 }
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
       ],
       "secundarios": {
         "deslocamentoBasico": 2,
@@ -109,7 +113,9 @@
       "vantagens": [
         {
           "id": "garras",
-          "metadados": { "tipoGarras": "cascos" }
+          "metadados": {
+            "tipoGarras": "cascos"
+          }
         },
         {
           "id": "deslocamento_ampliado",
@@ -148,23 +154,56 @@
       "nome": "Elfos",
       "pagina": "Cataclismo 189",
       "descricao": "Elfos são humanoides esguios com orelhas pontudas. Sua pele pode ser de qualquer cor encontrada em humanos. O cabelo geralmente é dourado, prateado, preto ou vermelho e os olhos geralmente dourados, verdes ou azuis. Existem poucos elfos ativos com mais de 700 anos; alguns magos permaneceram ativos por milhares de anos.",
-      "atributos": { "st": -1, "dx": 1, "iq": 1 },
+      "atributos": {
+        "st": -1,
+        "dx": 1,
+        "iq": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "aptidao_magica", "nivel": 1 },
-        { "id": "artista_talentoso", "nivel": 1 },
-        { "id": "aparencia", "descricao": "Atraente", "custoEscolhido": 4 },
-        { "id": "habilidade_musical", "nivel": 1 },
-        { "id": "idade_imutavel" }
+        {
+          "id": "aptidao_magica",
+          "nivel": 1
+        },
+        {
+          "id": "artista_talentoso",
+          "nivel": 1
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Atraente",
+          "custoEscolhido": 4
+        },
+        {
+          "id": "habilidade_musical",
+          "nivel": 1
+        },
+        {
+          "id": "idade_imutavel"
+        }
       ],
       "desvantagens": [
-        { "id": "codigo_de_honra", "descricao": "Élfico", "custoEscolhido": -10 },
-        { "id": "senso_do_dever", "descricao": "Natureza", "custoEscolhido": -15 }
+        {
+          "id": "codigo_de_honra",
+          "descricao": "Élfico",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "senso_do_dever",
+          "descricao": "Natureza",
+          "custoEscolhido": -15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [],
       "pericias": [
-        { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
+        {
+          "nome": "Arcos",
+          "diff": "M",
+          "baseAtributo": "DX",
+          "nivelRelativo": 1,
+          "tipo": "BONUS"
+        }
       ]
     },
     {
@@ -172,22 +211,52 @@
       "nome": "Elfos Negros",
       "pagina": "Cataclismo 190",
       "descricao": "Os “elfos negros” não são uma raça separada; são um ramo xenófobo da cultura élfica. Acham que orcs em particular representam uma aberração e que outras raças devem ser domesticadas ou destruídas. Muitos vivem na Floresta Negra.",
-      "atributos": { "st": -1, "dx": 1, "iq": 1 },
+      "atributos": {
+        "st": -1,
+        "dx": 1,
+        "iq": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "aptidao_magica", "nivel": 1 },
-        { "id": "aparencia", "descricao": "Atraente", "custoEscolhido": 4 },
-        { "id": "idade_imutavel" }
+        {
+          "id": "aptidao_magica",
+          "nivel": 1
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Atraente",
+          "custoEscolhido": 4
+        },
+        {
+          "id": "idade_imutavel"
+        }
       ],
       "desvantagens": [
-        { "id": "insensivel" },
-        { "id": "intolerancia", "descricao": "Total", "custoEscolhido": -10 },
-        { "id": "obsessao", "descricao": "Destruir ou controlar completamente os não-elfos", "autocontrole": 12, "custoEscolhido": -10 }
+        {
+          "id": "insensivel"
+        },
+        {
+          "id": "intolerancia",
+          "descricao": "Total",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "obsessao",
+          "descricao": "Destruir ou controlar completamente os não-elfos",
+          "autocontrole": 12,
+          "custoEscolhido": -10
+        }
       ],
       "qualidades": [],
       "peculiaridades": [],
       "pericias": [
-        { "nome": "Arcos", "diff": "M", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
+        {
+          "nome": "Arcos",
+          "diff": "M",
+          "baseAtributo": "DX",
+          "nivelRelativo": 1,
+          "tipo": "BONUS"
+        }
       ]
     },
     {
@@ -195,11 +264,19 @@
       "nome": "Meio-Elfos",
       "pagina": "Cataclismo 190",
       "descricao": "Relações entre humanos e elfos por vezes produzem meio-elfos. Têm constituição esguia e uma ponta suave nas orelhas. São bem-vindos em vilas élficas (exceto entre elfos negros) e em terras humanas.",
-      "atributos": { "iq": 1 },
+      "atributos": {
+        "iq": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "aptidao_magica", "nivel": 1 },
-        { "id": "expectativa_de_vida_ampliada", "nivel": 1 }
+        {
+          "id": "aptidao_magica",
+          "nivel": 1
+        },
+        {
+          "id": "expectativa_de_vida_ampliada",
+          "nivel": 1
+        }
       ],
       "desvantagens": [],
       "qualidades": [],
@@ -211,28 +288,69 @@
       "nome": "Elfos do Mar",
       "pagina": "Cataclismo 190",
       "descricao": "Semelhantes aos primos terrestres, mas a maioria é puramente aquática. Têm guelras, pés palmados, mãos ligeiramente palmadas e poucos pelos. Devoção primária ao mar.",
-      "atributos": { "dx": 1, "iq": 1 },
+      "atributos": {
+        "dx": 1,
+        "iq": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "anfibio" },
-        { "id": "aptidao_magica", "nivel": 1 },
-        { "id": "artista_talentoso", "nivel": 1 },
-        { "id": "aparencia", "descricao": "Atraente", "custoEscolhido": 4 },
-        { "id": "idade_imutavel" },
-        { "id": "membrana_nictitante", "nivel": 1 },
-        { "id": "resistencia_a_pressao", "nivel": 1, "custoEscolhido": 5 }
+        {
+          "id": "anfibio"
+        },
+        {
+          "id": "aptidao_magica",
+          "nivel": 1
+        },
+        {
+          "id": "artista_talentoso",
+          "nivel": 1
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Atraente",
+          "custoEscolhido": 4
+        },
+        {
+          "id": "idade_imutavel"
+        },
+        {
+          "id": "membrana_nictitante",
+          "nivel": 1
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 1,
+          "custoEscolhido": 5
+        }
       ],
       "desvantagens": [
-        { "id": "codigo_de_honra", "descricao": "Élfico", "custoEscolhido": -10 },
-        { "id": "nt_baixo", "nivel": 2 },
-        { "id": "senso_do_dever", "descricao": "Natureza", "custoEscolhido": -15 }
+        {
+          "id": "codigo_de_honra",
+          "descricao": "Élfico",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "nt_baixo",
+          "nivel": 2
+        },
+        {
+          "id": "senso_do_dever",
+          "descricao": "Natureza",
+          "custoEscolhido": -15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
         "Não gosta dos elfos negros"
       ],
       "pericias": [
-        { "nome": "Rede", "diff": "D", "baseAtributo": "DX", "nivelRelativo": 1, "tipo": "BONUS" }
+        {
+          "nome": "Rede",
+          "diff": "D",
+          "baseAtributo": "DX",
+          "nivelRelativo": 1,
+          "tipo": "BONUS"
+        }
       ]
     },
     {
@@ -240,24 +358,66 @@
       "nome": "Esfinges (Leonina/Panterina)",
       "pagina": "Cataclismo 190",
       "descricao": "Cabeças humanas em corpos de felinos gigantes; podem ser de qualquer sexo. Leoninas têm corpo de leão e asas de águia; panterinas têm corpo de pantera negra e asas de morcego. Patas dianteiras com dedo parcialmente opositor. Muito raras, inteligentes, sanguinárias.",
-      "atributos": { "st": 6, "dx": 3, "iq": 2, "ht": 1 },
+      "atributos": {
+        "st": 6,
+        "dx": 3,
+        "iq": 2,
+        "ht": 1
+      },
       "limitacoesAtributo": [
-        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -10 }
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
       ],
       "secundarios": {},
       "vantagens": [
-        { "id": "garras", "metadados": { "tipoGarras": "garras_afiadas" } },
-        { "id": "resistencia_a_dano", "nivel": 1 },
-        { "id": "tolerancia_a_temperatura", "nivel": 1 },
-        { "id": "visao_noturna", "nivel": 5 },
-        { "id": "voo", "descricao": "Alado", "custoEscolhido": 30 }
+        {
+          "id": "garras",
+          "metadados": {
+            "tipoGarras": "garras_afiadas"
+          }
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1
+        },
+        {
+          "id": "tolerancia_a_temperatura",
+          "nivel": 1
+        },
+        {
+          "id": "visao_noturna",
+          "nivel": 5
+        },
+        {
+          "id": "voo",
+          "descricao": "Alado",
+          "custoEscolhido": 30
+        }
       ],
       "desvantagens": [
-        { "id": "curiosidade", "autocontrole": 12 },
-        { "id": "habitos_detestaveis", "descricao": "Come outros seres sapientes", "custoEscolhido": -15 },
-        { "id": "horizontal" },
-        { "id": "mao_fraca", "nivel": 3 },
-        { "id": "sanguinolencia", "autocontrole": 15 }
+        {
+          "id": "curiosidade",
+          "autocontrole": 12
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Come outros seres sapientes",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "horizontal"
+        },
+        {
+          "id": "mao_fraca",
+          "nivel": 3
+        },
+        {
+          "id": "sanguinolencia",
+          "autocontrole": 15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
@@ -265,8 +425,20 @@
         "Solitário"
       ],
       "pericias": [
-        { "nome": "Briga", "diff": "F", "baseAtributo": "DX", "nivelRelativo": 2, "tipo": "CONCEDIDA" },
-        { "nome": "Corrida", "diff": "M", "baseAtributo": "HT", "nivelRelativo": 2, "tipo": "CONCEDIDA" }
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 2,
+          "tipo": "CONCEDIDA"
+        },
+        {
+          "nome": "Corrida",
+          "diff": "M",
+          "baseAtributo": "HT",
+          "nivelRelativo": 2,
+          "tipo": "CONCEDIDA"
+        }
       ]
     },
     {
@@ -274,23 +446,61 @@
       "nome": "Esfinges (Tigrina)",
       "pagina": "Cataclismo 190",
       "descricao": "Corpos de tigre, sem asas; listras continuam no cabelo, mas não no rosto. Patas dianteiras com dedo parcialmente opositor. Muito raras, inteligentes, sanguinárias.",
-      "atributos": { "st": 6, "dx": 3, "iq": 2, "ht": 1 },
+      "atributos": {
+        "st": 6,
+        "dx": 3,
+        "iq": 2,
+        "ht": 1
+      },
       "limitacoesAtributo": [
-        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -10 }
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
       ],
       "secundarios": {},
       "vantagens": [
-        { "id": "garras", "metadados": { "tipoGarras": "garras_afiadas" } },
-        { "id": "resistencia_a_dano", "nivel": 1 },
-        { "id": "tolerancia_a_temperatura", "nivel": 1 },
-        { "id": "visao_noturna", "nivel": 5 }
+        {
+          "id": "garras",
+          "metadados": {
+            "tipoGarras": "garras_afiadas"
+          }
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1
+        },
+        {
+          "id": "tolerancia_a_temperatura",
+          "nivel": 1
+        },
+        {
+          "id": "visao_noturna",
+          "nivel": 5
+        }
       ],
       "desvantagens": [
-        { "id": "curiosidade", "autocontrole": 12 },
-        { "id": "habitos_detestaveis", "descricao": "Come outros seres sapientes", "custoEscolhido": -15 },
-        { "id": "horizontal" },
-        { "id": "mao_fraca", "nivel": 3 },
-        { "id": "sanguinolencia", "autocontrole": 15 }
+        {
+          "id": "curiosidade",
+          "autocontrole": 12
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Come outros seres sapientes",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "horizontal"
+        },
+        {
+          "id": "mao_fraca",
+          "nivel": 3
+        },
+        {
+          "id": "sanguinolencia",
+          "autocontrole": 15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
@@ -298,8 +508,20 @@
         "Solitário"
       ],
       "pericias": [
-        { "nome": "Briga", "diff": "F", "baseAtributo": "DX", "nivelRelativo": 2, "tipo": "CONCEDIDA" },
-        { "nome": "Corrida", "diff": "M", "baseAtributo": "HT", "nivelRelativo": 2, "tipo": "CONCEDIDA" }
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 2,
+          "tipo": "CONCEDIDA"
+        },
+        {
+          "nome": "Corrida",
+          "diff": "M",
+          "baseAtributo": "HT",
+          "nivelRelativo": 2,
+          "tipo": "CONCEDIDA"
+        }
       ]
     },
     {
@@ -307,20 +529,57 @@
       "nome": "Gárgulas",
       "pagina": "Cataclismo 191",
       "descricao": "Humanoides alados com pele rígida e acinzentada que lembra pedra; parecem humanos grotescamente deformados. Originários de Gabrook; vivem em montanhas ou telhados. Crescem a vida toda; as jovens têm ~1,20 m.",
-      "atributos": { "st": -1, "iq": -1, "ht": 2 },
+      "atributos": {
+        "st": -1,
+        "iq": -1,
+        "ht": 2
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "expectativa_de_vida_ampliada", "nivel": 1 },
-        { "id": "garras", "metadados": { "tipoGarras": "garras_cegas" } },
-        { "id": "resistencia_a_dano", "nivel": 2 },
-        { "id": "visao_noturna", "nivel": 5 },
-        { "id": "voo", "descricao": "Alado", "custoEscolhido": 30 }
+        {
+          "id": "expectativa_de_vida_ampliada",
+          "nivel": 1
+        },
+        {
+          "id": "garras",
+          "metadados": {
+            "tipoGarras": "garras_cegas"
+          }
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2
+        },
+        {
+          "id": "visao_noturna",
+          "nivel": 5
+        },
+        {
+          "id": "voo",
+          "descricao": "Alado",
+          "custoEscolhido": 30
+        }
       ],
       "desvantagens": [
-        { "id": "estigma_social", "descricao": "Praga Inculta", "custoEscolhido": -5 },
-        { "id": "aparencia", "descricao": "Feio", "custoEscolhido": -8 },
-        { "id": "gula", "autocontrole": 12 },
-        { "id": "riqueza", "descricao": "Pobre", "custoEscolhido": -15 }
+        {
+          "id": "estigma_social",
+          "descricao": "Praga Inculta",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Feio",
+          "custoEscolhido": -8
+        },
+        {
+          "id": "gula",
+          "autocontrole": 12
+        },
+        {
+          "id": "riqueza",
+          "descricao": "Pobre",
+          "custoEscolhido": -15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
@@ -334,22 +593,60 @@
       "nome": "Gigantes",
       "pagina": "Cataclismo 192",
       "descricao": "Parecem humanos de três metros ou mais. Variam muito (alguns com um olho ou duas cabeças). Geralmente reclusos; perigosos se despertados. Ressentem ser comparados a ogros.",
-      "atributos": { "st": 15, "dx": -1, "ht": 2 },
+      "atributos": {
+        "st": 15,
+        "dx": -1,
+        "ht": 2
+      },
       "limitacoesAtributo": [
-        { "atributo": "ST", "tipo": "TAMANHO", "percentual": -20 }
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -20
+        }
       ],
-      "secundarios": { "velocidadeBasica": -0.25 },
+      "secundarios": {
+        "velocidadeBasica": -0.25
+      },
       "vantagens": [
-        { "id": "deslocamento_ampliado", "nivel": 1, "descricao": "Solo" },
-        { "id": "hipoalgia_alto_limiar_de_dor" },
-        { "id": "paladar_olfato_apurado", "nivel": 3 },
-        { "id": "resistencia_a_dano", "nivel": 2, "mods": ["pele_resistente"] }
+        {
+          "id": "deslocamento_ampliado",
+          "nivel": 1,
+          "descricao": "Solo"
+        },
+        {
+          "id": "hipoalgia_alto_limiar_de_dor"
+        },
+        {
+          "id": "paladar_olfato_apurado",
+          "nivel": 3
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2,
+          "mods": [
+            "pele_resistente"
+          ]
+        }
       ],
       "desvantagens": [
-        { "id": "irritabilidade", "autocontrole": 12 },
-        { "id": "timidez", "descricao": "Grave", "custoEscolhido": -10 },
-        { "id": "estigma_social", "descricao": "Bárbaro gigantesco", "custoEscolhido": -10 },
-        { "id": "teimosia" }
+        {
+          "id": "irritabilidade",
+          "autocontrole": 12
+        },
+        {
+          "id": "timidez",
+          "descricao": "Grave",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "estigma_social",
+          "descricao": "Bárbaro gigantesco",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "teimosia"
+        }
       ],
       "qualidades": [
         "Voz Penetrante"
@@ -365,14 +662,32 @@
       "pagina": "Cataclismo 193",
       "descricao": "Menores e mais esguios que anões; machos usam barbas curtas. Amam a natureza como os elfos. Raça marginalizada, talento sutil para lidar com pessoas. Gostam de pastoreio e bom artesanato.",
       "atributos": {},
-      "secundarios": { "pf": 1, "deslocamentoBasico": -1 },
+      "secundarios": {
+        "pf": 1,
+        "deslocamentoBasico": -1
+      },
       "vantagens": [
-        { "id": "dedos_verdes", "nivel": 1 },
-        { "id": "longevidade" },
-        { "id": "resistencia_a_dano", "nivel": 1, "mods": ["pele_resistente"] }
+        {
+          "id": "dedos_verdes",
+          "nivel": 1
+        },
+        {
+          "id": "longevidade"
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1,
+          "mods": [
+            "pele_resistente"
+          ]
+        }
       ],
       "desvantagens": [
-        { "id": "senso_do_dever", "descricao": "Natureza", "custoEscolhido": -15 }
+        {
+          "id": "senso_do_dever",
+          "descricao": "Natureza",
+          "custoEscolhido": -15
+        }
       ],
       "qualidades": [
         "Rosto Sincero"
@@ -387,13 +702,23 @@
       "nome": "Goblins",
       "pagina": "Cataclismo 193",
       "descricao": "Pele verde, orelhas pontudas, dentes pequenos e brancos. A magia os fascina. Grandes negociantes e mercadores; viajam para todos os lugares.",
-      "atributos": { "st": -2, "dx": 1, "iq": 1 },
+      "atributos": {
+        "st": -2,
+        "dx": 1,
+        "iq": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "visao_noturna", "nivel": 9 }
+        {
+          "id": "visao_noturna",
+          "nivel": 9
+        }
       ],
       "desvantagens": [
-        { "id": "impulsividade", "autocontrole": 12 }
+        {
+          "id": "impulsividade",
+          "autocontrole": 12
+        }
       ],
       "qualidades": [],
       "peculiaridades": [],
@@ -404,19 +729,37 @@
       "nome": "Hobgoblins",
       "pagina": "Cataclismo 194",
       "descricao": "Ancestrais parentes dos goblins: grandes, brutais e selvagens. Brutais e diretos, mas não tão cruéis quanto orcs. Gostos simples — comer e saquear.",
-      "atributos": { "st": 1, "dx": 1, "iq": -2 },
+      "atributos": {
+        "st": 1,
+        "dx": 1,
+        "iq": -2
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "visao_noturna", "nivel": 9 }
+        {
+          "id": "visao_noturna",
+          "nivel": 9
+        }
       ],
       "desvantagens": [
-        { "id": "irritabilidade", "autocontrole": 12 },
-        { "id": "teimosia" }
+        {
+          "id": "irritabilidade",
+          "autocontrole": 12
+        },
+        {
+          "id": "teimosia"
+        }
       ],
       "qualidades": [],
       "peculiaridades": [],
       "pericias": [
-        { "nome": "Briga", "diff": "F", "baseAtributo": "DX", "nivelRelativo": 0, "tipo": "CONCEDIDA" }
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        }
       ]
     },
     {
@@ -424,21 +767,56 @@
       "nome": "Homens-Tubarão",
       "pagina": "Cataclismo 194",
       "descricao": "Habitantes do mar humanoides de pele cinza com cabeças de tubarão. Dentes afiados; olhos grandes com visão excelente. Pragmáticos e diretos. Não se dão com o povo do mar nem elfos do mar.",
-      "atributos": { "st": 6, "dx": 2 },
+      "atributos": {
+        "st": 6,
+        "dx": 2
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "anfibio" },
-        { "id": "fala_subaquatica" },
-        { "id": "membrana_nictitante", "nivel": 1 },
-        { "id": "nao_respira", "descricao": "Guelras", "custoEscolhido": 10 },
-        { "id": "dentes", "descricao": "Presas", "custoEscolhido": 2 },
-        { "id": "resistencia_a_pressao", "nivel": 3, "custoEscolhido": 15 },
-        { "id": "resistencia_a_dano", "nivel": 1 },
-        { "id": "visao_agucada", "nivel": 3 },
-        { "id": "visao_noturna", "nivel": 6 }
+        {
+          "id": "anfibio"
+        },
+        {
+          "id": "fala_subaquatica"
+        },
+        {
+          "id": "membrana_nictitante",
+          "nivel": 1
+        },
+        {
+          "id": "nao_respira",
+          "descricao": "Guelras",
+          "custoEscolhido": 10
+        },
+        {
+          "id": "dentes",
+          "descricao": "Presas",
+          "custoEscolhido": 2
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 3,
+          "custoEscolhido": 15
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1
+        },
+        {
+          "id": "visao_agucada",
+          "nivel": 3
+        },
+        {
+          "id": "visao_noturna",
+          "nivel": 6
+        }
       ],
       "desvantagens": [
-        { "id": "dependencia", "descricao": "Água, Muito Comum, Diária", "custoEscolhido": -15 }
+        {
+          "id": "dependencia",
+          "descricao": "Água, Muito Comum, Diária",
+          "custoEscolhido": -15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [],
@@ -449,15 +827,40 @@
       "nome": "Kobolds",
       "pagina": "Cataclismo 196",
       "descricao": "Pequenos, azuis e agressivos. Sozinhos não são grande ameaça, mas viajam em gangues de 12 a 20. Andarilhos, fazem trabalhos simples ou roubam. Adoram piadas e travessuras grosseiras. Rápidos em se ofender e em esquecer.",
-      "atributos": { "st": -2, "dx": 1, "iq": -2 },
+      "atributos": {
+        "st": -2,
+        "dx": 1,
+        "iq": -2
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "consumo_reduzido", "nivel": 2, "mods": ["estomago_de_ferro"] },
-        { "id": "resistente", "descricao": "Doenças (+8)", "metadados": { "raridade": "10", "grau": "0.5", "atributo": "HT" } }
+        {
+          "id": "consumo_reduzido",
+          "nivel": 2,
+          "mods": [
+            "estomago_de_ferro"
+          ]
+        },
+        {
+          "id": "resistente",
+          "descricao": "Doenças (+8)",
+          "metadados": {
+            "raridade": "10",
+            "grau": "0.5",
+            "atributo": "HT"
+          }
+        }
       ],
       "desvantagens": [
-        { "id": "desatento", "autocontrole": 9 },
-        { "id": "estigma_social", "descricao": "Inculto", "custoEscolhido": -5 }
+        {
+          "id": "desatento",
+          "autocontrole": 9
+        },
+        {
+          "id": "estigma_social",
+          "descricao": "Inculto",
+          "custoEscolhido": -5
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
@@ -471,22 +874,67 @@
       "nome": "Homens-Inseto",
       "pagina": "Cataclismo 196",
       "descricao": "Bizarros homens-inseto vivem no subsolo perto da fronteira Zarak/Grande Deserto. Pele dura, quitinosa, cor de bronze, olhos pretos facetados, longas antenas. Castas: os inteligentes guias da colônia + guerreiros (servos). Reprodução pela rainha e seus consortes (não-inteligentes). NT 2.",
-      "atributos": { "st": 1, "ht": 1 },
+      "atributos": {
+        "st": 1,
+        "ht": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "memoria_racial", "descricao": "Passiva", "custoEscolhido": 15 },
-        { "id": "resistencia_a_dano", "nivel": 2 },
-        { "id": "silencio", "nivel": 2 },
-        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "mod_racial"] }
+        {
+          "id": "memoria_racial",
+          "descricao": "Passiva",
+          "custoEscolhido": 15
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2
+        },
+        {
+          "id": "silencio",
+          "nivel": 2
+        },
+        {
+          "id": "telecomunicacao",
+          "descricao": "Diapsiquia",
+          "metadados": {
+            "tipoTelecomunicacao": "diapsiquia"
+          },
+          "mods": [
+            "mod_transmissao_aberta",
+            "mod_racial"
+          ]
+        }
       ],
       "desvantagens": [
-        { "id": "amigavel", "custoEscolhido": -5 },
-        { "id": "duro_de_ouvido" },
-        { "id": "mudez" },
-        { "id": "nt_baixo", "nivel": 1 },
-        { "id": "aparencia", "descricao": "Sem Atrativos", "custoEscolhido": -4 },
-        { "id": "senso_do_dever", "descricao": "Colônia", "custoEscolhido": -10 },
-        { "id": "timidez", "descricao": "Suave", "custoEscolhido": -5 }
+        {
+          "id": "amigavel",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "duro_de_ouvido"
+        },
+        {
+          "id": "mudez"
+        },
+        {
+          "id": "nt_baixo",
+          "nivel": 1
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Sem Atrativos",
+          "custoEscolhido": -4
+        },
+        {
+          "id": "senso_do_dever",
+          "descricao": "Colônia",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "timidez",
+          "descricao": "Suave",
+          "custoEscolhido": -5
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
@@ -499,22 +947,68 @@
       "nome": "Guerreiros Insetos",
       "pagina": "Cataclismo 196",
       "descricao": "Casta guerreira dos homens-inseto: mais altos, mais fortes, quatro braços; servos e lutadores da colônia. Sem sexo, mente subordinada.",
-      "atributos": { "st": 3, "iq": -1, "ht": 2 },
+      "atributos": {
+        "st": 3,
+        "iq": -1,
+        "ht": 2
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "ataque_adicional", "descricao": "Um", "nivel": 1 },
-        { "id": "bracos_adicionais", "descricao": "Dois", "nivel": 2 },
-        { "id": "telecomunicacao", "descricao": "Diapsiquia", "metadados": { "tipoTelecomunicacao": "diapsiquia" }, "mods": ["mod_transmissao_aberta", "mod_racial"] },
-        { "id": "resistencia_a_dano", "nivel": 3 }
+        {
+          "id": "ataque_adicional",
+          "descricao": "Um",
+          "nivel": 1
+        },
+        {
+          "id": "bracos_adicionais",
+          "descricao": "Dois",
+          "nivel": 2
+        },
+        {
+          "id": "telecomunicacao",
+          "descricao": "Diapsiquia",
+          "metadados": {
+            "tipoTelecomunicacao": "diapsiquia"
+          },
+          "mods": [
+            "mod_transmissao_aberta",
+            "mod_racial"
+          ]
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 3
+        }
       ],
       "desvantagens": [
-        { "id": "duro_de_ouvido" },
-        { "id": "expectativa_de_vida_reduzida", "nivel": 1, "custoEscolhido": -10 },
-        { "id": "mentalidade_de_escravo" },
-        { "id": "mudez" },
-        { "id": "nt_baixo", "nivel": 1 },
-        { "id": "aparencia", "descricao": "Sem Atrativos", "custoEscolhido": -4 },
-        { "id": "senso_do_dever", "descricao": "Colônia", "custoEscolhido": -10 }
+        {
+          "id": "duro_de_ouvido"
+        },
+        {
+          "id": "expectativa_de_vida_reduzida",
+          "nivel": 1,
+          "custoEscolhido": -10
+        },
+        {
+          "id": "mentalidade_de_escravo"
+        },
+        {
+          "id": "mudez"
+        },
+        {
+          "id": "nt_baixo",
+          "nivel": 1
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Sem Atrativos",
+          "custoEscolhido": -4
+        },
+        {
+          "id": "senso_do_dever",
+          "descricao": "Colônia",
+          "custoEscolhido": -10
+        }
       ],
       "qualidades": [],
       "peculiaridades": [],
@@ -525,43 +1019,191 @@
       "nome": "Medusas",
       "pagina": "Cataclismo 196",
       "descricao": "As medusas parecem mulheres de uma das raças humanoides, com cobras na cabeça em vez de cabelos. Pele normal ou com padrões exóticos combinando com a coloração das cobras. Têm dois ataques inatos: a picada venenosa das cobras e a capacidade de transformar pessoas em pedra (Olhar Petrificante). Não existem medusas masculinas; para reproduzir, fêmeas devem acasalar com humano, elfo ou orc.",
-      "atributos": { "dx": 1, "iq": 1, "ht": 1 },
+      "atributos": {
+        "dx": 1,
+        "iq": 1,
+        "ht": 1
+      },
       "secundarios": {},
       "vantagens": [
-        { "id": "aptidao_magica", "nivel": 2, "custoEscolhido": 5 },
+        {
+          "id": "aptidao_magica",
+          "nivel": 2,
+          "custoEscolhido": 5
+        },
         {
           "id": "ataque_inato",
           "descricao": "Veneno de cobra",
-          "metadados": { "tipoDano": "tox", "dice": "1", "bonus": "0", "nomePersonalizado": "Ataque Tóxico" },
-          "mods": ["mod_acompanhamento", "mod_ciclico_1m:2"],
+          "metadados": {
+            "tipoDano": "tox",
+            "dice": "1",
+            "bonus": "0",
+            "nomePersonalizado": "Ataque Tóxico"
+          },
+          "mods": [
+            "mod_acompanhamento",
+            "mod_ciclico_1m:2"
+          ],
           "custoEscolhido": 0
         },
         {
           "id": "atribulacao",
           "descricao": "Olhar Petrificante",
-          "mods": ["mod_cone:15", "mod_prazo_permanente", "mod_area_seletiva", "mod_imprecacao_2", "paralisia", "mod_base_sensorial_lim"]
+          "mods": [
+            "mod_cone:15",
+            "mod_prazo_permanente",
+            "mod_area_seletiva",
+            "mod_imprecacao_2",
+            "paralisia",
+            "mod_base_sensorial_lim"
+          ]
         },
         {
           "id": "golpeadores",
-          "metadados": { "tipoDano": "pa++", "dice": "1", "bonus": "0", "nomePersonalizado": "Mordida de cobra" },
-          "mods": ["mod_incapaz_de_aparar", "mod_fraco"],
+          "descricao": "Mordida de cobra",
+          "metadados": {
+            "tipoDano": "pa++",
+            "dice": "1",
+            "bonus": "0"
+          },
+          "mods": [
+            "mod_incapaz_de_aparar",
+            "mod_fraco"
+          ],
           "custoEscolhido": 5
         },
         {
           "id": "resistente",
           "descricao": "Ao Olhar de qualquer medusa",
-          "metadados": { "raridade": "5", "grau": "1.0", "atributo": "HT" },
+          "metadados": {
+            "raridade": "5",
+            "grau": "1.0",
+            "atributo": "HT"
+          },
           "custoEscolhido": 5
         }
       ],
       "desvantagens": [
-        { "id": "estigma_social", "descricao": "Monstro", "custoEscolhido": -15 }
+        {
+          "id": "estigma_social",
+          "descricao": "Monstro",
+          "custoEscolhido": -15
+        }
       ],
       "qualidades": [],
       "peculiaridades": [
         "Aversão a outras raças"
       ],
       "pericias": []
+    },
+    {
+      "id": "minotauro",
+      "nome": "Minotauros",
+      "pagina": "Cataclismo 198",
+      "descricao": "Minotauros são solitários e agressivos, comem quase tudo incluindo pessoas. Gostam de batalha; preferem machado grande ou clava. Raramente usam armadura. São 7,5 cm mais altos que humanos de ST similar.",
+      "atributos": {
+        "st": 3,
+        "dx": 1,
+        "iq": -2,
+        "ht": 3
+      },
+      "secundarios": {},
+      "vantagens": [
+        {
+          "id": "audicao_agucada",
+          "nivel": 3
+        },
+        {
+          "id": "golpeadores",
+          "descricao": "Chifres",
+          "metadados": {
+            "tipoDano": "pa",
+            "dice": "0",
+            "bonus": "0",
+            "nomePersonalizado": "Chifres"
+          },
+          "mods": [
+            "mod_arco_limitado",
+            "mod_comprido:1"
+          ],
+          "custoEscolhido": 13
+        },
+        {
+          "id": "abascanto",
+          "nivel": 3
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 2,
+          "descricao": "Apenas o Crânio",
+          "mods": [
+            "mod_apenas_o_cranio:7"
+          ]
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 3,
+          "mods": [
+            "pele_resistente"
+          ]
+        },
+        {
+          "id": "senso_de_direcao"
+        },
+        {
+          "id": "visao_periferica"
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "estigma_social",
+          "descricao": "Inculto",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "furia",
+          "descricao": "Fúria em Combate",
+          "autocontrole": 9,
+          "custoEscolhido": -22
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Come outros seres sapientes",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Hediondo",
+          "custoEscolhido": -16
+        },
+        {
+          "id": "intolerancia",
+          "descricao": "Total",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "sanguinolencia",
+          "autocontrole": 9
+        },
+        {
+          "id": "solitario",
+          "autocontrole": 12,
+          "custoEscolhido": -5
+        }
+      ],
+      "qualidades": [],
+      "peculiaridades": [
+        "Odeia ogros, e ser confundido com ogros"
+      ],
+      "pericias": [
+        {
+          "nome": "Briga",
+          "diff": "F",
+          "baseAtributo": "DX",
+          "nivelRelativo": 2,
+          "tipo": "CONCEDIDA"
+        }
+      ]
     }
   ]
 }
