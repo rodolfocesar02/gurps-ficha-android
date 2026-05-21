@@ -38,6 +38,16 @@ class MestreIAUseCase(
 
     private data class AIConfig(val url: String, val key: String, val model: String)
 
+    private fun ehErroDeApi(texto: String): Boolean {
+        val t = texto.trimStart()
+        return Regex("^Erro \\d{3}:").containsMatchIn(t) ||
+            t.startsWith("Erro de Conexão:") ||
+            t.startsWith("Erro de API") ||
+            t.startsWith("Erro: Resposta vazia") ||
+            t.startsWith("Erro: Modo Stream") ||
+            t.startsWith("Erro: Falha na conexão")
+    }
+
     fun conversarComMestreIA(
         prompt: String,
         modo: String = "conversa",
@@ -135,6 +145,61 @@ class MestreIAUseCase(
                         resultado.isRagSuccess
                     )
                 }
+
+                // MULTI-QUERY TEMÁTICO: busca paralela por ângulos temáticos da pergunta.
+                // Chunks que aparecem em múltiplas sub-queries recebem bonus de relevância,
+                // pois sua presença em vários contextos indica alta relevância para a pergunta.
+                if (plano.subQueriesTemáticas.isNotEmpty()) {
+                    android.util.Log.i("MestreIA_RAG", "║  MULTI-QUERY: ${plano.subQueriesTemáticas.size} ângulos temáticos — buscando em paralelo")
+                    updateStatus("Expandindo busca temática...")
+                    val tematicasResultados = coroutineScope {
+                        plano.subQueriesTemáticas.map { tQuery ->
+                            async { tQuery to graphEngine.buscarDiretoNoCodex(tQuery, emptyList()) }
+                        }.awaitAll()
+                    }
+                    // Conta em quantas sub-queries cada chunk_id apareceu
+                    val contagemChunk = mutableMapOf<String, Int>()
+                    val todosChunksPorId = mutableMapOf<String, MestreIAChunk>()
+                    for ((_, tRes) in tematicasResultados) {
+                        tRes.relatedChunks.forEach { c ->
+                            contagemChunk[c.chunk_id] = (contagemChunk[c.chunk_id] ?: 0) + 1
+                            todosChunksPorId[c.chunk_id] = c
+                        }
+                    }
+                    // Chunks que aparecem em 2+ sub-queries são promovidos (cross-query bonus)
+                    val chunksPromovidos = todosChunksPorId.values
+                        .filter { (contagemChunk[it.chunk_id] ?: 0) >= 2 }
+                        .sortedByDescending { contagemChunk[it.chunk_id] ?: 0 }
+                        .take(10)
+
+                    val chunksTodos = todosChunksPorId.values.toList()
+                    val qtdNovos = chunksTodos.count { it.chunk_id !in resultado.catalogo.chunks.map { c -> c.chunk_id }.toSet() }
+                    android.util.Log.i("MestreIA_RAG", "║  MULTI-QUERY OK: ${chunksTodos.size} chunks totais | ${chunksPromovidos.size} em 2+ queries (cross-bonus) | $qtdNovos novos")
+
+                    // Injeta chunks promovidos no início do contexto (maior visibilidade para a IA)
+                    val chunksAtuais = resultado.catalogo.chunks.toMutableList()
+                    val chunksIdsAtuais = chunksAtuais.map { it.chunk_id }.toSet()
+                    val chunksNovosPromovidos = chunksPromovidos.filter { it.chunk_id !in chunksIdsAtuais }
+                    val chunksNovosComuns = chunksTodos.filter { it.chunk_id !in chunksIdsAtuais && it !in chunksNovosPromovidos }.take(5)
+
+                    if (chunksNovosPromovidos.isNotEmpty() || chunksNovosComuns.isNotEmpty()) {
+                        val novosFormatados = graphEngine.formatarParaIA(
+                            MestreIAGraphEngine.GraphSearchResult(
+                                relatedChunks = chunksNovosPromovidos + chunksNovosComuns,
+                                chunkScores = contagemChunk.mapValues { (_, count) -> count * 500.0 }
+                            )
+                        )
+                        val ponteAtualizada = (resultado.catalogo.ponteDeFerro + "\n\n=== REGRAS ADICIONAIS (multi-query) ===\n" + novosFormatados).take(35000)
+                        resultado = CatalogoLocalResult(
+                            resultado.catalogo.copy(
+                                ponteDeFerro = ponteAtualizada,
+                                chunks = (chunksNovosPromovidos + chunksNovosComuns + chunksAtuais).distinctBy { it.chunk_id }
+                            ),
+                            resultado.isRagSuccess || chunksTodos.isNotEmpty()
+                        )
+                    }
+                }
+
                 resultado
             }
             val isRagUsed = catalogoLocal.isRagSuccess
@@ -175,7 +240,12 @@ class MestreIAUseCase(
                     
                     var loopsRestantes = 3
                     var iteracao = 1
-                    
+                    // Pergunta "complexa" = tem número, alcance, cálculo, arma, penalidade → ativa protocolo 3 fases
+                    val isQuestaoComplexa = !isCasual && (
+                        prompt.contains(Regex("\\d+\\s*m|metros|alcance|calculo|penalidade|submerso|agua|piscina", RegexOption.IGNORE_CASE))
+                        || prompt.length > 80
+                    )
+
                     while (loopsRestantes > 0) {
                         val isUltimaIteracao = loopsRestantes == 1 && iteracao > 1
 
@@ -188,11 +258,22 @@ class MestreIAUseCase(
 
                         val ctxAtual = catalogoDinamico.ponteDeFerro.length
                         val chunksAtual = catalogoDinamico.chunks.size
-                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks | desativarTools=$isUltimaIteracao")
+                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks | desativarTools=$isUltimaIteracao | complexa=$isQuestaoComplexa")
+
+                        // PROTOCOLO 3 FASES: Iteração 1 de questão complexa → identificar lacunas, NÃO responder ainda
+                        if (iteracao == 1 && isQuestaoComplexa && !isUltimaIteracao) {
+                            promptAtual = "[FASE 1 — INVESTIGAÇÃO] $prompt\n\n" +
+                                "PROTOCOLO OBRIGATÓRIO:\n" +
+                                "1. Leia os chunks disponíveis no Códex.\n" +
+                                "2. Identifique quais informações ainda estão FALTANDO para responder completamente (ex: stat de alcance da arma, penalidade específica, fórmula de cálculo).\n" +
+                                "3. Chame 'consultar_manual_direto' com os termos que estão faltando. Seja específico.\n" +
+                                "NÃO responda a pergunta ainda — apenas investigue o que falta."
+                            android.util.Log.i("MestreIA_RAG", "║  FASE 1: protocolo 3-fases ativado — IA deve identificar lacunas e buscar")
+                        }
 
                         // Última iteração: força resposta final sem tool calls
                         if (isUltimaIteracao) {
-                            promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $promptAtual\n\nATENÇÃO: Esta é sua ÚLTIMA oportunidade de responder. Apresente sua conclusão agora com base no contexto já disponível. NÃO chame ferramentas. Se a regra encontrada for indireta (ex: uma fórmula, divisor ou modificador que implique o resultado), calcule e apresente o resultado para o jogador com a fonte [Livro, Pág]."
+                            promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $prompt\n\nATENÇÃO: Esta é sua ÚLTIMA oportunidade de responder. Apresente sua conclusão agora com base no contexto já disponível. NÃO chame ferramentas. Se a regra encontrada for indireta (ex: uma fórmula, divisor ou modificador que implique o resultado), calcule e apresente o resultado para o jogador com a fonte [Livro, Pág]."
                             android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: tools desativados + resposta forçada")
                         }
 
@@ -307,7 +388,7 @@ class MestreIAUseCase(
                             }
                         }
 
-                        if (resposta.text.isNotBlank() && !resposta.text.startsWith("Erro")) {
+                        if (resposta.text.isNotBlank() && !ehErroDeApi(resposta.text)) {
                             val lowerRes = resposta.text.lowercase()
                             if ((lowerRes.contains("lamento") || lowerRes.contains("não encontrei")) && loopsRestantes > 1) {
                                 promptAtual = "Pergunta: $prompt\n\nNão desista. Tente buscar termos mais genéricos no manual usando '${MestreIATools.TOOL_MANUAL_DIRETO}'."
@@ -369,15 +450,6 @@ class MestreIAUseCase(
     }
 
 
-    private fun traduzirModeloParaMestre(id: String): String = when {
-        id.contains("qwen") -> "Estrategista"
-        id.contains("gemini") -> "Mensageiro"
-        else -> "IA"
-    }
-
-    fun extrairJsonDeNarrativa(texto: String): String? = MestreIAClient.extrairJsonFicha(texto)?.let { "..." } 
-    // Remove blocos ```json ... ``` SEM regex (o .*? com DOTALL sobre
-    // texto grande pode sofrer backtracking e travar). Varredura linear.
     fun limparNarrativaParaChat(texto: String): String {
         if (!texto.contains("```json")) return texto.trim()
         val sb = StringBuilder()

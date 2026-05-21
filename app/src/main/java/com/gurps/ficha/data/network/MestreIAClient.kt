@@ -62,7 +62,6 @@ object MestreIAClient {
         val armas: List<String> = emptyList(),
         val itensDetalhes: List<String> = emptyList(), // LOTE 89.25: Detalhes completos dos JSONs
         val chunks: List<MestreIAChunk> = emptyList(),
-        val summaries: List<com.gurps.ficha.data.storage.GraphNodeEntity> = emptyList(),
         val ponteDeFerro: String = ""
     )
 

@@ -80,23 +80,11 @@ class MestreIARepository(
     }
 
     /**
-     * Transforma uma busca simples em uma query FTS poderosa com sinônimos.
-     */
-    private fun prepararQueryFTS(userQuery: String): String {
-        return prepararQueryFTSAgressiva(userQuery, emptyList())
-    }
-
-    /**
      * LOTE 126: Query FTS Otimizada.
      * Delegada para o MestreIAQueryEngine para testabilidade pura.
      */
     internal fun prepararQueryFTSAgressiva(userQuery: String, termosTecnicos: List<String>): String {
         return MestreIAQueryEngine.prepararQueryFTSAgressiva(userQuery, termosTecnicos)
-    }
-
-    private fun String.removeAccents(): String {
-        val normalizer = java.text.Normalizer.normalize(this, java.text.Normalizer.Form.NFD)
-        return normalizer.replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
     }
 
     suspend fun buscarPorPagina(pagina: Int): List<MestreIAChunk> {

@@ -13,7 +13,8 @@ object MestreIAPlanner {
         val termos: List<String>,
         val categorias: List<String>,
         val subQueriesStats: List<String> = emptyList(),
-        val contextoEquipamentos: String = ""  // Stats reais do inventário do personagem
+        val contextoEquipamentos: String = "",  // Stats reais do inventário do personagem
+        val subQueriesTemáticas: List<String> = emptyList()  // Multi-query: ângulos temáticos da pergunta
     )
 
     // Detector de itens com stats em tabela → gera query de pré-busca específica
@@ -134,7 +135,7 @@ object MestreIAPlanner {
         // Magia e encantamento
         "magia" to listOf("feitico", "encantamento", "conjuracao", "escola"),
         "feitico" to listOf("magia", "encantamento", "conjuracao"),
-        "encantamento" to listOf("magia", "feitico", "magia"),
+        "encantamento" to listOf("magia", "feitico", "conjuracao"),
         "escola" to listOf("magia", "categoria", "tipo"),
         // Perícias e habilidades
         "pericia" to listOf("habilidade", "nivel", "nh", "aptidao"),
@@ -272,9 +273,120 @@ object MestreIAPlanner {
             android.util.Log.i("MestreIA_Planner", "PRÉ-STATS: $subQueriesStats")
         }
 
-        android.util.Log.i("MestreIA_Planner", "TERMOS EXTRAÍDOS (local): $termosExpandidos | Categorias: $categorias")
+        val subQueriesTemáticas = gerarSubQueriesTemáticas(perguntaNorm, termosBrutos, termosExpandidos.toList())
 
-        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats, contextoEquipamentos)
+        android.util.Log.i("MestreIA_Planner", "TERMOS EXTRAÍDOS (local): $termosExpandidos | Categorias: $categorias")
+        if (subQueriesTemáticas.isNotEmpty()) {
+            android.util.Log.i("MestreIA_Planner", "MULTI-QUERY temáticas: $subQueriesTemáticas")
+        }
+
+        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats, contextoEquipamentos, subQueriesTemáticas)
+    }
+
+    /**
+     * Gera 2-4 sub-queries temáticas cobrindo ângulos diferentes da pergunta.
+     * Ex: "atirar revólver numa piscina" → [cenário direto, penalidade/ambiente, mecânica afetada, tipo de arma]
+     * Chunks que aparecem em múltiplas sub-queries recebem bonus de relevância no scoring.
+     */
+    private fun gerarSubQueriesTemáticas(
+        perguntaNorm: String,
+        termosBrutos: List<String>,
+        termosExpandidos: List<String>
+    ): List<String> {
+        val queries = mutableListOf<String>()
+
+        // Detectores de cenário por padrões de termos-chave
+        val temAmbienteAquático = termosBrutos.any { it in setOf("agua", "piscina", "submerso", "aquatico", "subaquatico", "mergulho", "mar", "rio", "lago") }
+        val temTiroDistância = termosBrutos.any { it in setOf("tiro", "atirar", "disparo", "arco", "besta", "flecha", "revolver", "pistola", "rifle", "espingarda") }
+        val temCombate = termosBrutos.any { it in setOf("combate", "ataque", "dano", "acertar", "lutar", "espada", "faca", "maca", "lanca") }
+        val temMovimento = termosBrutos.any { it in setOf("correr", "mover", "deslocamento", "velocidade", "pular", "salto", "nadar") }
+        val temVisibilidade = termosBrutos.any { it in setOf("escuridao", "visibilidade", "neblina", "fogo", "fumaca", "noite", "luz") }
+        val temCura = termosBrutos.any { it in setOf("cura", "curar", "medicina", "ferimento", "recuperar", "primeiros") }
+        val temMagia = termosBrutos.any { it in setOf("magia", "feitico", "conjurar", "escola", "encantamento") }
+        val temCarga = termosBrutos.any { it in setOf("carga", "peso", "encumbrance", "carregando", "levantamento") }
+        val temArmadura = termosBrutos.any { it in setOf("armadura", "rd", "colete", "elmo", "placa", "malha") }
+        val temPericia = termosBrutos.any { it in setOf("pericia", "habilidade", "nh", "nivel", "aptidao") }
+
+        when {
+            // CENÁRIO: tiro aquático — o caso clássico da falha
+            temTiroDistância && temAmbienteAquático -> {
+                queries.add("tiro subaquatico arma fogo penalidade")
+                queries.add("penalidade ambiente liquido agua combate")
+                queries.add("alcance distancia arma fogo agua divisor")
+                queries.add("underwater ranged weapon penalty")
+            }
+            // CENÁRIO: combate aquático
+            temCombate && temAmbienteAquático -> {
+                queries.add("combate subaquatico penalidade agua")
+                queries.add("lutar agua mergulho penalidade")
+                queries.add("movimento nadar combate submerso")
+            }
+            // CENÁRIO: tiro com penalidade de visibilidade/escuridão
+            temTiroDistância && temVisibilidade -> {
+                queries.add("tiro escuridao penalidade visibilidade")
+                queries.add("modificador tiro ambiente penalidade")
+                queries.add("alcance ataque distancia visibilidade")
+                queries.add("penalidade mira alvo encoberto")
+            }
+            // CENÁRIO: tiro puro (sem ambiente especial)
+            temTiroDistância -> {
+                val armaTipo = termosBrutos.firstOrNull { it in setOf("revolver", "pistola", "rifle", "arco", "besta", "espingarda") } ?: "arma"
+                queries.add("$armaTipo alcance dano tabela armas distancia")
+                queries.add("tiro distância penalidade modificador alvo")
+                queries.add("ataque distancia acerto alcance")
+            }
+            // CENÁRIO: movimento aquático
+            temMovimento && temAmbienteAquático -> {
+                queries.add("nadar natacao movimento agua penalidade")
+                queries.add("deslocamento subaquatico metro turno")
+                queries.add("mergulho pericia natacao")
+            }
+            // CENÁRIO: combate corpo a corpo
+            temCombate && !temTiroDistância -> {
+                queries.add("combate ataque dano modificador")
+                queries.add("manobra combate corpo a corpo")
+                queries.add("defesa esquiva apara bloqueio penalidade")
+            }
+            // CENÁRIO: carga/peso
+            temCarga -> {
+                queries.add("carga peso encumbrance penalidade")
+                queries.add("levantamento st forca peso maximo")
+                queries.add("carga encumbrance velocidade penalidade")
+            }
+            // CENÁRIO: armadura
+            temArmadura -> {
+                queries.add("armadura rd resistencia dano tabela")
+                queries.add("armadura peso penalidade destreza")
+                queries.add("cobertura local protecao armadura")
+            }
+            // CENÁRIO: cura/medicina
+            temCura -> {
+                queries.add("cura primeiros socorros medicina ferimento")
+                queries.add("recuperacao pv ferimento descanso")
+                queries.add("medicina pericia cura penalidade")
+            }
+            // CENÁRIO: magia
+            temMagia -> {
+                val termoMagia = termosBrutos.firstOrNull { it !in stopWords } ?: "feitico"
+                queries.add("$termoMagia magia escola pre-requisito")
+                queries.add("custo energia magia lancamento")
+                queries.add("resistir magia feitico defesa")
+            }
+            // CENÁRIO: perícia
+            temPericia -> {
+                val termoP = termosBrutos.firstOrNull { it !in stopWords && it !in setOf("pericia", "habilidade") } ?: ""
+                if (termoP.isNotBlank()) queries.add("$termoP pericia nivel dificuldade atributo")
+                queries.add("pericia nivel dificuldade calculo custo")
+                queries.add("especialização pericia bonus")
+            }
+        }
+
+        // Remove queries que são idênticas à query principal já planejada
+        val termosPrincipaisNorm = termosBrutos.take(5).joinToString(" ")
+        return queries.filter { q ->
+            val qNorm = CatalogFilters.normalizarBusca(q)
+            qNorm != termosPrincipaisNorm && q.isNotBlank()
+        }.distinct().take(4)
     }
 
     private fun inferirCategorias(termos: List<String>): List<String> {
