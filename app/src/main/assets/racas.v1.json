@@ -1382,6 +1382,62 @@
       ],
       "qualidades": [],
       "pericias": []
+    },
+    {
+      "id": "povo_do_mar",
+      "nome": "Povo do Mar",
+      "pagina": "Cataclismo 200",
+      "descricao": "O povo do mar (tritões e sereias) parecem humanos da cintura para cima e como peixes da cintura para baixo. Podem respirar tanto ar quanto água. No oceano são muito graciosos, mas em terra só se arrastam com os braços.",
+      "atributos": {},
+      "secundarios": {},
+      "vantagens": [
+        {
+          "id": "deslocamento_ampliado",
+          "nivel": 1,
+          "descricao": "Água"
+        },
+        {
+          "id": "escorregadio",
+          "nivel": 1
+        },
+        {
+          "id": "fala_subaquatica"
+        },
+        {
+          "id": "membrana_nictitante",
+          "nivel": 5
+        },
+        {
+          "id": "nao_respira",
+          "descricao": "Guelras",
+          "mods": [
+            "mod_guelras"
+          ],
+          "custoEscolhido": 10
+        },
+        {
+          "id": "resistencia_a_pressao",
+          "nivel": 1,
+          "custoEscolhido": 5
+        },
+        {
+          "id": "sentido_de_monitoramento",
+          "descricao": "Sonar",
+          "custoEscolhido": 20
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "dependencia",
+          "descricao": "Água, Muito Comum, Diária",
+          "custoEscolhido": -15
+        }
+      ],
+      "qualidades": [
+        "Aquático (traço inerente)"
+      ],
+      "peculiaridades": [],
+      "pericias": []
     }
   ]
 }

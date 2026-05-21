@@ -1303,7 +1303,7 @@
     "valor": "-20%",
     "porNivel": false,
     "pagina": 117,
-    "descricao": "Item que concede a vantagem ou o usuário quebram f\u00e1cil. Combustível -20%, Explosivo -50%."
+    "descricao": "Item que concede a vantagem ou o usuário quebram fácil. Combustível -20%, Explosivo -50%."
   },
   {
     "id": "mod_gasto_adicional_tempo",
@@ -1781,5 +1781,14 @@
     "porNivel": true,
     "pagina": 62,
     "descricao": "Cada nível aumenta o alcance do Golpeador em +1 MT. Disponível para Golpeadores e Braços Adicionais. Golpeadores: +100%/nível. Braços Adicionais: +75%/nível."
+  },
+  {
+    "id": "mod_guelras",
+    "nome": "Guelras",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 352,
+    "descricao": "O personagem só pode respirar na água ou em ar muito úmido (Não Respira com Guelras). Limitação de -50% sobre o custo da vantagem Não Respira (GURPS B352)."
   }
 ]
