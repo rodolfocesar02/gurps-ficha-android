@@ -1,136 +1,465 @@
 # Mapa Detalhado: Arquivos e Funções do Projeto GURPS
 
-Este arquivo serve como o mapa definitivo de engenharia para o projeto. Utilize-o para localizar lógicas específicas sem a necessidade de varredura completa do código.
----
-## 1. ViewModels e Controle de Estado (O Cérebro)
-*Onde a lógica de negócio e o estado da UI residem.*
-- **`FichaViewModel.kt`**: O controlador central. Gerencia o personagem ativo, coordena salvamentos (incluindo salvamento automático em edições de traços), e delega cálculos para os especialistas.
-- **`FichaUIState.kt`**: Define os estados reativos da interface (carregando, sincronizando, erros).
-- **`delegates/FichaPersistenceDelegate.kt`**: Especialista em salvar e carregar arquivos JSON do disco e gerenciar o Auto-Save.
----
-## 2. Domain & Engines (As Regras do RPG)
-*Onde a matemática do GURPS 4ª Edição acontece.*
-- **`engine/SkillEngine.kt`**: Calcula NH (Nível de Habilidade), bônus de atributos e custos de XP para Perícias.
-- **`engine/MagicEngine.kt`**: Gerencia o custo de mana, pré-requisitos e tempos de conjuração de Magias.
-- **`rules/CharacterRules.kt`**: Define limites de atributos, PV (Pontos de Vida) e PF (Pontos de Fadiga).
-- **`rules/CombatRules.kt`**: Onde moram as regras de defesa ativa, bônus de escudo (BD) e bônus de Mestre de Armas.
-- **`rules/MagiaEnergiaRules.kt`**: Regras específicas para recuperação de energia e custos extras.
-- **`motor modo alvo/src/NexusArcanoEngine.kt`**: O Maestro do sistema "Modo Alvo". Orquestra o parser, o avaliador de regras e o buscador de caminhos para liberar magias complexas.
-- **`regras_prerequisitos/PreRequisitoChecker.kt`**: O motor legado/base que valida se um personagem pode ter certas magias ou perícias de forma isolada.
----
-## 3. UI - Telas e Abas (O Corpo)
-*Componentes visuais e interações do usuário.*
-- **`FichaScreen.kt`**: O container principal que abriga o Scaffold e a navegação entre abas.
-- **`TabRolagem.kt`**: O Hub de Combate Unificado. Gerencia rolagens de ataque, defesa e dano.
-- **`TabGeral.kt`**: Exibe Atributos, PV, PF e informações básicas.
-- **`TabCombate.kt`**: Visão detalhada de armas, defesas e equipamentos de proteção.
-- **`TabPericias.kt` / `TabMagias.kt`**: Listagem e edição de habilidades do personagem.
-- **`TabTracos.kt`**: Vantagens e Desvantagens. Ponto de entrada para os diálogos de edição.
-- **`ui/features/traits/TraitSpecialRuleComponents.kt`**: Novo Hub Unificado de Regras Especiais. Contém as UIs compartilhadas para Aliados, Patronos, Dependência, Inimigos e Mestre de Armas.
-- **`ui/features/traits/TraitCommonComponents.kt`**: Componentes genéricos de traços, incluindo o Seletor de Modificadores com Busca.
-- **`ui/features/traits/VantagemDialogs.kt` / `DesvantagemDialogs.kt`**: Diálogos de Adição e Edição Unificados. Utilizam a mesma lógica de configuração e regras especiais.
-- **`TabEquipamentos.kt`**: Gerenciamento de itens e peso.
----
-## 4. Model (Os Dados)
-*Representação dos objetos do mundo real.*
-- **`Personagem.kt`**: O objeto raiz que contém tudo o que define o personagem.
-- **`Atributo.kt` / `Vantagem.kt` / `Equipamento.kt`**: Classes de dados (Data Classes).
-- **`PersonagemInterop.kt`**: Camada de tradução para importar/exportar JSONs entre versões diferentes.
----
-## 5. Data, Network & Social (Conectividade)
-*Persistência de dados, serviços externos e integração social.*
-- **`DataRepository.kt`**: Ponto único de acesso aos catálogos oficiais e aos IDs de canais do Discord. Agora delega as lógicas de RAG ao repositório especializado.
-- **`MestreIARepository.kt`**: Especialista em persistência e sincronização do Códex (Chunks e Grafo). Gerencia o Mutex de carga única.
-- **`storage/FichaDatabase.kt`**: Configuração do SQLite (Room). Atualizado para v19 para suportar codificação UTF-8 nativa e tabelas de Códex (FTS4).
-- **`storage/ChatHistoryEntity.kt`**: Define as tabelas `chat_sessions` (títulos e datas) e `chat_messages` (mensagens individuais).
-- **`storage/ChatHistoryDao.kt`**: Interface de persistência para salvar, carregar e atualizar o timestamp das conversas da IA.
-- **`network/DiscordRollApiClient.kt`**: O motor de envio. Transfere os resultados das rolagens para o Discord via Webhook.
-- **`viewmodel/delegates/FichaSocialDelegate.kt`**: Gerencia a ativação/desativação do envio automático e as preferências de rede.
-- **`network/MestreIAClient.kt`**: Interface de comunicação com o backend da IA.
----
-## 6. Update e VTT (Recursos Extras)
-*Sistema de atualização e integração virtual.*
-- **`update/AppUpdateService.kt`**: Verifica novas versões no GitHub e gerencia o download.
-- **`vtt/VttRollService.kt`**: Sincroniza dados com mesas virtuais (Foundry/Roll20).
----
-## 7. Recursos e Catálogos (A Alma do RPG)
-*Onde os dados estatísticos de GURPS residem (Pasta `assets/`).*
-- **`pericias.json`**: Banco de dados completo de perícias, dificuldades e atributos base.
-- **`magias.json`**: Lista oficial de magias, custos, tempos e classes.
-- **`vantagens.json` / `desvantagens.json`**: Descrições e custos de pontos.
-- **`equipamentos.json`**: Catálogo de armas, armaduras e itens gerais.
----
-## 8. Variantes e Build (As Versões do App)
-*Diferenças cruciais entre as variantes de compilação.*
-- **Variante `Pracego`**: Focada em acessibilidade total e TalkBack. Possui labels extras e diálogos simplificados para cegos.
-- **Variante `Visual`**: Focada na melhor estética visual, com cores vibrantes e layouts mais densos.
-- **`BuildConfig.UI_VARIANT`**: A chave usada no código para decidir qual lógica de interface aplicar.
----
-## 9. Endereços VIP (Busca Instantânea)
-*Funções críticas que mais sofrem manutenção.*
-
-- **Cálculo de Esquiva/Apara/Bloqueio**: `CombatRules.kt` -> `calcularDefesa()`.
-- **Bônus de Mestre de Armas**: `CombatRules.kt` -> `calcularDanoArma()`.
-- **Consumo de FP/HP**: `CharacterRules.kt` -> `processarCustoRecurso()`.
-- **Trava de Salvamento**: `FichaPersistenceDelegate.kt` -> `estaCarregando`.
-- **Busca de Modificadores**: `TraitCommonComponents.kt` -> `EscopoModificadoresDialog`.
-- **Fallback de Cálculo (Traços)**: `Personagem.kt` -> `VantagemSelecionada.custoFinal` / `DesvantagemSelecionada.custoFinal`.
----
-##  10. Scripts e Automação (Ferramentas de Suporte)
-*Onde as ferramentas de manutenção de dados residem (Pasta `scripts/`).*
-
-- **`audit_active_jsons_v2.py`**: A ferramenta mais importante. Verifica falhas de integridade em todos os catálogos JSON.
-- **`generate_pericias_v2_rules_map.py`**: Mapeia as regras complexas de perícias para o motor do jogo.
-- **`fix_mojibake_project.py`**: Corrige erros de codificação de texto (acentuação corrompida).
-- **`cleanup_assets_text.py`**: Normaliza textos e limpa resíduos de OCR de PDFs.
-- **Série `convert_*.py`**: Scripts de transformação usados para migrar dados brutos para o formato do App.
----
-##  12. Mestre Digital IA (A Inteligência do App)
-*Onde a "mágica" de conversar, criar histórias e gerar fichas acontece.*
-
-- **`network/MestreIAClient.kt`**: O mensageiro. Faz a chamada técnica para os servidores (Gemini, OpenRouter, DeepSeek) e extrai o JSON da resposta da IA processando chamadas de Tools.
-- **`network/MestreIATools.kt`**: Catálogo de Ferramentas da IA. Fornece os esquemas validados (Schemas nativo Gemini / padrão OpenAI) de "Functions" que permitem à IA "Preencher Ficha" ou executar a "Busca de Regra". Agora suporta paginação (`pagina=2`).
-- **`domain/MestreIAGraphEngine.kt`**: O motor RAG (Retrieval-Augmented Generation). Injeta as lógicas de pesquisa de regras. Agora com **Calibragem de Precisão** (Pesos: Original +10, Expandido +2) e dicionário técnico de sinônimos.
-- **`domain/MestreIAUseCase.kt`**: O tradutor. Orquestra as chamadas da IA e o Loop de Investigação. Agora roda 100% em **Dispatchers.IO** para não travar a UI.
-- **`data/MestreIARepository.kt`**: O guardião dos dados do Códex. Garante que a sincronização seja atômica via **Mutex**.
-- **`ui/DialogsMestreIA.kt`**: A interface de chat. Inclui balões de mensagens com **Botão de Copiar** (LocalClipboardManager) e o **Seletor de Histórico** (HistorySelectorDialog).
-- **`viewmodel/delegates/FichaIADelegate.kt`**: O gerente de inteligência. Controla o histórico das conversas (persistência via Room), o gerenciamento de sessões e a execução de **[AÇÕES]** instantâneas sugeridas pela IA.
-
-**Recursos de IA suportados:**
-1.  **Geração de Personagem**: Fluxo completo de transformar descrição em atributos e habilidades usando Schemas estruturados (Function Calling).
-2.  **Consulente de Regras & RAG**: Tira dúvidas de GURPS enviando chamadas nativas de ferrametas (Tool Calls) para pesquisar no banco.
-3.  **Comandos Diretos**: Processamento de tags como `[ATRIBUTO: ST 12]` enviadas pela IA.
----
-##  13. Fluxo de Manutenção Sugerido
-1.  **Modificar Lógica**: ViewModel -> Engines -> Model.
-2.  **Modificar Dados**: Assets (.json) -> Rodar Script de Auditoria.
-3.  **Compilar**: Escolher Variante -> Build APK.
----
-##  14. Laboratório de Testes (Qualidade)
-*Onde as regras de RPG são validadas automaticamente (Pasta `app/src/test/`).*
-
-- **`rules/RulesLayerTest.kt`**: Onde as regras de Combate e Atributos são estressadas para garantir que 1+1 sempre seja 2.
-- **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`**: Suíte de testes de "Cenário Ouro" (Desejo) que valida a progressão incremental de metas.
-- **`domain/magias/NexusArcano*Test.kt`**: Uma suíte massiva de testes para o motor de magias (Nexus Arcano). Garante que pré-requisitos e custos de mana nunca quebrem.
-- **`PersonagemRulesTest.kt`**: Valida a criação de personagens e limites de pontos.
-- **`vtt/VttBridgeCodecStressTest.kt`**: Testa a robustez da conexão com o Foundry/VTT.
----
-##  15. Infraestrutura Android (Manifesto e Configs)
-*A base técnica que permite o app rodar no telefone.*
-
-- **`AndroidManifest.xml`**: Onde as permissões de Internet (para IA/Discord) e Acesso a Arquivos são declaradas.
-- **`build.gradle(.kts)`**: Define a versão do app (como a V1.4.5) e as bibliotecas usadas. Incluída a dependência `material-icons-extended` para suporte a ícones de UX avançada.
-##  16. Detalhamento: Motor Nexus Arcano (Complexidade de Magia)
-*Onde a resolução de dependências pesadas do GURPS 4E reside (Pasta `motor modo alvo/src/`).*
-
-- **`NexusArcanoEngine.kt`**: Interface principal e orquestrador.
-- **`ArcanoModels.kt`**: Dados básicos (Metas, Snapshots para a UI e Estados de Evolução).
-- **`NexusArcanoHeuristics.kt`**: O especialista em regras (Avalia quantas magias de que escola o personagem tem).
-- **`NexusArcanoParser.kt`**: Interpretador de texto bruto dos caminhos de magia (Separa perícias de magias).
-- **`NexusArcanoPathfinder.kt`**: Algoritmo de Busca (DFS) para encontrar o caminho mais curto/lógico para uma magia alvo.
-- **`NexusArcanoStrings.kt`**: Formatação de textos para a interface (Mensagens de erro e trilhas de aprendizado).
-- **`domain/magias/NexusArcanoModoAlvoAdapter.kt`**: Faz o "de-para" entre o motor puramente lógico e a lista reativa que o usuário vê na tela.
+Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
+Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 ---
+
+## 1. Ponto de Entrada
+
+- **`MainActivity.kt`** — Activity principal. Inicializa o Compose, intercepta Intents de compartilhamento de ficha (importação via `.gurps` compartilhado), passa o Intent para o ViewModel processar. Única Activity do app.
+
+---
+
+## 2. ViewModel e Estado Central
+
+- **`viewmodel/FichaViewModel.kt`** — O controlador central do app. Instancia todos os delegates, mantém o `Personagem` ativo como `mutableStateOf`, coordena auto-save ao editar traços, e expõe métodos públicos que a UI chama. Delega todas as operações especializadas para os delegates.
+
+- **`viewmodel/FichaUIState.kt`** — Data classes dos estados de busca da UI: `TraitSearchState`, `SkillSearchState`, `MagicSearchState`, `TechniqueSearchState`, `EquipmentSearchState`. Sem lógica — só estruturas de dados para os filtros de catálogo.
+
+---
+
+## 3. Delegates do ViewModel
+
+*Cada delegate é responsável por uma fatia da lógica do `FichaViewModel`. Sem delegates, o ViewModel seria um arquivo de 4.000+ linhas.*
+
+- **`delegates/FichaAttributeDelegate.kt`** — Atualiza atributos primários (ST/DX/IQ/HT), atributos secundários (mod PV, PF, Vontade, Percepção, Velocidade, Deslocamento), e dados básicos do personagem (nome, jogador, campanha, histórico, aparência, notas). Aplica limites via `coerceIn`.
+
+- **`delegates/FichaCombatDelegate.kt`** — Calcula e atualiza defesas ativas (Esquiva, Apara, Bloqueio). Inclui bônus manuais, seleção de perícia de Apara e de Escudo para Bloqueio. Retorna a lista de `ActiveDefense` para a UI exibir.
+
+- **`delegates/FichaEquipmentDelegate.kt`** — Adiciona equipamentos gerais, armas do catálogo e armaduras. Gera as notas automáticas de armas (valor de Aparar, classe de arma de fogo). Filtra tags de armaduras. Contém lógica de classificação de armas de fogo por categoria (pistola, rifle, ultratech, pesada).
+
+- **`delegates/FichaIADelegate.kt`** — Gerente completo da IA. Instancia `MestreIAUseCase` e `MestreIAGeneratorUseCase`. Controla o histórico de chat (`mestreIAChatHistory`), sessões persistidas (Room), modo da IA (`conversa`/`geracao`/`analise`), auto-sincronização do Códex, e o sistema de "bolhas batch" (agrupa eventos consecutivos do Forjador na mesma bolha de chat).
+
+- **`delegates/FichaMagicDelegate.kt`** — Adiciona e remove magias. Valida pré-requisitos via `MagicEngine`, detecta duplicatas por escola (magias de múltiplas instâncias). Retorna escolas e classes únicas do catálogo para os filtros.
+
+- **`delegates/FichaNetworkDelegate.kt`** — Envia rolagens para o Discord via `DiscordRollApiClient`, com retry em timeout. Busca lista de canais de voz do Discord. Sem estado próprio — só operações de rede.
+
+- **`delegates/FichaPersistenceDelegate.kt`** — Salva, carrega e exclui fichas via `FichaStorageRepository`. Filtra o auto-save (`_autosave_recuperacao`) da listagem pública. Tenta import via `PersonagemInterop` e faz fallback para `Personagem.fromJson` em JSONs antigos.
+
+- **`delegates/FichaSearchDelegate.kt`** — Mantém os estados de busca (`advantageSearch`, `disadvantageSearch`, `skillSearch`, `magicSearch`, `techniqueSearch`, `equipmentSearch`). Delega as filtragens para `DataRepository`. Cache simples para `filtrarMagias` (evita reprocessar a cada recomposição).
+
+- **`delegates/FichaSkillDelegate.kt`** — Adiciona, remove e atualiza perícias. Valida pré-requisitos via `DataRepository.validarPreRequisitosPericia`. Detecta técnicas pelo nome normalizado (para não misturar com perícias). Recalcula NH ao alterar pontos gastos.
+
+- **`delegates/FichaSocialDelegate.kt`** — Gerencia configuração de envio ao Discord: seleção de canal de voz, status de carregamento de canais, persistência do canal selecionado em `SharedPreferences`. Coordena com `FichaNetworkDelegate` para buscar canais.
+
+- **`delegates/FichaTraitDelegate.kt`** — Adiciona, remove e edita vantagens e desvantagens. Valida duplicatas (permite múltiplas instâncias de `ataque_inato`, `golpeadores`, `resistencia_a_dano`). Normaliza o nível de vantagens acumulativas. Delega custo para `DataRepository.criarVantagemSelecionada`.
+
+---
+
+## 4. Domain — Engines
+
+*Lógica de regras pura do GURPS 4ª Ed. Sem Android, sem UI.*
+
+- **`domain/engine/MagicEngine.kt`** — Cálculo de Aptidão Mágica por escola (vantagem `aptidao_magica` com mod de escola). Valida se magia pode ter múltiplas instâncias. Valida pré-requisitos de magias (NH mínimo e magias dependentes). Calcula custo de energia ajustado pelo NH.
+
+- **`domain/engine/SkillEngine.kt`** — Regras de técnicas: calcula o tipo de limite (`TecnicaLimiteKind`) de cada técnica (explícito relativo, baseado em perícia base, Aparar, Bloquear, metade da penalidade). Inclui normalização de texto para matching de nomes.
+
+---
+
+## 5. Domain — Rules
+
+*Cálculos de regras encapsulados por tema.*
+
+- **`domain/rules/CharacterRules.kt`** — A base de tudo. Tabelas de Golpe/Empurrão por ST. Cálculo de PV, PF, Velocidade Básica, Deslocamento, Percepção, Vontade. Custo de atributos primários e secundários. Cálculo de custo de vantagens com `specialRule` (Aliado, Inimigo, Dependente, Reputação, Dever, Manutenção, Vício, Contato, Dor Crônica, Fraqueza, Vulnerabilidade). Limite de desvantagens. Referência global `DATA_REPOSITORY_INSTANCE`.
+
+- **`domain/rules/CombatRules.kt`** — Fórmulas de defesas ativas: `calcularEsquiva`, `calcularApara`, `calcularBloqueio` e suas variantes de base. Puro e sem dependências externas.
+
+- **`domain/rules/MagiaEnergiaRules.kt`** — Redução de custo de energia por NH alto (NH≥15 → -1, NH≥20 → -2+). Parse de string de custo de energia ("2 pontos" → 2). Usado por `MagicEngine` e pelos diálogos de magia.
+
+---
+
+## 6. Domain — Trait Rules
+
+*Regras especiais por ID de vantagem. Cada `TraitRule` implementa a interface e é registrada no Registry.*
+
+- **`domain/rules/traits/TraitRule.kt`** — Interface base: `calculateCost`, `getAttackOptions`, `getDefenseOptions`, `getDamageOptions`, `getDodgeModifier`, `getBlockModifier`, `getParryModifier`, `getSkillModifiers`, `getDamageBonusPerDie`. Todas com default `null`/`emptyList`/`0`.
+
+- **`domain/rules/traits/TraitRuleRegistry.kt`** — Singleton que registra todas as regras e expõe métodos agregadores: `getSkillBonus`, `getParryBonus`, `getDodgeBonus`, `getBlockBonus`, `getDamageBonusPerDie`. Usado pelo `Personagem` e pelo `FichaCombatDelegate`.
+
+- **`domain/rules/traits/AtaqueInatoRule.kt`** — Custo e opções de ataque para `ataque_inato` (vantagem composta, calcula por dados/modificadores armazenados nos metadados).
+
+- **`domain/rules/traits/GolpeadoresRule.kt`** — Custo e dano de `golpeadores` (Striker). Lê tipo de golpeador e metadados para calcular dano.
+
+- **`domain/rules/traits/DentesRule.kt`** — Custo e dano de `dentes` (Bite). Calcula dano por tipo de mordida.
+
+- **`domain/rules/traits/GarrasRule.kt`** — Custo de `garras` pelo metadado `tipoGarras` (cascos=3, afiadas=5, pontudas=8, longas_pontudas=11). Também expõe opções de ataque.
+
+- **`domain/rules/traits/FlexibilidadeRule.kt`** — Bônus de perícia para `flexibilidade` (Contorcionismo, Acrobacia).
+
+- **`domain/rules/traits/ApararAmpliadoRule.kt`** — Bônus de Apara para `aparar_ampliado`.
+
+- **`domain/rules/traits/BloqueioAmpliadoRule.kt`** — Bônus de Bloqueio para `bloqueio_ampliado`.
+
+- **`domain/rules/traits/EsquivaAmpliadaRule.kt`** — Bônus de Esquiva para `esquiva_ampliada`.
+
+- **`domain/rules/traits/MestreDeArmasRule.kt`** — Bônus de dano por dado (`getDamageBonusPerDie`) para `mestre_de_armas`, filtrado por grupo de arma e perícia.
+
+- **`domain/rules/traits/TelecomunicacaoRule.kt`** — Custo de `telecomunicacao` pelo metadado de alcance/tipo.
+
+---
+
+## 7. Domain — Loaders
+
+*Carregamento e resolução dos catálogos JSON dos assets.*
+
+- **`domain/loaders/CatalogLoaders.kt`** — Carrega todos os catálogos de assets: `vantagens.v3.json` (+ extras de artes marciais), `desvantagens.v2.json`, `pericias.json` (+ suplementares), `magias.json`, `tecnicas_*.json` (múltiplos arquivos), `armas_*.json`, `armaduras.json`, `escudos.json`. Registra erros de carga sem lançar exceção. Faz mojibake fix nos textos carregados.
+
+- **`domain/loaders/MetacaracteristicaCatalogo.kt`** — Carrega `metacaracteristicas.v1.json` (catálogo de metacaracterísticas prontas como Gigante, Anão, etc.) e resolve cada uma como `ModeloRacial` usando `RacaCatalogo.resolver`. Formato "enxuto": sem custos no JSON, recalculado em runtime.
+
+- **`domain/loaders/RacaCatalogo.kt`** — Carrega `racas.v1.json` (catálogo de raças jogáveis). Resolve `RacaDefinicao` → `ModeloRacial` casando IDs contra os catálogos de vantagens/desvantagens/perícias via `DataRepository`. Custo recalculado pelo `CharacterRules` — imune a custo salvo errado. É também o schema de raças para o Forjador IA.
+
+---
+
+## 8. Domain — Filters
+
+- **`domain/filters/CatalogFilters.kt`** — Normalização de busca canônica do projeto: remove mojibake, aplica NFD (deacento), lowercase, substitui não-alfanuméricos por espaço. `contemBusca` e `igualNormalizado` usados em todo o app para filtros de catálogo.
+
+---
+
+## 9. Domain — Magias (Nexus Arcano)
+
+- **`domain/magias/NexusArcanoModoAlvoAdapter.kt`** — Adapter entre o `NexusArcanoEngine` (módulo separado) e o ViewModel. Traduz `List<MagiaDefinicao>` em `ArcanoCatalogo`, chama o engine para calcular trilha ótima (A*/guloso), e retorna `NexusArcanoModoAlvoSnapshot` com relacionados, chaves, trilha mínima e avisos.
+
+---
+
+## 10. Domain — Roll
+
+- **`domain/roll/RollDispatchPolicy.kt`** — Política de retry e mensagens de erro para envio de rolagens ao Discord. `deveRetentar` retorna `true` só para timeout (statusCode null). `mensagemErro` mapeia HTTP 401/400/500/502 para mensagens amigáveis.
+
+---
+
+## 11. Domain — MestreIA (Núcleo da IA)
+
+- **`domain/MestreIAContextFilter.kt`** — Gera a string de contexto da ficha enviada para a IA: nome, atributos, HP/FP atual, vantagens, desvantagens, principais perícias. No modo `conversa` inclui aparência e histórico. Filtra metadados técnicos.
+
+- **`domain/MestreIAGeneratorUseCase.kt`** — Orquestra o fluxo FORJADOR (criação de personagem). Usa `MestreIAClient` com modo `geracao`/`analise`, executa `ForjadorToolExecutor` a cada tool call recebida (ler ficha, buscar catálogo, GPS magia, editar ficha), faz até N iterações do loop de tool-use. Valida resposta final via `MestreIAValidacaoReport`.
+
+- **`domain/MestreIAGraphEngine.kt`** — Motor RAG (Retrieval-Augmented Generation). Recebe os chunks brutos do banco, aplica scoring por relevância (termos encontrados, boost de source, proximidade), formata a "Ponte de Ferro" (contexto técnico hierárquico) para injetar no prompt. Contém dicionário de sinônimos GURPS para expansão de queries.
+
+- **`domain/MestreIAPlanner.kt`** — Planejador de busca. Recebe a pergunta do usuário e gera um `PlanoDeBusca`: extrai termos brutos, expande com sinônimos, detecta categorias (combate, magia, perícia, movimento…), monta query FTS para o banco de chunks. Tem seu próprio dicionário de sinônimos (paralelo ao do GraphEngine — risco de divergência).
+
+- **`domain/MestreIARuleAuditor.kt`** — Auditor fiscal (Lote 55). Compara a `MestreIAResponse` sugerida pela IA contra os cálculos reais do `CharacterRules`. Gera lista de `AuditNote` com campo, valor sugerido vs. correto. Usado pelo Forjador para detectar custo errado de atributos.
+
+- **`domain/MestreIAUseCase.kt`** — Orquestra o fluxo AUDITOR (consulta de regras com RAG). Chama o Planner para montar a query, busca chunks no banco via `MestreIARepository`, ranqueia via `MestreIAGraphEngine`, injeta contexto no prompt e chama `MestreIAClient`. Executa loop de tool-use (até 3 iterações). Possui `ehErroDeApi()` preciso para não confundir erro com resposta legítima.
+
+- **`domain/MestreIAValidacaoReport.kt`** — Data classes do relatório de validação do Forjador: `ItemValidacao` (entrada, idEncontrado, status, mensagem) e `RelatorioValidacao` (vantagens/desvantagens/perícias/magias/técnicas, totalOk, totalFallback, alertaBudget). `StatusValidacao` enum: OK, FUZZY, FALLBACK, ERRO.
+
+---
+
+## 12. Domain — Tools (Forjador)
+
+- **`domain/tools/ForjadorTools.kt`** — Define os schemas das 4 ferramentas do Forjador: `forjador_ler_ficha`, `forjador_buscar_catalogo`, `forjador_gps_magia`, `forjador_editar_ficha`. Exporta formato nativo Gemini (`getGeminiTools`) e formato OpenAI (`getOpenAITools`).
+
+- **`domain/tools/ForjadorToolExecutor.kt`** — Executor das ferramentas do Forjador. Mapeia nome da tool → implementação Kotlin: `lerFicha` (lê seção do personagem), `buscarCatalogo` (busca em vantagens/desvantagens/perícias/magias + injeta `RegrasEspeciaisSchema`), `gpsMagia` (trilha mínima via NexusArcano), `editarFicha` (aplica mudanças no personagem via ViewModel). Faz read-back pós-edição.
+
+- **`domain/tools/RegrasEspeciaisSchema.kt`** — Schemas textuais das regras especiais de vantagens/desvantagens que têm custo calculado por metadados (Aliado, Inimigo, Dependente, Garras, Resistente, Ataque Inato, etc.). Injetado pelo `buscarCatalogo` quando o traço tem `specialRule`, para que o modelo saiba exatamente quais metadados preencher.
+
+---
+
+## 13. Data — Repositórios
+
+- **`data/DataRepository.kt`** — Repositório central de catálogos. Carrega (lazy, com Mutex) vantagens, desvantagens, perícias, magias, técnicas, armas, armaduras, escudos, raças, metacaracterísticas. Expõe métodos de filtragem (`filtrarVantagens`, `filtrarDesvantagens`, `filtrarPericias`, `filtrarMagias`, `filtrarArmasCatalogo`, etc.), criação de objetos selecionados (`criarVantagemSelecionada`, `criarPericiaSelecionada`) e validação de pré-requisitos.
+
+- **`data/MestreIARepository.kt`** — Repositório especializado no Códex (RAG). Sincroniza `chunks.jsonl` → tabela `manual_chunks` (FTS4) com Mutex, detectando banco vazio ou versão desatualizada (`CODEX_VERSION_CURRENT = 2`). Expõe `buscarNoCodexDireto` (busca FTS com log de páginas), `buscarPorPagina`, `buscarPorPaginaESource`, `getChunkById`, `forçarSincronizacaoManual`. Delega query para `MestreIAQueryEngine`.
+
+- **`data/MestreIAQueryEngine.kt`** — Preparação de queries FTS4 para o banco de chunks. `prepararQueryFTSAgressiva` constrói query OR com todos os termos e sinônimos expandidos. Terceiro dicionário de sinônimos do projeto (paralelo ao Planner e GraphEngine).
+
+---
+
+## 14. Data — Network
+
+- **`data/network/MestreIAClient.kt`** — Cliente HTTP para APIs de IA. Suporta Gemini nativo (`generativelanguage.googleapis.com`) e OpenRouter/OpenAI-compatible. Monta JSON do request (`gerarJsonGoogleNative`, `gerarJsonOpenRouter`), lida com tool calls na resposta, captura tokens de uso. Modo stream desabilitado (JSON puro). Log de auditoria do prompt (tamanho, modelo, tokens).
+
+- **`data/network/MestreIAPromptsAuditor.kt`** — Prompt de sistema do AUDITOR (modo `conversa`). Define o comportamento da IA como especialista em regras GURPS 4ª Ed., instruções de citação de fontes, formato de resposta e uso das tools de busca.
+
+- **`data/network/MestreIAPromptsForjador.kt`** — Prompt de sistema do FORJADOR (modo `geracao`/`analise`). Define o comportamento da IA como criador de fichas, protocolo de uso das tools (`forjador_*`), ordem de operações e formato de JSON final.
+
+- **`data/network/MestreIAResponse.kt`** — Data classes da resposta estruturada da IA: `MestreIAResponse` (envelope completo da ficha gerada), `AtributosIA`, `VantagemIA`, `DesvantagemIA`, `PericiaIA`, `MagiaIA`, `TecnicaIA`. Usado no fluxo Forjador e no `TOOL_FILL_SHEET` (Auditor).
+
+- **`data/network/MestreIATools.kt`** — Schemas das ferramentas do AUDITOR: `consultar_manual_direto`, `TOOL_FILL_SHEET` (preenche ficha a partir de descrição no modo Auditor). Exporta formato Gemini e OpenAI. `TOOL_FILL_SHEET` ainda é usado em `FichaIADelegate` para parsing de fichas via Auditor.
+
+- **`data/network/DiscordRollApiClient.kt`** — Cliente HTTP para o servidor Discord do projeto. Envia `DiscordRollPayload` (personagem, tipo de teste, dados, resultado) via POST. Também busca lista de `DiscordVoiceChannel` disponíveis. Data classes: `DiscordRollPayload`, `DiscordRollSendResult`, `DiscordVoiceChannel`.
+
+---
+
+## 15. Data — Storage (Room / Persistência)
+
+- **`data/storage/FichaDatabase.kt`** — Configuração Room v22. Entidades: `FichaEntity`, `ManualChunkEntity`, `GraphNodeEntity` (legado), `ChatSessionEntity`, `ChatMessageEntity`. `fallbackToDestructiveMigration`. Método `prePopulateManual` (importa `chunks.jsonl` para FTS4). `graphNodeDao` declarado mas GraphNode está descontinuado.
+
+- **`data/storage/FichaDao.kt`** — DAO Room para fichas: `upsert`, `getJson`, `deleteByName`, `listNames` (ordenado por `updatedAt` DESC).
+
+- **`data/storage/FichaEntity.kt`** — Entidade Room `fichas`: `nomeArquivo` (PK), `json` (texto completo), `updatedAt` (timestamp).
+
+- **`data/storage/FichaStorageRepository.kt`** — Repositório de persistência de fichas. Migra fichas antigas de `SharedPreferences` → Room (operação única). `salvarFicha`, `carregarFicha`, `excluirFicha`, `listarFichas`. Normaliza nomes de arquivo para compatibilidade cross-versão.
+
+- **`data/storage/ManualChunkDao.kt`** — DAO FTS4 para o Códex. `buscarRegras` (query FTS4 full-text), `buscarPorPagina`, `buscarPorPaginaESource`, `getChunkById`, `getCount`, `clearAll`. Tabela virtual FTS4 com `search_text` (texto + source_title).
+
+- **`data/storage/ManualChunkEntity.kt`** — Entidade FTS4 `manual_chunks`: `chunk_id`, `text`, `source_title`, `source_id`, `page_number`, `search_text` (campo de busca composto).
+
+- **`data/storage/MetacaracteristicaStore.kt`** — Persistência leve de metacaracterísticas criadas pelo usuário (arquivo `metacaracteristicas_usuario.json` em `filesDir`). Lista, salva (por nome, case-insensitive) e exclui. Usa JSON direto em vez de Room (sem migration necessária).
+
+- **`data/storage/ChatHistoryDao.kt`** — DAO Room para histórico de chat: sessões (`getAllSessions`, `createSession`, `updateSessionTitle`, `updateSessionTimestamp`) e mensagens (`insertMessage`, `getMessagesForSession`).
+
+- **`data/storage/ChatHistoryEntity.kt`** — Entidades Room: `ChatSessionEntity` (`chat_sessions`: id, title, createdAt, updatedAt) e `ChatMessageEntity` (`chat_messages`: id, sessionId, role, text, modelName, createdAt).
+
+- **`data/storage/GraphNodeDao.kt`** — ⚠️ LEGADO — NÃO UTILIZADO. DAO Room para o grafo de conhecimento (descontinuado). Declarado no `FichaDatabase` mas nunca chamado pelo código ativo.
+
+- **`data/storage/GraphNodeEntity.kt`** — ⚠️ LEGADO — NÃO UTILIZADO. Entidade Room `graph_knowledge` do grafo descontinuado. Mantida só para não quebrar a migration do Room.
+
+---
+
+## 16. Model
+
+*Data classes puras. Sem lógica de negócio (exceto `Personagem.kt` que tem cálculos derivados).*
+
+- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização.
+
+- **`model/PersonagemInterop.kt`** — Importação/exportação versionada. `importarJson` suporta envelope `{"schema":"gurps-ficha","character":{...}}` e fallback para JSON legado sem envelope. `exportarJson` gera o envelope com metadados (schemaVersion, exportedAtUtc, appVersion, uiVariant).
+
+- **`model/CatalogosSuplementares.kt`** — Data classes dos catálogos suplementares: `PericiaSuplementarItem`, `TecnicaCatalogoItem`, `PericiaV2RuleMapItem` (e subclasses de regra: `PericiaV2TipoRegra`, `PericiaV2PreRequisitoRegra`, `PericiaV2PreDefinidoRegra`).
+
+- **`model/ArmaCatalogoItem.kt`** — Data class de arma do catálogo: nome, dano, alcance, ST mínimo, peso, custo, habilidade base, aparar, grupo, etc.
+
+- **`model/ArmaduraCatalogoItem.kt`** — Data class de armadura: nome, RD, peso, custo, locais cobertos, componentes (lista de peças individuais), tags.
+
+- **`model/EscudoCatalogoItem.kt`** — Data class de escudo: nome, BD, peso, custo, habilidade de bloqueio.
+
+- **`model/MestreIAChunk.kt`** — Data class de chunk do Códex: `chunk_id`, `text`, `source_title`, `source_id`, `page_number`. Usado pelo RAG.
+
+---
+
+## 17. PreRequisitos
+
+- **`regras_prerequisitos/PreRequisitoChecker.kt`** — Motor de verificação de pré-requisitos. `checkParseResult` avalia cada `PreRequisitoType` contra o personagem (atributo mínimo, vantagem necessária, perícia necessária, NH mínimo). Retorna lista de condições com status (atendido/faltando).
+
+- **`regras_prerequisitos/PreRequisitoParser.kt`** — Parser de texto bruto de pré-requisito ("IQ 12+", "Magia X em NH 14+") → lista de `PreRequisitoType`. Suporta pré-requisitos compostos (AND/OR implícito).
+
+- **`regras_prerequisitos/PreRequisitoType.kt`** — Sealed class / data classes dos tipos de pré-requisito: `AtributoMinimo`, `VantagemNecessaria`, `PericiaMinima`, `MagiaMinima`, `Bypass` (ignorar validação).
+
+---
+
+## 18. UI — Telas Principais
+
+- **`ui/FichaScreen.kt`** — Container principal. Scaffold com `FichaCustomNavigationBar`, troca de abas (Geral, Combate, Perícias, Magias, Traços, Equipamentos, Rolagem, Técnicas, Notas, VTT), e roteamento de dialogs globais (importação, erro de carga, atualização).
+
+- **`ui/TabGeral.kt`** — Aba de informações básicas: nome, jogador, campanha, pontos iniciais/gastos/restantes, atributos primários (ST/DX/IQ/HT) com custo, atributos secundários (PV, PF, Vontade, Percepção, Velocidade, Deslocamento), modelo racial ativo.
+
+- **`ui/TabCombate.kt`** — Aba de combate: defesas ativas (Esquiva, Apara, Bloqueio) com bônus manual editável, lista de armas equipadas com dano calculado, armaduras por local corporal com RD total.
+
+- **`ui/TabPericias.kt`** — Aba de perícias: busca por texto/atributo/dificuldade, lista com NH calculado e pontos gastos, adição do catálogo, edição inline de pontos.
+
+- **`ui/TabMagias.kt`** — Aba de magias: busca por escola e classe, lista com custo de energia reduzido por NH, modo alvo (Nexus Arcano) com trilha mínima e chaves de progressão.
+
+- **`ui/TabTracos.kt`** — Aba de vantagens e desvantagens: busca, listagem por custo, adição do catálogo com seleção de modificadores. Ponto de entrada para `VantagemDialogs` e `DesvantagemDialogs`.
+
+- **`ui/TabTecnicas.kt`** — Aba de técnicas: listagem com NH calculado relativo à perícia base, busca por nome/fonte.
+
+- **`ui/TabEquipamentos.kt`** — Aba de equipamentos: lista de itens com peso individual e total, adição de arma/armadura/item genérico do catálogo.
+
+- **`ui/TabRolagem.kt`** — Hub de rolagem. Lista atributos, perícias, magias e traços com ataque inato para rolagem de 3d6. Exibe resultado, margem de sucesso/falha, críticos. Dispatch para Discord se configurado.
+
+- **`ui/TabNotas.kt`** — Aba de notas e texto livre: histórico, aparência, notas gerais do personagem.
+
+- **`ui/TabVtt.kt`** — Aba de integração VTT: configuração de sessão (URL do servidor, Room Key, Player ID, Token ID), status de conexão, botão de auto-detect na LAN.
+
+---
+
+## 19. UI — Dialogs
+
+- **`ui/DialogsMestreIA.kt`** — Interface de chat completa do Mestre IA: balões de mensagem (usuário/assistente/sistema), botão de copiar por bolha, seletor de sessão histórica (`HistorySelectorDialog`), seletor de modo (conversa/geração/análise), painel de configuração de API (URL, chave, modelo), botão de sincronização forçada do Códex.
+
+- **`ui/DialogsCommon.kt`** — Dialogs comuns reutilizados em múltiplas abas: confirmação de exclusão, diálogo de texto simples, seletor de opções.
+
+- **`ui/DialogsMagias.kt`** — Dialogs específicos de magias: adição com seleção de escola e pontos, edição de pontos de magia existente.
+
+- **`ui/DialogsPericias.kt`** — Dialogs de perícias: adição com especialização, atributo e dificuldade escolhidos, edição de pontos.
+
+- **`ui/DialogsTecnicas.kt`** — Dialogs de técnicas: adição do catálogo com visualização de pré-requisito e limite de NH.
+
+- **`ui/DialogsTracos.kt`** — Dialogs de traços (legado/entrada): seleção de vantagem/desvantagem, visualização de custo e modificadores disponíveis.
+
+- **`ui/DiceRoller.kt`** — Componente de rolagem 3d6: resultado visual, cálculo de margem, identificação de crítico (acerto em ≤4, falha em ≥17, acerto/falha em 3/18).
+
+---
+
+## 20. UI — Features (Subcomponentes Especializados)
+
+- **`ui/features/traits/TraitRule.kt`** — (ver seção 6 — é domain, não UI)
+- **`ui/features/traits/TraitCommonComponents.kt`** — Componentes genéricos de traços: `EscopoModificadoresDialog` (seletor de modificadores com busca), chip de custo, card de traço com ações.
+
+- **`ui/features/traits/TraitDialogs.kt`** — Diálogos de adição/edição de vantagens e desvantagens simples (sem regra especial).
+
+- **`ui/features/traits/TraitDialogsV2.kt`** — Versão expandida dos diálogos de traços com suporte a metadados estruturados (para traços com `specialRule`).
+
+- **`ui/features/traits/TraitSpecialRuleComponents.kt`** — Hub de componentes de regras especiais: UI de Aliado, Patrono, Dependência, Inimigo, Mestre de Armas (com seleção de grupo de arma). Cada regra especial tem seu próprio composable.
+
+- **`ui/features/traits/VantagemDialogs.kt`** — Dialog unificado de adição de vantagem: detecta `specialRule` e renderiza o componente correto de `TraitSpecialRuleComponents`.
+
+- **`ui/features/traits/DesvantagemDialogs.kt`** — Dialog unificado de adição de desvantagem: mesma arquitetura de `VantagemDialogs`.
+
+- **`ui/features/magic/MagicDialogs.kt`** — Dialogs de configuração de magia: seleção de escola para `imunidade_a_encantamento`, configuração de encantamento alvo, seleção de AM (Aptidão Mágica) ativa.
+
+- **`ui/features/magic/SelectingMagicDialog.kt`** — Dialog de busca e seleção de magia do catálogo com pré-visualização de pré-requisitos e custo de energia.
+
+- **`ui/features/rolagem/RolagemModels.kt`** — Data classes da aba de rolagem: `RollMappedOption` (opção de rolagem mapeada de perícia/traço), `DamageSourceOption` (fonte de dano), `StDamageMode` (modo de dano por ST).
+
+- **`ui/features/rolagem/RolagemComponents.kt`** — Componentes visuais da rolagem: card de opção de rolagem, resultado visual com cor (verde=sucesso, vermelho=falha, dourado=crítico).
+
+- **`ui/features/rolagem/RolagemPrimaryDialogs.kt`** — Dialogs primários de rolagem: seleção de modificador antes de rolar, confirmação de envio para Discord.
+
+- **`ui/features/rolagem/RolagemSecondaryDialogs.kt`** — Dialogs secundários: configuração de canal Discord, histórico de rolagens da sessão.
+
+- **`ui/features/virtualtabletop/MesaVirtualScreen.kt`** — Tela da Mesa Virtual (placeholder). Exibe estado de conexão e botões de ação VTT. Ainda em desenvolvimento.
+
+- **`ui/features/virtualtabletop/MesaVirtualViewModel.kt`** — ViewModel da Mesa Virtual. `MesaVirtualState` com discordId, token, campaignId, isConnected, activePlayers. `conectar()` apenas atualiza o estado local (integração Railway planejada).
+
+---
+
+## 21. UI — Componentes Utilitários
+
+- **`ui/components/FichaCustomNavigationBar.kt`** — Barra de navegação inferior customizada com ícones e labels das abas.
+
+- **`ui/DialogStandards.kt`** — Padrões visuais de dialogs: dimensões, espaçamentos, cores de botões primário/secundário/destrutivo.
+
+- **`ui/HorizontalDivider.kt`** — Divisor horizontal estilizado usado em listas e seções.
+
+- **`ui/SectionCard.kt`** — Card de seção com título e conteúdo, usado em TabGeral e TabCombate.
+
+- **`ui/UiStandards.kt`** — Constantes de design do app: padding padrão, tamanhos de fonte, breakpoints.
+
+- **`ui/UiA11y.kt`** — Helpers de acessibilidade: `semantics` para TalkBack, labels descritivos. Usado pela variante Pracego.
+
+- **`ui/UiActionLabels.kt`** — Strings de labels de ação para acessibilidade (variante Pracego): "adicionar vantagem", "remover perícia", etc.
+
+---
+
+## 22. UI — Tema
+
+- **`ui/theme/Color.kt`** — Paleta de cores do app (Material You). Cores diferenciadas por variante Visual/Pracego.
+
+- **`ui/theme/Theme.kt`** — `GURPSFichaTheme`: configura `MaterialTheme` com `ColorScheme` e `Typography`. Detecta `BuildConfig.UI_VARIANT` para aplicar paleta correta.
+
+- **`ui/theme/Type.kt`** — Tipografia do app: `TextStyle` para títulos, corpo e legendas.
+
+---
+
+## 23. VTT — Mesa Virtual
+
+- **`vtt/VttBridgeCodec.kt`** — Codec de serialização para a ponte VTT. Converte JSON em JavaScript string literal com escape correto de caracteres especiais. Usado para injetar dados da ficha em WebView do Foundry.
+
+- **`vtt/VttHostAutoDetect.kt`** — Auto-detecção de servidor VTT na LAN. Primeiro tenta ARP table (`/proc/net/arp`), depois scan ativo por subnet. Faz probe HTTP paralelo (com coroutines) nos candidatos para detectar qual tem a API do servidor GURPS.
+
+- **`vtt/VttSessionService.kt`** — Serviço de sessão VTT. `joinSession` (entra numa sala com roomKey e playerId), retorna `VttJoinSessionResult` (sessionId, tokenId, needsBind). Chamadas HTTP para o servidor Railway/local.
+
+- **`vtt/VttSessionStorage.kt`** — Persistência local da sessão VTT em `SharedPreferences`: serverUrl, webUrl, roomKey, playerId, sessionId, tokenId, tokenImageUri, autoReconnect. `VttSessionSnapshot` data class.
+
+- **`vtt/VttTokenBindService.kt`** — Vincula o token do personagem (imagem e ID) ao player na sessão VTT. Retorna `VttTokenBindResult`. Separado do `VttSessionService` para responsabilidade única.
+
+- **`vtt/VttRollService.kt`** — Envia rolagens para o servidor VTT via HTTP: `VttRollRequest` (roomKey, playerId, tokenId, tipoAcao, nomeAcao, modificador, alvoTokenId) → `VttRollResult`.
+
+---
+
+## 24. Update
+
+- **`update/AppUpdateService.kt`** — Verifica nova versão no GitHub (endpoint configurado em `BuildConfig`). Compara `versionCode` atual vs. mais recente. Retorna `AppUpdateState` com URLs de APK para variante Visual e Pracego. Data classes: `AppUpdateMetadata`, `AppUpdateState`.
+
+- **`update/AppUpdateHelper.kt`** — Executa o download e instalação da nova APK via `DownloadManager`. Registra `BroadcastReceiver` para detectar conclusão do download e dispara o intent de instalação via `FileProvider`.
+
+---
+
+## 25. Assets — Catálogos JSON Ativos
+
+*Arquivos em `app/src/main/assets/`.*
+
+| Arquivo | Conteúdo |
+|---|---|
+| `vantagens.v3.json` | Vantagens oficiais GURPS 4ª Ed. (formato v3 com modificadores estruturados) |
+| `vantagens_artes_marciais.v1.json` | Vantagens exclusivas do suplemento Artes Marciais |
+| `desvantagens.v2.json` | Desvantagens oficiais (formato v2 com specialRule) |
+| `pericias.json` | Perícias do Módulo Básico |
+| `pericias_suplementares_*.json` | Perícias de suplementos (Artes Marciais, GunFu, etc.) |
+| `magias.json` | Magias do Módulo Básico com pré-requisitos raw |
+| `tecnicas_modulo_basico.json` | Técnicas do Módulo Básico |
+| `tecnicas_artes_marciais.json` | Técnicas do suplemento Artes Marciais |
+| `tecnicas_gunfu.json` | Técnicas do suplemento GunFu |
+| `armas_cac.json` | Armas de combate corpo a corpo |
+| `armas_distancia.json` | Armas de ataque à distância |
+| `armas_fogo.json` | Armas de fogo (módulo básico) |
+| `armas_fogo_gunfu.json` | Armas de fogo do suplemento GunFu |
+| `armaduras.json` | Armaduras com componentes por local corporal |
+| `escudos.json` | Escudos com BD |
+| `racas.v1.json` | Raças jogáveis (formato enxuto — sem custos, recalculado) |
+| `metacaracteristicas.v1.json` | Pacotes prontos de metacaracterísticas (Gigante, Anão, etc.) |
+| `chunks.jsonl` | Chunks do manual GURPS para o RAG (FTS4) |
+| `temas_ia.json` | Temas canônicos de busca para o Mestre IA |
+
+---
+
+## 26. Scripts de Manutenção (pasta `scripts/`)
+
+- **`audit_active_jsons_v2.py`** — Verifica integridade dos catálogos JSON (IDs únicos, campos obrigatórios, referências cruzadas).
+- **`generate_pericias_v2_rules_map.py`** — Gera o mapa de regras de perícias v2 a partir do texto bruto.
+- **`fix_mojibake_project.py`** — Corrige encoding corrompido (mojibake) em todo o projeto.
+- **`cleanup_assets_text.py`** — Normaliza textos e limpa artefatos de OCR de PDFs.
+- **Série `convert_*.py`** — Converte dados brutos (planilhas, PDFs) para o formato JSON dos assets.
+
+---
+
+## 27. Motor Nexus Arcano (módulo separado `motor modo alvo/src/`)
+
+- **`NexusArcanoEngine.kt`** — Orquestrador: avalia chaves, computa trilha ótima (A*/guloso via `planejarCaminhoMinimo`), retorna `ArcanoResultado`.
+- **`ArcanoModels.kt`** — Modelos: `ArcanoChave`, `ArcanoMetaTipo`, `ArcanoMetaProgress`, `ArcanoEstadoPersonagem`, `ArcanoResultado`.
+- **`ArcanoCatalogo.kt`** — Interface que o adapter implementa para fornecer pré-requisitos e escolas ao engine.
+- **`NexusArcanoHeuristics.kt`** — Avalia quantas magias de cada escola o personagem possui para detectar chaves desbloqueadas.
+- **`NexusArcanoParser.kt`** — Interpreta texto bruto de pré-requisito de magia → lista de dependências tipadas.
+- **`NexusArcanoPathfinder.kt`** — DFS/guloso para encontrar caminho mínimo até a magia alvo.
+- **`NexusArcanoStrings.kt`** — Formatação de mensagens para a UI (avisos, trilha de aprendizado, bloqueios).
+
+---
+
+## 28. Testes Automatizados (`app/src/test/`)
+
+- **`rules/RulesLayerTest.kt`** — Testes de `CharacterRules` e `CombatRules` (atributos, PV, defesas).
+- **`PersonagemRulesTest.kt`** — Validação de criação de personagem e limites de pontos.
+- **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`** — Cenários ouro do Nexus Arcano (progressão incremental de metas).
+- **`domain/magias/NexusArcano*Test.kt`** — Suíte massiva de testes do motor de magias.
+- **`vtt/VttBridgeCodecStressTest.kt`** — Teste de robustez do codec VTT.
+
+---
+
+## 29. Endereços Rápidos (Funções Críticas)
+
+| O que buscar | Onde está |
+|---|---|
+| Esquiva / Apara / Bloqueio (cálculo) | `CombatRules.kt` → `calcularEsquiva/Apara/Bloqueio` |
+| Bônus de Mestre de Armas | `MestreDeArmasRule.kt` → `getDamageBonusPerDie` |
+| Golpe/Empurrão por ST | `CharacterRules.kt` → `tabelaGdP / tabelaGeB` |
+| Custo de vantagem com specialRule | `CharacterRules.kt` → `calcularCustoAliado/Inimigo/...` |
+| Cálculo de NH de perícia | `SkillEngine.kt` → `getRegraPerfilTecnica` |
+| Loop de tool-use do Auditor | `MestreIAUseCase.kt` → `processarPergunta` |
+| Loop de tool-use do Forjador | `MestreIAGeneratorUseCase.kt` → `gerarPersonagem` |
+| Scoring de chunks RAG | `MestreIAGraphEngine.kt` → `ranquearChunks` |
+| Query FTS para o banco | `MestreIAQueryEngine.kt` → `prepararQueryFTSAgressiva` |
+| Carregamento de raças | `RacaCatalogo.kt` → `resolver` |
+| Envio para Discord | `DiscordRollApiClient.kt` → `postRoll` |
+| Salvar / carregar ficha | `FichaStorageRepository.kt` → `salvarFicha / carregarFicha` |
+| Importar JSON versionado | `PersonagemInterop.kt` → `importarJson` |
+| Normalização de busca | `CatalogFilters.kt` → `normalizarBusca` |
+| Auto-detect VTT na LAN | `VttHostAutoDetect.kt` → `detectLanHost` |
+
+---
+
+## 30. Variantes de Build
+
+| Variante | Foco |
+|---|---|
+| `Visual` | Estética visual, cores vibrantes, layouts densos |
+| `Pracego` | Acessibilidade total (TalkBack), labels extras, diálogos simplificados |
+
+Chave de controle: `BuildConfig.UI_VARIANT` (usado para condicionar lógica de UI entre as variantes).
+
+---
+
 > [!TIP]
-> **DICA PARA O AGENTE**: Antes de finalizar qualquer mudança em regras de combate ou magias, **RODE OS TESTS** (Especialmente o `NexusArcanoLoteFCanonicScenarioTest.kt`). Se um teste do Nexus Arcano falhar, sua alteração causou um bug de regressão na resolução de dependências!
+> **DICA PARA O AGENTE**: Ao modificar regras de combate ou magias, rode `NexusArcanoLoteFCanonicScenarioTest.kt` e `RulesLayerTest.kt`. Os três dicionários de sinônimos (`MestreIAPlanner`, `MestreIAGraphEngine`, `MestreIAQueryEngine`) devem ser mantidos sincronizados — divergência entre eles causa inconsistência no RAG.
