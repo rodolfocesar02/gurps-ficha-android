@@ -13,6 +13,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -75,16 +77,16 @@ fun SeletorListaTraitsDialog(
                                 Text(selecionado!!.nome, fontWeight = FontWeight.Bold)
                                 Text("${selecionado!!.custo} pts", style = MaterialTheme.typography.labelSmall)
                             }
-                            IconButton(onClick = { selecionado = null }) { Icon(Icons.Default.Delete, null) }
+                            IconButton(onClick = { selecionado = null }, modifier = Modifier.semantics { contentDescription = "Remover seleção de ${selecionado?.nome ?: "traço"}" }) { Icon(Icons.Default.Delete, null) }
                         }
                     }
 
                     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text("Nivel Racial", style = MaterialTheme.typography.labelMedium)
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
-                            IconButton(onClick = { if(level > 1) level -= 1 }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                            IconButton(onClick = { if(level > 1) level -= 1 }, modifier = Modifier.semantics { contentDescription = "Diminuir nível racial" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
                             Text("$level", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-                            IconButton(onClick = { level += 1 }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                            IconButton(onClick = { level += 1 }, modifier = Modifier.semantics { contentDescription = "Aumentar nível racial" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                         }
                     }
                     

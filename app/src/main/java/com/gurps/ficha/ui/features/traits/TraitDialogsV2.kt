@@ -122,7 +122,7 @@ fun ModeloRacialDialog(
                     contentAlignment = Alignment.Center
                 ) {
                     Text("Raça e Metacaracterísticas", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                    IconButton(onClick = onDismiss, modifier = Modifier.align(Alignment.CenterStart)) { Icon(Icons.Default.Close, "Fechar") }
+                    IconButton(onClick = onDismiss, modifier = Modifier.align(Alignment.CenterStart)) { Icon(Icons.Default.Close, "Fechar diálogo de Raça e Metacaracterísticas") }
                 }
 
                 LazyColumn(
@@ -205,7 +205,9 @@ fun ModeloRacialDialog(
                                     AssistChip(
                                         onClick = { limitacoesAtributo = limitacoesAtributo.toMutableList().apply { removeAt(idx) } },
                                         label = { Text("${lim.atributo.name}: ${lim.tipo.rotulo} ${lim.percentual}%  ✕") },
-                                        modifier = Modifier.padding(end = 4.dp)
+                                        modifier = Modifier.padding(end = 4.dp).semantics {
+                                            contentDescription = "Remover limitação ${lim.atributo.name} ${lim.tipo.rotulo} ${lim.percentual}%"
+                                        }
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(12.dp))
@@ -320,7 +322,14 @@ fun ModeloRacialDialog(
                     item {
                         val tempModelo = ModeloRacial(nome = nome, modForca = modForca, modDestreza = modDestreza, modInteligencia = modInteligencia, modVitalidade = modVitalidade, modPontosVida = modPontosVida, modVontade = modVontade, modPercepcao = modPercepcao, modPontosFadiga = modPontosFadiga, modVelocidadeBasica = modVelocidadeBasica, modDeslocamentoBasico = modDeslocamentoBasico, vantagens = vantagensRacais, desvantagens = desvantagensRacais, pericias = periciasRacais, qualidades = qualidadesRacais, peculiaridades = peculiaridadesRacais, limitacoesAtributo = limitacoesAtributo, descricao = descricaoRacial)
                         Card(modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                            Text("Custo Total Racial: ${tempModelo.custoTotal} pontos", modifier = Modifier.padding(16.dp).fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Custo Total Racial: ${tempModelo.custoTotal} pontos",
+                                modifier = Modifier.padding(16.dp).fillMaxWidth()
+                                    .semantics { contentDescription = "Custo total do modelo racial: ${tempModelo.custoTotal} pontos" },
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
@@ -328,10 +337,13 @@ fun ModeloRacialDialog(
                 // RODAPÉ FIXO
                 Surface(shadowElevation = 8.dp) {
                     Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(onClick = onDismiss, modifier = Modifier.weight(1f)) { Text("Cancelar") }
+                        OutlinedButton(
+                            onClick = onDismiss,
+                            modifier = Modifier.weight(1f).semantics { contentDescription = "Cancelar e fechar diálogo de Raça" }
+                        ) { Text("Cancelar") }
                         Button(
                             onClick = { showSalvarComo = true },
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f).semantics { contentDescription = "Salvar raça ou metacaracterística" }
                         ) { Text("Salvar") }
                     }
                 }
@@ -428,7 +440,7 @@ fun ModeloRacialDialog(
                             ListItem(
                                 headlineContent = { Text(cm.nome) },
                                 supportingContent = { Text("${cm.custoTotal} pts · ${cm.descricao.take(40)}") },
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.semantics { contentDescription = "Adicionar metacaracterística ${cm.nome}, ${cm.custoTotal} pontos" }.clickable {
                                     metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
                                         id = cm.nome.lowercase().replace(" ", "_"),
                                         nome = cm.nome, descricao = cm.descricao, conteudo = cm
@@ -445,7 +457,7 @@ fun ModeloRacialDialog(
                             ListItem(
                                 headlineContent = { Text(meta.nome) },
                                 supportingContent = { Text("${meta.custoTotal} pts") },
-                                modifier = Modifier.clickable {
+                                modifier = Modifier.semantics { contentDescription = "Adicionar metacaracterística ${meta.nome}, ${meta.custoTotal} pontos" }.clickable {
                                     metacaracteristicas = metacaracteristicas + com.gurps.ficha.model.MetacaracteristicaRef(
                                         id = meta.nome.lowercase().replace(" ", "_"),
                                         nome = meta.nome, descricao = meta.descricao, conteudo = meta
@@ -491,7 +503,9 @@ fun ModeloRacialDialog(
                         ListItem(
                             headlineContent = { Text(raca.nome) },
                             supportingContent = { if (raca.pagina.isNotBlank()) Text(raca.pagina) },
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.semantics {
+                                contentDescription = "Carregar raça ${raca.nome}${if (raca.pagina.isNotBlank()) ", ${raca.pagina}" else ""}"
+                            }.clickable {
                                 val res = com.gurps.ficha.domain.loaders.RacaCatalogo
                                     .resolver(raca, viewModel.dataRepository)
                                 val m = res.modelo
@@ -602,12 +616,13 @@ fun ModeloRacialDialog(
                             selected = tipoPR == TipoPericiaRacial.CONCEDIDA,
                             onClick = { tipoPR = TipoPericiaRacial.CONCEDIDA },
                             label = { Text("Concedida") },
-                            modifier = Modifier.padding(end = 6.dp)
+                            modifier = Modifier.padding(end = 6.dp).semantics { contentDescription = "Tipo Concedida: a raça já sabe a perícia, custo pela tabela${if (tipoPR == TipoPericiaRacial.CONCEDIDA) ", selecionado" else ""}" }
                         )
                         FilterChip(
                             selected = tipoPR == TipoPericiaRacial.BONUS,
                             onClick = { tipoPR = TipoPericiaRacial.BONUS },
-                            label = { Text("Bônus") }
+                            label = { Text("Bônus") },
+                            modifier = Modifier.semantics { contentDescription = "Tipo Bônus: a raça não sabe a perícia, apenas bônus no nível hábil${if (tipoPR == TipoPericiaRacial.BONUS) ", selecionado" else ""}" }
                         )
                     }
                     Text(
@@ -624,9 +639,9 @@ fun ModeloRacialDialog(
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = { nivelRelativo-- }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                        IconButton(onClick = { nivelRelativo-- }, modifier = Modifier.semantics { contentDescription = "Diminuir nível relativo da perícia" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
                         Text("${if(nivelRelativo>=0) "+" else ""}$nivelRelativo", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 24.dp))
-                        IconButton(onClick = { nivelRelativo++ }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                        IconButton(onClick = { nivelRelativo++ }, modifier = Modifier.semantics { contentDescription = "Aumentar nível relativo da perícia" }) { Icon(Icons.Default.KeyboardArrowUp, null) }
                     }
                     Text("Custo: $custoFinal pontos", color = MaterialTheme.colorScheme.primary)
                 }
@@ -693,8 +708,8 @@ fun ItemTraitRacial(nome: String, detalhes: String, onEdit: () -> Unit, onDelete
             supportingContent = { Text(detalhes) },
             trailingContent = {
                 Row {
-                    IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, "Editar") }
-                    IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, "Excluir", tint = MaterialTheme.colorScheme.error) }
+                    IconButton(onClick = onEdit, modifier = Modifier.semantics { contentDescription = "Editar $nome" }) { Icon(Icons.Default.Edit, null) }
+                    IconButton(onClick = onDelete, modifier = Modifier.semantics { contentDescription = "Remover $nome" }) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.error) }
                 }
             }
         )

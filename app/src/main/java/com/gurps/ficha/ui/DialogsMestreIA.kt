@@ -15,6 +15,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -108,14 +110,14 @@ fun ChatInputBar(value: String, onValueChange: (String) -> Unit, isAguardando: B
     Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(32.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)) {
         Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             var showMenu by remember { mutableStateOf(false) }
-            IconButton(onClick = { showMenu = true }) { Icon(if (mode == "conversa") Icons.Default.Add else Icons.Default.Settings, null) }
+            IconButton(onClick = { showMenu = true }, modifier = Modifier.semantics { contentDescription = if (mode == "conversa") "Abrir menu de modo do Mestre IA (modo: Dúvida)" else "Abrir menu de modo do Mestre IA (modo: ${if (mode == "analise") "Analisar ficha" else "Criar"})" }) { Icon(if (mode == "conversa") Icons.Default.Add else Icons.Default.Settings, null) }
             DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
                 DropdownMenuItem(text = { Text("📖 Dúvida") }, onClick = { onModeChange("conversa"); showMenu = false })
                 DropdownMenuItem(text = { Text("🔍 Analisar ficha") }, onClick = { onModeChange("analise"); showMenu = false })
                 DropdownMenuItem(text = { Text("🏗️ Criar") }, onClick = { onModeChange("geracao"); showMenu = false })
             }
             androidx.compose.foundation.text.BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier.weight(1f).padding(8.dp), decorationBox = { if (value.isEmpty()) Text("Fale com o mestre..."); it() })
-            if (isAguardando) CircularProgressIndicator(modifier = Modifier.size(24.dp)) else IconButton(onClick = onSend, enabled = value.isNotBlank()) { Icon(Icons.AutoMirrored.Filled.Send, null) }
+            if (isAguardando) CircularProgressIndicator(modifier = Modifier.size(24.dp)) else IconButton(onClick = onSend, enabled = value.isNotBlank(), modifier = Modifier.semantics { contentDescription = "Enviar mensagem para o Mestre IA" }) { Icon(Icons.AutoMirrored.Filled.Send, null) }
         }
     }
 }

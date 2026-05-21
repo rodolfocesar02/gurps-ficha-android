@@ -172,7 +172,7 @@ fun CarregarDialog(
                         }
                         
                         if (estaLocal) {
-                            IconButton(onClick = { onExcluir(nome) }) { Icon(Icons.Default.Delete, contentDescription = "Excluir") }
+                            IconButton(onClick = { onExcluir(nome) }) { Icon(Icons.Default.Delete, contentDescription = "Excluir ficha ${nome.replace("_", " ")}") }
                         }
                     }
                 }

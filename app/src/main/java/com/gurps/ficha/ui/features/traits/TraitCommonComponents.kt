@@ -15,6 +15,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,7 +48,7 @@ fun EscopoModificadoresDialog(especificos: List<ModificadorDefinicao>, gerais: L
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     leadingIcon = { Icon(Icons.Default.Search, null) },
-                    trailingIcon = { if (busca.isNotEmpty()) IconButton(onClick = { busca = "" }) { Icon(Icons.Default.Close, null) } }
+                    trailingIcon = { if (busca.isNotEmpty()) IconButton(onClick = { busca = "" }, modifier = Modifier.semantics { contentDescription = "Limpar busca" }) { Icon(Icons.Default.Close, null) } }
                 )
                 
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.height(300.dp)) {
@@ -109,7 +111,7 @@ fun ModificadorItemRow(mod: ModificadorDefinicao, onClick: () -> Unit) {
                 Text("${mod.tipo} | ${mod.valor}" + (if (mod.porNivel) " p/ nível" else ""), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
             }
             if (mod.descricao?.isNotBlank() == true) {
-                IconButton(onClick = { mostrarDescricao = true }) { Icon(Icons.Default.Info, null) }
+                IconButton(onClick = { mostrarDescricao = true }, modifier = Modifier.semantics { contentDescription = "Ver descrição de ${mod.nome}" }) { Icon(Icons.Default.Info, null) }
             }
         }
     }
@@ -135,7 +137,7 @@ fun ModificadorSelecionadoItem(mod: ModificadorSelecao, onUpdate: (ModificadorSe
                         TextButton(onClick = { onUpdate(mod.copy(niveis = mod.niveis + 1)) }) { Text("+") }
                     }
                 }
-                IconButton(onClick = onDelete) { Icon(androidx.compose.material.icons.Icons.Default.Delete, null) }
+                IconButton(onClick = onDelete, modifier = Modifier.semantics { contentDescription = "Remover modificador ${mod.nome}" }) { Icon(androidx.compose.material.icons.Icons.Default.Delete, null) }
             }
             // GURPS p.262/B102: vários modificadores (Cíclico, Acompanhamento,
             // Curável, Imprecação, etc.) exigem que o jogador especifique uma
