@@ -33,9 +33,9 @@ fun FichaCustomNavigationBar(
     tabs: List<String>,
     currentIndex: Int,
     onTabClick: (Int) -> Unit,
+    onMestreIAClick: () -> Unit = {},
     isPraCegoVariant: Boolean = false
 ) {
-    // Container da Barra de Navegação (Fundo Transparente)
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -43,42 +43,66 @@ fun FichaCustomNavigationBar(
         contentAlignment = Alignment.BottomCenter
     ) {
         Row(
-            modifier = Modifier
-                .wrapContentWidth()
-                .padding(horizontal = 4.dp),
-            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom
         ) {
-            tabs.forEachIndexed { index, title ->
-                val isSelected = index == currentIndex
-                
-                val iconRes = when (title) {
-                    "Geral" -> R.drawable.tab_geral
-                    "Traços" -> R.drawable.tab_tracos
-                    "Perícias" -> R.drawable.tab_pericias
-                    "Técnicas" -> R.drawable.tab_tecnicas
-                    "Magia" -> R.drawable.tab_magia
-                    "Equip." -> R.drawable.tab_equipamentos
-                    "Defesas" -> R.drawable.tab_defesas
-                    "Rolagem" -> R.drawable.tab_rolagem
-                    else -> R.drawable.tab_geral
-                }
-
-                // Regra do Usuário: Primeiros 3 (0,1,2) -> Nome na Direita. Restante -> Esquerda.
-                val labelOnRight = index <= 2
-
-                RPGNavigationItem(
-                    label = title,
-                    iconRes = iconRes,
-                    isSelected = isSelected,
-                    labelOnRight = labelOnRight,
-                    isPraCegoVariant = isPraCegoVariant,
-                    onClick = { onTabClick(index) }
+            // Ícone Mestre IA fixo à esquerda
+            Box(
+                modifier = Modifier
+                    .padding(start = 8.dp, end = 4.dp)
+                    .semantics { contentDescription = "Abrir Mestre IA" }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onMestreIAClick
+                    ),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.tab_mestre_ia),
+                    contentDescription = null,
+                    modifier = Modifier.size(38.dp)
                 )
-                
-                // Espaçamento total de 12dp entre os itens (4 + 4 + 4)
-                if (index < tabs.size - 1) {
-                    Spacer(modifier = Modifier.width(4.dp))
+            }
+
+            // Abas principais empurradas para a direita
+            Row(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 4.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    val isSelected = index == currentIndex
+
+                    val iconRes = when (title) {
+                        "Geral" -> R.drawable.tab_geral
+                        "Traços" -> R.drawable.tab_tracos
+                        "Perícias" -> R.drawable.tab_pericias
+                        "Técnicas" -> R.drawable.tab_tecnicas
+                        "Magia" -> R.drawable.tab_magia
+                        "Equip." -> R.drawable.tab_equipamentos
+                        "Defesas" -> R.drawable.tab_defesas
+                        "Rolagem" -> R.drawable.tab_rolagem
+                        else -> R.drawable.tab_geral
+                    }
+
+                    // Primeiros 3 (0,1,2) -> Nome na Direita. Restante -> Esquerda.
+                    val labelOnRight = index <= 2
+
+                    RPGNavigationItem(
+                        label = title,
+                        iconRes = iconRes,
+                        isSelected = isSelected,
+                        labelOnRight = labelOnRight,
+                        isPraCegoVariant = isPraCegoVariant,
+                        onClick = { onTabClick(index) }
+                    )
+
+                    if (index < tabs.size - 1) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
                 }
             }
         }
