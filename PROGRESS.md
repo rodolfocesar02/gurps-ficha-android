@@ -876,6 +876,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 204: modificadores em desvantagens (Configurar + Editar) - CONCLUÍDO
+- **Bug:** `ConfigurarDesvantagemDialog` nunca exibia a seção de modificadores (estava com comentário `// ... logic for showAddMod etc`). `EditarDesvantagemDialog` tinha o botão "Add" mas nunca instanciava o `EscopoModificadoresDialog` — clicar não abria nada.
+- **Correção:** `ConfigurarDesvantagemDialog` ganhou a seção "Modificadores (%)" com botão Add + lista `ModificadorSelecionadoItem` + `EscopoModificadoresDialog`. `EditarDesvantagemDialog` ganhou o `EscopoModificadoresDialog` que faltava. Lógica idêntica à das vantagens, sem `mod_aptidao_escola` (que não existe em desvantagens).
+- **Build:** 8s OK.
+- **Commit:** `bd5dabe`
+
 ### Lote 203: mods em desvantagens raciais + mod_furia_em_combate + fix Minotauro - CONCLUÍDO
 - **Bug:** `RacaCatalogo.kt` resolver de desvantagens NÃO processava o array `mods` — só vantagens tinham esse tratamento. Resultado: `furia` do Minotauro ficava com `modificadores:[]`, sem o `+50%` Fúria em Combate, então o app calculava `-10×1.5(auto9) = -15` em vez de `-22`. Total aparecia 19 pts em vez de 13.
 - **Correção:** Extendido o resolver de desvantagens para processar `mods` com a mesma lógica das vantagens (incluindo formato `id:N` para níveis e fallback no catálogo global de modificadores).
