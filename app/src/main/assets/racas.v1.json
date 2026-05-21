@@ -1330,6 +1330,58 @@
           "tipo": "CONCEDIDA"
         }
       ]
+    },
+    {
+      "id": "pequenino",
+      "nome": "Pequeninos (Halfling)",
+      "pagina": "Cataclismo 199",
+      "descricao": "Esse povo baixinho e pacífico está principalmente interessado em cultivar, comer, beber e viver uma vida boa. São atarracados e de rosto redondo; quase nunca usam barbas. São 45 cm mais baixos do que humanos normais de mesma ST.",
+      "mt": -1,
+      "atributos": {
+        "st": -3,
+        "dx": 1,
+        "ht": 1
+      },
+      "secundarios": {
+        "pv": 1,
+        "deslocamentoBasico": -1
+      },
+      "vantagens": [
+        {
+          "id": "reconhecimento_social",
+          "nivel": 1,
+          "descricao": "Bom Vizinho"
+        },
+        {
+          "id": "silencio",
+          "nivel": 1
+        },
+        {
+          "id": "talento_dos_pequeninos_para_armas_de_longa_distancia",
+          "nivel": 2
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "amigavel",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "codigo_de_honra",
+          "descricao": "Pequeninos",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "gula",
+          "autocontrole": 12
+        }
+      ],
+      "peculiaridades": [
+        "Aversão a grandes corpos d'água",
+        "Acomodado"
+      ],
+      "qualidades": [],
+      "pericias": []
     }
   ]
 }
