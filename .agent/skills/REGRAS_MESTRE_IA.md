@@ -1,11 +1,11 @@
 ---
 name: regras-mestre-ia-gurps
-description: "GRIMÓRIO MESTRE: Contém o Mapa do Projeto, Regras Operacionais, Leis de GURPS 4Ed e Guia de Acessibilidade. O ÚNICO arquivo de referência necessário para o Agente."
+description: "GRIMÓRIO MESTRE: Protocolo operacional, regras de trabalho e guia de acessibilidade para agentes que trabalham neste repositório. Leia este arquivo primeiro, depois consulte os documentos de referência listados abaixo."
 ---
 
 # Grimório mestre: regras da ia (projeto gurps android)
 
-Este documento é a **Fonte Única de Verdade (SSOT)** para qualquer IA trabalhando neste repositório. Ele consolida a arquitetura, as regras matematicas e o protocolo de trabalho com o Rodolfo.
+Este documento define o **protocolo de trabalho** para qualquer agente neste repositório: como se comunicar, como commitar, como testar. Para entender o projeto em si, consulte os documentos de referência listados na seção abaixo.
 
 ---
 
@@ -23,45 +23,22 @@ Este documento é a **Fonte Única de Verdade (SSOT)** para qualquer IA trabalha
 
 ---
 
-## Mapa da arquitetura (project map)
+## Documentos de Referência
 
-O projeto é um aplicativo Android (Kotlin/Compose) para fichas de GURPS 4ª Edição, focado em automação e acessibilidade.
+Leia nesta ordem ao assumir o projeto:
 
-###  Estrutura de Pastas
-- **`app/src/main/java/com/gurps/ficha/`**
-    - `model/`: Classes de dados puras (Personagem, Atributo, Vantagem).
-    - `data/`: Repositórios (Room/Database) e Preferências.
-    - `ui/`: Telas e Componentes (Jetpack Compose).
-    - `viewmodel/`:
-        - `FichaViewModel.kt`: Controlador Principal (State Holder).
-        - `delegates/`: Onde mora a lógica de negócio (Combate, Persistência, IA, etc).
-- **`.agent/skills/`**: Este arquivo mestre.
-
-###  Mapa de Funções VIP (Localização Rápida)
-Para economizar tokens e tempo, vá direto aos endereços abaixo:
-- **Cálculo de Defesas (Esquiva/Apara/Bloqueio)**: `FichaCombatDelegate.kt` -> `calcularDefesasVisiveis()`.
-- **Trava Anti-Corrupção (Auto-Save)**: `FichaViewModel.kt` -> variável `estaCarregando` (bloqueia o save no `init`).
-- **Importação de Fichas Antigas/Nuvem**: `FichaPersistenceDelegate.kt` -> `carregarFicha()` que chama `PersonagemInterop.importarJson()`.
-- **Auto-Ajuste de Escudos**: `FichaCombatDelegate.kt` -> `ajustarEscudoAutomatico()`.
-- **Busca e Filtros**: `FichaSearchDelegate.kt` -> `filtrarVantagens()`, `filtrarPericias()`, etc.
-- **Mestre IA e Reparo de JSON**: `MestreIAClient.kt` -> `repararJsonTruncado()` (Algoritmo de Pilha).
+1. **`MAPA_DETALHADO.md`** — Mapa completo de todos os 130+ arquivos do projeto: o que cada um faz, onde fica, e a tabela de endereços rápidos para funções críticas. Leia primeiro para se orientar.
+2. **`ARQUITETURA_MESTRE_IA.md`** — Detalhamento técnico do sistema de IA (fluxo Auditor/Forjador, loop de tool-use, FTS, prompts, decisões de arquitetura). Leia quando for trabalhar no Mestre IA.
+3. **`PROGRESS.md`** — Diário de lotes e commits desde o início do projeto. Consulte para entender o histórico de decisões e o que já foi feito. Nunca apague entradas — apenas adicione ao final.
 
 ---
 
 ### A Regra dos Lotes (Segurança)
 - **1 Lote = 1 Commit:** Nunca faça mudanças gigantescas sem salvar.
-- **PROGRESS.md:** Atualize este arquivo a cada commit com o número do Lote.
+- **PROGRESS.md:** Atualize este arquivo (nunca apague nada dentro, apenas adicione o novo item ao final) a cada commit com o número do Lote.
 - **Build Obrigatório:** Nunca termine um turno sem rodar `./gradlew build` para garantir que o app compila.
 
----
-
-## Leis rgp gurps (regras do sistema)
-
-### Isolamento Matemático (Calculadoras Puras)
-- **Zero Lógica na UI:** Cálculos de Esquiva, Apara e Bloqueio devem vir do `FichaViewModel` via `CombatDelegate`. Jamais coloque fórmulas matemáticas em arquivos `.kt` da UI.
-
-### Vínculo de Combate
-- **Dano vs Perícia:** O cálculo de dano deve ser vinculado ao `periciaId` selecionado para aplicar bônus específicos (como Mestre de Armas) de forma correta.
+## Jamais coloque fórmulas matemáticas em arquivos `.kt` da UI.
 
 ---
 
