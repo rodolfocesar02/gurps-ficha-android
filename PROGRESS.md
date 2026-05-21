@@ -876,6 +876,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 210: campo MT no dialog de modelo racial - CONCLUÍDO
+- **Dialog de Raça/Metacaracterísticas:** adicionado `AjustadorVerticalRacial("MT")` na Row de Vel.Básica/Desloc., ao lado do Deslocamento. Estado inicializado de `modeloOriginal.modificadorTamanho`.
+- **Carregar Raça do Catálogo:** propagação de `modificadorTamanho = m.modificadorTamanho` ao popular os campos do dialog (antes ficava 0 mesmo para raças com MT do catálogo).
+- **`montarModelo()`:** inclui `modificadorTamanho` na construção do `ModeloRacial`. Gson serializa/desserializa automaticamente; fichas antigas recebem 0 (padrão correto).
+- **Build:** 8s OK.
+- **Commit:** `14bcf7b`
+
 ### Lote 209: MT na mesma linha que BC nas Características Derivadas - CONCLUÍDO
 - **Fix UI:** MT estava numa linha separada abaixo do BC. Corrigido para aparecer na mesma Row (Vel. Basica / Desloc. / BC / MT), oculto se 0.
 - **Commit:** `54cf3ab`
