@@ -173,44 +173,49 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 }
 
                 // List
-                LazyColumn(modifier = Modifier.weight(1f)) {
+                LazyColumn(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     items(listaExibicao) { magia ->
                         Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                            modifier = Modifier.fillMaxWidth().clickable { magiaSelecionada = magia },
+                            colors = appCardColors()
                         ) {
-                            Row(modifier = Modifier.clickable { magiaSelecionada = magia }.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = UiTokens.CardPaddingHorizontal, vertical = UiTokens.CardPaddingVertical),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(magia.nome, fontWeight = FontWeight.Bold)
-                                    Text(magia.escola?.joinToString(", ") ?: "", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                    
+                                    Text(magia.nome, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium)
+                                    Text(
+                                        magia.escola?.joinToString(", ") ?: "",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
                                     val falha = viewModel.prereqFailureForMagia(magia)
                                     if (!falha.isNullOrBlank()) {
                                         Text(
                                             text = "Falta: $falha",
-                                            fontSize = 11.sp,
-                                            color = MaterialTheme.colorScheme.error,
-                                            lineHeight = 13.sp
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.error
                                         )
                                     } else {
                                         Text(
                                             text = "✓ Requisitos Atendidos",
-                                            fontSize = 11.sp,
+                                            style = MaterialTheme.typography.bodySmall,
                                             color = Color(0xFF2E7D32),
                                             fontWeight = FontWeight.Medium
                                         )
                                     }
                                 }
                                 if (modoAlvoAtivo) {
-                                    TextButton(onClick = { 
-                                        magiaAlvoId = magia.id 
-                                        viewModel.atualizarBuscaMagia("") 
+                                    TextButton(onClick = {
+                                        magiaAlvoId = magia.id
+                                        viewModel.atualizarBuscaMagia("")
                                     }) {
-                                        Text(if (magiaAlvoId == magia.id) "🎯 ALVO" else "OBJETIVO", 
-                                            fontSize = 10.sp, 
-                                            color = if (magiaAlvoId == magia.id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary)
+                                        Text(
+                                            if (magiaAlvoId == magia.id) "ALVO" else "OBJETIVO",
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = if (magiaAlvoId == magia.id) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+                                        )
                                     }
                                 }
                             }
