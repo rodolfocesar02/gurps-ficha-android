@@ -439,7 +439,8 @@
           "nivelRelativo": 2,
           "tipo": "CONCEDIDA"
         }
-      ]
+      ],
+      "mt": 1
     },
     {
       "id": "esfinge_tigrina",
@@ -522,7 +523,8 @@
           "nivelRelativo": 2,
           "tipo": "CONCEDIDA"
         }
-      ]
+      ],
+      "mt": 1
     },
     {
       "id": "gargula",
@@ -654,7 +656,8 @@
       "peculiaridades": [
         "Odeia ogros, e ser confundido com ogros"
       ],
-      "pericias": []
+      "pericias": [],
+      "mt": 2
     },
     {
       "id": "gnomo",
@@ -867,7 +870,8 @@
         "Adora pregar peças",
         "Se sente insultado facilmente"
       ],
-      "pericias": []
+      "pericias": [],
+      "mt": -1
     },
     {
       "id": "homem_inseto",
@@ -1164,7 +1168,9 @@
           "id": "furia",
           "descricao": "Fúria em Combate",
           "autocontrole": 9,
-          "mods": ["mod_furia_em_combate"]
+          "mods": [
+            "mod_furia_em_combate"
+          ]
         },
         {
           "id": "habitos_detestaveis",

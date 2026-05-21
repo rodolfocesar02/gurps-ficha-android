@@ -113,6 +113,7 @@ data class Personagem(
     val deslocamentoBasico: Int get() = velocidadeBasica.toInt() + modDeslocamentoBasico + modeloRacial.modDeslocamentoBasico
     val esquiva: Int get() = (velocidadeBasica + 3).toInt() // Esquiva Básica (sem carga)
     val baseCarga: Float get() = (st * st) / 10f
+    val modificadorTamanho: Int get() = modeloRacial.modificadorTamanho
     val danoGdP: String get() = CharacterRules.calcularDanoGdP(st)
     val danoGeB: String get() = CharacterRules.calcularDanoGeB(st)
 
@@ -1042,6 +1043,9 @@ data class ModeloRacial(
     // limitação (comportamento idêntico ao anterior). Cada item
     // afeta SÓ o atributo nomeado.
     val limitacoesAtributo: List<LimitacaoAtributo> = emptyList(),
+    // MT racial (GURPS B19). 0 = humano padrão (oculto na ficha).
+    // Valor positivo = alvo maior/mais fácil de acertar; negativo = menor.
+    val modificadorTamanho: Int = 0,
     // Metacaracterísticas embutidas (GURPS p.262). Cada uma entra como
     // UM item de custo único — NÃO expande componentes ("anote a
     // metacaracterística, não seus componentes"). Ex.: Espírito = +261.

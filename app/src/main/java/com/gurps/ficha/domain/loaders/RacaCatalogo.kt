@@ -63,6 +63,9 @@ data class RacaDefinicao(
     // Precários ST/DX). A IA informa atributo+tipo+% lidos do texto
     // do livro ("ST+8 (Tamanho, -10%)"). Vazio = sem limitação.
     val limitacoesAtributo: List<RacaLimitacaoRef> = emptyList(),
+    // MT racial (GURPS B19). 0 = humano (omitir no JSON). Bônus de ataque
+    // para acertar a criatura; afeta testes de Visão para encontrá-la.
+    val mt: Int = 0,
     val secundarios: Map<String, Int> = emptyMap(),
     val vantagens: List<RacaTracoRef> = emptyList(),
     val desvantagens: List<RacaTracoRef> = emptyList(),
@@ -287,6 +290,7 @@ object RacaCatalogo {
                     naoResolvidos.add("limitação ${tipo.rotulo} não vale p/ ${attr.name}"); null
                 } else com.gurps.ficha.model.LimitacaoAtributo(attr, tipo, ref.percentual)
             },
+            modificadorTamanho = raca.mt,
             descricao = raca.descricao
         )
         return ResultadoResolucao(modelo, naoResolvidos)
