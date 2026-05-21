@@ -1,5 +1,23 @@
 [
   {
+    "id": "mod_absorcao",
+    "nome": "Absorção",
+    "tipo": "ampliação",
+    "valor": "80%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "O personagem é capaz de absorver o dano e utilizá-lo para ampliar suas habilidades. Cada ponto de RD cancela um ponto de dano e o transforma em um ponto de personagem, que pode ser utilizado para melhorar temporariamente algumas características (tudo, exceto perícias). Esses pontos são armazenados em uma “bateria” com capacidade igual à RD (ex., uma RD 10 tem uma bateria de 10 pontos). Depois que essa bateria estiver cheia, cada ponto de RD continua cancelando um ponto de dano, mas não o converte mais em um ponto de personagem. O jogador não tem que usar os pontos armazenados imediatamente, mas não pode realocá-los depois que eles foram utilizados. Os pontos absorvidos são perdidos à razão de um ponto por segundo — começando pelos não utilizados. O personagem também perde as habilidades ampliadas à medida que os pontos vão se perdendo. (Exceção: Se precisar de PV ou PF, o personagem pode se curar com esses pontos. Restaurar um PV usa 2 pontos armazenados; restaurar um PF usa 3 pontos. Essa cura é permanente. Apenas PV ou PF acima do máximo são drenados.) O personagem não consegue absorver dano de sua própria ST ou habilidades de ataque."
+  },
+  {
+    "id": "mod_absorcao",
+    "nome": "Absorção",
+    "tipo": "ampliação",
+    "valor": "100%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "Igual Absorção de 80% mas é possível melhorar qualquer característica."
+  },
+  {
     "id": "mod_acompanhamento",
     "nome": "Acompanhamento",
     "tipo": "ampliação",
@@ -160,6 +178,15 @@
     "porNivel": false,
     "pagina": 103,
     "descricao": "Muda para qual atributo o alvo resiste (Vontade para HT, etc.). +20% se for para um atributo mais fraco no alvo médio."
+  },
+  {
+    "id": "mod_campo_de_forca",
+    "nome": "Campo de Força",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "A RD do personagem assume a forma de um campo de força projetado a uma curta distância de seu corpo. Esse efeito protege todo o corpo do personagem — inclusive os olhos — assim como qualquer coisa que ele estiver carregando, e reduz o dano causado por ataques antes da RD da armadura. Os efeitos de ataques que dependem do toque (como várias mágicas) só afetam o personagem se forem provocados por um ataque que causa dano suficiente para perfurar a RD."
   },
   {
     "id": "mod_capaz_de_carregar_objetos",
@@ -368,6 +395,15 @@
     "porNivel": false,
     "pagina": 85,
     "descricao": "O ataque do personagem imobiliza o alvo. Ele não consegue mover os braços, nem as pernas, nem falar; a única opção dele é usar habilidades puramente mentais, utilizar Ataques Inatos ou tentar libertar-se usando a ST (não a perícia Fuga). Se tentar se libertar e não conseguir, a vítima poderá fazer  uma nova tentativa depois de 10 segundos — contudo, com um resultado de 17 ou 18, ela fica tão enredada que não conseguirá mais escapar sozinha!"
+  },
+  {
+    "id": "mod_enrijecido",
+    "nome": "Enrijecido",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": true,
+    "pagina": 84,
+    "descricao": "Cada nível de Enrijecido reduz o divisor de armadura de um ataque em um degrau. Esses degraus são, na seguinte ordem: “ignora RD”, 100, 10, 5, 3, 2 e 1 (sem divisor)"
   },
   {
     "id": "mod_Estendida",
@@ -809,6 +845,24 @@
     "porNivel": false,
     "pagina": 109,
     "descricao": "Efeito ocorre com longo atraso (minutos, horas ou dias)."
+  },
+  {
+    "id": "mod_retardo_longo",
+    "nome": "Retardo (Minutos/Horas/Dias)",
+    "tipo": "ampliação",
+    "valor": "+20%",
+    "porNivel": false,
+    "pagina": 109,
+    "descricao": "Efeito ocorre com longo atraso (minutos, horas ou dias)."
+  },
+  {
+    "id": "mod_reflexao",
+    "nome": "Reflexão",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "A RD do personagem “ricocheteia” todo o dano que detém, lançando-o contra o atacante. O dano restante afeta o personagem normalmente. O atacante não tem direito a uma defesa ativa contra o primeiro ataque que o personagem devolver contra ele, mas retoma o direito de usar suas defesas normais contra os ataques subsequentes que forem refletidos. A Reflexão só funciona contra ataques diretos! Ela não é capaz de refletir o dano causado por explosões, fragmentos, gás venenoso ou qualquer outro efeito que afeta uma área. Esta ampliação e Absorção são mutuamente excludentes."
   },
   {
     "id": "mod_seletividade",
@@ -1709,6 +1763,15 @@
     "porNivel": false,
     "pagina": 116,
     "descricao": "Entre 5 e 10 utilizações por dia."
+  },
+  {
+    "id": "mod_furia_em_combate",
+    "nome": "Fúria em Combate",
+    "tipo": "ampliação",
+    "valor": "+50%",
+    "porNivel": false,
+    "pagina": 143,
+    "descricao": "A Fúria do personagem só é ativada durante o combate (quando sofre dano ou vê um aliado sofrer dano). Aumenta o custo da desvantagem em +50%."
   },
   {
     "id": "mod_comprido",

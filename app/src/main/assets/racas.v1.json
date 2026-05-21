@@ -1164,7 +1164,7 @@
           "id": "furia",
           "descricao": "Fúria em Combate",
           "autocontrole": 9,
-          "custoEscolhido": -22
+          "mods": ["mod_furia_em_combate"]
         },
         {
           "id": "habitos_detestaveis",

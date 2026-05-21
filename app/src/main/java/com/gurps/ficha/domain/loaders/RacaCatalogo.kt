@@ -199,6 +199,29 @@ object RacaCatalogo {
         val desvantagens = raca.desvantagens.mapNotNull { ref ->
             val def = casar(ref, repo.desvantagens, { it.id }, { it.nome })
             if (def == null) { naoResolvidos.add("desvantagem: ${ref.id ?: ref.nome}"); return@mapNotNull null }
+            val modsDesv = ref.mods.mapNotNull { modRaw ->
+                val parts = modRaw.split(":", limit = 2)
+                val modId = parts[0]
+                val modNiveis = parts.getOrNull(1)?.toIntOrNull() ?: 1
+                val esp = def.modificadoresEspecificos.firstOrNull { it.id.equals(modId, ignoreCase = true) }
+                if (esp != null) {
+                    return@mapNotNull ModificadorSelecao(
+                        id = esp.id, nome = esp.nome,
+                        valor = esp.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
+                        porNivel = false, niveis = modNiveis, pagina = esp.pagina, bonusBase = 0
+                    )
+                }
+                val ger = repo.modificadoresGerais.firstOrNull { it.id.equals(modId, ignoreCase = true) }
+                    ?: repo.modificadoresGerais.firstOrNull { norm(it.nome) == norm(modId) }
+                if (ger != null) {
+                    ModificadorSelecao(
+                        id = ger.id, nome = ger.nome,
+                        valor = ger.valor.replace(Regex("[^0-9-]"), "").toIntOrNull() ?: 0,
+                        porNivel = ger.porNivel, niveis = modNiveis,
+                        pagina = ger.pagina, bonusBase = ger.bonusBase
+                    )
+                } else { naoResolvidos.add("modificador: $modId (${def.id})"); null }
+            }
             DesvantagemSelecionada(
                 definicaoId = def.id,
                 nome = def.nome,
@@ -209,7 +232,8 @@ object RacaCatalogo {
                 autocontrole = ref.autocontrole,
                 tipoCusto = def.tipoCusto,
                 pagina = def.pagina,
-                specialRule = def.specialRule
+                specialRule = def.specialRule,
+                modificadores = modsDesv
             )
         }
 
