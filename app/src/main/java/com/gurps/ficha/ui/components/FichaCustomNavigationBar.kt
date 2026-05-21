@@ -34,6 +34,7 @@ fun FichaCustomNavigationBar(
     currentIndex: Int,
     onTabClick: (Int) -> Unit,
     onMestreIAClick: () -> Unit = {},
+    mestreIAAberto: Boolean = false,
     isPraCegoVariant: Boolean = false
 ) {
     Box(
@@ -46,24 +47,15 @@ fun FichaCustomNavigationBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom
         ) {
-            // Ícone Mestre IA fixo à esquerda
-            Box(
-                modifier = Modifier
-                    .padding(start = 8.dp, end = 4.dp)
-                    .semantics { contentDescription = "Abrir Mestre IA" }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = onMestreIAClick
-                    ),
-                contentAlignment = Alignment.BottomCenter
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.tab_mestre_ia),
-                    contentDescription = null,
-                    modifier = Modifier.size(38.dp)
-                )
-            }
+            // Ícone Mestre IA fixo à esquerda — usa a mesma animação das abas
+            RPGNavigationItem(
+                label = "Mestre IA",
+                iconRes = R.drawable.tab_mestre_ia,
+                isSelected = mestreIAAberto,
+                labelOnRight = true,
+                isPraCegoVariant = isPraCegoVariant,
+                onClick = onMestreIAClick
+            )
 
             // Abas principais empurradas para a direita
             Row(

@@ -282,6 +282,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     currentIndex = selectedTab,
                     onTabClick = { index -> selectedTab = index },
                     onMestreIAClick = { showMestreIADialog = true },
+                    mestreIAAberto = showMestreIADialog,
                     isPraCegoVariant = isPraCegoVariant
                 )
             }
