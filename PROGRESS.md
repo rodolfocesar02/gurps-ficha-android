@@ -7,7 +7,7 @@
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
 - **Unificação de Traços e Busca Inteligente**: Finalização do Lote 86 com todas as melhorias de interface e blindagem de cálculo integradas.
-- **Preparação de Update**: Arquivo `update.json` atualizado para notificar os usuários sobre a nova versão. Ã°Å¸â€â€Ã°Å¸â€ºÂ¡Ã¯Â¸ï¿½
+- **Preparação de Update**: Arquivo `update.json` atualizado para notificar os usuários sobre a nova versão. 
 
 ### Sincro V23: Mapeamento Arquitetural e Blindagem de Conhecimento
 - **Mapa Detalhado de Engenharia**: Criado o `MAPA_DETALHADO.md` com o inventário completo de funções, motores de RPG, scripts e suítes de teste. Ã°Å¸â€”ÂºÃ¯Â¸ï¿½Ã°Å¸â€ï¿½
@@ -882,49 +882,49 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Regra para futuras raças com Dentes:** sempre incluir `metadados: {tipoDentes: "rombo"|"bico_afiado"|"dentes_afiados"|"presas"}`.
 - **Commit:** `ba95481`
 
-### Lote 214: Reptantes (58 pts, Cataclismo 200) adicionado ao catálogo - CONCLUÍDO
+### Lote 216: Reptantes (58 pts, Cataclismo 200) adicionado ao catálogo - CONCLUÍDO
 - **Reptante:** ST+4 (Tamanho -10%), IQ-1, HT+2. MT+1. Vantagens: Dentes Afiados (1), Garras Afiadas (5), Longevidade, Membrana Nictitante 3, RD 1 (Pele Resistente -40% = 3), Tolerância à Temperatura 5, Visão Periférica. Desvantagens: Estigma Social Bárbaro (-10), Timidez Suave (-5). Perícias: Camuflagem (F) IQ+0 [1], Sobrevivência Deserto (M) Per+0 [2]. Qualidade: traço inerente idiomas Com Sotaque.
 - **Verificação:** 36(atrib)+34(vant)-15(desv)+3(perícias) = 58 pts ✓
 - **Commit:** `e51ea76`
 
-### Lote 213: fix Não Respira (Guelras) Povo do Mar - CONCLUÍDO
+### Lote 217: fix Não Respira (Guelras) Povo do Mar - CONCLUÍDO
 - **Bug:** `custoEscolhido: 10` era o valor pós-modificador. O app aplicava `-50%` em cima → `floor(10×0.5) = 5` em vez de 10. Correto: `custoEscolhido` deve ser o custo **base** (20); app calcula `floor(20×0.5) = 10` ✓.
 - **Regra geral:** para vantagens FIXO com mods no catálogo racial, `custoEscolhido` = custo base do catálogo (não o valor já calculado).
 - **Commit:** `5f95cab`
 
-### Lote 211: Povo do Mar (52 pts, Cataclismo 200) + mod_guelras - CONCLUÍDO
+### Lote 218: Povo do Mar (52 pts, Cataclismo 200) + mod_guelras - CONCLUÍDO
 - **Povo do Mar:** sem mod. atributos. Vantagens: Deslocamento Ampliado 1 (Água), Escorregadio 1, Fala Subaquática, Membrana Nictitante 5, Não Respira (Guelras -50% = 10 pts), Resistência à Pressão 1 (5 pts), Sentido de Monitoramento Sonar (20 pts). Desvantagem: Dependência Água Muito Comum Diária (-15). Qualidade: Aquático (traço inerente, sem custo).
 - **modificadores.v1.json:** adicionado `mod_guelras` (-50%, p.352) — limitação de Não Respira: só funciona na água ou em ar úmido.
 - **Verificação:** 0(atrib)+67(vant)-15(desv) = 52 pts ✓
 - **Commit:** `6c5092a`
 
-### Lote 210: campo MT no dialog de modelo racial - CONCLUÍDO
+### Lote 219: campo MT no dialog de modelo racial - CONCLUÍDO
 - **Dialog de Raça/Metacaracterísticas:** adicionado `AjustadorVerticalRacial("MT")` na Row de Vel.Básica/Desloc., ao lado do Deslocamento. Estado inicializado de `modeloOriginal.modificadorTamanho`.
 - **Carregar Raça do Catálogo:** propagação de `modificadorTamanho = m.modificadorTamanho` ao popular os campos do dialog (antes ficava 0 mesmo para raças com MT do catálogo).
 - **`montarModelo()`:** inclui `modificadorTamanho` na construção do `ModeloRacial`. Gson serializa/desserializa automaticamente; fichas antigas recebem 0 (padrão correto).
 - **Build:** 8s OK.
 - **Commit:** `14bcf7b`
 
-### Lote 209: MT na mesma linha que BC nas Características Derivadas - CONCLUÍDO
+### Lote 220: MT na mesma linha que BC nas Características Derivadas - CONCLUÍDO
 - **Fix UI:** MT estava numa linha separada abaixo do BC. Corrigido para aparecer na mesma Row (Vel. Basica / Desloc. / BC / MT), oculto se 0.
 - **Commit:** `54cf3ab`
 
-### Lote 208: Pequeninos/Halfling (0 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
+### Lote 221: Pequeninos/Halfling (0 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
 - **Pequenino:** ST-3, DX+1, HT+1. MT-1. PV+1, Deslocamento-1. Vantagens: Reconhecimento Social 1 (Bom Vizinho), Silêncio 1, Talento dos Pequeninos para Armas de Longa Distância 2. Desvantagens: Amigável (-5), Código de Honra Pequeninos (-5), Gula (auto12, -5). Peculiaridades (2, = -2): Aversão a grandes corpos d'água; Acomodado.
 - **Verificação:** 0(atrib)-3(sec)+20(vant)-15(desv)-2(peculiaridades) = 0 pts ✓
 - **Commit:** `37ae2aa`
 
-### Lote 207: Orc (-22 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
+### Lote 222: Orc (-22 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
 - **Orc:** IQ-1, HT+2. PV+3. Audição Aguçada 2. Desvantagens: Briquento (auto12, -10), Estigma Social Bárbaro (-10), Intolerância Total (-10). Perícia: Briga (F) DX+0 [1]. Peculiaridades (3, = -3 pts): curvam-se a seres mais fortes; medem posição social pelas coisas que controlam; não consideram traição errada.
 - **Verificação:** 0(atrib)+6(PV+3)+4(vant)-30(desv)+1(perícia)-3(peculiaridades) = -22 pts ✓
 - **Commit:** `1975166`
 
-### Lote 206: Ogro (28 pts, Cataclismo 198) adicionado ao catálogo - CONCLUÍDO
+### Lote 223: Ogro (28 pts, Cataclismo 198) adicionado ao catálogo - CONCLUÍDO
 - **Ogro:** ST+10 (Tamanho -10%), DX-1, IQ-3, HT+3. MT+1. Vantagens: Abascanto 2, Hipoalgia, Paladar/Olfato Apurado 1, RD 3 (Pele Resistente -40%), Visão Noturna 9. Desvantagens: Estigma Social Bárbaro (-10), Estigma Social Inculto (-5), Hábito Detestável Come sapientes (-15), Hediondo/Aparência (-16). Sem perícias/qualidades/peculiaridades (não mencionadas no texto).
 - **Verificação:** 40(atrib) + 34(vant) - 46(desv) = 28 pts ✓
 - **Commit:** `41c1829`
 
-### Lote 205: campo MT (Modificador de Tamanho) racial - CONCLUÍDO
+### Lote 224: campo MT (Modificador de Tamanho) racial - CONCLUÍDO
 - **Novo campo:** `ModeloRacial.modificadorTamanho: Int = 0` (GURPS B19). Bônus de ataque para acertar a criatura; afeta testes de Visão.
 - **`Personagem`**: propriedade computada `modificadorTamanho` lida do modelo racial.
 - **`RacaCatalogo.kt`**: `RacaDefinicao` ganha campo `mt: Int = 0`; resolver propaga para `ModeloRacial.modificadorTamanho`.
@@ -933,37 +933,37 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Build:** 13s OK.
 - **Commit:** `53eb210`
 
-### Lote 204: modificadores em desvantagens (Configurar + Editar) - CONCLUÍDO
+### Lote 225: modificadores em desvantagens (Configurar + Editar) - CONCLUÍDO
 - **Bug:** `ConfigurarDesvantagemDialog` nunca exibia a seção de modificadores (estava com comentário `// ... logic for showAddMod etc`). `EditarDesvantagemDialog` tinha o botão "Add" mas nunca instanciava o `EscopoModificadoresDialog` — clicar não abria nada.
 - **Correção:** `ConfigurarDesvantagemDialog` ganhou a seção "Modificadores (%)" com botão Add + lista `ModificadorSelecionadoItem` + `EscopoModificadoresDialog`. `EditarDesvantagemDialog` ganhou o `EscopoModificadoresDialog` que faltava. Lógica idêntica à das vantagens, sem `mod_aptidao_escola` (que não existe em desvantagens).
 - **Build:** 8s OK.
 - **Commit:** `bd5dabe`
 
-### Lote 203: mods em desvantagens raciais + mod_furia_em_combate + fix Minotauro - CONCLUÍDO
+### Lote 226: mods em desvantagens raciais + mod_furia_em_combate + fix Minotauro - CONCLUÍDO
 - **Bug:** `RacaCatalogo.kt` resolver de desvantagens NÃO processava o array `mods` — só vantagens tinham esse tratamento. Resultado: `furia` do Minotauro ficava com `modificadores:[]`, sem o `+50%` Fúria em Combate, então o app calculava `-10×1.5(auto9) = -15` em vez de `-22`. Total aparecia 19 pts em vez de 13.
 - **Correção:** Extendido o resolver de desvantagens para processar `mods` com a mesma lógica das vantagens (incluindo formato `id:N` para níveis e fallback no catálogo global de modificadores).
 - **modificadores.v1.json:** adicionado `mod_furia_em_combate` (+50%, p.143) — indica que a Fúria só é ativada em combate.
 - **Verificação de cálculo:** Fúria: `-10 × 1.5(auto9) = -15`, depois `ceil(-15 × 1.5) = ceil(-22.5) = -22` ✓. Total: 40(atributos)+57(vantagens)-88(desvantagens)+4(perícias) = 13 pts ✓
 - **Commit:** `ac41dc3`
 
-### Lote 202: arredondamento correto para vantagens com limitações (floor, não ceil) - CONCLUÍDO
+### Lote 227: arredondamento correto para vantagens com limitações (floor, não ceil) - CONCLUÍDO
 - **Bug:** `calcularCustoVantagem` usava `ceil` para todos os modificadores. GURPS p.102 diz: ampliações arredondam para cima (ceil), limitações **eliminam frações** (floor). Com só limitações o custo podia ficar 1 pt acima do correto (ex: RD 1 crânio = `ceil(5×0.3) = ceil(1.5) = 2` em vez do correto `floor(1.5) = 1`).
 - **Correção:** `calcularCustoVantagem` agora usa `floor` quando `percentualFinal < 0` e `ceil` quando positivo/misto.
 - **Casos Minotauro verificados:** RD crânio: `floor(10×0.30)=3` ✓ | RD pele: `floor(15×0.60)=9` ✓.
 - **Commit:** `c1be581`
 
-### Lote 201: corrige tipoDano Chifres Minotauro pa → pa++ - CONCLUÍDO
+### Lote 228: corrige tipoDano Chifres Minotauro pa → pa++ - CONCLUÍDO
 - **Bug:** `tipoDano` dos Chifres estava `pa` (5 pts base) em vez de `pa++` (8 pts base). Com `pa` o custo calculado seria 8 pts, não 13. `pa++` × (1-40%+100%) = 8×1.6 = 12.8 ≈ 13 ✓
 - **Commit:** `645edea`
 
-### Lote 199+200: Minotauro no catálogo + mod_comprido + RD múltipla permitida - CONCLUÍDO
+### Lote 229: Minotauro no catálogo + mod_comprido + RD múltipla permitida - CONCLUÍDO
 - **Minotauro (13 pts, Cataclismo 198)** adicionado ao `racas.v1.json`: ST+3/DX+1/IQ-2/HT+3. Vantagens: Audição Aguçada 3, Golpeadores (Chifres pa, Arco Limitado + Comprido 1MT, custoEscolhido:13), Abascanto 3, RD 2 crânio (`mod_apenas_o_cranio:7` = -70%), RD 3 pele (`pele_resistente`), Senso de Direção, Visão Periférica. Briga DX+2 concedida. Desvantagens: Fúria em Combate (auto9, -22), Sanguinolência (auto9), Hediondo (aparencia -16), Intolerância Total (-10), Hábito Detestável Come sapientes (-15), Estigma Social Inculto (-5), Solitário (auto12, -5). Peculiaridade: "Odeia ogros, e ser confundido com ogros".
 - **modificadores.v1.json:** adicionado `mod_comprido` (+100%/nível, ampliação, p.62) — antes não existia no catálogo global.
 - **FichaTraitDelegate.kt:** `resistencia_a_dano` agora entra na lista `permiteMultiplas` — usuário pode adicionar RD crânio + RD pele + RD tronco etc. com descrições diferentes, igual ao ataque_inato.
 - **Commit:** `f294e42`
 - **Build:** OK (16s).
 
-### Lote 198: mods de raça aceitam "id:N" (níveis) + Medusa Cone:15 / Cíclico:2 - CONCLUÍDO
+### Lote 230: mods de raça aceitam "id:N" (níveis) + Medusa Cone:15 / Cíclico:2 - CONCLUÍDO
 - **Bug (usuário viu na ficha):** raças não tinham como expressar "Cone 15 níveis" ou "Cíclico 1m 2 ciclos" — o resolver hardcodava `niveis=1` em todos os mods das raças. Cone da Medusa ficaria +60% (50+10×1) em vez de +200% (50+10×15).
 - **Solução (mínima, retrocompatível):** id estendido no array `mods` aceita formato `"id:N"`. Resolver (RacaCatalogo.kt linha 129) faz split em `:` — pré:colon = modId, pós:colon = níveis. Sem colon = 1 (compat antiga, todas as 17 raças continuam funcionando).
 - **Medusa corrigida:** `mod_cone:15` (Cone 15m de largura, +200%) e `mod_ciclico_1m:2` (Cíclico 1m com 2 ciclos = +80%). Aptidão Mágica 1 ficou com `nivel:2 custoEscolhido:5` no JSON da ficha — questionei, mas é o valor que o usuário validou no app.
@@ -973,11 +973,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 
 
 
-### Lote 199: Pente fino acessibilidade Pracego — diálogos de traços e Mestre IA - CONCLUÍDO
+### Lote 231: Pente fino acessibilidade Pracego — diálogos de traços e Mestre IA - CONCLUÍDO - **Commit:** `85cdbbd`
 - **Escopo:** 11 fixes em TraitDialogsV2.kt (ModeloRacialDialog completo), + fixes em TraitCommonComponents.kt, TraitDialogs.kt, DialogsMestreIA.kt e DialogsCommon.kt.
 - **Fixes principais:** ItemTraitRacial com labels por nome, FilterChip tipo perícia (Concedida/Bônus) com descrição do que significa cada opção, botão limpar busca, info modificador, remover modificador, menu modo Mestre IA, botão enviar mensagem, excluir ficha com nome.
 - **Verificação:** assemblePracegoDebug + assembleVisualDebug OK.
-- **Commit:** `85cdbbd`
+
 
 **[Bateria de Testes a Realizar]**
 - Bateria de Testes (Stress Test)
