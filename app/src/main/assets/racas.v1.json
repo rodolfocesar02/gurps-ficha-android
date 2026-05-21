@@ -1438,6 +1438,92 @@
       ],
       "peculiaridades": [],
       "pericias": []
+    },
+    {
+      "id": "reptante",
+      "nome": "Reptantes",
+      "pagina": "Cataclismo 200",
+      "descricao": "Grandes lagartos bípedes de escamas brilhantes e natureza alienígena. Decididamente carnívoros. Preferem planícies abertas e quentes. Tendem a suspeitar de outras raças e preferem isolamento. Pesam 15 kg a mais do que humanos da mesma altura.",
+      "mt": 1,
+      "atributos": {
+        "st": 4,
+        "iq": -1,
+        "ht": 2
+      },
+      "limitacoesAtributo": [
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
+      ],
+      "secundarios": {},
+      "vantagens": [
+        {
+          "id": "dentes",
+          "descricao": "Afiados",
+          "custoEscolhido": 1
+        },
+        {
+          "id": "garras",
+          "descricao": "Afiadas",
+          "custoEscolhido": 5
+        },
+        {
+          "id": "longevidade"
+        },
+        {
+          "id": "membrana_nictitante",
+          "nivel": 3
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 1,
+          "mods": [
+            "pele_resistente"
+          ]
+        },
+        {
+          "id": "tolerancia_a_temperatura",
+          "nivel": 5,
+          "descricao": "Em relação a 26,5 °C"
+        },
+        {
+          "id": "visao_periferica"
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "estigma_social",
+          "descricao": "Bárbaro",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "timidez",
+          "descricao": "Suave",
+          "custoEscolhido": -5
+        }
+      ],
+      "qualidades": [
+        "Não pode aprender a maior parte dos outros idiomas além do nível Com Sotaque (traço inerente)"
+      ],
+      "peculiaridades": [],
+      "pericias": [
+        {
+          "nome": "Camuflagem",
+          "diff": "F",
+          "baseAtributo": "IQ",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        },
+        {
+          "nome": "Sobrevivência (Deserto)",
+          "diff": "M",
+          "baseAtributo": "Per",
+          "nivelRelativo": 0,
+          "tipo": "CONCEDIDA"
+        }
+      ]
     }
   ]
 }
