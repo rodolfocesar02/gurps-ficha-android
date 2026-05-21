@@ -876,6 +876,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Verificação:** JSON válido (18 raças); clean build OK (7s).
 - **Próximo:** TESTE device — abrir Medusa, conferir se aparece sem "Não resolvidos"; conferir custo total bate com 139 pts do livro.
 
+### Lote 207: Orc (-22 pts, Cataclismo 199) adicionado ao catálogo - CONCLUÍDO
+- **Orc:** IQ-1, HT+2. PV+3. Audição Aguçada 2. Desvantagens: Briquento (auto12, -10), Estigma Social Bárbaro (-10), Intolerância Total (-10). Perícia: Briga (F) DX+0 [1]. Peculiaridades (3, = -3 pts): curvam-se a seres mais fortes; medem posição social pelas coisas que controlam; não consideram traição errada.
+- **Verificação:** 0(atrib)+6(PV+3)+4(vant)-30(desv)+1(perícia)-3(peculiaridades) = -22 pts ✓
+- **Commit:** `1975166`
+
 ### Lote 206: Ogro (28 pts, Cataclismo 198) adicionado ao catálogo - CONCLUÍDO
 - **Ogro:** ST+10 (Tamanho -10%), DX-1, IQ-3, HT+3. MT+1. Vantagens: Abascanto 2, Hipoalgia, Paladar/Olfato Apurado 1, RD 3 (Pele Resistente -40%), Visão Noturna 9. Desvantagens: Estigma Social Bárbaro (-10), Estigma Social Inculto (-5), Hábito Detestável Come sapientes (-15), Hediondo/Aparência (-16). Sem perícias/qualidades/peculiaridades (não mencionadas no texto).
 - **Verificação:** 40(atrib) + 34(vant) - 46(desv) = 28 pts ✓
