@@ -1462,7 +1462,9 @@
         {
           "id": "dentes",
           "descricao": "Afiados",
-          "custoEscolhido": 1
+          "metadados": {
+            "tipoDentes": "dentes_afiados"
+          }
         },
         {
           "id": "garras",
