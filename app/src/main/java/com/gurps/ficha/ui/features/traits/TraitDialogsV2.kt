@@ -47,6 +47,7 @@ fun ModeloRacialDialog(
     var modPontosFadiga by remember { mutableIntStateOf(modeloOriginal.modPontosFadiga) }
     var modVelocidadeBasica by remember { mutableFloatStateOf(modeloOriginal.modVelocidadeBasica) }
     var modDeslocamentoBasico by remember { mutableIntStateOf(modeloOriginal.modDeslocamentoBasico) }
+    var modificadorTamanho by remember { mutableIntStateOf(modeloOriginal.modificadorTamanho) }
     
     var vantagensRacais by remember { mutableStateOf(modeloOriginal.vantagens) }
     var desvantagensRacais by remember { mutableStateOf(modeloOriginal.desvantagens) }
@@ -98,6 +99,7 @@ fun ModeloRacialDialog(
         vantagens = vantagensRacais, desvantagens = desvantagensRacais,
         pericias = periciasRacais, qualidades = qualidadesRacais,
         peculiaridades = peculiaridadesRacais, limitacoesAtributo = limitacoesAtributo,
+        modificadorTamanho = modificadorTamanho,
         metacaracteristicas = metacaracteristicas, tipo = tipo, descricao = descricaoRacial
     )
     
@@ -222,6 +224,7 @@ fun ModeloRacialDialog(
                                         IconButton(onClick = { modVelocidadeBasica -= 0.25f }, modifier = Modifier.size(32.dp).semantics { contentDescription = "Diminuir Velocidade Básica" }) { Icon(Icons.Default.KeyboardArrowDown, null) }
                                     }
                                     AjustadorVerticalRacial("Desloc.", modDeslocamentoBasico, "Ajuste de Deslocamento Básico") { modDeslocamentoBasico += it }
+                                    AjustadorVerticalRacial("MT", modificadorTamanho, "Modificador de Tamanho (MT)") { modificadorTamanho += it }
                                 }
                             }
                         }
@@ -501,6 +504,7 @@ fun ModeloRacialDialog(
                                 modPercepcao = m.modPercepcao; modPontosFadiga = m.modPontosFadiga
                                 modVelocidadeBasica = m.modVelocidadeBasica
                                 modDeslocamentoBasico = m.modDeslocamentoBasico
+                                modificadorTamanho = m.modificadorTamanho
                                 vantagensRacais = m.vantagens
                                 desvantagensRacais = m.desvantagens
                                 periciasRacais = m.pericias
