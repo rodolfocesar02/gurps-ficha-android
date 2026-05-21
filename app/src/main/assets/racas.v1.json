@@ -1210,6 +1210,76 @@
           "tipo": "CONCEDIDA"
         }
       ]
+    },
+    {
+      "id": "ogro",
+      "nome": "Ogros",
+      "pagina": "Cataclismo 198",
+      "descricao": "Ogros têm de 2 a 2,5 metros de altura; eles pesam meia tonelada ou mais de puro músculo. A maioria são apenas andarilhos solitários, assombrando a selva e comendo tudo o que conseguem matar.",
+      "mt": 1,
+      "atributos": {
+        "st": 10,
+        "dx": -1,
+        "iq": -3,
+        "ht": 3
+      },
+      "limitacoesAtributo": [
+        {
+          "atributo": "ST",
+          "tipo": "TAMANHO",
+          "percentual": -10
+        }
+      ],
+      "secundarios": {},
+      "vantagens": [
+        {
+          "id": "abascanto",
+          "nivel": 2
+        },
+        {
+          "id": "hipoalgia_alto_limiar_de_dor"
+        },
+        {
+          "id": "paladar_olfato_apurado",
+          "nivel": 1
+        },
+        {
+          "id": "resistencia_a_dano",
+          "nivel": 3,
+          "mods": [
+            "pele_resistente"
+          ]
+        },
+        {
+          "id": "visao_noturna",
+          "nivel": 9
+        }
+      ],
+      "desvantagens": [
+        {
+          "id": "estigma_social",
+          "descricao": "Bárbaro",
+          "custoEscolhido": -10
+        },
+        {
+          "id": "estigma_social",
+          "descricao": "Inculto",
+          "custoEscolhido": -5
+        },
+        {
+          "id": "habitos_detestaveis",
+          "descricao": "Come outros seres sapientes",
+          "custoEscolhido": -15
+        },
+        {
+          "id": "aparencia",
+          "descricao": "Hediondo",
+          "custoEscolhido": -16
+        }
+      ],
+      "qualidades": [],
+      "peculiaridades": [],
+      "pericias": []
     }
   ]
 }
