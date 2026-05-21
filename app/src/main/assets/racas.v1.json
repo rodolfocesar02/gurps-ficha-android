@@ -1117,7 +1117,7 @@
           "id": "golpeadores",
           "descricao": "Chifres",
           "metadados": {
-            "tipoDano": "pa",
+            "tipoDano": "pa++",
             "dice": "0",
             "bonus": "0",
             "nomePersonalizado": "Chifres"
