@@ -251,6 +251,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var dadosPersonalizadosQuantidadeInput by remember { mutableStateOf("3") }
     var dadosPersonalizadosFacesInput by remember { mutableStateOf("6") }
     var dadosPersonalizadosModificadorInput by remember { mutableStateOf("0") }
+    var dadosPersonalizadosMotivo by remember { mutableStateOf("") }
     var ultimaRolagemPersonalizadaMs by remember { mutableStateOf(0L) }
 
     var magiaPendenteEnergia by remember { mutableStateOf<MagiaRollOption?>(null) }
@@ -360,7 +361,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         val modStr = if (mod == 0) "" else if (mod > 0) "+$mod" else "$mod"
         val expr = "${qtd}d${faces}$modStr"
-        val textoHist = "[$timestamp] Livre ($expr): $total"
+        val labelEfetivo = label.ifBlank { "Livre" }
+        val textoHist = "[$timestamp] $labelEfetivo ($expr): $total"
         
         val payload = DiscordRollPayload(
             character = p.nome,
@@ -727,15 +729,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
             dadosPersonalizadosModificadorInput = dadosPersonalizadosModificadorInput,
             expressaoPersonalizada = "${dadosPersonalizadosQuantidade}d${dadosPersonalizadosFaces}${if (dadosPersonalizadosModificador >= 0) "+$dadosPersonalizadosModificador" else dadosPersonalizadosModificador}",
             isPraCegoVariant = isPraCegoVariant,
+            motivo = dadosPersonalizadosMotivo,
             onUpdateQuantidade = { dadosPersonalizadosQuantidade = it },
             onUpdateFaces = { dadosPersonalizadosFaces = it },
             onUpdateModificador = { dadosPersonalizadosModificador = it },
             onInputQuantidade = { raw -> dadosPersonalizadosQuantidadeInput = raw.filter { it.isDigit() }.take(3) },
             onInputFaces = { raw -> dadosPersonalizadosFacesInput = raw.filter { it.isDigit() }.take(3) },
-            onInputModificador = { raw -> 
+            onInputModificador = { raw ->
                 val allowed = setOf('-') + ('0'..'9')
                 dadosPersonalizadosModificadorInput = raw.filter { it in allowed }.take(4)
             },
+            onUpdateMotivo = { dadosPersonalizadosMotivo = it },
             onExecutarRolagem = {
                 val inputQtd = dadosPersonalizadosQuantidadeInput.toIntOrNull()
                 if (inputQtd != null && inputQtd in 1..300) dadosPersonalizadosQuantidade = inputQtd
@@ -743,7 +747,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 if (inputFaces != null && inputFaces in 1..1000) dadosPersonalizadosFaces = inputFaces
                 val inputMod = dadosPersonalizadosModificadorInput.toIntOrNull()
                 if (inputMod != null && inputMod in -999..999) dadosPersonalizadosModificador = inputMod
-                executarRolagemPersonalizada("Livre", dadosPersonalizadosQuantidade, dadosPersonalizadosFaces, dadosPersonalizadosModificador)
+                executarRolagemPersonalizada(dadosPersonalizadosMotivo, dadosPersonalizadosQuantidade, dadosPersonalizadosFaces, dadosPersonalizadosModificador)
             },
             onDismiss = { showRolagemPersonalizadaDialog = false }
         )

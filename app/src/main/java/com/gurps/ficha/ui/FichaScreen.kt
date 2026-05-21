@@ -365,10 +365,6 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     }
                 }
             },
-            onMestreIA = {
-                showMenuDialog = false
-                showMestreIADialog = true
-            }
         )
     }
 

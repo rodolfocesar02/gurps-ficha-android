@@ -34,6 +34,7 @@ fun RolagemPersonalizadaDialog(
     dadosPersonalizadosQuantidadeInput: String,
     dadosPersonalizadosFacesInput: String,
     dadosPersonalizadosModificadorInput: String,
+    motivo: String,
     isPraCegoVariant: Boolean,
     onUpdateQuantidade: (Int) -> Unit,
     onUpdateFaces: (Int) -> Unit,
@@ -41,6 +42,7 @@ fun RolagemPersonalizadaDialog(
     onInputQuantidade: (String) -> Unit,
     onInputFaces: (String) -> Unit,
     onInputModificador: (String) -> Unit,
+    onUpdateMotivo: (String) -> Unit,
     onExecutarRolagem: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -236,6 +238,15 @@ fun RolagemPersonalizadaDialog(
                         fontWeight = FontWeight.SemiBold
                     )
                 }
+
+                OutlinedTextField(
+                    value = motivo,
+                    onValueChange = onUpdateMotivo,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Motivo (opcional)") },
+                    placeholder = { Text("Ex: Pânico, Iniciativa...") },
+                    singleLine = true
+                )
 
                 Button(
                     onClick = {
