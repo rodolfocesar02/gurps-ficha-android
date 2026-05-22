@@ -1052,6 +1052,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **GeminiLiveService.kt:** `buildSetupMessage()` declara 5 ferramentas (lerFicha, buscarCatalogo, editarFicha, trilhaDeMagias, consultarManual). `systemPrompt` atualizado com protocolo obrigatório: buscarCatalogo antes de qualquer edição, GPS antes de adicionar magia.
 - **Build:** assembleVisualDebug OK.
 
+### Lote 247: Voz — Fix conexão + transcrição bidirecional funcionando - CONCLUÍDO - **Commit:** `905dfd5`
+- **Modelo trocado:** `gemini-2.5-flash-native-audio-latest` → `gemini-3.1-flash-live-preview` — mais rápido, suporta transcrição nativa e tools simultâneas.
+- **code=1007 resolvido:** `outputAudioTranscription` removido do `generationConfig` (campo não existe nesse modelo). Diagnóstico via `logcat --pid` que revelou a mensagem exata do servidor.
+- **Formato do microfone corrigido:** `realtimeInput.mediaChunks[]` → `realtimeInput.audio{data, mimeType}` conforme spec oficial da API.
+- **Saudação corrigida:** `clientContent turnComplete=false` para injetar contexto sem disparar resposta; saudação via `realtimeInput.text` que dispara áudio imediato.
+- **Transcrição bidirecional funcionando:** `outputTranscription` chega como objeto `{"text":"fragmento"}` palavra por palavra — acumulado em `pendingTextoFallback` e exibido completo no `turnComplete`. Mesmo fix para `inputTranscription` do usuário.
+- **Log limpo:** Suprime spam de base64 PCM; mostra `♪ Áudio iniciado` por turno.
+- **Resultado:** Modelo conecta, fala saudação em PT-BR, ouve usuário, usa tools (buscarCatalogo, editarFicha, etc.) e transcreve conversa no chat. ✅
+
 ### Lote 246: Voz — Fix auto-interrupção permanente + texto em inglês no chat - CONCLUÍDO - **Commit:** `feed965`
 - **modeloFalando = false no turnComplete:** A flag nunca era resetada — após a 1ª resposta o modelo bloqueava o microfone permanentemente e ficava mudo para sempre.
 - **thought=true ignorado:** Substituiu o filtro de regex (`**Título**`) por verificação do campo `part.optBoolean("thought", false)`. Pensamentos internos do modelo em inglês (sem marcadores **) vazavam para o chat. Agora são descartados na fonte.
