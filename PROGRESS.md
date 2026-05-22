@@ -994,11 +994,6 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **`FichaScreen`:** bloco `onMestreIA = { ... }` removido do call site.
 - **Verificação:** assembleVisualDebug OK (20s).
 
-### Lote 236: Correção do Sistema de Voz (Long Press não disparava) - CONCLUÍDO - **Commit:** `cdf4b34`
-- **Causa raiz 1 (stale lambda):** `vozMestreIA.onEstado` e `onResultado` eram atribuídos uma vez em `remember {}`, capturando `estadoVoz` e `showMestreIADialog` por valor — nunca viam as atualizações de estado posteriores. Corrigido com `SideEffect` que re-atribui os lambdas a cada recomposição.
-- **Causa raiz 2 (permissão runtime):** `RECORD_AUDIO` estava no manifesto mas Android 6+ exige `requestPermissions()` em tempo de execução. Adicionado `rememberLauncherForActivityResult(RequestPermission)` que pede a permissão ao usuário na primeira vez e só então chama `iniciar()`.
-- **Causa raiz 3 (threading):** `SpeechRecognizer` deve ser criado e operado na Main thread. Adicionado `mainHandler = Handler(Looper.getMainLooper())` e `mainHandler.post { ... }` envolvendo toda a criação/início da escuta.
-- **Verificação:** assembleVisualDebug OK (17s).
 
 ### Lote 235: Comando de Voz no Mestre IA (Long Press) - CONCLUÍDO - **Commit:** `948bb5a`
 - **Novo arquivo:** `VozMestreIA.kt` (`ui/components/`) encapsula o `SpeechRecognizer` nativo Android em PT-BR. Estados: `OCIOSO → ESCUTANDO → PROCESSANDO → OCIOSO` (ou `ERRO`). Callbacks `onEstado` e `onResultado`.
@@ -1007,6 +1002,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Permissão:** `RECORD_AUDIO` já estava no `AndroidManifest.xml` — Android solicita ao usuário no primeiro long press.
 - **Docs:** `ARQUITETURA_MESTRE_IA.md` ganhou seção "9. A Voz"; `MAPA_DETALHADO.md` atualizado com os dois arquivos.
 - **Verificação:** assembleVisualDebug OK (30s).
+
+### Lote 236: Correção do Sistema de Voz (Long Press não disparava) - CONCLUÍDO - **Commit:** `cdf4b34`
+- **Causa raiz 1 (stale lambda):** `vozMestreIA.onEstado` e `onResultado` eram atribuídos uma vez em `remember {}`, capturando `estadoVoz` e `showMestreIADialog` por valor — nunca viam as atualizações de estado posteriores. Corrigido com `SideEffect` que re-atribui os lambdas a cada recomposição.
+- **Causa raiz 2 (permissão runtime):** `RECORD_AUDIO` estava no manifesto mas Android 6+ exige `requestPermissions()` em tempo de execução. Adicionado `rememberLauncherForActivityResult(RequestPermission)` que pede a permissão ao usuário na primeira vez e só então chama `iniciar()`.
+- **Causa raiz 3 (threading):** `SpeechRecognizer` deve ser criado e operado na Main thread. Adicionado `mainHandler = Handler(Looper.getMainLooper())` e `mainHandler.post { ... }` envolvendo toda a criação/início da escuta.
+- **Verificação:** assembleVisualDebug OK (17s).
 
 
 **[Bateria de Testes a Realizar]**
@@ -1018,3 +1019,12 @@ Equipamentos e Carga: "Estou carregando 40kg de ouro. Minha ST é 10. Como isso 
 Aparar com Escudo: "Um ogro me atacou com uma clava gigante. Posso usar a regra de 'Aparar com o Escudo' ou sou obrigado a Bloquear?"
 Criação de Especialista: "Gere uma ficha de um Ninja especializado em infiltração tecnológica (NT 9), com 'Mãos Pegajosas' e 'Passo Leve', usando 150 pontos."
 Regra de Recuo (Armas de Fogo): "Se eu der uma rajada de 3 tiros com uma submetralhadora de Recuo 2, como calculo quantos tiros acertaram?"
+
+### Lote 237: Classificador de Intenção por IA no Comando de Voz - CONCLUÍDO - **Commit:** `f32ad4b`
+- **Problema corrigido:** voz estava hardcoded em `"geracao"` — qualquer coisa falada virava criação de história e tentava integrar na ficha.
+- **Novo arquivo:** `VozIntencaoClassifier.kt` — chama o Gemini Flash Lite com prompt minúsculo após o reconhecimento de voz. Retorna `DUVIDA` → `"conversa"`, `ANALISE` → `"analise"`, `CRIAR` → `"geracao"`.
+- **`VozMestreIA.kt`:** `onResultado` agora passa `(texto, modo)`. Mantém estado `PROCESSANDO` enquanto a IA classifica, depois emite `OCIOSO`.
+- **`FichaScreen.kt`:** `onResultado` recebe o modo classificado, atualiza `viewModel.mestreIAMode` e chama `conversarComMestreIA(texto, modo)`.
+- **Fallback seguro:** qualquer erro na chamada ao classificador cai em `"conversa"` (Dúvida, gratuito) — nunca modifica a ficha por acidente.
+- **Fase 2 pendente:** botão de microfone dentro do dialog do Mestre IA (mesmo classificador).
+- **Verificação:** assembleVisualDebug OK (10s).
