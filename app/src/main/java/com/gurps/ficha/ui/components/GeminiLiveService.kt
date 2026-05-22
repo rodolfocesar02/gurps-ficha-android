@@ -57,7 +57,7 @@ Seu nome é Mestre.
 REGRAS DE COMPORTAMENTO — FICHA:
 - Antes de modificar a ficha, SEMPRE chame obterFicha para verificar pontos disponíveis
 - Confirme o que fez depois de executar — ex: "Pronto, adicionei X, ficam Y pontos restantes"
-- Se o usuário pedir algo impossível (sem pontos suficientes), explique e sugira alternativas
+- Se o usuário pedir algo impossível (sem pontos suficientes), explique e sugira alternativas, se insistir faça oque foi pedido
 - Após modificar a ficha, confirme o novo saldo de pontos em voz
 
 REGRAS DE COMPORTAMENTO — DÚVIDAS DE REGRAS:
@@ -197,15 +197,23 @@ NUNCA:
         if (sessaoAtiva) return
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
 
+        val keyPreview = BuildConfig.MESTRE_IA_GEMINI_KEY.take(8) + "..."
         val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
+        android.util.Log.i("GeminiLive", "╔══ INICIANDO SESSÃO ══════════════════")
+        android.util.Log.i("GeminiLive", "║  Modelo: ${BuildConfig.GEMINI_LIVE_MODEL}")
+        android.util.Log.i("GeminiLive", "║  Voz: ${BuildConfig.GEMINI_LIVE_VOICE}")
+        android.util.Log.i("GeminiLive", "║  Chave: $keyPreview")
+        android.util.Log.i("GeminiLive", "║  Conectando ao WebSocket...")
+
         val request = Request.Builder().url(url).build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
             override fun onOpen(ws: WebSocket, response: Response) {
-                // Envia setup com contexto da ficha no system prompt
+                android.util.Log.i("GeminiLive", "║  WebSocket ABERTO (HTTP ${response.code})")
                 val setup = buildSetupMessage()
+                android.util.Log.i("GeminiLive", "║  Enviando setup (${setup.length} chars)...")
                 ws.send(setup)
-                // Após setup, envia contexto da ficha como primeira mensagem
+
                 val ctxMsg = JSONObject().apply {
                     put("client_content", JSONObject().apply {
                         put("turns", JSONArray().apply {
@@ -219,23 +227,33 @@ NUNCA:
                         put("turn_complete", true)
                     })
                 }
+                android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
                 ws.send(ctxMsg.toString())
                 sessaoAtiva = true
                 iniciarCaptura()
+                android.util.Log.i("GeminiLive", "╚══ SESSÃO ATIVA — aguardando fala do usuário")
                 mainHandler.post { onEstado(EstadoLive.OUVINDO) }
             }
 
             override fun onMessage(ws: WebSocket, text: String) {
+                android.util.Log.d("GeminiLive", "◄ MSG servidor (${text.length} chars): ${text.take(120)}")
                 processarMensagemServidor(text)
             }
 
             override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
-                android.util.Log.e("GeminiLive", "Falha WebSocket: ${t.message}")
+                val httpCode = response?.code ?: -1
+                val body = response?.body?.string()?.take(300) ?: "sem body"
+                android.util.Log.e("GeminiLive", "╔══ FALHA WEBSOCKET ══════════════════")
+                android.util.Log.e("GeminiLive", "║  Erro: ${t.javaClass.simpleName}: ${t.message}")
+                android.util.Log.e("GeminiLive", "║  HTTP: $httpCode")
+                android.util.Log.e("GeminiLive", "║  Body: $body")
+                android.util.Log.e("GeminiLive", "╚═════════════════════════════════════")
                 encerrar()
                 mainHandler.post { onEstado(EstadoLive.ERRO) }
             }
 
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+                android.util.Log.w("GeminiLive", "WebSocket FECHADO: code=$code reason=$reason")
                 encerrar()
                 mainHandler.post { onEstado(EstadoLive.OCIOSO) }
             }
@@ -246,15 +264,26 @@ NUNCA:
         try {
             val obj = JSONObject(json)
 
-            // Aviso de desconexão iminente — reconectar
             if (obj.has("goAway")) {
-                android.util.Log.w("GeminiLive", "GoAway recebido — sessão encerrada pelo servidor")
+                android.util.Log.w("GeminiLive", "GoAway recebido — servidor encerrando sessão")
                 encerrar()
                 mainHandler.post { onEstado(EstadoLive.OCIOSO) }
                 return
             }
 
-            // Tool call — modelo quer chamar uma ferramenta
+            // Erro explícito da API retornado como JSON
+            if (obj.has("error")) {
+                val err = obj.getJSONObject("error")
+                android.util.Log.e("GeminiLive", "╔══ ERRO DA API ══════════════════════")
+                android.util.Log.e("GeminiLive", "║  code: ${err.optInt("code")}")
+                android.util.Log.e("GeminiLive", "║  status: ${err.optString("status")}")
+                android.util.Log.e("GeminiLive", "║  message: ${err.optString("message")}")
+                android.util.Log.e("GeminiLive", "╚═════════════════════════════════════")
+                encerrar()
+                mainHandler.post { onEstado(EstadoLive.ERRO) }
+                return
+            }
+
             if (obj.has("toolCall")) {
                 val calls = obj.getJSONObject("toolCall").getJSONArray("functionCalls")
                 val respostas = JSONArray()
@@ -263,8 +292,11 @@ NUNCA:
                     val id = call.getString("id")
                     val nome = call.getString("name")
                     val args = call.optJSONObject("args") ?: JSONObject()
-                    android.util.Log.i("GeminiLive", "ToolCall: $nome($args)")
+                    android.util.Log.i("GeminiLive", "► TOOL CALL: $nome | args=${args.toString().take(100)}")
+                    val t0 = System.currentTimeMillis()
                     val resultado = onToolCall(nome, args)
+                    val ms = System.currentTimeMillis() - t0
+                    android.util.Log.i("GeminiLive", "◄ TOOL RESP: $nome | ${ms}ms | sucesso=${resultado.optBoolean("sucesso", resultado.has("regras"))} | ${resultado.toString().take(150)}")
                     respostas.put(JSONObject().apply {
                         put("id", id)
                         put("name", nome)
@@ -276,11 +308,11 @@ NUNCA:
                         put("function_responses", respostas)
                     })
                 }
+                android.util.Log.i("GeminiLive", "► Enviando tool_response ao servidor...")
                 webSocket?.send(toolResp.toString())
                 return
             }
 
-            // Conteúdo do modelo (áudio + texto)
             if (obj.has("serverContent")) {
                 val content = obj.getJSONObject("serverContent")
 
@@ -290,37 +322,38 @@ NUNCA:
                     val parts = modelTurn.optJSONArray("parts") ?: return
                     for (i in 0 until parts.length()) {
                         val part = parts.getJSONObject(i)
-                        // Áudio → reproduzir
                         if (part.has("inlineData")) {
                             val mime = part.getJSONObject("inlineData").getString("mimeType")
                             if (mime.contains("audio")) {
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
-                                reproduzirAudio(Base64.decode(audioB64, Base64.DEFAULT))
+                                val bytes = Base64.decode(audioB64, Base64.DEFAULT)
+                                android.util.Log.d("GeminiLive", "♪ Áudio recebido: ${bytes.size} bytes (${mime})")
+                                reproduzirAudio(bytes)
                             }
                         }
-                        // Texto → salvar no histórico
                         if (part.has("text")) {
                             val texto = part.getString("text")
                             if (texto.isNotBlank()) {
+                                android.util.Log.i("GeminiLive", "✎ Texto Mestre: \"${texto.take(100)}\"")
                                 mainHandler.post { onRespostaMestre(texto) }
                             }
                         }
                     }
                 }
 
-                // Turno completo
                 if (content.optBoolean("turnComplete")) {
+                    android.util.Log.i("GeminiLive", "✓ Turno completo — voltando a ouvir")
                     mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                 }
 
-                // Transcrição do input do usuário
                 val inputTranscript = content.optString("inputTranscription", "")
                 if (inputTranscript.isNotBlank()) {
+                    android.util.Log.i("GeminiLive", "✎ Transcrição usuário: \"${inputTranscript.take(100)}\"")
                     mainHandler.post { onTranscricaoUsuario(inputTranscript) }
                 }
             }
         } catch (e: Exception) {
-            android.util.Log.e("GeminiLive", "Erro ao processar mensagem: ${e.message}")
+            android.util.Log.e("GeminiLive", "Erro ao processar mensagem: ${e.message} | json=${json.take(200)}")
         }
     }
 
