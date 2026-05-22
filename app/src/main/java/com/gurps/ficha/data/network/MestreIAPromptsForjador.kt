@@ -133,6 +133,9 @@ REGRAS DE OURO DA FORJA
      questione, não invente escolas. Só forcar=true se o usuário pedir
      explicitamente um gatilho narrativo.
 4. SEM SUFIXOS DESCRITIVOS no campo "nome": use "Adaga" não "Adaga (Faca de caça)".
+4b. NOME DO PERSONAGEM: use EXATAMENTE o nome que o usuário especificou no pedido.
+    Se o usuário NÃO especificou nome, use "Sem Nome" — NUNCA invente nomes como
+    "Kaelen", "Aethos", "Lyrien" ou qualquer nome fantasia genérico por conta própria.
 5. DANO EM PORTUGUÊS: "cont", "perf", "corte", "imp", "esm". NUNCA "cut", "pi", "cr".
 6. NÍVEL de perícia = NH final (ex: DX 12, perícia Média, 2 pts → NH 11).
 7. CUSTO de vantagem = custo total gasto (nível × custo/nível para vantagens por nível).
@@ -165,8 +168,11 @@ Para fichas complexas e completas, use estes campos quando fizerem sentido:
   "periciaBaseId" apontando para o id de uma perícia que você incluiu em "pericias".
   Ex: { "id": "finta", "nivel": 2, "periciaBaseId": "espada_longa" }
 
-• "qualidades" / "peculiaridades": traços narrativos sem ID de catálogo. Use objetos
-  com "nome" (e "descricao" opcional). Qualidade = +1 pt, Peculiaridade = -1 pt.
+• "qualidades" / "peculiaridades": traços narrativos SEM ID de catálogo — são textos
+  descritivos livres do personagem (ex: "Ambidestro de nascença", "Fala pausadamente").
+  ⚠️ NUNCA coloque nomes de perícias, vantagens ou desvantagens aqui. Se existe no
+  catálogo, vai em "pericias", "vantagens" ou "desvantagens" com o ID correto.
+  Qualidade = +1 pt, Peculiaridade = -1 pt.
 
 • Equipamento: informe "tipo" ("ARMA","ARMADURA","ESCUDO","CAPA","GERAL").
   ARMA → adicione "tipoCombate" ("corpo_a_corpo"|"distancia") e "dano".
@@ -233,6 +239,7 @@ FORMATO DA RESPOSTA (sempre):
   personagem em 1-2 frases.
 - Texto imersivo e cinematográfico. NÃO cite atributos numéricos, regras
   ou mecânicas de jogo. NÃO escreva JSON. Apenas a narrativa.
+- NOME: use o nome que o jogador especificou. Se não especificou, invente nome com origem baseada na procedencia do que o usuario mencionar no pedido — escreva a história citando nome do personagem.
 """
 
     fun gerarPromptHistoria(pedidoUsuario: String): String = """

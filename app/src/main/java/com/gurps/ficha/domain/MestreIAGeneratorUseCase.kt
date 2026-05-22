@@ -193,10 +193,12 @@ class MestreIAGeneratorUseCase(
                         if (ehErroDeApi(response.text)) break
 
                         val forjadorCalls = response.toolCalls.filter { tc ->
-                            tc.name == ForjadorTools.TOOL_LER_FICHA ||
-                            tc.name == ForjadorTools.TOOL_BUSCAR     ||
-                            tc.name == ForjadorTools.TOOL_GPS_MAGIA   ||
-                            tc.name == ForjadorTools.TOOL_EDITAR
+                            tc.name == ForjadorTools.TOOL_LER_FICHA      ||
+                            tc.name == ForjadorTools.TOOL_BUSCAR          ||
+                            tc.name == ForjadorTools.TOOL_GPS_MAGIA       ||
+                            tc.name == ForjadorTools.TOOL_EDITAR          ||
+                            tc.name == ForjadorTools.TOOL_BUSCAR_RACAS    ||
+                            tc.name == ForjadorTools.TOOL_APLICAR_RACIAL
                         }
 
                         if (forjadorCalls.isEmpty()) break
@@ -210,10 +212,12 @@ class MestreIAGeneratorUseCase(
                                 .ifBlank { tc.args.optString("query", "") }
                                 .ifBlank { tc.args.optString("secao", "") }
                             val acao = when (tc.name) {
-                                ForjadorTools.TOOL_EDITAR    -> "✏️ Aplicando: $alvo"
-                                ForjadorTools.TOOL_GPS_MAGIA -> "🧭 Calculando pré-requisitos: $alvo"
-                                ForjadorTools.TOOL_BUSCAR    -> "🔎 Buscando no catálogo: $alvo"
-                                ForjadorTools.TOOL_LER_FICHA -> "📖 Lendo a ficha: $alvo"
+                                ForjadorTools.TOOL_EDITAR          -> "✏️ Aplicando: $alvo"
+                                ForjadorTools.TOOL_GPS_MAGIA       -> "🧭 Calculando pré-requisitos: $alvo"
+                                ForjadorTools.TOOL_BUSCAR          -> "🔎 Buscando no catálogo: $alvo"
+                                ForjadorTools.TOOL_LER_FICHA       -> "📖 Lendo a ficha: $alvo"
+                                ForjadorTools.TOOL_BUSCAR_RACAS    -> "🧬 Buscando raças/metacaracterísticas..."
+                                ForjadorTools.TOOL_APLICAR_RACIAL  -> "🧬 Aplicando modelo racial: $alvo"
                                 else -> tc.name.replace("forjador_", "")
                             }
                             onStatusUpdate("$acao  (passo $iteracao)")

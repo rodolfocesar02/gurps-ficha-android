@@ -457,13 +457,13 @@ class ForjadorToolExecutor(
         val racasFiltradas = if (tipo != "meta" && tipo != "metacaracteristica") {
             catalogoRacas.filter {
                 query.isBlank() || it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
-            }.take(15)
+            }
         } else emptyList()
 
         val metasFiltradas = if (tipo != "raca") {
             catalogoMetas.filter {
                 query.isBlank() || it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
-            }.take(10)
+            }
         } else emptyList()
 
         if (racasFiltradas.isEmpty() && metasFiltradas.isEmpty()) {
