@@ -277,13 +277,20 @@ NUNCA:
             }
 
             override fun onMessage(ws: WebSocket, text: String) {
-                android.util.Log.i("GeminiLive", "◄ MSG texto (${text.length} chars): ${text.take(300)}")
+                // Só loga se não for áudio puro (evita spam de base64 PCM no Logcat)
+                val temAudio = text.contains("audio/pcm") && text.contains("\"data\"")
+                if (!temAudio) {
+                    android.util.Log.i("GeminiLive", "◄ MSG texto (${text.length} chars): ${text.take(300)}")
+                }
                 processarMensagemServidor(text)
             }
 
             override fun onMessage(ws: WebSocket, bytes: ByteString) {
                 val text = bytes.utf8()
-                android.util.Log.i("GeminiLive", "◄ MSG binário (${bytes.size} bytes): ${text.take(300)}")
+                val temAudio = text.contains("audio/pcm") && text.contains("\"data\"")
+                if (!temAudio) {
+                    android.util.Log.i("GeminiLive", "◄ MSG binário (${bytes.size} bytes): ${text.take(300)}")
+                }
                 processarMensagemServidor(text)
             }
 
@@ -317,6 +324,8 @@ NUNCA:
                 val ws = webSocket ?: return
 
                 val contextoFicha = contextoFichaParaSaudacao
+
+                // clientContent turnComplete=false: injeta contexto sem disparar resposta ainda
                 val ctxMsg = JSONObject().apply {
                     put("clientContent", JSONObject().apply {
                         put("turns", JSONArray().apply {
@@ -327,31 +336,24 @@ NUNCA:
                                 })
                             })
                         })
-                        put("turnComplete", true)
+                        put("turnComplete", false)
                     })
                 }
                 android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
                 ws.send(ctxMsg.toString().encodeUtf8())
 
+                // realtimeInput com text: dispara resposta de áudio imediatamente
                 val saudacaoPrompt = if (contextoFicha.contains("Sem nome") || contextoFicha.length < 20)
-                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta como Mestre IA de GURPS, apresente-se e pergunte como pode ajudar na ficha. Seja breve — máximo 2 frases."
+                    "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português."
                 else
-                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta mencionando o personagem pelo nome (se souber) e pergunte como pode ajudar. Seja breve — máximo 2 frases."
+                    "Cumprimente o jogador mencionando o personagem pelo nome e pergunte como pode ajudar. Máximo 2 frases em português."
 
                 val saudacaoMsg = JSONObject().apply {
-                    put("clientContent", JSONObject().apply {
-                        put("turns", JSONArray().apply {
-                            put(JSONObject().apply {
-                                put("role", "user")
-                                put("parts", JSONArray().apply {
-                                    put(JSONObject().apply { put("text", saudacaoPrompt) })
-                                })
-                            })
-                        })
-                        put("turnComplete", true)
+                    put("realtimeInput", JSONObject().apply {
+                        put("text", saudacaoPrompt)
                     })
                 }
-                android.util.Log.i("GeminiLive", "║  Enviando saudação inicial...")
+                android.util.Log.i("GeminiLive", "║  Enviando saudação (realtimeInput.text)...")
                 ws.send(saudacaoMsg.toString().encodeUtf8())
 
                 sessaoAtiva = true
@@ -441,6 +443,7 @@ NUNCA:
                                     modeloFalando = true
                                     limparFilaAudio()
                                     mainHandler.post { onEstado(EstadoLive.FALANDO) }
+                                    android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado")
                                 }
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
                                 val bytes = Base64.decode(audioB64, Base64.DEFAULT)
@@ -462,12 +465,18 @@ NUNCA:
                     }
                 }
 
-                // outputTranscription: fala real do modelo em PT-BR — prioridade máxima
-                val outputTranscript = content.optString("outputTranscription", "")
-                if (outputTranscript.isNotBlank()) {
-                    android.util.Log.i("GeminiLive", "✎ Transcrição Mestre: \"${outputTranscript.take(100)}\"")
-                    pendingTextoFallback = "" // cancela fallback — chegou o texto correto
-                    mainHandler.post { onRespostaMestre(outputTranscript) }
+                // outputTranscription: chega como objeto {"text":"palavra"} fragmentado por palavra
+                val outputTranscriptRaw = content.opt("outputTranscription")
+                if (outputTranscriptRaw != null) {
+                    val fragmento = when (outputTranscriptRaw) {
+                        is JSONObject -> outputTranscriptRaw.optString("text", "")
+                        is String -> outputTranscriptRaw
+                        else -> ""
+                    }
+                    if (fragmento.isNotBlank()) {
+                        android.util.Log.d("GeminiLive", "✎ frag transcrição: \"$fragmento\"")
+                        pendingTextoFallback += fragmento
+                    }
                 }
 
                 // interrupted=true: modelo foi cortado, descarta texto parcial
@@ -490,7 +499,12 @@ NUNCA:
                     mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                 }
 
-                val inputTranscript = content.optString("inputTranscription", "")
+                val inputTranscriptRaw = content.opt("inputTranscription")
+                val inputTranscript = when (inputTranscriptRaw) {
+                    is JSONObject -> inputTranscriptRaw.optString("text", "")
+                    is String -> inputTranscriptRaw
+                    else -> ""
+                }
                 if (inputTranscript.isNotBlank()) {
                     android.util.Log.i("GeminiLive", "✎ Transcrição usuário: \"${inputTranscript.take(100)}\"")
                     mainHandler.post { onTranscricaoUsuario(inputTranscript) }
@@ -537,13 +551,12 @@ NUNCA:
                     // Não envia microfone enquanto modelo está falando — evita auto-interrupção
                     if (modeloFalando) continue
                     val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
+                    // Formato correto conforme doc: realtimeInput.audio com data+mimeType
                     val msg = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
-                            put("mediaChunks", JSONArray().apply {
-                                put(JSONObject().apply {
-                                    put("mimeType", "audio/pcm;rate=16000")
-                                    put("data", b64)
-                                })
+                            put("audio", JSONObject().apply {
+                                put("data", b64)
+                                put("mimeType", "audio/pcm;rate=16000")
                             })
                         })
                     }
@@ -562,11 +575,9 @@ NUNCA:
                 try {
                     val ping = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
-                            put("mediaChunks", JSONArray().apply {
-                                put(JSONObject().apply {
-                                    put("mimeType", "audio/pcm;rate=16000")
-                                    put("data", b64silencio)
-                                })
+                            put("audio", JSONObject().apply {
+                                put("data", b64silencio)
+                                put("mimeType", "audio/pcm;rate=16000")
                             })
                         })
                     }

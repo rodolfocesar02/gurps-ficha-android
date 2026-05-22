@@ -122,7 +122,7 @@ android {
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-chat\"")
 
         // Gemini Live (voz bidirecional)
-        buildConfigField("String", "GEMINI_LIVE_MODEL", "\"models/gemini-2.5-flash-native-audio-latest\"")
+        buildConfigField("String", "GEMINI_LIVE_MODEL", "\"models/gemini-3.1-flash-live-preview\"")
         buildConfigField("String", "GEMINI_LIVE_VOICE", "\"Charon\"")
         buildConfigField("Boolean", "VOZ_BIDIRECIONAL_HABILITADA", "true")
 
