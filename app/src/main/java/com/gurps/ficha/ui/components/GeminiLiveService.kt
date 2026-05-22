@@ -193,8 +193,11 @@ NUNCA:
         }
     }
 
+    private var contextoFichaParaSaudacao: String = ""
+
     fun iniciarSessao(contextoFicha: String) {
         if (sessaoAtiva) return
+        contextoFichaParaSaudacao = contextoFicha
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
 
         val keyPreview = BuildConfig.MESTRE_IA_GEMINI_KEY.take(8) + "..."
@@ -211,51 +214,9 @@ NUNCA:
             override fun onOpen(ws: WebSocket, response: Response) {
                 android.util.Log.i("GeminiLive", "║  WebSocket ABERTO (HTTP ${response.code})")
                 val setup = buildSetupMessage()
-                android.util.Log.i("GeminiLive", "║  Enviando setup (${setup.length} chars)...")
+                android.util.Log.i("GeminiLive", "║  Enviando setup (${setup.length} chars) — aguardando setupComplete...")
                 ws.send(setup)
-
-                val ctxMsg = JSONObject().apply {
-                    put("client_content", JSONObject().apply {
-                        put("turns", JSONArray().apply {
-                            put(JSONObject().apply {
-                                put("role", "user")
-                                put("parts", JSONArray().apply {
-                                    put(JSONObject().apply { put("text", "Contexto atual da ficha: $contextoFicha") })
-                                })
-                            })
-                        })
-                        put("turn_complete", true)
-                    })
-                }
-                android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
-                ws.send(ctxMsg.toString())
-
-                // Saudação inicial — confirma canal de áudio e apresenta o Mestre
-                val saudacaoPrompt = if (contextoFicha.contains("Sem nome") || contextoFicha.length < 20)
-                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta como Mestre IA de GURPS, apresente-se e pergunte como pode ajudar na ficha. Seja breve — máximo 2 frases."
-                else
-                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta mencionando o personagem pelo nome (se souber) e pergunte como pode ajudar. Seja breve — máximo 2 frases."
-
-                val saudacaoMsg = JSONObject().apply {
-                    put("client_content", JSONObject().apply {
-                        put("turns", JSONArray().apply {
-                            put(JSONObject().apply {
-                                put("role", "user")
-                                put("parts", JSONArray().apply {
-                                    put(JSONObject().apply { put("text", saudacaoPrompt) })
-                                })
-                            })
-                        })
-                        put("turn_complete", true)
-                    })
-                }
-                android.util.Log.i("GeminiLive", "║  Enviando saudação inicial...")
-                ws.send(saudacaoMsg.toString())
-
-                sessaoAtiva = true
-                iniciarCaptura()
-                android.util.Log.i("GeminiLive", "╚══ SESSÃO ATIVA — aguardando fala do usuário")
-                mainHandler.post { onEstado(EstadoLive.OUVINDO) }
+                // NÃO enviar mais nada aqui — aguardar setupComplete no onMessage
             }
 
             override fun onMessage(ws: WebSocket, text: String) {
@@ -286,6 +247,56 @@ NUNCA:
     private fun processarMensagemServidor(json: String) {
         try {
             val obj = JSONObject(json)
+
+            // setupComplete — servidor confirmou o setup, agora podemos enviar mensagens
+            if (obj.has("setupComplete")) {
+                android.util.Log.i("GeminiLive", "║  setupComplete recebido — enviando contexto e saudação")
+                val ws = webSocket ?: return
+
+                val contextoFicha = contextoFichaParaSaudacao
+                val ctxMsg = JSONObject().apply {
+                    put("clientContent", JSONObject().apply {
+                        put("turns", JSONArray().apply {
+                            put(JSONObject().apply {
+                                put("role", "user")
+                                put("parts", JSONArray().apply {
+                                    put(JSONObject().apply { put("text", "Contexto atual da ficha: $contextoFicha") })
+                                })
+                            })
+                        })
+                        put("turnComplete", true)
+                    })
+                }
+                android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
+                ws.send(ctxMsg.toString())
+
+                val saudacaoPrompt = if (contextoFicha.contains("Sem nome") || contextoFicha.length < 20)
+                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta como Mestre IA de GURPS, apresente-se e pergunte como pode ajudar na ficha. Seja breve — máximo 2 frases."
+                else
+                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta mencionando o personagem pelo nome (se souber) e pergunte como pode ajudar. Seja breve — máximo 2 frases."
+
+                val saudacaoMsg = JSONObject().apply {
+                    put("clientContent", JSONObject().apply {
+                        put("turns", JSONArray().apply {
+                            put(JSONObject().apply {
+                                put("role", "user")
+                                put("parts", JSONArray().apply {
+                                    put(JSONObject().apply { put("text", saudacaoPrompt) })
+                                })
+                            })
+                        })
+                        put("turnComplete", true)
+                    })
+                }
+                android.util.Log.i("GeminiLive", "║  Enviando saudação inicial...")
+                ws.send(saudacaoMsg.toString())
+
+                sessaoAtiva = true
+                iniciarCaptura()
+                android.util.Log.i("GeminiLive", "╚══ SESSÃO ATIVA — aguardando fala do usuário")
+                mainHandler.post { onEstado(EstadoLive.OUVINDO) }
+                return
+            }
 
             if (obj.has("goAway")) {
                 android.util.Log.w("GeminiLive", "GoAway recebido — servidor encerrando sessão")
@@ -319,19 +330,20 @@ NUNCA:
                     val t0 = System.currentTimeMillis()
                     val resultado = onToolCall(nome, args)
                     val ms = System.currentTimeMillis() - t0
-                    android.util.Log.i("GeminiLive", "◄ TOOL RESP: $nome | ${ms}ms | sucesso=${resultado.optBoolean("sucesso", resultado.has("regras"))} | ${resultado.toString().take(150)}")
+                    android.util.Log.i("GeminiLive", "◄ TOOL RESP: $nome | ${ms}ms | ${resultado.toString().take(150)}")
                     respostas.put(JSONObject().apply {
                         put("id", id)
                         put("name", nome)
                         put("response", resultado)
                     })
                 }
+                // camelCase conforme spec Gemini Live
                 val toolResp = JSONObject().apply {
-                    put("tool_response", JSONObject().apply {
-                        put("function_responses", respostas)
+                    put("toolResponse", JSONObject().apply {
+                        put("functionResponses", respostas)
                     })
                 }
-                android.util.Log.i("GeminiLive", "► Enviando tool_response ao servidor...")
+                android.util.Log.i("GeminiLive", "► Enviando toolResponse ao servidor...")
                 webSocket?.send(toolResp.toString())
                 return
             }
@@ -410,10 +422,10 @@ NUNCA:
                 if (lidos > 0) {
                     val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
                     val msg = JSONObject().apply {
-                        put("realtime_input", JSONObject().apply {
-                            put("media_chunks", JSONArray().apply {
+                        put("realtimeInput", JSONObject().apply {
+                            put("mediaChunks", JSONArray().apply {
                                 put(JSONObject().apply {
-                                    put("mime_type", "audio/pcm;rate=16000")
+                                    put("mimeType", "audio/pcm;rate=16000")
                                     put("data", b64)
                                 })
                             })
@@ -426,7 +438,7 @@ NUNCA:
     }
 
     private fun reproduzirAudio(pcm: ByteArray) {
-        scope.launch(Dispatchers.Main) {
+        scope.launch(Dispatchers.IO) {
             audioTrack?.write(pcm, 0, pcm.size)
         }
     }
