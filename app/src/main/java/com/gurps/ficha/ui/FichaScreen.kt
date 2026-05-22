@@ -86,9 +86,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
     // SideEffect re-atribui os lambdas a cada recomposição — corrige stale capture
     SideEffect {
         vozMestreIA.onEstado = { novoEstado -> estadoVoz = novoEstado }
-        vozMestreIA.onResultado = { texto ->
+        vozMestreIA.onResultado = { texto, modo ->
+            viewModel.mestreIAMode = modo
             showMestreIADialog = true
-            viewModel.conversarComMestreIA(texto, "geracao") { _, _ -> }
+            viewModel.conversarComMestreIA(texto, modo) { _, _ -> }
         }
     }
     DisposableEffect(Unit) { onDispose { vozMestreIA.liberar() } }

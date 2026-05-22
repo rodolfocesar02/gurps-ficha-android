@@ -8,14 +8,19 @@ import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 enum class EstadoVoz { OCIOSO, ESCUTANDO, PROCESSANDO, ERRO }
 
 class VozMestreIA(private val context: Context) {
 
     private val mainHandler = Handler(Looper.getMainLooper())
+    private val scope = CoroutineScope(Dispatchers.Main)
     private var recognizer: SpeechRecognizer? = null
-    var onResultado: (String) -> Unit = {}
+    // (texto, modo) — modo já classificado pela IA
+    var onResultado: (String, String) -> Unit = { _, _ -> }
     var onEstado: (EstadoVoz) -> Unit = {}
 
     fun iniciar() {
@@ -40,8 +45,17 @@ class VozMestreIA(private val context: Context) {
                         ?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                         ?.firstOrNull()
                         .orEmpty()
-                    onEstado(EstadoVoz.OCIOSO)
-                    if (texto.isNotBlank()) onResultado(texto)
+                    if (texto.isBlank()) {
+                        onEstado(EstadoVoz.OCIOSO)
+                        return
+                    }
+                    // Mantém PROCESSANDO enquanto a IA classifica a intenção
+                    onEstado(EstadoVoz.PROCESSANDO)
+                    scope.launch {
+                        val modo = VozIntencaoClassifier.classificar(texto)
+                        onEstado(EstadoVoz.OCIOSO)
+                        onResultado(texto, modo)
+                    }
                 }
             })
         }
