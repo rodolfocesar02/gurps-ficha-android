@@ -2,6 +2,8 @@ package com.gurps.ficha.ui
 
 import android.Manifest
 import android.app.Activity
+import android.os.Handler
+import android.os.Looper
 import android.content.pm.ActivityInfo
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -108,8 +110,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
             viewModel.adicionarMensagemVoz(texto, "user")
         }
         geminiLive.onRespostaMestre = { texto ->
-            showMestreIADialog = true
             viewModel.adicionarMensagemVoz(texto, "model")
+            // showMestreIADialog é state Compose — precisa ser modificado na Main thread
+            Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
         }
         geminiLive.onToolCall = { nome, args ->
             geminiLiveTools.executar(nome, args)
@@ -362,6 +365,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     onMestreIALongPress = { iniciarVozComPermissao() },
                     mestreIAAberto = showMestreIADialog,
                     estadoVoz = estadoVoz,
+                    estadoLive = estadoLive,
                     isPraCegoVariant = isPraCegoVariant
                 )
             }

@@ -229,6 +229,25 @@ NUNCA:
                 }
                 android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
                 ws.send(ctxMsg.toString())
+
+                // Ping de confirmação — faz o Gemini responder imediatamente ao conectar,
+                // confirma que o canal de texto→áudio está funcionando antes do microfone
+                val pingMsg = JSONObject().apply {
+                    put("client_content", JSONObject().apply {
+                        put("turns", JSONArray().apply {
+                            put(JSONObject().apply {
+                                put("role", "user")
+                                put("parts", JSONArray().apply {
+                                    put(JSONObject().apply { put("text", "Olá! Diga apenas: 'Mestre pronto.' para confirmar a conexão.") })
+                                })
+                            })
+                        })
+                        put("turn_complete", true)
+                    })
+                }
+                android.util.Log.i("GeminiLive", "║  Enviando ping de confirmação...")
+                ws.send(pingMsg.toString())
+
                 sessaoAtiva = true
                 iniciarCaptura()
                 android.util.Log.i("GeminiLive", "╚══ SESSÃO ATIVA — aguardando fala do usuário")

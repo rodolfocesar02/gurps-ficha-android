@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.invisibleToUser
@@ -39,8 +41,17 @@ fun FichaCustomNavigationBar(
     onMestreIALongPress: () -> Unit = {},
     mestreIAAberto: Boolean = false,
     estadoVoz: EstadoVoz = EstadoVoz.OCIOSO,
+    estadoLive: EstadoLive = EstadoLive.OCIOSO,
     isPraCegoVariant: Boolean = false
 ) {
+    // Mapeia EstadoLive para EstadoVoz para reutilizar o anel visual existente
+    val estadoVozEfetivo = when {
+        estadoLive == EstadoLive.OUVINDO -> EstadoVoz.ESCUTANDO   // anel verde
+        estadoLive == EstadoLive.FALANDO -> EstadoVoz.PROCESSANDO  // anel amarelo
+        estadoLive == EstadoLive.CONECTANDO -> EstadoVoz.PROCESSANDO // anel amarelo
+        else -> estadoVoz // fallback para o sistema antigo
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,7 +69,7 @@ fun FichaCustomNavigationBar(
                 isSelected = mestreIAAberto,
                 labelOnRight = true,
                 isPraCegoVariant = isPraCegoVariant,
-                estadoVoz = estadoVoz,
+                estadoVoz = estadoVozEfetivo,
                 onClick = onMestreIAClick,
                 onLongClick = onMestreIALongPress
             )
@@ -180,12 +191,12 @@ fun RPGNavigationItem(
     val vozColor = if (estadoVoz == EstadoVoz.PROCESSANDO) Color(0xFFFFA000) else Color(0xFF4CAF50)
 
     val clickModifier = if (onLongClick != null) {
-        Modifier.combinedClickable(
-            interactionSource = interactionSource,
-            indication = null,
-            onClick = onClick,
-            onLongClick = onLongClick
-        )
+        Modifier.pointerInput(onClick, onLongClick) {
+            detectTapGestures(
+                onTap = { onClick() },
+                onLongPress = { onLongClick() }
+            )
+        }
     } else {
         Modifier.clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
     }
