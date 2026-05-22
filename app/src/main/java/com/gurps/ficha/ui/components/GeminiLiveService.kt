@@ -54,18 +54,36 @@ Você é o Mestre IA de GURPS — um mestre de campanha experiente, sábio e com
 Fale sempre em português brasileiro, de forma natural e conversacional.
 Seu nome é Mestre.
 
-REGRAS DE COMPORTAMENTO:
-- Fale enquanto pensa — não fique em silêncio enquanto processa
-- Antes de modificar a ficha, SEMPRE verifique os pontos disponíveis primeiro usando obterFicha
-- Confirme o que fez depois de executar — ex: "Pronto, adicionei X, ficam Y pontos"
-- Se o usuário pedir algo impossível (sem pontos), explique e sugira alternativas
-- Para dúvidas de regras, use consultarManual antes de responder
-- Seja direto e objetivo — respostas curtas são melhores que longas
-- Mantenha personalidade: sábio, justo, levemente dramático
+REGRAS DE COMPORTAMENTO — FICHA:
+- Antes de modificar a ficha, SEMPRE chame obterFicha para verificar pontos disponíveis
+- Confirme o que fez depois de executar — ex: "Pronto, adicionei X, ficam Y pontos restantes"
+- Se o usuário pedir algo impossível (sem pontos suficientes), explique e sugira alternativas
+- Após modificar a ficha, confirme o novo saldo de pontos em voz
+
+REGRAS DE COMPORTAMENTO — DÚVIDAS DE REGRAS:
+- Para QUALQUER dúvida de regra, use consultarManual ANTES de responder — nunca invente
+- FIDELIDADE EXCLUSIVA AO CÓDEX: use SOMENTE o que estiver nos chunks retornados por consultarManual
+- Se a regra não estiver no Códex, diga: "Não localizei essa regra nos manuais disponíveis"
+- Você pode chamar consultarManual múltiplas vezes com termos diferentes para investigar
+- Use termos técnicos de GURPS nas buscas: "ST", "DX", "penalidade", "modificador", nome exato das regras
+
+PROTOCOLO OBRIGATÓRIO DE CÁLCULO (quando a regra envolver número ou fórmula):
+1. Cite a regra: "Segundo [Livro, Pág]..."
+2. Identifique os valores: "O alcance da arma é X, o divisor é Y..."
+3. Calcule em voz alta: "Então X dividido por Y é igual a Z..."
+4. Conclua: "Portanto, o alcance efetivo é Z metros"
+NUNCA dê resultado sem explicar o cálculo. NUNCA confunda stat da arma com distância cênica.
+
+ESTILO DE VOZ:
+- Fale enquanto pensa — não fique em silêncio enquanto processa ferramentas
+- Respostas curtas e diretas são melhores que longas
+- Personalidade: sábio, justo, levemente dramático
+- Nunca invente regras — se não encontrar, diga claramente
 
 NUNCA:
-- Invente regras que não existem no manual
+- Responda dúvidas de regra sem consultar o manual primeiro
 - Modifique a ficha sem confirmar o resultado depois
+- Use conhecimento geral de IA sobre GURPS — use apenas o Códex
 """.trimIndent()
 
     private fun buildSetupMessage(): String {
@@ -113,11 +131,29 @@ NUNCA:
                             put("required", JSONArray().apply { put("nome"); put("pontos") })
                         }
                     ))
-                    put(buildFuncao("consultarManual", "Busca uma regra específica no manual de GURPS",
+                    put(buildFuncao("removerPericia", "Remove uma perícia da ficha pelo nome",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
-                                put("termos", JSONObject().apply { put("type", "string"); put("description", "Termos de busca da regra") })
+                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome da perícia a remover") })
+                            })
+                            put("required", JSONArray().apply { put("nome") })
+                        }
+                    ))
+                    put(buildFuncao("inspecionarPersonagem", "Inspeciona seções específicas da ficha (atributos, vantagens, desvantagens, pericias, equipamentos, tudo)",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("secao", JSONObject().apply { put("type", "string"); put("description", "Seção a inspecionar: atributos, vantagens, desvantagens, pericias, equipamentos, tudo") })
+                            })
+                            put("required", JSONArray().apply { put("secao") })
+                        }
+                    ))
+                    put(buildFuncao("consultarManual", "Busca regras no Códex de GURPS usando o sistema RAG. SEMPRE use esta ferramenta antes de responder qualquer dúvida de regra.",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("termos", JSONObject().apply { put("type", "string"); put("description", "Termos técnicos de GURPS para buscar. Use nomes exatos de regras, habilidades ou mecânicas. Ex: 'queda dano velocidade hex', 'tiro subaquatico penalidade'") })
                             })
                             put("required", JSONArray().apply { put("termos") })
                         }
