@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 22 de Maio de 2026
-**Status Atual:** UI/UX - Lote 235 CONCLUÍDO
+**Status Atual:** UI/UX - Lote 236 CONCLUÍDO
 
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -988,6 +988,18 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **`TabRolagem`:** estado `dadosPersonalizadosMotivo`; `executarRolagemPersonalizada` usa `label.ifBlank{"Livre"}` — texto do histórico e contexto Discord refletem o motivo digitado.
 - **Verificação:** assembleVisualDebug OK (30s).
 
+### Lote 234: Remove botão "Mestre IA (Beta)" do MenuDialog - CONCLUÍDO - **Commit:** `09092f8`
+- **Motivo:** com o ícone no rodapé (Lote 232) o botão do menu ficou redundante.
+- **`DialogsCommon`:** parâmetro `onMestreIA` e botão "Mestre IA (Beta)" removidos; `pracegoTraversal` do Fechar atualizado de 8→7.
+- **`FichaScreen`:** bloco `onMestreIA = { ... }` removido do call site.
+- **Verificação:** assembleVisualDebug OK (20s).
+
+### Lote 236: Correção do Sistema de Voz (Long Press não disparava) - CONCLUÍDO - **Commit:** `cdf4b34`
+- **Causa raiz 1 (stale lambda):** `vozMestreIA.onEstado` e `onResultado` eram atribuídos uma vez em `remember {}`, capturando `estadoVoz` e `showMestreIADialog` por valor — nunca viam as atualizações de estado posteriores. Corrigido com `SideEffect` que re-atribui os lambdas a cada recomposição.
+- **Causa raiz 2 (permissão runtime):** `RECORD_AUDIO` estava no manifesto mas Android 6+ exige `requestPermissions()` em tempo de execução. Adicionado `rememberLauncherForActivityResult(RequestPermission)` que pede a permissão ao usuário na primeira vez e só então chama `iniciar()`.
+- **Causa raiz 3 (threading):** `SpeechRecognizer` deve ser criado e operado na Main thread. Adicionado `mainHandler = Handler(Looper.getMainLooper())` e `mainHandler.post { ... }` envolvendo toda a criação/início da escuta.
+- **Verificação:** assembleVisualDebug OK (17s).
+
 ### Lote 235: Comando de Voz no Mestre IA (Long Press) - CONCLUÍDO - **Commit:** `948bb5a`
 - **Novo arquivo:** `VozMestreIA.kt` (`ui/components/`) encapsula o `SpeechRecognizer` nativo Android em PT-BR. Estados: `OCIOSO → ESCUTANDO → PROCESSANDO → OCIOSO` (ou `ERRO`). Callbacks `onEstado` e `onResultado`.
 - **`FichaCustomNavigationBar`:** ícone do Mestre IA ganhou `combinedClickable` — toque simples abre o chat, **segurar ativa o microfone**. Anel pulsante **verde** durante escuta e **amarelo** durante processamento como feedback visual.
@@ -995,13 +1007,6 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Permissão:** `RECORD_AUDIO` já estava no `AndroidManifest.xml` — Android solicita ao usuário no primeiro long press.
 - **Docs:** `ARQUITETURA_MESTRE_IA.md` ganhou seção "9. A Voz"; `MAPA_DETALHADO.md` atualizado com os dois arquivos.
 - **Verificação:** assembleVisualDebug OK (30s).
-
-### Lote 234: Remove botão "Mestre IA (Beta)" do MenuDialog - CONCLUÍDO - **Commit:** `09092f8`
-- **Motivo:** com o ícone no rodapé (Lote 232) o botão do menu ficou redundante.
-- **`DialogsCommon`:** parâmetro `onMestreIA` e botão "Mestre IA (Beta)" removidos; `pracegoTraversal` do Fechar atualizado de 8→7.
-- **`FichaScreen`:** bloco `onMestreIA = { ... }` removido do call site.
-- **Verificação:** assembleVisualDebug OK (20s).
-
 
 
 **[Bateria de Testes a Realizar]**
