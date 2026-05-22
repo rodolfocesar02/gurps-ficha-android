@@ -376,6 +376,33 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            // Banner do Gemini Live — visível quando sessão ativa, com botão encerrar
+            if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA && estadoLive != EstadoLive.OCIOSO) {
+                val (bannerColor, bannerTexto) = when (estadoLive) {
+                    EstadoLive.CONECTANDO -> Color(0xFFFF8F00) to "Mestre IA conectando..."
+                    EstadoLive.OUVINDO   -> Color(0xFF2E7D32) to "Mestre IA ouvindo — fale agora"
+                    EstadoLive.FALANDO   -> Color(0xFF1565C0) to "Mestre IA falando..."
+                    EstadoLive.ERRO      -> Color(0xFFC62828) to "Mestre IA — erro de conexão"
+                    else                 -> Color.Gray to ""
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = bannerTexto,
+                        color = bannerColor,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 13.sp
+                    )
+                    TextButton(onClick = { geminiLive.encerrar() }) {
+                        Text("Encerrar", color = bannerColor, fontSize = 13.sp)
+                    }
+                }
+            }
             if (!hideAppChrome && selectedTitle != "Rolagem") {
                 PontosBar(viewModel)
             }

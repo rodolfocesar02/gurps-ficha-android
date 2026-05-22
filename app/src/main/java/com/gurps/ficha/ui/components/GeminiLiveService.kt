@@ -230,23 +230,27 @@ NUNCA:
                 android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
                 ws.send(ctxMsg.toString())
 
-                // Ping de confirmação — faz o Gemini responder imediatamente ao conectar,
-                // confirma que o canal de texto→áudio está funcionando antes do microfone
-                val pingMsg = JSONObject().apply {
+                // Saudação inicial — confirma canal de áudio e apresenta o Mestre
+                val saudacaoPrompt = if (contextoFicha.contains("Sem nome") || contextoFicha.length < 20)
+                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta como Mestre IA de GURPS, apresente-se e pergunte como pode ajudar na ficha. Seja breve — máximo 2 frases."
+                else
+                    "O jogador acabou de abrir o modo de voz. Diga uma saudação curta mencionando o personagem pelo nome (se souber) e pergunte como pode ajudar. Seja breve — máximo 2 frases."
+
+                val saudacaoMsg = JSONObject().apply {
                     put("client_content", JSONObject().apply {
                         put("turns", JSONArray().apply {
                             put(JSONObject().apply {
                                 put("role", "user")
                                 put("parts", JSONArray().apply {
-                                    put(JSONObject().apply { put("text", "Olá! Diga apenas: 'Mestre pronto.' para confirmar a conexão.") })
+                                    put(JSONObject().apply { put("text", saudacaoPrompt) })
                                 })
                             })
                         })
                         put("turn_complete", true)
                     })
                 }
-                android.util.Log.i("GeminiLive", "║  Enviando ping de confirmação...")
-                ws.send(pingMsg.toString())
+                android.util.Log.i("GeminiLive", "║  Enviando saudação inicial...")
+                ws.send(saudacaoMsg.toString())
 
                 sessaoAtiva = true
                 iniciarCaptura()
