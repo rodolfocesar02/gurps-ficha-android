@@ -1051,3 +1051,8 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **GeminiLiveTools.kt reescrito:** Delega ao `ForjadorToolExecutor` (mesmo executor do Forjador/Auditor de texto). Ferramentas implementadas: `buscarCatalogo(tipo, query)` — previne alucinação de IDs buscando no catálogo oficial antes de qualquer edição; `editarFicha(operacao, secao, alvo, valor)` — CRUD unificado com a mesma lógica do Forjador para vantagens, desvantagens, perícias, técnicas, magias, equipamentos e atributos (com validação de pré-requisitos de magia); `trilhaDeMagias(magia_alvo)` — GPS de pré-requisitos, trilha ótima de magias; `lerFicha(secao)` — leitura de qualquer seção. Ferramentas legadas (adicionarVantagem, removerVantagem, etc.) mantidas como aliases.
 - **GeminiLiveService.kt:** `buildSetupMessage()` declara 5 ferramentas (lerFicha, buscarCatalogo, editarFicha, trilhaDeMagias, consultarManual). `systemPrompt` atualizado com protocolo obrigatório: buscarCatalogo antes de qualquer edição, GPS antes de adicionar magia.
 - **Build:** assembleVisualDebug OK.
+
+### Lote 246: Voz — Fix auto-interrupção permanente + texto em inglês no chat - CONCLUÍDO - **Commit:** `feed965`
+- **modeloFalando = false no turnComplete:** A flag nunca era resetada — após a 1ª resposta o modelo bloqueava o microfone permanentemente e ficava mudo para sempre.
+- **thought=true ignorado:** Substituiu o filtro de regex (`**Título**`) por verificação do campo `part.optBoolean("thought", false)`. Pensamentos internos do modelo em inglês (sem marcadores **) vazavam para o chat. Agora são descartados na fonte.
+- **Build:** assembleVisualDebug OK (23s clean build). Instalado via WiFi ADB (192.168.1.84:33933).
