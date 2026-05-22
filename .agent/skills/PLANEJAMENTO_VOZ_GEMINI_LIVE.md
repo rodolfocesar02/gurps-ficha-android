@@ -6,6 +6,19 @@
 
 ---
 
+## Decisões de Design (Confirmadas)
+
+| Decisão | Escolha |
+|---------|---------|
+| Voz | **Charon** (masculina, grave) |
+| Histórico | **Opção B** — voz integrada ao chat de texto. Transcrições salvas no `ChatHistoryDao` |
+| Ferramentas | **Mesmas do Forjador atual** — Gemini Live é nova interface, não nova lógica |
+| Raciocínio por baixo | Gemini (não DeepSeek/MiMo) — mas ferramentas Kotlin continuam iguais |
+| Ativar/desativar | `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA` — false por padrão |
+| GIF animado no ícone | **Fase 5 (futuro)** — animação do ícone do Mestre IA durante conversa por voz |
+
+---
+
 ## O Que Queremos
 
 O usuário fala com o Mestre IA como se fosse uma ligação:
@@ -239,8 +252,12 @@ NUNCA:
 
 ### Fase 4 — Qualidade
 - [ ] Ajustar system prompt para personalidade do Mestre
-- [ ] Testar PT-BR com vozes disponíveis (FENRIR, PUCK, CHARON, etc.)
+- [ ] Testar PT-BR com voz Charon
 - [ ] Compressão de contexto para sessões longas
+
+### Fase 5 — UX Avançada (Futuro)
+- [ ] GIF animado no ícone do Mestre IA durante conversa por voz (ouvindo / pensando / falando)
+- [ ] Microfone dentro do dialog (Fase 2 do sistema de voz atual)
 
 ---
 
