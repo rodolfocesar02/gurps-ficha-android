@@ -1009,17 +1009,6 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Causa raiz 3 (threading):** `SpeechRecognizer` deve ser criado e operado na Main thread. Adicionado `mainHandler = Handler(Looper.getMainLooper())` e `mainHandler.post { ... }` envolvendo toda a criação/início da escuta.
 - **Verificação:** assembleVisualDebug OK (17s).
 
-
-**[Bateria de Testes a Realizar]**
-- Bateria de Testes (Stress Test)
-Impacto em Alta Velocidade: "Um cavaleiro em carga a cavalo (Move 8) atinge um soldado com uma lança. Como calculo o dano de colisão baseado na ST 16 do cavalo?"
-Regras de Afogamento: "Meu personagem caiu em um rio e está sem fôlego. Quanto tempo ele aguenta antes de começar a perder PV e quais são os testes de HT?"
-Visibilidade Crítica: "Estou tentando atirar em um alvo na escuridão total, mas tenho 'Visão Noturna 5'. Qual a minha penalidade final?"
-Equipamentos e Carga: "Estou carregando 40kg de ouro. Minha ST é 10. Como isso afeta minha Esquiva e meu Deslocamento atual?"
-Aparar com Escudo: "Um ogro me atacou com uma clava gigante. Posso usar a regra de 'Aparar com o Escudo' ou sou obrigado a Bloquear?"
-Criação de Especialista: "Gere uma ficha de um Ninja especializado em infiltração tecnológica (NT 9), com 'Mãos Pegajosas' e 'Passo Leve', usando 150 pontos."
-Regra de Recuo (Armas de Fogo): "Se eu der uma rajada de 3 tiros com uma submetralhadora de Recuo 2, como calculo quantos tiros acertaram?"
-
 ### Lote 237: Classificador de Intenção por IA no Comando de Voz - CONCLUÍDO - **Commit:** `f32ad4b`
 - **Problema corrigido:** voz estava hardcoded em `"geracao"` — qualquer coisa falada virava criação de história e tentava integrar na ficha.
 - **Novo arquivo:** `VozIntencaoClassifier.kt` — chama o Gemini Flash Lite com prompt minúsculo após o reconhecimento de voz. Retorna `DUVIDA` → `"conversa"`, `ANALISE` → `"analise"`, `CRIAR` → `"geracao"`.
@@ -1028,3 +1017,10 @@ Regra de Recuo (Armas de Fogo): "Se eu der uma rajada de 3 tiros com uma submetr
 - **Fallback seguro:** qualquer erro na chamada ao classificador cai em `"conversa"` (Dúvida, gratuito) — nunca modifica a ficha por acidente.
 - **Fase 2 pendente:** botão de microfone dentro do dialog do Mestre IA (mesmo classificador).
 - **Verificação:** assembleVisualDebug OK (10s).
+
+### Lote 238: TTS Nativo — Mestre IA Responde em Voz - CONCLUÍDO - **Commit:** `bf13e48`
+- **Novo arquivo:** `VozTTS.kt` — encapsula `android.speech.tts.TextToSpeech` em PT-BR. Speech rate 1.05x, pitch neutro.
+- **Limpeza para fala:** remove blocos de código, `[Pág. X]`, markdown (negrito, itálico, títulos, listas), limita a 800 chars para não falar respostas enormes.
+- **`FichaScreen.kt`:** `vozTTS.falar(resposta)` chamado no callback `onResult` — só ativa quando o comando veio por voz, não interfere no chat de texto normal.
+- **Reversão simples:** deletar `VozTTS.kt` + remover 3 linhas do `FichaScreen.kt`.
+- **Verificação:** assembleVisualDebug OK (23s).
