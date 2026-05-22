@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 22 de Maio de 2026
-**Status Atual:** UI/UX - Lote 234 CONCLUÍDO
+**Status Atual:** UI/UX - Lote 235 CONCLUÍDO
 
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -986,6 +986,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Pedido:** usuário queria digitar o motivo da rolagem livre (ex: "Pânico") para aparecer no Discord em vez do genérico "Livre".
 - **`RolagemPersonalizadaDialog`:** novos parâmetros `motivo: String` e `onUpdateMotivo`; `OutlinedTextField` "Motivo (opcional)" com placeholder adicionado entre o card de expressão e o botão Rolar.
 - **`TabRolagem`:** estado `dadosPersonalizadosMotivo`; `executarRolagemPersonalizada` usa `label.ifBlank{"Livre"}` — texto do histórico e contexto Discord refletem o motivo digitado.
+- **Verificação:** assembleVisualDebug OK (30s).
+
+### Lote 235: Comando de Voz no Mestre IA (Long Press) - CONCLUÍDO - **Commit:** `948bb5a`
+- **Novo arquivo:** `VozMestreIA.kt` (`ui/components/`) encapsula o `SpeechRecognizer` nativo Android em PT-BR. Estados: `OCIOSO → ESCUTANDO → PROCESSANDO → OCIOSO` (ou `ERRO`). Callbacks `onEstado` e `onResultado`.
+- **`FichaCustomNavigationBar`:** ícone do Mestre IA ganhou `combinedClickable` — toque simples abre o chat, **segurar ativa o microfone**. Anel pulsante **verde** durante escuta e **amarelo** durante processamento como feedback visual.
+- **`FichaScreen`:** instancia `VozMestreIA` com `remember`, `onResultado` chama `conversarComMestreIA(texto, "geracao")` e abre o dialog automaticamente. `DisposableEffect` garante `liberar()` ao sair da tela.
+- **Permissão:** `RECORD_AUDIO` já estava no `AndroidManifest.xml` — Android solicita ao usuário no primeiro long press.
+- **Docs:** `ARQUITETURA_MESTRE_IA.md` ganhou seção "9. A Voz"; `MAPA_DETALHADO.md` atualizado com os dois arquivos.
 - **Verificação:** assembleVisualDebug OK (30s).
 
 ### Lote 234: Remove botão "Mestre IA (Beta)" do MenuDialog - CONCLUÍDO - **Commit:** `09092f8`
