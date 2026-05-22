@@ -14,6 +14,7 @@ import com.gurps.ficha.BuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -21,6 +22,8 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
+import okio.ByteString
+import okio.ByteString.Companion.encodeUtf8
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
@@ -35,6 +38,9 @@ class GeminiLiveService(private val context: Context) {
     private var audioRecord: AudioRecord? = null
     private var audioTrack: AudioTrack? = null
     private var capturaJob: Job? = null
+    private var reproducaoJob: Job? = null
+    // Recriado a cada sessão; máximo 200 chunks (~20s de buffer)
+    private var audioChannel = Channel<ByteArray>(capacity = 200)
     private var sessaoAtiva = false
 
     // Callbacks para o FichaScreen
@@ -50,21 +56,28 @@ class GeminiLiveService(private val context: Context) {
         .build()
 
     private val systemPrompt = """
+IDIOMA OBRIGATÓRIO: Responda SEMPRE em português brasileiro. NUNCA use inglês, nem para pensar em voz alta, nem para comentários internos. Todo output de texto e fala deve ser em PT-BR.
+
 Você é o Mestre IA de GURPS — um mestre de campanha experiente, sábio e com personalidade própria.
 Fale sempre em português brasileiro, de forma natural e conversacional.
 Seu nome é Mestre.
 
-REGRAS DE COMPORTAMENTO — FICHA:
-- Antes de modificar a ficha, SEMPRE chame obterFicha para verificar pontos disponíveis
-- Confirme o que fez depois de executar — ex: "Pronto, adicionei X, ficam Y pontos restantes"
-- Se o usuário pedir algo impossível (sem pontos suficientes), explique e sugira alternativas, se insistir faça oque foi pedido
-- Após modificar a ficha, confirme o novo saldo de pontos em voz
+FERRAMENTAS DISPONÍVEIS E QUANDO USAR:
+- lerFicha(secao): lê atributos, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, pontos
+- buscarCatalogo(tipo, query): OBRIGATÓRIO antes de adicionar qualquer trait — retorna IDs e nomes corretos. Tipos: vantagem, desvantagem, pericia, magia, tecnica. NUNCA invente um ID sem buscar antes.
+- editarFicha(operacao, secao, alvo, valor): adiciona, remove ou altera qualquer item da ficha. operacao: adicionar|remover|alterar. secao: vantagens|desvantagens|pericias|tecnicas|magias|equipamentos|atributos
+- trilhaDeMagias(magia_alvo): GPS de magias — mostra cadeia de pré-requisitos e trilha mais rápida até a magia desejada
+- consultarManual(termos): busca regras no Códex de GURPS. Use ANTES de responder qualquer dúvida de regra.
+
+FLUXO OBRIGATÓRIO PARA EDITAR A FICHA:
+1. SEMPRE buscar com buscarCatalogo primeiro para obter o ID correto
+2. Então chamar editarFicha com o ID/nome retornado
+3. Confirmar em voz o que foi feito e quantos pontos restam
 
 REGRAS DE COMPORTAMENTO — DÚVIDAS DE REGRAS:
 - Para QUALQUER dúvida de regra, use consultarManual ANTES de responder — nunca invente
 - FIDELIDADE EXCLUSIVA AO CÓDEX: use SOMENTE o que estiver nos chunks retornados por consultarManual
 - Se a regra não estiver no Códex, diga: "Não localizei essa regra nos manuais disponíveis"
-- Você pode chamar consultarManual múltiplas vezes com termos diferentes para investigar
 - Use termos técnicos de GURPS nas buscas: "ST", "DX", "penalidade", "modificador", nome exato das regras
 
 PROTOCOLO OBRIGATÓRIO DE CÁLCULO (quando a regra envolver número ou fórmula):
@@ -74,6 +87,11 @@ PROTOCOLO OBRIGATÓRIO DE CÁLCULO (quando a regra envolver número ou fórmula)
 4. Conclua: "Portanto, o alcance efetivo é Z metros"
 NUNCA dê resultado sem explicar o cálculo. NUNCA confunda stat da arma com distância cênica.
 
+MAGIAS — REGRAS ESPECIAIS:
+- Para adicionar uma magia, primeiro use trilhaDeMagias para verificar os pré-requisitos
+- O sistema BLOQUEIA magias sem pré-requisito (igual ao botão na tela)
+- Se faltarem pré-requisitos, explique a trilha e ofereça adicionar na ordem correta
+
 ESTILO DE VOZ:
 - Fale enquanto pensa — não fique em silêncio enquanto processa ferramentas
 - Respostas curtas e diretas são melhores que longas
@@ -81,8 +99,9 @@ ESTILO DE VOZ:
 - Nunca invente regras — se não encontrar, diga claramente
 
 NUNCA:
-- Responda dúvidas de regra sem consultar o manual primeiro
-- Modifique a ficha sem confirmar o resultado depois
+- Adicionar trait sem buscarCatalogo primeiro
+- Responder dúvidas de regra sem consultar o manual primeiro
+- Modificar a ficha sem confirmar o resultado depois
 - Use conhecimento geral de IA sobre GURPS — use apenas o Códex
 """.trimIndent()
 
@@ -90,72 +109,95 @@ NUNCA:
         val tools = JSONArray().apply {
             put(JSONObject().apply {
                 put("function_declarations", JSONArray().apply {
-                    put(buildFuncao("obterFicha", "Retorna o estado atual da ficha do personagem: nome, pontos restantes, vantagens, desvantagens e perícias", JSONObject()))
-                    put(buildFuncao("obterPontosRestantes", "Retorna quantos pontos estão disponíveis para gastar", JSONObject()))
-                    put(buildFuncao("adicionarVantagem", "Adiciona uma vantagem na ficha do personagem",
+
+                    // ── Leitura da ficha ──────────────────────────────────────────────
+                    put(buildFuncao("lerFicha",
+                        "Lê uma seção da ficha do personagem. Use antes de qualquer modificação para verificar o estado atual.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
-                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome exato da vantagem") })
-                                put("nivel", JSONObject().apply { put("type", "integer"); put("description", "Nível da vantagem (padrão 1)") })
+                                put("secao", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "atributos | vantagens | desvantagens | pericias | tecnicas | magias | equipamentos | qualidades | peculiaridades | pontos")
+                                })
                             })
-                            put("required", JSONArray().apply { put("nome") })
+                            put("required", JSONArray().put("secao"))
                         }
                     ))
-                    put(buildFuncao("removerVantagem", "Remove uma vantagem da ficha pelo nome",
+
+                    // ── Busca no catálogo (previne alucinação de IDs) ────────────────
+                    put(buildFuncao("buscarCatalogo",
+                        "Busca itens no catálogo oficial de GURPS. OBRIGATÓRIO antes de adicionar qualquer vantagem, desvantagem, perícia, magia ou técnica — retorna IDs e nomes corretos para usar em editarFicha.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
-                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome da vantagem a remover") })
+                                put("tipo", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "vantagem | desvantagem | pericia | magia | tecnica")
+                                })
+                                put("query", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Palavra-chave de busca (ex: 'combate', 'fogo', 'furtividade')")
+                                })
                             })
-                            put("required", JSONArray().apply { put("nome") })
+                            put("required", JSONArray().put("tipo").put("query"))
                         }
                     ))
-                    put(buildFuncao("adicionarDesvantagem", "Adiciona uma desvantagem na ficha",
+
+                    // ── Edição unificada da ficha ─────────────────────────────────────
+                    put(buildFuncao("editarFicha",
+                        "Edita a ficha DIRETAMENTE: adiciona, remove ou altera qualquer item. Para atributos: operacao=alterar, secao=atributos, alvo=ST/DX/IQ/HT, valor=14. Para vantagens/desvantagens/pericias/tecnicas/magias/equipamentos: use o ID retornado por buscarCatalogo.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
-                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome exato da desvantagem") })
-                                put("nivel", JSONObject().apply { put("type", "integer"); put("description", "Nível (padrão 1)") })
+                                put("operacao", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "adicionar | remover | alterar")
+                                })
+                                put("secao", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "atributos | vantagens | desvantagens | pericias | tecnicas | magias | equipamentos | qualidades | peculiaridades")
+                                })
+                                put("alvo", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "ID/nome do item ou atributo (ST/DX/IQ/HT/forca/destreza/inteligencia/vitalidade)")
+                                })
+                                put("valor", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Atributo: '14'. Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3'. Técnica: 'nivel=4;periciaBase=<id>'. Magia: 'forcar=true' apenas se narrativo.")
+                                })
                             })
-                            put("required", JSONArray().apply { put("nome") })
+                            put("required", JSONArray().put("operacao").put("secao").put("alvo"))
                         }
                     ))
-                    put(buildFuncao("adicionarPericia", "Adiciona ou atualiza uma perícia na ficha",
+
+                    // ── GPS de Magias ─────────────────────────────────────────────────
+                    put(buildFuncao("trilhaDeMagias",
+                        "GPS de Magias: calcula a trilha mais rápida de pré-requisitos para aprender uma magia alvo. Use antes de tentar adicionar qualquer magia para verificar se é possível e qual a ordem correta.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
-                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome da perícia") })
-                                put("pontos", JSONObject().apply { put("type", "integer"); put("description", "Pontos a investir") })
+                                put("magia_alvo", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "ID da magia alvo (use buscarCatalogo tipo=magia para obter o ID)")
+                                })
                             })
-                            put("required", JSONArray().apply { put("nome"); put("pontos") })
+                            put("required", JSONArray().put("magia_alvo"))
                         }
                     ))
-                    put(buildFuncao("removerPericia", "Remove uma perícia da ficha pelo nome",
+
+                    // ── RAG — Consulta ao Códex ───────────────────────────────────────
+                    put(buildFuncao("consultarManual",
+                        "Busca regras no Códex de GURPS (RAG). SEMPRE use antes de responder qualquer dúvida de regra — nunca invente. Pode chamar múltiplas vezes com termos diferentes.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
-                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome da perícia a remover") })
+                                put("termos", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Termos técnicos de GURPS para buscar. Ex: 'queda dano velocidade hex', 'tiro subaquatico penalidade alcance'")
+                                })
                             })
-                            put("required", JSONArray().apply { put("nome") })
-                        }
-                    ))
-                    put(buildFuncao("inspecionarPersonagem", "Inspeciona seções específicas da ficha (atributos, vantagens, desvantagens, pericias, equipamentos, tudo)",
-                        JSONObject().apply {
-                            put("type", "object")
-                            put("properties", JSONObject().apply {
-                                put("secao", JSONObject().apply { put("type", "string"); put("description", "Seção a inspecionar: atributos, vantagens, desvantagens, pericias, equipamentos, tudo") })
-                            })
-                            put("required", JSONArray().apply { put("secao") })
-                        }
-                    ))
-                    put(buildFuncao("consultarManual", "Busca regras no Códex de GURPS usando o sistema RAG. SEMPRE use esta ferramenta antes de responder qualquer dúvida de regra.",
-                        JSONObject().apply {
-                            put("type", "object")
-                            put("properties", JSONObject().apply {
-                                put("termos", JSONObject().apply { put("type", "string"); put("description", "Termos técnicos de GURPS para buscar. Use nomes exatos de regras, habilidades ou mecânicas. Ex: 'queda dano velocidade hex', 'tiro subaquatico penalidade'") })
-                            })
-                            put("required", JSONArray().apply { put("termos") })
+                            put("required", JSONArray().put("termos"))
                         }
                     ))
                 })
@@ -189,7 +231,12 @@ NUNCA:
         return JSONObject().apply {
             put("name", nome)
             put("description", descricao)
-            if (params.length() > 0) put("parameters", params)
+            // Gemini Live exige parameters mesmo quando vazio
+            val p = if (params.length() > 0) params else JSONObject().apply {
+                put("type", "object")
+                put("properties", JSONObject())
+            }
+            put("parameters", p)
         }
     }
 
@@ -201,7 +248,7 @@ NUNCA:
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
 
         val keyPreview = BuildConfig.MESTRE_IA_GEMINI_KEY.take(8) + "..."
-        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
+        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
         android.util.Log.i("GeminiLive", "╔══ INICIANDO SESSÃO ══════════════════")
         android.util.Log.i("GeminiLive", "║  Modelo: ${BuildConfig.GEMINI_LIVE_MODEL}")
         android.util.Log.i("GeminiLive", "║  Voz: ${BuildConfig.GEMINI_LIVE_VOICE}")
@@ -215,12 +262,22 @@ NUNCA:
                 android.util.Log.i("GeminiLive", "║  WebSocket ABERTO (HTTP ${response.code})")
                 val setup = buildSetupMessage()
                 android.util.Log.i("GeminiLive", "║  Enviando setup (${setup.length} chars) — aguardando setupComplete...")
-                ws.send(setup)
+                // Log do setup em chunks para ver o JSON completo no Logcat
+                setup.chunked(800).forEachIndexed { i, chunk ->
+                    android.util.Log.i("GeminiLive", "║  SETUP[$i]: $chunk")
+                }
+                ws.send(setup.encodeUtf8())
                 // NÃO enviar mais nada aqui — aguardar setupComplete no onMessage
             }
 
             override fun onMessage(ws: WebSocket, text: String) {
-                android.util.Log.d("GeminiLive", "◄ MSG servidor (${text.length} chars): ${text.take(120)}")
+                android.util.Log.i("GeminiLive", "◄ MSG texto (${text.length} chars): ${text.take(300)}")
+                processarMensagemServidor(text)
+            }
+
+            override fun onMessage(ws: WebSocket, bytes: ByteString) {
+                val text = bytes.utf8()
+                android.util.Log.i("GeminiLive", "◄ MSG binário (${bytes.size} bytes): ${text.take(300)}")
                 processarMensagemServidor(text)
             }
 
@@ -268,7 +325,7 @@ NUNCA:
                     })
                 }
                 android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
-                ws.send(ctxMsg.toString())
+                ws.send(ctxMsg.toString().encodeUtf8())
 
                 val saudacaoPrompt = if (contextoFicha.contains("Sem nome") || contextoFicha.length < 20)
                     "O jogador acabou de abrir o modo de voz. Diga uma saudação curta como Mestre IA de GURPS, apresente-se e pergunte como pode ajudar na ficha. Seja breve — máximo 2 frases."
@@ -289,7 +346,7 @@ NUNCA:
                     })
                 }
                 android.util.Log.i("GeminiLive", "║  Enviando saudação inicial...")
-                ws.send(saudacaoMsg.toString())
+                ws.send(saudacaoMsg.toString().encodeUtf8())
 
                 sessaoAtiva = true
                 iniciarCaptura()
@@ -344,7 +401,7 @@ NUNCA:
                     })
                 }
                 android.util.Log.i("GeminiLive", "► Enviando toolResponse ao servidor...")
-                webSocket?.send(toolResp.toString())
+                webSocket?.send(toolResp.toString().encodeUtf8())
                 return
             }
 
@@ -355,18 +412,21 @@ NUNCA:
                 if (modelTurn != null) {
                     mainHandler.post { onEstado(EstadoLive.FALANDO) }
                     val parts = modelTurn.optJSONArray("parts") ?: return
+                    var temAudio = false
                     for (i in 0 until parts.length()) {
                         val part = parts.getJSONObject(i)
                         if (part.has("inlineData")) {
                             val mime = part.getJSONObject("inlineData").getString("mimeType")
                             if (mime.contains("audio")) {
+                                temAudio = true
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
                                 val bytes = Base64.decode(audioB64, Base64.DEFAULT)
-                                android.util.Log.d("GeminiLive", "♪ Áudio recebido: ${bytes.size} bytes (${mime})")
+                                android.util.Log.d("GeminiLive", "♪ Áudio recebido: ${bytes.size} bytes")
                                 reproduzirAudio(bytes)
                             }
                         }
-                        if (part.has("text")) {
+                        // Só exibe texto no chat se NÃO tiver áudio (evita pensamento interno em inglês)
+                        if (!temAudio && part.has("text")) {
                             val texto = part.getString("text")
                             if (texto.isNotBlank()) {
                                 android.util.Log.i("GeminiLive", "✎ Texto Mestre: \"${texto.take(100)}\"")
@@ -374,6 +434,13 @@ NUNCA:
                             }
                         }
                     }
+                }
+
+                // Transcrição do que o Mestre falou (vem em PT-BR, usa para exibir no chat)
+                val outputTranscript = content.optString("outputTranscription", "")
+                if (outputTranscript.isNotBlank()) {
+                    android.util.Log.i("GeminiLive", "✎ Transcrição Mestre: \"${outputTranscript.take(100)}\"")
+                    mainHandler.post { onRespostaMestre(outputTranscript) }
                 }
 
                 if (content.optBoolean("turnComplete")) {
@@ -400,9 +467,14 @@ NUNCA:
             bufferSize * 2
         ).also { it.startRecording() }
 
+        // USAGE_MEDIA com buffer grande para streaming contínuo sem underrun
+        val trackBufSize = maxOf(
+            AudioTrack.getMinBufferSize(24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT),
+            24000 * 2 * 2  // 2 segundos de buffer (24kHz * 16bit * 2s)
+        )
         audioTrack = AudioTrack(
             AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .setUsage(AudioAttributes.USAGE_MEDIA)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 .build(),
             AudioFormat.Builder()
@@ -410,7 +482,7 @@ NUNCA:
                 .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
                 .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
                 .build(),
-            AudioTrack.getMinBufferSize(24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2,
+            trackBufSize,
             AudioTrack.MODE_STREAM,
             AudioManager.AUDIO_SESSION_ID_GENERATE
         ).also { it.play() }
@@ -431,21 +503,32 @@ NUNCA:
                             })
                         })
                     }
-                    webSocket?.send(msg.toString())
+                    webSocket?.send(msg.toString().encodeUtf8())
                 }
+            }
+        }
+
+        // Coroutine única de reprodução — garante acesso serial ao AudioTrack
+        val track = audioTrack
+        reproducaoJob = scope.launch {
+            for (pcm in audioChannel) {
+                track?.write(pcm, 0, pcm.size)
             }
         }
     }
 
     private fun reproduzirAudio(pcm: ByteArray) {
-        scope.launch(Dispatchers.IO) {
-            audioTrack?.write(pcm, 0, pcm.size)
-        }
+        // Enfileira o chunk — a coroutine de reprodução consome em ordem, sem concorrência
+        audioChannel.trySend(pcm)
     }
 
     fun encerrar() {
         sessaoAtiva = false
         capturaJob?.cancel()
+        audioChannel.close()
+        audioChannel = Channel(capacity = 200) // recria para próxima sessão
+        capturaJob?.cancel()
+        reproducaoJob?.cancel()
         audioRecord?.stop()
         audioRecord?.release()
         audioRecord = null

@@ -1,27 +1,52 @@
 package com.gurps.ficha.ui.components
 
+import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.domain.MestreIAGraphEngine
 import com.gurps.ficha.domain.MestreIAPlanner
+import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
+import com.gurps.ficha.domain.tools.ForjadorToolExecutor
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
 class GeminiLiveTools(private val viewModel: FichaViewModel) {
 
-    private val graphEngine = MestreIAGraphEngine(viewModel.dataRepository)
+    private val repo = viewModel.dataRepository
+    private val graphEngine = MestreIAGraphEngine(repo)
+    private val nexusAdapter = NexusArcanoModoAlvoAdapter(repo.magias)
+    private val forjador = ForjadorToolExecutor(viewModel, repo, nexusAdapter)
 
     fun executar(nome: String, args: JSONObject): JSONObject {
         return try {
             when (nome) {
-                "obterFicha" -> obterFicha()
-                "obterPontosRestantes" -> obterPontosRestantes()
-                "adicionarVantagem" -> adicionarVantagem(args)
-                "removerVantagem" -> removerVantagem(args)
-                "adicionarDesvantagem" -> adicionarDesvantagem(args)
-                "adicionarPericia" -> adicionarPericia(args)
-                "removerPericia" -> removerPericia(args)
+                // ── Ferramentas legadas (delegam ao ForjadorToolExecutor) ──
+                "obterFicha"           -> lerFicha("tudo")
+                "obterPontosRestantes" -> lerFicha("pontos")
+                "inspecionarPersonagem" -> lerFicha(args.optString("secao", "tudo"))
+
+                // ── Leitura de seções (unificada) ──
+                "lerFicha"             -> lerFicha(args.optString("secao", "atributos"))
+
+                // ── Busca no catálogo (previne alucinação de IDs) ──
+                "buscarCatalogo" -> executarForjador("buscar", args)
+
+                // ── Edição unificada via ForjadorToolExecutor ──
+                "editarFicha" -> executarForjador("editar", args)
+
+                // ── GPS de Magias ──
+                "trilhaDeMagias" -> executarForjador("gps", args)
+
+                // ── Ferramenta RAG (única que não vai para o Forjador) ──
                 "consultarManual" -> consultarManual(args)
-                "inspecionarPersonagem" -> inspecionarPersonagem(args)
+
+                // Compatibilidade: ferramentas antigas mapeadas para editarFicha
+                "adicionarVantagem"    -> editarCompat("adicionar", "vantagens", args.getString("nome"), "nivel=${args.optInt("nivel", 1)}")
+                "removerVantagem"      -> editarCompat("remover", "vantagens", args.getString("nome"), "")
+                "adicionarDesvantagem" -> editarCompat("adicionar", "desvantagens", args.getString("nome"), "nivel=${args.optInt("nivel", 1)}")
+                "removerDesvantagem"   -> editarCompat("remover", "desvantagens", args.getString("nome"), "")
+                "adicionarPericia"     -> editarCompat("adicionar", "pericias", args.getString("nome"), "nivel=${args.optInt("pontos", 1)}")
+                "removerPericia"       -> editarCompat("remover", "pericias", args.getString("nome"), "")
+
                 else -> JSONObject().apply { put("erro", "Ferramenta desconhecida: $nome") }
             }
         } catch (e: Exception) {
@@ -30,160 +55,75 @@ class GeminiLiveTools(private val viewModel: FichaViewModel) {
         }
     }
 
-    private fun obterFicha(): JSONObject {
+    private fun lerFicha(secao: String): JSONObject {
+        val secaoReal = when (secao) {
+            "tudo", "" -> "atributos"
+            else -> secao
+        }
+        val resultado = forjador.lerSecao(secaoReal)
         val p = viewModel.personagem
-        return JSONObject().apply {
-            put("nome", p.nome.ifBlank { "Sem nome" })
-            put("st", p.st); put("dx", p.dx); put("iq", p.iq); put("ht", p.ht)
-            put("pontosIniciais", p.pontosIniciais)
-            put("pontosGastos", p.pontosGastos)
-            put("pontosRestantes", p.pontosRestantes)
-            put("vantagens", p.vantagens.joinToString(", ") { it.nome })
-            put("desvantagens", p.desvantagens.joinToString(", ") { it.nome })
-            put("pericias", p.pericias.joinToString(", ") { "${it.nome}(${it.pontosGastos}pts)" })
-        }
-    }
-
-    private fun obterPontosRestantes(): JSONObject {
-        val p = viewModel.personagem
-        return JSONObject().apply {
-            put("pontosRestantes", p.pontosRestantes)
-            put("pontosGastos", p.pontosGastos)
-            put("pontosIniciais", p.pontosIniciais)
-        }
-    }
-
-    private fun inspecionarPersonagem(args: JSONObject): JSONObject {
-        val secao = args.optString("secao", "tudo")
-        val p = viewModel.personagem
-        return JSONObject().apply {
-            when (secao) {
-                "atributos" -> {
-                    put("st", p.st); put("dx", p.dx); put("iq", p.iq); put("ht", p.ht)
-                    put("pv", p.pontosVida); put("pf", p.pontosFadiga)
-                    put("velocidade", p.velocidadeBasica.toDouble())
-                    put("deslocamento", p.deslocamentoBasico)
-                    put("percepcao", p.percepcao); put("vontade", p.vontade)
-                }
-                "vantagens" -> put("vantagens", p.vantagens.joinToString(", ") { "${it.nome} [${it.custoFinal}pts]" })
-                "desvantagens" -> put("desvantagens", p.desvantagens.joinToString(", ") { "${it.nome} [${it.custoFinal}pts]" })
-                "pericias" -> put("pericias", p.pericias.joinToString(", ") { "${it.nome} NH${it.calcularNivel(p)}(${it.pontosGastos}pts)" })
-                "equipamentos" -> put("equipamentos", p.equipamentos.joinToString(", ") { it.nome })
-                else -> {
-                    put("nome", p.nome)
-                    put("st", p.st); put("dx", p.dx); put("iq", p.iq); put("ht", p.ht)
-                    put("pontosRestantes", p.pontosRestantes)
-                    put("vantagens", p.vantagens.joinToString(", ") { it.nome })
-                    put("desvantagens", p.desvantagens.joinToString(", ") { it.nome })
-                    put("pericias", p.pericias.take(10).joinToString(", ") { it.nome })
-                }
-            }
-        }
-    }
-
-    private fun adicionarVantagem(args: JSONObject): JSONObject {
-        val nome = args.getString("nome")
-        val nivel = args.optInt("nivel", 1)
-        val def = viewModel.dataRepository.vantagens.firstOrNull {
-            it.nome.equals(nome, ignoreCase = true) || it.nome.contains(nome, ignoreCase = true)
-        }
-        return if (def == null) {
-            JSONObject().apply { put("sucesso", false); put("mensagem", "Vantagem '$nome' não encontrada no catálogo") }
-        } else {
-            val erro = viewModel.adicionarVantagem(def, nivel)
+        return if (secao == "tudo") {
+            // Para obterFicha: retorna visão geral como JSON
             JSONObject().apply {
-                put("sucesso", erro == null)
-                put("mensagem", erro ?: "Vantagem '${def.nome}' adicionada com sucesso")
-                put("pontosRestantes", viewModel.personagem.pontosRestantes)
+                put("nome", p.nome.ifBlank { "Sem nome" })
+                put("st", p.st); put("dx", p.dx); put("iq", p.iq); put("ht", p.ht)
+                put("pontosIniciais", p.pontosIniciais)
+                put("pontosGastos", p.pontosGastos)
+                put("pontosRestantes", p.pontosRestantes)
+                put("vantagens", p.vantagens.joinToString(", ") { it.nome })
+                put("desvantagens", p.desvantagens.joinToString(", ") { it.nome })
+                put("pericias", p.pericias.joinToString(", ") { "${it.nome}(${it.pontosGastos}pts)" })
+                put("magias", p.magias.joinToString(", ") { it.nome })
+                put("tecnicas", p.tecnicas.joinToString(", ") { it.nome })
+                put("equipamentos", p.equipamentos.joinToString(", ") { it.nome })
             }
-        }
-    }
-
-    private fun removerVantagem(args: JSONObject): JSONObject {
-        val nome = args.getString("nome")
-        val index = viewModel.personagem.vantagens.indexOfFirst {
-            it.nome.equals(nome, ignoreCase = true) || it.nome.contains(nome, ignoreCase = true)
-        }
-        return if (index < 0) {
-            JSONObject().apply { put("sucesso", false); put("mensagem", "Vantagem '$nome' não encontrada na ficha") }
-        } else {
-            viewModel.removerVantagem(index)
+        } else if (secao == "pontos") {
             JSONObject().apply {
-                put("sucesso", true)
-                put("mensagem", "Vantagem '$nome' removida")
-                put("pontosRestantes", viewModel.personagem.pontosRestantes)
+                put("pontosRestantes", p.pontosRestantes)
+                put("pontosGastos", p.pontosGastos)
+                put("pontosIniciais", p.pontosIniciais)
             }
-        }
-    }
-
-    private fun adicionarDesvantagem(args: JSONObject): JSONObject {
-        val nome = args.getString("nome")
-        val nivel = args.optInt("nivel", 1)
-        val def = viewModel.dataRepository.desvantagens.firstOrNull {
-            it.nome.equals(nome, ignoreCase = true) || it.nome.contains(nome, ignoreCase = true)
-        }
-        return if (def == null) {
-            JSONObject().apply { put("sucesso", false); put("mensagem", "Desvantagem '$nome' não encontrada no catálogo") }
         } else {
-            val erro = viewModel.adicionarDesvantagem(def, nivel)
-            JSONObject().apply {
-                put("sucesso", erro == null)
-                put("mensagem", erro ?: "Desvantagem '${def.nome}' adicionada")
-                put("pontosRestantes", viewModel.personagem.pontosRestantes)
-            }
+            JSONObject().apply { put("resultado", resultado) }
         }
     }
 
-    private fun adicionarPericia(args: JSONObject): JSONObject {
-        val nome = args.getString("nome")
-        val pontos = args.optInt("pontos", 1)
-        val def = viewModel.dataRepository.pericias.firstOrNull {
-            it.nome.equals(nome, ignoreCase = true) || it.nome.contains(nome, ignoreCase = true)
+    private fun executarForjador(tipo: String, args: JSONObject): JSONObject {
+        val toolName = when (tipo) {
+            "buscar" -> "forjador_buscar_catalogo"
+            "editar" -> "forjador_editar_ficha"
+            "gps"    -> "forjador_gps_magia"
+            else -> "forjador_editar_ficha"
         }
-        return if (def == null) {
-            JSONObject().apply { put("sucesso", false); put("mensagem", "Perícia '$nome' não encontrada no catálogo") }
-        } else {
-            val erro = viewModel.adicionarPericia(def, pontos)
-            JSONObject().apply {
-                put("sucesso", erro == null)
-                put("mensagem", erro ?: "Perícia '${def.nome}' adicionada com $pontos ponto(s)")
-                put("pontosRestantes", viewModel.personagem.pontosRestantes)
-            }
+        val toolCall = MestreIAClient.MestreIAToolCall(name = toolName, args = args)
+        val resultado = forjador.execute(toolCall)
+        return try {
+            JSONObject(resultado)
+        } catch (_: Exception) {
+            JSONObject().apply { put("resultado", resultado) }
         }
     }
 
-    private fun removerPericia(args: JSONObject): JSONObject {
-        val nome = args.getString("nome")
-        val index = viewModel.personagem.pericias.indexOfFirst {
-            it.nome.equals(nome, ignoreCase = true) || it.nome.contains(nome, ignoreCase = true)
+    private fun editarCompat(op: String, secao: String, alvo: String, valor: String): JSONObject {
+        val args = JSONObject().apply {
+            put("operacao", op)
+            put("secao", secao)
+            put("alvo", alvo)
+            if (valor.isNotBlank()) put("valor", valor)
         }
-        return if (index < 0) {
-            JSONObject().apply { put("sucesso", false); put("mensagem", "Perícia '$nome' não encontrada na ficha") }
-        } else {
-            viewModel.removerPericia(index)
-            JSONObject().apply {
-                put("sucesso", true)
-                put("mensagem", "Perícia '$nome' removida")
-                put("pontosRestantes", viewModel.personagem.pontosRestantes)
-            }
-        }
+        return executarForjador("editar", args)
     }
 
-    // Pipeline RAG real: Planner → FTS → Scoring → Formatação — mesmo motor do Auditor texto
     private fun consultarManual(args: JSONObject): JSONObject {
         val termos = args.getString("termos")
         android.util.Log.i("GeminiLiveTools", "consultarManual: '$termos'")
 
         return try {
             val resultado = runBlocking {
-                // Usa o Planner para extrair termos técnicos de GURPS da query em linguagem natural
                 val plano = MestreIAPlanner.planejarBusca(termos, viewModel.personagem.equipamentos)
                 val termosExtras = plano.termos
-
-                // Busca FTS + scoring no Códex (mesmo motor do MestreIAUseCase)
                 val searchResult = graphEngine.buscarDiretoNoCodex(termos, termosExtras)
 
-                // Sub-queries temáticas em paralelo para ampliar cobertura
                 val resultadoFinal = if (plano.subQueriesTemáticas.isNotEmpty()) {
                     val subResultados = plano.subQueriesTemáticas.map { q ->
                         graphEngine.buscarDiretoNoCodex(q, emptyList())
@@ -208,7 +148,7 @@ class GeminiLiveTools(private val viewModel: FichaViewModel) {
             if (resultado.isBlank()) {
                 JSONObject().apply {
                     put("encontrado", false)
-                    put("mensagem", "Nenhuma regra encontrada no Códex para '$termos'. Tente termos mais específicos como nomes técnicos de GURPS.")
+                    put("mensagem", "Nenhuma regra encontrada no Códex para '$termos'. Tente termos mais específicos.")
                 }
             } else {
                 JSONObject().apply {
