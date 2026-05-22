@@ -165,17 +165,17 @@ NUNCA:
         return JSONObject().apply {
             put("setup", JSONObject().apply {
                 put("model", BuildConfig.GEMINI_LIVE_MODEL)
-                put("generation_config", JSONObject().apply {
-                    put("response_modalities", JSONArray().apply { put("AUDIO"); put("TEXT") })
-                    put("speech_config", JSONObject().apply {
-                        put("voice_config", JSONObject().apply {
-                            put("prebuilt_voice_config", JSONObject().apply {
-                                put("voice_name", BuildConfig.GEMINI_LIVE_VOICE)
+                put("generationConfig", JSONObject().apply {
+                    put("responseModalities", JSONArray().apply { put("AUDIO") })
+                    put("speechConfig", JSONObject().apply {
+                        put("voiceConfig", JSONObject().apply {
+                            put("prebuiltVoiceConfig", JSONObject().apply {
+                                put("voiceName", BuildConfig.GEMINI_LIVE_VOICE)
                             })
                         })
                     })
                 })
-                put("system_instruction", JSONObject().apply {
+                put("systemInstruction", JSONObject().apply {
                     put("parts", JSONArray().apply {
                         put(JSONObject().apply { put("text", systemPrompt) })
                     })

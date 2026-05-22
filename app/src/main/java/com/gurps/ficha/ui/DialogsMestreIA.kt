@@ -31,17 +31,21 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.ui.components.EstadoLive
 import com.gurps.ficha.viewmodel.FichaViewModel
 
 @Composable
 fun DialogMestreIA(
     viewModel: FichaViewModel,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    estadoLive: EstadoLive = EstadoLive.OCIOSO,
+    onEncerrarLive: () -> Unit = {}
 ) {
     var prompt by remember { mutableStateOf("") }
     var isAguardando by remember { mutableStateOf(false) }
     val chatHistory = viewModel.mestreIAChatHistory
     val scrollState = rememberLazyListState()
+    val liveAtivo = estadoLive != EstadoLive.OCIOSO && estadoLive != EstadoLive.ERRO
 
     LaunchedEffect(chatHistory.size) {
         if (chatHistory.isNotEmpty()) {
@@ -63,12 +67,25 @@ fun DialogMestreIA(
                     Image(painter = painterResource(id = R.drawable.tab_mestre_ia), contentDescription = null, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("Mestre IA", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold)
+                    // Indicador de estado do Live
+                    if (liveAtivo) {
+                        Spacer(Modifier.width(8.dp))
+                        val (dotColor, dotLabel) = when (estadoLive) {
+                            EstadoLive.CONECTANDO -> Color(0xFFFF8F00) to "conectando..."
+                            EstadoLive.OUVINDO   -> Color(0xFF2E7D32) to "ouvindo"
+                            EstadoLive.FALANDO   -> Color(0xFF1565C0) to "falando"
+                            else                 -> Color.Gray to ""
+                        }
+                        Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(dotColor))
+                        Spacer(Modifier.width(4.dp))
+                        Text(dotLabel, fontSize = 11.sp, color = dotColor)
+                    }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     var showHistory by remember { mutableStateOf(false) }
-                    IconButton(onClick = { 
+                    IconButton(onClick = {
                         viewModel.carregarHistoricoMestreIA()
-                        showHistory = true 
+                        showHistory = true
                     }) {
                         Icon(Icons.Default.History, null, modifier = Modifier.size(20.dp))
                     }
@@ -89,7 +106,12 @@ fun DialogMestreIA(
                             Box(modifier = Modifier.size(80.dp).clip(RoundedCornerShape(20.dp)).background(MaterialTheme.colorScheme.primaryContainer), contentAlignment = Alignment.Center) {
                                 Image(painter = painterResource(id = R.drawable.tab_mestre_ia), contentDescription = null, modifier = Modifier.size(48.dp))
                             }
-                            Spacer(Modifier.height(16.dp)); Text("Saudações!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.height(16.dp))
+                            Text("Saudações!", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                            if (liveAtivo) {
+                                Spacer(Modifier.height(8.dp))
+                                Text("🎙️ Modo voz ativo — fale com o Mestre", fontSize = 13.sp, color = Color(0xFF2E7D32))
+                            }
                         }
                     }
                 } else {
@@ -98,13 +120,36 @@ fun DialogMestreIA(
                     }
                 }
                 Spacer(Modifier.height(12.dp))
-                ChatInputBar(prompt, onValueChange = { prompt = it }, isAguardando, onSend = {
-                    val p = prompt; prompt = ""; isAguardando = true
-                    viewModel.conversarComMestreIA(p, viewModel.mestreIAMode) { _, _ -> isAguardando = false }
-                }, mode = viewModel.mestreIAMode, onModeChange = { viewModel.mestreIAMode = it })
+                // Barra de input — oculta enquanto Live estiver ouvindo (usuário fala por voz)
+                if (!liveAtivo) {
+                    ChatInputBar(prompt, onValueChange = { prompt = it }, isAguardando, onSend = {
+                        val p = prompt; prompt = ""; isAguardando = true
+                        viewModel.conversarComMestreIA(p, viewModel.mestreIAMode) { _, _ -> isAguardando = false }
+                    }, mode = viewModel.mestreIAMode, onModeChange = { viewModel.mestreIAMode = it })
+                } else {
+                    // Mostra status de voz e botão encerrar no lugar do input
+                    val statusTexto = when (estadoLive) {
+                        EstadoLive.CONECTANDO -> "Conectando ao Mestre..."
+                        EstadoLive.OUVINDO   -> "🎙️ Ouvindo — fale agora"
+                        EstadoLive.FALANDO   -> "🔊 Mestre falando..."
+                        else                 -> ""
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(statusTexto, fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        TextButton(onClick = { onEncerrarLive(); onDismiss() }) {
+                            Text("Encerrar voz", color = Color(0xFFC62828))
+                        }
+                    }
+                }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+        confirmButton = {
+            if (!liveAtivo) TextButton(onClick = onDismiss) { Text("Fechar") }
+        }
     )
 }
 
