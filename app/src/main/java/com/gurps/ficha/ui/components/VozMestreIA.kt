@@ -3,6 +3,8 @@ package com.gurps.ficha.ui.components
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -11,14 +13,16 @@ enum class EstadoVoz { OCIOSO, ESCUTANDO, PROCESSANDO, ERRO }
 
 class VozMestreIA(private val context: Context) {
 
+    private val mainHandler = Handler(Looper.getMainLooper())
     private var recognizer: SpeechRecognizer? = null
     var onResultado: (String) -> Unit = {}
     var onEstado: (EstadoVoz) -> Unit = {}
 
     fun iniciar() {
+        mainHandler.post {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             onEstado(EstadoVoz.ERRO)
-            return
+            return@post
         }
         recognizer?.destroy()
         recognizer = SpeechRecognizer.createSpeechRecognizer(context).also { sr ->
@@ -48,6 +52,7 @@ class VozMestreIA(private val context: Context) {
             putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
         }
         recognizer?.startListening(intent)
+        } // fim mainHandler.post
     }
 
     fun cancelar() {

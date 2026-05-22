@@ -1,9 +1,12 @@
 package com.gurps.ficha.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -78,16 +82,31 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var estadoVoz by remember { mutableStateOf(EstadoVoz.OCIOSO) }
-    val vozMestreIA = remember {
-        VozMestreIA(context).apply {
-            onEstado = { estadoVoz = it }
-            onResultado = { texto ->
-                showMestreIADialog = true
-                viewModel.conversarComMestreIA(texto, "geracao") { _, _ -> }
-            }
+    val vozMestreIA = remember { VozMestreIA(context) }
+    // SideEffect re-atribui os lambdas a cada recomposição — corrige stale capture
+    SideEffect {
+        vozMestreIA.onEstado = { novoEstado -> estadoVoz = novoEstado }
+        vozMestreIA.onResultado = { texto ->
+            showMestreIADialog = true
+            viewModel.conversarComMestreIA(texto, "geracao") { _, _ -> }
         }
     }
     DisposableEffect(Unit) { onDispose { vozMestreIA.liberar() } }
+
+    val permissaoMicLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { concedida ->
+        if (concedida) vozMestreIA.iniciar()
+    }
+
+    fun iniciarVozComPermissao() {
+        val permissao = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+        if (permissao == PackageManager.PERMISSION_GRANTED) {
+            vozMestreIA.iniciar()
+        } else {
+            permissaoMicLauncher.launch(Manifest.permission.RECORD_AUDIO)
+        }
+    }
 
     // Check automático de atualização na inicialização
     LaunchedEffect(Unit) {
@@ -295,7 +314,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     currentIndex = selectedTab,
                     onTabClick = { index -> selectedTab = index },
                     onMestreIAClick = { showMestreIADialog = true },
-                    onMestreIALongPress = { vozMestreIA.iniciar() },
+                    onMestreIALongPress = { iniciarVozComPermissao() },
                     mestreIAAberto = showMestreIADialog,
                     estadoVoz = estadoVoz,
                     isPraCegoVariant = isPraCegoVariant
