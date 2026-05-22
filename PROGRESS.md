@@ -1065,3 +1065,11 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **modeloFalando = false no turnComplete:** A flag nunca era resetada — após a 1ª resposta o modelo bloqueava o microfone permanentemente e ficava mudo para sempre.
 - **thought=true ignorado:** Substituiu o filtro de regex (`**Título**`) por verificação do campo `part.optBoolean("thought", false)`. Pensamentos internos do modelo em inglês (sem marcadores **) vazavam para o chat. Agora são descartados na fonte.
 - **Build:** assembleVisualDebug OK (23s clean build). Instalado via WiFi ADB (192.168.1.84:33933).
+
+
+### Lote 248: Raças e Metacaracterísticas no Mestre IA (voz e texto) - CONCLUÍDO - **Commit:** `06b2647`
+- **Duas novas ferramentas:** `forjador_buscar_racas(query, tipo)` — lista raças/metacaracterísticas dos catálogos; `forjador_aplicar_modelo_racial(id, tipo)` — aplica ModeloRacial completo (atributos, vantagens, desvantagens, perícias) via `viewModel.atualizarModeloRacial()`.
+- **Propagação de Context:** `ForjadorToolExecutor` recebe `Context?` (necessário para carregar os JSONs de assets). Propagado por FichaViewModel → FichaIADelegate → MestreIAGeneratorUseCase → ForjadorToolExecutor; e FichaScreen → GeminiLiveTools → ForjadorToolExecutor.
+- **Voz (GeminiLiveService):** 2 ferramentas declaradas no `buildSetupMessage()` e instrução no systemPrompt.
+- **Texto (ForjadorTools):** Schemas adicionados em getGeminiTools() e getOpenAITools(). Constantes TOOL_BUSCAR_RACAS e TOOL_APLICAR_RACIAL adicionadas.
+- **Build:** assembleVisualDebug OK (5s). Instalado via WiFi ADB (192.168.1.84:33933).
