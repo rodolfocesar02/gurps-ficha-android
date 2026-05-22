@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 22 de Maio de 2026
-**Status Atual:** Mestre IA - Lote 249 PLANEJADO
+**Status Atual:** Mestre IA - Lote 250 CONCLUÍDO
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -1079,8 +1079,8 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Proíbe perícias/vantagens em qualidades no prompt do Forjador
 - Bloqueia invenção de nomes genéricos como "Kaelen" — usa nome do usuário ou "Sem Nome"
 
-### Lote 250 (planejado): Melhorias DeepSeek API — Thinking Mode + JSON Mode + Migração de Modelo
-- Migração de `deepseek-chat` para `deepseek-v4-flash` (deprecação em 24/07/2026)
-- Thinking Mode para perguntas de regras complexas (resolve Falha Tipo 3 do RAG)
-- JSON Mode garantido para Forjador (elimina erros de parse)
-- Log de cache hit/miss tokens para monitorar Context Caching
+### Lote 250: Melhorias DeepSeek API — CONCLUÍDO | commit: 366be61
+- Migra `deepseek-chat` → `deepseek-v4-flash` (deprecação em 24/07/2026)
+- Ativa Thinking Mode no Auditor: modelo raciocina passo a passo antes de responder
+- Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
+- Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
