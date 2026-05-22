@@ -39,9 +39,15 @@ class GeminiLiveService(private val context: Context) {
     private var audioTrack: AudioTrack? = null
     private var capturaJob: Job? = null
     private var reproducaoJob: Job? = null
+    private var keepAliveJob: Job? = null
     // Recriado a cada sessão; máximo 200 chunks (~20s de buffer)
     private var audioChannel = Channel<ByteArray>(capacity = 200)
     private var sessaoAtiva = false
+    // Acumula texto do turno inteiro (várias mensagens) para exibir no chat
+    @Volatile private var pendingTextoFallback = ""
+    @Volatile private var turnoTemAudio = false
+    // Bloqueia envio de microfone enquanto modelo fala — evita auto-interrupção
+    @Volatile private var modeloFalando = false
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -383,11 +389,24 @@ NUNCA:
                     val id = call.getString("id")
                     val nome = call.getString("name")
                     val args = call.optJSONObject("args") ?: JSONObject()
-                    android.util.Log.i("GeminiLive", "► TOOL CALL: $nome | args=${args.toString().take(100)}")
+                    android.util.Log.i("GeminiLive", "╔══ 🔧 TOOL CALL ══════════════════════")
+                    android.util.Log.i("GeminiLive", "║  Ferramenta: $nome")
+                    android.util.Log.i("GeminiLive", "║  Args: ${args.toString().take(200)}")
+                    // Feedback visual imediato — evita silêncio durante RAG (pode demorar ~10s)
+                    val labelFerramenta = when (nome) {
+                        "consultarManual" -> "📖 Consultando o Códex..."
+                        "buscarCatalogo"  -> "🔍 Buscando no catálogo..."
+                        "editarFicha"     -> "✏️ Editando a ficha..."
+                        "trilhaDeMagias"  -> "🗺️ Calculando trilha de magias..."
+                        "lerFicha"        -> "📋 Lendo a ficha..."
+                        else              -> "⚙️ Processando..."
+                    }
+                    mainHandler.post { onRespostaMestre(labelFerramenta) }
                     val t0 = System.currentTimeMillis()
                     val resultado = onToolCall(nome, args)
                     val ms = System.currentTimeMillis() - t0
-                    android.util.Log.i("GeminiLive", "◄ TOOL RESP: $nome | ${ms}ms | ${resultado.toString().take(150)}")
+                    android.util.Log.i("GeminiLive", "║  Resultado (${ms}ms): ${resultado.toString().take(300)}")
+                    android.util.Log.i("GeminiLive", "╚══════════════════════════════════════")
                     respostas.put(JSONObject().apply {
                         put("id", id)
                         put("name", nome)
@@ -410,41 +429,64 @@ NUNCA:
 
                 val modelTurn = content.optJSONObject("modelTurn")
                 if (modelTurn != null) {
-                    mainHandler.post { onEstado(EstadoLive.FALANDO) }
                     val parts = modelTurn.optJSONArray("parts") ?: return
-                    var temAudio = false
                     for (i in 0 until parts.length()) {
                         val part = parts.getJSONObject(i)
                         if (part.has("inlineData")) {
                             val mime = part.getJSONObject("inlineData").getString("mimeType")
                             if (mime.contains("audio")) {
-                                temAudio = true
+                                if (!turnoTemAudio) {
+                                    // Primeiro chunk do turno: bloqueia mic, limpa fila anterior
+                                    turnoTemAudio = true
+                                    modeloFalando = true
+                                    limparFilaAudio()
+                                    mainHandler.post { onEstado(EstadoLive.FALANDO) }
+                                }
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
                                 val bytes = Base64.decode(audioB64, Base64.DEFAULT)
-                                android.util.Log.d("GeminiLive", "♪ Áudio recebido: ${bytes.size} bytes")
                                 reproduzirAudio(bytes)
                             }
                         }
-                        // Só exibe texto no chat se NÃO tiver áudio (evita pensamento interno em inglês)
-                        if (!temAudio && part.has("text")) {
-                            val texto = part.getString("text")
-                            if (texto.isNotBlank()) {
-                                android.util.Log.i("GeminiLive", "✎ Texto Mestre: \"${texto.take(100)}\"")
-                                mainHandler.post { onRespostaMestre(texto) }
+                        if (part.has("text")) {
+                            // Ignora parts de raciocínio interno (thought=true)
+                            if (part.optBoolean("thought", false)) {
+                                android.util.Log.d("GeminiLive", "✎ pensamento ignorado: \"${part.getString("text").take(80)}\"")
+                                continue
+                            }
+                            val t = part.getString("text")
+                            android.util.Log.i("GeminiLive", "✎ texto turno: \"${t.take(120)}\"")
+                            if (t.isNotBlank()) {
+                                pendingTextoFallback += t + " "
                             }
                         }
                     }
                 }
 
-                // Transcrição do que o Mestre falou (vem em PT-BR, usa para exibir no chat)
+                // outputTranscription: fala real do modelo em PT-BR — prioridade máxima
                 val outputTranscript = content.optString("outputTranscription", "")
                 if (outputTranscript.isNotBlank()) {
                     android.util.Log.i("GeminiLive", "✎ Transcrição Mestre: \"${outputTranscript.take(100)}\"")
+                    pendingTextoFallback = "" // cancela fallback — chegou o texto correto
                     mainHandler.post { onRespostaMestre(outputTranscript) }
+                }
+
+                // interrupted=true: modelo foi cortado, descarta texto parcial
+                if (content.optBoolean("interrupted")) {
+                    android.util.Log.i("GeminiLive", "⚡ Turno interrompido — descartando texto parcial")
+                    pendingTextoFallback = ""
+                    turnoTemAudio = false
                 }
 
                 if (content.optBoolean("turnComplete")) {
                     android.util.Log.i("GeminiLive", "✓ Turno completo — voltando a ouvir")
+                    val fallback = pendingTextoFallback.trim()
+                    if (fallback.isNotBlank()) {
+                        android.util.Log.i("GeminiLive", "✎ Fallback chat: \"${fallback.take(150)}\"")
+                        mainHandler.post { onRespostaMestre(fallback) }
+                    }
+                    pendingTextoFallback = ""
+                    turnoTemAudio = false
+                    modeloFalando = false
                     mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                 }
 
@@ -467,10 +509,10 @@ NUNCA:
             bufferSize * 2
         ).also { it.startRecording() }
 
-        // USAGE_MEDIA com buffer grande para streaming contínuo sem underrun
-        val trackBufSize = maxOf(
-            AudioTrack.getMinBufferSize(24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT),
-            24000 * 2 * 2  // 2 segundos de buffer (24kHz * 16bit * 2s)
+        // Buffer mínimo — write() bloqueia naturalmente na taxa correta (24kHz)
+        // Buffer grande causava acúmulo e reprodução acelerada
+        val trackBufSize = AudioTrack.getMinBufferSize(
+            24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT
         )
         audioTrack = AudioTrack(
             AudioAttributes.Builder()
@@ -492,6 +534,8 @@ NUNCA:
             while (isActive && sessaoAtiva) {
                 val lidos = audioRecord?.read(buffer, 0, buffer.size) ?: break
                 if (lidos > 0) {
+                    // Não envia microfone enquanto modelo está falando — evita auto-interrupção
+                    if (modeloFalando) continue
                     val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
                     val msg = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
@@ -508,13 +552,59 @@ NUNCA:
             }
         }
 
-        // Coroutine única de reprodução — garante acesso serial ao AudioTrack
-        val track = audioTrack
-        reproducaoJob = scope.launch {
-            for (pcm in audioChannel) {
-                track?.write(pcm, 0, pcm.size)
+        // Keepalive: envia áudio silencioso a cada 20s para manter WebSocket vivo
+        keepAliveJob = scope.launch {
+            val silencio = ByteArray(3200) // 100ms de zeros = silêncio PCM
+            val b64silencio = Base64.encodeToString(silencio, Base64.NO_WRAP)
+            while (isActive && sessaoAtiva) {
+                kotlinx.coroutines.delay(20_000)
+                if (!sessaoAtiva) break
+                try {
+                    val ping = JSONObject().apply {
+                        put("realtimeInput", JSONObject().apply {
+                            put("mediaChunks", JSONArray().apply {
+                                put(JSONObject().apply {
+                                    put("mimeType", "audio/pcm;rate=16000")
+                                    put("data", b64silencio)
+                                })
+                            })
+                        })
+                    }
+                    webSocket?.send(ping.toString().encodeUtf8())
+                    android.util.Log.d("GeminiLive", "♥ keepalive enviado")
+                } catch (e: Exception) {
+                    android.util.Log.w("GeminiLive", "keepalive falhou: ${e.message}")
+                }
             }
         }
+
+        // Coroutine de reprodução num thread dedicado (não IO pool)
+        // O write() bloqueia até o HW consumir os dados — garante ritmo natural
+        val track = audioTrack
+        reproducaoJob = scope.launch(Dispatchers.Default) {
+            for (pcm in audioChannel) {
+                if (!isActive) break
+                // write() em MODE_STREAM bloqueia até o hardware consumir
+                // Garante que reproduzimos na taxa real de 24kHz sem pular frames
+                var offset = 0
+                while (offset < pcm.size && isActive) {
+                    val written = track?.write(pcm, offset, pcm.size - offset) ?: break
+                    if (written <= 0) break
+                    offset += written
+                }
+            }
+        }
+    }
+
+    private fun limparFilaAudio() {
+        // Para o AudioTrack imediatamente e descarta buffer interno
+        audioTrack?.pause()
+        audioTrack?.flush()
+        audioTrack?.play()
+        // Descarta chunks pendentes no channel
+        var descartados = 0
+        while (audioChannel.tryReceive().isSuccess) { descartados++ }
+        android.util.Log.d("GeminiLive", "♪ Novo turno: $descartados chunks descartados, AudioTrack resetado")
     }
 
     private fun reproduzirAudio(pcm: ByteArray) {
@@ -525,10 +615,10 @@ NUNCA:
     fun encerrar() {
         sessaoAtiva = false
         capturaJob?.cancel()
+        keepAliveJob?.cancel()
+        reproducaoJob?.cancel()
         audioChannel.close()
         audioChannel = Channel(capacity = 200) // recria para próxima sessão
-        capturaJob?.cancel()
-        reproducaoJob?.cancel()
         audioRecord?.stop()
         audioRecord?.release()
         audioRecord = null
