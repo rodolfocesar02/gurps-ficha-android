@@ -1025,6 +1025,13 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Reversão simples:** deletar `VozTTS.kt` + remover 3 linhas do `FichaScreen.kt`.
 - **Verificação:** assembleVisualDebug OK (23s).
 
+### Lotes 240-243: Gemini Live — RAG Real + UI Auto-open + camelCase Fix - CONCLUÍDO - **Commit:** `45a5932`
+- **Lote 240 — RAG real no consultarManual:** `GeminiLiveTools.kt` reescrito. `consultarManual` chama `MestreIAPlanner.planejarBusca` + `MestreIAGraphEngine.buscarDiretoNoCodex` (com AND-bonus, proximity scoring) usando `runBlocking`. Sub-queries temáticas fazem merge de chunks. Resultado formatado via `formatarParaIA` — idêntico ao caminho do Auditor de texto. Corrigidos nomes de campo: `pontosGastos`, `custoFinal`, `deslocamentoBasico`, `velocidadeBasica.toDouble()`.
+- **Lote 241 — camelCase fix (code=1007):** `GeminiLiveService.buildSetupMessage()` tinha snake_case nas chaves JSON (`generation_config`, `system_instruction`). Corrigido para camelCase conforme spec da Gemini Live API (`generationConfig`, `responseModalities`, `speechConfig`, `voiceConfig`, `prebuiltVoiceConfig`, `voiceName`, `systemInstruction`). `responseModalities` agora só `["AUDIO"]` — `TEXT` foi removido (causava rejeição). Model name tem prefixo `models/`.
+- **Lote 242 — chat auto-abre + thread safety:** `FichaScreen.kt`: callback `onEstado` abre `showMestreIADialog=true` via `Handler(Looper.getMainLooper()).post{}` quando estado muda para OUVINDO. `onRespostaMestre` também usa Handler(Main). `DialogMestreIA` recebe `estadoLive` e `onEncerrarLive`. Banner removido do topo da tela.
+- **Lote 243 — botão encerrar dentro do dialog:** `DialogsMestreIA.kt`: aceita `estadoLive: EstadoLive` e `onEncerrarLive: () -> Unit`. Quando voz ativa: mostra dot colorido + label do estado no título; oculta input de texto; exibe status + botão "Encerrar voz" no rodapé. Quando inativo: comportamento normal com botão "Fechar".
+- **Build:** assembleVisualDebug OK (9s).
+
 ### Lote 239: Gemini Live API — Voz Bidirecional com Tool Calling (Fase 1) - CONCLUÍDO - **Commit:** `dea9751`
 - **Novo arquivo `GeminiLiveService.kt`:** WebSocket OkHttp persistente para `bidiGenerateContent`. Captura microfone (AudioRecord 16kHz PCM) em chunks de ~100ms, envia em base64. Reproduz resposta de áudio (AudioTrack 24kHz PCM). Gerencia estados OCIOSO/CONECTANDO/OUVINDO/FALANDO/ERRO. Trata `toolCall`, `serverContent`, `goAway` e `turnComplete`.
 - **Novo arquivo `GeminiLiveTools.kt`:** Despacha tool calls do Gemini para os métodos reais do FichaViewModel (obterFicha, obterPontosRestantes, adicionarVantagem, removerVantagem, adicionarDesvantagem, adicionarPericia, consultarManual). Busca definições no `dataRepository` antes de chamar o ViewModel.
@@ -1035,3 +1042,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Voz escolhida:** Charon (masculina, grave, PT-BR testado).
 - **Feature flag:** `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA=false` — invisível no APK padrão. Para testar: mudar para `true` em `build.gradle.kts` e gerar novo APK.
 - **Verificação:** assembleVisualDebug OK (26s).
+
+### Lote 244: Gemini Live — Fix protocolo (setupComplete + camelCase) - CONCLUÍDO - **Commit:** `f396366`
+- **GeminiLiveService.kt:** Corrigido EOFException do WebSocket — mensagens agora enviadas só após `setupComplete` do servidor, não no `onOpen`. URL corrigida para `v1alpha` (era `v1beta` — server ignorava tudo silenciosamente). OkHttp usa `ws.send(ByteString)` via `.encodeUtf8()` — frames binários conforme spec Gemini Live (texto é rejeitado). `onMessage(ws, ByteString)` sobrescrito para capturar respostas binárias. AudioTrack migrado para `USAGE_MEDIA` com buffer de 2s para evitar underrun. `Channel<ByteArray>(capacity=200)` + coroutine única de reprodução para evitar SIGSEGV de escritas concorrentes. `outputTranscription` usado no chat (PT-BR) em vez de `modelTurn.parts[].text` (inglês interno). `toolResponse` em camelCase. Campos inválidos `enableAudioTranscription` e `outputAudioTranscription` removidos.
+- **Build:** assembleVisualDebug OK.
+
+### Lote 245: Voz — Ferramentas Completas (buscarCatalogo + editarFicha + trilhaDeMagias) - CONCLUÍDO - **Commit:** `bac9b5b`
+- **GeminiLiveTools.kt reescrito:** Delega ao `ForjadorToolExecutor` (mesmo executor do Forjador/Auditor de texto). Ferramentas implementadas: `buscarCatalogo(tipo, query)` — previne alucinação de IDs buscando no catálogo oficial antes de qualquer edição; `editarFicha(operacao, secao, alvo, valor)` — CRUD unificado com a mesma lógica do Forjador para vantagens, desvantagens, perícias, técnicas, magias, equipamentos e atributos (com validação de pré-requisitos de magia); `trilhaDeMagias(magia_alvo)` — GPS de pré-requisitos, trilha ótima de magias; `lerFicha(secao)` — leitura de qualquer seção. Ferramentas legadas (adicionarVantagem, removerVantagem, etc.) mantidas como aliases.
+- **GeminiLiveService.kt:** `buildSetupMessage()` declara 5 ferramentas (lerFicha, buscarCatalogo, editarFicha, trilhaDeMagias, consultarManual). `systemPrompt` atualizado com protocolo obrigatório: buscarCatalogo antes de qualquer edição, GPS antes de adicionar magia.
+- **Build:** assembleVisualDebug OK.
