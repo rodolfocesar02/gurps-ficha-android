@@ -1,8 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 22 de Maio de 2026
-**Status Atual:** UI/UX - Lote 236 CONCLUÍDO
-
+**Status Atual:** Mestre IA - Lote 249 PLANEJADO
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -415,7 +414,7 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 ### Lote 137: Forjador — Atributos Tolerantes + Narrativa Fiel ao Pedido - CONCLUÍDO (commit b80e4bf)
 - **Bug 1 (atributos zerados — Aragorn.json com tudo 10):** a IA emitiu os atributos no formato `Personagem` (`"forca":14,"destreza":14,...`) em vez do formato `MestreIAResponse` (`"atributos":{"st":14,...}`). Ela copiou o formato que viu em `contextoPersonagem` (`personagem.toJson()`). Como não havia campo `atributos`, o Gson usava o default `MestreIAAtributos(10,10,10,10)` → ficha integrava com ST/DX/IQ/HT todos 10.
   - **Fix:** campos soltos opcionais (`forca/destreza/inteligencia/vitalidade` + `st/dx/iq/ht`) no `MestreIAResponse` + função `atributosEfetivos()` que resolve 3 formatos por prioridade (objeto canônico > soltos PT > soltos EN). `integrarRespostaNaFicha` e `validarBudget` passam a usar `atributosEfetivos()`.
-- **Bug 2 (história de personagem errado — "Kaelen, o Ferreiro" em vez de Aragorn):** a narrativa paralela extraía o nome via regex `chamado\s+...`, que não casava com "crie o Aragorn de senhor dos aneis" (sem a palavra "chamado") → `nomePersonagem = "o personagem"` → a IA inventava um personagem genérico aleatório.
+- **Bug 2 (história de personagem errado — "  , o Ferreiro" em vez de Aragorn):** a narrativa paralela extraía o nome via regex `chamado\s+...`, que não casava com "crie o Aragorn de senhor dos aneis" (sem a palavra "chamado") → `nomePersonagem = "o personagem"` → a IA inventava um personagem genérico aleatório.
   - **Fix:** a narrativa agora recebe o **pedido inteiro do usuário** (`prompt`) + instrução explícita de ser fiel a personagens conhecidos de livro/filme/jogo e não inventar outro.
 - **Verificação:** `test_forjador_complexo.py` 19/19 (5 casos novos de `atributosEfetivos`, incl. o caso real do Aragorn formato Personagem); `test_json_repair.py` 5/5; `BUILD SUCCESSFUL`.
 
@@ -1073,3 +1072,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Voz (GeminiLiveService):** 2 ferramentas declaradas no `buildSetupMessage()` e instrução no systemPrompt.
 - **Texto (ForjadorTools):** Schemas adicionados em getGeminiTools() e getOpenAITools(). Constantes TOOL_BUSCAR_RACAS e TOOL_APLICAR_RACIAL adicionadas.
 - **Build:** assembleVisualDebug OK (5s). Instalado via WiFi ADB (192.168.1.84:33933).
+
+### Lote 249 (fix pós-248): Correções Ferramentas Raciais — CONCLUÍDO | commit: 5209db9
+- Remove take(15)/take(10) em buscarRacas — lista cortava raças no meio (ex: Kobold era o limite)
+- Adiciona TOOL_BUSCAR_RACAS e TOOL_APLICAR_RACIAL ao filtro em MestreIAGeneratorUseCase — loop quebrava silenciosamente
+- Proíbe perícias/vantagens em qualidades no prompt do Forjador
+- Bloqueia invenção de nomes genéricos como "Kaelen" — usa nome do usuário ou "Sem Nome"
+
+### Lote 250 (planejado): Melhorias DeepSeek API — Thinking Mode + JSON Mode + Migração de Modelo
+- Migração de `deepseek-chat` para `deepseek-v4-flash` (deprecação em 24/07/2026)
+- Thinking Mode para perguntas de regras complexas (resolve Falha Tipo 3 do RAG)
+- JSON Mode garantido para Forjador (elimina erros de parse)
+- Log de cache hit/miss tokens para monitorar Context Caching
