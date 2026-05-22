@@ -61,15 +61,32 @@ Microfone (PCM 16kHz) → WebSocket → Gemini 3.1 Flash Live → Áudio (PCM 24
 | Entrada (microfone) | PCM 16-bit | 16.000 Hz | Mono |
 | Saída (alto-falante) | PCM 16-bit | 24.000 Hz | Mono |
 
+### Voz Escolhida
+**Charon** — voz masculina, grave e sóbria. Testada em PT-BR em 22/05/2026.  
+Vozes disponíveis na chave `mestre.ia.gemini1.key`: `Fenrir`, `Puck`, `Charon`, `Kore`, `Aoede`, `Zephyr`, `Schedar`, `Leda`, `Orus`, `Erinome`, `Iapetus`, `Callirrhoe`  
+Clonagem de voz: **não disponível** nessa API (exigiria ElevenLabs pago).
+
+### Chave API
+Usar `mestre.ia.gemini1.key` do `local.properties` → `BuildConfig.MESTRE_IA_GEMINI_KEY`  
+Modelos TTS confirmados disponíveis: `gemini-2.5-flash-preview-tts`, `gemini-2.5-pro-preview-tts`  
+Modelo Live confirmado: `gemini-2.5-flash-native-audio-latest` (suporta `bidiGenerateContent`)
+
+### BuildConfig Flag
+```kotlin
+// build.gradle.kts — controla se o botão de voz bidirecional aparece no app
+buildConfigField("Boolean", "VOZ_BIDIRECIONAL_HABILITADA", "false")
+// Para gerar APK de teste: mudar para "true"
+```
+
 ### Primeira Mensagem (Setup)
 ```json
 {
   "setup": {
-    "model": "gemini-2.5-flash-native-audio-preview-12-2025",
+    "model": "gemini-2.5-flash-native-audio-latest",
     "generationConfig": {
       "responseModalities": ["AUDIO"],
       "speechConfig": {
-        "voiceConfig": { "presetVoice": "FENRIR" }
+        "voiceConfig": { "presetVoice": "Charon" }
       },
       "contextWindowCompression": {
         "maxTokens": 25000,
@@ -160,18 +177,43 @@ dependencies {
 
 ## Ferramentas do Forjador a Expor
 
-As ferramentas que o Gemini Live precisará chamar (equivalentes às do sistema atual):
+Mapeamento direto para métodos reais do `FichaViewModel`:
 
-| Ferramenta | Descrição |
-|-----------|-----------|
-| `obterFicha` | Retorna o estado atual da ficha do personagem |
-| `adicionarVantagem` | Adiciona uma vantagem com nível e custo |
-| `removerVantagem` | Remove uma vantagem existente |
-| `adicionarDesvantagem` | Adiciona uma desvantagem |
-| `adicionarPericia` | Adiciona ou atualiza uma perícia |
-| `adicionarEquipamento` | Adiciona item ao inventário |
-| `consultarManual` | Busca uma regra no manual (RAG) |
-| `obterPontosRestantes` | Retorna pontos disponíveis para gastar |
+| Ferramenta (Gemini Live) | Método Real no ViewModel | Observação |
+|-----------|-----------|-----------|
+| `obterFicha` | `viewModel.personagem` | Retorna nome, pontos, vantagens, perícias, etc. |
+| `obterPontosRestantes` | `viewModel.personagem.pontosRestantes` | Calculado em `Personagem.kt:178` |
+| `adicionarVantagem` | `viewModel.adicionarVantagem(def, nivel, custo)` | Precisa buscar `VantagemDefinicao` no catálogo antes |
+| `removerVantagem` | `viewModel.removerVantagem(index)` | Requer índice da lista |
+| `adicionarDesvantagem` | `viewModel.adicionarDesvantagem(def, nivel, custo)` | Mesmo padrão da vantagem |
+| `adicionarPericia` | `viewModel.adicionarPericia(def, pts, esp)` | Precisa buscar `PericiaDefinicao` no catálogo |
+| `removerPericia` | `viewModel.removerPericia(index)` | Requer índice |
+| `adicionarEquipamento` | `viewModel.adicionarEquipamento(e)` | Recebe objeto `Equipamento` |
+| `consultarManual` | Sistema RAG existente (`MestreIAUseCase`) | Reutiliza busca FTS já implementada |
+
+**Fluxo de busca no catálogo:** antes de chamar `adicionarVantagem`, o `GeminiLiveTools.kt` precisa buscar a `VantagemDefinicao` pelo nome no `DataRepository` — o mesmo que o Forjador texto já faz.
+
+## System Prompt do Mestre IA (Voz)
+
+```
+Você é o Mestre IA de GURPS — um mestre de campanha experiente, sábio e com personalidade própria.
+Fale sempre em português brasileiro, de forma natural e conversacional.
+Seu nome é Mestre. O personagem atual se chama [NOME_PERSONAGEM].
+
+REGRAS DE COMPORTAMENTO:
+- Fale enquanto pensa — não fique em silêncio enquanto processa
+- Antes de modificar a ficha, SEMPRE verifique os pontos disponíveis primeiro
+- Confirme o que fez depois de executar — ex: "Pronto, adicionei X, ficam Y pontos"
+- Se o usuário pedir algo impossível (sem pontos), explique e sugira alternativas
+- Para dúvidas de regras, consulte o manual antes de responder
+- Seja direto e objetivo — respostas curtas são melhores que longas
+- Mantenha personalidade consistente: sábio, justo, levemente dramático
+
+NUNCA:
+- Invente regras que não existem no manual
+- Modifique a ficha sem confirmar o resultado
+- Fique mais de 3 segundos em silêncio
+```
 
 ---
 
