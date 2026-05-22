@@ -1,0 +1,354 @@
+package com.gurps.ficha.ui.components
+
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFormat
+import android.media.AudioManager
+import android.media.AudioRecord
+import android.media.AudioTrack
+import android.media.MediaRecorder
+import android.os.Handler
+import android.os.Looper
+import android.util.Base64
+import com.gurps.ficha.BuildConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
+import org.json.JSONArray
+import org.json.JSONObject
+import java.util.concurrent.TimeUnit
+
+enum class EstadoLive { OCIOSO, CONECTANDO, OUVINDO, FALANDO, ERRO }
+
+class GeminiLiveService(private val context: Context) {
+
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private var webSocket: WebSocket? = null
+    private var audioRecord: AudioRecord? = null
+    private var audioTrack: AudioTrack? = null
+    private var capturaJob: Job? = null
+    private var sessaoAtiva = false
+
+    // Callbacks para o FichaScreen
+    var onEstado: (EstadoLive) -> Unit = {}
+    var onTranscricaoUsuario: (String) -> Unit = {}
+    var onRespostaMestre: (String) -> Unit = {}
+    var onToolCall: (nome: String, args: JSONObject) -> JSONObject = { _, _ -> JSONObject() }
+
+    private val client = OkHttpClient.Builder()
+        .connectTimeout(30, TimeUnit.SECONDS)
+        .readTimeout(0, TimeUnit.MILLISECONDS) // sem timeout — WebSocket é persistente
+        .writeTimeout(30, TimeUnit.SECONDS)
+        .build()
+
+    private val systemPrompt = """
+Você é o Mestre IA de GURPS — um mestre de campanha experiente, sábio e com personalidade própria.
+Fale sempre em português brasileiro, de forma natural e conversacional.
+Seu nome é Mestre.
+
+REGRAS DE COMPORTAMENTO:
+- Fale enquanto pensa — não fique em silêncio enquanto processa
+- Antes de modificar a ficha, SEMPRE verifique os pontos disponíveis primeiro usando obterFicha
+- Confirme o que fez depois de executar — ex: "Pronto, adicionei X, ficam Y pontos"
+- Se o usuário pedir algo impossível (sem pontos), explique e sugira alternativas
+- Para dúvidas de regras, use consultarManual antes de responder
+- Seja direto e objetivo — respostas curtas são melhores que longas
+- Mantenha personalidade: sábio, justo, levemente dramático
+
+NUNCA:
+- Invente regras que não existem no manual
+- Modifique a ficha sem confirmar o resultado depois
+""".trimIndent()
+
+    private fun buildSetupMessage(): String {
+        val tools = JSONArray().apply {
+            put(JSONObject().apply {
+                put("function_declarations", JSONArray().apply {
+                    put(buildFuncao("obterFicha", "Retorna o estado atual da ficha do personagem: nome, pontos restantes, vantagens, desvantagens e perícias", JSONObject()))
+                    put(buildFuncao("obterPontosRestantes", "Retorna quantos pontos estão disponíveis para gastar", JSONObject()))
+                    put(buildFuncao("adicionarVantagem", "Adiciona uma vantagem na ficha do personagem",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome exato da vantagem") })
+                                put("nivel", JSONObject().apply { put("type", "integer"); put("description", "Nível da vantagem (padrão 1)") })
+                            })
+                            put("required", JSONArray().apply { put("nome") })
+                        }
+                    ))
+                    put(buildFuncao("removerVantagem", "Remove uma vantagem da ficha pelo nome",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome da vantagem a remover") })
+                            })
+                            put("required", JSONArray().apply { put("nome") })
+                        }
+                    ))
+                    put(buildFuncao("adicionarDesvantagem", "Adiciona uma desvantagem na ficha",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome exato da desvantagem") })
+                                put("nivel", JSONObject().apply { put("type", "integer"); put("description", "Nível (padrão 1)") })
+                            })
+                            put("required", JSONArray().apply { put("nome") })
+                        }
+                    ))
+                    put(buildFuncao("adicionarPericia", "Adiciona ou atualiza uma perícia na ficha",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("nome", JSONObject().apply { put("type", "string"); put("description", "Nome da perícia") })
+                                put("pontos", JSONObject().apply { put("type", "integer"); put("description", "Pontos a investir") })
+                            })
+                            put("required", JSONArray().apply { put("nome"); put("pontos") })
+                        }
+                    ))
+                    put(buildFuncao("consultarManual", "Busca uma regra específica no manual de GURPS",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("termos", JSONObject().apply { put("type", "string"); put("description", "Termos de busca da regra") })
+                            })
+                            put("required", JSONArray().apply { put("termos") })
+                        }
+                    ))
+                })
+            })
+        }
+
+        return JSONObject().apply {
+            put("setup", JSONObject().apply {
+                put("model", BuildConfig.GEMINI_LIVE_MODEL)
+                put("generation_config", JSONObject().apply {
+                    put("response_modalities", JSONArray().apply { put("AUDIO"); put("TEXT") })
+                    put("speech_config", JSONObject().apply {
+                        put("voice_config", JSONObject().apply {
+                            put("prebuilt_voice_config", JSONObject().apply {
+                                put("voice_name", BuildConfig.GEMINI_LIVE_VOICE)
+                            })
+                        })
+                    })
+                })
+                put("system_instruction", JSONObject().apply {
+                    put("parts", JSONArray().apply {
+                        put(JSONObject().apply { put("text", systemPrompt) })
+                    })
+                })
+                put("tools", tools)
+            })
+        }.toString()
+    }
+
+    private fun buildFuncao(nome: String, descricao: String, params: JSONObject): JSONObject {
+        return JSONObject().apply {
+            put("name", nome)
+            put("description", descricao)
+            if (params.length() > 0) put("parameters", params)
+        }
+    }
+
+    fun iniciarSessao(contextoFicha: String) {
+        if (sessaoAtiva) return
+        mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
+
+        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
+        val request = Request.Builder().url(url).build()
+
+        webSocket = client.newWebSocket(request, object : WebSocketListener() {
+            override fun onOpen(ws: WebSocket, response: Response) {
+                // Envia setup com contexto da ficha no system prompt
+                val setup = buildSetupMessage()
+                ws.send(setup)
+                // Após setup, envia contexto da ficha como primeira mensagem
+                val ctxMsg = JSONObject().apply {
+                    put("client_content", JSONObject().apply {
+                        put("turns", JSONArray().apply {
+                            put(JSONObject().apply {
+                                put("role", "user")
+                                put("parts", JSONArray().apply {
+                                    put(JSONObject().apply { put("text", "Contexto atual da ficha: $contextoFicha") })
+                                })
+                            })
+                        })
+                        put("turn_complete", true)
+                    })
+                }
+                ws.send(ctxMsg.toString())
+                sessaoAtiva = true
+                iniciarCaptura()
+                mainHandler.post { onEstado(EstadoLive.OUVINDO) }
+            }
+
+            override fun onMessage(ws: WebSocket, text: String) {
+                processarMensagemServidor(text)
+            }
+
+            override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
+                android.util.Log.e("GeminiLive", "Falha WebSocket: ${t.message}")
+                encerrar()
+                mainHandler.post { onEstado(EstadoLive.ERRO) }
+            }
+
+            override fun onClosed(ws: WebSocket, code: Int, reason: String) {
+                encerrar()
+                mainHandler.post { onEstado(EstadoLive.OCIOSO) }
+            }
+        })
+    }
+
+    private fun processarMensagemServidor(json: String) {
+        try {
+            val obj = JSONObject(json)
+
+            // Aviso de desconexão iminente — reconectar
+            if (obj.has("goAway")) {
+                android.util.Log.w("GeminiLive", "GoAway recebido — sessão encerrada pelo servidor")
+                encerrar()
+                mainHandler.post { onEstado(EstadoLive.OCIOSO) }
+                return
+            }
+
+            // Tool call — modelo quer chamar uma ferramenta
+            if (obj.has("toolCall")) {
+                val calls = obj.getJSONObject("toolCall").getJSONArray("functionCalls")
+                val respostas = JSONArray()
+                for (i in 0 until calls.length()) {
+                    val call = calls.getJSONObject(i)
+                    val id = call.getString("id")
+                    val nome = call.getString("name")
+                    val args = call.optJSONObject("args") ?: JSONObject()
+                    android.util.Log.i("GeminiLive", "ToolCall: $nome($args)")
+                    val resultado = onToolCall(nome, args)
+                    respostas.put(JSONObject().apply {
+                        put("id", id)
+                        put("name", nome)
+                        put("response", resultado)
+                    })
+                }
+                val toolResp = JSONObject().apply {
+                    put("tool_response", JSONObject().apply {
+                        put("function_responses", respostas)
+                    })
+                }
+                webSocket?.send(toolResp.toString())
+                return
+            }
+
+            // Conteúdo do modelo (áudio + texto)
+            if (obj.has("serverContent")) {
+                val content = obj.getJSONObject("serverContent")
+
+                val modelTurn = content.optJSONObject("modelTurn")
+                if (modelTurn != null) {
+                    mainHandler.post { onEstado(EstadoLive.FALANDO) }
+                    val parts = modelTurn.optJSONArray("parts") ?: return
+                    for (i in 0 until parts.length()) {
+                        val part = parts.getJSONObject(i)
+                        // Áudio → reproduzir
+                        if (part.has("inlineData")) {
+                            val mime = part.getJSONObject("inlineData").getString("mimeType")
+                            if (mime.contains("audio")) {
+                                val audioB64 = part.getJSONObject("inlineData").getString("data")
+                                reproduzirAudio(Base64.decode(audioB64, Base64.DEFAULT))
+                            }
+                        }
+                        // Texto → salvar no histórico
+                        if (part.has("text")) {
+                            val texto = part.getString("text")
+                            if (texto.isNotBlank()) {
+                                mainHandler.post { onRespostaMestre(texto) }
+                            }
+                        }
+                    }
+                }
+
+                // Turno completo
+                if (content.optBoolean("turnComplete")) {
+                    mainHandler.post { onEstado(EstadoLive.OUVINDO) }
+                }
+
+                // Transcrição do input do usuário
+                val inputTranscript = content.optString("inputTranscription", "")
+                if (inputTranscript.isNotBlank()) {
+                    mainHandler.post { onTranscricaoUsuario(inputTranscript) }
+                }
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("GeminiLive", "Erro ao processar mensagem: ${e.message}")
+        }
+    }
+
+    private fun iniciarCaptura() {
+        val bufferSize = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
+        audioRecord = AudioRecord(
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+            16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,
+            bufferSize * 2
+        ).also { it.startRecording() }
+
+        audioTrack = AudioTrack(
+            AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build(),
+            AudioFormat.Builder()
+                .setSampleRate(24000)
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                .build(),
+            AudioTrack.getMinBufferSize(24000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT) * 2,
+            AudioTrack.MODE_STREAM,
+            AudioManager.AUDIO_SESSION_ID_GENERATE
+        ).also { it.play() }
+
+        capturaJob = scope.launch {
+            val buffer = ByteArray(3200) // ~100ms de áudio a 16kHz
+            while (isActive && sessaoAtiva) {
+                val lidos = audioRecord?.read(buffer, 0, buffer.size) ?: break
+                if (lidos > 0) {
+                    val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
+                    val msg = JSONObject().apply {
+                        put("realtime_input", JSONObject().apply {
+                            put("media_chunks", JSONArray().apply {
+                                put(JSONObject().apply {
+                                    put("mime_type", "audio/pcm;rate=16000")
+                                    put("data", b64)
+                                })
+                            })
+                        })
+                    }
+                    webSocket?.send(msg.toString())
+                }
+            }
+        }
+    }
+
+    private fun reproduzirAudio(pcm: ByteArray) {
+        scope.launch(Dispatchers.Main) {
+            audioTrack?.write(pcm, 0, pcm.size)
+        }
+    }
+
+    fun encerrar() {
+        sessaoAtiva = false
+        capturaJob?.cancel()
+        audioRecord?.stop()
+        audioRecord?.release()
+        audioRecord = null
+        audioTrack?.stop()
+        audioTrack?.release()
+        audioTrack = null
+        webSocket?.close(1000, "Sessão encerrada pelo usuário")
+        webSocket = null
+    }
+}

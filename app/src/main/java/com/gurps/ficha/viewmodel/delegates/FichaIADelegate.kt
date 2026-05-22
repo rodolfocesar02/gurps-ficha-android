@@ -58,6 +58,20 @@ class FichaIADelegate(
         sistemaBatchUid = null
     }
 
+    fun adicionarMensagemVoz(texto: String, role: String) {
+        val msg = MestreIAClient.ChatMessage(role, texto, "Mestre IA (Voz)")
+        mestreIAChatHistory = mestreIAChatHistory + msg
+        sistemaBatchUid = null
+        scope.launch(Dispatchers.IO) {
+            val dao = dataRepository.chatHistoryDao()
+            val titulo = mestreIAChatHistory.firstOrNull { it.role == "user" }?.text?.take(30) ?: "Conversa por Voz"
+            val sessionId = currentSessionId ?: dao.insertSession(ChatSessionEntity(title = titulo, lastUpdate = System.currentTimeMillis()))
+            withContext(Dispatchers.Main) { currentSessionId = sessionId }
+            dao.updateSessionTimestamp(sessionId, System.currentTimeMillis())
+            dao.insertMessage(ChatMessageEntity(sessionId = sessionId, role = role, text = texto, modelName = "Mestre IA (Voz)", timestamp = System.currentTimeMillis()))
+        }
+    }
+
     fun carregarHistorico() {
         scope.launch(Dispatchers.IO) {
             val sessions = dataRepository.chatHistoryDao().getAllSessions()

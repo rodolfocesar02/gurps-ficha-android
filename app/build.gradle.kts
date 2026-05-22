@@ -121,6 +121,11 @@ android {
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_URL", "\"https://api.deepseek.com/v1\"")
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-chat\"")
 
+        // Gemini Live (voz bidirecional)
+        buildConfigField("String", "GEMINI_LIVE_MODEL", "\"gemini-2.5-flash-native-audio-latest\"")
+        buildConfigField("String", "GEMINI_LIVE_VOICE", "\"Charon\"")
+        buildConfigField("Boolean", "VOZ_BIDIRECIONAL_HABILITADA", "false")
+
         // Legado / Valores Padrão (DeepSeek por padrão no MESTRE_IA_KEY)
         buildConfigField("String", "MESTRE_IA_KEY", "\"$deepseekKey\"") 
         buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com/v1\"")
@@ -217,6 +222,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")

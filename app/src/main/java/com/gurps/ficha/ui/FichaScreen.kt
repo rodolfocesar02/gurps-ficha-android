@@ -60,7 +60,10 @@ import com.gurps.ficha.model.PersonagemInterop
 import com.gurps.ficha.update.AppUpdateService
 import com.gurps.ficha.update.AppUpdateHelper
 import com.gurps.ficha.viewmodel.FichaViewModel
+import com.gurps.ficha.ui.components.EstadoLive
 import com.gurps.ficha.ui.components.EstadoVoz
+import com.gurps.ficha.ui.components.GeminiLiveService
+import com.gurps.ficha.ui.components.GeminiLiveTools
 import com.gurps.ficha.ui.components.VozMestreIA
 import com.gurps.ficha.ui.components.VozTTS
 import kotlinx.coroutines.launch
@@ -83,9 +86,12 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     var estadoVoz by remember { mutableStateOf(EstadoVoz.OCIOSO) }
+    var estadoLive by remember { mutableStateOf(EstadoLive.OCIOSO) }
     val vozMestreIA = remember { VozMestreIA(context) }
     val vozTTS = remember { VozTTS(context) }
-    // SideEffect re-atribui os lambdas a cada recomposição — corrige stale capture
+    val geminiLive = remember { GeminiLiveService(context) }
+    val geminiLiveTools = remember { GeminiLiveTools(viewModel) }
+
     SideEffect {
         vozMestreIA.onEstado = { novoEstado -> estadoVoz = novoEstado }
         vozMestreIA.onResultado = { texto, modo ->
@@ -95,19 +101,53 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 if (resposta.isNotBlank()) vozTTS.falar(resposta)
             }
         }
+        // Gemini Live callbacks
+        geminiLive.onEstado = { novoEstado -> estadoLive = novoEstado }
+        geminiLive.onTranscricaoUsuario = { texto ->
+            // Salva o que o usuário falou no histórico do chat
+            viewModel.adicionarMensagemVoz(texto, "user")
+        }
+        geminiLive.onRespostaMestre = { texto ->
+            showMestreIADialog = true
+            viewModel.adicionarMensagemVoz(texto, "model")
+        }
+        geminiLive.onToolCall = { nome, args ->
+            geminiLiveTools.executar(nome, args)
+        }
     }
-    DisposableEffect(Unit) { onDispose { vozMestreIA.liberar(); vozTTS.liberar() } }
+    DisposableEffect(Unit) { onDispose { vozMestreIA.liberar(); vozTTS.liberar(); geminiLive.encerrar() } }
 
     val permissaoMicLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { concedida ->
-        if (concedida) vozMestreIA.iniciar()
+        if (concedida) {
+            if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA) {
+                val ctx = viewModel.personagem.let { p ->
+                    "Nome: ${p.nome}, Pontos restantes: ${p.pontosRestantes}"
+                }
+                geminiLive.iniciarSessao(ctx)
+            } else {
+                vozMestreIA.iniciar()
+            }
+        }
     }
 
     fun iniciarVozComPermissao() {
+        // Se sessão Live já ativa, encerra
+        if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA && estadoLive != EstadoLive.OCIOSO && estadoLive != EstadoLive.ERRO) {
+            geminiLive.encerrar()
+            return
+        }
         val permissao = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
         if (permissao == PackageManager.PERMISSION_GRANTED) {
-            vozMestreIA.iniciar()
+            if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA) {
+                val ctx = viewModel.personagem.let { p ->
+                    "Nome: ${p.nome}, Pontos restantes: ${p.pontosRestantes}"
+                }
+                geminiLive.iniciarSessao(ctx)
+            } else {
+                vozMestreIA.iniciar()
+            }
         } else {
             permissaoMicLauncher.launch(Manifest.permission.RECORD_AUDIO)
         }

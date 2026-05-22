@@ -452,6 +452,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
     fun descartarFichaPendente() = iaDelegate.descartarPendente()
     fun limparChatMestreIA() = iaDelegate.limparChat()
+    fun adicionarMensagemVoz(texto: String, role: String) = iaDelegate.adicionarMensagemVoz(texto, role)
     val mestreIASavedSessions get() = iaDelegate.savedSessions
     fun carregarHistoricoMestreIA() = iaDelegate.carregarHistorico()
     fun carregarSessaoMestreIA(id: Long) = iaDelegate.carregarSessao(id)
