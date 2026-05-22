@@ -320,7 +320,9 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 ## 21. UI — Componentes Utilitários
 
-- **`ui/components/FichaCustomNavigationBar.kt`** — Barra de navegação inferior customizada com ícones e labels das abas.
+- **`ui/components/FichaCustomNavigationBar.kt`** — Barra de navegação inferior customizada com ícones e labels das abas. Suporta `onLongPress` no ícone do Mestre IA para ativar reconhecimento de voz (`EstadoVoz`), com anel verde/amarelo pulsante como feedback visual durante escuta/processamento.
+
+- **`ui/components/VozMestreIA.kt`** — Encapsula o `SpeechRecognizer` do Android para reconhecimento de voz em PT-BR. Estados: `OCIOSO`, `ESCUTANDO`, `PROCESSANDO`, `ERRO`. Callbacks `onEstado` e `onResultado`. Instanciado em `FichaScreen` e conectado ao Forjador via `conversarComMestreIA`.
 
 - **`ui/DialogStandards.kt`** — Padrões visuais de dialogs: dimensões, espaçamentos, cores de botões primário/secundário/destrutivo.
 

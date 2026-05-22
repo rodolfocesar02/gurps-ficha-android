@@ -143,5 +143,16 @@ Define o formato físico de como os dados são tratados no código.
 
 ---
 
+## 9. A "Voz" (Reconhecimento de Fala)
+
+*   **`VozMestreIA.kt`** — `ui/components/`
+    *   **Descrição:** O Ouvido do Mestre IA. Encapsula o `SpeechRecognizer` nativo do Android para captura de comandos de voz em PT-BR. Ciclo de vida: `iniciar()` abre o microfone → `onEstado(ESCUTANDO)` → usuário fala → `onEstado(PROCESSANDO)` → `onResultado(texto)` entrega o texto reconhecido → `onEstado(OCIOSO)`. `cancelar()` interrompe; `liberar()` destrói o recognizer (chamado no `DisposableEffect` do `FichaScreen`). **Não usa servidor próprio** — depende do Google Speech Recognition instalado no dispositivo.
+    *   **Integração:** Instanciado em `FichaScreen`. `onResultado` chama `viewModel.conversarComMestreIA(texto, "geracao")` — o texto vai direto para o Forjador sem passar pelo chat. O dialog do Mestre IA abre automaticamente com a resposta.
+    *   **Ativação:** Long press no ícone do Mestre IA na `FichaCustomNavigationBar`. Toque simples continua abrindo o chat normalmente.
+    *   **Feedback visual:** `FichaCustomNavigationBar` recebe `estadoVoz: EstadoVoz` e exibe anel pulsante ao redor do ícone — **verde** durante `ESCUTANDO`, **amarelo** durante `PROCESSANDO`.
+    *   **Permissão:** `RECORD_AUDIO` já declarada no `AndroidManifest.xml`. Android solicita ao usuário na primeira vez que o long press é acionado.
+
+---
+
 > [!NOTE]
 > Esta arquitetura usa **RAG Direto nos Chunks** como rota primária de busca. O MestreIAUseCase (Auditor) consome RAG do manual. O MestreIAGeneratorUseCase (Forjador) **não usa RAG** — trabalha exclusivamente com o catálogo de IDs e as ferramentas do Forjador. Os dois modos compartilham o MestreIAClient (rede), MestreIATools/ForjadorTools (function calling) e FichaDatabase (persistência).

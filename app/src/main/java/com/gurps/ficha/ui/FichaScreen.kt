@@ -56,6 +56,8 @@ import com.gurps.ficha.model.PersonagemInterop
 import com.gurps.ficha.update.AppUpdateService
 import com.gurps.ficha.update.AppUpdateHelper
 import com.gurps.ficha.viewmodel.FichaViewModel
+import com.gurps.ficha.ui.components.EstadoVoz
+import com.gurps.ficha.ui.components.VozMestreIA
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,6 +77,17 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val activity = context as? Activity
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+    var estadoVoz by remember { mutableStateOf(EstadoVoz.OCIOSO) }
+    val vozMestreIA = remember {
+        VozMestreIA(context).apply {
+            onEstado = { estadoVoz = it }
+            onResultado = { texto ->
+                showMestreIADialog = true
+                viewModel.conversarComMestreIA(texto, "geracao") { _, _ -> }
+            }
+        }
+    }
+    DisposableEffect(Unit) { onDispose { vozMestreIA.liberar() } }
 
     // Check automático de atualização na inicialização
     LaunchedEffect(Unit) {
@@ -282,7 +295,9 @@ fun FichaScreen(viewModel: FichaViewModel) {
                     currentIndex = selectedTab,
                     onTabClick = { index -> selectedTab = index },
                     onMestreIAClick = { showMestreIADialog = true },
+                    onMestreIALongPress = { vozMestreIA.iniciar() },
                     mestreIAAberto = showMestreIADialog,
+                    estadoVoz = estadoVoz,
                     isPraCegoVariant = isPraCegoVariant
                 )
             }

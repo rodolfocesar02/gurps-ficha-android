@@ -3,7 +3,9 @@ package com.gurps.ficha.ui.components
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -27,14 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gurps.ficha.R
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun FichaCustomNavigationBar(
     tabs: List<String>,
     currentIndex: Int,
     onTabClick: (Int) -> Unit,
     onMestreIAClick: () -> Unit = {},
+    onMestreIALongPress: () -> Unit = {},
     mestreIAAberto: Boolean = false,
+    estadoVoz: EstadoVoz = EstadoVoz.OCIOSO,
     isPraCegoVariant: Boolean = false
 ) {
     Box(
@@ -47,14 +51,16 @@ fun FichaCustomNavigationBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.Bottom
         ) {
-            // Ícone Mestre IA fixo à esquerda — usa a mesma animação das abas
+            // Ícone Mestre IA fixo à esquerda — toque abre chat, segurar ativa voz
             RPGNavigationItem(
                 label = "Mestre IA",
                 iconRes = R.drawable.tab_mestre_ia,
                 isSelected = mestreIAAberto,
                 labelOnRight = true,
                 isPraCegoVariant = isPraCegoVariant,
-                onClick = onMestreIAClick
+                estadoVoz = estadoVoz,
+                onClick = onMestreIAClick,
+                onLongClick = onMestreIALongPress
             )
 
             // Abas principais empurradas para a direita
@@ -101,7 +107,7 @@ fun FichaCustomNavigationBar(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun RPGNavigationItem(
     label: String,
@@ -109,7 +115,9 @@ fun RPGNavigationItem(
     isSelected: Boolean,
     labelOnRight: Boolean,
     isPraCegoVariant: Boolean,
-    onClick: () -> Unit
+    estadoVoz: EstadoVoz = EstadoVoz.OCIOSO,
+    onClick: () -> Unit,
+    onLongClick: (() -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     
@@ -148,22 +156,67 @@ fun RPGNavigationItem(
     )
     
     val primaryColor = MaterialTheme.colorScheme.primary
+    val escutando = estadoVoz == EstadoVoz.ESCUTANDO || estadoVoz == EstadoVoz.PROCESSANDO
+
+    // Anel pulsante durante escuta de voz
+    val vozRingScale by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = if (escutando) 1.6f else 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(700, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "VozRing"
+    )
+    val vozRingAlpha by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = if (escutando) 0.6f else 0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(700, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "VozAlpha"
+    )
+    val vozColor = if (estadoVoz == EstadoVoz.PROCESSANDO) Color(0xFFFFA000) else Color(0xFF4CAF50)
+
+    val clickModifier = if (onLongClick != null) {
+        Modifier.combinedClickable(
+            interactionSource = interactionSource,
+            indication = null,
+            onClick = onClick,
+            onLongClick = onLongClick
+        )
+    } else {
+        Modifier.clickable(interactionSource = interactionSource, indication = null, onClick = onClick)
+    }
 
     Box(
         modifier = Modifier
             .wrapContentSize()
-            .semantics { 
-                contentDescription = if (isSelected) "$label (Aba Selecionada)" else "Aba $label"
+            .semantics {
+                contentDescription = when {
+                    escutando -> "$label (Escutando voz)"
+                    isSelected -> "$label (Aba Selecionada)"
+                    else -> "Aba $label"
+                }
             }
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick
-            )
-            .padding(horizontal = 4.dp) // Parte do cálculo dos 12dp totais entre ícones
+            .then(clickModifier)
+            .padding(horizontal = 4.dp)
             .offset(y = bobbingOffset),
         contentAlignment = Alignment.BottomCenter
     ) {
+        // Anel verde/amarelo pulsante ao escutar
+        if (escutando) {
+            Box(
+                modifier = Modifier
+                    .size(animatedSize * vozRingScale)
+                    .alpha(vozRingAlpha)
+                    .drawBehind {
+                        drawCircle(color = vozColor)
+                    }
+            )
+        }
+
         // Camada de Brilho atrás do ícone selecionado
         if (isSelected && !isPraCegoVariant) {
             Box(
