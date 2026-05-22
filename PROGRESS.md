@@ -1024,3 +1024,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **`FichaScreen.kt`:** `vozTTS.falar(resposta)` chamado no callback `onResult` — só ativa quando o comando veio por voz, não interfere no chat de texto normal.
 - **Reversão simples:** deletar `VozTTS.kt` + remover 3 linhas do `FichaScreen.kt`.
 - **Verificação:** assembleVisualDebug OK (23s).
+
+### Lote 239: Gemini Live API — Voz Bidirecional com Tool Calling (Fase 1) - CONCLUÍDO - **Commit:** `dea9751`
+- **Novo arquivo `GeminiLiveService.kt`:** WebSocket OkHttp persistente para `bidiGenerateContent`. Captura microfone (AudioRecord 16kHz PCM) em chunks de ~100ms, envia em base64. Reproduz resposta de áudio (AudioTrack 24kHz PCM). Gerencia estados OCIOSO/CONECTANDO/OUVINDO/FALANDO/ERRO. Trata `toolCall`, `serverContent`, `goAway` e `turnComplete`.
+- **Novo arquivo `GeminiLiveTools.kt`:** Despacha tool calls do Gemini para os métodos reais do FichaViewModel (obterFicha, obterPontosRestantes, adicionarVantagem, removerVantagem, adicionarDesvantagem, adicionarPericia, consultarManual). Busca definições no `dataRepository` antes de chamar o ViewModel.
+- **`FichaScreen.kt`:** Instancia `GeminiLiveService` e `GeminiLiveTools`. `iniciarVozComPermissao()` agora ramifica: se `VOZ_BIDIRECIONAL_HABILITADA=true` → abre/encerra sessão Live; senão → caminho antigo. Transcrições salvas no chat via `adicionarMensagemVoz`. `DisposableEffect` encerra a sessão ao sair da tela.
+- **`FichaIADelegate.kt`:** Novo método `adicionarMensagemVoz(texto, role)` — adiciona mensagem ao histórico em memória (`mestreIAChatHistory`) e persiste no `ChatHistoryDao` criando sessão se necessário.
+- **`FichaViewModel.kt`:** Expõe `adicionarMensagemVoz()` delegando ao `FichaIADelegate`.
+- **`build.gradle.kts`:** Novos campos `GEMINI_LIVE_MODEL` (`gemini-2.5-flash-native-audio-latest`), `GEMINI_LIVE_VOICE` (`Charon`), `VOZ_BIDIRECIONAL_HABILITADA` (`false` por padrão — habilitar no APK de teste).
+- **Voz escolhida:** Charon (masculina, grave, PT-BR testado).
+- **Feature flag:** `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA=false` — invisível no APK padrão. Para testar: mudar para `true` em `build.gradle.kts` e gerar novo APK.
+- **Verificação:** assembleVisualDebug OK (26s).
