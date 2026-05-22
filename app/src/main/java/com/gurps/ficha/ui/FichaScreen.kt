@@ -62,6 +62,7 @@ import com.gurps.ficha.update.AppUpdateHelper
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.ui.components.EstadoVoz
 import com.gurps.ficha.ui.components.VozMestreIA
+import com.gurps.ficha.ui.components.VozTTS
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,16 +84,19 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     var estadoVoz by remember { mutableStateOf(EstadoVoz.OCIOSO) }
     val vozMestreIA = remember { VozMestreIA(context) }
+    val vozTTS = remember { VozTTS(context) }
     // SideEffect re-atribui os lambdas a cada recomposição — corrige stale capture
     SideEffect {
         vozMestreIA.onEstado = { novoEstado -> estadoVoz = novoEstado }
         vozMestreIA.onResultado = { texto, modo ->
             viewModel.mestreIAMode = modo
             showMestreIADialog = true
-            viewModel.conversarComMestreIA(texto, modo) { _, _ -> }
+            viewModel.conversarComMestreIA(texto, modo) { _, resposta ->
+                if (resposta.isNotBlank()) vozTTS.falar(resposta)
+            }
         }
     }
-    DisposableEffect(Unit) { onDispose { vozMestreIA.liberar() } }
+    DisposableEffect(Unit) { onDispose { vozMestreIA.liberar(); vozTTS.liberar() } }
 
     val permissaoMicLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
