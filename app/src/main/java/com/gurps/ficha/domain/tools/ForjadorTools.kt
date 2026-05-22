@@ -4,10 +4,12 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 object ForjadorTools {
-    const val TOOL_LER_FICHA     = "forjador_ler_ficha"
-    const val TOOL_BUSCAR        = "forjador_buscar_catalogo"
-    const val TOOL_GPS_MAGIA     = "forjador_gps_magia"
-    const val TOOL_EDITAR        = "forjador_editar_ficha"
+    const val TOOL_LER_FICHA      = "forjador_ler_ficha"
+    const val TOOL_BUSCAR         = "forjador_buscar_catalogo"
+    const val TOOL_GPS_MAGIA      = "forjador_gps_magia"
+    const val TOOL_EDITAR         = "forjador_editar_ficha"
+    const val TOOL_BUSCAR_RACAS   = "forjador_buscar_racas"
+    const val TOOL_APLICAR_RACIAL = "forjador_aplicar_modelo_racial"
 
     fun getGeminiTools(): JSONArray {
         val decls = JSONArray()
@@ -85,6 +87,44 @@ object ForjadorTools {
                     })
                 })
                 put("required", JSONArray().put("operacao").put("secao").put("alvo"))
+            })
+        })
+
+        decls.put(JSONObject().apply {
+            put("name", TOOL_BUSCAR_RACAS)
+            put("description", "Lista raças e metacaracterísticas disponíveis no catálogo GURPS. Use ANTES de aplicar um modelo racial para saber os IDs disponíveis.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("query", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "Filtro por nome (opcional). Ex: 'elfo', 'anao', 'vampiro'. Deixar vazio lista todos.")
+                    })
+                    put("tipo", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "Filtrar por tipo: 'raca' (só raças), 'meta' (só metacaracterísticas), 'todos' (padrão)")
+                    })
+                })
+                put("required", JSONArray())
+            })
+        })
+
+        decls.put(JSONObject().apply {
+            put("name", TOOL_APLICAR_RACIAL)
+            put("description", "Aplica um modelo racial (raça ou metacaracterística) ao personagem, adicionando automaticamente todos os traços (atributos, vantagens, desvantagens, perícias) da raça. Use forjador_buscar_racas primeiro para obter o ID correto.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("id", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "ID da raça ou metacaracterística (ex: 'anao', 'elfo', 'vampiro'). Use forjador_buscar_racas para ver os IDs disponíveis.")
+                    })
+                    put("tipo", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "'raca' para raças jogáveis, 'meta' para metacaracterísticas (ex: Vampiro, Fantasma). Padrão: 'raca'.")
+                    })
+                })
+                put("required", JSONArray().put("id"))
             })
         })
 
@@ -175,6 +215,47 @@ object ForjadorTools {
                         })
                     })
                     put("required", JSONArray().put("operacao").put("secao").put("alvo"))
+                })
+            })
+        })
+
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_BUSCAR_RACAS)
+                put("description", "Lista raças e metacaracterísticas disponíveis no catálogo GURPS.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("query", JSONObject().put("type", "string"))
+                        put("tipo", JSONObject().apply {
+                            put("type", "string")
+                            put("enum", JSONArray().put("raca").put("meta").put("todos"))
+                        })
+                    })
+                    put("required", JSONArray())
+                })
+            })
+        })
+
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_APLICAR_RACIAL)
+                put("description", "Aplica modelo racial (raça ou metacaracterística) ao personagem com todos os traços automáticos.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("id", JSONObject().apply {
+                            put("type", "string")
+                            put("description", "ID da raça/metacaracterística")
+                        })
+                        put("tipo", JSONObject().apply {
+                            put("type", "string")
+                            put("enum", JSONArray().put("raca").put("meta"))
+                        })
+                    })
+                    put("required", JSONArray().put("id"))
                 })
             })
         })

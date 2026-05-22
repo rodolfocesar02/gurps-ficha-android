@@ -1,8 +1,12 @@
 package com.gurps.ficha.domain.tools
 
+import android.content.Context
 import android.util.Log
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
+import com.gurps.ficha.domain.loaders.MetacaracteristicaCatalogo
+import com.gurps.ficha.domain.loaders.RacaCatalogo
+import com.gurps.ficha.domain.loaders.RacaDefinicao
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.engine.MagicEngine
 import com.gurps.ficha.viewmodel.FichaViewModel
@@ -11,15 +15,26 @@ import org.json.JSONObject
 class ForjadorToolExecutor(
     private val viewModel: FichaViewModel,
     private val repository: DataRepository,
-    private val nexusAdapter: NexusArcanoModoAlvoAdapter
+    private val nexusAdapter: NexusArcanoModoAlvoAdapter,
+    private val context: Context? = null
 ) {
+    // Catálogos de raças/metacaracterísticas carregados lazily (context pode ser null em testes)
+    private val catalogoRacas: List<RacaDefinicao> by lazy {
+        context?.let { RacaCatalogo.carregar(it) } ?: emptyList()
+    }
+    private val catalogoMetas: List<RacaDefinicao> by lazy {
+        context?.let { MetacaracteristicaCatalogo.carregarBruto(it) } ?: emptyList()
+    }
+
     fun execute(toolCall: MestreIAClient.MestreIAToolCall): String {
         Log.d("Forjador_Tools", "Executando tool: ${toolCall.name} | args: ${toolCall.args}")
         val resultado = when (toolCall.name) {
-            ForjadorTools.TOOL_LER_FICHA    -> lerFicha(toolCall.args)
-            ForjadorTools.TOOL_BUSCAR       -> buscarCatalogo(toolCall.args)
-            ForjadorTools.TOOL_GPS_MAGIA    -> gpsMagia(toolCall.args)
-            ForjadorTools.TOOL_EDITAR       -> editarFicha(toolCall.args)
+            ForjadorTools.TOOL_LER_FICHA         -> lerFicha(toolCall.args)
+            ForjadorTools.TOOL_BUSCAR            -> buscarCatalogo(toolCall.args)
+            ForjadorTools.TOOL_GPS_MAGIA         -> gpsMagia(toolCall.args)
+            ForjadorTools.TOOL_EDITAR            -> editarFicha(toolCall.args)
+            ForjadorTools.TOOL_BUSCAR_RACAS      -> buscarRacas(toolCall.args)
+            ForjadorTools.TOOL_APLICAR_RACIAL    -> aplicarModeloRacial(toolCall.args)
             else -> """{"erro": "ferramenta desconhecida: ${toolCall.name}"}"""
         }
         // Loga o RESULTADO (não só a entrada) — auditoria real no logcat.
@@ -222,19 +237,47 @@ class ForjadorToolExecutor(
         val alvoN = norm(alvo)
         val p = viewModel.personagem
 
-        // ATRIBUTOS — caso especial: só "alterar", valor = novo valor base.
-        // Aceita "ST", "forca", "for", etc. valor pode vir solto ("14") ou "valor=14".
-        if (secao == "atributos" || secao == "atributo") {
+        // ATRIBUTOS + CAMPOS ESPECIAIS (nome, historia, PF, pontosIniciais)
+        if (secao == "atributos" || secao == "atributo" || secao == "personagem") {
+            // Campos de texto: nome e historia
+            when {
+                alvoN == "nome" || alvoN == "name" -> {
+                    viewModel.atualizarNome(valor)
+                    viewModel.autoSaveIA()
+                    return "OK: nome do personagem alterado para '$valor'."
+                }
+                alvoN == "historia" || alvoN == "historico" || alvoN == "background" || alvoN == "antecedentes" -> {
+                    viewModel.atualizarHistorico(valor)
+                    viewModel.autoSaveIA()
+                    return "OK: história do personagem atualizada."
+                }
+                alvoN == "pontosIniciais" || alvoN == "pontosiniciais" || alvoN == "pontos_iniciais" || alvoN == "budget" -> {
+                    val novo = Regex("\\d+").find(valor)?.value?.toIntOrNull()
+                        ?: return """{"erro":"valor numérico ausente para pontosIniciais"}"""
+                    viewModel.atualizarPontosIniciais(novo)
+                    viewModel.autoSaveIA()
+                    return "OK: pontosIniciais alterado para $novo."
+                }
+            }
+            // PF / Fadiga: mod incremental (não valor absoluto)
+            if (alvoN == "pf" || alvoN == "fadiga" || alvoN == "pontosfadiga" || alvoN == "pontos_fadiga") {
+                val mod = Regex("-?\\d+").find(valor)?.value?.toIntOrNull()
+                    ?: return """{"erro":"valor numérico ausente para PF (ex: valor=\"2\" para +2 de fadiga)"}"""
+                viewModel.atualizarModPontosFadiga(mod)
+                viewModel.autoSaveIA()
+                return "OK: modificador de PF alterado para $mod (PF base = HT + $mod)."
+            }
+            // Atributos primários numéricos: ST/DX/IQ/HT
             val novo = (Regex("-?\\d+").find(valor)?.value
                 ?: Regex("-?\\d+").find(alvo)?.value)?.toIntOrNull()
-                ?: return """{"erro":"valor numérico do atributo ausente (ex: valor=\"14\")"}"""
+                ?: return """{"erro":"atributo/campo desconhecido ou valor ausente: '$alvo'. Use ST/DX/IQ/HT, nome, historia, PF ou pontosIniciais"}"""
             val antes: Int
             when {
                 alvoN.startsWith("for") || alvoN == "st" -> { antes = p.forca;       viewModel.atualizarForca(novo) }
                 alvoN.startsWith("des") || alvoN == "dx" -> { antes = p.destreza;    viewModel.atualizarDestreza(novo) }
                 alvoN.startsWith("int") || alvoN.startsWith("iq") || alvoN.startsWith("ig") -> { antes = p.inteligencia; viewModel.atualizarInteligencia(novo) }
                 alvoN.startsWith("vit") || alvoN.startsWith("ht") || alvoN.startsWith("sau") -> { antes = p.vitalidade; viewModel.atualizarVitalidade(novo) }
-                else -> return """{"erro":"atributo desconhecido: '$alvo'. Use forca/destreza/inteligencia/vitalidade ou ST/DX/IQ/HT"}"""
+                else -> return """{"erro":"atributo desconhecido: '$alvo'. Use ST/DX/IQ/HT, nome, historia, PF ou pontosIniciais"}"""
             }
             viewModel.autoSaveIA()
             return "OK: atributo '$alvo' alterado de $antes para $novo."
@@ -405,6 +448,83 @@ class ForjadorToolExecutor(
             "peculiaridades" -> { viewModel.adicionarPeculiaridade(alvo); viewModel.autoSaveIA(); return "OK: peculiaridade adicionada." }
             else -> return """{"erro":"$op em $secao não suportado por esta ferramenta"}"""
         }
+    }
+
+    private fun buscarRacas(args: JSONObject): String {
+        val query = args.optString("query", "").lowercase().trim()
+        val tipo = args.optString("tipo", "todos").lowercase().trim()
+
+        val racasFiltradas = if (tipo != "meta" && tipo != "metacaracteristica") {
+            catalogoRacas.filter {
+                query.isBlank() || it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+            }.take(15)
+        } else emptyList()
+
+        val metasFiltradas = if (tipo != "raca") {
+            catalogoMetas.filter {
+                query.isBlank() || it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+            }.take(10)
+        } else emptyList()
+
+        if (racasFiltradas.isEmpty() && metasFiltradas.isEmpty()) {
+            return if (context == null) "Erro: contexto Android não disponível para carregar catálogos."
+            else "Nenhuma raça/metacaracterística encontrada para '$query'."
+        }
+
+        return buildString {
+            if (racasFiltradas.isNotEmpty()) {
+                appendLine("=== RAÇAS (${racasFiltradas.size}) ===")
+                racasFiltradas.forEach { r ->
+                    append("• [raca] id=${r.id} | ${r.nome}")
+                    if (r.pagina.isNotBlank()) append(" | pág.${r.pagina}")
+                    if (r.descricao.isNotBlank()) append(" | ${r.descricao.take(80)}")
+                    appendLine()
+                }
+            }
+            if (metasFiltradas.isNotEmpty()) {
+                appendLine("=== METACARACTERÍSTICAS (${metasFiltradas.size}) ===")
+                metasFiltradas.forEach { m ->
+                    append("• [meta] id=${m.id} | ${m.nome}")
+                    if (m.pagina.isNotBlank()) append(" | pág.${m.pagina}")
+                    if (m.descricao.isNotBlank()) append(" | ${m.descricao.take(80)}")
+                    appendLine()
+                }
+            }
+            appendLine("Para aplicar, use aplicarModeloRacial(id=..., tipo=raca|meta).")
+        }.trim()
+    }
+
+    private fun aplicarModeloRacial(args: JSONObject): String {
+        if (context == null) return """{"erro":"contexto Android não disponível"}"""
+        val id = args.optString("id", "").trim()
+        val tipo = args.optString("tipo", "raca").lowercase().trim()
+        if (id.isBlank()) return """{"erro":"id é obrigatório"}"""
+
+        fun norm(s: String) = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "").lowercase().replace(Regex("[^a-z0-9]"), "").trim()
+        val idN = norm(id)
+
+        val isMeta = tipo == "meta" || tipo == "metacaracteristica"
+        val catalogo = if (isMeta) catalogoMetas else catalogoRacas
+        val def = catalogo.firstOrNull { norm(it.id) == idN || norm(it.nome) == idN }
+            ?: return """{"erro":"${if (isMeta) "Metacaracterística" else "Raça"} '$id' não encontrada no catálogo. Use buscarRacas para ver os disponíveis."}"""
+
+        val resolucao = RacaCatalogo.resolver(def, repository)
+        val modelo = if (isMeta) {
+            resolucao.modelo.copy(tipo = com.gurps.ficha.model.TipoModeloRacial.METACARACTERISTICA)
+        } else {
+            resolucao.modelo
+        }
+
+        viewModel.atualizarModeloRacial(modelo)
+        viewModel.autoSaveIA()
+
+        val avisos = if (resolucao.naoResolvidos.isNotEmpty())
+            " (avisos: ${resolucao.naoResolvidos.joinToString(", ")})"
+        else ""
+        return "OK: modelo racial '${def.nome}' aplicado ao personagem$avisos. " +
+            "Vantagens: ${modelo.vantagens.size}, Desvantagens: ${modelo.desvantagens.size}, " +
+            "Perícias: ${modelo.pericias.size}. Use lerFicha(secao=atributos) para confirmar."
     }
 
     private fun calcularPontosGastos(): Int {

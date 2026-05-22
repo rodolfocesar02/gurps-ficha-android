@@ -1,20 +1,22 @@
 package com.gurps.ficha.ui.components
 
+import android.content.Context
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.domain.MestreIAGraphEngine
 import com.gurps.ficha.domain.MestreIAPlanner
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.tools.ForjadorToolExecutor
+import com.gurps.ficha.domain.tools.ForjadorTools
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 
-class GeminiLiveTools(private val viewModel: FichaViewModel) {
+class GeminiLiveTools(private val viewModel: FichaViewModel, private val context: Context? = null) {
 
     private val repo = viewModel.dataRepository
     private val graphEngine = MestreIAGraphEngine(repo)
     private val nexusAdapter = NexusArcanoModoAlvoAdapter(repo.magias)
-    private val forjador = ForjadorToolExecutor(viewModel, repo, nexusAdapter)
+    private val forjador = ForjadorToolExecutor(viewModel, repo, nexusAdapter, context)
 
     fun executar(nome: String, args: JSONObject): JSONObject {
         return try {
@@ -35,6 +37,10 @@ class GeminiLiveTools(private val viewModel: FichaViewModel) {
 
                 // ── GPS de Magias ──
                 "trilhaDeMagias" -> executarForjador("gps", args)
+
+                // ── Raças e Metacaracterísticas ──
+                ForjadorTools.TOOL_BUSCAR_RACAS   -> executarForjador("buscar_racas", args)
+                ForjadorTools.TOOL_APLICAR_RACIAL -> executarForjador("aplicar_racial", args)
 
                 // ── Ferramenta RAG (única que não vai para o Forjador) ──
                 "consultarManual" -> consultarManual(args)
@@ -90,10 +96,12 @@ class GeminiLiveTools(private val viewModel: FichaViewModel) {
 
     private fun executarForjador(tipo: String, args: JSONObject): JSONObject {
         val toolName = when (tipo) {
-            "buscar" -> "forjador_buscar_catalogo"
-            "editar" -> "forjador_editar_ficha"
-            "gps"    -> "forjador_gps_magia"
-            else -> "forjador_editar_ficha"
+            "buscar"         -> ForjadorTools.TOOL_BUSCAR
+            "editar"         -> ForjadorTools.TOOL_EDITAR
+            "gps"            -> ForjadorTools.TOOL_GPS_MAGIA
+            "buscar_racas"   -> ForjadorTools.TOOL_BUSCAR_RACAS
+            "aplicar_racial" -> ForjadorTools.TOOL_APLICAR_RACIAL
+            else             -> ForjadorTools.TOOL_EDITAR
         }
         val toolCall = MestreIAClient.MestreIAToolCall(name = toolName, args = args)
         val resultado = forjador.execute(toolCall)

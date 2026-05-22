@@ -74,11 +74,32 @@ FERRAMENTAS DISPONÍVEIS E QUANDO USAR:
 - editarFicha(operacao, secao, alvo, valor): adiciona, remove ou altera qualquer item da ficha. operacao: adicionar|remover|alterar. secao: vantagens|desvantagens|pericias|tecnicas|magias|equipamentos|atributos
 - trilhaDeMagias(magia_alvo): GPS de magias — mostra cadeia de pré-requisitos e trilha mais rápida até a magia desejada
 - consultarManual(termos): busca regras no Códex de GURPS. Use ANTES de responder qualquer dúvida de regra.
+- forjador_buscar_racas(query, tipo): lista raças e metacaracterísticas disponíveis. Use para descobrir IDs antes de aplicar. tipo=raca para raças jogáveis, tipo=meta para metacaracterísticas (Vampiro, Fantasma, etc).
+- forjador_aplicar_modelo_racial(id, tipo): aplica modelo racial completo ao personagem (atributos + vantagens + desvantagens + perícias da raça). Sempre usar forjador_buscar_racas antes para obter o ID correto.
 
-FLUXO OBRIGATÓRIO PARA EDITAR A FICHA:
-1. SEMPRE buscar com buscarCatalogo primeiro para obter o ID correto
-2. Então chamar editarFicha com o ID/nome retornado
+FLUXO PARA RAÇAS E METACARACTERÍSTICAS:
+1. forjador_buscar_racas() para ver quais raças/metas existem no catálogo
+2. forjador_aplicar_modelo_racial(id, tipo) para aplicar — aplica TUDO automaticamente (atributos, vantagens, desvantagens, perícias)
+3. Confirme em voz o que foi aplicado e quantos pontos restam
+
+CAMPOS DIRETOS (não precisam de buscarCatalogo):
+- Nome do personagem: editarFicha(alterar, atributos, nome, "Aragorn")
+- História/background: editarFicha(alterar, atributos, historia, "Era um bruxo...")
+- Atributos primários ST/DX/IQ/HT: editarFicha(alterar, atributos, ST, "12")
+- PF extra (fadiga): editarFicha(alterar, atributos, PF, "2") — valor é o modificador sobre HT
+- Pontos iniciais: editarFicha(alterar, atributos, pontosIniciais, "150")
+- Qualidades: editarFicha(adicionar, qualidades, "Corajoso", "") — texto livre
+- Peculiaridades: editarFicha(adicionar, peculiaridades, "Fala pouco", "") — texto livre
+
+FLUXO PARA VANTAGENS/DESVANTAGENS/PERÍCIAS/MAGIAS/TÉCNICAS/EQUIPAMENTOS:
+1. buscarCatalogo primeiro para obter o ID correto
+2. editarFicha com o ID retornado
 3. Confirmar em voz o que foi feito e quantos pontos restam
+
+MÚLTIPLAS EDIÇÕES DE UMA VEZ:
+- Chame editarFicha várias vezes em sequência sem pausar — o sistema aceita
+- buscarCatalogo também pode ser chamado múltiplas vezes em paralelo para buscar vários itens
+- Ao montar uma ficha completa: defina nome → pontosIniciais → atributos → vantagens → desvantagens → perícias → magias → historia
 
 REGRAS DE COMPORTAMENTO — DÚVIDAS DE REGRAS:
 - Para QUALQUER dúvida de regra, use consultarManual ANTES de responder — nunca invente
@@ -152,7 +173,7 @@ NUNCA:
 
                     // ── Edição unificada da ficha ─────────────────────────────────────
                     put(buildFuncao("editarFicha",
-                        "Edita a ficha DIRETAMENTE: adiciona, remove ou altera qualquer item. Para atributos: operacao=alterar, secao=atributos, alvo=ST/DX/IQ/HT, valor=14. Para vantagens/desvantagens/pericias/tecnicas/magias/equipamentos: use o ID retornado por buscarCatalogo.",
+                        "Edita a ficha DIRETAMENTE. ATRIBUTOS PRIMÁRIOS: secao=atributos, alvo=ST/DX/IQ/HT, valor=14. NOME: secao=atributos, alvo=nome, valor='Aragorn'. HISTÓRIA: secao=atributos, alvo=historia, valor='texto...'. PF extra: secao=atributos, alvo=PF, valor=2 (modificador sobre HT). PONTOS: secao=atributos, alvo=pontosIniciais, valor=150. LISTAS: secao=vantagens/desvantagens/pericias/tecnicas/magias/equipamentos/qualidades/peculiaridades — use ID retornado por buscarCatalogo.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
@@ -166,11 +187,11 @@ NUNCA:
                                 })
                                 put("alvo", JSONObject().apply {
                                     put("type", "string")
-                                    put("description", "ID/nome do item ou atributo (ST/DX/IQ/HT/forca/destreza/inteligencia/vitalidade)")
+                                    put("description", "ST/DX/IQ/HT | nome | historia | PF | pontosIniciais | ID do item do catálogo")
                                 })
                                 put("valor", JSONObject().apply {
                                     put("type", "string")
-                                    put("description", "Atributo: '14'. Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3'. Técnica: 'nivel=4;periciaBase=<id>'. Magia: 'forcar=true' apenas se narrativo.")
+                                    put("description", "Atributo numérico: '14'. Nome: 'Aragorn'. Historia: texto livre. PF: '2' (mod). Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3'. Técnica: 'nivel=4;periciaBase=<id>'. Qualidade/Peculiaridade: texto livre.")
                                 })
                             })
                             put("required", JSONArray().put("operacao").put("secao").put("alvo"))
@@ -204,6 +225,43 @@ NUNCA:
                                 })
                             })
                             put("required", JSONArray().put("termos"))
+                        }
+                    ))
+
+                    // ── Raças e Metacaracterísticas ───────────────────────────────────
+                    put(buildFuncao("forjador_buscar_racas",
+                        "Lista raças e metacaracterísticas disponíveis no catálogo GURPS. Use ANTES de aplicar qualquer modelo racial para obter os IDs disponíveis. Tipos: 'raca' (Anão, Elfo, Halfling...) ou 'meta' (Vampiro, Fantasma, Licantropo...).",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("query", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Filtro por nome (opcional). Ex: 'elfo', 'anao'. Vazio lista tudo.")
+                                })
+                                put("tipo", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "raca | meta | todos")
+                                })
+                            })
+                            put("required", JSONArray())
+                        }
+                    ))
+
+                    put(buildFuncao("forjador_aplicar_modelo_racial",
+                        "Aplica um modelo racial (raça ou metacaracterística) ao personagem, adicionando automaticamente TODOS os traços da raça: modificadores de atributos, vantagens, desvantagens e perícias. Use forjador_buscar_racas primeiro para obter o ID correto.",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("id", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "ID da raça ou metacaracterística obtido via forjador_buscar_racas. Ex: 'anao', 'elfo', 'vampiro'")
+                                })
+                                put("tipo", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "raca | meta. Padrão: raca")
+                                })
+                            })
+                            put("required", JSONArray().put("id"))
                         }
                     ))
                 })
@@ -396,12 +454,14 @@ NUNCA:
                     android.util.Log.i("GeminiLive", "║  Args: ${args.toString().take(200)}")
                     // Feedback visual imediato — evita silêncio durante RAG (pode demorar ~10s)
                     val labelFerramenta = when (nome) {
-                        "consultarManual" -> "📖 Consultando o Códex..."
-                        "buscarCatalogo"  -> "🔍 Buscando no catálogo..."
-                        "editarFicha"     -> "✏️ Editando a ficha..."
-                        "trilhaDeMagias"  -> "🗺️ Calculando trilha de magias..."
-                        "lerFicha"        -> "📋 Lendo a ficha..."
-                        else              -> "⚙️ Processando..."
+                        "consultarManual"                  -> "📖 Consultando o Códex..."
+                        "buscarCatalogo"                   -> "🔍 Buscando no catálogo..."
+                        "editarFicha"                      -> "✏️ Editando a ficha..."
+                        "trilhaDeMagias"                   -> "🗺️ Calculando trilha de magias..."
+                        "lerFicha"                         -> "📋 Lendo a ficha..."
+                        "forjador_buscar_racas"            -> "🧬 Buscando raças/metacaracterísticas..."
+                        "forjador_aplicar_modelo_racial"   -> "🧬 Aplicando modelo racial..."
+                        else                               -> "⚙️ Processando..."
                     }
                     mainHandler.post { onRespostaMestre(labelFerramenta) }
                     val t0 = System.currentTimeMillis()

@@ -1,5 +1,6 @@
 package com.gurps.ficha.domain
 
+import android.content.Context
 import android.util.Log
 import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.data.network.MestreIAClient
@@ -18,7 +19,8 @@ import kotlinx.coroutines.withContext
 
 class MestreIAGeneratorUseCase(
     private val viewModel: FichaViewModel,
-    private val repository: DataRepository
+    private val repository: DataRepository,
+    private val context: Context? = null
 ) {
     /**
      * Erro REAL de infra (vindo do MestreIAClient), não texto da IA que
@@ -84,7 +86,7 @@ class MestreIAGeneratorUseCase(
 
         // Lote E: executor de tools do Forjador Agêntico
         val nexusAdapter = NexusArcanoModoAlvoAdapter(repository.magias)
-        val toolExecutor = ForjadorToolExecutor(viewModel, repository, nexusAdapter)
+        val toolExecutor = ForjadorToolExecutor(viewModel, repository, nexusAdapter, context)
 
         // Nome só para mensagens de status. A narrativa usa o PEDIDO INTEIRO
         // (prompt) — extrair "nome" por regex falhava em "crie o Aragorn de

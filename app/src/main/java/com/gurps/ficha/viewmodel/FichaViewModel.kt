@@ -76,7 +76,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private val combatDelegate = FichaCombatDelegate()
     
     // Novos Delegados (Refatoração Lote 15)
-    private val iaDelegate = FichaIADelegate(this, dataRepository, viewModelScope)
+    private val iaDelegate = FichaIADelegate(this, dataRepository, viewModelScope, application)
     private val socialDelegate = FichaSocialDelegate(networkDelegate, configPrefs, viewModelScope)
     private val deviceId by lazy { Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID) ?: "DESCONHECIDO" }
 

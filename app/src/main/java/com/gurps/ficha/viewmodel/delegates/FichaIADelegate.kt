@@ -15,16 +15,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.gurps.ficha.data.storage.ChatSessionEntity
+import android.content.Context
 import com.gurps.ficha.data.storage.ChatMessageEntity
 import java.util.Date
 
 class FichaIADelegate(
     private val viewModel: FichaViewModel,
     private val dataRepository: DataRepository,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val context: Context? = null
 ) {
     private val mestreIAUseCase by lazy { MestreIAUseCase(viewModel, dataRepository) }
-    private val mestreIAGeneratorUseCase by lazy { MestreIAGeneratorUseCase(viewModel, dataRepository) }
+    private val mestreIAGeneratorUseCase by lazy { MestreIAGeneratorUseCase(viewModel, dataRepository, context) }
 
     var mestreIAChatHistory by mutableStateOf<List<MestreIAClient.ChatMessage>>(emptyList())
     var fichaGeradaPendente by mutableStateOf<MestreIAResponse?>(null)

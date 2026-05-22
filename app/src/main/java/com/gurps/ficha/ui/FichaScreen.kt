@@ -92,7 +92,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val vozMestreIA = remember { VozMestreIA(context) }
     val vozTTS = remember { VozTTS(context) }
     val geminiLive = remember { GeminiLiveService(context) }
-    val geminiLiveTools = remember { GeminiLiveTools(viewModel) }
+    val geminiLiveTools = remember { GeminiLiveTools(viewModel, context) }
 
     SideEffect {
         vozMestreIA.onEstado = { novoEstado -> estadoVoz = novoEstado }
