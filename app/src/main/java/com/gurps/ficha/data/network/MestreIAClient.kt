@@ -218,7 +218,13 @@ object MestreIAClient {
                         val choice = choices.getJSONObject(0)
                         val message = choice.optJSONObject("message")
                         fullText = message?.optString("content", "") ?: ""
-                        
+
+                        // Thinking Mode (DeepSeek): raciocínio interno — logado para debug
+                        val reasoning = message?.optString("reasoning_content", "") ?: ""
+                        if (reasoning.isNotBlank()) {
+                            android.util.Log.d("MestreIA_Thinking", "Raciocínio (${reasoning.length} chars): ${reasoning.take(500)}")
+                        }
+
                         val toolCalls = message?.optJSONArray("tool_calls")
                         if (toolCalls != null) {
                             for (i in 0 until toolCalls.length()) {
@@ -248,6 +254,14 @@ object MestreIAClient {
                     pTokens = usage?.optInt("prompt_tokens") ?: 0
                     cTokens = usage?.optInt("completion_tokens") ?: 0
                     tTokens = usage?.optInt("total_tokens") ?: 0
+
+                    // Context Caching (DeepSeek): monitora economia de tokens
+                    val cacheHit  = usage?.optInt("prompt_cache_hit_tokens", 0) ?: 0
+                    val cacheMiss = usage?.optInt("prompt_cache_miss_tokens", 0) ?: 0
+                    if (cacheHit > 0 || cacheMiss > 0) {
+                        val economia = if (pTokens > 0) (cacheHit * 100 / pTokens) else 0
+                        android.util.Log.i("MestreIA_Cache", "Cache hit=$cacheHit miss=$cacheMiss ($economia% do prompt em cache)")
+                    }
                 }
 
                 val finalLatency = System.currentTimeMillis() - startTime
@@ -359,6 +373,13 @@ object MestreIAClient {
         root.put("temperature", 0.1)
         root.put("max_tokens", maxTokens)
         root.put("stream", stream)
+
+        // Thinking Mode: ativa raciocínio passo a passo no Auditor (conversa)
+        // Resolve perguntas com cálculos e regras combinadas (ex: tiro subaquático)
+        if (modo == "conversa") {
+            root.put("thinking", JSONObject().put("type", "enabled"))
+        }
+
         return root.toString()
     }
 

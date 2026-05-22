@@ -129,7 +129,7 @@ android {
         // Legado / Valores Padrão (DeepSeek por padrão no MESTRE_IA_KEY)
         buildConfigField("String", "MESTRE_IA_KEY", "\"$deepseekKey\"") 
         buildConfigField("String", "MESTRE_IA_URL", "\"https://api.deepseek.com/v1\"")
-        buildConfigField("String", "MESTRE_IA_MODEL", "\"deepseek-chat\"")
+        buildConfigField("String", "MESTRE_IA_MODEL", "\"deepseek-v4-flash\"") // migrado: deepseek-chat deprecado em 24/07/2026
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
