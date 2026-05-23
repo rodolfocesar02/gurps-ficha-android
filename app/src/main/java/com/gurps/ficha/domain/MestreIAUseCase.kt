@@ -103,9 +103,11 @@ class MestreIAUseCase(
                 android.util.Log.i("MestreIA_RAG", "║  RAG: pulado (mensagem casual)")
                 CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
             } else {
+                updateStatus("Analisando pergunta...")
                 // LOTE 130: passa inventário do personagem para o Planner cruzar com a pergunta
                 val plano = MestreIAPlanner.planejarBusca(prompt, viewModel.personagem.equipamentos)
                 android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)} | livros: ${plano.livrosRelevantes}")
+                updateStatus("Consultando o manual...")
                 var resultado = gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
 
                 // Injeta contexto do inventário do personagem antes do RAG geral
@@ -151,7 +153,7 @@ class MestreIAUseCase(
                 // pois sua presença em vários contextos indica alta relevância para a pergunta.
                 if (plano.subQueriesTemáticas.isNotEmpty()) {
                     android.util.Log.i("MestreIA_RAG", "║  MULTI-QUERY: ${plano.subQueriesTemáticas.size} ângulos temáticos — buscando em paralelo")
-                    updateStatus("Expandindo busca temática...")
+                    updateStatus("Buscando regras relacionadas...")
                     val tematicasResultados = coroutineScope {
                         plano.subQueriesTemáticas.map { tQuery ->
                             async { tQuery to graphEngine.buscarDiretoNoCodex(tQuery, emptyList()) }
@@ -238,22 +240,24 @@ class MestreIAUseCase(
                     // Mescla o histórico do chat com as descobertas da investigação atual
                     val historicoLimitado = (viewModel.mestreIAChatHistory.map { it.role to it.text } + historicoInvestigacao).takeLast(12)
                     
-                    var loopsRestantes = 3
-                    var iteracao = 1
-                    // Pergunta "complexa" = tem número, alcance, cálculo, arma, penalidade → ativa protocolo 3 fases
+                    // Pergunta "complexa" = tem número, alcance, cálculo, arma, penalidade → ativa protocolo 3 fases + Thinking
                     val isQuestaoComplexa = !isCasual && (
-                        prompt.contains(Regex("\\d+\\s*m|metros|alcance|calculo|penalidade|submerso|agua|piscina", RegexOption.IGNORE_CASE))
+                        prompt.contains(Regex("\\d+\\s*(m|metro|hex|km|yard)|alcance|calculo|penalidade|submerso|agua|piscina|quanto de dano|cai|queda|velocidade", RegexOption.IGNORE_CASE))
                         || prompt.length > 80
                     )
+                    // Simples = 1 tool call max + sem Thinking; Complexa = 3 iterações + Thinking
+                    var loopsRestantes = if (isQuestaoComplexa) 3 else 2
+                    var iteracao = 1
 
                     while (loopsRestantes > 0) {
                         val isUltimaIteracao = loopsRestantes == 1 && iteracao > 1
 
                         val modeloCurto = iaModel.substringAfterLast("/").take(20)
                         updateStatus(when {
-                            iteracao == 1 -> "Consultando $modeloCurto..."
-                            isUltimaIteracao -> "Compilando resposta com $modeloCurto..."
-                            else -> "Aprofundando pesquisa (iteração $iteracao)..."
+                            iteracao == 1 && isQuestaoComplexa -> "Analisando regras (${catalogoDinamico.chunks.size} chunks encontrados)..."
+                            iteracao == 1 -> "Preparando resposta..."
+                            isUltimaIteracao -> "Elaborando resposta final..."
+                            else -> "Verificando regras adicionais..."
                         })
 
                         val ctxAtual = catalogoDinamico.ponteDeFerro.length
@@ -281,12 +285,14 @@ class MestreIAUseCase(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
-                            desativarTools = isUltimaIteracao
+                            desativarTools = isUltimaIteracao, isComplexo = isQuestaoComplexa
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {
                             val toolCall = resposta.toolCalls[0]
-                            android.util.Log.i("MestreIA_RAG", "║  TOOL CALL: IA chamou [${toolCall.name}] query=\"${toolCall.args.optString("query","").take(70)}\"")
+                            val queryTc = toolCall.args.optString("query","").take(50)
+                            android.util.Log.i("MestreIA_RAG", "║  TOOL CALL: IA chamou [${toolCall.name}] query=\"${queryTc}\"")
+                            updateStatus("Buscando no manual: \"${queryTc}\"...")
 
                             if (toolCall.name == MestreIATools.TOOL_MANUAL_DIRETO) {
                                 val queryTool = toolCall.args.optString("query", prompt)
@@ -304,8 +310,6 @@ class MestreIAUseCase(
                                     iteracao++
                                     continue
                                 }
-
-                                updateStatus("Buscando no manual: \"${queryTool.take(40)}\"...")
                                 val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
 
                                 if (resTool.relatedChunks.isNotEmpty()) {

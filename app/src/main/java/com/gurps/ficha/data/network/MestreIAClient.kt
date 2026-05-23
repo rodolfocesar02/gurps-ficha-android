@@ -77,7 +77,8 @@ object MestreIAClient {
         promptSistema: String? = null,
         onChunk: ((String) -> Unit)? = null,
         desativarTools: Boolean = false,
-        maxTokens: Int = 2048
+        maxTokens: Int = 2048,
+        isComplexo: Boolean = true
     ): ChatResponse = withContext(Dispatchers.IO) {
         val startTime = System.currentTimeMillis()
         try {
@@ -159,7 +160,7 @@ object MestreIAClient {
             val jsonOutput = if (isGoogleNative) {
                 gerarJsonGoogleNative(prompt, history, systemPulse, modo, desativarTools)
             } else {
-                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens)
+                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens, isComplexo)
             }
 
             android.util.Log.i("MestreIA_RAG", "║  REQUEST: ${jsonOutput.length}chars → $workspaceSlug")
@@ -350,7 +351,7 @@ object MestreIAClient {
         return root.toString()
     }
 
-    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048): String {
+    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048, isComplexo: Boolean = true): String {
         val root = JSONObject()
         root.put("model", modelId)
         val messages = JSONArray()
@@ -374,9 +375,9 @@ object MestreIAClient {
         root.put("max_tokens", maxTokens)
         root.put("stream", stream)
 
-        // Thinking Mode: ativa raciocínio passo a passo no Auditor (conversa)
-        // Resolve perguntas com cálculos e regras combinadas (ex: tiro subaquático)
-        if (modo == "conversa") {
+        // Thinking Mode: só ativa para perguntas complexas (cálculo, múltiplas regras)
+        // Perguntas simples não precisam — economiza ~15s de raciocínio interno
+        if (modo == "conversa" && isComplexo) {
             root.put("thinking", JSONObject().put("type", "enabled"))
         }
 
