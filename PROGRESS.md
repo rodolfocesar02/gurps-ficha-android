@@ -1084,3 +1084,14 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Ativa Thinking Mode no Auditor: modelo raciocina passo a passo antes de responder
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
+
+### Lote 251: Plano RAG Mestre IA + Descontinuação Voz Clássica + Mesa Virtual Completa — CONCLUÍDO | commit: 3c3d43b
+- `PLANO_MesteIA_RAG.md` criado: diagnóstico dos 3 tipos de falha RAG + 9 melhorias em 3 ondas
+  - Onda 1 (dias 1-3): FTS4→FTS5+BM25, filtro source_id, chunking menor
+  - Onda 2 (semanas 1-2): SQLite-vec semântico, LRU cache, compressão de contexto (Pocket RAG), índice por tópico
+  - Onda 3 (meses): pipeline offline de livros, tabelas FTS5 particionadas
+- Descontinuação da voz clássica: `VozMestreIA.kt`, `VozTTS.kt`, `VozIntencaoClassifier.kt` removidos
+- `GeminiLiveService.kt`: enum `EstadoVoz` migrado para cá (compatibilidade com FichaCustomNavigationBar)
+- `FichaScreen.kt`: simplificado — apenas GeminiLive, sem `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA`
+- `Mesa Virtual/index.html`: suporte completo a `modeloRacial` (modForca, modDestreza, etc.), especialização de perícias, histórico/notas, PV/PF corretos com modificadores raciais
+- `ARQUITETURA_MESTRE_IA.md`: atualizado com GeminiLiveService, GeminiLiveTools e marcação de deprecações
