@@ -1202,6 +1202,19 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - Com Lote 263 estimativa: ~30-35s (complexa detectada pelo "12 hex" e "queda")
 
 
+### Lote 265: topic_index gerado do Índice do Livro — CONCLUÍDO | commit: 4179816
+- **scripts/gerar_topic_index.py:** parse automático de `indice.md` + `glossario.md` → 515 tópicos
+  - `PALAVRAS_GENERICAS`: descarta termos genéricos ("combate", "dano", "armas", etc.) como `require_all` sozinhos
+  - Termos compostos (2+ palavras) sempre usam todas as palavras como `require_all` — mais precisos
+  - `--merge`: mescla gerado com manuais preservando entradas existentes
+- **topic_index.json:** 15 manuais + 515 gerados = **530 tópicos** (antes: 15)
+  - Cobertura ~80-90% das regras do Módulo Básico contra displacement BM25
+  - Nenhum `require_all` genérico sozinho nos tópicos gerados
+- **Correção de regressão:** primeira versão tinha 546 gerados com `require_all` genéricos → disparavam em quase toda pergunta de combate, poluindo contexto da IA com páginas irrelevantes (camelos, centrum, bactérias)
+  - Solução: `PALAVRAS_GENERICAS` descarta esses termos no `gerar_matching()` → tópico não é criado
+- **Arquivos auxiliares:** `topic_index_gerado.json` (output do script, 515 tópicos), `topic_index_backup_manual.json` (11 tópicos pré-lote-264)
+
+
 ### Lote 264: Status no Balão + Thinking sem Iteração Final + topic_index expandido — CONCLUÍDO | commit: 4d91d4b
 - **FichaIADelegate:** status de progresso aparece no corpo do balão (⏳ Consultando...) em vez da badge 7sp
   - `onChunk` limpa corretamente o prefixo ⏳ antes de escrever a resposta final
