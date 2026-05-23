@@ -1085,19 +1085,22 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
 
-### Lotes 259+260+261: RAG — Busca Semântica Híbrida + Scripts Offline — CONCLUÍDO | commit: a291d6b
+### Lotes 259+260+261: RAG — Busca Semântica Híbrida + Scripts Offline — CONCLUÍDO | commits: a291d6b, 6e6a7e0
 - `VecChunkEntity` + `VecChunkDao`: tabela `vec_chunks` no Room (versão 24)
-  - Armazena embeddings de 384 dims como ByteArray little-endian (1536 bytes/chunk)
-- `MestreIASemanticEngine`: reranking BM25+semântico por similaridade cosseno
+  - Armazena embeddings de 3072 dims como ByteArray little-endian (12288 bytes/chunk)
+- `MestreIASemanticEngine`: reranking BM25+semântico por similaridade cosseno em Kotlin puro
   - score_final = 0.6×BM25_norm + 0.4×cosseno
-  - Embedding da query via Gemini `text-embedding-004` (~200ms)
+  - Embedding da query via Gemini `gemini-embedding-001` (~200ms) — modelo correto: 3072 dims
   - Fallback gracioso: vec_chunks vazio → BM25 puro, sem erro
 - `FichaDatabase` v24: importa campo `"embedding"` do chunks.jsonl automaticamente
 - `MestreIAGraphEngine`: reranking semântico após BM25 (top-50 reranqueados)
-- `scripts/gerar_embeddings.py`: gera embeddings offline para chunks.jsonl existente
-  - Rechunking opcional: chunks grandes → sub-chunks de ~600 chars com overlap
+- `scripts/gerar_embeddings.py`: gera embeddings offline para chunks.jsonl via API Gemini
+  - SSL bypass necessário em ambiente corporativo (ctx.check_hostname = False)
+  - 1197 embeddings gerados (54.9 MB chunks.jsonl); validado: 0 erros, 0 dims erradas
 - `scripts/processar_livro.py`: pipeline PDF → extração → chunking → embedding → append
   - Adicionar livro novo = 1 comando Python, sem tocar no app
+- **Validação semântica:** "atirar com revólver numa piscina" → similaridade 0.6902 com Pyramid p.7 (regra subaquática) sem nenhum keyword match direto — busca semântica funcionando
+- **Commit 6e6a7e0:** corrige modelo de text-embedding-004 (404) para gemini-embedding-001 (correto)
 - **Lote 262 (tabelas por categoria)**: preparatório — `livrosPorCategoria` e `buscarRegrasPorFonte` já existem. Tabelas FTS separadas implementar quando atingir 5000+ chunks.
 
 ### Lotes 257+258: RAG — Raciocínio com Lacunas + Query Rewriting — CONCLUÍDO | commit: a3c5415
