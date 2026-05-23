@@ -36,6 +36,26 @@ IGNORAR_PREFIXOS = [
     "professor william", "iotha", "xing la", "sora", "c-31",
 ]
 
+# ── Palavras genéricas demais para ser require_all sozinhas ───────────────────
+# Tópicos com require_all de 1 palavra que esteja nessa lista são DESCARTADOS.
+# Só entram se o termo original tiver 2+ palavras (aí require_all fica composto).
+PALAVRAS_GENERICAS = {
+    "ataques", "ataque", "atacando", "combate", "combates", "dano", "danos",
+    "defesa", "defesas", "armas", "arma", "regras", "regra", "testes", "teste",
+    "modelos", "modelo", "personagens", "personagem", "perícias", "pericia",
+    "vantagens", "vantagem", "desvantagens", "desvantagem", "modificadores",
+    "modificador", "tabelas", "tabela", "equipamento", "equipamentos",
+    "manobras", "manobra", "deslocamento", "movimento", "velocidade",
+    "mundos", "mundo", "campanhas", "campanha", "aventuras", "aventura",
+    "animais", "animal", "veiculos", "veiculo", "mapas", "mapa",
+    "tecnicas", "tecnica", "magicas", "magica", "magia", "pericias",
+    "caracteristicas", "caracteristica", "atributos", "atributo",
+    "pontos", "ponto", "nivel", "niveis", "tipos", "tipo",
+    "sistemas", "sistema", "custos", "custo", "listas", "lista",
+    "ataques", "bloqueio", "aparar", "esquiva", "morte", "cura",
+    "novas", "novo", "outros", "outro", "varios", "vario",
+}
+
 # ── Sinônimos manuais para termos específicos ─────────────────────────────────
 SINONIMOS_EXTRAS = {
     "queda": ["cair", "precipicio", "altitude", "despencar", "tombo"],
@@ -227,33 +247,35 @@ def gerar_keywords(termo, glossario):
 # ── Geração de require_all e fallback_any ─────────────────────────────────────
 def gerar_matching(keywords, termo_original):
     """
-    require_all: todas as palavras significativas do termo original (não sinônimos)
-    fallback_any: pares das primeiras 2 keywords com sinônimos
+    require_all: palavras do termo original. Retorna None se o tópico for genérico demais.
+    fallback_any: pares keyword principal + sinônimos.
     """
     if not keywords:
-        return [], []
+        return None, []
 
     STOPWORDS = {"de", "do", "da", "dos", "das", "e", "em", "no", "na",
                  "nos", "nas", "a", "o", "os", "as", "com", "por", "para",
                  "um", "uma", "uns", "umas", "ou", "que", "se", "ao", "à"}
 
-    # require_all: palavras do TERMO ORIGINAL (não sinônimos) — mais específico
     palavras_termo = [normalizar(p) for p in termo_original.split()
                       if normalizar(p) not in STOPWORDS and len(p) > 2]
 
     if len(palavras_termo) >= 2:
-        # Termo composto: exige todas as palavras do termo
+        # Termo composto: exige todas as palavras — sempre válido
         require_all = palavras_termo
     elif palavras_termo:
-        # Termo simples: exige só essa palavra
-        require_all = [palavras_termo[0]]
+        palavra = palavras_termo[0]
+        # Termo simples genérico: DESCARTAR — vai disparar pra tudo
+        if palavra in PALAVRAS_GENERICAS:
+            return None, []
+        require_all = [palavra]
     else:
-        require_all = [keywords[0]] if keywords else []
+        return None, []
 
     # fallback_any: combina keyword principal com sinônimos
     principal = palavras_termo[0] if palavras_termo else keywords[0]
     fallback = []
-    for k in keywords[1:4]:  # primeiros sinônimos
+    for k in keywords[1:4]:
         if k != principal:
             fallback.append([principal, k])
 
@@ -305,6 +327,10 @@ def main():
             continue
 
         require_all, fallback_any = gerar_matching(keywords, termo)
+
+        # Descartar tópicos genéricos demais
+        if require_all is None:
+            continue
 
         id_ = gerar_id(termo)
         # Evitar colisão de IDs

@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 2,
   "topics": [
     {
       "id": "tiro_subaquatico",
@@ -1124,44 +1124,6 @@
       "nota": "Gerado do índice MB: 'Animais de estimação' → p.458-459"
     },
     {
-      "id": "animais",
-      "keywords": [
-        "animais"
-      ],
-      "require_all": [
-        "animais"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            57,
-            60,
-            90,
-            123,
-            174,
-            187,
-            196,
-            203,
-            212,
-            221,
-            222,
-            227,
-            396,
-            455,
-            456,
-            457,
-            458,
-            459,
-            460,
-            461
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Animais' → p.57-461"
-    },
-    {
       "id": "antecedentes_sociais",
       "keywords": [
         "antecedentes",
@@ -1232,46 +1194,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Apanhar objetos' → p.352-383"
-    },
-    {
-      "id": "aparar",
-      "keywords": [
-        "aparar",
-        "parry",
-        "aparada",
-        "defesa"
-      ],
-      "require_all": [
-        "aparar"
-      ],
-      "fallback_any": [
-        [
-          "aparar",
-          "parry"
-        ],
-        [
-          "aparar",
-          "aparada"
-        ],
-        [
-          "aparar",
-          "defesa"
-        ]
-      ],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            51,
-            96,
-            325,
-            327,
-            376,
-            390
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Aparar' → p.51-390"
     },
     {
       "id": "aparencia",
@@ -1400,52 +1322,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Armadura' → p.112-395"
-    },
-    {
-      "id": "armas",
-      "keywords": [
-        "armas"
-      ],
-      "require_all": [
-        "armas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            267,
-            268,
-            269,
-            270,
-            271,
-            272,
-            273,
-            274,
-            275,
-            276,
-            277,
-            278,
-            279,
-            280,
-            281,
-            287,
-            289,
-            351,
-            388,
-            397,
-            400,
-            401,
-            402,
-            404,
-            407,
-            412,
-            417,
-            485
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Armas' → p.267-485"
     },
     {
       "id": "armas_automaticas",
@@ -1766,56 +1642,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Artefatos alienígenas' → p.478"
-    },
-    {
-      "id": "atacando",
-      "keywords": [
-        "atacando"
-      ],
-      "require_all": [
-        "atacando"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            326,
-            369
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Atacando' → p.326-369"
-    },
-    {
-      "id": "ataques",
-      "keywords": [
-        "ataques"
-      ],
-      "require_all": [
-        "ataques"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            42,
-            43,
-            115,
-            369,
-            371,
-            381,
-            388,
-            391,
-            393,
-            402,
-            417,
-            461
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Ataques' → p.42-461"
     },
     {
       "id": "ataques_a_distancia",
@@ -2384,31 +2210,6 @@
       "nota": "Gerado do índice MB: 'Autocontrole' → p.120"
     },
     {
-      "id": "aventuras",
-      "keywords": [
-        "aventuras"
-      ],
-      "require_all": [
-        "aventuras"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            23,
-            494,
-            500,
-            501,
-            502,
-            503,
-            504
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Aventuras' → p.23-504"
-    },
-    {
       "id": "bandidos_transtemporais",
       "keywords": [
         "bandidos",
@@ -2529,45 +2330,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Bipé' → p.412"
-    },
-    {
-      "id": "bloqueio",
-      "keywords": [
-        "bloqueio",
-        "bloquear",
-        "escudo",
-        "capa"
-      ],
-      "require_all": [
-        "bloqueio"
-      ],
-      "fallback_any": [
-        [
-          "bloqueio",
-          "bloquear"
-        ],
-        [
-          "bloqueio",
-          "escudo"
-        ],
-        [
-          "bloqueio",
-          "capa"
-        ]
-      ],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            51,
-            325,
-            327,
-            375,
-            390
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Bloqueio' → p.51-390"
     },
     {
       "id": "boleadeiras",
@@ -2815,31 +2577,6 @@
       "nota": "Gerado do índice MB: 'Caminhada' → p.352-426"
     },
     {
-      "id": "campanhas",
-      "keywords": [
-        "campanhas"
-      ],
-      "require_all": [
-        "campanhas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            10,
-            486,
-            487,
-            488,
-            489,
-            504,
-            567
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Campanhas' → p.10-567"
-    },
-    {
       "id": "campanha_em_mundos_infinitos",
       "keywords": [
         "campanha",
@@ -2973,27 +2710,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Capas' → p.405"
-    },
-    {
-      "id": "caracteristicas",
-      "keywords": [
-        "caracteristicas"
-      ],
-      "require_all": [
-        "caracteristicas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            261,
-            262,
-            297
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Características' → p.261-297"
     },
     {
       "id": "caracteristicas_proibidas",
@@ -3562,88 +3278,6 @@
       "nota": "Gerado do índice MB: 'Coma' → p.429"
     },
     {
-      "id": "combate",
-      "keywords": [
-        "combate"
-      ],
-      "require_all": [
-        "combate"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            9,
-            230,
-            324,
-            362,
-            363,
-            364,
-            365,
-            366,
-            367,
-            368,
-            369,
-            370,
-            371,
-            372,
-            373,
-            374,
-            375,
-            376,
-            377,
-            378,
-            379,
-            380,
-            381,
-            382,
-            383,
-            384,
-            385,
-            386,
-            387,
-            388,
-            389,
-            390,
-            391,
-            392,
-            393,
-            394,
-            395,
-            396,
-            397,
-            398,
-            399,
-            400,
-            401,
-            402,
-            403,
-            404,
-            405,
-            406,
-            407,
-            408,
-            409,
-            410,
-            411,
-            412,
-            413,
-            414,
-            415,
-            416,
-            417,
-            467,
-            468,
-            469,
-            470,
-            547
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Combate' → p.9-547"
-    },
-    {
       "id": "combate_corporal",
       "keywords": [
         "combate",
@@ -4153,49 +3787,6 @@
       "nota": "Gerado do índice MB: 'Culturas' → p.23-508"
     },
     {
-      "id": "cura",
-      "keywords": [
-        "cura",
-        "recuperacao",
-        "primeiros socorros",
-        "medicina"
-      ],
-      "require_all": [
-        "cura"
-      ],
-      "fallback_any": [
-        [
-          "cura",
-          "recuperacao"
-        ],
-        [
-          "cura",
-          "primeiros socorros"
-        ],
-        [
-          "cura",
-          "medicina"
-        ]
-      ],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            51,
-            82,
-            140,
-            153,
-            156,
-            247,
-            256,
-            289,
-            512
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Cura' → p.51-512"
-    },
-    {
       "id": "custo_de_vida",
       "keywords": [
         "custo",
@@ -4241,51 +3832,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Dados' → p.8-9"
-    },
-    {
-      "id": "dano",
-      "keywords": [
-        "dano",
-        "ferimento",
-        "lesao",
-        "prejuizo"
-      ],
-      "require_all": [
-        "dano"
-      ],
-      "fallback_any": [
-        [
-          "dano",
-          "ferimento"
-        ],
-        [
-          "dano",
-          "lesao"
-        ],
-        [
-          "dano",
-          "prejuizo"
-        ]
-      ],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            9,
-            15,
-            16,
-            327,
-            377,
-            378,
-            461,
-            470,
-            483,
-            484,
-            485
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Dano' → p.9-485"
     },
     {
       "id": "dano_de_acompanhamento",
@@ -4498,27 +4044,6 @@
       "nota": "Gerado do índice MB: 'Defendendo' → p.326-390"
     },
     {
-      "id": "defesas",
-      "keywords": [
-        "defesas"
-      ],
-      "require_all": [
-        "defesas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            51,
-            83,
-            84
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Defesas' → p.51-84"
-    },
-    {
       "id": "defesas_ativas",
       "keywords": [
         "defesas",
@@ -4650,26 +4175,6 @@
       "nota": "Gerado do índice MB: 'Desidratação' → p.426"
     },
     {
-      "id": "deslocamento",
-      "keywords": [
-        "deslocamento"
-      ],
-      "require_all": [
-        "deslocamento"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            17,
-            52
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Deslocamento' → p.17-52"
-    },
-    {
       "id": "deslocamento_de_cronologias",
       "keywords": [
         "deslocamento",
@@ -4741,32 +4246,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Destro ou Canhoto' → p.14"
-    },
-    {
-      "id": "desvantagens",
-      "keywords": [
-        "desvantagens"
-      ],
-      "require_all": [
-        "desvantagens"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            11,
-            119,
-            120,
-            121,
-            165,
-            291,
-            299,
-            447
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Desvantagens' → p.11-447"
     },
     {
       "id": "desvencilhar_se",
@@ -5363,51 +4842,6 @@
       "nota": "Gerado do índice MB: 'Equilíbrio do jogo' → p.11"
     },
     {
-      "id": "equipamento",
-      "keywords": [
-        "equipamento"
-      ],
-      "require_all": [
-        "equipamento"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            264,
-            265,
-            266,
-            267,
-            268,
-            269,
-            270,
-            271,
-            272,
-            273,
-            274,
-            275,
-            276,
-            277,
-            278,
-            279,
-            280,
-            281,
-            282,
-            283,
-            284,
-            285,
-            286,
-            287,
-            288,
-            289,
-            345
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Equipamento' → p.264-345"
-    },
-    {
       "id": "equipamento_de_acampamento_e_sobrevivencia",
       "keywords": [
         "equipamento",
@@ -5917,46 +5351,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Esquiva altruísta' → p.375"
-    },
-    {
-      "id": "esquiva",
-      "keywords": [
-        "esquiva",
-        "desviar",
-        "esquivar",
-        "evadir"
-      ],
-      "require_all": [
-        "esquiva"
-      ],
-      "fallback_any": [
-        [
-          "esquiva",
-          "desviar"
-        ],
-        [
-          "esquiva",
-          "esquivar"
-        ],
-        [
-          "esquiva",
-          "evadir"
-        ]
-      ],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            17,
-            51,
-            325,
-            326,
-            374,
-            377
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Esquiva' → p.17-377"
     },
     {
       "id": "estado_do_paciente",
@@ -8641,50 +8035,6 @@
       "nota": "Gerado do índice MB: 'Manobra Preparar' → p.325-385"
     },
     {
-      "id": "manobras",
-      "keywords": [
-        "manobras"
-      ],
-      "require_all": [
-        "manobras"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            324,
-            363,
-            385,
-            551
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Manobras' → p.324-551"
-    },
-    {
-      "id": "mapas",
-      "keywords": [
-        "mapas"
-      ],
-      "require_all": [
-        "mapas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            384,
-            490,
-            491,
-            502
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Mapas' → p.384-502"
-    },
-    {
       "id": "mapas_da_area",
       "keywords": [
         "mapas",
@@ -9301,36 +8651,6 @@
       "nota": "Gerado do índice MB: 'Modelo felinoide' → p.261"
     },
     {
-      "id": "modelos",
-      "keywords": [
-        "modelos"
-      ],
-      "require_all": [
-        "modelos"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            258,
-            260,
-            445,
-            446,
-            447,
-            448,
-            449,
-            450,
-            451,
-            452,
-            453,
-            454
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Modelos' → p.258-454"
-    },
-    {
       "id": "modificacoes_corporais",
       "keywords": [
         "modificacoes",
@@ -9510,43 +8830,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Morcegos' → p.461"
-    },
-    {
-      "id": "morte",
-      "keywords": [
-        "morte",
-        "morrer",
-        "morto",
-        "fatal",
-        "obito"
-      ],
-      "require_all": [
-        "morte"
-      ],
-      "fallback_any": [
-        [
-          "morte",
-          "morrer"
-        ],
-        [
-          "morte",
-          "morto"
-        ],
-        [
-          "morte",
-          "fatal"
-        ]
-      ],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            296,
-            423
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Morte' → p.296-423"
     },
     {
       "id": "morto_vivo",
@@ -10210,26 +9493,6 @@
       "nota": "Gerado do índice MB: 'Nível Tecnológico' → p.22-514"
     },
     {
-      "id": "novas",
-      "keywords": [
-        "novas"
-      ],
-      "require_all": [
-        "novas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            117,
-            165
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Novas' → p.117-165"
-    },
-    {
       "id": "novas_invencoes",
       "keywords": [
         "novas",
@@ -10739,98 +10002,6 @@
       "nota": "Gerado do índice MB: 'Per (Percepção)' → p.16"
     },
     {
-      "id": "pericias",
-      "keywords": [
-        "pericias"
-      ],
-      "require_all": [
-        "pericias"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            167,
-            168,
-            169,
-            170,
-            171,
-            173,
-            174,
-            175,
-            176,
-            177,
-            178,
-            179,
-            180,
-            181,
-            182,
-            183,
-            184,
-            185,
-            186,
-            187,
-            188,
-            189,
-            190,
-            191,
-            192,
-            193,
-            194,
-            195,
-            196,
-            197,
-            198,
-            199,
-            200,
-            201,
-            202,
-            203,
-            204,
-            205,
-            206,
-            207,
-            208,
-            209,
-            210,
-            211,
-            212,
-            213,
-            214,
-            215,
-            216,
-            217,
-            218,
-            219,
-            220,
-            221,
-            222,
-            223,
-            224,
-            225,
-            226,
-            227,
-            228,
-            229,
-            230,
-            231,
-            232,
-            233,
-            292,
-            293,
-            294,
-            301,
-            447,
-            453,
-            495,
-            499
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Perícias' → p.167-499"
-    },
-    {
       "id": "pericias_curinga",
       "keywords": [
         "pericias",
@@ -10959,35 +10130,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Personagens idosos' → p.20"
-    },
-    {
-      "id": "personagens",
-      "keywords": [
-        "personagens"
-      ],
-      "require_all": [
-        "personagens"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            7,
-            10,
-            11,
-            12,
-            13,
-            33,
-            258,
-            290,
-            335,
-            336,
-            499
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Personagens' → p.7-499"
     },
     {
       "id": "personalizando_as_regras",
@@ -11940,84 +11082,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Redes' → p.411"
-    },
-    {
-      "id": "regra_do_14",
-      "keywords": [
-        "regra"
-      ],
-      "require_all": [
-        "regra"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            360
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Regra do 14' → p.360"
-    },
-    {
-      "id": "regra_do_16",
-      "keywords": [
-        "regra"
-      ],
-      "require_all": [
-        "regra"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            349
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Regra do 16' → p.349"
-    },
-    {
-      "id": "regra_do_20",
-      "keywords": [
-        "regra"
-      ],
-      "require_all": [
-        "regra"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            173,
-            344
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Regra do 20' → p.173-344"
-    },
-    {
-      "id": "regras",
-      "keywords": [
-        "regras"
-      ],
-      "require_all": [
-        "regras"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            486,
-            492
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Regras' → p.486-492"
     },
     {
       "id": "reich_5",
@@ -13439,28 +12503,6 @@
       "nota": "Gerado do índice MB: 'Tarefas demoradas' → p.346-499"
     },
     {
-      "id": "tecnicas",
-      "keywords": [
-        "tecnicas"
-      ],
-      "require_all": [
-        "tecnicas"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            229,
-            230,
-            292,
-            304
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Técnicas' → p.229-304"
-    },
-    {
       "id": "telepatia",
       "keywords": [
         "telepatia"
@@ -14254,32 +13296,6 @@
       "nota": "Gerado do índice MB: 'Vampiros' → p.125-214"
     },
     {
-      "id": "vantagens",
-      "keywords": [
-        "vantagens"
-      ],
-      "require_all": [
-        "vantagens"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            32,
-            33,
-            34,
-            117,
-            118,
-            294,
-            297,
-            447
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Vantagens' → p.32-447"
-    },
-    {
       "id": "vantagens_ativada_ou_desativada_a_vontade",
       "keywords": [
         "vantagens",
@@ -14369,41 +13385,6 @@
         }
       ],
       "nota": "Gerado do índice MB: 'Vantagens Potenciais' → p.33"
-    },
-    {
-      "id": "veiculos",
-      "keywords": [
-        "veiculos"
-      ],
-      "require_all": [
-        "veiculos"
-      ],
-      "fallback_any": [],
-      "pages": [
-        {
-          "source_id": "pt_modulo_basico",
-          "pages": [
-            189,
-            217,
-            224,
-            375,
-            400,
-            462,
-            463,
-            464,
-            465,
-            466,
-            467,
-            468,
-            469,
-            470,
-            485,
-            554,
-            555
-          ]
-        }
-      ],
-      "nota": "Gerado do índice MB: 'Veículos' → p.189-555"
     },
     {
       "id": "veiculos_terrestres",
