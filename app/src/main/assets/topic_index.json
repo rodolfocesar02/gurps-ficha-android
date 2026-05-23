@@ -29,15 +29,15 @@
     },
     {
       "id": "queda_dano",
-      "keywords": ["queda", "cair", "precipicio", "altitude", "dano", "impacto", "cavalo", "montaria", "caiu"],
+      "keywords": ["queda", "cair", "precipicio", "altitude", "dano", "impacto"],
       "require_all": ["queda"],
       "fallback_any": [
-        ["cair", "dano"], ["precipicio", "dano"], ["altitude", "dano"], ["cavalo", "dano"], ["montaria", "cai"], ["caiu", "cavalo"]
+        ["cair", "dano"], ["precipicio", "dano"], ["altitude", "dano"]
       ],
       "pages": [
-        {"source_id": "pt_modulo_basico", "pages": [107, 108, 431, 432]}
+        {"source_id": "pt_modulo_basico", "pages": [107, 108]}
       ],
-      "nota": "MB p.107: dano de queda — 1d-1 por metro, sem máximo. p.431: regra de Quedas detalhada. p.397-398: queda de montaria."
+      "nota": "MB p.107: dano de queda — 1d6 por 2m, máximo 10d6."
     },
     {
       "id": "dano_fogo",
