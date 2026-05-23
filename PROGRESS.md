@@ -1079,6 +1079,25 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Proíbe perícias/vantagens em qualidades no prompt do Forjador
 - Bloqueia invenção de nomes genéricos como "Kaelen" — usa nome do usuário ou "Sem Nome"
 
+### Lote 263: Velocidade + Feedback Visual + Thinking Adaptativo — CONCLUÍDO | commit: 01c8ceb
+- **Thinking Mode adaptativo:** só ativa quando `isComplexo=true` (pergunta com número, cálculo, metros, queda, etc.)
+  - Perguntas simples: DeepSeek responde sem raciocínio interno — economiza ~15-20s na iteração final
+  - Perguntas complexas: Thinking continua ativo para precisão máxima
+- **Loops reduzidos em perguntas simples:** `loopsRestantes=2` (antes: 3) → máximo 1 tool call em vez de 2
+  - Perguntas do tipo "qual a regra de X" → 1 busca + resposta final (economiza ~4-8s de rede + embedding)
+- **Feedback visual granular (elimina silêncio de 54s):**
+  - "Analisando pergunta..." → durante Planner
+  - "Consultando o manual..." → durante FTS4+BM25+Semantic
+  - "Buscando regras relacionadas..." → durante multi-query temático
+  - "Analisando regras (N chunks encontrados)..." → iteração 1 complexa
+  - "Preparando resposta..." → iteração 1 simples
+  - "Buscando no manual: <query>..." → quando IA faz tool call
+  - "Verificando regras adicionais..." → iteração intermediária
+  - "Elaborando resposta final..." → última iteração
+- **Diagnóstico logcat (pergunta "caí de um cavalo 12 hex"):**
+  - Total: 54s | Thinking na iter.3: 21s | 3 tool calls | 44.510 tokens
+  - Com Lote 263 estimativa: ~30-35s (complexa detectada pelo "12 hex" e "queda")
+
 ### Lote 250: Melhorias DeepSeek API — CONCLUÍDO | commit: 366be61
 - Migra `deepseek-chat` → `deepseek-v4-flash` (deprecação em 24/07/2026)
 - Ativa Thinking Mode no Auditor: modelo raciocina passo a passo antes de responder
