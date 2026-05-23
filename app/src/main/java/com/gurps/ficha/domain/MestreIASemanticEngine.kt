@@ -37,8 +37,8 @@ object MestreIASemanticEngine {
         .readTimeout(8, TimeUnit.SECONDS)
         .build()
 
-    // Dimensões do modelo all-MiniLM-L6-v2
-    private const val EMBEDDING_DIMS = 384
+    // Dimensões do modelo Gemini gemini-embedding-001
+    private const val EMBEDDING_DIMS = 3072
 
     /**
      * Reranqueia chunks candidatos usando similaridade semântica cosseno.
@@ -114,7 +114,7 @@ object MestreIASemanticEngine {
                 put("taskType", "RETRIEVAL_QUERY")
             }.toString()
 
-            val model = "text-embedding-004"
+            val model = "gemini-embedding-001"
             val url = "https://generativelanguage.googleapis.com/v1beta/models/$model:embedContent?key=$apiKey"
             val request = Request.Builder()
                 .url(url)
