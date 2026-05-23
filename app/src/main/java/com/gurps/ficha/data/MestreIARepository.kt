@@ -19,6 +19,13 @@ class MestreIARepository(
     private val manualChunkDao = database.manualChunkDao()
     private val syncMutex = Mutex()
 
+    // LRU Cache de buscas FTS — evita re-processar queries repetidas na mesma sessão.
+    // Tamanho 20: cobre multi-query temático (4 queries × 5 perguntas) sem pressão de memória.
+    private val ftsCache = object : LinkedHashMap<String, List<MestreIAChunk>>(20, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, List<MestreIAChunk>>) = size > 20
+    }
+    private val cacheMutex = Mutex()
+
     // Versão do formato de search_text. Bump aqui + em CODEX_VERSION_CURRENT para forçar re-importação.
     // v1: apenas texto do chunk. v2: texto + source_title (permite buscar "subaquatico" → chunks do Pyramid).
     private val CODEX_VERSION_KEY = "codex_search_text_version"
@@ -52,21 +59,31 @@ class MestreIARepository(
     }
 
     /**
-     * Busca DIRETA no Códex via FTS4. Pool de 500 para BM25-Kotlin no GraphEngine.
-     * (FTS5+BM25 nativo requer Room 2.7-alpha+ — agendado para quando estabilizar)
+     * Busca DIRETA no Códex via FTS4 com LRU cache de sessão.
+     * Cache evita re-processar a mesma query FTS dentro da mesma conversa (multi-query temático).
      */
     suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 500): List<MestreIAChunk> {
         val ftsQuery = prepararQueryFTSAgressiva(query, termosTecnicos)
-        android.util.Log.i("MestreIA_RAG", "┌─ FTS4 QUERY: $ftsQuery")
+        val cacheKey = "$ftsQuery:$limit"
 
-        val resultados = manualChunkDao.buscarRegras(ftsQuery, limit).map { entity ->
-            MestreIAChunk(
-                chunk_id = entity.chunk_id,
-                text = entity.text,
-                source_title = entity.source_title,
-                source_id = entity.source_id,
-                page_number = entity.page_number
-            )
+        // Consulta cache primeiro (sem I/O de banco)
+        val cached = cacheMutex.withLock { ftsCache[cacheKey] }
+        if (cached != null) {
+            android.util.Log.i("MestreIA_RAG", "┌─ FTS CACHE HIT: ${cached.size} chunks (query já processada)")
+            return cached
+        }
+
+        android.util.Log.i("MestreIA_RAG", "┌─ FTS4 QUERY: $ftsQuery")
+        val resultados = withContext(Dispatchers.IO) {
+            manualChunkDao.buscarRegras(ftsQuery, limit).map { entity ->
+                MestreIAChunk(
+                    chunk_id = entity.chunk_id,
+                    text = entity.text,
+                    source_title = entity.source_title,
+                    source_id = entity.source_id,
+                    page_number = entity.page_number
+                )
+            }
         }
 
         if (resultados.isEmpty()) {
@@ -74,9 +91,15 @@ class MestreIARepository(
         } else {
             val paginas = resultados.mapNotNull { it.page_number }.distinct().sorted().joinToString()
             android.util.Log.i("MestreIA_RAG", "└─ FTS4: ${resultados.size} chunks | páginas: [$paginas]")
+            cacheMutex.withLock { ftsCache[cacheKey] = resultados }
         }
 
         return resultados
+    }
+
+    /** Limpa o cache de FTS ao iniciar nova sessão de perguntas. */
+    fun limparCacheFTS() {
+        kotlinx.coroutines.runBlocking { cacheMutex.withLock { ftsCache.clear() } }
     }
 
     /**
