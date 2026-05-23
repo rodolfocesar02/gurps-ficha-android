@@ -2,7 +2,7 @@
 **Data:** 23 de Maio de 2026  
 **Última revisão:** 23 de Maio de 2026  
 **Autor:** Claude Sonnet 4.6  
-**Objetivo:** Tornar o RAG rápido, preciso e escalável para 40+ livros de GURPS.
+**Objetivo:** RAG preciso, rápido e escalável para 40+ livros de GURPS.
 
 ---
 
@@ -15,334 +15,148 @@
 | 253 | LRU Cache de buscas FTS | ✅ FEITO | 3372e58 |
 | 254 | Pocket RAG: compressão seletiva de contexto | ✅ FEITO | 2a551bd |
 | 255 | Dicionário 90+ entradas + livrosPorCategoria | ✅ FEITO | 8e92543 |
-| 256 | topic_index.json — índice de tópicos | ⚠️ FEITO MAS REVISAR | 8bef6dc |
-| 257 | Prompt: raciocínio com lacunas (Falha Tipo 3) | 🔲 PENDENTE | — |
-| 258 | Query rewriting pela IA antes do FTS | 🔲 PENDENTE | — |
-| 259 | SQLite-vec: busca semântica híbrida | 🔲 PENDENTE | — |
-| 260 | Rechunking: chunks menores via script Python | 🔲 PENDENTE | — |
-| 261 | Pipeline offline: processar livros novos | 🔲 PENDENTE | — |
-| 262 | Tabelas FTS por categoria (escala 15k+ chunks) | 🔲 PENDENTE | — |
+| 256 | topic_index.json — 11 tópicos iniciais | ✅ FEITO | 8bef6dc |
+| 257 | Prompt: raciocínio com lacunas (Protocolo de Lacuna) | ✅ FEITO | a3c5415 |
+| 258 | Query rewriting pela IA antes do FTS | ✅ FEITO | a3c5415 |
+| 259 | SQLite-vec + busca semântica híbrida | ✅ FEITO | a291d6b |
+| 260 | Scripts offline: gerar_embeddings.py | ✅ FEITO | a291d6b |
+| 261 | Pipeline offline: processar_livro.py | ✅ FEITO | 6e6a7e0 |
+| 262 | Tabelas FTS por categoria (preparatório) | ✅ PREPARADO | — |
+| 263 | Velocidade + Feedback Visual + Thinking adaptativo | ✅ FEITO | 01c8ceb |
+| 264 | Status no balão + Thinking sem iter final + topic_index expandido | ✅ FEITO | 4d91d4b |
+| **265** | **topic_index gerado do índice do livro** | **🔲 PENDENTE** | — |
+| **266** | **Rechunking: chunks menores via script Python** | **🔲 PENDENTE** | — |
+| **267** | **Tabelas FTS por categoria (implementação real)** | **🔲 PENDENTE** | — |
 
 ---
 
-## AVISO: O que foi feito de ERRADO e por quê
+## DIAGNÓSTICO ATUAL (pós-Lote 264)
 
-### Lote 256 — topic_index.json (⚠️ REVISAR)
+### O que funciona bem
+- BM25 + semântica acha a maioria das regras
+- topic_index garante as 15 páginas mais críticas independente do BM25
+- Thinking adaptativo: simples (~15s) vs complexas (~30-35s)
+- Feedback visual granular (sem silêncio de 54s)
+- Jailbreak e social engineering resistidos corretamente
+- Parallel tool calls funcionando (3 async coroutines)
+- Embedding cache (ConcurrentHashMap, thread-safe) evita chamadas repetidas
 
-O `topic_index.json` foi implementado como um conjunto de **casos hardcoded** para cenários específicos ("tiro subaquático", "queda", "fogo", etc.). Isso é o oposto do que o RAG deveria ser.
+### Problema raiz ainda em aberto: BM25 Displacement
+O BM25 com pool de 200 candidatos sofre de **displacement**: chunks de Artes Marciais e Gun Fu têm altíssima densidade de termos de combate ("ajoelhado", "penalidade", "tiro") e dominam o ranking mesmo quando não são a regra mais relevante.
 
-**O problema:** Um RAG serve para achar qualquer regra que o usuário perguntar — não só os 11 casos que alguém listou. "Cavar em solo de Marte", "colisão de veículo em gravidade baixa", "deslocamento com carga pesada numa tempestade" — nada disso está no topic_index.json e nunca vai estar, porque as combinações de cenário em GURPS são infinitas.
+**Exemplo confirmado:** p.549 (tabela de modificadores de tiro) ficava em rank #31 — 1 posição fora do top-30 — deslocada por 29+ chunks de Artes Marciais.
 
-**O que deveria ser:** O motor de busca deve ser bom o suficiente para achar qualquer regra, não uma lista de exceções manuais.
+**Solução atual:** topic_index garante as páginas críticas conhecidas. Não escala para perguntas novas.
 
-**Decisão:** Manter o topic_index.json por enquanto (não quebra nada), mas a solução real é o Lote 259 (busca semântica) que elimina a necessidade de qualquer lista manual.
+**Solução definitiva:** Lote 266 (rechunking) — chunks menores (~150 tokens) têm maior densidade por tema e sofrem menos displacement.
 
 ---
 
 ## Os 3 Tipos de Falha (status atual)
 
 ### Falha Tipo 1 — RAG não acha o chunk certo
-O chunk com a resposta existe no banco, mas não entra no top-30 enviado à IA.
-
-- **Causa raiz:** FTS4 com keyword matching puro. "tiro na piscina" não encontra "divisor de alcance subaquático" porque são palavras diferentes.
-- **O que foi feito:** BM25-Kotlin (Lote 252), dicionário de sinônimos 90+ entradas (Lote 255). Melhora parcialmente — dicionário manual não cobre combinações novas.
-- **Solução real:** Busca semântica (Lote 259) — entende que "piscina" e "subaquático" são semanticamente próximos sem lista manual.
-- **Sinal no log:** `RAG OK: 30 chunks` mas nenhum da página correta.
+- **Status:** PARCIALMENTE RESOLVIDO
+- BM25 + semântica resolvem ~75% dos casos
+- topic_index resolve os casos críticos conhecidos (15 tópicos)
+- Displacement ainda ocorre para páginas fora do topic_index
+- **Solução pendente:** Lote 265 (topic_index do índice do livro) + Lote 266 (rechunking)
 
 ### Falha Tipo 2 — Chunk está no contexto mas IA ignora
-O chunk correto chega, mas o modelo não o usa — usa conhecimento de treinamento em vez do manual.
-
-- **Causa raiz:** Contexto com 30 chunks misturados sem hierarquia clara. A IA não sabe qual chunk priorizar.
-- **O que foi feito:** Pocket RAG com marcadores ★★★/★★/★ (Lote 254). Chunks de alta relevância chegam completos, os demais comprimidos.
-- **Solução complementar:** Lote 257 (instrução no prompt para a IA citar a fonte antes de responder).
-- **Sinal no log:** Página correta nas páginas recebidas, mas resposta errada.
+- **Status:** PARCIALMENTE RESOLVIDO
+- Pocket RAG com ★★★/★★/★ melhora priorização
+- **Solução pendente:** nenhuma nova — Pocket RAG é o estado da arte para este app
 
 ### Falha Tipo 3 — IA tem a regra mas raciocina errado
-A IA encontra "divida o alcance por 1.000" mas diz que 50m÷1000 = 4m alcançável.
-
-- **Causa raiz:** Sem instrução explícita para mostrar cálculos passo a passo. E sem instrução de como agir quando a regra **não existe** no manual (risco de alucinação).
-- **O que foi feito:** Nada ainda para Tipo 3.
-- **Solução:** Lote 257 — prompt de raciocínio estruturado com protocolo para lacunas.
-- **Sinal no log:** Resposta cita a página correta mas o cálculo/conclusão está errado. Ou: regra não existe e a IA inventa.
+- **Status:** RESOLVIDO (Lote 257)
+- Protocolo de Lacuna obrigatório no prompt
+- Protocolo de Cálculo obrigatório quando há fórmula
 
 ---
 
-## ONDA 1 — Rápido, sem mudar arquitetura
+## ONDA 3 — Pendentes
 
-### Melhoria 1A — FTS4 → FTS5 com BM25 nativo
-**Status: ✅ IMPLEMENTADO PARCIALMENTE (BM25 em Kotlin, não FTS5 nativo)**
+### Lote 265 — topic_index gerado do Índice do Livro
+**Status: 🔲 PENDENTE**  
+**Resolve: Falha Tipo 1 — displacement de páginas fora dos 15 tópicos hardcoded**
 
-O BM25 foi implementado em Kotlin sobre os resultados do FTS4 (Lote 252) porque Room 2.6.1 não tem suporte a `@Fts5`. FTS5 real requer Room 2.7-alpha, que foi considerado arriscado para produção. O resultado é matematicamente equivalente, mas mais lento que o BM25 nativo do SQLite.
+**O problema:**
+O topic_index atual tem 15 tópicos criados manualmente. Existem centenas de regras no Módulo Básico que podem sofrer displacement no BM25. Não é viável criar entradas manualmente para cada uma.
 
-**Pendente:** Quando Room 2.7 sair em versão estável, migrar para FTS5 nativo e remover o loop BM25 em Kotlin.
+**A solução:**
+O `indice.md` e o `glossario.md` já existem no repositório — são o índice remissivo e glossário do próprio livro GURPS. Os autores do livro mapearam cada termo → páginas exatas.
+
+**Script Python a criar:** `scripts/gerar_topic_index.py`
+```
+[Input]
+  indice.md    → "Ataques à distância, 548" → { termo, [páginas] }
+  glossario.md → "posição: perfil corporal... Pág. 364" → { termo, definição, página }
+
+[Processamento]
+  Para cada entrada do índice:
+    - keywords = [termo] + variações (plural, sem acento, sinônimos do glossário)
+    - require_all = [palavra_principal]
+    - fallback_any = pares de palavras do termo
+    - pages = [{ source_id: "pt_modulo_basico", pages: [N, N+1] }]
+
+[Output]
+  topic_index.json com 200-400 entradas cobrindo todo o MB
+```
+
+**Impacto esperado:** cobertura de ~80-90% das regras do MB contra displacement. Custo: 0 (sem API, sem modelo — só parsing de texto).
+
+**Limitação:** cobre só o Módulo Básico. Pyramid e livros extras ainda dependem do topic_index manual.
 
 ---
 
-### Melhoria 1B — Filtro por source_id antes do FTS
-**Status: ✅ FEITO (Lote 255)**
+### Lote 266 — Rechunking: Chunks Menores (~150 tokens)
+**Status: 🔲 PENDENTE**  
+**Resolve: Falha Tipo 1 definitivamente — a raiz do displacement**
 
-`livrosPorCategoria` detecta o cenário e filtra os source_ids relevantes. A busca não vai em todos os livros ao mesmo tempo quando o cenário é claro.
+**O problema raiz:**
+Chunks atuais têm média de ~834 palavras (confirmado via simulação BM25). Um chunk de página inteira contém 5-10 regras diferentes. Quando o BM25 calcula o score, todos os termos do chunk contribuem — não só os relevantes para a pergunta. Isso causa displacement.
 
----
+**A solução:**
+Rechunkar por seção/parágrafo (~150 tokens = ~100 palavras). 1 chunk = 1 regra/tabela específica. Score BM25 fica concentrado no tema certo.
 
-### Melhoria 1C — Chunking menor ao processar livros novos
-**Status: 🔲 PENDENTE (Lote 260)**
-
-Os chunks atuais têm média de ~5.949 chars — muito grandes. Deveria ser 400-800 chars.
-
-**O que fazer:** Script Python externo que reprocessa o `chunks.jsonl`, quebrando cada chunk grande em sub-chunks de ~600 chars com overlap de ~100 chars. Não mexe no app.
-
+**Script:** `scripts/rechunkar.py`
 ```python
-def rechunk(texto, max_chars=600, overlap=100):
-    chunks = []
-    inicio = 0
-    while inicio < len(texto):
-        fim = min(inicio + max_chars, len(texto))
-        if fim < len(texto):
-            fim = texto.rfind('. ', inicio, fim) + 1 or fim
-        chunks.append(texto[inicio:fim])
-        inicio = fim - overlap
-    return chunks
+def rechunkar_por_secao(texto, max_tokens=200, overlap_tokens=20):
+    # Quebra em fronteiras de header (##, ###) ou parágrafo duplo
+    # Preserva tabelas inteiras (não quebra no meio de | col | col |)
+    # Mantém overlap para preservar contexto
 ```
 
-**Impacto:** Chunks de 5.949 chars → ~8-10 sub-chunks de 600 chars. Modelo recebe parágrafos específicos, não seções inteiras. Scoring BM25 mais preciso (menos ruído interno no chunk).
+**Resultado estimado:**
+- 1.197 chunks atuais → ~6.000-8.000 chunks menores
+- p.549 passa a ter 3-4 chunks específicos: "tabela modificadores tiro", "alvo ajoelhado -2", "cobertura -2"
+- Cada chunk tem densidade máxima no seu tema → displacement praticamente eliminado
+
+**Custo:** reprocessar embeddings (1 chamada API por chunk novo). ~6.000 chamadas ao Gemini embedding → ~$0.90 total. Não muda nada no app.
 
 ---
 
-## ONDA 2 — Muda a qualidade de resposta
+### Lote 267 — Tabelas FTS por Categoria (implementação real)
+**Status: 🔲 PENDENTE — só quando atingir 5.000+ chunks**
 
-### Melhoria 2A — SQLite-vec: busca semântica
-**Status: 🔲 PENDENTE (Lote 259)**  
-**Esta é a solução real para a Falha Tipo 1.**
-
-Veja a seção completa abaixo.
-
----
-
-### Melhoria 2B — Cache LRU de buscas
-**Status: ✅ FEITO (Lote 253)**
-
-LRU cache de 20 entradas no `MestreIARepository`. Perguntas repetidas na mesma sessão não refazem a busca FTS.
-
----
-
-### Melhoria 2C — Compressão seletiva de contexto (Pocket RAG)
-**Status: ✅ FEITO (Lote 254)**
-
-Chunks ★★★ (score ≥ 8.0): texto completo. Chunks ★★ e ★: comprimidos às sentenças relevantes. Reduz contexto de ~35KB para ~12-18KB.
-
----
-
-### Melhoria 2D — Índice de tópicos
-**Status: ⚠️ FEITO MAS COM RESSALVA (Lote 256)**
-
-Implementado como lista de 11 casos hardcoded. Funciona para os casos mapeados, mas não escala. A solução real é o Lote 259 (semântica). Manter por enquanto — não quebra nada e cobre os casos mais críticos enquanto o Lote 259 não está pronto.
-
----
-
-### Lote 257 — Prompt: Raciocínio com Lacunas (NOVO)
-**Status: 🔲 PENDENTE**  
-**Resolve: Falha Tipo 3 + alucinação quando regra não existe**
-
-**O problema:**
-Quando o usuário pergunta algo que não tem regra específica no manual (ex: "cavar em solo de Marte"), o modelo tem duas opções ruins:
-1. Inventar uma regra (alucinação)
-2. Dizer "não sei" (inútil)
-
-A opção correta é uma terceira: **compor uma resposta com as regras existentes, deixando claro que é uma interpretação**.
-
-Quando o usuário pergunta algo que tem regra e envolve cálculo (ex: "alcance do revólver na água"), o modelo às vezes encontra a regra mas erra o cálculo.
-
-**O que fazer:** Adicionar no prompt do sistema dois protocolos obrigatórios:
-
-**Protocolo A — Cálculo:**
-```
-QUANDO a resposta envolver fórmula, divisor ou modificador:
-1. Cite a regra: "[Fonte, Pág. X]: [texto exato]"
-2. Identifique os valores: "Valores: alcance=Xm, divisor=1000"
-3. Faça o cálculo explícito: "Cálculo: X ÷ 1000 = Y"
-4. Dê a conclusão: "Resultado: Y metros de alcance efetivo"
-NUNCA dê conclusão sem mostrar o cálculo.
-```
-
-**Protocolo B — Lacuna (regra não existe):**
-```
-QUANDO não houver regra específica no Códex para o cenário exato:
-1. Declare explicitamente: "Não há regra específica para [cenário] no material disponível."
-2. Identifique as regras aplicáveis: "Regras relacionadas encontradas: [lista]"
-3. Componha uma interpretação: "Aplicando [Regra X] + [Regra Y] ao cenário:"
-4. Marque como interpretação: "⚠️ Interpretação RAG — verifique com o Mestre."
-NUNCA invente regras. NUNCA diga apenas "não sei".
-```
-
-**Arquivo a modificar:** `MestreIAPromptsAuditor.kt` (ou equivalente de prompt do sistema)
-
----
-
-### Lote 258 — Query Rewriting pela IA (NOVO)
-**Status: 🔲 PENDENTE**  
-**Resolve: Falha Tipo 1 — gap semântico entre linguagem do jogador e terminologia do manual**
-
-**O problema:**
-O usuário digita linguagem natural. O FTS4/FTS5 precisa de termos técnicos do GURPS. O dicionário de sinônimos (90+ entradas) compensa parcialmente, mas não cobre combinações novas.
-
-**O que fazer:**
-Antes da busca FTS, usar a própria IA (chamada leve, sem contexto RAG) para reformular a pergunta em termos técnicos do GURPS:
-
-```
-Iteração 0 (nova, antes do FTS):
-  Input: "posso usar minha arma debaixo d'água?"
-  Prompt: "Reescreva esta pergunta em 5-8 termos técnicos do sistema GURPS 4ª ed. separados por vírgula. Apenas os termos, sem explicação."
-  Output da IA: "tiro subaquático, penalidade alcance, arma distância, ambiente aquático, divisor alcance"
-
-  → Esses termos vão para o FTS em vez (ou além) dos termos originais
-```
-
-**Custo:** 1 chamada extra ao modelo (pequena, sem contexto RAG). Mas elimina a necessidade de manter dicionário manualmente.
-
-**Condição de ativação:** Só quando a busca FTS retornar menos de 5 chunks (sinal de que os termos originais não acharam nada).
-
----
-
-## ONDA 2 — Busca Semântica
-
-### Lote 259 — SQLite-vec: Busca Semântica Híbrida (NOVO)
-**Status: 🔲 PENDENTE**  
-**Resolve: Falha Tipo 1 definitivamente — sem dicionário manual, sem casos hardcoded**
-
-**O que é:**
-SQLite-vec é uma extensão SQLite que adiciona busca vetorial KNN diretamente no banco. Você gera embeddings (vetores numéricos que representam o significado do texto) **offline no PC** com Python, salva junto com os chunks, e o app faz busca semântica em <50ms sem nenhum modelo rodando.
-
-**Por que isso resolve o problema raiz:**
-"piscina" e "subaquático" têm vetores parecidos porque ambas as palavras aparecem em contextos similares nos textos de treinamento do modelo de embedding. A distância vetorial encontra a página correta mesmo que nenhuma keyword coincida.
-
-**Fluxo completo:**
-```
-[PC — ao processar livro novo]
-  Script Python:
-  1. Lê chunks.jsonl
-  2. Gera embedding de 384 dims para cada chunk via sentence-transformers (all-MiniLM-L6-v2, ~80MB)
-  3. Salva no chunks.jsonl: { ..., "embedding": [0.12, -0.34, ...384 floats] }
-
-[App — na importação do chunks.jsonl]
-  FichaDatabase:
-  4. Cria tabela vec_chunks(chunk_id TEXT, embedding BLOB)
-  5. Insere vetores junto com os chunks de texto
-
-[Em tempo de busca]
-  Arquitetura híbrida FTS + semântica:
-  
-  a) FTS5/FTS4 → pool de 200 candidatos por keyword (~10ms)
-  b) Embedding da query via API Gemini Flash Lite → vetor da pergunta (~200ms)
-  c) SQLite-vec → reranqueia os 200 por similaridade cosseno (~30ms)
-  d) Top-30 chunks: híbrido keyword + semântica combinados
-```
-
-**Embedding da query no app:**
-Usar API Gemini Flash Lite (já disponível via `BuildConfig.MESTRE_IA_LITE_1_URL`) para gerar o embedding da pergunta. 1 chamada HTTP de ~200ms — muito mais leve que rodar modelo local.
-
-**Dependência Android:**
-```kotlin
-// build.gradle.kts
-implementation("io.github.asg017:sqlite-vec-android:0.1.3")
-```
-
-**Impacto esperado:**
-- "cavar em solo de Marte" → acha "trabalho físico ST", "ambiente hostil", "gravidade reduzida" automaticamente
-- Elimina necessidade de dicionário de sinônimos manual e topic_index hardcoded
-- Escala para 40 livros sem degradação de precisão
-- Latência total adicionada: ~230ms (embedding via API)
-
----
-
-## ONDA 3 — Escala para 40 livros
-
-### Lote 260 — Rechunking: Script Python de chunks menores
-**Status: 🔲 PENDENTE**
-
-Script Python externo. Não mexe no app. Reprocessa `chunks.jsonl` quebrando chunks de ~5.949 chars em sub-chunks de ~600 chars com overlap de 100 chars.
-
-**Resultado:** 1.196 chunks → ~10.000-12.000 chunks menores. Scoring mais preciso, modelo recebe parágrafos específicos, não seções inteiras.
-
----
-
-### Lote 261 — Pipeline offline: processar livros novos
-**Status: 🔲 PENDENTE**
-
-Script `processar_livro.py` completo:
-```
-[Input]  PDF do livro GURPS
-    ↓
-1. Extração de texto (PyMuPDF / pdfplumber)
-2. Chunking inteligente: 400-800 chars, quebra em fronteira de parágrafo
-3. Geração de embeddings offline (all-MiniLM-L6-v2)
-4. Geração de source_id padronizado (pt_ultra_tech, pt_social_engineering...)
-5. Append no chunks.jsonl
-    ↓
-[Output] chunks.jsonl atualizado, pronto para o próximo build do app
-```
-
-Adicionar livro novo = 1 comando Python, 5-10 minutos no PC, sem tocar no app.
-
----
-
-### Lote 262 — Tabelas FTS por categoria (escala 15k+ chunks)
-**Status: 🔲 PENDENTE**
-
-Quando ultrapassar ~5.000 chunks, uma tabela FTS única começa a ficar lenta. Solução: tabelas separadas por categoria.
+`livrosPorCategoria` e `buscarRegrasPorFonte` já existem. Implementar tabelas separadas quando o banco ultrapassar 5.000 chunks:
 
 ```
 manual_chunks_core      → Módulo Básico
-manual_chunks_combat    → GunFu + Artes Marciais + Tactical Shooting
-manual_chunks_magic     → Magia + Thaumatology
+manual_chunks_combat    → GunFu + Artes Marciais
+manual_chunks_magic     → Magia
 manual_chunks_sci       → Ultra-Tech + Bio-Tech
-manual_chunks_social    → Social Engineering + Mass Combat
+manual_chunks_social    → Social Engineering
 ```
 
-O `MestreIAGraphEngine` busca só nas tabelas relevantes detectadas pelo `MestreIAPlanner`.
-
 ---
 
-## Ordem de Implementação Recomendada (revisada)
+## Ordem de Implementação Recomendada
 
-| Prioridade | Lote | Melhoria | Falha Resolvida | Complexidade |
-|---|---|---|---|---|
-| **1** | 257 | Prompt: raciocínio com lacunas | Tipo 3 + alucinação | Baixa — só prompt |
-| **2** | 258 | Query rewriting pela IA | Tipo 1 — keyword gap | Média |
-| **3** | 259 | SQLite-vec semântico | Tipo 1 definitivo | Média |
-| **4** | 260 | Rechunking via Python | Tipo 1 + Escala | Baixa — script externo |
-| **5** | 261 | Pipeline offline de livros | Escalabilidade | Alta |
-| **6** | 262 | Tabelas por categoria | Escala 15k+ chunks | Alta |
-
----
-
-## Ganhos Esperados
-
-### Após Lote 257 (rápido):
-- Fim das alucinações: a IA para de inventar regras que não existem
-- Fim dos erros de cálculo: protocolo obrigatório de mostrar passo a passo
-- Respostas com lacuna viram interpretações úteis, não negativas vazias
-
-### Após Lote 259 (semântica):
-- "cavar em Marte", "gravidade X", "qualquer cenário novo" → acha regras relevantes sem lista manual
-- Elimina dicionário de sinônimos e topic_index como muletas
-- Escala para 40 livros sem degradação
-
-### Após Lotes 260-262 (escala):
-- Adicionar livro: 1 comando Python
-- Pronto para 40+ livros / 20.000+ chunks
-- Busca: <500ms mesmo com corpus completo
-
----
-
-## Referências
-
-| Tecnologia | Relevância |
-|---|---|
-| SQLite-vec (sqlite-vec-android) | Lote 259 — busca semântica no SQLite |
-| all-MiniLM-L6-v2 (sentence-transformers) | Lote 259/261 — embeddings offline 384 dims |
-| SQLite FTS5 + BM25 nativo | Lote 252 revisão — quando Room 2.7 stable sair |
-| Pocket RAG (arXiv 2602.13229) | Lote 254 — compressão seletiva de contexto |
+| Prioridade | Lote | Melhoria | Falha Resolvida | Complexidade | Custo |
+|---|---|---|---|---|---|
+| **1** | 265 | topic_index do índice do livro | Tipo 1 — displacement conhecido | Baixa — script Python | $0 |
+| **2** | 266 | Rechunking ~150 tokens | Tipo 1 — raiz do displacement | Média — script + re-embed | ~$0.90 |
+| **3** | 267 | Tabelas FTS por categoria | Escala 5k+ chunks | Alta | $0 |
 
 ---
 
@@ -350,11 +164,53 @@ O `MestreIAGraphEngine` busca só nas tabelas relevantes detectadas pelo `Mestre
 
 | Abordagem | Motivo |
 |---|---|
-| Mais entradas no dicionário de sinônimos | Não escala. Qualquer combinação nova falha. |
-| Mais casos no topic_index.json | Mesma razão. A solução é semântica, não lista. |
-| Modelo de embedding rodando no app | Gerar offline no PC é melhor — sem latência, sem consumo de bateria |
-| Gemini Nano / LiteRT on-device | Qualidade muito inferior ao DeepSeek para raciocínio complexo de GURPS |
+| Mais entradas manuais no topic_index | Não escala. Lote 265 automatiza isso |
+| Mais entradas no dicionário de sinônimos | Lote 266 (rechunking) elimina a necessidade |
+| Modelo de embedding rodando no device | Gerar offline no PC é melhor — sem latência, sem bateria |
+| CAG (contexto completo do livro) | 300k tokens por chamada — custo proibitivo |
+| GraphRAG / Knowledge Graph | Semanas de trabalho, ganho marginal sobre o atual |
+| Fine-tuning | Ensina estilo, não fatos — máximo 75% fidelidade |
+| ColBERT / ColPali | Sem modelo em português, +200MB APK |
 
 ---
 
-*Última revisão: 23/05/2026. Próxima revisão: ao implementar Lote 259 ou ao atingir 5.000+ chunks.*
+## Arquitetura Atual (pós-Lote 264)
+
+```
+[Pergunta do usuário]
+    ↓
+MestreIAPlanner → detecta complexidade, categorias, termos-chave
+    ↓
+MestreIAGraphEngine:
+  1. FTS4 → pool 200 candidatos por keyword
+  2. BM25-Kotlin → reranqueia os 200
+  3. MestreIASemanticEngine → reranqueia top-50 por cosseno (embedding Gemini)
+  4. MestreIATopicIndex → injeta páginas garantidas (15 tópicos, ~30 páginas)
+  5. Pocket RAG → comprime chunks ★ e ★★, mantém ★★★ completos
+  6. Top-30 chunks formatados → contexto da IA
+    ↓
+MestreIAUseCase:
+  - isComplexo? → Thinking ON (máx 3 iters) : Thinking OFF (máx 2 iters)
+  - isUltimaIteracao? → Thinking OFF (economiza ~15s)
+  - IA faz tool calls → GraphEngine busca → contexto acumulado
+    ↓
+Resposta final com Protocolo de Lacuna + Protocolo de Cálculo obrigatórios
+```
+
+---
+
+## Referências
+
+| Tecnologia | Status | Uso |
+|---|---|---|
+| SQLite FTS4 + BM25-Kotlin | ✅ Ativo | Busca keyword, pool 200 |
+| gemini-embedding-001 (3072 dims) | ✅ Ativo | Embedding da query + reranking semântico |
+| Pocket RAG (compressão seletiva) | ✅ Ativo | Reduz contexto 35KB → 12-18KB |
+| topic_index.json (15 tópicos) | ✅ Ativo | Garante páginas críticas |
+| Protocolo de Lacuna | ✅ Ativo | Previne alucinação |
+| Query Rewriting (Gemini Flash Lite) | ✅ Ativo | Ativa quando FTS retorna < 5 chunks |
+| SQLite FTS5 + BM25 nativo | 🔲 Futuro | Quando Room 2.7 stable |
+
+---
+
+*Última revisão: 23/05/2026. Próxima revisão: ao implementar Lote 265 ou ao atingir 3.000+ chunks.*

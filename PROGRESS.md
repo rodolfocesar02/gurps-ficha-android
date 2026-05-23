@@ -1079,30 +1079,90 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Proíbe perícias/vantagens em qualidades no prompt do Forjador
 - Bloqueia invenção de nomes genéricos como "Kaelen" — usa nome do usuário ou "Sem Nome"
 
-### Lote 263: Velocidade + Feedback Visual + Thinking Adaptativo — CONCLUÍDO | commit: 01c8ceb
-- **Thinking Mode adaptativo:** só ativa quando `isComplexo=true` (pergunta com número, cálculo, metros, queda, etc.)
-  - Perguntas simples: DeepSeek responde sem raciocínio interno — economiza ~15-20s na iteração final
-  - Perguntas complexas: Thinking continua ativo para precisão máxima
-- **Loops reduzidos em perguntas simples:** `loopsRestantes=2` (antes: 3) → máximo 1 tool call em vez de 2
-  - Perguntas do tipo "qual a regra de X" → 1 busca + resposta final (economiza ~4-8s de rede + embedding)
-- **Feedback visual granular (elimina silêncio de 54s):**
-  - "Analisando pergunta..." → durante Planner
-  - "Consultando o manual..." → durante FTS4+BM25+Semantic
-  - "Buscando regras relacionadas..." → durante multi-query temático
-  - "Analisando regras (N chunks encontrados)..." → iteração 1 complexa
-  - "Preparando resposta..." → iteração 1 simples
-  - "Buscando no manual: <query>..." → quando IA faz tool call
-  - "Verificando regras adicionais..." → iteração intermediária
-  - "Elaborando resposta final..." → última iteração
-- **Diagnóstico logcat (pergunta "caí de um cavalo 12 hex"):**
-  - Total: 54s | Thinking na iter.3: 21s | 3 tool calls | 44.510 tokens
-  - Com Lote 263 estimativa: ~30-35s (complexa detectada pelo "12 hex" e "queda")
 
 ### Lote 250: Melhorias DeepSeek API — CONCLUÍDO | commit: 366be61
 - Migra `deepseek-chat` → `deepseek-v4-flash` (deprecação em 24/07/2026)
 - Ativa Thinking Mode no Auditor: modelo raciocina passo a passo antes de responder
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
+
+
+### Lote 251: Plano RAG Mestre IA + Descontinuação Voz Clássica + Mesa Virtual Completa — CONCLUÍDO | commit: 3c3d43b
+- `PLANO_MesteIA_RAG.md` criado: diagnóstico dos 3 tipos de falha RAG + 9 melhorias em 3 ondas
+  - Onda 1 (dias 1-3): FTS4→FTS5+BM25, filtro source_id, chunking menor
+  - Onda 2 (semanas 1-2): SQLite-vec semântico, LRU cache, compressão de contexto (Pocket RAG), índice por tópico
+  - Onda 3 (meses): pipeline offline de livros, tabelas FTS5 particionadas
+- Descontinuação da voz clássica: `VozMestreIA.kt`, `VozTTS.kt`, `VozIntencaoClassifier.kt` removidos
+- `GeminiLiveService.kt`: enum `EstadoVoz` migrado para cá (compatibilidade com FichaCustomNavigationBar)
+- `FichaScreen.kt`: simplificado — apenas GeminiLive, sem `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA`
+- `Mesa Virtual/index.html`: suporte completo a `modeloRacial` (modForca, modDestreza, etc.), especialização de perícias, histórico/notas, PV/PF corretos com modificadores raciais
+- `ARQUITETURA_MESTRE_IA.md`: atualizado com GeminiLiveService, GeminiLiveTools e marcação de deprecações
+
+
+### Lote 252: RAG — BM25-Kotlin + Filtro por Fonte + Pool Otimizado — CONCLUÍDO | commits: db839d5, e03624e
+- `ManualChunkDao`: nova query `buscarRegrasPorFonte()` com filtro `source_id` (busca por livro específico)
+- `MestreIARepository`: novo método `buscarNoCodexPorFonte()` para buscas direcionadas (ex: só Pyramid)
+- `MestreIAGraphEngine`: scoring substituído por **BM25-Kotlin real**
+  - IDF por termo: `log((N-df+0.5)/(df+0.5))` — termos raros pesam mais que termos comuns
+  - TF com saturação k1=1.5: repetição do mesmo termo não infla o score infinitamente
+  - Normalização por comprimento b=0.75: chunks longos não têm vantagem injusta sobre curtos
+  - AND bonus (+15) e proximidade bonus (+5) calibrados em escala BM25
+- Pool reduzido 1500 → 500: BM25 ranqueia bem; pool menor = busca mais rápida
+- Nota: FTS5 nativo requer Room 2.7 (alpha). BM25-Kotlin equivale ao resultado sem alpha.
+
+
+### Lote 253: RAG — LRU Cache de Buscas FTS — CONCLUÍDO | commit: 3372e58
+- `MestreIARepository`: LinkedHashMap LRU (20 entradas) para resultados FTS da sessão
+- Cache hit evita re-processar queries repetidas no multi-query temático paralelo
+- Mutex protege acesso concorrente das coroutines
+- `limparCacheFTS()` para reset entre sessões de perguntas
+
+
+### Lote 254: RAG — Pocket RAG: Compressão Seletiva de Contexto — CONCLUÍDO | commit: 2a551bd
+- `MestreIAGraphEngine.comprimirChunk()`: extrai sentenças relevantes por termos de busca
+  - Chunks ★★★ (BM25 >= 8.0): texto completo preservado
+  - Chunks ★★/★: comprimidos para 4 sentenças relevantes + contexto vizinho
+  - Chunks sem match: primeiras 2 sentenças como contexto mínimo
+- Contexto RAG estimado: ~35KB → ~12-18KB (-40 a -60% de tokens)
+- `formatarParaIA()` recebe `query` para guiar qual sentença é relevante
+- Thresholds ajustados para escala BM25-Kotlin (8.0/2.0)
+
+
+### Lote 255: RAG — Dicionário 90+ Entradas + Filtro por Livro — CONCLUÍDO | commit: 8e92543
+- `MestreIAPlanner.dicionarioTecnico`: expandido de 45 → 90+ entradas
+  - Novos temas: voo, cavalaria, veículos, artes marciais, fogo/veneno/doença/radiação
+  - Social/reputação, economia, encumbrance, magia completa com pré-requisitos
+- `PlanoDeBusca.livrosRelevantes`: novo campo com source_ids detectados pelo cenário
+  - tiro+subaquático → `pt_pyramid_26_underwater` entra automaticamente
+  - Loga no Logcat `MestreIA_RAG` a lista de livros relevantes detectados
+- `livrosPorCategoria`: mapa público preparado para uso pelo GraphEngine na Onda 2
+
+
+
+### Lote 256: RAG — Melhoria 2D: Índice de Tópicos (topic_index.json) — CONCLUÍDO | commit: 8bef6dc
+- `topic_index.json`: 11 tópicos declarativos com `require_all` + `fallback_any` + páginas garantidas
+  - tiro_subaquatico → Pyramid p.7+8 + MB p.106-108 (garante alcance÷1000 sempre presente)
+  - combate_subaquatico, queda_dano, dano_fogo, asfixia, critico, carga, alcance_tiro, magia, sanidade, movimentacao_agua
+- `MestreIATopicIndex.kt`: loader JSON + matching engine (require_all / fallback_any)
+  - Carregado no init do GraphEngine via `MestreIATopicIndex.carregar(context)`
+  - Matching tolerante: `require_all` como primário, pares `fallback_any` como backup
+- `MestreIAGraphEngine.kt`: chunks do topic_index injetados com prioridade máxima
+  - Entram antes do `take(30)`, nunca cortados pelo diversificador de fontes
+  - Log `MestreIA_RAG`: "TopicIndex garantido: pt_pyramid_26 p.7 → 2 chunks"
+- **Impacto**: FTS4 pode falhar por keyword mismatch — topic_index garante as páginas certas mesmo assim
+
+
+
+### Lotes 257+258: RAG — Raciocínio com Lacunas + Query Rewriting — CONCLUÍDO | commit: a3c5415
+- `MestreIAPromptsAuditor`: Protocolo de Lacuna obrigatório no prompt do sistema
+  - Quando regra não existe: declarar lacuna → identificar regras aplicáveis → compor interpretação → marcar ⚠️ Interpretação RAG
+  - NUNCA inventar regra. NUNCA responder com negativa vazia.
+- `MestreIAUseCase`: quando busca direta retorna vazio, instrução para aplicar Protocolo de Lacuna
+- `gerarCatalogoDireto`: Query Rewriting ativado quando FTS retorna < 5 chunks
+  - Chama Gemini Flash Lite para reformular em termos técnicos do GURPS
+  - Merge dos resultados original + reescrito, deduplicado
+  - Só ativa quando necessário — sem custo extra em buscas normais
+
 
 ### Lotes 259+260+261: RAG — Busca Semântica Híbrida + Scripts Offline — CONCLUÍDO | commits: a291d6b, 6e6a7e0
 - `VecChunkEntity` + `VecChunkDao`: tabela `vec_chunks` no Room (versão 24)
@@ -1122,70 +1182,44 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Commit 6e6a7e0:** corrige modelo de text-embedding-004 (404) para gemini-embedding-001 (correto)
 - **Lote 262 (tabelas por categoria)**: preparatório — `livrosPorCategoria` e `buscarRegrasPorFonte` já existem. Tabelas FTS separadas implementar quando atingir 5000+ chunks.
 
-### Lotes 257+258: RAG — Raciocínio com Lacunas + Query Rewriting — CONCLUÍDO | commit: a3c5415
-- `MestreIAPromptsAuditor`: Protocolo de Lacuna obrigatório no prompt do sistema
-  - Quando regra não existe: declarar lacuna → identificar regras aplicáveis → compor interpretação → marcar ⚠️ Interpretação RAG
-  - NUNCA inventar regra. NUNCA responder com negativa vazia.
-- `MestreIAUseCase`: quando busca direta retorna vazio, instrução para aplicar Protocolo de Lacuna
-- `gerarCatalogoDireto`: Query Rewriting ativado quando FTS retorna < 5 chunks
-  - Chama Gemini Flash Lite para reformular em termos técnicos do GURPS
-  - Merge dos resultados original + reescrito, deduplicado
-  - Só ativa quando necessário — sem custo extra em buscas normais
+### Lote 263: Velocidade + Feedback Visual + Thinking Adaptativo — CONCLUÍDO | commit: 01c8ceb
+- **Thinking Mode adaptativo:** só ativa quando `isComplexo=true` (pergunta com número, cálculo, metros, queda, etc.)
+  - Perguntas simples: DeepSeek responde sem raciocínio interno — economiza ~15-20s na iteração final
+  - Perguntas complexas: Thinking continua ativo para precisão máxima
+- **Loops reduzidos em perguntas simples:** `loopsRestantes=2` (antes: 3) → máximo 1 tool call em vez de 2
+  - Perguntas do tipo "qual a regra de X" → 1 busca + resposta final (economiza ~4-8s de rede + embedding)
+- **Feedback visual granular (elimina silêncio de 54s):**
+  - "Analisando pergunta..." → durante Planner
+  - "Consultando o manual..." → durante FTS4+BM25+Semantic
+  - "Buscando regras relacionadas..." → durante multi-query temático
+  - "Analisando regras (N chunks encontrados)..." → iteração 1 complexa
+  - "Preparando resposta..." → iteração 1 simples
+  - "Buscando no manual: <query>..." → quando IA faz tool call
+  - "Verificando regras adicionais..." → iteração intermediária
+  - "Elaborando resposta final..." → última iteração
+- **Diagnóstico logcat (pergunta "caí de um cavalo 12 hex"):**
+  - Total: 54s | Thinking na iter.3: 21s | 3 tool calls | 44.510 tokens
+  - Com Lote 263 estimativa: ~30-35s (complexa detectada pelo "12 hex" e "queda")
 
-### Lote 256: RAG — Melhoria 2D: Índice de Tópicos (topic_index.json) — CONCLUÍDO | commit: 8bef6dc
-- `topic_index.json`: 11 tópicos declarativos com `require_all` + `fallback_any` + páginas garantidas
-  - tiro_subaquatico → Pyramid p.7+8 + MB p.106-108 (garante alcance÷1000 sempre presente)
-  - combate_subaquatico, queda_dano, dano_fogo, asfixia, critico, carga, alcance_tiro, magia, sanidade, movimentacao_agua
-- `MestreIATopicIndex.kt`: loader JSON + matching engine (require_all / fallback_any)
-  - Carregado no init do GraphEngine via `MestreIATopicIndex.carregar(context)`
-  - Matching tolerante: `require_all` como primário, pares `fallback_any` como backup
-- `MestreIAGraphEngine.kt`: chunks do topic_index injetados com prioridade máxima
-  - Entram antes do `take(30)`, nunca cortados pelo diversificador de fontes
-  - Log `MestreIA_RAG`: "TopicIndex garantido: pt_pyramid_26 p.7 → 2 chunks"
-- **Impacto**: FTS4 pode falhar por keyword mismatch — topic_index garante as páginas certas mesmo assim
 
-### Lote 255: RAG — Dicionário 90+ Entradas + Filtro por Livro — CONCLUÍDO | commit: 8e92543
-- `MestreIAPlanner.dicionarioTecnico`: expandido de 45 → 90+ entradas
-  - Novos temas: voo, cavalaria, veículos, artes marciais, fogo/veneno/doença/radiação
-  - Social/reputação, economia, encumbrance, magia completa com pré-requisitos
-- `PlanoDeBusca.livrosRelevantes`: novo campo com source_ids detectados pelo cenário
-  - tiro+subaquático → `pt_pyramid_26_underwater` entra automaticamente
-  - Loga no Logcat `MestreIA_RAG` a lista de livros relevantes detectados
-- `livrosPorCategoria`: mapa público preparado para uso pelo GraphEngine na Onda 2
+### Lote 264: Status no Balão + Thinking sem Iteração Final + topic_index expandido — CONCLUÍDO | commit: 4d91d4b
+- **FichaIADelegate:** status de progresso aparece no corpo do balão (⏳ Consultando...) em vez da badge 7sp
+  - `onChunk` limpa corretamente o prefixo ⏳ antes de escrever a resposta final
+- **MestreIAUseCase:** Thinking desativado na última iteração (`isComplexo=false` quando `isUltimaIteracao`)
+  - Economiza ~15s na resposta final — raciocínio interno já foi feito nas iterações anteriores
+- **topic_index.json expandido:**
+  - `queda_dano`: adicionadas p.431+432 (regra de Quedas detalhada no Livro 2) + keywords cavalo/montaria/caiu
+  - `modificadores_ataque_distancia`: garante p.548+549+552 para queries com "tiro"/"arco"
+  - `postura_alvo_combate`: garante p.548+549+552+365 para queries com "ajoelhado"
+  - `cobertura_obstaculo_tiro`: garante p.549 para queries com "cobertura"
+  - `modificadores_combate_geral`: garante p.548+549+550+552 para queries com "modificador"+"combate"
+  - `movimentacao_agua`: garante Pyramid p.7 + MB p.107 para queries com "nadar"
+  - Total: 15 tópicos (antes: 11)
+- **Revert parcial (commit 402b977):** keywords específicas de cavalo/montaria removidas do topic_index
+  - Decisão: RAG deve ser genérico — topic_index não deve hardcodar cenários específicos
+  - p.431+432 mantidas no tópico queda_dano (as páginas são corretas e genéricas)
+- **Diagnóstico de escala confirmado:** BM25 com limit=200 processa pool fixo — não degrada com 5000+ chunks
+  - p.549 (tabela modificadores tiro) estava em rank #31 no BM25 puro → deslocada por chunks de Artes Marciais
+  - topic_index resolve o displacement garantindo as páginas críticas independente do ranking BM25
 
-### Lote 254: RAG — Pocket RAG: Compressão Seletiva de Contexto — CONCLUÍDO | commit: 2a551bd
-- `MestreIAGraphEngine.comprimirChunk()`: extrai sentenças relevantes por termos de busca
-  - Chunks ★★★ (BM25 >= 8.0): texto completo preservado
-  - Chunks ★★/★: comprimidos para 4 sentenças relevantes + contexto vizinho
-  - Chunks sem match: primeiras 2 sentenças como contexto mínimo
-- Contexto RAG estimado: ~35KB → ~12-18KB (-40 a -60% de tokens)
-- `formatarParaIA()` recebe `query` para guiar qual sentença é relevante
-- Thresholds ajustados para escala BM25-Kotlin (8.0/2.0)
 
-### Lote 253: RAG — LRU Cache de Buscas FTS — CONCLUÍDO | commit: 3372e58
-- `MestreIARepository`: LinkedHashMap LRU (20 entradas) para resultados FTS da sessão
-- Cache hit evita re-processar queries repetidas no multi-query temático paralelo
-- Mutex protege acesso concorrente das coroutines
-- `limparCacheFTS()` para reset entre sessões de perguntas
-
-### Lote 252: RAG — BM25-Kotlin + Filtro por Fonte + Pool Otimizado — CONCLUÍDO | commits: db839d5, e03624e
-- `ManualChunkDao`: nova query `buscarRegrasPorFonte()` com filtro `source_id` (busca por livro específico)
-- `MestreIARepository`: novo método `buscarNoCodexPorFonte()` para buscas direcionadas (ex: só Pyramid)
-- `MestreIAGraphEngine`: scoring substituído por **BM25-Kotlin real**
-  - IDF por termo: `log((N-df+0.5)/(df+0.5))` — termos raros pesam mais que termos comuns
-  - TF com saturação k1=1.5: repetição do mesmo termo não infla o score infinitamente
-  - Normalização por comprimento b=0.75: chunks longos não têm vantagem injusta sobre curtos
-  - AND bonus (+15) e proximidade bonus (+5) calibrados em escala BM25
-- Pool reduzido 1500 → 500: BM25 ranqueia bem; pool menor = busca mais rápida
-- Nota: FTS5 nativo requer Room 2.7 (alpha). BM25-Kotlin equivale ao resultado sem alpha.
-
-### Lote 251: Plano RAG Mestre IA + Descontinuação Voz Clássica + Mesa Virtual Completa — CONCLUÍDO | commit: 3c3d43b
-- `PLANO_MesteIA_RAG.md` criado: diagnóstico dos 3 tipos de falha RAG + 9 melhorias em 3 ondas
-  - Onda 1 (dias 1-3): FTS4→FTS5+BM25, filtro source_id, chunking menor
-  - Onda 2 (semanas 1-2): SQLite-vec semântico, LRU cache, compressão de contexto (Pocket RAG), índice por tópico
-  - Onda 3 (meses): pipeline offline de livros, tabelas FTS5 particionadas
-- Descontinuação da voz clássica: `VozMestreIA.kt`, `VozTTS.kt`, `VozIntencaoClassifier.kt` removidos
-- `GeminiLiveService.kt`: enum `EstadoVoz` migrado para cá (compatibilidade com FichaCustomNavigationBar)
-- `FichaScreen.kt`: simplificado — apenas GeminiLive, sem `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA`
-- `Mesa Virtual/index.html`: suporte completo a `modeloRacial` (modForca, modDestreza, etc.), especialização de perícias, histórico/notas, PV/PF corretos com modificadores raciais
-- `ARQUITETURA_MESTRE_IA.md`: atualizado com GeminiLiveService, GeminiLiveTools e marcação de deprecações
