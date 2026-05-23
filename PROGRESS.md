@@ -1,7 +1,7 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 22 de Maio de 2026
-**Status Atual:** Mestre IA - Lote 250 CONCLUÍDO
+**Status Atual:** Mestre IA - Lotes 257-261 CONCLUÍDOS (semântica híbrida completa)
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -1084,6 +1084,31 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Ativa Thinking Mode no Auditor: modelo raciocina passo a passo antes de responder
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
+
+### Lotes 259+260+261: RAG — Busca Semântica Híbrida + Scripts Offline — CONCLUÍDO | commit: a291d6b
+- `VecChunkEntity` + `VecChunkDao`: tabela `vec_chunks` no Room (versão 24)
+  - Armazena embeddings de 384 dims como ByteArray little-endian (1536 bytes/chunk)
+- `MestreIASemanticEngine`: reranking BM25+semântico por similaridade cosseno
+  - score_final = 0.6×BM25_norm + 0.4×cosseno
+  - Embedding da query via Gemini `text-embedding-004` (~200ms)
+  - Fallback gracioso: vec_chunks vazio → BM25 puro, sem erro
+- `FichaDatabase` v24: importa campo `"embedding"` do chunks.jsonl automaticamente
+- `MestreIAGraphEngine`: reranking semântico após BM25 (top-50 reranqueados)
+- `scripts/gerar_embeddings.py`: gera embeddings offline para chunks.jsonl existente
+  - Rechunking opcional: chunks grandes → sub-chunks de ~600 chars com overlap
+- `scripts/processar_livro.py`: pipeline PDF → extração → chunking → embedding → append
+  - Adicionar livro novo = 1 comando Python, sem tocar no app
+- **Lote 262 (tabelas por categoria)**: preparatório — `livrosPorCategoria` e `buscarRegrasPorFonte` já existem. Tabelas FTS separadas implementar quando atingir 5000+ chunks.
+
+### Lotes 257+258: RAG — Raciocínio com Lacunas + Query Rewriting — CONCLUÍDO | commit: a3c5415
+- `MestreIAPromptsAuditor`: Protocolo de Lacuna obrigatório no prompt do sistema
+  - Quando regra não existe: declarar lacuna → identificar regras aplicáveis → compor interpretação → marcar ⚠️ Interpretação RAG
+  - NUNCA inventar regra. NUNCA responder com negativa vazia.
+- `MestreIAUseCase`: quando busca direta retorna vazio, instrução para aplicar Protocolo de Lacuna
+- `gerarCatalogoDireto`: Query Rewriting ativado quando FTS retorna < 5 chunks
+  - Chama Gemini Flash Lite para reformular em termos técnicos do GURPS
+  - Merge dos resultados original + reescrito, deduplicado
+  - Só ativa quando necessário — sem custo extra em buscas normais
 
 ### Lote 256: RAG — Melhoria 2D: Índice de Tópicos (topic_index.json) — CONCLUÍDO | commit: 8bef6dc
 - `topic_index.json`: 11 tópicos declarativos com `require_all` + `fallback_any` + páginas garantidas
