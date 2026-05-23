@@ -13,8 +13,9 @@ object MestreIAPlanner {
         val termos: List<String>,
         val categorias: List<String>,
         val subQueriesStats: List<String> = emptyList(),
-        val contextoEquipamentos: String = "",  // Stats reais do inventário do personagem
-        val subQueriesTemáticas: List<String> = emptyList()  // Multi-query: ângulos temáticos da pergunta
+        val contextoEquipamentos: String = "",
+        val subQueriesTemáticas: List<String> = emptyList(),
+        val livrosRelevantes: List<String> = emptyList()  // source_ids a priorizar na busca FTS
     )
 
     // Detector de itens com stats em tabela → gera query de pré-busca específica
@@ -92,86 +93,192 @@ object MestreIAPlanner {
         "nao", "mais", "muito", "cada", "deve", "seja", "sejam", "me"
     )
 
-    // Dicionário técnico de GURPS para expansão de termos de busca
+    // Mapa categoria → source_ids relevantes para filtro de busca por livro.
+    // Mantido aqui para que planejarBusca() possa expor os livros relevantes ao GraphEngine.
+    val livrosPorCategoria: Map<String, List<String>> = mapOf(
+        "tiro"         to listOf("pt_modulo_basico", "pt_gun_fu", "pt_pyramid_26_underwater"),
+        "arma_fogo"    to listOf("pt_modulo_basico", "pt_gun_fu"),
+        "subaquatico"  to listOf("pt_modulo_basico", "pt_pyramid_26_underwater"),
+        "magia"        to listOf("pt_modulo_basico", "pt_magia"),
+        "combate"      to listOf("pt_modulo_basico", "pt_artes_marciais", "pt_gun_fu"),
+        "artes_marciais" to listOf("pt_modulo_basico", "pt_artes_marciais"),
+        "pericia"      to listOf("pt_modulo_basico"),
+        "raca"         to listOf("pt_modulo_basico"),
+        "equipamento"  to listOf("pt_modulo_basico", "pt_gun_fu", "pt_artes_marciais")
+    )
+
+    // Dicionário técnico de GURPS — 90+ entradas cobrindo os grandes temas dos livros disponíveis.
     private val dicionarioTecnico = mapOf(
-        // Ferimento e sangue
-        "sangramento" to listOf("hemorragia", "ferimento", "saude"),
-        "hemorragia" to listOf("sangramento", "ferimento"),
-        // Movimento e salto
-        "pular" to listOf("salto", "distancia", "altura"),
-        "salto" to listOf("pular", "distancia", "altura", "acrobacia"),
-        // Colisão e queda
-        "impacto" to listOf("colisao", "batida", "queda", "atropelamento"),
-        "colisao" to listOf("impacto", "queda", "atropelamento", "encontro"),
-        "queda" to listOf("impacto", "colisao", "altitude", "precipicio"),
-        // Respiração e afogamento
-        "asfixia" to listOf("afogamento", "sufocamento", "respiracao", "folego", "ar"),
-        "afogamento" to listOf("asfixia", "agua", "submerso", "subaquatico"),
-        "sufocamento" to listOf("asfixia", "afogamento", "respiracao", "ar"),
-        // Atributos primários
-        "st" to listOf("forca", "levantamento", "carga", "dano", "gdp", "geb"),
-        "forca" to listOf("st", "levantamento", "carga", "muscular"),
-        "dx" to listOf("destreza", "agilidade", "coordenacao"),
-        "destreza" to listOf("dx", "agilidade", "coordenacao"),
-        "iq" to listOf("inteligencia", "vontade", "percepcao", "raciocinio"),
-        "ht" to listOf("vitalidade", "saude", "fadiga", "pf", "sobrevivencia"),
-        // Movimento e velocidade
-        "velocidade" to listOf("deslocamento", "esquiva", "movimento", "rapidez"),
-        "deslocamento" to listOf("velocidade", "movimento", "passo", "corrida"),
-        "movimento" to listOf("velocidade", "deslocamento", "passo", "corrida"),
-        // Ambiente aquático (inclui "underwater" para encontrar chunks do Pyramid)
-        "submerso" to listOf("agua", "aquatico", "mergulho", "piscina", "mar", "subaquatico", "underwater"),
-        "aquatico" to listOf("submerso", "agua", "subaquatico", "underwater"),
-        "piscina" to listOf("agua", "submerso", "aquatico", "subaquatico", "mergulho", "underwater"),
-        "agua" to listOf("submerso", "aquatico", "subaquatico", "piscina", "mar", "underwater"),
-        "subaquatico" to listOf("agua", "submerso", "aquatico", "piscina", "mergulho", "underwater"),
-        "mergulho" to listOf("agua", "submerso", "aquatico", "subaquatico", "underwater"),
-        // Defesas
-        "esquiva" to listOf("defesa", "apara", "bloqueio", "evasao"),
-        "apara" to listOf("defesa", "esquiva", "bloqueio", "escudo"),
-        "bloqueio" to listOf("defesa", "esquiva", "apara", "escudo"),
-        "defesa" to listOf("esquiva", "apara", "bloqueio", "protecao"),
-        "escudo" to listOf("bloqueio", "defesa", "apara"),
-        // Magia e encantamento
-        "magia" to listOf("feitico", "encantamento", "conjuracao", "escola"),
-        "feitico" to listOf("magia", "encantamento", "conjuracao"),
-        "encantamento" to listOf("magia", "feitico", "conjuracao"),
-        "escola" to listOf("magia", "categoria", "tipo"),
-        // Perícias e habilidades
-        "pericia" to listOf("habilidade", "nivel", "nh", "aptidao"),
-        "habilidade" to listOf("pericia", "nivel", "nh"),
-        // Combate e ataque
-        "ataque" to listOf("dano", "acerto", "combate", "ofensiva"),
-        "combate" to listOf("ataque", "defesa", "luta", "batalha"),
-        // Combate à distância
-        "tiro" to listOf("disparo", "arma", "fogo", "projetil", "atirar", "arremesso"),
-        "atirar" to listOf("tiro", "disparo", "fogo", "acertar"),
-        "disparo" to listOf("tiro", "atirar", "fogo", "projetil"),
-        "alcance" to listOf("distancia", "range", "metro", "faixa", "distante"),
-        "pistola" to listOf("revolver", "arma", "fogo", "disparo", "tiro"),
-        "revolver" to listOf("pistola", "arma", "fogo", "disparo", "tiro"),
-        "rifle" to listOf("arma", "fogo", "disparo", "tiro", "longa distancia"),
-        "espingarda" to listOf("arma", "fogo", "disparo", "tiro"),
-        // Dano e vida
-        "dano" to listOf("ataque", "ferimento", "pv", "lesao"),
-        "ferimento" to listOf("dano", "lesao", "pv", "sangramento"),
-        "pv" to listOf("vida", "saude", "ferimento", "pontos de vida"),
-        "pf" to listOf("fadiga", "cansaco", "energia", "pontos de fadiga"),
-        "fadiga" to listOf("pf", "cansaco", "energia", "exaustao"),
-        // Penalidades e modificadores
-        "penalidade" to listOf("modificador", "bonus", "malus", "reducao", "ajuste"),
-        "modificador" to listOf("penalidade", "bonus", "ajuste", "fator"),
-        "redutor" to listOf("penalidade", "modificador", "subtracao"),
-        // Cura e medicina
-        "cura" to listOf("recuperacao", "primeiros socorros", "medicina", "ferimento"),
-        "recuperacao" to listOf("cura", "descanso", "medicina"),
-        "medicina" to listOf("cura", "primeiros socorros", "recuperacao"),
-        // Visibilidade e ambiente
-        "escuridao" to listOf("visibilidade", "noite", "penalidade", "iluminacao"),
-        "visibilidade" to listOf("escuridao", "iluminacao", "claridade", "neblina"),
-        // Armadura e proteção
-        "armadura" to listOf("rd", "protecao", "cobertura", "blindagem"),
-        "rd" to listOf("armadura", "resistencia", "protecao", "reducao de dano")
+        // ── FERIMENTO E SANGUE ──────────────────────────────────────────────
+        "sangramento"   to listOf("hemorragia", "ferimento", "saude", "pv"),
+        "hemorragia"    to listOf("sangramento", "ferimento", "pv"),
+        "incapacitado"  to listOf("ferimento", "pv", "morte", "desmaiado", "inconsciente"),
+        "inconsciente"  to listOf("desmaiado", "incapacitado", "pv", "ferimento"),
+        "morte"         to listOf("morto", "incapacitado", "pv", "fatal"),
+        "morto"         to listOf("morte", "pv", "fatal"),
+        // ── MOVIMENTO E SALTO ───────────────────────────────────────────────
+        "pular"         to listOf("salto", "distancia", "altura", "acrobacia"),
+        "salto"         to listOf("pular", "distancia", "altura", "acrobacia"),
+        "correr"        to listOf("corrida", "deslocamento", "velocidade", "sprint"),
+        "corrida"       to listOf("correr", "deslocamento", "velocidade"),
+        "nadar"         to listOf("natacao", "agua", "deslocamento", "subaquatico"),
+        "natacao"       to listOf("nadar", "agua", "subaquatico", "pericia"),
+        "trepar"        to listOf("escalar", "subir", "altura", "pericia"),
+        "escalar"       to listOf("trepar", "subir", "altura", "acrobacia"),
+        "rastejar"      to listOf("agachar", "pronar", "movimento", "penalidade"),
+        "voar"          to listOf("voo", "altitude", "asa", "deslocamento"),
+        "voo"           to listOf("voar", "altitude", "asa", "deslocamento"),
+        // ── COLISÃO, QUEDA E IMPACTO ────────────────────────────────────────
+        "impacto"       to listOf("colisao", "batida", "queda", "atropelamento", "dano"),
+        "colisao"       to listOf("impacto", "queda", "atropelamento", "encontro", "dano"),
+        "queda"         to listOf("impacto", "colisao", "altitude", "precipicio", "dano"),
+        "atropelamento" to listOf("colisao", "impacto", "veiculo", "dano"),
+        "altitude"      to listOf("queda", "altura", "precipicio"),
+        // ── RESPIRAÇÃO, FOGO E AMBIENTE ─────────────────────────────────────
+        "asfixia"       to listOf("afogamento", "sufocamento", "respiracao", "folego", "ar"),
+        "afogamento"    to listOf("asfixia", "agua", "submerso", "subaquatico", "sufocamento"),
+        "sufocamento"   to listOf("asfixia", "afogamento", "respiracao", "ar", "folego"),
+        "fogo"          to listOf("queimadura", "chama", "calor", "dano", "incendio"),
+        "queimadura"    to listOf("fogo", "calor", "dano", "chama"),
+        "frio"          to listOf("congelamento", "hipotermia", "temperatura", "penalidade"),
+        "calor"         to listOf("fogo", "temperatura", "dano", "exaustao"),
+        "veneno"        to listOf("toxina", "envenenamento", "efeito", "resistencia"),
+        "doenca"        to listOf("infeccao", "enfermidade", "resistencia", "ht"),
+        "radiacao"      to listOf("radioatividade", "dano", "rad", "envenenamento"),
+        // ── ATRIBUTOS PRIMÁRIOS ─────────────────────────────────────────────
+        "st"            to listOf("forca", "levantamento", "carga", "dano", "gdp", "geb"),
+        "forca"         to listOf("st", "levantamento", "carga", "muscular", "dano"),
+        "dx"            to listOf("destreza", "agilidade", "coordenacao", "pericia"),
+        "destreza"      to listOf("dx", "agilidade", "coordenacao"),
+        "iq"            to listOf("inteligencia", "vontade", "percepcao", "raciocinio"),
+        "inteligencia"  to listOf("iq", "vontade", "percepcao", "raciocinio"),
+        "ht"            to listOf("vitalidade", "saude", "fadiga", "pf", "sobrevivencia"),
+        "vitalidade"    to listOf("ht", "saude", "pf", "resistencia"),
+        // ── METACARACTERÍSTICAS ─────────────────────────────────────────────
+        "vontade"       to listOf("iq", "resistencia", "mental", "medo"),
+        "percepcao"     to listOf("iq", "sentido", "visao", "audicao", "alerta"),
+        "velocidade"    to listOf("deslocamento", "esquiva", "movimento", "rapidez"),
+        "deslocamento"  to listOf("velocidade", "movimento", "passo", "corrida"),
+        "movimento"     to listOf("velocidade", "deslocamento", "passo", "corrida"),
+        // ── AMBIENTE AQUÁTICO ───────────────────────────────────────────────
+        "submerso"      to listOf("agua", "aquatico", "mergulho", "piscina", "mar", "subaquatico", "underwater"),
+        "aquatico"      to listOf("submerso", "agua", "subaquatico", "underwater"),
+        "piscina"       to listOf("agua", "submerso", "aquatico", "subaquatico", "mergulho", "underwater"),
+        "agua"          to listOf("submerso", "aquatico", "subaquatico", "piscina", "mar", "underwater"),
+        "subaquatico"   to listOf("agua", "submerso", "aquatico", "piscina", "mergulho", "underwater"),
+        "mergulho"      to listOf("agua", "submerso", "aquatico", "subaquatico", "underwater"),
+        "mar"           to listOf("agua", "submerso", "aquatico", "oceano"),
+        // ── DEFESAS ─────────────────────────────────────────────────────────
+        "esquiva"       to listOf("defesa", "apara", "bloqueio", "evasao", "dx"),
+        "apara"         to listOf("defesa", "esquiva", "bloqueio", "escudo", "arma"),
+        "bloqueio"      to listOf("defesa", "esquiva", "apara", "escudo"),
+        "defesa"        to listOf("esquiva", "apara", "bloqueio", "protecao"),
+        "escudo"        to listOf("bloqueio", "defesa", "apara", "db"),
+        "db"            to listOf("escudo", "bloqueio", "bonus defesa"),
+        // ── MAGIA ───────────────────────────────────────────────────────────
+        "magia"         to listOf("feitico", "encantamento", "conjuracao", "escola", "energia"),
+        "feitico"       to listOf("magia", "encantamento", "conjuracao", "escola"),
+        "encantamento"  to listOf("magia", "feitico", "conjuracao"),
+        "escola"        to listOf("magia", "categoria", "tipo", "feitico"),
+        "energia"       to listOf("magia", "custo", "pf", "mana"),
+        "mana"          to listOf("energia", "magia", "pf", "custo"),
+        "prereq"        to listOf("prerequisito", "requisito", "magia", "pericia"),
+        "prerequisito"  to listOf("prereq", "requisito", "magia", "habilidade"),
+        // ── PERÍCIAS E HABILIDADES ──────────────────────────────────────────
+        "pericia"       to listOf("habilidade", "nivel", "nh", "aptidao", "dx", "iq"),
+        "habilidade"    to listOf("pericia", "nivel", "nh", "aptidao"),
+        "nh"            to listOf("nivel", "pericia", "habilidade", "pontos"),
+        "nivel"         to listOf("nh", "pericia", "habilidade"),
+        "acrobacia"     to listOf("salto", "equilibrio", "dx", "pericia"),
+        "furtividade"   to listOf("esconder", "sorrateiro", "dx", "pericia"),
+        "persuasao"     to listOf("conversa", "negociacao", "iq", "pericia"),
+        "intimidacao"   to listOf("medo", "ameaca", "iq", "pericia"),
+        "primeiros socorros" to listOf("cura", "medicina", "ferimento", "pv"),
+        // ── COMBATE GERAL ───────────────────────────────────────────────────
+        "ataque"        to listOf("dano", "acerto", "combate", "ofensiva", "manobra"),
+        "combate"       to listOf("ataque", "defesa", "luta", "batalha", "manobra"),
+        "manobra"       to listOf("combate", "ataque", "movimento", "turno"),
+        "turno"         to listOf("manobra", "combate", "acao", "tempo"),
+        "critico"       to listOf("acerto critico", "falha critica", "dado", "3d6"),
+        "acerto"        to listOf("ataque", "dado", "nh", "sucesso"),
+        "falha"         to listOf("erro", "dado", "nh", "penalidade"),
+        // ── COMBATE À DISTÂNCIA ─────────────────────────────────────────────
+        "tiro"          to listOf("disparo", "arma", "fogo", "projetil", "atirar", "arremesso"),
+        "atirar"        to listOf("tiro", "disparo", "fogo", "acertar", "alcance"),
+        "disparo"       to listOf("tiro", "atirar", "fogo", "projetil", "municao"),
+        "alcance"       to listOf("distancia", "range", "metro", "faixa", "distante", "meia distancia"),
+        "municao"       to listOf("bala", "cartucho", "disparo", "capacidade"),
+        "cadencia"      to listOf("tiro", "disparo", "municao", "rajada"),
+        "rajada"        to listOf("cadencia", "rafaga", "municao", "tiro"),
+        "mira"          to listOf("tiro", "alcance", "penalidade", "alvo"),
+        "pistola"       to listOf("revolver", "arma", "fogo", "disparo", "tiro"),
+        "revolver"      to listOf("pistola", "arma", "fogo", "disparo", "tiro"),
+        "rifle"         to listOf("arma", "fogo", "disparo", "tiro", "longa distancia"),
+        "espingarda"    to listOf("arma", "fogo", "disparo", "tiro", "chumbinho"),
+        "metralhadora"  to listOf("arma", "fogo", "rajada", "cadencia", "municao"),
+        "submetralhadora" to listOf("arma", "fogo", "rajada", "pistola"),
+        "arco"          to listOf("flecha", "arremesso", "alcance", "dano"),
+        "besta"         to listOf("virote", "arremesso", "alcance", "dano"),
+        "arremesso"     to listOf("arco", "funda", "lancamento", "alcance", "tiro"),
+        // ── ARTES MARCIAIS ──────────────────────────────────────────────────
+        "artes marciais" to listOf("luta", "marcial", "combate", "tecnica"),
+        "tecnica"       to listOf("pericia", "combate", "manobra", "nh"),
+        "presa"         to listOf("agarrar", "imobilizar", "luta", "combate"),
+        "agarrar"       to listOf("presa", "imobilizar", "luta", "st"),
+        "derrubada"     to listOf("jogada", "queda", "combate", "dx"),
+        "chute"         to listOf("perna", "dano", "combate", "dx"),
+        "soco"          to listOf("pugno", "dano", "combate", "st"),
+        // ── DANO E VIDA ─────────────────────────────────────────────────────
+        "dano"          to listOf("ataque", "ferimento", "pv", "lesao", "gdp", "geb"),
+        "ferimento"     to listOf("dano", "lesao", "pv", "sangramento", "cura"),
+        "pv"            to listOf("vida", "saude", "ferimento", "pontos de vida"),
+        "pf"            to listOf("fadiga", "cansaco", "energia", "pontos de fadiga"),
+        "fadiga"        to listOf("pf", "cansaco", "energia", "exaustao", "ht"),
+        "gdp"           to listOf("dado de penetracao", "dano", "st", "arma"),
+        "geb"           to listOf("dado de esmagar", "dano", "st", "arma"),
+        // ── PENALIDADES E MODIFICADORES ─────────────────────────────────────
+        "penalidade"    to listOf("modificador", "bonus", "malus", "reducao", "ajuste"),
+        "modificador"   to listOf("penalidade", "bonus", "ajuste", "fator"),
+        "redutor"       to listOf("penalidade", "modificador", "subtracao"),
+        "bonus"         to listOf("modificador", "penalidade", "ajuste", "adicional"),
+        // ── CURA E MEDICINA ─────────────────────────────────────────────────
+        "cura"          to listOf("recuperacao", "primeiros socorros", "medicina", "ferimento", "pv"),
+        "recuperacao"   to listOf("cura", "descanso", "medicina", "pv"),
+        "medicina"      to listOf("cura", "primeiros socorros", "recuperacao", "iq"),
+        "descanso"      to listOf("recuperacao", "cura", "pv", "pf"),
+        // ── VISIBILIDADE E AMBIENTE ─────────────────────────────────────────
+        "escuridao"     to listOf("visibilidade", "noite", "penalidade", "iluminacao"),
+        "visibilidade"  to listOf("escuridao", "iluminacao", "claridade", "neblina"),
+        "neblina"       to listOf("visibilidade", "penalidade", "fumaca"),
+        "fumaca"        to listOf("visibilidade", "neblina", "penalidade"),
+        "iluminacao"    to listOf("visibilidade", "escuridao", "luz", "lanterna"),
+        // ── ARMADURA E PROTEÇÃO ─────────────────────────────────────────────
+        "armadura"      to listOf("rd", "protecao", "cobertura", "blindagem", "peso"),
+        "rd"            to listOf("armadura", "resistencia", "protecao", "reducao de dano"),
+        "cobertura"     to listOf("armadura", "rd", "local", "protecao"),
+        // ── CAVALARIA E MONTARIA ─────────────────────────────────────────────
+        "cavalo"        to listOf("montaria", "cavaleiro", "cavalgar", "animal"),
+        "montaria"      to listOf("cavalo", "cavaleiro", "cavalgar", "animal"),
+        "cavalgar"      to listOf("cavalo", "montaria", "pericia", "dx"),
+        // ── VEÍCULOS ────────────────────────────────────────────────────────
+        "veiculo"       to listOf("carro", "moto", "nave", "pilotagem", "velocidade"),
+        "pilotagem"     to listOf("veiculo", "pericia", "dx", "iq"),
+        // ── PSICOLOGIA E MENTAL ──────────────────────────────────────────────
+        "medo"          to listOf("fobia", "terror", "vontade", "panique"),
+        "fobia"         to listOf("medo", "terror", "vontade", "desvantagem"),
+        "panico"        to listOf("medo", "fobia", "terror", "vontade"),
+        "sansidade"     to listOf("sanidade", "mental", "horror", "vontade"),
+        "sanidade"      to listOf("sansidade", "mental", "horror", "vontade"),
+        // ── SOCIAL E REPUTAÇÃO ───────────────────────────────────────────────
+        "reputacao"     to listOf("status", "social", "reacao", "fama"),
+        "status"        to listOf("reputacao", "social", "riqueza", "classe"),
+        "reacao"        to listOf("npc", "social", "reputacao", "carisma"),
+        "carisma"       to listOf("persuasao", "reacao", "social", "iq"),
+        // ── ECONOMIA E EQUIPAMENTO ───────────────────────────────────────────
+        "custo"         to listOf("preco", "dinheiro", "compra", "equipamento"),
+        "peso"          to listOf("carga", "encumbrance", "st", "penalidade"),
+        "carga"         to listOf("peso", "encumbrance", "st", "velocidade"),
+        "encumbrance"   to listOf("carga", "peso", "penalidade", "velocidade")
     )
 
     fun planejarBusca(pergunta: String, equipamentos: List<Equipamento> = emptyList()): PlanoDeBusca {
@@ -275,12 +382,29 @@ object MestreIAPlanner {
 
         val subQueriesTemáticas = gerarSubQueriesTemáticas(perguntaNorm, termosBrutos, termosExpandidos.toList())
 
-        android.util.Log.i("MestreIA_Planner", "TERMOS EXTRAÍDOS (local): $termosExpandidos | Categorias: $categorias")
+        // Monta lista de source_ids relevantes baseada nos detectores de cenário
+        val livrosRelevantes = mutableSetOf<String>()
+        val temTiro = termosBrutos.any { it in setOf("tiro", "atirar", "disparo", "pistola", "revolver", "rifle", "espingarda", "arco", "besta") }
+        val temSubaquatico = termosBrutos.any { it in setOf("agua", "piscina", "submerso", "aquatico", "subaquatico", "mergulho", "mar") }
+        val temMagia = termosBrutos.any { it in setOf("magia", "feitico", "encantamento", "escola", "mana", "energia") }
+        val temArtesMarciais = termosBrutos.any { it in setOf("tecnica", "artes", "marciais", "luta", "presa", "agarrar", "derrubada") }
+
+        when {
+            temTiro && temSubaquatico -> livrosRelevantes.addAll(livrosPorCategoria["subaquatico"] ?: emptyList())
+            temTiro -> livrosRelevantes.addAll(livrosPorCategoria["tiro"] ?: emptyList())
+            temMagia -> livrosRelevantes.addAll(livrosPorCategoria["magia"] ?: emptyList())
+            temArtesMarciais -> livrosRelevantes.addAll(livrosPorCategoria["artes_marciais"] ?: emptyList())
+            else -> livrosRelevantes.addAll(livrosPorCategoria["pericia"] ?: emptyList())
+        }
+        // Módulo básico sempre incluído — é a referência principal de regras
+        livrosRelevantes.add("pt_modulo_basico")
+
+        android.util.Log.i("MestreIA_Planner", "TERMOS EXTRAÍDOS (local): $termosExpandidos | Categorias: $categorias | Livros: $livrosRelevantes")
         if (subQueriesTemáticas.isNotEmpty()) {
             android.util.Log.i("MestreIA_Planner", "MULTI-QUERY temáticas: $subQueriesTemáticas")
         }
 
-        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats, contextoEquipamentos, subQueriesTemáticas)
+        return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats, contextoEquipamentos, subQueriesTemáticas, livrosRelevantes.toList())
     }
 
     /**

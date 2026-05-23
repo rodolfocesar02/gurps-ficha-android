@@ -105,7 +105,7 @@ class MestreIAUseCase(
             } else {
                 // LOTE 130: passa inventário do personagem para o Planner cruzar com a pergunta
                 val plano = MestreIAPlanner.planejarBusca(prompt, viewModel.personagem.equipamentos)
-                android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)}")
+                android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)} | livros: ${plano.livrosRelevantes}")
                 var resultado = gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
 
                 // Injeta contexto do inventário do personagem antes do RAG geral
