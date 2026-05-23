@@ -1202,17 +1202,16 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - Com Lote 263 estimativa: ~30-35s (complexa detectada pelo "12 hex" e "queda")
 
 
-### Lote 265: topic_index gerado do Índice do Livro — CONCLUÍDO | commit: 4179816
-- **scripts/gerar_topic_index.py:** parse automático de `indice.md` + `glossario.md` → 515 tópicos
-  - `PALAVRAS_GENERICAS`: descarta termos genéricos ("combate", "dano", "armas", etc.) como `require_all` sozinhos
-  - Termos compostos (2+ palavras) sempre usam todas as palavras como `require_all` — mais precisos
-  - `--merge`: mescla gerado com manuais preservando entradas existentes
-- **topic_index.json:** 15 manuais + 515 gerados = **530 tópicos** (antes: 15)
-  - Cobertura ~80-90% das regras do Módulo Básico contra displacement BM25
-  - Nenhum `require_all` genérico sozinho nos tópicos gerados
-- **Correção de regressão:** primeira versão tinha 546 gerados com `require_all` genéricos → disparavam em quase toda pergunta de combate, poluindo contexto da IA com páginas irrelevantes (camelos, centrum, bactérias)
-  - Solução: `PALAVRAS_GENERICAS` descarta esses termos no `gerar_matching()` → tópico não é criado
-- **Arquivos auxiliares:** `topic_index_gerado.json` (output do script, 515 tópicos), `topic_index_backup_manual.json` (11 tópicos pré-lote-264)
+
+### Lote 265b: Correção do Match do TopicIndex — CONCLUÍDO | commit: 28219ae
+- **Diagnóstico:** logcat mostrou 93+ tópicos disparando para "atirar com arco a cavalo" — ainda poluição de contexto
+- **Causa raiz 1:** `resolverPaginasGarantidas` recebia a query expandida pelo planner (40+ termos) em vez da pergunta original
+  - Fix: `MestreIAGraphEngine.buscarDiretoNoCodex` recebe `perguntaOriginal` e passa para o TopicIndex
+- **Causa raiz 2:** lógica de match `t.contains(req) || req.contains(t)` — token "em" casava com "competencia", "empregos" etc.
+  - Fix: `tokenMatch` usa `t.startsWith(req) || (t.length >= 5 && req.startsWith(t))`
+  - Tokens mínimo 4 chars (antes: 2) — exclui "em", "na", "de", "com"
+- **Resultado:** "arco a cavalo" → 3 tópicos relevantes (antes: 93+). Zero ruído.
+- **Fallbacks ampliados** nos tópicos manuais: `modificadores_ataque_distancia`, `cavalos`, `combate_montado`, `tiro_subaquatico`, `queda_dano`, `cobertura_obstaculo_tiro`
 
 
 ### Lote 264: Status no Balão + Thinking sem Iteração Final + topic_index expandido — CONCLUÍDO | commit: 4d91d4b
@@ -1235,4 +1234,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - p.549 (tabela modificadores tiro) estava em rank #31 no BM25 puro → deslocada por chunks de Artes Marciais
   - topic_index resolve o displacement garantindo as páginas críticas independente do ranking BM25
 
+### Lote 265: topic_index gerado do Índice do Livro — CONCLUÍDO | commit: 4179816
+- **scripts/gerar_topic_index.py:** parse automático de `indice.md` + `glossario.md` → 515 tópicos
+  - `PALAVRAS_GENERICAS`: descarta termos genéricos ("combate", "dano", "armas", etc.) como `require_all` sozinhos
+  - Termos compostos (2+ palavras) sempre usam todas as palavras como `require_all` — mais precisos
+  - `--merge`: mescla gerado com manuais preservando entradas existentes
+- **topic_index.json:** 15 manuais + 515 gerados = **530 tópicos** (antes: 15)
+  - Cobertura ~80-90% das regras do Módulo Básico contra displacement BM25
+  - Nenhum `require_all` genérico sozinho nos tópicos gerados
+- **Correção de regressão:** primeira versão tinha 546 gerados com `require_all` genéricos → disparavam em quase toda pergunta de combate, poluindo contexto da IA com páginas irrelevantes (camelos, centrum, bactérias)
+  - Solução: `PALAVRAS_GENERICAS` descarta esses termos no `gerar_matching()` → tópico não é criado
+- **Arquivos auxiliares:** `topic_index_gerado.json` (output do script, 515 tópicos), `topic_index_backup_manual.json` (11 tópicos pré-lote-264)
 
