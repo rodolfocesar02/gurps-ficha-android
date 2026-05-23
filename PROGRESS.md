@@ -1085,6 +1085,17 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
 
+### Lote 252: RAG — BM25-Kotlin + Filtro por Fonte + Pool Otimizado — CONCLUÍDO | commits: db839d5, e03624e
+- `ManualChunkDao`: nova query `buscarRegrasPorFonte()` com filtro `source_id` (busca por livro específico)
+- `MestreIARepository`: novo método `buscarNoCodexPorFonte()` para buscas direcionadas (ex: só Pyramid)
+- `MestreIAGraphEngine`: scoring substituído por **BM25-Kotlin real**
+  - IDF por termo: `log((N-df+0.5)/(df+0.5))` — termos raros pesam mais que termos comuns
+  - TF com saturação k1=1.5: repetição do mesmo termo não infla o score infinitamente
+  - Normalização por comprimento b=0.75: chunks longos não têm vantagem injusta sobre curtos
+  - AND bonus (+15) e proximidade bonus (+5) calibrados em escala BM25
+- Pool reduzido 1500 → 500: BM25 ranqueia bem; pool menor = busca mais rápida
+- Nota: FTS5 nativo requer Room 2.7 (alpha). BM25-Kotlin equivale ao resultado sem alpha.
+
 ### Lote 251: Plano RAG Mestre IA + Descontinuação Voz Clássica + Mesa Virtual Completa — CONCLUÍDO | commit: 3c3d43b
 - `PLANO_MesteIA_RAG.md` criado: diagnóstico dos 3 tipos de falha RAG + 9 melhorias em 3 ondas
   - Onda 1 (dias 1-3): FTS4→FTS5+BM25, filtro source_id, chunking menor
