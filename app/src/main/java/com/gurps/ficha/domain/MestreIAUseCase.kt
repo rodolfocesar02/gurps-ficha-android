@@ -326,7 +326,7 @@ class MestreIAUseCase(
                                 } else {
                                     android.util.Log.e("MestreIA_RAG", "║  TOOL VAZIO: nenhum chunk para \"${queryTool.take(60)}\" — IA sem contexto extra")
                                     historicoInvestigacao.add("system" to "Não foram encontrados resultados técnicos para '$queryTool' no Códex.")
-                                    promptAtual = "Auditoria: Não localizei '$queryTool' nos manuais. INFORME ISSO AO JOGADOR. É terminantemente PROIBIDO usar conhecimento geral ou inventar regras. Diga que não achou e sugira que ele use outros termos de busca."
+                                    promptAtual = "Auditoria: A busca direta por '$queryTool' não retornou resultados. Aplique o PROTOCOLO DE LACUNA: (1) declare que não há regra específica para esse cenário, (2) identifique regras relacionadas já disponíveis no Códex que se aplicam parcialmente, (3) componha uma interpretação fundamentada nessas regras, (4) marque como '⚠️ Interpretação RAG'. É PROIBIDO inventar regras. É PROIBIDO dizer apenas 'não sei'."
                                 }
                                 
                                 loopsRestantes--
@@ -435,18 +435,73 @@ class MestreIAUseCase(
 
     /**
      * LOTE 119: Gerador de Catálogo via Busca Direta (Pula o Grafo).
+     * LOTE 258: Query Rewriting — se FTS retornar < 5 chunks, reformula a pergunta
+     * via API leve (Gemini Flash Lite) em termos técnicos do GURPS e tenta novamente.
      */
     suspend fun gerarCatalogoDireto(prompt: String, history: List<MestreIAClient.ChatMessage>, termosExtras: List<String> = emptyList()): CatalogoLocalResult {
-        // LOTE 126: Simplificamos a busca para evitar duplicação de termos no FTS
         val promptExpandido = prompt.take(500)
-        
         val res = graphEngine.buscarDiretoNoCodex(promptExpandido, termosExtras)
-        
+
+        // Resultado satisfatório: 5+ chunks — não precisa de rewriting
+        if (res.relatedChunks.size >= 5) {
+            val cat = MestreIAClient.CatalogoNomes(
+                chunks = res.relatedChunks,
+                ponteDeFerro = graphEngine.formatarParaIA(res, prompt).take(35000)
+            )
+            return CatalogoLocalResult(cat, true)
+        }
+
+        // Resultado fraco: tenta query rewriting via API antes de desistir
+        android.util.Log.w("MestreIA_RAG", "║  QUERY REWRITE: apenas ${res.relatedChunks.size} chunks — reformulando com IA...")
+        val termosReescritos = reescreverQueryParaGurps(prompt)
+        if (termosReescritos.isNotEmpty()) {
+            android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE OK: $termosReescritos")
+            val resReescrito = graphEngine.buscarDiretoNoCodex(termosReescritos, termosExtras)
+            if (resReescrito.relatedChunks.size > res.relatedChunks.size) {
+                android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE MELHOROU: ${res.relatedChunks.size} → ${resReescrito.relatedChunks.size} chunks")
+                // Merge: resultado original + reescrito, deduplicado
+                val chunksMerge = (resReescrito.relatedChunks + res.relatedChunks).distinctBy { it.chunk_id }
+                val scoresMerge = resReescrito.chunkScores + res.chunkScores
+                val resMerge = MestreIAGraphEngine.GraphSearchResult(relatedChunks = chunksMerge, chunkScores = scoresMerge)
+                val cat = MestreIAClient.CatalogoNomes(
+                    chunks = chunksMerge,
+                    ponteDeFerro = graphEngine.formatarParaIA(resMerge, prompt).take(35000)
+                )
+                return CatalogoLocalResult(cat, chunksMerge.isNotEmpty())
+            }
+        }
+
+        // Fallback: retorna o que tinha (pode ser 0 chunks — IA ativará protocolo de lacuna)
         val cat = MestreIAClient.CatalogoNomes(
             chunks = res.relatedChunks,
             ponteDeFerro = graphEngine.formatarParaIA(res, prompt).take(35000)
         )
         return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty())
+    }
+
+    /**
+     * LOTE 258: Chama API leve para reformular a query em termos técnicos do GURPS.
+     * Usa Gemini Flash Lite — rápido, barato, sem contexto RAG.
+     * Retorna string com 5-8 termos técnicos separados por espaço, ou vazia se falhar.
+     */
+    private suspend fun reescreverQueryParaGurps(pergunta: String): String {
+        val geminiUrl = BuildConfig.MESTRE_IA_LITE_1_URL
+        val geminiKey = BuildConfig.MESTRE_IA_GEMINI_KEY
+        val geminiModel = BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE
+        if (geminiKey.isBlank()) return ""
+        return try {
+            val promptRewrite = "Reescreva a pergunta abaixo como 5 a 8 termos técnicos do sistema de RPG GURPS 4ª edição, separados por espaço. Apenas os termos, sem explicação, sem pontuação.\n\nPergunta: $pergunta"
+            val resp = MestreIAClient.perguntarAoMestre(
+                baseUrl = geminiUrl, apiKey = geminiKey, workspaceSlug = geminiModel,
+                prompt = promptRewrite, history = emptyList(), contextoPersonagem = "{}",
+                catalogo = MestreIAClient.CatalogoNomes(), modo = "conversa",
+                onChunk = null, desativarTools = true
+            )
+            resp.text.trim().take(200).replace(",", " ").replace(";", " ")
+        } catch (e: Exception) {
+            android.util.Log.w("MestreIA_RAG", "║  QUERY REWRITE FALHOU: ${e.message?.take(50)}")
+            ""
+        }
     }
 
 
