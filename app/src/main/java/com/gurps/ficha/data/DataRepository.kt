@@ -176,19 +176,17 @@ open class DataRepository(internal val context: Context) {
             .toList()
     }
 
-    // --- MÉTODOS DELEGADOS AO MESTRE IA REPOSITORY (LEGADO/COMPATIBILIDADE) ---
+    // --- MÉTODOS DELEGADOS AO MESTRE IA REPOSITORY ---
     open suspend fun sincronizarCodexSeNecessario() = mestreIARepository.sincronizarCodexSeNecessario()
-    open suspend fun buscarResumosGrafo(query: String) = mestreIARepository.buscarResumosGrafo(query)
-    open suspend fun buscarNodesPorTitulo(query: String) = mestreIARepository.buscarNodesPorTitulo(query)
-    open suspend fun buscarRecortesManual(query: String, limit: Int = 30) = mestreIARepository.buscarRecortesManual(query, limit)
+    open suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 30) = mestreIARepository.buscarNoCodexDireto(query, termosTecnicos, limit)
+    open suspend fun buscarRecortesManual(query: String, limit: Int = 30) = mestreIARepository.buscarNoCodexDireto(query, emptyList(), limit)
     open suspend fun buscarPorPagina(pagina: Int) = mestreIARepository.buscarPorPagina(pagina)
     open suspend fun buscarPorPaginaESource(pagina: Int, source: String) = mestreIARepository.buscarPorPaginaESource(pagina, source)
     open suspend fun getChunkById(id: String) = mestreIARepository.getChunkById(id)
-    open suspend fun buscarResumoNode(id: String) = mestreIARepository.buscarResumoNode(id)
-    open suspend fun buscarResumosEssenciais() = mestreIARepository.buscarResumosEssenciais()
-    open suspend fun findByCategory(category: String) = mestreIARepository.findByCategory(category)
-    open suspend fun forçarSincronizacaoGrafo() = mestreIARepository.forçarSincronizacaoGrafo()
     open suspend fun forçarSincronizacaoManual() = mestreIARepository.forçarSincronizacaoManual()
+
+    // Lote 259: Acesso ao DAO de embeddings semânticos
+    val vecChunkDao by lazy { database.vecChunkDao() }
 
     fun filtrarTecnicasCatalogo(busca: String = "", sourceBook: String? = null): List<TecnicaCatalogoItem> {
         return CatalogFilters.filtrarTecnicasCatalogo(tecnicasCatalogo, busca, sourceBook)

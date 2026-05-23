@@ -97,13 +97,28 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         chunksPontuados.sortByDescending { it.second }
 
         val top5Log = chunksPontuados.take(5).joinToString(" | ") { "p.${it.first.page_number}(${it.second.toInt()}pts)" }
-        android.util.Log.i("MestreIA_RAG", "  Scoring top-5: $top5Log")
+        android.util.Log.i("MestreIA_RAG", "  Scoring BM25 top-5: $top5Log")
 
-        // 3. Diversificação por Página
+        // 2b. Lote 259: Reranking semântico (cosseno) sobre os top-50 do BM25.
+        // Se vec_chunks estiver vazio (embeddings não gerados), retorna BM25 puro sem erro.
+        val bm25ScoresMap = chunksPontuados.associate { it.first.chunk_id to it.second }
+        val top50BM25 = chunksPontuados.take(50).map { it.first }
+        val top50Reranqueado = MestreIASemanticEngine.reranquear(
+            query = query,
+            candidatos = top50BM25,
+            bm25Scores = bm25ScoresMap,
+            vecDao = repository.vecChunkDao
+        )
+        // Reconstrói a lista ordenada: reranqueados primeiro, demais chunks do BM25 ao final
+        val top50Ids = top50Reranqueado.map { it.chunk_id }.toSet()
+        val restantes = chunksPontuados.drop(50).map { it.first }.filter { it.chunk_id !in top50Ids }
+        val chunksPontuadosFinais = (top50Reranqueado + restantes).map { c -> c to (bm25ScoresMap[c.chunk_id] ?: 0.0) }
+
+        // 3. Diversificação por Página (usa lista pós-reranking semântico)
         val contadorPaginas = mutableMapOf<String, Int>()
         val chunksDiversos: MutableList<MestreIAChunk> = mutableListOf()
 
-        for (pair in chunksPontuados) {
+        for (pair in chunksPontuadosFinais) {
             if (chunksDiversos.size >= 15) break
             val c = pair.first
             val pageKey = "${c.source_id}_${c.page_number}"
@@ -115,8 +130,6 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         // 3b. Garantia por Índice de Tópicos (topic_index.json)
-        // Injeta páginas críticas identificadas pelo TopicIndex antes da diversificação por fonte.
-        // Ex: "atirar numa piscina" → garante Pyramid p.7 mesmo que FTS4 não o retorne.
         val paginasTopicIndex = MestreIATopicIndex.resolverPaginasGarantidas(query)
         val chunksTopicIndex = mutableListOf<MestreIAChunk>()
         for (garantia in paginasTopicIndex) {
@@ -130,12 +143,11 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         // 3c. Garantia de Diversidade por Fonte (pool FTS)
-        // Se alguma fonte tem chunks no pool mas não entrou nos top-15, adiciona seu melhor chunk.
         val fontesRepresentadas = (chunksDiversos + chunksTopicIndex).map { it.source_id }.toSet()
         val fontesNoPool = chunksCandidatos.map { it.source_id }.distinct()
         for (fonte in fontesNoPool) {
             if (fonte !in fontesRepresentadas) {
-                val melhorDaFonte = chunksPontuados.firstOrNull { it.first.source_id == fonte }
+                val melhorDaFonte = chunksPontuadosFinais.firstOrNull { it.first.source_id == fonte }
                 if (melhorDaFonte != null) {
                     chunksDiversos.add(melhorDaFonte.first)
                     android.util.Log.i("MestreIA_RAG", "  Fonte garantida: ${fonte} → p.${melhorDaFonte.first.page_number}(${melhorDaFonte.second.toInt()}pts)")
@@ -170,7 +182,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val paginasFinais = chunksFinal.mapNotNull { it.page_number }.distinct().sorted().joinToString()
         android.util.Log.i("MestreIA_RAG", "  Contexto final: ${chunksFinal.size} chunks | páginas: [$paginasFinais]")
 
-        val scoresMap = chunksPontuados.associate { it.first.chunk_id to it.second }
+        val scoresMap = chunksPontuadosFinais.associate { it.first.chunk_id to it.second }
         return GraphSearchResult(
             summaries = emptyList(),
             relatedChunks = chunksFinal,
