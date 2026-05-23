@@ -1085,6 +1085,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
 
+### Lote 255: RAG — Dicionário 90+ Entradas + Filtro por Livro — CONCLUÍDO | commit: 8e92543
+- `MestreIAPlanner.dicionarioTecnico`: expandido de 45 → 90+ entradas
+  - Novos temas: voo, cavalaria, veículos, artes marciais, fogo/veneno/doença/radiação
+  - Social/reputação, economia, encumbrance, magia completa com pré-requisitos
+- `PlanoDeBusca.livrosRelevantes`: novo campo com source_ids detectados pelo cenário
+  - tiro+subaquático → `pt_pyramid_26_underwater` entra automaticamente
+  - Loga no Logcat `MestreIA_RAG` a lista de livros relevantes detectados
+- `livrosPorCategoria`: mapa público preparado para uso pelo GraphEngine na Onda 2
+
 ### Lote 254: RAG — Pocket RAG: Compressão Seletiva de Contexto — CONCLUÍDO | commit: 2a551bd
 - `MestreIAGraphEngine.comprimirChunk()`: extrai sentenças relevantes por termos de busca
   - Chunks ★★★ (BM25 >= 8.0): texto completo preservado
