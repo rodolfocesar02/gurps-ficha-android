@@ -143,16 +143,31 @@ Define o formato físico de como os dados são tratados no código.
 
 ---
 
-## 9. A "Voz" (Reconhecimento de Fala)
+## 9. A "Voz" (Voz Bidirecional em Tempo Real — Gemini Live)
 
-*   **`VozMestreIA.kt`** — `ui/components/`
-    *   **Descrição:** O Ouvido do Mestre IA. Encapsula o `SpeechRecognizer` nativo do Android para captura de comandos de voz em PT-BR. Ciclo de vida: `iniciar()` abre o microfone → `onEstado(ESCUTANDO)` → usuário fala → `onEstado(PROCESSANDO)` → `onResultado(texto)` entrega o texto reconhecido → `onEstado(OCIOSO)`. `cancelar()` interrompe; `liberar()` destrói o recognizer (chamado no `DisposableEffect` do `FichaScreen`). **Não usa servidor próprio** — depende do Google Speech Recognition instalado no dispositivo.
-    *   **Integração:** Instanciado em `FichaScreen`. `onResultado` chama `viewModel.conversarComMestreIA(texto, "geracao")` — o texto vai direto para o Forjador sem passar pelo chat. O dialog do Mestre IA abre automaticamente com a resposta.
-    *   **Ativação:** Long press no ícone do Mestre IA na `FichaCustomNavigationBar`. Toque simples continua abrindo o chat normalmente.
-    *   **Feedback visual:** `FichaCustomNavigationBar` recebe `estadoVoz: EstadoVoz` e exibe anel pulsante ao redor do ícone — **verde** durante `ESCUTANDO`, **amarelo** durante `PROCESSANDO`.
-    *   **Permissão:** `RECORD_AUDIO` já declarada no `AndroidManifest.xml`. Android solicita ao usuário na primeira vez que o long press é acionado.
+> ⚠️ **Voz Clássica Descontinuada:** Os arquivos `VozMestreIA.kt`, `VozTTS.kt` e `VozIntencaoClassifier.kt` foram removidos. O único modo de voz ativo é o Gemini Live (bidirecional). A enum `EstadoVoz` foi migrada para `GeminiLiveService.kt` e mantida pois ainda é usada pelo anel visual da `FichaCustomNavigationBar`.
+
+*   **`GeminiLiveService.kt`** — `ui/components/`
+    *   **Descrição:** O Coração da Voz Bidirecional. Gerencia a conexão **WebSocket persistente** com a API Gemini Live (`wss://generativelanguage.googleapis.com/.../BidiGenerateContent`). Fluxo completo: `iniciarSessao(contextoFicha)` → conecta WebSocket → envia `setup` (modelo + voz + prompt de sistema + tools) → aguarda `setupComplete` → injeta contexto da ficha + saudação → inicia captura de microfone e reprodução de áudio em paralelo.
+    *   **Captura de áudio:** `AudioRecord` a 16kHz/PCM16 em coroutine de I/O. Envia chunks de ~100ms como `realtimeInput.audio` em Base64. **Bloqueia o envio do microfone enquanto o modelo está falando** (`modeloFalando=true`) para evitar auto-interrupção.
+    *   **Reprodução de áudio:** `AudioTrack` a 24kHz/PCM16 em `MODE_STREAM`. Canal de coroutine com capacidade 200 chunks — garante ordem e ritmo natural sem pular frames. Ao iniciar novo turno de áudio, `limparFilaAudio()` descarta chunks anteriores e reseta o `AudioTrack`.
+    *   **Keepalive:** Envia áudio silencioso (100ms de zeros PCM) a cada 20s para manter o WebSocket vivo.
+    *   **Function Calling:** Ao receber `toolCall`, executa as ferramentas via `onToolCall` (implementado por `GeminiLiveTools`), exibe label visual de feedback imediato (ex: "📖 Consultando o Códex..."), e devolve `toolResponse` ao servidor.
+    *   **Transcrições:** Captura `inputTranscription` (o que o usuário falou) via `onTranscricaoUsuario` e `outputTranscription`/`text` (o que o modelo respondeu) via `onRespostaMestre` — ambos exibidos no chat para manter histórico visual.
+    *   **Estados:** `EstadoLive` — `OCIOSO`, `CONECTANDO`, `OUVINDO`, `FALANDO`, `ERRO`.
+    *   **Prompt de sistema:** Embutido no próprio arquivo — contém todas as ferramentas disponíveis, fluxo para raças/metacaracterísticas, protocolo obrigatório de cálculo (citar → identificar → calcular → concluir), regras de comportamento (nunca inventar regras ou IDs) e estilo de voz (sábio, justo, levemente dramático).
+    *   **Modelo e voz:** `BuildConfig.GEMINI_LIVE_MODEL` (`gemini-3.1-flash-live-preview`) e `BuildConfig.GEMINI_LIVE_VOICE` (`Charon`).
+
+*   **`GeminiLiveTools.kt`** — `ui/components/`
+    *   **Descrição:** O Executor de Ferramentas do Gemini Live. Implementa o callback `onToolCall` do `GeminiLiveService` — recebe o nome e args da ferramenta chamada pelo modelo de voz e delega para os executores corretos. Reutiliza integralmente o `ForjadorToolExecutor` para edição de fichas e o `MestreIAGraphEngine` para RAG, garantindo que a voz bidirecional tenha exatamente as mesmas capacidades do chat de texto.
+    *   **Ferramentas disponíveis:** `lerFicha` (lê seções da ficha), `buscarCatalogo` (busca IDs oficiais — previne alucinação), `editarFicha` (edita ficha via `ForjadorToolExecutor`), `trilhaDeMagias` (GPS de pré-requisitos), `consultarManual` (RAG com multi-query via `MestreIAPlanner` + `MestreIAGraphEngine`), `forjador_buscar_racas`, `forjador_aplicar_modelo_racial`.
+    *   **Compatibilidade:** Mapeia ferramentas legadas (`obterFicha`, `adicionarVantagem`, etc.) para as APIs atuais — garante que sessões antigas ainda funcionem.
+    *   **RAG no Live:** `consultarManual` usa `runBlocking` para executar busca síncrona no `MestreIAGraphEngine`, com multi-query via `MestreIAPlanner.subQueriesTemáticas`. Retorna até 20 chunks com instrução de citar a página e calcular passo a passo.
 
 ---
+
+> [!NOTE]
+> Esta arquitetura tem **dois caminhos de voz independentes**: (1) Clássico — `VozMestreIA` captura STT → `VozIntencaoClassifier` decide o modo → `MestreIAUseCase`/`MestreIAGeneratorUseCase` processam → `VozTTS` fala a resposta. (2) Bidirecional — `GeminiLiveService` gerencia WebSocket direto com Gemini Live, que faz STT+IA+TTS em um único serviço de streaming. `GeminiLiveTools` garante que ambos os caminhos tenham acesso às mesmas ferramentas (RAG, catálogo, edição de ficha). Controlado por `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA`.
 
 > [!NOTE]
 > Esta arquitetura usa **RAG Direto nos Chunks** como rota primária de busca. O MestreIAUseCase (Auditor) consome RAG do manual. O MestreIAGeneratorUseCase (Forjador) **não usa RAG** — trabalha exclusivamente com o catálogo de IDs e as ferramentas do Forjador. Os dois modos compartilham o MestreIAClient (rede), MestreIATools/ForjadorTools (function calling) e FichaDatabase (persistência).

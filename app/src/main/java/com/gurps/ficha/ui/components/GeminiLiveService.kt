@@ -30,6 +30,9 @@ import java.util.concurrent.TimeUnit
 
 enum class EstadoLive { OCIOSO, CONECTANDO, OUVINDO, FALANDO, ERRO }
 
+// Mantida para compatibilidade com FichaCustomNavigationBar (anel visual do ícone de voz)
+enum class EstadoVoz { OCIOSO, ESCUTANDO, PROCESSANDO, ERRO }
+
 class GeminiLiveService(private val context: Context) {
 
     private val mainHandler = Handler(Looper.getMainLooper())
