@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "topics": [
+    {
+      "id": "tiro_subaquatico",
+      "keywords": ["subaquatico", "submerso", "piscina", "agua", "aquatico", "mergulho", "tiro", "atirar", "disparo", "arremesso", "distancia"],
+      "require_all": ["subaquatico", "tiro"],
+      "fallback_any": [
+        ["agua", "tiro"], ["piscina", "disparo"], ["submerso", "arma"], ["subaquatico", "alcance"]
+      ],
+      "pages": [
+        {"source_id": "pt_pyramid_26_underwater", "pages": [7, 8]},
+        {"source_id": "pt_modulo_basico", "pages": [106, 107, 108]}
+      ],
+      "nota": "Pyramid p.7: armas de distancia dividem alcance por 10 (musculares) ou 1000 (fogo). p.8: explosoes subaquaticas."
+    },
+    {
+      "id": "combate_subaquatico",
+      "keywords": ["subaquatico", "submerso", "piscina", "agua", "combate", "atacar", "luta"],
+      "require_all": ["subaquatico", "combate"],
+      "fallback_any": [
+        ["agua", "combate"], ["piscina", "ataque"], ["submerso", "luta"]
+      ],
+      "pages": [
+        {"source_id": "pt_pyramid_26_underwater", "pages": [7]},
+        {"source_id": "pt_modulo_basico", "pages": [106, 107]}
+      ],
+      "nota": "Pyramid p.7: penalidade -4 para armas corpo a corpo por jarda subaquatica."
+    },
+    {
+      "id": "queda_dano",
+      "keywords": ["queda", "cair", "precipicio", "altitude", "dano", "impacto"],
+      "require_all": ["queda"],
+      "fallback_any": [
+        ["cair", "dano"], ["precipicio", "dano"], ["altitude", "dano"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [107, 108]}
+      ],
+      "nota": "MB p.107: dano de queda — 1d6 por 2m, máximo 10d6."
+    },
+    {
+      "id": "dano_fogo",
+      "keywords": ["fogo", "chama", "queimadura", "incendio", "calor"],
+      "require_all": ["fogo"],
+      "fallback_any": [
+        ["queimadura", "dano"], ["chama", "dano"], ["incendio", "regra"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [107]}
+      ],
+      "nota": "MB p.107: regras de dano por fogo e queimaduras."
+    },
+    {
+      "id": "asfixia_afogamento",
+      "keywords": ["asfixia", "afogamento", "sufocamento", "respiracao", "folego", "ar", "agua"],
+      "require_all": ["asfixia"],
+      "fallback_any": [
+        ["afogamento", "regra"], ["sufocamento", "dano"], ["respiracao", "agua"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [107]},
+        {"source_id": "pt_pyramid_26_underwater", "pages": [4, 5, 6]}
+      ],
+      "nota": "MB p.107: asfixia e afogamento. Pyramid p.4-6: pressao, narcose, doenca descompressiva."
+    },
+    {
+      "id": "critico_acerto_falha",
+      "keywords": ["critico", "acerto critico", "falha critica", "dado", "3d6", "resultado"],
+      "require_all": ["critico"],
+      "fallback_any": [
+        ["acerto critico", "dado"], ["falha critica", "resultado"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [104, 105, 114]}
+      ],
+      "nota": "MB p.104-105: regras de acerto e falha crítica em combate."
+    },
+    {
+      "id": "carga_encumbrance",
+      "keywords": ["carga", "encumbrance", "peso", "carregando", "st", "penalidade", "velocidade"],
+      "require_all": ["carga"],
+      "fallback_any": [
+        ["encumbrance", "penalidade"], ["peso", "velocidade"], ["carregando", "st"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [17]}
+      ],
+      "nota": "MB p.17: tabela de carga e encumbrance por ST."
+    },
+    {
+      "id": "alcance_tiro_distancia",
+      "keywords": ["alcance", "distancia", "tiro", "disparo", "arma fogo", "penalidade", "range"],
+      "require_all": ["alcance", "tiro"],
+      "fallback_any": [
+        ["alcance", "disparo"], ["alcance", "arma"], ["distancia", "tiro"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [104, 105, 106]},
+        {"source_id": "pt_gun_fu", "pages": [1, 2, 3]}
+      ],
+      "nota": "MB p.104-106: regras de tiro a distancia, penalidades, meia distancia e max."
+    },
+    {
+      "id": "magia_custo_energia",
+      "keywords": ["magia", "feitico", "custo", "energia", "pf", "mana", "conjurar"],
+      "require_all": ["magia"],
+      "fallback_any": [
+        ["feitico", "custo"], ["energia", "magia"], ["mana", "custo"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [98, 99, 100, 101]},
+        {"source_id": "pt_magia", "pages": [1, 2, 3, 4]}
+      ],
+      "nota": "MB p.98-101: regras gerais de magia. pt_magia p.1-4: lista de feiticos por escola."
+    },
+    {
+      "id": "sanidade_medo",
+      "keywords": ["sanidade", "medo", "fobia", "horror", "panico", "vontade", "mental"],
+      "require_all": ["sanidade"],
+      "fallback_any": [
+        ["medo", "teste"], ["fobia", "vontade"], ["horror", "regra"]
+      ],
+      "pages": [
+        {"source_id": "pt_modulo_basico", "pages": [107]}
+      ],
+      "nota": "MB p.107: regras de medo, sanidade e testes de vontade."
+    },
+    {
+      "id": "movimentacao_agua",
+      "keywords": ["nadar", "natacao", "agua", "deslocamento", "move", "aquatico"],
+      "require_all": ["nadar"],
+      "fallback_any": [
+        ["natacao", "regra"], ["agua", "deslocamento"], ["aquatico", "move"]
+      ],
+      "pages": [
+        {"source_id": "pt_pyramid_26_underwater", "pages": [7]},
+        {"source_id": "pt_modulo_basico", "pages": [107]}
+      ],
+      "nota": "Pyramid p.7: deslocamento e acao subaquatica. MB p.107: natacao como pericia."
+    }
+  ]
+}

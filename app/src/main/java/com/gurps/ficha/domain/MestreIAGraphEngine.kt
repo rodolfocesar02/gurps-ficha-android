@@ -8,6 +8,10 @@ import com.gurps.ficha.model.*
  */
 class MestreIAGraphEngine(private val repository: DataRepository) {
 
+    init {
+        MestreIATopicIndex.carregar(repository.context)
+    }
+
     data class GraphSearchResult(
         val summaries: List<String> = emptyList(),
         val relatedChunks: List<MestreIAChunk>,
@@ -110,10 +114,24 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        // 3b. Garantia de Diversidade por Fonte
-        // Se alguma fonte (ex: Pyramid, Gun Fu) tem chunks no pool mas não entrou nos top-15,
-        // adiciona seu melhor chunk. Evita monopólio do Módulo Básico quando há suplementos relevantes.
-        val fontesRepresentadas = chunksDiversos.map { it.source_id }.toSet()
+        // 3b. Garantia por Índice de Tópicos (topic_index.json)
+        // Injeta páginas críticas identificadas pelo TopicIndex antes da diversificação por fonte.
+        // Ex: "atirar numa piscina" → garante Pyramid p.7 mesmo que FTS4 não o retorne.
+        val paginasTopicIndex = MestreIATopicIndex.resolverPaginasGarantidas(query)
+        val chunksTopicIndex = mutableListOf<MestreIAChunk>()
+        for (garantia in paginasTopicIndex) {
+            for (page in garantia.pages) {
+                val chunks = repository.buscarPorPaginaESource(page, garantia.sourceId)
+                if (chunks.isNotEmpty()) {
+                    chunksTopicIndex.addAll(chunks)
+                    android.util.Log.i("MestreIA_RAG", "  TopicIndex garantido: ${garantia.sourceId} p.$page → ${chunks.size} chunks")
+                }
+            }
+        }
+
+        // 3c. Garantia de Diversidade por Fonte (pool FTS)
+        // Se alguma fonte tem chunks no pool mas não entrou nos top-15, adiciona seu melhor chunk.
+        val fontesRepresentadas = (chunksDiversos + chunksTopicIndex).map { it.source_id }.toSet()
         val fontesNoPool = chunksCandidatos.map { it.source_id }.distinct()
         for (fonte in fontesNoPool) {
             if (fonte !in fontesRepresentadas) {
@@ -126,10 +144,13 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         // 4. Expansão por Proximidade
-        // Chunks garantidos (fontes extras) são expandidos PRIMEIRO para não serem cortados pelo take(30)
+        // Prioridade: TopicIndex > chunks garantidos de fonte > chunks por ranking BM25
         val chunksBase = chunksDiversos.take(15)
         val chunksGarantidos = chunksDiversos.drop(15)
         val chunksFinais = mutableSetOf<MestreIAChunk>()
+
+        // TopicIndex tem prioridade absoluta — entram primeiro, nunca cortados
+        chunksFinais.addAll(chunksTopicIndex)
 
         for (chunk in (chunksGarantidos + chunksBase)) {
             chunksFinais.add(chunk)
