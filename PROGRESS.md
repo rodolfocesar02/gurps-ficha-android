@@ -1085,6 +1085,18 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
 
+### Lote 256: RAG — Melhoria 2D: Índice de Tópicos (topic_index.json) — CONCLUÍDO | commit: 8bef6dc
+- `topic_index.json`: 11 tópicos declarativos com `require_all` + `fallback_any` + páginas garantidas
+  - tiro_subaquatico → Pyramid p.7+8 + MB p.106-108 (garante alcance÷1000 sempre presente)
+  - combate_subaquatico, queda_dano, dano_fogo, asfixia, critico, carga, alcance_tiro, magia, sanidade, movimentacao_agua
+- `MestreIATopicIndex.kt`: loader JSON + matching engine (require_all / fallback_any)
+  - Carregado no init do GraphEngine via `MestreIATopicIndex.carregar(context)`
+  - Matching tolerante: `require_all` como primário, pares `fallback_any` como backup
+- `MestreIAGraphEngine.kt`: chunks do topic_index injetados com prioridade máxima
+  - Entram antes do `take(30)`, nunca cortados pelo diversificador de fontes
+  - Log `MestreIA_RAG`: "TopicIndex garantido: pt_pyramid_26 p.7 → 2 chunks"
+- **Impacto**: FTS4 pode falhar por keyword mismatch — topic_index garante as páginas certas mesmo assim
+
 ### Lote 255: RAG — Dicionário 90+ Entradas + Filtro por Livro — CONCLUÍDO | commit: 8e92543
 - `MestreIAPlanner.dicionarioTecnico`: expandido de 45 → 90+ entradas
   - Novos temas: voo, cavalaria, veículos, artes marciais, fogo/veneno/doença/radiação
