@@ -1085,6 +1085,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
 
+### Lote 253: RAG — LRU Cache de Buscas FTS — CONCLUÍDO | commit: 3372e58
+- `MestreIARepository`: LinkedHashMap LRU (20 entradas) para resultados FTS da sessão
+- Cache hit evita re-processar queries repetidas no multi-query temático paralelo
+- Mutex protege acesso concorrente das coroutines
+- `limparCacheFTS()` para reset entre sessões de perguntas
+
 ### Lote 252: RAG — BM25-Kotlin + Filtro por Fonte + Pool Otimizado — CONCLUÍDO | commits: db839d5, e03624e
 - `ManualChunkDao`: nova query `buscarRegrasPorFonte()` com filtro `source_id` (busca por livro específico)
 - `MestreIARepository`: novo método `buscarNoCodexPorFonte()` para buscas direcionadas (ex: só Pyramid)
