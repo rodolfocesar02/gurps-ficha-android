@@ -2,6 +2,63 @@
   "version": 2,
   "topics": [
     {
+      "id": "jato_de_chamas",
+      "keywords": [
+        "jato",
+        "chamas",
+        "fogo",
+        "magia",
+        "feitico",
+        "ataque",
+        "inato",
+        "distancia",
+        "alcance"
+      ],
+      "require_all": [
+        "jato",
+        "chamas"
+      ],
+      "fallback_any": [
+        [
+          "jato",
+          "fogo"
+        ],
+        [
+          "jato",
+          "ataque"
+        ],
+        [
+          "chamas",
+          "ataque"
+        ],
+        [
+          "chamas",
+          "distancia"
+        ],
+        [
+          "fogo",
+          "alcance"
+        ],
+        [
+          "chamas",
+          "alcance"
+        ],
+        [
+          "inato",
+          "ataque"
+        ]
+      ],
+      "pages": [
+        {
+          "source_id": "pt_magia",
+          "pages": [
+            73
+          ]
+        }
+      ],
+      "nota": "pt_magia p.73: Jato de Chamas - trata como arma de mao, distancia = ndados metros, nao tem penalidade de distancia/velocidade. Max 3m com 3 pontos."
+    },
+    {
       "id": "tiro_subaquatico",
       "keywords": [
         "subaquatico",
