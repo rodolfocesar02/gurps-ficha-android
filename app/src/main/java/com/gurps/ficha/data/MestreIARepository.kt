@@ -52,9 +52,8 @@ class MestreIARepository(
     }
 
     /**
-     * Busca DIRETA no Códex via FTS4.
-     * Pool de 500 permite scoring BM25-Kotlin ter candidatos suficientes.
-     * Reduzido de 1500 → 500: FTS4 já filtra irrelevantes, scoring Kotlin refina o resto.
+     * Busca DIRETA no Códex via FTS4. Pool de 500 para BM25-Kotlin no GraphEngine.
+     * (FTS5+BM25 nativo requer Room 2.7-alpha+ — agendado para quando estabilizar)
      */
     suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 500): List<MestreIAChunk> {
         val ftsQuery = prepararQueryFTSAgressiva(query, termosTecnicos)

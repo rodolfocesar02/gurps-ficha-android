@@ -13,14 +13,13 @@ interface ManualChunkDao {
     suspend fun insertAll(chunks: List<ManualChunkEntity>)
 
     /**
-     * Busca FTS4 com pool amplo — o scoring BM25-Kotlin no GraphEngine faz o ranking.
+     * Busca FTS4 — retorna em ordem de rowid (inserção). Ranking feito pelo BM25-Kotlin no GraphEngine.
      */
     @Query("SELECT * FROM manual_chunks WHERE search_text MATCH :query LIMIT :limit")
     suspend fun buscarRegras(query: String, limit: Int): List<ManualChunkEntity>
 
     /**
      * Busca FTS4 filtrada por fonte específica.
-     * FTS4 suporta AND com colunas regulares normalmente.
      */
     @Query("SELECT * FROM manual_chunks WHERE search_text MATCH :query AND source_id = :sourceId LIMIT :limit")
     suspend fun buscarRegrasPorFonte(query: String, sourceId: String, limit: Int): List<ManualChunkEntity>

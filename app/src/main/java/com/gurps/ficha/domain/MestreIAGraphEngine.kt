@@ -24,47 +24,54 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         
         android.util.Log.i("MestreIA_RAG", "══ RAG BUSCA: \"${query.take(80)}\"")
 
-        // 1. Busca Agressiva no RepositÃ³rio
-        // Sem limite efetivo: FTS4 retorna em ordem de rowid (inserção), não por relevância.
-        // O scoring em Kotlin cuida do ranking — precisamos de TODOS os chunks candidatos no pool.
-        val chunksCandidatos: List<MestreIAChunk> = repository.buscarNoCodexDireto(query, termosBase, limit = 1500)
+        // 1. Busca FTS4 — pool de 500 candidatos pré-filtrados por keyword match
+        val chunksCandidatos: List<MestreIAChunk> = repository.buscarNoCodexDireto(query, termosBase, limit = 500)
 
         if (chunksCandidatos.isEmpty()) {
             android.util.Log.e("MestreIA_RAG", "✖ RAG FALHOU: nenhum chunk para \"${query.take(60)}\" — IA não terá contexto do manual!")
             return GraphSearchResult(emptyList(), emptyList())
         }
 
-        // 2. Motor de PontuaÃ§Ã£o (Scoring)
-        val termoWeights = mutableMapOf<String, Int>()
-        for (termo in termosBase) {
-            val ocorrencias = chunksCandidatos.count { it.text.contains(termo, ignoreCase = true) }
-            val pesoRaridade = if (ocorrencias > 0) (50 / ocorrencias).coerceIn(1, 50) else 1
-            termoWeights[termo.lowercase()] = pesoRaridade
+        // 2. BM25-Kotlin: scoring por relevância real (TF-IDF com saturação de frequência)
+        // BM25(d,q) = Σ IDF(qi) × tf(qi,d)×(k1+1) / (tf(qi,d) + k1×(1−b+b×|d|/avgdl))
+        val k1 = 1.5   // saturação: penaliza repetição excessiva do mesmo termo
+        val b  = 0.75  // normalização por comprimento do documento
+        val N  = chunksCandidatos.size.toDouble()
+        val avgdl = chunksCandidatos.map { it.text.length }.average().coerceAtLeast(1.0)
+
+        // IDF por termo: log((N − df + 0.5) / (df + 0.5))
+        val idfMap = termosBase.associate { termo ->
+            val df = chunksCandidatos.count { it.text.contains(termo, ignoreCase = true) }.toDouble()
+            val idf = kotlin.math.ln((N - df + 0.5) / (df + 0.5) + 1.0).coerceAtLeast(0.01)
+            termo.lowercase() to idf
         }
 
         val chunksPontuados: MutableList<Pair<MestreIAChunk, Double>> = mutableListOf()
         for (chunk in chunksCandidatos) {
-            var score = 0.0
             val texto = chunk.text.lowercase()
-            
+            val dl = texto.length.toDouble()
+            var score = 0.0
+
+            // Componente BM25 principal
             for (termo in termosBase) {
                 val termLower = termo.lowercase()
-                if (texto.contains(termLower)) {
-                    val peso = termoWeights[termLower] ?: 1
-                    score += (100.0 * peso)
-                }
+                val tf = texto.split(termLower).size - 1  // contagem de ocorrências
+                if (tf == 0) continue
+                val idf = idfMap[termLower] ?: 0.01
+                score += idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * dl / avgdl))
             }
 
+            // Bonus: termos expandidos (sinônimos) — peso reduzido vs. termos base
             for (termoEx in (termosExpandidos - termosBase.toSet())) {
-                if (texto.contains(termoEx.lowercase())) score += 15.0
+                if (texto.contains(termoEx.lowercase())) score += 0.3
             }
 
-            // Bonus AND: chunk contém TODOS os termos base → muito mais relevante que matches parciais
+            // Bonus AND: chunk contém TODOS os termos base (altamente relevante)
             if (termosBase.size >= 2 && termosBase.all { texto.contains(it.lowercase()) }) {
-                score += 500.0
+                score += 15.0
             }
 
-            // Bonus Proximidade: pares de termos base que aparecem próximos (< 100 chars)
+            // Bonus Proximidade: pares de termos base < 100 chars de distância
             if (termosBase.size >= 2) {
                 for (i in termosBase.indices) {
                     val t1 = termosBase[i].lowercase()
@@ -72,16 +79,17 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                     for (j in (i + 1) until termosBase.size) {
                         val t2 = termosBase[j].lowercase()
                         val pos2 = texto.indexOf(t2).takeIf { it >= 0 } ?: continue
-                        if (kotlin.math.abs(pos1 - pos2) < 100) score += 200.0
+                        if (kotlin.math.abs(pos1 - pos2) < 100) score += 5.0
                     }
                 }
             }
 
-            if ((chunk.page_number ?: 0) < 30 && chunk.source_id == "pt_modulo_basico") score -= 20.0
+            // Penalidade: páginas de índice/sumário (primeiras 30 do módulo básico)
+            if ((chunk.page_number ?: 0) < 30 && chunk.source_id == "pt_modulo_basico") score -= 0.5
 
             chunksPontuados.add(Pair(chunk, score))
         }
-        
+
         chunksPontuados.sortByDescending { it.second }
 
         val top5Log = chunksPontuados.take(5).joinToString(" | ") { "p.${it.first.page_number}(${it.second.toInt()}pts)" }

@@ -6,9 +6,7 @@ import com.gurps.ficha.domain.filters.CatalogFilters
  * MestreIAQueryEngine - Gera queries FTS5 válidas para o SQLite.
  *
  * FTS5 suporta: termo* (prefixo), "frase exata", termo1 OR termo2
- * Diferença do FTS4: parênteses agora são válidos, mas evitamos para consistência.
- * BM25 nativo do FTS5 ranqueia chunks por relevância real — não precisamos mais do
- * scoring total em Kotlin, apenas do re-scoring de proximidade/AND para refinamento.
+ * BM25 nativo ranqueia por relevância real — scoring Kotlin apenas refina AND/proximidade.
  */
 object MestreIAQueryEngine {
 
