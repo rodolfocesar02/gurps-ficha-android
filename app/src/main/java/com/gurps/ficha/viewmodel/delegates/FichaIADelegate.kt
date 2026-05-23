@@ -194,13 +194,20 @@ class FichaIADelegate(
                     modo = modo,
                     onStatusUpdate = { status ->
                         scope.launch(Dispatchers.Main) {
-                            atualizarMsgAssistente(assistantUid) { it.copy(modelName = status) }
+                            // Mostra status no corpo do balão enquanto a resposta não chegou
+                            atualizarMsgAssistente(assistantUid) {
+                                val textoAtual = it.text
+                                if (textoAtual == "Pensando..." || textoAtual.startsWith("⏳")) {
+                                    it.copy(text = "⏳ $status")
+                                } else it
+                            }
                         }
                     },
                     onChunk = { chunk ->
                         scope.launch(Dispatchers.Main) {
                             atualizarMsgAssistente(assistantUid) {
-                                it.copy(text = it.text.replace("Pensando...", "") + chunk)
+                                val textoLimpo = if (it.text == "Pensando..." || it.text.startsWith("⏳")) "" else it.text
+                                it.copy(text = textoLimpo + chunk)
                             }
                         }
                     },

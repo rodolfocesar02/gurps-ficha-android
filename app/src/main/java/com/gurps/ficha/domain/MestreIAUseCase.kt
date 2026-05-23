@@ -285,7 +285,9 @@ class MestreIAUseCase(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
-                            desativarTools = isUltimaIteracao, isComplexo = isQuestaoComplexa
+                            desativarTools = isUltimaIteracao,
+                            // Thinking só nas iterações de investigação, não na resposta final
+                            isComplexo = isQuestaoComplexa && !isUltimaIteracao
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {
