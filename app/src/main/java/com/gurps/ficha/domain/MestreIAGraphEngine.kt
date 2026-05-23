@@ -234,7 +234,8 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
     /**
      * Formata os resultados RAG para o prompt da IA.
-     * Injeta chunks do manual + tabelas tecnicas extraidas dos mesmos chunks.
+     * Pocket RAG: chunks ★★★ enviados completos; ★★ e ★ comprimidos por sentenças relevantes.
+     * Reduz contexto de ~35KB para ~12-18KB sem perder informação crítica.
      */
     suspend fun formatarParaIA(resultado: GraphSearchResult, query: String = ""): String {
         val s = StringBuilder()
@@ -242,6 +243,12 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         if (resultado.relatedChunks.isNotEmpty()) {
             s.append("\n=== REGRAS DO CODEX (PAGINAS DO MANUAL) ===\n")
             s.append("INSTRUÇÃO: Chunks marcados [★★★] têm maior relevância para a pergunta. Priorize-os na análise.\n")
+
+            // Extrai termos de busca do query para guiar a compressão de sentenças
+            val termosQuery = query.split(Regex("\\s+"))
+                .map { it.lowercase().trim() }
+                .filter { it.length >= 3 }
+
             val porFonte = resultado.relatedChunks.groupBy { it.source_id ?: "desconhecido" }
             porFonte.forEach { (_, chunks) ->
                 val tituloFonte = chunks.first().source_title ?: "Manual"
@@ -249,11 +256,18 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 chunks.forEach { chunk ->
                     val score = resultado.chunkScores[chunk.chunk_id] ?: 0.0
                     val relevancia = when {
-                        score >= 800 -> "[★★★]"
-                        score >= 300 -> "[★★]"
-                        else -> "[★]"
+                        score >= 8.0  -> "[★★★]"
+                        score >= 2.0  -> "[★★]"
+                        else          -> "[★]"
                     }
-                    s.append("[Pág. ${chunk.page_number}]$relevancia: ${chunk.text}\n")
+                    // Chunks de alta relevância: texto completo (IA precisa de todo o contexto)
+                    // Chunks de baixa relevância: comprimidos às sentenças que contêm os termos
+                    val textoFinal = when {
+                        score >= 8.0 -> chunk.text
+                        termosQuery.isNotEmpty() -> comprimirChunk(chunk.text, termosQuery)
+                        else -> chunk.text.take(600)  // fallback: limita sem comprimir
+                    }
+                    s.append("[Pág. ${chunk.page_number}]$relevancia: $textoFinal\n")
                 }
             }
         }
@@ -272,6 +286,34 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         return s.toString()
+    }
+
+    /**
+     * Pocket RAG — extrai sentenças relevantes de um chunk.
+     * Mantém sentenças que contêm pelo menos um termo de busca + 1 sentença de contexto vizinha.
+     * Chunks sem nenhuma sentença relevante retornam as primeiras 2 sentenças (contexto mínimo).
+     */
+    private fun comprimirChunk(texto: String, termos: List<String>, maxSentencas: Int = 4): String {
+        val sentencas = texto.split(Regex("(?<=[.!?])\\s+")).filter { it.isNotBlank() }
+        if (sentencas.size <= 2) return texto  // chunk pequeno: não comprimir
+
+        val indicesRelevantes = mutableSetOf<Int>()
+        sentencas.forEachIndexed { i, sentenca ->
+            val sent = sentenca.lowercase()
+            if (termos.any { sent.contains(it) }) {
+                indicesRelevantes.add(i)
+                // inclui sentença vizinha seguinte como contexto (regras frequentemente continuam na próxima frase)
+                if (i + 1 < sentencas.size) indicesRelevantes.add(i + 1)
+            }
+        }
+
+        if (indicesRelevantes.isEmpty()) {
+            // Nenhuma sentença contém os termos — retorna início do chunk como contexto
+            return sentencas.take(2).joinToString(" ")
+        }
+
+        return indicesRelevantes.sorted().take(maxSentencas)
+            .joinToString(" ") { sentencas[it] }
     }
 
     /**

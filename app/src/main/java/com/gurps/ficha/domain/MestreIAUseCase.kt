@@ -78,8 +78,8 @@ class MestreIAUseCase(
                 // MODO MESTRE/DÚVIDA: Fila de Falha Crítica (Failover)
                 // LOTE 127: Reordenado com base em análise de logcat — MiMo loopava sem responder
                 listOf(
-                    // 1. DeepSeek Gratuito (Main — confiável, responde diretamente)
-                    AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
+                    // 1. DeepSeek Pago (Main — teste com chave paga igual ao Forjador)
+                    AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
                     // 2. Gemini 3.1 Flash-Lite (Backup 1 — rápido e econômico)
                     AIConfig(BuildConfig.MESTRE_IA_LITE_1_URL, BuildConfig.MESTRE_IA_GEMINI_KEY, BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE),
                     // 3. MiMo Pro (Backup 2 — Xiaomi, loop-prone)
@@ -309,7 +309,7 @@ class MestreIAUseCase(
                                 val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
 
                                 if (resTool.relatedChunks.isNotEmpty()) {
-                                    val novoTextoRegras = graphEngine.formatarParaIA(resTool)
+                                    val novoTextoRegras = graphEngine.formatarParaIA(resTool, queryTool)
                                     val ponteAtualizada = (catalogoDinamico.ponteDeFerro + "\n\n=== NOVAS REGRAS ENCONTRADAS ===\n" + novoTextoRegras).take(35000)
                                     val paginasTool = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
                                     android.util.Log.i("MestreIA_RAG", "║  TOOL OK: ${resTool.relatedChunks.size} chunks adicionados | páginas: [$paginasTool] | ctx total: ${ponteAtualizada.length}chars")
@@ -444,7 +444,7 @@ class MestreIAUseCase(
         
         val cat = MestreIAClient.CatalogoNomes(
             chunks = res.relatedChunks,
-            ponteDeFerro = graphEngine.formatarParaIA(res).take(35000)
+            ponteDeFerro = graphEngine.formatarParaIA(res, prompt).take(35000)
         )
         return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty())
     }
