@@ -1085,6 +1085,15 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - Captura `reasoning_content` e loga em `MestreIA_Thinking` para debug
 - Loga `prompt_cache_hit_tokens` / `prompt_cache_miss_tokens` em `MestreIA_Cache`
 
+### Lote 254: RAG — Pocket RAG: Compressão Seletiva de Contexto — CONCLUÍDO | commit: 2a551bd
+- `MestreIAGraphEngine.comprimirChunk()`: extrai sentenças relevantes por termos de busca
+  - Chunks ★★★ (BM25 >= 8.0): texto completo preservado
+  - Chunks ★★/★: comprimidos para 4 sentenças relevantes + contexto vizinho
+  - Chunks sem match: primeiras 2 sentenças como contexto mínimo
+- Contexto RAG estimado: ~35KB → ~12-18KB (-40 a -60% de tokens)
+- `formatarParaIA()` recebe `query` para guiar qual sentença é relevante
+- Thresholds ajustados para escala BM25-Kotlin (8.0/2.0)
+
 ### Lote 253: RAG — LRU Cache de Buscas FTS — CONCLUÍDO | commit: 3372e58
 - `MestreIARepository`: LinkedHashMap LRU (20 entradas) para resultados FTS da sessão
 - Cache hit evita re-processar queries repetidas no multi-query temático paralelo
