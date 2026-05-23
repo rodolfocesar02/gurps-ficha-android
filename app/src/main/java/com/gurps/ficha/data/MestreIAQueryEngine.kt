@@ -3,11 +3,12 @@ package com.gurps.ficha.data
 import com.gurps.ficha.domain.filters.CatalogFilters
 
 /**
- * MestreIAQueryEngine - Gera queries FTS4 válidas para o SQLite.
+ * MestreIAQueryEngine - Gera queries FTS5 válidas para o SQLite.
  *
- * REGRA CRÍTICA: SQLite FTS4 NÃO suporta wildcard * dentro de parênteses.
- * Correto:   termo1* OR termo2* OR termo3*
- * Inválido:  (termo1*) OR (termo2* OR termo3*)
+ * FTS5 suporta: termo* (prefixo), "frase exata", termo1 OR termo2
+ * Diferença do FTS4: parênteses agora são válidos, mas evitamos para consistência.
+ * BM25 nativo do FTS5 ranqueia chunks por relevância real — não precisamos mais do
+ * scoring total em Kotlin, apenas do re-scoring de proximidade/AND para refinamento.
  */
 object MestreIAQueryEngine {
 

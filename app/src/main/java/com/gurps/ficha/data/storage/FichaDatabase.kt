@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class],
-    version = 22,
+    version = 23,  // Bump: FTS4 → FTS5 (esquemas incompatíveis, requer fallbackToDestructiveMigration)
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -72,7 +72,7 @@ abstract class FichaDatabase : RoomDatabase() {
                                         chunk_id = obj.getString("chunk_id"),
                                         source_title = obj.getString("source_title"),
                                         source_id = obj.optString("source_id", "pt_modulo_basico"),
-                                        page_number = obj.optInt("page_number", 0),
+                                        page_number = obj.optInt("page_number", 0),  // 0 = página desconhecida
                                         text = textLimpo,
                                         search_text = searchTextNorm
                                     ))

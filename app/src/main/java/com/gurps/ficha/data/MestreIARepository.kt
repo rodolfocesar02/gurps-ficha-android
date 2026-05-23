@@ -52,12 +52,13 @@ class MestreIARepository(
     }
 
     /**
-     * LOTE 119: Busca DIRETA no Códex (Pula o Grafo).
-     * Usa uma combinação de OR para abrangência e AND para precisão.
+     * Busca DIRETA no Códex via FTS4.
+     * Pool de 500 permite scoring BM25-Kotlin ter candidatos suficientes.
+     * Reduzido de 1500 → 500: FTS4 já filtra irrelevantes, scoring Kotlin refina o resto.
      */
-    suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 30): List<MestreIAChunk> {
+    suspend fun buscarNoCodexDireto(query: String, termosTecnicos: List<String> = emptyList(), limit: Int = 500): List<MestreIAChunk> {
         val ftsQuery = prepararQueryFTSAgressiva(query, termosTecnicos)
-        android.util.Log.i("MestreIA_RAG", "┌─ FTS QUERY: $ftsQuery")
+        android.util.Log.i("MestreIA_RAG", "┌─ FTS4 QUERY: $ftsQuery")
 
         val resultados = manualChunkDao.buscarRegras(ftsQuery, limit).map { entity ->
             MestreIAChunk(
@@ -70,13 +71,30 @@ class MestreIARepository(
         }
 
         if (resultados.isEmpty()) {
-            android.util.Log.w("MestreIA_RAG", "└─ FTS: NENHUM chunk encontrado — query muito específica ou termos ausentes no banco")
+            android.util.Log.w("MestreIA_RAG", "└─ FTS4: NENHUM chunk encontrado — query muito específica ou termos ausentes no banco")
         } else {
             val paginas = resultados.mapNotNull { it.page_number }.distinct().sorted().joinToString()
-            android.util.Log.i("MestreIA_RAG", "└─ FTS: ${resultados.size} chunks encontrados | páginas: [$paginas]")
+            android.util.Log.i("MestreIA_RAG", "└─ FTS4: ${resultados.size} chunks | páginas: [$paginas]")
         }
 
         return resultados
+    }
+
+    /**
+     * Busca filtrada por fonte específica (ex: apenas Pyramid, apenas GunFu).
+     * Útil quando o Planner identifica que a pergunta é de um suplemento específico.
+     */
+    suspend fun buscarNoCodexPorFonte(query: String, sourceId: String, limit: Int = 50): List<MestreIAChunk> {
+        val ftsQuery = prepararQueryFTSAgressiva(query, emptyList())
+        return manualChunkDao.buscarRegrasPorFonte(ftsQuery, sourceId, limit).map { entity ->
+            MestreIAChunk(
+                chunk_id = entity.chunk_id,
+                text = entity.text,
+                source_title = entity.source_title,
+                source_id = entity.source_id,
+                page_number = entity.page_number
+            )
+        }
     }
 
     /**

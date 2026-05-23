@@ -3,7 +3,9 @@ package com.gurps.ficha.data.storage
 import androidx.room.*
 
 /**
- * Data Access Object para busca instantânea em manuais GURPS.
+ * Data Access Object para busca instantânea em manuais GURPS via FTS4.
+ * O scoring BM25 é feito em Kotlin no MestreIAGraphEngine após a busca FTS4.
+ * (FTS5 nativo requer Room 2.7+ — documentado como Onda 3 do PLANO_MesteIA_RAG.md)
  */
 @Dao
 interface ManualChunkDao {
@@ -11,17 +13,23 @@ interface ManualChunkDao {
     suspend fun insertAll(chunks: List<ManualChunkEntity>)
 
     /**
-     * Busca usando o operador MATCH do SQLite FTS.
-     * Esta busca é ordens de magnitude mais rápida que um 'LIKE'.
+     * Busca FTS4 com pool amplo — o scoring BM25-Kotlin no GraphEngine faz o ranking.
      */
     @Query("SELECT * FROM manual_chunks WHERE search_text MATCH :query LIMIT :limit")
     suspend fun buscarRegras(query: String, limit: Int): List<ManualChunkEntity>
 
+    /**
+     * Busca FTS4 filtrada por fonte específica.
+     * FTS4 suporta AND com colunas regulares normalmente.
+     */
+    @Query("SELECT * FROM manual_chunks WHERE search_text MATCH :query AND source_id = :sourceId LIMIT :limit")
+    suspend fun buscarRegrasPorFonte(query: String, sourceId: String, limit: Int): List<ManualChunkEntity>
+
     @Query("SELECT * FROM manual_chunks WHERE page_number = :page ORDER BY chunk_id")
     suspend fun buscarPorPagina(page: Int): List<ManualChunkEntity>
 
-    @Query("SELECT * FROM manual_chunks WHERE page_number = :page AND source_title LIKE '%' || :source || '%' ORDER BY chunk_id")
-    suspend fun buscarPorPaginaESource(page: Int, source: String): List<ManualChunkEntity>
+    @Query("SELECT * FROM manual_chunks WHERE page_number = :page AND source_id = :sourceId ORDER BY chunk_id")
+    suspend fun buscarPorPaginaESource(page: Int, sourceId: String): List<ManualChunkEntity>
 
     @Query("SELECT * FROM manual_chunks WHERE chunk_id = :id")
     suspend fun getChunkById(id: String): ManualChunkEntity?
