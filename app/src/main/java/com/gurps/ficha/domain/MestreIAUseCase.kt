@@ -285,113 +285,139 @@ class MestreIAUseCase(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
-                            desativarTools = isUltimaIteracao,
-                            // Thinking só nas iterações de investigação, não na resposta final
-                            isComplexo = isQuestaoComplexa && !isUltimaIteracao
+                            desativarTools = isUltimaIteracao
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {
-                            val toolCall = resposta.toolCalls[0]
-                            val queryTc = toolCall.args.optString("query","").take(50)
-                            android.util.Log.i("MestreIA_RAG", "║  TOOL CALL: IA chamou [${toolCall.name}] query=\"${queryTc}\"")
-                            updateStatus("Buscando no manual: \"${queryTc}\"...")
+                            android.util.Log.i("MestreIA_RAG", "║  TOOL CALLS: ${resposta.toolCalls.size} chamada(s) — executando em paralelo")
 
-                            if (toolCall.name == MestreIATools.TOOL_MANUAL_DIRETO) {
-                                val queryTool = toolCall.args.optString("query", prompt)
+                            val toolResultados: List<ToolResult> = coroutineScope {
+                                resposta.toolCalls.mapIndexed { idx, toolCall ->
+                                    async {
+                                        val queryTc = toolCall.args.optString("query", "").take(50)
+                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx]: [${toolCall.name}] query=\"$queryTc\"")
 
-                                // Detecta query duplicada — evita loops de MiMo repetindo a mesma busca
-                                val queryNorm = queryTool.lowercase().trim().take(40)
-                                val jaFoiBuscado = historicoInvestigacao
-                                    .filter { it.first == "assistant" }
-                                    .any { it.second.lowercase().contains(queryNorm) }
-                                if (jaFoiBuscado) {
-                                    android.util.Log.w("MestreIA_RAG", "║  QUERY DUPLICADA: '$queryNorm' — forçando resposta com contexto atual")
-                                    historicoInvestigacao.add("system" to "AVISO: A busca por '$queryTool' já foi realizada. O contexto necessário já está no Códex. Responda agora sem chamar ferramentas.")
-                                    promptAtual = "[RESPOSTA OBRIGATÓRIA] Você já pesquisou '$queryTool' e o resultado está no contexto disponível. Responda agora com base no que encontrou. NÃO repita a mesma busca."
-                                    loopsRestantes--
-                                    iteracao++
-                                    continue
-                                }
-                                val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
-
-                                if (resTool.relatedChunks.isNotEmpty()) {
-                                    val novoTextoRegras = graphEngine.formatarParaIA(resTool, queryTool)
-                                    val ponteAtualizada = (catalogoDinamico.ponteDeFerro + "\n\n=== NOVAS REGRAS ENCONTRADAS ===\n" + novoTextoRegras).take(35000)
-                                    val paginasTool = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
-                                    android.util.Log.i("MestreIA_RAG", "║  TOOL OK: ${resTool.relatedChunks.size} chunks adicionados | páginas: [$paginasTool] | ctx total: ${ponteAtualizada.length}chars")
-
-                                    catalogoDinamico = catalogoDinamico.copy(
-                                        ponteDeFerro = ponteAtualizada,
-                                        chunks = (catalogoDinamico.chunks + resTool.relatedChunks).distinctBy { it.chunk_id }
-                                    )
-
-                                    historicoInvestigacao.add("assistant" to "Consultando manuais diretamente sobre '$queryTool'...")
-                                    // CRÍTICO: guardar apenas resumo no histórico — contexto completo já está em catalogoDinamico.ponteDeFerro
-                                    historicoInvestigacao.add("system" to "RESULTADO DA BUSCA DIRETA (resumo): ${novoTextoRegras.take(2000)}\n[Contexto completo já incorporado ao Códex disponível]")
-                                    promptAtual = "Com base nestas regras encontradas, responda à dúvida. Se a regra for parcial ou analógica, deixe isso explícito. Se não houver nada útil, admita que não localizou nos manuais."
-                                } else {
-                                    android.util.Log.e("MestreIA_RAG", "║  TOOL VAZIO: nenhum chunk para \"${queryTool.take(60)}\" — IA sem contexto extra")
-                                    historicoInvestigacao.add("system" to "Não foram encontrados resultados técnicos para '$queryTool' no Códex.")
-                                    promptAtual = "Auditoria: A busca direta por '$queryTool' não retornou resultados. Aplique o PROTOCOLO DE LACUNA: (1) declare que não há regra específica para esse cenário, (2) identifique regras relacionadas já disponíveis no Códex que se aplicam parcialmente, (3) componha uma interpretação fundamentada nessas regras, (4) marque como '⚠️ Interpretação RAG'. É PROIBIDO inventar regras. É PROIBIDO dizer apenas 'não sei'."
-                                }
-                                
-                                loopsRestantes--
-                                iteracao++
-                                continue
-                            }
-
-                            if (toolCall.name == MestreIATools.TOOL_INSPECT_CHARACTER) {
-                                val secao = toolCall.args.optString("secao", "atributos")
-                                updateStatus("Lendo ficha ($secao)...")
-                                
-                                val infoFicha = when(secao) {
-                                    "status" -> "PV: ${viewModel.personagem.pontosVidaRolagemAtual ?: viewModel.personagem.pontosVida}/${viewModel.personagem.pontosVida} | PF: ${viewModel.personagem.pontosFadigaRolagemAtual ?: viewModel.personagem.pontosFadiga}/${viewModel.personagem.pontosFadiga}"
-                                    "vantagens" -> "Vantagens: " + viewModel.personagem.vantagens.joinToString { it.nome }
-                                    "pericias" -> "Perícias: " + viewModel.personagem.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(viewModel.personagem)})" }
-                                    "armas" -> {
-                                        val armas = viewModel.personagem.equipamentos.filter { it.armaTipoCombate != null }
-                                        if (armas.isEmpty()) "Nenhuma arma no inventário."
-                                        else armas.joinToString("\n") { e ->
-                                            buildString {
-                                                append("• ${e.nome}")
-                                                e.armaTipoCombate?.let { append(" | Tipo: $it") }
-                                                e.armaDanoRaw?.let { append(" | Dano: $it") }
-                                                e.armaGrupo?.let { append(" | Grupo: $it") }
-                                                e.armaStMinimo?.let { append(" | ST mín: $it") }
+                                        when (toolCall.name) {
+                                            MestreIATools.TOOL_MANUAL_DIRETO -> {
+                                                val queryTool = toolCall.args.optString("query", prompt)
+                                                val queryNorm = queryTool.lowercase().trim().take(40)
+                                                val jaFoiBuscado = historicoInvestigacao
+                                                    .filter { it.first == "assistant" }
+                                                    .any { it.second.lowercase().contains(queryNorm) }
+                                                if (jaFoiBuscado) {
+                                                    android.util.Log.w("MestreIA_RAG", "║  TOOL[$idx] DUPLICADA: '$queryNorm'")
+                                                    ToolResult.Duplicada(queryTool)
+                                                } else {
+                                                    updateStatus("Buscando: \"${queryTool.take(40)}\"...")
+                                                    val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
+                                                    if (resTool.relatedChunks.isNotEmpty()) {
+                                                        val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
+                                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] OK: ${resTool.relatedChunks.size} chunks | págs: [$pags]")
+                                                        ToolResult.Manual(queryTool, graphEngine.formatarParaIA(resTool, queryTool), resTool.relatedChunks)
+                                                    } else {
+                                                        android.util.Log.e("MestreIA_RAG", "║  TOOL[$idx] VAZIO: \"${queryTool.take(60)}\"")
+                                                        ToolResult.Vazio(queryTool)
+                                                    }
+                                                }
                                             }
+                                            MestreIATools.TOOL_INSPECT_CHARACTER -> {
+                                                val secao = toolCall.args.optString("secao", "atributos")
+                                                updateStatus("Lendo ficha ($secao)...")
+                                                val infoFicha = when (secao) {
+                                                    "status" -> "PV: ${viewModel.personagem.pontosVidaRolagemAtual ?: viewModel.personagem.pontosVida}/${viewModel.personagem.pontosVida} | PF: ${viewModel.personagem.pontosFadigaRolagemAtual ?: viewModel.personagem.pontosFadiga}/${viewModel.personagem.pontosFadiga}"
+                                                    "vantagens" -> "Vantagens: " + viewModel.personagem.vantagens.joinToString { it.nome }
+                                                    "pericias" -> "Perícias: " + viewModel.personagem.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(viewModel.personagem)})" }
+                                                    "armas" -> {
+                                                        val armas = viewModel.personagem.equipamentos.filter { it.armaTipoCombate != null }
+                                                        if (armas.isEmpty()) "Nenhuma arma no inventário."
+                                                        else armas.joinToString("\n") { e ->
+                                                            buildString {
+                                                                append("• ${e.nome}")
+                                                                e.armaTipoCombate?.let { append(" | Tipo: $it") }
+                                                                e.armaDanoRaw?.let { append(" | Dano: $it") }
+                                                                e.armaGrupo?.let { append(" | Grupo: $it") }
+                                                                e.armaStMinimo?.let { append(" | ST mín: $it") }
+                                                            }
+                                                        }
+                                                    }
+                                                    "armaduras" -> {
+                                                        val armaduras = viewModel.personagem.equipamentos.filter { it.armaduraRd != null }
+                                                        if (armaduras.isEmpty()) "Nenhuma armadura no inventário."
+                                                        else armaduras.joinToString("\n") { e ->
+                                                            buildString {
+                                                                append("• ${e.nome}")
+                                                                e.armaduraRd?.let { append(" | RD: $it") }
+                                                                e.armaduraLocal?.let { append(" | Local: $it") }
+                                                            }
+                                                        }
+                                                    }
+                                                    else -> "Atributos: ST ${viewModel.personagem.st}, DX ${viewModel.personagem.dx}, IQ ${viewModel.personagem.iq}, HT ${viewModel.personagem.ht}"
+                                                }
+                                                ToolResult.Ficha(secao, infoFicha)
+                                            }
+                                            MestreIATools.TOOL_NEXUS_ARCANO -> {
+                                                val magiaAlvo = toolCall.args.optString("magia_alvo", prompt)
+                                                updateStatus("Nexus: $magiaAlvo...")
+                                                ToolResult.Nexus(magiaAlvo, nexusEngine.formatarGabaritoParaIA(magiaAlvo))
+                                            }
+                                            else -> ToolResult.Vazio(toolCall.name)
                                         }
                                     }
-                                    "armaduras" -> {
-                                        val armaduras = viewModel.personagem.equipamentos.filter { it.armaduraRd != null }
-                                        if (armaduras.isEmpty()) "Nenhuma armadura no inventário."
-                                        else armaduras.joinToString("\n") { e ->
-                                            buildString {
-                                                append("• ${e.nome}")
-                                                e.armaduraRd?.let { append(" | RD: $it") }
-                                                e.armaduraLocal?.let { append(" | Local: $it") }
-                                            }
-                                        }
-                                    }
-                                    else -> "Atributos: ST ${viewModel.personagem.st}, DX ${viewModel.personagem.dx}, IQ ${viewModel.personagem.iq}, HT ${viewModel.personagem.ht}"
-                                }
-                                
-                                historicoInvestigacao.add("system" to "DADOS DA FICHA ($secao): $infoFicha")
-                                loopsRestantes--
-                                iteracao++
-                                continue
+                                }.awaitAll()
                             }
 
-                            if (toolCall.name == MestreIATools.TOOL_NEXUS_ARCANO) {
-                                val magiaAlvo = toolCall.args.optString("magia_alvo", prompt)
-                                updateStatus("Nexus: $magiaAlvo...")
-                                val gabarito = nexusEngine.formatarGabaritoParaIA(magiaAlvo)
-                                catalogoDinamico = catalogoDinamico.copy(
-                                    ponteDeFerro = (catalogoDinamico.ponteDeFerro + "\n\n=== NEXUS ===\n" + gabarito).take(35000)
-                                )
-                                loopsRestantes--
-                                iteracao++
-                                continue
+                            // Aplica todos os resultados ao catalogoDinamico
+                            val resumoBuscas = mutableListOf<String>()
+                            var ponteFinal = catalogoDinamico.ponteDeFerro
+                            val chunksFinal = catalogoDinamico.chunks.toMutableList()
+                            var todasDuplicadas = true
+
+                            for ((idx, resultado) in toolResultados.withIndex()) {
+                                when (resultado) {
+                                    is ToolResult.Manual -> {
+                                        todasDuplicadas = false
+                                        ponteFinal = (ponteFinal + "\n\n=== REGRAS TOOL[$idx]: ${resultado.query} ===\n${resultado.texto}").take(35000)
+                                        chunksFinal.addAll(resultado.chunks)
+                                        resumoBuscas.add("'${resultado.query.take(30)}'")
+                                        historicoInvestigacao.add("assistant" to "Consultando manuais sobre '${resultado.query}'...")
+                                        historicoInvestigacao.add("system" to "RESULTADO[$idx]: ${resultado.texto.take(1500)}\n[Contexto completo no Códex]")
+                                    }
+                                    is ToolResult.Vazio -> {
+                                        todasDuplicadas = false
+                                        historicoInvestigacao.add("system" to "Nenhum resultado para '${resultado.query}' no Códex.")
+                                        resumoBuscas.add("'${resultado.query.take(30)}' sem resultado")
+                                    }
+                                    is ToolResult.Ficha -> {
+                                        todasDuplicadas = false
+                                        historicoInvestigacao.add("system" to "DADOS DA FICHA (${resultado.secao}): ${resultado.info}")
+                                        resumoBuscas.add("ficha(${resultado.secao})")
+                                    }
+                                    is ToolResult.Nexus -> {
+                                        todasDuplicadas = false
+                                        ponteFinal = (ponteFinal + "\n\n=== NEXUS ===\n${resultado.gabarito}").take(35000)
+                                        resumoBuscas.add("nexus(${resultado.magia})")
+                                    }
+                                    is ToolResult.Duplicada -> {
+                                        historicoInvestigacao.add("system" to "AVISO: '${resultado.query}' já foi buscado.")
+                                    }
+                                }
                             }
+
+                            catalogoDinamico = catalogoDinamico.copy(
+                                ponteDeFerro = ponteFinal,
+                                chunks = chunksFinal.distinctBy { it.chunk_id }
+                            )
+                            android.util.Log.i("MestreIA_RAG", "║  TOOLS CONCLUÍDAS: ${resumoBuscas.joinToString(" | ")} | ctx=${ponteFinal.length}chars | chunks=${chunksFinal.distinctBy{it.chunk_id}.size}")
+
+                            promptAtual = if (todasDuplicadas) {
+                                "[RESPOSTA OBRIGATÓRIA] Todas as buscas já foram realizadas. Responda agora com base no contexto disponível. NÃO repita buscas."
+                            } else {
+                                "Com base nas regras encontradas (${resumoBuscas.joinToString()}), responda à dúvida. Mostre os cálculos passo a passo se houver números. Se a regra for analógica, deixe isso explícito."
+                            }
+
+                            loopsRestantes--
+                            iteracao++
+                            continue
                         }
 
                         if (resposta.text.isNotBlank() && !ehErroDeApi(resposta.text)) {
@@ -446,7 +472,8 @@ class MestreIAUseCase(
      */
     suspend fun gerarCatalogoDireto(prompt: String, history: List<MestreIAClient.ChatMessage>, termosExtras: List<String> = emptyList()): CatalogoLocalResult {
         val promptExpandido = prompt.take(500)
-        val res = graphEngine.buscarDiretoNoCodex(promptExpandido, termosExtras)
+        // perguntaOriginal passada para que o TopicIndex use a pergunta curta, não a query expandida com 40+ termos
+        val res = graphEngine.buscarDiretoNoCodex(promptExpandido, termosExtras, perguntaOriginal = prompt)
 
         // Resultado satisfatório: 5+ chunks — não precisa de rewriting
         if (res.relatedChunks.size >= 5) {
@@ -462,7 +489,7 @@ class MestreIAUseCase(
         val termosReescritos = reescreverQueryParaGurps(prompt)
         if (termosReescritos.isNotEmpty()) {
             android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE OK: $termosReescritos")
-            val resReescrito = graphEngine.buscarDiretoNoCodex(termosReescritos, termosExtras)
+            val resReescrito = graphEngine.buscarDiretoNoCodex(termosReescritos, termosExtras, perguntaOriginal = prompt)
             if (resReescrito.relatedChunks.size > res.relatedChunks.size) {
                 android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE MELHOROU: ${res.relatedChunks.size} → ${resReescrito.relatedChunks.size} chunks")
                 // Merge: resultado original + reescrito, deduplicado
@@ -526,4 +553,12 @@ class MestreIAUseCase(
     }
 
     data class CatalogoLocalResult(val catalogo: MestreIAClient.CatalogoNomes, val isRagSuccess: Boolean)
+}
+
+private sealed class ToolResult {
+    data class Manual(val query: String, val texto: String, val chunks: List<MestreIAChunk>) : ToolResult()
+    data class Vazio(val query: String) : ToolResult()
+    data class Ficha(val secao: String, val info: String) : ToolResult()
+    data class Nexus(val magia: String, val gabarito: String) : ToolResult()
+    data class Duplicada(val query: String) : ToolResult()
 }

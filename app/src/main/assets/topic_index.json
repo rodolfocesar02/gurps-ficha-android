@@ -36,6 +36,26 @@
         [
           "subaquatico",
           "alcance"
+        ],
+        [
+          "piscina",
+          "atirar"
+        ],
+        [
+          "piscina",
+          "arma"
+        ],
+        [
+          "piscina",
+          "tiro"
+        ],
+        [
+          "mergulho",
+          "tiro"
+        ],
+        [
+          "submerso",
+          "atirar"
         ]
       ],
       "pages": [
@@ -84,6 +104,18 @@
         [
           "submerso",
           "luta"
+        ],
+        [
+          "piscina",
+          "combate"
+        ],
+        [
+          "piscina",
+          "luta"
+        ],
+        [
+          "mergulho",
+          "combate"
         ]
       ],
       "pages": [
@@ -128,6 +160,38 @@
         [
           "altitude",
           "dano"
+        ],
+        [
+          "cair",
+          "altura"
+        ],
+        [
+          "caindo",
+          "dano"
+        ],
+        [
+          "altura",
+          "hex"
+        ],
+        [
+          "caiu",
+          "dano"
+        ],
+        [
+          "caiu",
+          "altura"
+        ],
+        [
+          "caindo",
+          "altura"
+        ],
+        [
+          "caindo",
+          "dano"
+        ],
+        [
+          "caiu",
+          "altura"
         ]
       ],
       "pages": [
@@ -483,6 +547,22 @@
         [
           "tiro",
           "alvo"
+        ],
+        [
+          "atirar",
+          "arco"
+        ],
+        [
+          "arco",
+          "alvo"
+        ],
+        [
+          "flecha",
+          "alvo"
+        ],
+        [
+          "flecha",
+          "ataque"
         ]
       ],
       "pages": [
@@ -591,6 +671,26 @@
         [
           "abrigo",
           "penalidade"
+        ],
+        [
+          "parede",
+          "atirar"
+        ],
+        [
+          "parede",
+          "ataque"
+        ],
+        [
+          "parede",
+          "flecha"
+        ],
+        [
+          "obstaculo",
+          "atirar"
+        ],
+        [
+          "obstaculo",
+          "ataque"
         ]
       ],
       "pages": [
@@ -2845,9 +2945,19 @@
         "cavalos"
       ],
       "require_all": [
-        "cavalos"
+        "cavalo"
       ],
-      "fallback_any": [],
+      "fallback_any": [
+        [
+          "cavaleiro"
+        ],
+        [
+          "cavalgar"
+        ],
+        [
+          "montaria"
+        ]
+      ],
       "pages": [
         {
           "source_id": "pt_modulo_basico",
@@ -3371,6 +3481,26 @@
         [
           "combate",
           "montado"
+        ],
+        [
+          "cavalg",
+          "ataque"
+        ],
+        [
+          "cavalg",
+          "tiro"
+        ],
+        [
+          "cavalg",
+          "arco"
+        ],
+        [
+          "montado",
+          "tiro"
+        ],
+        [
+          "montado",
+          "arco"
         ]
       ],
       "pages": [
@@ -10825,6 +10955,18 @@
         [
           "queda",
           "altitude"
+        ],
+        [
+          "caindo",
+          "altura"
+        ],
+        [
+          "caiu",
+          "altura"
+        ],
+        [
+          "caindo",
+          "cavalo"
         ]
       ],
       "pages": [

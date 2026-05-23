@@ -80,20 +80,28 @@ object MestreIATopicIndex {
         if (!carregado || topicos.isEmpty()) return emptyList()
 
         val queryNorm = CatalogFilters.normalizarBusca(query)
-        val tokens = queryNorm.split(Regex("\\s+")).filter { it.length >= 2 }.toSet()
+        // Mínimo 4 chars para evitar que tokens curtos como "em", "com", "na" deem match em palavras longas
+        val tokens = queryNorm.split(Regex("\\s+")).filter { it.length >= 4 }.toSet()
 
         val resultado = mutableListOf<PaginasGarantidas>()
 
         for (topico in topicos) {
+            // Token match: o token da pergunta começa com a raiz do require (prefixo direto)
+            // Ex: req="cavalg" → casa com token "cavalgando" (cavalgando.startsWith("cavalg"))
+            // Ex: req="atirar" → casa com token "atirar" (exato) ou "atira" (prefix)
+            // req.startsWith(t): só ativa se token tem >= 5 chars (evita "qual" → "qualidades")
+            // Tokens < 4 chars são ignorados (filtrado antes de chegar aqui)
+            fun tokenMatch(req: String): Boolean = tokens.any { t ->
+                t.startsWith(req) || (t.length >= 5 && req.startsWith(t))
+            }
+
             val match = when {
                 // Modo primário: todos os termos de require_all presentes
-                topico.requireAll.isNotEmpty() && topico.requireAll.all { req ->
-                    tokens.any { t -> t.contains(req) || req.contains(t) }
-                } -> true
+                topico.requireAll.isNotEmpty() && topico.requireAll.all { req -> tokenMatch(req) } -> true
 
                 // Modo fallback: pelo menos um par [k1, k2] presente
                 topico.fallbackAny.isNotEmpty() && topico.fallbackAny.any { par ->
-                    par.all { req -> tokens.any { t -> t.contains(req) || req.contains(t) } }
+                    par.all { req -> tokenMatch(req) }
                 } -> true
 
                 else -> false

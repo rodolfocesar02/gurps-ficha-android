@@ -22,14 +22,15 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
      * LOTE 119: BUSCA DIRETA (Pula o Grafo).
      * Focada 100% em extrair o texto bruto dos manuais usando o novo motor FTS Agressivo.
      */
-    suspend fun buscarDiretoNoCodex(query: String, termosExtras: List<String> = emptyList()): GraphSearchResult {
+    suspend fun buscarDiretoNoCodex(query: String, termosExtras: List<String> = emptyList(), perguntaOriginal: String = ""): GraphSearchResult {
         val termosBase: List<String> = (extrairPalavrasChave(query, apenasOriginais = true) + termosExtras).distinct()
         val termosExpandidos: List<String> = (extrairPalavrasChave(query, apenasOriginais = false) + termosExtras).distinct()
         
         android.util.Log.i("MestreIA_RAG", "══ RAG BUSCA: \"${query.take(80)}\"")
 
-        // 1. Busca FTS4 — pool de 500 candidatos pré-filtrados por keyword match
-        val chunksCandidatos: List<MestreIAChunk> = repository.buscarNoCodexDireto(query, termosBase, limit = 500)
+        // 1. Busca FTS4 — pool de 200 candidatos pré-filtrados por keyword match
+        // FTS4 já ordena por relevância keyword; 200 candidatos é suficiente para BM25 e escala bem com 5000+ chunks
+        val chunksCandidatos: List<MestreIAChunk> = repository.buscarNoCodexDireto(query, termosBase, limit = 200)
 
         if (chunksCandidatos.isEmpty()) {
             android.util.Log.e("MestreIA_RAG", "✖ RAG FALHOU: nenhum chunk para \"${query.take(60)}\" — IA não terá contexto do manual!")
@@ -130,7 +131,9 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         // 3b. Garantia por Índice de Tópicos (topic_index.json)
-        val paginasTopicIndex = MestreIATopicIndex.resolverPaginasGarantidas(query)
+        // Usa a pergunta original (curta) para evitar falsos matches na query expandida com 40+ termos
+        val queryParaTopicIndex = perguntaOriginal.ifBlank { query }
+        val paginasTopicIndex = MestreIATopicIndex.resolverPaginasGarantidas(queryParaTopicIndex)
         val chunksTopicIndex = mutableListOf<MestreIAChunk>()
         for (garantia in paginasTopicIndex) {
             for (page in garantia.pages) {
