@@ -1246,3 +1246,12 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
   - Solução: `PALAVRAS_GENERICAS` descarta esses termos no `gerar_matching()` → tópico não é criado
 - **Arquivos auxiliares:** `topic_index_gerado.json` (output do script, 515 tópicos), `topic_index_backup_manual.json` (11 tópicos pré-lote-264)
 
+### Lote 266: busca semântica híbrida BM25 + embeddings ativada — CONCLUÍDO | commit: e5b7592
+- **Problema:** `vec_chunks` estava sempre vazia — embeddings existiam no `chunks.jsonl` (3072 dims, gemini-embedding-001) mas nunca eram importados para o banco porque `prePopulateManual` só rodava quando `totalChunks == 0`
+- **FichaDatabase.kt:** nova verificação independente — se `totalChunks > 0` mas `vecCount == 0`, reimporta só os embeddings sem apagar chunks
+- **MestreIARepository.kt:** bump `CODEX_VERSION_CURRENT` 2→3 força reimportação completa em devices existentes
+- **DialogsMestreIA.kt:** modo "📖 Dúvida" (RAG Auditor) reativado no menu (havia sido desabilitado no lote anterior)
+- **Resultado confirmado no Logcat:** `TOTAL: 1197 chunks | 1197 embeddings semânticos` em ~57s (única vez)
+- **Próximas aberturas:** zero reimportação — banco populado, versão `3` salva no SharedPreferences
+- **Arquitetura ativa:** FTS4 → BM25 → reranking semântico cosseno (60% BM25 + 40% semântico) → TopicIndex → Top-30 → Gemini
+
