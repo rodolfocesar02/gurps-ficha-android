@@ -47,8 +47,45 @@ abstract class FichaDatabase : RoomDatabase() {
         suspend fun prePopulateManual(context: Context, database: FichaDatabase) {
             try {
                 val dao = database.manualChunkDao()
+                val vecDao = database.vecChunkDao()
                 val totalChunks = dao.getCount()
-                android.util.Log.i("MestreIA_Auditoria", "ESTADO DO MANUAL: $totalChunks recortes de páginas (Chunks) carregados.")
+                val totalVecExistente = vecDao.getCount()
+                android.util.Log.i("MestreIA_Auditoria", "ESTADO DO MANUAL: $totalChunks chunks | $totalVecExistente embeddings no banco.")
+
+                // Reimporta embeddings se chunks existem mas vec_chunks está vazio
+                if (totalChunks > 0 && totalVecExistente == 0) {
+                    android.util.Log.i("MestreIA_Auditoria", "EMBEDDINGS AUSENTES: Reimportando embeddings do chunks.jsonl...")
+                    val assets = context.assets
+                    val reader = assets.open("chunks.jsonl").bufferedReader(Charsets.UTF_8)
+                    val vecChunks = mutableListOf<VecChunkEntity>()
+                    var totalVetores = 0
+                    reader.useLines { lines ->
+                        lines.forEach { line ->
+                            if (line.isNotBlank()) {
+                                try {
+                                    val obj = org.json.JSONObject(line)
+                                    if (obj.has("embedding")) {
+                                        val arr = obj.getJSONArray("embedding")
+                                        val floats = FloatArray(arr.length()) { arr.getDouble(it).toFloat() }
+                                        vecChunks.add(VecChunkEntity(
+                                            chunk_id = obj.getString("chunk_id"),
+                                            embedding = com.gurps.ficha.domain.MestreIASemanticEngine.floatArrayToByteArray(floats)
+                                        ))
+                                        totalVetores++
+                                        if (vecChunks.size >= 100) {
+                                            vecDao.insertAll(vecChunks.toList())
+                                            vecChunks.clear()
+                                        }
+                                    }
+                                } catch (e: Exception) {
+                                    android.util.Log.e("MestreIA_Auditoria", "Erro embedding: ${e.message}")
+                                }
+                            }
+                        }
+                    }
+                    if (vecChunks.isNotEmpty()) vecDao.insertAll(vecChunks)
+                    android.util.Log.i("MestreIA_Auditoria", "EMBEDDINGS: $totalVetores embeddings semânticos importados.")
+                }
 
                 if (totalChunks == 0) {
                     android.util.Log.i("MestreIA_Auditoria", "Iniciando leitura do arquivo chunks.jsonl...")
@@ -58,7 +95,6 @@ abstract class FichaDatabase : RoomDatabase() {
                     
                     val chunks = mutableListOf<ManualChunkEntity>()
                     val vecChunks = mutableListOf<VecChunkEntity>()
-                    val vecDao = database.vecChunkDao()
                     var totalLido = 0
                     var totalVetores = 0
                     reader.useLines { lines ->
