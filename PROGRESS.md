@@ -1361,3 +1361,14 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Status:** ✅ BUILD OK, implementação concluída
 - **Verificação pendente:** teste manual com 3 casos (tabela, regra, explicação)
 
+## Lote 269 — [2026-05-25] Ajuste Prompt Auditor: Ferramentas + RAG
+- **Hash:** e80aad0
+- **Mudanças:**
+  - Adicionado seção FERRAMENTAS DISPONÍVEIS (inspecionar_personagem, consultar_manual_direto, consultar_nexus_arcano)
+  - inspecionar_personagem: nova diretriz de USO (contextualiza ao personagem real)
+  - consultar_manual_direto: ajustado para "confiar no RAG" (Lote 268 entrega chunks completos)
+  - Consolidado PROTOCOLO DE LACUNA (removida duplicata, linguagem simplificada)
+  - Diretriz 3: PERSONALIZAÇÃO PELO PERSONAGEM (novo)
+  - Alinhado com Lote 268 (RAG semântico + IntencaoBusca)
+- **Status:** ✅ BUILD OK
+
