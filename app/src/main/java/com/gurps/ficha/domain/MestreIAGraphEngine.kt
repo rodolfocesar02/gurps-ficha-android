@@ -181,16 +181,17 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             if (hnswIds.isNotEmpty()) {
                 // Mapeia chunk_ids HNSW para objetos do pool BM25 (texto já carregado)
                 val chunksPorId = chunksCandidatos.associateBy { it.chunk_id }
-                val hnswChunks = hnswIds.mapNotNull { chunksPorId[it] }
-                // Chunks do HNSW recebem bonus de score: posição HNSW vira boost semântico
-                val hnswBonus = hnswIds.mapIndexed { idx, id ->
-                    id to (50.0 - idx) / 50.0 * 10.0  // top-1 = +10pts, top-50 = +0.2pts
-                }.toMap()
-                val hnswIds2 = hnswIds.toSet()
-                // Re-pontua: BM25 + bonus HNSW para chunks no resultado HNSW
+                // HNSW só reordena o pool BM25 — não introduz chunks externos com bonus
+                // Chunks fora do pool FTS4 (não encontrados por keyword) não recebem boost
+                val ftsIds = chunksCandidatos.map { it.chunk_id }.toSet()
+                val hnswRank = hnswIds.mapIndexed { idx, id -> id to idx }.toMap()
+                // Bonus proporcional à posição HNSW, mas APENAS para chunks já no pool FTS4
                 val repontua = chunksCandidatos.map { chunk ->
                     val bm25 = bm25ScoresMap[chunk.chunk_id] ?: 0.0
-                    val bonus = hnswBonus[chunk.chunk_id] ?: 0.0
+                    val rank = hnswRank[chunk.chunk_id]
+                    // Chunk no pool FTS4 E no top-50 HNSW: reranking semântico neutro
+                    // Bonus máximo = 3pts (não domina o BM25 que pode chegar a 20+pts)
+                    val bonus = if (rank != null) (50.0 - rank) / 50.0 * 3.0 else 0.0
                     chunk to (bm25 + bonus)
                 }.sortedByDescending { it.second }
                 android.util.Log.i("MestreIA_RAG", "  HNSW top-5: ${hnswIds.take(5).joinToString()}")
