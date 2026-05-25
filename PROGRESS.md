@@ -1372,3 +1372,47 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - Alinhado com Lote 268 (RAG semântico + IntencaoBusca)
 - **Status:** ✅ BUILD OK
 
+## Lote 270 — [2026-05-25] Reset Arquitetural do AUDITOR — Sistema Semântico de Intenção — PLANEJADO
+- **Problema raiz:** O sistema RAG do AUDITOR é léxico-cêntrico em 4 camadas independentes.
+  Pesa palavras individualmente — `golpe_fulminante` (termo raro, IDF alto) domina o scoring
+  mesmo quando é apenas o contexto da pergunta, não o sujeito da dúvida.
+  Exemplo: "é possível usar magia de bloqueio contra golpe fulminante?" → sistema busca golpe_fulminante
+  em vez de magia_de_bloqueio, porque golpe_fulminante tem IDF maior.
+- **Erros catalogados (13):**
+  1. BM25 pesa todos os tokens igualmente — sem distinção núcleo vs. contexto
+  2. `analisarIntencao()` retorna enum plano — sem estrutura relacional (sujeito/alvo)
+  3. `plano.termos.take(3)` sem ordenação — pode omitir o núcleo real da pergunta
+  4. `gerarSubQueriesTemáticas` hardcoded — cenários fixos, miss em perguntas relacionais
+  5. IDF calculado sobre pool de 200 candidatos (não corpus) — matemática corrompida
+  6. Bonus AND +15.0 amplifica viés léxico independente do que importa
+  7. Query OR plana — 20 tokens sem ordenação de relevância
+  8. avgdl calculado do pool filtrado, não do corpus completo
+  9. Sem estratégia de fallback quando gerarCatalogoDireto() falha
+  10. Expansão bidirecional no dicionário — matches não controlados
+  11. Comentário diz FTS5, código usa FTS4 (MestreIAQueryEngine)
+  12. Comentário diz 384 dims, código usa 3072 (MestreIASemanticEngine)
+  13. Referência a `consultar_grafo_regras` descontinuado em MestreIATools
+- **Arquivos resetados (8):**
+  - MestreIAPlanner.kt — TermoPonderado, IntencaoEstruturada, sub-queries dinâmicas
+  - MestreIAQueryEngine.kt — tokens ordenados, camadas NEAR/AND/OR
+  - MestreIAGraphEngine.kt — bonus proporcional, avgdl/IDF reais, take(30), Pocket RAG real
+  - MestreIAUseCase.kt — queryAjustada por núcleo, busca em camadas com fallback
+  - MestreIATopicIndex.kt — correção de comentário apenas
+  - MestreIASemanticEngine.kt — correção de comentário apenas
+  - MestreIAPromptsAuditor.kt — sem mudança funcional
+  - MestreIATools.kt — remove referência a consultar_grafo_regras
+- **Arquivos não tocados (infraestrutura compartilhada):**
+  - MestreIAClient.kt, MestreIARepository.kt, FichaIADelegate.kt, GeminiLiveTools.kt, MestreIADatabase.kt
+- **Contratos externos preservados:**
+  - `MestreIAUseCase.conversarComMestreIA(prompt, modo, onStatusUpdate, onChunk, onResultado)`
+  - `MestreIAGraphEngine.buscarDiretoNoCodex(query, termosExtras, perguntaOriginal)`
+  - `MestreIAPlanner.planejarBusca()` e `PlanoDeBusca.subQueriesTemáticas`
+- **Sublotes:**
+  - 270-A: MestreIAPlanner — TermoPonderado(termo, peso), IntencaoEstruturada(entidadePrimaria, entidadeSecundaria, relacao), sub-queries dinâmicas por estrutura relacional
+  - 270-B: MestreIAQueryEngine — tokens ordenados por relevância, suporte a camadas NEAR/AND/OR
+  - 270-C: MestreIAGraphEngine — bonus proporcional ao núcleo, avgdl/IDF reais (corpus global), take(30) + Pocket RAG real
+  - 270-D: MestreIAUseCase — queryAjustada por termos de núcleo, busca em camadas com fallback
+  - 270-E: MestreIATools — remove referência descontinuada; MestreIAPromptsAuditor — sem mudança
+  - 270-F: MestreIATopicIndex + MestreIASemanticEngine — correção de comentários apenas (3072 dims, FTS4)
+- **Status:** ⏳ PLANEJADO — aguardando autorização para iniciar código
+
