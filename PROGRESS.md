@@ -1414,5 +1414,6 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - 270-D: MestreIAUseCase — queryAjustada por termos de núcleo, busca em camadas com fallback
   - 270-E: MestreIATools — remove referência descontinuada; MestreIAPromptsAuditor — sem mudança
   - 270-F: MestreIATopicIndex + MestreIASemanticEngine — correção de comentários apenas (3072 dims, FTS4)
+- **Hash do plano:** 3445c8e
 - **Status:** ⏳ PLANEJADO — aguardando autorização para iniciar código
 
