@@ -304,11 +304,12 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
     /**
      * Formata resultados RAG para o prompt da IA com Pocket RAG.
      *
-     * ★★★ (score >= 8.0): texto completo — sempre relevante
-     * ★★  (score >= 2.0): comprimido — somente sentenças que contêm termos da query
-     * ★   (score < 2.0) : comprimido — somente sentenças com termos da query, ou omitido se vazio
+     * Ordem de saída: ★★★ (score >= 8.0) primeiro, depois ★★ e ★.
+     * TopicIndex (score=999) sempre aparecem no início — nunca comprimidos e nunca cortados.
      *
-     * Reduz contexto de ~35KB para ~12-18KB sem perder informação crítica.
+     * ★★★ (score >= 8.0): texto completo
+     * ★★  (score >= 2.0): comprimido a sentenças relevantes
+     * ★   (score < 2.0) : comprimido, ou omitido se vazio após compressão
      */
     suspend fun formatarParaIA(resultado: GraphSearchResult, query: String = ""): String {
         val s = StringBuilder()
@@ -321,8 +322,20 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 .map { it.lowercase().trim() }
                 .filter { it.length >= 3 }
 
-            val porFonte = resultado.relatedChunks.groupBy { it.source_id ?: "desconhecido" }
-            porFonte.forEach { (_, chunks) ->
+            // Ordena todos os chunks por score decrescente antes de agrupar por fonte.
+            // Garante que TopicIndex (score=999) e chunks de alta relevância apareçam primeiro,
+            // antes do limite de chars ser atingido.
+            val chunksOrdenados = resultado.relatedChunks.sortedByDescending {
+                resultado.chunkScores[it.chunk_id] ?: 0.0
+            }
+
+            val porFonte = chunksOrdenados.groupBy { it.source_id ?: "desconhecido" }
+            // Ordena fontes pelo melhor score de cada uma (fonte com chunks mais relevantes vem primeiro)
+            val fontesOrdenadas = porFonte.entries.sortedByDescending { (_, chunks) ->
+                chunks.maxOfOrNull { resultado.chunkScores[it.chunk_id] ?: 0.0 } ?: 0.0
+            }
+
+            fontesOrdenadas.forEach { (_, chunks) ->
                 val tituloFonte = chunks.first().source_title ?: "Manual"
                 s.append("\n--- FONTE: $tituloFonte ---\n")
                 chunks.forEach { chunk ->
@@ -333,6 +346,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                         else         -> "[★]"
                     }
 
+                    // TopicIndex (score=999) e ★★★ nunca comprimidos
                     val textoFinal = when {
                         score >= 8.0 -> chunk.text
                         else -> comprimirChunkPorSentencas(chunk.text, termosQuery)
