@@ -1416,7 +1416,8 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - 270-F: MestreIATopicIndex + MestreIASemanticEngine — correção de comentários apenas (3072 dims, FTS4)
 - **Hash do plano:** 3445c8e
 - **Hash da implementação:** 2791ede
+- **Hash do fix (formatarParaIA):** 01ac7bd — ordena chunks por score antes de groupBy(source_id); garante TopicIndex (score=999) apareça primeiro e não seja cortado pelo limite de 35000 chars
 - **Build:** ✅ compilePracegoDebugKotlin OK — sem erros de compilação
 - **Testes:** 17 falhas pré-existentes (NexusArcano/PersonagemRules), não introduzidas pelo Lote 270
-- **Status:** ✅ IMPLEMENTADO
+- **Status:** ✅ IMPLEMENTADO + FIX APLICADO
 
