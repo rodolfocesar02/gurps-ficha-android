@@ -12,6 +12,9 @@ import com.gurps.ficha.model.*
 import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import com.gurps.ficha.data.storage.ChatSessionEntity
@@ -58,6 +61,47 @@ class FichaIADelegate(
         mestreIAChatHistory = emptyList()
         currentSessionId = null
         sistemaBatchUid = null
+    }
+
+    fun gerarSaudacaoSeVazio() {
+        if (mestreIAChatHistory.isNotEmpty()) return
+        val nomePersonagem = viewModel.personagem.nome.takeIf { it.isNotBlank() }
+        val msg = MestreIAClient.ChatMessage("model", "...", "Mestre IA")
+        val saudacaoUid = msg.uid
+        scope.launch(Dispatchers.Main) {
+            mestreIAChatHistory = mestreIAChatHistory + msg
+        }
+        scope.launch(Dispatchers.IO) {
+            try {
+                val prompt = if (nomePersonagem != null) {
+                    "Você é o Mestre de um RPG de mesa (GURPS). Gere UMA saudação curta (2-3 linhas) e imersiva para o jogador chamado '$nomePersonagem' que acabou de abrir o chat com você. Seja criativo, use tom épico/fantasia, mencione o nome. Nunca comece com 'Olá' ou 'Bem-vindo'. Varie o estilo a cada vez. Responda APENAS a saudação, sem explicações."
+                } else {
+                    "Você é o Mestre de um RPG de mesa (GURPS). Gere UMA saudação curta (2-3 linhas) e imersiva para um aventureiro que acabou de abrir o chat. Use tom épico, fantasia ou mistério. Nunca comece com 'Olá' ou 'Bem-vindo'. Varie o estilo a cada vez. Responda APENAS a saudação, sem explicações."
+                }
+                val resp = MestreIAClient.perguntarAoMestre(
+                    baseUrl = "https://generativelanguage.googleapis.com/v1beta",
+                    apiKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY,
+                    workspaceSlug = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE,
+                    prompt = prompt,
+                    modo = "conversa",
+                    desativarTools = true,
+                    maxTokens = 150,
+                    silencioso = true
+                )
+                withContext(Dispatchers.Main) {
+                    val texto = resp.text.trim().ifBlank { "O Mestre está pronto para guiar sua jornada." }
+                    mestreIAChatHistory = mestreIAChatHistory.map {
+                        if (it.uid == saudacaoUid) it.copy(text = texto) else it
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    mestreIAChatHistory = mestreIAChatHistory.map {
+                        if (it.uid == saudacaoUid) it.copy(text = "O Códex está aberto. O que deseja saber, aventureiro?") else it
+                    }
+                }
+            }
+        }
     }
 
     fun adicionarMensagemVoz(texto: String, role: String) {
@@ -164,6 +208,45 @@ class FichaIADelegate(
         val assistantUid = assistantMsg.uid
         mestreIAChatHistory = mestreIAChatHistory + assistantMsg
 
+        // Loading dinâmico: Gemini Flash Lite gera frases temáticas enquanto o RAG processa
+        var loadingJob: Job? = null
+        if (modo == "conversa") {
+            val frasesUsadas = mutableSetOf<String>()
+            loadingJob = scope.launch(Dispatchers.IO) {
+                delay(2000) // espera 2s antes de começar (evita flicker em respostas rápidas)
+                while (isActive) {
+                    try {
+                        val nomePersonagem = viewModel.personagem.nome.takeIf { it.isNotBlank() }
+                        val ctx = if (nomePersonagem != null) "para o personagem $nomePersonagem" else "para um aventureiro"
+                        val usadas = if (frasesUsadas.isNotEmpty()) " NÃO repita estas frases já usadas: ${frasesUsadas.toList().takeLast(5).joinToString("; ")}" else ""
+                        val resp = MestreIAClient.perguntarAoMestre(
+                            baseUrl = "https://generativelanguage.googleapis.com/v1beta",
+                            apiKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY,
+                            workspaceSlug = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE,
+                            prompt = "Gere UMA frase curta (máx 10 palavras) de loading temática de RPG/fantasia $ctx, no estilo de um mestre consultando seus pergaminhos. Exemplos de estilo (NÃO copie): 'Os pergaminhos sussurram segredos...', 'O Mestre consulta os anais do destino...'. $usadas Responda APENAS a frase, sem aspas nem explicações.",
+                            modo = "conversa",
+                            desativarTools = true,
+                            maxTokens = 40,
+                            silencioso = true
+                        )
+                        val frase = resp.text.trim().ifBlank { null }
+                        if (frase != null && frase !in frasesUsadas) {
+                            frasesUsadas.add(frase)
+                            withContext(Dispatchers.Main) {
+                                atualizarMsgAssistente(assistantUid) {
+                                    val textoAtual = it.text
+                                    if (textoAtual == "Pensando..." || textoAtual.startsWith("⏳")) {
+                                        it.copy(text = "⏳ $frase")
+                                    } else it
+                                }
+                            }
+                        }
+                    } catch (_: Exception) {}
+                    delay(4500)
+                }
+            }
+        }
+
         // Modo é definido exclusivamente pelo botão "+" na UI — nunca auto-detectado
         scope.launch(Dispatchers.IO) {
             if (modo == "geracao" || modo == "analise") {
@@ -193,13 +276,15 @@ class FichaIADelegate(
                     prompt = pergunta,
                     modo = modo,
                     onStatusUpdate = { status ->
-                        scope.launch(Dispatchers.Main) {
-                            // Mostra status no corpo do balão enquanto a resposta não chegou
-                            atualizarMsgAssistente(assistantUid) {
-                                val textoAtual = it.text
-                                if (textoAtual == "Pensando..." || textoAtual.startsWith("⏳")) {
-                                    it.copy(text = "⏳ $status")
-                                } else it
+                        // Em modo conversa o loading job anima o balão — status técnico vai pro log apenas
+                        if (modo != "conversa") {
+                            scope.launch(Dispatchers.Main) {
+                                atualizarMsgAssistente(assistantUid) {
+                                    val textoAtual = it.text
+                                    if (textoAtual == "Pensando..." || textoAtual.startsWith("⏳")) {
+                                        it.copy(text = "⏳ $status")
+                                    } else it
+                                }
                             }
                         }
                     },
@@ -212,6 +297,7 @@ class FichaIADelegate(
                         }
                     },
                     onResultado = { isRagUsed, response ->
+                        loadingJob?.cancel()
                         scope.launch(Dispatchers.Main) {
                             processarRespostaIA(modo, assistantUid, isRagUsed, response, onResult)
                         }

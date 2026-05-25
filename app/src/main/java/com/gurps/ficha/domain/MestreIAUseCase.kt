@@ -189,8 +189,10 @@ class MestreIAUseCase(
                                                     val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
                                                     if (resTool.relatedChunks.isNotEmpty()) {
                                                         val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
+                                                        val textoFormatado = graphEngine.formatarParaIA(resTool, queryTool)
                                                         android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] OK: ${resTool.relatedChunks.size} chunks | págs: [$pags]")
-                                                        ToolResult.Manual(queryTool, graphEngine.formatarParaIA(resTool, queryTool), resTool.relatedChunks)
+                                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] CONTEUDO (800chars):\n${textoFormatado.take(800)}")
+                                                        ToolResult.Manual(queryTool, textoFormatado, resTool.relatedChunks)
                                                     } else {
                                                         android.util.Log.e("MestreIA_RAG", "║  TOOL[$idx] VAZIO: \"${queryTool.take(60)}\"")
                                                         ToolResult.Vazio(queryTool)

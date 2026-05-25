@@ -78,7 +78,7 @@ object MestreIAClient {
         onChunk: ((String) -> Unit)? = null,
         desativarTools: Boolean = false,
         maxTokens: Int = 2048,
-        isComplexo: Boolean = true
+        silencioso: Boolean = false
     ): ChatResponse = withContext(Dispatchers.IO) {
         val startTime = System.currentTimeMillis()
         try {
@@ -133,8 +133,7 @@ object MestreIAClient {
                 append("- Contexto Técnico: $ponteDeFerro")
             }
 
-            // LOTE 89.45: LOG DE AUDITORIA DE PROMPT (TRANSPARÊNCIA TOTAL)
-            android.util.Log.i("MestreIA_Prompt", """
+            if (!silencioso) android.util.Log.i("MestreIA_Prompt", """
                 [CONTEÚDO DO PROMPT ENVIADO]
                 - Pergunta: ${prompt.take(100)}...
                 - Modelo Alvo: $workspaceSlug
@@ -160,10 +159,10 @@ object MestreIAClient {
             val jsonOutput = if (isGoogleNative) {
                 gerarJsonGoogleNative(prompt, history, systemPulse, modo, desativarTools)
             } else {
-                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens, isComplexo)
+                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens)
             }
 
-            android.util.Log.i("MestreIA_RAG", "║  REQUEST: ${jsonOutput.length}chars → $workspaceSlug")
+            if (!silencioso) android.util.Log.i("MestreIA_RAG", "║  REQUEST: ${jsonOutput.length}chars → $workspaceSlug")
 
             connection.outputStream.use { it.write(jsonOutput.toByteArray(StandardCharsets.UTF_8)) }
 
@@ -181,7 +180,7 @@ object MestreIAClient {
             if (!useStream) {
                 val responseText = connection.inputStream.bufferedReader().readText()
                 
-                android.util.Log.i("MestreIA_RAG", "║  RESPONSE: ${responseText.length}chars (HTTP $responseCode)")
+                if (!silencioso) android.util.Log.i("MestreIA_RAG", "║  RESPONSE: ${responseText.length}chars (HTTP $responseCode)")
                 
                 val json = JSONObject(responseText)
                 if (isGoogleNative) {
@@ -222,7 +221,7 @@ object MestreIAClient {
 
                         // Thinking Mode (DeepSeek): raciocínio interno — logado para debug
                         val reasoning = message?.optString("reasoning_content", "") ?: ""
-                        if (reasoning.isNotBlank()) {
+                        if (reasoning.isNotBlank() && !silencioso) {
                             android.util.Log.d("MestreIA_Thinking", "Raciocínio (${reasoning.length} chars): ${reasoning.take(500)}")
                         }
 
@@ -259,14 +258,14 @@ object MestreIAClient {
                     // Context Caching (DeepSeek): monitora economia de tokens
                     val cacheHit  = usage?.optInt("prompt_cache_hit_tokens", 0) ?: 0
                     val cacheMiss = usage?.optInt("prompt_cache_miss_tokens", 0) ?: 0
-                    if (cacheHit > 0 || cacheMiss > 0) {
+                    if ((cacheHit > 0 || cacheMiss > 0) && !silencioso) {
                         val economia = if (pTokens > 0) (cacheHit * 100 / pTokens) else 0
                         android.util.Log.i("MestreIA_Cache", "Cache hit=$cacheHit miss=$cacheMiss ($economia% do prompt em cache)")
                     }
                 }
 
                 val finalLatency = System.currentTimeMillis() - startTime
-                android.util.Log.d("MestreIA_Tokens", """
+                if (!silencioso) android.util.Log.d("MestreIA_Tokens", """
                     [PAINEL DE CONSUMO]
                     Modelo: $workspaceSlug
                     Tokens Prompt: $pTokens
@@ -351,7 +350,7 @@ object MestreIAClient {
         return root.toString()
     }
 
-    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048, isComplexo: Boolean = true): String {
+    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048): String {
         val root = JSONObject()
         root.put("model", modelId)
         val messages = JSONArray()
@@ -374,12 +373,6 @@ object MestreIAClient {
         root.put("temperature", 0.1)
         root.put("max_tokens", maxTokens)
         root.put("stream", stream)
-
-        // Thinking Mode: só ativa para perguntas complexas (cálculo, múltiplas regras)
-        // Perguntas simples não precisam — economiza ~15s de raciocínio interno
-        if (modo == "conversa" && isComplexo) {
-            root.put("thinking", JSONObject().put("type", "enabled"))
-        }
 
         return root.toString()
     }
