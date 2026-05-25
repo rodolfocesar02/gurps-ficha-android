@@ -29,6 +29,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.ui.components.EstadoLive
@@ -196,7 +200,10 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
                     textContent = textContent.trim()
 
                     var showRaw by remember { mutableStateOf(false) }
-                    if (textContent.isNotEmpty()) Text(textContent, color = textColor, style = MaterialTheme.typography.bodyMedium)
+                    if (textContent.isNotEmpty()) {
+                        if (!isUser) MarkdownContent(textContent, textColor)
+                        else Text(textContent, color = textColor, style = MaterialTheme.typography.bodyMedium)
+                    }
                     else if (!isUser && msg.data != null) Text("📦 Ficha Pronta", fontWeight = FontWeight.Bold, color = textColor)
                     else if (!isUser && msg.rawJson != null) Text("⚠️ Erro de código", color = Color.Red, fontSize = 10.sp)
 
@@ -285,6 +292,125 @@ fun ChatBubble(msg: MestreIAClient.ChatMessage, isUser: Boolean, viewModel: Fich
 
 fun rawTagExists(text: String, tag: String): Boolean = text.contains(tag)
 fun rawTextFromMsg(msg: MestreIAClient.ChatMessage): String = msg.text
+
+@Composable
+fun MarkdownContent(text: String, textColor: Color) {
+    val bodyStyle = MaterialTheme.typography.bodyMedium
+    val lines = text.lines()
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        var i = 0
+        while (i < lines.size) {
+            val line = lines[i]
+            when {
+                // Tabela: detecta bloco de linhas com |
+                line.trimStart().startsWith("|") -> {
+                    val tableLines = mutableListOf<String>()
+                    while (i < lines.size && lines[i].trimStart().startsWith("|")) {
+                        tableLines.add(lines[i])
+                        i++
+                    }
+                    MarkdownTable(tableLines, textColor)
+                    continue
+                }
+                // Heading ## ou ###
+                line.startsWith("### ") -> {
+                    Text(
+                        line.removePrefix("### ").parseBold(),
+                        color = textColor,
+                        style = bodyStyle,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+                line.startsWith("## ") -> {
+                    Text(
+                        line.removePrefix("## ").parseBold(),
+                        color = textColor,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+                line.startsWith("# ") -> {
+                    Text(
+                        line.removePrefix("# ").parseBold(),
+                        color = textColor,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.ExtraBold
+                    )
+                }
+                // Separador ---
+                line.trim() == "---" || line.trim() == "***" -> {
+                    HorizontalDivider(color = textColor.copy(alpha = 0.2f), modifier = Modifier.padding(vertical = 4.dp))
+                }
+                // Linha vazia
+                line.isBlank() -> {
+                    Spacer(Modifier.height(4.dp))
+                }
+                // Texto normal (com bold inline)
+                else -> {
+                    Text(
+                        buildInlineMarkdown(line, textColor),
+                        style = bodyStyle
+                    )
+                }
+            }
+            i++
+        }
+    }
+}
+
+@Composable
+fun MarkdownTable(lines: List<String>, textColor: Color) {
+    val rows = lines
+        .filter { !it.trim().replace("|", "").replace("-", "").replace(":", "").replace(" ", "").isEmpty() }
+        .map { line -> line.trim().trim('|').split("|").map { it.trim() } }
+    if (rows.isEmpty()) return
+
+    val cols = rows.maxOf { it.size }
+    Surface(
+        color = textColor.copy(alpha = 0.06f),
+        shape = RoundedCornerShape(6.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+    ) {
+        Column {
+            rows.forEachIndexed { rowIdx, row ->
+                if (rowIdx > 0) HorizontalDivider(color = textColor.copy(alpha = 0.15f), thickness = 0.5.dp)
+                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 4.dp)) {
+                    for (col in 0 until cols) {
+                        val cell = row.getOrElse(col) { "" }
+                        Text(
+                            buildInlineMarkdown(cell, textColor),
+                            modifier = Modifier.weight(1f),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = if (rowIdx == 0) FontWeight.Bold else FontWeight.Normal,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun String.parseBold(): String = replace("**", "").replace("*", "")
+
+@Composable
+fun buildInlineMarkdown(text: String, textColor: Color): AnnotatedString {
+    return buildAnnotatedString {
+        val boldColor = textColor
+        var remaining = text
+        while (remaining.isNotEmpty()) {
+            val boldStart = remaining.indexOf("**")
+            if (boldStart < 0) { append(remaining); break }
+            append(remaining.substring(0, boldStart))
+            val boldEnd = remaining.indexOf("**", boldStart + 2)
+            if (boldEnd < 0) { append(remaining.substring(boldStart)); break }
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold, color = boldColor)) {
+                append(remaining.substring(boldStart + 2, boldEnd))
+            }
+            remaining = remaining.substring(boldEnd + 2)
+        }
+    }
+}
 
 @Composable
 fun HistorySelectorDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
