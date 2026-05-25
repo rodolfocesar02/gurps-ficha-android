@@ -978,14 +978,26 @@ fun String?.sanitized(default: String = ""): String {
 
 fun String.fixMojibakeIfNeeded(): String {
     if (this.isBlank()) return this
-    // LOTE 91.10: Detector de Mojibake (UTF-8 lido como ISO-8859-1 ou vice-versa)
-    val markers = listOf("Ã", "â€", "–", "—", "“", "”", "’", "Pǭg")
+    // Detecta mojibake (UTF-8 lido como ISO-8859-1).
+    // Marcadores construidos via bytes numericos para evitar chars especiais no fonte.
+    val iso = Charsets.ISO_8859_1
+    val markers = listOf(
+        String(byteArrayOf(0xC3.toByte(), 0xA7.toByte()), iso), // c-cedilha
+        String(byteArrayOf(0xC3.toByte(), 0xA3.toByte()), iso), // a-til
+        String(byteArrayOf(0xC3.toByte(), 0xA9.toByte()), iso), // e-agudo
+        String(byteArrayOf(0xC3.toByte(), 0xB3.toByte()), iso), // o-agudo
+        String(byteArrayOf(0xC3.toByte(), 0xBA.toByte()), iso), // u-agudo
+        String(byteArrayOf(0xC3.toByte(), 0xAD.toByte()), iso), // i-agudo
+        String(byteArrayOf(0xC3.toByte(), 0xAA.toByte()), iso), // e-circunflexo
+        String(byteArrayOf(0xC3.toByte(), 0xB5.toByte()), iso), // o-til
+        String(byteArrayOf(0xC3.toByte(), 0xA2.toByte()), iso)  // a-circunflexo
+    )
     var current = this
-    
+
     if (!markers.any { current.contains(it) }) return current
-    
+
     return try {
-        val bytes = current.toByteArray(Charsets.ISO_8859_1)
+        val bytes = current.toByteArray(iso)
         val repaired = String(bytes, Charsets.UTF_8)
         repaired
     } catch (e: Exception) {

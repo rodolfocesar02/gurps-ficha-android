@@ -255,12 +255,12 @@
         {
           "source_id": "pt_modulo_basico",
           "pages": [
-            107,
-            108
+            432,
+            433
           ]
         }
       ],
-      "nota": "MB p.107: dano de queda — 1d6 por 2m, máximo 10d6."
+      "nota": "MB p.432: Tabela de Velocidade em Quedas. MB p.433: Formula dano queda = (2 x PV x velocidade) / 100, dano por contusao."
     },
     {
       "id": "dano_fogo",
@@ -11030,7 +11030,8 @@
         {
           "source_id": "pt_modulo_basico",
           "pages": [
-            432
+            432,
+            433
           ]
         }
       ],

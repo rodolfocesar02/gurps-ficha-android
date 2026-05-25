@@ -58,8 +58,35 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo")
 
         // 1. Pool FTS4 — 200 candidatos pré-filtrados por keyword match
-        val chunksCandidatos: List<MestreIAChunk> =
-            repository.buscarNoCodexDireto(query, termosBase, limit = 200)
+        val chunksFTS: List<MestreIAChunk> =
+            repository.buscarNoCodexDireto(query, termosBase, limit = 500)
+
+        // 1b. Injeção direta por página: se a query menciona um número de página,
+        // busca esses chunks diretamente e injeta no pool — evita que páginas relevantes
+        // fiquem fora dos top-200 do FTS quando o corpo do texto usa termos diferentes do título.
+        val paginasMencionadas = Regex("\\b(\\d{1,3})\\b").findAll(query)
+            .map { it.value.toInt() }
+            .filter { it in 1..600 }
+            .distinct()
+        val chunksInjetados = mutableListOf<MestreIAChunk>()
+        for (pag in paginasMencionadas) {
+            val chunks = repository.buscarPorPagina(pag)
+            chunksInjetados.addAll(chunks)
+            if (chunks.isNotEmpty()) {
+                // Também busca páginas adjacentes (seções frequentemente continuam)
+                chunksInjetados.addAll(repository.buscarPorPagina(pag + 1))
+                chunksInjetados.addAll(repository.buscarPorPagina(pag + 2))
+            }
+        }
+
+        val chunksCandidatos: List<MestreIAChunk> = if (chunksInjetados.isNotEmpty()) {
+            val idsExistentes = chunksFTS.map { it.chunk_id }.toSet()
+            val novos = chunksInjetados.filter { it.chunk_id !in idsExistentes }
+            android.util.Log.i("MestreIA_RAG", "  Injeção por página: +${novos.size} chunks de p.${paginasMencionadas.joinToString()}")
+            chunksFTS + novos
+        } else {
+            chunksFTS
+        }
 
         if (chunksCandidatos.isEmpty()) {
             android.util.Log.e("MestreIA_RAG",
@@ -130,6 +157,10 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             // Penalidade: páginas de índice/sumário do módulo básico
             if ((chunk.page_number ?: 0) < 30 && chunk.source_id == "pt_modulo_basico") score -= 0.5
 
+            // Boost para chunks injetados por página: garante que entrem no pool de reranking
+            val injetado = chunksInjetados.any { it.chunk_id == chunk.chunk_id }
+            if (injetado && score < 8.0) score = 8.0
+
             chunksPontuados.add(Pair(chunk, score))
         }
 
@@ -158,7 +189,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val contadorPaginas = mutableMapOf<String, Int>()
         val chunksDiversos: MutableList<MestreIAChunk> = mutableListOf()
         for (pair in chunksPontuadosFinais) {
-            if (chunksDiversos.size >= 30) break
+            if (chunksDiversos.size >= 50) break
             val c = pair.first
             val pageKey = "${c.source_id}_${c.page_number}"
             val total = contadorPaginas.getOrDefault(pageKey, 0)
@@ -172,11 +203,14 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val chunksTopicIndex = emptyList<MestreIAChunk>()
         val fontesRepresentadas = chunksDiversos.map { it.source_id }.toSet()
         val fontesNoPool = chunksCandidatos.map { it.source_id }.distinct()
+        val scoresMapMutavel = chunksPontuadosFinais.associate { it.first.chunk_id to it.second }.toMutableMap()
         for (fonte in fontesNoPool) {
             if (fonte !in fontesRepresentadas) {
                 val melhorDaFonte = chunksPontuadosFinais.firstOrNull { it.first.source_id == fonte }
                 if (melhorDaFonte != null) {
                     chunksDiversos.add(melhorDaFonte.first)
+                    // Eleva score para garantir texto completo (não comprimido pelo Pocket RAG)
+                    scoresMapMutavel[melhorDaFonte.first.chunk_id] = 9.0
                     android.util.Log.i("MestreIA_RAG",
                         "  Fonte garantida: $fonte → p.${melhorDaFonte.first.page_number}")
                 }
@@ -184,8 +218,8 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         // 4. Expansão por proximidade de página
-        val chunksBase = chunksDiversos.take(30)
-        val chunksGarantidos = chunksDiversos.drop(30)
+        val chunksBase = chunksDiversos.take(50)
+        val chunksGarantidos = chunksDiversos.drop(50)
         val chunksFinais = mutableSetOf<MestreIAChunk>()
         chunksFinais.addAll(chunksTopicIndex)
 
@@ -203,17 +237,15 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        val chunksFinal = chunksFinais.toList().distinctBy { it.chunk_id }.take(30)
+        val chunksFinal = chunksFinais.toList().distinctBy { it.chunk_id }.take(50)
         val paginasFinais = chunksFinal.mapNotNull { it.page_number }.distinct().sorted().joinToString()
         android.util.Log.i("MestreIA_RAG",
             "  Contexto final: ${chunksFinal.size} chunks | páginas: [$paginasFinais]")
 
-        val scoresMap = chunksPontuadosFinais.associate { it.first.chunk_id to it.second }
-
         return GraphSearchResult(
             summaries = emptyList(),
             relatedChunks = chunksFinal,
-            chunkScores = scoresMap
+            chunkScores = scoresMapMutavel
         )
     }
 

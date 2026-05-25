@@ -1045,8 +1045,8 @@
     "descricao": "Inutilizável em situações que não sejam de urgência máxima."
   },
   {
-    "id": "mod_apenas_o_cranio",
-    "nome": "Apenas o Crânio",
+    "id": "mod_parcial",
+    "nome": "Parcial",
     "tipo": "limitação",
     "valor": "-10%",
     "porNivel": true,
@@ -1303,7 +1303,7 @@
     "valor": "-20%",
     "porNivel": false,
     "pagina": 117,
-    "descricao": "Item que concede a vantagem ou o usuário quebram fácil. Combustível -20%, Explosivo -50%."
+    "descricao": "Item que concede a vantagem ou o usuário quebram f\u00e1cil. Combustível -20%, Explosivo -50%."
   },
   {
     "id": "mod_gasto_adicional_tempo",
@@ -1771,7 +1771,7 @@
     "valor": "+50%",
     "porNivel": false,
     "pagina": 143,
-    "descricao": "A Fúria do personagem só é ativada durante o combate (quando sofre dano ou vê um aliado sofrer dano). Aumenta o custo da desvantagem em +50%."
+    "descricao": "O personagem fica enfurecido em qualquer situação de combate, independentemente de ter sido ferido ou não. Para evitar isso, ele precisa obter sucesso em um teste de autocontrole quando iniciar o combate (até mesmo em uma briga de bar ou luta de boxe)."
   },
   {
     "id": "mod_comprido",
@@ -1783,12 +1783,174 @@
     "descricao": "Cada nível aumenta o alcance do Golpeador em +1 MT. Disponível para Golpeadores e Braços Adicionais. Golpeadores: +100%/nível. Braços Adicionais: +75%/nível."
   },
   {
+    "id": "mod_substituicao",
+    "nome": "Substituição",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 135,
+    "descricao": "O personagem pode tentar consumir um alimento ou combustível semelhante ao que necessita. Por exemplo, um ciborgue que precisa de nutrientes exóticos poderia experimentar alimentos humanos comuns, enquanto uma máquina que precisa de gasolina poderia tentar usar diesel. Isso irá sustentá-lo, mas ele deve fazer um teste de HT depois de cada refeição ou reabastecimento. Um fracasso indica que a HT diminui um ponto até o personagem receber tratamento médico ou mecânico apropriado. Uma falha crítica indica que o personagem tem uma reação incapacitante (a critério do Mestre): resposta imunológica severa, falha no motor, etc. Personagens que não têm essa limitação, mas que por algum motivo tentarem fazer a substituição, não conseguem se sustentar e ainda precisam fazer o teste de HT; nesses casos, considere um sucesso como um fracasso e um fracasso como uma falha crítica."
+  },
+  {
+    "id": "mod_nao_pode_ser_preso",
+    "nome": "Não Pode ser Preso",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 135,
+    "descricao": "O personagem não é capaz de adentrar a zona proibida por vontade própria, mas, se for levado até ela por uma força externa, não sentirá mais Aversão. Ele consegue agir normalmente na zona proibida até se afastar da substância — quando então a desvantagem é reativada."
+  },
+  {
     "id": "mod_guelras",
     "nome": "Guelras",
     "tipo": "limitação",
     "valor": "-50%",
     "porNivel": false,
-    "pagina": 352,
-    "descricao": "O personagem só pode respirar na água ou em ar muito úmido (Não Respira com Guelras). Limitação de -50% sobre o custo da vantagem Não Respira (GURPS B352)."
+    "pagina": 74,
+    "descricao": "O personagem é capaz de extrair oxigênio da água, o que lhe permite ficar submerso por tempo indeterminado. Ele sufoca se a água não contiver oxigênio dissolvido, mas é imune a estrangulamentos e à doença da descompressão. Se o personagem só for capaz de sobreviver submerso e sufocar no ar com a mesma rapidez que um humano comum se afogaria, Não Respira (Guelras) se torna uma característica de custo 0; do contrário, -50%."
+  },
+  {
+    "id": "mod_absorcao_oxigenio",
+    "nome": "Absorção de Oxigênio",
+    "tipo": "limitação",
+    "valor": "-25%",
+    "porNivel": false,
+    "pagina": 74,
+    "descricao": "Funciona da mesma maneira que Guelras, mas o personagem é capaz de absorver oxigênio pela pele quando entra em contato com o ar, com líquidos ou com qualquer outra substância. O corpo dele não absorve gases venenosos, mas ele sufocará se não houver oxigênio disponível. O personagem consegue usar equipamentos de respiração no espaço (seus pulmões são capazes de funcionar normalmente) e ele não pode comprar a vantagem Lacrado."
+  },
+  {
+    "id": "mod_combustao_oxigenio",
+    "nome": "Combustão de Oxigênio",
+    "tipo": "limitação",
+    "valor": "-25%",
+    "porNivel": false,
+    "pagina": 74,
+    "descricao": "Funciona como Absorção de Oxigênio, mas o personagem não consegue respirar debaixo d’água nem em qualquer outro lugar onde fogo não pode ser criado."
+  },
+  {
+    "id": "mod_reserva_oxigenio",
+    "nome": "Reserva de Oxigênio",
+    "tipo": "limitação",
+    "valor": "-10%",
+    "porNivel": true,
+    "pagina": 74,
+    "descricao": "O personagem precisa respirar, mas consegue ficar sem fazer isso por um longo período de tempo; talvez ele tenha uma reserva de oxigênio (como uma baleia) ou uma oxigenização sanguínea muito boa. Essa opção difere de Prender a Respiração, no sentido que o personagem é completamente imune à “doença da descompressão” enquanto seu suprimento de oxigênio aguentar. Se o personagem for capaz de “prender o fôlego” durante um período 25 vezes maior que o normal, a vantagem tem um custo de -50%; 50 vezes, -40%; 100 vezes, -30%; 200 vezes, -20%; 300 vezes, -10%."
+  },
+  {
+    "id": "mod_furto_de_poder",
+    "nome": "Furto de Poder",
+    "tipo": "ampliação",
+    "valor": "+200%",
+    "porNivel": false,
+    "pagina": 74,
+    "descricao": "Quando neutraliza um psi, o personagem adquire os poderes dele! Ele ganha todas as habilidades psíquicas neutralizadas — incluindo suas ampliações e limitações — enquanto durar o efeito. O personagem não pode usar Neutralizar novamente até que esses poderes desapareçam. +200%"
+  },
+  {
+    "id": "mod_poder_unico",
+    "nome": "Poder Único",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 74,
+    "descricao": " O personagem só é capaz de neutralizar um poder psíquico específico; ex., PES ou Telepatia. No capítulo 6 se encontra uma lista dos poderes psíquicos mais comuns."
+  },
+  {
+    "id": "mod_comprido",
+    "nome": "Comprido",
+    "tipo": "ampliação",
+    "valor": "+100%",
+    "porNivel": true,
+    "pagina": 46,
+    "descricao": "O braço do personagem é mais comprido em relação ao seu corpo do que um braço humano em relação a um corpo humano. Isso aumenta o MT efetivo do personagem para o cálculo de alcance daquele braço (v. Modificador de Tamanho e Alcance, pág. 402). Isso afeta o alcance das armas de combate corporal empunhadas por aquela mão. Cada bônus de +1 no MT também acrescenta +1 por dado ao dano por GeB. +100% para cada bônus de +1 no MT."
+  },
+  {
+    "id": "mod_somente_fadiga_vantagem_vulnerabilidade",
+    "nome": "Somente Fadiga(Vulnerabilidade)",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 162,
+    "descricao": "O personagem é vulnerável a um ataque que drena PF, em vez de PV, ou a alguma forma mundana de perda de fadiga (ex.: ×2 PF de um clima quente). -50%"
+  },
+  {
+    "id": "mod_somente_fadiga_desvantagem_fraqueza",
+    "nome": "Somente Fadiga(Fraqueza)",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 144,
+    "descricao": "O personagem é vulnerável a um ataque que drena PF, em vez de PV, ou a alguma forma mundana de perda de fadiga (ex.: ×2 PF de um clima quente). -50%"
+  },
+  {
+    "id": "mod_variavel_desvantagem_fraqueza",
+    "nome": "Variável(Fraqueza)",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 144,
+    "descricao": "A Fraqueza é sensível à intensidade. Você pode especificar uma classe relativamente comum de barreiras que reduzem pela metade a velocidade com que o dano é sofrido (ex.: roupas grossas ou protetor solar, para a luz do sol). Por outro lado, fontes intensas (a critério do Mestre) causam dano no dobro da velocidade. -40%"
+  },
+  {
+    "id": "mod_pele_resistente",
+    "nome": "Pele Resistente",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "Via de regra, a Resistência a Dano exige um elemento “duro”: placa de armadura, quitina, etc. Com essa limitação, a RD do personagem é representada por uma pele resistente. Qualquer efeito que requer uma ruptura na pele (por exemplo, veneno) ou contato com a pele (por exemplo, choque elétrico ou a perícia Pontos de Pressão), afetará o personagem se o ataque que carrega o efeito penetrar a RD de sua armadura, mesmo que cause 0 ponto de dano! Por ser um tecido vivo, a RD natural do personagem não o protege contra ataques desse tipo. Esta limitação inclui todos os efeitos da limitação Flexível (acima); não é permitido adquirir as duas. Além disso, Pele Resistente e Campo de Força são mutuamente excludentes. -40%"
+  },
+  {
+    "id": "mod_sem_armadura",
+    "nome": "Sem Armadura",
+    "tipo": "limitação",
+    "valor": "-40%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "O corpo do personagem foi projetado de tal forma que ele não pode — ou prefere não usar armaduras nem roupas. -40%"
+  },
+  {
+    "id": "mod_semiablativa",
+    "nome": "Semiablativa",
+    "tipo": "limitação",
+    "valor": "-20%",
+    "porNivel": false,
+    "pagina": 84,
+    "descricao": "Quando um ataque atinge uma RD semiablativa, cada 10 pontos de dano removem um ponto de RD, independente do ataque ter penetrado a Resistência a Dano ou não. A RD perdida “sara” da mesma maneira que acontece com a limitação Ablativa (não é possível combinar as duas). -20%."
+  },
+  {
+    "id": "mod_bonus_manuseio",
+    "nome": "Bônus de Manuseio",
+    "tipo": "ampliação",
+    "valor": "+5%",
+    "porNivel": true,
+    "pagina": 53,
+    "descricao": "A DX e as perícias de operação de veículos (por exemplo, Condução) do personagem recebem um bônus quando estiverem sendo usadas com o único propósito de manter o controle em velocidades superiores ao seu Deslocamento Básico. +5% para cada bônus de +1, até o máximo de +5%"
+  },
+  {
+    "id": "mod_limitado_a_estradas",
+    "nome": "Limitado a Estradas",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 53,
+    "descricao": "Esta é uma limitação para Deslocamento Ampliado (Solo). O Deslocamento Ampliado só funciona em uma superfície plana, como a de uma estrada ou do piso de um edifício. Esta limitação muitas vezes é adquirida em conjunto com a desvantagem Com Rodas (pág. 146)."
+  },
+  {
+    "id": "mod_newtoniana",
+    "nome": "Newtoniana",
+    "tipo": "limitação",
+    "valor": "-50%",
+    "porNivel": false,
+    "pagina": 53,
+    "descricao": "Esta é uma limitação para Deslocamento Ampliado (Espaço). A “velocidade máxima” espacial do personagem é, na verdade, seu “delta-v”: a variação na velocidade total que ele é capaz de realizar antes de ficar sem massa de reação. Depois de realizar mudanças de velocidade igual à sua velocidade máxima, o personagem deve reabastecer para poder voltar a alterar sua velocidade."
+  },
+  {
+    "id": "mod_redutor_manuseio",
+    "nome": "Redutor de Manuseio",
+    "tipo": "limitação",
+    "valor": "-5%",
+    "porNivel": true,
+    "pagina": 53,
+    "descricao": "A DX e as perícias de operação de veículos do personagem sofrem uma penalidade quando usadas em altas velocidades. -5% para cada redutor de -1, até o máximo de -5%"
   }
 ]

@@ -2,7 +2,7 @@
 setlocal
 
 cd /d "%~dp0"
-call .\gradlew.bat :app:installDebug --no-daemon
+call .\gradlew.bat :app:installVisualDebug --no-daemon
 
 if errorlevel 1 (
   echo.
@@ -11,5 +11,5 @@ if errorlevel 1 (
 )
 
 echo.
-echo App atualizado no emulador com sucesso.
+echo App Visual atualizado no emulador com sucesso.
 exit /b 0

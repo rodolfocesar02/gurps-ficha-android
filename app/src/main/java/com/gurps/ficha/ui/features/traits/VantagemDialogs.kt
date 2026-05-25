@@ -634,8 +634,11 @@ fun ConfigurarVantagemDialog(
     }
 
     if (mostrarDescricaoCatalogo) {
-        AlertDialog(onDismissRequest = { mostrarDescricaoCatalogo = false }, title = { Text(definicao.nome) }, text = { Text(descricaoCatalogo.ifBlank { "Sem descrição disponível." }) },
-            confirmButton = { TextButton(onClick = { mostrarDescricaoCatalogo = false }) { Text(UiActionLabels.FECHAR) } })
+        CatalogoDescricaoDialog(
+            nome = definicao.nome,
+            descricao = descricaoCatalogo,
+            onDismiss = { mostrarDescricaoCatalogo = false }
+        )
     }
 }
 

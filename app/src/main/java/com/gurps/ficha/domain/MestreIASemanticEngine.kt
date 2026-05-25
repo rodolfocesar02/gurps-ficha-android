@@ -161,6 +161,38 @@ object MestreIASemanticEngine {
     }
 
     /**
+     * Mede quanto tempo leva calcular cosseno contra TODOS os chunks do banco.
+     * Chame uma vez na inicialização — resultado aparece no logcat como MestreIA_Benchmark.
+     * Remove essa função depois do teste.
+     */
+    suspend fun benchmarkFullScan(vecDao: com.gurps.ficha.data.storage.VecChunkDao) =
+        withContext(Dispatchers.IO) {
+            val todosVetores = vecDao.getAll()
+            val totalChunks = todosVetores.size
+            if (totalChunks == 0) {
+                android.util.Log.w("MestreIA_Benchmark", "vec_chunks vazio — sem o que medir.")
+                return@withContext
+            }
+
+            // Vetor de query sintético (simula embedding real)
+            val queryFake = FloatArray(EMBEDDING_DIMS) { 0.1f }
+
+            // Mede só o cosseno (sem I/O de banco)
+            val t0 = System.currentTimeMillis()
+            var melhorScore = 0.0
+            for (vec in todosVetores) {
+                val chunkVec = byteArrayToFloatArray(vec.embedding)
+                val score = cosineSimilarity(queryFake, chunkVec)
+                if (score > melhorScore) melhorScore = score
+            }
+            val tempoMs = System.currentTimeMillis() - t0
+
+            android.util.Log.i("MestreIA_Benchmark",
+                "══ FULL SCAN: $totalChunks chunks × $EMBEDDING_DIMS dims = ${tempoMs}ms " +
+                "(melhor score=${String.format("%.4f", melhorScore)})")
+        }
+
+    /**
      * Serializa FloatArray para ByteArray little-endian (formato de armazenamento).
      */
     fun floatArrayToByteArray(floats: FloatArray): ByteArray {

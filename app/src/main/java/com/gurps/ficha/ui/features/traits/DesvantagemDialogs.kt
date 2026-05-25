@@ -350,6 +350,14 @@ fun ConfigurarDesvantagemDialog(definicao: DesvantagemDefinicao, onDismiss: () -
             }
         )
     }
+
+    if (mostrarDescricaoCatalogo) {
+        CatalogoDescricaoDialog(
+            nome = definicao.nome,
+            descricao = descricaoCatalogo,
+            onDismiss = { mostrarDescricaoCatalogo = false }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -99,9 +99,25 @@ object MestreIAPromptsAuditor {
         consultar_manual_direto(query)
         → Busca no Códex de GURPS (manuais oficiais em PORTUGUÊS).
         → OBRIGATÓRIO: queries SEMPRE em português. O Códex não tem conteúdo em inglês.
-        → Use o ÍNDICE acima para saber qual página contém o que você precisa, depois busque.
         → Use queries CURTAS (máx 6 palavras) e ESPECÍFICAS por conceito isolado.
         → Ruim: query longa com a pergunta inteira | qualquer palavra em inglês
+
+        ══ LIVROS DISPONÍVEIS NO CÓDEX ══
+        O Códex contém os seguintes livros. Se a pergunta for sobre um desses temas,
+        INCLUA o nome do livro ou um termo característico na query para priorizar a fonte certa:
+
+        • Módulo Básico (pág. 1–336): regras gerais, atributos, vantagens, desvantagens,
+          perícias, combate, equipamentos, mundos de jogo.
+        • GURPS Magia (pág. 1–340): sistema de magia padrão, lista completa de magias,
+          elixires/poções (Alquimia), itens mágicos, magias alternativas (Sintática,
+          Ritualística, Clerical, Improvisação, Curinga), cajados, grimórios.
+        • GURPS Artes Marciais (pág. 1–240): técnicas de combate corpo a corpo,
+          estilos de luta, manobras avançadas, armas marciais.
+
+        REGRA: quando a pergunta envolver magia, feitiços, poções, elixires ou itens mágicos
+        → busque com termos do livro Magia (ex: "elixir alquimia magia", "magia sintática").
+        Quando envolver combate avançado, estilos ou técnicas
+        → busque com termos de Artes Marciais.
 
         inspecionar_personagem(secao)
         → Lê dados reais da ficha do jogador.

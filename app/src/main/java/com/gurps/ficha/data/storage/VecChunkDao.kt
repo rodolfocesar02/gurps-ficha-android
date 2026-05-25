@@ -16,6 +16,9 @@ interface VecChunkDao {
     @Query("SELECT * FROM vec_chunks WHERE chunk_id IN (:ids)")
     suspend fun getByIds(ids: List<String>): List<VecChunkEntity>
 
+    @Query("SELECT * FROM vec_chunks")
+    suspend fun getAll(): List<VecChunkEntity>
+
     @Query("SELECT COUNT(*) FROM vec_chunks")
     suspend fun getCount(): Int
 

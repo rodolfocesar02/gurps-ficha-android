@@ -19,10 +19,20 @@ Estes arquivos gerenciam o fluxo de pensamento da IA, desde o recebimento da per
     *   **Descrição:** O "Maestro do Forjador". Especializado em criação e análise de fichas — **não usa RAG** do manual (chunks são ruído para esse modo). Injeta o catálogo de IDs oficiais no prompt, executa o loop de Function Calling das ferramentas do Forjador (`ForjadorTools`) via `ForjadorToolExecutor`, e valida a resposta final com `MestreIAValidacaoReport`.
 
 *   **`MestreIAGraphEngine.kt`** — `domain/`
-    *   **Descrição:** O Motor de Busca RAG. Realiza busca direta nos `chunks.jsonl` via FTS SQLite — **o grafo foi descontinuado como rota primária**. Extrai palavras-chave da query, faz busca agressiva com pool de até 1.500 chunks candidatos, aplica um motor de pontuação com pesos por raridade de termo e bonus por expansão de sinônimos (via dicionário do `MestreIAPlanner`), e retorna os top-30 chunks mais relevantes para a IA.
+    *   **Modo:** AUDITOR (Dúvidas de Regras)
+    *   **Descrição:** O Motor de Busca RAG. Realiza busca direta nos `chunks.jsonl` via FTS SQLite — **o grafo foi descontinuado como rota primária**. Extrai palavras-chave da query, faz busca com pool de 200 candidatos pré-filtrados pelo FTS4 (limit fixo para escalar com 5000+ chunks sem degradar), aplica BM25-Kotlin com IDF por termo + bonus AND (todos os termos presentes) + bonus de proximidade (termos < 100 chars), delega reranking semântico ao `MestreIASemanticEngine` (top-50 BM25 → cosseno híbrido 60/40), injeta páginas garantidas via `MestreIATopicIndex` e retorna os top-30 chunks com formatação por estrelas de relevância (★★★/★★/★) via `formatarParaIA`. Inclui "Pocket RAG": chunks de baixa relevância são comprimidos às sentenças que contêm os termos buscados.
 
 *   **`MestreIAPlanner.kt`** — `domain/`
+    *   **Modo:** AUDITOR e LIVE (compartilhado)
     *   **Descrição:** O "Batedor" (Pré-processador de Queries). Transforma linguagem leiga em termos técnicos de GURPS usando mapeamentos locais. Gera um `PlanoDeBusca` com: termos técnicos extraídos, categorias de regra identificadas, sub-queries temáticas paralelas (multi-query decomposition) e contexto de stats de equipamentos do inventário do personagem (para perguntas sobre armas específicas como alcance de pistola subaquática).
+
+*   **`MestreIATopicIndex.kt`** — `domain/`
+    *   **Modo:** AUDITOR e LIVE (compartilhado)
+    *   **Descrição:** O "Garantidor de Páginas Críticas". Singleton que lê `topic_index.json` dos assets e resolve, para qualquer query, quais páginas específicas dos manuais **devem** entrar no contexto RAG — mesmo que o FTS4 falhe por keyword mismatch. Lógica de matching em dois níveis: (1) `require_all` — todos os termos devem estar presentes na query; (2) `fallback_any` — basta um par [keyword1, keyword2] presentes. Garante que, por exemplo, a pergunta "atirar numa piscina" sempre traga Pyramid p.7 (tiro subaquático), mesmo que a palavra "subaquático" não apareça na pergunta.
+
+*   **`MestreIASemanticEngine.kt`** — `domain/`
+    *   **Modo:** AUDITOR e LIVE (compartilhado)
+    *   **Descrição:** O Motor de Reranking Semântico. Singleton que executa reranking híbrido (BM25 + cosseno) sobre os top-50 chunks candidatos do BM25. Fluxo: gera embedding da query via API Gemini (`gemini-embedding-001`, 3072 dims, `RETRIEVAL_QUERY`), busca embeddings pré-computados dos candidatos na tabela `vec_chunks`, calcula similaridade cosseno em Kotlin puro, combina `score_final = 0.6×BM25_norm + 0.4×cosseno`. Possui **cache de embedding por sessão** (`ConcurrentHashMap`, thread-safe para coroutines paralelas, até 50 entradas) — evita chamadas repetidas à API Gemini quando a mesma query aparece em múltiplas tool calls. Fallback gracioso para BM25 puro se `vec_chunks` estiver vazio ou se houver ≤10 candidatos.
 
 *   **`MestreIARuleAuditor.kt`** — `domain/` *(arquivo não listado no documento original)*
     *   **Descrição:** O "Motor Fiscal". Valida as sugestões da IA contra as regras oficiais implementadas no `CharacterRules.kt`. Audita custo de atributos, dificuldade de perícias e níveis sugeridos, gerando `AuditNote` com campo auditado, valor sugerido pela IA e valor correto calculado.
@@ -44,8 +54,16 @@ Definem as funções que a IA pode chamar durante seu raciocínio.
     *   **Descrição:** A "Caixa de Ferramentas do Auditor". Define os schemas JSON de Function Calling compatíveis com Gemini (Native) e OpenAI/DeepSeek. Ferramentas disponíveis: `consultar_manual_direto` (busca RAG nos chunks), `inspecionar_personagem` (lê seções da ficha: armas com dano, armaduras com RD, atributos, status de HP/FP) e `consultar_nexus_arcano` (cálculo de pré-requisitos de magias).
 
 *   **`ForjadorTools.kt`** — `domain/tools/` *(arquivo não listado no documento original)*
-    *   **Modo:** FORJADOR
+    *   **Modo:** FORJADOR e LIVE
     *   **Descrição:** A "Caixa de Ferramentas do Forjador". Define os schemas JSON de Function Calling para criação e edição de fichas, compatíveis com Gemini e OpenAI. Ferramentas: `forjador_ler_ficha` (lê seções da ficha atual), `forjador_buscar_catalogo` (busca vantagens/desvantagens/perícias/magias no catálogo oficial), `forjador_gps_magia` (GPS de pré-requisitos — calcula o caminho mínimo até uma magia alvo) e `forjador_editar_ficha` (edita a ficha diretamente: adicionar/remover/alterar).
+
+*   **`ForjadorToolExecutor.kt`** — `domain/tools/` *(arquivo não listado no documento original)*
+    *   **Modo:** FORJADOR e LIVE
+    *   **Descrição:** O "Braço Executor do Forjador". Recebe o nome e args JSON de cada tool call do Forjador e executa a ação real no app. Delega: `forjador_ler_ficha` → lê seções da `FichaViewModel`; `forjador_buscar_catalogo` → busca no `DataRepository` + injeta schema de regras especiais via `RegrasEspeciaisSchema` (para traços com custo variável como Aliado, Garras, Inimigo); `forjador_gps_magia` → calcula trilha de pré-requisitos via `NexusArcanoModoAlvoAdapter`; `forjador_editar_ficha` → aplica edição real na ficha via `FichaViewModel`; `forjador_buscar_racas` / `forjador_aplicar_modelo_racial` → carrega catálogo de raças e metacaracterísticas via `RacaCatalogo` / `MetacaracteristicaCatalogo`. Reutilizado integralmente pelo `GeminiLiveTools`.
+
+*   **`RegrasEspeciaisSchema.kt`** — `domain/tools/` *(arquivo não listado no documento original)*
+    *   **Modo:** FORJADOR e LIVE
+    *   **Descrição:** O "Dicionário de Regras Especiais de Custo". Singleton com schemas textuais extraídos diretamente do `CharacterRules.kt` para traços cujo custo **não é fixo** — dependem de metadados (ex: Aliado, Inimigo, Garras, Vício, Contato, Reputação, Dor Crônica, Vulnerabilidade). Quando o `ForjadorToolExecutor` detecta que um traço tem `specialRule`, injeta o schema correspondente na resposta da tool call — assim a IA sabe exatamente quais campos de `metadados` preencher, evitando alucinação de custo.
 
 ---
 
@@ -66,6 +84,10 @@ Responsáveis por levar a pergunta até os servidores e trazer a resposta.
 *   **`MestreIAPromptsForjador.kt`** — `data/network/` *(arquivo não listado no documento original)*
     *   **Modo:** FORJADOR
     *   **Descrição:** O "Código de Conduta do Forjador". Contém o prompt de sistema do modo FORJADOR com: tabela completa de custo de atributos/vantagens/desvantagens/perícias de GURPS 4ª Ed., o template JSON canônico (`GOLD_TEMPLATE`) que a IA deve preencher, lista de IDs oficiais do catálogo (injetada dinamicamente) e instruções de uso das ferramentas do Forjador.
+
+*   **`DiscordRollApiClient.kt`** — `data/network/` *(arquivo não listado no documento original)*
+    *   **Modo:** Independente (Rolagem de Dados)
+    *   **Descrição:** O "Arauto do Discord". Cliente HTTP que envia os resultados de rolagens de dados (`3d6`, etc.) para um webhook ou endpoint externo de integração com Discord. Payload inclui: personagem, tipo de teste, contexto, alvo, modificador, dados rolados, total, resultado (sucesso/falha/crítico) e margem. Usado para que jogadores em sessão remota vejam as rolagens em tempo real no canal Discord da mesa.
 
 ---
 
@@ -101,6 +123,42 @@ As fontes de verdade que alimentam o sistema com o conhecimento oficial de GURPS
 *   **`chunks.jsonl`** — `assets/`
     *   **Descrição:** A Biblioteca (Recortes). Contém milhares de parágrafos extraídos diretamente dos manuais de GURPS (Módulo Básico, Artes Marciais, Pirâmide, etc.). É a **fonte primária do RAG** — fornece prova documental com número de página para todas as respostas do Auditor. Importado para o SQLite como tabela FTS4 (`manual_chunks`) na inicialização do app.
 
+*   **`topic_index.json`** — `assets/`
+    *   **Descrição:** O Índice de Tópicos Críticos. JSON com lista de tópicos de regras que **precisam de páginas garantidas** no RAG, mesmo quando a FTS4 falha por keyword mismatch. Cada tópico tem: `id`, `keywords` (pool de termos), `require_all` (termos obrigatórios para match primário), `fallback_any` (pares de termos para match secundário) e `pages` (lista de `{source_id, pages[]}` a injetar). Atualmente cobre: tiro subaquático, combate subaquático, queda/dano, dano por fogo, asfixia/afogamento, acerto/falha crítica, carga/encumbrance, alcance de tiro, magia/custo de energia, sanidade/medo e movimentação na água. **Editável sem recompilação** — o `MestreIATopicIndex` lê em runtime.
+
+*   **`mestre_ia_temas.json`** — `assets/`
+    *   **Descrição:** Catálogo de temas semânticos do Mestre IA. Define clusters de termos relacionados usados pelo `MestreIAPlanner` para expansão de queries — vai além do dicionário hardcoded, permitindo adicionar novos temas sem recompilar.
+
+*   **`magias2versao.json`** — `assets/`
+    *   **Descrição:** Catálogo completo de magias de GURPS 4ª Ed. com pré-requisitos, custo de energia, escolas e níveis. Base de dados do `NexusArcanoEngine` (GPS de pré-requisitos) e do `ForjadorTools` (`forjador_gps_magia`).
+
+*   **`pericias.json`** / **`pericias_v2_rules_map.json`** / **`pericias_artes_marciais.v1.json`** — `assets/`
+    *   **Descrição:** Catálogos de perícias. `pericias.json` contém todas as perícias do Módulo Básico. `pericias_v2_rules_map.json` mapeia regras especiais de dificuldade por perícia (usado pelo `MestreIARuleAuditor`). `pericias_artes_marciais.v1.json` adiciona perícias exclusivas do suplemento Artes Marciais.
+
+*   **`vantagens.v3.json`** / **`vantagens.v3.schema.json`** / **`vantagens_artes_marciais.v1.json`** — `assets/`
+    *   **Descrição:** Catálogos de vantagens. `vantagens.v3.json` é a lista principal com IDs oficiais, custo e metadados. `vantagens.v3.schema.json` define o schema de validação para importação. `vantagens_artes_marciais.v1.json` adiciona vantagens do suplemento Artes Marciais.
+
+*   **`desvantagens.v2.json`** / **`desvantagens.v2.schema.json`** — `assets/`
+    *   **Descrição:** Catálogo de desvantagens com IDs oficiais, custo (positivo = pontos que o jogador recebe), tipo de custo e `specialRule` para traços de custo variável.
+
+*   **`armas_corpo_a_corpo.v1.normalized.json`** / **`armas_fogo.v1.normalized.json`** / **`armas_distancia.v1.normalized.json`** — `assets/`
+    *   **Descrição:** Catálogos normalizados de armas por categoria (corpo a corpo, armas de fogo, distância/arremesso). Cada entrada tem: nome, dano, ST mínima, alcance, peso, custo e tipo de combate. Usados pelo `MestreIAGraphEngine` nas tabelas técnicas injetadas no contexto da IA.
+
+*   **`armaduras.v2.json`** / **`escudos.v1.json`** — `assets/`
+    *   **Descrição:** Catálogos de equipamentos de proteção. `armaduras.v2.json` lista armaduras com RD, local protegido e peso. `escudos.v1.json` lista escudos com bônus de Aparar e RD.
+
+*   **`tecnicas.v1.json`** — `assets/`
+    *   **Descrição:** Catálogo de técnicas de Artes Marciais e GunFu. Cada técnica tem: nome, perícia base, nível padrão e custo de pontos para aprimorar.
+
+*   **`racas.v1.json`** — `assets/`
+    *   **Descrição:** Catálogo de raças/espécies jogáveis. Cada raça tem um `ModeloRacial` com atributos modificados e lista de vantagens/desvantagens raciais embutidas. Usado pelo `ForjadorToolExecutor` (`forjador_buscar_racas` / `forjador_aplicar_modelo_racial`) e pelo `GeminiLiveTools`.
+
+*   **`metacaracteristicas.v1.json`** — `assets/`
+    *   **Descrição:** Catálogo de metacaracterísticas padrão (pré-definidas pelos desenvolvedores). Complementa o `MetacaracteristicaStore` (que armazena as criadas pelo usuário).
+
+*   **`modificadores.v1.json`** — `assets/`
+    *   **Descrição:** Catálogo de modificadores de vantagens e desvantagens (ex: "Sempre Ativo", "Custo de Manutenção"). Permite calcular custo final de traços com modificadores aplicados.
+
 *   **`graph_knowledge.json`** — `assets/`
     *   **Descrição:** O Códex Legado (Grafo). Contém regras resumidas em formato de nós de grafo.
     *   **⚠️ LEGADO — NÃO UTILIZADO:** Substituído pelo RAG direto nos `chunks.jsonl`. O arquivo existe no assets mas não é mais carregado nem consultado em nenhum ponto do código.
@@ -127,6 +185,18 @@ Define o formato físico de como os dados são tratados no código.
 *   **`GraphNodeDao.kt`** — `data/storage/` *(arquivo não listado no documento original)*
     *   **Descrição:** DAO do grafo de conhecimento. Expõe busca FTS (`buscarNodes`), busca por ID (`getNodeById`), por categoria (`findByCategory`), por título (LIKE) e `getEssentialNodes()`.
     *   **⚠️ LEGADO — NÃO UTILIZADO:** O DAO está declarado no `FichaDatabase` e instanciado (lazy) no `DataRepository`, mas **nenhum método seu é chamado em nenhum lugar do app**. A tabela `graph_nodes` existe no banco porém está vazia e inativa. Candidato a remoção futura.
+
+*   **`VecChunkEntity.kt`** — `data/storage/`
+    *   **Descrição:** Entidade Room da tabela `vec_chunks` — armazena embeddings semânticos pré-computados para busca híbrida BM25 + cosseno. Cada linha representa um chunk do manual com `chunk_id` (chave primária, liga a `manual_chunks`) e `embedding` (384 floats serializados como `ByteArray` little-endian = 1536 bytes por chunk). Embeddings gerados offline pelo script Python `gerar_embeddings.py` com modelo `all-MiniLM-L6-v2`.
+
+*   **`VecChunkDao.kt`** — `data/storage/`
+    *   **Descrição:** DAO da tabela `vec_chunks`. Expõe: `insertAll()` (upsert em lote), `getByIds(ids)` (busca por lista de chunk_ids — usado pelo `MestreIASemanticEngine` para buscar vetores dos candidatos BM25), `getCount()` (verificação de disponibilidade — se 0, semântico é pulado) e `clearAll()`.
+
+*   **`FichaStorageRepository.kt`** — `data/storage/`
+    *   **Descrição:** O Repositório de Fichas (CRUD). Camada de acesso a dados especializada em fichas de personagem. Gerencia: migração única de `SharedPreferences` → Room (para usuários que vieram da versão antiga), `salvarFicha()` / `carregarFicha()` / `listarFichas()` / `excluirFicha()` via `FichaDao`. Também expõe o `ChatHistoryDao` para que o `FichaViewModel` acesse histórico sem depender do `FichaDatabase` diretamente.
+
+*   **`MetacaracteristicaStore.kt`** — `data/storage/`
+    *   **Descrição:** Persistência leve de metacaracterísticas criadas pelo usuário. Armazena uma lista de `ModeloRacial` (com tipo `METACARACTERISTICA`) em arquivo JSON no `filesDir` (`metacaracteristicas_usuario.json`) — **evita migration do Room** para uma feature opcional. CRUD simples: `listar()`, `salvar()` (upsert por nome, case-insensitive), `remover()`. Decisão de design documentada: metacaracterística é o mesmo pacote de um modelo racial, reutilizando o tipo existente.
 
 *   **`ChatHistoryEntity.kt`** — `data/storage/`
     *   **Descrição:** Modelo da tabela de histórico de conversas no banco Room. Armazena role (user/assistant), texto, nome do modelo usado e timestamp da sessão.

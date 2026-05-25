@@ -1,9 +1,9 @@
 ---
 name: regras-mestre-ia-gurps
-description: "GRIMÓRIO MESTRE: Protocolo operacional, regras de trabalho e guia de acessibilidade para agentes que trabalham neste repositório. Leia este arquivo primeiro, depois consulte os documentos de referência listados abaixo."
+description: Protocolo operacional; Regras de trabalho e guia de acessibilidade para agentes que trabalham neste repositório. Leia este arquivo primeiro, depois consulte os documentos de referência listados abaixo.
 ---
 
-# Grimório mestre: regras da ia (projeto gurps android)
+Regras da IA (projeto GURPS android)
 
 Este documento define o **protocolo de trabalho** para qualquer agente neste repositório: como se comunicar, como commitar, como testar. Para entender o projeto em si, consulte os documentos de referência listados na seção abaixo.
 
@@ -29,7 +29,7 @@ Leia nesta ordem ao assumir o projeto:
 
 1. **`MAPA_DETALHADO.md`** — Mapa completo de todos os 130+ arquivos do projeto: o que cada um faz, onde fica, e a tabela de endereços rápidos para funções críticas. Leia primeiro para se orientar.
 2. **`ARQUITETURA_MESTRE_IA.md`** — Detalhamento técnico do sistema de IA (fluxo Auditor/Forjador, loop de tool-use, FTS, prompts, decisões de arquitetura). Leia quando for trabalhar no Mestre IA.
-3. **`PROGRESS.md`** — Diário de lotes e commits desde o início do projeto. Consulte para entender o histórico de decisões e o que já foi feito. Nunca apague entradas — apenas adicione ao final.
+3. **´SEMPRE QUE CRIAR NOVOS ARQUIVOS .kt`** , ADICIONE NO MAPA_DETALHADO.md, nome e descrição, seguinto o mesmo modelo ja pré existente.
 
 ---
 
