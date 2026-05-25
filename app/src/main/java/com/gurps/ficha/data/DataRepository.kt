@@ -184,6 +184,8 @@ open class DataRepository(internal val context: Context) {
     open suspend fun buscarPorPaginaESource(pagina: Int, source: String) = mestreIARepository.buscarPorPaginaESource(pagina, source)
     open suspend fun getChunkById(id: String) = mestreIARepository.getChunkById(id)
     open suspend fun forçarSincronizacaoManual() = mestreIARepository.forçarSincronizacaoManual()
+    open suspend fun contarTotalChunks(): Int = mestreIARepository.contarTotalChunks()
+    open fun calcularAvgdlCorpus(): Double = mestreIARepository.calcularAvgdlCorpus()
 
     // Lote 259: Acesso ao DAO de embeddings semânticos
     val vecChunkDao by lazy { database.vecChunkDao() }

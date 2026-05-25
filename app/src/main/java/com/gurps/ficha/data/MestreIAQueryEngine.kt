@@ -1,106 +1,104 @@
 package com.gurps.ficha.data
 
+import com.gurps.ficha.domain.MestreIAPlanner
 import com.gurps.ficha.domain.filters.CatalogFilters
 
 /**
- * MestreIAQueryEngine - Gera queries FTS5 válidas para o SQLite.
+ * MestreIAQueryEngine — Gera queries FTS4 válidas para o SQLite.
  *
- * FTS5 suporta: termo* (prefixo), "frase exata", termo1 OR termo2
- * BM25 nativo ranqueia por relevância real — scoring Kotlin apenas refina AND/proximidade.
+ * FTS4 suporta: termo* (prefixo), termo1 OR termo2
+ * Parênteses em torno de wildcards NÃO são suportados — sempre tokens planos com OR.
+ *
+ * Mudança Lote 270: tokens ordenados por relevância semântica antes de construir a query.
+ * Núcleo da pergunta (peso 1.0+) aparece primeiro → FTS4 prioriza documentos que os contêm.
+ * Expansão de sinônimos somente para termos do núcleo — evita amplificação de contexto.
  */
 object MestreIAQueryEngine {
 
     private val stopWords = setOf(
         "como", "para", "com", "dos", "das", "pela", "pelo", "onde", "quando", "quem", "sao",
         "uma", "nos", "nas", "aos", "meu", "meus", "minha", "minhas", "seu", "seus", "sua", "suas",
-        "esta", "esta", "estou", "que", "isso", "esse", "essa", "ser", "seja", "pode", "fazer",
-        "qual", "quais", "ele", "ela", "eles", "elas", "estao", "gurps"
+        "esta", "estou", "que", "isso", "esse", "essa", "ser", "seja", "pode", "fazer",
+        "qual", "quais", "ele", "ela", "eles", "elas", "estao", "gurps",
+        "posso", "possivel", "usar", "utilizar", "aplicar", "contra", "sobre",
+        "se", "ou", "ao", "e", "a", "o", "as", "os"
     )
 
-    // Sinônimos técnicos de GURPS — geram termos adicionais planos (sem parênteses)
-    // NOTA: prefixos aqui (ex: "agu") fazem match com qualquer token que COMEÇA com esse prefixo
+    // Sinônimos técnicos de GURPS — expansão APENAS direta (chave → valores).
+    // Sem matching bidirecional para evitar expansão não controlada.
     private val sinonimos = mapOf(
-        // Colisão e impacto
-        "colis" to listOf("colis", "encontr", "impact"),
-        "impact" to listOf("colis", "encontr", "impact"),
-        // Dano e ferimento
-        "dano" to listOf("dano", "ferim", "lesao"),
-        "ferim" to listOf("dano", "ferim", "lesao"),
-        // Fadiga
-        "fadig" to listOf("fadig", "cansac", "exaust"),
-        "cansac" to listOf("fadig", "cansac"),
-        // Combate à distância: atir/dispar/fogo são intercambiáveis
-        "atir" to listOf("atir", "dispar", "fogo", "tiro"),
-        "dispar" to listOf("atir", "dispar", "fogo", "tiro"),
-        "tiro" to listOf("atir", "dispar", "fogo"),
-        // Defesas
-        "esquiv" to listOf("esquiv", "bloqu", "apar", "defes"),
-        "bloqu" to listOf("esquiv", "bloqu", "apar", "defes"),
-        "apar" to listOf("esquiv", "bloqu", "apar", "defes"),
-        // Ambiente aquático — "underwat" aparece no search_text dos chunks do Pyramid Underwater Adventures
-        "agu" to listOf("agu", "submers", "subaquat", "liquid", "underwat", "piscin", "mergulh"),
-        "piscin" to listOf("agu", "submers", "subaquat", "piscin", "underwat", "mergulh"),
-        "submers" to listOf("agu", "submers", "subaquat", "underwat"),
-        "subaquat" to listOf("agu", "submers", "subaquat", "piscin", "underwat", "mergulh"),
-        "mergulh" to listOf("agu", "submers", "subaquat", "underwat"),
-        "underwat" to listOf("agu", "submers", "subaquat", "piscin", "mergulh"),
-        // Alcance e distância
-        "alcanc" to listOf("alcanc", "distanc", "range", "metro"),
-        "distanc" to listOf("alcanc", "distanc", "range"),
-        // Penalidades e modificadores
-        "redut" to listOf("redut", "penal", "modif"),
-        "penal" to listOf("redut", "penal", "modif", "malus"),
-        "modif" to listOf("modif", "penal", "bonus", "ajust"),
-        // Combate montado / cavalaria
-        "cavalo" to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
-        "cavalei" to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
-        "cavalg" to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
-        "montar" to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
-        "montari" to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
-        "carga" to listOf("carga", "colisao", "colis", "impact", "encontr"),
-        "lanca" to listOf("lanca", "arma", "dano"),
-        "combat" to listOf("combat", "ataque", "defes", "dano"),
-        // Armas de fogo específicas
-        "pistol" to listOf("pistol", "revolv", "arma", "fogo", "dispar"),
-        "revolv" to listOf("revolv", "pistol", "arma", "fogo", "dispar"),
+        "colis"     to listOf("colis", "encontr", "impact"),
+        "impact"    to listOf("colis", "encontr", "impact"),
+        "dano"      to listOf("dano", "ferim", "lesao"),
+        "ferim"     to listOf("dano", "ferim", "lesao"),
+        "fadig"     to listOf("fadig", "cansac", "exaust"),
+        "cansac"    to listOf("fadig", "cansac"),
+        "atir"      to listOf("atir", "dispar", "fogo", "tiro"),
+        "dispar"    to listOf("atir", "dispar", "fogo", "tiro"),
+        "tiro"      to listOf("atir", "dispar", "fogo"),
+        "esquiv"    to listOf("esquiv", "bloqu", "apar", "defes"),
+        "bloqu"     to listOf("esquiv", "bloqu", "apar", "defes"),
+        "apar"      to listOf("esquiv", "bloqu", "apar", "defes"),
+        "agu"       to listOf("agu", "submers", "subaquat", "liquid", "underwat", "piscin", "mergulh"),
+        "piscin"    to listOf("agu", "submers", "subaquat", "piscin", "underwat", "mergulh"),
+        "submers"   to listOf("agu", "submers", "subaquat", "underwat"),
+        "subaquat"  to listOf("agu", "submers", "subaquat", "piscin", "underwat", "mergulh"),
+        "mergulh"   to listOf("agu", "submers", "subaquat", "underwat"),
+        "underwat"  to listOf("agu", "submers", "subaquat", "piscin", "mergulh"),
+        "alcanc"    to listOf("alcanc", "distanc", "range", "metro"),
+        "distanc"   to listOf("alcanc", "distanc", "range"),
+        "redut"     to listOf("redut", "penal", "modif"),
+        "penal"     to listOf("redut", "penal", "modif", "malus"),
+        "modif"     to listOf("modif", "penal", "bonus", "ajust"),
+        "cavalo"    to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
+        "cavalei"   to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
+        "cavalg"    to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
+        "montar"    to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
+        "montari"   to listOf("cavalo", "cavalei", "cavalg", "montar", "montari"),
+        "combat"    to listOf("combat", "ataque", "defes", "dano"),
+        "pistol"    to listOf("pistol", "revolv", "arma", "fogo", "dispar"),
+        "revolv"    to listOf("revolv", "pistol", "arma", "fogo", "dispar"),
         "espingard" to listOf("espingard", "shotgun", "arma", "fogo"),
-        "rifl" to listOf("rifl", "arma", "fogo", "longa"),
-        // Magia
-        "magic" to listOf("magic", "feitiç", "encant", "conjur"),
-        "feitiç" to listOf("magic", "feitiç", "encant"),
-        // Cura e medicina
-        "cur" to listOf("cur", "recuper", "medicin", "socorr"),
-        "medicin" to listOf("medicin", "cur", "socorr"),
-        // Queda e altitude
-        "quet" to listOf("quet", "cai", "altitud", "impact"),
-        "altitud" to listOf("altitud", "quet", "cai"),
-        // Visibilidade
-        "visibil" to listOf("visibil", "escurid", "iluminac", "nebl"),
-        "escurid" to listOf("escurid", "visibil", "noite"),
-        // Artes marciais
-        "artes marciais" to listOf("artes", "marciais", "luta", "combat"),
-        "marciai" to listOf("marciai", "artes", "luta", "combat"),
-        // Armadura e proteção
-        "armadur" to listOf("armadur", "protec", "blindag"),
-        "armor" to listOf("armadur", "protec", "rd")
+        "rifl"      to listOf("rifl", "arma", "fogo", "longa"),
+        "magic"     to listOf("magic", "feitico", "encant", "conjur"),
+        "feitico"   to listOf("magic", "feitico", "encant"),
+        "cur"       to listOf("cur", "recuper", "medicin", "socorr"),
+        "medicin"   to listOf("medicin", "cur", "socorr"),
+        "altitud"   to listOf("altitud", "quet", "cai"),
+        "visibil"   to listOf("visibil", "escurid", "iluminac", "nebl"),
+        "escurid"   to listOf("escurid", "visibil", "noite"),
+        "marciai"   to listOf("marciai", "artes", "luta", "combat"),
+        "armadur"   to listOf("armadur", "protec", "blindag"),
+        "armor"     to listOf("armadur", "protec", "rd")
     )
 
-    fun prepararQueryFTSAgressiva(userQuery: String, termosTecnicos: List<String>): String {
-        // 1. Limpa e extrai tokens da query do usuário
+    /**
+     * Gera query FTS4 a partir da pergunta e dos termos ponderados do Planner.
+     *
+     * Ordem dos tokens na query resultante:
+     *   1. Termos de núcleo (peso >= 1.0) — aparecem primeiro
+     *   2. Expansão de sinônimos dos termos de núcleo
+     *   3. Termos de contexto (peso 0.6) — aparecem depois
+     *   4. Termos gerais da query original (sem classificação explícita)
+     *
+     * Limite: 20 prefixos. FTS4 não ordena por posição no OR, mas ter os termos
+     * relevantes no início garante que o pool inicial de candidatos os contenha.
+     */
+    fun prepararQueryFTSAgressiva(
+        userQuery: String,
+        termosTecnicos: List<String>,
+        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList()
+    ): String {
         val cleanQuery = userQuery.replace(Regex("[^a-zA-ZáàâãéèêíïóôõöúçÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇ0-9\\s]"), " ")
         val tokensUsuario = cleanQuery.split(Regex("\\s+"))
             .map { CatalogFilters.normalizarBusca(it) }
             .filter { it.length >= 3 && it !in stopWords && !it.all { c -> c.isDigit() } }
 
-        // 2. Normaliza os termos técnicos do Planner
         val tokensTecnicos = termosTecnicos
             .map { CatalogFilters.normalizarBusca(it) }
             .filter { it.length >= 3 && it !in stopWords && !it.all { c -> c.isDigit() } }
 
-        val todosTokens = (tokensUsuario + tokensTecnicos).distinct()
-
-        if (todosTokens.isEmpty()) {
-            // Fallback: usa as primeiras palavras da query original
+        if ((tokensUsuario + tokensTecnicos).isEmpty()) {
             return userQuery.split(" ")
                 .filter { it.length >= 3 }
                 .take(5)
@@ -108,29 +106,57 @@ object MestreIAQueryEngine {
                 .ifBlank { CatalogFilters.normalizarBusca(userQuery) }
         }
 
-        // 3. Expande com sinônimos e gera lista PLANA de prefixos
-        // NUNCA use parênteses em torno de wildcards — FTS4 não suporta (termo*)
-        val prefixos = mutableSetOf<String>()
-        for (token in todosTokens) {
-            prefixos.add("${token}*")
+        // Separa termos por camada de relevância
+        val termosNucleo = termosPonderados
+            .filter { it.peso >= 1.0 }
+            .map { CatalogFilters.normalizarBusca(it.termo) }
+            .filter { it.length >= 3 && it !in stopWords }
 
-            // Busca expansão por sinônimos usando prefixo do token
+        val termosContexto = termosPonderados
+            .filter { it.peso < 1.0 }
+            .map { CatalogFilters.normalizarBusca(it.termo) }
+            .filter { it.length >= 3 && it !in stopWords }
+
+        // Expansão de sinônimos — somente para termos do núcleo
+        val expansaoNucleo = mutableListOf<String>()
+        for (token in termosNucleo) {
             for ((chave, expansao) in sinonimos) {
-                if (token.startsWith(chave) || token.contains(chave)) {
-                    expansao.forEach { prefixos.add("${it}*") }
+                if (token.startsWith(chave)) {
+                    expansao.forEach { expansaoNucleo.add(it) }
                 }
             }
         }
 
-        // Siglas técnicas de GURPS — sem wildcard (são tokens exatos)
-        if (tokensUsuario.any { it == "pv" || it == "vida" || it == "saude" }) prefixos.add("pv")
-        if (tokensUsuario.any { it == "pf" || it == "fadig" }) prefixos.add("pf")
-        if (tokensUsuario.any { it == "st" || it == "forca" }) prefixos.add("st")
-        if (tokensUsuario.any { it == "dx" || it == "destrez" }) prefixos.add("dx")
-        if (tokensUsuario.any { it == "iq" || it == "intelig" }) prefixos.add("iq")
-        if (tokensUsuario.any { it == "ht" || it == "vitalid" }) prefixos.add("ht")
+        // Siglas técnicas de GURPS (tokens exatos, sem wildcard)
+        val siglas = mutableListOf<String>()
+        val todosTokensBrutos = tokensUsuario + tokensTecnicos + termosNucleo
+        if (todosTokensBrutos.any { it == "pv" || it == "vida" || it == "saude" }) siglas.add("pv")
+        if (todosTokensBrutos.any { it == "pf" || it.startsWith("fadig") }) siglas.add("pf")
+        if (todosTokensBrutos.any { it == "st" || it.startsWith("forca") }) siglas.add("st")
+        if (todosTokensBrutos.any { it == "dx" || it.startsWith("destrez") }) siglas.add("dx")
+        if (todosTokensBrutos.any { it == "iq" || it.startsWith("intelig") }) siglas.add("iq")
+        if (todosTokensBrutos.any { it == "ht" || it.startsWith("vitalid") }) siglas.add("ht")
 
-        // 4. Query final: termos planos separados por OR — sintaxe válida para FTS4
-        return prefixos.take(20).joinToString(" OR ")
+        // Monta prefixos em ordem de prioridade: núcleo → expansão núcleo → contexto → geral
+        val prefixosOrdenados = mutableListOf<String>()
+
+        termosNucleo.forEach { prefixosOrdenados.add("${it}*") }
+        expansaoNucleo.distinct().forEach {
+            val pref = "${it}*"
+            if (pref !in prefixosOrdenados) prefixosOrdenados.add(pref)
+        }
+        termosContexto.forEach {
+            val pref = "${it}*"
+            if (pref !in prefixosOrdenados) prefixosOrdenados.add(pref)
+        }
+        (tokensUsuario + tokensTecnicos).forEach {
+            val pref = "${it}*"
+            if (pref !in prefixosOrdenados) prefixosOrdenados.add(pref)
+        }
+        siglas.forEach {
+            if (it !in prefixosOrdenados) prefixosOrdenados.add(it)
+        }
+
+        return prefixosOrdenados.distinct().take(20).joinToString(" OR ")
     }
 }

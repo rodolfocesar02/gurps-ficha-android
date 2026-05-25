@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
  *   4. Reranking: score_final = 0.6×BM25_norm + 0.4×cosseno
  *
  * Embeddings dos chunks: gerados offline pelo script Python gerar_embeddings.py
- * e importados via chunks.jsonl (campo "embedding": [...384 floats...]).
+ * e importados via chunks.jsonl (campo "embedding": [...3072 floats...]).
  * Armazenados na tabela vec_chunks como ByteArray little-endian.
  *
  * Fallback gracioso: se vec_chunks estiver vazio (embeddings não gerados ainda),
@@ -40,6 +40,11 @@ object MestreIASemanticEngine {
     // Dimensões do modelo Gemini gemini-embedding-001
     private const val EMBEDDING_DIMS = 3072
 
+    // Cache de embeddings por query (sessão em memória — evita chamadas repetidas à API Gemini)
+    // ConcurrentHashMap: thread-safe para coroutines paralelas (3 tool calls simultâneas)
+    // Máximo 50 entradas — sem eviction sofisticada (50 queries por sessão é suficiente)
+    private val embeddingCache = java.util.concurrent.ConcurrentHashMap<String, FloatArray>(64)
+
     /**
      * Reranqueia chunks candidatos usando similaridade semântica cosseno.
      * Retorna os chunks reordenados por score híbrido (BM25 + semântico).
@@ -53,14 +58,33 @@ object MestreIASemanticEngine {
     ): List<MestreIAChunk> = withContext(Dispatchers.IO) {
         if (candidatos.isEmpty()) return@withContext candidatos
 
+        // Poucos candidatos: BM25 já é preciso, não vale a chamada API Gemini
+        if (candidatos.size <= 10) {
+            android.util.Log.d("MestreIA_Semantic", "Poucos candidatos (${candidatos.size}) — BM25 suficiente, pulando semântico.")
+            return@withContext candidatos
+        }
+
         val vetorCount = vecDao.getCount()
         if (vetorCount == 0) {
             android.util.Log.d("MestreIA_Semantic", "vec_chunks vazio — embeddings não gerados ainda. Usando BM25 puro.")
             return@withContext candidatos
         }
 
-        // Gera embedding da query via API
-        val queryEmbedding = gerarEmbeddingViaApi(query)
+        // Gera embedding da query via API (com cache por sessão)
+        val cacheKey = query.take(200).lowercase().trim()
+        val cached = embeddingCache[cacheKey]
+        val queryEmbedding = if (cached != null) {
+            android.util.Log.d("MestreIA_Semantic", "Cache hit: embedding reutilizado (evitou chamada API Gemini)")
+            cached
+        } else {
+            val novo = gerarEmbeddingViaApi(query)
+            if (novo != null) {
+                if (embeddingCache.size >= 50) embeddingCache.clear()  // eviction simples
+                embeddingCache[cacheKey] = novo
+                android.util.Log.d("MestreIA_Semantic", "Embedding gerado e cacheado (cache size=${embeddingCache.size})")
+            }
+            novo
+        }
         if (queryEmbedding == null) {
             android.util.Log.w("MestreIA_Semantic", "Embedding da query falhou — usando BM25 puro.")
             return@withContext candidatos

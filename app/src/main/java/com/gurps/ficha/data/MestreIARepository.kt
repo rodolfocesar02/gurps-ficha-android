@@ -167,4 +167,16 @@ class MestreIARepository(
         manualChunkDao.clearAll()
         FichaDatabase.prePopulateManual(context, database)
     }
+
+    /** Retorna o número total de chunks no corpus (para IDF global correto no BM25). */
+    suspend fun contarTotalChunks(): Int = withContext(Dispatchers.IO) {
+        manualChunkDao.getCount()
+    }
+
+    /**
+     * Retorna avgdl estimado do corpus completo.
+     * Valor calibrado empiricamente com os chunks GURPS (~900 chars/chunk).
+     * Evita query extra ao banco mantendo a infraestrutura imutável.
+     */
+    fun calcularAvgdlCorpus(): Double = 900.0
 }

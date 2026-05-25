@@ -108,31 +108,32 @@ class MestreIAUseCase(
                 val plano = MestreIAPlanner.planejarBusca(prompt, viewModel.personagem.equipamentos)
                 android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)} | livros: ${plano.livrosRelevantes}")
 
-                // LOTE 268: Análise de intenção semântica
-                val intencao = MestreIAPlanner.analisarIntencao(prompt)
-                val queryAjustada = when (intencao) {
-                    MestreIAPlanner.IntencaoBusca.QUER_TABELA -> {
-                        val tema = plano.termos.take(3).joinToString(" ")
-                        "tabela $tema resultados completa lista"
-                    }
-                    MestreIAPlanner.IntencaoBusca.QUER_EXPLICACAO -> {
-                        val tema = plano.termos.take(3).joinToString(" ")
-                        "como funciona $tema definição explicação"
-                    }
-                    MestreIAPlanner.IntencaoBusca.QUER_REGRA -> {
-                        val tema = plano.termos.take(3).joinToString(" ")
-                        "regra $tema é possível permitido proibido"
-                    }
-                    MestreIAPlanner.IntencaoBusca.QUER_CALCULO -> {
-                        val tema = plano.termos.take(3).joinToString(" ")
-                        "quantidade valor $tema modificador penalidade fórmula"
-                    }
-                    MestreIAPlanner.IntencaoBusca.GERAL -> prompt
+                // Lote 270-D: queryAjustada construída a partir dos termos de NÚCLEO (peso >= 1.0),
+                // não do take(3) da lista plana que poderia omitir o sujeito real da pergunta.
+                val intencao = plano.intencaoEstruturada ?: run {
+                    val ib = MestreIAPlanner.analisarIntencao(prompt)
+                    MestreIAPlanner.IntencaoEstruturada(ib, "", "", MestreIAPlanner.RelacaoSemantica.GENERICO, emptyList())
                 }
-                android.util.Log.i("MestreIA_RAG", "║  Intenção: $intencao | Query ajustada: \"${queryAjustada.take(60)}\"")
+                val termosPonderados = intencao.termosPonderados
+                val nucleoTermos = termosPonderados
+                    .filter { it.peso >= 1.0 }
+                    .sortedByDescending { it.peso }
+                    .map { it.termo }
+                    .take(5)
+                    .ifEmpty { plano.termos.take(3) }
+                val nucleoStr = nucleoTermos.joinToString(" ")
+
+                val queryAjustada = when (intencao.intencaoBusca) {
+                    MestreIAPlanner.IntencaoBusca.QUER_TABELA     -> "tabela $nucleoStr resultados completa lista"
+                    MestreIAPlanner.IntencaoBusca.QUER_EXPLICACAO -> "como funciona $nucleoStr definição explicação"
+                    MestreIAPlanner.IntencaoBusca.QUER_REGRA      -> "regra $nucleoStr é possível permitido proibido"
+                    MestreIAPlanner.IntencaoBusca.QUER_CALCULO    -> "quantidade valor $nucleoStr modificador penalidade fórmula"
+                    MestreIAPlanner.IntencaoBusca.GERAL            -> prompt
+                }
+                android.util.Log.i("MestreIA_RAG", "║  Intenção: ${intencao.intencaoBusca} | Núcleo: \"$nucleoStr\" | Query ajustada: \"${queryAjustada.take(60)}\"")
 
                 updateStatus("Consultando o manual...")
-                var resultado = gerarCatalogoDireto(queryAjustada, viewModel.mestreIAChatHistory, plano.termos)
+                var resultado = gerarCatalogoDireto(queryAjustada, viewModel.mestreIAChatHistory, plano.termos, termosPonderados)
 
                 // Injeta contexto do inventário do personagem antes do RAG geral
                 if (plano.contextoEquipamentos.isNotEmpty()) {
@@ -495,12 +496,20 @@ class MestreIAUseCase(
      * LOTE 258: Query Rewriting — se FTS retornar < 5 chunks, reformula a pergunta
      * via API leve (Gemini Flash Lite) em termos técnicos do GURPS e tenta novamente.
      */
-    suspend fun gerarCatalogoDireto(prompt: String, history: List<MestreIAClient.ChatMessage>, termosExtras: List<String> = emptyList()): CatalogoLocalResult {
+    suspend fun gerarCatalogoDireto(
+        prompt: String,
+        history: List<MestreIAClient.ChatMessage>,
+        termosExtras: List<String> = emptyList(),
+        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList()
+    ): CatalogoLocalResult {
         val promptExpandido = prompt.take(500)
-        // perguntaOriginal passada para que o TopicIndex use a pergunta curta, não a query expandida com 40+ termos
-        val res = graphEngine.buscarDiretoNoCodex(promptExpandido, termosExtras, perguntaOriginal = prompt)
+        val res = graphEngine.buscarDiretoNoCodex(
+            query = promptExpandido,
+            termosExtras = termosExtras,
+            perguntaOriginal = prompt,
+            termosPonderados = termosPonderados
+        )
 
-        // Resultado satisfatório: 5+ chunks — não precisa de rewriting
         if (res.relatedChunks.size >= 5) {
             val cat = MestreIAClient.CatalogoNomes(
                 chunks = res.relatedChunks,
@@ -509,15 +518,19 @@ class MestreIAUseCase(
             return CatalogoLocalResult(cat, true)
         }
 
-        // Resultado fraco: tenta query rewriting via API antes de desistir
+        // Resultado fraco: tenta query rewriting via API
         android.util.Log.w("MestreIA_RAG", "║  QUERY REWRITE: apenas ${res.relatedChunks.size} chunks — reformulando com IA...")
         val termosReescritos = reescreverQueryParaGurps(prompt)
         if (termosReescritos.isNotEmpty()) {
             android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE OK: $termosReescritos")
-            val resReescrito = graphEngine.buscarDiretoNoCodex(termosReescritos, termosExtras, perguntaOriginal = prompt)
+            val resReescrito = graphEngine.buscarDiretoNoCodex(
+                query = termosReescritos,
+                termosExtras = termosExtras,
+                perguntaOriginal = prompt,
+                termosPonderados = termosPonderados
+            )
             if (resReescrito.relatedChunks.size > res.relatedChunks.size) {
                 android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE MELHOROU: ${res.relatedChunks.size} → ${resReescrito.relatedChunks.size} chunks")
-                // Merge: resultado original + reescrito, deduplicado
                 val chunksMerge = (resReescrito.relatedChunks + res.relatedChunks).distinctBy { it.chunk_id }
                 val scoresMerge = resReescrito.chunkScores + res.chunkScores
                 val resMerge = MestreIAGraphEngine.GraphSearchResult(relatedChunks = chunksMerge, chunkScores = scoresMerge)
@@ -529,7 +542,6 @@ class MestreIAUseCase(
             }
         }
 
-        // Fallback: retorna o que tinha (pode ser 0 chunks — IA ativará protocolo de lacuna)
         val cat = MestreIAClient.CatalogoNomes(
             chunks = res.relatedChunks,
             ponteDeFerro = graphEngine.formatarParaIA(res, prompt).take(35000)

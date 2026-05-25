@@ -24,7 +24,7 @@ object MestreIATools {
         // Ferramenta 1: Busca Direta (NOVO LOTE 119)
         functionDeclarations.put(JSONObject().apply {
             put("name", TOOL_MANUAL_DIRETO)
-            put("description", "PREFERENCIAL: Use para buscas técnicas profundas. Ignora o índice e vai direto ao texto do manual. Use quando 'consultar_grafo_regras' falhar ou para dúvidas muito específicas de combate.")
+            put("description", "PREFERENCIAL: Use para buscas técnicas profundas. Vai direto ao texto bruto do manual. Use quando o contexto inicial não responder completamente ou para dúvidas muito específicas de combate.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
