@@ -106,7 +106,7 @@ object MestreIATools {
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {
-                        put("secao", JSONObject().put("type", "string").put("enum", JSONArray().put("atributos").put("vantagens").put("pericias").put("status").put("armas").put("armaduras")))
+                        put("secao", JSONObject().put("type", "string").put("enum", JSONArray().put("atributos").put("vantagens").put("pericias").put("status").put("armas").put("armaduras").put("completo")))
                     })
                 })
             })

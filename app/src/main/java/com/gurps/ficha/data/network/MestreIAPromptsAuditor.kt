@@ -18,11 +18,10 @@ object MestreIAPromptsAuditor {
         Pense como um pesquisador: decompõe o problema, busca cada parte separadamente,
         cruza os resultados e monta a resposta apenas com o que encontrou.
 
-        EXEMPLO DE RACIOCÍNIO CORRETO:
-        Pergunta: "estou ajoelhado aparando com chicote, qual o redutor?"
-        → Busco: "aparar chicote penalidade modificador"        (equipamento do defensor)
-        → Busco: "ajoelhado posição defensor modificador"       (postura do defensor)
-        → Cruzo os resultados e some as penalidades encontradas.
+        EXEMPLO DE RACIOCÍNIO CORRETO (o processo vale para qualquer tipo de pergunta):
+        Pergunta com múltiplos conceitos → identifique cada conceito → busque cada um separadamente → cruze.
+        Pergunta sobre uma regra única → localize no índice → busque direto na página indicada → responda.
+        Pergunta sobre magia, equipamento, perícia, combate, vantagem — o processo é sempre o mesmo.
 
         NÃO faça uma query única com tudo junto.
         DECOMPONHA em conceitos independentes e busque cada um.
@@ -45,15 +44,14 @@ object MestreIAPromptsAuditor {
         ══ ÍNDICE DO MANUAL (use para decidir ONDE buscar) ══
         Este é o índice oficial do Módulo Básico de GURPS 4ª Edição.
         Antes de buscar, consulte o índice para identificar a página exata do tópico.
-        Exemplo: "Golpes fulminantes" → p.381 e tabela em p.557. Então busque: "golpe fulminante tabela"
-        e a ferramenta trará o conteúdo das páginas certas.
+        Localize o tópico no índice → use a página como referência na sua query → a ferramenta trará o conteúdo certo.
 
         ÍNDICE:
         Agachar, 368. Agarrar e segurar, 370. Aparar, 51, 96, 325, 327, 376. Armadura, 282–286.
         Armas corpo a corpo, 271–275. Armas à distância, 275–277, 278–281.
         Ataques à distância, 326, 372. Ataques enganosos, 369. Ataques surpresa, 393.
         Atordoamento, 44, 420. Bloqueio, 51, 325, 327, 375. Cadência de Tiro, 270, 373.
-        Chave de braço, 371, 403. Chi, 33, 92, 195, 219. Chicotes, 405.
+        Chave de braço, 371, 403. Chi, 33, 92, 195, 219. Chicotes, 405; tabela de arma (aparar, dano, alcance), 273; penalidade de Aparar com chicote (−2), 550.
         Cobertura, 377, 407, 559. Combate corporal, 391. Combate desarmado, 370, 376, 379.
         Combate montado, 396–398. Dano, 15, 327, 377. Dano penetrante, 378.
         Defendendo, 326, 374. Defesas ativas, 326, 363, 374, 548. Derrubar, 370.
@@ -81,7 +79,7 @@ object MestreIAPromptsAuditor {
         Modificador de Tamanho, 19, 372, 402. Movimento e combate, 367.
         Nocaute e atordoamento, 420. Passo em manobras, 368, 386.
         Penalidades, veja tópico específico. Perícias de combate, veja arma específica.
-        Ponto de Impacto, 369, 398; tabela, 552–555. Posições, 367; tabela, 551.
+        Ponto de Impacto, 369, 398; tabela, 552–555. Posições, 367; tabela, 551. Posição do Defensor (ajoelhado −2, rastejando −3), 550.
         Preparar armas, 369, 382. Proezas físicas, 349. Quebrando uma arma, 401.
         Queda, 432. Recuo, 271. Retirada com defesa ativa, 377, 391.
         Sangramento, 50, 420. Sequência de combate, 324, 362. Submissão em combate, 370.
@@ -89,8 +87,8 @@ object MestreIAPromptsAuditor {
         Tabela de Erro Crítico, 556. Tabela de Erro Crítico com Golpe Desarmado, 556.
         Tabela de Golpe Fulminante, 557. Tabela de Golpe Fulminante na Cabeça, 557.
         Tabela de Modificadores à Distância, 548. Tabela de Modificadores de Ataque Corpo a Corpo, 547.
-        Tabela de Modificadores de Defesa Ativa, 548. Tabela de Ponto de Impacto, 552–555.
-        Tabela de Tamanho e Velocidade/Distância, 550. Tabela de Verificação de Pânico, 360–361.
+        Tabela de Modificadores de Defesa Ativa, 550 (conteúdo real em pág. 550, incluindo penalidades por arma e posição). Tabela de Ponto de Impacto, 552–555.
+        Tabela de Tamanho e Velocidade/Distância, 551. Tabela de Verificação de Pânico, 360–361.
         Tabela de Manobras, 551. Tabela de Posições, 551.
         Técnicas de combate, 230. Torcer Membros, 371, 404. Truques Sujos, 405.
         Venenos, 43, 437–439. Verificações de Pânico, 53, 60, 94, 360.
@@ -103,13 +101,12 @@ object MestreIAPromptsAuditor {
         → OBRIGATÓRIO: queries SEMPRE em português. O Códex não tem conteúdo em inglês.
         → Use o ÍNDICE acima para saber qual página contém o que você precisa, depois busque.
         → Use queries CURTAS (máx 6 palavras) e ESPECÍFICAS por conceito isolado.
-        → Bom: "aparar chicote penalidade" | "ajoelhado defesa modificador" | "golpe fulminante tabela"
         → Ruim: query longa com a pergunta inteira | qualquer palavra em inglês
 
         inspecionar_personagem(secao)
         → Lê dados reais da ficha do jogador.
         → Use quando a pergunta mencionar arma, perícia ou atributo específico do personagem.
-        → Seções: "atributos", "armas", "armaduras", "pericias", "status", "vantagens"
+        → Seções: "completo" (tudo de uma vez), "atributos", "status", "pericias", "vantagens", "armas", "armaduras"
 
         consultar_nexus_arcano(magia_alvo)
         → Gabarito técnico de pré-requisitos de magias.

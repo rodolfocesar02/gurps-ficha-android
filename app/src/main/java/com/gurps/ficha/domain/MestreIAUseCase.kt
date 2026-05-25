@@ -202,12 +202,91 @@ class MestreIAUseCase(
                                             MestreIATools.TOOL_INSPECT_CHARACTER -> {
                                                 val secao = toolCall.args.optString("secao", "atributos")
                                                 updateStatus("Lendo ficha ($secao)...")
+                                                val p = viewModel.personagem
+                                                val def = p.defesasAtivas
                                                 val infoFicha = when (secao) {
-                                                    "status" -> "PV: ${viewModel.personagem.pontosVidaRolagemAtual ?: viewModel.personagem.pontosVida}/${viewModel.personagem.pontosVida} | PF: ${viewModel.personagem.pontosFadigaRolagemAtual ?: viewModel.personagem.pontosFadiga}/${viewModel.personagem.pontosFadiga}"
-                                                    "vantagens" -> "Vantagens: " + viewModel.personagem.vantagens.joinToString { it.nome }
-                                                    "pericias" -> "Perícias: " + viewModel.personagem.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(viewModel.personagem)})" }
+                                                    "status" -> {
+                                                        val nivelCargaLabel = when (p.nivelCarga) {
+                                                            0 -> "Sem carga"
+                                                            1 -> "Carga leve"
+                                                            2 -> "Carga média"
+                                                            3 -> "Carga pesada"
+                                                            4 -> "Carga extra-pesada"
+                                                            else -> "Carga ${p.nivelCarga}"
+                                                        }
+                                                        "PV: ${p.pontosVidaRolagemAtual ?: p.pontosVida}/${p.pontosVida} | PF: ${p.pontosFadigaRolagemAtual ?: p.pontosFadiga}/${p.pontosFadiga} | Carga: $nivelCargaLabel"
+                                                    }
+                                                    "vantagens" -> buildString {
+                                                        append("Vantagens: " + p.vantagens.joinToString { it.nome })
+                                                        if (p.desvantagens.isNotEmpty())
+                                                            append("\nDesvantagens: " + p.desvantagens.joinToString { it.nome })
+                                                    }
+                                                    "pericias" -> buildString {
+                                                        append("Perícias: " + p.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(p)})" })
+                                                        if (p.tecnicas.isNotEmpty())
+                                                            append("\nTécnicas: " + p.tecnicas.joinToString { "${it.nome} (NH ${it.calcularNivel(p) ?: "?"})" })
+                                                        if (p.magias.isNotEmpty()) {
+                                                            val aptidao = com.gurps.ficha.domain.engine.MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+                                                            append("\nMagias: " + p.magias.joinToString { "${it.nome} (NH ${it.calcularNivel(p, aptidao)})" })
+                                                        }
+                                                    }
+                                                    "completo" -> buildString {
+                                                        // Atributos e defesas
+                                                        append("=== ATRIBUTOS ===\n")
+                                                        append("ST ${p.st}, DX ${p.dx}, IQ ${p.iq}, HT ${p.ht}")
+                                                        append(" | Vel. Básica: ${"%.2f".format(p.velocidadeBasica)}")
+                                                        append(" | Deslocamento: ${p.deslocamentoBasico}\n")
+                                                        append("Esquiva: ${def.calcularEsquiva(p)}")
+                                                        val apara = def.calcularApara(p)
+                                                        val periciaApara = def.getPericiaApara(p)
+                                                        if (apara != null && periciaApara != null)
+                                                            append(" | Apara: $apara (${periciaApara.nome})")
+                                                        val bloqueio = def.calcularBloqueio(p)
+                                                        if (bloqueio != null) append(" | Bloqueio: $bloqueio")
+                                                        // Status
+                                                        val nivelCargaLabel = when (p.nivelCarga) { 0 -> "Sem carga"; 1 -> "Leve"; 2 -> "Média"; 3 -> "Pesada"; 4 -> "Extra-pesada"; else -> "${p.nivelCarga}" }
+                                                        append("\nPV: ${p.pontosVidaRolagemAtual ?: p.pontosVida}/${p.pontosVida} | PF: ${p.pontosFadigaRolagemAtual ?: p.pontosFadiga}/${p.pontosFadiga} | Carga: $nivelCargaLabel")
+                                                        // Vantagens e desvantagens
+                                                        if (p.vantagens.isNotEmpty())
+                                                            append("\n=== VANTAGENS ===\n" + p.vantagens.joinToString { it.nome })
+                                                        if (p.desvantagens.isNotEmpty())
+                                                            append("\n=== DESVANTAGENS ===\n" + p.desvantagens.joinToString { it.nome })
+                                                        // Perícias
+                                                        if (p.pericias.isNotEmpty())
+                                                            append("\n=== PERÍCIAS ===\n" + p.pericias.joinToString { "${it.nome} (NH ${it.calcularNivel(p)})" })
+                                                        // Técnicas
+                                                        if (p.tecnicas.isNotEmpty())
+                                                            append("\n=== TÉCNICAS ===\n" + p.tecnicas.joinToString { "${it.nome} (NH ${it.calcularNivel(p) ?: "?"})" })
+                                                        // Magias
+                                                        if (p.magias.isNotEmpty()) {
+                                                            val aptidao = com.gurps.ficha.domain.engine.MagicEngine.getNivelAptidaoMagicaParaMagia(p, null)
+                                                            append("\n=== MAGIAS ===\n" + p.magias.joinToString { "${it.nome} (NH ${it.calcularNivel(p, aptidao)})" })
+                                                        }
+                                                        // Armas
+                                                        val armas = p.equipamentos.filter { it.armaTipoCombate != null }
+                                                        if (armas.isNotEmpty())
+                                                            append("\n=== ARMAS ===\n" + armas.joinToString("\n") { e ->
+                                                                buildString {
+                                                                    append("• ${e.nome}")
+                                                                    e.armaTipoCombate?.let { append(" | Tipo: $it") }
+                                                                    e.armaDanoRaw?.let { append(" | Dano: $it") }
+                                                                    e.armaGrupo?.let { append(" | Grupo: $it") }
+                                                                    e.armaStMinimo?.let { append(" | ST mín: $it") }
+                                                                }
+                                                            })
+                                                        // Armaduras
+                                                        val armaduras = p.equipamentos.filter { it.armaduraRd != null }
+                                                        if (armaduras.isNotEmpty())
+                                                            append("\n=== ARMADURAS ===\n" + armaduras.joinToString("\n") { e ->
+                                                                buildString {
+                                                                    append("• ${e.nome}")
+                                                                    e.armaduraRd?.let { append(" | RD: $it") }
+                                                                    e.armaduraLocal?.let { append(" | Local: $it") }
+                                                                }
+                                                            })
+                                                    }
                                                     "armas" -> {
-                                                        val armas = viewModel.personagem.equipamentos.filter { it.armaTipoCombate != null }
+                                                        val armas = p.equipamentos.filter { it.armaTipoCombate != null }
                                                         if (armas.isEmpty()) "Nenhuma arma no inventário."
                                                         else armas.joinToString("\n") { e ->
                                                             buildString {
@@ -220,7 +299,7 @@ class MestreIAUseCase(
                                                         }
                                                     }
                                                     "armaduras" -> {
-                                                        val armaduras = viewModel.personagem.equipamentos.filter { it.armaduraRd != null }
+                                                        val armaduras = p.equipamentos.filter { it.armaduraRd != null }
                                                         if (armaduras.isEmpty()) "Nenhuma armadura no inventário."
                                                         else armaduras.joinToString("\n") { e ->
                                                             buildString {
@@ -230,7 +309,19 @@ class MestreIAUseCase(
                                                             }
                                                         }
                                                     }
-                                                    else -> "Atributos: ST ${viewModel.personagem.st}, DX ${viewModel.personagem.dx}, IQ ${viewModel.personagem.iq}, HT ${viewModel.personagem.ht}"
+                                                    else -> buildString {
+                                                        append("ST ${p.st}, DX ${p.dx}, IQ ${p.iq}, HT ${p.ht}")
+                                                        append(" | Vel. Básica: ${"%.2f".format(p.velocidadeBasica)}")
+                                                        append(" | Deslocamento: ${p.deslocamentoBasico}")
+                                                        append(" | Esquiva: ${def.calcularEsquiva(p)}")
+                                                        val apara = def.calcularApara(p)
+                                                        val periciaApara = def.getPericiaApara(p)
+                                                        if (apara != null && periciaApara != null)
+                                                            append(" | Apara: $apara (${periciaApara.nome})")
+                                                        val bloqueio = def.calcularBloqueio(p)
+                                                        if (bloqueio != null)
+                                                            append(" | Bloqueio: $bloqueio")
+                                                    }
                                                 }
                                                 ToolResult.Ficha(secao, infoFicha)
                                             }
