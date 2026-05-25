@@ -181,11 +181,12 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        val chunksFinal = chunksFinais.toList().distinctBy { it.chunk_id }.take(30)
+        val chunksFinal = chunksFinais.toList().distinctBy { it.chunk_id }.take(15)
         val paginasFinais = chunksFinal.mapNotNull { it.page_number }.distinct().sorted().joinToString()
         android.util.Log.i("MestreIA_RAG", "  Contexto final: ${chunksFinal.size} chunks | páginas: [$paginasFinais]")
 
-        val scoresMap = chunksPontuadosFinais.associate { it.first.chunk_id to it.second }
+        val scoresMap = chunksPontuadosFinais.associate { it.first.chunk_id to it.second } +
+            chunksTopicIndex.associate { it.chunk_id to 999.0 }
         return GraphSearchResult(
             summaries = emptyList(),
             relatedChunks = chunksFinal,
@@ -296,13 +297,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                         score >= 2.0  -> "[★★]"
                         else          -> "[★]"
                     }
-                    // Chunks de alta relevância: texto completo (IA precisa de todo o contexto)
-                    // Chunks de baixa relevância: comprimidos às sentenças que contêm os termos
-                    val textoFinal = when {
-                        score >= 8.0 -> chunk.text
-                        termosQuery.isNotEmpty() -> comprimirChunk(chunk.text, termosQuery)
-                        else -> chunk.text.take(600)  // fallback: limita sem comprimir
-                    }
+                    val textoFinal = chunk.text
                     s.append("[Pág. ${chunk.page_number}]$relevancia: $textoFinal\n")
                 }
             }
@@ -322,34 +317,6 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         return s.toString()
-    }
-
-    /**
-     * Pocket RAG — extrai sentenças relevantes de um chunk.
-     * Mantém sentenças que contêm pelo menos um termo de busca + 1 sentença de contexto vizinha.
-     * Chunks sem nenhuma sentença relevante retornam as primeiras 2 sentenças (contexto mínimo).
-     */
-    private fun comprimirChunk(texto: String, termos: List<String>, maxSentencas: Int = 4): String {
-        val sentencas = texto.split(Regex("(?<=[.!?])\\s+")).filter { it.isNotBlank() }
-        if (sentencas.size <= 2) return texto  // chunk pequeno: não comprimir
-
-        val indicesRelevantes = mutableSetOf<Int>()
-        sentencas.forEachIndexed { i, sentenca ->
-            val sent = sentenca.lowercase()
-            if (termos.any { sent.contains(it) }) {
-                indicesRelevantes.add(i)
-                // inclui sentença vizinha seguinte como contexto (regras frequentemente continuam na próxima frase)
-                if (i + 1 < sentencas.size) indicesRelevantes.add(i + 1)
-            }
-        }
-
-        if (indicesRelevantes.isEmpty()) {
-            // Nenhuma sentença contém os termos — retorna início do chunk como contexto
-            return sentencas.take(2).joinToString(" ")
-        }
-
-        return indicesRelevantes.sorted().take(maxSentencas)
-            .joinToString(" ") { sentencas[it] }
     }
 
     /**

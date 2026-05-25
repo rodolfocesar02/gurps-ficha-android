@@ -19,10 +19,9 @@ class MestreIARagEngineTest {
         override val desvantagens = emptyList<com.gurps.ficha.model.DesvantagemDefinicao>()
         override val pericias = emptyList<com.gurps.ficha.model.PericiaDefinicao>()
         override val magias = emptyList<com.gurps.ficha.model.MagiaDefinicao>()
-        
-        override suspend fun buscarResumosGrafo(query: String) = emptyList<com.gurps.ficha.data.storage.GraphNodeEntity>()
-        override suspend fun buscarNodesPorTitulo(query: String) = emptyList<com.gurps.ficha.data.storage.GraphNodeEntity>()
+
         override suspend fun buscarRecortesManual(query: String, limit: Int) = emptyList<com.gurps.ficha.model.MestreIAChunk>()
+        override suspend fun buscarNoCodexDireto(query: String, termos: List<String>, limit: Int) = emptyList<com.gurps.ficha.model.MestreIAChunk>()
     }
 
     @Test
@@ -37,7 +36,7 @@ class MestreIARagEngineTest {
         
         kotlinx.coroutines.runBlocking {
             repeat(repeticoes) {
-                engine.buscarNoGrafo("Preciso de um guerreiro forte com espada e fogo")
+                engine.buscarDiretoNoCodex("Preciso de um guerreiro forte com espada e fogo")
             }
         }
         

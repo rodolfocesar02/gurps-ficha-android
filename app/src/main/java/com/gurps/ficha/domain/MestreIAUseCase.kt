@@ -107,8 +107,32 @@ class MestreIAUseCase(
                 // LOTE 130: passa inventário do personagem para o Planner cruzar com a pergunta
                 val plano = MestreIAPlanner.planejarBusca(prompt, viewModel.personagem.equipamentos)
                 android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)} | livros: ${plano.livrosRelevantes}")
+
+                // LOTE 268: Análise de intenção semântica
+                val intencao = MestreIAPlanner.analisarIntencao(prompt)
+                val queryAjustada = when (intencao) {
+                    MestreIAPlanner.IntencaoBusca.QUER_TABELA -> {
+                        val tema = plano.termos.take(3).joinToString(" ")
+                        "tabela $tema resultados completa lista"
+                    }
+                    MestreIAPlanner.IntencaoBusca.QUER_EXPLICACAO -> {
+                        val tema = plano.termos.take(3).joinToString(" ")
+                        "como funciona $tema definição explicação"
+                    }
+                    MestreIAPlanner.IntencaoBusca.QUER_REGRA -> {
+                        val tema = plano.termos.take(3).joinToString(" ")
+                        "regra $tema é possível permitido proibido"
+                    }
+                    MestreIAPlanner.IntencaoBusca.QUER_CALCULO -> {
+                        val tema = plano.termos.take(3).joinToString(" ")
+                        "quantidade valor $tema modificador penalidade fórmula"
+                    }
+                    MestreIAPlanner.IntencaoBusca.GERAL -> prompt
+                }
+                android.util.Log.i("MestreIA_RAG", "║  Intenção: $intencao | Query ajustada: \"${queryAjustada.take(60)}\"")
+
                 updateStatus("Consultando o manual...")
-                var resultado = gerarCatalogoDireto(prompt, viewModel.mestreIAChatHistory, plano.termos)
+                var resultado = gerarCatalogoDireto(queryAjustada, viewModel.mestreIAChatHistory, plano.termos)
 
                 // Injeta contexto do inventário do personagem antes do RAG geral
                 if (plano.contextoEquipamentos.isNotEmpty()) {
@@ -285,7 +309,8 @@ class MestreIAUseCase(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
-                            desativarTools = isUltimaIteracao
+                            desativarTools = isUltimaIteracao,
+                            maxTokens = if (isUltimaIteracao) 4096 else 2048
                         )
 
                         if (resposta.toolCalls.isNotEmpty()) {

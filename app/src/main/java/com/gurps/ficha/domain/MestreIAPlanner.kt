@@ -9,6 +9,14 @@ import com.gurps.ficha.model.Equipamento
  */
 object MestreIAPlanner {
 
+    enum class IntencaoBusca {
+        QUER_TABELA,       // "me da a tabela", "lista completa", "todos os resultados"
+        QUER_EXPLICACAO,   // "como funciona", "o que é", "explica"
+        QUER_REGRA,        // "posso", "é possível", "funciona contra", "se eu"
+        QUER_CALCULO,      // "quanto de dano", "qual a penalidade", "calcular"
+        GERAL              // comportamento padrão
+    }
+
     data class PlanoDeBusca(
         val termos: List<String>,
         val categorias: List<String>,
@@ -405,6 +413,21 @@ object MestreIAPlanner {
         }
 
         return PlanoDeBusca(termosExpandidos.toList().take(15), categorias, subQueriesStats, contextoEquipamentos, subQueriesTemáticas, livrosRelevantes.toList())
+    }
+
+    fun analisarIntencao(pergunta: String): IntencaoBusca {
+        val p = pergunta.lowercase()
+        return when {
+            Regex("(tabela|lista completa|todos os resultados|me (da|dá|mostre|traga)|complete|inteira|todinha)").containsMatchIn(p)
+                -> IntencaoBusca.QUER_TABELA
+            Regex("(como funciona|explica|o que (é|e) |como se usa|o que significa|qual é a|funcionalidade)").containsMatchIn(p)
+                -> IntencaoBusca.QUER_EXPLICACAO
+            Regex("(posso|é possível|funciona contra|se eu|consigo|permite|proibido|permite|conseguir|é permitido)").containsMatchIn(p)
+                -> IntencaoBusca.QUER_REGRA
+            Regex("(quanto|qual (o valor|a penalidade|o modificador)|calcul|formula|quanto de)").containsMatchIn(p)
+                -> IntencaoBusca.QUER_CALCULO
+            else -> IntencaoBusca.GERAL
+        }
     }
 
     /**
