@@ -21,16 +21,16 @@ object MestreIATools {
     fun getGeminiTools(modo: String): JSONArray {
         val functionDeclarations = JSONArray()
 
-        // Ferramenta 1: Busca Direta (NOVO LOTE 119)
+        // Ferramenta 1: Busca Direta no Códex (Lote 271)
         functionDeclarations.put(JSONObject().apply {
             put("name", TOOL_MANUAL_DIRETO)
-            put("description", "PREFERENCIAL: Use para buscas técnicas profundas. Vai direto ao texto bruto do manual. Use quando o contexto inicial não responder completamente ou para dúvidas muito específicas de combate.")
+            put("description", "Busca páginas completas no Códex de GURPS. Use queries CURTAS e ESPECÍFICAS por conceito isolado. Decomponha a pergunta em partes e busque cada uma separadamente. Ex: 'aparar chicote penalidade', 'ajoelhado defesa modificador'. NÃO use queries longas com a pergunta inteira.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
                     put("query", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Dúvida técnica exata. Ex: 'penalidade por atirar dentro d'água'.")
+                        put("description", "Conceito técnico isolado para busca. Máximo 6 palavras. Ex: 'escavar solo velocidade', 'queda cavalo dano'.")
                     })
                 })
                 put("required", JSONArray().put("query"))
@@ -81,16 +81,16 @@ object MestreIATools {
     fun getOpenAITools(modo: String): JSONArray {
         val tools = JSONArray()
 
-        // Manual Direto
+        // Manual Direto (Lote 271)
         tools.put(JSONObject().apply {
             put("type", "function")
             put("function", JSONObject().apply {
                 put("name", TOOL_MANUAL_DIRETO)
-                put("description", "PREFERENCIAL: Busca técnica direta no texto bruto dos manuais. Use para dúvidas complexas de combate ou ambiente.")
+                put("description", "Busca páginas completas no Códex de GURPS. Use queries CURTAS e ESPECÍFICAS por conceito isolado. Decomponha a pergunta em partes e busque cada uma separadamente. Ex: 'aparar chicote penalidade', 'ajoelhado defesa modificador'. NÃO use queries longas com a pergunta inteira.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {
-                        put("query", JSONObject().put("type", "string"))
+                        put("query", JSONObject().put("type", "string").put("description", "Conceito técnico isolado. Máximo 6 palavras."))
                     })
                     put("required", JSONArray().put("query"))
                 })

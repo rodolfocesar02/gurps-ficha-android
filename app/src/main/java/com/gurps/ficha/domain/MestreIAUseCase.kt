@@ -69,8 +69,8 @@ class MestreIAUseCase(
             }
 
             val isCasual = prompt.trim().lowercase() in listOf("oi", "olá", "ola", "bom dia", "boa tarde", "boa noite", "tudo bem", "teste", "test") || prompt.length < 5
-            
-            // LOTE 126: FILA DE CONTINGÊNCIA PRIME (Multi-Cloud)
+
+            // Lote 271: FILA DE CONTINGÊNCIA PRIME (Multi-Cloud)
             val fila = if (modo == "geracao" || modo == "analise") {
                 // MODO FORJADOR: Apenas DeepSeek Paga (Conforme solicitado)
                 listOf(AIConfig(BuildConfig.MESTRE_IA_DEEPSEEK_URL, BuildConfig.MESTRE_IA_DEEPSEEK_KEY, BuildConfig.MESTRE_IA_DEEPSEEK_MODEL))
@@ -99,151 +99,23 @@ class MestreIAUseCase(
             android.util.Log.i("MestreIA_RAG", "║  Pergunta: \"${prompt.take(100)}\"")
             android.util.Log.i("MestreIA_RAG", "║  Modo: $modo | Casual: $isCasual")
 
-            val catalogoLocal = if (isCasual) {
+            // Lote 271: sem pré-contexto RAG — IA decide sozinha o que buscar
+            if (!isCasual) {
+                android.util.Log.i("MestreIA_RAG", "║  Lote 271: busca livre — IA controla as queries (max 5 tool calls)")
+            } else {
                 android.util.Log.i("MestreIA_RAG", "║  RAG: pulado (mensagem casual)")
-                CatalogoLocalResult(MestreIAClient.CatalogoNomes(), false)
-            } else {
-                updateStatus("Analisando pergunta...")
-                // LOTE 130: passa inventário do personagem para o Planner cruzar com a pergunta
-                val plano = MestreIAPlanner.planejarBusca(prompt, viewModel.personagem.equipamentos)
-                android.util.Log.i("MestreIA_RAG", "║  Planner extraiu termos: ${plano.termos.take(8)} | livros: ${plano.livrosRelevantes}")
-
-                // Lote 270-D: queryAjustada construída a partir dos termos de NÚCLEO (peso >= 1.0),
-                // não do take(3) da lista plana que poderia omitir o sujeito real da pergunta.
-                val intencao = plano.intencaoEstruturada ?: run {
-                    val ib = MestreIAPlanner.analisarIntencao(prompt)
-                    MestreIAPlanner.IntencaoEstruturada(ib, "", "", MestreIAPlanner.RelacaoSemantica.GENERICO, emptyList())
-                }
-                val termosPonderados = intencao.termosPonderados
-                val nucleoTermos = termosPonderados
-                    .filter { it.peso >= 1.0 }
-                    .sortedByDescending { it.peso }
-                    .map { it.termo }
-                    .take(5)
-                    .ifEmpty { plano.termos.take(3) }
-                val nucleoStr = nucleoTermos.joinToString(" ")
-
-                val queryAjustada = when (intencao.intencaoBusca) {
-                    MestreIAPlanner.IntencaoBusca.QUER_TABELA     -> "tabela $nucleoStr resultados completa lista"
-                    MestreIAPlanner.IntencaoBusca.QUER_EXPLICACAO -> "como funciona $nucleoStr definição explicação"
-                    MestreIAPlanner.IntencaoBusca.QUER_REGRA      -> "regra $nucleoStr é possível permitido proibido"
-                    MestreIAPlanner.IntencaoBusca.QUER_CALCULO    -> "quantidade valor $nucleoStr modificador penalidade fórmula"
-                    MestreIAPlanner.IntencaoBusca.GERAL            -> prompt
-                }
-                android.util.Log.i("MestreIA_RAG", "║  Intenção: ${intencao.intencaoBusca} | Núcleo: \"$nucleoStr\" | Query ajustada: \"${queryAjustada.take(60)}\"")
-
-                updateStatus("Consultando o manual...")
-                var resultado = gerarCatalogoDireto(queryAjustada, viewModel.mestreIAChatHistory, plano.termos, termosPonderados)
-
-                // Injeta contexto do inventário do personagem antes do RAG geral
-                if (plano.contextoEquipamentos.isNotEmpty()) {
-                    val secaoInventario = "=== EQUIPAMENTO DO PERSONAGEM (inventário) ===\n${plano.contextoEquipamentos}\n"
-                    val ponteComInventario = (secaoInventario + resultado.catalogo.ponteDeFerro).take(35000)
-                    resultado = CatalogoLocalResult(
-                        resultado.catalogo.copy(ponteDeFerro = ponteComInventario),
-                        resultado.isRagSuccess
-                    )
-                    android.util.Log.i("MestreIA_RAG", "║  INVENTÁRIO: equipamento(s) do personagem injetado(s) no contexto")
-                }
-
-                // LOTE 131 (Paralelo): Pré-busca de stats de equipamentos em paralelo
-                if (plano.subQueriesStats.isNotEmpty()) {
-                    android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS: ${plano.subQueriesStats.size} equipamento(s) detectado(s) — buscando em paralelo")
-                    updateStatus("Verificando stats: ${plano.subQueriesStats.joinToString { it.take(20) }}...")
-                    val statsResultados = coroutineScope {
-                        plano.subQueriesStats.map { statsQuery ->
-                            async { statsQuery to graphEngine.buscarDiretoNoCodex(statsQuery, emptyList()) }
-                        }.awaitAll()
-                    }
-                    var ponte = resultado.catalogo.ponteDeFerro
-                    var chunks = resultado.catalogo.chunks.toMutableList()
-                    for ((statsQuery, statsRes) in statsResultados) {
-                        if (statsRes.relatedChunks.isNotEmpty()) {
-                            val statsTxt = graphEngine.formatarParaIA(statsRes)
-                            ponte = (ponte + "\n\n=== STATS DO EQUIPAMENTO (tabela) ===\n" + statsTxt).take(35000)
-                            chunks = (chunks + statsRes.relatedChunks).distinctBy { it.chunk_id }.toMutableList()
-                            android.util.Log.i("MestreIA_RAG", "║  PRÉ-STATS OK: \"${statsQuery.take(50)}\" → ${statsRes.relatedChunks.size} chunks")
-                        } else {
-                            android.util.Log.w("MestreIA_RAG", "║  PRÉ-STATS VAZIO: \"${statsQuery.take(50)}\"")
-                        }
-                    }
-                    resultado = CatalogoLocalResult(
-                        resultado.catalogo.copy(ponteDeFerro = ponte, chunks = chunks),
-                        resultado.isRagSuccess
-                    )
-                }
-
-                // MULTI-QUERY TEMÁTICO: busca paralela por ângulos temáticos da pergunta.
-                // Chunks que aparecem em múltiplas sub-queries recebem bonus de relevância,
-                // pois sua presença em vários contextos indica alta relevância para a pergunta.
-                if (plano.subQueriesTemáticas.isNotEmpty()) {
-                    android.util.Log.i("MestreIA_RAG", "║  MULTI-QUERY: ${plano.subQueriesTemáticas.size} ângulos temáticos — buscando em paralelo")
-                    updateStatus("Buscando regras relacionadas...")
-                    val tematicasResultados = coroutineScope {
-                        plano.subQueriesTemáticas.map { tQuery ->
-                            async { tQuery to graphEngine.buscarDiretoNoCodex(tQuery, emptyList()) }
-                        }.awaitAll()
-                    }
-                    // Conta em quantas sub-queries cada chunk_id apareceu
-                    val contagemChunk = mutableMapOf<String, Int>()
-                    val todosChunksPorId = mutableMapOf<String, MestreIAChunk>()
-                    for ((_, tRes) in tematicasResultados) {
-                        tRes.relatedChunks.forEach { c ->
-                            contagemChunk[c.chunk_id] = (contagemChunk[c.chunk_id] ?: 0) + 1
-                            todosChunksPorId[c.chunk_id] = c
-                        }
-                    }
-                    // Chunks que aparecem em 2+ sub-queries são promovidos (cross-query bonus)
-                    val chunksPromovidos = todosChunksPorId.values
-                        .filter { (contagemChunk[it.chunk_id] ?: 0) >= 2 }
-                        .sortedByDescending { contagemChunk[it.chunk_id] ?: 0 }
-                        .take(10)
-
-                    val chunksTodos = todosChunksPorId.values.toList()
-                    val qtdNovos = chunksTodos.count { it.chunk_id !in resultado.catalogo.chunks.map { c -> c.chunk_id }.toSet() }
-                    android.util.Log.i("MestreIA_RAG", "║  MULTI-QUERY OK: ${chunksTodos.size} chunks totais | ${chunksPromovidos.size} em 2+ queries (cross-bonus) | $qtdNovos novos")
-
-                    // Injeta chunks promovidos no início do contexto (maior visibilidade para a IA)
-                    val chunksAtuais = resultado.catalogo.chunks.toMutableList()
-                    val chunksIdsAtuais = chunksAtuais.map { it.chunk_id }.toSet()
-                    val chunksNovosPromovidos = chunksPromovidos.filter { it.chunk_id !in chunksIdsAtuais }
-                    val chunksNovosComuns = chunksTodos.filter { it.chunk_id !in chunksIdsAtuais && it !in chunksNovosPromovidos }.take(5)
-
-                    if (chunksNovosPromovidos.isNotEmpty() || chunksNovosComuns.isNotEmpty()) {
-                        val novosFormatados = graphEngine.formatarParaIA(
-                            MestreIAGraphEngine.GraphSearchResult(
-                                relatedChunks = chunksNovosPromovidos + chunksNovosComuns,
-                                chunkScores = contagemChunk.mapValues { (_, count) -> count * 500.0 }
-                            )
-                        )
-                        val ponteAtualizada = (resultado.catalogo.ponteDeFerro + "\n\n=== REGRAS ADICIONAIS (multi-query) ===\n" + novosFormatados).take(35000)
-                        resultado = CatalogoLocalResult(
-                            resultado.catalogo.copy(
-                                ponteDeFerro = ponteAtualizada,
-                                chunks = (chunksNovosPromovidos + chunksNovosComuns + chunksAtuais).distinctBy { it.chunk_id }
-                            ),
-                            resultado.isRagSuccess || chunksTodos.isNotEmpty()
-                        )
-                    }
-                }
-
-                resultado
             }
-            val isRagUsed = catalogoLocal.isRagSuccess
-            val ctxChars = catalogoLocal.catalogo.ponteDeFerro.length
-            val ctxChunks = catalogoLocal.catalogo.chunks.size
-            if (isRagUsed) {
-                android.util.Log.i("MestreIA_RAG", "║  RAG OK: $ctxChunks chunks | $ctxChars chars de contexto")
-            } else {
-                android.util.Log.e("MestreIA_RAG", "║  RAG VAZIO: contexto=0 chars — IA responderá SEM base no manual!")
-            }
+
             var sucesso = false
             val errosAcumulados = mutableListOf<String>()
 
-            // LOTE 122: ESTADO DE INVESTIGAÇÃO PERSISTENTE (Fora do loop de modelos)
-            var catalogoDinamico = catalogoLocal.catalogo
+            // Contexto dinâmico acumulado pelas tool calls da IA
+            var catalogoDinamico = MestreIAClient.CatalogoNomes()
             var promptAtual = prompt
             var historicoInvestigacao = mutableListOf<Pair<String, String>>()
+            var toolCallsFeitas = 0
+            val MAX_TOOL_CALLS = 5
+            var perguntaAoUsuarioPendente: String? = null
 
             for (config in fila) {
                 val iaUrl = config.url
@@ -255,66 +127,44 @@ class MestreIAUseCase(
                     continue
                 }
 
-                // LOTE 133: Handoff de contexto — novo modelo recebe tudo que o anterior pesquisou
                 if (historicoInvestigacao.isNotEmpty()) {
-                    android.util.Log.i("MestreIA_RAG", "║  HANDOFF → $iaModel: ${historicoInvestigacao.size} entradas preservadas | ctx=${catalogoDinamico.ponteDeFerro.length}chars / ${catalogoDinamico.chunks.size}chunks")
-                    promptAtual = prompt  // reset para pergunta original — histórico já tem todas as pesquisas
+                    android.util.Log.i("MestreIA_RAG", "║  HANDOFF → $iaModel: ${historicoInvestigacao.size} entradas preservadas")
+                    promptAtual = prompt
                 }
 
                 try {
-                    // Mescla o histórico do chat com as descobertas da investigação atual
                     val historicoLimitado = (viewModel.mestreIAChatHistory.map { it.role to it.text } + historicoInvestigacao).takeLast(12)
-                    
-                    // Pergunta "complexa" = tem número, alcance, cálculo, arma, penalidade → ativa protocolo 3 fases + Thinking
-                    val isQuestaoComplexa = !isCasual && (
-                        prompt.contains(Regex("\\d+\\s*(m|metro|hex|km|yard)|alcance|calculo|penalidade|submerso|agua|piscina|quanto de dano|cai|queda|velocidade", RegexOption.IGNORE_CASE))
-                        || prompt.length > 80
-                    )
-                    // Simples = 1 tool call max + sem Thinking; Complexa = 3 iterações + Thinking
-                    var loopsRestantes = if (isQuestaoComplexa) 3 else 2
+
+                    // Lote 271: loop livre — IA busca até MAX_TOOL_CALLS vezes, depois responde
                     var iteracao = 1
 
-                    while (loopsRestantes > 0) {
-                        val isUltimaIteracao = loopsRestantes == 1 && iteracao > 1
+                    while (true) {
+                        val toolsRestantes = MAX_TOOL_CALLS - toolCallsFeitas
+                        val isUltimaIteracao = toolsRestantes <= 0 || iteracao > MAX_TOOL_CALLS + 1
 
-                        val modeloCurto = iaModel.substringAfterLast("/").take(20)
                         updateStatus(when {
-                            iteracao == 1 && isQuestaoComplexa -> "Analisando regras (${catalogoDinamico.chunks.size} chunks encontrados)..."
-                            iteracao == 1 -> "Preparando resposta..."
+                            iteracao == 1 -> "Consultando o mestre..."
                             isUltimaIteracao -> "Elaborando resposta final..."
-                            else -> "Verificando regras adicionais..."
+                            else -> "Buscando regras (busca ${toolCallsFeitas}/${MAX_TOOL_CALLS})..."
                         })
 
                         val ctxAtual = catalogoDinamico.ponteDeFerro.length
-                        val chunksAtual = catalogoDinamico.chunks.size
-                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars / ${chunksAtual}chunks | desativarTools=$isUltimaIteracao | complexa=$isQuestaoComplexa")
+                        android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars | toolsFeitas=$toolCallsFeitas | desativarTools=$isUltimaIteracao")
 
-                        // PROTOCOLO 3 FASES: Iteração 1 de questão complexa → identificar lacunas, NÃO responder ainda
-                        if (iteracao == 1 && isQuestaoComplexa && !isUltimaIteracao) {
-                            promptAtual = "[FASE 1 — INVESTIGAÇÃO] $prompt\n\n" +
-                                "PROTOCOLO OBRIGATÓRIO:\n" +
-                                "1. Leia os chunks disponíveis no Códex.\n" +
-                                "2. Identifique quais informações ainda estão FALTANDO para responder completamente (ex: stat de alcance da arma, penalidade específica, fórmula de cálculo).\n" +
-                                "3. Chame 'consultar_manual_direto' com os termos que estão faltando. Seja específico.\n" +
-                                "NÃO responda a pergunta ainda — apenas investigue o que falta."
-                            android.util.Log.i("MestreIA_RAG", "║  FASE 1: protocolo 3-fases ativado — IA deve identificar lacunas e buscar")
-                        }
-
-                        // Última iteração: força resposta final sem tool calls
                         if (isUltimaIteracao) {
-                            promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $prompt\n\nATENÇÃO: Esta é sua ÚLTIMA oportunidade de responder. Apresente sua conclusão agora com base no contexto já disponível. NÃO chame ferramentas. Se a regra encontrada for indireta (ex: uma fórmula, divisor ou modificador que implique o resultado), calcule e apresente o resultado para o jogador com a fonte [Livro, Pág]."
+                            promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $prompt\n\nNÃO chame ferramentas. Responda com base no contexto acumulado. Se a regra for indireta, calcule e apresente com a fonte [Livro, Pág]. Se não encontrou, declare explicitamente."
                             android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: tools desativados + resposta forçada")
                         }
 
                         val resposta = MestreIAClient.perguntarAoMestre(
                             baseUrl = iaUrl, apiKey = iaKey, workspaceSlug = iaModel,
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
-                            catalogo = catalogoDinamico, modo = modo, onChunk = if (loopsRestantes == 1) sendChunk else null,
+                            catalogo = catalogoDinamico, modo = modo, onChunk = if (isUltimaIteracao) sendChunk else null,
                             desativarTools = isUltimaIteracao,
                             maxTokens = if (isUltimaIteracao) 4096 else 2048
                         )
 
-                        if (resposta.toolCalls.isNotEmpty()) {
+                        if (resposta.toolCalls.isNotEmpty() && !isUltimaIteracao) {
                             android.util.Log.i("MestreIA_RAG", "║  TOOL CALLS: ${resposta.toolCalls.size} chamada(s) — executando em paralelo")
 
                             val toolResultados: List<ToolResult> = coroutineScope {
@@ -335,6 +185,7 @@ class MestreIAUseCase(
                                                     ToolResult.Duplicada(queryTool)
                                                 } else {
                                                     updateStatus("Buscando: \"${queryTool.take(40)}\"...")
+                                                    // Lote 271: retorna texto completo dos chunks (sem compressão)
                                                     val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
                                                     if (resTool.relatedChunks.isNotEmpty()) {
                                                         val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
@@ -402,29 +253,31 @@ class MestreIAUseCase(
                                 when (resultado) {
                                     is ToolResult.Manual -> {
                                         todasDuplicadas = false
-                                        ponteFinal = (ponteFinal + "\n\n=== REGRAS TOOL[$idx]: ${resultado.query} ===\n${resultado.texto}").take(35000)
+                                        toolCallsFeitas++
+                                        ponteFinal = (ponteFinal + "\n\n=== BUSCA ${toolCallsFeitas} [\"${resultado.query.take(40)}\"]: ===\n${resultado.texto}").take(60000)
                                         chunksFinal.addAll(resultado.chunks)
                                         resumoBuscas.add("'${resultado.query.take(30)}'")
-                                        historicoInvestigacao.add("assistant" to "Consultando manuais sobre '${resultado.query}'...")
-                                        historicoInvestigacao.add("system" to "RESULTADO[$idx]: ${resultado.texto.take(1500)}\n[Contexto completo no Códex]")
+                                        historicoInvestigacao.add("assistant" to "Buscando '${resultado.query}'...")
+                                        historicoInvestigacao.add("system" to "RESULTADO: ${resultado.texto.take(2000)}")
                                     }
                                     is ToolResult.Vazio -> {
                                         todasDuplicadas = false
+                                        toolCallsFeitas++
                                         historicoInvestigacao.add("system" to "Nenhum resultado para '${resultado.query}' no Códex.")
                                         resumoBuscas.add("'${resultado.query.take(30)}' sem resultado")
                                     }
                                     is ToolResult.Ficha -> {
                                         todasDuplicadas = false
-                                        historicoInvestigacao.add("system" to "DADOS DA FICHA (${resultado.secao}): ${resultado.info}")
+                                        historicoInvestigacao.add("system" to "FICHA (${resultado.secao}): ${resultado.info}")
                                         resumoBuscas.add("ficha(${resultado.secao})")
                                     }
                                     is ToolResult.Nexus -> {
                                         todasDuplicadas = false
-                                        ponteFinal = (ponteFinal + "\n\n=== NEXUS ===\n${resultado.gabarito}").take(35000)
+                                        ponteFinal = (ponteFinal + "\n\n=== NEXUS: ${resultado.magia} ===\n${resultado.gabarito}").take(60000)
                                         resumoBuscas.add("nexus(${resultado.magia})")
                                     }
                                     is ToolResult.Duplicada -> {
-                                        historicoInvestigacao.add("system" to "AVISO: '${resultado.query}' já foi buscado.")
+                                        historicoInvestigacao.add("system" to "AVISO: '${resultado.query}' já foi buscado anteriormente.")
                                     }
                                 }
                             }
@@ -433,37 +286,31 @@ class MestreIAUseCase(
                                 ponteDeFerro = ponteFinal,
                                 chunks = chunksFinal.distinctBy { it.chunk_id }
                             )
-                            android.util.Log.i("MestreIA_RAG", "║  TOOLS CONCLUÍDAS: ${resumoBuscas.joinToString(" | ")} | ctx=${ponteFinal.length}chars | chunks=${chunksFinal.distinctBy{it.chunk_id}.size}")
+                            val toolsRestantesLog = MAX_TOOL_CALLS - toolCallsFeitas
+                            android.util.Log.i("MestreIA_RAG", "║  TOOLS CONCLUÍDAS: ${resumoBuscas.joinToString(" | ")} | ctx=${ponteFinal.length}chars | toolsRestantes=$toolsRestantesLog")
 
                             promptAtual = if (todasDuplicadas) {
-                                "[RESPOSTA OBRIGATÓRIA] Todas as buscas já foram realizadas. Responda agora com base no contexto disponível. NÃO repita buscas."
+                                "[RESPOSTA OBRIGATÓRIA] Buscas duplicadas detectadas. Responda agora com o contexto disponível. NÃO repita buscas."
+                            } else if (toolCallsFeitas >= MAX_TOOL_CALLS) {
+                                "[RESPOSTA OBRIGATÓRIA] Limite de $MAX_TOOL_CALLS buscas atingido. Responda agora com o contexto acumulado."
                             } else {
-                                "Com base nas regras encontradas (${resumoBuscas.joinToString()}), responda à dúvida. Mostre os cálculos passo a passo se houver números. Se a regra for analógica, deixe isso explícito."
+                                "Buscas realizadas: ${resumoBuscas.joinToString()}. Você tem ${toolsRestantesLog} busca(s) restante(s). Se precisar de mais informação, busque agora. Senão, responda."
                             }
 
-                            loopsRestantes--
                             iteracao++
                             continue
                         }
 
                         if (resposta.text.isNotBlank() && !ehErroDeApi(resposta.text)) {
-                            val lowerRes = resposta.text.lowercase()
-                            if ((lowerRes.contains("lamento") || lowerRes.contains("não encontrei")) && loopsRestantes > 1) {
-                                promptAtual = "Pergunta: $prompt\n\nNão desista. Tente buscar termos mais genéricos no manual usando '${MestreIATools.TOOL_MANUAL_DIRETO}'."
-                                loopsRestantes--
-                                iteracao++
-                                continue
-                            }
-
                             val temCitacao = resposta.text.contains("[") && (resposta.text.contains("Pág", true) || resposta.text.contains("Pg", true))
-                            val respostaFinal = if (!temCitacao && iteracao > 1) {
+                            val respostaFinal = if (!temCitacao && toolCallsFeitas > 0) {
                                 resposta.text + "\n\n _[AUDITORIA: Sem citações diretas do manual]_"
                             } else {
                                 resposta.text
                             }
-                            
-                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$iaModel] | iter=$iteracao | ${respostaFinal.length}chars | citação=${temCitacao}")
-                            sendResult(isRagUsed, resposta.copy(text = respostaFinal, modelName = iaModel))
+
+                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$iaModel] | iter=$iteracao | toolsFeitas=$toolCallsFeitas | ${respostaFinal.length}chars | citação=$temCitacao")
+                            sendResult(toolCallsFeitas > 0, resposta.copy(text = respostaFinal, modelName = iaModel))
                             sucesso = true
                         } else {
                             android.util.Log.e("MestreIA_RAG", "╠── MODELO FALHOU: $iaModel | resposta=\"${resposta.text.take(50)}\"")

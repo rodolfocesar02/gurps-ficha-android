@@ -1421,3 +1421,20 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Testes:** 17 falhas pré-existentes (NexusArcano/PersonagemRules), não introduzidas pelo Lote 270
 - **Status:** ✅ IMPLEMENTADO + FIX APLICADO
 
+## Lote 271 — [2026-05-25] Reset do AUDITOR: Busca Livre pela IA — CONCLUÍDO
+- **Problema raiz:** O sistema RAG do AUDITOR entregava RECORTES comprimidos (`comprimirChunkPorSentencas`), não páginas completas. Mesmo quando o chunk correto era encontrado pelo BM25, o conteúdo relevante era cortado. Além disso, o Planner gerava queries fixas que podiam não cobrir todas as dimensões semânticas de perguntas complexas.
+- **Decisão arquitetural (usuário):** Isolar completamente o AUDITOR do sistema RAG/Planner. Dar ao modelo liberdade total de investigação com ferramentas (até 5 tool calls). Prompt blindado para fonte de verdade = tools only.
+- **Nova arquitetura (sem RAG pré-contexto):**
+  - Modelo recebe a pergunta do usuário + ferramentas disponíveis
+  - IA decide sozinha quais queries fazer, em que ordem e quantas vezes (máx. 5)
+  - Cada tool call retorna o texto **completo** da página (sem compressão)
+  - Se incerta após 5 buscas, IA pode fazer 1 pergunta ao usuário e 1 busca extra
+  - Contexto acumulado dinamicamente (60.000 chars max)
+- **Arquivos alterados (3):**
+  - `MestreIAPromptsAuditor.kt` — reescrito: prompt blind (fonte de verdade = tools), protocolo de decomposição dimensional, exemplo de raciocínio correto, protocolo de busca até 5, quando não encontrar
+  - `MestreIATools.kt` — descrições de `consultar_manual_direto` reescritas para Gemini e OpenAI: queries curtas (máx 6 palavras), decomposição por conceito isolado, exemplos bons/ruins
+  - `MestreIAUseCase.kt` — loop `while(true)` substituindo Planner + multi-query + pre-context; `catalogoDinamico` começa vazio; `toolCallsFeitas` (max=5); resultado de cada tool labelado `=== BUSCA N ["query"]: ===`; limite de contexto 60k chars; `isUltimaIteracao` força resposta sem tools
+- **Arquivos NÃO alterados:** Forjador (MestreIAGeneratorUseCase, MestreIAPromptsForjador, ForjadorTools) — completamente isolado
+- **Arquivos agora dead code (não deletados ainda):** `MestreIAPlanner.kt`, `MestreIAQueryEngine.kt`, `MestreIASemanticEngine.kt` — não mais chamados pelo AUDITOR; `gerarCatalogoDireto()` e `reescreverQueryParaGurps()` em MestreIAUseCase
+- **Build:** ✅ compilePracegoDebugKotlin OK + assemblePracegoDebug OK
+
