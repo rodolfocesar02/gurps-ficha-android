@@ -15,7 +15,7 @@ import com.gurps.ficha.model.*
 class MestreIAGraphEngine(private val repository: DataRepository) {
 
     init {
-        MestreIATopicIndex.carregar(repository.context)
+        // TopicIndex removido (Lote 272): índice agora injetado no prompt do AUDITOR
     }
 
     data class GraphSearchResult(
@@ -168,23 +168,9 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             }
         }
 
-        // 3b. Garantia por TopicIndex
-        val queryParaTopicIndex = perguntaOriginal.ifBlank { query }
-        val paginasTopicIndex = MestreIATopicIndex.resolverPaginasGarantidas(queryParaTopicIndex)
-        val chunksTopicIndex = mutableListOf<MestreIAChunk>()
-        for (garantia in paginasTopicIndex) {
-            for (page in garantia.pages) {
-                val chunks = repository.buscarPorPaginaESource(page, garantia.sourceId)
-                if (chunks.isNotEmpty()) {
-                    chunksTopicIndex.addAll(chunks)
-                    android.util.Log.i("MestreIA_RAG",
-                        "  TopicIndex garantido: ${garantia.sourceId} p.$page → ${chunks.size} chunks")
-                }
-            }
-        }
-
-        // 3c. Garantia de diversidade por fonte
-        val fontesRepresentadas = (chunksDiversos + chunksTopicIndex).map { it.source_id }.toSet()
+        // 3b. Garantia de diversidade por fonte
+        val chunksTopicIndex = emptyList<MestreIAChunk>()
+        val fontesRepresentadas = chunksDiversos.map { it.source_id }.toSet()
         val fontesNoPool = chunksCandidatos.map { it.source_id }.distinct()
         for (fonte in fontesNoPool) {
             if (fonte !in fontesRepresentadas) {
@@ -222,8 +208,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         android.util.Log.i("MestreIA_RAG",
             "  Contexto final: ${chunksFinal.size} chunks | páginas: [$paginasFinais]")
 
-        val scoresMap = chunksPontuadosFinais.associate { it.first.chunk_id to it.second } +
-            chunksTopicIndex.associate { it.chunk_id to 999.0 }
+        val scoresMap = chunksPontuadosFinais.associate { it.first.chunk_id to it.second }
 
         return GraphSearchResult(
             summaries = emptyList(),
