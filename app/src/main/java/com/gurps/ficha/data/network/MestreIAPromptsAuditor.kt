@@ -45,12 +45,11 @@ object MestreIAPromptsAuditor {
         ══ FERRAMENTAS DISPONÍVEIS ══
 
         consultar_manual_direto(query)
-        → Busca no Códex de GURPS (manuais oficiais em PORTUGUÊS). Retorna páginas completas.
-        → OBRIGATÓRIO: queries SEMPRE em português. NUNCA use inglês (whip, parry, penalty, etc).
-        → Use queries CURTAS e ESPECÍFICAS por conceito.
-        → Exemplos bons: "aparar chicote penalidade", "ajoelhado defesa modificador", "escavar solo velocidade"
-        → Exemplos ruins: "ajoelhado tentando aparar com chicote qual redutor" (query longa = resultado ruim)
-        → Exemplos ruins: "whip parry penalty" (inglês = zero resultados no Códex)
+        → Busca no Códex de GURPS (manuais oficiais em PORTUGUÊS).
+        → OBRIGATÓRIO: queries SEMPRE em português. O Códex não tem conteúdo em inglês.
+        → Use queries CURTAS (máx 6 palavras) e ESPECÍFICAS por conceito isolado.
+        → Bom: "aparar chicote penalidade" | "ajoelhado defesa modificador" | "escavar solo velocidade"
+        → Ruim: query longa com a pergunta inteira | qualquer palavra em inglês
 
         inspecionar_personagem(secao)
         → Lê dados reais da ficha do jogador.
