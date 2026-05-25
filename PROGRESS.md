@@ -1255,3 +1255,97 @@ Melhoria: Avaliar o uso de uma pequena biblioteca de busca vetorial local (ou um
 - **Próximas aberturas:** zero reimportação — banco populado, versão `3` salva no SharedPreferences
 - **Arquitetura ativa:** FTS4 → BM25 → reranking semântico cosseno (60% BM25 + 40% semântico) → TopicIndex → Top-30 → Gemini
 
+## Lote 267 — [2026-05-25] DIAGNÓSTICO RAG + PLANO DE REFATORAÇÃO — PLANEJADO | análise: 4c2a8f9
+
+### DIAGNÓSTICO: 3 Erros Estruturais Descobertos
+
+**Erro 1 — BM25 não entende intenção semântica**
+- Pergunta "me da a tabela de golpe fulminante" → busca por termos "golpe" + "fulminante"
+- Pergunta "bloqueio funciona contra golpe fulminante" → busca pelos **mesmos termos**
+- Resultado: **chunks idênticos retornados para intenções completamente diferentes**
+- **Localização:** `domain/MestreIAGraphEngine.kt` linhas 26-27, 60-95 (BM25 scoring)
+- **Impacto:** RAG ignora intenção da pergunta, pondera apenas frequência de keywords
+
+**Erro 2 — comprimirChunk() destrói tabelas e blocos estruturados**
+- Chunk página 558 (Tabela de Golpe Fulminante: 5.251 chars) é comprimido para score < 8.0
+- Função busca sentenças contendo "golpe" ou "fulminante" e descarta o resto
+- A **tabela numérica** (`**3** → resultado`, `**4** → resultado`) não é "sentença" no sentido esperado → é excluída
+- **Localização:** `domain/MestreIAGraphEngine.kt` linhas 301-305 (formatarParaIA) e 332-353 (comprimirChunk)
+- **Impacto:** Tabelas, listas, blocos estruturados chegam à IA incompletos ou desaparecem
+
+**Erro 3 — TopicIndex scores = 0, anulando a garantia**
+- TopicIndex injeta páginas críticas (p.557) no `chunksFinais`
+- Mas essas páginas **não entram em `chunksPontuadosFinais`**, recebem score 0
+- formatarParaIA() recebe score 0 → chamam comprimirChunk() → conteúdo destruído (Erro 2 agravado)
+- **Localização:** `domain/MestreIAGraphEngine.kt` linhas 168 (adição) e 188 (scoresMap sem TopicIndex)
+- **Impacto:** TopicIndex existe mas é inútil — garante injeção, mas conteúdo é destruído
+
+### PLANO: 4 Correções Propostas
+
+**Correção 1 — Score TopicIndex = 999 [FÁCIL]**
+- Arquivo: `domain/MestreIAGraphEngine.kt` linha 188
+- TopicIndex chunks sempre recebem ★★★ → texto completo
+- 1 linha de código
+
+**Correção 2 — Remover comprimirChunk() [CRÍTICO]**
+- Arquivo: `domain/MestreIAGraphEngine.kt` linhas 301-305
+- Remover lógica de compressão: sempre enviar chunks completos
+- 1 linha de código (simplificação)
+- **Racional:** Melhor 15 chunks completos que 30 comprimidos/truncados
+
+**Correção 3 — Limite chunks: 30→15 [SIMPLES]**
+- Arquivo: `domain/MestreIAGraphEngine.kt` linha 184
+- Com texto completo, contexto cresce — menos chunks evita overflow
+- 1 número mudado
+
+**Correção 4 — Análise semântica de intenção [ALTO IMPACTO]**
+- Arquivos: `domain/MestreIAPlanner.kt` + `domain/MestreIAUseCase.kt`
+- Adicionar enum `IntencaoBusca` com 5 tipos (TABELA, EXPLICAÇÃO, REGRA, CÁLCULO, GERAL)
+- Função `analisarIntencao(pergunta)` que classifica a intenção antes da busca
+- Usar intenção em `MestreIAUseCase.kt` para ajustar query de busca antes de chamar RAG
+- **Impacto:** IA controla a busca, não BM25 — respostas semanticamente corretas
+
+### Evidência do Diagnóstico
+
+**Logcat "preciso da tabela de golpe fuminante!"**
+```
+BM25 top-5: p.382(1pts) | p.400(1pts) | p.390(1pts) | p.389(1pts) | p.401(1pts)
+Contexto final: 28 chunks | páginas: [...556, 557]
+RAG OK: 28 chunks | 12632 chars de contexto
+
+[RESPOSTA IA:]
+"o conteúdo exato da tabela (os resultados de 3d) não está presente nos trechos do Códex fornecidos"
+```
+
+**Análise:**
+1. Página 558 (tabela real) não está nos top-5 BM25 — **Erro 1 (BM25 ignora intenção)**
+2. TopicIndex força p.557 com score 0 — **Erro 3 (score zero)**
+3. p.557 é comprimida para ~600 chars, perde conteúdo — **Erro 2 (compressor destrói)**
+4. IA recebe referências, não tabela → responde "não encontrada"
+
+### Verificação Esperada (Após implementação)
+
+**Teste 1:** "me da a tabela de golpe fulminante"
+- Esperado: Tabela 3-18 **completa** em resposta
+
+**Teste 2:** "é possível usar mágicas de Bloqueio contra um golpe fulminante?"
+- Esperado: Regras de magia, **NÃO** lista de tabela
+
+**Teste 3:** "como funciona um golpe fulminante?"
+- Esperado: Explicação, **NÃO** tabela numérica
+
+**Logcat esperado:**
+- TopicIndex chunks: `[★★★]` (score 999)
+- Contexto final: ≤ 15 chunks, **texto completo**
+- Sem compressão lexical
+
+### Arquivos Afetados
+- `domain/MestreIAGraphEngine.kt` — Score, compressão, limite
+- `domain/MestreIAPlanner.kt` — Enum + função análise intenção
+- `domain/MestreIAUseCase.kt` — Usar intenção na busca
+
+### Status
+- ✅ Plano documentado em memory (`project_rag_refactoring.md`)
+- ✅ Análise rastreada para próximos lotes
+- ⏳ Implementação: Lote futuro priorizado
+
