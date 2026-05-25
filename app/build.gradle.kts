@@ -110,19 +110,19 @@ android {
         buildConfigField("String", "MESTRE_IA_MIMO_MODEL_FLASH", "\"mimo-v2-flash\"")
 
 
-        buildConfigField("String", "MESTRE_IA_GEMINI_3_1_PRO", "\"gemini-3.1-pro-preview\"")
-        buildConfigField("String", "MESTRE_IA_GEMINI_3_FLASH", "\"gemini-3-flash-preview\"")
-        buildConfigField("String", "MESTRE_IA_GEMINI_3_1_FLASH_LITE", "\"gemini-3.1-flash-lite-preview\"")
+        buildConfigField("String", "MESTRE_IA_GEMINI_3_1_PRO", "\"gemini-2.5-flash-preview-05-20\"")
+        buildConfigField("String", "MESTRE_IA_GEMINI_3_FLASH", "\"gemini-2.0-flash\"")
+        buildConfigField("String", "MESTRE_IA_GEMINI_3_1_FLASH_LITE", "\"gemini-2.0-flash-lite\"")
 
         buildConfigField("String", "MESTRE_IA_LITE_1_KEY", "\"$geminiKey\"") // Legado/Flash
         buildConfigField("String", "MESTRE_IA_LITE_1_URL", "\"https://generativelanguage.googleapis.com/v1beta\"")
-        buildConfigField("String", "MESTRE_IA_LITE_1_MODEL", "\"gemini-3.1-flash-lite-preview\"")
+        buildConfigField("String", "MESTRE_IA_LITE_1_MODEL", "\"gemini-2.0-flash-lite\"")
 
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_URL", "\"https://api.deepseek.com/v1\"")
-        buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-chat\"")
+        buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-v4-flash\"") // migrado: deepseek-chat deprecado em 24/07/2026
 
         // Gemini Live (voz bidirecional)
-        buildConfigField("String", "GEMINI_LIVE_MODEL", "\"models/gemini-3.1-flash-live-preview\"")
+        buildConfigField("String", "GEMINI_LIVE_MODEL", "\"models/gemini-2.0-flash-live-001\"")
         buildConfigField("String", "GEMINI_LIVE_VOICE", "\"Charon\"")
         buildConfigField("Boolean", "VOZ_BIDIRECIONAL_HABILITADA", "true")
 
