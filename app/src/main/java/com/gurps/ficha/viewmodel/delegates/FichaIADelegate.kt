@@ -54,8 +54,10 @@ class FichaIADelegate(
         scope.launch(Dispatchers.IO) {
             android.util.Log.i("MestreIA_Auditoria", "VERIFICANDO INTEGRIDADE DO CÓDEX (Início de Sessão)")
             dataRepository.sincronizarCodexSeNecessario()
-            // BENCHMARK TEMPORÁRIO — remove depois do teste
-            com.gurps.ficha.domain.MestreIASemanticEngine.benchmarkFullScan(dataRepository.vecChunkDao)
+            // Inicializa índice HNSW ObjectBox para busca vetorial ANN
+            if (context != null) {
+                com.gurps.ficha.domain.MestreIAVectorEngine.inicializar(context, dataRepository.vecChunkDao)
+            }
         }
     }
 

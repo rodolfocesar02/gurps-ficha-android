@@ -1,4 +1,14 @@
 // Top-level build file for GURPS Ficha Android
+buildscript {
+    val objectboxVersion by extra("5.4.2")
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("io.objectbox:objectbox-gradle-plugin:$objectboxVersion")
+    }
+}
+
 plugins {
     id("com.android.application") version "8.7.2" apply false
     id("org.jetbrains.kotlin.android") version "2.0.0" apply false

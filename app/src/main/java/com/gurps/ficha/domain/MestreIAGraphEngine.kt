@@ -171,19 +171,47 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
         android.util.Log.i("MestreIA_RAG", "  Scoring BM25 top-5: $top5Log")
 
-        // 2b. Reranking semântico (cosseno) sobre os top-50 do BM25
+        // 2b. Reranking semântico via HNSW (ObjectBox) ou fallback cosseno brute-force
         val bm25ScoresMap = chunksPontuados.associate { it.first.chunk_id to it.second }
-        val top50BM25 = chunksPontuados.take(50).map { it.first }
-        val top50Reranqueado = MestreIASemanticEngine.reranquear(
-            query = query,
-            candidatos = top50BM25,
-            bm25Scores = bm25ScoresMap,
-            vecDao = repository.vecChunkDao
-        )
-        val top50Ids = top50Reranqueado.map { it.chunk_id }.toSet()
-        val restantes = chunksPontuados.drop(50).map { it.first }.filter { it.chunk_id !in top50Ids }
-        val chunksPontuadosFinais =
-            (top50Reranqueado + restantes).map { c -> c to (bm25ScoresMap[c.chunk_id] ?: 0.0) }
+        val chunksPontuadosFinais: List<Pair<MestreIAChunk, Double>>
+
+        if (MestreIAVectorEngine.isReady()) {
+            // HNSW ANN: top-50 por semântica pura, ~1-5ms
+            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 50)
+            if (hnswIds.isNotEmpty()) {
+                // Mapeia chunk_ids HNSW para objetos do pool BM25 (texto já carregado)
+                val chunksPorId = chunksCandidatos.associateBy { it.chunk_id }
+                val hnswChunks = hnswIds.mapNotNull { chunksPorId[it] }
+                // Chunks do HNSW recebem bonus de score: posição HNSW vira boost semântico
+                val hnswBonus = hnswIds.mapIndexed { idx, id ->
+                    id to (50.0 - idx) / 50.0 * 10.0  // top-1 = +10pts, top-50 = +0.2pts
+                }.toMap()
+                val hnswIds2 = hnswIds.toSet()
+                // Re-pontua: BM25 + bonus HNSW para chunks no resultado HNSW
+                val repontua = chunksCandidatos.map { chunk ->
+                    val bm25 = bm25ScoresMap[chunk.chunk_id] ?: 0.0
+                    val bonus = hnswBonus[chunk.chunk_id] ?: 0.0
+                    chunk to (bm25 + bonus)
+                }.sortedByDescending { it.second }
+                android.util.Log.i("MestreIA_RAG", "  HNSW top-5: ${hnswIds.take(5).joinToString()}")
+                chunksPontuadosFinais = repontua
+            } else {
+                chunksPontuadosFinais = chunksPontuados
+            }
+        } else {
+            // Fallback: reranking cosseno brute-force (quando HNSW ainda não populado)
+            val top50BM25 = chunksPontuados.take(50).map { it.first }
+            val top50Reranqueado = MestreIASemanticEngine.reranquear(
+                query = query,
+                candidatos = top50BM25,
+                bm25Scores = bm25ScoresMap,
+                vecDao = repository.vecChunkDao
+            )
+            val top50Ids = top50Reranqueado.map { it.chunk_id }.toSet()
+            val restantes = chunksPontuados.drop(50).map { it.first }.filter { it.chunk_id !in top50Ids }
+            chunksPontuadosFinais =
+                (top50Reranqueado + restantes).map { c -> c to (bm25ScoresMap[c.chunk_id] ?: 0.0) }
+        }
 
         // 3. Diversificação por página (max 3 chunks por página/fonte)
         val contadorPaginas = mutableMapOf<String, Int>()
