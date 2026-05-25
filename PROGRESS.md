@@ -1415,5 +1415,8 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - 270-E: MestreIATools — remove referência descontinuada; MestreIAPromptsAuditor — sem mudança
   - 270-F: MestreIATopicIndex + MestreIASemanticEngine — correção de comentários apenas (3072 dims, FTS4)
 - **Hash do plano:** 3445c8e
-- **Status:** ⏳ PLANEJADO — aguardando autorização para iniciar código
+- **Hash da implementação:** 2791ede
+- **Build:** ✅ compilePracegoDebugKotlin OK — sem erros de compilação
+- **Testes:** 17 falhas pré-existentes (NexusArcano/PersonagemRules), não introduzidas pelo Lote 270
+- **Status:** ✅ IMPLEMENTADO
 
