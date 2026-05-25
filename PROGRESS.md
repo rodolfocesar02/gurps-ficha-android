@@ -1349,3 +1349,15 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - ✅ Análise rastreada para próximos lotes
 - ⏳ Implementação: Lote futuro priorizado
 
+## Lote 268 — [2026-05-25] Implementação RAG: 4 Correções
+- **Hash:** 6d3a2cc
+- **Mudanças:**
+  - **Correção 1:** TopicIndex score = 999 (garante páginas críticas chegam completas)
+  - **Correção 2:** Removido `comprimirChunk()` (elimina destruição de tabelas numéricas)
+  - **Correção 3:** Limite 30→15 chunks (compensa maior tamanho com qualidade)
+  - **Correção 4:** Análise de intenção semântica (query ajustada antes da busca RAG)
+- **Arquivos:** MestreIAGraphEngine.kt, MestreIAPlanner.kt, MestreIAUseCase.kt
+- **Testes:** MestreIARagEngineTest.kt corrigido
+- **Status:** ✅ BUILD OK, implementação concluída
+- **Verificação pendente:** teste manual com 3 casos (tabela, regra, explicação)
+
