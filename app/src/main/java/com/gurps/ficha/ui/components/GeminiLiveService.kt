@@ -919,10 +919,10 @@ limparFilaAudio()
                         val prompt   = usage.optInt("promptTokenCount")
                         val response = usage.optInt("responseTokenCount")
                         val total    = usage.optInt("totalTokenCount")
-                        if (ultimoPromptTokenCount > 0 && prompt < ultimoPromptTokenCount - 500) {
+                        if (prompt > 0 && ultimoPromptTokenCount > 0 && prompt < ultimoPromptTokenCount - 500) {
                             android.util.Log.w("GeminiLive", "⚠ COMPRESSÃO DE CONTEXTO detectada: prompt tokens caiu de $ultimoPromptTokenCount → $prompt (queda de ${ultimoPromptTokenCount - prompt})")
                         }
-                        ultimoPromptTokenCount = prompt
+                        if (prompt > 0) ultimoPromptTokenCount = prompt
                         android.util.Log.i("GeminiLive", "📊 Tokens — prompt: $prompt | resposta: $response | total: $total")
                     }
                     android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando reprodução terminar...")
