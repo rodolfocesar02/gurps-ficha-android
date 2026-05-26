@@ -1825,3 +1825,9 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - `GeminiLiveService.kt`: log W "COMPRESSÃO DE CONTEXTO" quando prompt token count cai >500 em relação ao turno anterior
   - Campo `ultimoPromptTokenCount` para rastrear evolução dos tokens
 - **Status:** ✅ Build OK
+
+## Lote 303 — [2026-05-26] take(20) → take(30) no multi-query consultarManual
+
+- **Hash:** aa40e72
+- **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
+- **Status:** ✅ Build OK
