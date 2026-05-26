@@ -1625,6 +1625,15 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 286 — [2026-05-26] Fix voz do usuário completamente suprimida pelo echo canceller
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `iniciarCaptura()`: `AudioManager.MODE_IN_COMMUNICATION` → `MODE_NORMAL` + `isSpeakerphoneOn = true`
+  - `AudioRecord`: `MediaRecorder.AudioSource.VOICE_COMMUNICATION` → `AudioSource.MIC`
+- **Causa:** `MODE_IN_COMMUNICATION` + `VOICE_COMMUNICATION` ativa echo canceller agressivo de chamada telefônica. Logcat mostrava `s:100` (100 frames suprimidos) — servidor nunca recebia a voz do usuário, zero `inputTranscription`. `MODE_NORMAL` desativa o canceller de chamada; `isSpeakerphoneOn=true` mantém o som saindo pelas caixas.
+- **Status:** ✅ Build OK
+
 ## Lote 285 — [2026-05-26] Fix 4 bugs confirmados + logs de diagnóstico nos 3 não confirmados
 
 - **Hash:** ver git log

@@ -863,14 +863,17 @@ NUNCA:
     }
 
     private fun iniciarCaptura() {
-        // Modo chamada com saída forçada no alto-falante (caixas de som, não ouvido)
+        // MODE_NORMAL + speakerphone=true: força saída nas caixas de som SEM ativar
+        // o echo canceller de chamada (MODE_IN_COMMUNICATION suprimia a voz do usuário)
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        audioManager.mode = AudioManager.MODE_NORMAL
         audioManager.isSpeakerphoneOn = true
 
         val bufferSize = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+            // MIC simples — sem echo canceller de hardware que suprimia a voz do usuário
+            // quando MODE_IN_COMMUNICATION estava ativo (Lote 281 → Lote 286 fix)
+            MediaRecorder.AudioSource.MIC,
             16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,
             bufferSize * 2
         ).also { it.startRecording() }
