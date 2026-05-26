@@ -833,6 +833,11 @@ NUNCA:
     }
 
     private fun iniciarCaptura() {
+        // Modo chamada com saída forçada no alto-falante (caixas de som, não ouvido)
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
+        audioManager.isSpeakerphoneOn = true
+
         val bufferSize = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         audioRecord = AudioRecord(
             MediaRecorder.AudioSource.VOICE_COMMUNICATION,
@@ -991,5 +996,9 @@ NUNCA:
         audioTrack = null
         webSocket?.close(1000, "Sessão encerrada pelo usuário")
         webSocket = null
+        // Restaura modo de áudio normal ao encerrar
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        audioManager.isSpeakerphoneOn = false
+        audioManager.mode = AudioManager.MODE_NORMAL
     }
 }
