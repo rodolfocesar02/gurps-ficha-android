@@ -1625,6 +1625,15 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 291 — [2026-05-26] Fix áudio acelerado após correção do timer de mic
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - Timer do mic: trocado `inicioAudioTurno` (tempo de rede) por `audioTrack.playbackHeadPosition` (frames reais reproduzidos pelo hardware)
+  - Removida variável `inicioAudioTurno` (não mais necessária)
+- **Causa:** Lote 289 usava `System.currentTimeMillis() - inicioAudioTurno` para estimar quanto já foi reproduzido. Mas o AudioTrack tem buffer interno — os chunks chegam da rede mais rápido do que o hardware os toca. Quando o servidor enviava chunks em ritmo próximo ao de reprodução, `jaDecorridoMs` ficava próximo de `duracaoTotal`, o timer virava ~300ms, e o AudioTrack ainda tinha vários segundos de buffer pendente acelerando para esvaziar. `playbackHeadPosition` mede frames hardware reais — independente do buffer de rede.
+- **Status:** ✅ Build OK
+
 ## Lote 290 — [2026-05-26] Fix transcrição do usuário não aparecia no chat (UI)
 
 - **Hash:** ver git log
