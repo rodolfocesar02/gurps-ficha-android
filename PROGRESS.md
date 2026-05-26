@@ -1806,3 +1806,12 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - Quando nome exato detectado na query → entidadePrimaria = nome exato, relação = FUNCIONAMENTO, sub-query específica (ex: "reflexos em combate vantagem bonus defesa"), boost 1.2 nos termos
   - Remove sub-queries genéricas de combate que diluíam o ranking BM25+HNSW
 - **Status:** ✅ Build OK
+
+## Lote 301 — [2026-05-26] Fix: reconexão ao encerrar + watchdog de inatividade
+
+- **Hash:** af856fb
+- **Bug 1 (reconexão ao encerrar):** `encerrar()` parava `AudioRecord` antes de fechar o WebSocket. Servidor detectava parada abrupta do stream e fechava com `code=1008`. O `onClosed` interpretava como fechamento inesperado e reconectava automaticamente. Fix: flag `encerramentoIntencional` setada no início do `encerrar()`; WebSocket fechado ANTES do AudioRecord.
+- **Bug 2 (silêncio de 57s):** Modelo respondeu por áudio sem chamar tool, servidor ficou 57s inativo até `code=1008`. Fix: watchdog de 50s — reinicia a cada mensagem recebida; expira sem mensagem → reconecta preventivamente.
+- **Mudanças:**
+  - `GeminiLiveService.kt`: flag `encerramentoIntencional`, reordenação de `encerrar()`, método `reiniciarWatchdog()`, `watchdogJob`
+- **Status:** ✅ Build OK
