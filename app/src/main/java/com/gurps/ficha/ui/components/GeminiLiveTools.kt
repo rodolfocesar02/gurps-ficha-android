@@ -141,7 +141,7 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
                     subResultados.forEach { sub -> scoresUnidos.putAll(sub.chunkScores) }
                     val todosChunks = (searchResult.relatedChunks + subResultados.flatMap { it.relatedChunks })
                         .distinctBy { it.chunk_id }
-                        .take(40)
+                        .take(20)
                     MestreIAGraphEngine.GraphSearchResult(
                         relatedChunks = todosChunks,
                         chunkScores = scoresUnidos
@@ -153,10 +153,17 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
                 graphEngine.formatarParaIA(resultadoFinal, termos)
             }
 
-            val chunksEncontrados = resultado.lines().count { it.startsWith("[Pág.") }
-            android.util.Log.i("GeminiLiveTools", "consultarManual OK: $chunksEncontrados chunks retornados")
+            // Limite de payload: toolResponse grande causa code=1007 no servidor Gemini Live.
+            // 25k chars ≈ 25KB — suficiente para ~15 chunks completos, bem abaixo do limite.
+            val resultadoLimitado = if (resultado.length > 25_000) {
+                android.util.Log.w("GeminiLiveTools", "consultarManual: resultado truncado de ${resultado.length} para 25000 chars")
+                resultado.take(25_000) + "\n[... truncado por limite de payload]"
+            } else resultado
 
-            if (resultado.isBlank()) {
+            val chunksEncontrados = resultadoLimitado.lines().count { it.startsWith("[Pág.") }
+            android.util.Log.i("GeminiLiveTools", "consultarManual OK: $chunksEncontrados chunks retornados (${resultadoLimitado.length} chars)")
+
+            if (resultadoLimitado.isBlank()) {
                 JSONObject().apply {
                     put("encontrado", false)
                     put("mensagem", "Nenhuma regra encontrada no Códex para '$termos'. Tente termos mais específicos.")
@@ -164,7 +171,7 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
             } else {
                 JSONObject().apply {
                     put("encontrado", true)
-                    put("regras", resultado)
+                    put("regras", resultadoLimitado)
                     put("instrucao", "Use SOMENTE as regras acima para responder. Cite [Livro, Pág]. Se envolver cálculo: cite a regra, identifique os valores, calcule passo a passo, conclua.")
                 }
             }
