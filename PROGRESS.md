@@ -1796,3 +1796,13 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:**
   - `GeminiLiveTools.kt`: cap de 25.000 → 18.000 chars no resultado do `consultarManual`
 - **Status:** ✅ Build OK
+
+## Lote 300 — [2026-05-26] Fix RAG: Planner detecta nomes de vantagens GURPS
+
+- **Hash:** 2879e39
+- **Causa raiz (logcat):** Query "reflexos em combate" era classificada como `GENERICO/combate` pelo grupo semântico do Planner. Sub-queries geradas ("combate ataque dano modificador manobra") puxavam páginas 379, 548, 327 (combate geral) — nunca p83 onde está o texto completo da vantagem. Chunk `pt_modulo_basico_p83_c1` (definição + bônus de defesa ativa) nunca entrava no resultado.
+- **Mudanças:**
+  - `MestreIAPlanner.kt`: mapa de ~40 vantagens/desvantagens GURPS conhecidas (`vantagensConhecidas`)
+  - Quando nome exato detectado na query → entidadePrimaria = nome exato, relação = FUNCIONAMENTO, sub-query específica (ex: "reflexos em combate vantagem bonus defesa"), boost 1.2 nos termos
+  - Remove sub-queries genéricas de combate que diluíam o ranking BM25+HNSW
+- **Status:** ✅ Build OK
