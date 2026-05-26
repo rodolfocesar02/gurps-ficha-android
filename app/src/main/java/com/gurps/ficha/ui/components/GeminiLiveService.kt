@@ -55,6 +55,10 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var turnoTemAudio = false
     // Bloqueia envio de microfone enquanto modelo fala — evita auto-interrupção
     @Volatile private var modeloFalando = false
+    // True enquanto reproducaoJob ainda está escrevendo chunks no AudioTrack hardware
+    @Volatile private var reproducaoEmAndamento = false
+    // Acumula bytes de áudio recebidos no turno atual — usado para calcular duração real
+    @Volatile private var bytesAudioTurno = 0L
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -704,12 +708,14 @@ NUNCA:
                                     // Primeiro chunk do turno: bloqueia mic, limpa fila anterior
                                     turnoTemAudio = true
                                     modeloFalando = true
+                                    bytesAudioTurno = 0L
                                     limparFilaAudio()
                                     mainHandler.post { onEstado(EstadoLive.FALANDO) }
                                     android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado")
                                 }
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
                                 val bytes = Base64.decode(audioB64, Base64.DEFAULT)
+                                bytesAudioTurno += bytes.size
                                 reproduzirAudio(bytes)
                             }
                         }
@@ -775,15 +781,15 @@ NUNCA:
                     }
                     pendingTextoFallback = ""
                     turnoTemAudio = false
-                    // Gemini 2.5: turnComplete chega antes do AudioTrack terminar de reproduzir
-                    // Aguarda o canal esvaziar antes de liberar o mic — evita o modelo ouvir
-                    // o próprio áudio e responder por cima (voz acelerada/atropelada)
+                    // Bug conhecido Gemini 2.5 (#2117): turnComplete chega antes do AudioTrack
+                    // terminar de reproduzir. Não há evento oficial de fim de reprodução.
+                    // Workaround: calcula duração real pelo total de bytes PCM recebidos
+                    // (24kHz, 16-bit, mono = 48000 bytes/s) e aguarda esse tempo + margem.
+                    val bytesDoTurno = bytesAudioTurno
+                    val duracaoMs = if (bytesDoTurno > 0) (bytesDoTurno * 1000L / 48000L) else 0L
+                    android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando ${duracaoMs}ms de áudio reproduzir")
                     scope.launch {
-                        while (audioChannel.isEmpty.not()) {
-                            kotlinx.coroutines.delay(100)
-                        }
-                        // Margem extra para o AudioTrack consumir o último chunk do hardware
-                        kotlinx.coroutines.delay(600)
+                        if (duracaoMs > 0) kotlinx.coroutines.delay(duracaoMs + 300L)
                         android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado")
                         modeloFalando = false
                         mainHandler.post { onEstado(EstadoLive.OUVINDO) }
@@ -887,6 +893,7 @@ NUNCA:
         reproducaoJob = scope.launch(Dispatchers.Default) {
             for (pcm in audioChannel) {
                 if (!isActive) break
+                reproducaoEmAndamento = true
                 // write() em MODE_STREAM bloqueia até o hardware consumir
                 // Garante que reproduzimos na taxa real de 24kHz sem pular frames
                 var offset = 0
@@ -896,10 +903,12 @@ NUNCA:
                     offset += written
                 }
             }
+            reproducaoEmAndamento = false
         }
     }
 
     private fun limparFilaAudio() {
+        reproducaoEmAndamento = false
         // Para o AudioTrack imediatamente e descarta buffer interno
         audioTrack?.pause()
         audioTrack?.flush()
