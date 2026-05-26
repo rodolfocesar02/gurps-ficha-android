@@ -99,7 +99,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
             }
         }
         geminiLive.onTranscricaoUsuario = { texto ->
+            // Primeiro fragmento: cria entrada no chat e abre o diálogo
             viewModel.adicionarMensagemVoz(texto, "user")
+            Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
+        }
+        geminiLive.onAtualizarTranscricaoUsuario = { texto ->
+            // Fragmentos seguintes e versão final: atualiza a entrada existente
+            viewModel.atualizarUltimaMensagemVozUsuario(texto)
             Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
         }
         geminiLive.onRespostaMestre = { texto ->

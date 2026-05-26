@@ -33,6 +33,24 @@ enum class EstadoLive { OCIOSO, CONECTANDO, OUVINDO, FALANDO, ERRO }
 // Mantida para compatibilidade com FichaCustomNavigationBar (anel visual do ícone de voz)
 enum class EstadoVoz { OCIOSO, ESCUTANDO, PROCESSANDO, ERRO }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// ORIENTAÇÃO DE REFATORAÇÃO
+//
+// Quando este arquivo atingir ~1500 linhas E novas ferramentas (functions/tools)
+// estiverem sendo adicionadas, dividir em três arquivos:
+//
+//   1. GeminiLiveSetupBuilder.kt  (~180 linhas)
+//      buildSetupMessage(), buildFuncao() e toda a construção do JSON de setup.
+//
+//   2. GeminiLiveMessageParser.kt  (~360 linhas)
+//      processarMensagemServidor() e os blocos de parsing de cada campo do servidor.
+//
+//   3. GeminiLiveService.kt  (restante)
+//      WebSocket, AudioRecord/AudioTrack, timers, reconexão, callbacks públicos.
+//
+// Tamanho atual: ~1100 linhas. Não refatorar antes de precisar.
+// ─────────────────────────────────────────────────────────────────────────────
+
 class GeminiLiveService(private val context: Context) {
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -59,16 +77,21 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var modeloFalando = false
     // True enquanto reproducaoJob ainda está escrevendo chunks no AudioTrack hardware
     @Volatile private var reproducaoEmAndamento = false
-    // Acumula bytes de áudio recebidos no turno atual — usado para calcular duração real
+    // Acumula bytes de áudio recebidos no turno atual — mantido apenas para diagnóstico (log)
     @Volatile private var bytesAudioTurno = 0L
-    // Congela no generationComplete — exclui silêncio de cauda enviado antes do turnComplete
+    // Congela no generationComplete — mantido apenas para diagnóstico (log)
     @Volatile private var bytesAudioGerado = 0L
+    // playbackHeadPosition capturado no primeiro chunk do turno — referência para o polling
+    @Volatile private var framesInicioTurno = 0L
     // Job do timer de liberação do mic — cancelado quando novo turno começa (evita race condition)
     private var micReleaseJob: Job? = null
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
+    // onTranscricaoUsuario: chamado com o PRIMEIRO fragmento (cria entrada no chat)
     var onTranscricaoUsuario: (String) -> Unit = {}
+    // onAtualizarTranscricaoUsuario: chamado com fragmentos seguintes e versão final (atualiza a entrada existente)
+    var onAtualizarTranscricaoUsuario: (String) -> Unit = {}
     var onRespostaMestre: (String) -> Unit = {}
     var onToolCall: (nome: String, args: JSONObject) -> JSONObject = { _, _ -> JSONObject() }
 
@@ -724,9 +747,12 @@ NUNCA:
                                     modeloFalando = true
                                     bytesAudioTurno = 0L
                                     bytesAudioGerado = 0L
+                                    // limparFilaAudio() chama flush() que reseta playbackHeadPosition
+                                    // DEVE ser chamado ANTES de capturar framesInicioTurno
 limparFilaAudio()
+                                    framesInicioTurno = audioTrack?.playbackHeadPosition?.toLong() ?: 0L
                                     mainHandler.post { onEstado(EstadoLive.FALANDO) }
-                                    android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado, timer anterior cancelado")
+                                    android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado, timer anterior cancelado, framesInicio=$framesInicioTurno")
                                 }
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
                                 val bytes = Base64.decode(audioB64, Base64.DEFAULT)
@@ -781,14 +807,15 @@ limparFilaAudio()
                     turnoTemAudio = false
                     bytesAudioTurno = 0L
                     bytesAudioGerado = 0L
+                    framesInicioTurno = 0L
                     micReleaseJob?.cancel()
                     micReleaseJob = null
                     modeloFalando = false
                     mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                 }
 
-                // inputTranscription: voz do usuário transcrita — processado ANTES do turnComplete
-                // pois servidor pode enviar os dois no mesmo JSON; turnComplete zera pendingTextoUsuario
+                // inputTranscription: streaming de fragmentos da voz do usuário
+                // Disparado imediatamente — não espera turnComplete para aparecer no chat
                 val inputTranscriptRaw = content.opt("inputTranscription")
                 val inputTranscript = when (inputTranscriptRaw) {
                     is JSONObject -> inputTranscriptRaw.optString("text", "")
@@ -796,9 +823,17 @@ limparFilaAudio()
                     else -> ""
                 }
                 if (inputTranscript.isNotBlank()) {
+                    val eraPrimeiroFragmento = pendingTextoUsuario.isBlank()
                     pendingTextoUsuario += inputTranscript
-                    if (pendingTextoUsuario.length > 2000) {
-                        android.util.Log.w("GeminiLive", "⚠ pendingTextoUsuario muito grande (${pendingTextoUsuario.length} chars) — possível bug de acumulação")
+                    android.util.Log.d("GeminiLive", "✎ frag transcrição usuário: \"$inputTranscript\"")
+                    // Dispara imediatamente: primeiro fragmento inicia uma nova entrada no chat;
+                    // fragmentos seguintes atualizam a entrada existente via append
+                    if (eraPrimeiroFragmento) {
+                        ultimaPerguntaUsuario = pendingTextoUsuario
+                        mainHandler.post { onTranscricaoUsuario(pendingTextoUsuario) }
+                    } else {
+                        ultimaPerguntaUsuario = pendingTextoUsuario
+                        mainHandler.post { onAtualizarTranscricaoUsuario(pendingTextoUsuario) }
                     }
                 }
 
@@ -812,12 +847,13 @@ limparFilaAudio()
                         android.util.Log.i("GeminiLive", "📊 Tokens — prompt: $prompt | resposta: $response | total: $total")
                     }
                     android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando reprodução terminar...")
-                    // Transcrição do usuário — acumulada, disparada uma vez aqui
+                    // Transcrição do usuário já foi enviada em streaming — apenas loga o total aqui
                     val textoUsuario = pendingTextoUsuario.trim()
                     if (textoUsuario.isNotBlank()) {
-                        android.util.Log.i("GeminiLive", "✎ Transcrição usuário: \"${textoUsuario.take(100)}\"")
+                        android.util.Log.i("GeminiLive", "✎ Transcrição usuário (completa): \"${textoUsuario.take(100)}\"")
                         ultimaPerguntaUsuario = textoUsuario
-                        mainHandler.post { onTranscricaoUsuario(textoUsuario) }
+                        // Envia versão final consolidada para garantir consistência
+                        mainHandler.post { onAtualizarTranscricaoUsuario(textoUsuario) }
                     }
                     pendingTextoUsuario = ""
 
@@ -841,34 +877,49 @@ limparFilaAudio()
                     pendingTextoFallback = ""
                     pendingTranscricaoModelo = ""
                     turnoTemAudio = false
-                    // Bug conhecido Gemini 2.5 (#2117): turnComplete chega antes do AudioTrack
-                    // terminar de reproduzir. Não há evento oficial de fim de reprodução.
-                    // Workaround: usa bytesAudioGerado (congelado no generationComplete) para
-                    // calcular duração real — ignora silêncio de cauda que chega após generationComplete
-                    // mas antes do turnComplete, que inflava o timer e atrasava a escuta do usuário.
-                    // micReleaseJob cancelado no início do próximo turno — evita race condition
-                    // onde o timer do turno anterior libera o mic no meio do turno novo.
-                    // duracaoMs == 0 significa turno só-texto (sem áudio) — mic liberado imediatamente
-                    val bytesDoTurno = if (bytesAudioGerado > 0) bytesAudioGerado else bytesAudioTurno
-                    val duracaoTotalMs = if (bytesDoTurno > 0) (bytesDoTurno * 1000L / 48000L) else 0L
-                    // Usa playbackHeadPosition para saber quantos frames já foram reproduzidos pelo hardware.
-                    // Mais preciso que medir tempo decorrido — o buffer de rede pode ser maior ou menor
-                    // que o buffer do AudioTrack, causando subcontagem ou supercontagem pelo relógio.
-                    val framesReproduzidos = audioTrack?.playbackHeadPosition?.toLong() ?: 0L
-                    val jaReproduzidoMs = framesReproduzidos * 1000L / 24000L
-                    val duracaoMs = maxOf(0L, duracaoTotalMs - jaReproduzidoMs + 300L)
-                    android.util.Log.i("GeminiLive", "✓ Turno completo — total=${duracaoTotalMs}ms, já reproduzido=${jaReproduzidoMs}ms (${framesReproduzidos}f), aguardando=${duracaoMs}ms (bytes: $bytesDoTurno)")
+                    // Bug #2117: turnComplete chega antes do AudioTrack terminar.
+                    // Fix determinístico: usa bytesAudioGerado (congelado no generationComplete,
+                    // exclui silêncio de cauda) para calcular quantos frames o hardware DEVE
+                    // reproduzir. Aguarda playbackHeadPosition atingir esse alvo antes de
+                    // liberar o mic. Evita o falso-positivo do polling de estabilidade:
+                    // quando reproducaoJob bloqueia esperando chunk, o counter para brevemente
+                    // mesmo com dados no buffer — o polling antigo interpretava isso como "fim".
+                    val framesNoTurnComplete = audioTrack?.playbackHeadPosition?.toLong() ?: 0L
+                    val inicioTurno = framesInicioTurno
+                    // bytesAudioGerado / 2 = frames totais (16-bit mono = 2 bytes por frame)
+                    val framesEsperados = if (bytesAudioGerado > 0) bytesAudioGerado / 2L else 0L
+                    val turnoTinhaAudio = framesEsperados > 0
+                    android.util.Log.i("GeminiLive", "✓ Turno completo — frames: inicio=$inicioTurno atual=$framesNoTurnComplete esperado=$framesEsperados (${bytesAudioGerado} bytes)")
                     micReleaseJob?.cancel()
                     micReleaseJob = scope.launch {
-                        if (duracaoMs > 0) kotlinx.coroutines.delay(duracaoMs)
+                        if (turnoTinhaAudio) {
+                            // Aguarda o hardware reproduzir todos os frames do turno.
+                            // Margem de 200 frames (~8ms) para não depender de timing exato.
+                            val alvo = inicioTurno + framesEsperados - 200L
+                            // Timeout de segurança: duração esperada + 3s extra
+                            val timeoutMs = (framesEsperados * 1000L / 24000L) + 3000L
+                            val inicio = System.currentTimeMillis()
+                            while (isActive) {
+                                kotlinx.coroutines.delay(80)
+                                val frameAtual = audioTrack?.playbackHeadPosition?.toLong() ?: 0L
+                                if (frameAtual >= alvo) break
+                                if (System.currentTimeMillis() - inicio > timeoutMs) {
+                                    android.util.Log.w("GeminiLive", "⚠ Timeout aguardando reprodução — liberando mic (frame=$frameAtual alvo=$alvo)")
+                                    break
+                                }
+                            }
+                            val frameFinal = audioTrack?.playbackHeadPosition?.toLong() ?: 0L
+                            android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado (frame=$frameFinal alvo=$alvo)")
+                        } else {
+                            android.util.Log.i("GeminiLive", "✓ Turno sem áudio — mic liberado imediatamente")
+                        }
                         if (!isActive) return@launch
-                        android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado${if (duracaoTotalMs == 0L) " (turno sem áudio)" else ""}")
                         modeloFalando = false
                         mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                     }
-                    // Zera bytes para não vazar para o próximo turno caso generationComplete não chegue
                     bytesAudioTurno = 0L
                     bytesAudioGerado = 0L
+                    framesInicioTurno = 0L
                 }
 
             }

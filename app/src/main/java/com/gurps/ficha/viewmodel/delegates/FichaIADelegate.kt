@@ -111,9 +111,13 @@ class FichaIADelegate(
         }
     }
 
+    // uid da última mensagem de voz do usuário — para atualizar em streaming
+    private var ultimaMensagemVozUsuarioUid: String? = null
+
     fun adicionarMensagemVoz(texto: String, role: String) {
         val msg = MestreIAClient.ChatMessage(role, texto, "Mestre IA (Voz)")
         mestreIAChatHistory = mestreIAChatHistory + msg
+        if (role == "user") ultimaMensagemVozUsuarioUid = msg.uid
         sistemaBatchUid = null
         scope.launch(Dispatchers.IO) {
             val dao = dataRepository.chatHistoryDao()
@@ -122,6 +126,19 @@ class FichaIADelegate(
             withContext(Dispatchers.Main) { currentSessionId = sessionId }
             dao.updateSessionTimestamp(sessionId, System.currentTimeMillis())
             dao.insertMessage(ChatMessageEntity(sessionId = sessionId, role = role, text = texto, modelName = "Mestre IA (Voz)", timestamp = System.currentTimeMillis()))
+        }
+    }
+
+    // Atualiza o texto da última mensagem de voz do usuário (streaming de transcrição)
+    // Se não houver mensagem anterior, cria uma nova (fallback)
+    fun atualizarUltimaMensagemVozUsuario(textoCompleto: String) {
+        val uid = ultimaMensagemVozUsuarioUid
+        if (uid != null) {
+            mestreIAChatHistory = mestreIAChatHistory.map {
+                if (it.uid == uid) it.copy(text = textoCompleto) else it
+            }
+        } else {
+            adicionarMensagemVoz(textoCompleto, "user")
         }
     }
 
