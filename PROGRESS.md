@@ -1625,6 +1625,20 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 288 — [2026-05-26] Fix 3 bugs de lógica no processamento de transcrição e histórico
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `pendingTranscricaoModelo` — novo buffer separado para `outputTranscription`; antes acumulava no `pendingTextoFallback` junto com `text` parts, causando texto duplicado ou garbled no chat
+  - `turnComplete`: resposta exibida no chat usa `outputTranscription` se disponível, `text` parts como fallback — não mistura os dois
+  - `interrupted`: limpa `pendingTranscricaoModelo` junto com os outros buffers
+  - Histórico de turnos: usa `textoUsuario` do turno atual em vez de `ultimaPerguntaUsuario` (que poderia ter valor de turno anterior caso o usuário ficasse em silêncio)
+- **Bugs corrigidos:**
+  1. `outputTranscription` misturado com `text` → texto dobrado/garbled no chat do modelo
+  2. `outputTranscription` chegando no mesmo JSON que `turnComplete` → mesma race condition que o `inputTranscription` tinha (agora processado antes do `turnComplete`)
+  3. Histórico salvava pergunta de turno anterior quando turno atual não tinha fala do usuário
+- **Status:** ✅ Build OK
+
 ## Lote 287 — [2026-05-26] Fix transcrição do usuário não aparecia no chat
 
 - **Hash:** ver git log

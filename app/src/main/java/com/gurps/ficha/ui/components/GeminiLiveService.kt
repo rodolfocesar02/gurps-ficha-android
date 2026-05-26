@@ -51,7 +51,8 @@ class GeminiLiveService(private val context: Context) {
     // Token de session resumption — permite reconectar na mesma sessão lógica (contexto preservado)
     @Volatile private var sessionResumptionToken: String? = null
     // Acumula texto do turno inteiro (várias mensagens) para exibir no chat
-    @Volatile private var pendingTextoFallback = ""
+    @Volatile private var pendingTextoFallback = ""    // text parts do modelo (fallback)
+    @Volatile private var pendingTranscricaoModelo = "" // outputTranscription (preferencial)
     @Volatile private var pendingTextoUsuario = ""
     @Volatile private var turnoTemAudio = false
     // Bloqueia envio de microfone enquanto modelo fala — evita auto-interrupção
@@ -748,7 +749,8 @@ NUNCA:
                     }
                 }
 
-                // outputTranscription: chega como objeto {"text":"palavra"} fragmentado por palavra
+                // outputTranscription: transcrição do que o modelo falou — buffer separado
+                // NÃO misturar com pendingTextoFallback (text parts) — evita texto duplicado no chat
                 val outputTranscriptRaw = content.opt("outputTranscription")
                 if (outputTranscriptRaw != null) {
                     val fragmento = when (outputTranscriptRaw) {
@@ -757,8 +759,8 @@ NUNCA:
                         else -> ""
                     }
                     if (fragmento.isNotBlank()) {
-                        android.util.Log.d("GeminiLive", "✎ frag transcrição: \"$fragmento\"")
-                        pendingTextoFallback += fragmento
+                        android.util.Log.d("GeminiLive", "✎ frag transcrição modelo: \"$fragmento\"")
+                        pendingTranscricaoModelo += fragmento
                     }
                 }
 
@@ -774,6 +776,7 @@ NUNCA:
                 if (content.optBoolean("interrupted")) {
                     android.util.Log.i("GeminiLive", "⚡ Turno interrompido — descartando texto parcial")
                     pendingTextoFallback = ""
+                    pendingTranscricaoModelo = ""
                     pendingTextoUsuario = ""
                     turnoTemAudio = false
                     bytesAudioTurno = 0L
@@ -818,21 +821,25 @@ NUNCA:
                     }
                     pendingTextoUsuario = ""
 
-                    val fallback = pendingTextoFallback.trim()
-                    if (fallback.isNotBlank()) {
-                        android.util.Log.i("GeminiLive", "✎ Fallback chat: \"${fallback.take(150)}\"")
-                        mainHandler.post { onRespostaMestre(fallback) }
+                    // Prefere transcrição de fala (outputTranscription); usa text parts como fallback
+                    val transcricao = pendingTranscricaoModelo.trim()
+                    val textoModelo = pendingTextoFallback.trim()
+                    val respostaFinal = transcricao.ifBlank { textoModelo }
+                    if (respostaFinal.isNotBlank()) {
+                        android.util.Log.i("GeminiLive", "✎ Resposta modelo (${if (transcricao.isNotBlank()) "transcrição" else "texto"}): \"${respostaFinal.take(150)}\"")
+                        mainHandler.post { onRespostaMestre(respostaFinal) }
                     }
-                    // Salva turno no histórico (máx 5 turnos)
-                    if (ultimaPerguntaUsuario.isNotBlank() && fallback.isNotBlank()) {
+                    // Salva turno no histórico (máx 5 turnos) — usa pergunta do turno atual
+                    if (textoUsuario.isNotBlank() && respostaFinal.isNotBlank()) {
                         if (historicoTurnos.size >= 5) historicoTurnos.removeFirst()
                         historicoTurnos.addLast(TurnoResumido(
-                            usuario = ultimaPerguntaUsuario.take(200),
-                            mestre  = fallback.take(300)
+                            usuario = textoUsuario.take(200),
+                            mestre  = respostaFinal.take(300)
                         ))
                         ultimaPerguntaUsuario = ""
                     }
                     pendingTextoFallback = ""
+                    pendingTranscricaoModelo = ""
                     turnoTemAudio = false
                     // Bug conhecido Gemini 2.5 (#2117): turnComplete chega antes do AudioTrack
                     // terminar de reproduzir. Não há evento oficial de fim de reprodução.
