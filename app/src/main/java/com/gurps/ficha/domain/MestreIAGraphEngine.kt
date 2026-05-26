@@ -57,9 +57,10 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         android.util.Log.i("MestreIA_RAG", "══ RAG BUSCA: \"${query.take(80)}\"")
         android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo")
 
-        // 1. Pool FTS4 — 200 candidatos pré-filtrados por keyword match
+        // 1. Pool FTS4 — candidatos pré-filtrados por keyword match, sem chunks corrompidos
         val chunksFTS: List<MestreIAChunk> =
             repository.buscarNoCodexDireto(query, termosBase, limit = 500)
+                .filter { chunk -> !isChunkCorrompido(chunk.text) }
 
         // 1b. Injeção direta por página: se a query menciona um número de página,
         // busca esses chunks diretamente e injeta no pool — evita que páginas relevantes
@@ -179,23 +180,30 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             // HNSW ANN: top-50 por semântica pura, ~1-5ms
             val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 50)
             if (hnswIds.isNotEmpty()) {
-                // Mapeia chunk_ids HNSW para objetos do pool BM25 (texto já carregado)
                 val chunksPorId = chunksCandidatos.associateBy { it.chunk_id }
-                // HNSW só reordena o pool BM25 — não introduz chunks externos com bonus
-                // Chunks fora do pool FTS4 (não encontrados por keyword) não recebem boost
-                val ftsIds = chunksCandidatos.map { it.chunk_id }.toSet()
                 val hnswRank = hnswIds.mapIndexed { idx, id -> id to idx }.toMap()
-                // Bonus proporcional à posição HNSW, mas APENAS para chunks já no pool FTS4
+
+                // Bonus proporcional à posição HNSW para chunks já no pool FTS4
                 val repontua = chunksCandidatos.map { chunk ->
                     val bm25 = bm25ScoresMap[chunk.chunk_id] ?: 0.0
                     val rank = hnswRank[chunk.chunk_id]
-                    // Chunk no pool FTS4 E no top-50 HNSW: reranking semântico neutro
-                    // Bonus máximo = 3pts (não domina o BM25 que pode chegar a 20+pts)
                     val bonus = if (rank != null) (50.0 - rank) / 50.0 * 3.0 else 0.0
                     chunk to (bm25 + bonus)
                 }.sortedByDescending { it.second }
-                android.util.Log.i("MestreIA_RAG", "  HNSW top-5: ${hnswIds.take(5).joinToString()}")
-                chunksPontuadosFinais = repontua
+
+                // Top-5 HNSW garantidos no contexto: se o HNSW elegeu como top semântico,
+                // o chunk entra independente do score BM25.
+                val top5HnswIds = hnswIds.take(5).toSet()
+                val top5HnswChunks = top5HnswIds.mapNotNull { id ->
+                    (chunksPorId[id] ?: repository.getChunkById(id))
+                        ?.takeIf { !isChunkCorrompido(it.text) }
+                }
+                val repontuaIds = repontua.map { it.first.chunk_id }.toSet()
+                val top5Extras = top5HnswChunks.filter { it.chunk_id !in repontuaIds }
+                    .map { chunk -> chunk to 9.0 }
+
+                android.util.Log.i("MestreIA_RAG", "  HNSW top-5: ${hnswIds.take(5).joinToString()} | garantidos=${top5Extras.size} extras")
+                chunksPontuadosFinais = (repontua + top5Extras).sortedByDescending { it.second }
             } else {
                 chunksPontuadosFinais = chunksPontuados
             }
@@ -276,6 +284,13 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             relatedChunks = chunksFinal,
             chunkScores = scoresMapMutavel
         )
+    }
+
+    private fun isChunkCorrompido(text: String): Boolean {
+        val linhas = text.trim().split('\n')
+        if (linhas.size < 5) return false
+        val vazias = linhas.count { it.trim().replace("|", "").replace(" ", "").isEmpty() }
+        return vazias.toDouble() / linhas.size > 0.5
     }
 
     private fun extrairPalavrasChave(
