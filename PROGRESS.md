@@ -1625,6 +1625,14 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 290 — [2026-05-26] Fix transcrição do usuário não aparecia no chat (UI)
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `FichaScreen.kt`: `onTranscricaoUsuario` agora abre o dialog igual ao `onRespostaMestre`
+- **Causa:** `onTranscricaoUsuario` chamava `adicionarMensagemVoz` mas não abria o dialog. Se o chat estivesse fechado quando o usuário falava, a pergunta era adicionada à lista mas o dialog não abria — o usuário nunca via sua própria pergunta aparecer. A resposta do modelo abria o dialog, mas a pergunta já tinha passado.
+- **Status:** ✅ Build OK
+
 ## Lote 289 — [2026-05-26] Fix mic liberado tarde demais — timer não descontava tempo já reproduzido
 
 - **Hash:** ver git log

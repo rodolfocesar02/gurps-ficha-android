@@ -100,6 +100,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         }
         geminiLive.onTranscricaoUsuario = { texto ->
             viewModel.adicionarMensagemVoz(texto, "user")
+            Handler(Looper.getMainLooper()).post { showMestreIADialog = true }
         }
         geminiLive.onRespostaMestre = { texto ->
             viewModel.adicionarMensagemVoz(texto, "model")
