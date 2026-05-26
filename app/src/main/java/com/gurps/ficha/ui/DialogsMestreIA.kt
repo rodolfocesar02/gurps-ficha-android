@@ -75,10 +75,11 @@ fun DialogMestreIA(
                     if (liveAtivo) {
                         Spacer(Modifier.width(8.dp))
                         val (dotColor, dotLabel) = when (estadoLive) {
-                            EstadoLive.CONECTANDO -> Color(0xFFFF8F00) to "conectando..."
-                            EstadoLive.OUVINDO   -> Color(0xFF2E7D32) to "ouvindo"
-                            EstadoLive.FALANDO   -> Color(0xFF1565C0) to "falando"
-                            else                 -> Color.Gray to ""
+                            EstadoLive.CONECTANDO    -> Color(0xFFFF8F00) to "conectando..."
+                            EstadoLive.OUVINDO       -> Color(0xFF2E7D32) to "ouvindo"
+                            EstadoLive.FALANDO       -> Color(0xFF1565C0) to "falando"
+                            EstadoLive.PROCESSANDO   -> Color(0xFFFFA000) to "processando..."
+                            else                     -> Color.Gray to ""
                         }
                         Box(modifier = Modifier.size(8.dp).clip(RoundedCornerShape(4.dp)).background(dotColor))
                         Spacer(Modifier.width(4.dp))
@@ -133,10 +134,11 @@ fun DialogMestreIA(
                 } else {
                     // Mostra status de voz e botão encerrar no lugar do input
                     val statusTexto = when (estadoLive) {
-                        EstadoLive.CONECTANDO -> "Conectando ao Mestre..."
-                        EstadoLive.OUVINDO   -> "🎙️ Ouvindo — fale agora"
-                        EstadoLive.FALANDO   -> "🔊 Mestre falando..."
-                        else                 -> ""
+                        EstadoLive.CONECTANDO  -> "Conectando ao Mestre..."
+                        EstadoLive.OUVINDO     -> "🎙️ Ouvindo — fale agora"
+                        EstadoLive.FALANDO     -> "🔊 Mestre falando..."
+                        EstadoLive.PROCESSANDO -> "⚙️ Processando..."
+                        else                   -> ""
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),

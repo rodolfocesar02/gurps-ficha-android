@@ -28,7 +28,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
-enum class EstadoLive { OCIOSO, CONECTANDO, OUVINDO, FALANDO, ERRO }
+enum class EstadoLive { OCIOSO, CONECTANDO, OUVINDO, FALANDO, PROCESSANDO, ERRO }
 
 // Mantida para compatibilidade com FichaCustomNavigationBar (anel visual do ícone de voz)
 enum class EstadoVoz { OCIOSO, ESCUTANDO, PROCESSANDO, ERRO }
@@ -87,6 +87,10 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var framesInicioTurno = 0L
     // Job do timer de liberação do mic — cancelado quando novo turno começa (evita race condition)
     private var micReleaseJob: Job? = null
+    // Bloqueia mic enquanto aguarda resposta do servidor após toolResponse — evita envio de dados durante thinking
+    @Volatile private var aguardandoRespostaServidor = false
+    // Job de timeout: se servidor não responder em 90s após toolResponse, reconecta
+    private var timeoutRespostaJob: Job? = null
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -679,6 +683,10 @@ NUNCA:
             }
 
             if (obj.has("toolCall")) {
+                // Servidor respondeu — cancela timeout e libera flag de bloqueio
+                timeoutRespostaJob?.cancel()
+                timeoutRespostaJob = null
+                aguardandoRespostaServidor = false
                 val calls = obj.getJSONObject("toolCall").getJSONArray("functionCalls")
                 val respostas = JSONArray()
                 for (i in 0 until calls.length()) {
@@ -723,6 +731,19 @@ NUNCA:
                 if (ws != null) {
                     android.util.Log.i("GeminiLive", "► Enviando toolResponse ao servidor...")
                     ws.send(toolRespStr.encodeUtf8())
+                    // Bloqueia mic e mostra PROCESSANDO enquanto servidor "pensa" após toolResponse
+                    aguardandoRespostaServidor = true
+                    mainHandler.post { onEstado(EstadoLive.PROCESSANDO) }
+                    // Timeout de 90s — se servidor não responder, reconecta
+                    timeoutRespostaJob?.cancel()
+                    timeoutRespostaJob = scope.launch {
+                        kotlinx.coroutines.delay(90_000)
+                        if (isActive && aguardandoRespostaServidor) {
+                            android.util.Log.w("GeminiLive", "⚠ Timeout 90s aguardando resposta do servidor — reconectando")
+                            aguardandoRespostaServidor = false
+                            reconectarAutomaticamente("fechado")
+                        }
+                    }
                 } else {
                     // Conexão caiu enquanto o RAG processava — registra pergunta interrompida
                     // NÃO tenta reenviar toolResponse (a nova sessão não conhece o toolCall original)
@@ -735,6 +756,12 @@ NUNCA:
             }
 
             if (obj.has("serverContent")) {
+                // Servidor respondeu — cancela timeout e libera flag de bloqueio
+                if (aguardandoRespostaServidor) {
+                    timeoutRespostaJob?.cancel()
+                    timeoutRespostaJob = null
+                    aguardandoRespostaServidor = false
+                }
                 val content = obj.getJSONObject("serverContent")
 
                 val modelTurn = content.optJSONObject("modelTurn")
@@ -980,8 +1007,8 @@ limparFilaAudio()
                     break
                 }
                 if (lidos > 0) {
-                    // Não envia microfone enquanto modelo está falando — evita auto-interrupção
-                    if (modeloFalando) continue
+                    // Não envia microfone enquanto modelo fala ou servidor está processando (thinking)
+                    if (modeloFalando || aguardandoRespostaServidor) continue
                     val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
                     // Formato correto conforme doc: realtimeInput.audio com data+mimeType
                     val msg = JSONObject().apply {
@@ -1005,7 +1032,7 @@ limparFilaAudio()
             while (isActive && sessaoAtiva) {
                 kotlinx.coroutines.delay(20_000)
                 if (!sessaoAtiva) break
-                if (modeloFalando) continue
+                if (modeloFalando || aguardandoRespostaServidor) continue
                 try {
                     val ping = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
@@ -1104,6 +1131,9 @@ limparFilaAudio()
         sessaoAtiva = false
         micReleaseJob?.cancel()
         micReleaseJob = null
+        timeoutRespostaJob?.cancel()
+        timeoutRespostaJob = null
+        aguardandoRespostaServidor = false
         capturaJob?.cancel()
         keepAliveJob?.cancel()
         // Cancela reproducaoJob ANTES de fechar o canal — evita que o job antigo

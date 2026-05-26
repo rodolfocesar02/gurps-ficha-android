@@ -46,10 +46,11 @@ fun FichaCustomNavigationBar(
 ) {
     // Mapeia EstadoLive para EstadoVoz para reutilizar o anel visual existente
     val estadoVozEfetivo = when {
-        estadoLive == EstadoLive.OUVINDO -> EstadoVoz.ESCUTANDO   // anel verde
-        estadoLive == EstadoLive.FALANDO -> EstadoVoz.PROCESSANDO  // anel amarelo
-        estadoLive == EstadoLive.CONECTANDO -> EstadoVoz.PROCESSANDO // anel amarelo
-        else -> estadoVoz // fallback para o sistema antigo
+        estadoLive == EstadoLive.OUVINDO      -> EstadoVoz.ESCUTANDO    // anel verde
+        estadoLive == EstadoLive.FALANDO      -> EstadoVoz.PROCESSANDO  // anel amarelo
+        estadoLive == EstadoLive.CONECTANDO   -> EstadoVoz.PROCESSANDO  // anel amarelo
+        estadoLive == EstadoLive.PROCESSANDO  -> EstadoVoz.PROCESSANDO  // anel amarelo
+        else -> estadoVoz
     }
 
     Box(
