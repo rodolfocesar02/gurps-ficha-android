@@ -536,7 +536,11 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
 
     if (showMestreIADialog) {
-        LaunchedEffect(Unit) { viewModel.gerarSaudacaoMestreIA() }
+        LaunchedEffect(Unit) {
+            if (estadoLive == EstadoLive.OCIOSO || estadoLive == EstadoLive.ERRO) {
+                viewModel.gerarSaudacaoMestreIA()
+            }
+        }
         DialogMestreIA(
             viewModel = viewModel,
             onDismiss = { showMestreIADialog = false },
