@@ -138,6 +138,52 @@ object MestreIAPlanner {
     )
 
     // ─────────────────────────────────────────────────────────────────────────
+    // Vantagens/Desvantagens GURPS conhecidas — detectadas na query para busca direta
+    // Quando um nome exato bate aqui, o Planner usa o nome como entidade primária e
+    // gera sub-queries específicas (não genéricas de combate).
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private val vantagensConhecidas: Map<String, String> = mapOf(
+        "reflexos em combate"        to "reflexos em combate vantagem bonus defesa",
+        "treinado por um mestre"     to "treinado por um mestre vantagem combate",
+        "mestre de armas"            to "mestre de armas vantagem combate",
+        "duro de matar"              to "duro de matar vantagem pv",
+        "hipoalgia"                  to "hipoalgia alto limiar dor vantagem",
+        "alto limiar de dor"         to "hipoalgia alto limiar dor vantagem",
+        "ambidestria"                to "ambidestria vantagem mao inabil",
+        "visao noturna"              to "visao noturna vantagem penalidade escuridao",
+        "sentido aguado"             to "sentido aguado vantagem percepcao",
+        "equilibrio perfeito"        to "equilibrio perfeito vantagem acrobacia",
+        "queda de gato"              to "queda de gato vantagem queda dano",
+        "aptidao magica"             to "aptidao magica vantagem magia requisito",
+        "bencao"                     to "bencao vantagem teste dado bonus",
+        "sorte"                      to "sorte vantagem teste dado bonus",
+        "ataque adicional"           to "ataque adicional vantagem combate manobra",
+        "nocao do tempo ampliada"    to "nocao do tempo ampliada vantagem tempo",
+        "nta"                        to "nocao do tempo ampliada vantagem tempo",
+        "empatia"                    to "empatia vantagem social reacao",
+        "regeneracao"                to "regeneracao vantagem cura pv",
+        "recuperacao acelerada"      to "recuperacao acelerada vantagem cura pv",
+        "defesas ampliadas"          to "defesas ampliadas vantagem bonus defesa",
+        "vantagem em combate"        to "vantagem em combate manobra bonus",
+        "resistencia a magia"        to "resistencia magica vantagem magia",
+        "paralisia frente ao combate" to "paralisia frente ao combate desvantagem",
+        "covardia"                   to "covardia desvantagem medo combate",
+        "impulsividade"              to "impulsividade desvantagem controle",
+        "honestidade"                to "honestidade desvantagem codigo",
+        "fanatismo"                  to "fanatismo desvantagem codigo",
+        "fobia"                      to "fobia desvantagem medo panico",
+        "berserk"                    to "berserk desvantagem furia combate",
+        "dependencia"                to "dependencia desvantagem habito",
+        "vicio"                      to "vicio desvantagem habito",
+        "memoria fotografica"        to "memoria fotografica vantagem iq",
+        "calculo rapido"             to "calculo rapido vantagem iq matematica",
+        "percepcao aguada"           to "percepcao aguada vantagem per sentido",
+        "fleuma"                     to "fleuma vantagem panico verificacao",
+        "venturoso"                  to "venturoso vantagem iniciativa combate"
+    )
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Padrões relacionais para sub-queries (golpe fulminante, queda livre, etc.)
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -550,6 +596,25 @@ object MestreIAPlanner {
     private fun extrairIntencaoEstruturada(perguntaOriginal: String, perguntaNorm: String): IntencaoEstruturada {
         val intencaoBusca = analisarIntencao(perguntaOriginal)
 
+        // Tenta nome exato de vantagem/desvantagem GURPS — máxima prioridade
+        val nomeVantagem = vantagensConhecidas.keys.firstOrNull { nome ->
+            perguntaNorm.contains(nome, ignoreCase = true)
+        }
+        if (nomeVantagem != null) {
+            val queryEspecifica = vantagensConhecidas[nomeVantagem]!!
+            val termosPonderados = nomeVantagem.split(" ")
+                .filter { it.length >= 2 }
+                .map { TermoPonderado(it, 1.2) }
+            android.util.Log.i("MestreIA_Planner", "VANTAGEM_NOMEADA detectada: '$nomeVantagem' → query='$queryEspecifica'")
+            return IntencaoEstruturada(
+                intencaoBusca = intencaoBusca,
+                entidadePrimaria = nomeVantagem,
+                entidadeSecundaria = "",
+                relacao = RelacaoSemantica.FUNCIONAMENTO,
+                termosPonderados = termosPonderados
+            )
+        }
+
         // Tenta padrão "X contra/em/sobre Y"
         val matchContra = padroesUsarContra.find(perguntaOriginal)
         if (matchContra != null) {
@@ -728,9 +793,17 @@ object MestreIAPlanner {
                 }
             }
             RelacaoSemantica.FUNCIONAMENTO -> {
-                if (primaria.isNotBlank()) {
-                    queries.add("$primaria regra mecanica como funciona")
-                    queries.add("$primaria definicao uso quando aplicar")
+                // Se a intenção primária bate com uma vantagem conhecida, usa a sub-query específica
+                val nomeVant = vantagensConhecidas.keys.firstOrNull { primaria.contains(it, ignoreCase = true) }
+                if (nomeVant != null) {
+                    queries.add(vantagensConhecidas[nomeVant]!!)
+                    // Sub-query adicional para apanhar menções cruzadas (ex: p394 menciona a vantagem)
+                    queries.add("$nomeVant bonus penalidade efeito")
+                } else {
+                    if (primaria.isNotBlank()) {
+                        queries.add("$primaria regra mecanica como funciona")
+                        queries.add("$primaria definicao uso quando aplicar")
+                    }
                 }
             }
             RelacaoSemantica.GENERICO -> {
