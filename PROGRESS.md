@@ -1625,6 +1625,16 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 289 — [2026-05-26] Fix mic liberado tarde demais — timer não descontava tempo já reproduzido
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `inicioAudioTurno`: novo timestamp gravado no primeiro chunk de áudio do turno
+  - `turnComplete`: timer = `duracaoTotal - jaDecorrido + 300ms` em vez de `duracaoTotal + 300ms`
+  - `inicioAudioTurno` zerado no `interrupted` e ao final do `turnComplete`
+- **Causa:** o modelo começa a enviar áudio ~10s antes do `turnComplete` chegar. O timer usava a duração total (ex: 10s), mas o áudio já estava tocando há 10s — então o mic só abria 10s depois do `turnComplete`, quando na verdade já devia abrir quase imediatamente. No log: `generationComplete` às 18:55:38, `turnComplete` às 18:55:45 (7s depois), timer calculou 10s → mic abriu às 18:55:55 (17s após o fim real do áudio).
+- **Status:** ✅ Build OK
+
 ## Lote 288 — [2026-05-26] Fix 3 bugs de lógica no processamento de transcrição e histórico
 
 - **Hash:** ver git log
