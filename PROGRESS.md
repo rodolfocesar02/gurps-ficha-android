@@ -1831,3 +1831,10 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Hash:** aa40e72
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
+
+## Lote 304 — [2026-05-26] Fix falso alarme de compressão de contexto
+
+- **Hash:** (ver git log)
+- **Causa:** `usageMetadata` vem vazio `{}` em alguns turnos (promptTokenCount=0). O detector interpretava 4915→0 como compressão real.
+- **Fix:** Ignora prompt=0 na detecção e na atualização de `ultimoPromptTokenCount`.
+- **Status:** ✅ Build OK
