@@ -52,6 +52,7 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var sessionResumptionToken: String? = null
     // Acumula texto do turno inteiro (várias mensagens) para exibir no chat
     @Volatile private var pendingTextoFallback = ""
+    @Volatile private var pendingTextoUsuario = ""
     @Volatile private var turnoTemAudio = false
     // Bloqueia envio de microfone enquanto modelo fala — evita auto-interrupção
     @Volatile private var modeloFalando = false
@@ -762,6 +763,7 @@ NUNCA:
                 if (content.optBoolean("interrupted")) {
                     android.util.Log.i("GeminiLive", "⚡ Turno interrompido — descartando texto parcial")
                     pendingTextoFallback = ""
+                    pendingTextoUsuario = ""
                     turnoTemAudio = false
                     bytesAudioTurno = 0L
                     micReleaseJob?.cancel()
@@ -780,6 +782,15 @@ NUNCA:
                         android.util.Log.i("GeminiLive", "📊 Tokens — prompt: $prompt | resposta: $response | total: $total")
                     }
                     android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando reprodução terminar...")
+                    // Transcrição do usuário — acumulada, disparada uma vez aqui
+                    val textoUsuario = pendingTextoUsuario.trim()
+                    if (textoUsuario.isNotBlank()) {
+                        android.util.Log.i("GeminiLive", "✎ Transcrição usuário: \"${textoUsuario.take(100)}\"")
+                        ultimaPerguntaUsuario = textoUsuario
+                        mainHandler.post { onTranscricaoUsuario(textoUsuario) }
+                    }
+                    pendingTextoUsuario = ""
+
                     val fallback = pendingTextoFallback.trim()
                     if (fallback.isNotBlank()) {
                         android.util.Log.i("GeminiLive", "✎ Fallback chat: \"${fallback.take(150)}\"")
@@ -822,9 +833,7 @@ NUNCA:
                     else -> ""
                 }
                 if (inputTranscript.isNotBlank()) {
-                    android.util.Log.i("GeminiLive", "✎ Transcrição usuário: \"${inputTranscript.take(100)}\"")
-                    ultimaPerguntaUsuario = inputTranscript
-                    mainHandler.post { onTranscricaoUsuario(inputTranscript) }
+                    pendingTextoUsuario += inputTranscript
                 }
             }
         } catch (e: Exception) {
