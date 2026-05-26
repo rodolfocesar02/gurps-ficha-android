@@ -1778,3 +1778,12 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - `DialogsMestreIA.kt`: dot amarelo "processando..." + status "⚙️ Processando..."
   - `FichaCustomNavigationBar.kt`: `PROCESSANDO` mapeado para anel amarelo
 - **Status:** ✅ Build OK
+
+## Lote 298 — [2026-05-26] Fix code=1007: limita payload do consultarManual
+
+- **Hash:** a65282b
+- **Causa raiz (logcat):** 1º `consultarManual` com 18 chunks → funcionou. 2º `consultarManual` com 40 chunks → 61s silêncio + `code=1007`. Payload excedeu limite do servidor Gemini Live.
+- **Mudanças:**
+  - `GeminiLiveTools.kt`: `take(40)` → `take(20)` no path multi-query
+  - `GeminiLiveTools.kt`: cap de 25.000 chars no resultado final — previne payload gigante em qualquer path
+- **Status:** ✅ Build OK
