@@ -1625,6 +1625,16 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 284 — [2026-05-26] Fix timer de mic muito longo — usar generationComplete
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt`: adicionado `bytesAudioGerado` — congelado no `generationComplete`
+  - Timer do `micReleaseJob` agora usa `bytesAudioGerado` em vez de `bytesAudioTurno`
+  - `bytesAudioGerado` zerado no início de cada turno e no `interrupted`
+- **Causa:** O `turnComplete` chegava ~4s depois do `generationComplete`. Nesse intervalo o servidor enviava silêncio de cauda que era somado ao `bytesAudioTurno`, inflando o timer (7960ms para uma fala de ~4s). Resultado: o mic ficava bloqueado por quase o dobro do necessário — o usuário falava antes do timer acabar e a voz era descartada
+- **Status:** ✅ Build OK
+
 ## Lote 283 — [2026-05-26] Fix keepalive não pausava durante fala do modelo
 
 - **Hash:** ver git log
