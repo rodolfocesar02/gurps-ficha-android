@@ -1438,3 +1438,96 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Arquivos agora dead code (não deletados ainda):** `MestreIAPlanner.kt`, `MestreIAQueryEngine.kt`, `MestreIASemanticEngine.kt` — não mais chamados pelo AUDITOR; `gerarCatalogoDireto()` e `reescreverQueryParaGurps()` em MestreIAUseCase
 - **Build:** ✅ compilePracegoDebugKotlin OK + assemblePracegoDebug OK
 
+---
+
+## Commit `729c80a` — 2026-05-26
+**feat: Gemini Live — session resumption, reconexão automática, RAG 40 chunks, log tokens**
+
+### GeminiLiveService.kt
+- **Session Resumption**: salva `newHandle` do `sessionResumptionUpdate` a cada turno; ao reconectar envia `sessionResumption: { handle }` no setup — servidor restaura sessão lógica completa com todo o contexto, sem reinjetar nada
+- **Reconexão automática**: `goAway` e `onClosed` com code ≠ 1000 reconectam sozinhos após 1.5s; encerramento manual (code=1000) cancela o `Runnable` pendente via `removeCallbacks()` e limpa o token — resolve o bug de precisar clicar "Encerrar" duas vezes
+- **Histórico de turnos**: `ArrayDeque` com últimos 5 pares `(pergunta→resposta)` — reinjetado como contexto quando session resumption não está disponível
+- **Pergunta interrompida**: se conexão cai no meio do RAG (`webSocket=null` ao tentar enviar toolResponse), salva `ultimaPerguntaUsuario` e reinjetar na nova sessão para o modelo retomar
+- **Log tokens**: `📊 Tokens — prompt: X | resposta: Y | total: Z` exibido após cada `turnComplete`
+- **sessionResumptionUpdate**: suprimido do log de ruído (era spam a cada ~1s); token capturado silenciosamente em `Log.d`
+- **Prompt**: instrução explícita para NÃO chamar `consultarManual` antes de saber qual é a dúvida — resolve chamada RAG prematura da sessão anterior
+
+### GeminiLiveTools.kt
+- **RAG voz**: `take(50)` → `take(40)` — redução ~26% nos tokens por consulta sem perda de qualidade comprovada em testes
+
+### MestreIATools.kt + MestreIAGraphEngine.kt
+- **Pyramid Aquático**: adicionado ao enum de livros Gemini e OpenAI; mapping `"pyramid aquático"/"pyramid aquatico"` → `pt_pyramid_26_underwater` no `buscarDiretoNoCodex`
+
+### FichaIADelegate.kt
+- **Loading phrases**: personalizadas com nome do personagem, até 2 desvantagens e 1 vantagem shuffled; sem exemplos de estilo no prompt (modo aleatório puro)
+
+### Validado em logcat
+- Pergunta "atirar em inimigo entre copas de árvore a 3m": 2 buscas paralelas, citou Pág. 374/550/551, calculou -2 distância + -2 cobertura parcial, ofereceu calcular chance final
+- Tokens: `prompt: 122.694` vs `~165k` anterior com 50 chunks — redução confirmada
+- Session resumption token atualizado a cada ~1s ✅
+
+---
+
+## Commit `458d955` — 2026-05-26
+**Lote 1: Context Window Compression + Session Resumption transparent + goAway preventivo**
+
+### GeminiLiveService.kt — buildSetupMessage()
+- **`sessionResumptionConfig: { transparent: true }`**: servidor passa a gerenciar os tokens automaticamente e inclui `lastConsumedClientMessageIndex` no update — garante que mensagens enviadas durante queda não se percam; handle ainda enviado na reconexão quando disponível
+- **`contextWindowCompression: { triggerTokens: 100000, slidingWindow: { targetTokens: 4000 } }`**: quando contexto passa de 100k tokens o servidor comprime automaticamente para ~4k — resolve o crescimento de 120k+ após 2-3 perguntas RAG; sessões agora rodam indefinidamente (sem limite de 15min)
+- **`goAway.timeLeft` preventivo**: campo parsed — se `timeLeft > 5s` reconecta com delay de 500ms em vez de 1500ms, evitando interrupção perceptível ao usuário
+- **`reconectarAutomaticamenteComDelay(motivo, delayMs)`**: refatoração para suportar delay variável; `reconectarAutomaticamente()` mantida como atalho com 1500ms padrão
+
+### Build
+- ✅ `assemblePracegoDebug` OK — 83 tasks up-to-date
+- ✅ APK instalado em 192.168.1.84:44221
+
+---
+
+## Commit `17c9eca` — 2026-05-26
+**Lote 2: Automatic Activity Detection (AAD) configurado no setup**
+
+### GeminiLiveService.kt — buildSetupMessage()
+- **`realtimeInputConfig.automaticActivityDetection`**: configura explicitamente sensibilidade de voz em vez de depender dos padrões do servidor
+  - `startOfSpeechSensitivity: 0.5` — detecção balanceada de início de fala
+  - `endOfSpeechSensitivity: 0.5` — menos falsas ativações de fim de turno
+  - `prefixPaddingMs: 200` — captura 200ms antes do início detectado, evita cortar começo de palavras
+  - `silenceDurationMs: 1000` — só considera turno encerrado após 1s de silêncio (evita cortes no meio da fala)
+
+### Build
+- ✅ `assemblePracegoDebug` OK
+- ✅ APK instalado em 192.168.1.84:44221
+
+---
+
+## Commit `2b42b18` — 2026-05-26
+**Lotes 3+4: migração para Gemini 2.5 + Proactive Audio + endpoint v1beta**
+
+### app/build.gradle.kts
+- **Modelo**: `gemini-3.1-flash-live-preview` → `gemini-2.5-flash-preview-native-audio-dialog`
+  - Async Function Calling ✅ — RAG não bloqueia mais o WebSocket durante busca
+  - Proactive Audio ✅ — modelo ignora barulho de fundo
+  - Affective Dialogue ✅ — adapta tom ao estado emocional
+  - 30 vozes HD em 24 idiomas
+
+### GeminiLiveService.kt
+- **`proactiveAudioConfig: { enabled: true }`**: modelo só responde quando a fala é direcionada a ele — ignora TV ligada, conversas ao redor, barulho de fundo
+- **Endpoint**: `v1alpha` → `v1beta` — versão estável da API
+
+### Build
+- ✅ `assembleDebug` OK
+- ✅ APK visual instalado em 192.168.1.84:44221
+
+
+---
+
+## Lote 272 — [2026-05-26] Fix Race Condition Bug #2117 — micReleaseJob
+
+- **Hash:** e3f1916
+- **Mudanças:**
+  - `GeminiLiveService.kt`: adicionado `micReleaseJob: Job?` para rastrear o timer de liberação do mic
+  - No início de novo turno de áudio: `micReleaseJob?.cancel()` antes de `limparFilaAudio()` — cancela o timer do turno anterior
+  - No `turnComplete`: `micReleaseJob = scope.launch { ... }` em vez de `scope.launch { ... }` — permite rastrear e cancelar
+  - Adicionado `if (!isActive) return@launch` no início do bloco do timer — garante que job cancelado não libera mic
+  - No `encerrar()`: `micReleaseJob?.cancel()` adicionado ao cleanup
+- **Causa do bug:** quando o modelo respondia rápido (turno 2 antes do timer do turno 1 expirar), o timer antigo chamava `modeloFalando = false` no meio do áudio novo → reprodução acelerada e sobreposição de conversas
+- **Status:** ✅ Build OK
