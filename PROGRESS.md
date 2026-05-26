@@ -1590,7 +1590,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 279 — [2026-05-26] Remove proactiveAudio — trava setup
 
-- **Hash:** ver git log
+- **Hash:** e61a97b
 - **Mudanças:**
   - `GeminiLiveService.kt`: removido `proactivity: { proactiveAudio: true }` — servidor não respondia `setupComplete`, app ficava travado em "Conectando..."
   - Mantido `v1alpha` — não causou problema, só o proactiveAudio travava
@@ -1599,7 +1599,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 280 — [2026-05-26] Fix posição dos campos de transcrição no setup
 
-- **Hash:** ver git log
+- **Hash:** 83c86d9
 - **Mudanças:**
   - `GeminiLiveService.kt`: movido `outputAudioTranscription` e `inputAudioTranscription` para fora do `generationConfig` — devem ficar no nível do `setup`, não dentro de `generationConfig`
 - **Causa do travamento:** campos dentro de `generationConfig` eram rejeitados silenciosamente pelo servidor — `setupComplete` nunca chegava, app ficava em "Conectando..." indefinidamente
@@ -1608,7 +1608,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 281 — [2026-05-26] Forçar saída de áudio nas caixas de som
 
-- **Hash:** ver git log
+- **Hash:** b47092e
 - **Mudanças:**
   - `GeminiLiveService.kt` `iniciarCaptura()`: ativa `AudioManager.MODE_IN_COMMUNICATION` + `isSpeakerphoneOn = true` — mantém cancelamento de eco do `VOICE_COMMUNICATION` mas força saída pelo alto-falante (caixas de som), não pelo ouvido
   - `GeminiLiveService.kt` `encerrar()`: restaura `isSpeakerphoneOn = false` + `MODE_NORMAL` ao fechar a sessão — evita deixar o celular preso em modo chamada
@@ -1617,7 +1617,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 282 — [2026-05-26] Fix transcrição usuário — cada palavra num balão
 
-- **Hash:** ver git log
+- **Hash:** b80f5cd
 - **Mudanças:**
   - `GeminiLiveService.kt`: adicionado `pendingTextoUsuario` — acumula fragmentos do `inputTranscription` igual ao que já fazíamos com `outputTranscription`
   - `onTranscricaoUsuario` agora só é chamado **uma vez** no `turnComplete` com o texto completo — não mais a cada fragmento
@@ -1627,7 +1627,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 295 — [2026-05-26] Fix áudio acelerado: polling de estabilidade substituído por alvo determinístico
 
-- **Hash:** ver git log
+- **Hash:** edeac27
 - **Mudanças:**
   - `GeminiLiveService.kt`: `micReleaseJob` agora aguarda `playbackHeadPosition >= inicioTurno + framesEsperados - 200` em vez de detectar "estabilidade por 200ms"
   - `framesEsperados = bytesAudioGerado / 2` (16-bit mono = 2 bytes por frame)
@@ -1637,7 +1637,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 294 — [2026-05-26] Fix mic travado: framesInicioTurno capturado antes do flush() que reseta o contador
 
-- **Hash:** ver git log
+- **Hash:** edeac27
 - **Mudanças:**
   - `GeminiLiveService.kt`: movida captura de `framesInicioTurno` para DEPOIS de `limparFilaAudio()`, não antes
 - **Causa:** `limparFilaAudio()` chama `audioTrack.flush()`, que reseta o `playbackHeadPosition` internamente. O código capturava `framesInicioTurno` antes do flush, guardando o valor do turno anterior (ex: 181.440). Depois do flush, o hardware reiniciava do zero (~0 frames). No polling, `frameAtual` (0..N) nunca ficava `> inicioTurno` (181.440) — o loop ficava preso para sempre, `modeloFalando` nunca virava `false`, e o app exibia "Falando..." indefinidamente. No log: `frames: inicio=181440 atual=175104` — atual menor que início, loop preso por 37s até o usuário fechar manualmente.
@@ -1645,7 +1645,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 293 — [2026-05-26] Fix timer de mic: polling de playbackHeadPosition em vez de cálculo por bytes
 
-- **Hash:** ver git log
+- **Hash:** edeac27
 - **Mudanças:**
   - `GeminiLiveService.kt`: removida lógica de timer baseada em `bytesAudioGerado / 48000`
   - Novo campo `framesInicioTurno`: captura `playbackHeadPosition` no primeiro chunk de áudio do turno
@@ -1656,7 +1656,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 292 — [2026-05-26] Fix transcrição do usuário: streaming imediato em vez de esperar turnComplete
 
-- **Hash:** ver git log
+- **Hash:** edeac27
 - **Mudanças:**
   - `GeminiLiveService.kt`: novo callback `onAtualizarTranscricaoUsuario` — chamado com fragmentos seguintes e versão final consolidada
   - `inputTranscription`: primeiro fragmento chama `onTranscricaoUsuario` (cria entrada no chat), fragmentos seguintes chamam `onAtualizarTranscricaoUsuario` (atualiza a entrada existente)
@@ -1668,7 +1668,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 291 — [2026-05-26] Fix áudio acelerado após correção do timer de mic
 
-- **Hash:** ver git log
+- **Hash:** 0f8197a
 - **Mudanças:**
   - Timer do mic: trocado `inicioAudioTurno` (tempo de rede) por `audioTrack.playbackHeadPosition` (frames reais reproduzidos pelo hardware)
   - Removida variável `inicioAudioTurno` (não mais necessária)
@@ -1677,7 +1677,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 290 — [2026-05-26] Fix transcrição do usuário não aparecia no chat (UI)
 
-- **Hash:** ver git log
+- **Hash:** 20ba9d4
 - **Mudanças:**
   - `FichaScreen.kt`: `onTranscricaoUsuario` agora abre o dialog igual ao `onRespostaMestre`
 - **Causa:** `onTranscricaoUsuario` chamava `adicionarMensagemVoz` mas não abria o dialog. Se o chat estivesse fechado quando o usuário falava, a pergunta era adicionada à lista mas o dialog não abria — o usuário nunca via sua própria pergunta aparecer. A resposta do modelo abria o dialog, mas a pergunta já tinha passado.
@@ -1685,7 +1685,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 289 — [2026-05-26] Fix mic liberado tarde demais — timer não descontava tempo já reproduzido
 
-- **Hash:** ver git log
+- **Hash:** 7417dce
 - **Mudanças:**
   - `inicioAudioTurno`: novo timestamp gravado no primeiro chunk de áudio do turno
   - `turnComplete`: timer = `duracaoTotal - jaDecorrido + 300ms` em vez de `duracaoTotal + 300ms`
@@ -1695,7 +1695,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 288 — [2026-05-26] Fix 3 bugs de lógica no processamento de transcrição e histórico
 
-- **Hash:** ver git log
+- **Hash:** 4e2a652
 - **Mudanças:**
   - `pendingTranscricaoModelo` — novo buffer separado para `outputTranscription`; antes acumulava no `pendingTextoFallback` junto com `text` parts, causando texto duplicado ou garbled no chat
   - `turnComplete`: resposta exibida no chat usa `outputTranscription` se disponível, `text` parts como fallback — não mistura os dois
@@ -1709,7 +1709,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 287 — [2026-05-26] Fix transcrição do usuário não aparecia no chat
 
-- **Hash:** ver git log
+- **Hash:** 945a104
 - **Mudanças:**
   - `GeminiLiveService.kt`: bloco `inputTranscription` movido para **antes** do bloco `turnComplete`
 - **Causa:** servidor manda `inputTranscription` e `turnComplete` no **mesmo JSON**. O código processava `turnComplete` primeiro — lia `pendingTextoUsuario`, exibia, e o **zerava**. Depois processava `inputTranscription` e acumulava no buffer já vazio. No próximo JSON não vinha mais `turnComplete`, então o texto ficava preso e nunca era exibido. Solução: processar `inputTranscription` antes do `turnComplete` dentro do mesmo JSON.
@@ -1717,7 +1717,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 286 — [2026-05-26] Fix voz do usuário completamente suprimida pelo echo canceller
 
-- **Hash:** ver git log
+- **Hash:** 5fe618c
 - **Mudanças:**
   - `iniciarCaptura()`: `AudioManager.MODE_IN_COMMUNICATION` → `MODE_NORMAL` + `isSpeakerphoneOn = true`
   - `AudioRecord`: `MediaRecorder.AudioSource.VOICE_COMMUNICATION` → `AudioSource.MIC`
@@ -1726,7 +1726,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 285 — [2026-05-26] Fix 4 bugs confirmados + logs de diagnóstico nos 3 não confirmados
 
-- **Hash:** ver git log
+- **Hash:** 54304d4
 - **Mudanças:**
   - `sessaoAtiva` agora é `@Volatile` — jobs em threads IO viam valor desatualizado após `encerrar()`
   - `turnComplete` sem áudio: `micReleaseJob` com `duracaoMs == 0` libera mic imediatamente com log `(turno sem áudio)` — antes `modeloFalando` ficava `true` para sempre
@@ -1741,7 +1741,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 284 — [2026-05-26] Fix timer de mic muito longo — usar generationComplete
 
-- **Hash:** ver git log
+- **Hash:** cf8dfda
 - **Mudanças:**
   - `GeminiLiveService.kt`: adicionado `bytesAudioGerado` — congelado no `generationComplete`
   - Timer do `micReleaseJob` agora usa `bytesAudioGerado` em vez de `bytesAudioTurno`
@@ -1751,7 +1751,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 283 — [2026-05-26] Fix keepalive não pausava durante fala do modelo
 
-- **Hash:** ver git log
+- **Hash:** 1d233ae
 - **Mudanças:**
   - `GeminiLiveService.kt`: keepalive agora checa `modeloFalando` antes de enviar silêncio — `if (modeloFalando) continue`
 - **Causa:** O keepalive enviava áudio silencioso a cada 20s independente do estado. Se o ciclo de 20s caísse logo após o modelo terminar de falar, o servidor recebia silêncio no exato momento em que o usuário começa a falar — podendo confundir o detector de fala (VAD) e atrasar o reconhecimento da voz do usuário
