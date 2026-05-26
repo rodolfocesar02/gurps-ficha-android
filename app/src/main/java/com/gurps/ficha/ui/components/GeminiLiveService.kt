@@ -339,34 +339,16 @@ NUNCA:
         return JSONObject().apply {
             put("setup", JSONObject().apply {
                 put("model", BuildConfig.GEMINI_LIVE_MODEL)
-                // Session resumption transparente: servidor gerencia o token automaticamente
-                // e garante que mensagens enviadas durante a queda não se percam
-                val resumptionCfg = JSONObject().apply {
-                    put("transparent", true)
-                    if (token != null) {
+                // Session resumption: reconecta na mesma sessão lógica quando tiver token
+                // transparent=true: desativado no 2.5 preview — testar compatibilidade
+                if (token != null) {
+                    put("sessionResumptionConfig", JSONObject().apply {
                         put("handle", token)
-                        android.util.Log.i("GeminiLive", "║  Usando session resumption token (contexto preservado)")
-                    }
+                    })
+                    android.util.Log.i("GeminiLive", "║  Usando session resumption token (contexto preservado)")
                 }
-                put("sessionResumptionConfig", resumptionCfg)
-                // Context window compression: evita limite de 15min e crescimento de 120k+ tokens
-                // Quando o contexto passar de 100k tokens o servidor comprime para ~4k automaticamente
-                put("contextWindowCompression", JSONObject().apply {
-                    put("triggerTokens", 100000)
-                    put("slidingWindow", JSONObject().apply {
-                        put("targetTokens", 4000)
-                    })
-                })
-                // AAD: configura sensibilidade de detecção de voz — evita cortes no meio da fala
-                // e falsas ativações de fim de turno
-                put("realtimeInputConfig", JSONObject().apply {
-                    put("automaticActivityDetection", JSONObject().apply {
-                        put("startOfSpeechSensitivity", 0.5)
-                        put("endOfSpeechSensitivity", 0.5)
-                        put("prefixPaddingMs", 200)
-                        put("silenceDurationMs", 1000)
-                    })
-                })
+                // contextWindowCompression e realtimeInputConfig desativados temporariamente
+                // para diagnóstico — modelo 2.5 preview pode não suportar esses campos
                 put("generationConfig", JSONObject().apply {
                     put("responseModalities", JSONArray().apply { put("AUDIO") })
                     put("speechConfig", JSONObject().apply {
@@ -776,7 +758,7 @@ NUNCA:
                         val total    = usage.optInt("totalTokenCount")
                         android.util.Log.i("GeminiLive", "📊 Tokens — prompt: $prompt | resposta: $response | total: $total")
                     }
-                    android.util.Log.i("GeminiLive", "✓ Turno completo — voltando a ouvir")
+                    android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando reprodução terminar...")
                     val fallback = pendingTextoFallback.trim()
                     if (fallback.isNotBlank()) {
                         android.util.Log.i("GeminiLive", "✎ Fallback chat: \"${fallback.take(150)}\"")
@@ -793,8 +775,19 @@ NUNCA:
                     }
                     pendingTextoFallback = ""
                     turnoTemAudio = false
-                    modeloFalando = false
-                    mainHandler.post { onEstado(EstadoLive.OUVINDO) }
+                    // Gemini 2.5: turnComplete chega antes do AudioTrack terminar de reproduzir
+                    // Aguarda o canal esvaziar antes de liberar o mic — evita o modelo ouvir
+                    // o próprio áudio e responder por cima (voz acelerada/atropelada)
+                    scope.launch {
+                        while (audioChannel.isEmpty.not()) {
+                            kotlinx.coroutines.delay(100)
+                        }
+                        // Margem extra para o AudioTrack consumir o último chunk do hardware
+                        kotlinx.coroutines.delay(600)
+                        android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado")
+                        modeloFalando = false
+                        mainHandler.post { onEstado(EstadoLive.OUVINDO) }
+                    }
                 }
 
                 val inputTranscriptRaw = content.opt("inputTranscription")
