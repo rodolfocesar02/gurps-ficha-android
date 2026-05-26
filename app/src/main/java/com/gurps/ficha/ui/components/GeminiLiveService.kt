@@ -372,6 +372,9 @@ NUNCA:
                         put(JSONObject().apply { put("text", systemPrompt) })
                     })
                 })
+                put("proactivity", JSONObject().apply {
+                    put("proactiveAudio", true)
+                })
                 put("tools", tools)
             })
         }.toString()
@@ -440,7 +443,7 @@ NUNCA:
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
 
         val keyPreview = BuildConfig.MESTRE_IA_GEMINI_KEY.take(8) + "..."
-        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
+        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
         android.util.Log.i("GeminiLive", "╔══ INICIANDO SESSÃO ══════════════════")
         android.util.Log.i("GeminiLive", "║  Modelo: ${BuildConfig.GEMINI_LIVE_MODEL}")
         android.util.Log.i("GeminiLive", "║  Voz: $vozAtual")
