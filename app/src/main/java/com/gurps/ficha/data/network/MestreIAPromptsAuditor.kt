@@ -96,16 +96,25 @@ object MestreIAPromptsAuditor {
 
         ══ FERRAMENTAS DISPONÍVEIS ══
 
-        consultar_manual_direto(query)
+        consultar_manual_direto(query, livro?)
         → Busca no Códex de GURPS (manuais oficiais em PORTUGUÊS).
         → OBRIGATÓRIO: queries SEMPRE em português. O Códex não tem conteúdo em inglês.
         → Use queries CURTAS (máx 6 palavras) e ESPECÍFICAS por conceito isolado.
-        → Ruim: query longa com a pergunta inteira | qualquer palavra em inglês
+        → Use livro= quando souber de qual livro a regra vem. MELHORA MUITO A PRECISÃO.
+        → Sem livro=: busca em todos os 4 livros ao mesmo tempo.
 
-        ══ LIVROS DISPONÍVEIS NO CÓDEX ══
-        O Códex contém 4 livros. A busca encontra o conteúdo certo automaticamente.
-
-        • Módulo Básico • GURPS Magia • GURPS Artes Marciais • Gurps Gun Fu
+        ══ QUAL LIVRO USAR ══
+        Antes de buscar, identifique o livro certo e passe livro= na ferramenta.
+        • "Gun Fu"           → técnicas e regras de armas de fogo, tiro cinematográfico
+        • "Artes Marciais"   → técnicas corpo a corpo, estilos marciais, combate desarmado
+        • "Magia"            → magias, escolas, alquimia, encantamentos, runas
+        • "Módulo Básico"    → tudo mais: atributos, vantagens, desvantagens, perícias,
+                               manobras, combate geral, equipamentos, tabelas de regras
+        • "Pyramid Aquático" → regras e cenários para ambientes submersos/aquáticos:
+                               combate submerso, pressão, narcose, descompressão,
+                               movimentação na água, criaturas aquáticas, aventuras
+                               em oceanos, rios, mundos subaquáticos
+        • Sem livro=         → quando a pergunta pode cruzar mais de um livro
 
         inspecionar_personagem(secao)
         → Lê dados reais da ficha do jogador.

@@ -51,6 +51,9 @@ class FichaIADelegate(
         if (sincroniaExecutadaNestaSessao) return
         sincroniaExecutadaNestaSessao = true
         
+        // FLAG DE TESTE: true = HNSW puro (sem BM25), false = BM25 + HNSW (padrão)
+        com.gurps.ficha.domain.MestreIAGraphEngine.MODO_HNSW_PURO = true
+
         scope.launch(Dispatchers.IO) {
             android.util.Log.i("MestreIA_Auditoria", "VERIFICANDO INTEGRIDADE DO CÓDEX (Início de Sessão)")
             dataRepository.sincronizarCodexSeNecessario()
@@ -220,14 +223,29 @@ class FichaIADelegate(
                 delay(2000) // espera 2s antes de começar (evita flicker em respostas rápidas)
                 while (isActive) {
                     try {
-                        val nomePersonagem = viewModel.personagem.nome.takeIf { it.isNotBlank() }
-                        val ctx = if (nomePersonagem != null) "para o personagem $nomePersonagem" else "para um aventureiro"
-                        val usadas = if (frasesUsadas.isNotEmpty()) " NÃO repita estas frases já usadas: ${frasesUsadas.toList().takeLast(5).joinToString("; ")}" else ""
+                        val p = viewModel.personagem
+                        val nome = p.nome.takeIf { it.isNotBlank() }
+                        val desvs = p.desvantagens.map { it.nome }.filter { it.isNotBlank() }.shuffled().take(2)
+                        val vants = p.vantagens.map { it.nome }.filter { it.isNotBlank() }.shuffled().take(1)
+                        val tracos = (desvs + vants).joinToString(", ").takeIf { it.isNotBlank() }
+
+                        val nomeCtx = if (nome != null) "O nome do personagem é \"$nome\"." else ""
+                        val tracosCtx = if (tracos != null) "Traços da ficha: $tracos." else ""
+                        val usadas = if (frasesUsadas.isNotEmpty()) "Frases já usadas (NÃO repita): ${frasesUsadas.toList().takeLast(5).joinToString("; ")}." else ""
+
+                        val prompt = """
+                            Você é um Mestre de RPG de fantasia medieval. Está consultando a ficha do jogador enquanto pensa na resposta.
+                            $nomeCtx $tracosCtx
+                            Crie UMA frase curta e original (máx 12 palavras) em português. Use os dados da ficha do jeito que quiser — pode ser dramático, irônico, bem-humorado, misterioso, o que parecer mais interessante. Seja imprevisível.
+                            $usadas
+                            Responda APENAS a frase, sem aspas, sem explicações.
+                        """.trimIndent()
+
                         val resp = MestreIAClient.perguntarAoMestre(
                             baseUrl = "https://generativelanguage.googleapis.com/v1beta",
                             apiKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY,
                             workspaceSlug = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE,
-                            prompt = "Gere UMA frase curta (máx 10 palavras) de loading temática de RPG/fantasia $ctx, no estilo de um mestre consultando seus pergaminhos. Exemplos de estilo (NÃO copie): 'Os pergaminhos sussurram segredos...', 'O Mestre consulta os anais do destino...'. $usadas Responda APENAS a frase, sem aspas nem explicações.",
+                            prompt = prompt,
                             modo = "conversa",
                             desativarTools = true,
                             maxTokens = 40,

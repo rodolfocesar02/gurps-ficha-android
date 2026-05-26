@@ -20,7 +20,7 @@ Estes arquivos gerenciam o fluxo de pensamento da IA, desde o recebimento da per
 
 *   **`MestreIAGraphEngine.kt`** — `domain/`
     *   **Modo:** AUDITOR (Dúvidas de Regras)
-    *   **Descrição:** O Motor de Busca RAG. Realiza busca direta nos `chunks.jsonl` via FTS SQLite — **o grafo foi descontinuado como rota primária**. Extrai palavras-chave da query, faz busca com pool de 200 candidatos pré-filtrados pelo FTS4 (limit fixo para escalar com 5000+ chunks sem degradar), aplica BM25-Kotlin com IDF por termo + bonus AND (todos os termos presentes) + bonus de proximidade (termos < 100 chars), delega reranking semântico ao `MestreIASemanticEngine` (top-50 BM25 → cosseno híbrido 60/40), injeta páginas garantidas via `MestreIATopicIndex` e retorna os top-30 chunks com formatação por estrelas de relevância (★★★/★★/★) via `formatarParaIA`. Inclui "Pocket RAG": chunks de baixa relevância são comprimidos às sentenças que contêm os termos buscados.
+    *   **Descrição:** O Motor de Busca RAG. Realiza busca direta nos `chunks.jsonl` via FTS SQLite — **o grafo foi descontinuado como rota primária**. Função principal: `buscarDiretoNoCodex(query, filtroLivro?)`. Aceita parâmetro opcional `filtroLivro` que restringe a busca a um dos 5 livros do Códex. Extrai palavras-chave da query, faz busca com pool de **500 candidatos** pré-filtrados pelo FTS4, aplica BM25-Kotlin com IDF por termo + bonus AND proporcional à cobertura de termos + bonus de proximidade (termos < 100 chars). Reranking via **HNSW ANN** (`MestreIAVectorEngine.buscarTopK(topK=50)`) — top-5 HNSW recebem score fixo 9.0 para garantir que o chunk semanticamente mais próximo entre no contexto. "Fonte garantida": injeta o melhor chunk de cada livro sub-representado, **somente se score > 1.0** (evita livros irrelevantes dominarem). Page expansion apenas para chunks com score > 1.0. `MestreIASemanticEngine` é fallback (cosseno brute-force) quando HNSW não está populado. Retorna top-**50** chunks com formatação por estrelas (★★★/★★/★) via `formatarParaIA`. Inclui "Pocket RAG": ★★★ (score ≥ 8.0) texto completo; ★★ (score ≥ 2.0) comprimido por `comprimirChunkPorSentencas`; ★ omitido se vazio. Flag de teste: `MODO_HNSW_PURO` (companion object) — quando `true`, ignora BM25 e usa só HNSW top-50.
 
 *   **`MestreIAPlanner.kt`** — `domain/`
     *   **Modo:** AUDITOR e LIVE (compartilhado)
@@ -51,7 +51,7 @@ Definem as funções que a IA pode chamar durante seu raciocínio.
 
 *   **`MestreIATools.kt`** — `data/network/`
     *   **Modo:** AUDITOR
-    *   **Descrição:** A "Caixa de Ferramentas do Auditor". Define os schemas JSON de Function Calling compatíveis com Gemini (Native) e OpenAI/DeepSeek. Ferramentas disponíveis: `consultar_manual_direto` (busca RAG nos chunks), `inspecionar_personagem` (lê seções da ficha: armas com dano, armaduras com RD, atributos, status de HP/FP) e `consultar_nexus_arcano` (cálculo de pré-requisitos de magias).
+    *   **Descrição:** A "Caixa de Ferramentas do Auditor". Define os schemas JSON de Function Calling compatíveis com Gemini (Native) e OpenAI/DeepSeek. Ferramentas disponíveis: `consultar_manual_direto(query, livro?)` (busca RAG nos chunks; parâmetro opcional `livro=` com enum de 5 valores: "Módulo Básico", "Artes Marciais", "Magia", "Gun Fu", "Pyramid Aquático" — filtra a busca no livro específico, melhorando precisão), `inspecionar_personagem` (lê seções da ficha: armas com dano, armaduras com RD, atributos, status de HP/FP, pericias, completo) e `consultar_nexus_arcano` (cálculo de pré-requisitos de magias).
 
 *   **`ForjadorTools.kt`** — `domain/tools/` *(arquivo não listado no documento original)*
     *   **Modo:** FORJADOR e LIVE
@@ -187,7 +187,7 @@ Define o formato físico de como os dados são tratados no código.
     *   **⚠️ LEGADO — NÃO UTILIZADO:** O DAO está declarado no `FichaDatabase` e instanciado (lazy) no `DataRepository`, mas **nenhum método seu é chamado em nenhum lugar do app**. A tabela `graph_nodes` existe no banco porém está vazia e inativa. Candidato a remoção futura.
 
 *   **`VecChunkEntity.kt`** — `data/storage/`
-    *   **Descrição:** Entidade Room da tabela `vec_chunks` — armazena embeddings semânticos pré-computados para busca híbrida BM25 + cosseno. Cada linha representa um chunk do manual com `chunk_id` (chave primária, liga a `manual_chunks`) e `embedding` (384 floats serializados como `ByteArray` little-endian = 1536 bytes por chunk). Embeddings gerados offline pelo script Python `gerar_embeddings.py` com modelo `all-MiniLM-L6-v2`.
+    *   **Descrição:** Entidade Room da tabela `vec_chunks` — armazena embeddings semânticos pré-computados para busca híbrida BM25 + HNSW. Cada linha representa um chunk do manual com `chunk_id` (chave primária, liga a `manual_chunks`) e `embedding` (**3072 floats** serializados como `ByteArray` little-endian = **12288 bytes** por chunk). Embeddings gerados offline pelo script Python `gerar_embeddings.py` com modelo **`gemini-embedding-001`** (dimensão 3072, tarefa `RETRIEVAL_DOCUMENT`).
 
 *   **`VecChunkDao.kt`** — `data/storage/`
     *   **Descrição:** DAO da tabela `vec_chunks`. Expõe: `insertAll()` (upsert em lote), `getByIds(ids)` (busca por lista de chunk_ids — usado pelo `MestreIASemanticEngine` para buscar vetores dos candidatos BM25), `getCount()` (verificação de disponibilidade — se 0, semântico é pulado) e `clearAll()`.
@@ -237,7 +237,7 @@ Define o formato físico de como os dados são tratados no código.
 ---
 
 > [!NOTE]
-> Esta arquitetura tem **dois caminhos de voz independentes**: (1) Clássico — `VozMestreIA` captura STT → `VozIntencaoClassifier` decide o modo → `MestreIAUseCase`/`MestreIAGeneratorUseCase` processam → `VozTTS` fala a resposta. (2) Bidirecional — `GeminiLiveService` gerencia WebSocket direto com Gemini Live, que faz STT+IA+TTS em um único serviço de streaming. `GeminiLiveTools` garante que ambos os caminhos tenham acesso às mesmas ferramentas (RAG, catálogo, edição de ficha). Controlado por `BuildConfig.VOZ_BIDIRECIONAL_HABILITADA`.
+> Esta arquitetura tem **um único caminho de voz ativo**: Bidirecional — `GeminiLiveService` gerencia WebSocket direto com Gemini Live, que faz STT+IA+TTS em um único serviço de streaming. `GeminiLiveTools` garante que a voz tenha acesso às mesmas ferramentas do chat de texto (RAG, catálogo, edição de ficha). O caminho clássico (`VozMestreIA`, `VozTTS`, `VozIntencaoClassifier`) foi descontinuado e removido.
 
 > [!NOTE]
 > Esta arquitetura usa **RAG Direto nos Chunks** como rota primária de busca. O MestreIAUseCase (Auditor) consome RAG do manual. O MestreIAGeneratorUseCase (Forjador) **não usa RAG** — trabalha exclusivamente com o catálogo de IDs e as ferramentas do Forjador. Os dois modos compartilham o MestreIAClient (rede), MestreIATools/ForjadorTools (function calling) e FichaDatabase (persistência).

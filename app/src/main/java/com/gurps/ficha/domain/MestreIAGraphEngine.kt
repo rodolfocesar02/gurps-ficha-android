@@ -14,6 +14,11 @@ import com.gurps.ficha.model.*
  */
 class MestreIAGraphEngine(private val repository: DataRepository) {
 
+    companion object {
+        // FLAG DE TESTE: true = HNSW puro (sem BM25), false = BM25 + HNSW (padrão)
+        var MODO_HNSW_PURO: Boolean = false
+    }
+
     init {
         // TopicIndex removido (Lote 272): índice agora injetado no prompt do AUDITOR
     }
@@ -37,8 +42,18 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         query: String,
         termosExtras: List<String> = emptyList(),
         perguntaOriginal: String = "",
-        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList()
+        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList(),
+        filtroLivro: String? = null
     ): GraphSearchResult {
+        // Mapeia nome amigável → source_id do banco
+        val sourceIdFiltro: String? = when (filtroLivro?.lowercase()?.trim()) {
+            "módulo básico", "modulo basico"       -> "pt_modulo_basico"
+            "artes marciais"                        -> "pt_artes_marciais"
+            "magia"                                 -> "pt_magia"
+            "gun fu"                                -> "pt_gun_fu"
+            "pyramid aquático", "pyramid aquatico" -> "pt_pyramid_26_underwater"
+            else                                    -> null
+        }
         val termosBase: List<String> =
             (extrairPalavrasChave(query, apenasOriginais = true) + termosExtras).distinct()
         val termosExpandidos: List<String> =
@@ -55,12 +70,30 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         if (corpusSize == 0) corpusSize = repository.contarTotalChunks().coerceAtLeast(1)
 
         android.util.Log.i("MestreIA_RAG", "══ RAG BUSCA: \"${query.take(80)}\"")
-        android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo")
+        android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo | modo=${if (MODO_HNSW_PURO) "HNSW_PURO" else "BM25+HNSW"}${if (sourceIdFiltro != null) " | livro=$sourceIdFiltro" else ""}")
+
+        // MODO HNSW PURO: ignora BM25, usa só o ranking semântico do HNSW
+        if (MODO_HNSW_PURO && MestreIAVectorEngine.isReady()) {
+            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 50)
+            if (hnswIds.isNotEmpty()) {
+                val chunks = hnswIds.mapNotNull { id -> repository.getChunkById(id) }
+                    .filter { !isChunkCorrompido(it.text) }
+                    .filter { sourceIdFiltro == null || it.source_id == sourceIdFiltro }
+                val scoresMap = hnswIds.mapIndexed { idx, id -> id to (50.0 - idx) }.toMap()
+                android.util.Log.i("MestreIA_RAG", "  HNSW PURO: ${chunks.size} chunks | top-5: ${hnswIds.take(5).joinToString()}")
+                return GraphSearchResult(
+                    summaries = emptyList(),
+                    relatedChunks = chunks.take(50),
+                    chunkScores = scoresMap
+                )
+            }
+        }
 
         // 1. Pool FTS4 — candidatos pré-filtrados por keyword match, sem chunks corrompidos
         val chunksFTS: List<MestreIAChunk> =
             repository.buscarNoCodexDireto(query, termosBase, limit = 500)
                 .filter { chunk -> !isChunkCorrompido(chunk.text) }
+                .filter { chunk -> sourceIdFiltro == null || chunk.source_id == sourceIdFiltro }
 
         // 1b. Injeção direta por página: se a query menciona um número de página,
         // busca esses chunks diretamente e injeta no pool — evita que páginas relevantes
@@ -183,26 +216,31 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 val chunksPorId = chunksCandidatos.associateBy { it.chunk_id }
                 val hnswRank = hnswIds.mapIndexed { idx, id -> id to idx }.toMap()
 
-                // Bonus proporcional à posição HNSW para chunks já no pool FTS4
-                val repontua = chunksCandidatos.map { chunk ->
-                    val bm25 = bm25ScoresMap[chunk.chunk_id] ?: 0.0
-                    val rank = hnswRank[chunk.chunk_id]
-                    val bonus = if (rank != null) (50.0 - rank) / 50.0 * 3.0 else 0.0
-                    chunk to (bm25 + bonus)
-                }.sortedByDescending { it.second }
-
-                // Top-5 HNSW garantidos no contexto: se o HNSW elegeu como top semântico,
-                // o chunk entra independente do score BM25.
+                // Top-5 HNSW recebem score 9.0 fixo — independente do BM25.
+                // Isso garante que o chunk semanticamente mais relevante esteja no topo,
+                // mesmo que o BM25 o tenha pontuado mal por razões lexicais (ex: chunk
+                // começa com outro subtítulo e "Ataque Furacão" aparece depois no texto).
                 val top5HnswIds = hnswIds.take(5).toSet()
                 val top5HnswChunks = top5HnswIds.mapNotNull { id ->
                     (chunksPorId[id] ?: repository.getChunkById(id))
                         ?.takeIf { !isChunkCorrompido(it.text) }
                 }
+
+                val repontua = chunksCandidatos.map { chunk ->
+                    val bm25 = bm25ScoresMap[chunk.chunk_id] ?: 0.0
+                    val rank = hnswRank[chunk.chunk_id]
+                    val scoreHnsw = if (chunk.chunk_id in top5HnswIds) 9.0
+                                    else if (rank != null) bm25 + (50.0 - rank) / 50.0 * 3.0
+                                    else bm25
+                    chunk to scoreHnsw
+                }.sortedByDescending { it.second }
+
+                // Chunks HNSW top-5 que não estão no pool FTS4: adiciona como extras com 9.0
                 val repontuaIds = repontua.map { it.first.chunk_id }.toSet()
                 val top5Extras = top5HnswChunks.filter { it.chunk_id !in repontuaIds }
                     .map { chunk -> chunk to 9.0 }
 
-                android.util.Log.i("MestreIA_RAG", "  HNSW top-5: ${hnswIds.take(5).joinToString()} | garantidos=${top5Extras.size} extras")
+                android.util.Log.i("MestreIA_RAG", "  HNSW top-5: ${hnswIds.take(5).joinToString()} | extras fora do pool=${top5Extras.size}")
                 chunksPontuadosFinais = (repontua + top5Extras).sortedByDescending { it.second }
             } else {
                 chunksPontuadosFinais = chunksPontuados
@@ -237,6 +275,8 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         }
 
         // 3b. Garantia de diversidade por fonte
+        // Só injeta fontes cujo melhor chunk tem score BM25 > 1.0 — evita fontes espúrias
+        // (ex: pyramid_26_underwater com score ~0.3) dominarem o topo do contexto.
         val chunksTopicIndex = emptyList<MestreIAChunk>()
         val fontesRepresentadas = chunksDiversos.map { it.source_id }.toSet()
         val fontesNoPool = chunksCandidatos.map { it.source_id }.distinct()
@@ -244,17 +284,21 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         for (fonte in fontesNoPool) {
             if (fonte !in fontesRepresentadas) {
                 val melhorDaFonte = chunksPontuadosFinais.firstOrNull { it.first.source_id == fonte }
-                if (melhorDaFonte != null) {
+                if (melhorDaFonte != null && melhorDaFonte.second > 1.0) {
                     chunksDiversos.add(melhorDaFonte.first)
-                    // Eleva score para garantir texto completo (não comprimido pelo Pocket RAG)
-                    scoresMapMutavel[melhorDaFonte.first.chunk_id] = 9.0
+                    scoresMapMutavel[melhorDaFonte.first.chunk_id] = melhorDaFonte.second
                     android.util.Log.i("MestreIA_RAG",
-                        "  Fonte garantida: $fonte → p.${melhorDaFonte.first.page_number}")
+                        "  Fonte garantida: $fonte → p.${melhorDaFonte.first.page_number} (score=${String.format("%.1f", melhorDaFonte.second)})")
+                } else if (melhorDaFonte != null) {
+                    android.util.Log.d("MestreIA_RAG",
+                        "  Fonte ignorada (score baixo): $fonte score=${String.format("%.1f", melhorDaFonte.second)}")
                 }
             }
         }
 
         // 4. Expansão por proximidade de página
+        // Só expande chunks com score real (> 1.0) — evita que fontes garantidas artificialmente
+        // se multipliquem ocupando slots com score 0 (ex: pyramid_26_underwater p.7 × 4 vezes).
         val chunksBase = chunksDiversos.take(50)
         val chunksGarantidos = chunksDiversos.drop(50)
         val chunksFinais = mutableSetOf<MestreIAChunk>()
@@ -264,7 +308,8 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
             chunksFinais.add(chunk)
             val pagina = chunk.page_number
             val fonte = chunk.source_id
-            if (pagina != null && fonte != null) {
+            val scoreChunk = scoresMapMutavel[chunk.chunk_id] ?: 0.0
+            if (pagina != null && fonte != null && scoreChunk > 1.0) {
                 val pOriginal = repository.buscarPorPaginaESource(pagina, fonte)
                 chunksFinais.addAll(pOriginal)
                 if (pOriginal.size < 3 ||
@@ -278,6 +323,13 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val paginasFinais = chunksFinal.mapNotNull { it.page_number }.distinct().sorted().joinToString()
         android.util.Log.i("MestreIA_RAG",
             "  Contexto final: ${chunksFinal.size} chunks | páginas: [$paginasFinais]")
+
+        // Log top-10 com score e posição para diagnóstico
+        val top10Log = chunksFinal.take(10).mapIndexed { idx, chunk ->
+            val score = scoresMapMutavel[chunk.chunk_id] ?: 0.0
+            "#${idx+1} ${(chunk.source_id ?: "?").removePrefix("pt_")}_p${chunk.page_number}(${String.format("%.1f", score)}pts)"
+        }.joinToString(" | ")
+        android.util.Log.i("MestreIA_RAG", "  Ranking top-10: $top10Log")
 
         return GraphSearchResult(
             summaries = emptyList(),

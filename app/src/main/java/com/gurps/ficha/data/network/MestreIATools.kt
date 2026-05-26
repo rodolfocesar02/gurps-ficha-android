@@ -24,13 +24,18 @@ object MestreIATools {
         // Ferramenta 1: Busca Direta no Códex (Lote 271)
         functionDeclarations.put(JSONObject().apply {
             put("name", TOOL_MANUAL_DIRETO)
-            put("description", "Busca páginas completas no Códex de GURPS. Use queries CURTAS e ESPECÍFICAS por conceito isolado. Decomponha a pergunta em partes e busque cada uma separadamente. Ex: 'aparar chicote penalidade', 'ajoelhado defesa modificador'. NÃO use queries longas com a pergunta inteira.")
+            put("description", "Busca páginas completas no Códex de GURPS. Use queries CURTAS e ESPECÍFICAS por conceito isolado. Use o parâmetro 'livro' quando souber de qual livro a regra vem — isso melhora muito a precisão. Ex: buscar 'Ataque Furacão' em livro='Gun Fu'.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
                     put("query", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Conceito técnico isolado para busca. Máximo 6 palavras. Ex: 'escavar solo velocidade', 'queda cavalo dano'.")
+                        put("description", "Conceito técnico isolado para busca. Máximo 6 palavras.")
+                    })
+                    put("livro", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "Filtra a busca por livro. Use 'Gun Fu' para técnicas de armas de fogo. Use 'Artes Marciais' para técnicas corpo a corpo, estilos, regras de artes marciais. Use 'Magia' para magias, alquimia, encantamentos, regras de uso de magia. Use 'Módulo Básico' para regras gerais de combate, manobras, tabelas, atributos, vantagens, desvantagens, perícias, equipamentos. Use 'Pyramid Aquático' para regras de ambientes submersos: combate subaquático, pressão, narcose, criaturas aquáticas. Omita quando não tiver certeza de qual livro, para buscar em todos.")
+                        put("enum", JSONArray().put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático"))
                     })
                 })
                 put("required", JSONArray().put("query"))
@@ -86,11 +91,16 @@ object MestreIATools {
             put("type", "function")
             put("function", JSONObject().apply {
                 put("name", TOOL_MANUAL_DIRETO)
-                put("description", "Busca páginas completas no Códex de GURPS. Use queries CURTAS e ESPECÍFICAS por conceito isolado. Decomponha a pergunta em partes e busque cada uma separadamente. Ex: 'aparar chicote penalidade', 'ajoelhado defesa modificador'. NÃO use queries longas com a pergunta inteira.")
+                put("description", "Busca páginas completas no Códex de GURPS. Use queries CURTAS e ESPECÍFICAS por conceito isolado. Use o parâmetro 'livro' quando souber de qual livro a regra vem — melhora muito a precisão.")
                 put("parameters", JSONObject().apply {
                     put("type", "object")
                     put("properties", JSONObject().apply {
                         put("query", JSONObject().put("type", "string").put("description", "Conceito técnico isolado. Máximo 6 palavras."))
+                        put("livro", JSONObject().apply {
+                            put("type", "string")
+                            put("description", "Filtra a busca por livro. Use 'Gun Fu' para técnicas de armas de fogo. Use 'Artes Marciais' para técnicas corpo a corpo, estilos, regras de artes marciais. Use 'Magia' para magias, alquimia, encantamentos, regras de uso de magia. Use 'Módulo Básico' para regras gerais de combate, manobras, tabelas, atributos, vantagens, desvantagens, perícias, equipamentos. Use 'Pyramid Aquático' para regras de ambientes submersos: combate subaquático, pressão, narcose, criaturas aquáticas. Omita quando não tiver certeza de qual livro, para buscar em todos.")
+                            put("enum", JSONArray().put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático"))
+                        })
                     })
                     put("required", JSONArray().put("query"))
                 })

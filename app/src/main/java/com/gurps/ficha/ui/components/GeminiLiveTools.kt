@@ -124,24 +124,27 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
 
     private fun consultarManual(args: JSONObject): JSONObject {
         val termos = args.getString("termos")
-        android.util.Log.i("GeminiLiveTools", "consultarManual: '$termos'")
+        val livro = args.optString("livro", "").takeIf { it.isNotBlank() }
+        android.util.Log.i("GeminiLiveTools", "consultarManual: '$termos'${if (livro != null) " livro='$livro'" else ""}")
 
         return try {
             val resultado = runBlocking {
                 val plano = MestreIAPlanner.planejarBusca(termos, viewModel.personagem.equipamentos)
                 val termosExtras = plano.termos
-                val searchResult = graphEngine.buscarDiretoNoCodex(termos, termosExtras)
+                val searchResult = graphEngine.buscarDiretoNoCodex(termos, termosExtras, filtroLivro = livro)
 
                 val resultadoFinal = if (plano.subQueriesTemáticas.isNotEmpty()) {
                     val subResultados = plano.subQueriesTemáticas.map { q ->
-                        graphEngine.buscarDiretoNoCodex(q, emptyList())
+                        graphEngine.buscarDiretoNoCodex(q, emptyList(), filtroLivro = livro)
                     }
+                    val scoresUnidos = searchResult.chunkScores.toMutableMap()
+                    subResultados.forEach { sub -> scoresUnidos.putAll(sub.chunkScores) }
                     val todosChunks = (searchResult.relatedChunks + subResultados.flatMap { it.relatedChunks })
                         .distinctBy { it.chunk_id }
-                        .take(20)
+                        .take(40)
                     MestreIAGraphEngine.GraphSearchResult(
                         relatedChunks = todosChunks,
-                        chunkScores = searchResult.chunkScores
+                        chunkScores = scoresUnidos
                     )
                 } else {
                     searchResult

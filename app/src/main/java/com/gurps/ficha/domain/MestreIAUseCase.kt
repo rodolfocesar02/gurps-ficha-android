@@ -171,11 +171,14 @@ class MestreIAUseCase(
                                 resposta.toolCalls.mapIndexed { idx, toolCall ->
                                     async {
                                         val queryTc = toolCall.args.optString("query", "").take(50)
-                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx]: [${toolCall.name}] query=\"$queryTc\"")
+                                        val livroTc = toolCall.args.optString("livro", "").takeIf { it.isNotBlank() }
+                                        val livroLog = if (livroTc != null) " livro=\"$livroTc\"" else ""
+                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx]: [${toolCall.name}] query=\"$queryTc\"$livroLog")
 
                                         when (toolCall.name) {
                                             MestreIATools.TOOL_MANUAL_DIRETO -> {
                                                 val queryTool = toolCall.args.optString("query", prompt)
+                                                val filtroLivro = toolCall.args.optString("livro", "").takeIf { it.isNotBlank() }
                                                 val queryNorm = queryTool.lowercase().trim().take(40)
                                                 val jaFoiBuscado = historicoInvestigacao
                                                     .filter { it.first == "assistant" }
@@ -184,9 +187,9 @@ class MestreIAUseCase(
                                                     android.util.Log.w("MestreIA_RAG", "║  TOOL[$idx] DUPLICADA: '$queryNorm'")
                                                     ToolResult.Duplicada(queryTool)
                                                 } else {
-                                                    updateStatus("Buscando: \"${queryTool.take(40)}\"...")
-                                                    // Lote 271: retorna texto completo dos chunks (sem compressão)
-                                                    val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList())
+                                                    val statusMsg = if (filtroLivro != null) "Buscando em $filtroLivro: \"${queryTool.take(30)}\"..." else "Buscando: \"${queryTool.take(40)}\"..."
+                                                    updateStatus(statusMsg)
+                                                    val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList(), filtroLivro = filtroLivro)
                                                     if (resTool.relatedChunks.isNotEmpty()) {
                                                         val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
                                                         val textoFormatado = graphEngine.formatarParaIA(resTool, queryTool)

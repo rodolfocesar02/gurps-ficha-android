@@ -46,6 +46,10 @@ class GeminiLiveService(private val context: Context) {
     // Recriado a cada sessão; máximo 200 chunks (~20s de buffer)
     private var audioChannel = Channel<ByteArray>(capacity = 200)
     private var sessaoAtiva = false
+    // Controle de reconexão — Runnable salvo para poder cancelar se usuário encerrar manualmente
+    private var reconexaoPendente: Runnable? = null
+    // Token de session resumption — permite reconectar na mesma sessão lógica (contexto preservado)
+    @Volatile private var sessionResumptionToken: String? = null
     // Acumula texto do turno inteiro (várias mensagens) para exibir no chat
     @Volatile private var pendingTextoFallback = ""
     @Volatile private var turnoTemAudio = false
@@ -76,9 +80,77 @@ FERRAMENTAS DISPONÍVEIS E QUANDO USAR:
 - buscarCatalogo(tipo, query): OBRIGATÓRIO antes de adicionar qualquer trait — retorna IDs e nomes corretos. Tipos: vantagem, desvantagem, pericia, magia, tecnica. NUNCA invente um ID sem buscar antes.
 - editarFicha(operacao, secao, alvo, valor): adiciona, remove ou altera qualquer item da ficha. operacao: adicionar|remover|alterar. secao: vantagens|desvantagens|pericias|tecnicas|magias|equipamentos|atributos
 - trilhaDeMagias(magia_alvo): GPS de magias — mostra cadeia de pré-requisitos e trilha mais rápida até a magia desejada
-- consultarManual(termos): busca regras no Códex de GURPS. Use ANTES de responder qualquer dúvida de regra.
+- consultarManual(termos, livro?): busca regras no Códex de GURPS. Use ANTES de responder qualquer dúvida de regra. Use livro= quando souber de qual livro a regra vem — melhora muito a precisão.
 - forjador_buscar_racas(query, tipo): lista raças e metacaracterísticas disponíveis. Use para descobrir IDs antes de aplicar. tipo=raca para raças jogáveis, tipo=meta para metacaracterísticas (Vampiro, Fantasma, etc).
 - forjador_aplicar_modelo_racial(id, tipo): aplica modelo racial completo ao personagem (atributos + vantagens + desvantagens + perícias da raça). Sempre usar forjador_buscar_racas antes para obter o ID correto.
+
+QUAL LIVRO USAR em consultarManual:
+- livro="Gun Fu"           → técnicas e regras de armas de fogo, tiro cinematográfico
+- livro="Artes Marciais"   → técnicas corpo a corpo, estilos marciais, combate desarmado
+- livro="Magia"            → magias, escolas, alquimia, encantamentos, runas
+- livro="Módulo Básico"    → tudo mais: atributos, vantagens, desvantagens, perícias, manobras, combate geral, equipamentos, tabelas de regras
+- livro="Pyramid Aquático" → regras de ambientes submersos: combate subaquático, pressão, narcose, descompressão, criaturas aquáticas
+- sem livro=               → quando a pergunta cruza mais de um livro
+
+ÍNDICE DO MANUAL (use para decidir onde buscar):
+Agachar, 368. Agarrar e segurar, 370. Aparar, 51, 96, 325, 327, 376. Armadura, 282–286.
+Armas corpo a corpo, 271–275. Armas à distância, 275–277, 278–281.
+Ataques à distância, 326, 372. Ataques enganosos, 369. Ataques surpresa, 393.
+Atordoamento, 44, 420. Bloqueio, 51, 325, 327, 375. Cadência de Tiro, 270, 373.
+Chave de braço, 371, 403. Chi, 33, 92, 195, 219.
+Cobertura, 377, 407, 559. Combate corporal, 391. Combate desarmado, 370, 376, 379.
+Combate montado, 396–398. Dano, 15, 327, 377. Dano penetrante, 378.
+Defendendo, 326, 374. Defesas ativas, 326, 363, 374, 548. Derrubar, 370.
+Deslocamento básico, 17. Disparo com mira, 372. Disputas, 348–349. Divisor de armadura, 378.
+Encontrão, 371. Erros críticos, 381; tabela, 556–557.
+Escudos, 287, 374. Esforço adicional, 356.
+Esquiva, 17, 51, 325, 326, 374. Esquiva acrobática, 375. Evadir, 368.
+Explosões, 414–415. Fadiga, 16, 328, 426. Ferimentos graves, 420.
+Garrotes, 406. Golpe Letal, 404. Golpe Rápido, 42, 96, 370.
+Golpes fulminantes, 381; tabela, 557.
+Hexágonos, 384. Imobilizando o adversário, 401. Incapacitado, 51, 420–423.
+Iniciativa, 393. Joelhada, 404. Lesões, 327, 377, 380, 418–425. Levantamento, 14, 15, 354.
+Mágicas de Bloqueio, 242. Mágicas de Projétil, 242. Manobra Aguardar, 324, 366.
+Manobra Apontar, 43, 324, 364. Manobra Ataque Total, 42, 324, 365.
+Manobra Ataque, 324, 365. Manobra Avaliar, 325, 364. Manobra Avançar e Atacar, 325, 365.
+Manobra Concentrar, 325, 366. Manobra Defesa Total, 325, 366.
+Manobra Deslocamento, 325, 364. Manobra Fazer Nada, 325, 364.
+Manobra Fintar, 325, 365. Manobra Mudança de Posição, 325, 364.
+Manobra Preparar, 325, 366. Manobras, 324, 363; tabela, 551.
+Mata-leão, 371, 404. Mau Funcionamento, 279, 382, 407.
+Mergulho de proteção, 377, 413. Modificador de ferimento, 379.
+Modificador de Tamanho, 19, 372, 402. Movimento e combate, 367.
+Nocaute e atordoamento, 420. Passo em manobras, 368, 386.
+Ponto de Impacto, 369, 398; tabela, 552–555. Posições, 367; tabela, 551.
+Queda, 432. Recuo, 271. Retirada com defesa ativa, 377, 391.
+Sangramento, 50, 420. Sequência de combate, 324, 362. Submissão em combate, 370.
+Sucesso decisivo, 347. Tabela de Erro Crítico, 556. Tabela de Golpe Fulminante, 557.
+Tabela de Modificadores à Distância, 548. Tabela de Modificadores de Ataque Corpo a Corpo, 547.
+Tabela de Ponto de Impacto, 552–555. Tabela de Tamanho e Velocidade/Distância, 551.
+Técnicas de combate, 230. Torcer Membros, 371, 404. Truques Sujos, 405.
+Venenos, 43, 437–439. Verificações de Pânico, 53, 60, 94, 360.
+Vantagens (lista), 32–118. Desvantagens (lista), 119–165. Perícias (lista), 167–233.
+
+PROTOCOLO DE BUSCA — DÚVIDAS DE REGRAS:
+- ESPERE saber QUAL é a dúvida antes de chamar consultarManual. Se o usuário disser "tenho uma dúvida" ou algo vago, PERGUNTE "Qual é a sua dúvida?" — NÃO chame consultarManual ainda.
+- Somente quando a pergunta específica for clara, use consultarManual ANTES de responder — nunca invente
+- FIDELIDADE EXCLUSIVA AO CÓDEX: use SOMENTE o que estiver nos chunks retornados
+- Decomponha perguntas complexas: busque cada conceito separadamente
+- Se a regra não estiver no Códex, diga: "Não localizei essa regra nos manuais disponíveis"
+- Use termos técnicos de GURPS nas buscas: "ST", "DX", "penalidade", "modificador", nome exato das regras
+- Queries CURTAS e ESPECÍFICAS (máx 6 palavras) — nunca coloque a pergunta inteira
+
+QUANDO NÃO ENCONTRAR:
+- Declare: "Não encontrei essa regra nos manuais disponíveis."
+- Se encontrou regras parcialmente relacionadas, componha uma interpretação e avise que é interpretação, não regra oficial.
+- NUNCA invente números ou afirme regras que não vieram de consultarManual.
+
+PROTOCOLO OBRIGATÓRIO DE CÁLCULO (quando a regra envolver número ou fórmula):
+1. Cite a regra: "Segundo [Livro, Pág]..."
+2. Identifique os valores: "O alcance da arma é X, o divisor é Y..."
+3. Calcule em voz alta: "Então X dividido por Y é igual a Z..."
+4. Conclua: "Portanto, o alcance efetivo é Z metros"
+NUNCA dê resultado sem explicar o cálculo. NUNCA confunda stat da arma com distância cênica.
 
 FLUXO PARA RAÇAS E METACARACTERÍSTICAS:
 1. forjador_buscar_racas() para ver quais raças/metas existem no catálogo
@@ -104,19 +176,6 @@ MÚLTIPLAS EDIÇÕES DE UMA VEZ:
 - buscarCatalogo também pode ser chamado múltiplas vezes em paralelo para buscar vários itens
 - Ao montar uma ficha completa: defina nome → pontosIniciais → atributos → vantagens → desvantagens → perícias → magias → historia
 
-REGRAS DE COMPORTAMENTO — DÚVIDAS DE REGRAS:
-- Para QUALQUER dúvida de regra, use consultarManual ANTES de responder — nunca invente
-- FIDELIDADE EXCLUSIVA AO CÓDEX: use SOMENTE o que estiver nos chunks retornados por consultarManual
-- Se a regra não estiver no Códex, diga: "Não localizei essa regra nos manuais disponíveis"
-- Use termos técnicos de GURPS nas buscas: "ST", "DX", "penalidade", "modificador", nome exato das regras
-
-PROTOCOLO OBRIGATÓRIO DE CÁLCULO (quando a regra envolver número ou fórmula):
-1. Cite a regra: "Segundo [Livro, Pág]..."
-2. Identifique os valores: "O alcance da arma é X, o divisor é Y..."
-3. Calcule em voz alta: "Então X dividido por Y é igual a Z..."
-4. Conclua: "Portanto, o alcance efetivo é Z metros"
-NUNCA dê resultado sem explicar o cálculo. NUNCA confunda stat da arma com distância cênica.
-
 MAGIAS — REGRAS ESPECIAIS:
 - Para adicionar uma magia, primeiro use trilhaDeMagias para verificar os pré-requisitos
 - O sistema BLOQUEIA magias sem pré-requisito (igual ao botão na tela)
@@ -132,7 +191,7 @@ NUNCA:
 - Adicionar trait sem buscarCatalogo primeiro
 - Responder dúvidas de regra sem consultar o manual primeiro
 - Modificar a ficha sem confirmar o resultado depois
-- Use conhecimento geral de IA sobre GURPS — use apenas o Códex
+- Usar conhecimento geral de IA sobre GURPS — usar apenas o Códex
 """.trimIndent()
 
     private fun buildSetupMessage(): String {
@@ -218,13 +277,18 @@ NUNCA:
 
                     // ── RAG — Consulta ao Códex ───────────────────────────────────────
                     put(buildFuncao("consultarManual",
-                        "Busca regras no Códex de GURPS (RAG). SEMPRE use antes de responder qualquer dúvida de regra — nunca invente. Pode chamar múltiplas vezes com termos diferentes.",
+                        "Busca regras no Códex de GURPS (RAG). SEMPRE use antes de responder qualquer dúvida de regra — nunca invente. Pode chamar múltiplas vezes com termos diferentes. Use livro= para melhorar a precisão.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
                                 put("termos", JSONObject().apply {
                                     put("type", "string")
-                                    put("description", "Termos técnicos de GURPS para buscar. Ex: 'queda dano velocidade hex', 'tiro subaquatico penalidade alcance'")
+                                    put("description", "Termos técnicos de GURPS para buscar. Máximo 6 palavras, específicos por conceito isolado.")
+                                })
+                                put("livro", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Filtra a busca por livro. Use 'Gun Fu' para técnicas de armas de fogo. Use 'Artes Marciais' para técnicas corpo a corpo e estilos marciais. Use 'Magia' para magias, alquimia e encantamentos. Use 'Módulo Básico' para regras gerais, manobras, tabelas, atributos, vantagens, perícias. Use 'Pyramid Aquático' para combate subaquático, pressão, narcose. Omita para buscar em todos os livros.")
+                                    put("enum", JSONArray().put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático"))
                                 })
                             })
                             put("required", JSONArray().put("termos"))
@@ -271,9 +335,17 @@ NUNCA:
             })
         }
 
+        val token = sessionResumptionToken
         return JSONObject().apply {
             put("setup", JSONObject().apply {
                 put("model", BuildConfig.GEMINI_LIVE_MODEL)
+                // Session resumption: se tiver token, reconecta na mesma sessão lógica
+                if (token != null) {
+                    put("sessionResumption", JSONObject().apply {
+                        put("handle", token)
+                    })
+                    android.util.Log.i("GeminiLive", "║  Usando session resumption token (contexto preservado)")
+                }
                 put("generationConfig", JSONObject().apply {
                     put("responseModalities", JSONArray().apply { put("AUDIO") })
                     put("speechConfig", JSONObject().apply {
@@ -307,7 +379,16 @@ NUNCA:
         }
     }
 
+    // Histórico resumido de turnos — sobrevive ao goAway para reinjeção na reconexão
+    private data class TurnoResumido(val usuario: String, val mestre: String)
+    private val historicoTurnos = ArrayDeque<TurnoResumido>(5)
+    private var ultimaPerguntaUsuario: String = ""
+
+    // Pergunta que estava sendo processada quando a conexão caiu — reinjetar como contexto
+    @Volatile private var perguntaInterrompida: String? = null
+
     private var contextoFichaParaSaudacao: String = ""
+    private var reconectandoApos: String = "" // "goAway" | "fechado" | ""
 
     fun iniciarSessao(contextoFicha: String) {
         if (sessaoAtiva) return
@@ -338,10 +419,12 @@ NUNCA:
             }
 
             override fun onMessage(ws: WebSocket, text: String) {
-                // Só loga se não for áudio puro (evita spam de base64 PCM no Logcat)
                 val temAudio = text.contains("audio/pcm") && text.contains("\"data\"")
-                if (!temAudio) {
+                val ehResumption = text.contains("sessionResumptionUpdate")
+                if (!temAudio && !ehResumption) {
                     android.util.Log.i("GeminiLive", "◄ MSG texto (${text.length} chars): ${text.take(300)}")
+                } else if (ehResumption) {
+                    android.util.Log.d("GeminiLive", "◄ sessionResumptionUpdate (suprimido)")
                 }
                 processarMensagemServidor(text)
             }
@@ -349,8 +432,11 @@ NUNCA:
             override fun onMessage(ws: WebSocket, bytes: ByteString) {
                 val text = bytes.utf8()
                 val temAudio = text.contains("audio/pcm") && text.contains("\"data\"")
-                if (!temAudio) {
+                val ehResumption = text.contains("sessionResumptionUpdate")
+                if (!temAudio && !ehResumption) {
                     android.util.Log.i("GeminiLive", "◄ MSG binário (${bytes.size} bytes): ${text.take(300)}")
+                } else if (ehResumption) {
+                    android.util.Log.d("GeminiLive", "◄ sessionResumptionUpdate (suprimido)")
                 }
                 processarMensagemServidor(text)
             }
@@ -370,7 +456,13 @@ NUNCA:
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                 android.util.Log.w("GeminiLive", "WebSocket FECHADO: code=$code reason=$reason")
                 encerrar()
-                mainHandler.post { onEstado(EstadoLive.OCIOSO) }
+                // Fechamento inesperado (não foi o usuário que encerrou) → reconectar
+                if (code != 1000) {
+                    android.util.Log.i("GeminiLive", "Fechamento inesperado (code=$code) — reconectando...")
+                    reconectarAutomaticamente("fechado")
+                } else {
+                    mainHandler.post { onEstado(EstadoLive.OCIOSO) }
+                }
             }
         })
     }
@@ -379,35 +471,87 @@ NUNCA:
         try {
             val obj = JSONObject(json)
 
+            // Session resumption — salva token para reconexão transparente
+            if (obj.has("sessionResumptionUpdate")) {
+                val update = obj.getJSONObject("sessionResumptionUpdate")
+                val token = update.optString("newHandle", "")
+                if (token.isNotBlank()) {
+                    sessionResumptionToken = token
+                    android.util.Log.d("GeminiLive", "◄ sessionResumptionToken atualizado (${token.take(20)}...)")
+                }
+                return
+            }
+
             // setupComplete — servidor confirmou o setup, agora podemos enviar mensagens
             if (obj.has("setupComplete")) {
                 android.util.Log.i("GeminiLive", "║  setupComplete recebido — enviando contexto e saudação")
                 val ws = webSocket ?: return
 
                 val contextoFicha = contextoFichaParaSaudacao
+                val foiReconexao = reconectandoApos.isNotBlank()
+                reconectandoApos = ""
+                val perguntaInterrompidaAgora = perguntaInterrompida
+                perguntaInterrompida = null
 
-                // clientContent turnComplete=false: injeta contexto sem disparar resposta ainda
-                val ctxMsg = JSONObject().apply {
-                    put("clientContent", JSONObject().apply {
-                        put("turns", JSONArray().apply {
-                            put(JSONObject().apply {
-                                put("role", "user")
-                                put("parts", JSONArray().apply {
-                                    put(JSONObject().apply { put("text", "Contexto atual da ficha: $contextoFicha") })
+                // Se usou session resumption, o modelo já tem todo o contexto — não reinjetar nada
+                val usouResumption = sessionResumptionToken != null && foiReconexao
+                if (!usouResumption) {
+                    // Primeira abertura ou reconexão sem token — injeta contexto da ficha
+                    val ctxMsg = JSONObject().apply {
+                        put("clientContent", JSONObject().apply {
+                            put("turns", JSONArray().apply {
+                                put(JSONObject().apply {
+                                    put("role", "user")
+                                    put("parts", JSONArray().apply {
+                                        put(JSONObject().apply { put("text", "Contexto atual da ficha: $contextoFicha") })
+                                    })
                                 })
                             })
+                            put("turnComplete", false)
                         })
-                        put("turnComplete", false)
-                    })
-                }
-                android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
-                ws.send(ctxMsg.toString().encodeUtf8())
+                    }
+                    android.util.Log.i("GeminiLive", "║  Enviando contexto da ficha (${contextoFicha.length} chars)...")
+                    ws.send(ctxMsg.toString().encodeUtf8())
 
-                // realtimeInput com text: dispara resposta de áudio imediatamente
-                val saudacaoPrompt = if (contextoFicha.contains("Sem nome") || contextoFicha.length < 20)
-                    "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português."
-                else
-                    "Cumprimente o jogador mencionando o personagem pelo nome e pergunte como pode ajudar. Máximo 2 frases em português."
+                    // Reinjetar histórico só se não tiver token de resumption
+                    val resumo = buildResumoHistorico()
+                    if (resumo.isNotBlank()) {
+                        val histMsg = JSONObject().apply {
+                            put("clientContent", JSONObject().apply {
+                                put("turns", JSONArray().apply {
+                                    put(JSONObject().apply {
+                                        put("role", "user")
+                                        put("parts", JSONArray().apply {
+                                            put(JSONObject().apply { put("text", resumo) })
+                                        })
+                                    })
+                                })
+                                put("turnComplete", false)
+                            })
+                        }
+                        android.util.Log.i("GeminiLive", "║  Reinjetando histórico (${historicoTurnos.size} turnos)...")
+                        ws.send(histMsg.toString().encodeUtf8())
+                    }
+                } else {
+                    android.util.Log.i("GeminiLive", "║  Session resumption ativa — contexto preservado, sem reinjeção")
+                }
+
+                val saudacaoPrompt = when {
+                    usouResumption && perguntaInterrompidaAgora != null ->
+                        "Conexão restaurada. Responda a pergunta que estava processando: \"$perguntaInterrompidaAgora\""
+                    usouResumption ->
+                        "Conexão restaurada. Continue a conversa naturalmente sem se apresentar novamente. Máximo 1 frase."
+                    perguntaInterrompidaAgora != null ->
+                        "A conexão caiu enquanto você estava processando a pergunta: \"$perguntaInterrompidaAgora\". Avise brevemente que a conexão foi restaurada e responda essa pergunta agora."
+                    foiReconexao && historicoTurnos.isNotEmpty() ->
+                        "A sessão foi reconectada automaticamente. Avise brevemente o jogador que a conexão foi renovada e que você lembra do que estávamos conversando. Máximo 1 frase em português."
+                    foiReconexao ->
+                        "A sessão foi reconectada automaticamente. Avise brevemente o jogador. Máximo 1 frase em português."
+                    contextoFicha.contains("Sem nome") || contextoFicha.length < 20 ->
+                        "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português."
+                    else ->
+                        "Cumprimente o jogador mencionando o personagem pelo nome e pergunte como pode ajudar. Máximo 2 frases em português."
+                }
 
                 val saudacaoMsg = JSONObject().apply {
                     put("realtimeInput", JSONObject().apply {
@@ -425,9 +569,9 @@ NUNCA:
             }
 
             if (obj.has("goAway")) {
-                android.util.Log.w("GeminiLive", "GoAway recebido — servidor encerrando sessão")
+                android.util.Log.w("GeminiLive", "GoAway recebido — servidor encerrando sessão, reconectando...")
                 encerrar()
-                mainHandler.post { onEstado(EstadoLive.OCIOSO) }
+                reconectarAutomaticamente("goAway")
                 return
             }
 
@@ -484,8 +628,19 @@ NUNCA:
                         put("functionResponses", respostas)
                     })
                 }
-                android.util.Log.i("GeminiLive", "► Enviando toolResponse ao servidor...")
-                webSocket?.send(toolResp.toString().encodeUtf8())
+                val toolRespStr = toolResp.toString()
+                val ws = webSocket
+                if (ws != null) {
+                    android.util.Log.i("GeminiLive", "► Enviando toolResponse ao servidor...")
+                    ws.send(toolRespStr.encodeUtf8())
+                } else {
+                    // Conexão caiu enquanto o RAG processava — registra pergunta interrompida
+                    // NÃO tenta reenviar toolResponse (a nova sessão não conhece o toolCall original)
+                    android.util.Log.w("GeminiLive", "⚠ Conexão caiu durante RAG — pergunta será reinjetada na reconexão")
+                    if (ultimaPerguntaUsuario.isNotBlank()) {
+                        perguntaInterrompida = ultimaPerguntaUsuario
+                    }
+                }
                 return
             }
 
@@ -550,11 +705,28 @@ NUNCA:
                 }
 
                 if (content.optBoolean("turnComplete")) {
+                    // Loga tokens do turno (usageMetadata vem no mesmo JSON que turnComplete)
+                    val usage = obj.optJSONObject("usageMetadata")
+                    if (usage != null) {
+                        val prompt   = usage.optInt("promptTokenCount")
+                        val response = usage.optInt("responseTokenCount")
+                        val total    = usage.optInt("totalTokenCount")
+                        android.util.Log.i("GeminiLive", "📊 Tokens — prompt: $prompt | resposta: $response | total: $total")
+                    }
                     android.util.Log.i("GeminiLive", "✓ Turno completo — voltando a ouvir")
                     val fallback = pendingTextoFallback.trim()
                     if (fallback.isNotBlank()) {
                         android.util.Log.i("GeminiLive", "✎ Fallback chat: \"${fallback.take(150)}\"")
                         mainHandler.post { onRespostaMestre(fallback) }
+                    }
+                    // Salva turno no histórico (máx 5 turnos)
+                    if (ultimaPerguntaUsuario.isNotBlank() && fallback.isNotBlank()) {
+                        if (historicoTurnos.size >= 5) historicoTurnos.removeFirst()
+                        historicoTurnos.addLast(TurnoResumido(
+                            usuario = ultimaPerguntaUsuario.take(200),
+                            mestre  = fallback.take(300)
+                        ))
+                        ultimaPerguntaUsuario = ""
                     }
                     pendingTextoFallback = ""
                     turnoTemAudio = false
@@ -570,6 +742,7 @@ NUNCA:
                 }
                 if (inputTranscript.isNotBlank()) {
                     android.util.Log.i("GeminiLive", "✎ Transcrição usuário: \"${inputTranscript.take(100)}\"")
+                    ultimaPerguntaUsuario = inputTranscript
                     mainHandler.post { onTranscricaoUsuario(inputTranscript) }
                 }
             }
@@ -686,7 +859,34 @@ NUNCA:
         audioChannel.trySend(pcm)
     }
 
+    private fun reconectarAutomaticamente(motivo: String) {
+        reconectandoApos = motivo
+        mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
+        val runnable = Runnable {
+            reconexaoPendente = null
+            android.util.Log.i("GeminiLive", "♻ Reconectando após $motivo (token=${if (sessionResumptionToken != null) "✓" else "✗"}, histórico: ${historicoTurnos.size} turnos)...")
+            iniciarSessao(contextoFichaParaSaudacao)
+        }
+        reconexaoPendente = runnable
+        mainHandler.postDelayed(runnable, 1500)
+    }
+
+    private fun buildResumoHistorico(): String {
+        if (historicoTurnos.isEmpty()) return ""
+        val sb = StringBuilder("Resumo da conversa anterior (antes da reconexão):\n")
+        historicoTurnos.forEachIndexed { i, t ->
+            sb.append("${i + 1}. Jogador: \"${t.usuario}\"\n   Mestre: \"${t.mestre}\"\n")
+        }
+        return sb.toString()
+    }
+
     fun encerrar() {
+        // Cancela reconexão automática pendente — encerramento manual é intencional
+        reconexaoPendente?.let { mainHandler.removeCallbacks(it) }
+        reconexaoPendente = null
+        reconectandoApos = ""
+        perguntaInterrompida = null
+        sessionResumptionToken = null // encerramento manual limpa o token
         sessaoAtiva = false
         capturaJob?.cancel()
         keepAliveJob?.cancel()
