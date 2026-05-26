@@ -96,6 +96,8 @@ class GeminiLiveService(private val context: Context) {
     private var timeoutRespostaJob: Job? = null
     // Timestamp da última mensagem recebida do servidor — usado para detectar inatividade
     @Volatile private var ultimaMsgServidor = 0L
+    // Último prompt token count — detecta compressão de contexto quando valor cai
+    @Volatile private var ultimoPromptTokenCount = 0
     // Job de watchdog: reinicia a cada mensagem; se expirar sem nova mensagem, reconecta
     private var watchdogJob: Job? = null
 
@@ -580,7 +582,13 @@ NUNCA:
                 val token = update.optString("newHandle", "")
                 if (token.isNotBlank()) {
                     sessionResumptionToken = token
-                    android.util.Log.d("GeminiLive", "◄ sessionResumptionToken atualizado (${token.take(20)}...)")
+                    val resumable = update.optBoolean("resumable", true)
+                    val lastIdx = update.optInt("lastConsumedClientMessageIndex", -1)
+                    if (!resumable) {
+                        android.util.Log.w("GeminiLive", "⚠ sessionResumption: resumable=false — contexto foi COMPACTADO pelo servidor (lastIdx=$lastIdx)")
+                    } else {
+                        android.util.Log.d("GeminiLive", "◄ sessionResumptionToken atualizado (${token.take(20)}...) resumable=$resumable lastIdx=$lastIdx")
+                    }
                 }
                 return
             }
@@ -911,6 +919,10 @@ limparFilaAudio()
                         val prompt   = usage.optInt("promptTokenCount")
                         val response = usage.optInt("responseTokenCount")
                         val total    = usage.optInt("totalTokenCount")
+                        if (ultimoPromptTokenCount > 0 && prompt < ultimoPromptTokenCount - 500) {
+                            android.util.Log.w("GeminiLive", "⚠ COMPRESSÃO DE CONTEXTO detectada: prompt tokens caiu de $ultimoPromptTokenCount → $prompt (queda de ${ultimoPromptTokenCount - prompt})")
+                        }
+                        ultimoPromptTokenCount = prompt
                         android.util.Log.i("GeminiLive", "📊 Tokens — prompt: $prompt | resposta: $response | total: $total")
                     }
                     android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando reprodução terminar...")
