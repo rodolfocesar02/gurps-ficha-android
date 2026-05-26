@@ -1765,15 +1765,15 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa raiz:** Canal tinha capacidade 200 chunks. `trySend()` retorna `false` silenciosamente quando cheio — sem log, sem erro. Para respostas longas (~40s ≈ 400 chunks), metade dos chunks era descartada. O AudioTrack reproduzia os 200 que entraram em velocidade normal e parava. O restante do áudio nunca chegava — ao usuário parecia áudio acelerado/truncado. Com `UNLIMITED`, o back-pressure é natural: `write()` bloqueia no hardware até ele consumir, sem descartar nada. Memória: 40s de áudio = ~1,9MB, trivial.
 - **Status:** ✅ Build OK
 
-## Lote 297 — [2026-05-26] Fix code=1007: bloqueia mic durante thinking do modelo após toolResponse
+## Lote 297 — [2026-05-26] Fix code=1007: interrompe áudio ao receber toolCall durante turno ativo
 
-- **Hash:** edb4367
-- **Problema:** Após enviar toolResponse de `buscarCatalogo`, o servidor ficou 70s em "thinking" (Gemini 2.5 deliberando sobre `editarFicha`). Durante esse tempo, o mic continuava enviando `realtimeInput.audio`. O servidor Gemini 2.5 retornou `code=1007` (Invalid Frame Payload Data) — dados recebidos durante estado de processing são inválidos.
+- **Hash:** edb4367 → 1a7d9b9
+- **Causa raiz (logcat):** Gemini 2.5 async function calling emite `toolCall` **antes** do `generationComplete` — turno de áudio ainda aberto. O app enviava `toolResponse` com `turnoTemAudio=true`. O servidor ficava em estado inconsistente (70s silêncio) e fechava com `code=1007`.
 - **Mudanças:**
   - `GeminiLiveService.kt`:
-    - Flag `aguardandoRespostaServidor`: bloqueia `capturaJob` e `keepAliveJob` enquanto servidor processa
-    - Liga ao enviar toolResponse; desliga ao receber qualquer `serverContent` ou `toolCall`
-    - Timeout de 90s: se servidor não responder, reconecta automaticamente
+    - Quando `toolCall` chega com turno de áudio ativo: `limparFilaAudio()` imediatamente antes de processar (modelo já decidiu — áudio pendente é descartável)
+    - Flag `aguardandoRespostaServidor`: controla estado visual PROCESSANDO e timeout (mic NÃO bloqueado — usuário pode interromper normalmente)
+    - Timeout de 90s: reconecta se servidor não responder após toolResponse
     - `EstadoLive.PROCESSANDO` adicionado ao enum
   - `DialogsMestreIA.kt`: dot amarelo "processando..." + status "⚙️ Processando..."
   - `FichaCustomNavigationBar.kt`: `PROCESSANDO` mapeado para anel amarelo
