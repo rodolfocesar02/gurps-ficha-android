@@ -50,6 +50,7 @@ class ForjadorToolExecutor(
         val secao = args.optString("secao", "atributos")
         return when (secao) {
             "atributos" -> buildString {
+                if (p.nome.isNotBlank()) appendLine("Nome: ${p.nome}")
                 appendLine("ST: ${p.st} | DX: ${p.dx} | IQ: ${p.iq} | HT: ${p.ht}")
                 appendLine("PV: ${p.pontosVida} | PF: ${p.pontosFadiga}")
                 val am = viewModel.nivelAptidaoMagica
