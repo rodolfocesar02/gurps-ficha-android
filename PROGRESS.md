@@ -1815,3 +1815,13 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:**
   - `GeminiLiveService.kt`: flag `encerramentoIntencional`, reordenação de `encerrar()`, método `reiniciarWatchdog()`, `watchdogJob`
 - **Status:** ✅ Build OK
+
+## Lote 302 — [2026-05-26] Detecta compressão de contexto do servidor no log
+
+- **Hash:** 833506e
+- **Motivação:** Não havia forma de saber se o servidor compactou o contexto (system prompt, histórico) durante a sessão.
+- **Mudanças:**
+  - `GeminiLiveService.kt`: log W "COMPACTADO" quando `sessionResumptionUpdate.resumable=false`
+  - `GeminiLiveService.kt`: log W "COMPRESSÃO DE CONTEXTO" quando prompt token count cai >500 em relação ao turno anterior
+  - Campo `ultimoPromptTokenCount` para rastrear evolução dos tokens
+- **Status:** ✅ Build OK
