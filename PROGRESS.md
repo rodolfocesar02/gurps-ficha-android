@@ -1625,103 +1625,22 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
-## Lote 295 — [2026-05-26] Fix áudio acelerado: polling de estabilidade substituído por alvo determinístico
+## Lote 283 — [2026-05-26] Fix keepalive não pausava durante fala do modelo
 
-- **Hash:** edeac27
+- **Hash:** 1d233ae
 - **Mudanças:**
-  - `GeminiLiveService.kt`: `micReleaseJob` agora aguarda `playbackHeadPosition >= inicioTurno + framesEsperados - 200` em vez de detectar "estabilidade por 200ms"
-  - `framesEsperados = bytesAudioGerado / 2` (16-bit mono = 2 bytes por frame)
-  - Timeout de segurança: duração esperada + 3s
-- **Causa:** O polling anterior detectava quando o counter parava de avançar por 200ms. O `reproducaoJob` bloqueia no canal `audioChannel` esperando chunks — nesse instante o hardware esvazia o buffer interno brevemente antes do próximo chunk chegar. O polling interpretava esse pause como "fim da reprodução" e liberava o mic cedo. O áudio ainda bufferizado no AudioTrack continuava tocando acelerado (sem back-pressure). No log: turno 4 liberado com 14,96s mas esperado 23,12s — 8,16s de áudio ainda buffered.
+  - `GeminiLiveService.kt`: keepalive agora checa `modeloFalando` antes de enviar silêncio — `if (modeloFalando) continue`
+- **Causa:** O keepalive enviava áudio silencioso a cada 20s independente do estado. Se o ciclo de 20s caísse logo após o modelo terminar de falar, o servidor recebia silêncio no exato momento em que o usuário começa a falar — podendo confundir o detector de fala (VAD) e atrasar o reconhecimento da voz do usuário
 - **Status:** ✅ Build OK
 
-## Lote 294 — [2026-05-26] Fix mic travado: framesInicioTurno capturado antes do flush() que reseta o contador
+## Lote 284 — [2026-05-26] Fix timer de mic muito longo — usar generationComplete
 
-- **Hash:** edeac27
+- **Hash:** cf8dfda
 - **Mudanças:**
-  - `GeminiLiveService.kt`: movida captura de `framesInicioTurno` para DEPOIS de `limparFilaAudio()`, não antes
-- **Causa:** `limparFilaAudio()` chama `audioTrack.flush()`, que reseta o `playbackHeadPosition` internamente. O código capturava `framesInicioTurno` antes do flush, guardando o valor do turno anterior (ex: 181.440). Depois do flush, o hardware reiniciava do zero (~0 frames). No polling, `frameAtual` (0..N) nunca ficava `> inicioTurno` (181.440) — o loop ficava preso para sempre, `modeloFalando` nunca virava `false`, e o app exibia "Falando..." indefinidamente. No log: `frames: inicio=181440 atual=175104` — atual menor que início, loop preso por 37s até o usuário fechar manualmente.
-- **Status:** ✅ Build OK
-
-## Lote 293 — [2026-05-26] Fix timer de mic: polling de playbackHeadPosition em vez de cálculo por bytes
-
-- **Hash:** edeac27
-- **Mudanças:**
-  - `GeminiLiveService.kt`: removida lógica de timer baseada em `bytesAudioGerado / 48000`
-  - Novo campo `framesInicioTurno`: captura `playbackHeadPosition` no primeiro chunk de áudio do turno
-  - Polling no `micReleaseJob`: verifica a cada 100ms se o hardware parou de avançar além de `framesInicioTurno` por 200ms consecutivos — só então libera o mic
-  - Bytes mantidos apenas para diagnóstico (log) — não usados para timer
-- **Causa:** `bytesAudioTurno` acumulava bytes em excesso em turnos com toolCall (2.628.480 bytes = 54s para uma resposta de ~23s), causando timer inflado → mic bloqueado muito além do fim do áudio → quando finalmente liberava, o AudioTrack reproduzia o buffer acumulado em velocidade acelerada. O polling detecta o fim real da reprodução pelo hardware, independente do volume de dados.
-- **Status:** ✅ Build OK
-
-## Lote 292 — [2026-05-26] Fix transcrição do usuário: streaming imediato em vez de esperar turnComplete
-
-- **Hash:** edeac27
-- **Mudanças:**
-  - `GeminiLiveService.kt`: novo callback `onAtualizarTranscricaoUsuario` — chamado com fragmentos seguintes e versão final consolidada
-  - `inputTranscription`: primeiro fragmento chama `onTranscricaoUsuario` (cria entrada no chat), fragmentos seguintes chamam `onAtualizarTranscricaoUsuario` (atualiza a entrada existente)
-  - `FichaIADelegate.kt`: novo campo `ultimaMensagemVozUsuarioUid` + método `atualizarUltimaMensagemVozUsuario` — edita a mensagem existente pelo uid em vez de criar nova
-  - `FichaViewModel.kt`: delegação de `atualizarUltimaMensagemVozUsuario`
-  - `FichaScreen.kt`: registra o callback `onAtualizarTranscricaoUsuario`
-- **Causa:** `onTranscricaoUsuario` só era chamado no `turnComplete`, que chega DEPOIS que o modelo termina de falar. Em turnos com toolCall (RAG), o `turnComplete` vinha apenas após o modelo responder completamente — o usuário não via sua própria frase no chat durante todo o processamento. Agora o primeiro fragmento abre o balão imediatamente e os seguintes atualizam o texto.
-- **Status:** ✅ Build OK
-
-## Lote 291 — [2026-05-26] Fix áudio acelerado após correção do timer de mic
-
-- **Hash:** 0f8197a
-- **Mudanças:**
-  - Timer do mic: trocado `inicioAudioTurno` (tempo de rede) por `audioTrack.playbackHeadPosition` (frames reais reproduzidos pelo hardware)
-  - Removida variável `inicioAudioTurno` (não mais necessária)
-- **Causa:** Lote 289 usava `System.currentTimeMillis() - inicioAudioTurno` para estimar quanto já foi reproduzido. Mas o AudioTrack tem buffer interno — os chunks chegam da rede mais rápido do que o hardware os toca. Quando o servidor enviava chunks em ritmo próximo ao de reprodução, `jaDecorridoMs` ficava próximo de `duracaoTotal`, o timer virava ~300ms, e o AudioTrack ainda tinha vários segundos de buffer pendente acelerando para esvaziar. `playbackHeadPosition` mede frames hardware reais — independente do buffer de rede.
-- **Status:** ✅ Build OK
-
-## Lote 290 — [2026-05-26] Fix transcrição do usuário não aparecia no chat (UI)
-
-- **Hash:** 20ba9d4
-- **Mudanças:**
-  - `FichaScreen.kt`: `onTranscricaoUsuario` agora abre o dialog igual ao `onRespostaMestre`
-- **Causa:** `onTranscricaoUsuario` chamava `adicionarMensagemVoz` mas não abria o dialog. Se o chat estivesse fechado quando o usuário falava, a pergunta era adicionada à lista mas o dialog não abria — o usuário nunca via sua própria pergunta aparecer. A resposta do modelo abria o dialog, mas a pergunta já tinha passado.
-- **Status:** ✅ Build OK
-
-## Lote 289 — [2026-05-26] Fix mic liberado tarde demais — timer não descontava tempo já reproduzido
-
-- **Hash:** 7417dce
-- **Mudanças:**
-  - `inicioAudioTurno`: novo timestamp gravado no primeiro chunk de áudio do turno
-  - `turnComplete`: timer = `duracaoTotal - jaDecorrido + 300ms` em vez de `duracaoTotal + 300ms`
-  - `inicioAudioTurno` zerado no `interrupted` e ao final do `turnComplete`
-- **Causa:** o modelo começa a enviar áudio ~10s antes do `turnComplete` chegar. O timer usava a duração total (ex: 10s), mas o áudio já estava tocando há 10s — então o mic só abria 10s depois do `turnComplete`, quando na verdade já devia abrir quase imediatamente. No log: `generationComplete` às 18:55:38, `turnComplete` às 18:55:45 (7s depois), timer calculou 10s → mic abriu às 18:55:55 (17s após o fim real do áudio).
-- **Status:** ✅ Build OK
-
-## Lote 288 — [2026-05-26] Fix 3 bugs de lógica no processamento de transcrição e histórico
-
-- **Hash:** 4e2a652
-- **Mudanças:**
-  - `pendingTranscricaoModelo` — novo buffer separado para `outputTranscription`; antes acumulava no `pendingTextoFallback` junto com `text` parts, causando texto duplicado ou garbled no chat
-  - `turnComplete`: resposta exibida no chat usa `outputTranscription` se disponível, `text` parts como fallback — não mistura os dois
-  - `interrupted`: limpa `pendingTranscricaoModelo` junto com os outros buffers
-  - Histórico de turnos: usa `textoUsuario` do turno atual em vez de `ultimaPerguntaUsuario` (que poderia ter valor de turno anterior caso o usuário ficasse em silêncio)
-- **Bugs corrigidos:**
-  1. `outputTranscription` misturado com `text` → texto dobrado/garbled no chat do modelo
-  2. `outputTranscription` chegando no mesmo JSON que `turnComplete` → mesma race condition que o `inputTranscription` tinha (agora processado antes do `turnComplete`)
-  3. Histórico salvava pergunta de turno anterior quando turno atual não tinha fala do usuário
-- **Status:** ✅ Build OK
-
-## Lote 287 — [2026-05-26] Fix transcrição do usuário não aparecia no chat
-
-- **Hash:** 945a104
-- **Mudanças:**
-  - `GeminiLiveService.kt`: bloco `inputTranscription` movido para **antes** do bloco `turnComplete`
-- **Causa:** servidor manda `inputTranscription` e `turnComplete` no **mesmo JSON**. O código processava `turnComplete` primeiro — lia `pendingTextoUsuario`, exibia, e o **zerava**. Depois processava `inputTranscription` e acumulava no buffer já vazio. No próximo JSON não vinha mais `turnComplete`, então o texto ficava preso e nunca era exibido. Solução: processar `inputTranscription` antes do `turnComplete` dentro do mesmo JSON.
-- **Status:** ✅ Build OK
-
-## Lote 286 — [2026-05-26] Fix voz do usuário completamente suprimida pelo echo canceller
-
-- **Hash:** 5fe618c
-- **Mudanças:**
-  - `iniciarCaptura()`: `AudioManager.MODE_IN_COMMUNICATION` → `MODE_NORMAL` + `isSpeakerphoneOn = true`
-  - `AudioRecord`: `MediaRecorder.AudioSource.VOICE_COMMUNICATION` → `AudioSource.MIC`
-- **Causa:** `MODE_IN_COMMUNICATION` + `VOICE_COMMUNICATION` ativa echo canceller agressivo de chamada telefônica. Logcat mostrava `s:100` (100 frames suprimidos) — servidor nunca recebia a voz do usuário, zero `inputTranscription`. `MODE_NORMAL` desativa o canceller de chamada; `isSpeakerphoneOn=true` mantém o som saindo pelas caixas.
+  - `GeminiLiveService.kt`: adicionado `bytesAudioGerado` — congelado no `generationComplete`
+  - Timer do `micReleaseJob` agora usa `bytesAudioGerado` em vez de `bytesAudioTurno`
+  - `bytesAudioGerado` zerado no início de cada turno e no `interrupted`
+- **Causa:** O `turnComplete` chegava ~4s depois do `generationComplete`. Nesse intervalo o servidor enviava silêncio de cauda que era somado ao `bytesAudioTurno`, inflando o timer (7960ms para uma fala de ~4s). Resultado: o mic ficava bloqueado por quase o dobro do necessário — o usuário falava antes do timer acabar e a voz era descartada
 - **Status:** ✅ Build OK
 
 ## Lote 285 — [2026-05-26] Fix 4 bugs confirmados + logs de diagnóstico nos 3 não confirmados
@@ -1739,20 +1658,101 @@ RAG OK: 28 chunks | 12632 chars de contexto
     - `limparFilaAudio > 50 chunks` → log `⚠ limparFilaAudio: canal estava muito cheio`
 - **Status:** ✅ Build OK
 
-## Lote 284 — [2026-05-26] Fix timer de mic muito longo — usar generationComplete
+## Lote 286 — [2026-05-26] Fix voz do usuário completamente suprimida pelo echo canceller
 
-- **Hash:** cf8dfda
+- **Hash:** 5fe618c
 - **Mudanças:**
-  - `GeminiLiveService.kt`: adicionado `bytesAudioGerado` — congelado no `generationComplete`
-  - Timer do `micReleaseJob` agora usa `bytesAudioGerado` em vez de `bytesAudioTurno`
-  - `bytesAudioGerado` zerado no início de cada turno e no `interrupted`
-- **Causa:** O `turnComplete` chegava ~4s depois do `generationComplete`. Nesse intervalo o servidor enviava silêncio de cauda que era somado ao `bytesAudioTurno`, inflando o timer (7960ms para uma fala de ~4s). Resultado: o mic ficava bloqueado por quase o dobro do necessário — o usuário falava antes do timer acabar e a voz era descartada
+  - `iniciarCaptura()`: `AudioManager.MODE_IN_COMMUNICATION` → `MODE_NORMAL` + `isSpeakerphoneOn = true`
+  - `AudioRecord`: `MediaRecorder.AudioSource.VOICE_COMMUNICATION` → `AudioSource.MIC`
+- **Causa:** `MODE_IN_COMMUNICATION` + `VOICE_COMMUNICATION` ativa echo canceller agressivo de chamada telefônica. Logcat mostrava `s:100` (100 frames suprimidos) — servidor nunca recebia a voz do usuário, zero `inputTranscription`. `MODE_NORMAL` desativa o canceller de chamada; `isSpeakerphoneOn=true` mantém o som saindo pelas caixas.
 - **Status:** ✅ Build OK
 
-## Lote 283 — [2026-05-26] Fix keepalive não pausava durante fala do modelo
+## Lote 287 — [2026-05-26] Fix transcrição do usuário não aparecia no chat
 
-- **Hash:** 1d233ae
+- **Hash:** 945a104
 - **Mudanças:**
-  - `GeminiLiveService.kt`: keepalive agora checa `modeloFalando` antes de enviar silêncio — `if (modeloFalando) continue`
-- **Causa:** O keepalive enviava áudio silencioso a cada 20s independente do estado. Se o ciclo de 20s caísse logo após o modelo terminar de falar, o servidor recebia silêncio no exato momento em que o usuário começa a falar — podendo confundir o detector de fala (VAD) e atrasar o reconhecimento da voz do usuário
+  - `GeminiLiveService.kt`: bloco `inputTranscription` movido para **antes** do bloco `turnComplete`
+- **Causa:** servidor manda `inputTranscription` e `turnComplete` no **mesmo JSON**. O código processava `turnComplete` primeiro — lia `pendingTextoUsuario`, exibia, e o **zerava**. Depois processava `inputTranscription` e acumulava no buffer já vazio. No próximo JSON não vinha mais `turnComplete`, então o texto ficava preso e nunca era exibido. Solução: processar `inputTranscription` antes do `turnComplete` dentro do mesmo JSON.
+- **Status:** ✅ Build OK
+
+## Lote 288 — [2026-05-26] Fix 3 bugs de lógica no processamento de transcrição e histórico
+
+- **Hash:** 4e2a652
+- **Mudanças:**
+  - `pendingTranscricaoModelo` — novo buffer separado para `outputTranscription`; antes acumulava no `pendingTextoFallback` junto com `text` parts, causando texto duplicado ou garbled no chat
+  - `turnComplete`: resposta exibida no chat usa `outputTranscription` se disponível, `text` parts como fallback — não mistura os dois
+  - `interrupted`: limpa `pendingTranscricaoModelo` junto com os outros buffers
+  - Histórico de turnos: usa `textoUsuario` do turno atual em vez de `ultimaPerguntaUsuario` (que poderia ter valor de turno anterior caso o usuário ficasse em silêncio)
+- **Bugs corrigidos:**
+  1. `outputTranscription` misturado com `text` → texto dobrado/garbled no chat do modelo
+  2. `outputTranscription` chegando no mesmo JSON que `turnComplete` → mesma race condition que o `inputTranscription` tinha (agora processado antes do `turnComplete`)
+  3. Histórico salvava pergunta de turno anterior quando turno atual não tinha fala do usuário
+- **Status:** ✅ Build OK
+
+## Lote 289 — [2026-05-26] Fix mic liberado tarde demais — timer não descontava tempo já reproduzido
+
+- **Hash:** 7417dce
+- **Mudanças:**
+  - `inicioAudioTurno`: novo timestamp gravado no primeiro chunk de áudio do turno
+  - `turnComplete`: timer = `duracaoTotal - jaDecorrido + 300ms` em vez de `duracaoTotal + 300ms`
+  - `inicioAudioTurno` zerado no `interrupted` e ao final do `turnComplete`
+- **Causa:** o modelo começa a enviar áudio ~10s antes do `turnComplete` chegar. O timer usava a duração total (ex: 10s), mas o áudio já estava tocando há 10s — então o mic só abria 10s depois do `turnComplete`, quando na verdade já devia abrir quase imediatamente. No log: `generationComplete` às 18:55:38, `turnComplete` às 18:55:45 (7s depois), timer calculou 10s → mic abriu às 18:55:55 (17s após o fim real do áudio).
+- **Status:** ✅ Build OK
+
+## Lote 290 — [2026-05-26] Fix transcrição do usuário não aparecia no chat (UI)
+
+- **Hash:** 20ba9d4
+- **Mudanças:**
+  - `FichaScreen.kt`: `onTranscricaoUsuario` agora abre o dialog igual ao `onRespostaMestre`
+- **Causa:** `onTranscricaoUsuario` chamava `adicionarMensagemVoz` mas não abria o dialog. Se o chat estivesse fechado quando o usuário falava, a pergunta era adicionada à lista mas o dialog não abria — o usuário nunca via sua própria pergunta aparecer. A resposta do modelo abria o dialog, mas a pergunta já tinha passado.
+- **Status:** ✅ Build OK
+
+## Lote 291 — [2026-05-26] Fix áudio acelerado após correção do timer de mic
+
+- **Hash:** 0f8197a
+- **Mudanças:**
+  - Timer do mic: trocado `inicioAudioTurno` (tempo de rede) por `audioTrack.playbackHeadPosition` (frames reais reproduzidos pelo hardware)
+  - Removida variável `inicioAudioTurno` (não mais necessária)
+- **Causa:** Lote 289 usava `System.currentTimeMillis() - inicioAudioTurno` para estimar quanto já foi reproduzido. Mas o AudioTrack tem buffer interno — os chunks chegam da rede mais rápido do que o hardware os toca. Quando o servidor enviava chunks em ritmo próximo ao de reprodução, `jaDecorridoMs` ficava próximo de `duracaoTotal`, o timer virava ~300ms, e o AudioTrack ainda tinha vários segundos de buffer pendente acelerando para esvaziar. `playbackHeadPosition` mede frames hardware reais — independente do buffer de rede.
+- **Status:** ✅ Build OK
+
+## Lote 292 — [2026-05-26] Fix transcrição do usuário: streaming imediato em vez de esperar turnComplete
+
+- **Hash:** edeac27
+- **Mudanças:**
+  - `GeminiLiveService.kt`: novo callback `onAtualizarTranscricaoUsuario` — chamado com fragmentos seguintes e versão final consolidada
+  - `inputTranscription`: primeiro fragmento chama `onTranscricaoUsuario` (cria entrada no chat), fragmentos seguintes chamam `onAtualizarTranscricaoUsuario` (atualiza a entrada existente)
+  - `FichaIADelegate.kt`: novo campo `ultimaMensagemVozUsuarioUid` + método `atualizarUltimaMensagemVozUsuario` — edita a mensagem existente pelo uid em vez de criar nova
+  - `FichaViewModel.kt`: delegação de `atualizarUltimaMensagemVozUsuario`
+  - `FichaScreen.kt`: registra o callback `onAtualizarTranscricaoUsuario`
+- **Causa:** `onTranscricaoUsuario` só era chamado no `turnComplete`, que chega DEPOIS que o modelo termina de falar. Em turnos com toolCall (RAG), o `turnComplete` vinha apenas após o modelo responder completamente — o usuário não via sua própria frase no chat durante todo o processamento. Agora o primeiro fragmento abre o balão imediatamente e os seguintes atualizam o texto.
+- **Status:** ✅ Build OK
+
+## Lote 293 — [2026-05-26] Fix timer de mic: polling de playbackHeadPosition em vez de cálculo por bytes
+
+- **Hash:** edeac27
+- **Mudanças:**
+  - `GeminiLiveService.kt`: removida lógica de timer baseada em `bytesAudioGerado / 48000`
+  - Novo campo `framesInicioTurno`: captura `playbackHeadPosition` no primeiro chunk de áudio do turno
+  - Polling no `micReleaseJob`: verifica a cada 100ms se o hardware parou de avançar além de `framesInicioTurno` por 200ms consecutivos — só então libera o mic
+  - Bytes mantidos apenas para diagnóstico (log) — não usados para timer
+- **Causa:** `bytesAudioTurno` acumulava bytes em excesso em turnos com toolCall (2.628.480 bytes = 54s para uma resposta de ~23s), causando timer inflado → mic bloqueado muito além do fim do áudio → quando finalmente liberava, o AudioTrack reproduzia o buffer acumulado em velocidade acelerada. O polling detecta o fim real da reprodução pelo hardware, independente do volume de dados.
+- **Status:** ✅ Build OK
+
+## Lote 294 — [2026-05-26] Fix mic travado: framesInicioTurno capturado antes do flush() que reseta o contador
+
+- **Hash:** edeac27
+- **Mudanças:**
+  - `GeminiLiveService.kt`: movida captura de `framesInicioTurno` para DEPOIS de `limparFilaAudio()`, não antes
+- **Causa:** `limparFilaAudio()` chama `audioTrack.flush()`, que reseta o `playbackHeadPosition` internamente. O código capturava `framesInicioTurno` antes do flush, guardando o valor do turno anterior (ex: 181.440). Depois do flush, o hardware reiniciava do zero (~0 frames). No polling, `frameAtual` (0..N) nunca ficava `> inicioTurno` (181.440) — o loop ficava preso para sempre, `modeloFalando` nunca virava `false`, e o app exibia "Falando..." indefinidamente. No log: `frames: inicio=181440 atual=175104` — atual menor que início, loop preso por 37s até o usuário fechar manualmente.
+- **Status:** ✅ Build OK
+
+## Lote 295 — [2026-05-26] Fix áudio acelerado: polling de estabilidade substituído por alvo determinístico
+
+- **Hash:** edeac27
+- **Mudanças:**
+  - `GeminiLiveService.kt`: `micReleaseJob` agora aguarda `playbackHeadPosition >= inicioTurno + framesEsperados - 200` em vez de detectar "estabilidade por 200ms"
+  - `framesEsperados = bytesAudioGerado / 2` (16-bit mono = 2 bytes por frame)
+  - Timeout de segurança: duração esperada + 3s
+- **Causa:** O polling anterior detectava quando o counter parava de avançar por 200ms. O `reproducaoJob` bloqueia no canal `audioChannel` esperando chunks — nesse instante o hardware esvazia o buffer interno brevemente antes do próximo chunk chegar. O polling interpretava esse pause como "fim da reprodução" e liberava o mic cedo. O áudio ainda bufferizado no AudioTrack continuava tocando acelerado (sem back-pressure). No log: turno 4 liberado com 14,96s mas esperado 23,12s — 8,16s de áudio ainda buffered.
 - **Status:** ✅ Build OK
