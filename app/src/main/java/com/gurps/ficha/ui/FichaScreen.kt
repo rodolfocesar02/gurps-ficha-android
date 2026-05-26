@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
+import com.gurps.ficha.domain.MestreIAContextFilter
 import com.gurps.ficha.ui.components.FichaCustomNavigationBar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -114,9 +115,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         contract = ActivityResultContracts.RequestPermission()
     ) { concedida ->
         if (concedida) {
-            val ctx = viewModel.personagem.let { p ->
-                "Nome: ${p.nome}, Pontos restantes: ${p.pontosRestantes}"
-            }
+            val ctx = MestreIAContextFilter.gerarContexto(viewModel.personagem, "conversa")
             geminiLive.iniciarSessao(ctx)
         }
     }
@@ -128,9 +127,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
         }
         val permissao = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
         if (permissao == PackageManager.PERMISSION_GRANTED) {
-            val ctx = viewModel.personagem.let { p ->
-                "Nome: ${p.nome}, Pontos restantes: ${p.pontosRestantes}"
-            }
+            val ctx = MestreIAContextFilter.gerarContexto(viewModel.personagem, "conversa")
             geminiLive.iniciarSessao(ctx)
         } else {
             permissaoMicLauncher.launch(Manifest.permission.RECORD_AUDIO)

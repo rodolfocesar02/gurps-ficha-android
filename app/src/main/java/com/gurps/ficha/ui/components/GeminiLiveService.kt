@@ -589,13 +589,17 @@ NUNCA:
                         "A sessão foi reconectada automaticamente. Avise brevemente o jogador que a conexão foi renovada e que você lembra do que estávamos conversando. Máximo 1 frase em português."
                     foiReconexao ->
                         "A sessão foi reconectada automaticamente. Avise brevemente o jogador. Máximo 1 frase em português."
-                    contextoFicha.contains("Sem nome") || contextoFicha.length < 20 -> {
-                        val instrucao = vozesDisponiveis.find { it.nome == vozAtual }?.instrucaoSaudacao ?: ""
-                        "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português. $instrucao"
-                    }
                     else -> {
                         val instrucao = vozesDisponiveis.find { it.nome == vozAtual }?.instrucaoSaudacao ?: ""
-                        "Cumprimente o jogador mencionando o personagem pelo nome e pergunte como pode ajudar. Máximo 2 frases em português. $instrucao"
+                        val nomePersonagem = contextoFicha.lines()
+                            .firstOrNull { it.startsWith("Nome:") }
+                            ?.removePrefix("Nome:")?.trim()
+                            ?.takeIf { it.isNotBlank() }
+                        if (nomePersonagem != null) {
+                            "Cumprimente $nomePersonagem pelo nome de forma breve e natural, como um mestre que reconhece seu jogador. Máximo 2 frases em português. $instrucao"
+                        } else {
+                            "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português. $instrucao"
+                        }
                     }
                 }
 
