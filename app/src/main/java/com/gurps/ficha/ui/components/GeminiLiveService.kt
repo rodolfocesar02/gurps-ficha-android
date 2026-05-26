@@ -339,13 +339,24 @@ NUNCA:
         return JSONObject().apply {
             put("setup", JSONObject().apply {
                 put("model", BuildConfig.GEMINI_LIVE_MODEL)
-                // Session resumption: se tiver token, reconecta na mesma sessão lógica
-                if (token != null) {
-                    put("sessionResumption", JSONObject().apply {
+                // Session resumption transparente: servidor gerencia o token automaticamente
+                // e garante que mensagens enviadas durante a queda não se percam
+                val resumptionCfg = JSONObject().apply {
+                    put("transparent", true)
+                    if (token != null) {
                         put("handle", token)
-                    })
-                    android.util.Log.i("GeminiLive", "║  Usando session resumption token (contexto preservado)")
+                        android.util.Log.i("GeminiLive", "║  Usando session resumption token (contexto preservado)")
+                    }
                 }
+                put("sessionResumptionConfig", resumptionCfg)
+                // Context window compression: evita limite de 15min e crescimento de 120k+ tokens
+                // Quando o contexto passar de 100k tokens o servidor comprime para ~4k automaticamente
+                put("contextWindowCompression", JSONObject().apply {
+                    put("triggerTokens", 100000)
+                    put("slidingWindow", JSONObject().apply {
+                        put("targetTokens", 4000)
+                    })
+                })
                 put("generationConfig", JSONObject().apply {
                     put("responseModalities", JSONArray().apply { put("AUDIO") })
                     put("speechConfig", JSONObject().apply {
@@ -569,9 +580,14 @@ NUNCA:
             }
 
             if (obj.has("goAway")) {
-                android.util.Log.w("GeminiLive", "GoAway recebido — servidor encerrando sessão, reconectando...")
+                val goAway = obj.getJSONObject("goAway")
+                val timeLeft = goAway.optString("timeLeft", "")
+                val timeLeftSecs = timeLeft.trimEnd('s').toLongOrNull() ?: 0L
+                android.util.Log.w("GeminiLive", "GoAway recebido — timeLeft=${timeLeft.ifBlank { "não informado" }}, reconectando preventivamente...")
                 encerrar()
-                reconectarAutomaticamente("goAway")
+                // Reconecta com atraso menor se tiver tempo sobrando (reconexão preventiva)
+                val delayMs = if (timeLeftSecs > 5L) 500L else 1500L
+                reconectarAutomaticamenteComDelay("goAway", delayMs)
                 return
             }
 
@@ -860,6 +876,10 @@ NUNCA:
     }
 
     private fun reconectarAutomaticamente(motivo: String) {
+        reconectarAutomaticamenteComDelay(motivo, 1500L)
+    }
+
+    private fun reconectarAutomaticamenteComDelay(motivo: String, delayMs: Long) {
         reconectandoApos = motivo
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
         val runnable = Runnable {
@@ -868,7 +888,7 @@ NUNCA:
             iniciarSessao(contextoFichaParaSaudacao)
         }
         reconexaoPendente = runnable
-        mainHandler.postDelayed(runnable, 1500)
+        mainHandler.postDelayed(runnable, delayMs)
     }
 
     private fun buildResumoHistorico(): String {
