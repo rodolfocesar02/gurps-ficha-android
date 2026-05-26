@@ -45,7 +45,7 @@ class GeminiLiveService(private val context: Context) {
     private var keepAliveJob: Job? = null
     // Recriado a cada sessão; máximo 200 chunks (~20s de buffer)
     private var audioChannel = Channel<ByteArray>(capacity = 200)
-    private var sessaoAtiva = false
+    @Volatile private var sessaoAtiva = false
     // Controle de reconexão — Runnable salvo para poder cancelar se usuário encerrar manualmente
     private var reconexaoPendente: Runnable? = null
     // Token de session resumption — permite reconectar na mesma sessão lógica (contexto preservado)
@@ -826,6 +826,7 @@ NUNCA:
                     // mas antes do turnComplete, que inflava o timer e atrasava a escuta do usuário.
                     // micReleaseJob cancelado no início do próximo turno — evita race condition
                     // onde o timer do turno anterior libera o mic no meio do turno novo.
+                    // duracaoMs == 0 significa turno só-texto (sem áudio) — mic liberado imediatamente
                     val bytesDoTurno = if (bytesAudioGerado > 0) bytesAudioGerado else bytesAudioTurno
                     val duracaoMs = if (bytesDoTurno > 0) (bytesDoTurno * 1000L / 48000L) else 0L
                     android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando ${duracaoMs}ms de áudio reproduzir (bytes gerados: $bytesDoTurno)")
@@ -833,10 +834,13 @@ NUNCA:
                     micReleaseJob = scope.launch {
                         if (duracaoMs > 0) kotlinx.coroutines.delay(duracaoMs + 300L)
                         if (!isActive) return@launch
-                        android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado")
+                        android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado${if (duracaoMs == 0L) " (turno sem áudio)" else ""}")
                         modeloFalando = false
                         mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                     }
+                    // Zera bytes para não vazar para o próximo turno caso generationComplete não chegue
+                    bytesAudioTurno = 0L
+                    bytesAudioGerado = 0L
                 }
 
                 val inputTranscriptRaw = content.opt("inputTranscription")
@@ -847,6 +851,10 @@ NUNCA:
                 }
                 if (inputTranscript.isNotBlank()) {
                     pendingTextoUsuario += inputTranscript
+                    // Avisa se transcrição crescer demais — indicaria bug no servidor ou loop
+                    if (pendingTextoUsuario.length > 2000) {
+                        android.util.Log.w("GeminiLive", "⚠ pendingTextoUsuario muito grande (${pendingTextoUsuario.length} chars) — possível bug de acumulação")
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -891,6 +899,11 @@ NUNCA:
             val buffer = ByteArray(3200) // ~100ms de áudio a 16kHz
             while (isActive && sessaoAtiva) {
                 val lidos = audioRecord?.read(buffer, 0, buffer.size) ?: break
+                if (lidos < 0) {
+                    // Erro de hardware ou permissão negada — loga para diagnóstico
+                    android.util.Log.e("GeminiLive", "⚠ audioRecord.read() retornou erro: $lidos")
+                    break
+                }
                 if (lidos > 0) {
                     // Não envia microfone enquanto modelo está falando — evita auto-interrupção
                     if (modeloFalando) continue
@@ -947,7 +960,12 @@ NUNCA:
                 var offset = 0
                 while (offset < pcm.size && isActive) {
                     val written = track?.write(pcm, offset, pcm.size - offset) ?: break
-                    if (written <= 0) break
+                    if (written < 0) {
+                        // Erro de hardware no AudioTrack — loga para diagnóstico
+                        android.util.Log.e("GeminiLive", "⚠ audioTrack.write() retornou erro: $written")
+                        break
+                    }
+                    if (written == 0) break
                     offset += written
                 }
             }
@@ -958,12 +976,16 @@ NUNCA:
     private fun limparFilaAudio() {
         reproducaoEmAndamento = false
         // Para o AudioTrack imediatamente e descarta buffer interno
+        // play() logo após flush() reativa o track — sem isso, write() retornaria 0 em loop
         audioTrack?.pause()
         audioTrack?.flush()
         audioTrack?.play()
         // Descarta chunks pendentes no channel
         var descartados = 0
         while (audioChannel.tryReceive().isSuccess) { descartados++ }
+        if (descartados > 50) {
+            android.util.Log.w("GeminiLive", "⚠ limparFilaAudio: $descartados chunks descartados — canal estava muito cheio")
+        }
         android.util.Log.d("GeminiLive", "♪ Novo turno: $descartados chunks descartados, AudioTrack resetado")
     }
 
@@ -1009,7 +1031,10 @@ NUNCA:
         micReleaseJob = null
         capturaJob?.cancel()
         keepAliveJob?.cancel()
+        // Cancela reproducaoJob ANTES de fechar o canal — evita que o job antigo
+        // continue iterando o canal velho enquanto já foi recriado para a próxima sessão
         reproducaoJob?.cancel()
+        reproducaoJob = null
         audioChannel.close()
         audioChannel = Channel(capacity = 200) // recria para próxima sessão
         audioRecord?.stop()

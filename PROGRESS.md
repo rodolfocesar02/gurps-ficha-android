@@ -1625,6 +1625,21 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 285 — [2026-05-26] Fix 4 bugs confirmados + logs de diagnóstico nos 3 não confirmados
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `sessaoAtiva` agora é `@Volatile` — jobs em threads IO viam valor desatualizado após `encerrar()`
+  - `turnComplete` sem áudio: `micReleaseJob` com `duracaoMs == 0` libera mic imediatamente com log `(turno sem áudio)` — antes `modeloFalando` ficava `true` para sempre
+  - `bytesAudioTurno` e `bytesAudioGerado` zerados ao final do `turnComplete` — antes o valor vazava para o próximo turno se `generationComplete` não chegasse
+  - `reproducaoJob = null` após cancel em `encerrar()` — canal antigo fechado antes do job ser nulificado
+  - **Logs de diagnóstico adicionados:**
+    - `audioRecord.read()` negativo → log `⚠ audioRecord.read() retornou erro`
+    - `audioTrack.write()` negativo → log `⚠ audioTrack.write() retornou erro`
+    - `pendingTextoUsuario > 2000 chars` → log `⚠ pendingTextoUsuario muito grande`
+    - `limparFilaAudio > 50 chunks` → log `⚠ limparFilaAudio: canal estava muito cheio`
+- **Status:** ✅ Build OK
+
 ## Lote 284 — [2026-05-26] Fix timer de mic muito longo — usar generationComplete
 
 - **Hash:** ver git log
