@@ -364,6 +364,8 @@ NUNCA:
                             })
                         })
                     })
+                    put("outputAudioTranscription", JSONObject())
+                    put("inputAudioTranscription", JSONObject())
                 })
                 put("systemInstruction", JSONObject().apply {
                     put("parts", JSONArray().apply {
