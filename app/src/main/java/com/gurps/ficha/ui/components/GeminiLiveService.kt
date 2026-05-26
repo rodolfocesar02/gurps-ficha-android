@@ -433,9 +433,9 @@ NUNCA:
             instrucaoSaudacao = "Fale com gravidade e experiência, como um mestre experiente que já viu muitas campanhas. Tom sóbrio e respeitoso."
         ),
         VozConfig(
-            nome = "Sulafat",
-            estilo = "Warm",
-            instrucaoSaudacao = "Fale de forma calorosa e acolhedora, como um velho amigo que está animado para jogar. Tom entusiasmado mas sereno."
+            nome = "Charon",
+            estilo = "Informative",
+            instrucaoSaudacao = "Fale de forma direta e precisa, como um consultor técnico que vai direto ao ponto. Sem rodeios, mas cordial."
         ),
     )
 
