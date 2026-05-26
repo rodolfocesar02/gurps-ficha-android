@@ -1759,7 +1759,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 296 — [2026-05-26] Fix áudio acelerado: causa raiz — overflow silencioso do audioChannel
 
-- **Hash:** pendente
+- **Hash:** 11bcdba
 - **Mudanças:**
   - `GeminiLiveService.kt`: `audioChannel` trocado de `capacity=200` para `Channel.UNLIMITED`
 - **Causa raiz:** Canal tinha capacidade 200 chunks. `trySend()` retorna `false` silenciosamente quando cheio — sem log, sem erro. Para respostas longas (~40s ≈ 400 chunks), metade dos chunks era descartada. O AudioTrack reproduzia os 200 que entraram em velocidade normal e parava. O restante do áudio nunca chegava — ao usuário parecia áudio acelerado/truncado. Com `UNLIMITED`, o back-pressure é natural: `write()` bloqueia no hardware até ele consumir, sem descartar nada. Memória: 40s de áudio = ~1,9MB, trivial.
