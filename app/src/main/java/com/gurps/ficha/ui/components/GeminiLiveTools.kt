@@ -155,9 +155,9 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
 
             // Limite de payload: toolResponse grande causa code=1007 no servidor Gemini Live.
             // 25k chars ≈ 25KB — suficiente para ~15 chunks completos, bem abaixo do limite.
-            val resultadoLimitado = if (resultado.length > 25_000) {
-                android.util.Log.w("GeminiLiveTools", "consultarManual: resultado truncado de ${resultado.length} para 25000 chars")
-                resultado.take(25_000) + "\n[... truncado por limite de payload]"
+            val resultadoLimitado = if (resultado.length > 18_000) {
+                android.util.Log.w("GeminiLiveTools", "consultarManual: resultado truncado de ${resultado.length} para 18000 chars")
+                resultado.take(18_000) + "\n[... truncado por limite de payload]"
             } else resultado
 
             val chunksEncontrados = resultadoLimitado.lines().count { it.startsWith("[Pág.") }
