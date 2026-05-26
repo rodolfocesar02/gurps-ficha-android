@@ -87,7 +87,7 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var framesInicioTurno = 0L
     // Job do timer de liberação do mic — cancelado quando novo turno começa (evita race condition)
     private var micReleaseJob: Job? = null
-    // Bloqueia mic enquanto aguarda resposta do servidor após toolResponse — evita envio de dados durante thinking
+    // True após enviar toolResponse enquanto aguarda a próxima mensagem do servidor — mostra estado PROCESSANDO
     @Volatile private var aguardandoRespostaServidor = false
     // Job de timeout: se servidor não responder em 90s após toolResponse, reconecta
     private var timeoutRespostaJob: Job? = null
@@ -687,6 +687,17 @@ NUNCA:
                 timeoutRespostaJob?.cancel()
                 timeoutRespostaJob = null
                 aguardandoRespostaServidor = false
+                // Async function calling: toolCall pode chegar antes do generationComplete.
+                // Se há áudio ativo, para imediatamente — o modelo já decidiu chamar a tool.
+                if (turnoTemAudio || modeloFalando) {
+                    android.util.Log.i("GeminiLive", "♪ toolCall interrompe turno de áudio — limpando fila")
+                    micReleaseJob?.cancel()
+                    micReleaseJob = null
+                    limparFilaAudio()
+                    turnoTemAudio = false
+                    modeloFalando = false
+                    reproducaoEmAndamento = false
+                }
                 val calls = obj.getJSONObject("toolCall").getJSONArray("functionCalls")
                 val respostas = JSONArray()
                 for (i in 0 until calls.length()) {
@@ -1007,8 +1018,8 @@ limparFilaAudio()
                     break
                 }
                 if (lidos > 0) {
-                    // Não envia microfone enquanto modelo fala ou servidor está processando (thinking)
-                    if (modeloFalando || aguardandoRespostaServidor) continue
+                    // Não envia microfone enquanto modelo fala — evita auto-interrupção
+                    if (modeloFalando) continue
                     val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
                     // Formato correto conforme doc: realtimeInput.audio com data+mimeType
                     val msg = JSONObject().apply {
@@ -1032,7 +1043,7 @@ limparFilaAudio()
             while (isActive && sessaoAtiva) {
                 kotlinx.coroutines.delay(20_000)
                 if (!sessaoAtiva) break
-                if (modeloFalando || aguardandoRespostaServidor) continue
+                if (modeloFalando) continue
                 try {
                     val ping = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
