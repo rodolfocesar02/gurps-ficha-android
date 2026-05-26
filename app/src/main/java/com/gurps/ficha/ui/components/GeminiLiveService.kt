@@ -59,6 +59,8 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var reproducaoEmAndamento = false
     // Acumula bytes de áudio recebidos no turno atual — usado para calcular duração real
     @Volatile private var bytesAudioTurno = 0L
+    // Job do timer de liberação do mic — cancelado quando novo turno começa (evita race condition)
+    private var micReleaseJob: Job? = null
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -705,13 +707,15 @@ NUNCA:
                             val mime = part.getJSONObject("inlineData").getString("mimeType")
                             if (mime.contains("audio")) {
                                 if (!turnoTemAudio) {
-                                    // Primeiro chunk do turno: bloqueia mic, limpa fila anterior
+                                    // Primeiro chunk do turno: cancela timer anterior, bloqueia mic, limpa fila
+                                    micReleaseJob?.cancel()
+                                    micReleaseJob = null
                                     turnoTemAudio = true
                                     modeloFalando = true
                                     bytesAudioTurno = 0L
                                     limparFilaAudio()
                                     mainHandler.post { onEstado(EstadoLive.FALANDO) }
-                                    android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado")
+                                    android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado, timer anterior cancelado")
                                 }
                                 val audioB64 = part.getJSONObject("inlineData").getString("data")
                                 val bytes = Base64.decode(audioB64, Base64.DEFAULT)
@@ -785,11 +789,15 @@ NUNCA:
                     // terminar de reproduzir. Não há evento oficial de fim de reprodução.
                     // Workaround: calcula duração real pelo total de bytes PCM recebidos
                     // (24kHz, 16-bit, mono = 48000 bytes/s) e aguarda esse tempo + margem.
+                    // micReleaseJob cancelado no início do próximo turno — evita race condition
+                    // onde o timer do turno anterior libera o mic no meio do turno novo.
                     val bytesDoTurno = bytesAudioTurno
                     val duracaoMs = if (bytesDoTurno > 0) (bytesDoTurno * 1000L / 48000L) else 0L
                     android.util.Log.i("GeminiLive", "✓ Turno completo — aguardando ${duracaoMs}ms de áudio reproduzir")
-                    scope.launch {
+                    micReleaseJob?.cancel()
+                    micReleaseJob = scope.launch {
                         if (duracaoMs > 0) kotlinx.coroutines.delay(duracaoMs + 300L)
+                        if (!isActive) return@launch
                         android.util.Log.i("GeminiLive", "✓ Reprodução concluída — mic liberado")
                         modeloFalando = false
                         mainHandler.post { onEstado(EstadoLive.OUVINDO) }
@@ -957,6 +965,8 @@ NUNCA:
         perguntaInterrompida = null
         sessionResumptionToken = null // encerramento manual limpa o token
         sessaoAtiva = false
+        micReleaseJob?.cancel()
+        micReleaseJob = null
         capturaJob?.cancel()
         keepAliveJob?.cancel()
         reproducaoJob?.cancel()
