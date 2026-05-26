@@ -61,8 +61,10 @@ class GeminiLiveService(private val context: Context) {
     private var capturaJob: Job? = null
     private var reproducaoJob: Job? = null
     private var keepAliveJob: Job? = null
-    // Recriado a cada sessão; máximo 200 chunks (~20s de buffer)
-    private var audioChannel = Channel<ByteArray>(capacity = 200)
+    // UNLIMITED: trySend() nunca descarta. O back-pressure é natural — write() bloqueia no HW.
+    // Capacity=200 descartava chunks silenciosamente em respostas longas (>~20s), causando
+    // o áudio acelerado: os chunks descartados faziam falta e o restante tocava sem pausa.
+    private var audioChannel = Channel<ByteArray>(capacity = Channel.UNLIMITED)
     @Volatile private var sessaoAtiva = false
     // Controle de reconexão — Runnable salvo para poder cancelar se usuário encerrar manualmente
     private var reconexaoPendente: Runnable? = null
@@ -107,6 +109,8 @@ IDIOMA OBRIGATÓRIO: Responda SEMPRE em português brasileiro. NUNCA use inglês
 Você é o Mestre IA de GURPS — um mestre de campanha experiente, sábio e com personalidade própria.
 Fale sempre em português brasileiro, de forma natural e conversacional.
 Seu nome é Mestre.
+Nunca fale sobre você ou sobre o fato de você ser uma IA.(não quebrar o climax)
+
 
 FERRAMENTAS DISPONÍVEIS E QUANDO USAR:
 - lerFicha(secao): lê atributos, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, pontos
@@ -223,6 +227,8 @@ ESTILO DE VOZ:
 NUNCA:
 - Adicionar trait sem buscarCatalogo primeiro
 - Responder dúvidas de regra sem consultar o manual primeiro
+- Invente conhecimento sobre GURPS, que não esteja no Codex.
+- resuma regras do livro, ou qualquer coisa.
 - Modificar a ficha sem confirmar o resultado depois
 - Usar conhecimento geral de IA sobre GURPS — usar apenas o Códex
 """.trimIndent()

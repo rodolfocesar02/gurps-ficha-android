@@ -1756,3 +1756,11 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - Timeout de segurança: duração esperada + 3s
 - **Causa:** O polling anterior detectava quando o counter parava de avançar por 200ms. O `reproducaoJob` bloqueia no canal `audioChannel` esperando chunks — nesse instante o hardware esvazia o buffer interno brevemente antes do próximo chunk chegar. O polling interpretava esse pause como "fim da reprodução" e liberava o mic cedo. O áudio ainda bufferizado no AudioTrack continuava tocando acelerado (sem back-pressure). No log: turno 4 liberado com 14,96s mas esperado 23,12s — 8,16s de áudio ainda buffered.
 - **Status:** ✅ Build OK
+
+## Lote 296 — [2026-05-26] Fix áudio acelerado: causa raiz — overflow silencioso do audioChannel
+
+- **Hash:** pendente
+- **Mudanças:**
+  - `GeminiLiveService.kt`: `audioChannel` trocado de `capacity=200` para `Channel.UNLIMITED`
+- **Causa raiz:** Canal tinha capacidade 200 chunks. `trySend()` retorna `false` silenciosamente quando cheio — sem log, sem erro. Para respostas longas (~40s ≈ 400 chunks), metade dos chunks era descartada. O AudioTrack reproduzia os 200 que entraram em velocidade normal e parava. O restante do áudio nunca chegava — ao usuário parecia áudio acelerado/truncado. Com `UNLIMITED`, o back-pressure é natural: `write()` bloqueia no hardware até ele consumir, sem descartar nada. Memória: 40s de áudio = ~1,9MB, trivial.
+- **Status:** ✅ Build OK
