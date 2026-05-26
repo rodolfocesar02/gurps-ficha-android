@@ -141,7 +141,7 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
                     subResultados.forEach { sub -> scoresUnidos.putAll(sub.chunkScores) }
                     val todosChunks = (searchResult.relatedChunks + subResultados.flatMap { it.relatedChunks })
                         .distinctBy { it.chunk_id }
-                        .take(20)
+                        .take(30)
                     MestreIAGraphEngine.GraphSearchResult(
                         relatedChunks = todosChunks,
                         chunkScores = scoresUnidos
