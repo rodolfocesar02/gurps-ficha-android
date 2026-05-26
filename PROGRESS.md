@@ -1531,3 +1531,49 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - No `encerrar()`: `micReleaseJob?.cancel()` adicionado ao cleanup
 - **Causa do bug:** quando o modelo respondia rápido (turno 2 antes do timer do turno 1 expirar), o timer antigo chamava `modeloFalando = false` no meio do áudio novo → reprodução acelerada e sobreposição de conversas
 - **Status:** ✅ Build OK
+
+## Lote 273 — [2026-05-26] Fix Dupla Saudação — Live ativo não gera saudação de texto
+
+- **Hash:** 18b22e1
+- **Mudanças:**
+  - `FichaScreen.kt` linha 539: `LaunchedEffect(Unit)` agora verifica `estadoLive` antes de chamar `gerarSaudacaoMestreIA()`
+  - Se Live estiver CONECTANDO, OUVINDO ou FALANDO → saudação de texto não é gerada
+  - Se Live estiver OCIOSO ou ERRO → comportamento anterior (gera saudação de texto normalmente)
+- **Causa do bug:** segurar o ícone do Mestre IA iniciava o GeminiLive, que ao chegar em OUVINDO abria o dialog, que disparava o `LaunchedEffect(Unit)`, gerando saudação de texto E saudação por voz ao mesmo tempo
+- **Status:** ✅ Build OK
+
+## Lote 274 — [2026-05-26] Fix lerFicha(atributos) sem nome do personagem
+
+- **Hash:** 22b9e56
+- **Mudanças:**
+  - `ForjadorToolExecutor.kt` linha 52: adicionado `Nome: ${p.nome}` no início do bloco `atributos`
+  - Nome só aparece se não estiver em branco
+- **Causa do bug:** `lerFicha("atributos")` retornava apenas ST/DX/IQ/HT/PV/PF/Aptidão — sem o nome. O modelo chamava essa ferramenta na saudação, não encontrava o nome, e ficava sem saber quem era o personagem. O bloco `secao == "tudo"` incluía o nome, mas o modelo nunca chamava "tudo", sempre "atributos".
+- **Confirmado no logcat:** linha 91 — resultado da tool = `ST: 11 | DX: 16 | IQ: 12 | HT: 11 | PV: 11 | PF: 11 | Aptidão Mágica: 0` (sem nome). Pensamento do modelo (linha 101) confirmou: "I've hit a snag: the lerFicha output lacks a character name"
+- **Status:** ✅ Build OK
+
+## Lote 275 — [2026-05-26] Contexto ficha completo no Live + saudação com nome
+
+- **Hash:** 6c02ada
+- **Mudanças:**
+  - `FichaScreen.kt`: substituído `"Nome: ${p.nome}, Pontos restantes: X"` (49 chars) por `MestreIAContextFilter.gerarContexto(personagem, "conversa")` — envia ficha completa (nome, atributos, HP/FP, vantagens, desvantagens, perícias, aparência, histórico)
+  - `GeminiLiveService.kt`: saudação agora extrai o nome diretamente do contexto injetado e passa explicitamente no prompt — `"Cumprimente [Nome] pelo nome de forma breve e natural"`; se não tiver nome, cai no fallback genérico
+- **Motivo:** modelo recebia apenas 49 chars de contexto, sem nome completo. Agora recebe a ficha toda antes de qualquer ferramenta, eliminando a necessidade de chamar `lerFicha` só para saber o nome na saudação
+- **Status:** ✅ Build OK
+
+## Lote 276 — [2026-05-26] Fix interrupted + AudioTrack VOICE_COMMUNICATION
+
+- **Hash:** 47e859e
+- **Mudanças:**
+  - `GeminiLiveService.kt`: quando `interrupted=true`, agora zera `bytesAudioTurno=0`, cancela `micReleaseJob` e libera o mic imediatamente — antes o turno interrompido deixava os bytes acumulados do turno anterior, e quando chegava o `turnComplete` criava um timer fantasma de 2280ms causando áudio acelerado
+  - `GeminiLiveService.kt`: `AudioTrack` trocado de `USAGE_MEDIA` para `USAGE_VOICE_COMMUNICATION` — alinha com o `AudioRecord` que já usava `VOICE_COMMUNICATION`. Isso faz o Android tratar como chamada de voz com cancelamento de eco, evitando conflito entre saída e entrada de áudio (causava mic mudo/silencioso por vários segundos)
+- **Evidência no logcat:** linha 211-225 — `interrupted` seguido de `aguardando 2280ms` com bytes do turno anterior. Linhas 109-162 — `audioRecordData [mute]` por 16+ segundos com `f` parado (mic capturando silêncio)
+- **Status:** ✅ Build OK
+
+## Lote 277 — [2026-05-26] Habilitar transcrição de áudio entrada e saída
+
+- **Hash:** 66f70a1
+- **Mudanças:**
+  - `GeminiLiveService.kt` setup: adicionado `outputAudioTranscription: {}` e `inputAudioTranscription: {}` no `generationConfig`
+- **Causa:** o setup só pedia `responseModalities: ["AUDIO"]` sem habilitar transcrição. O servidor não mandava `outputTranscription` nem `inputTranscription` nas mensagens, então `pendingTextoFallback` ficava sempre vazio e `onRespostaMestre` nunca era chamado — nada aparecia no chat
+- **Status:** ✅ Build OK
