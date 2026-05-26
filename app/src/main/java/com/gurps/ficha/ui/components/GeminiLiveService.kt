@@ -377,7 +377,7 @@ NUNCA:
                     put("speechConfig", JSONObject().apply {
                         put("voiceConfig", JSONObject().apply {
                             put("prebuiltVoiceConfig", JSONObject().apply {
-                                put("voiceName", BuildConfig.GEMINI_LIVE_VOICE)
+                                put("voiceName", vozAtual)
                             })
                         })
                     })
@@ -416,16 +416,49 @@ NUNCA:
     private var contextoFichaParaSaudacao: String = ""
     private var reconectandoApos: String = "" // "goAway" | "fechado" | ""
 
+    // Voz sorteada para a sessão atual — muda a cada nova sessão (não em reconexões)
+    private var vozAtual: String = BuildConfig.GEMINI_LIVE_VOICE
+
+    private data class VozConfig(val nome: String, val estilo: String, val instrucaoSaudacao: String)
+
+    private val vozesDisponiveis = listOf(
+        VozConfig(
+            nome = "Sadaltager",
+            estilo = "Knowledgeable",
+            instrucaoSaudacao = "Fale de forma pausada e confiante, como um especialista que domina o assunto. Demonstre autoridade e conhecimento desde a primeira frase."
+        ),
+        VozConfig(
+            nome = "Gacrux",
+            estilo = "Mature",
+            instrucaoSaudacao = "Fale com gravidade e experiência, como um mestre experiente que já viu muitas campanhas. Tom sóbrio e respeitoso."
+        ),
+        VozConfig(
+            nome = "Sulafat",
+            estilo = "Warm",
+            instrucaoSaudacao = "Fale de forma calorosa e acolhedora, como um velho amigo que está animado para jogar. Tom entusiasmado mas sereno."
+        ),
+    )
+
+    private fun sortearVoz(): VozConfig {
+        return vozesDisponiveis.random()
+    }
+
     fun iniciarSessao(contextoFicha: String) {
         if (sessaoAtiva) return
         contextoFichaParaSaudacao = contextoFicha
+        // Sorteia voz apenas em novas sessões (não em reconexões automáticas)
+        if (reconectandoApos.isBlank()) {
+            val voz = sortearVoz()
+            vozAtual = voz.nome
+            android.util.Log.i("GeminiLive", "║  Voz sorteada: ${voz.nome} (${voz.estilo})")
+        }
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
 
         val keyPreview = BuildConfig.MESTRE_IA_GEMINI_KEY.take(8) + "..."
         val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
         android.util.Log.i("GeminiLive", "╔══ INICIANDO SESSÃO ══════════════════")
         android.util.Log.i("GeminiLive", "║  Modelo: ${BuildConfig.GEMINI_LIVE_MODEL}")
-        android.util.Log.i("GeminiLive", "║  Voz: ${BuildConfig.GEMINI_LIVE_VOICE}")
+        android.util.Log.i("GeminiLive", "║  Voz: $vozAtual")
         android.util.Log.i("GeminiLive", "║  Chave: $keyPreview")
         android.util.Log.i("GeminiLive", "║  Conectando ao WebSocket...")
 
@@ -573,10 +606,14 @@ NUNCA:
                         "A sessão foi reconectada automaticamente. Avise brevemente o jogador que a conexão foi renovada e que você lembra do que estávamos conversando. Máximo 1 frase em português."
                     foiReconexao ->
                         "A sessão foi reconectada automaticamente. Avise brevemente o jogador. Máximo 1 frase em português."
-                    contextoFicha.contains("Sem nome") || contextoFicha.length < 20 ->
-                        "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português."
-                    else ->
-                        "Cumprimente o jogador mencionando o personagem pelo nome e pergunte como pode ajudar. Máximo 2 frases em português."
+                    contextoFicha.contains("Sem nome") || contextoFicha.length < 20 -> {
+                        val instrucao = vozesDisponiveis.find { it.nome == vozAtual }?.instrucaoSaudacao ?: ""
+                        "Apresente-se brevemente como Mestre IA de GURPS e pergunte como pode ajudar. Máximo 2 frases em português. $instrucao"
+                    }
+                    else -> {
+                        val instrucao = vozesDisponiveis.find { it.nome == vozAtual }?.instrucaoSaudacao ?: ""
+                        "Cumprimente o jogador mencionando o personagem pelo nome e pergunte como pode ajudar. Máximo 2 frases em português. $instrucao"
+                    }
                 }
 
                 val saudacaoMsg = JSONObject().apply {
