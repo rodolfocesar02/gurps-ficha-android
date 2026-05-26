@@ -357,11 +357,6 @@ NUNCA:
                         put("targetTokens", 4000)
                     })
                 })
-                // Proactive Audio (Gemini 2.5): modelo só responde quando a fala é direcionada a ele
-                // ignora barulho de fundo, TV ligada, conversas ao redor
-                put("proactiveAudioConfig", JSONObject().apply {
-                    put("enabled", true)
-                })
                 // AAD: configura sensibilidade de detecção de voz — evita cortes no meio da fala
                 // e falsas ativações de fim de turno
                 put("realtimeInputConfig", JSONObject().apply {
