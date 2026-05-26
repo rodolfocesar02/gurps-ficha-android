@@ -66,6 +66,9 @@ class GeminiLiveService(private val context: Context) {
     // o áudio acelerado: os chunks descartados faziam falta e o restante tocava sem pausa.
     private var audioChannel = Channel<ByteArray>(capacity = Channel.UNLIMITED)
     @Volatile private var sessaoAtiva = false
+    // Flag de encerramento intencional — bloqueia reconexão automática mesmo se onClosed chegar
+    // com código inesperado (ex: servidor fecha com 1008 ao detectar parada do AudioRecord)
+    @Volatile private var encerramentoIntencional = false
     // Controle de reconexão — Runnable salvo para poder cancelar se usuário encerrar manualmente
     private var reconexaoPendente: Runnable? = null
     // Token de session resumption — permite reconectar na mesma sessão lógica (contexto preservado)
@@ -91,6 +94,10 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var aguardandoRespostaServidor = false
     // Job de timeout: se servidor não responder em 90s após toolResponse, reconecta
     private var timeoutRespostaJob: Job? = null
+    // Timestamp da última mensagem recebida do servidor — usado para detectar inatividade
+    @Volatile private var ultimaMsgServidor = 0L
+    // Job de watchdog: reinicia a cada mensagem; se expirar sem nova mensagem, reconecta
+    private var watchdogJob: Job? = null
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -536,9 +543,10 @@ NUNCA:
 
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                 android.util.Log.w("GeminiLive", "WebSocket FECHADO: code=$code reason=$reason")
+                val foiIntencional = encerramentoIntencional
                 encerrar()
                 // Fechamento inesperado (não foi o usuário que encerrou) → reconectar
-                if (code != 1000) {
+                if (code != 1000 && !foiIntencional) {
                     android.util.Log.i("GeminiLive", "Fechamento inesperado (code=$code) — reconectando...")
                     reconectarAutomaticamente("fechado")
                 } else {
@@ -548,7 +556,21 @@ NUNCA:
         })
     }
 
+    private fun reiniciarWatchdog() {
+        ultimaMsgServidor = System.currentTimeMillis()
+        watchdogJob?.cancel()
+        watchdogJob = scope.launch {
+            kotlinx.coroutines.delay(50_000) // 50s sem mensagem → reconecta
+            if (isActive && sessaoAtiva && !encerramentoIntencional) {
+                val secsInativo = (System.currentTimeMillis() - ultimaMsgServidor) / 1000
+                android.util.Log.w("GeminiLive", "⚠ Watchdog: ${secsInativo}s sem mensagem do servidor — reconectando")
+                reconectarAutomaticamente("fechado")
+            }
+        }
+    }
+
     private fun processarMensagemServidor(json: String) {
+        reiniciarWatchdog()
         try {
             val obj = JSONObject(json)
 
@@ -651,6 +673,7 @@ NUNCA:
                 ws.send(saudacaoMsg.toString().encodeUtf8())
 
                 sessaoAtiva = true
+                reiniciarWatchdog()
                 iniciarCaptura()
                 android.util.Log.i("GeminiLive", "╚══ SESSÃO ATIVA — aguardando fala do usuário")
                 mainHandler.post { onEstado(EstadoLive.OUVINDO) }
@@ -1133,6 +1156,14 @@ limparFilaAudio()
     }
 
     fun encerrar() {
+        // Sinaliza encerramento intencional ANTES de qualquer cleanup — bloqueia reconexão
+        // automática que seria disparada pelo onClosed quando servidor fechar com 1008
+        // (servidor fecha com 1008 ao detectar parada abrupta do AudioRecord)
+        encerramentoIntencional = true
+        // Fecha WebSocket ANTES de parar AudioRecord — evita que o servidor detecte
+        // parada do stream e feche com código inesperado antes do close(1000) chegar
+        webSocket?.close(1000, "Sessão encerrada pelo usuário")
+        webSocket = null
         // Cancela reconexão automática pendente — encerramento manual é intencional
         reconexaoPendente?.let { mainHandler.removeCallbacks(it) }
         reconexaoPendente = null
@@ -1140,10 +1171,13 @@ limparFilaAudio()
         perguntaInterrompida = null
         sessionResumptionToken = null // encerramento manual limpa o token
         sessaoAtiva = false
+        encerramentoIntencional = false // reseta para próxima sessão
         micReleaseJob?.cancel()
         micReleaseJob = null
         timeoutRespostaJob?.cancel()
         timeoutRespostaJob = null
+        watchdogJob?.cancel()
+        watchdogJob = null
         aguardandoRespostaServidor = false
         capturaJob?.cancel()
         keepAliveJob?.cancel()
@@ -1159,8 +1193,6 @@ limparFilaAudio()
         audioTrack?.stop()
         audioTrack?.release()
         audioTrack = null
-        webSocket?.close(1000, "Sessão encerrada pelo usuário")
-        webSocket = null
         // Restaura modo de áudio normal ao encerrar
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManager.isSpeakerphoneOn = false
