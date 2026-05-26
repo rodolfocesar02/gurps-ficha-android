@@ -372,9 +372,6 @@ NUNCA:
                         put(JSONObject().apply { put("text", systemPrompt) })
                     })
                 })
-                put("proactivity", JSONObject().apply {
-                    put("proactiveAudio", true)
-                })
                 put("tools", tools)
             })
         }.toString()
