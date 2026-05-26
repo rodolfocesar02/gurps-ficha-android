@@ -1577,3 +1577,58 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - `GeminiLiveService.kt` setup: adicionado `outputAudioTranscription: {}` e `inputAudioTranscription: {}` no `generationConfig`
 - **Causa:** o setup só pedia `responseModalities: ["AUDIO"]` sem habilitar transcrição. O servidor não mandava `outputTranscription` nem `inputTranscription` nas mensagens, então `pendingTextoFallback` ficava sempre vazio e `onRespostaMestre` nunca era chamado — nada aparecia no chat
 - **Status:** ✅ Build OK
+
+## Lote 278 — [2026-05-26] v1beta → v1alpha + proactiveAudio
+
+- **Hash:** 34c982b
+- **Mudanças:**
+  - `GeminiLiveService.kt`: endpoint `v1beta` → `v1alpha` — necessário para usar proactiveAudio e affectiveDialogue
+  - `GeminiLiveService.kt`: adicionado `proactivity: { proactiveAudio: true }` no setup — modelo ignora barulho de fundo, TV ligada, conversas ao redor; só responde quando a fala é claramente direcionada a ele
+- **Motivo:** `proactiveAudio` e `affectiveDialogue` só funcionam em `v1alpha`. A migração para `v1beta` foi feita como "versão estável" mas não havia dependência técnica específica
+- **Risco:** se o setup travar (não responder `setupComplete`), reverter para `v1beta` e remover `proactivity`
+- **Status:** ✅ Build OK — aguardando teste
+
+## Lote 279 — [2026-05-26] Remove proactiveAudio — trava setup
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt`: removido `proactivity: { proactiveAudio: true }` — servidor não respondia `setupComplete`, app ficava travado em "Conectando..."
+  - Mantido `v1alpha` — não causou problema, só o proactiveAudio travava
+- **Conclusão:** `proactiveAudio` incompatível com `gemini-2.5-flash-native-audio-preview-12-2025`, igual ao `proactiveAudioConfig` removido no commit 96c038a
+- **Status:** ✅ Build OK
+
+## Lote 280 — [2026-05-26] Fix posição dos campos de transcrição no setup
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt`: movido `outputAudioTranscription` e `inputAudioTranscription` para fora do `generationConfig` — devem ficar no nível do `setup`, não dentro de `generationConfig`
+- **Causa do travamento:** campos dentro de `generationConfig` eram rejeitados silenciosamente pelo servidor — `setupComplete` nunca chegava, app ficava em "Conectando..." indefinidamente
+- **Confirmado na doc:** `BidiGenerateContentSetup` tem esses campos no nível raiz, não dentro de `generationConfig`
+- **Status:** ✅ Build OK — aguardando teste
+
+## Lote 281 — [2026-05-26] Forçar saída de áudio nas caixas de som
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt` `iniciarCaptura()`: ativa `AudioManager.MODE_IN_COMMUNICATION` + `isSpeakerphoneOn = true` — mantém cancelamento de eco do `VOICE_COMMUNICATION` mas força saída pelo alto-falante (caixas de som), não pelo ouvido
+  - `GeminiLiveService.kt` `encerrar()`: restaura `isSpeakerphoneOn = false` + `MODE_NORMAL` ao fechar a sessão — evita deixar o celular preso em modo chamada
+- **Causa:** `USAGE_VOICE_COMMUNICATION` no AudioTrack roteava o áudio para o alto-falante do ouvido (como ligação telefônica). Solução: manter o modo mas forçar speakerphone
+- **Status:** ✅ Build OK
+
+## Lote 282 — [2026-05-26] Fix transcrição usuário — cada palavra num balão
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt`: adicionado `pendingTextoUsuario` — acumula fragmentos do `inputTranscription` igual ao que já fazíamos com `outputTranscription`
+  - `onTranscricaoUsuario` agora só é chamado **uma vez** no `turnComplete` com o texto completo — não mais a cada fragmento
+  - `pendingTextoUsuario` zerado no `interrupted` e no `turnComplete`
+- **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
+- **Status:** ✅ Build OK
+
+## Lote 283 — [2026-05-26] Fix keepalive não pausava durante fala do modelo
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt`: keepalive agora checa `modeloFalando` antes de enviar silêncio — `if (modeloFalando) continue`
+- **Causa:** O keepalive enviava áudio silencioso a cada 20s independente do estado. Se o ciclo de 20s caísse logo após o modelo terminar de falar, o servidor recebia silêncio no exato momento em que o usuário começa a falar — podendo confundir o detector de fala (VAD) e atrasar o reconhecimento da voz do usuário
+- **Status:** ✅ Build OK

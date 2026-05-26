@@ -897,12 +897,14 @@ NUNCA:
         }
 
         // Keepalive: envia áudio silencioso a cada 20s para manter WebSocket vivo
+        // Não envia enquanto modelo fala — evita confundir o VAD do servidor
         keepAliveJob = scope.launch {
             val silencio = ByteArray(3200) // 100ms de zeros = silêncio PCM
             val b64silencio = Base64.encodeToString(silencio, Base64.NO_WRAP)
             while (isActive && sessaoAtiva) {
                 kotlinx.coroutines.delay(20_000)
                 if (!sessaoAtiva) break
+                if (modeloFalando) continue
                 try {
                     val ping = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
