@@ -357,6 +357,11 @@ NUNCA:
                         put("targetTokens", 4000)
                     })
                 })
+                // Proactive Audio (Gemini 2.5): modelo só responde quando a fala é direcionada a ele
+                // ignora barulho de fundo, TV ligada, conversas ao redor
+                put("proactiveAudioConfig", JSONObject().apply {
+                    put("enabled", true)
+                })
                 // AAD: configura sensibilidade de detecção de voz — evita cortes no meio da fala
                 // e falsas ativações de fim de turno
                 put("realtimeInputConfig", JSONObject().apply {
@@ -417,7 +422,7 @@ NUNCA:
         mainHandler.post { onEstado(EstadoLive.CONECTANDO) }
 
         val keyPreview = BuildConfig.MESTRE_IA_GEMINI_KEY.take(8) + "..."
-        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
+        val url = "wss://generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1beta.GenerativeService.BidiGenerateContent?key=${BuildConfig.MESTRE_IA_GEMINI_KEY}"
         android.util.Log.i("GeminiLive", "╔══ INICIANDO SESSÃO ══════════════════")
         android.util.Log.i("GeminiLive", "║  Modelo: ${BuildConfig.GEMINI_LIVE_MODEL}")
         android.util.Log.i("GeminiLive", "║  Voz: ${BuildConfig.GEMINI_LIVE_VOICE}")
