@@ -357,6 +357,16 @@ NUNCA:
                         put("targetTokens", 4000)
                     })
                 })
+                // AAD: configura sensibilidade de detecção de voz — evita cortes no meio da fala
+                // e falsas ativações de fim de turno
+                put("realtimeInputConfig", JSONObject().apply {
+                    put("automaticActivityDetection", JSONObject().apply {
+                        put("startOfSpeechSensitivity", 0.5)
+                        put("endOfSpeechSensitivity", 0.5)
+                        put("prefixPaddingMs", 200)
+                        put("silenceDurationMs", 1000)
+                    })
+                })
                 put("generationConfig", JSONObject().apply {
                     put("responseModalities", JSONArray().apply { put("AUDIO") })
                     put("speechConfig", JSONObject().apply {
