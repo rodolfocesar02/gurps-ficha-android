@@ -1625,6 +1625,14 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Causa:** `inputTranscription` chega fragmentado palavra por palavra (igual ao output). Cada fragmento chamava `onTranscricaoUsuario` → cada palavra virava um balão separado no chat
 - **Status:** ✅ Build OK
 
+## Lote 287 — [2026-05-26] Fix transcrição do usuário não aparecia no chat
+
+- **Hash:** ver git log
+- **Mudanças:**
+  - `GeminiLiveService.kt`: bloco `inputTranscription` movido para **antes** do bloco `turnComplete`
+- **Causa:** servidor manda `inputTranscription` e `turnComplete` no **mesmo JSON**. O código processava `turnComplete` primeiro — lia `pendingTextoUsuario`, exibia, e o **zerava**. Depois processava `inputTranscription` e acumulava no buffer já vazio. No próximo JSON não vinha mais `turnComplete`, então o texto ficava preso e nunca era exibido. Solução: processar `inputTranscription` antes do `turnComplete` dentro do mesmo JSON.
+- **Status:** ✅ Build OK
+
 ## Lote 286 — [2026-05-26] Fix voz do usuário completamente suprimida pelo echo canceller
 
 - **Hash:** ver git log

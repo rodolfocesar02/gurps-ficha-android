@@ -784,6 +784,21 @@ NUNCA:
                     mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                 }
 
+                // inputTranscription: voz do usuário transcrita — processado ANTES do turnComplete
+                // pois servidor pode enviar os dois no mesmo JSON; turnComplete zera pendingTextoUsuario
+                val inputTranscriptRaw = content.opt("inputTranscription")
+                val inputTranscript = when (inputTranscriptRaw) {
+                    is JSONObject -> inputTranscriptRaw.optString("text", "")
+                    is String -> inputTranscriptRaw
+                    else -> ""
+                }
+                if (inputTranscript.isNotBlank()) {
+                    pendingTextoUsuario += inputTranscript
+                    if (pendingTextoUsuario.length > 2000) {
+                        android.util.Log.w("GeminiLive", "⚠ pendingTextoUsuario muito grande (${pendingTextoUsuario.length} chars) — possível bug de acumulação")
+                    }
+                }
+
                 if (content.optBoolean("turnComplete")) {
                     // Loga tokens do turno (usageMetadata vem no mesmo JSON que turnComplete)
                     val usage = obj.optJSONObject("usageMetadata")
@@ -843,19 +858,6 @@ NUNCA:
                     bytesAudioGerado = 0L
                 }
 
-                val inputTranscriptRaw = content.opt("inputTranscription")
-                val inputTranscript = when (inputTranscriptRaw) {
-                    is JSONObject -> inputTranscriptRaw.optString("text", "")
-                    is String -> inputTranscriptRaw
-                    else -> ""
-                }
-                if (inputTranscript.isNotBlank()) {
-                    pendingTextoUsuario += inputTranscript
-                    // Avisa se transcrição crescer demais — indicaria bug no servidor ou loop
-                    if (pendingTextoUsuario.length > 2000) {
-                        android.util.Log.w("GeminiLive", "⚠ pendingTextoUsuario muito grande (${pendingTextoUsuario.length} chars) — possível bug de acumulação")
-                    }
-                }
             }
         } catch (e: Exception) {
             android.util.Log.e("GeminiLive", "Erro ao processar mensagem: ${e.message} | json=${json.take(200)}")
