@@ -364,9 +364,9 @@ NUNCA:
                             })
                         })
                     })
-                    put("outputAudioTranscription", JSONObject())
-                    put("inputAudioTranscription", JSONObject())
                 })
+                put("outputAudioTranscription", JSONObject())
+                put("inputAudioTranscription", JSONObject())
                 put("systemInstruction", JSONObject().apply {
                     put("parts", JSONArray().apply {
                         put(JSONObject().apply { put("text", systemPrompt) })
