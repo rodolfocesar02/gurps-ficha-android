@@ -1787,3 +1787,12 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - `GeminiLiveTools.kt`: `take(40)` → `take(20)` no path multi-query
   - `GeminiLiveTools.kt`: cap de 25.000 chars no resultado final — previne payload gigante em qualquer path
 - **Status:** ✅ Build OK
+
+
+## Lote 299 — [2026-05-26] Fix: reduz cap consultarManual de 25k para 18k chars
+
+- **Hash:** ae2198f
+- **Motivação:** Fórum Google confirma limite ~20KB para payloads na API Gemini. Cap anterior de 25k chars (~25KB) estava acima desse limite documentado. 18k chars (~18KB) fica conservadoramente abaixo e dentro da faixa empiricamente segura.
+- **Mudanças:**
+  - `GeminiLiveTools.kt`: cap de 25.000 → 18.000 chars no resultado do `consultarManual`
+- **Status:** ✅ Build OK
