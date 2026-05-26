@@ -756,11 +756,16 @@ NUNCA:
                     }
                 }
 
-                // interrupted=true: modelo foi cortado, descarta texto parcial
+                // interrupted=true: modelo foi cortado, descarta texto parcial e zera bytes
                 if (content.optBoolean("interrupted")) {
                     android.util.Log.i("GeminiLive", "⚡ Turno interrompido — descartando texto parcial")
                     pendingTextoFallback = ""
                     turnoTemAudio = false
+                    bytesAudioTurno = 0L
+                    micReleaseJob?.cancel()
+                    micReleaseJob = null
+                    modeloFalando = false
+                    mainHandler.post { onEstado(EstadoLive.OUVINDO) }
                 }
 
                 if (content.optBoolean("turnComplete")) {
@@ -840,7 +845,7 @@ NUNCA:
         )
         audioTrack = AudioTrack(
             AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 .build(),
             AudioFormat.Builder()
