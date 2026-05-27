@@ -1832,6 +1832,17 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 310 — [2026-05-27] Auditoria linha a linha GeminiLiveService.kt — 5 correções
+
+- **Hash:** 9c651ad
+- **Escopo:** Pente fino completo no arquivo após acúmulo de patches incrementais.
+- **Bug crítico (#2):** `modeloFalando` não era resetado quando o watchdog disparava. Nova sessão iniciava com mic permanentemente mudo. Fix: reseta `modeloFalando=false` e cancela `micReleaseJob` antes de `reconectarAutomaticamente()` no watchdog.
+- **Bug #3:** `turnoTemAudio=false` e `modeloFalando=false` redundantes dentro do `else` do bloco NON_BLOCKING toolCall — já eram `false` ao entrar no `else`. Removidos.
+- **Bug #4:** `ultimaPerguntaUsuario` atribuída duas vezes nos dois ramos do `if/else` de `inputTranscription`. Extraído para antes do `if`.
+- **Bug #5:** `keepAliveJob` e `capturaJob` cancelados mas não nulificados em `encerrar()`. Assimetria com `reproducaoJob`. Corrigido com `= null`.
+- **Bug #1:** Indentação incorreta de `limparFilaAudio()` na linha 852 (colagem manual sem ajuste). Corrigido.
+- **Status:** ⏳ Aguardando build
+
 ## Lote 309 — [2026-05-27] Fix: WHEN_IDLE → SILENT no toolResponse (duplo turno de áudio)
 
 - **Hash:** 3b8d3fb
