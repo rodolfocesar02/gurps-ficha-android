@@ -1834,7 +1834,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 306 — [2026-05-27] Mitigação bug <ctrl46>: NON_BLOCKING + detector
 
-- **Hash:** (pendente build)
+- **Hash:** b6df4dd
 - **Motivação:** Bug confirmado do Google: `<ctrl46>` emitido em vez de áudio após múltiplas tool calls. Hipótese: ciclo silêncio-de-espera → retomada de fala repetido N vezes dispara o bug.
 - **Mudanças — `GeminiLiveService.kt`:**
   - `buildFuncao()`: novo parâmetro `nonBlocking: Boolean` — adiciona `"behavior": "NON_BLOCKING"` na declaração da tool
