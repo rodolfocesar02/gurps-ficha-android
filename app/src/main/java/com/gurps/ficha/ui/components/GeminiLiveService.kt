@@ -102,6 +102,8 @@ class GeminiLiveService(private val context: Context) {
     private var watchdogJob: Job? = null
     // Contador de tool calls na sessão — usado para detectar correlação com <ctrl46>
     @Volatile private var toolCallCount = 0
+    // Monitor de taxa de reprodução — detecta aceleração de áudio
+    private var audioMonitorJob: Job? = null
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -1135,16 +1137,28 @@ NUNCA:
         // O write() bloqueia até o HW consumir os dados — garante ritmo natural
         val track = audioTrack
         reproducaoJob = scope.launch(Dispatchers.Default) {
+            // Diagnóstico 1: delta entre chunks
+            // Cada chunk de PCM tem duração teórica = tamanho / (24000 * 2) segundos.
+            // Se o intervalo real entre chegadas for muito menor que a duração, o buffer
+            // acumula e o hardware acelera para esvaziar — isso causa o áudio acelerado.
+            var ultimoChunkMs = 0L
+            var chunkIdx = 0
             for (pcm in audioChannel) {
                 if (!isActive) break
                 reproducaoEmAndamento = true
-                // write() em MODE_STREAM bloqueia até o hardware consumir
-                // Garante que reproduzimos na taxa real de 24kHz sem pular frames
+                val agora = System.currentTimeMillis()
+                val duracaoTeoricaMs = pcm.size * 1000L / 48000L // 16-bit mono = 2 bytes/frame, 24000fps → 48000 B/s
+                if (ultimoChunkMs > 0) {
+                    val deltaMs = agora - ultimoChunkMs
+                    val acumulando = deltaMs < duracaoTeoricaMs / 2
+                    android.util.Log.d("GeminiLive", "♪ chunk#$chunkIdx ${pcm.size}B durTeórica=${duracaoTeoricaMs}ms deltaCheg=${deltaMs}ms${if (acumulando) " ⚠ ACUMULANDO" else ""}")
+                }
+                ultimoChunkMs = agora
+                chunkIdx++
                 var offset = 0
                 while (offset < pcm.size && isActive) {
                     val written = track?.write(pcm, offset, pcm.size - offset) ?: break
                     if (written < 0) {
-                        // Erro de hardware no AudioTrack — loga para diagnóstico
                         android.util.Log.e("GeminiLive", "⚠ audioTrack.write() retornou erro: $written")
                         break
                     }
@@ -1153,6 +1167,37 @@ NUNCA:
                 }
             }
             reproducaoEmAndamento = false
+        }
+
+        // Diagnóstico 2: monitor periódico do playbackHeadPosition
+        // 24000 frames/s = taxa correta. Se avançar mais rápido → hardware acelerando.
+        audioMonitorJob = scope.launch(Dispatchers.Default) {
+            var ultimoFrame = 0L
+            var ultimoTempoMs = 0L
+            while (isActive && sessaoAtiva) {
+                kotlinx.coroutines.delay(500)
+                if (!modeloFalando) continue
+                val frameAtual = audioTrack?.playbackHeadPosition?.toLong() ?: continue
+                val agora = System.currentTimeMillis()
+                if (ultimoFrame > 0 && ultimoTempoMs > 0) {
+                    val deltaFrames = frameAtual - ultimoFrame
+                    val deltaMs = agora - ultimoTempoMs
+                    if (deltaMs > 0 && deltaFrames > 0) {
+                        val taxaReal = deltaFrames * 1000L / deltaMs // frames/s real
+                        val desvio = taxaReal - 24000L
+                        val emoji = when {
+                            desvio > 1200  -> "🔴 ACELERADO"
+                            desvio > 400   -> "🟡 levemente acelerado"
+                            desvio < -1200 -> "🔵 LENTO"
+                            else           -> "🟢 normal"
+                        }
+                        val sinal = if (desvio >= 0) "+$desvio" else "$desvio"
+                        android.util.Log.d("GeminiLive", "♪ taxa HW: ${taxaReal}fps (desvio=$sinal) $emoji | frame=$frameAtual")
+                    }
+                }
+                ultimoFrame = frameAtual
+                ultimoTempoMs = agora
+            }
         }
     }
 
@@ -1231,6 +1276,8 @@ NUNCA:
         capturaJob = null
         keepAliveJob?.cancel()
         keepAliveJob = null
+        audioMonitorJob?.cancel()
+        audioMonitorJob = null
         // Cancela reproducaoJob ANTES de fechar o canal — evita que o job antigo
         // continue iterando o canal velho enquanto já foi recriado para a próxima sessão
         reproducaoJob?.cancel()
