@@ -1224,11 +1224,11 @@ limparFilaAudio()
         reproducaoJob = null
         audioChannel.close()
         audioChannel = Channel(capacity = 200) // recria para próxima sessão
-        audioRecord?.stop()
-        audioRecord?.release()
+        try { audioRecord?.stop() } catch (_: IllegalStateException) {}
+        try { audioRecord?.release() } catch (_: Exception) {}
         audioRecord = null
-        audioTrack?.stop()
-        audioTrack?.release()
+        try { audioTrack?.stop() } catch (_: IllegalStateException) {}
+        try { audioTrack?.release() } catch (_: Exception) {}
         audioTrack = null
         // Restaura modo de áudio normal ao encerrar
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager

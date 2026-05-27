@@ -1832,6 +1832,13 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 307 — [2026-05-27] Fix crash IllegalStateException no AudioRecord.stop()
+
+- **Hash:** (pendente build)
+- **Causa:** `encerrar()` chamado do thread OkHttp (`onClosed`) quando o `AudioRecord` já estava em estado inválido (liberado ou nunca iniciado). `native_stop()` lançava `IllegalStateException` → crash fatal.
+- **Fix:** `try/catch` em `audioRecord?.stop()`, `audioRecord?.release()`, `audioTrack?.stop()`, `audioTrack?.release()` — encerramento nunca mais crashar por estado de hardware.
+- **Status:** ⏳ Aguardando build
+
 ## Lote 306 — [2026-05-27] Mitigação bug <ctrl46>: NON_BLOCKING + detector
 
 - **Hash:** b6df4dd
