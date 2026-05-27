@@ -583,6 +583,11 @@ NUNCA:
             if (isActive && sessaoAtiva && !encerramentoIntencional) {
                 val secsInativo = (System.currentTimeMillis() - ultimaMsgServidor) / 1000
                 android.util.Log.w("GeminiLive", "⚠ Watchdog: ${secsInativo}s sem mensagem do servidor — reconectando")
+                // Reseta modeloFalando antes de reconectar — evita microfone permanentemente
+                // mudo na nova sessão quando o watchdog dispara durante resposta do modelo.
+                modeloFalando = false
+                micReleaseJob?.cancel()
+                micReleaseJob = null
                 reconectarAutomaticamente("fechado")
             }
         }
@@ -743,8 +748,6 @@ NUNCA:
                 } else {
                     // Tool chegou sem áudio — limpa fila por segurança (estado síncrono normal)
                     limparFilaAudio()
-                    turnoTemAudio = false
-                    modeloFalando = false
                     reproducaoEmAndamento = false
                 }
                 val calls = obj.getJSONObject("toolCall").getJSONArray("functionCalls")
@@ -849,7 +852,7 @@ NUNCA:
                                     bytesAudioGerado = 0L
                                     // limparFilaAudio() chama flush() que reseta playbackHeadPosition
                                     // DEVE ser chamado ANTES de capturar framesInicioTurno
-limparFilaAudio()
+                                    limparFilaAudio()
                                     framesInicioTurno = audioTrack?.playbackHeadPosition?.toLong() ?: 0L
                                     mainHandler.post { onEstado(EstadoLive.FALANDO) }
                                     android.util.Log.i("GeminiLive", "♪ Áudio iniciado — mic bloqueado, timer anterior cancelado, framesInicio=$framesInicioTurno")
@@ -933,14 +936,13 @@ limparFilaAudio()
                 if (inputTranscript.isNotBlank()) {
                     val eraPrimeiroFragmento = pendingTextoUsuario.isBlank()
                     pendingTextoUsuario += inputTranscript
+                    ultimaPerguntaUsuario = pendingTextoUsuario
                     android.util.Log.d("GeminiLive", "✎ frag transcrição usuário: \"$inputTranscript\"")
                     // Dispara imediatamente: primeiro fragmento inicia uma nova entrada no chat;
                     // fragmentos seguintes atualizam a entrada existente via append
                     if (eraPrimeiroFragmento) {
-                        ultimaPerguntaUsuario = pendingTextoUsuario
                         mainHandler.post { onTranscricaoUsuario(pendingTextoUsuario) }
                     } else {
-                        ultimaPerguntaUsuario = pendingTextoUsuario
                         mainHandler.post { onAtualizarTranscricaoUsuario(pendingTextoUsuario) }
                     }
                 }
@@ -1226,7 +1228,9 @@ limparFilaAudio()
         watchdogJob = null
         aguardandoRespostaServidor = false
         capturaJob?.cancel()
+        capturaJob = null
         keepAliveJob?.cancel()
+        keepAliveJob = null
         // Cancela reproducaoJob ANTES de fechar o canal — evita que o job antigo
         // continue iterando o canal velho enquanto já foi recriado para a próxima sessão
         reproducaoJob?.cancel()
