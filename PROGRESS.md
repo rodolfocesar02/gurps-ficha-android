@@ -1832,18 +1832,24 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 306 — [2026-05-27] Mitigação bug <ctrl46>: NON_BLOCKING + detector
+
+- **Hash:** (pendente build)
+- **Motivação:** Bug confirmado do Google: `<ctrl46>` emitido em vez de áudio após múltiplas tool calls. Hipótese: ciclo silêncio-de-espera → retomada de fala repetido N vezes dispara o bug.
+- **Mudanças — `GeminiLiveService.kt`:**
+  - `buildFuncao()`: novo parâmetro `nonBlocking: Boolean` — adiciona `"behavior": "NON_BLOCKING"` na declaração da tool
+  - `buscarCatalogo` e `consultarManual`: marcados como `nonBlocking = true` → modelo fala enquanto a tool processa
+  - `toolResponse`: `scheduling=WHEN_IDLE` injetado dentro do `response` — entrega resultado quando modelo terminar de falar
+  - `toolCallCount`: contador de tool calls por sessão — logado em cada `toolCall` e no detector de `<ctrl46>`
+  - Detector `<ctrl46>`: ao detectar token em `outputTranscription`, loga com nível ERROR incluindo `tc=N` (número de tool calls na sessão) para mapear o limiar exato
+  - `encerrar()`: reseta `toolCallCount = 0`
+- **Status:** ⏳ Aguardando build no Android Studio
+
 ## Lote 305 — [2026-05-27] Pesquisa e planejamento: mitigação do bug <ctrl46>
 
-- **Hash:** (pendente — implementação no próximo lote)
+- **Hash:** 075501c
 - **Motivação:** Bug confirmado do Google: modelo `native-audio-preview-12-2025` emite tokens `<ctrl46>` em vez de áudio PCM após múltiplas tool calls em sequência (observado na sessão: tc=2 → silêncio no tc=3). Causa silencios persistentes sem reconexão possível sem perda de contexto.
-- **Pesquisa:**
-  - `<ctrl46>` é bug interno do modelo, não do nosso código
-  - Google Live API suporta ferramentas `NON_BLOCKING` (model fala enquanto tool processa) no Gemini 2.5 Flash Live; suporte em `native-audio-preview` não documentado explicitamente
-  - Hipótese: ciclo silêncio-de-espera → retomada de fala repetido N vezes dispara o bug
-- **Plano (Lote 306):**
-  - Opção A: declarar `buscarCatalogo` e `consultarManual` como `NON_BLOCKING` + respostas com `scheduling=WHEN_IDLE`
-  - Opção C: detectar `<ctrl46>` em `outputTranscription` e logar com contagem de tool calls da sessão
-- **Status:** 🔬 Pesquisa concluída — implementação pendente
+- **Status:** ✅ Pesquisa concluída
 
 ## Lote 304 — [2026-05-26] Fix falso alarme de compressão de contexto
 

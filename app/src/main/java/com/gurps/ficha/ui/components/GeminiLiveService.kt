@@ -100,6 +100,8 @@ class GeminiLiveService(private val context: Context) {
     @Volatile private var ultimoPromptTokenCount = 0
     // Job de watchdog: reinicia a cada mensagem; se expirar sem nova mensagem, reconecta
     private var watchdogJob: Job? = null
+    // Contador de tool calls na sessão — usado para detectar correlação com <ctrl46>
+    @Volatile private var toolCallCount = 0
 
     // Callbacks para o FichaScreen
     var onEstado: (EstadoLive) -> Unit = {}
@@ -282,7 +284,8 @@ NUNCA:
                                 })
                             })
                             put("required", JSONArray().put("tipo").put("query"))
-                        }
+                        },
+                        nonBlocking = true
                     ))
 
                     // ── Edição unificada da ficha ─────────────────────────────────────
@@ -344,7 +347,8 @@ NUNCA:
                                 })
                             })
                             put("required", JSONArray().put("termos"))
-                        }
+                        },
+                        nonBlocking = true
                     ))
 
                     // ── Raças e Metacaracterísticas ───────────────────────────────────
@@ -423,10 +427,13 @@ NUNCA:
         }.toString()
     }
 
-    private fun buildFuncao(nome: String, descricao: String, params: JSONObject): JSONObject {
+    private fun buildFuncao(nome: String, descricao: String, params: JSONObject, nonBlocking: Boolean = false): JSONObject {
         return JSONObject().apply {
             put("name", nome)
             put("description", descricao)
+            // NON_BLOCKING: modelo continua gerando áudio enquanto a tool processa.
+            // Elimina o ciclo silêncio-de-espera → retomada que pode disparar o bug <ctrl46>.
+            if (nonBlocking) put("behavior", "NON_BLOCKING")
             // Gemini Live exige parameters mesmo quando vazio
             val p = if (params.length() > 0) params else JSONObject().apply {
                 put("type", "object")
@@ -718,12 +725,13 @@ NUNCA:
                 timeoutRespostaJob?.cancel()
                 timeoutRespostaJob = null
                 aguardandoRespostaServidor = false
-                // Async function calling: toolCall pode chegar antes do generationComplete.
-                // Se há áudio ativo, para imediatamente — o modelo já decidiu chamar a tool.
+                // NON_BLOCKING: toolCall pode chegar COM áudio ainda em geração (modelo falando).
+                // Nesse caso NÃO interrompemos o áudio — ele continua enquanto processamos a tool.
+                // Apenas interrompemos se o modelo NÃO estava falando (tool síncrona / pausa normal).
                 if (turnoTemAudio || modeloFalando) {
-                    android.util.Log.i("GeminiLive", "♪ toolCall interrompe turno de áudio — limpando fila")
-                    micReleaseJob?.cancel()
-                    micReleaseJob = null
+                    android.util.Log.i("GeminiLive", "♪ toolCall NON_BLOCKING — modelo continua falando durante processamento")
+                } else {
+                    // Tool chegou sem áudio — limpa fila por segurança (estado síncrono normal)
                     limparFilaAudio()
                     turnoTemAudio = false
                     modeloFalando = false
@@ -736,8 +744,9 @@ NUNCA:
                     val id = call.getString("id")
                     val nome = call.getString("name")
                     val args = call.optJSONObject("args") ?: JSONObject()
+                    toolCallCount++
                     android.util.Log.i("GeminiLive", "╔══ 🔧 TOOL CALL ══════════════════════")
-                    android.util.Log.i("GeminiLive", "║  Ferramenta: $nome")
+                    android.util.Log.i("GeminiLive", "║  Ferramenta: $nome  [tc=$toolCallCount na sessão]")
                     android.util.Log.i("GeminiLive", "║  Args: ${args.toString().take(200)}")
                     // Feedback visual imediato — evita silêncio durante RAG (pode demorar ~10s)
                     val labelFerramenta = when (nome) {
@@ -759,7 +768,14 @@ NUNCA:
                     respostas.put(JSONObject().apply {
                         put("id", id)
                         put("name", nome)
-                        put("response", resultado)
+                        // scheduling=WHEN_IDLE: servidor entrega o resultado quando o modelo
+                        // terminar de falar — não interrompe resposta em andamento (NON_BLOCKING).
+                        // Em tools síncronas, WHEN_IDLE equivale a entrega imediata (modelo parado).
+                        // O campo scheduling vai DENTRO do response, junto com os dados do resultado.
+                        val responseObj = JSONObject()
+                        responseObj.put("scheduling", "WHEN_IDLE")
+                        resultado.keys().forEach { key -> responseObj.put(key, resultado.get(key)) }
+                        put("response", responseObj)
                     })
                 }
                 // camelCase conforme spec Gemini Live
@@ -860,8 +876,16 @@ limparFilaAudio()
                         else -> ""
                     }
                     if (fragmento.isNotBlank()) {
-                        android.util.Log.d("GeminiLive", "✎ frag transcrição modelo: \"$fragmento\"")
-                        pendingTranscricaoModelo += fragmento
+                        // Detector de <ctrl46>: bug Google — modelo emite tokens de controle
+                        // em vez de áudio PCM após múltiplas tool calls. Logamos para correlacionar
+                        // com o contador de tool calls e diagnosticar o limiar exato.
+                        if (fragmento.contains("<ctrl46>")) {
+                            val ctrl46Count = fragmento.split("<ctrl46>").size - 1
+                            android.util.Log.e("GeminiLive", "🚨 <ctrl46> DETECTADO: $ctrl46Count tokens | tc=$toolCallCount na sessão | fragmento=\"${fragmento.take(200)}\"")
+                        } else {
+                            android.util.Log.d("GeminiLive", "✎ frag transcrição modelo: \"$fragmento\"")
+                            pendingTranscricaoModelo += fragmento
+                        }
                     }
                 }
 
@@ -1184,6 +1208,7 @@ limparFilaAudio()
         sessionResumptionToken = null // encerramento manual limpa o token
         sessaoAtiva = false
         encerramentoIntencional = false // reseta para próxima sessão
+        toolCallCount = 0
         micReleaseJob?.cancel()
         micReleaseJob = null
         timeoutRespostaJob?.cancel()
