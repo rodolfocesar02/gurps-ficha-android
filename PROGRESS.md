@@ -1832,9 +1832,22 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 305 — [2026-05-27] Pesquisa e planejamento: mitigação do bug <ctrl46>
+
+- **Hash:** (pendente — implementação no próximo lote)
+- **Motivação:** Bug confirmado do Google: modelo `native-audio-preview-12-2025` emite tokens `<ctrl46>` em vez de áudio PCM após múltiplas tool calls em sequência (observado na sessão: tc=2 → silêncio no tc=3). Causa silencios persistentes sem reconexão possível sem perda de contexto.
+- **Pesquisa:**
+  - `<ctrl46>` é bug interno do modelo, não do nosso código
+  - Google Live API suporta ferramentas `NON_BLOCKING` (model fala enquanto tool processa) no Gemini 2.5 Flash Live; suporte em `native-audio-preview` não documentado explicitamente
+  - Hipótese: ciclo silêncio-de-espera → retomada de fala repetido N vezes dispara o bug
+- **Plano (Lote 306):**
+  - Opção A: declarar `buscarCatalogo` e `consultarManual` como `NON_BLOCKING` + respostas com `scheduling=WHEN_IDLE`
+  - Opção C: detectar `<ctrl46>` em `outputTranscription` e logar com contagem de tool calls da sessão
+- **Status:** 🔬 Pesquisa concluída — implementação pendente
+
 ## Lote 304 — [2026-05-26] Fix falso alarme de compressão de contexto
 
-- **Hash:** (ver git log)
+- **Hash:** f4e0137
 - **Causa:** `usageMetadata` vem vazio `{}` em alguns turnos (promptTokenCount=0). O detector interpretava 4915→0 como compressão real.
 - **Fix:** Ignora prompt=0 na detecção e na atualização de `ultimoPromptTokenCount`.
 - **Status:** ✅ Build OK
