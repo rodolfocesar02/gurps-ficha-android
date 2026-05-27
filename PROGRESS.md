@@ -1832,6 +1832,15 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 312 — [2026-05-27] feat: AcousticEchoCanceler + mic sempre aberto
+
+- **Hash:** 703cf38
+- **Motivação:** Pesquisa em repositórios reais (GeminiLive-Assistant-Android, android/ai-samples) mostrou que o padrão correto é usar cancelamento de eco em hardware e deixar o mic aberto o tempo todo — não bloqueio de software.
+- **AcousticEchoCanceler:** ativado em hardware logo após criar o `AudioRecord`. Cancela o eco do speaker no microfone — modelo não ouve a si mesmo.
+- **Mic sempre aberto:** removido `if (modeloFalando) continue` no loop de captura e no keepAlive. O AEC garante que o eco não chega ao servidor.
+- **Resultado esperado:** usuário pode falar e interromper o modelo a qualquer momento, sem janela de silêncio forçado.
+- **Status:** ⏳ Aguardando build e teste
+
 ## Lote 311 — [2026-05-27] Diagnóstico: dois monitores de aceleração de áudio
 
 - **Hash:** ac6e0ea
