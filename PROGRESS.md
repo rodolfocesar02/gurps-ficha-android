@@ -1832,6 +1832,13 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 309 — [2026-05-27] Fix: WHEN_IDLE → SILENT no toolResponse (duplo turno de áudio)
+
+- **Hash:** (pendente build)
+- **Causa:** `scheduling=WHEN_IDLE` fazia o modelo gerar um **segundo turno de áudio** quando recebia o resultado da tool NON_BLOCKING — enquanto o primeiro turno ainda tocava. Resultado: 59 chunks descartados, corte abrupto, recomeço da resposta. Usuário ouvia a resposta "duas vezes".
+- **Fix:** `scheduling=WHEN_IDLE` → `SILENT`: modelo incorpora o resultado da tool na resposta em andamento sem gerar novo turno de fala.
+- **Status:** ⏳ Aguardando build
+
 ## Lote 308 — [2026-05-27] Fix: pergunta interrompida não era salva ao cair durante resposta
 
 - **Hash:** abc1315

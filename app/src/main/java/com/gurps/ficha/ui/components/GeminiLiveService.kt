@@ -778,12 +778,11 @@ NUNCA:
                     respostas.put(JSONObject().apply {
                         put("id", id)
                         put("name", nome)
-                        // scheduling=WHEN_IDLE: servidor entrega o resultado quando o modelo
-                        // terminar de falar — não interrompe resposta em andamento (NON_BLOCKING).
-                        // Em tools síncronas, WHEN_IDLE equivale a entrega imediata (modelo parado).
-                        // O campo scheduling vai DENTRO do response, junto com os dados do resultado.
+                        // scheduling=SILENT: modelo recebe o resultado da tool sem gerar novo
+                        // turno de fala — incorpora os dados na resposta já em andamento.
+                        // WHEN_IDLE causava dois turnos consecutivos de áudio (corte + recomeço).
                         val responseObj = JSONObject()
-                        responseObj.put("scheduling", "WHEN_IDLE")
+                        responseObj.put("scheduling", "SILENT")
                         resultado.keys().forEach { key -> responseObj.put(key, resultado.get(key)) }
                         put("response", responseObj)
                     })
