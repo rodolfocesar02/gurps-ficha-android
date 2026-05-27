@@ -1053,12 +1053,20 @@ NUNCA:
 
         val bufferSize = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         audioRecord = AudioRecord(
-            // MIC simples — sem echo canceller de hardware que suprimia a voz do usuário
-            // quando MODE_IN_COMMUNICATION estava ativo (Lote 281 → Lote 286 fix)
             MediaRecorder.AudioSource.MIC,
             16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,
             bufferSize * 2
-        ).also { it.startRecording() }
+        ).also { rec ->
+            // AcousticEchoCanceler: cancela em hardware o eco do speaker no microfone.
+            // Com isso o mic pode ficar aberto enquanto o modelo fala — sem auto-interrupção.
+            if (android.media.audiofx.AcousticEchoCanceler.isAvailable()) {
+                android.media.audiofx.AcousticEchoCanceler.create(rec.audioSessionId)?.enabled = true
+                android.util.Log.i("GeminiLive", "✓ AcousticEchoCanceler ativado (sessionId=${rec.audioSessionId})")
+            } else {
+                android.util.Log.w("GeminiLive", "⚠ AcousticEchoCanceler não disponível neste dispositivo")
+            }
+            rec.startRecording()
+        }
 
         // Buffer mínimo — write() bloqueia naturalmente na taxa correta (24kHz)
         // Buffer grande causava acúmulo e reprodução acelerada
@@ -1090,8 +1098,6 @@ NUNCA:
                     break
                 }
                 if (lidos > 0) {
-                    // Não envia microfone enquanto modelo fala — evita auto-interrupção
-                    if (modeloFalando) continue
                     val b64 = Base64.encodeToString(buffer.copyOf(lidos), Base64.NO_WRAP)
                     // Formato correto conforme doc: realtimeInput.audio com data+mimeType
                     val msg = JSONObject().apply {
@@ -1108,14 +1114,12 @@ NUNCA:
         }
 
         // Keepalive: envia áudio silencioso a cada 20s para manter WebSocket vivo
-        // Não envia enquanto modelo fala — evita confundir o VAD do servidor
         keepAliveJob = scope.launch {
             val silencio = ByteArray(3200) // 100ms de zeros = silêncio PCM
             val b64silencio = Base64.encodeToString(silencio, Base64.NO_WRAP)
             while (isActive && sessaoAtiva) {
                 kotlinx.coroutines.delay(20_000)
                 if (!sessaoAtiva) break
-                if (modeloFalando) continue
                 try {
                     val ping = JSONObject().apply {
                         put("realtimeInput", JSONObject().apply {
