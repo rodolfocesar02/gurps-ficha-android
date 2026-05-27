@@ -1834,7 +1834,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 307 — [2026-05-27] Fix crash IllegalStateException no AudioRecord.stop()
 
-- **Hash:** (pendente build)
+- **Hash:** ba59716
 - **Causa:** `encerrar()` chamado do thread OkHttp (`onClosed`) quando o `AudioRecord` já estava em estado inválido (liberado ou nunca iniciado). `native_stop()` lançava `IllegalStateException` → crash fatal.
 - **Fix:** `try/catch` em `audioRecord?.stop()`, `audioRecord?.release()`, `audioTrack?.stop()`, `audioTrack?.release()` — encerramento nunca mais crashar por estado de hardware.
 - **Status:** ⏳ Aguardando build
