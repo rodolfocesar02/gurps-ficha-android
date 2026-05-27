@@ -553,9 +553,19 @@ NUNCA:
             override fun onClosed(ws: WebSocket, code: Int, reason: String) {
                 android.util.Log.w("GeminiLive", "WebSocket FECHADO: code=$code reason=$reason")
                 val foiIntencional = encerramentoIntencional
+                // Salva pergunta interrompida ANTES do encerrar() resetar os campos.
+                // Cobre o caso em que a sessão cai enquanto o modelo estava respondendo
+                // (não só durante tool call) — sem isso a reconexão não retoma a pergunta.
+                val perguntaEmAndamento = if (!foiIntencional && ultimaPerguntaUsuario.isNotBlank()) {
+                    ultimaPerguntaUsuario
+                } else null
                 encerrar()
                 // Fechamento inesperado (não foi o usuário que encerrou) → reconectar
                 if (code != 1000 && !foiIntencional) {
+                    if (perguntaEmAndamento != null) {
+                        perguntaInterrompida = perguntaEmAndamento
+                        android.util.Log.i("GeminiLive", "Pergunta interrompida salva: \"${perguntaEmAndamento.take(80)}\"")
+                    }
                     android.util.Log.i("GeminiLive", "Fechamento inesperado (code=$code) — reconectando...")
                     reconectarAutomaticamente("fechado")
                 } else {

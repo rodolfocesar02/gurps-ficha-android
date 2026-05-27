@@ -1832,6 +1832,14 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 308 — [2026-05-27] Fix: pergunta interrompida não era salva ao cair durante resposta
+
+- **Hash:** (pendente build)
+- **Causa:** `perguntaInterrompida` só era setada quando a sessão caía **durante tool call** (dentro do bloco `toolCall` com `webSocket==null`). Se a sessão caísse enquanto o modelo estava **gerando resposta** (sem tool call ativa), a pergunta do usuário era perdida e a reconexão não retomava.
+- **Observado:** usuário perguntou "explique reflexos em combate" → `code=1011` durante resposta → reconectou → modelo disse "lembro onde paramos" mas **não chamou nenhuma tool** e encerrou.
+- **Fix:** `onClosed` salva `ultimaPerguntaUsuario` em `perguntaInterrompida` antes de `encerrar()` resetar os campos, para qualquer fechamento inesperado (`code != 1000`).
+- **Status:** ⏳ Aguardando build
+
 ## Lote 307 — [2026-05-27] Fix crash IllegalStateException no AudioRecord.stop()
 
 - **Hash:** ba59716
