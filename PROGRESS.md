@@ -1832,6 +1832,13 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
+## Lote 311 — [2026-05-27] Diagnóstico: dois monitores de aceleração de áudio
+
+- **Hash:** ac6e0ea
+- **Diagnóstico 1 — delta entre chunks:** dentro do `reproducaoJob`, loga para cada chunk o tamanho, duração teórica (bytes/48000) e delta real de chegada. Se `deltaCheg < duracaoTeórica/2` → loga `⚠ ACUMULANDO`. Indica que chunks chegam mais rápido do que o hardware os consome.
+- **Diagnóstico 2 — monitor periódico `playbackHeadPosition`:** coroutine `audioMonitorJob` que a cada 500ms (enquanto `modeloFalando=true`) mede a taxa real de avanço do hardware em fps. 24000fps = normal. Emojis: 🟢 normal / 🟡 leve / 🔴 ACELERADO / 🔵 lento.
+- **Status:** ⏳ Aguardando build e teste
+
 ## Lote 310 — [2026-05-27] Auditoria linha a linha GeminiLiveService.kt — 5 correções
 
 - **Hash:** 9c651ad
