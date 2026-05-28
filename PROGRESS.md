@@ -1935,7 +1935,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 315 — [2026-05-28] fix: Auditor RAG — verificador de citações + topK 15 + prompt anti-alucinação
 
-- **Hash:** (preenchido após commit)
+- **Hash:** a46d36a
 - **Escopo:** 3 mudanças coordenadas para resolver alucinação confiante do Auditor (caso real:
   modelo citou "[Módulo Básico, pág. 174]" com -5 inventado para "escalar com uma mão",
   regra que não existe no GURPS). Diagnóstico completo em `.agent/skills/DIAGNOSTICO_AUDITOR_RAG.md`.
