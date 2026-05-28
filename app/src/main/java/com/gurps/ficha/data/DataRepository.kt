@@ -760,16 +760,15 @@ open class DataRepository(internal val context: Context) {
             (especializacao.isNotBlank() && (especializacao.contains(alvo) || alvo.contains(especializacao)))
     }
 
-    private fun normalizarComparacao(valor: String): String {
-        val semAcento = Normalizer.normalize(valor.sanitized(), Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-        return semAcento
-            .lowercase()
-            .replace("-", " ")
-            .replace(Regex("[^a-z0-9\\s]"), " ")
-            .replace(Regex("\\s+"), " ")
-            .trim()
-    }
+    private fun normalizarComparacao(valor: String): String =
+        com.gurps.ficha.domain.filters.TextNormalizer.normalize(
+            valor.sanitized(),
+            com.gurps.ficha.domain.filters.TextNormalizer.Options(
+                fixMojibake = false,
+                replaceNonAlphanumWithSpace = true,
+                collapseWhitespace = true,
+            ),
+        )
 
     companion object {
         private val CLASSES_BLOQUEIO = setOf(
@@ -876,14 +875,11 @@ open class DataRepository(internal val context: Context) {
             }
         }
 
-        private fun normalizarChaveClasse(valor: String): String {
-            val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
-                .replace(Regex("\\p{M}+"), "")
-            return semAcento
-                .lowercase()
-                .replace(Regex("\\s+"), " ")
-                .trim()
-        }
+        private fun normalizarChaveClasse(valor: String): String =
+            com.gurps.ficha.domain.filters.TextNormalizer.normalize(
+                valor,
+                com.gurps.ficha.domain.filters.TextNormalizer.SIMPLE,
+            )
     }
 }
 
