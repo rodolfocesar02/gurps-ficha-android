@@ -1917,4 +1917,20 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Próximos passos sugeridos:** após aprovação do usuário, executar a Etapa 1 (baseline de testes) do plano §1 — ainda não iniciado.
 - **Status:** ✅ Relatório entregue; refatoração aguardando aprovação.
 
+## Lote 314 — [2026-05-28] refactor: §1 do relatório DRY — TextNormalizer centralizado (6 de 7 migradas)
+
+- **Hashes (branch `refactor/text-normalizer`, mesclada em `feature/mestre-ia-graphrag`):**
+  - `eecb0e8` — Etapa 2: cria TextNormalizer (sem ligar ainda) + 18 testes
+  - `fdb573d` — Etapa 3: CatalogFilters.normalizarBusca delega ao TextNormalizer
+  - `6657a4c` — Etapa 4: DialogsTecnicas delega ao CatalogFilters (apaga função privada)
+  - `cb6797d` — Etapa 5: SkillEngine + DataRepository (normalizarComparacao + normalizarChaveClasse) delegam
+- **Escopo:** unifica 6 das 7 implementações paralelas de normalização de texto. Cria preset central `TextNormalizer` em `domain/filters/` com 4 modos (`SIMPLE`, `BUSCA_PADRAO`, `PERICIA_RAW`, `ARMA_GRUPO`).
+- **Branch isolada:** trabalho feito em `refactor/text-normalizer` ("modo paranoico" — protegeu a principal). Mesclada após validação.
+- **Cobertura nova:** 18 testes do `TextNormalizer` cobrindo cada modo, incluindo o `ARMA_GRUPO` (Mestre de Armas) que historicamente não tinha teste.
+- **Validação visual:** 5 cenários de busca testados no app pelo usuário (catálogos + Técnicas) — 0 regressões.
+- **Validação automatizada:** baseline preservada (130 verdes, 17 vermelhos pré-existentes não-relacionados) em cada uma das 4 etapas commitadas.
+- **Adiamento consciente — Etapa 6 (Mestre de Armas):** decisão deliberada de não migrar `MestreDeArmasRule.normalize` por risco de regressão silenciosa em cálculo de bônus de dano sem ficha de teste pronta. Preset `ARMA_GRUPO` já implementado e testado, esperando migração futura quando o usuário tiver ficha de validação.
+- **Linhas eliminadas:** ~58 (líquido após criar 102 de TextNormalizer + testes).
+- **Status:** ✅ Mesclado em `feature/mestre-ia-graphrag` (ainda não pushed para origin).
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
