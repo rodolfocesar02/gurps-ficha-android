@@ -1933,4 +1933,52 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Linhas eliminadas:** ~58 (líquido após criar 102 de TextNormalizer + testes).
 - **Status:** ✅ Mesclado em `feature/mestre-ia-graphrag` (ainda não pushed para origin).
 
+## Lote 315 — [2026-05-28] fix: Auditor RAG — verificador de citações + topK 15 + prompt anti-alucinação
+
+- **Hash:** (preenchido após commit)
+- **Escopo:** 3 mudanças coordenadas para resolver alucinação confiante do Auditor (caso real:
+  modelo citou "[Módulo Básico, pág. 174]" com -5 inventado para "escalar com uma mão",
+  regra que não existe no GURPS). Diagnóstico completo em `.agent/skills/DIAGNOSTICO_AUDITOR_RAG.md`.
+
+### Motivação (evidência do logcat)
+- Modelo fez 5 buscas honestas, declarou "não vi resultados nos fragmentos", mas mesmo assim
+  inventou página específica (174) e número (-5) usando "conhecimento padrão de GURPS".
+- Prompt sozinho já proibia isso (linha 11-14), mas modelo desobedeceu — comportamento típico
+  de LLMs que preferem "ser útil" a admitir desconhecimento.
+- Logcat também revelou que `MODO_HNSW_PURO=true` está LIGADO (BM25 desativado), e o RAG
+  retornava 40+ chunks por busca, afogando o modelo em contexto.
+
+### Mudança A — Verificador de Citações (novo)
+- **Arquivo novo:** `domain/MestreIACitationValidator.kt` (~165 linhas).
+- Extrai citações no formato `[Livro, Pág. X]` e `pág. NNN` da resposta do modelo.
+- Compara cada citação contra páginas dos chunks que o RAG efetivamente retornou.
+- Citações sem chunk correspondente são marcadas como "⚠️ não verificadas" e anexadas
+  ao final da resposta com aviso visual para o usuário.
+- **NÃO impede alucinação** (impossível com LLM atual) — apenas AVISA quando acontece.
+- Integração em `MestreIAUseCase.kt` (~15 linhas modificadas) no ponto onde `respostaFinal` é montada.
+
+### Mudança B — HNSW topK 50→15
+- **Arquivo:** `domain/MestreIAGraphEngine.kt`.
+- Dois pontos: linha 77 (modo HNSW puro, ativo hoje) e linha 214 (modo BM25+HNSW, desativado).
+- Constantes do scoreMap e take ajustadas proporcionalmente (50.0 → 15.0) para evitar
+  scores negativos.
+- Resultado esperado: 40+ chunks por busca → ~15 chunks, modelo foca melhor.
+
+### Mudança C — Prompt do Auditor reforçado
+- **Arquivo:** `data/network/MestreIAPromptsAuditor.kt`.
+- Adicionada seção "REGRA CRÍTICA DE CITAÇÃO (LOTE 315)" com:
+  - Lista explícita de comportamentos PROIBIDOS (citar página por inferência, números inventados, etc.).
+  - Lista de comportamentos OBRIGATÓRIOS (declarar quando não achou, marcar conhecimento geral).
+  - Exemplo concreto da alucinação detectada (pág. 174 / -5) como caso negativo.
+  - Avisa o modelo que existe sistema externo verificando suas citações (aumenta cumprimento).
+
+### Validação
+- ✅ Compila (`./gradlew :app:compilePracegoDebugKotlin` BUILD SUCCESSFUL em 12s).
+- ⏳ Validação funcional: usuário vai re-testar a bateria de 7 perguntas reais
+  (registradas em `pergutas.txt`) e comparar respostas antes/depois.
+
+### Rollback
+- 1 commit único na `feature/mestre-ia-graphrag` — `git revert <hash>` desfaz tudo.
+- Nenhuma mudança em testes, banco de dados, ou catálogos.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------

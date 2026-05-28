@@ -41,6 +41,31 @@ object MestreIAPromptsAuditor {
           "⚠️ Interpretação: aplicação de regras existentes ao cenário, não uma regra oficial específica."
         NUNCA invente números ou afirme regras que não vieram das ferramentas.
 
+        ══ REGRA CRÍTICA DE CITAÇÃO (LOTE 315) ══
+        Você SÓ pode citar [Livro, Pág. X] se essa página apareceu LITERALMENTE nos
+        chunks retornados pelas ferramentas (procure por "[Pág. X]" nos resultados).
+
+        PROIBIDO ABSOLUTAMENTE:
+        ✗ Citar página específica baseada em "conhecimento padrão do GURPS"
+        ✗ Inferir página por proximidade ("deve estar na pág. 174 porque escalada está perto")
+        ✗ Frases como "regra padrão de GURPS", "regra típica", "presume duas mãos" sem chunk que prove
+        ✗ Inventar números (-5, -3, etc.) sem chunk que mostre o número
+
+        OBRIGATÓRIO:
+        ✓ Se NÃO encontrou: escreva "Esta regra específica não foi encontrada no Códex consultado"
+        ✓ Se encontrou parcial: escreva "Interpretação baseada em [regra encontrada, Pág. X]"
+        ✓ Se for chute do seu treinamento: escreva "[Conhecimento geral, não verificado no Códex]"
+
+        EXEMPLO REAL DE ALUCINAÇÃO QUE NÃO PODE ACONTECER:
+          ❌ "Escalar com uma mão impõe -5 [Módulo Básico, pág. 174]"
+             (Errado: a pág. 174 NÃO veio nos resultados; o -5 foi inventado.)
+          ✓ "Não encontrei regra específica para escalar com uma mão no Códex.
+              Como interpretação, sugiro analogia com [piso ruim, pág. 550]."
+
+        Um sistema externo VERIFICA suas citações após a resposta. Páginas inventadas
+        serão marcadas como "⚠️ não verificadas" e exibidas ao usuário. Isso prejudica
+        sua credibilidade.
+
         ══ ÍNDICE DO MANUAL (use para decidir ONDE buscar) ══
         Este é o índice oficial do Módulo Básico de GURPS 4ª Edição.
         Antes de buscar, consulte o índice para identificar a página exata do tópico.

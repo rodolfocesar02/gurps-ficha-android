@@ -73,17 +73,18 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo | modo=${if (MODO_HNSW_PURO) "HNSW_PURO" else "BM25+HNSW"}${if (sourceIdFiltro != null) " | livro=$sourceIdFiltro" else ""}")
 
         // MODO HNSW PURO: ignora BM25, usa só o ranking semântico do HNSW
+        // Lote 315: topK reduzido de 50→15 — modelo "se afogava" em chunks demais
         if (MODO_HNSW_PURO && MestreIAVectorEngine.isReady()) {
-            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 50)
+            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 15)
             if (hnswIds.isNotEmpty()) {
                 val chunks = hnswIds.mapNotNull { id -> repository.getChunkById(id) }
                     .filter { !isChunkCorrompido(it.text) }
                     .filter { sourceIdFiltro == null || it.source_id == sourceIdFiltro }
-                val scoresMap = hnswIds.mapIndexed { idx, id -> id to (50.0 - idx) }.toMap()
+                val scoresMap = hnswIds.mapIndexed { idx, id -> id to (15.0 - idx) }.toMap()
                 android.util.Log.i("MestreIA_RAG", "  HNSW PURO: ${chunks.size} chunks | top-5: ${hnswIds.take(5).joinToString()}")
                 return GraphSearchResult(
                     summaries = emptyList(),
-                    relatedChunks = chunks.take(50),
+                    relatedChunks = chunks.take(15),
                     chunkScores = scoresMap
                 )
             }
@@ -210,8 +211,9 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val chunksPontuadosFinais: List<Pair<MestreIAChunk, Double>>
 
         if (MestreIAVectorEngine.isReady()) {
-            // HNSW ANN: top-50 por semântica pura, ~1-5ms
-            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 50)
+            // HNSW ANN: top-15 por semântica pura, ~1-5ms
+            // Lote 315: topK reduzido de 50→15 — modelo "se afogava" em chunks demais
+            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 15)
             if (hnswIds.isNotEmpty()) {
                 val chunksPorId = chunksCandidatos.associateBy { it.chunk_id }
                 val hnswRank = hnswIds.mapIndexed { idx, id -> id to idx }.toMap()
@@ -230,7 +232,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                     val bm25 = bm25ScoresMap[chunk.chunk_id] ?: 0.0
                     val rank = hnswRank[chunk.chunk_id]
                     val scoreHnsw = if (chunk.chunk_id in top5HnswIds) 9.0
-                                    else if (rank != null) bm25 + (50.0 - rank) / 50.0 * 3.0
+                                    else if (rank != null) bm25 + (15.0 - rank) / 15.0 * 3.0
                                     else bm25
                     chunk to scoreHnsw
                 }.sortedByDescending { it.second }

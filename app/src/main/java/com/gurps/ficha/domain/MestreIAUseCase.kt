@@ -399,13 +399,28 @@ class MestreIAUseCase(
 
                         if (resposta.text.isNotBlank() && !ehErroDeApi(resposta.text)) {
                             val temCitacao = resposta.text.contains("[") && (resposta.text.contains("Pág", true) || resposta.text.contains("Pg", true))
-                            val respostaFinal = if (!temCitacao && toolCallsFeitas > 0) {
-                                resposta.text + "\n\n _[AUDITORIA: Sem citações diretas do manual]_"
-                            } else {
-                                resposta.text
+
+                            // Lote 315: Verificador de Citações — detecta páginas alucinadas
+                            val citacoes = MestreIACitationValidator.extrair(resposta.text)
+                            val validacao = MestreIACitationValidator.validar(citacoes, catalogoDinamico.chunks)
+                            val avisoAlucinacao = MestreIACitationValidator.formatarAviso(validacao)
+                            if (validacao.temAlucinacao) {
+                                android.util.Log.w(
+                                    "MestreIA_RAG",
+                                    "║  ALUCINAÇÃO DETECTADA: ${validacao.naoVerificadas.size} citações fora do contexto RAG: " +
+                                        validacao.naoVerificadas.joinToString { it.trecho.take(60) }
+                                )
                             }
 
-                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$iaModel] | iter=$iteracao | toolsFeitas=$toolCallsFeitas | ${respostaFinal.length}chars | citação=$temCitacao")
+                            val respostaFinal = buildString {
+                                append(resposta.text)
+                                if (!temCitacao && toolCallsFeitas > 0) {
+                                    append("\n\n _[AUDITORIA: Sem citações diretas do manual]_")
+                                }
+                                append(avisoAlucinacao)
+                            }
+
+                            android.util.Log.i("MestreIA_RAG", "╚══ RESPOSTA OK [$iaModel] | iter=$iteracao | toolsFeitas=$toolCallsFeitas | ${respostaFinal.length}chars | citação=$temCitacao | alucinou=${validacao.temAlucinacao}")
                             sendResult(toolCallsFeitas > 0, resposta.copy(text = respostaFinal, modelName = iaModel))
                             sucesso = true
                         } else {
