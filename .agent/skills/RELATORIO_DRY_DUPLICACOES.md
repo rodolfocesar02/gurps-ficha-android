@@ -25,7 +25,17 @@ Foram identificados **11 padrões principais** de código duplicado, totalizando
 
 ---
 
-## 1. 🔴 Normalização de Texto — 7 Implementações Paralelas
+## 1. ✅ Normalização de Texto — RESOLVIDO (Lote 314, 6 de 7 migradas)
+
+> **Status:** Implementado em [Lote 314](../../PROGRESS.md) — `TextNormalizer` centralizado em [domain/filters/TextNormalizer.kt](../../app/src/main/java/com/gurps/ficha/domain/filters/TextNormalizer.kt) com 4 presets (`SIMPLE`, `BUSCA_PADRAO`, `PERICIA_RAW`, `ARMA_GRUPO`).
+> **Migradas (6):** CatalogFilters, DialogsTecnicas, SkillEngine, DataRepository.normalizarComparacao, DataRepository.normalizarChaveClasse, FichaSkillDelegate (implícito via SkillEngine).
+> **Adiada (1):** MestreDeArmasRule.normalize — adiada conscientemente por risco de regressão silenciosa em cálculo de bônus de dano sem ficha de teste pronta. Preset `ARMA_GRUPO` já criado e coberto por 5 testes, esperando migração futura.
+> **Ganho:** ~58 linhas duplicadas eliminadas, 18 testes novos cobrindo cada modo (incluindo cobertura do `ARMA_GRUPO` que historicamente não tinha teste).
+
+---
+
+### Diagnóstico original (preservado para referência histórica)
+
 
 ### Evidência
 

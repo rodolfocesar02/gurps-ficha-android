@@ -43,27 +43,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.BuildConfig
+import com.gurps.ficha.domain.filters.CatalogFilters.contemBusca
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PericiaSuplementarItem
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.TecnicaCatalogoItem
 import com.gurps.ficha.model.TecnicaSelecionada
 import com.gurps.ficha.viewmodel.FichaViewModel
-import java.text.Normalizer
 import kotlin.math.abs
-
-private fun normalizarBusca(valor: String): String {
-    val semAcento = Normalizer.normalize(valor, Normalizer.Form.NFD)
-        .replace(Regex("\\p{M}+"), "")
-    return semAcento.lowercase().replace(Regex("\\s+"), " ").trim()
-}
-
-private fun contemBusca(texto: String, busca: String): Boolean {
-    if (busca.isBlank()) return true
-    val buscaNorm = normalizarBusca(busca)
-    if (buscaNorm.isBlank()) return true
-    return normalizarBusca(texto).contains(buscaNorm)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +71,7 @@ fun SelecionarTecnicaDialog(
             contemBusca(tecnica.descricao, busca)
         val matchFonte = filtroFonte.isNullOrBlank() || tecnica.sourceBook.equals(filtroFonte, ignoreCase = true)
         matchBusca && matchFonte
-    }.sortedBy { normalizarBusca(it.nome) }
+    }.sortedBy { com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(it.nome) }
 
     FullscreenDialogContainer(onDismiss = onDismiss) {
         Column(modifier = Modifier.fillMaxSize()) {

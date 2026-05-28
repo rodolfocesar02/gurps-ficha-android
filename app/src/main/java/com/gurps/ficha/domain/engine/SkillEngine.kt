@@ -2,7 +2,7 @@ package com.gurps.ficha.domain.engine
 
 import com.gurps.ficha.model.*
 import com.gurps.ficha.data.DataRepository
-import java.text.Normalizer
+import com.gurps.ficha.domain.filters.TextNormalizer
 
 /**
  * Foundation for GURPS Skills and Techniques rules.
@@ -220,9 +220,6 @@ object SkillEngine {
         return periciaEhCorpoACorpo(pericia) || periciaEhDesarmado(pericia)
     }
 
-    private fun normalizarTexto(texto: String): String {
-        val semAcento = Normalizer.normalize(texto, Normalizer.Form.NFD)
-            .replace(Regex("\\p{M}+"), "")
-        return semAcento.lowercase().trim()
-    }
+    private fun normalizarTexto(texto: String): String =
+        TextNormalizer.normalize(texto, TextNormalizer.SIMPLE)
 }

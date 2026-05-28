@@ -113,7 +113,9 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 ## 8. Domain — Filters
 
-- **`domain/filters/CatalogFilters.kt`** — Normalização de busca canônica do projeto: remove mojibake, aplica NFD (deacento), lowercase, substitui não-alfanuméricos por espaço. `contemBusca` e `igualNormalizado` usados em todo o app para filtros de catálogo.
+- **`domain/filters/TextNormalizer.kt`** — (Lote 314) Normalizador único do projeto. 4 presets: `SIMPLE` (sem acento + lowercase), `BUSCA_PADRAO` (+ mojibake fix + colapsa não-alfanuméricos), `PERICIA_RAW` (preserva `/+_-`), `ARMA_GRUPO` (strip parênteses + despluralização para Mestre de Armas). Consumido por `CatalogFilters`, `DialogsTecnicas`, `SkillEngine`, `DataRepository`. **Pendência:** `MestreDeArmasRule.normalize` ainda tem cópia local — migrar para preset `ARMA_GRUPO` quando houver ficha de teste pronta.
+
+- **`domain/filters/CatalogFilters.kt`** — Fachada pública de busca/comparação. `normalizarBusca` e `contemBusca` delegam ao `TextNormalizer.BUSCA_PADRAO`. Usados em todo o app para filtros de catálogo (vantagens, perícias, magias, armas, armaduras, escudos). Inclui também `normalizarLocal` (caso específico de armaduras — substitui espaço por `_`, não migrado para o TextNormalizer).
 
 ---
 

@@ -6,27 +6,8 @@ import com.gurps.ficha.data.DataRepository
 
 object CatalogFilters {
 
-    fun normalizarBusca(valor: String): String {
-        // 1. LIMPEZA DE MOJIBAKE (Pré-Normalização)
-        // Se sobrar algum caractere bizarro no banco, convertemos aqui.
-        val limpo = valor
-            .replace("ǜ", "a") 
-            .replace("ǭ", "a") 
-            .replace("Ǹ", "e")
-            .replace("Ǧ", "e")
-            .replace("Ǭ", "o")
-            .replace("ǽ", "a")
-        
-        // 2. Decodificação de acentos básica (ã -> a, í -> i)
-        val normalized = Normalizer.normalize(limpo, Normalizer.Form.NFD)
-        val accentRemoved = normalized.replace(Regex("\\p{M}+"), "")
-        
-        // 3. NORMALIZAÇÃO DE BUSCA
-        return accentRemoved.lowercase(java.util.Locale.ROOT)
-            .replace(Regex("[^a-z0-9]"), " ") 
-            .replace(Regex("\\s+"), " ")
-            .trim()
-    }
+    fun normalizarBusca(valor: String): String =
+        TextNormalizer.normalize(valor, TextNormalizer.BUSCA_PADRAO)
 
     fun contemBusca(texto: String, busca: String): Boolean {
         if (busca.isBlank()) return true
