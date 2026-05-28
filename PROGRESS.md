@@ -1910,7 +1910,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 313 — [2026-05-28] docs: relatório DRY de duplicações + plano para §1 (normalização de texto)
 
-- **Hash:** (preenchido após commit)
+- **Hash:** 4340056
 - **Escopo:** Análise — nenhum código de produção alterado.
 - **Entrega 1:** novo arquivo `.agent/skills/RELATORIO_DRY_DUPLICACOES.md` documentando **11 padrões** de código duplicado no projeto Android (~380–450 linhas elimináveis). Inclui evidências por arquivo:linha, exemplos de código, diagnóstico, sugestão de refatoração e plano em 3 lotes (A: RAG/buscas → B: UI → C: infra).
 - **Entrega 2:** plano detalhado para o §1 do relatório (normalização de texto — 7 implementações paralelas), em 7 etapas reversíveis, com rede de segurança via testes antes de qualquer refatoração. Plano apresentado em linguagem de funcionalidade (sem tecniquês) para o usuário aprovar.
