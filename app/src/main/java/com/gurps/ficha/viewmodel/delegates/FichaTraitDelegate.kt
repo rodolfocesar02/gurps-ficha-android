@@ -19,6 +19,7 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
         val permiteMultiplas = definicao.id.equals("ataque_inato", ignoreCase = true)
             || definicao.id.equals("golpeadores", ignoreCase = true)
             || definicao.id.equals("resistencia_a_dano", ignoreCase = true)
+            || definicao.id.equals("habilidades_modulares", ignoreCase = true)
 
         val jaExisteIdentica = personagem.vantagens.any {
             it.definicaoId.equals(definicao.id, true) && it.descricao.equals(descricao, true)

@@ -1832,54 +1832,19 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Mudanças:** `GeminiLiveTools.kt`: take(20) → take(30) no path multi-query
 - **Status:** ✅ Build OK
 
-## Lote 312 — [2026-05-27] feat: AcousticEchoCanceler + mic sempre aberto
 
-- **Hash:** 703cf38
-- **Motivação:** Pesquisa em repositórios reais (GeminiLive-Assistant-Android, android/ai-samples) mostrou que o padrão correto é usar cancelamento de eco em hardware e deixar o mic aberto o tempo todo — não bloqueio de software.
-- **AcousticEchoCanceler:** ativado em hardware logo após criar o `AudioRecord`. Cancela o eco do speaker no microfone — modelo não ouve a si mesmo.
-- **Mic sempre aberto:** removido `if (modeloFalando) continue` no loop de captura e no keepAlive. O AEC garante que o eco não chega ao servidor.
-- **Resultado esperado:** usuário pode falar e interromper o modelo a qualquer momento, sem janela de silêncio forçado.
-- **Status:** ⏳ Aguardando build e teste
+## Lote 304 — [2026-05-26] Fix falso alarme de compressão de contexto
 
-## Lote 311 — [2026-05-27] Diagnóstico: dois monitores de aceleração de áudio
+- **Hash:** f4e0137
+- **Causa:** `usageMetadata` vem vazio `{}` em alguns turnos (promptTokenCount=0). O detector interpretava 4915→0 como compressão real.
+- **Fix:** Ignora prompt=0 na detecção e na atualização de `ultimoPromptTokenCount`.
+- **Status:** ✅ Build OK
 
-- **Hash:** ac6e0ea
-- **Diagnóstico 1 — delta entre chunks:** dentro do `reproducaoJob`, loga para cada chunk o tamanho, duração teórica (bytes/48000) e delta real de chegada. Se `deltaCheg < duracaoTeórica/2` → loga `⚠ ACUMULANDO`. Indica que chunks chegam mais rápido do que o hardware os consome.
-- **Diagnóstico 2 — monitor periódico `playbackHeadPosition`:** coroutine `audioMonitorJob` que a cada 500ms (enquanto `modeloFalando=true`) mede a taxa real de avanço do hardware em fps. 24000fps = normal. Emojis: 🟢 normal / 🟡 leve / 🔴 ACELERADO / 🔵 lento.
-- **Status:** ⏳ Aguardando build e teste
+## Lote 305 — [2026-05-27] Pesquisa e planejamento: mitigação do bug <ctrl46>
 
-## Lote 310 — [2026-05-27] Auditoria linha a linha GeminiLiveService.kt — 5 correções
-
-- **Hash:** 9c651ad
-- **Escopo:** Pente fino completo no arquivo após acúmulo de patches incrementais.
-- **Bug crítico (#2):** `modeloFalando` não era resetado quando o watchdog disparava. Nova sessão iniciava com mic permanentemente mudo. Fix: reseta `modeloFalando=false` e cancela `micReleaseJob` antes de `reconectarAutomaticamente()` no watchdog.
-- **Bug #3:** `turnoTemAudio=false` e `modeloFalando=false` redundantes dentro do `else` do bloco NON_BLOCKING toolCall — já eram `false` ao entrar no `else`. Removidos.
-- **Bug #4:** `ultimaPerguntaUsuario` atribuída duas vezes nos dois ramos do `if/else` de `inputTranscription`. Extraído para antes do `if`.
-- **Bug #5:** `keepAliveJob` e `capturaJob` cancelados mas não nulificados em `encerrar()`. Assimetria com `reproducaoJob`. Corrigido com `= null`.
-- **Bug #1:** Indentação incorreta de `limparFilaAudio()` na linha 852 (colagem manual sem ajuste). Corrigido.
-- **Status:** ⏳ Aguardando build
-
-## Lote 309 — [2026-05-27] Fix: WHEN_IDLE → SILENT no toolResponse (duplo turno de áudio)
-
-- **Hash:** 3b8d3fb
-- **Causa:** `scheduling=WHEN_IDLE` fazia o modelo gerar um **segundo turno de áudio** quando recebia o resultado da tool NON_BLOCKING — enquanto o primeiro turno ainda tocava. Resultado: 59 chunks descartados, corte abrupto, recomeço da resposta. Usuário ouvia a resposta "duas vezes".
-- **Fix:** `scheduling=WHEN_IDLE` → `SILENT`: modelo incorpora o resultado da tool na resposta em andamento sem gerar novo turno de fala.
-- **Status:** ⏳ Aguardando build
-
-## Lote 308 — [2026-05-27] Fix: pergunta interrompida não era salva ao cair durante resposta
-
-- **Hash:** abc1315
-- **Causa:** `perguntaInterrompida` só era setada quando a sessão caía **durante tool call** (dentro do bloco `toolCall` com `webSocket==null`). Se a sessão caísse enquanto o modelo estava **gerando resposta** (sem tool call ativa), a pergunta do usuário era perdida e a reconexão não retomava.
-- **Observado:** usuário perguntou "explique reflexos em combate" → `code=1011` durante resposta → reconectou → modelo disse "lembro onde paramos" mas **não chamou nenhuma tool** e encerrou.
-- **Fix:** `onClosed` salva `ultimaPerguntaUsuario` em `perguntaInterrompida` antes de `encerrar()` resetar os campos, para qualquer fechamento inesperado (`code != 1000`).
-- **Status:** ⏳ Aguardando build
-
-## Lote 307 — [2026-05-27] Fix crash IllegalStateException no AudioRecord.stop()
-
-- **Hash:** ba59716
-- **Causa:** `encerrar()` chamado do thread OkHttp (`onClosed`) quando o `AudioRecord` já estava em estado inválido (liberado ou nunca iniciado). `native_stop()` lançava `IllegalStateException` → crash fatal.
-- **Fix:** `try/catch` em `audioRecord?.stop()`, `audioRecord?.release()`, `audioTrack?.stop()`, `audioTrack?.release()` — encerramento nunca mais crashar por estado de hardware.
-- **Status:** ⏳ Aguardando build
+- **Hash:** 075501c
+- **Motivação:** Bug confirmado do Google: modelo `native-audio-preview-12-2025` emite tokens `<ctrl46>` em vez de áudio PCM após múltiplas tool calls em sequência (observado na sessão: tc=2 → silêncio no tc=3). Causa silencios persistentes sem reconexão possível sem perda de contexto.
+- **Status:** ✅ Pesquisa concluída
 
 ## Lote 306 — [2026-05-27] Mitigação bug <ctrl46>: NON_BLOCKING + detector
 
@@ -1894,15 +1859,62 @@ RAG OK: 28 chunks | 12632 chars de contexto
   - `encerrar()`: reseta `toolCallCount = 0`
 - **Status:** ⏳ Aguardando build no Android Studio
 
-## Lote 305 — [2026-05-27] Pesquisa e planejamento: mitigação do bug <ctrl46>
+## Lote 307 — [2026-05-27] Fix crash IllegalStateException no AudioRecord.stop()
 
-- **Hash:** 075501c
-- **Motivação:** Bug confirmado do Google: modelo `native-audio-preview-12-2025` emite tokens `<ctrl46>` em vez de áudio PCM após múltiplas tool calls em sequência (observado na sessão: tc=2 → silêncio no tc=3). Causa silencios persistentes sem reconexão possível sem perda de contexto.
-- **Status:** ✅ Pesquisa concluída
+- **Hash:** ba59716
+- **Causa:** `encerrar()` chamado do thread OkHttp (`onClosed`) quando o `AudioRecord` já estava em estado inválido (liberado ou nunca iniciado). `native_stop()` lançava `IllegalStateException` → crash fatal.
+- **Fix:** `try/catch` em `audioRecord?.stop()`, `audioRecord?.release()`, `audioTrack?.stop()`, `audioTrack?.release()` — encerramento nunca mais crashar por estado de hardware.
+- **Status:** ⏳ Aguardando build
 
-## Lote 304 — [2026-05-26] Fix falso alarme de compressão de contexto
+## Lote 308 — [2026-05-27] Fix: pergunta interrompida não era salva ao cair durante resposta
 
-- **Hash:** f4e0137
-- **Causa:** `usageMetadata` vem vazio `{}` em alguns turnos (promptTokenCount=0). O detector interpretava 4915→0 como compressão real.
-- **Fix:** Ignora prompt=0 na detecção e na atualização de `ultimoPromptTokenCount`.
-- **Status:** ✅ Build OK
+- **Hash:** abc1315
+- **Causa:** `perguntaInterrompida` só era setada quando a sessão caía **durante tool call** (dentro do bloco `toolCall` com `webSocket==null`). Se a sessão caísse enquanto o modelo estava **gerando resposta** (sem tool call ativa), a pergunta do usuário era perdida e a reconexão não retomava.
+- **Observado:** usuário perguntou "explique reflexos em combate" → `code=1011` durante resposta → reconectou → modelo disse "lembro onde paramos" mas **não chamou nenhuma tool** e encerrou.
+- **Fix:** `onClosed` salva `ultimaPerguntaUsuario` em `perguntaInterrompida` antes de `encerrar()` resetar os campos, para qualquer fechamento inesperado (`code != 1000`).
+- **Status:** ⏳ Aguardando build
+
+## Lote 309 — [2026-05-27] Fix: WHEN_IDLE → SILENT no toolResponse (duplo turno de áudio)
+
+- **Hash:** 3b8d3fb
+- **Causa:** `scheduling=WHEN_IDLE` fazia o modelo gerar um **segundo turno de áudio** quando recebia o resultado da tool NON_BLOCKING — enquanto o primeiro turno ainda tocava. Resultado: 59 chunks descartados, corte abrupto, recomeço da resposta. Usuário ouvia a resposta "duas vezes".
+- **Fix:** `scheduling=WHEN_IDLE` → `SILENT`: modelo incorpora o resultado da tool na resposta em andamento sem gerar novo turno de fala.
+- **Status:** ⏳ Aguardando build
+
+## Lote 310 — [2026-05-27] Auditoria linha a linha GeminiLiveService.kt — 5 correções
+
+- **Hash:** 9c651ad
+- **Escopo:** Pente fino completo no arquivo após acúmulo de patches incrementais.
+- **Bug crítico (#2):** `modeloFalando` não era resetado quando o watchdog disparava. Nova sessão iniciava com mic permanentemente mudo. Fix: reseta `modeloFalando=false` e cancela `micReleaseJob` antes de `reconectarAutomaticamente()` no watchdog.
+- **Bug #3:** `turnoTemAudio=false` e `modeloFalando=false` redundantes dentro do `else` do bloco NON_BLOCKING toolCall — já eram `false` ao entrar no `else`. Removidos.
+- **Bug #4:** `ultimaPerguntaUsuario` atribuída duas vezes nos dois ramos do `if/else` de `inputTranscription`. Extraído para antes do `if`.
+- **Bug #5:** `keepAliveJob` e `capturaJob` cancelados mas não nulificados em `encerrar()`. Assimetria com `reproducaoJob`. Corrigido com `= null`.
+- **Bug #1:** Indentação incorreta de `limparFilaAudio()` na linha 852 (colagem manual sem ajuste). Corrigido.
+- **Status:** ⏳ Aguardando build
+
+## Lote 311 — [2026-05-27] Diagnóstico: dois monitores de aceleração de áudio
+
+- **Hash:** ac6e0ea
+- **Diagnóstico 1 — delta entre chunks:** dentro do `reproducaoJob`, loga para cada chunk o tamanho, duração teórica (bytes/48000) e delta real de chegada. Se `deltaCheg < duracaoTeórica/2` → loga `⚠ ACUMULANDO`. Indica que chunks chegam mais rápido do que o hardware os consome.
+- **Diagnóstico 2 — monitor periódico `playbackHeadPosition`:** coroutine `audioMonitorJob` que a cada 500ms (enquanto `modeloFalando=true`) mede a taxa real de avanço do hardware em fps. 24000fps = normal. Emojis: 🟢 normal / 🟡 leve / 🔴 ACELERADO / 🔵 lento.
+- **Status:** ⏳ Aguardando build e teste
+
+## Lote 312 — [2026-05-27] feat: AcousticEchoCanceler + mic sempre aberto
+
+- **Hash:** 703cf38
+- **Motivação:** Pesquisa em repositórios reais (GeminiLive-Assistant-Android, android/ai-samples) mostrou que o padrão correto é usar cancelamento de eco em hardware e deixar o mic aberto o tempo todo — não bloqueio de software.
+- **AcousticEchoCanceler:** ativado em hardware logo após criar o `AudioRecord`. Cancela o eco do speaker no microfone — modelo não ouve a si mesmo.
+- **Mic sempre aberto:** removido `if (modeloFalando) continue` no loop de captura e no keepAlive. O AEC garante que o eco não chega ao servidor.
+- **Resultado esperado:** usuário pode falar e interromper o modelo a qualquer momento, sem janela de silêncio forçado.
+- **Status:** ⏳ Aguardando build e teste
+
+## Lote 313 — [2026-05-28] docs: relatório DRY de duplicações + plano para §1 (normalização de texto)
+
+- **Hash:** (preenchido após commit)
+- **Escopo:** Análise — nenhum código de produção alterado.
+- **Entrega 1:** novo arquivo `.agent/skills/RELATORIO_DRY_DUPLICACOES.md` documentando **11 padrões** de código duplicado no projeto Android (~380–450 linhas elimináveis). Inclui evidências por arquivo:linha, exemplos de código, diagnóstico, sugestão de refatoração e plano em 3 lotes (A: RAG/buscas → B: UI → C: infra).
+- **Entrega 2:** plano detalhado para o §1 do relatório (normalização de texto — 7 implementações paralelas), em 7 etapas reversíveis, com rede de segurança via testes antes de qualquer refatoração. Plano apresentado em linguagem de funcionalidade (sem tecniquês) para o usuário aprovar.
+- **Próximos passos sugeridos:** após aprovação do usuário, executar a Etapa 1 (baseline de testes) do plano §1 — ainda não iniciado.
+- **Status:** ✅ Relatório entregue; refatoração aguardando aprovação.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

@@ -237,6 +237,9 @@ fun ConfigurarVantagemDialog(
     var classMestre by remember { mutableStateOf("todas") }
     var periciasMestre by remember { mutableStateOf("") }
 
+    // Estados para Habilidades Modulares
+    var selecoesHabMod by remember { mutableStateOf(mapOf<String, HabModTipoSel>()) }
+
     // Estados para Resistente
     var raridadeResistente by remember { mutableStateOf(10) } // Ocasional (Default)
     var grauResistente by remember { mutableStateOf(1f) } // Imunidade (Default)
@@ -259,11 +262,12 @@ fun ConfigurarVantagemDialog(
             "grau" to grauResistente.toString(),
             "atributo" to atributoResistente
         )
+        "habilidades_modulares" -> selecoesHabMod.entries.filter { it.value.ativo }.associate { e -> "habmod_${e.key}" to e.value.niveis.toString() }
         else -> null
     }
 
     // Sincronização de custos especiais
-    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, raridadeResistente, grauResistente) {
+    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, raridadeResistente, grauResistente, selecoesHabMod) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -304,6 +308,9 @@ fun ConfigurarVantagemDialog(
             "resistente" -> {
                 custoEscolhido = CharacterRules.calcularCustoResistente(raridadeResistente, grauResistente)
             }
+            "habilidades_modulares" -> {
+                custoEscolhido = CharacterRules.calcularCustoHabilidadesModulares(selecoesHabMod)
+            }
         }
     }
 
@@ -343,6 +350,7 @@ fun ConfigurarVantagemDialog(
                     custoEscolhido = custoEscolhido,
                     nivel = nivel,
                     modificadores = mods,
+                    specialRule = definicao.specialRule,
                     metadados = metadados
                 )
 
@@ -564,12 +572,19 @@ fun ConfigurarVantagemDialog(
                                     onChanged = { r, g, a -> raridadeResistente = r; grauResistente = g; atributoResistente = a }
                                 )
                             }
+                            "habilidades_modulares" -> {
+                                HabilidadesModularesConfig(
+                                    selecoes = selecoesHabMod,
+                                    onChanged = { selecoesHabMod = it }
+                                )
+                            }
                             else -> {
+                                val (minCusto, maxCusto) = definicao.getIntervaloVariavel()
                                 Text("Custo Variável:")
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    TextButton(onClick = { custoEscolhido -= 1 }) { Text("-1") }
+                                    TextButton(onClick = { custoEscolhido = (custoEscolhido - 1).coerceIn(minCusto, maxCusto) }, enabled = custoEscolhido > minCusto) { Text("-1") }
                                     Text("$custoEscolhido pts", fontWeight = FontWeight.Bold)
-                                    TextButton(onClick = { custoEscolhido += 1 }) { Text("+1") }
+                                    TextButton(onClick = { custoEscolhido = (custoEscolhido + 1).coerceIn(minCusto, maxCusto) }, enabled = custoEscolhido < maxCusto) { Text("+1") }
                                 }
                             }
                         }
@@ -681,6 +696,17 @@ fun EditarVantagemDialog(
     // Estados para Resistente (Edição)
     var raridadeResistente by remember { mutableStateOf(vantagem.metadados?.get("raridade")?.toIntOrNull() ?: 10) }
     var grauResistente by remember { mutableStateOf(vantagem.metadados?.get("grau")?.toFloatOrNull() ?: 1f) }
+
+    // Estados para Habilidades Modulares (Edição) — reconstrói do metadados salvo
+    var selecoesHabMod by remember {
+        val inicial: Map<String, HabModTipoSel> = vantagem.metadados
+            ?.entries
+            ?.filter { it.key.startsWith("habmod_") }
+            ?.associate { entry ->
+                entry.key.removePrefix("habmod_") to HabModTipoSel(ativo = true, niveis = entry.value.toIntOrNull() ?: 1)
+            } ?: emptyMap()
+        mutableStateOf(inicial)
+    }
     var atributoResistente by remember { mutableStateOf(vantagem.metadados?.get("atributo") ?: "HT") }
 
     var freqAliado by remember { mutableStateOf(vantagem.metadados?.get("multFrequencia")?.toFloatOrNull() ?: 1f) }
@@ -702,7 +728,7 @@ fun EditarVantagemDialog(
     var isContactFavor by remember { mutableStateOf(vantagem.metadados?.get("isContact")?.toBoolean() ?: false) }
 
     // Sincronização de custos para Editar
-    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, classMestre, raridadeResistente, grauResistente) {
+    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, classMestre, raridadeResistente, grauResistente, selecoesHabMod) {
         when (vantagem.definicaoId) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -743,6 +769,11 @@ fun EditarVantagemDialog(
             "resistente" -> {
                 custoEscolhido = CharacterRules.calcularCustoResistente(raridadeResistente, grauResistente)
             }
+            "habilidades_modulares" -> {
+                custoEscolhido = CharacterRules.calcularCustoHabilidadesModulares(
+                    selecoesHabMod.entries.filter { it.value.ativo }.associate { e -> "habmod_${e.key}" to e.value.niveis.toString() }
+                )
+            }
         }
     }
 
@@ -767,11 +798,16 @@ fun EditarVantagemDialog(
             "grau" to grauResistente.toString(),
             "atributo" to atributoResistente
         )
+        "habilidades_modulares" -> selecoesHabMod.entries.filter { it.value.ativo }.associate { e -> "habmod_${e.key}" to e.value.niveis.toString() }
         else -> null
     }
 
     val def = remember { CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(vantagem.definicaoId) }
-    val specialRule = vantagem.specialRule ?: def?.specialRule ?: ""
+    // specialRule: tenta na instância salva, depois no catálogo, depois infere pelo próprio id da vantagem
+    val specialRule = vantagem.specialRule
+        ?: def?.specialRule
+        ?: CharacterRules.DATA_REPOSITORY_INSTANCE?.getVantagemPorId(vantagem.definicaoId)?.specialRule
+        ?: vantagem.definicaoId
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -789,6 +825,7 @@ fun EditarVantagemDialog(
                     custoEscolhido = custoEscolhido,
                     nivel = nivel,
                     modificadores = mods,
+                    specialRule = specialRule,
                     metadados = metadados
                 )
                 
@@ -832,6 +869,7 @@ fun EditarVantagemDialog(
                     "telecomunicacao" -> TelecomunicacaoConfig(currentType = tipoTelecomunicacao, onChanged = { tipoTelecomunicacao = it })
                     "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(currentType = tipoAparar, currentSkill = periciaAparar, onChanged = { t, s -> tipoAparar = t; periciaAparar = s })
                     "mestre_de_armas" -> MestreDeArmasConfig(currentClass = classMestre, currentSkills = periciasMestre, onChanged = { c, s -> classMestre = c; periciasMestre = s })
+                    "habilidades_modulares" -> HabilidadesModularesConfig(selecoes = selecoesHabMod, onChanged = { selecoesHabMod = it })
                 }
 
                 OutlinedTextField(value = descricao, onValueChange = { descricao = it }, label = { Text("Descrição") }, modifier = Modifier.fillMaxWidth())

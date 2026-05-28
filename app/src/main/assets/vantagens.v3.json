@@ -48,7 +48,6 @@
   },
   {
     "id": "adaptabilidade_cultural",
-    "nome": "Adaptabilidade Cultural",
     "pagina": 35,
     "costKind": "fixed",
     "fixed": 10,
@@ -1225,7 +1224,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é capaz de controlar normalmente funções biológicas involuntárias, como pulsação, fluxo sanguíneo, digestão e respiração. Cada nível desta vantagem concede um bônus de +1 em qualquer teste de HT que seria beneficiado por esse controle (a critério do Mestre), incluindo os testes de sangramento (v. Sangramento, pág. 420) e testes para se recuperar de doenças e envenenamento (não resistir). O personagem também é capaz de entrar em um transe semelhante à morte. Qualquer indivíduo que não esteja familiarizado com o metabolismo do personagem precisa vencer uma Disputa Rápida de Diagnose vs. HT + Controle do Metabolismo do personagem para descobrir que ele não está morto. Nesse estado, cada nível de Controle do Metabolismo reduz em 10% a quantidade de oxigênio necessária para o personagem se manter vivo (com um nível maior ou igual a 10, o personagem não respira) e dobra a quantidade de tempo que ele consegue viver sem alimento ou água. O personagem não tem consciência de seus arredores enquanto se encontra em transe, mas acorda automaticamente se for ferido. Ele também consegue ajustar um “alarme” mental para acordá-lo depois de algum tempo. Esta habilidade é incompatível com a metacaracterística Máquina (pág. 262)."
+    "descricao": "O personagem é capaz de controlar normalmente funções biológicas involuntárias, como pulsação, fluxo sanguíneo, digestão e respiração.\n\nCada nível desta vantagem concede um bônus de +1 em qualquer teste de HT que seria beneficiado por esse controle (a critério do Mestre), incluindo os testes de sangramento (v. Sangramento, pág. 420) e testes para se recuperar de doenças e envenenamento (não resistir).\n\nO personagem também é capaz de entrar em um transe semelhante à morte.\n\nQualquer indivíduo que não esteja familiarizado com o metabolismo do personagem precisa vencer uma Disputa Rápida de Diagnose vs. HT + Controle do Metabolismo do personagem para descobrir que ele não está morto.\n\nNesse estado, cada nível de Controle do Metabolismo reduz em 10% a quantidade de oxigênio necessária para o personagem se manter vivo.\n\nCom um nível maior ou igual a 10, o personagem não respira.\n\nCada nível também dobra a quantidade de tempo que ele consegue viver sem alimento ou água.\n\nO personagem não tem consciência de seus arredores enquanto se encontra em transe, mas acorda automaticamente se for ferido.\n\nEle também consegue ajustar um “alarme” mental para acordá-lo depois de algum tempo.\n\nEsta habilidade é incompatível com a metacaracterística Máquina (pág. 262)."
   },
   {
     "id": "controle_termico",
@@ -1240,7 +1239,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é capaz de alterar a temperatura ambiente. O aquecimento ou esfriamento está limitado a 10 °C por nível e ocorre a uma taxa de 1 °C por nível a cada segundo de concentração. O personagem é capaz de afetar um raio de dois metros a uma distância de até 10 metros. Utilize Alcance Ampliado (pág. 102) ou Alcance Reduzido (pág. 110) para modificar essa distância; acrescente níveis de Efeito de Área (pág. 105) para aumentar o raio. Esta habilidade nunca causa dano direto. Para isso, compre Ataque Inato normalmente por queimadura (no caso de chamas) ou fadiga (no caso de ataques que causam dano por meio de alterações na temperatura corporal)."
+    "descricao": "O personagem é capaz de alterar a temperatura ambiente.\n\nO aquecimento ou esfriamento está limitado a 10 °C por nível e ocorre a uma taxa de 1 °C por nível a cada segundo de concentração.\n\nO personagem é capaz de afetar um raio de dois metros a uma distância de até 10 metros.\n\nUtilize Alcance Ampliado (pág. 102) ou Alcance Reduzido (pág. 110) para modificar essa distância.\n\nAcrescente níveis de Efeito de Área (pág. 105) para aumentar o raio.\n\nEsta habilidade nunca causa dano direto.\n\nPara isso, compre Ataque Inato normalmente por queimadura (no caso de chamas) ou fadiga (no caso de ataques que causam dano por meio de alterações na temperatura corporal)."
   },
   {
     "id": "crescimento",
@@ -1755,7 +1754,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "Comunicação telepática permanente com um ou mais indivíduos. Custo: 5 pts (1 pessoa), 10 pts (2-9), 20 pts (10-99), etc."
+    "descricao": "O personagem se encontra em comunicação telepática permanente com outro indivíduo — geralmente um irmão gêmeo, um ente querido, um membro da mesma colmeia, etc.\n\nO personagem será automaticamente bem-sucedido em todas as tentativas de contatar essa pessoa com Diapsiquia (v. Telecomunicação, pág. 93) e Leitura da Mente (pág. 68), contanto que ela decida não resistir ou tenha Mentalidade de Escravo.\n\nElo Mental não permite contato automático a distâncias interestelares (mais de 0,1 ano-luz) nem consegue alcançar outras dimensões, mundos paralelos, etc.\n\nEsta vantagem custa 5 pontos para uma pessoa, 10 pontos para 2–9 pessoas, 20 pontos para 10–99 pessoas, 30 pontos para 100–999 pessoas e assim por diante — adicione 10 pontos ao custo para cada aumento de dez vezes no número de pessoas.\n\nVia de regra, o Mestre deve permitir que PdJs tenham Elo Mental apenas com Aliados, Contatos, Dependentes, duplicatas (v. Duplicação, pág. 55) e outros PdJs (se os jogadores que os controlam permitirem)."
   },
   {
     "id": "empatia",
@@ -1770,7 +1769,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Sensibilidade para sentir as intenções das pessoas. Sensível: -3 no teste de IQ, +1 em perícias (5 pts). Empatia: teste normal, +3 em perícias (15 pts)."
+    "descricao": "O personagem tem uma “sensibilidade” para as outras pessoas.\n\nQuando conhece ou encontra alguém depois de uma longa separação, ele pode pedir ao Mestre que faça um teste de IQ em seu lugar.\n\nO Mestre lhe dirá então o que o personagem “sente” em relação àquela pessoa.\n\nNo caso de um fracasso no teste, o Mestre deve dar uma informação falsa para o jogador.\n\nEste talento é excelente para identificar impostores, possessões por espíritos, etc., e para descobrir a verdadeira lealdade dos PdMs.\n\nEle também pode ser usado para descobrir se alguém está mentindo — ele não revela a verdade, somente se a pessoa está sendo sincera ou não com o personagem.\n\nEsta vantagem pode ser comprada em dois níveis:\n\n## Sensível\n\nA habilidade do personagem não é totalmente confiável; o teste de IQ sofre uma penalidade de -3.\n\nO personagem recebe um bônus de +1 nas perícias Detecção de Mentiras e Adivinhação, e nos testes de Psicologia para analisar um indivíduo com quem o personagem pode manter um diálogo.\n\nCusto: 5 pontos.\n\n## Empatia\n\nA habilidade funciona com o valor total da IQ, e o bônus para Detecção de Mentiras, Adivinhação e Psicologia é igual a +3.\n\nCusto: 15 pontos.\n\nEsta vantagem funciona apenas com criaturas inteligentes (IQ 6+) e naturais.\n\nOs equivalentes para animais, plantas e entidades sobrenaturais são Empatia com Animais (pág. 57), Empatia com Plantas (pág. 57) e Empatia com Espíritos (pág. 57), respectivamente."
   },
   {
     "id": "empatia_com_animais",
@@ -1785,7 +1784,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Compreende emoções de animais e pode usar influência neles. Custo não especificado com total clareza; em geral é tratado como similar à Empatia."
+    "descricao": "O personagem tem um talento incomum para compreender as motivações dos animais.\n\nQuando ele encontra um animal, o Mestre deve fazer um teste de IQ e dizer o que o personagem está “sentindo”.\n\nIsso revela o estado emocional da criatura — amigável, assustada, hostil, faminta, etc. — e se ela se encontra sob controle sobrenatural.\n\nO personagem também pode usar suas perícias de Influenciar (pág. 359) em animais, do mesmo modo que faria com seres racionais, o que normalmente garante uma reação positiva.\n\nEsta vantagem muitas vezes é acompanhada por algum nível de Companheiro Animal (v. Talento, pág. 90) e Senso do Dever (Animais) ou Voto (Vegetarianismo)."
   },
   {
     "id": "empatia_com_espiritos",
@@ -1800,7 +1799,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Funciona como Empatia com espíritos. Custo não especificado com total clareza na fonte."
+    "descricao": "O personagem está em sintonia com os espíritos e recebe os benefícios da vantagem Empatia (pág. 57) quando lida com eles.\n\nCom um sucesso em um teste de IQ, o personagem é capaz de ter uma sensação geral com relação às intenções de qualquer entidade que encontre.\n\nDa mesma forma, suas perícias de Influenciar (Diplomacia, Sex Appeal, etc.) funcionam normalmente sobre espíritos, o que diferencia o personagem da maioria dos mortais.\n\nEmpatia com Espíritos não evita que espíritos malignos ou maliciosos tentem prejudicá-lo, mas, a critério do Mestre, será mais fácil detectar os planos desses seres e combatê-los."
   },
   {
     "id": "empatia_com_plantas",
@@ -1815,7 +1814,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Compreende plantas e pode influenciá-las. Custo não especificado com total clareza na fonte."
+    "descricao": "O personagem tem uma harmonia incomum com coisas em desenvolvimento.\n\nAo encontrar uma planta, o Mestre deve fazer um teste de IQ.\n\nNo caso de um sucesso, ele fornece informações sobre a saúde da planta e se ela tem origem natural ou sobrenatural.\n\nAlém disso, essa vantagem funciona como Empatia (pág. 57) em relação a plantas inteligentes e permite que o personagem utilize suas perícias de Influenciar (pág. 359) nessas entidades — o que normalmente garante uma reação positiva.\n\nEsta habilidade costuma aparecer em conjunto com algum nível de Dedos Verdes (v. Talento, pág. 90) e, também com frequência, Senso do Dever (Plantas) ou Voto (usar material botânico somente se ele for recolhido sem causar uma lesão grave à planta)."
   },
   {
     "id": "encolhimento",
@@ -1830,7 +1829,7 @@
     "rawCost": "5/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode encolher, reduzindo o MT. Custa 10 pontos/nível (não especificado)."
+    "descricao": "O personagem é capaz de encolher à vontade.\n\nCada nível desta vantagem permite ao personagem alterar seu modificador de tamanho em -1, à razão de -1 MT por segundo.\n\nO personagem volta ao tamanho normal à mesma razão.\n\nVia de regra, o personagem não pode carregar nenhum equipamento, nem mesmo roupas, quando estiver na forma reduzida.\n\nA habilidade de transportar objetos nesse estado é uma ampliação.\n\nQuando o personagem encolher, determine sua nova altura com base na Tabela de Modificador de Tamanho (pág. 19).\n\nCada variação de -6 no MT reduz a altura em um fator de 10 vezes.\n\nDiminua o Deslocamento, alcance, dano (no caso de ataques desarmados, Ataques Inatos ou armas encolhidas), PV e RD na mesma proporção.\n\nCada penalidade de -2 também reduz o peso em um fator de 10.\n\nNesse caso, considere níveis ímpares como uma penalidade adicional de -1, ou seja, um fator adicional.\n\nExemplo: uma penalidade de -3 no MT reduz o peso do personagem em um fator de 30.\n\nExemplo:\n\nUm personagem com 1,75 m de altura (MT 0) compra Encolhimento 12.\n\nIsso permite a ele encolher até um MT de -12, reduzindo sua altura em um fator de até 100 vezes, ou seja, mais ou menos 1,75 cm.\n\nNo entanto, com essa altura, ele tem apenas 1% do seu Deslocamento, alcance, PV e RD usuais e terá que dividir qualquer dano que causar por 100.\n\nSeu peso diminui em um fator de 1.000.000."
   },
   {
     "id": "equilibrio_perfeito",
@@ -1845,7 +1844,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem nunca perde o equilíbrio em superfícies estreitas, recebe bônus em testes relevantes. Custa 15 pontos."
+    "descricao": "Em condições normais, o personagem sempre consegue manter o equilíbrio, independente de quão estreita é a superfície sobre a qual ele está caminhando.\n\nIsso permite ao personagem caminhar sobre uma corda bamba, recifes, galhos de árvore ou qualquer outra superfície fixa sem precisar de um teste.\n\nSe a superfície estiver úmida, escorregadia ou instável, o personagem recebe um bônus de +6 nos testes para verificar se ele consegue se manter em pé.\n\nDurante o combate, ele recebe um bônus de +4 nos testes de DX e de perícias baseadas em DX para se manter em pé ou não ser derrubado.\n\nPor último, o personagem recebe um bônus de +1 nos testes de Acrobacia, Escalada e Pilotagem."
   },
   {
     "id": "equipamento_caracteristico",
@@ -1860,7 +1859,7 @@
     "rawCost": "Variável",
     "specialRule": "equipamento_caracteristico",
     "tags": [],
-    "descricao": "Objetos valiosos que fazem parte da história do personagem. Cada ponto equivale a 50% dos recursos iniciais."
+    "descricao": "O personagem tem coisas distintas e valiosas que não estão relacionadas com seu nível de riqueza.\n\nEsses objetos fazem parte de sua história pessoal tanto quanto sua reputação e suas perícias.\n\nO jogador tem que explicar a origem dessas posses: ganhou sua nave estelar em um jogo de cartas, herdou sua espada mágica de um mentor, etc.\n\nNo caso de equipamentos que possam ser comprados com dinheiro, como armas e armaduras, cada ponto de Equipamento Característico concede produtos que valem até 50% dos recursos iniciais médios da campanha, mas nunca em dinheiro.\n\nNo entanto, no caso de objetos criados como personagens, utilize as regras descritas na vantagem Aliados (pág. 35).\n\nO Mestre deve decidir se companheiros androides, corcéis leais, veículos personalizados, etc., devem ser tratados como equipamento (com um custo em dinheiro) ou personagens (com um custo em pontos).\n\nSe o personagem perder o Equipamento Característico ou vendê-lo a contragosto, ou se ele for roubado ou confiscado, o Mestre deve dar a ele a oportunidade de recuperá-lo durante a aventura.\n\nSe ele estiver realmente perdido para sempre por alguma eventualidade, o Mestre deve devolver os pontos de personagem, ou substituir o objeto por outro de valor equivalente.\n\nNo entanto, se o personagem vender ou se desfizer do Equipamento Característico por vontade própria, então ele estará perdido junto com os pontos gastos."
   },
   {
     "id": "escavacao",
@@ -1875,7 +1874,7 @@
     "rawCost": "30 + 5/nível",
     "specialRule": "escavacao",
     "tags": [],
-    "descricao": "O personagem pode cavar túneis através de solo e rocha. Custa 30 pts + 5 pts por ponto de Deslocamento de Escavação."
+    "descricao": "O personagem é capaz de atravessar solo e rocha, deixando entulhos para trás.\n\nA passagem cavada tem largura suficiente para que ele possa caminhar dentro dela.\n\nEle se move através de rochas com metade do seu Deslocamento de Escavação.\n\nO Mestre pode querer verificar as chances de o túnel desabar atrás do personagem.\n\nO personagem deve fazer um teste por minuto contra o NH mais elevado entre Engenharia (Mineração), Prospecção-3 ou IQ-4 para cavar um túnel estável.\n\nEsses valores podem receber bônus no caso de rochas sólidas e penalidades para rochas fracas ou terra solta.\n\nCada redução de metade do Deslocamento de Escavação concede um bônus de +1 nesses testes."
   },
   {
     "id": "escorregadio",
@@ -1890,7 +1889,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Bônus de +1 por nível para se libertar de amarras e em combate corporal. Custa 2 pontos/nível."
+    "descricao": "O personagem é difícil de segurar.\n\nEle pode ser viscoso, ter moléculas muito lisas ou estar cercado por um campo de força que evita fricção.\n\nCada nível nesta característica, até no máximo cinco, concede um bônus de +1 nos testes de ST, DX e Fuga feitos pelo personagem para se libertar de amarras, se desvencilhar em um combate corporal ou se espremer por aberturas estreitas."
   },
   {
     "id": "escudo_mental",
@@ -1908,7 +1907,7 @@
       "combate",
       "mental"
     ],
-    "descricao": "Bônus de +4 por nível para resistir a ataques mentais. Custa 4 pontos/nível. Limitações: Cibernética (-50%), Telepático (-10%)."
+    "descricao": "O personagem possui um “escudo” que o avisa ou defende de ataques mentais.\n\nAdicione o nível de Escudo Mental do personagem à sua IQ ou Vontade sempre que ele for resistir a uma vantagem com a limitação Telepático (v. o Capítulo 6) ou a uma mágica relacionada entre as Mágicas de Comunicação e Empatia (pág. 245) ou Mágicas de Controle da Mente (pág. 245).\n\nO escudo também protege o personagem de tentativas de localizar sua mente utilizando magia ou psiquismo.\n\nPara encontrá-lo, o controlador dessas habilidades precisa vencer uma Disputa Rápida contra a Vontade + Escudo Mental do personagem.\n\nO personagem é capaz de desligar voluntariamente seu Escudo Mental se quiser, para permitir que um amigo leia sua mente, por exemplo.\n\nEssa é uma ação livre, mas precisa ser realizada no início do turno.\n\nEscudo Mental protege o personagem enquanto ele está dormindo ou inconsciente, a menos que ele tenha adormecido ou desmaiado enquanto o escudo se encontrava voluntariamente desligado."
   },
   {
     "id": "espinhos",
@@ -1923,7 +1922,7 @@
     "rawCost": "1 a 3",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem espinhos defensivos. Espinhos Curtos (1d-2 perf): 1 pt. Espinhos Longos (1d perf): 3 pts."
+    "descricao": "O personagem tem espinhos afiados, como os de um porco-espinho ou de uma equidna, localizados em partes estratégicas do corpo.\n\nTrata-se de uma arma defensiva com a função de desencorajar possíveis agressores.\n\nO personagem não pode usar ativamente seus Espinhos.\n\nNo entanto, uma vez por rodada, como uma ação livre, ele tem direito a um teste de DX-4 para ver se atinge qualquer inimigo que se encontra em combate corporal com ele.\n\nO teste recebe um bônus de +2 para inimigos que estiverem atacando pelas costas.\n\nInimigos que estiverem agarrando o personagem ou que derem um encontrão nele são atingidos imediata e automaticamente.\n\nNo caso de um encontrão, eles sofrem o dano máximo.\n\n## Espinhos Curtos\n\nCom 2,5 a 5 cm de comprimento.\n\nCausam 1d-2 ponto de dano por perfuração.\n\nAlcance C.\n\nCusto: 1 ponto.\n\n## Espinhos Longos\n\nCom 30 a 60 cm de comprimento.\n\nCausam 1d ponto de dano por perfuração.\n\nAlcance C.\n\nCusto: 3 pontos."
   },
   {
     "id": "estabilidade_no_emprego",
@@ -1938,7 +1937,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem tem um emprego vitalício do qual não pode ser despedido. Custa 5 pontos."
+    "descricao": "O personagem tem um emprego do qual não pode ser despedido.\n\nEle só perderá esse emprego, e a vantagem, como resultado de um mau comportamento absurdo: assalto, imoralidade grave, etc.\n\nDo contrário, sua atividade e salário estão garantidos para o resto da vida.\n\nIsso é mais comum entre professores universitários nos dias de hoje, mas também se aplica a juízes, sacerdotes, senadores, etc., em várias sociedades."
   },
   {
     "id": "estatica_psiquica",
@@ -1953,7 +1952,7 @@
     "rawCost": "30",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é imune a poderes psíquicos. Custo base tratado como não totalmente especificado na fonte. Ampliações: Ativada/Desativada (+100%), Efeito de Área (+50%/nível). Limitação: Resistível (-50%)."
+    "descricao": "O personagem sofre de uma “invalidez” psíquica.\n\nHabilidades psíquicas não conseguem afetá-lo diretamente ou a qualquer coisa que esteja sendo carregada ou vestida por ele.\n\nExemplo: um indivíduo com telecinese poderia arremessar uma pedra contra o personagem, mas não seria capaz de fazê-lo levitar nem de tirar uma espada de sua mão."
   },
   {
     "id": "expectativa_de_vida_ampliada",
@@ -1970,7 +1969,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Cada nível dobra a idade de maturidade e os patamares de envelhecimento. Custa 2 pontos/nível."
+    "descricao": "Um indivíduo com ciclo de vida médio atinge a maturidade aos 18 anos de idade e os efeitos do envelhecimento (pág. 444) aos 50, acelerando aos 70 e 90.\n\nCada nível de Expectativa de Vida Ampliada dobra todos esses valores.\n\nObserve que para um personagem que deseja obter mais que sete níveis nesta característica, o que o faria atingir a maturidade aos 2.304 anos de idade e começar a envelhecer a partir dos 6.400 anos, vale mais a pena comprar Idade Imutável (pág. 63)."
   },
   {
     "id": "experiencia_g",
@@ -2015,7 +2014,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem aprende idiomas com um nível de compreensão extra. Custa 10 pontos."
+    "descricao": "O personagem tem jeito para idiomas.\n\nQuando aprende um idioma com um nível de compreensão maior que Nenhum, ele automaticamente passa a poder usá-lo como se o conhecesse com um nível de compreensão a mais.\n\nCom isso, o personagem pode comprar um idioma no nível Com Sotaque por 2 pontos ou no nível Materna por 4 pontos.\n\nPara conhecer todas as regras sobre idiomas, consulte a seção Idiomas (pág. 23)."
   },
   {
     "id": "fala_subaquatica",
@@ -2030,22 +2029,22 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode falar e ouvir debaixo d'água. Custa 5 pontos. Ampliação: Através de Interface (+50%)."
+    "descricao": "O personagem é capaz de falar normalmente e compreender o que os outros dizem quando se encontra sob a água."
   },
   {
     "id": "fala_subsonica",
     "nome": "Fala Subsônica",
     "pagina": 59,
-    "costKind": "fixed",
-    "fixed": 10,
+    "costKind": "range",
+    "fixed": null,
     "perLevel": null,
     "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "10",
+    "min": 0,
+    "max": 10,
+    "rawCost": "0 a 10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem fala em frequência subsônica. Custo: 0 pt (só subsônica) ou 10 pts (alterna com normal)."
+    "descricao": "O personagem é capaz de falar utilizando sons de frequência extremamente baixa.\n\nEsta característica abrange Audição Subsônica.\n\nA Fala Subsônica é lenta, funcionando com metade da velocidade usual.\n\nMesmo que a frequência seja alterada para o tom comum, os personagens que fazem uso desse tipo de fala sofrem uma penalidade de -2 em Lábia e qualquer outra perícia para a qual uma fala versátil seja importante.\n\nNo entanto, essa vantagem tem um alcance duas vezes maior que a fala normal.\n\nO custo depende do nível de habilidade concedida ao personagem.\n\n## Apenas Fala Subsônica\n\nO personagem só é capaz de se comunicar com a Fala Subsônica.\n\nCusto: 0 ponto.\n\n## Fala Normal e Subsônica\n\nO personagem é capaz de alternar à vontade entre a fala normal e a Fala Subsônica.\n\nCusto: 10 pontos."
   },
   {
     "id": "fala_ultrassonica",
@@ -2060,7 +2059,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem fala em frequência ultrassônica. Custo: 0 pt (só ultrassônica) ou 10 pts (alterna)."
+    "descricao": "O personagem é capaz de falar em uma frequência ultrassônica.\n\nEsta vantagem abrange Superaudição (pág. 90).\n\nPerceba que grande parte das criaturas considera extremamente irritante ou até mesmo doloroso estar ao alcance de uma voz com timbre ultrassônico.\n\nO custo da vantagem depende das habilidades conferidas ao personagem.\n\n## Apenas Fala Ultrassônica\n\nO personagem só é capaz de se comunicar por meio da Fala Ultrassônica.\n\nCusto: 0 ponto.\n\n## Fala Comum e Ultrassônica\n\nO personagem é capaz de alternar à vontade entre a fala comum e a Ultrassônica.\n\nCusto: 10 pontos."
   },
   {
     "id": "falar_com_animais",
@@ -2075,7 +2074,7 @@
     "rawCost": "25",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode conversar com animais. Custa 25 pontos. Limitação: Especializada (-40% a -80%)."
+    "descricao": "O personagem é capaz de falar com os animais.\n\nA qualidade das informações que ele recebe depende da IQ da criatura e da decisão do Mestre em relação ao que o animal tem a dizer.\n\nInsetos e outras criaturas minúsculas são capazes apenas de transmitir emoções como fome e medo, enquanto um chimpanzé ou um gato conseguem participar de uma discussão razoavelmente inteligente.\n\nO personagem normalmente demora um minuto para fazer uma pergunta e obter uma resposta, isso se o animal decidir falar.\n\nO Mestre pode exigir um teste de reação, com bônus de +2 se o personagem oferecer alimento ao animal.\n\nO Mestre tem liberdade para decidir que criaturas alienígenas, sobrenaturais ou místicas não contam como “animais” no que se refere a esta vantagem."
   },
   {
     "id": "falar_com_plantas",
@@ -2090,7 +2089,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se comunica empaticamente com plantas. Custa 15 pontos."
+    "descricao": "O personagem é capaz de se comunicar empaticamente com plantas.\n\nToda a vegetação terrestre tem IQ 0, mas uma grande árvore pode ser mais “sábia” do que uma hera comum — a critério do Mestre.\n\nUma planta pode saber quando foi regada ou pisada pela última vez, ou alguma outra coisa diretamente relacionada ao seu bem estar, mas não seria capaz de relatar uma conversa telefônica ouvida por acaso.\n\nQualquer planta normal sempre vai cooperar, dentro dos limites de suas habilidades.\n\nA interação com um repolho mutante de Marte, por outro lado, pode exigir um teste de reação."
   },
   {
     "id": "familiaridade_cultural",
@@ -2123,7 +2122,7 @@
     "rawCost": "Variável",
     "specialRule": "favor",
     "tags": [],
-    "descricao": "Um favor que alguém deve ao personagem, usado uma vez. Custo é 1/5 do custo da vantagem subjacente."
+    "descricao": "O personagem salvou a vida de alguém, ficou em silêncio no momento certo ou de alguma outra maneira beneficiou outra pessoa.\n\nAgora, essa pessoa lhe deve uma.\n\nUm Favor é um Aliado, Contato, Grupo de Contato ou Patrono que só pode ser usado uma vez.\n\nEstabeleça o custo em pontos da vantagem principal, depois o divida por 5, arredondado para cima, para obter o custo do Favor.\n\nMas lembre-se que o(s) PdM(s) em questão ajudará(rão) o personagem somente uma vez.\n\nQuando o personagem quiser “cobrar” o Favor, o Mestre deve fazer um teste contra a frequência de participação da vantagem subjacente.\n\nNo caso de um fracasso, o personagem não consegue entrar em contato com seu “amigo” a tempo ou ele não pode atender seu pedido, mas ele ainda deve o Favor.\n\nO personagem pode tentar novamente em outra aventura.\n\nNo caso de um sucesso, o personagem consegue tudo o que queria, sujeito aos limites da vantagem, e elimina a obrigação.\n\nRemova o Favor da planilha de personagem e reduza o total de pontos do personagem da forma apropriada.\n\nSe o Mestre obtiver um resultado de 3 ou 4, o “amigo” do personagem ainda se sente em dívida com ele, e o Favor é mantido, pelo menos até a próxima vez.\n\nO personagem pode adquirir um Favor durante a aventura, assim como qualquer outra vantagem similar.\n\nO Mestre também pode conceder essa vantagem como parte da recompensa por uma aventura bem-sucedida."
   },
   {
     "id": "fe_verdadeira",
@@ -2138,7 +2137,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Fé intensa que protege contra seres malignos. Custa 15 pontos."
+    "descricao": "O personagem tem uma fé religiosa intensa que o protege de seres sobrenaturais “malignos”, como demônios e vampiros.\n\nPara desfrutar dessa proteção, ele deve afirmar ativamente sua fé portando um símbolo físico reverenciado por sua religião, como um crucifixo, o Torá ou o Corão, entoando cânticos, dançando ou realizando qualquer outro ato apropriado às suas crenças.\n\nSe o personagem quiser utilizar esta habilidade durante o combate para repelir zumbis, por exemplo, deve selecionar a manobra Concentrar a cada turno e não pode fazer mais nada.\n\nEnquanto a fé do personagem estiver sendo afirmada, nenhuma entidade sobrenatural maligna, conforme definido pelo Mestre, pode se aproximar a menos de um metro dele.\n\nSe uma dessas entidades for forçada a entrar nesse raio, ela deve sair pela rota mais próxima, como se sofresse de Aversão (pág. 123).\n\nSe não conseguir fazer isso sem se aproximar ainda mais, ela deve fazer um teste de Vontade.\n\nNo caso de um sucesso, ela pode passar pelo personagem para escapar, empurrando-o se necessário, mas utilizando apenas a menor força necessária para a fuga.\n\nSe fracassar, o monstro se acovarda.\n\nEle se encolhe indefeso e não consegue se mover, se defender ou realizar qualquer ação.\n\nPara manter a Fé Verdadeira, o personagem deve se comportar de acordo com sua religião.\n\nEle muito provavelmente terá que aderir a uma ou mais características listadas sob Desvantagens Mentais Autoimpostas (pág. 121).\n\nNa verdade, a Fé Verdadeira já inclui a limitação Pacto (pág. 114); não aplique esse modificador novamente.\n\nNo entanto, o personagem não precisa ser gentil, amoroso ou obediente.\n\nUm fanático violento ou terrorista religioso pode ser tão verdadeiro em relação à sua devoção quanto um beato inofensivo."
   },
   {
     "id": "fleuma",
@@ -2153,7 +2152,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem nunca se surpreende, imune a pânico e intimidação. Custa 15 pontos."
+    "descricao": "Nada surpreende o personagem — pelo menos nada que não seja realmente uma ameaça.\n\nO mundo está repleto de coisas estranhas e, desde que elas não o perturbem, o personagem não precisa incomodá-las também.\n\nO personagem está isento de Verificações de Pânico e os modificadores de reação raramente o afetam.\n\nEle trata desconhecidos com uma cortesia distante, independente de quão estranhos eles sejam, contanto que se comportem bem.\n\nMesmo com esta vantagem, o personagem ainda sofre as penalidades normais de reação em relação a qualquer um que faça algo rude ou brutal, mas ele permanece calmo, mesmo se for forçado a ficar violento.\n\nA Intimidação (pág. 204) simplesmente não funciona com ele.\n\nO personagem não é impassível, apenas não demonstra fortes emoções.\n\nOs estereótipos “velho Mestre do kung fu” ou mordomo inglês apresentam esta característica.\n\nEsta vantagem precisa ser representada em sua totalidade, ou o Mestre pode decidir que ela foi perdida.\n\nEm uma campanha na qual as Verificações de Pânico são frequentes, o Mestre pode inclusive cobrar 20 pontos ou mais, ou proibir a Fleuma completamente.\n\nEla também é incompatível com todos os tipos de Fobia."
   },
   {
     "id": "flexibilidade",
@@ -2168,7 +2167,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "Corpo excepcionalmente flexível. Flexibilidade: +3 em Escalada, Fuga, etc. (5 pts). Ultraflexibilidade: +5, ignora penalidades (15 pts)."
+    "descricao": "O corpo do personagem é excepcionalmente flexível.\n\nEsta vantagem pode ser comprada em dois níveis.\n\n## Flexibilidade\n\nO personagem recebe um bônus de +3 nos testes de Escalada, nos testes de Fuga para se livrar de cordas, algemas e outras restrições semelhantes, na perícia Arte Erótica e em todas as tentativas de se libertar durante um combate corporal (pág. 391).\n\nO personagem também pode ignorar penalidades de até -3 por trabalhar em espaços apertados, incluindo testes com Explosivos e Mecânica.\n\nCusto: 5 pontos.\n\n## Ultraflexibilidade das Juntas\n\nFunciona da mesma maneira que o caso anterior, mas um pouco melhor.\n\nO personagem não é capaz de se esticar ou espremer de maneira anormal, mas qualquer parte do seu corpo pode ser dobrada em qualquer direção.\n\nO personagem recebe um bônus de +5 nos testes de Escalada, Arte Erótica e Fuga, e nas tentativas de se libertar.\n\nO personagem pode ignorar penalidades de até -5 por trabalhar em espaços apertados.\n\nCusto: 15 pontos."
   },
   {
     "id": "forma_alternativa",
@@ -2202,7 +2201,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem se transforma em sombra bidimensional. Custa 50 pontos. Ampliação: Capaz de Carregar Objetos (+10% a +100%)."
+    "descricao": "O personagem é capaz de se transformar numa sombra bi-dimensional.\n\nIsso permite que ele deslize pelo solo e pelas paredes, e até mesmo através das rachaduras mais estreitas, qualquer coisa com largura suficiente para que seus ombros possam atravessá-la, com seu Deslocamento terrestre normal.\n\nO personagem também é capaz de desafiar a gravidade, escalando paredes e locomovendo-se sobre os tetos com metade do Deslocamento.\n\nOs ataques físicos causam somente metade do dano quando o personagem se encontra nessa forma.\n\nOs ataques de energia causam o dano normal, exceto aqueles com base em iluminação, que causam 50% a mais de dano.\n\nMagia, psiquismo e outras habilidades puramente mentais afetam o personagem normalmente.\n\nO personagem sofre algumas restrições importantes quando se encontra na Forma de Sombras.\n\nEle não é capaz de caminhar em um espaço tridimensional e tem de deslizar ao longo de um objeto.\n\nAlém disso, ele não consegue realizar ações ou ataques puramente físicos nem carregar objetos comuns ou afetá-los de qualquer forma.\n\nNo entanto, o personagem consegue utilizar magia, psiquismo e habilidades semelhantes.\n\nSe ele não conseguir sair da Forma de Sombras, esta será uma desvantagem de -20 pontos.\n\nIsso dificulta a interação do personagem com outras pessoas.\n\nNesse caso, o jogador pode acrescentar ampliações, mas elas funcionam como limitações, reduzindo o valor da desvantagem.\n\nExemplo: uma ampliação de +50% reduziria o valor da desvantagem em 50%, ou seja, para -10 pontos."
   },
   {
     "id": "garras",
@@ -2224,7 +2223,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Garras naturais. Cascos (3 pts), Garras Afiadas (5 pts), Garras Cegas (3 pts), Garras Pontudas (8 pts), Longas Garras Pontudas (11 pts)."
+    "descricao": "O personagem tem garras.\n\nEsta vantagem modifica todas as mãos e pés do personagem.\n\nNão existe desconto por garras em apenas alguns dos membros.\n\n## Cascos\n\nCascos duros, como os de um cavalo.\n\nAdicione +1 por dado ao dano causado pelos chutes do personagem e +1 à RD dos pés, apenas.\n\nCusto: 3 pontos.\n\n## Garras Afiadas\n\nGarras curtas, como as de um gato.\n\nAltere o dano causado pelos socos e chutes do personagem de contusão para corte.\n\nCusto: 5 pontos.\n\n## Garras Cegas\n\nGarras muito curtas, como as de um cachorro.\n\nAdicione +1 por dado ao dano causado pelos socos e chutes do personagem.\n\nExemplo: 2d-3 se torna 2d-1.\n\nCusto: 3 pontos.\n\n## Garras Pontudas\n\nGarras mais longas de até 30 cm de comprimento.\n\nAltere o dano causado pelos socos e chutes do personagem de contusão para corte ou perfuração, à escolha do jogador, que deve ser feita antes da jogada de ataque.\n\nCusto: 8 pontos.\n\n## Longas Garras Pontudas\n\nGarras enormes, como lâminas de espadas que saem do corpo do personagem.\n\nTrate-as como Garras Pontudas, mas adicione +1 por dado ao dano causado.\n\nCusto: 11 pontos."
   },
   {
     "id": "golpeadores",
@@ -2241,7 +2240,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Parte do corpo usada para golpes (chifres, cauda). Custo varia conforme dano: contusão/perfurante (5), muito perfurante (6), corte (7), perfuração (8). Ampliação: Comprido (+100% ou +75%). Limitações: Arco Limitado (-40%), Desajeitado (-20%/penalidade), Fraco (-50%), Incapaz de Aparar (-40%)."
+    "descricao": "O personagem tem uma parte do corpo que pode ser usada para aplicar golpes no alvo, mas não serve para manipular objetos (v. Braços Adicionais, pág. 45) nem caminhar (v. Pernas Adicionais, pág. 77).\n\nEsta vantagem pode ter a forma de um conjunto de chifres ou defesas protuberantes, uma cauda pesada, um ferrão ou qualquer outra arma natural.\n\nO Golpeador do personagem pode atacar qualquer alvo num alcance C, apenas combate corporal, causando dano por GdP com um bônus de +1 para cada dado.\n\nExemplo: 2d-1 se torna 2d+1.\n\nO dano causado pode ser:\n\n| Tipo de Dano | Custo |\n|---|---|\n| Contusão ou perfurante | 5 pontos |\n| Muito perfurante | 6 pontos |\n| Corte | 7 pontos |\n| Perfuração | 8 pontos |\n\nPara maiores detalhes, consulte Ataque Inato (pág. 42).\n\nO personagem deve fazer um teste de DX ou Briga para atingir um alvo com seu Golpeador.\n\nEle também pode utilizá-lo para aparar como se tivesse uma arma.\n\nUtilize o maior valor entre (DX/2) + 3 ou a ação Aparar do personagem derivada de sua perícia Briga."
   },
   {
     "id": "grupo_de_contato",
@@ -2258,7 +2257,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Rede de contatos em uma organização. Custo é 5 vezes o custo de um contato simples equivalente."
+    "descricao": "O personagem tem uma rede de Contatos (v. Contatos, pág. 48) dentro de uma determinada organização ou camada social.\n\nO jogador precisa especificar uma corporação, sindicato do crime, unidade militar, departamento de polícia ou organização similar, ou o submundo, comerciantes, a classe alta, etc., de uma determinada cidade.\n\nGrupos de Contato maiores não são permitidos.\n\nO personagem pode solicitar informações de um Grupo de Contatos exatamente como faria com um Contato, utilizando as mesmas regras para frequência de participação, NH efetivo e confiabilidade.\n\nA única diferença é que o NH efetivo de um Grupo de Contato reflete habilidade em uma categoria inteira de perícias, por exemplo, “perícias comerciais” no caso de uma corporação, ou “perícias militares” para uma unidade militar, em vez de uma perícia específica.\n\nO jogador deve definir essa área de conhecimento quando comprar a vantagem e ela precisa estar de acordo com a organização.\n\nQuando o personagem requisitar alguma informação que esteja dentro das capacidades do grupo, o Mestre faz um teste contra o NH do grupo.\n\nContudo, esse seria um teste de habilidade abstrato e não um teste com uma perícia específica.\n\nExemplo:\n\nUm Grupo de Contato na polícia poderia fornecer comparações balísticas, fichas criminais, conselhos legais, registros policiais e contatos com criminosos.\n\nNo entanto, ele não usaria especificamente as perícias Administração, Criminologia, Jurisprudência, Manha ou Perícia Forense, embora as informações fornecidas possam ser apropriadas para qualquer uma dessas “perícias policiais”.\n\nPara determinar o custo em pontos de um Grupo de Contato, determine o NH efetivo, a frequência de participação e o nível de confiabilidade, assim como faria com um Contato simples, e depois multiplique o custo resultante por 5."
   },
   {
     "id": "habilidade_matematica",
@@ -2318,7 +2317,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode alternar entre sexos. Custa 5 pontos."
+    "descricao": "O personagem é capaz de assumir uma forma masculina, feminina ou assexuada. O processo demora 10 segundos. Gasto Adicional de Tempo, Requer Preparo e Requer Recarga são limitações comuns."
   },
   {
     "id": "hierarquia",
@@ -2470,7 +2469,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem não sente dor intensa; nunca sofre penalidades de choque por ferimentos, +3 em testes de HT para evitar nocaute/atordoamento e resistir a tortura. Custa 10 pontos. (pág. 63)"
+    "descricao": "O personagem é tão suscetível a dano quanto qualquer outra pessoa, mas não sente a dor com a mesma intensidade.\n\nEle nunca sofre as penalidades relacionadas ao choque quando é ferido.\n\nAlém disso, ele recebe um bônus de +3 nos testes de HT para não ficar nocauteado ou atordoado e para resistir torturas físicas.\n\nO Mestre também pode permitir que o personagem faça testes de Vontade com um bônus de +3 para ignorar a dor em outras situações.\n\nHipoalgia faz parte de Durabilidade Sobrenatural (pág. 56).\n\nSe tiver essa vantagem, o personagem não pode adquirir Hipoalgia."
   },
   {
     "id": "idade_imutavel",
@@ -2485,7 +2484,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem não envelhece. Custa 15 pontos. Ampliação: Controle Etário (+20%)."
+    "descricao": "O personagem possui identidades múltiplas aparentemente legítimas.\n\nCada vez que o personagem adquire esta característica, suas digitais, ou qualquer outra medida biométrica utilizada em seu mundo para verificar a identidade, são registradas sob outro nome e ele recebe um conjunto adicional de documentos, como certidão de nascimento, carteira de motorista, passaporte, etc., suficientemente autênticos para que ele consiga passar por uma inspeção rigorosa.\n\nEssas identidades também podem ter cartões de crédito e contas bancárias válidas, mas o personagem terá que dividir seu dinheiro — riqueza adicional não está incluída no pacote.\n\nSe uma agência de inteligência ou de combate ao crime tentar identificar o personagem sem quaisquer pistas sobre o nome dele, utilizando-se, por exemplo, de biometria ou fotoanálise, existem chances iguais de qualquer uma das identidades surgir.\n\nA busca será interrompida, a não ser que eles tenham motivos para acreditar que o personagem é suspeito.\n\nSe a busca continuar, as outras identidades do personagem surgirão e ele será desmascarado.\n\nDepois que a agência governamental descobrir quem o personagem realmente é, as Identidades Alternativas estarão perdidas para sempre.\n\nExistem dois tipos de Identidades Alternativas.\n\n## Legal\n\nAlguns espiões e policiais disfarçados, e até mesmo personagens supers em cenários onde eles são apoiados pelo governo, podem ter uma Identidade Alternativa legal.\n\nIsso exige pelo menos 10 pontos em Poderes Legais, Imunidade Legal, Hierarquia Policial, Permissão de Segurança, etc.\n\nO Mestre deve estabelecer os pré-requisitos com precisão.\n\nSe um super tiver permissão oficial para ocultar seu nome verdadeiro, a fim de proteger sua família, por exemplo, e tiver propriedades em seu “nome super”, ele então deve possuir uma Identidade Alternativa legal em conjunto com uma Identidade Secreta (v. pág. 145).\n\nCusto: 5 pontos.\n\n## Ilegal\n\nUm criminoso ou agente estrangeiro pode ter uma Identidade Alternativa ilegal.\n\nEla tem a vantagem de ser completamente desconhecida quando o personagem é criado e, é claro, não pode ser cancelada pelo governo.\n\nPor outro lado, se ela for descoberta, o personagem terá que pagar uma multa elevada, cumprir pena na prisão ou ser executado, dependendo da época e do lugar.\n\nCusto: 15 pontos."
   },
   {
     "id": "identidade_alternativa",
@@ -2503,7 +2502,7 @@
     "rawCost": "5 ou 15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Múltiplas identidades legítimas. Legal: 5 pts, Ilegal: 15 pts."
+    "descricao": "O personagem possui uma identidade legal alternativa. Custa 5 pontos se a identidade não resistir a uma investigação policial séria, ou 15 pontos se for completamente à prova."
   },
   {
     "id": "iluminado",
@@ -2518,20 +2517,24 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem reconhece outros Illuminati e tem intuição sobre conspirações. Custa 15 pontos."
+    "descricao": "O personagem é um “Illuminatus” no sentido original da palavra — ele é iluminado.\n\nEle sabe intuitivamente o que está acontecendo ao seu redor.\n\nO personagem é capaz de reconhecer outros Illuminati imediatamente, sem chance de erro.\n\nAlém disso, sempre que o Mestre pedir um teste de perícias como Análise da Informação, Assuntos Atuais ou Conhecimento Oculto para descobrir se um determinado acontecimento estranho é realmente uma coincidência ou resultado de uma conspiração, o personagem sempre pode fazer um teste de IQ no lugar, utilizando o que for maior.\n\nPor último, ele é capaz de perceber criaturas sobrenaturais que estão ligadas a conspirações Illuminati existentes no cenário da campanha, a critério do Mestre, e de se comunicar com elas.\n\nIsso não concede ao personagem o poder de controlar essas criaturas, mas elas o reconhecem e o tratam com certo respeito.\n\nO personagem recebe um bônus de +3 nos testes de reação dessas criaturas.\n\nA única desvantagem é que outros Illuminati e criaturas espirituais também conseguem perceber a natureza Iluminada do personagem e nada pode ser feito em relação a isso, a não ser ficar escondido.\n\nEsta vantagem é mais apropriada a campanhas místicas ou fantásticas e pouco adequada a campanhas que envolvem conspirações mais “mundanas”.\n\nO Mestre deve decidir quem pode ou não possuir essa característica."
   },
   {
     "id": "impossivel_de_matar",
     "nome": "Impossível de Matar",
     "pagina": 64,
-    "costKind": "special",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
+    "options": [
+      50,
+      100,
+      150
+    ],
     "min": null,
     "max": null,
-    "rawCost": "50, 100, 150",
-    "specialRule": "impossivel_de_matar",
+    "rawCost": "50, 100 ou 150",
+    "specialRule": null,
     "tags": [],
     "descricao": "O personagem não morre facilmente. Nível 1: sobrevive até -10×PV (50 pts). Nível 2: vira esqueleto indestrutível (100 pts). Nível 3: vira fantasma (150 pts). Limitações: Calcanhar de Aquiles (-10% a -50%), Gatilho (-5% a -25%), Impedimento (-5% a -25%), Reencarnação (-20%)."
   },
@@ -2539,17 +2542,21 @@
     "id": "imunidade_legal",
     "nome": "Imunidade Legal",
     "pagina": 64,
-    "costKind": "range",
+    "costKind": "choice",
     "fixed": null,
     "perLevel": null,
-    "options": null,
-    "min": 5,
-    "max": 20,
-    "rawCost": "5 a 20",
+    "options": [
+      5,
+      10,
+      15,
+      20
+    ],
+    "min": null,
+    "max": null,
+    "rawCost": "5, 10, 15 ou 20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem está isento de certas leis. Custo: 5, 10, 15 ou 20 pontos, conforme abrangência."
-  },
+    "descricao": "O personagem é isento de algumas ou de todas as leis da sociedade.\n\nSe violá-las, um agente da lei comum não terá poder suficiente para prendê-lo.\n\nApenas uma determinada autoridade — a igreja ou classe social do personagem, uma corte especial ou talvez seu governante — pode julgá-lo ou puni-lo.\n\nO custo em pontos depende da amplitude da imunidade, a critério do Mestre.\n\n| Tipo de Imunidade | Descrição | Custo |\n|---|---|---|\n| Imunidade Restrita | O personagem não está sujeito às leis comuns, mas as regras que determinam seu comportamento são igualmente rígidas. Exemplos: um abade da Idade Média ou observador da ONU nos dias de hoje. | 5 pontos |\n| Imunidade Moderada | Igual ao caso anterior, mas as leis que se aplicam ao personagem são menos rígidas do que aquelas que se aplicam às outras pessoas. Exemplo: um bardo da Idade Média. | 10 pontos |\n| Imunidade Ampla | O personagem pode fazer quase tudo que quiser, contanto que não prejudique a nação, a igreja ou a instituição que lhe concedeu a Imunidade Legal. Exemplos: um duque da Idade Média ou um diplomata internacional. | 15 pontos |\n\nPor 5 pontos adicionais, é possível adicionar o privilégio da “mala diplomática”.\n\nO personagem pode mandar e receber objetos e correspondência que as autoridades comuns não têm poder legal para deter ou examinar.\n\n## Imunidade Bárdica\n\nO personagem tem o direito de cantar o que quiser sem temer consequências graves.\n\nEle pode até mesmo entoar uma canção extremamente desrespeitosa para o rei.\n\nClaro que ele poderá ser punido por isso, mas não açoitado, aprisionado ou morto.\n\nQualquer pessoa que violar a imunidade do personagem corre o risco de sujar o próprio nome e reputação.\n\nOutros bardos vão compor e distribuir sátiras cruéis sobre essa pessoa, deixando-a com uma má Reputação.\n\nEles podem até mesmo revelar um Segredo, se ela tiver um.\n\nEssa vantagem só se aplica ao conteúdo das performances do personagem, nada mais.\n\nEla está disponível somente para bardos verdadeiros em cenários de fantasia ou medievais.\n\nPara se qualificar para essa vantagem, o personagem precisa gastar pelo menos 1 ponto em cada uma das perícias Atuação, Canto e Poesia.\n\nCusto: 10 pontos.\n\n## Imunidade Diplomática\n\nO personagem é um diplomata internacional e pode ignorar as leis de todos os países, exceto o seu.\n\nQuando está no exterior, ele não pode ser levado a julgamento por nenhum crime, independente da gravidade do mesmo.\n\nA polícia local pode prendê-lo, mas não processá-lo.\n\nO único recurso disponível para um governo estrangeiro é declará-lo persona non grata.\n\nIsso significa que ele tem de deixar o país imediatamente, pondo um fim à sua atribuição atual e possivelmente sua carreira.\n\nAs autoridades estrangeiras podem pedir sua extradição devido a uma acusação comum, mas seu governo provavelmente não concordará com isso.\n\nEsta característica é sempre acompanhada de um Dever (pág. 133) para com uma agência do governo e muitas vezes tem algum nível de Hierarquia Administrativa (pág. 30) como pré-requisito.\n\nCusto: 20 pontos."  },
   {
     "id": "indomavel",
     "nome": "Indomável",
@@ -2578,8 +2585,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se lembra de realidades alternativas e não é afetado por paradoxos temporais. Custa 15 pontos."
-  },
+    "descricao": "O personagem está intimamente conectado à probabilidade. Se a História mudar, ele será capaz de se lembrar das duas versões. Se for envolvido em um paradoxo temporal genuíno, não será eliminado, mesmo que isso aconteça com o resto de seu mundo. O personagem sempre tem um lugar na nova cronologia, qualquer que seja, e se lembra de todas as suas experiências, até mesmo daquelas que nunca aconteceram. Em um caso extremo, o personagem terá dois conjuntos completos de lembranças e precisa de um sucesso em um teste de IQ sempre que tiver que distingui-las sob pressão. É provável que ele precise da perícia Dissimulação para não acabar em um manicômio. Contudo, existe um contratempo. O “eu” do personagem existe em qualquer cronologia paralela ou desdobrada com a qual ele se deparar e será tão semelhante ao original quanto for possível no local ou época em questão. Esta característica só é vantajosa em campanhas onde os paradoxos temporais ou mudanças na História que apagam eventos passados ou cronologias inteiras são possíveis. Consulte Único (pág. 159) se estiver procurando uma versão oposta desta vantagem."  },
   {
     "id": "infravisao",
     "nome": "Infravisão",
@@ -2593,8 +2599,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem enxerga infravermelho. Custo: 0 pt (só infra) ou 10 pts (alterna com visão normal)."
-  },
+    "descricao": "O personagem consegue enxergar frequências de infravermelho, o que lhe permite detectar variações de temperatura.\n\nCom esta vantagem, um personagem pode lutar sem sofrer penalidades mesmo sob escuridão absoluta, se o oponente emitir calor.\n\nIsso inclui todos os seres vivos e a maioria das máquinas.\n\nAlém disso, ele recebe um bônus de +2 nos testes de Visão feitos para encontrar esses alvos, pois o calor emitido se destaca no ambiente.\n\nO personagem também pode seguir rastros de calor.\n\nEle recebe um bônus de +3 nos testes de Rastreamento se a pista tiver menos de uma hora.\n\nA Infravisão não permite que o personagem distinga cores.\n\nEla possibilita apenas a percepção do tamanho e da forma geral dos objetos que emitem calor, inclusive dos seres vivos.\n\nPor exemplo, o personagem pode ter problemas para diferenciar duas pessoas do mesmo tamanho.\n\nEle deve fazer um teste com uma penalidade de -4 para distinguir objetos do mesmo tamanho e formato.\n\nO Mestre pode exigir um teste de Visão com uma penalidade de -4 para “ler” o calor refletido.\n\nFlashes repentinos de calor, como uma chama, explosão ou laser infravermelho, podem cegar o personagem da mesma forma que um flash de luz cega uma pessoa com visão comum.\n\nO custo depende da capacidade da visão do personagem.\n\n## Apenas Infravisão\n\nO personagem só enxerga por meio da Infravisão e sofre as limitações dessa vantagem o tempo todo.\n\nCusto: 0 ponto.\n\n## Infravisão Alternável\n\nO personagem é capaz de alternar entre a visão comum e a Infravisão, e vice-versa.\n\nCusto: 10 pontos."  },
   {
     "id": "insubstancialidade",
     "nome": "Insubstancialidade",
@@ -2608,8 +2613,7 @@
     "rawCost": "80",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem se torna intangível. Custa 80 pontos. Ampliações: Afeta a Matéria (+100%), Capaz de Carregar Objetos (+10% a +100%), Mudança Parcial (+20% ou +100%). Limitações: Sempre Ativa (-50%), Normalmente Ativa (-40%)."
-  },
+    "descricao": "O personagem é capaz de se tornar intangível e atravessar objetos sólidos como se eles não existissem. Nesse estado, a gravidade não afeta o personagem e ele é capaz de se mover em qualquer direção com seu valor total de Deslocamento, sem produzir nenhum som enquanto faz isso. O personagem consegue perceber o mundo tangível e pode se comunicar normalmente com as pessoas que fazem parte dele, mas não consegue pegar objetos comuns nem afetá-los de qualquer maneira. Ataques físicos e de energia não afetam o personagem, mas ele continua vulnerável a ataques psíquicos e mágicos, desde que não sejam materiais. Da mesma maneira, seus ataques físicos e de energia não afetam oponentes físicos. Suas habilidades psíquicas e mágicas afetam o mundo físico, mas todas as jogadas sofrem uma penalidade de -3. Embora seja capaz de atravessar objetos sólidos, o personagem ainda precisa respirar. Quando ele atravessar esses objetos, considere que ele está debaixo d’água para verificar se há ou não sufocamento. O personagem não consegue se materializar dentro de um objeto sólido. A forma “natural”, material ou insubstancial, do personagem é considerada um efeito especial. O jogador tem que comprar a vantagem para que o personagem seja capaz de assumir, alternadamente, uma forma física e uma forma insubstancial. Esta característica pode representar qualquer habilidade do folclore e da ficção. É aconselhável estabelecer as origens (v. pág. 33) e os efeitos especiais em conjunto com o Mestre. Talvez o personagem “vibre” em dissonância com a realidade, viaje por uma dimensão diferente ou se transforme em um espírito. Esses detalhes determinam a aparência do efeito, que pode ser transparente, enevoada ou completamente normal. Contudo, o personagem não pode ficar invisível sem ter a vantagem Invisibilidade. Os ataques físicos e de energia do personagem afetam outras criaturas com Insubstancialidade que estiverem na mesma forma que ele, e vice-versa. O Mestre pode definir que certos materiais, barreiras de energia, mágicas, etc., não podem ser atravessados pela forma específica de Insubstancialidade do personagem."  },
   {
     "id": "interposicao",
     "nome": "Interposição",
@@ -2628,8 +2632,7 @@
     "rawCost": "40, 20, 10 ou 5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem atravessa matéria sólida específica. Custo conforme frequência: Muito Comum (40), Comum (20), Ocasional (10), Raro (5). Ampliações: Capaz de Carregar Objetos (+10% a +100%), Túnel (+40%)."
-  },
+    "descricao": "O personagem é capaz de atravessar uma determinada matéria sólida como se ela não existisse.\n\nEle não abre uma passagem atrás dele.\n\nSeus observadores simplesmente o veem “derreter” na superfície e desaparecer.\n\nO personagem precisa ter Visão Penetrante (pág. 97) para enxergar onde está indo.\n\nEle ainda precisa respirar, a menos que tenha a vantagem Não Respira, o que limita o tempo dessas incursões ao tempo em que ele pode ficar sem respirar (v. Prender o Fôlego, pág. 355).\n\nA Interposição é diferente da Insubstancialidade.\n\nO personagem é afetado pela gravidade e está limitado ao deslocamento normal.\n\nSe não possuir Voo ou qualquer outra vantagem de deslocamento, o personagem precisa caminhar com seu Deslocamento Básico.\n\nAlém disso, o personagem pode ser afetado por qualquer ataque capaz de alcançá-lo dentro do objeto sólido.\n\nO personagem ainda é vulnerável a ataques realizados com o material que ele consegue atravessar, a menos que o jogador compre Resistência a Dano para esses ataques.\n\nO custo desta vantagem depende da frequência com que o personagem encontra o material que ele consegue transpor na forma de uma barreira.\n\nExemplo: papel pode ser uma substância “Comum”, mas como muralhas de papel são raras, esse objeto é considerado “Raro” no cálculo da Interposição.\n\n| Frequência | Exemplos | Custo |\n|---|---|---|\n| Muito Comum | Terra, incluindo argila, lama e areia, metal, pedra, incluindo tijolo, concreto e gesso, madeira e outros materiais estruturais comuns | 40 pontos |\n| Comum | Concreto, plástico, aço e outros materiais estruturais específicos e comuns | 20 pontos |\n| Ocasional | Vidro, gelo, incluindo neve, areia e qualquer outra coisa que uma pessoa normal poderia acabar quebrando ou atravessando por meio de força muscular, assim como materiais estruturais incomuns, como alumínio e cobre | 10 pontos |\n| Raro | Osso, carne, papel e outros materiais raramente encontrados em grandes quantidades ou como barreiras | 5 pontos |"  },
   {
     "id": "intuicao",
     "nome": "Intuição",
@@ -2645,8 +2648,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem palpites corretos em situações de escolha. Custa 15 pontos."
-  },
+    "descricao": "O personagem normalmente acerta em suas conjecturas.\n\nQuando ele tiver várias alternativas diante de si e não houver nenhuma maneira lógica de escolher entre elas, o jogador pode pedir ao Mestre que permita ao personagem um teste de Intuição.\n\nO Mestre faz um teste secreto de IQ com um bônus igual ao número de opções “boas” e uma penalidade igual ao número de opções “ruins”.\n\nNo caso de um sucesso, ele conduz o personagem a uma opção favorável.\n\nNo caso de um sucesso decisivo, ele revela a melhor opção.\n\nNum fracasso, o personagem não recebe nenhuma informação.\n\nNo caso de uma falha crítica, o Mestre indica uma opção ruim.\n\nO Mestre pode modificar esse sistema para situações onde ele acredita que a Intuição poderia ajudar.\n\nSó é permitido um teste por problema.\n\nO Mestre também não deve permitir que a Intuição cause um “curto-circuito” na aventura.\n\nPor exemplo, que o detetive intuitivo entre em uma sala, coloque as algemas nos culpados e encerre o caso.\n\nA Intuição deveria, na melhor das hipóteses, apontar uma boa pista.\n\nMestres que não se acham capazes de controlar os efeitos da Intuição de modo conveniente não devem permiti-la em jogo."  },
   {
     "id": "investidura_de_poder",
     "nome": "Investidura de Poder",
@@ -2660,8 +2662,7 @@
     "rawCost": "10/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Poder divino para operar mágicas clericais. Adiciona nível à IQ para aprendê-las. Custa 10 pontos/nível."
-  },
+    "descricao": "Uma divindade — deus, lorde demoníaco, grande espírito, poder cósmico etc. — investiu o personagem de poderes para operar mágicas “clericais”.\n\nAdicione o nível de Investidura de Poder à IQ do personagem quando ele for aprender mágicas oferecidas pela divindade que concedeu a vantagem.\n\nExemplo: IQ 12 e Investidura de Poder (Thor) 2 permite que o personagem aprenda as mágicas oferecidas pelo deus Thor como se tivesse uma IQ 14.\n\nO personagem só pode aprender as mágicas clericais que aparecem em uma lista pré-estabelecida pela divindade.\n\nA divindade pode até mesmo impor a mágica que deseja que o personagem aprenda.\n\nO Mestre deve criar essa lista e representar o papel da divindade quando o personagem quiser aprender novas mágicas.\n\nComo ele está canalizando a vontade divina e não estudando magia, as mágicas clericais não têm pré-requisitos.\n\nEm geral, quanto maior a Investidura de Poder, mais “sagrado” será o personagem.\n\nO nível máximo desta vantagem depende da divindade, conforme determinado pelo Mestre.\n\nDeuses menores, que têm uma habilidade limitada de transferir poder para seus escolhidos ou uma lista pequena de efeitos mágicos, podem conceder apenas um nível, enquanto divindades mais importantes podem ser mais generosas.\n\nLembre-se que Investidura de Poder é uma medida do vínculo do personagem com a divindade, enquanto Clericato (pág. 47) e Hierarquia Religiosa (pág. 30) medem o poder social.\n\nEssas duas coisas não precisam necessariamente estar relacionadas.\n\nInvestidura de Poder pode ser restringida a clérigos de cargos elevados, mas no fim das contas, uma divindade concede poderes a quem quiser, possivelmente decepcionando a própria igreja.\n\nEm alguns casos, é possível aumentar o poder desta vantagem durante o jogo.\n\nAs formas como isso pode acontecer dependem da divindade.\n\nPara receber, manter ou aprimorar Investidura de Poder, o personagem normalmente precisa adquirir e se manter fiel a uma ou mais características relacionadas no quadro Desvantagens Mentais Autoimpostas (pág. 121).\n\nSe quebrar esses votos, o personagem pode inclusive perder alguns ou todos os seus poderes, possivelmente até cumprir uma penitência adequada, ou talvez, para sempre.\n\nEfetivamente, Investidura de Poder traz embutida a limitação Pacto (pág. 114), portanto não aplique novamente esse modificador.\n\nPode ser também que o personagem precise atender certas exigências físicas.\n\nAlgumas divindades só concedem poder a homens, mulheres, eunucos, virgens, etc.\n\nO Mestre deve ser criativo.\n\nSe o personagem perder uma dessas exigências especiais, como virgindade, por exemplo, a Investidura de Poder pode enfraquecer ou ser perdida, reduzindo de maneira correspondente o valor em pontos do personagem.\n\nÉ possível ter tanto Aptidão Mágica quanto Investidura de Poder, a menos que a divindade proíba isso.\n\nNo entanto, a Aptidão Mágica não aprimora mágicas clericais e a Investidura de Poder não influencia as demais mágicas.\n\nAs versões clericais e mágicas de uma determinada mágica são completamente diferentes e as clericais nunca contam como pré-requisitos para as mágicas.\n\nSe o personagem conhecer as duas versões de uma mágica, elas não afetam uma à outra.\n\nInvestidura de Poder é uma maneira possível de lidar com “poderes sagrados”.\n\nEla é mais apropriada em cenários onde sacerdotes são feiticeiros inspirados divinamente.\n\nSe quiser conhecer outras visões de dons divinos, consulte Abençoado (pág. 35) e Fé Verdadeira (pág. 60)."  },
   {
     "id": "invisibilidade",
     "nome": "Invisibilidade",
@@ -2675,8 +2676,7 @@
     "rawCost": "40",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é invisível. Custa 40 pontos. Ampliações: Afeta Máquinas (+50%), Ativada/Desativada (+10%), Capaz de Carregar Objetos (+10% a +100%), Estendida (+20%/sentido), Normalmente Ativa (+5%). Limitações: Reflexo Visível (-10%), Somente Máquinas (-50%), Somente Matéria (-10%), Sombra Visível (-10%)."
-  },
+    "descricao": "O personagem é invisível.\n\nAo contrário da maioria das vantagens, esta vantagem está “sempre ativa”, a menos que o jogador compre uma ampliação especial.\n\nO personagem faz barulho, deixa pegadas e exala odores.\n\nVia de regra, qualquer coisa que ele estiver carregando permanece visível.\n\nSe não estiver carregando nada, o personagem recebe um bônus de +9 em Furtividade em qualquer situação onde é importante não ser visto.\n\nIndivíduos utilizando visão remota paranormal, como bola de cristal, Clarividência, etc., não conseguem enxergar o personagem se ele estiver invisível para os sentidos normais dessas pessoas.\n\nOs dispositivos com esses poderes ainda conseguem localizá-lo, assim como habilidades paranormais que detectam inimigos, vida, etc., mas apenas de modo não-visual.\n\nA Invisibilidade funciona apenas contra um tipo de visão.\n\nEntre os tipos de visão se incluem visão eletromagnética, que abrange a visão comum, a Infravisão, a Ultravisão e os radares, sonares, campos magnéticos e qualquer outra coisa que o Mestre possa criar.\n\nSe for invisível para a visão eletromagnética, o personagem não apresenta sombra ou reflexo."  },
   {
     "id": "lacrado",
     "nome": "Lacrado",
@@ -2690,8 +2690,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem é à prova d'água e gases, imune a toxinas de contato. Custa 15 pontos."
-  },
+  "descricao": "O personagem é envolvido por uma camada impermeável de gases e líquidos.\n\nIsso o torna à prova d’água e concede imunidade total contra agentes tóxicos e corrosivos que precisam tocar a pele ou maquinário exposto para fazer efeito.\n\nO personagem continua precisando respirar, a menos que tenha também Não Respira (pág. 73).\n\nNo entanto, seu sistema externo de respiração, como nariz, snorkel, etc., também é protegido por esta vantagem.\n\nAlém disso, o personagem não fica pressurizado automaticamente.\n\nPara isso, ele precisa ter Resistência à Pressão (pág. 84) ou Resistência ao Vácuo (pág. 84)."  },
   {
     "id": "lamentavel",
     "nome": "Lamentável",
@@ -2722,8 +2721,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem pode ler pensamentos superficiais. Custa 30 pontos. Ampliações: Cibernética (+50%), Sensorial (+20%), Universal (+50%). Limitações: Racial (-20%), Somente Cibernética (-50%), Somente Sensorial (-20%), Telecomunicação (-20%), Telepático (-10%)."
-  },
+    "descricao": "O personagem pode bisbilhotar os pensamentos superficiais de outras pessoas.\n\nEle precisa ser capaz de ver ou tocar o alvo e tem que se concentrar durante um segundo.\n\nDepois disso, deve fazer uma Disputa Rápida entre seu IQ e a Vontade do alvo.\n\nO teste sofre as penalidades normais relativas à distância (v. pág. 550).\n\nSe vencer, o personagem consegue “ouvir” tudo o que a vítima disser, subvocalizar ou pensar ativamente como uma voz em sua própria mente.\n\nOs pensamentos recebidos surgem na velocidade da fala.\n\nSe o personagem não compreender o idioma, ou se o alvo não for inteligente, será possível captar apenas sentimentos, imagens e intenções gerais.\n\nÉ possível manter uma Leitura da Mente por quanto tempo o personagem quiser sem ter que se concentrar novamente.\n\nPara escolher um novo alvo, o personagem precisa interromper a leitura corrente e fazer uma Disputa Rápida com o novo alvo.\n\nPara ler várias mentes de uma vez, o personagem precisa da vantagem Mente Segmentada (pág. 70).\n\nSe perder, o personagem pode tentar novamente, mas sofre uma penalidade cumulativa de -2 para cada outra tentativa fracassada que realizou contra o mesmo alvo durante a última hora.\n\nNo caso de uma falha crítica, não será possível ler a mente da mesma pessoa durante 24 horas.\n\nLeitura da Mente muitas vezes tem origem psíquica, mas também pode ser uma habilidade mágica, divina ou até mesmo tecnológica.\n\nA limitação Base Sensorial (pág. 103), principalmente Base Tátil, é muito comum.\n\nSe o jogador comprar Base Auditiva, o personagem só será capaz de ler os pensamentos de alguém cujas palavras ele consegue ouvir.\n\nNesse caso, ele funcionaria como um “detector de mentiras” ou, se tiver Universal, como um “tradutor universal”."  },
   {
     "id": "lingua_ferina",
     "nome": "Língua Ferina",
@@ -2737,8 +2735,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode atordoar oponentes com insultos. Custa 5 pontos."
-  },
+    "descricao": "O personagem é capaz de usar réplicas espirituosas para atordoar seus oponentes durante um combate.\n\nIsso não exige uma manobra de combate, pois a fala é uma ação livre (pág. 363).\n\nFaça uma Disputa Rápida entre a Oratória do personagem e a Vontade do oponente.\n\n## Modificadores\n\n| Situação | Modificador |\n|---|---|\n| Alvo com Ingênuo ou Circunspecção | -2 |\n| Cada oponente adicional além do primeiro | -1 |\n| Outros modificadores apropriados definidos pelo Mestre | Variável |\n\nO personagem precisa saber de alguma coisa em comum com todo o grupo para afetar múltiplos alvos.\n\nExemplo: todos são servos de uma mesma casa ou membros da mesma unidade militar.\n\nOponentes com a vantagem Fleuma (pág. 60) são imunes à Língua Ferina.\n\nSe o personagem vencer, o oponente fica mentalmente atordoado (v. pág. 420).\n\nUm sucesso decisivo também provoca 1 ponto de dano físico.\n\nA vítima se fere acidentalmente, deixando cair alguma coisa no próprio pé, sufocando com a própria língua, etc.\n\nSe o personagem perder, não há nenhum efeito.\n\nNuma falha crítica, o personagem deixa o oponente furioso, possivelmente ativando desvantagens como Fúria e Sanguinolência.\n\nEsta vantagem costuma só ser apropriada em campanhas de gozação."  },
   {
     "id": "longevidade",
     "nome": "Longevidade",
@@ -2754,8 +2751,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem envelhece mais devagar, só falhando em testes de envelhecimento com 17 ou 18. Custa 2 pontos."
-  },
+    "descricao": "A expectativa de vida do personagem é naturalmente grande.\n\nEle só fracassa nos testes de envelhecimento (pág. 444) se obtiver um 17 ou 18.\n\nSe sua HT modificada for maior ou igual a 17, ele só fracassa com um resultado 18."  },
   {
     "id": "matematico_intuitivo",
     "nome": "Matemático Intuitivo",
@@ -2784,7 +2780,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem percebe e se comunica com espíritos. Custa 10 pontos."
+  "descricao": "O personagem é capaz de perceber e de se comunicar com espíritos, principalmente espíritos de pessoas mortas.\n\nEle não consegue vê-los, mas sabe quando estão por perto.\n\nO personagem é capaz de falar com qualquer espírito que estiver em sua presença, desde que tenham um idioma em comum.\n\nEle também pode invocá-los.\n\nNão há garantia de que atenderão seu chamado, mas irão ouvi-lo.\n\nObserve que essa característica não concede nenhum bônus de reação diante de espíritos nem poderes para controlá-los."
   },
   {
     "id": "membrana_nictitante",
@@ -2799,7 +2795,7 @@
     "rawCost": "1/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Lentes sobre os olhos que protegem e permitem visão subaquática. Cada nível dá RD 1 e +1 em testes de HT para dano ocular. Custa 1 ponto/nível."
+  "descricao": "O personagem tem lentes transparentes sobre os olhos que ele é capaz de abrir e fechar como uma pálpebra.\n\nIsso permite que ele enxergue normalmente sob a água e protege os olhos da areia, de substâncias irritantes, etc.\n\nCada nível de Membrana Nictitante concede a cada olho uma RD de 1 e um bônus de +1 em todos os testes de HT relacionados a dano nos olhos."
   },
   {
     "id": "memoria_eidetica",
@@ -2816,7 +2812,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "Memória excepcional. Eidética: lembra-se de tudo que focou (5 pts). Fotográfica: lembra-se automaticamente (10 pts)."
+    "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nEsta característica pode ser comprada em dois níveis.\n\n## Memória Eidética\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nCusto: 5 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |"
   },
   {
     "id": "memoria_fotografica",
@@ -2833,7 +2829,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "Ver Memória Eidética."
+    "descricao": "O personagem tem uma memória excepcionalmente boa.\n\nQualquer pessoa pode fazer um teste de IQ para tentar relembrar eventos passados.\n\nQuanto melhor o resultado do teste, mais verdadeira será a lembrança, mas os detalhes sempre ficam incompletos.\n\nCom esse talento, o personagem é automaticamente bem-sucedido nesses “testes de memória” e se lembra de detalhes precisos.\n\nO personagem sempre consegue se lembrar de tudo no que focalizar sua atenção e consegue relembrar detalhes específicos com um sucesso num teste de IQ.\n\nÉ possível “aprender” essa vantagem durante o jogo.\n\nTrovadores e escaldos costumam adquiri-la para decorar poemas e canções.\n\nO personagem também se lembra automaticamente de detalhes específicos.\n\nToda vez que o jogador esquecer qualquer detalhe que seu personagem viu ou ouviu, o Mestre ou os outros jogadores devem lembrá-lo de forma honesta.\n\nCusto: 10 pontos.\n\nEsta característica afeta a memória, não a compreensão.\n\nPortanto, ela não acarreta benefícios para perícias.\n\nNo entanto, ela concede bônus sempre que o Mestre pedir um teste de IQ para o aprendizado de um assunto.\n\n| Tipo | Bônus |\n|---|---|\n| Memória Eidética | +5 |\n| Memória Fotográfica | +10 |"
   },
   {
     "id": "memoria_racial",
@@ -2853,7 +2849,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "Acesso a lembranças ancestrais. Passiva: 15 pts, Ativa: 40 pts."
+    "descricao": "O personagem tem acesso às lembranças de seus ancestrais diretos, ou de gerações mais antigas de software, no caso de Mentes Digitais.\n\nEssa habilidade está dividida em dois formatos.\n\n## Memória Racial (Passiva)\n\nO talento do personagem é vago e completamente passivo.\n\nO Mestre faz um teste de IQ em segredo para o personagem em qualquer situação que possivelmente já foi vivida por seus ancestrais.\n\nNo caso de um sucesso, o personagem tem uma sensação de déjà vu daquela situação.\n\nO personagem deve decidir se irá interpretá-la ou não.\n\nUm sucesso decisivo mostra um replay vívido das lembranças.\n\nNo caso de um fracasso, nada acontece.\n\nUma falha crítica resulta em uma impressão falsa.\n\nCusto: 15 pontos.\n\n## Memória Racial (Ativa)\n\nO personagem pode utilizar esta vantagem ativamente.\n\nSe ele quiser saber alguma coisa, o Mestre deve determinar primeiro se os ancestrais sabiam ou não a resposta.\n\nEm seguida, deve fazer um teste de IQ para verificar se o personagem terá acesso às informações.\n\nSe os ancestrais não sabiam a resposta e o teste foi bem-sucedido, o personagem ficará sabendo disso.\n\nNo caso de uma falha crítica, o personagem acreditará que seus ancestrais não sabiam de nada, mesmo que, na verdade, eles tivessem as informações.\n\nEssa ação exige um turno de concentração absoluta.\n\nO Mestre pode exigir uma preparação mais elaborada para o personagem relembrar fatos muito antigos.\n\nCusto: 40 pontos."
   },
   {
     "id": "mente_digital",
@@ -2870,8 +2866,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é um programa de computador senciente. Custa 5 pontos."
-  },
+    "descricao": "O personagem é um programa de computador senciente — possivelmente uma inteligência artificial ou um “upload” da mente de um ser vivo.\n\nVia de regra, o personagem deve habitar o corpo de um computador cuja Complexidade seja pelo menos metade de sua IQ (v. Computadores, pág. 472).\n\nO personagem é completamente imune a poderes com o descritor “Telepático” e a mágicas que afetam especificamente a mente de seres vivos.\n\nNo entanto, um vírus de computador e habilidades que afetam Mentes Digitais podem influenciá-lo.\n\nO personagem pode ser forçado a ficar offline, ou até mesmo pode ser armazenado inconsciente como uma massa de dados.\n\nOutros personagens com as perícias Hacking de Computador ou Programação de Computadores podem acessar seus dados e possivelmente ler ou alterar sua consciência.\n\nÉ muito provável que o personagem tenha a metacaracterística Máquina (pág. 262), mas isso não é obrigatório.\n\nEle pode ser uma mente similar à de um computador dentro de um corpo orgânico, como um biocomputador ou um implante cerebral.\n\nA desvantagem Reprogramável (pág. 153) também é comum entre as Mentes Digitais, assim como a metacaracterística Autômato (pág. 263), mas o personagem não é obrigado a ter nenhum dos dois.\n\nMuitas outras vantagens também são possíveis, embora não automáticas.\n\n## Capacidade de Processamento\n\nSe o personagem funciona mais rápido que uma mente humana, compre Noção do Tempo Ampliada (pág. 73).\n\nSe ele for capaz de adicionar vantagens ou perícias temporariamente por meio de programas, compre Habilidades Modulares (pág. 62).\n\n## Cópias\n\nSe o personagem for capaz de executar várias cópias de sua mente em um único sistema de computador, compre Mente Segmentada (pág. 70).\n\nSe ele for capaz de criar cópias fiéis que funcionam em outros sistemas, compre Duplicação (pág. 56) com a limitação Digital.\n\nSe ele possuir cópias armazenadas offline, compre Vida Extra (pág. 96).\n\n## Uploading\n\nSe o personagem for capaz de fazer um “upload” de si mesmo para outros computadores, compre Possessão (pág. 78) com a limitação Digital.\n\nSe ele for capaz de fazer isso com facilidade, compre corpos adicionais como Títeres (pág. 94)."  },
   {
     "id": "mente_segmentada",
     "nome": "Mente Segmentada",
@@ -2887,7 +2882,41 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem múltiplos compartimentos mentais, permitindo manobras mentais extras. Custa 50 pontos/nível."
+    "descricao": "A coordenação mental do personagem efetivamente concede a ele mais de uma mente.\n\nCada uma dessas mentes ou “compartimentos” funciona de modo independente e com capacidade total.\n\nAs segmentações da mente do personagem são idênticas, mas hipnotismo, magia e psiquismo as afetam de modo independente.\n\nPor exemplo, um compartimento poderia ser hipnotizado sem afetar os outros.\n\nEsta vantagem não permite que o corpo do personagem execute mais de uma tarefa física.\n\nUm personagem normal pode realizar uma manobra física ou mental durante seu turno de combate.\n\nPara cada nível em Mente Segmentada, acrescente uma manobra mental à equação.\n\nPor exemplo, Mente Segmentada 1 permitiria que o personagem executasse uma manobra mental e outra física, como concentrar-se em uma mágica e Atacar, ou duas manobras mentais, como concentrar-se em duas mágicas.\n\nNo entanto, ele nunca poderá realizar mais de uma manobra física.\n\nPara isso, consulte Ataque Adicional (pág. 42).\n\nSe um desses segmentos se encontrar sob influência externa, será preciso fazer uma Disputa Rápida de Vontades para ver quem ganha o controle do corpo.\n\nO segmento que atualmente tem o controle do corpo recebe um bônus de +1.\n\nCompartimentos em conflito podem tentar utilizar poderes mentais um contra o outro.\n\nNesse caso, considere que elas são mentes completamente separadas.\n\nCada uma possui sua própria IQ, Vontade e habilidades mentais, como Escudo Mental.\n\nExistem duas variantes dessa vantagem disponíveis para veículos criados como personagens.\n\n## Controles\n\nCada nível compra um conjunto de controles.\n\nEsses controles permitem que o operador realize suas próprias manobras físicas ou mentais usando as habilidades do veículo, como Ataque Inato ou Radar, conforme descrito nas regras de combate em veículos (v. pág. 467).\n\nO operador controla todas as ações de um veículo com IQ 0 que possui esta vantagem.\n\nAs limitações físicas continuam existindo.\n\nPor exemplo, um veículo não pode realizar mais ataques do que o número de armas prontas.\n\nResolva os conflitos entre operadores com uma Disputa Rápida da perícia de condução apropriada.\n\nCusto: 25 pontos por nível.\n\n## Controles Dedicados\n\nFunciona como no caso anterior, mas cada conjunto de controles executa uma tarefa específica.\n\nExemplo: “artilharia da retaguarda”.\n\nO indivíduo que estiver tripulando o veículo não pode fazer mais nada.\n\nCusto: 10 pontos por nível.\n"
+  },
+  {
+    "id": "mente_segmentada_controles",
+    "nome": "Mente Segmentada (Controles)",
+    "pagina": 70,
+    "costKind": "perLevel",
+    "fixed": null,
+    "perLevel": 25,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "25/nível",
+    "specialRule": null,
+    "tags": [
+      "mental"
+    ],
+    "descricao": "Cada nível compra um conjunto de controles.\n\nEsses controles permitem que o operador realize suas próprias manobras físicas ou mentais usando as habilidades do veículo, como Ataque Inato ou Radar, conforme descrito nas regras de combate em veículos (v. pág. 467).\n\nO operador controla todas as ações de um veículo com IQ 0 que possui esta vantagem.\n\nAs limitações físicas continuam existindo.\n\nPor exemplo, um veículo não pode realizar mais ataques do que o número de armas prontas.\n\nResolva os conflitos entre operadores com uma Disputa Rápida da perícia de condução apropriada.\n\nCusto: 25 pontos por nível.\n\n## Controles Dedicados\n\nFunciona como no caso anterior, mas cada conjunto de controles executa uma tarefa específica.\n\nExemplo: “artilharia da retaguarda”.\n\nO indivíduo que estiver tripulando o veículo não pode fazer mais nada.\n\nCusto: 10 pontos por nível."
+  },
+  {
+    "id": "mente_segmentada_controles_dedicados",
+    "nome": "Mente Segmentada (Controles Dedicados)",
+    "pagina": 70,
+    "costKind": "perLevel",
+    "fixed": null,
+    "perLevel": 10,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "10/nível",
+    "specialRule": null,
+    "tags": [
+      "mental"
+    ],
+    "descricao": "Cada conjunto de controles executa uma tarefa específica.\n\nExemplo: “artilharia da retaguarda”.\n\nO indivíduo que estiver tripulando o veículo não pode fazer mais nada.\n\nCusto: 10 pontos por nível."
   },
   {
     "id": "mestre_de_armas",
@@ -2904,8 +2933,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": "Alto treinamento com armas. Custo varia de 20 a 45 pontos conforme abrangência. Concede bônus de dano e redução de penalidades."
-  },
+    "descricao": "O personagem tem um alto grau de treinamento ou um talento incomparável com uma determinada categoria de armas motoras, como espadas, arcos, etc., mas não armas de fogo.\n\n## Classes Disponíveis\n\n| Classe | Custo |\n|---|---|\n| Todas as armas motoras | 45 pontos |\n| Uma classe ampla de armas | 40 pontos |\n| Uma classe intermediária de armas | 35 pontos |\n| Uma classe pequena de armas | 30 pontos |\n| Duas armas normalmente utilizadas em conjunto | 25 pontos |\n| Uma arma específica | 20 pontos |\n\n## Exemplos\n\n| Categoria | Exemplos |\n|---|---|\n| Classe ampla | Todas as armas com lâmina, todas as armas de uma mão |\n| Classe intermediária | Todas as espadas, todas as armas de ninja |\n| Classe pequena | Armas de esgrima, armas de cavaleiros |\n| Duas armas em conjunto | Espadas de lâmina larga e escudo, rapieira e adaga de esgrima |\n\nEm todos os casos, se uma arma puder ser arremessada, os benefícios desta vantagem também se aplicam ao arremesso.\n\nQuando estiver utilizando uma arma adequada, o personagem recebe um bônus de +1 por dado no dano básico por GdP ou GeB se possuir a perícia com a arma em questão com NH igual à sua DX+1.\n\nEle recebe um bônus de +2 por dado se possuir a mesma perícia com NH maior ou igual a DX+2.\n\nO personagem sofre apenas metade da penalidade habitual para executar um Golpe Rápido (v. Opções de Ataques Corpo a Corpo, pág. 369) ou para Aparar mais de uma vez por turno (v. Aparar, pág. 376).\n\nNenhum desses benefícios se aplica ao uso de valores predefinidos.\n\nO personagem está familiarizado, mesmo que não seja proficiente, com todas as armas da classe escolhida.\n\nIsso concede a ele um melhor valor predefinido com essas armas.\n\n| Tipo de Perícia | Valor Predefinido |\n|---|---|\n| DX/Fácil | DX-1 |\n| DX/Média | DX-2 |\n| DX/Difícil | DX-3 |\n\nObserve que essas perícias não são mais fáceis de aprender e não podem ser compradas a partir dos valores predefinidos melhorados para economizar pontos.\n\nPor fim, o personagem pode aprender qualquer perícia cinematográfica que exija esta vantagem como pré-requisito, consulte o Capítulo 4, desde que exista uma razão para ele usar essas perícias com as armas de sua preferência.\n\nExemplos incluem Lutar às Cegas e Golpe Poderoso.\n\nO Mestre tem a palavra final.\n\nEsta característica combina melhor com aventuras cinematográficas e informais.\n\nTalvez o Mestre prefira proibi-la em uma campanha realista."  },
   {
     "id": "metabolismo_impoluto",
     "nome": "Metabolismo Impoluto",
@@ -2934,8 +2962,7 @@
     "rawCost": "Variável",
     "specialRule": "metamorfose",
     "tags": [],
-    "descricao": "O personagem pode assumir outras formas. Dividido em Forma Alternativa e Morfose."
-  },
+    "descricao": "O personagem é capaz de assumir uma ou mais formas físicas diferentes de sua original.\n\nPara isso, ele precisa se concentrar por 10 segundos.\n\nPara acelerar o processo, acrescente Tempo Reduzido (pág. 109).\n\nA Fadiga, lesões, incapacitação e atribulações são passadas de uma forma para outra.\n\nNo entanto, as perdas de PV e PF são escalonadas na proporção dos valores totais de PV e PF da nova forma.\n\nExemplo: se o personagem sofrer 10 pontos de dano e quebrar uma perna em uma forma com 20 PV, terá sofrido 5 pontos de dano e terá a mesma perna quebrada quando assumir uma forma com apenas 10 PV.\n\nSe o personagem for nocauteado ou morto, ele volta imediatamente para a forma original.\n\nA forma original também estará inconsciente ou morta.\n\nAlém disso, o jogador precisa especificar uma influência externa razoavelmente comum capaz de obrigá-lo a retornar à forma original.\n\nIsso deve estar de acordo com a origem da vantagem.\n\nExemplos incluem:\n\n| Origem | Influência Externa |\n|---|---|\n| Mágica | Anular Mágica |\n| Espiritual | Exorcismo |\n| Tecnológica | Campos magnéticos poderosos |\n\nMetamorfose abrange duas características distintas: Forma Alternativa e Morfose."  },
   {
     "id": "mordida_de_vampiro",
     "nome": "Mordida de Vampiro",
@@ -2949,8 +2976,7 @@
     "rawCost": "30 + 5/nível",
     "specialRule": "mordida_de_vampiro",
     "tags": [],
-    "descricao": "O personagem pode drenar PV de vítimas indefesas, curando-se. Custo: 30 pts + 5 pts por PV adicional por segundo."
-  },
+    "descricao": "O personagem pode morder pessoas e drenar a força vital delas, curando as próprias feridas no processo.\n\nEle só consegue se alimentar se a vítima não puder se defender, ou seja, se estiver presa, atordoada, inconsciente, etc., se ela for agarrada ou se ela se entregar de livre e espontânea vontade.\n\nSe a vítima estiver usando uma armadura, a mordida deve atravessar a RD.\n\nDepois que o ataque surtir efeito, o personagem pode sugar 1 PV por segundo.\n\nA cada 3 PV roubados, o personagem cura 1 PV ou 1 PF, à escolha do personagem.\n\nNão é possível elevar os valores de PV ou PF acima do máximo dessa maneira.\n\nA Mordida de Vampiro básica descrita anteriormente custa 30 pontos.\n\nÉ possível aprimorar esta vantagem a um custo de 5 pontos por PV adicional sugado por segundo.\n\nExemplo: para sugar 10 PV por segundo, o jogador precisa gastar 75 pontos.\n\nCom esta característica, o personagem pode morder em combate sem se alimentar.\n\nConsidere essa ação como um ataque com Dentes (Dentes Afiados) ou Dentes (Bico Afiado), pág. 52, a critério do jogador.\n\nNão é preciso adquirir essas outras vantagens separadamente."  },
   {
     "id": "morfose",
     "nome": "Morfose",
@@ -2964,8 +2990,7 @@
     "rawCost": "Variável",
     "specialRule": "morfose",
     "tags": [],
-    "descricao": "Assume qualquer modelo racial existente na campanha, dentro de limite de pontos. Custo: 100 pts para formas de valor ≤ original; + diferença para formas mais poderosas. Pode memorizar número de formas igual à IQ. Ampliação: Ilimitada (+50%) permite transformar-se em robôs, veículos. Limitações: Conservação da Massa (-20%), Cosmética (-50%), Mantém a Forma (-20%). (pág. 72-73)"
-  },
+    "descricao": "Essa habilidade é semelhante à Forma Alternativa, mas não está limitada a modelos raciais específicos.\n\nO personagem pode assumir qualquer modelo racial, respeitando alguns limites.\n\nPrimeiro, o modelo racial deve existir na campanha.\n\nO Mestre pode criá-lo por conta própria ou se basear em algum suplemento de GURPS, mas o jogador não pode criar modelos totalmente novos para uma Morfose.\n\nNo entanto, ele pode ajustar modelos existentes.\n\nSegundo, o personagem é capaz de se transformar apenas em um ser vivo ou em alguma criatura que já foi viva, como um vampiro.\n\nTransformar-se em uma máquina exige uma ampliação especial.\n\nPor último, o valor em pontos do modelo deve estar dentro de um limite determinado pelo número de pontos que o personagem tem em Morfose.\n\nSe o personagem for capaz de assumir qualquer modelo racial cujo valor em pontos é menor que seu valor em pontos original, a Morfose custa 100 pontos.\n\nIsso coloca muitas formas à disposição do personagem, qualquer tipo de criatura que não for mais poderosa que sua forma original.\n\nNo caso de um ser humano, isso significa gatos, insetos, corujas e lobos.\n\nSe o personagem for capaz de assumir formas mais poderosas, some a diferença entre o custo do modelo racial mais alto e o custo do modelo original aos 100 pontos básicos.\n\nExemplo: um ser humano capaz de assumir qualquer modelo racial de até 75 pontos pagaria 175 pontos pela Morfose.\n\nÉ possível aumentar esse limite com pontos de personagem adquiridos.\n\nO personagem sempre será capaz de assumir a forma de uma criatura que pode ser vista ou tocada por ele, desde que o custo do novo modelo racial não exceda o valor máximo permitido.\n\nDepois de assumir uma forma, o personagem pode memorizá-la ao se concentrar durante um minuto.\n\nIsso permite que ele assuma aquela forma a qualquer momento.\n\nO personagem é capaz de memorizar um número de formas igual à sua IQ.\n\nSe todos os seus “espaços” estiverem ocupados, será necessário eliminar uma criatura previamente memorizada, à escolha dele, para memorizar uma nova forma.\n\nAssim como acontece com a Forma Alternativa, qualquer modelo racial assumido substitui o modelo racial original.\n\nO personagem não pode acrescentar características aos modelos, mas pode suprimir desvantagens mentais raciais, como Bestial, e escolher manter sua própria IQ no lugar da IQ racial.\n\nEssas alterações aumentam o custo dos modelos animais, que são baratos devido à capacidade mental limitada dessas criaturas.\n\nSe quiser fazer isso, o jogador provavelmente vai ter que gastar mais do que 100 pontos em Morfose.\n\nA Morfose inclui a habilidade de fazer alterações físicas cosméticas.\n\nIsso permite que o personagem personifique um membro específico de qualquer raça cuja forma seja capaz de assumir.\n\nO personagem sempre pode se transformar em um indivíduo que se encontra presente.\n\nPara assumir essa forma mais tarde, terá que ocupar um “espaço” de sua memória com aquela forma.\n\nGastando mais alguns pontos em Morfose, é possível usar essa função para melhorar a aparência.\n\nExemplo: gastando 115 pontos em Morfose, o personagem pode assumir qualquer aparência, desde Horrendo até Elegante.\n\nAs alterações cosméticas continuam levando os 10 segundos usuais.\n\n## Raças Metamórficas\n\nOs membros de uma raça que possui Morfose devem subtrair o custo em pontos desta vantagem do custo racial quando forem determinar que formas podem assumir.\n\nExemplo: As Bolhas Azuis possuem uma Morfose racial que vale 125 pontos, a habilidade básica mais 25 pontos de capacidade adicional.\n\nIsso permite que elas assumam formas que valem até 25 pontos a mais que a original.\n\nJuntando as outras características, o custo racial total é de 175 pontos.\n\nNo entanto, para fins de Morfose, considera-se que as Bolhas Azuis têm um custo racial de 175 - 125 = 50 pontos.\n\nCom os 25 pontos de capacidade adicional, os membros dessa raça podem se transformar em modelos que valem até no máximo 75 pontos."  },
   {
     "id": "nao_come_nem_bebe",
     "nome": "Não Come nem Bebe",
@@ -2979,7 +3004,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem não precisa de alimento ou água. Custa 10 pontos."
+    "descricao": "O personagem não precisa de alimento, água ou combustível.\n\nSeu corpo se mantém de alguma outra maneira, como energia solar, energia mágica do ambiente, etc.\n\nUma fonte de energia suficientemente rara pode qualificar o personagem para a desvantagem Dependência (pág. 130)."  
   },
   {
     "id": "nao_dorme",
@@ -2994,7 +3019,7 @@
     "rawCost": "20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem não precisa dormir. Custa 20 pontos."
+    "descricao": "O personagem não precisa dormir e pode ignorar todos os efeitos nocivos provocados pela falta de descanso noturno."
   },
   {
     "id": "nao_respira",
@@ -3009,8 +3034,7 @@
     "rawCost": "20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem não precisa respirar. Custa 20 pontos. Limitações: Guelras (-50%), Absorção de Oxigênio (-25%), Combustão de Oxigênio (valor variável), Reserva de Oxigênio (-10% a -50%)."
-  },
+    "descricao": "O personagem não respira nem necessita de oxigênio.\n\nTentativas de asfixiá-lo ou estrangulá-lo não podem feri-lo, nem silenciá-lo.\n\nO personagem também é imune a toxinas inaladas.\n\nNo entanto, ele ainda é afetado por venenos de contato, pela pressão e pelo vácuo.\n\nPara resistir a essas ameaças, o personagem deve adquirir as vantagens apropriadas.\n\n| Ameaça | Vantagem Necessária |\n|---|---|\n| Venenos de contato e agentes externos | Lacrado (pág. 68) |\n| Pressão extrema | Resistência à Pressão (pág. 84) |\n| Vácuo | Resistência ao Vácuo (pág. 84) |"  },
   {
     "id": "neutralizar",
     "nome": "Neutralizar",
@@ -3024,8 +3048,7 @@
     "rawCost": "50",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem neutraliza poderes psíquicos de um alvo. Custa 50 pontos. Ampliação: Furto de Poder (+200%). Limitação: Poder Único (-50%)."
-  },
+    "descricao": "O personagem é capaz de neutralizar os poderes psíquicos de um indivíduo.\n\nEsta é uma habilidade ativa com um efeito contínuo sobre o alvo.\n\nEla não precisa ser psíquica.\n\nPode representar uma maneira mágica ou de alta tecnologia de drenar habilidades psíquicas.\n\nPara usar Neutralizar, o personagem precisa tocar o alvo, o que exige uma manobra Ataque, e vencer uma Disputa Rápida de Vontade.\n\nNo caso de um sucesso, o personagem neutraliza todos os poderes psíquicos da vítima (v. Capítulo 6) durante um número de minutos igual à sua margem de vitória.\n\nEsse efeito não afeta os Talentos psíquicos do alvo.\n\nDepois que tiver neutralizado um indivíduo, o personagem não poderá afetá-lo novamente com este poder até que ele recupere os poderes.\n\nUma falha crítica na utilização desta habilidade a deixa incapacitada por 1d horas."  },
   {
     "id": "nocao_do_perigo",
     "nome": "Noção do Perigo",
@@ -3069,7 +3092,22 @@
     "rawCost": "2",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem sabe a hora exata. Noção Exata: 2 pts. Cronolocalização: 5 pts."
+    "descricao": "O personagem sempre sabe a hora exata, com uma precisão equivalente à dos melhores medidores de tempo pessoais disponíveis em sua cultura (mas sempre com alguns segundos de diferença). Ele também é capaz de medir com precisão qualquer lapso de tempo. Mudanças no fuso horário ou no sono não interferem com esta habilidade, sendo que o personagem é inclusive capaz de acordar numa hora pré-determinada, se quiser. Se o personagem for nocauteado, hipnotizado, etc., talvez a vantagem pare de funcionar; além disso, viagens no tempo vão confundi-lo até que ele descubra qual é o \"novo\" horário."
+  },
+  {
+    "id": "nocao_exata_do_tempo_cronolocalizacao",
+    "nome": "Noção Exata do Tempo (Cronolocalização)",
+    "pagina": 74,
+    "costKind": "fixed",
+    "fixed": 5,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "5",
+    "specialRule": null,
+    "tags": [],
+    "descricao": "O personagem sempre sabe as horas em um sentido absoluto.\n\nLembre-se que coisas como Horário de Verão e mudanças no calendário ainda poderão confundi-lo.\n\nQuando o personagem viajar no tempo, o Mestre pode dizer: “Seu personagem voltou exatamente 92.876,3 dias”, deixando que o jogador, ou o personagem, resolva questões do tipo: “E quantos anos bissextos houve nesse intervalo?”\n\nCusto: 5 pontos."
   },
   {
     "id": "nocao_tridimensional_do_espaco",
@@ -3114,8 +3152,7 @@
     "rawCost": "2/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem produz um efeito que bloqueia um sentido em uma área (2 m de raio). Custa 2 pontos/nível."
-  },
+    "descricao": "O personagem produz um efeito que efetivamente “bloqueia” um determinado sentido, fazendo com que seja difícil detectá-lo e tudo ao redor dele.\n\nÉ necessário especificar o sentido afetado.\n\nIsso pode incluir qualquer um dos cinco sentidos humanos ou uma vantagem sensorial, como Infravisão, Radar ou um tipo de Detectar.\n\nAlguns exemplos incluem Obscurecer (Visão) para neblina, Obscurecer (Audição) para barulho de fundo e Obscurecer (Radar) para bloquear sinais eletrônicos.\n\nEsta vantagem afeta um raio de 2 metros ao redor do personagem.\n\nPara aumentar esse raio é preciso acrescentar a ampliação Efeito de Área (pág. 105).\n\nO sentido afetado sofre uma penalidade de -1 para cada nível de Obscurecer nas tentativas de detectar qualquer coisa dentro do raio estabelecido.\n\nDez níveis de Obscurecer bloqueiam completamente o sentido.\n\nObserve que as fronteiras da área são facilmente percebidas pelo sentido afetado.\n\nExiste um bônus de +1 por nível para perceber essas fronteiras."  },
   {
     "id": "obstinado",
     "nome": "Obstinado",
@@ -3129,8 +3166,7 @@
     "rawCost": "5",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem recebe +3 em tarefas que exigem concentração, mas tem penalidade para perceber interrupções. Custa 5 pontos."
-  },
+    "descricao": "O personagem realmente sabe como se concentrar.\n\nEle recebe um bônus de +3 nos testes de habilidade para qualquer tarefa mental extensa na qual precise se concentrar, independente de todas as outras atividades, se o Mestre acreditar que esse foco seria benéfico.\n\nEle tende a ignorar todo o resto enquanto se encontra concentrado.\n\nO personagem deve fazer um teste de Vontade para evitar isso.\n\nEnquanto estiver concentrado, sofre uma penalidade de -5 em qualquer teste para perceber interrupções.\n\nO Mestre pode determinar que certas tarefas complexas, como invenções, magia e atividades sociais, exigem que o personagem divida sua atenção.\n\nNesses casos, esta vantagem não surte qualquer efeito."  },
   {
     "id": "oflato_discriminatorio",
     "nome": "Oflato Discriminatório",
@@ -3144,7 +3180,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "Olfato superaguçado, reconhece odores e memoriza. Custa 15 pontos. Bônus de +4 em tarefas olfativas. Ampliação: Percepção de Emoções (+50%)."
+    "descricao": "O olfato do personagem é muito mais aguçado do que o olfato normal dos seres humanos e registra odores diferentes para praticamente tudo que ele encontrar.\n\nIsso permite que o personagem reconheça pessoas, lugares e coisas pelo cheiro.\n\nNo caso de um sucesso em um teste de IQ, ele é capaz de memorizar um odor se farejá-lo durante pelo menos um minuto.\n\nNo caso de um fracasso, ele tem que esperar no mínimo um dia antes de repetir a tentativa.\n\nO personagem recebe um bônus de +4, além dos bônus relacionados à vantagem Paladar/Olfato Apurado, em qualquer tarefa que utiliza o olfato e na perícia Rastreamento.\n\nSe ficar doente quando for exposto ao odor de uma determinada substância, o personagem pode adquirir a limitação Desvantagem Temporária (pág. 111).\n\nO efeito mais comum é Repugnância (pág. 154), mas o Mestre pode optar por permitir outras desvantagens temporárias."
   },
   {
     "id": "oraculo",
@@ -3159,8 +3195,7 @@
     "rawCost": "15",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem vê presságios em fenômenos naturais e recebe conselhos do Mestre. Custa 15 pontos."
-  },
+    "descricao": "O personagem tem presságios e vê significados ocultos em coisas como o modo que as plantas crescem, o comportamento dos animais e até mesmo alterações no clima e no céu.\n\nO personagem pode verificar os presságios uma vez por dia.\n\nIsso normalmente requer pelo menos uma hora de análise, mas se o Mestre tiver alguma coisa para comunicar, ele pode simplesmente colocá-la no caminho do personagem.\n\nQuando o personagem usa esta habilidade, o Mestre deve fazer duas jogadas em segredo: uma para determinar se ele recebe um presságio e outra para verificar se ele o interpreta corretamente.\n\n## Descoberta\n\nUm presságio exige um teste de Sentidos.\n\nNo caso de um sucesso, o personagem recebe o presságio.\n\nNo caso de um sucesso decisivo, ele também recebe um bônus de +5 no teste de interpretação que deve ser feito em sequência.\n\nSe fracassar, o personagem não encontra nenhum elemento com significado profético.\n\nNuma falha crítica, o Mestre deve mentir e dizer ao personagem que ele teve um presságio, que será, na verdade, produto de seus próprios medos e desejos.\n\n## Interpretação\n\nA interpretação de um presságio exige um teste de IQ.\n\nNo caso de um sucesso, a interpretação será bastante genérica.\n\nExemplos: “um inimigo se aproxima” ou “um grande poder, há muito adormecido, está despertando”.\n\nNo caso de um sucesso decisivo, a informação será mais específica.\n\nExemplos: “você despertará a ira do rei” ou “procure o mago na torre”.\n\nSe fracassar, o presságio será simplesmente vago demais para ter alguma utilidade.\n\nNuma falha crítica, o personagem interpreta a profecia de modo completamente equivocado, provavelmente de maneira perigosa.\n\nEsta habilidade é diferente de Precognição (pág. 80), que não exige nenhuma interpretação."  },
   {
     "id": "otima_forma",
     "nome": "Ótima Forma",
@@ -3191,7 +3226,7 @@
     "rawCost": "100/nível",
     "specialRule": null,
     "tags": [],
-    "descricao": "Percepção do tempo acelerada, permitindo ações extras por turno. Custa 100 pontos/nível."
+    "descricao": "O ritmo de percepção do tempo do personagem é maior do que o de um ser humano normal.\n\nO primeiro nível desta vantagem permite que a percepção do tempo do personagem seja duas vezes mais veloz que o normal, fazendo com que ele vivencie dois segundos subjetivos para cada segundo real que se passar.\n\nCada nível além do primeiro aumenta essa taxa em um ponto: três vezes mais veloz no nível 2, quatro vezes no nível 3 e assim por diante.\n\nCada nível de Padrão de Tempo Alterado permite que o personagem realize uma manobra a mais em seu turno de combate.\n\nIsso permite que ele faça mágicas com rapidez ao realizar diversas vezes a manobra Concentrar, ou que ele corra velozmente com uma sequência de manobras Deslocamento.\n\nNo entanto, o turno do personagem não chega mais rápido.\n\nEsta vantagem afeta a rapidez com que o personagem responde quando reage, mas não quanto tempo ele demora para reagir.\n\nFora de combate, Padrão de Tempo Alterado dá ao personagem o luxo de fazer um planejamento extensivo, mesmo em situações de crise, pois tudo parece acontecer em câmera lenta para ele.\n\nO personagem sempre pode testar seus Sentidos ou usar perícias baseadas na IQ para se planejar ou relembrar informações, a critério do Mestre, sem sofrer penalidades nas ações seguintes.\n\nPara fazer qualquer coisa que dependa da reação de outro indivíduo, o personagem precisa deliberadamente “diminuir seu ritmo” e agir na mesma velocidade que essa outra pessoa.\n\nIsso é verdade tanto para uma Finta realizada em combate quanto para um teste de Influência (pág. 359) fora de combate.\n\nPor exemplo, se o personagem quiser usar uma Finta, ele só poderá fazer isso em seu turno.\n\nNão será possível realizar ações adicionais.\n\nPor outro lado, ele poderia fazer um Ataque Total seguido de outro Ataque para abater um inimigo usando sua velocidade cegante.\n\nCusto: 100 pontos por nível."  
   },
   {
     "id": "paladar_discriminatorio",
@@ -3206,7 +3241,7 @@
     "rawCost": "10",
     "specialRule": null,
     "tags": [],
-    "descricao": "Paladar superaguçado, analisa substâncias ingeridas. Custa 10 pontos. Bônus de +4 em tarefas gustativas."
+    "descricao": "Este talento funciona da mesma maneira que Olfato Discriminatório (pág. 74), mas amplia o sentido do paladar, não permitindo rastreamento.\n\nPara analisar uma substância, o personagem deve ingerir uma pequena quantidade.\n\nNo caso de um ser vivo, isso significa fluidos corporais.\n\nEsta característica permite que o personagem faça um teste de IQ para tentar reconhecer um sabor, verificar se é seguro ingerir uma determinada substância, etc.\n\nO personagem é capaz de realizar uma “análise” detalhada com um teste contra a perícia adequada.\n\nExemplos incluem Química, Culinária, Farmácia e Venefício.\n\nO personagem recebe um bônus de +4, além dos bônus relacionados a Paladar/Olfato Apurado, em qualquer tarefa que utiliza o paladar.\n\nCusto: 10 pontos."  
   },
   {
     "id": "paladar_olfato_apurado",
@@ -3236,8 +3271,7 @@
     "rawCost": "Variável",
     "specialRule": "patronos",
     "tags": [],
-    "descricao": "Um PdM poderoso que ajuda o personagem. Custo básico de 10 a 30 pontos conforme poder. Multiplicado por frequência. Ampliações: Altamente Acessível (+50%), Equipamento (+50% ou +100%), Habilidades Especiais (+50% ou +100%). Limitações: Intervenção Mínima (-50%), Relutante (-50%), Segredo (-50%)."
-  },
+    "descricao": "Um “Patrono” é um PdM, ou até mesmo uma organização inteira, que pode ser de grande ajuda como conselheiro, patrão, mentor ou protetor.\n\nUm patrão precisa ser um indivíduo excepcional para se qualificar como Patrono.\n\nUm Patrono é muito mais que um chefão comum.\n\n## Poder\n\nO custo básico de um Patrono em pontos de personagem depende de seu poder.\n\nUtilize as categorias descritas a seguir como guia, mas lembre-se que alguns Patronos não se encaixam em nenhuma delas.\n\nO Mestre tem sempre a palavra final.\n\n| Tipo de Patrono | Custo |\n|---|---|\n| Indivíduo poderoso ou organização relativamente poderosa | 10 pontos |\n| Indivíduo extremamente poderoso ou organização poderosa | 15 pontos |\n| Indivíduo ultrapoderoso ou organização muito poderosa | 20 pontos |\n| Organização extremamente poderosa | 25 pontos |\n| Governo nacional, organização multinacional gigantesca ou deus verdadeiro | 30 pontos |\n\n## Exemplos de Poder\n\n| Categoria | Exemplos |\n|---|---|\n| 15 pontos | Manifestação limitada de um deus inferior, bilionário, departamento de polícia de uma cidade grande |\n| 20 pontos | Personagem super, manifestação limitada de um deus superior, cidade grande |\n| 25 pontos | Grande corporação, nação muito pequena |\n| 30 pontos | Governo nacional, organização multinacional gigantesca, deus verdadeiro |\n\nObserve que o custo básico para se ter uma divindade como Patrono é comparável ao custo de um Patrono mundano poderoso.\n\nNo entanto, o poder divino exige a ampliação Habilidades Especiais, que aumenta significativamente o custo final de um Patrono divino.\n\n## Frequência de Participação\n\nEscolha uma Frequência de Participação, como explicado no quadro Frequência de Participação (pág. 36).\n\nSe o Mestre determinar que o Patrono vai aparecer no início da aventura, ele pode prepará-la de modo a incluir uma tarefa a ser realizada ou um auxílio a ser prestado pelo Patrono.\n\nEle também pode optar por deixar o Patrono de fora se a participação dele não fizer sentido ou atrapalhar a aventura.\n\nSe o Mestre definir que o Patrono do personagem deveria ter aparecido e então o personagem tentar contatá-lo durante a aventura, buscando ajuda, conselho, etc., é provável que o contato seja bem-sucedido e a ajuda seja oferecida.\n\nIsso depende de ser razoável.\n\nSe o personagem estiver preso em uma masmorra sem um rádio ou outro meio de comunicação, talvez não consiga entrar em contato com ninguém.\n\nO personagem nunca sabe se seu Patrono está disponível em uma determinada aventura até tentar entrar em contato.\n\nComo regra, ele só deve receber ajuda do Patrono uma vez por aventura.\n\nMestres e jogadores devem se lembrar que um Patrono poderoso pode ser útil mesmo sem intervir ativamente.\n\nUm gângster de Chicago dizendo “O Big Eddie me mandou” ou um oficial do governo exibindo o distintivo na hora certa podem resolver muitos problemas.\n\n## Grupos Patronos\n\nÉ possível que vários PdJs compartilhem o mesmo Patrono.\n\nExemplos incluem agentes do mesmo governo ou seguidores da mesma seita.\n\nNo entanto, o custo em pontos de um Patrono não é dividido.\n\nTodos os personagens pagam o preço total.\n\nO Mestre fará um teste de participação para cada personagem no início da aventura.\n\nSe o Patrono aparecer para qualquer um deles, ficará disponível para todos os membros do grupo.\n\nA qualidade do auxílio deve ser proporcional ao número de testes bem-sucedidos.\n\n## Patronos e seus Inconvenientes\n\nUm personagem que tem como Patrono um exército, corporação, senhor feudal, etc., pode ter algum Dever (pág. 133) em relação a ele.\n\nUm deus ou Patrono similar pode exigir comportamento exemplar em troca de ajuda.\n\nConsulte Desvantagens Mentais Autoimpostas (pág. 121).\n\nUm Patrono pode ter inimigos poderosos que também serão inimigos do personagem.\n\nIsso pode conceder a desvantagem Inimigo (pág. 146).\n\nEsses fatores podem diminuir bastante o custo de um Patrono e fazer com que ele se transforme em uma responsabilidade considerável.\n\n## Patrões e Patronos\n\nNem todo patrão é um Patrono.\n\nSe o patrão do personagem for alguém com quem ele pode contar para livrá-lo de problemas, ao menos de vez em quando, então ele realmente pode ser considerado um Patrono.\n\nCaso contrário, não passará de um empregador.\n\nExemplo: um pequeno departamento de polícia é um Patrono de 10 pontos se proteger seus membros.\n\nO exército dos EUA, apesar de mais poderoso, normalmente não seria Patrono de um soldado raso.\n\n## Exemplos de Patronos\n\n- Um mago poderoso como Patrono de guerreiros ou jovens feiticeiros.\n- Um rei do crime como Patrono de ladrões e assassinos independentes.\n- Uma divindade menor como Patrono de um Paladino da Justiça.\n- O departamento de polícia de uma cidade como Patrono de um detetive particular.\n- Um soberano como Patrono de um aventureiro.\n- Uma grande companhia como Patrono de um diplomata ou espião.\n- Um supercombatente do crime ou político como Patrono de um repórter.\n- Organizações de espionagem como Patronos de agentes independentes.\n\nOs modificadores apropriados devem ser aplicados depois que o custo básico for multiplicado pela frequência de participação."  },
   {
     "id": "pelagem",
     "nome": "Pelagem",
@@ -3266,8 +3300,7 @@
     "rawCost": "20",
     "specialRule": null,
     "tags": [],
-    "descricao": "O personagem pode alterar a pele e feições para imitar outros. Custa 20 pontos. Bônus de +4 em Disfarce."
-  },
+    "descricao": "O personagem é capaz de alterar sua pele e feições, mas não as vestimentas ou maquiagem, para imitar outros membros de sua própria raça ou de outra raça muito semelhante.\n\nO processo leva 10 segundos e exige um teste de Disfarce se o personagem estiver tentando copiar um indivíduo em particular.\n\nSão necessários três segundos para retornar à forma original.\n\nEsta habilidade concede um bônus de +4 em todos os testes de Disfarce.\n\nCusto: 20 pontos."  },
   {
     "id": "pendulear",
     "nome": "Pendulear",

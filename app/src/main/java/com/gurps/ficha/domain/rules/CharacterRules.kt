@@ -268,6 +268,7 @@ object CharacterRules {
                 "manutencao" -> calcularCustoManutencao(metadados)
                 "vicio" -> calcularCustoVicio(metadados)
                 "maldicao_divina" -> calcularCustoMaldicaoDivina(metadados)
+                "habilidades_modulares" -> calcularCustoHabilidadesModulares(metadados)
                 else -> null
             }
             if (baseCostForSpecialRule != null) {
@@ -492,6 +493,26 @@ object CharacterRules {
         }
         val finalVal = (custoBase * frequencia * confiabilidade.toDouble())
         return kotlin.math.ceil(finalVal).toInt().coerceAtLeast(1)
+    }
+
+    fun calcularCustoHabilidadesModulares(selecoes: Map<String, Any>): Int {
+        var total = 0
+        selecoes.forEach { (key, value) ->
+            // chaves podem vir com prefixo "habmod_" (metadados persistidos) ou sem (Map<String, HabModTipoSel>)
+            val id = key.removePrefix("habmod_")
+            val niveis: Int = when (value) {
+                is com.gurps.ficha.ui.features.traits.HabModTipoSel -> if (value.ativo) value.niveis else return@forEach
+                else -> value.toString().toIntOrNull() ?: return@forEach
+            }
+            total += when (id) {
+                "cerebro_eletronico" -> 6 + 4 * niveis
+                "chips" -> 5 + 3 * niveis
+                "poder_cosmico" -> 10 * niveis
+                "supermemorizar" -> 5 + 3 * niveis
+                else -> 0
+            }
+        }
+        return total.coerceAtLeast(1)
     }
 
     fun calcularCustoAliado(basePoints: Int, frequencia: Float, multiplicadorGrupo: Int): Int {

@@ -2,6 +2,7 @@ package com.gurps.ficha.ui.features.traits
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,12 +15,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gurps.ficha.BuildConfig
 import com.gurps.ficha.model.ModificadorSelecao
 import com.gurps.ficha.model.ModificadorDefinicao
+import kotlin.math.abs
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -604,6 +608,150 @@ fun GolpeadoresConfig(nome: String, tipoDano: String, dados: Int, bonus: Int, on
                 FilterChip(selected = tipoDano == t, onClick = { onChanged(nome, t, dados, bonus) }, label = { Text(t) })
             }
         }
+    }
+}
+
+// Representa a seleção de cada tipo dentro de Habilidades Modulares
+data class HabModTipoSel(val ativo: Boolean, val niveis: Int)
+
+data class HabModTipoInfo(val id: String, val nome: String, val formula: String, val descricao: String)
+
+@Composable
+private fun HabModTipoCard(
+    tipo: HabModTipoInfo,
+    sel: HabModTipoSel,
+    isPracego: Boolean,
+    onToggle: (HabModTipoSel) -> Unit,
+    onDescricao: () -> Unit
+) {
+    // Estado interno isolado por card — evita contaminação entre recomposições do forEach
+    var ativo by remember { mutableStateOf(sel.ativo) }
+    var niveis by remember { mutableIntStateOf(sel.niveis) }
+
+    // Sincroniza se o pai enviar um valor novo (ex: edição carregada)
+    LaunchedEffect(sel.ativo, sel.niveis) {
+        if (ativo != sel.ativo) ativo = sel.ativo
+        if (niveis != sel.niveis) niveis = sel.niveis
+    }
+
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = if (ativo) MaterialTheme.colorScheme.primaryContainer
+            else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            RadioButton(
+                selected = ativo,
+                onClick = {
+                    ativo = !ativo
+                    onToggle(HabModTipoSel(ativo = ativo, niveis = niveis.coerceAtLeast(1)))
+                }
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(tipo.nome, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    tipo.formula,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.clickable { onDescricao() }
+                )
+            }
+            if (ativo) {
+                Spacer(modifier = Modifier.width(12.dp))
+                if (isPracego) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextButton(onClick = {
+                            niveis = (niveis - 1).coerceAtLeast(1)
+                            onToggle(HabModTipoSel(ativo = true, niveis = niveis))
+                        }, enabled = niveis > 1) { Text("-") }
+                        Text("$niveis", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineMedium)
+                        TextButton(onClick = {
+                            niveis++
+                            onToggle(HabModTipoSel(ativo = true, niveis = niveis))
+                        }) { Text("+") }
+                    }
+                } else {
+                    Text(
+                        "$niveis",
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier.pointerInput(tipo.id, niveis) {
+                            var dragAcumulado = 0f
+                            val passoPx = 40f
+                            var niveisAtual = niveis.coerceAtLeast(1)
+                            detectVerticalDragGestures(
+                                onVerticalDrag = { change, dragAmount ->
+                                    change.consume()
+                                    dragAcumulado += dragAmount
+                                    if (abs(dragAcumulado) >= passoPx) {
+                                        niveisAtual = if (dragAcumulado < 0f) niveisAtual + 1 else (niveisAtual - 1).coerceAtLeast(1)
+                                        onToggle(HabModTipoSel(ativo = true, niveis = niveisAtual))
+                                        dragAcumulado = 0f
+                                    }
+                                }
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HabilidadesModularesConfig(
+    selecoes: Map<String, HabModTipoSel>,
+    onChanged: (Map<String, HabModTipoSel>) -> Unit
+) {
+    val isPracego = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
+
+    // rememberUpdatedState garante que o onChanged e selecoes dentro das lambdas
+    // sempre apontam para a versão mais recente, sem capturar valores stale
+    val selecoesAtual by rememberUpdatedState(selecoes)
+    val onChangedAtual by rememberUpdatedState(onChanged)
+
+    val tipos = remember {
+        listOf(
+            HabModTipoInfo("cerebro_eletronico", "Cérebro Eletrônico", "6 + 4×níveis",
+                "As habilidades são programas de computador. Com Telecomunicação, o personagem pode baixar programas de uma rede (1 segundo por ponto). Custo padrão: \$100 por ponto."),
+            HabModTipoInfo("chips", "Entradas para Chips", "5 + 3×níveis",
+                "Programas armazenados em chips físicos encaixados num soquete no crânio (3 segundos). Chips custam entre \$100 e \$1.000 por ponto."),
+            HabModTipoInfo("poder_cosmico", "Poder Cósmico", "10×níveis",
+                "O personagem simplesmente deseja e novas habilidades aparecem (1 segundo por habilidade). Uma única entrada, reorganiza todos os pontos em quantas habilidades desejar."),
+            HabModTipoInfo("supermemorizar", "Supermemorização", "5 + 3×níveis",
+                "Adquire habilidades por estudo rápido (1 segundo por ponto) com obra de referência. Pode \"esquecer\" instantaneamente.")
+        )
+    }
+
+    var descricaoExpandida by remember { mutableStateOf<HabModTipoInfo?>(null) }
+
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        tipos.forEach { tipo ->
+            key(tipo.id) {
+                HabModTipoCard(
+                    tipo = tipo,
+                    sel = selecoesAtual[tipo.id] ?: HabModTipoSel(false, 1),
+                    isPracego = isPracego,
+                    onToggle = { novoSel -> onChangedAtual(selecoesAtual + (tipo.id to novoSel)) },
+                    onDescricao = { descricaoExpandida = tipo }
+                )
+            }
+        }
+    }
+
+    descricaoExpandida?.let { tipo ->
+        AlertDialog(
+            onDismissRequest = { descricaoExpandida = null },
+            title = { Text(tipo.nome) },
+            text = { Text(tipo.descricao) },
+            confirmButton = { TextButton(onClick = { descricaoExpandida = null }) { Text("Fechar") } }
+        )
     }
 }
 
