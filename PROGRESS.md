@@ -2057,4 +2057,59 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Validação:** Compila (BUILD SUCCESSFUL em 4s). Validação funcional via script Python `scripts/testar_tools_318.py` chamando API DeepSeek real com 8 perguntas (2 por tema).
 - **Rollback:** `git revert <hash>` desfaz Lote 318. Lote 317 ainda funcional (só com descriptions blindadas).
 
+## Lote 319 — [2026-05-29] feat: migra Gemini Live para tools especializadas (espelho do Auditor Texto)
+
+- **Hash:** (preenchido após commit)
+- **Motivação:** Auditoria identificou que o **Gemini Live (voz)** ainda usava o `MestreIAPlanner` com 7 dicionários hardcoded e prompt com índice MB completo — exatamente os anti-padrões que removemos do Auditor Texto nos Lotes 317/318. Live ficava com tratamento pior que Texto, e modelo da voz preferia sempre Módulo Básico, ignorando 619 chunks (52% do códex) dos outros 4 livros.
+- **Pesquisa prévia:** documentação oficial Gemini Live API (https://ai.google.dev/gemini-api/docs/live-api/tools) confirmou suporte a múltiplas tools especializadas, mas com particularidades vs DeepSeek:
+  - Formato simplificado (sem wrapper `{"type":"function"}`)
+  - `behavior: NON_BLOCKING` essencial para evitar bug `<ctrl46>` (Lote 306)
+  - Sem cache automático (sessão WebSocket única)
+  - Manual tool response handling (já implementado no projeto)
+- **Mudanças (3 arquivos):**
+
+### `GeminiLiveService.kt`
+- **Substituída** a declaração da tool `consultarManual` por **5 tools especializadas**:
+  - `consultarManual` (genérica, fallback para casos transversais)
+  - `consultarRegrasMagia`
+  - `consultarRegrasArmasFogo`
+  - `consultarRegrasArtesMarciais`
+  - `consultarRegrasAquatico`
+- **Todas com `nonBlocking = true`** (previne bug `<ctrl46>`).
+- **Descriptions categoriais** (sem hardcode de exemplos, lição do Lote 318).
+- **Removidas** ~50 linhas de índice MB hardcoded do prompt + seção "QUAL LIVRO USAR".
+- **Adicionados 4 labels visuais** novos no `when` da linha 768 (ex: "🔫 Consultando Gun Fu...").
+
+### `GeminiLiveTools.kt`
+- **Removido import** de `MestreIAPlanner` (não usado mais).
+- **Adicionados 4 cases** no `when` da função `executar()`: cada uma chama `consultarManual(args, livroForcado="X")`.
+- **Refatorada** função `consultarManual` para aceitar `livroForcado: String?`:
+  - **Removido** uso do `MestreIAPlanner.planejarBusca` (7 dicionários hardcoded).
+  - **Removido** loop de sub-queries temáticas do Planner.
+  - Agora chama `graphEngine.buscarDiretoNoCodex(termos, [], filtroLivro=X)` direto, sem expansão de termos.
+- Tool genérica `consultarManual` continua aceitando `args.livro` opcional para retrocompatibilidade.
+
+### Por quê tools em vez de regra no prompt
+- Modelo escolhe pela natureza da pergunta inteira, não palavra-chave isolada.
+- Descriptions auto-documentam quando usar cada uma.
+- Não polui o prompt do Live (importante: cada token na sessão WebSocket conta).
+- Espelha exatamente o que funciona no Texto (87% acerto comprovado no Lote 318).
+
+### Validação
+- ✅ Compila (BUILD SUCCESSFUL em 6s — 2 warnings pré-existentes sobre `isSpeakerphoneOn deprecated`, não relacionados).
+- ⏳ Funcional: **usuário precisa testar voz no celular real** (Python não testa Gemini Live). Cenários sugeridos:
+  - Pergunta de magia → esperado: modelo usa `consultarRegrasMagia` (label "✨ Consultando o Livro de Magia...")
+  - Pergunta de arma de fogo → esperado: `consultarRegrasArmasFogo` (label "🔫 Consultando Gun Fu...")
+  - Pergunta combinada → esperado: modelo escolhe a especializada do domínio principal.
+
+### Riscos
+- 🟡 **Bug `<ctrl46>` poderia voltar** se alguma tool nova esquecesse `nonBlocking=true`. Mitigação: todas as 5 estão `nonBlocking=true`, validado linha por linha.
+- 🟡 Modelo Gemini pode ser mais literal que DeepSeek nas descriptions. Se errar muito, refinar.
+- 🟢 Planner ainda existe no código (não foi apagado), pode ser apagado em lote futuro de limpeza se confirmar que não há mais uso.
+
+### Rollback
+- 1 commit único — `git revert <hash>` desfaz tudo.
+- `MestreIAPlanner.kt` continua intacto (deixar como "código morto" por enquanto, decisão consciente).
+- Nenhuma mudança em catálogos, banco, testes ou outras superfícies.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------

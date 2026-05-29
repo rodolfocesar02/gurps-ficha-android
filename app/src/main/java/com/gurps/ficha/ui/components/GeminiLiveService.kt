@@ -134,60 +134,22 @@ FERRAMENTAS DISPONÍVEIS E QUANDO USAR:
 - buscarCatalogo(tipo, query): OBRIGATÓRIO antes de adicionar qualquer trait — retorna IDs e nomes corretos. Tipos: vantagem, desvantagem, pericia, magia, tecnica. NUNCA invente um ID sem buscar antes.
 - editarFicha(operacao, secao, alvo, valor): adiciona, remove ou altera qualquer item da ficha. operacao: adicionar|remover|alterar. secao: vantagens|desvantagens|pericias|tecnicas|magias|equipamentos|atributos
 - trilhaDeMagias(magia_alvo): GPS de magias — mostra cadeia de pré-requisitos e trilha mais rápida até a magia desejada
-- consultarManual(termos, livro?): busca regras no Códex de GURPS. Use ANTES de responder qualquer dúvida de regra. Use livro= quando souber de qual livro a regra vem — melhora muito a precisão.
+- consultarManual(termos, livro?): FERRAMENTA GENÉRICA — use APENAS quando a pergunta não cabe nas especializadas abaixo.
+- consultarRegrasMagia(termos): especializada em magia, feitiços, escolas, alquimia, encantamentos, conjuração. PREFIRA esta quando o tema central for magia.
+- consultarRegrasArmasFogo(termos): especializada em armas de fogo (Gun Fu). PREFIRA quando o foco for arma de fogo.
+- consultarRegrasArtesMarciais(termos): especializada em técnicas marciais, estilos, combate desarmado. PREFIRA quando o foco for luta corporal ou técnica marcial nomeada.
+- consultarRegrasAquatico(termos): especializada em ambientes submersos (Pyramid Aquático). PREFIRA quando água/submersão for elemento estrutural da regra.
 - forjador_buscar_racas(query, tipo): lista raças e metacaracterísticas disponíveis. Use para descobrir IDs antes de aplicar. tipo=raca para raças jogáveis, tipo=meta para metacaracterísticas (Vampiro, Fantasma, etc).
 - forjador_aplicar_modelo_racial(id, tipo): aplica modelo racial completo ao personagem (atributos + vantagens + desvantagens + perícias da raça). Sempre usar forjador_buscar_racas antes para obter o ID correto.
 
-QUAL LIVRO USAR em consultarManual:
-- livro="Gun Fu"           → técnicas e regras de armas de fogo, tiro cinematográfico
-- livro="Artes Marciais"   → técnicas corpo a corpo, estilos marciais, combate desarmado
-- livro="Magia"            → magias, escolas, alquimia, encantamentos, runas
-- livro="Módulo Básico"    → tudo mais: atributos, vantagens, desvantagens, perícias, manobras, combate geral, equipamentos, tabelas de regras
-- livro="Pyramid Aquático" → regras de ambientes submersos: combate subaquático, pressão, narcose, descompressão, criaturas aquáticas
-- sem livro=               → quando a pergunta cruza mais de um livro
-
-ÍNDICE DO MANUAL (use para decidir onde buscar):
-Agachar, 368. Agarrar e segurar, 370. Aparar, 51, 96, 325, 327, 376. Armadura, 282–286.
-Armas corpo a corpo, 271–275. Armas à distância, 275–277, 278–281.
-Ataques à distância, 326, 372. Ataques enganosos, 369. Ataques surpresa, 393.
-Atordoamento, 44, 420. Bloqueio, 51, 325, 327, 375. Cadência de Tiro, 270, 373.
-Chave de braço, 371, 403. Chi, 33, 92, 195, 219.
-Cobertura, 377, 407, 559. Combate corporal, 391. Combate desarmado, 370, 376, 379.
-Combate montado, 396–398. Dano, 15, 327, 377. Dano penetrante, 378.
-Defendendo, 326, 374. Defesas ativas, 326, 363, 374, 548. Derrubar, 370.
-Deslocamento básico, 17. Disparo com mira, 372. Disputas, 348–349. Divisor de armadura, 378.
-Encontrão, 371. Erros críticos, 381; tabela, 556–557.
-Escudos, 287, 374. Esforço adicional, 356.
-Esquiva, 17, 51, 325, 326, 374. Esquiva acrobática, 375. Evadir, 368.
-Explosões, 414–415. Fadiga, 16, 328, 426. Ferimentos graves, 420.
-Garrotes, 406. Golpe Letal, 404. Golpe Rápido, 42, 96, 370.
-Golpes fulminantes, 381; tabela, 557.
-Hexágonos, 384. Imobilizando o adversário, 401. Incapacitado, 51, 420–423.
-Iniciativa, 393. Joelhada, 404. Lesões, 327, 377, 380, 418–425. Levantamento, 14, 15, 354.
-Mágicas de Bloqueio, 242. Mágicas de Projétil, 242. Manobra Aguardar, 324, 366.
-Manobra Apontar, 43, 324, 364. Manobra Ataque Total, 42, 324, 365.
-Manobra Ataque, 324, 365. Manobra Avaliar, 325, 364. Manobra Avançar e Atacar, 325, 365.
-Manobra Concentrar, 325, 366. Manobra Defesa Total, 325, 366.
-Manobra Deslocamento, 325, 364. Manobra Fazer Nada, 325, 364.
-Manobra Fintar, 325, 365. Manobra Mudança de Posição, 325, 364.
-Manobra Preparar, 325, 366. Manobras, 324, 363; tabela, 551.
-Mata-leão, 371, 404. Mau Funcionamento, 279, 382, 407.
-Mergulho de proteção, 377, 413. Modificador de ferimento, 379.
-Modificador de Tamanho, 19, 372, 402. Movimento e combate, 367.
-Nocaute e atordoamento, 420. Passo em manobras, 368, 386.
-Ponto de Impacto, 369, 398; tabela, 552–555. Posições, 367; tabela, 551.
-Queda, 432. Recuo, 271. Retirada com defesa ativa, 377, 391.
-Sangramento, 50, 420. Sequência de combate, 324, 362. Submissão em combate, 370.
-Sucesso decisivo, 347. Tabela de Erro Crítico, 556. Tabela de Golpe Fulminante, 557.
-Tabela de Modificadores à Distância, 548. Tabela de Modificadores de Ataque Corpo a Corpo, 547.
-Tabela de Ponto de Impacto, 552–555. Tabela de Tamanho e Velocidade/Distância, 551.
-Técnicas de combate, 230. Torcer Membros, 371, 404. Truques Sujos, 405.
-Venenos, 43, 437–439. Verificações de Pânico, 53, 60, 94, 360.
-Vantagens (lista), 32–118. Desvantagens (lista), 119–165. Perícias (lista), 167–233.
+REGRA DE ESCOLHA DE FERRAMENTA DE BUSCA: leia a pergunta INTEIRA antes de escolher.
+Não decida pela primeira palavra-chave que reconhecer. Se a pergunta combina dois
+domínios (ex: "magia de fogo subaquática"), prefira o domínio principal da ação
+que o usuário quer executar.
 
 PROTOCOLO DE BUSCA — DÚVIDAS DE REGRAS:
-- ESPERE saber QUAL é a dúvida antes de chamar consultarManual. Se o usuário disser "tenho uma dúvida" ou algo vago, PERGUNTE "Qual é a sua dúvida?" — NÃO chame consultarManual ainda.
-- Somente quando a pergunta específica for clara, use consultarManual ANTES de responder — nunca invente
+- ESPERE saber QUAL é a dúvida antes de chamar qualquer ferramenta de busca. Se o usuário disser "tenho uma dúvida" ou algo vago, PERGUNTE "Qual é a sua dúvida?" — NÃO busque ainda.
+- Somente quando a pergunta específica for clara, use a ferramenta de busca adequada (consultarRegrasMagia/ArmasFogo/ArtesMarciais/Aquatico ou consultarManual genérica) ANTES de responder — nunca invente
 - FIDELIDADE EXCLUSIVA AO CÓDEX: use SOMENTE o que estiver nos chunks retornados
 - Decomponha perguntas complexas: busque cada conceito separadamente
 - Se a regra não estiver no Códex, diga: "Não localizei essa regra nos manuais disponíveis"
@@ -197,7 +159,7 @@ PROTOCOLO DE BUSCA — DÚVIDAS DE REGRAS:
 QUANDO NÃO ENCONTRAR:
 - Declare: "Não encontrei essa regra nos manuais disponíveis."
 - Se encontrou regras parcialmente relacionadas, componha uma interpretação e avise que é interpretação, não regra oficial.
-- NUNCA invente números ou afirme regras que não vieram de consultarManual.
+- NUNCA invente números ou afirme regras que não vieram das ferramentas de busca.
 
 PROTOCOLO OBRIGATÓRIO DE CÁLCULO (quando a regra envolver número ou fórmula):
 1. Cite a regra: "Segundo [Livro, Pág]..."
@@ -333,8 +295,12 @@ NUNCA:
                     ))
 
                     // ── RAG — Consulta ao Códex ───────────────────────────────────────
+                    // Lote 319: 5 tools especializadas (espelho do Auditor Texto, Lote 317/318)
+                    // Todas nonBlocking=true: previne bug <ctrl46> (Lote 306) e mantém fluência de fala.
+
+                    // Tool genérica (fallback)
                     put(buildFuncao("consultarManual",
-                        "Busca regras no Códex de GURPS (RAG). SEMPRE use antes de responder qualquer dúvida de regra — nunca invente. Pode chamar múltiplas vezes com termos diferentes. Use livro= para melhorar a precisão.",
+                        "FERRAMENTA GENÉRICA do Códex. Use APENAS quando a pergunta não cabe nas especializadas (consultarRegrasMagia, consultarRegrasArmasFogo, consultarRegrasArtesMarciais, consultarRegrasAquatico). Boa para: atributos, vantagens, desvantagens, perícias gerais, manobras de combate genéricas, tabelas, equipamentos não-armas, regras transversais.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
@@ -344,8 +310,72 @@ NUNCA:
                                 })
                                 put("livro", JSONObject().apply {
                                     put("type", "string")
-                                    put("description", "Filtra a busca por livro. Use 'Gun Fu' para técnicas de armas de fogo. Use 'Artes Marciais' para técnicas corpo a corpo e estilos marciais. Use 'Magia' para magias, alquimia e encantamentos. Use 'Módulo Básico' para regras gerais, manobras, tabelas, atributos, vantagens, perícias. Use 'Pyramid Aquático' para combate subaquático, pressão, narcose. Omita para buscar em todos os livros.")
+                                    put("description", "Opcional. Filtra por livro. Omita para buscar em todos os 5 livros.")
                                     put("enum", JSONArray().put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático"))
+                                })
+                            })
+                            put("required", JSONArray().put("termos"))
+                        },
+                        nonBlocking = true
+                    ))
+
+                    // Tool especializada: Magia
+                    put(buildFuncao("consultarRegrasMagia",
+                        "Busca no LIVRO DE MAGIA do GURPS. Use sempre que o tema central da pergunta for qualquer aspecto mágico/sobrenatural do sistema. Prefira esta sobre a genérica quando o foco da pergunta for magia.",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("termos", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Conceito específico de magia. Máximo 6 palavras.")
+                                })
+                            })
+                            put("required", JSONArray().put("termos"))
+                        },
+                        nonBlocking = true
+                    ))
+
+                    // Tool especializada: Armas de Fogo
+                    put(buildFuncao("consultarRegrasArmasFogo",
+                        "Busca no livro GUN FU (regras especializadas de armas de fogo). Use sempre que o tema central da pergunta envolver uso, mecânica ou manuseio de qualquer arma de fogo. Prefira esta sobre a genérica quando o foco da pergunta for arma de fogo.",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("termos", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Conceito específico de armas de fogo. Máximo 6 palavras.")
+                                })
+                            })
+                            put("required", JSONArray().put("termos"))
+                        },
+                        nonBlocking = true
+                    ))
+
+                    // Tool especializada: Artes Marciais
+                    put(buildFuncao("consultarRegrasArtesMarciais",
+                        "Busca no livro ARTES MARCIAIS. Use sempre que a pergunta envolver técnicas corpo a corpo nomeadas, estilos marciais específicos, combate desarmado ou manobras avançadas além das básicas do Módulo Básico. Prefira esta sobre a genérica quando o foco da pergunta for luta corporal ou técnica marcial.",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("termos", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Conceito específico de artes marciais. Máximo 6 palavras.")
+                                })
+                            })
+                            put("required", JSONArray().put("termos"))
+                        },
+                        nonBlocking = true
+                    ))
+
+                    // Tool especializada: Aquático
+                    put(buildFuncao("consultarRegrasAquatico",
+                        "Busca no PYRAMID AQUÁTICO (ambientes submersos). Use sempre que água/submersão for elemento estrutural da regra perguntada (não apenas cenário visual ou personagem molhado). Prefira esta sobre a genérica quando o ambiente aquático for parte da mecânica da pergunta.",
+                        JSONObject().apply {
+                            put("type", "object")
+                            put("properties", JSONObject().apply {
+                                put("termos", JSONObject().apply {
+                                    put("type", "string")
+                                    put("description", "Conceito específico de combate/movimento aquático. Máximo 6 palavras.")
                                 })
                             })
                             put("required", JSONArray().put("termos"))
@@ -766,6 +796,10 @@ NUNCA:
                     // Feedback visual imediato — evita silêncio durante RAG (pode demorar ~10s)
                     val labelFerramenta = when (nome) {
                         "consultarManual"                  -> "📖 Consultando o Códex..."
+                        "consultarRegrasMagia"             -> "✨ Consultando o Livro de Magia..."
+                        "consultarRegrasArmasFogo"         -> "🔫 Consultando Gun Fu..."
+                        "consultarRegrasArtesMarciais"     -> "🥋 Consultando Artes Marciais..."
+                        "consultarRegrasAquatico"          -> "🌊 Consultando Pyramid Aquático..."
                         "buscarCatalogo"                   -> "🔍 Buscando no catálogo..."
                         "editarFicha"                      -> "✏️ Editando a ficha..."
                         "trilhaDeMagias"                   -> "🗺️ Calculando trilha de magias..."

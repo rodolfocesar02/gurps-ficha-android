@@ -3,7 +3,6 @@ package com.gurps.ficha.ui.components
 import android.content.Context
 import com.gurps.ficha.data.network.MestreIAClient
 import com.gurps.ficha.domain.MestreIAGraphEngine
-import com.gurps.ficha.domain.MestreIAPlanner
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.tools.ForjadorToolExecutor
 import com.gurps.ficha.domain.tools.ForjadorTools
@@ -42,8 +41,12 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
                 ForjadorTools.TOOL_BUSCAR_RACAS   -> executarForjador("buscar_racas", args)
                 ForjadorTools.TOOL_APLICAR_RACIAL -> executarForjador("aplicar_racial", args)
 
-                // ── Ferramenta RAG (única que não vai para o Forjador) ──
-                "consultarManual" -> consultarManual(args)
+                // ── Ferramentas RAG (Lote 319: 1 genérica + 4 especializadas) ──
+                "consultarManual"               -> consultarManual(args, livroForcado = null)
+                "consultarRegrasMagia"          -> consultarManual(args, livroForcado = "Magia")
+                "consultarRegrasArmasFogo"      -> consultarManual(args, livroForcado = "Gun Fu")
+                "consultarRegrasArtesMarciais"  -> consultarManual(args, livroForcado = "Artes Marciais")
+                "consultarRegrasAquatico"       -> consultarManual(args, livroForcado = "Pyramid Aquático")
 
                 // Compatibilidade: ferramentas antigas mapeadas para editarFicha
                 "adicionarVantagem"    -> editarCompat("adicionar", "vantagens", args.getString("nome"), "nivel=${args.optInt("nivel", 1)}")
@@ -122,35 +125,22 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
         return executarForjador("editar", args)
     }
 
-    private fun consultarManual(args: JSONObject): JSONObject {
+    /**
+     * Lote 319: refatorada — removido MestreIAPlanner (que tinha 7 dicionários hardcoded
+     * causando alucinação léxica). Agora chama RAG direto, sem expansão de termos.
+     * O livro vem de:
+     *  - `livroForcado` (quando chamada por uma tool especializada do Lote 319), OU
+     *  - `args.livro` (quando chamada pela tool genérica consultarManual).
+     */
+    private fun consultarManual(args: JSONObject, livroForcado: String?): JSONObject {
         val termos = args.getString("termos")
-        val livro = args.optString("livro", "").takeIf { it.isNotBlank() }
+        val livro = livroForcado ?: args.optString("livro", "").takeIf { it.isNotBlank() }
         android.util.Log.i("GeminiLiveTools", "consultarManual: '$termos'${if (livro != null) " livro='$livro'" else ""}")
 
         return try {
             val resultado = runBlocking {
-                val plano = MestreIAPlanner.planejarBusca(termos, viewModel.personagem.equipamentos)
-                val termosExtras = plano.termos
-                val searchResult = graphEngine.buscarDiretoNoCodex(termos, termosExtras, filtroLivro = livro)
-
-                val resultadoFinal = if (plano.subQueriesTemáticas.isNotEmpty()) {
-                    val subResultados = plano.subQueriesTemáticas.map { q ->
-                        graphEngine.buscarDiretoNoCodex(q, emptyList(), filtroLivro = livro)
-                    }
-                    val scoresUnidos = searchResult.chunkScores.toMutableMap()
-                    subResultados.forEach { sub -> scoresUnidos.putAll(sub.chunkScores) }
-                    val todosChunks = (searchResult.relatedChunks + subResultados.flatMap { it.relatedChunks })
-                        .distinctBy { it.chunk_id }
-                        .take(30)
-                    MestreIAGraphEngine.GraphSearchResult(
-                        relatedChunks = todosChunks,
-                        chunkScores = scoresUnidos
-                    )
-                } else {
-                    searchResult
-                }
-
-                graphEngine.formatarParaIA(resultadoFinal, termos)
+                val searchResult = graphEngine.buscarDiretoNoCodex(termos, emptyList(), filtroLivro = livro)
+                graphEngine.formatarParaIA(searchResult, termos)
             }
 
             // Limite de payload: toolResponse grande causa code=1007 no servidor Gemini Live.
