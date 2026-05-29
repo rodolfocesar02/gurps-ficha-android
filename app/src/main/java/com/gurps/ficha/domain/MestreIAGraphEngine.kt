@@ -74,17 +74,48 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
 
         // MODO HNSW PURO: ignora BM25, usa só o ranking semântico do HNSW
         // Lote 315: topK reduzido de 50→15 — modelo "se afogava" em chunks demais
+        // Lote 322: filtro de livro vira HÍBRIDO — se filtrar deixar <5 chunks,
+        // complementa com top-N globais. Resolve o caso onde tools especializadas
+        // (consultarRegrasArmasFogo, etc.) retornavam só 1-2 chunks porque os melhores
+        // estavam em outros livros (ex: regra de pólvora molhada está em MB pág.408,
+        // não em Gun Fu — e o filtro estrito rejeitava esse chunk).
         if (MODO_HNSW_PURO && MestreIAVectorEngine.isReady()) {
-            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = 15)
+            // Lote 322: topK aumentado de 15→30 quando há filtro de livro,
+            // pra ter margem após o corte. Sem filtro mantém 15.
+            val topKBuscado = if (sourceIdFiltro != null) 30 else 15
+            val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = topKBuscado)
             if (hnswIds.isNotEmpty()) {
-                val chunks = hnswIds.mapNotNull { id -> repository.getChunkById(id) }
+                val chunksTodos = hnswIds.mapNotNull { id -> repository.getChunkById(id) }
                     .filter { !isChunkCorrompido(it.text) }
-                    .filter { sourceIdFiltro == null || it.source_id == sourceIdFiltro }
-                val scoresMap = hnswIds.mapIndexed { idx, id -> id to (15.0 - idx) }.toMap()
-                android.util.Log.i("MestreIA_RAG", "  HNSW PURO: ${chunks.size} chunks | top-5: ${hnswIds.take(5).joinToString()}")
+
+                val chunksFiltrados = if (sourceIdFiltro != null) {
+                    chunksTodos.filter { it.source_id == sourceIdFiltro }
+                } else {
+                    chunksTodos
+                }
+
+                // Lote 322 — Fallback complementar:
+                // Se filtro rígido deixou <5 chunks, complementa com top globais
+                // (chunks de outros livros que NÃO estavam no resultado filtrado).
+                // Preserva a intenção da tool especializada (livro escolhido vem primeiro)
+                // mas garante variedade quando o livro é pequeno ou o tópico cruza livros.
+                val chunksFinais = if (sourceIdFiltro != null && chunksFiltrados.size < 5) {
+                    val idsJaIncluidos = chunksFiltrados.map { it.chunk_id }.toSet()
+                    val complementares = chunksTodos
+                        .filter { it.chunk_id !in idsJaIncluidos }
+                        .take(5)
+                    android.util.Log.i("MestreIA_RAG",
+                        "  Filtro $sourceIdFiltro deixou ${chunksFiltrados.size} chunks — complementando com ${complementares.size} de outros livros")
+                    chunksFiltrados + complementares
+                } else {
+                    chunksFiltrados
+                }
+
+                val scoresMap = hnswIds.mapIndexed { idx, id -> id to (topKBuscado - idx).toDouble() }.toMap()
+                android.util.Log.i("MestreIA_RAG", "  HNSW PURO: ${chunksFinais.size} chunks | top-5: ${hnswIds.take(5).joinToString()}")
                 return GraphSearchResult(
                     summaries = emptyList(),
-                    relatedChunks = chunks.take(15),
+                    relatedChunks = chunksFinais.take(15),
                     chunkScores = scoresMap
                 )
             }

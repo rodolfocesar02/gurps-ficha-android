@@ -2155,4 +2155,33 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Risco:** Gemini Live pode ignorar regra de paralelismo (default é sequential). Mitigação: se ignorar, perdemos pouco — comportamento sequential já era o atual.
 - **Rollback:** `git revert <hash>` desfaz.
 
+## Lote 322 — [2026-05-29] fix: filtro de livro vira híbrido (rígido + fallback complementar)
+
+- **Hash:** (preenchido após commit)
+- **Bug descoberto na análise do log da sessão Live (16:07):**
+  - Modelo chamou `consultarRegrasArmasFogo` para "pólvora molhada".
+  - HNSW retornou top-5 globais: pág.408 MB (Mau Funcionamento), pág.7 Pyramid, pág.280 MB, pág.262 Magia, pág.411 MB.
+  - Filtro `livro='Gun Fu'` REJEITOU TODOS OS 5 (nenhum era Gun Fu).
+  - Resultado: **só 1 chunk obscuro de Gun Fu sobrou (1.108 chars)** — material praticamente inútil.
+  - Mesma coisa para `consultarRegrasAquatico`: 2 chunks de 1.755 chars.
+  - Bug arquitetural do Lote 317 (tools especializadas) descoberto só agora — filtro rígido vazia o resultado quando a regra real está em outro livro.
+- **Análise das opções (pensamento exaustivo):**
+  - **A. Boost (não filtro):** complica scoring, perde especialização → descartada.
+  - **B. topK maior + filtrar:** simples mas pode esgotar livros pequenos → descartada.
+  - **C. Busca dupla:** 2x latência → descartada.
+  - **D. Filtro rígido + fallback complementar (ESCOLHIDA):** rápida, robusta, preserva intenção.
+- **Mudança em `MestreIAGraphEngine.buscarDiretoNoCodex()` linhas 75-119:**
+  - **topK aumentado** de 15→30 quando há `sourceIdFiltro` (margem pra filtro).
+  - **Filtro rígido** mantido (chunks do livro escolhido vêm primeiro).
+  - **Fallback complementar:** se filtro rígido deixou <5 chunks, complementa com até 5 chunks globais (de outros livros) que estavam no top-30 do HNSW e não foram incluídos.
+  - Log adicional: `"Filtro X deixou N chunks — complementando com M de outros livros"`.
+- **Comportamento esperado:**
+  - Tool `consultarRegrasArmasFogo` para "pólvora molhada" → HNSW top-30 → filtra Gun Fu (sobram 1-2) → complementa com top 5 globais → modelo recebe **6-7 chunks: 1-2 do Gun Fu + 5 dos mais relevantes globais (provável: pág.408 MB, pág.7 Pyramid)**.
+  - Tool `consultarRegrasMagia` para "bola de fogo" → filtro deixa 10+ chunks de Magia → não complementa (já rico).
+- **Validação:**
+  - ✅ Compila (BUILD SUCCESSFUL em 7s).
+  - ⏳ Funcional: usuário re-testará voz e verificará se chunks complementares aparecem nos logs.
+- **Risco:** mínimo — mudança contida em 1 função, fallback só ativa quando filtro falha. Reversível.
+- **Rollback:** `git revert <hash>` desfaz.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
