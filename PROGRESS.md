@@ -2139,7 +2139,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 321 — [2026-05-29] feat: prompt Live com regras categoriais (busca exaustiva + paralelismo)
 
-- **Hash:** (preenchido após commit)
+- **Hash:** e05e777
 - **Motivação:** Análise do logcat revelou 2 limitações comportamentais do Gemini Live:
   1. Modelo fez 6 tool calls 100% sequenciais (nunca paralelas) em sessão de voz.
   2. Modelo esgotou 1 livro de cada vez antes de pular pro próximo, parando antes de explorar todos os domínios relevantes da pergunta.
