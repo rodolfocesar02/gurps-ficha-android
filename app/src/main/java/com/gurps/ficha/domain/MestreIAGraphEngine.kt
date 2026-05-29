@@ -43,16 +43,23 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         termosExtras: List<String> = emptyList(),
         perguntaOriginal: String = "",
         termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList(),
-        filtroLivro: String? = null
+        filtroLivro: String? = null,
+        filtroLivros: List<String>? = null
     ): GraphSearchResult {
-        // Mapeia nome amigável → source_id do banco
-        val sourceIdFiltro: String? = when (filtroLivro?.lowercase()?.trim()) {
+        // Lote 324: filtroLivros (multi) tem precedência sobre filtroLivro (single).
+        // Backward compat: callers antigos seguem usando filtroLivro: String? sem mudança.
+        fun mapearLivro(nome: String): String? = when (nome.lowercase().trim()) {
             "módulo básico", "modulo basico"       -> "pt_modulo_basico"
             "artes marciais"                        -> "pt_artes_marciais"
             "magia"                                 -> "pt_magia"
             "gun fu"                                -> "pt_gun_fu"
             "pyramid aquático", "pyramid aquatico" -> "pt_pyramid_26_underwater"
             else                                    -> null
+        }
+        val sourceIdsFiltro: Set<String>? = when {
+            !filtroLivros.isNullOrEmpty() -> filtroLivros.mapNotNull { mapearLivro(it) }.toSet().takeIf { it.isNotEmpty() }
+            filtroLivro != null            -> mapearLivro(filtroLivro)?.let { setOf(it) }
+            else                           -> null
         }
         val termosBase: List<String> =
             (extrairPalavrasChave(query, apenasOriginais = true) + termosExtras).distinct()
@@ -70,7 +77,12 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         if (corpusSize == 0) corpusSize = repository.contarTotalChunks().coerceAtLeast(1)
 
         android.util.Log.i("MestreIA_RAG", "══ RAG BUSCA: \"${query.take(80)}\"")
-        android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo | modo=${if (MODO_HNSW_PURO) "HNSW_PURO" else "BM25+HNSW"}${if (sourceIdFiltro != null) " | livro=$sourceIdFiltro" else ""}")
+        val livroLogStr: String = when {
+            sourceIdsFiltro == null     -> ""
+            sourceIdsFiltro.size == 1   -> " | livro=${sourceIdsFiltro.first()}"
+            else                        -> " | livros=${sourceIdsFiltro.joinToString(",")}"
+        }
+        android.util.Log.i("MestreIA_RAG", "  Núcleo: $termosNucleo | modo=${if (MODO_HNSW_PURO) "HNSW_PURO" else "BM25+HNSW"}$livroLogStr")
 
         // MODO HNSW PURO: ignora BM25, usa só o ranking semântico do HNSW
         // Lote 315: topK reduzido de 50→15 — modelo "se afogava" em chunks demais
@@ -82,14 +94,15 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         if (MODO_HNSW_PURO && MestreIAVectorEngine.isReady()) {
             // Lote 322: topK aumentado de 15→30 quando há filtro de livro,
             // pra ter margem após o corte. Sem filtro mantém 15.
-            val topKBuscado = if (sourceIdFiltro != null) 30 else 15
+            // Lote 324: idem para filtro multi-livro.
+            val topKBuscado = if (sourceIdsFiltro != null) 30 else 15
             val hnswIds = MestreIAVectorEngine.buscarTopK(query, topK = topKBuscado)
             if (hnswIds.isNotEmpty()) {
                 val chunksTodos = hnswIds.mapNotNull { id -> repository.getChunkById(id) }
                     .filter { !isChunkCorrompido(it.text) }
 
-                val chunksFiltrados = if (sourceIdFiltro != null) {
-                    chunksTodos.filter { it.source_id == sourceIdFiltro }
+                val chunksFiltrados = if (sourceIdsFiltro != null) {
+                    chunksTodos.filter { it.source_id in sourceIdsFiltro }
                 } else {
                     chunksTodos
                 }
@@ -97,15 +110,15 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
                 // Lote 322 — Fallback complementar:
                 // Se filtro rígido deixou <5 chunks, complementa com top globais
                 // (chunks de outros livros que NÃO estavam no resultado filtrado).
-                // Preserva a intenção da tool especializada (livro escolhido vem primeiro)
-                // mas garante variedade quando o livro é pequeno ou o tópico cruza livros.
-                val chunksFinais = if (sourceIdFiltro != null && chunksFiltrados.size < 5) {
+                // Preserva a intenção da tool especializada (livros escolhidos vêm primeiro)
+                // mas garante variedade quando os livros são pequenos ou o tópico cruza livros.
+                val chunksFinais = if (sourceIdsFiltro != null && chunksFiltrados.size < 5) {
                     val idsJaIncluidos = chunksFiltrados.map { it.chunk_id }.toSet()
                     val complementares = chunksTodos
                         .filter { it.chunk_id !in idsJaIncluidos }
                         .take(5)
                     android.util.Log.i("MestreIA_RAG",
-                        "  Filtro $sourceIdFiltro deixou ${chunksFiltrados.size} chunks — complementando com ${complementares.size} de outros livros")
+                        "  Filtro $sourceIdsFiltro deixou ${chunksFiltrados.size} chunks — complementando com ${complementares.size} de outros livros")
                     chunksFiltrados + complementares
                 } else {
                     chunksFiltrados
@@ -125,7 +138,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         val chunksFTS: List<MestreIAChunk> =
             repository.buscarNoCodexDireto(query, termosBase, limit = 500)
                 .filter { chunk -> !isChunkCorrompido(chunk.text) }
-                .filter { chunk -> sourceIdFiltro == null || chunk.source_id == sourceIdFiltro }
+                .filter { chunk -> sourceIdsFiltro == null || chunk.source_id in sourceIdsFiltro }
 
         // 1b. Injeção direta por página: se a query menciona um número de página,
         // busca esses chunks diretamente e injeta no pool — evita que páginas relevantes

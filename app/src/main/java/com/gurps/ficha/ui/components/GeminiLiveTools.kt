@@ -41,12 +41,9 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
                 ForjadorTools.TOOL_BUSCAR_RACAS   -> executarForjador("buscar_racas", args)
                 ForjadorTools.TOOL_APLICAR_RACIAL -> executarForjador("aplicar_racial", args)
 
-                // ── Ferramentas RAG (Lote 319: 1 genérica + 4 especializadas) ──
-                "consultarManual"               -> consultarManual(args, livroForcado = null)
-                "consultarRegrasMagia"          -> consultarManual(args, livroForcado = "Magia")
-                "consultarRegrasArmasFogo"      -> consultarManual(args, livroForcado = "Gun Fu")
-                "consultarRegrasArtesMarciais"  -> consultarManual(args, livroForcado = "Artes Marciais")
-                "consultarRegrasAquatico"       -> consultarManual(args, livroForcado = "Pyramid Aquático")
+                // ── Ferramenta RAG unificada (Lote 324: fusão das 5 anteriores) ──
+                // Aceita args.livros: array<string> com 1+ livros. Sem array = busca todos.
+                "consultarManual"               -> consultarManual(args)
 
                 // Compatibilidade: ferramentas antigas mapeadas para editarFicha
                 "adicionarVantagem"    -> editarCompat("adicionar", "vantagens", args.getString("nome"), "nivel=${args.optInt("nivel", 1)}")
@@ -126,20 +123,33 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
     }
 
     /**
-     * Lote 319: refatorada — removido MestreIAPlanner (que tinha 7 dicionários hardcoded
-     * causando alucinação léxica). Agora chama RAG direto, sem expansão de termos.
-     * O livro vem de:
-     *  - `livroForcado` (quando chamada por uma tool especializada do Lote 319), OU
-     *  - `args.livro` (quando chamada pela tool genérica consultarManual).
+     * Lote 319: refatorada — removido MestreIAPlanner (7 dicionários hardcoded causavam
+     * alucinação léxica). Agora chama RAG direto, sem expansão de termos.
+     *
+     * Lote 324: unificação — substituiu as 5 tools anteriores (genérica + 4 especializadas).
+     * Aceita args.livros: array<string> com 1+ livros. Compatível também com args.livro
+     * (string única, legado). Sem ambos = busca todos os livros.
      */
-    private fun consultarManual(args: JSONObject, livroForcado: String?): JSONObject {
+    private fun consultarManual(args: JSONObject): JSONObject {
         val termos = args.getString("termos")
-        val livro = livroForcado ?: args.optString("livro", "").takeIf { it.isNotBlank() }
-        android.util.Log.i("GeminiLiveTools", "consultarManual: '$termos'${if (livro != null) " livro='$livro'" else ""}")
+        val livros: List<String> = run {
+            val arr = args.optJSONArray("livros")
+            if (arr != null && arr.length() > 0) {
+                (0 until arr.length()).mapNotNull { arr.optString(it, "").takeIf { s -> s.isNotBlank() } }
+            } else {
+                val livroUnico = args.optString("livro", "").takeIf { it.isNotBlank() }
+                if (livroUnico != null) listOf(livroUnico) else emptyList()
+            }
+        }
+        android.util.Log.i("GeminiLiveTools", "consultarManual: '$termos'${if (livros.isNotEmpty()) " livros=$livros" else ""}")
 
         return try {
             val resultado = runBlocking {
-                val searchResult = graphEngine.buscarDiretoNoCodex(termos, emptyList(), filtroLivro = livro)
+                val searchResult = graphEngine.buscarDiretoNoCodex(
+                    termos,
+                    emptyList(),
+                    filtroLivros = livros.takeIf { it.isNotEmpty() }
+                )
                 graphEngine.formatarParaIA(searchResult, termos)
             }
 

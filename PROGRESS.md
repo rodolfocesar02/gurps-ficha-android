@@ -2213,3 +2213,52 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Rollback:** `git revert <hash>` desfaz.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 324 — [2026-05-29] feat: Live RAG (fusão 5 tools → 1 com array de livros) + VAD 1500ms
+
+- **Hash:** (preenchido após commit)
+- **Sintomas observados no log do Lote 323:**
+  1. Modelo usou **3 chamadas sequenciais** de `consultarManual` (genérica), nenhuma das 4 especializadas. Pergunta cruzava domínios (escalada + escudo + aparar/bloquear), mas o modelo não tinha como expressar essa combinação numa só chamada.
+  2. UI fragmentou a fala do usuário em **4 balões separados** ("Fala mestre.", "Queria tirar uma dúvida.", "Eu estou escalando...", "Eu posso aparar...") porque o VAD do Gemini Live fecha o turno a cada ~800ms de silêncio (cada pausa pra respirar).
+  3. **Erro de regra** identificado pelo usuário: modelo confundiu aparar com bloquear (não se apara com escudo, se bloqueia). Causa-raiz na granularidade das tools: queries das 3 chamadas não cobriram "bloquear com escudo".
+- **Causa raiz (busca):** 5 tools especializadas (1 genérica + 4 por livro) cobriam só 5 dos 32 cenários combinatórios possíveis. Quando o tópico tocava 2+ livros, modelo ou usava só a genérica (perdia foco) ou fazia chamadas sequenciais (latência + queries muito estreitas cada uma).
+- **Causa raiz (UI):** `realtimeInputConfig` estava desativado no setup da sessão (comentário "diagnóstico — modelo 2.5 preview pode não suportar"). Sem essa config, VAD usa default de ~800ms.
+
+### Mudança A — Fusão das 5 tools em 1 (multi-livro via array)
+- `MestreIAGraphEngine.buscarDiretoNoCodex`: novo parâmetro `filtroLivros: List<String>?` com precedência sobre o legado `filtroLivro: String?` (Auditor Texto não muda — backward compat). Mapeamento para `source_id` agora retorna `Set<String>?`. Filtro de chunks via `it.source_id in sourceIdsFiltro`.
+- `GeminiLiveTools.consultarManual`: assinatura `(args)` apenas. Lê `args.livros: array<string>` (aceita também `args.livro: string` legado). Passa lista para `filtroLivros`.
+- `GeminiLiveTools.executar`: removidos os 4 cases `consultarRegrasMagia/ArmasFogo/ArtesMarciais/Aquatico`. Restou apenas `consultarManual`.
+- `GeminiLiveService.criarSetupSessao`: removidas as 4 declarações de tools especializadas. `consultarManual` agora declara `livros: array<string>` com `items.enum` dos 5 livros. Description categorial (sem exemplos) instruindo a passar TODOS os livros relevantes num único array.
+- `GeminiLiveService` (helper novo) `labelConsultarManual(args)`: gera label de loading dinâmico tipo "📖 Consultando 📕 Módulo Básico + 🥋 Artes Marciais...". Substitui o `when` antigo com 5 strings fixas.
+- Fallback complementar do Lote 322 (top-5 globais quando filtro deixa <5 chunks) **preservado** — agora aplica também para multi-livro.
+
+### Mudança B — Prompt principal
+- Linha de tools: substituídas as 5 linhas por **uma só** descrevendo `consultarManual(termos, livros?)` com regra de "informar TODOS os livros relevantes no MESMO array".
+- "PROTOCOLO DE PARALELISMO" reescrito: paralelismo deixa de ser "múltiplas chamadas no mesmo turno" e passa a ser "uma única chamada com array multi-livro".
+- "PROTOCOLO DE BUSCA — DÚVIDAS DE REGRAS": ajustado pra mencionar só `consultarManual` (com array 'livros').
+
+### Mudança C — VAD silenceDurationMs = 1500
+- `realtimeInputConfig.automaticActivityDetection.silenceDurationMs = 1500` agora reativado.
+- Sobe de ~800ms (default) pra 1500ms → permite pausa pra respirar entre frases sem fechar turno do usuário.
+- Efeito esperado: 1 balão por turno do usuário em vez de 4-5.
+- Trade-off: modelo demora ~700ms a mais pra começar a responder após usuário parar de falar (aceitável; pode até ajudar contra a sensação de "fala atropelando").
+
+### Princípios mantidos
+- **Zero exemplos hardcoded nas descriptions** (lição do Lote 318 — exemplos viram cola, categorias generalizam).
+- **Auditor Texto não foi tocado** (decisão do usuário neste lote).
+- **Compatibilidade**: `filtroLivro: String?` legado preservado, `args.livro: string` legado preservado.
+
+### Validação
+- ✅ Compila (BUILD SUCCESSFUL em 25s).
+- ⏳ Funcional: usuário re-testará voz. Métricas a observar:
+  - Quantidade de balões por turno do usuário (alvo: 1).
+  - Quantidade de tool calls por resposta (alvo: ≤2; ideal 1 com array).
+  - Acerto da regra de bloquear/aparar com escudo durante escalada (caso do log que falhou no Lote 323).
+
+### Risco
+- Médio. `realtimeInputConfig` foi desativado historicamente por suspeita de incompatibilidade com modelo 2.5 preview. Se a sessão não abrir, basta remover o bloco `realtimeInputConfig` e reverter pro default. As mudanças de tool são puramente aditivas no backend e não tocam o Auditor.
+
+### Rollback
+- `git revert <hash>` desfaz tudo. Como há mudança em 3 arquivos (GraphEngine, GeminiLiveTools, GeminiLiveService), revert único é seguro.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

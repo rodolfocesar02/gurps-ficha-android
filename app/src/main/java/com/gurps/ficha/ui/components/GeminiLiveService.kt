@@ -134,11 +134,7 @@ FERRAMENTAS DISPONÍVEIS E QUANDO USAR:
 - buscarCatalogo(tipo, query): OBRIGATÓRIO antes de adicionar qualquer trait — retorna IDs e nomes corretos. Tipos: vantagem, desvantagem, pericia, magia, tecnica. NUNCA invente um ID sem buscar antes.
 - editarFicha(operacao, secao, alvo, valor): adiciona, remove ou altera qualquer item da ficha. operacao: adicionar|remover|alterar. secao: vantagens|desvantagens|pericias|tecnicas|magias|equipamentos|atributos
 - trilhaDeMagias(magia_alvo): GPS de magias — mostra cadeia de pré-requisitos e trilha mais rápida até a magia desejada
-- consultarManual(termos, livro?): FERRAMENTA GENÉRICA — use APENAS quando a pergunta não cabe nas especializadas abaixo.
-- consultarRegrasMagia(termos): especializada em magia, feitiços, escolas, alquimia, encantamentos, conjuração. PREFIRA esta quando o tema central for magia.
-- consultarRegrasArmasFogo(termos): especializada em armas de fogo (Gun Fu). PREFIRA quando o foco for arma de fogo.
-- consultarRegrasArtesMarciais(termos): especializada em técnicas marciais, estilos, combate desarmado. PREFIRA quando o foco for luta corporal ou técnica marcial nomeada.
-- consultarRegrasAquatico(termos): especializada em ambientes submersos (Pyramid Aquático). PREFIRA quando água/submersão for elemento estrutural da regra.
+- consultarManual(termos, livros?): consulta o Códex. Parâmetro 'livros' aceita um conjunto (1+) dos manuais disponíveis: "Módulo Básico", "Artes Marciais", "Magia", "Gun Fu", "Pyramid Aquático". Quando a pergunta toca múltiplos domínios, declare TODOS os livros relevantes no MESMO array, em uma única chamada. Omita 'livros' apenas quando não houver hipótese clara de domínio.
 - forjador_buscar_racas(query, tipo): lista raças e metacaracterísticas disponíveis. Use para descobrir IDs antes de aplicar. tipo=raca para raças jogáveis, tipo=meta para metacaracterísticas (Vampiro, Fantasma, etc).
 - forjador_aplicar_modelo_racial(id, tipo): aplica modelo racial completo ao personagem (atributos + vantagens + desvantagens + perícias da raça). Sempre usar forjador_buscar_racas antes para obter o ID correto.
 
@@ -157,14 +153,15 @@ NÃO finalize a resposta enquanto não tiver verificado cada domínio com pelo m
 1 chamada de ferramenta. Esgotar 1 livro e parar é insuficiente quando a pergunta
 toca múltiplos domínios.
 
-PROTOCOLO DE PARALELISMO (Lote 321):
-Quando precisar consultar 2+ livros para a mesma pergunta, prefira realizar TODAS
-as chamadas no MESMO turno (em paralelo) em vez de aguardar o resultado de uma
-para iniciar a próxima. Isso reduz latência e mantém o raciocínio coeso.
+PROTOCOLO DE PARALELISMO (Lote 324):
+Quando precisar consultar 2+ livros para a mesma pergunta, faça UMA chamada de
+consultarManual com TODOS os livros no array 'livros' — não sequencie múltiplas
+chamadas de consultarManual quando uma só com array resolve. Isso reduz latência
+e mantém o raciocínio coeso.
 
 PROTOCOLO DE BUSCA — DÚVIDAS DE REGRAS:
 - ESPERE saber QUAL é a dúvida antes de chamar qualquer ferramenta de busca. Se o usuário disser "tenho uma dúvida" ou algo vago, PERGUNTE "Qual é a sua dúvida?" — NÃO busque ainda.
-- Somente quando a pergunta específica for clara, use a ferramenta de busca adequada (consultarRegrasMagia/ArmasFogo/ArtesMarciais/Aquatico ou consultarManual genérica) ANTES de responder — nunca invente
+- Somente quando a pergunta específica for clara, use consultarManual (com o array 'livros' apropriado) ANTES de responder — nunca invente
 - FIDELIDADE EXCLUSIVA AO CÓDEX: use SOMENTE o que estiver nos chunks retornados
 - Decomponha perguntas complexas: busque cada conceito separadamente
 - Se a regra não estiver no Códex, diga: "Não localizei essa regra nos manuais disponíveis"
@@ -324,87 +321,32 @@ NUNCA:
                     ))
 
                     // ── RAG — Consulta ao Códex ───────────────────────────────────────
-                    // Lote 319: 5 tools especializadas (espelho do Auditor Texto, Lote 317/318)
-                    // Todas nonBlocking=true: previne bug <ctrl46> (Lote 306) e mantém fluência de fala.
-
-                    // Tool genérica (fallback)
+                    // Lote 324: tool UNIFICADA. Substitui as 5 anteriores (genérica + 4
+                    // especializadas) por uma só que aceita ARRAY de livros, permitindo
+                    // qualquer combinação (1+) numa única chamada. Reduz tool calls
+                    // sequenciais quando o tema cruza domínios, sem explosão combinatória.
+                    // nonBlocking=true previne bug <ctrl46> (Lote 306) e mantém fluência.
                     put(buildFuncao("consultarManual",
-                        "FERRAMENTA GENÉRICA do Códex. Use APENAS quando a pergunta não cabe nas especializadas (consultarRegrasMagia, consultarRegrasArmasFogo, consultarRegrasArtesMarciais, consultarRegrasAquatico). Boa para: atributos, vantagens, desvantagens, perícias gerais, manobras de combate genéricas, tabelas, equipamentos não-armas, regras transversais.",
+                        "Busca regras no Códex (manuais GURPS). Aceita um conjunto de livros via parâmetro 'livros'; quando o tema da pergunta cruza domínios, informe TODOS os livros relevantes na MESMA chamada em vez de fazer chamadas sequenciais. Quando omitido, busca em todos.",
                         JSONObject().apply {
                             put("type", "object")
                             put("properties", JSONObject().apply {
                                 put("termos", JSONObject().apply {
                                     put("type", "string")
-                                    put("description", "Termos técnicos de GURPS para buscar. Máximo 6 palavras, específicos por conceito isolado.")
+                                    put("description", "Termos técnicos de GURPS para buscar. Máximo 6 palavras, específicos por conceito.")
                                 })
-                                put("livro", JSONObject().apply {
-                                    put("type", "string")
-                                    put("description", "Opcional. Filtra por livro. Omita para buscar em todos os 5 livros.")
-                                    put("enum", JSONArray().put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático"))
-                                })
-                            })
-                            put("required", JSONArray().put("termos"))
-                        },
-                        nonBlocking = true
-                    ))
-
-                    // Tool especializada: Magia
-                    put(buildFuncao("consultarRegrasMagia",
-                        "Busca no LIVRO DE MAGIA do GURPS. Use sempre que o tema central da pergunta for qualquer aspecto mágico/sobrenatural do sistema. Prefira esta sobre a genérica quando o foco da pergunta for magia.",
-                        JSONObject().apply {
-                            put("type", "object")
-                            put("properties", JSONObject().apply {
-                                put("termos", JSONObject().apply {
-                                    put("type", "string")
-                                    put("description", "Conceito específico de magia. Máximo 6 palavras.")
-                                })
-                            })
-                            put("required", JSONArray().put("termos"))
-                        },
-                        nonBlocking = true
-                    ))
-
-                    // Tool especializada: Armas de Fogo
-                    put(buildFuncao("consultarRegrasArmasFogo",
-                        "Busca no livro GUN FU (regras especializadas de armas de fogo). Use sempre que o tema central da pergunta envolver uso, mecânica ou manuseio de qualquer arma de fogo. Prefira esta sobre a genérica quando o foco da pergunta for arma de fogo.",
-                        JSONObject().apply {
-                            put("type", "object")
-                            put("properties", JSONObject().apply {
-                                put("termos", JSONObject().apply {
-                                    put("type", "string")
-                                    put("description", "Conceito específico de armas de fogo. Máximo 6 palavras.")
-                                })
-                            })
-                            put("required", JSONArray().put("termos"))
-                        },
-                        nonBlocking = true
-                    ))
-
-                    // Tool especializada: Artes Marciais
-                    put(buildFuncao("consultarRegrasArtesMarciais",
-                        "Busca no livro ARTES MARCIAIS. Use sempre que a pergunta envolver técnicas corpo a corpo nomeadas, estilos marciais específicos, combate desarmado ou manobras avançadas além das básicas do Módulo Básico. Prefira esta sobre a genérica quando o foco da pergunta for luta corporal ou técnica marcial.",
-                        JSONObject().apply {
-                            put("type", "object")
-                            put("properties", JSONObject().apply {
-                                put("termos", JSONObject().apply {
-                                    put("type", "string")
-                                    put("description", "Conceito específico de artes marciais. Máximo 6 palavras.")
-                                })
-                            })
-                            put("required", JSONArray().put("termos"))
-                        },
-                        nonBlocking = true
-                    ))
-
-                    // Tool especializada: Aquático
-                    put(buildFuncao("consultarRegrasAquatico",
-                        "Busca no PYRAMID AQUÁTICO (ambientes submersos). Use sempre que água/submersão for elemento estrutural da regra perguntada (não apenas cenário visual ou personagem molhado). Prefira esta sobre a genérica quando o ambiente aquático for parte da mecânica da pergunta.",
-                        JSONObject().apply {
-                            put("type", "object")
-                            put("properties", JSONObject().apply {
-                                put("termos", JSONObject().apply {
-                                    put("type", "string")
-                                    put("description", "Conceito específico de combate/movimento aquático. Máximo 6 palavras.")
+                                put("livros", JSONObject().apply {
+                                    put("type", "array")
+                                    put("description", "Opcional. Lista de livros a consultar. Quando a pergunta cruza domínios, inclua TODOS os livros relevantes nesta lista (busca paralela em uma chamada só). Omita para buscar em todos.")
+                                    put("items", JSONObject().apply {
+                                        put("type", "string")
+                                        put("enum", JSONArray()
+                                            .put("Módulo Básico")
+                                            .put("Artes Marciais")
+                                            .put("Magia")
+                                            .put("Gun Fu")
+                                            .put("Pyramid Aquático"))
+                                    })
                                 })
                             })
                             put("required", JSONArray().put("termos"))
@@ -464,8 +406,19 @@ NUNCA:
                     })
                     android.util.Log.i("GeminiLive", "║  Usando session resumption token (contexto preservado)")
                 }
-                // contextWindowCompression e realtimeInputConfig desativados temporariamente
-                // para diagnóstico — modelo 2.5 preview pode não suportar esses campos
+                // contextWindowCompression desativado temporariamente para diagnóstico —
+                // modelo 2.5 preview pode não suportar esse campo.
+                //
+                // Lote 324: realtimeInputConfig REATIVADO apenas com silenceDurationMs.
+                // Default do servidor (~800ms) fechava o turno do usuário a cada pausa
+                // de respiração, gerando 4-5 balões fragmentados pra uma única dúvida.
+                // 1500ms permite respirar entre frases sem fechar o turno, agregando
+                // tudo em um único balão por turno do usuário.
+                put("realtimeInputConfig", JSONObject().apply {
+                    put("automaticActivityDetection", JSONObject().apply {
+                        put("silenceDurationMs", 1500)
+                    })
+                })
                 put("generationConfig", JSONObject().apply {
                     put("responseModalities", JSONArray().apply { put("AUDIO") })
                     put("speechConfig", JSONObject().apply {
@@ -486,6 +439,28 @@ NUNCA:
                 put("tools", tools)
             })
         }.toString()
+    }
+
+    // Lote 324: label dinâmico do loading reflete o array 'livros' que o modelo passou.
+    // Sem array = consulta global ao Códex; com array = lista os livros escolhidos.
+    private fun labelConsultarManual(args: JSONObject): String {
+        val arr = args.optJSONArray("livros")
+        val livros: List<String> = if (arr != null && arr.length() > 0) {
+            (0 until arr.length()).mapNotNull { arr.optString(it, "").takeIf { s -> s.isNotBlank() } }
+        } else {
+            args.optString("livro", "").takeIf { it.isNotBlank() }?.let { listOf(it) } ?: emptyList()
+        }
+        if (livros.isEmpty()) return "📖 Consultando o Códex..."
+        fun emoji(livro: String): String = when (livro.lowercase().trim()) {
+            "magia"                                 -> "✨"
+            "gun fu"                                -> "🔫"
+            "artes marciais"                        -> "🥋"
+            "pyramid aquático", "pyramid aquatico"  -> "🌊"
+            "módulo básico", "modulo basico"        -> "📕"
+            else                                    -> "📖"
+        }
+        val partes = livros.joinToString(" + ") { "${emoji(it)} $it" }
+        return "📖 Consultando $partes..."
     }
 
     private fun buildFuncao(nome: String, descricao: String, params: JSONObject, nonBlocking: Boolean = false): JSONObject {
@@ -828,11 +803,8 @@ NUNCA:
                     android.util.Log.i("GeminiLive", "║  Args: ${args.toString().take(200)}")
                     // Feedback visual imediato — evita silêncio durante RAG (pode demorar ~10s)
                     val labelFerramenta = when (nome) {
-                        "consultarManual"                  -> "📖 Consultando o Códex..."
-                        "consultarRegrasMagia"             -> "✨ Consultando o Livro de Magia..."
-                        "consultarRegrasArmasFogo"         -> "🔫 Consultando Gun Fu..."
-                        "consultarRegrasArtesMarciais"     -> "🥋 Consultando Artes Marciais..."
-                        "consultarRegrasAquatico"          -> "🌊 Consultando Pyramid Aquático..."
+                        // Lote 324: label dinâmico — reflete os livros escolhidos no array.
+                        "consultarManual"                  -> labelConsultarManual(args)
                         "buscarCatalogo"                   -> "🔍 Buscando no catálogo..."
                         "editarFicha"                      -> "✏️ Editando a ficha..."
                         "trilhaDeMagias"                   -> "🗺️ Calculando trilha de magias..."
