@@ -2114,7 +2114,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 320 — [2026-05-29] fix: echo de áudio Live — AudioSource.MIC → VOICE_COMMUNICATION + NS + AGC
 
-- **Hash:** (preenchido após commit)
+- **Hash:** 2834ba1
 - **Bug observado:** Após testar voz no Xiaomi 23078PND5G, modelo "ouvia a si mesmo" — `inputTranscription` capturava fragmentos da saudação que o próprio modelo acabara de falar (ex: "Ah", ",", "Ja", "ck", "E", "go", ". Bom tê-lo aqui na mesa." — frase exata da saudação). Resultado: bug em loop, modelo respondendo à própria voz.
 - **Auditoria do código (bloco a bloco) revelou 3 anti-padrões combinados em `GeminiLiveService.iniciarCaptura()`:**
   1. `MediaRecorder.AudioSource.MIC` — fonte CRUA, sem pré-processamento do Android.
