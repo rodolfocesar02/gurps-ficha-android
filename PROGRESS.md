@@ -2157,7 +2157,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 322 — [2026-05-29] fix: filtro de livro vira híbrido (rígido + fallback complementar)
 
-- **Hash:** (preenchido após commit)
+- **Hash:** 013ef45
 - **Bug descoberto na análise do log da sessão Live (16:07):**
   - Modelo chamou `consultarRegrasArmasFogo` para "pólvora molhada".
   - HNSW retornou top-5 globais: pág.408 MB (Mau Funcionamento), pág.7 Pyramid, pág.280 MB, pág.262 Magia, pág.411 MB.
