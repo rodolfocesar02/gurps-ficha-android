@@ -2184,4 +2184,32 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Risco:** mínimo — mudança contida em 1 função, fallback só ativa quando filtro falha. Reversível.
 - **Rollback:** `git revert <hash>` desfaz.
 
+## Lote 323 — [2026-05-29] fix: prompt Live anti-enrolamento (mantém saudação cerimonial, corta meta-fala nas respostas)
+
+- **Hash:** (preenchido após commit)
+- **Bug observado:** Modelo de voz "enche linguiça". Análise do log mostrou que de 113 fragmentos de resposta, ~38% (43 fragmentos) eram puro enrolamento (saudação cerimonial pós-pergunta, meta-fala anunciando o que vai fazer, conclusão genérica sobre "campanha"). Só 62% era resposta técnica útil.
+- **Causa raiz identificada (auditoria do prompt linhas 215-218 + 509-525):**
+  - Linha 218: `"Personalidade: sábio, justo, levemente dramático"` — aplicava o "dramático" a TODAS as respostas, não só à saudação.
+  - Linhas 513/518 das vozes Sadaltager/Gacrux: `"Demonstre autoridade desde a primeira frase"` / `"Tom sóbrio e respeitoso"` — induziam respostas elaboradas e cerimoniais.
+  - Linha 217: `"Respostas curtas e diretas"` existia, mas era contradita pelas regras dramáticas acima.
+- **Decisão de design (usuário aprovou):**
+  - **Manter** saudação cerimonial inicial (imersão de mesa de RPG, legítimo).
+  - **Eliminar** enrolamento APÓS a pergunta concreta.
+  - **Princípios categoriais, ZERO exemplos** (lição do Lote 318 — exemplos viram cola, categorias generalizam).
+- **Mudança A — Personalidade no prompt principal:**
+  - Linha 218 reescrita: o "dramático" agora é EXPLICITAMENTE restrito à saudação inicial. Após pergunta concreta, tom técnico/direto/factual.
+- **Mudança B — As 3 vozes (Sadaltager, Gacrux, Charon):**
+  - Cada `instrucaoSaudacao` reescrita para deixar EXPLÍCITO que se aplica APENAS à saudação inicial.
+  - As 3 agora delegam o estilo de resposta ao prompt principal.
+  - Diferenciação entre vozes preservada via timbre/cadência (não estrutura).
+- **Mudança C — Nova seção "PROIBIDO ENROLAR NAS RESPOSTAS":**
+  - Categoria 1: META-FALA (anunciar o que vai fazer antes de fazer).
+  - Categoria 2: REPETIÇÃO CERIMONIAL (nome do personagem repetido, saudação no meio).
+  - Categoria 3: CONCLUSÕES GENÉRICAS (encerrar com frases sem informação).
+  - Regra final: "A primeira frase da resposta deve conter informação técnica direta da regra."
+  - **Zero exemplos de frases específicas** — só descrição categorial do anti-padrão.
+- **Validação:** ✅ Compila (BUILD SUCCESSFUL em 11s). ⏳ Funcional: usuário re-testará voz e medirá razão "resposta útil / total".
+- **Risco:** baixo — mudanças no prompt apenas. Reversíveis via revert.
+- **Rollback:** `git revert <hash>` desfaz.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
