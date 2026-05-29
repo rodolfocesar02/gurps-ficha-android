@@ -2042,4 +2042,19 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Risco:** modelo pode escolher tool errada em casos ambíguos (ex: "magia que dispara projétil" — magia ou armas?). Mitigação: regra no prompt diz "prefira o domínio principal da ação".
 - **Rollback:** `git revert <hash>` desfaz tudo. Sem mudanças em testes/banco/catálogos.
 
+## Lote 318 — [2026-05-29] fix: remove hardcode dos exemplos nas descriptions das tools especializadas
+
+- **Hash:** (preenchido após commit)
+- **Motivação:** O usuário detectou que no Lote 317 eu blindei as descriptions das 4 tools especializadas com **listas hardcoded de exemplos** (ex: "Ataque Furacão, Joelhada, Mata-leão, Chave de Braço" na tool de Artes Marciais; "pistola, revólver, rifle, espingarda, metralhadora..." na de Armas de Fogo). Isso é exatamente o anti-padrão que o usuário identificou em sessões anteriores como causa raiz dos 7 dicionários hardcoded que corrompem o RAG: **listas finitas viram cola para casos específicos e quebram em casos novos**.
+- **Mudança (8 descriptions reescritas):**
+  - Removidos TODOS os exemplos nominais nas descriptions.
+  - Substituídos por **descrição categorial** ("tema central da pergunta", "foco da pergunta").
+  - Cada tool aplicada em ambos formatos: Gemini (`getGeminiTools`) e OpenAI (`getOpenAITools`).
+- **Antes vs Depois (exemplo Artes Marciais):**
+  - ❌ Antes: "técnicas marciais específicas (Ataque Furacão, Joelhada, Mata-leão, Golpe Fulminante, Chave de Braço), estilos marciais, combate desarmado, agarrar, derrubar, imobilizar, judô, karatê, boxe, esgrima..."
+  - ✅ Depois: "técnicas corpo a corpo nomeadas, estilos marciais específicos, combate desarmado ou manobras avançadas além das básicas do Módulo Básico"
+- **Princípio:** descrição por categoria conceitual cobre qualquer caso futuro (técnica nova, estilo novo). Lista hardcoded só cobre o que alguém pensou antes.
+- **Validação:** Compila (BUILD SUCCESSFUL em 4s). Validação funcional via script Python `scripts/testar_tools_318.py` chamando API DeepSeek real com 8 perguntas (2 por tema).
+- **Rollback:** `git revert <hash>` desfaz Lote 318. Lote 317 ainda funcional (só com descriptions blindadas).
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
