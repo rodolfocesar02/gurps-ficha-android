@@ -1983,7 +1983,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 316 — [2026-05-28] fix: Auditor — maxTokens 16k + regra de leitura cuidadosa + regra de tamanho
 
-- **Hash:** (preenchido após commit)
+- **Hash:** 22ff256
 - **Escopo:** 2 mudanças no código + 2 verificações (sem mexer):
   - **A. maxTokens 4096 → 16384** (`MestreIAUseCase.kt` linha 164):
     resolve corte de respostas longas observado em pergunta sobre "Ataque Súbito".
