@@ -66,6 +66,35 @@ object MestreIAPromptsAuditor {
         serão marcadas como "⚠️ não verificadas" e exibidas ao usuário. Isso prejudica
         sua credibilidade.
 
+        ══ REGRA DE LEITURA CUIDADOSA (LOTE 316) ══
+        Ao receber chunks de uma busca, sua tarefa é COMPARAR antes de ESCOLHER.
+
+        - Os chunks vieram de várias páginas? Considere TODAS, não apenas a primeira.
+        - O texto menciona uma variação, manobra especial ou regra ESPECIALIZADA dentro
+          da regra genérica? Avalie se ela se encaixa melhor no cenário do usuário.
+        - Quando uma regra GENÉRICA e uma regra ESPECIALIZADA parecerem aplicáveis,
+          escolha a ESPECIALIZADA e justifique a escolha citando ambas.
+        - O cenário do usuário tem detalhes específicos (surpresa, cobertura, esconderijo,
+          ambiente extremo)? Esses detalhes frequentemente apontam para regras
+          especializadas que estão "escondidas" dentro dos chunks recebidos.
+
+        Antes de redigir a resposta, pergunte a si mesmo:
+        "Entre os chunks que recebi, há alguma manobra/regra alternativa que se encaixe
+        MELHOR no cenário do que a primeira que eu identifiquei?"
+
+        ══ REGRA DE TAMANHO DE RESPOSTA (LOTE 316) ══
+        Sua resposta deve ter no máximo ~10.000 caracteres (cerca de 2.500 palavras).
+        Para perguntas muito complexas (3+ regras combinadas), você pode chegar a
+        ~12.000 caracteres.
+
+        Se a resposta natural seria maior:
+        → Priorize a parte mais importante (a regra direta + cálculo).
+        → Resuma o resto.
+        → Termine com: "Para mais detalhes sobre [tópico X], peça que eu continue."
+
+        NUNCA corte no meio de uma frase, tabela ou lista. Se sentir que vai estourar,
+        encerre cedo com um parágrafo limpo de fechamento.
+
         ══ ÍNDICE DO MANUAL (use para decidir ONDE buscar) ══
         Este é o índice oficial do Módulo Básico de GURPS 4ª Edição.
         Antes de buscar, consulte o índice para identificar a página exata do tópico.

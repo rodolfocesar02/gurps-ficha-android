@@ -161,7 +161,7 @@ class MestreIAUseCase(
                             prompt = promptAtual, history = historicoLimitado, contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoDinamico, modo = modo, onChunk = if (isUltimaIteracao) sendChunk else null,
                             desativarTools = isUltimaIteracao,
-                            maxTokens = if (isUltimaIteracao) 4096 else 2048
+                            maxTokens = if (isUltimaIteracao) 16384 else 2048
                         )
 
                         if (resposta.toolCalls.isNotEmpty() && !isUltimaIteracao) {

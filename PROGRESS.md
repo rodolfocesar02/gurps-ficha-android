@@ -1981,4 +1981,41 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - 1 commit único na `feature/mestre-ia-graphrag` — `git revert <hash>` desfaz tudo.
 - Nenhuma mudança em testes, banco de dados, ou catálogos.
 
+## Lote 316 — [2026-05-28] fix: Auditor — maxTokens 16k + regra de leitura cuidadosa + regra de tamanho
+
+- **Hash:** (preenchido após commit)
+- **Escopo:** 2 mudanças no código + 2 verificações (sem mexer):
+  - **A. maxTokens 4096 → 16384** (`MestreIAUseCase.kt` linha 164):
+    resolve corte de respostas longas observado em pergunta sobre "Ataque Súbito".
+  - **B. temperature:** verificado, **já estava em 0.1** em `MestreIAClient.kt`
+    linhas 349 e 373 — sem alteração necessária (modelo já está em modo determinístico).
+  - **C. log cache_hit:** verificado, **já existe** em `MestreIAClient.kt` linhas 259-263
+    (`MestreIA_Cache: Cache hit=X miss=Y (Z% do prompt em cache)`). Sem duplicação.
+  - **D. Regra de tamanho:** nova seção no prompt do Auditor obrigando ~10k caracteres
+    máximo, com instrução de "encerrar limpo" se exceder. Mira o problema do corte
+    no meio de tabela/frase observado.
+  - **E. Princípio de leitura cuidadosa:** nova seção no prompt obrigando o modelo a
+    **comparar TODOS os chunks recebidos** antes de escolher uma manobra/regra, e
+    preferir regras ESPECIALIZADAS quando aplicáveis. Mira o caso "Avançar e Atacar
+    vs Ataque Súbito" onde o modelo escolheu a primeira opção e ignorou a melhor
+    que estava no mesmo pacote de chunks. Princípio genérico, sem hardcode de páginas
+    ou termos específicos (contraste com erro de IAs anteriores que blindavam casos
+    específicos).
+
+### Motivação
+- Lote 315 detectou alucinação de páginas; Lote 316 ataca outro problema:
+  modelo **escolher mal** entre chunks já recebidos.
+- Pesquisa profunda da documentação DeepSeek (ver `.agent/skills/DEEPSEEK_DOCUMENTACAO.md`)
+  confirmou: max_tokens default 4000 é fácil de estourar em respostas técnicas;
+  temperature recomendada para tarefas determinísticas é baixa (já estava em 0.1).
+
+### Validação
+- ✅ Compila (`./gradlew :app:compilePracegoDebugKotlin` BUILD SUCCESSFUL em 15s).
+- ⏳ Validação funcional: usuário re-testará perguntas (especialmente a do "Ataque Súbito"
+  e perguntas longas que cortavam) para confirmar melhoria.
+
+### Rollback
+- 1 commit único — `git revert <hash>` desfaz tudo.
+- Nenhuma mudança em testes, banco, catálogos.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
