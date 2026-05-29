@@ -2059,7 +2059,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 319 — [2026-05-29] feat: migra Gemini Live para tools especializadas (espelho do Auditor Texto)
 
-- **Hash:** (preenchido após commit)
+- **Hash:** 4a1b689
 - **Motivação:** Auditoria identificou que o **Gemini Live (voz)** ainda usava o `MestreIAPlanner` com 7 dicionários hardcoded e prompt com índice MB completo — exatamente os anti-padrões que removemos do Auditor Texto nos Lotes 317/318. Live ficava com tratamento pior que Texto, e modelo da voz preferia sempre Módulo Básico, ignorando 619 chunks (52% do códex) dos outros 4 livros.
 - **Pesquisa prévia:** documentação oficial Gemini Live API (https://ai.google.dev/gemini-api/docs/live-api/tools) confirmou suporte a múltiplas tools especializadas, mas com particularidades vs DeepSeek:
   - Formato simplificado (sem wrapper `{"type":"function"}`)
