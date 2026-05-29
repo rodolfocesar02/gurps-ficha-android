@@ -2186,7 +2186,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 323 — [2026-05-29] fix: prompt Live anti-enrolamento (mantém saudação cerimonial, corta meta-fala nas respostas)
 
-- **Hash:** (preenchido após commit)
+- **Hash:** `415a661`
 - **Bug observado:** Modelo de voz "enche linguiça". Análise do log mostrou que de 113 fragmentos de resposta, ~38% (43 fragmentos) eram puro enrolamento (saudação cerimonial pós-pergunta, meta-fala anunciando o que vai fazer, conclusão genérica sobre "campanha"). Só 62% era resposta técnica útil.
 - **Causa raiz identificada (auditoria do prompt linhas 215-218 + 509-525):**
   - Linha 218: `"Personalidade: sábio, justo, levemente dramático"` — aplicava o "dramático" a TODAS as respostas, não só à saudação.
