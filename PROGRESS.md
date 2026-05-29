@@ -2021,7 +2021,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 317 — [2026-05-29] feat: tools especializadas por livro + remoção do índice MB hardcoded
 
-- **Hash:** (preenchido após commit)
+- **Hash:** ef51715
 - **Motivação:** evidência do logcat mostrou que o modelo SEMPRE usava `livro="Módulo Básico"` mesmo quando a pergunta envolvia magia/armas de fogo/artes marciais. Causa: o prompt do Auditor tinha 50 linhas do índice oficial do MB hardcoded, viciando o modelo a pensar "tudo importante está no MB". Resultado: 619 chunks (52% do códex) dos outros 4 livros ficavam subutilizados, e modelo alucinava páginas do índice (ex: pág. 551 — citada sem chunk porque estava no índice do prompt).
 - **Mudança A — Prompt:**
   - **Removidas** 50 linhas de índice hardcoded do Módulo Básico (linhas 98-149 antigas).
