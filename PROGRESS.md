@@ -2137,4 +2137,22 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Risco:** Doc oficial alerta que alguns dispositivos têm implementação ruim de VOICE_COMMUNICATION também. Se Xiaomi 23078PND5G estiver entre eles, avaliar reverter para MIC + bloqueio de software (`if (modeloFalando) continue`).
 - **Rollback:** `git revert <hash>` desfaz tudo.
 
+## Lote 321 — [2026-05-29] feat: prompt Live com regras categoriais (busca exaustiva + paralelismo)
+
+- **Hash:** (preenchido após commit)
+- **Motivação:** Análise do logcat revelou 2 limitações comportamentais do Gemini Live:
+  1. Modelo fez 6 tool calls 100% sequenciais (nunca paralelas) em sessão de voz.
+  2. Modelo esgotou 1 livro de cada vez antes de pular pro próximo, parando antes de explorar todos os domínios relevantes da pergunta.
+- **Diagnóstico:** NÃO é trava sistêmica — código (`GeminiLiveService.kt:785-787`) tem loop `for i in 0 until calls.length()` pronto pra processar N tool calls paralelas. Live também NÃO tem `MAX_TOOL_CALLS` (diferente do Auditor Texto). O comportamento sequencial é do modelo (doc oficial: *"function calling executes sequentially by default"*) + ausência de instruções explícitas no prompt.
+- **Princípio guia (lição do próprio modelo):**
+  > *"Exemplos detalhados podem criar vieses ou direcionar fluxo de forma restritiva. O protocolo sistêmico valoriza a clareza nas regras de priorização e na hierarquia das ferramentas, permitindo análise dinâmica e adaptável."*
+- **Mudança em `GeminiLiveService.kt` prompt (sem hardcode de exemplos):**
+  - **Adicionado "PROTOCOLO DE BUSCA EXAUSTIVA"**: para perguntas que combinam múltiplos domínios (ação + ambiente, regra base + situação especial), consultar TODOS os domínios relevantes antes de responder. Hierarquia categorial: (1) ação principal, (2) contexto/ambiente, (3) situações especiais aplicáveis.
+  - **Adicionado "PROTOCOLO DE PARALELISMO"**: incentiva chamar 2+ tools no mesmo turno em vez de aguardar resultado entre elas.
+  - **Removido exemplo "magia de fogo subaquática"** da REGRA DE ESCOLHA (coerência com o princípio do modelo).
+- **Por que sem exemplos:** lição confirmada do Lote 318 — listas finitas viram cola; categorias generalizam.
+- **Validação:** ✅ Compila (BUILD SUCCESSFUL em 5s). ⏳ Funcional: usuário re-testará voz com pergunta que combine múltiplos domínios.
+- **Risco:** Gemini Live pode ignorar regra de paralelismo (default é sequential). Mitigação: se ignorar, perdemos pouco — comportamento sequential já era o atual.
+- **Rollback:** `git revert <hash>` desfaz.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------
