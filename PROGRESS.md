@@ -2044,7 +2044,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 318 — [2026-05-29] fix: remove hardcode dos exemplos nas descriptions das tools especializadas
 
-- **Hash:** (preenchido após commit)
+- **Hash:** be43445
 - **Motivação:** O usuário detectou que no Lote 317 eu blindei as descriptions das 4 tools especializadas com **listas hardcoded de exemplos** (ex: "Ataque Furacão, Joelhada, Mata-leão, Chave de Braço" na tool de Artes Marciais; "pistola, revólver, rifle, espingarda, metralhadora..." na de Armas de Fogo). Isso é exatamente o anti-padrão que o usuário identificou em sessões anteriores como causa raiz dos 7 dicionários hardcoded que corrompem o RAG: **listas finitas viram cola para casos específicos e quebram em casos novos**.
 - **Mudança (8 descriptions reescritas):**
   - Removidos TODOS os exemplos nominais nas descriptions.
