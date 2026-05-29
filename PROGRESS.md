@@ -2112,4 +2112,29 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - `MestreIAPlanner.kt` continua intacto (deixar como "código morto" por enquanto, decisão consciente).
 - Nenhuma mudança em catálogos, banco, testes ou outras superfícies.
 
+## Lote 320 — [2026-05-29] fix: echo de áudio Live — AudioSource.MIC → VOICE_COMMUNICATION + NS + AGC
+
+- **Hash:** (preenchido após commit)
+- **Bug observado:** Após testar voz no Xiaomi 23078PND5G, modelo "ouvia a si mesmo" — `inputTranscription` capturava fragmentos da saudação que o próprio modelo acabara de falar (ex: "Ah", ",", "Ja", "ck", "E", "go", ". Bom tê-lo aqui na mesa." — frase exata da saudação). Resultado: bug em loop, modelo respondendo à própria voz.
+- **Auditoria do código (bloco a bloco) revelou 3 anti-padrões combinados em `GeminiLiveService.iniciarCaptura()`:**
+  1. `MediaRecorder.AudioSource.MIC` — fonte CRUA, sem pré-processamento do Android.
+  2. `AcousticEchoCanceler` software — fraco, depende do fabricante, sem referência do speaker.
+  3. `AudioManager.MODE_NORMAL` — sistema não sabe que app está em comunicação bidirecional.
+- **Documentação oficial (developer.android.com):**
+  > *"VOICE_COMMUNICATION is similar to MIC but adds acoustic echo cancellation so audio from the loudspeaker is not heard by the microphone. This is intended for use during Voice over IP (VoIP) and video calls."*
+  > *"Android implementations should provide an acoustic echo canceler (AEC) on the capture path when capturing with VOICE_COMMUNICATION."*
+- **Fix aplicado em 1 ponto cirúrgico (`iniciarCaptura()` linhas 1080-1130):**
+  - **`MediaRecorder.AudioSource.MIC` → `MediaRecorder.AudioSource.VOICE_COMMUNICATION`**: ativa AEC nativo do sistema (mais potente que o software manual).
+  - **Adicionado `NoiseSuppressor`**: reduz ruído ambiente capturado pelo mic.
+  - **Adicionado `AutomaticGainControl`**: normaliza volume do mic (voz baixa fica audível).
+  - **Mantido `AcousticEchoCanceler` como 2ª camada** (caso VOICE_COMMUNICATION não ative AEC em algum dispositivo — sem custo).
+  - **Mantido `MODE_NORMAL`** (MODE_IN_COMMUNICATION historicamente suprimia voz do usuário neste app).
+  - Logs atualizados para refletir cada efeito ativado.
+- **Por que NÃO foi causado pelos Lotes anteriores:** auditoria do `git diff 703cf38..HEAD` confirmou que nenhuma linha de áudio foi tocada entre Lote 312 (`703cf38`, 27/05) e Lote 320. O bug existia desde o Lote 312 — só não tinha sido testado novamente até hoje.
+- **Validação:**
+  - ✅ Compila (BUILD SUCCESSFUL em 6s).
+  - ⏳ Funcional: usuário precisa testar voz no celular real (Xiaomi via WiFi adb).
+- **Risco:** Doc oficial alerta que alguns dispositivos têm implementação ruim de VOICE_COMMUNICATION também. Se Xiaomi 23078PND5G estiver entre eles, avaliar reverter para MIC + bloqueio de software (`if (modeloFalando) continue`).
+- **Rollback:** `git revert <hash>` desfaz tudo.
+
 ----------------------------------------------------------------------------------------------------------------------------------------------------

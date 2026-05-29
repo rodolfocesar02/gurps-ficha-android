@@ -1079,25 +1079,40 @@ NUNCA:
     }
 
     private fun iniciarCaptura() {
-        // MODE_NORMAL + speakerphone=true: força saída nas caixas de som SEM ativar
-        // o echo canceller de chamada (MODE_IN_COMMUNICATION suprimia a voz do usuário)
+        // Lote 320: VOICE_COMMUNICATION em vez de MIC.
+        // Doc oficial Android (developer.android.com/reference/android/media/MediaRecorder.AudioSource):
+        // "VOICE_COMMUNICATION is similar to MIC but adds acoustic echo cancellation so audio
+        //  from the loudspeaker is not heard by the microphone."
+        // Antes do Lote 320: usávamos MIC (áudio cru) + AcousticEchoCanceler manual,
+        // que falhou no Xiaomi 23078PND5G (modelo ouvia a si mesmo).
+        // MODE_NORMAL mantido (MODE_IN_COMMUNICATION historicamente suprimia voz do usuário).
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         audioManager.mode = AudioManager.MODE_NORMAL
         audioManager.isSpeakerphoneOn = true
 
         val bufferSize = AudioRecord.getMinBufferSize(16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT)
         audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
+            MediaRecorder.AudioSource.VOICE_COMMUNICATION,
             16000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,
             bufferSize * 2
         ).also { rec ->
-            // AcousticEchoCanceler: cancela em hardware o eco do speaker no microfone.
-            // Com isso o mic pode ficar aberto enquanto o modelo fala — sem auto-interrupção.
+            // AcousticEchoCanceler como segunda camada (caso VOICE_COMMUNICATION
+            // não ative AEC neste dispositivo). Sem custo se não disponível.
             if (android.media.audiofx.AcousticEchoCanceler.isAvailable()) {
                 android.media.audiofx.AcousticEchoCanceler.create(rec.audioSessionId)?.enabled = true
-                android.util.Log.i("GeminiLive", "✓ AcousticEchoCanceler ativado (sessionId=${rec.audioSessionId})")
+                android.util.Log.i("GeminiLive", "✓ AcousticEchoCanceler ativado (2ª camada, sessionId=${rec.audioSessionId})")
             } else {
-                android.util.Log.w("GeminiLive", "⚠ AcousticEchoCanceler não disponível neste dispositivo")
+                android.util.Log.w("GeminiLive", "⚠ AcousticEchoCanceler não disponível (apenas VOICE_COMMUNICATION ativo)")
+            }
+            // NoiseSuppressor: reduz ruído ambiente capturado pelo mic.
+            if (android.media.audiofx.NoiseSuppressor.isAvailable()) {
+                android.media.audiofx.NoiseSuppressor.create(rec.audioSessionId)?.enabled = true
+                android.util.Log.i("GeminiLive", "✓ NoiseSuppressor ativado (sessionId=${rec.audioSessionId})")
+            }
+            // AutomaticGainControl: normaliza volume do mic (voz baixa vira audível).
+            if (android.media.audiofx.AutomaticGainControl.isAvailable()) {
+                android.media.audiofx.AutomaticGainControl.create(rec.audioSessionId)?.enabled = true
+                android.util.Log.i("GeminiLive", "✓ AutomaticGainControl ativado (sessionId=${rec.audioSessionId})")
             }
             rec.startRecording()
         }
