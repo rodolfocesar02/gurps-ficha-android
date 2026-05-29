@@ -2216,7 +2216,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 324 — [2026-05-29] feat: Live RAG (fusão 5 tools → 1 com array de livros) + VAD 1500ms
 
-- **Hash:** (preenchido após commit)
+- **Hash:** `a711ec8`
 - **Sintomas observados no log do Lote 323:**
   1. Modelo usou **3 chamadas sequenciais** de `consultarManual` (genérica), nenhuma das 4 especializadas. Pergunta cruzava domínios (escalada + escudo + aparar/bloquear), mas o modelo não tinha como expressar essa combinação numa só chamada.
   2. UI fragmentou a fala do usuário em **4 balões separados** ("Fala mestre.", "Queria tirar uma dúvida.", "Eu estou escalando...", "Eu posso aparar...") porque o VAD do Gemini Live fecha o turno a cada ~800ms de silêncio (cada pausa pra respirar).
