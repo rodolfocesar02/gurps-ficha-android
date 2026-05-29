@@ -1,7 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 22 de Maio de 2026
-**Status Atual:** Mestre IA - Lotes 257-261 CONCLUÍDOS (semântica híbrida completa)
+**Última Atualização:** 29 de Maio de 2026
+**Status Atual:** Lote 316 CONCLUÍDO — Auditor RAG: maxTokens 16k + regra de leitura cuidadosa + regra de tamanho
+**Último Lote Registrado:** Lote 316 (hash `22ff256`) — começa na linha **1984** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2017,5 +2018,28 @@ RAG OK: 28 chunks | 12632 chars de contexto
 ### Rollback
 - 1 commit único — `git revert <hash>` desfaz tudo.
 - Nenhuma mudança em testes, banco, catálogos.
+
+## Lote 317 — [2026-05-29] feat: tools especializadas por livro + remoção do índice MB hardcoded
+
+- **Hash:** (preenchido após commit)
+- **Motivação:** evidência do logcat mostrou que o modelo SEMPRE usava `livro="Módulo Básico"` mesmo quando a pergunta envolvia magia/armas de fogo/artes marciais. Causa: o prompt do Auditor tinha 50 linhas do índice oficial do MB hardcoded, viciando o modelo a pensar "tudo importante está no MB". Resultado: 619 chunks (52% do códex) dos outros 4 livros ficavam subutilizados, e modelo alucinava páginas do índice (ex: pág. 551 — citada sem chunk porque estava no índice do prompt).
+- **Mudança A — Prompt:**
+  - **Removidas** 50 linhas de índice hardcoded do Módulo Básico (linhas 98-149 antigas).
+  - **Removida** seção "QUAL LIVRO USAR" — substituída por descriptions das tools especializadas.
+  - Nova seção "FERRAMENTAS DISPONÍVEIS" descrevendo as 5 tools por domínio + regra genérica de escolha (ler pergunta inteira antes de escolher).
+- **Mudança B — Tools especializadas (`MestreIATools.kt`):**
+  - 4 novas constantes: `TOOL_REGRAS_MAGIA`, `TOOL_REGRAS_ARMAS_FOGO`, `TOOL_REGRAS_ARTES_MARCIAIS`, `TOOL_REGRAS_AQUATICO`.
+  - Cada uma adicionada em ambos `getGeminiTools()` e `getOpenAITools()` com description detalhada do domínio.
+  - `TOOL_MANUAL_DIRETO` mantida como fallback genérico, com description atualizada para "Use APENAS quando não cabe nas especializadas".
+- **Mudança C — Execução (`MestreIAUseCase.kt`):**
+  - Extraída lógica de execução de busca para método helper `executarBuscaCodex()` (privado, suspend).
+  - 4 novos `case` no `when (toolCall.name)`: cada tool especializada chama o helper com `filtroLivro` fixo.
+  - Log de tool agora inclui `[livro=X]` quando especificado.
+- **Por quê tools em vez de regra no prompt:** modelo escolhe ferramenta pelo entendimento da pergunta inteira (não palavra-chave). Descriptions das tools auto-documentam quando usar. Não polui o prompt com regras IF-ELSE. Documentação oficial DeepSeek recomenda esse padrão (ver `.agent/skills/DEEPSEEK_DOCUMENTACAO.md`).
+- **Validação:**
+  - ✅ Compila (BUILD SUCCESSFUL em 7s).
+  - ⏳ Funcional: usuário re-testará a pergunta "duas pistolas em corredor escuro" — esperado: modelo escolhe `consultar_regras_armas_fogo` em vez de `consultar_manual_direto` com `livro="MB"`.
+- **Risco:** modelo pode escolher tool errada em casos ambíguos (ex: "magia que dispara projétil" — magia ou armas?). Mitigação: regra no prompt diz "prefira o domínio principal da ação".
+- **Rollback:** `git revert <hash>` desfaz tudo. Sem mudanças em testes/banco/catálogos.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------

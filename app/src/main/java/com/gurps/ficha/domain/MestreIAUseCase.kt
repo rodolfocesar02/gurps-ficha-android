@@ -179,28 +179,24 @@ class MestreIAUseCase(
                                             MestreIATools.TOOL_MANUAL_DIRETO -> {
                                                 val queryTool = toolCall.args.optString("query", prompt)
                                                 val filtroLivro = toolCall.args.optString("livro", "").takeIf { it.isNotBlank() }
-                                                val queryNorm = queryTool.lowercase().trim().take(40)
-                                                val jaFoiBuscado = historicoInvestigacao
-                                                    .filter { it.first == "assistant" }
-                                                    .any { it.second.lowercase().contains(queryNorm) }
-                                                if (jaFoiBuscado) {
-                                                    android.util.Log.w("MestreIA_RAG", "║  TOOL[$idx] DUPLICADA: '$queryNorm'")
-                                                    ToolResult.Duplicada(queryTool)
-                                                } else {
-                                                    val statusMsg = if (filtroLivro != null) "Buscando em $filtroLivro: \"${queryTool.take(30)}\"..." else "Buscando: \"${queryTool.take(40)}\"..."
-                                                    updateStatus(statusMsg)
-                                                    val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList(), filtroLivro = filtroLivro)
-                                                    if (resTool.relatedChunks.isNotEmpty()) {
-                                                        val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
-                                                        val textoFormatado = graphEngine.formatarParaIA(resTool, queryTool)
-                                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] OK: ${resTool.relatedChunks.size} chunks | págs: [$pags]")
-                                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] CONTEUDO (800chars):\n${textoFormatado.take(800)}")
-                                                        ToolResult.Manual(queryTool, textoFormatado, resTool.relatedChunks)
-                                                    } else {
-                                                        android.util.Log.e("MestreIA_RAG", "║  TOOL[$idx] VAZIO: \"${queryTool.take(60)}\"")
-                                                        ToolResult.Vazio(queryTool)
-                                                    }
-                                                }
+                                                executarBuscaCodex(idx, queryTool, filtroLivro, historicoInvestigacao, updateStatus)
+                                            }
+                                            // Lote 317: tools especializadas — cada uma força filtroLivro fixo
+                                            MestreIATools.TOOL_REGRAS_MAGIA -> {
+                                                val queryTool = toolCall.args.optString("query", prompt)
+                                                executarBuscaCodex(idx, queryTool, "Magia", historicoInvestigacao, updateStatus)
+                                            }
+                                            MestreIATools.TOOL_REGRAS_ARMAS_FOGO -> {
+                                                val queryTool = toolCall.args.optString("query", prompt)
+                                                executarBuscaCodex(idx, queryTool, "Gun Fu", historicoInvestigacao, updateStatus)
+                                            }
+                                            MestreIATools.TOOL_REGRAS_ARTES_MARCIAIS -> {
+                                                val queryTool = toolCall.args.optString("query", prompt)
+                                                executarBuscaCodex(idx, queryTool, "Artes Marciais", historicoInvestigacao, updateStatus)
+                                            }
+                                            MestreIATools.TOOL_REGRAS_AQUATICO -> {
+                                                val queryTool = toolCall.args.optString("query", prompt)
+                                                executarBuscaCodex(idx, queryTool, "Pyramid Aquático", historicoInvestigacao, updateStatus)
                                             }
                                             MestreIATools.TOOL_INSPECT_CHARACTER -> {
                                                 val secao = toolCall.args.optString("secao", "atributos")
@@ -446,6 +442,45 @@ class MestreIAUseCase(
                 }
                 sendResult(false, MestreIAClient.ChatResponse(resumoErro))
             }
+        }
+    }
+
+    /**
+     * LOTE 317: helper compartilhado entre TOOL_MANUAL_DIRETO e as 4 tools
+     * especializadas (TOOL_REGRAS_MAGIA, _ARMAS_FOGO, _ARTES_MARCIAIS, _AQUATICO).
+     * Cada tool especializada chama isto com filtroLivro fixo.
+     */
+    private suspend fun executarBuscaCodex(
+        idx: Int,
+        queryTool: String,
+        filtroLivro: String?,
+        historicoInvestigacao: MutableList<Pair<String, String>>,
+        updateStatus: (String) -> Unit
+    ): ToolResult {
+        val queryNorm = queryTool.lowercase().trim().take(40)
+        val jaFoiBuscado = historicoInvestigacao
+            .filter { it.first == "assistant" }
+            .any { it.second.lowercase().contains(queryNorm) }
+        if (jaFoiBuscado) {
+            android.util.Log.w("MestreIA_RAG", "║  TOOL[$idx] DUPLICADA: '$queryNorm'")
+            return ToolResult.Duplicada(queryTool)
+        }
+        val statusMsg = if (filtroLivro != null)
+            "Buscando em $filtroLivro: \"${queryTool.take(30)}\"..."
+        else
+            "Buscando: \"${queryTool.take(40)}\"..."
+        updateStatus(statusMsg)
+        val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList(), filtroLivro = filtroLivro)
+        return if (resTool.relatedChunks.isNotEmpty()) {
+            val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
+            val textoFormatado = graphEngine.formatarParaIA(resTool, queryTool)
+            val livroLog = if (filtroLivro != null) " [livro=$filtroLivro]" else ""
+            android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] OK$livroLog: ${resTool.relatedChunks.size} chunks | págs: [$pags]")
+            android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] CONTEUDO (800chars):\n${textoFormatado.take(800)}")
+            ToolResult.Manual(queryTool, textoFormatado, resTool.relatedChunks)
+        } else {
+            android.util.Log.e("MestreIA_RAG", "║  TOOL[$idx] VAZIO: \"${queryTool.take(60)}\"")
+            ToolResult.Vazio(queryTool)
         }
     }
 

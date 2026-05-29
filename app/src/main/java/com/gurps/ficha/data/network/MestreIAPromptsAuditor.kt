@@ -95,80 +95,42 @@ object MestreIAPromptsAuditor {
         NUNCA corte no meio de uma frase, tabela ou lista. Se sentir que vai estourar,
         encerre cedo com um parágrafo limpo de fechamento.
 
-        ══ ÍNDICE DO MANUAL (use para decidir ONDE buscar) ══
-        Este é o índice oficial do Módulo Básico de GURPS 4ª Edição.
-        Antes de buscar, consulte o índice para identificar a página exata do tópico.
-        Localize o tópico no índice → use a página como referência na sua query → a ferramenta trará o conteúdo certo.
-
-        ÍNDICE:
-        Agachar, 368. Agarrar e segurar, 370. Aparar, 51, 96, 325, 327, 376. Armadura, 282–286.
-        Armas corpo a corpo, 271–275. Armas à distância, 275–277, 278–281.
-        Ataques à distância, 326, 372. Ataques enganosos, 369. Ataques surpresa, 393.
-        Atordoamento, 44, 420. Bloqueio, 51, 325, 327, 375. Cadência de Tiro, 270, 373.
-        Chave de braço, 371, 403. Chi, 33, 92, 195, 219. Chicotes, 405; tabela de arma (aparar, dano, alcance), 273; penalidade de Aparar com chicote (−2), 550.
-        Cobertura, 377, 407, 559. Combate corporal, 391. Combate desarmado, 370, 376, 379.
-        Combate montado, 396–398. Dano, 15, 327, 377. Dano penetrante, 378.
-        Defendendo, 326, 374. Defesas ativas, 326, 363, 374, 548. Derrubar, 370.
-        Deslocamento básico, 17. Direcionamento em combate, 386.
-        Disparo com mira, 372. Disputas, 348–349. Divisor de armadura, 378.
-        Encontrão, 371. Equilíbrio do jogo, 11. Erros críticos, 381; tabela, 556–557.
-        Escavar, 354, 356. Escudos, 287, 374. Esforço adicional, 356.
-        Esquiva, 17, 51, 325, 326, 374. Esquiva acrobática, 375. Evadir, 368.
-        Explosões, 414–415. Fadiga, 16, 328, 426. Ferimentos graves, 420.
-        Figuras multi-hexagonais, 392. Fogo contínuo, 373, 408. Fogo de retenção, 409.
-        Garrotes, 406. Golpe Letal, 404. Golpe Rápido, 42, 96, 370.
-        Golpes fulminantes, 381; tabela, 557. Golpes visando a arma do oponente, 400.
-        Hexágonos, 384. Imobilizando o adversário, 401. Incapacitado, 51, 420–423.
-        Iniciativa, 393. Jogar-se ao chão, 374. Jogada de ataque, 369.
-        Joelhada, 404. Lesões, 327, 377, 380, 418–425. Levantamento, 14, 15, 354.
-        Mágicas de Bloqueio, 242. Mágicas de Projétil, 242. Manobra Aguardar, 324, 366.
-        Manobra Apontar, 43, 324, 364. Manobra Ataque Total, 42, 324, 365.
-        Manobra Ataque, 324, 365. Manobra Avaliar, 325, 364. Manobra Avançar e Atacar, 325, 365.
-        Manobra Concentrar, 325, 366. Manobra Defesa Total, 325, 366.
-        Manobra Deslocamento, 325, 364. Manobra Fazer Nada, 325, 364.
-        Manobra Fintar, 325, 365. Manobra Mudança de Posição, 325, 364.
-        Manobra Preparar, 325, 366. Manobras, 324, 363; tabela, 551.
-        Mata-leão, 371, 404. Mau Funcionamento, 279, 382, 407.
-        Mergulho de proteção, 377, 413. Modificador de ferimento, 379.
-        Modificador de Tamanho, 19, 372, 402. Movimento e combate, 367.
-        Nocaute e atordoamento, 420. Passo em manobras, 368, 386.
-        Penalidades, veja tópico específico. Perícias de combate, veja arma específica.
-        Ponto de Impacto, 369, 398; tabela, 552–555. Posições, 367; tabela, 551. Posição do Defensor (ajoelhado −2, rastejando −3), 550.
-        Preparar armas, 369, 382. Proezas físicas, 349. Quebrando uma arma, 401.
-        Queda, 432. Recuo, 271. Retirada com defesa ativa, 377, 391.
-        Sangramento, 50, 420. Sequência de combate, 324, 362. Submissão em combate, 370.
-        Sucesso decisivo, 347; durante defesa, 381.
-        Tabela de Erro Crítico, 556. Tabela de Erro Crítico com Golpe Desarmado, 556.
-        Tabela de Golpe Fulminante, 557. Tabela de Golpe Fulminante na Cabeça, 557.
-        Tabela de Modificadores à Distância, 548. Tabela de Modificadores de Ataque Corpo a Corpo, 547.
-        Tabela de Modificadores de Defesa Ativa, 550 (conteúdo real em pág. 550, incluindo penalidades por arma e posição). Tabela de Ponto de Impacto, 552–555.
-        Tabela de Tamanho e Velocidade/Distância, 551. Tabela de Verificação de Pânico, 360–361.
-        Tabela de Manobras, 551. Tabela de Posições, 551.
-        Técnicas de combate, 230. Torcer Membros, 371, 404. Truques Sujos, 405.
-        Venenos, 43, 437–439. Verificações de Pânico, 53, 60, 94, 360.
-        Vantagens (lista), 32–118. Desvantagens (lista), 119–165. Perícias (lista), 167–233.
-
         ══ FERRAMENTAS DISPONÍVEIS ══
 
+        Você tem ferramentas ESPECIALIZADAS por domínio. Cada uma busca em um livro
+        específico do Códex. ESCOLHA a ferramenta certa com base no contexto da
+        pergunta — não em palavras isoladas:
+
+        • consultar_regras_magia(query)
+          → magias, feitiços, escolas, alquimia, encantamentos, energia mágica,
+            pré-requisitos de magias, conjuração
+
+        • consultar_regras_armas_fogo(query)
+          → técnicas e regras de armas de fogo, tiro cinematográfico, balística,
+            pistolas, rifles, espingardas, supressão, recarga, cadência
+
+        • consultar_regras_artes_marciais(query)
+          → técnicas corpo a corpo, estilos marciais, combate desarmado,
+            golpes específicos (Ataque Furacão, Joelhada, etc.), perícias marciais
+
+        • consultar_regras_aquatico(query)
+          → ambientes submersos: combate subaquático, pressão, narcose,
+            descompressão, movimentação na água, criaturas aquáticas
+
+        • consultar_manual_direto(query, livro?)
+          → FERRAMENTA GENÉRICA. Use quando a pergunta não cabe em nenhuma
+            especializada acima (atributos, vantagens, desvantagens, perícias gerais,
+            manobras de combate genéricas, tabelas, equipamentos não-armas).
+          → Aceita parâmetro 'livro' opcional para filtrar; omita para buscar em todos.
+
+        REGRA DE ESCOLHA: leia a pergunta INTEIRA antes de escolher a ferramenta.
+        Não decida pela primeira palavra-chave que reconhecer. Se a pergunta combina
+        dois domínios (ex: "magia de fogo subaquática"), prefira o domínio principal
+        da ação que o usuário quer executar.
+
         consultar_manual_direto(query, livro?)
-        → Busca no Códex de GURPS (manuais oficiais em PORTUGUÊS).
         → OBRIGATÓRIO: queries SEMPRE em português. O Códex não tem conteúdo em inglês.
         → Use queries CURTAS (máx 6 palavras) e ESPECÍFICAS por conceito isolado.
-        → Use livro= quando souber de qual livro a regra vem. MELHORA MUITO A PRECISÃO.
-        → Sem livro=: busca em todos os 4 livros ao mesmo tempo.
-
-        ══ QUAL LIVRO USAR ══
-        Antes de buscar, identifique o livro certo e passe livro= na ferramenta.
-        • "Gun Fu"           → técnicas e regras de armas de fogo, tiro cinematográfico
-        • "Artes Marciais"   → técnicas corpo a corpo, estilos marciais, combate desarmado
-        • "Magia"            → magias, escolas, alquimia, encantamentos, runas
-        • "Módulo Básico"    → tudo mais: atributos, vantagens, desvantagens, perícias,
-                               manobras, combate geral, equipamentos, tabelas de regras
-        • "Pyramid Aquático" → regras e cenários para ambientes submersos/aquáticos:
-                               combate submerso, pressão, narcose, descompressão,
-                               movimentação na água, criaturas aquáticas, aventuras
-                               em oceanos, rios, mundos subaquáticos
-        • Sem livro=         → quando a pergunta pode cruzar mais de um livro
 
         inspecionar_personagem(secao)
         → Lê dados reais da ficha do jogador.
