@@ -114,7 +114,9 @@ class MestreIAUseCase(
             var promptAtual = prompt
             var historicoInvestigacao = mutableListOf<Pair<String, String>>()
             var toolCallsFeitas = 0
-            val MAX_TOOL_CALLS = 5
+            // Lote 325: novo loop "localizar → ler" precisa de mais idas (localizar e ler
+            // são chamadas separadas). Antes 5 era suficiente quando 1 tool fazia tudo.
+            val MAX_TOOL_CALLS = 8
             var perguntaAoUsuarioPendente: String? = null
 
             for (config in fila) {
@@ -197,6 +199,21 @@ class MestreIAUseCase(
                                             MestreIATools.TOOL_REGRAS_AQUATICO -> {
                                                 val queryTool = toolCall.args.optString("query", prompt)
                                                 executarBuscaCodex(idx, queryTool, "Pyramid Aquático", historicoInvestigacao, updateStatus)
+                                            }
+                                            // Lote 325: novo motor de busca do Auditor (grep + leitura dirigida)
+                                            MestreIATools.TOOL_LOCALIZAR -> {
+                                                val termos = toolCall.args.optString("termos", prompt)
+                                                val livros = toolCall.args.optJSONArray("livros")?.let { arr ->
+                                                    (0 until arr.length()).mapNotNull { i -> arr.optString(i, "").takeIf { it.isNotBlank() } }
+                                                }
+                                                executarLocalizar(idx, termos, livros, updateStatus)
+                                            }
+                                            MestreIATools.TOOL_LER -> {
+                                                val livro = toolCall.args.optString("livro", "")
+                                                val pagina = toolCall.args.optInt("pagina", -1)
+                                                val paginaFinal = if (toolCall.args.has("pagina_final")) toolCall.args.optInt("pagina_final") else null
+                                                if (livro.isBlank() || pagina < 0) ToolResult.Vazio("ler: argumentos inválidos")
+                                                else executarLer(idx, livro, pagina, paginaFinal, updateStatus)
                                             }
                                             MestreIATools.TOOL_INSPECT_CHARACTER -> {
                                                 val secao = toolCall.args.optString("secao", "atributos")
@@ -482,6 +499,62 @@ class MestreIAUseCase(
             android.util.Log.e("MestreIA_RAG", "║  TOOL[$idx] VAZIO: \"${queryTool.take(60)}\"")
             ToolResult.Vazio(queryTool)
         }
+    }
+
+    /**
+     * Lote 325: LOCALIZAR — "página de resultados" por palavra-chave (FTS4 AND).
+     * Retorna lista compacta (livro|página|trecho), não o texto completo.
+     */
+    private suspend fun executarLocalizar(
+        idx: Int,
+        termos: String,
+        livros: List<String>?,
+        updateStatus: (String) -> Unit
+    ): ToolResult {
+        updateStatus("Localizando: \"${termos.take(40)}\"...")
+        val res = repository.localizarNoCodex(termos, livros)
+        if (res.hits.isEmpty()) {
+            android.util.Log.w("MestreIA_RAG", "║  LOCALIZAR[$idx] VAZIO: \"${termos.take(60)}\"")
+            return ToolResult.Vazio("localizar: $termos")
+        }
+        val sb = StringBuilder()
+        sb.append("PÁGINAS ENCONTRADAS para \"$termos\" (${res.total} no total")
+        if (res.modo == "OR") sb.append(", busca aproximada — nenhuma página continha TODAS as palavras")
+        sb.append("):\n")
+        for (h in res.hits) {
+            sb.append("• [${h.livro}, pág. ${h.pagina}] ${h.trecho}\n")
+        }
+        if (res.total > res.hits.size) {
+            sb.append("(... e mais ${res.total - res.hits.size} páginas — adicione palavras para estreitar)\n")
+        }
+        sb.append("\nAGORA use ler_pagina(livro, pagina) para ler o conteúdo completo das páginas que parecem responder à pergunta.")
+        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR[$idx] OK: ${res.total} págs [${res.modo}]")
+        return ToolResult.Manual("localizar:$termos", sb.toString(), emptyList())
+    }
+
+    /**
+     * Lote 325: LER — abre o texto completo de uma página (ou intervalo curto).
+     * Adiciona os chunks reais ao contexto (o Verificador de Citações valida contra eles).
+     */
+    private suspend fun executarLer(
+        idx: Int,
+        livro: String,
+        pagina: Int,
+        paginaFinal: Int?,
+        updateStatus: (String) -> Unit
+    ): ToolResult {
+        val faixa = if (paginaFinal != null && paginaFinal != pagina) "$pagina-$paginaFinal" else "$pagina"
+        updateStatus("Lendo $livro pág. $faixa...")
+        val chunks = repository.lerPaginas(livro, pagina, paginaFinal)
+        if (chunks.isEmpty()) {
+            android.util.Log.w("MestreIA_RAG", "║  LER[$idx] VAZIO: $livro p$faixa")
+            return ToolResult.Vazio("ler: $livro pág. $faixa")
+        }
+        val texto = chunks.joinToString("\n\n") { c ->
+            "--- [${c.source_title}, pág. ${c.page_number}] ---\n${c.text}"
+        }
+        android.util.Log.i("MestreIA_RAG", "║  LER[$idx] OK: $livro p$faixa → ${chunks.size} chunks (${texto.length} chars)")
+        return ToolResult.Manual("ler:$livro p$faixa", texto, chunks)
     }
 
     /**

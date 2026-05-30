@@ -151,6 +151,139 @@ class MestreIARepository(
         }
     }
 
+    // ──────────────────────────────────────────────────────────────────────
+    // Lote 325: NOVO MOTOR DE BUSCA POR PALAVRA-CHAVE (sem embedding)
+    //
+    // Substitui a busca semântica (HNSW) no fluxo do Auditor por um modelo
+    // "grep + leitura dirigida": o modelo LOCALIZA páginas por palavras-chave
+    // (AND, igual ao Google: mais palavras = menos resultados) e depois LÊ as
+    // páginas que julgar relevantes. Determinístico: mesma query → mesmas páginas.
+    // ──────────────────────────────────────────────────────────────────────
+
+    data class LocalizarHit(
+        val livro: String,       // source_title amigável
+        val sourceId: String,
+        val pagina: Int,
+        val trecho: String       // snippet (~180 chars) onde o termo casou
+    )
+
+    data class LocalizarResultado(
+        val total: Int,                 // total de páginas que casaram (antes do corte)
+        val hits: List<LocalizarHit>,   // capado em `limit`
+        val modo: String                // "AND" (estrito) ou "OR" (aproximado, fallback)
+    )
+
+    /** Mapeia nome amigável do livro → source_id do banco. null = livro desconhecido. */
+    private fun mapearLivroParaSourceId(nome: String): String? = when (nome.lowercase().trim()) {
+        "módulo básico", "modulo basico"       -> "pt_modulo_basico"
+        "artes marciais"                        -> "pt_artes_marciais"
+        "magia"                                 -> "pt_magia"
+        "gun fu"                                -> "pt_gun_fu"
+        "pyramid aquático", "pyramid aquatico" -> "pt_pyramid_26_underwater"
+        else                                    -> null
+    }
+
+    /**
+     * Tokeniza os termos da busca: normaliza, remove vazios/curtos.
+     * NÃO expande sinônimos nem adiciona OR — controle do modelo (loop explícito).
+     */
+    private fun tokenizarTermos(termos: String): List<String> {
+        return termos.split(Regex("\\s+"))
+            .map { com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(it) }
+            .filter { it.length >= 2 }
+            .distinct()
+    }
+
+    /** Constrói o trecho (snippet): primeira linha do texto que contém algum token. */
+    private fun construirTrecho(texto: String, tokens: List<String>): String {
+        val linhas = texto.split("\n").map { it.trim() }.filter { it.isNotBlank() }
+        for (linha in linhas) {
+            val norm = com.gurps.ficha.domain.filters.CatalogFilters.normalizarBusca(linha)
+            if (tokens.any { norm.contains(it) }) {
+                return linha.take(180)
+            }
+        }
+        return (linhas.firstOrNull() ?: texto.trim()).take(180)
+    }
+
+    /**
+     * LOCALIZA páginas por palavras-chave (FTS4 AND). Igual ao Google: cada palavra
+     * a mais ESTREITA o resultado. Retorna lista COMPACTA (livro|página|trecho) —
+     * NÃO o texto completo. O modelo usa isto para decidir o que LER depois.
+     *
+     * @param termos string com palavras-chave separadas por espaço
+     * @param livrosFiltro nomes amigáveis de livros para restringir; null/vazio = todos
+     * @param limit máximo de hits retornados (o total real vem em LocalizarResultado.total)
+     */
+    suspend fun localizarNoCodex(
+        termos: String,
+        livrosFiltro: List<String>? = null,
+        limit: Int = 60
+    ): LocalizarResultado = withContext(Dispatchers.IO) {
+        val tokens = tokenizarTermos(termos)
+        if (tokens.isEmpty()) {
+            android.util.Log.w("MestreIA_RAG", "║  LOCALIZAR: termos vazios após normalização ('$termos')")
+            return@withContext LocalizarResultado(0, emptyList(), "AND")
+        }
+
+        val sourceIds: Set<String>? = livrosFiltro
+            ?.mapNotNull { mapearLivroParaSourceId(it) }
+            ?.toSet()
+            ?.takeIf { it.isNotEmpty() }
+
+        // FTS4 AND: tokens separados por espaço = AND implícito; "*" = prefixo.
+        val queryAnd = tokens.joinToString(" ") { "$it*" }
+        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR AND: \"$queryAnd\"${if (sourceIds != null) " livros=$sourceIds" else ""}")
+
+        var modo = "AND"
+        var brutos = manualChunkDao.buscarRegras(queryAnd, 500)
+
+        // Fallback aproximado: se AND não casou nada e há 2+ tokens, tenta OR.
+        if (brutos.isEmpty() && tokens.size > 1) {
+            val queryOr = tokens.joinToString(" OR ") { "$it*" }
+            android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR fallback OR: \"$queryOr\"")
+            brutos = manualChunkDao.buscarRegras(queryOr, 500)
+            modo = "OR"
+        }
+
+        val filtrados = if (sourceIds != null) brutos.filter { it.source_id in sourceIds } else brutos
+        val total = filtrados.size
+
+        val hits = filtrados.take(limit).map { e ->
+            LocalizarHit(
+                livro = e.source_title,
+                sourceId = e.source_id,
+                pagina = e.page_number,
+                trecho = construirTrecho(e.text, tokens)
+            )
+        }
+        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR [$modo]: $total páginas (retornando ${hits.size})")
+        LocalizarResultado(total, hits, modo)
+    }
+
+    /**
+     * LÊ o texto COMPLETO de uma página (ou intervalo) de um livro específico.
+     * Equivalente a abrir o manual na página. Intervalo limitado para não inflar o contexto.
+     */
+    suspend fun lerPaginas(
+        livro: String,
+        paginaInicial: Int,
+        paginaFinal: Int? = null
+    ): List<MestreIAChunk> = withContext(Dispatchers.IO) {
+        val sourceId = mapearLivroParaSourceId(livro)
+        if (sourceId == null) {
+            android.util.Log.w("MestreIA_RAG", "║  LER: livro desconhecido '$livro'")
+            return@withContext emptyList()
+        }
+        val pFim = (paginaFinal ?: paginaInicial).coerceIn(paginaInicial, paginaInicial + 3) // máx 4 páginas
+        val resultado = mutableListOf<MestreIAChunk>()
+        for (pag in paginaInicial..pFim) {
+            resultado.addAll(buscarPorPaginaESource(pag, sourceId))
+        }
+        android.util.Log.i("MestreIA_RAG", "║  LER $livro p$paginaInicial${if (pFim != paginaInicial) "-$pFim" else ""}: ${resultado.size} chunks")
+        resultado
+    }
+
     suspend fun getChunkById(id: String): MestreIAChunk? {
         return manualChunkDao.getChunkById(id)?.let { entity ->
             MestreIAChunk(

@@ -17,10 +17,21 @@ object MestreIATools {
 
     // Lote 317: tools especializadas por livro — modelo escolhe pela natureza
     // da pergunta, não por palavra-chave isolada. Cada uma força filtroLivro fixo.
+    // (Lote 325: usadas apenas pelo Forjador agora — Auditor migrou para localizar/ler.)
     const val TOOL_REGRAS_MAGIA = "consultar_regras_magia"
     const val TOOL_REGRAS_ARMAS_FOGO = "consultar_regras_armas_fogo"
     const val TOOL_REGRAS_ARTES_MARCIAIS = "consultar_regras_artes_marciais"
     const val TOOL_REGRAS_AQUATICO = "consultar_regras_aquatico"
+
+    // Lote 325: NOVO motor de busca por palavra-chave (Auditor). Substitui a busca
+    // semântica (embedding/HNSW) por "grep + leitura dirigida":
+    //  - localizar_no_codex: lista páginas que casam (AND de palavras), trecho curto
+    //  - ler_pagina: abre o texto completo de uma página/intervalo escolhido
+    const val TOOL_LOCALIZAR = "localizar_no_codex"
+    const val TOOL_LER = "ler_pagina"
+
+    private val LIVROS_ENUM = JSONArray()
+        .put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático")
 
     /**
      * Retorna a lista de Function Declarations no formato nativo do Gemini.
@@ -280,6 +291,89 @@ object MestreIATools {
                 put("name", TOOL_FILL_SHEET)
                 put("description", "Preenche a ficha completa.")
                 put("parameters", getSheetSchemaOpenAI())
+            })
+        })
+
+        return tools
+    }
+
+    /**
+     * Lote 325: Toolset do AUDITOR (modo dúvida/conversa). Formato OpenAI/DeepSeek.
+     * Motor "grep + leitura dirigida" — sem busca semântica:
+     *   1. localizar_no_codex(termos, livros?) → páginas que casam (AND), trecho curto
+     *   2. ler_pagina(livro, pagina, pagina_final?) → texto completo pra interpretar
+     * + inspecionar_personagem e consultar_nexus_arcano (auxiliares).
+     */
+    fun getAuditorToolsOpenAI(): JSONArray {
+        val tools = JSONArray()
+
+        // LOCALIZAR — a "página de resultados". AND: mais palavras = menos páginas.
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_LOCALIZAR)
+                put("description", "Localiza páginas do Códex que contêm TODAS as palavras informadas (igual a uma busca AND: cada palavra a mais restringe o resultado). Retorna uma lista compacta de páginas com um trecho curto de cada — NÃO o texto completo. Use para descobrir EM QUAIS páginas está a regra; depois use ler_pagina para ler as escolhidas. Comece amplo e adicione palavras para estreitar quando vierem páginas demais; remova/troque palavras quando vier nenhuma.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("termos", JSONObject().put("type", "string").put("description", "Palavras-chave separadas por espaço. Use os termos técnicos exatos da regra. Mais palavras = busca mais restrita."))
+                        put("livros", JSONObject().apply {
+                            put("type", "array")
+                            put("description", "Opcional. Restringe a busca a estes livros. Omita para procurar em todos.")
+                            put("items", JSONObject().put("type", "string").put("enum", LIVROS_ENUM))
+                        })
+                    })
+                    put("required", JSONArray().put("termos"))
+                })
+            })
+        })
+
+        // LER — abre a página inteira (ou intervalo curto) pra interpretar a regra.
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_LER)
+                put("description", "Lê o TEXTO COMPLETO de uma página específica de um livro (ou um intervalo curto de páginas, quando a regra/tabela atravessa páginas). Use depois de localizar_no_codex, nas páginas que você julgou relevantes. É aqui que você lê a regra inteira para interpretar e citar.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("livro", JSONObject().put("type", "string").put("description", "Livro da página.").put("enum", LIVROS_ENUM))
+                        put("pagina", JSONObject().put("type", "integer").put("description", "Número da página a ler."))
+                        put("pagina_final", JSONObject().put("type", "integer").put("description", "Opcional. Para ler um intervalo (ex.: tabela que continua na página seguinte). Máximo de 4 páginas por leitura."))
+                    })
+                    put("required", JSONArray().put("livro").put("pagina"))
+                })
+            })
+        })
+
+        // INSPECIONAR PERSONAGEM (auxiliar — reaproveita schema do Auditor)
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_INSPECT_CHARACTER)
+                put("description", "Lê dados da ficha atual para contextualizar a resposta.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("secao", JSONObject().put("type", "string").put("enum", JSONArray().put("atributos").put("vantagens").put("pericias").put("status").put("armas").put("armaduras").put("completo")))
+                    })
+                })
+            })
+        })
+
+        // NEXUS ARCANO (auxiliar — pré-requisitos de magias)
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_NEXUS_ARCANO)
+                put("description", "Trilha técnica de pré-requisitos de magias.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("magia_alvo", JSONObject().put("type", "string"))
+                    })
+                    put("required", JSONArray().put("magia_alvo"))
+                })
             })
         })
 

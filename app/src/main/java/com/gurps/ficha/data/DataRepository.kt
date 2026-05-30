@@ -182,6 +182,12 @@ open class DataRepository(internal val context: Context) {
     open suspend fun buscarRecortesManual(query: String, limit: Int = 30) = mestreIARepository.buscarNoCodexDireto(query, emptyList(), limit)
     open suspend fun buscarPorPagina(pagina: Int) = mestreIARepository.buscarPorPagina(pagina)
     open suspend fun buscarPorPaginaESource(pagina: Int, source: String) = mestreIARepository.buscarPorPaginaESource(pagina, source)
+
+    // Lote 325: motor de busca por palavra-chave (localizar + ler) — Auditor
+    open suspend fun localizarNoCodex(termos: String, livrosFiltro: List<String>? = null, limit: Int = 60) =
+        mestreIARepository.localizarNoCodex(termos, livrosFiltro, limit)
+    open suspend fun lerPaginas(livro: String, paginaInicial: Int, paginaFinal: Int? = null) =
+        mestreIARepository.lerPaginas(livro, paginaInicial, paginaFinal)
     open suspend fun getChunkById(id: String) = mestreIARepository.getChunkById(id)
     open suspend fun forçarSincronizacaoManual() = mestreIARepository.forçarSincronizacaoManual()
     open suspend fun contarTotalChunks(): Int = mestreIARepository.contarTotalChunks()
