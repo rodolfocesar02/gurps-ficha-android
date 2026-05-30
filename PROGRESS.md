@@ -2214,64 +2214,6 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Lote 325 — [2026-05-30] feat: NOVO motor de busca do Auditor (grep + leitura dirigida, substitui embedding)
-
-- **Hash:** `7b3f9c2`
-- **Escopo:** APENAS Auditor Texto (modo dúvida/conversa). Voz (Live) e Forjador NÃO tocados.
-- **Diagnóstico (origem do problema, confirmado com o usuário e com dados):**
-  - 3 sessões com a MESMA pergunta → 3 respostas diferentes (escalada+escudo+aparar). Causa: variância na recuperação.
-  - Motor era **HNSW puro** (flag de teste `MODO_HNSW_PURO=true` em `FichaIADelegate.kt:55`, ligada desde testes antigos). 1 embedding por PÁGINA inteira (~5700 chars, mediana medida no chunks.jsonl) = vetor "borrado": a busca casava pelo SUBSTANTIVO dominante, ignorando a INTENÇÃO (verbo).
-  - O sistema ainda CARIMBAVA o chunk borrado como `[★★★] priorize` — mandava o modelo confiar no resultado errado.
-  - Resultado: modelo "adaptava" (confabulava) regras a partir de páginas vagamente relacionadas, com eloquência > verdade. Ex. real: confundiu Escalada (perícia mundana, MB) com "Escalada de Lagarto" (cinematográfica, Artes Marciais) e cruzou regra inexistente de aparar.
-  - BM25+HNSW também era ruim → trocar algoritmo de ranking não resolvia. Nenhum dos dois JULGA relevância; só ordenam por número-proxy.
-  - Determinismo por tópico (TopicIndex) também não serve: usuário mostrou que "traga a tabela X" e "posso fazer Y contra X" caíam nos mesmos fragmentos — carimbaria o erro.
-- **Solução (pedida pelo usuário): buscar como o Claude busca neste projeto** — palavra-chave (grep) + estreitamento por AND + leitura dirigida + julgamento por LEITURA, em loop. Não usar embedding.
-
-### Novas ferramentas (substituem as 5 tools de embedding NO AUDITOR)
-- `localizar_no_codex(termos, livros?)` — "página de resultados". FTS4 **AND** (cada palavra a mais estreita, igual ao Google). Retorna lista COMPACTA: livro|página|trecho curto. NÃO texto completo. Fallback OR rotulado "aproximado" quando AND dá zero.
-- `ler_pagina(livro, pagina, pagina_final?)` — abre o TEXTO COMPLETO da página/intervalo escolhido (máx 4 págs). Adiciona os chunks reais ao contexto (Verificador de Citações valida contra eles).
-- Loop ensinado no prompt: localizar → julgar pela leitura (não pela ordem) → ler → (seguir referências) → responder citando [Livro, Pág].
-
-### Anti-confabulação (cerne da queixa) — no prompt do Auditor
-- Usar SOMENTE o que leu com ler_pagina.
-- DESCARTAR página de tema diferente mesmo que compartilhe palavra no título (homônimo).
-- NÃO acrescentar penalidades/condições que a pergunta não pediu nem a página declarou.
-- SEPARAR "regra oficial" de "interpretação"; melhor dizer "não encontrei" do que maquiar.
-- Zero exemplos hardcoded no prompt (lição do Lote 318).
-
-### Arquivos
-- `data/MestreIARepository.kt`: + `localizarNoCodex()` (FTS4 AND + snippet + fallback OR), + `lerPaginas()` (intervalo, livro→source_id), + helpers `tokenizarTermos`/`construirTrecho`/`mapearLivroParaSourceId`. Data classes `LocalizarHit`/`LocalizarResultado`.
-- `data/DataRepository.kt`: expõe `localizarNoCodex`/`lerPaginas`.
-- `data/network/MestreIATools.kt`: + constantes `TOOL_LOCALIZAR`/`TOOL_LER`, + `getAuditorToolsOpenAI()` (localizar+ler+inspect+nexus). `getOpenAITools`/`getGeminiTools` INTACTAS (Forjador).
-- `data/network/MestreIAClient.kt`: `montarFerramentasParaModo` — branch do Auditor agora chama `getAuditorToolsOpenAI()`; Forjador (geracao/analise) inalterado.
-- `domain/MestreIAUseCase.kt`: + cases dispatch `TOOL_LOCALIZAR`/`TOOL_LER`, + `executarLocalizar()`/`executarLer()`. `MAX_TOOL_CALLS` 5→8 (loop localizar+ler precisa de mais idas). Cases antigos MANTIDOS (não quebra nada).
-- `data/network/MestreIAPromptsAuditor.kt`: SYSTEM_PROMPT_BASE reescrito (loop + anti-confabulação).
-
-### Embeddings: MANTIDOS DORMENTES (decisão do usuário)
-- `chunks.jsonl` continua com os 1197 embeddings (48MB). HNSW segue disponível pra Voz/Forjador.
-- O Auditor simplesmente não chama mais busca semântica.
-- Existe `chunks.jsonl.bak` (mesmo texto, MESMAS 1197 páginas, SEM embeddings, 6.5MB). Import tolera ausência de embedding (`if (obj.has("embedding"))` em FichaDatabase). **Plano futuro:** se os testes provarem que keyword cobre tudo, trocar pro .bak e cortar 48MB.
-
-### Validação
-- ⚠️ ERRATA: o 1º commit (`f20172c`) foi feito com o build QUEBRADO e a fiação incompleta
-  (tipo nullable em localizarNoCodex; `getAuditorTools*` criadas mas nunca chamadas; prompt
-  real `MestreIAPromptsAuditor.PROMPT` não havia sido trocado — eu editei a constante errada).
-  Corrigido no commit seguinte: tipos nullable, fiação de `getAuditorToolsOpenAI`/`getAuditorToolsGemini`
-  em `gerarJsonOpenRouter`/`gerarJsonGoogleNative`, e reescrita do PROMPT real.
-- ✅ Compila após a correção (BUILD SUCCESSFUL em 1m02s).
-- ⏳ Funcional: usuário testará no chat (Auditor). Métricas:
-  - Consistência: mesma pergunta repetida → mesma página lida → resposta estável.
-  - Acerto: Escalada (perícia mundana) ≠ Escalada de Lagarto; bloquear (não aparar) com escudo.
-  - Honestidade: declara "não encontrei" em vez de confabular.
-
-### Risco
-- Médio. Mudança de arquitetura de busca, mas isolada no Auditor (Forjador/Voz intactos; cases antigos preservados). Palavra-chave pode errar sinônimo — mitigado por: (a) modelo conhece termos de GURPS e tenta sinônimos no loop; (b) fallback OR no localizar; (c) embedding ainda existe se precisarmos religar.
-
-### Rollback
-- `git revert <hash>` desfaz. Auditor volta às 5 tools de embedding.
-
-----------------------------------------------------------------------------------------------------------------------------------------------------
-
 ## Lote 324 — [2026-05-29] feat: Live RAG (fusão 5 tools → 1 com array de livros) + VAD 1500ms
 
 - **Hash:** `a711ec8`
@@ -2318,5 +2260,82 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ### Rollback
 - `git revert <hash>` desfaz tudo. Como há mudança em 3 arquivos (GraphEngine, GeminiLiveTools, GeminiLiveService), revert único é seguro.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 325 — [2026-05-30] feat: NOVO motor de busca do Auditor (grep + leitura dirigida, substitui embedding)
+
+- **Hash:** `7b3f9c2`
+- **Escopo:** APENAS Auditor Texto (modo dúvida/conversa). Voz (Live) e Forjador NÃO tocados.
+- **Diagnóstico (origem do problema, confirmado com o usuário e com dados):**
+  - 3 sessões com a MESMA pergunta → 3 respostas diferentes (escalada+escudo+aparar). Causa: variância na recuperação.
+  - Motor era **HNSW puro** (flag de teste `MODO_HNSW_PURO=true` em `FichaIADelegate.kt:55`, ligada desde testes antigos). 1 embedding por PÁGINA inteira (~5700 chars, mediana medida no chunks.jsonl) = vetor "borrado": a busca casava pelo SUBSTANTIVO dominante, ignorando a INTENÇÃO (verbo).
+  - O sistema ainda CARIMBAVA o chunk borrado como `[★★★] priorize` — mandava o modelo confiar no resultado errado.
+  - Resultado: modelo "adaptava" (confabulava) regras a partir de páginas vagamente relacionadas, com eloquência > verdade. Ex. real: confundiu Escalada (perícia mundana, MB) com "Escalada de Lagarto" (cinematográfica, Artes Marciais) e cruzou regra inexistente de aparar.
+  - BM25+HNSW também era ruim → trocar algoritmo de ranking não resolvia. Nenhum dos dois JULGA relevância; só ordenam por número-proxy.
+  - Determinismo por tópico (TopicIndex) também não serve: usuário mostrou que "traga a tabela X" e "posso fazer Y contra X" caíam nos mesmos fragmentos — carimbaria o erro.
+- **Solução (pedida pelo usuário): buscar como o Claude busca neste projeto** — palavra-chave (grep) + estreitamento por AND + leitura dirigida + julgamento por LEITURA, em loop. Não usar embedding.
+
+### Novas ferramentas (substituem as 5 tools de embedding NO AUDITOR)
+- `localizar_no_codex(termos, livros?)` — "página de resultados". FTS4 **AND** (cada palavra a mais estreita, igual ao Google). Retorna lista COMPACTA: livro|página|trecho curto. NÃO texto completo. Fallback OR rotulado "aproximado" quando AND dá zero.
+- `ler_pagina(livro, pagina, pagina_final?)` — abre o TEXTO COMPLETO da página/intervalo escolhido (máx 4 págs). Adiciona os chunks reais ao contexto (Verificador de Citações valida contra eles).
+- Loop ensinado no prompt: localizar → julgar pela leitura (não pela ordem) → ler → (seguir referências) → responder citando [Livro, Pág].
+
+### Anti-confabulação (cerne da queixa) — no prompt do Auditor
+- Usar SOMENTE o que leu com ler_pagina.
+- DESCARTAR página de tema diferente mesmo que compartilhe palavra no título (homônimo).
+- NÃO acrescentar penalidades/condições que a pergunta não pediu nem a página declarou.
+- SEPARAR "regra oficial" de "interpretação"; melhor dizer "não encontrei" do que maquiar.
+- Zero exemplos hardcoded no prompt (lição do Lote 318).
+
+### Arquivos
+- `data/MestreIARepository.kt`: + `localizarNoCodex()` (FTS4 AND + snippet + fallback OR), + `lerPaginas()` (intervalo, livro→source_id), + helpers `tokenizarTermos`/`construirTrecho`/`mapearLivroParaSourceId`. Data classes `LocalizarHit`/`LocalizarResultado`.
+- `data/DataRepository.kt`: expõe `localizarNoCodex`/`lerPaginas`.
+- `data/network/MestreIATools.kt`: + constantes `TOOL_LOCALIZAR`/`TOOL_LER`, + `getAuditorToolsOpenAI()` (localizar+ler+inspect+nexus). `getOpenAITools`/`getGeminiTools` INTACTAS (Forjador).
+- `data/network/MestreIAClient.kt`: `gerarJsonOpenRouter` (DeepSeek) e `gerarJsonGoogleNative` (Gemini) — branch do Auditor chama `getAuditorToolsOpenAI()`/`getAuditorToolsGemini()`; Forjador (geracao/analise) inalterado. [corrigido no fix ac26f1d]
+- `domain/MestreIAUseCase.kt`: + cases dispatch `TOOL_LOCALIZAR`/`TOOL_LER`, + `executarLocalizar()`/`executarLer()`. `MAX_TOOL_CALLS` 5→8 (loop localizar+ler precisa de mais idas). Cases antigos MANTIDOS (não quebra nada).
+- `data/network/MestreIAPromptsAuditor.kt`: SYSTEM_PROMPT_BASE reescrito (loop + anti-confabulação).
+
+### Embeddings: MANTIDOS DORMENTES (decisão do usuário)
+- `chunks.jsonl` continua com os 1197 embeddings (48MB). HNSW segue disponível pra Voz/Forjador.
+- O Auditor simplesmente não chama mais busca semântica.
+- Existe `chunks.jsonl.bak` (mesmo texto, MESMAS 1197 páginas, SEM embeddings, 6.5MB). Import tolera ausência de embedding (`if (obj.has("embedding"))` em FichaDatabase). **Plano futuro:** se os testes provarem que keyword cobre tudo, trocar pro .bak e cortar 48MB.
+
+### Validação
+- ⚠️ ERRATA: o 1º commit (`f20172c`) foi feito com o build QUEBRADO e a fiação incompleta
+  (tipo nullable em localizarNoCodex; `getAuditorTools*` criadas mas nunca chamadas; prompt
+  real `MestreIAPromptsAuditor.PROMPT` não havia sido trocado — eu editei a constante errada).
+  Corrigido no commit seguinte: tipos nullable, fiação de `getAuditorToolsOpenAI`/`getAuditorToolsGemini`
+  em `gerarJsonOpenRouter`/`gerarJsonGoogleNative`, e reescrita do PROMPT real.
+- ✅ Compila após a correção (BUILD SUCCESSFUL em 1m02s).
+- ⏳ Funcional: usuário testará no chat (Auditor). Métricas:
+  - Consistência: mesma pergunta repetida → mesma página lida → resposta estável.
+  - Acerto: Escalada (perícia mundana) ≠ Escalada de Lagarto; bloquear (não aparar) com escudo.
+  - Honestidade: declara "não encontrei" em vez de confabular.
+
+### Risco
+- Médio. Mudança de arquitetura de busca, mas isolada no Auditor (Forjador/Voz intactos; cases antigos preservados). Palavra-chave pode errar sinônimo — mitigado por: (a) modelo conhece termos de GURPS e tenta sinônimos no loop; (b) fallback OR no localizar; (c) embedding ainda existe se precisarmos religar.
+
+### Rollback
+- `git revert <hash>` desfaz. Auditor volta às 5 tools de embedding.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 326 — [2026-05-30] chore: log de avaliação do novo motor de busca (Auditor)
+
+- **Hash:** `bdc37a2`
+- **Motivo:** antes de testar o Lote 325, fechar 3 cegos do log que impediam AVALIAR a qualidade da busca (não só ver que rodou).
+- **Cego #1 — dispatch logava arg errado:** a linha de dispatch lia `args.query` (vazio nas tools novas, que usam `termos`/`livros`/`pagina`). Agora loga os args REAIS por tipo de tool: `TOOL[0]: [localizar_no_codex] termos="..." livros=[...]` / `TOOL[1]: [ler_pagina] livro="..." pag=N`.
+- **Cego #2 — LOCALIZAR não mostrava QUAIS páginas:** logava só "N páginas". Agora: `LOCALIZAR [AND]: N páginas (retornando M) → [modulo_b:354, artes_ma:62, ...]`. Permite distinguir "página certa nem apareceu" (falha da busca) de "apareceu e o modelo ignorou" (falha do modelo).
+- **Cego #3 — LER não mostrava o texto lido:** logava só "N chunks, X chars". Agora: `LER[i] PREVIEW: "..."` (300 chars). Permite comparar o que o modelo LEU com o que AFIRMOU → audita confabulação.
+- **Arquivos:** `domain/MestreIAUseCase.kt` (dispatch consciente de tipo + preview de LER), `data/MestreIARepository.kt` (lista de páginas no LOCALIZAR).
+- **Como avaliar (filtro logcat tag `MestreIA_RAG`):**
+  - **Consistência:** repita a MESMA pergunta 2-3x. Compare LOCALIZAR (mesmos termos? mesmas páginas?) e LER (mesmas páginas?). Idealmente idênticas.
+  - **Causa-raiz de erro de regra:** a página correta apareceu no `→ [...]` do LOCALIZAR? Se NÃO = busca falhou (ajustar termos/sinônimos). Se SIM mas não foi lida = modelo escolheu mal (ajustar prompt).
+  - **Confabulação:** compare `LER PREVIEW` com a resposta. Afirmou algo fora do texto lido? `alucinou=` na linha RESPOSTA OK também sinaliza.
+  - **Esforço:** `toolsFeitas=N` na RESPOSTA OK (loop localizar+ler gasta 2+ por conceito; teto 8).
+- **Validação:** ✅ Compila (BUILD SUCCESSFUL). Sem impacto funcional (só `Log.i`).
+- **Risco:** mínimo.
+- **Rollback:** `git revert bdc37a2`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
