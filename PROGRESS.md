@@ -2216,7 +2216,7 @@ RAG OK: 28 chunks | 12632 chars de contexto
 
 ## Lote 325 — [2026-05-30] feat: NOVO motor de busca do Auditor (grep + leitura dirigida, substitui embedding)
 
-- **Hash:** (preenchido após commit)
+- **Hash:** `7b3f9c2`
 - **Escopo:** APENAS Auditor Texto (modo dúvida/conversa). Voz (Live) e Forjador NÃO tocados.
 - **Diagnóstico (origem do problema, confirmado com o usuário e com dados):**
   - 3 sessões com a MESMA pergunta → 3 respostas diferentes (escalada+escudo+aparar). Causa: variância na recuperação.
