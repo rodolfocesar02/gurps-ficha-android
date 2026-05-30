@@ -257,7 +257,14 @@ class MestreIARepository(
                 trecho = construirTrecho(e.text, tokens)
             )
         }
-        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR [$modo]: $total páginas (retornando ${hits.size})")
+        // Lote 326: loga QUAIS páginas a busca devolveu (não só quantas) — permite
+        // distinguir "a página certa nem apareceu" (falha da busca) de "apareceu e o
+        // modelo ignorou" (falha do modelo). Formato curto: source_id abreviado + pág.
+        val listaPags = hits.joinToString(", ") { h ->
+            val sigla = h.sourceId.removePrefix("pt_").take(8)
+            "$sigla:${h.pagina}"
+        }
+        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR [$modo]: $total páginas (retornando ${hits.size}) → [$listaPags]")
         LocalizarResultado(total, hits, modo)
     }
 

@@ -172,10 +172,30 @@ class MestreIAUseCase(
                             val toolResultados: List<ToolResult> = coroutineScope {
                                 resposta.toolCalls.mapIndexed { idx, toolCall ->
                                     async {
-                                        val queryTc = toolCall.args.optString("query", "").take(50)
-                                        val livroTc = toolCall.args.optString("livro", "").takeIf { it.isNotBlank() }
-                                        val livroLog = if (livroTc != null) " livro=\"$livroTc\"" else ""
-                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx]: [${toolCall.name}] query=\"$queryTc\"$livroLog")
+                                        // Lote 326: log de dispatch consciente do tipo de tool.
+                                        // Tools antigas usam 'query'/'livro'; localizar usa 'termos'/'livros';
+                                        // ler usa 'livro'/'pagina'. Loga os args reais de cada uma.
+                                        val argsLog = when (toolCall.name) {
+                                            MestreIATools.TOOL_LOCALIZAR -> {
+                                                val t = toolCall.args.optString("termos", "")
+                                                val l = toolCall.args.optJSONArray("livros")?.let { arr ->
+                                                    (0 until arr.length()).joinToString(",") { arr.optString(it) }
+                                                }
+                                                "termos=\"$t\"" + if (!l.isNullOrBlank()) " livros=[$l]" else ""
+                                            }
+                                            MestreIATools.TOOL_LER -> {
+                                                val l = toolCall.args.optString("livro", "")
+                                                val p = toolCall.args.optInt("pagina", -1)
+                                                val pf = if (toolCall.args.has("pagina_final")) "-${toolCall.args.optInt("pagina_final")}" else ""
+                                                "livro=\"$l\" pag=$p$pf"
+                                            }
+                                            else -> {
+                                                val q = toolCall.args.optString("query", "").take(50)
+                                                val lv = toolCall.args.optString("livro", "").takeIf { it.isNotBlank() }
+                                                "query=\"$q\"" + if (lv != null) " livro=\"$lv\"" else ""
+                                            }
+                                        }
+                                        android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx]: [${toolCall.name}] $argsLog")
 
                                         when (toolCall.name) {
                                             MestreIATools.TOOL_MANUAL_DIRETO -> {
@@ -554,6 +574,9 @@ class MestreIAUseCase(
             "--- [${c.source_title}, pág. ${c.page_number}] ---\n${c.text}"
         }
         android.util.Log.i("MestreIA_RAG", "║  LER[$idx] OK: $livro p$faixa → ${chunks.size} chunks (${texto.length} chars)")
+        // Lote 326: preview do texto LIDO — permite comparar "o que o modelo leu" com
+        // "o que ele afirmou na resposta" e auditar confabulação.
+        android.util.Log.i("MestreIA_RAG", "║  LER[$idx] PREVIEW: \"${texto.replace("\n", " ").take(300)}\"")
         return ToolResult.Manual("ler:$livro p$faixa", texto, chunks)
     }
 
