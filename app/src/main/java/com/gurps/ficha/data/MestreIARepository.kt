@@ -252,8 +252,8 @@ class MestreIARepository(
         val hits = filtrados.take(limit).map { e ->
             LocalizarHit(
                 livro = e.source_title,
-                sourceId = e.source_id,
-                pagina = e.page_number,
+                sourceId = e.source_id ?: "",
+                pagina = e.page_number ?: 0,
                 trecho = construirTrecho(e.text, tokens)
             )
         }

@@ -2253,7 +2253,12 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - Existe `chunks.jsonl.bak` (mesmo texto, MESMAS 1197 páginas, SEM embeddings, 6.5MB). Import tolera ausência de embedding (`if (obj.has("embedding"))` em FichaDatabase). **Plano futuro:** se os testes provarem que keyword cobre tudo, trocar pro .bak e cortar 48MB.
 
 ### Validação
-- ✅ Compila (BUILD SUCCESSFUL em 1m19s).
+- ⚠️ ERRATA: o 1º commit (`f20172c`) foi feito com o build QUEBRADO e a fiação incompleta
+  (tipo nullable em localizarNoCodex; `getAuditorTools*` criadas mas nunca chamadas; prompt
+  real `MestreIAPromptsAuditor.PROMPT` não havia sido trocado — eu editei a constante errada).
+  Corrigido no commit seguinte: tipos nullable, fiação de `getAuditorToolsOpenAI`/`getAuditorToolsGemini`
+  em `gerarJsonOpenRouter`/`gerarJsonGoogleNative`, e reescrita do PROMPT real.
+- ✅ Compila após a correção (BUILD SUCCESSFUL em 1m02s).
 - ⏳ Funcional: usuário testará no chat (Auditor). Métricas:
   - Consistência: mesma pergunta repetida → mesma página lida → resposta estável.
   - Acerto: Escalada (perícia mundana) ≠ Escalada de Lagarto; bloquear (não aparar) com escudo.

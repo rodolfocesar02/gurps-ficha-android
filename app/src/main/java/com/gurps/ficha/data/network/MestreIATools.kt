@@ -380,6 +380,74 @@ object MestreIATools {
         return tools
     }
 
+    /**
+     * Lote 325: mesma toolset do Auditor (localizar + ler + inspect + nexus),
+     * no formato NATIVO do Gemini (functionDeclarations, tipos OBJECT/STRING/ARRAY).
+     * Usada quando o Auditor cai num backup com endpoint Google-native.
+     */
+    fun getAuditorToolsGemini(): JSONArray {
+        val fns = JSONArray()
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_LOCALIZAR)
+            put("description", "Localiza páginas do Códex que contêm TODAS as palavras informadas (busca AND: cada palavra a mais restringe). Retorna lista compacta de páginas com um trecho curto — NÃO o texto completo. Use para descobrir EM QUAIS páginas está a regra; depois use ler_pagina nas escolhidas. Comece amplo e adicione palavras para estreitar; remova/troque palavras quando vier nenhuma.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("termos", JSONObject().put("type", "STRING").put("description", "Palavras-chave separadas por espaço. Termos técnicos exatos da regra. Mais palavras = mais restrito."))
+                    put("livros", JSONObject().apply {
+                        put("type", "ARRAY")
+                        put("description", "Opcional. Restringe a busca a estes livros. Omita para procurar em todos.")
+                        put("items", JSONObject().put("type", "STRING").put("enum", LIVROS_ENUM))
+                    })
+                })
+                put("required", JSONArray().put("termos"))
+            })
+        })
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_LER)
+            put("description", "Lê o TEXTO COMPLETO de uma página específica de um livro (ou intervalo curto, quando a regra/tabela atravessa páginas). Use depois de localizar_no_codex, nas páginas que julgou relevantes. É aqui que você lê a regra inteira para interpretar e citar.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("livro", JSONObject().put("type", "STRING").put("description", "Livro da página.").put("enum", LIVROS_ENUM))
+                    put("pagina", JSONObject().put("type", "INTEGER").put("description", "Número da página a ler."))
+                    put("pagina_final", JSONObject().put("type", "INTEGER").put("description", "Opcional. Intervalo (tabela que continua). Máximo 4 páginas."))
+                })
+                put("required", JSONArray().put("livro").put("pagina"))
+            })
+        })
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_INSPECT_CHARACTER)
+            put("description", "Lê dados da ficha atual para contextualizar a resposta.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("secao", JSONObject().apply {
+                        put("type", "STRING")
+                        put("description", "Seção: 'atributos', 'vantagens', 'pericias', 'status', 'armas', 'armaduras', 'completo'.")
+                    })
+                })
+            })
+        })
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_NEXUS_ARCANO)
+            put("description", "Trilha técnica de pré-requisitos de magias.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("magia_alvo", JSONObject().put("type", "STRING"))
+                })
+                put("required", JSONArray().put("magia_alvo"))
+            })
+        })
+
+        return JSONArray().put(JSONObject().put("functionDeclarations", fns))
+    }
+
     private fun getSheetSchemaGemini(): JSONObject {
         return JSONObject().apply {
             put("type", "OBJECT")

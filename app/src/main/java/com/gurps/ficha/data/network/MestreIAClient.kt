@@ -337,12 +337,13 @@ object MestreIAClient {
         contents.put(JSONObject().put("role", "user").put("parts", JSONArray().put(JSONObject().put("text", cleanPrompt))))
         root.put("contents", contents)
 
-        // Forjador (geracao/analise) usa ForjadorTools; Auditor (conversa) usa MestreIATools
+        // Forjador (geracao/analise) usa ForjadorTools; Auditor (conversa/dúvida) usa o
+        // NOVO motor de busca (Lote 325): localizar_no_codex + ler_pagina (grep + leitura).
         if (!desativarTools && modo != "planejamento") {
             if (modo == "geracao" || modo == "analise") {
                 root.put("tools", ForjadorTools.getGeminiTools())
             } else {
-                root.put("tools", MestreIATools.getGeminiTools(modo))
+                root.put("tools", MestreIATools.getAuditorToolsGemini())
             }
         }
 
@@ -361,12 +362,13 @@ object MestreIAClient {
         messages.put(JSONObject().put("role", "user").put("content", prompt))
         root.put("messages", messages)
 
-        // Forjador (geracao/analise) usa ForjadorTools; Auditor (conversa) usa MestreIATools
+        // Forjador (geracao/analise) usa ForjadorTools; Auditor (conversa/dúvida) usa o
+        // NOVO motor de busca (Lote 325): localizar_no_codex + ler_pagina (grep + leitura).
         if (!desativarTools && modo != "planejamento") {
             if (modo == "geracao" || modo == "analise") {
                 root.put("tools", ForjadorTools.getOpenAITools())
             } else {
-                root.put("tools", MestreIATools.getOpenAITools(modo))
+                root.put("tools", MestreIATools.getAuditorToolsOpenAI())
             }
         }
 
