@@ -2339,3 +2339,36 @@ RAG OK: 28 chunks | 12632 chars de contexto
 - **Rollback:** `git revert bdc37a2`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 327 — [2026-05-31] feat: autonomia do Forjador (catálogo rico) + ranking/anti-confabulação do Auditor
+
+- **Hash:** `9bb4172`
+- **Resumo:** commit único juntando o trabalho da sessão (decisão do usuário). Duas frentes: FORJADOR (plano completo A+F, C, B, D, E) e AUDITOR (ranking BM25 + trava anti-confabulação). 11 arquivos `.kt`.
+
+### FORJADOR (plano `.agent/skills/PLANO_MELHORIAS_FORJADOR.md`)
+Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcula — nunca recalcula.
+- **A+F:** `forjador_ler_ficha(pontos)` e `validarBudget` usam `Personagem.pontosGastos`/`pontosRestantes` (fonte de verdade completa). Removida `calcularPontosGastos` (Executor) e a estimativa `nivel*2` de perícia — 2 bugs que faziam o Forjador relatar pontos errados.
+- **C (read-back numérico):** `forjador_ler_ficha(secao=derivados)` → Esquiva/Apara/Bloqueio, dano GdP/GeB, PV/PF/Vontade/Percepção, Velocidade/Desloc, carga, Aptidão Mágica. Read-back automático pós-edição inclui `derivados`.
+- **B (equipamento de catálogo):** `buscar_catalogo` aceita `arma`/`armadura`/`escudo` com stats REAIS; `editar_ficha(adicionar, equipamentos, <id>)` resolve do catálogo (dano por ST automático + grupo p/ Mestre de Armas).
+- **D (veredito técnica):** `buscar_catalogo(tecnica)` dá ✓PODE/⚠FALTA via `tecnicaAtendePreRequisito`.
+- **E (secundários):** `editar_ficha(alterar, atributos, pv|vontade|percepcao|deslocamento|velocidade)`.
+
+### AUDITOR
+- **`rankearPorBM25`** em `MestreIARepository`: `localizar` ordena por relevância antes do `take` — corrige o fallback OR que devolvia "500 páginas" em ordem de nº de página.
+- **Trava anti-confabulação** em `MestreIAUseCase` (`leuAlgumaPagina`) + "REGRA DE OURO do loop" no prompt (não responder sem ler).
+- Comentários de **código LEGADO/MORTO** em `GraphEngine`/`Planner`/`SemanticEngine`/`VectorEngine` (ver `ARQUITETURA_MESTRE_IA.md` §5).
+
+### Validação
+- ✅ Compila (BUILD SUCCESSFUL). `GeminiLiveService.kt` (logs do Lote 324) deixado FORA a pedido do usuário.
+- ⏳ Funcional: testar criar/editar ficha (pontos/stats devem bater com a tela) e Auditor.
+
+### Pendência (descoberta no teste do Forjador) → próximo: Lote G
+- `forjador_buscar_catalogo` ainda **não devolve `descricao`/`pagina`** — por isso o modelo cita fonte de memória (citou "B43"; a página real é 82). Os JSONs TÊM os campos (vant/desv/magia/técnica; perícia via `pericias_v2_rules_map.json` 332/332). Lote G = expor descrição+página (limpas de mojibake) na busca.
+
+### Rollback
+- `git revert 9bb4172`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
