@@ -237,6 +237,11 @@ class MestreIAGeneratorUseCase(
                                 it.args.optString("secao", "").lowercase().trim().ifBlank { null }
                             }.toMutableSet()
                             if ("atributos" in secoes) secoes.add("pontos")
+                            // Lote C: mudanças que afetam stats calculados → relê "derivados"
+                            // (defesas/dano/carga) para o modelo conferir o efeito real.
+                            if (secoes.any { it in setOf("atributos", "equipamentos", "pericias", "vantagens") }) {
+                                secoes.add("derivados")
+                            }
                             val leitura = secoes.joinToString("\n\n") { s ->
                                 "--- $s (estado ATUAL na ficha) ---\n${toolExecutor.lerSecao(s)}"
                             }
@@ -386,22 +391,22 @@ class MestreIAGeneratorUseCase(
         )
     }
 
+    /**
+     * Lote A+F: usa a FONTE DE VERDADE (Personagem.pontosGastos), que calcula o custo
+     * completo e correto (atributos + secundários + vantagens + desvantagens + qualidades
+     * + peculiaridades + perícias + técnicas + magias + racial). Chamado APÓS a integração
+     * do JSON na ficha, então `viewModel.personagem` já reflete a ficha final.
+     *
+     * Antes (BUG-2) recalculava por estimativa grosseira — perícia como `nivel*2` (que NÃO
+     * é o custo real, depende de dificuldade/atributo) e ignorava técnicas/secundários/racial.
+     */
     fun validarBudget(ficha: MestreIAResponse): String? {
-        val attr = ficha.atributosEfetivos()
-        val st = attr.st; val dx = attr.dx
-        val iq = attr.iq; val ht = attr.ht
-        val custoAtributos = ((st - 10).coerceAtLeast(0) * 10) +
-                             ((dx - 10).coerceAtLeast(0) * 20) +
-                             ((iq - 10).coerceAtLeast(0) * 20) +
-                             ((ht - 10).coerceAtLeast(0) * 10)
-        val custoVantagens    = ficha.vantagens.sumOf    { it.custo ?: 0 }
-        val custoDesvantagens = ficha.desvantagens.sumOf { it.custo ?: 0 } // já negativo
-        val custoPericias     = ficha.pericias.sumOf     { it.nivel * 2 }  // estimativa
-        val total = custoAtributos + custoVantagens + custoDesvantagens + custoPericias
-        val max = viewModel.personagem.pontosIniciais
+        val p = viewModel.personagem
+        val total = p.pontosGastos
+        val max = p.pontosTotaisDisponiveis
         return if (total > max) {
             Log.w("MestreIA_Forjador", "Budget excedido: $total pts (máximo: $max pts)")
-            "⚠️ Ficha usa ~$total pts (máximo: $max pts)"
+            "⚠️ Ficha usa $total pts (máximo: $max pts)"
         } else null
     }
 

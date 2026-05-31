@@ -11,6 +11,13 @@ import com.gurps.ficha.model.Equipamento
  * IntencaoEstruturada (entidadePrimaria + entidadeSecundaria + relacao).
  * Termos recebem peso explícito (TermoPonderado) para que BM25 e FTS
  * priorizem o núcleo da pergunta, não o contexto.
+ *
+ * ⚠️ QUASE MORTO desde o Lote 319. A lógica de planejamento (com dicionários hardcoded)
+ * causava ALUCINAÇÃO LÉXICA e foi removida do fluxo do Auditor/Live. Hoje apenas a data
+ * class `TermoPonderado` é referenciada — como parâmetro com DEFAULT VAZIO em assinaturas
+ * (MestreIAQueryEngine, MestreIAGraphEngine, MestreIAUseCase) que nunca recebem valor real.
+ * Nenhuma função de planejamento roda no Auditor atual (que usa localizar+ler).
+ * Ver .agent/skills/ARQUITETURA_MESTRE_IA.md §5.5.
  */
 object MestreIAPlanner {
 

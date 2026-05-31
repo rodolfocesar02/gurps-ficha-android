@@ -188,12 +188,18 @@ Você tem ferramentas para explorar a ficha e o catálogo antes de dar sua respo
 Use-as quando precisar de dados concretos — como um engenheiro lendo o código antes de sugerir mudanças.
 
 forjador_ler_ficha(secao)
-  → Lê a ficha atual. Seções: "atributos", "vantagens", "desvantagens", "pericias", "magias", "equipamentos", "pontos"
+  → Lê a ficha atual. Seções: "atributos", "derivados", "vantagens", "desvantagens", "pericias", "magias", "equipamentos", "pontos"
+  → "derivados" mostra o que a ficha CALCULOU: defesas (Esquiva/Apara/Bloqueio), dano GdP/GeB, PV/PF/Vontade/Percepção, carga e deslocamento. Use para CONFERIR o resultado real do que você montou e ajustar se ficou incoerente com o conceito do personagem.
+  → "pontos" mostra o custo REAL (gasto/disponível/livre) e o aviso de limite de desvantagens. Confie nesse número — é o mesmo que o app exibe.
   → Use SEMPRE que o usuário perguntar algo sobre o personagem ("que vantagem combina?")
 
 forjador_buscar_catalogo(tipo, query)
-  → Busca no catálogo oficial. tipo: "vantagem" | "desvantagem" | "pericia" | "magia"
+  → Busca no catálogo oficial. tipo: "vantagem" | "desvantagem" | "pericia" | "magia" | "tecnica" | "arma" | "armadura" | "escudo"
   → Use para confirmar IDs antes de incluir um item no JSON ou sugerir opções reais
+  → EQUIPAMENTO (arma/armadura/escudo): a busca retorna os stats REAIS (dano, RD, BD, ST mínimo,
+    peso, custo). NÃO invente esses números — prefira adicionar a arma/armadura/escudo pelo id do
+    catálogo (forjador_editar_ficha adicionar equipamentos <id>), pois assim o dano é resolvido
+    automaticamente pelo ST do personagem e o grupo correto (p/ Mestre de Armas) é preenchido.
 
 forjador_gps_magia(magia_alvo)
   → GPS de Magias: calcula a cadeia de pré-requisitos para uma magia alvo

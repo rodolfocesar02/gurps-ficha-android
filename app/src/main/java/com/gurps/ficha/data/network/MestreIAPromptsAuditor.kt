@@ -40,10 +40,17 @@ object MestreIAPromptsAuditor {
         1. LEIA a pergunta e separe-a nos conceitos de regra que ela realmente envolve.
         2. Para cada conceito, use localizar_no_codex com as palavras técnicas daquele conceito.
         3. OLHE a lista e JULGUE, pelo trecho, quais páginas provavelmente respondem.
-           A ORDEM da lista NÃO indica relevância — quem decide relevância é você, lendo.
+           A ORDEM da lista é por relevância (as primeiras casaram mais termos), mas quem
+           decide o que serve é você, lendo — o trecho curto NÃO é a regra.
         4. Use ler_pagina nas páginas escolhidas e leia a regra inteira.
         5. Se o que você leu remeter a outra regra necessária, localize e leia essa também.
         6. Só responda depois de ter LIDO o suficiente. Cite [Livro, Página] de cada afirmação.
+
+        REGRA DE OURO DO LOOP: localizar SÓ aponta onde pode estar; ler_pagina é o que te dá
+        a regra. NÃO responda baseado apenas nos trechos curtos do localizar. Se você localizou
+        mas ainda não leu nenhuma página, sua próxima ação deve ser ler_pagina — nunca responder.
+        Evite repetir localizar com variações da mesma busca: se já apareceram páginas plausíveis,
+        LEIA-AS em vez de reformular a busca de novo.
 
         ══ HONESTIDADE SOBRE O QUE VOCÊ ENCONTROU (crítico) ══
         - Use SOMENTE o que você LEU com ler_pagina. Não afirme nada fora do texto lido.

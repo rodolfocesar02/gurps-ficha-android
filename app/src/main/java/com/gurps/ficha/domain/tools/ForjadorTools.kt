@@ -22,7 +22,7 @@ object ForjadorTools {
                 put("properties", JSONObject().apply {
                     put("secao", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Seção a ler: 'atributos', 'vantagens', 'desvantagens', 'pericias', 'tecnicas', 'magias', 'equipamentos', 'qualidades', 'peculiaridades', 'pontos'")
+                        put("description", "Seção a ler: 'atributos', 'derivados' (stats CALCULADOS: defesas, dano, carga, secundários), 'vantagens', 'desvantagens', 'pericias', 'tecnicas', 'magias', 'equipamentos', 'qualidades', 'peculiaridades', 'pontos'")
                     })
                 })
                 put("required", JSONArray().put("secao"))
@@ -31,13 +31,13 @@ object ForjadorTools {
 
         decls.put(JSONObject().apply {
             put("name", TOOL_BUSCAR)
-            put("description", "Busca itens no catálogo oficial de GURPS. Use para encontrar vantagens, desvantagens, perícias ou magias antes de adicionar.")
+            put("description", "Busca itens no catálogo oficial de GURPS. Use para encontrar vantagens, desvantagens, perícias, magias, técnicas OU equipamento (arma/armadura/escudo) antes de adicionar. Para equipamento, retorna stats REAIS (dano, RD, BD, ST mínimo, peso, custo) — NÃO invente esses números.")
             put("parameters", JSONObject().apply {
                 put("type", "OBJECT")
                 put("properties", JSONObject().apply {
                     put("tipo", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Tipo a buscar: 'vantagem', 'desvantagem', 'pericia', 'magia', 'tecnica'")
+                        put("description", "Tipo a buscar: 'vantagem', 'desvantagem', 'pericia', 'magia', 'tecnica', 'arma', 'armadura', 'escudo'")
                     })
                     put("query", JSONObject().apply {
                         put("type", "STRING")
@@ -79,7 +79,7 @@ object ForjadorTools {
                     })
                     put("alvo", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "ID/nome do item, OU o atributo (forca/destreza/inteligencia/vitalidade). Ex: 'destemor', 'forca', 'Arco Longo'")
+                        put("description", "ID/nome do item, OU atributo primário (forca/destreza/inteligencia/vitalidade), OU secundário (pv/pf/vontade/percepcao/velocidade/deslocamento). Para equipamento, use o id do catálogo (arma/armadura/escudo).")
                     })
                     put("valor", JSONObject().apply {
                         put("type", "STRING")
@@ -144,7 +144,7 @@ object ForjadorTools {
                     put("properties", JSONObject().apply {
                         put("secao", JSONObject().apply {
                             put("type", "string")
-                            put("enum", JSONArray().put("atributos").put("vantagens").put("desvantagens")
+                            put("enum", JSONArray().put("atributos").put("derivados").put("vantagens").put("desvantagens")
                                 .put("pericias").put("tecnicas").put("magias").put("equipamentos")
                                 .put("qualidades").put("peculiaridades").put("pontos"))
                         })
@@ -164,7 +164,7 @@ object ForjadorTools {
                     put("properties", JSONObject().apply {
                         put("tipo", JSONObject().apply {
                             put("type", "string")
-                            put("enum", JSONArray().put("vantagem").put("desvantagem").put("pericia").put("magia").put("tecnica"))
+                            put("enum", JSONArray().put("vantagem").put("desvantagem").put("pericia").put("magia").put("tecnica").put("arma").put("armadura").put("escudo"))
                         })
                         put("query", JSONObject().put("type", "string"))
                     })

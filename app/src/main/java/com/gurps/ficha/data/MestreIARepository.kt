@@ -19,6 +19,9 @@ class MestreIARepository(
     private val manualChunkDao = database.manualChunkDao()
     private val syncMutex = Mutex()
 
+    // Lote 327: N do corpus para IDF do BM25 do localizar. Preenchido na 1ª busca.
+    @Volatile private var corpusSizeCache: Int = 1197
+
     // LRU Cache de buscas FTS — evita re-processar queries repetidas na mesma sessão.
     // Tamanho 20: cobre multi-query temático (4 queries × 5 perguntas) sem pressão de memória.
     private val ftsCache = object : LinkedHashMap<String, List<MestreIAChunk>>(20, 0.75f, true) {
@@ -194,6 +197,70 @@ class MestreIARepository(
             .distinct()
     }
 
+    /**
+     * Lote 327: Ranking BM25 para o localizar (Opção A).
+     * Extraído fielmente do scoring que JÁ existia em MestreIAGraphEngine.buscarDiretoNoCodex
+     * (BM25 + cobertura de termos + proximidade + penalidade de índice) — esse pipeline foi
+     * bypassado quando o Lote 325 criou o localizar como "grep cru + take(60)" sem ordenar.
+     * Aqui o reusamos para que as páginas saiam ordenadas por RELEVÂNCIA, não por nº de página.
+     *
+     * Diferença vs GraphEngine: aqui é só lexical (sem reranking HNSW/cosseno) — o localizar
+     * é a "página de resultados" por palavra-chave; a leitura semântica fica com o modelo.
+     */
+    private fun rankearPorBM25(
+        chunks: List<com.gurps.ficha.data.storage.ManualChunkEntity>,
+        tokens: List<String>
+    ): List<Pair<com.gurps.ficha.data.storage.ManualChunkEntity, Double>> {
+        if (chunks.isEmpty()) return emptyList()
+        val k1 = 1.5
+        val b = 0.75
+        val N = corpusSizeCache.toDouble().coerceAtLeast(1.0)
+        val avgdl = calcularAvgdlCorpus()
+
+        // IDF: df calculado sobre o pool (aproximação controlada, evita varrer o corpus)
+        val idfMap = tokens.associateWith { termo ->
+            val df = chunks.count { it.text.contains(termo, ignoreCase = true) }.toDouble()
+            kotlin.math.ln((N - df + 0.5) / (df + 0.5) + 1.0).coerceAtLeast(0.01)
+        }
+
+        return chunks.map { chunk ->
+            val texto = chunk.text.lowercase()
+            val dl = texto.length.toDouble()
+            var score = 0.0
+
+            // BM25 principal por termo
+            for (termo in tokens) {
+                val tf = texto.split(termo).size - 1
+                if (tf == 0) continue
+                val idf = idfMap[termo] ?: 0.01
+                score += idf * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * dl / avgdl))
+            }
+
+            // Bônus de cobertura: quantos dos termos pedidos aparecem na página
+            // (é a "ideia de quantos termos casaram" — pág. com 4/5 termos > pág. com 1/5)
+            val presentes = tokens.count { texto.contains(it) }.toDouble()
+            if (tokens.isNotEmpty() && presentes > 0.0) {
+                score += 10.0 * (presentes / tokens.size.toDouble())
+            }
+
+            // Bônus de proximidade: pares de termos a < 100 chars de distância
+            if (tokens.size >= 2) {
+                for (i in tokens.indices) {
+                    val pos1 = texto.indexOf(tokens[i]).takeIf { it >= 0 } ?: continue
+                    for (j in (i + 1) until tokens.size) {
+                        val pos2 = texto.indexOf(tokens[j]).takeIf { it >= 0 } ?: continue
+                        if (kotlin.math.abs(pos1 - pos2) < 100) score += 5.0
+                    }
+                }
+            }
+
+            // Penalidade: páginas de índice/sumário do Módulo Básico (< 30)
+            if ((chunk.page_number ?: 0) < 30 && chunk.source_id == "pt_modulo_basico") score -= 0.5
+
+            chunk to score
+        }.sortedByDescending { it.second }
+    }
+
     /** Constrói o trecho (snippet): primeira linha do texto que contém algum token. */
     private fun construirTrecho(texto: String, tokens: List<String>): String {
         val linhas = texto.split("\n").map { it.trim() }.filter { it.isNotBlank() }
@@ -249,7 +316,13 @@ class MestreIARepository(
         val filtrados = if (sourceIds != null) brutos.filter { it.source_id in sourceIds } else brutos
         val total = filtrados.size
 
-        val hits = filtrados.take(limit).map { e ->
+        // Lote 327: RANKING BM25 antes do corte (Opção A — reusa o scoring que já existia).
+        // ANTES: filtrados.take(60) devolvia as páginas em ordem de rowid (= nº de página),
+        // então o fallback OR despejava "500 páginas" em ordem aleatória de relevância.
+        // AGORA: ordena por relevância real (BM25 + cobertura de termos + proximidade) e
+        // corta as melhores. Resolve o ruído do OR e queda de qualidade observados no log.
+        val rankeados = rankearPorBM25(filtrados, tokens)
+        val hits = rankeados.take(limit).map { (e, _) ->
             LocalizarHit(
                 livro = e.source_title,
                 sourceId = e.source_id ?: "",
@@ -257,14 +330,18 @@ class MestreIARepository(
                 trecho = construirTrecho(e.text, tokens)
             )
         }
-        // Lote 326: loga QUAIS páginas a busca devolveu (não só quantas) — permite
-        // distinguir "a página certa nem apareceu" (falha da busca) de "apareceu e o
-        // modelo ignorou" (falha do modelo). Formato curto: source_id abreviado + pág.
+        // Lote 326/327: loga QUAIS páginas (agora rankeadas) + o score das 5 primeiras —
+        // permite distinguir "página certa nem apareceu" de "apareceu e o modelo ignorou",
+        // e ver se o ranking colocou a página relevante no topo.
         val listaPags = hits.joinToString(", ") { h ->
             val sigla = h.sourceId.removePrefix("pt_").take(8)
             "$sigla:${h.pagina}"
         }
-        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR [$modo]: $total páginas (retornando ${hits.size}) → [$listaPags]")
+        val top5Score = rankeados.take(5).joinToString(" ") { (e, s) ->
+            "${(e.source_id ?: "?").removePrefix("pt_").take(6)}:${e.page_number}=${String.format("%.1f", s)}"
+        }
+        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR [$modo]: $total páginas (retornando ${hits.size}) | top5: [$top5Score]")
+        android.util.Log.i("MestreIA_RAG", "║  LOCALIZAR páginas: [$listaPags]")
         LocalizarResultado(total, hits, modo)
     }
 

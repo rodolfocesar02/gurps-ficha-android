@@ -69,6 +69,37 @@ class ForjadorToolExecutor(
                     val nh = t.calcularNivel(p)?.toString() ?: "ÓRFÃ (perícia-base ausente)"
                     "• ${t.definicaoId} | ${t.nome} | base:${t.periciaBaseDefinicaoId.ifBlank { "?" }} | NH $nh | ${t.pontosGastos} pts"
                 }
+            // Lote C: stats DERIVADOS (o que a ficha CALCULOU, não o que foi inserido).
+            // Permite o Forjador conferir o resultado real e auto-corrigir (ex: "a Esquiva
+            // ficou 8, baixa demais"). Tudo vem das propriedades calculadas de Personagem/
+            // DefesasAtivas — NÃO recalcular aqui. "combate" é alias de "derivados".
+            "derivados", "combate", "secundarios", "secundários" -> {
+                val def = p.defesasAtivas
+                val esquiva = def.calcularEsquiva(p)
+                val apara = def.calcularApara(p)
+                val periciaApara = def.getPericiaApara(p)
+                val bloqueio = def.calcularBloqueio(p)
+                buildString {
+                    appendLine("=== ATRIBUTOS PRIMÁRIOS ===")
+                    appendLine("ST ${p.st} | DX ${p.dx} | IQ ${p.iq} | HT ${p.ht}")
+                    appendLine("=== SECUNDÁRIOS (calculados) ===")
+                    appendLine("PV ${p.pontosVida} | PF ${p.pontosFadiga} | Vontade ${p.vontade} | Percepção ${p.percepcao}")
+                    appendLine("Vel. Básica ${"%.2f".format(p.velocidadeBasica)} | Deslocamento ${p.deslocamentoBasico}")
+                    appendLine("Dano: GdP ${p.danoGdP} | GeB ${p.danoGeB}")
+                    appendLine("=== DEFESAS ATIVAS (calculadas) ===")
+                    append("Esquiva $esquiva")
+                    if (apara != null) append(" | Apara $apara${periciaApara?.let { " (${it.nome})" } ?: ""}")
+                    if (bloqueio != null) append(" | Bloqueio $bloqueio")
+                    appendLine()
+                    appendLine("=== CARGA ===")
+                    val cargaLabel = when (p.nivelCarga) {
+                        0 -> "Nenhuma"; 1 -> "Leve"; 2 -> "Média"; 3 -> "Pesada"; 4 -> "Extra-pesada"; else -> "${p.nivelCarga}"
+                    }
+                    appendLine("Peso equipado ${"%.1f".format(p.pesoTotalEquipamentos)}kg | Carga base ${"%.1f".format(p.baseCarga)}kg | Nível $cargaLabel | Deslocamento c/ carga ${p.deslocamentoAtual}")
+                    appendLine("=== MAGIA ===")
+                    appendLine("Aptidão Mágica: ${viewModel.nivelAptidaoMagica}")
+                }.trim()
+            }
             "qualidades" -> if (p.qualidades.isEmpty()) "Nenhuma qualidade." else
                 p.qualidades.joinToString("\n") { "• $it" }
             "peculiaridades" -> if (p.peculiaridades.isEmpty()) "Nenhuma peculiaridade." else
@@ -83,11 +114,24 @@ class ForjadorToolExecutor(
                     }
                 }
             "pontos" -> {
-                val gastos = calcularPontosGastos()
-                val max = p.pontosIniciais
-                "Pontos gastos: $gastos / $max pts disponíveis. Livres: ${max - gastos} pts."
+                // Lote A+F: fonte de VERDADE = Personagem.pontosGastos (calcula TUDO:
+                // atributos + secundários + vantagens + desvantagens + qualidades +
+                // peculiaridades + perícias + técnicas + magias + modelo racial).
+                // NÃO recalcular aqui — o número do app é a verdade.
+                buildString {
+                    appendLine("Pontos gastos: ${p.pontosGastos} / ${p.pontosTotaisDisponiveis} disponíveis | Livres: ${p.pontosRestantes}")
+                    appendLine("Quebra: atributos ${p.pontosAtributos} | secundários ${p.pontosSecundarios} | " +
+                        "vantagens ${p.pontosVantagens} | desvantagens ${p.pontosDesvantagens} | " +
+                        "perícias ${p.pontosPericias} | técnicas ${p.pontosTecnicas} | magias ${p.pontosMagias} | " +
+                        "qualidades ${p.pontosQualidades} | peculiaridades ${p.pontosPeculiaridades}" +
+                        if (p.modeloRacial.custoTotal != 0) " | racial ${p.modeloRacial.custoTotal}" else "")
+                    // Limite de desvantagens (GURPS): aviso se excedeu.
+                    if (p.desvantagensExcedemLimite) {
+                        appendLine("⚠ LIMITE DE DESVANTAGENS EXCEDIDO: ${p.pontosDesvantagens} pts (limite ${p.limiteDesvantagens}).")
+                    }
+                }.trim()
             }
-            else -> """{"erro": "seção inválida: $secao. Use: atributos, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, qualidades, peculiaridades, pontos"}"""
+            else -> """{"erro": "seção inválida: $secao. Use: atributos, derivados, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, qualidades, peculiaridades, pontos"}"""
         }
     }
 
@@ -158,10 +202,53 @@ class ForjadorToolExecutor(
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma técnica encontrada para '$query'."
                 else resultados.joinToString("\n") { t ->
-                    "• ${t.id} | ${t.nome} | dif:${t.dificuldadeRaw} | predef:${t.preDefinidoRaw} | pré:${t.preRequisitoRaw.take(60)}"
+                    // Lote D: VEREDITO determinístico de pré-requisito (análogo ao GPS de magia).
+                    // Técnica precisa de uma perícia-base na ficha que atenda o pré-requisito.
+                    // O app é o juiz (tecnicaAtendePreRequisito) — o modelo NÃO calcula de cabeça.
+                    val pp = viewModel.personagem
+                    val baseOk = pp.pericias.firstOrNull { per -> viewModel.tecnicaAtendePreRequisito(t, per) }
+                    val status = if (baseOk != null) "✓ PODE ADICIONAR (base: ${baseOk.nome})"
+                                 else "⚠ FALTA perícia-base compatível na ficha"
+                    "• ${t.id} | ${t.nome} | dif:${t.dificuldadeRaw} | $status | pré:${t.preRequisitoRaw.take(50)}"
                 }
             }
-            else -> """{"erro": "tipo inválido: $tipo. Use: vantagem, desvantagem, pericia, magia, tecnica"}"""
+            // Lote B: equipamento de catálogo — stats REAIS (dano/ST/peso/custo), em vez de
+            // o modelo inventar números no JSON. O dano vem como "GdP+2 corte" e a ficha
+            // resolve por ST automaticamente ao adicionar (Equipamento.danoCalculadoComSt).
+            "arma" -> {
+                val resultados = repository.armasCatalogo.filter {
+                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query) ||
+                    it.grupo.lowercase().contains(query) || it.categoria.lowercase().contains(query)
+                }.take(12)
+                if (resultados.isEmpty()) "Nenhuma arma encontrada para '$query'."
+                else resultados.joinToString("\n") { a ->
+                    "• ${a.id} | ${a.nome} | ${a.tipoCombate} | dano:${a.danoRaw} | ST mín:${a.stMinimo ?: "—"}" +
+                    " | grupo:${a.grupo} | ${a.pesoBaseKg ?: "?"}kg | ${a.custoBase ?: "?"}\$" +
+                    (a.aparar?.let { " | aparar:$it" } ?: "")
+                }
+            }
+            "armadura" -> {
+                val resultados = repository.armadurasCatalogo.filter {
+                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query) ||
+                    it.local.lowercase().contains(query)
+                }.take(12)
+                if (resultados.isEmpty()) "Nenhuma armadura encontrada para '$query'."
+                else resultados.joinToString("\n") { a ->
+                    "• ${a.id} | ${a.nome} | RD:${a.rd} | local:${a.local}" +
+                    " | ${a.pesoBaseKg ?: "?"}kg | ${a.custoBase ?: "?"}\$" + (a.nt?.let { " | NT$it" } ?: "")
+                }
+            }
+            "escudo" -> {
+                val resultados = repository.escudosCatalogo.filter {
+                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+                }.take(12)
+                if (resultados.isEmpty()) "Nenhum escudo encontrado para '$query'."
+                else resultados.joinToString("\n") { e ->
+                    "• ${e.id} | ${e.nome} | BD:${e.db} | ST mín:${e.stMinimo ?: "—"}" +
+                    " | ${e.pesoKg ?: "?"}kg | ${e.custo ?: "?"}\$" + (e.nt?.let { " | NT$it" } ?: "")
+                }
+            }
+            else -> """{"erro": "tipo inválido: $tipo. Use: vantagem, desvantagem, pericia, magia, tecnica, arma, armadura, escudo"}"""
         }
     }
 
@@ -267,6 +354,40 @@ class ForjadorToolExecutor(
                 viewModel.atualizarModPontosFadiga(mod)
                 viewModel.autoSaveIA()
                 return "OK: modificador de PF alterado para $mod (PF base = HT + $mod)."
+            }
+            // Lote E: atributos SECUNDÁRIOS via modificador incremental (não absoluto).
+            // O valor é o mod sobre a base (ex: PV=HT+mod). Custo entra automático em
+            // Personagem.pontosSecundarios. Velocidade aceita decimal (passos de 0.25).
+            run {
+                val modInt: Int? = Regex("-?\\d+").find(valor)?.value?.toIntOrNull()
+                when {
+                    alvoN == "pv" || alvoN == "pontosvida" || alvoN == "pontos_vida" -> {
+                        val m = modInt ?: return """{"erro":"valor numérico ausente para PV"}"""
+                        viewModel.atualizarModPontosVida(m); viewModel.autoSaveIA()
+                        return "OK: modificador de PV = $m (PV base = ST + $m)."
+                    }
+                    alvoN == "vontade" || alvoN == "von" || alvoN == "will" -> {
+                        val m = modInt ?: return """{"erro":"valor numérico ausente para Vontade"}"""
+                        viewModel.atualizarModVontade(m); viewModel.autoSaveIA()
+                        return "OK: modificador de Vontade = $m (Vontade = IQ + $m)."
+                    }
+                    alvoN == "percepcao" || alvoN == "per" || alvoN == "percepção" -> {
+                        val m = modInt ?: return """{"erro":"valor numérico ausente para Percepção"}"""
+                        viewModel.atualizarModPercepcao(m); viewModel.autoSaveIA()
+                        return "OK: modificador de Percepção = $m (Percepção = IQ + $m)."
+                    }
+                    alvoN == "deslocamento" || alvoN == "desloc" || alvoN == "movimento" -> {
+                        val m = modInt ?: return """{"erro":"valor numérico ausente para Deslocamento"}"""
+                        viewModel.atualizarModDeslocamentoBasico(m); viewModel.autoSaveIA()
+                        return "OK: modificador de Deslocamento = $m."
+                    }
+                    alvoN == "velocidade" || alvoN == "velocidadebasica" || alvoN == "velocidade_basica" -> {
+                        val mf = Regex("-?\\d+(?:[.,]\\d+)?").find(valor)?.value?.replace(",", ".")?.toFloatOrNull()
+                            ?: return """{"erro":"valor numérico ausente para Velocidade (ex: 0.25)"}"""
+                        viewModel.atualizarModVelocidadeBasica(mf); viewModel.autoSaveIA()
+                        return "OK: modificador de Velocidade Básica = $mf (custo: 5 pts por 0.25)."
+                    }
+                }
             }
             // Atributos primários numéricos: ST/DX/IQ/HT
             val novo = (Regex("-?\\d+").find(valor)?.value
@@ -447,6 +568,31 @@ class ForjadorToolExecutor(
             }
             "qualidades"     -> { viewModel.adicionarQualidade(alvo); viewModel.autoSaveIA(); return "OK: qualidade adicionada." }
             "peculiaridades" -> { viewModel.adicionarPeculiaridade(alvo); viewModel.autoSaveIA(); return "OK: peculiaridade adicionada." }
+            // Lote B: adicionar equipamento DO CATÁLOGO (stats reais). Procura em armas →
+            // escudos → armaduras pelo id/nome. Usa os métodos do ViewModel que já preenchem
+            // dano/ST/peso/custo/grupo corretos (dano resolve por ST na exibição).
+            "equipamentos" -> {
+                val arma = repository.armasCatalogo.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                if (arma != null) {
+                    viewModel.adicionarEquipamentoArma(arma); viewModel.autoSaveIA()
+                    return "OK: arma '${arma.nome}' adicionada do catálogo (dano ${arma.danoRaw}, ST mín ${arma.stMinimo ?: "—"})."
+                }
+                val escudo = repository.escudosCatalogo.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                if (escudo != null) {
+                    viewModel.adicionarEquipamentoEscudo(escudo); viewModel.autoSaveIA()
+                    return "OK: escudo '${escudo.nome}' adicionado do catálogo (BD ${escudo.db})."
+                }
+                val armadura = repository.armadurasCatalogo.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
+                if (armadura != null) {
+                    viewModel.adicionarEquipamentoArmadura(armadura); viewModel.autoSaveIA()
+                    return "OK: armadura '${armadura.nome}' adicionada do catálogo (RD ${armadura.rd})."
+                }
+                // Não está no catálogo: cria item genérico (texto livre) com o nome dado.
+                viewModel.adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = alvo))
+                viewModel.autoSaveIA()
+                return "OK: equipamento genérico '$alvo' adicionado (não estava no catálogo — sem stats). " +
+                    "Para item com dano/RD reais, use forjador_buscar_catalogo(tipo=arma|armadura|escudo) e adicione pelo id."
+            }
             else -> return """{"erro":"$op em $secao não suportado por esta ferramenta"}"""
         }
     }
@@ -528,16 +674,4 @@ class ForjadorToolExecutor(
             "Perícias: ${modelo.pericias.size}. Use lerFicha(secao=atributos) para confirmar."
     }
 
-    private fun calcularPontosGastos(): Int {
-        val p = viewModel.personagem
-        val atributos = ((p.st - 10).coerceAtLeast(0) * 10) +
-                        ((p.dx - 10).coerceAtLeast(0) * 20) +
-                        ((p.iq - 10).coerceAtLeast(0) * 20) +
-                        ((p.ht - 10).coerceAtLeast(0) * 10)
-        val vantagens    = p.vantagens.sumOf { it.custoFinal }
-        val desvantagens = p.desvantagens.sumOf { it.custoFinal }
-        val pericias     = p.pericias.sumOf { it.pontosGastos }
-        val magias       = p.magias.sumOf { it.pontosGastos }
-        return atributos + vantagens + desvantagens + pericias + magias
-    }
 }

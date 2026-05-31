@@ -29,6 +29,12 @@ import java.util.concurrent.TimeUnit
  *
  * Fallback gracioso: se vec_chunks estiver vazio (embeddings não gerados ainda),
  * retorna os chunks originais sem reranking — sem crash, sem erro visível.
+ *
+ * ⚠️ DORMENTE para o AUDITOR desde o Lote 325 (que parou de usar busca semântica). Só é
+ * acionado via MestreIAGraphEngine.buscarDiretoNoCodex, que o Auditor não chama mais.
+ * Pode ser usado por Forjador/Voz se acionarem o GraphEngine. Os utilitários puros
+ * (floatArrayToByteArray / byteArrayToFloatArray) ainda são usados pela importação de
+ * embeddings em FichaDatabase. Ver ARQUITETURA_MESTRE_IA.md §5.6.
  */
 object MestreIASemanticEngine {
 

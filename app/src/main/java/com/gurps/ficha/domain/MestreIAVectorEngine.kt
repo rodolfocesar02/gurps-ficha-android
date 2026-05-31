@@ -25,6 +25,10 @@ import java.util.concurrent.TimeUnit
  *
  * Coexiste com Room: ObjectBox guarda apenas chunkId + FloatArray(3072).
  * Populado na inicialização a partir dos embeddings já existentes no Room (vec_chunks).
+ *
+ * ⚠️ DORMENTE para o AUDITOR desde o Lote 325. Busca semântica HNSW não é mais usada
+ * pelo Auditor (que migrou para grep + leitura dirigida). Embeddings (48MB) ficam
+ * dormentes; existe chunks.jsonl.bak sem eles. Ver ARQUITETURA_MESTRE_IA.md §5.6.
  */
 object MestreIAVectorEngine {
 

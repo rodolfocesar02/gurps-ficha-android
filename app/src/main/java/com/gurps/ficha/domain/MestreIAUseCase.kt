@@ -114,6 +114,9 @@ class MestreIAUseCase(
             var promptAtual = prompt
             var historicoInvestigacao = mutableListOf<Pair<String, String>>()
             var toolCallsFeitas = 0
+            // Lote 328: trava anti-confabulação — rastreia se o modelo REALMENTE leu alguma
+            // página (ler_pagina), não só localizou. Sem leitura, a resposta seria de memória.
+            var leuAlgumaPagina = false
             // Lote 325: novo loop "localizar → ler" precisa de mais idas (localizar e ler
             // são chamadas separadas). Antes 5 era suficiente quando 1 tool fazia tudo.
             val MAX_TOOL_CALLS = 8
@@ -154,8 +157,25 @@ class MestreIAUseCase(
                         android.util.Log.i("MestreIA_RAG", "╠══ ITERAÇÃO $iteracao → $iaModel | ctx=${ctxAtual}chars | toolsFeitas=$toolCallsFeitas | desativarTools=$isUltimaIteracao")
 
                         if (isUltimaIteracao) {
-                            promptAtual = "[RESPOSTA FINAL OBRIGATÓRIA] $prompt\n\nNÃO chame ferramentas. Responda com base no contexto acumulado. Se a regra for indireta, calcule e apresente com a fonte [Livro, Pág]. Se não encontrou, declare explicitamente."
-                            android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: tools desativados + resposta forçada")
+                            // Lote 328: trava anti-confabulação categorial (sem exemplos).
+                            // Se o modelo nunca leu uma página, ele NÃO tem base textual — qualquer
+                            // citação seria de memória. Nesse caso a instrução exige declarar a
+                            // ausência, em vez de "responda com o que tem" (que induzia confabulação).
+                            promptAtual = if (!leuAlgumaPagina) {
+                                "[RESPOSTA FINAL OBRIGATÓRIA] $prompt\n\n" +
+                                "ATENÇÃO: você NÃO leu nenhuma página com ler_pagina nesta investigação. " +
+                                "Portanto você NÃO possui texto de regra para citar. NÃO invente páginas, " +
+                                "números ou regras de memória. Responda declarando que não localizou a regra " +
+                                "nos manuais e, se quiser, ofereça apenas uma interpretação claramente rotulada " +
+                                "como tal — sem citar páginas que você não leu."
+                            } else {
+                                "[RESPOSTA FINAL OBRIGATÓRIA] $prompt\n\n" +
+                                "NÃO chame ferramentas. Responda usando SOMENTE o texto das páginas que você " +
+                                "leu com ler_pagina. Cite [Livro, Pág] apenas de páginas efetivamente lidas. " +
+                                "NÃO acrescente páginas, números ou regras de memória. Se a regra for indireta, " +
+                                "calcule a partir do que leu, mostrando os valores. Se não encontrou, declare explicitamente."
+                            }
+                            android.util.Log.i("MestreIA_RAG", "║  ÚLTIMA ITERAÇÃO: tools desativados + resposta forçada | leuAlgumaPagina=$leuAlgumaPagina")
                         }
 
                         val resposta = MestreIAClient.perguntarAoMestre(
@@ -383,6 +403,11 @@ class MestreIAUseCase(
                                     is ToolResult.Manual -> {
                                         todasDuplicadas = false
                                         toolCallsFeitas++
+                                        // Lote 328: marca leitura real. localizar e ler ambos viram Manual;
+                                        // distinguimos pelo prefixo "ler:" da query e pela presença de chunks reais.
+                                        if (resultado.query.startsWith("ler:") && resultado.chunks.isNotEmpty()) {
+                                            leuAlgumaPagina = true
+                                        }
                                         ponteFinal = (ponteFinal + "\n\n=== BUSCA ${toolCallsFeitas} [\"${resultado.query.take(40)}\"]: ===\n${resultado.texto}").take(60000)
                                         chunksFinal.addAll(resultado.chunks)
                                         resumoBuscas.add("'${resultado.query.take(30)}'")
@@ -486,6 +511,12 @@ class MestreIAUseCase(
      * LOTE 317: helper compartilhado entre TOOL_MANUAL_DIRETO e as 4 tools
      * especializadas (TOOL_REGRAS_MAGIA, _ARMAS_FOGO, _ARTES_MARCIAIS, _AQUATICO).
      * Cada tool especializada chama isto com filtroLivro fixo.
+     *
+     * ⚠️ LEGADO desde o Lote 325. As 5 tools de embedding que chamavam este helper
+     * NÃO são mais oferecidas ao modelo (o Auditor usa localizar_no_codex + ler_pagina).
+     * Os `when` cases que chamam esta função permanecem no dispatch como rede, mas nunca
+     * disparam. Usa graphEngine.buscarDiretoNoCodex (motor semântico, também legado p/ Auditor).
+     * Candidato a remoção em lote de limpeza — ver .agent/skills/ARQUITETURA_MESTRE_IA.md §5.2.
      */
     private suspend fun executarBuscaCodex(
         idx: Int,
@@ -584,6 +615,10 @@ class MestreIAUseCase(
      * LOTE 119: Gerador de Catálogo via Busca Direta (Pula o Grafo).
      * LOTE 258: Query Rewriting — se FTS retornar < 5 chunks, reformula a pergunta
      * via API leve (Gemini Flash Lite) em termos técnicos do GURPS e tenta novamente.
+     *
+     * ⚠️ MORTO desde o Lote 325 — ZERO callers no app. Era o pré-contexto RAG do fluxo
+     * antigo. Usa graphEngine.buscarDiretoNoCodex (semântico) + reescreverQueryParaGurps,
+     * ambos legados p/ o Auditor. Candidato a remoção — ver ARQUITETURA_MESTRE_IA.md §5.3.
      */
     suspend fun gerarCatalogoDireto(
         prompt: String,

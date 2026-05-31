@@ -4,13 +4,19 @@ import com.gurps.ficha.data.DataRepository
 import com.gurps.ficha.model.*
 
 /**
- * Motor de busca RAG direto nos chunks.jsonl via FTS SQLite.
+ * Motor de busca RAG SEMÂNTICO (BM25 + HNSW + reranking) direto nos chunks via FTS SQLite.
  *
  * Lote 270-C:
  * - avgdl e IDF globais (pré-computados do corpus, não do pool de candidatos)
  * - Bonus AND proporcional à cobertura de termos de núcleo (não flat +15)
  * - take(30) com Pocket RAG: chunks ★★ e ★ comprimidos a sentenças relevantes
  * - Expansão bidirecional removida de extrairPalavrasChave
+ *
+ * ⚠️ NÃO usado pelo AUDITOR desde o Lote 325 (que migrou para "grep + leitura dirigida"
+ * em MestreIARepository.localizarNoCodex/lerPaginas). Hoje este motor só é alcançado por
+ * MestreIAUseCase.gerarCatalogoDireto (MORTO) e potencialmente Forjador/Voz.
+ * O scoring BM25 daqui foi COPIADO para MestreIARepository.rankearPorBM25 (Lote 327) —
+ * se for ajustar o ranking do AUDITOR, mexa LÁ, não aqui. Ver ARQUITETURA_MESTRE_IA.md §5.1.
  */
 class MestreIAGraphEngine(private val repository: DataRepository) {
 
