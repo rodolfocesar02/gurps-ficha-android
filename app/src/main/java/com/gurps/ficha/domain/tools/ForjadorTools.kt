@@ -83,7 +83,7 @@ object ForjadorTools {
                     })
                     put("valor", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Atributos: novo valor ('14'). Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=<id>' (auto-escolhe se omitir). Magia: a ferramenta BARRA se faltar pré-requisito (igual ao app) — adicione a cadeia antes; só 'forcar=true' adiciona sem pré-requisito (gatilho narrativo).")
+                        put("description", "Atributos: novo valor ('14'). Perícia: 'nivel=14;esp=Florestas'. Vantagem: 'nivel=3;custo=15'. Técnica: 'nivel=4;periciaBase=<id>' (auto-escolhe se omitir). Magia: basta pedir a magia-ALVO — se faltarem pré-requisitos, o sistema adiciona TODA a cadeia automaticamente na ordem certa (você NÃO precisa adicionar as magias-base uma a uma). Use 'forcar=true' só para gatilho narrativo sem pré-requisito.")
                     })
                 })
                 put("required", JSONArray().put("operacao").put("secao").put("alvo"))

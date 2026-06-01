@@ -8364,6 +8364,37 @@
 
   },
 
+{
+
+
+    "id": "pontaria_zen",
+
+
+    "nome": "Pontaria Zen",
+
+
+    "atributoBase": "IQ",
+
+
+    "atributosPossiveis": null,
+
+
+    "atributoEscolhaObrigatoria": false,
+
+
+    "dificuldadeFixa": "MD",
+
+
+    "dificuldadeVariavel": false,
+
+
+    "exigeEspecializacao": false,
+
+
+    "preDefinicoes": []
+
+
+  },
 
   {
 

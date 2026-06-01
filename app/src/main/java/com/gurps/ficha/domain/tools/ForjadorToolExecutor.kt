@@ -45,6 +45,40 @@ class ForjadorToolExecutor(
     /** Read-back: relê uma seção pelo nome (reusa lerFicha). Usado na verificação pós-edição. */
     fun lerSecao(secao: String): String = lerFicha(JSONObject().put("secao", secao))
 
+    /**
+     * Lote G: prepara a descrição oficial do catálogo para o modelo — fonte real em vez de
+     * ele citar de memória (chutava "B43" sendo a pág. 82). Corrige mojibake (ï¿½/Ã) e trunca.
+     */
+    private fun descricaoFonte(raw: String?): String? {
+        val t = raw?.trim().orEmpty()
+        if (t.isBlank()) return null
+        // Remove o caractere de substituição (�) que aparece no mojibake dos JSONs e colapsa espaços.
+        val limpo = t.replace("�", "").replace(Regex("\\s+"), " ").trim()
+        return limpo.take(320).let { if (limpo.length > 320) "$it…" else it }
+    }
+
+    /**
+     * Mostra ao modelo as opções de custo de uma vantagem/desvantagem de ESCALA,
+     * para ele ESCOLHER conscientemente (via valor="custo=N" ou "nivel=N") em vez
+     * de pegar sempre o custo-base. Fichas humanas usam muito custoEscolhido —
+     * Riqueza (10/20/30/50), Status/Reputação (por nível), Mestre de Armas (variável).
+     * Retorna null para FIXO (não há o que escolher). NÃO inventa valores: usa os
+     * que o catálogo define — o app valida o que for aplicado.
+     */
+    private fun opcoesCustoTexto(
+        tipo: com.gurps.ficha.model.TipoCusto,
+        opcoes: List<Int>,
+        custoPorNivel: Int
+    ): String? = when (tipo) {
+        com.gurps.ficha.model.TipoCusto.ESCOLHA ->
+            if (opcoes.size > 1) " | opções de custo: ${opcoes.joinToString("/")} (passe valor=\"custo=N\")" else null
+        com.gurps.ficha.model.TipoCusto.POR_NIVEL ->
+            " | $custoPorNivel pts/nível (passe valor=\"nivel=N\")"
+        com.gurps.ficha.model.TipoCusto.VARIAVEL ->
+            " | custo variável (passe valor=\"custo=N\" conforme o conceito)"
+        com.gurps.ficha.model.TipoCusto.FIXO -> null
+    }
+
     private fun lerFicha(args: JSONObject): String {
         val p = viewModel.personagem
         val secao = args.optString("secao", "atributos")
@@ -152,6 +186,9 @@ class ForjadorToolExecutor(
                     val schema = RegrasEspeciaisSchema.para(v.specialRule, v.id)
                     buildString {
                         append("• ${v.id} | ${v.nome} | ${v.getCustoBase()} pts | tipoCusto:${v.tipoCusto}")
+                        // Escala de custo: mostra as opções/custo-por-nível para o modelo
+                        // ESCOLHER conscientemente (valor="custo=20" ou "nivel=N").
+                        opcoesCustoTexto(v.tipoCusto, v.getOpcoesEscolha(), v.getCustoPorNivel())?.let { append(it) }
                         if (mods.isNotBlank()) append(" | modificadores: $mods")
                         if (schema != null) append("\n   ⚙ REGRA ESPECIAL — $schema")
                     }
@@ -168,7 +205,10 @@ class ForjadorToolExecutor(
                     val schema = RegrasEspeciaisSchema.para(d.specialRule, d.id)
                     buildString {
                         append("• ${d.id} | ${d.nome} | ${d.getCustoBase()} pts | tipoCusto:${d.tipoCusto}")
+                        opcoesCustoTexto(d.tipoCusto, d.getOpcoesEscolha(), d.getCustoPorNivel())?.let { append(it) }
+                        if (d.pagina > 0) append(" | pág.${d.pagina}")
                         if (mods.isNotBlank()) append(" | modificadores: $mods")
+                        descricaoFonte(d.descricao)?.let { append("\n   📖 $it") }
                         if (schema != null) append("\n   ⚙ REGRA ESPECIAL — $schema")
                     }
                 }
@@ -180,7 +220,14 @@ class ForjadorToolExecutor(
                     it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma perícia encontrada para '$query'."
-                else resultados.joinToString("\n") { "• ${it.id} | ${it.nome}" }
+                else resultados.joinToString("\n") { p ->
+                    // Lote G: descrição da perícia vem do mapa de regras v2 (pericias_v2_rules_map.json).
+                    val regra = repository.regraPericiaV2(p.id)
+                    buildString {
+                        append("• ${p.id} | ${p.nome}")
+                        descricaoFonte(regra?.descricao)?.let { append("\n   📖 $it") }
+                    }
+                }
             }
             "magia" -> {
                 val resultados = repository.magias.filter {
@@ -193,7 +240,12 @@ class ForjadorToolExecutor(
                     // "✓ Requisitos Atendidos" ou o motivo do bloqueio.
                     val status = viewModel.prereqFailureForMagia(m)
                         ?.let { "⚠ FALTA: $it" } ?: "✓ requisitos atendidos"
-                    "• ${m.id} | ${m.nome} | escola:${m.escola?.joinToString() ?: "?"} | $status | pré:${m.preRequisitos?.take(60) ?: "—"}"
+                    buildString {
+                        append("• ${m.id} | ${m.nome} | escola:${m.escola?.joinToString() ?: "?"}")
+                        m.pagina?.takeIf { it > 0 }?.let { append(" | pág.$it") }
+                        append(" | $status | pré:${m.preRequisitos?.take(60) ?: "—"}")
+                        descricaoFonte(m.descricao)?.let { append("\n   📖 $it") }
+                    }
                 }
             }
             "tecnica" -> {
@@ -209,7 +261,12 @@ class ForjadorToolExecutor(
                     val baseOk = pp.pericias.firstOrNull { per -> viewModel.tecnicaAtendePreRequisito(t, per) }
                     val status = if (baseOk != null) "✓ PODE ADICIONAR (base: ${baseOk.nome})"
                                  else "⚠ FALTA perícia-base compatível na ficha"
-                    "• ${t.id} | ${t.nome} | dif:${t.dificuldadeRaw} | $status | pré:${t.preRequisitoRaw.take(50)}"
+                    buildString {
+                        append("• ${t.id} | ${t.nome} | dif:${t.dificuldadeRaw}")
+                        if (t.pagina != null && t.pagina > 0) append(" | pág.${t.pagina}")
+                        append(" | $status | pré:${t.preRequisitoRaw.take(50)}")
+                        descricaoFonte(t.descricao)?.let { append("\n   📖 $it") }
+                    }
                 }
             }
             // Lote B: equipamento de catálogo — stats REAIS (dano/ST/peso/custo), em vez de
@@ -275,18 +332,19 @@ class ForjadorToolExecutor(
             when {
                 jaTem -> appendLine("VEREDITO: ✅ '$alvoNome' JÁ ESTÁ na ficha. Nada a fazer.")
                 aprendivel -> appendLine("VEREDITO: ✅ PODE ADICIONAR '$alvoNome' AGORA — pré-requisitos atendidos. Chame forjador_editar_ficha adicionar magias \"$alvoId\".")
-                else -> appendLine("VEREDITO: ⛔ AINDA NÃO pode adicionar '$alvoNome'. Falta: $faltaPrereq")
+                // Lote 329: o sistema resolve a cadeia sozinho. NÃO mande o modelo
+                // adicionar pré-requisitos um a um (era o que o tornava lento).
+                else -> appendLine("VEREDITO: ⚙ '$alvoNome' tem pré-requisitos faltando ($faltaPrereq), MAS você NÃO precisa adicioná-los um a um: basta chamar forjador_editar_ficha adicionar magias \"$alvoId\" — o sistema adiciona AUTOMATICAMENTE toda a cadeia de pré-requisitos, na ordem certa, junto com o alvo.")
             }
-            // TRILHA ÓTIMA (Pathfinder) — o ROTEIRO PRONTO. Adicione as
-            // magias EXATAMENTE nesta ordem; é o caminho mais curto. NÃO
-            // invente outra ordem nem tateie.
-            if (snapshot.trilhaOtimaIds.isNotEmpty()) {
-                appendLine("TRILHA MAIS RÁPIDA (adicione NESTA ORDEM, depois o alvo):")
-                snapshot.trilhaOtimaIds.forEachIndexed { i, id ->
+            // A trilha abaixo é só INFORMATIVA (o que será adicionado junto). Você
+            // NÃO precisa aplicar item por item — peça o ALVO e o sistema resolve.
+            if (!jaTem && !aprendivel && snapshot.trilhaOtimaIds.isNotEmpty()) {
+                appendLine("Pré-requisitos que serão adicionados junto (automático, nesta ordem):")
+                snapshot.trilhaOtimaIds.filter { it != alvoId }.forEachIndexed { i, id ->
                     val nome = repository.magias.find { it.id == id }?.nome ?: id
                     appendLine("  ${i + 1}. $id ($nome)")
                 }
-                appendLine("  → por fim: $alvoId ($alvoNome)")
+                appendLine("  → e então o alvo: $alvoId ($alvoNome)")
             }
             // Os campos abaixo são CONTEXTO. NÃO recalcule escolas/contagens
             // de cabeça — o número do app é a verdade.
@@ -338,6 +396,16 @@ class ForjadorToolExecutor(
                     viewModel.atualizarHistorico(valor)
                     viewModel.autoSaveIA()
                     return "OK: história do personagem atualizada."
+                }
+                alvoN == "aparencia" || alvoN == "aparência" || alvoN == "appearance" || alvoN == "descricaofisica" -> {
+                    viewModel.atualizarAparencia(valor)
+                    viewModel.autoSaveIA()
+                    return "OK: aparência do personagem atualizada."
+                }
+                alvoN == "notas" || alvoN == "notes" || alvoN == "observacoes" || alvoN == "anotacoes" -> {
+                    viewModel.atualizarNotas(valor)
+                    viewModel.autoSaveIA()
+                    return "OK: notas do personagem atualizadas."
                 }
                 alvoN == "pontosIniciais" || alvoN == "pontosiniciais" || alvoN == "pontos_iniciais" || alvoN == "budget" -> {
                     val novo = Regex("\\d+").find(valor)?.value?.toIntOrNull()
@@ -392,7 +460,7 @@ class ForjadorToolExecutor(
             // Atributos primários numéricos: ST/DX/IQ/HT
             val novo = (Regex("-?\\d+").find(valor)?.value
                 ?: Regex("-?\\d+").find(alvo)?.value)?.toIntOrNull()
-                ?: return """{"erro":"atributo/campo desconhecido ou valor ausente: '$alvo'. Use ST/DX/IQ/HT, nome, historia, PF ou pontosIniciais"}"""
+                ?: return """{"erro":"atributo/campo desconhecido ou valor ausente: '$alvo'. Use ST/DX/IQ/HT, nome, historia, aparencia, notas, PF ou pontosIniciais"}"""
             val antes: Int
             when {
                 alvoN.startsWith("for") || alvoN == "st" -> { antes = p.forca;       viewModel.atualizarForca(novo) }
@@ -455,14 +523,44 @@ class ForjadorToolExecutor(
                     }
                     return "Nada alterado: '$alvo' não está na ficha."
                 }
-                when {
-                    v != null -> viewModel.adicionarVantagem(v, nivel = nivel,
-                        custo = if (custo != 0) custo else v.getCustoBase())
-                    d != null -> viewModel.adicionarDesvantagem(d, nivel = nivel,
-                        custo = if (custo != 0) custo else d.getCustoBase())
+                // RESPEITA A SEÇÃO PEDIDA. Alguns ids existem nas DUAS listas
+                // (ex: "riqueza" é escala única: Falido/Pobre são desvantagem,
+                // Confortável/Rico são vantagem). Antes o código preferia SEMPRE
+                // a vantagem → pedir "riqueza" em desvantagens aplicava +10 (rico)
+                // em vez de negativo (pobre). Agora: se o jogador escolheu a seção
+                // "desvantagens", usa a desvantagem; em "vantagens", usa a vantagem.
+                // Só cai na outra lista se o id não existir na seção pedida.
+                val aplicado = when {
+                    secao == "desvantagens" && d != null -> {
+                        viewModel.adicionarDesvantagem(d, nivel = nivel,
+                            custo = if (custo != 0) custo else d.getCustoBase()); "desvantagem"
+                    }
+                    secao == "vantagens" && v != null -> {
+                        viewModel.adicionarVantagem(v, nivel = nivel,
+                            custo = if (custo != 0) custo else v.getCustoBase()); "vantagem"
+                    }
+                    v != null -> {
+                        viewModel.adicionarVantagem(v, nivel = nivel,
+                            custo = if (custo != 0) custo else v.getCustoBase()); "vantagem"
+                    }
+                    d != null -> {
+                        viewModel.adicionarDesvantagem(d, nivel = nivel,
+                            custo = if (custo != 0) custo else d.getCustoBase()); "desvantagem"
+                    }
                     else -> return "Não encontrado no catálogo: '$alvo'."
                 }
-                viewModel.autoSaveIA(); return "OK: '$alvo' adicionada em $secao."
+                viewModel.autoSaveIA()
+                // Informa o custo REAL aplicado: se vier sinal trocado do esperado
+                // (ex: pediu desvantagem mas só existe como vantagem +10), o modelo
+                // vê no retorno e no read-back e pode corrigir. Relê da ficha (estado
+                // pós-edição) pelo mesmo alvo.
+                val pAtual = viewModel.personagem
+                val custoReal: Int? = if (aplicado == "vantagem")
+                    pAtual.vantagens.lastOrNull { norm(it.definicaoId) == alvoN || norm(it.nome) == alvoN }?.custoFinal
+                else
+                    pAtual.desvantagens.lastOrNull { norm(it.definicaoId) == alvoN || norm(it.nome) == alvoN }?.custoFinal
+                return "OK: '$alvo' aplicada como $aplicado" +
+                    (custoReal?.let { " ($it pts)" } ?: "") + "."
             }
             "pericias" -> {
                 val def = repository.pericias.find { norm(it.id) == alvoN || norm(it.nome) == alvoN }
@@ -551,15 +649,69 @@ class ForjadorToolExecutor(
                 }
                 // Validação de pré-requisito — MESMA do app (a tela mostra
                 // "✓ Requisitos Atendidos" / "Pré-requisito não atendido").
-                // Por padrão BARRA, igual o botão bloqueado para o usuário.
                 val forcar = Regex("forcar\\s*=\\s*(true|sim|1)", RegexOption.IGNORE_CASE).containsMatchIn(valor)
                 val faltaPrereq = viewModel.prereqFailureForMagia(mag)
+
+                // CADEIA AUTOMÁTICA (Lote 329): se faltam pré-requisitos e o modelo
+                // NÃO pediu para forçar, o SISTEMA adiciona a cadeia inteira na ordem
+                // correta — em vez de BLOQUEAR e fazer o modelo tatear 1 magia por
+                // iteração (lento: o Raspha gastou 5 iterações p/ 1 magia). O motor
+                // Nexus já calcula a trilha ótima (trilhaOtimaIds), a mesma do GPS.
+                // Não recalculamos regra aqui: cada magia da trilha é aplicada com a
+                // validação normal, na ordem que o motor garante ser aprendível.
                 if (faltaPrereq != null && !forcar) {
-                    return "BLOQUEADO: '${mag.nome}' não pode ser adicionada — $faltaPrereq. " +
-                        "Use forjador_gps_magia(\"${mag.id}\") para ver a cadeia completa de " +
-                        "pré-requisitos e adicione cada magia faltante (na ordem) ANTES desta. " +
-                        "Só se for gatilho narrativo intencional, repita com valor=\"forcar=true\"."
+                    val p0 = viewModel.personagem
+                    val trilha = nexusAdapter.calcular(
+                        mag.id, p0.magias.map { it.definicaoId }.toSet(),
+                        p0.iq, p0.dx, viewModel.nivelAptidaoMagica
+                    ).trilhaOtimaIds.filter { it != mag.id }
+
+                    if (trilha.isEmpty()) {
+                        // Sem trilha calculável (motor não achou caminho) → mantém o
+                        // bloqueio honesto para o modelo resolver/forçar conscientemente.
+                        return "BLOQUEADO: '${mag.nome}' não pode ser adicionada — $faltaPrereq. " +
+                            "Use forjador_gps_magia(\"${mag.id}\") para ver a cadeia e adicione as " +
+                            "pré-requisito antes. Só com valor=\"forcar=true\" para gatilho narrativo."
+                    }
+
+                    val gastoAntes = viewModel.personagem.pontosGastos
+                    val aplicadas = mutableListOf<String>()
+                    val falhas = mutableListOf<String>()
+                    // Adiciona cada magia-base na ordem; só prossegue enquanto o passo
+                    // anterior libera o próximo (validação real a cada uma).
+                    for (id in trilha) {
+                        val base = repository.magias.find { it.id == id } ?: continue
+                        if (viewModel.personagem.magias.any { it.definicaoId == id }) continue // já tem
+                        if (viewModel.prereqFailureForMagia(base) != null) {
+                            falhas.add(base.nome); break
+                        }
+                        if (viewModel.adicionarMagia(base, pts = 1) == null) aplicadas.add(base.nome)
+                        else { falhas.add(base.nome); break }
+                    }
+                    // Por fim, o alvo (agora com a cadeia satisfeita).
+                    val erroAlvo = if (viewModel.prereqFailureForMagia(mag) == null)
+                        viewModel.adicionarMagia(mag, pts = if (custo > 0) custo else 1) else "pré-requisito ainda pendente"
+                    viewModel.autoSaveIA()
+                    // AVISO TRANSPARENTE: quantas magias e quantos pontos a cadeia
+                    // consumiu (fonte de verdade = pontosGastos da ficha, não soma de
+                    // cabeça). Cadeias longas (Desejo ~16) gastam muito — é a regra do
+                    // GURPS, mas o modelo precisa VER o impacto no orçamento.
+                    val pAtual = viewModel.personagem
+                    val gastoNaCadeia = pAtual.pontosGastos - gastoAntes
+                    val totalMagias = aplicadas.size + (if (erroAlvo == null) 1 else 0)
+                    return buildString {
+                        if (erroAlvo == null) {
+                            append("OK: '${mag.nome}' + ${aplicadas.size} pré-requisito(s) = $totalMagias magia(s) adicionada(s)")
+                            append(", consumindo $gastoNaCadeia pts. Total da ficha agora: ${pAtual.pontosGastos}/${pAtual.pontosTotaisDisponiveis} (livres: ${pAtual.pontosRestantes}).")
+                            if (aplicadas.isNotEmpty()) append(" Cadeia (na ordem): ${aplicadas.joinToString(", ")}.")
+                        } else {
+                            append("PARCIAL: adicionadas ${aplicadas.joinToString(", ").ifBlank { "nenhuma" }} ($gastoNaCadeia pts), ")
+                            append("mas '${mag.nome}' ainda não entrou ($erroAlvo).")
+                        }
+                        if (falhas.isNotEmpty()) append(" Falhou em: ${falhas.joinToString(", ")}.")
+                    }
                 }
+
                 val erro = viewModel.adicionarMagia(mag, pts = if (custo > 0) custo else 1, ignora = forcar)
                 viewModel.autoSaveIA()
                 val sufixoForca = if (faltaPrereq != null && forcar) " (ADIÇÃO FORÇADA, sem pré-requisito — gatilho narrativo)" else ""

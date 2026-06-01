@@ -2372,3 +2372,73 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 329 — [2026-06-01] feat: Forjador cria ficha INCREMENTAL (sem botão) + cadeia de magia automática + correções pós-teste
+
+- **Hash:** `<preenchido após o commit>`
+- **Resumo:** o modo CRIAR deixou de depender do JSON final + botão INTEGRAR. O Forjador
+  agora MONTA a ficha ao vivo via `forjador_editar_ficha` (igual ao modo análise), bloco a
+  bloco na ordem dos 9 pilares. Se a conexão cai no meio, o que já foi aplicado permanece.
+  Inclui Lote G (descrição+página no catálogo) e 9 Pilares (prompt criador + consultor),
+  que vinham desta mesma sessão sem commit.
+
+### B-COMPLETO (criação incremental)
+- **Início da criação:** se há ficha não-vazia → `viewModel.autoSaveIA()` + `novaFicha()`
+  (salva a atual, cria do zero). Só na 1ª config (não a cada fallback).
+- **Síntese final:** virou `[FECHAMENTO]` (mensagem ao jogador), NÃO gera mais JSON.
+- **Prompt criador (`MestreIAPromptsForjador.PROMPT`):** nova seção "MODO INCREMENTAL";
+  removida a exigência de JSON final + GABARITO (GOLD_TEMPLATE virou código morto).
+- **`FichaIADelegate`:** modo `geracao` NÃO cria `fichaGeradaPendente` → some o botão
+  INTEGRAR na criação. Modo `analise` (Consultor) intacto (mantém sugerir→INTEGRAR).
+- **Teto de pesquisa 4→12** + aviso de orçamento por rodada (anti-loop de pesquisa).
+- **9 PILARES** nos DOIS prompts (criador = método de construção; consultor = estrutura
+  de análise). Sem exemplos hardcoded (princípio anti-viés do Lote 318).
+
+### Correções pós-teste (a partir de logs + comparação com fichas humanas)
+- **BUG aparência:** `editarFicha` não aceitava `aparencia`/`notas` → texto se perdia. Corrigido.
+- **BUG Riqueza invertida:** id existe em vantagens E desvantagens (escala única Falido↔Rico);
+  o executor sempre preferia a vantagem (+10). Corrigido p/ respeitar a SEÇÃO pedida +
+  retornar o custo real aplicado.
+- **custoEscolhido:** `buscar_catalogo` mostra opções de escala (ESCOLHA/POR_NIVEL/VARIAVEL)
+  e o prompt ensina a passar `custo=N`/`nivel=N`. Antes ignorava (tudo nível 1) → fichas rasas.
+- **BUG encerramento prematuro:** `totalItens()` (detector de progresso) só contava listas;
+  iterações de ATRIBUTOS/nome eram lidas como "estagnação" e o loop morria em 2 iterações.
+  Agora usa fingerprint do estado (`pontosGastos` + itens + textos) e compara `!=` (desvantagem
+  baixa pontos = progresso).
+- **BUG não-fecha:** se o modelo parava de chamar tools sem fechar (resposta curta/interna
+  "Dados coletados com sucesso"), o loop encerrava com esse lixo. Agora força UMA rodada de
+  FECHAMENTO (tools off) p/ escrever a mensagem real ao jogador.
+- **BUG salvamento-lixo (sistema):** `autoSaveIA` usava `IA_<nome>_<timestamp>` com timestamp
+  novo a cada edição → ~20 arquivos-lixo por ficha. Agora fixa `nomeSessaoIA` na 1ª chamada e
+  SOBRESCREVE o mesmo arquivo (zera em `novaFicha()`).
+- **Log do budget** no início da criação.
+
+### CADEIA DE MAGIA AUTOMÁTICA (sistemática, sem viés)
+- `editarFicha` (secao=magias): ao pedir uma magia-alvo com pré-requisitos faltando (sem
+  `forcar`), o SISTEMA adiciona a TRILHA INTEIRA na ordem (via `nexusAdapter.calcular(...)
+  .trilhaOtimaIds`, a mesma do GPS) + o alvo, numa só chamada. Antes BLOQUEAVA e o modelo
+  tateava 1 magia/iteração (Raspha gastou 5 iterações p/ 1 magia).
+- **Medição real (teste JUnit rodado, depois removido):** fogo 1-3 magias, Encantar 10,
+  Desejo 16 — todos <110ms. Decisão: SEM teto (cadeia longa é regra do GURPS), MAS o retorno
+  avisa nº de magias + pontos consumidos + total da ficha (fonte de verdade `pontosGastos`).
+- **GPS + descrição da tool** avisam que basta pedir o alvo (não tatear pré-req). Categórico,
+  sem exemplo de magia → zero viés. Modelo pode pedir N alvos numa rodada (cada um resolve a cadeia).
+
+### Validação
+- ✅ Compila (BUILD SUCCESSFUL) em todas as etapas.
+- ✅ Testes reais: criação do Kael, Raspha, Rapha (logs analisados) + teste JUnit de trilha.
+- ⏳ Funcional pendente: reconfirmar criação completa (aparência grava, Riqueza no sinal certo,
+  cadeia de magia entra inteira, 1 só arquivo salvo por ficha, fechamento honesto sem confabular).
+
+### PENDÊNCIAS conhecidas (lotes futuros — ver PLANO_MELHORIAS_FORJADOR.md §8)
+- **Confabulação no fechamento:** o fechamento forçado (tools off) pode o modelo DESCREVER
+  magias/vantagens que NÃO aplicou (observado no Rapha: disse "150/150, 6 magias", ficha tinha
+  "111/150, 1 magia"). NÃO corrigido ainda — é o mais perigoso (engana o usuário). Próximo alvo.
+- **Mojibake:** falso positivo (artefato de transferência; no app/editor o texto está correto).
+- **Arquétipos hardcoded** (LADRÃO/GUERREIRO/MAGO no PROMPT) citam custo e contradizem regra
+  "app calcula custo" — candidatos a remover (usuário fará teste A/B antes).
+
+### Rollback
+- `git revert <hash>`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

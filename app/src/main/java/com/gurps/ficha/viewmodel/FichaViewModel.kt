@@ -400,7 +400,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
     fun excluirFicha(nome: String) { viewModelScope.launch { fichasSalvas = persistenceDelegate.excluirFicha(nome) } }
-    fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false; nomeFichaAtual = null }
+    fun novaFicha() { personagem = Personagem(); personagemPendenteLimpezaMagias = null; mostrarConfirmacaoLimpezaMagias = false; nomeFichaAtual = null; nomeSessaoIA = null }
     
     fun atualizarListaFichasUnificada() {
         viewModelScope.launch {
@@ -465,7 +465,15 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun salvarConfiguracaoIA(baseUrl: String, apiKey: String, workspaceSlug: String) {
         // Log ou ação de segurança se necessário
     }
-    fun autoSaveIA() { viewModelScope.launch { fichaStorage.salvarFicha("IA_${personagem.nome}_${System.currentTimeMillis()}", personagem.toJson()); carregarListaFichas() } }
+    // Nome FIXO da sessão de criação/edição por IA. Antes (bug): cada autoSaveIA
+    // usava timestamp novo → ~20 arquivos-lixo por ficha criada (o loop salva a
+    // cada edição). Agora o nome é fixado na 1ª chamada e REUSADO nas seguintes,
+    // sobrescrevendo o MESMO arquivo. Zera em novaFicha() (início de nova criação).
+    private var nomeSessaoIA: String? = null
+    fun autoSaveIA() {
+        val nome = nomeSessaoIA ?: "IA_${personagem.nome.ifBlank { "Sem_Nome" }}_${System.currentTimeMillis()}".also { nomeSessaoIA = it }
+        viewModelScope.launch { fichaStorage.salvarFicha(nome, personagem.toJson()); carregarListaFichas() }
+    }
     fun gerarFichaComIA(h: String, onRes: (Boolean, String) -> Unit) = iaDelegate.conversar(h, "geracao", onRes)
     fun analisarFichaComIA(onRes: (Boolean, String) -> Unit) = iaDelegate.conversar("Analise minha ficha atual e dê sugestões.", "analise", onRes)
 

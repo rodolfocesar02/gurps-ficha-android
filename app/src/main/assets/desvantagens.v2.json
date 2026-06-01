@@ -2998,7 +2998,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": ""
+    "descricao": "O personagem se opõe à violência. Essa oposição pode assumir várias formas. Escolha uma das seguintes:\n\nAssassino Relutante: O personagem está psicologicamente despreparado para matar. Sempre que fizer um ataque letal (ex.: com uma faca ou arma de fogo) contra uma pessoa que possa ver, ele sofre uma penalidade de -4 para acertar o alvo e não pode Apontar. Se ele não puder ver o rosto do inimigo (por causa de uma máscara, escuridão, distância ou porque o atacou pelas costas), a penalidade é de -2, a não ser durante um combate corporal. O personagem não sofre penalidades ao atacar veículos (mesmo que estejam ocupados), oponentes que ele não acredita serem pessoas (incluindo coisas com aparência Horrenda ou Monstruosa) ou alvos que ele não consegue ver (ex.: uma série de coordenadas em um mapa ou um ponto na tela de um radar). Se o personagem matar uma pessoa de verdade, o efeito sobre ele é o mesmo que acontece com Incapaz de Matar (adiante). Ele não se importa que seus aliados façam a matança e pode até mesmo fornecer munição, armas carregadas e encorajá-los. O personagem simplesmente é incapaz de matar por conta própria. -5 pontos.\n\nIncapaz de Ferir Inocentes: O personagem pode lutar livremente ou até mesmo começar uma briga, mas só utiliza força letal contra inimigos que estiverem tentando lhe causar algum mal. Se quiserem capturá-lo, isso não se qualifica a menos que o personagem já se encontre sob pena de morte ou siga um Código de Honra que exige um suicídio caso ele seja aprisionado. Ele nunca fará nada que cause, ou ameace causar, algum mal a seres inocentes, principalmente se forem \"pessoas comuns\". Esta característica é muito comum em combatentes do crime, personagens supers, etc. -10 pontos.\n\nIncapaz de Matar: O personagem pode lutar ou até mesmo começar uma briga, mas nunca conseguirá fazer algo que possa provocar a morte de outra pessoa. Isso inclui abandonar um inimigo ferido para morrer \"por sua própria conta\". Ele também deve sempre fazer o possível para evitar que seus companheiros matem. O personagem será vítima de um colapso nervoso se matar alguém (ou se sentir-se responsável por uma morte). Jogue três dados — o personagem fica completamente intratável e inútil (interprete isso!) durante um número de dias igual ao resultado dos dados. Também durante esse período, o personagem precisa de um sucesso em um teste de Vontade para tentar qualquer tipo de violência contra qualquer pessoa por qualquer motivo. -15 pontos.\n\nLegítima Defesa: O personagem só luta para defender a si mesmo ou àqueles de quem ele gosta, usando apenas a força necessária (nenhum golpe preventivo deve ser permitido). O personagem também deve dar o melhor de si para desencorajar outros a começarem uma briga. -15 pontos.\n\nNão-Violência Total: Exatamente isso! O personagem nunca deve levantar a mão contra outra criatura inteligente por qualquer razão e deve sempre dar o melhor de si para desencorajar o comportamento violento em outros. Ele ainda pode se defender contra o ataque de animais, mosquitos, etc. -30 pontos.\n\nEm uma campanha de realismo extremo, o Mestre pode exigir que todos os PdJs comecem o jogo como Assassinos Relutantes ou até mesmo Incapazes de Matar, concedendo-lhes pontos adicionais, mas deixando-os em desvantagem quando enfrentarem inimigos experientes."
   },
   {
     "id": "padrao_de_tempo_reduzido",
@@ -3013,7 +3013,7 @@
     "rawCost": "-100",
     "specialRule": null,
     "tags": [],
-    "descricao": ""
+    "descricao": "Esta desvantagem é a contraparte de Padrão de Tempo Alterado (pág. 75).\n\nO personagem vivencia o tempo com metade da velocidade normal.\n\nPara ele, passa-se um segundo subjetivo para cada dois segundos reais.\n\nO jogador recebe apenas um turno para cada dois segundos de combate.\n\nGrupos que utilizam um nível maior de detalhamento podem optar por conceder ao personagem metade de um turno por segundo.\n\nNesse caso, uma manobra Deslocamento pode ser dividida em dois turnos, ou uma manobra Ataque pode ser declarada em um turno e resolvida no seguinte.\n\nPadrão de Tempo Reduzido 2 vale -100 pontos."
   },
   {
     "id": "paralisia_frente_ao_combate",
@@ -3030,7 +3030,7 @@
     "tags": [
       "combate"
     ],
-    "descricao": ""
+    "descricao": "O personagem normalmente fica paralisado quando se encontra numa situação de combate.\n\nEle sofre uma penalidade de -2 em todas as Verificações de Pânico.\n\nEsta desvantagem não tem relação com Covardia (pág. 129).\n\nO personagem pode ser corajoso, mas é traído pelo próprio corpo.\n\nSempre que estiver em uma situação na qual uma lesão física pareça iminente, ele deve fazer um teste de HT.\n\nA jogada não deve ser feita até o momento em que ele precisa lutar, fugir, puxar o gatilho ou realizar alguma outra ação decisiva.\n\nQualquer resultado maior que 13 é considerado um fracasso, mesmo que o personagem tenha uma HT superior.\n\nNo caso de sucesso, ele consegue agir normalmente.\n\nNo caso de fracasso, ele fica mentalmente atordoado (v. Efeitos do Atordoamento, pág. 420).\n\nO personagem pode fazer um novo teste de HT a cada segundo para sair do estado de torpor.\n\nEsse teste recebe um bônus cumulativo de +1 por turno.\n\nUm tapa de um companheiro acrescenta +1 adicional ao bônus cumulativo do teste de HT.\n\nDepois que sair do estado de torpor, ele não volta a sofrer seus efeitos enquanto o perigo atual persistir.\n\nQuando enfrentar uma nova situação de perigo no futuro, a desvantagem poderá se manifestar novamente.\n\nEsta característica é o oposto de Reflexos em Combate (pág. 82).\n\nNão é possível possuir ambas as características ao mesmo tempo.\n\nParalisia Frente ao Combate vale -15 pontos."
   },
   {
     "id": "paranoia",
@@ -3047,22 +3047,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem perdeu o contato com a realidade e acredita que alguém está planejando alguma coisa contra ele e nunca confiará em ninguém, com exceção de seus velhos amigos — ainda assim, sem perdê-los de vista. Compre ensivelmente, a reação da maioria das pessoas sofre uma penalidade de -2 em relação a ele. A reação de um PdM paranoico diante de qualquer pessoa estranha sofre uma penalidade de -4 e qualquer redutor de reação “legítimo” (ex. : raça ou nacionalidade não-amis tosa) é dobrado. Esta desvantagem casa muito bem com Fantasias (pág. 139) que, é claro, tem seu próprio valor como desvantagem. Pesadelos 2 -5 pontos* O personagem é atormentado todas as noites por terríveis pesadelos. Às ve zes, eles são tão angustiantes que afetam a experiência do personagem quando ele está acordado. Ele deve fazer um teste de autocontrole todas as manhãs depois de acordar. Um fracasso indica que ele teve pesadelos; isso custa 1 PF, que só pode ser recuperado com uma noite de sono. No caso de um resultado de 17 ou 18, ele fica o dia inteiro tremendo e sofre uma penalidade de -1 em todos os testes de habilidade e Percepção. Alguns pesadelos podem ser tão vívi dos que acabam se confundindo com a realidade. Talvez o Mestre queira ence ná-los durante o jogo, começando com um cenário comum e depois os tornan do cada vez mais medonhos. Só depois de algum tempo a vítima vai perceber que está sonhando. Esses pesadelos podem ter um efeito dramático na vida diurna do personagem, como Obses sões e Fobias temporárias, ou até mes -"
-  },
-  {
-    "id": "pernas_tortas",
-    "nome": "Pernas Tortas",
-    "pagina": 165,
-    "costKind": "fixed",
-    "fixed": -1,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "-1",
-    "specialRule": null,
-    "tags": [],
-    "descricao": "O personagem tem pernas tortas. Isso não costuma afetar o Deslocamento, mas ele sofre uma penalidade de -1 na perícia Salto. Esta peculiaridade também pode resultar em uma penalidade de -1 nos testes de reação de pessoas que acham seu modo de andar engraçado."
+    "descricao": "O personagem perdeu o contato com a realidade e acredita que alguém está planejando alguma coisa contra ele.\n\nEle nunca confiará em ninguém, com exceção de seus velhos amigos.\n\nMesmo assim, não deixará de vigiá-los e desconfiar deles ocasionalmente.\n\nA reação da maioria das pessoas sofre uma penalidade de -2 em relação ao personagem.\n\nA reação de um PdM paranoico diante de qualquer pessoa estranha sofre uma penalidade de -4.\n\nAlém disso, qualquer penalidade de reação legítima, como raça ou nacionalidade não amistosa, é dobrada.\n\nEsta desvantagem combina muito bem com Fantasias (pág. 139), que frequentemente servem para explicar ou reforçar as crenças paranoicas do personagem.\n\nParanoia vale -10 pontos."
   },
   {
     "id": "pesadelos",
@@ -3079,7 +3064,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "-5 pontos* O personagem é atormentado todas as noites por terríveis pesadelos. Às ve zes, eles são tão angustiantes que afetam a experiência do personagem quando ele está acordado. Ele deve fazer um teste de autocontrole todas as manhãs depois de acordar. Um fracasso indica que ele teve pesadelos; isso custa 1 PF, que só pode ser recuperado com uma noite de sono. No caso de um resultado de 17 ou 18, ele fica o dia inteiro tremendo e sofre uma penalidade de -1 em todos os testes de habilidade e Percepção. Alguns pesadelos podem ser tão vívi dos que acabam se confundindo com a realidade. Talvez o Mestre queira ence ná-los durante o jogo, começando com um cenário comum e depois os tornan do cada vez mais medonhos. Só depois de algum tempo a vítima vai perceber que está sonhando. Esses pesadelos podem ter um efeito dramático na vida diurna do personagem, como Obses sões e Fobias temporárias, ou até mes mo uma perda psicossomática de PV ou níveis de atributos."
+    "descricao": "O personagem é atormentado todas as noites por terríveis pesadelos.\n\nÀs vezes, eles são tão angustiantes que afetam sua experiência quando está acordado.\n\nEle deve fazer um teste de autocontrole todas as manhãs depois de despertar.\n\nUm fracasso indica que ele teve pesadelos durante a noite.\n\nIsso custa 1 PF, que só pode ser recuperado após uma noite de sono.\n\nNo caso de um resultado de 17 ou 18, ele passa o dia inteiro abalado e sofre uma penalidade de -1 em todos os testes de habilidade e Percepção.\n\nAlguns pesadelos podem ser tão vívidos que acabam se confundindo com a realidade.\n\nO Mestre pode optar por encená-los durante o jogo, começando com um cenário comum e tornando-o progressivamente mais perturbador.\n\nSomente depois de algum tempo a vítima percebe que está sonhando.\n\nEsses pesadelos podem ter efeitos dramáticos sobre a vida desperta do personagem, como Obsessões temporárias, Fobias temporárias ou até perdas psicossomáticas de PV ou níveis de atributos.\n\nSe outros personagens jogadores estiverem presentes no pesadelo, eles não serão afetados pelos acontecimentos.\n\nEntretanto, se a sequência onírica ocupar muito tempo de jogo, o Mestre pode recompensar os jogadores com um ponto adicional de personagem, ou até dois pontos se a interpretação tiver sido particularmente boa.\n\nCabe ao Mestre decidir se os outros jogadores sabem antecipadamente que o cenário é apenas um sonho.\n\nEssa situação pode gerar interpretações incomuns e interessantes.\n\nPesadelos vale -5 pontos."
   },
   {
     "id": "piromania",
@@ -3096,7 +3081,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem adora o fogo! E também gosta de acendê-lo. Para conseguir uma boa atuação, o personagem não deve nunca perder uma oportunidade de começar um incêndio ou apreciar um em andamento. Ele deve fazer um teste de autocontrole sempre que tiver a oportunidade de causar um incêndio."
+    "descricao": "O personagem adora fogo.\n\nEle também gosta de acender incêndios.\n\nPara representar adequadamente esta desvantagem, o personagem nunca deve perder uma oportunidade de iniciar um incêndio ou de apreciar um fogo já em andamento.\n\nSempre que tiver a oportunidade de provocar um incêndio, ele deve fazer um teste de autocontrole.\n\nNo caso de um fracasso, não consegue resistir ao impulso e tenta iniciar o fogo ou agir de forma que favoreça sua criação.\n\nPiromania vale -5 pontos."
   },
   {
     "id": "pouca_empatia",
@@ -3113,24 +3098,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem não é capaz de entender nenhum tipo de emoção. Isso não o impede de ter e demonstrar sentimentos (a menos que tenha algo como Circunspeção), seu problema é não conseguir compreendê-los de verdade. Por causa disso, ele tem dificuldade para interagir socialmente. Ele não pode adquirir a vantagem Empatia e sofre uma penalidade de -3 em todas as perícias que dependem — no todo ou em parte — da compreensão da motivação emocional de uma pessoa, o que inclui Boemia, Comércio, Criminologia, Deslumbrar, Detecção de Mentiras, Diplomacia, Dissimulação, Interrogatório, Lábia, Liderança, Manha, Política, Psicologia, Sex Appeal, Sociologia e Trato Social."
-  },
-  {
-    "id": "preferencias",
-    "nome": "Preferências",
-    "pagina": 164,
-    "costKind": "fixed",
-    "fixed": -1,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "-1",
-    "specialRule": null,
-    "tags": [
-      "mental"
-    ],
-    "descricao": "Se o personagem gosta de alguma coisa, ele deve procurá-la sempre que possível. Instrumentos, gatinhos, cani vetes reluzentes, corujas de cerâmica, obras de arte… qualquer coisa serve. Isso não chega a ser uma compulsão, apenas um gosto."
+    "descricao": "O personagem não é capaz de entender nenhum tipo de emoção.\n\nIsso não o impede de ter e demonstrar sentimentos, a menos que possua alguma característica adicional que interfira nisso.\n\nSeu problema é não conseguir compreender verdadeiramente as emoções das outras pessoas.\n\nPor causa dessa limitação, ele tem dificuldade para interagir socialmente.\n\nO personagem não pode adquirir a vantagem Empatia.\n\nAlém disso, sofre uma penalidade de -3 em todas as perícias que dependem, total ou parcialmente, da compreensão das motivações emocionais de outras pessoas.\n\nEntre essas perícias estão:\n\n• Boemia\n• Comércio\n• Criminologia\n• Deslumbrar\n• Detecção de Mentiras\n• Diplomacia\n• Dissimulação\n• Interrogatório\n• Lábia\n• Liderança\n• Manha\n• Política\n• Psicologia\n• Sex Appeal\n• Sociologia\n• Trato Social\n\nO personagem ainda pode possuir essas perícias, mas nunca será tão eficiente nelas quanto alguém sem esta desvantagem.\n\nEsta característica é comum entre androides, demônios, golens, mortos-vivos e alguns alienígenas.\n\nEla também pode ser apropriada para certos humanos.\n\nPouca Empatia é mutuamente excludente com Insensível (pág. 147) e Oblívio (pág. 151).\n\nEssas desvantagens pressupõem algum grau de compreensão emocional, ainda que distorcida ou inadequada.\n\nPouca Empatia vale -20 pontos."
   },
   {
     "id": "preguica",
@@ -3147,7 +3115,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem uma aversão mui to grande ao trabalho físico. Suas chan ces de conseguir um aumento em qual quer emprego são reduzidas à metade. Se ele trabalha por conta própria, sua renda mensal cai para a metade (v. Empregos, pág. 516). O personagem deve evitar o trabalho, principalmente o trabalho pe sado, a qualquer custo. Interprete! Problemas na Coluna 3 A coluna do personagem está em más condições — qualquer que seja o motivo. É possível que durante uma ati vidade física intensa, ele venha a “travar as costas” e sinta uma dor incapacitante ou piore sua lesão. Sempre que fizer um teste de ST, ou quando obtiver um resul tado de 17 ou 18 numa jogada de ataque ou defesa durante um combate corpo a corpo, ou ainda num teste com algu ma perícia “atlética” (como Acrobacia), será necessário fazer um teste de HT. Modificadores: Qualquer modifica dor usado no teste de habilidade da tarefa que desencadeou o teste de HT. No caso de uma atividade prolongada que permite um maior planejamento, é possível minimizar a pressão sobre a coluna; nesses casos, um sucesso num teste de IQ-2 ou Fisiologia+4 concede um bônus de +2 no teste de HT. Se fracassar, a coluna do persona gem fica travada. As consequências dis so dependem da gravidade do caso: Suave: O personagem sofre uma pe nalidade de -3 até conseguir descansar ou até receber ajuda; um sucesso num teste de Primeiros Socorros-2 restaura a coluna. A IQ do personagem também sofre uma penalidade de -3, mas só du rante o próximo segundo (no caso de um combate, isso significa o próximo tur -"
+    "descricao": "O personagem tem uma aversão muito grande ao trabalho físico.\n\nSuas chances de conseguir uma promoção ou aumento em qualquer emprego são reduzidas à metade.\n\nSe trabalhar por conta própria, sua renda mensal é reduzida à metade (v. Empregos, pág. 516).\n\nO personagem deve evitar o trabalho sempre que possível, principalmente tarefas que exijam esforço físico intenso.\n\nEle tende a procurar atalhos, delegar responsabilidades, adiar tarefas desagradáveis ou simplesmente deixar que outras pessoas façam o serviço.\n\nEssa atitude deve ser interpretada durante o jogo.\n\nPreguiça vale -10 pontos."
   },
   {
     "id": "problemas_na_coluna",
@@ -3167,7 +3135,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "A coluna do personagem está em más condições — qualquer que seja o motivo. É possível que durante uma ati vidade física intensa, ele venha a “travar as costas” e sinta uma dor incapacitante ou piore sua lesão. Sempre que fizer um teste de ST, ou quando obtiver um resul tado de 17 ou 18 numa jogada de ataque ou defesa durante um combate corpo a corpo, ou ainda num teste com algu ma perícia “atlética” (como Acrobacia), será necessário fazer um teste de HT. Modificadores: Qualquer modifica dor usado no teste de habilidade da tarefa que desencadeou o teste de HT. No caso de uma atividade prolongada que permite um maior planejamento, é possível minimizar a pressão sobre a coluna; nesses casos, um sucesso num teste de IQ-2 ou Fisiologia+4 concede um bônus de +2 no teste de HT. Se fracassar, a coluna do persona gem fica travada. As consequências dis so dependem da gravidade do caso: Suave: O personagem sofre uma pe nalidade de -3 até conseguir descansar ou até receber ajuda; um sucesso num teste de Primeiros Socorros-2 restaura a coluna. A IQ do personagem também sofre uma penalidade de -3, mas só du rante o próximo segundo (no caso de um combate, isso significa o próximo tur no). No caso de uma falha crítica, a DX também sofre uma penalidade de -5 e o personagem precisa de um sucesso num teste de Vontade para conseguir realizar qualquer ação física. -15 pontos. Grave: O teste de HT sofre uma pe nalidade de -2. No caso de um fracasso, a DX e a IQ sofrem uma penalidade de -4, até o personagem conseguir descan sar ou receber ajuda; antes disso, ele fica em profunda agonia. Numa falha crítica, ele sofre 1d-3 ponto de dano,"
+    "descricao": "A coluna do personagem está em más condições, qualquer que seja a causa.\n\nDurante atividades físicas intensas, ele corre o risco de travar a coluna, sofrer dores incapacitantes ou agravar a lesão.\n\nSempre que fizer um teste de ST, obtiver um resultado de 17 ou 18 em uma jogada de ataque ou defesa de combate corpo a corpo, ou realizar um teste com uma perícia atlética, como Acrobacia, ele deve fazer um teste de HT.\n\nModificadores:\n\nUtilize os mesmos modificadores aplicados ao teste da tarefa que desencadeou o teste de HT.\n\nEm atividades prolongadas que permitam planejamento adequado, é possível reduzir o esforço sobre a coluna.\n\nNesses casos, um sucesso em um teste de IQ-2 ou Fisiologia+4 concede um bônus de +2 ao teste de HT.\n\nSe o teste de HT fracassar, a coluna do personagem trava.\n\nAs consequências dependem da gravidade da desvantagem.\n\nSuave:\n\nO personagem sofre uma penalidade de -3 até conseguir descansar ou receber ajuda.\n\nUm sucesso em um teste de Primeiros Socorros-2 restaura a coluna.\n\nA IQ também sofre uma penalidade de -3, mas apenas durante o próximo segundo.\n\nEm combate, isso corresponde ao próximo turno.\n\nNo caso de uma falha crítica, a DX sofre uma penalidade de -5 e o personagem precisa obter sucesso em um teste de Vontade para realizar qualquer ação física.\n\n-15 pontos.\n\nGrave:\n\nO teste de HT sofre uma penalidade de -2.\n\nNo caso de fracasso, a DX e a IQ sofrem uma penalidade de -4 até que o personagem consiga descansar ou receba ajuda.\n\nEnquanto isso, ele permanece em profunda agonia.\n\nNo caso de uma falha crítica, ele sofre 1d-3 pontos de dano.\n\nAlém disso, sua DX sofre uma penalidade de -6 e sua IQ uma penalidade de -4.\n\n-25 pontos.\n\nA vantagem Hipoalgia (pág. 63) reduz pela metade as penalidades aplicadas à DX e IQ, arredondando frações para baixo, mas não elimina completamente os efeitos da desvantagem."
   },
   {
     "id": "recuperacao_lenta",
@@ -3184,7 +3152,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O corpo do personagem se recupera muito lentamente de ferimentos. O intervalo entre testes de HT para cura é dobrado ou triplicado."
+    "descricao": "O corpo do personagem se recupera muito devagar.\n\nCada nível desta desvantagem dobra o intervalo entre os testes de HT para recuperar Pontos de Vida perdidos.\n\nRecuperação Lenta 1:\n\nO personagem faz um teste de HT para recuperação a cada dois dias.\n\n-5 pontos.\n\nRecuperação Lenta 2:\n\nO personagem faz um teste de HT para recuperação a cada quatro dias.\n\n-10 pontos.\n\nRecuperação Lenta 3:\n\nO personagem faz um teste de HT para recuperação a cada oito dias.\n\n-15 pontos.\n\nCaso o personagem possua uma capacidade de recuperação ainda pior, adquira Sem Recuperação (pág. 156).\n\nSe o personagem estiver sob os cuidados de um médico competente (v. Cuidados Médicos, pág. 424), cada nível de Recuperação Lenta também dobra o tempo necessário entre os testes de Medicina destinados à sua recuperação.\n\nHumanos normais não podem adquirir mais que um nível desta desvantagem."
   },
   {
     "id": "refeicao_demorada",
@@ -3201,7 +3169,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem gasta muito mais tempo que o normal para se alimentar, o que reduz seu tempo útil diário."
+    "descricao": "O personagem passa grande parte do tempo comendo.\n\nCada refeição leva aproximadamente duas horas para ser concluída, em vez dos trinta minutos típicos de um ser humano.\n\nComo consequência, ele dispõe de menos tempo para estudos, trabalhos prolongados e viagens a pé.\n\nEssa necessidade reduz em 4 horas e 30 minutos o tempo disponível do personagem a cada dia.\n\nRefeição Demorada vale -10 pontos."
   },
   {
     "id": "reprogramavel",
@@ -3218,7 +3186,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem pode ser programado para obedecer a um mestre ou conjunto de ordens. Frequentemente associado a robôs ou seres controlados mentalmente."
+    "descricao": "O personagem pode ser programado para obedecer a um Mestre.\n\nSe possuir a desvantagem Mentalidade de Escravo (pág. 151), ele deve seguir as ordens de seu Mestre literalmente e sem questionamentos.\n\nSe não possuir Mentalidade de Escravo, pode interpretar suas ordens com criatividade, desde que permaneça fiel às instruções recebidas ou ao entendimento que teve delas.\n\nA interpretação exata fica a critério do jogador.\n\nSe o personagem não for inteligente (IQ 0), ele não terá qualquer interesse em fazer algo diferente daquilo para o qual foi programado.\n\nUm personagem pode possuir simultaneamente Dever e Reprogramável.\n\nNesse caso, ele deve se esforçar para cumprir ambas as obrigações.\n\nEntretanto, caso exista um conflito entre seu Dever e sua programação, as ordens programadas têm prioridade.\n\nEsta característica é apropriada para golens, mortos-vivos irracionais, robôs e outros tipos de autômatos.\n\nEla raramente é adequada para personagens jogadores.\n\nO Mestre pode decidir proibi-la completamente para PdJs.\n\nReprogramável vale -10 pontos."
   },
   {
     "id": "repugnancia",
@@ -3240,7 +3208,7 @@
       "fisica",
       "magica"
     ],
-    "descricao": "O personagem tem uma reação sobrenatural incapacitante diante de uma substância comumente inócua. Se tocar nessa substância ou respirá - -la, ele deve fazer um teste de HT ime diatamente. Se fracassar ele sofre uma penalidade de -5 em todas as perícias e atributos durante os próximos 10 minutos. Se ingerir a substância, ele sofre uma penalidade de -5 em todos os atributos e -10 em todas as perícias e testes de Sentidos — novamente du rante 10 minutos. O valor em pontos da desvantagem depende da raridade da substância: Ocasional (couro, sabonete): -5 pontos. Comum (fumaça, madeira): -10 pontos. Muito Comum (grama, metal): -15 pontos. Esta reação é de natureza física. Para efeitos mentais, consulte Aversão (pág. 123)."
+    "descricao": "O personagem possui uma reação sobrenatural incapacitante diante de uma substância normalmente inofensiva.\n\nSe tocar ou respirar essa substância, deve fazer imediatamente um teste de HT.\n\nNo caso de um fracasso, sofre uma penalidade de -5 em todos os atributos e perícias durante os próximos 10 minutos.\n\nSe ingerir a substância, os efeitos são mais severos.\n\nNesse caso, sofre uma penalidade de -5 em todos os atributos e uma penalidade de -10 em todas as perícias e testes de Sentidos durante 10 minutos.\n\nO valor em pontos da desvantagem depende da raridade da substância.\n\nOcasional:\n\nExemplos: couro, sabonete.\n\n-5 pontos.\n\nComum:\n\nExemplos: fumaça, madeira.\n\n-10 pontos.\n\nMuito Comum:\n\nExemplos: grama, metal.\n\n-15 pontos.\n\nEsta reação é de natureza física.\n\nPara efeitos mentais semelhantes, consulte Aversão (pág. 123)."
   },
   {
     "id": "reputacao",
@@ -3258,7 +3226,7 @@
       "mental",
       "social"
     ],
-    "descricao": "Base: -5, -10, -15, ou -20. Pessoas Afetadas: Quase todas (x1), Exceto grupo grande (x2/3), Exceto grupo médio (x1/2), Exceto grupo pequeno (x1/3). Reconhecimento: Todo tempo (x1), 10- (x1/2), 7- (x1/3)."
+    "descricao": "É possível que o personagem seja tão conhecido que sua reputação se torne uma vantagem ou uma desvantagem.\n\nA reputação afeta os testes de reação feitos pelos PdMs.\n\nEla possui quatro componentes: Detalhes, Modificador de Reação, Pessoas Afetadas e Frequência de Reconhecimento.\n\nDetalhes\n\nOs detalhes da reputação ficam inteiramente a cargo do jogador.\n\nO personagem pode ser conhecido por sua bravura, ferocidade, generosidade, crueldade ou qualquer outra característica notável.\n\nUma reputação deve ser específica; não existe uma reputação genérica.\n\nModificador de Reação\n\nDefina o modificador que será aplicado aos testes de reação das pessoas que reconhecerem o personagem.\n\nEsse modificador determina o custo básico da reputação.\n\nCada +1 de bônus nos testes de reação vale 5 pontos, até um máximo de +4.\n\nCada -1 de penalidade nos testes de reação vale -5 pontos, até um máximo de -4.\n\nPessoas Afetadas\n\nO tamanho do grupo de pessoas que conhece a reputação modifica seu custo.\n\n• Quase todas as pessoas encontradas no cenário: ×1.\n\n• Quase todas as pessoas, exceto um grupo grande: ×2/3.\n\n• Um grupo grande de pessoas: ×1/2.\n\n• Um grupo pequeno de pessoas: ×1/3.\n\nSe o grupo for tão raro que dificilmente apareceria em aventuras, a reputação não tem valor prático.\n\nFrequência de Reconhecimento\n\nO nome ou rosto do personagem devem ser suficientes para permitir um teste de reconhecimento.\n\nO Mestre faz uma jogada para determinar se a reputação é conhecida.\n\n• O tempo todo: ×1.\n\n• De vez em quando (10 ou menos): ×1/2.\n\n• Ocasionalmente (7 ou menos): ×1/3.\n\nApós aplicar todos os modificadores, despreze as frações.\n\nUma reputação normalmente só existe dentro de uma área geográfica ou cultural limitada.\n\nCaso o personagem viaje para uma região distante, o Mestre pode exigir que ele recompre os pontos obtidos por uma Má Reputação.\n\nReputações Múltiplas\n\nUm personagem pode possuir mais de uma reputação.\n\nO Mestre verifica cada uma delas separadamente.\n\nO modificador total decorrente das reputações nunca pode ser superior a +4 nem inferior a -4.\n\nReputações Multifacetadas\n\nUma mesma reputação pode gerar modificadores diferentes para grupos distintos, desde que esses grupos não se sobreponham.\n\nCalcule separadamente o custo para cada grupo afetado, some os valores obtidos e depois aplique o modificador de Frequência de Reconhecimento.\n\nO resultado final pode ser positivo, negativo ou até mesmo igual a zero.\n\nMesmo que o valor final seja zero, a reputação deve ser registrada na ficha do personagem.\n\nExemplo:\n\nUm personagem famoso por derrotar monstros pode receber um bônus de +2 nos testes de reação daqueles que o reconhecem.\n\nOutro personagem pode ser admirado pelos cidadãos honestos e odiado pelo submundo, resultando em modificadores positivos e negativos que se anulam."
   },
   {
     "id": "riqueza",
@@ -3279,7 +3247,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem possui menos recursos financeiros que a média da campanha (Pobre, Muito Pobre ou Indigente)."
+    "descricao": "A Riqueza representa os recursos financeiros, bens e poder econômico do personagem.\n\nUma Riqueza acima da média é considerada uma vantagem, pois concede recursos iniciais superiores aos normalmente disponíveis na sociedade.\n\nUma Riqueza abaixo da média é considerada uma desvantagem, pois limita os recursos iniciais e as oportunidades econômicas do personagem.\n\nO significado exato de cada nível de riqueza depende do cenário de campanha.\n\nFalido:\n\nO personagem não possui emprego, fonte de renda, dinheiro ou bens relevantes além das roupas que veste.\n\nEle é incapaz de conseguir trabalho ou vive em uma situação na qual não existem oportunidades de emprego disponíveis.\n\n-25 pontos.\n\nPobre:\n\nO personagem possui apenas 1/5 dos recursos iniciais normais de sua sociedade.\n\nMuitas profissões e oportunidades estão fora de seu alcance.\n\nMesmo quando consegue emprego, dificilmente recebe um bom salário.\n\n-15 pontos.\n\nBatalhador:\n\nO personagem possui apenas metade dos recursos iniciais normais de sua sociedade.\n\nTodos os tipos de profissão continuam disponíveis para ele, mas seus rendimentos permanecem abaixo da média.\n\nEsta categoria é adequada para estudantes, jovens profissionais e indivíduos em início de carreira.\n\n-10 pontos.\n\n*Riqueza e Status*\n\nEm alguns cenários, a riqueza influencia diretamente o Status social.\n\nNesses casos:\n\n• Rico ou superior: Status +1.\n\n• Multimilionário 1: Status +2.\n\n• Multimilionário 2: Status +3.\n\nO bônus máximo de Status obtido exclusivamente por riqueza é +3."
   },
   {
     "id": "sadismo",
@@ -3294,7 +3262,7 @@
     "rawCost": "-15*",
     "specialRule": null,
     "tags": [],
-    "descricao": ""
+    "descricao": "O personagem aprecia a crueldade mental, física ou ambas.\n\nEle deve fazer um teste de autocontrole sempre que tiver uma oportunidade de satisfazer esses impulsos, mesmo sabendo que não deveria fazê-lo.\n\nExemplo: quando um prisioneiro precisa ser libertado sem sofrer qualquer dano.\n\nNo caso de um fracasso, o personagem não consegue resistir aos seus impulsos sádicos.\n\nA reação das pessoas que descobrem essa característica sofre uma penalidade de -3.\n\nEssa penalidade não se aplica em culturas que desprezam a vida ou consideram a crueldade aceitável.\n\nSadismo é uma característica particularmente maligna.\n\nEla costuma ser mais apropriada para PdMs cruéis do que para personagens jogadores heroicos.\n\nO Mestre pode proibir esta desvantagem caso não deseje que ela seja interpretada na campanha.\n\nSadismo vale -15 pontos."
   },
   {
     "id": "sangue_frio",
@@ -3315,7 +3283,7 @@
       "combate",
       "mental"
     ],
-    "descricao": "A temperatura corporal do persona gem varia de acordo com o ambiente ele é menos suscetível ao dano causado pela temperatura corporal alta ou bai xa (bônus de +2 na HT para resistir aos efeitos térmicos). Ele só precisa de 1/3 do alimento necessário à sobrevivência de uma criatura com sangue quente e mas sa semelhante, mas tem uma tendência a ficar “paralisado” sob a água fria. Depois de 30 minutos em um ambien te frio (ou uma hora se tiver qualquer ní vel de Tolerância à Temperatura), o per sonagem sofre uma penalidade de -1 no Deslocamento Básico e na DX para cada 5 °C abaixo de sua “temperatura limite” (v. a seguir). Quando a temperatura am biente estiver abaixo de 0 °C, o persona gem precisará de um sucesso num teste de HT ou perderá 1 PV. Roupas quentes concedem um bônus de +2 nesse teste. Depois que o personagem voltar para um clima quente, o Deslocamento Básico e DX perdidos são recuperados à razão de um ponto por hora. Dobre esse valor em um ambiente excepcio nalmente quente. O valor em pontos da desvantagem depende da “temperatura limite”: O personagem fica “paralisado” em temperaturas abaixo de 10 °C: -5 pontos. O personagem fica “paralisado” em temperaturas abaixo de 18 °C: -10 pontos. Sanguinolência 2 -10 pontos* O personagem quer ver seus inimigos mortos. Em uma batalha, ele prefere gol pes mortais e dará um tiro a mais para ter certeza de que matou um oponente vencido. Ele precisa ser bem-sucedido"
+    "descricao": "A temperatura corporal do personagem varia de acordo com o ambiente.\n\nEle é menos suscetível aos efeitos do calor e do frio extremos.\n\nRecebe um bônus de +2 nos testes de HT para resistir a danos ou efeitos causados por temperaturas elevadas ou baixas.\n\nAlém disso, necessita de apenas 1/3 da quantidade de alimento exigida por uma criatura de sangue quente de massa semelhante.\n\nPor outro lado, ele possui uma tendência a ficar paralisado em ambientes frios.\n\nApós 30 minutos em um ambiente frio, ou uma hora caso possua qualquer nível de Tolerância à Temperatura, o personagem sofre uma penalidade de -1 na DX e no Deslocamento Básico para cada 5 °C abaixo de sua Temperatura Limite.\n\nQuando a temperatura ambiente estiver abaixo de 0 °C, ele deve obter sucesso em um teste de HT ou perder 1 PV.\n\nRoupas adequadas para o frio concedem um bônus de +2 nesse teste.\n\nQuando retornar a um ambiente quente, os pontos perdidos de DX e Deslocamento Básico são recuperados à razão de um ponto por hora.\n\nEm ambientes excepcionalmente quentes, essa recuperação ocorre duas vezes mais rápido.\n\nO valor da desvantagem depende da Temperatura Limite.\n\nTemperatura Limite de 10 °C:\n\nO personagem começa a sofrer os efeitos descritos apenas quando a temperatura estiver abaixo de 10 °C.\n\n-5 pontos.\n\nTemperatura Limite de 18 °C:\n\nO personagem começa a sofrer os efeitos descritos quando a temperatura estiver abaixo de 18 °C.\n\n-10 pontos.\n\nSangue Frio também concede as vantagens fisiológicas típicas de organismos ectotérmicos, mas impõe severas limitações de desempenho em ambientes frios."
   },
   {
     "id": "sanguinolencia",
@@ -3332,7 +3300,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem sente um desejo incontrolável de matar seus inimigos, raramente aceitando rendições."
+    "descricao": "O personagem deseja ver seus inimigos mortos.\n\nEm combate, ele prefere golpes fatais e frequentemente aplica ataques adicionais para garantir que um adversário derrotado esteja realmente morto.\n\nSempre que precisar aceitar a rendição de um inimigo, deixar uma sentinela viva, capturar um prisioneiro ou permitir que um adversário sobreviva, deve fazer um teste de autocontrole.\n\nNo caso de um fracasso, ele tenta matar o oponente, mesmo que isso viole leis, revele sua posição, desperdice munição valiosa ou desobedeça ordens diretas.\n\nO personagem nunca esquece que um inimigo é um inimigo.\n\nEsta característica não significa que ele seja sádico ou fanático.\n\nSua hostilidade está limitada a inimigos que considera legítimos, como criminosos, soldados inimigos ou membros de grupos tradicionalmente hostis.\n\nEle pode agir normalmente em conflitos cotidianos.\n\nPor exemplo, durante uma briga comum em uma taverna, costuma lutar como qualquer outra pessoa e não necessariamente tenta matar seus adversários.\n\nPor outro lado, indivíduos com esta desvantagem podem enfrentar sérios problemas em profissões ou funções que exijam moderação.\n\nUm gladiador ou duelista com essa reputação tende a ser impopular, um policial pode acabar enfrentando investigações e um soldado corre o risco de sofrer punições disciplinares ou até corte marcial.\n\nSanguinolência vale -10 pontos."
   },
   {
     "id": "segredo",
@@ -3354,7 +3322,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O valor em pontos depende da gravidade: Problema Grave (-5), Rejeição Grave (-10), Prisão ou Exílio (-20), Perigo de Morte (-30)."
+    "descricao": "Um Segredo é um aspecto da vida ou do passado do personagem que precisa permanecer oculto.\n\nA revelação dessa informação acarretaria consequências negativas.\n\nO valor em pontos depende da gravidade das consequências caso o segredo venha a público.\n\nProblema Grave:\n\nA revelação do segredo pode impedir promoções, eleições, casamentos vantajosos ou causar atenção pública indesejada.\n\n-5 pontos.\n\nRejeição Grave:\n\nA revelação altera significativamente a vida do personagem.\n\nEle pode perder o emprego, ser abandonado por amigos ou familiares, ou passar a ser perseguido por jornalistas, admiradores, seguidores ou parentes inconvenientes.\n\n-10 pontos.\n\nPrisão ou Exílio:\n\nCaso as autoridades descubram o segredo, o personagem precisará fugir ou enfrentará uma longa pena de prisão.\n\nA duração da punição fica a critério do Mestre.\n\n-20 pontos.\n\nPerigo de Morte:\n\nO segredo é tão grave que sua revelação pode resultar em execução legal, linchamento popular ou assassinato por organizações poderosas.\n\nO personagem se torna um homem caçado.\n\n-30 pontos.\n\nFrequência de Participação\n\nNormalmente, no início de cada aventura, o Mestre faz uma jogada de 3d.\n\nCom um resultado de 6 ou menos, o Segredo entra em cena.\n\nEntretanto, o Mestre não é obrigado a seguir essa regra e pode introduzir o Segredo sempre que considerar apropriado.\n\nA participação do Segredo não significa necessariamente sua revelação.\n\nO personagem normalmente recebe uma oportunidade para evitar que a verdade venha à tona.\n\nIsso pode envolver chantagem, extorsão, roubo de provas comprometedoras ou outras medidas destinadas a silenciar quem conhece o segredo.\n\nEssas soluções costumam ser temporárias.\n\nO Segredo continua retornando à campanha até ser finalmente revelado ou recomprado com pontos de personagem.\n\nEfeitos da Revelação\n\nQuando o Segredo é revelado, ele produz um efeito negativo imediato compatível com sua gravidade.\n\nAlém disso, o personagem adquire novas desvantagens permanentes ou perde vantagens existentes.\n\nO valor total dessas mudanças deve ser igual ao dobro do valor original do Segredo.\n\nEssas novas características substituem o Segredo na ficha do personagem.\n\nO Mestre escolhe as novas desvantagens ou vantagens perdidas, sempre de forma relacionada à natureza do segredo.\n\nEntre as consequências mais comuns estão:\n\n• Estigma Social.\n• Inimigos.\n• Má Reputação.\n• Redução de Status.\n• Redução de Riqueza.\n• Desvantagens mentais.\n• Desvantagens físicas.\n\nExemplo:\n\nUm guarda da cidade possui um Segredo de -20 pontos: durante a noite atua como ladrão.\n\nQuando é descoberto e condenado, o Segredo é substituído por -40 pontos em novas desvantagens.\n\nEle pode perder seus Poderes Legais, adquirir Estigma Social (Ficha Criminal), tornar-se Maneta e sofrer uma redução permanente em sua Riqueza.\n\nO Segredo vale entre -5 e -30 pontos, dependendo das consequências de sua revelação."
   },
   {
     "id": "sem_imaginacao",
@@ -3371,7 +3339,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem dificuldade para pensar em algo original. Ele sofre uma pe nalidade de -2 em qualquer tarefa que exi gir criatividade ou imaginação, incluindo a maioria dos testes da perícia Artista, todos os testes de Engenharia para criar invenções e todos os testes de habilidade para utilizar a vantagem Desenvolvedor."
+    "descricao": "O personagem tem dificuldade para pensar em algo original.\n\nEle sofre uma penalidade de -2 em qualquer tarefa que exija criatividade, inovação ou imaginação.\n\nEssa penalidade se aplica a atividades que dependam da criação de novas ideias, conceitos, projetos ou soluções originais.\n\nEntre os exemplos mais comuns estão:\n\n• A maioria dos testes da perícia Artista.\n\n• Todos os testes de Engenharia destinados à criação de invenções.\n\n• Todos os testes de habilidade relacionados ao uso da vantagem Desenvolvedor.\n\nO personagem ainda pode reproduzir técnicas conhecidas, seguir procedimentos estabelecidos e aplicar conhecimentos existentes normalmente.\n\nSua limitação afeta apenas situações que exijam pensamento criativo ou a elaboração de algo novo.\n\nSem Imaginação vale -5 pontos."
   },
   {
     "id": "sem_manuseadores",
@@ -3388,7 +3356,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não possui braços ou membros capazes de manipular objetos. Sofre grandes penalidades em tarefas manuais."
+    "descricao": "O personagem não possui mãos e possivelmente não possui outros membros capazes de manipular objetos.\n\nSem Manuseadores:\n\nO personagem não possui membros manipuladores.\n\nA única forma de interagir fisicamente com objetos é empurrando-os com o corpo ou com a cabeça.\n\nEle continua capaz de se mover, rolar, contorcer-se, saltar e realizar outras formas de deslocamento utilizando seu Deslocamento Básico.\n\nO jogador pode reduzir voluntariamente o Deslocamento Básico até 0, se desejar representar uma criatura ainda mais limitada.\n\nEsta característica normalmente está restrita a criaturas não humanas e personagens supers.\n\nQualquer personagem com esta desvantagem pode adquirir ST e DX com a limitação Manipuladores Precários (-40%).\n\nSem Manuseadores vale -50 pontos."
   },
   {
     "id": "sem_nocao_de_profundidade",
@@ -3405,7 +3373,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": ""
+    "descricao": "O personagem possui dois olhos funcionais, mas é incapaz de avaliar corretamente profundidade e distância.\n\nEssa condição pode ser resultado de um distúrbio visual ou de uma característica neurológica própria de sua raça.\n\nOs efeitos em jogo são idênticos aos da desvantagem Zarolho (pág. 162).\n\nO personagem sofre as mesmas limitações de percepção espacial, avaliação de distâncias e coordenação associadas à perda da visão estereoscópica.\n\nNão é permitido adquirir Sem Noção de Profundidade e Zarolho simultaneamente.\n\nSem Noção de Profundidade vale -15 pontos."
   },
   {
     "id": "sem_pernas",
@@ -3427,7 +3395,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não possui pernas ou membros inferiores funcionais. O valor depende da forma de locomoção alternativa."
+    "descricao": "Esta desvantagem indica que a raça do personagem não possui pernas.\n\nSe a raça normalmente possui pernas e apenas o indivíduo não as possui, utilize Deficiência Física (pág. 130) em vez desta característica.\n\nIndependentemente da forma escolhida, o personagem não pode realizar chutes, não pode ser atingido da cintura para baixo durante o combate e não precisa utilizar armaduras para as pernas.\n\nOs custos apresentados assumem que a vantagem de não possuir pernas vulneráveis compensa a incapacidade de chutar.\n\nAéreo:\n\nO personagem não consegue se locomover por terra.\n\nEle flutua, plana ou voa e deve possuir a vantagem Voo (pág. 98).\n\nCalcule a Velocidade Básica normalmente e utilize o dobro desse valor como Deslocamento Aéreo Básico.\n\nSeu Deslocamento Terrestre é 0.\n\n0 ponto.\n\nAquático:\n\nO personagem não consegue se locomover por terra.\n\nEle é capaz de se mover sobre ou sob a água, como um peixe ou navio.\n\nSeu Deslocamento Aquático Básico é igual ao seu Deslocamento Básico.\n\nSeu Deslocamento Terrestre é 0.\n\nAs perícias não sofrem penalidades por serem utilizadas na água.\n\n0 ponto.\n\nSe a locomoção depender de nadadeiras, remos, mastros ou velas que não podem receber armadura: -5 pontos.\n\nSe além disso ele não puder mergulhar: -10 pontos.\n\nCom Esteira ou Rodas:\n\nO personagem utiliza esteiras ou rodas em vez de pernas.\n\nO número de rodas ou esteiras deve ser especificado.\n\nEle não consegue saltar nem superar obstáculos que exijam coordenação típica de pernas ou braços, como escadas ou cordas.\n\nSempre deixa rastros visíveis.\n\nOs testes de Rastreamento contra ele recebem bônus de +1 se possuir rodas ou +2 se possuir esteiras.\n\nEsteiras também produzem ruído significativo, concedendo +2 nos testes de Audição para detectá-lo.\n\nPor outro lado, permitem melhor movimentação em terrenos difíceis.\n\nRodas e esteiras não reduzem o Deslocamento e permitem adquirir até três níveis de Deslocamento Ampliado (Terrestre).\n\nEsta opção normalmente acompanha a metacaracterística Máquina.\n\n-20 pontos.\n\nPula, Rola ou Desliza:\n\nO personagem se locomove sem pernas, como uma serpente ou determinados tipos de robôs.\n\nSeu Deslocamento Terrestre é igual ao seu Deslocamento Básico normal.\n\n0 ponto.\n\nSemiaquático:\n\nO personagem se desloca em terra utilizando membros adaptados à natação, como uma foca.\n\nSeu Deslocamento Aquático Básico é igual ao Deslocamento Básico.\n\nSeu Deslocamento Terrestre é igual a 1/5 desse valor.\n\nAs perícias sofrem as penalidades normais quando utilizadas na água.\n\n0 ponto.\n\nSéssil:\n\nO personagem está permanentemente fixo ao local onde se encontra, como uma árvore ou edifício.\n\nNão pode se mover por conta própria em nenhum ambiente.\n\nTambém não pode utilizar plataformas móveis, embora possa ser transportado por terceiros mediante esforço considerável.\n\nSeu Deslocamento Básico é 0 e não gera pontos adicionais por essa redução.\n\nEle ainda pode possuir manipuladores.\n\nNesse caso, pode utilizar armas normalmente, beneficiando-se de uma base extremamente estável.\n\n-50 pontos."
   },
   {
     "id": "sem_recuperacao",
@@ -3447,7 +3415,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem é incapaz de se curar naturalmente de ferimentos. PV perdidos não retornam com o tempo e exigem métodos artificiais ou mágicos."
+    "descricao": "O personagem é incapaz de se curar naturalmente.\n\nEle não realiza os testes periódicos de HT para recuperar Pontos de Vida perdidos.\n\nTambém não consegue recuperar naturalmente o uso de membros incapacitados ou superar ferimentos incapacitantes através do repouso.\n\nA perícia Primeiros Socorros continua sendo capaz de interromper sangramentos.\n\nEntretanto, nem Primeiros Socorros nem Medicina restauram Pontos de Vida perdidos.\n\nTecnologias e tratamentos que aceleram a cura natural, incluindo ervas medicinais, drogas e métodos semelhantes, também não funcionam.\n\nEsta desvantagem possui dois níveis.\n\nParcial:\n\nO personagem pode recuperar Pontos de Vida naturalmente apenas se satisfizer uma condição rara e específica.\n\nExemplos incluem permanecer imerso em sangue ou banhar-se em lava.\n\nEle também pode recuperar PV drenando-os de outras criaturas por meio de Mordida de Vampiro (pág. 72), magia, psiquismo ou efeitos semelhantes.\n\n-20 pontos.\n\nTotal:\n\nO personagem jamais recupera Pontos de Vida naturalmente.\n\nAlém disso, não pode obter cura roubando Pontos de Vida de outras criaturas.\n\n-30 pontos.\n\nDependendo de sua natureza, ainda pode ser possível restaurar Pontos de Vida ou reparar membros incapacitados por meios artificiais.\n\nEntre os exemplos estão cirurgia, manutenção mecânica no caso de máquinas, magia de cura, alquimia, psiquismo ou outros métodos extraordinários.\n\nSem Recuperação vale -20 pontos (Parcial) ou -30 pontos (Total)."
   },
   {
     "id": "sem_um_dedo",
@@ -3467,7 +3435,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem não tem um ou mais dedos em uma mão, o que pode causar penalidades em tarefas manuais finas."
+    "descricao": "O personagem perdeu um dos dedos de uma das mãos.\n\nOs efeitos dependem de qual dedo está ausente.\n\nSem Um Dedo:\n\nO personagem perdeu um dedo que não seja o polegar.\n\nEle sofre uma penalidade de -1 na DX da mão afetada.\n\nEssa penalidade se aplica apenas às ações realizadas com a mão que perdeu o dedo.\n\n-2 pontos.\n\nSem o Polegar:\n\nO personagem perdeu o polegar de uma das mãos.\n\nEle sofre uma penalidade de -5 na DX da mão afetada.\n\nEssa penalidade se aplica apenas às ações realizadas com a mão que perdeu o polegar.\n\n-5 pontos."
   },
   {
     "id": "semiereito",
@@ -3484,7 +3452,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem tem uma postura semiereita, similar à de um chimpanzé. Isso afeta seu deslocamento e o uso de ferramentas."
+    "descricao": "O personagem possui uma postura semiereta, semelhante à de um chimpanzé.\n\nEle consegue permanecer em pé com relativo conforto, o que lhe permite utilizar os membros dianteiros para atacar, carregar filhotes ou manipular objetos.\n\nTambém é capaz de caminhar em uma postura totalmente ereta.\n\nEntretanto, quando faz isso, seu Deslocamento é reduzido em 40%.\n\nPara correr utilizando seu Deslocamento total, ele precisa empregar todos os membros na locomoção.\n\nSe possuir DX 12 ou superior, o personagem também consegue carregar um ou dois objetos pequenos enquanto caminha.\n\nSemiereto vale -5 pontos."
   },
   {
     "id": "senso_do_dever",
@@ -3507,24 +3475,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem sente um forte compromisso moral de proteger ou ajudar um indivíduo ou grupo. O valor depende da abrangência do grupo: Individual (-2), Grupo Pequeno/Companheiros (-5), Grupo Grande (-10), Toda uma Classe de Pessoas ou Nação (-15), Toda a Humanidade ou Natureza (-20)."
-  },
-  {
-    "id": "simpatico",
-    "nome": "Simpático",
-    "pagina": 164,
-    "costKind": "fixed",
-    "fixed": -1,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "-1",
-    "specialRule": null,
-    "tags": [
-      "mental"
-    ],
-    "descricao": "Esta é uma versão suavizada de Amigável (pág. 122). O personagem gosta de ter companhia e trabalha muito bem em grupo. Ele sempre prefere uma ação em grupo a uma ação solitária."
+    "descricao": "O personagem sente um dever para com uma determinada classe de pessoas.\n\nEle nunca vai traí-las ou abandoná-las quando estiverem enfrentando um problema, nem deixar que sofram ou passem fome, se puder ajudar.\n\nEsta desvantagem é diferente de um Dever verdadeiro. Um Dever é imposto. O Senso do Dever vem do coração.\n\nSe o personagem for conhecido por ter um Senso do Dever, a reação de outras pessoas em relação a ele recebe um bônus de +2 sempre que o Mestre for verificar se os outros confiam nele numa situação de perigo.\n\nContudo, se o personagem agir contra seu Senso do Dever, indo contra os interesses daqueles que supostamente deveria proteger, o Mestre pode penalizá-lo por má atuação.\n\nO valor em pontos depende do tamanho do grupo que o personagem se sente compelido a ajudar.\n\nIndivíduos (o Presidente, seu braço-direito, etc.): -2 pontos.\n\nGrupo Pequeno (amigos íntimos, companheiros de aventura ou esquadrão): -5 pontos.\n\nGrupo Grande (uma nação, religião ou todos aqueles que o personagem conhece pessoalmente): -10 pontos.\n\nUma Raça Inteira (toda a humanidade, todos os elfos, etc.): -15 pontos.\n\nTodos os Seres Vivos: -20 pontos.\n\nNão é permitido receber pontos por um Senso do Dever relacionado a Aliados, Dependentes ou Patronos. Os custos dessas características já levam esses vínculos em consideração.\n\nO personagem pode ter um Senso do Dever em relação aos companheiros de aventura.\n\nNesse caso, ele deve compartilhar seu equipamento, prestar auxílio aos outros membros do grupo e acatar todas as decisões da maioria.\n\nO Mestre pode tornar esta desvantagem obrigatória em campanhas nas quais o grupo precisa cooperar. Nesse caso, todos os personagens recebem 5 pontos adicionais para gastar.\n\nSe um personagem passar a trair seus companheiros, preocupar-se apenas consigo mesmo ou agir contra o espírito desta desvantagem, o Mestre pode desconsiderar suas ações e utilizar os pontos recebidos por ela como justificativa para essa decisão."
   },
   {
     "id": "solitario",
@@ -3541,7 +3492,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem detesta companhia e prefere agir sozinho. Ele sofre penalidades quando forçado a interagir por muito tempo."
+    "descricao": "O personagem precisa de muito espaço para si mesmo.\n\nEle deve fazer um teste de autocontrole sempre que alguém estiver muito próximo dele, observando por cima de seus ombros ou invadindo seu espaço pessoal de alguma outra forma.\n\nNo caso de um fracasso, ele reage tentando afastar essa pessoa, como se possuísse a desvantagem Irritabilidade (pág. 147).\n\nPersonagens Solitários também sofrem penalidades nas reações de outras pessoas devido ao seu comportamento distante e pouco sociável.\n\nA penalidade de reação depende do número de autocontrole.\n\nAutocontrole 6: penalidade de -4.\n\nAutocontrole 9: penalidade de -3.\n\nAutocontrole 12: penalidade de -2.\n\nAutocontrole 15: penalidade de -1.\n\nSolitário vale -5 pontos."
   },
   {
     "id": "sonambulismo",
@@ -3558,25 +3509,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem anda enquanto dorme, realizando ações sem consciência. Pode ser perigoso em ambientes desconhecidos."
-  },
-  {
-    "id": "sonhador",
-    "nome": "Sonhador",
-    "pagina": 164,
-    "costKind": "fixed",
-    "fixed": -1,
-    "perLevel": null,
-    "options": null,
-    "min": null,
-    "max": null,
-    "rawCost": "-1",
-    "specialRule": null,
-    "tags": [
-      "fisica",
-      "mental"
-    ],
-    "descricao": "O personagem sofre uma penalidade de -1 em qualquer tarefa extensa, pois tende a passar seu tempo pensando em uma maneira melhor de executá-la, em vez de trabalhar"
+    "descricao": "O personagem anda durante o sono, sendo um sonâmbulo.\n\nNa maioria das situações, isso representa apenas um inconveniente ou fonte de constrangimento, embora possa se tornar extremamente perigoso em ambientes hostis ou arriscados.\n\nSe esta característica for relevante para uma aventura, o Mestre deve fazer um teste de autocontrole em segredo toda vez que o personagem adormecer.\n\nNo caso de um fracasso, em algum momento durante o período de sono o personagem se levanta e começa a caminhar inconscientemente.\n\nA vítima desperta após caminhar durante 1d minutos ou quando alguém a acorda.\n\nDurante esse período, o Mestre realiza todos os testes necessários para verificar se o personagem tropeça, cai de escadas ou sofre acidentes semelhantes.\n\nSe ocorrer uma queda ou acidente, o personagem desperta imediatamente.\n\nAo acordar dessa forma, ele fica mentalmente atordoado.\n\nDurante um episódio de sonambulismo, considera-se que o personagem está em um estado hipnagógico.\n\nNesse estado, ele é especialmente vulnerável a influências telepáticas.\n\nSe possuir habilidades sobrenaturais, pode utilizá-las enquanto estiver sonâmbulo.\n\nPor exemplo, um personagem com a vantagem Dobra pode realizar essa habilidade durante o sono.\n\nSonambulismo vale -5 pontos."
   },
   {
     "id": "sono_complementar",
@@ -3593,7 +3526,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem necessita de mais horas de sono do que o normal (8+) para se sentir descansado."
+    "descricao": "O personagem necessita de mais horas de sono do que o normal para sua espécie.\n\nUm ser humano comum precisa de aproximadamente 8 horas de sono por dia.\n\nCada nível desta desvantagem aumenta essa necessidade em uma hora adicional.\n\nO personagem pode adquirir até quatro níveis desta característica.\n\nA necessidade extra de sono reduz o tempo disponível para outras atividades, obrigando o personagem a dormir mais cedo ou a tirar cochilos durante o dia.\n\nIsso deixa menos tempo para estudar, trabalhar, viajar ou realizar projetos pessoais.\n\nCada nível aumenta a necessidade diária de sono em uma hora.\n\nSono Complementar vale -2 pontos por nível."
   },
   {
     "id": "sono_leve",
@@ -3610,7 +3543,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "Qualquer pequeno ruído ou perturbação no ambiente acorda o personagem imediatamente."
+    "descricao": "O personagem não dorme com tanta facilidade ou tranquilidade quanto a maioria das pessoas.\n\nSempre que estiver em um local desconfortável ou houver barulho ao seu redor, ele precisa obter sucesso em um teste de HT para conseguir adormecer.\n\nNo caso de um fracasso, ele pode tentar novamente após uma hora.\n\nEntretanto, sofre todos os efeitos normais de uma hora de sono perdido (v. Sono Perdido, pág. 426).\n\nO personagem desperta automaticamente sempre que ocorrer alguma atividade próxima a ele.\n\nAo acordar dessa forma, fica atordoado, a menos que possua Reflexos em Combate.\n\nPara continuar dormindo apesar da perturbação, ele deve fracassar em um teste de Sentidos.\n\nSe acordar, precisa obter sucesso em um novo teste de HT para voltar a dormir, seguindo as regras normais desta desvantagem.\n\nEmbora ocasionalmente permita perceber perigos antes de outras pessoas, na maioria das vezes esta característica apenas faz com que o personagem perca sono devido a ruídos, movimentação de companheiros ou outras interrupções comuns.\n\nSono Leve vale -5 pontos."
   },
   {
     "id": "sonolento",
@@ -3620,9 +3553,10 @@
     "fixed": null,
     "perLevel": null,
     "options": [
-      -30,
+      -8,
+      -16,
       -20,
-      -10
+      -26
     ],
     "min": null,
     "max": null,
@@ -3631,7 +3565,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "Traços Inerentes: Cauda; Voz Ronro nante."
+    "descricao": "Esta é uma característica racial.\n\nOs membros da raça precisam dormir mais do que a média humana.\n\nUm ser humano comum passa aproximadamente 1/3 do tempo dormindo, o equivalente a 8 horas por dia.\n\nO valor da desvantagem depende da fração total do tempo que a raça precisa dedicar ao sono.\n\nDormir metade do tempo:\n\nOs membros da raça precisam passar 12 horas de cada período de 24 horas dormindo.\n\n-8 pontos.\n\nDormir dois terços do tempo:\n\nOs membros da raça precisam passar aproximadamente 16 horas de cada período de 24 horas dormindo.\n\n-16 pontos.\n\nDormir três quartos do tempo:\n\nOs membros da raça precisam passar aproximadamente 18 horas de cada período de 24 horas dormindo.\n\n-20 pontos.\n\nDormir sete oitavos do tempo:\n\nOs membros da raça precisam passar aproximadamente 21 horas de cada período de 24 horas dormindo.\n\n-26 pontos.\n\nA distribuição desse sono é um efeito especial racial.\n\nPor exemplo, uma raça que dorme três quartos do tempo pode permanecer acordada durante três dias consecutivos e depois dormir durante nove dias inteiros.\n\nEsta característica também pode representar hibernação.\n\nPor exemplo, uma raça que permanece ativa durante seis meses e depois entra em hibernação por dois meses apresenta, em média, a mesma proporção de tempo dormindo que uma raça que passa metade do tempo em repouso.\n\nSonolento vale entre -8 e -26 pontos, dependendo da fração de tempo que a raça precisa dormir."
   },
   {
     "id": "status",
@@ -3651,7 +3585,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "Posição social negativa ou inferior. O personagem é visto como de classe baixa ou indesejado."
+    "descricao": "Status é uma medida da posição social do personagem dentro da sociedade.\n\nNa maioria das campanhas, o Status varia entre -2 e 8.\n\nUm indivíduo comum possui Status 0.\n\nCada nível de Status custa 5 pontos.\n\nStatus positivo representa prestígio, autoridade, influência e posição social elevada.\n\nStatus negativo representa pobreza, servidão, marginalização ou posição social inferior.\n\nAlém do custo em pontos, a manutenção de um Status elevado normalmente exige gastos financeiros compatíveis com o padrão de vida correspondente.\n\nStatus não é a mesma coisa que Reputação, Reconhecimento Social ou Estigma Social.\n\nEnquanto essas características representam fama, preconceito ou aceitação social, Status representa a posição formal do personagem dentro da hierarquia da sociedade.\n\nEm essência, Status representa poder social reconhecido.\n\nStatus Baixo\n\nUm Status inferior a 0 indica que o personagem ocupa uma posição social inferior, como servo, escravo ou indigente.\n\nIsso não é o mesmo que possuir um Estigma Social.\n\nÉ possível possuir Status elevado e ainda sofrer preconceitos decorrentes de um Estigma Social.\n\nDa mesma forma, um personagem com Status baixo pode possuir uma excelente Reputação.\n\nStatus como Modificador de Reação\n\nO Status pode afetar testes de reação quando a posição social dos envolvidos for relevante.\n\nQuando o personagem interage com pessoas de Status inferior, a diferença entre os níveis de Status normalmente é utilizada como bônus nos testes de reação.\n\nExemplo: um personagem com Status 3 recebe um bônus de +2 ao lidar com alguém de Status 1 e um bônus de +3 ao lidar com alguém de Status 0.\n\nQuando o personagem possui Status inferior ao de um indivíduo neutro ou hostil, a diferença entre os níveis de Status normalmente é aplicada como penalidade nos testes de reação.\n\nQuanto maior a diferença social, pior tende a ser a reação.\n\nSe o personagem possuir Status negativo, pessoas com Status superior normalmente aplicam uma penalidade baseada na diferença entre os níveis de Status, até um máximo de -4.\n\nReconhecendo o Status\n\nO Status só afeta reações quando pode ser identificado.\n\nDependendo da sociedade, o Status pode ser reconhecido pela aparência, roupas, comportamento, modo de falar, acompanhantes, títulos ou fama pessoal.\n\nEm outros cenários, podem ser necessárias credenciais, documentos, símbolos de autoridade, exames mágicos ou verificações tecnológicas.\n\nA dificuldade para reconhecer o Status não altera seu custo em pontos.\n\nNíveis de Status\n\nStatus -2: -10 pontos.\n\nStatus -1: -5 pontos.\n\nStatus 0: 0 pontos.\n\nStatus 1: 5 pontos.\n\nStatus 2: 10 pontos.\n\nStatus 3: 15 pontos.\n\nStatus 4: 20 pontos.\n\nStatus 5: 25 pontos.\n\nStatus 6: 30 pontos.\n\nStatus 7: 35 pontos.\n\nStatus 8: 40 pontos."
   },
   {
     "id": "supersensitivismo",
@@ -3668,7 +3602,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é extremamente sensível a radiações, psiquismo ou sinais telepáticos, o que causa distração ou dor."
+    "descricao": "O personagem é telepaticamente sensível à presença de outras mentes inteligentes.\n\nEle está constantemente exposto a um ruído psíquico de baixa intensidade, percebido como um zumbido mental contínuo e irritante.\n\nEssa sensibilidade não concede nenhuma habilidade telepática útil.\n\nOs pensamentos e emoções captados permanecem abaixo do limiar da compreensão consciente, impedindo a obtenção de informações específicas.\n\nSempre que existir pelo menos um ser inteligente com IQ 6 ou superior em um raio de 20 metros, o personagem sofre uma penalidade de -1 na DX e na IQ.\n\nEssa penalidade aumenta de acordo com a quantidade de mentes presentes na área.\n\n• 1 ou mais indivíduos: -1.\n\n• 10 ou mais indivíduos: -2.\n\n• 100 ou mais indivíduos: -3.\n\n• 1.000 ou mais indivíduos: -4.\n\n• Quantidades ainda maiores podem gerar penalidades adicionais, a critério do Mestre.\n\nSe a DX ou a IQ do personagem forem reduzidas à metade de seus valores originais por causa dessas penalidades, ele sofre um colapso mental.\n\nEnquanto permanecer nesse estado, não consegue realizar nenhuma ação até que o ruído psíquico diminua.\n\nInteligências artificiais não produzem esse efeito.\n\nDa mesma forma, indivíduos protegidos contra detecção telepática por psiquismo, tecnologia ou outros meios não geram interferência.\n\nApesar de suas limitações, Supersensitivo possui um benefício colateral.\n\nO ruído psíquico alerta o personagem para a presença de seres inteligentes em um raio de 20 metros.\n\nAlém disso, a intensidade do ruído fornece uma estimativa aproximada da quantidade de indivíduos presentes.\n\nEntretanto, essa percepção é difusa demais para revelar a localização exata dessas pessoas.\n\nSupersensitivo vale -15 pontos."
   },
   {
     "id": "suporte_de_vida_ampliado",
@@ -3688,7 +3622,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem necessita de equipamento especial ou ambientes controlados para sobreviver (ex: respirar gás diferente)."
+    "descricao": "O personagem possui exigências de sobrevivência superiores às de um ser humano comum.\n\nEssas necessidades especiais não causam dano ou doença diretamente, mas tornam sua sobrevivência logisticamente mais difícil.\n\nCada requisito especial possui um custo em pontos próprio.\n\nOs valores de todas as exigências são somados para determinar o custo final da desvantagem.\n\nO valor total de Suporte de Vida Ampliado não pode exceder -40 pontos.\n\nCalor Extremo:\n\nO personagem só consegue sobreviver em ambientes com temperatura superior a 93 °C.\n\n-10 pontos.\n\nFrio Extremo:\n\nO personagem só consegue sobreviver em ambientes com temperatura inferior a -17 °C.\n\n-10 pontos.\n\nMaciço:\n\nO personagem necessita de mais de uma tonelada de massa adicional para sobreviver em ambientes com restrições de espaço ou recursos, como naves espaciais ou submarinos.\n\nSe utilizar um traje de suporte à vida, esse equipamento deve pesar pelo menos uma tonelada.\n\n-10 pontos.\n\nPressurizado:\n\nO personagem precisa viver em um compartimento pressurizado para sobreviver.\n\n-10 pontos.\n\nRadioativo:\n\nO personagem é radioativo ou necessita de um ambiente radioativo para sobreviver.\n\n-10 pontos.\n\nO Mestre pode permitir outras formas de Suporte de Vida Ampliado.\n\nNormalmente, cada exigência adicional não deve valer mais de -10 pontos, exceto em casos extremamente exóticos.\n\nSuporte de Vida Ampliado representa dificuldades logísticas relacionadas à sobrevivência.\n\nEle difere de Dependência, Manutenção e Dieta Restrita, que representam consequências fisiológicas e de saúde decorrentes da falta de determinadas substâncias ou condições.\n\nUma mesma exigência pode justificar simultaneamente Suporte de Vida Ampliado e outra desvantagem, desde que produza tanto dificuldades logísticas quanto efeitos sobre a saúde.\n\nA aprovação final de qualquer combinação fica a critério do Mestre.\n\nCom autorização do Mestre, seres humanos comuns podem adquirir esta desvantagem para representar necessidades especiais decorrentes de doenças crônicas ou condições médicas incomuns."
   },
   {
     "id": "surdez",
@@ -3705,7 +3639,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem é completamente surdo e não pode ouvir sons de qualquer tipo."
+    "descricao": "O personagem é completamente incapaz de ouvir.\n\nEle não percebe sons de qualquer tipo.\n\nToda comunicação deve ocorrer por meios alternativos, como escrita, caso seja alfabetizado, ou linguagem de sinais.\n\nO tempo gasto utilizando esses métodos de comunicação conta integralmente para fins de estudo e aperfeiçoamento de perícias relacionadas.\n\nIsso inclui perícias como Mímica/Pantomima, Leitura Labial e outras formas de comunicação não verbal.\n\nO personagem não pode realizar testes de Audição e falha automaticamente em qualquer tarefa que dependa exclusivamente da capacidade de ouvir."
   },
   {
     "id": "susceptibilidade_a_magia",
@@ -3723,13 +3657,13 @@
       "fisica",
       "magica"
     ],
-    "descricao": "O personagem é mais vulnerável a efeitos mágicos, sofrendo penalidade em testes de resistência."
+    "descricao": "A magia tem mais chance de afetar o personagem.\n\nAcrescente o nível de Suscetibilidade à Magia do personagem ao NH de qualquer pessoa que estiver fazendo uma mágica contra ele e subtraia o mesmo valor dos testes para resistir a qualquer mágica que seja passível de resistência.\n\nExemplo: se o personagem tem Suscetibilidade à Magia 4, qualquer mago recebe um bônus de +4 para lançar mágicas contra ele e ele sofre uma penalidade de -4 para resistir.\n\nA Suscetibilidade à Magia torna o personagem mais vulnerável às mágicas lançadas diretamente contra ele.\n\nEla não afeta Mágicas de Projétil, ataques com armas mágicas ou mágicas de informação que não forem lançadas diretamente contra o personagem.\n\nEsta desvantagem também não surte efeitos sobre outros poderes sobrenaturais; ex.: milagres divinos, psiquismo ou o poder inato dos espíritos.\n\nA Suscetibilidade à Magia age normalmente contra mágicas de área; não dobre seus efeitos (como aconteceria com Resistência à Magia, pág. 34).\n\nA Suscetibilidade à Magia e seu nível preciso podem ser reconhecidos por qualquer mago que observe a aura do personagem ou por qualquer pessoa que lançar uma mágica contra ele.\n\nNão é permitido ter mais que cinco níveis nesta desvantagem.\n\nÉ possível combinar Suscetibilidade à Magia com Aptidão Mágica, mas não com Abascanto."
   },
   {
     "id": "suscetivel",
     "nome": "Suscetível",
     "pagina": 158,
-    "costKind": "choice",
+    "costKind": "perLevel",
     "fixed": null,
     "perLevel": null,
     "options": [
@@ -3744,7 +3678,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem é extremamente sensível a uma classe de substâncias nocivas (doenças, venenos, etc.)."
+    "descricao": "O personagem é extremamente sensível a uma classe de objetos ou substâncias nocivas (ex.: doenças ou venenos).\n\nEle sofre uma penalidade nos testes de HT para resistir aos efeitos negativos desses elementos, mas não sofre dano adicional.\n\nPara isso, v. Vulnerabilidade (pág. 161).\n\nMesmo que ele seja exposto apenas a quantidades residuais do objeto de sua suscetibilidade — uma dose tão pequena que não afetaria a maioria das pessoas — ele deve fazer um teste de HT+1, modificado pela penalidade usual da desvantagem.\n\nUm fracasso indica que o personagem sofre metade dos efeitos (fadiga, lesão, perda de atributos, períodos de incapacitação, etc.) causados por uma dose completa.\n\nExemplo: A desvantagem Suscetível a Veneno vai exigir um teste se o personagem ingerir lixo industrial altamente diluído na água.\n\nSe for Suscetível a Doenças, ele deverá fazer um teste se tomar uma vacina (que contém antígenos atenuados).\n\nO Mestre tem a palavra final se houver qualquer dúvida quanto à exposição ao elemento ou seus efeitos.\n\nO custo em pontos da desvantagem depende da raridade do objeto da suscetibilidade no ambiente.\n\nMuito Comum (ex.: Doença, Veneno):\n\n-4 pontos/redutor de -1 nos testes de HT.\n\nComum (ex.: Bactérias, Gases):\n\n-2 pontos/redutor de -1 nos testes de HT.\n\nOcasional (ex.: Doenças Intestinais, Venenos Ingeridos):\n\n-1 ponto/redutor de -1 nos testes de HT.\n\nNão é possível adquirir mais de cinco níveis de Suscetível para um determinado objeto ou mais de duas desvantagens Suscetível diferentes sem a permissão do Mestre.\n\nTambém não é permitido comprar um número de níveis nesta desvantagem que reduza a HT efetiva do personagem a 3.\n\nExemplo: um personagem com HT 7 só pode comprar quatro níveis de Suscetível.\n\nUm personagem também não pode ser Resistente (pág. 84) e Suscetível a um mesmo objeto.\n\nEsta característica pode simular vários problemas comuns de saúde.\n\nUse Suscetível a Doenças no caso de um sistema imunológico deficiente.\n\nUse Suscetível a Venenos Ingeridos se o personagem tem uma tendência a não vomitar substâncias nocivas (um 'baixo reflexo de vômito'), etc."
   },
   {
     "id": "teimosia",
@@ -3761,7 +3695,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é teimoso e obstinado, recusando-se a mudar de ideia facilmente. Sofre penalidade em reações."
+    "descricao": "O personagem sempre quer fazer as coisas do seu modo e é uma pessoa difícil de conviver.\n\nInterprete!\n\nSeus amigos podem ter que fazer um bocado de testes de Lábia para conseguir que ele concorde com planos perfeitamente razoáveis.\n\nA reação das pessoas diante do personagem recebe uma penalidade de -1."
   },
   {
     "id": "temor",
@@ -3778,7 +3712,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é covarde e facilmente intimidado. Sofre penalidade em Verificações de Pânico."
+    "descricao": "O personagem vive apreensivo e é muito medroso.\n\nSubtraia o nível de Temor de sua Vontade sempre que fizer uma Verificação de Pânico ou tiver que resistir à perícia Intimidação (pág. 204) ou a um poder sobrenatural que cause medo.\n\nDa mesma forma, o personagem adiciona seu nível de Temor aos testes de Intimidação realizados contra ele.\n\nNão é permitido reduzir o número alvo do teste de Vontade a um valor menor que 3.\n\nPor exemplo, se tiver Vontade 11, o personagem fica limitado a Temor 8.\n\nEsta característica é o oposto de Destemor (pág. 53) e um personagem não pode ter as duas."
   },
   {
     "id": "tetraplegico",
@@ -3795,7 +3729,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O personagem é incapaz de mover seus quatro membros devido a paralisia ou lesão grave."
+    "descricao": "O personagem está completamente paralisado ou não tem pernas nem braços.\n\nEle não é capaz de manipular objetos nem se mover sem assistência e sofre todos os efeitos ruins de Paraplégico (v. Deficiência Física, pág. 130) e Sem Manuseadores (v. Manuseadores Precários, pág. 149).\n\nSe o Mestre estabelecer um limite para o total de desvantagens, Tetraplégico deve ser levado em conta para esse limite — mas o jogador pode reduzir a ST e DX do personagem em até quatro níveis sem que isso conte para o limite (os pontos recebidos por reduções maiores são contados normalmente).\n\nPara informações sobre próteses e correções cirúrgicas, consulte Deficiência Física (pág. 130) e Maneta (Um Braço) (pág. 148) para pernas e braços, respectivamente."
   },
   {
     "id": "timidez",
@@ -3816,7 +3750,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem se sente desconfortável ou ansioso em situações sociais ou na presença de estranhos."
+    "descricao": "O personagem se sente desconfortável quando há pessoas estranhas por perto.\n\nInterprete!\n\nEsta desvantagem é apresentada em três níveis e pode ser recomprada um nível por vez.\n\nSuave:\n\nO personagem fica um tanto desconfortável na presença de pessoas estranhas, especialmente se elas forem agressivas ou atraentes.\n\nTodas as perícias que o obrigam a lidar com o público (incluindo Atuação, Boemia, Comércio, Diplomacia, Dissimulação, Intimidação, Lábia, Liderança, Manha, Mendicância, Oratória, Pedagogia, Política, Sex Appeal e Trato Social) sofrem uma penalidade de -1.\n\n-5 pontos.\n\nGrave:\n\nO personagem se sente muito desconfortável na presença de estranhos e tende a permanecer calado, mesmo entre amigos.\n\nTodas as perícias listadas acima sofrem uma penalidade de -2.\n\n-10 pontos.\n\nIncapacitante:\n\nO personagem evita pessoas estranhas sempre que possível.\n\nEle não pode aprender nenhuma das perícias acima e o valor predefinido em seus testes com essas perícias sofre uma penalidade adicional de -4.\n\n-20 pontos."
   },
   {
     "id": "trapaceiro",
@@ -3833,7 +3767,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem tem um impulso irresistível de enganar e pregar peças. Exige teste de autocontrole."
+    "descricao": "O personagem precisa da empolgação resultante de superar intelectualmente inimigos perigosos.\n\nIsso não é feito com uma simples brincadeira.\n\nPregar peças em pessoas inocentes e inofensivas não tem graça nenhuma… ele precisa de algo arriscado!\n\nTalvez não haja necessidade disso (na verdade, provavelmente não há), mas ele precisa da emoção de uma batalha mental.\n\nO personagem deve fazer um teste de autocontrole por dia.\n\nNo caso de um fracasso, ele se sentirá forçado a tentar enganar um indivíduo perigoso: um guerreiro habilidoso, um monstro terrível, um grupo inteiro de inimigos razoavelmente competentes, etc.\n\nSe conseguir resistir, o personagem recebe uma penalidade cumulativo de -1 por dia no teste de autocontrole até finalmente fracassar."
   },
   {
     "id": "unico",
@@ -3851,7 +3785,7 @@
       "magica",
       "mental"
     ],
-    "descricao": "O personagem é o único de sua espécie ou não possui duplicatas em universos paralelos."
+    "descricao": "O personagem só existe em uma única cronologia.\n\nSe ocorrer um paradoxo no tempo, ele não conseguirá se lembrar de nada.\n\nSe esse evento for particularmente grave, é provável que ele desapareça.\n\nEm grande parte dos cenários, ele não estaria consciente desse perigo até que alguma coisa aconteça… quando então, ninguém se lembraria dele!\n\nPor esse motivo, esta desvantagem costuma ser inadequada para PdJs.\n\nEm uma campanha com mundos alternativos, ser Único significa que o personagem não existe em nenhum tipo de universo paralelo, mesmo que seja muito parecido com o seu próprio universo.\n\nIsso o privará da chance de fazer amizade “com ele mesmo” quando visitar aquele mundo.\n\nNo entanto, existe um benefício: em qualquer mundo alternativo, ele se torna efetivamente Apagado (pág. 39), sem qualquer custo em pontos.\n\nÚnico é uma desvantagem em campanhas onde paradoxos ou alterações na História — a eliminação de eventos passados ou de cronologias inteiras são possíveis.\n\nConsulte Inércia Temporal (pág. 65) se quiser conhecer o oposto desta desvantagem."
   },
   {
     "id": "veracidade",
@@ -3868,7 +3802,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é incapaz de mentir de forma convincente ou se sente extremamente culpado ao fazê-lo."
+    "descricao": "O personagem odeia dizer uma mentira ou o faz muito mal.\n\nPara conseguir se manter calado sobre uma verdade desconfortável (mentir por omissão), ele precisa de um sucesso em um teste de autocontrole.\n\nPara chegar a realmente dizer uma mentira, o teste precisa de um sucesso com uma penalidade de -5.\n\nUm fracasso indica que ele deixou escapar a verdade ou gaguejou tanto que sua mentira ficou óbvia.\n\nEsta desvantagem impõe uma penalidade permanente de -5 na perícia Lábia e a mesma penalidade em Dissimulação quando o personagem estiver com a intenção de enganar alguém."
   },
   {
     "id": "viciado_em_trabalho",
@@ -3885,7 +3819,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é compelido a trabalhar excessivamente, negligenciando outras áreas da vida."
+    "descricao": "O personagem muitas vezes passa dos limites e tem dificuldade para relaxar e se desligar do trabalho.\n\nEle sempre trabalha no mínimo o dobro do expediente normal, o que costuma resultar em sono perdido (v. Sono Perdido, pág. 426).\n\nNo início, a maioria das pessoas o trata com respeito (bônus de +1 nos testes de reação), mas depois de algum tempo, ele acaba sofrendo uma penalidade de -1 ou -2, principalmente por parte dos amigos e entes queridos, que raramente conseguem passar algum tempo ao seu lado."
   },
   {
     "id": "vicio",
@@ -3932,7 +3866,7 @@
         "descricao": "A substância é legalizada (+5)."
       }
     ],
-    "descricao": "Custo Diário: Barato (-5), Caro (-10), Muito Caro (-20). Efeitos: Mínimo (+0), Incapacitante (-10), Altamente viciante (-5), Totalmente viciante (-10). Legalidade: Ilegal (+0), Legal (+5)."
+    "descricao": "O personagem é viciado em alguma droga que precisa ingerir diariamente para não sofrer as consequências da desintoxicação (a seguir).\n\nO valor desta desvantagem depende do custo, efeitos e legalidade da droga.\n\nCusto (por dia)\n\nBarato (até 0,1% da média dos recursos iniciais): -5 pontos.\n\nCaro (até 0,5% da média dos recursos iniciais): -10 pontos.\n\nMuito Caro (mais que 0,5% da média dos recursos iniciais): -20 pontos.\n\nEfeitos\n\nMínimo ou estimulante: +0 pontos.\n\nIncapacitante ou alucinógena: -10 pontos.\n\nAltamente viciante (redutor de -5 no teste de Desintoxicação): -5 pontos.\n\nTotalmente viciante (redutor de -10 no teste de Desintoxicação): -10 pontos.\n\nLegalidade\n\nIlegal: +0 ponto.\n\nLegal: +5 pontos.\n\nExemplos:\n\nO tabaco é barato, altamente viciante e legal.\n\nUm fumante inveterado tem um vício que vale -5 pontos.\n\nA heroína é muito cara, ilegal, totalmente viciante e incapacitante.\n\nUm viciado em heroína tem uma desvantagem que vale -40 pontos.\n\nVícios Sem Química\n\nUm personagem também pode se viciar em uma atividade, em vez de uma droga — como manter contato telepático ou passar algum tempo em uma realidade virtual, por exemplo.\n\nSe isso custar dinheiro, estabeleça o preço do Vício com base em seu custo diário.\n\nSe for gratuito (ex.: contato telepático), considere-o 'Barato' se o personagem puder sucumbir ao Vício em quase qualquer lugar (contato telepático com qualquer pessoa), ou como 'Caro' se houver algum limite (contato telepático com uma determinada pessoa).\n\nEsses Vícios quase sempre causam dependência fisiológica (v. Desintoxicação, a seguir).\n\nEfeitos das Drogas\n\nUma droga estimulante faz com que seu usuário se sinta energizado… até o efeito acabar.\n\nAí, a pessoa fica deprimida e irritável.\n\nUma droga incapacitante deixará o usuário inconsciente (ou alegre e inutilmente sonolento) por mais ou menos duas horas.\n\nUma droga alucinógena deixa o usuário inútil para o trabalho ou combate, embora ele possa estar ativo e falante.\n\nAlgumas drogas (como o tabaco) não apresentam nenhum desses efeitos, enquanto outras têm um efeito próprio.\n\nTambém é possível que ocorram efeitos colaterais.\n\nPara maiores detalhes consulte Drogas Viciantes (pág. 440).\n\nDesintoxicação\n\nMuitas vezes, um viciado tenta, voluntariamente ou não, largar o Vício.\n\nO consumo de uma substância que causa dependência fisiológica representa uma desvantagem mental; a Desintoxicação desse vício exige uma série de testes de Vontade e pode resultar em problemas mentais.\n\nO consumo de uma substância que induz à dependência fisiológica representa uma desvantagem física; a Desintoxicação é uma função da HT e pode causar dano físico.\n\nPara maiores detalhes, consulte Desintoxicação de Drogas (pág. 440).\n\nSe o personagem conseguir largar um vício, terá que recomprar a desvantagem imediatamente.\n\nVícios Leves\n\nPara um Vício que vale apenas -5 pontos, o Mestre pode determinar que os gastos, o sofrimento e os efeitos nocivos de longo prazo são os únicos elementos que compõem a desvantagem e deixar de lado as regras usuais de Desintoxicação.\n\nIsso se aplica a drogas como tabaco e cafeína.\n\nSe o personagem for forçado a ficar sem essas substâncias, terá que fazer um teste de Vontade ou HT normalmente, mas os únicos efeitos de um fracasso serão ansiedade, irritabilidade ou inquietação.\n\nIsso se manifesta como uma penalidade temporária de -1 nos testes de DX, IQ, autocontrole ou de reação (a critério do Mestre), e não como insanidade ou enfermidade.\n\nFracassos sucessivos prolongam a duração dos efeitos, mas não aumentam o tamanho da penalidade.\n\nSe o personagem obtiver sucesso em 14 testes consecutivos, precisará recomprar o Vício.\n\nTambém é possível criar um Vício com pontuação nula utilizando essas mesmas regras.\n\nEsses vícios sempre se encaixam na categoria Vícios Leves e podem ser adotados como uma peculiaridade de -1 ponto (v. Peculiaridades, pág. 162)."
   },
   {
     "id": "visao_restrita",
@@ -3952,7 +3886,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "O campo de visão do personagem é limitado lateralmente."
+    "descricao": "O personagem tem um campo de visão incomumente estreito.\n\nUma pessoa comum é capaz de enxergar num arco de 120° à sua frente sem virar o rosto e tem 30° de visão periférica para cada lado, o que confere um “arco de visão” de 180° para observação e ataques à distância.\n\nEm um mapa hexagonal, isso significa que o campo de visão de uma pessoa normal tem três hexágonos “frontais”, dois hexágonos “laterais” (“esquerda” e “direita”) e um hexágono “nas costas”.\n\nPorém, a visão de um indivíduo com esta desvantagem é muito mais restrita.\n\nExistem dois níveis:\n\nSem Visão Periférica:\n\nO arco de visão do personagem consiste em um triângulo de 120° à frente.\n\nEm um mapa, seus hexágonos “direito” e “esquerdo” se tornam “nas costas”, isto é, ele tem três hexágonos “nas costas” e não consegue se defender de ataques que vêm dessa região.\n\n-15 pontos.\n\nVisão Estreita:\n\nO arco de visão do personagem consiste em um triângulo de 60° à frente.\n\nEm um mapa, seu único hexágono “frontal” é aquele diretamente à frente.\n\nOs hexágonos de cada lado desse primeiro são considerados “laterais”: o personagem sofre uma penalidade de -2 ao se defender de ataques que vêm dessa região e só pode atacar esses hexágonos com um Golpe Desenfreado.\n\nTodos os outros hexágonos são considerados “nas costas”, como no caso anterior.\n\n-30 pontos."
   },
   {
     "id": "voto",
@@ -3974,7 +3908,7 @@
     "tags": [
       "social"
     ],
-    "descricao": "O personagem fez um juramento sagrado ou compromisso pessoal que deve ser cumprido sob pena de desonra ou perda de poderes."
+    "descricao": "O personagem realizou um voto de fazer (ou não) uma determinada coisa.\n\nLembre-se que, qualquer que seja o voto, o personagem o leva a sério.\n\nSe ele não agir da maneira esperada, esta não será uma desvantagem.\n\nEsta característica é especialmente adequada para cavaleiros, homens santos e fanáticos.\n\nO valor em pontos de um voto é decidido pelo Mestre, mas deveria estar diretamente relacionado ao transtorno que ele causa ao personagem.\n\nAlguns exemplos:\n\nVoto Menor:\n\nVoto de silêncio durante o dia, vegetarianismo, castidade (exatamente isso! Para efeito de jogo, esse é um voto menos importante).\n\n-5 pontos.\n\nVoto Importante:\n\nNão usar armas afiadas; ficar em silêncio todo o tempo; nunca dormir sob um teto; não possuir nada além do que o cavalo consegue carregar.\n\n-10 pontos.\n\nVoto Muito Importante:\n\nNunca recusar nenhum pedido de ajuda; sempre lutar com a mão trocada; caçar um inimigo até destruí-lo; desafiar todos os cavaleiros que encontrar para um combate.\n\n-15 pontos.\n\nObserve que, se o personagem puder representar seu Voto usando outra desvantagem, ele só deve receber os pontos por uma delas (a critério do jogador).\n\nSe o personagem fizer um Voto (Pobreza), não deve receber pontos por Riqueza (Falido).\n\nDa mesma forma, se fizer um Voto (Nunca Matar) não deve receber os pontos por Pacifismo (Incapaz de Matar) e assim por diante.\n\nA maioria dos votos termina depois de algum tempo.\n\nO jogador deve recomprar o voto quando isso acontecer.\n\nVotos que duram por períodos menores que um ano são frívolos.\n\nSe um jogador desejar abandonar um Voto antes do tempo preestabelecido, o Mestre pode impor alguma penalidade.\n\nEm um cenário medieval, por exemplo, uma missão seria uma penitência apropriada."
   },
   {
     "id": "voz_irritante",
@@ -3991,7 +3925,7 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "A voz do personagem é desagradável ou irritante, o que prejudica suas interações sociais e oratória."
+    "descricao": "A voz do personagem é naturalmente irritante ou claramente artificial.\n\nOs detalhes variam.\n\nEle pode ser um robô ou utilizar um recurso tecnológico para abrandar a desvantagem Mudez.\n\nSua voz pode ser áspera, baixa ou estridente e sua fala pode assumir um tom monótono ou não ter qualquer tipo de modulação.\n\nOs efeitos causados no jogo, em todos os casos, são idênticos aos relacionados à Gagueira (pág. 143), embora ele não sofra, necessariamente, desse problema.\n\nEsta característica é o oposto da vantagem Voz Melodiosa (pág. 100) e um jogador não pode comprar as duas características para seu personagem."
   },
   {
     "id": "vozes_fantasmagoricas",
@@ -4012,7 +3946,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem ouve vozes que ninguém mais ouve. Pode ser sinal de loucura ou influência espiritual."
+    "descricao": "O personagem é assombrado por frases sussurradas que só ele é capaz de ouvir.\n\nEssas vozes podem ser incompreensíveis ou podem repetir sempre as mesmas palavras.\n\nMais cedo ou mais tarde, a sanidade do personagem (independente de seu estado) começará a se desgastar.\n\nO Mestre deve jogar três dados em qualquer situação que considere estressante.\n\nNo caso de um resultado menor ou igual a 6, o personagem ouve vozes.\n\nO Mestre também deve fazer uma jogada quando o personagem fracassar ou obtiver o resultado exato em uma Verificação de Pânico ou quando fracassar em um teste de autocontrole relacionado a outra desvantagem ligada ao estresse.\n\nAs vozes se somam a quaisquer outros resultados.\n\nO valor em pontos da desvantagem depende da natureza das vozes.\n\nImportuna:\n\nO personagem ouve vozes, mas tem quase certeza de que elas não são reais e que não lhe farão mal.\n\nAinda assim, a maioria das pessoas que o virem responder a frases inaudíveis, deve reagir com uma penalidade de -2.\n\n-5 pontos.\n\nIrritante:\n\nIgual ao caso anterior, mas as vozes são capazes de emitir sons comuns e podem até mesmo surpreender o personagem ou assustá-lo (possivelmente exigindo uma Verificação de Pânico).\n\n-10 pontos.\n\nDiabólica:\n\nAs vozes ordenam que o personagem se mate, mate outras pessoas ou faça outras coisas terríveis.\n\nSe ele já estiver sob pressão ou sob o efeito de drogas, talvez o personagem precise fazer um teste de Vontade para evitar obedecer a essas “ordens” (a critério do Mestre).\n\n-15 pontos.\n\nVozes Fantasmagóricas normalmente são consequência de problemas mentais, mas também podem revelar algum tipo de possessão sobrenatural.\n\nNesse caso, a psicoterapia não é capaz de revelar a causa, muito menos a cura, do problema.\n\nSe conseguir exorcizar os espíritos malignos, o personagem fica curado, mas precisará recomprar a desvantagem."
   },
   {
     "id": "vulnerabilidade",
@@ -4030,7 +3964,17 @@
       "combate",
       "fisica"
     ],
-    "descricao": "Variável O personagem sofre dano adicional de uma forma específica de ataque. Sempre que esse tipo de ataque o atingir, o Mestre deve aplicar um multiplicador especial ao dano que ultrapassar a RD. Os multiplicadores de dano normais (por corte, perfuração, etc. ) multiplicam novamente o dano. Exemplo: Um lobisomem com Vulnerabilidade (Prata ×4) é retalhado com uma faca de prata que causa 1 ponto de dano por corte. O Mestre multiplica esse valor por 4 para obter o dano da Vulnerabilidade — um resultado de 4 pontos de dano — e, em seguida, multiplica esse valor por 1, 5 (por se tratar de um ataque por corte). A lesão final é de 6 pontos de dano. O valor em pontos da desvantagem depende do multiplicador de ferimen to e da raridade do ataque: Utilize as categorias descritas no quadro Defesas Limitadas (pág. 84) para avaliar a frequência. Cabe ao Mes tre decidir a raridade de uma determi nada forma de ataque. Não é possível adquirir mais que dois tipos de Vulne rabilidade sem a permissão do Mestre. O personagem não pode ter Vulne rabilidade a coisas contra as quais ele também tem uma defesa específica: como Resistente, uma Resistência a Dano que funciona contra a mesma forma de ataque, etc. Um personagem pode ter tanto Vulnerabilidade quanto Durabilidade Sobrenatural (pág. 56), mas esta desvantagem reduz a utilidade de Durabilidade Sobrenatural. Limitações Especiais Somente Fadiga: O personagem é vulnerável a um ataque que drena PF, em vez de PV, ou a alguma forma mun -"
+    "descricao": "O personagem sofre dano adicional de uma forma específica de ataque.\n\nSempre que esse tipo de ataque o atingir, o Mestre deve aplicar um multiplicador especial ao dano que ultrapassar a RD.\n\nOs multiplicadores de dano normais (por corte, perfuração, etc.) multiplicam novamente o dano.\n\nExemplo:\n\nUm lobisomem com Vulnerabilidade (Prata ×4) é retalhado com uma faca de prata que causa 1 ponto de dano por corte.\n\nO Mestre multiplica esse valor por 4 para obter o dano da Vulnerabilidade — um resultado de 4 pontos de dano — e, em seguida, multiplica esse valor por 1,5 (por se tratar de um ataque por corte).\n\nA lesão final é de 6 pontos de dano.\n\nO valor em pontos da desvantagem depende do multiplicador de ferimento e da raridade do ataque.\n\nUtilize as categorias descritas no quadro Defesas Limitadas (pág. 84) para avaliar a frequência.\n\nCabe ao Mestre decidir a raridade de uma determinada forma de ataque.\n\nNão é possível adquirir mais que dois tipos de Vulnerabilidade sem a permissão do Mestre.\n\nO personagem não pode ter Vulnerabilidade a coisas contra as quais ele também tem uma defesa específica: como Resistente, uma Resistência a Dano que funciona contra a mesma forma de ataque, etc.\n\nUm personagem pode ter tanto Vulnerabilidade quanto Durabilidade Sobrenatural (pág. 56), mas esta desvantagem reduz a utilidade de Durabilidade Sobrenatural.\n\nTabela de Vulnerabilidade\n\nRaro:\n\n×2: -10 pontos.\n\n×3: -15 pontos.\n\n×4: -20 pontos.\n\nOcasional:\n\n×2: -20 pontos.\n\n×3: -30 pontos.\n\n×4: -40 pontos.\n\nComum:\n\n×2: -30 pontos.\n\n×3: -45 pontos.\n\n×4: -60 pontos.\n\nMuito Comum:\n\n×2: -40 pontos.\n\n×3: -60 pontos.\n\n×4: -80 pontos.",
+    "modificadores_especificos": [
+      {
+        "id": "mod_somente_fadiga",
+        "nome": "Somente Fadiga",
+        "tipo": "limitação",
+        "valor": "-50%",
+        "pagina": 161,
+        "descricao": "O personagem é vulnerável a um ataque que drena PF, em vez de PV, ou a alguma forma mundana de perda de fadiga (ex.: ×2 PF de um clima quente)."
+      }
+    ]
   },
   {
     "id": "xenofilia",
@@ -4047,7 +3991,7 @@
     "tags": [
       "mental"
     ],
-    "descricao": "O personagem é fascinado por coisas estranhas e alienígenas, assumindo que são amigáveis até prova em contrário."
+    "descricao": "O personagem se sente instintivamente atraído e fascinado pelo estranho e por alienígenas, independente de quão perigosos ou assustadores eles pareçam ser.\n\nEle deve fazer um teste de autocontrole quando encontrar alguém (ou alguma coisa) desse tipo.\n\nUm fracasso indica que ele assume que essa pessoa está interessada em interagir socialmente com ele.\n\nUm xenófilo tem o hábito de oferecer bebidas a soldados evidentemente estrangeiros, passar cantadas em vampiras bonitinhas e trocar cumprimentos com Coisas Que o Homem Não Deveria Saber Que Existem, enquanto seus companheiros estão apontando armas ou fugindo na direção oposta…\n\nPara compensar tudo isso, o personagem recebe um bônus nas Verificações de Pânico quando encontra criaturas estranhas.\n\nNúmero de Autocontrole / Bônus\n\n6: +4.\n\n9: +3.\n\n12: +2.\n\n15: +1.\n\nPdMs com esta característica reagem diante PdJs exótico com os mesmos bônus."
   },
   {
     "id": "zarolho",
@@ -4064,6 +4008,6 @@
     "tags": [
       "fisica"
     ],
-    "descricao": "modifiCadores Os seguintes modificadores são aplicáveis às vantagens e desvantagens em geral. Muitas características têm seus próprios modificadores especiais; consulte a descrição da característica específica para maiores detalhes. Na coluna Tipo, os modificadores de ataque (v. pág. 102) são denotados pela letra A; uma limitação de Instrumento (v. pág. 116) é denotada por um E. Um — indica que não é nenhuma das duas. ampliações"
+    "descricao": "O personagem tem apenas um olho bom.\n\nPode ser que ele tenha sofrido um acidente e ficado sem um olho (nesse caso, ele pode usar um olho de vidro ou cobrir o orifício com um tapa-olho) ou talvez essa seja uma característica natural, como acontece com um ciclope.\n\nSua DX sofre uma penalidade de -1 em situações de combate e/ou que envolvam a coordenação entre mãos e olhos, e de -3 em situações que envolvam ataques à distância (a menos que ele realize uma manobra Apontar antes) ou a condução de qualquer veículo mais rápido que um cavalo ou uma charrete.\n\nAlgumas culturas consideram a aparência dos zarolhos desagradável.\n\nSe isso for verdade em sua campanha, a perda de um olho também vai resultar na perda de um nível de aparência (v. Aparência Física, pág. 20).\n\nSe o personagem foi criado com esta característica, assuma que a falta de um olho é uma coisa que já foi levada em conta em sua aparência.\n\nNão aplique um modificador de reação adicional."
   }
 ]

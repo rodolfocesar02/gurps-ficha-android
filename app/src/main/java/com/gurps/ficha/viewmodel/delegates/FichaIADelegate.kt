@@ -490,12 +490,14 @@ class FichaIADelegate(
                 )
             }
 
-            // "geracao" sempre integra. "analise" (Consultor) é conversa
-            // fluida: quando o usuário só pergunta, a IA responde texto (sem
-            // JSON → fichaObjeto null → sem botão). Quando o usuário manda
-            // aplicar, a IA devolve um DELTA em JSON → aí sim mostra INTEGRAR.
-            // O tradutor mescla o delta sem apagar o resto (dedup do Lote 140).
-            if (fichaObjeto != null && (modo == "geracao" || modo == "analise")) {
+            // B-completo (Lote 329): no modo "geracao" a ficha é montada
+            // INCREMENTALMENTE via forjador_editar_ficha durante o loop — já está
+            // aplicada na tela. Não há JSON final nem botão INTEGRAR: a criação
+            // termina com uma mensagem de fechamento (texto), fichaObjeto = null.
+            // Só o modo "analise" (Consultor) mantém o fluxo sugerir→INTEGRAR:
+            // quando o usuário manda aplicar, a IA devolve um DELTA em JSON e aí
+            // mostramos o botão. O tradutor mescla o delta sem apagar (dedup L140).
+            if (fichaObjeto != null && modo == "analise") {
                 fichaGeradaPendente = fichaObjeto
                 relatorioValidacao = mestreIAGeneratorUseCase.gerarRelatorio(fichaObjeto)
             }

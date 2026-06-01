@@ -60,6 +60,7 @@ class MestreIAGeneratorUseCase(
         // periciasSuplementares (AM) são tipo diferente — incluídas só no catálogo textual
         // Lote D: inclui budget de pontos para o modelo respeitar o limite
         val pontosIniciais = viewModel.personagem.pontosIniciais
+        Log.i("MestreIA_Forjador", "Início ($modo): budget = $pontosIniciais pts | ficha atual gasta ${viewModel.personagem.pontosGastos} pts")
         val vantagensCat = repository.vantagens.map { it.id to it.nome }
         val desvantagensCat = repository.desvantagens.map { it.id to it.nome }
         val periciasCat = repository.pericias.map { it.id to it.nome } +
@@ -114,6 +115,29 @@ class MestreIAGeneratorUseCase(
                     // (analise) NÃO há história: ele lê a ficha existente e
                     // sugere, sem criar personagem novo.
                     if (!ehConsultor) {
+                        // B-completo (Lote 329): a criação agora APLICA incrementalmente na
+                        // ficha viva (via forjador_editar_ficha), não no JSON final. Por isso,
+                        // se já existe uma ficha na tela, ela seria contaminada pela criação
+                        // nova. Regra do usuário: salvar a atual e abrir uma ficha LIMPA antes
+                        // de criar do zero — sem perguntar. Roda só na 1ª config (não a cada
+                        // fallback) para não re-salvar/re-zerar a cada tentativa.
+                        if (config == fila.first()) {
+                            val pAtual = viewModel.personagem
+                            val fichaNaoVazia = pAtual.nome.isNotBlank() ||
+                                pAtual.vantagens.isNotEmpty() || pAtual.desvantagens.isNotEmpty() ||
+                                pAtual.pericias.isNotEmpty() || pAtual.magias.isNotEmpty() ||
+                                pAtual.tecnicas.isNotEmpty() || pAtual.equipamentos.isNotEmpty() ||
+                                pAtual.forcaBase != 10 || pAtual.destrezaBase != 10 ||
+                                pAtual.inteligenciaBase != 10 || pAtual.vitalidadeBase != 10
+                            if (fichaNaoVazia) {
+                                onStatusUpdate("Guardando a ficha atual e abrindo uma nova...")
+                                // Mesmo contexto em que o loop já chama viewModel (via
+                                // toolExecutor.execute) — autoSaveIA/novaFicha lançam seus
+                                // próprios viewModelScope internamente.
+                                viewModel.autoSaveIA()   // salva a ficha atual (nome único IA_*)
+                                viewModel.novaFicha()     // zera para criar do zero
+                            }
+                        }
                         onStatusUpdate("Mestre $nomeModelo concebendo a história...")
                         val narrativaResp = MestreIAClient.perguntarAoMestre(
                             baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
@@ -161,9 +185,25 @@ class MestreIAGeneratorUseCase(
                     // break), OU 2 iterações seguidas sem adicionar nada novo
                     // (anti-loop real), OU teto de segurança absoluto.
                     val ITER_HARD_CAP = 30
+                    // Quantas iterações de PESQUISA-sem-aplicar são toleradas antes
+                    // de forçar a síntese final. Criar ficha completa pesquisa muito.
+                    val MAX_PESQUISA = 12
+                    // "Fingerprint" do estado da ficha: muda a CADA edição real,
+                    // não só ao adicionar item de lista. ANTES (bug Lote 329): só
+                    // contava listas (magias/vantagens/...) — então iterações que
+                    // só mexiam em ATRIBUTOS ou NOME (pilares 1-2, naturalmente as
+                    // primeiras no modo incremental) eram lidas como "estagnação" e
+                    // o loop morria em 2 iterações, antes de chegar às magias.
+                    // Agora inclui pontosGastos (reflete atributos/secundários/
+                    // vantagens/perícias) + nº de itens + tamanho dos textos.
                     fun totalItens() = viewModel.personagem.let {
-                        it.magias.size + it.vantagens.size + it.desvantagens.size +
-                        it.pericias.size + it.tecnicas.size + it.equipamentos.size
+                        it.pontosGastos +
+                        (it.magias.size + it.vantagens.size + it.desvantagens.size +
+                         it.pericias.size + it.tecnicas.size + it.equipamentos.size +
+                         it.qualidades.size + it.peculiaridades.size) +
+                        (if (it.nome.isNotBlank()) 1 else 0) +
+                        (if (it.historico.isNotBlank()) 1 else 0) +
+                        (if (it.aparencia.isNotBlank()) 1 else 0)
                     }
                     var iteracao = 0
                     var semProgresso = 0
@@ -201,7 +241,37 @@ class MestreIAGeneratorUseCase(
                             tc.name == ForjadorTools.TOOL_APLICAR_RACIAL
                         }
 
-                        if (forjadorCalls.isEmpty()) break
+                        if (forjadorCalls.isEmpty()) {
+                            // Modelo parou de chamar ferramentas. Se ISTO já era a
+                            // rodada final (tools desativadas), a resposta é o
+                            // fechamento legítimo → sai. MAS se ele parou no meio
+                            // (ainda com tools ligadas) e devolveu algo curto/interno
+                            // (ex: "Dados coletados com sucesso") em vez de um
+                            // fechamento de verdade, NÃO encerra com esse lixo: força
+                            // UMA rodada final de SÍNTESE (tools off) para ele escrever
+                            // a mensagem ao jogador. Bug observado no Lote 329: ficha
+                            // ficava montada mas o chat exibia a mensagem interna.
+                            val pareceFechamentoReal = ultima || response.text.trim().length > 120
+                            if (pareceFechamentoReal) break
+                            Log.d("MestreIA_Forjador", "Parou sem fechar (resp curta) → força síntese final it.$iteracao")
+                            response = MestreIAClient.perguntarAoMestre(
+                                baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
+                                prompt = comAncora(
+                                    "[FECHAMENTO] A ficha já está montada na tela. NÃO chame ferramentas. " +
+                                    "Escreva AGORA a mensagem final ao jogador: história/aparência (2-3 parágrafos) " +
+                                    "+ resumo \"Atributos: X | Vantagens: Y | Desv: Z | Perícias: W | Total: V/MAX pts\" " +
+                                    "(use os números reais do read-back)."),
+                                history = histCompleto,
+                                contextoPersonagem = viewModel.personagem.toJson(),
+                                catalogo = catalogoVazio,
+                                modo = modo,
+                                promptSistema = promptForjador,
+                                onChunk = null,
+                                desativarTools = true,
+                                maxTokens = 8192
+                            )
+                            break
+                        }
 
                         val resultados = forjadorCalls.joinToString("\n\n") { tc ->
                             // Status AO VIVO descritivo (não "tela em branco"):
@@ -275,24 +345,31 @@ class MestreIAGeneratorUseCase(
                             it.name == ForjadorTools.TOOL_GPS_MAGIA ||
                             it.name == ForjadorTools.TOOL_BUSCAR
                         }
-                        val progrediu = totalItens() > itensAntes
+                        // != e não >: aplicar DESVANTAGEM baixa pontosGastos (custo
+                        // negativo) — também é progresso. Qualquer mudança no estado conta.
+                        val progrediu = totalItens() != itensAntes
                         if (progrediu) {
-                            // Adicionou algo: zera tudo, cadeia avançando.
+                            // Mudou a ficha: zera tudo, cadeia avançando.
                             semProgresso = 0
                             pesquisaSeguida = 0
-                            Log.d("MestreIA_Forjador", "Progresso (+${totalItens() - itensAntes} itens) it.$iteracao")
+                            Log.d("MestreIA_Forjador", "Progresso (estado ${itensAntes}→${totalItens()}) it.$iteracao")
                         } else if (pesquisou) {
                             // Pesquisou mas não adicionou: trabalho válido,
                             // mas limita pesquisa-sem-aplicar p/ não loopar.
+                            // Teto 12 (era 4): criar ficha completa precisa
+                            // pesquisar MUITO (arco, sobrevivência, furtividade,
+                            // rastreamento, naturalista, N vantagens...) ANTES de
+                            // aplicar o 1º item; 4 empurrava à síntese cedo demais,
+                            // antes do modelo ter os IDs e ainda sem ter aplicado.
                             semProgresso = 0
                             pesquisaSeguida++
-                            Log.d("MestreIA_Forjador", "Pesquisa s/ aplicar ($pesquisaSeguida/4) it.$iteracao")
+                            Log.d("MestreIA_Forjador", "Pesquisa s/ aplicar ($pesquisaSeguida/$MAX_PESQUISA) it.$iteracao")
                         } else {
                             semProgresso++
                             Log.d("MestreIA_Forjador", "Sem avanço ($semProgresso/2) na iteração $iteracao")
                         }
                         val proximaEhFinal = semProgresso >= 2 ||
-                            pesquisaSeguida >= 4 || iteracao >= ITER_HARD_CAP - 1
+                            pesquisaSeguida >= MAX_PESQUISA || iteracao >= ITER_HARD_CAP - 1
 
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         // Resultado de ferramenta = dado do SISTEMA, não fala
@@ -303,10 +380,24 @@ class MestreIAGeneratorUseCase(
                             if (modo == "analise") {
                                 "[RESPOSTA FINAL] NÃO chame mais ferramentas. Se o usuário tinha pedido para APLICAR algo e a cadeia ficou incompleta (ex: ainda falta a magia-alvo ou pré-requisitos), diga com clareza e honestidade O QUE JÁ FOI APLICADO e O QUE AINDA FALTA — NÃO finja que terminou. NÃO afirme que o usuário aceitou ou pediu algo que não está no PEDIDO REAL acima. Caso contrário, faça a análise + sugestões com IDs reais."
                             } else {
-                                "[SÍNTESE FINAL OBRIGATÓRIA] Você já tem todos os dados necessários. NÃO chame ferramentas. Gere AGORA o JSON completo da ficha usando os IDs reais encontrados acima. No campo \"historico\" copie EXATAMENTE a história já definida no início desta conversa (não reescreva nem resuma) e no campo \"aparencia\" a descrição física correspondente. Responda APENAS com o JSON, sem texto adicional."
+                                // B-completo (Lote 329): a ficha já foi montada INCREMENTALMENTE
+                                // via forjador_editar_ficha durante o loop — não há JSON final.
+                                // O fechamento é só a mensagem ao jogador (história + resumo real).
+                                "[FECHAMENTO] A ficha já está montada na tela (você a construiu aplicando cada bloco). NÃO chame mais ferramentas e NÃO gere JSON. Escreva ao jogador uma mensagem final: a história/aparência do personagem (2-3 parágrafos imersivos, igual à definida no início) e um resumo dos pontos no formato \"Atributos: X | Vantagens: Y | Desv: Z | Perícias: W | Total: V/MAX pts\" (use os números REAIS que apareceram no read-back de pontos)."
                             }
                         } else {
-                            "Continue executando ESTRITAMENTE o PEDIDO REAL do usuário acima — nada além dele. NÃO trate sugestões que você fez antes como aceitas; o usuário só pediu o que está em PEDIDO REAL. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha, sem parar para perguntar."
+                            // Aviso de orçamento: diz ao modelo quantas rodadas de
+                            // PESQUISA ainda restam antes da síntese ser forçada, pra
+                            // ele não deixar tudo pro fim e começar a APLICAR cedo.
+                            val pesquisasRestantes = (MAX_PESQUISA - pesquisaSeguida).coerceAtLeast(0)
+                            val avisoOrcamento = if (pesquisaSeguida > 0)
+                                "\n\n⏳ ORÇAMENTO: você já fez $pesquisaSeguida rodada(s) de pesquisa SEM aplicar nada. " +
+                                "Restam ~$pesquisasRestantes rodadas de pesquisa antes de eu FORÇAR a ficha final. " +
+                                "NÃO deixe para aplicar tudo no fim: assim que tiver os IDs de um bloco (ex.: atributos, " +
+                                "ou um grupo de perícias), CHAME forjador_editar_ficha JÁ para aplicá-lo, e só então " +
+                                "pesquise o próximo bloco. Aplicar cedo protege o trabalho se a conexão cair."
+                            else ""
+                            "Continue executando ESTRITAMENTE o PEDIDO REAL do usuário acima — nada além dele. NÃO trate sugestões que você fez antes como aceitas; o usuário só pediu o que está em PEDIDO REAL. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha, sem parar para perguntar.$avisoOrcamento"
                         }
                         promptAtual = comAncora(instrucao)
                         onStatusUpdate("Mestre $nomeModelo montando a cadeia (passo $iteracao)...")

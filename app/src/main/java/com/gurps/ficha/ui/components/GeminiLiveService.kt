@@ -936,7 +936,9 @@ NUNCA:
                             val ctrl46Count = fragmento.split("<ctrl46>").size - 1
                             android.util.Log.e("GeminiLive", "🚨 <ctrl46> DETECTADO: $ctrl46Count tokens | tc=$toolCallCount na sessão | fragmento=\"${fragmento.take(200)}\"")
                         } else {
-                            android.util.Log.d("GeminiLive", "✎ frag transcrição modelo: \"$fragmento\"")
+                            // Lote 324: rebaixado a Verbose — o log consolidado por turno (linha ~1020)
+                            // já mostra a frase inteira. Fragmento serve só pra debug fino.
+                            android.util.Log.v("GeminiLive", "✎ frag transcrição modelo: \"$fragmento\"")
                             pendingTranscricaoModelo += fragmento
                         }
                     }
@@ -978,7 +980,8 @@ NUNCA:
                     val eraPrimeiroFragmento = pendingTextoUsuario.isBlank()
                     pendingTextoUsuario += inputTranscript
                     ultimaPerguntaUsuario = pendingTextoUsuario
-                    android.util.Log.d("GeminiLive", "✎ frag transcrição usuário: \"$inputTranscript\"")
+                    // Lote 324: rebaixado a Verbose — log consolidado já mostra a frase inteira.
+                    android.util.Log.v("GeminiLive", "✎ frag transcrição usuário: \"$inputTranscript\"")
                     // Dispara imediatamente: primeiro fragmento inicia uma nova entrada no chat;
                     // fragmentos seguintes atualizam a entrada existente via append
                     if (eraPrimeiroFragmento) {
@@ -1005,7 +1008,7 @@ NUNCA:
                     // Transcrição do usuário já foi enviada em streaming — apenas loga o total aqui
                     val textoUsuario = pendingTextoUsuario.trim()
                     if (textoUsuario.isNotBlank()) {
-                        android.util.Log.i("GeminiLive", "✎ Transcrição usuário (completa): \"${textoUsuario.take(100)}\"")
+                        android.util.Log.i("GeminiLive", "✎ Transcrição usuário (${textoUsuario.length} chars): \"${textoUsuario.take(500)}\"")
                         ultimaPerguntaUsuario = textoUsuario
                         // Envia versão final consolidada para garantir consistência
                         mainHandler.post { onAtualizarTranscricaoUsuario(textoUsuario) }
@@ -1017,7 +1020,7 @@ NUNCA:
                     val textoModelo = pendingTextoFallback.trim()
                     val respostaFinal = transcricao.ifBlank { textoModelo }
                     if (respostaFinal.isNotBlank()) {
-                        android.util.Log.i("GeminiLive", "✎ Resposta modelo (${if (transcricao.isNotBlank()) "transcrição" else "texto"}): \"${respostaFinal.take(150)}\"")
+                        android.util.Log.i("GeminiLive", "✎ Resposta modelo (${if (transcricao.isNotBlank()) "transcrição" else "texto"}, ${respostaFinal.length} chars): \"${respostaFinal.take(800)}\"")
                         mainHandler.post { onRespostaMestre(respostaFinal) }
                     }
                     // Salva turno no histórico (máx 5 turnos) — usa pergunta do turno atual

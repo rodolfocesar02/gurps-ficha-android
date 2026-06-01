@@ -1,7 +1,12 @@
 # Mapa Detalhado: Arquivos e Funções do Projeto GURPS
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
-Atualizado em: 2026-05-21 | 130+ arquivos documentados.
+Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328) | 130+ arquivos documentados.
+
+> ⚠️ **AUDITOR mudou de motor (Lotes 325-328):** saiu da busca semântica (RAG/HNSW) para
+> "grep + leitura dirigida" (`localizar_no_codex` + `ler_pagina`). Vários arquivos abaixo
+> viraram LEGADO/MORTO — marcados com ⚠️. Detalhe e motivo de cada um em
+> `ARQUITETURA_MESTRE_IA.md §5`.
 
 ---
 
@@ -139,13 +144,19 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 - **`domain/MestreIAGeneratorUseCase.kt`** — Orquestra o fluxo FORJADOR (criação de personagem). Usa `MestreIAClient` com modo `geracao`/`analise`, executa `ForjadorToolExecutor` a cada tool call recebida (ler ficha, buscar catálogo, GPS magia, editar ficha), faz até N iterações do loop de tool-use. Valida resposta final via `MestreIAValidacaoReport`.
 
-- **`domain/MestreIAGraphEngine.kt`** — Motor RAG (Retrieval-Augmented Generation). Recebe os chunks brutos do banco, aplica scoring por relevância (termos encontrados, boost de source, proximidade), formata a "Ponte de Ferro" (contexto técnico hierárquico) para injetar no prompt. Contém dicionário de sinônimos GURPS para expansão de queries.
+- **`domain/MestreIAGraphEngine.kt`** — ⚠️ **LEGADO p/ Auditor desde Lote 325.** Motor RAG semântico (BM25 + HNSW + diversificação + "Ponte de Ferro"). Hoje só alcançado por `gerarCatalogoDireto` (morto) e potencialmente Forjador/Voz. O scoring BM25 daqui foi **copiado** para `MestreIARepository.rankearPorBM25` (Lote 327) — ajustar ranking do Auditor é LÁ, não aqui.
 
-- **`domain/MestreIAPlanner.kt`** — Planejador de busca. Recebe a pergunta do usuário e gera um `PlanoDeBusca`: extrai termos brutos, expande com sinônimos, detecta categorias (combate, magia, perícia, movimento…), monta query FTS para o banco de chunks. Tem seu próprio dicionário de sinônimos (paralelo ao do GraphEngine — risco de divergência).
+- **`domain/MestreIAPlanner.kt`** — ⚠️ **QUASE MORTO desde Lote 319.** A lógica de planejamento (dicionários hardcoded) causava alucinação léxica e foi removida do fluxo. Hoje só a data class `TermoPonderado` é usada como TIPO (parâmetro com default vazio que nunca recebe valor real). Nenhum `PlanoDeBusca` roda no Auditor atual.
 
 - **`domain/MestreIARuleAuditor.kt`** — Auditor fiscal (Lote 55). Compara a `MestreIAResponse` sugerida pela IA contra os cálculos reais do `CharacterRules`. Gera lista de `AuditNote` com campo, valor sugerido vs. correto. Usado pelo Forjador para detectar custo errado de atributos.
 
-- **`domain/MestreIAUseCase.kt`** — Orquestra o fluxo AUDITOR (consulta de regras com RAG). Chama o Planner para montar a query, busca chunks no banco via `MestreIARepository`, ranqueia via `MestreIAGraphEngine`, injeta contexto no prompt e chama `MestreIAClient`. Executa loop de tool-use (até 3 iterações). Possui `ehErroDeApi()` preciso para não confundir erro com resposta legítima.
+- **`domain/MestreIAUseCase.kt`** — Orquestra o fluxo AUDITOR. **Desde Lote 325 NÃO usa RAG semântico:** loop de tool-use com `localizar_no_codex` (FTS4 AND/OR + ranking BM25) e `ler_pagina` (texto completo), via `MestreIARepository` — até **8 iterações** (`MAX_TOOL_CALLS`). **Lote 328:** trava anti-confabulação (`leuAlgumaPagina`) — se nunca leu página, força declarar "não localizei" em vez de citar de memória. `ehErroDeApi()` preciso. ⚠️ Contém funções legadas no mesmo arquivo: `executarBuscaCodex` (cases das 5 tools de embedding nunca disparam — Lote 317→325) e `gerarCatalogoDireto`/`reescreverQueryParaGurps` (MORTAS, zero callers).
+
+- **`domain/MestreIACitationValidator.kt`** — (Lote 315, VIVO) Verificador de Citações. Extrai citações `[Livro, Pág]` da resposta e compara com as páginas dos chunks lidos; o que não bate vira aviso "⚠️ não verificadas" anexado à resposta. Não bloqueia — apenas avisa.
+
+- **`domain/MestreIATopicIndex.kt`** — ⚠️ **MORTO desde Lote 272.** Lê `topic_index.json` para "páginas garantidas", mas NENHUM arquivo o referencia (nem `carregar()`). Determinismo por tópico foi rejeitado. Não reviver sem rediscutir.
+
+- **`domain/MestreIASemanticEngine.kt` / `MestreIAVectorEngine.kt`** — ⚠️ **DORMENTES p/ Auditor desde Lote 325.** Reranking cosseno e busca HNSW (ObjectBox). Só via GraphEngine (Forjador/Voz). Os utilitários `floatArrayToByteArray`/`byteArrayToFloatArray` do SemanticEngine ainda são usados na importação de embeddings (FichaDatabase).
 
 - **`domain/MestreIAValidacaoReport.kt`** — Data classes do relatório de validação do Forjador: `ItemValidacao` (entrada, idEncontrado, status, mensagem) e `RelatorioValidacao` (vantagens/desvantagens/perícias/magias/técnicas, totalOk, totalFallback, alertaBudget). `StatusValidacao` enum: OK, FUZZY, FALLBACK, ERRO.
 
@@ -165,9 +176,9 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 - **`data/DataRepository.kt`** — Repositório central de catálogos. Carrega (lazy, com Mutex) vantagens, desvantagens, perícias, magias, técnicas, armas, armaduras, escudos, raças, metacaracterísticas. Expõe métodos de filtragem (`filtrarVantagens`, `filtrarDesvantagens`, `filtrarPericias`, `filtrarMagias`, `filtrarArmasCatalogo`, etc.), criação de objetos selecionados (`criarVantagemSelecionada`, `criarPericiaSelecionada`) e validação de pré-requisitos.
 
-- **`data/MestreIARepository.kt`** — Repositório especializado no Códex (RAG). Sincroniza `chunks.jsonl` → tabela `manual_chunks` (FTS4) com Mutex, detectando banco vazio ou versão desatualizada (`CODEX_VERSION_CURRENT = 2`). Expõe `buscarNoCodexDireto` (busca FTS com log de páginas), `buscarPorPagina`, `buscarPorPaginaESource`, `getChunkById`, `forçarSincronizacaoManual`. Delega query para `MestreIAQueryEngine`.
+- **`data/MestreIARepository.kt`** — Repositório do Códex + **motor de busca VIVO do Auditor (Lotes 325-327).** Sincroniza `chunks.jsonl` → `manual_chunks` (FTS4) com Mutex (`CODEX_VERSION_CURRENT = 3`). Funções do Auditor: **`localizarNoCodex`** (FTS4 AND, fallback OR, + **`rankearPorBM25`** que ordena por relevância — Lote 327), **`lerPaginas`** (texto completo de página/intervalo), `buscarPorPaginaESource`. Mantém também `buscarNoCodexDireto`/`buscarPorPagina` (usados pelo GraphEngine legado).
 
-- **`data/MestreIAQueryEngine.kt`** — Preparação de queries FTS4 para o banco de chunks. `prepararQueryFTSAgressiva` constrói query OR com todos os termos e sinônimos expandidos. Terceiro dicionário de sinônimos do projeto (paralelo ao Planner e GraphEngine).
+- **`data/MestreIAQueryEngine.kt`** — Preparação de queries FTS4 (`prepararQueryFTSAgressiva`, OR + sinônimos). ⚠️ Usado pelo GraphEngine (Forjador/legado), **NÃO pelo `localizarNoCodex` do Auditor**, que tokeniza por conta própria. Um dos 3 dicionários de sinônimos do projeto.
 
 ---
 
@@ -175,13 +186,13 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 
 - **`data/network/MestreIAClient.kt`** — Cliente HTTP para APIs de IA. Suporta Gemini nativo (`generativelanguage.googleapis.com`) e OpenRouter/OpenAI-compatible. Monta JSON do request (`gerarJsonGoogleNative`, `gerarJsonOpenRouter`), lida com tool calls na resposta, captura tokens de uso. Modo stream desabilitado (JSON puro). Log de auditoria do prompt (tamanho, modelo, tokens).
 
-- **`data/network/MestreIAPromptsAuditor.kt`** — Prompt de sistema do AUDITOR (modo `conversa`). Define o comportamento da IA como especialista em regras GURPS 4ª Ed., instruções de citação de fontes, formato de resposta e uso das tools de busca.
+- **`data/network/MestreIAPromptsAuditor.kt`** — Prompt de sistema do AUDITOR (reescrito Lotes 325/328): loop `localizar`→`ler`, "REGRA DE OURO" (não responder sem ter lido), anti-confabulação (citar só o que leu). **CATEGORIAL, sem exemplos hardcoded** (lição do Lote 318 — exemplo vira cola/viés).
 
 - **`data/network/MestreIAPromptsForjador.kt`** — Prompt de sistema do FORJADOR (modo `geracao`/`analise`). Define o comportamento da IA como criador de fichas, protocolo de uso das tools (`forjador_*`), ordem de operações e formato de JSON final.
 
 - **`data/network/MestreIAResponse.kt`** — Data classes da resposta estruturada da IA: `MestreIAResponse` (envelope completo da ficha gerada), `AtributosIA`, `VantagemIA`, `DesvantagemIA`, `PericiaIA`, `MagiaIA`, `TecnicaIA`. Usado no fluxo Forjador e no `TOOL_FILL_SHEET` (Auditor).
 
-- **`data/network/MestreIATools.kt`** — Schemas das ferramentas do AUDITOR: `consultar_manual_direto`, `TOOL_FILL_SHEET` (preenche ficha a partir de descrição no modo Auditor). Exporta formato Gemini e OpenAI. `TOOL_FILL_SHEET` ainda é usado em `FichaIADelegate` para parsing de fichas via Auditor.
+- **`data/network/MestreIATools.kt`** — Schemas das ferramentas. **AUDITOR atual (Lote 325): `getAuditorToolsOpenAI`/`getAuditorToolsGemini`** = `localizar_no_codex` + `ler_pagina` + `inspecionar_personagem` + `consultar_nexus_arcano`. ⚠️ `getOpenAITools`/`getGeminiTools` (5 tools de embedding: `consultar_manual_direto` + 4 especializadas por livro + `TOOL_FILL_SHEET`) agora só servem ao FORJADOR — legadas p/ o Auditor. A seleção por modo acontece em `MestreIAClient`.
 
 - **`data/network/DiscordRollApiClient.kt`** — Cliente HTTP para o servidor Discord do projeto. Envia `DiscordRollPayload` (personagem, tipo de teste, dados, resultado) via POST. Também busca lista de `DiscordVoiceChannel` disponíveis. Data classes: `DiscordRollPayload`, `DiscordRollSendResult`, `DiscordVoiceChannel`.
 
@@ -397,8 +408,10 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 | `escudos.json` | Escudos com BD |
 | `racas.v1.json` | Raças jogáveis (formato enxuto — sem custos, recalculado) |
 | `metacaracteristicas.v1.json` | Pacotes prontos de metacaracterísticas (Gigante, Anão, etc.) |
-| `chunks.jsonl` | Chunks do manual GURPS para o RAG (FTS4) |
+| `chunks.jsonl` | Chunks do manual GURPS (1 por página, FTS4). Auditor usa só o texto; embedding (48MB) dormente p/ ele. |
+| `chunks.jsonl.bak` | Idêntico SEM embeddings (6.5MB). Candidato a substituir o .jsonl quando confirmado que Auditor não precisa de embedding. |
 | `temas_ia.json` | Temas canônicos de busca para o Mestre IA |
+| `topic_index.json` | ⚠️ Páginas garantidas — lido só pelo `MestreIATopicIndex`, que está MORTO (Lote 272). Asset órfão na prática. |
 
 ---
 
@@ -443,10 +456,13 @@ Atualizado em: 2026-05-21 | 130+ arquivos documentados.
 | Golpe/Empurrão por ST | `CharacterRules.kt` → `tabelaGdP / tabelaGeB` |
 | Custo de vantagem com specialRule | `CharacterRules.kt` → `calcularCustoAliado/Inimigo/...` |
 | Cálculo de NH de perícia | `SkillEngine.kt` → `getRegraPerfilTecnica` |
-| Loop de tool-use do Auditor | `MestreIAUseCase.kt` → `processarPergunta` |
+| Loop de tool-use do Auditor | `MestreIAUseCase.kt` → `conversarComMestreIA` (localizar→ler, máx 8) |
+| Busca do Auditor (localizar/ler) | `MestreIARepository.kt` → `localizarNoCodex` / `lerPaginas` |
+| Ranking do Auditor (ajustar AQUI) | `MestreIARepository.kt` → `rankearPorBM25` (Lote 327) |
+| Trava anti-confabulação | `MestreIAUseCase.kt` → var `leuAlgumaPagina` (Lote 328) |
 | Loop de tool-use do Forjador | `MestreIAGeneratorUseCase.kt` → `gerarPersonagem` |
-| Scoring de chunks RAG | `MestreIAGraphEngine.kt` → `ranquearChunks` |
-| Query FTS para o banco | `MestreIAQueryEngine.kt` → `prepararQueryFTSAgressiva` |
+| ⚠️ Scoring RAG semântico (LEGADO p/ Auditor) | `MestreIAGraphEngine.kt` → `buscarDiretoNoCodex` |
+| Query FTS (GraphEngine/Forjador) | `MestreIAQueryEngine.kt` → `prepararQueryFTSAgressiva` |
 | Carregamento de raças | `RacaCatalogo.kt` → `resolver` |
 | Envio para Discord | `DiscordRollApiClient.kt` → `postRoll` |
 | Salvar / carregar ficha | `FichaStorageRepository.kt` → `salvarFicha / carregarFicha` |
@@ -468,4 +484,12 @@ Chave de controle: `BuildConfig.UI_VARIANT` (usado para condicionar lógica de U
 ---
 
 > [!TIP]
-> **DICA PARA O AGENTE**: Ao modificar regras de combate ou magias, rode `NexusArcanoLoteFCanonicScenarioTest.kt` e `RulesLayerTest.kt`. Os três dicionários de sinônimos (`MestreIAPlanner`, `MestreIAGraphEngine`, `MestreIAQueryEngine`) devem ser mantidos sincronizados — divergência entre eles causa inconsistência no RAG.
+> **DICA PARA O AGENTE**: Ao modificar regras de combate ou magias, rode `NexusArcanoLoteFCanonicScenarioTest.kt` e `RulesLayerTest.kt`.
+>
+> **Sobre o Mestre IA (pós-Lote 328):** o AUDITOR não usa mais RAG semântico — usa
+> `localizar_no_codex` + `ler_pagina` (`MestreIARepository`). Para ajustar a busca/ranking do
+> Auditor, mexa em `MestreIARepository.rankearPorBM25` — **NÃO** no `MestreIAGraphEngine` (legado
+> p/ Auditor). Os 3 dicionários de sinônimos (`MestreIAPlanner`, `MestreIAGraphEngine`,
+> `MestreIAQueryEngine`) só importam para o GraphEngine/Forjador/Voz, não para o Auditor.
+> Antes de mexer em qualquer arquivo do Mestre IA, leia `ARQUITETURA_MESTRE_IA.md §5` (código
+> legado/morto e desde quando) para não reanimar algo descontinuado.
