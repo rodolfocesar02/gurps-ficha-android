@@ -2375,7 +2375,7 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 
 ## Lote 329 — [2026-06-01] feat: Forjador cria ficha INCREMENTAL (sem botão) + cadeia de magia automática + correções pós-teste
 
-- **Hash:** `<preenchido após o commit>`
+- **Hash:** `d7db852`
 - **Resumo:** o modo CRIAR deixou de depender do JSON final + botão INTEGRAR. O Forjador
   agora MONTA a ficha ao vivo via `forjador_editar_ficha` (igual ao modo análise), bloco a
   bloco na ordem dos 9 pilares. Se a conexão cai no meio, o que já foi aplicado permanece.
@@ -2439,6 +2439,6 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
   "app calcula custo" — candidatos a remover (usuário fará teste A/B antes).
 
 ### Rollback
-- `git revert <hash>`.
+- `git revert d7db852`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
