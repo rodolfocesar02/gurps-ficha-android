@@ -2445,7 +2445,7 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 
 ## Lote 330 — [2026-06-01] fix: magias de escola única e elementais (sub-escola por entradas no catálogo)
 
-- **Hash:** `<preenchido após o commit>`
+- **Hash:** `a0235aa`
 - **Resumo:** corrige um IMPASSE de UI que impedia adicionar certas magias. O `MagicEngine`
   exigia "especialização" para magias que a UI não dava campo para preencher → clicava
   Adicionar e a magia nunca entrava (validação barrava em silêncio). Regra GURPS: magia NÃO
@@ -2482,6 +2482,6 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
   deve bloquear até 8 magias de Fogo; Controle/Criar exigem o anterior do mesmo elemento.
 
 ### Rollback
-- `git revert <hash>`.
+- `git revert a0235aa`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
