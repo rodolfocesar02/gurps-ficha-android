@@ -123,24 +123,13 @@ object MagicEngine {
                 else if ((nivelMagia("Furacão") ?: 0) < 16 && (nivelMagia("Furacao") ?: 0) < 16) "Pré-requisito não atendido: Furacão NH 16+."
                 else null
             }
-            "criar_elemental" -> {
-                if (nivelAptidaoMagicaGeral < 2) "Pré-requisito não atendido: Aptidão Mágica 2."
-                else if (!hasMagia("Controle de Elemental")) "Pré-requisito não atendido: Controle de Elemental."
-                else null
-            }
-            "convocar_elemental" -> {
-                if (nivelAptidaoMagicaGeral < 1) "Pré-requisito não atendido: Aptidão Mágica 1."
-                else null
-            }
-            "controle_de_elemental" -> {
-                if (!hasMagia("Convocar Elemental")) "Pré-requisito não atendido: Convocar Elemental."
-                else null
-            }
-            "adivinhacao" -> {
-                val temHistoria = personagem.pericias.any { it.nome.equals("História", ignoreCase = true) || it.nome.equals("Historia", ignoreCase = true) }
-                if (!temHistoria) "Pré-requisito não atendido: História."
-                else null
-            }
+            // ELEMENTAIS: removidos daqui (eram validados por NOME genérico
+            // "Controle de Elemental"/"Convocar Elemental", o que conflitaria com as
+            // novas entradas POR ELEMENTO do catálogo: convocar/controle/criar_elemental
+            // _ar/_fogo/_terra/_agua. O pré-requisito de cada uma (AM + N magias da
+            // escola do elemento; cadeia Convocar→Controle→Criar do MESMO elemento)
+            // agora vem do TEXTO de pré-requisito no JSON, validado pelo motor Nexus —
+            // igual a qualquer outra magia. (Decisão do usuário; espelha os animais.)
             "anular_possessao" -> {
                 if (!hasMagia("Passageiro da Alma")) "Pré-requisito não atendido: Passageiro da Alma."
                 else if (!hasMagia("Possessão") && !hasMagia("Possessao")) "Pré-requisito não atendido: Possessão."
@@ -211,16 +200,12 @@ object MagicEngine {
             return null
         }
 
-        val exigeEspecializacao = definicaoId.lowercase() in setOf(
-            "adivinhacao",
-            "cavalgar",
-            "controle_de_hibrido",
-            "golem",
-            "passageiro_interno",
-            "criar_elemental",
-            "convocar_elemental",
-            "controle_de_elemental"
-        )
+        // NENHUMA magia exige "especialização" livre (regra de PERÍCIA, não de magia).
+        // Animais → sub-escola tratada acima (exigeSubEscolaAnimais). Elementais →
+        // viraram entradas POR ELEMENTO no catálogo (Ar/Fogo/Terra/Água), cada uma com
+        // escola e pré-requisito próprios; não precisam de campo de especialização.
+        // Lista vazia: a função nunca mais barra por "falta especialização".
+        val exigeEspecializacao = definicaoId.lowercase() in emptySet<String>()
         if (!exigeEspecializacao) return null
         if (especializacaoMagia.isNullOrBlank()) {
             return "Informe a especializacao desta magia."
@@ -229,16 +214,15 @@ object MagicEngine {
     }
 
     fun permiteMultiplasInstanciasMagia(definicaoId: String): Boolean {
+        // Elementais antigos saíram: agora são entradas distintas por elemento no
+        // catálogo (ids diferentes), então não precisam de "múltiplas instâncias do
+        // mesmo id". cavalgar idem (entradas por sub-escola). anular_possessao mantido.
         return definicaoId.lowercase() in setOf(
-            "criar_elemental",
-            "convocar_elemental",
-            "controle_de_elemental",
-            "anular_possessao",
-            "cavalgar"
+            "anular_possessao"
         )
     }
 
     fun permiteMultiplasInstanciasPorEscola(definicaoId: String): Boolean {
-        return definicaoId.lowercase() in setOf("criar_elemental", "convocar_elemental", "controle_de_elemental")
+        return definicaoId.lowercase() in emptySet<String>()
     }
 }

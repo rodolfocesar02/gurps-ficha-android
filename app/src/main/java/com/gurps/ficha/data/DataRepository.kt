@@ -509,9 +509,10 @@ open class DataRepository(internal val context: Context) {
         "controle_de_membro" to "AM1, 5 magicas de Corpo, incl. Espasmo",
         "adivinhacao" to "Historia",
         "anular_possessao" to "Passageiro da Alma e Possessao",
-        "convocar_elemental" to "Aptidao Magica 1 e 8 magicas da escola apropriada",
-        "controle_de_elemental" to "Convocar Elemental para a escola apropriada",
-        "criar_elemental" to "AM2, Controle de Elemental",
+        // Elementais genéricos REMOVIDOS do override: viraram entradas POR ELEMENTO
+        // no catálogo (convocar/controle/criar_elemental_ar/_fogo/_terra/_agua), cada
+        // uma com pré-requisito ESPECÍFICO escrito no JSON. O texto genérico ("escola
+        // apropriada") não resolvia no parser. As novas entradas leem o preReq do JSON.
         "corpo_de_vento" to "Aptidao Magica 3, Corpo de Ar e Furacao, cada um com NH 16 ou superior, 1 magica em cinco escolas diferentes",
         "cavalgar" to "Pelo menos uma magia de Controle de Animal",
         "controle_de_hibrido" to "2 magicas de Controle de Animal",

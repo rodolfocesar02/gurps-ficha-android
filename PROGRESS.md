@@ -2442,3 +2442,46 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert d7db852`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 330 — [2026-06-01] fix: magias de escola única e elementais (sub-escola por entradas no catálogo)
+
+- **Hash:** `<preenchido após o commit>`
+- **Resumo:** corrige um IMPASSE de UI que impedia adicionar certas magias. O `MagicEngine`
+  exigia "especialização" para magias que a UI não dava campo para preencher → clicava
+  Adicionar e a magia nunca entrava (validação barrava em silêncio). Regra GURPS: magia NÃO
+  tem especialização livre (isso é de PERÍCIA); o que parecia especialização é SUB-ESCOLA
+  (animais: Terra/Ar/Mar; elementais: Ar/Fogo/Terra/Água), resolvida por ENTRADAS SEPARADAS
+  no catálogo — não por campo de texto.
+
+### MagicEngine.kt
+- `validarEspecializacaoObrigatoria`: lista de "exige especialização" ESVAZIADA. Saíram
+  cavalgar, passageiro_interno, golem, adivinhacao, controle_de_hibrido (escola única) e os
+  3 elementais. A sub-escola de Animais continua tratada à parte (`exigeSubEscolaAnimais`).
+- `validarRegrasEspeciaisMagia`: removidos os 3 blocos hardcoded dos elementais (validavam por
+  NOME genérico "Convocar/Controle de Elemental", conflitando com as novas entradas por elemento).
+  Pré-requisito agora vem do TEXTO do JSON, validado pelo motor Nexus (igual às demais magias).
+- `permiteMultiplasInstanciasMagia`/`PorEscola`: removidos os elementais antigos (agora são ids
+  distintos por elemento). Mantido `anular_possessao`.
+
+### DataRepository.kt
+- `preRequisitosOverridePorMagiaId`: removidas as 3 linhas genéricas dos elementais (texto
+  "escola apropriada" que o parser não resolvia). As novas entradas leem o preReq do JSON.
+
+### Catálogo (magias2versao.json) — usuário criou as entradas; correção pontual da IA
+- Usuário adicionou entradas por sub-escola: Cavalgar (Terra/Ar/Mar) e 12 elementais
+  (convocar/controle/criar × Ar/Fogo/Terra/Água), cada uma com escola e pré-requisito próprios.
+- IA corrigiu as 4 entradas de Convocar Elemental: preReq dizia "8 magicas da escola apropriada"
+  (texto vago que o parser nunca resolve → magia ficaria travada) → trocado para o formato
+  canônico "8 magicas de <Elemento>" (mesmo padrão de 60+ magias que já funcionam).
+- Total: 839 → 853 magias (sem perda; validado).
+
+### Validação
+- ✅ Compila (BUILD SUCCESSFUL).
+- ✅ Funcional confirmado no device: Cavalgar (Criaturas do Ar) entra na lista (antes travava).
+- ⏳ Pendente testar elementais no device (dependem das entradas do catálogo): Convocar Fogo
+  deve bloquear até 8 magias de Fogo; Controle/Criar exigem o anterior do mesmo elemento.
+
+### Rollback
+- `git revert <hash>`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

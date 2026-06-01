@@ -1846,8 +1846,8 @@
     "descricao": "O operador conta uma história fascinante. Qualquer um que entenda o idioma e preste atenção cai sob a mágica. Uma hora de tempo real passa, mas as vítimas percebem apenas um minuto passando. Qualquer um que resista perceberá o operador e suas vítimas paralisadas. Qualquer objetivo que seja atacado ou balançado se liberta da mágica."
   },
   {
-    "id": "cavalgar",
-    "nome": "Cavalgar",
+    "id": "cavalgar_criaturas_do_ar",
+    "nome": "Cavalgar (Criaturas do Ar)",
     "dificuldade": "D",
     "pagina": 31,
     "classe": "Comum",
@@ -1857,7 +1857,37 @@
     "duracao": "5 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Pelo menos uma magia de Controle de Animal",
+    "preRequisitos": "Controle de Animal (Criaturas do Ar)",
+    "descricao": "Permite que o operador monte e cavalgue uma criatura-objetivo, como se ela fosse um animal de montaria treinado e fiel. A criatura precisa ser capaz de aguentar o operador e este, por sua vez, ainda precisa ser bem-sucedido num teste de Cavalgar."
+  },
+  {
+    "id": "cavalgar_criaturas_do_mar",
+    "nome": "Cavalgar (Criaturas do Mar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "5 min.",
+    "energia": "02/01",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Mar)",
+    "descricao": "Permite que o operador monte e cavalgue uma criatura-objetivo, como se ela fosse um animal de montaria treinado e fiel. A criatura precisa ser capaz de aguentar o operador e este, por sua vez, ainda precisa ser bem-sucedido num teste de Cavalgar."
+  },
+  {
+    "id": "cavalgar_criaturas_da_terra",
+    "nome": "Cavalgar (Criaturas da Terra)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "5 min.",
+    "energia": "02/01",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas da Terra)",
     "descricao": "Permite que o operador monte e cavalgue uma criatura-objetivo, como se ela fosse um animal de montaria treinado e fiel. A criatura precisa ser capaz de aguentar o operador e este, por sua vez, ainda precisa ser bem-sucedido num teste de Cavalgar."
   },
   {
@@ -2603,21 +2633,63 @@
     "descricao": "Assume o controle de uma criação viva operada por outra pessoa. Em um sucesso, mais custos de energia são necessários para manter a criação. Esta mágica não pode afetar uma ilusão."
   },
   {
-    "id": "controle_de_elemental",
-    "nome": "Controle de Elemental",
+    "id": "controle_de_elemental_ar",
+    "nome": "Controle de Elemental Ar",
     "dificuldade": "D",
     "pagina": 28,
     "classe": "Especial",
     "escola": [
-      "Ar",
-      "Fogo",
-      "Terra",
+      "Ar"
+    ],
+    "duracao": "1 min.",
+    "energia": "Especial",
+    "tempoOperacao": "2 seg.",
+    "preRequisitos": "Convocar Elemental Ar",
+    "descricao": "Permite ao operador controlar todas as ações de um elemental enquanto a mágica durar. Para controle direto, o elemental deve manter-se ao alcance dos olhos do operador. O elemental se retirará se assim lhe for dito. Esta mágica pode também ser usada como uma mágica de Informação, para avaliar os quatro atributos daquele tipo de elemental."
+  },
+  {
+    "id": "controle_de_elemental_fogo",
+    "nome": "Controle de Elemental Fogo",
+    "dificuldade": "D",
+    "pagina": 28,
+    "classe": "Especial",
+    "escola": [
+      "Fogo"
+    ],
+    "duracao": "1 min.",
+    "energia": "Especial",
+    "tempoOperacao": "2 seg.",
+    "preRequisitos": "Convocar Elemental Fogo",
+    "descricao": "Permite ao operador controlar todas as ações de um elemental enquanto a mágica durar. Para controle direto, o elemental deve manter-se ao alcance dos olhos do operador. O elemental se retirará se assim lhe for dito. Esta mágica pode também ser usada como uma mágica de Informação, para avaliar os quatro atributos daquele tipo de elemental."
+  },
+  {
+    "id": "controle_de_elemental_terra",
+    "nome": "Controle de Elemental Terra",
+    "dificuldade": "D",
+    "pagina": 28,
+    "classe": "Especial",
+    "escola": [
+      "Terra"
+    ],
+    "duracao": "1 min.",
+    "energia": "Especial",
+    "tempoOperacao": "2 seg.",
+    "preRequisitos": "Convocar Elemental Terra",
+    "descricao": "Permite ao operador controlar todas as ações de um elemental enquanto a mágica durar. Para controle direto, o elemental deve manter-se ao alcance dos olhos do operador. O elemental se retirará se assim lhe for dito. Esta mágica pode também ser usada como uma mágica de Informação, para avaliar os quatro atributos daquele tipo de elemental."
+  },
+  {
+    "id": "controle_de_elemental_agua",
+    "nome": "Controle de Elemental Água",
+    "dificuldade": "D",
+    "pagina": 28,
+    "classe": "Especial",
+    "escola": [
       "Água"
     ],
     "duracao": "1 min.",
     "energia": "Especial",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Convocar Elemental para a escola apropriada",
+    "preRequisitos": "Convocar Elemental Água",
     "descricao": "Permite ao operador controlar todas as ações de um elemental enquanto a mágica durar. Para controle direto, o elemental deve manter-se ao alcance dos olhos do operador. O elemental se retirará se assim lhe for dito. Esta mágica pode também ser usada como uma mágica de Informação, para avaliar os quatro atributos daquele tipo de elemental."
   },
   {
@@ -2846,21 +2918,63 @@
     "descricao": "Esta versão de Convocação Planar gera demônios. Se o operador falhar em controlar o demônio, ele sempre o atacará! Se ele conseguir controlar o demônio e dar a ele um comando, o demônio executará a literalmente de suas ordens, fazendo o possível para perverter seu espírito para desfavorecer o operador."
   },
   {
-    "id": "convocar_elemental",
-    "nome": "Convocar Elemental",
+    "id": "convocar_elemental_ar",
+    "nome": "Convocar Elemental Ar",
     "dificuldade": "D",
     "pagina": 27,
     "classe": "Especial",
     "escola": [
-      "Ar",
-      "Fogo",
-      "Terra",
+      "Ar"
+    ],
+    "duracao": "1 hora",
+    "energia": "4#",
+    "tempoOperacao": "30 seg.",
+    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Ar",
+    "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
+  },
+  {
+    "id": "convocar_elemental_fogo",
+    "nome": "Convocar Elemental Fogo",
+    "dificuldade": "D",
+    "pagina": 27,
+    "classe": "Especial",
+    "escola": [
+      "Fogo"
+    ],
+    "duracao": "1 hora",
+    "energia": "4#",
+    "tempoOperacao": "30 seg.",
+    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Fogo",
+    "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
+  },
+  {
+    "id": "convocar_elemental_terra",
+    "nome": "Convocar Elemental Terra",
+    "dificuldade": "D",
+    "pagina": 27,
+    "classe": "Especial",
+    "escola": [
+      "Terra"
+    ],
+    "duracao": "1 hora",
+    "energia": "4#",
+    "tempoOperacao": "30 seg.",
+    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Terra",
+    "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
+  },
+  {
+    "id": "convocar_elemental_agua",
+    "nome": "Convocar Elemental Água",
+    "dificuldade": "D",
+    "pagina": 27,
+    "classe": "Especial",
+    "escola": [
       "Água"
     ],
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Aptidao Magica 1 e 8 magicas da escola apropriada",
+    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Água",
     "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
   },
   {
@@ -3361,22 +3475,64 @@
     "descricao": "Transforma qualquer substância natural no combustível primário sólido ou líquido para o NT da mágica. No NT5, isso transformará rochas em carvão; no NT7, transformaria rochas em urânio. Outras mágicas sobre Energia não podem tocar no combustível criado magicamente ou em uma máquina usando combustível criado para energia."
   },
   {
-    "id": "criar_elemental",
-    "nome": "Criar Elemental",
+    "id": "criar_elemental_ar",
+    "nome": "Criar Elemental Ar",
     "dificuldade": "D",
     "pagina": 28,
     "classe": "Especial",
     "escola": [
-      "Ar",
-      "Fogo",
-      "Terra",
+      "Ar"
+    ],
+    "duracao": "Perm.",
+    "energia": "Especial",
+    "tempoOperacao": "Especial",
+    "preRequisitos": "AM2, Controle de Elemental Ar",
+    "descricao": "Permite ao operador criar um espírito do elemento Ar. O operador pode determinar as capacidades do elemental criado aumentando ou diminuindo os atributos do elemental básico desse tipo. Um elemental recém-criado servirá obedientemente ao operador por uma hora. No fim deste período, faça uma Disputa Rápida entre o NH do operador com esta mágica, e a soma dos atributos IQ e ST do elemental. Se o operador vencer, o elemental serve por mais uma hora, no final do qual outra Disputa Rápida é necessária, e assim por diante. Quando o operador perder, o elemental escapará de seu controle."
+  },
+  {
+    "id": "criar_elemental_fogo",
+    "nome": "Criar Elemental Fogo",
+    "dificuldade": "D",
+    "pagina": 28,
+    "classe": "Especial",
+    "escola": [
+      "Fogo"
+    ],
+    "duracao": "Perm.",
+    "energia": "Especial",
+    "tempoOperacao": "Especial",
+    "preRequisitos": "AM2, Controle de Elemental Fogo",
+    "descricao": "Permite ao operador criar um espírito do elemento Fogo. O operador pode determinar as capacidades do elemental criado aumentando ou diminuindo os atributos do elemental básico desse tipo. Um elemental recém-criado servirá obedientemente ao operador por uma hora. No fim deste período, faça uma Disputa Rápida entre o NH do operador com esta mágica, e a soma dos atributos IQ e ST do elemental. Se o operador vencer, o elemental serve por mais uma hora, no final do qual outra Disputa Rápida é necessária, e assim por diante. Quando o operador perder, o elemental escapará de seu controle."
+  },
+  {
+    "id": "criar_elemental_terra",
+    "nome": "Criar Elemental Terra",
+    "dificuldade": "D",
+    "pagina": 28,
+    "classe": "Especial",
+    "escola": [
+      "Terra"
+    ],
+    "duracao": "Perm.",
+    "energia": "Especial",
+    "tempoOperacao": "Especial",
+    "preRequisitos": "AM2, Controle de Elemental Terra",
+    "descricao": "Permite ao operador criar um espírito do elemento Terra. O operador pode determinar as capacidades do elemental criado aumentando ou diminuindo os atributos do elemental básico desse tipo. Um elemental recém-criado servirá obedientemente ao operador por uma hora. No fim deste período, faça uma Disputa Rápida entre o NH do operador com esta mágica, e a soma dos atributos IQ e ST do elemental. Se o operador vencer, o elemental serve por mais uma hora, no final do qual outra Disputa Rápida é necessária, e assim por diante. Quando o operador perder, o elemental escapará de seu controle."
+  },
+  {
+    "id": "criar_elemental_agua",
+    "nome": "Criar Elemental Água",
+    "dificuldade": "D",
+    "pagina": 28,
+    "classe": "Especial",
+    "escola": [
       "Água"
     ],
     "duracao": "Perm.",
     "energia": "Especial",
     "tempoOperacao": "Especial",
-    "preRequisitos": "AM2, Controle de Elemental",
-    "descricao": "Permite ao operador criar um espírito do elemento apropriado. O operador pode determinar as capacidades do elemental criado aumentando ou diminuindo os atributos do elemental básico desse tipo. Um elemental recém-criado servirá obedientemente ao operador por uma hora. No fim deste período, faça uma Disputa Rápida entre o NH do operador com esta mágica, e a soma dos atributos IQ e ST do elemental. Se o operador vencer, o elemental serve por mais uma hora, no final do qual outra Disputa Rápida é necessária, e assim por diante. Quando o operador perder, o elemental escapará de seu controle."
+    "preRequisitos": "AM2, Controle de Elemental Água",
+    "descricao": "Permite ao operador criar um espírito do elemento Água. O operador pode determinar as capacidades do elemental criado aumentando ou diminuindo os atributos do elemental básico desse tipo. Um elemental recém-criado servirá obedientemente ao operador por uma hora. No fim deste período, faça uma Disputa Rápida entre o NH do operador com esta mágica, e a soma dos atributos IQ e ST do elemental. Se o operador vencer, o elemental serve por mais uma hora, no final do qual outra Disputa Rápida é necessária, e assim por diante. Quando o operador perder, o elemental escapará de seu controle."
   },
   {
     "id": "criar_fogo",
@@ -8654,8 +8810,53 @@
     "descricao": "O operador pode ver através dos olhos do objetivo, ouvir através de seus ouvidos, etc., sempre que ele se concentra. O operador não exerce nenhum controle sobre o objetivo."
   },
   {
-    "id": "passageiro_interno",
-    "nome": "Passageiro Interno",
+    "id": "passageiro_interno_criaturas_do_ar",
+    "nome": "Passageiro Interno (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "04/01",
+    "tempoOperacao": "3 seg.",
+    "preRequisitos": "Pelo menos uma magia de Controle de Animal diferente",
+    "descricao": "Funciona sobre qualquer tipo de animal. Esta é a versão para animais da mágica Passageiro da Alma. O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração."
+  },
+  {
+    "id": "passageiro_interno_criaturas_da_terra",
+    "nome": "Passageiro Interno (Criaturas da Terra)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "04/01",
+    "tempoOperacao": "3 seg.",
+    "preRequisitos": "2 magicas de Controle de Animal diferentes",
+    "descricao": "Funciona sobre qualquer tipo de animal. Esta é a versão para animais da mágica Passageiro da Alma. O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração."
+  },
+  {
+    "id": "passageiro_interno_criaturas_do_mar",
+    "nome": "Passageiro Interno (Criaturas do Mar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "1 min.",
+    "energia": "04/01",
+    "tempoOperacao": "3 seg.",
+    "preRequisitos": "2 magicas de Controle de Animal diferentes",
+    "descricao": "Funciona sobre qualquer tipo de animal. Esta é a versão para animais da mágica Passageiro da Alma. O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração."
+  },
+  {
+    "id": "passo_leve",
+    "nome": "Passo Leve",
     "dificuldade": "D",
     "pagina": 31,
     "classe": "Comum",
