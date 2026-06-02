@@ -2597,3 +2597,52 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert b8429b5`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 334 — [2026-06-02] feat: motor resolve as 3 frentes pendentes do pré-requisito de magia
+
+- **Hash:** `df19c8a`
+- **Resumo:** implementadas no MOTOR as 3 frentes que o Lote 333 deixou pendentes
+  (dependiam de código, não de texto).
+
+### Frente 1 — VANTAGEM
+- `ArcanoEstadoPersonagem` agora carrega `vantagensConhecidasNorm`/`periciasConhecidasNorm`.
+- `branchFromAlternative`: token nomeado não-resolvido (ex: "Empatia com Animais") deixa de
+  ser descartado (passe livre) e vira `vantagensRequeridas` — só satisfeito se a ficha tiver
+  a vantagem/perícia. Stop-list `tokensGenericosIgnorados` ("qualquer"...) evita bloquear curingas.
+- Adapter (`falhaPreRequisitoHierarquica`/`calcular`) e `FichaMagicDelegate` passam as
+  vantagens/perícias da ficha NORMALIZADAS (mesmo `normalize` do motor).
+- Magias: acalmar_animal, agitar_animal, conceder_energia, medo, descanso_final,
+  percepcao_do_perigo, visao_sonora, olhos_do_falcao.
+
+### Frente 3 — "1 de cada elemento"
+- `PreRequisitoParser.expandirCadaUmDosElementos`: "1 mágica de cada um dos quatro escola
+  (ar,terra,fogo,agua)" → 4 segmentos `MagiasEscola` ANDados. Alvo: detectar_pontos_fracos.
+
+### Frente 2 — NOME-BASE = sub-escola
+- `resolverVariantesSubEscola` + `RequisitoBranch.gruposDependenciaOu`: nome-base
+  ("Convocar Animal") casa com QUALQUER variante "(...)" via grupo OU. Beneficia
+  localizar_animais, possessao_de_animais, conceder_idioma.
+
+### Fix de cache
+- `CacheKey` passou a incluir vantagens/perícias. Sem isso, a 1ª consulta (sem a vantagem,
+  bloqueado) ficava cacheada e a 2ª (com a vantagem) retornava o resultado velho.
+
+### Validação
+- Build Visual debug compila verde. Testes alvo rodados: **6 falhas, TODAS pré-existentes**
+  (anteriores ao lote — confirmado rodando o baseline sem o código deste lote), **0 regressão**.
+  São elas: NexusArcanoEngineLote2Test::fallback_final / ::fallback_controlado;
+  NexusArcanoEngineLoteAGlobalTest::metas_globais_de_desejo;
+  NexusArcanoEngineStressMagiasV2Test::stress_ramificacoes / ::sweep_escola_encantamento;
+  PreRequisitoParserTest::repository validates fallback magia vantagem pericia and escudo exception.
+
+### PENDÊNCIA
+- Frente 3 (tema/elemento) restante: combustivel ("Energia"), conceder_idioma ("Comunicação"),
+  convocar_elemental_* (2ª parte do OU), atrofiar_sentidos, sabedoria, jato_de_som — o usuário
+  vai analisar caso a caso (texto vs motor).
+- "2 mágicas Localizar" (em localizar_animais) ainda cai como vantagem fake (tema-count não
+  implementado) — bloqueia corretamente, mas não há rota de satisfação por contagem de tema.
+
+### Rollback
+- `git revert df19c8a`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
