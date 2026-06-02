@@ -15,7 +15,8 @@ object PreRequisitoParser {
     )
 
     fun parse(raw: String): ParseResult {
-        val normalized = raw.trim().removePrefix("—").trim()
+        val preExpandido = expandirCadaUmDosElementos(raw)
+        val normalized = preExpandido.trim().removePrefix("—").trim()
         if (normalized.isEmpty()) {
             return ParseResult(tipos = emptyList(), terms = emptyList())
         }
@@ -68,6 +69,29 @@ object PreRequisitoParser {
         // para evitar poluir perícias que não utilizam o sistema de magia.
 
         return ParseResult(tipos = allTipos, terms = terms)
+    }
+
+    /**
+     * Expande "N mágica(s) de cada um dos <quantos> escola(s) (ar,terra,fogo,agua)"
+     * em N exigências SEPARADAS ANDadas: "N magicas de ar; N magicas de fogo; ...".
+     * Sem o expand, esse texto caía no fallback de Vantagem e a magia liberava com
+     * ficha vazia (ex: Detectar Pontos Fracos). Cada item da lista vira MagiasEscola,
+     * e termos separados por ';' são todos obrigatórios (AND) no motor.
+     */
+    internal fun expandirCadaUmDosElementos(raw: String): String {
+        val regex = Regex(
+            "(\\d+)\\s+m[aá]g(?:ica|ia)s?\\s+de\\s+cada\\s+um\\s+d[oa]s\\s+\\S+\\s+escolas?\\s*\\(([^)]+)\\)",
+            RegexOption.IGNORE_CASE
+        )
+        return regex.replace(raw) { m ->
+            val qtd = m.groupValues[1]
+            val elementos = m.groupValues[2]
+                .split(Regex("[,;/]|\\s+e\\s+"))
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+            if (elementos.isEmpty()) m.value
+            else elementos.joinToString("; ") { "$qtd magicas de $it" }
+        }
     }
 
     private fun parseSingle(token: String, lastSchool: String?): PreRequisitoType? {

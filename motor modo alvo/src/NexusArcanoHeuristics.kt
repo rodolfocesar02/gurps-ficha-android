@@ -184,6 +184,8 @@ internal fun NexusArcanoEngine.escolherBranchRelevante(
         compareBy<RequisitoBranch> { branch -> branch.dependencias.count { it !in known } }
             .thenBy { branch -> branch.regrasEscolas.count { !atendeRegraEscolas(it, known) } }
             .thenBy { branch -> branch.regrasNumericas.count { !atendeRegraNumerica(it, estado) } }
+            .thenBy { branch -> branch.vantagensRequeridas.count { !atendeVantagemRequerida(it, estado) } }
+            .thenBy { branch -> branch.gruposDependenciaOu.count { grupo -> grupo.none { it in known } } }
             .thenBy { it.dependencias.size }
             .thenBy { it.regrasEscolas.size }
             .thenBy { it.regrasNumericas.size }

@@ -55,7 +55,11 @@ class NexusArcanoModoAlvoAdapter(
         magiasConhecidasIds: Set<String>,
         iq: Int,
         dx: Int,
-        am: Int
+        am: Int,
+        // Lote 334: nomes NORMALIZADOS de vantagens/perícias da ficha, p/ validar
+        // pré-requisitos "ou Vantagem X". Default vazio = compatível com chamadas antigas.
+        vantagensConhecidasNorm: Set<String> = emptySet(),
+        periciasConhecidasNorm: Set<String> = emptySet()
     ): NexusArcanoModoAlvoSnapshot {
         if (!magiasById.containsKey(alvoId)) {
             return NexusArcanoModoAlvoSnapshot(
@@ -76,7 +80,9 @@ class NexusArcanoModoAlvoAdapter(
             magiasConhecidasIds = magiasConhecidasIds,
             am = am,
             iq = iq,
-            dx = dx
+            dx = dx,
+            vantagensConhecidasNorm = vantagensConhecidasNorm,
+            periciasConhecidasNorm = periciasConhecidasNorm
         )
 
         val resultado = engine.calcularEstadoAlvo(alvoId, estado)
@@ -145,7 +151,10 @@ class NexusArcanoModoAlvoAdapter(
         magiasConhecidasIds: Set<String>,
         iq: Int,
         dx: Int,
-        am: Int
+        am: Int,
+        // Lote 334: nomes NORMALIZADOS de vantagens/perícias da ficha (ver calcular()).
+        vantagensConhecidasNorm: Set<String> = emptySet(),
+        periciasConhecidasNorm: Set<String> = emptySet()
     ): String? {
         if (!magiasById.containsKey(alvoId)) return "Alvo não encontrado no catálogo."
 
@@ -155,7 +164,9 @@ class NexusArcanoModoAlvoAdapter(
                 magiasConhecidasIds = magiasConhecidasIds,
                 am = am,
                 iq = iq,
-                dx = dx
+                dx = dx,
+                vantagensConhecidasNorm = vantagensConhecidasNorm,
+                periciasConhecidasNorm = periciasConhecidasNorm
             )
         )
         return mensagemFalhaHierarquica(alvoId, resultado)

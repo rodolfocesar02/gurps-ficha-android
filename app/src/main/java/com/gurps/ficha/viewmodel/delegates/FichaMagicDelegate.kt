@@ -98,7 +98,9 @@ class FichaMagicDelegate(
             magiasConhecidasIds = personagem.magias.asSequence().map { it.definicaoId }.toSet(),
             iq = personagem.inteligencia,
             dx = personagem.destreza,
-            am = nivelAptidaoMagica
+            am = nivelAptidaoMagica,
+            vantagensConhecidasNorm = vantagensNormDe(personagem),
+            periciasConhecidasNorm = periciasNormDe(personagem)
         )
     }
 
@@ -112,8 +114,28 @@ class FichaMagicDelegate(
             magiasConhecidasIds = personagem.magias.asSequence().map { it.definicaoId }.toSet(),
             iq = personagem.inteligencia,
             dx = personagem.destreza,
-            am = nivelAptidaoMagica
+            am = nivelAptidaoMagica,
+            vantagensConhecidasNorm = vantagensNormDe(personagem),
+            periciasConhecidasNorm = periciasNormDe(personagem)
         )
+    }
+
+    // Lote 334: extrai vantagens/perícias da ficha NORMALIZADAS no MESMO formato do
+    // motor (NexusArcanoEngine.normalize): sem acento, minúsculas, só [a-z0-9 espaço].
+    // Assim o pré-requisito "ou Empatia com Animais" casa com a vantagem da ficha.
+    private fun vantagensNormDe(personagem: Personagem): Set<String> =
+        personagem.vantagens.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
+
+    private fun periciasNormDe(personagem: Personagem): Set<String> =
+        personagem.pericias.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
+
+    private fun normalizarNome(raw: String): String {
+        val semAcento = java.text.Normalizer.normalize(raw, java.text.Normalizer.Form.NFD)
+            .replace(Regex("\\p{M}+"), "")
+        return semAcento.lowercase()
+            .replace(Regex("[^a-z0-9\\s]"), " ")
+            .replace(Regex("\\s+"), " ")
+            .trim()
     }
 
     fun assinaturaEstadoMagias(personagem: Personagem, nivelAptidaoMagica: Int): String {

@@ -4,7 +4,12 @@ data class ArcanoEstadoPersonagem(
     val magiasConhecidasIds: Set<String>,
     val am: Int,
     val iq: Int,
-    val dx: Int = 0
+    val dx: Int = 0,
+    // Lote 334: vantagens/perícias da ficha (nomes NORMALIZADOS) para o motor validar
+    // pré-requisitos do tipo "ou Vantagem X" (ex: Empatia, Noção do Perigo). Default
+    // vazio = compatível com chamadas antigas (que só passavam magias).
+    val vantagensConhecidasNorm: Set<String> = emptySet(),
+    val periciasConhecidasNorm: Set<String> = emptySet()
 )
 
 data class ArcanoChave(

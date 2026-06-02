@@ -54,7 +54,17 @@ class NexusArcanoEngine(
     internal data class RequisitoBranch(
         val dependencias: List<String>,
         val regrasEscolas: List<RegraEscolas>,
-        val regrasNumericas: List<RegraNumerica>
+        val regrasNumericas: List<RegraNumerica>,
+        // Lote 334: nomes (normalizados) de VANTAGENS/perícias exigidas que NÃO são
+        // magia. Antes, um token não-resolvido (ex: "Empatia") era descartado e a
+        // branch ficava vazia = passe livre. Agora vira requisito real: só satisfeito
+        // se a vantagem/perícia estiver na ficha (estado.vantagensConhecidasNorm).
+        val vantagensRequeridas: List<String> = emptyList(),
+        // Lote 334 (Frente 2): grupos OU de magias. Cada grupo é satisfeito se a ficha
+        // tiver QUALQUER uma das magias dele. Usado quando o pré-requisito cita um
+        // NOME-BASE (ex: "Convocar Animal") que no catálogo só existe em sub-escolas
+        // ("Convocar Animal (Criaturas da Terra/Ar/Mar)"): qualquer variante serve.
+        val gruposDependenciaOu: List<List<String>> = emptyList()
     )
 
     internal data class AvaliacaoCandidata(
@@ -78,7 +88,11 @@ class NexusArcanoEngine(
         val assinaturaKnown: String,
         val am: Int,
         val iq: Int,
-        val dx: Int
+        val dx: Int,
+        // Lote 334: vantagens/perícias entram na chave de cache. Sem isto, a 1ª consulta
+        // (ficha sem a vantagem → bloqueado) ficava cacheada e a 2ª (com a vantagem)
+        // retornava o resultado velho = magia continuava bloqueada falsamente.
+        val assinaturaVantagens: String = ""
     )
 
     internal data class SnapshotAlvo(
@@ -287,6 +301,31 @@ class NexusArcanoEngine(
                         ativa = qtdAtual >= regra.minMagiasEscola
                     )
                 }
+            }
+
+            // Lote 334: chave para pré-requisito de VANTAGEM (ex: "ou Empatia com
+            // Animais"). Mostra qual vantagem falta na ficha — antes o bloqueio caía
+            // no genérico "Sem ação imediata". Usa o ramo relevante ao estado atual.
+            val branchVant = escolherBranchRelevante(alvoId, known, estado)
+            branchVant?.vantagensRequeridas?.forEach { vantNorm ->
+                val ativa = atendeVantagemRequerida(vantNorm, estado)
+                val label = vantNorm.replaceFirstChar { it.uppercase() }
+                chaves += ArcanoChave(
+                    id = "chave_vantagem_${alvoId}_$vantNorm",
+                    descricao = "Ter a vantagem/perícia \"$label\" para ${nomeMagia(alvoId)}",
+                    ativa = ativa
+                )
+            }
+            // Lote 334 (Frente 2): chave para grupo OU de variantes (ex: qualquer
+            // "Convocar Animal (...)"). Mostra as opções aceitas em vez do genérico.
+            branchVant?.gruposDependenciaOu?.forEachIndexed { idx, grupo ->
+                val ativa = grupo.any { it in known }
+                val opcoes = grupo.map { nomeMagia(it) }.distinct().joinToString(" ou ")
+                chaves += ArcanoChave(
+                    id = "chave_ou_${alvoId}_$idx",
+                    descricao = "Aprender qualquer: $opcoes",
+                    ativa = ativa
+                )
             }
 
             val alvoLiberado = magiaAprendivelAgora(alvoId, known, estado)
@@ -507,7 +546,9 @@ class NexusArcanoEngine(
             return branches.any { branch ->
                 branch.dependencias.all { it in known } &&
                     branch.regrasEscolas.all { atendeRegraEscolas(it, known) } &&
-                    branch.regrasNumericas.all { atendeRegraNumerica(it, estado) }
+                    branch.regrasNumericas.all { atendeRegraNumerica(it, estado) } &&
+                    branch.vantagensRequeridas.all { atendeVantagemRequerida(it, estado) } &&
+                    branch.gruposDependenciaOu.all { grupo -> grupo.any { it in known } }
             }
         }
 
@@ -561,6 +602,17 @@ class NexusArcanoEngine(
             true
         }
         return okAm && okIq && okSoma && okEscola
+    }
+
+    /**
+     * Lote 334: pré-requisito do tipo "ou Vantagem X" (ex: Empatia com Animais,
+     * Noção do Perigo). 'vantNorm' é o nome normalizado exigido; só é atendido se a
+     * ficha tiver essa vantagem OU perícia (match por prefixo p/ cobrir variações como
+     * "Empatia com Animais (Cães)"). Match em ambos os sentidos.
+     */
+    internal fun atendeVantagemRequerida(vantNorm: String, estado: ArcanoEstadoPersonagem): Boolean {
+        val conhecidas = estado.vantagensConhecidasNorm + estado.periciasConhecidasNorm
+        return conhecidas.any { it == vantNorm || it.startsWith("$vantNorm ") || vantNorm.startsWith("$it ") }
     }
 
     /**
@@ -712,6 +764,27 @@ class NexusArcanoEngine(
         return extrairDependenciasNomeadas(tokenNorm, magiaId)
     }
 
+    /**
+     * Lote 334 (Frente 2): se 'tokenRaw' for um NOME-BASE que no catálogo só existe em
+     * SUB-ESCOLAS (ex: "Convocar Animal" → "Convocar Animal (Criaturas da Terra)",
+     * "... (do Ar)", "... (do Mar)"), retorna os ids das variantes. Qualquer variante
+     * satisfaz (tratado como OU em magiaAprendivelAgora). Só dispara quando NÃO há
+     * magia com nome exatamente igual ao token (senão usa a resolução normal).
+     */
+    internal fun resolverVariantesSubEscola(tokenRaw: String, magiaId: String): List<String> {
+        val tokenNorm = normalize(tokenRaw)
+        if (tokenNorm.isBlank()) return emptyList()
+        // Se existe magia com nome exato, NÃO é caso de sub-escola.
+        if (nomesNormalizadosPorTamanho.any { it.nome == tokenNorm }) return emptyList()
+        val prefixo = "$tokenNorm "
+        return nomesNormalizadosPorTamanho
+            .asSequence()
+            .filter { it.id != magiaId && it.nome.startsWith(prefixo) }
+            .map { it.id }
+            .distinct()
+            .toList()
+    }
+
     internal fun combinarAlternativasDependencias(
         alternativasPorTermo: List<List<List<String>>>
     ): List<List<String>> {
@@ -803,6 +876,12 @@ class NexusArcanoEngine(
         }
     }
 
+    // Lote 334: palavras-curinga que aparecem como pré-requisito mas não são uma
+    // vantagem real (não podem virar exigência, senão bloqueiam a magia sempre).
+    internal val tokensGenericosIgnorados: Set<String> = setOf(
+        "qualquer", "qualquer uma", "qualquer magica", "qualquer outra", "nenhum", "nenhuma"
+    )
+
     internal fun branchFromAlternative(
         magiaId: String,
         alternativa: List<PreRequisitoType>
@@ -810,17 +889,40 @@ class NexusArcanoEngine(
         val deps = linkedSetOf<String>()
         val regrasEscolas = mutableListOf<RegraEscolas>()
         val regrasNumericas = mutableListOf<RegraNumerica>()
+        val vantagensReq = linkedSetOf<String>()
+        val gruposOu = mutableListOf<List<String>>()
+
+        // Lote 334: um token nomeado (magia/vantagem) ou resolve para uma MAGIA do
+        // catálogo (vira dependência), ou — se não existir como magia — vira VANTAGEM
+        // REQUERIDA (checada contra a ficha). Antes, não-resolvido era descartado e a
+        // branch ficava vazia = passe livre.
+        fun tratarTokenNomeado(nomeRaw: String) {
+            // Frente 2: nome-base que só existe em sub-escolas → grupo OU (qualquer serve).
+            val variantes = resolverVariantesSubEscola(nomeRaw, magiaId)
+            if (variantes.isNotEmpty()) {
+                gruposOu += variantes
+                return
+            }
+            val resolved = resolverDependenciasNomeadasToken(nomeRaw, magiaId)
+            if (resolved.isNotEmpty()) {
+                resolved.forEach { deps += it }
+            } else {
+                val nomeNorm = normalize(nomeRaw)
+                    .replace(Regex("^(a |o |as |os )"), "")
+                    .replace(Regex("\\bvantagem\\b|\\bvantagens\\b|\\bpericia\\b|\\bpericias\\b|\\bdesvantagem\\b"), "")
+                    .replace(Regex("\\s+"), " ").trim()
+                // Tokens genéricos/placeholder NÃO viram exigência de vantagem (senão
+                // bloqueariam tudo). Ex: "qualquer" usado como curinga de pré-requisito.
+                if (nomeNorm.isNotBlank() && nomeNorm !in tokensGenericosIgnorados) {
+                    vantagensReq += nomeNorm
+                }
+            }
+        }
 
         alternativa.forEach { tipo ->
             when (tipo) {
-                is PreRequisitoType.MagiaConhecida -> {
-                    val resolved = resolverDependenciasNomeadasToken(tipo.nomeMagia, magiaId)
-                    resolved.forEach { deps += it }
-                }
-                is PreRequisitoType.VantagemConhecida -> {
-                    val resolved = resolverDependenciasNomeadasToken(tipo.nomeVantagem, magiaId)
-                    resolved.forEach { deps += it }
-                }
+                is PreRequisitoType.MagiaConhecida -> tratarTokenNomeado(tipo.nomeMagia)
+                is PreRequisitoType.VantagemConhecida -> tratarTokenNomeado(tipo.nomeVantagem)
                 is PreRequisitoType.MagiasEmEscolasDiferentes -> {
                     regrasEscolas += RegraEscolas(
                         magiaOrigemId = magiaId,
@@ -873,7 +975,9 @@ class NexusArcanoEngine(
         return RequisitoBranch(
             dependencias = deps.toList(),
             regrasEscolas = regrasEscolas.distinct(),
-            regrasNumericas = regrasNumericas.distinct()
+            regrasNumericas = regrasNumericas.distinct(),
+            vantagensRequeridas = vantagensReq.toList(),
+            gruposDependenciaOu = gruposOu.toList()
         )
     }
 
@@ -893,7 +997,9 @@ class NexusArcanoEngine(
                     val combinado = RequisitoBranch(
                         dependencias = (base.dependencias + alt.dependencias).distinct(),
                         regrasEscolas = (base.regrasEscolas + alt.regrasEscolas).distinct(),
-                        regrasNumericas = (base.regrasNumericas + alt.regrasNumericas).distinct()
+                        regrasNumericas = (base.regrasNumericas + alt.regrasNumericas).distinct(),
+                        vantagensRequeridas = (base.vantagensRequeridas + alt.vantagensRequeridas).distinct(),
+                        gruposDependenciaOu = (base.gruposDependenciaOu + alt.gruposDependenciaOu).distinct()
                     )
                     prox.putIfAbsent(branchKey(combinado), combinado)
                     if (prox.size >= maxGruposDependencias) break@loop
@@ -918,7 +1024,12 @@ class NexusArcanoEngine(
                 val soma = it.somaAtributos.sorted().joinToString("+")
                 "${it.magiaOrigemId}:${it.minAm ?: "-"}:${it.minIq ?: "-"}:${it.minSoma ?: "-"}:$soma"
             }
-        return "$deps|$escolas|$nums"
+        val vant = branch.vantagensRequeridas.sorted().joinToString(",")
+        val ous = branch.gruposDependenciaOu
+            .map { it.sorted().joinToString("/") }
+            .sorted()
+            .joinToString(",")
+        return "$deps|$escolas|$nums|$vant|$ous"
     }
 
     internal fun dependenciasMinimasPendentes(magiaId: String, known: Set<String>): Int {
@@ -1104,12 +1215,15 @@ class NexusArcanoEngine(
         estado: ArcanoEstadoPersonagem
     ): CacheKey {
         val assinaturaKnown = known.sorted().joinToString(separator = "|", prefix = "|", postfix = "|")
+        val assinaturaVantagens = (estado.vantagensConhecidasNorm + estado.periciasConhecidasNorm)
+            .sorted().joinToString(separator = "|", prefix = "|", postfix = "|")
         return CacheKey(
             alvoId = alvoId,
             assinaturaKnown = assinaturaKnown,
             am = estado.am,
             iq = estado.iq,
-            dx = estado.dx
+            dx = estado.dx,
+            assinaturaVantagens = assinaturaVantagens
         )
     }
 
