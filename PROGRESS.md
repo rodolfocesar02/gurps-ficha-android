@@ -2530,3 +2530,35 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert 6ef376d`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 332 — [2026-06-01] fix: pré-requisito de magia com sufixo "/NT" não casava
+
+- **Hash:** `<preenchido após o commit>`
+- **Resumo:** continuação do Lote 331. Várias magias citam no pré-requisito o nome de
+  outra magia SEM o sufixo "/NT" (ex: "Controle de Máquina"), mas a magia real tem o
+  sufixo ("Controle de Máquina/NT"). O matching exigia nome igual → não achava → a magia
+  liberava sem o pré-requisito. Corrigido em `variantesSingularPlural` (NexusArcanoStrings):
+  além de singular/plural, gera a variante SEM o sufixo " nt"/" tl" (a "/" já vira espaço
+  na normalização, então o sufixo fica solto no fim). Resolveu ~6-9 magias de máquina/
+  combustível (convocar_maquina, falar_com_maquinas, identificar_funcao, panent, etc.).
+
+### Validação
+- ✅ Compila. Varredura (ficha zerada AM0/IQ10, JUnit temporário removido): magias que
+  liberavam errado caíram de 43 → 34.
+
+### PENDÊNCIA (continua) — 34 magias ainda liberam com ficha vazia
+- **~15 VANTAGEM:** preReq cita vantagem (Empatia, Resistência a Danos, Visão Aguçada,
+  Noção do Perigo, Audição Aguçada). O motor NÃO recebe as vantagens da ficha
+  (`ArcanoEstadoPersonagem` só tem magias/AM/IQ/DX). Próximo passo: passar
+  vantagens da ficha pro motor e checar (ideia do usuário: se tem na ficha libera, senão bloqueia).
+- **~10 MAGIA sub-escola/nome:** "Convocar Animal"/"Controle de Animal" (existem só como
+  sub-escola: Criaturas da Terra/Ar/Mar) — motor precisa aceitar "qualquer variação".
+  Outras: "Ampliar Objeto", "Voz Ampliada", "Transmissão de Pensamento", "Possessão".
+- **~9 TEMA/elemento/elementais-com-OU:** "6 magias com Energia", "1 de cada elemento",
+  convocar_elemental_* (OU + 2ª parte não resolvida).
+- Raiz comum (Lote 331): alternativa de OU/dependência não-reconhecida vira branch vazia = passe livre.
+
+### Rollback
+- `git revert <hash>`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

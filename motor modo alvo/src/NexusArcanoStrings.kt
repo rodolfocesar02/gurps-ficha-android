@@ -40,27 +40,30 @@ internal fun NexusArcanoEngine.escolaBloqueadaPorPolitica(magiaId: String): Bool
 }
 
 internal fun NexusArcanoEngine.variantesSingularPlural(nomeNorm: String): Set<String> {
-    val tokens = nomeNorm
-        .split(" ")
-        .map { it.trim() }
-        .filter { it.isNotBlank() }
-        .toMutableList()
-    if (tokens.isEmpty()) return emptySet()
-    val idx = tokens.indexOfLast { it.length > 2 }.coerceAtLeast(tokens.lastIndex)
-    val tokenBase = tokens[idx]
-    val singular = singularizarTokenPt(tokenBase)
-    val plural = pluralizarTokenPt(singular)
-    val out = linkedSetOf(nomeNorm)
+    val out = linkedSetOf<String>()
+    // Lote 332: muitas magias têm sufixo "/NT" no nome (Controle de Maquina/NT) mas
+    // o pré-requisito de outra magia cita só "Controle de Maquina". Aqui o nome JÁ vem
+    // NORMALIZADO (a "/" virou espaço → "controle de maquina nt"), então removemos o
+    // sufixo " nt"/" tl" final (separado). Geramos a variante SEM o sufixo + o original.
+    val basesSemSufixo = linkedSetOf(nomeNorm)
+    val semNt = nomeNorm.replace(Regex("\\s+(nt|tl)$"), "")
+        .replace(Regex("\\s+"), " ").trim()
+    if (semNt.isNotBlank()) basesSemSufixo += semNt
 
-    fun addComToken(novoToken: String) {
-        if (novoToken.isBlank()) return
-        val copia = tokens.toMutableList()
-        copia[idx] = novoToken
-        out += copia.joinToString(" ")
+    for (base in basesSemSufixo) {
+        val tokens = base.split(" ").map { it.trim() }.filter { it.isNotBlank() }.toMutableList()
+        if (tokens.isEmpty()) continue
+        out += base
+        val idx = tokens.indexOfLast { it.length > 2 }.coerceAtLeast(tokens.lastIndex)
+        val singular = singularizarTokenPt(tokens[idx])
+        val plural = pluralizarTokenPt(singular)
+        for (novoToken in listOf(singular, plural)) {
+            if (novoToken.isBlank()) continue
+            val copia = tokens.toMutableList()
+            copia[idx] = novoToken
+            out += copia.joinToString(" ")
+        }
     }
-
-    addComToken(singular)
-    addComToken(plural)
     return out
 }
 
