@@ -2488,7 +2488,7 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 
 ## Lote 331 — [2026-06-01] fix: pré-requisito "N magias de escola/tema" + correções de texto
 
-- **Hash:** `<preenchido após o commit>`
+- **Hash:** `6ef376d`
 - **Resumo:** o motor Nexus IGNORAVA o tipo de pré-requisito "N magias de uma escola"
   (ex: Convocar Elemental = "8 magias de Ar") — caía no `else` de `branchFromAlternative`
   e a magia liberava sem checar. Corrigido: agora vira `RegraNumerica` com escola e é
@@ -2527,6 +2527,6 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Também pendente: "magia X com NH 16+" (SkillMinLevel) e "N de cada elemento".
 
 ### Rollback
-- `git revert <hash>`.
+- `git revert 6ef376d`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
