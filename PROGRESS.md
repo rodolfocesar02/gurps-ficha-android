@@ -2562,3 +2562,38 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert 8b95626`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 333 — [2026-06-01] data: correções de texto nos pré-requisitos (3 frentes) + sub-escolas
+
+- **Hash:** `<preenchido após o commit>`
+- **Resumo:** o usuário corrigiu manualmente os textos de pré-requisito de dezenas de magias
+  (nomes errados, plural, vantagem citada errada) e criou novas entradas por sub-escola
+  (conexao_com_animal, criar_portal, repelir_animal — por elemento/tipo, como Cavalgar).
+  Resultado: magias que liberavam com ficha vazia caíram de 34 → 21. Tudo que dependia
+  SÓ de texto está resolvido; os 21 restantes dependem de correção no MOTOR.
+
+### Correções de texto (exemplos)
+- fortalecer: nome errado → "Resistência a Choques". telepatia → "Transmissão Mental".
+  aumentar_objeto → "Alongar Objeto". condensar_vapor → "Ferver Água" (era "Fever").
+- Vantagens citadas certas: "Empatia com Animais", "Noção do Perigo", "Audição Aguçada".
+- "Sentido Aguçado (Visão/Audição)" como magia onde o livro pede.
+- Novas entradas por sub-escola: conexao_com_animal_*, criar_portal (teleporte/tempo/planar),
+  repelir_animal_*. baliza_teleporte/baliza_planar.
+
+### PENDÊNCIA (21 restantes — todos dependem do MOTOR) → próximo lote
+- **Frente 1 — VANTAGEM (~8):** "ou vantagem X" (Empatia, Noção do Perigo, Audição/Visão
+  Aguçada). O motor (`ArcanoEstadoPersonagem`) NÃO recebe vantagens da ficha. Implementar:
+  passar `vantagensConhecidas` e checar. Ideia do usuário: tem na ficha → libera; senão bloqueia.
+  Magias: acalmar_animal, agitar_animal, conceder_energia, medo, descanso_final,
+  percepcao_do_perigo, visao_sonora, olhos_do_falcao.
+- **Frente 2 — NOME-BASE = sub-escola (~3):** localizar_animais/possessao_de_animais pedem
+  "Convocar Animal"/"Possessão" (que só existem como sub-escola). Motor deve aceitar nome-base
+  = qualquer "Nome (...)". conexao_com_animal_agua: conferir nome exato.
+- **Frente 3 — TEMA/elemento (~6):** combustivel ("Energia"), conceder_idioma ("Comunicação"),
+  detectar_pontos_fracos ("1 de cada uma das 4 escolas"), convocar_elemental_* (2ª parte do OU),
+  atrofiar_sentidos, sabedoria, jato_de_som ("Voz Ampliada").
+
+### Rollback
+- `git revert <hash>`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

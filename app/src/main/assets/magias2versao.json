@@ -192,7 +192,7 @@
     "duracao": "1 hora#",
     "energia": "1 a 3",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Vexação ou Empatia em Animais",
+    "preRequisitos": "Vexação ou Empatia com Animais",
     "descricao": "Agita um único animal. O teste de reação do animal (a qualquer um) recebe uma penalidade igual ao dobro da energia aplicada na mágica."
   },
   {
@@ -1280,7 +1280,7 @@
     "duracao": "10 min.",
     "energia": "2 a 10/M",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Quaisquer 2 mágicas Atrofiar",
+    "preRequisitos": "2 mágicas Atrofiar(Sentido)",
     "descricao": "Reduz todos os testes de Sentidos do objetivo."
   },
   {
@@ -1357,7 +1357,7 @@
     "duracao": "1 hora",
     "energia": "Varia",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "Ampliar Objeto",
+    "preRequisitos": "Alongar Objeto",
     "descricao": "Amplia um objeto em tamanho, mantendo suas proporções, aumentando seu modificador de Tamanho. Multiplique o peso por 3,5 e os PV por 1,5, para cada ponto adicionado do modificador de Tamanho; adicione 1 na RD para cada 2 pontos adicionados no modificador de Tamanho."
   },
   {
@@ -2420,7 +2420,7 @@
     "duracao": "1 min.",
     "energia": "03/01",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "Falar com Animais ou 3 mágicas de Comunicação e Empatia",
+    "preRequisitos": "Falar com Animais ou 3 mágicas de Comunicação",
     "descricao": "O objetivo ganha uma linguagem ao nível de compreensão do operador ou Com Sotaque — o que for menor. O operador deve conhecer o idioma em questão."
   },
   {
@@ -2450,7 +2450,7 @@
     "duracao": "1 min.",
     "energia": "03/02",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "Transmissão de Pensamento, IQ 11+",
+    "preRequisitos": "Transmissão Mental, IQ 11+",
     "descricao": "O objetivo ganha uma perícia com (atributo dominante)+4 ou aumenta o NH da perícia já existente em 4 níveis — o que for maior. O NH do objetivo não pode ser maior que o NH do operador. O operador deve conhecer a perícia em questão. Não funciona com idiomas ou mágicas."
   },
   {
@@ -2496,7 +2496,7 @@
     "duracao": "Perm.",
     "energia": "2#",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "Frio ou Fever Água",
+    "preRequisitos": "Frio ou Ferver Água",
     "descricao": "Transforma vapor em água em temperatura ambiente."
   },
   {
@@ -2560,8 +2560,8 @@
     "descricao": "Esta mágica adia a ativação de uma ou mais mágicas conectadas, feitas em sua área de atuação, até que um determinado evento ocorra na presença de Conexão. O operador paga os custos de energia e faz os testes de NH para a mágica Conexão e todas as mágicas conectadas no momento da operação. O tamanho da área afetada por Conexão é definido no momento da operação. As mágicas conectadas não contam como \"ativas\". É possível fazer uma única Conexão que ative uma mágica quando a área for penetrada e a desative assim que a área for deixada. Uma Conexão não precisa ser mantida. A Conexão também pode ser usada para Encantamentos Limitantes."
   },
   {
-    "id": "conexao_com_animal",
-    "nome": "Conexão com Animal",
+    "id": "conexao_com_animal_terra",
+    "nome": "Conexão com Animal (Criaturas da Terra)",
     "dificuldade": "D",
     "pagina": 30,
     "classe": "Comum",
@@ -2571,7 +2571,37 @@
     "duracao": "Especial",
     "energia": "3",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "Convocar Animal",
+    "preRequisitos": "Convocar Animal (Criaturas da Terra)",
+    "descricao": "Estabelece uma conexão mental com um animal. Depois de estar submetido a esta mágica, o animal não se afastará muito do operador. Uma vez que o operador assim o deseje, ela então se aproximará num ritmo rápido. Se for uma criatura selvagem, quaisquer reações precisarão ser reavaliadas assim que ela chegar."
+  },
+  {
+    "id": "conexao_com_animal_agua",
+    "nome": "Conexão com Animal (Criaturas da Água)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "Especial",
+    "energia": "3",
+    "tempoOperacao": "5 seg.",
+    "preRequisitos": "Convocar Animal (Criaturas da Água)",
+    "descricao": "Estabelece uma conexão mental com um animal. Depois de estar submetido a esta mágica, o animal não se afastará muito do operador. Uma vez que o operador assim o deseje, ela então se aproximará num ritmo rápido. Se for uma criatura selvagem, quaisquer reações precisarão ser reavaliadas assim que ela chegar."
+  },
+  {
+    "id": "conexao_com_animal_ar",
+    "nome": "Conexão com Animal (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 30,
+    "classe": "Comum",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "Especial",
+    "energia": "3",
+    "tempoOperacao": "5 seg.",
+    "preRequisitos": "Convocar Animal (Criaturas do Ar)",
     "descricao": "Estabelece uma conexão mental com um animal. Depois de estar submetido a esta mágica, o animal não se afastará muito do operador. Uma vez que o operador assim o deseje, ela então se aproximará num ritmo rápido. Se for uma criatura selvagem, quaisquer reações precisarão ser reavaliadas assim que ela chegar."
   },
   {
@@ -2991,7 +3021,7 @@
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Aptidao Magica 1 e oito mágicas de Ar ou quatro mágicas do elemento apropriado e outra mágica Convocar Elemental.",
+    "preRequisitos": "Aptidao Magica 1 e oito mágicas de Ar ou quatro mágicas da escola apropriada e mágica Convocar Elemental.",
     "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
   },
   {
@@ -3717,8 +3747,8 @@
     "descricao": "Quando operada no lado próximo de uma obstrução sólida, essa mágica cria um portal de curta duração e alcance que leva ao outro lado. A distância de intervenção não é realmente percorrida pelos usuários da porta — eles são simultaneamente teleportados. Esta mágica tem a vantagem sobre o Teleporte ao permitir o acesso a lugares desconhecidos do operador, além de permitir que ele transporte uma carga maior que Pesada."
   },
   {
-    "id": "criar_portal",
-    "nome": "Criar Portal",
+    "id": "criar_portal_teleporte",
+    "nome": "Criar Portal (Teleporte)",
     "dificuldade": "MD",
     "pagina": 85,
     "classe": "Comum",
@@ -3728,7 +3758,37 @@
     "duracao": "1 min.",
     "energia": "Varia",
     "tempoOperacao": "Varia",
-    "preRequisitos": "Controle de Portal ou Teleporte ou Viagem no Tempo ou Trocar de Plano",
+    "preRequisitos": "Controle de Portal, Teleporte",
+    "descricao": "Cria um portal mágico temporário que leva a outro lugar, tempo ou dimensão — efetivamente, um buraco no tempo e no espaço do qual aqueles que entram se teleportam, viajam no tempo e/ou transferem de plano para um destino predeterminado. Quanto maior a \"distância\" entre o portal e seu destino, maior o custo de energia e a penalidade de NH. Esta mágica também pode ser usada para encantar um portal permanente."
+  },
+  {
+    "id": "criar_portal_viagem_no_tempo",
+    "nome": "Criar Portal (Viagem no Tempo)",
+    "dificuldade": "MD",
+    "pagina": 85,
+    "classe": "Comum",
+    "escola": [
+      "Portal"
+    ],
+    "duracao": "1 min.",
+    "energia": "Varia",
+    "tempoOperacao": "Varia",
+    "preRequisitos": "Controle de Portal, Viagem no Tempo",
+    "descricao": "Cria um portal mágico temporário que leva a outro lugar, tempo ou dimensão — efetivamente, um buraco no tempo e no espaço do qual aqueles que entram se teleportam, viajam no tempo e/ou transferem de plano para um destino predeterminado. Quanto maior a \"distância\" entre o portal e seu destino, maior o custo de energia e a penalidade de NH. Esta mágica também pode ser usada para encantar um portal permanente."
+  },
+  {
+    "id": "criar_portal_viagem_planar",
+    "nome": "Criar Portal (Viagem Planar)",
+    "dificuldade": "MD",
+    "pagina": 85,
+    "classe": "Comum",
+    "escola": [
+      "Portal"
+    ],
+    "duracao": "1 min.",
+    "energia": "Varia",
+    "tempoOperacao": "Varia",
+    "preRequisitos": "Controle de Portal, Viagem Planar",
     "descricao": "Cria um portal mágico temporário que leva a outro lugar, tempo ou dimensão — efetivamente, um buraco no tempo e no espaço do qual aqueles que entram se teleportam, viajam no tempo e/ou transferem de plano para um destino predeterminado. Quanto maior a \"distância\" entre o portal e seu destino, maior o custo de energia e a penalidade de NH. Esta mágica também pode ser usada para encantar um portal permanente."
   },
   {
@@ -3985,8 +4045,8 @@
     "duracao": "Perm.",
     "energia": "20",
     "tempoOperacao": "10 min.#",
-    "preRequisitos": "AM1 ou Empatia com Espíritos",
-    "descricao": "Quando operada em um corpo morto, esta mágica torna o objetivo imune à toda magia Necromântica. O espírito do falecido não pode ser convocado, nem o corpo pode ser animado. Não tem efeito físico no corpo. Esta mágica não tem efeito em uma pessoa viva e não afetará os mortos-vivos que já se levantaram. Esta também é uma mágica de Necromancia."
+    "preRequisitos": "AM1 ou Vantagem Empatia com Espíritos ou Vantagem status “santo”.",
+    "descricao": "Quando operada em um corpo morto, esta mágica torna o objetivo imune à toda magia Necromântica. O espírito do falecido não pode ser convocado, nem o corpo pode ser animado (ou ressuscitado). Não tem efeito físico no corpo. A mágica pode ser operada a qualquer momento depois que o objetivo morrer, mas há uma penalidade cumulativa de -1 para cada mês que o objetivo estiver morto, até um máximo de -10. Um operador pode tentar a mágica apenas uma vez por objetivo. Esta mágica não tem efeito em uma pessoa viva e não afetará os mortos-vivos que já se levantaram. Em muitos cenários, essa mágica é uma parte intrínseca dos ritos fúnebres e pode ser restrita ao clero. Os Mestres podem desejar mudar o pré-requisito de Aptidão Mágica para Clericato ou Abençoado. Em outros cenários, essa ágica é desnecessária; rituais funerários não mágicos são suficientes para salvaguardar os mortos da necromancia. Costuma-se supor que esta mágica funciona enviando a alma do falecido do plano mortal para a presença de sua divindade. Alguns, no entanto (geralmente membros de um culto da morte ou outro), acreditam que essa mágica funciona destruindo os espíritos desencarnados dos mortos! Esta também é uma mágica de Necromancia."
   },
   {
     "id": "descongelar",
@@ -4320,7 +4380,7 @@
     "duracao": "Instant.",
     "energia": "1#",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "1 mágica de cada um dos quatro elementos",
+    "preRequisitos": "1 mágica de cada um dos quatro escola (ar,terra,fogo,agua)",
     "descricao": "Encontra a parte mais fraca do objetivo. Pode ser operada em qualquer parte de um objeto grande. Naturalmente, muitos objetivos não terão nenhuma fraqueza especial. Esta mágica pode ser usada para solucionar problemas de objetos complexos; um defeito que impede que uma máquina funcione normalmente qualifica como sua parte mais fraca."
   },
   {
@@ -5937,7 +5997,7 @@
     "duracao": "1 hora",
     "energia": "Varia",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "Resistência a Danos",
+    "preRequisitos": "Resistência a Choques",
     "descricao": "Torna um objeto inanimado mais difícil de penetrar, aumentando sua RD. Não tem efeito sobre o valor de proteção da armadura. Se o objeto receber dano básico igual ou maior que sua RD, a mágica é quebrada."
   },
   {
@@ -5952,7 +6012,7 @@
     "duracao": "1 min.",
     "energia": "1/ponto/M",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "AM1, 6 mágicas da Mente",
+    "preRequisitos": "AM1, 6 mágicas de Mente",
     "descricao": "Aumenta temporariamente a Vontade do objetivo."
   },
   {
@@ -6392,7 +6452,7 @@
     "duracao": "Perm.",
     "energia": "800",
     "tempoOperacao": "—",
-    "preRequisitos": "Encantar, Transmissão de Pensamento",
+    "preRequisitos": "Encantar, Transmissão Mental",
     "descricao": "Faz crescer uma imagem em miniatura da sua carne. Esta imagem, chamada de homúnculo, tem ST 1, DX 0 e não tem IQ ou HT. Deve ser mantida dentro de uma garrafa. Sempre que ele desejar, o operador pode mover seu espírito para o homúnculo, não importa quão longe esteja, a um custo de energia."
   },
   {
@@ -6791,7 +6851,7 @@
     "duracao": "1 min.",
     "energia": "03/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas",
+    "preRequisitos": "Sentido aguçado (Visão Aguçada) ou 5 mágicas de Luz e Trevas",
     "descricao": "Veja o \"infravermelho\" ou raios de calor, além da luz normal, como na vantagem Infravisão. Esta mágica não permite que objetos invisíveis sejam vistos."
   },
   {
@@ -7878,7 +7938,7 @@
     "duracao": "10 min.",
     "energia": "1",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Percepção de Emoção ou Empatia",
+    "preRequisitos": "Percepção de Emoção ou Vantagem Empatia",
     "descricao": "O(s) objetivo(s) sentem medo. O operador recebe +3 de bônus em testes de reação em situações de combate em potencial, mas sofre -3 de penalidade nos testes de lealdade e situações em que aterrorizar é contraproducente."
   },
   {
@@ -8883,7 +8943,7 @@
     "duracao": "1 min.",
     "energia": "04/01",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "Pelo menos uma magia de Controle de Animal diferente",
+    "preRequisitos": "Controle de Animal (Criaturas do Ar), 1 mágica de controlar animal",
     "descricao": "Funciona sobre qualquer tipo de animal. Esta é a versão para animais da mágica Passageiro da Alma. O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração."
   },
   {
@@ -8898,7 +8958,7 @@
     "duracao": "1 min.",
     "energia": "04/01",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "2 magicas de Controle de Animal diferentes",
+    "preRequisitos": "Controle de Animal (Criaturas da Terra), 1 mágica de controlar animal",
     "descricao": "Funciona sobre qualquer tipo de animal. Esta é a versão para animais da mágica Passageiro da Alma. O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração."
   },
   {
@@ -8913,7 +8973,7 @@
     "duracao": "1 min.",
     "energia": "04/01",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "2 magicas de Controle de Animal diferentes",
+    "preRequisitos": "Controle de Animal (Criaturas do Mar), 1 magica de controlar animal",
     "descricao": "Funciona sobre qualquer tipo de animal. Esta é a versão para animais da mágica Passageiro da Alma. O operador torna-se capaz de ver através dos olhos do objetivo, ouvir com seus ouvidos, etc., durante o tempo em que mantiver a concentração."
   },
   {
@@ -9213,7 +9273,7 @@
     "duracao": "Instant.",
     "energia": "3",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Percepção de Inimigos ou Noção do Perigo",
+    "preRequisitos": "Percepção de Inimigos ou Vantagem Noção do Perigo",
     "descricao": "Diz ao operador se há algum perigo imediato por perto; também detecta um perigo distante se ele estiver prestes a se aproximar e atacar!"
   },
   {
@@ -9910,7 +9970,7 @@
     "duracao": "1 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Audição Aguçada",
+    "preRequisitos": "Sentido aguçado (Visão Aguçada)",
     "descricao": "O objetivo pode \"sintonizar\" sua audição nas partes de rádio e micro-ondas do espectro eletromagnético."
   },
   {
@@ -10183,7 +10243,7 @@
     "duracao": "1 seg.",
     "energia": "5",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "Sonda Mental, Transmissão de Pensamento",
+    "preRequisitos": "Sonda Mental, Transmissão Mental",
     "descricao": "Faz com que um objetivo reviva um evento de sua vida passada."
   },
   {
@@ -10384,8 +10444,8 @@
     "descricao": "Como Puxar, exceto que a força agora repele os objetos em vez de atraí-los."
   },
   {
-    "id": "repelir_animal",
-    "nome": "Repelir Animal",
+    "id": "repelir_animal_terra",
+    "nome": "Repelir Animal (Criaturas da Terra)",
     "dificuldade": "D",
     "pagina": 31,
     "classe": "Área/R-HT",
@@ -10395,9 +10455,40 @@
     "duracao": "Hora",
     "energia": "Varia",
     "tempoOperacao": "10 seg.",
-    "preRequisitos": "Controle de Animal",
+    "preRequisitos": "Controle de Animal (Criaturas da Terra)",
     "descricao": "Repele os animais de uma área."
   },
+  {
+    "id": "repelir_animal_ar",
+    "nome": "Repelir Animal (Criaturas do Ar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Área/R-HT",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "Hora",
+    "energia": "Varia",
+    "tempoOperacao": "10 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Ar)",
+    "descricao": "Repele os animais de uma área."
+  },
+  {
+    "id": "repelir_animal_mar",
+    "nome": "Repelir Animal (Criaturas do Mar)",
+    "dificuldade": "D",
+    "pagina": 31,
+    "classe": "Área/R-HT",
+    "escola": [
+      "Animais"
+    ],
+    "duracao": "Hora",
+    "energia": "Varia",
+    "tempoOperacao": "10 seg.",
+    "preRequisitos": "Controle de Animal (Criaturas do Mar)",
+    "descricao": "Repele os animais de uma área."
+  },
+
   {
     "id": "repelir_espiritos",
     "nome": "Repelir Espíritos",
@@ -11044,7 +11135,7 @@
     "duracao": "1 min.",
     "energia": "4 por IQ+/I",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "6 outras mágicas da Mente",
+    "preRequisitos": "6 outras mágicas de Mente",
     "descricao": "Aumenta a IQ do objetivo temporariamente."
   },
   {
@@ -11783,7 +11874,7 @@
     "duracao": "1 min.",
     "energia": "4/4#",
     "tempoOperacao": "4 seg.",
-    "preRequisitos": "Transmissão de Pensamento",
+    "preRequisitos": "Transmissão Mental",
     "descricao": "Comunicação bidirecional completa, como Leitura da Mente e Transmissão Mental combinados."
   },
   {
@@ -12715,7 +12806,7 @@
     "duracao": "1 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas, não pode ser Cegueira",
+    "preRequisitos": "Sentido Aguçado (Visão Aguçada) ou 5 mágicas de Luz e Trevas, não ter Desvantagem Cegueira",
     "descricao": "Espie com segurança em fontes intensas de luz."
   },
   {
@@ -12791,7 +12882,7 @@
     "duracao": "1 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguçada",
+    "preRequisitos": "Sentido Aguçado (Visão Aguçada)",
     "descricao": "Revela campos magnéticos para o objetivo."
   },
   {
@@ -12807,7 +12898,7 @@
     "duracao": "1 min.",
     "energia": "4/2#",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas, não pode ser Cegueira ou Disopia",
+    "preRequisitos": "Sentido Aguçado (Visão Aguçada) ou 5 mágicas de Luz e Trevas, não pode ter Desvantagem Cegueira ou Desvantagem Disopia",
     "descricao": "O objetivo pode examinar objetos ao seu alcance como se eles estivessem com uma ampliação de ×100."
   },
   {
@@ -12837,7 +12928,7 @@
     "duracao": "1 min.",
     "energia": "03/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas",
+    "preRequisitos": "Sentido Aguçado (Visão Aguçada) ou 5 mágicas de Luz e Trevas",
     "descricao": "Veja claramente desde que haja alguma luz."
   },
   {
@@ -12852,7 +12943,7 @@
     "duracao": "1 min.",
     "energia": "05/02",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Sentidos Aguçados (Visão) ou Vantagem Visão Aguçada",
+    "preRequisitos": "Sentidos Aguçados (Audição) ou Vantagem Audição Aguçada",
     "descricao": "Permite que o objetivo veja através do som, como um morcego ou um golfinho."
   },
   {

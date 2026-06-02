@@ -192,3 +192,67 @@ restaurar_audicao, restaurar_fala, restaurar_visao, ver_a_forma_real, visita_pla
 - USUÁRIO (JSON): baliza (2 entradas) + ajustar texto dos 8 especiais conforme acima.
 - PENDÊNCIA: "magia X com NH 16+" (SkillMinLevel) — Nexus ignora; corpo_de_vento depende(mantenha do geito que esta).
 
+
+================================================================================
+# OS 34 RESTANTES (Lotes 331/332) — 3 FRENTES
+================================================================================
+
+## FRENTE 1 — VANTAGEM (motor precisa receber vantagens da ficha) — ~14
+O preReq cita uma VANTAGEM. O motor só tem magias hoje → precisa receber vantagens.
+Match das vantagens com o catálogo (vantagens.v3.json) — CONFIRA estes ajustes de texto:
+  - "Empatia em Animais" -> "Empatia com Animais"  (preposição; corrigir no JSON: agitar_animal)✅corrigido
+
+  - "Resistência a Danos" -> "Resistência a Dano"   (plural; corrigir: fortalecer)✅corrigido, o preReq estava errado o correto Resistência a Choques, ja corrigi
+
+  - "Sentido Aguçado" -> NÃO existe como vantagem (ver caso a caso)
+Magias: 
+acalmar_animal,✅corrigido
+agitar_animal,✅corrigido
+ conceder_energia,✅corrigido
+descanso_final,(precisa conferir, se do geito que esta o motor da match)
+ fortalecer,✅corrigido(o nome da magia esta errada, o correto é Resistência a Choques)
+infravisao,✅corrigido (é a magia sentidos aguçados(visão))
+ medo, ✅corrigido 
+percepcao_do_perigo, ✅corrigido(é a Vantagem noçao do perigo)
+radioaudicao,✅corrigido(magia sentido aguçado(audição))
+visao_brilhante,✅corrigido (magia sentidos aguçãdos e Desvantegem Cegueria)
+visao_magnetica,✅corrigido Sentido Aguçado (Visão Aguçada)
+visao_microscopica,✅corrigido Sentido Aguçado (Visão Aguçada) ou 5 mágicas de Luz e Trevas, não pode ter Desvantagem Cegueira ou Desvantagem Disopia
+visao_noturna, ✅corrigido Sentido Aguçado (Visão Aguçada) ou 5 mágicas de Luz e Trevas
+visao_sonora, ✅corrigido Sentido Aguçado (Audição) ou Vantagem Audição Aguçada
+
+## FRENTE 2 — MAGIA sub-escola / nome base — ~12
+Magia citada existe só com sub-escola (Convocar Animal = Criaturas Terra/Ar/Mar) ou
+nome base. localizar_animais é o caso-chave: pede "Convocar Animal" e NÃO dá pra criar
+3 variações dela. Solução: motor aceitar nome-base = qualquer variação "Nome (...)".
+Magias:
+atrofiar_sentidos,2 mágicas Atrofiar(Sentido)
+ aumentar_objeto, Alongar Objeto, estava com nome errado
+condensar_vapor, Frio ou Ferver Água, estava com nome errado Fever Água
+conexao_com_animal, tive que criar um ID pra cada terra, ar, agua igual o convocar_animal
+criar_portal, teive que criar uma magia pra cada  (teleporte, Viagem no Tempo,Viagem Planar)
+localizar_animais, caso isolado, tera que mexer nomotor pra reconhecer o convocar Animal
+passageiro_interno_criaturas_do_ar, nessa caso tem que conhecer a respctiva +1 magia de controle de animal
+possessao_de_animais, ela cai na mesma regra de localizar_animais + magia possessão
+repelir_animal, tive que crir uma pra cada tipo (terra, ar, agua)
+sabedoria, troquei o "da" por "de" mente
+telepatia, o correto é Transmissão Mental
+conceder_idioma. era apenas Comunicação!
+
+## FRENTE 3 — TEMA / "DE CADA ELEMENTO" / OU-complexo — ~8  (USUÁRIO ANALISA CADA UMA)
+- combustivel_essencialnt: "6 mágicas com Energia"   (tema Energia — conta por nome? "com" vs "de")
+- detectar_pontos_fracos: "1 mágica de cada um dos quatro elementos"  (1 de Ar E 1 Fogo E 1 Terra E 1 Água)
+- convocar_elemental_ar/fogo/terra/agua: "...8 magias de X ou 4 do elemento apropriado e
+  outra Convocar Elemental"  (a 2ª alternativa do OU é a complicada)
+- atrofiar_sentidos: "Quaisquer 2 mágicas Atrofiar"  (2 magias cujo nome tem "Atrofiar")
+- condensar_vapor: "Frio ou Fever Água"  (Fever = erro de texto? "Ferver Água"?)
+- conceder_idioma: "Falar com Animais ou 3 mágicas de Comunicação"
+
+### ANÁLISE DO USUÁRIO (Frente 3) — preencher como resolver cada:
+- combustivel_essencialnt: parser pro nome Eenrgia!
+- detectar_pontos_fracos: 1 mágica de cada um dos quatro escola (ar,terra,fogo,agua)
+- convocar_elemental_* (4): Aptidao Magica 1 e oito mágicas de Ar ou quatro mágicas da escola apropriada e mágica Convocar Elemental.",
+- atrofiar_sentidos: 2 mágicas Atrofiar(Sentido)
+- condensar_vapor:  "Frio ou Fever Água"  =texto errdo
+- conceder_idioma: "Falar com Animais ou 3 mágicas de Comunicação"
+
