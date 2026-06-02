@@ -2565,7 +2565,7 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 
 ## Lote 333 — [2026-06-01] data: correções de texto nos pré-requisitos (3 frentes) + sub-escolas
 
-- **Hash:** `<preenchido após o commit>`
+- **Hash:** `b8429b5`
 - **Resumo:** o usuário corrigiu manualmente os textos de pré-requisito de dezenas de magias
   (nomes errados, plural, vantagem citada errada) e criou novas entradas por sub-escola
   (conexao_com_animal, criar_portal, repelir_animal — por elemento/tipo, como Cavalgar).
@@ -2594,6 +2594,6 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
   atrofiar_sentidos, sabedoria, jato_de_som ("Voz Ampliada").
 
 ### Rollback
-- `git revert <hash>`.
+- `git revert b8429b5`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
