@@ -43,7 +43,12 @@ class NexusArcanoEngine(
         val minAm: Int?,
         val minIq: Int?,
         val somaAtributos: List<String> = emptyList(),
-        val minSoma: Int? = null
+        val minSoma: Int? = null,
+        // Lote 330: requisito "N magias de UMA escola específica" (ex: Convocar
+        // Elemental = 8 magias de Fogo). Antes o tipo MagiasEscola caía no else
+        // do branchFromAlternative e era IGNORADO → magia liberava sem checar.
+        val escolaRequerida: String? = null,
+        val minMagiasEscola: Int? = null
     )
 
     internal data class RequisitoBranch(
@@ -134,6 +139,13 @@ class NexusArcanoEngine(
     internal val somaRegex = Regex("\\(([^\\)]*?)\\)\\s*:?\\s*(\\d+)\\+?", RegexOption.IGNORE_CASE)
     internal val amRegex = Regex("\\bam\\s*(\\d+)\\b")
     internal val iqRegex = Regex("\\biq\\s*(\\d+)\\b")
+    // Lote 330: conjunto de escolas reais (normalizadas), derivado do catálogo.
+    // Usado para decidir se "N magias de X" conta por ESCOLA (X é escola real) ou
+    // por NOME (X é tema, ex: Ácido). O parsing de MagiasEscola é feito pelo
+    // PreRequisitoParser (em branchFromAlternative), não por regex aqui.
+    internal val escolasConhecidasNorm: Set<String> by lazy {
+        escolasNormById.values.flatten().filter { it.isNotBlank() }.toSet()
+    }
     internal val pesoDepsMissing = 6
     internal val pesoFaltaNumerica = 8
     internal val pesoFaltaEscolas = 3
@@ -261,6 +273,18 @@ class NexusArcanoEngine(
                         id = "chave_soma_${regra.magiaOrigemId}_${regra.somaAtributos.joinToString("_")}_${regra.minSoma}",
                         descricao = "Ter ${regra.somaAtributos.joinToString("+").uppercase()} >= ${regra.minSoma} para ${nomeMagia(regra.magiaOrigemId)}",
                         ativa = somaAtual >= regra.minSoma
+                    )
+                }
+                // Lote 330: chave para "N magias de uma escola" com descrição clara
+                // (ex: "Ter 8 magias de Ar (atual 3)") — antes a falta caía no
+                // motivoBloqueio genérico "Sem ação imediata".
+                if (regra.escolaRequerida != null && regra.minMagiasEscola != null) {
+                    val qtdAtual = contarMagiasPorEscolaOuNome(regra.escolaRequerida, known)
+                    val termoLabel = regra.escolaRequerida.replaceFirstChar { it.uppercase() }
+                    chaves += ArcanoChave(
+                        id = "chave_escola_qtd_${regra.magiaOrigemId}_${regra.escolaRequerida}_${regra.minMagiasEscola}",
+                        descricao = "Ter ${regra.minMagiasEscola} magias de $termoLabel (atual $qtdAtual)",
+                        ativa = qtdAtual >= regra.minMagiasEscola
                     )
                 }
             }
@@ -531,7 +555,29 @@ class NexusArcanoEngine(
         } else {
             true
         }
-        return okAm && okIq && okSoma
+        val okEscola = if (regra.escolaRequerida != null && regra.minMagiasEscola != null) {
+            contarMagiasPorEscolaOuNome(regra.escolaRequerida, estado.magiasConhecidasIds) >= regra.minMagiasEscola
+        } else {
+            true
+        }
+        return okAm && okIq && okSoma && okEscola
+    }
+
+    /**
+     * Lote 330: "N magias de X" — X pode ser ESCOLA real (Fogo, Ar, Mente...) ou
+     * TEMA/nome (Ácido = magias com "acido" no nome: Criar Ácido, Jato de Ácido...).
+     * Se 'termoNorm' bate com uma escola real do catálogo → conta por escola.
+     * Senão → conta magias cujo NOME normalizado contém o termo. Cobre os dois casos.
+     */
+    internal fun contarMagiasPorEscolaOuNome(termoNorm: String, known: Set<String>): Int {
+        val ehEscolaReal = termoNorm in escolasConhecidasNorm
+        return known.count { id ->
+            if (ehEscolaReal) {
+                escolasNormById[id].orEmpty().contains(termoNorm)
+            } else {
+                nomeNormById[id].orEmpty().contains(termoNorm)
+            }
+        }
     }
 
     internal fun construirCadeiaObrigatoria(alvoId: String): List<String> {
@@ -805,6 +851,19 @@ class NexusArcanoEngine(
                         minIq = null,
                         somaAtributos = tipo.atributos.map(::normalize).filter { it.isNotBlank() },
                         minSoma = tipo.minimo
+                    )
+                }
+                is PreRequisitoType.MagiasEscola -> {
+                    // Lote 330: "N magias de X". X pode ser ESCOLA real (Fogo, Ar...)
+                    // ou TEMA/nome (Ácido = magias com "Acido" no nome). Antes caía no
+                    // else e era ignorado → magia liberava sem checar (84 magias).
+                    // A contagem (escola vs nome) é decidida em atendeRegraNumerica.
+                    regrasNumericas += RegraNumerica(
+                        magiaOrigemId = magiaId,
+                        minAm = null,
+                        minIq = null,
+                        escolaRequerida = normalize(tipo.escola),
+                        minMagiasEscola = tipo.quantidade
                     )
                 }
                 else -> Unit

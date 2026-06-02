@@ -2485,3 +2485,48 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert a0235aa`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 331 — [2026-06-01] fix: pré-requisito "N magias de escola/tema" + correções de texto
+
+- **Hash:** `<preenchido após o commit>`
+- **Resumo:** o motor Nexus IGNORAVA o tipo de pré-requisito "N magias de uma escola"
+  (ex: Convocar Elemental = "8 magias de Ar") — caía no `else` de `branchFromAlternative`
+  e a magia liberava sem checar. Corrigido: agora vira `RegraNumerica` com escola e é
+  validado de verdade, contando por ESCOLA (Fogo/Ar/...) ou, se o termo não for escola
+  real, por NOME/tema (ex: "6 magias de Ácido" = magias com "Ácido" no nome). Mensagem
+  clara de falta ("Ter 8 magias de Ar (atual N)").
+
+### NexusArcanoEngine.kt
+- `RegraNumerica` ganhou `escolaRequerida` + `minMagiasEscola`.
+- `branchFromAlternative`: trata `PreRequisitoType.MagiasEscola` (antes ignorado).
+- `atendeRegraNumerica` + `contarMagiasPorEscolaOuNome`: conta por escola real OU por
+  nome (fallback p/ temas). `escolasConhecidasNorm` derivado do catálogo.
+- Chave de falta com descrição clara.
+
+### magias2versao.json (usuário + IA)
+- USUÁRIO: criou sub-escolas (Cavalgar Terra/Ar/Mar, elementais por elemento, balizas,
+  sentidos separados) e corrigiu nomes de escola incompletos no texto: "Luz"→"Luz e Trevas"
+  (8 magias), "Controle da Mente"→"Mente" (4), "Planta"→"Plantas".
+- IA: ajustou os 7 especiais (visao_brilhante/microscopica "não pode ser"; geiser; corpo_de_vento
+  "NH 16"; remover_infeccao "Deteriorar, Purificar ou Cura"; remover_maldicao). Removeu o ", ou"
+  (vírgula antes de "ou" quebrava o parser).
+- Regra de precedência documentada em `VALIDAR_PRECEDENCIA.md`: E > OU ("X, Y ou Z" = X E (Y OU Z)).
+
+### Validação
+- ✅ Compila. Testado (device + JUnit temporários, depois removidos): Convocar Elemental,
+  Cavalgar, Raio Solar (com 6 Luz e Trevas), ~18 magias de escola/tema agora validam certo.
+
+### PENDÊNCIA GRANDE (próximo lote) — 43 magias ainda liberam com ficha vazia
+- **Raiz única:** quando uma alternativa do "OU" (ou dependência) é um requisito que o motor
+  NÃO reconhece (vantagem/perícia como "Persuasão", "Resistência a Danos"; magia nominal que
+  não resolve; "X de cada elemento"), a branch fica VAZIA e `all{}` de lista vazia = true →
+  vira "passe livre". Ex: infravisao ("Visão Aguçada ou 5 magias..."), acalmar_animal, etc.
+- **3 abordagens a avaliar:** (a) corrigir o motor (branch de requisito não-reconhecido vira
+  IMPOSSÍVEL, não vazia); (b) corrigir texto no JSON; (c) função no motor que reconheça
+  vantagem/perícia/tema. Decidir no próximo lote — exige simular as 853 antes/depois.
+- Também pendente: "magia X com NH 16+" (SkillMinLevel) e "N de cada elemento".
+
+### Rollback
+- `git revert <hash>`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------

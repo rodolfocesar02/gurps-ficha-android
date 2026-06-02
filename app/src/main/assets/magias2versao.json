@@ -330,7 +330,7 @@
     "energia": "2",
     "tempoOperacao": "10 seg.",
     "preRequisitos": "Conceder Vitalidade, Sabedoria",
-    "descricao": "Restaura temporariamente a sanidade de um objetivo, aliviando-o de uma única Loucura, Fobia, Compulsão ou Loucura induzida por mágicas (escolhida pelo operador). As mágicas Loucura e Loucura Permanente resistem. Esta também é uma mágica de Controle da Mente."
+    "descricao": "Restaura temporariamente a sanidade de um objetivo, aliviando-o de uma única Loucura, Fobia, Compulsão ou Loucura induzida por mágicas (escolhida pelo operador). As mágicas Loucura e Loucura Permanente resistem. Esta também é uma mágica de mente."
   },
   {
     "id": "aliviar_paralisia",
@@ -615,7 +615,7 @@
     "duracao": "1 min.",
     "energia": "Varia",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "7 mágicas de Planta",
+    "preRequisitos": "7 mágicas de Plantas",
     "descricao": "Como Animação, exceto que apenas uma planta viva pode ser animada. Uma planta animada ganha uma pontuação de HT igual a duas vezes a energia colocada na mágica. Note-se que as plantas lenhosas muitas vezes têm uma alta RD e fazem inimigos assustadores. Uma planta sapiente não pode ser animada."
   },
   {
@@ -1209,8 +1209,38 @@
     "descricao": "Passe pela terra como se fosse ar. Com essa mágica, o objetivo pode atravessar a parede de pedra de uma masmorra ou a parede de terra de uma cabana. Esta mágica não abre uma passagem para que outros possam seguir. Também não revela o que está do outro lado. Se o operador também conhecer Terra para Ar, ele terá automaticamente ar respirável durante sua jornada. Caso contrário, ele deve prender a respiração! Se a mágica terminar antes que o objetivo chegue ao ar livre, ele será enterrado e irá sufocar se não puder escapar."
   },
   {
-    "id": "atrofiar_sentido",
-    "nome": "Atrofiar (Sentido)",
+    "id": "atrofiar_sentido_audicao",
+    "nome": "Atrofiar (Sentido audição)",
+    "dificuldade": "D",
+    "pagina": 133,
+    "classe": "Comum/R-HT",
+    "escola": [
+      "Mente"
+    ],
+    "duracao": "30 min.",
+    "energia": "1 a 3/M",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "—",
+    "descricao": "O inverso de Sentido Aguçado, esta mágica prejudica todos os testes referentes ao respectivo Sentido."
+  },
+  {
+    "id": "atrofiar_visao",
+    "nome": "Atrofiar (Visão)",
+    "dificuldade": "D",
+    "pagina": 133,
+    "classe": "Comum/R-HT",
+    "escola": [
+      "Mente"
+    ],
+    "duracao": "30 min.",
+    "energia": "1 a 3/M",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "—",
+    "descricao": "O inverso de Sentido Aguçado, esta mágica prejudica todos os testes referentes ao respectivo Sentido."
+  },
+  {
+    "id": "atrofiar_sentido_olfato",
+    "nome": "Atrofiar (Sentido olfato)",
     "dificuldade": "D",
     "pagina": 133,
     "classe": "Comum/R-HT",
@@ -1406,8 +1436,8 @@
     "descricao": "O equivalente mecânico da Paralisia Total. A máquina em questão simplesmente deixa de funcionar enquanto durar a mágica (um avião cai, um sensor fica \"cego\" e assim por diante). O operador deve tocar o objetivo."
   },
   {
-    "id": "baliza",
-    "nome": "Baliza",
+    "id": "baliza_viagem_planar",
+    "nome": "Baliza(Viagem Planar)",
     "dificuldade": "D",
     "pagina": 83,
     "classe": "Área",
@@ -1418,7 +1448,39 @@
     "duracao": "24 horas",
     "energia": "10/M",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Teleporte, Viagem no Tempo ou Trocar de Plano",
+    "preRequisitos": "Viagem Planar",
+    "descricao": "\"Suaviza\" o espaço-tempo local, facilitando a área de efeito ao se teleportar, viajar no tempo ou transferir de plano. O custo de energia e as penalidades de NH para viajar até uma baliza são reduzidos pela metade. Uma baliza também pode ser usada para ajudar a teleportar um objetivo sinalizado para perto do operador. Uma baliza não é privativa; qualquer operador transportando-se magicamente para a área irá se beneficiar da mágica. O operador deve, na operação, especificar qual mágica de viagem sua baliza auxilia. Esta também é uma mágica de Deslocamento."
+  },
+  {
+    "id": "baliza_viagem_no_tempo",
+    "nome": "Baliza(Viagem no Tempo)",
+    "dificuldade": "D",
+    "pagina": 83,
+    "classe": "Área",
+    "escola": [
+      "Portal",
+      "Deslocamento"
+    ],
+    "duracao": "24 horas",
+    "energia": "10/M",
+    "tempoOperacao": "30 seg.",
+    "preRequisitos": "Viagem Planar",
+    "descricao": "\"Suaviza\" o espaço-tempo local, facilitando a área de efeito ao se teleportar, viajar no tempo ou transferir de plano. O custo de energia e as penalidades de NH para viajar até uma baliza são reduzidos pela metade. Uma baliza também pode ser usada para ajudar a teleportar um objetivo sinalizado para perto do operador. Uma baliza não é privativa; qualquer operador transportando-se magicamente para a área irá se beneficiar da mágica. O operador deve, na operação, especificar qual mágica de viagem sua baliza auxilia. Esta também é uma mágica de Deslocamento."
+  },
+  {
+    "id": "baliza_teleporte",
+    "nome": "Baliza(Teleporte)",
+    "dificuldade": "D",
+    "pagina": 83,
+    "classe": "Área",
+    "escola": [
+      "Portal",
+      "Deslocamento"
+    ],
+    "duracao": "24 horas",
+    "energia": "10/M",
+    "tempoOperacao": "30 seg.",
+    "preRequisitos": "Teleporte",
     "descricao": "\"Suaviza\" o espaço-tempo local, facilitando a área de efeito ao se teleportar, viajar no tempo ou transferir de plano. O custo de energia e as penalidades de NH para viajar até uma baliza são reduzidos pela metade. Uma baliza também pode ser usada para ajudar a teleportar um objetivo sinalizado para perto do operador. Uma baliza não é privativa; qualquer operador transportando-se magicamente para a área irá se beneficiar da mágica. O operador deve, na operação, especificar qual mágica de viagem sua baliza auxilia. Esta também é uma mágica de Deslocamento."
   },
   {
@@ -1902,7 +1964,7 @@
     "duracao": "10 seg.",
     "energia": "04/02",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "2 mágicas de Luz, Espasmo",
+    "preRequisitos": "2 mágicas de Luz e Trevas, Espasmo",
     "descricao": "Cega o objetivo temporariamente. O objetivo fica submetido a uma penalidade de -10 em qualquer ataque físico que queira empreender e não é capaz de ver os alvos para direcionar mágicas."
   },
   {
@@ -1963,7 +2025,7 @@
     "duracao": "Perm.",
     "energia": "1 ou 2",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Cura Profunda, ou Cura Superficial e Paralisar Membro",
+    "preRequisitos": "Cura Profunda ou Cura Superficial e Paralisar Membro",
     "descricao": "Anula uma paralisia temporária (devido à mágica, arma paralisante, etc.). Uma mágica em andamento recebe um teste de resistência."
   },
   {
@@ -2237,7 +2299,7 @@
     "duracao": "Perm.",
     "energia": "2/litro",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "6 mágicas de Energia",
+    "preRequisitos": "6 mágicas com Energia",
     "descricao": "Transforma qualquer combustível comum na essência mágica do combustível. O Combustível Essencial queima 10 vezes mais que o combustível normal, com um terço da poluição usual. Veículos que funcionam com Combustível Essencial têm 10 vezes o Alcance."
   },
   {
@@ -2449,7 +2511,7 @@
     "duracao": "Perm.",
     "energia": "12",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "AM2, 10 mágicas de Controle da Mente",
+    "preRequisitos": "AM2, 10 mágicas de mente",
     "descricao": "Dá a um objetivo um comando, que o objetivo deve obedecer. Este deve ser um comando para fazer uma coisa específica. Deve ser razoavelmente possível. Até que a condição seja satisfeita ou removida, deve ser a primeira prioridade do objetivo."
   },
   {
@@ -2464,7 +2526,7 @@
     "duracao": "Perm.",
     "energia": "30",
     "tempoOperacao": "1 min.",
-    "preRequisitos": "AM3, 15 magicas de Controle da Mente, incl. Condicionamento",
+    "preRequisitos": "AM3, 15 magicas demente, Condicionamento",
     "descricao": "Dá a um objetivo um comando contínuo, como \"Nunca toque em armas\" ou \"Mate todos os orcs\". Um Condicionamento Permanente não precisa ser razoavelmente possível; pode ocupar o objetivo pelo resto de sua vida a menos que seja removida."
   },
   {
@@ -2749,7 +2811,7 @@
     "duracao": "1 min.",
     "energia": "06/03",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Identificar Funcao, Serralheiro, Relampago",
+    "preRequisitos": "Identificar Função, Serralheiro, Relampago",
     "descricao": "Controle as ações de uma máquina ou várias pequenas. O operador deve estar ciente das funções da máquina para controlá-la. A mágica não fornece a perícia de usar a máquina — o operador deve usar seu próprio NH. É necessária concentração. A mágica atua através dos gatilhos e controles da máquina."
   },
   {
@@ -2929,7 +2991,7 @@
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Ar",
+    "preRequisitos": "Aptidao Magica 1 e oito mágicas de Ar ou quatro mágicas do elemento apropriado e outra mágica Convocar Elemental.",
     "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
   },
   {
@@ -2944,7 +3006,7 @@
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Fogo",
+    "preRequisitos": "Aptidao Magica 1 e oito mágicas de Fogo ou quatro mágicas do elemento apropriado e outra mágica Convocar Elemental.",
     "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
   },
   {
@@ -2959,7 +3021,7 @@
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Terra",
+    "preRequisitos": "Aptidao Magica 1 e oito mágicas de Terra ou quatro mágicas do elemento apropriado e outra mágica Convocar Elemental.",
     "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
   },
   {
@@ -2974,7 +3036,7 @@
     "duracao": "1 hora",
     "energia": "4#",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "Aptidao Magica 1 e 8 magicas de Água",
+    "preRequisitos": "Aptidao Magica 1 e oito mágicas de Água ou quatro mágicas do elemento apropriado e outra mágica Convocar Elemental.",
     "descricao": "Esta é uma mágica diferente para cada um dos quatro elementos. Ela permite ao operador chamar um elemental próximo (se existir um). Em geral, o Mestre deve assumir que um elemental está disponível se o local for apropriado. O operador determina o nível de poder do elemental através da quantidade de energia que ele emprega na mágica, mas o Mestre determina com mais precisão as capacidades do elemental. O elemental que atender à convocação não estará sob o controle do operador, mas deverá permanecer por uma hora."
   },
   {
@@ -3260,7 +3322,7 @@
     "duracao": "1 min.",
     "energia": "08/04",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Aptidao Magica 3, Corpo de Ar e Furacao, cada um com NH 16 ou superior, 1 magica em cinco escolas diferentes",
+    "preRequisitos": "Aptidao Magica 3, Corpo de Ar NH 16, Furacao NH 16, 1 magica em cinco escolas diferentes",
     "descricao": "O corpo do objetivo torna-se um redemoinho, cujo raio é de 2 a 4 metros. Nessa forma, ele tem uma forma variante da metacaracterística Corpo de Ar; ele não tem a Vulnerabilidade listada para vácuo e ataques baseados em vento, adquire a desvantagem Manuseadores Precários ao invés de Sem Manuseadores, e obtém uma ST efetiva cujo valor é o dobro de sua ST normal. As roupas também se tornam vento, mas perdem quaisquer poderes mágicos que possuam enquanto estiverem em forma de vento."
   },
   {
@@ -3276,7 +3338,7 @@
     "energia": "08/04",
     "tempoOperacao": "30 seg.",
     "preRequisitos": "6 mágicas de Deslocamento ou AM3 e Corpo de Ar",
-    "descricao": "O objetivo se torna etéreo e pode se mover através de objetos sólidos e criaturas como se eles não estivessem lá. Suas roupas se tornam etéreas, mas não seu equipamento. Ele não pode empunhar armas ou mover coisas, e não precisa respirar, comer ou beber enquanto está etéreo. Ele pode ser visto, embora tenha uma aparência translúcida. Ataques físicos e a maioria das mágicas não podem afetar alguém que é etéreo. No entanto, qualquer mágica das Escolas de Comunicação e Empatia ou Controle da Mente tem efeito normal e é Resistível a -2."
+    "descricao": "O objetivo se torna etéreo e pode se mover através de objetos sólidos e criaturas como se eles não estivessem lá. Suas roupas se tornam etéreas, mas não seu equipamento. Ele não pode empunhar armas ou mover coisas, e não precisa respirar, comer ou beber enquanto está etéreo. Ele pode ser visto, embora tenha uma aparência translúcida. Ataques físicos e a maioria das mágicas não podem afetar alguém que é etéreo. No entanto, qualquer mágica das Escolas de Comunicação e Empatia oumente tem efeito normal e é Resistível a -2."
   },
   {
     "id": "corpulencia",
@@ -4970,7 +5032,7 @@
     "duracao": "Perm.",
     "energia": "10 a 50",
     "tempoOperacao": "1 min.",
-    "preRequisitos": "Rejuvenescer, ou 6 mágicas de Necromancia",
+    "preRequisitos": "Rejuvenescer ou 6 mágicas de Necromancia",
     "descricao": "Torna o objetivo mais velho! O objetivo envelhece um ano para cada 10 pontos de energia colocados na mágica."
   },
   {
@@ -6072,7 +6134,7 @@
     "duracao": "1 seg.",
     "energia": "05/02",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "6 magicas da Agua, incl. Criar Nascente, quaisquer 4 magicas da Terra ou Fogo",
+    "preRequisitos": "6 magicas da Agua incl. Criar Nascente, 4 magicas da Terra ou 4 magicas de Fogo",
     "descricao": "Faz com que um gêiser de água quente fervente saia do chão. Todos aqueles dentro do gêiser sofrem danos de 3d. Eles são automaticamente empurrados para fora da área de efeito. Dois segundos após o início, a água começa a cair como spray, afetando uma área com o dobro do raio com 1d de dano."
   },
   {
@@ -6729,7 +6791,7 @@
     "duracao": "1 min.",
     "energia": "03/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguda ou 5 mágicas de Luz",
+    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas",
     "descricao": "Veja o \"infravermelho\" ou raios de calor, além da luz normal, como na vantagem Infravisão. Esta mágica não permite que objetos invisíveis sejam vistos."
   },
   {
@@ -6804,7 +6866,7 @@
     "duracao": "1 min.",
     "energia": "05/03",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "6 mágicas de Luz incl. Nublar",
+    "preRequisitos": "6 mágicas de Luz e Trevas, Nublar",
     "descricao": "O objetivo não pode ser visto e não aparece em reflexos ou fotografias. Ele ainda faz sons e pode ser rastreado por perfume ou pegadas. Qualquer coisa que ele pega se torna invisível. Infravisão não pode detectá-lo, mas Ver o Invisível pode."
   },
   {
@@ -7046,7 +7108,7 @@
     "duracao": "1 hora",
     "energia": "2/2#",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Bravura, 2 outras mágicas de Controle da Mente",
+    "preRequisitos": "Bravura, 2 outras mágicas de mente",
     "descricao": "Torna o objetivo leal ao operador. O objetivo segue qualquer ordem direta; na ausência de ordens diretas, ele age de acordo com o interesse do operador. A mágica é quebrada se o operador atacar o objetivo."
   },
   {
@@ -7831,7 +7893,7 @@
     "duracao": "Varia",
     "energia": "Varia",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "Esquecimento, outras 6 mágicas de Controle da Mente",
+    "preRequisitos": "Esquecimento, outras 6 mágicas de mente",
     "descricao": "Insira uma única memória falsa simples na mente de um objetivo. Esta mágica é frequentemente usada para evitar o pagamento de contas, e é considerada altamente ilegal."
   },
   {
@@ -7848,7 +7910,7 @@
     "energia": "3",
     "tempoOperacao": "2 seg.",
     "preRequisitos": "Sabedoria ou 6 mágicas de Reconhecimento",
-    "descricao": "Tudo o que o operador percebe no momento da operação é implantado perfeitamente em sua memória, como se ele tivesse Memória Fotográfica. A mágica pode ser usada para memorizar mapas, rostos, um evento, etc. Ela não pode ser usada para aprender uma perícia ou para manter uma emprestada magicamente. Esta também é uma mágica de Controle da Mente."
+    "descricao": "Tudo o que o operador percebe no momento da operação é implantado perfeitamente em sua memória, como se ele tivesse Memória Fotográfica. A mágica pode ser usada para memorizar mapas, rostos, um evento, etc. Ela não pode ser usada para aprender uma perícia ou para manter uma emprestada magicamente. Esta também é uma mágica de mente."
   },
   {
     "id": "mensagem",
@@ -8044,7 +8106,7 @@
     "duracao": "1 min.",
     "energia": "6/M#",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "AM1, Moldar Terra ou 6 mágicas Tecnológicas",
+    "preRequisitos": "AM1, Moldar Terra ou 6 mágicas de Tecnológica",
     "descricao": "Mova o metal sólido ou líquido e molde-o para qualquer forma. Se a forma for estável, ela permanecerá permanentemente após a modelagem. Uma forma instável dura apenas enquanto a mágica continuar."
   },
   {
@@ -8074,7 +8136,7 @@
     "duracao": "1 min.",
     "energia": "06/03",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "AM1, Moldar Planta ou 6 mágicas Tecnológicas",
+    "preRequisitos": "AM1, Moldar Planta ou 6 mágicas de Tecnológica",
     "descricao": "Semelhante a Moldar Metal, mas afeta o \"plástico\"."
   },
   {
@@ -8654,7 +8716,7 @@
     "duracao": "1 min.",
     "energia": "2/nível/M#",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz; não pode ter Cegueira ou Disopia",
+    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas; não pode ter Cegueira ou Disopia",
     "descricao": "Concede ao objetivo uma clareza extraordinária de visão e a capacidade de \"ampliar\" objetos distantes, fornecendo o equivalente à Visão Telescópica. Esta habilidade também pode funcionar como mira telescópica."
   },
   {
@@ -9031,7 +9093,7 @@
     "duracao": "Instant.",
     "energia": "1#",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão da Morte, ou Percepção de Vida e AM1",
+    "preRequisitos": "Visão da Morte ou Percepção de Vida e AM1",
     "descricao": "Encontre quaisquer fantasmas, espíritos, mortos-vivos ou entidades sobrenaturais similares dentro da área de efeito."
   },
   {
@@ -9545,7 +9607,7 @@
     "energia": "03/03",
     "tempoOperacao": "1 min.",
     "preRequisitos": "Transmissão de Sonho",
-    "descricao": "Usando esta mágica, o operador projeta sua presença nos sonhos do objetivo para conversar com ele. Esta também é uma mágica de Controle da Mente."
+    "descricao": "Usando esta mágica, o operador projeta sua presença nos sonhos do objetivo para conversar com ele. Esta também é uma mágica de mente."
   },
   {
     "id": "projeteis_congelantes",
@@ -9620,7 +9682,7 @@
     "duracao": "10 min.",
     "energia": "2 a 10/M",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Quaisquer 2 mágicas de Sentido Aguçado",
+    "preRequisitos": "2 mágicas de Sentido Aguçado",
     "descricao": "Concede bônus a todas as jogadas de Sentido do objetivo."
   },
   {
@@ -9863,7 +9925,7 @@
     "duracao": "Instant.",
     "energia": "1 a AM#",
     "tempoOperacao": "1 a 3 seg.",
-    "preRequisitos": "6 mágicas de Luz incl. Luz Solar",
+    "preRequisitos": "6 mágicas de Luz e Trevas, Luz Solar",
     "descricao": "Atira um raio de luz solar concentrada da ponta de um dedo. A luz queima como a luz do laser e causa dano por queimadura. Qualquer espelho refletirá um Raio Solar."
   },
   {
@@ -9894,7 +9956,7 @@
     "duracao": "Instant.",
     "energia": "3",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Teleporte, Viagem no Tempo, ou Viagem Planar",
+    "preRequisitos": "Teleporte ou Viagem no Tempo ou ou Viagem Planar",
     "descricao": "Quando operada logo após alguém ou algo se teleportar, esta mágica dá ao operador uma visão do destino do objetivo teleportado. Esta também é uma mágica de Deslocamento."
   },
   {
@@ -9957,7 +10019,7 @@
     "energia": "4",
     "tempoOperacao": "10 seg.",
     "preRequisitos": "AM2, Memorizar, Sabedoria",
-    "descricao": "O objetivo relembra um fato ou evento esquecido ou obscuro como se ele tivesse Memória Fotográfica. Esta também é uma mágica de Controle da Mente."
+    "descricao": "O objetivo relembra um fato ou evento esquecido ou obscuro como se ele tivesse Memória Fotográfica. Esta também é uma mágica de mente."
   },
   {
     "id": "recordar_caminho",
@@ -10258,7 +10320,7 @@
     "duracao": "Instant.",
     "energia": "3",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Deteriorar, Limpar ou Curar Doenças",
+    "preRequisitos": "Deteriorar, Purificar ou Cura",
     "descricao": "Purifica a área objetivo de agentes causadores de doenças contagiosas."
   },
   {
@@ -10273,7 +10335,7 @@
     "duracao": "Instant.",
     "energia": "20",
     "tempoOperacao": "1 hora",
-    "preRequisitos": "AM2, Suspender Maldição ou 1 mágica de cada uma das 15 escolas",
+    "preRequisitos": "Aptidao Magica 2, 1 magica em quinze escolas diferentes",
     "descricao": "Anula qualquer uma das mágicas listadas na descrição."
   },
   {
@@ -10907,7 +10969,7 @@
     "duracao": "Perm.",
     "energia": "10 a 30",
     "tempoOperacao": "1 hora",
-    "preRequisitos": "Rejuvenesc, Envelhecer, Roubar Vitalidade",
+    "preRequisitos": "Rejuvenescer, Envelhecer, Roubar Vitalidade",
     "descricao": "Tome a juventude de outro."
   },
   {
@@ -11138,8 +11200,24 @@
     "descricao": "O objetivo fica extremamente sensível à dor, adquirindo a desvantagem Hiperalgia."
   },
   {
-    "id": "sentido_agucado",
-    "nome": "Sentido Aguçado",
+    "id": "sentido_agucado_audicao_agucada",
+    "nome": "Sentido Aguçado (audição aguçada)",
+    "dificuldade": "D",
+    "pagina": 133,
+    "classe": "Comum",
+    "escola": [
+      "Mente",
+      "Som"
+    ],
+    "duracao": "30 min.",
+    "energia": "1 por +/M#",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "—",
+    "descricao": "Sentido Aguçado concede um bônus de +1 por ponto de energia gasto sobre os testes de Sentidos do tipo apropriado. Audição Aguçada também é uma mágica de Som"
+  },
+  {
+    "id": "sentido_agucado_visao_agucada",
+    "nome": "Sentido Aguçado (visão aguçada)",
     "dificuldade": "D",
     "pagina": 133,
     "classe": "Comum",
@@ -11150,7 +11228,22 @@
     "energia": "1 por +/M#",
     "tempoOperacao": "1 seg.",
     "preRequisitos": "—",
-    "descricao": "Na verdade existem várias mágicas diferentes deste tipo. Sentido Aguçado concede um bônus de +1 por ponto de energia gasto sobre os testes de Sentidos do tipo apropriado."
+    "descricao": "Sentido Aguçado concede um bônus de +1 por ponto de energia gasto sobre os testes de Sentidos do tipo apropriado. Audição Aguçada também é uma mágica de Som"
+  },
+  {
+    "id": "sentido_agucado_olfato_paladar_agucado",
+    "nome": "Sentido Aguçado (olfato/paladar aguçado)",
+    "dificuldade": "D",
+    "pagina": 133,
+    "classe": "Comum",
+    "escola": [
+      "Mente"
+    ],
+    "duracao": "30 min.",
+    "energia": "1 por +/M#",
+    "tempoOperacao": "1 seg.",
+    "preRequisitos": "—",
+    "descricao": "Sentido Aguçado concede um bônus de +1 por ponto de energia gasto sobre os testes de Sentidos do tipo apropriado. Audição Aguçada também é uma mágica de Som"
   },
   {
     "id": "sentinela",
@@ -11439,18 +11532,18 @@
     "descricao": "Cria um redemoinho circular em um corpo de água."
   },
   {
-    "id": "sotterramento",
-    "nome": "Sotterramento",
+    "id": "soterramento",
+    "nome": "Soterramento",
     "dificuldade": "D",
     "pagina": 53,
     "classe": "Comum/R-HT",
     "escola": [
-      "Mente"
+      "Terra"
     ],
     "duracao": "Perm.",
     "energia": "06/03",
     "tempoOperacao": "3 seg.",
-    "preRequisitos": "AM1, Lealdade, 7 mágicas de Controle da Mente",
+    "preRequisitos": "Aptidão Mágica 2 e cinco mágicas da Terra.",
     "descricao": "A terra engole instantaneamente o objetivo."
   },
   {
@@ -11630,7 +11723,7 @@
     "duracao": "Perm.",
     "energia": "1/0,1 m²/M",
     "tempoOperacao": "5 seg.",
-    "preRequisitos": "Voo, ou AM2 e Caminhar no Ar",
+    "preRequisitos": "Voo ou AM2 e Caminhar no Ar",
     "descricao": "Transforma um tapete em um veículo voador."
   },
   {
@@ -12229,7 +12322,7 @@
     "energia": "3",
     "tempoOperacao": "1 min.",
     "preRequisitos": "Visualização de Sonho ou Sono",
-    "descricao": "O operador usa essa mágica para enviar uma visão de um sonho ao objetivo. Esta também é uma mágica de Controle da Mente."
+    "descricao": "O operador usa essa mágica para enviar uma visão de um sonho ao objetivo. Esta também é uma mágica de mente."
   },
   {
     "id": "transmissao_mental",
@@ -12440,7 +12533,7 @@
     "duracao": "1 min.",
     "energia": "04/02",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Invisibilidade, ou Visão nas Trevas ou Infravisão",
+    "preRequisitos": "Invisibilidade ou Visão nas Trevas ou Infravisão",
     "descricao": "O objetivo pode ver qualquer coisa oculta pela mágica Invisibilidade ou pela invisibilidade \"natural\"."
   },
   {
@@ -12622,7 +12715,7 @@
     "duracao": "1 min.",
     "energia": "02/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz, não pode ter Cegueira",
+    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas, não pode ser Cegueira",
     "descricao": "Espie com segurança em fontes intensas de luz."
   },
   {
@@ -12714,7 +12807,7 @@
     "duracao": "1 min.",
     "energia": "4/2#",
     "tempoOperacao": "2 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz, não pode ter Cegueira ou Disopia",
+    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas, não pode ser Cegueira ou Disopia",
     "descricao": "O objetivo pode examinar objetos ao seu alcance como se eles estivessem com uma ampliação de ×100."
   },
   {
@@ -12744,7 +12837,7 @@
     "duracao": "1 min.",
     "energia": "03/01",
     "tempoOperacao": "1 seg.",
-    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz",
+    "preRequisitos": "Visão Aguçada ou 5 mágicas de Luz e Trevas",
     "descricao": "Veja claramente desde que haja alguma luz."
   },
   {
@@ -12774,7 +12867,7 @@
     "duracao": "1 min.",
     "energia": "04/02",
     "tempoOperacao": "30 seg.",
-    "preRequisitos": "AM2, Projeção da Mente, ou Convocação Planar",
+    "preRequisitos": "AM2, Projeção da Mente ou Convocação Planar",
     "descricao": "O operador deixa seu corpo para trás e vagueia livremente como um espírito em outro plano de existência."
   },
   {
