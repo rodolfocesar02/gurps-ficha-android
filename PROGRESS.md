@@ -2533,7 +2533,7 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 
 ## Lote 332 — [2026-06-01] fix: pré-requisito de magia com sufixo "/NT" não casava
 
-- **Hash:** `<preenchido após o commit>`
+- **Hash:** `8b95626`
 - **Resumo:** continuação do Lote 331. Várias magias citam no pré-requisito o nome de
   outra magia SEM o sufixo "/NT" (ex: "Controle de Máquina"), mas a magia real tem o
   sufixo ("Controle de Máquina/NT"). O matching exigia nome igual → não achava → a magia
@@ -2559,6 +2559,6 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Raiz comum (Lote 331): alternativa de OU/dependência não-reconhecida vira branch vazia = passe livre.
 
 ### Rollback
-- `git revert <hash>`.
+- `git revert 8b95626`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
