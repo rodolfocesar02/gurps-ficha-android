@@ -99,12 +99,12 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 .filter { it !in idsJaAdicionadas }
                 .mapNotNull { catalogoPorId[it] }
                 .toList()
-            
+
             val magiasLivres = listaFiltrada.asSequence()
                 .filter { it.id !in idsJaAdicionadas }
                 .filter { viewModel.prereqsSatisfied(it) }
                 .toList()
-                
+
             (relacionadas + magiasLivres).distinctBy { it.id }
         } else {
             listaFiltrada.filter { it.id !in idsJaAdicionadas }

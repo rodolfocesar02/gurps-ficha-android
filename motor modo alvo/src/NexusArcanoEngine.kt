@@ -48,7 +48,11 @@ class NexusArcanoEngine(
         // Elemental = 8 magias de Fogo). Antes o tipo MagiasEscola caía no else
         // do branchFromAlternative e era IGNORADO → magia liberava sem checar.
         val escolaRequerida: String? = null,
-        val minMagiasEscola: Int? = null
+        val minMagiasEscola: Int? = null,
+        // Lote 335: requisito "N magias QUAISQUER" (ex: Retardo = "AM3, 15 magias";
+        // Metamorfose Superior = "10 outras magicas"). Conta o TOTAL de magias da ficha.
+        // Antes o tipo QuantidadeOutrasMagias caía no else e era ignorado → liberava sem checar.
+        val minMagiasQuaisquer: Int? = null
     )
 
     internal data class RequisitoBranch(
@@ -299,6 +303,15 @@ class NexusArcanoEngine(
                         id = "chave_escola_qtd_${regra.magiaOrigemId}_${regra.escolaRequerida}_${regra.minMagiasEscola}",
                         descricao = "Ter ${regra.minMagiasEscola} magias de $termoLabel (atual $qtdAtual)",
                         ativa = qtdAtual >= regra.minMagiasEscola
+                    )
+                }
+                // Lote 335: chave para "N magias quaisquer" (ex: Retardo = 15 magias).
+                if (regra.minMagiasQuaisquer != null) {
+                    val total = known.size
+                    chaves += ArcanoChave(
+                        id = "chave_magias_quaisquer_${regra.magiaOrigemId}_${regra.minMagiasQuaisquer}",
+                        descricao = "Ter ${regra.minMagiasQuaisquer} magias quaisquer (atual $total)",
+                        ativa = total >= regra.minMagiasQuaisquer
                     )
                 }
             }
@@ -601,7 +614,14 @@ class NexusArcanoEngine(
         } else {
             true
         }
-        return okAm && okIq && okSoma && okEscola
+        // Lote 335: "N magias quaisquer" = total de magias da ficha. Não conta a própria
+        // magia-alvo (que ainda não foi aprendida) nem precisa: known já é o repertório atual.
+        val okQuaisquer = if (regra.minMagiasQuaisquer != null) {
+            estado.magiasConhecidasIds.size >= regra.minMagiasQuaisquer
+        } else {
+            true
+        }
+        return okAm && okIq && okSoma && okEscola && okQuaisquer
     }
 
     /**
@@ -968,6 +988,22 @@ class NexusArcanoEngine(
                         minMagiasEscola = tipo.quantidade
                     )
                 }
+                is PreRequisitoType.QuantidadeOutrasMagias -> {
+                    // Lote 335: "N magias quaisquer" (contexto vazio) = total de magias da
+                    // ficha. Se houver contexto (ex: "de mente"), trata como escola/tema.
+                    val ctx = tipo.contexto?.let { normalize(it) }?.takeIf { it.isNotBlank() }
+                    if (ctx == null) {
+                        regrasNumericas += RegraNumerica(
+                            magiaOrigemId = magiaId, minAm = null, minIq = null,
+                            minMagiasQuaisquer = tipo.quantidade
+                        )
+                    } else {
+                        regrasNumericas += RegraNumerica(
+                            magiaOrigemId = magiaId, minAm = null, minIq = null,
+                            escolaRequerida = ctx, minMagiasEscola = tipo.quantidade
+                        )
+                    }
+                }
                 else -> Unit
             }
         }
@@ -1022,7 +1058,8 @@ class NexusArcanoEngine(
             .sortedWith(compareBy<RegraNumerica> { it.magiaOrigemId }.thenBy { it.minAm ?: -1 }.thenBy { it.minIq ?: -1 }.thenBy { it.minSoma ?: -1 })
             .joinToString(",") {
                 val soma = it.somaAtributos.sorted().joinToString("+")
-                "${it.magiaOrigemId}:${it.minAm ?: "-"}:${it.minIq ?: "-"}:${it.minSoma ?: "-"}:$soma"
+                "${it.magiaOrigemId}:${it.minAm ?: "-"}:${it.minIq ?: "-"}:${it.minSoma ?: "-"}:$soma" +
+                    ":${it.escolaRequerida ?: "-"}:${it.minMagiasEscola ?: "-"}:${it.minMagiasQuaisquer ?: "-"}"
             }
         val vant = branch.vantagensRequeridas.sorted().joinToString(",")
         val ous = branch.gruposDependenciaOu

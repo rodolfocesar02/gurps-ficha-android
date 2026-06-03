@@ -227,6 +227,18 @@ object PreRequisitoParser {
             return PreRequisitoType.MagiasEscola(qtd, escola)
         }
 
+        // Lote 335: "N mágicas" PURO (sem "de/da/em", sem nome depois) = N magias
+        // QUAISQUER. Ex: Retardo "AM3, 15 mágicas". Vem DEPOIS do escolaMatch (que exige
+        // "de X"), então só cai aqui quando não há contexto de escola/tema.
+        val magiasQuaisquer = Regex(
+            "^(\\d+)\\s+m[aá]g(?:ica|ia)s(?:\\s+quaisquer)?\\.?$",
+            RegexOption.IGNORE_CASE
+        ).find(tok)
+        if (magiasQuaisquer != null) {
+            val qtd = magiasQuaisquer.groupValues[1].toIntOrNull() ?: return null
+            return PreRequisitoType.QuantidadeOutrasMagias(qtd, null)
+        }
+
         val inclMatch = Regex(
             "^(?:incl\\.?\\s*(?:\\(\\s*ou\\s+inclusive\\s*\\))?|inclusive)\\s*[:.-]?\\s*(.+)$",
             RegexOption.IGNORE_CASE
