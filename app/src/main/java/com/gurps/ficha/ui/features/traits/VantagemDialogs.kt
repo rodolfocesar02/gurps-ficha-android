@@ -233,6 +233,11 @@ fun ConfigurarVantagemDialog(
     var tipoAparar by remember { mutableStateOf("global") }
     var periciaAparar by remember { mutableStateOf("desarmado") }
 
+    // Estados para Idioma
+    var nomeIdioma by remember { mutableStateOf("") }
+    var nivelFaladoIdioma by remember { mutableStateOf("sotaque") }
+    var nivelEscritoIdioma by remember { mutableStateOf("sotaque") }
+
     // Estados para Mestre de Armas
     var classMestre by remember { mutableStateOf("todas") }
     var periciasMestre by remember { mutableStateOf("") }
@@ -256,6 +261,11 @@ fun ConfigurarVantagemDialog(
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
         "garras" -> mapOf("tipoGarras" to tipoGarras)
         "telecomunicacao" -> mapOf("tipoTelecomunicacao" to tipoTelecomunicacao)
+        "idioma" -> mapOf(
+            "nomeIdioma" to nomeIdioma,
+            "nivelFalado" to nivelFaladoIdioma,
+            "nivelEscrito" to nivelEscritoIdioma
+        )
         "defesas_ampliadas_aparar_ampliado" -> mapOf("tipo" to tipoAparar, "skillId" to periciaAparar)
         "resistente" -> mapOf(
             "raridade" to raridadeResistente.toString(),
@@ -267,7 +277,7 @@ fun ConfigurarVantagemDialog(
     }
 
     // Sincronização de custos especiais
-    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, raridadeResistente, grauResistente, selecoesHabMod) {
+    LaunchedEffect(definicao.id, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, raridadeResistente, grauResistente, selecoesHabMod, nivelFaladoIdioma, nivelEscritoIdioma) {
         when (definicao.id) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -290,6 +300,10 @@ fun ConfigurarVantagemDialog(
                     "radio" -> 10
                     else -> 10
                 }
+            }
+            "idioma" -> {
+                custoEscolhido = com.gurps.ficha.domain.rules.traits.IdiomaRule.metadeCusto(nivelFaladoIdioma) +
+                    com.gurps.ficha.domain.rules.traits.IdiomaRule.metadeCusto(nivelEscritoIdioma)
             }
             "defesas_ampliadas_aparar_ampliado" -> {
                 custoEscolhido = if (tipoAparar == "global") 10 else 5
@@ -446,6 +460,11 @@ fun ConfigurarVantagemDialog(
                             GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
                         } else if (definicao.id == "telecomunicacao") {
                             TelecomunicacaoConfig(currentType = tipoTelecomunicacao, onChanged = { tipoTelecomunicacao = it })
+                        } else if (definicao.id == "idioma") {
+                            IdiomaConfig(
+                                nome = nomeIdioma, nivelFalado = nivelFaladoIdioma, nivelEscrito = nivelEscritoIdioma,
+                                onChanged = { n, f, e -> nomeIdioma = n; nivelFaladoIdioma = f; nivelEscritoIdioma = e }
+                            )
                         } else if (definicao.id == "defesas_ampliadas_aparar_ampliado") {
                             ApararAmpliadoConfig(
                                 currentType = tipoAparar,
@@ -522,6 +541,12 @@ fun ConfigurarVantagemDialog(
                                 TelecomunicacaoConfig(
                                     currentType = tipoTelecomunicacao,
                                     onChanged = { tipoTelecomunicacao = it }
+                                )
+                            }
+                            "idioma" -> {
+                                IdiomaConfig(
+                                    nome = nomeIdioma, nivelFalado = nivelFaladoIdioma, nivelEscrito = nivelEscritoIdioma,
+                                    onChanged = { n, f, e -> nomeIdioma = n; nivelFaladoIdioma = f; nivelEscritoIdioma = e }
                                 )
                             }
                             "defesas_ampliadas_aparar_ampliado" -> {
@@ -615,7 +640,11 @@ fun ConfigurarVantagemDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = { onSave(nivel, custoEscolhido, descricao, mods, metadados) },
+                onClick = {
+                    // Idioma: usa o nome do idioma como descrição (aparece na lista e diferencia instâncias).
+                    val descFinal = if (definicao.id == "idioma" && nomeIdioma.isNotBlank()) nomeIdioma else descricao
+                    onSave(nivel, custoEscolhido, descFinal, mods, metadados)
+                },
                 enabled = (definicao.id != "ataque_inato" && definicao.id != "golpeadores") || nomeAtaque.isNotBlank()
             ) { Text(UiActionLabels.ADICIONAR) }
         },
@@ -688,6 +717,9 @@ fun EditarVantagemDialog(
     var tipoTelecomunicacao by remember { mutableStateOf(vantagem.metadados?.get("tipoTelecomunicacao") ?: "radio") }
     var tipoAparar by remember { mutableStateOf(vantagem.metadados?.get("tipo") ?: "global") }
     var periciaAparar by remember { mutableStateOf(vantagem.metadados?.get("skillId") ?: "desarmado") }
+    var nomeIdioma by remember { mutableStateOf(vantagem.metadados?.get("nomeIdioma") ?: "") }
+    var nivelFaladoIdioma by remember { mutableStateOf(vantagem.metadados?.get("nivelFalado") ?: "sotaque") }
+    var nivelEscritoIdioma by remember { mutableStateOf(vantagem.metadados?.get("nivelEscrito") ?: "sotaque") }
 
     // Estados para Mestre de Armas
     var classMestre by remember { mutableStateOf(vantagem.metadados?.get("classId") ?: "todas") }
@@ -728,7 +760,7 @@ fun EditarVantagemDialog(
     var isContactFavor by remember { mutableStateOf(vantagem.metadados?.get("isContact")?.toBoolean() ?: false) }
 
     // Sincronização de custos para Editar
-    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, classMestre, raridadeResistente, grauResistente, selecoesHabMod) {
+    LaunchedEffect(vantagem.definicaoId, freqAliado, ratioAliado, grupoAliado, nhContato, freqContato, confContato, powerPatrono, freqPatrono, modPatrono, secretoPatrono, powerFavor, modFavor, secretoFavor, isContactFavor, tipoGarras, tipoTelecomunicacao, tipoAparar, classMestre, raridadeResistente, grauResistente, selecoesHabMod, nivelFaladoIdioma, nivelEscritoIdioma) {
         when (vantagem.definicaoId) {
             "aliados" -> custoEscolhido = CharacterRules.calcularCustoAliado(ratioAliado, freqAliado, grupoAliado)
             "contatos" -> custoEscolhido = CharacterRules.calcularCustoContato(nhContato, freqContato, confContato)
@@ -751,6 +783,10 @@ fun EditarVantagemDialog(
                     "radio" -> 10
                     else -> 10
                 }
+            }
+            "idioma" -> {
+                custoEscolhido = com.gurps.ficha.domain.rules.traits.IdiomaRule.metadeCusto(nivelFaladoIdioma) +
+                    com.gurps.ficha.domain.rules.traits.IdiomaRule.metadeCusto(nivelEscritoIdioma)
             }
             "defesas_ampliadas_aparar_ampliado" -> {
                 custoEscolhido = if (tipoAparar == "global") 10 else 5
@@ -792,6 +828,11 @@ fun EditarVantagemDialog(
         "dentes" -> mapOf("tipoDentes" to tipoDentes)
         "garras" -> mapOf("tipoGarras" to tipoGarras)
         "telecomunicacao" -> mapOf("tipoTelecomunicacao" to tipoTelecomunicacao)
+        "idioma" -> mapOf(
+            "nomeIdioma" to nomeIdioma,
+            "nivelFalado" to nivelFaladoIdioma,
+            "nivelEscrito" to nivelEscritoIdioma
+        )
         "defesas_ampliadas_aparar_ampliado" -> mapOf("tipo" to tipoAparar, "skillId" to periciaAparar)
         "resistente" -> mapOf(
             "raridade" to raridadeResistente.toString(),
@@ -867,6 +908,7 @@ fun EditarVantagemDialog(
                     "dentes" -> DentesConfig(currentType = tipoDentes, onChanged = { tipoDentes = it })
                     "garras" -> GarrasConfig(currentType = tipoGarras, onChanged = { tipoGarras = it })
                     "telecomunicacao" -> TelecomunicacaoConfig(currentType = tipoTelecomunicacao, onChanged = { tipoTelecomunicacao = it })
+                    "idioma" -> IdiomaConfig(nome = nomeIdioma, nivelFalado = nivelFaladoIdioma, nivelEscrito = nivelEscritoIdioma, onChanged = { n, f, e -> nomeIdioma = n; nivelFaladoIdioma = f; nivelEscritoIdioma = e })
                     "defesas_ampliadas_aparar_ampliado" -> ApararAmpliadoConfig(currentType = tipoAparar, currentSkill = periciaAparar, onChanged = { t, s -> tipoAparar = t; periciaAparar = s })
                     "mestre_de_armas" -> MestreDeArmasConfig(currentClass = classMestre, currentSkills = periciasMestre, onChanged = { c, s -> classMestre = c; periciasMestre = s })
                     "habilidades_modulares" -> HabilidadesModularesConfig(selecoes = selecoesHabMod, onChanged = { selecoesHabMod = it })
@@ -889,7 +931,8 @@ fun EditarVantagemDialog(
         confirmButton = {
             TextButton(
                 onClick = {
-                    onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descricao, modificadores = mods, metadados = metadados))
+                    val descFinal = if (vantagem.definicaoId == "idioma" && nomeIdioma.isNotBlank()) nomeIdioma else descricao
+                    onSave(vantagem.copy(nivel = nivel, custoEscolhido = custoEscolhido, descricao = descFinal, modificadores = mods, metadados = metadados))
                 }
             ) { Text(UiActionLabels.SALVAR) }
         },

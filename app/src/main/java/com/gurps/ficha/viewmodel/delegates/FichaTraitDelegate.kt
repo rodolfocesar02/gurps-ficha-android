@@ -20,6 +20,7 @@ class FichaTraitDelegate(private val dataRepository: DataRepository) {
             || definicao.id.equals("golpeadores", ignoreCase = true)
             || definicao.id.equals("resistencia_a_dano", ignoreCase = true)
             || definicao.id.equals("habilidades_modulares", ignoreCase = true)
+            || definicao.id.equals("idioma", ignoreCase = true)
 
         val jaExisteIdentica = personagem.vantagens.any {
             it.definicaoId.equals(definicao.id, true) && it.descricao.equals(descricao, true)

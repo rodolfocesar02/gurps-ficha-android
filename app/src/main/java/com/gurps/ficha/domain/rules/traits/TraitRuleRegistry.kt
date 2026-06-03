@@ -21,6 +21,7 @@ object TraitRuleRegistry {
         register(EsquivaAmpliadaRule())
         register(MestreDeArmasRule())
         register(TelecomunicacaoRule())
+        register(IdiomaRule())
     }
 
     private fun register(rule: TraitRule) {

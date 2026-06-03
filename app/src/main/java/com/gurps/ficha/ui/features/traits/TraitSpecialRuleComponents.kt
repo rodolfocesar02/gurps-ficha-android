@@ -560,6 +560,55 @@ fun TelecomunicacaoConfig(currentType: String, onChanged: (String) -> Unit) {
 }
 
 @Composable
+fun IdiomaConfig(
+    nome: String,
+    nivelFalado: String,
+    nivelEscrito: String,
+    onChanged: (nome: String, falado: String, escrito: String) -> Unit
+) {
+    // Níveis de compreensão (custo da metade = fala OU escrita): Rud 1, Sotaque 2, Materna 3.
+    val niveis = listOf(
+        "nenhum" to "Nenhum (0)",
+        "rudimentar" to "Rudimentar (2)",
+        "sotaque" to "Com Sotaque (4)",
+        "materna" to "Materna (6)"
+    )
+
+    @Composable
+    fun seletor(titulo: String, atual: String, onSel: (String) -> Unit) {
+        Text(titulo, style = MaterialTheme.typography.titleSmall)
+        niveis.forEach { (id, label) ->
+            Card(
+                modifier = Modifier.fillMaxWidth().clickable { onSel(id) },
+                colors = CardDefaults.cardColors(containerColor = if (atual == id) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+                border = if (atual == id) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
+            ) {
+                Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(selected = atual == id, onClick = { onSel(id) })
+                    Spacer(modifier = Modifier.width(8.dp)); Text(label, style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+        }
+    }
+
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        OutlinedTextField(
+            value = nome,
+            onValueChange = { onChanged(it, nivelFalado, nivelEscrito) },
+            label = { Text("Nome do idioma (ex: Inglês)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Text(
+            "A língua materna é de graça (apenas anote). Esta vantagem é para idiomas adicionais. " +
+                "Se fala e escrita tiverem níveis diferentes, paga-se metade de cada.",
+            style = MaterialTheme.typography.bodySmall
+        )
+        seletor("Nível Falado:", nivelFalado) { onChanged(nome, it, nivelEscrito) }
+        seletor("Nível Escrito:", nivelEscrito) { onChanged(nome, nivelFalado, it) }
+    }
+}
+
+@Composable
 fun ApararAmpliadoConfig(currentType: String, currentSkill: String, onChanged: (String, String) -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text("Tipo de Bônus:", style = MaterialTheme.typography.titleSmall)

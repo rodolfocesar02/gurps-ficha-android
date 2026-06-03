@@ -2032,6 +2032,23 @@
     "descricao": "O personagem tem jeito para idiomas.\n\nQuando aprende um idioma com um nível de compreensão maior que Nenhum, ele automaticamente passa a poder usá-lo como se o conhecesse com um nível de compreensão a mais.\n\nCom isso, o personagem pode comprar um idioma no nível Com Sotaque por 2 pontos ou no nível Materna por 4 pontos.\n\nPara conhecer todas as regras sobre idiomas, consulte a seção Idiomas (pág. 23)."
   },
   {
+    "id": "idioma",
+    "nome": "Idioma",
+    "pagina": 23,
+    "costKind": "special",
+    "fixed": null,
+    "perLevel": null,
+    "options": null,
+    "min": null,
+    "max": null,
+    "rawCost": "2 a 6",
+    "specialRule": "idioma",
+    "tags": [
+      "social"
+    ],
+    "descricao": "Um idioma adicional além da língua materna (a materna é de graça).\n\nNíveis de compreensão e custo: Rudimentar (2), Com Sotaque (4), Materna (6).\n\nA fala e a escrita podem ter níveis diferentes — nesse caso paga-se metade do custo de cada um (ex.: Falado Materna + Escrito Nenhum = 3).\n\nAdicione uma instância desta vantagem para cada idioma. Veja a seção Idiomas (pág. 23)."
+  },
+  {
     "id": "fala_subaquatica",
     "nome": "Fala Subaquática",
     "pagina": 59,
