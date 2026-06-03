@@ -2676,3 +2676,38 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert 56b6c71`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 336 — [2026-06-03] feat: vantagem Idioma (ponta a ponta) + pré-requisito de magia por idioma
+
+- **Hash:** `c8f0151`
+- **Resumo:** criada a vantagem "Idioma" (GURPS p.23) usando o padrão `specialRule`, e
+  ligada ao motor de pré-requisito de magia. Resolve magias que pediam "N idioma(s) Com
+  Sotaque" (copiar, escriba, dom_da_escrita, dom_das_linguas, pergaminho_magico) — antes
+  viravam vantagem-fake e nunca liberavam.
+
+### Implementação (5 passos do plano)
+1. `vantagens.v3.json`: vantagem `idioma` (costKind=special, rawCost "2 a 6").
+2. `IdiomaRule.kt`: custo por nível — metade (fala OU escrita): Rud 1, Sotaque 2, Materna 3;
+   custo final = fala + escrita. Registrada no `TraitRuleRegistry`.
+3. `VantagemDialogs` + `IdiomaConfig` (em TraitSpecialRuleComponents): UI nome + nível
+   Falado/Escrito, custo ao vivo (add e edit). Deps do LaunchedEffect atualizadas.
+4. `FichaTraitDelegate`: `idioma` entra na lista de múltiplas instâncias. O nome do idioma
+   é gravado na `descricao` → lista mostra "Idioma (Élfico)" e diferencia instâncias.
+5. `FichaMagicDelegate.tokensIdioma`: gera tokens sintéticos por nível/contagem
+   ("N idioma(s) <nível>", singular/plural/numeral por extenso) p/ casar no motor; nível
+   superior conta para inferiores. SEM mexer no parser nem no motor (shim no delegate).
+
+### Validação
+- Custos: Rud/Rud=2, Sot/Sot=4, Mat/Mat=6, Mat/Nenhum=3, Mat/Rud=4, Nenhum=0.
+- pergaminho_magico libera com 1 idioma Sotaque, bloqueia com Rudimentar/sem.
+- dom_da_escrita libera com 3 idiomas Sotaque, bloqueia com 2. Build verde.
+
+### PENDÊNCIA
+- Língua materna (0 pt) hoje é só anotação — decidir se vira instância especial.
+- JSON `magias2versao.json` (as 32 correções de texto do Rodolfo + passageiro_interno)
+  ainda não commitado — commit de texto separado, a cargo do Rodolfo.
+
+### Rollback
+- `git revert c8f0151`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
