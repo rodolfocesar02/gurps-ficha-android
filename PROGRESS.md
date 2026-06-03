@@ -2646,3 +2646,33 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert df19c8a`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lote 335 — [2026-06-03] feat: motor entende "N magias quaisquer" + auditoria geral
+
+- **Hash:** `56b6c71` (código) · docs: `RELATORIO_PREREQUISITOS_QUEBRADOS.md` em commit separado
+- **Resumo:** pré-requisito "N magias quaisquer" (total da ficha) antes era ignorado
+  pelo motor (caía no else) → magia liberava sem checar. Corrigido. Cobre Retardo
+  ("AM3, 15 mágicas quaisquer"), Metamorfose Superior ("10 outras mágicas"),
+  Anular Mágica (12), Suspender Magia (8).
+
+### Mudanças
+- `RegraNumerica.minMagiasQuaisquer` conta `estado.magiasConhecidasIds.size`.
+- `branchFromAlternative` trata `QuantidadeOutrasMagias`: sem contexto = quaisquer;
+  com contexto ("de mente") = contagem por escola/tema.
+- `atendeRegraNumerica` valida total; `branchKey` + chave de UI ("Ter N magias quaisquer").
+- Parser reconhece "N magias" e "N magias quaisquer" puro (regra nova, depois do escolaMatch).
+
+### Auditoria de satisfatibilidade (todas as 873)
+- Teste real: monta ficha que CUMPRE e verifica se libera. 32 magias NÃO liberam mesmo
+  cumprindo → documentadas em `RELATORIO_PREREQUISITOS_QUEBRADOS.md` (grupos: digitação,
+  metamorfose, "de cada elemento", sub-escola, não-validável). Rodolfo corrigindo os textos.
+
+### Lag da tela de magias (diagnóstico via logcat — NÃO corrigido ainda)
+- Causa: `prereqFailure`/`calcular` rodam na MAIN THREAD. Modo Alvo filtra as 873 de uma vez
+  = ~10s congelando. Magia `acelerar_tempo` ("2 magias em 10 escolas diferentes") = 3,7s
+  sozinha no celular (pathfinder explode). Fix pendente: mover cálculo p/ coroutine + loading.
+
+### Rollback
+- `git revert 56b6c71`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
