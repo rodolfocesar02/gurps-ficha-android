@@ -59,7 +59,8 @@ class NexusArcanoModoAlvoAdapter(
         // Lote 334: nomes NORMALIZADOS de vantagens/perícias da ficha, p/ validar
         // pré-requisitos "ou Vantagem X". Default vazio = compatível com chamadas antigas.
         vantagensConhecidasNorm: Set<String> = emptySet(),
-        periciasConhecidasNorm: Set<String> = emptySet()
+        periciasConhecidasNorm: Set<String> = emptySet(),
+        desvantagensConhecidasNorm: Set<String> = emptySet()
     ): NexusArcanoModoAlvoSnapshot {
         if (!magiasById.containsKey(alvoId)) {
             return NexusArcanoModoAlvoSnapshot(
@@ -82,7 +83,8 @@ class NexusArcanoModoAlvoAdapter(
             iq = iq,
             dx = dx,
             vantagensConhecidasNorm = vantagensConhecidasNorm,
-            periciasConhecidasNorm = periciasConhecidasNorm
+            periciasConhecidasNorm = periciasConhecidasNorm,
+            desvantagensConhecidasNorm = desvantagensConhecidasNorm
         )
 
         val resultado = engine.calcularEstadoAlvo(alvoId, estado)
@@ -154,11 +156,14 @@ class NexusArcanoModoAlvoAdapter(
         am: Int,
         // Lote 334: nomes NORMALIZADOS de vantagens/perícias da ficha (ver calcular()).
         vantagensConhecidasNorm: Set<String> = emptySet(),
-        periciasConhecidasNorm: Set<String> = emptySet()
+        periciasConhecidasNorm: Set<String> = emptySet(),
+        desvantagensConhecidasNorm: Set<String> = emptySet()
     ): String? {
         if (!magiasById.containsKey(alvoId)) return "Alvo não encontrado no catálogo."
 
-        val resultado = engine.calcularEstadoAlvo(
+        // Lote 339: caminho LEVE — só "liberada? e o que falta", sem rodar o pathfinder
+        // (que custava segundos por magia). Usado pela LISTA de magias.
+        return engine.faltaPreRequisitoLeve(
             alvoId = alvoId,
             estado = ArcanoEstadoPersonagem(
                 magiasConhecidasIds = magiasConhecidasIds,
@@ -166,10 +171,10 @@ class NexusArcanoModoAlvoAdapter(
                 iq = iq,
                 dx = dx,
                 vantagensConhecidasNorm = vantagensConhecidasNorm,
-                periciasConhecidasNorm = periciasConhecidasNorm
+                periciasConhecidasNorm = periciasConhecidasNorm,
+                desvantagensConhecidasNorm = desvantagensConhecidasNorm
             )
         )
-        return mensagemFalhaHierarquica(alvoId, resultado)
     }
 
     private fun mensagemFalhaHierarquica(alvoId: String, resultado: ArcanoResultado): String? {

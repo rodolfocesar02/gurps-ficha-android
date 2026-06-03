@@ -98,14 +98,19 @@ object PreRequisitoParser {
         val tok = cleanupConnectorPrefix(token)
         if (tok.isBlank() || tok == "-") return null
 
-        val naoPodeSer = Regex("(?i)^n[aã]o\\s+pode\\s+(?:ser|ter)\\s+(.+)$").find(tok)
+        // "Não pode ser/ter X", "não ter X", "não possuir X", "sem X" (Lote 337).
+        // Aceita também "não ter Desvantagem X" — a palavra "Desvantagem" é removida da condição.
+        val naoPodeSer = Regex(
+            "(?i)^n[aã]o\\s+(?:pode\\s+(?:ser|ter)|ter|possuir|tenha)\\s+(.+)$|(?i)^sem\\s+(.+)$"
+        ).find(tok)
         if (naoPodeSer != null) {
-            val condicoes = naoPodeSer.groupValues[1]
-                .split(Regex("(?i)\\s+ou\\s+"))
-                .map { cleanupNomeTema(it) }
+            val capturado = naoPodeSer.groupValues[1].ifBlank { naoPodeSer.groupValues[2] }
+            val condicoes = capturado
+                .split(Regex("(?i)\\s+ou\\s+|\\s+e\\s+"))
+                .map { cleanupNomeTema(it).replace(Regex("(?i)\\b(des)?vantagem\\b"), "").replace(Regex("\\s+"), " ").trim() }
                 .filter { it.isNotBlank() }
                 .toSet()
-            return PreRequisitoType.NaoPodeSer(condicoes)
+            if (condicoes.isNotEmpty()) return PreRequisitoType.NaoPodeSer(condicoes)
         }
 
         val somaAtributos = Regex(

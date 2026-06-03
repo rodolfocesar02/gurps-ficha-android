@@ -329,15 +329,22 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         private set
     val modoAlvoProximasAcoesIds get() = modoAlvoSnapshot?.proximasAcoesIds ?: emptyList()
     val modoAlvoRelacionadosIds get() = modoAlvoSnapshot?.relacionadosIds ?: emptyList()
+    // Lote 338: assinatura do estado usado no último snapshot, para recalcular quando o
+    // jogador APRENDE uma magia (antes só recalculava ao trocar o alvo → lista congelava).
+    private var modoAlvoAssinatura: String? = null
 
     fun requisitarModoAlvo(id: String?, habilitado: Boolean) {
         if (!habilitado) {
             modoAlvoId = null
             modoAlvoSnapshot = null
+            modoAlvoAssinatura = null
             return
         }
-        if (modoAlvoId != id) {
+        val assinaturaAtual = assinaturaEstadoMagiasParaModoAlvo()
+        // Recalcula se mudou o ALVO ou o ESTADO (magias/AM/IQ/DX) desde o último snapshot.
+        if (modoAlvoId != id || modoAlvoAssinatura != assinaturaAtual) {
             modoAlvoId = id
+            modoAlvoAssinatura = assinaturaAtual
             atualizarModoAlvoSnapshot()
         }
     }

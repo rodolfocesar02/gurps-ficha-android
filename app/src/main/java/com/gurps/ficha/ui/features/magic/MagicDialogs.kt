@@ -78,8 +78,10 @@ fun AdicionarMagiaDialog(
     var adicaoForcadaSemPrereq by remember { mutableStateOf(false) }
     var confirmarAdicaoForcada by remember { mutableStateOf(false) }
     var mostrarDescricaoMagiaPopup by remember { mutableStateOf(false) }
-    val tags = definicao.descricao?.lowercase() ?: ""
-    val exigeEncantamentoAlvo = tags.contains("encantamento") && definicao.classe?.lowercase()?.contains("encantamento") == true
+    // Lote 338: só "Imunidade a Encantamento" exige um alvo de encantamento (é o único
+    // que o delegate valida). A heurística antiga (descrição contém "encantamento" + classe
+    // Encantamento) pegava Pequeno Desejo, Cajado, Desejo, Encantar indevidamente.
+    val exigeEncantamentoAlvo = definicao.id.equals("imunidade_a_encantamento", ignoreCase = true)
     val exigeEspecializacao = definicao.preRequisitos?.lowercase()?.contains("especializacao") == true
     val exigeSubEscolaAnimais = definicao.escola?.any { it.lowercase().contains("controle de animais") } == true
     val opcoesSubEscolaAnimais = listOf("Mamíferos", "Répteis", "Aves", "Anfíbios", "Peixes", "Moluscos", "Insetos")

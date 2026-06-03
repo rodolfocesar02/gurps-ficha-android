@@ -100,7 +100,8 @@ class FichaMagicDelegate(
             dx = personagem.destreza,
             am = nivelAptidaoMagica,
             vantagensConhecidasNorm = vantagensNormDe(personagem),
-            periciasConhecidasNorm = periciasNormDe(personagem)
+            periciasConhecidasNorm = periciasNormDe(personagem),
+            desvantagensConhecidasNorm = desvantagensNormDe(personagem)
         )
     }
 
@@ -116,7 +117,8 @@ class FichaMagicDelegate(
             dx = personagem.destreza,
             am = nivelAptidaoMagica,
             vantagensConhecidasNorm = vantagensNormDe(personagem),
-            periciasConhecidasNorm = periciasNormDe(personagem)
+            periciasConhecidasNorm = periciasNormDe(personagem),
+            desvantagensConhecidasNorm = desvantagensNormDe(personagem)
         )
     }
 
@@ -172,6 +174,10 @@ class FichaMagicDelegate(
 
     private fun periciasNormDe(personagem: Personagem): Set<String> =
         personagem.pericias.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
+
+    // Lote 337: desvantagens da ficha NORMALIZADAS, p/ pré-requisitos "não ter Desvantagem X".
+    private fun desvantagensNormDe(personagem: Personagem): Set<String> =
+        personagem.desvantagens.asSequence().map { normalizarNome(it.nome) }.filter { it.isNotBlank() }.toSet()
 
     private fun normalizarNome(raw: String): String {
         val semAcento = java.text.Normalizer.normalize(raw, java.text.Normalizer.Form.NFD)

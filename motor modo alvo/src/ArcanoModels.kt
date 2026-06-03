@@ -9,7 +9,10 @@ data class ArcanoEstadoPersonagem(
     // pré-requisitos do tipo "ou Vantagem X" (ex: Empatia, Noção do Perigo). Default
     // vazio = compatível com chamadas antigas (que só passavam magias).
     val vantagensConhecidasNorm: Set<String> = emptySet(),
-    val periciasConhecidasNorm: Set<String> = emptySet()
+    val periciasConhecidasNorm: Set<String> = emptySet(),
+    // Lote 337: desvantagens da ficha (normalizadas) para validar pré-requisitos
+    // "não pode ter / não ter Desvantagem X" (ex: Visão Brilhante exige NÃO ter Cegueira).
+    val desvantagensConhecidasNorm: Set<String> = emptySet()
 )
 
 data class ArcanoChave(

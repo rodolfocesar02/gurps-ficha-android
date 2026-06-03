@@ -68,7 +68,10 @@ class NexusArcanoEngine(
         // tiver QUALQUER uma das magias dele. Usado quando o pré-requisito cita um
         // NOME-BASE (ex: "Convocar Animal") que no catálogo só existe em sub-escolas
         // ("Convocar Animal (Criaturas da Terra/Ar/Mar)"): qualquer variante serve.
-        val gruposDependenciaOu: List<List<String>> = emptyList()
+        val gruposDependenciaOu: List<List<String>> = emptyList(),
+        // Lote 337: condições que a ficha NÃO pode ter (desvantagens). Satisfeito só se
+        // NENHUMA estiver na ficha. Ex: Visão Brilhante = não ter Cegueira.
+        val condicoesProibidas: List<String> = emptyList()
     )
 
     internal data class AvaliacaoCandidata(
@@ -379,6 +382,58 @@ class NexusArcanoEngine(
         }
     }
 
+    /**
+     * Lote 339: caminho LEVE para a LISTA de magias (só precisa saber "liberada? e, se
+     * não, o que falta"). NÃO roda o pathfinder (sugerirProximasAcoes) nem o lookahead de
+     * metas — que custavam segundos por magia (ex: acelerar_tempo ~5s). Reaproveita o
+     * resultado cacheado se já existir. Retorna null se liberada; senão, texto curto da falta.
+     */
+    fun faltaPreRequisitoLeve(alvoId: String, estado: ArcanoEstadoPersonagem): String? {
+        if (!catalogo.existe(alvoId)) return "Alvo não encontrado no catálogo."
+        // Se o resultado completo já está em cache, usa (não recalcula nada).
+        val key = cacheKey(alvoId, estado.magiasConhecidasIds, estado)
+        cacheResultados[key]?.let { r ->
+            if (r.chavesAtivas.any { it.id == "chave_alvo_$alvoId" }) return null
+            return r.chavesFaltantes.asSequence().filter { it.id != "chave_alvo_$alvoId" }
+                .map { it.descricao.trim() }.filter { it.isNotBlank() }.distinct().take(3).toList()
+                .joinToString(" | ").ifBlank { r.motivoBloqueio?.trim() }
+        }
+        val known = estado.magiasConhecidasIds
+        // Liberada? — só magiaAprendivelAgora (rápido), sem pathfinder.
+        if (magiaAprendivelAgora(alvoId, known, estado)) return null
+        // Monta as faltas a partir das chaves (sem proximasAcoes nem bloqueioNumerico pesado).
+        val branch = escolherBranchRelevante(alvoId, known, estado)
+        val faltas = mutableListOf<String>()
+        branch?.dependencias?.filter { it !in known }?.forEach { faltas += "Aprender ${nomeMagia(it)}" }
+        branch?.gruposDependenciaOu?.filter { g -> g.none { it in known } }?.forEach { g ->
+            faltas += "Aprender qualquer: ${g.joinToString(" ou ") { nomeMagia(it) }}"
+        }
+        branch?.vantagensRequeridas?.filter { !atendeVantagemRequerida(it, estado) }?.forEach {
+            faltas += "Ter a vantagem/perícia \"${it.replaceFirstChar { c -> c.uppercase() }}\""
+        }
+        branch?.condicoesProibidas?.filter { atendeCondicaoProibida(it, estado) }?.forEach {
+            faltas += "Não pode ter: ${it.replaceFirstChar { c -> c.uppercase() }}"
+        }
+        branch?.regrasNumericas?.forEach { rn ->
+            if (rn.minAm != null && estado.am < rn.minAm) faltas += "Ter AM ${rn.minAm}"
+            if (rn.minIq != null && estado.iq < rn.minIq) faltas += "Ter IQ ${rn.minIq}"
+            if (rn.escolaRequerida != null && rn.minMagiasEscola != null) {
+                val atual = contarMagiasPorEscolaOuNome(rn.escolaRequerida, known)
+                if (atual < rn.minMagiasEscola) faltas += "Ter ${rn.minMagiasEscola} magias de ${rn.escolaRequerida.replaceFirstChar { c -> c.uppercase() }} (atual $atual)"
+            }
+            if (rn.minMagiasQuaisquer != null && known.size < rn.minMagiasQuaisquer)
+                faltas += "Ter ${rn.minMagiasQuaisquer} magias quaisquer (atual ${known.size})"
+            if (rn.somaAtributos.isNotEmpty() && rn.minSoma != null) {
+                val s = rn.somaAtributos.sumOf { valorAtributo(it, estado) }
+                if (s < rn.minSoma) faltas += "Ter ${rn.somaAtributos.joinToString("+").uppercase()} >= ${rn.minSoma}"
+            }
+        }
+        branch?.regrasEscolas?.filter { !atendeRegraEscolas(it, known) }?.forEach {
+            faltas += "Atender ${it.quantidadeEscolas} escolas diferentes"
+        }
+        return faltas.distinct().take(3).joinToString(" | ").ifBlank { "Requisitos pendentes." }
+    }
+
 
 
 
@@ -561,7 +616,8 @@ class NexusArcanoEngine(
                     branch.regrasEscolas.all { atendeRegraEscolas(it, known) } &&
                     branch.regrasNumericas.all { atendeRegraNumerica(it, estado) } &&
                     branch.vantagensRequeridas.all { atendeVantagemRequerida(it, estado) } &&
-                    branch.gruposDependenciaOu.all { grupo -> grupo.any { it in known } }
+                    branch.gruposDependenciaOu.all { grupo -> grupo.any { it in known } } &&
+                    branch.condicoesProibidas.none { atendeCondicaoProibida(it, estado) }
             }
         }
 
@@ -633,6 +689,16 @@ class NexusArcanoEngine(
     internal fun atendeVantagemRequerida(vantNorm: String, estado: ArcanoEstadoPersonagem): Boolean {
         val conhecidas = estado.vantagensConhecidasNorm + estado.periciasConhecidasNorm
         return conhecidas.any { it == vantNorm || it.startsWith("$vantNorm ") || vantNorm.startsWith("$it ") }
+    }
+
+    /**
+     * Lote 337: retorna TRUE se a ficha TEM a condição proibida (desvantagem) — nesse caso
+     * a magia é bloqueada. Match em desvantagens E vantagens (algumas condições como
+     * "cego" podem estar em qualquer lista), por igualdade ou prefixo.
+     */
+    internal fun atendeCondicaoProibida(condNorm: String, estado: ArcanoEstadoPersonagem): Boolean {
+        val possiveis = estado.desvantagensConhecidasNorm + estado.vantagensConhecidasNorm
+        return possiveis.any { it == condNorm || it.startsWith("$condNorm ") || condNorm.startsWith("$it ") }
     }
 
     /**
@@ -911,6 +977,7 @@ class NexusArcanoEngine(
         val regrasNumericas = mutableListOf<RegraNumerica>()
         val vantagensReq = linkedSetOf<String>()
         val gruposOu = mutableListOf<List<String>>()
+        val condicoesProib = linkedSetOf<String>()
 
         // Lote 334: um token nomeado (magia/vantagem) ou resolve para uma MAGIA do
         // catálogo (vira dependência), ou — se não existir como magia — vira VANTAGEM
@@ -1004,6 +1071,10 @@ class NexusArcanoEngine(
                         )
                     }
                 }
+                is PreRequisitoType.NaoPodeSer -> {
+                    // Lote 337: "não pode ter / não ter Desvantagem X" → condição proibida.
+                    tipo.condicoes.map { normalize(it) }.filter { it.isNotBlank() }.forEach { condicoesProib += it }
+                }
                 else -> Unit
             }
         }
@@ -1013,7 +1084,8 @@ class NexusArcanoEngine(
             regrasEscolas = regrasEscolas.distinct(),
             regrasNumericas = regrasNumericas.distinct(),
             vantagensRequeridas = vantagensReq.toList(),
-            gruposDependenciaOu = gruposOu.toList()
+            gruposDependenciaOu = gruposOu.toList(),
+            condicoesProibidas = condicoesProib.toList()
         )
     }
 
@@ -1035,7 +1107,8 @@ class NexusArcanoEngine(
                         regrasEscolas = (base.regrasEscolas + alt.regrasEscolas).distinct(),
                         regrasNumericas = (base.regrasNumericas + alt.regrasNumericas).distinct(),
                         vantagensRequeridas = (base.vantagensRequeridas + alt.vantagensRequeridas).distinct(),
-                        gruposDependenciaOu = (base.gruposDependenciaOu + alt.gruposDependenciaOu).distinct()
+                        gruposDependenciaOu = (base.gruposDependenciaOu + alt.gruposDependenciaOu).distinct(),
+                        condicoesProibidas = (base.condicoesProibidas + alt.condicoesProibidas).distinct()
                     )
                     prox.putIfAbsent(branchKey(combinado), combinado)
                     if (prox.size >= maxGruposDependencias) break@loop
@@ -1066,7 +1139,8 @@ class NexusArcanoEngine(
             .map { it.sorted().joinToString("/") }
             .sorted()
             .joinToString(",")
-        return "$deps|$escolas|$nums|$vant|$ous"
+        val proib = branch.condicoesProibidas.sorted().joinToString(",")
+        return "$deps|$escolas|$nums|$vant|$ous|!$proib"
     }
 
     internal fun dependenciasMinimasPendentes(magiaId: String, known: Set<String>): Int {
@@ -1252,7 +1326,7 @@ class NexusArcanoEngine(
         estado: ArcanoEstadoPersonagem
     ): CacheKey {
         val assinaturaKnown = known.sorted().joinToString(separator = "|", prefix = "|", postfix = "|")
-        val assinaturaVantagens = (estado.vantagensConhecidasNorm + estado.periciasConhecidasNorm)
+        val assinaturaVantagens = (estado.vantagensConhecidasNorm + estado.periciasConhecidasNorm + estado.desvantagensConhecidasNorm.map { "d:$it" })
             .sorted().joinToString(separator = "|", prefix = "|", postfix = "|")
         return CacheKey(
             alvoId = alvoId,

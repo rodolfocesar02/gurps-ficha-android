@@ -93,6 +93,16 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
         listaFiltrada
     ) {
         if (modoAlvoAtivoEfetivo && magiaAlvoSelecionada != null) {
+            // Lote 338: a lista do Modo Alvo deve LIDERAR com as PRÓXIMAS AÇÕES do pathfinder
+            // (a magia certa a aprender agora). Seguir a 1ª da lista repetidamente leva ao alvo.
+            // Antes, a lista misturava "relacionadas" + TODAS as magias livres, afogando a
+            // recomendação e fazendo parecer que o caminho não avançava.
+            val proximas = viewModel.modoAlvoProximasAcoesIds
+                .asSequence()
+                .filter { it !in idsJaAdicionadas }
+                .mapNotNull { catalogoPorId[it] }
+                .toList()
+
             val relacionadas = (ordemRelacionadosAlvo + magiaAlvoSelecionada.id)
                 .asSequence()
                 .distinct()
@@ -100,12 +110,17 @@ fun SelecionarMagiaDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
                 .mapNotNull { catalogoPorId[it] }
                 .toList()
 
-            val magiasLivres = listaFiltrada.asSequence()
-                .filter { it.id !in idsJaAdicionadas }
-                .filter { viewModel.prereqsSatisfied(it) }
-                .toList()
+            // Lote 338: no Modo Alvo NÃO varremos o catálogo inteiro com prereqsSatisfied
+            // (custava ~28s rodando o motor em 879 magias, na main thread). As recomendações
+            // que levam ao alvo já vêm do pathfinder (proximas + relacionadas). Se houver
+            // BUSCA por texto, aí sim filtramos a lista digitada (poucas magias) por prereq.
+            val porBusca = if (viewModel.magicSearch.query.isBlank()) emptyList() else
+                listaFiltrada.asSequence()
+                    .filter { it.id !in idsJaAdicionadas }
+                    .filter { viewModel.prereqsSatisfied(it) }
+                    .toList()
 
-            (relacionadas + magiasLivres).distinctBy { it.id }
+            (proximas + relacionadas + porBusca).distinctBy { it.id }
         } else {
             listaFiltrada.filter { it.id !in idsJaAdicionadas }
         }
