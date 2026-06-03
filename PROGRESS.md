@@ -2711,3 +2711,40 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert c8f0151`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Lotes 337-339 — [2026-06-03] feat: "não ter Desvantagem", fixes UI Modo Alvo, caminho leve (perf)
+
+- **Hash:** `f22f6eb`
+
+### Lote 337 — pré-requisito "não ter Desvantagem X"
+- Parser aceita "não ter / não possuir / sem X" (além de "não pode ter"); remove a palavra
+  "Desvantagem" da condição.
+- Motor: `RequisitoBranch.condicoesProibidas` + `atendeCondicaoProibida`; estado ganha
+  `desvantagensConhecidasNorm`; incluído em cacheKey/branchKey/combinarBranches.
+- Adapter/delegate passam as desvantagens da ficha. Resolve `paladar_remoto` (não ter
+  Disosmia) e `visao_brilhante` (não ter Cegueira).
+
+### Lote 338 — fixes do Modo Alvo (UI)
+- `MagicDialogs`: campo "Qual encantamento?" só para `imunidade_a_encantamento` (heurística
+  antiga `descricao.contains("encantamento")` pegava Pequeno Desejo, Cajado, Desejo, Encantar).
+- `FichaViewModel.requisitarModoAlvo`: recalcula o snapshot também quando o ESTADO de magias
+  muda — antes só ao trocar o alvo, então a lista de recomendadas CONGELAVA ao aprender magia.
+- `SelectingMagicDialog`: lista do Modo Alvo lidera com as `proximasAcoes` do pathfinder e
+  NÃO varre mais as 879 magias com `prereqsSatisfied` (só filtra quando há busca por texto).
+
+### Lote 339 — caminho LEVE para a lista (performance)
+- `NexusArcanoEngine.faltaPreRequisitoLeve`: só "liberada? e o que falta", SEM rodar
+  `sugerirProximasAcoes` (pathfinder). `falhaPreRequisitoHierarquica` usa esse caminho.
+- 6x mais rápido no PC (526→84ms nas 878 magias), ZERO divergência de veredito (testado).
+  Elimina o caso patológico `acelerar_tempo` (~5s por magia na lista).
+
+### Diagnóstico do lag (via logcat PERF, instrumentação temporária já removida)
+- Antes: ~86s ao adicionar 1 magia (varredura dupla de 879 + acelerar_tempo 5s na main thread).
+- Depois dos fixes: ~11,7s — filtro 0ms, lista 17ms, pior magia 45ms.
+- **PENDENTE:** `atualizarModoAlvoSnapshot` ainda ~9s (pathfinder do alvo desejo) → mover para
+  background (coroutine + estado "calculando"); não perde precisão. Próxima sessão.
+
+### Rollback
+- `git revert f22f6eb`.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------
