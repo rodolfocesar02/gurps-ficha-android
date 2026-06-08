@@ -271,7 +271,7 @@ class MestreIAGeneratorUseCase(
                             contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoVazio,
                             modo = modo,
-                            promptSistema = promptForjador + templateBloco + "\n[CONTEXTO DE SESSÃO] Iteração $iteracao de $ITER_HARD_CAP | Restam $iteracoesRestantes iterações.",
+                            promptSistema = promptForjador + (if (iteracao == 1) templateBloco else "") + "\n[CONTEXTO DE SESSÃO] Iteração $iteracao de $ITER_HARD_CAP | Restam $iteracoesRestantes iterações.",
                             onChunk = null,
                             desativarTools = ultima,
                             maxTokens = if (ultima) 16384 else 16384

@@ -260,7 +260,8 @@ Responda apenas com a narrativa + linha "Aparência:".
         magias: List<Pair<String, String>>,
         tecnicas: List<Pair<String, String>>
     ): String {
-        fun fmt(l: List<Pair<String, String>>) = l.joinToString(", ") { (id, n) -> "$id ($n)" }
+        // Só IDs — nomes omitidos para reduzir tokens. O modelo busca detalhes via forjador_buscar_catalogo.
+        fun fmt(l: List<Pair<String, String>>) = l.joinToString(", ") { (id, _) -> id }
         return """
 === CATÁLOGO LOCAL — IDs VÁLIDOS ===
 Use apenas estes IDs. Qualquer ID fora desta lista será rejeitado.

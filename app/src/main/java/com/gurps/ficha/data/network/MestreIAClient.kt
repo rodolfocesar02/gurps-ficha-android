@@ -193,6 +193,14 @@ object MestreIAClient {
                             if (finishReason.isNotBlank() && finishReason != "STOP" && !silencioso) {
                                 android.util.Log.w("MestreIA_Gemini", "finishReason=$finishReason (candidato $j)")
                             }
+                            // MALFORMED_FUNCTION_CALL = Gemini tentou chamar tool mas corrompeu o JSON.
+                            // Tratado como erro de API para acionar o fallback (DeepSeek).
+                            if (finishReason == "MALFORMED_FUNCTION_CALL") {
+                                return@withContext ChatResponse(
+                                    text = "Erro de API: MALFORMED_FUNCTION_CALL — Gemini corrompeu a chamada de ferramenta. Tentando fallback.",
+                                    toolCalls = emptyList()
+                                )
+                            }
                             val content = candidate.optJSONObject("content")
                             val parts = content?.optJSONArray("parts")
                             if (parts != null) {
