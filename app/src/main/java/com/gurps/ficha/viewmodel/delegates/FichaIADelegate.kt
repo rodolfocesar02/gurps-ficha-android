@@ -47,6 +47,11 @@ class FichaIADelegate(
     // Reinicia quando outra coisa (resposta da IA) é escrita no chat.
     private var sistemaBatchUid: String? = null
 
+    // Entrevista do Forjador (Pilar 0): guarda o pedido original enquanto
+    // aguarda as respostas do jogador sobre cenário/NT/pontos/magia/conceito.
+    private var aguardandoEntrevistaForjador = false
+    private var pedidoOriginalForjador = ""
+
     fun verificarSincroniaAutomatica() {
         if (sincroniaExecutadaNestaSessao) return
         sincroniaExecutadaNestaSessao = true
@@ -68,6 +73,8 @@ class FichaIADelegate(
         mestreIAChatHistory = emptyList()
         currentSessionId = null
         sistemaBatchUid = null
+        aguardandoEntrevistaForjador = false
+        pedidoOriginalForjador = ""
     }
 
     fun gerarSaudacaoSeVazio() {
@@ -289,9 +296,73 @@ class FichaIADelegate(
         // Modo é definido pelo botão "+" na UI. Exceção: se o usuário está em "geracao"
         // mas já existe histórico de chat (ficha criada, conversa em andamento), trata
         // como "analise" — evita disparar nova criação a cada mensagem de acompanhamento.
-        val modoEfetivo = if (modo == "geracao" && mestreIAChatHistory.size > 2) "analise" else modo
+        val modoEfetivo = if (modo == "geracao" && mestreIAChatHistory.size > 2 && !aguardandoEntrevistaForjador) "analise" else modo
         scope.launch(Dispatchers.IO) {
-            if (modoEfetivo == "geracao" || modoEfetivo == "analise") {
+            // ENTREVISTA (Pilar 0): na primeira mensagem do modo geracao, o Forjador
+            // faz perguntas sobre cenário/NT/pontos/magia antes de criar a ficha.
+            // Se o modelo detectar que o pedido já contém tudo, responde com JSON e
+            // a criação começa imediatamente (sem esperar o usuário responder).
+            if (modoEfetivo == "geracao" && !aguardandoEntrevistaForjador) {
+                pedidoOriginalForjador = pergunta
+                val entrevistaResp = MestreIAClient.perguntarAoMestre(
+                    baseUrl = com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL,
+                    apiKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY,
+                    workspaceSlug = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_FLASH,
+                    prompt = MestreIAPromptsForjador.gerarPromptEntrevista(pergunta),
+                    history = emptyList(),
+                    contextoPersonagem = "",
+                    catalogo = MestreIAClient.CatalogoNomes(),
+                    modo = "conversa",
+                    promptSistema = MestreIAPromptsForjador.PROMPT_ENTREVISTA_SISTEMA,
+                    desativarTools = true,
+                    maxTokens = 512,
+                    silencioso = true
+                )
+                val textoEntrevista = entrevistaResp.text.trim()
+                // Se o modelo devolveu JSON completo, contexto já está definido → forja direto.
+                // Caso contrário, exibe as perguntas e aguarda resposta do jogador.
+                val ehJsonCompleto = textoEntrevista.trimStart().startsWith("{") &&
+                    textoEntrevista.contains("\"completo\":true")
+                if (ehJsonCompleto) {
+                    // Contexto suficiente — forja imediatamente com o pedido original + contexto
+                    val promptEnriquecido = "$pedidoOriginalForjador\n\n[CONTEXTO DA CAMPANHA]\n$textoEntrevista"
+                    aguardandoEntrevistaForjador = false
+                    mestreIAGeneratorUseCase.gerarOuAnalisarFicha(
+                        prompt = promptEnriquecido,
+                        modo = "geracao",
+                        onStatusUpdate = { status ->
+                            scope.launch(Dispatchers.Main) {
+                                atualizarMsgAssistente(assistantUid) { it.copy(modelName = status) }
+                            }
+                        },
+                        onChunk = { chunk ->
+                            scope.launch(Dispatchers.Main) {
+                                atualizarMsgAssistente(assistantUid) {
+                                    it.copy(text = it.text.replace("Pensando...", "") + chunk)
+                                }
+                            }
+                        },
+                        onResultado = { success, response ->
+                            scope.launch(Dispatchers.Main) {
+                                processarRespostaIA(modo, assistantUid, false, response, onResult)
+                            }
+                        }
+                    )
+                } else {
+                    // Faz as perguntas ao jogador e aguarda resposta
+                    aguardandoEntrevistaForjador = true
+                    scope.launch(Dispatchers.Main) {
+                        atualizarMsgAssistente(assistantUid) {
+                            it.copy(text = textoEntrevista, modelName = "Forjador")
+                        }
+                        onResult(true, textoEntrevista)
+                    }
+                }
+                return@launch
+            }
+
+            // Modo analise ou conversa normal (sem entrevista)
+            if (modoEfetivo == "analise") {
                 mestreIAGeneratorUseCase.gerarOuAnalisarFicha(
                     prompt = pergunta,
                     modo = modoEfetivo,
