@@ -210,6 +210,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun atualizarCampanha(campanha: String) { personagem = attributeDelegate.atualizarCampanha(personagem, campanha) }
     fun atualizarHistorico(historico: String) { personagem = attributeDelegate.atualizarHistorico(personagem, historico) }
     fun atualizarAparencia(aparencia: String) { personagem = attributeDelegate.atualizarAparencia(personagem, aparencia) }
+    fun atualizarImagemPersonagem(uri: String, originalUri: String) { personagem = attributeDelegate.atualizarImagemPersonagem(personagem, uri, originalUri) }
     fun atualizarNotas(notas: String) { personagem = attributeDelegate.atualizarNotas(personagem, notas) }
     fun atualizarPontosIniciais(pontos: Int) { personagem = attributeDelegate.atualizarPontosIniciais(personagem, pontos) }
     fun atualizarLimiteDesvantagens(limite: Int) { personagem = attributeDelegate.atualizarLimiteDesvantagens(personagem, limite) }
@@ -384,9 +385,20 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     private fun ajustarEscudo() { personagem = combatDelegate.ajustarEscudoAutomatico(personagem, escudosEquipados) }
 
     // === PERSISTÊNCIA ===
-    fun salvarFicha(nome: String = personagem.nome.ifBlank { "Sem_Nome" }) { 
+    fun salvarFicha(nome: String = personagem.nome.ifBlank { "Sem_Nome" }) {
         nomeFichaAtual = nome
-        viewModelScope.launch { fichasSalvas = persistenceDelegate.salvarFicha(nome, personagem) } 
+        viewModelScope.launch { fichasSalvas = persistenceDelegate.salvarFicha(nome, personagem) }
+        // Sobe o retrato ao Discord UMA vez, junto do salvar (best-effort, não
+        // bloqueia o salvamento). O bot guarda e usa nos embeds de rolagem.
+        val imagemUri = personagem.imagemPersonagemUri
+        if (imagemUri.isNotBlank() && nome.isNotBlank()) {
+            viewModelScope.launch {
+                val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(imagemUri)
+                if (dataUri != null) {
+                    networkDelegate.enviarRetratoDiscord(nome, dataUri)
+                }
+            }
+        }
     }
     fun carregarFicha(nome: String, onResult: (Boolean, String) -> Unit) { 
         estaCarregando = true

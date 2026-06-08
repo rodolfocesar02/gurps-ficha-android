@@ -158,6 +158,41 @@ object DiscordRollApiClient {
         }
     }
 
+    /**
+     * Envia o retrato do personagem (data:image/...;base64,...) ao servidor,
+     * que o guarda associado ao personagem e o anexa nos embeds de rolagem.
+     * Feito UMA vez (ao salvar a ficha) para não inflar cada rolagem.
+     */
+    fun postPortrait(
+        baseUrl: String,
+        apiKey: String,
+        characterName: String,
+        imageDataUri: String
+    ): Boolean {
+        if (baseUrl.isBlank() || apiKey.isBlank()) return false
+        if (characterName.isBlank() || imageDataUri.isBlank()) return false
+        val endpoint = "${baseUrl.trimEnd('/')}/api/portrait"
+        val body = gson.toJson(
+            mapOf(
+                "character" to characterName,
+                "image" to imageDataUri
+            )
+        ).toByteArray(StandardCharsets.UTF_8)
+        var connection: HttpURLConnection? = null
+        return try {
+            connection = (URL(endpoint).openConnection() as HttpURLConnection).apply {
+                requestMethod = "POST"
+                doOutput = true
+                connectTimeout = CONNECT_TIMEOUT_MS
+                readTimeout = READ_TIMEOUT_MS
+                setRequestProperty("Content-Type", "application/json; charset=utf-8")
+                setRequestProperty("x-api-key", apiKey)
+            }
+            connection.outputStream.use { it.write(body) }
+            connection.responseCode in 200..299
+        } catch (e: Exception) { false } finally { connection?.disconnect() }
+    }
+
     fun postFicha(baseUrl: String, apiKey: String, deviceId: String, characterName: String, fichaJson: Any): Boolean {
         if (baseUrl.isBlank() || apiKey.isBlank()) return false
         val endpoint = "${baseUrl.trimEnd('/')}/api/fichas"

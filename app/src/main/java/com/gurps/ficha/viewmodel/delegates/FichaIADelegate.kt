@@ -327,9 +327,8 @@ class FichaIADelegate(
                     // Contexto suficiente — forja imediatamente com o pedido original + contexto
                     val promptEnriquecido = "$pedidoOriginalForjador\n\n[CONTEXTO DA CAMPANHA]\n$textoEntrevista"
                     aguardandoEntrevistaForjador = false
-                    mestreIAGeneratorUseCase.gerarOuAnalisarFicha(
+                    mestreIAGeneratorUseCase.gerarFichaViaPlano(
                         prompt = promptEnriquecido,
-                        modo = "geracao",
                         onStatusUpdate = { status ->
                             scope.launch(Dispatchers.Main) {
                                 atualizarMsgAssistente(assistantUid) { it.copy(modelName = status) }
@@ -358,6 +357,33 @@ class FichaIADelegate(
                         onResult(true, textoEntrevista)
                     }
                 }
+                return@launch
+            }
+
+            // Respostas do jogador à entrevista → forja com contexto completo
+            if (aguardandoEntrevistaForjador) {
+                aguardandoEntrevistaForjador = false
+                val promptEnriquecido = "$pedidoOriginalForjador\n\n[RESPOSTAS DO JOGADOR]\n$pergunta"
+                mestreIAGeneratorUseCase.gerarFichaViaPlano(
+                    prompt = promptEnriquecido,
+                    onStatusUpdate = { status ->
+                        scope.launch(Dispatchers.Main) {
+                            atualizarMsgAssistente(assistantUid) { it.copy(modelName = status) }
+                        }
+                    },
+                    onChunk = { chunk ->
+                        scope.launch(Dispatchers.Main) {
+                            atualizarMsgAssistente(assistantUid) {
+                                it.copy(text = it.text.replace("Pensando...", "") + chunk)
+                            }
+                        }
+                    },
+                    onResultado = { success, response ->
+                        scope.launch(Dispatchers.Main) {
+                            processarRespostaIA(modo, assistantUid, false, response, onResult)
+                        }
+                    }
+                )
                 return@launch
             }
 

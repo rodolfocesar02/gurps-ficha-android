@@ -1,7 +1,16 @@
 # Mapa Detalhado: Arquivos e Funções do Projeto GURPS
 
 Mapa de engenharia completo do projeto. Use para localizar lógicas específicas sem varrer o código.
-Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328) | 130+ arquivos documentados.
+Atualizado em: 2026-06-08 (revisão de fidelidade linha-a-linha contra o código real: corrigidos nomes de
+assets, tipos de pré-requisito, tools do Forjador, Voz GeminiLive, Room v24, tema, abas e testes;
+adicionados arquivos novos — IdiomaRule, VecChunk*, ObjectBoxStore, GeminiLive*, AppUiEntry).
+Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados.
+
+> ➕ **2026-06-08 — Feature Imagem/Retrato do Personagem:** novo `ImagemPersonagemStore.kt`
+> (seção 15) + funções novas em `Personagem`, `FichaAttributeDelegate`, `FichaViewModel`,
+> `FichaNetworkDelegate`, `DiscordRollApiClient`, `FichaScreen` e na API Node (`discord-roll-api`).
+> Foto no cabeçalho (recorte por rosto/assunto via ML Kit) + tela cheia + envio ao Discord.
+> Cada item está marcado com **[+ 2026-06-08]** nas seções abaixo.
 
 > ⚠️ **AUDITOR mudou de motor (Lotes 325-328):** saiu da busca semântica (RAG/HNSW) para
 > "grep + leitura dirigida" (`localizar_no_codex` + `ler_pagina`). Vários arquivos abaixo
@@ -18,7 +27,7 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 ## 2. ViewModel e Estado Central
 
-- **`viewmodel/FichaViewModel.kt`** — O controlador central do app. Instancia todos os delegates, mantém o `Personagem` ativo como `mutableStateOf`, coordena auto-save ao editar traços, e expõe métodos públicos que a UI chama. Delega todas as operações especializadas para os delegates.
+- **`viewmodel/FichaViewModel.kt`** — O controlador central do app. Instancia todos os delegates, mantém o `Personagem` ativo como `mutableStateOf`, coordena auto-save ao editar traços, e expõe métodos públicos que a UI chama. Delega todas as operações especializadas para os delegates. **[+ 2026-06-08]** `atualizarImagemPersonagem(uri, originalUri)`; `salvarFicha` agora também sobe o retrato ao Discord (best-effort) via `ImagemPersonagemStore.bytesBase64` + `networkDelegate.enviarRetratoDiscord`.
 
 - **`viewmodel/FichaUIState.kt`** — Data classes dos estados de busca da UI: `TraitSearchState`, `SkillSearchState`, `MagicSearchState`, `TechniqueSearchState`, `EquipmentSearchState`. Sem lógica — só estruturas de dados para os filtros de catálogo.
 
@@ -28,7 +37,7 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 *Cada delegate é responsável por uma fatia da lógica do `FichaViewModel`. Sem delegates, o ViewModel seria um arquivo de 4.000+ linhas.*
 
-- **`delegates/FichaAttributeDelegate.kt`** — Atualiza atributos primários (ST/DX/IQ/HT), atributos secundários (mod PV, PF, Vontade, Percepção, Velocidade, Deslocamento), e dados básicos do personagem (nome, jogador, campanha, histórico, aparência, notas). Aplica limites via `coerceIn`.
+- **`delegates/FichaAttributeDelegate.kt`** — Atualiza atributos primários (ST/DX/IQ/HT), atributos secundários (mod PV, PF, Vontade, Percepção, Velocidade, Deslocamento), e dados básicos do personagem (nome, jogador, campanha, histórico, aparência, notas). Aplica limites via `coerceIn`. **[+ 2026-06-08]** `atualizarImagemPersonagem(personagem, uri, originalUri)` grava os dois caminhos de imagem.
 
 - **`delegates/FichaCombatDelegate.kt`** — Calcula e atualiza defesas ativas (Esquiva, Apara, Bloqueio). Inclui bônus manuais, seleção de perícia de Apara e de Escudo para Bloqueio. Retorna a lista de `ActiveDefense` para a UI exibir.
 
@@ -38,7 +47,7 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 - **`delegates/FichaMagicDelegate.kt`** — Adiciona e remove magias. Valida pré-requisitos via `MagicEngine`, detecta duplicatas por escola (magias de múltiplas instâncias). Retorna escolas e classes únicas do catálogo para os filtros.
 
-- **`delegates/FichaNetworkDelegate.kt`** — Envia rolagens para o Discord via `DiscordRollApiClient`, com retry em timeout. Busca lista de canais de voz do Discord. Sem estado próprio — só operações de rede.
+- **`delegates/FichaNetworkDelegate.kt`** — Envia rolagens para o Discord via `DiscordRollApiClient`, com retry em timeout. Busca lista de canais de voz do Discord. Sem estado próprio — só operações de rede. **[+ 2026-06-08]** `enviarRetratoDiscord(characterName, imageDataUri)` sobe o retrato uma vez (chamado no salvar da ficha).
 
 - **`delegates/FichaPersistenceDelegate.kt`** — Salva, carrega e exclui fichas via `FichaStorageRepository`. Filtra o auto-save (`_autosave_recuperacao`) da listagem pública. Tenta import via `PersonagemInterop` e faz fallback para `Personagem.fromJson` em JSONs antigos.
 
@@ -88,7 +97,7 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 - **`domain/rules/traits/DentesRule.kt`** — Custo e dano de `dentes` (Bite). Calcula dano por tipo de mordida.
 
-- **`domain/rules/traits/GarrasRule.kt`** — Custo de `garras` pelo metadado `tipoGarras` (cascos=3, afiadas=5, pontudas=8, longas_pontudas=11). Também expõe opções de ataque.
+- **`domain/rules/traits/GarrasRule.kt`** — Custo de `garras` pelo metadado `tipoGarras` (cascos=3, cegas=3, afiadas=5, pontudas=8, longas_pontudas=11; default afiadas=5). Expõe as opções de dano (`getDamageOptions`) por tipo de garra (corte/perfuração, com bônus de +1/dado em cascos, cegas e longas).
 
 - **`domain/rules/traits/FlexibilidadeRule.kt`** — Bônus de perícia para `flexibilidade` (Contorcionismo, Acrobacia).
 
@@ -101,6 +110,10 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 - **`domain/rules/traits/MestreDeArmasRule.kt`** — Bônus de dano por dado (`getDamageBonusPerDie`) para `mestre_de_armas`, filtrado por grupo de arma e perícia.
 
 - **`domain/rules/traits/TelecomunicacaoRule.kt`** — Custo de `telecomunicacao` pelo metadado de alcance/tipo.
+
+- **`domain/rules/traits/IdiomaRule.kt`** — Custo de `idioma` (GURPS p.23). Cada instância = um idioma adicional; o custo soma as duas "metades" (fala + escrita) via `metadeCusto` no companion (rudimentar=1, com sotaque=2, materna=3, nenhum=0). Metadados: `nomeIdioma`, `nivelFalado`, `nivelEscrito`.
+
+> **Nota:** as 11 regras acima são registradas em `TraitRuleRegistry.init` (AtaqueInato, Golpeadores, Dentes, Flexibilidade, Garras, ApararAmpliado, BloqueioAmpliado, EsquivaAmpliada, MestreDeArmas, Telecomunicacao, Idioma).
 
 ---
 
@@ -144,9 +157,9 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 - **`domain/MestreIAGeneratorUseCase.kt`** — Orquestra o fluxo FORJADOR (criação de personagem). Usa `MestreIAClient` com modo `geracao`/`analise`, executa `ForjadorToolExecutor` a cada tool call recebida (ler ficha, buscar catálogo, GPS magia, editar ficha), faz até N iterações do loop de tool-use. Valida resposta final via `MestreIAValidacaoReport`.
 
-- **`domain/MestreIAGraphEngine.kt`** — ⚠️ **LEGADO p/ Auditor desde Lote 325.** Motor RAG semântico (BM25 + HNSW + diversificação + "Ponte de Ferro"). Hoje só alcançado por `gerarCatalogoDireto` (morto) e potencialmente Forjador/Voz. O scoring BM25 daqui foi **copiado** para `MestreIARepository.rankearPorBM25` (Lote 327) — ajustar ranking do Auditor é LÁ, não aqui.
+- **`domain/MestreIAGraphEngine.kt`** (603 linhas) — ⚠️ **LEGADO p/ Auditor desde Lote 325.** Motor RAG semântico (BM25 + HNSW + diversificação + "Ponte de Ferro"). Hoje alcançado por `gerarCatalogoDireto` (morto) e **ATIVAMENTE pela Voz** (`GeminiLiveTools` instancia o próprio `MestreIAGraphEngine` e chama `buscarDiretoNoCodex`). O scoring BM25 daqui foi **copiado** para `MestreIARepository.rankearPorBM25` (Lote 327) — ajustar ranking do Auditor é LÁ, não aqui. Flag `MODO_HNSW_PURO` setada em `FichaIADelegate.kt:55`.
 
-- **`domain/MestreIAPlanner.kt`** — ⚠️ **QUASE MORTO desde Lote 319.** A lógica de planejamento (dicionários hardcoded) causava alucinação léxica e foi removida do fluxo. Hoje só a data class `TermoPonderado` é usada como TIPO (parâmetro com default vazio que nunca recebe valor real). Nenhum `PlanoDeBusca` roda no Auditor atual.
+- **`domain/MestreIAPlanner.kt`** (879 linhas) — ⚠️ **QUASE MORTO desde Lote 319.** A lógica de planejamento (dicionários hardcoded) causava alucinação léxica e foi removida do fluxo. Hoje só a data class `TermoPonderado` é usada como TIPO (parâmetro com default vazio que nunca recebe valor real). Nenhum `PlanoDeBusca` roda no Auditor atual.
 
 - **`domain/MestreIARuleAuditor.kt`** — Auditor fiscal (Lote 55). Compara a `MestreIAResponse` sugerida pela IA contra os cálculos reais do `CharacterRules`. Gera lista de `AuditNote` com campo, valor sugerido vs. correto. Usado pelo Forjador para detectar custo errado de atributos.
 
@@ -164,9 +177,9 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 ## 12. Domain — Tools (Forjador)
 
-- **`domain/tools/ForjadorTools.kt`** — Define os schemas das 4 ferramentas do Forjador: `forjador_ler_ficha`, `forjador_buscar_catalogo`, `forjador_gps_magia`, `forjador_editar_ficha`. Exporta formato nativo Gemini (`getGeminiTools`) e formato OpenAI (`getOpenAITools`).
+- **`domain/tools/ForjadorTools.kt`** — Define os schemas das **6 ferramentas** do Forjador: `forjador_ler_ficha`, `forjador_buscar_catalogo`, `forjador_gps_magia`, `forjador_editar_ficha`, `forjador_buscar_racas`, `forjador_aplicar_modelo_racial`. Exporta formato nativo Gemini (`getGeminiTools`) e formato OpenAI (`getOpenAITools`).
 
-- **`domain/tools/ForjadorToolExecutor.kt`** — Executor das ferramentas do Forjador. Mapeia nome da tool → implementação Kotlin: `lerFicha` (lê seção do personagem), `buscarCatalogo` (busca em vantagens/desvantagens/perícias/magias + injeta `RegrasEspeciaisSchema`), `gpsMagia` (trilha mínima via NexusArcano), `editarFicha` (aplica mudanças no personagem via ViewModel). Faz read-back pós-edição.
+- **`domain/tools/ForjadorToolExecutor.kt`** — Executor das ferramentas do Forjador. Mapeia nome da tool → implementação Kotlin: `lerFicha` (lê seção do personagem), `buscarCatalogo` (busca em vantagens/desvantagens/perícias/magias + injeta `RegrasEspeciaisSchema`), `gpsMagia` (trilha mínima via NexusArcano), `editarFicha` (aplica mudanças no personagem via ViewModel), `buscarRacas` e `aplicarModeloRacial` (catálogos de raças/metacaracterísticas via `RacaCatalogo`/`MetacaracteristicaCatalogo`, carregados lazily). Faz read-back pós-edição (`lerSecao`).
 
 - **`domain/tools/RegrasEspeciaisSchema.kt`** — Schemas textuais das regras especiais de vantagens/desvantagens que têm custo calculado por metadados (Aliado, Inimigo, Dependente, Garras, Resistente, Ataque Inato, etc.). Injetado pelo `buscarCatalogo` quando o traço tem `specialRule`, para que o modelo saiba exatamente quais metadados preencher.
 
@@ -194,13 +207,13 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 - **`data/network/MestreIATools.kt`** — Schemas das ferramentas. **AUDITOR atual (Lote 325): `getAuditorToolsOpenAI`/`getAuditorToolsGemini`** = `localizar_no_codex` + `ler_pagina` + `inspecionar_personagem` + `consultar_nexus_arcano`. ⚠️ `getOpenAITools`/`getGeminiTools` (5 tools de embedding: `consultar_manual_direto` + 4 especializadas por livro + `TOOL_FILL_SHEET`) agora só servem ao FORJADOR — legadas p/ o Auditor. A seleção por modo acontece em `MestreIAClient`.
 
-- **`data/network/DiscordRollApiClient.kt`** — Cliente HTTP para o servidor Discord do projeto. Envia `DiscordRollPayload` (personagem, tipo de teste, dados, resultado) via POST. Também busca lista de `DiscordVoiceChannel` disponíveis. Data classes: `DiscordRollPayload`, `DiscordRollSendResult`, `DiscordVoiceChannel`.
+- **`data/network/DiscordRollApiClient.kt`** — Cliente HTTP para o servidor Discord do projeto. Envia `DiscordRollPayload` (personagem, tipo de teste, dados, resultado) via POST. Também busca lista de `DiscordVoiceChannel` disponíveis. Data classes: `DiscordRollPayload`, `DiscordRollSendResult`, `DiscordVoiceChannel`. **[+ 2026-06-08]** `postPortrait(baseUrl, apiKey, characterName, imageDataUri)` → `POST /api/portrait` (sobe o retrato data:base64 que o bot reanexa nos embeds de rolagem).
 
 ---
 
 ## 15. Data — Storage (Room / Persistência)
 
-- **`data/storage/FichaDatabase.kt`** — Configuração Room v22. Entidades: `FichaEntity`, `ManualChunkEntity`, `GraphNodeEntity` (legado), `ChatSessionEntity`, `ChatMessageEntity`. `fallbackToDestructiveMigration`. Método `prePopulateManual` (importa `chunks.jsonl` para FTS4). `graphNodeDao` declarado mas GraphNode está descontinuado.
+- **`data/storage/FichaDatabase.kt`** — Configuração Room **v24** (Lote 259 adicionou `vec_chunks`). Entidades: `FichaEntity`, `ManualChunkEntity`, `GraphNodeEntity` (legado), `ChatSessionEntity`, `ChatMessageEntity`, `VecChunkEntity`. DAOs expostos: `fichaDao`, `manualChunkDao`, `graphNodeDao` (legado), `chatHistoryDao`, `vecChunkDao`. `fallbackToDestructiveMigration`. Método `prePopulateManual` (importa `chunks.jsonl` → `manual_chunks` FTS4 + embeddings → `vec_chunks`; reimporta só embeddings se chunks existem mas vec está vazio). `graphNodeDao` declarado mas GraphNode está descontinuado.
 
 - **`data/storage/FichaDao.kt`** — DAO Room para fichas: `upsert`, `getJson`, `deleteByName`, `listNames` (ordenado por `updatedAt` DESC).
 
@@ -214,6 +227,8 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 - **`data/storage/MetacaracteristicaStore.kt`** — Persistência leve de metacaracterísticas criadas pelo usuário (arquivo `metacaracteristicas_usuario.json` em `filesDir`). Lista, salva (por nome, case-insensitive) e exclui. Usa JSON direto em vez de Room (sem migration necessária).
 
+- **`data/storage/ImagemPersonagemStore.kt`** — **[+ 2026-06-08]** Processa e armazena o retrato do personagem em `filesDir/portraits/`. `salvarImagem(context, uri)` decodifica (com `inSampleSize`), corrige rotação via EXIF (`androidx.exifinterface`), enquadra o assunto principal (ML Kit **Subject Segmentation** — `play-services-mlkit-subject-segmentation`) refinando pelo rosto (ML Kit **Face Detection**), recorta na proporção do cabeçalho e salva **DUAS versões**: recortada (cabeçalho) e inteira (tela cheia, maior lado 1600px) — retorna `ImagensSalvas(recortadaUri, originalUri)`. `bytesBase64(caminho)` gera `data:image/jpeg;base64,...` para o Discord (mesma estratégia do VTT `resolveTokenImagePayload`). `excluirImagem(caminho)`. Funções internas: `detectarAssunto`/`boundingBoxDaMascara` (FloatBuffer da máscara), `detectarRosto`, `recortarFaixa` (centro horizontal no assunto/rosto; vertical com margem acima do rosto, ou topo do assunto, ou topo da imagem), `redimensionar`/`redimensionarMaiorLado`. Sem Room, sem migration.
+
 - **`data/storage/ChatHistoryDao.kt`** — DAO Room para histórico de chat: sessões (`getAllSessions`, `createSession`, `updateSessionTitle`, `updateSessionTimestamp`) e mensagens (`insertMessage`, `getMessagesForSession`).
 
 - **`data/storage/ChatHistoryEntity.kt`** — Entidades Room: `ChatSessionEntity` (`chat_sessions`: id, title, createdAt, updatedAt) e `ChatMessageEntity` (`chat_messages`: id, sessionId, role, text, modelName, createdAt).
@@ -222,13 +237,21 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 - **`data/storage/GraphNodeEntity.kt`** — ⚠️ LEGADO — NÃO UTILIZADO. Entidade Room `graph_knowledge` do grafo descontinuado. Mantida só para não quebrar a migration do Room.
 
+- **`data/storage/VecChunkEntity.kt`** — (Lote 259) Entidade Room `vec_chunks`: `chunk_id` (PK) + `embedding` (ByteArray little-endian). Guarda os embeddings semânticos importados do `chunks.jsonl`. ⚠️ DORMENTE p/ Auditor desde Lote 325 (embeddings só usados via GraphEngine/Voz). Embeddings reais têm 3072 dims (Gemini) — o comentário "384 floats" no arquivo está desatualizado.
+
+- **`data/storage/VecChunkDao.kt`** — (Lote 259) DAO Room dos embeddings: `insertAll`, `getByIds`, `getAll`, `getCount`, `clearAll`.
+
+- **`data/storage/VecChunkOBEntity.kt`** — Entidade **ObjectBox** (não Room) para busca vetorial HNSW: `id`, `chunkId` (`@Index`), `embedding` (`@HnswIndex(dimensions = 3072)`). Usada pelo `MestreIAVectorEngine`. ⚠️ DORMENTE p/ Auditor.
+
+- **`data/storage/ObjectBoxStore.kt`** — Singleton do `BoxStore` ObjectBox (`gurps_vec_store`), usado exclusivamente para o vector search HNSW. `init`/`get`/`close`. Room continua o banco principal. ⚠️ DORMENTE p/ Auditor.
+
 ---
 
 ## 16. Model
 
 *Data classes puras. Sem lógica de negócio (exceto `Personagem.kt` que tem cálculos derivados).*
 
-- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização.
+- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização. **[+ 2026-06-08]** Campos novos `imagemPersonagemUri` (foto RECORTADA do cabeçalho) e `imagemPersonagemOriginalUri` (foto INTEIRA p/ tela cheia) — ambos `file://` em `filesDir/portraits/`, default vazio (retrocompatível).
 
 - **`model/PersonagemInterop.kt`** — Importação/exportação versionada. `importarJson` suporta envelope `{"schema":"gurps-ficha","character":{...}}` e fallback para JSON legado sem envelope. `exportarJson` gera o envelope com metadados (schemaVersion, exportedAtUtc, appVersion, uiVariant).
 
@@ -246,17 +269,17 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 ## 17. PreRequisitos
 
-- **`regras_prerequisitos/PreRequisitoChecker.kt`** — Motor de verificação de pré-requisitos. `checkParseResult` avalia cada `PreRequisitoType` contra o personagem (atributo mínimo, vantagem necessária, perícia necessária, NH mínimo). Retorna lista de condições com status (atendido/faltando).
+- **`regras_prerequisitos/PreRequisitoChecker.kt`** — Motor de verificação de pré-requisitos. `checkParseResult(personagem, parsed)` avalia um `ParseResult` contra o personagem (respeita `bypassValidation`) e retorna uma **String de relatório** ("todos requisitos atendidos" / "faltando: ..."). Também tem `checkSimples` (lista direta de `PreRequisitoType`) e `check` (legado). Data class `ConditionStatus` (label, isMet, current, required).
 
-- **`regras_prerequisitos/PreRequisitoParser.kt`** — Parser de texto bruto de pré-requisito ("IQ 12+", "Magia X em NH 14+") → lista de `PreRequisitoType`. Suporta pré-requisitos compostos (AND/OR implícito).
+- **`regras_prerequisitos/PreRequisitoParser.kt`** — Parser de texto bruto de pré-requisito ("IQ 12+", "Magia X em NH 14+") → `ParseResult` (`tipos`, `terms`, `bypassValidation`, `warnings`). Cada `PreRequisitoTerm` tem `alternatives: List<List<PreRequisitoType>>` (OR de grupos AND). Detecta marcador de bypass (`#`/especial) → `bypassValidation = true`.
 
-- **`regras_prerequisitos/PreRequisitoType.kt`** — Sealed class / data classes dos tipos de pré-requisito: `AtributoMinimo`, `VantagemNecessaria`, `PericiaMinima`, `MagiaMinima`, `Bypass` (ignorar validação).
+- **`regras_prerequisitos/PreRequisitoType.kt`** — Sealed class com `readableName()` e **17 tipos** de pré-requisito (não 5): `AttributeMin`, `AptidaoMagica`, `MagiaConhecida`, `VantagemConhecida`, `PericiaConhecida`, `MagiasEscola`, `MagiaInclusaNaContagem`, `QualquerMagiaComNome`, `QuantidadeOutrasMagias`, `QuantidadeMagiasPorEscolas`, `QuantidadeMagiasPorTemas`, `MagiasEmEscolasDiferentes`, `AtributosSomaMin`, `NaoPodeSer`, `SkillMinLevel`, `NivelMin`. (Bypass NÃO é um tipo aqui — é o flag `bypassValidation` do `ParseResult`.)
 
 ---
 
 ## 18. UI — Telas Principais
 
-- **`ui/FichaScreen.kt`** — Container principal. Scaffold com `FichaCustomNavigationBar`, troca de abas (Geral, Combate, Perícias, Magias, Traços, Equipamentos, Rolagem, Técnicas, Notas, VTT), e roteamento de dialogs globais (importação, erro de carga, atualização).
+- **`ui/FichaScreen.kt`** — Container principal. Scaffold com `FichaCustomNavigationBar` e roteamento de dialogs globais (importação, erro de carga, atualização). Abas reais: **Geral, Traços, Perícias, Técnicas, Magia, Equip., Rolagem** (na variante Pracego a aba "Magia" é omitida da barra). A aba **VTT** entra em modo imersivo (esconde o chrome via `vttImmersiveUi`). Combate e Notas são exibidos dentro de outras abas/seções, não como abas separadas na barra. **[+ 2026-06-08]** Quando há foto, o `topBar` vira `CabecalhoComImagem` (private composable: foto de fundo altura fixa 140dp + gradiente + título e linha de pontos overlaid; ícone câmera troca a foto; toque abre tela cheia). `ImagemPersonagemFullscreenDialog` (private): foto INTEIRA em tela cheia, fundo preto, sem texto, X/toque fecha. Picker via `ActivityResultContracts.OpenDocument()` (explorador de arquivos completo, qualquer pasta — não só galeria) chama `ImagemPersonagemStore.salvarImagem`. Sem foto: `TopAppBar` padrão + ícone "adicionar foto".
 
 - **`ui/TabGeral.kt`** — Aba de informações básicas: nome, jogador, campanha, pontos iniciais/gastos/restantes, atributos primários (ST/DX/IQ/HT) com custo, atributos secundários (PV, PF, Vontade, Percepção, Velocidade, Deslocamento), modelo racial ativo.
 
@@ -333,9 +356,11 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 ## 21. UI — Componentes Utilitários
 
-- **`ui/components/FichaCustomNavigationBar.kt`** — Barra de navegação inferior customizada com ícones e labels das abas. Suporta `onLongPress` no ícone do Mestre IA para ativar reconhecimento de voz (`EstadoVoz`), com anel verde/amarelo pulsante como feedback visual durante escuta/processamento.
+- **`ui/components/FichaCustomNavigationBar.kt`** — Barra de navegação inferior customizada com ícones e labels das abas. Suporta `onLongPress` no ícone do Mestre IA para ativar a voz. Recebe `estadoLive: EstadoLive` (Gemini Live) e o mapeia internamente para `EstadoVoz` (OUVINDO→ESCUTANDO/anel verde; FALANDO/CONECTANDO/PROCESSANDO→anel amarelo), reusando o anel visual pulsante existente.
 
-- **`ui/components/VozMestreIA.kt`** — Encapsula o `SpeechRecognizer` do Android para reconhecimento de voz em PT-BR. Estados: `OCIOSO`, `ESCUTANDO`, `PROCESSANDO`, `ERRO`. Callbacks `onEstado` e `onResultado`. Instanciado em `FichaScreen` e conectado ao Forjador via `conversarComMestreIA`.
+- **`ui/components/GeminiLiveService.kt`** — (~81KB) Serviço de **voz em tempo real** via Gemini Live API (WebSocket OkHttp). Substituiu o antigo `VozMestreIA`/`SpeechRecognizer`. Captura áudio (`AudioRecord`) e reproduz (`AudioTrack`), gerencia a sessão WebSocket bidirecional, despacha tool calls para `GeminiLiveTools`. Estados: `EstadoLive` (OCIOSO, CONECTANDO, OUVINDO, FALANDO, PROCESSANDO, ERRO). Mantém `EstadoVoz` por compatibilidade com a navbar. Ver `project_gemini_live_estado.md`.
+
+- **`ui/components/GeminiLiveTools.kt`** — Roteador de ferramentas da Voz. `executar(nome, args)` mapeia as tools do Gemini Live → implementações: lê ficha (`lerFicha`), busca catálogo/edita/GPS de magias/raças (delega ao `ForjadorToolExecutor`), e `consultarManual` (RAG via `MestreIAGraphEngine.buscarDiretoNoCodex` — **caller ativo do GraphEngine**, com truncamento de payload p/ evitar code=1007 do servidor Live). Mantém aliases legados (`obterFicha`, `adicionarVantagem`, etc.).
 
 - **`ui/DialogStandards.kt`** — Padrões visuais de dialogs: dimensões, espaçamentos, cores de botões primário/secundário/destrutivo.
 
@@ -353,9 +378,9 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 ## 22. UI — Tema
 
-- **`ui/theme/Color.kt`** — Paleta de cores do app (Material You). Cores diferenciadas por variante Visual/Pracego.
+- **`ui/theme/Color.kt`** — Paleta de cores do app (Material You / esquemas claro e escuro). Paleta **única** — não há cores condicionadas à variante Visual/Pracego (a diferenciação de variante é só comportamental, nas telas).
 
-- **`ui/theme/Theme.kt`** — `GURPSFichaTheme`: configura `MaterialTheme` com `ColorScheme` e `Typography`. Detecta `BuildConfig.UI_VARIANT` para aplicar paleta correta.
+- **`ui/theme/Theme.kt`** — `GURPSFichaTheme`: configura `MaterialTheme` com `ColorScheme` e `Typography`. Usa **Material You dynamic color** (`dynamicDark/LightColorScheme` em Android 12+) com fallback para `DarkColorScheme`/`LightColorScheme`; ajusta a cor da status bar. **Não** lê `BuildConfig.UI_VARIANT` — a diferenciação Visual/Pracego acontece nas telas/dialogs (via `isPraCegoVariant = BuildConfig.UI_VARIANT == "pracego"`), não no tema.
 
 - **`ui/theme/Type.kt`** — Tipografia do app: `TextStyle` para títulos, corpo e legendas.
 
@@ -389,39 +414,51 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 
 *Arquivos em `app/src/main/assets/`.*
 
-| Arquivo | Conteúdo |
-|---|---|
-| `vantagens.v3.json` | Vantagens oficiais GURPS 4ª Ed. (formato v3 com modificadores estruturados) |
-| `vantagens_artes_marciais.v1.json` | Vantagens exclusivas do suplemento Artes Marciais |
-| `desvantagens.v2.json` | Desvantagens oficiais (formato v2 com specialRule) |
-| `pericias.json` | Perícias do Módulo Básico |
-| `pericias_suplementares_*.json` | Perícias de suplementos (Artes Marciais, GunFu, etc.) |
-| `magias.json` | Magias do Módulo Básico com pré-requisitos raw |
-| `tecnicas_modulo_basico.json` | Técnicas do Módulo Básico |
-| `tecnicas_artes_marciais.json` | Técnicas do suplemento Artes Marciais |
-| `tecnicas_gunfu.json` | Técnicas do suplemento GunFu |
-| `armas_cac.json` | Armas de combate corpo a corpo |
-| `armas_distancia.json` | Armas de ataque à distância |
-| `armas_fogo.json` | Armas de fogo (módulo básico) |
-| `armas_fogo_gunfu.json` | Armas de fogo do suplemento GunFu |
-| `armaduras.json` | Armaduras com componentes por local corporal |
-| `escudos.json` | Escudos com BD |
-| `racas.v1.json` | Raças jogáveis (formato enxuto — sem custos, recalculado) |
-| `metacaracteristicas.v1.json` | Pacotes prontos de metacaracterísticas (Gigante, Anão, etc.) |
-| `chunks.jsonl` | Chunks do manual GURPS (1 por página, FTS4). Auditor usa só o texto; embedding (48MB) dormente p/ ele. |
-| `chunks.jsonl.bak` | Idêntico SEM embeddings (6.5MB). Candidato a substituir o .jsonl quando confirmado que Auditor não precisa de embedding. |
-| `temas_ia.json` | Temas canônicos de busca para o Mestre IA |
-| `topic_index.json` | ⚠️ Páginas garantidas — lido só pelo `MestreIATopicIndex`, que está MORTO (Lote 272). Asset órfão na prática. |
+*Nomes de arquivo conferidos contra os `assets.open(...)` reais em `CatalogLoaders.kt`,
+`DataRepository.kt`, `RacaCatalogo.kt`, `MetacaracteristicaCatalogo.kt` e `MestreIATopicIndex.kt`.*
+
+| Arquivo | Conteúdo | Carregado por |
+|---|---|---|
+| `vantagens.v3.json` | Vantagens oficiais GURPS 4ª Ed. (formato v3 com modificadores estruturados) | `CatalogLoaders` |
+| `vantagens_artes_marciais.v1.json` | Vantagens exclusivas do suplemento Artes Marciais | `CatalogLoaders` |
+| `desvantagens.v2.json` | Desvantagens oficiais (formato v2 com specialRule) | `CatalogLoaders` |
+| `pericias.json` | Perícias do Módulo Básico | `CatalogLoaders` |
+| `pericias_artes_marciais.v1.json` | Perícias suplementares (Artes Marciais) | `CatalogLoaders` |
+| `pericias_v2_rules_map.json` | Mapa de regras de perícias v2 (tipo, pré-requisito, predefinido) | `CatalogLoaders` |
+| `magias2versao.json` | Magias com pré-requisitos raw | `CatalogLoaders` |
+| `tecnicas.v1.json` | Técnicas (arquivo único — Módulo Básico + suplementos) | `CatalogLoaders` |
+| `armas_corpo_a_corpo.v1.normalized.json` | Armas de combate corpo a corpo | `CatalogLoaders` |
+| `armas_distancia.v1.normalized.json` | Armas de ataque à distância | `CatalogLoaders` |
+| `armas_fogo.v1.normalized.json` | Armas de fogo | `CatalogLoaders` |
+| `modificadores.v1.json` | Catálogo global de modificadores | `CatalogLoaders` |
+| `armaduras.v2.json` | Armaduras com componentes por local corporal | `CatalogLoaders` |
+| `escudos.v1.json` | Escudos com BD | `CatalogLoaders` |
+| `racas.v1.json` | Raças jogáveis (formato enxuto — sem custos, recalculado) | `RacaCatalogo` |
+| `metacaracteristicas.v1.json` | Pacotes prontos de metacaracterísticas (Gigante, Anão, etc.) | `MetacaracteristicaCatalogo` |
+| `mestre_ia_temas.json` | Temas canônicos de busca para o Mestre IA | `DataRepository` |
+| `chunks.jsonl` | Chunks do manual GURPS (1 por página, FTS4). 54.9MB com embeddings; Auditor usa só o texto, embeddings (3072 dims) dormentes p/ ele. | `FichaDatabase.prePopulateManual` |
+| `chunks.jsonl.bak` | Idêntico SEM embeddings (6.5MB, 1196 linhas). Candidato a substituir o .jsonl quando confirmado que Auditor não precisa de embedding. | (não carregado — backup) |
+| `topic_index.json` | ⚠️ Páginas garantidas — lido só por `MestreIATopicIndex.carregar()`, que existe mas **NINGUÉM chama** (MORTO desde Lote 272). Asset órfão na prática. | `MestreIATopicIndex` (nunca invocado) |
+
+> **Nota:** há vários assets de apoio/backup não consumidos em runtime (`*.schema.json`,
+> `topic_index_backup_manual.json`, `topic_index_gerado.json`, `pericias_v2_rules_map copy.json`).
+> Não são catálogos ativos.
 
 ---
 
 ## 26. Scripts de Manutenção (pasta `scripts/`)
 
-- **`audit_active_jsons_v2.py`** — Verifica integridade dos catálogos JSON (IDs únicos, campos obrigatórios, referências cruzadas).
+*~40 scripts Python no total. Destaques (todos conferidos como existentes):*
+
 - **`generate_pericias_v2_rules_map.py`** — Gera o mapa de regras de perícias v2 a partir do texto bruto.
 - **`fix_mojibake_project.py`** — Corrige encoding corrompido (mojibake) em todo o projeto.
 - **`cleanup_assets_text.py`** — Normaliza textos e limpa artefatos de OCR de PDFs.
-- **Série `convert_*.py`** — Converte dados brutos (planilhas, PDFs) para o formato JSON dos assets.
+- **`gerar_embeddings.py`** — Gera os embeddings dos chunks (importados no `chunks.jsonl`).
+- **`gerar_topic_index.py`** — Gera o `topic_index.json` (asset hoje órfão).
+- **`processar_livro.py` / `sanitize_manuals.py`** — Pipeline de ingestão dos manuais (chunks do Códex).
+- **Série `convert_*.py` / `normalize_*.py`** — Convertem/normalizam dados brutos (planilhas, PDFs) para o formato JSON dos assets (vantagens, desvantagens, perícias, armas, armaduras, escudos, técnicas).
+- **Série `validate_*.py`** — Validação de integridade dos catálogos (armaduras, técnicas, associações de texto).
+- (⚠️ a antiga doc citava `audit_active_jsons_v2.py`, que **não existe** na pasta.)
 
 ---
 
@@ -434,15 +471,30 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 - **`NexusArcanoParser.kt`** — Interpreta texto bruto de pré-requisito de magia → lista de dependências tipadas.
 - **`NexusArcanoPathfinder.kt`** — DFS/guloso para encontrar caminho mínimo até a magia alvo.
 - **`NexusArcanoStrings.kt`** — Formatação de mensagens para a UI (avisos, trilha de aprendizado, bloqueios).
+- **`ArcanoCatalogoDesejoExemplo.kt`** — Catálogo de exemplo (fixture) para testar o motor sem o app.
+- **`diagnostico_desejo.kt` / `diagnostico_parser.kt` / `diagnostico_real.kt`** — Mains de diagnóstico standalone do motor (parser, pathfinder, cenário real). Ferramentas de depuração, não fazem parte do app.
 
 ---
 
 ## 28. Testes Automatizados (`app/src/test/`)
 
-- **`rules/RulesLayerTest.kt`** — Testes de `CharacterRules` e `CombatRules` (atributos, PV, defesas).
-- **`PersonagemRulesTest.kt`** — Validação de criação de personagem e limites de pontos.
-- **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`** — Cenários ouro do Nexus Arcano (progressão incremental de metas).
-- **`domain/magias/NexusArcano*Test.kt`** — Suíte massiva de testes do motor de magias.
+*Pacote base: `com/gurps/ficha/` (exceto a suíte `nexus/arcano/`, que fica em `app/src/test/java/nexus/arcano/`).*
+
+- **`domain/rules/RulesLayerTest.kt`** — Testes de `CharacterRules` e `CombatRules` (atributos, PV, defesas).
+- **`domain/rules/MagiaEnergiaRulesTest.kt`** — Redução de custo de energia por NH.
+- **`model/PersonagemRulesTest.kt`** — Validação de criação de personagem e limites de pontos.
+- **`model/PersonagemInteropTest.kt`** — Import/export versionado (envelope + fallback legado).
+- **`model/PericiaJsonParsingTest.kt`** — Parsing dos JSONs de perícias.
+- **`domain/filters/TextNormalizerTest.kt`** — Os 4 presets do `TextNormalizer`.
+- **`domain/MestreIAContextFilterTest.kt`** — String de contexto da ficha enviada à IA.
+- **`domain/MestreIARagEngineTest.kt`** — Motor RAG (GraphEngine).
+- **`data/network/MestreIAClientTest.kt`** — Montagem de request / parsing de tool calls.
+- **`data/storage/FichaStorageRepositoryTest.kt`** — Persistência de fichas.
+- **`domain/roll/RollDispatchPolicyTest.kt`** — Política de retry/erro de rolagem.
+- **`regras_prerequisitos/PreRequisitoParserTest.kt`** — Parser de pré-requisitos.
+- **`ui/TabCombateStateTest.kt`** — Estado da aba de combate.
+- **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`** + **`NexusArcanoModoAlvoAdapterTest.kt`** — Cenários do adapter Nexus Arcano.
+- **`nexus/arcano/NexusArcanoEngine*Test.kt`** — Suíte massiva do motor de magias (Lote1/2/3, GlobalA/B, StressMagiasV2, AuditoriaTodasMagias) + `NexusArcanoTestCatalog.kt` (catálogo de fixtures).
 - **`vtt/VttBridgeCodecStressTest.kt`** — Teste de robustez do codec VTT.
 
 ---
@@ -453,7 +505,7 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 |---|---|
 | Esquiva / Apara / Bloqueio (cálculo) | `CombatRules.kt` → `calcularEsquiva/Apara/Bloqueio` |
 | Bônus de Mestre de Armas | `MestreDeArmasRule.kt` → `getDamageBonusPerDie` |
-| Golpe/Empurrão por ST | `CharacterRules.kt` → `tabelaGdP / tabelaGeB` |
+| Golpe/Empurrão por ST | `CharacterRules.kt` → `calcularDanoGdP / calcularDanoGeB` (tabelas privadas `tabelaGdP / tabelaGeB`, com extrapolação) |
 | Custo de vantagem com specialRule | `CharacterRules.kt` → `calcularCustoAliado/Inimigo/...` |
 | Cálculo de NH de perícia | `SkillEngine.kt` → `getRegraPerfilTecnica` |
 | Loop de tool-use do Auditor | `MestreIAUseCase.kt` → `conversarComMestreIA` (localizar→ler, máx 8) |
@@ -479,7 +531,22 @@ Atualizado em: 2026-05-30 (seção 11/13/14 do Mestre IA revistas pós-Lote 328)
 | `Visual` | Estética visual, cores vibrantes, layouts densos |
 | `Pracego` | Acessibilidade total (TalkBack), labels extras, diálogos simplificados |
 
-Chave de controle: `BuildConfig.UI_VARIANT` (usado para condicionar lógica de UI entre as variantes).
+Chave de controle: `BuildConfig.UI_VARIANT` (usado para condicionar lógica de UI entre as variantes — ex.: `isPraCegoVariant` espalhado pelas telas/dialogs).
+
+Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
+- **`app/src/visual/.../ui/AppUiEntry.kt`** e **`app/src/pracego/.../ui/AppUiEntry.kt`** — `@Composable AppUiEntry(viewModel)` específico de cada flavor. Ambos hoje delegam a `FichaScreen(viewModel)`; o source set garante que cada build compile a sua versão. `MainActivity` chama `AppUiEntry` dentro de `GURPSFichaTheme`.
+
+---
+
+## 31. Servidor Discord (Node/Express — fora do `app/`)
+
+*Pasta `discord-roll-api/` (raiz do projeto Android). Node 18+, Express. Roda no Railway. NÃO é compilado pelo Gradle.*
+
+- **`discord-roll-api/src/server.js`** — API que publica rolagens no Discord via bot. Rotas: `GET /health`, `GET /api/channels` (lista canais de voz, com cache 30min), `POST /api/rolls` (monta mensagem da rolagem e envia ao canal), `GET|POST /api/fichas*` (persistência in-memory de fichas na nuvem por `deviceId`). `formatRollMessage` formata texto (crítico, margem). `sendToDiscord` envia ao endpoint do Discord. **[+ 2026-06-08]** Map `portraits` (in-memory: sanitizedName → {mime,buffer,ext}); `parseDataUri`/`sanitizeName`; rota nova **`POST /api/portrait`** {character, image(data:base64)} guarda o retrato; `sendToDiscord` passou a aceitar portrait opcional → com retrato manda **embed + multipart** (FormData/Blob, globais Node 18+) com `thumbnail` `attachment://portrait.<ext>`, sem retrato manda `{content}` como antes; `/api/rolls` busca `portraits.get(sanitizeName(payload.character))`. Limite do `express.json` subiu p/ 8mb. ⚠️ portraits e fichas são in-memory (perdem no restart do Railway). ⚠️ Mudanças exigem **deploy** no Railway p/ valer online.
+
+> **Nota de build [+ 2026-06-08]:** `app/build.gradle.kts` ganhou deps p/ a feature de imagem:
+> `com.google.mlkit:face-detection:16.1.7`, `com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1`
+> e `androidx.exifinterface:exifinterface:1.3.7` (Coil 2.5.0 já existia).
 
 ---
 

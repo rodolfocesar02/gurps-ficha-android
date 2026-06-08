@@ -1,9 +1,11 @@
 # ⚙️ ARQUITETURA DO MOTOR "MESTRE IA"
 
-> **Atualizado em 2026-05-30 (pós-Lote 328).** Documento reescrito após auditoria linha-a-linha
-> de todos os arquivos do Auditor. Substitui a versão antiga (que descrevia o RAG semântico
-> pré-Lote 325). Seções de **código LEGADO/MORTO** estão marcadas com ⚠️ e o lote em que
-> deixaram de ser usadas — leia-as antes de mexer em qualquer coisa.
+> **Atualizado em 2026-06-08 (revisão de fidelidade pós-Lote 328).** Documento reescrito após
+> auditoria linha-a-linha de todos os arquivos do Auditor (revisão 2026-06-08 reconferiu
+> contagens/números de linha contra o código real e confirmou a Voz como caller ativo do
+> GraphEngine). Substitui a versão antiga (que descrevia o RAG semântico pré-Lote 325). Seções de
+> **código LEGADO/MORTO** estão marcadas com ⚠️ e o lote em que deixaram de ser usadas — leia-as
+> antes de mexer em qualquer coisa.
 
 Sistema de IA (RAG) integrado ao app de Ficha GURPS. **Dois modos** sobre a mesma base:
 
@@ -97,16 +99,18 @@ Estas peças continuam compiladas mas **não fazem parte do fluxo vivo do Audito
 por (a) o Forjador ainda usar parte, ou (b) ninguém ter removido. Documentadas para evitar que
 um futuro "vou reusar o que já existe" caia numa armadilha.
 
-### 5.1 `MestreIAGraphEngine.kt` (597 linhas) — ⚠️ NÃO usado pelo Auditor desde Lote 325
+### 5.1 `MestreIAGraphEngine.kt` (603 linhas) — ⚠️ NÃO usado pelo Auditor desde Lote 325
 - Era o motor RAG semântico: BM25 + HNSW + reranking + diversificação (`buscarDiretoNoCodex`).
-- **Hoje o Auditor NÃO o chama.** Só é alcançado por `gerarCatalogoDireto` (ver 5.3, morto).
+- **Hoje o Auditor NÃO o chama.** É alcançado por `gerarCatalogoDireto` (ver 5.3, morto) e
+  **ATIVAMENTE pela Voz** (`ui/components/GeminiLiveTools.kt` instancia o próprio
+  `MestreIAGraphEngine(repo)` e chama `buscarDiretoNoCodex` — caller real, não hipotético).
 - O scoring BM25 dele foi **copiado** (não movido) para `rankearPorBM25` no Repository (Lote 327).
   Se for ajustar ranking do Auditor, mexa em `rankearPorBM25`, **não aqui**.
 - A flag `MODO_HNSW_PURO` (companion object) ainda existe e é setada `true` em
-  `FichaIADelegate.kt` — mas só afeta este GraphEngine, que o Auditor não usa. Relevante apenas
-  para Forjador/Voz, se chamarem.
+  `FichaIADelegate.kt` (linha 55) — mas só afeta este GraphEngine, que o Auditor não usa.
+  Relevante apenas para Forjador/Voz.
 
-### 5.2 `executarBuscaCodex()` em `MestreIAUseCase.kt` (linha ~453) — ⚠️ LEGADO (Lote 317, morto no 325)
+### 5.2 `executarBuscaCodex()` em `MestreIAUseCase.kt` (linha ~521) — ⚠️ LEGADO (Lote 317, morto no 325)
 - Helper das 5 tools de embedding antigas (`consultar_manual_direto`, `consultar_regras_magia`,
   `_armas_fogo`, `_artes_marciais`, `_aquatico`). Chama `graphEngine.buscarDiretoNoCodex`.
 - Os `when` cases dessas tools AINDA existem no dispatch do UseCase, mas **as tools não são mais
@@ -114,9 +118,9 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
   disparam. Mantidos como rede; podem ser removidos num lote de limpeza.
 
 ### 5.3 `gerarCatalogoDireto()` + `reescreverQueryParaGurps()` em `MestreIAUseCase.kt` — ⚠️ MORTO
-- `gerarCatalogoDireto` (linha ~487): zero callers no app. Era usado pelo fluxo antigo de
+- `gerarCatalogoDireto` (linha ~623): zero callers no app. Era usado pelo fluxo antigo de
   pré-contexto RAG. Chama GraphEngine + Planner + query-rewrite via Gemini Lite.
-- `reescreverQueryParaGurps` (linha ~550): só chamado por `gerarCatalogoDireto` → morto junto.
+- `reescreverQueryParaGurps` (linha ~681): só chamado por `gerarCatalogoDireto` → morto junto.
 
 ### 5.4 `MestreIATopicIndex.kt` (123 linhas) — ⚠️ MORTO desde Lote 272
 - Mapa "tópico → páginas garantidas". **Nenhum arquivo o referencia** (nem `carregar()` é
@@ -125,17 +129,23 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
   (mesma página viria para perguntas diferentes sobre o mesmo substantivo). Não reviver sem
   rediscutir.
 
-### 5.5 `MestreIAPlanner.kt` (872 linhas) — ⚠️ quase morto (só o TIPO é usado)
+### 5.5 `MestreIAPlanner.kt` (879 linhas) — ⚠️ quase morto (só o TIPO é usado)
 - Lógica de planejamento de busca com 7 dicionários hardcoded — **causava alucinação léxica**,
   removida do fluxo no Lote 319.
 - Hoje só a data class `MestreIAPlanner.TermoPonderado` é referenciada, como parâmetro com
-  default vazio em assinaturas (UseCase linha 491, Generator). A lógica nunca roda no Auditor.
+  default vazio em assinaturas (`MestreIAQueryEngine` linha 90, `MestreIAGraphEngine` linha 51,
+  `MestreIAUseCase` linha 627). A lógica nunca roda no Auditor.
 
-### 5.6 `MestreIAVectorEngine.kt` / `MestreIASemanticEngine.kt` — ⚠️ dormentes no Auditor
-- Busca semântica HNSW (ObjectBox) e reranking cosseno. **O Auditor não chama mais** (Lote 325).
-- Ainda podem ser usados por Voz/Forjador se o GraphEngine for acionado por eles.
-- Os embeddings (`chunks.jsonl`, 48MB / tabela `vec_chunks`) ficam **dormentes** para o Auditor.
-  Existe `chunks.jsonl.bak` (mesmo texto, sem embeddings, 6.5MB) para troca futura — ver memória.
+### 5.6 `MestreIAVectorEngine.kt` (160 linhas) / `MestreIASemanticEngine.kt` (203 linhas) — ⚠️ dormentes no Auditor
+- Busca semântica HNSW (`MestreIAVectorEngine`, via ObjectBox) e reranking cosseno
+  (`MestreIASemanticEngine`). **O Auditor não chama mais** (Lote 325).
+- São acionados pela **Voz** quando o GeminiLiveTools dispara o GraphEngine (caller real);
+  Forjador idem se acionar o GraphEngine.
+- Os embeddings (`chunks.jsonl`, 54.9MB / tabela `vec_chunks`, entidade `VecChunkEntity`)
+  ficam **dormentes** para o Auditor. Existe `chunks.jsonl.bak` (mesmo texto, sem embeddings,
+  6.5MB) para troca futura — ver memória.
+- Utilitários puros `floatArrayToByteArray`/`byteArrayToFloatArray` (de `MestreIASemanticEngine`)
+  AINDA são usados na importação de embeddings (`FichaDatabase.prePopulateManual`).
 
 ### 5.7 `consultar_manual_direto` + 4 especializadas em `MestreIATools.getOpenAITools/getGeminiTools` — ⚠️ LEGADO p/ Auditor
 - Schemas das 5 tools de embedding. `getOpenAITools`/`getGeminiTools` ainda existem e são usadas
@@ -150,11 +160,13 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
   chunk_id, source_id, source_title, page_number, text, **embedding** (3072 dims).
 - 5 livros (source_id): `pt_modulo_basico` (578), `pt_magia` (284), `pt_artes_marciais` (264),
   `pt_gun_fu` (49), `pt_pyramid_26_underwater` (22).
-- `assets/chunks.jsonl.bak` (6.5 MB): idêntico SEM embeddings. Import tolera ausência
-  (`if (obj.has("embedding"))` em FichaDatabase). Candidato a substituir o .jsonl quando se
-  confirmar que o Auditor não precisa mais de embedding.
-- Importação: `FichaDatabase.prePopulateManual` → `manual_chunks` (FTS4) + `vec_chunks` (vetores).
-  Versão controlada por `CODEX_VERSION_CURRENT` no Repository.
+- `assets/chunks.jsonl.bak` (6.5 MB, 1196 linhas — 1 a menos que o .jsonl): idêntico SEM
+  embeddings. Import tolera ausência (`if (obj.has("embedding"))` em FichaDatabase). Candidato a
+  substituir o .jsonl quando se confirmar que o Auditor não precisa mais de embedding.
+- Importação: `FichaDatabase.prePopulateManual` → `manual_chunks` (FTS4, DAO `ManualChunkDao`) +
+  `vec_chunks` (vetores, entidade `VecChunkEntity`, DAO `VecChunkDao`). O Room está em
+  **version = 24** (`FichaDatabase`). Versão do search_text controlada por `CODEX_VERSION_CURRENT`
+  (= 3) no Repository.
 
 ---
 

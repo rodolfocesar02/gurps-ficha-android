@@ -11,15 +11,24 @@ import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -47,8 +56,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -88,6 +102,33 @@ fun FichaScreen(viewModel: FichaViewModel) {
     val snackbarHostState = remember { SnackbarHostState() }
     var estadoVoz by remember { mutableStateOf(EstadoVoz.OCIOSO) }
     var estadoLive by remember { mutableStateOf(EstadoLive.OCIOSO) }
+    var mostrarImagemFullscreen by remember { mutableStateOf(false) }
+
+    // OpenDocument (SAF): explorador de arquivos completo — permite escolher de
+    // QUALQUER pasta do telefone (Downloads, WhatsApp, Drive, etc.), não só a galeria.
+    val imagemPersonagemPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri: Uri? ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        coroutineScope.launch {
+            val store = com.gurps.ficha.data.storage.ImagemPersonagemStore
+            val imagens = store.salvarImagem(context, uri)
+            if (imagens != null) {
+                // Remove os arquivos anteriores, se houver, para não acumular.
+                val anteriorRecorte = viewModel.personagem.imagemPersonagemUri
+                val anteriorOriginal = viewModel.personagem.imagemPersonagemOriginalUri
+                if (anteriorRecorte.isNotBlank() && anteriorRecorte != imagens.recortadaUri) {
+                    store.excluirImagem(anteriorRecorte)
+                }
+                if (anteriorOriginal.isNotBlank() && anteriorOriginal != imagens.originalUri) {
+                    store.excluirImagem(anteriorOriginal)
+                }
+                viewModel.atualizarImagemPersonagem(imagens.recortadaUri, imagens.originalUri)
+            } else {
+                snackbarHostState.showSnackbar("Falha ao processar a imagem.")
+            }
+        }
+    }
     val geminiLive = remember { GeminiLiveService(context) }
     val geminiLiveTools = remember { GeminiLiveTools(viewModel, context) }
 
@@ -310,34 +351,65 @@ fun FichaScreen(viewModel: FichaViewModel) {
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             if (!hideAppChrome) {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = viewModel.personagem.nome.ifBlank { "GURPS - Nova Ficha" },
-                            fontWeight = FontWeight.Bold
-                        )
-                    },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        titleContentColor = MaterialTheme.colorScheme.onPrimary
-                    ),
-                    actions = {
-                        IconButton(
-                            onClick = { showMenuDialog = true },
-                            modifier = if (isPraCegoVariant) {
-                                Modifier.semantics { contentDescription = "Abrir menu da ficha" }
-                            } else {
-                                Modifier
-                            }
-                        ) {
-                            Icon(
-                                Icons.Default.MoreVert,
-                                contentDescription = "Menu",
-                                tint = MaterialTheme.colorScheme.onPrimary
+                val imagemUri = viewModel.personagem.imagemPersonagemUri
+                if (imagemUri.isNotBlank()) {
+                    CabecalhoComImagem(
+                        viewModel = viewModel,
+                        imagemUri = imagemUri,
+                        mostrarPontos = selectedTitle != "Rolagem",
+                        isPraCegoVariant = isPraCegoVariant,
+                        onMenuClick = { showMenuDialog = true },
+                        onTrocarImagem = {
+                            imagemPersonagemPicker.launch(arrayOf("image/*"))
+                        },
+                        onExpandirImagem = { mostrarImagemFullscreen = true }
+                    )
+                } else {
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = viewModel.personagem.nome.ifBlank { "GURPS - Nova Ficha" },
+                                fontWeight = FontWeight.Bold
                             )
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        actions = {
+                            IconButton(
+                                onClick = {
+                                    imagemPersonagemPicker.launch(arrayOf("image/*"))
+                                },
+                                modifier = if (isPraCegoVariant) {
+                                    Modifier.semantics { contentDescription = "Adicionar foto do personagem" }
+                                } else {
+                                    Modifier
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Default.AddAPhoto,
+                                    contentDescription = "Adicionar foto",
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
+                            IconButton(
+                                onClick = { showMenuDialog = true },
+                                modifier = if (isPraCegoVariant) {
+                                    Modifier.semantics { contentDescription = "Abrir menu da ficha" }
+                                } else {
+                                    Modifier
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Default.MoreVert,
+                                    contentDescription = "Menu",
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         },
         bottomBar = {
@@ -361,7 +433,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            if (!hideAppChrome && selectedTitle != "Rolagem") {
+            // Quando há foto, a linha de pontos já é exibida SOBRE a imagem no
+            // cabeçalho (CabecalhoComImagem), então não repetimos a PontosBar aqui.
+            val temImagemNoCabecalho = viewModel.personagem.imagemPersonagemUri.isNotBlank()
+            if (!hideAppChrome && selectedTitle != "Rolagem" && !temImagemNoCabecalho) {
                 PontosBar(viewModel)
             }
             when (selectedTitle) {
@@ -551,6 +626,189 @@ fun FichaScreen(viewModel: FichaViewModel) {
             estadoLive = if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA) estadoLive else EstadoLive.OCIOSO,
             onEncerrarLive = { geminiLive.encerrar() }
         )
+    }
+
+    if (mostrarImagemFullscreen && viewModel.personagem.imagemPersonagemUri.isNotBlank()) {
+        // Tela cheia mostra a imagem INTEIRA (original). Fichas antigas sem
+        // original caem na recortada.
+        val original = viewModel.personagem.imagemPersonagemOriginalUri
+        val recorte = viewModel.personagem.imagemPersonagemUri
+        ImagemPersonagemFullscreenDialog(
+            imagemUri = original.ifBlank { recorte },
+            onDismiss = { mostrarImagemFullscreen = false }
+        )
+    }
+}
+
+/**
+ * Cabeçalho da ficha com a foto do personagem ao fundo (estilo "capa"),
+ * com título e a linha de pontos (Iniciais/Gastos/Restantes) por cima,
+ * em branco, sobre um gradiente escuro para legibilidade.
+ *
+ * - Toque na foto -> abre em tela cheia ([onExpandirImagem]).
+ * - Ícone de câmera -> trocar a foto.
+ * - Ícone de menu -> menu da ficha.
+ */
+@Composable
+private fun CabecalhoComImagem(
+    viewModel: FichaViewModel,
+    imagemUri: String,
+    mostrarPontos: Boolean,
+    isPraCegoVariant: Boolean,
+    onMenuClick: () -> Unit,
+    onTrocarImagem: () -> Unit,
+    onExpandirImagem: () -> Unit
+) {
+    val p = viewModel.personagem
+    val restantes = p.pontosRestantes
+    val corRestantes = when {
+        restantes < 0 -> MaterialTheme.colorScheme.error
+        else -> Color.White
+    }
+
+    // Altura fixa: mesma faixa que o cabeçalho original (TopAppBar + linha de
+    // pontos) ocupava, para NÃO empurrar a ficha pra baixo. A foto preenche
+    // essa faixa como fundo (Crop), alinhada ao TOPO (favorece cabeça/rosto).
+    // A foto vai ATÉ atrás da status bar (sem statusBarsPadding no Box);
+    // só o conteúdo interno (título/pontos) respeita a status bar.
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .clickable(onClick = onExpandirImagem)
+            .semantics {
+                contentDescription = "Foto do personagem. Toque para ampliar."
+            }
+    ) {
+        AsyncImage(
+            model = imagemUri,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.TopCenter
+        )
+        // Gradiente escuro de cima e de baixo para o texto branco ficar legível.
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.45f),
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.55f)
+                        )
+                    )
+                )
+        )
+
+        // Linha do topo: título + ações (câmera, menu)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = p.nome.ifBlank { "GURPS - Nova Ficha" },
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.weight(1f, fill = false)
+            )
+            Row {
+                IconButton(
+                    onClick = onTrocarImagem,
+                    modifier = if (isPraCegoVariant) {
+                        Modifier.semantics { contentDescription = "Trocar foto do personagem" }
+                    } else Modifier
+                ) {
+                    Icon(Icons.Default.PhotoCamera, contentDescription = "Trocar foto", tint = Color.White)
+                }
+                IconButton(
+                    onClick = onMenuClick,
+                    modifier = if (isPraCegoVariant) {
+                        Modifier.semantics { contentDescription = "Abrir menu da ficha" }
+                    } else Modifier
+                ) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = Color.White)
+                }
+            }
+        }
+
+        // Linha de pontos, ancorada na parte de baixo da foto.
+        if (mostrarPontos) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
+                    .semantics {
+                        if (isPraCegoVariant) {
+                            contentDescription =
+                                "Resumo de pontos. Iniciais ${p.pontosIniciais}. Gastos ${p.pontosGastos}. Restantes $restantes."
+                        }
+                    },
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Column {
+                    Text(
+                        "Pontos Iniciais: ${p.pontosIniciais}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                    Text(
+                        "Gastos: ${p.pontosGastos}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
+                    )
+                }
+                Text(
+                    text = "Restantes: $restantes",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = corRestantes
+                )
+            }
+        }
+    }
+}
+
+/** Mostra a foto do personagem em tela cheia; toque em qualquer lugar fecha. */
+@Composable
+private fun ImagemPersonagemFullscreenDialog(
+    imagemUri: String,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .clickable(onClick = onDismiss)
+        ) {
+            AsyncImage(
+                model = imagemUri,
+                contentDescription = "Foto do personagem em tela cheia",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .padding(8.dp)
+            ) {
+                Icon(Icons.Default.Close, contentDescription = "Fechar", tint = Color.White)
+            }
+        }
     }
 }
 

@@ -112,6 +112,7 @@ android {
 
 
         buildConfigField("String", "MESTRE_IA_GEMINI_3_1_PRO", "\"gemini-3.1-pro-preview\"")     // confirmado API 05/2026
+        buildConfigField("String", "MESTRE_IA_GEMINI_2_5_PRO", "\"gemini-2.5-pro\"")            // Forjador primário — estável com tool calls 50k+
         buildConfigField("String", "MESTRE_IA_GEMINI_3_FLASH", "\"gemini-2.5-flash\"")           // confirmado API 05/2026
         buildConfigField("String", "MESTRE_IA_GEMINI_3_1_FLASH_LITE", "\"gemini-2.5-flash-lite\"") // confirmado API 05/2026
 
@@ -229,6 +230,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("com.google.mlkit:face-detection:16.1.7")
+    implementation("com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1")
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

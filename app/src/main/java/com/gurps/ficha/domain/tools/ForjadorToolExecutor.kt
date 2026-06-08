@@ -46,6 +46,14 @@ class ForjadorToolExecutor(
     /** Read-back: relê uma seção pelo nome (reusa lerFicha). Usado na verificação pós-edição. */
     fun lerSecao(secao: String): String = lerFicha(JSONObject().put("secao", secao))
 
+    /** Fluxo Pro: aplica um edit diretamente sem passar por tool call. */
+    fun aplicarEdit(secao: String, alvo: String, operacao: String = "adicionar", valor: String = ""): String =
+        try {
+            editarFicha(JSONObject().put("secao", secao).put("alvo", alvo).put("operacao", operacao).put("valor", valor))
+        } catch (e: Exception) {
+            "ERRO: ${e.message}"
+        }
+
     /**
      * Lote G: prepara a descrição oficial do catálogo para o modelo — fonte real em vez de
      * ele citar de memória (chutava "B43" sendo a pág. 82). Corrige mojibake (ï¿½/Ã) e trunca.
@@ -786,6 +794,20 @@ class ForjadorToolExecutor(
                 return "OK: equipamento genérico '$alvo' adicionado (não estava no catálogo — sem stats). " +
                     "Para item com dano/RD reais, use forjador_buscar_catalogo(tipo=arma|armadura|escudo) e adicione pelo id."
             }
+            // Fluxo Pro: equipamento livre (sem ID de catálogo), com peso/custo/qtd no valor
+            "equipamentos_livres" -> {
+                if (op != "adicionar") return """{"erro":"equipamentos_livres só suporta 'adicionar'"}"""
+                fun parseValorKey(key: String): String? =
+                    Regex("$key=([^;]+)").find(valor)?.groupValues?.get(1)?.trim()
+                val peso   = parseValorKey("peso")?.toFloatOrNull() ?: 0f
+                val custo  = parseValorKey("custo")?.toFloatOrNull() ?: 0f
+                val qtd    = parseValorKey("quantidade")?.toIntOrNull() ?: 1
+                viewModel.adicionarEquipamento(
+                    com.gurps.ficha.model.Equipamento(nome = alvo, peso = peso, custo = custo, quantidade = qtd)
+                )
+                viewModel.autoSaveIA()
+                return "OK: equipamento livre '$alvo' adicionado (peso=${peso}kg custo=${custo} qtd=$qtd)."
+            }
             else -> return """{"erro":"$op em $secao não suportado por esta ferramenta"}"""
         }
     }
@@ -834,7 +856,7 @@ class ForjadorToolExecutor(
         }.trim()
     }
 
-    private fun aplicarModeloRacial(args: JSONObject): String {
+    fun aplicarModeloRacial(args: JSONObject): String {
         if (context == null) return """{"erro":"contexto Android não disponível"}"""
         val id = args.optString("id", "").trim()
         val tipo = args.optString("tipo", "raca").lowercase().trim()

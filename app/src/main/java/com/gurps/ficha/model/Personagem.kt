@@ -55,6 +55,12 @@ data class Personagem(
     var historico: String = "",
     var notas: String = "",
 
+    // Imagem do personagem. Caminhos file:// em filesDir/portraits/.
+    //  - imagemPersonagemUri: versao RECORTADA (faixa do cabecalho).
+    //  - imagemPersonagemOriginalUri: imagem INTEIRA (mostrada em tela cheia).
+    var imagemPersonagemUri: String = "",
+    var imagemPersonagemOriginalUri: String = "",
+
     // Combate
     var defesasAtivas: DefesasAtivas = DefesasAtivas(),
 

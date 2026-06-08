@@ -92,11 +92,15 @@ class MestreIAGeneratorUseCase(
             }
         } else ""
 
-        // Forjador: Gemini primário; fallback = DeepSeek V4 Pro.
+        // Forjador: Gemini 2.5 Pro primário (estável com tool calls 50k+); fallback = DeepSeek V4 Pro.
         val fila = listOf(
-            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_FLASH),
+            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_2_5_PRO),
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL_V3)
         )
+
+        // Acumulador de tokens da sessão de forja (in/out por modelo)
+        var tokensInTotal = 0
+        var tokensOutTotal = 0
 
         // Lote E: executor de tools do Forjador Agêntico
         val nexusAdapter = NexusArcanoModoAlvoAdapter(repository.magias)
@@ -151,6 +155,20 @@ class MestreIAGeneratorUseCase(
                                 viewModel.novaFicha()     // zera para criar do zero
                             }
                         }
+                        // FASE 1 — HISTÓRIA: só roda na primeira config da fila.
+                        // Se caiu no fallback, Gemini já aplicou nome/histórico —
+                        // não sobrescrever com a versão do DeepSeek.
+                        if (config != fila.first()) {
+                            // Fallback: pula história, usa o que já está na ficha
+                            Log.i("MestreIA_Forjador", "Fallback para ${config.third} — mantendo história já aplicada pelo Gemini")
+                            // Injeta a história existente no localHistory para o fallback ter contexto
+                            val historiaExistente = viewModel.personagem.historico
+                            if (historiaExistente.isNotBlank()) {
+                                localHistory.add("model" to historiaExistente)
+                                localHistory.add("user" to "[SISTEMA — orquestração]\nEsta é a história DEFINITIVA do personagem. Nome e história já foram aplicados na ficha pelo sistema. NÃO aplique nome nem história — já estão na ficha.\n\nFASE DE PLANEJAMENTO OBRIGATÓRIA: antes de aplicar qualquer item, use forjador_ler_ficha('pontos') para ver o orçamento disponível. Depois decida internamente quanto de pontos cada pilar do conceito vai receber. Só então comece a construir, pilar por pilar, na ordem dos 9 pilares.")
+                            }
+                        } else {
+
                         // FASE 1 — HISTÓRIA (sem thinking, rápido ~1-3s)
                         // Aparece no chat enquanto o planning processa nos bastidores.
                         onStatusUpdate("Mestre $nomeModelo concebendo a história...")
@@ -166,6 +184,8 @@ class MestreIAGeneratorUseCase(
                             desativarTools = true,
                             maxTokens = 1500
                         )
+                        tokensInTotal  += narrativaResp.promptTokens
+                        tokensOutTotal += narrativaResp.completionTokens
                         val historiaBase = narrativaResp.text
                             .takeIf { it.isNotBlank() && !ehErroDeApi(it) }
                             ?.trim()
@@ -176,11 +196,23 @@ class MestreIAGeneratorUseCase(
                         // não depende do modelo chamar forjador_editar_ficha para isso.
                         if (historiaBase.isNotBlank()) {
                             // Extrai nome da primeira linha da história (antes do primeiro ponto/quebra)
+                            // Palavras comuns que iniciam frases e NÃO são nomes de personagem
+                            val naoSaoNomes = setOf(
+                                "agora", "era", "foi", "era", "havia", "numa", "num",
+                                "quando", "onde", "assim", "então", "depois", "antes",
+                                "com", "sem", "por", "para", "pelo", "pela", "sobre",
+                                "mas", "porém", "contudo", "todavia", "logo", "ainda",
+                                "ele", "ela", "eles", "elas", "seu", "sua", "seus",
+                                "um", "uma", "uns", "umas", "o", "a", "os", "as",
+                                "em", "de", "da", "do", "das", "dos", "ao", "aos"
+                            )
                             val nomeExtraido = Regex(
                                 """(?:^|\n)([A-ZÁÉÍÓÚÀÂÊÔÃÕÇ][a-záéíóúàâêôãõç]+(?: [A-ZÁÉÍÓÚÀÂÊÔÃÕÇ][a-záéíóúàâêôãõç]+){0,3})""",
                                 RegexOption.MULTILINE
-                            ).find(historiaBase)?.groupValues?.get(1)?.trim()
-                                ?.takeIf { it.length in 3..40 }
+                            ).findAll(historiaBase)
+                                .map { it.groupValues[1].trim() }
+                                .filter { it.length in 3..40 && it.lowercase() !in naoSaoNomes }
+                                .firstOrNull()
                             if (!nomeExtraido.isNullOrBlank()) viewModel.atualizarNome(nomeExtraido)
 
                             // Separa aparência do histórico (linha "Aparência: ...")
@@ -202,6 +234,7 @@ class MestreIAGeneratorUseCase(
                             localHistory.add("model" to historiaBase)
                             localHistory.add("user" to "[SISTEMA — orquestração]\nEsta é a história DEFINITIVA do personagem. Nome e história já foram aplicados na ficha pelo sistema. NÃO aplique nome nem história — já estão na ficha.\n\nFASE DE PLANEJAMENTO OBRIGATÓRIA: antes de aplicar qualquer item, use forjador_ler_ficha('pontos') para ver o orçamento disponível. Depois decida internamente quanto de pontos cada pilar do conceito vai receber. Só então comece a construir, pilar por pilar, na ordem dos 9 pilares.")
                         }
+                        } // fim do else (config == fila.first())
                     }
 
                     onStatusUpdate(
@@ -253,9 +286,17 @@ class MestreIAGeneratorUseCase(
                     while (iteracao < ITER_HARD_CAP) {
                         iteracao++
                         val itensAntes = totalItens()
-                        // "final" = próxima já deve ser síntese: estagnou (2x
+                        // "final" = próxima já deve ser síntese: estagnou (3x
                         // sem progresso) ou bateu o teto duro de segurança.
-                        val ultima = semProgresso >= 2 || iteracao >= ITER_HARD_CAP
+                        // 3x (era 2x): Gemini 2.5 Pro planeja mais antes de agir,
+                        // 2x encerrava cedo demais antes de ele começar a editar.
+                        // Lote 347: se a ficha está vazia por estagnação (não pelo cap),
+                        // não desativar tools — dar uma última chance com ferramentas ativas.
+                        val fichaVaziaAgora = viewModel.personagem.let { pf ->
+                            pf.vantagens.isEmpty() && pf.pericias.isEmpty() &&
+                            pf.magias.isEmpty() && pf.desvantagens.isEmpty() && pf.pontosGastos <= 30
+                        }
+                        val ultima = (semProgresso >= 3 && !fichaVaziaAgora) || iteracao >= ITER_HARD_CAP
                         // Passa todo o histórico real do chat — sem limite de mensagens.
                         // Filtra bolhas de sistema ([SISTEMA]) que são ruído para o modelo.
                         val histBase = viewModel.mestreIAChatHistory
@@ -276,6 +317,10 @@ class MestreIAGeneratorUseCase(
                             desativarTools = ultima,
                             maxTokens = if (ultima) 16384 else 16384
                         )
+
+                        tokensInTotal  += response.promptTokens
+                        tokensOutTotal += response.completionTokens
+                        Log.i("MestreIA_Tokens", "it.$iteracao [${config.third.substringAfterLast('/')}] in=${response.promptTokens} out=${response.completionTokens} | TOTAL_SESSÃO in=$tokensInTotal out=$tokensOutTotal")
 
                         if (ehErroDeApi(response.text)) break
 
@@ -298,9 +343,55 @@ class MestreIAGeneratorUseCase(
                             // UMA rodada final de SÍNTESE (tools off) para ele escrever
                             // a mensagem ao jogador. Bug observado no Lote 329: ficha
                             // ficava montada mas o chat exibia a mensagem interna.
-                            val pareceFechamentoReal = ultima || response.text.trim().length > 300
-                            if (pareceFechamentoReal) break
-                            Log.d("MestreIA_Forjador", "Parou sem fechar (resp curta) → força síntese final it.$iteracao")
+                            //
+                            // ANTI-PLANO-VAZIO (Lote 347): mesmo que a resposta pareça
+                            // um fechamento real (>300 chars), se a ficha está vazia
+                            // (nenhuma vantagem/perícia/magia aplicada), o modelo só
+                            // planejou — NÃO aplicou nada. Nesse caso, rejeitar o
+                            // "fechamento" e forçar uma rodada de aplicação urgente.
+                            val p = viewModel.personagem
+                            val fichaTemConteudo = p.vantagens.isNotEmpty() ||
+                                p.pericias.isNotEmpty() ||
+                                p.magias.isNotEmpty() ||
+                                p.desvantagens.isNotEmpty() ||
+                                p.pontosGastos > 30  // atributos custam pts; >30 = algo aplicado
+                            // Ficha incompleta = muitos pontos livres OU magias ausentes
+                            // quando o pedido claramente inclui magias (ex: mago).
+                            // Usar >25% do budget livre como indicador seguro de ficha incompleta.
+                            val pontosLivres = pontosIniciais - p.pontosGastos
+                            val fichaIncompleta = !fichaTemConteudo ||
+                                (pontosLivres > pontosIniciais / 4 && iteracao < ITER_HARD_CAP - 2)
+                            val pareceFechamentoReal = (ultima || response.text.trim().length > 300) && !fichaIncompleta
+                            if (pareceFechamentoReal) {
+                                Log.d("MestreIA_Forjador", "Fechamento aceito: ficha tem conteúdo (pts=${p.pontosGastos}/$pontosIniciais van=${p.vantagens.size} per=${p.pericias.size} mag=${p.magias.size}) it.$iteracao")
+                                break
+                            }
+                            if (fichaIncompleta && response.text.trim().length > 300) {
+                                // Modelo escreveu um plano bonito mas não aplicou NADA (ou quase nada).
+                                // Forçar iteração de aplicação urgente com tools ativas.
+                                val motivo = if (!fichaTemConteudo) "ficha vazia" else "ainda $pontosLivres pts livres (>${pontosIniciais/4} = 25% do budget)"
+                                Log.w("MestreIA_Forjador", "PLANO SEM APLICAÇÃO COMPLETA ($motivo) após texto de ${response.text.trim().length} chars it.$iteracao — forçando aplicação")
+                                localHistory.add("model" to response.text)
+                                localHistory.add("user" to
+                                    "[SISTEMA — ALERTA CRÍTICO]\n" +
+                                    "⚠️ VOCÊ DESCREVEU O PERSONAGEM MAS NÃO TERMINOU DE APLICAR!\n" +
+                                    "Pontos livres: $pontosLivres / $pontosIniciais — a ficha está INCOMPLETA.\n" +
+                                    "Itens aplicados: vantagens=${p.vantagens.size} perícias=${p.pericias.size} magias=${p.magias.size}\n\n" +
+                                    "AÇÃO OBRIGATÓRIA AGORA:\n" +
+                                    "1. NÃO escreva mais texto de resumo\n" +
+                                    "2. CHAME forjador_editar_ficha para cada item que ainda falta (magias, equipamentos, etc.)\n" +
+                                    "3. Continue aplicando até os pontos estarem distribuídos\n\n" +
+                                    "Você tem ${ITER_HARD_CAP - iteracao} iterações restantes. CONTINUE APLICANDO AGORA."
+                                )
+                                promptAtual = comAncora(
+                                    "CONTINUE APLICANDO ITENS NA FICHA usando forjador_editar_ficha. " +
+                                    "Ainda há $pontosLivres pontos livres. " +
+                                    "NÃO escreva mais resumo. Aplique as magias e equipamentos que faltam."
+                                )
+                                onStatusUpdate("Mestre $nomeModelo aplicando itens restantes (passo $iteracao)...")
+                                continue
+                            }
+                            Log.d("MestreIA_Forjador", "Parou sem fechar (resp curta, $pontosLivres pts livres) → força síntese final it.$iteracao")
                             response = MestreIAClient.perguntarAoMestre(
                                 baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
                                 prompt = comAncora(
@@ -391,7 +482,10 @@ class MestreIAGeneratorUseCase(
                         // e o loop morria EXATAMENTE quando o GPS acabava de
                         // liberar o que adicionar. Pesquisar é trabalho real.
                         // Estagnação de verdade = iteração sem nada útil.
-                        val pesquisou = forjadorCalls.any {
+                        // Iteração 1 inteira conta como planejamento válido —
+                        // o sistema bloqueia edição nela, então nunca há progresso real,
+                        // mas também nunca deve contar como estagnação.
+                        val pesquisou = iteracao == 1 || forjadorCalls.any {
                             it.name == ForjadorTools.TOOL_GPS_MAGIA ||
                             it.name == ForjadorTools.TOOL_BUSCAR
                         }
@@ -416,10 +510,12 @@ class MestreIAGeneratorUseCase(
                             Log.d("MestreIA_Forjador", "Pesquisa s/ aplicar ($pesquisaSeguida/$MAX_PESQUISA) it.$iteracao")
                         } else {
                             semProgresso++
-                            Log.d("MestreIA_Forjador", "Sem avanço ($semProgresso/2) na iteração $iteracao")
+                            Log.d("MestreIA_Forjador", "Sem avanço ($semProgresso/3) na iteração $iteracao")
                         }
-                        val proximaEhFinal = semProgresso >= 2 ||
-                            pesquisaSeguida >= MAX_PESQUISA || iteracao >= ITER_HARD_CAP - 1
+                        // Lote 347: ficha vazia por estagnação → não sinalizar como final ainda
+                        val proximaEhFinal = (semProgresso >= 3 && !fichaVaziaAgora) ||
+                            (pesquisaSeguida >= MAX_PESQUISA && !fichaVaziaAgora) ||
+                            iteracao >= ITER_HARD_CAP - 1
 
                         localHistory.add("model" to "Dados coletados com sucesso.")
                         // Resultado de ferramenta = dado do SISTEMA, não fala
@@ -433,7 +529,20 @@ class MestreIAGeneratorUseCase(
                                 // B-completo (Lote 329): a ficha já foi montada INCREMENTALMENTE
                                 // via forjador_editar_ficha durante o loop — não há JSON final.
                                 // O fechamento é só a mensagem ao jogador (história + resumo real).
-                                "[FECHAMENTO] A ficha já está montada na tela (você a construiu aplicando cada bloco). NÃO chame mais ferramentas e NÃO gere JSON. Escreva ao jogador uma mensagem final: a história/aparência do personagem (2-3 parágrafos imersivos, igual à definida no início) e um resumo dos pontos no formato \"Atributos: X | Vantagens: Y | Desv: Z | Perícias: W | Total: V/MAX pts\" (use os números REAIS que apareceram no read-back de pontos)."
+                                // Lote 347: verifica se ficha tem conteúdo real antes de dizer "montada".
+                                run {
+                                    val pf = viewModel.personagem
+                                    val temConteudo = pf.vantagens.isNotEmpty() || pf.pericias.isNotEmpty() ||
+                                        pf.magias.isNotEmpty() || pf.desvantagens.isNotEmpty() || pf.pontosGastos > 30
+                                    if (temConteudo) {
+                                        "[FECHAMENTO] A ficha já está montada na tela (você a construiu aplicando cada bloco). NÃO chame mais ferramentas e NÃO gere JSON. Escreva ao jogador uma mensagem final: a história/aparência do personagem (2-3 parágrafos imersivos, igual à definida no início) e um resumo dos pontos no formato \"Atributos: X | Vantagens: Y | Desv: Z | Perícias: W | Total: V/MAX pts\" (use os números REAIS que apareceram no read-back de pontos)."
+                                    } else {
+                                        Log.w("MestreIA_Forjador", "FORÇANDO síntese com ficha VAZIA it.$iteracao — modelo não aplicou nada")
+                                        "[ÚLTIMA CHANCE] A ficha está VAZIA — você descreveu o personagem mas NÃO chamou forjador_editar_ficha. " +
+                                        "CHAME as ferramentas AGORA para aplicar pelo menos os atributos e vantagens principais. " +
+                                        "Esta é sua última chance antes do encerramento forçado."
+                                    }
+                                }
                             }
                         } else {
                             // Aviso de orçamento: diz ao modelo quantas rodadas de
@@ -457,6 +566,13 @@ class MestreIAGeneratorUseCase(
 
                 val finalResponse = sheetResponse ?: continue
                 if (!ehErroDeApi(finalResponse.text)) {
+                    Log.i("MestreIA_Tokens", "╔══ RESUMO DE TOKENS DA FORJA ══════════════════")
+                    Log.i("MestreIA_Tokens", "║  Modelo: ${config.third}")
+                    Log.i("MestreIA_Tokens", "║  Tokens IN  (prompt):    $tokensInTotal")
+                    Log.i("MestreIA_Tokens", "║  Tokens OUT (resposta):  $tokensOutTotal")
+                    Log.i("MestreIA_Tokens", "║  Total:                  ${tokensInTotal + tokensOutTotal}")
+                    Log.i("MestreIA_Tokens", "║  Custo estimado Gemini 2.5 Pro: \$${String.format("%.4f", tokensInTotal / 1_000_000.0 * 1.25 + tokensOutTotal / 1_000_000.0 * 10.0)}")
+                    Log.i("MestreIA_Tokens", "╚═══════════════════════════════════════════════")
                     onResultado(true, finalResponse)
                     sucesso = true
                     break
@@ -465,7 +581,485 @@ class MestreIAGeneratorUseCase(
                 Log.e("MestreIA_Forjador", "Falha no Gerador: ${e.message}")
             }
         }
-        if (!sucesso) onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com os forjadores."))
+        if (!sucesso) {
+            Log.i("MestreIA_Tokens", "╔══ RESUMO DE TOKENS (FALHOU) ══════════════════")
+            Log.i("MestreIA_Tokens", "║  Tokens IN total:  $tokensInTotal | Tokens OUT total: $tokensOutTotal")
+            Log.i("MestreIA_Tokens", "╚═══════════════════════════════════════════════")
+            onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com os forjadores."))
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // FLUXO PRO: V4-Pro gera JSON completo → Kotlin aplica direto
+    // ══════════════════════════════════════════════════════════════
+
+    suspend fun gerarFichaViaPlano(
+        prompt: String,
+        onStatusUpdate: (String) -> Unit,
+        onChunk: (String) -> Unit,
+        onResultado: (Boolean, MestreIAClient.ChatResponse) -> Unit
+    ) = withContext(Dispatchers.IO) {
+        val pontosIniciais = viewModel.personagem.pontosIniciais
+        Log.i("MestreIA_Pro", "Início fluxo Pro: budget=$pontosIniciais pts")
+
+        // Salva/zera ficha atual se não vazia
+        val pAtual = viewModel.personagem
+        if (pAtual.nome.isNotBlank() || pAtual.vantagens.isNotEmpty() || pAtual.pericias.isNotEmpty() ||
+            pAtual.magias.isNotEmpty() || pAtual.forcaBase != 10 || pAtual.destrezaBase != 10 ||
+            pAtual.inteligenciaBase != 10 || pAtual.vitalidadeBase != 10) {
+            onStatusUpdate("Guardando ficha atual e abrindo uma nova...")
+            viewModel.autoSaveIA()
+            viewModel.novaFicha()
+        }
+
+        // Monta catálogo serializado (id | nome | custo)
+        onStatusUpdate("Preparando catálogo completo...")
+        fun custoTraco(tipo: String, custoBase: Int, custoPorNivel: Int, opcoes: List<Int>): String {
+            val t = tipo.uppercase()
+            return when {
+                t.contains("NIVEL")   -> "$custoPorNivel pts/nível"
+                t.contains("ESCOLHA") -> "opções: ${opcoes.joinToString("/")}"
+                t.contains("VARIAVEL")-> "variável"
+                else                  -> "$custoBase pts"
+            }
+        }
+        val vans = repository.vantagens
+        val desv = repository.desvantagens
+        val periBase = repository.pericias.map { it.id to it.nome }
+        val periSupl = repository.periciasSuplementares.map { it.id to it.nome }
+        val periIds = periBase.map { it.first }.toHashSet()
+        val peri = periBase + periSupl.filter { it.first !in periIds } // deduplica por ID
+        val magi = repository.magias
+        val tecn = repository.tecnicasCatalogo
+        val arma = repository.armasCatalogo.map { it.id to it.nome }
+        val armd = repository.armadurasCatalogo.map { it.id to it.nome }
+        val escu = repository.escudosCatalogo.map { it.id to it.nome }
+
+        // Raças e metacaracterísticas
+        val nexusAdapter = NexusArcanoModoAlvoAdapter(repository.magias)
+        val toolExecutor = ForjadorToolExecutor(viewModel, repository, nexusAdapter, context)
+        val racasRaw: List<Pair<String, String>> = if (context != null) {
+            try {
+                val json = org.json.JSONObject(context.assets.open("racas.v1.json").bufferedReader().readText())
+                val arr = json.optJSONArray("racas") ?: org.json.JSONArray()
+                (0 until arr.length()).map {
+                    val r = arr.getJSONObject(it)
+                    (r.optString("id") ?: "") to (r.optString("nome") ?: "")
+                }
+            } catch (e: Exception) { emptyList() }
+        } else emptyList()
+        val metasRaw: List<Pair<String, String>> = if (context != null) {
+            try {
+                val json = org.json.JSONObject(context.assets.open("metacaracteristicas.v1.json").bufferedReader().readText())
+                val arr = json.optJSONArray("metacaracteristicas") ?: org.json.JSONArray()
+                (0 until arr.length()).map {
+                    val m = arr.getJSONObject(it)
+                    (m.optString("id") ?: "") to (m.optString("nome") ?: "")
+                }
+            } catch (e: Exception) { emptyList() }
+        } else emptyList()
+
+        val catalogo = MestreIAPromptsForjador.gerarCatalogoPro(
+            vantagens      = vans.map { it.id to it.nome },
+            vantagensCusto = vans.map { custoTraco(it.tipoCusto.toString(), it.getCustoBase(), it.getCustoPorNivel(), it.getOpcoesEscolha()) },
+            desvantagens   = desv.map { it.id to it.nome },
+            desvantgCusto  = desv.map { custoTraco(it.tipoCusto.toString(), it.getCustoBase(), it.getCustoPorNivel(), it.getOpcoesEscolha()) },
+            pericias       = peri,
+            periciasDif    = emptyList(),
+            magias         = magi.map { it.id to it.nome },
+            magiasDif      = emptyList(),
+            tecnicas       = tecn.map { it.id to it.nome },
+            armas          = arma,
+            armaduras      = armd,
+            escudos        = escu,
+            racas          = racasRaw,
+            metas          = metasRaw
+        )
+
+        val promptSistema = MestreIAPromptsForjador.gerarPromptSistemaPro(catalogo, pontosIniciais)
+        Log.i("MestreIA_Pro", "Catálogo montado: ${catalogo.length} chars | prompt sistema: ${promptSistema.length} chars")
+
+        // Chama V4-Pro
+        onStatusUpdate("Forjador Pro concebendo o personagem...")
+        val proUrl   = com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL
+        val proKey   = com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY
+        val proModel = com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL_V3
+
+        val resposta = try {
+            MestreIAClient.perguntarAoMestre(
+                baseUrl             = proUrl,
+                apiKey              = proKey,
+                workspaceSlug       = proModel,
+                prompt              = prompt,
+                history             = emptyList(),
+                contextoPersonagem  = "",
+                catalogo            = MestreIAClient.CatalogoNomes(),
+                modo                = "conversa",
+                promptSistema       = promptSistema,
+                onChunk             = null,
+                desativarTools      = true,
+                maxTokens           = 16384
+            )
+        } catch (e: Exception) {
+            Log.e("MestreIA_Pro", "Erro na chamada Pro: ${e.message}")
+            onResultado(false, MestreIAClient.ChatResponse("Erro: Falha na conexão com o Forjador Pro."))
+            return@withContext
+        }
+
+        Log.i("MestreIA_Pro", "Resposta Pro: ${resposta.text.length} chars | tokens in=${resposta.promptTokens} out=${resposta.completionTokens}")
+        Log.i("MestreIA_Tokens", "╔══ RESUMO FLUXO PRO ══════════════════════════")
+        Log.i("MestreIA_Tokens", "║  Modelo: $proModel")
+        Log.i("MestreIA_Tokens", "║  Tokens IN:  ${resposta.promptTokens}")
+        Log.i("MestreIA_Tokens", "║  Tokens OUT: ${resposta.completionTokens}")
+        Log.i("MestreIA_Tokens", "║  Custo estimado DeepSeek V4-Pro: \$${String.format("%.4f", resposta.promptTokens / 1_000_000.0 * 0.27 + resposta.completionTokens / 1_000_000.0 * 1.10)}")
+        Log.i("MestreIA_Tokens", "╚══════════════════════════════════════════════")
+
+        if (ehErroDeApi(resposta.text)) {
+            onResultado(false, resposta)
+            return@withContext
+        }
+
+        // Extrai JSON da resposta — remove cercas markdown em qualquer variante
+        val jsonTexto = resposta.text.trim().let { raw ->
+            val semCerca = raw
+                .replace(Regex("^```(?:json)?\\s*", RegexOption.MULTILINE), "")
+                .replace(Regex("^```\\s*$", RegexOption.MULTILINE), "")
+                .trim()
+            // garante que começa em '{' — descarta texto introdutório se houver
+            val inicio = semCerca.indexOf('{')
+            val fim = semCerca.lastIndexOf('}')
+            if (inicio >= 0 && fim > inicio) semCerca.substring(inicio, fim + 1) else semCerca
+        }
+        val fichaJson = try {
+            org.json.JSONObject(jsonTexto)
+        } catch (e: Exception) {
+            Log.e("MestreIA_Pro", "JSON inválido: ${e.message}\nTexto: ${jsonTexto.take(500)}")
+            onResultado(false, MestreIAClient.ChatResponse("Erro: O Forjador Pro retornou um JSON inválido. Tente novamente."))
+            return@withContext
+        }
+
+        // Aplica a ficha pilar por pilar
+        onStatusUpdate("Aplicando a ficha na tela...")
+        val erros = mutableListOf<String>()
+        var aplicados = 0
+
+        // Aliases conhecidos: IDs que o modelo frequentemente usa de forma errada → ID real no catálogo
+        val ALIASES = mapOf(
+            // perícias
+            "pesquisa"           to "pesquisa_nt",
+            "pesquisa_geral"     to "pesquisa_nt",
+            "arremessar_magica"  to "arremesso",
+            "arremessar"         to "arremesso",
+            "magia_arremessada"  to "arremesso",
+            "natacao"            to "natacao",
+            "espada_longa"       to "espada_de_lamina_larga",
+            "espada_larga"       to "espada_de_lamina_larga",
+            "espada"             to "espada_de_lamina_larga",
+            "katana"             to "espada_de_lamina_larga",
+            // magias
+            "detectar_magia"     to "deteccao_de_magia",
+            "deteccao_magia"     to "deteccao_de_magia",
+            // equipamentos
+            "sandalia"           to "sandalias",
+            "sandalias"          to "sandalias",
+            "sapato"             to "sapatos"
+        )
+
+        // Função de fallback: aliases → exact → fuzzy match por nome
+        fun resolverId(id: String, secao: String): String? {
+            fun norm(s: String) = java.text.Normalizer.normalize(s, java.text.Normalizer.Form.NFD)
+                .replace(Regex("\\p{M}+"), "").lowercase().replace(Regex("[^a-z0-9]"), "")
+            val idRawN = norm(id)
+            // 1. Tenta alias exato
+            val aliased = ALIASES[id.lowercase().trim()] ?: ALIASES[idRawN]
+            val idN = if (aliased != null) norm(aliased) else idRawN
+            val idFinal = aliased ?: id
+            return when (secao) {
+                "vantagens"    -> repository.vantagens.find { norm(it.id) == idN }?.id
+                                  ?: repository.vantagens.find { norm(it.nome) == idN }?.id
+                "desvantagens" -> repository.desvantagens.find { norm(it.id) == idN }?.id
+                                  ?: repository.desvantagens.find { norm(it.nome) == idN }?.id
+                "pericias"     -> peri.find { norm(it.first) == idN }?.first
+                                  ?: peri.find { norm(it.second) == idN }?.first
+                "magias"       -> repository.magias.find { norm(it.id) == idN }?.id
+                                  ?: repository.magias.find { norm(it.nome) == idN }?.id
+                "tecnicas"     -> repository.tecnicasCatalogo.find { norm(it.id) == idN }?.id
+                                  ?: repository.tecnicasCatalogo.find { norm(it.nome) == idN }?.id
+                "equipamentos" -> repository.armasCatalogo.find { norm(it.id) == idN || norm(it.nome) == idN }?.id
+                                  ?: repository.armadurasCatalogo.find { norm(it.id) == idN || norm(it.nome) == idN }?.id
+                                  ?: repository.escudosCatalogo.find { norm(it.id) == idN || norm(it.nome) == idN }?.id
+                else           -> null
+            }.also { result ->
+                if (result != null && aliased != null) Log.d("MestreIA_Pro", "Alias '$id' → '$result'")
+            }
+        }
+
+        // Pilar 0.5: raça (antes dos atributos, pois o modelo racial pode setar atributos base)
+        fichaJson.optString("raca").takeIf { it.isNotBlank() }?.let { racaId ->
+            onStatusUpdate("Aplicando raça: $racaId...")
+            val args = org.json.JSONObject().apply { put("id", racaId); put("tipo", "raca") }
+            val r = toolExecutor.aplicarModeloRacial(args)
+            Log.d("MestreIA_Pro", "Raça '$racaId' → $r")
+            if (!r.contains("erro", ignoreCase = true)) aplicados++
+            else erros.add("raça '$racaId': $r")
+        }
+
+        // Pilar 1: nome, história, aparência
+        fichaJson.optString("nome").takeIf { it.isNotBlank() }?.let {
+            viewModel.atualizarNome(it); aplicados++ }
+        fichaJson.optString("historia").takeIf { it.isNotBlank() }?.let {
+            viewModel.atualizarHistorico(it); aplicados++ }
+        fichaJson.optString("aparencia").takeIf { it.isNotBlank() }?.let {
+            viewModel.atualizarAparencia(it); aplicados++ }
+
+        // Mostra história no chat imediatamente
+        val historiaChat = buildString {
+            fichaJson.optString("historia").takeIf { it.isNotBlank() }?.let { append(it) }
+            fichaJson.optString("aparencia").takeIf { it.isNotBlank() }?.let { append("\n\nAparência: $it") }
+        }
+        if (historiaChat.isNotBlank()) onChunk(historiaChat)
+
+        // Pilar 2: atributos
+        onStatusUpdate("Aplicando atributos...")
+        fichaJson.optJSONObject("atributos")?.let { atrs ->
+            mapOf("st" to "ST", "dx" to "DX", "iq" to "IQ", "ht" to "HT").forEach { (k, alvo) ->
+                val v = atrs.optInt(k, 0)
+                if (v > 0 && v != 10) {
+                    val r = toolExecutor.aplicarEdit("atributos", alvo, "alterar", v.toString())
+                    Log.d("MestreIA_Pro", "Atributo $alvo=$v → $r")
+                    aplicados++
+                }
+            }
+        }
+
+        // Pilar 3: características secundárias (só as não-zero)
+        fichaJson.optJSONObject("secundarios")?.let { sec ->
+            mapOf("pf" to "pf", "pv" to "pv", "vontade" to "vontade",
+                  "percepcao" to "percepcao", "velocidade" to "velocidade", "deslocamento" to "deslocamento")
+                .forEach { (k, alvo) ->
+                    val v = sec.optInt(k, 0)
+                    if (v != 0) {
+                        val r = toolExecutor.aplicarEdit("atributos", alvo, "alterar", v.toString())
+                        Log.d("MestreIA_Pro", "Secundário $alvo=$v → $r")
+                        aplicados++
+                    }
+                }
+        }
+
+        // Extrai o campo "valor" de um item do JSON para passar ao aplicarEdit.
+        // O modelo pode enviar "valor" explícito (formato interno) OU campos separados:
+        //   vantagens/desvantagens: nivel=N ou custo=N
+        //   pericias: nivel=N;esp=X
+        fun extrairValor(item: org.json.JSONObject, tipo: String): String {
+            val explicit = item.optString("valor", "").trim()
+            if (explicit.isNotBlank()) return explicit
+            return when (tipo) {
+                "vantagens", "desvantagens" -> {
+                    val nivel = item.optInt("nivel", -1)
+                    val custo = item.optInt("custo", Int.MIN_VALUE)
+                    when {
+                        nivel > 0 -> "nivel=$nivel"
+                        custo != Int.MIN_VALUE && custo != 0 -> "custo=${Math.abs(custo)}"
+                        else -> ""
+                    }
+                }
+                "pericias" -> {
+                    val nivel = item.optInt("nivel", -1)
+                    val esp = item.optString("especializacao", "").trim()
+                    buildString {
+                        if (nivel > 0) append("nivel=$nivel")
+                        if (esp.isNotBlank()) append(";esp=$esp")
+                    }
+                }
+                else -> ""
+            }
+        }
+
+        // Pilar 4: vantagens
+        fichaJson.optJSONArray("vantagens")?.let { arr ->
+            onStatusUpdate("Aplicando vantagens (0/${arr.length()})...")
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val idRaw = item.optString("id").trim()
+                val valor = extrairValor(item, "vantagens")
+                val id = resolverId(idRaw, "vantagens") ?: run {
+                    erros.add("vantagem não encontrada: '$idRaw'"); null
+                } ?: continue
+                val nomeVan = repository.vantagens.find { it.id == id }?.nome ?: id
+                onStatusUpdate("Vantagem: $nomeVan")
+                val r = toolExecutor.aplicarEdit("vantagens", id, "adicionar", valor)
+                Log.d("MestreIA_Pro", "Vantagem $id ($valor) → $r")
+                if (!r.startsWith("OK")) erros.add("vantagem '$id': $r") else aplicados++
+            }
+        }
+
+        // Pilar 5: desvantagens
+        fichaJson.optJSONArray("desvantagens")?.let { arr ->
+            onStatusUpdate("Aplicando desvantagens (0/${arr.length()})...")
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val idRaw = item.optString("id").trim()
+                val valor = extrairValor(item, "desvantagens")
+                val id = resolverId(idRaw, "desvantagens") ?: run {
+                    erros.add("desvantagem não encontrada: '$idRaw'"); null
+                } ?: continue
+                val nomeDesv = repository.desvantagens.find { it.id == id }?.nome ?: id
+                onStatusUpdate("Desvantagem: $nomeDesv")
+                val r = toolExecutor.aplicarEdit("desvantagens", id, "adicionar", valor)
+                Log.d("MestreIA_Pro", "Desvantagem $id ($valor) → $r")
+                if (!r.startsWith("OK")) erros.add("desvantagem '$id': $r") else aplicados++
+            }
+        }
+
+        // Qualidades e peculiaridades (traços livres) — aceita string ou {nome: "..."}
+        fichaJson.optJSONArray("qualidades")?.let { arr ->
+            for (i in 0 until arr.length()) {
+                val nome = (arr.optJSONObject(i)?.optString("nome") ?: arr.optString(i)).trim().ifBlank { null } ?: continue
+                onStatusUpdate("Qualidade: $nome")
+                toolExecutor.aplicarEdit("qualidades", nome, "adicionar", ""); aplicados++
+            }
+        }
+        fichaJson.optJSONArray("peculiaridades")?.let { arr ->
+            for (i in 0 until arr.length()) {
+                val nome = (arr.optJSONObject(i)?.optString("nome") ?: arr.optString(i)).trim().ifBlank { null } ?: continue
+                onStatusUpdate("Peculiaridade: $nome")
+                toolExecutor.aplicarEdit("peculiaridades", nome, "adicionar", ""); aplicados++
+            }
+        }
+
+        // Pilar 6: perícias
+        fichaJson.optJSONArray("pericias")?.let { arr ->
+            onStatusUpdate("Aplicando perícias (0/${arr.length()})...")
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val idRaw = item.optString("id").trim()
+                val valor = extrairValor(item, "pericias")
+                val id = resolverId(idRaw, "pericias") ?: run {
+                    erros.add("perícia não encontrada: '$idRaw'"); null
+                } ?: continue
+                val nomePer = peri.find { it.first == id }?.second ?: id
+                onStatusUpdate("Perícia: $nomePer")
+                val r = toolExecutor.aplicarEdit("pericias", id, "adicionar", valor)
+                Log.d("MestreIA_Pro", "Perícia $id ($valor) → $r")
+                if (!r.startsWith("OK")) erros.add("perícia '$id': $r") else aplicados++
+            }
+        }
+
+        // Pilar 7a: técnicas
+        fichaJson.optJSONArray("tecnicas")?.let { arr ->
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val idRaw = item.optString("id").trim()
+                val valor = item.optString("valor", "")
+                val id = resolverId(idRaw, "tecnicas") ?: run {
+                    erros.add("técnica não encontrada: '$idRaw'"); null
+                } ?: continue
+                val nomeTec = repository.tecnicasCatalogo.find { it.id == id }?.nome ?: id
+                onStatusUpdate("Técnica: $nomeTec")
+                val r = toolExecutor.aplicarEdit("tecnicas", id, "adicionar", valor)
+                Log.d("MestreIA_Pro", "Técnica $id ($valor) → $r")
+                if (!r.startsWith("OK")) erros.add("técnica '$id': $r") else aplicados++
+            }
+        }
+
+        // Pilar 7b: magias (o sistema adiciona a cadeia de pré-requisitos automaticamente)
+        fichaJson.optJSONArray("magias")?.let { arr ->
+            onStatusUpdate("Aplicando magias (0/${arr.length()})...")
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val idRaw = item.optString("id").trim()
+                val id = resolverId(idRaw, "magias") ?: run {
+                    erros.add("magia não encontrada: '$idRaw'"); null
+                } ?: continue
+                val nomeMag = repository.magias.find { it.id == id }?.nome ?: id
+                onStatusUpdate("Magia: $nomeMag")
+                val r = toolExecutor.aplicarEdit("magias", id, "adicionar", "")
+                Log.d("MestreIA_Pro", "Magia $id → $r")
+                if (!r.startsWith("OK")) erros.add("magia '$id': $r") else aplicados++
+            }
+        }
+
+        // Pilar 8: equipamentos (catálogo por ID ou objeto detalhado → livre)
+        fichaJson.optJSONArray("equipamentos")?.let { arr ->
+            onStatusUpdate("Aplicando equipamentos...")
+            for (i in 0 until arr.length()) {
+                // Aceita tanto string "id_do_item" quanto objeto {"nome":..., "tipo":..., "dano":...}
+                val item = arr.optJSONObject(i)
+                val idRaw = if (item != null) item.optString("id", "").trim() else arr.optString(i).trim()
+
+                if (idRaw.isNotBlank()) {
+                    // Tenta catálogo primeiro
+                    val id = resolverId(idRaw, "equipamentos")
+                    if (id != null) {
+                        val nomeEq = repository.armasCatalogo.find { it.id == id }?.nome
+                            ?: repository.armadurasCatalogo.find { it.id == id }?.nome
+                            ?: repository.escudosCatalogo.find { it.id == id }?.nome
+                            ?: id
+                        onStatusUpdate("Equipamento: $nomeEq")
+                        val r = toolExecutor.aplicarEdit("equipamentos", id, "adicionar", "")
+                        Log.d("MestreIA_Pro", "Equipamento $id → $r")
+                        if (!r.startsWith("OK")) erros.add("equip '$id': $r") else aplicados++
+                        continue
+                    }
+                }
+
+                // Fallback: se tem objeto com "nome", trata como equipamento livre
+                if (item != null) {
+                    val nomeItem = item.optString("nome", "").trim().ifBlank { idRaw }.ifBlank { null } ?: continue
+                    val peso = item.optDouble("peso", 0.0)
+                    val custo = item.optDouble("custo", 0.0)
+                    val qtd = item.optInt("quantidade", 1)
+                    val dano = item.optString("dano", "").trim()
+                    val stMin = item.optInt("st_min", 0)
+                    val valor = buildString {
+                        append("peso=$peso;custo=$custo;quantidade=$qtd")
+                        if (dano.isNotBlank()) append(";dano=$dano")
+                        if (stMin > 0) append(";stMin=$stMin")
+                    }
+                    onStatusUpdate("Item: $nomeItem")
+                    val r = toolExecutor.aplicarEdit("equipamentos_livres", nomeItem, "adicionar", valor)
+                    Log.d("MestreIA_Pro", "EquipObjeto $nomeItem → $r")
+                    aplicados++
+                } else if (idRaw.isNotBlank()) {
+                    erros.add("equipamento não encontrado: '$idRaw'")
+                }
+            }
+        }
+        // Equipamentos livres (sem ID de catálogo)
+        fichaJson.optJSONArray("equipamentos_livres")?.let { arr ->
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val nome = item.optString("nome").trim().ifBlank { null } ?: continue
+                val peso = item.optDouble("peso", 0.0)
+                val custo = item.optDouble("custo", 0.0)
+                val qtd = item.optInt("quantidade", 1)
+                onStatusUpdate("Item: $nome")
+                val valor = "peso=$peso;custo=$custo;quantidade=$qtd"
+                val r = toolExecutor.aplicarEdit("equipamentos_livres", nome, "adicionar", valor)
+                Log.d("MestreIA_Pro", "EquipLivre $nome → $r")
+                aplicados++
+            }
+        }
+
+        viewModel.autoSaveIA()
+
+        // Log de erros
+        if (erros.isNotEmpty()) {
+            Log.w("MestreIA_Pro", "Erros de aplicação (${erros.size}): ${erros.joinToString(" | ")}")
+        }
+        Log.i("MestreIA_Pro", "Aplicação concluída: $aplicados itens aplicados, ${erros.size} erros")
+
+        // Monta mensagem de fechamento para o chat
+        val pontos = toolExecutor.lerSecao("pontos")
+        val nome = viewModel.personagem.nome.ifBlank { "Personagem" }
+        val avisoErros = if (erros.isNotEmpty())
+            "\n\n⚠️ Alguns itens não foram aplicados (IDs não encontrados): ${erros.joinToString(", ")}"
+        else ""
+        val mensagemFinal = MestreIAClient.ChatResponse(
+            text = "$historiaChat\n\n---\n**$nome está pronto!** $pontos$avisoErros"
+        )
+
+        onResultado(true, mensagemFinal)
     }
 
     fun gerarRelatorio(ficha: MestreIAResponse): RelatorioValidacao {

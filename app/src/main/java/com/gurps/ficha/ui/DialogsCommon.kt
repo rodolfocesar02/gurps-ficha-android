@@ -1,6 +1,7 @@
 package com.gurps.ficha.ui
 
 import androidx.compose.foundation.clickable
+import com.gurps.ficha.model.TipoEquipamento
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -231,13 +232,20 @@ fun EquipamentoDialog(initialEquipamento: Equipamento? = null, onDismiss: () -> 
         confirmButton = {
             TextButton(onClick = {
                 if (nome.isNotBlank()) {
+                    val danoFinal = dano.ifBlank { null }
+                    val tipoFinal = when {
+                        danoFinal != null -> TipoEquipamento.ARMA
+                        initialEquipamento != null -> initialEquipamento.tipo
+                        else -> TipoEquipamento.GERAL
+                    }
                     val novo = (initialEquipamento ?: Equipamento()).copy(
                         nome = nome,
                         peso = peso.toFloatOrNull() ?: 0f,
                         custo = custo.toFloatOrNull() ?: 0f,
                         quantidade = quantidade.toIntOrNull()?.coerceAtLeast(1) ?: 1,
                         notas = notas,
-                        armaDanoRaw = dano.ifBlank { null },
+                        tipo = tipoFinal,
+                        armaDanoRaw = danoFinal,
                         armaStMinimo = stMin.toIntOrNull()
                     )
                     onSave(novo)

@@ -35,6 +35,18 @@ class FichaNetworkDelegate {
         }
     }
 
+    /** Sobe o retrato do personagem ao servidor (uma vez, ao salvar a ficha). */
+    suspend fun enviarRetratoDiscord(characterName: String, imageDataUri: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            DiscordRollApiClient.postPortrait(
+                baseUrl = BuildConfig.DISCORD_ROLL_API_BASE_URL,
+                apiKey = BuildConfig.DISCORD_ROLL_API_KEY,
+                characterName = characterName,
+                imageDataUri = imageDataUri
+            )
+        }
+    }
+
     suspend fun buscarCanaisDiscord(): Result<List<com.gurps.ficha.data.network.DiscordVoiceChannel>> {
         return withContext(Dispatchers.IO) {
             val resultado = DiscordRollApiClient.fetchVoiceChannels(

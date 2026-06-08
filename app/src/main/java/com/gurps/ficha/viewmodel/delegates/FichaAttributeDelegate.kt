@@ -10,6 +10,8 @@ class FichaAttributeDelegate {
     fun atualizarCampanha(personagem: Personagem, campanha: String) = personagem.copy(campanha = campanha)
     fun atualizarHistorico(personagem: Personagem, historico: String) = personagem.copy(historico = historico)
     fun atualizarAparencia(personagem: Personagem, aparencia: String) = personagem.copy(aparencia = aparencia)
+    fun atualizarImagemPersonagem(personagem: Personagem, uri: String, originalUri: String) =
+        personagem.copy(imagemPersonagemUri = uri, imagemPersonagemOriginalUri = originalUri)
     fun atualizarNotas(personagem: Personagem, notas: String) = personagem.copy(notas = notas)
     fun atualizarPontosIniciais(personagem: Personagem, pontos: Int) = personagem.copy(pontosIniciais = pontos.coerceIn(0, 1000))
     fun atualizarLimiteDesvantagens(personagem: Personagem, limite: Int) = personagem.copy(limiteDesvantagens = limite.coerceIn(-200, 0))

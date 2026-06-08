@@ -4,7 +4,8 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-app.use(express.json({ limit: '1mb' }));
+// Limite maior: o retrato chega como data:base64 (algumas centenas de KB).
+app.use(express.json({ limit: '8mb' }));
 
 const port = Number(process.env.PORT || 8787);
 const apiKey = process.env.API_KEY || '';
@@ -21,6 +22,25 @@ const channelsCache = {
 // Armazenamento em nuvem para fichas (In-memory para persistência rápida nesta sessão)
 // Estrutura: deviceId -> { characterName -> fichaJson }
 const cloudFichas = new Map();
+
+// Retratos dos personagens (in-memory). Estrutura:
+//   sanitizedCharacterName -> { mime, buffer, ext }
+// Subidos UMA vez (ao salvar a ficha) e reanexados em cada embed de rolagem.
+const portraits = new Map();
+
+function sanitizeName(value) {
+  return String(value || '').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+}
+
+/** Converte um data:URI (data:image/png;base64,XXXX) em { mime, buffer, ext }. */
+function parseDataUri(dataUri) {
+  const match = /^data:([^;]+);base64,(.+)$/i.exec(String(dataUri || ''));
+  if (!match) return null;
+  const mime = match[1];
+  const buffer = Buffer.from(match[2], 'base64');
+  const ext = mime.split('/')[1] || 'png';
+  return { mime, buffer, ext };
+}
 
 function requireConfigured() {
   return Boolean(apiKey && botToken);
@@ -95,11 +115,54 @@ function discordAuthHeaders() {
   };
 }
 
-async function sendToDiscord(content, channelId) {
-  const response = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+/**
+ * Envia mensagem ao Discord.
+ * - Sem retrato: manda { content } como antes (texto simples).
+ * - Com retrato: manda um embed com a descrição e o retrato anexado como
+ *   arquivo, referenciado por embed.thumbnail.url = attachment://<file>.
+ *   Exige multipart/form-data (payload_json + files[0]).
+ */
+async function sendToDiscord(content, channelId, portrait) {
+  const url = `https://discord.com/api/v10/channels/${channelId}/messages`;
+
+  if (!portrait) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: discordAuthHeaders(),
+      body: JSON.stringify({ content })
+    });
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`discord_error_${response.status}: ${text}`);
+    }
+    return response.json();
+  }
+
+  const fileName = `portrait.${portrait.ext}`;
+  const payloadJson = {
+    embeds: [
+      {
+        description: content,
+        color: 0x5865f2,
+        thumbnail: { url: `attachment://${fileName}` }
+      }
+    ],
+    attachments: [{ id: 0, filename: fileName }]
+  };
+
+  const form = new FormData();
+  form.append('payload_json', JSON.stringify(payloadJson));
+  form.append(
+    'files[0]',
+    new Blob([portrait.buffer], { type: portrait.mime }),
+    fileName
+  );
+
+  // NÃO definir Content-Type manualmente: o fetch/FormData define o boundary.
+  const response = await fetch(url, {
     method: 'POST',
-    headers: discordAuthHeaders(),
-    body: JSON.stringify({ content })
+    headers: { Authorization: `Bot ${botToken}` },
+    body: form
   });
 
   if (!response.ok) {
@@ -227,9 +290,10 @@ app.post('/api/rolls', async (req, res) => {
   }
 
   const message = formatRollMessage(payload);
+  const portrait = portraits.get(sanitizeName(payload.character)) || null;
 
   try {
-    const discordMessage = await sendToDiscord(message, targetChannelId);
+    const discordMessage = await sendToDiscord(message, targetChannelId, portrait);
     return res.json({
       ok: true,
       discordMessageId: discordMessage.id,
@@ -238,6 +302,30 @@ app.post('/api/rolls', async (req, res) => {
   } catch (error) {
     return jsonError(res, 502, 'discord_send_failed', error.message);
   }
+});
+
+// Recebe e guarda o retrato do personagem (data:base64). Reanexado nos embeds.
+app.post('/api/portrait', (req, res) => {
+  if (!hasValidApiKey(req)) return unauthorized(res);
+
+  const { character, image } = req.body || {};
+  if (!character || !image) {
+    return jsonError(res, 400, 'dados_insuficientes');
+  }
+
+  const parsed = parseDataUri(image);
+  if (!parsed) {
+    return jsonError(res, 400, 'imagem_invalida');
+  }
+  // Limite de segurança (~4MB já decodificado).
+  if (parsed.buffer.length > 4 * 1024 * 1024) {
+    return jsonError(res, 413, 'imagem_muito_grande');
+  }
+
+  const key = sanitizeName(character);
+  portraits.set(key, parsed);
+  console.log(`[portrait] retrato salvo para ${key} (${parsed.buffer.length} bytes, ${parsed.mime})`);
+  res.json({ ok: true });
 });
 
 // --- NOVAS ROTAS PARA PERSISTÊNCIA DE FICHAS EM NUVEM ---

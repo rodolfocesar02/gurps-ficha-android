@@ -5,34 +5,36 @@ object MestreIAPromptsForjador {
 {
   "nome": "Nome do Personagem",
   "pontosIniciais": 150,
-  "historico": "Biografia narrativa (max 800 chars)",
-  "aparencia": "Descrição física breve",
+  "raca": "reptante",
+  "historico": "Biografia concisa (max 600 chars, 1 parágrafo)",
+  "aparencia": "Descrição física breve (max 200 chars)",
   "notas": "Anotações livres: poderes especiais, regras de mesa, etc.",
   "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
   "vantagens": [
-    { "id": "aptidao_magica", "nivel": 3, "custo": 15, "descricao": "Aptidão mágica nível 3" },
-    { "id": "ataque_inato", "nivel": 5, "custo": 50, "descricao": "Lança de fogo",
-      "modificadores": [ { "id": "explosao", "niveis": 1 } ] }
+    { "id": "aptidao_magica", "nivel": 2 },
+    { "id": "abencoado", "custo": 10 }
   ],
   "desvantagens": [
-    { "id": "codigo_de_honra", "custo": -10, "descricao": "Código do Samurai" },
-    { "id": "fobia", "custo": -10, "autocontrole": 12, "descricao": "Fogo" }
+    { "id": "codigo_de_honra", "custo": 10 },
+    { "id": "fobia", "custo": 10 }
   ],
   "pericias": [
-    { "id": "espada_longa", "nivel": 14 },
+    { "id": "espada_de_lamina_larga", "nivel": 14 },
     { "id": "sobrevivencia", "nivel": 13, "especializacao": "Florestas" }
   ],
   "tecnicas": [
-    { "id": "finta", "nivel": 2, "periciaBaseId": "espada_longa" }
+    { "id": "finta", "nivel": 2, "periciaBaseId": "espada_de_lamina_larga" }
   ],
-  "magias":  [ { "id": "criar_fogo", "custo": 1 } ],
+  "magias":  [ { "id": "criar_fogo" } ],
   "qualidades":     [ { "nome": "Treinamento com Arma na Mão Inábil" } ],
   "peculiaridades": [ { "nome": "Fala pausadamente" } ],
   "equipamentos": [
-    { "nome": "Espada Longa", "tipo": "ARMA", "tipoCombate": "corpo_a_corpo",
-      "peso": 1.5, "custo": 500, "quantidade": 1, "dano": "1d+1 corte", "st_min": 10 },
-    { "nome": "Cota de Malha", "tipo": "ARMADURA", "peso": 20, "custo": 150, "quantidade": 1, "rd": 4 },
-    { "nome": "Escudo Médio", "tipo": "ESCUDO", "peso": 6, "custo": 60, "quantidade": 1, "bonusDefesa": 2 }
+    { "id": "espada_de_lamina_larga" },
+    { "id": "cota_de_malha" },
+    { "id": "escudo_medio" }
+  ],
+  "equipamentos_livres": [
+    { "nome": "Mochila de Viagem", "peso": 2.0, "custo": 60, "quantidade": 1 }
   ]
 }
 """
@@ -367,6 +369,133 @@ OS 9 PILARES (use para organizar sua análise):
 
 """ + blocoCatalogo(vantagens, desvantagens, pericias, magias, tecnicas)
     }
+
+    // ══════════════════════════════════════════════════════════════
+    // FLUXO PRO — V4-Pro gera JSON completo em 1 chamada, Kotlin aplica
+    // ══════════════════════════════════════════════════════════════
+
+    /**
+     * Catálogo completo serializado para o Pro: id | nome | custo/dificuldade.
+     * Inclui vantagens, desvantagens, perícias, magias, técnicas, equipamentos,
+     * raças e metacaracterísticas.
+     */
+    fun gerarCatalogoPro(
+        vantagens: List<Pair<String, String>>,     // id, nome
+        vantagensCusto: List<String>,              // custo serializado por item
+        desvantagens: List<Pair<String, String>>,
+        desvantgCusto: List<String>,
+        pericias: List<Pair<String, String>>,
+        periciasDif: List<String>,
+        magias: List<Pair<String, String>>,
+        magiasDif: List<String>,
+        tecnicas: List<Pair<String, String>>,
+        armas: List<Pair<String, String>>,
+        armaduras: List<Pair<String, String>>,
+        escudos: List<Pair<String, String>>,
+        racas: List<Pair<String, String>>,
+        metas: List<Pair<String, String>>
+    ): String {
+        fun bloco(titulo: String, items: List<Pair<String, String>>, extras: List<String> = emptyList()): String {
+            val linhas = items.mapIndexed { i, (id, nome) ->
+                val extra = extras.getOrNull(i)?.let { " | $it" } ?: ""
+                "  $id | $nome$extra"
+            }.joinToString("\n")
+            return "=== $titulo (${items.size}) ===\n$linhas"
+        }
+        return listOf(
+            bloco("VANTAGENS", vantagens, vantagensCusto),
+            bloco("DESVANTAGENS", desvantagens, desvantgCusto),
+            bloco("PERÍCIAS", pericias, periciasDif),
+            bloco("MAGIAS", magias, magiasDif),
+            bloco("TÉCNICAS", tecnicas),
+            bloco("ARMAS", armas),
+            bloco("ARMADURAS", armaduras),
+            bloco("ESCUDOS", escudos),
+            bloco("RAÇAS", racas),
+            bloco("METACARACTERÍSTICAS", metas)
+        ).joinToString("\n\n")
+    }
+
+    /**
+     * Prompt sistema para o V4-Pro no fluxo de 1 chamada.
+     * Recebe o catálogo completo e retorna JSON pronto para aplicação.
+     */
+    fun gerarPromptSistemaPro(catalogo: String, pontosIniciais: Int): String = """
+Você é o FORJADOR GURPS — especialista em fichas GURPS 4ª edição Brasil.
+Sua tarefa é criar uma ficha completa e retornar SOMENTE um JSON válido, sem texto antes ou depois.
+IDIOMA OBRIGATÓRIO: escreva história e aparência SEMPRE em português do Brasil. Nunca em inglês.
+
+═══ REGRAS ═══
+1. Use APENAS os IDs do catálogo abaixo. IDs fora da lista serão rejeitados pelo app.
+2. Budget: $pontosIniciais pontos. A soma (atributos + vantagens - desvantagens + pericias + magias + racial) deve ser ≤ $pontosIniciais.
+3. MAGIAS: coloque apenas as magias-alvo desejadas. O sistema adiciona pré-requisitos automaticamente.
+4. VANTAGENS com tipoCusto POR_NIVEL: use o campo "nivel": N  →  { "id": "<id>", "nivel": N }
+5. VANTAGENS/DESVANTAGENS com tipoCusto ESCOLHA ou VARIAVEL: use o campo "custo": N (positivo, sem sinal)  →  { "id": "<id>", "custo": N }
+6. PERÍCIAS: use o campo "nivel": NH. Especialização opcional  →  { "id": "<id>", "nivel": NH, "especializacao": "X" }
+7. TÉCNICAS: { "id": "<id>", "nivel": N, "periciaBaseId": "<id-da-pericia-base>" }
+8. EQUIPAMENTOS do catálogo: use apenas { "id": "<id>" }. Para itens SEM id (mochilas, tochas, rações), use "equipamentos_livres".
+9. RAÇA: se o conceito tiver uma raça (anão, elfo, reptante, etc.), coloque "raca": "id_da_raca" no JSON. O sistema aplica todos os traços raciais automaticamente — NÃO duplique os traços da raça em vantagens/desvantagens.
+10. Limite de desvantagens: -50 pts (padrão GURPS), salvo se o pedido especificar outro valor.
+11. Qualidades (traços positivos livres sem ID) = +1 pt cada. Peculiaridades (traços negativos livres) = -1 pt cada.
+12. Escreva história concisa (máx 600 chars, 1 parágrafo) e aparência física separada (máx 200 chars). Seja direto — tokens são preciosos para a ficha.
+13. Respeite ESTRITAMENTE o conceito pedido pelo jogador.
+
+═══ IDs CORRETOS (erros frequentes) ═══
+• Perícia "Pesquisa" → id: pesquisa_nt  (NÃO "pesquisa")
+• Perícia "Arremesso" → id: arremesso  (NÃO "arremessar_magica", NÃO "arremesso_de_magia")
+• Perícia de espada (katana, espada longa, espada larga) → id: espada_de_lamina_larga  (NÃO "espada_longa", NÃO "espada_larga", NÃO "katana")
+• Sandálias → id: sandalias  (NÃO "sandalia")
+• Sapatos → id: sapatos
+• NÃO existe magia "detectar_magia" — o id correto é: deteccao_de_magia  (NÃO "detectar_magia")
+
+═══ MAGIAS COM PRÉ-REQUISITOS PESADOS ═══
+• Algumas magias exigem longas cadeias de pré-requisitos que custam muitos pontos.
+  O sistema adiciona a cadeia completa automaticamente — mas isso CONSOME pontos reais do budget.
+  Se o budget não comportar a cadeia toda, NÃO coloque a magia. Prefira magias que cabem no orçamento.
+  NUNCA use "forcar=true" — o personagem deve pagar todos os pré-requisitos.
+
+═══ FORMATO JSON OBRIGATÓRIO ═══
+Retorne APENAS este JSON, sem markdown, sem ```json, sem texto adicional:
+
+{
+  "nome": "...",
+  "raca": "<id_da_raca ou omitir se humano>",
+  "historia": "...",
+  "aparencia": "...",
+  "atributos": { "st": 10, "dx": 10, "iq": 10, "ht": 10 },
+  "secundarios": { "pf": 0, "pv": 0, "vontade": 0, "percepcao": 0, "velocidade": 0, "deslocamento": 0 },
+  "vantagens": [
+    { "id": "<id>", "nivel": N },
+    { "id": "<id>", "custo": N }
+  ],
+  "desvantagens": [
+    { "id": "<id>", "custo": N }
+  ],
+  "pericias": [
+    { "id": "<id>", "nivel": NH },
+    { "id": "<id>", "nivel": NH, "especializacao": "..." }
+  ],
+  "tecnicas": [
+    { "id": "<id>", "nivel": N, "periciaBaseId": "<id-da-pericia-base>" }
+  ],
+  "magias": [
+    { "id": "<id>" }
+  ],
+  "qualidades": [ { "nome": "..." } ],
+  "peculiaridades": [ { "nome": "..." } ],
+  "equipamentos": [
+    { "id": "<id>" }
+  ],
+  "equipamentos_livres": [
+    { "nome": "...", "peso": 0.0, "custo": 0, "quantidade": 1 }
+  ]
+}
+
+Campos "secundarios": use 0 para não modificar. Valores são MODIFICADORES sobre a base (ex: pf=2 significa PF = HT+2).
+
+═══ CATÁLOGO COMPLETO ═══
+$catalogo
+"""
 
     /**
      * Prompt da iteração de PLANNING (iteração 2 do novo fluxo).
