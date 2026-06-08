@@ -8,6 +8,7 @@ import com.gurps.ficha.data.network.MestreIAItem
 import com.gurps.ficha.data.network.MestreIAPromptsForjador
 import com.gurps.ficha.data.network.MestreIAResponse
 import com.gurps.ficha.data.network.MestreIATools
+import com.gurps.ficha.domain.loaders.ForjadorTemplateCatalogo
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.rules.CharacterRules
 import com.gurps.ficha.domain.tools.ForjadorToolExecutor
@@ -77,12 +78,24 @@ class MestreIAGeneratorUseCase(
             )
         }
 
-        // Forjador: DeepSeek primário; fallback = DeepSeek 2 (chave gratuita).
-        // Antes o fallback era Gemini 3.1 Pro, mas a chave está com quota 0
-        // (free tier zerado) → qualquer fallback derrubava tudo com 429.
+        // Template base: escolhe automaticamente o arquétipo mais próximo do pedido.
+        // O bloco é injetado no sistema do loop principal (não sobrescreve o prompt do usuário).
+        val templateBloco: String = if (modo != "analise" && context != null) {
+            val templates = ForjadorTemplateCatalogo.carregar(context)
+            val template = ForjadorTemplateCatalogo.escolher(prompt, templates)
+            if (template != null) {
+                Log.i("MestreIA_Forjador", "Template escolhido: ${template.nome} (id=${template.id})")
+                "\n\n" + ForjadorTemplateCatalogo.formatarParaPrompt(template)
+            } else {
+                Log.i("MestreIA_Forjador", "Nenhum template correspondente para: ${prompt.take(80)}")
+                ""
+            }
+        } else ""
+
+        // Forjador: Gemini primário; fallback = DeepSeek V4 Pro.
         val fila = listOf(
-            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL),
-            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_2_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL)
+            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_FLASH),
+            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL_V3)
         )
 
         // Lote E: executor de tools do Forjador Agêntico
@@ -187,7 +200,7 @@ class MestreIAGeneratorUseCase(
                         // Injeta a história no localHistory para guiar o loop de execução.
                         if (historiaBase.isNotBlank()) {
                             localHistory.add("model" to historiaBase)
-                            localHistory.add("user" to "[SISTEMA — orquestração]\nEsta é a história DEFINITIVA do personagem. Nome e história já foram aplicados na ficha pelo sistema. Construa agora a ficha GURPS coerente com ela, seguindo os 9 pilares na ordem: atributos → vantagens → desvantagens → perícias → magias → equipamentos. NÃO aplique nome nem história — já estão na ficha.")
+                            localHistory.add("user" to "[SISTEMA — orquestração]\nEsta é a história DEFINITIVA do personagem. Nome e história já foram aplicados na ficha pelo sistema. NÃO aplique nome nem história — já estão na ficha.\n\nFASE DE PLANEJAMENTO OBRIGATÓRIA: antes de aplicar qualquer item, use forjador_ler_ficha('pontos') para ver o orçamento disponível. Depois decida internamente quanto de pontos cada pilar do conceito vai receber. Só então comece a construir, pilar por pilar, na ordem dos 9 pilares.")
                         }
                     }
 
@@ -258,7 +271,7 @@ class MestreIAGeneratorUseCase(
                             contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoVazio,
                             modo = modo,
-                            promptSistema = promptForjador + "\n[CONTEXTO DE SESSÃO] Iteração $iteracao de $ITER_HARD_CAP | Restam $iteracoesRestantes iterações.",
+                            promptSistema = promptForjador + templateBloco + "\n[CONTEXTO DE SESSÃO] Iteração $iteracao de $ITER_HARD_CAP | Restam $iteracoesRestantes iterações.",
                             onChunk = null,
                             desativarTools = ultima,
                             maxTokens = if (ultima) 16384 else 16384
@@ -308,9 +321,6 @@ class MestreIAGeneratorUseCase(
                         }
 
                         val resultados = forjadorCalls.joinToString("\n\n") { tc ->
-                            // Status AO VIVO descritivo (não "tela em branco"):
-                            // diz exatamente a ação, como um editor mostrando
-                            // "abrindo arquivo / aplicando mudança".
                             val alvo = tc.args.optString("alvo", "")
                                 .ifBlank { tc.args.optString("magia_alvo", "") }
                                 .ifBlank { tc.args.optString("query", "") }
@@ -325,7 +335,13 @@ class MestreIAGeneratorUseCase(
                                 else -> tc.name.replace("forjador_", "")
                             }
                             onStatusUpdate("$acao  (passo $iteracao)")
-                            "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
+                            // Iteração 1 (planejamento): bloqueia edição, só leitura/busca permitida.
+                            // O modelo deve primeiro entender o orçamento antes de gastar.
+                            if (!ehConsultor && iteracao == 1 && tc.name == ForjadorTools.TOOL_EDITAR) {
+                                "=== ${tc.name} ===\n[PLANEJAMENTO] Ainda não aplique itens. Primeiro leia o orçamento disponível com forjador_ler_ficha('pontos'), pesquise os catálogos necessários e decida a distribuição de pontos entre os pilares. A edição começa na próxima iteração."
+                            } else {
+                                "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
+                            }
                         }
                         Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
 
@@ -431,7 +447,7 @@ class MestreIAGeneratorUseCase(
                                 "ou um grupo de perícias), CHAME forjador_editar_ficha JÁ para aplicá-lo, e só então " +
                                 "pesquise o próximo bloco. Aplicar cedo protege o trabalho se a conexão cair."
                             else ""
-                            "Continue executando ESTRITAMENTE o PEDIDO REAL do usuário acima — nada além dele. NÃO trate sugestões que você fez antes como aceitas; o usuário só pediu o que está em PEDIDO REAL. Se ainda faltam magias da cadeia (pré-requisitos OU a própria magia-alvo pedida), CONTINUE chamando forjador_editar_ficha e forjador_gps_magia até a magia-alvo estar de fato na ficha, sem parar para perguntar.$avisoOrcamento"
+                            "Continue executando ESTRITAMENTE o PEDIDO REAL do usuário acima — nada além dele. NÃO trate sugestões que você fez antes como aceitas; o usuário só pediu o que está em PEDIDO REAL. Siga os 9 pilares na ordem até a ficha estar completa, sem parar para perguntar.$avisoOrcamento"
                         }
                         promptAtual = comAncora(instrucao)
                         onStatusUpdate("Mestre $nomeModelo montando a cadeia (passo $iteracao)...")

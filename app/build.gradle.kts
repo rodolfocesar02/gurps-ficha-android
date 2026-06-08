@@ -121,6 +121,7 @@ android {
 
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_URL", "\"https://api.deepseek.com/v1\"")
         buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL", "\"deepseek-v4-flash\"") // migrado: deepseek-chat deprecado em 24/07/2026
+        buildConfigField("String", "MESTRE_IA_DEEPSEEK_MODEL_V3", "\"deepseek-v4-pro\"") // V4 Pro — MoE 1.6T params, mais capaz que Flash
 
         // Gemini Live (voz bidirecional) — migrado para 2.5 (Lote 3, 2026-05-26): async tools, proactive audio, vozes HD
         buildConfigField("String", "GEMINI_LIVE_MODEL", "\"models/gemini-2.5-flash-native-audio-preview-12-2025\"")

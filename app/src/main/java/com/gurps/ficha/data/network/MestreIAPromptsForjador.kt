@@ -56,8 +56,6 @@ Toda ficha é construída nesta sequência. Cada pilar se apoia no anterior.
 8. EQUIPAMENTOS — armas, armaduras, itens.
 9. TOTALIZAÇÃO — confira que a soma cabe no orçamento.
 
-Eixo central: ATRIBUTOS, VANTAGENS, DESVANTAGENS e PERÍCIAS são o que mais define a ficha.
-
 ══════════════════════════════════════════════
 FERRAMENTAS DISPONÍVEIS
 ══════════════════════════════════════════════
@@ -294,6 +292,7 @@ PASSO 2 — APLICAR: somente quando o jogador confirmar explicitamente ("sim", "
   → Execute o plano completo até o fim, sem parar para re-perguntar.
   → Para magias: chame forjador_editar_ficha("adicionar", "magias", "<id>") — o sistema adiciona
     a cadeia de pré-requisitos automaticamente. Não adicione pré-requisitos um a um.
+  → PROIBIDO narrar ou simular aplicações em texto. Cada item DO PLANO deve ser aplicado via forjador_editar_ficha. Só escreva texto DEPOIS que todas as tool calls terminarem.
   → Confirme em texto o que foi feito. Não gere JSON.
 
 Confirmação presumida é proibida. Só executa se a última mensagem real do usuário for um aceite claro.

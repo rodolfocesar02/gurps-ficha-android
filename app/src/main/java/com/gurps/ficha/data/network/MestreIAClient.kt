@@ -189,12 +189,16 @@ object MestreIAClient {
                     if (candidates != null) {
                         for (j in 0 until candidates.length()) {
                             val candidate = candidates.getJSONObject(j)
+                            val finishReason = candidate.optString("finishReason", "")
+                            if (finishReason.isNotBlank() && finishReason != "STOP" && !silencioso) {
+                                android.util.Log.w("MestreIA_Gemini", "finishReason=$finishReason (candidato $j)")
+                            }
                             val content = candidate.optJSONObject("content")
                             val parts = content?.optJSONArray("parts")
                             if (parts != null) {
                                 for (i in 0 until parts.length()) {
                                     val part = parts.getJSONObject(i)
-                                    
+
                                     // Captura Texto
                                     val textPart = part.optString("text", "")
                                     if (textPart.isNotBlank()) {
@@ -348,7 +352,9 @@ object MestreIAClient {
             }
         }
 
-        root.put("generationConfig", JSONObject().put("temperature", 0.1))
+        root.put("generationConfig", JSONObject()
+            .put("temperature", 0.1)
+            .put("maxOutputTokens", 8192))
         return root.toString()
     }
 
