@@ -2748,3 +2748,16 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - `git revert f22f6eb`.
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 340 (hash `763f42c`) — 08 de Junho de 2026
+**Forjador: ficha completa — nome/historia auto, pericias por catalogo, threshold, modoEfetivo**
+- Sistema aplica nome/historia/aparencia automaticamente apos geracao (regex no MestreIAGeneratorUseCase)
+- buscarCatalogo("pericia","") retorna catalogo completo de 281 pericias de uma so vez
+- Prompt instrui: usar query vazia para pericias — ler tudo, escolher, aplicar (sem buscas cegas uma a uma)
+- Threshold resposta curta: 120->300 chars (evita encerramento prematuro com 8 tokens)
+- modoEfetivo: geracao->analise quando historico existe (evita recriar personagem ao continuar conversa)
+- Thinking desligado no Forjador (economiza tokens, acelera execucao)
+- Reescrita dos prompts: 9 pilares em ordem, GPS opcional, regra anti-loop Aptidao Magica
+- lerFicha("completo") entrega todas as secoes de uma vez
+- buscarCatalogo retorna descricao de vantagens
+----------------------------------------------------------------------------------------------------------------------------------------------------
