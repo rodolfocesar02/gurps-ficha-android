@@ -286,12 +286,15 @@ class FichaIADelegate(
             }
         }
 
-        // Modo é definido exclusivamente pelo botão "+" na UI — nunca auto-detectado
+        // Modo é definido pelo botão "+" na UI. Exceção: se o usuário está em "geracao"
+        // mas já existe histórico de chat (ficha criada, conversa em andamento), trata
+        // como "analise" — evita disparar nova criação a cada mensagem de acompanhamento.
+        val modoEfetivo = if (modo == "geracao" && mestreIAChatHistory.size > 2) "analise" else modo
         scope.launch(Dispatchers.IO) {
-            if (modo == "geracao" || modo == "analise") {
+            if (modoEfetivo == "geracao" || modoEfetivo == "analise") {
                 mestreIAGeneratorUseCase.gerarOuAnalisarFicha(
                     prompt = pergunta,
-                    modo = modo,
+                    modo = modoEfetivo,
                     onStatusUpdate = { status ->
                         scope.launch(Dispatchers.Main) {
                             atualizarMsgAssistente(assistantUid) { it.copy(modelName = status) }

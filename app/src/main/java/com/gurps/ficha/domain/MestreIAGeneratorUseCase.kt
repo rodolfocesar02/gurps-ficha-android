@@ -138,6 +138,8 @@ class MestreIAGeneratorUseCase(
                                 viewModel.novaFicha()     // zera para criar do zero
                             }
                         }
+                        // FASE 1 — HISTÓRIA (sem thinking, rápido ~1-3s)
+                        // Aparece no chat enquanto o planning processa nos bastidores.
                         onStatusUpdate("Mestre $nomeModelo concebendo a história...")
                         val narrativaResp = MestreIAClient.perguntarAoMestre(
                             baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
@@ -156,9 +158,36 @@ class MestreIAGeneratorUseCase(
                             ?.trim()
                             .orEmpty()
                         if (historiaBase.isNotBlank()) onChunk(historiaBase)
+
+                        // Aplica nome e história na ficha IMEDIATAMENTE pelo sistema —
+                        // não depende do modelo chamar forjador_editar_ficha para isso.
+                        if (historiaBase.isNotBlank()) {
+                            // Extrai nome da primeira linha da história (antes do primeiro ponto/quebra)
+                            val nomeExtraido = Regex(
+                                """(?:^|\n)([A-ZÁÉÍÓÚÀÂÊÔÃÕÇ][a-záéíóúàâêôãõç]+(?: [A-ZÁÉÍÓÚÀÂÊÔÃÕÇ][a-záéíóúàâêôãõç]+){0,3})""",
+                                RegexOption.MULTILINE
+                            ).find(historiaBase)?.groupValues?.get(1)?.trim()
+                                ?.takeIf { it.length in 3..40 }
+                            if (!nomeExtraido.isNullOrBlank()) viewModel.atualizarNome(nomeExtraido)
+
+                            // Separa aparência do histórico (linha "Aparência: ...")
+                            val aparenciaMatch = Regex("""Aparência:\s*(.+)""", RegexOption.IGNORE_CASE)
+                                .find(historiaBase)
+                            val aparencia = aparenciaMatch?.groupValues?.get(1)?.trim().orEmpty()
+                            val historico = if (aparenciaMatch != null)
+                                historiaBase.substring(0, aparenciaMatch.range.first).trim()
+                            else historiaBase.trim()
+
+                            if (historico.isNotBlank()) viewModel.atualizarHistorico(historico)
+                            if (aparencia.isNotBlank()) viewModel.atualizarAparencia(aparencia)
+                            viewModel.autoSaveIA()
+                            Log.d("MestreIA_Forjador", "Sistema aplicou: nome='$nomeExtraido' | histórico=${historico.length}chars | aparência=${aparencia.length}chars")
+                        }
+
+                        // Injeta a história no localHistory para guiar o loop de execução.
                         if (historiaBase.isNotBlank()) {
                             localHistory.add("model" to historiaBase)
-                            localHistory.add("user" to "[SISTEMA — instrução de orquestração, NÃO é mensagem do usuário]\nEsta é a história/aparência DEFINITIVA do personagem (acima). Agora construa a ficha GURPS COERENTE com ela: as perícias, vantagens e desvantagens devem refletir o que a história descreve. No JSON final, use EXATAMENTE esta história no campo \"historico\" e a descrição física no campo \"aparencia\" — não reescreva.")
+                            localHistory.add("user" to "[SISTEMA — orquestração]\nEsta é a história DEFINITIVA do personagem. Nome e história já foram aplicados na ficha pelo sistema. Construa agora a ficha GURPS coerente com ela, seguindo os 9 pilares na ordem: atributos → vantagens → desvantagens → perícias → magias → equipamentos. NÃO aplique nome nem história — já estão na ficha.")
                         }
                     }
 
@@ -184,7 +213,7 @@ class MestreIAGeneratorUseCase(
                     // final quando: para de chamar ferramentas (já existe o
                     // break), OU 2 iterações seguidas sem adicionar nada novo
                     // (anti-loop real), OU teto de segurança absoluto.
-                    val ITER_HARD_CAP = 30
+                    val ITER_HARD_CAP = 60
                     // Quantas iterações de PESQUISA-sem-aplicar são toleradas antes
                     // de forçar a síntese final. Criar ficha completa pesquisa muito.
                     val MAX_PESQUISA = 12
@@ -214,9 +243,14 @@ class MestreIAGeneratorUseCase(
                         // "final" = próxima já deve ser síntese: estagnou (2x
                         // sem progresso) ou bateu o teto duro de segurança.
                         val ultima = semProgresso >= 2 || iteracao >= ITER_HARD_CAP
-                        val histBase = viewModel.mestreIAChatHistory.takeLast(4).map { it.role to it.text }
+                        // Passa todo o histórico real do chat — sem limite de mensagens.
+                        // Filtra bolhas de sistema ([SISTEMA]) que são ruído para o modelo.
+                        val histBase = viewModel.mestreIAChatHistory
+                            .filter { !it.text.startsWith("[SISTEMA]") }
+                            .map { it.role to it.text }
                         val histCompleto = histBase + localHistory
 
+                        val iteracoesRestantes = ITER_HARD_CAP - iteracao
                         response = MestreIAClient.perguntarAoMestre(
                             baseUrl = config.first, apiKey = config.second, workspaceSlug = config.third,
                             prompt = promptAtual,
@@ -224,10 +258,10 @@ class MestreIAGeneratorUseCase(
                             contextoPersonagem = viewModel.personagem.toJson(),
                             catalogo = catalogoVazio,
                             modo = modo,
-                            promptSistema = promptForjador,
+                            promptSistema = promptForjador + "\n[CONTEXTO DE SESSÃO] Iteração $iteracao de $ITER_HARD_CAP | Restam $iteracoesRestantes iterações.",
                             onChunk = null,
                             desativarTools = ultima,
-                            maxTokens = if (ultima) 8192 else 2048
+                            maxTokens = if (ultima) 16384 else 16384
                         )
 
                         if (ehErroDeApi(response.text)) break
@@ -251,7 +285,7 @@ class MestreIAGeneratorUseCase(
                             // UMA rodada final de SÍNTESE (tools off) para ele escrever
                             // a mensagem ao jogador. Bug observado no Lote 329: ficha
                             // ficava montada mas o chat exibia a mensagem interna.
-                            val pareceFechamentoReal = ultima || response.text.trim().length > 120
+                            val pareceFechamentoReal = ultima || response.text.trim().length > 300
                             if (pareceFechamentoReal) break
                             Log.d("MestreIA_Forjador", "Parou sem fechar (resp curta) → força síntese final it.$iteracao")
                             response = MestreIAClient.perguntarAoMestre(

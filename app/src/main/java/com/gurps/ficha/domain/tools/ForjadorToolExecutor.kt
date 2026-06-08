@@ -9,6 +9,7 @@ import com.gurps.ficha.domain.loaders.RacaCatalogo
 import com.gurps.ficha.domain.loaders.RacaDefinicao
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.engine.MagicEngine
+import com.gurps.ficha.domain.filters.TextNormalizer
 import com.gurps.ficha.viewmodel.FichaViewModel
 import org.json.JSONObject
 
@@ -165,40 +166,74 @@ class ForjadorToolExecutor(
                     }
                 }.trim()
             }
-            else -> """{"erro": "seção inválida: $secao. Use: atributos, derivados, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, qualidades, peculiaridades, pontos"}"""
+            "completo" -> buildString {
+                appendLine("=== ATRIBUTOS ===")
+                if (p.nome.isNotBlank()) appendLine("Nome: ${p.nome}")
+                appendLine("ST: ${p.st} | DX: ${p.dx} | IQ: ${p.iq} | HT: ${p.ht}")
+                appendLine("PV: ${p.pontosVida} | PF: ${p.pontosFadiga} | Vontade: ${p.vontade} | Percepção: ${p.percepcao}")
+                appendLine("Vel. Básica ${"%.2f".format(p.velocidadeBasica)} | Deslocamento ${p.deslocamentoBasico}")
+                appendLine("Aptidão Mágica: ${viewModel.nivelAptidaoMagica}")
+                appendLine("=== PONTOS ===")
+                appendLine("Gastos: ${p.pontosGastos} / ${p.pontosTotaisDisponiveis} | Livres: ${p.pontosRestantes}")
+                appendLine("Quebra: atributos ${p.pontosAtributos} | vantagens ${p.pontosVantagens} | desvantagens ${p.pontosDesvantagens} | perícias ${p.pontosPericias} | magias ${p.pontosMagias}")
+                if (p.desvantagensExcedemLimite) appendLine("⚠ LIMITE DE DESVANTAGENS EXCEDIDO")
+                appendLine("=== VANTAGENS ===")
+                if (p.vantagens.isEmpty()) appendLine("Nenhuma.") else
+                    p.vantagens.forEach { appendLine("• ${it.definicaoId} | ${it.nome} | ${it.custoFinal} pts") }
+                appendLine("=== DESVANTAGENS ===")
+                if (p.desvantagens.isEmpty()) appendLine("Nenhuma.") else
+                    p.desvantagens.forEach { appendLine("• ${it.definicaoId} | ${it.nome} | ${it.custoFinal} pts") }
+                appendLine("=== PERÍCIAS ===")
+                if (p.pericias.isEmpty()) appendLine("Nenhuma.") else
+                    p.pericias.forEach { appendLine("• ${it.definicaoId} | ${it.nome} | NH ${it.calcularNivel(p)} | ${it.pontosGastos} pts") }
+                appendLine("=== MAGIAS ===")
+                if (p.magias.isEmpty()) appendLine("Nenhuma.") else
+                    p.magias.forEach { appendLine("• ${it.definicaoId} | ${it.nome} | escola:${it.escola?.joinToString() ?: "?"}") }
+                appendLine("=== EQUIPAMENTOS ===")
+                if (p.equipamentos.isEmpty()) appendLine("Nenhum.") else
+                    p.equipamentos.forEach { e ->
+                        append("• ${e.nome}")
+                        e.armaDanoRaw?.let { append(" | dano:$it") }
+                        e.armaduraRd?.let { append(" | RD:$it") }
+                        appendLine(" | ${e.peso}kg | ${e.custo}$")
+                    }
+            }.trim()
+            else -> """{"erro": "seção inválida: $secao. Use: completo, atributos, derivados, vantagens, desvantagens, pericias, tecnicas, magias, equipamentos, qualidades, peculiaridades, pontos"}"""
         }
     }
 
     private fun buscarCatalogo(args: JSONObject): String {
         val tipo = args.optString("tipo", "vantagem")
-        val query = args.optString("query", "").lowercase().trim()
-        if (query.isBlank()) return """{"erro": "query não pode ser vazia"}"""
+        val queryRaw = args.optString("query", "").trim()
+        // Query vazia só é permitida para perícias (retorna catálogo completo)
+        if (queryRaw.isBlank() && tipo != "pericia") return """{"erro": "query não pode ser vazia"}"""
+        val query = TextNormalizer.normalize(queryRaw, TextNormalizer.SIMPLE)
+        fun norm(s: String) = TextNormalizer.normalize(s, TextNormalizer.SIMPLE)
 
         return when (tipo) {
             "vantagem" -> {
                 val resultados = repository.vantagens.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+                    norm(it.nome).contains(query) || norm(it.id).contains(query)
                 }.take(10)
-                if (resultados.isEmpty()) "Nenhuma vantagem encontrada para '$query'."
+                if (resultados.isEmpty()) "NENHUMA VANTAGEM encontrada para '$queryRaw'. Tente outro termo. NÃO repita esta busca — escolha outro nome ou pule para o próximo pilar."
                 else resultados.joinToString("\n") { v ->
                     val mods = v.modificadoresEspecificos.take(8)
                         .joinToString(", ") { "${it.id}(${it.nome})" }
                     val schema = RegrasEspeciaisSchema.para(v.specialRule, v.id)
                     buildString {
                         append("• ${v.id} | ${v.nome} | ${v.getCustoBase()} pts | tipoCusto:${v.tipoCusto}")
-                        // Escala de custo: mostra as opções/custo-por-nível para o modelo
-                        // ESCOLHER conscientemente (valor="custo=20" ou "nivel=N").
                         opcoesCustoTexto(v.tipoCusto, v.getOpcoesEscolha(), v.getCustoPorNivel())?.let { append(it) }
                         if (mods.isNotBlank()) append(" | modificadores: $mods")
+                        descricaoFonte(v.descricao)?.let { append("\n   📖 $it") }
                         if (schema != null) append("\n   ⚙ REGRA ESPECIAL — $schema")
                     }
                 }
             }
             "desvantagem" -> {
                 val resultados = repository.desvantagens.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+                    norm(it.nome).contains(query) || norm(it.id).contains(query)
                 }.take(10)
-                if (resultados.isEmpty()) "Nenhuma desvantagem encontrada para '$query'."
+                if (resultados.isEmpty()) "NENHUMA DESVANTAGEM encontrada para '$queryRaw'. Tente outro termo. NÃO repita esta busca — escolha outro nome ou pule para o próximo pilar."
                 else resultados.joinToString("\n") { d ->
                     val mods = d.modificadoresEspecificos.take(8)
                         .joinToString(", ") { "${it.id}(${it.nome})" }
@@ -214,25 +249,31 @@ class ForjadorToolExecutor(
                 }
             }
             "pericia" -> {
-                val resultados = (repository.pericias + repository.periciasSuplementares.map {
+                val todas = repository.pericias + repository.periciasSuplementares.map {
                     com.gurps.ficha.model.PericiaDefinicao(id = it.id, nome = it.nome)
-                }).filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
-                }.take(10)
-                if (resultados.isEmpty()) "Nenhuma perícia encontrada para '$query'."
-                else resultados.joinToString("\n") { p ->
-                    // Lote G: descrição da perícia vem do mapa de regras v2 (pericias_v2_rules_map.json).
-                    val regra = repository.regraPericiaV2(p.id)
-                    buildString {
-                        append("• ${p.id} | ${p.nome}")
-                        descricaoFonte(regra?.descricao)?.let { append("\n   📖 $it") }
+                }
+                // Query vazia = catalogo completo (id | nome, sem descrição para não explodir contexto)
+                if (queryRaw.isBlank()) {
+                    "CATÁLOGO COMPLETO DE PERÍCIAS (${todas.size} itens):\n" +
+                    todas.joinToString("\n") { "• ${it.id} | ${it.nome}" }
+                } else {
+                    val resultados = todas.filter {
+                        norm(it.nome).contains(query) || norm(it.id).contains(query)
+                    }.take(10)
+                    if (resultados.isEmpty()) "Nenhuma perícia encontrada para '$queryRaw'."
+                    else resultados.joinToString("\n") { p ->
+                        val regra = repository.regraPericiaV2(p.id)
+                        buildString {
+                            append("• ${p.id} | ${p.nome}")
+                            descricaoFonte(regra?.descricao)?.let { append("\n   📖 $it") }
+                        }
                     }
                 }
             }
             "magia" -> {
                 val resultados = repository.magias.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query) ||
-                    it.escola?.any { e -> e.lowercase().contains(query) } == true
+                    norm(it.nome).contains(query) || norm(it.id).contains(query) ||
+                    it.escola?.any { e -> norm(e).contains(query) } == true
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma magia encontrada para '$query'."
                 else resultados.joinToString("\n") { m ->
@@ -250,7 +291,7 @@ class ForjadorToolExecutor(
             }
             "tecnica" -> {
                 val resultados = repository.tecnicasCatalogo.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+                    norm(it.nome).contains(query) || norm(it.id).contains(query)
                 }.take(10)
                 if (resultados.isEmpty()) "Nenhuma técnica encontrada para '$query'."
                 else resultados.joinToString("\n") { t ->
@@ -274,8 +315,8 @@ class ForjadorToolExecutor(
             // resolve por ST automaticamente ao adicionar (Equipamento.danoCalculadoComSt).
             "arma" -> {
                 val resultados = repository.armasCatalogo.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query) ||
-                    it.grupo.lowercase().contains(query) || it.categoria.lowercase().contains(query)
+                    norm(it.nome).contains(query) || norm(it.id).contains(query) ||
+                    norm(it.grupo).contains(query) || norm(it.categoria).contains(query)
                 }.take(12)
                 if (resultados.isEmpty()) "Nenhuma arma encontrada para '$query'."
                 else resultados.joinToString("\n") { a ->
@@ -286,8 +327,8 @@ class ForjadorToolExecutor(
             }
             "armadura" -> {
                 val resultados = repository.armadurasCatalogo.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query) ||
-                    it.local.lowercase().contains(query)
+                    norm(it.nome).contains(query) || norm(it.id).contains(query) ||
+                    norm(it.local).contains(query)
                 }.take(12)
                 if (resultados.isEmpty()) "Nenhuma armadura encontrada para '$query'."
                 else resultados.joinToString("\n") { a ->
@@ -297,7 +338,7 @@ class ForjadorToolExecutor(
             }
             "escudo" -> {
                 val resultados = repository.escudosCatalogo.filter {
-                    it.nome.lowercase().contains(query) || it.id.lowercase().contains(query)
+                    norm(it.nome).contains(query) || norm(it.id).contains(query)
                 }.take(12)
                 if (resultados.isEmpty()) "Nenhum escudo encontrado para '$query'."
                 else resultados.joinToString("\n") { e ->

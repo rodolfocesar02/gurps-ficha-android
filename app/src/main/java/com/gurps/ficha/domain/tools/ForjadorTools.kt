@@ -22,7 +22,7 @@ object ForjadorTools {
                 put("properties", JSONObject().apply {
                     put("secao", JSONObject().apply {
                         put("type", "STRING")
-                        put("description", "Seção a ler: 'atributos', 'derivados' (stats CALCULADOS: defesas, dano, carga, secundários), 'vantagens', 'desvantagens', 'pericias', 'tecnicas', 'magias', 'equipamentos', 'qualidades', 'peculiaridades', 'pontos'")
+                        put("description", "Seção a ler: 'completo' (tudo de uma vez — use quando precisar ver o estado geral da ficha), 'atributos', 'derivados', 'vantagens', 'desvantagens', 'pericias', 'tecnicas', 'magias', 'equipamentos', 'qualidades', 'peculiaridades', 'pontos'")
                     })
                 })
                 put("required", JSONArray().put("secao"))
@@ -144,7 +144,7 @@ object ForjadorTools {
                     put("properties", JSONObject().apply {
                         put("secao", JSONObject().apply {
                             put("type", "string")
-                            put("enum", JSONArray().put("atributos").put("derivados").put("vantagens").put("desvantagens")
+                            put("enum", JSONArray().put("completo").put("atributos").put("derivados").put("vantagens").put("desvantagens")
                                 .put("pericias").put("tecnicas").put("magias").put("equipamentos")
                                 .put("qualidades").put("peculiaridades").put("pontos"))
                         })
@@ -166,7 +166,10 @@ object ForjadorTools {
                             put("type", "string")
                             put("enum", JSONArray().put("vantagem").put("desvantagem").put("pericia").put("magia").put("tecnica").put("arma").put("armadura").put("escudo"))
                         })
-                        put("query", JSONObject().put("type", "string"))
+                        put("query", JSONObject().apply {
+                            put("type", "string")
+                            put("description", "Palavra-chave de busca. Para tipo='pericia': use '' (string vazia) para receber o catálogo COMPLETO de perícias de uma só vez — leia e escolha; não pesquise perícias uma a uma.")
+                        })
                     })
                     put("required", JSONArray().put("tipo").put("query"))
                 })

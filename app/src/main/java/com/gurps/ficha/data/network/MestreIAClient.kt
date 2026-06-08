@@ -78,7 +78,8 @@ object MestreIAClient {
         onChunk: ((String) -> Unit)? = null,
         desativarTools: Boolean = false,
         maxTokens: Int = 2048,
-        silencioso: Boolean = false
+        silencioso: Boolean = false,
+        ativarThinking: Boolean = false
     ): ChatResponse = withContext(Dispatchers.IO) {
         val startTime = System.currentTimeMillis()
         try {
@@ -159,7 +160,7 @@ object MestreIAClient {
             val jsonOutput = if (isGoogleNative) {
                 gerarJsonGoogleNative(prompt, history, systemPulse, modo, desativarTools)
             } else {
-                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens)
+                gerarJsonOpenRouter(workspaceSlug, prompt, history, systemPulse, modo, useStream, desativarTools, maxTokens, ativarThinking)
             }
 
             if (!silencioso) android.util.Log.i("MestreIA_RAG", "║  REQUEST: ${jsonOutput.length}chars → $workspaceSlug")
@@ -351,7 +352,7 @@ object MestreIAClient {
         return root.toString()
     }
 
-    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048): String {
+    private fun gerarJsonOpenRouter(modelId: String, prompt: String, history: List<Pair<String, String>>, system: String, modo: String, stream: Boolean, desativarTools: Boolean = false, maxTokens: Int = 2048, ativarThinking: Boolean = false): String {
         val root = JSONObject()
         root.put("model", modelId)
         val messages = JSONArray()
@@ -375,6 +376,18 @@ object MestreIAClient {
         root.put("temperature", 0.1)
         root.put("max_tokens", maxTokens)
         root.put("stream", stream)
+
+        // Thinking: ativado só quando solicitado explicitamente (iteração 1 do Forjador
+        // para planejar a ficha). Nas demais iterações desativado — tool calling agêntico
+        // não precisa de raciocínio interno e o thinking consumia 1000-5000 tokens por
+        // iteração sem benefício real.
+        if (modo == "geracao" || modo == "analise") {
+            if (ativarThinking) {
+                root.put("thinking", JSONObject().put("type", "enabled").put("budget_tokens", 2000))
+            } else {
+                root.put("thinking", JSONObject().put("type", "disabled"))
+            }
+        }
 
         return root.toString()
     }
