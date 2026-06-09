@@ -34,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import com.gurps.ficha.domain.MestreIAContextFilter
 import com.gurps.ficha.ui.components.FichaCustomNavigationBar
@@ -625,6 +626,28 @@ fun FichaScreen(viewModel: FichaViewModel) {
             onDismiss = { showMestreIADialog = false },
             estadoLive = if (BuildConfig.VOZ_BIDIRECIONAL_HABILITADA) estadoLive else EstadoLive.OCIOSO,
             onEncerrarLive = { geminiLive.encerrar() }
+        )
+    }
+
+    if (viewModel.mostrarDialogRetrato) {
+        DialogRetratoIA(
+            nomePersonagem = viewModel.personagem.nome.ifBlank { "o personagem" },
+            onGerar = { viewModel.gerarRetratoIA() },
+            onDispensар = { viewModel.dispensarDialogRetrato() }
+        )
+    }
+
+    if (viewModel.retratoGerandoStatus.isNotBlank()) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text("Gerando retrato...") },
+            text = {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                    Text(viewModel.retratoGerandoStatus, style = MaterialTheme.typography.bodyMedium)
+                }
+            },
+            confirmButton = {}
         )
     }
 

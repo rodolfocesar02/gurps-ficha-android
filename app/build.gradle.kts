@@ -26,6 +26,7 @@ android {
 
     // FATOR PRIME: Chaves Mascaradas Multi-Flavor (Lidas no topo para visibilidade global)
     val geminiKey = (localProperties.getProperty("mestre.ia.gemini.key") ?: "").replace("\"", "\\\"")
+    val gemini1Key = (localProperties.getProperty("mestre.ia.gemini1.key") ?: "").replace("\"", "\\\"")
     val deepseekKey = (localProperties.getProperty("mestre.ia.deepseek.key") ?: "").replace("\"", "\\\"")
     val deepseek2Key = (localProperties.getProperty("mestre.ia.deepseek.2.key") ?: "").replace("\"", "\\\"")
     val openRouter1Key = (localProperties.getProperty("mestre.ia.openrouter.1.key") ?: "").replace("\"", "\\\"")
@@ -111,6 +112,8 @@ android {
         buildConfigField("String", "MESTRE_IA_MIMO_MODEL_FLASH", "\"mimo-v2-flash\"")
 
 
+        buildConfigField("String", "MESTRE_IA_GEMINI_IMAGE_KEY", "\"$gemini1Key\"")  // chave paga — imagem
+        buildConfigField("String", "MESTRE_IA_GEMINI_IMAGE_MODEL", "\"gemini-3.1-flash-image\"") // $0.067/img 9:16
         buildConfigField("String", "MESTRE_IA_GEMINI_3_1_PRO", "\"gemini-3.1-pro-preview\"")     // confirmado API 05/2026
         buildConfigField("String", "MESTRE_IA_GEMINI_2_5_PRO", "\"gemini-2.5-pro\"")            // Forjador primário — estável com tool calls 50k+
         buildConfigField("String", "MESTRE_IA_GEMINI_3_FLASH", "\"gemini-2.5-flash\"")           // confirmado API 05/2026

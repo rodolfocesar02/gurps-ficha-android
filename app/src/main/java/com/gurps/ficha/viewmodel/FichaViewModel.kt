@@ -106,6 +106,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
 
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
+    val mostrarDialogRetrato get() = iaDelegate.mostrarDialogRetrato
+    val retratoGerandoStatus get() = iaDelegate.retratoGerandoStatus
     var mestreIAMode 
         get() = iaDelegate.mestreIAMode
         set(value) { 
@@ -470,6 +472,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun executarAcaoIA(c: String) = iaDelegate.executarAcao(c)
     fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
     fun descartarFichaPendente() = iaDelegate.descartarPendente()
+    fun gerarRetratoIA() = iaDelegate.gerarRetratoIA()
+    fun dispensarDialogRetrato() { iaDelegate.mostrarDialogRetrato = false }
     fun limparChatMestreIA() = iaDelegate.limparChat()
     fun gerarSaudacaoMestreIA() = iaDelegate.gerarSaudacaoSeVazio()
     fun adicionarMensagemVoz(texto: String, role: String) = iaDelegate.adicionarMensagemVoz(texto, role)

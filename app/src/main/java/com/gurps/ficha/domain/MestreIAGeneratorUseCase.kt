@@ -18,6 +18,23 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * ════════════════════════════════════════════════════════════════
+ * MESTRE AUDITOR  (modo "analise")  — Analisa e edita ficha existente
+ * MESTRE FORJADOR (modo "geracao")  — Cria ficha do zero incrementalmente
+ * ════════════════════════════════════════════════════════════════
+ * Modos UI:
+ *   "analise" → 🔍 Mestre Auditor   — sugere melhorias / aplica delta JSON
+ *   "geracao" → 🏗️ Mestre Forjador  — loop agêntico: 9 pilares via forjador_editar_ficha
+ *
+ * Ponto de entrada: FichaIADelegate.conversar() → gerarOuAnalisarFicha()
+ * Fluxo Pro (1 chamada): gerarFichaViaPlano() — chamado pela entrevista do Forjador
+ *
+ * OUTROS MESTRES (referência cruzada):
+ *   Mestre Bibliotecário → MestreIAUseCase.kt    (modo "conversa")
+ *   Mestre Pintor        → GeminiImageService.kt  (modo "pintor")
+ * ════════════════════════════════════════════════════════════════
+ */
 class MestreIAGeneratorUseCase(
     private val viewModel: FichaViewModel,
     private val repository: DataRepository,

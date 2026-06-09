@@ -128,8 +128,14 @@ fun DialogMestreIA(
                 // Barra de input — oculta enquanto Live estiver ouvindo (usuário fala por voz)
                 if (!liveAtivo) {
                     ChatInputBar(prompt, onValueChange = { prompt = it }, isAguardando, onSend = {
-                        val p = prompt; prompt = ""; isAguardando = true
-                        viewModel.conversarComMestreIA(p, viewModel.mestreIAMode) { _, _ -> isAguardando = false }
+                        if (viewModel.mestreIAMode == "pintor") {
+                            // Mestre Pintor: ignora o texto e abre o dialog de retrato
+                            viewModel.dispensarDialogRetrato()  // reseta flag, o delegate reexibe
+                            viewModel.gerarRetratoIA()
+                        } else {
+                            val p = prompt; prompt = ""; isAguardando = true
+                            viewModel.conversarComMestreIA(p, viewModel.mestreIAMode) { _, _ -> isAguardando = false }
+                        }
                     }, mode = viewModel.mestreIAMode, onModeChange = { viewModel.mestreIAMode = it })
                 } else {
                     // Mostra status de voz e botão encerrar no lugar do input
@@ -164,14 +170,56 @@ fun ChatInputBar(value: String, onValueChange: (String) -> Unit, isAguardando: B
     Surface(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(32.dp), color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)) {
         Row(modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             var showMenu by remember { mutableStateOf(false) }
-            IconButton(onClick = { showMenu = true }, modifier = Modifier.semantics { contentDescription = if (mode == "conversa") "Abrir menu de modo do Mestre IA (modo: Dúvida)" else "Abrir menu de modo do Mestre IA (modo: ${if (mode == "analise") "Analisar ficha" else "Criar"})" }) { Icon(if (mode == "conversa") Icons.Default.Add else Icons.Default.Settings, null) }
-            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
-                DropdownMenuItem(text = { Text("📖 Dúvida") }, onClick = { onModeChange("conversa"); showMenu = false })
-                DropdownMenuItem(text = { Text("🔍 Analisar ficha") }, onClick = { onModeChange("analise"); showMenu = false })
-                DropdownMenuItem(text = { Text("🏗️ Criar") }, onClick = { onModeChange("geracao"); showMenu = false })
+            // Modos disponíveis:
+            // "conversa"  → Mestre Bibliotecário  — dúvidas de regras via RAG (MestreIAUseCase)
+            // "analise"   → Mestre Auditor        — analisa/edita ficha existente (MestreIAGeneratorUseCase / modo analise)
+            // "geracao"   → Mestre Forjador       — cria ficha do zero incrementalmente (MestreIAGeneratorUseCase / modo geracao)
+            // "pintor"    → Mestre Pintor         — gera retrato via Gemini Image (GeminiImageService)
+            val modoLabel = when (mode) {
+                "analise"  -> "Mestre Auditor"
+                "geracao"  -> "Mestre Forjador"
+                "pintor"   -> "Mestre Pintor"
+                else       -> "Mestre Bibliotecário"
             }
-            androidx.compose.foundation.text.BasicTextField(value = value, onValueChange = onValueChange, modifier = Modifier.weight(1f).padding(8.dp), decorationBox = { if (value.isEmpty()) Text("Fale com o mestre..."); it() })
-            if (isAguardando) CircularProgressIndicator(modifier = Modifier.size(24.dp)) else IconButton(onClick = onSend, enabled = value.isNotBlank(), modifier = Modifier.semantics { contentDescription = "Enviar mensagem para o Mestre IA" }) { Icon(Icons.AutoMirrored.Filled.Send, null) }
+            IconButton(onClick = { showMenu = true }, modifier = Modifier.semantics { contentDescription = "Abrir menu de modo do Mestre IA (modo: $modoLabel)" }) {
+                Icon(if (mode == "conversa") Icons.Default.Add else Icons.Default.Settings, null)
+            }
+            DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                DropdownMenuItem(
+                    leadingIcon = { Image(painterResource(R.drawable.mestre_bibliotecario), null, modifier = Modifier.size(28.dp)) },
+                    text = { Text("Mestre Bibliotecário") },
+                    onClick = { onModeChange("conversa"); showMenu = false }
+                )
+                DropdownMenuItem(
+                    leadingIcon = { Image(painterResource(R.drawable.mestre_auditor), null, modifier = Modifier.size(28.dp)) },
+                    text = { Text("Mestre Auditor") },
+                    onClick = { onModeChange("analise"); showMenu = false }
+                )
+                DropdownMenuItem(
+                    leadingIcon = { Image(painterResource(R.drawable.mestre_forjador), null, modifier = Modifier.size(28.dp)) },
+                    text = { Text("Mestre Forjador") },
+                    onClick = { onModeChange("geracao"); showMenu = false }
+                )
+                DropdownMenuItem(
+                    leadingIcon = { Image(painterResource(R.drawable.mestre_pintor), null, modifier = Modifier.size(28.dp)) },
+                    text = { Text("Mestre Pintor") },
+                    onClick = { onModeChange("pintor"); showMenu = false }
+                )
+            }
+            val isPintor = mode == "pintor"
+            androidx.compose.foundation.text.BasicTextField(
+                value = value, onValueChange = onValueChange,
+                modifier = Modifier.weight(1f).padding(8.dp),
+                enabled = !isPintor,
+                decorationBox = {
+                    if (value.isEmpty()) Text(if (isPintor) "Toque em ▶ para gerar o retrato" else "Fale com o mestre...")
+                    it()
+                }
+            )
+            if (isAguardando) CircularProgressIndicator(modifier = Modifier.size(24.dp))
+            else IconButton(onClick = onSend, enabled = isPintor || value.isNotBlank(), modifier = Modifier.semantics { contentDescription = "Enviar mensagem para o Mestre IA" }) {
+                Icon(Icons.AutoMirrored.Filled.Send, null)
+            }
         }
     }
 }
@@ -449,5 +497,65 @@ fun HistorySelectorDialog(viewModel: FichaViewModel, onDismiss: () -> Unit) {
             }
         },
         confirmButton = { TextButton(onClick = onDismiss) { Text("Fechar") } }
+    )
+}
+
+@Composable
+fun DialogRetratoIA(
+    nomePersonagem: String,
+    onGerar: () -> Unit,
+    onDispensар: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDispensар,
+        icon = {
+            Image(
+                painter = painterResource(R.drawable.mestre_pintor),
+                contentDescription = null,
+                modifier = Modifier.size(48.dp)
+            )
+        },
+        title = {
+            Text(
+                "Gerar retrato de $nomePersonagem?",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    "O Mestre IA pode gerar um retrato artístico do personagem usando a descrição e história que acabaram de ser criadas.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+                Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        "Modelo: Gemini 3.1 Flash Image\nCusto: ~\$0,07 por imagem\nTempo: ~10-35 segundos",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(12.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = onGerar) {
+                Text("Gerar retrato")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDispensар) {
+                Text("Agora não")
+            }
+        }
     )
 }

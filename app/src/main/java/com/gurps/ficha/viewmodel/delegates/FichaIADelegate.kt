@@ -41,6 +41,10 @@ class FichaIADelegate(
     private var sincroniaExecutadaNestaSessao = false
     @Volatile private var integracaoEmAndamento = false
 
+    // Retrato IA: true após o Forjador terminar uma ficha nova (modo geracao)
+    var mostrarDialogRetrato by mutableStateOf(false)
+    var retratoGerandoStatus by mutableStateOf("")  // mensagem de progresso durante geração
+
     // uid da bolha [SISTEMA] agregadora ativa. Eventos consecutivos
     // (cada item aplicado pelo Forjador) viram LINHAS na MESMA bolha em
     // vez de N bolhas separadas — chat limpo, feedback ao vivo mantido.
@@ -597,6 +601,14 @@ class FichaIADelegate(
             // Só o modo "analise" (Consultor) mantém o fluxo sugerir→INTEGRAR:
             // quando o usuário manda aplicar, a IA devolve um DELTA em JSON e aí
             // mostramos o botão. O tradutor mescla o delta sem apagar (dedup L140).
+
+            // Retrato IA: oferece geração de retrato ao final da criação de ficha.
+            // Só dispara no modo geracao e quando a ficha tem nome (foi criada agora).
+            if (modo == "geracao" && viewModel.personagem.nome.isNotBlank() &&
+                viewModel.personagem.imagemPersonagemUri.isBlank()) {
+                mostrarDialogRetrato = true
+            }
+
             if (fichaObjeto != null && modo == "analise") {
                 fichaGeradaPendente = fichaObjeto
                 relatorioValidacao = mestreIAGeneratorUseCase.gerarRelatorio(fichaObjeto)
@@ -638,6 +650,65 @@ class FichaIADelegate(
                         modelName = userMsg.modelName,
                         timestamp = System.currentTimeMillis() - 1000
                     ))
+                }
+            }
+        }
+    }
+
+    /**
+     * Gera retrato do personagem via Gemini Image e aplica na ficha.
+     * Chamado quando o usuário aceita o dialog de retrato pós-Forjador.
+     */
+    fun gerarRetratoIA() {
+        mostrarDialogRetrato = false
+        val p = viewModel.personagem
+        val apiKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
+        val modelId = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
+        if (apiKey.isBlank()) {
+            android.util.Log.w("GeminiImage", "MESTRE_IA_GEMINI_IMAGE_KEY vazia — abortando")
+            return
+        }
+        retratoGerandoStatus = "Gerando retrato de ${p.nome}..."
+        scope.launch(Dispatchers.IO) {
+            val resultado = com.gurps.ficha.data.network.GeminiImageService.gerarRetrato(
+                apiKey = apiKey,
+                modelId = modelId,
+                nome = p.nome,
+                aparencia = p.aparencia,
+                historia = p.historico
+            )
+            withContext(Dispatchers.Main) {
+                retratoGerandoStatus = ""
+                if (resultado == null) {
+                    mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
+                        "model", "⚠️ Não foi possível gerar o retrato agora. Tente pela galeria depois."
+                    )
+                    return@withContext
+                }
+                // Salva bytes como arquivo temporário e passa ao ImagemPersonagemStore
+                val ctx = context ?: return@withContext
+                try {
+                    val tmpFile = java.io.File(ctx.cacheDir, "retrato_ia_tmp.${resultado.mimeType.substringAfter('/')}")
+                    tmpFile.writeBytes(resultado.bytes)
+                    val uri = android.net.Uri.fromFile(tmpFile)
+                    val imagens = com.gurps.ficha.data.storage.ImagemPersonagemStore.salvarImagem(ctx, uri)
+                    if (imagens != null) {
+                        viewModel.atualizarImagemPersonagem(imagens.recortadaUri, imagens.originalUri)
+                        viewModel.autoSaveIA()
+                        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
+                            "model", "🎨 Retrato de ${p.nome} gerado com sucesso!"
+                        )
+                    } else {
+                        mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
+                            "model", "⚠️ Retrato gerado mas não foi possível salvar. Tente pela galeria."
+                        )
+                    }
+                    tmpFile.delete()
+                } catch (e: Exception) {
+                    android.util.Log.e("GeminiImage", "Erro ao salvar retrato: ${e.message}")
+                    mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
+                        "model", "⚠️ Erro ao salvar o retrato. Tente pela galeria."
+                    )
                 }
             }
         }

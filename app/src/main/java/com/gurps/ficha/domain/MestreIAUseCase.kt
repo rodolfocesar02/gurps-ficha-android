@@ -16,8 +16,20 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 /**
- * MestreIAUseCase - ESPECIALISTA EM AUDITORIA (Regras e Dúvidas).
- * Focado em fornecer respostas precisas baseadas no Códex de GURPS.
+ * ════════════════════════════════════════════════════════════════
+ * MESTRE BIBLIOTECÁRIO — Dúvidas e Consultas de Regras
+ * ════════════════════════════════════════════════════════════════
+ * Modo UI: "conversa"  |  Ícone: 📖  |  Menu: "Mestre Bibliotecário"
+ * Ponto de entrada: ChatInputBar (DialogsMestreIA.kt) → modo "conversa"
+ *
+ * Responde dúvidas de regras GURPS usando RAG sobre o Códex (busca
+ * vetorial HNSW + BM25 sobre os chunks do manual).
+ *
+ * OUTROS MESTRES (referência cruzada):
+ *   Mestre Auditor   → MestreIAGeneratorUseCase.kt  (modo "analise")
+ *   Mestre Forjador  → MestreIAGeneratorUseCase.kt  (modo "geracao")
+ *   Mestre Pintor    → GeminiImageService.kt         (modo "pintor")
+ * ════════════════════════════════════════════════════════════════
  */
 class MestreIAUseCase(
     private val viewModel: FichaViewModel,
