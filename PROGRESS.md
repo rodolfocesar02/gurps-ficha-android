@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 29 de Maio de 2026
-**Status Atual:** Lote 316 CONCLUÍDO — Auditor RAG: maxTokens 16k + regra de leitura cuidadosa + regra de tamanho
-**Último Lote Registrado:** Lote 316 (hash `22ff256`) — começa na linha **1984** deste arquivo
+**Última Atualização:** 09 de Junho de 2026
+**Status Atual:** Lote 341 CONCLUÍDO — Imagem (enquadramento de rosto) + Forjador (bug do Chute, GPS de técnicas, raça null)
+**Último Lote Registrado:** Lote 341 (hash `b927a51`) — começa na linha **2765** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2760,4 +2760,15 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Reescrita dos prompts: 9 pilares em ordem, GPS opcional, regra anti-loop Aptidao Magica
 - lerFicha("completo") entrega todas as secoes de uma vez
 - buscarCatalogo retorna descricao de vantagens
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 341 (hash `b927a51`) — 09 de Junho de 2026
+**Imagem: enquadramento de rosto no cabecalho + Forjador: correcoes de tecnica/JSON**
+- Imagem: faixa do cabecalho 2:1, rosto centralizado, Compose Alignment.Center (corrige rosto cortado/so testa)
+- Forjador: corrige bug do pre-requisito plural ("pericias pre-requisitos") em FichaSkillDelegate.extrairAncoraPericiaNoLimite — "Chute" (Briga ou Carate) falhava com as pericias na ficha
+- Forjador: GPS de tecnicas — adiciona automaticamente a pericia-base nomeada no pre-req (1 pt) quando a ficha nao tem compativel (ForjadorToolExecutor.gpsAdicionarPericiaBaseDeTecnica)
+- Forjador: remove mensagem tecnica "itens nao aplicados" do chat (fica so no Logcat)
+- Forjador: corrige raca "null" (org.json.optString devolve string "null")
+- Diagnostico: logs MestreIA_JSON (JSON cru da IA + IDs por secao)
+- Docs: remove planos/relatorios obsoletos, adiciona Skill_GURPS.MD
 ----------------------------------------------------------------------------------------------------------------------------------------------------
