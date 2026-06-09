@@ -383,9 +383,9 @@ fun ModeloRacialDialog(
                     Spacer(Modifier.height(8.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("Limitação:", style = MaterialTheme.typography.labelMedium)
-                        IconButton(onClick = { pctSel = (pctSel - 10).coerceAtLeast(-80) }) { Icon(Icons.Default.KeyboardArrowDown, null) }
+                        IconButton(onClick = { pctSel = (pctSel - 10).coerceAtLeast(-80) }) { Icon(Icons.Default.KeyboardArrowDown, "Diminuir limitação") }
                         Text("$pctSel%", fontWeight = FontWeight.Bold)
-                        IconButton(onClick = { pctSel = (pctSel + 10).coerceAtMost(-10) }) { Icon(Icons.Default.KeyboardArrowUp, null) }
+                        IconButton(onClick = { pctSel = (pctSel + 10).coerceAtMost(-10) }) { Icon(Icons.Default.KeyboardArrowUp, "Aumentar limitação") }
                     }
                 }
             },

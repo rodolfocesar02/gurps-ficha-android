@@ -1,0 +1,840 @@
+[
+  {
+    "id": "gladiador",
+    "nome": "Gladiador",
+    "descricao": "Combatente profissional das arenas. Mestre em combate de exibição, sobrevivência em duelos e adaptação a múltiplas armas.",
+    "tags": [
+      "combate",
+      "arena",
+      "gladiador",
+      "lutador",
+      "duelista",
+      "espetaculo",
+      "mercenario"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 14,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "reflexos_em_combate" },
+      { "id": "hipoalgia_alto_limiar_de_dor" }
+    ],
+    "desvantagens": [
+      { "id": "orgulhoso" },
+      { "id": "sanguinolencia" }
+    ],
+    "pericias": [
+      { "id": "espada_de_lamina_larga", "pts": 8 },
+      { "id": "escudo", "pts": 4 },
+      { "id": "briga", "pts": 4 },
+      { "id": "intimidacao", "pts": 2 },
+      { "id": "acrobacia", "pts": 2 }
+    ],
+    "equipamentos": [
+      "tridente",
+      "escudo_pequeno",
+      "capacete_de_gladiador"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Especialista em rede e tridente",
+      "Campeão da arena",
+      "Lutador ex-escravo"
+    ]
+  },
+  {
+    "id": "lanceiro",
+    "nome": "Lanceiro",
+    "descricao": "Soldado disciplinado treinado para combate em formação e defesa de posições.",
+    "tags": [
+      "combate",
+      "soldado",
+      "lanceiro",
+      "infantaria",
+      "militar"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 12,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "reflexos_em_combate" }
+    ],
+    "desvantagens": [
+      { "id": "senso_do_dever" },
+      { "id": "codigo_de_honra" }
+    ],
+    "pericias": [
+      { "id": "lanca", "pts": 8 },
+      { "id": "escudo", "pts": 4 },
+      { "id": "tatica", "pts": 2 },
+      { "id": "briga", "pts": 2 },
+      { "id": "primeiros_socorros_nt", "pts": 1 }
+    ],
+    "equipamentos": [
+      "lanca",
+      "escudo_grande",
+      "camisa_de_cota_de_malha"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Piqueiro",
+      "Guarda de muralha",
+      "Veterano de campanha"
+    ]
+  },
+  {
+    "id": "mercenario_veterano",
+    "nome": "Mercenário Veterano",
+    "descricao": "Combatente experiente que lutou em inúmeras campanhas e conflitos.",
+    "tags": [
+      "combate",
+      "mercenario",
+      "veterano",
+      "guerreiro"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "reflexos_em_combate" },
+      { "id": "sorte" }
+    ],
+    "desvantagens": [
+      { "id": "avareza" },
+      { "id": "codigo_de_honra" }
+    ],
+    "pericias": [
+      { "id": "espada_de_lamina_larga", "pts": 6 },
+      { "id": "escudo", "pts": 4 },
+      { "id": "intimidacao", "pts": 2 },
+      { "id": "sobrevivencia", "pts": 2 },
+      { "id": "tatica", "pts": 2 }
+    ],
+    "equipamentos": [
+      "espada_bastarda",
+      "escudo_medio",
+      "loriga_segmentada"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Capitão mercenário",
+      "Veterano de cercos",
+      "Guarda-costas"
+    ]
+  },
+  {
+    "id": "duelista_nobre",
+    "nome": "Duelista Nobre",
+    "descricao": "Espadachim aristocrata especializado em duelos formais e etiqueta da corte.",
+    "tags": [
+      "combate",
+      "nobre",
+      "duelista",
+      "esgrima",
+      "cortesao"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 15,
+      "iq": 11,
+      "ht": 11
+    },
+    "vantagens": [
+      { "id": "status" },
+      { "id": "reflexos_em_combate" }
+    ],
+    "desvantagens": [
+      { "id": "orgulhoso" },
+      { "id": "codigo_de_honra" }
+    ],
+    "pericias": [
+      { "id": "rapieira", "pts": 8 },
+      { "id": "adaga_de_esgrima", "pts": 4 },
+      { "id": "trato_social", "pts": 4 },
+      { "id": "diplomacia", "pts": 2 },
+      { "id": "acrobacia", "pts": 2 }
+    ],
+    "equipamentos": [
+      "rapieira",
+      "adaga",
+      "jaqueta_de_couro"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Mosqueteiro",
+      "Campeão da corte",
+      "Espadachim errante"
+    ]
+  },
+  {
+    "id": "guarda_real",
+    "nome": "Guarda Real",
+    "descricao": "Soldado de elite responsável pela proteção da família real.",
+    "tags": [
+      "combate",
+      "elite",
+      "guarda",
+      "real"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "reflexos_em_combate" },
+      { "id": "duro_de_matar", "nivel": 1 }
+    ],
+    "desvantagens": [
+      { "id": "dever" },
+      { "id": "codigo_de_honra" }
+    ],
+    "pericias": [
+      { "id": "espada_de_lamina_larga", "pts": 8 },
+      { "id": "escudo", "pts": 4 },
+      { "id": "observacao", "pts": 2 },
+      { "id": "lideranca", "pts": 2 },
+      { "id": "tatica", "pts": 2 }
+    ],
+    "equipamentos": [
+      "espada_larga",
+      "escudo_grande",
+      "corselete_de_aco"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Guarda cerimonial",
+      "Capitão da guarda",
+      "Veterano do palácio"
+    ]
+  },
+  {
+    "id": "cavaleiro_negro",
+    "nome": "Cavaleiro Negro",
+    "descricao": "Guerreiro temido por sua reputação sombria e disciplina brutal.",
+    "tags": [
+      "combate",
+      "cavaleiro",
+      "sombrio",
+      "guerreiro"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 14,
+      "dx": 12,
+      "ht": 13
+    },
+    "vantagens": [
+      { "id": "intimidante" },
+      { "id": "reflexos_em_combate" }
+    ],
+    "desvantagens": [
+      { "id": "orgulhoso" },
+      { "id": "reputacao", "custoEscolhido": -10 }
+    ],
+    "pericias": [
+      { "id": "macamachado", "pts": 8 },
+      { "id": "escudo", "pts": 4 },
+      { "id": "intimidacao", "pts": 4 },
+      { "id": "cavalgar", "pts": 2 }
+    ],
+    "equipamentos": [
+      "mangual",
+      "escudo_grande",
+      "armadura_de_placas_laminadas_de_aco"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Lorde caído",
+      "Comandante cruel",
+      "Cavaleiro amaldiçoado"
+    ]
+  },
+  {
+    "id": "cavaleiro_andante",
+    "nome": "Cavaleiro Andante",
+    "descricao": "Nobre aventureiro que percorre o mundo em busca de honra e glória.",
+    "tags": [
+      "combate",
+      "cavaleiro",
+      "honra",
+      "aventura"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 12,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "status" },
+      { "id": "reflexos_em_combate" }
+    ],
+    "desvantagens": [
+      { "id": "codigo_de_honra" },
+      { "id": "senso_do_dever" }
+    ],
+    "pericias": [
+      { "id": "espada_de_lamina_larga", "pts": 8 },
+      { "id": "cavalgar", "pts": 4 },
+      { "id": "escudo", "pts": 4 },
+      { "id": "lideranca", "pts": 2 },
+      { "id": "trato_social", "pts": 2 }
+    ],
+    "equipamentos": [
+      "espada_bastarda",
+      "escudo_pequeno",
+      "cota_de_malha_longa"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Errante solitário",
+      "Defensor dos fracos",
+      "Campeão do reino"
+    ]
+  },
+  {
+    "id": "matador_de_gigantes",
+    "nome": "Matador de Gigantes",
+    "descricao": "Especialista em enfrentar monstros enormes e criaturas colossais.",
+    "tags": [
+      "combate",
+      "cacador",
+      "monstros",
+      "gigantes"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 14,
+      "dx": 12,
+      "ht": 13
+    },
+    "vantagens": [
+      { "id": "nocao_do_perigo" },
+      { "id": "hipoalgia_alto_limiar_de_dor" }
+    ],
+    "desvantagens": [
+      { "id": "impulsividade" },
+      { "id": "sanguinolencia" }
+    ],
+    "pericias": [
+      { "id": "machado_de_duas_maos", "pts": 8 },
+      { "id": "rastreamento", "pts": 2 },
+      { "id": "sobrevivencia", "pts": 2 },
+      { "id": "observacao", "pts": 2 },
+      { "id": "briga", "pts": 2 }
+    ],
+    "equipamentos": [
+      "machado_de_duas_maos",
+      "peitoral_de_aco"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Caçador de dragões",
+      "Matador de trolls",
+      "Veterano das montanhas"
+    ]
+  },
+  {
+    "id": "guerreiro_tribal",
+    "nome": "Guerreiro Tribal",
+    "descricao": "Combatente criado na natureza, especialista em caça, rastreamento e guerra tribal.",
+    "tags": [
+      "combate",
+      "tribal",
+      "cacador",
+      "selvagem"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 14,
+      "dx": 12,
+      "ht": 13
+    },
+    "vantagens": [
+      { "id": "senso_de_direcao" },
+      { "id": "hipoalgia_alto_limiar_de_dor" }
+    ],
+    "desvantagens": [
+      { "id": "antecedentes_mundanos" },
+      { "id": "impulsividade" }
+    ],
+    "pericias": [
+      { "id": "lanca", "pts": 6 },
+      { "id": "arco", "pts": 4 },
+      { "id": "sobrevivencia", "pts": 4 },
+      { "id": "rastreamento", "pts": 2 },
+      { "id": "briga", "pts": 2 }
+    ],
+    "equipamentos": [
+      "azagaia",
+      "arco_longo",
+      "tunica_de_pele"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Chefe tribal",
+      "Caçador da tribo",
+      "Guardião ancestral"
+    ]
+  },
+  {
+    "id": "corsario",
+    "nome": "Corsário",
+    "descricao": "Marinheiro guerreiro especializado em abordagens e combate naval.",
+    "tags": [
+      "combate",
+      "naval",
+      "corsario",
+      "pirata",
+      "marinheiro"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "ambidestria" },
+      { "id": "sorte" }
+    ],
+    "desvantagens": [
+      { "id": "avareza" },
+      { "id": "reputacao", "custoEscolhido": -5 }
+    ],
+    "pericias": [
+      { "id": "sabre", "pts": 8 },
+      { "id": "faca", "pts": 4 },
+      { "id": "remo_vela_nt", "pts": 4 },
+      { "id": "natacao", "pts": 2 },
+      { "id": "acrobacia", "pts": 2 }
+    ],
+    "equipamentos": [
+      "sabre_de_abordagem",
+      "adaga",
+      "jaqueta_de_couro"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Capitão corsário",
+      "Caçador de navios",
+      "Pirata veterano"
+    ]
+  },
+  {
+    "id": "espiao_imperial",
+    "nome": "Espião Imperial",
+    "descricao": "Agente da coroa especializado em intriga política, coleta de informações e infiltração social.",
+    "tags": ["furtividade", "social", "espiao", "imperio", "intriga"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 12,
+      "iq": 13
+    },
+    "vantagens": [
+      { "id": "carisma", "nivel": 1 },
+      { "id": "voz" }
+    ],
+    "desvantagens": [
+      { "id": "dever" },
+      { "id": "segredo" }
+    ],
+    "pericias": [
+      { "id": "diplomacia", "pts": 4 },
+      { "id": "politica", "pts": 4 },
+      { "id": "trato_social", "pts": 4 },
+      { "id": "dissimulacao", "pts": 4 },
+      { "id": "disfarce_nt", "pts": 2 },
+      { "id": "observacao", "pts": 2 },
+      { "id": "linguistica", "pts": 2 }
+    ],
+    "equipamentos": [
+      "adaga",
+      "capa_leve",
+      "jaqueta_de_couro"
+    ],
+    "magias": [
+      "alterar_voz",
+      "disfarce_ilusorio",
+      "mensagem"
+    ],
+    "variacoes": [
+      "Agente diplomático",
+      "Espião infiltrado",
+      "Mestre de chantagem"
+    ]
+  },
+  {
+    "id": "batedor",
+    "nome": "Batedor",
+    "descricao": "Explorador especializado em reconhecimento e vigilância de territórios hostis.",
+    "tags": ["furtividade", "exploracao", "batedor", "rastreador"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      { "id": "senso_de_direcao" },
+      { "id": "visao_agucada", "nivel": 2 }
+    ],
+    "desvantagens": [
+      { "id": "solitario" },
+      { "id": "senso_do_dever" }
+    ],
+    "pericias": [
+      { "id": "rastreamento", "pts": 8 },
+      { "id": "sobrevivencia", "pts": 4 },
+      { "id": "observacao", "pts": 4 },
+      { "id": "arco", "pts": 4 },
+      { "id": "naturalista", "pts": 2 }
+    ],
+    "equipamentos": [
+      "arco_longo",
+      "faca",
+      "tunica_de_pele",
+      "botas"
+    ],
+    "magias": [
+      "localizar_agua",
+      "localizar_alimento",
+      "guia"
+    ],
+    "variacoes": [
+      "Patrulheiro de fronteira",
+      "Batedor militar",
+      "Explorador de montanhas"
+    ]
+  },
+  {
+    "id": "cacador_de_recompensas",
+    "nome": "Caçador de Recompensas",
+    "descricao": "Perseguidor profissional treinado para localizar e capturar alvos perigosos.",
+    "tags": ["furtividade", "captura", "mercenario", "rastreador"],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "iq": 11
+    },
+    "vantagens": [
+      { "id": "nocao_do_perigo" },
+      { "id": "reflexos_em_combate" }
+    ],
+    "desvantagens": [
+      { "id": "avareza" },
+      { "id": "inimigos" }
+    ],
+    "pericias": [
+      { "id": "rastreamento", "pts": 8 },
+      { "id": "intimidacao", "pts": 4 },
+      { "id": "observacao", "pts": 2 },
+      { "id": "revistar", "pts": 2 },
+      { "id": "besta", "pts": 4 }
+    ],
+    "equipamentos": [
+      "besta",
+      "rede_de_combate",
+      "machadinha",
+      "casaco_de_couro_de_bufalo"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Capturador vivo",
+      "Caçador urbano",
+      "Perseguidor de monstros"
+    ]
+  },
+  {
+    "id": "sabotador",
+    "nome": "Sabotador",
+    "descricao": "Especialista em destruir recursos inimigos e comprometer operações sem ser detectado.",
+    "tags": ["furtividade", "sabotagem", "infiltracao"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 13,
+      "iq": 12
+    },
+    "vantagens": [
+      { "id": "fleuma" },
+      { "id": "destreza_manual_elevada", "nivel": 1 }
+    ],
+    "desvantagens": [
+      { "id": "segredo" },
+      { "id": "obsessao" }
+    ],
+    "pericias": [
+      { "id": "armadilhas_nt", "pts": 4 },
+      { "id": "mecanica_nt", "pts": 4 },
+      { "id": "arrombamento_nt", "pts": 4 },
+      { "id": "furtividade", "pts": 4 }
+    ],
+    "equipamentos": [
+      "garrote",
+      "faca",
+      "jaqueta_de_couro",
+      "luvas_de_couro"
+    ],
+    "magias": [
+      "estragar",
+      "deteriorar",
+      "extinguir_fogo"
+    ],
+    "variacoes": [
+      "Sabotador militar",
+      "Agente revolucionário",
+      "Especialista em infraestrutura"
+    ]
+  },
+  {
+    "id": "infiltrador",
+    "nome": "Infiltrador",
+    "descricao": "Especialista em entrar e sair de áreas protegidas sem deixar rastros.",
+    "tags": ["furtividade", "infiltracao", "escalada"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 14,
+      "ht": 11
+    },
+    "vantagens": [
+      { "id": "equilibrio_perfeito" },
+      { "id": "flexibilidade" }
+    ],
+    "desvantagens": [
+      { "id": "curiosidade" },
+      { "id": "ganancia" }
+    ],
+    "pericias": [
+      { "id": "escalada", "pts": 4 },
+      { "id": "acrobacia", "pts": 4 },
+      { "id": "furtividade", "pts": 8 },
+      { "id": "arrombamento_nt", "pts": 2 },
+      { "id": "disfarce_nt", "pts": 2 }
+    ],
+    "equipamentos": [
+      "adaga",
+      "capa_leve",
+      "luvas_de_couro",
+      "botas"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Ladrão de castelos",
+      "Agente de resgate",
+      "Escalador urbano"
+    ]
+  },
+  {
+    "id": "assassino_de_guilda",
+    "nome": "Assassino de Guilda",
+    "descricao": "Executor treinado por uma organização secreta para eliminar alvos específicos.",
+    "tags": ["furtividade", "assassino", "sombras"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 14,
+      "iq": 11
+    },
+    "vantagens": [
+      { "id": "ambidestria" },
+      { "id": "reflexos_em_combate" }
+    ],
+    "desvantagens": [
+      { "id": "segredo" },
+      { "id": "estigma_social" }
+    ],
+    "pericias": [
+      { "id": "faca", "pts": 8 },
+      { "id": "furtividade", "pts": 8 },
+      { "id": "dissimulacao", "pts": 2 },
+      { "id": "disfarce_nt", "pts": 2 }
+    ],
+    "equipamentos": [
+      "adaga",
+      "adaga",
+      "garrote",
+      "capa_pesada"
+    ],
+    "magias": [
+      "invisibilidade",
+      "medo",
+      "escuridao"
+    ],
+    "variacoes": [
+      "Matador silencioso",
+      "Executor nobre",
+      "Especialista em venenos"
+    ]
+  },
+  {
+    "id": "ladrao_de_tumbas",
+    "nome": "Ladrão de Tumbas",
+    "descricao": "Explorador de ruínas antigas em busca de relíquias e tesouros esquecidos.",
+    "tags": ["furtividade", "exploracao", "ruinas", "tesouros"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 13,
+      "iq": 12
+    },
+    "vantagens": [
+      { "id": "sorte" },
+      { "id": "nocao_do_perigo" }
+    ],
+    "desvantagens": [
+      { "id": "curiosidade" },
+      { "id": "avareza" }
+    ],
+    "pericias": [
+      { "id": "armadilhas_nt", "pts": 4 },
+      { "id": "historia", "pts": 2 },
+      { "id": "arqueologia", "pts": 4 },
+      { "id": "escalada", "pts": 2 },
+      { "id": "observacao", "pts": 4 }
+    ],
+    "equipamentos": [
+      "facao",
+      "armadura_de_couro",
+      "barrete_de_couro",
+      "botas"
+    ],
+    "magias": [
+      "deteccao_de_magia",
+      "localizar_passagem",
+      "luz"
+    ],
+    "variacoes": [
+      "Arqueólogo aventureiro",
+      "Saqueador profissional",
+      "Explorador de catacumbas"
+    ]
+  },
+  {
+    "id": "arrombador",
+    "nome": "Arrombador",
+    "descricao": "Especialista em abrir fechaduras, cofres e mecanismos complexos.",
+    "tags": ["furtividade", "arrombamento", "ladrao"],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 14,
+      "iq": 12
+    },
+    "vantagens": [
+      { "id": "destreza_manual_elevada", "nivel": 2 },
+      { "id": "fleuma" }
+    ],
+    "desvantagens": [
+      { "id": "ganancia" },
+      { "id": "compulsao" }
+    ],
+    "pericias": [
+      { "id": "arrombamento_nt", "pts": 8 },
+      { "id": "mecanica_nt", "pts": 4 },
+      { "id": "furtividade", "pts": 4 },
+      { "id": "observacao", "pts": 2 }
+    ],
+    "equipamentos": [
+      "faca",
+      "luvas_de_couro",
+      "capa_leve",
+      "sapatos"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Especialista em cofres",
+      "Ladrão de mansões",
+      "Sabotador mecânico"
+    ]
+  },
+  {
+    "id": "contrabandista",
+    "nome": "Contrabandista",
+    "descricao": "Transportador de bens ilegais e operador do mercado negro.",
+    "tags": ["furtividade", "mercador", "ilegal", "social"],
+    "pontosBase": 150,
+    "atributos": {
+      "iq": 12,
+      "dx": 12
+    },
+    "vantagens": [
+      { "id": "contatos" },
+      { "id": "aliados" }
+    ],
+    "desvantagens": [
+      { "id": "inimigos" },
+      { "id": "avareza" }
+    ],
+    "pericias": [
+      { "id": "contrabando", "pts": 8 },
+      { "id": "comercio", "pts": 4 },
+      { "id": "labia", "pts": 4 },
+      { "id": "navegacao", "pts": 2 }
+    ],
+    "equipamentos": [
+      "sabre_de_abordagem",
+      "jaqueta_de_couro",
+      "botas",
+      "capa_pesada"
+    ],
+    "magias": [
+      "esconder",
+      "escamotear_informacao"
+    ],
+    "variacoes": [
+      "Mercador clandestino",
+      "Capitão de rota secreta",
+      "Traficante de relíquias"
+    ]
+  },
+  {
+    "id": "vigarista",
+    "nome": "Vigarista",
+    "descricao": "Manipulador social que vive de golpes, blefes e esquemas.",
+    "tags": ["social", "golpista", "enganacao", "furtividade"],
+    "pontosBase": 150,
+    "atributos": {
+      "iq": 13,
+      "dx": 11
+    },
+    "vantagens": [
+      { "id": "carisma", "nivel": 2 },
+      { "id": "voz" }
+    ],
+    "desvantagens": [
+      { "id": "trapaceiro" },
+      { "id": "luxuria" }
+    ],
+    "pericias": [
+      { "id": "labia", "pts": 8 },
+      { "id": "atuacao", "pts": 4 },
+      { "id": "dissimulacao", "pts": 4 },
+      { "id": "jogos", "pts": 2 },
+      { "id": "trato_social", "pts": 2 }
+    ],
+    "equipamentos": [
+      "adaga",
+      "capa_leve",
+      "sapatos",
+      "barrete_de_tecido"
+    ],
+    "magias": [
+      "fascinar",
+      "eloquencia",
+      "compelir_a_mentira"
+    ],
+    "variacoes": [
+      "Charlatão religioso",
+      "Mestre dos jogos",
+      "Golpista aristocrático"
+    ]
+  },
+  

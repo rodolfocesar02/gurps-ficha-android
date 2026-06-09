@@ -45,6 +45,10 @@ object ImagemPersonagemStore {
     private const val LARGURA_ALVO = 1080       // px — largura do retrato recortado (cabeçalho)
     private const val MAIOR_LADO_ORIGINAL = 1600 // px — maior lado da imagem inteira (tela cheia)
     private const val PROPORCAO = 2.0f          // faixa do cabeçalho (largura/altura)
+    // Fração da ALTURA da faixa que o rosto deve ocupar (enquadramento
+    // consistente "rosto + ombros" — independe de quão grande o rosto aparece
+    // na arte original). 0.42 = rosto ocupa ~42% da faixa.
+    private const val ROSTO_FRACAO_ALTURA = 0.42f
     private const val QUALIDADE_JPEG = 88
     private const val MAX_DECODE = 2048          // limita o bitmap carregado em memória
 
@@ -273,34 +277,47 @@ object ImagemPersonagemStore {
     }
 
     /**
-     * Recorta [bmp] na proporção do cabeçalho, enquadrando o assunto.
-     *  - Centro horizontal: centro do rosto (ou do assunto, ou da imagem).
-     *  - Vertical: com rosto, CENTRALIZA o rosto na faixa (levemente acima do
-     *    meio, para mostrar cabelo em cima e um pouco de ombro embaixo). Como o
-     *    cabeçalho na tela é mais baixo que esta faixa, o Compose ainda recorta
-     *    pelo CENTRO (Alignment.Center) — por isso o rosto centralizado aqui
-     *    continua visível lá. Sem rosto → topo do assunto; senão topo da imagem.
+     * Recorta [bmp] na proporção do cabeçalho, enquadrando o assunto de forma
+     * CONSISTENTE entre artes diferentes.
+     *  - COM rosto: a altura da faixa é derivada do TAMANHO do rosto (o rosto
+     *    ocupa sempre ~ROSTO_FRACAO_ALTURA da faixa). Assim, um rosto pequeno
+     *    na arte é "aproximado" e um rosto grande é "afastado" — todos ficam na
+     *    mesma escala (rosto + ombros). Centraliza horizontal e verticalmente
+     *    no rosto.
+     *  - SEM rosto: faixa padrão (largura/PROPORCAO), topo do assunto ou da
+     *    imagem.
+     * Em ambos os casos o redimensionamento final (LARGURA_ALVO) normaliza a
+     * resolução.
      */
     private fun recortarFaixa(bmp: Bitmap, assunto: Rect?, rosto: Rect?): Bitmap {
         val w = bmp.width
         val h = bmp.height
-        var cropW = w
-        var cropH = (w / PROPORCAO).roundToInt()
-        if (cropH > h) {
-            cropH = h
-            cropW = (h * PROPORCAO).roundToInt().coerceAtMost(w)
+
+        var cropW: Int
+        var cropH: Int
+
+        if (rosto != null) {
+            // Altura da faixa para o rosto ocupar ROSTO_FRACAO_ALTURA dela.
+            cropH = (rosto.height() / ROSTO_FRACAO_ALTURA).roundToInt()
+            cropW = (cropH * PROPORCAO).roundToInt()
+            // Não pode exceder a imagem: ajusta mantendo a proporção.
+            if (cropW > w) { cropW = w; cropH = (w / PROPORCAO).roundToInt() }
+            if (cropH > h) { cropH = h; cropW = (h * PROPORCAO).roundToInt().coerceAtMost(w) }
+        } else {
+            cropW = w
+            cropH = (w / PROPORCAO).roundToInt()
+            if (cropH > h) { cropH = h; cropW = (h * PROPORCAO).roundToInt().coerceAtMost(w) }
         }
 
         // Centro horizontal: rosto > assunto > centro da imagem.
         val centroX = rosto?.centerX() ?: assunto?.centerX() ?: (w / 2)
-        var left = (centroX - cropW / 2).coerceIn(0, w - cropW)
+        var left = (centroX - cropW / 2)
 
         val top: Int = when {
-            // Rosto a ~46% do topo da faixa (centralizado, levemente acima do
-            // meio). Mantém o rosto no centro mesmo após o recorte do Compose.
-            rosto != null ->
-                (rosto.centerY() - (cropH * 0.46f).roundToInt()).coerceIn(0, h - cropH)
-            assunto != null -> assunto.top.coerceIn(0, h - cropH)
+            // Rosto centralizado na vertical (levemente acima do meio: cabelo
+            // em cima, ombros embaixo). 0.46 = rosto um pouco acima do centro.
+            rosto != null -> rosto.centerY() - (cropH * 0.46f).roundToInt()
+            assunto != null -> assunto.top
             else -> 0
         }
 

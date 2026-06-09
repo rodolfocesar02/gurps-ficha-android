@@ -3,24 +3,71 @@
     "id": "mago_elementalista",
     "nome": "Mago Elementalista",
     "descricao": "Estudioso das forças elementais. Domina fogo, ar ou terra conforme sua especialidade.",
-    "tags": ["magia", "estudioso", "elementalista"],
+    "tags": [
+      "magia",
+      "estudioso",
+      "elementalista",
+      "mago",
+      "feiticeiro",
+      "bruxo",
+      "arcano",
+      "conjurador",
+      "piromante",
+      "elementos",
+      "fogo",
+      "gelo",
+      "raio"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 14, "ht": 11 },
+    "atributos": {
+      "iq": 14,
+      "ht": 11
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 3 },
-      { "id": "memoria_eidetica", "nivel": 1 }
+      {
+        "id": "aptidao_magica",
+        "nivel": 3
+      },
+      {
+        "id": "memoria_eidetica",
+        "nivel": 1
+      }
     ],
     "desvantagens": [
-      { "id": "curiosidade", "autocontrole": 12 },
-      { "id": "codigo_de_honra", "custoEscolhido": -5 }
+      {
+        "id": "curiosidade",
+        "autocontrole": 12
+      },
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "ocultismo", "pts": 4 },
-      { "id": "taumatologia", "pts": 2 },
-      { "id": "historia", "pts": 1 },
-      { "id": "escrita", "pts": 1 }
+      {
+        "id": "ocultismo",
+        "pts": 4
+      },
+      {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 1
+      },
+      {
+        "id": "escrita",
+        "pts": 1
+      }
     ],
-    "magias": ["criar_fogo", "bola_de_fogo", "resistencia_ao_fogo", "moldar_fogo", "apressar_fogo"],
+    "magias": [
+      "criar_fogo",
+      "bola_de_fogo",
+      "resistencia_ao_fogo",
+      "moldar_fogo",
+      "apressar_fogo"
+    ],
     "variacoes": [
       "Troque a escola de fogo por ar (relampago) ou terra (pedra) conforme o conceito",
       "Pode adicionar Aptidão Mágica nível 4 reduzindo perícias",
@@ -31,25 +78,69 @@
     "id": "guerreiro_espada_escudo",
     "nome": "Guerreiro (Espada e Escudo)",
     "descricao": "Soldado experiente, equilibrado entre ataque e defesa. Usa espada longa e escudo.",
-    "tags": ["combate", "guerreiro", "medievalismo"],
+    "tags": [
+      "combate",
+      "guerreiro",
+      "medievalismo",
+      "soldado",
+      "cavaleiro",
+      "espadachim",
+      "lutador",
+      "mercenario",
+      "combatente",
+      "espada"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 13, "dx": 13, "ht": 12 },
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "ht": 12
+    },
     "vantagens": [
-      { "id": "reflexos_em_combate" },
-      { "id": "duro_de_matar", "nivel": 1 }
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "duro_de_matar",
+        "nivel": 1
+      }
     ],
     "desvantagens": [
-      { "id": "codigo_de_honra", "custoEscolhido": -10 },
-      { "id": "senso_do_dever", "custoEscolhido": -10 }
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "senso_do_dever",
+        "custoEscolhido": -10
+      }
     ],
     "pericias": [
-      { "id": "espada_de_lamina_larga", "pts": 8 },
-      { "id": "escudo", "pts": 4 },
-      { "id": "briga", "pts": 2 },
-      { "id": "tatica", "pts": 2 },
-      { "id": "primeiros_socorros_nt", "pts": 1 }
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 8
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["espada_longa", "escudo_medio"],
+    "equipamentos": [
+      "espada_longa",
+      "escudo_medio"
+    ],
     "variacoes": [
       "Troque espada por machado (maça/machado) para estilo mais bruto",
       "Adicione Ambidestria para dual wield sem escudo",
@@ -60,28 +151,80 @@
     "id": "ladino_urbano",
     "nome": "Ladino Urbano",
     "descricao": "Especialista em furtividade e subterfúgio. Prefere agir nas sombras e evitar confronto direto.",
-    "tags": ["furtividade", "urbano", "ladino"],
+    "tags": [
+      "furtividade",
+      "urbano",
+      "ladino",
+      "ladrao",
+      "batedor",
+      "trapaceiro",
+      "assassino furtivo",
+      "gatuno",
+      "espiao",
+      "furtivo"
+    ],
     "pontosBase": 150,
-    "atributos": { "dx": 14, "iq": 12 },
+    "atributos": {
+      "dx": 14,
+      "iq": 12
+    },
     "vantagens": [
-      { "id": "sorte", "nivel": 1 },
-      { "id": "fleuma" }
+      {
+        "id": "sorte",
+        "nivel": 1
+      },
+      {
+        "id": "fleuma"
+      }
     ],
     "desvantagens": [
-      { "id": "avareza", "autocontrole": 12 },
-      { "id": "trapaceiro", "autocontrole": 15 }
+      {
+        "id": "avareza",
+        "autocontrole": 12
+      },
+      {
+        "id": "trapaceiro",
+        "autocontrole": 15
+      }
     ],
     "pericias": [
-      { "id": "furtividade", "pts": 8 },
-      { "id": "surrupiar", "pts": 4 },
-      { "id": "faca", "pts": 4 },
-      { "id": "arrombamento_nt", "pts": 2 },
-      { "id": "dissimulacao", "pts": 2 },
-      { "id": "labia", "pts": 2 },
-      { "id": "observacao", "pts": 2 },
-      { "id": "acrobacia", "pts": 1 }
+      {
+        "id": "furtividade",
+        "pts": 8
+      },
+      {
+        "id": "surrupiar",
+        "pts": 4
+      },
+      {
+        "id": "faca",
+        "pts": 4
+      },
+      {
+        "id": "arrombamento_nt",
+        "pts": 2
+      },
+      {
+        "id": "dissimulacao",
+        "pts": 2
+      },
+      {
+        "id": "labia",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "acrobacia",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["faca", "faca"],
+    "equipamentos": [
+      "faca",
+      "faca"
+    ],
     "variacoes": [
       "Adicione Ambidestria e segunda faca para combate duplo",
       "Troque Fleuma por Apagado para versão ainda mais discreta",
@@ -92,29 +235,69 @@
     "id": "arqueiro_caçador",
     "nome": "Arqueiro Caçador",
     "descricao": "Rastreador habilidoso, especialista em arcos e sobrevivência nas terras selvagens.",
-    "tags": ["combate", "natureza", "arqueiro"],
+    "tags": [
+      "combate",
+      "natureza",
+      "arqueiro"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 12, "dx": 14, "ht": 12 },
+    "atributos": {
+      "st": 12,
+      "dx": 14,
+      "ht": 12
+    },
     "vantagens": [
-      { "id": "visao_agucada", "nivel": 2 },
-      { "id": "senso_de_direcao" }
+      {
+        "id": "visao_agucada",
+        "nivel": 2
+      },
+      {
+        "id": "senso_de_direcao"
+      }
     ],
     "desvantagens": [
-      { "id": "senso_do_dever", "custoEscolhido": -5 },
-      { "id": "solitario", "autocontrole": 12 }
+      {
+        "id": "senso_do_dever",
+        "custoEscolhido": -5
+      },
+      {
+        "id": "solitario",
+        "autocontrole": 12
+      }
     ],
     "pericias": [
-      { "id": "arco", "pts": 8 },
-      { "id": "sobrevivencia", "pts": 4, "esp": "Florestas" },
-      { "id": "rastreamento", "pts": 4 },
-      { "id": "furtividade", "pts": 2 },
-      { "id": "naturalista", "pts": 2 },
-      { "id": "faca", "pts": 1 }
+      {
+        "id": "arco",
+        "pts": 8
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 4,
+        "esp": "Florestas"
+      },
+      {
+        "id": "rastreamento",
+        "pts": 4
+      },
+      {
+        "id": "furtividade",
+        "pts": 2
+      },
+      {
+        "id": "naturalista",
+        "pts": 2
+      },
+      {
+        "id": "faca",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["arco_curto"],
+    "equipamentos": [
+      "arco_curto"
+    ],
     "variacoes": [
       "Troque sobrevivência Florestas por Desertos ou Montanhas conforme o cenário",
-      "Adicione Atirador para versão de arqueiro heroico",
+      "Adicione Mestre de armas (arco) para versão de arqueiro heroico",
       "Versão patrulheiro: adicione Tatica e Liderança"
     ]
   },
@@ -122,27 +305,77 @@
     "id": "clerigo_curador",
     "nome": "Clérigo Curador",
     "descricao": "Servo devoto de uma divindade, especializado em magias de cura e proteção.",
-    "tags": ["magia", "cura", "religioso"],
+    "tags": [
+      "magia",
+      "cura",
+      "religioso",
+      "clerigo",
+      "sacerdote",
+      "padre",
+      "curandeiro",
+      "curador",
+      "sacerdotisa"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 13, "ht": 12, "dx": 10 },
+    "atributos": {
+      "iq": 13,
+      "ht": 12,
+      "dx": 10
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 2 },
-      { "id": "empatia" },
-      { "id": "fe_verdadeira" }
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      },
+      {
+        "id": "empatia"
+      },
+      {
+        "id": "fe_verdadeira"
+      }
     ],
     "desvantagens": [
-      { "id": "voto", "custoEscolhido": -10 },
-      { "id": "fanatismo" },
-      { "id": "pacifismo", "custoEscolhido": -15 }
+      {
+        "id": "voto",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "fanatismo"
+      },
+      {
+        "id": "pacifismo",
+        "custoEscolhido": -15
+      }
     ],
     "pericias": [
-      { "id": "teologia", "pts": 4 },
-      { "id": "ritual_religioso", "pts": 4 },
-      { "id": "medicina_nt", "pts": 2 },
-      { "id": "primeiros_socorros_nt", "pts": 2 },
-      { "id": "oratoria", "pts": 1 }
+      {
+        "id": "teologia",
+        "pts": 4
+      },
+      {
+        "id": "ritual_religioso",
+        "pts": 4
+      },
+      {
+        "id": "medicina_nt",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 2
+      },
+      {
+        "id": "oratoria",
+        "pts": 1
+      }
     ],
-    "magias": ["cura_superficial", "cura_profunda", "imunidade_a_doencas", "cessar_sangramento", "recuperar_energia"],
+    "magias": [
+      "cura_superficial",
+      "cura_profunda",
+      "imunidade_a_doencas",
+      "cessar_sangramento",
+      "recuperar_energia"
+    ],
     "variacoes": [
       "Clérigo de guerra: remova Pacifismo, adicione Reflexos em Combate e perícia de combate",
       "Adicione Investidura de Poder para clérigo com dons divinos explícitos",
@@ -153,26 +386,71 @@
     "id": "barbaro_nortico",
     "nome": "Bárbaro Nórtico",
     "descricao": "Guerreiro feroz das terras frias, enorme e resistente. Luta com arma de duas mãos.",
-    "tags": ["combate", "bruto", "bárbaro"],
+    "tags": [
+      "combate",
+      "bruto",
+      "bárbaro",
+      "barbaro",
+      "selvagem",
+      "viking",
+      "nortico",
+      "berserker",
+      "guerreiro tribal"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 15, "dx": 12, "ht": 13 },
+    "atributos": {
+      "st": 15,
+      "dx": 12,
+      "ht": 13
+    },
     "vantagens": [
-      { "id": "duro_de_matar", "nivel": 2 },
-      { "id": "hipoalgia_alto_limiar_de_dor" }
+      {
+        "id": "duro_de_matar",
+        "nivel": 2
+      },
+      {
+        "id": "hipoalgia_alto_limiar_de_dor"
+      }
     ],
     "desvantagens": [
-      { "id": "furia", "autocontrole": 12 },
-      { "id": "antecedentes_mundanos" },
-      { "id": "impulsividade", "autocontrole": 12 }
+      {
+        "id": "furia",
+        "autocontrole": 12
+      },
+      {
+        "id": "antecedentes_mundanos"
+      },
+      {
+        "id": "impulsividade",
+        "autocontrole": 12
+      }
     ],
     "pericias": [
-      { "id": "macamachado_de_duas_maos", "pts": 8 },
-      { "id": "briga", "pts": 4 },
-      { "id": "intimidacao", "pts": 2 },
-      { "id": "sobrevivencia", "pts": 2, "esp": "Ártico" },
-      { "id": "levantamento", "pts": 1 }
+      {
+        "id": "macamachado_de_duas_maos",
+        "pts": 8
+      },
+      {
+        "id": "briga",
+        "pts": 4
+      },
+      {
+        "id": "intimidacao",
+        "pts": 2
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 2,
+        "esp": "Ártico"
+      },
+      {
+        "id": "levantamento",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["machado_grande"],
+    "equipamentos": [
+      "machado_grande"
+    ],
     "variacoes": [
       "Troque Fúria por Sanguinolência para versão ainda mais selvagem",
       "Adicione Resistência a Dano nível 1 para pele grossa de batalha",
@@ -183,28 +461,81 @@
     "id": "diplomata_nobre",
     "nome": "Diplomata Nobre",
     "descricao": "Aristocrata com treinamento social excepcional. Resolve conflitos com palavras, não com espadas.",
-    "tags": ["social", "nobre", "político"],
+    "tags": [
+      "social",
+      "nobre",
+      "político",
+      "diplomata",
+      "politico",
+      "cortesao",
+      "aristocrata",
+      "lider",
+      "negociador"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 14 },
+    "atributos": {
+      "iq": 14
+    },
     "vantagens": [
-      { "id": "carisma", "nivel": 2 },
-      { "id": "status", "custoEscolhido": 10 },
-      { "id": "riqueza", "custoEscolhido": 20 },
-      { "id": "aparencia", "custoEscolhido": 4 }
+      {
+        "id": "carisma",
+        "nivel": 2
+      },
+      {
+        "id": "status",
+        "custoEscolhido": 10
+      },
+      {
+        "id": "riqueza",
+        "custoEscolhido": 20
+      },
+      {
+        "id": "aparencia",
+        "custoEscolhido": 4
+      }
     ],
     "desvantagens": [
-      { "id": "obrigacao", "custoEscolhido": -10 },
-      { "id": "orgulhoso" },
-      { "id": "codigo_de_honra", "custoEscolhido": -5 }
+      {
+        "id": "dever",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "orgulhoso"
+      },
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "diplomacia", "pts": 8 },
-      { "id": "politica", "pts": 4 },
-      { "id": "labia", "pts": 4 },
-      { "id": "historia", "pts": 2 },
-      { "id": "linguistica", "pts": 2 },
-      { "id": "trato_social", "pts": 2 },
-      { "id": "administracao", "pts": 1 }
+      {
+        "id": "diplomacia",
+        "pts": 8
+      },
+      {
+        "id": "politica",
+        "pts": 4
+      },
+      {
+        "id": "labia",
+        "pts": 4
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "trato_social",
+        "pts": 2
+      },
+      {
+        "id": "administracao",
+        "pts": 1
+      }
     ],
     "variacoes": [
       "Adicione Contatos (nobreza) para rede de influência maior",
@@ -216,27 +547,77 @@
     "id": "ranger_explorador",
     "nome": "Ranger Explorador",
     "descricao": "Patrulheiro da fronteira, equilibrado entre combate e sobrevivência selvagem. Usa espada curta e arco.",
-    "tags": ["combate", "natureza", "explorador"],
+    "tags": [
+      "combate",
+      "natureza",
+      "explorador",
+      "ranger",
+      "patrulheiro",
+      "guarda florestal",
+      "batedor",
+      "rastreador",
+      "montanhes"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 12, "dx": 13, "iq": 12, "ht": 12 },
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "iq": 12,
+      "ht": 12
+    },
     "vantagens": [
-      { "id": "reflexos_em_combate" },
-      { "id": "sentido_de_direcao" }
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "senso_de_direcao"
+      }
     ],
     "desvantagens": [
-      { "id": "senso_do_dever", "custoEscolhido": -10 },
-      { "id": "codigo_de_honra", "custoEscolhido": -5 }
+      {
+        "id": "senso_do_dever",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "espada_curta", "pts": 4 },
-      { "id": "arco", "pts": 4 },
-      { "id": "sobrevivencia", "pts": 4, "esp": "Florestas" },
-      { "id": "rastreamento", "pts": 2 },
-      { "id": "furtividade", "pts": 2 },
-      { "id": "naturalista", "pts": 2 },
-      { "id": "escudo", "pts": 1 }
+      {
+        "id": "espada_curta",
+        "pts": 4
+      },
+      {
+        "id": "arco",
+        "pts": 4
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 4,
+        "esp": "Florestas"
+      },
+      {
+        "id": "rastreamento",
+        "pts": 2
+      },
+      {
+        "id": "furtividade",
+        "pts": 2
+      },
+      {
+        "id": "naturalista",
+        "pts": 2
+      },
+      {
+        "id": "escudo",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["espada_curta", "arco_curto"],
+    "equipamentos": [
+      "espada_curta",
+      "arco_curto"
+    ],
     "variacoes": [
       "Adicione Empatia com Animais para versão com companheiro animal",
       "Troque espada curta por duas facas para estilo ágil",
@@ -247,25 +628,72 @@
     "id": "monge_marcial",
     "nome": "Monge de Artes Marciais",
     "descricao": "Lutador disciplinado sem armas. Mestre em combate corpo a corpo com técnicas de precisão.",
-    "tags": ["combate", "artes marciais", "disciplinado"],
+    "tags": [
+      "combate",
+      "artes marciais",
+      "disciplinado",
+      "monge",
+      "samurai",
+      "ronin",
+      "artista marcial",
+      "lutador",
+      "karateca",
+      "ninja",
+      "pugilista",
+      "asceta"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 12, "dx": 15, "ht": 13 },
+    "atributos": {
+      "st": 12,
+      "dx": 15,
+      "ht": 13
+    },
     "vantagens": [
-      { "id": "reflexos_em_combate" },
-      { "id": "treinado_por_um_mestre" },
-      { "id": "equilibrio_perfeito" }
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "treinado_por_um_mestre"
+      },
+      {
+        "id": "equilibrio_perfeito"
+      }
     ],
     "desvantagens": [
-      { "id": "voto", "custoEscolhido": -5 },
-      { "id": "codigo_de_honra", "custoEscolhido": -10 }
+      {
+        "id": "voto",
+        "custoEscolhido": -5
+      },
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -10
+      }
     ],
     "pericias": [
-      { "id": "carate", "pts": 8 },
-      { "id": "briga", "pts": 2 },
-      { "id": "acrobacia", "pts": 4 },
-      { "id": "meditacao", "pts": 2 },
-      { "id": "golpe_poderoso", "pts": 2 },
-      { "id": "golpe_debilitante", "pts": 2 }
+      {
+        "id": "caratê",
+        "pts": 8
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      },
+      {
+        "id": "acrobacia",
+        "pts": 4
+      },
+      {
+        "id": "meditacao",
+        "pts": 2
+      },
+      {
+        "id": "golpe_poderoso",
+        "pts": 2
+      },
+      {
+        "id": "golpe_debilitante",
+        "pts": 2
+      }
     ],
     "variacoes": [
       "Troque Caratê por Judô para versão de agarrão e projeção",
@@ -277,24 +705,64 @@
     "id": "necromante_sombrio",
     "nome": "Necromante Sombrio",
     "descricao": "Estudioso da morte e do além. Manipula energias sombrias e invoca mortos-vivos.",
-    "tags": ["magia", "morte", "necromante"],
+    "tags": [
+      "magia",
+      "morte",
+      "necromante",
+      "negromante",
+      "feiticeiro sombrio",
+      "mago da morte",
+      "sombrio"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 15, "ht": 10 },
+    "atributos": {
+      "iq": 15,
+      "ht": 10
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 3 },
-      { "id": "memoria_eidetica" }
+      {
+        "id": "aptidao_magica",
+        "nivel": 3
+      },
+      {
+        "id": "memoria_eidetica"
+      }
     ],
     "desvantagens": [
-      { "id": "estigma_social", "custoEscolhido": -10 },
-      { "id": "egoismo", "autocontrole": 12 },
-      { "id": "curiosidade", "autocontrole": 15 }
+      {
+        "id": "estigma_social",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "egoismo",
+        "autocontrole": 12
+      },
+      {
+        "id": "curiosidade",
+        "autocontrole": 15
+      }
     ],
     "pericias": [
-      { "id": "ocultismo", "pts": 4 },
-      { "id": "taumatologia", "pts": 4 },
-      { "id": "historia", "pts": 1 }
+      {
+        "id": "ocultismo",
+        "pts": 4
+      },
+      {
+        "id": "taumatologia",
+        "pts": 4
+      },
+      {
+        "id": "historia",
+        "pts": 1
+      }
     ],
-    "magias": ["morte_candente", "descanso_final", "toque_mortal", "paralisia_total", "medo"],
+    "magias": [
+      "morte_candente",
+      "descanso_final",
+      "toque_mortal",
+      "paralisia_total",
+      "medo"
+    ],
     "variacoes": [
       "Adicione Empatia com Espíritos para comunhão com os mortos",
       "Versão mais acadêmica: reduza Aptidão Mágica para 2, adicione mais perícias intelectuais",
@@ -305,29 +773,85 @@
     "id": "bardo_viajante",
     "nome": "Bardo Viajante",
     "descricao": "Artista nômade que combina talentos musicais com conhecimento arcano e lábia aguçada.",
-    "tags": ["social", "magia", "artista"],
+    "tags": [
+      "social",
+      "magia",
+      "artista",
+      "bardo",
+      "menestrel",
+      "trovador",
+      "musico",
+      "contador de historias"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 13, "dx": 12 },
+    "atributos": {
+      "iq": 13,
+      "dx": 12
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 1 },
-      { "id": "carisma", "nivel": 2 },
-      { "id": "voz_melodiosa" },
-      { "id": "habilidade_musical", "nivel": 2 }
+      {
+        "id": "aptidao_magica",
+        "nivel": 1
+      },
+      {
+        "id": "carisma",
+        "nivel": 2
+      },
+      {
+        "id": "voz_melodiosa"
+      },
+      {
+        "id": "habilidade_musical",
+        "nivel": 2
+      }
     ],
     "desvantagens": [
-      { "id": "curiosidade", "autocontrole": 15 },
-      { "id": "luxuria", "autocontrole": 15 },
-      { "id": "dividas", "nivel": 5 }
+      {
+        "id": "curiosidade",
+        "autocontrole": 15
+      },
+      {
+        "id": "luxuria",
+        "autocontrole": 15
+      },
+      {
+        "id": "dividas",
+        "nivel": 5
+      }
     ],
     "pericias": [
-      { "id": "canto", "pts": 4 },
-      { "id": "instrumentos_musicais", "pts": 4, "esp": "Alaúde" },
-      { "id": "labia", "pts": 4 },
-      { "id": "atuacao", "pts": 2 },
-      { "id": "historia", "pts": 2 },
-      { "id": "linguistica", "pts": 1 }
+      {
+        "id": "canto",
+        "pts": 4
+      },
+      {
+        "id": "instrumentos_musicais",
+        "pts": 4,
+        "esp": "Alaúde"
+      },
+      {
+        "id": "labia",
+        "pts": 4
+      },
+      {
+        "id": "atuacao",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 1
+      }
     ],
-    "magias": ["sono", "fascinar", "bravura", "comando"],
+    "magias": [
+      "sono",
+      "fascinar",
+      "bravura",
+      "comando"
+    ],
     "variacoes": [
       "Versão combatente: adicione perícia de espada e reduza magias",
       "Adicione Facilidade para Idiomas para linguista poliglota",
@@ -338,29 +862,86 @@
     "id": "paladino_sagrado",
     "nome": "Paladino Sagrado",
     "descricao": "Guerreiro santo comprometido com uma causa divina. Combina habilidade marcial e magias de proteção.",
-    "tags": ["combate", "magia", "religioso"],
+    "tags": [
+      "combate",
+      "magia",
+      "religioso",
+      "paladino",
+      "cavaleiro sagrado",
+      "templario",
+      "cruzado",
+      "guerreiro santo",
+      "sagrado"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 13, "dx": 12, "ht": 13, "iq": 12 },
+    "atributos": {
+      "st": 13,
+      "dx": 12,
+      "ht": 13,
+      "iq": 12
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 1 },
-      { "id": "reflexos_em_combate" },
-      { "id": "fe_verdadeira" },
-      { "id": "duro_de_matar", "nivel": 1 }
+      {
+        "id": "aptidao_magica",
+        "nivel": 1
+      },
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "fe_verdadeira"
+      },
+      {
+        "id": "duro_de_matar",
+        "nivel": 1
+      }
     ],
     "desvantagens": [
-      { "id": "codigo_de_honra", "custoEscolhido": -15 },
-      { "id": "senso_do_dever", "custoEscolhido": -15 },
-      { "id": "voto", "custoEscolhido": -5 }
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -15
+      },
+      {
+        "id": "senso_do_dever",
+        "custoEscolhido": -15
+      },
+      {
+        "id": "voto",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "espada_de_lamina_larga", "pts": 8 },
-      { "id": "escudo", "pts": 4 },
-      { "id": "teologia", "pts": 2 },
-      { "id": "lideranca", "pts": 2 },
-      { "id": "primeiros_socorros_nt", "pts": 1 }
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 8
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "teologia",
+        "pts": 2
+      },
+      {
+        "id": "lideranca",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 1
+      }
     ],
-    "magias": ["bravura", "imunidade_a_doencas", "cessar_sangramento", "tepidez"],
-    "equipamentos": ["espada_longa", "escudo_grande"],
+    "magias": [
+      "bravura",
+      "imunidade_a_doencas",
+      "cessar_sangramento",
+      "tepidez"
+    ],
+    "equipamentos": [
+      "espada_longa",
+      "escudo_grande"
+    ],
     "variacoes": [
       "Adicione Aptidão Mágica 2 para foco maior em cura e proteção divinas",
       "Versão anti-magia: adicione Abascanto e reduza Aptidão Mágica própria",
@@ -371,28 +952,79 @@
     "id": "alquimista_inventor",
     "nome": "Alquimista Inventor",
     "descricao": "Cientista excêntrico que combina conhecimento arcano com habilidade técnica. Cria poções e dispositivos.",
-    "tags": ["técnico", "intelectual", "inventor"],
+    "tags": [
+      "técnico",
+      "intelectual",
+      "inventor",
+      "alquimista",
+      "engenheiro",
+      "artifice",
+      "cientista",
+      "tecnico",
+      "gadgeteer"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 15, "dx": 11 },
+    "atributos": {
+      "iq": 15,
+      "dx": 11
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 1 },
-      { "id": "artifice", "nivel": 2 },
-      { "id": "memoria_eidetica" }
+      {
+        "id": "aptidao_magica",
+        "nivel": 1
+      },
+      {
+        "id": "artifice",
+        "nivel": 2
+      },
+      {
+        "id": "memoria_eidetica"
+      }
     ],
     "desvantagens": [
-      { "id": "curiosidade", "autocontrole": 12 },
-      { "id": "disturbio_neurologico", "custoEscolhido": -15 },
-      { "id": "acomodado" }
+      {
+        "id": "curiosidade",
+        "autocontrole": 12
+      },
+      {
+        "id": "disturbio_neurologico",
+        "custoEscolhido": -15
+      },
+      {
+        "id": "acomodado"
+      }
     ],
     "pericias": [
-      { "id": "alquimia_nt", "pts": 8 },
-      { "id": "quimica_nt", "pts": 4 },
-      { "id": "fisica_nt", "pts": 2 },
-      { "id": "historia", "pts": 2 },
-      { "id": "ocultismo", "pts": 2 },
-      { "id": "ferreiro_nt", "pts": 1 }
+      {
+        "id": "alquimia_nt",
+        "pts": 8
+      },
+      {
+        "id": "quimica_nt",
+        "pts": 4
+      },
+      {
+        "id": "fisica_nt",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "ferreiro_nt",
+        "pts": 1
+      }
     ],
-    "magias": ["criar_fogo", "resistencia_ao_fogo", "purificar"],
+    "magias": [
+      "criar_fogo",
+      "resistencia_ao_fogo",
+      "purificar"
+    ],
     "variacoes": [
       "Versão gadgeteiro: troque Alquimia por Mecânica e Engenharia",
       "Adicione Habilidade Matemática para matemático prodígio",
@@ -403,27 +1035,75 @@
     "id": "druida_silvano",
     "nome": "Druida Silvano",
     "descricao": "Guardião da natureza que manipula magias elementais de terra, plantas e animais.",
-    "tags": ["magia", "natureza", "druida"],
+    "tags": [
+      "magia",
+      "natureza",
+      "druida",
+      "xama",
+      "silvano",
+      "feiticeiro da floresta",
+      "elementalista natural"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 13, "ht": 13 },
+    "atributos": {
+      "iq": 13,
+      "ht": 13
+    },
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 2 },
-      { "id": "empatia_com_animais" },
-      { "id": "empatia_com_plantas" }
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      },
+      {
+        "id": "empatia_com_animais"
+      },
+      {
+        "id": "empatia_com_plantas"
+      }
     ],
     "desvantagens": [
-      { "id": "senso_do_dever", "custoEscolhido": -15 },
-      { "id": "voto", "custoEscolhido": -10 },
-      { "id": "antecedentes_mundanos" }
+      {
+        "id": "senso_do_dever",
+        "custoEscolhido": -15
+      },
+      {
+        "id": "voto",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "antecedentes_mundanos"
+      }
     ],
     "pericias": [
-      { "id": "naturalista", "pts": 4 },
-      { "id": "sobrevivencia", "pts": 4, "esp": "Florestas" },
-      { "id": "adestramento_de_animais", "pts": 2 },
-      { "id": "conhecimento_das_ervas_nt", "pts": 2 },
-      { "id": "medicina_alternativa", "pts": 2 }
+      {
+        "id": "naturalista",
+        "pts": 4
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 4,
+        "esp": "Florestas"
+      },
+      {
+        "id": "adestramento_de_animais",
+        "pts": 2
+      },
+      {
+        "id": "conhecimento_das_ervas_nt",
+        "pts": 2
+      },
+      {
+        "id": "medicina_alternativa",
+        "pts": 2
+      }
     ],
-    "magias": ["criar_terra", "moldar_terra", "purificar_a_terra", "localizar_terra", "cura_superficial"],
+    "magias": [
+      "criar_terra",
+      "moldar_terra",
+      "purificar_a_terra",
+      "localizar_terra",
+      "cura_superficial"
+    ],
     "variacoes": [
       "Adicione Falar com Animais para comunhão total com a fauna",
       "Versão mais agressiva: adicione magias de Ar e Tempestade",
@@ -434,27 +1114,77 @@
     "id": "pirata_mercenario",
     "nome": "Pirata Mercenário",
     "descricao": "Corsário veterano que luta pelo ouro. Especialista em combate naval e facas.",
-    "tags": ["combate", "náutico", "mercenário"],
+    "tags": [
+      "combate",
+      "náutico",
+      "mercenário",
+      "pirata",
+      "corsario",
+      "mercenario",
+      "bucaneiro",
+      "marinheiro",
+      "navegante",
+      "saqueador"
+    ],
     "pontosBase": 150,
-    "atributos": { "st": 13, "dx": 13, "ht": 12 },
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "ht": 12
+    },
     "vantagens": [
-      { "id": "ambidestria" },
-      { "id": "sorte", "nivel": 1 }
+      {
+        "id": "ambidestria"
+      },
+      {
+        "id": "sorte",
+        "nivel": 1
+      }
     ],
     "desvantagens": [
-      { "id": "avareza", "autocontrole": 12 },
-      { "id": "reputacao", "custoEscolhido": -10 },
-      { "id": "codigo_de_honra", "custoEscolhido": -5 }
+      {
+        "id": "avareza",
+        "autocontrole": 12
+      },
+      {
+        "id": "reputacao",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "codigo_de_honra",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "sabre", "pts": 8 },
-      { "id": "faca", "pts": 4 },
-      { "id": "remo_vela_nt", "pts": 4 },
-      { "id": "acrobacia", "pts": 2 },
-      { "id": "natacao", "pts": 2 },
-      { "id": "intimidacao", "pts": 1 }
+      {
+        "id": "sabre",
+        "pts": 8
+      },
+      {
+        "id": "faca",
+        "pts": 4
+      },
+      {
+        "id": "remo_vela_nt",
+        "pts": 4
+      },
+      {
+        "id": "acrobacia",
+        "pts": 2
+      },
+      {
+        "id": "natacao",
+        "pts": 2
+      },
+      {
+        "id": "intimidacao",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["sabre", "faca"],
+    "equipamentos": [
+      "sabre",
+      "faca"
+    ],
     "variacoes": [
       "Adicione Atirador para pirata com pistola (cenário com pólvora)",
       "Versão capitão: adicione Carisma e Liderança, reduza perícias de combate",
@@ -465,28 +1195,78 @@
     "id": "espirita_medium",
     "nome": "Espírita Médium",
     "descricao": "Sensitivo que comunica com entidades do além. Usa poderes mentais e espirituais.",
-    "tags": ["psi", "espiritual", "social"],
+    "tags": [
+      "psi",
+      "espiritual",
+      "social",
+      "medium",
+      "espirita",
+      "vidente",
+      "xama",
+      "psiquico",
+      "canalizador",
+      "sensitivo"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 14, "ht": 10 },
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
     "vantagens": [
-      { "id": "medium" },
-      { "id": "empatia" },
-      { "id": "empatia_com_espiritos" },
-      { "id": "intuicao" },
-      { "id": "nocao_do_perigo" }
+      {
+        "id": "medium"
+      },
+      {
+        "id": "empatia"
+      },
+      {
+        "id": "empatia_com_espiritos"
+      },
+      {
+        "id": "intuicao"
+      },
+      {
+        "id": "nocao_do_perigo"
+      }
     ],
     "desvantagens": [
-      { "id": "pesadelos", "autocontrole": 12 },
-      { "id": "vozes_fantasmagoricas", "custoEscolhido": -10 },
-      { "id": "sensivel" }
+      {
+        "id": "pesadelos",
+        "autocontrole": 12
+      },
+      {
+        "id": "vozes_fantasmagoricas",
+        "custoEscolhido": -10
+      },
+      {
+        "id": "fobias"
+      }
     ],
     "pericias": [
-      { "id": "ocultismo", "pts": 4 },
-      { "id": "exorcismo", "pts": 4 },
-      { "id": "sonhos", "pts": 2 },
-      { "id": "teologia", "pts": 2 },
-      { "id": "psicologia", "pts": 2 },
-      { "id": "historia", "pts": 1 }
+      {
+        "id": "ocultismo",
+        "pts": 4
+      },
+      {
+        "id": "exorcismo",
+        "pts": 4
+      },
+      {
+        "id": "sonhos",
+        "pts": 2
+      },
+      {
+        "id": "teologia",
+        "pts": 2
+      },
+      {
+        "id": "psicologia",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 1
+      }
     ],
     "variacoes": [
       "Adicione Aptidão Mágica 1 para médium com poderes arcanos",
@@ -498,27 +1278,72 @@
     "id": "anao_ferreiro",
     "nome": "Anão Ferreiro",
     "descricao": "Artesão consumado das montanhas, mestre no trabalho com metais e combatente resistente.",
-    "tags": ["combate", "artesão", "anão"],
+    "tags": [
+      "combate",
+      "artesão",
+      "anão",
+      "anao",
+      "ferreiro",
+      "artesao",
+      "ferreiro anao",
+      "forjador",
+      "mineiro",
+      "metalurgico"
+    ],
     "pontosBase": 150,
     "racaId": "anao",
-    "atributos": { "iq": 12 },
+    "atributos": {
+      "iq": 12
+    },
     "vantagens": [
-      { "id": "artifice", "nivel": 2 },
-      { "id": "st_de_levantamento", "nivel": 2 }
+      {
+        "id": "artifice",
+        "nivel": 2
+      },
+      {
+        "id": "st_de_levantamento",
+        "nivel": 2
+      }
     ],
     "desvantagens": [
-      { "id": "teimosia" },
-      { "id": "avareza", "autocontrole": 15 }
+      {
+        "id": "teimosia"
+      },
+      {
+        "id": "avareza",
+        "autocontrole": 15
+      }
     ],
     "pericias": [
-      { "id": "ferreiro_nt", "pts": 8 },
-      { "id": "macamachado", "pts": 6 },
-      { "id": "escudo", "pts": 4 },
-      { "id": "metalurgia_nt", "pts": 2 },
-      { "id": "mineracao", "pts": 2 },
-      { "id": "comercio", "pts": 1 }
+      {
+        "id": "ferreiro_nt",
+        "pts": 8
+      },
+      {
+        "id": "macamachado",
+        "pts": 6
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "metalurgia_nt",
+        "pts": 2
+      },
+      {
+        "id": "prospeccao_nt",
+        "pts": 2
+      },
+      {
+        "id": "comercio",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["machado", "escudo_medio"],
+    "equipamentos": [
+      "machado",
+      "escudo_medio"
+    ],
     "variacoes": [
       "Versão mercenário: reduza perícias artesanais e aumente combate",
       "Adicione Aptidão Mágica 1 para ferreiro rúnico",
@@ -529,24 +1354,58 @@
     "id": "elfo_arqueiro_mago",
     "nome": "Elfo Arqueiro-Mago",
     "descricao": "Elfo que combina precisão marcial com magia élfica. Versátil a distância e em conjuração.",
-    "tags": ["combate", "magia", "elfo"],
+    "tags": [
+      "combate",
+      "magia",
+      "elfo",
+      "arqueiro elfico",
+      "mago elfo",
+      "guerreiro magico",
+      "meio-elfo"
+    ],
     "pontosBase": 150,
     "racaId": "elfo",
     "atributos": {},
     "vantagens": [
-      { "id": "aptidao_magica", "nivel": 1 }
+      {
+        "id": "aptidao_magica",
+        "nivel": 1
+      }
     ],
     "desvantagens": [
-      { "id": "intolerancia", "custoEscolhido": -5 }
+      {
+        "id": "intolerancia",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "arco", "pts": 8 },
-      { "id": "furtividade", "pts": 4 },
-      { "id": "ocultismo", "pts": 2 },
-      { "id": "naturalista", "pts": 2 },
-      { "id": "historia", "pts": 1 }
+      {
+        "id": "arco",
+        "pts": 8
+      },
+      {
+        "id": "furtividade",
+        "pts": 4
+      },
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "naturalista",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 1
+      }
     ],
-    "magias": ["criar_fogo", "sono", "bravura", "sentido_agucado_visao_agucada"],
+    "magias": [
+      "criar_fogo",
+      "sono",
+      "bravura",
+      "sentido_agucado_visao_agucada"
+    ],
     "variacoes": [
       "Aumente Aptidão Mágica para 2 e reduza pontos em arco para versão mais mágica",
       "Adicione Arte do Arremesso para arqueiro de elite",
@@ -557,29 +1416,83 @@
     "id": "investigador_detetive",
     "nome": "Investigador Detetive",
     "descricao": "Especialista em dedução e análise. Resolve mistérios com lógica aguçada e rede de contatos.",
-    "tags": ["investigação", "social", "intelectual"],
+    "tags": [
+      "investigação",
+      "social",
+      "intelectual",
+      "detetive",
+      "investigador",
+      "inspetor",
+      "espiao",
+      "analista",
+      "cacador de pistas"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 15, "dx": 10 },
+    "atributos": {
+      "iq": 15,
+      "dx": 10
+    },
     "vantagens": [
-      { "id": "intuicao" },
-      { "id": "empatia" },
-      { "id": "memoria_eidetica" },
-      { "id": "bom_senso" }
+      {
+        "id": "intuicao"
+      },
+      {
+        "id": "empatia"
+      },
+      {
+        "id": "memoria_eidetica"
+      },
+      {
+        "id": "bom_senso"
+      }
     ],
     "desvantagens": [
-      { "id": "curiosidade", "autocontrole": 12 },
-      { "id": "vicio", "custoEscolhido": -5 },
-      { "id": "fora_de_forma", "custoEscolhido": -5 }
+      {
+        "id": "curiosidade",
+        "autocontrole": 12
+      },
+      {
+        "id": "vicio",
+        "custoEscolhido": -5
+      },
+      {
+        "id": "fora_de_forma",
+        "custoEscolhido": -5
+      }
     ],
     "pericias": [
-      { "id": "observacao", "pts": 8 },
-      { "id": "deteccao_de_mentiras", "pts": 4 },
-      { "id": "psicologia", "pts": 4 },
-      { "id": "pesquisa_nt", "pts": 4 },
-      { "id": "linguagem_corporal", "pts": 2 },
-      { "id": "criminologia_nt", "pts": 2 },
-      { "id": "interrogatorio", "pts": 2 },
-      { "id": "labia", "pts": 1 }
+      {
+        "id": "observacao",
+        "pts": 8
+      },
+      {
+        "id": "deteccao_de_mentiras",
+        "pts": 4
+      },
+      {
+        "id": "psicologia",
+        "pts": 4
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 4
+      },
+      {
+        "id": "linguagem_corporal",
+        "pts": 2
+      },
+      {
+        "id": "criminologia_nt",
+        "pts": 2
+      },
+      {
+        "id": "interrogatorio",
+        "pts": 2
+      },
+      {
+        "id": "labia",
+        "pts": 1
+      }
     ],
     "variacoes": [
       "Adicione Contatos para rede de informantes",
@@ -591,33 +1504,2106 @@
     "id": "mercador_aventureiro",
     "nome": "Mercador Aventureiro",
     "descricao": "Comerciante experiente que percorre terras perigosas. Sabe negociar e se defender quando necessário.",
-    "tags": ["social", "viajante", "comerciante"],
+    "tags": [
+      "social",
+      "viajante",
+      "comerciante",
+      "mercador",
+      "negociante",
+      "vendedor",
+      "tratante"
+    ],
     "pontosBase": 150,
-    "atributos": { "iq": 14, "dx": 11, "ht": 11 },
+    "atributos": {
+      "iq": 14,
+      "dx": 11,
+      "ht": 11
+    },
     "vantagens": [
-      { "id": "perspicacia_comercial", "nivel": 2 },
-      { "id": "riqueza", "custoEscolhido": 20 },
-      { "id": "sorte", "nivel": 1 }
+      {
+        "id": "perspicacia_comercial",
+        "nivel": 2
+      },
+      {
+        "id": "riqueza",
+        "custoEscolhido": 20
+      },
+      {
+        "id": "sorte",
+        "nivel": 1
+      }
     ],
     "desvantagens": [
-      { "id": "avareza", "autocontrole": 15 },
-      { "id": "curiosidade", "autocontrole": 15 },
-      { "id": "dividas", "nivel": 3 }
+      {
+        "id": "avareza",
+        "autocontrole": 15
+      },
+      {
+        "id": "curiosidade",
+        "autocontrole": 15
+      },
+      {
+        "id": "dividas",
+        "nivel": 3
+      }
     ],
     "pericias": [
-      { "id": "comercio", "pts": 8 },
-      { "id": "labia", "pts": 4 },
-      { "id": "diplomacia", "pts": 4 },
-      { "id": "analise_de_mercado", "pts": 2 },
-      { "id": "linguistica", "pts": 2 },
-      { "id": "faca", "pts": 2 },
-      { "id": "geografia", "pts": 1 }
+      {
+        "id": "comercio",
+        "pts": 8
+      },
+      {
+        "id": "labia",
+        "pts": 4
+      },
+      {
+        "id": "diplomacia",
+        "pts": 4
+      },
+      {
+        "id": "analise_de_mercado",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "faca",
+        "pts": 2
+      },
+      {
+        "id": "geografia",
+        "pts": 1
+      }
     ],
-    "equipamentos": ["faca"],
+    "equipamentos": [
+      "faca"
+    ],
     "variacoes": [
       "Adicione Contatos em múltiplas cidades para rede comercial",
       "Versão contrabandista: adicione Furtividade e Dissimulação",
       "Mercador de poções: adicione Alquimia e Aptidão Mágica 1"
+    ]
+  },
+  {
+    "id": "assassino_sombras",
+    "nome": "Assassino das Sombras",
+    "descricao": "Matador furtivo que ataca pelas sombras com laminas e venenos.",
+    "tags": [
+      "combate",
+      "furtividade",
+      "assassino",
+      "matador",
+      "ninja",
+      "espiao",
+      "sicario",
+      "sombras"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 11,
+      "dx": 14,
+      "iq": 11,
+      "ht": 11
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "ambidestria"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "inimigos"
+      },
+      {
+        "id": "codigo_de_honra"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "faca",
+        "pts": 4
+      },
+      {
+        "id": "furtividade",
+        "pts": 8
+      },
+      {
+        "id": "disfarce_nt",
+        "pts": 2
+      },
+      {
+        "id": "farmacia_nt",
+        "pts": 2
+      },
+      {
+        "id": "arrombamento_nt",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "acrobacia",
+        "pts": 2
+      }
+    ],
+    "variacoes": [
+      "Versao ninja: adicione pericias de escalada e disfarce",
+      "Versao envenenador: foque em Farmacia e venenos",
+      "Troque Faca por Espada Curta para combate mais aberto"
+    ]
+  },
+  {
+    "id": "espadachim_duelista",
+    "nome": "Espadachim Duelista",
+    "descricao": "Lutador agil e elegante, mestre da rapieira e do duelo.",
+    "tags": [
+      "combate",
+      "espadachim",
+      "duelista",
+      "esgrima",
+      "mosqueteiro",
+      "swashbuckler",
+      "rapieira",
+      "aventureiro"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 11,
+      "dx": 15,
+      "iq": 10,
+      "ht": 11
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "sorte"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "codigo_de_honra"
+      },
+      {
+        "id": "orgulhoso"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "rapieira",
+        "pts": 8
+      },
+      {
+        "id": "adaga_de_esgrima",
+        "pts": 4
+      },
+      {
+        "id": "acrobacia",
+        "pts": 2
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      },
+      {
+        "id": "intimidacao",
+        "pts": 2
+      },
+      {
+        "id": "trato_social",
+        "pts": 2
+      }
+    ],
+    "variacoes": [
+      "Versao mosqueteiro: adicione Armas de Fogo e Cavalgar",
+      "Versao pirata: adicione Manejo de Barcos",
+      "Adicione Ambidestria para luta com duas laminas"
+    ]
+  },
+  {
+    "id": "cavaleiro_montado",
+    "nome": "Cavaleiro Montado",
+    "descricao": "Guerreiro de elite a cavalo, com lanca e armadura pesada.",
+    "tags": [
+      "combate",
+      "cavaleiro",
+      "montado",
+      "lanceiro",
+      "nobre",
+      "guerreiro",
+      "justa",
+      "honra"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "iq": 10,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "status"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "codigo_de_honra"
+      },
+      {
+        "id": "senso_do_dever"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "lanca",
+        "pts": 4
+      },
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 4
+      },
+      {
+        "id": "escudo",
+        "pts": 2
+      },
+      {
+        "id": "cavalgar",
+        "pts": 4
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      },
+      {
+        "id": "lideranca",
+        "pts": 2
+      }
+    ],
+    "variacoes": [
+      "Troque Lanca por Lanca de Justa para torneios",
+      "Versao general: foque em Tatica e Lideranca",
+      "Adicione Riqueza para equipamento melhor"
+    ]
+  },
+  {
+    "id": "artifice_engenhoso",
+    "nome": "Artifice Engenhoso",
+    "descricao": "Inventor e construtor de engenhocas, conserta e cria equipamentos.",
+    "tags": [
+      "tecnico",
+      "artifice",
+      "inventor",
+      "engenheiro",
+      "construtor",
+      "gadgeteer",
+      "mecanico",
+      "intelectual"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 10,
+      "dx": 12,
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "artifice"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "mecanica_nt",
+        "pts": 4
+      },
+      {
+        "id": "engenharia_nt",
+        "pts": 4
+      },
+      {
+        "id": "armadilhas_nt",
+        "pts": 2
+      },
+      {
+        "id": "ferreiro_nt",
+        "pts": 2
+      },
+      {
+        "id": "conserto_de_equipamento_eletronico_nt",
+        "pts": 2
+      }
+    ],
+    "variacoes": [
+      "Versao alquimista: adicione Quimica e Farmacia",
+      "Versao armeiro: foque em Ferreiro e armas",
+      "Adicione Riqueza para oficina melhor"
+    ]
+  },
+  {
+    "id": "cacador_mortos_vivos",
+    "nome": "Cacador de Mortos-Vivos",
+    "descricao": "Especialista em rastrear e destruir mortos-vivos e criaturas das trevas.",
+    "tags": [
+      "combate",
+      "cacador",
+      "mortos-vivos",
+      "exorcista",
+      "cacador de monstros",
+      "religioso",
+      "trevas",
+      "undead"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "iq": 11,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "nocao_do_perigo"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "voto"
+      },
+      {
+        "id": "senso_do_dever"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 4
+      },
+      {
+        "id": "besta",
+        "pts": 2
+      },
+      {
+        "id": "ocultismo",
+        "pts": 4
+      },
+      {
+        "id": "exorcismo",
+        "pts": 2
+      },
+      {
+        "id": "teologia",
+        "pts": 2
+      },
+      {
+        "id": "rastreamento",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 1
+      }
+    ],
+    "variacoes": [
+      "Versao sacerdote-guerreiro: adicione magias sagradas",
+      "Versao cacador secular: foque em armas e Ocultismo",
+      "Adicione Conhecimento Oculto para tipos especificos"
+    ]
+  },
+  {
+    "id": "detetive_investigador",
+    "nome": "Detetive Investigador",
+    "descricao": "Investigador perspicaz que resolve crimes com logica e observacao. Moderno (NT8).",
+    "tags": [
+      "moderno",
+      "detetive",
+      "investigador",
+      "policial",
+      "inspetor",
+      "criminologia",
+      "noir",
+      "misterio"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 10,
+      "dx": 11,
+      "iq": 13,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "intuicao"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "criminologia_nt",
+        "pts": 4
+      },
+      {
+        "id": "observacao",
+        "pts": 4
+      },
+      {
+        "id": "interrogatorio",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      },
+      {
+        "id": "armas_de_fogo_nt",
+        "pts": 2,
+        "esp": "Pistola"
+      },
+      {
+        "id": "psicologia",
+        "pts": 2
+      },
+      {
+        "id": "furtividade",
+        "pts": 1
+      }
+    ],
+    "variacoes": [
+      "Versao policial: adicione Direito e autoridade legal",
+      "Versao noir/durao: foque em Briga e Intimidacao",
+      "Versao forense: adicione Diagnose e Quimica"
+    ]
+  },
+  {
+    "id": "soldado_moderno",
+    "nome": "Soldado Moderno",
+    "descricao": "Combatente profissional treinado com armas de fogo e taticas. Moderno (NT8).",
+    "tags": [
+      "moderno",
+      "soldado",
+      "militar",
+      "combatente",
+      "atirador",
+      "tropa",
+      "veterano",
+      "guerra"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "iq": 10,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "senso_do_dever"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "armas_de_fogo_nt",
+        "pts": 8,
+        "esp": "Rifle"
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 2
+      },
+      {
+        "id": "conducao_nt",
+        "pts": 1
+      },
+      {
+        "id": "intimidacao",
+        "pts": 1
+      }
+    ],
+    "variacoes": [
+      "Versao atirador de elite: foque em Rifle e Furtividade",
+      "Versao oficial: adicione Lideranca e Tatica",
+      "Versao mercenario: adicione mais armas e Demolicao"
+    ]
+  },
+  {
+    "id": "medico_doutor",
+    "nome": "Medico",
+    "descricao": "Profissional da saude que diagnostica e trata ferimentos e doencas. Moderno (NT8).",
+    "tags": [
+      "moderno",
+      "medico",
+      "doutor",
+      "cirurgiao",
+      "paramedico",
+      "saude",
+      "hospital",
+      "cientista"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 10,
+      "dx": 11,
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "status"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "senso_do_dever"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "medicina_nt",
+        "pts": 8
+      },
+      {
+        "id": "diagnose_nt",
+        "pts": 4
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 2
+      },
+      {
+        "id": "farmacia_nt",
+        "pts": 2
+      },
+      {
+        "id": "psicologia",
+        "pts": 2
+      }
+    ],
+    "variacoes": [
+      "Versao cirurgiao: foque em Cirurgia e Medicina",
+      "Versao paramedico de campo: adicione Conducao",
+      "Versao pesquisador: adicione Quimica e Biologia"
+    ]
+  },
+  {
+    "id": "cientista_pesquisador",
+    "nome": "Cientista Pesquisador",
+    "descricao": "Mente brilhante dedicada a pesquisa e ao conhecimento. Moderno (NT8+).",
+    "tags": [
+      "moderno",
+      "cientista",
+      "pesquisador",
+      "academico",
+      "fisico",
+      "quimico",
+      "professor",
+      "intelectual",
+      "sci-fi"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 9,
+      "dx": 10,
+      "iq": 15,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "talento_instintivo"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "fisica_nt",
+        "pts": 4
+      },
+      {
+        "id": "quimica_nt",
+        "pts": 4
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      },
+      {
+        "id": "operacao_de_computadores_nt",
+        "pts": 2
+      },
+      {
+        "id": "programacao_de_computadores_nt",
+        "pts": 2
+      },
+      {
+        "id": "engenharia_nt",
+        "pts": 2
+      }
+    ],
+    "variacoes": [
+      "Versao hacker: foque em Computadores e Hacking",
+      "Versao inventor: adicione Engenharia e Mecanica",
+      "Versao biologo: adicione Biologia e Medicina"
+    ]
+  },
+  {
+    "id": "investigador_horror",
+    "nome": "Investigador do Oculto",
+    "descricao": "Pesquisador do sobrenatural que enfrenta horrores alem da compreensao. Horror moderno (NT8).",
+    "tags": [
+      "horror",
+      "ocultismo",
+      "investigador",
+      "cacador",
+      "sobrenatural",
+      "paranormal",
+      "misterio",
+      "cthulhu",
+      "oculto"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "st": 10,
+      "dx": 11,
+      "iq": 13,
+      "ht": 11
+    },
+    "vantagens": [
+      {
+        "id": "nocao_do_perigo"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      },
+      {
+        "id": "fobias"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 4
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "armas_de_fogo_nt",
+        "pts": 2,
+        "esp": "Pistola"
+      },
+      {
+        "id": "psicologia",
+        "pts": 2
+      },
+      {
+        "id": "conhecimento_oculto",
+        "pts": 2
+      },
+      {
+        "id": "furtividade",
+        "pts": 1
+      }
+    ],
+    "variacoes": [
+      "Versao academico: foque em Pesquisa e idiomas mortos",
+      "Versao cacador armado: adicione mais armas e Tatica",
+      "Versao medium: adicione poderes psiquicos"
+    ]
+  },
+  {
+    "id": "gladiador",
+    "nome": "Gladiador",
+    "descricao": "Combatente profissional das arenas. Mestre em combate de exibição, sobrevivência em duelos e adaptação a múltiplas armas.",
+    "tags": [
+      "combate",
+      "arena",
+      "gladiador",
+      "lutador",
+      "duelista",
+      "espetaculo",
+      "mercenario"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 14,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "hipoalgia_alto_limiar_de_dor"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "orgulhoso"
+      },
+      {
+        "id": "sanguinolencia"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 8
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "briga",
+        "pts": 4
+      },
+      {
+        "id": "intimidacao",
+        "pts": 2
+      },
+      {
+        "id": "acrobacia",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "escudo_pequeno"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Especialista em rede e tridente",
+      "Campeão da arena",
+      "Lutador ex-escravo"
+    ]
+  },
+  {
+    "id": "lanceiro",
+    "nome": "Lanceiro",
+    "descricao": "Soldado disciplinado treinado para combate em formação e defesa de posições.",
+    "tags": [
+      "combate",
+      "soldado",
+      "lanceiro",
+      "infantaria",
+      "militar"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 12,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "senso_do_dever"
+      },
+      {
+        "id": "codigo_de_honra"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "lanca",
+        "pts": 8
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 1
+      }
+    ],
+    "equipamentos": [
+      "lanca",
+      "escudo_grande",
+      "camisa_de_cota_de_malha"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Piqueiro",
+      "Guarda de muralha",
+      "Veterano de campanha"
+    ]
+  },
+  {
+    "id": "mercenario_veterano",
+    "nome": "Mercenário Veterano",
+    "descricao": "Combatente experiente que lutou em inúmeras campanhas e conflitos.",
+    "tags": [
+      "combate",
+      "mercenario",
+      "veterano",
+      "guerreiro"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "sorte"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "avareza"
+      },
+      {
+        "id": "codigo_de_honra"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 6
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "intimidacao",
+        "pts": 2
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 2
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "espada_bastarda",
+      "escudo_medio",
+      "loriga_segmentada"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Capitão mercenário",
+      "Veterano de cercos",
+      "Guarda-costas"
+    ]
+  },
+  {
+    "id": "duelista_nobre",
+    "nome": "Duelista Nobre",
+    "descricao": "Espadachim aristocrata especializado em duelos formais e etiqueta da corte.",
+    "tags": [
+      "combate",
+      "nobre",
+      "duelista",
+      "esgrima",
+      "cortesao"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 15,
+      "iq": 11,
+      "ht": 11
+    },
+    "vantagens": [
+      {
+        "id": "status"
+      },
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "orgulhoso"
+      },
+      {
+        "id": "codigo_de_honra"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "rapieira",
+        "pts": 8
+      },
+      {
+        "id": "adaga_de_esgrima",
+        "pts": 4
+      },
+      {
+        "id": "trato_social",
+        "pts": 4
+      },
+      {
+        "id": "diplomacia",
+        "pts": 2
+      },
+      {
+        "id": "acrobacia",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "rapieira",
+      "adaga",
+      "jaqueta_de_couro"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Mosqueteiro",
+      "Campeão da corte",
+      "Espadachim errante"
+    ]
+  },
+  {
+    "id": "guarda_real",
+    "nome": "Guarda Real",
+    "descricao": "Soldado de elite responsável pela proteção da família real.",
+    "tags": [
+      "combate",
+      "elite",
+      "guarda",
+      "real"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      },
+      {
+        "id": "duro_de_matar",
+        "nivel": 1
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "dever"
+      },
+      {
+        "id": "codigo_de_honra"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 8
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "lideranca",
+        "pts": 2
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "espada_larga",
+      "escudo_grande",
+      "corselete_de_aco"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Guarda cerimonial",
+      "Capitão da guarda",
+      "Veterano do palácio"
+    ]
+  },
+  {
+    "id": "cavaleiro_negro",
+    "nome": "Cavaleiro Negro",
+    "descricao": "Guerreiro temido por sua reputação sombria e disciplina brutal.",
+    "tags": [
+      "combate",
+      "cavaleiro",
+      "sombrio",
+      "guerreiro"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 14,
+      "dx": 12,
+      "ht": 13
+    },
+    "vantagens": [
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "orgulhoso"
+      },
+      {
+        "id": "reputacao",
+        "custoEscolhido": -10
+      }
+    ],
+    "pericias": [
+      {
+        "id": "macamachado",
+        "pts": 8
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "intimidacao",
+        "pts": 4
+      },
+      {
+        "id": "cavalgar",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "mangual",
+      "escudo_grande",
+      "armadura_de_placas_laminadas_de_aco"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Lorde caído",
+      "Comandante cruel",
+      "Cavaleiro amaldiçoado"
+    ]
+  },
+  {
+    "id": "cavaleiro_andante",
+    "nome": "Cavaleiro Andante",
+    "descricao": "Nobre aventureiro que percorre o mundo em busca de honra e glória.",
+    "tags": [
+      "combate",
+      "cavaleiro",
+      "honra",
+      "aventura"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 13,
+      "dx": 12,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "status"
+      },
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "codigo_de_honra"
+      },
+      {
+        "id": "senso_do_dever"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "espada_de_lamina_larga",
+        "pts": 8
+      },
+      {
+        "id": "cavalgar",
+        "pts": 4
+      },
+      {
+        "id": "escudo",
+        "pts": 4
+      },
+      {
+        "id": "lideranca",
+        "pts": 2
+      },
+      {
+        "id": "trato_social",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "espada_bastarda",
+      "escudo_pequeno",
+      "cota_de_malha_longa"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Errante solitário",
+      "Defensor dos fracos",
+      "Campeão do reino"
+    ]
+  },
+  {
+    "id": "matador_de_gigantes",
+    "nome": "Matador de Gigantes",
+    "descricao": "Especialista em enfrentar monstros enormes e criaturas colossais.",
+    "tags": [
+      "combate",
+      "cacador",
+      "monstros",
+      "gigantes"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 14,
+      "dx": 12,
+      "ht": 13
+    },
+    "vantagens": [
+      {
+        "id": "nocao_do_perigo"
+      },
+      {
+        "id": "hipoalgia_alto_limiar_de_dor"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "impulsividade"
+      },
+      {
+        "id": "sanguinolencia"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "macamachado_de_duas_maos",
+        "pts": 8
+      },
+      {
+        "id": "rastreamento",
+        "pts": 2
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "peitoral_de_aco"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Caçador de dragões",
+      "Matador de trolls",
+      "Veterano das montanhas"
+    ]
+  },
+  {
+    "id": "guerreiro_tribal",
+    "nome": "Guerreiro Tribal",
+    "descricao": "Combatente criado na natureza, especialista em caça, rastreamento e guerra tribal.",
+    "tags": [
+      "combate",
+      "tribal",
+      "cacador",
+      "selvagem"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 14,
+      "dx": 12,
+      "ht": 13
+    },
+    "vantagens": [
+      {
+        "id": "senso_de_direcao"
+      },
+      {
+        "id": "hipoalgia_alto_limiar_de_dor"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "antecedentes_mundanos"
+      },
+      {
+        "id": "impulsividade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "lanca",
+        "pts": 6
+      },
+      {
+        "id": "arco",
+        "pts": 4
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 4
+      },
+      {
+        "id": "rastreamento",
+        "pts": 2
+      },
+      {
+        "id": "briga",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "azagaia",
+      "arco_longo",
+      "tunica_de_pele"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Chefe tribal",
+      "Caçador da tribo",
+      "Guardião ancestral"
+    ]
+  },
+  {
+    "id": "corsario",
+    "nome": "Corsário",
+    "descricao": "Marinheiro guerreiro especializado em abordagens e combate naval.",
+    "tags": [
+      "combate",
+      "naval",
+      "corsario",
+      "pirata",
+      "marinheiro"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "ambidestria"
+      },
+      {
+        "id": "sorte"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "avareza"
+      },
+      {
+        "id": "reputacao",
+        "custoEscolhido": -5
+      }
+    ],
+    "pericias": [
+      {
+        "id": "sabre",
+        "pts": 8
+      },
+      {
+        "id": "faca",
+        "pts": 4
+      },
+      {
+        "id": "remo_vela_nt",
+        "pts": 4
+      },
+      {
+        "id": "natacao",
+        "pts": 2
+      },
+      {
+        "id": "acrobacia",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "sabre_de_abordagem",
+      "adaga",
+      "jaqueta_de_couro"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Capitão corsário",
+      "Caçador de navios",
+      "Pirata veterano"
+    ]
+  },
+  {
+    "id": "espiao_imperial",
+    "nome": "Espião Imperial",
+    "descricao": "Agente da coroa especializado em intriga política, coleta de informações e infiltração social.",
+    "tags": [
+      "furtividade",
+      "social",
+      "espiao",
+      "imperio",
+      "intriga"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 12,
+      "iq": 13
+    },
+    "vantagens": [
+      {
+        "id": "carisma",
+        "nivel": 1
+      },
+      {
+        "id": "voz_penetrante"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "dever"
+      },
+      {
+        "id": "segredo"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "diplomacia",
+        "pts": 4
+      },
+      {
+        "id": "politica",
+        "pts": 4
+      },
+      {
+        "id": "trato_social",
+        "pts": 4
+      },
+      {
+        "id": "dissimulacao",
+        "pts": 4
+      },
+      {
+        "id": "disfarce_nt",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "adaga",
+      "capa_leve",
+      "jaqueta_de_couro"
+    ],
+    "magias": [
+      "alterar_voz",
+      "disfarce_ilusorio",
+      "mensagem"
+    ],
+    "variacoes": [
+      "Agente diplomático",
+      "Espião infiltrado",
+      "Mestre de chantagem"
+    ]
+  },
+  {
+    "id": "batedor",
+    "nome": "Batedor",
+    "descricao": "Explorador especializado em reconhecimento e vigilância de territórios hostis.",
+    "tags": [
+      "furtividade",
+      "exploracao",
+      "batedor",
+      "rastreador"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 13,
+      "ht": 12
+    },
+    "vantagens": [
+      {
+        "id": "senso_de_direcao"
+      },
+      {
+        "id": "visao_agucada",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "solitario"
+      },
+      {
+        "id": "senso_do_dever"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "rastreamento",
+        "pts": 8
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 4
+      },
+      {
+        "id": "observacao",
+        "pts": 4
+      },
+      {
+        "id": "arco",
+        "pts": 4
+      },
+      {
+        "id": "naturalista",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "arco_longo",
+      "faca",
+      "tunica_de_pele",
+      "botas"
+    ],
+    "magias": [
+      "localizar_agua",
+      "localizar_alimento",
+      "guia"
+    ],
+    "variacoes": [
+      "Patrulheiro de fronteira",
+      "Batedor militar",
+      "Explorador de montanhas"
+    ]
+  },
+  {
+    "id": "cacador_de_recompensas",
+    "nome": "Caçador de Recompensas",
+    "descricao": "Perseguidor profissional treinado para localizar e capturar alvos perigosos.",
+    "tags": [
+      "furtividade",
+      "captura",
+      "mercenario",
+      "rastreador"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "st": 12,
+      "dx": 13,
+      "iq": 11
+    },
+    "vantagens": [
+      {
+        "id": "nocao_do_perigo"
+      },
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "avareza"
+      },
+      {
+        "id": "inimigos"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "rastreamento",
+        "pts": 8
+      },
+      {
+        "id": "intimidacao",
+        "pts": 4
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "revistar",
+        "pts": 2
+      },
+      {
+        "id": "besta",
+        "pts": 4
+      }
+    ],
+    "equipamentos": [
+      "besta",
+      "rede_de_combate",
+      "machadinha",
+      "casaco_de_couro_de_bufalo"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Capturador vivo",
+      "Caçador urbano",
+      "Perseguidor de monstros"
+    ]
+  },
+  {
+    "id": "sabotador",
+    "nome": "Sabotador",
+    "descricao": "Especialista em destruir recursos inimigos e comprometer operações sem ser detectado.",
+    "tags": [
+      "furtividade",
+      "sabotagem",
+      "infiltracao"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 13,
+      "iq": 12
+    },
+    "vantagens": [
+      {
+        "id": "fleuma"
+      },
+      {
+        "id": "destreza_manual_elevada",
+        "nivel": 1
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "segredo"
+      },
+      {
+        "id": "obsessao"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "armadilhas_nt",
+        "pts": 4
+      },
+      {
+        "id": "mecanica_nt",
+        "pts": 4
+      },
+      {
+        "id": "arrombamento_nt",
+        "pts": 4
+      },
+      {
+        "id": "furtividade",
+        "pts": 4
+      }
+    ],
+    "equipamentos": [
+      "garrote",
+      "faca",
+      "jaqueta_de_couro",
+      "luvas_de_couro"
+    ],
+    "magias": [
+      "estragar",
+      "deteriorar",
+      "extinguir_fogo"
+    ],
+    "variacoes": [
+      "Sabotador militar",
+      "Agente revolucionário",
+      "Especialista em infraestrutura"
+    ]
+  },
+  {
+    "id": "infiltrador",
+    "nome": "Infiltrador",
+    "descricao": "Especialista em entrar e sair de áreas protegidas sem deixar rastros.",
+    "tags": [
+      "furtividade",
+      "infiltracao",
+      "escalada"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 14,
+      "ht": 11
+    },
+    "vantagens": [
+      {
+        "id": "equilibrio_perfeito"
+      },
+      {
+        "id": "flexibilidade"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      },
+      {
+        "id": "avareza"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "escalada",
+        "pts": 4
+      },
+      {
+        "id": "acrobacia",
+        "pts": 4
+      },
+      {
+        "id": "furtividade",
+        "pts": 8
+      },
+      {
+        "id": "arrombamento_nt",
+        "pts": 2
+      },
+      {
+        "id": "disfarce_nt",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "adaga",
+      "capa_leve",
+      "luvas_de_couro",
+      "botas"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Ladrão de castelos",
+      "Agente de resgate",
+      "Escalador urbano"
+    ]
+  },
+  {
+    "id": "assassino_de_guilda",
+    "nome": "Assassino de Guilda",
+    "descricao": "Executor treinado por uma organização secreta para eliminar alvos específicos.",
+    "tags": [
+      "furtividade",
+      "assassino",
+      "sombras"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 14,
+      "iq": 11
+    },
+    "vantagens": [
+      {
+        "id": "ambidestria"
+      },
+      {
+        "id": "reflexos_em_combate"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "segredo"
+      },
+      {
+        "id": "estigma_social"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "faca",
+        "pts": 8
+      },
+      {
+        "id": "furtividade",
+        "pts": 8
+      },
+      {
+        "id": "dissimulacao",
+        "pts": 2
+      },
+      {
+        "id": "disfarce_nt",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "adaga",
+      "adaga",
+      "garrote",
+      "capa_pesada"
+    ],
+    "magias": [
+      "invisibilidade",
+      "medo",
+      "escuridao"
+    ],
+    "variacoes": [
+      "Matador silencioso",
+      "Executor nobre",
+      "Especialista em venenos"
+    ]
+  },
+  {
+    "id": "ladrao_de_tumbas",
+    "nome": "Ladrão de Tumbas",
+    "descricao": "Explorador de ruínas antigas em busca de relíquias e tesouros esquecidos.",
+    "tags": [
+      "furtividade",
+      "exploracao",
+      "ruinas",
+      "tesouros"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 13,
+      "iq": 12
+    },
+    "vantagens": [
+      {
+        "id": "sorte"
+      },
+      {
+        "id": "nocao_do_perigo"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      },
+      {
+        "id": "avareza"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "armadilhas_nt",
+        "pts": 4
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "arqueologia",
+        "pts": 4
+      },
+      {
+        "id": "escalada",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 4
+      }
+    ],
+    "equipamentos": [
+      "facao",
+      "armadura_de_couro",
+      "barrete_de_couro",
+      "botas"
+    ],
+    "magias": [
+      "deteccao_de_magia",
+      "localizar_passagem",
+      "luz"
+    ],
+    "variacoes": [
+      "Arqueólogo aventureiro",
+      "Saqueador profissional",
+      "Explorador de catacumbas"
+    ]
+  },
+  {
+    "id": "arrombador",
+    "nome": "Arrombador",
+    "descricao": "Especialista em abrir fechaduras, cofres e mecanismos complexos.",
+    "tags": [
+      "furtividade",
+      "arrombamento",
+      "ladrao"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "dx": 14,
+      "iq": 12
+    },
+    "vantagens": [
+      {
+        "id": "destreza_manual_elevada",
+        "nivel": 2
+      },
+      {
+        "id": "fleuma"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "avareza"
+      },
+      {
+        "id": "compulsao"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "arrombamento_nt",
+        "pts": 8
+      },
+      {
+        "id": "mecanica_nt",
+        "pts": 4
+      },
+      {
+        "id": "furtividade",
+        "pts": 4
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "faca",
+      "luvas_de_couro",
+      "capa_leve",
+      "sapatos"
+    ],
+    "magias": [],
+    "variacoes": [
+      "Especialista em cofres",
+      "Ladrão de mansões",
+      "Sabotador mecânico"
+    ]
+  },
+  {
+    "id": "contrabandista",
+    "nome": "Contrabandista",
+    "descricao": "Transportador de bens ilegais e operador do mercado negro.",
+    "tags": [
+      "furtividade",
+      "mercador",
+      "ilegal",
+      "social"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "iq": 12,
+      "dx": 12
+    },
+    "vantagens": [
+      {
+        "id": "contatos"
+      },
+      {
+        "id": "aliados"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "inimigos"
+      },
+      {
+        "id": "avareza"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "contrabando",
+        "pts": 8
+      },
+      {
+        "id": "comercio",
+        "pts": 4
+      },
+      {
+        "id": "labia",
+        "pts": 4
+      },
+      {
+        "id": "navegacao_nt",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "sabre_de_abordagem",
+      "jaqueta_de_couro",
+      "botas",
+      "capa_pesada"
+    ],
+    "magias": [
+      "esconder",
+      "escamotear_informacao"
+    ],
+    "variacoes": [
+      "Mercador clandestino",
+      "Capitão de rota secreta",
+      "Traficante de relíquias"
+    ]
+  },
+  {
+    "id": "vigarista",
+    "nome": "Vigarista",
+    "descricao": "Manipulador social que vive de golpes, blefes e esquemas.",
+    "tags": [
+      "social",
+      "golpista",
+      "enganacao",
+      "furtividade"
+    ],
+    "pontosBase": 150,
+    "atributos": {
+      "iq": 13,
+      "dx": 11
+    },
+    "vantagens": [
+      {
+        "id": "carisma",
+        "nivel": 2
+      },
+      {
+        "id": "voz_penetrante"
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "trapaceiro"
+      },
+      {
+        "id": "luxuria"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "labia",
+        "pts": 8
+      },
+      {
+        "id": "atuacao",
+        "pts": 4
+      },
+      {
+        "id": "dissimulacao",
+        "pts": 4
+      },
+      {
+        "id": "jogos_de_azar",
+        "pts": 2
+      },
+      {
+        "id": "trato_social",
+        "pts": 2
+      }
+    ],
+    "equipamentos": [
+      "adaga",
+      "capa_leve",
+      "sapatos",
+      "barrete_de_tecido"
+    ],
+    "magias": [
+      "fascinar",
+      "eloquencia",
+      "compelir_a_mentira"
+    ],
+    "variacoes": [
+      "Charlatão religioso",
+      "Mestre dos jogos",
+      "Golpista aristocrático"
     ]
   }
 ]

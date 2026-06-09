@@ -92,13 +92,13 @@ fun DialogMestreIA(
                         viewModel.carregarHistoricoMestreIA()
                         showHistory = true
                     }) {
-                        Icon(Icons.Default.History, null, modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.History, "Histórico de conversas", modifier = Modifier.size(20.dp))
                     }
                     if (showHistory) {
                         HistorySelectorDialog(viewModel) { showHistory = false }
                     }
                     IconButton(onClick = { viewModel.limparChatMestreIA() }) {
-                        Icon(Icons.Default.Delete, null, modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.Delete, "Limpar conversa", modifier = Modifier.size(20.dp))
                     }
                 }
             }
@@ -531,18 +531,6 @@ fun DialogRetratoIA(
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        "Modelo: Gemini 3.1 Flash Image\nCusto: ~\$0,07 por imagem\nTempo: ~10-35 segundos",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(12.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
             }
         },
         confirmButton = {

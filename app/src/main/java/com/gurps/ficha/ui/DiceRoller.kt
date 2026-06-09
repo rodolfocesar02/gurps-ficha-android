@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -61,7 +63,8 @@ fun RoladorDadosDialog(
                 ) {
                     Text("Dados:")
                     IconButton(
-                        onClick = { if (quantidadeDados > 1) quantidadeDados-- }
+                        onClick = { if (quantidadeDados > 1) quantidadeDados-- },
+                        modifier = Modifier.semantics { contentDescription = "Diminuir quantidade de dados" }
                     ) {
                         Text("-", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
@@ -71,7 +74,8 @@ fun RoladorDadosDialog(
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(
-                        onClick = { if (quantidadeDados < 10) quantidadeDados++ }
+                        onClick = { if (quantidadeDados < 10) quantidadeDados++ },
+                        modifier = Modifier.semantics { contentDescription = "Aumentar quantidade de dados" }
                     ) {
                         Text("+", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
@@ -84,7 +88,8 @@ fun RoladorDadosDialog(
                 ) {
                     Text("Modificador:")
                     IconButton(
-                        onClick = { modificador-- }
+                        onClick = { modificador-- },
+                        modifier = Modifier.semantics { contentDescription = "Diminuir modificador" }
                     ) {
                         Text("-", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }
@@ -94,7 +99,8 @@ fun RoladorDadosDialog(
                         fontWeight = FontWeight.Bold
                     )
                     IconButton(
-                        onClick = { modificador++ }
+                        onClick = { modificador++ },
+                        modifier = Modifier.semantics { contentDescription = "Aumentar modificador" }
                     ) {
                         Text("+", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     }

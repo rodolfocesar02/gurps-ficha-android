@@ -100,7 +100,9 @@ object ForjadorTemplateCatalogo {
         val sb = StringBuilder()
         sb.appendLine("=== TEMPLATE BASE: ${t.nome} ===")
         sb.appendLine("Arquétipo: ${t.descricao}")
-        sb.appendLine("Pontos base: ${t.pontosBase}")
+        // OBS: pontosBase é só a ESCALA ORIGINAL em que o template foi desenhado.
+        // NÃO é o budget da ficha — o budget real é o pedido pelo usuário.
+        sb.appendLine("(Este template foi desenhado para ~${t.pontosBase} pts — use só como referência de proporção.)")
 
         if (t.racaId != null) sb.appendLine("Raça sugerida: ${t.racaId}")
 
@@ -144,11 +146,11 @@ object ForjadorTemplateCatalogo {
 
         sb.appendLine()
         sb.appendLine("INSTRUÇÕES PARA O TEMPLATE:")
-        sb.appendLine("• Aplique TODOS os itens do template como ponto de partida.")
+        sb.appendLine("• Use o template como ponto de partida do conceito (não como cópia fixa).")
         sb.appendLine("• Adapte atributos, vantagens e perícias ao conceito específico do usuário.")
         sb.appendLine("• Use as variações para personalizar e diferenciar do template padrão.")
         sb.appendLine("• O objetivo é que o personagem final seja único, não uma cópia exata do template.")
-        sb.appendLine("• Respeite o budget total de ${t.pontosBase} pontos.")
+        sb.appendLine("• ⚠️ O BUDGET DE PONTOS é SEMPRE o pedido pelo usuário (definido acima no contexto), NÃO os ${t.pontosBase} pts deste template. Se o budget for maior, expanda (mais perícias/vantagens/níveis); se for menor, reduza. AJUSTE o template ao budget real.")
 
         return sb.toString()
     }
