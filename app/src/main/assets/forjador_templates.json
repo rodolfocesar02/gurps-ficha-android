@@ -3636,16 +3636,68 @@
     ],
     "pericias": [
       {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
         "id": "ocultismo",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "psicologia",
         "pts": 2
       },
       {
-        "id": "pesquisa_nt",
+        "id": "dissimulacao",
         "pts": 2
+      },
+      {
+        "id": "labia",
+        "pts": 2
+      },
+      {
+        "id": "atuacao",
+        "pts": 2
+      },
+      {
+        "id": "disfarce_nt",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "escrita",
+        "pts": 2
+      },
+      {
+        "id": "diplomacia",
+        "pts": 1
+      },
+      {
+        "id": "trato_social",
+        "pts": 1
+      },
+      {
+        "id": "deteccao_de_mentiras",
+        "pts": 1
+      },
+      {
+        "id": "prestidigitacao",
+        "pts": 1
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 1
+      },
+      {
+        "id": "historia",
+        "pts": 1
       }
     ],
     "magias": [
@@ -3706,16 +3758,64 @@
     ],
     "pericias": [
       {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
         "id": "ocultismo",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "conhecimento_oculto_conhecimento_espiritual",
         "pts": 2
       },
       {
-        "id": "pesquisa_nt",
+        "id": "ritual_religioso",
         "pts": 2
+      },
+      {
+        "id": "exorcismo",
+        "pts": 2
+      },
+      {
+        "id": "meditacao",
+        "pts": 2
+      },
+      {
+        "id": "desenho_de_simbolos",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "escrita",
+        "pts": 2
+      },
+      {
+        "id": "diplomacia",
+        "pts": 1
+      },
+      {
+        "id": "psicologia",
+        "pts": 1
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 1
+      },
+      {
+        "id": "teologia",
+        "pts": 1
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 1
       }
     ],
     "magias": [
@@ -3776,16 +3876,56 @@
     ],
     "pericias": [
       {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
+        "id": "estrategia",
+        "pts": 2
+      },
+      {
+        "id": "tatica",
+        "pts": 2
+      },
+      {
+        "id": "lideranca",
+        "pts": 2
+      },
+      {
+        "id": "escudo",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 2
+      },
+      {
+        "id": "observacao",
+        "pts": 2
+      },
+      {
         "id": "ocultismo",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "cavalgar",
         "pts": 2
       },
       {
-        "id": "pesquisa_nt",
-        "pts": 2
+        "id": "intimidacao",
+        "pts": 1
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 1
+      },
+      {
+        "id": "armeiro_nt",
+        "pts": 1
+      },
+      {
+        "id": "soldado_nt",
+        "pts": 1
       }
     ],
     "magias": [
@@ -3845,16 +3985,60 @@
     ],
     "pericias": [
       {
-        "id": "ocultismo",
+        "id": "taumatologia",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "matematica_nt",
+        "pts": 2
+      },
+      {
+        "id": "astronomia_nt",
+        "pts": 2
+      },
+      {
+        "id": "fisica_nt",
+        "pts": 2
+      },
+      {
+        "id": "historia",
         "pts": 2
       },
       {
         "id": "pesquisa_nt",
         "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "escrita",
+        "pts": 2
+      },
+      {
+        "id": "meditacao",
+        "pts": 2
+      },
+      {
+        "id": "ocultismo",
+        "pts": 1
+      },
+      {
+        "id": "filosofia",
+        "pts": 1
+      },
+      {
+        "id": "arqueologia",
+        "pts": 1
+      },
+      {
+        "id": "desenho_de_simbolos",
+        "pts": 1
+      },
+      {
+        "id": "observacao",
+        "pts": 1
       }
     ],
     "magias": [
@@ -3915,16 +4099,56 @@
     ],
     "pericias": [
       {
+        "id": "astronomia_nt",
+        "pts": 2
+      },
+      {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
         "id": "ocultismo",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "matematica_nt",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "desenho_de_simbolos",
         "pts": 2
       },
       {
         "id": "pesquisa_nt",
         "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "cartografia_nt",
+        "pts": 1
+      },
+      {
+        "id": "navegacao_nt",
+        "pts": 1
+      },
+      {
+        "id": "observacao",
+        "pts": 1
+      },
+      {
+        "id": "escrita",
+        "pts": 1
+      },
+      {
+        "id": "filosofia",
+        "pts": 1
       }
     ],
     "magias": [
@@ -3984,16 +4208,64 @@
     ],
     "pericias": [
       {
-        "id": "ocultismo",
+        "id": "taumatologia",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "psicologia",
         "pts": 2
+      },
+      {
+        "id": "diplomacia",
+        "pts": 2
+      },
+      {
+        "id": "labia",
+        "pts": 2
+      },
+      {
+        "id": "trato_social",
+        "pts": 2
+      },
+      {
+        "id": "deteccao_de_mentiras",
+        "pts": 2
+      },
+      {
+        "id": "lideranca",
+        "pts": 2
+      },
+      {
+        "id": "desenho_de_simbolos",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "escrita",
+        "pts": 2
+      },
+      {
+        "id": "atuacao",
+        "pts": 1
+      },
+      {
+        "id": "politica",
+        "pts": 1
       },
       {
         "id": "pesquisa_nt",
-        "pts": 2
+        "pts": 1
+      },
+      {
+        "id": "ocultismo",
+        "pts": 1
+      },
+      {
+        "id": "administracao",
+        "pts": 1
       }
     ],
     "magias": [
@@ -4054,16 +4326,64 @@
     ],
     "pericias": [
       {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "quimica_nt",
+        "pts": 2
+      },
+      {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
         "id": "ocultismo",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "armeiro_nt",
+        "pts": 2
+      },
+      {
+        "id": "explosivos_nt",
+        "pts": 2
+      },
+      {
+        "id": "engenharia_nt",
+        "pts": 2
+      },
+      {
+        "id": "fisica_nt",
         "pts": 2
       },
       {
         "id": "pesquisa_nt",
         "pts": 2
+      },
+      {
+        "id": "escrita",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 1
+      },
+      {
+        "id": "medicina_nt",
+        "pts": 1
+      },
+      {
+        "id": "veneficio_nt",
+        "pts": 1
+      },
+      {
+        "id": "ferreiro_nt",
+        "pts": 1
+      },
+      {
+        "id": "matematica_nt",
+        "pts": 1
       }
     ],
     "magias": [
@@ -4124,16 +4444,64 @@
     ],
     "pericias": [
       {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
         "id": "ocultismo",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "teologia",
         "pts": 2
       },
       {
-        "id": "pesquisa_nt",
+        "id": "ritual_religioso",
         "pts": 2
+      },
+      {
+        "id": "exorcismo",
+        "pts": 2
+      },
+      {
+        "id": "medicina_nt",
+        "pts": 2
+      },
+      {
+        "id": "primeiros_socorros_nt",
+        "pts": 2
+      },
+      {
+        "id": "psicologia",
+        "pts": 2
+      },
+      {
+        "id": "historia",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "filosofia",
+        "pts": 1
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 1
+      },
+      {
+        "id": "diagnose_nt",
+        "pts": 1
+      },
+      {
+        "id": "desenho_de_simbolos",
+        "pts": 1
+      },
+      {
+        "id": "meditacao",
+        "pts": 1
       }
     ],
     "magias": [
@@ -4195,16 +4563,64 @@
     ],
     "pericias": [
       {
-        "id": "ocultismo",
-        "pts": 2
-      },
-      {
         "id": "alquimia_nt",
         "pts": 2
       },
       {
-        "id": "pesquisa_nt",
+        "id": "conhecimento_das_ervas_nt",
         "pts": 2
+      },
+      {
+        "id": "medicina_alternativa",
+        "pts": 2
+      },
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "taumatologia",
+        "pts": 2
+      },
+      {
+        "id": "naturalista",
+        "pts": 2
+      },
+      {
+        "id": "sobrevivencia",
+        "pts": 2
+      },
+      {
+        "id": "adestramento_de_animais",
+        "pts": 2
+      },
+      {
+        "id": "meteorologia_nt",
+        "pts": 2
+      },
+      {
+        "id": "veneficio_nt",
+        "pts": 2
+      },
+      {
+        "id": "rastreamento",
+        "pts": 1
+      },
+      {
+        "id": "furtividade",
+        "pts": 1
+      },
+      {
+        "id": "diagnose_nt",
+        "pts": 1
+      },
+      {
+        "id": "pescaria",
+        "pts": 1
+      },
+      {
+        "id": "navegacao_nt",
+        "pts": 1
       }
     ],
     "magias": [
@@ -4264,16 +4680,60 @@
     ],
     "pericias": [
       {
-        "id": "ocultismo",
+        "id": "taumatologia",
         "pts": 2
       },
       {
-        "id": "alquimia_nt",
+        "id": "desenho_de_simbolos",
+        "pts": 2
+      },
+      {
+        "id": "linguistica",
+        "pts": 2
+      },
+      {
+        "id": "escrita",
+        "pts": 2
+      },
+      {
+        "id": "historia",
         "pts": 2
       },
       {
         "id": "pesquisa_nt",
         "pts": 2
+      },
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "arquitetura_nt",
+        "pts": 2
+      },
+      {
+        "id": "cartografia_nt",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 1
+      },
+      {
+        "id": "matematica_nt",
+        "pts": 1
+      },
+      {
+        "id": "arqueologia",
+        "pts": 1
+      },
+      {
+        "id": "criptografia_nt",
+        "pts": 1
+      },
+      {
+        "id": "filosofia",
+        "pts": 1
       }
     ],
     "magias": [
