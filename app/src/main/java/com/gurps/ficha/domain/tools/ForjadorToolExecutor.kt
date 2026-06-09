@@ -647,9 +647,21 @@ class ForjadorToolExecutor(
 
                 // 1) Resolve a perícia-base ALVO ANTES de remover nada.
                 // Candidatas: perícias da ficha que atendem o pré-requisito.
-                val pp0 = viewModel.personagem
-                val candidatas = pp0.pericias.filter { per ->
+                var pp0 = viewModel.personagem
+                var candidatas = pp0.pericias.filter { per ->
                     viewModel.tecnicaAtendePreRequisito(tec, per)
+                }
+                // GPS de técnica: se NENHUMA perícia da ficha atende, tenta
+                // adicionar automaticamente a perícia-base mínima (1 pt) que o
+                // pré-requisito nomeia explicitamente (ex.: "Briga ou Caratê").
+                if (candidatas.isEmpty()) {
+                    val adicionada = gpsAdicionarPericiaBaseDeTecnica(tec)
+                    if (adicionada != null) {
+                        pp0 = viewModel.personagem
+                        candidatas = pp0.pericias.filter { per ->
+                            viewModel.tecnicaAtendePreRequisito(tec, per)
+                        }
+                    }
                 }
                 if (candidatas.isEmpty())
                     return "Não foi possível adicionar '${tec.nome}': nenhuma perícia da ficha atende o pré-requisito (${tec.preRequisitoRaw.take(80)}). Adicione antes uma perícia compatível."
@@ -887,6 +899,61 @@ class ForjadorToolExecutor(
         return "OK: modelo racial '${def.nome}' aplicado ao personagem$avisos. " +
             "Vantagens: ${modelo.vantagens.size}, Desvantagens: ${modelo.desvantagens.size}, " +
             "Perícias: ${modelo.pericias.size}. Use lerFicha(secao=atributos) para confirmar."
+    }
+
+    /**
+     * GPS de técnica: dado o pré-requisito de uma técnica (ex.: "Briga ou
+     * Caratê; não pode exceder..."), tenta adicionar à ficha a primeira
+     * perícia-base NOMEADA que faça a técnica passar a ter pré-requisito
+     * atendido. Adiciona com 1 ponto (mínimo). Retorna o nome da perícia
+     * adicionada, ou null se não conseguiu resolver automaticamente
+     * (pré-requisito genérico tipo "qualquer arma de esgrima" — aí não dá
+     * para escolher uma perícia sozinho).
+     */
+    private fun gpsAdicionarPericiaBaseDeTecnica(tec: com.gurps.ficha.model.TecnicaCatalogoItem): String? {
+        fun norm(s: String) = TextNormalizer.normalize(s, TextNormalizer.SIMPLE)
+
+        // Bloco principal do pré-requisito (antes do ';'): lista as perícias.
+        val bloco = tec.preRequisitoRaw.substringBefore(";")
+        // Extrai os nomes candidatos separando por "ou"/"e"/",".
+        val nomesCandidatos = bloco
+            .replace(Regex("(?i)\\bou\\b"), ",")
+            .replace(Regex("(?i)\\be\\b"), ",")
+            .split(",")
+            .map { it.trim() }
+            .filter { it.isNotBlank() }
+
+        for (nomeBruto in nomesCandidatos) {
+            val nomeN = norm(nomeBruto)
+            if (nomeN.length < 3) continue
+            // Acha uma definição de perícia cujo nome bate com o termo do
+            // pré-requisito (match por igualdade ou contido).
+            val def = repository.pericias.firstOrNull { norm(it.nome) == nomeN }
+                ?: repository.pericias.firstOrNull {
+                    val pn = norm(it.nome)
+                    pn.isNotBlank() && (pn.contains(nomeN) || nomeN.contains(pn))
+                }
+                ?: continue
+
+            // Já está na ficha? então não era esse o problema; pula.
+            if (viewModel.personagem.pericias.any { norm(it.nome) == norm(def.nome) }) continue
+
+            val erro = viewModel.adicionarPericia(def, pts = 1)
+            if (erro == null) {
+                // Confirma que agora a técnica tem pré-requisito atendido por
+                // essa perícia recém-adicionada.
+                val periciaNova = viewModel.personagem.pericias
+                    .lastOrNull { norm(it.nome) == norm(def.nome) }
+                if (periciaNova != null && viewModel.tecnicaAtendePreRequisito(tec, periciaNova)) {
+                    viewModel.autoSaveIA()
+                    return def.nome
+                }
+                // Adicionou mas não satisfez (era a perícia errada): remove.
+                val idx = viewModel.personagem.pericias.indexOfLast { norm(it.nome) == norm(def.nome) }
+                if (idx >= 0) viewModel.removerPericia(idx)
+            }
+        }
+        return null
     }
 
 }

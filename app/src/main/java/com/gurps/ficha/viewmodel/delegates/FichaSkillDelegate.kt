@@ -241,9 +241,11 @@ class FichaSkillDelegate(private val dataRepository: DataRepository) {
             .trim()
         val termosGenericos = listOf(
             "pre requisito",
+            "pre requisitos",          // plural: "não pode exceder as perícias pré-requisitos"
             "pre requisito aparar",
             "pre requisito bloquear",
             "pericia pre requisito",
+            "pericias pre requisitos", // plural
             "pericia de tiro",
             "pericia com arma",
             "defesa ativa",

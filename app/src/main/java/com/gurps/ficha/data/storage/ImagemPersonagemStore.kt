@@ -44,7 +44,7 @@ object ImagemPersonagemStore {
     private const val DIR = "portraits"
     private const val LARGURA_ALVO = 1080       // px — largura do retrato recortado (cabeçalho)
     private const val MAIOR_LADO_ORIGINAL = 1600 // px — maior lado da imagem inteira (tela cheia)
-    private const val PROPORCAO = 16f / 9f      // faixa larga do cabeçalho
+    private const val PROPORCAO = 2.0f          // faixa do cabeçalho (largura/altura)
     private const val QUALIDADE_JPEG = 88
     private const val MAX_DECODE = 2048          // limita o bitmap carregado em memória
 
@@ -274,9 +274,12 @@ object ImagemPersonagemStore {
 
     /**
      * Recorta [bmp] na proporção do cabeçalho, enquadrando o assunto.
-     *  - Centro horizontal: centro do assunto (ou do rosto, ou da imagem).
-     *  - Vertical: se há rosto, deixa ~30% de margem acima dele (não corta a
-     *    cabeça); senão, começa no TOPO do assunto; senão, no topo da imagem.
+     *  - Centro horizontal: centro do rosto (ou do assunto, ou da imagem).
+     *  - Vertical: com rosto, CENTRALIZA o rosto na faixa (levemente acima do
+     *    meio, para mostrar cabelo em cima e um pouco de ombro embaixo). Como o
+     *    cabeçalho na tela é mais baixo que esta faixa, o Compose ainda recorta
+     *    pelo CENTRO (Alignment.Center) — por isso o rosto centralizado aqui
+     *    continua visível lá. Sem rosto → topo do assunto; senão topo da imagem.
      */
     private fun recortarFaixa(bmp: Bitmap, assunto: Rect?, rosto: Rect?): Bitmap {
         val w = bmp.width
@@ -293,10 +296,10 @@ object ImagemPersonagemStore {
         var left = (centroX - cropW / 2).coerceIn(0, w - cropW)
 
         val top: Int = when {
-            rosto != null -> {
-                val margemAcima = (cropH * 0.30f).roundToInt()
-                (rosto.top - margemAcima).coerceIn(0, h - cropH)
-            }
+            // Rosto a ~46% do topo da faixa (centralizado, levemente acima do
+            // meio). Mantém o rosto no centro mesmo após o recorte do Compose.
+            rosto != null ->
+                (rosto.centerY() - (cropH * 0.46f).roundToInt()).coerceIn(0, h - cropH)
             assunto != null -> assunto.top.coerceIn(0, h - cropH)
             else -> 0
         }

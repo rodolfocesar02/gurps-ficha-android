@@ -708,7 +708,7 @@ private fun CabecalhoComImagem(
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
-            alignment = Alignment.TopCenter
+            alignment = Alignment.Center
         )
         // Gradiente escuro de cima e de baixo para o texto branco ficar legível.
         Box(

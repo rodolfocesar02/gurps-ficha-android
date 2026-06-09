@@ -816,6 +816,32 @@ class MestreIAGeneratorUseCase(
             return@withContext
         }
 
+        // DIAGNÓSTICO (filtrar logcat por "MestreIA_JSON"): registra o JSON CRU
+        // que a IA mandou + a lista de IDs por seção, para descobrir quais IDs
+        // ela está usando errado. Logado em blocos de 3500 chars (limite do
+        // Logcat por linha).
+        run {
+            val cru = fichaJson.toString()
+            Log.i("MestreIA_JSON", "===== JSON RECEBIDO DA IA (${cru.length} chars) =====")
+            cru.chunked(3500).forEachIndexed { i, parte -> Log.i("MestreIA_JSON", "[$i] $parte") }
+            fun idsDe(secao: String): String {
+                val arr = fichaJson.optJSONArray(secao) ?: return "(vazio)"
+                return (0 until arr.length()).joinToString(", ") { idx ->
+                    val o = arr.optJSONObject(idx)
+                    val id = o?.optString("id")?.takeIf { it.isNotBlank() && it != "null" }
+                    val nome = o?.optString("nome")?.takeIf { it.isNotBlank() }
+                    id ?: ("?nome:" + (nome ?: arr.optString(idx)))
+                }
+            }
+            Log.i("MestreIA_JSON", "IDs raca=[${fichaJson.optString("raca")}]")
+            Log.i("MestreIA_JSON", "IDs vantagens=[${idsDe("vantagens")}]")
+            Log.i("MestreIA_JSON", "IDs desvantagens=[${idsDe("desvantagens")}]")
+            Log.i("MestreIA_JSON", "IDs pericias=[${idsDe("pericias")}]")
+            Log.i("MestreIA_JSON", "IDs tecnicas=[${idsDe("tecnicas")}]")
+            Log.i("MestreIA_JSON", "IDs magias=[${idsDe("magias")}]")
+            Log.i("MestreIA_JSON", "IDs equipamentos=[${idsDe("equipamentos")}]")
+        }
+
         // Aplica a ficha pilar por pilar
         onStatusUpdate("Aplicando a ficha na tela...")
         val erros = mutableListOf<String>()
@@ -873,7 +899,11 @@ class MestreIAGeneratorUseCase(
         }
 
         // Pilar 0.5: raça (antes dos atributos, pois o modelo racial pode setar atributos base)
-        fichaJson.optString("raca").takeIf { it.isNotBlank() }?.let { racaId ->
+        // OBS: org.json.optString("raca") devolve a STRING "null" quando o valor
+        // JSON é null — por isso filtramos "null"/"none"/"nenhuma" além de vazio.
+        fichaJson.optString("raca")
+            .takeIf { it.isNotBlank() && it.lowercase() !in setOf("null", "none", "nenhuma", "nenhum") }
+            ?.let { racaId ->
             onStatusUpdate("Aplicando raça: $racaId...")
             val args = org.json.JSONObject().apply { put("id", racaId); put("tipo", "raca") }
             val r = toolExecutor.aplicarModeloRacial(args)
@@ -1127,14 +1157,14 @@ class MestreIAGeneratorUseCase(
         }
         Log.i("MestreIA_Pro", "Aplicação concluída: $aplicados itens aplicados, ${erros.size} erros")
 
-        // Monta mensagem de fechamento para o chat
+        // Monta mensagem de fechamento para o chat.
+        // OBS: a lista de itens não aplicados NÃO é mais exibida ao jogador
+        // (poluía o chat com texto técnico). Continua registrada no Logcat
+        // acima (tag MestreIA_Pro) para diagnóstico.
         val pontos = toolExecutor.lerSecao("pontos")
         val nome = viewModel.personagem.nome.ifBlank { "Personagem" }
-        val avisoErros = if (erros.isNotEmpty())
-            "\n\n⚠️ Alguns itens não foram aplicados (IDs não encontrados): ${erros.joinToString(", ")}"
-        else ""
         val mensagemFinal = MestreIAClient.ChatResponse(
-            text = "$historiaChat\n\n---\n**$nome está pronto!** $pontos$avisoErros"
+            text = "$historiaChat\n\n---\n**$nome está pronto!** $pontos"
         )
 
         onResultado(true, mensagemFinal)
