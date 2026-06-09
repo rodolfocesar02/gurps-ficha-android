@@ -138,7 +138,7 @@
       }
     ],
     "equipamentos": [
-      "espada_longa",
+      "espada_larga",
       "escudo_medio"
     ],
     "variacoes": [
@@ -939,7 +939,7 @@
       "tepidez"
     ],
     "equipamentos": [
-      "espada_longa",
+      "espada_larga",
       "escudo_grande"
     ],
     "variacoes": [
@@ -3620,6 +3620,7 @@
     "pontosBase": 150,
     "racaId": null,
     "atributos": {
+      "dx": 11,
       "iq": 14,
       "ht": 10
     },
@@ -3627,11 +3628,18 @@
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "voz_melodiosa"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "reputacao",
+        "custoEscolhido": -5
       }
     ],
     "pericias": [
@@ -3726,6 +3734,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "adaga",
+      "tunica",
+      "capa_leve"
     ]
   },
   {
@@ -3743,17 +3756,23 @@
     "racaId": null,
     "atributos": {
       "iq": 14,
-      "ht": 10
+      "ht": 11
     },
     "vantagens": [
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "empatia_com_espiritos"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "voto"
       }
     ],
     "pericias": [
@@ -3844,6 +3863,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "adaga",
+      "tunica"
     ]
   },
   {
@@ -3860,18 +3884,26 @@
     "pontosBase": 150,
     "racaId": null,
     "atributos": {
-      "iq": 14,
-      "ht": 10
+      "st": 11,
+      "dx": 12,
+      "iq": 13,
+      "ht": 12
     },
     "vantagens": [
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "reflexos_em_combate"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "senso_do_dever"
       }
     ],
     "pericias": [
@@ -3954,6 +3986,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "adaga",
+      "tunica"
     ]
   },
   {
@@ -3969,18 +4006,24 @@
     "pontosBase": 150,
     "racaId": null,
     "atributos": {
-      "iq": 14,
+      "iq": 15,
       "ht": 10
     },
     "vantagens": [
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "nocao_exata_do_tempo"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "obsessao"
       }
     ],
     "pericias": [
@@ -4067,6 +4110,10 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "tunica"
     ]
   },
   {
@@ -4090,11 +4137,17 @@
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "intuicao"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "distraido"
       }
     ],
     "pericias": [
@@ -4176,6 +4229,10 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "tunica"
     ]
   },
   {
@@ -4199,11 +4256,21 @@
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "carisma",
+        "nivel": 1
+      },
+      {
+        "id": "voz_melodiosa"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "luxuria"
       }
     ],
     "pericias": [
@@ -4294,6 +4361,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "adaga",
+      "tunica",
+      "capa_leve"
     ]
   },
   {
@@ -4310,18 +4382,25 @@
     "pontosBase": 150,
     "racaId": null,
     "atributos": {
+      "dx": 11,
       "iq": 14,
-      "ht": 10
+      "ht": 11
     },
     "vantagens": [
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "resistente"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "obsessao"
       }
     ],
     "pericias": [
@@ -4412,6 +4491,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "adaga",
+      "tunica",
+      "capa_pesada"
     ]
   },
   {
@@ -4429,17 +4513,23 @@
     "racaId": null,
     "atributos": {
       "iq": 14,
-      "ht": 10
+      "ht": 11
     },
     "vantagens": [
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "empatia_com_espiritos"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "senso_do_dever"
       }
     ],
     "pericias": [
@@ -4530,6 +4620,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "adaga",
+      "tunica"
     ]
   },
   {
@@ -4548,17 +4643,24 @@
     "racaId": null,
     "atributos": {
       "iq": 14,
-      "ht": 10
+      "ht": 11
     },
     "vantagens": [
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "empatia_com_plantas"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "reputacao",
+        "custoEscolhido": -10
       }
     ],
     "pericias": [
@@ -4648,6 +4750,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "faca",
+      "tunica_de_pele"
     ]
   },
   {
@@ -4664,6 +4771,7 @@
     "pontosBase": 150,
     "racaId": null,
     "atributos": {
+      "dx": 11,
       "iq": 14,
       "ht": 10
     },
@@ -4671,11 +4779,17 @@
       {
         "id": "aptidao_magica",
         "nivel": 2
+      },
+      {
+        "id": "versatil"
       }
     ],
     "desvantagens": [
       {
         "id": "curiosidade"
+      },
+      {
+        "id": "obsessao"
       }
     ],
     "pericias": [
@@ -4762,6 +4876,11 @@
       "Versao iniciante: menos magias, mais Aptidao Magica",
       "Versao mestre: adicione magias avancadas da mesma escola",
       "Combine com outra escola para um mago hibrido"
+    ],
+    "equipamentos": [
+      "bordao",
+      "adaga",
+      "tunica"
     ]
   }
 ]
