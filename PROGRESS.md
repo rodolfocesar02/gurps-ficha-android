@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 341 CONCLUÍDO — Imagem (enquadramento de rosto) + Forjador (bug do Chute, GPS de técnicas, raça null)
-**Último Lote Registrado:** Lote 341 (hash `b927a51`) — começa na linha **2765** deste arquivo
+**Status Atual:** Lote 342 CONCLUÍDO — Forjador 50 templates validados + fix budget | Imagem proporcional | Acessibilidade
+**Último Lote Registrado:** Lote 342 (hash `9eab63c`) — começa na linha **2776** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2771,4 +2771,18 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Forjador: corrige raca "null" (org.json.optString devolve string "null")
 - Diagnostico: logs MestreIA_JSON (JSON cru da IA + IDs por secao)
 - Docs: remove planos/relatorios obsoletos, adiciona Skill_GURPS.MD
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 342 (hash `9eab63c`) — 09 de Junho de 2026
+**Forjador: 50 templates validados + fix budget | Imagem proporcional | Acessibilidade**
+- Templates: 20 -> 50 no forjador_templates.json (todos com IDs validados contra catalogo, 0 quebrados)
+- Corrige 5 IDs quebrados nos originais (carate, mineracao, sentido_de_direcao, obrigacao, sensivel)
+- Expande tags/sinonimos dos 20 (samurai, ronin, espadachim, cavaleiro, feiticeiro...)
+- +10 templates (fantasia: assassino/espadachim/cavaleiro/artifice/caca-mortos-vivos; generos: detetive/soldado/medico/cientista/horror)
+- +20 templates do Rodolfo (8 IDs corrigidos na mesclagem; templates2.json -> lixeira)
+- Fix budget: pontosBase do template vira referencia; budget real (pedido) sempre manda (corrige empurrao p/ 150 pts)
+- scripts/add_templates.py + merge_templates.py: geradores com validacao de ID
+- Imagem: recorte proporcional ao tamanho do rosto (rosto ~42% da faixa) -> enquadramento consistente entre artes
+- Acessibilidade Pracego: rotulos em 8 botoes mudos (DiceRoller +-dados/mod, DialogsMestreIA historico/limpar, TraitDialogsV2 +-limitacao)
+- UI: remove bloco custo/modelo do dialogo de gerar retrato
 ----------------------------------------------------------------------------------------------------------------------------------------------------
