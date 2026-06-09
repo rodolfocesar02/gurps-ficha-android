@@ -129,9 +129,8 @@ fun DialogMestreIA(
                 if (!liveAtivo) {
                     ChatInputBar(prompt, onValueChange = { prompt = it }, isAguardando, onSend = {
                         if (viewModel.mestreIAMode == "pintor") {
-                            // Mestre Pintor: ignora o texto e abre o dialog de retrato
-                            viewModel.dispensarDialogRetrato()  // reseta flag, o delegate reexibe
-                            viewModel.gerarRetratoIA()
+                            val p = prompt.trim(); prompt = ""; isAguardando = true
+                            viewModel.gerarRetratoIA(promptCustom = p.ifBlank { null }) { isAguardando = false }
                         } else {
                             val p = prompt; prompt = ""; isAguardando = true
                             viewModel.conversarComMestreIA(p, viewModel.mestreIAMode) { _, _ -> isAguardando = false }
@@ -210,9 +209,8 @@ fun ChatInputBar(value: String, onValueChange: (String) -> Unit, isAguardando: B
             androidx.compose.foundation.text.BasicTextField(
                 value = value, onValueChange = onValueChange,
                 modifier = Modifier.weight(1f).padding(8.dp),
-                enabled = !isPintor,
                 decorationBox = {
-                    if (value.isEmpty()) Text(if (isPintor) "Toque em ▶ para gerar o retrato" else "Fale com o mestre...")
+                    if (value.isEmpty()) Text(if (isPintor) "Descreva a imagem ou envie vazio para usar a ficha..." else "Fale com o mestre...")
                     it()
                 }
             )

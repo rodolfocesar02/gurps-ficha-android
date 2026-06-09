@@ -656,26 +656,40 @@ class FichaIADelegate(
     }
 
     /**
-     * Gera retrato do personagem via Gemini Image e aplica na ficha.
-     * Chamado quando o usuário aceita o dialog de retrato pós-Forjador.
+     * Gera retrato via Gemini Image e aplica na ficha.
+     * [promptCustom] — descrição livre do usuário; se null usa nome/aparência/história da ficha.
+     * [onFim] — callback chamado ao terminar (sucesso ou falha), para atualizar estado de loading na UI.
      */
-    fun gerarRetratoIA() {
+    fun gerarRetratoIA(promptCustom: String? = null, onFim: (() -> Unit)? = null) {
         mostrarDialogRetrato = false
         val p = viewModel.personagem
         val apiKey = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_KEY
         val modelId = com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_IMAGE_MODEL
         if (apiKey.isBlank()) {
             android.util.Log.w("GeminiImage", "MESTRE_IA_GEMINI_IMAGE_KEY vazia — abortando")
+            onFim?.invoke()
             return
         }
-        retratoGerandoStatus = "Gerando retrato de ${p.nome}..."
+        // Se o usuário digitou um prompt livre, usa ele diretamente.
+        // Senão, monta o prompt a partir dos campos da ficha.
+        val nome     = if (promptCustom != null) "" else p.nome
+        val aparencia = if (promptCustom != null) "" else p.aparencia
+        val historia  = promptCustom ?: p.historico
+        val statusMsg = if (promptCustom != null) "Gerando imagem..." else "Gerando retrato de ${p.nome}..."
+        retratoGerandoStatus = statusMsg
+
+        // Mostra no chat o que o usuário pediu
+        if (promptCustom != null) {
+            mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage("user", promptCustom, "Você")
+        }
+
         scope.launch(Dispatchers.IO) {
             val resultado = com.gurps.ficha.data.network.GeminiImageService.gerarRetrato(
                 apiKey = apiKey,
                 modelId = modelId,
-                nome = p.nome,
-                aparencia = p.aparencia,
-                historia = p.historico
+                nome = nome,
+                aparencia = aparencia,
+                historia = historia
             )
             withContext(Dispatchers.Main) {
                 retratoGerandoStatus = ""
@@ -709,6 +723,8 @@ class FichaIADelegate(
                     mestreIAChatHistory = mestreIAChatHistory + MestreIAClient.ChatMessage(
                         "model", "⚠️ Erro ao salvar o retrato. Tente pela galeria."
                     )
+                } finally {
+                    onFim?.invoke()
                 }
             }
         }

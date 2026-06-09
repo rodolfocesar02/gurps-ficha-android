@@ -472,7 +472,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun executarAcaoIA(c: String) = iaDelegate.executarAcao(c)
     fun confirmarIntegracaoFicha() = iaDelegate.confirmarIntegracao()
     fun descartarFichaPendente() = iaDelegate.descartarPendente()
-    fun gerarRetratoIA() = iaDelegate.gerarRetratoIA()
+    fun gerarRetratoIA(promptCustom: String? = null, onFim: (() -> Unit)? = null) =
+        iaDelegate.gerarRetratoIA(promptCustom, onFim)
     fun dispensarDialogRetrato() { iaDelegate.mostrarDialogRetrato = false }
     fun limparChatMestreIA() = iaDelegate.limparChat()
     fun gerarSaudacaoMestreIA() = iaDelegate.gerarSaudacaoSeVazio()
