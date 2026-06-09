@@ -3605,5 +3605,703 @@
       "Mestre dos jogos",
       "Golpista aristocrático"
     ]
+  },
+  {
+    "id": "ilusionista",
+    "nome": "Ilusionista",
+    "descricao": "Mestre das ilusoes, alucinacoes e enganos mentais. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "ilusao",
+      "ilusionista",
+      "enganador",
+      "mentalista"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "ilusao_simples",
+      "ilusao_complexa",
+      "ilusao_perfeita",
+      "alucinacao",
+      "alucinacao_superior",
+      "anular_ilusao",
+      "controle_de_ilusao",
+      "detectar_ilusao",
+      "cobertura_ilusoria",
+      "disfarce_ilusorio",
+      "aura_falsa",
+      "memoria_falsa",
+      "esquecimento",
+      "esquecimento_permanente",
+      "doppelganger",
+      "imitar_voz",
+      "alterar_voz",
+      "alterar_feicoes",
+      "invisibilidade",
+      "escamotear_informacao"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "invocador",
+    "nome": "Invocador",
+    "descricao": "Conjura elementais, animais, espiritos e criaturas de outros planos. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "invocador",
+      "conjurador",
+      "convocacao",
+      "elementais"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "convocar_elemental_ar",
+      "convocar_elemental_fogo",
+      "convocar_elemental_terra",
+      "convocar_elemental_agua",
+      "convocar_animal_terra",
+      "convocar_animal_ar",
+      "convocar_animal_mar",
+      "convocar_espirito",
+      "convocar_sombra",
+      "convocar_demonio",
+      "convocar_zumbi",
+      "convocacao_planar",
+      "criar_elemental_ar",
+      "criar_elemental_fogo",
+      "criar_elemental_terra",
+      "criar_elemental_agua",
+      "criar_guerreiro",
+      "criar_montaria",
+      "criar_servo",
+      "criar_animal"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "mago_de_batalha",
+    "nome": "Mago de Batalha",
+    "descricao": "Especialista em magia ofensiva e protecao no campo de batalha. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "combate",
+      "mago de guerra",
+      "ofensivo",
+      "destruidor"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "bola_de_fogo",
+      "bola_de_fogo_explosiva",
+      "bola_de_relampagos",
+      "jato_de_chamas",
+      "jato_de_acido",
+      "jato_de_ar",
+      "jato_de_luz",
+      "chicote_de_relampago",
+      "flecha_magica",
+      "flecha_magica_rapida",
+      "arma_flamejante",
+      "arma_de_relampago",
+      "arma_penetrante",
+      "armadura",
+      "armadura_flamejante",
+      "armadura_de_relampagos",
+      "escudo",
+      "escudo_antiprojeteis",
+      "fortificar",
+      "bravura"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "cronomante",
+    "nome": "Cronomante",
+    "descricao": "Manipula o tempo: acelera, atrasa e enxerga o passado. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "tempo",
+      "cronomante",
+      "temporal"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "acelerar_tempo",
+      "acelerar",
+      "apressar",
+      "cadencia",
+      "marcha_acelerada",
+      "marcha_lenta",
+      "intervalo",
+      "adiar_magica",
+      "baliza_viagem_no_tempo",
+      "criar_portal_viagem_no_tempo",
+      "hora_certa",
+      "historia",
+      "historia_antiga",
+      "ecos_do_passado",
+      "imagens_do_passado",
+      "aromas_do_passado",
+      "interromper_envelhecimento",
+      "envelhecer",
+      "memorizar",
+      "jornada_rapida"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "astrologo",
+    "nome": "Astrologo",
+    "descricao": "Le os astros, adivinha e enxerga a distancia. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "adivinhacao",
+      "astrologo",
+      "vidente",
+      "oraculo"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "adivinhacao",
+      "aura",
+      "bola_de_cristal",
+      "historia",
+      "historia_antiga",
+      "ecos_do_passado",
+      "imagens_do_passado",
+      "aromas_do_passado",
+      "hora_certa",
+      "localizador",
+      "localizar_magia",
+      "localizar_portal",
+      "guia",
+      "aerovisao",
+      "aquavisao",
+      "geovisao",
+      "metalovisao",
+      "audicao_remota",
+      "leitura_da_mente"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "encantador",
+    "nome": "Encantador",
+    "descricao": "Domina mentes e emocoes com feiticos de controle. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "encantamento",
+      "encantador",
+      "controle mental",
+      "sedutor"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "encantar",
+      "encantamento_temporario",
+      "cativar",
+      "fascinar",
+      "feitico",
+      "enfeiticar",
+      "controle_de_emocao",
+      "controle_de_pessoa",
+      "comando",
+      "condicionamento",
+      "condicionamento_permanente",
+      "escravizar",
+      "juramento",
+      "lealdade",
+      "compelir_a_verdade",
+      "compelir_a_mentira",
+      "eloquencia",
+      "loquacidade",
+      "fortalecer_vontade",
+      "enfraquecer_vontade"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "alquimista_de_guerra",
+    "nome": "Alquimista de Guerra",
+    "descricao": "Combina alquimia ofensiva com energia e cura de campo. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "alquimia",
+      "acido",
+      "energia",
+      "guerra"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "acido_essencial",
+      "bola_de_acido",
+      "jato_de_acido",
+      "chuva_de_acido",
+      "criar_acido",
+      "agua_essencial",
+      "chama_essencial",
+      "ar_essencial",
+      "alimento_essencial",
+      "gema_de_energia",
+      "conceder_energia",
+      "compartilhar_energia",
+      "energizacao",
+      "arma_flamejante",
+      "arma_congelante",
+      "arma_penetrante",
+      "fortificar",
+      "fortalecer",
+      "cura_superficial",
+      "cura_profunda"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "necromante_branco",
+    "nome": "Necromante Branco",
+    "descricao": "Lida com espiritos e mortos para curar e libertar, nao para o mal. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "necromancia",
+      "espiritos",
+      "cura",
+      "sagrado"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "afetar_espiritos",
+      "espantar_espirito",
+      "convocar_espirito",
+      "comandar_espirito",
+      "aprisionar_espirito",
+      "expulsar",
+      "fantasma",
+      "espectro",
+      "descanso_final",
+      "cura_superficial",
+      "cura_profunda",
+      "cura_superior",
+      "curar_doencas",
+      "cessar_sangramento",
+      "cessar_paralisia",
+      "aliviar_loucura",
+      "compartilhar_vitalidade",
+      "conceder_vitalidade",
+      "fortalecer",
+      "bencao"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "bruxa_do_pantano",
+    "nome": "Bruxa do Pantano",
+    "descricao": "Usa venenos, pragas, plantas e maldicoes da natureza sombria. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "bruxa",
+      "pantano",
+      "veneno",
+      "plantas",
+      "maldicao"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "agua_podre",
+      "envenenar_alimento",
+      "mau_cheiro",
+      "gerar_odor",
+      "desidratar",
+      "maldicao",
+      "maleficio",
+      "medo",
+      "loucura",
+      "atrofiar_membro",
+      "atrofiar_visao",
+      "atrofiar_sentidos",
+      "controle_de_planta",
+      "criar_planta",
+      "curar_planta",
+      "falar_com_plantas",
+      "enclausuramento_arboreo",
+      "corpo_de_lodo",
+      "jato_de_lama"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
+  },
+  {
+    "id": "magista_runico",
+    "nome": "Magista Runico",
+    "descricao": "Inscreve runas de protecao, deteccao e anti-magia. Mago (precisa de Aptidao Magica).",
+    "tags": [
+      "magia",
+      "runas",
+      "magista",
+      "protecao",
+      "anti-magia"
+    ],
+    "pontosBase": 150,
+    "racaId": null,
+    "atributos": {
+      "iq": 14,
+      "ht": 10
+    },
+    "vantagens": [
+      {
+        "id": "aptidao_magica",
+        "nivel": 2
+      }
+    ],
+    "desvantagens": [
+      {
+        "id": "curiosidade"
+      }
+    ],
+    "pericias": [
+      {
+        "id": "ocultismo",
+        "pts": 2
+      },
+      {
+        "id": "alquimia_nt",
+        "pts": 2
+      },
+      {
+        "id": "pesquisa_nt",
+        "pts": 2
+      }
+    ],
+    "magias": [
+      "amuleto",
+      "marca_mistica",
+      "boca_magica",
+      "alarme",
+      "alarme_florestal",
+      "guardamagica",
+      "escudo_antimagica",
+      "contramagica",
+      "anular_magica",
+      "identificar_magica",
+      "deteccao_de_magia",
+      "localizar_magia",
+      "analisar_magica",
+      "conceder_magica",
+      "manter_magica",
+      "arremessar_magica",
+      "apanhar_magica",
+      "deslocar_magica",
+      "escudo_protetor",
+      "guardachuva"
+    ],
+    "variacoes": [
+      "Versao iniciante: menos magias, mais Aptidao Magica",
+      "Versao mestre: adicione magias avancadas da mesma escola",
+      "Combine com outra escola para um mago hibrido"
+    ]
   }
 ]
