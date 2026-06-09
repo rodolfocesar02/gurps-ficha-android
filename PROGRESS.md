@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 344 CONCLUÍDO — Forjador: perícias temáticas nos 10 magos (60 templates validados)
-**Último Lote Registrado:** Lote 344 (hash `c171a2c`) — começa na linha **2799** deste arquivo
+**Status Atual:** Lote 345 CONCLUÍDO — Forjador: 10 magos enriquecidos (vantagens/desv/equip/atributos), 60 templates validados
+**Último Lote Registrado:** Lote 345 (hash `3aaa5f9`) — começa na linha **2808** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2803,4 +2803,14 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Astrologia e Historia Militar nao existem no catalogo -> removidas
 - scripts/check_pericias_magos.py + add_pericias_magos.py
 - 60 templates, 0 IDs quebrados
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 345 (hash `3aaa5f9`) — 09 de Junho de 2026
+**Forjador: enriquece os 10 magos (vantagens/desvantagens/equip/atributos)**
+- Cada mago ganha identidade propria (antes todos identicos: so aptidao_magica+curiosidade)
+- Vantagens tematicas (Carisma/Voz, Empatia com Espiritos/Plantas, Intuicao, Nocao Exata do Tempo, Reflexos em Combate, Resistente, Versatil)
+- Desvantagens caracteristicas (Luxuria, Voto, Reputacao, Senso do Dever, Obsessao, Distraido)
+- Equipamentos (bordao/cajado, adaga, tunica/vestes) + atributos variados por arquetipo
+- Tudo validado; corrige espada_longa->espada_larga em guerreiro_espada_escudo e paladino_sagrado
+- scripts/enrich_magos.py | 60 templates, 0 IDs quebrados em TODOS os campos
 ----------------------------------------------------------------------------------------------------------------------------------------------------
