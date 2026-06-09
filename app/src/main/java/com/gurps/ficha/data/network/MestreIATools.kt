@@ -381,9 +381,138 @@ object MestreIATools {
     }
 
     /**
+     * Toolset UNIFICADA do Auditor (modo "analise"):
+     * tools do Forjador (ler_ficha, buscar_catalogo, gps_magia, editar_ficha)
+     * + busca no manual (localizar_no_codex, ler_pagina) + nexus_arcano.
+     * Formato OpenAI/DeepSeek.
+     *
+     * PROMPT que usa este toolset: MestreIAPromptsForjador.gerarPromptConsultor()
+     * EXECUTOR: MestreIAGeneratorUseCase — filtra TOOL_LOCALIZAR + TOOL_LER além das ForjadorTools.
+     */
+    fun getAuditorUnificadoToolsOpenAI(): JSONArray {
+        // Tools do Forjador replicadas aqui para evitar dependência circular
+        // (MestreIATools está em data.network; ForjadorTools em domain.tools)
+        val tools = getOpenAITools(modo = "geracao")   // ler_ficha, buscar_catalogo, gps_magia, editar_ficha, raças
+
+        // Adiciona as 2 tools de consulta ao manual (grep + leitura dirigida)
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_LOCALIZAR)
+                put("description", "Localiza páginas do manual GURPS que contêm TODAS as palavras informadas (busca AND). Retorna lista compacta com livro, número de página e um trecho curto — NÃO o texto completo. Use para descobrir EM QUAIS páginas está a regra; depois use ler_pagina para ler. Comece amplo e adicione palavras para estreitar; troque por sinônimos técnicos quando vier nenhuma.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("termos", JSONObject().put("type", "string").put("description", "Palavras-chave separadas por espaço. Use termos técnicos exatos. Mais palavras = busca mais restrita."))
+                        put("livros", JSONObject().apply {
+                            put("type", "array")
+                            put("description", "Opcional. Restringe a estes livros. Omita para procurar em todos.")
+                            put("items", JSONObject().put("type", "string").put("enum", LIVROS_ENUM))
+                        })
+                    })
+                    put("required", JSONArray().put("termos"))
+                })
+            })
+        })
+
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_LER)
+                put("description", "Lê o TEXTO COMPLETO de uma página do manual GURPS (ou intervalo curto quando a regra/tabela atravessa páginas). Use depois de localizar_no_codex, nas páginas que você julgou relevantes. É aqui que você lê a regra inteira para citar e embasar a análise.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("livro", JSONObject().put("type", "string").put("description", "Livro da página.").put("enum", LIVROS_ENUM))
+                        put("pagina", JSONObject().put("type", "integer").put("description", "Número da página a ler."))
+                        put("pagina_final", JSONObject().put("type", "integer").put("description", "Opcional. Para ler um intervalo (ex.: tabela que continua na seguinte). Máximo 4 páginas."))
+                    })
+                    put("required", JSONArray().put("livro").put("pagina"))
+                })
+            })
+        })
+
+        // Nexus Arcano (pré-requisitos de magias)
+        tools.put(JSONObject().apply {
+            put("type", "function")
+            put("function", JSONObject().apply {
+                put("name", TOOL_NEXUS_ARCANO)
+                put("description", "Trilha técnica de pré-requisitos de magias. Use para planejar a cadeia antes de sugerir ao jogador.")
+                put("parameters", JSONObject().apply {
+                    put("type", "object")
+                    put("properties", JSONObject().apply {
+                        put("magia_alvo", JSONObject().put("type", "string").put("description", "ID da magia (ex: 'tempestade_de_relampagos')"))
+                    })
+                    put("required", JSONArray().put("magia_alvo"))
+                })
+            })
+        })
+
+        return tools
+    }
+
+    /**
+     * Mesma toolset unificada do Auditor, no formato NATIVO do Gemini.
+     * Usada quando o Auditor cai em backup com endpoint Google-native.
+     */
+    fun getAuditorUnificadoToolsGemini(): JSONArray {
+        // Tools do Forjador replicadas aqui (evita dependência circular data.network → domain.tools)
+        val forjadorDecls = getGeminiTools(modo = "geracao")
+            .optJSONObject(0)?.optJSONArray("functionDeclarations") ?: JSONArray()
+        val fns = JSONArray()
+        for (i in 0 until forjadorDecls.length()) fns.put(forjadorDecls.getJSONObject(i))
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_LOCALIZAR)
+            put("description", "Localiza páginas do manual GURPS que contêm TODAS as palavras informadas (busca AND). Retorna lista compacta (livro|página|trecho curto). Use para descobrir onde está a regra; depois use ler_pagina. Adicione palavras para estreitar; remova/troque quando vier nenhuma.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("termos", JSONObject().put("type", "STRING").put("description", "Palavras-chave separadas por espaço. Termos técnicos exatos. Mais palavras = mais restrito."))
+                    put("livros", JSONObject().apply {
+                        put("type", "ARRAY")
+                        put("description", "Opcional. Restringe a estes livros. Omita para todos.")
+                        put("items", JSONObject().put("type", "STRING").put("enum", LIVROS_ENUM))
+                    })
+                })
+                put("required", JSONArray().put("termos"))
+            })
+        })
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_LER)
+            put("description", "Lê o TEXTO COMPLETO de uma página do manual GURPS (ou intervalo curto). Use depois de localizar_no_codex nas páginas relevantes. É aqui que você lê a regra inteira para citar.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("livro", JSONObject().put("type", "STRING").put("description", "Livro da página.").put("enum", LIVROS_ENUM))
+                    put("pagina", JSONObject().put("type", "INTEGER").put("description", "Número da página a ler."))
+                    put("pagina_final", JSONObject().put("type", "INTEGER").put("description", "Opcional. Intervalo (tabela que continua). Máximo 4 páginas."))
+                })
+                put("required", JSONArray().put("livro").put("pagina"))
+            })
+        })
+
+        fns.put(JSONObject().apply {
+            put("name", TOOL_NEXUS_ARCANO)
+            put("description", "Trilha técnica de pré-requisitos de magias.")
+            put("parameters", JSONObject().apply {
+                put("type", "OBJECT")
+                put("properties", JSONObject().apply {
+                    put("magia_alvo", JSONObject().put("type", "STRING").put("description", "ID da magia"))
+                })
+                put("required", JSONArray().put("magia_alvo"))
+            })
+        })
+
+        return JSONArray().put(JSONObject().put("functionDeclarations", fns))
+    }
+
+    /**
      * Lote 325: mesma toolset do Auditor (localizar + ler + inspect + nexus),
      * no formato NATIVO do Gemini (functionDeclarations, tipos OBJECT/STRING/ARRAY).
      * Usada quando o Auditor cai num backup com endpoint Google-native.
+     * @deprecated Substituído por getAuditorUnificadoToolsGemini()
      */
     fun getAuditorToolsGemini(): JSONArray {
         val fns = JSONArray()

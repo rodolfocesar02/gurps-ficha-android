@@ -341,13 +341,18 @@ class MestreIAGeneratorUseCase(
 
                         if (ehErroDeApi(response.text)) break
 
+                        // Auditor (analise) também pode chamar localizar_no_codex, ler_pagina e
+                        // consultar_nexus_arcano — incluídas no toolset unificado do Auditor.
                         val forjadorCalls = response.toolCalls.filter { tc ->
-                            tc.name == ForjadorTools.TOOL_LER_FICHA      ||
-                            tc.name == ForjadorTools.TOOL_BUSCAR          ||
-                            tc.name == ForjadorTools.TOOL_GPS_MAGIA       ||
-                            tc.name == ForjadorTools.TOOL_EDITAR          ||
-                            tc.name == ForjadorTools.TOOL_BUSCAR_RACAS    ||
-                            tc.name == ForjadorTools.TOOL_APLICAR_RACIAL
+                            tc.name == ForjadorTools.TOOL_LER_FICHA         ||
+                            tc.name == ForjadorTools.TOOL_BUSCAR             ||
+                            tc.name == ForjadorTools.TOOL_GPS_MAGIA          ||
+                            tc.name == ForjadorTools.TOOL_EDITAR             ||
+                            tc.name == ForjadorTools.TOOL_BUSCAR_RACAS       ||
+                            tc.name == ForjadorTools.TOOL_APLICAR_RACIAL     ||
+                            tc.name == MestreIATools.TOOL_LOCALIZAR          ||
+                            tc.name == MestreIATools.TOOL_LER                ||
+                            tc.name == MestreIATools.TOOL_NEXUS_ARCANO
                         }
 
                         if (forjadorCalls.isEmpty()) {
@@ -428,10 +433,14 @@ class MestreIAGeneratorUseCase(
                             break
                         }
 
-                        val resultados = forjadorCalls.joinToString("\n\n") { tc ->
+                        // Executa cada tool call. Suspend calls (localizar/ler) requerem loop,
+                        // não lambda joinToString — as funções de repositório são suspend.
+                        val resultadosParts = mutableListOf<String>()
+                        for (tc in forjadorCalls) {
                             val alvo = tc.args.optString("alvo", "")
                                 .ifBlank { tc.args.optString("magia_alvo", "") }
                                 .ifBlank { tc.args.optString("query", "") }
+                                .ifBlank { tc.args.optString("termos", "") }
                                 .ifBlank { tc.args.optString("secao", "") }
                             val acao = when (tc.name) {
                                 ForjadorTools.TOOL_EDITAR          -> "✏️ Aplicando: $alvo"
@@ -440,17 +449,65 @@ class MestreIAGeneratorUseCase(
                                 ForjadorTools.TOOL_LER_FICHA       -> "📖 Lendo a ficha: $alvo"
                                 ForjadorTools.TOOL_BUSCAR_RACAS    -> "🧬 Buscando raças/metacaracterísticas..."
                                 ForjadorTools.TOOL_APLICAR_RACIAL  -> "🧬 Aplicando modelo racial: $alvo"
+                                MestreIATools.TOOL_LOCALIZAR        -> "🔍 Localizando no manual: $alvo"
+                                MestreIATools.TOOL_LER              -> "📚 Lendo manual ${tc.args.optString("livro","")} pág. ${tc.args.optInt("pagina", 0)}"
+                                MestreIATools.TOOL_NEXUS_ARCANO     -> "🧭 Pré-requisitos de magia: $alvo"
                                 else -> tc.name.replace("forjador_", "")
                             }
                             onStatusUpdate("$acao  (passo $iteracao)")
-                            // Iteração 1 (planejamento): bloqueia edição, só leitura/busca permitida.
-                            // O modelo deve primeiro entender o orçamento antes de gastar.
-                            if (!ehConsultor && iteracao == 1 && tc.name == ForjadorTools.TOOL_EDITAR) {
+
+                            val res = if (!ehConsultor && iteracao == 1 && tc.name == ForjadorTools.TOOL_EDITAR) {
+                                // Iteração 1 (planejamento Forjador): bloqueia edição.
                                 "=== ${tc.name} ===\n[PLANEJAMENTO] Ainda não aplique itens. Primeiro leia o orçamento disponível com forjador_ler_ficha('pontos'), pesquise os catálogos necessários e decida a distribuição de pontos entre os pilares. A edição começa na próxima iteração."
-                            } else {
-                                "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
+                            } else when (tc.name) {
+                                // Tools de consulta ao manual (suspend — executadas aqui no loop suspend)
+                                MestreIATools.TOOL_LOCALIZAR -> {
+                                    val termos = tc.args.optString("termos", "")
+                                    val livros = tc.args.optJSONArray("livros")?.let { arr ->
+                                        (0 until arr.length()).mapNotNull { i -> arr.optString(i).takeIf { it.isNotBlank() } }
+                                    }
+                                    val r = repository.localizarNoCodex(termos, livros)
+                                    if (r.hits.isEmpty()) {
+                                        "=== ${tc.name} ===\nNenhuma página encontrada para \"$termos\". Tente outros termos técnicos."
+                                    } else {
+                                        val sb = StringBuilder("=== ${tc.name} ===\nPÁGINAS para \"$termos\" (${r.total} total")
+                                        if (r.modo == "OR") sb.append(", busca aproximada")
+                                        sb.append("):\n")
+                                        for (h in r.hits) sb.append("• [${h.livro}, pág. ${h.pagina}] ${h.trecho}\n")
+                                        if (r.total > r.hits.size) sb.append("(... e mais ${r.total - r.hits.size} — adicione palavras para estreitar)\n")
+                                        sb.append("\nUse ler_pagina(livro, pagina) para ler o texto completo das páginas relevantes.")
+                                        sb.toString()
+                                    }
+                                }
+                                MestreIATools.TOOL_LER -> {
+                                    val livro = tc.args.optString("livro", "")
+                                    val pagina = tc.args.optInt("pagina", -1)
+                                    val paginaFinal = if (tc.args.has("pagina_final")) tc.args.optInt("pagina_final") else null
+                                    if (livro.isBlank() || pagina < 0) {
+                                        "=== ${tc.name} ===\nArgumentos inválidos (livro ou pagina ausente)."
+                                    } else {
+                                        val chunks = repository.lerPaginas(livro, pagina, paginaFinal)
+                                        if (chunks.isEmpty()) {
+                                            "=== ${tc.name} ===\nPágina não encontrada: $livro pág. $pagina."
+                                        } else {
+                                            val texto = chunks.joinToString("\n\n") { c ->
+                                                "--- [${c.source_title}, pág. ${c.page_number}] ---\n${c.text}"
+                                            }
+                                            "=== ${tc.name} ===\n$texto"
+                                        }
+                                    }
+                                }
+                                MestreIATools.TOOL_NEXUS_ARCANO -> {
+                                    // Redireciona para o executor do GPS_MAGIA do Forjador
+                                    "=== ${tc.name} ===\n${toolExecutor.execute(
+                                        MestreIAClient.MestreIAToolCall(ForjadorTools.TOOL_GPS_MAGIA, tc.args)
+                                    )}"
+                                }
+                                else -> "=== ${tc.name} ===\n${toolExecutor.execute(tc)}"
                             }
+                            resultadosParts.add(res)
                         }
+                        val resultados = resultadosParts.joinToString("\n\n")
                         Log.d("MestreIA_Forjador", "Iteração $iteracao: ${forjadorCalls.size} tool(s) → ${resultados.length} chars")
 
                         // READ-BACK: se houve edição, relê AUTOMATICAMENTE as
@@ -502,9 +559,13 @@ class MestreIAGeneratorUseCase(
                         // Iteração 1 inteira conta como planejamento válido —
                         // o sistema bloqueia edição nela, então nunca há progresso real,
                         // mas também nunca deve contar como estagnação.
+                        // Auditor: localizar/ler/nexus também contam como pesquisa válida
                         val pesquisou = iteracao == 1 || forjadorCalls.any {
-                            it.name == ForjadorTools.TOOL_GPS_MAGIA ||
-                            it.name == ForjadorTools.TOOL_BUSCAR
+                            it.name == ForjadorTools.TOOL_GPS_MAGIA       ||
+                            it.name == ForjadorTools.TOOL_BUSCAR           ||
+                            it.name == MestreIATools.TOOL_LOCALIZAR        ||
+                            it.name == MestreIATools.TOOL_LER              ||
+                            it.name == MestreIATools.TOOL_NEXUS_ARCANO
                         }
                         // != e não >: aplicar DESVANTAGEM baixa pontosGastos (custo
                         // negativo) — também é progresso. Qualquer mudança no estado conta.
