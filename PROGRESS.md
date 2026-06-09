@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 342 CONCLUÍDO — Forjador 50 templates validados + fix budget | Imagem proporcional | Acessibilidade
-**Último Lote Registrado:** Lote 342 (hash `9eab63c`) — começa na linha **2776** deste arquivo
+**Status Atual:** Lote 343 CONCLUÍDO — Forjador +10 magos temáticos (60 templates validados)
+**Último Lote Registrado:** Lote 343 (hash `6ad7afc`) — começa na linha **2790** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2785,4 +2785,13 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Imagem: recorte proporcional ao tamanho do rosto (rosto ~42% da faixa) -> enquadramento consistente entre artes
 - Acessibilidade Pracego: rotulos em 8 botoes mudos (DiceRoller +-dados/mod, DialogsMestreIA historico/limpar, TraitDialogsV2 +-limitacao)
 - UI: remove bloco custo/modelo do dialogo de gerar retrato
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 343 (hash `6ad7afc`) — 09 de Junho de 2026
+**Forjador: +10 magos tematicos (60 templates no total)**
+- 10 templates de mago do Rodolfo: Ilusionista, Invocador, Mago de Batalha, Cronomante, Astrologo, Encantador, Alquimista de Guerra, Necromante Branco, Bruxa do Pantano, Magista Runico
+- Magias validadas contra catalogo (das 200, so premonicao e doenca nao existiam -> removidas)
+- Cada mago: Aptidao Magica 2 + pericias base (ocultismo/alquimia/pesquisa) + ~20 magias tematicas
+- scripts/check_magos.py + add_magos.py (validacao de magias)
+- forjador_templates.json: 50 -> 60 templates, 0 IDs quebrados, 0 duplicados
 ----------------------------------------------------------------------------------------------------------------------------------------------------
