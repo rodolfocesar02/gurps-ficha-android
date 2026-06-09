@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 343 CONCLUÍDO — Forjador +10 magos temáticos (60 templates validados)
-**Último Lote Registrado:** Lote 343 (hash `6ad7afc`) — começa na linha **2790** deste arquivo
+**Status Atual:** Lote 344 CONCLUÍDO — Forjador: perícias temáticas nos 10 magos (60 templates validados)
+**Último Lote Registrado:** Lote 344 (hash `c171a2c`) — começa na linha **2799** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2794,4 +2794,13 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Cada mago: Aptidao Magica 2 + pericias base (ocultismo/alquimia/pesquisa) + ~20 magias tematicas
 - scripts/check_magos.py + add_magos.py (validacao de magias)
 - forjador_templates.json: 50 -> 60 templates, 0 IDs quebrados, 0 duplicados
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 344 (hash `c171a2c`) — 09 de Junho de 2026
+**Forjador: pericias tematicas nos 10 magos (IDs validados)**
+- Adiciona pericias por mago (principais 2pts / secundarias 1pt), ~150 pts total
+- Todas validadas; 7 nomes resolvidos (Armaria->armeiro_nt, Conhecimento de Espiritos->conhecimento_oculto_conhecimento_espiritual, Detectar Mentiras->deteccao_de_mentiras, Simbologia Oculta->desenho_de_simbolos, Historia Antiga->historia)
+- Astrologia e Historia Militar nao existem no catalogo -> removidas
+- scripts/check_pericias_magos.py + add_pericias_magos.py
+- 60 templates, 0 IDs quebrados
 ----------------------------------------------------------------------------------------------------------------------------------------------------
