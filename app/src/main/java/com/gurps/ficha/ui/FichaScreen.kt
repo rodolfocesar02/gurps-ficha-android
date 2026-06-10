@@ -224,14 +224,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
-        val exportResult = runCatching {
-            context.contentResolver.openOutputStream(uri)?.use { output ->
-                output.writer(Charsets.UTF_8).use { writer ->
-                    writer.write(viewModel.exportarFichaJsonCompativel())
+        coroutineScope.launch {
+            val exportResult = runCatching {
+                val json = viewModel.exportarFichaJsonCompativelComImagem()
+                context.contentResolver.openOutputStream(uri)?.use { output ->
+                    output.writer(Charsets.UTF_8).use { writer -> writer.write(json) }
                 }
             }
-        }
-        coroutineScope.launch {
             val mensagem = if (exportResult.isSuccess) {
                 "Ficha exportada (JSON compatível)."
             } else {
@@ -247,14 +246,13 @@ fun FichaScreen(viewModel: FichaViewModel) {
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri: Uri? ->
         if (uri == null) return@rememberLauncherForActivityResult
-        val exportResult = runCatching {
-            context.contentResolver.openOutputStream(uri)?.use { output ->
-                output.writer(Charsets.UTF_8).use { writer ->
-                    writer.write(viewModel.exportarFichaJsonVersionada())
+        coroutineScope.launch {
+            val exportResult = runCatching {
+                val json = viewModel.exportarFichaJsonVersionadaComImagem()
+                context.contentResolver.openOutputStream(uri)?.use { output ->
+                    output.writer(Charsets.UTF_8).use { writer -> writer.write(json) }
                 }
             }
-        }
-        coroutineScope.launch {
             val mensagem = if (exportResult.isSuccess) {
                 "Ficha exportada (JSON versionado)."
             } else {
@@ -289,37 +287,38 @@ fun FichaScreen(viewModel: FichaViewModel) {
     }
 
     fun compartilharFicha() {
-        runCatching {
-            val json = viewModel.exportarFichaJsonCompativel()
-            val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
-                .replace(Regex("[^a-zA-Z0-9._-]"), "_")
-            val fileName = "${nomeBase}.json"
-            
-            // Grava em arquivo temporário no cache
-            val cacheDir = context.cacheDir
-            val file = java.io.File(cacheDir, fileName)
-            file.writeText(json)
-            
-            // Obtém URI via FileProvider
-            val contentUri = androidx.core.content.FileProvider.getUriForFile(
-                context,
-                "${context.packageName}.fileprovider",
-                file
-            )
-            
-            // Prepara a Intent
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/json"
-                putExtra(Intent.EXTRA_STREAM, contentUri)
-                putExtra(Intent.EXTRA_SUBJECT, "Ficha GURPS: ${viewModel.personagem.nome}")
-                putExtra(Intent.EXTRA_TEXT, "Segue em anexo a ficha de GURPS de ${viewModel.personagem.nome}.")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            
-            val chooser = Intent.createChooser(intent, "Compartilhar Ficha via...")
-            context.startActivity(chooser)
-        }.onFailure { e ->
-            coroutineScope.launch {
+        coroutineScope.launch {
+            runCatching {
+                // Exporta com a imagem do personagem embutida (vai junto no arquivo).
+                val json = viewModel.exportarFichaJsonCompativelComImagem()
+                val nomeBase = viewModel.personagem.nome.ifBlank { "ficha_gurps" }
+                    .replace(Regex("[^a-zA-Z0-9._-]"), "_")
+                val fileName = "${nomeBase}.json"
+
+                // Grava em arquivo temporário no cache
+                val cacheDir = context.cacheDir
+                val file = java.io.File(cacheDir, fileName)
+                file.writeText(json)
+
+                // Obtém URI via FileProvider
+                val contentUri = androidx.core.content.FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    file
+                )
+
+                // Prepara a Intent
+                val intent = Intent(Intent.ACTION_SEND).apply {
+                    type = "application/json"
+                    putExtra(Intent.EXTRA_STREAM, contentUri)
+                    putExtra(Intent.EXTRA_SUBJECT, "Ficha GURPS: ${viewModel.personagem.nome}")
+                    putExtra(Intent.EXTRA_TEXT, "Segue em anexo a ficha de GURPS de ${viewModel.personagem.nome}.")
+                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                }
+
+                val chooser = Intent.createChooser(intent, "Compartilhar Ficha via...")
+                context.startActivity(chooser)
+            }.onFailure { e ->
                 snackbarHostState.showSnackbar("Erro ao compartilhar: ${e.message}")
             }
         }

@@ -128,6 +128,32 @@ object ImagemPersonagemStore {
         "data:image/jpeg;base64,$base64"
     }
 
+    /**
+     * Restaura uma imagem vinda EMBUTIDA num arquivo exportado (campo
+     * imagemPersonagemBase64 = "data:image/...;base64,..."). Decodifica os
+     * bytes, grava num arquivo temporário e roda o mesmo fluxo de
+     * [salvarImagem] (recorte por rosto + 2 versões: recortada + inteira).
+     * Retorna os dois URIs salvos, ou null em caso de falha.
+     */
+    suspend fun salvarDeBase64(context: Context, dataUri: String): ImagensSalvas? = withContext(Dispatchers.IO) {
+        if (dataUri.isBlank()) return@withContext null
+        // Aceita "data:...;base64,XXXX" ou só "XXXX".
+        val base64 = dataUri.substringAfter("base64,", dataUri)
+        val bytes = runCatching { Base64.decode(base64, Base64.DEFAULT) }.getOrNull()
+            ?: return@withContext null
+        if (bytes.isEmpty()) return@withContext null
+
+        // Grava num arquivo temporário no cache e reusa o pipeline de salvarImagem.
+        val temp = File(context.cacheDir, "import_retrato_${UUID.randomUUID()}.jpg")
+        val ok = runCatching { temp.writeBytes(bytes) }.isSuccess
+        if (!ok) return@withContext null
+        try {
+            salvarImagem(context, Uri.fromFile(temp))
+        } finally {
+            runCatching { temp.delete() }
+        }
+    }
+
     // --- internos ---
 
     private fun String.toUri(): Uri? = runCatching { Uri.parse(this) }.getOrNull()

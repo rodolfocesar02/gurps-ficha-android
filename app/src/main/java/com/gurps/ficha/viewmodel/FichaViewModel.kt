@@ -450,19 +450,67 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     }
     fun exportarFichaJsonCompativel() = persistenceDelegate.exportarJsonCompativel(personagem)
     fun exportarFichaJsonVersionada() = persistenceDelegate.exportarJsonVersionado(personagem)
+
+    /**
+     * Versões SUSPEND da exportação que EMBUTEM a imagem original do
+     * personagem (base64) no arquivo, para a foto viajar junto com a ficha.
+     * Use estas ao exportar/compartilhar.
+     */
+    suspend fun exportarFichaJsonCompativelComImagem(): String {
+        return persistenceDelegate.exportarJsonCompativel(comImagemEmbutida())
+    }
+    suspend fun exportarFichaJsonVersionadaComImagem(): String {
+        return persistenceDelegate.exportarJsonVersionado(comImagemEmbutida())
+    }
+
+    /** Devolve uma cópia do personagem com a imagem ORIGINAL embutida em base64. */
+    private suspend fun comImagemEmbutida(): Personagem {
+        val original = personagem.imagemPersonagemOriginalUri.ifBlank { personagem.imagemPersonagemUri }
+        if (original.isBlank()) return personagem
+        val dataUri = com.gurps.ficha.data.storage.ImagemPersonagemStore.bytesBase64(original)
+            ?: return personagem
+        return personagem.copy(imagemPersonagemBase64 = dataUri)
+    }
     fun importarFichaJson(json: String): String? {
         estaCarregando = true
         val res = persistenceDelegate.importarJson(json)
-        return res.fold(onSuccess = { novo -> 
+        return res.fold(onSuccess = { novo ->
             personagem = novo
             nomeFichaAtual = novo.nome.ifBlank { "Importada_${System.currentTimeMillis()}" }
             searchDelegate.resetarTodosCaches()
             estaCarregando = false
-            "Sucesso" 
-        }, onFailure = { 
+            restaurarImagemEmbutidaSeHouver(novo)
+            "Sucesso"
+        }, onFailure = {
             estaCarregando = false
-            it.message 
+            it.message
         })
+    }
+
+    /**
+     * Se a ficha importada trouxe a imagem EMBUTIDA (imagemPersonagemBase64),
+     * salva a imagem no aparelho (re-recorta o rosto → gera as 2 versões),
+     * aponta os URIs e LIMPA o base64. Assíncrono — a foto aparece logo após.
+     */
+    private fun restaurarImagemEmbutidaSeHouver(ficha: Personagem) {
+        val base64 = ficha.imagemPersonagemBase64
+        if (base64.isBlank()) return
+        viewModelScope.launch {
+            val imagens = com.gurps.ficha.data.storage.ImagemPersonagemStore
+                .salvarDeBase64(getApplication(), base64)
+            // Atualiza só se a ficha ativa ainda for esta (usuário não trocou).
+            if (personagem.nome == ficha.nome) {
+                personagem = if (imagens != null) {
+                    personagem.copy(
+                        imagemPersonagemUri = imagens.recortadaUri,
+                        imagemPersonagemOriginalUri = imagens.originalUri,
+                        imagemPersonagemBase64 = ""
+                    )
+                } else {
+                    personagem.copy(imagemPersonagemBase64 = "")
+                }
+            }
+        }
     }
     private suspend fun carregarListaFichas() { fichasSalvas = persistenceDelegate.listarFichas() }
     private suspend fun restaurarAutoSaveSeExistir() { persistenceDelegate.restaurarAutoSave(autoSaveRecuperacaoNome)?.let { personagem = it } }

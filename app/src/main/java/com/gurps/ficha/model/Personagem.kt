@@ -60,6 +60,11 @@ data class Personagem(
     //  - imagemPersonagemOriginalUri: imagem INTEIRA (mostrada em tela cheia).
     var imagemPersonagemUri: String = "",
     var imagemPersonagemOriginalUri: String = "",
+    // Imagem ORIGINAL embutida (data:image/...;base64,...) — preenchida APENAS
+    // na EXPORTACAO, para a foto viajar junto com a ficha (.json). No IMPORT,
+    // o app salva como arquivo + re-recorta o rosto e LIMPA este campo (fica
+    // vazio na ficha em uso, para nao inchar a persistencia local).
+    var imagemPersonagemBase64: String = "",
 
     // Combate
     var defesasAtivas: DefesasAtivas = DefesasAtivas(),
