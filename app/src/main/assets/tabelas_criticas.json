@@ -1,0 +1,87 @@
+{
+  "golpe_fulminante": {
+    "nome": "Tabela de Golpe Fulminante",
+    "entradas": {
+      "3": "O golpe causa o triplo do dano.",
+      "4": "A RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura.",
+      "5": "O golpe causa o dobro do dano.",
+      "6": "O golpe causa o máximo do dano normal.",
+      "7": "Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "8": "Se qualquer dano penetrar a RD, ele causa o dobro do choque normal (até uma penalidade máxima de -8). Se o ataque foi contra um membro ou extremidade, a parte do corpo em questão fica incapacitada. Trata-se de um choque superficial: a parte incapacitada volta ao normal em (16 - HT) segundos, com um mínimo de dois segundos; a não ser que a lesão tenha sido suficiente forte para incapacitar a parte do corpo de qualquer forma.",
+      "9": "Apenas o dano normal.",
+      "10": "Apenas o dano normal.",
+      "11": "Apenas o dano normal.",
+      "12": "Dano normal e a vítima deixa cair o que estiver segurando, independe do dano que penetrar a RD.",
+      "13": "Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "14": "Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "15": "O golpe causa o máximo do dano normal.",
+      "16": "O golpe causa o dobro do dano.",
+      "17": "A RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura.",
+      "18": "O golpe causa o triplo do dano."
+    }
+  },
+  "golpe_fulminante_cabeca": {
+    "nome": "Tabela de Golpe Fulminante na Cabeça",
+    "entradas": {
+      "3": "O golpe causa o máximo do dano normal e ignora a RD do alvo.",
+      "4": "A RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura. Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "5": "A RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura. Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "6": "Se o ataque visava o rosto ou crânio, trate como se fosse contra o olho, mesmo que o ataque normalmente não pudesse atingir o olho! Se seria impossível atingir o olho (como num ataque por trás), a RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura. Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "7": "Se o ataque visava o rosto ou crânio, trate como se fosse contra o olho, mesmo que o ataque normalmente não pudesse atingir o olho! Se seria impossível atingir o olho (como num ataque por trás), a RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura. Se qualquer dano penetrar a RD, trate como se fosse um ferimento grave, independente do dano causado.",
+      "8": "Dano normal à cabeça e a vítima fica desequilibrada: ela deve Fazer Nada no próximo turno (mas pode se defender normalmente).",
+      "9": "Apenas dano normal à cabeça.",
+      "10": "Apenas dano normal à cabeça.",
+      "11": "Apenas dano normal à cabeça.",
+      "12": "Dano normal à cabeça e, se qualquer dano penetrar a RD, um ataque por contusão deixa a vítima surda (veja Duração de Lesões Incapacitantes, pág. 422), ao passo que qualquer outro ataque causa cicatrizes profundas (a vítima perde um nível de Aparência Física, ou dois níveis no caso de ataque por queimadura ou corrosão).",
+      "13": "Dano normal à cabeça e, se qualquer dano penetrar a RD, um ataque por contusão deixa a vítima surda (veja Duração de Lesões Incapacitantes, pág. 422), ao passo que qualquer outro ataque causa cicatrizes profundas (a vítima perde um nível de Aparência Física, ou dois níveis no caso de ataque por queimadura ou corrosão).",
+      "14": "Dano normal à cabeça e a vítima deixa a arma cair (se ela estiver segurando duas armas, determine aleatoriamente qual caiu).",
+      "15": "O golpe causa o máximo do dano normal.",
+      "16": "O golpe causa o dobro do dano.",
+      "17": "A RD do alvo protege apenas com metade do valor (arredondado para baixo) depois de aplicados quaisquer divisores de armadura.",
+      "18": "O golpe causa o triplo do dano."
+    }
+  },
+  "erro_critico": {
+    "nome": "Tabela de Erro Crítico",
+    "entradas": {
+      "3": "A arma se quebra e fica inutilizável. Exceção: algumas armas são mais difíceis de quebrar (armas sólidas que causam dano por contusão como maças, manguais, malhos, barras de metal; armas mágicas; armas de fogo, exceto wheel-lock, mísseis guiados e armas de feixe; e armas de qualidade superior ou altíssima). Se o combatente possuir uma arma dessas, jogue novamente: somente um 2º resultado de 'arma quebrada' a quebra; qualquer outro resultado, ignore o texto e o combatente deixa a arma cair. V. Armas Quebradas (pág. 485).",
+      "4": "A arma se quebra e fica inutilizável. Exceção: algumas armas são mais difíceis de quebrar (armas sólidas de contusão, mágicas, de fogo, ou de qualidade superior/altíssima). Se possuir uma arma dessas, jogue novamente: só um 2º 'arma quebrada' a quebra; senão, ignore e deixa a arma cair. V. Armas Quebradas (pág. 485).",
+      "5": "O combatente atinge a si mesmo no braço ou perna (50% de chance para cada). Exceção: se estiver realizando um ataque por perfuração ou perfurante com arma corpo a corpo ou qualquer arma à distância, jogue novamente. Se obtiver 'atinge a si mesmo' pela 2ª vez, assuma — metade ou todo o dano conforme o caso (v. 6). Resultado diferente, use o outro.",
+      "6": "O combatente atinge a si mesmo no braço ou perna (50% de chance para cada). Exceção: se estiver realizando um ataque por perfuração ou perfurante com arma corpo a corpo ou qualquer arma à distância, jogue novamente. Se obtiver 'atinge a si mesmo' pela 2ª vez, assuma, mas apenas metade do dano.",
+      "7": "O combatente perde o equilíbrio. Ele não pode fazer nada (nem mesmo uma ação livre) até seu próximo turno e todas as suas defesas ativas sofrem uma penalidade de -2 até lá.",
+      "8": "A arma gira na mão do combatente. Ele precisa executar uma manobra Preparar adicional antes de poder usá-la novamente.",
+      "9": "O combatente deixa a arma cair. Exceção: no caso de uma arma barata, ela se quebra. Exceção: armas mais difíceis de quebrar (contusão sólida, mágicas, de fogo, qualidade superior/altíssima) — jogue novamente; só um 2º 'arma quebrada' a quebra, senão ignore e deixa cair.",
+      "10": "O combatente deixa a arma cair. Exceção: no caso de uma arma barata, ela se quebra. Exceção: armas mais difíceis de quebrar (contusão sólida, mágicas, de fogo, qualidade superior/altíssima) — jogue novamente; só um 2º 'arma quebrada' a quebra, senão ignore e deixa cair.",
+      "11": "O combatente deixa a arma cair. Exceção: no caso de uma arma barata, ela se quebra. Exceção: armas mais difíceis de quebrar (contusão sólida, mágicas, de fogo, qualidade superior/altíssima) — jogue novamente; só um 2º 'arma quebrada' a quebra, senão ignore e deixa cair.",
+      "12": "A arma gira na mão do combatente. Ele precisa executar uma manobra Preparar adicional antes de poder usá-la novamente.",
+      "13": "O combatente perde o equilíbrio. Ele não pode fazer nada (nem mesmo uma ação livre) até seu próximo turno e todas as suas defesas ativas sofrem uma penalidade de -2 até lá.",
+      "14": "Se o combatente estava desferindo um golpe em balanço com arma corpo a corpo, a arma voa da mão dele 1d metros — 50% de chance para frente ou para trás. Qualquer pessoa no local atingido deve fazer um teste de DX ou sofre metade do dano do ataque! Se era golpe de ponta, ataque à distância ou aparando, ele simplesmente deixa a arma cair. Exceção: arma barata se quebra; armas difíceis de quebrar — jogue novamente (só um 2º 'arma quebrada' a quebra).",
+      "15": "O combatente estira o ombro! Seu braço da arma fica 'incapacitado'. Ele não precisa deixar a arma cair, mas não pode usá-la para atacar ou defender durante 30 minutos.",
+      "16": "O combatente cai! Se ele estava fazendo um ataque à distância, o combatente perde o equilíbrio: não pode fazer nada (nem ação livre) até seu próximo turno e todas as defesas ativas sofrem -2 até lá.",
+      "17": "A arma se quebra. Exceção: armas mais difíceis de quebrar (contusão sólida, mágicas, de fogo, qualidade superior/altíssima) — jogue novamente; só um 2º 'arma quebrada' a quebra, senão ignore e deixa a arma cair. V. Armas Quebradas (pág. 485).",
+      "18": "A arma se quebra. Exceção: armas mais difíceis de quebrar (contusão sólida, mágicas, de fogo, qualidade superior/altíssima) — jogue novamente; só um 2º 'arma quebrada' a quebra, senão ignore e deixa a arma cair. V. Armas Quebradas (pág. 485)."
+    }
+  },
+  "erro_critico_desarmado": {
+    "nome": "Tabela de Erro Crítico com Golpe Desarmado",
+    "nota": "Use esta tabela somente para erros críticos em golpes desarmados (mordidas, garras, agarrões, cabeçadas, chutes, socos, encontrões, etc.) ou aparar desarmado, incluindo os de animais.",
+    "entradas": {
+      "3": "O combatente se nocauteia! Os detalhes ficam a critério do Mestre — talvez ele tenha tropeçado e caído de cabeça, ou deu com a cara no escudo ou no punho do oponente. Ele deve fazer um teste contra a HT a cada 30 minutos para se recuperar.",
+      "4": "Se estiver atacando ou aparando com um membro, este fica estirado: sofre 1 ponto de dano e o membro fica 'incapacitado' (não pode atacar/defender por 30 minutos). Se estiver dando mordida, cabeçada etc., distende um músculo e sofre dor moderada (v. Condições Irritantes, pág. 428) pelos próximos (20 - HT) minutos, mínimo de um minuto.",
+      "5": "O combatente atinge um objeto sólido (parede, chão, etc.) em vez do oponente. Sofre dano por contusão igual ao seu GdP na parte do corpo usada; a RD protege normalmente. Exceção: se atacando oponente armado com arma preparada de perfuração, o combatente cai sobre a arma! Sofre o dano da arma, mas com base em sua própria ST.",
+      "6": "O combatente atinge um objeto sólido (parede, chão, etc.) em vez do oponente. Sofre dano por contusão igual ao seu GdP na parte usada; RD protege. Exceção: se atacando oponente com arma preparada de perfuração, cai sobre a arma (dano da arma com base na própria ST, metade do dano). Exceção: se atacando com armas naturais (garras/dentes), elas se quebram: -1 de dano nos próximos ataques até curar (v. pág. 422).",
+      "7": "O combatente dá um passo em falso. Se estiver atacando, ele avança um metro além do oponente e termina na direção oposta a ele; o oponente agora está nas costas do combatente! Se estiver aparando, ele cai!",
+      "8": "O combatente cai!",
+      "9": "O combatente perde o equilíbrio. Ele não pode fazer nada (nem mesmo uma ação livre) até seu próximo turno e todas as suas defesas ativas sofrem uma penalidade de -2 até lá.",
+      "10": "O combatente perde o equilíbrio. Ele não pode fazer nada (nem mesmo uma ação livre) até seu próximo turno e todas as suas defesas ativas sofrem uma penalidade de -2 até lá.",
+      "11": "O combatente perde o equilíbrio. Ele não pode fazer nada (nem mesmo uma ação livre) até seu próximo turno e todas as suas defesas ativas sofrem uma penalidade de -2 até lá.",
+      "12": "O combatente tropeça. Ele precisa fazer um teste de DX para não cair — DX-4 se estiver chutando, ou contra o dobro da penalidade normal à DX no caso de técnicas que exigem teste de DX para evitar acidente mesmo em fracassos comuns (ex.: DX-8 para um Voadora).",
+      "13": "O combatente baixa a guarda. Até seu próximo turno, suas defesas ativas sofrem -2 e quaisquer bônus de Avaliar ou penalidades de Fintar sobre ele contam em dobro! Isso fica bem óbvio para oponentes próximos.",
+      "14": "O combatente dá um passo em falso. Se estiver atacando, avança um metro além do oponente e termina na direção oposta; o oponente agora está nas suas costas! Se estiver aparando, ele cai!",
+      "15": "O combatente rompe um músculo. Sofre 1d-3 de dano no membro usado (ou em um deles, se usava dois), ou no pescoço se mordia/dava cabeçada. Perde o equilíbrio e sofre -1 em todas as jogadas de ataque e defesa no próximo turno. Sofre também -3 em qualquer ação que envolva o membro (ou em todas, se feriu o pescoço) até curar. Penalidade reduzida para -1 se tiver Hipoalgia.",
+      "16": "O combatente atinge um objeto sólido (parede, chão, etc.) em vez do oponente. Sofre dano por contusão igual ao seu GdP na parte usada; a RD protege normalmente. Exceção: se atacando oponente armado com arma preparada de perfuração, cai sobre a arma! Sofre o dano da arma com base na própria ST.",
+      "17": "Se estiver atacando ou aparando com um membro, este fica estirado: sofre 1 ponto de dano e fica 'incapacitado' (30 min). Se dava mordida/cabeçada, distende um músculo e sofre dor moderada (v. pág. 428) por (20 - HT) minutos, mínimo de um. Exceção: animal de IQ 3–5 fracassa tão mal que perde a coragem, vira e foge no próximo turno; se encurralado, assume posição de rendição.",
+      "18": "O combatente se nocauteia! Detalhes a critério do Mestre. Ele deve fazer teste de HT a cada 30 minutos para se recuperar. Combatentes que não podem cair (cobras, ou quem já está no chão): trate queda como 1d-3 de dano. Criaturas nadadoras/voadoras: trate queda como posição desajeitada de voo/nado (-4 para atacar, -3 para defender)."
+    }
+  }
+}

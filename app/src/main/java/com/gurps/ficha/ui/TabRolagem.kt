@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.gurps.ficha.data.network.DiscordRollPayload
 import com.gurps.ficha.data.network.DiscordVoiceChannel
 
+import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.rules.MagiaEnergiaRules
 import com.gurps.ficha.model.PericiaSelecionada
 import com.gurps.ficha.model.PERICIAS_COMBATE
@@ -52,6 +54,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val isPraCegoVariant = BuildConfig.UI_VARIANT.equals("pracego", ignoreCase = true)
     val historico = remember { mutableStateListOf<HistoricoRolagemItem>() }
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
     val canaisDiscord = viewModel.canaisDiscord
     val canalSelecionadoId = viewModel.canalDiscordSelecionadoId
     val canalSelecionadoNome = viewModel.canalDiscordSelecionadoNome
@@ -277,6 +280,29 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
     }
 
+    /** Rola 3d6 nas tabelas críticas e envia uma 2ª mensagem ao Discord/histórico. */
+    fun dispararTabelaCritica(
+        critico: CriticoRules.ResultadoCritico,
+        contextoLabel: String
+    ) {
+        val tabela = CriticoRules.rolarTabela(context, critico) ?: return
+        val ts = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
+        val textoHist = "[$ts] ${tabela.titulo} — $contextoLabel\n${tabela.textoCompleto}"
+        val payload = DiscordRollPayload(
+            character = p.nome,
+            testType = tabela.titulo,           // ex.: "💥 Golpe Fulminante (3d6 = 11)"
+            context = contextoLabel,
+            dice = tabela.dados,
+            total = tabela.soma,
+            modifier = 0,
+            target = null,
+            outcome = tabela.textoCompleto,     // o texto das duas tabelas
+            margin = null,
+            channelId = viewModel.canalDiscordSelecionadoId
+        )
+        registrarResultado(textoHist, payload)
+    }
+
     fun executarRolagem(tipo: TipoTeste, contextoLabel: String, alvo: Int?, mod: Int = 0) {
         val d1 = Random.nextInt(1, 7); val d2 = Random.nextInt(1, 7); val d3 = Random.nextInt(1, 7)
         val soma = d1 + d2 + d3
@@ -286,25 +312,26 @@ fun TabRolagem(viewModel: FichaViewModel) {
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         val modStr = if (modEfetivo == 0) "" else if (modEfetivo > 0) "+$modEfetivo" else "$modEfetivo"
         val labelComMod = if (modStr.isEmpty()) contextoLabel else "$contextoLabel ($modStr)"
+
+        // Classificação de crítico pela regra COMPLETA (considera o NH efetivo).
+        val critico = CriticoRules.classificar(soma, alvoEfetivo)
         val statusText = if (alvoEfetivo != null) {
             val dist = alvoEfetivo - soma
             val marginPart = "(por ${abs(dist)})"
-            when {
-                soma <= 4 -> "Sucesso Crítico! $marginPart"
-                soma >= 17 -> "Falha Crítica! $marginPart"
-                dist >= 0 -> "Sucesso $marginPart"
-                else -> "Falha $marginPart"
+            when (critico) {
+                CriticoRules.ResultadoCritico.DECISIVO -> "Sucesso Crítico! $marginPart"
+                CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica! $marginPart"
+                else -> if (dist >= 0) "Sucesso $marginPart" else "Falha $marginPart"
             }
         } else ""
 
         val outcome = if (alvoEfetivo != null) {
             val dist = alvoEfetivo - soma
             val marginPart = " (por ${abs(dist)})"
-            when {
-                soma <= 4 -> "crítico$marginPart"
-                soma >= 17 -> "falha_crítica$marginPart"
-                dist >= 0 -> "sucesso$marginPart"
-                else -> "falha$marginPart"
+            when (critico) {
+                CriticoRules.ResultadoCritico.DECISIVO -> "crítico$marginPart"
+                CriticoRules.ResultadoCritico.FALHA_CRITICA -> "falha_crítica$marginPart"
+                else -> if (dist >= 0) "sucesso$marginPart" else "falha$marginPart"
             }
         } else "sucesso"
         val margin = if (alvoEfetivo != null) alvoEfetivo - soma else null
@@ -327,6 +354,15 @@ fun TabRolagem(viewModel: FichaViewModel) {
             channelId = viewModel.canalDiscordSelecionadoId
         )
         registrarResultado(textoHist, payload)
+
+        // AUTOMAÇÃO: em testes de COMBATE (Ataque/Defesa/Técnica/Magia), um
+        // Sucesso Decisivo ou Falha Crítica dispara automaticamente a rolagem
+        // 3d6 nas tabelas (Golpe Fulminante / Erro Crítico) — 2ª mensagem.
+        if (critico != CriticoRules.ResultadoCritico.NORMAL &&
+            CriticoRules.ehTesteDeCombate(tipo.label)
+        ) {
+            dispararTabelaCritica(critico, contextoLabel)
+        }
     }
 
     fun executarRolagemDano(contextoLabel: String, danoExpr: String, periciaId: String? = null) {
