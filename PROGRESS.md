@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 347 CONCLUÍDO — Import: ficha do WhatsApp abre direto no app (intent-filters por extensão + octet-stream)
-**Último Lote Registrado:** Lote 347 (hash `2615e92`) — começa na linha **2828** deste arquivo
+**Status Atual:** Lote 348 CONCLUÍDO — Import/Export: imagem do personagem viaja junto com a ficha (base64 embutido)
+**Último Lote Registrado:** Lote 348 (hash `83ff3d3`) — começa na linha **2836** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2831,4 +2831,13 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Causa: intent-filters so cobriam application/json e text/plain; WhatsApp reatribui p/ application/octet-stream (generico)
 - Manifest: ACTION_VIEW cobre octet-stream/text-json/x-gurps; novo filtro por EXTENSAO (pathPattern .gurps/.json, host=*, mime=*/*) casa pelo nome do arquivo; ACTION_SEND ampliado
 - MainActivity: limpa BOM/espacos antes do parse + aviso de arquivo vazio
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 348 (hash `83ff3d3`) — 09 de Junho de 2026
+**Import/Export: imagem do personagem viaja junto com a ficha**
+- Exportar/compartilhar embute a imagem ORIGINAL no .json (base64); importar em qualquer celular salva+recorta o rosto e a foto reaparece
+- Personagem: campo imagemPersonagemBase64 (so na exportacao; limpo no import - nao incha persistencia local)
+- ImagemPersonagemStore.salvarDeBase64 (decodifica + reusa pipeline de salvarImagem)
+- FichaViewModel: exportar*ComImagem (suspend) + restaurarImagemEmbutidaSeHouver
+- FichaScreen: 3 call sites (compativel/versionado/compartilhar) usam versao com imagem em coroutine
 ----------------------------------------------------------------------------------------------------------------------------------------------------
