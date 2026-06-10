@@ -97,11 +97,18 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 
-                result.onSuccess { json ->
+                result.onSuccess { rawJson ->
+                    // Limpa BOM (UTF-8 ﻿) e espaços que apps como o WhatsApp
+                    // podem deixar no arquivo e que quebrariam o parse do JSON.
+                    val json = rawJson
+                        ?.removePrefix("﻿")
+                        ?.trim()
                     if (!json.isNullOrBlank()) {
                         val msg = viewModel.importarFichaJson(json) ?: "Ficha importada com sucesso!"
                         val toastMsg = if (msg == "Sucesso") "Ficha importada com sucesso!" else msg
                         android.widget.Toast.makeText(this@MainActivity, toastMsg, android.widget.Toast.LENGTH_LONG).show()
+                    } else {
+                        android.widget.Toast.makeText(this@MainActivity, "Arquivo de ficha vazio.", android.widget.Toast.LENGTH_LONG).show()
                     }
                 }.onFailure { error ->
                     android.widget.Toast.makeText(this@MainActivity, "Erro ao ler arquivo: ${error.message}", android.widget.Toast.LENGTH_LONG).show()

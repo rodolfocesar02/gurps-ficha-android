@@ -36,6 +36,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Importar ficha: abrir por TIPO MIME (Explorador, Drive, etc.).
+                 Inclui octet-stream pois o WhatsApp e muitos apps reatribuem
+                 .json/.gurps para esse tipo genérico. -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -43,14 +46,39 @@
                 <data android:scheme="content" />
                 <data android:scheme="file" />
                 <data android:mimeType="application/json" />
+                <data android:mimeType="text/json" />
                 <data android:mimeType="text/plain" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/x-gurps" />
             </intent-filter>
 
-            <intent-filter>
+            <!-- Importar ficha: abrir por EXTENSÃO de arquivo (.gurps/.json).
+                 Casa pelo NOME do arquivo mesmo quando o MIME vem genérico/ausente
+                 (caso típico do WhatsApp). host="*" + mimeType="*/*" para abranger. -->
+            <intent-filter android:label="Importar ficha GURPS">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
+                <data android:host="*" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.gurps" />
+                <data android:pathPattern=".*\\..*\\.gurps" />
+                <data android:pathPattern=".*\\.json" />
+                <data android:pathPattern=".*\\..*\\.json" />
+            </intent-filter>
+
+            <!-- Importar ficha: compartilhar PARA o app (botão Compartilhar do
+                 WhatsApp/explorador → "GURPS Ficha"). -->
+            <intent-filter android:label="Importar ficha GURPS">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="application/json" />
+                <data android:mimeType="text/json" />
                 <data android:mimeType="text/plain" />
+                <data android:mimeType="application/octet-stream" />
+                <data android:mimeType="application/x-gurps" />
             </intent-filter>
 
             <!-- Mesa Virtual: Link Mágico do Discord -->
