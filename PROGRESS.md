@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 345 CONCLUÍDO — Forjador: 10 magos enriquecidos (vantagens/desv/equip/atributos), 60 templates validados
-**Último Lote Registrado:** Lote 345 (hash `3aaa5f9`) — começa na linha **2808** deste arquivo
+**Status Atual:** Lote 346 CONCLUÍDO — Rolagem: automação de Golpe Fulminante / Erro Crítico (tabelas 3d6 no Discord)
+**Último Lote Registrado:** Lote 346 (hash `214e0c7`) — começa na linha **2818** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2813,4 +2813,14 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Equipamentos (bordao/cajado, adaga, tunica/vestes) + atributos variados por arquetipo
 - Tudo validado; corrige espada_longa->espada_larga em guerreiro_espada_escudo e paladino_sagrado
 - scripts/enrich_magos.py | 60 templates, 0 IDs quebrados em TODOS os campos
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 346 (hash `214e0c7`) — 09 de Junho de 2026
+**Rolagem: automacao de Golpe Fulminante / Erro Critico (tabelas 3d6)**
+- Rolagem de combate (Ataque/Defesa/Tecnica/Magia) com Decisivo/Critico dispara 2a rolagem 3d6 nas tabelas
+- Mostra AS DUAS tabelas (Decisivo: Golpe Fulminante + na Cabeca; Critico: Erro Critico + Desarmado) - jogador escolhe na interpretacao
+- assets/tabelas_criticas.json (4 tabelas, entradas 3-18, texto completo)
+- domain/roll/CriticoRules.kt: regra de critico COMPLETA com NH (5@NH15+, 6@NH16+, 17@NH<=15, soma>=NH+10) + loader + rolarTabela
+- TabRolagem: classificacao correta + disparo automatico (Atributo/Pericia NAO disparam)
+- server.js: classificarCritico com NH + render da 2a mensagem (testType 💥/💀). EXIGE deploy Railway
 ----------------------------------------------------------------------------------------------------------------------------------------------------
