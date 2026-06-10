@@ -1,18 +1,23 @@
 # ⚙️ ARQUITETURA DO MOTOR "MESTRE IA"
 
-> **Atualizado em 2026-06-08 (revisão de fidelidade pós-Lote 328).** Documento reescrito após
+> **Atualizado em 2026-06-09 (Forjador JSON-direto + Templates + Pintor — §9). Auditor (§1-8) revisado pós-Lote 328.** Documento reescrito após
 > auditoria linha-a-linha de todos os arquivos do Auditor (revisão 2026-06-08 reconferiu
 > contagens/números de linha contra o código real e confirmou a Voz como caller ativo do
 > GraphEngine). Substitui a versão antiga (que descrevia o RAG semântico pré-Lote 325). Seções de
 > **código LEGADO/MORTO** estão marcadas com ⚠️ e o lote em que deixaram de ser usadas — leia-as
 > antes de mexer em qualquer coisa.
 
+> ➕ **2026-06-09:** Forjador mudou de fluxo (JSON direto, não mais loop de tools p/ CRIAR) e ganhou
+> Templates + Mestre Pintor. Ver **§9** (nova). O AUDITOR (§1-8) não mudou.
+
 Sistema de IA (RAG) integrado ao app de Ficha GURPS. **Dois modos** sobre a mesma base:
 
 1. **AUDITOR** (modo `conversa`/dúvida): responde regras de GURPS. **Desde o Lote 325 usa
    busca por palavra-chave ("grep + leitura dirigida"), NÃO mais busca semântica/embedding.**
-2. **FORJADOR** (modo `geracao`/`analise`): cria fichas via `fill_character_sheet`. Não foi
-   tocado pelos Lotes 325-328; mantém seu próprio toolset (`ForjadorTools`).
+2. **FORJADOR** (modo `geracao`/`analise`): cria fichas. **[+ 2026-06-09]** Hoje o modelo **entrega
+   um JSON completo da ficha de uma vez** e o app preenche pilar a pilar (`MestreIAGeneratorUseCase`)
+   — não usa mais loop de `fill_character_sheet` para CRIAR. As `ForjadorTools` ainda existem (edição
+   incremental/consulta). Ver **§9**.
 
 ---
 
@@ -197,3 +202,34 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
   mortas). Não remover sem confirmar que Forjador/Voz não dependem do GraphEngine.
 - **Princípio inviolável:** prompts do Auditor são CATEGORIAIS, **sem exemplos hardcoded**
   (lição do Lote 318 — exemplo vira cola e cria viés direcionado).
+
+---
+
+## 9. FORJADOR — fluxo atual (JSON direto) + Templates + Mestre Pintor [+ 2026-06-09]
+
+### 9.1 Fluxo JSON-direto (criação de ficha)
+O Forjador (`MestreIAGeneratorUseCase`) hoje **não usa mais o loop de tools para CRIAR**. O modelo
+recebe o prompt (`MestreIAPromptsForjador`) + catálogo + budget + (opcional) um TEMPLATE base, e
+**retorna um JSON completo** da ficha. O app então percorre o JSON **pilar a pilar** (atributos →
+raça → vantagens → desvantagens → perícias → técnicas → magias → equipamentos), aplicando cada item
+via `ForjadorToolExecutor.aplicarEdit`.
+- **Resolução de IDs:** `resolverId` (alias → exato → fuzzy por nome) em TODAS as seções de catálogo,
+  antes de descartar um item.
+- **Diagnóstico:** logs `MestreIA_JSON` (JSON cru + IDs por seção) logo após o parse.
+- **Correções (Lotes recentes):** raça "null" (org.json devolve string "null"); bug de pré-requisito
+  plural de técnica ("perícias pré-requisitos") no `FichaSkillDelegate.extrairAncoraPericiaNoLimite`;
+  **GPS de técnicas** (`ForjadorToolExecutor.gpsAdicionarPericiaBaseDeTecnica` — adiciona a perícia-base
+  nomeada no pré-req quando a ficha não tem nenhuma compatível). Detalhes: `project_forjador_pendencias`.
+
+### 9.2 Templates de personagem (`ForjadorTemplateCatalogo` + `forjador_templates.json`)
+60 arquétipos prontos. **É o CÓDIGO que escolhe** o template mais próximo do pedido (match por
+palavra-chave em id/nome/descrição/tags via `escolher()`), **não a IA**. O bloco do template é
+injetado no prompt na 1ª iteração como "ponto de partida". `pontosBase` é só REFERÊNCIA — o budget
+real é sempre o do pedido do usuário. Todos os IDs dos templates são validados contra o catálogo.
+
+### 9.3 Mestre Pintor (`GeminiImageService`)
+Gera retrato artístico do personagem via Gemini Image API (`gemini-3.1-flash-image`, chave PAGA,
+~$0,067/imagem). Fluxo: `FichaIADelegate.gerarRetratoIA()` → `GeminiImageService.gerarRetrato()` →
+`ImagemPersonagemStore.salvarImagem()` → `FichaViewModel.atualizarImagemPersonagem()`. Acionado por
+dialog pós-Forjador ou pelo modo "pintor" no chat. (A imagem entra no fluxo da feature de retrato:
+cabeçalho + tela cheia + Discord + viaja embutida na ficha exportada.)

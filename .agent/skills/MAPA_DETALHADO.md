@@ -12,6 +12,18 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 > Foto no cabeçalho (recorte por rosto/assunto via ML Kit) + tela cheia + envio ao Discord.
 > Cada item está marcado com **[+ 2026-06-08]** nas seções abaixo.
 
+> ➕ **2026-06-09 (Lotes 341-348):** arquivos novos e mudanças (marcados com **[+ 2026-06-09]**):
+> - **Rolagem:** `domain/roll/CriticoRules.kt` (NOVO, §10) + `assets/tabelas_criticas.json` (§25) —
+>   automação de Golpe Fulminante / Erro Crítico ao dar Decisivo/Crítico em testes de COMBATE.
+> - **Mestre Pintor:** `data/network/GeminiImageService.kt` (NOVO, §14) — gera retrato via Gemini Image API.
+> - **Templates do Forjador:** `domain/loaders/ForjadorTemplateCatalogo.kt` (NOVO, §7) +
+>   `assets/forjador_templates.json` (§25) — 60 templates de personagem prontos (combatentes, furtivos,
+>   sociais, 10 escolas de mago, gêneros modernos).
+> - **Import/Export:** imagem do personagem viaja embutida (base64) na ficha; intent-filters do
+>   `AndroidManifest` ampliados (abrir ficha do WhatsApp por extensão/octet-stream).
+> - **Forjador (fluxo):** entrega JSON direto (não usa mais loop de tools p/ CRIAR ficha); correções de
+>   pré-requisito de técnica, GPS de técnicas, raça "null", budget de template. Ver `ARQUITETURA_MESTRE_IA.md §9`.
+
 > ⚠️ **AUDITOR mudou de motor (Lotes 325-328):** saiu da busca semântica (RAG/HNSW) para
 > "grep + leitura dirigida" (`localizar_no_codex` + `ler_pagina`). Vários arquivos abaixo
 > viraram LEGADO/MORTO — marcados com ⚠️. Detalhe e motivo de cada um em
@@ -21,13 +33,13 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 ## 1. Ponto de Entrada
 
-- **`MainActivity.kt`** — Activity principal. Inicializa o Compose, intercepta Intents de compartilhamento de ficha (importação via `.gurps` compartilhado), passa o Intent para o ViewModel processar. Única Activity do app.
+- **`MainActivity.kt`** — Activity principal. Inicializa o Compose, intercepta Intents de compartilhamento de ficha, passa o Intent para o ViewModel processar. Única Activity do app. **[+ 2026-06-09]** `tratarIntentRecebido` trata `ACTION_VIEW`/`ACTION_SEND` (importar ficha do WhatsApp/explorador); limpa BOM/espaços antes do parse. Os `intent-filter` do `AndroidManifest` foram ampliados (octet-stream + filtro por EXTENSÃO `.json`/`.gurps`) para o app aparecer ao abrir a ficha no WhatsApp.
 
 ---
 
 ## 2. ViewModel e Estado Central
 
-- **`viewmodel/FichaViewModel.kt`** — O controlador central do app. Instancia todos os delegates, mantém o `Personagem` ativo como `mutableStateOf`, coordena auto-save ao editar traços, e expõe métodos públicos que a UI chama. Delega todas as operações especializadas para os delegates. **[+ 2026-06-08]** `atualizarImagemPersonagem(uri, originalUri)`; `salvarFicha` agora também sobe o retrato ao Discord (best-effort) via `ImagemPersonagemStore.bytesBase64` + `networkDelegate.enviarRetratoDiscord`.
+- **`viewmodel/FichaViewModel.kt`** — O controlador central do app. Instancia todos os delegates, mantém o `Personagem` ativo como `mutableStateOf`, coordena auto-save ao editar traços, e expõe métodos públicos que a UI chama. Delega todas as operações especializadas para os delegates. **[+ 2026-06-08]** `atualizarImagemPersonagem(uri, originalUri)`; `salvarFicha` agora também sobe o retrato ao Discord (best-effort) via `ImagemPersonagemStore.bytesBase64` + `networkDelegate.enviarRetratoDiscord`. **[+ 2026-06-09]** `exportarFichaJson*ComImagem` (suspend — embute a imagem base64 na exportação) e `restaurarImagemEmbutidaSeHouver` (no import: salva+recorta a imagem embutida e limpa o base64).
 
 - **`viewmodel/FichaUIState.kt`** — Data classes dos estados de busca da UI: `TraitSearchState`, `SkillSearchState`, `MagicSearchState`, `TechniqueSearchState`, `EquipmentSearchState`. Sem lógica — só estruturas de dados para os filtros de catálogo.
 
@@ -127,6 +139,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`domain/loaders/RacaCatalogo.kt`** — Carrega `racas.v1.json` (catálogo de raças jogáveis). Resolve `RacaDefinicao` → `ModeloRacial` casando IDs contra os catálogos de vantagens/desvantagens/perícias via `DataRepository`. Custo recalculado pelo `CharacterRules` — imune a custo salvo errado. É também o schema de raças para o Forjador IA.
 
+- **`domain/loaders/ForjadorTemplateCatalogo.kt`** — **[+ 2026-06-09]** Carrega `forjador_templates.json` (60 templates/arquétipos de personagem prontos). `escolher(prompt, templates)` faz match por palavra-chave (id/nome/descrição/tags) e retorna o template mais próximo do pedido — é **o SISTEMA (código) que escolhe, não a IA**. `formatarParaPrompt(t)` serializa o template como bloco de texto injetado no prompt do Forjador (na 1ª iteração) como "ponto de partida". `pontosBase` é só REFERÊNCIA — o budget real é o do pedido do usuário. Data classes: `ForjadorTemplate` (+ Pericia/Vantagem/Desvantagem). ⚠️ Todos os IDs dos templates são validados contra o catálogo (ver `project_forjador_pendencias`).
+
 ---
 
 ## 8. Domain — Filters
@@ -146,6 +160,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 ## 10. Domain — Roll
 
 - **`domain/roll/RollDispatchPolicy.kt`** — Política de retry e mensagens de erro para envio de rolagens ao Discord. `deveRetentar` retorna `true` só para timeout (statusCode null). `mensagemErro` mapeia HTTP 401/400/500/502 para mensagens amigáveis.
+
+- **`domain/roll/CriticoRules.kt`** — **[+ 2026-06-09]** Regra de crítico COMPLETA do GURPS (com NH) + automação das tabelas. `classificar(soma, nhEfetivo)` → DECISIVO/FALHA_CRITICA/NORMAL (decisivo 3-4 sempre, 5@NH≥15, 6@NH≥16; falha 18 sempre, 17@NH≤15, soma≥NH+10). `ehTesteDeCombate(tipoLabel)` (Ataque/Defesa/Técnica/Magia). `rolarTabela(context, resultado)` rola **3d6** e monta o texto das DUAS tabelas (Decisivo→Golpe Fulminante + na Cabeça; Crítico→Erro Crítico + Desarmado) carregadas de `tabelas_criticas.json`. Disparado por `TabRolagem.executarRolagem` após uma rolagem de combate dar decisivo/crítico (2ª mensagem ao Discord).
 
 ---
 
@@ -209,6 +225,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`data/network/DiscordRollApiClient.kt`** — Cliente HTTP para o servidor Discord do projeto. Envia `DiscordRollPayload` (personagem, tipo de teste, dados, resultado) via POST. Também busca lista de `DiscordVoiceChannel` disponíveis. Data classes: `DiscordRollPayload`, `DiscordRollSendResult`, `DiscordVoiceChannel`. **[+ 2026-06-08]** `postPortrait(baseUrl, apiKey, characterName, imageDataUri)` → `POST /api/portrait` (sobe o retrato data:base64 que o bot reanexa nos embeds de rolagem).
 
+- **`data/network/GeminiImageService.kt`** — **[+ 2026-06-09] MESTRE PINTOR.** Gera retrato artístico do personagem via Gemini Image API (`gemini-3.1-flash-image`, chave PAGA `MESTRE_IA_GEMINI_IMAGE_KEY`, ~$0,067/imagem, proporção 9:16). `gerarRetrato(prompt)` → POST `:generateContent` com `responseModalities=["IMAGE","TEXT"]`, devolve a imagem (base64). Fluxo: `FichaIADelegate.gerarRetratoIA()` → `GeminiImageService.gerarRetrato()` → `ImagemPersonagemStore.salvarImagem()` → `FichaViewModel.atualizarImagemPersonagem()`. Entradas na UI: dialog pós-Forjador (`DialogRetratoIA` em FichaScreen) e modo "pintor" no ChatInputBar (DialogsMestreIA).
+
 ---
 
 ## 15. Data — Storage (Room / Persistência)
@@ -227,7 +245,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`data/storage/MetacaracteristicaStore.kt`** — Persistência leve de metacaracterísticas criadas pelo usuário (arquivo `metacaracteristicas_usuario.json` em `filesDir`). Lista, salva (por nome, case-insensitive) e exclui. Usa JSON direto em vez de Room (sem migration necessária).
 
-- **`data/storage/ImagemPersonagemStore.kt`** — **[+ 2026-06-08]** Processa e armazena o retrato do personagem em `filesDir/portraits/`. `salvarImagem(context, uri)` decodifica (com `inSampleSize`), corrige rotação via EXIF (`androidx.exifinterface`), enquadra o assunto principal (ML Kit **Subject Segmentation** — `play-services-mlkit-subject-segmentation`) refinando pelo rosto (ML Kit **Face Detection**), recorta na proporção do cabeçalho e salva **DUAS versões**: recortada (cabeçalho) e inteira (tela cheia, maior lado 1600px) — retorna `ImagensSalvas(recortadaUri, originalUri)`. `bytesBase64(caminho)` gera `data:image/jpeg;base64,...` para o Discord (mesma estratégia do VTT `resolveTokenImagePayload`). `excluirImagem(caminho)`. Funções internas: `detectarAssunto`/`boundingBoxDaMascara` (FloatBuffer da máscara), `detectarRosto`, `recortarFaixa` (centro horizontal no assunto/rosto; vertical com margem acima do rosto, ou topo do assunto, ou topo da imagem), `redimensionar`/`redimensionarMaiorLado`. Sem Room, sem migration.
+- **`data/storage/ImagemPersonagemStore.kt`** — **[+ 2026-06-08]** Processa e armazena o retrato do personagem em `filesDir/portraits/`. `salvarImagem(context, uri)` decodifica (com `inSampleSize`), corrige rotação via EXIF (`androidx.exifinterface`), enquadra o assunto principal (ML Kit **Subject Segmentation** — `play-services-mlkit-subject-segmentation`) refinando pelo rosto (ML Kit **Face Detection**), recorta na proporção do cabeçalho e salva **DUAS versões**: recortada (cabeçalho) e inteira (tela cheia, maior lado 1600px) — retorna `ImagensSalvas(recortadaUri, originalUri)`. `bytesBase64(caminho)` gera `data:image/jpeg;base64,...` para o Discord (mesma estratégia do VTT `resolveTokenImagePayload`). `excluirImagem(caminho)`. **[+ 2026-06-09]** `salvarDeBase64(context, dataUri)` — restaura a imagem EMBUTIDA numa ficha importada: decodifica o base64, grava arquivo temp e reusa `salvarImagem` (re-recorta o rosto + gera as 2 versões). Funções internas: `detectarAssunto`/`boundingBoxDaMascara` (FloatBuffer da máscara), `detectarRosto`, `recortarFaixa` (centro horizontal no assunto/rosto; vertical com margem acima do rosto, ou topo do assunto, ou topo da imagem), `redimensionar`/`redimensionarMaiorLado`. Sem Room, sem migration.
 
 - **`data/storage/ChatHistoryDao.kt`** — DAO Room para histórico de chat: sessões (`getAllSessions`, `createSession`, `updateSessionTitle`, `updateSessionTimestamp`) e mensagens (`insertMessage`, `getMessagesForSession`).
 
@@ -251,7 +269,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 *Data classes puras. Sem lógica de negócio (exceto `Personagem.kt` que tem cálculos derivados).*
 
-- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização. **[+ 2026-06-08]** Campos novos `imagemPersonagemUri` (foto RECORTADA do cabeçalho) e `imagemPersonagemOriginalUri` (foto INTEIRA p/ tela cheia) — ambos `file://` em `filesDir/portraits/`, default vazio (retrocompatível).
+- **`model/Personagem.kt`** — Modelo raiz. Todos os campos do personagem GURPS 4ª Ed. (atributos primários/secundários, vantagens, desvantagens, qualidades, peculiaridades, perícias, técnicas, magias, equipamentos, modelo racial, HP/FP de rolagem, notas). Tem propriedades calculadas (`pontosVida`, `pontosFadiga`, `velocidadeBasica`, etc.) que usam `CharacterRules` e `TraitRuleRegistry`. `toJson`/`fromJson` para serialização. **[+ 2026-06-08]** Campos novos `imagemPersonagemUri` (foto RECORTADA do cabeçalho) e `imagemPersonagemOriginalUri` (foto INTEIRA p/ tela cheia) — ambos `file://` em `filesDir/portraits/`, default vazio (retrocompatível). **[+ 2026-06-09]** Campo `imagemPersonagemBase64` — preenchido APENAS na exportação (foto viaja embutida na ficha); limpo no import (não incha persistência local).
 
 - **`model/PersonagemInterop.kt`** — Importação/exportação versionada. `importarJson` suporta envelope `{"schema":"gurps-ficha","character":{...}}` e fallback para JSON legado sem envelope. `exportarJson` gera o envelope com metadados (schemaVersion, exportedAtUtc, appVersion, uiVariant).
 
@@ -295,7 +313,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`ui/TabEquipamentos.kt`** — Aba de equipamentos: lista de itens com peso individual e total, adição de arma/armadura/item genérico do catálogo.
 
-- **`ui/TabRolagem.kt`** — Hub de rolagem. Lista atributos, perícias, magias e traços com ataque inato para rolagem de 3d6. Exibe resultado, margem de sucesso/falha, críticos. Dispatch para Discord se configurado.
+- **`ui/TabRolagem.kt`** — Hub de rolagem. Lista atributos, perícias, magias e traços com ataque inato para rolagem de 3d6. Exibe resultado, margem de sucesso/falha, críticos. Dispatch para Discord se configurado. **[+ 2026-06-09]** `executarRolagem` usa `CriticoRules.classificar` (regra COMPLETA com NH) e, em testes de COMBATE (Ataque/Defesa/Técnica/Magia) que dão Decisivo/Crítico, chama `dispararTabelaCritica` → 2ª rolagem 3d6 nas tabelas → 2ª mensagem ao Discord.
 
 - **`ui/TabNotas.kt`** — Aba de notas e texto livre: histórico, aparência, notas gerais do personagem.
 
@@ -435,6 +453,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 | `escudos.v1.json` | Escudos com BD | `CatalogLoaders` |
 | `racas.v1.json` | Raças jogáveis (formato enxuto — sem custos, recalculado) | `RacaCatalogo` |
 | `metacaracteristicas.v1.json` | Pacotes prontos de metacaracterísticas (Gigante, Anão, etc.) | `MetacaracteristicaCatalogo` |
+| `forjador_templates.json` **[+ 2026-06-09]** | 60 templates/arquétipos de personagem prontos (combatentes, furtivos, sociais, 10 magos, gêneros modernos). IDs validados contra o catálogo. | `ForjadorTemplateCatalogo` |
+| `tabelas_criticas.json` **[+ 2026-06-09]** | 4 tabelas de combate (Golpe Fulminante, na Cabeça, Erro Crítico, Erro Crítico Desarmado), entradas 3-18 com texto completo. | `CriticoRules` |
 | `mestre_ia_temas.json` | Temas canônicos de busca para o Mestre IA | `DataRepository` |
 | `chunks.jsonl` | Chunks do manual GURPS (1 por página, FTS4). 54.9MB com embeddings; Auditor usa só o texto, embeddings (3072 dims) dormentes p/ ele. | `FichaDatabase.prePopulateManual` |
 | `chunks.jsonl.bak` | Idêntico SEM embeddings (6.5MB, 1196 linhas). Candidato a substituir o .jsonl quando confirmado que Auditor não precisa de embedding. | (não carregado — backup) |
@@ -542,7 +562,7 @@ Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
 
 *Pasta `discord-roll-api/` (raiz do projeto Android). Node 18+, Express. Roda no Railway. NÃO é compilado pelo Gradle.*
 
-- **`discord-roll-api/src/server.js`** — API que publica rolagens no Discord via bot. Rotas: `GET /health`, `GET /api/channels` (lista canais de voz, com cache 30min), `POST /api/rolls` (monta mensagem da rolagem e envia ao canal), `GET|POST /api/fichas*` (persistência in-memory de fichas na nuvem por `deviceId`). `formatRollMessage` formata texto (crítico, margem). `sendToDiscord` envia ao endpoint do Discord. **[+ 2026-06-08]** Map `portraits` (in-memory: sanitizedName → {mime,buffer,ext}); `parseDataUri`/`sanitizeName`; rota nova **`POST /api/portrait`** {character, image(data:base64)} guarda o retrato; `sendToDiscord` passou a aceitar portrait opcional → com retrato manda **embed + multipart** (FormData/Blob, globais Node 18+) com `thumbnail` `attachment://portrait.<ext>`, sem retrato manda `{content}` como antes; `/api/rolls` busca `portraits.get(sanitizeName(payload.character))`. Limite do `express.json` subiu p/ 8mb. ⚠️ portraits e fichas são in-memory (perdem no restart do Railway). ⚠️ Mudanças exigem **deploy** no Railway p/ valer online.
+- **`discord-roll-api/src/server.js`** — API que publica rolagens no Discord via bot. Rotas: `GET /health`, `GET /api/channels` (lista canais de voz, com cache 30min), `POST /api/rolls` (monta mensagem da rolagem e envia ao canal), `GET|POST /api/fichas*` (persistência in-memory de fichas na nuvem por `deviceId`). `formatRollMessage` formata texto (crítico, margem). `sendToDiscord` envia ao endpoint do Discord. **[+ 2026-06-08]** Map `portraits` (in-memory: sanitizedName → {mime,buffer,ext}); `parseDataUri`/`sanitizeName`; rota nova **`POST /api/portrait`** {character, image(data:base64)} guarda o retrato; `sendToDiscord` passou a aceitar portrait opcional → com retrato manda **embed + multipart** (FormData/Blob, globais Node 18+) com `thumbnail` `attachment://portrait.<ext>`, sem retrato manda `{content}` como antes; `/api/rolls` busca `portraits.get(sanitizeName(payload.character))`. Limite do `express.json` subiu p/ 8mb. **[+ 2026-06-09]** `classificarCritico(soma, nh)` aplica a regra COMPLETA com NH (corrige a simplificada 3-4/17-18); `formatRollMessage` detecta a 2ª mensagem de tabela crítica (testType começa com 💥/💀) e renderiza o texto cru. ⚠️ portraits e fichas são in-memory (perdem no restart do Railway). ⚠️ Mudanças exigem **deploy** no Railway p/ valer online.
 
 > **Nota de build [+ 2026-06-08]:** `app/build.gradle.kts` ganhou deps p/ a feature de imagem:
 > `com.google.mlkit:face-detection:16.1.7`, `com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1`
