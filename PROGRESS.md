@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 346 CONCLUÍDO — Rolagem: automação de Golpe Fulminante / Erro Crítico (tabelas 3d6 no Discord)
-**Último Lote Registrado:** Lote 346 (hash `214e0c7`) — começa na linha **2818** deste arquivo
+**Status Atual:** Lote 347 CONCLUÍDO — Import: ficha do WhatsApp abre direto no app (intent-filters por extensão + octet-stream)
+**Último Lote Registrado:** Lote 347 (hash `2615e92`) — começa na linha **2828** deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2823,4 +2823,12 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - domain/roll/CriticoRules.kt: regra de critico COMPLETA com NH (5@NH15+, 6@NH16+, 17@NH<=15, soma>=NH+10) + loader + rolarTabela
 - TabRolagem: classificacao correta + disparo automatico (Atributo/Pericia NAO disparam)
 - server.js: classificarCritico com NH + render da 2a mensagem (testType 💥/💀). EXIGE deploy Railway
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 347 (hash `2615e92`) — 09 de Junho de 2026
+**Import: ficha do WhatsApp abre direto no app (acessibilidade)**
+- Problema: clicar na ficha .json/.gurps compartilhada (WhatsApp) nao abria no app; tinha que salvar e procurar nas pastas (ruim p/ cegos)
+- Causa: intent-filters so cobriam application/json e text/plain; WhatsApp reatribui p/ application/octet-stream (generico)
+- Manifest: ACTION_VIEW cobre octet-stream/text-json/x-gurps; novo filtro por EXTENSAO (pathPattern .gurps/.json, host=*, mime=*/*) casa pelo nome do arquivo; ACTION_SEND ampliado
+- MainActivity: limpa BOM/espacos antes do parse + aviso de arquivo vazio
 ----------------------------------------------------------------------------------------------------------------------------------------------------
