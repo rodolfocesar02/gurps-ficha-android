@@ -22,8 +22,8 @@ import org.json.JSONObject
  * Modo UI: "conversa"  |  Ícone: 📖  |  Menu: "Mestre Bibliotecário"
  * Ponto de entrada: ChatInputBar (DialogsMestreIA.kt) → modo "conversa"
  *
- * Responde dúvidas de regras GURPS usando RAG sobre o Códex (busca
- * vetorial HNSW + BM25 sobre os chunks do manual).
+ * Responde dúvidas de regras GURPS via "grep + leitura dirigida" no Códex
+ * (localizar_no_codex FTS4/BM25 + ler_pagina — Lotes 325-328).
  *
  * OUTROS MESTRES (referência cruzada):
  *   Mestre Auditor   → MestreIAGeneratorUseCase.kt  (modo "analise")
@@ -36,8 +36,7 @@ class MestreIAUseCase(
     private val repository: DataRepository
 ) {
     private val viewModelScope = CoroutineScope(Dispatchers.IO)
-    private val graphEngine = MestreIAGraphEngine(repository)
-    
+
     // Adaptador para o Motor Nexus ler do repositório oficial
     private val arcanoCatalogo = object : ArcanoCatalogo {
         override fun preRequisitoRaw(magiaId: String) = repository.magias.find { it.id == magiaId }?.preRequisitos ?: ""
@@ -230,29 +229,10 @@ class MestreIAUseCase(
                                         android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx]: [${toolCall.name}] $argsLog")
 
                                         when (toolCall.name) {
-                                            MestreIATools.TOOL_MANUAL_DIRETO -> {
-                                                val queryTool = toolCall.args.optString("query", prompt)
-                                                val filtroLivro = toolCall.args.optString("livro", "").takeIf { it.isNotBlank() }
-                                                executarBuscaCodex(idx, queryTool, filtroLivro, historicoInvestigacao, updateStatus)
-                                            }
-                                            // Lote 317: tools especializadas — cada uma força filtroLivro fixo
-                                            MestreIATools.TOOL_REGRAS_MAGIA -> {
-                                                val queryTool = toolCall.args.optString("query", prompt)
-                                                executarBuscaCodex(idx, queryTool, "Magia", historicoInvestigacao, updateStatus)
-                                            }
-                                            MestreIATools.TOOL_REGRAS_ARMAS_FOGO -> {
-                                                val queryTool = toolCall.args.optString("query", prompt)
-                                                executarBuscaCodex(idx, queryTool, "Gun Fu", historicoInvestigacao, updateStatus)
-                                            }
-                                            MestreIATools.TOOL_REGRAS_ARTES_MARCIAIS -> {
-                                                val queryTool = toolCall.args.optString("query", prompt)
-                                                executarBuscaCodex(idx, queryTool, "Artes Marciais", historicoInvestigacao, updateStatus)
-                                            }
-                                            MestreIATools.TOOL_REGRAS_AQUATICO -> {
-                                                val queryTool = toolCall.args.optString("query", prompt)
-                                                executarBuscaCodex(idx, queryTool, "Pyramid Aquático", historicoInvestigacao, updateStatus)
-                                            }
-                                            // Lote 325: novo motor de busca do Auditor (grep + leitura dirigida)
+                                            // Lote 349: removidos os cases das 5 tools de embedding
+                                            // (consultar_manual_direto + 4 especializadas) — não eram
+                                            // mais oferecidas ao modelo desde o Lote 325.
+                                            // Lote 325: motor de busca do Auditor (grep + leitura dirigida)
                                             MestreIATools.TOOL_LOCALIZAR -> {
                                                 val termos = toolCall.args.optString("termos", prompt)
                                                 val livros = toolCall.args.optJSONArray("livros")?.let { arr ->
@@ -408,12 +388,10 @@ class MestreIAUseCase(
                             val resumoBuscas = mutableListOf<String>()
                             var ponteFinal = catalogoDinamico.ponteDeFerro
                             val chunksFinal = catalogoDinamico.chunks.toMutableList()
-                            var todasDuplicadas = true
 
                             for ((idx, resultado) in toolResultados.withIndex()) {
                                 when (resultado) {
                                     is ToolResult.Manual -> {
-                                        todasDuplicadas = false
                                         toolCallsFeitas++
                                         // Lote 328: marca leitura real. localizar e ler ambos viram Manual;
                                         // distinguimos pelo prefixo "ler:" da query e pela presença de chunks reais.
@@ -427,23 +405,17 @@ class MestreIAUseCase(
                                         historicoInvestigacao.add("system" to "RESULTADO: ${resultado.texto.take(2000)}")
                                     }
                                     is ToolResult.Vazio -> {
-                                        todasDuplicadas = false
                                         toolCallsFeitas++
                                         historicoInvestigacao.add("system" to "Nenhum resultado para '${resultado.query}' no Códex.")
                                         resumoBuscas.add("'${resultado.query.take(30)}' sem resultado")
                                     }
                                     is ToolResult.Ficha -> {
-                                        todasDuplicadas = false
                                         historicoInvestigacao.add("system" to "FICHA (${resultado.secao}): ${resultado.info}")
                                         resumoBuscas.add("ficha(${resultado.secao})")
                                     }
                                     is ToolResult.Nexus -> {
-                                        todasDuplicadas = false
                                         ponteFinal = (ponteFinal + "\n\n=== NEXUS: ${resultado.magia} ===\n${resultado.gabarito}").take(60000)
                                         resumoBuscas.add("nexus(${resultado.magia})")
-                                    }
-                                    is ToolResult.Duplicada -> {
-                                        historicoInvestigacao.add("system" to "AVISO: '${resultado.query}' já foi buscado anteriormente.")
                                     }
                                 }
                             }
@@ -455,9 +427,7 @@ class MestreIAUseCase(
                             val toolsRestantesLog = MAX_TOOL_CALLS - toolCallsFeitas
                             android.util.Log.i("MestreIA_RAG", "║  TOOLS CONCLUÍDAS: ${resumoBuscas.joinToString(" | ")} | ctx=${ponteFinal.length}chars | toolsRestantes=$toolsRestantesLog")
 
-                            promptAtual = if (todasDuplicadas) {
-                                "[RESPOSTA OBRIGATÓRIA] Buscas duplicadas detectadas. Responda agora com o contexto disponível. NÃO repita buscas."
-                            } else if (toolCallsFeitas >= MAX_TOOL_CALLS) {
+                            promptAtual = if (toolCallsFeitas >= MAX_TOOL_CALLS) {
                                 "[RESPOSTA OBRIGATÓRIA] Limite de $MAX_TOOL_CALLS buscas atingido. Responda agora com o contexto acumulado."
                             } else {
                                 "Buscas realizadas: ${resumoBuscas.joinToString()}. Você tem ${toolsRestantesLog} busca(s) restante(s). Se precisar de mais informação, busque agora. Senão, responda."
@@ -520,51 +490,6 @@ class MestreIAUseCase(
     }
 
     /**
-     * LOTE 317: helper compartilhado entre TOOL_MANUAL_DIRETO e as 4 tools
-     * especializadas (TOOL_REGRAS_MAGIA, _ARMAS_FOGO, _ARTES_MARCIAIS, _AQUATICO).
-     * Cada tool especializada chama isto com filtroLivro fixo.
-     *
-     * ⚠️ LEGADO desde o Lote 325. As 5 tools de embedding que chamavam este helper
-     * NÃO são mais oferecidas ao modelo (o Auditor usa localizar_no_codex + ler_pagina).
-     * Os `when` cases que chamam esta função permanecem no dispatch como rede, mas nunca
-     * disparam. Usa graphEngine.buscarDiretoNoCodex (motor semântico, também legado p/ Auditor).
-     * Candidato a remoção em lote de limpeza — ver .agent/skills/ARQUITETURA_MESTRE_IA.md §5.2.
-     */
-    private suspend fun executarBuscaCodex(
-        idx: Int,
-        queryTool: String,
-        filtroLivro: String?,
-        historicoInvestigacao: MutableList<Pair<String, String>>,
-        updateStatus: (String) -> Unit
-    ): ToolResult {
-        val queryNorm = queryTool.lowercase().trim().take(40)
-        val jaFoiBuscado = historicoInvestigacao
-            .filter { it.first == "assistant" }
-            .any { it.second.lowercase().contains(queryNorm) }
-        if (jaFoiBuscado) {
-            android.util.Log.w("MestreIA_RAG", "║  TOOL[$idx] DUPLICADA: '$queryNorm'")
-            return ToolResult.Duplicada(queryTool)
-        }
-        val statusMsg = if (filtroLivro != null)
-            "Buscando em $filtroLivro: \"${queryTool.take(30)}\"..."
-        else
-            "Buscando: \"${queryTool.take(40)}\"..."
-        updateStatus(statusMsg)
-        val resTool = graphEngine.buscarDiretoNoCodex(queryTool, emptyList(), filtroLivro = filtroLivro)
-        return if (resTool.relatedChunks.isNotEmpty()) {
-            val pags = resTool.relatedChunks.mapNotNull { it.page_number }.distinct().sorted().joinToString()
-            val textoFormatado = graphEngine.formatarParaIA(resTool, queryTool)
-            val livroLog = if (filtroLivro != null) " [livro=$filtroLivro]" else ""
-            android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] OK$livroLog: ${resTool.relatedChunks.size} chunks | págs: [$pags]")
-            android.util.Log.i("MestreIA_RAG", "║  TOOL[$idx] CONTEUDO (800chars):\n${textoFormatado.take(800)}")
-            ToolResult.Manual(queryTool, textoFormatado, resTool.relatedChunks)
-        } else {
-            android.util.Log.e("MestreIA_RAG", "║  TOOL[$idx] VAZIO: \"${queryTool.take(60)}\"")
-            ToolResult.Vazio(queryTool)
-        }
-    }
-
-    /**
      * Lote 325: LOCALIZAR — "página de resultados" por palavra-chave (FTS4 AND).
      * Retorna lista compacta (livro|página|trecho), não o texto completo.
      */
@@ -623,94 +548,6 @@ class MestreIAUseCase(
         return ToolResult.Manual("ler:$livro p$faixa", texto, chunks)
     }
 
-    /**
-     * LOTE 119: Gerador de Catálogo via Busca Direta (Pula o Grafo).
-     * LOTE 258: Query Rewriting — se FTS retornar < 5 chunks, reformula a pergunta
-     * via API leve (Gemini Flash Lite) em termos técnicos do GURPS e tenta novamente.
-     *
-     * ⚠️ MORTO desde o Lote 325 — ZERO callers no app. Era o pré-contexto RAG do fluxo
-     * antigo. Usa graphEngine.buscarDiretoNoCodex (semântico) + reescreverQueryParaGurps,
-     * ambos legados p/ o Auditor. Candidato a remoção — ver ARQUITETURA_MESTRE_IA.md §5.3.
-     */
-    suspend fun gerarCatalogoDireto(
-        prompt: String,
-        history: List<MestreIAClient.ChatMessage>,
-        termosExtras: List<String> = emptyList(),
-        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList()
-    ): CatalogoLocalResult {
-        val promptExpandido = prompt.take(500)
-        val res = graphEngine.buscarDiretoNoCodex(
-            query = promptExpandido,
-            termosExtras = termosExtras,
-            perguntaOriginal = prompt,
-            termosPonderados = termosPonderados
-        )
-
-        if (res.relatedChunks.size >= 5) {
-            val cat = MestreIAClient.CatalogoNomes(
-                chunks = res.relatedChunks,
-                ponteDeFerro = graphEngine.formatarParaIA(res, prompt).take(35000)
-            )
-            return CatalogoLocalResult(cat, true)
-        }
-
-        // Resultado fraco: tenta query rewriting via API
-        android.util.Log.w("MestreIA_RAG", "║  QUERY REWRITE: apenas ${res.relatedChunks.size} chunks — reformulando com IA...")
-        val termosReescritos = reescreverQueryParaGurps(prompt)
-        if (termosReescritos.isNotEmpty()) {
-            android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE OK: $termosReescritos")
-            val resReescrito = graphEngine.buscarDiretoNoCodex(
-                query = termosReescritos,
-                termosExtras = termosExtras,
-                perguntaOriginal = prompt,
-                termosPonderados = termosPonderados
-            )
-            if (resReescrito.relatedChunks.size > res.relatedChunks.size) {
-                android.util.Log.i("MestreIA_RAG", "║  QUERY REWRITE MELHOROU: ${res.relatedChunks.size} → ${resReescrito.relatedChunks.size} chunks")
-                val chunksMerge = (resReescrito.relatedChunks + res.relatedChunks).distinctBy { it.chunk_id }
-                val scoresMerge = resReescrito.chunkScores + res.chunkScores
-                val resMerge = MestreIAGraphEngine.GraphSearchResult(relatedChunks = chunksMerge, chunkScores = scoresMerge)
-                val cat = MestreIAClient.CatalogoNomes(
-                    chunks = chunksMerge,
-                    ponteDeFerro = graphEngine.formatarParaIA(resMerge, prompt).take(35000)
-                )
-                return CatalogoLocalResult(cat, chunksMerge.isNotEmpty())
-            }
-        }
-
-        val cat = MestreIAClient.CatalogoNomes(
-            chunks = res.relatedChunks,
-            ponteDeFerro = graphEngine.formatarParaIA(res, prompt).take(35000)
-        )
-        return CatalogoLocalResult(cat, res.relatedChunks.isNotEmpty())
-    }
-
-    /**
-     * LOTE 258: Chama API leve para reformular a query em termos técnicos do GURPS.
-     * Usa Gemini Flash Lite — rápido, barato, sem contexto RAG.
-     * Retorna string com 5-8 termos técnicos separados por espaço, ou vazia se falhar.
-     */
-    private suspend fun reescreverQueryParaGurps(pergunta: String): String {
-        val geminiUrl = BuildConfig.MESTRE_IA_LITE_1_URL
-        val geminiKey = BuildConfig.MESTRE_IA_GEMINI_KEY
-        val geminiModel = BuildConfig.MESTRE_IA_GEMINI_3_1_FLASH_LITE
-        if (geminiKey.isBlank()) return ""
-        return try {
-            val promptRewrite = "Reescreva a pergunta abaixo como 5 a 8 termos técnicos do sistema de RPG GURPS 4ª edição, separados por espaço. Apenas os termos, sem explicação, sem pontuação.\n\nPergunta: $pergunta"
-            val resp = MestreIAClient.perguntarAoMestre(
-                baseUrl = geminiUrl, apiKey = geminiKey, workspaceSlug = geminiModel,
-                prompt = promptRewrite, history = emptyList(), contextoPersonagem = "{}",
-                catalogo = MestreIAClient.CatalogoNomes(), modo = "conversa",
-                onChunk = null, desativarTools = true
-            )
-            resp.text.trim().take(200).replace(",", " ").replace(";", " ")
-        } catch (e: Exception) {
-            android.util.Log.w("MestreIA_RAG", "║  QUERY REWRITE FALHOU: ${e.message?.take(50)}")
-            ""
-        }
-    }
-
-
     fun limparNarrativaParaChat(texto: String): String {
         if (!texto.contains("```json")) return texto.trim()
         val sb = StringBuilder()
@@ -724,8 +561,6 @@ class MestreIAUseCase(
         }
         return sb.toString().trim()
     }
-
-    data class CatalogoLocalResult(val catalogo: MestreIAClient.CatalogoNomes, val isRagSuccess: Boolean)
 }
 
 private sealed class ToolResult {
@@ -733,5 +568,4 @@ private sealed class ToolResult {
     data class Vazio(val query: String) : ToolResult()
     data class Ficha(val secao: String, val info: String) : ToolResult()
     data class Nexus(val magia: String, val gabarito: String) : ToolResult()
-    data class Duplicada(val query: String) : ToolResult()
 }

@@ -106,40 +106,39 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
 
 ### 5.1 `MestreIAGraphEngine.kt` (603 linhas) — ⚠️ NÃO usado pelo Auditor desde Lote 325
 - Era o motor RAG semântico: BM25 + HNSW + reranking + diversificação (`buscarDiretoNoCodex`).
-- **Hoje o Auditor NÃO o chama.** É alcançado por `gerarCatalogoDireto` (ver 5.3, morto) e
-  **ATIVAMENTE pela Voz** (`ui/components/GeminiLiveTools.kt` instancia o próprio
-  `MestreIAGraphEngine(repo)` e chama `buscarDiretoNoCodex` — caller real, não hipotético).
+- **Hoje o Auditor NÃO o chama.** Caller vivo: **a Voz** (`ui/components/GeminiLiveTools.kt`
+  instancia o próprio `MestreIAGraphEngine(repo)` e chama `buscarDiretoNoCodex`).
+  O caller morto `gerarCatalogoDireto` foi REMOVIDO no Lote 349 (ver 5.3).
+- **Lote 349:** ganhou cabeçalho-guarda `⚠️ USADO APENAS PELA VOZ (GeminiLive) E FORJADOR`.
 - O scoring BM25 dele foi **copiado** (não movido) para `rankearPorBM25` no Repository (Lote 327).
   Se for ajustar ranking do Auditor, mexa em `rankearPorBM25`, **não aqui**.
 - A flag `MODO_HNSW_PURO` (companion object) ainda existe e é setada `true` em
   `FichaIADelegate.kt` (linha 55) — mas só afeta este GraphEngine, que o Auditor não usa.
   Relevante apenas para Forjador/Voz.
 
-### 5.2 `executarBuscaCodex()` em `MestreIAUseCase.kt` (linha ~521) — ⚠️ LEGADO (Lote 317, morto no 325)
-- Helper das 5 tools de embedding antigas (`consultar_manual_direto`, `consultar_regras_magia`,
-  `_armas_fogo`, `_artes_marciais`, `_aquatico`). Chama `graphEngine.buscarDiretoNoCodex`.
-- Os `when` cases dessas tools AINDA existem no dispatch do UseCase, mas **as tools não são mais
-  oferecidas ao modelo** (o toolset do Auditor agora é só localizar+ler). Então os cases nunca
-  disparam. Mantidos como rede; podem ser removidos num lote de limpeza.
+### 5.2 `executarBuscaCodex()` em `MestreIAUseCase.kt` — ✅ REMOVIDO no Lote 349
+- Era o helper das 5 tools de embedding antigas (`consultar_manual_direto`, `consultar_regras_magia`,
+  `_armas_fogo`, `_artes_marciais`, `_aquatico`); chamava `graphEngine.buscarDiretoNoCodex`.
+- Lote 349 removeu a função, os 5 `when` cases mortos do dispatch, o campo `graphEngine` do
+  UseCase e o subtipo `ToolResult.Duplicada` (+ mecanismo `todasDuplicadas`), que só ela alimentava.
 
-### 5.3 `gerarCatalogoDireto()` + `reescreverQueryParaGurps()` em `MestreIAUseCase.kt` — ⚠️ MORTO
-- `gerarCatalogoDireto` (linha ~623): zero callers no app. Era usado pelo fluxo antigo de
-  pré-contexto RAG. Chama GraphEngine + Planner + query-rewrite via Gemini Lite.
-- `reescreverQueryParaGurps` (linha ~681): só chamado por `gerarCatalogoDireto` → morto junto.
+### 5.3 `gerarCatalogoDireto()` + `reescreverQueryParaGurps()` — ✅ REMOVIDOS no Lote 349
+- Estavam em `MestreIAUseCase.kt` com zero callers (pré-contexto RAG do fluxo antigo).
+- A data class `CatalogoLocalResult` (tipo de retorno) foi removida junto.
 
-### 5.4 `MestreIATopicIndex.kt` (123 linhas) — ⚠️ MORTO desde Lote 272
-- Mapa "tópico → páginas garantidas". **Nenhum arquivo o referencia** (nem `carregar()` é
-  chamado). Comentário no GraphEngine diz "TopicIndex removido (Lote 272)".
+### 5.4 `MestreIATopicIndex.kt` — ✅ DELETADO no Lote 349
+- Morto desde o Lote 272; nenhum arquivo o referenciava. Os assets `topic_index*.json`
+  foram movidos para `lixeira/assets_lote349/` (fora do APK).
 - Decisão de design (validada com usuário): determinismo por tópico NÃO serve para este corpus
   (mesma página viria para perguntas diferentes sobre o mesmo substantivo). Não reviver sem
   rediscutir.
 
-### 5.5 `MestreIAPlanner.kt` (879 linhas) — ⚠️ quase morto (só o TIPO é usado)
-- Lógica de planejamento de busca com 7 dicionários hardcoded — **causava alucinação léxica**,
-  removida do fluxo no Lote 319.
-- Hoje só a data class `MestreIAPlanner.TermoPonderado` é referenciada, como parâmetro com
-  default vazio em assinaturas (`MestreIAQueryEngine` linha 90, `MestreIAGraphEngine` linha 51,
-  `MestreIAUseCase` linha 627). A lógica nunca roda no Auditor.
+### 5.5 `MestreIAPlanner.kt` (879 linhas) — ✅ DELETADO no Lote 349
+- Lógica de planejamento com 7 dicionários hardcoded — causava alucinação léxica, fora do
+  fluxo desde o Lote 319. Só o TIPO `TermoPonderado` era usado.
+- A data class `TermoPonderado` foi MOVIDA para `MestreIAQueryEngine` (agora
+  `MestreIAQueryEngine.TermoPonderado`); assinaturas em `MestreIAQueryEngine` e
+  `MestreIAGraphEngine` atualizadas.
 
 ### 5.6 `MestreIAVectorEngine.kt` (160 linhas) / `MestreIASemanticEngine.kt` (203 linhas) — ⚠️ dormentes no Auditor
 - Busca semântica HNSW (`MestreIAVectorEngine`, via ObjectBox) e reranking cosseno
@@ -152,10 +151,19 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
 - Utilitários puros `floatArrayToByteArray`/`byteArrayToFloatArray` (de `MestreIASemanticEngine`)
   AINDA são usados na importação de embeddings (`FichaDatabase.prePopulateManual`).
 
-### 5.7 `consultar_manual_direto` + 4 especializadas em `MestreIATools.getOpenAITools/getGeminiTools` — ⚠️ LEGADO p/ Auditor
-- Schemas das 5 tools de embedding. `getOpenAITools`/`getGeminiTools` ainda existem e são usadas
-  pelo **Forjador** (que precisa de `fill_character_sheet` etc.). Para o Auditor foram
-  substituídas por `getAuditorTools*`. Não confundir os dois conjuntos.
+### 5.7 `consultar_manual_direto` + 4 especializadas em `MestreIATools` — ⚠️ LEGADO (renomeadas no Lote 349)
+- Schemas das 5 tools de embedding + `fill_character_sheet`. **Lote 349 renomeou**
+  `getOpenAITools`/`getGeminiTools` → `getLegacyEmbeddingToolsOpenAI`/`getLegacyEmbeddingToolsGemini`
+  com comentário-guarda (não adicionar tools ali).
+- ⚠️ A afirmação antiga de que "são usadas pelo Forjador" estava DESATUALIZADA: o Forjador usa
+  `ForjadorTools.getOpenAITools/getGeminiTools` (objeto próprio em `domain/tools`).
+- 🐛 **BUG MAPEADO no Lote 349 (não corrigido — fora do escopo do A1):**
+  `getAuditorUnificadoToolsOpenAI/Gemini` (toolset do modo `analise`, commit d9d999c) montam a
+  base chamando o toolset LEGADO de embedding acreditando que ele continha as ForjadorTools.
+  Resultado: o modo `analise` oferece ao modelo 8 schemas que o executor
+  (`MestreIAGeneratorUseCase`) não roda e NÃO oferece as tools de ficha do Forjador.
+  Corrigir em lote dedicado: trocar a base por `ForjadorTools.*` e remover a duplicata de
+  `consultar_nexus_arcano`; depois disso o toolset legado fica sem callers (candidato a deleção).
 
 ---
 
@@ -198,8 +206,9 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
 - **Custo:** cada iteração reenvia o contexto acumulado; localizar que devolve muita página
   infla o request. O ranking (327) mitigou; paginação do localizar (ideia do usuário) é o
   próximo passo natural se o custo ainda incomodar.
-- **Limpeza pendente:** 5.2, 5.3, 5.4 podem ser removidos num lote dedicado (reduz 1000+ linhas
-  mortas). Não remover sem confirmar que Forjador/Voz não dependem do GraphEngine.
+- **Limpeza pendente:** ✅ FEITA no Lote 349 — 5.2, 5.3, 5.4 e 5.5 removidos (~1.900 linhas).
+  GraphEngine/Vector/Semantic preservados (a Voz depende deles) com cabeçalhos-guarda.
+- **Bug do toolset unificado (modo `analise`):** ver 5.7 — corrigir em lote dedicado.
 - **Princípio inviolável:** prompts do Auditor são CATEGORIAIS, **sem exemplos hardcoded**
   (lição do Lote 318 — exemplo vira cola e cria viés direcionado).
 

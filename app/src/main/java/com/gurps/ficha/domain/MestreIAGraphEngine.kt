@@ -1,9 +1,12 @@
 package com.gurps.ficha.domain
 
 import com.gurps.ficha.data.DataRepository
+import com.gurps.ficha.data.MestreIAQueryEngine
 import com.gurps.ficha.model.*
 
 /**
+ * ⚠️ USADO APENAS PELA VOZ (GeminiLive) E FORJADOR — NÃO REMOVER.
+ *
  * Motor de busca RAG SEMÂNTICO (BM25 + HNSW + reranking) direto nos chunks via FTS SQLite.
  *
  * Lote 270-C:
@@ -13,8 +16,9 @@ import com.gurps.ficha.model.*
  * - Expansão bidirecional removida de extrairPalavrasChave
  *
  * ⚠️ NÃO usado pelo AUDITOR desde o Lote 325 (que migrou para "grep + leitura dirigida"
- * em MestreIARepository.localizarNoCodex/lerPaginas). Hoje este motor só é alcançado por
- * MestreIAUseCase.gerarCatalogoDireto (MORTO) e potencialmente Forjador/Voz.
+ * em MestreIARepository.localizarNoCodex/lerPaginas). Caller ativo: a VOZ
+ * (GeminiLiveTools.consultarManual → buscarDiretoNoCodex). O caller morto
+ * MestreIAUseCase.gerarCatalogoDireto foi removido no Lote 349.
  * O scoring BM25 daqui foi COPIADO para MestreIARepository.rankearPorBM25 (Lote 327) —
  * se for ajustar o ranking do AUDITOR, mexa LÁ, não aqui. Ver ARQUITETURA_MESTRE_IA.md §5.1.
  */
@@ -48,7 +52,7 @@ class MestreIAGraphEngine(private val repository: DataRepository) {
         query: String,
         termosExtras: List<String> = emptyList(),
         perguntaOriginal: String = "",
-        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList(),
+        termosPonderados: List<MestreIAQueryEngine.TermoPonderado> = emptyList(),
         filtroLivro: String? = null,
         filtroLivros: List<String>? = null
     ): GraphSearchResult {

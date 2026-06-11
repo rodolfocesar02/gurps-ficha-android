@@ -15,6 +15,10 @@ import java.nio.ByteOrder
 import java.util.concurrent.TimeUnit
 
 /**
+ * ⚠️ USADO APENAS PELA VOZ (GeminiLive) E FORJADOR — NÃO REMOVER.
+ * (Alcançado via MestreIAGraphEngine; os utilitários floatArrayToByteArray/
+ * byteArrayToFloatArray também são usados por FichaDatabase.prePopulateManual — Lote 349.)
+ *
  * Lote 259: Motor de busca semântica híbrida.
  *
  * Arquitetura:

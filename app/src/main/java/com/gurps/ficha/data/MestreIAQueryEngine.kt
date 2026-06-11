@@ -1,6 +1,5 @@
 package com.gurps.ficha.data
 
-import com.gurps.ficha.domain.MestreIAPlanner
 import com.gurps.ficha.domain.filters.CatalogFilters
 
 /**
@@ -14,6 +13,17 @@ import com.gurps.ficha.domain.filters.CatalogFilters
  * Expansão de sinônimos somente para termos do núcleo — evita amplificação de contexto.
  */
 object MestreIAQueryEngine {
+
+    /**
+     * Termo com peso explícito (Lote 349: movida de MestreIAPlanner.kt, deletado).
+     * peso=1.0 → núcleo da pergunta (sujeito principal)
+     * peso=0.6 → entidade secundária (alvo ou contexto)
+     * peso=0.3 → expansão semântica (sinônimos)
+     */
+    data class TermoPonderado(
+        val termo: String,
+        val peso: Double
+    )
 
     private val stopWords = setOf(
         "como", "para", "com", "dos", "das", "pela", "pelo", "onde", "quando", "quem", "sao",
@@ -87,7 +97,7 @@ object MestreIAQueryEngine {
     fun prepararQueryFTSAgressiva(
         userQuery: String,
         termosTecnicos: List<String>,
-        termosPonderados: List<MestreIAPlanner.TermoPonderado> = emptyList()
+        termosPonderados: List<TermoPonderado> = emptyList()
     ): String {
         val cleanQuery = userQuery.replace(Regex("[^a-zA-ZáàâãéèêíïóôõöúçÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇ0-9\\s]"), " ")
         val tokensUsuario = cleanQuery.split(Regex("\\s+"))

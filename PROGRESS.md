@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 09 de Junho de 2026
-**Status Atual:** Lote 348 CONCLUÍDO — Import/Export: imagem do personagem viaja junto com a ficha (base64 embutido)
-**Último Lote Registrado:** Lote 348 (hash `83ff3d3`) — começa na linha **2836** deste arquivo
+**Última Atualização:** 12 de Junho de 2026
+**Status Atual:** Lote 349 CONCLUÍDO — GURPS Saga Fase A1: limpeza cirúrgica de código morto e assets-lixo (branch `GURPS-Saga`)
+**Último Lote Registrado:** Lote 349 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2840,4 +2840,16 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - ImagemPersonagemStore.salvarDeBase64 (decodifica + reusa pipeline de salvarImagem)
 - FichaViewModel: exportar*ComImagem (suspend) + restaurarImagemEmbutidaSeHouver
 - FichaScreen: 3 call sites (compativel/versionado/compartilhar) usam versao com imagem em coroutine
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 349 — 12 de Junho de 2026
+**GURPS Saga Fase A1: limpeza cirurgica de codigo morto e assets-lixo (branch GURPS-Saga)**
+- DELETADOS: MestreIATopicIndex.kt (morto desde L272) e MestreIAPlanner.kt (879 linhas; data class TermoPonderado MOVIDA para MestreIAQueryEngine)
+- MestreIAUseCase: removidos executarBuscaCodex, gerarCatalogoDireto, reescreverQueryParaGurps, os 5 when-cases mortos das tools de embedding, campo graphEngine e ToolResult.Duplicada (+todasDuplicadas) — orfaos apos a remocao
+- MestreIATools: getOpenAITools/getGeminiTools renomeadas getLegacyEmbeddingToolsOpenAI/Gemini + comentario-guarda (nao adicionar tools ali)
+- BUG MAPEADO (NAO corrigido — fora do escopo do A1): getAuditorUnificadoTools* (modo analise, commit d9d999c) monta a base com o toolset LEGADO de embedding achando que eram as ForjadorTools; executor nao roda 8 dos schemas oferecidos. Corrigir em lote proprio — ver ARQUITETURA_MESTRE_IA.md secao 5.7
+- Cabecalhos-guarda "USADO APENAS PELA VOZ (GeminiLive) E FORJADOR" em MestreIAGraphEngine/VectorEngine/SemanticEngine
+- Assets movidos para lixeira/assets_lote349 (fora do APK): pericias_v2_rules_map copy.json, topic_index.json, topic_index_backup_manual.json, topic_index_gerado.json (~933 KB brutos; APK debug -0,15 MB: 98,31 -> 98,16 Visual / 98,17 PraCego)
+- VttHostAutoDetect: leitura de /proc/net/arp pulada em API >= 29 (Android 10+ bloqueia; cai direto no scan ativo)
+- Build: assemble Visual+PraCego (debug e release) VERDE. Testes: 17 falhas PRE-EXISTENTES no Lote 348 (paridade 17=17 provada rodando a suite num worktree limpo do commit base aefb3ce) — ZERO regressao deste lote; consertar em lote dedicado
 ----------------------------------------------------------------------------------------------------------------------------------------------------

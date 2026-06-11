@@ -18,6 +18,9 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 /**
+ * ⚠️ USADO APENAS PELA VOZ (GeminiLive) E FORJADOR — NÃO REMOVER.
+ * (Alcançado somente via MestreIAGraphEngine.buscarDiretoNoCodex — Lote 349.)
+ *
  * Motor de busca vetorial HNSW via ObjectBox.
  *
  * Substitui o brute-force O(n) do MestreIASemanticEngine por ANN HNSW (~1-5ms).

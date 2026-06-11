@@ -34,9 +34,13 @@ object MestreIATools {
         .put("Módulo Básico").put("Artes Marciais").put("Magia").put("Gun Fu").put("Pyramid Aquático")
 
     /**
-     * Retorna a lista de Function Declarations no formato nativo do Gemini.
+     * // LEGADO: toolset ANTIGO de embedding (Lotes 271-318): 5 tools consultar_* +
+     * // inspecionar_personagem + nexus + fill_character_sheet. Não adicionar tools aqui.
+     * // O Auditor usa getAuditorToolsGemini(); o Forjador usa ForjadorTools.getGeminiTools().
+     * // ⚠️ Único caller: getAuditorUnificadoToolsGemini() — que acreditava receber as
+     * // ForjadorTools (engano do commit d9d999c, mapeado no Lote 349; corrigir em lote próprio).
      */
-    fun getGeminiTools(modo: String): JSONArray {
+    fun getLegacyEmbeddingToolsGemini(modo: String): JSONArray {
         val functionDeclarations = JSONArray()
 
         // Ferramenta 1: Busca Direta no Códex (Lote 271)
@@ -163,9 +167,13 @@ object MestreIATools {
     }
 
     /**
-     * Retorna a lista de Tools no formato OpenAI/DeepSeek.
+     * // LEGADO: toolset ANTIGO de embedding (Lotes 271-318), formato OpenAI/DeepSeek.
+     * // Não adicionar tools aqui. O Auditor usa getAuditorToolsOpenAI(); o Forjador usa
+     * // ForjadorTools.getOpenAITools().
+     * // ⚠️ Único caller: getAuditorUnificadoToolsOpenAI() — que acreditava receber as
+     * // ForjadorTools (engano do commit d9d999c, mapeado no Lote 349; corrigir em lote próprio).
      */
-    fun getOpenAITools(modo: String): JSONArray {
+    fun getLegacyEmbeddingToolsOpenAI(modo: String): JSONArray {
         val tools = JSONArray()
 
         // Manual Direto (Lote 271)
@@ -390,9 +398,11 @@ object MestreIATools {
      * EXECUTOR: MestreIAGeneratorUseCase — filtra TOOL_LOCALIZAR + TOOL_LER além das ForjadorTools.
      */
     fun getAuditorUnificadoToolsOpenAI(): JSONArray {
-        // Tools do Forjador replicadas aqui para evitar dependência circular
-        // (MestreIATools está em data.network; ForjadorTools em domain.tools)
-        val tools = getOpenAITools(modo = "geracao")   // ler_ficha, buscar_catalogo, gps_magia, editar_ficha, raças
+        // ⚠️ BUG MAPEADO (Lote 349): a intenção do commit d9d999c era usar as ForjadorTools
+        // (forjador_ler_ficha, forjador_buscar_catalogo, gps_magia, editar_ficha, raças),
+        // mas esta chamada devolve o toolset LEGADO de embedding (consultar_* + fill_sheet),
+        // que o executor do modo "analise" NÃO roda. Corrigir em lote próprio — fora do A1.
+        val tools = getLegacyEmbeddingToolsOpenAI(modo = "geracao")
 
         // Adiciona as 2 tools de consulta ao manual (grep + leitura dirigida)
         tools.put(JSONObject().apply {
@@ -456,8 +466,9 @@ object MestreIATools {
      * Usada quando o Auditor cai em backup com endpoint Google-native.
      */
     fun getAuditorUnificadoToolsGemini(): JSONArray {
-        // Tools do Forjador replicadas aqui (evita dependência circular data.network → domain.tools)
-        val forjadorDecls = getGeminiTools(modo = "geracao")
+        // ⚠️ BUG MAPEADO (Lote 349): mesma situação da variante OpenAI acima — devolve o
+        // toolset LEGADO de embedding, não as ForjadorTools que o executor espera.
+        val forjadorDecls = getLegacyEmbeddingToolsGemini(modo = "geracao")
             .optJSONObject(0)?.optJSONArray("functionDeclarations") ?: JSONArray()
         val fns = JSONArray()
         for (i in 0 until forjadorDecls.length()) fns.put(forjadorDecls.getJSONObject(i))

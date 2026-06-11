@@ -1,5 +1,6 @@
 package com.gurps.ficha.vtt
 
+import android.os.Build
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -108,6 +109,9 @@ object VttHostAutoDetect {
     }
 
     private fun readArpCandidates(): List<String> {
+        // Android 10+ (API 29) bloqueia a leitura de /proc/net/arp (retorna vazio ou
+        // SecurityException). Nesses aparelhos pulamos direto para o scan ativo.
+        if (Build.VERSION.SDK_INT >= 29) return emptyList()
         val arpFile = File("/proc/net/arp")
         if (!arpFile.exists()) return emptyList()
 
