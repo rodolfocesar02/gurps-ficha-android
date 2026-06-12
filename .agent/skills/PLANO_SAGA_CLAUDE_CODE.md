@@ -9,7 +9,8 @@
 > - ✅ Lote 350 = EXTRA: fix do toolset unificado do modo análise (2026-06-12, `8af1192`)
 > - ✅ Lote 351 = EXTRA: suíte de testes 100% verde + lint baseline (2026-06-12, `302deae`) — a regra 3 (build é lei) vale integralmente a partir daqui
 > - ✅ Lote 352 = A2 (2026-06-12) — pendente só a validação do usuário no aparelho (passo 5)
-> - ➡️ Próximo: A3 (≈353)
+> - ✅ A3 = resolvido FORA do fluxo de lotes (declarado pelo usuário em 2026-06-13; não consumiu número)
+> - ➡️ Próximo: A4 (≈353)
 
 ---
 
@@ -66,7 +67,7 @@ LOTE NNN — <título>
 5. Teste manual roteirizado: 3 perguntas de regra na Voz e 3 no Auditor (use as perguntas-padrão do histórico de logs); todas devem citar página.
 **Aceite:** build verde; APK ≥40 MB menor (anote); Voz e Auditor respondem com citação; nenhum import de embeddings no caminho da Voz.
 
-### LOTE A3 (≈351) — Persistência no Railway (Node — fora do Gradle)
+### ✅ LOTE A3 (resolvido fora do fluxo — declarado pelo usuário em 2026-06-13) — Persistência no Railway (Node — fora do Gradle)
 **Objetivo:** fichas e retratos sobrevivem a restart do servidor Discord.
 **Passos:** em `discord-roll-api/`: adicionar `better-sqlite3`; criar `db.js` (tabelas `fichas(deviceId TEXT PK, json TEXT, updatedAt INTEGER)` e `portraits(name TEXT PK, mime TEXT, blob BLOB)`); apontar o caminho do arquivo para o Volume Railway (`process.env.RAILWAY_VOLUME_MOUNT_PATH || './data'`); converter as rotas `/api/fichas*` e o mapa `portraits` para write-through (escreve no SQLite, mantém cache em memória para leitura); `GET /health` reporta `dbOk`.
 **Aceite:** deploy; criar ficha → restart manual do serviço → ficha e retrato persistem. (Sem mudanças no app Android neste lote.)
