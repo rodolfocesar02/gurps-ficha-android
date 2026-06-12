@@ -413,10 +413,36 @@ object MestreIAClient {
         return try {
             val firstBrace = texto.indexOf('{')
             if (firstBrace == -1) return null
-            val jsonPart = texto.substring(firstBrace).trim()
+            // Lote 351: recorta no '}' que FECHA o primeiro '{' (balanceamento de chaves,
+            // ignorando chaves dentro de strings). Antes o corte ia até o fim do texto e
+            // prosa após o JSON ("...} e ele é um elfo") derrubava o parse estrito do Gson.
+            val jsonPart = extrairBlocoJsonBalanceado(texto, firstBrace) ?: texto.substring(firstBrace).trim()
             val finalJson = if (jsonPart.contains("```")) jsonPart.substringBeforeLast("```").trim() else jsonPart
             Gson().fromJson(finalJson, com.gurps.ficha.data.network.MestreIAResponse::class.java)
         } catch (e: Exception) { null }
+    }
+
+    private fun extrairBlocoJsonBalanceado(texto: String, inicio: Int): String? {
+        var profundidade = 0
+        var dentroDeString = false
+        var i = inicio
+        while (i < texto.length) {
+            val c = texto[i]
+            when {
+                dentroDeString -> when (c) {
+                    '\\' -> i++ // pula o caractere escapado
+                    '"' -> dentroDeString = false
+                }
+                c == '"' -> dentroDeString = true
+                c == '{' -> profundidade++
+                c == '}' -> {
+                    profundidade--
+                    if (profundidade == 0) return texto.substring(inicio, i + 1)
+                }
+            }
+            i++
+        }
+        return null // chaves desbalanceadas (ex.: JSON truncado) — caller usa o fallback antigo
     }
 
     // LOTE 89.65: HELPER PARA LOGS GIGANTES (Evita cortes do Android Logcat)

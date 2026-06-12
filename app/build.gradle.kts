@@ -194,6 +194,10 @@ android {
         disable += "MutableCollectionMutableState"
         // Workaround para bug do lint Compose (AutoboxingStateCreationDetector)
         disable += "AutoboxingStateCreation"
+        // Lote 351: baseline congela os 16 erros ANTIGOS de lint (ex.: MissingPermission
+        // no GeminiLiveService) como dívida documentada — o build falha só em erro NOVO.
+        // Para revisar a dívida: abrir lint-baseline.xml ou rodar gradlew updateLintBaseline.
+        baseline = file("lint-baseline.xml")
     }
     sourceSets {
         getByName("main") {

@@ -23,7 +23,10 @@ class NexusArcanoEngineLoteAGlobalTest {
         assertTrue(metas.any { it.id == "meta_cadeia_encantar" && !it.atendida })
         assertTrue(metas.any { it.id == "meta_cadeia_pequeno_desejo" && !it.atendida })
         assertTrue(metas.any { it.id.startsWith("meta_escolas_encantar_10_1") })
-        assertTrue(metas.any { it.id.startsWith("meta_escolas_desejo_15_0") })
+        // Lote 351: contrato atualizado para METAS INCREMENTAIS (Lote 50) — o motor expõe
+        // só a PRÓXIMA meta de escolas pendente (a de encantar). A meta de 15 escolas do
+        // desejo só aparece depois que a de encantar for cumprida.
+        assertTrue(metas.none { it.id.startsWith("meta_escolas_desejo_") })
         assertTrue(metas.any { it.id == "meta_alvo_desejo" && !it.atendida })
     }
 

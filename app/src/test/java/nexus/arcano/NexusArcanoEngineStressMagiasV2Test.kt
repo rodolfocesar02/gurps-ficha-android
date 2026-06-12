@@ -48,8 +48,10 @@ class NexusArcanoEngineStressMagiasV2Test {
                     ) {
                         inconsistencias += "$alvoId sem chave de alvo."
                     }
-                    if (r.proximasAcoes.size > 3) {
-                        inconsistencias += "$alvoId retornou mais de 3 proximas acoes."
+                    // Lote 351: teto atual do motor é 5 (take(5) em sugerirProximasAcoes:
+                    // até 3 imediatas da cadeia + lookahead de escolas).
+                    if (r.proximasAcoes.size > 5) {
+                        inconsistencias += "$alvoId retornou mais de 5 proximas acoes."
                     }
                     if (r.proximasAcoes.map { it.magiaId }.toSet().size != r.proximasAcoes.size) {
                         inconsistencias += "$alvoId retornou acoes duplicadas."
@@ -132,8 +134,9 @@ class NexusArcanoEngineStressMagiasV2Test {
                 if (a1 != a2) {
                     inconsistencias += "$alvoId nao deterministico entre chamadas consecutivas."
                 }
-                if (r1.proximasAcoes.size > 3) {
-                    inconsistencias += "$alvoId retornou mais de 3 proximas acoes."
+                // Lote 351: teto atual do motor é 5 (take(5) em sugerirProximasAcoes).
+                if (r1.proximasAcoes.size > 5) {
+                    inconsistencias += "$alvoId retornou mais de 5 proximas acoes."
                 }
                 if (r1.proximasAcoes.map { it.magiaId }.toSet().size != r1.proximasAcoes.size) {
                     inconsistencias += "$alvoId retornou acoes duplicadas."

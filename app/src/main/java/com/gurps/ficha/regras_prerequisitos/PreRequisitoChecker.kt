@@ -25,7 +25,14 @@ object PreRequisitoChecker {
         }
     }
 
-    fun checkParseResult(personagem: Map<String, Any>, parsed: PreRequisitoParser.ParseResult): String {
+    /**
+     * @param contextoMagia true quando o pré-requisito validado é de MAGIA (não de
+     * perícia/vantagem). Ativa a "exceção do Escudo": num pré-requisito de magia,
+     * "Escudo" refere-se à MAGIA Escudo (Livro de Magia, escola Proteção) — a
+     * perícia/equipamento Escudo não satisfaz. (Lote 351 — regra restaurada; existia
+     * no caminho MagiaConhecida mas o fallback do parser passou a emitir VantagemConhecida.)
+     */
+    fun checkParseResult(personagem: Map<String, Any>, parsed: PreRequisitoParser.ParseResult, contextoMagia: Boolean = false): String {
         if (parsed.bypassValidation || parsed.terms.isEmpty()) {
             return "todos requisitos atendidos"
         }
@@ -37,7 +44,7 @@ object PreRequisitoChecker {
             val faltasAlternativas = mutableListOf<String>()
 
             term.alternatives.forEach { alternativa ->
-                val faltas = alternativa.mapNotNull { requirementFailure(personagem, it) }
+                val faltas = alternativa.mapNotNull { requirementFailure(personagem, it, contextoMagia) }
                 if (faltas.isEmpty()) {
                     termoAtendido = true
                     return@forEach
@@ -125,7 +132,7 @@ object PreRequisitoChecker {
         return results
     }
 
-    private fun requirementFailure(personagem: Map<String, Any>, requisito: PreRequisitoType): String? {
+    private fun requirementFailure(personagem: Map<String, Any>, requisito: PreRequisitoType, contextoMagia: Boolean = false): String? {
         return when (requisito) {
             is PreRequisitoType.AttributeMin -> {
                 val atual = valorAtributo(personagem, requisito.atributo)
@@ -228,19 +235,30 @@ object PreRequisitoChecker {
             }
             is PreRequisitoType.VantagemConhecida -> {
                 val alvo = normalizar(requisito.nomeVantagem)
+                // Exceção do Escudo (Lote 351): em pré-requisito de MAGIA, "Escudo" é a
+                // MAGIA Escudo — a perícia/vantagem homônima não satisfaz.
+                if (contextoMagia && alvo == "escudo") {
+                    val temMagiaEscudo = magiasNomes(personagem).any { it == alvo || it.contains(alvo) }
+                    return if (temMagiaEscudo) null else "Conhecimento magico requerido: ${requisito.nomeVantagem}"
+                }
                 val emVantagens = vantagensConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
                 val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
                 val emMagias = magiasNomes(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
-                
+
                 if (!emVantagens && !emPericias && !emMagias) {
                     "Falta requisito: ${requisito.nomeVantagem}"
                 } else null
             }
             is PreRequisitoType.PericiaConhecida -> {
                 val alvo = normalizar(requisito.nomePericia)
+                // Exceção do Escudo (Lote 351): idem ao caso VantagemConhecida acima.
+                if (contextoMagia && alvo == "escudo") {
+                    val temMagiaEscudo = magiasNomes(personagem).any { it == alvo || it.contains(alvo) }
+                    return if (temMagiaEscudo) null else "Conhecimento magico requerido: ${requisito.nomePericia}"
+                }
                 val emPericias = periciasConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
                 val emVantagens = vantagensConhecidas(personagem).any { it == alvo || it.contains(alvo) || alvo.contains(it) }
-                
+
                 if (!emPericias && !emVantagens) {
                     "Falta requisito: ${requisito.nomePericia}"
                 } else null

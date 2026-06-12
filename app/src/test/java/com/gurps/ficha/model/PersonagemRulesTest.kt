@@ -187,11 +187,12 @@ class PersonagemRulesTest {
             )
         )
 
-        // Esquiva base 8, carga 2, bonus +1
-        assertEquals(7, personagem.defesasAtivas.calcularEsquiva(personagem))
-        // NH 11 -> (11/2)+3 = 8
-        assertEquals(8, personagem.defesasAtivas.calcularApara(personagem))
-        // Base 8 + DB 2 + bonus manual 1
+        // Lote 30 (MB p.374): o BD do escudo soma em TODAS as defesas ativas.
+        // Esquiva: base 8 - carga 2 + BD 2 + bonus manual 1 = 9
+        assertEquals(9, personagem.defesasAtivas.calcularEsquiva(personagem))
+        // Apara: NH 11 -> (11/2)+3 = 8, + BD 2 = 10
+        assertEquals(10, personagem.defesasAtivas.calcularApara(personagem))
+        // Bloqueio: base 8 + BD 2 + bonus manual 1 = 11
         assertEquals(11, personagem.defesasAtivas.calcularBloqueio(personagem))
     }
 
@@ -264,8 +265,9 @@ class PersonagemRulesTest {
             equipamentos = base.equipamentos + Equipamento(nome = "Carga", peso = 25f)
         )
 
-        assertEquals(8, base.defesasAtivas.calcularEsquiva(base))
-        assertEquals(6, comCarga.defesasAtivas.calcularEsquiva(comCarga))
+        // Lote 30 (MB p.374): BD 2 do escudo soma na esquiva: 8 + 2 = 10; com carga 2: 8.
+        assertEquals(10, base.defesasAtivas.calcularEsquiva(base))
+        assertEquals(8, comCarga.defesasAtivas.calcularEsquiva(comCarga))
 
         assertEquals(base.defesasAtivas.calcularApara(base), comCarga.defesasAtivas.calcularApara(comCarga))
         assertEquals(base.defesasAtivas.calcularBloqueio(base), comCarga.defesasAtivas.calcularBloqueio(comCarga))

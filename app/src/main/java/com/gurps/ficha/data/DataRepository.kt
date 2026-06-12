@@ -423,7 +423,7 @@ open class DataRepository(internal val context: Context) {
         if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
 
         val mapa = buildPreReqContext(personagem)
-        val report = PreRequisitoChecker.checkParseResult(mapa, parsed)
+        val report = PreRequisitoChecker.checkParseResult(mapa, parsed, contextoMagia = true)
         if (isPrerequisitoTratadoComoSemRequisito(raw, parsed, report)) return null
         return if (report.startsWith("faltando")) raw else null
     }
@@ -441,7 +441,7 @@ open class DataRepository(internal val context: Context) {
         if (parsed.bypassValidation || parsed.terms.isEmpty()) return null
 
         val mapa = buildPreReqContext(personagem)
-        val report = PreRequisitoChecker.checkParseResult(mapa, parsed)
+        val report = PreRequisitoChecker.checkParseResult(mapa, parsed, contextoMagia = true)
         if (isPrerequisitoTratadoComoSemRequisito(raw, parsed, report)) return null
         if (!report.startsWith("faltando")) return null
         return report.removePrefix("faltando:").trim().takeIf { it.isNotBlank() }

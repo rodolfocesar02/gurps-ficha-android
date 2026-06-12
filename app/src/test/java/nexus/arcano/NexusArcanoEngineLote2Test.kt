@@ -58,7 +58,11 @@ class NexusArcanoEngineLote2Test {
     }
 
     @Test
-    fun fallback_final_completa_tres_acoes_quando_so_ha_escolas_repetidas() {
+    fun sem_fallback_de_escolas_repetidas_sugere_apenas_escola_nova() {
+        // Lote 351: contrato atualizado. O fallback que completava 3 ações repetindo
+        // escolas foi REMOVIDO por design (NexusArcanoHeuristics, "Passo 2 (Fallback
+        // Removido)") — sugerir magias de escola repetida induzia aprendizado redundante.
+        // Agora só entram candidatas de escola NOVA.
         val engine = NexusArcanoEngine(catalogoComPoucasEscolas())
         val estado = ArcanoEstadoPersonagem(
             magiasConhecidasIds = setOf("base_ar"),
@@ -68,9 +72,10 @@ class NexusArcanoEngineLote2Test {
         )
 
         val r = engine.calcularEstadoAlvo("alvo", estado)
+        val ids = r.proximasAcoes.map { it.magiaId }
 
-        assertEquals(3, r.proximasAcoes.size)
-        assertEquals(3, r.proximasAcoes.map { it.magiaId }.toSet().size)
+        assertEquals(listOf("cand_agua_1"), ids)
+        assertTrue("cand_ar_1" !in ids && "cand_ar_2" !in ids)
     }
 
     @Test
@@ -200,7 +205,10 @@ class NexusArcanoEngineLote2Test {
     }
 
     @Test
-    fun fallback_controlado_explica_quando_nao_ha_escola_nova_aprendivel() {
+    fun sem_escola_nova_aprendivel_bloqueia_sem_sugestoes_e_explica() {
+        // Lote 351: contrato atualizado (fallback de escolas repetidas removido por
+        // design). Sem escola nova aprendível, o motor NÃO inventa sugestões: devolve
+        // lista vazia e explica o bloqueio via motivoBloqueio/motivoCodigo.
         val engine = NexusArcanoEngine(catalogoSemEscolaNovaAprendivel())
         val estado = ArcanoEstadoPersonagem(
             magiasConhecidasIds = setOf("base_ar", "base_agua"),
@@ -211,8 +219,9 @@ class NexusArcanoEngineLote2Test {
 
         val r = engine.calcularEstadoAlvo("alvo", estado)
 
-        assertEquals(3, r.proximasAcoes.size)
-        assertTrue(r.proximasAcoes.all { it.motivo.contains("Sem escola nova aprendivel agora") })
+        assertEquals(0, r.proximasAcoes.size)
+        assertTrue(r.motivoBloqueio != null)
+        assertEquals("SCHOOL_COUNT_PENDING", r.motivoCodigo)
     }
 
     private fun catalogoComPoucasEscolas(): ArcanoCatalogo {

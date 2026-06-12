@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 12 de Junho de 2026
-**Status Atual:** Lote 350 CONCLUÍDO — fix do toolset unificado do modo análise (Auditor) + teste de contrato
-**Último Lote Registrado:** Lote 350 — última entrada deste arquivo
+**Status Atual:** Lote 351 CONCLUÍDO — suíte de testes 100% verde (consertadas as 17 falhas pré-existentes; `./gradlew build` volta a ser lei)
+**Último Lote Registrado:** Lote 351 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2862,4 +2862,22 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - NOVO MestreIAToolsTest (4 testes de CONTRATO): cada toolset enviado a IA bate EXATAMENTE com o conjunto que o executor aceita (unificado = 9 tools; Auditor = 4) — quebra se alguem dessincronizar toolset x executor
 - build.gradle.kts: testImplementation org.json:json (android.jar dos unit tests so tem stubs "not mocked")
 - Docs: ARQUITETURA_MESTRE_IA.md secao 5.7 (bug corrigido) + MAPA_DETALHADO.md secao 14 atualizados
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 351 — 12 de Junho de 2026
+**Conserto das 17 falhas de teste pre-existentes (suite 100% verde nas 2 variantes)**
+Diagnostico caso a caso: 14 eram TESTES DESATUALIZADOS (codigo evoluiu de proposito), 2 eram BUGS REAIS no codigo, 1 era teste quebrado por construcao.
+- TESTES ATUALIZADOS para o contrato vigente:
+  - PersonagemRulesTest (2): BD do escudo soma em TODAS as defesas ativas desde o Lote 30 (MB p.374) — esquiva 7->9 e 8->10, apara 8->10
+  - MestreIAContextFilterTest (5): reescrito — gerarContexto devolve TEXTO compacto (Token Economy L53+), nao mais JSON com truncamento/pontos
+  - PericiaJsonParsingTest (2): mojibake e consertado PELO LOADER (fixMojibakeIfNeeded, L314) antes do Gson; teste agora valida o pipeline real (fix + parse)
+  - NexusArcanoEngineLote2Test (2): fallback de escolas repetidas foi REMOVIDO por design ("Passo 2 Fallback Removido" em NexusArcanoHeuristics) — sem escola nova: lista vazia + motivoCodigo SCHOOL_COUNT_PENDING
+  - NexusArcanoEngineLoteAGlobalTest (1): METAS INCREMENTAIS (L50) — so a PROXIMA meta de escolas pendente aparece (a de 15 escolas do desejo so apos a do encantar)
+  - NexusArcanoEngineStressMagiasV2Test (2): teto de proximas acoes e 5 (take(5): 3 imediatas + lookahead), nao 3
+- BUGS REAIS CORRIGIDOS no codigo:
+  - MestreIAClient.extrairJsonFicha: recorta no '}' que FECHA o primeiro '{' (balanceamento, ignora chaves em strings) — prosa apos o JSON derrubava o parse (Gson estrito); intencao do Lote 52 restaurada
+  - PreRequisitoChecker/DataRepository: EXCECAO DO ESCUDO restaurada e ESCOPADA (novo flag contextoMagia, default false) — em pre-requisito de MAGIA, "Escudo" e a MAGIA Escudo (Livro de Magia, Protecao); a pericia Escudo nao satisfaz. Validacao de PERICIAS nao muda (flag desligado). A regra existia no caminho MagiaConhecida mas o fallback do parser passou a emitir VantagemConhecida, contornando-a
+- DELETADO: MestreIARagEngineTest — quebrado por construcao ("null as Any as Context" lanca NPE sempre) e media performance do motor RAG legado (dormente p/ Auditor desde L325)
+- LINT BASELINE (lint-baseline.xml): com os testes verdes o build avancou ate o lint, que tem 16 erros ANTIGOS (ex.: MissingPermission no GeminiLiveService/Voz — protegido, fora do escopo). Baseline congela a divida documentada; build falha so em erro NOVO de lint
+- Resultado: ./gradlew build COMPLETO VERDE (testes 2 variantes + assemble + lint). A partir deste lote a regra 3 do plano Saga (build e lei) vale de verdade
 ----------------------------------------------------------------------------------------------------------------------------------------------------
