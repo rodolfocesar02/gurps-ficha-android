@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 12 de Junho de 2026
-**Status Atual:** Lote 351 CONCLUÍDO — suíte de testes 100% verde (consertadas as 17 falhas pré-existentes; `./gradlew build` volta a ser lei)
-**Último Lote Registrado:** Lote 351 — última entrada deste arquivo
+**Status Atual:** Lote 352 CONCLUÍDO — Saga A2: um motor de busca só (Voz usa localizar/ler) + Códex em dieta (APK −23 MB)
+**Último Lote Registrado:** Lote 352 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2880,4 +2880,16 @@ Diagnostico caso a caso: 14 eram TESTES DESATUALIZADOS (codigo evoluiu de propos
 - DELETADO: MestreIARagEngineTest — quebrado por construcao ("null as Any as Context" lanca NPE sempre) e media performance do motor RAG legado (dormente p/ Auditor desde L325)
 - LINT BASELINE (lint-baseline.xml): com os testes verdes o build avancou ate o lint, que tem 16 erros ANTIGOS (ex.: MissingPermission no GeminiLiveService/Voz — protegido, fora do escopo). Baseline congela a divida documentada; build falha so em erro NOVO de lint
 - Resultado: ./gradlew build COMPLETO VERDE (testes 2 variantes + assemble + lint). A partir deste lote a regra 3 do plano Saga (build e lei) vale de verdade
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 352 — 12 de Junho de 2026
+**GURPS Saga Fase A2: um motor de busca so + Codex em dieta (branch GURPS-Saga)**
+- VOZ migrou para o motor do Auditor: GeminiLiveTools.consultarManual agora usa localizarNoCodex (FTS4 AND/OR + ranking BM25) + lerPaginas — em UMA chamada localiza, le o texto COMPLETO das 3 melhores paginas e devolve compacto com citacao [Livro, Pag]
+- LIVE_MAX_TOOL_PAYLOAD (18k chars) em local unico + truncamento CENTRALIZADO no roteador executar() — QUALQUER tool da Voz fica protegida do code=1007 do Gemini Live; loga quando trunca
+- Caminho semantico (GraphEngine/HNSW/ObjectBox/SemanticEngine) ficou com ZERO callers: cabecalhos atualizados p/ "LEGADO DORMENTE desde Lote 352" (nao deletados, conforme plano); inicializacao do HNSW no startup (FichaIADelegate) comentada — nao carrega mais embeddings mortos na RAM
+- CODEX EM DIETA: chunks.jsonl 54,9 MB -> 6,5 MB (mesmo texto, SEM embeddings; conferido: 1197 chunk_ids identicos, zero perda). chunks.jsonl.bak movido p/ lixeira/assets_lote352. CODEX_VERSION_CURRENT 3 -> 4 (forca re-seed do Room no proximo boot)
+- APK: debug 98,2 -> 74,8 MB (-23,4) | release 86,9 -> 66,0 MB (-20,9). DIVERGENCIA do aceite ">=40 MB menor": o plano assumiu bytes BRUTOS, mas o zip ja comprimia os embeddings (54,9 brutos ~ 20,6 comprimidos) — no APARELHO a economia e bem maior (asset -48 MB + Room sem embeddings + ObjectBox vazio + RAM do indice HNSW)
+- ARMADILHA DESCOBERTA: o empacotador incremental (zipflinger) substitui entries e deixa "buraco" no zip — o APK nao encolhe ate forcar reempacotamento. Medicoes de tamanho sempre apos apagar o APK e reempacotar
+- Build: ./gradlew build COMPLETO VERDE (testes 2 variantes + lint + assemble)
+- PENDENTE (validacao do usuario no aparelho): roteiro do passo 5 — 3 perguntas de regra na VOZ e 3 no AUDITOR, todas citando pagina
 ----------------------------------------------------------------------------------------------------------------------------------------------------

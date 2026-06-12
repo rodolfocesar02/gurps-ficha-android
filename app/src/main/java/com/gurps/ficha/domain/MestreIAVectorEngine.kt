@@ -18,8 +18,9 @@ import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
 /**
- * ⚠️ USADO APENAS PELA VOZ (GeminiLive) E FORJADOR — NÃO REMOVER.
- * (Alcançado somente via MestreIAGraphEngine.buscarDiretoNoCodex — Lote 349.)
+ * ⚠️ LEGADO DORMENTE desde o Lote 352 — ZERO CALLERS (a Voz migrou para localizar/ler;
+ * a inicialização no FichaIADelegate foi desligada). chunks.jsonl não traz mais embeddings.
+ * Candidato a deleção em lote futuro junto com ObjectBoxStore/VecChunk*.
  *
  * Motor de busca vetorial HNSW via ObjectBox.
  *

@@ -2,7 +2,6 @@ package com.gurps.ficha.ui.components
 
 import android.content.Context
 import com.gurps.ficha.data.network.MestreIAClient
-import com.gurps.ficha.domain.MestreIAGraphEngine
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.tools.ForjadorToolExecutor
 import com.gurps.ficha.domain.tools.ForjadorTools
@@ -12,14 +11,20 @@ import org.json.JSONObject
 
 class GeminiLiveTools(private val viewModel: FichaViewModel, private val context: Context? = null) {
 
+    companion object {
+        // Lote 352: limite ÚNICO de payload de toolResponse da Voz. Respostas grandes
+        // causam code=1007 (message too big) no WebSocket do Gemini Live. Valor herdado
+        // do truncamento que vivia dentro de consultarManual (18k chars ≈ 18 KB).
+        const val LIVE_MAX_TOOL_PAYLOAD = 18_000
+    }
+
     private val repo = viewModel.dataRepository
-    private val graphEngine = MestreIAGraphEngine(repo)
     private val nexusAdapter = NexusArcanoModoAlvoAdapter(repo.magias)
     private val forjador = ForjadorToolExecutor(viewModel, repo, nexusAdapter, context)
 
     fun executar(nome: String, args: JSONObject): JSONObject {
         return try {
-            when (nome) {
+            limitarPayload(nome, when (nome) {
                 // ── Ferramentas legadas (delegam ao ForjadorToolExecutor) ──
                 "obterFicha"           -> lerFicha("tudo")
                 "obterPontosRestantes" -> lerFicha("pontos")
@@ -54,11 +59,39 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
                 "removerPericia"       -> editarCompat("remover", "pericias", args.getString("nome"), "")
 
                 else -> JSONObject().apply { put("erro", "Ferramenta desconhecida: $nome") }
-            }
+            })
         } catch (e: Exception) {
             android.util.Log.e("GeminiLiveTools", "Erro em $nome: ${e.message}")
             JSONObject().apply { put("erro", e.message ?: "Erro desconhecido") }
         }
+    }
+
+    /**
+     * Lote 352: truncamento CENTRALIZADO de payload (antes vivia só dentro de
+     * consultarManual). Se o JSON serializado passa de LIVE_MAX_TOOL_PAYLOAD,
+     * corta o maior campo string até caber — qualquer tool da Voz fica protegida
+     * do code=1007 do servidor Live.
+     */
+    private fun limitarPayload(nome: String, json: JSONObject): JSONObject {
+        val total = json.toString().length
+        if (total <= LIVE_MAX_TOOL_PAYLOAD) return json
+        val marcador = "\n[... truncado por limite de payload]"
+        val chaveMaior = json.keys().asSequence()
+            .filter { json.opt(it) is String }
+            .maxByOrNull { (json.opt(it) as String).length }
+        if (chaveMaior != null) {
+            val valor = json.getString(chaveMaior)
+            val excesso = total - LIVE_MAX_TOOL_PAYLOAD
+            val novoTamanho = (valor.length - excesso - marcador.length).coerceAtLeast(0)
+            json.put(chaveMaior, valor.take(novoTamanho) + marcador)
+            android.util.Log.w(
+                "GeminiLiveTools",
+                "payload de '$nome' truncado: $total -> ${json.toString().length} chars (campo '$chaveMaior')"
+            )
+        } else {
+            android.util.Log.w("GeminiLiveTools", "payload de '$nome' excede $LIVE_MAX_TOOL_PAYLOAD chars sem campo string truncável ($total)")
+        }
+        return json
     }
 
     private fun lerFicha(secao: String): JSONObject {
@@ -123,12 +156,13 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
     }
 
     /**
-     * Lote 319: refatorada — removido MestreIAPlanner (7 dicionários hardcoded causavam
-     * alucinação léxica). Agora chama RAG direto, sem expansão de termos.
+     * Lote 352: a Voz passou a usar o MESMO motor de busca do Auditor (Lotes 325-327):
+     * localizar_no_codex (FTS4 AND/OR + ranking BM25) + lerPaginas (texto completo).
+     * O motor semântico (GraphEngine/HNSW/embeddings) ficou SEM CALLERS — dormente.
+     * Em UMA chamada: localiza, lê as melhores páginas do ranking e devolve compacto
+     * (o fluxo de voz não comporta o loop localizar→ler de múltiplas rodadas do Auditor).
      *
-     * Lote 324: unificação — substituiu as 5 tools anteriores (genérica + 4 especializadas).
-     * Aceita args.livros: array<string> com 1+ livros. Compatível também com args.livro
-     * (string única, legado). Sem ambos = busca todos os livros.
+     * Lote 324 (mantido): aceita args.livros (array) ou args.livro (string, legado).
      */
     private fun consultarManual(args: JSONObject): JSONObject {
         val termos = args.getString("termos")
@@ -145,25 +179,32 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
 
         return try {
             val resultado = runBlocking {
-                val searchResult = graphEngine.buscarDiretoNoCodex(
-                    termos,
-                    emptyList(),
-                    filtroLivros = livros.takeIf { it.isNotEmpty() }
-                )
-                graphEngine.formatarParaIA(searchResult, termos)
+                val loc = repo.localizarNoCodex(termos, livros.takeIf { it.isNotEmpty() })
+                if (loc.hits.isEmpty()) return@runBlocking ""
+
+                val sb = StringBuilder()
+                sb.append("PÁGINAS ENCONTRADAS para \"$termos\" (${loc.total} no total")
+                if (loc.modo == "OR") sb.append(", busca aproximada")
+                sb.append("):\n")
+                loc.hits.take(8).forEach { h ->
+                    sb.append("• [${h.livro}, pág. ${h.pagina}] ${h.trecho}\n")
+                }
+
+                // Lê o texto COMPLETO das 3 melhores páginas do ranking BM25 (citáveis).
+                val melhores = loc.hits.distinctBy { it.livro to it.pagina }.take(3)
+                sb.append("\nCONTEÚDO DAS MELHORES PÁGINAS:\n")
+                melhores.forEach { h ->
+                    val chunks = repo.lerPaginas(h.livro, h.pagina)
+                    chunks.forEach { c ->
+                        sb.append("--- [${c.source_title}, pág. ${c.page_number}] ---\n${c.text}\n\n")
+                    }
+                }
+                sb.toString()
             }
 
-            // Limite de payload: toolResponse grande causa code=1007 no servidor Gemini Live.
-            // 25k chars ≈ 25KB — suficiente para ~15 chunks completos, bem abaixo do limite.
-            val resultadoLimitado = if (resultado.length > 18_000) {
-                android.util.Log.w("GeminiLiveTools", "consultarManual: resultado truncado de ${resultado.length} para 18000 chars")
-                resultado.take(18_000) + "\n[... truncado por limite de payload]"
-            } else resultado
+            android.util.Log.i("GeminiLiveTools", "consultarManual OK (${resultado.length} chars)")
 
-            val chunksEncontrados = resultadoLimitado.lines().count { it.startsWith("[Pág.") }
-            android.util.Log.i("GeminiLiveTools", "consultarManual OK: $chunksEncontrados chunks retornados (${resultadoLimitado.length} chars)")
-
-            if (resultadoLimitado.isBlank()) {
+            if (resultado.isBlank()) {
                 JSONObject().apply {
                     put("encontrado", false)
                     put("mensagem", "Nenhuma regra encontrada no Códex para '$termos'. Tente termos mais específicos.")
@@ -171,12 +212,12 @@ class GeminiLiveTools(private val viewModel: FichaViewModel, private val context
             } else {
                 JSONObject().apply {
                     put("encontrado", true)
-                    put("regras", resultadoLimitado)
+                    put("regras", resultado)
                     put("instrucao", "Use SOMENTE as regras acima para responder. Cite [Livro, Pág]. Se envolver cálculo: cite a regra, identifique os valores, calcule passo a passo, conclua.")
                 }
             }
         } catch (e: Exception) {
-            android.util.Log.e("GeminiLiveTools", "Erro no RAG: ${e.message}")
+            android.util.Log.e("GeminiLiveTools", "Erro na busca do Códex: ${e.message}")
             JSONObject().apply { put("erro", "Falha na busca: ${e.message}") }
         }
     }

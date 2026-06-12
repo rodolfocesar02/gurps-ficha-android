@@ -8,7 +8,8 @@
 > - ✅ Lote 349 = A1 (2026-06-12, commit `f47ec38`)
 > - ✅ Lote 350 = EXTRA: fix do toolset unificado do modo análise (2026-06-12, `8af1192`)
 > - ✅ Lote 351 = EXTRA: suíte de testes 100% verde + lint baseline (2026-06-12, `302deae`) — a regra 3 (build é lei) vale integralmente a partir daqui
-> - ➡️ Próximo: A2 (≈352)
+> - ✅ Lote 352 = A2 (2026-06-12) — pendente só a validação do usuário no aparelho (passo 5)
+> - ➡️ Próximo: A3 (≈353)
 
 ---
 
@@ -55,7 +56,7 @@ LOTE NNN — <título>
 8. Rode toda a suíte de testes existente.
 **Aceite:** build verde 2 variantes; greps de deleção vazios anexados; APK menor (anote o delta); `ARQUITETURA_MESTRE_IA.md §5` atualizado marcando os itens como "removidos no Lote NNN".
 
-### LOTE A2 (≈350) — Um motor de busca só + Códex em dieta
+### ✅ LOTE A2 (= Lote 352, concluído 2026-06-12; falta validar Voz/Auditor no aparelho) — Um motor de busca só + Códex em dieta
 **Objetivo:** Voz passa a usar `localizar/ler` do Auditor; `chunks.jsonl` perde os embeddings (−48 MB).
 **Passos:**
 1. Em `GeminiLiveTools.kt`: substitua a implementação da tool de consulta ao manual por chamadas a `MestreIARepository.localizarNoCodex(query)` + `lerPaginas(ids)`; formate o retorno compacto.

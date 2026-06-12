@@ -5,7 +5,9 @@ import com.gurps.ficha.data.MestreIAQueryEngine
 import com.gurps.ficha.model.*
 
 /**
- * ⚠️ USADO APENAS PELA VOZ (GeminiLive) E FORJADOR — NÃO REMOVER.
+ * ⚠️ LEGADO DORMENTE desde o Lote 352 — ZERO CALLERS.
+ * A Voz (último caller) migrou para o motor do Auditor (localizar_no_codex + ler_pagina).
+ * Mantido apenas como referência do experimento semântico; candidato a deleção em lote futuro.
  *
  * Motor de busca RAG SEMÂNTICO (BM25 + HNSW + reranking) direto nos chunks via FTS SQLite.
  *

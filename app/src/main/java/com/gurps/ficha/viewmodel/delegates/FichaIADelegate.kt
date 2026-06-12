@@ -60,16 +60,18 @@ class FichaIADelegate(
         if (sincroniaExecutadaNestaSessao) return
         sincroniaExecutadaNestaSessao = true
         
-        // FLAG DE TESTE: true = HNSW puro (sem BM25), false = BM25 + HNSW (padrão)
-        com.gurps.ficha.domain.MestreIAGraphEngine.MODO_HNSW_PURO = true
+        // Lote 352: caminho semântico (HNSW/ObjectBox) DORMENTE — a Voz migrou para o
+        // motor localizar/ler do Auditor e o GraphEngine ficou sem callers. A inicialização
+        // abaixo só desperdiçava startup/RAM carregando embeddings que ninguém consulta.
+        // Para reativar o experimento HNSW: descomente as 2 linhas e gere chunks.jsonl com embeddings.
+        // com.gurps.ficha.domain.MestreIAGraphEngine.MODO_HNSW_PURO = true
 
         scope.launch(Dispatchers.IO) {
             android.util.Log.i("MestreIA_Auditoria", "VERIFICANDO INTEGRIDADE DO CÓDEX (Início de Sessão)")
             dataRepository.sincronizarCodexSeNecessario()
-            // Inicializa índice HNSW ObjectBox para busca vetorial ANN
-            if (context != null) {
-                com.gurps.ficha.domain.MestreIAVectorEngine.inicializar(context, dataRepository.vecChunkDao)
-            }
+            // if (context != null) {
+            //     com.gurps.ficha.domain.MestreIAVectorEngine.inicializar(context, dataRepository.vecChunkDao)
+            // }
         }
     }
 
