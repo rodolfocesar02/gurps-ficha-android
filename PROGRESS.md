@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 12 de Junho de 2026
-**Status Atual:** Lote 349 CONCLUÍDO — GURPS Saga Fase A1: limpeza cirúrgica de código morto e assets-lixo (branch `GURPS-Saga`)
-**Último Lote Registrado:** Lote 349 — última entrada deste arquivo
+**Status Atual:** Lote 350 CONCLUÍDO — fix do toolset unificado do modo análise (Auditor) + teste de contrato
+**Último Lote Registrado:** Lote 350 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2852,4 +2852,14 @@ Princípio (herdado do Auditor): o Forjador LÊ o número que a ficha já calcul
 - Assets movidos para lixeira/assets_lote349 (fora do APK): pericias_v2_rules_map copy.json, topic_index.json, topic_index_backup_manual.json, topic_index_gerado.json (~933 KB brutos; APK debug -0,15 MB: 98,31 -> 98,16 Visual / 98,17 PraCego)
 - VttHostAutoDetect: leitura de /proc/net/arp pulada em API >= 29 (Android 10+ bloqueia; cai direto no scan ativo)
 - Build: assemble Visual+PraCego (debug e release) VERDE. Testes: 17 falhas PRE-EXISTENTES no Lote 348 (paridade 17=17 provada rodando a suite num worktree limpo do commit base aefb3ce) — ZERO regressao deste lote; consertar em lote dedicado
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 350 — 12 de Junho de 2026
+**Fix: toolset unificado do modo analise (Auditor) + teste de contrato**
+- CORRIGE o bug mapeado no Lote 349: getAuditorUnificadoToolsOpenAI/Gemini montavam a base com o toolset LEGADO de embedding (engano do commit d9d999c) — o modelo recebia 8 schemas que o executor nao roda e NAO recebia as tools de ficha
+- Base agora e ForjadorTools.getOpenAITools()/getGeminiTools() + localizar_no_codex + ler_pagina + consultar_nexus_arcano (duplicata de nexus eliminada)
+- Toolset legado DELETADO (getLegacyEmbeddingTools*, getSheetSchema*, getArrayOf*, constantes TOOL_MANUAL_DIRETO/TOOL_REGRAS_*) — ~460 linhas; TOOL_FILL_SHEET e TOOL_INSPECT_CHARACTER permanecem (ainda usados)
+- NOVO MestreIAToolsTest (4 testes de CONTRATO): cada toolset enviado a IA bate EXATAMENTE com o conjunto que o executor aceita (unificado = 9 tools; Auditor = 4) — quebra se alguem dessincronizar toolset x executor
+- build.gradle.kts: testImplementation org.json:json (android.jar dos unit tests so tem stubs "not mocked")
+- Docs: ARQUITETURA_MESTRE_IA.md secao 5.7 (bug corrigido) + MAPA_DETALHADO.md secao 14 atualizados
 ----------------------------------------------------------------------------------------------------------------------------------------------------

@@ -151,19 +151,20 @@ um futuro "vou reusar o que já existe" caia numa armadilha.
 - Utilitários puros `floatArrayToByteArray`/`byteArrayToFloatArray` (de `MestreIASemanticEngine`)
   AINDA são usados na importação de embeddings (`FichaDatabase.prePopulateManual`).
 
-### 5.7 `consultar_manual_direto` + 4 especializadas em `MestreIATools` — ⚠️ LEGADO (renomeadas no Lote 349)
-- Schemas das 5 tools de embedding + `fill_character_sheet`. **Lote 349 renomeou**
-  `getOpenAITools`/`getGeminiTools` → `getLegacyEmbeddingToolsOpenAI`/`getLegacyEmbeddingToolsGemini`
-  com comentário-guarda (não adicionar tools ali).
-- ⚠️ A afirmação antiga de que "são usadas pelo Forjador" estava DESATUALIZADA: o Forjador usa
-  `ForjadorTools.getOpenAITools/getGeminiTools` (objeto próprio em `domain/tools`).
-- 🐛 **BUG MAPEADO no Lote 349 (não corrigido — fora do escopo do A1):**
-  `getAuditorUnificadoToolsOpenAI/Gemini` (toolset do modo `analise`, commit d9d999c) montam a
-  base chamando o toolset LEGADO de embedding acreditando que ele continha as ForjadorTools.
-  Resultado: o modo `analise` oferece ao modelo 8 schemas que o executor
-  (`MestreIAGeneratorUseCase`) não roda e NÃO oferece as tools de ficha do Forjador.
-  Corrigir em lote dedicado: trocar a base por `ForjadorTools.*` e remover a duplicata de
-  `consultar_nexus_arcano`; depois disso o toolset legado fica sem callers (candidato a deleção).
+### 5.7 Toolset legado de embedding em `MestreIATools` — ✅ DELETADO no Lote 350
+- Eram os schemas das 5 tools de embedding (`consultar_manual_direto` + 4 especializadas) +
+  `fill_character_sheet`: `getLegacyEmbeddingToolsOpenAI/Gemini` (ex-`getOpenAITools`/`getGeminiTools`,
+  renomeadas no Lote 349 com comentário-guarda).
+- 🐛 **BUG CORRIGIDO no Lote 350:** `getAuditorUnificadoToolsOpenAI/Gemini` (toolset do modo
+  `analise`, commit d9d999c) montavam a base chamando o toolset LEGADO de embedding acreditando
+  que ele continha as ForjadorTools. Resultado: o modo `analise` oferecia ao modelo 8 schemas
+  que o executor (`MestreIAGeneratorUseCase`) não roda e NÃO oferecia as tools de ficha do
+  Forjador. A base agora é `ForjadorTools.getOpenAITools()/getGeminiTools()` + localizar/ler/nexus
+  (a duplicata de `consultar_nexus_arcano` sumiu junto — as ForjadorTools não incluem nexus).
+- Com a correção o toolset legado ficou sem callers e foi DELETADO, junto com `getSheetSchema*`,
+  os helpers privados `getArrayOf*` e as constantes `TOOL_MANUAL_DIRETO`/`TOOL_REGRAS_*`
+  (~460 linhas). `TOOL_FILL_SHEET` e `TOOL_INSPECT_CHARACTER` permanecem — ainda referenciadas
+  em `FichaIADelegate`/`MestreIAUseCase` e nos toolsets do Auditor.
 
 ---
 
