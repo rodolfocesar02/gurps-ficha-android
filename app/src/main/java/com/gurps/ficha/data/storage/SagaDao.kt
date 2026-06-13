@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.gurps.ficha.domain.filters.CatalogFilters
 
@@ -31,6 +32,24 @@ interface SagaDao {
 
     @Query("DELETE FROM campanhas WHERE id = :id")
     suspend fun excluirCampanha(id: Long)
+
+    @Query("DELETE FROM cenas WHERE campanhaId = :id")
+    suspend fun excluirCenasDaCampanha(id: Long)
+
+    @Query("DELETE FROM campaign_facts WHERE campanhaId = :id")
+    suspend fun excluirFatosDaCampanha(id: Long)
+
+    @Query("DELETE FROM world_state WHERE campanhaId = :id")
+    suspend fun excluirWorldState(id: Long)
+
+    /** Lote 356: remove a campanha e tudo que pendura nela (sem deixar órfãos). */
+    @Transaction
+    suspend fun excluirCampanhaCompleta(id: Long) {
+        excluirFatosDaCampanha(id)
+        excluirCenasDaCampanha(id)
+        excluirWorldState(id)
+        excluirCampanha(id)
+    }
 
     // ── Cenas ──────────────────────────────────────────────────────────────
     @Insert

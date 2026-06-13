@@ -1,19 +1,21 @@
 package com.gurps.ficha.ui
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.liveRegion
@@ -21,6 +23,7 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gurps.ficha.domain.saga.CampanhaConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.viewmodel.delegates.SagaTurn
 import kotlinx.coroutines.delay
@@ -41,9 +44,19 @@ fun TabSaga(viewModel: FichaViewModel) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
     var nome by remember { mutableStateOf("") }
+    var genero by remember { mutableStateOf("") }
+    var conceito by remember { mutableStateOf("") }
+    var tom by remember { mutableStateOf("Heroico") }
+    var dificuldade by remember { mutableStateOf("Normal") }
+    var magia by remember { mutableStateOf(true) }
+    var nt by remember { mutableStateOf(3) }
+    val livros = remember { mutableStateListOf(CampanhaConfig.MODULO_BASICO) }
+    var idParaExcluir by remember { mutableStateOf<Long?>(null) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,18 +75,110 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
-            label = { Text("Nome da nova campanha") },
+            label = { Text("Nome da campanha") },
             singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Nome da nova campanha" }
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Nome da nova campanha" }
         )
-        Spacer(Modifier.height(8.dp))
+
+        // Gênero
+        SecaoConfig("Gênero") {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CampanhaConfig.GENEROS.forEach { g ->
+                    FilterChip(
+                        selected = genero == g,
+                        onClick = { genero = if (genero == g) "" else g },
+                        label = { Text(g) },
+                        modifier = Modifier.semantics { contentDescription = "Gênero $g" }
+                    )
+                }
+            }
+        }
+
+        OutlinedTextField(
+            value = conceito,
+            onValueChange = { conceito = it },
+            label = { Text("Conceito (opcional)") },
+            placeholder = { Text("ex.: caçador de recompensas num faroeste sombrio") },
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp).semantics { contentDescription = "Conceito da campanha" },
+            maxLines = 3
+        )
+
+        // Tom
+        SecaoConfig("Tom") {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CampanhaConfig.TONS.forEach { t ->
+                    FilterChip(selected = tom == t, onClick = { tom = t }, label = { Text(t) },
+                        modifier = Modifier.semantics { contentDescription = "Tom $t" })
+                }
+            }
+        }
+
+        // Dificuldade
+        SecaoConfig("Dificuldade") {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CampanhaConfig.DIFICULDADES.forEach { d ->
+                    FilterChip(selected = dificuldade == d, onClick = { dificuldade = d }, label = { Text(d) },
+                        modifier = Modifier.semantics { contentDescription = "Dificuldade $d" })
+                }
+            }
+        }
+
+        // Conteúdo: magia
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Magia neste mundo", modifier = Modifier.weight(1f))
+            Switch(checked = magia, onCheckedChange = { magia = it },
+                modifier = Modifier.semantics { contentDescription = "Permitir magia" })
+        }
+
+        // Nível tecnológico (stepper)
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Nível tecnológico (NT)", modifier = Modifier.weight(1f))
+            OutlinedButton(onClick = { if (nt > 0) nt-- },
+                modifier = Modifier.semantics { contentDescription = "Diminuir nível tecnológico" }) { Text("−") }
+            Text("NT$nt", modifier = Modifier.padding(horizontal = 12.dp), fontWeight = FontWeight.Bold)
+            OutlinedButton(onClick = { if (nt < 12) nt++ },
+                modifier = Modifier.semantics { contentDescription = "Aumentar nível tecnológico" }) { Text("+") }
+        }
+
+        // Livros liberados
+        SecaoConfig("Regras/livros liberados") {
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CampanhaConfig.LIVROS_DISPONIVEIS.forEach { livro ->
+                    val obrigatorio = livro == CampanhaConfig.MODULO_BASICO
+                    val sel = livro in livros
+                    FilterChip(
+                        selected = sel,
+                        onClick = {
+                            if (!obrigatorio) {
+                                if (sel) livros.remove(livro) else livros.add(livro)
+                            }
+                        },
+                        label = { Text(livro) },
+                        modifier = Modifier.semantics { contentDescription = "Livro $livro ${if (sel) "incluído" else "fora"}" }
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
         Button(
-            onClick = { viewModel.sagaCriarCampanha(nome) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { contentDescription = "Criar campanha e começar a aventura" }
+            onClick = {
+                viewModel.sagaCriarCampanha(
+                    nome,
+                    CampanhaConfig(
+                        genero = genero, conceito = conceito.trim(), tom = tom,
+                        dificuldade = dificuldade, magiaPermitida = magia,
+                        nivelTecnologico = nt, livros = livros.toList()
+                    )
+                )
+            },
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Criar campanha e começar a aventura" }
         ) { Text("Criar campanha") }
 
         val campanhas = viewModel.sagaCampanhas
@@ -82,25 +187,54 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
             Text("Continuar", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(8.dp))
             campanhas.forEach { camp ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp)
-                        .semantics { contentDescription = "Continuar campanha ${camp.nome}, capítulo ${camp.capituloAtual}" },
-                    onClick = { viewModel.sagaContinuarCampanha(camp.id) }
-                ) {
-                    Column(Modifier.padding(12.dp)) {
-                        Text(camp.nome, fontWeight = FontWeight.Bold)
-                        Text(
-                            "Capítulo ${camp.capituloAtual} · cenário ${camp.cenarioId}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                Card(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .clickable { viewModel.sagaContinuarCampanha(camp.id) }
+                                .padding(12.dp)
+                                .semantics { contentDescription = "Continuar campanha ${camp.nome}, capítulo ${camp.capituloAtual}" }
+                        ) {
+                            Text(camp.nome, fontWeight = FontWeight.Bold)
+                            Text(
+                                "Capítulo ${camp.capituloAtual} · cenário ${camp.cenarioId}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        IconButton(
+                            onClick = { idParaExcluir = camp.id },
+                            modifier = Modifier.semantics { contentDescription = "Excluir campanha ${camp.nome}" }
+                        ) { Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) }
                     }
                 }
             }
         }
     }
+
+    idParaExcluir?.let { id ->
+        val nomeCamp = viewModel.sagaCampanhas.firstOrNull { it.id == id }?.nome ?: "campanha"
+        AlertDialog(
+            onDismissRequest = { idParaExcluir = null },
+            title = { Text("Excluir campanha?") },
+            text = { Text("\"$nomeCamp\" e todo o seu progresso (cena, fatos e histórico) serão apagados. Esta ação não pode ser desfeita.") },
+            confirmButton = {
+                TextButton(onClick = { viewModel.sagaExcluirCampanha(id); idParaExcluir = null }) {
+                    Text("Excluir", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = { TextButton(onClick = { idParaExcluir = null }) { Text("Cancelar") } }
+        )
+    }
+}
+
+@Composable
+private fun SecaoConfig(titulo: String, conteudo: @Composable () -> Unit) {
+    Spacer(Modifier.height(12.dp))
+    Text(titulo, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+    Spacer(Modifier.height(4.dp))
+    conteudo()
 }
 
 @Composable

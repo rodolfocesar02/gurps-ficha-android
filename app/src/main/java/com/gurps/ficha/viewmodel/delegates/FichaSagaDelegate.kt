@@ -13,6 +13,7 @@ import com.gurps.ficha.data.storage.FichaDatabase
 import com.gurps.ficha.data.storage.SagaDao
 import com.gurps.ficha.domain.MestreIANarradorUseCase
 import com.gurps.ficha.domain.filters.CatalogFilters
+import com.gurps.ficha.domain.saga.CampanhaConfig
 import com.gurps.ficha.domain.magias.NexusArcanoModoAlvoAdapter
 import com.gurps.ficha.domain.roll.CriticoRules
 import com.gurps.ficha.domain.saga.NarradorToolExecutor
@@ -89,7 +90,7 @@ class FichaSagaDelegate(
         }
     }
 
-    fun criarCampanha(nome: String, cenarioId: String = "fendaverso") {
+    fun criarCampanha(nome: String, config: CampanhaConfig = CampanhaConfig(), cenarioId: String = "fendaverso") {
         val dao = sagaDao ?: return
         scope.launch {
             val personagemId = viewModel.nomeFichaAtual ?: viewModel.personagem.nome.ifBlank { "heroi" }
@@ -99,7 +100,8 @@ class FichaSagaDelegate(
                     cenarioId = cenarioId,
                     personagemId = personagemId,
                     criadaEm = System.currentTimeMillis(),
-                    seedMundo = Random.nextLong()
+                    seedMundo = Random.nextLong(),
+                    configJson = config.toJson()
                 )
             )
             val cenaId = dao.inserirCena(
@@ -148,6 +150,18 @@ class FichaSagaDelegate(
         sessionIdAtual = null
     }
 
+    /** Lote 356: exclui a campanha e tudo que pendura nela (cenas, fatos, estado, chat). */
+    fun excluirCampanha(id: Long) {
+        val dao = sagaDao ?: return
+        scope.launch {
+            val sessao = chatDao?.getAllSessions()?.firstOrNull { it.title == "saga#$id" }
+            sessao?.id?.let { chatDao?.deleteFullSession(it) }
+            dao.excluirCampanhaCompleta(id)
+            if (campanhaAtiva?.id == id) sairDaCampanha()
+            campanhas = dao.listarCampanhas()
+        }
+    }
+
     fun enviarMensagem(texto: String) {
         val msg = texto.trim()
         if (msg.isBlank() || processando || campanhaAtiva == null) return
@@ -181,12 +195,14 @@ class FichaSagaDelegate(
                 val historico = feed.takeLast(16).map {
                     (if (it.role == "jogador") "user" else "model") to it.texto
                 }
+                val configBloco = CampanhaConfig.fromJson(campanhaAtiva?.configJson).paraPromptBloco()
                 val r = narrador.narrar(
                     mensagemJogador = mensagem,
                     executor = executor,
                     cenaResumo = cenaResumo,
                     ultimosTurnos = historico,
-                    onStatus = { fase = it }
+                    onStatus = { fase = it },
+                    configBloco = configBloco
                 )
                 feed = feed + SagaTurn("narrador", r.prosa)
                 persistirTurno("model", r.prosa)

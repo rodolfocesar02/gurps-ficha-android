@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 @Database(
     entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class, VecChunkEntity::class,
         CampanhaEntity::class, CenaEntity::class, CampaignFactEntity::class, WorldStateEntity::class],
-    version = 25,  // Lote 353 (Saga A4): tabelas da campanha (campanhas, cenas, campaign_facts FTS4, world_state)
+    version = 26,  // Lote 356 (Saga): campanhas.configJson (session zero do Narrador)
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -44,6 +44,16 @@ abstract class FichaDatabase : RoomDatabase() {
             }
         }
 
+        /**
+         * Lote 356: adiciona campanhas.configJson (TEXT NOT NULL DEFAULT '{}'). Aditiva e
+         * idempotente — SQL espelha o createAllTables do FichaDatabase_Impl gerado pelo Room.
+         */
+        val MIGRATION_25_26 = object : androidx.room.migration.Migration(25, 26) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `campanhas` ADD COLUMN `configJson` TEXT NOT NULL DEFAULT '{}'")
+            }
+        }
+
         fun getInstance(context: Context): FichaDatabase {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: Room.databaseBuilder(
@@ -51,7 +61,7 @@ abstract class FichaDatabase : RoomDatabase() {
                     FichaDatabase::class.java,
                     "gurps_fichas.db"
                 )
-                .addMigrations(MIGRATION_24_25)
+                .addMigrations(MIGRATION_24_25, MIGRATION_25_26)
                 .fallbackToDestructiveMigration()
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {

@@ -25,7 +25,9 @@ data class CampanhaEntity(
     /** Tempo DE JOGO decorrido, em minutos (relógio do mundo, não da sessão). */
     val tempoJogoMin: Long = 0,
     /** Seed determinística do mundo (clima/ecologia/encontros reproduzíveis). */
-    val seedMundo: Long
+    val seedMundo: Long,
+    /** Lote 356: "session zero" serializado (CampanhaConfig) — gênero/tom/dificuldade/conteúdo. */
+    val configJson: String = "{}"
 )
 
 /** Uma cena da campanha (unidade narrativa). fechadaEm == null → cena aberta. */

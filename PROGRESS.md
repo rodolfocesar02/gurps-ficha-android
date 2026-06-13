@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 355 CONCLUÍDO — Polimento do Narrador (definir_cena real + cena de abertura automática + narração no Flash + consultar_mundo por palavras-chave)
-**Último Lote Registrado:** Lote 355 — última entrada deste arquivo
+**Status Atual:** Lote 356 CONCLUÍDO — Configuração de campanha (session zero: gênero/tom/dificuldade/magia/NT/livros) + excluir campanha
+**Último Lote Registrado:** Lote 356 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2935,4 +2935,19 @@ Baseado na analise da 1a sessao de jogo real do usuario (logcat): nucleo OK (rol
 - TabSaga: texto de estado vazio ajustado ("Narrador preparando a cena de abertura")
 - Sem mudanca de schema (Room segue v25; so 1 @Query novo). Build completo verde 2 variantes
 - NAO incluido (fora do escopo escolhido A+B+C+D): margem negativa e warning "resource failed to call release" — anotados para lote futuro
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 356 — 13 de Junho de 2026
+**Configuracao de campanha (session zero) + excluir campanha (branch GURPS-Saga)**
+Pedido do usuario apos teste real: faltava lixeira pra apagar campanha e um menu de definicoes do jogo.
+- domain/saga/CampanhaConfig.kt: data class do "session zero" (genero, conceito livre, tom, dificuldade, magiaPermitida, nivelTecnologico NT, livros liberados) + paraPromptBloco() que vira bloco CATEGORIAL no system prompt do Narrador (tom/dificuldade traduzidos em instrucoes; magia off = "nao existe neste mundo"; livros = trava textual). Gson para (de)serializar
+- SagaEntities: CampanhaEntity ganha configJson (TEXT) | FichaDatabase v25->v26 + MIGRATION_25_26 (ALTER TABLE campanhas ADD COLUMN configJson TEXT NOT NULL DEFAULT '{}'); SQL conferido vs createAllTables do _Impl gerado
+- SagaDao: excluirCampanhaCompleta (@Transaction) apaga fatos+cenas+world_state+campanha sem orfaos
+- FichaSagaDelegate: criarCampanha(nome, config) salva configJson; rodarTurno injeta configBloco no narrar(); excluirCampanha(id) (limpa tambem a sessao de chat "saga#id")
+- MestreIANarradorUseCase.narrar: novo param configBloco -> entra no systemBase
+- FichaViewModel: sagaCriarCampanha(nome, config) + sagaExcluirCampanha(id)
+- ui/TabSaga: form de criacao expandido (FilterChips de genero/tom/dificuldade/livros, Switch magia, stepper NT, conceito livre) + lixeira por campanha com AlertDialog de confirmacao. TalkBack em todos os controles
+- MIGRACAO v25->v26 VALIDADA no emulador (instalado por cima do banco real com a campanha "Quartedec"; logcat sem Migration/IllegalState/FATAL + "CODEX OK v4 1197 chunks" = dados preservados)
+- Build completo verde 2 variantes
+- NOTA: a config hoje e TRAVA TEXTUAL no prompt (o Narrador e instruido a respeitar). Trava REAL de tools/catalogo (ex.: bloquear magia de fato) fica para quando a Fase B/C precisar
 ----------------------------------------------------------------------------------------------------------------------------------------------------

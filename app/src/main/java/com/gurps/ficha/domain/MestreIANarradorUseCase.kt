@@ -58,7 +58,8 @@ class MestreIANarradorUseCase(
         executor: NarradorToolExecutor,
         cenaResumo: String,
         ultimosTurnos: List<Pair<String, String>>,
-        onStatus: (String) -> Unit
+        onStatus: (String) -> Unit,
+        configBloco: String = ""
     ): Resultado = withContext(Dispatchers.IO) {
         val toolsUsadas = mutableSetOf<String>()
 
@@ -84,6 +85,7 @@ class MestreIANarradorUseCase(
             if (fatosContexto.isNotBlank()) append("FATOS CANÔNICOS RELEVANTES:\n$fatosContexto\n")
         }
         val systemBase = MestreIAPromptsNarrador.PROMPT +
+            (if (configBloco.isNotBlank()) "\n\n$configBloco" else "") +
             (if (contextoCena.isNotBlank()) "\n\n=== ESTADO DA CAMPANHA ===\n$contextoCena" else "")
 
         val contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, "conversa")

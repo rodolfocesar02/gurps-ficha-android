@@ -115,8 +115,9 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val sagaFase get() = sagaDelegate.fase
     val sagaProcessando get() = sagaDelegate.processando
     fun sagaCarregarCampanhas() = sagaDelegate.carregarCampanhas()
-    fun sagaCriarCampanha(nome: String) = sagaDelegate.criarCampanha(nome)
+    fun sagaCriarCampanha(nome: String, config: com.gurps.ficha.domain.saga.CampanhaConfig) = sagaDelegate.criarCampanha(nome, config)
     fun sagaContinuarCampanha(id: Long) = sagaDelegate.continuarCampanha(id)
+    fun sagaExcluirCampanha(id: Long) = sagaDelegate.excluirCampanha(id)
     fun sagaSair() = sagaDelegate.sairDaCampanha()
     fun sagaEnviar(texto: String) = sagaDelegate.enviarMensagem(texto)
     fun sagaRolarDado() = sagaDelegate.rolarDadoPendente()
