@@ -10,7 +10,8 @@
 > - ✅ Lote 351 = EXTRA: suíte de testes 100% verde + lint baseline (2026-06-12, `302deae`) — a regra 3 (build é lei) vale integralmente a partir daqui
 > - ✅ Lote 352 = A2 (2026-06-12) — pendente só a validação do usuário no aparelho (passo 5)
 > - ✅ A3 = resolvido FORA do fluxo de lotes (declarado pelo usuário em 2026-06-13; não consumiu número)
-> - ➡️ Próximo: A4 (≈353)
+> - ✅ Lote 353 = A4 (2026-06-13) — fundação de dados (Room v25) + 16 tools do Narrador + executor; migração validada no emulador, testes instrumentados verdes
+> - ➡️ Próximo: A5 (≈354)
 
 ---
 
@@ -72,7 +73,7 @@ LOTE NNN — <título>
 **Passos:** em `discord-roll-api/`: adicionar `better-sqlite3`; criar `db.js` (tabelas `fichas(deviceId TEXT PK, json TEXT, updatedAt INTEGER)` e `portraits(name TEXT PK, mime TEXT, blob BLOB)`); apontar o caminho do arquivo para o Volume Railway (`process.env.RAILWAY_VOLUME_MOUNT_PATH || './data'`); converter as rotas `/api/fichas*` e o mapa `portraits` para write-through (escreve no SQLite, mantém cache em memória para leitura); `GET /health` reporta `dbOk`.
 **Aceite:** deploy; criar ficha → restart manual do serviço → ficha e retrato persistem. (Sem mudanças no app Android neste lote.)
 
-### LOTE A4 (≈352) — Fundação de dados da Saga + contrato de tools
+### ✅ LOTE A4 (= Lote 353, concluído 2026-06-13) — Fundação de dados da Saga + contrato de tools
 **Objetivo:** persistência da campanha e o contrato completo do Narrador (sem IA ainda).
 **Passos:**
 1. `data/storage/SagaEntities.kt`:

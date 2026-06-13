@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 12 de Junho de 2026
-**Status Atual:** Lote 352 CONCLUÍDO — Saga A2: um motor de busca só (Voz usa localizar/ler) + Códex em dieta (APK −23 MB)
-**Último Lote Registrado:** Lote 352 — última entrada deste arquivo
+**Última Atualização:** 13 de Junho de 2026
+**Status Atual:** Lote 353 CONCLUÍDO — Saga A4: fundação de dados da campanha (Room v25) + contrato das 16 tools do Narrador + executor
+**Último Lote Registrado:** Lote 353 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2892,4 +2892,19 @@ Diagnostico caso a caso: 14 eram TESTES DESATUALIZADOS (codigo evoluiu de propos
 - ARMADILHA DESCOBERTA: o empacotador incremental (zipflinger) substitui entries e deixa "buraco" no zip — o APK nao encolhe ate forcar reempacotamento. Medicoes de tamanho sempre apos apagar o APK e reempacotar
 - Build: ./gradlew build COMPLETO VERDE (testes 2 variantes + lint + assemble)
 - PENDENTE (validacao do usuario no aparelho): roteiro do passo 5 — 3 perguntas de regra na VOZ e 3 no AUDITOR, todas citando pagina
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 353 — 13 de Junho de 2026
+**GURPS Saga Fase A4: fundacao de dados da campanha + contrato de tools do Narrador (branch GURPS-Saga)**
+- data/storage/SagaEntities.kt: 4 entidades novas — CampanhaEntity, CenaEntity, CampaignFactEntity (FTS4: campanhaId/sujeito/predicado/objeto/peso/cenaId/texto), WorldStateEntity (PK campanhaId)
+- data/storage/SagaDao.kt: CRUD de campanha/cena/world_state + buscarFatos(campanhaId, query, limite) — normaliza a consulta (CatalogFilters.normalizarBusca, mesma do Codex), MATCH AND com fallback OR, ranking peso DESC depois frequencia dos termos (BM25 simplificado, padrao do ManualChunkDao)
+- FichaDatabase.kt: v24 -> v25, registra as 4 entidades + sagaDao(); MIGRATION_24_25 EXPLICITA (SQL conferido byte a byte contra o createAllTables do FichaDatabase_Impl gerado pelo Room) mantendo fallbackToDestructiveMigration como rede
+- domain/saga/NarradorTools.kt: contrato das 14 tools do Narrador (pedir_rolagem, iniciar_combate, acao_npc, aplicar_dano, aplicar_condicao, gastar_recurso, consultar_mundo, registrar_fato, avancar_relogio, passar_tempo, conceder_xp, definir_cena, forjar_npc, inspecionar_personagem) + reuso localizar_no_codex/ler_pagina = 16 no total. Schemas Gemini E OpenAI gerados de uma spec neutra unica. Descricoes CATEGORIAIS (regra 6, zero exemplos)
+- domain/saga/NarradorToolExecutor.kt: roteador suspend executar(nome, argsJson): String no padrao do ForjadorToolExecutor. REAIS: registrar_fato, consultar_mundo, inspecionar_personagem (delega lerSecao), localizar_no_codex/ler_pagina (delega ao DataRepository). Resto -> {"erro":"nao_implementado","tool":...}; desconhecida -> ferramenta_desconhecida; dependencia ausente degrada com erro JSON (nao excecao)
+- TESTES: NarradorToolsTest (JVM, contrato dos 2 toolsets == TODAS, 16 tools, obrigatorios) VERDE; SagaFoundationTest (instrumentado, Room em memoria + FTS4 REAL do device: 5 fatos/busca/ordenacao por peso/isolamento por campanha + roundtrip registrar->consultar + roteamento nao_implementado/desconhecida/sem_campanha) 3/3 VERDE no Pixel_8a API 34
+- MIGRACAO VALIDADA no emulador: instalado v25 por cima do v24 SEM desinstalar; logcat sem Migration/Room/IllegalStateException/FATAL e "CODEX OK v4: 1197 chunks" (dados PRESERVADOS = migracao aditiva real rodou, NAO o fallback destrutivo; schema das 4 tabelas validado pelo Room)
+- DIVERGENCIA do plano (passo 3): o plano pede "siga o padrao das migracoes anteriores" mas NAO EXISTE migracao anterior — o projeto sempre usou fallbackToDestructiveMigration (bump apagava o banco; fichas sobreviviam pela nuvem). Esta e a PRIMEIRA migracao explicita; documentado no comentario do MIGRATION_24_25
+- DIVERGENCIA menor: §3.2 do PLANO_GURPS_SAGA_v2 (citado no passo 4) nao existe no repo; os parametros das tools foram projetados a partir dos nomes/objetivos do proprio plano
+- Efeito colateral necessario: res/drawable/Sir Aldric.png (nome invalido com espaco/maiuscula, travava o merge de recursos) movido para lixeira/ — sem relacao com a Saga, mas o build nao compilava sem isso
+- Build: ./gradlew build COMPLETO VERDE (testes 2 variantes + lint + assemble)
 ----------------------------------------------------------------------------------------------------------------------------------------------------

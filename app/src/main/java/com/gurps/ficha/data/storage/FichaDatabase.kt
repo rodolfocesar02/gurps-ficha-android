@@ -10,8 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class, VecChunkEntity::class],
-    version = 24,  // Lote 259: adiciona tabela vec_chunks para embeddings semânticos
+    entities = [FichaEntity::class, ManualChunkEntity::class, GraphNodeEntity::class, ChatSessionEntity::class, ChatMessageEntity::class, VecChunkEntity::class,
+        CampanhaEntity::class, CenaEntity::class, CampaignFactEntity::class, WorldStateEntity::class],
+    version = 25,  // Lote 353 (Saga A4): tabelas da campanha (campanhas, cenas, campaign_facts FTS4, world_state)
     exportSchema = false
 )
 abstract class FichaDatabase : RoomDatabase() {
@@ -20,10 +21,28 @@ abstract class FichaDatabase : RoomDatabase() {
     abstract fun graphNodeDao(): GraphNodeDao
     abstract fun chatHistoryDao(): ChatHistoryDao
     abstract fun vecChunkDao(): VecChunkDao
+    abstract fun sagaDao(): SagaDao
 
     companion object {
         @Volatile
         private var INSTANCE: FichaDatabase? = null
+
+        /**
+         * Lote 353: PRIMEIRA migração explícita do projeto. O "padrão anterior" era
+         * fallbackToDestructiveMigration (bump de versão APAGAVA o banco — fichas
+         * sobreviviam pela sincronização em nuvem). Como a 24→25 é puramente ADITIVA,
+         * preservamos tudo criando só as 4 tabelas novas. O SQL espelha EXATAMENTE o
+         * createAllTables gerado pelo Room (FichaDatabase_Impl) — divergência = crash
+         * de validação na abertura.
+         */
+        val MIGRATION_24_25 = object : androidx.room.migration.Migration(24, 25) {
+            override fun migrate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
+                db.execSQL("CREATE TABLE IF NOT EXISTS `campanhas` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nome` TEXT NOT NULL, `cenarioId` TEXT NOT NULL, `personagemId` TEXT NOT NULL, `criadaEm` INTEGER NOT NULL, `capituloAtual` INTEGER NOT NULL, `resumoCapitulo` TEXT NOT NULL, `tempoJogoMin` INTEGER NOT NULL, `seedMundo` INTEGER NOT NULL)")
+                db.execSQL("CREATE TABLE IF NOT EXISTS `cenas` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `campanhaId` INTEGER NOT NULL, `indice` INTEGER NOT NULL, `titulo` TEXT NOT NULL, `resumo` TEXT NOT NULL, `bioma` TEXT NOT NULL, `humor` TEXT NOT NULL, `fechadaEm` INTEGER)")
+                db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS `campaign_facts` USING FTS4(`campanhaId` INTEGER NOT NULL, `sujeito` TEXT NOT NULL, `predicado` TEXT NOT NULL, `objeto` TEXT NOT NULL, `peso` INTEGER NOT NULL, `cenaId` INTEGER, `texto` TEXT NOT NULL)")
+                db.execSQL("CREATE TABLE IF NOT EXISTS `world_state` (`campanhaId` INTEGER NOT NULL, `climaPorRegiaoJson` TEXT NOT NULL, `relogiosJson` TEXT NOT NULL, `ecologiaJson` TEXT NOT NULL, `economiaJson` TEXT NOT NULL, `ultimoTickMin` INTEGER NOT NULL, PRIMARY KEY(`campanhaId`))")
+            }
+        }
 
         fun getInstance(context: Context): FichaDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -32,6 +51,7 @@ abstract class FichaDatabase : RoomDatabase() {
                     FichaDatabase::class.java,
                     "gurps_fichas.db"
                 )
+                .addMigrations(MIGRATION_24_25)
                 .fallbackToDestructiveMigration()
                 .addCallback(object : RoomDatabase.Callback() {
                     override fun onOpen(db: androidx.sqlite.db.SupportSQLiteDatabase) {
