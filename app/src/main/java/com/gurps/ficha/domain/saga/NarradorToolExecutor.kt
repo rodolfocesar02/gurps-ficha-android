@@ -25,8 +25,19 @@ import org.json.JSONObject
 class NarradorToolExecutor(
     private val sagaDao: SagaDao?,
     private val repository: DataRepository? = null,
-    private val forjador: ForjadorToolExecutor? = null
+    private val forjador: ForjadorToolExecutor? = null,
+    private val rollBridge: RollBridge? = null
 ) {
+    /**
+     * Lote 354 (A5): ponte INTERATIVA da rolagem. pedir_rolagem suspende o loop da IA
+     * até o jogador tocar o dado na UI. Implementada pelo FichaSagaDelegate (que tem
+     * acesso à ficha p/ resolver o NH e ao mesmo caminho de rolagem da TabRolagem).
+     * Retorna o JSON {soma, alvo, margem, resultado, critico} pronto para o loop.
+     */
+    interface RollBridge {
+        suspend fun pedirRolagem(pericia: String, mods: List<Pair<String, Int>>, motivo: String): String
+    }
+
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
     var campanhaId: Long = 0L
 
@@ -45,6 +56,7 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_REGISTRAR_FATO -> registrarFato(args)
                 NarradorTools.TOOL_CONSULTAR_MUNDO -> consultarMundo(args)
                 NarradorTools.TOOL_INSPECIONAR_PERSONAGEM -> inspecionarPersonagem(args)
+                NarradorTools.TOOL_PEDIR_ROLAGEM -> pedirRolagem(args)
                 NarradorTools.TOOL_LOCALIZAR -> localizarNoCodex(args)
                 NarradorTools.TOOL_LER -> lerPagina(args)
                 in NarradorTools.TODAS -> {
@@ -126,6 +138,24 @@ class NarradorToolExecutor(
         val secao = args.optString("secao", "atributos")
         // Delega ao leitor de ficha existente (mesma fonte usada pelo Forjador/Voz).
         return f.lerSecao(secao)
+    }
+
+    private suspend fun pedirRolagem(args: JSONObject): String {
+        val bridge = rollBridge ?: return erro("sem_ui_rolagem", "Nenhuma ponte de rolagem ativa")
+        val pericia = args.optString("pericia").trim()
+        if (pericia.isBlank()) return erro("campos_obrigatorios", "pericia é obrigatória")
+        val motivo = args.optString("motivo").trim()
+        val mods = mutableListOf<Pair<String, Int>>()
+        args.optJSONArray("modificadores")?.let { arr ->
+            for (i in 0 until arr.length()) {
+                val o = arr.optJSONObject(i) ?: continue
+                val m = o.optString("motivo").trim()
+                val v = o.optInt("valor", 0)
+                if (m.isNotBlank() || v != 0) mods.add(m to v)
+            }
+        }
+        // Suspende até a UI devolver o dado; o JSON de resultado vem pronto da ponte.
+        return bridge.pedirRolagem(pericia, mods, motivo)
     }
 
     private suspend fun localizarNoCodex(args: JSONObject): String {

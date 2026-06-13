@@ -77,6 +77,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     
     // Novos Delegados (Refatoração Lote 15)
     private val iaDelegate = FichaIADelegate(this, dataRepository, viewModelScope, application)
+    // Lote 354 (Saga A5): delegate do modo Saga (Narrador + campanhas + rolagem interativa)
+    private val sagaDelegate = FichaSagaDelegate(this, dataRepository, viewModelScope, application)
     private val socialDelegate = FichaSocialDelegate(networkDelegate, configPrefs, viewModelScope)
     private val deviceId by lazy { Settings.Secure.getString(application.contentResolver, Settings.Secure.ANDROID_ID) ?: "DESCONHECIDO" }
 
@@ -103,6 +105,21 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val canaisDiscordErro get() = socialDelegate.canaisDiscordErro
     val canalDiscordSelecionadoId get() = socialDelegate.canalDiscordSelecionadoId
     val canalDiscordSelecionadoNome get() = socialDelegate.canalDiscordSelecionadoNome
+
+    // Getters do modo Saga (Lote 354)
+    val sagaCampanhas get() = sagaDelegate.campanhas
+    val sagaCampanhaAtiva get() = sagaDelegate.campanhaAtiva
+    val sagaCenaAtiva get() = sagaDelegate.cenaAtiva
+    val sagaFeed get() = sagaDelegate.feed
+    val sagaRolagemPendente get() = sagaDelegate.rolagemPendente
+    val sagaFase get() = sagaDelegate.fase
+    val sagaProcessando get() = sagaDelegate.processando
+    fun sagaCarregarCampanhas() = sagaDelegate.carregarCampanhas()
+    fun sagaCriarCampanha(nome: String) = sagaDelegate.criarCampanha(nome)
+    fun sagaContinuarCampanha(id: Long) = sagaDelegate.continuarCampanha(id)
+    fun sagaSair() = sagaDelegate.sairDaCampanha()
+    fun sagaEnviar(texto: String) = sagaDelegate.enviarMensagem(texto)
+    fun sagaRolarDado() = sagaDelegate.rolarDadoPendente()
 
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente

@@ -1,6 +1,7 @@
 package com.gurps.ficha.data.network
 
 import com.google.gson.Gson
+import com.gurps.ficha.domain.saga.NarradorTools
 import com.gurps.ficha.domain.tools.ForjadorTools
 import com.gurps.ficha.model.*
 import org.json.JSONArray
@@ -18,8 +19,12 @@ import kotlinx.coroutines.withContext
  */
 object MestreIAClient {
     private const val CONNECT_TIMEOUT_MS = 120000
-    private const val READ_TIMEOUT_MS = 120000 
+    private const val READ_TIMEOUT_MS = 120000
     private val gson = Gson()
+
+    // Lote 354: modos válidos que selecionam toolset. "saga" (Narrador) entrou aqui.
+    // Os fluxos reais só passam estes; o require guarda contra modo digitado errado.
+    private val MODOS_VALIDOS = setOf("conversa", "geracao", "analise", "planejamento", "saga")
 
     data class ChatMessage(
         val role: String,
@@ -81,6 +86,7 @@ object MestreIAClient {
         silencioso: Boolean = false,
         ativarThinking: Boolean = false
     ): ChatResponse = withContext(Dispatchers.IO) {
+        require(modo in MODOS_VALIDOS) { "Modo de IA inválido: '$modo' (válidos: $MODOS_VALIDOS)" }
         val startTime = System.currentTimeMillis()
         try {
             val isGoogleNative = baseUrl.contains("generativelanguage.googleapis.com")
@@ -357,6 +363,7 @@ object MestreIAClient {
             when (modo) {
                 "geracao" -> root.put("tools", ForjadorTools.getGeminiTools())
                 "analise" -> root.put("tools", MestreIATools.getAuditorUnificadoToolsGemini())
+                "saga"    -> root.put("tools", NarradorTools.getGeminiTools())
                 else      -> root.put("tools", MestreIATools.getAuditorToolsGemini())
             }
         }
@@ -385,6 +392,7 @@ object MestreIAClient {
             when (modo) {
                 "geracao" -> root.put("tools", ForjadorTools.getOpenAITools())
                 "analise" -> root.put("tools", MestreIATools.getAuditorUnificadoToolsOpenAI())
+                "saga"    -> root.put("tools", NarradorTools.getOpenAITools())
                 else      -> root.put("tools", MestreIATools.getAuditorToolsOpenAI())
             }
         }

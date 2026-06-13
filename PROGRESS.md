@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 353 CONCLUÍDO — Saga A4: fundação de dados da campanha (Room v25) + contrato das 16 tools do Narrador + executor
-**Último Lote Registrado:** Lote 353 — última entrada deste arquivo
+**Status Atual:** Lote 354 CONCLUÍDO — Saga A5: Narrador mínimo viável + Aba Saga (jogável: narração → card de rolagem → dado real → consequência → persistência)
+**Último Lote Registrado:** Lote 354 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2907,4 +2907,20 @@ Diagnostico caso a caso: 14 eram TESTES DESATUALIZADOS (codigo evoluiu de propos
 - DIVERGENCIA menor: §3.2 do PLANO_GURPS_SAGA_v2 (citado no passo 4) nao existe no repo; os parametros das tools foram projetados a partir dos nomes/objetivos do proprio plano
 - Efeito colateral necessario: res/drawable/Sir Aldric.png (nome invalido com espaco/maiuscula, travava o merge de recursos) movido para lixeira/ — sem relacao com a Saga, mas o build nao compilava sem isso
 - Build: ./gradlew build COMPLETO VERDE (testes 2 variantes + lint + assemble)
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 354 — 13 de Junho de 2026
+**GURPS Saga Fase A5: Narrador minimo viavel + Aba Saga (branch GURPS-Saga)**
+- data/network/MestreIAPromptsNarrador.kt: persona CATEGORIAL do Narrador (modo "saga") — leis de ferro (nunca declarar numero/resultado sem tool do turno; pedir_rolagem com mods nomeados; fatos de consultar_mundo sao canonicos; max 3 paragrafos; terminar abrindo escolha), uso de cada tool em 1 frase, proibicoes. Zero exemplos (regra 6)
+- domain/MestreIANarradorUseCase.kt: clone estrutural do Generator — top-5 consultar_mundo automatico sobre a msg do jogador, contexto via MestreIAContextFilter + cena + 8 turnos, fila de modelos (Gemini 2.5 Pro -> DeepSeek V3), loop de tool-use com NarradorToolExecutor, validacao final + 1 re-pedido (Auto-Healing)
+- data/network/MestreIAClient.kt: modo "saga" -> NarradorTools nos DOIS switches (Gemini e OpenAI) + require(modo in MODOS_VALIDOS) no inicio de perguntarAoMestre (conversa/geracao/analise/planejamento/saga)
+- domain/saga/NarradorOutputValidator.kt: regex de resultado mecanico (\d+ (de )? dano|PV|PF|margem) sem tool correspondente no turno -> 1 instrucao de correcao. +NarradorOutputValidatorTest (4 casos) VERDE
+- domain/saga/NarradorToolExecutor.kt: + interface RollBridge + execucao REAL de pedir_rolagem (suspende ate a UI tocar o dado)
+- viewmodel/delegates/FichaSagaDelegate.kt: estado observavel da aba (campanhas/cena/feed/rolagemPendente/fase/processando), ponte de rolagem (resolve NH da ficha por nome de pericia/atributo -> alvo, 3d6 + CriticoRules.classificar — MESMO caminho da TabRolagem), persistencia dos turnos nas tabelas de chat (sessao "saga#<id>" por campanha, sem migracao), CRUD de campanha/cena via SagaDao
+- FichaViewModel: instancia o delegate + getters/metodos saga* (additivo)
+- ui/TabSaga.kt: sem campanha -> criar/continuar; com campanha -> feed (bolhas jogador/narrador/sistema) + indicador de fase (liveRegion) + card de rolagem (toque = 3d6) + barra de envio. Maquina de escrever local (2-3 palavras/30ms) no ultimo turno do Narrador. TalkBack: contentDescription em bolhas, card e controles
+- FichaScreen + FichaCustomNavigationBar: aba "Saga" registrada (icone reusa tab_mestre_ia)
+- Build: ./gradlew build COMPLETO VERDE (testes 2 variantes + lint + assemble). Smoke test no emulador: app abre sem crash com o delegate Saga no construtor do VM (PID vivo, zero FATAL)
+- DIVERGENCIA do plano: §3.2 do PLANO_GURPS_SAGA_v2 (citado) nao existe no repo — parametros das tools projetados a partir dos nomes/objetivos do plano. Persistencia "CenaEntity/chat": optei pelas tabelas de chat (sessao por campanha) por nao exigir migracao; CenaEntity guarda titulo/resumo
+- PENDENTE (validacao do usuario no aparelho): roteiro do aceite — criar campanha -> "tento ouvir a conversa dos guardas" -> card Audicao com mods -> tocar dado -> narracao cita a margem real -> fato registrado -> fechar/reabrir -> contexto continua. (Requer chaves de IA reais; a IA roda no device.)
 ----------------------------------------------------------------------------------------------------------------------------------------------------

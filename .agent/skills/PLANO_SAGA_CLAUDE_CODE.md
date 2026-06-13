@@ -11,7 +11,8 @@
 > - ✅ Lote 352 = A2 (2026-06-12) — pendente só a validação do usuário no aparelho (passo 5)
 > - ✅ A3 = resolvido FORA do fluxo de lotes (declarado pelo usuário em 2026-06-13; não consumiu número)
 > - ✅ Lote 353 = A4 (2026-06-13) — fundação de dados (Room v25) + 16 tools do Narrador + executor; migração validada no emulador, testes instrumentados verdes
-> - ➡️ Próximo: A5 (≈354)
+> - ✅ Lote 354 = A5 (2026-06-13) — Narrador (modo saga) + Aba Saga + ponte de rolagem real; build verde, smoke test no emulador OK. Pendente: roteiro de jogo no aparelho (chaves de IA)
+> - ➡️ Próximo: FASE B — B1 (≈355) Combate: modelos + sequência de turnos
 
 ---
 
@@ -88,7 +89,7 @@ LOTE NNN — <título>
 6. Testes: DAO (gravar 5 fatos, buscar por termo, ordenação por peso), executor (roteamento + fato roundtrip).
 **Aceite:** build verde; migração validada; testes verdes.
 
-### LOTE A5 (≈353) — Narrador mínimo viável + Aba Saga
+### ✅ LOTE A5 (= Lote 354, concluído 2026-06-13; falta roteiro de jogo no aparelho) — Narrador mínimo viável + Aba Saga
 **Objetivo:** jogar uma cena: narração → pedido de rolagem → dado real → consequência.
 **Passos:**
 1. `data/network/MestreIAPromptsNarrador.kt` — persona em blocos categoriais: identidade (mestre de GURPS 4ª ed.); leis de ferro (nunca declarar números/resultados sem tool deste turno; em incerteza mecânica, `pedir_rolagem` com modificadores nomeados; fatos de `consultar_mundo` são canônicos; máx. 3 parágrafos por turno; terminar abrindo escolha ao jogador); uso de cada tool em 1 frase categorial; proibições (não decidir dano, não pular a vez do jogador, não inventar conteúdo de regra — usar `localizar/ler`).
