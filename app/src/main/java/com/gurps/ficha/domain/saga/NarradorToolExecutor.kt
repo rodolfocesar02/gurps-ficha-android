@@ -56,6 +56,7 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_REGISTRAR_FATO -> registrarFato(args)
                 NarradorTools.TOOL_CONSULTAR_MUNDO -> consultarMundo(args)
                 NarradorTools.TOOL_INSPECIONAR_PERSONAGEM -> inspecionarPersonagem(args)
+                NarradorTools.TOOL_DEFINIR_CENA -> definirCena(args)
                 NarradorTools.TOOL_PEDIR_ROLAGEM -> pedirRolagem(args)
                 NarradorTools.TOOL_LOCALIZAR -> localizarNoCodex(args)
                 NarradorTools.TOOL_LER -> lerPagina(args)
@@ -138,6 +139,20 @@ class NarradorToolExecutor(
         val secao = args.optString("secao", "atributos")
         // Delega ao leitor de ficha existente (mesma fonte usada pelo Forjador/Voz).
         return f.lerSecao(secao)
+    }
+
+    private suspend fun definirCena(args: JSONObject): String {
+        val dao = sagaDao ?: return erro("sem_dao", "SagaDao indisponível")
+        val cid = cenaAtualId ?: return erro("sem_cena", "Nenhuma cena ativa")
+        if (campanhaId <= 0L) return erro("sem_campanha", "Nenhuma campanha ativa")
+        val atual = dao.cenaAberta(campanhaId)
+        // Preserva o campo anterior quando a IA omite algum (definir_cena costuma vir parcial).
+        val titulo = args.optString("titulo").trim().ifBlank { atual?.titulo.orEmpty() }
+        val bioma = args.optString("bioma").trim().ifBlank { atual?.bioma.orEmpty() }
+        val humor = args.optString("humor").trim().ifBlank { atual?.humor.orEmpty() }
+        val resumo = args.optString("resumo").trim().ifBlank { atual?.resumo.orEmpty() }
+        dao.atualizarDescricaoCena(cid, titulo, bioma, humor, resumo)
+        return JSONObject().put("ok", true).put("cena", titulo).put("bioma", bioma).put("humor", humor).toString()
     }
 
     private suspend fun pedirRolagem(args: JSONObject): String {

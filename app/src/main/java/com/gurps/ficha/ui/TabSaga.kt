@@ -151,10 +151,10 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(vertical = 8.dp)
         ) {
-            if (feed.isEmpty()) {
+            if (feed.isEmpty() && !processando) {
                 item {
                     Text(
-                        "Descreva a primeira ação do seu herói para começar a cena.",
+                        "O Narrador está preparando a cena de abertura…",
                         style = MaterialTheme.typography.bodyMedium,
                         fontStyle = FontStyle.Italic,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

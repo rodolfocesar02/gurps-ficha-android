@@ -115,6 +115,8 @@ class FichaSagaDelegate(
             cenaAtiva = dao.cenaAberta(id)
             feed = emptyList()
             campanhas = dao.listarCampanhas()
+            // Lote 355 (B): Narrador abre a cena automaticamente (não deixa o jogador no escuro).
+            abrirCenaInicial()
         }
     }
 
@@ -151,6 +153,27 @@ class FichaSagaDelegate(
         if (msg.isBlank() || processando || campanhaAtiva == null) return
         feed = feed + SagaTurn("jogador", msg)
         persistirTurno("user", msg)
+        rodarTurno(msg)
+    }
+
+    /**
+     * Lote 355 (B): cena de abertura automática. Ao criar a campanha, o Narrador
+     * enquadra onde o herói está e oferece o 1º gancho — o jogador não começa perdido.
+     * O prompt-semente NÃO vira bolha de jogador (instrução de sistema).
+     */
+    private fun abrirCenaInicial() {
+        if (campanhaAtiva == null) return
+        rodarTurno(
+            "[ABERTURA DA CAMPANHA] Apresente a cena de abertura desta aventura solo: enquadre " +
+            "onde o herói está agora e o que ele percebe ao redor (use o conceito da ficha dele), " +
+            "chame definir_cena para fixar título/bioma/humor, e termine oferecendo a primeira " +
+            "escolha ao jogador. NÃO peça rolagem nesta abertura."
+        )
+    }
+
+    /** Roda um turno do Narrador (compartilhado por enviarMensagem e abrirCenaInicial). */
+    private fun rodarTurno(mensagem: String) {
+        if (processando) return
         processando = true
         scope.launch {
             try {
@@ -159,7 +182,7 @@ class FichaSagaDelegate(
                     (if (it.role == "jogador") "user" else "model") to it.texto
                 }
                 val r = narrador.narrar(
-                    mensagemJogador = msg,
+                    mensagemJogador = mensagem,
                     executor = executor,
                     cenaResumo = cenaResumo,
                     ultimosTurnos = historico,
@@ -167,6 +190,8 @@ class FichaSagaDelegate(
                 )
                 feed = feed + SagaTurn("narrador", r.prosa)
                 persistirTurno("model", r.prosa)
+                // Lote 355 (A): definir_cena pode ter mudado a cena — reflete no cabeçalho.
+                campanhaAtiva?.let { cenaAtiva = sagaDao?.cenaAberta(it.id) }
             } finally {
                 processando = false
                 fase = ""

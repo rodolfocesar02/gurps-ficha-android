@@ -62,12 +62,15 @@ class MestreIANarradorUseCase(
     ): Resultado = withContext(Dispatchers.IO) {
         val toolsUsadas = mutableSetOf<String>()
 
-        // top-5 consultar_mundo AUTOMÁTICO sobre a mensagem do jogador (contexto canônico)
+        // top-5 consultar_mundo AUTOMÁTICO sobre a mensagem do jogador (contexto canônico).
+        // Lote 355 (D): usa PALAVRAS-CHAVE em vez da frase crua — a frase inteira (com aspas
+        // e pontuação) virava uma query FTS AND impossível de casar; keywords melhoram o recall.
         onStatus("Consultando o mundo…")
+        val consultaKeywords = extrairPalavrasChave(mensagemJogador)
         val fatosContexto = runCatching {
             val json = executor.executar(
                 NarradorTools.TOOL_CONSULTAR_MUNDO,
-                org.json.JSONObject().put("consulta", mensagemJogador).put("limite", 5).toString()
+                org.json.JSONObject().put("consulta", consultaKeywords).put("limite", 5).toString()
             )
             val o = org.json.JSONObject(json)
             val arr = o.optJSONArray("fatos")
@@ -85,8 +88,10 @@ class MestreIANarradorUseCase(
 
         val contextoPersonagem = MestreIAContextFilter.gerarContexto(viewModel.personagem, "conversa")
 
-        // Fila de modelos (mesma do Forjador): Gemini 2.5 Pro → DeepSeek V3.
+        // Lote 355 (C): narração no FLASH (rápido) — antes era Gemini 2.5 Pro, 15-19s/turno.
+        // Narração não precisa de raciocínio pesado; Flash corta a latência. Pro fica de fallback.
         val fila = listOf(
+            Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_3_FLASH),
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_LITE_1_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_GEMINI_2_5_PRO),
             Triple(com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_URL, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_KEY, com.gurps.ficha.BuildConfig.MESTRE_IA_DEEPSEEK_MODEL_V3)
         )
@@ -153,6 +158,27 @@ class MestreIANarradorUseCase(
             }
         }
         Resultado(false, "O Narrador se calou (falha de conexão com os modelos). Tente de novo.", toolsUsadas, null)
+    }
+
+    // Lote 355 (D): extrai até 8 palavras-chave da mensagem do jogador para o consultar_mundo
+    // automático. Tira pontuação/aspas, descarta palavras curtas e stopwords comuns de PT-BR.
+    private val STOPWORDS = setOf(
+        "que", "com", "uma", "uns", "para", "pra", "por", "dos", "das", "como", "mas", "nao",
+        "sim", "isso", "esse", "essa", "este", "esta", "aqui", "ali", "vou", "vamos", "ele",
+        "ela", "voce", "vc", "meu", "minha", "seu", "sua", "tem", "ter", "fazer", "faco",
+        "sobre", "entao", "tambem", "ate", "the", "and", "mestre", "eu", "tu", "ele"
+    )
+
+    private fun extrairPalavrasChave(texto: String): String {
+        val palavras = texto
+            .replace(Regex("[^\\p{L}\\p{N}\\s]"), " ")
+            .split(Regex("\\s+"))
+            .map { it.trim().lowercase() }
+            .filter { it.length >= 4 && it !in STOPWORDS }
+            .distinct()
+            .take(8)
+        // Se sobrou nada (mensagem só de palavras curtas), cai na frase normalizada original.
+        return if (palavras.isNotEmpty()) palavras.joinToString(" ") else texto.take(60)
     }
 
     private fun faseDe(tool: String, args: org.json.JSONObject): String = when (tool) {

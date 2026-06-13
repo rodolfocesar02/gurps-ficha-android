@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 354 CONCLUÍDO — Saga A5: Narrador mínimo viável + Aba Saga (jogável: narração → card de rolagem → dado real → consequência → persistência)
-**Último Lote Registrado:** Lote 354 — última entrada deste arquivo
+**Status Atual:** Lote 355 CONCLUÍDO — Polimento do Narrador (definir_cena real + cena de abertura automática + narração no Flash + consultar_mundo por palavras-chave)
+**Último Lote Registrado:** Lote 355 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2923,4 +2923,16 @@ Diagnostico caso a caso: 14 eram TESTES DESATUALIZADOS (codigo evoluiu de propos
 - Build: ./gradlew build COMPLETO VERDE (testes 2 variantes + lint + assemble). Smoke test no emulador: app abre sem crash com o delegate Saga no construtor do VM (PID vivo, zero FATAL)
 - DIVERGENCIA do plano: §3.2 do PLANO_GURPS_SAGA_v2 (citado) nao existe no repo — parametros das tools projetados a partir dos nomes/objetivos do plano. Persistencia "CenaEntity/chat": optei pelas tabelas de chat (sessao por campanha) por nao exigir migracao; CenaEntity guarda titulo/resumo
 - PENDENTE (validacao do usuario no aparelho): roteiro do aceite — criar campanha -> "tento ouvir a conversa dos guardas" -> card Audicao com mods -> tocar dado -> narracao cita a margem real -> fato registrado -> fechar/reabrir -> contexto continua. (Requer chaves de IA reais; a IA roda no device.)
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 355 — 13 de Junho de 2026
+**Polimento do Narrador (correcao pos-teste real do A5 — branch GURPS-Saga)**
+Baseado na analise da 1a sessao de jogo real do usuario (logcat): nucleo OK (rolagem interativa, fatos, lei de ferro), mas 4 pontos crus corrigidos:
+- (A) definir_cena REAL: estava nao_implementado; agora grava titulo/bioma/humor/resumo na CenaEntity (SagaDao.atualizarDescricaoCena), preserva campo omitido, e o cabecalho da TabSaga reflete a cena (delegate re-le cenaAberta apos cada turno)
+- (B) Cena de ABERTURA automatica: ao criar campanha, o Narrador enquadra onde o heroi esta + 1o gancho (prompt-semente de sistema, nao vira bolha de jogador) — resolve o "comecei perdido" observado no teste
+- (C) Narracao no FLASH: fila do Narrador agora Gemini 2.5 Flash -> 2.5 Pro -> DeepSeek V3 (antes Pro primario, 15-19s/turno). Narracao nao precisa de raciocinio pesado
+- (D) consultar_mundo automatico por PALAVRAS-CHAVE: extrairPalavrasChave (tira pontuacao/aspas/stopwords, <=8 termos) em vez da frase crua do jogador — query FTS melhor
+- TabSaga: texto de estado vazio ajustado ("Narrador preparando a cena de abertura")
+- Sem mudanca de schema (Room segue v25; so 1 @Query novo). Build completo verde 2 variantes
+- NAO incluido (fora do escopo escolhido A+B+C+D): margem negativa e warning "resource failed to call release" — anotados para lote futuro
 ----------------------------------------------------------------------------------------------------------------------------------------------------

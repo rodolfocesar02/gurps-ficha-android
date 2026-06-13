@@ -45,6 +45,10 @@ interface SagaDao {
     @Query("SELECT * FROM cenas WHERE campanhaId = :campanhaId AND fechadaEm IS NULL ORDER BY indice DESC LIMIT 1")
     suspend fun cenaAberta(campanhaId: Long): CenaEntity?
 
+    /** Lote 355: definir_cena — atualiza os campos descritivos da cena aberta. */
+    @Query("UPDATE cenas SET titulo = :titulo, bioma = :bioma, humor = :humor, resumo = :resumo WHERE id = :cenaId")
+    suspend fun atualizarDescricaoCena(cenaId: Long, titulo: String, bioma: String, humor: String, resumo: String)
+
     // ── Fatos (FTS4) ───────────────────────────────────────────────────────
     @Insert
     suspend fun inserirFato(fato: CampaignFactEntity)

@@ -12,7 +12,8 @@
 > - ✅ A3 = resolvido FORA do fluxo de lotes (declarado pelo usuário em 2026-06-13; não consumiu número)
 > - ✅ Lote 353 = A4 (2026-06-13) — fundação de dados (Room v25) + 16 tools do Narrador + executor; migração validada no emulador, testes instrumentados verdes
 > - ✅ Lote 354 = A5 (2026-06-13) — Narrador (modo saga) + Aba Saga + ponte de rolagem real; build verde, smoke test no emulador OK. Pendente: roteiro de jogo no aparelho (chaves de IA)
-> - ➡️ Próximo: FASE B — B1 (≈355) Combate: modelos + sequência de turnos
+> - ✅ Lote 355 = EXTRA: polimento do Narrador pós-teste real (definir_cena real, cena de abertura automática, narração no Flash, consultar_mundo por palavras-chave) (2026-06-13)
+> - ➡️ Próximo: FASE B — B1 (≈356) Combate: modelos + sequência de turnos
 
 ---
 
