@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 356 CONCLUÍDO — Configuração de campanha (session zero: gênero/tom/dificuldade/magia/NT/livros) + excluir campanha
-**Último Lote Registrado:** Lote 356 — última entrada deste arquivo
+**Status Atual:** Lote 357 CONCLUÍDO — UI: tela de criação da Saga limpa, configurações atrás do botão "Configuração do Jogo" (diálogo)
+**Último Lote Registrado:** Lote 357 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2950,4 +2950,14 @@ Pedido do usuario apos teste real: faltava lixeira pra apagar campanha e um menu
 - MIGRACAO v25->v26 VALIDADA no emulador (instalado por cima do banco real com a campanha "Quartedec"; logcat sem Migration/IllegalState/FATAL + "CODEX OK v4 1197 chunks" = dados preservados)
 - Build completo verde 2 variantes
 - NOTA: a config hoje e TRAVA TEXTUAL no prompt (o Narrador e instruido a respeitar). Trava REAL de tools/catalogo (ex.: bloquear magia de fato) fica para quando a Fase B/C precisar
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 357 — 13 de Junho de 2026
+**UI: tela de criacao da Saga limpa (configuracoes em dialogo) (branch GURPS-Saga)**
+Feedback do usuario: a tela de criacao estava POLUIDA (genero/tom/dificuldade/magia/NT/livros todos inline).
+- ui/TabSaga: tela de criacao agora so tem Nome + botao "Configuração do Jogo" (icone Tune) + resumo de 1 linha (ex.: "Faroeste · Sombrio · Dificil · NT5 · sem magia") + botao Criar campanha
+- Novo ConfiguracaoJogoDialog: AlertDialog rolavel (heightIn max 460dp) com TODAS as definicoes dentro (FilterChips genero/tom/dificuldade/livros, conceito, Switch magia, stepper NT); botao "Concluir"
+- Estado consolidado em um unico `config: CampanhaConfig` (antes eram 7 vars soltas); edicao live via config.copy(...)
+- resumoConfig() helper para o texto sob o botao. TalkBack mantido em todos os controles
+- SO UI: zero mudanca de logica/schema/regras. Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------

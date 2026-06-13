@@ -14,7 +14,8 @@
 > - ✅ Lote 354 = A5 (2026-06-13) — Narrador (modo saga) + Aba Saga + ponte de rolagem real; build verde, smoke test no emulador OK. Pendente: roteiro de jogo no aparelho (chaves de IA)
 > - ✅ Lote 355 = EXTRA: polimento do Narrador pós-teste real (definir_cena real, cena de abertura automática, narração no Flash, consultar_mundo por palavras-chave) (2026-06-13)
 > - ✅ Lote 356 = EXTRA: configuração de campanha (session zero: gênero/tom/dificuldade/magia/NT/livros) + excluir campanha; migração Room v25→v26 (2026-06-13)
-> - ➡️ Próximo: FASE B — B1 (≈357) Combate: modelos + sequência de turnos
+> - ✅ Lote 357 = EXTRA (UI): tela de criação da Saga limpa — configurações atrás do botão "Configuração do Jogo" (diálogo) (2026-06-13)
+> - ➡️ Próximo: FASE B — B1 (≈358) Combate: modelos + sequência de turnos
 
 ---
 

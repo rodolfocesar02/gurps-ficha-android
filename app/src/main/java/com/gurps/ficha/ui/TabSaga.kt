@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,17 +45,11 @@ fun TabSaga(viewModel: FichaViewModel) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
     var nome by remember { mutableStateOf("") }
-    var genero by remember { mutableStateOf("") }
-    var conceito by remember { mutableStateOf("") }
-    var tom by remember { mutableStateOf("Heroico") }
-    var dificuldade by remember { mutableStateOf("Normal") }
-    var magia by remember { mutableStateOf(true) }
-    var nt by remember { mutableStateOf(3) }
-    val livros = remember { mutableStateListOf(CampanhaConfig.MODULO_BASICO) }
+    var config by remember { mutableStateOf(CampanhaConfig()) }
+    var mostrarConfig by remember { mutableStateOf(false) }
     var idParaExcluir by remember { mutableStateOf<Long?>(null) }
 
     Column(
@@ -80,104 +75,26 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Nome da nova campanha" }
         )
 
-        // Gênero
-        SecaoConfig("Gênero") {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CampanhaConfig.GENEROS.forEach { g ->
-                    FilterChip(
-                        selected = genero == g,
-                        onClick = { genero = if (genero == g) "" else g },
-                        label = { Text(g) },
-                        modifier = Modifier.semantics { contentDescription = "Gênero $g" }
-                    )
-                }
-            }
+        Spacer(Modifier.height(12.dp))
+        // Tela limpa: as definições do jogo ficam atrás de um botão.
+        OutlinedButton(
+            onClick = { mostrarConfig = true },
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Abrir Configuração do Jogo" }
+        ) {
+            Icon(Icons.Default.Tune, contentDescription = null)
+            Spacer(Modifier.width(8.dp))
+            Text("Configuração do Jogo")
         }
-
-        OutlinedTextField(
-            value = conceito,
-            onValueChange = { conceito = it },
-            label = { Text("Conceito (opcional)") },
-            placeholder = { Text("ex.: caçador de recompensas num faroeste sombrio") },
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp).semantics { contentDescription = "Conceito da campanha" },
-            maxLines = 3
+        Text(
+            resumoConfig(config),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 4.dp, start = 4.dp)
         )
-
-        // Tom
-        SecaoConfig("Tom") {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CampanhaConfig.TONS.forEach { t ->
-                    FilterChip(selected = tom == t, onClick = { tom = t }, label = { Text(t) },
-                        modifier = Modifier.semantics { contentDescription = "Tom $t" })
-                }
-            }
-        }
-
-        // Dificuldade
-        SecaoConfig("Dificuldade") {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CampanhaConfig.DIFICULDADES.forEach { d ->
-                    FilterChip(selected = dificuldade == d, onClick = { dificuldade = d }, label = { Text(d) },
-                        modifier = Modifier.semantics { contentDescription = "Dificuldade $d" })
-                }
-            }
-        }
-
-        // Conteúdo: magia
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Magia neste mundo", modifier = Modifier.weight(1f))
-            Switch(checked = magia, onCheckedChange = { magia = it },
-                modifier = Modifier.semantics { contentDescription = "Permitir magia" })
-        }
-
-        // Nível tecnológico (stepper)
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Nível tecnológico (NT)", modifier = Modifier.weight(1f))
-            OutlinedButton(onClick = { if (nt > 0) nt-- },
-                modifier = Modifier.semantics { contentDescription = "Diminuir nível tecnológico" }) { Text("−") }
-            Text("NT$nt", modifier = Modifier.padding(horizontal = 12.dp), fontWeight = FontWeight.Bold)
-            OutlinedButton(onClick = { if (nt < 12) nt++ },
-                modifier = Modifier.semantics { contentDescription = "Aumentar nível tecnológico" }) { Text("+") }
-        }
-
-        // Livros liberados
-        SecaoConfig("Regras/livros liberados") {
-            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                CampanhaConfig.LIVROS_DISPONIVEIS.forEach { livro ->
-                    val obrigatorio = livro == CampanhaConfig.MODULO_BASICO
-                    val sel = livro in livros
-                    FilterChip(
-                        selected = sel,
-                        onClick = {
-                            if (!obrigatorio) {
-                                if (sel) livros.remove(livro) else livros.add(livro)
-                            }
-                        },
-                        label = { Text(livro) },
-                        modifier = Modifier.semantics { contentDescription = "Livro $livro ${if (sel) "incluído" else "fora"}" }
-                    )
-                }
-            }
-        }
 
         Spacer(Modifier.height(16.dp))
         Button(
-            onClick = {
-                viewModel.sagaCriarCampanha(
-                    nome,
-                    CampanhaConfig(
-                        genero = genero, conceito = conceito.trim(), tom = tom,
-                        dificuldade = dificuldade, magiaPermitida = magia,
-                        nivelTecnologico = nt, livros = livros.toList()
-                    )
-                )
-            },
+            onClick = { viewModel.sagaCriarCampanha(nome, config) },
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = "Criar campanha e começar a aventura" }
         ) { Text("Criar campanha") }
 
@@ -213,6 +130,14 @@ private fun SelecaoDeCampanha(viewModel: FichaViewModel) {
         }
     }
 
+    if (mostrarConfig) {
+        ConfiguracaoJogoDialog(
+            config = config,
+            onConfigChange = { config = it },
+            onFechar = { mostrarConfig = false }
+        )
+    }
+
     idParaExcluir?.let { id ->
         val nomeCamp = viewModel.sagaCampanhas.firstOrNull { it.id == id }?.nome ?: "campanha"
         AlertDialog(
@@ -235,6 +160,125 @@ private fun SecaoConfig(titulo: String, conteudo: @Composable () -> Unit) {
     Text(titulo, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(4.dp))
     conteudo()
+}
+
+/** Resumo de uma linha mostrado sob o botão "Configuração do Jogo". */
+private fun resumoConfig(c: CampanhaConfig): String {
+    val partes = mutableListOf<String>()
+    if (c.genero.isNotBlank()) partes.add(c.genero)
+    partes.add(c.tom)
+    partes.add(c.dificuldade)
+    partes.add("NT${c.nivelTecnologico}")
+    partes.add(if (c.magiaPermitida) "com magia" else "sem magia")
+    return partes.joinToString(" · ")
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ConfiguracaoJogoDialog(
+    config: CampanhaConfig,
+    onConfigChange: (CampanhaConfig) -> Unit,
+    onFechar: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Configuração do Jogo") },
+        text = {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 460.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                // Gênero
+                SecaoConfig("Gênero") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CampanhaConfig.GENEROS.forEach { g ->
+                            FilterChip(
+                                selected = config.genero == g,
+                                onClick = { onConfigChange(config.copy(genero = if (config.genero == g) "" else g)) },
+                                label = { Text(g) },
+                                modifier = Modifier.semantics { contentDescription = "Gênero $g" }
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = config.conceito,
+                    onValueChange = { onConfigChange(config.copy(conceito = it)) },
+                    label = { Text("Conceito (opcional)") },
+                    placeholder = { Text("ex.: caçador de recompensas num faroeste sombrio") },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp).semantics { contentDescription = "Conceito da campanha" },
+                    maxLines = 3
+                )
+
+                // Tom
+                SecaoConfig("Tom") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CampanhaConfig.TONS.forEach { t ->
+                            FilterChip(selected = config.tom == t, onClick = { onConfigChange(config.copy(tom = t)) },
+                                label = { Text(t) }, modifier = Modifier.semantics { contentDescription = "Tom $t" })
+                        }
+                    }
+                }
+
+                // Dificuldade
+                SecaoConfig("Dificuldade") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CampanhaConfig.DIFICULDADES.forEach { d ->
+                            FilterChip(selected = config.dificuldade == d, onClick = { onConfigChange(config.copy(dificuldade = d)) },
+                                label = { Text(d) }, modifier = Modifier.semantics { contentDescription = "Dificuldade $d" })
+                        }
+                    }
+                }
+
+                // Magia
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Magia neste mundo", modifier = Modifier.weight(1f))
+                    Switch(checked = config.magiaPermitida, onCheckedChange = { onConfigChange(config.copy(magiaPermitida = it)) },
+                        modifier = Modifier.semantics { contentDescription = "Permitir magia" })
+                }
+
+                // Nível tecnológico
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Nível tecnológico (NT)", modifier = Modifier.weight(1f))
+                    OutlinedButton(onClick = { if (config.nivelTecnologico > 0) onConfigChange(config.copy(nivelTecnologico = config.nivelTecnologico - 1)) },
+                        modifier = Modifier.semantics { contentDescription = "Diminuir nível tecnológico" }) { Text("−") }
+                    Text("NT${config.nivelTecnologico}", modifier = Modifier.padding(horizontal = 12.dp), fontWeight = FontWeight.Bold)
+                    OutlinedButton(onClick = { if (config.nivelTecnologico < 12) onConfigChange(config.copy(nivelTecnologico = config.nivelTecnologico + 1)) },
+                        modifier = Modifier.semantics { contentDescription = "Aumentar nível tecnológico" }) { Text("+") }
+                }
+
+                // Livros liberados
+                SecaoConfig("Regras/livros liberados") {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CampanhaConfig.LIVROS_DISPONIVEIS.forEach { livro ->
+                            val obrigatorio = livro == CampanhaConfig.MODULO_BASICO
+                            val sel = livro in config.livros
+                            FilterChip(
+                                selected = sel,
+                                onClick = {
+                                    if (!obrigatorio) {
+                                        val novos = if (sel) config.livros - livro else config.livros + livro
+                                        onConfigChange(config.copy(livros = novos))
+                                    }
+                                },
+                                label = { Text(livro) },
+                                modifier = Modifier.semantics { contentDescription = "Livro $livro ${if (sel) "incluído" else "fora"}" }
+                            )
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onFechar) { Text("Concluir") } }
+    )
 }
 
 @Composable
