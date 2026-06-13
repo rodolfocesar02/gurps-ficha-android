@@ -1,5 +1,6 @@
 package com.gurps.ficha.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -11,12 +12,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.liveRegion
@@ -24,6 +27,8 @@ import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.domain.saga.CampanhaConfig
 import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.viewmodel.delegates.SagaTurn
@@ -180,15 +185,35 @@ private fun ConfiguracaoJogoDialog(
     onConfigChange: (CampanhaConfig) -> Unit,
     onFechar: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = onFechar,
-        title = { Text("Configuração do Jogo") },
-        text = {
-            Column(
-                modifier = Modifier
-                    .heightIn(max = 460.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
+    Dialog(onDismissRequest = onFechar, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
+            Column(Modifier.fillMaxSize()) {
+                // Barra superior fixa
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "Configuração do Jogo",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    TextButton(onClick = onFechar, modifier = Modifier.semantics { contentDescription = "Concluir configuração" }) { Text("Concluir") }
+                    IconButton(onClick = onFechar, modifier = Modifier.semantics { contentDescription = "Fechar configuração" }) {
+                        Icon(Icons.Default.Close, contentDescription = null)
+                    }
+                }
+                HorizontalDivider()
+                // Conteúdo rolável + barra de rolagem visível à direita
+                BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                    val scrollState = rememberScrollState()
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(scrollState)
+                            .padding(16.dp)
+                    ) {
                 // Gênero
                 SecaoConfig("Gênero") {
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -275,9 +300,37 @@ private fun ConfiguracaoJogoDialog(
                         }
                     }
                 }
+                        Spacer(Modifier.height(24.dp))
+                    }
+                    BarraDeRolagem(scrollState, maxHeight, Modifier.align(Alignment.TopEnd))
+                }
             }
-        },
-        confirmButton = { TextButton(onClick = onFechar) { Text("Concluir") } }
+        }
+    }
+}
+
+/** Barra de rolagem vertical simples (o Compose Android não traz uma nativa). */
+@Composable
+private fun BarraDeRolagem(
+    scroll: androidx.compose.foundation.ScrollState,
+    alturaVisivel: androidx.compose.ui.unit.Dp,
+    modifier: Modifier = Modifier
+) {
+    if (scroll.maxValue <= 0) return
+    val density = LocalDensity.current
+    val viewportPx = with(density) { alturaVisivel.toPx() }
+    val totalPx = viewportPx + scroll.maxValue
+    val minThumbPx = with(density) { 32.dp.toPx() }
+    val thumbPx = (viewportPx * viewportPx / totalPx).coerceAtLeast(minThumbPx)
+    val trackPx = (viewportPx - thumbPx).coerceAtLeast(0f)
+    val topPx = trackPx * (scroll.value.toFloat() / scroll.maxValue.toFloat())
+    Box(
+        modifier
+            .padding(end = 2.dp)
+            .offset(y = with(density) { topPx.toDp() })
+            .width(4.dp)
+            .height(with(density) { thumbPx.toDp() })
+            .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(2.dp))
     )
 }
 

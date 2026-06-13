@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 357 CONCLUÍDO — UI: tela de criação da Saga limpa, configurações atrás do botão "Configuração do Jogo" (diálogo)
-**Último Lote Registrado:** Lote 357 — última entrada deste arquivo
+**Status Atual:** Lote 358 CONCLUÍDO — UI: diálogo "Configuração do Jogo" em tela cheia + barra de rolagem visível
+**Último Lote Registrado:** Lote 358 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2960,4 +2960,13 @@ Feedback do usuario: a tela de criacao estava POLUIDA (genero/tom/dificuldade/ma
 - Estado consolidado em um unico `config: CampanhaConfig` (antes eram 7 vars soltas); edicao live via config.copy(...)
 - resumoConfig() helper para o texto sob o botao. TalkBack mantido em todos os controles
 - SO UI: zero mudanca de logica/schema/regras. Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 358 — 13 de Junho de 2026
+**UI: dialogo "Configuração do Jogo" em tela cheia + barra de rolagem visivel (branch GURPS-Saga)**
+Feedback do usuario: o dialogo de config deveria ser TELA CHEIA e mostrar uma barra de rolagem (nao dava pra perceber que havia mais conteudo abaixo).
+- ui/TabSaga: ConfiguracaoJogoDialog deixou de ser AlertDialog -> agora Dialog(usePlatformDefaultWidth=false) + Surface fillMaxSize = TELA CHEIA
+- Barra superior fixa (titulo + Concluir + X) + HorizontalDivider; conteudo num BoxWithConstraints/verticalScroll
+- BarraDeRolagem (composable nova): thumb desenhado a partir do ScrollState (o Compose Android nao tem scrollbar nativa) — posicao/altura do thumb calculadas com LocalDensity (viewport vs maxValue); aparece so quando ha rolagem
+- SO UI: zero mudanca de logica/schema/regras. Build completo verde 2 variantes. Nao testado no emulador (usuario roda no Android Studio)
 ----------------------------------------------------------------------------------------------------------------------------------------------------
