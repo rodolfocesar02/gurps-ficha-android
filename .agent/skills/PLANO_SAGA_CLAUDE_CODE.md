@@ -18,7 +18,8 @@
 > - ✅ Lote 358 = EXTRA (UI): diálogo "Configuração do Jogo" em tela cheia + barra de rolagem visível (2026-06-13)
 > - ✅ Lote 359 = B1 (2026-06-13) — FASE B início: modelos de combate (domain/combat) + CombatEncounter (ordem/manobrasLegais/estadoResumo) + testes
 > - ✅ Lotes 360-362 = B2+B3+B4 (2026-06-13, commit único) — ataque/manobras (CombatActions+ModificadoresCombate), dano localizado (HitLocationRules, paridade Mesa Virtual), estados vitais (InjuryRules); todos com testes
-> - ➡️ Próximo: FASE B — B6 (≈363) Bestiário + cérebro tático; depois B5 (≈364) defesas/dano fim-a-fim + UI (integração)
+> - ✅ Lote 363 = B6 (2026-06-13) — bestiário (17 criaturas) + check_bestiario.py + BestiarioModels/loader + NpcCombatBrain + testes
+> - ➡️ Próximo: FASE B — B5 (≈364) defesas no fluxo + executor real aplicar_dano (B3+B4) + UI card "Defenda-se!" + crítico (INTEGRAÇÃO — toca arquivos existentes)
 
 ---
 
@@ -142,7 +143,7 @@ LOTE NNN — <título>
 4. Crítico no ataque do NPC contra o herói: defesa anulada + tabela do `CriticoRules` (já pronta) aplicada.
 **Aceite:** teste de integração: round completo herói×1 NPC via executores, com um crítico forçado (seed) disparando a tabela.
 
-### LOTE B6 (≈359) — Bestiário + cérebro tático de NPC
+### ✅ LOTE B6 (= Lote 363, concluído 2026-06-13; 17 criaturas, F1 expande p/ 40) — Bestiário + cérebro tático de NPC
 1. `assets/bestiario.v1.json` (~40 criaturas; schema §4.5) + `scripts/check_bestiario.py` no padrão dos checks existentes (IDs únicos, dano PT-BR `cont/corte/perf/imp`, locais válidos).
 2. `model/BestiarioModels.kt` + loader no padrão `CatalogLoaders`.
 3. `NpcCombatBrain.kt`: dado o estado, decide manobra/alvo/local por `agressividade`, `moral` (foge abaixo de X% PV), alcance da arma e distância — determinístico com seed. É o fallback quando o Narrador não especificar detalhes em `acao_npc`.

@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lotes 360-362 CONCLUÍDOS — Saga FASE B: B2 (ataque/manobras), B3 (dano localizado, paridade Mesa Virtual), B4 (estados vitais)
-**Último Lote Registrado:** Lote 362 — última entrada deste arquivo
+**Status Atual:** Lote 363 CONCLUÍDO — Saga FASE B B6: bestiário (17 criaturas) + cérebro tático de NPC
+**Último Lote Registrado:** Lote 363 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2988,5 +2988,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - B3 (HitLocationRules.kt): PORTE FIEL da calculadora da Mesa Virtual (index.html DAMAGE_RULES/applySmartDmg). DanoTipo (cont1.0/corte1.5/pi-0.5/pi1.0/pi+1.5/pi++2.0/perf2.0); overrides cranio x4 (qualquer tipo) e vitais x3 (so perfurante/perf); RD extra cranio +2; limite de membro braco/perna ceil(PV*0.5), mao/pe ceil(PV*0.33) com flag incapacitou. HitLocationRulesTest: 15 casos de PARIDADE com gabarito do JS. VERDE
 - B4 (InjuryRules.kt): penalidadeChoque (-min(dano,4)); ehFerimentoGrave (>PV/2); aplicarGolpe (morte automatica <=-5xPV; cheques de morte -1x..-4xPV recem-cruzados; ferimento grave HT->atordoado+caido ou inconsciente por falha 5+; inconsciencia por PV<=0); recuperaAtordoamento; ferir(Combatente) muta PV/condicoes. InjuryRulesTest: choque/grave/recuperacao/morte-automatica + simulacao 0->morte com log e seed fixa. VERDE
 - DIVERGENCIA (B2): plano diz "Mover-e-Atacar teto 9" (regra A DISTANCIA); no CaC a regra e -4. Implementei as duas (param aDistancia), matematica correta do GURPS. DIVERGENCIA (B3): paridade e com a Mesa Virtual (locais olho/pescoco/virilha sem override especial usam mult base — documentado)
+- Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 363 — 13 de Junho de 2026
+**Saga FASE B B6: bestiario + cerebro tatico de NPC (branch GURPS-Saga)**
+- assets/bestiario.v1.json: 17 criaturas (goblin, goblin_arqueiro, kobold, orc, lobo, lobo_atroz, urso_pardo, rato_gigante, aranha_gigante, serpente_venenosa, esqueleto, zumbi, bandido, bandido_arqueiro, mercenario, ogro, cultista) com st/dx/iq/ht/pv/rd/vel/desloc/agressividade/moral/ataques. (Plano pede ~40; F1 expande — comecei com 17 cobrindo os arquetipos)
+- scripts/check_bestiario.py (padrao dos checks): IDs unicos, campos obrigatorios, dano NdX±Y, tipo PT-BR valido (cont/corte/pi-/pi/pi+/pi++/perf), stats positivos, agressividade/moral 0-10, >=1 ataque. RODADO: 0 erros
+- model/BestiarioModels.kt: BestiarioCriatura/AtaqueCriatura/Bestiario + BestiarioLoader.parse (Gson) + novoCombatente() (cria Combatente do B1). NpcStats ganhou agressividade/moral
+- domain/combat/NpcCombatBrain.kt: decidir(npc, encounter, alvo, seed) deterministico — fuga por moral/PV (limiarFugaPV), arqueiro mantem distancia, bruto avanca/Ataque Total, default avanca/ataca. Fallback do acao_npc (B8)
+- NpcCombatBrainTest: arqueiro mantem distancia, bruto avanca, covarde foge a 30% PV, bestiario carrega/integridade, 3 goblins avancam coerentes. VERDE
+- BUG corrigido: Gson nao roda init de data class -> Bestiario.get() agora busca direto (sem mapa cacheado vazio)
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
