@@ -16,7 +16,8 @@
 > - ✅ Lote 356 = EXTRA: configuração de campanha (session zero: gênero/tom/dificuldade/magia/NT/livros) + excluir campanha; migração Room v25→v26 (2026-06-13)
 > - ✅ Lote 357 = EXTRA (UI): tela de criação da Saga limpa — configurações atrás do botão "Configuração do Jogo" (diálogo) (2026-06-13)
 > - ✅ Lote 358 = EXTRA (UI): diálogo "Configuração do Jogo" em tela cheia + barra de rolagem visível (2026-06-13)
-> - ➡️ Próximo: FASE B — B1 (≈359) Combate: modelos + sequência de turnos
+> - ✅ Lote 359 = B1 (2026-06-13) — FASE B início: modelos de combate (domain/combat) + CombatEncounter (ordem/manobrasLegais/estadoResumo) + testes
+> - ➡️ Próximo: FASE B — B2 (≈360) Ataque e manobras núcleo (CombatActions)
 
 ---
 
@@ -110,7 +111,7 @@ LOTE NNN — <título>
 ## FASE B — COMBATE GURPS 4ª ED. (8 lotes)
 > Tudo em `domain/combat/`, Kotlin puro, testável sem UI. Referência de regra em comentário (`// MB p.XXX`). Fonte de verdade conceitual: `.agent/skills/Skill_GURPS.MD` + Códex.
 
-### LOTE B1 (≈354) — Modelos + sequência de turnos
+### ✅ LOTE B1 (= Lote 359, concluído 2026-06-13) — Modelos + sequência de turnos
 1. `CombatModels.kt`: `Combatente`, `Postura`, `Condicao`, `Manobra`, `DefesasUsadas`, `NpcStats` (campos no §4.1 do PLANO_GURPS_SAGA_v2; PT-BR como o domínio existente).
 2. `CombatEncounter.kt`: construtor com lista de combatentes + distâncias iniciais; ordenação por Velocidade Básica (desempate DX, depois aleatório com seed); `proximoTurno()`, `rodadaAtual`, `manobrasLegais(c): List<Manobra>` (filtra por condições: atordoado → só recuperar/Defesa Total; caído → Mudar Postura...; sem alvo engajado → sem ataque corpo-a-corpo), `estadoResumo(): String` (relatório factual p/ IA).
 3. Testes (`CombatEncounterTest`): ordem com 4 combatentes (2 empates), legalidade de manobras em 6 estados, resumo determinístico.

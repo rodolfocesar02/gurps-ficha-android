@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 358 CONCLUÍDO — UI: diálogo "Configuração do Jogo" em tela cheia + barra de rolagem visível
-**Último Lote Registrado:** Lote 358 — última entrada deste arquivo
+**Status Atual:** Lote 359 CONCLUÍDO — Saga FASE B (Combate) B1: modelos de combate + sequência de turnos (Kotlin puro)
+**Último Lote Registrado:** Lote 359 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2969,4 +2969,14 @@ Feedback do usuario: o dialogo de config deveria ser TELA CHEIA e mostrar uma ba
 - Barra superior fixa (titulo + Concluir + X) + HorizontalDivider; conteudo num BoxWithConstraints/verticalScroll
 - BarraDeRolagem (composable nova): thumb desenhado a partir do ScrollState (o Compose Android nao tem scrollbar nativa) — posicao/altura do thumb calculadas com LocalDensity (viewport vs maxValue); aparece so quando ha rolagem
 - SO UI: zero mudanca de logica/schema/regras. Build completo verde 2 variantes. Nao testado no emulador (usuario roda no Android Studio)
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 359 — 13 de Junho de 2026
+**Saga FASE B (Combate) B1: modelos + sequencia de turnos (branch GURPS-Saga)**
+Inicio da Fase B. Tudo em domain/combat/, KOTLIN PURO (zero dependencia de Android), testavel sem UI. Referencias // MB nos comentarios.
+- domain/combat/CombatModels.kt: Postura (6, MB p.551), Condicao (atordoado/caido/inconsciente/agarrado/surpreso), Manobra (11: ataque, ataque total, defesa total, mover, mover e atacar, mudar postura, preparar, aguardar, avaliar, concentrar, nao fazer nada), DefesasUsadas (base p/ B5), NpcStats (vel/desloc default de DX+HT), Combatente (estado mutavel pv/pf/postura/condicoes + vivo/caido)
+- domain/combat/CombatEncounter.kt: ordem por Velocidade Basica desc -> DX desc -> aleatorio com SEED (deterministico); proximoTurno()/rodadaAtual; engajado() (corpo-a-corpo se dist<=1 do heroi); manobrasLegais() (inconsciente->nenhuma; atordoado->Defesa Total/Nao Fazer Nada; caido->sem Ataque Total/Mover e Atacar; sem alvo engajado->sem ataque CaC); estadoResumo() factual e deterministico p/ a IA
+- CombatEncounterTest: ordem com 4 combatentes e 2 empates (vel+DX) + determinismo por seed; proximoTurno/rodada; manobras legais em 6 estados; estadoResumo deterministico/factual. VERDE
+- DIVERGENCIA: §4.1 do PLANO_GURPS_SAGA_v2 nao existe no repo; campos derivados do MB + Skill_GURPS
+- Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
