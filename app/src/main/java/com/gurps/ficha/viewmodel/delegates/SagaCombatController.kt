@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.gurps.ficha.domain.combat.*
+import com.gurps.ficha.domain.filters.CatalogFilters
 import com.gurps.ficha.domain.loaders.BestiarioCatalogo
 import com.gurps.ficha.model.Personagem
 import com.gurps.ficha.model.TipoEquipamento
@@ -62,10 +63,14 @@ data class CombatUiState(
     val combatentes: List<CombatenteUi>,
     val vezDoHeroi: Boolean,
     val manobrasHeroi: List<Manobra>,
-    val alvosCorpoACorpo: List<CombatenteUi>,
+    val alvos: List<CombatenteUi>,
+    val ataques: List<AtaqueHeroi>,
+    val ataqueSelecionado: Int,
     val encerrado: Boolean,
     val resultado: ResultadoCombate?
-)
+) {
+    val ataqueAtual: AtaqueHeroi? get() = ataques.getOrNull(ataqueSelecionado)
+}
 
 /** Card "Defenda-se!" pendente: o herói foi atacado e precisa escolher uma defesa. */
 data class DefesaPendenteUi(
@@ -95,6 +100,14 @@ class SagaCombatController(
 
     var estado by mutableStateOf<CombatUiState?>(null); private set
     var defesaPendente by mutableStateOf<DefesaPendenteUi?>(null); private set
+
+    /** Ataques utilizáveis do herói (armas empunhadas + desarmado) e o índice escolhido (Lote 368). */
+    private var ataques: List<AtaqueHeroi> = emptyList()
+    private var ataqueSelecionado: Int = 0
+
+    fun selecionarAtaque(indice: Int) {
+        if (indice in ataques.indices) { ataqueSelecionado = indice; atualizarEstado() }
+    }
 
     /** Notificado quando o combate encerra — o delegate dispara a narração do desfecho (B8). */
     var onFim: ((CombatFim) -> Unit)? = null
@@ -156,6 +169,8 @@ class SagaCombatController(
         sessao = s
         logPublicado = 0
         finalizado = false
+        ataques = construirAtaques(p)
+        ataqueSelecionado = 0
         s.log += "⚔️ Combate iniciado: ${inimigos.joinToString(", ") { "${it.second}× ${it.first}" }} a ${distanciaM}m."
         scope.launch { rodarLoop() }
         return s.resumo()
@@ -201,7 +216,8 @@ class SagaCombatController(
     fun heroiAtaca(alvoId: String, manobra: Manobra, local: LocalAtaque, modo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
-        s.heroiAtaca(alvoId, manobra, local, modo)
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        s.heroiAtaca(ataque, alvoId, manobra, local, modo)
         depoisDaAcaoDoHeroi()
     }
 
@@ -301,12 +317,24 @@ class SagaCombatController(
                 vivo = c.vivo
             )
         }
+        val ataqueSel = ataques.getOrNull(ataqueSelecionado)
+        val ranged = ataqueSel?.aDistancia == true
+        // Alvos: à distância = qualquer inimigo vivo; corpo-a-corpo = só adjacentes.
+        val alvos = if (!vezHeroi) emptyList()
+            else if (ranged) combs.filter { !it.ehHeroi && it.vivo }
+            else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= 1 }
+        // Manobras: à distância pode Atacar mesmo sem inimigo adjacente.
+        val manobras = if (!vezHeroi) emptyList() else s.manobrasHeroi().toMutableList().also {
+            if (ranged && alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
+        }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,
             combatentes = combs,
             vezDoHeroi = vezHeroi,
-            manobrasHeroi = if (vezHeroi) s.manobrasHeroi() else emptyList(),
-            alvosCorpoACorpo = if (vezHeroi) combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= 1 } else emptyList(),
+            manobrasHeroi = manobras,
+            alvos = alvos,
+            ataques = ataques,
+            ataqueSelecionado = ataqueSelecionado,
             encerrado = s.encerrado,
             resultado = s.resultado
         )
@@ -334,28 +362,70 @@ class SagaCombatController(
 
     // ── Perfil de combate do herói (a partir da ficha) ─────────────────────────
 
-    private fun construirPerfilHeroi(p: Personagem): HeroiPerfilCombate {
-        val periciaArma = p.defesasAtivas.getPericiaApara(p)
-        val nhArma = periciaArma?.calcularNivel(p) ?: p.dx
-        val arma = p.equipamentos.firstOrNull { it.tipo == TipoEquipamento.ARMA && !it.armaDanoRaw.isNullOrBlank() }
-        val danoArma = arma?.danoCalculadoComSt(p, periciaArma?.definicaoId) ?: p.danoGdP
-        val tipo = CombatSession.tipoDano(arma?.armaTipoCombate ?: "cont")
-        return HeroiPerfilCombate(
-            nhArma = nhArma,
-            danoArma = danoArma,
-            tipoDano = tipo,
-            esquiva = p.defesasAtivas.calcularEsquiva(p),
-            apara = p.defesasAtivas.calcularApara(p),
-            bloqueio = p.defesasAtivas.calcularBloqueio(p),
-            ht = p.ht,
-            rd = rdHeroi(p),
-            alcanceArma = 1
-        )
+    /** Defesas do herói (Lote 368: o ataque agora é uma lista escolhível, ver [construirAtaques]). */
+    private fun construirPerfilHeroi(p: Personagem): HeroiPerfilCombate = HeroiPerfilCombate(
+        esquiva = p.defesasAtivas.calcularEsquiva(p),
+        apara = p.defesasAtivas.calcularApara(p),
+        bloqueio = p.defesasAtivas.calcularBloqueio(p),
+        ht = p.ht,
+        rd = rdHeroi(p)
+    )
+
+    /**
+     * Lista de ataques utilizáveis (Lote 368): cada arma EQUIPADA (corpo-a-corpo e à distância/fogo)
+     * com sua perícia, NH, dano resolvido por ST e tipo correto; mais o desarmado como último recurso.
+     */
+    private fun construirAtaques(p: Personagem): List<AtaqueHeroi> {
+        val out = mutableListOf<AtaqueHeroi>()
+        p.equipamentos.filter { it.tipo == TipoEquipamento.ARMA }.forEach { arma ->
+            // Modo do catálogo: "corpo_a_corpo" | "distancia" (arcos/arremesso) | "armas_de_fogo".
+            val modo = arma.armaTipoCombate?.lowercase().orEmpty()
+            val aDistancia = modo.contains("dist") || modo.contains("fogo")
+            val pericia = acharPericiaDaArma(p, arma)
+            val nh = pericia?.calcularNivel(p) ?: p.dx
+            val danoExpr = (arma.danoCalculadoComSt(p, pericia?.definicaoId) ?: arma.armaDanoRaw).orEmpty()
+            if (danoExpr.isBlank()) return@forEach
+            out.add(AtaqueHeroi(
+                rotulo = arma.nome + (pericia?.let { " (${it.nome})" } ?: " (sem perícia, usa DX)"),
+                nh = nh, danoExpr = danoExpr, tipo = CombatSession.tipoDano(danoExpr),
+                aDistancia = aDistancia, alcance = if (aDistancia) 50 else 1, temPericia = pericia != null
+            ))
+        }
+        // Desarmado (sempre disponível): melhor perícia de luta sem arma, ou DX.
+        val desarmada = melhorPericiaDesarmada(p)
+        out.add(AtaqueHeroi(
+            rotulo = (desarmada?.nome ?: "Desarmado"),
+            nh = desarmada?.calcularNivel(p) ?: p.dx,
+            danoExpr = p.danoGdP, tipo = DanoTipo.CONT, aDistancia = false, alcance = 1,
+            temPericia = desarmada != null
+        ))
+        // Armas à distância primeiro quando há (pistoleiro saca o revólver, não soca).
+        return out.sortedByDescending { it.aDistancia }
     }
 
-    /** RD do herói: maior RD entre as armaduras equipadas (aproximação de torso para o B7). */
+    /** Casa uma arma com a perícia do herói por grupo/nome (fuzzy, normalizado). */
+    private fun acharPericiaDaArma(p: Personagem, arma: com.gurps.ficha.model.Equipamento): com.gurps.ficha.model.PericiaSelecionada? {
+        val alvos = listOfNotNull(arma.armaGrupo, arma.nome)
+            .map { CatalogFilters.normalizarBusca(it) }.filter { it.isNotBlank() }
+        if (alvos.isEmpty()) return null
+        return p.periciasTotais.firstOrNull { per ->
+            val n = CatalogFilters.normalizarBusca(per.nome)
+            alvos.any { a -> n == a || n.contains(a) || a.contains(n) }
+        }
+    }
+
+    private fun melhorPericiaDesarmada(p: Personagem): com.gurps.ficha.model.PericiaSelecionada? =
+        p.periciasTotais.filter {
+            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") in DESARMADAS
+        }.maxByOrNull { it.calcularNivel(p) }
+
+    /** RD do herói: maior RD entre as armaduras equipadas (aproximação de torso). */
     private fun rdHeroi(p: Personagem): Int = p.equipamentos
         .filter { it.tipo == TipoEquipamento.ARMADURA }
         .mapNotNull { it.rdArmaduraExibicao()?.let { s -> Regex("\\d+").find(s)?.value?.toIntOrNull() } }
         .maxOrNull() ?: 0
+
+    private companion object {
+        val DESARMADAS = setOf("briga", "boxe", "carate", "judo", "luta_grecoromana", "caratê", "judô")
+    }
 }

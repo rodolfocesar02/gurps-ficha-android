@@ -173,9 +173,14 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
         Column(Modifier.padding(12.dp)) {
             Text("Sua vez — escolha a manobra", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(6.dp))
+
+            // Seletor de arma/ataque (o jogador vê e escolhe o que está empunhando).
+            SeletorDeArma(viewModel, estado)
+
+            Spacer(Modifier.height(8.dp))
             estado.manobrasHeroi.forEach { m ->
                 val ehAtaque = m == Manobra.ATAQUE || m == Manobra.ATAQUE_TOTAL
-                val temAlvo = estado.alvosCorpoACorpo.isNotEmpty()
+                val temAlvo = estado.alvos.isNotEmpty()
                 Button(
                     onClick = {
                         when {
@@ -189,8 +194,9 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                         .semantics { contentDescription = "Manobra ${m.rotulo}" + if (ehAtaque && !temAlvo) ", sem alvo ao alcance" else "" }
                 ) { Text(m.rotulo + if (ehAtaque && !temAlvo) " (sem alvo)" else "") }
             }
-            if (estado.alvosCorpoACorpo.isEmpty()) {
-                Text("Nenhum inimigo ao alcance do corpo-a-corpo — use Mover para avançar.",
+            val ranged = estado.ataqueAtual?.aDistancia == true
+            if (estado.alvos.isEmpty() && !ranged) {
+                Text("Nenhum inimigo ao alcance do corpo-a-corpo — use Mover para avançar (ou empunhe uma arma à distância).",
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp))
             }
@@ -200,13 +206,52 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     alvoDialogo?.let { manobra ->
         SubDialogoAlvoLocal(
             manobra = manobra,
-            alvos = estado.alvosCorpoACorpo,
+            alvos = estado.alvos,
             onConfirmar = { alvoId, local, modo ->
                 viewModel.sagaCombateAtacar(alvoId, manobra, local, modo)
                 alvoDialogo = null
             },
             onFechar = { alvoDialogo = null }
         )
+    }
+}
+
+@Composable
+private fun SeletorDeArma(viewModel: FichaViewModel, estado: com.gurps.ficha.viewmodel.delegates.CombatUiState) {
+    val atual = estado.ataqueAtual ?: return
+    var aberto by remember { mutableStateOf(false) }
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.fillMaxWidth().semantics {
+            contentDescription = "Arma empunhada: ${atual.rotulo}, NH ${atual.nh}, dano ${atual.danoExpr}. Toque para trocar."
+        }
+    ) {
+        Column(Modifier.padding(8.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text("Empunhando: ${atual.rotulo}", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        "NH ${atual.nh} · ${atual.danoExpr} ${atual.tipo.rotulo}" + if (atual.aDistancia) " · à distância" else " · corpo-a-corpo",
+                        style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                if (estado.ataques.size > 1) {
+                    TextButton(onClick = { aberto = true },
+                        modifier = Modifier.semantics { contentDescription = "Trocar de arma" }) { Text("Trocar") }
+                }
+            }
+            if (aberto) {
+                estado.ataques.forEachIndexed { i, atk ->
+                    OpcaoRadio(
+                        selecionado = i == estado.ataqueSelecionado,
+                        rotulo = "${atk.rotulo} — NH ${atk.nh}, ${atk.danoExpr} ${atk.tipo.rotulo}",
+                        descricao = "Empunhar ${atk.rotulo}",
+                        onClick = { viewModel.sagaCombateSelecionarAtaque(i); aberto = false }
+                    )
+                }
+            }
+        }
     }
 }
 

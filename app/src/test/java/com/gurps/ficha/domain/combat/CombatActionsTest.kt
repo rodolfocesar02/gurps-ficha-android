@@ -25,7 +25,8 @@ class CombatActionsTest {
         assertEquals(14, nh(14))                                                   // 1) base 14 = 14
         assertEquals(18, nh(14, Manobra.ATAQUE_TOTAL, at = AtaqueTotalModo.DETERMINADO)) // 2) 14+4=18
         assertEquals(14, nh(14, Manobra.ATAQUE_TOTAL, at = AtaqueTotalModo.FORTE)) // 3) 14+0=14
-        assertEquals(10, nh(14, Manobra.MOVER_E_ATACAR))                           // 4) 14-4=10 (CaC)
+        assertEquals(9, nh(14, Manobra.MOVER_E_ATACAR))                            // 4) CaC 14-4=10 -> teto 9 (MB p.366)
+        assertEquals(8, nh(12, Manobra.MOVER_E_ATACAR))                            // 4b) CaC 12-4=8 (sem teto, já < 9)
         assertEquals(11, nh(14, local = LocalAtaque.VITAIS))                       // 5) 14-3=11
         assertEquals(7, nh(14, local = LocalAtaque.CRANIO))                        // 6) 14-7=7
         assertEquals(10, nh(14, postura = Postura.DEITADO))                        // 7) 14-4=10
@@ -33,17 +34,22 @@ class CombatActionsTest {
         assertEquals(5, nh(14, local = LocalAtaque.VITAIS, vis = Visibilidade.ESCURIDAO_PARCIAL)) // 9) 14-3-6=5
         assertEquals(1, nh(12, postura = Postura.AGACHADO, local = LocalAtaque.OLHO)) // 10) 12-2-9=1
         assertEquals(14, nh(14, Manobra.ATAQUE_TOTAL, local = LocalAtaque.VITAIS, vis = Visibilidade.NEVOA_LEVE, at = AtaqueTotalModo.DETERMINADO)) // 11) 14+4-3-1=14
-        assertEquals(9, nh(10, Manobra.MOVER_E_ATACAR, aDist = true))              // 12) 10 -> teto 9
-        assertEquals(8, nh(8, Manobra.MOVER_E_ATACAR, aDist = true))               // 13) 8 (sem teto)
-        assertEquals(9, nh(14, Manobra.MOVER_E_ATACAR, local = LocalAtaque.VITAIS, aDist = true)) // 14) 14-3=11 -> teto 9
+        assertEquals(8, nh(10, Manobra.MOVER_E_ATACAR, aDist = true))              // 12) à distância 10-2=8 (sem teto)
+        assertEquals(6, nh(8, Manobra.MOVER_E_ATACAR, aDist = true))               // 13) à distância 8-2=6
+        assertEquals(9, nh(14, Manobra.MOVER_E_ATACAR, local = LocalAtaque.VITAIS, aDist = true)) // 14) à distância 14-2-3=9
     }
 
     @Test
-    fun `teto do mover-e-atacar a distancia marca a flag`() {
-        val c = CombatActions.calcularNH(10, Manobra.MOVER_E_ATACAR, aDistancia = true)
+    fun `teto do mover-e-atacar corpo-a-corpo marca a flag`() {
+        // CaC: 14-4=10 -> teto 9 (MB p.366)
+        val c = CombatActions.calcularNH(14, Manobra.MOVER_E_ATACAR)
         assertTrue(c.limitadoPorTeto)
-        val c2 = CombatActions.calcularNH(8, Manobra.MOVER_E_ATACAR, aDistancia = true)
+        // CaC já abaixo de 9: sem teto
+        val c2 = CombatActions.calcularNH(8, Manobra.MOVER_E_ATACAR)
         assertFalse(c2.limitadoPorTeto)
+        // À distância nunca tem teto
+        val c3 = CombatActions.calcularNH(20, Manobra.MOVER_E_ATACAR, aDistancia = true)
+        assertFalse(c3.limitadoPorTeto)
     }
 
     @Test

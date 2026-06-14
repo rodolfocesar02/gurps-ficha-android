@@ -7,9 +7,9 @@ import kotlin.random.Random
  * Lote 360 (Saga B2): resolução do ATAQUE (cálculo de NH efetivo + rolagem 3d6).
  * Kotlin puro, sem Android. O dano localizado é o B3; estados vitais o B4; defesas o B5.
  *
- * Divergência do plano: o plano fala "Mover-e-Atacar teto 9" — isso é a regra À DISTÂNCIA
- * (MB p.365). No corpo-a-corpo a regra é −4 (sem teto). Implemento as DUAS via `aDistancia`,
- * mantendo a matemática correta do GURPS (regra 5/12 do plano: regra real vence).
+ * Regra Mover e Atacar (MB p.366, texto literal do Códex): corpo-a-corpo sofre −4 E o NH ajustado
+ * não pode passar de 9; à distância sofre −2 (ou a Magnitude da arma, o que for pior) sem teto.
+ * (Correção do Lote 368 após ler o chunks.jsonl — antes estava invertido.)
  */
 object CombatActions {
 
@@ -47,9 +47,11 @@ object CombatActions {
         local: LocalAtaque = LocalAtaque.TORSO,
         visibilidade: Visibilidade = Visibilidade.NORMAL,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
-        aDistancia: Boolean = false
+        aDistancia: Boolean = false,
+        modsExtra: List<ComponenteMod> = emptyList()
     ): CalculoNH {
         val comps = mutableListOf<ComponenteMod>()
+        comps.addAll(modsExtra) // ex.: penalidade de distância (tiro), mira (Acc), avaliar
 
         when (manobra) {
             Manobra.ATAQUE_TOTAL -> {
@@ -57,7 +59,8 @@ object CombatActions {
                 if (m != 0) comps.add(ComponenteMod("Ataque Total ${ataqueTotalModo.rotulo}", m))
             }
             Manobra.MOVER_E_ATACAR -> {
-                if (!aDistancia) comps.add(ComponenteMod("Mover e Atacar", -4)) // CaC: −4 (MB p.365)
+                // MB p.366 (texto literal): corpo-a-corpo −4 (e teto NH 9); à distância −2 (ou Magnitude).
+                comps.add(ComponenteMod("Mover e Atacar", if (aDistancia) -2 else -4))
             }
             else -> { /* Ataque simples e demais: sem mod de manobra ao acerto */ }
         }
@@ -68,9 +71,9 @@ object CombatActions {
         if (visibilidade.penalidade != 0) comps.add(ComponenteMod(visibilidade.rotulo, visibilidade.penalidade))
 
         var nh = nhBase(nhBaseArma, comps)
-        // Mover-e-Atacar À DISTÂNCIA: NH limitado a 9 (MB p.365).
+        // Mover-e-Atacar CORPO-A-CORPO: NH ajustado não passa de 9 (MB p.366).
         var teto = false
-        if (manobra == Manobra.MOVER_E_ATACAR && aDistancia && nh > 9) {
+        if (manobra == Manobra.MOVER_E_ATACAR && !aDistancia && nh > 9) {
             nh = 9
             teto = true
         }
@@ -122,9 +125,10 @@ object CombatActions {
         visibilidade: Visibilidade = Visibilidade.NORMAL,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
         aDistancia: Boolean = false,
+        modsExtra: List<ComponenteMod> = emptyList(),
         random: Random = Random.Default
     ): RelatorioAtaque {
-        val calc = calcularNH(nhBaseArma, manobra, postura, local, visibilidade, ataqueTotalModo, aDistancia)
+        val calc = calcularNH(nhBaseArma, manobra, postura, local, visibilidade, ataqueTotalModo, aDistancia, modsExtra)
         val d = List(3) { random.nextInt(1, 7) }
         val soma = d.sum()
         val (res, margem, critico) = avaliarRolagem(calc.nhEfetivo, soma)

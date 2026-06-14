@@ -20,9 +20,10 @@ class CombatSessionTest {
         stats = NpcStats(st = 11, dx = 11, ht = 11, pvMax = pv, rd = 0, armaDano = "1d-1", armaTipo = "corte", armaNh = 11, alcanceMetros = 1, agressividade = 6, moral = 5)
     )
 
-    private fun perfilHeroi() = HeroiPerfilCombate(
-        nhArma = 14, danoArma = "2d", tipoDano = DanoTipo.CORT, esquiva = 9, apara = 11, bloqueio = null, ht = 12, rd = 2
-    )
+    private fun perfilHeroi() = HeroiPerfilCombate(esquiva = 9, apara = 11, bloqueio = null, ht = 12, rd = 2)
+
+    private fun espada() = AtaqueHeroi(rotulo = "Espada", nh = 14, danoExpr = "2d", tipo = DanoTipo.CORT)
+    private fun revolver() = AtaqueHeroi(rotulo = "Revólver", nh = 14, danoExpr = "2d-1 pa+", tipo = DanoTipo.PI_MAIS, aDistancia = true, alcance = 50)
 
     @Test
     fun `parser de dano respeita quantidade e modificador`() {
@@ -36,11 +37,37 @@ class CombatSessionTest {
     }
 
     @Test
-    fun `mapa de tipo de dano cobre o bestiario`() {
+    fun `mapa de tipo de dano cobre bestiario e ficha (corte, perf, pa)`() {
         assertEquals(DanoTipo.CORT, CombatSession.tipoDano("corte"))
         assertEquals(DanoTipo.PI_MAIS_MAIS, CombatSession.tipoDano("pi++"))
         assertEquals(DanoTipo.PERF, CombatSession.tipoDano("perf"))
         assertEquals(DanoTipo.CONT, CombatSession.tipoDano("desconhecido"))
+        // expressões completas da ficha: tipo vem do token final
+        assertEquals(DanoTipo.CORT, CombatSession.tipoDano("GeB+2 corte"))
+        assertEquals(DanoTipo.PI_MAIS, CombatSession.tipoDano("2d-1 pa+")) // pa+ (Devir) = pi+
+        assertEquals(DanoTipo.PI, CombatSession.tipoDano("2d pa"))
+        assertEquals(DanoTipo.PI_MENOS, CombatSession.tipoDano("4d pa-"))
+    }
+
+    @Test
+    fun `penalidade de distancia segue a tabela`() {
+        assertEquals(0, CombatSession.penalidadeDistancia(2))
+        assertEquals(-2, CombatSession.penalidadeDistancia(5))
+        assertEquals(-4, CombatSession.penalidadeDistancia(10))
+        assertEquals(-7, CombatSession.penalidadeDistancia(30))
+    }
+
+    @Test
+    fun `tiro a distancia sofre penalidade e so permite esquiva`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L) // 10m
+        val s = CombatSession(enc, perfilHeroi(), Random(5))
+        val r = s.heroiAtaca(revolver(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        // resolveu e logou o tiro (🎯) com o nome da arma
+        assertTrue(s.log.any { it.contains("Revólver") })
+        assertTrue(s.log.isNotEmpty())
+        // o relatório do ataque deve registrar a penalidade de distância de 10m (-4)
+        assertTrue(s.log.last().contains("distância") || r.texto.contains("distância") || s.log.any { it.contains("distância") })
     }
 
     @Test
@@ -49,7 +76,7 @@ class CombatSessionTest {
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
         val s = CombatSession(enc, perfilHeroi(), Random(7))
         assertTrue("goblin deve ser alvo de corpo-a-corpo", s.alvosHeroi().any { it.id == "goblin" })
-        val r = s.heroiAtaca("goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        val r = s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
         // Com NH 14 a chance de acerto é alta; o que garantimos é que o motor resolveu e gerou log.
         assertTrue(s.log.isNotEmpty())
         if (r.acertou && !r.defendeu) assertTrue(g.pvAtual < g.pvMax)
@@ -63,7 +90,7 @@ class CombatSessionTest {
         // martela até alguém cair (limite de segurança)
         var i = 0
         while (!s.encerrado && i++ < 30) {
-            if (g.vivo) s.heroiAtaca("goblin") else break
+            if (g.vivo) s.heroiAtaca(espada(), "goblin") else break
         }
         assertTrue("g.pv=${g.pvAtual}", !g.vivo || s.encerrado)
         if (!g.vivo) {

@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 367 CONCLUÍDO — fix da UI de combate (painel rolável + divide tela com o chat). FASE B completa; validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 367 — última entrada deste arquivo
+**Status Atual:** Lote 368 CONCLUÍDO — combate: arma em uso de verdade (corpo-a-corpo + fogo/distância, tipo de dano correto, seletor de arma) + correção da regra Mover e Atacar (lida no Códex). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 368 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3036,6 +3036,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 368 — 14 de Junho de 2026
+**Saga: arma em uso real + estudo de regras no Codex (branch GURPS-Saga)**
+- PEDIDO do usuario (validacao no aparelho): o pistoleiro atacava de SOCO ("10 cont"), nao dava p/ ver/escolher a arma, e ele pediu p/ eu ESTUDAR as regras no chunks.jsonl (Codex). Li o cap. de Combate do Modulo Basico (manobras p.364-366) direto da fonte
+- BUG do "soco" (2 causas): (1) eu usava armaTipoCombate (modo "corpo_a_corpo"/"distancia"/"armas_de_fogo") como se fosse TIPO de dano -> sempre CONT; (2) o perfil so olhava arma corpo-a-corpo. Corrigido: CombatSession.tipoDano agora parseia o token de tipo da expressao de dano ("GeB+2 corte", "2d-1 pa+") e mapeia pa-/pa/pa+/pa++ (Devir) -> pi-/pi/pi+/pi++
+- HeroiPerfilCombate agora e SO defesa; ataque virou AtaqueHeroi (rotulo/nh/danoExpr/tipo/aDistancia/alcance/precisao). SagaCombatController.construirAtaques monta a lista de ataques da ficha: cada arma equipada (corpo-a-corpo E fogo/distancia) com pericia casada (acharPericiaDaArma fuzzy por grupo/nome), NH, dano resolvido por ST e tipo; + desarmado. Armas a distancia entram primeiro (pistoleiro saca o revolver). Modo "armas_de_fogo" tratado como a distancia
+- Regras de tiro: penalidade de distancia (CombatSession.penalidadeDistancia, tabela Tamanho/Velocidade MB p.550) aplicada via CombatActions.calcularNH(modsExtra=...) tanto p/ heroi quanto p/ NPC arqueiro; contra ataque a distancia o alvo SO pode Esquivar (nao aparar)
+- UI: SeletorDeArma no card de manobras ("Empunhando: Revolver — NH X, 2d-1 pi+ · a distancia", botao Trocar); alvos do ataque = todos os vivos (a distancia) ou adjacentes (corpo-a-corpo); ATAQUE liberado a distancia mesmo sem inimigo adjacente
+- CORRECAO DE REGRA (lida no Codex, MB p.366): Mover e Atacar estava INVERTIDO. Correto: corpo-a-corpo -4 E teto NH 9; a distancia -2 (sem teto). Consertado em CombatActions + comentario + CombatActionsTest
+- Testes: CombatSessionTest (tipoDano corte/perf/pa+, penalidade de distancia, tiro a distancia loga e penaliza) + CombatActionsTest atualizado p/ a regra correta. build.gradle ja tinha returnDefaultValues
+- Build 2 variantes verde
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 367 — 14 de Junho de 2026

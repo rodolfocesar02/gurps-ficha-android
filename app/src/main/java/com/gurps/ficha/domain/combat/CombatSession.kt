@@ -52,10 +52,12 @@ class CombatSession(
     )
 
     /**
-     * O herói ataca [alvoId]. Encadeia B2 (rolar acerto) → B5 (defesa do NPC) → B3/B4 (dano/ferimento)
-     * via [CombatResolver.resolverTroca]. O NPC defende automaticamente com a melhor defesa.
+     * O herói ataca [alvoId] com o [ataque] escolhido (arma/perícia). Encadeia B2 (rolar acerto) →
+     * B5 (defesa do NPC) → B3/B4 (dano/ferimento). À distância sofre penalidade por metro e o NPC
+     * só pode Esquivar; corpo-a-corpo o NPC usa a melhor defesa (Esquiva/Aparar).
      */
     fun heroiAtaca(
+        ataque: AtaqueHeroi,
         alvoId: String,
         manobra: Manobra = Manobra.ATAQUE,
         local: LocalAtaque = LocalAtaque.TORSO,
@@ -64,23 +66,29 @@ class CombatSession(
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
 
-        val aDistancia = heroiPerfil.alcanceArma >= 3 && encounter.distancia(alvo) > 1
+        val dist = encounter.distancia(alvo)
+        val modsExtra: List<CombatActions.ComponenteMod> = if (ataque.aDistancia) {
+            val pen = penalidadeDistancia(dist)
+            if (pen != 0) listOf(CombatActions.ComponenteMod("distância ${dist}m", pen)) else emptyList()
+        } else emptyList()
         val atk = CombatActions.resolverAtaque(
-            nhBaseArma = heroiPerfil.nhArma, manobra = manobra, postura = heroi.postura,
+            nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
             local = local, visibilidade = Visibilidade.NORMAL, ataqueTotalModo = ataqueTotalModo,
-            aDistancia = aDistancia, random = random
+            aDistancia = ataque.aDistancia, modsExtra = modsExtra, random = random
         )
-        val (defTipo, defValor) = melhorDefesaNpc(alvo)
+        // Contra ataque à distância o alvo só Esquiva; corpo-a-corpo usa a melhor defesa.
+        val (defTipo, defValor) = if (ataque.aDistancia)
+            CombatResolver.TipoDefesa.ESQUIVA to esquivaNpc(alvo) else melhorDefesaNpc(alvo)
         val defSoma = rolar3d6()
-        val danoBruto = rolarDano(heroiPerfil.danoArma, random) + bonusDanoForte(manobra, ataqueTotalModo)
+        val danoBruto = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo)
 
         val troca = CombatResolver.resolverTroca(
             defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
             defesaTipo = defTipo, defesaValorFinal = defValor, defesaSoma = defSoma,
-            surpresa = false, danoBaseRolado = danoBruto, danoTipo = heroiPerfil.tipoDano,
+            surpresa = false, danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
             local = local, rdLocal = alvo.stats?.rd ?: 0, randomFerimento = random
         )
-        log += "🗡️ Herói → ${alvo.nome}: ${troca.texto}"
+        log += "${if (ataque.aDistancia) "🎯" else "🗡️"} Herói (${ataque.rotulo}) → ${alvo.nome}: ${troca.texto}"
         val incap = !alvo.vivo
         if (incap) log += "  └ ${alvo.nome} está fora de combate."
         verificarFim()
@@ -171,10 +179,14 @@ class CombatSession(
         }
 
         val stats = npc.stats ?: return AtaqueResultado(false, false, 0, false, "${npc.nome} sem stats de ataque.")
+        val modsNpc: List<CombatActions.ComponenteMod> = if (intencao.aDistancia) {
+            val pen = penalidadeDistancia(encounter.distancia(npc))
+            if (pen != 0) listOf(CombatActions.ComponenteMod("distância", pen)) else emptyList()
+        } else emptyList()
         val atk = CombatActions.resolverAtaque(
             nhBaseArma = stats.armaNh, manobra = intencao.manobra, postura = npc.postura,
             local = intencao.local, visibilidade = Visibilidade.NORMAL,
-            aDistancia = intencao.aDistancia, random = random
+            aDistancia = intencao.aDistancia, modsExtra = modsNpc, random = random
         )
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
         val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
@@ -247,9 +259,12 @@ class CombatSession(
         }
     }
 
+    /** Esquiva de um NPC = Velocidade Básica + 3 (MB p.374). */
+    private fun esquivaNpc(npc: Combatente): Int = floor(npc.velocidadeBasica).toInt() + 3
+
     /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo). */
     private fun melhorDefesaNpc(npc: Combatente): Pair<CombatResolver.TipoDefesa, Int> {
-        val esquiva = floor(npc.velocidadeBasica).toInt() + 3
+        val esquiva = esquivaNpc(npc)
         val melee = (npc.stats?.alcanceMetros ?: 1) <= 2
         val apara = if (melee) (npc.stats?.armaNh ?: 0) / 2 + 3 else 0
         return if (apara > esquiva) CombatResolver.TipoDefesa.APARA to apara
@@ -265,15 +280,45 @@ class CombatSession(
         /** A partir desta distância um NPC em fuga é considerado fora do encontro. */
         const val FUGA_METROS = 20
 
-        /** Mapeia a string de tipo do bestiário/ficha para o enum de dano (B3). */
-        fun tipoDano(tipo: String): DanoTipo = when (tipo.lowercase().trim()) {
-            "corte", "cort" -> DanoTipo.CORT
-            "pi-" -> DanoTipo.PI_MENOS
-            "pi" -> DanoTipo.PI
-            "pi+" -> DanoTipo.PI_MAIS
-            "pi++" -> DanoTipo.PI_MAIS_MAIS
-            "perf" -> DanoTipo.PERF
-            else -> DanoTipo.CONT
+        /**
+         * Mapeia o tipo de dano vindo do bestiário OU da ficha (Lote 368).
+         * Aceita a string inteira do dano ("2d-1 pa+", "GeB+2 corte") e extrai o token de tipo.
+         * Vocabulário Devir PT-BR das tabelas: corte, cont, perf, e pa-/pa/pa+/pa++ (= perfurante "pi").
+         */
+        fun tipoDano(tipo: String): DanoTipo {
+            val t = tipo.lowercase().trim()
+            // procura o token de tipo no fim da expressão (ex.: "2d-1 pa+")
+            val token = Regex("(pa\\+\\+|pa\\+|pa-|pa|pi\\+\\+|pi\\+|pi-|pi|corte|cort|perf|imp|cont|esm)\\s*$")
+                .find(t)?.groupValues?.getOrNull(1) ?: t
+            return when (token) {
+                "corte", "cort" -> DanoTipo.CORT
+                "pa-", "pi-" -> DanoTipo.PI_MENOS
+                "pa", "pi" -> DanoTipo.PI
+                "pa+", "pi+" -> DanoTipo.PI_MAIS
+                "pa++", "pi++" -> DanoTipo.PI_MAIS_MAIS
+                "perf", "imp" -> DanoTipo.PERF
+                else -> DanoTipo.CONT // cont/esm/queimadura/tóxico/etc. → multiplicador ×1.0
+            }
+        }
+
+        /**
+         * Penalidade de PARA ACERTAR pela distância em ataque à distância (Tabela
+         * Tamanho/Velocidade-Distância, MB p.550). Resumo determinístico em metros.
+         */
+        fun penalidadeDistancia(metros: Int): Int = when {
+            metros <= 2 -> 0
+            metros <= 3 -> -1
+            metros <= 5 -> -2
+            metros <= 7 -> -3
+            metros <= 10 -> -4
+            metros <= 15 -> -5
+            metros <= 20 -> -6
+            metros <= 30 -> -7
+            metros <= 50 -> -8
+            metros <= 70 -> -9
+            metros <= 100 -> -10
+            metros <= 150 -> -11
+            else -> -12 - ((metros - 200) / 100).coerceAtLeast(0)
         }
 
         /** Rola uma expressão de dano GURPS "<n>d[±m]" (ex.: "2d-1", "1d+2", "3d"). Mínimo 0. */
@@ -287,17 +332,29 @@ class CombatSession(
     }
 }
 
-/** Perfil de combate do herói — o controller extrai da ficha; mantém a sessão pura. */
+/** Defesas do herói — o controller extrai da ficha; mantém a sessão pura. (Lote 368: só defesa.) */
 data class HeroiPerfilCombate(
-    val nhArma: Int,
-    val danoArma: String,        // expressão "2d-1"
-    val tipoDano: DanoTipo,
     val esquiva: Int,
     val apara: Int? = null,
     val bloqueio: Int? = null,
     val ht: Int = 10,
-    val rd: Int = 0,
-    val alcanceArma: Int = 1
+    val rd: Int = 0
+)
+
+/**
+ * Um ataque utilizável do herói (Lote 368): arma empunhada + perícia. O jogador ESCOLHE qual usar.
+ * @param aDistancia true para arma de fogo/arremesso (defesa do alvo só por Esquiva; sofre penal. de distância).
+ * @param precisao Acc da arma (bônus ao Apontar — usado no lote de manobras).
+ */
+data class AtaqueHeroi(
+    val rotulo: String,          // ex.: "Revólver (Pistola)"
+    val nh: Int,
+    val danoExpr: String,        // expressão já resolvida por ST, ex.: "2d-1 pa+"
+    val tipo: DanoTipo,
+    val aDistancia: Boolean = false,
+    val alcance: Int = 1,
+    val precisao: Int = 0,
+    val temPericia: Boolean = true
 )
 
 /** Defesa escolhida pelo jogador no card "Defenda-se!" (tipo + valor final + 3d6 rolado). */
