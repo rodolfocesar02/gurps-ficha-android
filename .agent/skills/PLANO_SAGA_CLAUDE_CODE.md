@@ -20,7 +20,8 @@
 > - ✅ Lotes 360-362 = B2+B3+B4 (2026-06-13, commit único) — ataque/manobras (CombatActions+ModificadoresCombate), dano localizado (HitLocationRules, paridade Mesa Virtual), estados vitais (InjuryRules); todos com testes
 > - ✅ Lote 363 = B6 (2026-06-13) — bestiário (17 criaturas) + check_bestiario.py + BestiarioModels/loader + NpcCombatBrain + testes
 > - ✅ Lote 364 = B5 PARCIAL (2026-06-13) — camada de regra: CombatResolver (defesas no fluxo + troca completa, teste de round c/ crítico forçado). Executor `aplicar_dano` + card "Defenda-se!" ADIADOS p/ B8/B7 (precisam do estado vivo do encontro/UI). **Escopo "B2 a B6" do usuário concluído.**
-> - ➡️ Próximo: FASE B — B7 (UI CombatTracker) e B8 (Narrador⇄combate: iniciar_combate/acao_npc/aplicar_dano reais + card Defenda-se). Depois: validação no aparelho.
+> - ✅ Lote 365 = B7 (2026-06-14) — UI de combate (visual aprovado): CombatTracker + ManeuverCards + DefendaSeCard (TalkBack) + CombatSession (motor de encontro puro, encadeia B1-B6) + SagaCombatController (estado Compose + ponte de defesa) + BestiarioCatalogo. Testes verdes; build 2 variantes verde. MVP usa inicial colorida (retrato real fica p/ B7/E2). `controller.iniciarCombate` pronto p/ o Narrador chamar no B8.
+> - ➡️ Próximo: B8 (Narrador⇄combate: iniciar_combate/acao_npc/aplicar_dano reais + condição/recurso/XP + saque + prosa final agregada). Depois: validação no aparelho (fim da Fase B).
 
 ---
 
@@ -151,7 +152,7 @@ LOTE NNN — <título>
 4. Testes: arqueiro mantém distância; bruto avança; covarde foge a 30% PV.
 **Aceite:** `check_bestiario.py` zero erros; 3 goblins lutam sozinhos de forma coerente em teste de simulação.
 
-### LOTE B7 (≈360) — UI de combate + TalkBack
+### ✅ LOTE B7 (= Lote 365, 2026-06-14) — UI de combate + TalkBack
 1. `ui/features/saga/CombatTracker.kt`: faixas horizontais (Engajado/Perto/Médio/Longe/Extremo) com retratos, barra de PV, postura e condições; herói fixo à esquerda.
 2. `ManeuverCards.kt`: somente `manobrasLegais()`; sub-diálogo de alvo + local do golpe (lista com penalidades visíveis).
 3. TalkBack: cada combatente = frase única ("Goblin, faixa Médio, catorze metros, em pé, ferido"); cards e sub-diálogos com `stateDescription`.

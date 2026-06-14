@@ -422,8 +422,13 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
             CardDeRolagem(viewModel, rolagem)
         }
 
-        // Barra de envio
-        BarraDeEnvio(viewModel, habilitado = !processando && rolagem == null)
+        // Combate ativo (B7): tracker + manobras/defesa substituem a barra de texto.
+        if (viewModel.sagaCombateAtivo) {
+            com.gurps.ficha.ui.saga.CombatePainel(viewModel)
+        } else {
+            // Barra de envio
+            BarraDeEnvio(viewModel, habilitado = !processando && rolagem == null)
+        }
     }
 }
 

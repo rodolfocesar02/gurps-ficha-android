@@ -72,6 +72,16 @@ class FichaSagaDelegate(
         NarradorToolExecutor(sagaDao, repository, forjador, this)
     }
 
+    /**
+     * Lote 365 (B7): controller do combate. As linhas factuais do motor entram no feed como
+     * turnos "sistema" ( efêmeros — a prosa narrada do B8 é o que persiste).
+     */
+    val combate: SagaCombatController by lazy {
+        SagaCombatController(viewModel, context, scope) { linhas ->
+            linhas.forEach { feed = feed + SagaTurn("sistema", it) }
+        }
+    }
+
     // ── Estado observável (lido pela TabSaga via getters no ViewModel) ──
     var campanhas by mutableStateOf<List<CampanhaEntity>>(emptyList()); private set
     var campanhaAtiva by mutableStateOf<CampanhaEntity?>(null); private set

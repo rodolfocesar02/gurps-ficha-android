@@ -122,6 +122,18 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaEnviar(texto: String) = sagaDelegate.enviarMensagem(texto)
     fun sagaRolarDado() = sagaDelegate.rolarDadoPendente()
 
+    // Getters/ações do combate da Saga (Lote 365 / B7)
+    val sagaCombateEstado get() = sagaDelegate.combate.estado
+    val sagaCombateDefesaPendente get() = sagaDelegate.combate.defesaPendente
+    val sagaCombateAtivo get() = sagaDelegate.combate.ativo
+    fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO) =
+        sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo)
+    fun sagaCombateMover(afastar: Boolean) = sagaDelegate.combate.heroiMove(afastar)
+    fun sagaCombateManobra(manobra: com.gurps.ficha.domain.combat.Manobra, novaPostura: com.gurps.ficha.domain.combat.Postura? = null) =
+        sagaDelegate.combate.heroiManobra(manobra, novaPostura)
+    fun sagaCombateDefender(opcao: com.gurps.ficha.domain.combat.CombatResolver.OpcaoDefesa) = sagaDelegate.combate.escolherDefesa(opcao)
+    fun sagaCombateEncerrar() = sagaDelegate.combate.encerrarManual()
+
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
     val mostrarDialogRetrato get() = iaDelegate.mostrarDialogRetrato

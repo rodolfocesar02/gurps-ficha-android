@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 364 CONCLUÍDO — Saga FASE B B5 (regra): defesas no fluxo + troca completa (CombatResolver). Wiring executor/UI adiado p/ B8/B7
-**Último Lote Registrado:** Lote 364 — última entrada deste arquivo
+**Última Atualização:** 14 de Junho de 2026
+**Status Atual:** Lote 365 CONCLUÍDO — Saga FASE B B7: UI de combate (CombatTracker + ManeuverCards + Defenda-se) + CombatSession (motor de encontro) + controller. Falta B8 (Narrador⇄combate)
+**Último Lote Registrado:** Lote 365 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3009,4 +3009,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA do plano (regra 12): (1) NAO estendi CombatRules.kt (domain/rules, usado pelo Personagem) p/ nao arriscar a ficha — a logica de defesa do combate fica em domain/combat/CombatResolver. (2) Executor real `aplicar_dano` no NarradorToolExecutor e o card "Defenda-se!" na UI dependem do ESTADO VIVO do encontro (nasce no B8 iniciar_combate) e da UI de combate (B7); fazer agora seria fragil/falso -> ADIADOS para B7/B8. B5 entrega a camada de resolucao testada
 - Build completo verde 2 variantes
 - ESCOPO "B2 a B6" do usuario: CONCLUIDO (B2,B3,B4,B6,B5). Restam na Fase B: B7 (UI CombatTracker) e B8 (Narrador<->combate: iniciar_combate/acao_npc/aplicar_dano reais + card Defenda-se), fora do pedido "b2 a b6"
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 365 — 14 de Junho de 2026
+**Saga FASE B B7: UI de combate + motor de encontro (branch GURPS-Saga)**
+- domain/combat/CombatSession.kt: SESSAO de combate (Kotlin puro) que orquestra um encontro inteiro encadeando B1-B6 — heroi ataca (resolverAtaque->resolverTroca), turno de NPC (NpcCombatBrain decide; override do Narrador entra no B8), defesa interativa do heroi, dano/ferimento, fim de combate (vitoria/derrota), parser de dano "<n>d[±m]" e mapeador de tipo. HeroiPerfilCombate/DefesaHeroi/ResultadoCombate
+- Enablers minimos: NpcStats ganhou armaNh (o motor precisa do "para acertar" do NPC; novoCombatente popula do AtaqueCriatura.nh); CombatEncounter ganhou distancia MUTAVEL + moverEmRelacaoAoHeroi/definirDistancia (manobra Mover muda a faixa). Construtor inalterado -> testes antigos intactos
+- ui/saga/CombatUi.kt (VISUAL APROVADO no mockup): CombatTracker (faixas Engajado->Extremo, avatar de INICIAL colorida [azul heroi/vermelho inimigo - placeholder do retrato real, ver registro B7/E2], barra de PV verde->amarelo->vermelho, postura/condicoes, heroi destacado); ManeuverCards (so manobrasLegais; sub-dialogo de alvo + local com penalidades visiveis; modo do Ataque Total); DefendaSeCard (opcoesDefesa com valor final + Rolar). Tudo com contentDescription p/ TalkBack (aceite: jogavel de olhos fechados)
+- viewmodel/delegates/SagaCombatController.kt: embrulha a CombatSession com estado Compose (CombatUiState/CombatenteUi/FaixaDistancia) + corrotinas + ponte de defesa suspensa ("Defenda-se!"); le o heroi da ficha (NH da melhor pericia de combate, dano da arma equipada, esquiva/apara/bloqueio, RD da armadura) e devolve o PV ao fim do combate. domain/loaders/BestiarioCatalogo.kt (le assets/bestiario.v1.json, cache)
+- Fiacao: TabSaga mostra o CombatePainel no lugar da barra de texto quando o combate esta ativo; getters/acoes sagaCombate* no FichaViewModel; controller criado no FichaSagaDelegate (linhas factuais -> turnos "sistema" efemeros no feed)
+- CombatSessionTest: parser de dano, mapa de tipo, heroi ataca goblin adjacente, vitoria quando inimigos caem, NPC ataca heroi (esquiva soma 3 sempre defende), fuga por moral baixa. VERDE
+- NAO inclui (vai no B8): iniciar_combate disparado pelo Narrador, acao_npc override, aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp reais, saque + prosa final agregada. O controller.iniciarCombate ja existe e sera chamado pelo executor no B8
+- Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------

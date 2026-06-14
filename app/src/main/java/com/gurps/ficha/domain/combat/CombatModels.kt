@@ -70,6 +70,7 @@ data class NpcStats(
     val armaNome: String = "",
     val armaDano: String = "",
     val armaTipo: String = "",   // cont/corte/perf/imp...
+    val armaNh: Int = 10,        // NH do ataque principal (B7: o motor precisa do "para acertar")
     val alcanceMetros: Int = 1,
     /** Comportamento tático (Lote 363/B6): 0-10. Alimenta o NpcCombatBrain. */
     val agressividade: Int = 5,

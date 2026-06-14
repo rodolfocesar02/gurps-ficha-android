@@ -45,7 +45,8 @@ data class BestiarioCriatura(
             st = st, dx = dx, iq = iq, ht = ht, pvMax = pv, rd = rd,
             velocidadeBasica = velocidadeBasica, deslocamento = deslocamento,
             armaNome = principal?.nome ?: "", armaDano = principal?.dano ?: "",
-            armaTipo = principal?.tipo ?: "", alcanceMetros = alcanceMaximo,
+            armaTipo = principal?.tipo ?: "", armaNh = principal?.nh ?: 10,
+            alcanceMetros = alcanceMaximo,
             agressividade = agressividade, moral = moral
         )
         return Combatente(

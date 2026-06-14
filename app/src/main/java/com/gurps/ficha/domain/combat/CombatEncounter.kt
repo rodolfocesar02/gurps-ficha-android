@@ -14,10 +14,25 @@ import kotlin.random.Random
  */
 class CombatEncounter(
     val combatentes: List<Combatente>,
-    private val distanciaAoHeroi: Map<String, Int> = emptyMap(),
+    distanciaAoHeroi: Map<String, Int> = emptyMap(),
     seed: Long = 0L
 ) {
     private val porId = combatentes.associateBy { it.id }
+
+    /** Distâncias ao herói (mutáveis: a manobra Mover altera a faixa — B7). */
+    private val distanciaAoHeroi: MutableMap<String, Int> = distanciaAoHeroi.toMutableMap()
+
+    /** Reposiciona um combatente (clamp em 0; herói é sempre 0). MB: 1 hexágono ≈ 1 m. */
+    fun definirDistancia(id: String, metros: Int) {
+        if (porId[id]?.ehHeroi == true) return
+        distanciaAoHeroi[id] = metros.coerceAtLeast(0)
+    }
+
+    /** Aproxima (delta negativo) ou afasta (positivo) do herói, respeitando o mínimo de 0. */
+    fun moverEmRelacaoAoHeroi(id: String, delta: Int) {
+        val atual = distanciaAoHeroi[id] ?: return
+        definirDistancia(id, atual + delta)
+    }
 
     /** Ordem de iniciativa: Velocidade Básica desc, desempate DX desc, depois aleatório (seed). MB p.363. */
     val ordemTurnos: List<String> = run {
