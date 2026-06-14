@@ -19,7 +19,8 @@
 > - ✅ Lote 359 = B1 (2026-06-13) — FASE B início: modelos de combate (domain/combat) + CombatEncounter (ordem/manobrasLegais/estadoResumo) + testes
 > - ✅ Lotes 360-362 = B2+B3+B4 (2026-06-13, commit único) — ataque/manobras (CombatActions+ModificadoresCombate), dano localizado (HitLocationRules, paridade Mesa Virtual), estados vitais (InjuryRules); todos com testes
 > - ✅ Lote 363 = B6 (2026-06-13) — bestiário (17 criaturas) + check_bestiario.py + BestiarioModels/loader + NpcCombatBrain + testes
-> - ➡️ Próximo: FASE B — B5 (≈364) defesas no fluxo + executor real aplicar_dano (B3+B4) + UI card "Defenda-se!" + crítico (INTEGRAÇÃO — toca arquivos existentes)
+> - ✅ Lote 364 = B5 PARCIAL (2026-06-13) — camada de regra: CombatResolver (defesas no fluxo + troca completa, teste de round c/ crítico forçado). Executor `aplicar_dano` + card "Defenda-se!" ADIADOS p/ B8/B7 (precisam do estado vivo do encontro/UI). **Escopo "B2 a B6" do usuário concluído.**
+> - ➡️ Próximo: FASE B — B7 (UI CombatTracker) e B8 (Narrador⇄combate: iniciar_combate/acao_npc/aplicar_dano reais + card Defenda-se). Depois: validação no aparelho.
 
 ---
 
@@ -136,7 +137,7 @@ LOTE NNN — <título>
 ### ✅ LOTE B4 (= Lote 362, concluído 2026-06-13) — Estados vitais
 `InjuryRules.kt`: choque (−min(dano,4) em DX/IQ no próximo turno); ferimento grave (>PV/2) → HT ou atordoado+caído; PV≤0 → HT por turno para agir; morte: HT a −1×PV, −2×PV...; inconsciência; recuperação de atordoamento (HT no fim do turno). Integrar ao `Combatente`. Teste-simulação 0→morte com log de cada teste e seed fixa.
 
-### LOTE B5 (≈358) — Defesas no fluxo + dano fim-a-fim
+### 🟡 LOTE B5 (= Lote 364, PARCIAL 2026-06-13: camada de regra feita; executor `aplicar_dano` + card "Defenda-se!" movidos p/ B7/B8) — Defesas no fluxo + dano fim-a-fim
 1. Estender `CombatRules.kt` SEM quebrar funções atuais: apara múltipla (−4 cumulativo na mesma arma), retração (+1 Esquiva/+3 Apara-Bloqueio, 1×/turno), Defesa Total (+2 na escolhida), bloqueio 1×/turno, sem defesa em surpresa/costas.
 2. Executor real `aplicar_dano` no `NarradorToolExecutor` encadeando B3+B4.
 3. UI: card "Defenda-se!" (opções com valores finais; toque rola via TabRolagem) emitido quando o alvo é o herói.

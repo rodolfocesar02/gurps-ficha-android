@@ -1,0 +1,152 @@
+package com.gurps.ficha.domain.combat
+
+import com.gurps.ficha.domain.roll.CriticoRules
+
+/**
+ * Lote 364 (Saga B5): camada de DEFESA + troca completa (ataque→defesa→dano→ferimento).
+ * Kotlin puro. Encadeia B2 (CombatActions), B3 (HitLocationRules) e B4 (InjuryRules).
+ *
+ * Divergência do plano: o plano dizia "estender CombatRules.kt". `CombatRules` (domain/rules)
+ * é usado pelo `Personagem` (defesas da ficha); para não arriscar o que já funciona, a lógica
+ * de defesa DO COMBATE fica aqui, em domain/combat. Os valores-base de defesa continuam vindo
+ * de CombatRules/Personagem. (Regra 12: realidade do código vence; divergência relatada.)
+ */
+object CombatResolver {
+
+    enum class TipoDefesa(val rotulo: String) { ESQUIVA("Esquiva"), APARA("Aparar"), BLOQUEIO("Bloquear") }
+
+    const val BONUS_RECUO_ESQUIVA = 3        // recuar dá +3 à Esquiva. MB p.377
+    const val BONUS_RECUO_APARA_BLOQUEIO = 1 // +1 a Aparar/Bloquear ao recuar
+    const val BONUS_DEFESA_TOTAL = 2         // Defesa Total Determinada: +2 numa defesa. MB p.366
+    const val PENALIDADE_APARA_EXTRA = 4     // cada apara extra na MESMA arma: −4 cumulativo. MB p.376
+
+    data class ComponenteMod(val nome: String, val valor: Int)
+
+    data class OpcaoDefesa(
+        val tipo: TipoDefesa,
+        val valorFinal: Int,
+        val componentes: List<ComponenteMod>,
+        val disponivel: Boolean,
+        val motivoIndisponivel: String? = null
+    )
+
+    /**
+     * Valor final de uma defesa, aplicando recuo / Defesa Total / aparas extras.
+     * @param aparasJaFeitas nº de aparas já feitas com a MESMA arma neste turno (só para APARA).
+     */
+    fun valorDefesaFinal(
+        tipo: TipoDefesa,
+        base: Int,
+        recuo: Boolean = false,
+        defesaTotalDeterminada: Boolean = false,
+        aparasJaFeitas: Int = 0
+    ): Pair<Int, List<ComponenteMod>> {
+        val comps = mutableListOf<ComponenteMod>()
+        if (recuo) {
+            val b = if (tipo == TipoDefesa.ESQUIVA) BONUS_RECUO_ESQUIVA else BONUS_RECUO_APARA_BLOQUEIO
+            comps.add(ComponenteMod("recuo", b))
+        }
+        if (defesaTotalDeterminada) comps.add(ComponenteMod("Defesa Total", BONUS_DEFESA_TOTAL))
+        if (tipo == TipoDefesa.APARA && aparasJaFeitas > 0) {
+            comps.add(ComponenteMod("apara extra ×$aparasJaFeitas", -PENALIDADE_APARA_EXTRA * aparasJaFeitas))
+        }
+        return (base + comps.sumOf { it.valor }) to comps
+    }
+
+    /** A defesa é ANULADA por crítico do atacante ou por surpresa/ataque pelas costas. MB p.374. */
+    fun defesaAnulada(criticoAtaque: Boolean, surpresa: Boolean): Boolean = criticoAtaque || surpresa
+
+    /** Sucesso na defesa: 3-4 sempre passa, 17-18 sempre falha; senão soma ≤ valor. MB p.374. */
+    fun defesaBemSucedida(valorFinal: Int, soma: Int): Boolean = when {
+        soma <= 4 -> true
+        soma >= 17 -> false
+        else -> soma <= valorFinal
+    }
+
+    /**
+     * Monta as opções de defesa do herói para o card "Defenda-se!" (a UI usa em B7/B8).
+     * bloqueouEsteTurno/esquivouEsteTurno tornam a opção indisponível quando a regra é 1×/turno.
+     */
+    fun opcoesDefesa(
+        esquivaBase: Int,
+        aparaBase: Int?,
+        bloqueioBase: Int?,
+        defesasUsadas: DefesasUsadas,
+        recuo: Boolean = false,
+        defesaTotalEm: TipoDefesa? = null
+    ): List<OpcaoDefesa> {
+        val out = mutableListOf<OpcaoDefesa>()
+
+        valorDefesaFinal(TipoDefesa.ESQUIVA, esquivaBase, recuo, defesaTotalEm == TipoDefesa.ESQUIVA).let { (v, c) ->
+            out.add(OpcaoDefesa(TipoDefesa.ESQUIVA, v, c, disponivel = true))
+        }
+        if (aparaBase != null) {
+            val aparas = defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0
+            valorDefesaFinal(TipoDefesa.APARA, aparaBase, recuo, defesaTotalEm == TipoDefesa.APARA, aparas).let { (v, c) ->
+                out.add(OpcaoDefesa(TipoDefesa.APARA, v, c, disponivel = true))
+            }
+        }
+        if (bloqueioBase != null) {
+            val (v, c) = valorDefesaFinal(TipoDefesa.BLOQUEIO, bloqueioBase, recuo, defesaTotalEm == TipoDefesa.BLOQUEIO)
+            out.add(OpcaoDefesa(TipoDefesa.BLOQUEIO, v, c,
+                disponivel = !defesasUsadas.bloqueouEsteTurno,
+                motivoIndisponivel = if (defesasUsadas.bloqueouEsteTurno) "já bloqueou neste turno" else null))
+        }
+        return out
+    }
+
+    // ── Troca completa (ataque → defesa → dano → ferimento) ──────────────────
+
+    data class RelatorioTroca(
+        val ataque: CombatActions.RelatorioAtaque,
+        val defesaTentada: Boolean,
+        val defesaValor: Int?,
+        val defesaSoma: Int?,
+        val defendeu: Boolean,
+        val dano: HitLocationRules.RelatorioDano?,
+        val ferimento: InjuryRules.ResultadoFerimento?,
+        val texto: String
+    )
+
+    /**
+     * Resolve uma troca usando ROLAGENS JÁ FEITAS (puro/testável). O atacante acerta?
+     * Crítico anula a defesa. Se penetrar, encadeia dano localizado (B3) + ferimento (B4).
+     * @param danoBaseRolado dano da arma já rolado em número (ex.: 2d → 9).
+     */
+    fun resolverTroca(
+        defensor: Combatente,
+        htDefensor: Int,
+        ataque: CombatActions.RelatorioAtaque,
+        defesaTipo: TipoDefesa,
+        defesaValorFinal: Int,
+        defesaSoma: Int,
+        surpresa: Boolean,
+        danoBaseRolado: Int,
+        danoTipo: DanoTipo,
+        local: LocalAtaque,
+        rdLocal: Int,
+        randomFerimento: kotlin.random.Random
+    ): RelatorioTroca {
+        if (ataque.resultado == CombatActions.ResultadoAcerto.FALHA) {
+            return RelatorioTroca(ataque, false, null, null, false, null, null, "${ataque.texto} → erra, sem defesa necessária.")
+        }
+        val critico = ataque.critico == CriticoRules.ResultadoCritico.DECISIVO
+        val anulada = defesaAnulada(critico, surpresa)
+        val defendeu = if (anulada) false else defesaBemSucedida(defesaValorFinal, defesaSoma)
+
+        if (defendeu) {
+            return RelatorioTroca(ataque, true, defesaValorFinal, defesaSoma, true, null, null,
+                "${ataque.texto} → ${defesaTipo.rotulo} $defesaValorFinal, rolou $defesaSoma: DEFENDEU.")
+        }
+
+        val dano = HitLocationRules.aplicarDano(defensor.pvMax, danoBaseRolado, danoTipo, local, rdLocal)
+        val ferimento = InjuryRules.ferir(defensor, dano.pvSubtrair, htDefensor, randomFerimento)
+        val motivoSemDefesa = when {
+            anulada && critico -> " (defesa ANULADA por golpe decisivo)"
+            anulada && surpresa -> " (defesa ANULADA por surpresa)"
+            else -> ", rolou $defesaSoma: falhou na defesa"
+        }
+        val texto = "${ataque.texto} → ${defesaTipo.rotulo} $defesaValorFinal$motivoSemDefesa → ${dano.texto} | ${ferimento.efeito}"
+        return RelatorioTroca(ataque, !anulada, defesaValorFinal, if (anulada) null else defesaSoma, false, dano, ferimento, texto)
+    }
+}

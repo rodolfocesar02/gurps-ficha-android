@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 363 CONCLUÍDO — Saga FASE B B6: bestiário (17 criaturas) + cérebro tático de NPC
-**Último Lote Registrado:** Lote 363 — última entrada deste arquivo
+**Status Atual:** Lote 364 CONCLUÍDO — Saga FASE B B5 (regra): defesas no fluxo + troca completa (CombatResolver). Wiring executor/UI adiado p/ B8/B7
+**Último Lote Registrado:** Lote 364 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3000,4 +3000,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - NpcCombatBrainTest: arqueiro mantem distancia, bruto avanca, covarde foge a 30% PV, bestiario carrega/integridade, 3 goblins avancam coerentes. VERDE
 - BUG corrigido: Gson nao roda init de data class -> Bestiario.get() agora busca direto (sem mapa cacheado vazio)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 364 — 13 de Junho de 2026
+**Saga FASE B B5 (camada de regra): defesas no fluxo + troca completa (branch GURPS-Saga)**
+- domain/combat/CombatResolver.kt: modificadores de defesa (recuo +3 esquiva / +1 apara-bloqueio; Defesa Total Determinada +2; apara extra -4 cumulativa por arma; bloqueio 1x/turno; defesa anulada por critico/surpresa); opcoesDefesa() (alimenta o card "Defenda-se!" do B7/B8); defesaBemSucedida (3-4 passa, 17-18 falha); resolverTroca() encadeando B2(ataque)->defesa->B3(dano localizado)->B4(ferimento)
+- CombatResolverTest: modificadores (recuo/defesa total/apara extra), anulacao por critico/surpresa, bloqueio 1x/turno, e ROUND COMPLETO heroi×goblin com CRITICO FORCADO (anula defesa, fere de verdade) + round normal (apara com sucesso, sem dano). VERDE (aceite do B5 ao nivel de regra)
+- DIVERGENCIA do plano (regra 12): (1) NAO estendi CombatRules.kt (domain/rules, usado pelo Personagem) p/ nao arriscar a ficha — a logica de defesa do combate fica em domain/combat/CombatResolver. (2) Executor real `aplicar_dano` no NarradorToolExecutor e o card "Defenda-se!" na UI dependem do ESTADO VIVO do encontro (nasce no B8 iniciar_combate) e da UI de combate (B7); fazer agora seria fragil/falso -> ADIADOS para B7/B8. B5 entrega a camada de resolucao testada
+- Build completo verde 2 variantes
+- ESCOPO "B2 a B6" do usuario: CONCLUIDO (B2,B3,B4,B6,B5). Restam na Fase B: B7 (UI CombatTracker) e B8 (Narrador<->combate: iniciar_combate/acao_npc/aplicar_dano reais + card Defenda-se), fora do pedido "b2 a b6"
 ----------------------------------------------------------------------------------------------------------------------------------------------------
