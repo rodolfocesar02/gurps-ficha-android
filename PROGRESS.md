@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 366 CONCLUÍDO — Saga FASE B B8: Narrador⇄combate (iniciar_combate/aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp reais + saque + prosa final). **FASE B (motor + UI + integração) COMPLETA — falta só validação no aparelho.**
-**Último Lote Registrado:** Lote 366 — última entrada deste arquivo
+**Status Atual:** Lote 367 CONCLUÍDO — fix da UI de combate (painel rolável + divide tela com o chat). FASE B completa; validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 367 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3036,4 +3036,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 367 — 14 de Junho de 2026
+**Saga FASE B: fix da UI de combate (achado na validacao no aparelho, branch GURPS-Saga)**
+- BUG (1o teste real no device): o CombatePainel entrava na Column do feed SEM weight nem scroll -> engolia o espaco do chat (feed sumia) e TRANSBORDAVA, cortando as manobras de baixo sem como rolar
+- CombatUi.kt: CombatePainel agora recebe Modifier e usa Surface(fillMaxWidth) + Column(fillMaxSize); cabecalho "Rodada" FIXO no topo; tracker + manobras/defesa num Column com weight(1f) + verticalScroll -> rola por dentro
+- TabSaga.kt: o painel recebe Modifier.weight(1.5f) e o feed (LazyColumn) mantem weight(1f) -> chat ~40% / combate ~60%, ambos visiveis e roláveis
+- So UI/layout; sem mudanca de logica/regra. Build 2 variantes verde
 ----------------------------------------------------------------------------------------------------------------------------------------------------

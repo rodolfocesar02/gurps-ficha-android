@@ -22,7 +22,8 @@
 > - ✅ Lote 364 = B5 PARCIAL (2026-06-13) — camada de regra: CombatResolver (defesas no fluxo + troca completa, teste de round c/ crítico forçado). Executor `aplicar_dano` + card "Defenda-se!" ADIADOS p/ B8/B7 (precisam do estado vivo do encontro/UI). **Escopo "B2 a B6" do usuário concluído.**
 > - ✅ Lote 365 = B7 (2026-06-14) — UI de combate (visual aprovado): CombatTracker + ManeuverCards + DefendaSeCard (TalkBack) + CombatSession (motor de encontro puro, encadeia B1-B6) + SagaCombatController (estado Compose + ponte de defesa) + BestiarioCatalogo. Testes verdes; build 2 variantes verde. MVP usa inicial colorida (retrato real fica p/ B7/E2). `controller.iniciarCombate` pronto p/ o Narrador chamar no B8.
 > - ✅ Lote 366 = B8 (2026-06-14) — Narrador⇄combate: CombatBridge + 6 tools reais (iniciar_combate/acao_npc/aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp); fim de combate → prosa factual + saque (armas dos derrotados) entregue na ficha + conceder_xp; lei de ferro 8 no prompt. Testes verdes; build 2 variantes verde. **FASE B COMPLETA.** Divergência (regra 12): NPC dirigido pelo motor (B6), acao_npc devolve estado factual (UI interativa do B7 venceu o "round em lote" do plano).
-> - ➡️ Próximo: **validação no aparelho** (fim da Fase B — combate jogável ponta a ponta + pendências antigas A2/A5). Depois: Fase C/D/E conforme o plano.
+> - ✅ Lote 367 = EXTRA fix de UI (2026-06-14, validação no aparelho) — painel de combate engolia o chat e cortava as manobras sem rolagem; agora divide a tela com o feed (weight) e rola por dentro (cabeçalho "Rodada" fixo). Só layout; build 2 variantes verde.
+> - ➡️ Em andamento: **validação no aparelho** (combate jogável ponta a ponta + pendências antigas A2/A5). Depois: Fase C/D/E conforme o plano.
 
 ---
 

@@ -423,8 +423,9 @@ private fun FeedDaCampanha(viewModel: FichaViewModel) {
         }
 
         // Combate ativo (B7): tracker + manobras/defesa substituem a barra de texto.
+        // Recebe weight p/ dividir a tela com o feed (chat) — o painel rola por dentro.
         if (viewModel.sagaCombateAtivo) {
-            com.gurps.ficha.ui.saga.CombatePainel(viewModel)
+            com.gurps.ficha.ui.saga.CombatePainel(viewModel, Modifier.weight(1.5f))
         } else {
             // Barra de envio
             BarraDeEnvio(viewModel, habilitado = !processando && rolagem == null)

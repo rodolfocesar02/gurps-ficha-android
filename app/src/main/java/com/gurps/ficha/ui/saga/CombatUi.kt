@@ -39,32 +39,45 @@ private val COR_PV_MEDIO = Color(0xFFFFC107)
 private val COR_PV_BAIXO = Color(0xFFF44336)
 
 @Composable
-fun CombatePainel(viewModel: FichaViewModel) {
+fun CombatePainel(viewModel: FichaViewModel, modifier: Modifier = Modifier) {
     val estado = viewModel.sagaCombateEstado ?: return
     val defesa = viewModel.sagaCombateDefesaPendente
 
-    Column(Modifier.fillMaxWidth()) {
-        // Cabeçalho da rodada
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Combate — Rodada ${estado.rodada}", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-            Spacer(Modifier.weight(1f))
-            if (estado.encerrado) {
-                TextButton(onClick = { viewModel.sagaCombateEncerrar() },
-                    modifier = Modifier.semantics { contentDescription = "Fechar combate e voltar à narração" }) { Text("Fechar") }
+    Surface(
+        tonalElevation = 2.dp,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Column(Modifier.fillMaxSize()) {
+            // Cabeçalho da rodada — FIXO no topo do painel.
+            Row(
+                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Combate — Rodada ${estado.rodada}", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.weight(1f))
+                if (estado.encerrado) {
+                    TextButton(onClick = { viewModel.sagaCombateEncerrar() },
+                        modifier = Modifier.semantics { contentDescription = "Fechar combate e voltar à narração" }) { Text("Fechar") }
+                }
             }
-        }
-        HorizontalDivider()
+            HorizontalDivider()
 
-        CombatTracker(estado.combatentes)
+            // Conteúdo ROLÁVEL: tracker + manobras/defesa (resolve card tampando o chat e manobras cortadas).
+            Column(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                CombatTracker(estado.combatentes)
 
-        when {
-            estado.encerrado -> FimDeCombate(estado.resultado)
-            defesa != null -> DefendaSeCard(viewModel, defesa)
-            estado.vezDoHeroi -> ManeuverCards(viewModel, estado)
-            else -> AguardandoInimigos()
+                when {
+                    estado.encerrado -> FimDeCombate(estado.resultado)
+                    defesa != null -> DefendaSeCard(viewModel, defesa)
+                    estado.vezDoHeroi -> ManeuverCards(viewModel, estado)
+                    else -> AguardandoInimigos()
+                }
+            }
         }
     }
 }
