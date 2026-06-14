@@ -227,6 +227,9 @@ class CombatSession(
         else if (inimigosVivos.isEmpty()) { encerrado = true; resultado = ResultadoCombate.VITORIA; log += "🏆 Combate encerrado: vitória do herói." }
     }
 
+    /** Reavalia o fim após um efeito aplicado FORA do loop de turnos (ex.: dano do Narrador). B8. */
+    fun reavaliarFim() = verificarFim()
+
     /** Resumo factual do estado atual — base do que o Narrador vai narrar. */
     fun resumo(): String = encounter.estadoResumo()
 

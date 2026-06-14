@@ -184,6 +184,11 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        // Lote 366 (B8): android.util.Log e afins retornam default em vez de lançar "not mocked"
+        // nos testes JVM (permite testar o roteamento do NarradorToolExecutor, que loga).
+        unitTests.isReturnDefaultValues = true
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"

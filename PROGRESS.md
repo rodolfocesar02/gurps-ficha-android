@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 365 CONCLUÍDO — Saga FASE B B7: UI de combate (CombatTracker + ManeuverCards + Defenda-se) + CombatSession (motor de encontro) + controller. Falta B8 (Narrador⇄combate)
-**Último Lote Registrado:** Lote 365 — última entrada deste arquivo
+**Status Atual:** Lote 366 CONCLUÍDO — Saga FASE B B8: Narrador⇄combate (iniciar_combate/aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp reais + saque + prosa final). **FASE B (motor + UI + integração) COMPLETA — falta só validação no aparelho.**
+**Último Lote Registrado:** Lote 366 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3020,5 +3020,20 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Fiacao: TabSaga mostra o CombatePainel no lugar da barra de texto quando o combate esta ativo; getters/acoes sagaCombate* no FichaViewModel; controller criado no FichaSagaDelegate (linhas factuais -> turnos "sistema" efemeros no feed)
 - CombatSessionTest: parser de dano, mapa de tipo, heroi ataca goblin adjacente, vitoria quando inimigos caem, NPC ataca heroi (esquiva soma 3 sempre defende), fuga por moral baixa. VERDE
 - NAO inclui (vai no B8): iniciar_combate disparado pelo Narrador, acao_npc override, aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp reais, saque + prosa final agregada. O controller.iniciarCombate ja existe e sera chamado pelo executor no B8
+- Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 366 — 14 de Junho de 2026
+**Saga FASE B B8: integracao Narrador<->combate (branch GURPS-Saga)**
+- NarradorToolExecutor: interface CombatBridge + roteamento das 6 tools que antes davam "nao_implementado" -> iniciar_combate, acao_npc, aplicar_dano, aplicar_condicao, gastar_recurso, conceder_xp. Parsers finos (validam args, delegam a bridge)
+- FichaSagaDelegate implementa CombatBridge: iniciarCombate (delega ao controller); aplicar_dano (em combate -> combatente vivo via HitLocationRules+ferir; FORA de combate -> PV do heroi na ficha; tipo "fad" -> debita PF); aplicar_condicao (mapeia p/ Condicao; aplica no combatente, fora de combate vira nota); gastar_recurso (pf/pv reais e salvos; dinheiro/municao/item = nota narrativa); conceder_xp (xpGanhos += pts, salva, + turno "sistema" no feed). Mapeadores localDeString/condicaoDeString
+- Fim de combate: SagaCombatController.onFim -> narrarFimDeCombate. finalizar() (guarda 1x) salva PV do heroi, computa SAQUE (armas dos inimigos derrotados, agrupadas) e entrega na ficha (sagaAdicionarItem), e dispara um turno do Narrador com o relatorio factual agregado p/ converter em PROSA (sem inventar numeros) + conceder_xp pelo marco
+- SagaCombatController: aplicarDanoCombatente/aplicarCondicaoCombatente (efeitos do Narrador fora do loop), perfilHeroi() (perfil da ficha atual), emCurso (combate em andamento), reavaliarFim() na CombatSession
+- FichaViewModel: sagaConcederXp/sagaDefinirPvAtual/sagaDefinirPfAtual/sagaAdicionarItem (mutam e SALVAM a ficha carregada pelo caminho normal salvarFicha)
+- MestreIAPromptsNarrador: lei de ferro 8 (combate abre com iniciar_combate, jogador resolve na UI, Narrador narra so abertura+desfecho; nunca golpe a golpe nem numeros) + descricao das tools de combate refinada (categorial, zero exemplos)
+- build.gradle.kts: testOptions unitTests.isReturnDefaultValues = true (android.util.Log retorna default no teste JVM -> permite testar o roteamento do executor)
+- NarradorToolExecutorCombatTest: roteamento das 6 tools com CombatBridge falsa (parse de inimigos, campos obrigatorios, acao_npc exige combate ativo, degradacao sem bridge). VERDE
+- DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
+- FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------

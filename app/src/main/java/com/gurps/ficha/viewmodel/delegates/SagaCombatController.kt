@@ -91,11 +91,27 @@ class SagaCombatController(
 ) {
     private var sessao: CombatSession? = null
     private var logPublicado = 0
+    private var finalizado = false
 
     var estado by mutableStateOf<CombatUiState?>(null); private set
     var defesaPendente by mutableStateOf<DefesaPendenteUi?>(null); private set
 
+    /** Notificado quando o combate encerra — o delegate dispara a narração do desfecho (B8). */
+    var onFim: ((CombatFim) -> Unit)? = null
+
+    /** Resumo factual entregue ao Narrador no fim do combate. */
+    data class CombatFim(
+        val resultado: ResultadoCombate?,
+        val resumoFactual: String,
+        val logCompleto: List<String>,
+        val saque: List<String>
+    )
+
     val ativo: Boolean get() = sessao != null
+    /** Combate AINDA em andamento (a UI joga). Difere de [ativo], que segue true no estado final. */
+    val emCurso: Boolean get() = sessao?.let { !it.encerrado } ?: false
+
+    fun resumoFactual(): String? = sessao?.resumo()
 
     /**
      * Abre um encontro. [inimigos] = pares (id do bestiário, quantidade). Devolve um resumo factual
@@ -139,9 +155,45 @@ class SagaCombatController(
         if (surpresa == "heroi") heroiComb.condicoes.add(Condicao.SURPRESO)
         sessao = s
         logPublicado = 0
+        finalizado = false
         s.log += "⚔️ Combate iniciado: ${inimigos.joinToString(", ") { "${it.second}× ${it.first}" }} a ${distanciaM}m."
         scope.launch { rodarLoop() }
         return s.resumo()
+    }
+
+    /** Perfil de combate do herói montado da ficha ATUAL (o bridge usa p/ dano fora do loop). */
+    fun perfilHeroi(): HeroiPerfilCombate = construirPerfilHeroi(viewModel.personagem)
+
+    // ── Efeitos aplicados pelo Narrador (B8), fora do loop de turnos ────────────
+
+    /** Aplica dano a um combatente vivo do encontro (NPC ou herói). Retorna relatório factual ou null. */
+    fun aplicarDanoCombatente(alvoId: String, danoBase: Int, tipo: DanoTipo, local: LocalAtaque): String? {
+        val s = sessao ?: return null
+        val alvo = s.encounter.combatentes.firstOrNull { it.id == alvoId && it.vivo } ?: return null
+        val ht = if (alvo.ehHeroi) s.heroiPerfil.ht else (alvo.stats?.ht ?: 10)
+        val rd = if (alvo.ehHeroi) s.heroiPerfil.rd else (alvo.stats?.rd ?: 0)
+        val dano = HitLocationRules.aplicarDano(alvo.pvMax, danoBase, tipo, local, rd)
+        val fer = InjuryRules.ferir(alvo, dano.pvSubtrair, ht, Random.Default)
+        val txt = "✴️ ${alvo.nome}: ${dano.texto} | ${fer.efeito}"
+        s.log += txt
+        if (alvo.ehHeroi) viewModel.sagaDefinirPvAtual(alvo.pvAtual.coerceAtLeast(0))
+        s.reavaliarFim()
+        publicarLog(); atualizarEstado()
+        if (s.encerrado) finalizar()
+        return txt
+    }
+
+    /** Aplica/remove uma condição de um combatente do encontro. Retorna relatório ou null. */
+    fun aplicarCondicaoCombatente(alvoId: String, cond: Condicao, aplicar: Boolean): String? {
+        val s = sessao ?: return null
+        val alvo = s.encounter.combatentes.firstOrNull { it.id == alvoId } ?: return null
+        if (aplicar) alvo.condicoes.add(cond) else alvo.condicoes.remove(cond)
+        val txt = "• ${alvo.nome}: ${if (aplicar) "ganha" else "perde"} a condição ${cond.rotulo}."
+        s.log += txt
+        s.reavaliarFim()
+        publicarLog(); atualizarEstado()
+        if (s.encerrado) finalizar()
+        return txt
     }
 
     // ── Ações do herói (a UI chama) ──────────────────────────────────────────
@@ -181,7 +233,7 @@ class SagaCombatController(
     }
 
     fun encerrarManual() {
-        sessao = null; estado = null; defesaPendente = null; logPublicado = 0
+        sessao = null; estado = null; defesaPendente = null; logPublicado = 0; finalizado = false
     }
 
     // ── Loop de turnos ────────────────────────────────────────────────────────
@@ -262,11 +314,23 @@ class SagaCombatController(
 
     private fun finalizar() {
         val s = sessao ?: return
-        // Devolve o PV do herói à ficha (clamp em 0 — a ficha não guarda PV negativo).
-        viewModel.atualizarPontosVidaRolagemAtual(s.heroi.pvAtual.coerceAtLeast(0))
-        // B7 entrega só a regra/feedback; saque + XP reais entram no B8.
-        // Mantém o estado final visível; a UI fecha com "encerrarManual".
+        if (finalizado) return
+        finalizado = true
+        // Devolve o PV do herói à ficha (clamp em 0 — a ficha não guarda PV negativo) e SALVA.
+        viewModel.sagaDefinirPvAtual(s.heroi.pvAtual.coerceAtLeast(0))
+        // Saque (B8): armas dos inimigos derrotados, entregues à ficha de verdade.
+        val saque = if (s.resultado == ResultadoCombate.VITORIA) computarSaque(s) else emptyList()
+        saque.forEach { viewModel.sagaAdicionarItem(it, 1) }
+        // Narrador converte o relatório factual agregado em prosa (+ XP) — sem inventar números.
+        onFim?.invoke(CombatFim(s.resultado, s.resumo(), s.log.toList(), saque))
     }
+
+    /** Saque simples e factual: arma de cada inimigo derrotado (agrupada por nome). */
+    private fun computarSaque(s: CombatSession): List<String> =
+        s.inimigos.filter { !it.vivo }
+            .mapNotNull { it.stats?.armaNome?.trim()?.takeIf { n -> n.isNotBlank() } }
+            .groupingBy { it }.eachCount()
+            .map { (nome, q) -> if (q > 1) "$nome (x$q)" else nome }
 
     // ── Perfil de combate do herói (a partir da ficha) ─────────────────────────
 

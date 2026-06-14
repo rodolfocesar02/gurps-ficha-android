@@ -21,7 +21,8 @@
 > - ✅ Lote 363 = B6 (2026-06-13) — bestiário (17 criaturas) + check_bestiario.py + BestiarioModels/loader + NpcCombatBrain + testes
 > - ✅ Lote 364 = B5 PARCIAL (2026-06-13) — camada de regra: CombatResolver (defesas no fluxo + troca completa, teste de round c/ crítico forçado). Executor `aplicar_dano` + card "Defenda-se!" ADIADOS p/ B8/B7 (precisam do estado vivo do encontro/UI). **Escopo "B2 a B6" do usuário concluído.**
 > - ✅ Lote 365 = B7 (2026-06-14) — UI de combate (visual aprovado): CombatTracker + ManeuverCards + DefendaSeCard (TalkBack) + CombatSession (motor de encontro puro, encadeia B1-B6) + SagaCombatController (estado Compose + ponte de defesa) + BestiarioCatalogo. Testes verdes; build 2 variantes verde. MVP usa inicial colorida (retrato real fica p/ B7/E2). `controller.iniciarCombate` pronto p/ o Narrador chamar no B8.
-> - ➡️ Próximo: B8 (Narrador⇄combate: iniciar_combate/acao_npc/aplicar_dano reais + condição/recurso/XP + saque + prosa final agregada). Depois: validação no aparelho (fim da Fase B).
+> - ✅ Lote 366 = B8 (2026-06-14) — Narrador⇄combate: CombatBridge + 6 tools reais (iniciar_combate/acao_npc/aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp); fim de combate → prosa factual + saque (armas dos derrotados) entregue na ficha + conceder_xp; lei de ferro 8 no prompt. Testes verdes; build 2 variantes verde. **FASE B COMPLETA.** Divergência (regra 12): NPC dirigido pelo motor (B6), acao_npc devolve estado factual (UI interativa do B7 venceu o "round em lote" do plano).
+> - ➡️ Próximo: **validação no aparelho** (fim da Fase B — combate jogável ponta a ponta + pendências antigas A2/A5). Depois: Fase C/D/E conforme o plano.
 
 ---
 
@@ -160,9 +161,11 @@ LOTE NNN — <título>
 > 🎨 **Visual aprovado (2026-06-13):** mockup dos 3 cards (CombatTracker faixas + PV + herói destacado; card de manobra só com legais + sub-diálogo alvo/local; card "Defenda-se!" com valores finais e Rolar) validado pelo usuário. No B7, INICIAL: avatar com a inicial colorida (azul herói / vermelho inimigo) + barra de PV verde→amarelo→vermelho.
 > 📌 **REGISTRO p/ depois (retratos):** trocar as iniciais por RETRATOS reais — herói via `ImagemPersonagemStore` (já existe); NPCs via imagem gerada. O projeto já tem o Mestre Pintor (`data/network/GeminiImageService.kt`, API de imagem do Gemini). Ideia do usuário: o NARRADOR gera imagens em TEMPO REAL (retrato de NPC ao `forjar_npc`/`iniciar_combate`, arte de cena ao `definir_cena`) com cache por NPC/cena. Casa com o LOTE E2 (Imagem de cena) — implementar lá ou num lote dedicado de "retratos de combate". Fallback sempre = inicial colorida.
 
-### LOTE B8 (≈361) — Integração Narrador⇄Combate
+### ✅ LOTE B8 (= Lote 366, 2026-06-14) — Integração Narrador⇄Combate
 Executores reais: `iniciar_combate` (instancia do bestiário e/ou `forjar_npc` via Forjador), `acao_npc` (valida → executa → relatório), `aplicar_condicao`, `gastar_recurso`. Round de NPCs em LOTE (1 chamada de IA decide intenções de todos; motor executa um a um). Fim de combate → relatório agregado → Narrador converte em prosa → saque da tabela da criatura → gancho p/ `conceder_xp`.
 **Aceite:** dizer ao Narrador "três bandidos saem da mata" → combate completo → prosa final SEM números inventados (`NarradorOutputValidator` zero alarmes) → saque entregue na ficha.
+> **Entregue (Lote 366):** CombatBridge + as 6 tools roteadas (iniciar_combate/acao_npc/aplicar_dano/aplicar_condicao/gastar_recurso/conceder_xp); fim de combate → prosa factual + saque (armas dos derrotados) na ficha + conceder_xp; lei de ferro 8 no prompt; teste de roteamento verde.
+> **Divergências (regra 12):** (1) NPC dirigido pelo MOTOR (NpcCombatBrain/B6) e jogado na UI interativa do B7 — `acao_npc` devolve o ESTADO FACTUAL p/ narração em vez de dirigir o "round em lote" (a UI aprovada venceu). (2) `forjar_npc` dentro do iniciar_combate (NPC sob medida) e TABELAS DE SAQUE por criatura ficam p/ enriquecimento (F1); saque atual = armas dos inimigos derrotados. (3) `gastar_recurso` dinheiro/munição/item = nota narrativa (a ficha não modela esses como número vivo); pf/pv são reais e salvos.
 
 ---
 

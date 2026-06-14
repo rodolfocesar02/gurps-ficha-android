@@ -134,6 +134,17 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     fun sagaCombateDefender(opcao: com.gurps.ficha.domain.combat.CombatResolver.OpcaoDefesa) = sagaDelegate.combate.escolherDefesa(opcao)
     fun sagaCombateEncerrar() = sagaDelegate.combate.encerrarManual()
 
+    // Efeitos da Saga na ficha do herói (Lote 366 / B8) — mutam e SALVAM a ficha carregada.
+    fun sagaConcederXp(pts: Int): Int {
+        personagem = personagem.copy(xpGanhos = (personagem.xpGanhos + pts).coerceAtLeast(0)); salvarFicha(); return personagem.xpGanhos
+    }
+    fun sagaDefinirPvAtual(v: Int) { atualizarPontosVidaRolagemAtual(v); salvarFicha() }
+    fun sagaDefinirPfAtual(v: Int) { atualizarPontosFadigaRolagemAtual(v); salvarFicha() }
+    fun sagaAdicionarItem(nome: String, qtd: Int) {
+        if (nome.isBlank()) return
+        adicionarEquipamento(com.gurps.ficha.model.Equipamento(nome = nome, quantidade = qtd.coerceAtLeast(1))); salvarFicha()
+    }
+
     val mestreIAChatHistory get() = iaDelegate.mestreIAChatHistory
     val fichaGeradaPendente get() = iaDelegate.fichaGeradaPendente
     val mostrarDialogRetrato get() = iaDelegate.mostrarDialogRetrato

@@ -26,7 +26,8 @@ class NarradorToolExecutor(
     private val sagaDao: SagaDao?,
     private val repository: DataRepository? = null,
     private val forjador: ForjadorToolExecutor? = null,
-    private val rollBridge: RollBridge? = null
+    private val rollBridge: RollBridge? = null,
+    private val combatBridge: CombatBridge? = null
 ) {
     /**
      * Lote 354 (A5): ponte INTERATIVA da rolagem. pedir_rolagem suspende o loop da IA
@@ -36,6 +37,22 @@ class NarradorToolExecutor(
      */
     interface RollBridge {
         suspend fun pedirRolagem(pericia: String, mods: List<Pair<String, Int>>, motivo: String): String
+    }
+
+    /**
+     * Lote 366 (B8): ponte de COMBATE. Liga as tools do Narrador ao motor de combate
+     * (SagaCombatController + CombatSession) e à ficha do herói. O combate em si é jogado
+     * na UI (B7); aqui o Narrador abre o encontro, consulta o estado e aplica efeitos
+     * factuais (dano/condição/recurso/XP) sem inventar números.
+     */
+    interface CombatBridge {
+        suspend fun iniciarCombate(inimigos: List<Pair<String, Int>>, distanciaM: Int, surpresa: String): String
+        fun combateAtivo(): Boolean
+        fun acaoNpc(npcId: String, intencao: String, alvoId: String?, detalhes: String?): String
+        fun aplicarDano(alvoId: String?, dano: String, tipo: String, local: String?): String
+        fun aplicarCondicao(alvoId: String?, condicao: String, operacao: String): String
+        fun gastarRecurso(recurso: String, quantidade: Int, motivo: String, itemNome: String?): String
+        fun concederXp(pontos: Int, motivo: String): String
     }
 
     /** Campanha ativa — obrigatória para fatos. Setada ao abrir/criar campanha (A5). */
@@ -60,6 +77,12 @@ class NarradorToolExecutor(
                 NarradorTools.TOOL_PEDIR_ROLAGEM -> pedirRolagem(args)
                 NarradorTools.TOOL_LOCALIZAR -> localizarNoCodex(args)
                 NarradorTools.TOOL_LER -> lerPagina(args)
+                NarradorTools.TOOL_INICIAR_COMBATE -> iniciarCombate(args)
+                NarradorTools.TOOL_ACAO_NPC -> acaoNpc(args)
+                NarradorTools.TOOL_APLICAR_DANO -> aplicarDano(args)
+                NarradorTools.TOOL_APLICAR_CONDICAO -> aplicarCondicao(args)
+                NarradorTools.TOOL_GASTAR_RECURSO -> gastarRecurso(args)
+                NarradorTools.TOOL_CONCEDER_XP -> concederXp(args)
                 in NarradorTools.TODAS -> {
                     Log.w("Narrador_Tools", "Tool ainda não implementada: $nome")
                     """{"erro":"nao_implementado","tool":"$nome"}"""
@@ -203,6 +226,76 @@ class NarradorToolExecutor(
             "--- [${c.source_title}, pág. ${c.page_number}] ---\n${c.text}"
         }
         return JSONObject().put("encontrado", true).put("texto", texto).toString()
+    }
+
+    // ── Combate (Lote 366 / B8) — parsers finos que delegam ao CombatBridge ────
+
+    private suspend fun iniciarCombate(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Motor de combate indisponível")
+        val arr = args.optJSONArray("inimigos") ?: return erro("campos_obrigatorios", "inimigos é obrigatório")
+        val inimigos = mutableListOf<Pair<String, Int>>()
+        for (i in 0 until arr.length()) {
+            val o = arr.optJSONObject(i) ?: continue
+            val id = o.optString("id_ou_conceito").trim()
+            val qtd = o.optInt("quantidade", 1)
+            if (id.isNotBlank()) inimigos.add(id to qtd)
+        }
+        if (inimigos.isEmpty()) return erro("campos_obrigatorios", "ao menos um inimigo é obrigatório")
+        val distancia = args.optInt("distancia_m", 5)
+        val surpresa = args.optString("surpresa", "ninguem").ifBlank { "ninguem" }
+        val resumo = bridge.iniciarCombate(inimigos, distancia, surpresa)
+        return JSONObject().put("ok", true).put("estado", resumo)
+            .put("instrucao", "O combate é jogado na interface pelo jogador. Narre a abertura SEM rolar nem inventar números; o motor cuida das rolagens. Você será chamado de novo ao fim do combate para narrar o desfecho.")
+            .toString()
+    }
+
+    private fun acaoNpc(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Motor de combate indisponível")
+        if (!bridge.combateAtivo()) return erro("sem_combate_ativo", "Nenhum combate em andamento")
+        val npcId = args.optString("npc_id").trim()
+        val intencao = args.optString("intencao").trim()
+        if (npcId.isBlank() || intencao.isBlank()) return erro("campos_obrigatorios", "npc_id e intencao são obrigatórios")
+        val alvo = args.optString("alvo_id").trim().ifBlank { null }
+        val detalhes = args.optString("detalhes").trim().ifBlank { null }
+        return bridge.acaoNpc(npcId, intencao, alvo, detalhes)
+    }
+
+    private fun aplicarDano(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Motor de combate indisponível")
+        val dano = args.optString("dano").trim()
+        val tipo = args.optString("tipo").trim()
+        if (dano.isBlank() || tipo.isBlank()) return erro("campos_obrigatorios", "dano e tipo são obrigatórios")
+        val alvo = args.optString("alvo_id").trim().ifBlank { null }
+        val local = args.optString("local").trim().ifBlank { null }
+        return bridge.aplicarDano(alvo, dano, tipo, local)
+    }
+
+    private fun aplicarCondicao(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Motor de combate indisponível")
+        val condicao = args.optString("condicao").trim()
+        if (condicao.isBlank()) return erro("campos_obrigatorios", "condicao é obrigatória")
+        val alvo = args.optString("alvo_id").trim().ifBlank { null }
+        val operacao = args.optString("operacao", "aplicar").ifBlank { "aplicar" }
+        return bridge.aplicarCondicao(alvo, condicao, operacao)
+    }
+
+    private fun gastarRecurso(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Recursos do herói indisponíveis")
+        val recurso = args.optString("recurso").trim()
+        if (recurso.isBlank()) return erro("campos_obrigatorios", "recurso é obrigatório")
+        val quantidade = args.optInt("quantidade", 0)
+        if (quantidade <= 0) return erro("campos_obrigatorios", "quantidade deve ser positiva")
+        val motivo = args.optString("motivo").trim()
+        val itemNome = args.optString("item_nome").trim().ifBlank { null }
+        return bridge.gastarRecurso(recurso, quantidade, motivo, itemNome)
+    }
+
+    private fun concederXp(args: JSONObject): String {
+        val bridge = combatBridge ?: return erro("sem_combate", "Ficha do herói indisponível")
+        val pontos = args.optInt("pontos", 0)
+        if (pontos == 0) return erro("campos_obrigatorios", "pontos é obrigatório")
+        val motivo = args.optString("motivo").trim()
+        return bridge.concederXp(pontos, motivo)
     }
 
     private fun erro(codigo: String, detalhe: String): String =
