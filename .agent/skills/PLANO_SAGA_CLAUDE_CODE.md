@@ -156,6 +156,8 @@ LOTE NNN — <título>
 2. `ManeuverCards.kt`: somente `manobrasLegais()`; sub-diálogo de alvo + local do golpe (lista com penalidades visíveis).
 3. TalkBack: cada combatente = frase única ("Goblin, faixa Médio, catorze metros, em pé, ferido"); cards e sub-diálogos com `stateDescription`.
 **Aceite:** combate jogável de olhos fechados na variante PraCego (roteiro no relatório).
+> 🎨 **Visual aprovado (2026-06-13):** mockup dos 3 cards (CombatTracker faixas + PV + herói destacado; card de manobra só com legais + sub-diálogo alvo/local; card "Defenda-se!" com valores finais e Rolar) validado pelo usuário. No B7, INICIAL: avatar com a inicial colorida (azul herói / vermelho inimigo) + barra de PV verde→amarelo→vermelho.
+> 📌 **REGISTRO p/ depois (retratos):** trocar as iniciais por RETRATOS reais — herói via `ImagemPersonagemStore` (já existe); NPCs via imagem gerada. O projeto já tem o Mestre Pintor (`data/network/GeminiImageService.kt`, API de imagem do Gemini). Ideia do usuário: o NARRADOR gera imagens em TEMPO REAL (retrato de NPC ao `forjar_npc`/`iniciar_combate`, arte de cena ao `definir_cena`) com cache por NPC/cena. Casa com o LOTE E2 (Imagem de cena) — implementar lá ou num lote dedicado de "retratos de combate". Fallback sempre = inicial colorida.
 
 ### LOTE B8 (≈361) — Integração Narrador⇄Combate
 Executores reais: `iniciar_combate` (instancia do bestiário e/ou `forjar_npc` via Forjador), `acao_npc` (valida → executa → relatório), `aplicar_condicao`, `gastar_recurso`. Round de NPCs em LOTE (1 chamada de IA decide intenções de todos; motor executa um a um). Fim de combate → relatório agregado → Narrador converte em prosa → saque da tabela da criatura → gancho p/ `conceder_xp`.
@@ -212,6 +214,7 @@ Deps: Media3 (ExoPlayer) + SoundPool. `domain/media/AudioEngine.kt`: música por
 ### LOTE E2 (≈371) — Imagem de cena
 `assets/cenas/` (~30 ilustrações bioma×hora geradas previamente em lote pelo `GeminiImageService`, curadas, otimizadas WebP) + `ImagemCenaStore` (clone do `ImagemPersonagemStore`); cabeçalho da cena mostra a arte do bioma instantânea; botão "ilustrar este momento" → Narrador escreve prompt visual → `GeminiImageService` 16:9 → cache por cena.
 **Aceite:** cena nova exibe arte <100 ms; ilustração sob demanda persiste ao reabrir.
+> 📌 **REGISTRO (geração em tempo real pelo Narrador):** além das cenas, o mesmo `GeminiImageService` (Mestre Pintor) deve gerar **retratos de NPC** em tempo real ao `forjar_npc`/`iniciar_combate` (ver REGISTRO no LOTE B7). Padrão: Narrador escreve o prompt visual → gera 1:1 p/ retrato de NPC, 16:9 p/ cena → cache por id (NPC) / por cena. Fallback = inicial colorida (NPC) / arte de bioma pré-gerada (cena). Decidir se vira sub-lote próprio "retratos de combate" entre B7 e E2.
 
 ### LOTE E3 (≈372) — Vida visual + tato
 Lottie-compose: chuva/neve/brasas/névoa como overlay da arte conforme clima; shake+flash em ferimento grave do herói; háptica (acerto curto, crítico duplo, 0 PV longo, relógio de facção tique). Tudo com toggle em configurações (acessibilidade vestibular).
