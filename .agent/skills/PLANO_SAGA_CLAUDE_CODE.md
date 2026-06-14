@@ -17,7 +17,8 @@
 > - ✅ Lote 357 = EXTRA (UI): tela de criação da Saga limpa — configurações atrás do botão "Configuração do Jogo" (diálogo) (2026-06-13)
 > - ✅ Lote 358 = EXTRA (UI): diálogo "Configuração do Jogo" em tela cheia + barra de rolagem visível (2026-06-13)
 > - ✅ Lote 359 = B1 (2026-06-13) — FASE B início: modelos de combate (domain/combat) + CombatEncounter (ordem/manobrasLegais/estadoResumo) + testes
-> - ➡️ Próximo: FASE B — B2 (≈360) Ataque e manobras núcleo (CombatActions)
+> - ✅ Lotes 360-362 = B2+B3+B4 (2026-06-13, commit único) — ataque/manobras (CombatActions+ModificadoresCombate), dano localizado (HitLocationRules, paridade Mesa Virtual), estados vitais (InjuryRules); todos com testes
+> - ➡️ Próximo: FASE B — B6 (≈363) Bestiário + cérebro tático; depois B5 (≈364) defesas/dano fim-a-fim + UI (integração)
 
 ---
 
@@ -117,7 +118,7 @@ LOTE NNN — <título>
 3. Testes (`CombatEncounterTest`): ordem com 4 combatentes (2 empates), legalidade de manobras em 6 estados, resumo determinístico.
 **Aceite:** suíte verde; nenhuma dependência de Android no módulo.
 
-### LOTE B2 (≈355) — Ataque e manobras núcleo
+### ✅ LOTE B2 (= Lote 360, concluído 2026-06-13) — Ataque e manobras núcleo
 1. `CombatActions.kt`: `resolverAtaque(atacante, alvo, arma, manobra, localAlvo?, encounter): RelatorioAtaque`.
 2. NH efetivo = NH da arma ± manobra (Ataque Total Determinado +4; Mover-e-Atacar teto 9 e sem aparar depois) ± postura do atacante ± penalidade do local visado ± visibilidade (tabela própria `ModificadoresCombate.kt`: escuridão, névoa — valores do MB).
 3. Implementar: Ataque, Ataque Total (Determinado/Duplo/Forte), Mover (gasta Deslocamento real nos `distancias`), Mover-e-Atacar, Mudar Postura, Preparar, Defesa Total (flag p/ B4).
@@ -125,13 +126,13 @@ LOTE NNN — <título>
 5. Testes: matriz de ≥12 casos com gabarito calculado à mão no comentário.
 **Aceite:** suíte verde; relatório de ataque legível (`"NH 14 −3 vitais −2 escuro = 9; rolou 8: acerto, margem 1"`).
 
-### LOTE B3 (≈356) — Dano localizado (porte da Mesa Virtual JS→Kotlin)
+### ✅ LOTE B3 (= Lote 361, concluído 2026-06-13) — Dano localizado (porte da Mesa Virtual JS→Kotlin)
 1. Extraia os números de `Mesa Virtual/index.html` (calculadora): tabela de locais (penalidade de mira; RD extra quando houver), multiplicadores tipo×local (perf ×3 vitais; ×4 crânio; corte ×1,5 pescoço; etc.), limites de membro (>PV/2 incapacita braço/perna; >PV/3 mão/pé).
 2. `HitLocationRules.kt`: `data class Local(...)`, `fun multiplicador(tipoDano, local)`, `fun aplicarDano(alvo, danoBase, tipo, local): RelatorioDano` (ordem: RD do local → dano penetrante → multiplicador → limite de membro → retorna PV a subtrair + efeitos).
 3. Testes de PARIDADE: ≥12 casos idênticos aos da calculadora web (rode-a mentalmente/manual e cole o gabarito no teste).
 **Aceite:** paridade 100% com a Mesa Virtual; comentários `// MB p.XXX` em cada tabela.
 
-### LOTE B4 (≈357) — Estados vitais
+### ✅ LOTE B4 (= Lote 362, concluído 2026-06-13) — Estados vitais
 `InjuryRules.kt`: choque (−min(dano,4) em DX/IQ no próximo turno); ferimento grave (>PV/2) → HT ou atordoado+caído; PV≤0 → HT por turno para agir; morte: HT a −1×PV, −2×PV...; inconsciência; recuperação de atordoamento (HT no fim do turno). Integrar ao `Combatente`. Teste-simulação 0→morte com log de cada teste e seed fixa.
 
 ### LOTE B5 (≈358) — Defesas no fluxo + dano fim-a-fim

@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 13 de Junho de 2026
-**Status Atual:** Lote 359 CONCLUÍDO — Saga FASE B (Combate) B1: modelos de combate + sequência de turnos (Kotlin puro)
-**Último Lote Registrado:** Lote 359 — última entrada deste arquivo
+**Status Atual:** Lotes 360-362 CONCLUÍDOS — Saga FASE B: B2 (ataque/manobras), B3 (dano localizado, paridade Mesa Virtual), B4 (estados vitais)
+**Último Lote Registrado:** Lote 362 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -2978,5 +2978,15 @@ Inicio da Fase B. Tudo em domain/combat/, KOTLIN PURO (zero dependencia de Andro
 - domain/combat/CombatEncounter.kt: ordem por Velocidade Basica desc -> DX desc -> aleatorio com SEED (deterministico); proximoTurno()/rodadaAtual; engajado() (corpo-a-corpo se dist<=1 do heroi); manobrasLegais() (inconsciente->nenhuma; atordoado->Defesa Total/Nao Fazer Nada; caido->sem Ataque Total/Mover e Atacar; sem alvo engajado->sem ataque CaC); estadoResumo() factual e deterministico p/ a IA
 - CombatEncounterTest: ordem com 4 combatentes e 2 empates (vel+DX) + determinismo por seed; proximoTurno/rodada; manobras legais em 6 estados; estadoResumo deterministico/factual. VERDE
 - DIVERGENCIA: §4.1 do PLANO_GURPS_SAGA_v2 nao existe no repo; campos derivados do MB + Skill_GURPS
+- Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lotes 360-362 — 13 de Junho de 2026
+**Saga FASE B: B2 (ataque/manobras) + B3 (dano localizado) + B4 (estados vitais) (branch GURPS-Saga)**
+Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para economizar builds (autorizado pelo usuario). Cada um com sua suite de testes.
+- B2 (CombatActions.kt + ModificadoresCombate.kt): calcularNH (PURO) = NH arma ± manobra (Ataque Total Determinado +4; Mover-e-Atacar CaC -4, a distancia teto 9) ± postura ± local visado ± visibilidade; avaliarRolagem (acerto/margem/critico via CriticoRules); resolverAtaque (3d6 + relatorio legivel "NH 14 -3 vitais -2 escuro = 9; rolou 8: acerto, margem 1"); flags atacanteSemDefesaAtiva (Ataque Total) e semApararDepois (Mover-e-Atacar). LocalAtaque (11 locais, penalidade de mira MB p.398), Visibilidade, AtaqueTotalModo. CombatActionsTest: matriz de 14 NH + criticos + flags. VERDE
+- B3 (HitLocationRules.kt): PORTE FIEL da calculadora da Mesa Virtual (index.html DAMAGE_RULES/applySmartDmg). DanoTipo (cont1.0/corte1.5/pi-0.5/pi1.0/pi+1.5/pi++2.0/perf2.0); overrides cranio x4 (qualquer tipo) e vitais x3 (so perfurante/perf); RD extra cranio +2; limite de membro braco/perna ceil(PV*0.5), mao/pe ceil(PV*0.33) com flag incapacitou. HitLocationRulesTest: 15 casos de PARIDADE com gabarito do JS. VERDE
+- B4 (InjuryRules.kt): penalidadeChoque (-min(dano,4)); ehFerimentoGrave (>PV/2); aplicarGolpe (morte automatica <=-5xPV; cheques de morte -1x..-4xPV recem-cruzados; ferimento grave HT->atordoado+caido ou inconsciente por falha 5+; inconsciencia por PV<=0); recuperaAtordoamento; ferir(Combatente) muta PV/condicoes. InjuryRulesTest: choque/grave/recuperacao/morte-automatica + simulacao 0->morte com log e seed fixa. VERDE
+- DIVERGENCIA (B2): plano diz "Mover-e-Atacar teto 9" (regra A DISTANCIA); no CaC a regra e -4. Implementei as duas (param aDistancia), matematica correta do GURPS. DIVERGENCIA (B3): paridade e com a Mesa Virtual (locais olho/pescoco/virilha sem override especial usam mult base — documentado)
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
