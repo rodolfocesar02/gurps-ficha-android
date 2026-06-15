@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 370 CONCLUÍDO — combate: manobras com opções (Mover dirigido, Mudar de Postura, Avaliar +1..+3). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 370 — última entrada deste arquivo
+**Status Atual:** Lote 371 CONCLUÍDO — stats de arma (reach/Acc/1-2D/Máx/CdT/Bulk/Recuo) lidos dos JSONs → ArmaCatalogoItem + Equipamento + AtaqueHeroi. Backward-compatible (sem migração). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 371 — última entrada deste arquivo
 **HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3037,6 +3037,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 371 — 14 de Junho de 2026
+**Saga: stats de arma do catálogo → ficha → combate (plumbing, branch GURPS-Saga)**
+- CONTEXTO: combate GURPS depende de stats que os JSONs JÁ TINHAM mas o app DESCARTAVA. Análise de risco confirmou: aditivo, sem migração Room (Equipamento mora no Personagem.toJson()→FichaEntity.json TEXT), construção só por args nomeados, Gson preenche ausentes com null/0/false → ficha antiga carrega intacta.
+- `ArmaCatalogoItem`: +campos alcanceCorpoACorpo, duasMaos, precisao(Acc), meioDanoMetros(1/2D), maximoMetros(Máx), alcanceMultStRaw(×ST arcos), cadenciaTiro(CdT), tirosRaw, magnitude(Bulk), recuo(Rcl). Todos com default → seguro.
+- `CatalogLoaders`: loader corpo-a-corpo lê modo1.alcanceCorpo + flag †/‡ (duas mãos); loader distância/fogo lê precisao/alcanceDistancia(metade/máx, detecta ×ST)/cdt/tiros/magnitude/recuo.
+- `Equipamento` (ficha): +campos armaAlcanceCorpoACorpo/armaDuasMaos/armaPrecisao/armaMeioDanoMetros/armaMaximoMetros/armaAlcanceMultStRaw/armaCadenciaTiro/armaTirosRaw/armaMagnitude/armaRecuo (ANULÁVEIS, no fim da data class). `adicionarEquipamentoArma` copia do catálogo.
+- `SagaCombatController.construirAtaques`: passa alcance REAL (Máx p/ tiro; reach "C"/"1"/"1,2"→metros p/ CaC via `reachParaMetros`) e `precisao` real ao `AtaqueHeroi` (antes era 50/1 fixo e 0). Sem mudar regra ainda — só carrega o dado.
+- `scripts/check_armas.py`: valida que os 3 catálogos têm os campos críticos. Rodou: corpo-a-corpo=60, distância=28, fogo=62, ZERO erros (13 avisos não-bloqueantes em armas especiais: lança-chamas sem Acc, autos com CdT "!" especial).
+- SEM mudança de regra de combate (vem no Lote 372: Apontar/Acc, 1/2D, Máx, engajamento por reach, Bulk no Avançar-e-Atacar, Aparar E/D). Build 2 variantes verde.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 370 — 14 de Junho de 2026  ·  commit `41996c4`

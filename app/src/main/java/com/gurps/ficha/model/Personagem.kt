@@ -711,7 +711,18 @@ data class Equipamento(
     var armaDanoRaw: String? = null,
     var armaStMinimo: Int? = null,
     var armaduraLocal: String? = null,
-    var armaduraRd: String? = null
+    var armaduraRd: String? = null,
+    // ── Stats de combate da arma (Lote 371) — anuláveis: ficha antiga carrega como null (= desconhecido). ──
+    var armaAlcanceCorpoACorpo: String? = null, // "C" | "1" | "1,2"
+    var armaDuasMaos: Boolean = false,
+    var armaPrecisao: Int? = null,              // Acc (Apontar)
+    var armaMeioDanoMetros: Int? = null,        // 1/2D
+    var armaMaximoMetros: Int? = null,          // Máx
+    var armaAlcanceMultStRaw: String? = null,   // arcos/arremesso: "×10/×15"
+    var armaCadenciaTiro: Int? = null,          // CdT/RoF
+    var armaTirosRaw: String? = null,           // "6(3)"
+    var armaMagnitude: Int? = null,             // Bulk
+    var armaRecuo: Int? = null                  // Rcl
 ) {
     fun danoCalculadoComSt(personagem: Personagem, periciaId: String? = null): String? {
         val raw = armaDanoRaw?.trim().orEmpty()

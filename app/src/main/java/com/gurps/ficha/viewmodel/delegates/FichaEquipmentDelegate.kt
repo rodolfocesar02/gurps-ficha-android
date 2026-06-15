@@ -57,7 +57,18 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             armaGrupo = arma.grupo?.substringBefore("(")?.trim(), // Mestre de Armas (Limpo)
             armaTipoCombate = arma.tipoCombate,
             armaDanoRaw = arma.danoRaw,
-            armaStMinimo = arma.stMinimo
+            armaStMinimo = arma.stMinimo,
+            // Stats de combate (Lote 371) — copiados do catálogo p/ a ficha.
+            armaAlcanceCorpoACorpo = arma.alcanceCorpoACorpo,
+            armaDuasMaos = arma.duasMaos,
+            armaPrecisao = arma.precisao,
+            armaMeioDanoMetros = arma.meioDanoMetros,
+            armaMaximoMetros = arma.maximoMetros,
+            armaAlcanceMultStRaw = arma.alcanceMultStRaw,
+            armaCadenciaTiro = arma.cadenciaTiro,
+            armaTirosRaw = arma.tirosRaw,
+            armaMagnitude = arma.magnitude,
+            armaRecuo = arma.recuo
         )
         return adicionarEquipamento(personagem, equipamento)
     }

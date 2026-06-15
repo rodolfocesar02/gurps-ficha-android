@@ -398,10 +398,14 @@ class SagaCombatController(
             val nh = pericia?.calcularNivel(p) ?: p.dx
             val danoExpr = (arma.danoCalculadoComSt(p, pericia?.definicaoId) ?: arma.armaDanoRaw).orEmpty()
             if (danoExpr.isBlank()) return@forEach
+            // Alcance real (Lote 371): à distância usa o Máx do catálogo; corpo-a-corpo, o reach ("C"/"1"/"1,2").
+            val alcanceReal = if (aDistancia) (arma.armaMaximoMetros ?: 50)
+                else (arma.armaAlcanceCorpoACorpo?.let { reachParaMetros(it) } ?: 1)
             out.add(AtaqueHeroi(
                 rotulo = arma.nome + (pericia?.let { " (${it.nome})" } ?: " (sem perícia, usa DX)"),
                 nh = nh, danoExpr = danoExpr, tipo = CombatSession.tipoDano(danoExpr),
-                aDistancia = aDistancia, alcance = if (aDistancia) 50 else 1, temPericia = pericia != null
+                aDistancia = aDistancia, alcance = alcanceReal, precisao = arma.armaPrecisao ?: 0,
+                temPericia = pericia != null
             ))
         }
         // Desarmado (sempre disponível): melhor perícia de luta sem arma, ou DX.
@@ -415,6 +419,10 @@ class SagaCombatController(
         // Armas à distância primeiro quando há (pistoleiro saca o revólver, não soca).
         return out.sortedByDescending { it.aDistancia }
     }
+
+    /** Converte o alcance corpo-a-corpo ("C", "1", "1,2") em metros (maior alcance da arma). "C" → 1 (adjacente). */
+    private fun reachParaMetros(raw: String): Int =
+        Regex("\\d+").findAll(raw).mapNotNull { it.value.toIntOrNull() }.maxOrNull() ?: 1
 
     /** Casa uma arma com a perícia do herói por grupo/nome (fuzzy, normalizado). */
     private fun acharPericiaDaArma(p: Personagem, arma: com.gurps.ficha.model.Equipamento): com.gurps.ficha.model.PericiaSelecionada? {

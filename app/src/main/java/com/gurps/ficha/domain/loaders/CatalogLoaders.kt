@@ -354,6 +354,7 @@ class CatalogLoaders(private val context: Context) {
                 val custoObj = modo1?.obj("custo")
                 val pesoObj = modo1?.obj("peso")
                 val aparar = modo1?.string("aparar")?.sanitized()
+                val stRaw = stObj?.string("raw").orEmpty()
                 ArmaCatalogoItem(
                     id = "cc_" + obj.string("id").orEmpty(),
                     nome = obj.string("nome").orEmpty().sanitized(),
@@ -365,7 +366,9 @@ class CatalogLoaders(private val context: Context) {
                     custoBase = custoObj?.float("valor"),
                     pesoBaseKg = pesoObj?.float("kg"),
                     aparar = aparar,
-                    observacoes = obj.string("observacoes").orEmpty().sanitized()
+                    observacoes = obj.string("observacoes").orEmpty().sanitized(),
+                    alcanceCorpoACorpo = modo1?.string("alcanceCorpo")?.sanitized(),
+                    duasMaos = stRaw.contains("†") || stRaw.contains("‡")
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError("armas_corpo_a_corpo")
@@ -401,6 +404,12 @@ class CatalogLoaders(private val context: Context) {
                 val danoObj = obj.obj("dano")
                 val custoObj = obj.obj("custo")
                 val pesoObj = obj.obj("peso")
+                val alcObj = obj.obj("alcanceDistancia")
+                val meioRaw = alcObj?.string("metadeDano")
+                val maxRaw = alcObj?.string("maximo")
+                // Alcance pode ser metros fixos ("75") ou múltiplo de ST ("×4", "×10/×15", p/ arcos/arremesso).
+                val usaMultST = (meioRaw?.startsWith("×") == true) || (maxRaw?.startsWith("×") == true)
+                val stRaw = stObj?.string("raw").orEmpty()
                 ArmaCatalogoItem(
                     id = "dist_" + obj.string("id").orEmpty(),
                     nome = obj.string("nome").orEmpty().sanitized(),
@@ -416,7 +425,16 @@ class CatalogLoaders(private val context: Context) {
                         obj.string("observacoes").orEmpty().sanitized()
                     } else {
                         ""
-                    }
+                    },
+                    precisao = obj.obj("precisao")?.int("valor"),
+                    meioDanoMetros = if (usaMultST) null else meioRaw?.toIntOrNull(),
+                    maximoMetros = if (usaMultST) null else maxRaw?.toIntOrNull(),
+                    alcanceMultStRaw = if (usaMultST) alcObj?.string("raw")?.sanitized() else null,
+                    cadenciaTiro = obj.obj("cdt")?.int("valor"),
+                    tirosRaw = obj.obj("tiros")?.string("raw")?.sanitized(),
+                    magnitude = obj.obj("magnitude")?.int("valor"),
+                    recuo = obj.obj("recuo")?.int("valor"),
+                    duasMaos = stRaw.contains("†") || stRaw.contains("‡")
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError(nomeArquivo)

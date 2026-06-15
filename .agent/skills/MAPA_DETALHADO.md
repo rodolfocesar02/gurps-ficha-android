@@ -279,7 +279,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`model/CatalogosSuplementares.kt`** — Data classes dos catálogos suplementares: `PericiaSuplementarItem`, `TecnicaCatalogoItem`, `PericiaV2RuleMapItem` (e subclasses de regra: `PericiaV2TipoRegra`, `PericiaV2PreRequisitoRegra`, `PericiaV2PreDefinidoRegra`).
 
-- **`model/ArmaCatalogoItem.kt`** — Data class de arma do catálogo: nome, dano, alcance, ST mínimo, peso, custo, habilidade base, aparar, grupo, etc.
+- **`model/ArmaCatalogoItem.kt`** — Data class de arma do catálogo: nome, dano, ST mínimo, peso, custo, grupo (perícia), aparar. **[+ 2026-06-14, Lote 371]** stats de combate lidos dos JSONs normalizados: `alcanceCorpoACorpo` ("C"/"1"/"1,2"), `duasMaos` (†/‡), `precisao` (Acc), `meioDanoMetros` (1/2D), `maximoMetros` (Máx), `alcanceMultStRaw` (×ST p/ arcos), `cadenciaTiro` (CdT), `tirosRaw`, `magnitude` (Bulk), `recuo` (Rcl). `Equipamento` (em `Personagem.kt`) ganhou os campos `arma*` correspondentes (anuláveis, backward-compatible) populados em `FichaEquipmentDelegate.adicionarEquipamentoArma`.
 
 - **`model/ArmaduraCatalogoItem.kt`** — Data class de armadura: nome, RD, peso, custo, locais cobertos, componentes (lista de peças individuais), tags.
 
@@ -483,6 +483,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **`processar_livro.py` / `sanitize_manuals.py`** — Pipeline de ingestão dos manuais (chunks do Códex).
 - **Série `convert_*.py` / `normalize_*.py`** — Convertem/normalizam dados brutos (planilhas, PDFs) para o formato JSON dos assets (vantagens, desvantagens, perícias, armas, armaduras, escudos, técnicas).
 - **Série `validate_*.py`** — Validação de integridade dos catálogos (armaduras, técnicas, associações de texto).
+- **`check_bestiario.py`** (Lote 363) — valida `bestiario.v1.json`. **`check_armas.py`** **[+ 2026-06-14, Lote 371]** — valida que os 3 catálogos de armas têm os stats de combate (reach CaC; precisão/alcance/CdT/Bulk à distância).
 - (⚠️ a antiga doc citava `audit_active_jsons_v2.py`, que **não existe** na pasta.)
 
 ---

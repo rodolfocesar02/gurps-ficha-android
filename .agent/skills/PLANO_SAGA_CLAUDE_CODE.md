@@ -26,7 +26,8 @@
 > - ✅ Lote 368 = EXTRA combate fidelidade (2026-06-14, pós-validação) — "arma em uso": corrige o herói atacando de SOCO (tipo de dano parseado da expressão, pa*→pi*; armas de fogo/distância incluídas), lista de ataques escolhíveis (SeletorDeArma), penalidade de distância + só-Esquiva contra tiro. Estudei o cap. de Combate no `chunks.jsonl` e **corrigi a regra Mover e Atacar** (estava invertida: o correto é CaC −4+teto 9, à distância −2). Build 2 variantes verde. Pendente do pedido do usuário: narração no combate (próximo) e manobras com opções (Preparar/Sacar, Apontar, Avaliar, Mudar Postura, Mover dirigido).
 > - ✅ Lote 369 = EXTRA narração no combate (2026-06-14) — log do combate virou prosa de mestre DETERMINÍSTICA (sem IA), mantendo os números num colchete técnico. `CombatSession.narrarTroca`. Build 2 variantes verde.
 > - ✅ Lote 370 = EXTRA manobras com opções (2026-06-14) — Mover dirigido (alvo/direção/metros), Mudar de Postura (seletor + regra "não levanta direto de deitado"), Avaliar (+1..+3, MB p.365). Sub-diálogos na UI. Build 2 variantes verde. FALTA do pedido: Apontar (+Prec) e Preparar/Sacar (arma pronta) — exigem puxar o Acc da arma do catálogo p/ a ficha.
-> - ➡️ Em andamento: Apontar/Sacar (próximo) e **validação no aparelho**.
+> - ✅ Lote 371 = EXTRA stats de arma → ficha (2026-06-14) — os JSONs já tinham reach/Acc/1-2D/Máx/CdT/Bulk/Recuo; o app passou a LER e GUARDAR (ArmaCatalogoItem + loader + Equipamento anulável + AtaqueHeroi). Análise confirmou: aditivo, sem migração, fichas antigas intactas. `check_armas.py` (0 erros). Sem mudar regra de combate ainda. Build 2 variantes verde.
+> - ➡️ Próximo: **Lote 372 — ligar as regras** (Apontar/Acc, 1/2D meio dano, Máx alcance, engajamento por reach, Bulk no Avançar-e-Atacar, Aparar E/D). Depois: **validação no aparelho**.
 
 ---
 
