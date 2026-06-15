@@ -1,5 +1,6 @@
 package com.gurps.ficha.domain.combat
 
+import com.gurps.ficha.domain.roll.CriticoRules
 import kotlin.math.floor
 import kotlin.random.Random
 
@@ -88,9 +89,8 @@ class CombatSession(
             surpresa = false, danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
             local = local, rdLocal = alvo.stats?.rd ?: 0, randomFerimento = random
         )
-        log += "${if (ataque.aDistancia) "🎯" else "🗡️"} Herói (${ataque.rotulo}) → ${alvo.nome}: ${troca.texto}"
+        log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
         val incap = !alvo.vivo
-        if (incap) log += "  └ ${alvo.nome} está fora de combate."
         verificarFim()
         return AtaqueResultado(
             acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO,
@@ -200,9 +200,8 @@ class CombatSession(
         )
         // marca a defesa usada (bloqueio/recuo 1×/turno; aparas extras cumulativas)
         registrarDefesaUsada(def.tipo)
-        log += "⚔️ ${npc.nome} → Herói: ${troca.texto}"
+        log += narrarTroca(npc.nome, "você", stats.armaNome, intencao.aDistancia, atk, def.tipo, troca, intencao.local, tipoDano(stats.armaTipo))
         val incap = !heroi.vivo
-        if (incap) log += "  └ O herói caiu!"
         verificarFim()
         return AtaqueResultado(
             acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO,
@@ -257,6 +256,64 @@ class CombatSession(
                 heroi.defesasUsadas.copy(aparasPorArma = mapa)
             }
         }
+    }
+
+    /**
+     * Lote 369: compõe uma linha de combate EVOCATIVA (voz de mestre) e DETERMINÍSTICA, preservando
+     * os números num colchete técnico. Sem IA — instantânea. "você" leva verbo na 3ª pessoa (PT-BR),
+     * então as mesmas formas servem para o herói e para os NPCs.
+     */
+    private fun narrarTroca(
+        atacante: String,
+        alvo: String,
+        arma: String,
+        aDistancia: Boolean,
+        atk: CombatActions.RelatorioAtaque,
+        defesaTipo: CombatResolver.TipoDefesa,
+        troca: CombatResolver.RelatorioTroca,
+        local: LocalAtaque,
+        tipo: DanoTipo
+    ): String {
+        val icone = if (aDistancia) "🎯" else "🗡️"
+        val verbo = if (aDistancia) "dispara" else "ataca"
+        val comArma = if (arma.isNotBlank()) " com $arma" else ""
+        // Colchete técnico: conta completa do acerto (mostra postura/local/distância) + dado.
+        val tecAtk = "${atk.calculo.descricao()}; rolou ${atk.soma}"
+
+        if (atk.resultado == CombatActions.ResultadoAcerto.FALHA) {
+            return if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
+                "💥 $atacante $verbo$comArma contra $alvo e comete uma FALHA CRÍTICA! [$tecAtk]"
+            else "$icone $atacante $verbo$comArma e erra $alvo. [$tecAtk]"
+        }
+        if (troca.defendeu) {
+            val def = when (defesaTipo) {
+                CombatResolver.TipoDefesa.ESQUIVA -> "$alvo se esquiva"
+                CombatResolver.TipoDefesa.APARA -> "$alvo apara o golpe"
+                CombatResolver.TipoDefesa.BLOQUEIO -> "$alvo bloqueia"
+            }
+            return "$icone $atacante $verbo$comArma, mas $def! [$tecAtk · def ${troca.defesaValor}, rolou ${troca.defesaSoma}]"
+        }
+        val dano = troca.dano
+        val cabeca = if (atk.critico == CriticoRules.ResultadoCritico.DECISIVO) "⭐ GOLPE CERTEIRO! $atacante" else "$icone $atacante"
+        val onde = if (local == LocalAtaque.TORSO) "" else " ${preposicaoLocal(local)} ${local.rotulo}"
+        if (dano == null || dano.pvSubtrair <= 0) {
+            return "$cabeca acerta $alvo$onde$comArma, mas a proteção absorve tudo (0 de dano). [$tecAtk · RD ${dano?.rdEfetiva ?: 0}]"
+        }
+        val efeito = when (troca.ferimento?.efeito) {
+            InjuryRules.EfeitoFerimento.MORTO -> " $alvo tomba sem vida!"
+            InjuryRules.EfeitoFerimento.INCONSCIENTE -> " $alvo desaba inconsciente."
+            InjuryRules.EfeitoFerimento.ATORDOADO_CAIDO -> " $alvo cambaleia e cai, atordoado."
+            else -> if (dano.incapacitouMembro) " O membro fica inutilizado!" else ""
+        }
+        val tec = "$tecAtk · ${dano.penetrante} pen ×${dano.multiplicador} = ${dano.pvSubtrair}"
+        return "$cabeca acerta $alvo$onde$comArma — ${dano.pvSubtrair} de dano (${tipo.rotulo})!$efeito [$tec]"
+    }
+
+    /** Preposição contraída para o local do golpe ("no rosto", "na perna", "nos vitais"). */
+    private fun preposicaoLocal(local: LocalAtaque): String = when (local) {
+        LocalAtaque.PERNA, LocalAtaque.MAO, LocalAtaque.INGLE -> "na"
+        LocalAtaque.VITAIS -> "nos"
+        else -> "no"
     }
 
     /** Esquiva de um NPC = Velocidade Básica + 3 (MB p.374). */

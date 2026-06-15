@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 368 CONCLUÍDO — combate: arma em uso de verdade (corpo-a-corpo + fogo/distância, tipo de dano correto, seletor de arma) + correção da regra Mover e Atacar (lida no Códex). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 368 — última entrada deste arquivo
+**Status Atual:** Lote 369 CONCLUÍDO — combate: log EVOCATIVO (narrativo + números preservados no colchete técnico), sem custo de IA. Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 369 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3036,6 +3036,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 369 — 14 de Junho de 2026
+**Saga: narração no combate (log evocativo, branch GURPS-Saga)**
+- PEDIDO do usuario (validacao): o log do combate era "so texto matematico, nada narrativo". Solucao: narracao DETERMINISTICA (sem IA -> instantanea e de graca) que vira prosa de mestre MANTENDO os numeros num colchete tecnico [..]
+- CombatSession.narrarTroca(): compoe a linha a partir dos dados estruturados (RelatorioAtaque/RelatorioTroca/RelatorioDano/ferimento) -> falha ("erra"/"FALHA CRITICA"), defesa ("se esquiva"/"apara"/"bloqueia"), acerto ("acerta X no rosto - N de dano (corte)! cambaleia e cai, atordoado"), critico ("GOLPE CERTEIRO"), 0 de dano ("a protecao absorve tudo"). "voce" (3a pessoa PT-BR) serve p/ heroi e NPC. Colchete tecnico usa calculo.descricao() (mostra postura/local/distancia) + dado + breakdown do dano
+- preposicaoLocal() p/ "no rosto"/"na perna"/"nos vitais". Substitui o antigo log cru (troca.texto) nas trocas heroi e NPC. Demais linhas (mover/manobra/atordoamento/fim) mantidas
+- O log evocativo tambem MELHORA a entrada da prosa final do Narrador (narrarFimDeCombate usa o log agregado)
+- Teste: CombatSessionTest "log de combate e narrativo e mantem os numeros" (verbo narrativo + colchete com rolagem)
+- Build 2 variantes verde
+- NOTA: continua sem IA por turno (decisao de custo/velocidade). Narrador entra na abertura e no desfecho. Narracao por rodada via IA = opcao futura (toggle)
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 368 — 14 de Junho de 2026

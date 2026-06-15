@@ -83,6 +83,19 @@ class CombatSessionTest {
     }
 
     @Test
+    fun `log de combate e narrativo e mantem os numeros`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        val linha = s.log.last { it.startsWith("🗡️") || it.startsWith("🎯") || it.startsWith("⭐") || it.startsWith("💥") }
+        assertTrue("deve ter verbo narrativo: $linha",
+            Regex("erra|acerta|se esquiva|apara|bloqueia|FALHA|absorve").containsMatchIn(linha))
+        assertTrue("deve preservar os números no colchete técnico: $linha",
+            linha.contains("[") && linha.contains("rolou"))
+    }
+
+    @Test
     fun `vitoria quando todos os inimigos caem`() {
         val g = goblin(pv = 1) // 1 PV: cai fácil
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
