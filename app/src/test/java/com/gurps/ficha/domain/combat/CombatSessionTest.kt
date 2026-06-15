@@ -130,6 +130,42 @@ class CombatSessionTest {
     }
 
     @Test
+    fun `avaliar acumula ate 3, reseta em alvo novo e entra no ataque`() {
+        val g1 = goblin("g1"); val g2 = goblin("g2")
+        val enc = CombatEncounter(listOf(heroi(), g1, g2), mapOf("g1" to 1, "g2" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(4))
+        s.heroiAvaliar("g1"); assertTrue(s.log.last().contains("+1"))
+        s.heroiAvaliar("g1"); assertTrue(s.log.last().contains("+2"))
+        s.heroiAvaliar("g1"); assertTrue(s.log.last().contains("+3"))
+        s.heroiAvaliar("g1"); assertTrue("limita em +3", s.log.last().contains("+3"))
+        s.heroiAvaliar("g2"); assertTrue("alvo novo reseta", s.log.last().contains("+1"))
+        // o bônus de avaliar aparece na conta do ataque corpo-a-corpo ao alvo avaliado
+        s.heroiAtaca(espada(), "g2", Manobra.ATAQUE, LocalAtaque.TORSO)
+        val golpe = s.log.last { it.startsWith("🗡️") || it.startsWith("⭐") || it.startsWith("💥") }
+        assertTrue("ataque deve somar avaliar: $golpe", golpe.contains("avaliar"))
+    }
+
+    @Test
+    fun `nao se levanta direto de deitado (MB p365)`() {
+        val enc = CombatEncounter(listOf(heroi(), goblin()), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        s.heroiManobra(Manobra.MUDAR_POSTURA, Postura.DEITADO)
+        val alcancaveis = s.posturasAlcancaveis()
+        assertFalse("não pode ficar em pé direto de deitado", alcancaveis.contains(Postura.EM_PE))
+        assertTrue(alcancaveis.contains(Postura.AJOELHADO))
+    }
+
+    @Test
+    fun `mover dirigido respeita metros e o teto de deslocamento`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L) // herói desloc 6
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        s.heroiMove("goblin", afastar = false, metros = 4); assertEquals(6, s.distancia(g)) // 10-4
+        s.heroiMove("goblin", afastar = true, metros = 3); assertEquals(9, s.distancia(g))  // 6+3
+        s.heroiMove("goblin", afastar = false, metros = 100); assertEquals(3, s.distancia(g)) // clamp 6: 9-6
+    }
+
+    @Test
     fun `npc com moral baixa e PV no chao foge`() {
         val g = goblin(pv = 10).apply { pvAtual = 1 } // 10% de PV
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)

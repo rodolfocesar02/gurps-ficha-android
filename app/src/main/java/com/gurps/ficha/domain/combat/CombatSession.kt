@@ -27,6 +27,11 @@ class CombatSession(
     var encerrado: Boolean = false; private set
     var resultado: ResultadoCombate? = null; private set
 
+    // Avaliar (Lote 370): bônus cumulativo (até +3) no PRÓXIMO ataque corpo-a-corpo ao alvo avaliado.
+    private var avaliarAlvoId: String? = null
+    private var avaliarStacks: Int = 0
+    private fun limparAvaliar() { avaliarAlvoId = null; avaliarStacks = 0 }
+
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
     val inimigos: List<Combatente> get() = encounter.combatentes.filter { !it.ehHeroi }
     val inimigosVivos: List<Combatente> get() = inimigos.filter { it.vivo }
@@ -68,10 +73,15 @@ class CombatSession(
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
 
         val dist = encounter.distancia(alvo)
-        val modsExtra: List<CombatActions.ComponenteMod> = if (ataque.aDistancia) {
-            val pen = penalidadeDistancia(dist)
-            if (pen != 0) listOf(CombatActions.ComponenteMod("distância ${dist}m", pen)) else emptyList()
-        } else emptyList()
+        val modsExtra: List<CombatActions.ComponenteMod> = buildList {
+            if (ataque.aDistancia) {
+                val pen = penalidadeDistancia(dist)
+                if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
+            } else if (avaliarAlvoId == alvoId && avaliarStacks > 0) {
+                // Avaliar só vale corpo-a-corpo, contra o alvo avaliado, no ataque seguinte (MB p.365).
+                add(CombatActions.ComponenteMod("avaliar", avaliarStacks))
+            }
+        }
         val atk = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
             local = local, visibilidade = Visibilidade.NORMAL, ataqueTotalModo = ataqueTotalModo,
@@ -91,6 +101,7 @@ class CombatSession(
         )
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
         val incap = !alvo.vivo
+        limparAvaliar() // o bônus de Avaliar é consumido neste ataque
         verificarFim()
         return AtaqueResultado(
             acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO,
@@ -99,20 +110,45 @@ class CombatSession(
         )
     }
 
-    /** Manobra não-ofensiva do herói (Defesa Total, Avaliar, Mudar de Postura, Não Fazer Nada…). */
+    /** Manobra não-ofensiva do herói (Defesa Total, Concentrar, Não Fazer Nada…) e Mudar de Postura. */
     fun heroiManobra(manobra: Manobra, novaPostura: Postura? = null): String {
-        if (manobra == Manobra.MUDAR_POSTURA && novaPostura != null) heroi.postura = novaPostura
-        val txt = "🛡️ Herói: ${manobra.rotulo}" + (novaPostura?.let { " (${it.rotulo})" } ?: "")
+        if (manobra == Manobra.MUDAR_POSTURA && novaPostura != null && novaPostura in posturasAlcancaveis()) {
+            heroi.postura = novaPostura
+        }
+        limparAvaliar()
+        val txt = if (manobra == Manobra.MUDAR_POSTURA) "🧍 Você muda para ${heroi.postura.rotulo}."
+            else "🛡️ Você: ${manobra.rotulo}."
         log += txt
         return txt
     }
 
-    /** Herói se aproxima do alvo (ou de todos) pela sua margem de deslocamento. */
-    fun heroiMove(alvoId: String? = null, afastar: Boolean = false): String {
-        val passo = heroi.deslocamento.coerceAtLeast(1)
+    /** Avaliar (MB p.365): +1 cumulativo (máx +3) no próximo ataque corpo-a-corpo ao alvo. */
+    fun heroiAvaliar(alvoId: String): String {
+        if (avaliarAlvoId == alvoId) avaliarStacks = (avaliarStacks + 1).coerceAtMost(3)
+        else { avaliarAlvoId = alvoId; avaliarStacks = 1 }
+        val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
+        val txt = "👁️ Você avalia $nome (+$avaliarStacks no próximo golpe corpo-a-corpo)."
+        log += txt
+        return txt
+    }
+
+    /**
+     * Posturas para as quais o herói PODE mudar agora (MB p.365): de deitado não se levanta direto —
+     * só vai para ajoelhado/sentado/rastejando antes de ficar em pé.
+     */
+    fun posturasAlcancaveis(): List<Postura> = when (heroi.postura) {
+        Postura.DEITADO -> listOf(Postura.RASTEJANDO, Postura.SENTADO, Postura.AJOELHADO)
+        else -> Postura.values().filter { it != heroi.postura }
+    }
+
+    /** Herói se move até [metros] (clamp no Deslocamento) aproximando/afastando do alvo (ou de todos). */
+    fun heroiMove(alvoId: String? = null, afastar: Boolean = false, metros: Int = Int.MAX_VALUE): String {
+        val passo = metros.coerceIn(1, heroi.deslocamento.coerceAtLeast(1))
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
-        val txt = "🏃 Herói ${if (afastar) "recua" else "avança"} ${passo}m."
+        limparAvaliar()
+        val nome = alvoId?.let { id -> inimigos.firstOrNull { it.id == id }?.nome } ?: "os inimigos"
+        val txt = "🏃 Você ${if (afastar) "recua ${passo}m de" else "avança ${passo}m até"} $nome."
         log += txt
         return txt
     }

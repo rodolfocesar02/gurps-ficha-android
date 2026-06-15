@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 369 CONCLUÍDO — combate: log EVOCATIVO (narrativo + números preservados no colchete técnico), sem custo de IA. Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 369 — última entrada deste arquivo
+**Status Atual:** Lote 370 CONCLUÍDO — combate: manobras com opções (Mover dirigido, Mudar de Postura, Avaliar +1..+3). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 370 — última entrada deste arquivo
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3036,6 +3036,18 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 370 — 14 de Junho de 2026
+**Saga: manobras com opções no combate (branch GURPS-Saga)**
+- PEDIDO do usuario: as manobras estavam "muito fixas" (ex.: Mover nao perguntava p/ onde/quantos metros). Implementadas com sub-dialogos, seguindo o cap. de Combate lido no Codex (MB p.364-366)
+- MOVER dirigido: SubDialogoMover (avancar/recuar, em relacao a qual inimigo ou todos, quantos metros ate o Deslocamento). CombatSession.heroiMove(alvoId, afastar, metros) com clamp no deslocamento
+- MUDAR DE POSTURA: SubDialogoPostura lista so as posturas alcancaveis; CombatSession.posturasAlcancaveis() aplica a regra do MB "nao se levanta direto de deitado" (de DEITADO so RASTEJANDO/SENTADO/AJOELHADO)
+- AVALIAR (MB p.365): CombatSession.heroiAvaliar(alvoId) acumula +1 ate +3 contra o alvo; o bonus entra no PROXIMO ataque corpo-a-corpo aquele alvo (modsExtra) e e consumido; reseta em alvo novo ou em qualquer outra manobra. SubDialogoEscolherAlvo
+- UI: roteamento no ManeuverCards (MOVER/AVALIAR/MUDAR_POSTURA abrem sub-dialogo); CombatUiState ganhou deslocamentoHeroi/posturaHeroi/posturasAlcancaveis. Getters sagaCombateMover(alvoId,afastar,metros)/sagaCombateAvaliar no ViewModel
+- Testes: avaliar acumula/reseta/entra no ataque; nao levanta direto de deitado; mover dirigido respeita metros e teto de deslocamento
+- Build 2 variantes verde
+- AINDA FALTA do pedido "manobras": Apontar (+Precisao) e Preparar/Sacar arma (arma pronta vs guardada) — precisam puxar o Acc da arma do catalogo p/ a ficha (proximo lote)
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 369 — 14 de Junho de 2026

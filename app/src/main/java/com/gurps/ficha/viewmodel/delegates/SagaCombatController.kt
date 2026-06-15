@@ -66,6 +66,9 @@ data class CombatUiState(
     val alvos: List<CombatenteUi>,
     val ataques: List<AtaqueHeroi>,
     val ataqueSelecionado: Int,
+    val deslocamentoHeroi: Int,
+    val posturaHeroi: String,
+    val posturasAlcancaveis: List<Postura>,
     val encerrado: Boolean,
     val resultado: ResultadoCombate?
 ) {
@@ -221,10 +224,17 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
-    fun heroiMove(afastar: Boolean) {
+    fun heroiMove(alvoId: String?, afastar: Boolean, metros: Int) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
-        s.heroiMove(afastar = afastar)
+        s.heroiMove(alvoId = alvoId, afastar = afastar, metros = metros)
+        depoisDaAcaoDoHeroi()
+    }
+
+    fun heroiAvaliar(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiAvaliar(alvoId)
         depoisDaAcaoDoHeroi()
     }
 
@@ -335,6 +345,9 @@ class SagaCombatController(
             alvos = alvos,
             ataques = ataques,
             ataqueSelecionado = ataqueSelecionado,
+            deslocamentoHeroi = s.heroi.deslocamento.coerceAtLeast(1),
+            posturaHeroi = s.heroi.postura.rotulo,
+            posturasAlcancaveis = if (vezHeroi) s.posturasAlcancaveis() else emptyList(),
             encerrado = s.encerrado,
             resultado = s.resultado
         )

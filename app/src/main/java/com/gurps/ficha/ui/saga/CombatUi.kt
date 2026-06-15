@@ -165,6 +165,9 @@ private fun CombatenteChip(c: CombatenteUi, destaque: Boolean) {
 @Composable
 private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.viewmodel.delegates.CombatUiState) {
     var alvoDialogo by remember { mutableStateOf<Manobra?>(null) }
+    var moverDialogo by remember { mutableStateOf(false) }
+    var avaliarDialogo by remember { mutableStateOf(false) }
+    var posturaDialogo by remember { mutableStateOf(false) }
 
     Card(
         Modifier.fillMaxWidth().padding(8.dp),
@@ -185,7 +188,9 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                     onClick = {
                         when {
                             ehAtaque && temAlvo -> alvoDialogo = m
-                            m == Manobra.MOVER -> viewModel.sagaCombateMover(afastar = false)
+                            m == Manobra.MOVER -> moverDialogo = true
+                            m == Manobra.AVALIAR -> avaliarDialogo = true
+                            m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             else -> viewModel.sagaCombateManobra(m)
                         }
                     },
@@ -214,6 +219,138 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             onFechar = { alvoDialogo = null }
         )
     }
+
+    if (moverDialogo) {
+        SubDialogoMover(
+            inimigos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
+            deslocamentoMax = estado.deslocamentoHeroi,
+            onConfirmar = { alvoId, afastar, metros ->
+                viewModel.sagaCombateMover(alvoId, afastar, metros); moverDialogo = false
+            },
+            onFechar = { moverDialogo = false }
+        )
+    }
+
+    if (avaliarDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Avaliar quem?",
+            descricaoConfirmar = "Avaliar alvo",
+            alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
+            onConfirmar = { alvoId -> viewModel.sagaCombateAvaliar(alvoId); avaliarDialogo = false },
+            onFechar = { avaliarDialogo = false }
+        )
+    }
+
+    if (posturaDialogo) {
+        SubDialogoPostura(
+            posturaAtual = estado.posturaHeroi,
+            posturas = estado.posturasAlcancaveis,
+            onConfirmar = { postura -> viewModel.sagaCombateManobra(Manobra.MUDAR_POSTURA, postura); posturaDialogo = false },
+            onFechar = { posturaDialogo = false }
+        )
+    }
+}
+
+@Composable
+private fun SubDialogoMover(
+    inimigos: List<CombatenteUi>,
+    deslocamentoMax: Int,
+    onConfirmar: (alvoId: String?, afastar: Boolean, metros: Int) -> Unit,
+    onFechar: () -> Unit
+) {
+    var alvoId by remember { mutableStateOf(inimigos.firstOrNull()?.id) }
+    var afastar by remember { mutableStateOf(false) }
+    var metros by remember { mutableIntStateOf(deslocamentoMax.coerceAtLeast(1)) }
+
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Mover") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text("Direção", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                OpcaoRadio(!afastar, "Avançar (aproximar)", "Avançar, aproximar do alvo") { afastar = false }
+                OpcaoRadio(afastar, "Recuar (afastar)", "Recuar, afastar do alvo") { afastar = true }
+
+                Spacer(Modifier.height(8.dp))
+                Text("Em relação a", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                OpcaoRadio(alvoId == null, "Todos os inimigos", "Mover em relação a todos") { alvoId = null }
+                inimigos.forEach { a ->
+                    OpcaoRadio(alvoId == a.id, "${a.nome} (${a.distanciaM}m)", "Mover em relação a ${a.nome}") { alvoId = a.id }
+                }
+
+                Spacer(Modifier.height(8.dp))
+                Text("Distância: ${metros}m (até ${deslocamentoMax}m)", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    OutlinedButton(onClick = { if (metros > 1) metros-- },
+                        modifier = Modifier.semantics { contentDescription = "Menos um metro" }) { Text("−") }
+                    Text("${metros}m", Modifier.padding(horizontal = 16.dp), fontWeight = FontWeight.Bold)
+                    OutlinedButton(onClick = { if (metros < deslocamentoMax) metros++ },
+                        modifier = Modifier.semantics { contentDescription = "Mais um metro" }) { Text("+") }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onConfirmar(alvoId, afastar, metros) },
+                modifier = Modifier.semantics { contentDescription = "Confirmar movimento" }) { Text("Mover") }
+        },
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+private fun SubDialogoEscolherAlvo(
+    titulo: String,
+    descricaoConfirmar: String,
+    alvos: List<CombatenteUi>,
+    onConfirmar: (alvoId: String) -> Unit,
+    onFechar: () -> Unit
+) {
+    var alvoId by remember { mutableStateOf(alvos.firstOrNull()?.id ?: "") }
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text(titulo) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                alvos.forEach { a ->
+                    OpcaoRadio(alvoId == a.id, "${a.nome} — PV ${a.pvAtual}/${a.pvMax} (${a.distanciaM}m)", "Alvo ${a.nome}") { alvoId = a.id }
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = { if (alvoId.isNotBlank()) onConfirmar(alvoId) },
+                enabled = alvoId.isNotBlank(),
+                modifier = Modifier.semantics { contentDescription = descricaoConfirmar }) { Text("Confirmar") }
+        },
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
+}
+
+@Composable
+private fun SubDialogoPostura(
+    posturaAtual: String,
+    posturas: List<Postura>,
+    onConfirmar: (Postura) -> Unit,
+    onFechar: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Mudar de postura") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                Text("Atual: $posturaAtual", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(6.dp))
+                posturas.forEach { p ->
+                    Button(
+                        onClick = { onConfirmar(p) },
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
+                            .semantics { contentDescription = "Mudar para ${p.rotulo}" }
+                    ) { Text(p.rotulo.replaceFirstChar { it.uppercase() }) }
+                }
+            }
+        },
+        confirmButton = {},
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
 }
 
 @Composable
