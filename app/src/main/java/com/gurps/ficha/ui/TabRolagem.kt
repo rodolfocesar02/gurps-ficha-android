@@ -241,6 +241,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var showRolagemPersonalizadaDialog by remember { mutableStateOf(false) }
     var showConfigAtaqueDialog by remember { mutableStateOf(false) }
     var showConfigDanoDialog by remember { mutableStateOf(false) }
+    var showSentidosDialog by remember { mutableStateOf(false) } // Lote 372: diálogo de sentidos ao tocar PER
     var showEditarEsquivaDialog by remember { mutableStateOf(false) }
     var showEditarAparaDialog by remember { mutableStateOf(false) }
     var showEditarBloqueioDialog by remember { mutableStateOf(false) }
@@ -504,12 +505,17 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     compactLabelStyle = compactLabelStyle,
                     innerCardVerticalPadding = innerCardVerticalPadding,
                     onExecutarRolagem = { attr, valor, modAttr ->
-                        executarRolagem(
-                            tipo = TipoTeste.ATRIBUTO,
-                            contextoLabel = attr,
-                            alvo = valor,
-                            mod = modAttr
-                        )
+                        if (attr == "PER") {
+                            // Lote 372: PER abre o diálogo de Testes de Sentidos (Visão/Audição/Olfato-Paladar/Tato).
+                            showSentidosDialog = true
+                        } else {
+                            executarRolagem(
+                                tipo = TipoTeste.ATRIBUTO,
+                                contextoLabel = attr,
+                                alvo = valor,
+                                mod = modAttr
+                            )
+                        }
                     }
                 )
 
@@ -806,6 +812,19 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 energiaManualInput = ""
                 talismaMagiaVinculada = null
             }
+        )
+    }
+
+    if (showSentidosDialog) {
+        com.gurps.ficha.ui.features.rolagem.DialogoSentidos(
+            personagem = p,
+            isPraCegoVariant = isPraCegoVariant,
+            modSituacional = modificadoresAtributo["PER"] ?: 0,
+            onRolar = { label, alvo, mod ->
+                executarRolagem(tipo = TipoTeste.ATRIBUTO, contextoLabel = label, alvo = alvo, mod = mod)
+                showSentidosDialog = false
+            },
+            onFechar = { showSentidosDialog = false }
         )
     }
 

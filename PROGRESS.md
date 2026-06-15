@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 371 CONCLUÍDO — stats de arma (reach/Acc/1-2D/Máx/CdT/Bulk/Recuo) lidos dos JSONs → ArmaCatalogoItem + Equipamento + AtaqueHeroi. Backward-compatible (sem migração). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 371 — última entrada deste arquivo
+**Status Atual:** Lote 372 CONCLUÍDO — Testes de Sentidos na Rolagem (clicar PER abre diálogo Visão/Audição/Olfato-Paladar/Tato; vantagens/desvantagens automáticas com "notinha"; variante PraCego). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 372 — última entrada deste arquivo
 **HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3037,6 +3037,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 372 — 14 de Junho de 2026
+**Rolagem: Testes de Sentidos (Per) + automação de vantagens/desvantagens (branch GURPS-Saga)**
+- PEDIDO do usuário: clicar "PER" deveria abrir um diálogo com os SENTIDOS (Visão/Audição/Olfato-Paladar), pois são testes de regra (MB p.358); + mapear e AUTOMATIZAR as vantagens/desvantagens que dão bônus/redutor; + "notinha" do motivo; + versão PraCego.
+- Estudo no Códex (chunks p359): todo teste de sentido rola vs PERCEPÇÃO somando o "Sentido Aguçado" correspondente.
+- `domain/rules/SentidoRules.kt` (PURO): enum Sentido (Percepção/Visão/Audição/Olfato-Paladar/Tato); `avaliar(p, sentido)` devolve percepção base + componentes NOMEADOS + valorFinal + bloqueado/motivo. IDs mapeados do catálogo: visao_agucada(+nível), visao_hiperespectral(+3), audicao_agucada(+nível), paladar_olfato_apurado(+nível), oflato_discriminatorio/paladar_discriminatorio(+4), tato_apurado(+nível); redutores duro_de_ouvido(-4), disopia(-6 condicional); bloqueios cegueira(Cego)/surdez(Surdo)/disosmia(Sem olfato). Cobre vantagens PESSOAIS e RACIAIS.
+- `SentidoRulesTest`: base, Visão Aguçada+nota, Duro de Ouvido -4, hiperespectral+discriminatório, cegueira/surdez bloqueiam, vantagem racial conta. VERDE.
+- UI: `ui/features/rolagem/DialogoSentidos.kt` — clicar PER (intercept no TabRolagem, sem mexer no AtributosQuickRollPanel) abre o diálogo; cada sentido mostra valor + "notinha" ("Percepção 12 (+2 Visão Aguçada)") e rola pelo MESMO caminho (executarRolagem→Discord) com o rótulo carregando o motivo. Sentido bloqueado fica desabilitado ("Cego"). **Variante PraCego: botão rotulado grande "Rolar (14)"** em vez de tocar o número; semântica TalkBack em todos os itens. O mod situacional do PER (swipe) soma a todos.
+- SEM mudança de estrutura de ficha (só LÊ vantagens/desvantagens existentes). Build 2 variantes verde.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 371 — 14 de Junho de 2026

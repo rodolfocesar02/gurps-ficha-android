@@ -97,6 +97,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`domain/rules/MagiaEnergiaRules.kt`** — Redução de custo de energia por NH alto (NH≥15 → -1, NH≥20 → -2+). Parse de string de custo de energia ("2 pontos" → 2). Usado por `MagicEngine` e pelos diálogos de magia.
 
+- **`domain/rules/SentidoRules.kt`** — **[+ 2026-06-14, Lote 372]** Testes de Sentidos (MB p.358): `enum Sentido` (Percepção/Visão/Audição/Olfato-Paladar/Tato); `avaliar(p, sentido)` rola vs Percepção somando o "Sentido Aguçado" e descontando limitações, com COMPONENTES NOMEADOS (a "notinha"). Mapeia ids do catálogo (visao_agucada, audicao_agucada, paladar_olfato_apurado, *_discriminatorio, visao_hiperespectral, tato_apurado; redutores duro_de_ouvido/disopia; bloqueios cegueira/surdez/disosmia). Cobre traços pessoais E raciais. Puro/testável (`SentidoRulesTest`). Consumido por `DialogoSentidos` (§20).
+
 ---
 
 ## 6. Domain — Trait Rules
@@ -369,6 +371,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **`ui/features/rolagem/RolagemPrimaryDialogs.kt`** — Dialogs primários de rolagem: seleção de modificador antes de rolar, confirmação de envio para Discord.
 
 - **`ui/features/rolagem/RolagemSecondaryDialogs.kt`** — Dialogs secundários: configuração de canal Discord, histórico de rolagens da sessão.
+
+- **`ui/features/rolagem/DialogoSentidos.kt`** — **[+ 2026-06-14, Lote 372]** Diálogo de Testes de Sentidos: tocar **PER** (intercept em `TabRolagem`, sem alterar `AtributosQuickRollPanel`) abre os 5 sentidos com valor efetivo + "notinha" do motivo (via `SentidoRules`); cada um rola pelo mesmo caminho (`executarRolagem`→Discord) com o rótulo carregando o bônus/redutor. Sentido bloqueado fica desabilitado ("Cego"/"Surdo"). **Variante PraCego:** botão rotulado grande ("Rolar (14)") + semântica TalkBack.
 
 - **`ui/features/virtualtabletop/MesaVirtualScreen.kt`** — Tela da Mesa Virtual (placeholder). Exibe estado de conexão e botões de ação VTT. Ainda em desenvolvimento.
 
