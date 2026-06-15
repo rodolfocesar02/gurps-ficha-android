@@ -3,6 +3,7 @@
 **Última Atualização:** 14 de Junho de 2026
 **Status Atual:** Lote 370 CONCLUÍDO — combate: manobras com opções (Mover dirigido, Mudar de Postura, Avaliar +1..+3). Validação no aparelho em andamento.
 **Último Lote Registrado:** Lote 370 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3011,7 +3012,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - ESCOPO "B2 a B6" do usuario: CONCLUIDO (B2,B3,B4,B6,B5). Restam na Fase B: B7 (UI CombatTracker) e B8 (Narrador<->combate: iniciar_combate/acao_npc/aplicar_dano reais + card Defenda-se), fora do pedido "b2 a b6"
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 365 — 14 de Junho de 2026
+### Lote 365 — 14 de Junho de 2026  ·  commit `98a691e`
 **Saga FASE B B7: UI de combate + motor de encontro (branch GURPS-Saga)**
 - domain/combat/CombatSession.kt: SESSAO de combate (Kotlin puro) que orquestra um encontro inteiro encadeando B1-B6 — heroi ataca (resolverAtaque->resolverTroca), turno de NPC (NpcCombatBrain decide; override do Narrador entra no B8), defesa interativa do heroi, dano/ferimento, fim de combate (vitoria/derrota), parser de dano "<n>d[±m]" e mapeador de tipo. HeroiPerfilCombate/DefesaHeroi/ResultadoCombate
 - Enablers minimos: NpcStats ganhou armaNh (o motor precisa do "para acertar" do NPC; novoCombatente popula do AtaqueCriatura.nh); CombatEncounter ganhou distancia MUTAVEL + moverEmRelacaoAoHeroi/definirDistancia (manobra Mover muda a faixa). Construtor inalterado -> testes antigos intactos
@@ -3023,7 +3024,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 366 — 14 de Junho de 2026
+### Lote 366 — 14 de Junho de 2026  ·  commit `07a059b`
 **Saga FASE B B8: integracao Narrador<->combate (branch GURPS-Saga)**
 - NarradorToolExecutor: interface CombatBridge + roteamento das 6 tools que antes davam "nao_implementado" -> iniciar_combate, acao_npc, aplicar_dano, aplicar_condicao, gastar_recurso, conceder_xp. Parsers finos (validam args, delegam a bridge)
 - FichaSagaDelegate implementa CombatBridge: iniciarCombate (delega ao controller); aplicar_dano (em combate -> combatente vivo via HitLocationRules+ferir; FORA de combate -> PV do heroi na ficha; tipo "fad" -> debita PF); aplicar_condicao (mapeia p/ Condicao; aplica no combatente, fora de combate vira nota); gastar_recurso (pf/pv reais e salvos; dinheiro/municao/item = nota narrativa); conceder_xp (xpGanhos += pts, salva, + turno "sistema" no feed). Mapeadores localDeString/condicaoDeString
@@ -3038,7 +3039,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 370 — 14 de Junho de 2026
+### Lote 370 — 14 de Junho de 2026  ·  commit `41996c4`
 **Saga: manobras com opções no combate (branch GURPS-Saga)**
 - PEDIDO do usuario: as manobras estavam "muito fixas" (ex.: Mover nao perguntava p/ onde/quantos metros). Implementadas com sub-dialogos, seguindo o cap. de Combate lido no Codex (MB p.364-366)
 - MOVER dirigido: SubDialogoMover (avancar/recuar, em relacao a qual inimigo ou todos, quantos metros ate o Deslocamento). CombatSession.heroiMove(alvoId, afastar, metros) com clamp no deslocamento
@@ -3050,7 +3051,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - AINDA FALTA do pedido "manobras": Apontar (+Precisao) e Preparar/Sacar arma (arma pronta vs guardada) — precisam puxar o Acc da arma do catalogo p/ a ficha (proximo lote)
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 369 — 14 de Junho de 2026
+### Lote 369 — 14 de Junho de 2026  ·  commit `2233b45`
 **Saga: narração no combate (log evocativo, branch GURPS-Saga)**
 - PEDIDO do usuario (validacao): o log do combate era "so texto matematico, nada narrativo". Solucao: narracao DETERMINISTICA (sem IA -> instantanea e de graca) que vira prosa de mestre MANTENDO os numeros num colchete tecnico [..]
 - CombatSession.narrarTroca(): compoe a linha a partir dos dados estruturados (RelatorioAtaque/RelatorioTroca/RelatorioDano/ferimento) -> falha ("erra"/"FALHA CRITICA"), defesa ("se esquiva"/"apara"/"bloqueia"), acerto ("acerta X no rosto - N de dano (corte)! cambaleia e cai, atordoado"), critico ("GOLPE CERTEIRO"), 0 de dano ("a protecao absorve tudo"). "voce" (3a pessoa PT-BR) serve p/ heroi e NPC. Colchete tecnico usa calculo.descricao() (mostra postura/local/distancia) + dado + breakdown do dano
@@ -3061,7 +3062,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - NOTA: continua sem IA por turno (decisao de custo/velocidade). Narrador entra na abertura e no desfecho. Narracao por rodada via IA = opcao futura (toggle)
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 368 — 14 de Junho de 2026
+### Lote 368 — 14 de Junho de 2026  ·  commit `01b01a5`
 **Saga: arma em uso real + estudo de regras no Codex (branch GURPS-Saga)**
 - PEDIDO do usuario (validacao no aparelho): o pistoleiro atacava de SOCO ("10 cont"), nao dava p/ ver/escolher a arma, e ele pediu p/ eu ESTUDAR as regras no chunks.jsonl (Codex). Li o cap. de Combate do Modulo Basico (manobras p.364-366) direto da fonte
 - BUG do "soco" (2 causas): (1) eu usava armaTipoCombate (modo "corpo_a_corpo"/"distancia"/"armas_de_fogo") como se fosse TIPO de dano -> sempre CONT; (2) o perfil so olhava arma corpo-a-corpo. Corrigido: CombatSession.tipoDano agora parseia o token de tipo da expressao de dano ("GeB+2 corte", "2d-1 pa+") e mapeia pa-/pa/pa+/pa++ (Devir) -> pi-/pi/pi+/pi++
@@ -3073,7 +3074,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build 2 variantes verde
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 367 — 14 de Junho de 2026
+### Lote 367 — 14 de Junho de 2026  ·  commit `79f410c`
 **Saga FASE B: fix da UI de combate (achado na validacao no aparelho, branch GURPS-Saga)**
 - BUG (1o teste real no device): o CombatePainel entrava na Column do feed SEM weight nem scroll -> engolia o espaco do chat (feed sumia) e TRANSBORDAVA, cortando as manobras de baixo sem como rolar
 - CombatUi.kt: CombatePainel agora recebe Modifier e usa Surface(fillMaxWidth) + Column(fillMaxSize); cabecalho "Rodada" FIXO no topo; tracker + manobras/defesa num Column com weight(1f) + verticalScroll -> rola por dentro

@@ -24,6 +24,10 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 > - **Forjador (fluxo):** entrega JSON direto (não usa mais loop de tools p/ CRIAR ficha); correções de
 >   pré-requisito de técnica, GPS de técnicas, raça "null", budget de template. Ver `ARQUITETURA_MESTRE_IA.md §9`.
 
+> ➕ **2026-06-14 (Lotes 349-370, branch `GURPS-Saga`, HEAD `41996c4`):** modo **SAGA / NARRADOR** (3º modo de IA)
+> + **motor de combate** (`domain/combat/`, Kotlin puro) + UI de combate. Arquivos novos na **§32** (nova).
+> `FichaDatabase` subiu p/ **v26** (migrações 24→25→26 explícitas, tabelas da Saga). Detalhe do fluxo de IA: `ARQUITETURA_MESTRE_IA.md §10`.
+
 > ⚠️ **AUDITOR mudou de motor (Lotes 325-328):** saiu da busca semântica (RAG/HNSW) para
 > "grep + leitura dirigida" (`localizar_no_codex` + `ler_pagina`). Vários arquivos abaixo
 > viraram LEGADO/MORTO — marcados com ⚠️. Detalhe e motivo de cada um em
@@ -455,6 +459,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 | `metacaracteristicas.v1.json` | Pacotes prontos de metacaracterísticas (Gigante, Anão, etc.) | `MetacaracteristicaCatalogo` |
 | `forjador_templates.json` **[+ 2026-06-09]** | 60 templates/arquétipos de personagem prontos (combatentes, furtivos, sociais, 10 magos, gêneros modernos). IDs validados contra o catálogo. | `ForjadorTemplateCatalogo` |
 | `tabelas_criticas.json` **[+ 2026-06-09]** | 4 tabelas de combate (Golpe Fulminante, na Cabeça, Erro Crítico, Erro Crítico Desarmado), entradas 3-18 com texto completo. | `CriticoRules` |
+| `bestiario.v1.json` **[+ 2026-06-14]** | Bestiário da Saga: 17 criaturas (goblin, orc, lobo, ogro, esqueleto, bandido…) com stats de combate e ataques. Validado por `scripts/check_bestiario.py`. | `BestiarioCatalogo` / `BestiarioLoader` |
 | `mestre_ia_temas.json` | Temas canônicos de busca para o Mestre IA | `DataRepository` |
 | `chunks.jsonl` | Chunks do manual GURPS (1 por página, FTS4). 54.9MB com embeddings; Auditor usa só o texto, embeddings (3072 dims) dormentes p/ ele. | `FichaDatabase.prePopulateManual` |
 | `chunks.jsonl.bak` | Idêntico SEM embeddings (6.5MB, 1196 linhas). Candidato a substituir o .jsonl quando confirmado que Auditor não precisa de embedding. | (não carregado — backup) |
@@ -516,6 +521,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`** + **`NexusArcanoModoAlvoAdapterTest.kt`** — Cenários do adapter Nexus Arcano.
 - **`nexus/arcano/NexusArcanoEngine*Test.kt`** — Suíte massiva do motor de magias (Lote1/2/3, GlobalA/B, StressMagiasV2, AuditoriaTodasMagias) + `NexusArcanoTestCatalog.kt` (catálogo de fixtures).
 - **`vtt/VttBridgeCodecStressTest.kt`** — Teste de robustez do codec VTT.
+- **[+ 2026-06-14] Combate da Saga** (`domain/combat/`): `CombatEncounterTest`, `CombatActionsTest` (inclui Mover e Atacar correto), `HitLocationRulesTest`, `InjuryRulesTest`, `NpcCombatBrainTest`, `CombatResolverTest`, `CombatSessionTest` (sessão ponta a ponta: arma/tipo de dano/distância, narração, avaliar, postura, mover dirigido).
+- **[+ 2026-06-14] Narrador/Saga** (`domain/saga/`): `NarradorToolsTest` (contrato das 16 tools), `NarradorOutputValidatorTest`, `NarradorToolExecutorCombatTest` (roteamento das 6 tools de combate via `CombatBridge` falsa). Instrumentado: `SagaFoundationTest` (FTS4 real).
 
 ---
 
@@ -541,6 +548,12 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 | Importar JSON versionado | `PersonagemInterop.kt` → `importarJson` |
 | Normalização de busca | `CatalogFilters.kt` → `normalizarBusca` |
 | Auto-detect VTT na LAN | `VttHostAutoDetect.kt` → `detectLanHost` |
+| **Combate Saga: orquestra o encontro** | `domain/combat/CombatSession.kt` (heroiAtaca/npcResolve/heroiMove/heroiAvaliar/narrarTroca) |
+| **Combate: NH efetivo / Mover e Atacar** | `domain/combat/CombatActions.kt` → `calcularNH` (CaC −4+teto 9; à distância −2) |
+| **Combate: dano localizado / tipo (pa*→pi*)** | `HitLocationRules.aplicarDano` + `CombatSession.tipoDano` |
+| **Combate: ponte motor↔UI / arma escolhível** | `viewmodel/delegates/SagaCombatController.kt` (`construirAtaques`, `CombatUiState`) |
+| **Narrador: tools / executor (combate via bridge)** | `domain/saga/NarradorTools.kt` + `NarradorToolExecutor.kt` (`CombatBridge`) |
+| **Narrador: estado da aba + bridges** | `viewmodel/delegates/FichaSagaDelegate.kt` (RollBridge + CombatBridge + narrarFimDeCombate) |
 
 ---
 
@@ -570,8 +583,50 @@ Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
 
 ---
 
+## 32. SAGA / NARRADOR / MOTOR DE COMBATE  [+ 2026-06-14, Lotes 349-370]
+
+*Modo solo-RPG narrado por IA (3º modo de IA = `saga`). Fluxo de IA detalhado em `ARQUITETURA_MESTRE_IA.md §10`.
+Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) e coberto por testes (§28).*
+
+### 32.1 Narrador (IA modo `saga`)
+- **`domain/MestreIANarradorUseCase.kt`** — Orquestrador do modo `saga` (clone do Generator: fila de fallback de modelos + loop de tool-use + Auto-Healing + `consultar_mundo` automático por palavra-chave). Narração no Gemini 2.5 Flash.
+- **`domain/saga/NarradorTools.kt`** — Schemas das **16 tools** (14 próprias + `localizar_no_codex`/`ler_pagina` reusadas do Auditor). Spec neutra única → Gemini + OpenAI. `NarradorToolsTest` garante toolset == executor.
+- **`domain/saga/NarradorToolExecutor.kt`** — Roteador nome→impl. Interfaces `RollBridge` (rolagem interativa) e **`CombatBridge`** (combate). Reais: fato/mundo/inspecionar/cena/rolagem/Códex + 6 de combate. `forjar_npc`/`avancar_relogio`/`passar_tempo` = `nao_implementado` (Fase C/D).
+- **`domain/saga/NarradorOutputValidator.kt`** — Anti-confabulação: alarme se a prosa cita número/regra que não veio de tool no turno.
+- **`domain/saga/CampanhaConfig.kt`** — Session zero (gênero/tom/dificuldade/magia/NT/livros) → bloco no prompt.
+- **`data/network/MestreIAPromptsNarrador.kt`** — Persona categorial do Narrador (8 leis de ferro; a nº 8 = protocolo de combate).
+- **`viewmodel/delegates/FichaSagaDelegate.kt`** — Estado da aba Saga; implementa `RollBridge` + `CombatBridge`; resolve NH→3d6→`CriticoRules`; persiste turnos (chat sessão `saga#<id>`); `narrarFimDeCombate` (prosa + saque + XP).
+- **`ui/TabSaga.kt`** — UI da aba (campanhas, feed/máquina de escrever, card de rolagem, `ConfiguracaoJogoDialog` tela cheia, `BarraDeRolagem`). Renderiza `CombatePainel` (com `weight`) quando há combate.
+
+### 32.2 Persistência da Saga (Room v26)
+- **`data/storage/SagaEntities.kt`** — `CampanhaEntity` (+`configJson`), `CenaEntity`, `CampaignFactEntity` (FTS4), `WorldStateEntity`.
+- **`data/storage/SagaDao.kt`** — CRUD + `buscarFatos` (MATCH AND/fallback OR, ranking peso→frequência) + `excluirCampanhaCompleta` (@Transaction). `FichaDatabase` v24→25→26 com `MIGRATION_24_25`/`MIGRATION_25_26` explícitas.
+
+### 32.3 Motor de combate puro (`domain/combat/`)
+- **`CombatModels.kt`** — `Postura`/`Condicao`/`Manobra`, `NpcStats` (com `armaNh`), `Combatente` (PV/PF/postura/condições mutáveis; `vivo`/`caido`).
+- **`CombatEncounter.kt`** — Iniciativa (Vel.Básica→DX→seed), `proximoTurno`, `manobrasLegais`, `estadoResumo`, distância MUTÁVEL (`moverEmRelacaoAoHeroi`/`definirDistancia`).
+- **`CombatActions.kt`** — `calcularNH` (manobra/postura/local/visibilidade/`modsExtra`) + `resolverAtaque` (3d6) + `avaliarRolagem`. **Mover e Atacar: CaC −4+teto 9; à distância −2** (MB p.366).
+- **`ModificadoresCombate.kt`** — `LocalAtaque` (penalidades p/ acertar, MB p.398), `Visibilidade`, `AtaqueTotalModo`.
+- **`HitLocationRules.kt`** — Dano localizado (paridade Mesa Virtual: crânio×4, vitais×3 perf, limites de membro).
+- **`InjuryRules.kt`** — Choque, ferimento grave, cheques de morte, KO, recuperação de atordoamento, `ferir(Combatente)`.
+- **`NpcCombatBrain.kt`** — Intenção tática do NPC (fuga por moral, arqueiro mantém distância, bruto avança).
+- **`CombatResolver.kt`** — Modificadores de defesa (recuo/Defesa Total/apara extra/bloqueio 1×) + `resolverTroca` (ataque→defesa→dano→ferimento; crítico anula defesa).
+- **`CombatSession.kt`** — **Orquestra o encontro:** `heroiAtaca(AtaqueHeroi,…)`, `npcIntencao`/`npcResolve` (defesa interativa), `heroiMove`/`heroiManobra`/`heroiAvaliar`, `narrarTroca` (log evocativo + colchete técnico), `tipoDano`/`rolarDano` (mapeia `pa*`→`pi*`), `penalidadeDistancia` (MB p.550). Tipos: `HeroiPerfilCombate` (defesa), `AtaqueHeroi` (arma escolhível), `ResultadoCombate`.
+- **`model/BestiarioModels.kt`** + **`domain/loaders/BestiarioCatalogo.kt`** — Catálogo de criaturas (`assets/bestiario.v1.json`) → `Combatente` (`novoCombatente`). Loader com cache. ⚠️ Gson não roda init de data class → `Bestiario.get()` busca direto (sem mapa cacheado).
+
+### 32.4 UI e ponte de combate
+- **`viewmodel/delegates/SagaCombatController.kt`** — Embrulha `CombatSession` com estado Compose (`CombatUiState`/`CombatenteUi`/`FaixaDistancia`/`DefesaPendenteUi`) + corrotinas + ponte de defesa suspensa. `construirAtaques` lê as armas da ficha (corpo-a-corpo + fogo/distância, perícia casada por grupo/nome, dano por ST, tipo correto). Devolve PV/saque/XP à ficha (`sagaConcederXp`/`sagaDefinirPvAtual`/`sagaAdicionarItem` no ViewModel).
+- **`ui/saga/CombatUi.kt`** — Visual aprovado: `CombatTracker` (faixas Engajado→Extremo, barra de PV, postura/condições, avatar de inicial colorida = **placeholder do retrato real**), `SeletorDeArma`, `ManeuverCards` + sub-diálogos (alvo/local, Mover dirigido, Avaliar, Postura), `DefendaSeCard`. TalkBack em tudo.
+
+### 32.5 Pendências
+- **Apontar (+Precisão)** e **Preparar/Sacar arma** (arma pronta vs guardada) — faltam; precisam do `Acc`/alcance da arma no catálogo (`ArmaCatalogoItem`/`Equipamento` não carregam isso hoje).
+- **Validação no aparelho** do combate ponta a ponta (chaves de IA reais) — pendente.
+- **Retratos reais de NPC/cena** (Mestre Pintor em tempo real) — registro futuro (Lotes B7/E2 do plano).
+
+---
+
 > [!TIP]
-> **DICA PARA O AGENTE**: Ao modificar regras de combate ou magias, rode `NexusArcanoLoteFCanonicScenarioTest.kt` e `RulesLayerTest.kt`.
+> **DICA PARA O AGENTE**: Ao modificar regras de combate ou magias, rode `NexusArcanoLoteFCanonicScenarioTest.kt`, `RulesLayerTest.kt` e a suíte `domain/combat/*Test.kt` (Saga). **Regra de combate só se implementa lendo a fonte literal: `assets/chunks.jsonl` (Códex), não só o resumo do `Skill_GURPS.MD`** — ver `ARQUITETURA_MESTRE_IA.md §10`.
 >
 > **Sobre o Mestre IA (pós-Lote 328):** o AUDITOR não usa mais RAG semântico — usa
 > `localizar_no_codex` + `ler_pagina` (`MestreIARepository`). Para ajustar a busca/ranking do

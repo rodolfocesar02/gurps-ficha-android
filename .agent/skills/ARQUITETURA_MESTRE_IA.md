@@ -10,6 +10,10 @@
 > ➕ **2026-06-09:** Forjador mudou de fluxo (JSON direto, não mais loop de tools p/ CRIAR) e ganhou
 > Templates + Mestre Pintor. Ver **§9** (nova). O AUDITOR (§1-8) não mudou.
 
+> ➕ **2026-06-14 (Lotes 349-370):** novo **3º modo de IA — NARRADOR (modo Saga)** + **motor de combate**
+> (`domain/combat`, Kotlin puro) + UI de combate. Ver **§10** (nova). Auditor (§1-8) e Forjador (§9) não mudaram.
+> Branch `GURPS-Saga` (submódulo), HEAD `41996c4`.
+
 Sistema de IA (RAG) integrado ao app de Ficha GURPS. **Dois modos** sobre a mesma base:
 
 1. **AUDITOR** (modo `conversa`/dúvida): responde regras de GURPS. **Desde o Lote 325 usa
@@ -243,3 +247,59 @@ Gera retrato artístico do personagem via Gemini Image API (`gemini-3.1-flash-im
 `ImagemPersonagemStore.salvarImagem()` → `FichaViewModel.atualizarImagemPersonagem()`. Acionado por
 dialog pós-Forjador ou pelo modo "pintor" no chat. (A imagem entra no fluxo da feature de retrato:
 cabeçalho + tela cheia + Discord + viaja embutida na ficha exportada.)
+
+---
+
+## 10. NARRADOR (modo Saga) + MOTOR DE COMBATE  [+ 2026-06-13/14, Lotes 349-370]
+
+**3º modo de IA** sobre o mesmo `MestreIAClient`: modo `saga`. O NARRADOR conduz uma aventura solo
+(RPG de mesa para 1 jogador) usando a ficha como herói. Plano canônico: `.agent/skills/PLANO_SAGA_CLAUDE_CODE.md`.
+
+### 10.1 Loop do Narrador (clone do Forjador, modo `saga`)
+```
+Mensagem do jogador
+  → MestreIANarradorUseCase.narrar()  [fila de fallback de modelos; loop de tool-use; Auto-Healing]
+      → consultar_mundo automático (top-5 por palavra-chave) injeta fatos canônicos
+      → modelo chama as NarradorTools (rolagem, combate, fatos, cena, XP, Códex…)
+          → NarradorToolExecutor roteia cada tool → resultado JSON factual
+      → prosa final (≤3 parágrafos, 2ª pessoa)
+  → NarradorOutputValidator: zero números/regras inventados (alarme se a prosa cita dado/PV/dano
+    que não veio de tool naquele turno)
+```
+- **Lei de ferro:** o Narrador NUNCA declara resultado mecânico de cabeça — chama a ferramenta e narra a consequência.
+- Narração no Gemini 2.5 **Flash** (não Pro) — turno ~rápido (Lote 355).
+
+### 10.2 Arquivos do Narrador
+| Arquivo | Papel |
+|---|---|
+| `domain/MestreIANarradorUseCase.kt` | Orquestrador do modo `saga` (clone do Generator: fallback de modelos + loop de tools + Auto-Healing + consultar_mundo automático). |
+| `domain/saga/NarradorTools.kt` | Schemas das **16 tools** (14 próprias + `localizar_no_codex`/`ler_pagina` reusadas do Auditor). Spec neutra única → Gemini e OpenAI. CATEGORIAL, zero exemplos. |
+| `domain/saga/NarradorToolExecutor.kt` | Roteador nome→implementação. Reais: registrar_fato, consultar_mundo, inspecionar_personagem, definir_cena, pedir_rolagem (via `RollBridge`), localizar/ler, **e as 6 de combate via `CombatBridge`** (iniciar_combate, acao_npc, aplicar_dano, aplicar_condicao, gastar_recurso, conceder_xp). `avancar_relogio`/`passar_tempo`/`forjar_npc` = `nao_implementado` (Fase C/D). |
+| `domain/saga/NarradorOutputValidator.kt` | Detector anti-confabulação da prosa (números/regras sem tool). |
+| `domain/saga/CampanhaConfig.kt` | Session zero (gênero/tom/dificuldade/magia/NT/livros) → bloco textual no prompt. |
+| `data/network/MestreIAPromptsNarrador.kt` | Persona do Narrador (categorial). Leis de ferro incl. a nº 8 (combate abre com `iniciar_combate`; jogador resolve na UI; narra só abertura+desfecho). |
+| `viewmodel/delegates/FichaSagaDelegate.kt` | Estado observável da aba Saga; implementa `RollBridge` (rolagem interativa) **e `CombatBridge`** (liga as tools ao combate + ficha); fim de combate → `narrarFimDeCombate` (prosa + saque + XP). Persiste turnos em tabelas de chat (sessão `saga#<id>`). |
+| `ui/TabSaga.kt` | UI da aba (lista/criação de campanha, feed/máquina de escrever, card de rolagem, `ConfiguracaoJogoDialog`, TalkBack). Mostra o `CombatePainel` quando há combate. |
+| `data/storage/SagaEntities.kt` / `SagaDao.kt` | Room: Campanha/Cena/CampaignFact (FTS4)/WorldState. `FichaDatabase` hoje em **v26** (MIGRATION_24_25 + 25_26 explícitas). |
+
+### 10.3 Motor de combate (`domain/combat/`, Kotlin PURO, testável) — Lotes 359-370
+Tudo determinístico (RNG por seed injetável), sem Android. Encadeado pela `CombatSession`.
+| Arquivo | Papel |
+|---|---|
+| `CombatModels.kt` | Enums `Postura`/`Condicao`/`Manobra`, `NpcStats` (tem `armaNh`), `Combatente` (estado mutável). |
+| `CombatEncounter.kt` | Iniciativa (Vel.Básica→DX→seed), `proximoTurno`, `manobrasLegais`, distância MUTÁVEL (`moverEmRelacaoAoHeroi`). |
+| `CombatActions.kt` | `calcularNH` (postura/local/visibilidade/`modsExtra`) + `resolverAtaque` (3d6). **Mover e Atacar: CaC −4+teto 9; à distância −2** (corrigido no Lote 368 lendo o Códex). |
+| `ModificadoresCombate.kt` | Tabelas: `LocalAtaque` (penalidades MB p.398), `Visibilidade`, `AtaqueTotalModo`. |
+| `HitLocationRules.kt` | Dano localizado (paridade com a calculadora da Mesa Virtual: crânio ×4, vitais ×3 perf, limites de membro). |
+| `InjuryRules.kt` | Choque, ferimento grave, cheques de morte, inconsciência, recuperação de atordoamento. |
+| `NpcCombatBrain.kt` | Cérebro tático do NPC (fuga por moral, arqueiro mantém distância, bruto avança) — determinístico. |
+| `CombatResolver.kt` | Camada de defesa (recuo/Defesa Total/apara extra/bloqueio 1×) + `resolverTroca` (ataque→defesa→dano→ferimento; crítico anula defesa). |
+| `CombatSession.kt` | **Orquestra o encontro inteiro:** `heroiAtaca(AtaqueHeroi,…)`, `npcIntencao`/`npcResolve` (defesa interativa "Defenda-se!"), `heroiMove`/`heroiManobra`/`heroiAvaliar` (manobras), `narrarTroca` (log EVOCATIVO + colchete técnico), parser de dano `tipoDano`/`rolarDano` (mapeia `pa*`→`pi*`), `penalidadeDistancia` (MB p.550). `HeroiPerfilCombate` (defesas) + `AtaqueHeroi` (arma escolhível). |
+| `model/BestiarioModels.kt` + `domain/loaders/BestiarioCatalogo.kt` | Bestiário (17 criaturas, `assets/bestiario.v1.json`) → `Combatente`. Loader com cache. |
+| `viewmodel/delegates/SagaCombatController.kt` | **Ponte motor↔UI:** estado Compose (`CombatUiState`/`CombatenteUi`/`FaixaDistancia`), corrotinas, ponte de defesa suspensa, lista de ataques da ficha (corpo-a-corpo + fogo/distância, perícia casada por grupo/nome), devolve PV/saque/XP à ficha. |
+| `ui/saga/CombatUi.kt` | UI aprovada no mockup: CombatTracker (faixas/PV/postura, inicial colorida = placeholder do retrato real — ver registro B7/E2), SeletorDeArma, ManeuverCards + sub-diálogos (alvo/local, Mover, Avaliar, Postura), DefendaSeCard. TalkBack em tudo. |
+
+### 10.4 Estado e pendências
+- **FASE B (combate) COMPLETA + polimento 367-370.** Falta do pedido do usuário: **Apontar (+Precisão)** e **Preparar/Sacar arma** (arma pronta vs guardada) — exigem puxar o `Acc`/alcance da arma do catálogo (`ArmaCatalogoItem`/`Equipamento` ainda não carregam isso).
+- **Validação no aparelho** do combate ponta a ponta segue pendente (chaves de IA reais).
+- **Retratos reais de NPC/cena** gerados pelo Mestre Pintor em tempo real = registro futuro (Lotes B7/E2 do plano).
