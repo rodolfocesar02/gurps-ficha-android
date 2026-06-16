@@ -128,6 +128,8 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
     val sagaCombateAtivo get() = sagaDelegate.combate.ativo
     fun sagaCombateAtacar(alvoId: String, manobra: com.gurps.ficha.domain.combat.Manobra, local: com.gurps.ficha.domain.combat.LocalAtaque, modo: com.gurps.ficha.domain.combat.AtaqueTotalModo = com.gurps.ficha.domain.combat.AtaqueTotalModo.DETERMINADO) =
         sagaDelegate.combate.heroiAtaca(alvoId, manobra, local, modo)
+    fun sagaCombateAtacarDuplo(alvoId: String, local: com.gurps.ficha.domain.combat.LocalAtaque, offHandIndex: Int) =
+        sagaDelegate.combate.heroiAtaqueDuplo(alvoId, local, offHandIndex)
     fun sagaCombateMover(alvoId: String?, afastar: Boolean, metros: Int) = sagaDelegate.combate.heroiMove(alvoId, afastar, metros)
     fun sagaCombateAvaliar(alvoId: String) = sagaDelegate.combate.heroiAvaliar(alvoId)
     fun sagaCombateApontar(alvoId: String) = sagaDelegate.combate.heroiApontar(alvoId)

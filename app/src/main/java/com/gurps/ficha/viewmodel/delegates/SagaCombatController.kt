@@ -69,6 +69,8 @@ data class CombatUiState(
     val deslocamentoHeroi: Int,
     val posturaHeroi: String,
     val posturasAlcancaveis: List<Postura>,
+    /** Ambidestria (Lote 377): zera o −4 da mão inábil no Ataque Total (Duplo). */
+    val heroiAmbidestro: Boolean,
     val encerrado: Boolean,
     val resultado: ResultadoCombate?
 ) {
@@ -250,6 +252,24 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /**
+     * Lote 377: Ataque Total (Duplo) — golpeia o alvo com a arma EMPUNHADA (mão hábil) e com a arma
+     * [offHandIndex] (mão inábil, −4 salvo Ambidestria). MB p.366. Consome o turno como qualquer ataque.
+     */
+    fun heroiAtaqueDuplo(alvoId: String, local: LocalAtaque, offHandIndex: Int) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        if (offHandIndex == ataqueSelecionado) return // a 2ª arma precisa ser diferente da empunhada
+        val principal = ataques.getOrNull(ataqueSelecionado) ?: return
+        val secundaria = ataques.getOrNull(offHandIndex) ?: return
+        s.heroiAtaqueDuplo(principal, secundaria, alvoId, local, temAmbidestria(viewModel.personagem))
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Ambidestria (MB p.38) — anula o −4 da mão inábil. Mesmo padrão de varredura por id de [SentidoRules]. */
+    private fun temAmbidestria(p: Personagem): Boolean =
+        (p.vantagens + p.modeloRacial.vantagens).any { it.definicaoId == "ambidestria" }
+
     fun heroiMove(alvoId: String?, afastar: Boolean, metros: Int) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
@@ -314,9 +334,10 @@ class SagaCombatController(
     private suspend fun executarTurnoNpc(npcId: String) {
         val s = sessao ?: return
         val intencao = s.npcIntencao(npcId)
-        if (s.intencaoAtacaHeroi(intencao)) {
-            // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
-            val opcoes = s.opcoesDefesaHeroi(armaPronta = ataques.getOrNull(ataqueSelecionado))
+        // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
+        // Sem opções (ex.: herói sem defesa ativa após Ataque Total) → resolve direto, sem card.
+        val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(armaPronta = ataques.getOrNull(ataqueSelecionado)) else emptyList()
+        if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = s.inimigos.first { it.id == npcId }.nome
             defesaPendente = DefesaPendenteUi(
@@ -384,6 +405,7 @@ class SagaCombatController(
             deslocamentoHeroi = s.heroi.deslocamento.coerceAtLeast(1),
             posturaHeroi = s.heroi.postura.rotulo,
             posturasAlcancaveis = if (vezHeroi) s.posturasAlcancaveis() else emptyList(),
+            heroiAmbidestro = temAmbidestria(viewModel.personagem),
             encerrado = s.encerrado,
             resultado = s.resultado
         )

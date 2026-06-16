@@ -32,7 +32,8 @@
 > - ✅ Lote 374 = EXTRA combate corpo-a-corpo (2026-06-14) — engajamento por reach (arma "C"/"1"/"2" define quem você atinge; longe demais = aproxime-se) + Sacar/Preparar arma (na mão vs guardada; Preparar gasta o turno, livre com Saque Rápido). Teste + build 2 variantes verde.
 > - ✅ Lote 375 = EXTRA fim das regras de arma (2026-06-14) — Bulk no Avançar-e-Atacar à distância (−2 ou Magnitude, o pior) + Aparar E/D (esgrima −2 extra; desbalanceada não apara após atacar; "Não"/à distância não apara). Persistiu `armaAparar`. Testes + build 2 variantes verde. **Regras de arma no combate completas** (reach, Apontar/Acc, 1/2D, Máx, Bulk, Aparar E/D, Sacar/Preparar).
 > - ✅ Lote 376 = EXTRA rajada (2026-06-14) — CdT → bônus de acerto (tabela MB p.374) + Recuo → múltiplos acertos (1+⌊margem/Recuo⌋) + Ataque Total à distância +1. Testes + build 2 variantes verde.
-> - ➡️ Próximo: **dual-wield** (Lote 377 — 2 armas prontas, mão inábil −4/Ambidestria, Ataque Total Duplo) fecha o polimento de combate. Depois: **validação no aparelho** e Fases C/D/E.
+> - ✅ Lote 377 = EXTRA dual-wield (2026-06-16) — Ataque Total (Duplo, MB p.366): 2 golpes no mesmo alvo, 2ª arma na mão inábil −4 salvo Ambidestria (`heroiAtaqueDuplo` + helpers `resolverGolpeHeroi`/`golpeForaDeAlcance`). De quebra fechou a lacuna **"sem defesa ativa após Ataque Total"** (todos os modos): `heroiSemDefesaAtiva` anula a defesa do herói até o próximo turno. UI: modo Duplo + seletor da 2ª arma + notinha. Testes + build 2 variantes verde. **Polir combate FECHADO** (RoF/Recuo + dual-wield).
+> - ➡️ Próximo: **validação no aparelho** (combate ponta a ponta + Testes de Sentidos), e pendências antigas (A2 Voz/Auditor citando página, A5 jogabilidade da Saga). Depois: Fases C (Mundo Vivo), D (XP/Acampamento), E (áudio/imagem/voz).
 
 ---
 

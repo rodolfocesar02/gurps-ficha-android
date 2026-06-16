@@ -293,4 +293,56 @@ class CombatSessionTest {
         val intencao = s.npcIntencao("goblin")
         assertTrue("deve recuar", intencao.manobra == Manobra.MOVER && intencao.recuar)
     }
+
+    // ── Lote 377: Ataque Total (Duplo) + sem defesa ativa após Ataque Total (MB p.366) ──
+
+    private fun faca() = AtaqueHeroi("Faca", nh = 14, danoExpr = "1d-1", tipo = DanoTipo.PERF)
+    private fun espadaCurta() = AtaqueHeroi("Espada", nh = 14, danoExpr = "1d", tipo = DanoTipo.CORT)
+
+    @Test
+    fun `ataque total duplo desfere dois golpes e a 2a arma sofre -4 da mao inabil`() {
+        val g = goblin(pv = 40) // sobrevive aos dois golpes p/ expor as duas linhas
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        val res = s.heroiAtaqueDuplo(espadaCurta(), faca(), "goblin", LocalAtaque.TORSO, ambidestria = false)
+        assertEquals("dois golpes resolvidos", 2, res.size)
+        assertTrue("cabeçalho do Duplo", s.log.any { it.contains("Ataque Total (Duplo)") })
+        // a 2ª arma (Faca) carrega o −4 da mão inábil no colchete técnico
+        assertTrue("a 2ª arma deve mostrar a penalidade de mão inábil",
+            s.log.any { it.contains("Faca") && it.contains("mão inábil") })
+        // Ataque Total → herói sem defesa ativa neste turno
+        assertTrue(s.heroiSemDefesaAtiva)
+        assertTrue("sem opções de defesa após Ataque Total",
+            s.opcoesDefesaHeroi(armaPronta = espadaCurta()).isEmpty())
+    }
+
+    @Test
+    fun `com ambidestria a 2a arma nao sofre o -4 da mao inabil`() {
+        val g = goblin(pv = 40)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        s.heroiAtaqueDuplo(espadaCurta(), faca(), "goblin", LocalAtaque.TORSO, ambidestria = true)
+        assertFalse("Ambidestria zera a penalidade de mão inábil",
+            s.log.any { it.contains("mão inábil") })
+    }
+
+    @Test
+    fun `apos ataque total o heroi fica sem defesa ativa ate o proximo turno`() {
+        val g = goblin(pv = 40)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        // antes do Ataque Total a defesa normal está disponível
+        assertTrue(s.opcoesDefesaHeroi(armaPronta = espadaCurta()).isNotEmpty())
+        s.heroiAtaca(espadaCurta(), "goblin", Manobra.ATAQUE_TOTAL, LocalAtaque.TORSO)
+        assertTrue("Ataque Total tira a defesa ativa", s.heroiSemDefesaAtiva)
+        assertTrue("sem opções de defesa", s.opcoesDefesaHeroi(armaPronta = espadaCurta()).isEmpty())
+        // NPC ataca o herói indefeso → o log avisa a ausência de defesa
+        val intencao = s.npcIntencao("goblin")
+        s.npcResolve("goblin", intencao, null)
+        assertTrue("avisa que o herói está sem defesa", s.log.any { it.contains("sem defesa ativa") })
+        // a próxima ação do herói restaura a defesa (passou o turno)
+        s.heroiManobra(Manobra.NAO_FAZER_NADA)
+        assertFalse(s.heroiSemDefesaAtiva)
+        assertTrue(s.opcoesDefesaHeroi(armaPronta = espadaCurta()).isNotEmpty())
+    }
 }

@@ -526,7 +526,7 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 - **`domain/magias/NexusArcanoLoteFCanonicScenarioTest.kt`** + **`NexusArcanoModoAlvoAdapterTest.kt`** — Cenários do adapter Nexus Arcano.
 - **`nexus/arcano/NexusArcanoEngine*Test.kt`** — Suíte massiva do motor de magias (Lote1/2/3, GlobalA/B, StressMagiasV2, AuditoriaTodasMagias) + `NexusArcanoTestCatalog.kt` (catálogo de fixtures).
 - **`vtt/VttBridgeCodecStressTest.kt`** — Teste de robustez do codec VTT.
-- **[+ 2026-06-14] Combate da Saga** (`domain/combat/`): `CombatEncounterTest`, `CombatActionsTest` (inclui Mover e Atacar correto), `HitLocationRulesTest`, `InjuryRulesTest`, `NpcCombatBrainTest`, `CombatResolverTest`, `CombatSessionTest` (sessão ponta a ponta: arma/tipo de dano/distância, narração, avaliar, postura, mover dirigido).
+- **[+ 2026-06-14] Combate da Saga** (`domain/combat/`): `CombatEncounterTest`, `CombatActionsTest` (inclui Mover e Atacar correto), `HitLocationRulesTest`, `InjuryRulesTest`, `NpcCombatBrainTest`, `CombatResolverTest`, `CombatSessionTest` (sessão ponta a ponta: arma/tipo de dano/distância, narração, avaliar, postura, mover dirigido, rajada, **dual-wield: 2 golpes + mão inábil −4/Ambidestria, sem defesa após Ataque Total**).
 - **[+ 2026-06-14] Narrador/Saga** (`domain/saga/`): `NarradorToolsTest` (contrato das 16 tools), `NarradorOutputValidatorTest`, `NarradorToolExecutorCombatTest` (roteamento das 6 tools de combate via `CombatBridge` falsa). Instrumentado: `SagaFoundationTest` (FTS4 real).
 
 ---
@@ -553,7 +553,8 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 | Importar JSON versionado | `PersonagemInterop.kt` → `importarJson` |
 | Normalização de busca | `CatalogFilters.kt` → `normalizarBusca` |
 | Auto-detect VTT na LAN | `VttHostAutoDetect.kt` → `detectLanHost` |
-| **Combate Saga: orquestra o encontro** | `domain/combat/CombatSession.kt` (heroiAtaca/npcResolve/heroiMove/heroiAvaliar/narrarTroca) |
+| **Combate Saga: orquestra o encontro** | `domain/combat/CombatSession.kt` (heroiAtaca/**heroiAtaqueDuplo**/npcResolve/heroiMove/heroiAvaliar/narrarTroca; golpe único em `resolverGolpeHeroi`) |
+| **Combate: dual-wield / sem defesa pós-Ataque Total** | `CombatSession.heroiAtaqueDuplo` (mão inábil −4/Ambidestria, MB p.366) + flag `heroiSemDefesaAtiva` (anula defesa do herói) · UI `SubDialogoAlvoLocal` modo Duplo |
 | **Combate: NH efetivo / Mover e Atacar** | `domain/combat/CombatActions.kt` → `calcularNH` (CaC −4+teto 9; à distância −2) |
 | **Combate: dano localizado / tipo (pa*→pi*)** | `HitLocationRules.aplicarDano` + `CombatSession.tipoDano` |
 | **Combate: ponte motor↔UI / arma escolhível** | `viewmodel/delegates/SagaCombatController.kt` (`construirAtaques`, `CombatUiState`) |

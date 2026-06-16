@@ -215,8 +215,14 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
         SubDialogoAlvoLocal(
             manobra = manobra,
             alvos = estado.alvos,
-            onConfirmar = { alvoId, local, modo ->
-                viewModel.sagaCombateAtacar(alvoId, manobra, local, modo)
+            ataques = estado.ataques,
+            ataqueSelecionado = estado.ataqueSelecionado,
+            ambidestro = estado.heroiAmbidestro,
+            onConfirmar = { alvoId, local, modo, offHand ->
+                if (modo == AtaqueTotalModo.DUPLO && offHand != null)
+                    viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
+                else
+                    viewModel.sagaCombateAtacar(alvoId, manobra, local, modo)
                 alvoDialogo = null
             },
             onFechar = { alvoDialogo = null }
@@ -416,12 +422,21 @@ private fun SeletorDeArma(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
 private fun SubDialogoAlvoLocal(
     manobra: Manobra,
     alvos: List<CombatenteUi>,
-    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo) -> Unit,
+    ataques: List<AtaqueHeroi>,
+    ataqueSelecionado: Int,
+    ambidestro: Boolean,
+    onConfirmar: (alvoId: String, local: LocalAtaque, modo: AtaqueTotalModo, offHandIndex: Int?) -> Unit,
     onFechar: () -> Unit
 ) {
     var alvoId by remember { mutableStateOf(alvos.firstOrNull()?.id ?: "") }
     var local by remember { mutableStateOf(LocalAtaque.TORSO) }
     var modo by remember { mutableStateOf(AtaqueTotalModo.DETERMINADO) }
+    // Ataque Total (Duplo): a 2ª arma (mão inábil) é qualquer ataque diferente do empunhado.
+    val opcoesOffHand = remember(ataques, ataqueSelecionado) {
+        ataques.withIndex().filter { it.index != ataqueSelecionado }
+    }
+    var offHand by remember { mutableStateOf(opcoesOffHand.firstOrNull()?.index) }
+    val podeDuplo = manobra == Manobra.ATAQUE_TOTAL && opcoesOffHand.isNotEmpty()
 
     AlertDialog(
         onDismissRequest = onFechar,
@@ -451,8 +466,12 @@ private fun SubDialogoAlvoLocal(
                 if (manobra == Manobra.ATAQUE_TOTAL) {
                     Spacer(Modifier.height(8.dp))
                     Text("Modo do Ataque Total", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
-                    listOf(AtaqueTotalModo.DETERMINADO, AtaqueTotalModo.FORTE).forEach { mo ->
-                        val desc = if (mo == AtaqueTotalModo.DETERMINADO) "+4 para acertar" else "+2 de dano"
+                    val modos = buildList {
+                        add(AtaqueTotalModo.DETERMINADO to "+4 para acertar")
+                        add(AtaqueTotalModo.FORTE to "+2 de dano")
+                        if (podeDuplo) add(AtaqueTotalModo.DUPLO to "2 golpes, 2 armas")
+                    }
+                    modos.forEach { (mo, desc) ->
                         OpcaoRadio(
                             selecionado = modo == mo,
                             rotulo = "${mo.rotulo} ($desc)",
@@ -460,14 +479,34 @@ private fun SubDialogoAlvoLocal(
                             onClick = { modo = mo }
                         )
                     }
+                    // Duplo: escolher a 2ª arma (mão inábil) + notinha do −4/Ambidestria (MB p.366).
+                    if (modo == AtaqueTotalModo.DUPLO && podeDuplo) {
+                        Spacer(Modifier.height(8.dp))
+                        val notinha = if (ambidestro) "Ambidestria: a 2ª arma ataca sem penalidade."
+                            else "Mão inábil: a 2ª arma ataca com −4 (Ambidestria anularia)."
+                        Text("2ª arma — $notinha",
+                            fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                        opcoesOffHand.forEach { (i, atk) ->
+                            OpcaoRadio(
+                                selecionado = offHand == i,
+                                rotulo = "${atk.rotulo} — NH ${atk.nh}, ${atk.danoExpr} ${atk.tipo.rotulo}",
+                                descricao = "Segunda arma ${atk.rotulo}",
+                                onClick = { offHand = i }
+                            )
+                        }
+                    }
                 }
             }
         },
         confirmButton = {
             Button(
-                onClick = { if (alvoId.isNotBlank()) onConfirmar(alvoId, local, modo) },
+                onClick = {
+                    if (alvoId.isNotBlank())
+                        onConfirmar(alvoId, local, modo, if (modo == AtaqueTotalModo.DUPLO) offHand else null)
+                },
+                enabled = alvoId.isNotBlank() && !(modo == AtaqueTotalModo.DUPLO && offHand == null),
                 modifier = Modifier.semantics { contentDescription = "Confirmar ataque" }
-            ) { Text("Atacar") }
+            ) { Text(if (modo == AtaqueTotalModo.DUPLO) "Atacar (Duplo)" else "Atacar") }
         },
         dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
     )

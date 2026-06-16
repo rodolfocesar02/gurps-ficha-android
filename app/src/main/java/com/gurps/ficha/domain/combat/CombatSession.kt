@@ -38,8 +38,12 @@ class CombatSession(
 
     // Aparar desbalanceada (Lote 375): atacou com arma "D" → não pode aparar com ela até o próximo turno (MB p.270).
     private var atacouDesbalanceada = false
-    /** Início de uma ação do herói: zera o "atacou desbalanceada" (passou o turno em que não podia aparar). */
-    private fun inicioAcaoHeroi() { atacouDesbalanceada = false }
+
+    // Ataque Total (Lote 377): depois de um Ataque Total o herói fica SEM defesa ativa até o próximo turno (MB p.366).
+    var heroiSemDefesaAtiva: Boolean = false; private set
+
+    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa do Ataque Total). */
+    private fun inicioAcaoHeroi() { atacouDesbalanceada = false; heroiSemDefesaAtiva = false }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
     val inimigos: List<Combatente> get() = encounter.combatentes.filter { !it.ehHeroi }
@@ -81,18 +85,87 @@ class CombatSession(
         inicioAcaoHeroi()
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
+        golpeForaDeAlcance(ataque, alvo)?.let { return it }
+        val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo)
+        limparAvaliar(); limparApontar() // bônus de Avaliar/Mira consumidos neste ataque
+        // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
+        if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
+        // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
+        if (manobra == Manobra.ATAQUE_TOTAL) heroiSemDefesaAtiva = true
+        verificarFim()
+        return r
+    }
 
-        val dist = encounter.distancia(alvo)
-        // Fora do alcance da arma — Máx à distância OU reach corpo-a-corpo ("C"/"1"/"2") — não alcança (MB p.270).
-        if (dist > ataque.alcance) {
-            limparApontar()
-            val txt = if (ataque.aDistancia)
-                "🎯 ${alvo.nome} está fora de alcance (${dist}m > Máx ${ataque.alcance}m): o tiro não chega."
-            else
-                "🗡️ ${alvo.nome} está longe demais (${dist}m > alcance ${ataque.alcance}m da arma) — aproxime-se."
-            log += txt
-            return AtaqueResultado(false, false, 0, false, txt)
+    /**
+     * Ataque Total (Duplo) — MB p.366: DOIS ataques contra o MESMO alvo, exigindo duas armas
+     * preparadas. O 1º golpe sai com a mão hábil (NH normal); o 2º, com a arma na mão inábil, sofre
+     * −4 a menos que o herói tenha Ambidestria (pág. 38). Sem defesa ativa até o próximo turno.
+     * Os bônus de Avaliar/Mira valem só no 1º golpe ("seu próximo ataque").
+     */
+    fun heroiAtaqueDuplo(
+        principal: AtaqueHeroi,
+        secundaria: AtaqueHeroi,
+        alvoId: String,
+        local: LocalAtaque = LocalAtaque.TORSO,
+        ambidestria: Boolean = false
+    ): List<AtaqueResultado> {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return listOf(AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto })
+        log += "⚔️ Ataque Total (Duplo): você golpeia ${alvo.nome} com as duas armas!"
+        val resultados = mutableListOf<AtaqueResultado>()
+        // 1º golpe — mão hábil, NH normal (DUPLO não dá +4/+1). Consome Avaliar/Mira.
+        val fora1 = golpeForaDeAlcance(principal, alvo)
+        resultados += fora1 ?: resolverGolpeHeroi(principal, alvo, Manobra.ATAQUE_TOTAL, local, AtaqueTotalModo.DUPLO)
+        limparAvaliar(); limparApontar()
+        // 2º golpe — mão inábil (−4 salvo Ambidestria), só se o alvo continua de pé.
+        if (alvo.vivo) {
+            val penOff = if (ambidestria) 0 else -4
+            val fora2 = golpeForaDeAlcance(secundaria, alvo)
+            resultados += fora2 ?: resolverGolpeHeroi(
+                secundaria, alvo, Manobra.ATAQUE_TOTAL, local, AtaqueTotalModo.DUPLO,
+                modAdicional = penOff, rotuloModAdicional = if (ambidestria) "mão inábil (Ambidestria)" else "mão inábil"
+            )
+        } else {
+            log += "  └ ${alvo.nome} já caiu — o segundo golpe não chega a ser desferido."
         }
+        // Desbalanceada: se qualquer golpe corpo-a-corpo usou arma "D" (não apara até o próximo turno).
+        if ((!principal.aDistancia && principal.apararTipo == ApararTipo.DESBALANCEADA) ||
+            (!secundaria.aDistancia && secundaria.apararTipo == ApararTipo.DESBALANCEADA)) atacouDesbalanceada = true
+        heroiSemDefesaAtiva = true // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
+        verificarFim()
+        return resultados
+    }
+
+    /** Golpe fora de alcance (Máx à distância OU reach corpo-a-corpo): loga e devolve o resultado; null se está no alcance. */
+    private fun golpeForaDeAlcance(ataque: AtaqueHeroi, alvo: Combatente): AtaqueResultado? {
+        val dist = encounter.distancia(alvo)
+        if (dist <= ataque.alcance) return null
+        limparApontar()
+        val txt = if (ataque.aDistancia)
+            "🎯 ${alvo.nome} está fora de alcance (${dist}m > Máx ${ataque.alcance}m): o tiro não chega."
+        else
+            "🗡️ ${alvo.nome} está longe demais (${dist}m > alcance ${ataque.alcance}m da arma) — aproxime-se."
+        log += txt
+        return AtaqueResultado(false, false, 0, false, txt)
+    }
+
+    /**
+     * Resolve UM golpe do herói já validado (alvo vivo e no alcance): rola acerto (B2) → defesa do
+     * NPC (B5) → dano/ferimento (B3/B4) e narra. Não cuida do bookkeeping de turno — quem chama
+     * consome Avaliar/Mira, marca desbalanceada/sem-defesa e verifica o fim. [modAdicional] aplica
+     * uma penalidade nomeada extra (ex.: −4 da mão inábil no Ataque Total Duplo).
+     */
+    private fun resolverGolpeHeroi(
+        ataque: AtaqueHeroi,
+        alvo: Combatente,
+        manobra: Manobra,
+        local: LocalAtaque,
+        ataqueTotalModo: AtaqueTotalModo,
+        modAdicional: Int = 0,
+        rotuloModAdicional: String = ""
+    ): AtaqueResultado {
+        val dist = encounter.distancia(alvo)
         // Rajada (MB p.374): com CdT≥2 dispara a rajada cheia → bônus para acertar por nº de tiros.
         val tiros = if (ataque.aDistancia) ataque.cadenciaTiro.coerceAtLeast(1) else 1
         val modsExtra: List<CombatActions.ComponenteMod> = buildList {
@@ -100,13 +173,14 @@ class CombatSession(
                 val pen = penalidadeDistancia(dist)
                 if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
-                if (apontarAlvoId == alvoId && ataque.precisao != 0)
+                if (apontarAlvoId == alvo.id && ataque.precisao != 0)
                     add(CombatActions.ComponenteMod("mira (Acc)", ataque.precisao))
                 bonusCadenciaTiro(tiros).let { if (it != 0) add(CombatActions.ComponenteMod("rajada ${tiros} tiros", it)) }
-            } else if (avaliarAlvoId == alvoId && avaliarStacks > 0) {
+            } else if (avaliarAlvoId == alvo.id && avaliarStacks > 0) {
                 // Avaliar só vale corpo-a-corpo, contra o alvo avaliado, no ataque seguinte (MB p.365).
                 add(CombatActions.ComponenteMod("avaliar", avaliarStacks))
             }
+            if (modAdicional != 0) add(CombatActions.ComponenteMod(rotuloModAdicional.ifBlank { "mod" }, modAdicional))
         }
         val atk = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
@@ -145,10 +219,6 @@ class CombatSession(
             }
         }
         val incap = !alvo.vivo
-        limparAvaliar(); limparApontar() // bônus de Avaliar/Mira consumidos neste ataque
-        // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
-        if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
-        verificarFim()
         return AtaqueResultado(
             acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO,
             defendeu = troca.defendeu, danoAplicado = troca.dano?.pvSubtrair ?: 0,
@@ -234,6 +304,8 @@ class CombatSession(
         recuo: Boolean = false,
         defesaTotalEm: CombatResolver.TipoDefesa? = null
     ): List<CombatResolver.OpcaoDefesa> {
+        // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
+        if (heroiSemDefesaAtiva) return emptyList()
         val tipoAparar = armaPronta?.apararTipo ?: ApararTipo.NORMAL
         val ranged = armaPronta?.aDistancia == true
         // Aparar indisponível: arma à distância, arma "Não", ou desbalanceada já usada para atacar neste turno (MB p.270).
@@ -301,11 +373,13 @@ class CombatSession(
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
         val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
         val danoTotal = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE)
+        // Ataque Total no turno anterior ANULA a defesa do herói até o próximo turno (MB p.366).
+        if (heroiSemDefesaAtiva) log += "🛡️ Você está sem defesa ativa (Ataque Total) — resta torcer pelo erro do oponente!"
 
         val troca = CombatResolver.resolverTroca(
             defensor = heroi, htDefensor = heroiPerfil.ht, ataque = atk,
             defesaTipo = def.tipo, defesaValorFinal = def.valorFinal, defesaSoma = def.soma,
-            surpresa = false, danoBaseRolado = danoTotal, danoTipo = tipoDano(stats.armaTipo),
+            surpresa = heroiSemDefesaAtiva, danoBaseRolado = danoTotal, danoTipo = tipoDano(stats.armaTipo),
             local = intencao.local, rdLocal = heroiPerfil.rd, randomFerimento = random
         )
         // marca a defesa usada (bloqueio/recuo 1×/turno; aparas extras cumulativas)

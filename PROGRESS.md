@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 376 CONCLUÍDO — combate à distância: rajada (CdT → bônus de acerto, Recuo → múltiplos acertos) + Ataque Total à distância (+1). Falta dual-wield (377) e validação no aparelho.
-**Último Lote Registrado:** Lote 376 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `de7f266` (Lote 375). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`.
+**Última Atualização:** 16 de Junho de 2026
+**Status Atual:** Lote 377 CONCLUÍDO — dual-wield (Ataque Total Duplo: 2 golpes, mão inábil −4/Ambidestria) + "sem defesa ativa" após Ataque Total. FECHA o "polir combate". Próximo: validação no aparelho (combate + sentidos), depois Fases C/D/E.
+**Último Lote Registrado:** Lote 377 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `aa56969` (Lote 376). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=(este lote, hash após o commit).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 377 — 16 de Junho de 2026
+**Saga combate: dual-wield (Ataque Total Duplo) + "sem defesa ativa" após Ataque Total (branch GURPS-Saga)**
+- DUAL-WIELD / ATAQUE TOTAL (DUPLO) (MB p.366, lido no `chunks.jsonl`): novo `CombatSession.heroiAtaqueDuplo(principal, secundaria, alvoId, local, ambidestria)` — DOIS golpes no MESMO alvo; o 1º com a mão hábil (NH normal), o 2º com a arma na mão inábil sofrendo **−4 salvo Ambidestria** (pág. 38). Avaliar/Mira valem só no 1º golpe; se o alvo cai no 1º, o 2º não é desferido.
+- REFATORAÇÃO SEGURA: o corpo do golpe único saiu de `heroiAtaca` para os helpers privados `resolverGolpeHeroi(...)` (resolução pura, com `modAdicional` nomeado p/ a mão inábil) e `golpeForaDeAlcance(...)`; `heroiAtaca` e `heroiAtaqueDuplo` reaproveitam ambos (comportamento do ataque simples inalterado — testes antigos verdes).
+- SEM DEFESA ATIVA APÓS ATAQUE TOTAL (MB p.366) — lacuna pré-existente fechada p/ TODOS os modos (Determinado/Forte/Duplo): flag `heroiSemDefesaAtiva` (ligada ao fim de um Ataque Total, zerada no início da próxima ação do herói); `opcoesDefesaHeroi` devolve vazio; `npcResolve` passa `surpresa=true` (anula a defesa) + log "🛡️ sem defesa ativa…"; o controller pula o card "Defenda-se!" e resolve direto.
+- AMBIDESTRIA: detectada por id `ambidestria` (vantagens pessoais + raciais, mesmo padrão do `SentidoRules`); exposta em `CombatUiState.heroiAmbidestro` e usada para zerar o −4.
+- UI (`CombatUi.kt`): `SubDialogoAlvoLocal` ganha o modo **Duplo** (quando há ≥1 arma além da empunhada) + seletor da 2ª arma + "notinha" do −4/Ambidestria; botão vira "Atacar (Duplo)". `FichaViewModel.sagaCombateAtacarDuplo` → `controller.heroiAtaqueDuplo`. Tudo com `contentDescription` (acessível nas 2 variantes, sem arquivo PraCego extra).
+- Testes (`CombatSessionTest`): 2 golpes resolvidos + −4 da mão inábil no colchete técnico; Ambidestria zera a penalidade; sem defesa ativa após Ataque Total (e restauração no turno seguinte). Build 2 variantes verde.
+- FECHA o "polir combate" (RoF/Recuo no 376 + dual-wield aqui). PRÓXIMO: **validação no aparelho** (combate ponta a ponta + sentidos), depois Fases C/D/E do plano.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 376 — 14 de Junho de 2026
