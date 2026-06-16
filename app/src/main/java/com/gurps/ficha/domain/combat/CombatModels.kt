@@ -39,6 +39,7 @@ enum class Manobra(val rotulo: String) {
     PREPARAR("Preparar"),
     AGUARDAR("Aguardar"),
     AVALIAR("Avaliar"),
+    APONTAR("Apontar"),            // mira arma à distância → +Precisão no próximo tiro (MB p.364)
     CONCENTRAR("Concentrar-se"),
     NAO_FAZER_NADA("Não Fazer Nada")
 }

@@ -166,6 +166,43 @@ class CombatSessionTest {
     }
 
     @Test
+    fun `apontar soma a precisao da arma no proximo tiro`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val rev = AtaqueHeroi("Revólver", nh = 14, danoExpr = "2d-1 pa+", tipo = DanoTipo.PI_MAIS, aDistancia = true, alcance = 1700, precisao = 2, meioDano = 150)
+        s.heroiApontar("goblin")
+        s.heroiAtaca(rev, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        val tiro = s.log.last { it.startsWith("🎯") || it.startsWith("⭐") || it.startsWith("💥") }
+        assertTrue("o tiro deve somar a Precisão da mira: $tiro", tiro.contains("mira (Acc)"))
+    }
+
+    @Test
+    fun `tiro alem do maximo nao alcanca`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 200), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        val pistola = AtaqueHeroi("Pistola", nh = 14, danoExpr = "2d", tipo = DanoTipo.PI, aDistancia = true, alcance = 150, precisao = 2, meioDano = 50)
+        val r = s.heroiAtaca(pistola, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertFalse("além do Máx não acerta", r.acertou)
+        assertTrue(s.log.last().contains("fora de alcance"))
+    }
+
+    @Test
+    fun `tiro alem de meio dano corta o dano pela metade`() {
+        var achouMetade = false
+        for (seed in 0L..25L) {
+            val g = goblin(pv = 20)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 7), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            val arco = AtaqueHeroi("Arco", nh = 16, danoExpr = "2d", tipo = DanoTipo.PERF, aDistancia = true, alcance = 100, precisao = 2, meioDano = 5)
+            s.heroiAtaca(arco, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+            if (s.log.any { it.contains("1/2D") }) { achouMetade = true; break }
+        }
+        assertTrue("em algum acerto a 7m (≥ 1/2D 5m) o log deve marcar dano pela metade", achouMetade)
+    }
+
+    @Test
     fun `npc com moral baixa e PV no chao foge`() {
         val g = goblin(pv = 10).apply { pvAtual = 1 } // 10% de PV
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)

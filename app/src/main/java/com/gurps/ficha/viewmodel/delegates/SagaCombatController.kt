@@ -238,6 +238,13 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    fun heroiApontar(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiApontar(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     fun heroiManobra(manobra: Manobra, novaPostura: Postura? = null) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
@@ -333,9 +340,12 @@ class SagaCombatController(
         val alvos = if (!vezHeroi) emptyList()
             else if (ranged) combs.filter { !it.ehHeroi && it.vivo }
             else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= 1 }
-        // Manobras: à distância pode Atacar mesmo sem inimigo adjacente.
+        // Manobras: à distância pode Atacar mesmo sem inimigo adjacente, e pode Apontar (mira).
         val manobras = if (!vezHeroi) emptyList() else s.manobrasHeroi().toMutableList().also {
-            if (ranged && alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
+            if (ranged && alvos.isNotEmpty()) {
+                if (Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
+                if (Manobra.APONTAR !in it) it.add(Manobra.APONTAR)
+            }
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,
@@ -405,6 +415,7 @@ class SagaCombatController(
                 rotulo = arma.nome + (pericia?.let { " (${it.nome})" } ?: " (sem perícia, usa DX)"),
                 nh = nh, danoExpr = danoExpr, tipo = CombatSession.tipoDano(danoExpr),
                 aDistancia = aDistancia, alcance = alcanceReal, precisao = arma.armaPrecisao ?: 0,
+                meioDano = if (aDistancia) (arma.armaMeioDanoMetros ?: 0) else 0,
                 temPericia = pericia != null
             ))
         }

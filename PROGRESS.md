@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 372 CONCLUÍDO — Testes de Sentidos na Rolagem (clicar PER abre diálogo Visão/Audição/Olfato-Paladar/Tato; vantagens/desvantagens automáticas com "notinha"; variante PraCego). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 372 — última entrada deste arquivo
+**Status Atual:** Lote 373 CONCLUÍDO — combate à distância: manobra Apontar (+Precisão), dano pela metade além de 1/2D, erro automático além do Máx (usa os stats do Lote 371). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 373 — última entrada deste arquivo
 **HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3037,6 +3037,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 373 — 14 de Junho de 2026
+**Saga combate à distância: Apontar + alcance (1/2D, Máx) — usa os stats do Lote 371 (branch GURPS-Saga)**
+- Manobra `APONTAR` no enum (MB p.364): `CombatSession.heroiApontar(alvoId)` mira numa arma à distância; o PRÓXIMO tiro ao mesmo alvo soma a `precisao` (Acc) da arma via modsExtra. Consome ao atacar; perde em qualquer outra manobra (limparApontar em mover/manobra/avaliar/ataque). Mutuamente exclusivo com Avaliar.
+- `AtaqueHeroi` ganhou `meioDano` (1/2D); `construirAtaques` preenche do `armaMeioDanoMetros`. `alcance` já era o Máx (Lote 371).
+- `heroiAtaca` à distância: (1) **Máx** — se `dist > alcance`, o tiro NÃO chega (erro automático, não rola, log "fora de alcance"); (2) **1/2D** — se `dist >= meioDano`, o dado básico cai pela metade antes de RD (MB p.270), com nota no log "└ além de 1/2D: dano pela metade".
+- Controller: `heroiApontar`; `atualizarEstado` oferece APONTAR (além de ATAQUE) quando a arma selecionada é à distância e há alvo vivo. ViewModel `sagaCombateApontar`. UI: manobra Apontar → `SubDialogoEscolherAlvo` (reuso) → mira.
+- Testes: Apontar soma Acc no tiro; além do Máx não acerta; além de 1/2D corta o dano. Build 2 variantes verde.
+- Ainda falta (próximo lote): engajamento por reach corpo-a-corpo (arma "C"/"1"/"2"), Preparar/Sacar arma (pronta vs guardada), Bulk no Avançar-e-Atacar à distância, Aparar E/D.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 372 — 14 de Junho de 2026

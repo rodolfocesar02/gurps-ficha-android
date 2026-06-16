@@ -167,6 +167,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var alvoDialogo by remember { mutableStateOf<Manobra?>(null) }
     var moverDialogo by remember { mutableStateOf(false) }
     var avaliarDialogo by remember { mutableStateOf(false) }
+    var apontarDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
 
     Card(
@@ -190,6 +191,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             ehAtaque && temAlvo -> alvoDialogo = m
                             m == Manobra.MOVER -> moverDialogo = true
                             m == Manobra.AVALIAR -> avaliarDialogo = true
+                            m == Manobra.APONTAR -> apontarDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             else -> viewModel.sagaCombateManobra(m)
                         }
@@ -238,6 +240,16 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
             onConfirmar = { alvoId -> viewModel.sagaCombateAvaliar(alvoId); avaliarDialogo = false },
             onFechar = { avaliarDialogo = false }
+        )
+    }
+
+    if (apontarDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Apontar (mirar) em quem?",
+            descricaoConfirmar = "Apontar no alvo",
+            alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
+            onConfirmar = { alvoId -> viewModel.sagaCombateApontar(alvoId); apontarDialogo = false },
+            onFechar = { apontarDialogo = false }
         )
     }
 

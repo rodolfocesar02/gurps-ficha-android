@@ -32,6 +32,10 @@ class CombatSession(
     private var avaliarStacks: Int = 0
     private fun limparAvaliar() { avaliarAlvoId = null; avaliarStacks = 0 }
 
+    // Apontar (Lote 373): mira numa arma à distância → +Precisão (Acc) no próximo tiro ao mesmo alvo.
+    private var apontarAlvoId: String? = null
+    private fun limparApontar() { apontarAlvoId = null }
+
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
     val inimigos: List<Combatente> get() = encounter.combatentes.filter { !it.ehHeroi }
     val inimigosVivos: List<Combatente> get() = inimigos.filter { it.vivo }
@@ -73,10 +77,20 @@ class CombatSession(
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
 
         val dist = encounter.distancia(alvo)
+        // Fora do alcance Máximo da arma à distância → o tiro não alcança (MB p.270). Não rola.
+        if (ataque.aDistancia && dist > ataque.alcance) {
+            limparApontar()
+            val txt = "🎯 ${alvo.nome} está fora de alcance (${dist}m > Máx ${ataque.alcance}m): o tiro não chega."
+            log += txt
+            return AtaqueResultado(false, false, 0, false, txt)
+        }
         val modsExtra: List<CombatActions.ComponenteMod> = buildList {
             if (ataque.aDistancia) {
                 val pen = penalidadeDistancia(dist)
                 if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
+                // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
+                if (apontarAlvoId == alvoId && ataque.precisao != 0)
+                    add(CombatActions.ComponenteMod("mira (Acc)", ataque.precisao))
             } else if (avaliarAlvoId == alvoId && avaliarStacks > 0) {
                 // Avaliar só vale corpo-a-corpo, contra o alvo avaliado, no ataque seguinte (MB p.365).
                 add(CombatActions.ComponenteMod("avaliar", avaliarStacks))
@@ -91,7 +105,10 @@ class CombatSession(
         val (defTipo, defValor) = if (ataque.aDistancia)
             CombatResolver.TipoDefesa.ESQUIVA to esquivaNpc(alvo) else melhorDefesaNpc(alvo)
         val defSoma = rolar3d6()
-        val danoBruto = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo)
+        // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
+        val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
+        val danoRolado = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo)
+        val danoBruto = if (meioDano) danoRolado / 2 else danoRolado
 
         val troca = CombatResolver.resolverTroca(
             defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
@@ -100,8 +117,9 @@ class CombatSession(
             local = local, rdLocal = alvo.stats?.rd ?: 0, randomFerimento = random
         )
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
+        if (meioDano && troca.dano != null) log += "  └ além de 1/2D (${dist}m ≥ ${ataque.meioDano}m): dano pela metade."
         val incap = !alvo.vivo
-        limparAvaliar() // o bônus de Avaliar é consumido neste ataque
+        limparAvaliar(); limparApontar() // bônus de Avaliar/Mira consumidos neste ataque
         verificarFim()
         return AtaqueResultado(
             acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO,
@@ -115,7 +133,7 @@ class CombatSession(
         if (manobra == Manobra.MUDAR_POSTURA && novaPostura != null && novaPostura in posturasAlcancaveis()) {
             heroi.postura = novaPostura
         }
-        limparAvaliar()
+        limparAvaliar(); limparApontar()
         val txt = if (manobra == Manobra.MUDAR_POSTURA) "🧍 Você muda para ${heroi.postura.rotulo}."
             else "🛡️ Você: ${manobra.rotulo}."
         log += txt
@@ -126,8 +144,19 @@ class CombatSession(
     fun heroiAvaliar(alvoId: String): String {
         if (avaliarAlvoId == alvoId) avaliarStacks = (avaliarStacks + 1).coerceAtMost(3)
         else { avaliarAlvoId = alvoId; avaliarStacks = 1 }
+        limparApontar()
         val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
         val txt = "👁️ Você avalia $nome (+$avaliarStacks no próximo golpe corpo-a-corpo)."
+        log += txt
+        return txt
+    }
+
+    /** Apontar (MB p.364): mira numa arma à distância → +Precisão (Acc) no próximo tiro ao alvo. */
+    fun heroiApontar(alvoId: String): String {
+        apontarAlvoId = alvoId
+        limparAvaliar()
+        val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
+        val txt = "🎯 Você mira em $nome (+Precisão da arma no próximo tiro)."
         log += txt
         return txt
     }
@@ -146,7 +175,7 @@ class CombatSession(
         val passo = metros.coerceIn(1, heroi.deslocamento.coerceAtLeast(1))
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
-        limparAvaliar()
+        limparAvaliar(); limparApontar()
         val nome = alvoId?.let { id -> inimigos.firstOrNull { it.id == id }?.nome } ?: "os inimigos"
         val txt = "🏃 Você ${if (afastar) "recua ${passo}m de" else "avança ${passo}m até"} $nome."
         log += txt
@@ -445,8 +474,9 @@ data class AtaqueHeroi(
     val danoExpr: String,        // expressão já resolvida por ST, ex.: "2d-1 pa+"
     val tipo: DanoTipo,
     val aDistancia: Boolean = false,
-    val alcance: Int = 1,
-    val precisao: Int = 0,
+    val alcance: Int = 1,        // à distância: alcance Máximo (m). Além disso, não acerta.
+    val precisao: Int = 0,       // Acc — bônus ao Apontar (MB p.364)
+    val meioDano: Int = 0,       // à distância: 1/2D (m). A partir daí, dano pela metade. 0 = sempre cheio.
     val temPericia: Boolean = true
 )
 
