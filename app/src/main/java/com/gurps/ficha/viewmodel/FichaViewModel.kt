@@ -135,6 +135,7 @@ class FichaViewModel(application: Application) : AndroidViewModel(application) {
         sagaDelegate.combate.heroiManobra(manobra, novaPostura)
     fun sagaCombateDefender(opcao: com.gurps.ficha.domain.combat.CombatResolver.OpcaoDefesa) = sagaDelegate.combate.escolherDefesa(opcao)
     fun sagaCombateSelecionarAtaque(indice: Int) = sagaDelegate.combate.selecionarAtaque(indice)
+    fun sagaCombateSacarArma(indice: Int) = sagaDelegate.combate.sacarArma(indice)
     fun sagaCombateEncerrar() = sagaDelegate.combate.encerrarManual()
 
     // Efeitos da Saga na ficha do herói (Lote 366 / B8) — mutam e SALVAM a ficha carregada.

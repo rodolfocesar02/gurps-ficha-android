@@ -29,7 +29,8 @@
 > - ✅ Lote 371 = EXTRA stats de arma → ficha (2026-06-14) — os JSONs já tinham reach/Acc/1-2D/Máx/CdT/Bulk/Recuo; o app passou a LER e GUARDAR (ArmaCatalogoItem + loader + Equipamento anulável + AtaqueHeroi). Análise confirmou: aditivo, sem migração, fichas antigas intactas. `check_armas.py` (0 erros). Sem mudar regra de combate ainda. Build 2 variantes verde.
 > - ✅ Lote 372 = EXTRA Testes de Sentidos na Rolagem (2026-06-14) — clicar PER abre diálogo Visão/Audição/Olfato-Paladar/Tato (regra MB p.358); `SentidoRules` automatiza vantagens/desvantagens (Visão/Audição Aguçada, Hiperespectral, Discriminatório, Duro de Ouvido, Cegueira/Surdez/Disosmia) com "notinha" do motivo; variante PraCego (botão rotulado). Sem mudar estrutura da ficha. Testes + build 2 variantes verde.
 > - ✅ Lote 373 = EXTRA combate à distância (2026-06-14) — manobra Apontar (+Precisão/Acc no próximo tiro), dano pela metade além de 1/2D, erro automático além do Máx (usa os stats do Lote 371). Testes + build 2 variantes verde.
-> - ➡️ Próximo: engajamento por reach corpo-a-corpo + Preparar/Sacar arma (pronta vs guardada) + Bulk no Avançar-e-Atacar + Aparar E/D. Depois: **validação no aparelho**.
+> - ✅ Lote 374 = EXTRA combate corpo-a-corpo (2026-06-14) — engajamento por reach (arma "C"/"1"/"2" define quem você atinge; longe demais = aproxime-se) + Sacar/Preparar arma (na mão vs guardada; Preparar gasta o turno, livre com Saque Rápido). Teste + build 2 variantes verde.
+> - ➡️ Próximo (último de combate): Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima/desbalanceada) — exigem persistir armaMagnitude/armaAparar na ficha. Depois: **validação no aparelho**.
 
 ---
 

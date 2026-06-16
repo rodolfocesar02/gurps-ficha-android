@@ -108,8 +108,34 @@ class SagaCombatController(
     private var ataques: List<AtaqueHeroi> = emptyList()
     private var ataqueSelecionado: Int = 0
 
+    /** Troca a arma EMPUNHADA sem custo (uso interno / arma já pronta). */
     fun selecionarAtaque(indice: Int) {
         if (indice in ataques.indices) { ataqueSelecionado = indice; atualizarEstado() }
+    }
+
+    /**
+     * Lote 374: saca/prepara a arma [indice] para a mão. Com Saque Rápido é ação livre; senão é a
+     * manobra Preparar e CONSOME o turno (MB p.366: para atacar, a arma precisa estar preparada).
+     */
+    fun sacarArma(indice: Int) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        if (indice !in ataques.indices || indice == ataqueSelecionado) return
+        ataqueSelecionado = indice
+        val nome = ataques[indice].rotulo.substringBefore(" (").trim()
+        if (temSaqueRapido(viewModel.personagem)) {
+            s.log += "🤚 Você saca $nome rapidamente (Saque Rápido — ação livre)."
+            publicarLog(); atualizarEstado() // não consome o turno
+        } else {
+            s.log += "🤚 Você saca $nome (Preparar — gasta o turno)."
+            depoisDaAcaoDoHeroi() // Preparar consome o turno
+        }
+    }
+
+    /** Saque Rápido (Fast-Draw) deixa sacar a arma como ação livre. */
+    private fun temSaqueRapido(p: Personagem): Boolean = p.periciasTotais.any {
+        CatalogFilters.normalizarBusca(it.nome).contains("saque rapido") ||
+            it.definicaoId.lowercase().contains("saque")
     }
 
     /** Notificado quando o combate encerra — o delegate dispara a narração do desfecho (B8). */
@@ -336,16 +362,15 @@ class SagaCombatController(
         }
         val ataqueSel = ataques.getOrNull(ataqueSelecionado)
         val ranged = ataqueSel?.aDistancia == true
-        // Alvos: à distância = qualquer inimigo vivo; corpo-a-corpo = só adjacentes.
+        val reachMelee = ataqueSel?.alcance ?: 1 // "C"/"1"/"2" já convertido em metros
+        // Alvos: à distância = qualquer inimigo vivo; corpo-a-corpo = dentro do ALCANCE da arma.
         val alvos = if (!vezHeroi) emptyList()
             else if (ranged) combs.filter { !it.ehHeroi && it.vivo }
-            else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= 1 }
-        // Manobras: à distância pode Atacar mesmo sem inimigo adjacente, e pode Apontar (mira).
+            else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= reachMelee }
+        // Manobras: Atacar fica disponível se há alvo no alcance (cobre reach > 1); à distância também Apontar.
         val manobras = if (!vezHeroi) emptyList() else s.manobrasHeroi().toMutableList().also {
-            if (ranged && alvos.isNotEmpty()) {
-                if (Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
-                if (Manobra.APONTAR !in it) it.add(Manobra.APONTAR)
-            }
+            if (alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
+            if (ranged && alvos.isNotEmpty() && Manobra.APONTAR !in it) it.add(Manobra.APONTAR)
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

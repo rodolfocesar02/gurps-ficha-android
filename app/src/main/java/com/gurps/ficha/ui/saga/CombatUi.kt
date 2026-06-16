@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gurps.ficha.domain.combat.*
@@ -369,11 +370,12 @@ private fun SubDialogoPostura(
 private fun SeletorDeArma(viewModel: FichaViewModel, estado: com.gurps.ficha.viewmodel.delegates.CombatUiState) {
     val atual = estado.ataqueAtual ?: return
     var aberto by remember { mutableStateOf(false) }
+    val alcanceTxt = if (atual.aDistancia) " · à distância (Máx ${atual.alcance}m)" else " · corpo-a-corpo (alcance ${atual.alcance}m)"
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = RoundedCornerShape(8.dp),
         modifier = Modifier.fillMaxWidth().semantics {
-            contentDescription = "Arma empunhada: ${atual.rotulo}, NH ${atual.nh}, dano ${atual.danoExpr}. Toque para trocar."
+            contentDescription = "Arma empunhada: ${atual.rotulo}, NH ${atual.nh}, dano ${atual.danoExpr}. Toque em Sacar para trocar de arma."
         }
     ) {
         Column(Modifier.padding(8.dp)) {
@@ -381,22 +383,28 @@ private fun SeletorDeArma(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                 Column(Modifier.weight(1f)) {
                     Text("Empunhando: ${atual.rotulo}", fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodyMedium)
                     Text(
-                        "NH ${atual.nh} · ${atual.danoExpr} ${atual.tipo.rotulo}" + if (atual.aDistancia) " · à distância" else " · corpo-a-corpo",
+                        "NH ${atual.nh} · ${atual.danoExpr} ${atual.tipo.rotulo}$alcanceTxt",
                         style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
                 if (estado.ataques.size > 1) {
                     TextButton(onClick = { aberto = true },
-                        modifier = Modifier.semantics { contentDescription = "Trocar de arma" }) { Text("Trocar") }
+                        modifier = Modifier.semantics { contentDescription = "Sacar outra arma" }) { Text("Sacar") }
                 }
             }
             if (aberto) {
+                Text(
+                    "Sacar outra arma é a manobra Preparar (gasta o turno) — livre com Saque Rápido.",
+                    style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 estado.ataques.forEachIndexed { i, atk ->
+                    val empunhada = i == estado.ataqueSelecionado
                     OpcaoRadio(
-                        selecionado = i == estado.ataqueSelecionado,
-                        rotulo = "${atk.rotulo} — NH ${atk.nh}, ${atk.danoExpr} ${atk.tipo.rotulo}",
-                        descricao = "Empunhar ${atk.rotulo}",
-                        onClick = { viewModel.sagaCombateSelecionarAtaque(i); aberto = false }
+                        selecionado = empunhada,
+                        rotulo = "${atk.rotulo} — NH ${atk.nh}, ${atk.danoExpr} ${atk.tipo.rotulo}" + if (empunhada) " (na mão)" else "",
+                        descricao = if (empunhada) "${atk.rotulo}, já empunhada" else "Sacar ${atk.rotulo}",
+                        onClick = { if (!empunhada) viewModel.sagaCombateSacarArma(i); aberto = false }
                     )
                 }
             }

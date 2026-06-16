@@ -178,6 +178,21 @@ class CombatSessionTest {
     }
 
     @Test
+    fun `corpo-a-corpo respeita o alcance da arma (reach)`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 2), seed = 1L) // 2m
+        val s = CombatSession(enc, perfilHeroi(), Random(2))
+        // Espada (reach 1) não alcança um alvo a 2m.
+        val r1 = s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertFalse(r1.acertou)
+        assertTrue(s.log.last().contains("longe demais"))
+        // Lança (reach 2) alcança a 2m e resolve o ataque.
+        val lanca = AtaqueHeroi("Lança", nh = 14, danoExpr = "1d+2", tipo = DanoTipo.PERF, alcance = 2)
+        s.heroiAtaca(lanca, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("a lança deve alcançar e resolver", s.log.any { it.contains("Lança") })
+    }
+
+    @Test
     fun `tiro alem do maximo nao alcanca`() {
         val g = goblin()
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 200), seed = 1L)

@@ -77,10 +77,13 @@ class CombatSession(
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
 
         val dist = encounter.distancia(alvo)
-        // Fora do alcance Máximo da arma à distância → o tiro não alcança (MB p.270). Não rola.
-        if (ataque.aDistancia && dist > ataque.alcance) {
+        // Fora do alcance da arma — Máx à distância OU reach corpo-a-corpo ("C"/"1"/"2") — não alcança (MB p.270).
+        if (dist > ataque.alcance) {
             limparApontar()
-            val txt = "🎯 ${alvo.nome} está fora de alcance (${dist}m > Máx ${ataque.alcance}m): o tiro não chega."
+            val txt = if (ataque.aDistancia)
+                "🎯 ${alvo.nome} está fora de alcance (${dist}m > Máx ${ataque.alcance}m): o tiro não chega."
+            else
+                "🗡️ ${alvo.nome} está longe demais (${dist}m > alcance ${ataque.alcance}m da arma) — aproxime-se."
             log += txt
             return AtaqueResultado(false, false, 0, false, txt)
         }

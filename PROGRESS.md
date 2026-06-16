@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 373 CONCLUÍDO — combate à distância: manobra Apontar (+Precisão), dano pela metade além de 1/2D, erro automático além do Máx (usa os stats do Lote 371). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 373 — última entrada deste arquivo
+**Status Atual:** Lote 374 CONCLUÍDO — combate corpo-a-corpo: engajamento por reach (arma "C"/"1"/"2") + Sacar/Preparar arma (na mão vs guardada; Preparar gasta o turno, livre com Saque Rápido). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 374 — última entrada deste arquivo
 **HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 374 — 14 de Junho de 2026
+**Saga combate corpo-a-corpo: engajamento por reach + Sacar/Preparar arma (branch GURPS-Saga)**
+- ENGAJAMENTO POR REACH: `heroiAtaca` agora bloqueia ataque (à distância OU corpo-a-corpo) se `dist > ataque.alcance` ("longe demais — aproxime-se"). O `alcance` do corpo-a-corpo vem do reach da arma ("C"/"1"/"2" convertido em metros no Lote 371). Controller: `alvos` corpo-a-corpo = inimigos com `dist <= reachMelee` (antes era fixo <=1); ATAQUE liberado quando há alvo no alcance (cobre lança reach 2).
+- SACAR/PREPARAR (arma pronta vs guardada, MB p.366 "para atacar, a arma precisa estar preparada"): `SagaCombatController.sacarArma(indice)` — com Saque Rápido (perícia) é AÇÃO LIVRE (troca na hora); senão é a manobra Preparar e CONSOME o turno. `temSaqueRapido` detecta a perícia. A arma EMPUNHADA = `ataqueSelecionado` (default índice 0 ao iniciar). ViewModel `sagaCombateSacarArma`.
+- UI: SeletorDeArma virou "Sacar" (não "Trocar"): mostra a arma na mão + alcance/Máx; ao abrir, avisa "Sacar outra arma é Preparar (gasta o turno) — livre com Saque Rápido"; a arma já empunhada aparece "(na mão)".
+- Teste: corpo-a-corpo respeita reach (espada reach 1 não alcança a 2m; lança reach 2 alcança). Build 2 variantes verde.
+- Ainda falta (último de combate): Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima/desbalanceada) — precisam persistir armaMagnitude/armaAparar estruturado na ficha.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 373 — 14 de Junho de 2026
