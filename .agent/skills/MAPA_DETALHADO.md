@@ -610,23 +610,25 @@ Tudo em `domain/combat/` é Kotlin PURO (sem Android, determinístico por seed) 
 ### 32.3 Motor de combate puro (`domain/combat/`)
 - **`CombatModels.kt`** — `Postura`/`Condicao`/`Manobra`, `NpcStats` (com `armaNh`), `Combatente` (PV/PF/postura/condições mutáveis; `vivo`/`caido`).
 - **`CombatEncounter.kt`** — Iniciativa (Vel.Básica→DX→seed), `proximoTurno`, `manobrasLegais`, `estadoResumo`, distância MUTÁVEL (`moverEmRelacaoAoHeroi`/`definirDistancia`).
-- **`CombatActions.kt`** — `calcularNH` (manobra/postura/local/visibilidade/`modsExtra`) + `resolverAtaque` (3d6) + `avaliarRolagem`. **Mover e Atacar: CaC −4+teto 9; à distância −2** (MB p.366).
+- **`CombatActions.kt`** — `calcularNH` (manobra/postura/local/visibilidade/`modsExtra`/`magnitudeArma`) + `resolverAtaque` (3d6) + `avaliarRolagem`. **Mover e Atacar: CaC −4+teto 9; à distância −2 OU a Magnitude/Bulk, o pior** (MB p.366/271, Lote 375).
 - **`ModificadoresCombate.kt`** — `LocalAtaque` (penalidades p/ acertar, MB p.398), `Visibilidade`, `AtaqueTotalModo`.
 - **`HitLocationRules.kt`** — Dano localizado (paridade Mesa Virtual: crânio×4, vitais×3 perf, limites de membro).
 - **`InjuryRules.kt`** — Choque, ferimento grave, cheques de morte, KO, recuperação de atordoamento, `ferir(Combatente)`.
 - **`NpcCombatBrain.kt`** — Intenção tática do NPC (fuga por moral, arqueiro mantém distância, bruto avança).
-- **`CombatResolver.kt`** — Modificadores de defesa (recuo/Defesa Total/apara extra/bloqueio 1×) + `resolverTroca` (ataque→defesa→dano→ferimento; crítico anula defesa).
-- **`CombatSession.kt`** — **Orquestra o encontro:** `heroiAtaca(AtaqueHeroi,…)`, `npcIntencao`/`npcResolve` (defesa interativa), `heroiMove`/`heroiManobra`/`heroiAvaliar`, `narrarTroca` (log evocativo + colchete técnico), `tipoDano`/`rolarDano` (mapeia `pa*`→`pi*`), `penalidadeDistancia` (MB p.550). Tipos: `HeroiPerfilCombate` (defesa), `AtaqueHeroi` (arma escolhível), `ResultadoCombate`.
+- **`CombatResolver.kt`** — Modificadores de defesa (recuo/Defesa Total/apara extra/bloqueio 1×; **esgrima → apara extra −2**, param `esgrima`, Lote 375) + `resolverTroca` (ataque→defesa→dano→ferimento; crítico anula defesa).
+- **`CombatSession.kt`** — **Orquestra o encontro:** `heroiAtaca(AtaqueHeroi,…)`, `npcIntencao`/`npcResolve` (defesa interativa), `heroiMove`/`heroiManobra`/`heroiAvaliar`, **`heroiApontar`** (mira → +Acc, Lote 373), `narrarTroca` (log evocativo + colchete técnico), `tipoDano`/`rolarDano` (`pa*`→`pi*`), `penalidadeDistancia` (MB p.550), **`parseAparar`** (E/D/Não, Lote 375). Regras por ataque: **reach/Máx** (`dist > alcance` → não alcança), **1/2D** (dano pela metade), **Bulk** (Avançar-e-Atacar), **Apontar/Acc**, **Aparar E/D** (`opcoesDefesaHeroi(armaPronta)` tira aparar de arma à distância/Não/desbalanceada-já-usada via flag `atacouDesbalanceada`). Tipos: `HeroiPerfilCombate` (defesa), `AtaqueHeroi` (arma escolhível: nh/dano/tipo/alcance/precisao/meioDano/magnitude/apararTipo), `ApararTipo`, `ResultadoCombate`.
 - **`model/BestiarioModels.kt`** + **`domain/loaders/BestiarioCatalogo.kt`** — Catálogo de criaturas (`assets/bestiario.v1.json`) → `Combatente` (`novoCombatente`). Loader com cache. ⚠️ Gson não roda init de data class → `Bestiario.get()` busca direto (sem mapa cacheado).
 
 ### 32.4 UI e ponte de combate
-- **`viewmodel/delegates/SagaCombatController.kt`** — Embrulha `CombatSession` com estado Compose (`CombatUiState`/`CombatenteUi`/`FaixaDistancia`/`DefesaPendenteUi`) + corrotinas + ponte de defesa suspensa. `construirAtaques` lê as armas da ficha (corpo-a-corpo + fogo/distância, perícia casada por grupo/nome, dano por ST, tipo correto). Devolve PV/saque/XP à ficha (`sagaConcederXp`/`sagaDefinirPvAtual`/`sagaAdicionarItem` no ViewModel).
-- **`ui/saga/CombatUi.kt`** — Visual aprovado: `CombatTracker` (faixas Engajado→Extremo, barra de PV, postura/condições, avatar de inicial colorida = **placeholder do retrato real**), `SeletorDeArma`, `ManeuverCards` + sub-diálogos (alvo/local, Mover dirigido, Avaliar, Postura), `DefendaSeCard`. TalkBack em tudo.
+- **`viewmodel/delegates/SagaCombatController.kt`** — Embrulha `CombatSession` com estado Compose (`CombatUiState`/`CombatenteUi`/`FaixaDistancia`/`DefesaPendenteUi`) + corrotinas + ponte de defesa suspensa. `construirAtaques` lê as armas da ficha (corpo-a-corpo + fogo/distância, perícia casada por grupo/nome, dano por ST, tipo correto, reach/Acc/1-2D/Máx/Bulk/aparar). `heroiApontar`; **`sacarArma(indice)`** (Saque Rápido = livre, senão Preparar gasta o turno, Lote 374); alvos corpo-a-corpo por reach. Devolve PV/saque/XP à ficha (`sagaConcederXp`/`sagaDefinirPvAtual`/`sagaAdicionarItem` no ViewModel).
+- **`ui/saga/CombatUi.kt`** — Visual aprovado: `CombatTracker` (faixas Engajado→Extremo, barra de PV, postura/condições, avatar de inicial colorida = **placeholder do retrato real**), `SeletorDeArma` (mostra arma na mão + alcance; "Sacar" = Preparar), `ManeuverCards` + sub-diálogos (alvo/local, Mover dirigido, Avaliar, **Apontar**, Postura), `DefendaSeCard`. TalkBack em tudo.
 
-### 32.5 Pendências
-- **Apontar (+Precisão)** e **Preparar/Sacar arma** (arma pronta vs guardada) — faltam; precisam do `Acc`/alcance da arma no catálogo (`ArmaCatalogoItem`/`Equipamento` não carregam isso hoje).
+### 32.5 Regras de arma no combate — COMPLETAS (Lotes 371-375)
+Stats de arma vêm do catálogo → ficha (`Equipamento.arma*`) → `AtaqueHeroi`: **reach** ("C"/"1"/"2", engajamento), **Acc + Apontar**, **1/2D** (meio dano), **Máx** (não alcança além), **Mover-e-Atacar** (CaC −4+teto / à distância −2 ou **Bulk**), **Aparar E/D** (esgrima/desbalanceada/Não/à distância), **Sacar/Preparar** (arma pronta vs guardada; livre c/ Saque Rápido). Sentidos na Rolagem: §5 `SentidoRules` + §20 `DialogoSentidos`.
+
+### 32.6 Pendências
 - **Validação no aparelho** do combate ponta a ponta (chaves de IA reais) — pendente.
-- **Retratos reais de NPC/cena** (Mestre Pintor em tempo real) — registro futuro (Lotes B7/E2 do plano).
+- **Futuro:** CdT/Recuo/rajada (RoF/Rcl), dual-wield, Ataque Total à distância (+1). **Retratos reais de NPC/cena** (Mestre Pintor em tempo real) — registro Lotes B7/E2 do plano. Fases C/D/E do plano Saga.
 
 ---
 

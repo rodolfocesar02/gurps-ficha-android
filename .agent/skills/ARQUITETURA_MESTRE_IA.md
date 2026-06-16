@@ -300,6 +300,6 @@ Tudo determinístico (RNG por seed injetável), sem Android. Encadeado pela `Com
 | `ui/saga/CombatUi.kt` | UI aprovada no mockup: CombatTracker (faixas/PV/postura, inicial colorida = placeholder do retrato real — ver registro B7/E2), SeletorDeArma, ManeuverCards + sub-diálogos (alvo/local, Mover, Avaliar, Postura), DefendaSeCard. TalkBack em tudo. |
 
 ### 10.4 Estado e pendências
-- **FASE B (combate) COMPLETA + polimento 367-370.** Falta do pedido do usuário: **Apontar (+Precisão)** e **Preparar/Sacar arma** (arma pronta vs guardada) — exigem puxar o `Acc`/alcance da arma do catálogo (`ArmaCatalogoItem`/`Equipamento` ainda não carregam isso).
+- **FASE B (combate) COMPLETA + polimento 367-375.** **Regras de arma no combate COMPLETAS:** stats do catálogo → ficha (`Equipamento.arma*`, Lote 371) → `AtaqueHeroi`; reach/engajamento (374), Apontar/Acc + 1/2D + Máx (373), Mover-e-Atacar com Bulk (375), Aparar E/D (375), Sacar/Preparar arma (374). **Testes de Sentidos** na Rolagem (`SentidoRules`/`DialogoSentidos`, Lote 372).
 - **Validação no aparelho** do combate ponta a ponta segue pendente (chaves de IA reais).
-- **Retratos reais de NPC/cena** gerados pelo Mestre Pintor em tempo real = registro futuro (Lotes B7/E2 do plano).
+- **Futuro:** CdT/Recuo/rajada (RoF/Rcl), dual-wield, Ataque Total à distância (+1). **Retratos reais de NPC/cena** gerados pelo Mestre Pintor em tempo real = registro futuro (Lotes B7/E2 do plano). Fases C/D/E do plano.

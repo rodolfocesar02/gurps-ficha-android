@@ -3,7 +3,7 @@
 **Última Atualização:** 14 de Junho de 2026
 **Status Atual:** Lote 375 CONCLUÍDO — fim das regras de arma no combate: Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima −2 extra / desbalanceada não apara após atacar / Não / à distância). Validação no aparelho em andamento.
 **Último Lote Registrado:** Lote 375 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `de7f266` (Lote 375). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3039,7 +3039,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 375 — 14 de Junho de 2026
+### Lote 375 — 14 de Junho de 2026  ·  commit `de7f266`
 **Saga combate: Bulk no Avançar-e-Atacar + Aparar E/D — fecha as regras de arma (branch GURPS-Saga)**
 - PLUMBING: `Equipamento.armaAparar` (novo, anulável) + `adicionarEquipamentoArma` copia `arma.aparar`. `ArmaCatalogoItem.aparar` já existia. Sem migração (mesmo padrão dos campos do Lote 371).
 - BULK (Magnitude) no Avançar-e-Atacar à distância (MB p.366/271): `CombatActions.calcularNH(magnitudeArma=...)` aplica "−2 OU a Magnitude, o pior". `AtaqueHeroi.magnitude` (do `armaMagnitude`); `heroiAtaca` passa a magnitude quando à distância.
@@ -3048,7 +3048,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **REGRAS DE ARMA NO COMBATE COMPLETAS** (reach, Apontar/Acc, 1/2D, Máx, Bulk, Aparar E/D, Sacar/Preparar). Resta só validação no aparelho + (futuro) RoF/Recuo/rajada e dual-wield.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 374 — 14 de Junho de 2026
+### Lote 374 — 14 de Junho de 2026  ·  commit `41a21e1`
 **Saga combate corpo-a-corpo: engajamento por reach + Sacar/Preparar arma (branch GURPS-Saga)**
 - ENGAJAMENTO POR REACH: `heroiAtaca` agora bloqueia ataque (à distância OU corpo-a-corpo) se `dist > ataque.alcance` ("longe demais — aproxime-se"). O `alcance` do corpo-a-corpo vem do reach da arma ("C"/"1"/"2" convertido em metros no Lote 371). Controller: `alvos` corpo-a-corpo = inimigos com `dist <= reachMelee` (antes era fixo <=1); ATAQUE liberado quando há alvo no alcance (cobre lança reach 2).
 - SACAR/PREPARAR (arma pronta vs guardada, MB p.366 "para atacar, a arma precisa estar preparada"): `SagaCombatController.sacarArma(indice)` — com Saque Rápido (perícia) é AÇÃO LIVRE (troca na hora); senão é a manobra Preparar e CONSOME o turno. `temSaqueRapido` detecta a perícia. A arma EMPUNHADA = `ataqueSelecionado` (default índice 0 ao iniciar). ViewModel `sagaCombateSacarArma`.
@@ -3057,7 +3057,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Ainda falta (último de combate): Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima/desbalanceada) — precisam persistir armaMagnitude/armaAparar estruturado na ficha.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 373 — 14 de Junho de 2026
+### Lote 373 — 14 de Junho de 2026  ·  commit `91e76d3`
 **Saga combate à distância: Apontar + alcance (1/2D, Máx) — usa os stats do Lote 371 (branch GURPS-Saga)**
 - Manobra `APONTAR` no enum (MB p.364): `CombatSession.heroiApontar(alvoId)` mira numa arma à distância; o PRÓXIMO tiro ao mesmo alvo soma a `precisao` (Acc) da arma via modsExtra. Consome ao atacar; perde em qualquer outra manobra (limparApontar em mover/manobra/avaliar/ataque). Mutuamente exclusivo com Avaliar.
 - `AtaqueHeroi` ganhou `meioDano` (1/2D); `construirAtaques` preenche do `armaMeioDanoMetros`. `alcance` já era o Máx (Lote 371).
@@ -3067,7 +3067,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Ainda falta (próximo lote): engajamento por reach corpo-a-corpo (arma "C"/"1"/"2"), Preparar/Sacar arma (pronta vs guardada), Bulk no Avançar-e-Atacar à distância, Aparar E/D.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 372 — 14 de Junho de 2026
+### Lote 372 — 14 de Junho de 2026  ·  commit `988ab54`
 **Rolagem: Testes de Sentidos (Per) + automação de vantagens/desvantagens (branch GURPS-Saga)**
 - PEDIDO do usuário: clicar "PER" deveria abrir um diálogo com os SENTIDOS (Visão/Audição/Olfato-Paladar), pois são testes de regra (MB p.358); + mapear e AUTOMATIZAR as vantagens/desvantagens que dão bônus/redutor; + "notinha" do motivo; + versão PraCego.
 - Estudo no Códex (chunks p359): todo teste de sentido rola vs PERCEPÇÃO somando o "Sentido Aguçado" correspondente.
@@ -3077,7 +3077,7 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - SEM mudança de estrutura de ficha (só LÊ vantagens/desvantagens existentes). Build 2 variantes verde.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-### Lote 371 — 14 de Junho de 2026
+### Lote 371 — 14 de Junho de 2026  ·  commit `82c1856`
 **Saga: stats de arma do catálogo → ficha → combate (plumbing, branch GURPS-Saga)**
 - CONTEXTO: combate GURPS depende de stats que os JSONs JÁ TINHAM mas o app DESCARTAVA. Análise de risco confirmou: aditivo, sem migração Room (Equipamento mora no Personagem.toJson()→FichaEntity.json TEXT), construção só por args nomeados, Gson preenche ausentes com null/0/false → ficha antiga carrega intacta.
 - `ArmaCatalogoItem`: +campos alcanceCorpoACorpo, duasMaos, precisao(Acc), meioDanoMetros(1/2D), maximoMetros(Máx), alcanceMultStRaw(×ST arcos), cadenciaTiro(CdT), tirosRaw, magnitude(Bulk), recuo(Rcl). Todos com default → seguro.
