@@ -722,7 +722,8 @@ data class Equipamento(
     var armaCadenciaTiro: Int? = null,          // CdT/RoF
     var armaTirosRaw: String? = null,           // "6(3)"
     var armaMagnitude: Int? = null,             // Bulk
-    var armaRecuo: Int? = null                  // Rcl
+    var armaRecuo: Int? = null,                 // Rcl
+    var armaAparar: String? = null              // coluna Aparar: "0", "-1", "0D" (desbal.), "0E"/"F" (esgrima), "Não"
 ) {
     fun danoCalculadoComSt(personagem: Personagem, periciaId: String? = null): String? {
         val raw = armaDanoRaw?.trim().orEmpty()

@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 374 CONCLUÍDO — combate corpo-a-corpo: engajamento por reach (arma "C"/"1"/"2") + Sacar/Preparar arma (na mão vs guardada; Preparar gasta o turno, livre com Saque Rápido). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 374 — última entrada deste arquivo
+**Status Atual:** Lote 375 CONCLUÍDO — fim das regras de arma no combate: Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima −2 extra / desbalanceada não apara após atacar / Não / à distância). Validação no aparelho em andamento.
+**Último Lote Registrado:** Lote 375 — última entrada deste arquivo
 **HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `41996c4` (Lote 370). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 375 — 14 de Junho de 2026
+**Saga combate: Bulk no Avançar-e-Atacar + Aparar E/D — fecha as regras de arma (branch GURPS-Saga)**
+- PLUMBING: `Equipamento.armaAparar` (novo, anulável) + `adicionarEquipamentoArma` copia `arma.aparar`. `ArmaCatalogoItem.aparar` já existia. Sem migração (mesmo padrão dos campos do Lote 371).
+- BULK (Magnitude) no Avançar-e-Atacar à distância (MB p.366/271): `CombatActions.calcularNH(magnitudeArma=...)` aplica "−2 OU a Magnitude, o pior". `AtaqueHeroi.magnitude` (do `armaMagnitude`); `heroiAtaca` passa a magnitude quando à distância.
+- APARAR E/D (MB p.270/404): `ApararTipo` (NORMAL/ESGRIMA/DESBALANCEADA/NAO) + `CombatSession.parseAparar("0D"/"0E"/"F"/"Não"/"-1")`. `AtaqueHeroi.apararTipo`. `opcoesDefesaHeroi(armaPronta)` agora: SEM Aparar se arma à distância, "Não", ou desbalanceada já usada para atacar neste turno (flag `atacouDesbalanceada`, zerada no início de cada ação via `inicioAcaoHeroi`); ESGRIMA → apara extra −2 (`CombatResolver.PENALIDADE_APARA_ESGRIMA`, novo param `esgrima` em opcoesDefesa/valorDefesaFinal). Controller passa a arma empunhada (`ataqueSelecionado`) ao montar o card "Defenda-se!".
+- Testes: Bulk pior-de (CombatActionsTest); esgrima −2 (CombatResolverTest); parseAparar, Aparar bloqueado à distância, desbalanceada não apara após atacar (CombatSessionTest). Build 2 variantes verde.
+- **REGRAS DE ARMA NO COMBATE COMPLETAS** (reach, Apontar/Acc, 1/2D, Máx, Bulk, Aparar E/D, Sacar/Preparar). Resta só validação no aparelho + (futuro) RoF/Recuo/rajada e dual-wield.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 374 — 14 de Junho de 2026

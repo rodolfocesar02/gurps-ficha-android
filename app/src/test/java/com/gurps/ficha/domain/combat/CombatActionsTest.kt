@@ -40,6 +40,14 @@ class CombatActionsTest {
     }
 
     @Test
+    fun `mover e atacar a distancia usa o pior entre -2 e a magnitude (Bulk)`() {
+        // MB p.366/271: à distância a penalidade é -2 OU a Magnitude (Bulk), o que for pior.
+        assertEquals(12, CombatActions.calcularNH(14, Manobra.MOVER_E_ATACAR, aDistancia = true, magnitudeArma = -1).nhEfetivo) // -2 é pior
+        assertEquals(8, CombatActions.calcularNH(14, Manobra.MOVER_E_ATACAR, aDistancia = true, magnitudeArma = -6).nhEfetivo)  // -6 é pior
+        assertEquals(12, CombatActions.calcularNH(14, Manobra.MOVER_E_ATACAR, aDistancia = true).nhEfetivo)                      // sem Bulk → -2
+    }
+
+    @Test
     fun `teto do mover-e-atacar corpo-a-corpo marca a flag`() {
         // CaC: 14-4=10 -> teto 9 (MB p.366)
         val c = CombatActions.calcularNH(14, Manobra.MOVER_E_ATACAR)

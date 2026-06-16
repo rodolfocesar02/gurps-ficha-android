@@ -22,6 +22,9 @@ class CombatResolverTest {
         assertEquals(7, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, aparasJaFeitas = 1).first)
         // 3ª apara: −8.
         assertEquals(3, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, aparasJaFeitas = 2).first)
+        // Arma de esgrima: apara extra −2 em vez de −4 (MB p.404).
+        assertEquals(9, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, aparasJaFeitas = 1, esgrima = true).first)
+        assertEquals(7, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, aparasJaFeitas = 2, esgrima = true).first)
     }
 
     @Test

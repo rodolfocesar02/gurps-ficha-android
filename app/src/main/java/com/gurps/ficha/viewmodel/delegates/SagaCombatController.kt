@@ -315,7 +315,8 @@ class SagaCombatController(
         val s = sessao ?: return
         val intencao = s.npcIntencao(npcId)
         if (s.intencaoAtacaHeroi(intencao)) {
-            val opcoes = s.opcoesDefesaHeroi()
+            // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
+            val opcoes = s.opcoesDefesaHeroi(armaPronta = ataques.getOrNull(ataqueSelecionado))
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = s.inimigos.first { it.id == npcId }.nome
             defesaPendente = DefesaPendenteUi(
@@ -441,6 +442,8 @@ class SagaCombatController(
                 nh = nh, danoExpr = danoExpr, tipo = CombatSession.tipoDano(danoExpr),
                 aDistancia = aDistancia, alcance = alcanceReal, precisao = arma.armaPrecisao ?: 0,
                 meioDano = if (aDistancia) (arma.armaMeioDanoMetros ?: 0) else 0,
+                magnitude = arma.armaMagnitude ?: 0,
+                apararTipo = CombatSession.parseAparar(arma.armaAparar).second,
                 temPericia = pericia != null
             ))
         }

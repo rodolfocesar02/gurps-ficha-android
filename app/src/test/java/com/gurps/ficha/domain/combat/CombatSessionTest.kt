@@ -178,6 +178,39 @@ class CombatSessionTest {
     }
 
     @Test
+    fun `parseAparar interpreta os codigos da coluna`() {
+        assertEquals(ApararTipo.DESBALANCEADA, CombatSession.parseAparar("0D").second)
+        assertEquals(ApararTipo.ESGRIMA, CombatSession.parseAparar("0E").second)
+        assertEquals(ApararTipo.ESGRIMA, CombatSession.parseAparar("F").second)
+        assertEquals(ApararTipo.NAO, CombatSession.parseAparar("Não").second)
+        assertEquals(-1, CombatSession.parseAparar("-1").first)
+        assertEquals(ApararTipo.NORMAL, CombatSession.parseAparar("-1").second)
+    }
+
+    @Test
+    fun `aparar indisponivel com arma a distancia`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        val espada = AtaqueHeroi("Espada", nh = 14, danoExpr = "2d", tipo = DanoTipo.CORT)
+        assertTrue(s.opcoesDefesaHeroi(armaPronta = espada).any { it.tipo == CombatResolver.TipoDefesa.APARA })
+        val rev = AtaqueHeroi("Revólver", nh = 14, danoExpr = "2d", tipo = DanoTipo.PI, aDistancia = true, alcance = 100)
+        assertFalse("não se apara com arma à distância", s.opcoesDefesaHeroi(armaPronta = rev).any { it.tipo == CombatResolver.TipoDefesa.APARA })
+    }
+
+    @Test
+    fun `arma desbalanceada nao apara depois de atacar`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        val machado = AtaqueHeroi("Machado", nh = 14, danoExpr = "2d", tipo = DanoTipo.CORT, apararTipo = ApararTipo.DESBALANCEADA)
+        assertTrue(s.opcoesDefesaHeroi(armaPronta = machado).any { it.tipo == CombatResolver.TipoDefesa.APARA })
+        s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertFalse("desbalanceada não apara após atacar no mesmo turno",
+            s.opcoesDefesaHeroi(armaPronta = machado).any { it.tipo == CombatResolver.TipoDefesa.APARA })
+    }
+
+    @Test
     fun `corpo-a-corpo respeita o alcance da arma (reach)`() {
         val g = goblin()
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 2), seed = 1L) // 2m

@@ -36,6 +36,11 @@ class CombatSession(
     private var apontarAlvoId: String? = null
     private fun limparApontar() { apontarAlvoId = null }
 
+    // Aparar desbalanceada (Lote 375): atacou com arma "D" → não pode aparar com ela até o próximo turno (MB p.270).
+    private var atacouDesbalanceada = false
+    /** Início de uma ação do herói: zera o "atacou desbalanceada" (passou o turno em que não podia aparar). */
+    private fun inicioAcaoHeroi() { atacouDesbalanceada = false }
+
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
     val inimigos: List<Combatente> get() = encounter.combatentes.filter { !it.ehHeroi }
     val inimigosVivos: List<Combatente> get() = inimigos.filter { it.vivo }
@@ -73,6 +78,7 @@ class CombatSession(
         local: LocalAtaque = LocalAtaque.TORSO,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO
     ): AtaqueResultado {
+        inicioAcaoHeroi()
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
 
@@ -102,7 +108,8 @@ class CombatSession(
         val atk = CombatActions.resolverAtaque(
             nhBaseArma = ataque.nh, manobra = manobra, postura = heroi.postura,
             local = local, visibilidade = Visibilidade.NORMAL, ataqueTotalModo = ataqueTotalModo,
-            aDistancia = ataque.aDistancia, modsExtra = modsExtra, random = random
+            aDistancia = ataque.aDistancia, modsExtra = modsExtra,
+            magnitudeArma = if (ataque.aDistancia) ataque.magnitude else null, random = random
         )
         // Contra ataque à distância o alvo só Esquiva; corpo-a-corpo usa a melhor defesa.
         val (defTipo, defValor) = if (ataque.aDistancia)
@@ -123,6 +130,8 @@ class CombatSession(
         if (meioDano && troca.dano != null) log += "  └ além de 1/2D (${dist}m ≥ ${ataque.meioDano}m): dano pela metade."
         val incap = !alvo.vivo
         limparAvaliar(); limparApontar() // bônus de Avaliar/Mira consumidos neste ataque
+        // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
+        if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
         verificarFim()
         return AtaqueResultado(
             acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO,
@@ -133,6 +142,7 @@ class CombatSession(
 
     /** Manobra não-ofensiva do herói (Defesa Total, Concentrar, Não Fazer Nada…) e Mudar de Postura. */
     fun heroiManobra(manobra: Manobra, novaPostura: Postura? = null): String {
+        inicioAcaoHeroi()
         if (manobra == Manobra.MUDAR_POSTURA && novaPostura != null && novaPostura in posturasAlcancaveis()) {
             heroi.postura = novaPostura
         }
@@ -145,6 +155,7 @@ class CombatSession(
 
     /** Avaliar (MB p.365): +1 cumulativo (máx +3) no próximo ataque corpo-a-corpo ao alvo. */
     fun heroiAvaliar(alvoId: String): String {
+        inicioAcaoHeroi()
         if (avaliarAlvoId == alvoId) avaliarStacks = (avaliarStacks + 1).coerceAtMost(3)
         else { avaliarAlvoId = alvoId; avaliarStacks = 1 }
         limparApontar()
@@ -156,6 +167,7 @@ class CombatSession(
 
     /** Apontar (MB p.364): mira numa arma à distância → +Precisão (Acc) no próximo tiro ao alvo. */
     fun heroiApontar(alvoId: String): String {
+        inicioAcaoHeroi()
         apontarAlvoId = alvoId
         limparAvaliar()
         val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
@@ -175,6 +187,7 @@ class CombatSession(
 
     /** Herói se move até [metros] (clamp no Deslocamento) aproximando/afastando do alvo (ou de todos). */
     fun heroiMove(alvoId: String? = null, afastar: Boolean = false, metros: Int = Int.MAX_VALUE): String {
+        inicioAcaoHeroi()
         val passo = metros.coerceIn(1, heroi.deslocamento.coerceAtLeast(1))
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
@@ -200,11 +213,24 @@ class CombatSession(
                 intencao.manobra == Manobra.MOVER_E_ATACAR)
 
     /** Opções de defesa do herói para o card "Defenda-se!" (aplica recuo/Defesa Total/aparas extras). */
-    fun opcoesDefesaHeroi(recuo: Boolean = false, defesaTotalEm: CombatResolver.TipoDefesa? = null): List<CombatResolver.OpcaoDefesa> =
-        CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva, aparaBase = heroiPerfil.apara, bloqueioBase = heroiPerfil.bloqueio,
-            defesasUsadas = heroi.defesasUsadas, recuo = recuo, defesaTotalEm = defesaTotalEm
+    fun opcoesDefesaHeroi(
+        armaPronta: AtaqueHeroi? = null,
+        recuo: Boolean = false,
+        defesaTotalEm: CombatResolver.TipoDefesa? = null
+    ): List<CombatResolver.OpcaoDefesa> {
+        val tipoAparar = armaPronta?.apararTipo ?: ApararTipo.NORMAL
+        val ranged = armaPronta?.aDistancia == true
+        // Aparar indisponível: arma à distância, arma "Não", ou desbalanceada já usada para atacar neste turno (MB p.270).
+        val podeAparar = !ranged && tipoAparar != ApararTipo.NAO &&
+            !(tipoAparar == ApararTipo.DESBALANCEADA && atacouDesbalanceada)
+        return CombatResolver.opcoesDefesa(
+            esquivaBase = heroiPerfil.esquiva,
+            aparaBase = if (podeAparar) heroiPerfil.apara else null,
+            bloqueioBase = heroiPerfil.bloqueio,
+            defesasUsadas = heroi.defesasUsadas, recuo = recuo, defesaTotalEm = defesaTotalEm,
+            esgrima = tipoAparar == ApararTipo.ESGRIMA
         )
+    }
 
     /**
      * Resolve o turno do NPC [npcId] com a [intencao] já decidida. Se for ataque ao herói, exige
@@ -426,6 +452,21 @@ class CombatSession(
             }
         }
 
+        /** Interpreta a coluna Aparar do catálogo ("0", "-1", "0D", "0E", "F", "Não") → (mod, tipo). MB p.270. */
+        fun parseAparar(raw: String?): Pair<Int, ApararTipo> {
+            val s = (raw ?: "").trim()
+            if (s.isEmpty()) return 0 to ApararTipo.NORMAL
+            val low = s.lowercase()
+            val tipo = when {
+                low.contains("nao") || low.contains("não") -> ApararTipo.NAO
+                low.contains("e") || low.contains("f") -> ApararTipo.ESGRIMA      // E (esgrima Devir) / F (fencing)
+                low.contains("d") || low.contains("u") -> ApararTipo.DESBALANCEADA // D (Devir) / U (unbalanced)
+                else -> ApararTipo.NORMAL
+            }
+            val mod = Regex("-?\\d+").find(s)?.value?.toIntOrNull() ?: 0
+            return mod to tipo
+        }
+
         /**
          * Penalidade de PARA ACERTAR pela distância em ataque à distância (Tabela
          * Tamanho/Velocidade-Distância, MB p.550). Resumo determinístico em metros.
@@ -471,6 +512,9 @@ data class HeroiPerfilCombate(
  * @param aDistancia true para arma de fogo/arremesso (defesa do alvo só por Esquiva; sofre penal. de distância).
  * @param precisao Acc da arma (bônus ao Apontar — usado no lote de manobras).
  */
+/** Comportamento de Aparar da arma (coluna Aparar, MB p.270): normal / esgrima (E) / desbalanceada (D) / não. */
+enum class ApararTipo { NORMAL, ESGRIMA, DESBALANCEADA, NAO }
+
 data class AtaqueHeroi(
     val rotulo: String,          // ex.: "Revólver (Pistola)"
     val nh: Int,
@@ -480,6 +524,8 @@ data class AtaqueHeroi(
     val alcance: Int = 1,        // à distância: alcance Máximo (m). Além disso, não acerta.
     val precisao: Int = 0,       // Acc — bônus ao Apontar (MB p.364)
     val meioDano: Int = 0,       // à distância: 1/2D (m). A partir daí, dano pela metade. 0 = sempre cheio.
+    val magnitude: Int = 0,      // Bulk — penalidade no Avançar e Atacar à distância (MB p.271)
+    val apararTipo: ApararTipo = ApararTipo.NORMAL,
     val temPericia: Boolean = true
 )
 

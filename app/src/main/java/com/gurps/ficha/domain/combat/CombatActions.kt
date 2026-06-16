@@ -48,7 +48,8 @@ object CombatActions {
         visibilidade: Visibilidade = Visibilidade.NORMAL,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
         aDistancia: Boolean = false,
-        modsExtra: List<ComponenteMod> = emptyList()
+        modsExtra: List<ComponenteMod> = emptyList(),
+        magnitudeArma: Int? = null
     ): CalculoNH {
         val comps = mutableListOf<ComponenteMod>()
         comps.addAll(modsExtra) // ex.: penalidade de distância (tiro), mira (Acc), avaliar
@@ -59,8 +60,9 @@ object CombatActions {
                 if (m != 0) comps.add(ComponenteMod("Ataque Total ${ataqueTotalModo.rotulo}", m))
             }
             Manobra.MOVER_E_ATACAR -> {
-                // MB p.366 (texto literal): corpo-a-corpo −4 (e teto NH 9); à distância −2 (ou Magnitude).
-                comps.add(ComponenteMod("Mover e Atacar", if (aDistancia) -2 else -4))
+                // MB p.366: corpo-a-corpo −4 (e teto NH 9); à distância −2 OU a Magnitude (Bulk), o pior.
+                if (aDistancia) comps.add(ComponenteMod("Mover e Atacar (Bulk)", minOf(-2, magnitudeArma ?: -2)))
+                else comps.add(ComponenteMod("Mover e Atacar", -4))
             }
             else -> { /* Ataque simples e demais: sem mod de manobra ao acerto */ }
         }
@@ -126,9 +128,10 @@ object CombatActions {
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO,
         aDistancia: Boolean = false,
         modsExtra: List<ComponenteMod> = emptyList(),
+        magnitudeArma: Int? = null,
         random: Random = Random.Default
     ): RelatorioAtaque {
-        val calc = calcularNH(nhBaseArma, manobra, postura, local, visibilidade, ataqueTotalModo, aDistancia, modsExtra)
+        val calc = calcularNH(nhBaseArma, manobra, postura, local, visibilidade, ataqueTotalModo, aDistancia, modsExtra, magnitudeArma)
         val d = List(3) { random.nextInt(1, 7) }
         val soma = d.sum()
         val (res, margem, critico) = avaliarRolagem(calc.nhEfetivo, soma)

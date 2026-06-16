@@ -30,7 +30,8 @@
 > - ✅ Lote 372 = EXTRA Testes de Sentidos na Rolagem (2026-06-14) — clicar PER abre diálogo Visão/Audição/Olfato-Paladar/Tato (regra MB p.358); `SentidoRules` automatiza vantagens/desvantagens (Visão/Audição Aguçada, Hiperespectral, Discriminatório, Duro de Ouvido, Cegueira/Surdez/Disosmia) com "notinha" do motivo; variante PraCego (botão rotulado). Sem mudar estrutura da ficha. Testes + build 2 variantes verde.
 > - ✅ Lote 373 = EXTRA combate à distância (2026-06-14) — manobra Apontar (+Precisão/Acc no próximo tiro), dano pela metade além de 1/2D, erro automático além do Máx (usa os stats do Lote 371). Testes + build 2 variantes verde.
 > - ✅ Lote 374 = EXTRA combate corpo-a-corpo (2026-06-14) — engajamento por reach (arma "C"/"1"/"2" define quem você atinge; longe demais = aproxime-se) + Sacar/Preparar arma (na mão vs guardada; Preparar gasta o turno, livre com Saque Rápido). Teste + build 2 variantes verde.
-> - ➡️ Próximo (último de combate): Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima/desbalanceada) — exigem persistir armaMagnitude/armaAparar na ficha. Depois: **validação no aparelho**.
+> - ✅ Lote 375 = EXTRA fim das regras de arma (2026-06-14) — Bulk no Avançar-e-Atacar à distância (−2 ou Magnitude, o pior) + Aparar E/D (esgrima −2 extra; desbalanceada não apara após atacar; "Não"/à distância não apara). Persistiu `armaAparar`. Testes + build 2 variantes verde. **Regras de arma no combate completas** (reach, Apontar/Acc, 1/2D, Máx, Bulk, Aparar E/D, Sacar/Preparar).
+> - ➡️ Próximo: **validação no aparelho** (combate completo + sentidos). Futuro: RoF/Recuo/rajada, dual-wield, e Fases C/D/E do plano.
 
 ---
 

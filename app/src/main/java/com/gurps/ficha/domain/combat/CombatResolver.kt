@@ -19,6 +19,7 @@ object CombatResolver {
     const val BONUS_RECUO_APARA_BLOQUEIO = 1 // +1 a Aparar/Bloquear ao recuar
     const val BONUS_DEFESA_TOTAL = 2         // Defesa Total Determinada: +2 numa defesa. MB p.366
     const val PENALIDADE_APARA_EXTRA = 4     // cada apara extra na MESMA arma: −4 cumulativo. MB p.376
+    const val PENALIDADE_APARA_ESGRIMA = 2   // armas de esgrima (E): apara extra −2 em vez de −4. MB p.404
 
     data class ComponenteMod(val nome: String, val valor: Int)
 
@@ -39,7 +40,8 @@ object CombatResolver {
         base: Int,
         recuo: Boolean = false,
         defesaTotalDeterminada: Boolean = false,
-        aparasJaFeitas: Int = 0
+        aparasJaFeitas: Int = 0,
+        esgrima: Boolean = false
     ): Pair<Int, List<ComponenteMod>> {
         val comps = mutableListOf<ComponenteMod>()
         if (recuo) {
@@ -48,7 +50,8 @@ object CombatResolver {
         }
         if (defesaTotalDeterminada) comps.add(ComponenteMod("Defesa Total", BONUS_DEFESA_TOTAL))
         if (tipo == TipoDefesa.APARA && aparasJaFeitas > 0) {
-            comps.add(ComponenteMod("apara extra ×$aparasJaFeitas", -PENALIDADE_APARA_EXTRA * aparasJaFeitas))
+            val porApara = if (esgrima) PENALIDADE_APARA_ESGRIMA else PENALIDADE_APARA_EXTRA
+            comps.add(ComponenteMod("apara extra ×$aparasJaFeitas", -porApara * aparasJaFeitas))
         }
         return (base + comps.sumOf { it.valor }) to comps
     }
@@ -73,7 +76,8 @@ object CombatResolver {
         bloqueioBase: Int?,
         defesasUsadas: DefesasUsadas,
         recuo: Boolean = false,
-        defesaTotalEm: TipoDefesa? = null
+        defesaTotalEm: TipoDefesa? = null,
+        esgrima: Boolean = false
     ): List<OpcaoDefesa> {
         val out = mutableListOf<OpcaoDefesa>()
 
@@ -82,7 +86,7 @@ object CombatResolver {
         }
         if (aparaBase != null) {
             val aparas = defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0
-            valorDefesaFinal(TipoDefesa.APARA, aparaBase, recuo, defesaTotalEm == TipoDefesa.APARA, aparas).let { (v, c) ->
+            valorDefesaFinal(TipoDefesa.APARA, aparaBase, recuo, defesaTotalEm == TipoDefesa.APARA, aparas, esgrima).let { (v, c) ->
                 out.add(OpcaoDefesa(TipoDefesa.APARA, v, c, disponivel = true))
             }
         }

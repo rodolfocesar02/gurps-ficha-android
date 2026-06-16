@@ -68,7 +68,8 @@ class FichaEquipmentDelegate(private val dataRepository: DataRepository) {
             armaCadenciaTiro = arma.cadenciaTiro,
             armaTirosRaw = arma.tirosRaw,
             armaMagnitude = arma.magnitude,
-            armaRecuo = arma.recuo
+            armaRecuo = arma.recuo,
+            armaAparar = arma.aparar
         )
         return adicionarEquipamento(personagem, equipamento)
     }
