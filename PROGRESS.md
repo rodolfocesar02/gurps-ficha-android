@@ -3,7 +3,7 @@
 **Última Atualização:** 16 de Junho de 2026
 **Status Atual:** Lote 377 CONCLUÍDO — dual-wield (Ataque Total Duplo: 2 golpes, mão inábil −4/Ambidestria) + "sem defesa ativa" após Ataque Total. FECHA o "polir combate". Próximo: validação no aparelho (combate + sentidos), depois Fases C/D/E.
 **Último Lote Registrado:** Lote 377 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `aa56969` (Lote 376). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=(este lote, hash após o commit).
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `aa56969` (Lote 376). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
