@@ -444,6 +444,8 @@ class SagaCombatController(
                 meioDano = if (aDistancia) (arma.armaMeioDanoMetros ?: 0) else 0,
                 magnitude = arma.armaMagnitude ?: 0,
                 apararTipo = CombatSession.parseAparar(arma.armaAparar).second,
+                cadenciaTiro = arma.armaCadenciaTiro ?: 1,
+                recuo = arma.armaRecuo ?: 1,
                 temPericia = pericia != null
             ))
         }

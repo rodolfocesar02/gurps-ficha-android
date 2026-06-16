@@ -1,8 +1,8 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 14 de Junho de 2026
-**Status Atual:** Lote 375 CONCLUÍDO — fim das regras de arma no combate: Bulk no Avançar-e-Atacar à distância + Aparar E/D (esgrima −2 extra / desbalanceada não apara após atacar / Não / à distância). Validação no aparelho em andamento.
-**Último Lote Registrado:** Lote 375 — última entrada deste arquivo
+**Status Atual:** Lote 376 CONCLUÍDO — combate à distância: rajada (CdT → bônus de acerto, Recuo → múltiplos acertos) + Ataque Total à distância (+1). Falta dual-wield (377) e validação no aparelho.
+**Último Lote Registrado:** Lote 376 — última entrada deste arquivo
 **HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `de7f266` (Lote 375). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 376 — 14 de Junho de 2026
+**Saga combate à distância: rajada (CdT/Recuo) + Ataque Total à distância +1 (branch GURPS-Saga)**
+- RAJADA (MB p.374): `AtaqueHeroi` ganhou `cadenciaTiro`/`recuo` (do `armaCadenciaTiro`/`armaRecuo`). `CombatSession`: `bonusCadenciaTiro(tiros)` (2-4=+0, 5-8=+1, 9-12=+2, 13-16=+3, 17-24=+4, 25-49=+5, 50-99=+6, +) somado ao acerto à distância (dispara a rajada cheia = CdT); `acertosDaRajada(margem, recuo, tiros)` = 1 + ⌊margem/Recuo⌋, limitado aos tiros. Em `heroiAtaca`: o 1º tiro é resolvido por `resolverTroca`; tiros EXTRAS (Recuo) aplicam dano adicional em loop (HitLocationRules+ferir), com log "rajada: +N projéteis".
+- ATAQUE TOTAL À DISTÂNCIA = +1 (não +4): `CombatActions.calcularNH` trata Determinado à distância como +1 (MB p.366); corpo-a-corpo segue +4.
+- Controller popula `cadenciaTiro`/`recuo` no `construirAtaques`.
+- Testes: tabela de bônus de CdT, `acertosDaRajada` (1+margem/recuo, teto), rajada aplica múltiplos acertos (SMG Recuo 1), Ataque Total à distância +1. Build 2 variantes verde.
+- FALTA do "polir combate": **dual-wield** (Lote 377) — 2 armas prontas, mão inábil −4 / Ambidestria, Ataque Total Duplo. Depois: validação no aparelho.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 375 — 14 de Junho de 2026  ·  commit `de7f266`

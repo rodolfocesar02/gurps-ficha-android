@@ -56,7 +56,9 @@ object CombatActions {
 
         when (manobra) {
             Manobra.ATAQUE_TOTAL -> {
-                val m = ModificadoresCombate.modAtaqueTotal(ataqueTotalModo)
+                // À distância, Ataque Total (Determinado) é +1 — não +4 (MB p.366).
+                val m = if (aDistancia && ataqueTotalModo == AtaqueTotalModo.DETERMINADO) 1
+                    else ModificadoresCombate.modAtaqueTotal(ataqueTotalModo)
                 if (m != 0) comps.add(ComponenteMod("Ataque Total ${ataqueTotalModo.rotulo}", m))
             }
             Manobra.MOVER_E_ATACAR -> {

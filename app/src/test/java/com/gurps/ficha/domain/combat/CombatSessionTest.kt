@@ -211,6 +211,41 @@ class CombatSessionTest {
     }
 
     @Test
+    fun `bonus de cadencia de tiro segue a tabela`() {
+        assertEquals(0, CombatSession.bonusCadenciaTiro(1))
+        assertEquals(0, CombatSession.bonusCadenciaTiro(4))
+        assertEquals(1, CombatSession.bonusCadenciaTiro(5))
+        assertEquals(2, CombatSession.bonusCadenciaTiro(9))
+        assertEquals(3, CombatSession.bonusCadenciaTiro(16))
+        assertEquals(4, CombatSession.bonusCadenciaTiro(24))
+        assertEquals(6, CombatSession.bonusCadenciaTiro(50))
+    }
+
+    @Test
+    fun `acertos da rajada = 1 + margem por recuo, limitado aos tiros`() {
+        assertEquals(1, CombatSession.acertosDaRajada(margem = 1, recuo = 2, tirosDisparados = 3)) // 1 + 0
+        assertEquals(2, CombatSession.acertosDaRajada(margem = 2, recuo = 2, tirosDisparados = 3)) // 1 + 1
+        assertEquals(3, CombatSession.acertosDaRajada(margem = 4, recuo = 2, tirosDisparados = 3)) // 1 + 2
+        assertEquals(3, CombatSession.acertosDaRajada(margem = 20, recuo = 2, tirosDisparados = 3)) // teto = tiros
+        assertEquals(3, CombatSession.acertosDaRajada(margem = 2, recuo = 1, tirosDisparados = 10)) // 1 + 2
+    }
+
+    @Test
+    fun `rajada aplica multiplos acertos quando a margem cobre o recuo`() {
+        var viuRajada = false
+        for (seed in 0L..25L) {
+            val g = goblin(pv = 40) // sobrevive p/ mostrar a rajada
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 3), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            // SMG: NH alto + Recuo 1 (toda margem vira acerto extra) + CdT 10.
+            val smg = AtaqueHeroi("SMG", nh = 18, danoExpr = "3d", tipo = DanoTipo.PI, aDistancia = true, alcance = 200, meioDano = 50, cadenciaTiro = 10, recuo = 1)
+            s.heroiAtaca(smg, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+            if (s.log.any { it.contains("rajada: +") }) { viuRajada = true; break }
+        }
+        assertTrue("uma rajada com Recuo 1 e margem boa deve cravar tiros extras", viuRajada)
+    }
+
+    @Test
     fun `corpo-a-corpo respeita o alcance da arma (reach)`() {
         val g = goblin()
         val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 2), seed = 1L) // 2m

@@ -31,7 +31,8 @@
 > - ✅ Lote 373 = EXTRA combate à distância (2026-06-14) — manobra Apontar (+Precisão/Acc no próximo tiro), dano pela metade além de 1/2D, erro automático além do Máx (usa os stats do Lote 371). Testes + build 2 variantes verde.
 > - ✅ Lote 374 = EXTRA combate corpo-a-corpo (2026-06-14) — engajamento por reach (arma "C"/"1"/"2" define quem você atinge; longe demais = aproxime-se) + Sacar/Preparar arma (na mão vs guardada; Preparar gasta o turno, livre com Saque Rápido). Teste + build 2 variantes verde.
 > - ✅ Lote 375 = EXTRA fim das regras de arma (2026-06-14) — Bulk no Avançar-e-Atacar à distância (−2 ou Magnitude, o pior) + Aparar E/D (esgrima −2 extra; desbalanceada não apara após atacar; "Não"/à distância não apara). Persistiu `armaAparar`. Testes + build 2 variantes verde. **Regras de arma no combate completas** (reach, Apontar/Acc, 1/2D, Máx, Bulk, Aparar E/D, Sacar/Preparar).
-> - ➡️ Próximo: **validação no aparelho** (combate completo + sentidos). Futuro: RoF/Recuo/rajada, dual-wield, e Fases C/D/E do plano.
+> - ✅ Lote 376 = EXTRA rajada (2026-06-14) — CdT → bônus de acerto (tabela MB p.374) + Recuo → múltiplos acertos (1+⌊margem/Recuo⌋) + Ataque Total à distância +1. Testes + build 2 variantes verde.
+> - ➡️ Próximo: **dual-wield** (Lote 377 — 2 armas prontas, mão inábil −4/Ambidestria, Ataque Total Duplo) fecha o polimento de combate. Depois: **validação no aparelho** e Fases C/D/E.
 
 ---
 

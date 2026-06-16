@@ -40,6 +40,13 @@ class CombatActionsTest {
     }
 
     @Test
+    fun `ataque total a distancia e +1 (nao +4)`() {
+        // À distância: Determinado = +1 (MB p.366). Corpo-a-corpo continua +4.
+        assertEquals(15, CombatActions.calcularNH(14, Manobra.ATAQUE_TOTAL, aDistancia = true, ataqueTotalModo = AtaqueTotalModo.DETERMINADO).nhEfetivo)
+        assertEquals(18, CombatActions.calcularNH(14, Manobra.ATAQUE_TOTAL, ataqueTotalModo = AtaqueTotalModo.DETERMINADO).nhEfetivo)
+    }
+
+    @Test
     fun `mover e atacar a distancia usa o pior entre -2 e a magnitude (Bulk)`() {
         // MB p.366/271: à distância a penalidade é -2 OU a Magnitude (Bulk), o que for pior.
         assertEquals(12, CombatActions.calcularNH(14, Manobra.MOVER_E_ATACAR, aDistancia = true, magnitudeArma = -1).nhEfetivo) // -2 é pior

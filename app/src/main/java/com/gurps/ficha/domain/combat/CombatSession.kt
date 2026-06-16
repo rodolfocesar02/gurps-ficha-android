@@ -93,6 +93,8 @@ class CombatSession(
             log += txt
             return AtaqueResultado(false, false, 0, false, txt)
         }
+        // Rajada (MB p.374): com CdT≥2 dispara a rajada cheia → bônus para acertar por nº de tiros.
+        val tiros = if (ataque.aDistancia) ataque.cadenciaTiro.coerceAtLeast(1) else 1
         val modsExtra: List<CombatActions.ComponenteMod> = buildList {
             if (ataque.aDistancia) {
                 val pen = penalidadeDistancia(dist)
@@ -100,6 +102,7 @@ class CombatSession(
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
                 if (apontarAlvoId == alvoId && ataque.precisao != 0)
                     add(CombatActions.ComponenteMod("mira (Acc)", ataque.precisao))
+                bonusCadenciaTiro(tiros).let { if (it != 0) add(CombatActions.ComponenteMod("rajada ${tiros} tiros", it)) }
             } else if (avaliarAlvoId == alvoId && avaliarStacks > 0) {
                 // Avaliar só vale corpo-a-corpo, contra o alvo avaliado, no ataque seguinte (MB p.365).
                 add(CombatActions.ComponenteMod("avaliar", avaliarStacks))
@@ -128,6 +131,19 @@ class CombatSession(
         )
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
         if (meioDano && troca.dano != null) log += "  └ além de 1/2D (${dist}m ≥ ${ataque.meioDano}m): dano pela metade."
+        // Rajada: o primeiro tiro foi resolvido acima; o Recuo define quantos tiros EXTRAS acertam (MB p.374).
+        if (tiros >= 2 && !troca.defendeu && troca.dano != null) {
+            val extras = acertosDaRajada(atk.margem, ataque.recuo, tiros) - 1
+            if (extras > 0 && alvo.vivo) {
+                repeat(extras) {
+                    if (!alvo.vivo) return@repeat
+                    val d = (rolarDano(ataque.danoExpr, random)).let { if (meioDano) it / 2 else it }
+                    val rd = HitLocationRules.aplicarDano(alvo.pvMax, d, ataque.tipo, local, alvo.stats?.rd ?: 0)
+                    InjuryRules.ferir(alvo, rd.pvSubtrair, alvo.stats?.ht ?: 10, random)
+                }
+                log += "  └ rajada: +$extras projétil(eis) acertam (Recuo ${ataque.recuo}, margem ${atk.margem}) → ${alvo.nome} PV ${alvo.pvAtual}/${alvo.pvMax}."
+            }
+        }
         val incap = !alvo.vivo
         limparAvaliar(); limparApontar() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
@@ -452,6 +468,22 @@ class CombatSession(
             }
         }
 
+        /** Bônus PARA ACERTAR por nº de tiros numa rajada (MB p.374). Tiros <=4 = +0. */
+        fun bonusCadenciaTiro(tiros: Int): Int = when {
+            tiros <= 4 -> 0
+            tiros <= 8 -> 1
+            tiros <= 12 -> 2
+            tiros <= 16 -> 3
+            tiros <= 24 -> 4
+            tiros <= 49 -> 5
+            tiros <= 99 -> 6
+            else -> 7
+        }
+
+        /** Nº de tiros que ACERTAM numa rajada: 1 + ⌊margem/Recuo⌋, limitado aos tiros disparados (MB p.374). */
+        fun acertosDaRajada(margem: Int, recuo: Int, tirosDisparados: Int): Int =
+            (1 + margem / recuo.coerceAtLeast(1)).coerceIn(1, tirosDisparados.coerceAtLeast(1))
+
         /** Interpreta a coluna Aparar do catálogo ("0", "-1", "0D", "0E", "F", "Não") → (mod, tipo). MB p.270. */
         fun parseAparar(raw: String?): Pair<Int, ApararTipo> {
             val s = (raw ?: "").trim()
@@ -526,6 +558,8 @@ data class AtaqueHeroi(
     val meioDano: Int = 0,       // à distância: 1/2D (m). A partir daí, dano pela metade. 0 = sempre cheio.
     val magnitude: Int = 0,      // Bulk — penalidade no Avançar e Atacar à distância (MB p.271)
     val apararTipo: ApararTipo = ApararTipo.NORMAL,
+    val cadenciaTiro: Int = 1,   // CdT/RoF — tiros por ataque (MB p.373). >=2 permite rajada.
+    val recuo: Int = 1,          // Rco/Rcl — controla quantos tiros da rajada acertam (MB p.374).
     val temPericia: Boolean = true
 )
 
