@@ -3,7 +3,7 @@
 **Última Atualização:** 17 de Junho de 2026
 **Status Atual:** Lote 378 CONCLUÍDO — bugfix de jogabilidade do combate (validação no aparelho): perícia da arma casa armas de fogo; Mover e Atacar abre o card e funciona; Sacar com UX clara; dano sem token duplicado. Próximo da auditoria de combate: "números que faltam" (Modificador de Tamanho + Bônus de Defesa de escudo).
 **Último Lote Registrado:** Lote 378 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `0399ca2` (Lote 377). Hashes dos lotes recentes do submódulo: 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=(este lote, hash após o commit).
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `0399ca2` (Lote 377). Hashes dos lotes recentes do submódulo: 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
