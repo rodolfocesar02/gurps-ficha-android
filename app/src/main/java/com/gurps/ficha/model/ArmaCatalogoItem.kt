@@ -33,4 +33,22 @@ data class ArmaCatalogoItem(
     val magnitude: Int? = null,
     /** À distância: Recuo (Rcl). */
     val recuo: Int? = null
-)
+) {
+    companion object {
+        /**
+         * Lote 380: a arma à distância/de fogo ocupa as DUAS mãos? Determinado pelo GRUPO do catálogo
+         * (dado estruturado, não pelo nome). Armas de fogo: só pistola é de uma mão; o resto (rifle,
+         * mosquete, espingarda, metralhadora…) é arma longa. À distância: arco/besta/zarabatana = 2 mãos;
+         * arremesso/funda = 1 mão. (Corpo-a-corpo usa as flags † / ‡ da coluna ST, tratadas no loader.)
+         * Limitação conhecida: na ficha o grupo vem sem o parêntese, então "Feixe (Pistola)" (FC) não é
+         * distinguido — fora do escopo de ambientação atual.
+         */
+        fun duasMaosPorGrupo(tipoCombate: String, grupo: String): Boolean {
+            val g = grupo.lowercase()
+            return when {
+                tipoCombate == "armas_de_fogo" -> !g.contains("pistola")
+                else -> g.contains("arco") || g.contains("besta") || g.contains("zarabatana")
+            }
+        }
+    }
+}

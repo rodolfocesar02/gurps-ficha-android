@@ -338,7 +338,8 @@ class CombatSession(
     fun opcoesDefesaHeroi(
         armaPronta: AtaqueHeroi? = null,
         recuo: Boolean = false,
-        defesaTotalEm: CombatResolver.TipoDefesa? = null
+        defesaTotalEm: CombatResolver.TipoDefesa? = null,
+        contraArmaDeFogo: Boolean = false
     ): List<CombatResolver.OpcaoDefesa> {
         // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) return emptyList()
@@ -348,10 +349,14 @@ class CombatSession(
         // Atacar no turno anterior (que permite só Esquiva/Bloqueio, MB p.367/270).
         val podeAparar = !ranged && tipoAparar != ApararTipo.NAO && !heroiSemAparar &&
             !(tipoAparar == ApararTipo.DESBALANCEADA && atacouDesbalanceada)
+        // BD do escudo (MB p.375): só vale com o escudo PREPARADO — uma mão livre (arma de 2 mãos não tem) —
+        // e NÃO contra armas de fogo. Quando não vale, removemos o BD que já vem embutido nas defesas da ficha.
+        val semMaoParaEscudo = armaPronta?.duasMaos == true
+        val bdRemovido = if (!semMaoParaEscudo && !contraArmaDeFogo) 0 else heroiPerfil.bonusEscudo
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva,
-            aparaBase = if (podeAparar) heroiPerfil.apara else null,
-            bloqueioBase = heroiPerfil.bloqueio,
+            esquivaBase = heroiPerfil.esquiva - bdRemovido,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido } else null,
+            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido },
             defesasUsadas = heroi.defesasUsadas, recuo = recuo, defesaTotalEm = defesaTotalEm,
             esgrima = tipoAparar == ApararTipo.ESGRIMA
         )
@@ -589,6 +594,20 @@ class CombatSession(
                 ""
             ).trim()
 
+        /**
+         * O ataque do NPC parece de arma de fogo? (Lote 380 — o BD do escudo do herói não vale contra fogo,
+         * MB p.375.) Heurística pelo nome da arma, já que o bestiário atual não traz a flag explícita.
+         */
+        fun pareceArmaDeFogo(nome: String?): Boolean {
+            val n = (nome ?: "").lowercase()
+            if (n.isBlank()) return false
+            return listOf(
+                "revolver", "revólver", "pistola", "rifle", "mosquete", "fuzil", "carabina", "espingarda",
+                "metralhad", "submetralhad", "arma de fogo", "winchester", "colt", "canhao", "canhão",
+                "lanca-chama", "lança-chama", "lança-chamas"
+            ).any { n.contains(it) }
+        }
+
         /** Bônus PARA ACERTAR por nº de tiros numa rajada (MB p.374). Tiros <=4 = +0. */
         fun bonusCadenciaTiro(tiros: Int): Int = when {
             tiros <= 4 -> 0
@@ -657,7 +676,10 @@ data class HeroiPerfilCombate(
     val apara: Int? = null,
     val bloqueio: Int? = null,
     val ht: Int = 10,
-    val rd: Int = 0
+    val rd: Int = 0,
+    /** Lote 380: BD do escudo JÁ embutido em esquiva/apara/bloqueio — guardado à parte para poder
+     *  REMOVÊ-LO quando o escudo não conta (arma de 2 mãos sem mão livre, ou ataque de arma de fogo; MB p.375). */
+    val bonusEscudo: Int = 0
 )
 
 /**
@@ -681,6 +703,7 @@ data class AtaqueHeroi(
     val apararTipo: ApararTipo = ApararTipo.NORMAL,
     val cadenciaTiro: Int = 1,   // CdT/RoF — tiros por ataque (MB p.373). >=2 permite rajada.
     val recuo: Int = 1,          // Rco/Rcl — controla quantos tiros da rajada acertam (MB p.374).
+    val duasMaos: Boolean = false, // Lote 380: ocupa as duas mãos → sem mão livre p/ o escudo (MB p.375).
     val temPericia: Boolean = true
 )
 

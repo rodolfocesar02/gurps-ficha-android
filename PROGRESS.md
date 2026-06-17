@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 379 CONCLUÍDO — bugfix da ficha (validação no aparelho): BD de escudo/capa só conta quando o escudo é explicitamente selecionado na defesa de Bloqueio (antes aplicava automático só por ter o equipamento). Próximo da auditoria de combate: Modificador de Tamanho no acerto à distância.
-**Último Lote Registrado:** Lote 379 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `4cc8d43` (Lote 378). Hashes dos lotes recentes do submódulo: 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`.
+**Status Atual:** Lote 380 CONCLUÍDO — BD do escudo no combate só vale com mão livre (arma de 1 mão) e NÃO contra arma de fogo (MB p.375). Detecção de "duas mãos" orientada a dado (grupo do catálogo), não a nome. Próximo da auditoria de combate: Modificador de Tamanho no acerto.
+**Último Lote Registrado:** Lote 380 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `5f0f0df` (Lote 379). Hashes dos lotes recentes do submódulo: 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=(este lote, hash após o commit).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 380 — 17 de Junho de 2026
+**Saga combate: quando o BD do escudo conta na defesa (MB p.375, branch GURPS-Saga)**
+- REGRA (MB p.375, lida no `chunks.jsonl`): o BD do escudo só vale com o escudo **PREPARADO** (mão livre) e **NÃO contra armas de fogo** (vale contra corpo-a-corpo, arremesso e arcos/bestas). Direção (frente/lado) não é modelada — simplificação.
+- O BD agora é guardado à parte em `HeroiPerfilCombate.bonusEscudo` (vem de `getBonusEscudo`, já embutido em esquiva/apara/bloqueio) e **removido** em `opcoesDefesaHeroi` quando: (a) a arma pronta do herói é de **duas mãos** (sem mão livre p/ o escudo) ou (b) o ataque é de **arma de fogo**.
+- DETECÇÃO ORIENTADA A DADO (correção do viés apontado pelo usuário — não usar nome): "duas mãos" vem do **grupo do catálogo** via novo `ArmaCatalogoItem.duasMaosPorGrupo` (fogo: só "pistola" é 1 mão; arco/besta = 2). Aplicado no loader de fogo/distância (`CatalogLoaders`) e no combate (`ehDuasMaos`). Arma de fogo do NPC: flag `NpcStats.armaDeFogo` + `CombatSession.pareceArmaDeFogo(nome)` — heurística por nome só aqui porque NPC é texto livre (sem catálogo).
+- Testes: `duasMaosPorGrupo` (Pistola/Feixe(Pistola)=1 mão; Rifle/Mosquete/Espingarda/Arco/Besta=2), `pareceArmaDeFogo`, e remoção do BD da Esquiva (1 mão = +BD; vs fogo ou 2 mãos = sai o BD). Build 2 variantes + lint verde.
+- LIMITAÇÃO honesta: fichas ANTIGAS cujas armas não têm `grupo`/`armaDuasMaos` não detectam "2 mãos" — re-adicionar a arma do catálogo resolve (dado correto). Não foi feito hack por nome p/ contornar isso.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 379 — 17 de Junho de 2026

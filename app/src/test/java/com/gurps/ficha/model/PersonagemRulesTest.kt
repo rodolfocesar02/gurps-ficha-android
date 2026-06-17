@@ -508,4 +508,18 @@ class PersonagemRulesTest {
         assertEquals(3, comEscudo.defesasAtivas.getBonusEscudo(comEscudo))
         assertEquals(11, comEscudo.defesasAtivas.calcularBloqueio(comEscudo)) // base 8 + DB 3
     }
+
+    @Test
+    fun `duasMaosPorGrupo decide pelo grupo do catalogo, nao pelo nome (Lote 380)`() {
+        // Armas de fogo: só pistola é de uma mão; o resto é arma longa (duas mãos).
+        assertEquals(false, ArmaCatalogoItem.duasMaosPorGrupo("armas_de_fogo", "Pistola"))
+        assertEquals(false, ArmaCatalogoItem.duasMaosPorGrupo("armas_de_fogo", "Feixe (Pistola)"))
+        assertEquals(true, ArmaCatalogoItem.duasMaosPorGrupo("armas_de_fogo", "Rifle"))
+        assertEquals(true, ArmaCatalogoItem.duasMaosPorGrupo("armas_de_fogo", "Mosquete"))
+        assertEquals(true, ArmaCatalogoItem.duasMaosPorGrupo("armas_de_fogo", "Espingarda"))
+        // À distância: arco/besta = duas mãos; arremesso = uma mão.
+        assertEquals(true, ArmaCatalogoItem.duasMaosPorGrupo("distancia", "Arco"))
+        assertEquals(true, ArmaCatalogoItem.duasMaosPorGrupo("distancia", "Besta"))
+        assertEquals(false, ArmaCatalogoItem.duasMaosPorGrupo("distancia", "Arma de Arremesso"))
+    }
 }

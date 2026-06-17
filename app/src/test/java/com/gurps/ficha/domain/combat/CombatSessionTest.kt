@@ -389,4 +389,35 @@ class CombatSessionTest {
         assertTrue("dispara em movimento", s.log.any { it.contains("dispara em movimento") })
         assertTrue("o colchete técnico mostra a penalidade de Mover e Atacar", s.log.any { it.contains("Mover e Atacar") })
     }
+
+    // ── Lote 380: BD do escudo só com mão livre e não contra arma de fogo (MB p.375) ──
+
+    @Test
+    fun `pareceArmaDeFogo detecta revolver e rifle, ignora arco e espada`() {
+        assertTrue(CombatSession.pareceArmaDeFogo("Revólver, .36"))
+        assertTrue(CombatSession.pareceArmaDeFogo("Rifle-Mosquete, .577"))
+        assertFalse(CombatSession.pareceArmaDeFogo("Arco Longo"))
+        assertFalse(CombatSession.pareceArmaDeFogo("Espada Larga"))
+        assertFalse(CombatSession.pareceArmaDeFogo(null))
+    }
+
+    @Test
+    fun `BD do escudo sai da defesa contra arma de fogo e com arma de duas maos (MB p375)`() {
+        val perfilComEscudo = HeroiPerfilCombate(esquiva = 9, apara = 11, bloqueio = 10, ht = 12, rd = 2, bonusEscudo = 1)
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilComEscudo, Random(1))
+        val espada1mao = AtaqueHeroi("Espada", nh = 14, danoExpr = "2d", tipo = DanoTipo.CORT, duasMaos = false)
+        val rifle = AtaqueHeroi("Rifle", nh = 14, danoExpr = "5d", tipo = DanoTipo.PI_MAIS, aDistancia = true, alcance = 100, duasMaos = true)
+
+        fun esquivaDe(opcoes: List<CombatResolver.OpcaoDefesa>) =
+            opcoes.first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA }.valorFinal
+
+        // Arma de 1 mão, ataque corpo-a-corpo: o BD (1) entra na Esquiva → 9.
+        assertEquals(9, esquivaDe(s.opcoesDefesaHeroi(armaPronta = espada1mao)))
+        // Contra arma de fogo: BD sai → Esquiva 8.
+        assertEquals(8, esquivaDe(s.opcoesDefesaHeroi(armaPronta = espada1mao, contraArmaDeFogo = true)))
+        // Arma de duas mãos (sem mão livre p/ o escudo): BD sai → Esquiva 8.
+        assertEquals(8, esquivaDe(s.opcoesDefesaHeroi(armaPronta = rifle)))
+    }
 }

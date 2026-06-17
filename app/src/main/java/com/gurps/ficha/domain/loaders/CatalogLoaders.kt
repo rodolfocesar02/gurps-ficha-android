@@ -434,7 +434,9 @@ class CatalogLoaders(private val context: Context) {
                     tirosRaw = obj.obj("tiros")?.string("raw")?.sanitized(),
                     magnitude = obj.obj("magnitude")?.int("valor"),
                     recuo = obj.obj("recuo")?.int("valor"),
-                    duasMaos = stRaw.contains("†") || stRaw.contains("‡")
+                    // Duas mãos: † / ‡ na ST OU determinado pelo grupo (fogo: só pistola é 1 mão; arco/besta = 2). Lote 380.
+                    duasMaos = stRaw.contains("†") || stRaw.contains("‡") ||
+                        ArmaCatalogoItem.duasMaosPorGrupo(tipoCombate, obj.string("grupo").orEmpty().sanitized())
                 )
             }.filter { it.id.isNotBlank() && it.nome.isNotBlank() }
             clearLoadError(nomeArquivo)

@@ -345,12 +345,15 @@ class SagaCombatController(
     private suspend fun executarTurnoNpc(npcId: String) {
         val s = sessao ?: return
         val intencao = s.npcIntencao(npcId)
+        val npc = s.inimigos.first { it.id == npcId }
+        // BD do escudo do herói não vale contra arma de fogo (MB p.375): detecta pela flag ou pelo nome da arma.
+        val contraFogo = npc.stats?.let { it.armaDeFogo || CombatSession.pareceArmaDeFogo(it.armaNome) } ?: false
         // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
         // Sem opções (ex.: herói sem defesa ativa após Ataque Total) → resolve direto, sem card.
-        val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(armaPronta = ataques.getOrNull(ataqueSelecionado)) else emptyList()
+        val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(armaPronta = ataques.getOrNull(ataqueSelecionado), contraArmaDeFogo = contraFogo) else emptyList()
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
-            val nomeNpc = s.inimigos.first { it.id == npcId }.nome
+            val nomeNpc = npc.nome
             defesaPendente = DefesaPendenteUi(
                 atacante = nomeNpc,
                 descricaoAtaque = "${nomeNpc} ataca! Escolha sua defesa.",
@@ -456,7 +459,9 @@ class SagaCombatController(
         apara = p.defesasAtivas.calcularApara(p),
         bloqueio = p.defesasAtivas.calcularBloqueio(p),
         ht = p.ht,
-        rd = rdHeroi(p)
+        rd = rdHeroi(p),
+        // BD do escudo já está embutido acima; guardado à parte p/ removê-lo quando não vale (Lote 380, MB p.375).
+        bonusEscudo = p.defesasAtivas.getBonusEscudo(p)
     )
 
     /**
@@ -488,6 +493,7 @@ class SagaCombatController(
                 apararTipo = CombatSession.parseAparar(arma.armaAparar).second,
                 cadenciaTiro = arma.armaCadenciaTiro ?: 1,
                 recuo = arma.armaRecuo ?: 1,
+                duasMaos = ehDuasMaos(arma),
                 temPericia = pericia != null
             ))
         }
@@ -506,6 +512,17 @@ class SagaCombatController(
     /** Converte o alcance corpo-a-corpo ("C", "1", "1,2") em metros (maior alcance da arma). "C" → 1 (adjacente). */
     private fun reachParaMetros(raw: String): Int =
         Regex("\\d+").findAll(raw).mapNotNull { it.value.toIntOrNull() }.maxOrNull() ?: 1
+
+    /**
+     * Lote 380: a arma ocupa as DUAS mãos (sem mão livre para o escudo, MB p.375)? Orientado a DADO: a flag
+     * do catálogo (`armaDuasMaos`, do †/‡ corpo-a-corpo ou já resolvida por grupo no loader) e, para fichas
+     * antigas, o GRUPO da arma (não o nome) via [ArmaCatalogoItem.duasMaosPorGrupo].
+     */
+    private fun ehDuasMaos(arma: com.gurps.ficha.model.Equipamento): Boolean =
+        arma.armaDuasMaos ||
+            com.gurps.ficha.model.ArmaCatalogoItem.duasMaosPorGrupo(
+                arma.armaTipoCombate.orEmpty(), arma.armaGrupo.orEmpty()
+            )
 
     /**
      * Casa uma arma com a perícia do herói (Lote 378 — robusto). Confere grupo/nome da arma contra
