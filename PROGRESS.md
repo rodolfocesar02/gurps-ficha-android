@@ -3,7 +3,7 @@
 **Última Atualização:** 17 de Junho de 2026
 **Status Atual:** Lote 380 CONCLUÍDO — BD do escudo no combate só vale com mão livre (arma de 1 mão) e NÃO contra arma de fogo (MB p.375). Detecção de "duas mãos" orientada a dado (grupo do catálogo), não a nome. Próximo da auditoria de combate: Modificador de Tamanho no acerto.
 **Último Lote Registrado:** Lote 380 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `5f0f0df` (Lote 379). Hashes dos lotes recentes do submódulo: 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=(este lote, hash após o commit).
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `5f0f0df` (Lote 379). Hashes dos lotes recentes do submódulo: 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
