@@ -33,6 +33,7 @@ data class BestiarioCriatura(
     val deslocamento: Int = ((dx + ht) / 4.0).toInt(),
     val agressividade: Int = 5,     // 0-10
     val moral: Int = 5,             // 0-10
+    val mt: Int = 0,                // Modificador de Tamanho (MT) — +MT no acerto à distância contra ela (MB p.549)
     val ataques: List<AtaqueCriatura> = emptyList()
 ) {
     /** Maior alcance entre os ataques (define se a criatura é "de distância"). */
@@ -47,7 +48,8 @@ data class BestiarioCriatura(
             armaNome = principal?.nome ?: "", armaDano = principal?.dano ?: "",
             armaTipo = principal?.tipo ?: "", armaNh = principal?.nh ?: 10,
             alcanceMetros = alcanceMaximo,
-            agressividade = agressividade, moral = moral
+            agressividade = agressividade, moral = moral,
+            modificadorTamanho = mt
         )
         return Combatente(
             id = id, nome = nome, ehHeroi = false, dx = dx,

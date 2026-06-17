@@ -206,6 +206,9 @@ class CombatSession(
         val tiros = if (ataque.aDistancia) ataque.cadenciaTiro.coerceAtLeast(1) else 1
         val modsExtra: List<CombatActions.ComponenteMod> = buildList {
             if (ataque.aDistancia) {
+                // Modificador de Tamanho do alvo (MB p.549): alvo grande é mais fácil de acertar, pequeno mais difícil.
+                val mt = alvo.stats?.modificadorTamanho ?: 0
+                if (mt != 0) add(CombatActions.ComponenteMod("tamanho do alvo (MT)", mt))
                 val pen = penalidadeDistancia(dist)
                 if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
@@ -403,10 +406,15 @@ class CombatSession(
         }
 
         val stats = npc.stats ?: return AtaqueResultado(false, false, 0, false, "${npc.nome} sem stats de ataque.")
-        val modsNpc: List<CombatActions.ComponenteMod> = if (intencao.aDistancia) {
-            val pen = penalidadeDistancia(encounter.distancia(npc))
-            if (pen != 0) listOf(CombatActions.ComponenteMod("distância", pen)) else emptyList()
-        } else emptyList()
+        val modsNpc: List<CombatActions.ComponenteMod> = buildList {
+            if (intencao.aDistancia) {
+                // Atirando NO herói: soma o MT do herói (alvo) ao acerto (MB p.549).
+                if (heroiPerfil.modificadorTamanho != 0)
+                    add(CombatActions.ComponenteMod("tamanho do alvo (MT)", heroiPerfil.modificadorTamanho))
+                val pen = penalidadeDistancia(encounter.distancia(npc))
+                if (pen != 0) add(CombatActions.ComponenteMod("distância", pen))
+            }
+        }
         val atk = CombatActions.resolverAtaque(
             nhBaseArma = stats.armaNh, manobra = intencao.manobra, postura = npc.postura,
             local = intencao.local, visibilidade = Visibilidade.NORMAL,
@@ -679,7 +687,9 @@ data class HeroiPerfilCombate(
     val rd: Int = 0,
     /** Lote 380: BD do escudo JÁ embutido em esquiva/apara/bloqueio — guardado à parte para poder
      *  REMOVÊ-LO quando o escudo não conta (arma de 2 mãos sem mão livre, ou ataque de arma de fogo; MB p.375). */
-    val bonusEscudo: Int = 0
+    val bonusEscudo: Int = 0,
+    /** Lote 381: Modificador de Tamanho (MT) do herói — somado ao acerto quando um NPC atira NELE (MB p.549). */
+    val modificadorTamanho: Int = 0
 )
 
 /**

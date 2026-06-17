@@ -420,4 +420,46 @@ class CombatSessionTest {
         // Arma de duas mãos (sem mão livre p/ o escudo): BD sai → Esquiva 8.
         assertEquals(8, esquivaDe(s.opcoesDefesaHeroi(armaPronta = rifle)))
     }
+
+    // ── Lote 381: Modificador de Tamanho (MT) do alvo no acerto à distância (MB p.549) ──
+
+    private fun ogro(id: String = "ogro", mt: Int = 2) = Combatente(
+        id = id, nome = "Ogro", dx = 11, velocidadeBasica = 5.0, deslocamento = 5, pvMax = 30, pvAtual = 30,
+        stats = NpcStats(st = 18, dx = 11, ht = 13, pvMax = 30, armaDano = "2d", armaTipo = "cont", armaNh = 12, alcanceMetros = 1, modificadorTamanho = mt)
+    )
+
+    @Test
+    fun `MT do alvo grande entra no acerto a distancia`() {
+        val g = ogro(mt = 2)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("ogro" to 10), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val arco = AtaqueHeroi("Arco", nh = 14, danoExpr = "1d+1", tipo = DanoTipo.PERF, aDistancia = true, alcance = 100)
+        s.heroiAtaca(arco, "ogro", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("o MT +2 do alvo grande deve entrar na conta do tiro",
+            s.log.any { it.contains("tamanho do alvo (MT)") && it.contains("+2") })
+    }
+
+    @Test
+    fun `MT nao entra no corpo-a-corpo (so a distancia, MB p548-549)`() {
+        val g = ogro(mt = 2)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("ogro" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        s.heroiAtaca(espada(), "ogro", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertFalse("corpo-a-corpo não soma MT", s.log.any { it.contains("tamanho do alvo (MT)") })
+    }
+
+    @Test
+    fun `npc que atira no heroi soma o MT do heroi`() {
+        val perfilMT = perfilHeroi().copy(modificadorTamanho = 1) // herói é um alvo maior (MT +1)
+        val arqueiro = Combatente(
+            id = "arqueiro", nome = "Arqueiro", dx = 12, velocidadeBasica = 5.5, deslocamento = 5, pvMax = 10, pvAtual = 10,
+            stats = NpcStats(dx = 12, ht = 11, pvMax = 10, armaNome = "Arco", armaDano = "1d+1", armaTipo = "perf", armaNh = 13, alcanceMetros = 100)
+        )
+        val enc = CombatEncounter(listOf(heroi(), arqueiro), mapOf("arqueiro" to 8), seed = 1L)
+        val s = CombatSession(enc, perfilMT, Random(3))
+        val intencao = NpcCombatBrain.IntencaoNpc(manobra = Manobra.ATAQUE, alvoId = "heroi", aDistancia = true, motivo = "atira no herói")
+        s.npcResolve("arqueiro", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, soma = 3))
+        assertTrue("o MT +1 do herói deve entrar na conta do tiro do NPC",
+            s.log.any { it.contains("tamanho do alvo (MT)") && it.contains("+1") })
+    }
 }

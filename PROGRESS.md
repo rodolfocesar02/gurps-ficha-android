@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 380 CONCLUÍDO — BD do escudo no combate só vale com mão livre (arma de 1 mão) e NÃO contra arma de fogo (MB p.375). Detecção de "duas mãos" orientada a dado (grupo do catálogo), não a nome. Próximo da auditoria de combate: Modificador de Tamanho no acerto.
-**Último Lote Registrado:** Lote 380 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `5f0f0df` (Lote 379). Hashes dos lotes recentes do submódulo: 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357`.
+**Status Atual:** Lote 381 CONCLUÍDO — Modificador de Tamanho (MT) do alvo somado ao acerto À DISTÂNCIA (MB p.549), nas duas direções (herói↔NPC). Motor pronto/testado; ⚠️ criaturas do bestiário ainda com MT 0 (campo novo, default) — preencher MT (passo de dado) p/ a regra mudar números em jogo.
+**Último Lote Registrado:** Lote 381 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `3a9b2cb` (Lote 380). Hashes dos lotes recentes do submódulo: 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357` (chore `3a9b2cb`), 381=(este lote, hash após o commit).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 381 — 17 de Junho de 2026
+**Saga combate: Modificador de Tamanho (MT) do alvo no acerto à distância (MB p.549, branch GURPS-Saga)**
+- REGRA (MB p.549, lida no `chunks.jsonl`): no ataque À DISTÂNCIA soma-se o **MT do alvo** ao NH (alvo grande = mais fácil; pequeno = mais difícil). A lista de modificadores corpo-a-corpo (p.548) **não** inclui MT → MT é só à distância.
+- DAS DUAS DIREÇÕES: herói atira no NPC → soma o MT do NPC (`alvo.stats.modificadorTamanho`) em `resolverGolpeHeroi`; NPC atira no herói → soma o MT do herói (`heroiPerfil.modificadorTamanho`, da ficha `p.modificadorTamanho`) em `npcResolve`. Aparece no colchete técnico como "tamanho do alvo (MT)".
+- CAMINHO DE DADO: `NpcStats.modificadorTamanho` (novo) ← `BestiarioCriatura.mt` (lido do JSON, default 0) em `novoCombatente`; `HeroiPerfilCombate.modificadorTamanho` ← `construirPerfilHeroi`.
+- Testes (`CombatSessionTest`): herói→Ogro(MT+2) soma; corpo-a-corpo não soma; NPC→herói(MT+1) soma. Build 2 variantes + lint verde.
+- ⚠️ PENDÊNCIA DE DADO (não chutar): as 17 criaturas do bestiário estão com MT 0 (o JSON não tinha o campo). A regra só muda números quando o MT for preenchido nas criaturas grandes/pequenas (Ogro/Urso-pardo/Lobo Atroz etc.), conferindo valores no Bestiário/Módulo Básico.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 380 — 17 de Junho de 2026

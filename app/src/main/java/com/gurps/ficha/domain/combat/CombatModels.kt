@@ -75,6 +75,8 @@ data class NpcStats(
     val alcanceMetros: Int = 1,
     /** Lote 380: arma de fogo? (o BD do escudo do herói não vale contra fogo — MB p.375.) Default infere pelo nome. */
     val armaDeFogo: Boolean = false,
+    /** Lote 381: Modificador de Tamanho (MT) da criatura — somado ao acerto À DISTÂNCIA contra ela (MB p.549). */
+    val modificadorTamanho: Int = 0,
     /** Comportamento tático (Lote 363/B6): 0-10. Alimenta o NpcCombatBrain. */
     val agressividade: Int = 5,
     val moral: Int = 5

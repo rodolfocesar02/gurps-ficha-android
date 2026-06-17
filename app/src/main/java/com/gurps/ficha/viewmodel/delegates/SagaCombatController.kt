@@ -461,7 +461,9 @@ class SagaCombatController(
         ht = p.ht,
         rd = rdHeroi(p),
         // BD do escudo já está embutido acima; guardado à parte p/ removê-lo quando não vale (Lote 380, MB p.375).
-        bonusEscudo = p.defesasAtivas.getBonusEscudo(p)
+        bonusEscudo = p.defesasAtivas.getBonusEscudo(p),
+        // MT do herói (alvo) — somado ao acerto quando um NPC atira nele (Lote 381, MB p.549).
+        modificadorTamanho = p.modificadorTamanho
     )
 
     /**
