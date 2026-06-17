@@ -3,7 +3,7 @@
 **Última Atualização:** 17 de Junho de 2026
 **Status Atual:** Lote 379 CONCLUÍDO — bugfix da ficha (validação no aparelho): BD de escudo/capa só conta quando o escudo é explicitamente selecionado na defesa de Bloqueio (antes aplicava automático só por ter o equipamento). Próximo da auditoria de combate: Modificador de Tamanho no acerto à distância.
 **Último Lote Registrado:** Lote 379 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `4cc8d43` (Lote 378). Hashes dos lotes recentes do submódulo: 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=(este lote, hash após o commit).
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `4cc8d43` (Lote 378). Hashes dos lotes recentes do submódulo: 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
