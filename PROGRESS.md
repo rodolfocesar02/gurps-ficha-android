@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 378 CONCLUÍDO — bugfix de jogabilidade do combate (validação no aparelho): perícia da arma casa armas de fogo; Mover e Atacar abre o card e funciona; Sacar com UX clara; dano sem token duplicado. Próximo da auditoria de combate: "números que faltam" (Modificador de Tamanho + Bônus de Defesa de escudo).
-**Último Lote Registrado:** Lote 378 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `0399ca2` (Lote 377). Hashes dos lotes recentes do submódulo: 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`.
+**Status Atual:** Lote 379 CONCLUÍDO — bugfix da ficha (validação no aparelho): BD de escudo/capa só conta quando o escudo é explicitamente selecionado na defesa de Bloqueio (antes aplicava automático só por ter o equipamento). Próximo da auditoria de combate: Modificador de Tamanho no acerto à distância.
+**Último Lote Registrado:** Lote 379 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `4cc8d43` (Lote 378). Hashes dos lotes recentes do submódulo: 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=(este lote, hash após o commit).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 379 — 17 de Junho de 2026
+**Ficha: BD de escudo/capa só com escolha explícita (validação no aparelho, branch GURPS-Saga)**
+- BUG (reportado no aparelho): o Bônus de Defesa (BD) do escudo/capa aparecia em Esquiva/Apara **só por ter o equipamento na lista** — confuso. Causa: `Personagem.DefesasAtivas.getBonusEscudo` tinha um fallback `?: escudos.maxByOrNull { bonusDefesa }` que pegava o melhor escudo quando nenhum estava selecionado.
+- CORREÇÃO: `getBonusEscudo` agora retorna BD só quando há **escudo explicitamente selecionado** (`escudoSelecionadoNome`, setado no diálogo de Bloqueio). Sem seleção → BD 0 em todas as defesas. Ao selecionar, o BD soma em Esquiva/Apara/Bloqueio (correto: GURPS MB p.375, escudo pronto dá DB em todas as defesas ativas). Afeta também o perfil de combate da Saga (usa as mesmas defesas).
+- NÃO mexido (convenção mantida): `FichaCombatDelegate.ajustarEscudoAutomatico` ainda auto-seleciona o melhor escudo **quando o personagem tem perícia de Escudo** (não dispara só por ter o equipamento). Pode virar manual-sempre num lote futuro se o usuário pedir.
+- Teste atualizado (`PersonagemRulesTest`): o que codificava o fallback agora valida "sem seleção = BD 0; com seleção = BD soma". Build 2 variantes + lint verde.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 378 — 17 de Junho de 2026

@@ -854,18 +854,18 @@ data class DefesasAtivas(
         return CombatRules.calcularBloqueioBase(nh)
     }
 
+    /**
+     * BD (Bônus de Defesa) do escudo/capa. Lote 379: só conta quando o jogador ESCOLHE explicitamente o
+     * escudo na defesa de Bloqueio (`escudoSelecionadoNome`). Antes havia um fallback que pegava o escudo de
+     * maior BD só por estar na lista de equipamentos — isso confundia, pois o BD aparecia em Esquiva/Apara
+     * sem o jogador declarar que estava usando o escudo. (GURPS MB p.375: o BD vale em TODAS as defesas
+     * quando o escudo está pronto; aqui "pronto" = selecionado na defesa de Bloqueio.)
+     */
     fun getBonusEscudo(personagem: Personagem): Int {
-        val escudos = personagem.equipamentos.filter { it.tipo == TipoEquipamento.ESCUDO || it.tipo == TipoEquipamento.CAPA }
-        if (escudos.isEmpty()) return 0
-
-        val nomeSelecionado = escudoSelecionadoNome
-            ?.trim()
-            ?.takeIf { it.isNotEmpty() }
-
-        val escudoSelecionado = nomeSelecionado?.let { nome ->
-            escudos.find { it.nome.trim().equals(nome, ignoreCase = true) }
-        }
-        val escudo = escudoSelecionado ?: escudos.maxByOrNull { it.bonusDefesa }
+        val nomeSelecionado = escudoSelecionadoNome?.trim()?.takeIf { it.isNotEmpty() } ?: return 0
+        val escudo = personagem.equipamentos
+            .filter { it.tipo == TipoEquipamento.ESCUDO || it.tipo == TipoEquipamento.CAPA }
+            .find { it.nome.trim().equals(nomeSelecionado, ignoreCase = true) }
         return escudo?.bonusDefesa ?: 0
     }
 

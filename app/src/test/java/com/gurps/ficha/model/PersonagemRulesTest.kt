@@ -479,8 +479,8 @@ class PersonagemRulesTest {
     }
 
     @Test
-    fun `bloqueio usa melhor DB de escudo quando nenhum escudo foi selecionado explicitamente`() {
-        val personagem = Personagem(
+    fun `BD do escudo so conta quando ha escudo selecionado explicitamente (Lote 379)`() {
+        val base = Personagem(
             destreza = 10,
             equipamentos = listOf(
                 Equipamento(nome = "Escudo Leve", tipo = TipoEquipamento.ESCUDO, bonusDefesa = 1),
@@ -500,8 +500,12 @@ class PersonagemRulesTest {
                 escudoSelecionadoNome = null
             )
         )
-
-        // NH 10 -> base 8, + DB 3
-        assertEquals(11, personagem.defesasAtivas.calcularBloqueio(personagem))
+        // Sem escudo escolhido: NÃO soma BD só por ter o equipamento. NH 10 -> base 8, sem DB.
+        assertEquals(0, base.defesasAtivas.getBonusEscudo(base))
+        assertEquals(8, base.defesasAtivas.calcularBloqueio(base))
+        // Ao escolher o escudo na defesa de Bloqueio, o BD passa a contar (e em todas as defesas).
+        val comEscudo = base.copy(defesasAtivas = base.defesasAtivas.copy(escudoSelecionadoNome = "Escudo Grande"))
+        assertEquals(3, comEscudo.defesasAtivas.getBonusEscudo(comEscudo))
+        assertEquals(11, comEscudo.defesasAtivas.calcularBloqueio(comEscudo)) // base 8 + DB 3
     }
 }
