@@ -295,6 +295,15 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 383: Finta — Disputa Rápida com a arma empunhada (corpo-a-corpo) que reduz a defesa do alvo. */
+    fun heroiFintar(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        s.heroiFintar(ataque, alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     fun heroiApontar(alvoId: String) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
@@ -412,6 +421,7 @@ class SagaCombatController(
         val manobras = if (!vezHeroi) emptyList() else s.manobrasHeroi().toMutableList().also {
             if (alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
             if (ranged && alvos.isNotEmpty() && Manobra.APONTAR !in it) it.add(Manobra.APONTAR)
+            if (!ranged && alvos.isNotEmpty() && Manobra.FINTAR !in it) it.add(Manobra.FINTAR) // Lote 383: finta corpo-a-corpo
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

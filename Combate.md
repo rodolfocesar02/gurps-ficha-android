@@ -187,7 +187,7 @@ atacar, escolha Ataque Total ou Avançar
 e Atacar.
 Defesa Ativa: Qualquer.
 
-## Fintar []
+## Fintar [x] ✅ FEITO
 O personagem “finge” que vai atacar com uma arma de combate corpo
 a corpo. Ele não pode Fintar alguém
 a menos que pudesse também atacar a

@@ -36,6 +36,11 @@ class CombatSession(
     private var apontarAlvoId: String? = null
     private fun limparApontar() { apontarAlvoId = null }
 
+    // Fintar (Lote 383): venceu a Disputa Rápida → reduz a defesa do alvo no PRÓXIMO golpe ao mesmo alvo (MB p.366).
+    private var fintaAlvoId: String? = null
+    private var fintaPenalidade: Int = 0
+    private fun limparFinta() { fintaAlvoId = null; fintaPenalidade = 0 }
+
     // Aparar desbalanceada (Lote 375): atacou com arma "D" → não pode aparar com ela até o próximo turno (MB p.270).
     private var atacouDesbalanceada = false
 
@@ -90,7 +95,7 @@ class CombatSession(
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
         golpeForaDeAlcance(ataque, alvo)?.let { return it }
         val r = resolverGolpeHeroi(ataque, alvo, manobra, local, ataqueTotalModo)
-        limparAvaliar(); limparApontar() // bônus de Avaliar/Mira consumidos neste ataque
+        limparAvaliar(); limparApontar(); limparFinta() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
         // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
@@ -123,9 +128,9 @@ class CombatSession(
         } else {
             log += "🏃🎯 Você dispara em movimento contra ${alvo.nome}."
         }
-        golpeForaDeAlcance(ataque, alvo)?.let { limparAvaliar(); limparApontar(); verificarFim(); return it }
+        golpeForaDeAlcance(ataque, alvo)?.let { limparAvaliar(); limparApontar(); limparFinta(); verificarFim(); return it }
         val r = resolverGolpeHeroi(ataque, alvo, Manobra.MOVER_E_ATACAR, local, AtaqueTotalModo.DETERMINADO)
-        limparAvaliar(); limparApontar()
+        limparAvaliar(); limparApontar(); limparFinta()
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
         heroiSemAparar = true // Mover e Atacar: só Esquiva/Bloqueio até o próximo turno (MB p.367).
         verificarFim()
@@ -153,7 +158,7 @@ class CombatSession(
         // 1º golpe — mão hábil, NH normal (DUPLO não dá +4/+1). Consome Avaliar/Mira.
         val fora1 = golpeForaDeAlcance(principal, alvo)
         resultados += fora1 ?: resolverGolpeHeroi(principal, alvo, Manobra.ATAQUE_TOTAL, local, AtaqueTotalModo.DUPLO)
-        limparAvaliar(); limparApontar()
+        limparAvaliar(); limparApontar(); limparFinta()
         // 2º golpe — mão inábil (−4 salvo Ambidestria), só se o alvo continua de pé.
         if (alvo.vivo) {
             val penOff = if (ambidestria) 0 else -4
@@ -234,6 +239,9 @@ class CombatSession(
         // Contra ataque à distância o alvo só Esquiva; corpo-a-corpo usa a melhor defesa.
         val (defTipo, defValor) = if (ataque.aDistancia)
             CombatResolver.TipoDefesa.ESQUIVA to esquivaNpc(alvo) else melhorDefesaNpc(alvo)
+        // Finta (Lote 383, MB p.366): a margem da finta contra este alvo reduz a defesa dele NESTE golpe.
+        val penFinta = if (alvo.id == fintaAlvoId) fintaPenalidade else 0
+        val defValorFinal = (defValor - penFinta).coerceAtLeast(0)
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
@@ -242,10 +250,11 @@ class CombatSession(
 
         val troca = CombatResolver.resolverTroca(
             defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
-            defesaTipo = defTipo, defesaValorFinal = defValor, defesaSoma = defSoma,
+            defesaTipo = defTipo, defesaValorFinal = defValorFinal, defesaSoma = defSoma,
             surpresa = false, danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
             local = local, rdLocal = alvo.stats?.rd ?: 0, randomFerimento = random
         )
+        if (penFinta > 0) log += "  └ finta: a defesa de ${alvo.nome} cai −$penFinta neste golpe (${defValor}→${defValorFinal})."
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
         if (meioDano && troca.dano != null) log += "  └ além de 1/2D (${dist}m ≥ ${ataque.meioDano}m): dano pela metade."
         // Rajada: o primeiro tiro foi resolvido acima; o Recuo define quantos tiros EXTRAS acertam (MB p.374).
@@ -275,7 +284,7 @@ class CombatSession(
         if (manobra == Manobra.MUDAR_POSTURA && novaPostura != null && novaPostura in posturasAlcancaveis()) {
             heroi.postura = novaPostura
         }
-        limparAvaliar(); limparApontar()
+        limparAvaliar(); limparApontar(); limparFinta()
         val txt = if (manobra == Manobra.MUDAR_POSTURA) "🧍 Você muda para ${heroi.postura.rotulo}."
             else "🛡️ Você: ${manobra.rotulo}."
         log += txt
@@ -287,7 +296,7 @@ class CombatSession(
         inicioAcaoHeroi()
         if (avaliarAlvoId == alvoId) avaliarStacks = (avaliarStacks + 1).coerceAtMost(3)
         else { avaliarAlvoId = alvoId; avaliarStacks = 1 }
-        limparApontar()
+        limparApontar(); limparFinta()
         val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
         val txt = "👁️ Você avalia $nome (+$avaliarStacks no próximo golpe corpo-a-corpo)."
         log += txt
@@ -298,9 +307,39 @@ class CombatSession(
     fun heroiApontar(alvoId: String): String {
         inicioAcaoHeroi()
         apontarAlvoId = alvoId
-        limparAvaliar()
+        limparAvaliar(); limparFinta()
         val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
         val txt = "🎯 Você mira em $nome (+Precisão da arma no próximo tiro)."
+        log += txt
+        return txt
+    }
+
+    /**
+     * Fintar (MB p.366): Disputa Rápida entre o NH do herói com a arma e a defesa do alvo (maior entre
+     * armaNh e DX do NPC). Se o herói vencer, a MARGEM DE VITÓRIA é subtraída da defesa do alvo no próximo
+     * golpe corpo-a-corpo contra ele. Exige arma corpo-a-corpo no alcance. Não causa dano nem desprepara.
+     */
+    fun heroiFintar(ataque: AtaqueHeroi, alvoId: String): String {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return "🤺 Alvo inválido ou já fora de combate.".also { log += it }
+        val dist = encounter.distancia(alvo)
+        if (ataque.aDistancia || dist > ataque.alcance) {
+            val txt = "🤺 Não dá para fintar ${alvo.nome}: a finta exige uma arma corpo-a-corpo no alcance."
+            log += txt; return txt
+        }
+        val rolHeroi = rolar3d6()
+        val nhDefensor = maxOf(alvo.stats?.armaNh ?: 10, alvo.stats?.dx ?: 10)
+        val rolDefensor = rolar3d6()
+        val penalidade = fintaResultado(ataque.nh, rolHeroi, nhDefensor, rolDefensor)
+        val tec = "[NH ${ataque.nh} rolou $rolHeroi vs defesa $nhDefensor rolou $rolDefensor]"
+        val txt = if (penalidade > 0) {
+            fintaAlvoId = alvoId; fintaPenalidade = penalidade
+            "🤺 Você finta e engana ${alvo.nome}! A defesa dele cai −$penalidade no seu próximo golpe. $tec"
+        } else {
+            "🤺 Você finta ${alvo.nome}, mas ele não se deixa enganar. $tec"
+        }
         log += txt
         return txt
     }
@@ -320,7 +359,7 @@ class CombatSession(
         val passo = metros.coerceIn(1, heroi.deslocamentoEfetivo.coerceAtLeast(1)) // metade se cambaleante (MB p.380)
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
-        limparAvaliar(); limparApontar()
+        limparAvaliar(); limparApontar(); limparFinta()
         val nome = alvoId?.let { id -> inimigos.firstOrNull { it.id == id }?.nome } ?: "os inimigos"
         val txt = "🏃 Você ${if (afastar) "recua ${passo}m de" else "avança ${passo}m até"} $nome."
         log += txt
@@ -606,6 +645,21 @@ class CombatSession(
                 "perf", "imp" -> DanoTipo.PERF
                 else -> DanoTipo.CONT // cont/esm/queimadura/tóxico/etc. → multiplicador ×1.0
             }
+        }
+
+        /**
+         * Resultado de uma Finta (Lote 383, MB p.366): Disputa Rápida entre atacante e defensor (rolagens
+         * 3d6 já feitas). Devolve a penalidade na defesa do alvo no próximo golpe: 0 se a finta falhou;
+         * a margem de sucesso do atacante se o defensor falhou; ou a margem de VITÓRIA (margem do atacante −
+         * margem do defensor) se ambos tiveram sucesso.
+         */
+        fun fintaResultado(nhAtacante: Int, rolAtacante: Int, nhDefensor: Int, rolDefensor: Int): Int {
+            if (rolAtacante > nhAtacante) return 0 // o fintador falhou no próprio teste
+            val margemAtacante = nhAtacante - rolAtacante
+            val defensorTeveSucesso = rolDefensor <= nhDefensor
+            if (!defensorTeveSucesso) return margemAtacante
+            val margemDefensor = nhDefensor - rolDefensor
+            return (margemAtacante - margemDefensor).coerceAtLeast(0)
         }
 
         /**

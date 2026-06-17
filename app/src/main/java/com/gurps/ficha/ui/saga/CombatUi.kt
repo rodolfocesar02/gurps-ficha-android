@@ -169,6 +169,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var moverDialogo by remember { mutableStateOf(false) }
     var avaliarDialogo by remember { mutableStateOf(false) }
     var apontarDialogo by remember { mutableStateOf(false) }
+    var fintarDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
 
     Card(
@@ -195,6 +196,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.MOVER -> moverDialogo = true
                             m == Manobra.AVALIAR -> avaliarDialogo = true
                             m == Manobra.APONTAR -> apontarDialogo = true
+                            m == Manobra.FINTAR -> fintarDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             else -> viewModel.sagaCombateManobra(m)
                         }
@@ -261,6 +263,16 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.combatentes.filter { !it.ehHeroi && it.vivo },
             onConfirmar = { alvoId -> viewModel.sagaCombateApontar(alvoId); apontarDialogo = false },
             onFechar = { apontarDialogo = false }
+        )
+    }
+
+    if (fintarDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Fintar quem?",
+            descricaoConfirmar = "Fintar o alvo (reduz a defesa dele no próximo golpe)",
+            alvos = estado.alvos, // corpo-a-corpo: alvos ao alcance da arma
+            onConfirmar = { alvoId -> viewModel.sagaCombateFintar(alvoId); fintarDialogo = false },
+            onFechar = { fintarDialogo = false }
         )
     }
 

@@ -502,4 +502,43 @@ class CombatSessionTest {
         assertTrue("Esquiva cai quando cambaleante ($esqCambaleante < $esqNormal)", esqCambaleante < esqNormal)
         assertEquals("Deslocamento pela metade (6 → 3)", 3, s.heroi.deslocamentoEfetivo)
     }
+
+    // ── Lote 383: Fintar (Disputa Rápida → reduz a defesa do alvo no próximo golpe, MB p.366) ──
+
+    @Test
+    fun `fintaResultado segue a disputa rapida (MB p366)`() {
+        assertEquals("fintador falha no próprio teste", 0, CombatSession.fintaResultado(14, 16, 11, 10))
+        assertEquals("defensor falhou → margem do atacante", 4, CombatSession.fintaResultado(14, 10, 11, 13))
+        assertEquals("ambos passam → margem de vitória (5−2)", 3, CombatSession.fintaResultado(15, 10, 14, 12))
+        assertEquals("defensor venceu a disputa → 0", 0, CombatSession.fintaResultado(15, 13, 14, 8))
+    }
+
+    @Test
+    fun `finta bem-sucedida reduz a defesa do alvo no proximo golpe corpo-a-corpo`() {
+        var verificou = false
+        for (seed in 0L..30L) {
+            val g = goblin(pv = 40)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiFintar(espada(), "goblin")
+            if (s.log.any { it.contains("engana") }) { // finta venceu a disputa
+                s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+                assertTrue("o golpe após a finta deve abater a defesa do alvo",
+                    s.log.any { it.contains("finta: a defesa de") })
+                verificou = true
+                break
+            }
+        }
+        assertTrue("alguma seed deve produzir uma finta bem-sucedida (NH 14 vs 11)", verificou)
+    }
+
+    @Test
+    fun `nao finta com arma a distancia`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        val rev = AtaqueHeroi("Revólver", nh = 14, danoExpr = "2d", tipo = DanoTipo.PI, aDistancia = true, alcance = 50)
+        s.heroiFintar(rev, "goblin")
+        assertTrue("finta exige arma corpo-a-corpo", s.log.any { it.contains("exige uma arma corpo-a-corpo") })
+    }
 }

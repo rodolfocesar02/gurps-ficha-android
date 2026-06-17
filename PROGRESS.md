@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 382 CONCLUÍDO — Choque (penalidade DX/IQ no próximo turno por PV perdidos) e Cambaleante (<1/3 PV → Esquiva e Deslocamento à metade) (MB p.419/380). 1/5 do loop de regras de combate. Próximos no loop: Fintar → Tabelas de crítico → Tolerância a Ferimentos → Luta agarrada.
-**Último Lote Registrado:** Lote 382 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `3802d17` (Lote 381). Hashes dos lotes recentes do submódulo: 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=(este lote, hash recordado no próximo).
+**Status Atual:** Lote 383 CONCLUÍDO — Fintar (manobra: Disputa Rápida que reduz a defesa do alvo no próximo golpe corpo-a-corpo, MB p.366). 2/5 do loop de regras de combate. Próximos: Tabelas de crítico → Tolerância a Ferimentos → Luta agarrada.
+**Último Lote Registrado:** Lote 383 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `ae73170` (Lote 382). Hashes dos lotes recentes do submódulo: 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=`ae73170`, 383=(este lote, hash recordado no próximo).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 383 — 17 de Junho de 2026
+**Saga combate: Fintar (loop de regras 2/5, MB p.366, branch GURPS-Saga)**
+- MANOBRA FINTAR: `CombatSession.heroiFintar(ataque, alvoId)` — Disputa Rápida entre o NH do herói com a arma e a defesa do alvo (maior entre `armaNh` e DX do NPC). Helper puro `fintaResultado(nhAtk, rolAtk, nhDef, rolDef)`: 0 se o fintador falha; margem do atacante se o defensor falha; margem de vitória se ambos passam.
+- EFEITO: se vence, `fintaAlvoId`/`fintaPenalidade` reduzem a defesa do alvo no PRÓXIMO golpe corpo-a-corpo (em `resolverGolpeHeroi`, `defValorFinal`); aplica também aos dois golpes do Ataque Total (Duplo) (MB p.366). Exige arma corpo-a-corpo no alcance. `limparFinta` espelha avaliar/apontar (consumido no ataque; descartado em mover/manobra/outra prep).
+- UI: manobra Fintar (quando há arma corpo-a-corpo + alvo ao alcance) → seletor de alvo; `FichaViewModel.sagaCombateFintar`.
+- Testes: `fintaResultado` (4 casos), finta bem-sucedida abate a defesa no golpe seguinte, finta bloqueada com arma à distância. Build 2 variantes + lint verde.
+- Combate.md: "Fintar" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 382 — 17 de Junho de 2026
