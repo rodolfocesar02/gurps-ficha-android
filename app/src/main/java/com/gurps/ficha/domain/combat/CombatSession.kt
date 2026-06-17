@@ -116,7 +116,7 @@ class CombatSession(
             // Aproxima-se até o alcance da arma, gastando até o Deslocamento (assim o golpe alcança).
             val dist = encounter.distancia(alvo)
             if (dist > ataque.alcance) {
-                val passo = (dist - ataque.alcance).coerceAtMost(heroi.deslocamento.coerceAtLeast(1))
+                val passo = (dist - ataque.alcance).coerceAtMost(heroi.deslocamentoEfetivo.coerceAtLeast(1))
                 if (passo > 0) encounter.moverEmRelacaoAoHeroi(alvo.id, -passo)
             }
             log += "🏃🗡️ Você avança sobre ${alvo.nome} e ataca em movimento."
@@ -205,6 +205,10 @@ class CombatSession(
         // Rajada (MB p.374): com CdT≥2 dispara a rajada cheia → bônus para acertar por nº de tiros.
         val tiros = if (ataque.aDistancia) ataque.cadenciaTiro.coerceAtLeast(1) else 1
         val modsExtra: List<CombatActions.ComponenteMod> = buildList {
+            // Choque (Lote 382, MB p.419): PV perdidos no turno anterior penalizam DX/IQ deste ataque.
+            InjuryRules.penalidadeChoque(heroi.choquePendente, heroi.pvMax).let {
+                if (it != 0) add(CombatActions.ComponenteMod("choque", it))
+            }
             if (ataque.aDistancia) {
                 // Modificador de Tamanho do alvo (MB p.549): alvo grande é mais fácil de acertar, pequeno mais difícil.
                 val mt = alvo.stats?.modificadorTamanho ?: 0
@@ -313,7 +317,7 @@ class CombatSession(
     /** Herói se move até [metros] (clamp no Deslocamento) aproximando/afastando do alvo (ou de todos). */
     fun heroiMove(alvoId: String? = null, afastar: Boolean = false, metros: Int = Int.MAX_VALUE): String {
         inicioAcaoHeroi()
-        val passo = metros.coerceIn(1, heroi.deslocamento.coerceAtLeast(1))
+        val passo = metros.coerceIn(1, heroi.deslocamentoEfetivo.coerceAtLeast(1)) // metade se cambaleante (MB p.380)
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
         limparAvaliar(); limparApontar()
@@ -356,8 +360,11 @@ class CombatSession(
         // e NÃO contra armas de fogo. Quando não vale, removemos o BD que já vem embutido nas defesas da ficha.
         val semMaoParaEscudo = armaPronta?.duasMaos == true
         val bdRemovido = if (!semMaoParaEscudo && !contraArmaDeFogo) 0 else heroiPerfil.bonusEscudo
+        // Cambaleante (MB p.380): com < 1/3 do PV, a Vel.Básica cai à metade → a Esquiva também.
+        val reducaoCambaleante = if (heroi.cambaleante)
+            floor(heroi.velocidadeBasica).toInt() - floor(heroi.velocidadeBasica / 2).toInt() else 0
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva - bdRemovido,
+            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante,
             aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido } else null,
             bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido },
             defesasUsadas = heroi.defesasUsadas, recuo = recuo, defesaTotalEm = defesaTotalEm,
@@ -379,7 +386,7 @@ class CombatSession(
 
         when (intencao.manobra) {
             Manobra.MOVER -> {
-                val passo = npc.deslocamento.coerceAtLeast(1)
+                val passo = npc.deslocamentoEfetivo.coerceAtLeast(1) // metade se cambaleante (MB p.380)
                 if (intencao.recuar) {
                     encounter.moverEmRelacaoAoHeroi(npc.id, passo)
                     log += "🏃 ${npc.nome} recua ${passo}m (${intencao.motivo})."
@@ -407,6 +414,10 @@ class CombatSession(
 
         val stats = npc.stats ?: return AtaqueResultado(false, false, 0, false, "${npc.nome} sem stats de ataque.")
         val modsNpc: List<CombatActions.ComponenteMod> = buildList {
+            // Choque (Lote 382, MB p.419): PV perdidos no turno anterior penalizam o acerto do NPC.
+            InjuryRules.penalidadeChoque(npc.choquePendente, npc.pvMax).let {
+                if (it != 0) add(CombatActions.ComponenteMod("choque", it))
+            }
             if (intencao.aDistancia) {
                 // Atirando NO herói: soma o MT do herói (alvo) ao acerto (MB p.549).
                 if (heroiPerfil.modificadorTamanho != 0)
@@ -458,6 +469,8 @@ class CombatSession(
                 log += "• ${anterior.nome} recupera-se do atordoamento."
             }
         }
+        // Choque (Lote 382): expira ao fim do turno de quem agiu (valeu só no turno seguinte ao ferimento).
+        anterior.choquePendente = 0
         // zera defesas do turno de quem vai começar
         var prox = encounter.proximoTurno()
         var guarda = 0
@@ -550,8 +563,11 @@ class CombatSession(
         else -> "no"
     }
 
-    /** Esquiva de um NPC = Velocidade Básica + 3 (MB p.374). */
-    private fun esquivaNpc(npc: Combatente): Int = floor(npc.velocidadeBasica).toInt() + 3
+    /** Esquiva de um NPC = Velocidade Básica + 3 (MB p.374); Vel.Básica pela metade se cambaleante (MB p.380). */
+    private fun esquivaNpc(npc: Combatente): Int {
+        val velB = if (npc.cambaleante) npc.velocidadeBasica / 2 else npc.velocidadeBasica
+        return floor(velB).toInt() + 3
+    }
 
     /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo). */
     private fun melhorDefesaNpc(npc: Combatente): Pair<CombatResolver.TipoDefesa, Int> {

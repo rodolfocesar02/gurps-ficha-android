@@ -8,8 +8,15 @@ import kotlin.random.Random
  */
 object InjuryRules {
 
-    /** Choque: −1 por PV perdido, até −4, no PRÓXIMO turno (em testes de DX/IQ). MB p.419. */
-    fun penalidadeChoque(dano: Int): Int = -minOf(dano.coerceAtLeast(0), 4)
+    /**
+     * Choque (MB p.419/381): penalidade em DX/IQ no PRÓXIMO turno por PV perdidos. −1 por PV perdido; se
+     * PV Inicial ≥ 20, −1 a cada (PVInicial/10) PV perdidos (arredondado p/ baixo). Teto −4. Não afeta defesas.
+     */
+    fun penalidadeChoque(pvPerdidos: Int, pvMax: Int): Int {
+        if (pvPerdidos <= 0) return 0
+        val unidade = if (pvMax >= 20) (pvMax / 10).coerceAtLeast(1) else 1
+        return -minOf(pvPerdidos / unidade, 4)
+    }
 
     /** Ferimento grave = mais da metade do PV num único golpe (> PV/2). MB p.420. */
     fun ehFerimentoGrave(dano: Int, pvMax: Int): Boolean = dano * 2 > pvMax
@@ -84,6 +91,8 @@ object InjuryRules {
     fun ferir(c: Combatente, dano: Int, ht: Int, random: Random): ResultadoFerimento {
         val r = aplicarGolpe(c.pvAtual, c.pvMax, ht, dano, random)
         c.pvAtual = r.pvDepois
+        // Choque (Lote 382): acumula os PV perdidos; vira penalidade no próximo turno do combatente (MB p.419).
+        if (dano > 0) c.choquePendente += dano
         when (r.efeito) {
             EfeitoFerimento.MORTO, EfeitoFerimento.INCONSCIENTE -> c.condicoes.add(Condicao.INCONSCIENTE)
             EfeitoFerimento.ATORDOADO_CAIDO -> { c.condicoes.add(Condicao.ATORDOADO); c.condicoes.add(Condicao.CAIDO) }

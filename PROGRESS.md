@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 381 CONCLUÍDO — Modificador de Tamanho (MT) do alvo somado ao acerto À DISTÂNCIA (MB p.549), nas duas direções (herói↔NPC). Motor pronto/testado; ⚠️ criaturas do bestiário ainda com MT 0 (campo novo, default) — preencher MT (passo de dado) p/ a regra mudar números em jogo.
-**Último Lote Registrado:** Lote 381 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `3a9b2cb` (Lote 380). Hashes dos lotes recentes do submódulo: 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357` (chore `3a9b2cb`), 381=`3802d17`.
+**Status Atual:** Lote 382 CONCLUÍDO — Choque (penalidade DX/IQ no próximo turno por PV perdidos) e Cambaleante (<1/3 PV → Esquiva e Deslocamento à metade) (MB p.419/380). 1/5 do loop de regras de combate. Próximos no loop: Fintar → Tabelas de crítico → Tolerância a Ferimentos → Luta agarrada.
+**Último Lote Registrado:** Lote 382 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `3802d17` (Lote 381). Hashes dos lotes recentes do submódulo: 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=(este lote, hash recordado no próximo).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 382 — 17 de Junho de 2026
+**Saga combate: Choque + Cambaleante (loop de regras 1/5, MB p.419/380, branch GURPS-Saga)**
+- CHOQUE (MB p.419/381): toda perda de PV gera choque — penalidade em DX/IQ (acerto) no PRÓXIMO turno. `InjuryRules.penalidadeChoque(pvPerdidos, pvMax)`: −1/PV; se PV Inicial ≥20, −1 a cada PVInicial/10; teto −4. NÃO afeta defesas (MB p.375). `Combatente.choquePendente` acumula em `ferir`; aplicado ao acerto do herói (`resolverGolpeHeroi`) e do NPC (`npcResolve`); expira em `avancarTurno` (fim do turno de quem agiu).
+- CAMBALEANTE (MB p.380): com < 1/3 do PV Inicial, Vel.Básica/Deslocamento e Esquiva caem à metade. `Combatente.cambaleante`/`deslocamentoEfetivo`; Esquiva do herói (`opcoesDefesaHeroi`) e do NPC (`esquivaNpc`) reduzidas; Deslocamento à metade em `heroiMove`/`heroiMoverEAtacar`/NPC/controller.
+- Testes: penalidadeChoque (PV<20 e ≥20 com teto); choque aplicado ao golpe + expira; ferir acumula choque; cambaleante reduz Esquiva e Deslocamento. Build 2 variantes + lint verde.
+- Combate.md: "Efeitos de Lesões" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 381 — 17 de Junho de 2026

@@ -400,7 +400,7 @@ class SagaCombatController(
         val ranged = ataqueSel?.aDistancia == true
         val reachMelee = ataqueSel?.alcance ?: 1 // "C"/"1"/"2" já convertido em metros
         // Alvos: à distância = qualquer inimigo vivo; corpo-a-corpo = dentro do ALCANCE da arma.
-        val deslocHeroi = s.heroi.deslocamento.coerceAtLeast(1)
+        val deslocHeroi = s.heroi.deslocamentoEfetivo.coerceAtLeast(1) // metade se cambaleante (Lote 382, MB p.380)
         val alvos = if (!vezHeroi) emptyList()
             else if (ranged) combs.filter { !it.ehHeroi && it.vivo }
             else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= reachMelee }

@@ -462,4 +462,44 @@ class CombatSessionTest {
         assertTrue("o MT +1 do herói deve entrar na conta do tiro do NPC",
             s.log.any { it.contains("tamanho do alvo (MT)") && it.contains("+1") })
     }
+
+    // ── Lote 382: Choque (penalidade no próximo turno) + Cambaleante (<1/3 PV) — MB p.419/380 ──
+
+    @Test
+    fun `choque do turno anterior penaliza o acerto e expira ao fim do turno`() {
+        val g = goblin(pv = 40)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        s.heroi.choquePendente = 3 // perdeu 3 PV no turno anterior (PV Inicial 12 < 20 → −3)
+        s.heroiAtaca(espada(), "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("o golpe deve mostrar a penalidade de choque",
+            s.log.any { (it.startsWith("🗡️") || it.startsWith("⭐") || it.startsWith("💥")) && it.contains("choque") && it.contains("-3") })
+        s.avancarTurno() // fim do turno do herói
+        assertEquals("choque expira após o turno", 0, s.heroi.choquePendente)
+    }
+
+    @Test
+    fun `ferir acumula choque pendente no alvo`() {
+        val g = goblin(pv = 40)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        InjuryRules.ferir(g, 5, g.stats?.ht ?: 10, Random(1))
+        assertEquals(5, g.choquePendente)
+    }
+
+    @Test
+    fun `cambaleante reduz esquiva e deslocamento (MB p380)`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(1))
+        val esqNormal = s.opcoesDefesaHeroi(armaPronta = espada())
+            .first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA }.valorFinal
+        assertFalse(s.heroi.cambaleante)
+        s.heroi.pvAtual = 3 // < 1/3 de 12 PV → cambaleante
+        assertTrue(s.heroi.cambaleante)
+        val esqCambaleante = s.opcoesDefesaHeroi(armaPronta = espada())
+            .first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA }.valorFinal
+        assertTrue("Esquiva cai quando cambaleante ($esqCambaleante < $esqNormal)", esqCambaleante < esqNormal)
+        assertEquals("Deslocamento pela metade (6 → 3)", 3, s.heroi.deslocamentoEfetivo)
+    }
 }

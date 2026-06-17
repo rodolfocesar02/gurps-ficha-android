@@ -99,10 +99,16 @@ data class Combatente(
     var postura: Postura = Postura.EM_PE,
     val condicoes: MutableSet<Condicao> = mutableSetOf(),
     var defesasUsadas: DefesasUsadas = DefesasUsadas(),
+    /** Lote 382: PV perdidos desde o último turno deste combatente → penalidade de Choque no próximo (MB p.419). */
+    var choquePendente: Int = 0,
     /** Stats completos quando é NPC do bestiário; null para o herói (vem da ficha). */
     val stats: NpcStats? = null
 ) {
     val vivo: Boolean get() = pvAtual > -pvMax && Condicao.INCONSCIENTE !in condicoes
     /** Caído = derrubado (condição) ou postura deitada. */
     val caido: Boolean get() = Condicao.CAIDO in condicoes || postura == Postura.DEITADO
+    /** Cambaleante (MB p.380): com menos de 1/3 do PV Inicial, Vel.Básica/Deslocamento e Esquiva caem à metade. */
+    val cambaleante: Boolean get() = vivo && pvAtual * 3 < pvMax
+    /** Deslocamento efetivo: metade (arredondado p/ cima) se cambaleante (MB p.380). */
+    val deslocamentoEfetivo: Int get() = if (cambaleante) (deslocamento + 1) / 2 else deslocamento
 }

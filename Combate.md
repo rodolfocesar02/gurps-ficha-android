@@ -2029,7 +2029,7 @@ descritas acima assumem um golpe no
 tronco ou no rosto.
 
 
-## Efeitos de Lesões [~] ⚠️ PARCIAL OU INCOMPLETO
+## Efeitos de Lesões [x] ✅ FEITO
 Quando um personagem sofre uma
 lesão, ele deve subtrair os pontos de
 dano perdidos do seu total de Pontos de

@@ -10,11 +10,16 @@ import kotlin.random.Random
 class InjuryRulesTest {
 
     @Test
-    fun `penalidade de choque limita em -4`() {
-        assertEquals(0, InjuryRules.penalidadeChoque(0))
-        assertEquals(-3, InjuryRules.penalidadeChoque(3))
-        assertEquals(-4, InjuryRules.penalidadeChoque(4))
-        assertEquals(-4, InjuryRules.penalidadeChoque(9)) // cap
+    fun `penalidade de choque limita em -4 e usa PVInicial-10 acima de 20 PV`() {
+        // PV Inicial < 20: -1 por PV perdido, teto -4.
+        assertEquals(0, InjuryRules.penalidadeChoque(0, 10))
+        assertEquals(-3, InjuryRules.penalidadeChoque(3, 10))
+        assertEquals(-4, InjuryRules.penalidadeChoque(4, 10))
+        assertEquals(-4, InjuryRules.penalidadeChoque(9, 10)) // cap
+        // PV Inicial >= 20: -1 a cada PVInicial/10 perdidos. Ex.: 30 PV -> unidade 3.
+        assertEquals(-2, InjuryRules.penalidadeChoque(6, 30))   // 6/3 = 2
+        assertEquals(-1, InjuryRules.penalidadeChoque(5, 30))   // 5/3 = 1 (arred. baixo)
+        assertEquals(-4, InjuryRules.penalidadeChoque(100, 30)) // teto -4
     }
 
     @Test
