@@ -345,4 +345,48 @@ class CombatSessionTest {
         assertFalse(s.heroiSemDefesaAtiva)
         assertTrue(s.opcoesDefesaHeroi(armaPronta = espadaCurta()).isNotEmpty())
     }
+
+    // ── Lote 378: bugfix — Mover e Atacar funcional + expressão de dano sem token duplicado ──
+
+    @Test
+    fun `semTokenTipo remove o token de tipo deixando so os dados`() {
+        assertEquals("2d-1", CombatSession.semTokenTipo("2d-1 pa"))   // o app mostrava "2d-1 pa pi"
+        assertEquals("2d-1", CombatSession.semTokenTipo("2d-1 pa+"))
+        assertEquals("1d+2", CombatSession.semTokenTipo("1d+2 corte"))
+        assertEquals("3d", CombatSession.semTokenTipo("3d cont"))
+        assertEquals("4d", CombatSession.semTokenTipo("4d pa-"))
+        assertEquals("2d-1", CombatSession.semTokenTipo("2d-1"))      // sem token: inalterado (não corta o "-1")
+    }
+
+    @Test
+    fun `mover e atacar corpo-a-corpo aproxima-se do alvo, golpeia e nao apara depois`() {
+        val g = goblin(pv = 40)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 4), seed = 1L) // 4m; herói desloc 6
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        // Espada (reach 1) não alcançaria a 4m num Ataque normal; com Mover e Atacar, avança e golpeia.
+        s.heroiMoverEAtacar(espada(), "goblin", LocalAtaque.TORSO)
+        assertTrue("avança e ataca em movimento", s.log.any { it.contains("avança sobre") })
+        assertTrue("o golpe é resolvido (não 'longe demais')", s.log.any { it.contains("Espada") })
+        assertFalse("não pode ficar 'longe demais'", s.log.any { it.contains("longe demais") })
+        assertEquals("aproximou-se até o alcance da arma (1m)", 1, s.distancia(g))
+        // Mover e Atacar: na defesa seguinte só Esquiva/Bloqueio — sem aparar (MB p.367).
+        assertTrue(s.heroiSemAparar)
+        val opc = s.opcoesDefesaHeroi(armaPronta = espada())
+        assertTrue("Esquiva segue disponível", opc.any { it.tipo == CombatResolver.TipoDefesa.ESQUIVA })
+        assertFalse("não apara após Mover e Atacar", opc.any { it.tipo == CombatResolver.TipoDefesa.APARA })
+        // a próxima ação restaura o Aparar.
+        s.heroiManobra(Manobra.NAO_FAZER_NADA)
+        assertFalse(s.heroiSemAparar)
+    }
+
+    @Test
+    fun `mover e atacar a distancia aplica a penalidade e dispara em movimento`() {
+        val g = goblin(pv = 40)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(7))
+        val rev = AtaqueHeroi("Revólver", nh = 14, danoExpr = "2d-1", tipo = DanoTipo.PI_MAIS, aDistancia = true, alcance = 100, magnitude = -1)
+        s.heroiMoverEAtacar(rev, "goblin", LocalAtaque.TORSO)
+        assertTrue("dispara em movimento", s.log.any { it.contains("dispara em movimento") })
+        assertTrue("o colchete técnico mostra a penalidade de Mover e Atacar", s.log.any { it.contains("Mover e Atacar") })
+    }
 }

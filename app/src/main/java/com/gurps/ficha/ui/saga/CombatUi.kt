@@ -185,11 +185,13 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             Spacer(Modifier.height(8.dp))
             estado.manobrasHeroi.forEach { m ->
                 val ehAtaque = m == Manobra.ATAQUE || m == Manobra.ATAQUE_TOTAL
-                val temAlvo = estado.alvos.isNotEmpty()
+                val ehMoverAtacar = m == Manobra.MOVER_E_ATACAR
+                val precisaAlvo = ehAtaque || ehMoverAtacar
+                val temAlvo = if (ehMoverAtacar) estado.alvosMoverEAtacar.isNotEmpty() else estado.alvos.isNotEmpty()
                 Button(
                     onClick = {
                         when {
-                            ehAtaque && temAlvo -> alvoDialogo = m
+                            precisaAlvo && temAlvo -> alvoDialogo = m
                             m == Manobra.MOVER -> moverDialogo = true
                             m == Manobra.AVALIAR -> avaliarDialogo = true
                             m == Manobra.APONTAR -> apontarDialogo = true
@@ -197,10 +199,10 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             else -> viewModel.sagaCombateManobra(m)
                         }
                     },
-                    enabled = !(ehAtaque && !temAlvo),
+                    enabled = !(precisaAlvo && !temAlvo),
                     modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)
-                        .semantics { contentDescription = "Manobra ${m.rotulo}" + if (ehAtaque && !temAlvo) ", sem alvo ao alcance" else "" }
-                ) { Text(m.rotulo + if (ehAtaque && !temAlvo) " (sem alvo)" else "") }
+                        .semantics { contentDescription = "Manobra ${m.rotulo}" + if (precisaAlvo && !temAlvo) ", sem alvo ao alcance" else "" }
+                ) { Text(m.rotulo + if (precisaAlvo && !temAlvo) " (sem alvo)" else "") }
             }
             val ranged = estado.ataqueAtual?.aDistancia == true
             if (estado.alvos.isEmpty() && !ranged) {
@@ -212,17 +214,19 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     }
 
     alvoDialogo?.let { manobra ->
+        val ehMoverAtacar = manobra == Manobra.MOVER_E_ATACAR
         SubDialogoAlvoLocal(
             manobra = manobra,
-            alvos = estado.alvos,
+            alvos = if (ehMoverAtacar) estado.alvosMoverEAtacar else estado.alvos,
             ataques = estado.ataques,
             ataqueSelecionado = estado.ataqueSelecionado,
             ambidestro = estado.heroiAmbidestro,
             onConfirmar = { alvoId, local, modo, offHand ->
-                if (modo == AtaqueTotalModo.DUPLO && offHand != null)
-                    viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
-                else
-                    viewModel.sagaCombateAtacar(alvoId, manobra, local, modo)
+                when {
+                    ehMoverAtacar -> viewModel.sagaCombateMoverEAtacar(alvoId, local)
+                    modo == AtaqueTotalModo.DUPLO && offHand != null -> viewModel.sagaCombateAtacarDuplo(alvoId, local, offHand)
+                    else -> viewModel.sagaCombateAtacar(alvoId, manobra, local, modo)
+                }
                 alvoDialogo = null
             },
             onFechar = { alvoDialogo = null }
@@ -394,13 +398,16 @@ private fun SeletorDeArma(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                     )
                 }
                 if (estado.ataques.size > 1) {
-                    TextButton(onClick = { aberto = true },
-                        modifier = Modifier.semantics { contentDescription = "Sacar outra arma" }) { Text("Sacar") }
+                    OutlinedButton(onClick = { aberto = !aberto },
+                        modifier = Modifier.semantics { contentDescription = if (aberto) "Fechar troca de arma" else "Trocar a arma empunhada" }) {
+                        Text(if (aberto) "Fechar" else "Trocar arma")
+                    }
                 }
             }
             if (aberto) {
+                Text("Toque numa arma para empunhá-la:", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
                 Text(
-                    "Sacar outra arma é a manobra Preparar (gasta o turno) — livre com Saque Rápido.",
+                    "Trocar de arma é a manobra Preparar (gasta o turno) — livre com Saque Rápido.",
                     style = MaterialTheme.typography.bodySmall, fontStyle = FontStyle.Italic,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

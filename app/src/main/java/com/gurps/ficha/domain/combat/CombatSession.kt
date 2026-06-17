@@ -42,8 +42,11 @@ class CombatSession(
     // Ataque Total (Lote 377): depois de um Ataque Total o herói fica SEM defesa ativa até o próximo turno (MB p.366).
     var heroiSemDefesaAtiva: Boolean = false; private set
 
-    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa do Ataque Total). */
-    private fun inicioAcaoHeroi() { atacouDesbalanceada = false; heroiSemDefesaAtiva = false }
+    // Mover e Atacar (Lote 378): na defesa seguinte só Esquiva/Bloqueio — sem aparar — até o próximo turno (MB p.367).
+    var heroiSemAparar: Boolean = false; private set
+
+    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar). */
+    private fun inicioAcaoHeroi() { atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
     val inimigos: List<Combatente> get() = encounter.combatentes.filter { !it.ehHeroi }
@@ -92,6 +95,39 @@ class CombatSession(
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
         // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
         if (manobra == Manobra.ATAQUE_TOTAL) heroiSemDefesaAtiva = true
+        verificarFim()
+        return r
+    }
+
+    /**
+     * Mover e Atacar (MB p.366): o herói se desloca e ataca em movimento. Corpo-a-corpo aproxima-se do
+     * alvo (gastando até o Deslocamento) antes de golpear; a penalidade é tratada pelo motor (CaC −4 e
+     * teto de NH 9; à distância −2 ou a Magnitude, o pior). Na defesa seguinte só Esquiva/Bloqueio (MB p.367).
+     */
+    fun heroiMoverEAtacar(
+        ataque: AtaqueHeroi,
+        alvoId: String,
+        local: LocalAtaque = LocalAtaque.TORSO
+    ): AtaqueResultado {
+        inicioAcaoHeroi()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
+        if (!ataque.aDistancia) {
+            // Aproxima-se até o alcance da arma, gastando até o Deslocamento (assim o golpe alcança).
+            val dist = encounter.distancia(alvo)
+            if (dist > ataque.alcance) {
+                val passo = (dist - ataque.alcance).coerceAtMost(heroi.deslocamento.coerceAtLeast(1))
+                if (passo > 0) encounter.moverEmRelacaoAoHeroi(alvo.id, -passo)
+            }
+            log += "🏃🗡️ Você avança sobre ${alvo.nome} e ataca em movimento."
+        } else {
+            log += "🏃🎯 Você dispara em movimento contra ${alvo.nome}."
+        }
+        golpeForaDeAlcance(ataque, alvo)?.let { limparAvaliar(); limparApontar(); verificarFim(); return it }
+        val r = resolverGolpeHeroi(ataque, alvo, Manobra.MOVER_E_ATACAR, local, AtaqueTotalModo.DETERMINADO)
+        limparAvaliar(); limparApontar()
+        if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
+        heroiSemAparar = true // Mover e Atacar: só Esquiva/Bloqueio até o próximo turno (MB p.367).
         verificarFim()
         return r
     }
@@ -308,8 +344,9 @@ class CombatSession(
         if (heroiSemDefesaAtiva) return emptyList()
         val tipoAparar = armaPronta?.apararTipo ?: ApararTipo.NORMAL
         val ranged = armaPronta?.aDistancia == true
-        // Aparar indisponível: arma à distância, arma "Não", ou desbalanceada já usada para atacar neste turno (MB p.270).
-        val podeAparar = !ranged && tipoAparar != ApararTipo.NAO &&
+        // Aparar indisponível: arma à distância, arma "Não", desbalanceada já usada para atacar, ou Mover e
+        // Atacar no turno anterior (que permite só Esquiva/Bloqueio, MB p.367/270).
+        val podeAparar = !ranged && tipoAparar != ApararTipo.NAO && !heroiSemAparar &&
             !(tipoAparar == ApararTipo.DESBALANCEADA && atacouDesbalanceada)
         return CombatResolver.opcoesDefesa(
             esquivaBase = heroiPerfil.esquiva,
@@ -541,6 +578,16 @@ class CombatSession(
                 else -> DanoTipo.CONT // cont/esm/queimadura/tóxico/etc. → multiplicador ×1.0
             }
         }
+
+        /**
+         * Remove o token de TIPO do fim da expressão de dano (Lote 378), deixando só os dados ("2d-1 pa" →
+         * "2d-1"). O tipo é mostrado à parte ([tipoDano]); sem isso o app exibia o tipo duplicado ("2d-1 pa pi").
+         */
+        fun semTokenTipo(expr: String): String =
+            expr.trim().replace(
+                Regex("\\s+(pa\\+\\+|pa\\+|pa-|pa|pi\\+\\+|pi\\+|pi-|pi|corte|cort|perf|imp|cont|esm|qmd|cor|tox|fad|queimadura)\\s*$", RegexOption.IGNORE_CASE),
+                ""
+            ).trim()
 
         /** Bônus PARA ACERTAR por nº de tiros numa rajada (MB p.374). Tiros <=4 = +0. */
         fun bonusCadenciaTiro(tiros: Int): Int = when {

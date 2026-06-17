@@ -64,6 +64,8 @@ data class CombatUiState(
     val vezDoHeroi: Boolean,
     val manobrasHeroi: List<Manobra>,
     val alvos: List<CombatenteUi>,
+    /** Alvos alcançáveis com Mover e Atacar (Lote 378): corpo-a-corpo = reach + Deslocamento; à distância = dentro do Máx. */
+    val alvosMoverEAtacar: List<CombatenteUi>,
     val ataques: List<AtaqueHeroi>,
     val ataqueSelecionado: Int,
     val deslocamentoHeroi: Int,
@@ -252,6 +254,15 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 378: Mover e Atacar — desloca-se até o alvo (corpo-a-corpo) e ataca em movimento com a arma empunhada. */
+    fun heroiMoverEAtacar(alvoId: String, local: LocalAtaque) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        s.heroiMoverEAtacar(ataque, alvoId, local)
+        depoisDaAcaoDoHeroi()
+    }
+
     /**
      * Lote 377: Ataque Total (Duplo) — golpeia o alvo com a arma EMPUNHADA (mão hábil) e com a arma
      * [offHandIndex] (mão inábil, −4 salvo Ambidestria). MB p.366. Consome o turno como qualquer ataque.
@@ -386,9 +397,14 @@ class SagaCombatController(
         val ranged = ataqueSel?.aDistancia == true
         val reachMelee = ataqueSel?.alcance ?: 1 // "C"/"1"/"2" já convertido em metros
         // Alvos: à distância = qualquer inimigo vivo; corpo-a-corpo = dentro do ALCANCE da arma.
+        val deslocHeroi = s.heroi.deslocamento.coerceAtLeast(1)
         val alvos = if (!vezHeroi) emptyList()
             else if (ranged) combs.filter { !it.ehHeroi && it.vivo }
             else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= reachMelee }
+        // Mover e Atacar (Lote 378): corpo-a-corpo alcança quem está a até reach + Deslocamento (avança e golpeia).
+        val alvosMover = if (!vezHeroi) emptyList()
+            else if (ranged) combs.filter { !it.ehHeroi && it.vivo }
+            else combs.filter { !it.ehHeroi && it.vivo && it.distanciaM <= reachMelee + deslocHeroi }
         // Manobras: Atacar fica disponível se há alvo no alcance (cobre reach > 1); à distância também Apontar.
         val manobras = if (!vezHeroi) emptyList() else s.manobrasHeroi().toMutableList().also {
             if (alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
@@ -400,9 +416,10 @@ class SagaCombatController(
             vezDoHeroi = vezHeroi,
             manobrasHeroi = manobras,
             alvos = alvos,
+            alvosMoverEAtacar = alvosMover,
             ataques = ataques,
             ataqueSelecionado = ataqueSelecionado,
-            deslocamentoHeroi = s.heroi.deslocamento.coerceAtLeast(1),
+            deslocamentoHeroi = deslocHeroi,
             posturaHeroi = s.heroi.postura.rotulo,
             posturasAlcancaveis = if (vezHeroi) s.posturasAlcancaveis() else emptyList(),
             heroiAmbidestro = temAmbidestria(viewModel.personagem),
@@ -454,14 +471,17 @@ class SagaCombatController(
             val aDistancia = modo.contains("dist") || modo.contains("fogo")
             val pericia = acharPericiaDaArma(p, arma)
             val nh = pericia?.calcularNivel(p) ?: p.dx
-            val danoExpr = (arma.danoCalculadoComSt(p, pericia?.definicaoId) ?: arma.armaDanoRaw).orEmpty()
-            if (danoExpr.isBlank()) return@forEach
+            // Dano bruto traz o token de tipo ("2d-1 pa"): o tipo vem dele; a expressão fica só com os dados.
+            val danoBruto = (arma.danoCalculadoComSt(p, pericia?.definicaoId) ?: arma.armaDanoRaw).orEmpty()
+            if (danoBruto.isBlank()) return@forEach
+            val tipoArma = CombatSession.tipoDano(danoBruto)
+            val danoExpr = CombatSession.semTokenTipo(danoBruto)
             // Alcance real (Lote 371): à distância usa o Máx do catálogo; corpo-a-corpo, o reach ("C"/"1"/"1,2").
             val alcanceReal = if (aDistancia) (arma.armaMaximoMetros ?: 50)
                 else (arma.armaAlcanceCorpoACorpo?.let { reachParaMetros(it) } ?: 1)
             out.add(AtaqueHeroi(
                 rotulo = arma.nome + (pericia?.let { " (${it.nome})" } ?: " (sem perícia, usa DX)"),
-                nh = nh, danoExpr = danoExpr, tipo = CombatSession.tipoDano(danoExpr),
+                nh = nh, danoExpr = danoExpr, tipo = tipoArma,
                 aDistancia = aDistancia, alcance = alcanceReal, precisao = arma.armaPrecisao ?: 0,
                 meioDano = if (aDistancia) (arma.armaMeioDanoMetros ?: 0) else 0,
                 magnitude = arma.armaMagnitude ?: 0,
@@ -487,15 +507,43 @@ class SagaCombatController(
     private fun reachParaMetros(raw: String): Int =
         Regex("\\d+").findAll(raw).mapNotNull { it.value.toIntOrNull() }.maxOrNull() ?: 1
 
-    /** Casa uma arma com a perícia do herói por grupo/nome (fuzzy, normalizado). */
+    /**
+     * Casa uma arma com a perícia do herói (Lote 378 — robusto). Confere grupo/nome da arma contra
+     * nome/ESPECIALIZAÇÃO/id da perícia: armas de fogo usam a perícia "Armas de Fogo/NT" com a
+     * especialização ("Pistola"/"Rifle") guardada à parte, então só comparar o nome falhava. Se a ficha
+     * veio sem o grupo da arma (ex.: criada pela IA), cai num fallback por FAMÍLIA derivada do tipo de
+     * combate (fogo → "Armas de Fogo"; distância → arco/besta/arremesso…), preferindo a especialização
+     * que casa a arma, senão a perícia de maior NH.
+     */
     private fun acharPericiaDaArma(p: Personagem, arma: com.gurps.ficha.model.Equipamento): com.gurps.ficha.model.PericiaSelecionada? {
-        val alvos = listOfNotNull(arma.armaGrupo, arma.nome)
+        val tokens = listOfNotNull(arma.armaGrupo, arma.nome)
             .map { CatalogFilters.normalizarBusca(it) }.filter { it.isNotBlank() }
-        if (alvos.isEmpty()) return null
-        return p.periciasTotais.firstOrNull { per ->
-            val n = CatalogFilters.normalizarBusca(per.nome)
-            alvos.any { a -> n == a || n.contains(a) || a.contains(n) }
+
+        fun casa(per: com.gurps.ficha.model.PericiaSelecionada): Boolean {
+            val campos = listOf(per.nome, per.especializacao, per.definicaoId)
+                .map { CatalogFilters.normalizarBusca(it) }.filter { it.isNotBlank() }
+            return campos.any { c -> tokens.any { a -> c == a || c.contains(a) || a.contains(c) } }
         }
+        // 1) Match direto: grupo/nome da arma × nome/especialização/id da perícia.
+        p.periciasTotais.firstOrNull { casa(it) }?.let { return it }
+
+        // 2) Fallback por FAMÍLIA (grupo pode vir vazio): tipo de combate da arma → perícia base.
+        val modo = arma.armaTipoCombate?.lowercase().orEmpty()
+        val familia: List<String> = when {
+            modo.contains("fogo") -> listOf("armas de fogo", "arma de fogo")
+            modo.contains("dist") -> listOf("arco", "besta", "arremesso", "funda", "zarabatana")
+            else -> emptyList()
+        }
+        if (familia.isEmpty()) return null
+        val candidatas = p.periciasTotais.filter { per ->
+            val n = CatalogFilters.normalizarBusca(per.nome)
+            familia.any { n.contains(it) }
+        }
+        if (candidatas.isEmpty()) return null
+        return candidatas.firstOrNull { per ->
+            val esp = CatalogFilters.normalizarBusca(per.especializacao)
+            esp.isNotBlank() && tokens.any { a -> esp == a || esp.contains(a) || a.contains(esp) }
+        } ?: candidatas.maxByOrNull { it.calcularNivel(p) }
     }
 
     private fun melhorPericiaDesarmada(p: Personagem): com.gurps.ficha.model.PericiaSelecionada? =

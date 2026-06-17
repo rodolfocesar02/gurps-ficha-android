@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 16 de Junho de 2026
-**Status Atual:** Lote 377 CONCLUÍDO — dual-wield (Ataque Total Duplo: 2 golpes, mão inábil −4/Ambidestria) + "sem defesa ativa" após Ataque Total. FECHA o "polir combate". Próximo: validação no aparelho (combate + sentidos), depois Fases C/D/E.
-**Último Lote Registrado:** Lote 377 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `aa56969` (Lote 376). Hashes dos lotes recentes do submódulo: 365=`98a691e`, 366=`07a059b`, 367=`79f410c`, 368=`01b01a5`, 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`.
+**Última Atualização:** 17 de Junho de 2026
+**Status Atual:** Lote 378 CONCLUÍDO — bugfix de jogabilidade do combate (validação no aparelho): perícia da arma casa armas de fogo; Mover e Atacar abre o card e funciona; Sacar com UX clara; dano sem token duplicado. Próximo da auditoria de combate: "números que faltam" (Modificador de Tamanho + Bônus de Defesa de escudo).
+**Último Lote Registrado:** Lote 378 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `0399ca2` (Lote 377). Hashes dos lotes recentes do submódulo: 369=`2233b45`, 370=`41996c4`, 371=`82c1856`, 372=`988ab54`, 373=`91e76d3`, 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=(este lote, hash após o commit).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,19 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 378 — 17 de Junho de 2026
+**Saga combate: bugfix de jogabilidade da validação no aparelho (branch GURPS-Saga)**
+- CONTEXTO: 1º teste de combate no aparelho (personagem pistoleiro). Antes, fiz a **auditoria do capítulo de combate (MB 363–384, lido linha a linha no `chunks.jsonl`)** vs o app — registrada em memória; diretriz do usuário: **concluir TODAS as regras de combate antes da Fase C**. Este lote ataca os bugs que travavam o jogo.
+- BUG 1 — PERÍCIA DA ARMA (armas de fogo): `SagaCombatController.acharPericiaDaArma` reescrito. Agora casa grupo/nome da arma contra **nome + ESPECIALIZAÇÃO + id** da perícia (a perícia de fogo é "Armas de Fogo/NT" com "Pistola"/"Rifle" guardado à parte → só comparar o nome falhava). Fallback por **família** quando a ficha vem sem o grupo da arma (criada pela IA): tipo de combate → "Armas de Fogo"/arco/besta/arremesso, preferindo a especialização que casa, senão a perícia de maior NH.
+- BUG 2 — MOVER E ATACAR não abria o card / virava só narração: o roteamento (`CombatUi.ManeuverCards`) só tratava ATAQUE/ATAQUE_TOTAL como ataque. Agora MOVER_E_ATACAR abre o `SubDialogoAlvoLocal` e **funciona de fato**: novo `CombatSession.heroiMoverEAtacar` aproxima-se do alvo (gastando até o Deslocamento) e golpeia com a penalidade do motor (CaC −4 e teto NH 9; à distância −2/Bulk). Regra fina (MB p.367): na defesa seguinte **só Esquiva/Bloqueio — sem aparar** (flag `heroiSemAparar`). Lista de alvos = quem está a até *reach + Deslocamento* (`CombatUiState.alvosMoverEAtacar`). Delegate `FichaViewModel.sagaCombateMoverEAtacar`.
+- BUG 5 — SACAR confuso: botão renomeado para **"Trocar arma"** (toggle Trocar/Fechar) + cabeçalho "Toque numa arma para empunhá-la" no painel.
+- BUG 6 — DANO com tipo duplicado ("2d-1 pa pi"): novo `CombatSession.semTokenTipo` remove o token de tipo da expressão (o tipo já é mostrado à parte); `construirAtaques` calcula o tipo a partir do bruto e guarda a expressão limpa.
+- BUG 3 — MOVER "sem direção/metros": o diálogo `SubDialogoMover` (direção + alvo + metros) JÁ existe e está correto; era build antigo no aparelho — reconferir no rebuild.
+- NÃO são bugs (esclarecido ao usuário): dano e dano localizado **funcionam** (print "3 pen ×1.0 = 3"; rosto+pi = ×1.0 é o multiplicador correto); Avaliar é só corpo-a-corpo (pistoleiro à distância não recebe = regra).
+- Testes (`CombatSessionTest`): `semTokenTipo`; Mover-e-Atacar corpo-a-corpo (aproxima até o alcance, golpeia, não apara depois, restaura no turno seguinte); Mover-e-Atacar à distância (aplica a penalidade). Build 2 variantes + lint verde.
+- PRÓXIMO da auditoria: "números que faltam" (Modificador de Tamanho no acerto + Bônus de Defesa de escudo nas defesas).
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 377 — 16 de Junho de 2026
