@@ -3,7 +3,7 @@
 **Última Atualização:** 17 de Junho de 2026
 **Status Atual:** Lote 381 CONCLUÍDO — Modificador de Tamanho (MT) do alvo somado ao acerto À DISTÂNCIA (MB p.549), nas duas direções (herói↔NPC). Motor pronto/testado; ⚠️ criaturas do bestiário ainda com MT 0 (campo novo, default) — preencher MT (passo de dado) p/ a regra mudar números em jogo.
 **Último Lote Registrado:** Lote 381 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `3a9b2cb` (Lote 380). Hashes dos lotes recentes do submódulo: 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357` (chore `3a9b2cb`), 381=(este lote, hash após o commit).
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `3a9b2cb` (Lote 380). Hashes dos lotes recentes do submódulo: 374=`41a21e1`, 375=`de7f266`, 376=`aa56969`, 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357` (chore `3a9b2cb`), 381=`3802d17`.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
