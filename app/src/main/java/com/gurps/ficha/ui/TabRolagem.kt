@@ -81,6 +81,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
     var showEditarCanalDialog by remember { mutableStateOf(false) }
 
     var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
+    var pendingResults by remember { mutableStateOf<List<Int>?>(null) }
 
     LaunchedEffect(Unit) {
         if (canaisDiscord.isEmpty() && !canaisCarregando) {
@@ -769,33 +770,95 @@ fun TabRolagem(viewModel: FichaViewModel) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .zIndex(100f) // Garante que a box fica por cima
                 .background(Color.Black.copy(alpha = 0.7f))
         ) {
             Dice3DScene(
                 modifier = Modifier.fillMaxSize(),
                 diceCount = pendingRoll!!.diceCount,
                 onRollFinished = { resultados ->
-                    val pr = pendingRoll!!
-                    pendingRoll = null
-                    
-                    if (pr.isDano) {
-                        finalizarRolagemDano(pr, resultados)
-                    } else if (pr.isPersonalizada) {
-                        finalizarRolagemPersonalizada(pr.contextoLabel, pr.diceCount, pr.faces, pr.mod, resultados)
-                    } else {
-                        finalizarRolagem(pr, resultados)
+                    if (pendingResults == null) {
+                        pendingResults = resultados
                     }
                 }
             )
             
-            Button(
-                onClick = { pendingRoll = null },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp)
-                    .padding(top = 24.dp)
-            ) {
-                Text("Fechar Teste 3D")
+            if (pendingResults != null) {
+                // Montar o texto base dependendo do tipo:
+                val pr = pendingRoll!!
+                val rolagens = pendingResults!!
+                val soma = rolagens.sum()
+                
+                val msgPrincipal = if (pr.isDano) {
+                    val total = (soma + pr.mod).coerceAtLeast(1)
+                    "Dano: $total"
+                } else if (pr.isPersonalizada) {
+                    val total = soma + pr.mod
+                    "Resultado: $total"
+                } else {
+                    val modEfetivo = pr.mod + (if (isPraCegoVariant) modificadorGlobalPraCego else 0)
+                    val alvoEfetivo = if (pr.alvo != null) pr.alvo + modEfetivo else null
+                    val critico = CriticoRules.classificar(soma, alvoEfetivo)
+                    
+                    if (alvoEfetivo != null) {
+                        val dist = alvoEfetivo - soma
+                        val margem = Math.abs(dist)
+                        when (critico) {
+                            CriticoRules.ResultadoCritico.DECISIVO -> "Sucesso Crítico!\n(por $margem)"
+                            CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica!\n(por $margem)"
+                            else -> if (dist >= 0) "Sucesso\n(por $margem)" else "Falha\n(por $margem)"
+                        }
+                    } else {
+                        "Rolagem: $soma"
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 64.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = msgPrincipal,
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    
+                    Button(
+                        onClick = {
+                            val prState = pendingRoll!!
+                            val resultadosFinais = pendingResults!!
+                            pendingRoll = null
+                            pendingResults = null
+                            
+                            if (prState.isDano) {
+                                finalizarRolagemDano(prState, resultadosFinais)
+                            } else if (prState.isPersonalizada) {
+                                finalizarRolagemPersonalizada(prState.contextoLabel, prState.diceCount, prState.faces, prState.mod, resultadosFinais)
+                            } else {
+                                finalizarRolagem(prState, resultadosFinais)
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0EA5E9))
+                    ) {
+                        Text("Confirmar")
+                    }
+                }
+            } else {
+                Button(
+                    onClick = { pendingRoll = null },
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(16.dp)
+                        .padding(top = 24.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red.copy(alpha = 0.5f))
+                ) {
+                    Text("Cancelar Teste")
+                }
             }
         }
     }

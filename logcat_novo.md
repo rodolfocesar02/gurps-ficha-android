@@ -1,180 +1,349 @@
- Error was captured in composition. (Fix with AI)
-                                                                                                    java.lang.IllegalArgumentException: clickable only supports IndicationNodeFactory instances provided to LocalIndication, but Indication was provided instead. Either migrate the Indication implementation to implement IndicationNodeFactory, or use the other clickable overload that takes an Indication parameter, and explicitly pass LocalIndication.current there. The Indication instance provided here was: androidx.compose.material.ripple.PlatformRipple@81cb2ad6
-                                                                                                    	at androidx.compose.foundation.internal.InlineClassHelperKt.throwIllegalArgumentException(InlineClassHelper.kt:34)
-                                                                                                    	at androidx.compose.foundation.AbstractClickableNode.onObservedReadsChanged$lambda$0(Clickable.kt:1940)
-                                                                                                    	at androidx.compose.foundation.AbstractClickableNode.$r8$lambda$0NYE0E6SUj_qhL0H2zRlte2VELs(Clickable.kt:0)
-                                                                                                    	at androidx.compose.foundation.AbstractClickableNode$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:699)
-                                                                                                    	at androidx.compose.ui.node.ObserverModifierNodeKt.observeReads(ObserverModifierNode.kt:66)
-                                                                                                    	at androidx.compose.foundation.AbstractClickableNode.onObservedReadsChanged(Clickable.kt:1396)
-                                                                                                    	at androidx.compose.foundation.AbstractClickableNode.onAttach(Clickable.kt:1385)
-                                                                                                    	at androidx.compose.ui.Modifier$Node.runAttachLifecycle$ui(Modifier.kt:266)
-                                                                                                    	at androidx.compose.ui.node.DelegatingNode.runAttachLifecycle$ui(DelegatingNode.kt:261)
-                                                                                                    	at androidx.compose.ui.node.NodeChain.runAttachLifecycle(NodeChain.kt:283)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:561)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:559)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:559)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:559)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:559)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:559)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.attach$ui(LayoutNode.kt:559)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.insertAt$ui(LayoutNode.kt:314)
-                                                                                                    	at androidx.compose.ui.node.UiApplier.insertBottomUp(UiApplier.android.kt:29)
-                                                                                                    	at androidx.compose.ui.node.UiApplier.insertBottomUp(UiApplier.android.kt:21)
-                                                                                                    	at androidx.compose.runtime.changelist.Operation$PostInsertNodeFixup.execute(Operation.kt:777)
-                                                                                                    	at androidx.compose.runtime.changelist.Operation.executeWithComposeStackTrace(Operation.kt:63)
-                                                                                                    	at androidx.compose.runtime.changelist.Operations.executeAndFlushAllPendingOperations(Operations.kt:350)
-                                                                                                    	at androidx.compose.runtime.changelist.FixupList.executeAndFlushAllPendingFixups(FixupList.kt:54)
-                                                                                                    	at androidx.compose.runtime.changelist.Operation$InsertSlotsWithFixups.execute(Operation.kt:683)
-                                                                                                    	at androidx.compose.runtime.changelist.Operation.executeWithComposeStackTrace(Operation.kt:63)
-                                                                                                    	at androidx.compose.runtime.changelist.Operations.executeAndFlushAllPendingOperations(Operations.kt:350)
-                                                                                                    	at androidx.compose.runtime.changelist.ChangeList.executeAndFlushAllPendingChanges(ChangeList.kt:90)
-                                                                                                    	at androidx.compose.runtime.CompositionImpl.applyChangesInLocked(Composition.kt:1120)
-                                                                                                    	at androidx.compose.runtime.CompositionImpl.applyChanges(Composition.kt:1160)
-                                                                                                    	at androidx.compose.runtime.Recomposer$runRecomposeAndApplyChanges$2.invokeSuspend$lambda$2(Recomposer.kt:716)
-                                                                                                    	at androidx.compose.runtime.Recomposer$runRecomposeAndApplyChanges$2.$r8$lambda$sdKIQuFT6MpOW8QdHT9yWSawFoM(Recomposer.kt:0)
-                                                                                                    	at androidx.compose.runtime.Recomposer$runRecomposeAndApplyChanges$2$$ExternalSyntheticLambda0.invoke(D8$$SyntheticClass:0)
-                                                                                                    	at androidx.compose.ui.platform.AndroidUiFrameClock$withFrameNanos$2$callback$1.doFrame(AndroidUiFrameClock.android.kt:39)
-                                                                                                    	at androidx.compose.ui.platform.AndroidUiDispatcher.performFrameDispatch(AndroidUiDispatcher.android.kt:108)
-                                                                                                    	at androidx.compose.ui.platform.AndroidUiDispatcher.access$performFrameDispatch(AndroidUiDispatcher.android.kt:41)
-2026-06-18 16:46:18.813 27782-27782 ComposeInternal         com.gurps.ficha.visual               E  	at androidx.compose.ui.platform.AndroidUiDispatcher$dispatchCallback$1.doFrame(AndroidUiDispatcher.android.kt:69) (Fix with AI)
-                                                                                                    	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1655)
-                                                                                                    	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1666)
-                                                                                                    	at android.view.Choreographer.doCallbacks(Choreographer.java:1252)
-                                                                                                    	at android.view.Choreographer.doFrame(Choreographer.java:1205)
-                                                                                                    	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1640)
-                                                                                                    	at android.os.Handler.handleCallback(Handler.java:1095)
-                                                                                                    	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
-                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:125)
-                                                                                                    	at android.os.Looper.loopOnce(Looper.java:296)
-                                                                                                    	at android.os.Looper.loop(Looper.java:397)
-                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:9523)
-                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
-                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
-                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:939)
-2026-06-18 16:46:18.821 27782-27782 AndroidRuntime          com.gurps.ficha.visual               D  Shutting down VM
-2026-06-18 16:46:18.823 27782-27782 AndroidRuntime          com.gurps.ficha.visual               E  FATAL EXCEPTION: main (Fix with AI)
-                                                                                                    Process: com.gurps.ficha.visual, PID: 27782
-                                                                                                    java.lang.IllegalStateException: LayoutNode should be attached to an owner
-                                                                                                    	at androidx.compose.ui.internal.InlineClassHelperKt.throwIllegalStateExceptionForNullCheck(InlineClassHelper.kt:32)
-                                                                                                    	at androidx.compose.ui.node.LayoutNodeKt.requireOwner(LayoutNode.kt:1612)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:480)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.measure-BRTryo0(MeasurePassDelegate.kt:470)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure(RowColumnMeasurePolicy.kt:126)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure$default(RowColumnMeasurePolicy.kt:77)
-                                                                                                    	at androidx.compose.foundation.layout.RowMeasurePolicy.measure-3p2s80s(Row.kt:142)
-                                                                                                    	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:128)
-                                                                                                    	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:721)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:173)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:172)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:699)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:1064)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.measure-BRTryo0(MeasurePassDelegate.kt:470)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure(RowColumnMeasurePolicy.kt:126)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure$default(RowColumnMeasurePolicy.kt:77)
-                                                                                                    	at androidx.compose.foundation.layout.ColumnMeasurePolicy.measure-3p2s80s(Column.kt:211)
-                                                                                                    	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:128)
-                                                                                                    	at androidx.compose.foundation.layout.PaddingNode.measure-3p2s80s(Padding.kt:406)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:173)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:172)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:699)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:1064)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.measure-BRTryo0(MeasurePassDelegate.kt:470)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure(RowColumnMeasurePolicy.kt:126)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure$default(RowColumnMeasurePolicy.kt:77)
-                                                                                                    	at androidx.compose.foundation.layout.ColumnMeasurePolicy.measure-3p2s80s(Column.kt:211)
-                                                                                                    	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:128)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:173)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:172)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:699)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:1064)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.measure-BRTryo0(MeasurePassDelegate.kt:470)
-                                                                                                    	at androidx.compose.foundation.layout.BoxMeasurePolicy.measure-3p2s80s(Box.kt:145)
-                                                                                                    	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:128)
-                                                                                                    	at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:843)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-2026-06-18 16:46:18.823 27782-27782 AndroidRuntime          com.gurps.ficha.visual               E  	at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:843) (Fix with AI)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:721)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:173)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:172)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:699)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:1064)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.measure-BRTryo0(MeasurePassDelegate.kt:470)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure(RowColumnMeasurePolicy.kt:126)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure$default(RowColumnMeasurePolicy.kt:77)
-                                                                                                    	at androidx.compose.foundation.layout.ColumnMeasurePolicy.measure-3p2s80s(Column.kt:211)
-                                                                                                    	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:128)
-                                                                                                    	at androidx.compose.foundation.layout.PaddingNode.measure-3p2s80s(Padding.kt:406)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.foundation.ScrollNode.measure-3p2s80s(Scroll.kt:450)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.ui.graphics.SimpleGraphicsLayerModifier.measure-3p2s80s(GraphicsLayerModifier.kt:843)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:721)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:173)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:172)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:699)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:1064)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.measure-BRTryo0(MeasurePassDelegate.kt:470)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure(RowColumnMeasurePolicy.kt:126)
-                                                                                                    	at androidx.compose.foundation.layout.RowColumnMeasurePolicyKt.measure$default(RowColumnMeasurePolicy.kt:77)
-                                                                                                    	at androidx.compose.foundation.layout.ColumnMeasurePolicy.measure-3p2s80s(Column.kt:211)
-                                                                                                    	at androidx.compose.ui.node.InnerNodeCoordinator.measure-BRTryo0(InnerNodeCoordinator.kt:128)
-                                                                                                    	at androidx.compose.foundation.layout.PaddingValuesModifier.measure-3p2s80s(Padding.kt:470)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.foundation.layout.FillNode.measure-3p2s80s(Size.kt:721)
-                                                                                                    	at androidx.compose.ui.node.LayoutModifierNodeCoordinator.measure-BRTryo0(LayoutModifierNodeCoordinator.kt:190)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:173)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate$performMeasureBlock$1.invoke(MeasurePassDelegate.kt:172)
-                                                                                                    	at androidx.compose.runtime.snapshots.SnapshotStateObserver.observeReads(SnapshotStateObserver.kt:728)
-                                                                                                    	at androidx.compose.ui.node.MeasurePassDelegate.remeasure-BRTryo0(MeasurePassDelegate.kt:1064)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui(LayoutNode.kt:1281)
-                                                                                                    	at androidx.compose.ui.node.LayoutNode.remeasure-_Sx5XlM$ui$default(LayoutNode.kt:1274)
-2026-06-18 16:46:18.824 27782-27782 AndroidRuntime          com.gurps.ficha.visual               E  	at androidx.compose.ui.node.MeasureAndLayoutDelegate.doRemeasure-sdFAvZA(MeasureAndLayoutDelegate.kt:380) (Fix with AI)
-                                                                                                    	at androidx.compose.ui.node.MeasureAndLayoutDelegate.remeasureAndRelayoutIfNeeded(MeasureAndLayoutDelegate.kt:595)
-                                                                                                    	at androidx.compose.ui.node.MeasureAndLayoutDelegate.access$remeasureAndRelayoutIfNeeded(MeasureAndLayoutDelegate.kt:43)
-                                                                                                    	at androidx.compose.ui.node.MeasureAndLayoutDelegate.measureAndLayout(MeasureAndLayoutDelegate.kt:402)
-                                                                                                    	at androidx.compose.ui.platform.AndroidComposeView.measureAndLayout(AndroidComposeView.android.kt:1735)
-                                                                                                    	at androidx.compose.ui.node.Owner.measureAndLayout$default(Owner.kt:258)
-                                                                                                    	at androidx.compose.ui.platform.AndroidComposeView.dispatchDraw(AndroidComposeView.android.kt:2063)
-                                                                                                    	at android.view.View.draw(View.java:25524)
-                                                                                                    	at android.view.View.updateDisplayListIfDirty(View.java:24368)
-                                                                                                    	at android.view.ViewGroup.recreateChildDisplayList(ViewGroup.java:4689)
-                                                                                                    	at android.view.ViewGroup.dispatchGetDisplayList(ViewGroup.java:4662)
-                                                                                                    	at android.view.View.updateDisplayListIfDirty(View.java:24322)
-                                                                                                    	at android.view.ViewGroup.recreateChildDisplayList(ViewGroup.java:4689)
-                                                                                                    	at android.view.ViewGroup.dispatchGetDisplayList(ViewGroup.java:4662)
-                                                                                                    	at android.view.View.updateDisplayListIfDirty(View.java:24322)
-                                                                                                    	at android.view.ViewGroup.recreateChildDisplayList(ViewGroup.java:4689)
-                                                                                                    	at android.view.ViewGroup.dispatchGetDisplayList(ViewGroup.java:4662)
-                                                                                                    	at android.view.View.updateDisplayListIfDirty(View.java:24322)
-                                                                                                    	at android.view.ViewGroup.recreateChildDisplayList(ViewGroup.java:4689)
-                                                                                                    	at android.view.ViewGroup.dispatchGetDisplayList(ViewGroup.java:4662)
-                                                                                                    	at android.view.View.updateDisplayListIfDirty(View.java:24322)
-                                                                                                    	at android.view.ThreadedRenderer.updateViewTreeDisplayList(ThreadedRenderer.java:726)
-                                                                                                    	at android.view.ThreadedRenderer.updateRootDisplayList(ThreadedRenderer.java:732)
-                                                                                                    	at android.view.ThreadedRenderer.draw(ThreadedRenderer.java:830)
-                                                                                                    	at android.view.ViewRootImpl.draw(ViewRootImpl.java:6320)
-                                                                                                    	at android.view.ViewRootImpl.performDraw(ViewRootImpl.java:5970)
-                                                                                                    	at android.view.ViewRootImpl.performTraversals(ViewRootImpl.java:4903)
-                                                                                                    	at android.view.ViewRootImpl.doTraversal(ViewRootImpl.java:3351)
-                                                                                                    	at android.view.ViewRootImpl$TraversalCallback.onVsync(ViewRootImpl.java:11448)
-                                                                                                    	at android.view.Choreographer$CallbackRecord.run(Choreographer.java:1664)
-                                                                                                    	at android.view.Choreographer.doCallbacks(Choreographer.java:1252)
-                                                                                                    	at android.view.Choreographer.doFrame(Choreographer.java:1209)
-                                                                                                    	at android.view.Choreographer$FrameDisplayEventReceiver.run(Choreographer.java:1640)
-                                                                                                    	at android.os.Handler.handleCallback(Handler.java:1095)
-                                                                                                    	at android.os.Handler.dispatchMessageImpl(Handler.java:135)
-                                                                                                    	at android.os.Handler.dispatchMessage(Handler.java:125)
-                                                                                                    	at android.os.Looper.loopOnce(Looper.java:296)
-                                                                                                    	at android.os.Looper.loop(Looper.java:397)
-                                                                                                    	at android.app.ActivityThread.main(ActivityThread.java:9523)
-                                                                                                    	at java.lang.reflect.Method.invoke(Native Method)
-                                                                                                    	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:575)
-                                                                                                    	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:939)
----------------------------- PROCESS ENDED (27782) for package com.gurps.ficha.visual ----------------------------
+2026-06-18 22:02:00.499 11389-11389 WindowOnBackDispatcher  com.gurps.ficha.visual               W  OnBackInvokedCallback is not enabled for the application.
+                                                                                                    Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+2026-06-18 22:02:00.533 11389-11389 WindowOnBackDispatcher  com.gurps.ficha.visual               D  setTopOnBackInvokedCallback (unwrapped): android.view.ViewRootImpl$$ExternalSyntheticLambda14@6b4bacc
+2026-06-18 22:02:00.611 11389-11389 InsetsController        com.gurps.ficha.visual               D  hide(ime())
+2026-06-18 22:02:00.611 11389-11389 ImeTracker              com.gurps.ficha.visual               I  com.gurps.ficha.visual:2f6661fa: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+2026-06-18 22:02:02.983 11389-12018 MediaCodecList          com.gurps.ficha.visual               D  codecHandlesFormat: no format, so no extra checks
+2026-06-18 22:02:02.983 11389-12018 MediaCodec              com.gurps.ficha.visual               I  Retry enabled for HDCP failure
+2026-06-18 22:02:02.990 11389-12019 CCodec                  com.gurps.ficha.visual               D  allocate(c2.android.raw.decoder)
+2026-06-18 22:02:02.994 11389-12019 CCodec                  com.gurps.ficha.visual               I  setting up 'default' as default (vendor) store
+2026-06-18 22:02:02.997 11389-11400 AidlBufferPool          com.gurps.ficha.visual               D  bufferpool2 0x773bf2ef0588 : 0(0 size) total buffers - 0(0 size) used buffers - 0/5 (recycle/alloc) - 1/2 (fetch/transfer)
+2026-06-18 22:02:02.997 11389-11400 AidlBufferPool          com.gurps.ficha.visual               D  Destruction - bufferpool2 0x773bf2ef0588 cached: 0/0M, 0/0% in use; allocs: 5, 0% recycled; transfers: 2, 50% unfetched
+2026-06-18 22:02:02.999 11389-12019 CCodec                  com.gurps.ficha.visual               I  Created component [c2.android.raw.decoder] for [c2.android.raw.decoder]
+2026-06-18 22:02:02.999 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  read media type: audio/raw
+2026-06-18 22:02:03.001 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: algo.buffers.max-count.values
+2026-06-18 22:02:03.003 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: output.subscribed-indices.values
+2026-06-18 22:02:03.003 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: input.buffers.allocator-ids.values
+2026-06-18 22:02:03.003 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: output.buffers.allocator-ids.values
+2026-06-18 22:02:03.004 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: algo.buffers.allocator-ids.values
+2026-06-18 22:02:03.004 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: output.buffers.pool-ids.values
+2026-06-18 22:02:03.005 11389-12019 ReflectedParamUpdater   com.gurps.ficha.visual               D  extent() != 1 for single value type: algo.buffers.pool-ids.values
+2026-06-18 22:02:03.008 11389-12019 CCodecConfig            com.gurps.ficha.visual               I  query failed after returning 9 values (BAD_INDEX)
+2026-06-18 22:02:03.008 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  c2 config diff is Dict {
+                                                                                                      c2::u32 coded.bitrate.value = 64000
+                                                                                                      c2::u32 input.buffers.max-size.value = 65536
+                                                                                                      c2::u32 input.delay.value = 0
+                                                                                                      string input.media-type.value = "audio/raw"
+                                                                                                      c2::u32 output.large-frame.max-size = 0
+                                                                                                      c2::u32 output.large-frame.threshold-size = 0
+                                                                                                      string output.media-type.value = "audio/raw"
+                                                                                                      c2::u32 raw.channel-count.value = 2
+                                                                                                      c2::u32 raw.pcm-encoding.value = 0
+                                                                                                      c2::u32 raw.sample-rate.value = 44100
+                                                                                                    }
+2026-06-18 22:02:03.009 11389-12018 MediaCodec              com.gurps.ficha.visual               I  media_quality service unavailable, skipping updatePictureProfile
+2026-06-18 22:02:03.010 11389-12019 CCodec                  com.gurps.ficha.visual               D  [c2.android.raw.decoder] buffers are bound to CCodec for this session
+2026-06-18 22:02:03.010 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  no c2 equivalents for durationUs
+2026-06-18 22:02:03.010 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  no c2 equivalents for track-id
+2026-06-18 22:02:03.010 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  no c2 equivalents for bits-per-sample
+2026-06-18 22:02:03.010 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  no c2 equivalents for flags
+2026-06-18 22:02:03.011 11389-12019 CCodecConfig            com.gurps.ficha.visual               D  c2 config diff is   c2::u32 raw.channel-count.value = 1
+2026-06-18 22:02:03.012 11389-12019 CCodec                  com.gurps.ficha.visual               D  encoding statistics level = 0
+2026-06-18 22:02:03.012 11389-12019 CCodec                  com.gurps.ficha.visual               D  setup formats input: AMessage(what = 0x00000000) = {
+                                                                                                      int32_t android._codec-pcm-encoding = 2
+                                                                                                      int32_t bitrate = 64000
+                                                                                                      int32_t channel-count = 1
+                                                                                                      int32_t max-input-size = 65536
+                                                                                                      string mime = "audio/raw"
+                                                                                                      int32_t pcm-encoding = 2
+                                                                                                      int32_t sample-rate = 44100
+                                                                                                    }
+2026-06-18 22:02:03.012 11389-12019 CCodec                  com.gurps.ficha.visual               D  setup formats output: AMessage(what = 0x00000000) = {
+                                                                                                      int32_t android._codec-pcm-encoding = 2
+                                                                                                      int32_t buffer-batch-max-output-size = 0
+                                                                                                      int32_t buffer-batch-threshold-output-size = 0
+                                                                                                      int32_t channel-count = 1
+                                                                                                      string mime = "audio/raw"
+                                                                                                      int32_t pcm-encoding = 2
+                                                                                                      int32_t sample-rate = 44100
+                                                                                                      int32_t channel-mask = 0
+                                                                                                      int32_t android._config-pcm-encoding = 2
+                                                                                                    }
+2026-06-18 22:02:03.012 11389-12019 CCodecConfig            com.gurps.ficha.visual               I  query failed after returning 9 values (BAD_INDEX)
+2026-06-18 22:02:03.015 11389-12019 CCodecBufferChannel     com.gurps.ficha.visual               D  [c2.android.raw.decoder#35] Created input block pool with allocatorID 16 => poolID 19 - OK (0)
+2026-06-18 22:02:03.015 11389-11389 Filament                com.gurps.ficha.visual               I  FEngine (64 bits) created at 0x773bb30673b0 (threading is enabled)
+2026-06-18 22:02:03.015 11389-12025 Filament                com.gurps.ficha.visual               D  Using ASurfaceTexture
+2026-06-18 22:02:03.016 11389-12025 Filament                com.gurps.ficha.visual               I  FEngine resolved backend: OpenGL
+2026-06-18 22:02:03.017 11389-12019 CCodecBufferChannel     com.gurps.ficha.visual               I  [c2.android.raw.decoder#35] Created output block pool with allocatorID 16 => poolID 46 - OK
+2026-06-18 22:02:03.017 11389-12019 CCodecBufferChannel     com.gurps.ficha.visual               D  [c2.android.raw.decoder#35] Configured output block pool ids 46 => OK
+2026-06-18 22:02:03.022 11389-12025 libc                    com.gurps.ficha.visual               W  Access denied finding property "vendor.mesa.virtgpu.kumquat"
+2026-06-18 22:02:03.031 11389-12019 CCodecBuffers           com.gurps.ficha.visual               D  [c2.android.raw.decoder#35:1D-Output] received null buffer
+2026-06-18 22:02:03.035 11389-12019 CCodecBufferChannel     com.gurps.ficha.visual               D  [c2.android.raw.decoder#35] MediaCodec discarded an unknown buffer
+2026-06-18 22:02:03.035 11389-12019 CCodecBufferChannel     com.gurps.ficha.visual               D  [c2.android.raw.decoder#35] MediaCodec discarded an unknown buffer
+2026-06-18 22:02:03.035 11389-12019 CCodecBufferChannel     com.gurps.ficha.visual               D  [c2.android.raw.decoder#35] MediaCodec discarded an unknown buffer
+2026-06-18 22:02:03.038 11389-12026 CCodec                  com.gurps.ficha.visual               D  hold CodecLooper(1) until release
+2026-06-18 22:02:03.042 11389-12025 Filament                com.gurps.ficha.visual               V  [Google (Intel)], [Android Emulator OpenGL ES Translator (Intel(R) Arc(TM) A750 Graphics)], [OpenGL ES 3.0 (4.5.0 - Build 32.0.101.8826)], [OpenGL ES GLSL ES 3.00]
+2026-06-18 22:02:03.046 11389-12025 Filament                com.gurps.ficha.visual               V  Feature level: 1
+                                                                                                    Active workarounds: 
+                                                                                                    vao_doesnt_store_element_array_buffer_binding
+2026-06-18 22:02:03.048 11389-11389 Filament                com.gurps.ficha.visual               I  Backend feature level: 1
+2026-06-18 22:02:03.048 11389-11389 Filament                com.gurps.ficha.visual               I  FEngine feature level: 1
+2026-06-18 22:02:03.112 11389-11389 WindowOnBackDispatcher  com.gurps.ficha.visual               D  setTopOnBackInvokedCallback (unwrapped): null
+2026-06-18 22:02:03.167 11389-12029 libc                    com.gurps.ficha.visual               W  Access denied finding property "vendor.mesa.virtgpu.kumquat"
+2026-06-18 22:02:03.168 11389-11389 InsetsController        com.gurps.ficha.visual               D  hide(ime())
+2026-06-18 22:02:03.169 11389-11389 ImeTracker              com.gurps.ficha.visual               I  com.gurps.ficha.visual:9fd49c48: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+2026-06-18 22:02:03.661   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.663   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.678   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.679   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.684   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.684   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.699   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.699   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.707   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.707   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.714   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.714   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.729   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.729   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.745   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.746   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.749   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.749   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.757   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.757   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.810   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.810   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.825   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.826   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.833   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.833   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.853   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.853   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.874   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.875   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.878   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.878   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.885   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.885   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.906   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.906   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.910   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.910   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.957   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.957   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.973   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:03.974   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.016   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.016   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.024   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.024   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.040   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.041   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.057   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.057   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.058   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.059   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.078   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.078   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.094   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.094   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.114   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.114   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.119   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.120   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.125   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.125   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.127   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.128   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.138   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.138   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.157   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.158   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.194   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.194   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.196   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.197   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.199   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.200   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.201   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.202   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.227   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.227   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.227   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.228   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.229   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.229   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.231   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.231   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.250   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.250   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.251   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.252   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.257   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.257   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.258   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.259   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.260   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.260   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.261   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.261   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.262   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.262   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.263   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.263   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.281   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.282   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.285   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.286   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.326   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.326   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.327   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.327   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.350   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.350   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.351   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.352   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.357   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.358   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.359   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.360   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.362   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.362   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.363   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.364   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.378   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.378   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.378   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.378   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.379   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.379   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.379   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.381   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.402   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.402   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.403   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.404   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.414   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.415   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.416   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.417   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.434   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.434   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.434   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.434   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.435   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.435   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.436   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.436   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.437   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.437   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.439   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.440   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.445   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.445   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.445   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.445   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.448   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.448   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.449   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.450   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.450   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.450   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.452   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.452   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.464   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.464   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.465   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.466   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.477   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.477   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.479   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.480   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.494   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.494   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.495   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.495   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.496   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.496   690-1063  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.497   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.497   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.521   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.521   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.523   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.524   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.530   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.530   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.532   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.533   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.547   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.547   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.547   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.547   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.548   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.548   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.549   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.549   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.551   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.551   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.554   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.554   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.562   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.562   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.562   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.562   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.563   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.563   690-1901  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.564   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.564   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.614   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.615   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.616   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.616   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.629   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.629   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.629   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.629   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.631   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.631   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.631   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.631   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.646   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.646   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.646   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.646   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.648   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.648   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.648   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.648   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.661   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.661   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.661   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.661   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.662   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.663   690-706   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.663   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.663   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.678   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.678   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.679   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.680   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.681   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.682   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.683   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.684   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.702   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.703   690-939   AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.704   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.705   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.728 11389-11389 Sceneview               com.gurps.ficha.visual               D  Engine destroyed
+2026-06-18 22:02:04.729   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.730   690-1064  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.731   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.731   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.732   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.733   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.735   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.735   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.736   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.736   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.737   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.738   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.738   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.739   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.740   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.740   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.741   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.742   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.743   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
+2026-06-18 22:02:04.743   690-1854  AppOps                  system_server                        E  attributionTag  not declared in manifest of com.gurps.ficha.visual
