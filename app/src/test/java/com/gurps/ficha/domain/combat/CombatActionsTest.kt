@@ -118,4 +118,35 @@ class CombatActionsTest {
         val b = CombatActions.resolverAtaque(12, Manobra.ATAQUE, random = Random(99))
         assertEquals(a.dados, b.dados)
     }
+
+    // ── Lote 384: Tabelas de crítico (MB p.557–558) ──
+
+    @Test
+    fun `tabela de Golpe Fulminante mapeia o efeito de dano (MB p558)`() {
+        val gf = CriticoRules::golpeFulminante
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.TRIPLO, gf(3))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.TRIPLO, gf(18))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.DOBRO, gf(5))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.DOBRO, gf(16))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.MAXIMO, gf(6))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.RD_METADE, gf(4))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.RD_METADE, gf(17))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.FERIMENTO_GRAVE, gf(7))
+        assertEquals(CriticoRules.EfeitoGolpeFulminante.NORMAL, gf(10))
+    }
+
+    @Test
+    fun `tabela de Erro Critico mapeia o efeito no atacante (MB p557)`() {
+        // Armada: 3/4/17/18 quebram a arma; 5/6 atinge a si; 16 cai; demais largam a arma.
+        assertEquals(CriticoRules.EfeitoErroCritico.QUEBRA_ARMA, CriticoRules.erroCritico(3, desarmado = false))
+        assertEquals(CriticoRules.EfeitoErroCritico.ACERTA_A_SI, CriticoRules.erroCritico(5, desarmado = false))
+        assertEquals(CriticoRules.EfeitoErroCritico.ACERTA_A_SI_METADE, CriticoRules.erroCritico(6, desarmado = false))
+        assertEquals(CriticoRules.EfeitoErroCritico.CAI, CriticoRules.erroCritico(16, desarmado = false))
+        assertEquals(CriticoRules.EfeitoErroCritico.LARGA_ARMA, CriticoRules.erroCritico(9, desarmado = false))
+        // Desarmado: nunca quebra/larga arma; 3/8 = cai; 5 = atinge a si.
+        assertEquals(CriticoRules.EfeitoErroCritico.CAI, CriticoRules.erroCritico(3, desarmado = true))
+        assertEquals(CriticoRules.EfeitoErroCritico.CAI, CriticoRules.erroCritico(8, desarmado = true))
+        assertEquals(CriticoRules.EfeitoErroCritico.ACERTA_A_SI, CriticoRules.erroCritico(5, desarmado = true))
+        assertEquals(CriticoRules.EfeitoErroCritico.DESEQUILIBRIO, CriticoRules.erroCritico(10, desarmado = true))
+    }
 }

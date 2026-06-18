@@ -541,4 +541,46 @@ class CombatSessionTest {
         s.heroiFintar(rev, "goblin")
         assertTrue("finta exige arma corpo-a-corpo", s.log.any { it.contains("exige uma arma corpo-a-corpo") })
     }
+
+    // ── Lote 384: Tabelas de crítico aplicadas no combate (MB p.557–558) ──
+
+    @Test
+    fun `danoMaximo calcula o teto da expressao`() {
+        assertEquals(11, CombatSession.danoMaximo("2d-1"))
+        assertEquals(12, CombatSession.danoMaximo("2d"))
+        assertEquals(8, CombatSession.danoMaximo("1d+2"))
+        assertEquals(0, CombatSession.danoMaximo("lixo"))
+    }
+
+    @Test
+    fun `golpe fulminante aparece no log do combate (NH alto - crítico de 6 ou menos)`() {
+        val arma = AtaqueHeroi("Espada", nh = 16, danoExpr = "2d", tipo = DanoTipo.CORT) // NH 16 → decisivo em 6-
+        var viu = false
+        var seed = 0L
+        while (!viu && seed <= 300L) {
+            val g = goblin(pv = 80)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiAtaca(arma, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+            if (s.log.any { it.contains("Golpe Fulminante") }) viu = true
+            seed++
+        }
+        assertTrue("um Golpe Fulminante deve ocorrer com NH 16 em 300 seeds", viu)
+    }
+
+    @Test
+    fun `erro critico aparece no log do combate (NH baixo - falha por 10+)`() {
+        val arma = AtaqueHeroi("Espada", nh = 6, danoExpr = "2d", tipo = DanoTipo.CORT) // NH 6 → falha crítica em 16+
+        var viu = false
+        var seed = 0L
+        while (!viu && seed <= 300L) {
+            val g = goblin(pv = 80)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiAtaca(arma, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+            if (s.log.any { it.contains("Erro crítico") }) viu = true
+            seed++
+        }
+        assertTrue("um Erro crítico deve ocorrer com NH 6 em 300 seeds", viu)
+    }
 }

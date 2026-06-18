@@ -2168,12 +2168,12 @@ Nem todos os ataques causam dano. Alguns — raios atordoantes, drogas, etc. —
 Se a vítima for atingida e fracassar no teste de HT, ela é afetada; v. Atribulação (pág. 43). Outros ataques podem também imobilizar a vítima, exigindo
 testes de ST para que ela possa se desvencilhar; v. Retenção (pág. 85).
 
-## Golpes Fulminantes e Erros Críticos [~] ⚠️ PARCIAL OU INCOMPLETO
+## Golpes Fulminantes e Erros Críticos [x] ✅ FEITO
 “Golpes fulminantes” e “erros críticos” são sucessos decisivos e falhas
 críticas (v. Grau de Sucesso ou Fracasso, pág. 347) nas jogadas de ataque ou
 defesa durante um combate.
 
-### Golpes Fulminantes [~] ⚠️ PARCIAL OU INCOMPLETO
+### Golpes Fulminantes [x] ✅ FEITO
 Fulminantes
 Um “golpe fulminante” é um golpe
 especialmente sortudo ou bem-feito.
@@ -2232,7 +2232,7 @@ uma arma de arremesso, um sucesso
 decisivo numa tentativa de aparar desarmado permite que o personagem pegue a arma vindo em sua direção sem se
 machucar, se ele assim quiser.
 
-## Erros Críticos [~] ⚠️ PARCIAL OU INCOMPLETO
+## Erros Críticos [x] ✅ FEITO
 O oposto de “golpe fulminante” é um
 “erro crítico”. Um personagem obtém um
 erro crítico quando fracassa feio em uma

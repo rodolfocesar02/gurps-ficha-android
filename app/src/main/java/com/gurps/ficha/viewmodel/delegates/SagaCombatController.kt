@@ -515,7 +515,7 @@ class SagaCombatController(
             rotulo = (desarmada?.nome ?: "Desarmado"),
             nh = desarmada?.calcularNivel(p) ?: p.dx,
             danoExpr = p.danoGdP, tipo = DanoTipo.CONT, aDistancia = false, alcance = 1,
-            temPericia = desarmada != null
+            desarmado = true, temPericia = desarmada != null
         ))
         // Armas à distância primeiro quando há (pistoleiro saca o revólver, não soca).
         return out.sortedByDescending { it.aDistancia }

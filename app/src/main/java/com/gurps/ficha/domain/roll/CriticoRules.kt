@@ -47,6 +47,43 @@ object CriticoRules {
         return ResultadoCritico.NORMAL
     }
 
+    // --- Aplicação MECÂNICA das tabelas no combate da Saga (Lote 384, puro/testável) ---
+
+    /** Efeito de um Golpe Fulminante sobre o DANO (MB p.558, Tabela de Golpe Fulminante geral). */
+    enum class EfeitoGolpeFulminante { NORMAL, DOBRO, TRIPLO, MAXIMO, RD_METADE, FERIMENTO_GRAVE }
+
+    /** Rola o efeito do Golpe Fulminante a partir de 3d6 (MB p.558). Defesa já é anulada pelo crítico. */
+    fun golpeFulminante(soma3d6: Int): EfeitoGolpeFulminante = when (soma3d6) {
+        3, 18 -> EfeitoGolpeFulminante.TRIPLO
+        5, 16 -> EfeitoGolpeFulminante.DOBRO
+        6, 15 -> EfeitoGolpeFulminante.MAXIMO
+        4, 17 -> EfeitoGolpeFulminante.RD_METADE
+        7, 13, 14 -> EfeitoGolpeFulminante.FERIMENTO_GRAVE
+        else -> EfeitoGolpeFulminante.NORMAL // 8/9/10/11/12: dano normal (efeitos de choque/largar tratados à parte)
+    }
+
+    /**
+     * Efeito de um Erro Crítico sobre o ATACANTE (MB p.557). O motor da Saga aplica os mecânicos
+     * (ACERTA_A_SI[_METADE] = dano em si; CAI = derrubado) e NARRA os demais (sem rastrear durabilidade
+     * de arma): QUEBRA_ARMA/LARGA_ARMA/DESEQUILIBRIO.
+     */
+    enum class EfeitoErroCritico { LARGA_ARMA, QUEBRA_ARMA, ACERTA_A_SI, ACERTA_A_SI_METADE, CAI, DESEQUILIBRIO }
+
+    fun erroCritico(soma3d6: Int, desarmado: Boolean): EfeitoErroCritico = if (desarmado) when (soma3d6) {
+        3, 18 -> EfeitoErroCritico.CAI            // nocaute → aproximado como queda
+        5, 16 -> EfeitoErroCritico.ACERTA_A_SI    // atinge objeto sólido / a si
+        6 -> EfeitoErroCritico.ACERTA_A_SI_METADE
+        8 -> EfeitoErroCritico.CAI
+        else -> EfeitoErroCritico.DESEQUILIBRIO   // 4/7/9-15/17: tropeço/perde equilíbrio/distensão
+    } else when (soma3d6) {
+        3, 4, 17, 18 -> EfeitoErroCritico.QUEBRA_ARMA
+        5 -> EfeitoErroCritico.ACERTA_A_SI
+        6 -> EfeitoErroCritico.ACERTA_A_SI_METADE
+        7, 13, 15 -> EfeitoErroCritico.DESEQUILIBRIO
+        16 -> EfeitoErroCritico.CAI
+        else -> EfeitoErroCritico.LARGA_ARMA      // 8/9/10/11/12/14: arma gira/cai
+    }
+
     // --- Tabelas (carregadas do asset) ---
 
     private data class TabelaCritica(

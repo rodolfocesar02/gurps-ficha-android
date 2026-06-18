@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 383 CONCLUÍDO — Fintar (manobra: Disputa Rápida que reduz a defesa do alvo no próximo golpe corpo-a-corpo, MB p.366). 2/5 do loop de regras de combate. Próximos: Tabelas de crítico → Tolerância a Ferimentos → Luta agarrada.
-**Último Lote Registrado:** Lote 383 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `ae73170` (Lote 382). Hashes dos lotes recentes do submódulo: 377=`d172baa`, 378=`d5db511`, 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=`ae73170`, 383=(este lote, hash recordado no próximo).
+**Status Atual:** Lote 384 CONCLUÍDO — Tabelas de Golpe Fulminante (dano ×2/×3/máx/RD½/ferimento grave) e Erro Crítico (efeito no atacante: acerta a si/cai; narra quebrar/largar arma), MB p.557–558, nas duas direções. **+ workaround do lint** (3 detectores compose-runtime crashavam por incompat. da Kotlin Analysis API). 3/5 do loop. Próximos: Tolerância a Ferimentos → Luta agarrada.
+**Último Lote Registrado:** Lote 384 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `0acc528` (Lote 383). Hashes dos lotes recentes do submódulo: 378=`d5db511`, 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=`ae73170`, 383=`0acc528`, 384=(este lote, hash recordado no próximo).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 384 — 17 de Junho de 2026
+**Saga combate: Tabelas de Golpe Fulminante / Erro Crítico (loop de regras 3/5, MB p.557–558, branch GURPS-Saga)**
+- GOLPE FULMINANTE (MB p.558): a defesa já é anulada pelo crítico; a tabela (3d6) modifica o DANO. `CriticoRules.golpeFulminante(soma)` → DOBRO/TRIPLO/MÁXIMO/RD_METADE/FERIMENTO_GRAVE/NORMAL. Aplicado em `resolverGolpeHeroi` (herói→NPC) e `npcResolve` (NPC→herói) via `aplicarGolpeFulminante` (+ `CombatSession.danoMaximo`; `forcarFerimentoGrave` threadeado por `resolverTroca`→`ferir`→`aplicarGolpe`).
+- ERRO CRÍTICO (MB p.557): `CriticoRules.erroCritico(soma, desarmado)` → efeito no ATACANTE. O motor aplica os mecânicos (ACERTA_A_SI[_METADE] = dano em si; CAI = derrubado/deitado) e NARRA o resto (QUEBRA_ARMA/LARGA_ARMA/DESEQUILIBRIO — não rastreamos durabilidade/empunhadura de arma). `AtaqueHeroi.desarmado` escolhe a tabela armada/desarmada.
+- WORKAROUND DE BUILD: 3 detectores do compose-runtime lint (`NullSafeMutableLiveData`, `FrequentlyChangingValue`, `RememberInComposition`) crashavam com `IncompatibleClassChangeError` ("Found class KaSimpleVariableAccessCall, but interface was expected" — Kotlin Analysis API × versão do lint) ao re-executar o lint, derrubando o build (os lotes anteriores passavam só porque o lint estava em cache). Desligados em `app/build.gradle.kts` (mesmo padrão dos 2 já existentes; nosso código não usa Compose neles).
+- Testes: `golpeFulminante`/`erroCritico` (mapeamento das tabelas), `danoMaximo`, e integração (Golpe Fulminante com NH alto, Erro crítico com NH baixo). Build 2 variantes + lint verde.
+- Combate.md: "Golpes Fulminantes e Erros Críticos", "Golpes Fulminantes", "Erros Críticos" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 383 — 17 de Junho de 2026

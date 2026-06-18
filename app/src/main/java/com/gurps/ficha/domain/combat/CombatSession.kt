@@ -245,17 +245,28 @@ class CombatSession(
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
-        val danoRolado = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo)
-        val danoBruto = if (meioDano) danoRolado / 2 else danoRolado
+        var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo)
+        var rdAlvo = alvo.stats?.rd ?: 0
+        var forcaGrave = false
+        // Golpe Fulminante (Lote 384, MB p.558): a defesa já é anulada pelo crítico; a tabela modifica o DANO.
+        if (atk.critico == CriticoRules.ResultadoCritico.DECISIVO) {
+            val gf = aplicarGolpeFulminante(danoBasico, rdAlvo, ataque.danoExpr)
+            danoBasico = gf.dano; rdAlvo = gf.rd; forcaGrave = gf.grave
+            log += "  ⭐ Golpe Fulminante — ${gf.nota}"
+        }
+        val danoBruto = if (meioDano) danoBasico / 2 else danoBasico
 
         val troca = CombatResolver.resolverTroca(
             defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
             defesaTipo = defTipo, defesaValorFinal = defValorFinal, defesaSoma = defSoma,
             surpresa = false, danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
-            local = local, rdLocal = alvo.stats?.rd ?: 0, randomFerimento = random
+            local = local, rdLocal = rdAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGrave
         )
         if (penFinta > 0) log += "  └ finta: a defesa de ${alvo.nome} cai −$penFinta neste golpe (${defValor}→${defValorFinal})."
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
+        // Erro Crítico (Lote 384, MB p.557): o próprio herói tropeça no golpe.
+        if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
+            aplicarErroCritico(heroi, heroiPerfil.ht, ataque.danoExpr, ataque.desarmado, "Você")
         if (meioDano && troca.dano != null) log += "  └ além de 1/2D (${dist}m ≥ ${ataque.meioDano}m): dano pela metade."
         // Rajada: o primeiro tiro foi resolvido acima; o Recuo define quantos tiros EXTRAS acertam (MB p.374).
         if (tiros >= 2 && !troca.defendeu && troca.dano != null) {
@@ -472,19 +483,30 @@ class CombatSession(
         )
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
         val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
-        val danoTotal = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE)
+        var danoBasicoNpc = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE)
+        var rdHeroiAlvo = heroiPerfil.rd
+        var forcaGraveNpc = false
+        // Golpe Fulminante do NPC (Lote 384, MB p.558).
+        if (atk.critico == CriticoRules.ResultadoCritico.DECISIVO) {
+            val gf = aplicarGolpeFulminante(danoBasicoNpc, rdHeroiAlvo, stats.armaDano)
+            danoBasicoNpc = gf.dano; rdHeroiAlvo = gf.rd; forcaGraveNpc = gf.grave
+            log += "  ⭐ Golpe Fulminante de ${npc.nome} — ${gf.nota}"
+        }
         // Ataque Total no turno anterior ANULA a defesa do herói até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) log += "🛡️ Você está sem defesa ativa (Ataque Total) — resta torcer pelo erro do oponente!"
 
         val troca = CombatResolver.resolverTroca(
             defensor = heroi, htDefensor = heroiPerfil.ht, ataque = atk,
             defesaTipo = def.tipo, defesaValorFinal = def.valorFinal, defesaSoma = def.soma,
-            surpresa = heroiSemDefesaAtiva, danoBaseRolado = danoTotal, danoTipo = tipoDano(stats.armaTipo),
-            local = intencao.local, rdLocal = heroiPerfil.rd, randomFerimento = random
+            surpresa = heroiSemDefesaAtiva, danoBaseRolado = danoBasicoNpc, danoTipo = tipoDano(stats.armaTipo),
+            local = intencao.local, rdLocal = rdHeroiAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGraveNpc
         )
         // marca a defesa usada (bloqueio/recuo 1×/turno; aparas extras cumulativas)
         registrarDefesaUsada(def.tipo)
         log += narrarTroca(npc.nome, "você", stats.armaNome, intencao.aDistancia, atk, def.tipo, troca, intencao.local, tipoDano(stats.armaTipo))
+        // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
+        if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
+            aplicarErroCritico(npc, stats.ht, stats.armaDano, stats.armaNome.isBlank(), npc.nome)
         val incap = !heroi.vivo
         verificarFim()
         return AtaqueResultado(
@@ -622,6 +644,46 @@ class CombatSession(
 
     private fun rolar3d6(): Int = (1..3).sumOf { random.nextInt(1, 7) }
 
+    /** Resultado de aplicar a Tabela de Golpe Fulminante (Lote 384): dano/RD ajustados + flag de ferimento grave. */
+    private data class GolpeFulminanteAplicado(val dano: Int, val rd: Int, val grave: Boolean, val nota: String)
+
+    /** Rola a Tabela de Golpe Fulminante (MB p.558) e aplica ao dano básico / RD do alvo. */
+    private fun aplicarGolpeFulminante(danoBasico: Int, rd: Int, danoExpr: String): GolpeFulminanteAplicado {
+        val soma = rolar3d6()
+        return when (CriticoRules.golpeFulminante(soma)) {
+            CriticoRules.EfeitoGolpeFulminante.TRIPLO -> GolpeFulminanteAplicado(danoBasico * 3, rd, false, "×3 no dano! (tabela $soma)")
+            CriticoRules.EfeitoGolpeFulminante.DOBRO -> GolpeFulminanteAplicado(danoBasico * 2, rd, false, "×2 no dano! (tabela $soma)")
+            CriticoRules.EfeitoGolpeFulminante.MAXIMO -> GolpeFulminanteAplicado(maxOf(danoBasico, danoMaximo(danoExpr)), rd, false, "dano máximo! (tabela $soma)")
+            CriticoRules.EfeitoGolpeFulminante.RD_METADE -> GolpeFulminanteAplicado(danoBasico, rd / 2, false, "RD do alvo pela metade! (tabela $soma)")
+            CriticoRules.EfeitoGolpeFulminante.FERIMENTO_GRAVE -> GolpeFulminanteAplicado(danoBasico, rd, true, "trata como ferimento grave! (tabela $soma)")
+            CriticoRules.EfeitoGolpeFulminante.NORMAL -> GolpeFulminanteAplicado(danoBasico, rd, false, "golpe certeiro (dano normal, tabela $soma)")
+        }
+    }
+
+    /** Rola a Tabela de Erro Crítico (MB p.557) e aplica ao ATACANTE o que o motor suporta; narra o resto. */
+    private fun aplicarErroCritico(atacante: Combatente, htAtacante: Int, danoExpr: String, desarmado: Boolean, nome: String) {
+        val soma = rolar3d6()
+        when (CriticoRules.erroCritico(soma, desarmado)) {
+            CriticoRules.EfeitoErroCritico.ACERTA_A_SI -> {
+                val d = rolarDano(danoExpr, random).coerceAtLeast(1)
+                InjuryRules.ferir(atacante, d, htAtacante, random)
+                log += "  💀 Erro crítico: $nome atinge a si mesmo — $d de dano! (tabela $soma)"
+            }
+            CriticoRules.EfeitoErroCritico.ACERTA_A_SI_METADE -> {
+                val d = (rolarDano(danoExpr, random) / 2).coerceAtLeast(1)
+                InjuryRules.ferir(atacante, d, htAtacante, random)
+                log += "  💀 Erro crítico: $nome se machuca — $d de dano! (tabela $soma)"
+            }
+            CriticoRules.EfeitoErroCritico.CAI -> {
+                atacante.condicoes.add(Condicao.CAIDO); atacante.postura = Postura.DEITADO
+                log += "  💀 Erro crítico: $nome perde o apoio e cai! (tabela $soma)"
+            }
+            CriticoRules.EfeitoErroCritico.QUEBRA_ARMA -> log += "  💀 Erro crítico: a arma de $nome se quebra! (tabela $soma)"
+            CriticoRules.EfeitoErroCritico.LARGA_ARMA -> log += "  💀 Erro crítico: $nome deixa a arma cair! (tabela $soma)"
+            CriticoRules.EfeitoErroCritico.DESEQUILIBRIO -> log += "  💀 Erro crítico: $nome perde o equilíbrio! (tabela $soma)"
+        }
+    }
+
     companion object {
         /** A partir desta distância um NPC em fuga é considerado fora do encontro. */
         const val FUGA_METROS = 20
@@ -745,6 +807,14 @@ class CombatSession(
             val rol = (1..qtd).sumOf { random.nextInt(1, 7) }
             return (rol + mod).coerceAtLeast(0)
         }
+
+        /** Dano MÁXIMO de uma expressão "<n>d[±m]" (cada dado = 6). Usado pelo Golpe Fulminante "dano máximo" (Lote 384). */
+        fun danoMaximo(expr: String): Int {
+            val m = Regex("""(\d+)d([+-]\d+)?""").find(expr.lowercase().replace(" ", "")) ?: return 0
+            val qtd = m.groupValues[1].toIntOrNull() ?: 0
+            val mod = m.groupValues.getOrNull(2)?.toIntOrNull() ?: 0
+            return (qtd * 6 + mod).coerceAtLeast(0)
+        }
     }
 }
 
@@ -784,6 +854,7 @@ data class AtaqueHeroi(
     val cadenciaTiro: Int = 1,   // CdT/RoF — tiros por ataque (MB p.373). >=2 permite rajada.
     val recuo: Int = 1,          // Rco/Rcl — controla quantos tiros da rajada acertam (MB p.374).
     val duasMaos: Boolean = false, // Lote 380: ocupa as duas mãos → sem mão livre p/ o escudo (MB p.375).
+    val desarmado: Boolean = false, // Lote 384: ataque desarmado (usa a Tabela de Erro Crítico desarmada).
     val temPericia: Boolean = true
 )
 

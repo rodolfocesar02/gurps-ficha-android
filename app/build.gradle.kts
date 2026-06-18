@@ -22,7 +22,7 @@ fun firstNonBlank(vararg values: String?): String? {
 
 android {
     namespace = "com.gurps.ficha"
-    compileSdk = 34
+    compileSdk = 35
 
     // FATOR PRIME: Chaves Mascaradas Multi-Flavor (Lidas no topo para visibilidade global)
     val geminiKey = (localProperties.getProperty("mestre.ia.gemini.key") ?: "").replace("\"", "\\\"")
@@ -74,7 +74,7 @@ android {
 
         applicationId = "com.gurps.ficha"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 100
         versionName = "2.1-FIX"
         buildConfigField("String", "DISCORD_ROLL_API_BASE_URL", "\"$discordApiBaseUrl\"")
@@ -199,6 +199,13 @@ android {
         disable += "MutableCollectionMutableState"
         // Workaround para bug do lint Compose (AutoboxingStateCreationDetector)
         disable += "AutoboxingStateCreation"
+        // Lote 384: detectores do compose-runtime lint quebram (IncompatibleClassChangeError —
+        // "Found class KaSimpleVariableAccessCall, but interface was expected": incompatibilidade da
+        // Kotlin Analysis API com a versão do lint) ao re-executar o lint, derrubando o build.
+        // Workaround igual aos de cima — desliga só esses detectores. Sem efeito no código (não usamos Compose neles).
+        disable += "NullSafeMutableLiveData"
+        disable += "FrequentlyChangingValue"
+        disable += "RememberInComposition"
         // Lote 351: baseline congela os 16 erros ANTIGOS de lint (ex.: MissingPermission
         // no GeminiLiveService) como dívida documentada — o build falha só em erro NOVO.
         // Para revisar a dívida: abrir lint-baseline.xml ou rodar gradlew updateLintBaseline.
@@ -255,4 +262,11 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Lote 1: Motor 3D Declarativo para Compose
+    implementation("io.github.sceneview:sceneview:3.0.0")
+
+    // Lote 2: Física Pura (JBullet portado pelo StephenGold)
+    implementation("com.github.stephengold:jbullet:1.0.3")
+    implementation("javax.vecmath:vecmath:1.5.2")
 }

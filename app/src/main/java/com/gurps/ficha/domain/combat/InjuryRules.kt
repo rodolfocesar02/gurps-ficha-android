@@ -37,7 +37,7 @@ object InjuryRules {
      *  ferimento grave (HT: falha = atordoado+caído; falha por 5+ ou 18 = inconsciente) →
      *  inconsciência por PV ≤ 0. HT rolado via [random] (3d6).
      */
-    fun aplicarGolpe(pvAntes: Int, pvMax: Int, ht: Int, dano: Int, random: Random): ResultadoFerimento {
+    fun aplicarGolpe(pvAntes: Int, pvMax: Int, ht: Int, dano: Int, random: Random, forcarFerimentoGrave: Boolean = false): ResultadoFerimento {
         val logs = mutableListOf<String>()
         val pvDepois = pvAntes - dano
         logs.add("Dano $dano: PV $pvAntes → $pvDepois")
@@ -58,7 +58,7 @@ object InjuryRules {
         }
 
         var efeito = EfeitoFerimento.NENHUM
-        if (ehFerimentoGrave(dano, pvMax)) {
+        if (ehFerimentoGrave(dano, pvMax) || forcarFerimentoGrave) {
             val soma = rolar3d6(random)
             efeito = when {
                 soma <= ht -> { logs.add("Ferimento grave: HT $ht, rolou $soma → mantém-se."); EfeitoFerimento.NENHUM }
@@ -88,8 +88,8 @@ object InjuryRules {
      * Aplica o resultado de um golpe diretamente a um [Combatente] (muta PV e condições).
      * Integração pedida no B4; o executor real `aplicar_dano` (B5) usa isto encadeado ao B3.
      */
-    fun ferir(c: Combatente, dano: Int, ht: Int, random: Random): ResultadoFerimento {
-        val r = aplicarGolpe(c.pvAtual, c.pvMax, ht, dano, random)
+    fun ferir(c: Combatente, dano: Int, ht: Int, random: Random, forcarFerimentoGrave: Boolean = false): ResultadoFerimento {
+        val r = aplicarGolpe(c.pvAtual, c.pvMax, ht, dano, random, forcarFerimentoGrave)
         c.pvAtual = r.pvDepois
         // Choque (Lote 382): acumula os PV perdidos; vira penalidade no próximo turno do combatente (MB p.419).
         if (dano > 0) c.choquePendente += dano

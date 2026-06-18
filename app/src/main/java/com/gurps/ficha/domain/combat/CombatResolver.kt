@@ -129,7 +129,8 @@ object CombatResolver {
         danoTipo: DanoTipo,
         local: LocalAtaque,
         rdLocal: Int,
-        randomFerimento: kotlin.random.Random
+        randomFerimento: kotlin.random.Random,
+        forcarFerimentoGrave: Boolean = false
     ): RelatorioTroca {
         if (ataque.resultado == CombatActions.ResultadoAcerto.FALHA) {
             return RelatorioTroca(ataque, false, null, null, false, null, null, "${ataque.texto} → erra, sem defesa necessária.")
@@ -144,7 +145,7 @@ object CombatResolver {
         }
 
         val dano = HitLocationRules.aplicarDano(defensor.pvMax, danoBaseRolado, danoTipo, local, rdLocal)
-        val ferimento = InjuryRules.ferir(defensor, dano.pvSubtrair, htDefensor, randomFerimento)
+        val ferimento = InjuryRules.ferir(defensor, dano.pvSubtrair, htDefensor, randomFerimento, forcarFerimentoGrave)
         val motivoSemDefesa = when {
             anulada && critico -> " (defesa ANULADA por golpe decisivo)"
             anulada && surpresa -> " (defesa ANULADA por surpresa)"
