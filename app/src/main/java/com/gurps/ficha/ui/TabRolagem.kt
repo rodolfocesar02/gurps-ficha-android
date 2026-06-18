@@ -12,6 +12,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.background
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.semantics.contentDescription
@@ -42,6 +44,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.gurps.ficha.BuildConfig
 
 import com.gurps.ficha.ui.features.rolagem.*
+import com.gurps.ficha.ui.features.dice3d.Dice3DScene
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -461,23 +464,43 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val innerCardPadding = if (isSmallScreen) 4.dp else 8.dp
     val rowSpacing = if (isTinyScreen) 4.dp else 8.dp
 
-    // --- UI Layout ---
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(start = horizontalPadding, top = 6.dp, end = horizontalPadding, bottom = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        RolagemHeader(
-            canalSelecionadoNome = canalSelecionadoNome,
-            backendOnline = backendOnline,
-            isVerySmallScreen = isVerySmallScreen,
-            compactLabelStyle = compactLabelStyle,
-            onEditCanal = { showEditarCanalDialog = true }
-        )
+    var showTestDado3d by remember { mutableStateOf(false) }
 
-        if (isPraCegoVariant) SectionHeaderPraCego("Atributos e Status")
+    // --- UI Layout ---
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(start = horizontalPadding, top = 6.dp, end = horizontalPadding, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            RolagemHeader(
+                canalSelecionadoNome = canalSelecionadoNome,
+                backendOnline = backendOnline,
+                isVerySmallScreen = isVerySmallScreen,
+                compactLabelStyle = compactLabelStyle,
+                onEditCanal = { showEditarCanalDialog = true }
+            )
+
+            Button(
+                onClick = { showTestDado3d = true },
+                modifier = Modifier.fillMaxWidth().height(48.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                ),
+                shape = RoundedCornerShape(8.dp),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = "Testar Física 3D e Som (Lote 2 e 3)",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = if (isSmallScreen) 14.sp else 16.sp
+                )
+            }
+
+            if (isPraCegoVariant) SectionHeaderPraCego("Atributos e Status")
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -686,6 +709,26 @@ fun TabRolagem(viewModel: FichaViewModel) {
             onCanalSelecionado = { canal -> viewModel.selecionarCanalDiscord(canal) },
             onDismiss = { showEditarCanalDialog = false }
         )
+    }
+
+    if (showTestDado3d) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.7f))
+        ) {
+            Dice3DScene(modifier = Modifier.fillMaxSize())
+            
+            Button(
+                onClick = { showTestDado3d = false },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+                    .padding(top = 24.dp)
+            ) {
+                Text("Fechar Teste 3D")
+            }
+        }
     }
 
     if (showConfigAtaqueDialog) {
@@ -920,5 +963,6 @@ fun TabRolagem(viewModel: FichaViewModel) {
                 showEditarBloqueioDialog = false
             }
         )
+    }
     }
 }
