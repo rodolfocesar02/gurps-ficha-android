@@ -35,6 +35,7 @@ class PhysicsWorld {
     }
 
     var onCollision: ((force: Float) -> Unit)? = null
+    private var lastCollisionTime = 0L
 
     /**
      * Avança a simulação física baseado no tempo transcorrido.
@@ -45,16 +46,24 @@ class PhysicsWorld {
         // Verifica colisões para som
         val dispatcher = dynamicsWorld.dispatcher
         val numManifolds = dispatcher.numManifolds
+        var maxImpulse = 0f
+        
         for (i in 0 until numManifolds) {
             val contactManifold = dispatcher.getManifoldByIndexInternal(i)
             val numContacts = contactManifold.numContacts
             for (j in 0 until numContacts) {
                 val pt = contactManifold.getContactPoint(j)
-                // Se o impulso aplicado for grande o suficiente, significa uma batida forte
-                if (pt.appliedImpulse > 0.5f) {
-                    onCollision?.invoke(pt.appliedImpulse)
+                if (pt.appliedImpulse > maxImpulse) {
+                    maxImpulse = pt.appliedImpulse
                 }
             }
+        }
+        
+        // Debounce de 80ms para evitar spam do SoundPool (Log infinito)
+        val currentTime = System.currentTimeMillis()
+        if (maxImpulse > 0.5f && (currentTime - lastCollisionTime) > 80) {
+            onCollision?.invoke(maxImpulse)
+            lastCollisionTime = currentTime
         }
     }
 

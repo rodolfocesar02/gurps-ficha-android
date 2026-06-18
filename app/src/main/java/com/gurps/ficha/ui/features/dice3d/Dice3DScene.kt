@@ -159,7 +159,8 @@ fun Dice3DScene(
                     position = io.github.sceneview.math.Position(x = 0f, y = 18f, z = 4f)
                     lookAt(io.github.sceneview.math.Position(x = 0f, y = 0f, z = 0f))
                 },
-                isOpaque = false
+                isOpaque = false,
+                surfaceType = io.github.sceneview.SurfaceType.TextureSurface
             ) {
                 LightNode(
                     type = LightManager.Type.SUN
