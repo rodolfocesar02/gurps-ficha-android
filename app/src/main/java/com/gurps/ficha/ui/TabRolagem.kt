@@ -45,6 +45,20 @@ import com.gurps.ficha.BuildConfig
 
 import com.gurps.ficha.ui.features.rolagem.*
 import com.gurps.ficha.ui.features.dice3d.Dice3DScene
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.zIndex
+
+data class PendingRollState(
+    val tipo: TipoTeste? = null,
+    val contextoLabel: String,
+    val alvo: Int? = null,
+    val mod: Int = 0,
+    val diceCount: Int = 3,
+    val isDano: Boolean = false,
+    val isPersonalizada: Boolean = false,
+    val faces: Int = 6,
+    val danoExpr: String? = null
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +79,8 @@ fun TabRolagem(viewModel: FichaViewModel) {
     val canaisErro = viewModel.canaisDiscordErro
     val backendOnline = canaisErro.isNullOrBlank()
     var showEditarCanalDialog by remember { mutableStateOf(false) }
+
+    var pendingRoll by remember { mutableStateOf<PendingRollState?>(null) }
 
     LaunchedEffect(Unit) {
         if (canaisDiscord.isEmpty() && !canaisCarregando) {
@@ -308,14 +324,24 @@ fun TabRolagem(viewModel: FichaViewModel) {
     }
 
     fun executarRolagem(tipo: TipoTeste, contextoLabel: String, alvo: Int?, mod: Int = 0) {
-        val d1 = Random.nextInt(1, 7); val d2 = Random.nextInt(1, 7); val d3 = Random.nextInt(1, 7)
-        val soma = d1 + d2 + d3
-        val modEfetivo = mod + (if (isPraCegoVariant) modificadorGlobalPraCego else 0)
-        val alvoEfetivo = if (alvo != null) alvo + modEfetivo else null
+        pendingRoll = PendingRollState(
+            tipo = tipo,
+            contextoLabel = contextoLabel,
+            alvo = alvo,
+            mod = mod,
+            diceCount = 3,
+            isDano = false
+        )
+    }
+
+    fun finalizarRolagem(pending: PendingRollState, rolagens: List<Int>) {
+        val soma = rolagens.sum()
+        val modEfetivo = pending.mod + (if (isPraCegoVariant) modificadorGlobalPraCego else 0)
+        val alvoEfetivo = if (pending.alvo != null) pending.alvo + modEfetivo else null
         
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
         val modStr = if (modEfetivo == 0) "" else if (modEfetivo > 0) "+$modEfetivo" else "$modEfetivo"
-        val labelComMod = if (modStr.isEmpty()) contextoLabel else "$contextoLabel ($modStr)"
+        val labelComMod = if (modStr.isEmpty()) pending.contextoLabel else "${pending.contextoLabel} ($modStr)"
 
         // Classificação de crítico pela regra COMPLETA (considera o NH efetivo).
         val critico = CriticoRules.classificar(soma, alvoEfetivo)
@@ -347,9 +373,9 @@ fun TabRolagem(viewModel: FichaViewModel) {
         }
         val payload = DiscordRollPayload(
             character = p.nome,
-            testType = tipo.label,
-            context = contextoLabel,
-            dice = listOf(d1, d2, d3),
+            testType = pending.tipo?.label ?: TipoTeste.ATAQUE.label,
+            context = pending.contextoLabel,
+            dice = rolagens,
             total = soma,
             modifier = modEfetivo,
             target = alvoEfetivo,
@@ -363,26 +389,37 @@ fun TabRolagem(viewModel: FichaViewModel) {
         // Sucesso Decisivo ou Falha Crítica dispara automaticamente a rolagem
         // 3d6 nas tabelas (Golpe Fulminante / Erro Crítico) — 2ª mensagem.
         if (critico != CriticoRules.ResultadoCritico.NORMAL &&
-            CriticoRules.ehTesteDeCombate(tipo.label)
+            pending.tipo != null && CriticoRules.ehTesteDeCombate(pending.tipo.label)
         ) {
-            dispararTabelaCritica(critico, contextoLabel)
+            dispararTabelaCritica(critico, pending.contextoLabel)
         }
     }
 
     fun executarRolagemDano(contextoLabel: String, danoExpr: String, periciaId: String? = null) {
         val parsed = parseDamageExpression(danoExpr) ?: return
         
-        val rolagens = List(parsed.diceCount) { Random.nextInt(1, 7) }
+        pendingRoll = PendingRollState(
+            contextoLabel = contextoLabel,
+            danoExpr = danoExpr,
+            mod = parsed.modifier,
+            diceCount = parsed.diceCount,
+            isDano = true
+        )
+    }
+
+    fun finalizarRolagemDano(pending: PendingRollState, rolagens: List<Int>) {
+        val parsed = parseDamageExpression(pending.danoExpr ?: "") ?: return
+        
         val somaDados = rolagens.sum()
-        val total = (somaDados + parsed.modifier).coerceAtLeast(1)
+        val total = (somaDados + pending.mod).coerceAtLeast(1)
         
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
-        val textoHist = "[$timestamp] Dano $contextoLabel ($danoExpr): $total"
+        val textoHist = "[$timestamp] Dano ${pending.contextoLabel} (${pending.danoExpr}): $total"
         
         val payload = DiscordRollPayload(
             character = p.nome,
             testType = TipoTeste.ATAQUE.label,
-            context = "Dano $contextoLabel",
+            context = "Dano ${pending.contextoLabel}",
             dice = rolagens,
             total = total,
             modifier = parsed.modifier,
@@ -394,8 +431,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
         registrarResultado(textoHist, payload)
     }
 
-    fun executarRolagemPersonalizada(label: String, qtd: Int, faces: Int, mod: Int) {
-        val rolagens = List(qtd) { Random.nextInt(1, faces + 1) }
+    fun finalizarRolagemPersonalizada(label: String, qtd: Int, faces: Int, mod: Int, rolagens: List<Int>) {
         val soma = rolagens.sum()
         val total = soma + mod
         val timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"))
@@ -418,6 +454,22 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
         registrarResultado(textoHist, payload)
         ultimaRolagemPersonalizadaMs = System.currentTimeMillis()
+    }
+
+    fun executarRolagemPersonalizada(label: String, qtd: Int, faces: Int, mod: Int) {
+        if (faces == 6) {
+            pendingRoll = PendingRollState(
+                contextoLabel = label,
+                diceCount = qtd,
+                faces = faces,
+                mod = mod,
+                isPersonalizada = true
+            )
+        } else {
+            // Se não for D6, rola invisível mesmo (não temos modelos 3D de D10, D20 ainda)
+            val rolagens = List(qtd) { Random.nextInt(1, faces + 1) }
+            finalizarRolagemPersonalizada(label, qtd, faces, mod, rolagens)
+        }
     }
 
     fun consumirEnergiaMagia(custo: Int) {
@@ -711,16 +763,33 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    if (showTestDado3d) {
+    val blurModifier = if (pendingRoll != null) Modifier.blur(16.dp) else Modifier
+
+    if (pendingRoll != null) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.7f))
         ) {
-            Dice3DScene(modifier = Modifier.fillMaxSize())
+            Dice3DScene(
+                modifier = Modifier.fillMaxSize(),
+                diceCount = pendingRoll!!.diceCount,
+                onRollFinished = { resultados ->
+                    val pr = pendingRoll!!
+                    pendingRoll = null
+                    
+                    if (pr.isDano) {
+                        finalizarRolagemDano(pr, resultados)
+                    } else if (pr.isPersonalizada) {
+                        finalizarRolagemPersonalizada(pr.contextoLabel, pr.diceCount, pr.faces, pr.mod, resultados)
+                    } else {
+                        finalizarRolagem(pr, resultados)
+                    }
+                }
+            )
             
             Button(
-                onClick = { showTestDado3d = false },
+                onClick = { pendingRoll = null },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(16.dp)

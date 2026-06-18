@@ -34,11 +34,28 @@ class PhysicsWorld {
         dynamicsWorld.setGravity(Vector3f(0f, -60.0f, 0f))
     }
 
+    var onCollision: ((force: Float) -> Unit)? = null
+
     /**
      * Avança a simulação física baseado no tempo transcorrido.
      */
     fun stepSimulation(deltaTimeSec: Float) {
         dynamicsWorld.stepSimulation(deltaTimeSec, 10, 1f / 60f)
+        
+        // Verifica colisões para som
+        val dispatcher = dynamicsWorld.dispatcher
+        val numManifolds = dispatcher.numManifolds
+        for (i in 0 until numManifolds) {
+            val contactManifold = dispatcher.getManifoldByIndexInternal(i)
+            val numContacts = contactManifold.numContacts
+            for (j in 0 until numContacts) {
+                val pt = contactManifold.getContactPoint(j)
+                // Se o impulso aplicado for grande o suficiente, significa uma batida forte
+                if (pt.appliedImpulse > 0.5f) {
+                    onCollision?.invoke(pt.appliedImpulse)
+                }
+            }
+        }
     }
 
     /**

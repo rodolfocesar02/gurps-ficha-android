@@ -241,7 +241,9 @@ class CombatSession(
             CombatResolver.TipoDefesa.ESQUIVA to esquivaNpc(alvo) else melhorDefesaNpc(alvo)
         // Finta (Lote 383, MB p.366): a margem da finta contra este alvo reduz a defesa dele NESTE golpe.
         val penFinta = if (alvo.id == fintaAlvoId) fintaPenalidade else 0
-        val defValorFinal = (defValor - penFinta).coerceAtLeast(0)
+        // Agarrado (Lote 386, MB p.370): o alvo preso defende-se mal (−4).
+        val penAgarrado = if (Condicao.AGARRADO in alvo.condicoes) 4 else 0
+        val defValorFinal = (defValor - penFinta - penAgarrado).coerceAtLeast(0)
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
@@ -357,6 +359,63 @@ class CombatSession(
     }
 
     /**
+     * Agarrar (MB p.370): manobra de ataque com o NH de luta. Se acertar e o alvo não se defender, ele
+     * fica AGARRADO — não pode atacar (gasta o turno tentando se soltar) e fica −4 na defesa. Sem dano.
+     * Exige estar adjacente. (Base do Lote 386; Imobilizar/Estrangular ficam para lotes futuros.)
+     */
+    fun heroiAgarrar(ataque: AtaqueHeroi, alvoId: String): String {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return "🤼 Alvo inválido ou já fora de combate.".also { log += it }
+        if (ataque.aDistancia || encounter.distancia(alvo) > 1) {
+            val txt = "🤼 Não dá para agarrar ${alvo.nome}: é preciso estar adjacente (corpo-a-corpo)."
+            log += txt; return txt
+        }
+        val atk = CombatActions.resolverAtaque(nhBaseArma = ataque.nh, manobra = Manobra.ATAQUE, postura = heroi.postura, random = random)
+        val (_, defValor) = melhorDefesaNpc(alvo)
+        val defSoma = rolar3d6()
+        val acertou = atk.resultado == CombatActions.ResultadoAcerto.ACERTO
+        val defendeu = acertou && atk.critico != CriticoRules.ResultadoCritico.DECISIVO && CombatResolver.defesaBemSucedida(defValor, defSoma)
+        val tec = "[NH ${ataque.nh} rolou ${atk.soma}]"
+        val txt = if (acertou && !defendeu) {
+            alvo.condicoes.add(Condicao.AGARRADO)
+            "🤼 Você agarra ${alvo.nome}! Ele fica preso (−4 na defesa) e gasta o turno tentando se soltar. $tec"
+        } else {
+            "🤼 Você tenta agarrar ${alvo.nome}, mas ${if (!acertou) "erra o bote" else "ele escapa"}. $tec"
+        }
+        log += txt
+        return txt
+    }
+
+    /**
+     * Derrubar (MB p.371): Disputa Rápida usando o maior entre ST e DX de cada um. Se o herói vence, o alvo
+     * vai ao chão (caído/deitado). Exige estar adjacente. Útil principalmente contra um alvo já agarrado.
+     */
+    fun heroiDerrubar(alvoId: String): String {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+        val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
+            ?: return "🤼 Alvo inválido ou já fora de combate.".also { log += it }
+        if (encounter.distancia(alvo) > 1) {
+            val txt = "🤼 Você precisa estar adjacente para derrubar ${alvo.nome}."
+            log += txt; return txt
+        }
+        val heroVal = maxOf(heroiPerfil.st, heroiPerfil.dx)
+        val npcVal = maxOf(alvo.stats?.st ?: 10, alvo.stats?.dx ?: 10)
+        val rh = rolar3d6(); val rn = rolar3d6()
+        val tec = "[$heroVal rolou $rh vs $npcVal rolou $rn]"
+        val txt = if (vencaDisputaRapida(heroVal, rh, npcVal, rn)) {
+            alvo.condicoes.add(Condicao.CAIDO); alvo.postura = Postura.DEITADO
+            "🤼 Você derruba ${alvo.nome} no chão! $tec"
+        } else {
+            "🤼 Você tenta derrubar ${alvo.nome}, mas ele se mantém de pé. $tec"
+        }
+        log += txt
+        return txt
+    }
+
+    /**
      * Posturas para as quais o herói PODE mudar agora (MB p.365): de deitado não se levanta direto —
      * só vai para ajoelhado/sentado/rastejando antes de ficar em pé.
      */
@@ -434,6 +493,22 @@ class CombatSession(
     ): AtaqueResultado {
         val npc = inimigos.firstOrNull { it.id == npcId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "NPC fora de combate.")
+
+        // Agarrado (Lote 386, MB p.371): o NPC preso gasta o turno tentando se desvencilhar (Disputa Rápida
+        // do maior entre ST/DX). Se vencer, solta-se; senão, continua preso. Em ambos os casos, não ataca.
+        if (Condicao.AGARRADO in npc.condicoes) {
+            val nv = maxOf(npc.stats?.st ?: 10, npc.stats?.dx ?: npc.dx)
+            val hv = maxOf(heroiPerfil.st, heroiPerfil.dx)
+            val rn = rolar3d6(); val rh = rolar3d6()
+            if (vencaDisputaRapida(nv, rn, hv, rh)) {
+                npc.condicoes.remove(Condicao.AGARRADO)
+                log += "🤼 ${npc.nome} se desvencilha e se solta do agarrão! [$nv rolou $rn vs $hv rolou $rh]"
+            } else {
+                log += "🤼 ${npc.nome} forceja, mas continua preso no agarrão. [$nv rolou $rn vs $hv rolou $rh]"
+            }
+            verificarFim()
+            return AtaqueResultado(false, false, 0, false, log.last())
+        }
 
         when (intencao.manobra) {
             Manobra.MOVER -> {
@@ -726,6 +801,16 @@ class CombatSession(
         }
 
         /**
+         * Disputa Rápida (MB p.348, Lote 386): A vence se obtém sucesso e (B falha OU a margem de A é maior
+         * que a de B). Empate ou A sem sucesso = A NÃO vence. Usada na luta agarrada (Derrubar/desvencilhar).
+         */
+        fun vencaDisputaRapida(valorA: Int, rolA: Int, valorB: Int, rolB: Int): Boolean {
+            if (rolA > valorA) return false
+            if (rolB > valorB) return true
+            return (valorA - rolA) > (valorB - rolB)
+        }
+
+        /**
          * Remove o token de TIPO do fim da expressão de dano (Lote 378), deixando só os dados ("2d-1 pa" →
          * "2d-1"). O tipo é mostrado à parte ([tipoDano]); sem isso o app exibia o tipo duplicado ("2d-1 pa pi").
          */
@@ -830,7 +915,10 @@ data class HeroiPerfilCombate(
      *  REMOVÊ-LO quando o escudo não conta (arma de 2 mãos sem mão livre, ou ataque de arma de fogo; MB p.375). */
     val bonusEscudo: Int = 0,
     /** Lote 381: Modificador de Tamanho (MT) do herói — somado ao acerto quando um NPC atira NELE (MB p.549). */
-    val modificadorTamanho: Int = 0
+    val modificadorTamanho: Int = 0,
+    /** Lote 386: ST e DX do herói — para as Disputas Rápidas de luta agarrada (Agarrar/Derrubar, MB p.370/371). */
+    val st: Int = 10,
+    val dx: Int = 10
 )
 
 /**

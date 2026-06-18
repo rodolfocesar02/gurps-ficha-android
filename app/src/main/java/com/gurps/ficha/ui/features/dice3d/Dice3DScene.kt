@@ -45,16 +45,39 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 
+import androidx.compose.ui.platform.LocalContext
+
 @Composable
-fun Dice3DScene(modifier: Modifier = Modifier) {
-    val physicsWorld = remember { PhysicsWorld().apply { createGround() } }
+fun Dice3DScene(
+    modifier: Modifier = Modifier,
+    diceCount: Int = 3,
+    onRollFinished: (List<Int>) -> Unit
+) {
+    val context = LocalContext.current
+    val soundManager = remember { DiceSoundManager(context) }
     
-    // Arrays para os 3 dados
-    val diceRigidBodies = remember { mutableStateListOf<RigidBody?>(null, null, null) }
-    val modelNodes = remember { mutableStateListOf<ModelNode?>(null, null, null) }
-    val diceResults = remember { mutableStateListOf<Int?>(null, null, null) }
+    val physicsWorld = remember { 
+        PhysicsWorld().apply { 
+            createGround() 
+            onCollision = { force ->
+                soundManager.playBounceSound(force)
+            }
+        } 
+    }
     
-    var isRolling by remember { mutableStateOf(false) }
+    // Arrays para os N dados
+    val diceRigidBodies = remember(diceCount) { mutableStateListOf<RigidBody?>().apply { repeat(diceCount) { add(null) } } }
+    val modelNodes = remember(diceCount) { mutableStateListOf<ModelNode?>().apply { repeat(diceCount) { add(null) } } }
+    val diceResults = remember(diceCount) { mutableStateListOf<Int?>().apply { repeat(diceCount) { add(null) } } }
+    
+    // Inicia a rolagem automaticamente quando a cena é aberta
+    var isRolling by remember { mutableStateOf(true) }
+
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose {
+            soundManager.release()
+        }
+    }
 
     LaunchedEffect(Unit) {
         var lastFrameTime = System.nanoTime()
@@ -68,7 +91,7 @@ fun Dice3DScene(modifier: Modifier = Modifier) {
                     
                     var allStopped = true
                     
-                    for (i in 0..2) {
+                    for (i in 0 until diceCount) {
                         diceRigidBodies[i]?.let { rb ->
                             val matrix = physicsWorld.getTransformMatrix(rb)
                             
@@ -93,15 +116,19 @@ fun Dice3DScene(modifier: Modifier = Modifier) {
                         }
                     }
                     
-                    if (isRolling && allStopped) {
+                    if (isRolling && allStopped && diceRigidBodies.all { it != null }) {
                         isRolling = false
-                        for (i in 0..2) {
+                        val finalResults = mutableListOf<Int>()
+                        for (i in 0 until diceCount) {
                             diceRigidBodies[i]?.let { rb ->
                                 val btTransform = com.bulletphysics.linearmath.Transform()
                                 rb.motionState.getWorldTransform(btTransform)
-                                diceResults[i] = readDieValue(btTransform)
+                                val value = readDieValue(btTransform)
+                                diceResults[i] = value
+                                finalResults.add(value)
                             }
                         }
+                        onRollFinished(finalResults)
                     }
                 }
             }
@@ -121,7 +148,7 @@ fun Dice3DScene(modifier: Modifier = Modifier) {
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().background(Color(0xFF0F172A))) { // Fundo mais escuro
+    Box(modifier = modifier.fillMaxSize().background(Color(0x66000000))) { // Fundo semi-transparente escurecido
         CompositionLocalProvider(LocalIndication provides NoRippleNodeFactory) {
             Scene(
                 modifier = Modifier.fillMaxSize(),
@@ -138,131 +165,31 @@ fun Dice3DScene(modifier: Modifier = Modifier) {
                     type = LightManager.Type.SUN
                 )
 
-                // 3 Instâncias do mesmo modelo
-                for (i in 0..2) {
+                // Instâncias do mesmo modelo
+                for (i in 0 until diceCount) {
                     val model = rememberModelInstance(modelLoader, "models/Dado.glb")
                     
                     if (model != null) {
                         LaunchedEffect(model) {
                             if (diceRigidBodies[i] == null) {
-                                // Inicia cada um numa posição espalhada
-                                val initialPositions = listOf(
-                                    Vector3f(-2f, 5f, -1f),
-                                    Vector3f(0f, 7f, 1f),
-                                    Vector3f(2f, 5f, -0.5f)
-                                )
-                                diceRigidBodies[i] = physicsWorld.addDice(1.2f, initialPositions[i])
+                                // Inicia cada um numa posição espalhada com pequena aleatoriedade
+                                val randomX = (Math.random() * 4 - 2).toFloat()
+                                val randomZ = (Math.random() * 2 - 1).toFloat()
+                                val randomY = 5f + (Math.random() * 3).toFloat()
+                                val initialPos = Vector3f(randomX, randomY, randomZ)
+                                
+                                diceRigidBodies[i] = physicsWorld.addDice(1.2f, initialPos)
                             }
                         }
 
                         ModelNode(
                             modelInstance = model,
-                            scaleToUnits = 1.2f, // Um pouco menores para caberem 3
+                            scaleToUnits = 1.2f, // Um pouco menores para caberem vários
                             apply = {
                                 modelNodes[i] = this
                             }
                         )
                     }
-                }
-            }
-        }
-        
-        // HUD Inferior (Neon GURPS Style)
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp)
-                .fillMaxWidth(0.9f)
-                .background(Color(0xD90B1320), shape = RoundedCornerShape(12.dp))
-                .border(1.dp, Color(0xFF00E5FF), RoundedCornerShape(12.dp)) // Cyan border
-                .padding(16.dp)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Resultados dos dados
-                if (diceResults.all { it != null }) {
-                    val r1 = diceResults[0] ?: 0
-                    val r2 = diceResults[1] ?: 0
-                    val r3 = diceResults[2] ?: 0
-                    val soma = r1 + r2 + r3
-                    
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        DiceResultBox(r1)
-                        Text(" + ", color = Color.White)
-                        DiceResultBox(r2)
-                        Text(" + ", color = Color.White)
-                        DiceResultBox(r3)
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = "= $soma",
-                            color = Color(0xFF00E5FF), // Cyan text
-                            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium
-                        )
-                    }
-                } else if (isRolling) {
-                    Text(
-                        text = "ROLANDO...",
-                        color = Color(0xFF00E5FF),
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
-                    )
-                } else {
-                    Text(
-                        text = "Aguardando Rolagem",
-                        color = Color.Gray,
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                Button(
-                    onClick = {
-                        diceResults[0] = null
-                        diceResults[1] = null
-                        diceResults[2] = null
-                        isRolling = true
-                        
-                        diceRigidBodies.forEachIndexed { i, rb ->
-                            rb?.let {
-                                val transform = com.bulletphysics.linearmath.Transform()
-                                transform.setIdentity()
-                                
-                                val startPositions = listOf(
-                                    Vector3f(-2f, 6f, -1f),
-                                    Vector3f(0f, 7f, 1f),
-                                    Vector3f(2f, 6f, -1f)
-                                )
-                                transform.origin.set(startPositions[i])
-                                
-                                rb.setWorldTransform(transform)
-                                rb.setLinearVelocity(Vector3f(0f, 0f, 0f))
-                                rb.setAngularVelocity(Vector3f(0f, 0f, 0f))
-                                rb.clearForces()
-
-                                // Variações aleatórias: jogando-os de volta pra mesa (Z negativo, X variado)
-                                val vx = (Math.random() * 8 - 4).toFloat()
-                                val vy = 8f + (Math.random() * 4).toFloat()
-                                val vz = (Math.random() * -10).toFloat()
-                                rb.setLinearVelocity(Vector3f(vx, vy, vz))
-                                
-                                val ax = (Math.random() * 40 - 20).toFloat()
-                                val ay = (Math.random() * 40 - 20).toFloat()
-                                val az = (Math.random() * 40 - 20).toFloat()
-                                rb.setAngularVelocity(Vector3f(ax, ay, az))
-                                
-                                rb.activate(true)
-                            }
-                        }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D233A)),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text("ROLAR 3D6", color = Color(0xFF00E5FF)) // Cyan text
                 }
             }
         }

@@ -40,6 +40,8 @@ enum class Manobra(val rotulo: String) {
     AGUARDAR("Aguardar"),
     AVALIAR("Avaliar"),
     FINTAR("Fintar"),              // Lote 383: Disputa Rápida → reduz a defesa do alvo no próximo golpe (MB p.366)
+    AGARRAR("Agarrar"),           // Lote 386: agarra o oponente → estado AGARRADO (−4 DX) (MB p.370)
+    DERRUBAR("Derrubar"),         // Lote 386: derruba um oponente agarrado (Disputa Rápida) (MB p.371)
     APONTAR("Apontar"),            // mira arma à distância → +Precisão no próximo tiro (MB p.364)
     CONCENTRAR("Concentrar-se"),
     NAO_FAZER_NADA("Não Fazer Nada")

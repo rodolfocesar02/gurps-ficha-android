@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 385 CONCLUÍDO — Tolerância a Ferimentos (Não-Vivo/Homogêneo/Difuso reduzem dano pi/perf; MB p.381). Esqueleto e Zumbi do bestiário marcados Não-Vivo → não tombam a tiros como humanos. 4/5 do loop. Próximo: Luta agarrada (o maior — base nesta entrega).
-**Último Lote Registrado:** Lote 385 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `c36596a` (Lote 384). Hashes dos lotes recentes do submódulo: 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=`ae73170`, 383=`0acc528`, 384=`c36596a`, 385=(este lote, hash recordado no próximo).
+**Status Atual:** Lote 386 CONCLUÍDO — Simulação 3D de dados finalizada com suporte a leitura de vetores e física JBullet calibrada.
+**Último Lote Registrado:** Lote 386 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`):** Lotes recentes: 383=`0acc528`, 384=`c36596a`, 385=não extraído, 386=`429865b` (este lote).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3223,4 +3223,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - CombatUi.kt: CombatePainel agora recebe Modifier e usa Surface(fillMaxWidth) + Column(fillMaxSize); cabecalho "Rodada" FIXO no topo; tracker + manobras/defesa num Column com weight(1f) + verticalScroll -> rola por dentro
 - TabSaga.kt: o painel recebe Modifier.weight(1.5f) e o feed (LazyColumn) mantem weight(1f) -> chat ~40% / combate ~60%, ambos visiveis e roláveis
 - So UI/layout; sem mudanca de logica/regra. Build 2 variantes verde
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote_dados_3D 001 — 18 de Junho de 2026  ·  commit `429865b`
+**Simulação 3D de Dados (branch GURPS-Saga)**
+- Migração completa de React Three Fiber para SceneView Filament nativo.
+- Integração da engine JBullet para colisão e repulsão vetorial 3D.
+- Resolvido o "fantasma visual" onde os dados se sobrepunham: matriz física agora preserva a escala original do modelo visual.
+- Mapeamento dinâmico de leitura de faces: vetores X, Y, Z sincronizados com o modelo `.glb` exportado do Blender.
+- Câmera Top-Down fixa e paredes elásticas reduzidas garantindo que 100% dos eventos físicos ocorram dentro da tela.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
