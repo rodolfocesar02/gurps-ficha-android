@@ -260,7 +260,8 @@ class CombatSession(
             defensor = alvo, htDefensor = alvo.stats?.ht ?: 10, ataque = atk,
             defesaTipo = defTipo, defesaValorFinal = defValorFinal, defesaSoma = defSoma,
             surpresa = false, danoBaseRolado = danoBruto, danoTipo = ataque.tipo,
-            local = local, rdLocal = rdAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGrave
+            local = local, rdLocal = rdAlvo, randomFerimento = random, forcarFerimentoGrave = forcaGrave,
+            tolerancia = alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL
         )
         if (penFinta > 0) log += "  └ finta: a defesa de ${alvo.nome} cai −$penFinta neste golpe (${defValor}→${defValorFinal})."
         log += narrarTroca("Você", alvo.nome, ataque.rotulo.substringBefore(" (").trim(), ataque.aDistancia, atk, defTipo, troca, local, ataque.tipo)
@@ -275,7 +276,7 @@ class CombatSession(
                 repeat(extras) {
                     if (!alvo.vivo) return@repeat
                     val d = (rolarDano(ataque.danoExpr, random)).let { if (meioDano) it / 2 else it }
-                    val rd = HitLocationRules.aplicarDano(alvo.pvMax, d, ataque.tipo, local, alvo.stats?.rd ?: 0)
+                    val rd = HitLocationRules.aplicarDano(alvo.pvMax, d, ataque.tipo, local, alvo.stats?.rd ?: 0, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
                     InjuryRules.ferir(alvo, rd.pvSubtrair, alvo.stats?.ht ?: 10, random)
                 }
                 log += "  └ rajada: +$extras projétil(eis) acertam (Recuo ${ataque.recuo}, margem ${atk.margem}) → ${alvo.nome} PV ${alvo.pvAtual}/${alvo.pvMax}."

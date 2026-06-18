@@ -220,7 +220,7 @@ class SagaCombatController(
         val alvo = s.encounter.combatentes.firstOrNull { it.id == alvoId && it.vivo } ?: return null
         val ht = if (alvo.ehHeroi) s.heroiPerfil.ht else (alvo.stats?.ht ?: 10)
         val rd = if (alvo.ehHeroi) s.heroiPerfil.rd else (alvo.stats?.rd ?: 0)
-        val dano = HitLocationRules.aplicarDano(alvo.pvMax, danoBase, tipo, local, rd)
+        val dano = HitLocationRules.aplicarDano(alvo.pvMax, danoBase, tipo, local, rd, alvo.stats?.tolerancia ?: ToleranciaFerimentos.NORMAL)
         val fer = InjuryRules.ferir(alvo, dano.pvSubtrair, ht, Random.Default)
         val txt = "✴️ ${alvo.nome}: ${dano.texto} | ${fer.efeito}"
         s.log += txt

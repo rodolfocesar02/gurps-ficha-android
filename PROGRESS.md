@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 384 CONCLUÍDO — Tabelas de Golpe Fulminante (dano ×2/×3/máx/RD½/ferimento grave) e Erro Crítico (efeito no atacante: acerta a si/cai; narra quebrar/largar arma), MB p.557–558, nas duas direções. **+ workaround do lint** (3 detectores compose-runtime crashavam por incompat. da Kotlin Analysis API). 3/5 do loop. Próximos: Tolerância a Ferimentos → Luta agarrada.
-**Último Lote Registrado:** Lote 384 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `0acc528` (Lote 383). Hashes dos lotes recentes do submódulo: 378=`d5db511`, 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=`ae73170`, 383=`0acc528`, 384=(este lote, hash recordado no próximo).
+**Status Atual:** Lote 385 CONCLUÍDO — Tolerância a Ferimentos (Não-Vivo/Homogêneo/Difuso reduzem dano pi/perf; MB p.381). Esqueleto e Zumbi do bestiário marcados Não-Vivo → não tombam a tiros como humanos. 4/5 do loop. Próximo: Luta agarrada (o maior — base nesta entrega).
+**Último Lote Registrado:** Lote 385 — última entrada deste arquivo
+**HEAD (branch `GURPS-Saga`, pushado em `origin/GURPS-Saga`):** `c36596a` (Lote 384). Hashes dos lotes recentes do submódulo: 379=`fe255e9`, 380=`665e357`, 381=`3802d17`, 382=`ae73170`, 383=`0acc528`, 384=`c36596a`, 385=(este lote, hash recordado no próximo).
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3037,6 +3037,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - DIVERGENCIA (regra 12): o "round de NPCs em LOTE" do plano (Narrador decide intencoes de todos) conflita com a UI interativa em tempo real APROVADA no B7. A tatica do NPC fica no motor (NpcCombatBrain, B6) e acao_npc devolve o ESTADO FACTUAL p/ o Narrador narrar, em vez de dirigir o turno. forjar_npc no iniciar_combate (NPC sob medida) e tabelas de saque por criatura ficam p/ enriquecimento futuro (F1); saque do B8 = armas dos derrotados
 - FASE B COMPLETA (motor B1-B6 + UI B7 + integracao B8). Pendente so a validacao no aparelho (combate jogavel ponta a ponta com chaves de IA reais)
 - Build completo verde 2 variantes
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote 385 — 17 de Junho de 2026
+**Saga combate: Tolerância a Ferimentos (loop de regras 4/5, MB p.381, branch GURPS-Saga)**
+- REGRA (MB p.381): mortos-vivos/máquinas/objetos/enxames são menos vulneráveis a pi/perf. Novo `enum ToleranciaFerimentos { NORMAL, NAO_VIVO, HOMOGENEO, DIFUSO }`. `HitLocationRules.multiplicador(tipo, local, tolerancia)` sobrescreve o multiplicador de pi/perf (NÃO-VIVO: perf/pi++ ×1, pi+ ×½, pi ×⅓, pi- ×⅕; HOMOGÊNEO mais ainda) e remove o bônus de crânio/vitais (sem órgãos); DIFUSO = teto no dano final (pi/perf ≤1 PV, resto ≤2). `aplicarDano` aplica.
+- CAMINHO DE DADO: `NpcStats.tolerancia` ← `BestiarioCriatura.tolerancia` (string do JSON → enum). `CombatResolver.resolverTroca` repassa ao `aplicarDano`; chamadores (`resolverGolpeHeroi`, rajada, `aplicarDanoCombatente`) passam a tolerância do alvo. Herói = NORMAL.
+- DADO DO BESTIÁRIO: **esqueleto e zumbi** marcados `"tolerancia": "nao_vivo"` (canônico: mortos-vivos corpóreos = Unliving) — agora resistem a tiros (pi ×⅓), como o exemplo do próprio MB p.381.
+- Testes (`HitLocationRulesTest`): Não-Vivo reduz pi (9→3) e não dá bônus de vitais; perf segue ×1; Homogêneo (pi ×0.2); Difuso (teto 1/2). Build 2 variantes + lint verde.
+- Combate.md: "Lesões em Alvos Difusos, Homogêneos e Não-Vivos" → FEITO.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 ### Lote 384 — 17 de Junho de 2026

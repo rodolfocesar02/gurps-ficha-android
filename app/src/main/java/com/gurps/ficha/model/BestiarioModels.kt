@@ -3,6 +3,7 @@ package com.gurps.ficha.model
 import com.google.gson.Gson
 import com.gurps.ficha.domain.combat.Combatente
 import com.gurps.ficha.domain.combat.NpcStats
+import com.gurps.ficha.domain.combat.ToleranciaFerimentos
 
 /**
  * Lote 363 (Saga B6): catálogo de criaturas (bestiário) carregado de assets/bestiario.v1.json.
@@ -34,8 +35,17 @@ data class BestiarioCriatura(
     val agressividade: Int = 5,     // 0-10
     val moral: Int = 5,             // 0-10
     val mt: Int = 0,                // Modificador de Tamanho (MT) — +MT no acerto à distância contra ela (MB p.549)
+    val tolerancia: String = "",    // Lote 385: "" | "nao_vivo" | "homogeneo" | "difuso" (MB p.381)
     val ataques: List<AtaqueCriatura> = emptyList()
 ) {
+    /** Mapeia a string [tolerancia] do JSON para o enum de combate (Lote 385). */
+    private fun toleranciaEnum(): ToleranciaFerimentos =
+        when (tolerancia.lowercase().trim().replace(" ", "_").replace("-", "_")) {
+            "nao_vivo", "naovivo", "morto_vivo", "mortovivo", "unliving" -> ToleranciaFerimentos.NAO_VIVO
+            "homogeneo", "homogêneo" -> ToleranciaFerimentos.HOMOGENEO
+            "difuso", "diffuse" -> ToleranciaFerimentos.DIFUSO
+            else -> ToleranciaFerimentos.NORMAL
+        }
     /** Maior alcance entre os ataques (define se a criatura é "de distância"). */
     val alcanceMaximo: Int get() = ataques.maxOfOrNull { it.alcanceMetros } ?: 1
 
@@ -49,7 +59,7 @@ data class BestiarioCriatura(
             armaTipo = principal?.tipo ?: "", armaNh = principal?.nh ?: 10,
             alcanceMetros = alcanceMaximo,
             agressividade = agressividade, moral = moral,
-            modificadorTamanho = mt
+            modificadorTamanho = mt, tolerancia = toleranciaEnum()
         )
         return Combatente(
             id = id, nome = nome, ehHeroi = false, dx = dx,

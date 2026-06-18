@@ -54,12 +54,12 @@
 
     { "id": "esqueleto", "nome": "Esqueleto", "descricao": "Morto-vivo sem medo; luta até ser destruído.",
       "st": 11, "dx": 12, "iq": 8, "ht": 12, "pv": 11, "rd": 2, "velocidadeBasica": 6.0, "deslocamento": 6,
-      "agressividade": 8, "moral": 10,
+      "agressividade": 8, "moral": 10, "tolerancia": "nao_vivo",
       "ataques": [ { "nome": "Espada curta", "dano": "1d+1", "tipo": "corte", "nh": 12, "alcanceMetros": 1 } ] },
 
     { "id": "zumbi", "nome": "Zumbi", "descricao": "Morto-vivo lento e incansável.",
       "st": 13, "dx": 8, "iq": 8, "ht": 14, "pv": 14, "rd": 1, "velocidadeBasica": 4.5, "deslocamento": 4,
-      "agressividade": 8, "moral": 10,
+      "agressividade": 8, "moral": 10, "tolerancia": "nao_vivo",
       "ataques": [ { "nome": "Pancada", "dano": "1d+1", "tipo": "cont", "nh": 10, "alcanceMetros": 1 } ] },
 
     { "id": "bandido", "nome": "Bandido", "descricao": "Salteador humano; recua se a luta virar contra ele.",

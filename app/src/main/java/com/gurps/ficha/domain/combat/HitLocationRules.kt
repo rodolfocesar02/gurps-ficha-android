@@ -26,6 +26,12 @@ enum class DanoTipo(val rotulo: String, val multBase: Double) {
     val perfuranteOuPerf: Boolean get() = this != CONT && this != CORT
 }
 
+/**
+ * Lote 385: Tolerância a Ferimentos (MB p.380/381). Reduz o multiplicador de ferimento de pi/perf
+ * (mortos-vivos, máquinas, objetos, enxames). NORMAL = ser vivo comum.
+ */
+enum class ToleranciaFerimentos { NORMAL, NAO_VIVO, HOMOGENEO, DIFUSO }
+
 object HitLocationRules {
 
     /** RD extra natural do local (Mesa Virtual: só crânio = +2). MB p.399. */
@@ -38,11 +44,32 @@ object HitLocationRules {
         else -> null
     }
 
-    /** Multiplicador final tipo×local (com os overrides do JS: crânio ×4; vitais ×3 p/ perf.). */
-    fun multiplicador(tipo: DanoTipo, local: LocalAtaque): Double = when {
-        local == LocalAtaque.CRANIO -> 4.0
-        local == LocalAtaque.VITAIS && tipo.perfuranteOuPerf -> 3.0
-        else -> tipo.multBase
+    /**
+     * Multiplicador final tipo×local. NORMAL: crânio ×4; vitais ×3 p/ perf.; senão o base.
+     * Lote 385 (MB p.381): com Tolerância a Ferimentos, pi/perf têm multiplicador reduzido e os locais
+     * vitais/crânio não dão bônus (sem órgãos/cérebro). Difuso é tratado por um teto no dano final.
+     */
+    fun multiplicador(tipo: DanoTipo, local: LocalAtaque, tolerancia: ToleranciaFerimentos = ToleranciaFerimentos.NORMAL): Double = when (tolerancia) {
+        ToleranciaFerimentos.NORMAL -> when {
+            local == LocalAtaque.CRANIO -> 4.0
+            local == LocalAtaque.VITAIS && tipo.perfuranteOuPerf -> 3.0
+            else -> tipo.multBase
+        }
+        ToleranciaFerimentos.NAO_VIVO -> when (tipo) {
+            DanoTipo.PERF, DanoTipo.PI_MAIS_MAIS -> 1.0
+            DanoTipo.PI_MAIS -> 0.5
+            DanoTipo.PI -> 1.0 / 3
+            DanoTipo.PI_MENOS -> 0.2
+            else -> tipo.multBase
+        }
+        ToleranciaFerimentos.HOMOGENEO -> when (tipo) {
+            DanoTipo.PERF, DanoTipo.PI_MAIS_MAIS -> 0.5
+            DanoTipo.PI_MAIS -> 1.0 / 3
+            DanoTipo.PI -> 0.2
+            DanoTipo.PI_MENOS -> 0.1
+            else -> tipo.multBase
+        }
+        ToleranciaFerimentos.DIFUSO -> tipo.multBase // o teto (1 p/ pi-perf, 2 p/ resto) é no dano final
     }
 
     data class RelatorioDano(
@@ -60,10 +87,10 @@ object HitLocationRules {
      * @param danoBase dano rolado já somado (ex.: 2d+1 já resolvido em número).
      * @param rd RD da armadura no local (a RD natural do crânio é somada aqui dentro).
      */
-    fun aplicarDano(pvMax: Int, danoBase: Int, tipo: DanoTipo, local: LocalAtaque, rd: Int): RelatorioDano {
+    fun aplicarDano(pvMax: Int, danoBase: Int, tipo: DanoTipo, local: LocalAtaque, rd: Int, tolerancia: ToleranciaFerimentos = ToleranciaFerimentos.NORMAL): RelatorioDano {
         val rdEf = rd + rdExtra(local)
         val penetrante = (danoBase - rdEf).coerceAtLeast(0)
-        val mult = multiplicador(tipo, local)
+        val mult = multiplicador(tipo, local, tolerancia)
         var final = floor(penetrante * mult).toInt()
 
         var incapacitou = false
@@ -76,9 +103,17 @@ object HitLocationRules {
             }
         }
 
+        // Difuso (MB p.381): pi/perf nunca passam de 1 PV; os demais tipos, de 2 PV.
+        var notaDifuso = ""
+        if (tolerancia == ToleranciaFerimentos.DIFUSO && penetrante > 0) {
+            val teto = if (tipo.perfuranteOuPerf) 1 else 2
+            if (final > teto) { final = teto; notaDifuso = " (difuso: teto $teto)" }
+        }
+
         val texto = buildString {
             append("${local.rotulo}: $danoBase ${tipo.rotulo} − RD $rdEf = $penetrante penetrante ×$mult = $final PV")
             if (incapacitou) append(" (membro incapacitado)")
+            append(notaDifuso)
         }
         return RelatorioDano(final, penetrante, mult, rdEf, incapacitou, texto)
     }

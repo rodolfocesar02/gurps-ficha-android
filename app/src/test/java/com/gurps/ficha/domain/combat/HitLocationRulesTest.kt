@@ -50,4 +50,26 @@ class HitLocationRulesTest {
         assertEquals(1.5, HitLocationRules.multiplicador(DanoTipo.CORT, LocalAtaque.VITAIS), 0.001)
         assertEquals(1.5, HitLocationRules.multiplicador(DanoTipo.CORT, LocalAtaque.TORSO), 0.001)
     }
+
+    // ── Lote 385: Tolerância a Ferimentos (MB p.381) ──
+
+    @Test
+    fun `Nao-Vivo reduz dano perfurante (zumbi-esqueleto)`() {
+        // pi contra Não-Vivo = ×1/3: 9 penetrante → 3 PV (o vivo levaria 9).
+        assertEquals(3, HitLocationRules.aplicarDano(20, 9, DanoTipo.PI, LocalAtaque.TORSO, 0, ToleranciaFerimentos.NAO_VIVO).pvSubtrair)
+        assertEquals(9, HitLocationRules.aplicarDano(20, 9, DanoTipo.PI, LocalAtaque.TORSO, 0).pvSubtrair)
+        // perfuração (perf) = ×1 mesmo no Não-Vivo (lança/flecha ainda doem).
+        assertEquals(8, HitLocationRules.aplicarDano(20, 8, DanoTipo.PERF, LocalAtaque.TORSO, 0, ToleranciaFerimentos.NAO_VIVO).pvSubtrair)
+        // Não-Vivo não tem vitais: pi nos vitais NÃO ganha ×3 (vivo ganharia).
+        assertEquals(3, HitLocationRules.aplicarDano(20, 9, DanoTipo.PI, LocalAtaque.VITAIS, 0, ToleranciaFerimentos.NAO_VIVO).pvSubtrair)
+    }
+
+    @Test
+    fun `Homogeneo e Difuso limitam o dano`() {
+        // Homogêneo: pi ×0.2 → floor(10*0.2)=2.
+        assertEquals(2, HitLocationRules.aplicarDano(50, 10, DanoTipo.PI, LocalAtaque.TORSO, 0, ToleranciaFerimentos.HOMOGENEO).pvSubtrair)
+        // Difuso: pi/perf nunca passam de 1 PV; os demais, de 2 PV.
+        assertEquals(1, HitLocationRules.aplicarDano(50, 30, DanoTipo.PI, LocalAtaque.TORSO, 0, ToleranciaFerimentos.DIFUSO).pvSubtrair)
+        assertEquals(2, HitLocationRules.aplicarDano(50, 30, DanoTipo.CONT, LocalAtaque.TORSO, 0, ToleranciaFerimentos.DIFUSO).pvSubtrair)
+    }
 }

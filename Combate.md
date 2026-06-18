@@ -2083,7 +2083,7 @@ penalidade devido ao choque não
 pode exceder -4, independentemente da quantidade de dano sofrido.
 
 
-## Lesões em Alvos Difusos, Homogêneos e Não-Vivos[]
+## Lesões em Alvos Difusos, Homogêneos e Não-Vivos [x] ✅ FEITO
 As regras de Modificadores de Ferimento e Lesão assumem um humano,
 animal ou outro ser vivo comum. Máquinas, mortos-vivos corpóreos, enxames e outras entidades incomuns são muito menos vulneráveis a tipos
 de dano específicos:

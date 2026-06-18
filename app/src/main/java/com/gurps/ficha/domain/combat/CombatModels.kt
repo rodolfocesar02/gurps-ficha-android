@@ -78,6 +78,8 @@ data class NpcStats(
     val armaDeFogo: Boolean = false,
     /** Lote 381: Modificador de Tamanho (MT) da criatura — somado ao acerto À DISTÂNCIA contra ela (MB p.549). */
     val modificadorTamanho: Int = 0,
+    /** Lote 385: Tolerância a Ferimentos (MB p.381) — reduz dano pi/perf (mortos-vivos = NÃO_VIVO, etc.). */
+    val tolerancia: ToleranciaFerimentos = ToleranciaFerimentos.NORMAL,
     /** Comportamento tático (Lote 363/B6): 0-10. Alimenta o NpcCombatBrain. */
     val agressividade: Int = 5,
     val moral: Int = 5
