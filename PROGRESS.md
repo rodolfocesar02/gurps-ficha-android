@@ -3233,3 +3233,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Mapeamento dinâmico de leitura de faces: vetores X, Y, Z sincronizados com o modelo `.glb` exportado do Blender.
 - Câmera Top-Down fixa e paredes elásticas reduzidas garantindo que 100% dos eventos físicos ocorram dentro da tela.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote_dados_3D 002 & 003 — 18 de Junho de 2026
+**Som Imersivo e Interligação de Combate (branch GURPS-Saga)**
+- **Áudio Baseado em Física:** Implementado `CollisionListener` em `PhysicsWorld` que monitora `contactManifolds`. Impactos reais (`appliedImpulse > 0.5f`) disparam sons de batida dinâmicos no `DiceSoundManager` com variações de pitch e volume.
+- **Remoção do Mock:** O `Dice3DScene` abandonou a janela de testes isolada com "HUD neon" e agora aceita parâmetros escaláveis (`diceCount`, `onRollFinished`).
+- **Overlay de Batalha:** `TabRolagem.kt` completamente refatorada. `executarRolagem`, `executarRolagemDano` e `executarRolagemPersonalizada` agora disparam o estado `PendingRollState`.
+- Ao disparar rolagem, a tela sofre um `Modifier.blur(16.dp)`, revelando o `Dice3DScene` transparente que faz a jogada física real, colhe os resultados da simulação e devolve para as regras do GURPS injetar no Chat do Discord com todos os modificadores aplicados.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
