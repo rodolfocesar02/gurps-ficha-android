@@ -764,13 +764,13 @@ fun TabRolagem(viewModel: FichaViewModel) {
         )
     }
 
-    val blurModifier = if (pendingRoll != null) Modifier.blur(16.dp) else Modifier
+    val blurModifier = if (pendingRoll != null) Modifier.blur(20.dp) else Modifier
 
     if (pendingRoll != null) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .zIndex(100f) // Garante que a box fica por cima
+                .zIndex(100f)
                 .background(Color.Black.copy(alpha = 0.3f))
         ) {
             Dice3DScene(

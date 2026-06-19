@@ -187,10 +187,10 @@ fun Dice3DScene(
                     if (model != null) {
                         LaunchedEffect(model) {
                             if (diceRigidBodies[i] == null) {
-                                // Inicia cada um numa posição espalhada com pequena aleatoriedade
-                                val randomX = (Math.random() * 4 - 2).toFloat()
-                                val randomZ = (Math.random() * 2 - 1).toFloat()
-                                val randomY = 5f + (Math.random() * 3).toFloat()
+                                // Inicia cada um numa posição espalhada com bastante aleatoriedade
+                                val randomX = (Math.random() * 10 - 5).toFloat()
+                                val randomZ = (Math.random() * 6 - 3).toFloat()
+                                val randomY = 15f + (Math.random() * 6).toFloat() // Mais alto para dar tempo de girar no ar
                                 val initialPos = Vector3f(randomX, randomY, randomZ)
                                 
                                 diceRigidBodies[i] = physicsWorld.addDice(1.2f, initialPos)

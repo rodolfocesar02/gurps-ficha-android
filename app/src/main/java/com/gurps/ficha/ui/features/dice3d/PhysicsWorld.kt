@@ -126,9 +126,21 @@ class PhysicsWorld {
         val halfExtents = size / 2f
         val boxShape = BoxShape(Vector3f(halfExtents, halfExtents, halfExtents))
 
-        // 2. Define a posição inicial no ar
+        // 2. Define a posição e Rotação inicial aleatória
         val transform = Transform()
         transform.setIdentity()
+        
+        val rotX = javax.vecmath.Matrix3f()
+        rotX.rotX((Math.random() * Math.PI * 2).toFloat())
+        val rotY = javax.vecmath.Matrix3f()
+        rotY.rotY((Math.random() * Math.PI * 2).toFloat())
+        val rotZ = javax.vecmath.Matrix3f()
+        rotZ.rotZ((Math.random() * Math.PI * 2).toFloat())
+        
+        rotX.mul(rotY)
+        rotX.mul(rotZ)
+        transform.basis.set(rotX)
+        
         transform.origin.set(initialPosition)
 
         // 3. Define massa (dados não são estáticos, então massa > 0)
@@ -148,6 +160,19 @@ class PhysicsWorld {
         rbInfo.angularDamping = 0.5f
 
         val diceRigidBody = RigidBody(rbInfo)
+        
+        // Impulso aleatório de movimento (espalhamento) e giro
+        diceRigidBody.setLinearVelocity(Vector3f(
+            (Math.random() * 20 - 10).toFloat(), // X
+            0f,                                  // Y
+            (Math.random() * 20 - 10).toFloat()  // Z
+        ))
+        
+        diceRigidBody.setAngularVelocity(Vector3f(
+            (Math.random() * 50 - 25).toFloat(),
+            (Math.random() * 50 - 25).toFloat(),
+            (Math.random() * 50 - 25).toFloat()
+        ))
         
         // 5. Adiciona o dado no mundo da simulação
         dynamicsWorld.addRigidBody(diceRigidBody)
