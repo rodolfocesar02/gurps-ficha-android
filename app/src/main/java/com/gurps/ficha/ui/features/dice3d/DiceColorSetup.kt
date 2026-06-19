@@ -16,8 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gurps.ficha.ui.UiActionLabels
 import com.gurps.ficha.ui.UiTokens
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.graphics.Brush
 
 object DiceColorsStore {
     private const val PREFS_NAME = "DiceColorsPrefs"
@@ -65,77 +70,153 @@ fun ConfigurarDadosDialog(onDismiss: () -> Unit) {
         Color(0xFFF4511E)  // Orange
     )
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Cores dos Dados 3D") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Cor do Plástico (Corpo):", style = MaterialTheme.typography.labelLarge)
-                ColorPickerRow(
-                    colors = availableColors,
-                    selectedColor = bodyColor,
-                    onColorSelected = { bodyColor = it }
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF2B2B36), Color(0xFF1E1E24))
+                    )
+                )
+                .border(2.dp, Color(0xFF4A4A5A), RoundedCornerShape(16.dp))
+                .padding(24.dp)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                // Título
+                Text(
+                    text = "Aparência dos Dados",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFE0E0E0),
+                        letterSpacing = 1.2.sp
+                    )
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Text("Cor da Tinta (Números):", style = MaterialTheme.typography.labelLarge)
-                ColorPickerRow(
-                    colors = availableColors,
-                    selectedColor = numColor,
-                    onColorSelected = { numColor = it }
-                )
+                Divider(color = Color(0xFF4A4A5A), thickness = 1.dp)
 
-                // Preview box
-                Spacer(modifier = Modifier.height(16.dp))
+                // Plástico
+                Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Material Base",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color(0xFFAAAAAA),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    ColorPickerGrid(
+                        colors = availableColors,
+                        selectedColor = bodyColor,
+                        onColorSelected = { bodyColor = it }
+                    )
+                }
+
+                // Números
+                Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
+                    Text(
+                        text = "Tinta dos Números",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = Color(0xFFAAAAAA),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    ColorPickerGrid(
+                        colors = availableColors,
+                        selectedColor = numColor,
+                        onColorSelected = { numColor = it }
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Preview Estilizado
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .background(bodyColor, shape = RoundedCornerShape(8.dp))
-                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    bodyColor.copy(alpha = 0.9f),
+                                    bodyColor.copy(alpha = 0.7f),
+                                    Color.Black.copy(alpha = 0.6f) // Borda escurecida para 3D
+                                ),
+                                radius = 150f
+                            )
+                        )
+                        .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("3", color = numColor, style = MaterialTheme.typography.headlineLarge)
+                    Text(
+                        text = "6",
+                        color = numColor,
+                        style = MaterialTheme.typography.displayMedium.copy(
+                            fontWeight = FontWeight.ExtraBold
+                        ),
+                        modifier = Modifier.padding(top = 4.dp) // Ajuste visual de centralização
+                    )
+                }
+
+                // Botões de Ação
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text(UiActionLabels.CANCELAR, color = Color(0xFFB0B0B0))
+                    }
+                    Button(
+                        onClick = {
+                            DiceColorsStore.saveColors(context, bodyColor, numColor)
+                            onDismiss()
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Text(UiActionLabels.SALVAR, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
-        },
-        confirmButton = {
-            TextButton(onClick = {
-                DiceColorsStore.saveColors(context, bodyColor, numColor)
-                onDismiss()
-            }) {
-                Text(UiActionLabels.SALVAR)
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(UiActionLabels.CANCELAR)
-            }
         }
-    )
+    }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun ColorPickerRow(colors: List<Color>, selectedColor: Color, onColorSelected: (Color) -> Unit) {
-    Row(
+private fun ColorPickerGrid(colors: List<Color>, selectedColor: Color, onColorSelected: (Color) -> Unit) {
+    FlowRow(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         colors.forEach { color ->
             val isSelected = color == selectedColor
             Box(
                 modifier = Modifier
-                    .size(32.dp)
+                    .size(36.dp)
                     .clip(CircleShape)
                     .background(color)
                     .clickable { onColorSelected(color) }
                     .border(
                         width = if (isSelected) 3.dp else 1.dp,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
+                        color = if (isSelected) Color.White else Color(0xFF222222),
                         shape = CircleShape
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .size(14.dp)
+                            .clip(CircleShape)
+                            .background(Color.White.copy(alpha = 0.6f))
                     )
-            )
+                }
+            }
         }
     }
 }
