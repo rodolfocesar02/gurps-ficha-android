@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
-**Última Atualização:** 17 de Junho de 2026
-**Status Atual:** Lote 386 CONCLUÍDO — Simulação 3D de dados finalizada com suporte a leitura de vetores e física JBullet calibrada.
-**Último Lote Registrado:** Lote 386 — última entrada deste arquivo
-**HEAD (branch `GURPS-Saga`):** Lotes recentes: 383=`0acc528`, 384=`c36596a`, 385=não extraído, 386=`429865b` (este lote).
+**Última Atualização:** 19 de Junho de 2026
+**Status Atual:** Lote_dados_3D 004 CONCLUÍDO — Customização RPGística do Menu de Cores de Dados 3D concluída.
+**Último Lote Registrado:** Lote_dados_3D 004 — última entrada deste arquivo
+**HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003 (Sons/UI)=64d4223, Lote 004=585f040.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3242,3 +3242,12 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Ao disparar rolagem, a tela sofre um `Modifier.blur(16.dp)`, revelando o `Dice3DScene` transparente que faz a jogada física real, colhe os resultados da simulação e devolve para as regras do GURPS injetar no Chat do Discord com todos os modificadores aplicados.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+
+### Lote_dados_3D 004 — 19 de Junho de 2026  (commits 64d4223, ad895f9, 585f040)
+**Customização de Cores dos Dados 3D (branch GURPS-Saga)**
+- Criação da loja/persitência de cores via SharedPreferences (DiceColorsStore).
+- Menu de Configuração ultra-premium ConfigurarDadosDialog com grid flow, radiantes e UI temática.
+- Correção crítica da engine Filament: conversão do compose color space (sRGB) para LinearSrgb permitindo fidelidade absoluta na renderização das texturas `baseColorFactor` no JBullet/SceneView.
+- Substituição de mocks 2D no preview por um micro motor 3D ativo exibindo rotação vetorial do .glb em tempo real na tela de configuração.
+- Integração no Menu superior ao lado da foto do personagem (DialogsCommon.kt).
+- ---------------------------------------------------------------------------------------------------------------------------------------------------

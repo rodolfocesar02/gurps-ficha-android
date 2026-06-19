@@ -372,6 +372,15 @@ Base anterior: 2026-05-30 (Mestre IA pós-Lote 328) | 130+ arquivos documentados
 
 - **`ui/features/rolagem/RolagemSecondaryDialogs.kt`** — Dialogs secundários: configuração de canal Discord, histórico de rolagens da sessão.
 
+- **ui/features/dice3d/Dice3DScene.kt** — Cena 3D física que simula a rolagem dos dados usando SceneView (Filament) e JBullet, substituindo mock 2D. Aplica as cores via shader LinearSrgb.
+
+- **ui/features/dice3d/DiceColorSetup.kt** — Menu premium de customização visual dos dados (ConfigurarDadosDialog), contendo o Dice3DPreview (mini cena 3D giratória em tempo real) e o DiceColorsStore (SharedPreferences).
+
+- **ui/features/dice3d/PhysicsWorld.kt** — Setup da engine JBullet. Mapeia a colisão, restituição, paredes elásticas e detecta os lados do dado.
+
+- **ui/features/dice3d/DiceSoundManager.kt** — Gerencia os sons físicos (batidas) mapeados pela simulação do JBullet em tempo real.
+
+
 - **`ui/features/rolagem/DialogoSentidos.kt`** — **[+ 2026-06-14, Lote 372]** Diálogo de Testes de Sentidos: tocar **PER** (intercept em `TabRolagem`, sem alterar `AtributosQuickRollPanel`) abre os 5 sentidos com valor efetivo + "notinha" do motivo (via `SentidoRules`); cada um rola pelo mesmo caminho (`executarRolagem`→Discord) com o rótulo carregando o bônus/redutor. Sentido bloqueado fica desabilitado ("Cego"/"Surdo"). **Variante PraCego:** botão rotulado grande ("Rolar (14)") + semântica TalkBack.
 
 - **`ui/features/virtualtabletop/MesaVirtualScreen.kt`** — Tela da Mesa Virtual (placeholder). Exibe estado de conexão e botões de ação VTT. Ainda em desenvolvimento.
