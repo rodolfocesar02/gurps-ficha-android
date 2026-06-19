@@ -51,6 +51,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 
 @Composable
 fun Dice3DScene(
@@ -59,17 +61,25 @@ fun Dice3DScene(
     onRollFinished: (List<Int>) -> Unit
 ) {
     val context = LocalContext.current
+    val haptic = LocalHapticFeedback.current
     val soundManager = remember { DiceSoundManager(context) }
-    val (diceBodyColor, diceNumColor) = remember { DiceColorsStore.getColors(context) }
+    val diceConfig = remember { DiceColorsStore.getConfig(context) }
     
     val physicsWorld = remember { 
         PhysicsWorld().apply { 
             createGround() 
             onCollision = { force ->
                 soundManager.playBounceSound(force)
+                if (force > 5f) {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                } else if (force > 1.5f) {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                }
             }
         } 
     }
+
+    val sensorManager = remember { DiceSensorManager(context, physicsWorld) }
     
     // Arrays para os N dados
     val diceRigidBodies = remember(diceCount) { mutableStateListOf<RigidBody?>().apply { repeat(diceCount) { add(null) } } }
@@ -80,8 +90,10 @@ fun Dice3DScene(
     var isRolling by remember { mutableStateOf(true) }
 
     androidx.compose.runtime.DisposableEffect(Unit) {
+        sensorManager.startListening()
         onDispose {
             soundManager.release()
+            sensorManager.stopListening()
         }
     }
 
@@ -200,8 +212,8 @@ fun Dice3DScene(
                             }
                             
                             // Aplicar as cores aos materiais
-                            val linearBody = diceBodyColor.convert(ColorSpaces.LinearSrgb)
-                            val linearNum = diceNumColor.convert(ColorSpaces.LinearSrgb)
+                            val linearBody = diceConfig.bodyColor.convert(ColorSpaces.LinearSrgb)
+                            val linearNum = diceConfig.numColor.convert(ColorSpaces.LinearSrgb)
                             
                             model.materialInstances?.forEach { materialInstance ->
                                 if (materialInstance.name.startsWith("bod_red")) {
@@ -209,6 +221,20 @@ fun Dice3DScene(
                                         "baseColorFactor",
                                         linearBody.red, linearBody.green, linearBody.blue, linearBody.alpha
                                     )
+                                    when (diceConfig.materialType) {
+                                        "matte" -> {
+                                            materialInstance.setParameter("metallicFactor", 0.0f)
+                                            materialInstance.setParameter("roughnessFactor", 0.8f)
+                                        }
+                                        "metal" -> {
+                                            materialInstance.setParameter("metallicFactor", 1.0f)
+                                            materialInstance.setParameter("roughnessFactor", 0.15f)
+                                        }
+                                        else -> { // plastic
+                                            materialInstance.setParameter("metallicFactor", 0.1f)
+                                            materialInstance.setParameter("roughnessFactor", 0.3f)
+                                        }
+                                    }
                                 }
                                 if (materialInstance.name.startsWith("Numbers_Black")) {
                                     materialInstance.setParameter(

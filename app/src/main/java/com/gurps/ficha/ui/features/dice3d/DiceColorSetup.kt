@@ -41,21 +41,32 @@ object DiceColorsStore {
     private const val PREFS_NAME = "DiceColorsPrefs"
     private const val KEY_BODY = "diceBodyColor"
     private const val KEY_NUMBER = "diceNumberColor"
+    private const val KEY_MATERIAL = "diceMaterial"
 
-    fun getColors(context: Context): Pair<Color, Color> {
+    data class DiceConfig(val bodyColor: Color, val numColor: Color, val materialType: String)
+
+    fun getConfig(context: Context): DiceConfig {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val defaultRed = android.graphics.Color.parseColor("#E52E2D")
         val bodyColorInt = prefs.getInt(KEY_BODY, defaultRed)
         val numColorInt = prefs.getInt(KEY_NUMBER, android.graphics.Color.WHITE)
-        return Pair(Color(bodyColorInt), Color(numColorInt))
+        val mat = prefs.getString(KEY_MATERIAL, "plastic") ?: "plastic"
+        return DiceConfig(Color(bodyColorInt), Color(numColorInt), mat)
     }
 
-    fun saveColors(context: Context, bodyColor: Color, numColor: Color) {
+    fun saveConfig(context: Context, bodyColor: Color, numColor: Color, materialType: String) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         prefs.edit()
             .putInt(KEY_BODY, bodyColor.toArgb())
             .putInt(KEY_NUMBER, numColor.toArgb())
+            .putString(KEY_MATERIAL, materialType)
             .apply()
+    }
+
+    // Keep old getColors for compatibility just in case
+    fun getColors(context: Context): Pair<Color, Color> {
+        val cfg = getConfig(context)
+        return Pair(cfg.bodyColor, cfg.numColor)
     }
 }
 
@@ -64,11 +75,13 @@ fun ConfigurarDadosDialog(onDismiss: () -> Unit) {
     val context = LocalContext.current
     var bodyColor by remember { mutableStateOf(Color.Red) }
     var numColor by remember { mutableStateOf(Color.White) }
+    var materialType by remember { mutableStateOf("plastic") }
 
     LaunchedEffect(Unit) {
-        val (b, n) = DiceColorsStore.getColors(context)
-        bodyColor = b
-        numColor = n
+        val config = DiceColorsStore.getConfig(context)
+        bodyColor = config.bodyColor
+        numColor = config.numColor
+        materialType = config.materialType
     }
 
     val availableColors = listOf(
@@ -112,6 +125,31 @@ fun ConfigurarDadosDialog(onDismiss: () -> Unit) {
                 
                 Divider(color = Color(0xFF4A4A5A), thickness = 1.dp)
 
+                // Material selector
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    val mats = listOf("matte" to "Fosco", "plastic" to "Plástico", "metal" to "Metal")
+                    mats.forEach { (key, label) ->
+                        val isSelected = materialType == key
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color(0xFF3A3A4A))
+                                .clickable { materialType = key }
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                        ) {
+                            Text(
+                                text = label,
+                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else Color(0xFFAAAAAA),
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
+                    }
+                }
+
                 // Plástico
                 Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
                     Text(
@@ -148,6 +186,7 @@ fun ConfigurarDadosDialog(onDismiss: () -> Unit) {
                 Dice3DPreview(
                     bodyColor = bodyColor,
                     numColor = numColor,
+                    materialType = materialType,
                     modifier = Modifier
                         .size(100.dp)
                         .clip(RoundedCornerShape(12.dp))
@@ -173,7 +212,7 @@ fun ConfigurarDadosDialog(onDismiss: () -> Unit) {
                     }
                     Button(
                         onClick = {
-                            DiceColorsStore.saveColors(context, bodyColor, numColor)
+                            DiceColorsStore.saveConfig(context, bodyColor, numColor, materialType)
                             onDismiss()
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -226,7 +265,7 @@ private fun ColorPickerGrid(colors: List<Color>, selectedColor: Color, onColorSe
 }
 
 @Composable
-fun Dice3DPreview(bodyColor: Color, numColor: Color, modifier: Modifier = Modifier) {
+fun Dice3DPreview(bodyColor: Color, numColor: Color, materialType: String, modifier: Modifier = Modifier) {
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
     val view = rememberView(engine)
@@ -262,13 +301,27 @@ fun Dice3DPreview(bodyColor: Color, numColor: Color, modifier: Modifier = Modifi
 
         val model = rememberModelInstance(modelLoader, "models/Dado.glb")
         if (model != null) {
-            LaunchedEffect(model, bodyColor, numColor) {
+            LaunchedEffect(model, bodyColor, numColor, materialType) {
                 val linearBody = bodyColor.convert(ColorSpaces.LinearSrgb)
                 val linearNum = numColor.convert(ColorSpaces.LinearSrgb)
                 
                 model.materialInstances?.forEach { materialInstance ->
                     if (materialInstance.name.startsWith("bod_red")) {
                         materialInstance.setParameter("baseColorFactor", linearBody.red, linearBody.green, linearBody.blue, linearBody.alpha)
+                        when (materialType) {
+                            "matte" -> {
+                                materialInstance.setParameter("metallicFactor", 0.0f)
+                                materialInstance.setParameter("roughnessFactor", 0.8f)
+                            }
+                            "metal" -> {
+                                materialInstance.setParameter("metallicFactor", 1.0f)
+                                materialInstance.setParameter("roughnessFactor", 0.15f)
+                            }
+                            else -> { // plastic
+                                materialInstance.setParameter("metallicFactor", 0.1f)
+                                materialInstance.setParameter("roughnessFactor", 0.3f)
+                            }
+                        }
                     }
                     if (materialInstance.name.startsWith("Numbers_Black")) {
                         materialInstance.setParameter("baseColorFactor", linearNum.red, linearNum.green, linearNum.blue, linearNum.alpha)

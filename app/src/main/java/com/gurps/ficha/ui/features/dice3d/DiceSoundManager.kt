@@ -27,7 +27,7 @@ class DiceSoundManager(context: Context) {
             .setAudioAttributes(audioAttributes)
             .build()
 
-        rollSoundId = soundPool.load(context, R.raw.dice_roll, 1)
+        rollSoundId = soundPool.load(context, R.raw.dice_impact_magnesus, 1)
     }
 
     /**

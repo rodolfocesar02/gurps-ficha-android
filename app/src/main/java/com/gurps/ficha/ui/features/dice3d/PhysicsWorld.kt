@@ -20,6 +20,7 @@ import javax.vecmath.Vector3f
 class PhysicsWorld {
 
     val dynamicsWorld: DiscreteDynamicsWorld
+    private val baseGravity = -40.0f
 
     init {
         // Setup Padrão JBullet
@@ -31,11 +32,21 @@ class PhysicsWorld {
         dynamicsWorld = DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration)
 
         // Gravidade reduzida para evitar que o dado vibre infinitamente (jittering) contra o chão
-        dynamicsWorld.setGravity(Vector3f(0f, -40.0f, 0f))
+        dynamicsWorld.setGravity(Vector3f(0f, baseGravity, 0f))
     }
 
     var onCollision: ((force: Float) -> Unit)? = null
     private var lastCollisionTime = 0L
+
+    fun updateGravity(x: Float, y: Float, z: Float) {
+        // Limita a influencia para evitar que saiam voando
+        val maxTilt = 20f
+        val newX = (x * 3f).coerceIn(-maxTilt, maxTilt)
+        val newZ = (y * 3f).coerceIn(-maxTilt, maxTilt) // Mapeia o Y da tela para o Z da profundidade
+        
+        // Mantém a gravidade base puxando para baixo
+        dynamicsWorld.setGravity(Vector3f(newX, baseGravity, newZ))
+    }
 
     /**
      * Avança a simulação física baseado no tempo transcorrido.
@@ -43,7 +54,7 @@ class PhysicsWorld {
     fun stepSimulation(deltaTimeSec: Float) {
         dynamicsWorld.stepSimulation(deltaTimeSec, 10, 1f / 60f)
         
-        // Verifica colisões para som
+        // Verifica colisões para som e haptics
         val dispatcher = dynamicsWorld.dispatcher
         val numManifolds = dispatcher.numManifolds
         var maxImpulse = 0f
@@ -59,74 +70,19 @@ class PhysicsWorld {
             }
         }
         
-        // Debounce de 80ms para evitar spam do SoundPool (Log infinito)
-        val currentTime = System.currentTimeMillis()
-        // O impulso de repouso para a gravidade -40 (com massa 1.0) é por volta de 0.6 por frame.
-        // Bater no chão gera muito mais, então o threshold tem que ser alto (> 3.0) para ignorar o jitter
-        if (maxImpulse > 3.0f && (currentTime - lastCollisionTime) > 80) {
-            onCollision?.invoke(maxImpulse)
-            lastCollisionTime = currentTime
+        if (maxImpulse > 1.5f) { // threshold para evitar spam sonoro/vibratório de micro-quiques
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastCollisionTime > 50) { // debounce de 50ms
+                onCollision?.invoke(maxImpulse)
+                lastCollisionTime = currentTime
+            }
         }
     }
 
-    /**
-     * Adiciona o chão/mesa para os dados não caírem infinitamente.
-     */
-    fun createGround() {
-        val groundShape = StaticPlaneShape(Vector3f(0f, 1f, 0f), 0f)
+    fun addDice(size: Float = 1.0f, initialPosition: Vector3f): RigidBody {
+        // Dado é um cubo (BoxShape recebe half-extents)
+        val shape = BoxShape(Vector3f(size / 2f, size / 2f, size / 2f))
         
-        val groundTransform = Transform()
-        groundTransform.setIdentity()
-        groundTransform.origin.set(0f, -1f, 0f) // 1 unidade abaixo da câmera
-        
-        val motionState = DefaultMotionState(groundTransform)
-        val rbInfo = RigidBodyConstructionInfo(0f, motionState, groundShape, Vector3f(0f, 0f, 0f))
-        
-        // Atrito da mesa aumentado, quique diminuído para realismo (plástico no feltro)
-        rbInfo.restitution = 0.3f // Quique
-        rbInfo.friction = 0.8f    // Atrito
-
-        val groundRigidBody = RigidBody(rbInfo)
-        dynamicsWorld.addRigidBody(groundRigidBody)
-        
-        // Paredes invisíveis com grande espessura para evitar tunnelling (dados passarem através)
-        val thickness = 10f
-        val wallHeight = 40f
-        
-        // Esquerda e Direita (limites em X mais apertados para não sair da tela)
-        createWall(Vector3f(thickness, wallHeight, 20f), Vector3f(-3.5f - thickness, 0f, 0f))
-        createWall(Vector3f(thickness, wallHeight, 20f), Vector3f(3.5f + thickness, 0f, 0f))
-        
-        // Fundo (longe) e Frente (perto) (limites em Z)
-        createWall(Vector3f(20f, wallHeight, thickness), Vector3f(0f, 0f, -3.5f - thickness))
-        createWall(Vector3f(20f, wallHeight, thickness), Vector3f(0f, 0f, 5f + thickness))
-    }
-
-    private fun createWall(halfExtents: Vector3f, position: Vector3f) {
-        val shape = BoxShape(halfExtents)
-        val transform = Transform()
-        transform.setIdentity()
-        transform.origin.set(position)
-        
-        val motionState = DefaultMotionState(transform)
-        val rbInfo = RigidBodyConstructionInfo(0f, motionState, shape, Vector3f(0f, 0f, 0f))
-        rbInfo.restitution = 0.3f
-        rbInfo.friction = 0.5f
-        dynamicsWorld.addRigidBody(RigidBody(rbInfo))
-    }
-
-    /**
-     * Adiciona um dado genérico na simulação física.
-     * @param size O tamanho do dado calculado a partir da BoundingBox do modelo .glb
-     * @param initialPosition A posição (x,y,z) de onde o dado vai ser jogado
-     * @return O corpo rígido (RigidBody) para sincronizarmos com o SceneView depois
-     */
-    fun addDice(size: Float, initialPosition: Vector3f): RigidBody {
-        // 1. Cria a caixa de colisão do tamanho dinâmico do modelo
-        val halfExtents = size / 2f
-        val boxShape = BoxShape(Vector3f(halfExtents, halfExtents, halfExtents))
-
-        // 2. Define a posição e Rotação inicial aleatória
         val transform = Transform()
         transform.setIdentity()
         
@@ -140,49 +96,68 @@ class PhysicsWorld {
         rotX.mul(rotY)
         rotX.mul(rotZ)
         transform.basis.set(rotX)
-        
         transform.origin.set(initialPosition)
-
-        // 3. Define massa (dados não são estáticos, então massa > 0)
+        
         val mass = 1.0f
         val localInertia = Vector3f(0f, 0f, 0f)
-        boxShape.calculateLocalInertia(mass, localInertia)
-
-        // 4. Cria o corpo físico
+        shape.calculateLocalInertia(mass, localInertia)
+        
         val motionState = DefaultMotionState(transform)
-        val rbInfo = RigidBodyConstructionInfo(mass, motionState, boxShape, localInertia)
+        val rbInfo = RigidBodyConstructionInfo(mass, motionState, shape, localInertia)
         
-        // Quique do dado (restitution) e atrito
-        rbInfo.restitution = 0.2f
-        rbInfo.friction = 0.8f
-        // Amortecimento aumentado para forçar a inércia e parar de vibrar
-        rbInfo.linearDamping = 0.5f
-        rbInfo.angularDamping = 0.5f
+        // Restituição (Bounce) = 0.6 = elástico mas assenta
+        rbInfo.restitution = 0.6f
+        rbInfo.friction = 0.5f
+        
+        val body = RigidBody(rbInfo)
+        
+        // Dá um "spin" aleatório para ele girar loucamente ao nascer
+        body.setLinearVelocity(Vector3f(
+            (Math.random() * 20 - 10).toFloat(),
+            0f,
+            (Math.random() * 20 - 10).toFloat()
+        ))
+        body.setAngularVelocity(Vector3f((Math.random()*20 - 10).toFloat(), (Math.random()*20 - 10).toFloat(), (Math.random()*20 - 10).toFloat()))
+        
+        dynamicsWorld.addRigidBody(body)
+        return body
+    }
 
-        val diceRigidBody = RigidBody(rbInfo)
+    fun createGround() {
+        // Chão (plano)
+        val groundShape = StaticPlaneShape(Vector3f(0f, 1f, 0f), 0f)
+        val groundTransform = Transform()
+        groundTransform.setIdentity()
+        groundTransform.origin.set(Vector3f(0f, 0f, 0f))
         
-        // Impulso aleatório de movimento (espalhamento) e giro
-        diceRigidBody.setLinearVelocity(Vector3f(
-            (Math.random() * 20 - 10).toFloat(), // X
-            0f,                                  // Y
-            (Math.random() * 20 - 10).toFloat()  // Z
-        ))
+        val groundMotionState = DefaultMotionState(groundTransform)
+        val rbInfo = RigidBodyConstructionInfo(0f, groundMotionState, groundShape, Vector3f(0f, 0f, 0f))
+        rbInfo.restitution = 0.5f // Chão quica um pouco
+        rbInfo.friction = 0.8f
         
-        diceRigidBody.setAngularVelocity(Vector3f(
-            (Math.random() * 50 - 25).toFloat(),
-            (Math.random() * 50 - 25).toFloat(),
-            (Math.random() * 50 - 25).toFloat()
-        ))
-        
-        // 5. Adiciona o dado no mundo da simulação
-        dynamicsWorld.addRigidBody(diceRigidBody)
-        
-        return diceRigidBody
+        val groundBody = RigidBody(rbInfo)
+        dynamicsWorld.addRigidBody(groundBody)
+
+        // Paredes invisíveis (para o dado não cair da tela)
+        createWall(Vector3f(1f, 0f, 0f), -8f) // Direita
+        createWall(Vector3f(-1f, 0f, 0f), -8f) // Esquerda
+        createWall(Vector3f(0f, 0f, 1f), -12f) // Frente
+        createWall(Vector3f(0f, 0f, -1f), -12f) // Trás
+    }
+    
+    private fun createWall(normal: Vector3f, distance: Float) {
+        val wallShape = StaticPlaneShape(normal, distance)
+        val transform = Transform()
+        transform.setIdentity()
+        val motionState = DefaultMotionState(transform)
+        val rbInfo = RigidBodyConstructionInfo(0f, motionState, wallShape, Vector3f(0f, 0f, 0f))
+        rbInfo.restitution = 0.5f // Paredes quicam bem
+        val wallBody = RigidBody(rbInfo)
+        dynamicsWorld.addRigidBody(wallBody)
     }
 
     /**
-     * Obtém a matriz de transformação do corpo rígido no formato 4x4 (FloatArray)
-     * compatível com a engine do SceneView.
+     * Retorna a matriz 4x4 de transformação (translação + rotação) do corpo rígido
      */
     fun getTransformMatrix(body: RigidBody): FloatArray {
         val transform = Transform()
