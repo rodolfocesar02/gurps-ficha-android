@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateListOf
 import io.github.sceneview.math.toTransform
+import io.github.sceneview.model.materialInstances
 import com.bulletphysics.dynamics.RigidBody
 import javax.vecmath.Vector3f
 import androidx.compose.runtime.CompositionLocalProvider
@@ -58,6 +59,7 @@ fun Dice3DScene(
 ) {
     val context = LocalContext.current
     val soundManager = remember { DiceSoundManager(context) }
+    val (diceBodyColor, diceNumColor) = remember { DiceColorsStore.getColors(context) }
     
     val physicsWorld = remember { 
         PhysicsWorld().apply { 
@@ -194,6 +196,22 @@ fun Dice3DScene(
                                 val initialPos = Vector3f(randomX, randomY, randomZ)
                                 
                                 diceRigidBodies[i] = physicsWorld.addDice(1.2f, initialPos)
+                            }
+                            
+                            // Aplicar as cores aos materiais
+                            model.materialInstances?.forEach { materialInstance ->
+                                if (materialInstance.name.startsWith("bod_red")) {
+                                    materialInstance.setParameter(
+                                        "baseColorFactor",
+                                        diceBodyColor.red, diceBodyColor.green, diceBodyColor.blue, diceBodyColor.alpha
+                                    )
+                                }
+                                if (materialInstance.name.startsWith("Numbers_Black")) {
+                                    materialInstance.setParameter(
+                                        "baseColorFactor",
+                                        diceNumColor.red, diceNumColor.green, diceNumColor.blue, diceNumColor.alpha
+                                    )
+                                }
                             }
                         }
 

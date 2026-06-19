@@ -40,6 +40,7 @@ fun MenuDialog(
     onCarregar: () -> Unit,
     onImportar: () -> Unit,
     onCompartilhar: () -> Unit,
+    onConfigurarDados: () -> Unit,
     onVerificarAtualizacao: () -> Unit
 ) {
     AlertDialog(
@@ -52,10 +53,11 @@ fun MenuDialog(
                 PrimaryActionButton(text = "Carregar Ficha", onClick = onCarregar, modifier = Modifier.pracegoTraversal(3))
                 PrimaryActionButton(text = "Importar Ficha (JSON)", onClick = onImportar, modifier = Modifier.pracegoTraversal(4))
                 PrimaryActionButton(text = "Compartilhar Ficha", onClick = onCompartilhar, modifier = Modifier.pracegoTraversal(5))
-                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(6))
+                PrimaryActionButton(text = "Configurar Dados 3D", onClick = onConfigurarDados, modifier = Modifier.pracegoTraversal(6))
+                PrimaryActionButton(text = "Atualizar app", onClick = onVerificarAtualizacao, modifier = Modifier.pracegoTraversal(7))
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(7)) { Text(UiActionLabels.FECHAR) } }
+        confirmButton = { TextButton(onClick = onDismiss, modifier = Modifier.pracegoTraversal(8)) { Text(UiActionLabels.FECHAR) } }
     )
 }
 

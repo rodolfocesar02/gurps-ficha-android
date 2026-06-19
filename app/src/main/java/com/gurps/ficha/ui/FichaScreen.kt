@@ -81,6 +81,7 @@ import com.gurps.ficha.viewmodel.FichaViewModel
 import com.gurps.ficha.ui.components.EstadoLive
 import com.gurps.ficha.ui.components.EstadoVoz
 import com.gurps.ficha.ui.components.GeminiLiveService
+import com.gurps.ficha.ui.features.dice3d.ConfigurarDadosDialog
 import com.gurps.ficha.ui.components.GeminiLiveTools
 import kotlinx.coroutines.launch
 
@@ -93,6 +94,7 @@ fun FichaScreen(viewModel: FichaViewModel) {
     var showSaveDialog by remember { mutableStateOf(false) }
     var showLoadDialog by remember { mutableStateOf(false) }
     var showUpdateDialog by remember { mutableStateOf(false) }
+    var showConfigDadosDialog by remember { mutableStateOf(false) }
     var showMestreIADialog by remember { mutableStateOf(false) }
     var updateDialogTitle by remember { mutableStateOf("Atualização") }
     var updateDialogMessage by remember { mutableStateOf("") }
@@ -480,6 +482,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 showMenuDialog = false
                 compartilharFicha()
             },
+            onConfigurarDados = {
+                showMenuDialog = false
+                showConfigDadosDialog = true
+            },
             onVerificarAtualizacao = {
                 showMenuDialog = false
                 coroutineScope.launch {
@@ -613,6 +619,10 @@ fun FichaScreen(viewModel: FichaViewModel) {
                 TextButton(onClick = { showUpdateDialog = false }) { Text("Cancelar") }
             }
         )
+    }
+
+    if (showConfigDadosDialog) {
+        ConfigurarDadosDialog(onDismiss = { showConfigDadosDialog = false })
     }
 
     if (showMestreIADialog) {
