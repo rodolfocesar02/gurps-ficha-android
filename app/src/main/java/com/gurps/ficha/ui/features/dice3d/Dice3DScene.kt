@@ -90,10 +90,10 @@ fun Dice3DScene(
     var isRolling by remember { mutableStateOf(true) }
 
     androidx.compose.runtime.DisposableEffect(Unit) {
-        sensorManager.startListening()
+        // Removido sensorManager.startListening() a pedido do usuário
         onDispose {
             soundManager.release()
-            sensorManager.stopListening()
+            // sensorManager.stopListening()
         }
     }
 

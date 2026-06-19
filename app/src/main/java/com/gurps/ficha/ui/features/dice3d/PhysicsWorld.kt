@@ -124,36 +124,46 @@ class PhysicsWorld {
     }
 
     fun createGround() {
-        // Chão (plano)
         val groundShape = StaticPlaneShape(Vector3f(0f, 1f, 0f), 0f)
+        
         val groundTransform = Transform()
         groundTransform.setIdentity()
-        groundTransform.origin.set(Vector3f(0f, 0f, 0f))
+        groundTransform.origin.set(0f, -1f, 0f) // 1 unidade abaixo da câmera
         
-        val groundMotionState = DefaultMotionState(groundTransform)
-        val rbInfo = RigidBodyConstructionInfo(0f, groundMotionState, groundShape, Vector3f(0f, 0f, 0f))
-        rbInfo.restitution = 0.5f // Chão quica um pouco
-        rbInfo.friction = 0.8f
+        val motionState = DefaultMotionState(groundTransform)
+        val rbInfo = RigidBodyConstructionInfo(0f, motionState, groundShape, Vector3f(0f, 0f, 0f))
         
-        val groundBody = RigidBody(rbInfo)
-        dynamicsWorld.addRigidBody(groundBody)
+        // Atrito da mesa aumentado, quique diminuído para realismo (plástico no feltro)
+        rbInfo.restitution = 0.3f // Quique
+        rbInfo.friction = 0.8f    // Atrito
 
-        // Paredes invisíveis (para o dado não cair da tela)
-        createWall(Vector3f(1f, 0f, 0f), -8f) // Direita
-        createWall(Vector3f(-1f, 0f, 0f), -8f) // Esquerda
-        createWall(Vector3f(0f, 0f, 1f), -12f) // Frente
-        createWall(Vector3f(0f, 0f, -1f), -12f) // Trás
+        val groundRigidBody = RigidBody(rbInfo)
+        dynamicsWorld.addRigidBody(groundRigidBody)
+        
+        // Paredes invisíveis com grande espessura para evitar tunnelling (dados passarem através)
+        val thickness = 10f
+        val wallHeight = 40f
+        
+        // Esquerda e Direita (limites em X mais apertados para não sair da tela)
+        createWall(Vector3f(thickness, wallHeight, 20f), Vector3f(-3.5f - thickness, 0f, 0f))
+        createWall(Vector3f(thickness, wallHeight, 20f), Vector3f(3.5f + thickness, 0f, 0f))
+        
+        // Fundo (longe) e Frente (perto) (limites em Z)
+        createWall(Vector3f(20f, wallHeight, thickness), Vector3f(0f, 0f, -3.5f - thickness))
+        createWall(Vector3f(20f, wallHeight, thickness), Vector3f(0f, 0f, 5f + thickness))
     }
-    
-    private fun createWall(normal: Vector3f, distance: Float) {
-        val wallShape = StaticPlaneShape(normal, distance)
+
+    private fun createWall(halfExtents: Vector3f, position: Vector3f) {
+        val shape = BoxShape(halfExtents)
         val transform = Transform()
         transform.setIdentity()
+        transform.origin.set(position)
+        
         val motionState = DefaultMotionState(transform)
-        val rbInfo = RigidBodyConstructionInfo(0f, motionState, wallShape, Vector3f(0f, 0f, 0f))
-        rbInfo.restitution = 0.5f // Paredes quicam bem
-        val wallBody = RigidBody(rbInfo)
-        dynamicsWorld.addRigidBody(wallBody)
+        val rbInfo = RigidBodyConstructionInfo(0f, motionState, shape, Vector3f(0f, 0f, 0f))
+        rbInfo.restitution = 0.3f
+        rbInfo.friction = 0.5f
+        dynamicsWorld.addRigidBody(RigidBody(rbInfo))
     }
 
     /**
