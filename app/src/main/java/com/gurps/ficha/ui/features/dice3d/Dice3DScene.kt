@@ -32,6 +32,9 @@ import io.github.sceneview.rememberModelLoader
 import io.github.sceneview.node.ModelNode
 import io.github.sceneview.rememberModelInstance
 import io.github.sceneview.rememberCameraNode
+import io.github.sceneview.rememberView
+import io.github.sceneview.rememberRenderer
+import com.google.android.filament.View as FilamentView
 import io.github.sceneview.node.LightNode
 import com.google.android.filament.LightManager
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -137,6 +140,15 @@ fun Dice3DScene(
 
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
+    val view = rememberView(engine).apply {
+        blendMode = FilamentView.BlendMode.TRANSLUCENT
+    }
+    val renderer = rememberRenderer(engine).apply {
+        clearOptions = clearOptions.apply {
+            clear = true
+            clearColor = floatArrayOf(0f, 0f, 0f, 0f)
+        }
+    }
 
     val NoRippleNodeFactory = remember {
         object : IndicationNodeFactory {
@@ -154,6 +166,8 @@ fun Dice3DScene(
                 modifier = Modifier.fillMaxSize(),
                 engine = engine,
                 modelLoader = modelLoader,
+                view = view,
+                renderer = renderer,
                 cameraNode = rememberCameraNode(engine).apply {
                     // Visão top-down inclinada, câmera um pouco mais alta para caberem bem
                     position = io.github.sceneview.math.Position(x = 0f, y = 18f, z = 4f)
