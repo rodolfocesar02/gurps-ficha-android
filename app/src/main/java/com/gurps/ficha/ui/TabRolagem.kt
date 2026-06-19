@@ -813,6 +813,34 @@ fun TabRolagem(viewModel: FichaViewModel) {
                     }
                 }
 
+                val view = androidx.compose.ui.platform.LocalView.current
+                LaunchedEffect(pendingResults) {
+                    val announceMsg = if (pr.isDano) {
+                        val total = (soma + pr.mod).coerceAtLeast(1)
+                        "${pr.contextoLabel} causou $total de Dano"
+                    } else if (pr.isPersonalizada) {
+                        val total = soma + pr.mod
+                        "${pr.contextoLabel} rolou $total"
+                    } else {
+                        val modEfetivo = pr.mod + (if (isPraCegoVariant) modificadorGlobalPraCego else 0)
+                        val alvoEfetivo = if (pr.alvo != null) pr.alvo + modEfetivo else null
+                        val critico = CriticoRules.classificar(soma, alvoEfetivo)
+                        if (alvoEfetivo != null) {
+                            val dist = alvoEfetivo - soma
+                            val margem = Math.abs(dist)
+                            val status = when (critico) {
+                                CriticoRules.ResultadoCritico.DECISIVO -> "Sucesso Crítico por $margem"
+                                CriticoRules.ResultadoCritico.FALHA_CRITICA -> "Falha Crítica por $margem"
+                                else -> if (dist >= 0) "Passou por $margem" else "Falhou por $margem"
+                            }
+                            "${pr.contextoLabel} (NH $alvoEfetivo). $status"
+                        } else {
+                            "${pr.contextoLabel}. Rolou $soma"
+                        }
+                    }
+                    view.announceForAccessibility(announceMsg)
+                }
+
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
