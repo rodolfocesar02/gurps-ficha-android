@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 19 de Junho de 2026
-**Status Atual:** Lote_dados_3D 005 CONCLUÍDO — Imersão Sensorial (Materiais, Haptics e Contenção Física).
-**Último Lote Registrado:** Lote_dados_3D 005 — última entrada deste arquivo
-**HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47.
+**Status Atual:** Lote_dados_3D 006 CONCLUÍDO — Acessibilidade PraCego na Rolagem 3D.
+**Último Lote Registrado:** Lote_dados_3D 006 — última entrada deste arquivo
+**HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47, Lote 006=448c674.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3257,3 +3257,8 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - **Haptic Feedback Dinâmico**: Roteamento de eventos do motor de física (JBullet) para a API `LocalHapticFeedback` do Compose. Colisões com força acima de 1.5 disparam trancos táteis, simulando impacto direto do dado na mão do usuário.
 - **Renderização Baseada em Física (PBR)**: Shader Filament agora mapeia dinamicamente os parâmetros `metallicFactor` e `roughnessFactor` conforme o material selecionado (Fosco, Plástico ou Metal).
 - **Caixa de Contenção Física**: Restauração das barreiras grossas com `BoxShape` nos eixos X e Z da cena, contendo implacavelmente a física gravitacional, para assegurar que todos os dados saltem livremente mas permaneçam estritamente dentro da "mesa" na tela do celular.
+
+### Lote_dados_3D 006 — 19 de Junho de 2026 (commit 448c674)
+**Acessibilidade PraCego na Rolagem 3D (branch GURPS-Saga)**
+- **TalkBack Dinâmico**: Implementação de `LaunchedEffect` aliado ao `LocalView.current.announceForAccessibility()` para forçar a leitura do resultado exato da rolagem na variante PraCego.
+- **Interpretação Narrativa**: Textos convertidos de dados crus para frases descritivas claras (ex: "Esquiva (NH 14). Falhou por 2", "Dano causou 8").
