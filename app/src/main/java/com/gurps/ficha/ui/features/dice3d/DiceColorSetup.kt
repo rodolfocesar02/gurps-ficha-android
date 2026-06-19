@@ -23,6 +23,19 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import io.github.sceneview.Scene
+import io.github.sceneview.rememberEngine
+import io.github.sceneview.rememberModelLoader
+import io.github.sceneview.node.ModelNode
+import io.github.sceneview.rememberModelInstance
+import io.github.sceneview.rememberCameraNode
+import io.github.sceneview.rememberRenderer
+import io.github.sceneview.rememberView
+import io.github.sceneview.model.materialInstances
+import com.google.android.filament.LightManager
+import io.github.sceneview.node.LightNode
+import io.github.sceneview.math.Rotation
 
 object DiceColorsStore {
     private const val PREFS_NAME = "DiceColorsPrefs"
@@ -131,33 +144,24 @@ fun ConfigurarDadosDialog(onDismiss: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Preview Estilizado
-                Box(
+                // Preview Estilizado com o Modelo 3D
+                Dice3DPreview(
+                    bodyColor = bodyColor,
+                    numColor = numColor,
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(100.dp)
                         .clip(RoundedCornerShape(12.dp))
                         .background(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    bodyColor.copy(alpha = 0.9f),
-                                    bodyColor.copy(alpha = 0.7f),
-                                    Color.Black.copy(alpha = 0.6f) // Borda escurecida para 3D
+                                    Color(0xFF2B2B36),
+                                    Color.Black.copy(alpha = 0.8f)
                                 ),
-                                radius = 150f
+                                radius = 200f
                             )
                         )
-                        .border(1.dp, Color.White.copy(alpha = 0.2f), RoundedCornerShape(12.dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "6",
-                        color = numColor,
-                        style = MaterialTheme.typography.displayMedium.copy(
-                            fontWeight = FontWeight.ExtraBold
-                        ),
-                        modifier = Modifier.padding(top = 4.dp) // Ajuste visual de centralização
-                    )
-                }
+                        .border(1.dp, Color.White.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                )
 
                 // Botões de Ação
                 Row(
@@ -217,6 +221,67 @@ private fun ColorPickerGrid(colors: List<Color>, selectedColor: Color, onColorSe
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun Dice3DPreview(bodyColor: Color, numColor: Color, modifier: Modifier = Modifier) {
+    val engine = rememberEngine()
+    val modelLoader = rememberModelLoader(engine)
+    val view = rememberView(engine)
+    val renderer = rememberRenderer(engine)
+    val cameraNode = rememberCameraNode(engine).apply {
+        position = io.github.sceneview.math.Position(x = 0f, y = 0f, z = 4f)
+    }
+
+    val modelNodeState = remember { mutableStateOf<ModelNode?>(null) }
+
+    LaunchedEffect(Unit) {
+        var angle = 0f
+        while (true) {
+            androidx.compose.runtime.withFrameNanos { time ->
+                angle += 1f
+                modelNodeState.value?.rotation = Rotation(angle * 0.5f, angle, angle * 0.2f)
+            }
+        }
+    }
+
+    Scene(
+        modifier = modifier,
+        engine = engine,
+        modelLoader = modelLoader,
+        view = view,
+        renderer = renderer,
+        cameraNode = cameraNode,
+        isOpaque = false
+    ) {
+        LightNode(
+            type = LightManager.Type.SUN
+        )
+
+        val model = rememberModelInstance(modelLoader, "models/Dado.glb")
+        if (model != null) {
+            LaunchedEffect(model, bodyColor, numColor) {
+                val linearBody = bodyColor.convert(ColorSpaces.LinearSrgb)
+                val linearNum = numColor.convert(ColorSpaces.LinearSrgb)
+                
+                model.materialInstances?.forEach { materialInstance ->
+                    if (materialInstance.name.startsWith("bod_red")) {
+                        materialInstance.setParameter("baseColorFactor", linearBody.red, linearBody.green, linearBody.blue, linearBody.alpha)
+                    }
+                    if (materialInstance.name.startsWith("Numbers_Black")) {
+                        materialInstance.setParameter("baseColorFactor", linearNum.red, linearNum.green, linearNum.blue, linearNum.alpha)
+                    }
+                }
+            }
+            ModelNode(
+                modelInstance = model,
+                scaleToUnits = 1.8f,
+                apply = {
+                    modelNodeState.value = this
+                }
+            )
         }
     }
 }

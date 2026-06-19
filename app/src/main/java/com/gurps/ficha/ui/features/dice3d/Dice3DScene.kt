@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import io.github.sceneview.math.toTransform
 import io.github.sceneview.model.materialInstances
 import com.bulletphysics.dynamics.RigidBody
@@ -199,17 +200,20 @@ fun Dice3DScene(
                             }
                             
                             // Aplicar as cores aos materiais
+                            val linearBody = diceBodyColor.convert(ColorSpaces.LinearSrgb)
+                            val linearNum = diceNumColor.convert(ColorSpaces.LinearSrgb)
+                            
                             model.materialInstances?.forEach { materialInstance ->
                                 if (materialInstance.name.startsWith("bod_red")) {
                                     materialInstance.setParameter(
                                         "baseColorFactor",
-                                        diceBodyColor.red, diceBodyColor.green, diceBodyColor.blue, diceBodyColor.alpha
+                                        linearBody.red, linearBody.green, linearBody.blue, linearBody.alpha
                                     )
                                 }
                                 if (materialInstance.name.startsWith("Numbers_Black")) {
                                     materialInstance.setParameter(
                                         "baseColorFactor",
-                                        diceNumColor.red, diceNumColor.green, diceNumColor.blue, diceNumColor.alpha
+                                        linearNum.red, linearNum.green, linearNum.blue, linearNum.alpha
                                     )
                                 }
                             }
