@@ -1,9 +1,9 @@
 # Acompanhamento do Projeto da Ficha GURPS (Para Rodolfo)
 
 **Última Atualização:** 19 de Junho de 2026
-**Status Atual:** Lote_dados_3D 004 CONCLUÍDO — Customização RPGística do Menu de Cores de Dados 3D concluída.
-**Último Lote Registrado:** Lote_dados_3D 004 — última entrada deste arquivo
-**HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003 (Sons/UI)=64d4223, Lote 004=585f040.
+**Status Atual:** Lote_dados_3D 005 CONCLUÍDO — Imersão Sensorial (Materiais, Haptics e Contenção Física).
+**Último Lote Registrado:** Lote_dados_3D 005 — última entrada deste arquivo
+**HEAD (branch GURPS-Saga):** Lotes recentes: Lote 001=429865b, Lotes 002/003=64d4223, Lote 004=585f040, Lote 005=c3f0c47.
 
 ### Sincro V24: Super Release 2.0 (Lote 86)
 - **Lançamento Oficial V1.5.0**: Build de produção gerada para as variantes Visual e PraCego.
@@ -3250,4 +3250,10 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Correção crítica da engine Filament: conversão do compose color space (sRGB) para LinearSrgb permitindo fidelidade absoluta na renderização das texturas `baseColorFactor` no JBullet/SceneView.
 - Substituição de mocks 2D no preview por um micro motor 3D ativo exibindo rotação vetorial do .glb em tempo real na tela de configuração.
 - Integração no Menu superior ao lado da foto do personagem (DialogsCommon.kt).
-- ---------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+### Lote_dados_3D 005 — 19 de Junho de 2026  (commits b15b57a, c3f0c47)
+**Imersão Sensorial 3D: Materiais, Haptics e Limites Físicos (branch GURPS-Saga)**
+- **Haptic Feedback Dinâmico**: Roteamento de eventos do motor de física (JBullet) para a API `LocalHapticFeedback` do Compose. Colisões com força acima de 1.5 disparam trancos táteis, simulando impacto direto do dado na mão do usuário.
+- **Renderização Baseada em Física (PBR)**: Shader Filament agora mapeia dinamicamente os parâmetros `metallicFactor` e `roughnessFactor` conforme o material selecionado (Fosco, Plástico ou Metal).
+- **Caixa de Contenção Física**: Restauração das barreiras grossas com `BoxShape` nos eixos X e Z da cena, contendo implacavelmente a física gravitacional, para assegurar que todos os dados saltem livremente mas permaneçam estritamente dentro da "mesa" na tela do celular.
