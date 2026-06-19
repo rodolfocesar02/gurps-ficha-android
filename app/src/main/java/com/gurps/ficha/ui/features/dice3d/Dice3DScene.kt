@@ -148,7 +148,7 @@ fun Dice3DScene(
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().background(Color(0x66000000))) { // Fundo semi-transparente escurecido
+    Box(modifier = modifier.fillMaxSize()) { 
         CompositionLocalProvider(LocalIndication provides NoRippleNodeFactory) {
             Scene(
                 modifier = Modifier.fillMaxSize(),

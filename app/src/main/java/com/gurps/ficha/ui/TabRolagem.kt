@@ -771,7 +771,7 @@ fun TabRolagem(viewModel: FichaViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .zIndex(100f) // Garante que a box fica por cima
-                .background(Color.Black.copy(alpha = 0.7f))
+                .background(Color.Black.copy(alpha = 0.3f))
         ) {
             Dice3DScene(
                 modifier = Modifier.fillMaxSize(),

@@ -30,8 +30,8 @@ class PhysicsWorld {
 
         dynamicsWorld = DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration)
 
-        // Gravidade aumentada (-60) para compensar a escala dos dados na tela e dar peso realista
-        dynamicsWorld.setGravity(Vector3f(0f, -60.0f, 0f))
+        // Gravidade reduzida para evitar que o dado vibre infinitamente (jittering) contra o chão
+        dynamicsWorld.setGravity(Vector3f(0f, -40.0f, 0f))
     }
 
     var onCollision: ((force: Float) -> Unit)? = null
@@ -61,7 +61,9 @@ class PhysicsWorld {
         
         // Debounce de 80ms para evitar spam do SoundPool (Log infinito)
         val currentTime = System.currentTimeMillis()
-        if (maxImpulse > 0.5f && (currentTime - lastCollisionTime) > 80) {
+        // O impulso de repouso para a gravidade -40 (com massa 1.0) é por volta de 0.6 por frame.
+        // Bater no chão gera muito mais, então o threshold tem que ser alto (> 3.0) para ignorar o jitter
+        if (maxImpulse > 3.0f && (currentTime - lastCollisionTime) > 80) {
             onCollision?.invoke(maxImpulse)
             lastCollisionTime = currentTime
         }
@@ -139,10 +141,11 @@ class PhysicsWorld {
         val rbInfo = RigidBodyConstructionInfo(mass, motionState, boxShape, localInertia)
         
         // Quique do dado (restitution) e atrito
-        rbInfo.restitution = 0.3f
-        rbInfo.friction = 0.6f
-        rbInfo.linearDamping = 0.2f
-        rbInfo.angularDamping = 0.3f
+        rbInfo.restitution = 0.2f
+        rbInfo.friction = 0.8f
+        // Amortecimento aumentado para forçar a inércia e parar de vibrar
+        rbInfo.linearDamping = 0.5f
+        rbInfo.angularDamping = 0.5f
 
         val diceRigidBody = RigidBody(rbInfo)
         
