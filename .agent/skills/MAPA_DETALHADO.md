@@ -596,6 +596,8 @@ Cada variante tem seu próprio **source set** com um ponto de entrada de UI:
 > `com.google.mlkit:face-detection:16.1.7`, `com.google.android.gms:play-services-mlkit-subject-segmentation:16.0.0-beta1`
 > e `androidx.exifinterface:exifinterface:1.3.7` (Coil 2.5.0 já existia).
 
+> **Nota de build [+ Lotes 3D Dice]:** Injeção da engine 3D nativa (io.github.sceneview:sceneview) e do motor de colisão JBullet (cz.advel.jbullet) para física de dados real.
+
 ---
 
 ## 32. SAGA / NARRADOR / MOTOR DE COMBATE  [+ 2026-06-14, Lotes 349-370]
