@@ -173,6 +173,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var agarrarDialogo by remember { mutableStateOf(false) }
     var derrubarDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
+    var defesaTotalDialogo by remember { mutableStateOf(false) }
 
     Card(
         Modifier.fillMaxWidth().padding(8.dp),
@@ -202,6 +203,7 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.AGARRAR -> agarrarDialogo = true
                             m == Manobra.DERRUBAR -> derrubarDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
+                            m == Manobra.DEFESA_TOTAL -> defesaTotalDialogo = true
                             else -> viewModel.sagaCombateManobra(m)
                         }
                     },
@@ -308,6 +310,53 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             onFechar = { posturaDialogo = false }
         )
     }
+
+    if (defesaTotalDialogo) {
+        SubDialogoDefesaTotal(
+            onConfirmar = { modo, aumentadaEm ->
+                viewModel.sagaCombateDefesaTotal(modo, aumentadaEm); defesaTotalDialogo = false
+            },
+            onFechar = { defesaTotalDialogo = false }
+        )
+    }
+}
+
+/** Lote 388: escolhe a opção da Defesa Total — Aumentada (+2 numa defesa) ou Dupla (2ª defesa). MB p.366. */
+@Composable
+private fun SubDialogoDefesaTotal(
+    onConfirmar: (DefesaTotalModo, CombatResolver.TipoDefesa?) -> Unit,
+    onFechar: () -> Unit
+) {
+    var modo by remember { mutableStateOf(DefesaTotalModo.AUMENTADA) }
+    var aumentadaEm by remember { mutableStateOf(CombatResolver.TipoDefesa.ESQUIVA) }
+    AlertDialog(
+        onDismissRequest = onFechar,
+        title = { Text("Defesa Total") },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                OpcaoRadio(modo == DefesaTotalModo.AUMENTADA, "Aumentada (+2 numa defesa)",
+                    "Defesa Total Aumentada, +2 numa defesa à escolha") { modo = DefesaTotalModo.AUMENTADA }
+                OpcaoRadio(modo == DefesaTotalModo.DUPLA, "Dupla (2ª defesa se a 1ª falhar)",
+                    "Defesa Total Dupla, tenta uma segunda defesa diferente se a primeira falhar") { modo = DefesaTotalModo.DUPLA }
+                if (modo == DefesaTotalModo.AUMENTADA) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("+2 em qual defesa?", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    listOf(
+                        CombatResolver.TipoDefesa.ESQUIVA, CombatResolver.TipoDefesa.APARA, CombatResolver.TipoDefesa.BLOQUEIO
+                    ).forEach { d ->
+                        OpcaoRadio(aumentadaEm == d, d.rotulo, "+2 em ${d.rotulo}") { aumentadaEm = d }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = { onConfirmar(modo, if (modo == DefesaTotalModo.AUMENTADA) aumentadaEm else null) },
+                modifier = Modifier.semantics { contentDescription = "Confirmar Defesa Total" }
+            ) { Text("Assumir") }
+        },
+        dismissButton = { TextButton(onClick = onFechar) { Text("Cancelar") } }
+    )
 }
 
 @Composable

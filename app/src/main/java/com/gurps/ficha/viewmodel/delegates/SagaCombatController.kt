@@ -335,6 +335,14 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 388: Defesa Total — Aumentada (+2 numa defesa) ou Dupla (2ª defesa se a 1ª falhar). MB p.366. */
+    fun heroiDefesaTotal(modo: DefesaTotalModo, aumentadaEm: CombatResolver.TipoDefesa? = null) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiDefesaTotal(modo, aumentadaEm)
+        depoisDaAcaoDoHeroi()
+    }
+
     private fun depoisDaAcaoDoHeroi() {
         val s = sessao ?: return
         publicarLog()
@@ -389,7 +397,12 @@ class SagaCombatController(
             val escolha = deferred.await()
             defesaPendente = null
             val soma = (1..3).sumOf { Random.nextInt(1, 7) }
-            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma))
+            // Defesa Total (Dupla, Lote 388): prepara a melhor 2ª defesa de TIPO diferente — usada só se a 1ª falhar.
+            val secundaria = if (s.heroiDefesaTotalDupla)
+                opcoes.filter { it.tipo != escolha.tipo }.maxByOrNull { it.valorFinal }
+                    ?.let { DefesaHeroi(it.tipo, it.valorFinal, (1..3).sumOf { Random.nextInt(1, 7) }) }
+            else null
+            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma), secundaria)
         } else {
             s.npcResolve(npcId, intencao, null)
         }

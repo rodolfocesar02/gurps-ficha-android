@@ -50,8 +50,18 @@ class CombatSession(
     // Mover e Atacar (Lote 378): na defesa seguinte só Esquiva/Bloqueio — sem aparar — até o próximo turno (MB p.367).
     var heroiSemAparar: Boolean = false; private set
 
-    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar). */
-    private fun inicioAcaoHeroi() { atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false }
+    // Defesa Total (Lote 388, MB p.366): declarada no turno do herói, vale até a PRÓXIMA ação dele.
+    // AUMENTADA = +2 numa defesa escolhida; DUPLA = 2ª defesa diferente se a 1ª falhar.
+    private var defesaTotalModo: DefesaTotalModo? = null
+    private var defesaTotalAumentadaEm: CombatResolver.TipoDefesa? = null
+    /** True quando o herói está em Defesa Total (Dupla) — o controller prepara a 2ª defesa. */
+    val heroiDefesaTotalDupla: Boolean get() = defesaTotalModo == DefesaTotalModo.DUPLA
+    private fun limparDefesaTotal() { defesaTotalModo = null; defesaTotalAumentadaEm = null }
+
+    /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total). */
+    private fun inicioAcaoHeroi() {
+        atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false; limparDefesaTotal()
+    }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
     val inimigos: List<Combatente> get() = encounter.combatentes.filter { !it.ehHeroi }
@@ -329,6 +339,24 @@ class CombatSession(
     }
 
     /**
+     * Defesa Total (MB p.366): AUMENTADA (+2 numa defesa escolhida) ou DUPLA (tenta uma 2ª defesa
+     * diferente se a 1ª falhar). O benefício vale até a PRÓXIMA ação do herói.
+     */
+    fun heroiDefesaTotal(modo: DefesaTotalModo, aumentadaEm: CombatResolver.TipoDefesa? = null): String {
+        inicioAcaoHeroi()
+        limparAvaliar(); limparApontar(); limparFinta()
+        defesaTotalModo = modo
+        defesaTotalAumentadaEm = if (modo == DefesaTotalModo.AUMENTADA) aumentadaEm else null
+        val det = when (modo) {
+            DefesaTotalModo.AUMENTADA -> "Aumentada — +2 em ${aumentadaEm?.rotulo ?: "uma defesa"}"
+            DefesaTotalModo.DUPLA -> "Dupla — se a 1ª defesa falhar, você tenta uma 2ª diferente"
+        }
+        val txt = "🛡️🛡️ Você assume Defesa Total ($det)."
+        log += txt
+        return txt
+    }
+
+    /**
      * Fintar (MB p.366): Disputa Rápida entre o NH do herói com a arma e a defesa do alvo (maior entre
      * armaNh e DX do NPC). Se o herói vencer, a MARGEM DE VITÓRIA é subtraída da defesa do alvo no próximo
      * golpe corpo-a-corpo contra ele. Exige arma corpo-a-corpo no alcance. Não causa dano nem desprepara.
@@ -477,7 +505,8 @@ class CombatSession(
             esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante,
             aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido } else null,
             bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido },
-            defesasUsadas = heroi.defesasUsadas, recuo = recuo, defesaTotalEm = defesaTotalEm,
+            defesasUsadas = heroi.defesasUsadas, recuo = recuo,
+            defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA
         )
     }
@@ -489,7 +518,8 @@ class CombatSession(
     fun npcResolve(
         npcId: String,
         intencao: NpcCombatBrain.IntencaoNpc,
-        defesaHeroi: DefesaHeroi? = null
+        defesaHeroi: DefesaHeroi? = null,
+        defesaSecundaria: DefesaHeroi? = null // Lote 388: Defesa Total (Dupla) — 2ª defesa se a 1ª falhar
     ): AtaqueResultado {
         val npc = inimigos.firstOrNull { it.id == npcId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "NPC fora de combate.")
@@ -558,7 +588,7 @@ class CombatSession(
             aDistancia = intencao.aDistancia, modsExtra = modsNpc, random = random
         )
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
-        val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
+        var def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
         var danoBasicoNpc = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE, stats.armaDano, intencao.aDistancia)
         var rdHeroiAlvo = heroiPerfil.rd
         var forcaGraveNpc = false
@@ -570,6 +600,16 @@ class CombatSession(
         }
         // Ataque Total no turno anterior ANULA a defesa do herói até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) log += "🛡️ Você está sem defesa ativa (Ataque Total) — resta torcer pelo erro do oponente!"
+
+        // Defesa Dupla (Lote 388, MB p.366): se a 1ª defesa falhou e o ataque NÃO foi anulado por golpe
+        // decisivo, o herói tenta automaticamente a 2ª defesa diferente já preparada pelo controller.
+        if (defesaSecundaria != null && atk.resultado != CombatActions.ResultadoAcerto.FALHA &&
+            atk.critico != CriticoRules.ResultadoCritico.DECISIVO &&
+            !CombatResolver.defesaBemSucedida(def.valorFinal, def.soma)) {
+            log += "🛡️🛡️ Defesa Dupla: ${def.tipo.rotulo} ${def.valorFinal} falhou (rolou ${def.soma}) — você tenta ${defesaSecundaria.tipo.rotulo}!"
+            registrarDefesaUsada(def.tipo) // a 1ª defesa também conta como usada neste turno
+            def = defesaSecundaria
+        }
 
         val troca = CombatResolver.resolverTroca(
             defensor = heroi, htDefensor = heroiPerfil.ht, ataque = atk,

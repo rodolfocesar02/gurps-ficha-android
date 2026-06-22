@@ -317,7 +317,7 @@ Defesa Ativa: Somente esquiva ou
 bloqueio. O personagem não pode aparar nem bater em retirada (v. Retirada,
 pág. 377).
 
-## Defesa Total [~] ⚠️ PARCIAL OU INCOMPLETO
+## Defesa Total [x] ✅ FEITO (Aumentada +2 + Dupla — Lote 388)
 Esta é a manobra que um personagem deve adotar quando está cercado
 de oponentes — especialmente oponentes que usam muito Ataque Total! Ele
 deve especificar uma das duas opções

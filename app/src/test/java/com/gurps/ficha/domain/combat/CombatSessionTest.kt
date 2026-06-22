@@ -656,4 +656,41 @@ class CombatSessionTest {
         assertEquals(0, CombatSession.bonusDanoForte(Manobra.ATAQUE, AtaqueTotalModo.FORTE, "3d", false))
         assertEquals(0, CombatSession.bonusDanoForte(Manobra.ATAQUE_TOTAL, AtaqueTotalModo.DETERMINADO, "3d", false))
     }
+
+    // Lote 388 — Defesa Total (MB p.366): Aumentada (+2 numa defesa) e Dupla (2ª defesa se a 1ª falhar).
+    @Test
+    fun `Defesa Total Aumentada soma +2 na defesa escolhida`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val base = s.opcoesDefesaHeroi().first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA }.valorFinal
+        s.heroiDefesaTotal(DefesaTotalModo.AUMENTADA, CombatResolver.TipoDefesa.ESQUIVA)
+        val comBonus = s.opcoesDefesaHeroi().first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA }.valorFinal
+        assertEquals("Aumentada soma +2 na Esquiva", base + 2, comBonus)
+        // o +2 não vaza para outra defesa
+        val apara = s.opcoesDefesaHeroi().first { it.tipo == CombatResolver.TipoDefesa.APARA }
+        assertEquals("o +2 vale só na defesa escolhida", 11, apara.valorFinal)
+    }
+
+    @Test
+    fun `Defesa Total Dupla tenta a 2a defesa quando a 1a falha`() {
+        var salvou = false
+        for (seed in 0L..60L) {
+            val base = goblin()
+            val g = base.copy(stats = base.stats!!.copy(armaNh = 16)) // acerta com frequência
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            val intencao = NpcCombatBrain.IntencaoNpc(
+                manobra = Manobra.ATAQUE, alvoId = "heroi", local = LocalAtaque.TORSO, motivo = "teste"
+            )
+            val primaria = DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, soma = 18)   // sempre falha
+            val secundaria = DefesaHeroi(CombatResolver.TipoDefesa.APARA, 11, soma = 3)    // sempre passa
+            val pvAntes = s.heroi.pvAtual
+            val r = s.npcResolve("goblin", intencao, primaria, secundaria)
+            if (r.acertou && s.log.any { it.contains("Defesa Dupla") } && s.heroi.pvAtual == pvAntes) {
+                salvou = true; break
+            }
+        }
+        assertTrue("a Defesa Dupla deve salvar o herói em alguma seed com acerto não-crítico", salvou)
+    }
 }

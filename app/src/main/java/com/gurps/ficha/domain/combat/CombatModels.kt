@@ -47,6 +47,12 @@ enum class Manobra(val rotulo: String) {
     NAO_FAZER_NADA("Não Fazer Nada")
 }
 
+/** Opção da manobra Defesa Total (Lote 388, MB p.366). */
+enum class DefesaTotalModo(val rotulo: String) {
+    AUMENTADA("Aumentada"), // +2 numa defesa ativa escolhida
+    DUPLA("Dupla")          // se a 1ª defesa falhar, tenta uma 2ª defesa DIFERENTE contra o mesmo ataque
+}
+
 /**
  * Defesas já usadas pelo combatente NESTE turno — base para as regras de B5
  * (apara múltipla −4 cumulativa, bloqueio/recuo 1×/turno). Em B1 é só o registro.

@@ -3039,6 +3039,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 388 — 22 de Junho de 2026
+**Saga combate: Defesa Total completa — Aumentada + Dupla (loop de defesa 1/5, MB p.366, branch GURPS-Saga)**
+- A manobra Defesa Total do herói **não fazia nada** (só logava). Agora `CombatSession.heroiDefesaTotal(modo, aumentadaEm)` com `enum DefesaTotalModo { AUMENTADA, DUPLA }`; o benefício vale até a PRÓXIMA ação do herói (limpo em `inicioAcaoHeroi`).
+- **AUMENTADA:** +2 numa defesa escolhida — `opcoesDefesaHeroi` passa `defesaTotalEm = defesaTotalAumentadaEm` ao `CombatResolver` (reusa `BONUS_DEFESA_TOTAL` já existente).
+- **DUPLA:** se a 1ª defesa falha (e o ataque NÃO foi anulado por golpe decisivo), tenta automaticamente uma 2ª defesa de TIPO diferente. Como `resolverTroca` MUTA o defensor (aplica dano), decido o resultado ANTES via `CombatResolver.defesaBemSucedida` (puro): o controller prepara a melhor 2ª defesa (`opcoes.filter{tipo≠1ª}.maxBy{valorFinal}`) e passa em `npcResolve(..., defesaSecundaria)`; o motor troca `def` pela 2ª só se a 1ª falhou.
+- UI: manobra "Defesa Total" abre `SubDialogoDefesaTotal` (Aumentada [+ qual defesa] / Dupla); `FichaViewModel.sagaCombateDefesaTotal`; wrapper no `SagaCombatController`.
+- Testes (`CombatSessionTest`): Aumentada soma +2 só na defesa escolhida; Dupla salva o herói quando a 1ª falha (loop de seeds, acerto não-crítico). Build 2 variantes + testes verdes.
+- Combate.md: "Defesa Total" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 387 — 22 de Junho de 2026
 **Saga combate: refino do Ataque Total — Forte correto (MB p.365, branch GURPS-Saga)**
 - BUG DE REGRA corrigido: o Ataque Total **Forte** dava **+2 fixo** de dano. A regra (MB p.365) é **+2 OU +1 por dado, o que for maior** — então armas de vários dados eram subestimadas (uma 3d devia dar +3). `CombatSession.bonusDanoForte(manobra, modo, danoExpr, aDistancia)` virou função pura (companion, testável) = `max(2, nº de dados)`.
