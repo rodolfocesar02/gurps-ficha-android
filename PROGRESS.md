@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 387 — 22 de Junho de 2026
+**Saga combate: refino do Ataque Total — Forte correto (MB p.365, branch GURPS-Saga)**
+- BUG DE REGRA corrigido: o Ataque Total **Forte** dava **+2 fixo** de dano. A regra (MB p.365) é **+2 OU +1 por dado, o que for maior** — então armas de vários dados eram subestimadas (uma 3d devia dar +3). `CombatSession.bonusDanoForte(manobra, modo, danoExpr, aDistancia)` virou função pura (companion, testável) = `max(2, nº de dados)`.
+- RESTRIÇÃO: Forte só vale **corpo-a-corpo** (à distância não tem Forte; MB p.365). Gateado por `aDistancia` no herói e no NPC. (Espada de energia/queimadura ficaria de fora pela regra, mas o motor só modela dano por ST de GdP/GeB — todo corpo-a-corpo aqui é elegível; nota para quando houver dano de queimadura.)
+- UI: a opção "Forte" some quando a arma empunhada é à distância; o rótulo do **Determinado** mostra **+1** à distância (era sempre "+4", errado para tiro).
+- Testes (`CombatSessionTest`): 1d→+2, 2d→+2, 3d→+3, 4d→+4, à distância→0, manobra/modo diferentes→0. Build 2 variantes + testes verdes.
+- Combate.md: "Ataque Total" segue PARCIAL (Determinado/Forte/Duplo/Fintar OK; falta **Fogo de Retenção**, CdT 5+, MB p.409).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 386 — 22 de Junho de 2026
 **Saga combate: Luta agarrada — base (loop de regras 5/5, MB p.370–371, branch GURPS-Saga)**
 - AGARRAR (MB p.370): `CombatSession.heroiAgarrar(ataque, alvoId)` — ataque normal; se acerta e o alvo não defende, adiciona `Condicao.AGARRADO`. O alvo agarrado defende a −4 (`penAgarrado` em `resolverGolpeHeroi`) e, no turno dele, gasta a ação tentando se desvencilhar (Disputa Rápida em `npcResolve`, não ataca).

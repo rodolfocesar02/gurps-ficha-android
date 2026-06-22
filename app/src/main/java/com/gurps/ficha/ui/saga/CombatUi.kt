@@ -509,9 +509,11 @@ private fun SubDialogoAlvoLocal(
                 if (manobra == Manobra.ATAQUE_TOTAL) {
                     Spacer(Modifier.height(8.dp))
                     Text("Modo do Ataque Total", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.labelLarge)
+                    // Lote 387: à distância o Determinado é +1 (não +4) e não existe "Forte" (MB p.365).
+                    val armaDistancia = ataques.getOrNull(ataqueSelecionado)?.aDistancia == true
                     val modos = buildList {
-                        add(AtaqueTotalModo.DETERMINADO to "+4 para acertar")
-                        add(AtaqueTotalModo.FORTE to "+2 de dano")
+                        add(AtaqueTotalModo.DETERMINADO to if (armaDistancia) "+1 para acertar" else "+4 para acertar")
+                        if (!armaDistancia) add(AtaqueTotalModo.FORTE to "+2 de dano, ou +1/dado")
                         if (podeDuplo) add(AtaqueTotalModo.DUPLO to "2 golpes, 2 armas")
                     }
                     modos.forEach { (mo, desc) ->

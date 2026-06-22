@@ -640,4 +640,20 @@ class CombatSessionTest {
         }
         assertTrue("herói forte deve derrubar o goblin em alguma seed", derrubou)
     }
+
+    // Lote 387 — Ataque Total (Forte): +2 de dano OU +1 por dado, o que for maior; só corpo-a-corpo (MB p.365).
+    @Test
+    fun `Ataque Total Forte da +2 ou +1 por dado, o que for maior`() {
+        val f = { expr: String, dist: Boolean ->
+            CombatSession.bonusDanoForte(Manobra.ATAQUE_TOTAL, AtaqueTotalModo.FORTE, expr, dist)
+        }
+        assertEquals("1 dado: o piso de +2 vale", 2, f("1d+2", false))
+        assertEquals("2 dados: +1/dado = +2 (empata com o piso)", 2, f("2d", false))
+        assertEquals("3 dados: +1/dado = +3 supera o piso", 3, f("3d-1", false))
+        assertEquals("4 dados: +4", 4, f("4d pa+", false))
+        // À distância não tem Forte; nem manobra/modo diferente dão bônus.
+        assertEquals("à distância não tem Forte", 0, f("3d", true))
+        assertEquals(0, CombatSession.bonusDanoForte(Manobra.ATAQUE, AtaqueTotalModo.FORTE, "3d", false))
+        assertEquals(0, CombatSession.bonusDanoForte(Manobra.ATAQUE_TOTAL, AtaqueTotalModo.DETERMINADO, "3d", false))
+    }
 }

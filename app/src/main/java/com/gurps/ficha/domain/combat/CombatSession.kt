@@ -247,7 +247,7 @@ class CombatSession(
         val defSoma = rolar3d6()
         // Além de 1/2D, o dano cai pela metade (MB p.270) — aplica no dado básico antes de RD.
         val meioDano = ataque.aDistancia && ataque.meioDano > 0 && dist >= ataque.meioDano
-        var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo)
+        var danoBasico = rolarDano(ataque.danoExpr, random) + bonusDanoForte(manobra, ataqueTotalModo, ataque.danoExpr, ataque.aDistancia)
         var rdAlvo = alvo.stats?.rd ?: 0
         var forcaGrave = false
         // Golpe Fulminante (Lote 384, MB p.558): a defesa já é anulada pelo crítico; a tabela modifica o DANO.
@@ -559,7 +559,7 @@ class CombatSession(
         )
         // Sem escolha de defesa (herói atordoado/sem opção) → só Esquiva passiva da ficha.
         val def = defesaHeroi ?: DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, heroiPerfil.esquiva, rolar3d6())
-        var danoBasicoNpc = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE)
+        var danoBasicoNpc = rolarDano(stats.armaDano, random) + bonusDanoForte(intencao.manobra, AtaqueTotalModo.FORTE, stats.armaDano, intencao.aDistancia)
         var rdHeroiAlvo = heroiPerfil.rd
         var forcaGraveNpc = false
         // Golpe Fulminante do NPC (Lote 384, MB p.558).
@@ -714,9 +714,6 @@ class CombatSession(
         return if (apara > esquiva) CombatResolver.TipoDefesa.APARA to apara
         else CombatResolver.TipoDefesa.ESQUIVA to esquiva
     }
-
-    private fun bonusDanoForte(manobra: Manobra, modo: AtaqueTotalModo): Int =
-        if (manobra == Manobra.ATAQUE_TOTAL && modo == AtaqueTotalModo.FORTE) 2 else 0
 
     private fun rolar3d6(): Int = (1..3).sumOf { random.nextInt(1, 7) }
 
@@ -900,6 +897,17 @@ class CombatSession(
             val qtd = m.groupValues[1].toIntOrNull() ?: 0
             val mod = m.groupValues.getOrNull(2)?.toIntOrNull() ?: 0
             return (qtd * 6 + mod).coerceAtLeast(0)
+        }
+
+        /**
+         * Bônus de dano do Ataque Total (Forte): +2 de dano OU +1 por dado, o que for maior (MB p.365, Lote 387).
+         * Só vale para corpo-a-corpo (à distância não tem "Forte"). Espada de energia/dano de queimadura ficaria
+         * de fora pela regra, mas o motor só modela dano por ST (GdP/GeB) — todo ataque corpo-a-corpo aqui é elegível.
+         */
+        fun bonusDanoForte(manobra: Manobra, modo: AtaqueTotalModo, danoExpr: String, aDistancia: Boolean): Int {
+            if (manobra != Manobra.ATAQUE_TOTAL || modo != AtaqueTotalModo.FORTE || aDistancia) return 0
+            val nDados = Regex("""(\d+)d""").find(danoExpr.lowercase())?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 1
+            return maxOf(2, nDados)
         }
     }
 }
