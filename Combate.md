@@ -1693,7 +1693,7 @@ consegue aparar desarmado. Veja as
 descrições individuais das perícias para
 maiores informações.
 
-## Opções de Defesa Ativa [~] ⚠️ PARCIAL OU INCOMPLETO
+## Opções de Defesa Ativa [x] ✅ FEITO (Retirada: +3 Esquiva/+1 Apara-Bloqueio, +3 esgrima, 1×/turno — Lote 389; falta Boxe/Caratê/Judô +3 e Esquiva-e-Queda)
 Um personagem pode aumentar
 suas chances de sucesso em uma jogada de defesa ao escolher uma das
 opções a seguir para usar juntamente

@@ -3039,6 +3039,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 389 — 22 de Junho de 2026
+**Saga combate: Retirada / Opções de Defesa Ativa (loop de defesa 2/5, MB p.377, branch GURPS-Saga)**
+- A Retirada (recuar) existia no motor mas **não era oferecida** no card (o param `recuo` nunca era ligado). Agora `opcoesDefesaHeroi(contraAtaqueCorpoACorpo)` calcula `permitirRecuo` e `CombatResolver.opcoesDefesa` emite **variantes "com recuo"** de cada defesa (Esquiva +3, Aparar/Bloquear +1).
+- EXCEÇÃO MARCIAL (MB p.377): aparar com **esgrima** ao recuar dá **+3** (não +1) — `valorDefesaFinal` usa o flag `esgrima`. Boxe/Caratê/Judô (+3 desarmado) ficam de fora por ora (sem flag de perícia de luta).
+- RESTRIÇÕES: só **contra ataque corpo-a-corpo**; **1×/turno** (reusa `DefesasUsadas.retracaoUsada`, marcado em `npcResolve` quando `DefesaHeroi.recuo`); bloqueado se **atordoado**. (Postura sentado/ajoelhado e o passo físico p/ trás = simplificação registrada — o herói está sempre engajado no tracker.)
+- UI: as variantes aparecem no card "Defenda-se!" com sufixo "↩ recuar" + componente "+N recuo"; a Dupla (388) ignora variantes com recuo na 2ª defesa.
+- Testes: esgrima+recuo=+3, variantes emitidas só com `permitirRecuo`, recuo só corpo-a-corpo e 1×/turno. Build 2 variantes + testes verdes.
+- Combate.md: "Opções de Defesa Ativa" → FEITO (Retirada). "Retirada e Jogar-se ao Chão" segue parcial (falta Esquiva-e-Queda).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 388 — 22 de Junho de 2026
 **Saga combate: Defesa Total completa — Aumentada + Dupla (loop de defesa 1/5, MB p.366, branch GURPS-Saga)**
 - A manobra Defesa Total do herói **não fazia nada** (só logava). Agora `CombatSession.heroiDefesaTotal(modo, aumentadaEm)` com `enum DefesaTotalModo { AUMENTADA, DUPLA }`; o benefício vale até a PRÓXIMA ação do herói (limpo em `inicioAcaoHeroi`).

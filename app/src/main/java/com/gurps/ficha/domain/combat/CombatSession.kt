@@ -482,7 +482,7 @@ class CombatSession(
     /** Opções de defesa do herói para o card "Defenda-se!" (aplica recuo/Defesa Total/aparas extras). */
     fun opcoesDefesaHeroi(
         armaPronta: AtaqueHeroi? = null,
-        recuo: Boolean = false,
+        contraAtaqueCorpoACorpo: Boolean = false, // Lote 389: Retirada só vale contra ataque corpo-a-corpo
         defesaTotalEm: CombatResolver.TipoDefesa? = null,
         contraArmaDeFogo: Boolean = false
     ): List<CombatResolver.OpcaoDefesa> {
@@ -501,13 +501,18 @@ class CombatSession(
         // Cambaleante (MB p.380): com < 1/3 do PV, a Vel.Básica cai à metade → a Esquiva também.
         val reducaoCambaleante = if (heroi.cambaleante)
             floor(heroi.velocidadeBasica).toInt() - floor(heroi.velocidadeBasica / 2).toInt() else 0
+        // Retirada (Lote 389, MB p.377): só vs corpo-a-corpo, 1×/turno e não atordoado (postura sentado/ajoelhado
+        // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
+        val permitirRecuo = contraAtaqueCorpoACorpo && !heroi.defesasUsadas.retracaoUsada &&
+            Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
             esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante,
             aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido } else null,
             bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido },
-            defesasUsadas = heroi.defesasUsadas, recuo = recuo,
+            defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
-            esgrima = tipoAparar == ApararTipo.ESGRIMA
+            esgrima = tipoAparar == ApararTipo.ESGRIMA,
+            permitirRecuo = permitirRecuo
         )
     }
 
@@ -619,6 +624,11 @@ class CombatSession(
         )
         // marca a defesa usada (bloqueio/recuo 1×/turno; aparas extras cumulativas)
         registrarDefesaUsada(def.tipo)
+        // Retirada (Lote 389, MB p.377): recuar é 1×/turno; o bônus já está no valorFinal da defesa.
+        if (def.recuo) {
+            heroi.defesasUsadas = heroi.defesasUsadas.copy(retracaoUsada = true)
+            log += "  └ você recua um passo (Retirada, defesa ${def.valorFinal})."
+        }
         log += narrarTroca(npc.nome, "você", stats.armaNome, intencao.aDistancia, atk, def.tipo, troca, intencao.local, tipoDano(stats.armaTipo))
         // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
@@ -999,7 +1009,8 @@ data class AtaqueHeroi(
 data class DefesaHeroi(
     val tipo: CombatResolver.TipoDefesa,
     val valorFinal: Int,
-    val soma: Int
+    val soma: Int,
+    val recuo: Boolean = false // Lote 389: a defesa veio com Retirada (recuar um passo) — marca 1×/turno (MB p.377)
 )
 
 enum class ResultadoCombate { VITORIA, DERROTA, FUGA }

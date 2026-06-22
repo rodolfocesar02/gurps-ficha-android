@@ -384,7 +384,10 @@ class SagaCombatController(
         val contraFogo = npc.stats?.let { it.armaDeFogo || CombatSession.pareceArmaDeFogo(it.armaNome) } ?: false
         // Passa a arma EMPUNHADA p/ as regras de Aparar (esgrima/desbalanceada/Não/à distância).
         // Sem opções (ex.: herói sem defesa ativa após Ataque Total) → resolve direto, sem card.
-        val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(armaPronta = ataques.getOrNull(ataqueSelecionado), contraArmaDeFogo = contraFogo) else emptyList()
+        val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(
+            armaPronta = ataques.getOrNull(ataqueSelecionado), contraArmaDeFogo = contraFogo,
+            contraAtaqueCorpoACorpo = !intencao.aDistancia // Lote 389: Retirada só vs corpo-a-corpo
+        ) else emptyList()
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
             val nomeNpc = npc.nome
@@ -398,11 +401,12 @@ class SagaCombatController(
             defesaPendente = null
             val soma = (1..3).sumOf { Random.nextInt(1, 7) }
             // Defesa Total (Dupla, Lote 388): prepara a melhor 2ª defesa de TIPO diferente — usada só se a 1ª falhar.
+            // Sem variante "com recuo" na 2ª (recuo é 1×/turno e já pode ter ido na 1ª).
             val secundaria = if (s.heroiDefesaTotalDupla)
-                opcoes.filter { it.tipo != escolha.tipo }.maxByOrNull { it.valorFinal }
+                opcoes.filter { it.tipo != escolha.tipo && !it.recuo }.maxByOrNull { it.valorFinal }
                     ?.let { DefesaHeroi(it.tipo, it.valorFinal, (1..3).sumOf { Random.nextInt(1, 7) }) }
             else null
-            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma), secundaria)
+            s.npcResolve(npcId, intencao, DefesaHeroi(escolha.tipo, escolha.valorFinal, soma, escolha.recuo), secundaria)
         } else {
             s.npcResolve(npcId, intencao, null)
         }

@@ -28,7 +28,8 @@ object CombatResolver {
         val valorFinal: Int,
         val componentes: List<ComponenteMod>,
         val disponivel: Boolean,
-        val motivoIndisponivel: String? = null
+        val motivoIndisponivel: String? = null,
+        val recuo: Boolean = false // Lote 389: variante "com recuo" (Retirada, MB p.377)
     )
 
     /**
@@ -45,7 +46,10 @@ object CombatResolver {
     ): Pair<Int, List<ComponenteMod>> {
         val comps = mutableListOf<ComponenteMod>()
         if (recuo) {
-            val b = if (tipo == TipoDefesa.ESQUIVA) BONUS_RECUO_ESQUIVA else BONUS_RECUO_APARA_BLOQUEIO
+            // Recuar: +3 Esquiva; +1 Aparar/Bloquear; EXCEÇÃO +3 ao aparar com esgrima (E) — e Boxe/Caratê/Judô,
+            // ainda não modelados (sem flag de perícia de luta) — MB p.377.
+            val b = if (tipo == TipoDefesa.ESQUIVA || (tipo == TipoDefesa.APARA && esgrima))
+                BONUS_RECUO_ESQUIVA else BONUS_RECUO_APARA_BLOQUEIO
             comps.add(ComponenteMod("recuo", b))
         }
         if (defesaTotalDeterminada) comps.add(ComponenteMod("Defesa Total", BONUS_DEFESA_TOTAL))
@@ -75,27 +79,26 @@ object CombatResolver {
         aparaBase: Int?,
         bloqueioBase: Int?,
         defesasUsadas: DefesasUsadas,
-        recuo: Boolean = false,
         defesaTotalEm: TipoDefesa? = null,
-        esgrima: Boolean = false
+        esgrima: Boolean = false,
+        permitirRecuo: Boolean = false // Lote 389: emite variantes "com recuo" (ataque corpo-a-corpo, 1×/turno)
     ): List<OpcaoDefesa> {
         val out = mutableListOf<OpcaoDefesa>()
-
-        valorDefesaFinal(TipoDefesa.ESQUIVA, esquivaBase, recuo, defesaTotalEm == TipoDefesa.ESQUIVA).let { (v, c) ->
-            out.add(OpcaoDefesa(TipoDefesa.ESQUIVA, v, c, disponivel = true))
-        }
-        if (aparaBase != null) {
-            val aparas = defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0
-            valorDefesaFinal(TipoDefesa.APARA, aparaBase, recuo, defesaTotalEm == TipoDefesa.APARA, aparas, esgrima).let { (v, c) ->
-                out.add(OpcaoDefesa(TipoDefesa.APARA, v, c, disponivel = true))
+        fun emitir(tipo: TipoDefesa, base: Int, disponivel: Boolean, motivo: String?, aparas: Int = 0) {
+            valorDefesaFinal(tipo, base, false, defesaTotalEm == tipo, aparas, esgrima).let { (v, c) ->
+                out.add(OpcaoDefesa(tipo, v, c, disponivel, motivo, recuo = false))
+            }
+            // Variante "com recuo" (Retirada, MB p.377): só vs corpo-a-corpo e 1×/turno (gateado pelo chamador).
+            if (permitirRecuo) valorDefesaFinal(tipo, base, true, defesaTotalEm == tipo, aparas, esgrima).let { (v, c) ->
+                out.add(OpcaoDefesa(tipo, v, c, disponivel, motivo, recuo = true))
             }
         }
-        if (bloqueioBase != null) {
-            val (v, c) = valorDefesaFinal(TipoDefesa.BLOQUEIO, bloqueioBase, recuo, defesaTotalEm == TipoDefesa.BLOQUEIO)
-            out.add(OpcaoDefesa(TipoDefesa.BLOQUEIO, v, c,
-                disponivel = !defesasUsadas.bloqueouEsteTurno,
-                motivoIndisponivel = if (defesasUsadas.bloqueouEsteTurno) "já bloqueou neste turno" else null))
-        }
+        emitir(TipoDefesa.ESQUIVA, esquivaBase, true, null)
+        if (aparaBase != null)
+            emitir(TipoDefesa.APARA, aparaBase, true, null, defesasUsadas.aparasPorArma.values.firstOrNull() ?: 0)
+        if (bloqueioBase != null)
+            emitir(TipoDefesa.BLOQUEIO, bloqueioBase, !defesasUsadas.bloqueouEsteTurno,
+                if (defesasUsadas.bloqueouEsteTurno) "já bloqueou neste turno" else null)
         return out
     }
 

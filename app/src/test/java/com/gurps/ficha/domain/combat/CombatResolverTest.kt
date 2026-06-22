@@ -27,6 +27,24 @@ class CombatResolverTest {
         assertEquals(7, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, aparasJaFeitas = 2, esgrima = true).first)
     }
 
+    // Lote 389 — Retirada (MB p.377): exceção marcial +3 ao aparar com esgrima + variantes "com recuo" no card.
+    @Test
+    fun `Retirada - esgrima apara +3 e opcoesDefesa emite variantes com recuo`() {
+        // Aparar com esgrima ao recuar: +3 (em vez de +1).
+        assertEquals(14, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, recuo = true, esgrima = true).first)
+        // Aparar normal ao recuar: +1.
+        assertEquals(12, CombatResolver.valorDefesaFinal(CombatResolver.TipoDefesa.APARA, 11, recuo = true).first)
+        // permitirRecuo emite as variantes: Esquiva 9→12 (+3), Aparar 11→12 (+1).
+        val ops = CombatResolver.opcoesDefesa(
+            esquivaBase = 9, aparaBase = 11, bloqueioBase = null,
+            defesasUsadas = DefesasUsadas(), permitirRecuo = true
+        )
+        assertEquals(12, ops.first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA && it.recuo }.valorFinal)
+        assertEquals(12, ops.first { it.tipo == CombatResolver.TipoDefesa.APARA && it.recuo }.valorFinal)
+        // Sem permitirRecuo: nenhuma variante com recuo.
+        assertTrue(CombatResolver.opcoesDefesa(9, 11, null, DefesasUsadas()).none { it.recuo })
+    }
+
     @Test
     fun `defesa anulada por critico ou surpresa e criticos da defesa`() {
         assertTrue(CombatResolver.defesaAnulada(criticoAtaque = true, surpresa = false))

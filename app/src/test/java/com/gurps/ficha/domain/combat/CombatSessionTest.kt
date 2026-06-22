@@ -693,4 +693,16 @@ class CombatSessionTest {
         }
         assertTrue("a Defesa Dupla deve salvar o herói em alguma seed com acerto não-crítico", salvou)
     }
+
+    // Lote 389 — Retirada (MB p.377): só contra ataque corpo-a-corpo e 1×/turno.
+    @Test
+    fun `Retirada so vs corpo-a-corpo e 1x por turno`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        assertTrue("corpo-a-corpo oferece recuo", s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true).any { it.recuo })
+        assertFalse("à distância não oferece recuo", s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = false).any { it.recuo })
+        s.heroi.defesasUsadas = s.heroi.defesasUsadas.copy(retracaoUsada = true)
+        assertFalse("recuo é 1×/turno", s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true).any { it.recuo })
+    }
 }
