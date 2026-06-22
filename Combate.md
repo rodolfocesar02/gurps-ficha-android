@@ -98,7 +98,7 @@ muda de posição.
 Defesa Ativa: Qualquer. Qualquer posição, exceto em pé, atrapalha as jogadas de defesa, mas também faz do personagem um alvo menor para ataques
 à distância.
 
-## Apontar [~] ⚠️ PARCIAL OU INCOMPLETO
+## Apontar [~] ⚠️ PARCIAL (Acc no próximo tiro, mira de vários turnos +1/+2, perde a mira ao usar defesa ativa — Lote 392; falta firmar +1 e teste de Vontade ao ser ferido)
 Esta é uma manobra de turno completo usada para apontar uma arma de
 longo alcance (ou um dispositivo como
 uma câmera ou telescópio). O personagem deve escolher um alvo específico —

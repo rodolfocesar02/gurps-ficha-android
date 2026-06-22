@@ -32,9 +32,10 @@ class CombatSession(
     private var avaliarStacks: Int = 0
     private fun limparAvaliar() { avaliarAlvoId = null; avaliarStacks = 0 }
 
-    // Apontar (Lote 373): mira numa arma à distância → +Precisão (Acc) no próximo tiro ao mesmo alvo.
+    // Apontar (Lote 373/392): mira numa arma à distância → +Precisão (Acc) + mira de vários turnos (+1 no 2º seg, +2 no 3º+).
     private var apontarAlvoId: String? = null
-    private fun limparApontar() { apontarAlvoId = null }
+    private var apontarStacks: Int = 0 // turnos consecutivos mirando o MESMO alvo
+    private fun limparApontar() { apontarAlvoId = null; apontarStacks = 0 }
 
     // Fintar (Lote 383): venceu a Disputa Rápida → reduz a defesa do alvo no PRÓXIMO golpe ao mesmo alvo (MB p.366).
     private var fintaAlvoId: String? = null
@@ -231,8 +232,12 @@ class CombatSession(
                 val pen = penalidadeDistancia(dist)
                 if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
-                if (apontarAlvoId == alvo.id && ataque.precisao != 0)
-                    add(CombatActions.ComponenteMod("mira (Acc)", ataque.precisao))
+                if (apontarAlvoId == alvo.id) {
+                    if (ataque.precisao != 0) add(CombatActions.ComponenteMod("mira (Acc)", ataque.precisao))
+                    // Mira de vários turnos (MB p.364): +1 ao mirar 2 segundos, +2 ao mirar 3+ segundos.
+                    val miraExtra = (apontarStacks - 1).coerceIn(0, 2)
+                    if (miraExtra != 0) add(CombatActions.ComponenteMod("mira contínua", miraExtra))
+                }
                 bonusCadenciaTiro(tiros).let { if (it != 0) add(CombatActions.ComponenteMod("rajada ${tiros} tiros", it)) }
             } else if (avaliarAlvoId == alvo.id && avaliarStacks > 0) {
                 // Avaliar só vale corpo-a-corpo, contra o alvo avaliado, no ataque seguinte (MB p.365).
@@ -327,13 +332,15 @@ class CombatSession(
         return txt
     }
 
-    /** Apontar (MB p.364): mira numa arma à distância → +Precisão (Acc) no próximo tiro ao alvo. */
+    /** Apontar (MB p.364): mira numa arma à distância → +Precisão (Acc) + mira contínua (+1 no 2º seg, +2 no 3º+). */
     fun heroiApontar(alvoId: String): String {
         inicioAcaoHeroi()
-        apontarAlvoId = alvoId
+        // Mirar o MESMO alvo por turnos seguidos acumula a mira (+1 no 2º segundo, +2 no 3º+; MB p.364).
+        if (apontarAlvoId == alvoId) apontarStacks++ else { apontarAlvoId = alvoId; apontarStacks = 1 }
         limparAvaliar(); limparFinta()
+        val miraExtra = (apontarStacks - 1).coerceIn(0, 2)
         val nome = inimigos.firstOrNull { it.id == alvoId }?.nome ?: "o alvo"
-        val txt = "🎯 Você mira em $nome (+Precisão da arma no próximo tiro)."
+        val txt = "🎯 Você mira em $nome (+Precisão${if (miraExtra > 0) " +$miraExtra de mira contínua" else ""} no próximo tiro)."
         log += txt
         return txt
     }
@@ -641,6 +648,11 @@ class CombatSession(
         // Lote 390 (MB p.376): aparar um tiro à queima-roupa = desviar a ARMA do atacante, não o projétil.
         if (def.tipo == CombatResolver.TipoDefesa.APARA && intencao.aDistancia && troca.defendeu)
             log += "  └ você desvia a arma do atirador (não o projétil) — só dá pra aparar à queima-roupa."
+        // Apontar (Lote 392, MB p.364): usar uma defesa ativa faz o herói PERDER a pontaria acumulada.
+        if (troca.defesaTentada && apontarAlvoId != null) {
+            limparApontar()
+            log += "  └ você perde a mira (usou uma defesa ativa)."
+        }
         // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
             aplicarErroCritico(npc, stats.ht, stats.armaDano, stats.armaNome.isBlank(), npc.nome)

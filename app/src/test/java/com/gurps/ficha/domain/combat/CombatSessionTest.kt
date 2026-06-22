@@ -735,4 +735,34 @@ class CombatSessionTest {
         assertEquals("vs ataque desarmado: sem −3", base, valorApara(punho, comArma = false))
         assertEquals("Caratê/Judô: valor cheio vs arma", base, valorApara(punho.copy(aparaMarcial = true), comArma = true))
     }
+
+    // Lote 392 — Apontar (MB p.364): mira de vários turnos acumula +1 (2º seg) / +2 (3º+); defender perde a mira.
+    @Test
+    fun `mira de varios turnos acumula +1 depois +2 com teto`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        s.heroiApontar("goblin"); assertFalse("1º segundo: sem extra", s.log.last().contains("mira contínua"))
+        s.heroiApontar("goblin"); assertTrue("2º segundo: +1", s.log.last().contains("+1 de mira contínua"))
+        s.heroiApontar("goblin"); assertTrue("3º segundo: +2", s.log.last().contains("+2 de mira contínua"))
+        s.heroiApontar("goblin"); assertTrue("4º: teto +2", s.log.last().contains("+2 de mira contínua"))
+    }
+
+    @Test
+    fun `defender com defesa ativa perde a mira`() {
+        var perdeu = false
+        for (seed in 0L..40L) {
+            val base = goblin()
+            val g = base.copy(stats = base.stats!!.copy(armaNh = 16))
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiApontar("goblin")
+            val intencao = NpcCombatBrain.IntencaoNpc(
+                manobra = Manobra.ATAQUE, alvoId = "heroi", local = LocalAtaque.TORSO, motivo = "t"
+            )
+            s.npcResolve("goblin", intencao, DefesaHeroi(CombatResolver.TipoDefesa.ESQUIVA, 9, 10))
+            if (s.log.any { it.contains("perde a mira") }) { perdeu = true; break }
+        }
+        assertTrue("usar uma defesa ativa deve fazer perder a mira", perdeu)
+    }
 }

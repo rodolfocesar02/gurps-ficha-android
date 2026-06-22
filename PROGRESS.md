@@ -3039,6 +3039,16 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 392 — 23 de Junho de 2026
+**Saga combate: Apontar — mira de vários turnos + perde a mira ao defender (loop de defesa 5/5 — FECHA O LOOP, MB p.364, branch GURPS-Saga)**
+- MIRA DE VÁRIOS TURNOS (MB p.364): mirar o MESMO alvo por segundos seguidos acumula **+1 (2º seg) / +2 (3º+)** ALÉM da Precisão (Acc). `apontarStacks` (espelha o Avaliar); bônus = `(stacks−1).coerceIn(0,2)` aplicado no acerto à distância.
+- PERDER A MIRA: usar uma **defesa ativa** zera a pontaria (`limparApontar` quando `troca.defesaTentada`); o log avisa. (Defender entre os turnos = perde o Acc no tiro seguinte, como manda a regra.)
+- DEFERIDO (registrado): **firmar** a arma (+1 Acc) e o **teste de Vontade** para não perder a mira ao ser ferido (não modelados).
+- Testes: stacking +1→+2→teto; defender perde a mira (loop de seeds com acerto). Build 2 variantes + testes verdes.
+- Combate.md: "Apontar" segue PARCIAL (núcleo da mira feito; firmar/Vontade deferidos).
+- **✅ LOOP DE REFINO DE DEFESA 388–392 COMPLETO** (Defesa Total Aumentada+Dupla, Retirada, Aparar à queima-roupa, Aparar Desarmado −3, Apontar multi-turno).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 391 — 23 de Junho de 2026
 **Saga combate: Aparar Desarmado — −3 vs armas (loop de defesa 4/5, MB p.376, branch GURPS-Saga)**
 - REGRA (MB p.376): aparar uma ARMA com as mãos nuas sofre **−3**, salvo se o herói usa **Caratê ou Judô** (valor cheio). `opcoesDefesaHeroi(ataqueComArma)` aplica `penAparaDesarmada = 3` quando a "arma" empunhada é desarmada (`armaPronta.desarmado`), o NPC ataca com arma e a perícia não é marcial.
