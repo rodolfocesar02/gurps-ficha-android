@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 390 — 23 de Junho de 2026
+**Saga combate: Aparar — só à queima-roupa contra tiro (loop de defesa 3/5, MB p.376, branch GURPS-Saga)**
+- BUG: o card oferecia **Aparar contra um atirador distante**. A regra (MB p.376): só se apara um ataque à distância se o atacante estiver **adjacente (≤1m)** — apara-se a ARMA, não o projétil. `opcoesDefesaHeroi(atacanteAdjacente)` gateia o `podeAparar`; o controller passa `s.distancia(npc) <= 1`. Bloqueio (escudo) continua valendo contra tiro (a regra do escudo não muda).
+- Narração: ao aparar um tiro à queima-roupa, o log explica "você desvia a arma do atirador (não o projétil)".
+- Testes: corpo-a-corpo e tiro a 1m oferecem aparar; tiro de longe não. Build 2 variantes + testes verdes.
+- Combate.md: "Aparar" segue PARCIAL — falta mão inábil −4, arremesso −1/−2, aparar-desarmado→ferir o atacante.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 389 — 22 de Junho de 2026
 **Saga combate: Retirada / Opções de Defesa Ativa (loop de defesa 2/5, MB p.377, branch GURPS-Saga)**
 - A Retirada (recuar) existia no motor mas **não era oferecida** no card (o param `recuo` nunca era ligado). Agora `opcoesDefesaHeroi(contraAtaqueCorpoACorpo)` calcula `permitirRecuo` e `CombatResolver.opcoesDefesa` emite **variantes "com recuo"** de cada defesa (Esquiva +3, Aparar/Bloquear +1).

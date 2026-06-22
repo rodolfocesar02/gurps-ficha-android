@@ -1572,7 +1572,7 @@ Um atacante também pode quebrar ou derrubar uma
 arma deliberadamente; v. Golpes Visando a Arma do Oponente
 (pág. 400).
 
-## Aparar [~] ⚠️ PARCIAL OU INCOMPLETO
+## Aparar [~] ⚠️ PARCIAL (apara extra −4/−2 esgrima, recuo +3 esgrima, tiro só à queima-roupa — Lote 390; falta mão inábil −4, arremesso −1/−2, aparar-desarmado→ferir o atacante)
 “Aparar” é uma tentativa de desviar
 um golpe utilizando uma arma ou as
 mãos nuas. O personagem não pode

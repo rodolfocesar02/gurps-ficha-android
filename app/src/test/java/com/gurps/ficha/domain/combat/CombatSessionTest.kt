@@ -705,4 +705,18 @@ class CombatSessionTest {
         s.heroi.defesasUsadas = s.heroi.defesasUsadas.copy(retracaoUsada = true)
         assertFalse("recuo é 1×/turno", s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = true).any { it.recuo })
     }
+
+    // Lote 390 — Aparar (MB p.376): aparar um ataque à distância só com o atacante adjacente (≤1m).
+    @Test
+    fun `aparar tiro so com atacante adjacente`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        fun temApara(corpoACorpo: Boolean, adjacente: Boolean) =
+            s.opcoesDefesaHeroi(contraAtaqueCorpoACorpo = corpoACorpo, atacanteAdjacente = adjacente)
+                .any { it.tipo == CombatResolver.TipoDefesa.APARA }
+        assertTrue("corpo-a-corpo: apara", temApara(corpoACorpo = true, adjacente = true))
+        assertTrue("tiro à queima-roupa: apara a arma", temApara(corpoACorpo = false, adjacente = true))
+        assertFalse("tiro de longe: sem aparar", temApara(corpoACorpo = false, adjacente = false))
+    }
 }

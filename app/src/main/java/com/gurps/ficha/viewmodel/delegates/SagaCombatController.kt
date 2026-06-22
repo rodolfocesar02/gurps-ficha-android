@@ -386,7 +386,8 @@ class SagaCombatController(
         // Sem opções (ex.: herói sem defesa ativa após Ataque Total) → resolve direto, sem card.
         val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(
             armaPronta = ataques.getOrNull(ataqueSelecionado), contraArmaDeFogo = contraFogo,
-            contraAtaqueCorpoACorpo = !intencao.aDistancia // Lote 389: Retirada só vs corpo-a-corpo
+            contraAtaqueCorpoACorpo = !intencao.aDistancia, // Lote 389: Retirada só vs corpo-a-corpo
+            atacanteAdjacente = s.distancia(npc) <= 1 // Lote 390: aparar tiro só se o atirador está a 1m
         ) else emptyList()
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()

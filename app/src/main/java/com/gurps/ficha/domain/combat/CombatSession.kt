@@ -484,15 +484,19 @@ class CombatSession(
         armaPronta: AtaqueHeroi? = null,
         contraAtaqueCorpoACorpo: Boolean = false, // Lote 389: Retirada só vale contra ataque corpo-a-corpo
         defesaTotalEm: CombatResolver.TipoDefesa? = null,
-        contraArmaDeFogo: Boolean = false
+        contraArmaDeFogo: Boolean = false,
+        atacanteAdjacente: Boolean = true // Lote 390: aparar à distância só se o atacante estiver a 1m (default permissivo p/ corpo-a-corpo)
     ): List<CombatResolver.OpcaoDefesa> {
         // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) return emptyList()
         val tipoAparar = armaPronta?.apararTipo ?: ApararTipo.NORMAL
         val ranged = armaPronta?.aDistancia == true
+        // Aparar um ataque À DISTÂNCIA só se o atacante estiver adjacente (≤1m): apara-se a ARMA, não o projétil
+        // (MB p.376). Contra corpo-a-corpo, sempre vale. Bloqueio (escudo) continua valendo contra tiro.
+        val podeApararPeloAlcance = contraAtaqueCorpoACorpo || atacanteAdjacente
         // Aparar indisponível: arma à distância, arma "Não", desbalanceada já usada para atacar, ou Mover e
         // Atacar no turno anterior (que permite só Esquiva/Bloqueio, MB p.367/270).
-        val podeAparar = !ranged && tipoAparar != ApararTipo.NAO && !heroiSemAparar &&
+        val podeAparar = !ranged && podeApararPeloAlcance && tipoAparar != ApararTipo.NAO && !heroiSemAparar &&
             !(tipoAparar == ApararTipo.DESBALANCEADA && atacouDesbalanceada)
         // BD do escudo (MB p.375): só vale com o escudo PREPARADO — uma mão livre (arma de 2 mãos não tem) —
         // e NÃO contra armas de fogo. Quando não vale, removemos o BD que já vem embutido nas defesas da ficha.
@@ -630,6 +634,9 @@ class CombatSession(
             log += "  └ você recua um passo (Retirada, defesa ${def.valorFinal})."
         }
         log += narrarTroca(npc.nome, "você", stats.armaNome, intencao.aDistancia, atk, def.tipo, troca, intencao.local, tipoDano(stats.armaTipo))
+        // Lote 390 (MB p.376): aparar um tiro à queima-roupa = desviar a ARMA do atacante, não o projétil.
+        if (def.tipo == CombatResolver.TipoDefesa.APARA && intencao.aDistancia && troca.defendeu)
+            log += "  └ você desvia a arma do atirador (não o projétil) — só dá pra aparar à queima-roupa."
         // Erro Crítico do NPC (Lote 384, MB p.557): o oponente tropeça no próprio golpe.
         if (atk.critico == CriticoRules.ResultadoCritico.FALHA_CRITICA)
             aplicarErroCritico(npc, stats.ht, stats.armaDano, stats.armaNome.isBlank(), npc.nome)
