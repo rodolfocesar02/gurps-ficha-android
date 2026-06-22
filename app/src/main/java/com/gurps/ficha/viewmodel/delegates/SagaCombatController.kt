@@ -304,6 +304,23 @@ class SagaCombatController(
         depoisDaAcaoDoHeroi()
     }
 
+    /** Lote 386: Agarrar — usa o NH da arma/luta empunhada; deixa o alvo AGARRADO (−4 na defesa). */
+    fun heroiAgarrar(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        s.heroiAgarrar(ataque, alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote 386: Derrubar — Disputa Rápida (ST/DX) que joga um oponente adjacente no chão. */
+    fun heroiDerrubar(alvoId: String) {
+        val s = sessao ?: return
+        if (!s.combatenteAtual().ehHeroi || s.encerrado) return
+        s.heroiDerrubar(alvoId)
+        depoisDaAcaoDoHeroi()
+    }
+
     fun heroiApontar(alvoId: String) {
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
@@ -422,6 +439,8 @@ class SagaCombatController(
             if (alvos.isNotEmpty() && Manobra.ATAQUE !in it) it.add(Manobra.ATAQUE)
             if (ranged && alvos.isNotEmpty() && Manobra.APONTAR !in it) it.add(Manobra.APONTAR)
             if (!ranged && alvos.isNotEmpty() && Manobra.FINTAR !in it) it.add(Manobra.FINTAR) // Lote 383: finta corpo-a-corpo
+            if (!ranged && alvos.isNotEmpty() && Manobra.AGARRAR !in it) it.add(Manobra.AGARRAR) // Lote 386: agarrar
+            if (!ranged && alvos.isNotEmpty() && Manobra.DERRUBAR !in it) it.add(Manobra.DERRUBAR) // Lote 386: derrubar
         }
         estado = CombatUiState(
             rodada = s.encounter.rodadaAtual,

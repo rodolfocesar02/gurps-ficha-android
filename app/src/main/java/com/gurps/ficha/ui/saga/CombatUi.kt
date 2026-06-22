@@ -170,6 +170,8 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
     var avaliarDialogo by remember { mutableStateOf(false) }
     var apontarDialogo by remember { mutableStateOf(false) }
     var fintarDialogo by remember { mutableStateOf(false) }
+    var agarrarDialogo by remember { mutableStateOf(false) }
+    var derrubarDialogo by remember { mutableStateOf(false) }
     var posturaDialogo by remember { mutableStateOf(false) }
 
     Card(
@@ -197,6 +199,8 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
                             m == Manobra.AVALIAR -> avaliarDialogo = true
                             m == Manobra.APONTAR -> apontarDialogo = true
                             m == Manobra.FINTAR -> fintarDialogo = true
+                            m == Manobra.AGARRAR -> agarrarDialogo = true
+                            m == Manobra.DERRUBAR -> derrubarDialogo = true
                             m == Manobra.MUDAR_POSTURA -> posturaDialogo = true
                             else -> viewModel.sagaCombateManobra(m)
                         }
@@ -273,6 +277,26 @@ private fun ManeuverCards(viewModel: FichaViewModel, estado: com.gurps.ficha.vie
             alvos = estado.alvos, // corpo-a-corpo: alvos ao alcance da arma
             onConfirmar = { alvoId -> viewModel.sagaCombateFintar(alvoId); fintarDialogo = false },
             onFechar = { fintarDialogo = false }
+        )
+    }
+
+    if (agarrarDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Agarrar quem?",
+            descricaoConfirmar = "Agarrar o alvo (fica preso, −4 na defesa)",
+            alvos = estado.alvos,
+            onConfirmar = { alvoId -> viewModel.sagaCombateAgarrar(alvoId); agarrarDialogo = false },
+            onFechar = { agarrarDialogo = false }
+        )
+    }
+
+    if (derrubarDialogo) {
+        SubDialogoEscolherAlvo(
+            titulo = "Derrubar quem?",
+            descricaoConfirmar = "Derrubar o alvo (Disputa de ST/DX; melhor se já estiver agarrado)",
+            alvos = estado.alvos,
+            onConfirmar = { alvoId -> viewModel.sagaCombateDerrubar(alvoId); derrubarDialogo = false },
+            onFechar = { derrubarDialogo = false }
         )
     }
 

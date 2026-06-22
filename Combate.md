@@ -820,7 +820,7 @@ Disputa Normal de ST. Se vencer, o
 personagem toma o objeto. Se perder,
 ele o solta.
 
-## Agarrar[]
+## Agarrar [x] FEITO (base)
 “Agarrar” é uma tentativa de segurar o corpo do oponente. O personagem
 precisa de pelo menos uma mão livre.
 Se o Mestre estiver usando um mapa,
@@ -880,7 +880,7 @@ personagem pode tentar as seguintes
 ações nos turnos seguintes (contanto
 que o oponente não consiga se desvencilhar!). Cada ação requer uma manobra Ataque ou Ataque Total.
 
-## Derrubar []
+## Derrubar [x] FEITO (base)
 Esta é a tentativa de levar o oponente ao chão. Só é possível usá-la se
 o oponente estiver em pé. Trata-se de
 uma Disputa Rápida, sendo que cada

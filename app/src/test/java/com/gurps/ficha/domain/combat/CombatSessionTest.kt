@@ -583,4 +583,61 @@ class CombatSessionTest {
         }
         assertTrue("um Erro crítico deve ocorrer com NH 6 em 300 seeds", viu)
     }
+
+    // ── Lote 386: Luta agarrada (base) — Agarrar/Derrubar/desvencilhar (MB p.370–371) ──
+
+    @Test
+    fun `vencaDisputaRapida segue a regra (MB p348)`() {
+        assertTrue(CombatSession.vencaDisputaRapida(14, 8, 12, 11))   // A margem 6 > B margem 1
+        assertFalse(CombatSession.vencaDisputaRapida(14, 8, 12, 6))   // empate (6 = 6) → A não vence
+        assertTrue(CombatSession.vencaDisputaRapida(14, 8, 12, 13))   // B falhou → A vence
+        assertFalse(CombatSession.vencaDisputaRapida(14, 16, 12, 13)) // A falhou → não vence
+    }
+
+    @Test
+    fun `agarrar deixa o NPC preso (AGARRADO)`() {
+        var ok = false
+        for (seed in 0L..40L) {
+            val g = goblin(pv = 40)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilHeroi(), Random(seed))
+            s.heroiAgarrar(espada(), "goblin")
+            if (Condicao.AGARRADO in g.condicoes) {
+                assertTrue("log do agarrão", s.log.any { it.contains("agarra") })
+                ok = true; break
+            }
+        }
+        assertTrue("alguma seed deve conseguir agarrar (NH 14)", ok)
+    }
+
+    @Test
+    fun `npc agarrado gasta o turno tentando se soltar e nao ataca`() {
+        val g = goblin(pv = 40)
+        g.condicoes.add(Condicao.AGARRADO)
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val intencao = NpcCombatBrain.IntencaoNpc(manobra = Manobra.ATAQUE, alvoId = "heroi", motivo = "ataca")
+        val pvAntes = s.heroi.pvAtual
+        s.npcResolve("goblin", intencao, null)
+        assertTrue("o NPC preso forceja ou se solta",
+            s.log.any { it.contains("se desvencilha") || it.contains("forceja") })
+        assertEquals("um NPC preso não ataca → herói intacto", pvAntes, s.heroi.pvAtual)
+    }
+
+    @Test
+    fun `derrubar joga o alvo no chao quando o heroi vence a disputa`() {
+        val perfilForte = perfilHeroi().copy(st = 16, dx = 16) // herói forte vs goblin (ST/DX 11)
+        var derrubou = false
+        for (seed in 0L..40L) {
+            val g = goblin(pv = 40)
+            val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+            val s = CombatSession(enc, perfilForte, Random(seed))
+            s.heroiDerrubar("goblin")
+            if (g.postura == Postura.DEITADO && Condicao.CAIDO in g.condicoes) {
+                assertTrue(s.log.any { it.contains("derruba") })
+                derrubou = true; break
+            }
+        }
+        assertTrue("herói forte deve derrubar o goblin em alguma seed", derrubou)
+    }
 }

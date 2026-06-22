@@ -3039,6 +3039,17 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 386 — 22 de Junho de 2026
+**Saga combate: Luta agarrada — base (loop de regras 5/5, MB p.370–371, branch GURPS-Saga)**
+- AGARRAR (MB p.370): `CombatSession.heroiAgarrar(ataque, alvoId)` — ataque normal; se acerta e o alvo não defende, adiciona `Condicao.AGARRADO`. O alvo agarrado defende a −4 (`penAgarrado` em `resolverGolpeHeroi`) e, no turno dele, gasta a ação tentando se desvencilhar (Disputa Rápida em `npcResolve`, não ataca).
+- DERRUBAR (MB p.370–371): `heroiDerrubar(alvoId)` — Disputa Rápida do maior entre ST/DX; vencendo, o alvo vai a CAÍDO/DEITADO. Helper puro `vencaDisputaRapida(valorA, rolA, valorB, rolB)` (empate de margem favorece o defensor, MB p.348).
+- UI: manobras Agarrar/Derrubar habilitadas quando há alvo corpo-a-corpo (sem alvo à distância) → seletor de alvo; `FichaViewModel.sagaCombateAgarrar/Derrubar`; wrappers no `SagaCombatController`.
+- Testes (`CombatSessionTest`): `vencaDisputaRapida` segue a regra; agarrar deixa o NPC AGARRADO; NPC agarrado gasta o turno se soltando (não ataca); derrubar joga o alvo no chão. Build 2 variantes + testes verdes.
+- Combate.md: "Agarrar" e "Derrubar" → FEITO (base). Sub-sistema completo (Imobilizar/Estrangular/Mata-Leão/Chave de Braço/Encontrão/Empurrão) fica para lotes futuros.
+- NOTA (git): o código de domínio (CombatSession.kt/CombatModels.kt) foi varrido por engano para o commit `02e4567` (sessão paralela dados-3D, `git add -A`); este commit fecha o Lote 386 com a fiação de UI + testes + docs sob a mensagem correta. ⚠️ Colisão de numeração: a série dados-3D também tem um "Lote 386" (correção de colisão física dos dados) — são trabalhos distintos.
+- LOOP DE REGRAS DE COMBATE 5/5 COMPLETO (382–386). Próximo: validação no aparelho (tudo de uma vez) + resto do sub-sistema de luta agarrada.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 385 — 17 de Junho de 2026
 **Saga combate: Tolerância a Ferimentos (loop de regras 4/5, MB p.381, branch GURPS-Saga)**
 - REGRA (MB p.381): mortos-vivos/máquinas/objetos/enxames são menos vulneráveis a pi/perf. Novo `enum ToleranciaFerimentos { NORMAL, NAO_VIVO, HOMOGENEO, DIFUSO }`. `HitLocationRules.multiplicador(tipo, local, tolerancia)` sobrescreve o multiplicador de pi/perf (NÃO-VIVO: perf/pi++ ×1, pi+ ×½, pi ×⅓, pi- ×⅕; HOMOGÊNEO mais ainda) e remove o bônus de crânio/vitais (sem órgãos); DIFUSO = teto no dano final (pi/perf ≤1 PV, resto ≤2). `aplicarDano` aplica.
