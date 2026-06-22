@@ -765,4 +765,18 @@ class CombatSessionTest {
         }
         assertTrue("usar uma defesa ativa deve fazer perder a mira", perdeu)
     }
+
+    // Lote 393 — Fazer Nada / Atordoado (MB p.364): todas as defesas ativas sofrem −4 enquanto atordoado.
+    @Test
+    fun `atordoado reduz as defesas ativas em -4`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        fun esquiva() = s.opcoesDefesaHeroi().first { it.tipo == CombatResolver.TipoDefesa.ESQUIVA && !it.recuo }.valorFinal
+        fun apara() = s.opcoesDefesaHeroi().first { it.tipo == CombatResolver.TipoDefesa.APARA && !it.recuo }.valorFinal
+        val esqN = esquiva(); val aparaN = apara()
+        s.heroi.condicoes.add(Condicao.ATORDOADO)
+        assertEquals("esquiva −4 atordoado", esqN - 4, esquiva())
+        assertEquals("apara −4 atordoado", aparaN - 4, apara())
+    }
 }

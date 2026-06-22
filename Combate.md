@@ -19,7 +19,7 @@ um alvo menor para ataques à distância) no início do seu turno. Isso normalme
 e impede que ele dispare a toda velocidade. Um personagem agachado pode se
 levantar desta posição a qualquer momento usando uma ação livre.
 
-## Fazer Nada [~] ⚠️ PARCIAL OU INCOMPLETO
+## Fazer Nada [x] ✅ FEITO (manobra forçada + recuperação HT/IQ já existiam; defesas ativas −4 atordoado — Lote 393)
 Assume-se que um personagem em
 pé e parado, está fazendo nada. Particularmente, quando um combate se inicia, quem ainda não teve a oportunidade de agir em seu turno é tratado como
 se tivesse “escolhido” esta manobra até

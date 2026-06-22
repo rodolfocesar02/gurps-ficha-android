@@ -516,14 +516,16 @@ class CombatSession(
         // Cambaleante (MB p.380): com < 1/3 do PV, a Vel.Básica cai à metade → a Esquiva também.
         val reducaoCambaleante = if (heroi.cambaleante)
             floor(heroi.velocidadeBasica).toInt() - floor(heroi.velocidadeBasica / 2).toInt() else 0
+        // Atordoado (Lote 393, MB p.364/"Fazer Nada"): TODAS as defesas ativas sofrem −4 enquanto atordoado.
+        val penAtordoado = if (Condicao.ATORDOADO in heroi.condicoes) 4 else 0
         // Retirada (Lote 389, MB p.377): só vs corpo-a-corpo, 1×/turno e não atordoado (postura sentado/ajoelhado
         // = limitação futura). O passo de recuo em si fica abstraído (o herói está sempre engajado no tracker).
         val permitirRecuo = contraAtaqueCorpoACorpo && !heroi.defesasUsadas.retracaoUsada &&
             Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
-            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante,
-            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada } else null,
-            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido },
+            esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante - penAtordoado,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada - penAtordoado } else null,
+            bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido - penAtordoado },
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
             esgrima = tipoAparar == ApararTipo.ESGRIMA,
@@ -774,16 +776,19 @@ class CombatSession(
     }
 
     /** Esquiva de um NPC = Velocidade Básica + 3 (MB p.374); Vel.Básica pela metade se cambaleante (MB p.380). */
+    /** Penalidade de defesa por atordoamento (Lote 393, MB p.364): todas as defesas ativas a −4. */
+    private fun penDefesaAtordoado(c: Combatente): Int = if (Condicao.ATORDOADO in c.condicoes) 4 else 0
+
     private fun esquivaNpc(npc: Combatente): Int {
         val velB = if (npc.cambaleante) npc.velocidadeBasica / 2 else npc.velocidadeBasica
-        return floor(velB).toInt() + 3
+        return floor(velB).toInt() + 3 - penDefesaAtordoado(npc)
     }
 
-    /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo). */
+    /** Melhor defesa de um NPC: Esquiva (Vel.Básica+3) vs Aparar (NH/2+3, só corpo-a-corpo); −4 se atordoado. */
     private fun melhorDefesaNpc(npc: Combatente): Pair<CombatResolver.TipoDefesa, Int> {
         val esquiva = esquivaNpc(npc)
         val melee = (npc.stats?.alcanceMetros ?: 1) <= 2
-        val apara = if (melee) (npc.stats?.armaNh ?: 0) / 2 + 3 else 0
+        val apara = if (melee) (npc.stats?.armaNh ?: 0) / 2 + 3 - penDefesaAtordoado(npc) else 0
         return if (apara > esquiva) CombatResolver.TipoDefesa.APARA to apara
         else CombatResolver.TipoDefesa.ESQUIVA to esquiva
     }

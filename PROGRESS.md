@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 393 — 23 de Junho de 2026
+**Saga combate: Fazer Nada / Atordoado — defesas −4 (loop dos 16 parciais 1/16, MB p.364, branch GURPS-Saga)**
+- A manobra forçada ao atordoado e a recuperação (HT/IQ em `avancarTurno`) JÁ existiam. Faltava o **−4 em TODAS as defesas ativas enquanto atordoado** (MB p.364). `opcoesDefesaHeroi` aplica `penAtordoado` (herói); `esquivaNpc`/`melhorDefesaNpc` usam `penDefesaAtordoado` (NPC).
+- Teste: esquiva e apara caem −4 com `Condicao.ATORDOADO`. Build 2 variantes + testes verdes.
+- Combate.md: "Fazer Nada" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 392 — 23 de Junho de 2026
 **Saga combate: Apontar — mira de vários turnos + perde a mira ao defender (loop de defesa 5/5 — FECHA O LOOP, MB p.364, branch GURPS-Saga)**
 - MIRA DE VÁRIOS TURNOS (MB p.364): mirar o MESMO alvo por segundos seguidos acumula **+1 (2º seg) / +2 (3º+)** ALÉM da Precisão (Acc). `apontarStacks` (espelha o Avaliar); bônus = `(stacks−1).coerceIn(0,2)` aplicado no acerto à distância.
