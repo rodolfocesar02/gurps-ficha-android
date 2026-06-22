@@ -485,7 +485,8 @@ class CombatSession(
         contraAtaqueCorpoACorpo: Boolean = false, // Lote 389: Retirada só vale contra ataque corpo-a-corpo
         defesaTotalEm: CombatResolver.TipoDefesa? = null,
         contraArmaDeFogo: Boolean = false,
-        atacanteAdjacente: Boolean = true // Lote 390: aparar à distância só se o atacante estiver a 1m (default permissivo p/ corpo-a-corpo)
+        atacanteAdjacente: Boolean = true, // Lote 390: aparar à distância só se o atacante estiver a 1m (default permissivo p/ corpo-a-corpo)
+        ataqueComArma: Boolean = false // Lote 391: o ataque do NPC usa arma? (−3 ao aparar com as mãos nuas)
     ): List<CombatResolver.OpcaoDefesa> {
         // Após um Ataque Total o herói não tem NENHUMA defesa ativa até o próximo turno (MB p.366).
         if (heroiSemDefesaAtiva) return emptyList()
@@ -498,6 +499,9 @@ class CombatSession(
         // Atacar no turno anterior (que permite só Esquiva/Bloqueio, MB p.367/270).
         val podeAparar = !ranged && podeApararPeloAlcance && tipoAparar != ApararTipo.NAO && !heroiSemAparar &&
             !(tipoAparar == ApararTipo.DESBALANCEADA && atacouDesbalanceada)
+        // Aparar Desarmado (Lote 391, MB p.376): aparar uma ARMA com as mãos nuas sofre −3, salvo Caratê/Judô.
+        // (A exceção GdP do MB fica de fora: o motor não distingue GdP/GeB no ataque do NPC — registrado.)
+        val penAparaDesarmada = if (armaPronta?.desarmado == true && ataqueComArma && armaPronta.aparaMarcial != true) 3 else 0
         // BD do escudo (MB p.375): só vale com o escudo PREPARADO — uma mão livre (arma de 2 mãos não tem) —
         // e NÃO contra armas de fogo. Quando não vale, removemos o BD que já vem embutido nas defesas da ficha.
         val semMaoParaEscudo = armaPronta?.duasMaos == true
@@ -511,7 +515,7 @@ class CombatSession(
             Condicao.ATORDOADO !in heroi.condicoes
         return CombatResolver.opcoesDefesa(
             esquivaBase = heroiPerfil.esquiva - bdRemovido - reducaoCambaleante,
-            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido } else null,
+            aparaBase = if (podeAparar) heroiPerfil.apara?.let { it - bdRemovido - penAparaDesarmada } else null,
             bloqueioBase = heroiPerfil.bloqueio?.let { it - bdRemovido },
             defesasUsadas = heroi.defesasUsadas,
             defesaTotalEm = defesaTotalEm ?: defesaTotalAumentadaEm, // Lote 388: +2 da Defesa Total (Aumentada)
@@ -1009,6 +1013,7 @@ data class AtaqueHeroi(
     val recuo: Int = 1,          // Rco/Rcl — controla quantos tiros da rajada acertam (MB p.374).
     val duasMaos: Boolean = false, // Lote 380: ocupa as duas mãos → sem mão livre p/ o escudo (MB p.375).
     val desarmado: Boolean = false, // Lote 384: ataque desarmado (usa a Tabela de Erro Crítico desarmada).
+    val aparaMarcial: Boolean = false, // Lote 391: apara desarmada por Caratê/Judô → sem o −3 vs armas (MB p.376).
     val temPericia: Boolean = true
 )
 

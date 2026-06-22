@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 391 — 23 de Junho de 2026
+**Saga combate: Aparar Desarmado — −3 vs armas (loop de defesa 4/5, MB p.376, branch GURPS-Saga)**
+- REGRA (MB p.376): aparar uma ARMA com as mãos nuas sofre **−3**, salvo se o herói usa **Caratê ou Judô** (valor cheio). `opcoesDefesaHeroi(ataqueComArma)` aplica `penAparaDesarmada = 3` quando a "arma" empunhada é desarmada (`armaPronta.desarmado`), o NPC ataca com arma e a perícia não é marcial.
+- `AtaqueHeroi.aparaMarcial` (novo) = true quando a melhor perícia de luta do herói é Caratê/Judô — detectado por `definicaoId` estruturado (set `MARCIAIS_APARA`, não por nome livre). Controller passa `ataqueComArma = npc.armaNome.isNotBlank()`.
+- DEFERIDO (registrado): a exceção **GdP** (o motor não distingue GdP/GeB no ataque do NPC) e a **lesão no braço que apara** ao falhar.
+- Testes: mãos nuas vs arma = −3; vs ataque desarmado = sem penalidade; Caratê/Judô = valor cheio. Build 2 variantes + testes verdes.
+- Combate.md: "Aparar Desarmado" segue PARCIAL (com o avanço anotado).
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 390 — 23 de Junho de 2026
 **Saga combate: Aparar — só à queima-roupa contra tiro (loop de defesa 3/5, MB p.376, branch GURPS-Saga)**
 - BUG: o card oferecia **Aparar contra um atirador distante**. A regra (MB p.376): só se apara um ataque à distância se o atacante estiver **adjacente (≤1m)** — apara-se a ARMA, não o projétil. `opcoesDefesaHeroi(atacanteAdjacente)` gateia o `podeAparar`; o controller passa `s.distancia(npc) <= 1`. Bloqueio (escudo) continua valendo contra tiro (a regra do escudo não muda).

@@ -387,7 +387,8 @@ class SagaCombatController(
         val opcoes = if (s.intencaoAtacaHeroi(intencao)) s.opcoesDefesaHeroi(
             armaPronta = ataques.getOrNull(ataqueSelecionado), contraArmaDeFogo = contraFogo,
             contraAtaqueCorpoACorpo = !intencao.aDistancia, // Lote 389: Retirada só vs corpo-a-corpo
-            atacanteAdjacente = s.distancia(npc) <= 1 // Lote 390: aparar tiro só se o atirador está a 1m
+            atacanteAdjacente = s.distancia(npc) <= 1, // Lote 390: aparar tiro só se o atirador está a 1m
+            ataqueComArma = npc.stats?.armaNome?.isNotBlank() == true // Lote 391: −3 ao aparar arma com as mãos nuas
         ) else emptyList()
         if (s.intencaoAtacaHeroi(intencao) && opcoes.isNotEmpty()) {
             val deferred = CompletableDeferred<CombatResolver.OpcaoDefesa>()
@@ -550,11 +551,14 @@ class SagaCombatController(
         }
         // Desarmado (sempre disponível): melhor perícia de luta sem arma, ou DX.
         val desarmada = melhorPericiaDesarmada(p)
+        val aparaMarcial = desarmada?.let {
+            CatalogFilters.normalizarBusca(it.definicaoId).removePrefix("racial_") in MARCIAIS_APARA
+        } ?: false
         out.add(AtaqueHeroi(
             rotulo = (desarmada?.nome ?: "Desarmado"),
             nh = desarmada?.calcularNivel(p) ?: p.dx,
             danoExpr = p.danoGdP, tipo = DanoTipo.CONT, aDistancia = false, alcance = 1,
-            desarmado = true, temPericia = desarmada != null
+            desarmado = true, aparaMarcial = aparaMarcial, temPericia = desarmada != null
         ))
         // Armas à distância primeiro quando há (pistoleiro saca o revólver, não soca).
         return out.sortedByDescending { it.aDistancia }
@@ -627,5 +631,7 @@ class SagaCombatController(
 
     private companion object {
         val DESARMADAS = setOf("briga", "boxe", "carate", "judo", "luta_grecoromana", "caratê", "judô")
+        // Lote 391: aparar uma ARMA desarmado tem o valor cheio (sem −3) com Caratê ou Judô (MB p.376).
+        val MARCIAIS_APARA = setOf("carate", "caratê", "judo", "judô")
     }
 }

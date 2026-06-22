@@ -1657,7 +1657,7 @@ podem ser arruinados de forma semelhante. A maior parte das armas improvisadas
 são consideradas “baratas” para fins de
 rompimento; veja Aparando Armas Pesadas (acima) para maiores informações.
 
-## Aparar Desarmado [~] ⚠️ PARCIAL OU INCOMPLETO
+## Aparar Desarmado [~] ⚠️ PARCIAL (aparar arma com mãos nuas −3, exceção Caratê/Judô valor cheio — Lote 391; falta exceção GdP e lesão no braço que apara)
 Se estiver lutando sem armas ou com
 pelo menos uma mão livre, o personagem
 pode tentar aparar com as mãos nuas.

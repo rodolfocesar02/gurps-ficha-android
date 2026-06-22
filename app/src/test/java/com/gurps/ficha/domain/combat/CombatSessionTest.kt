@@ -719,4 +719,20 @@ class CombatSessionTest {
         assertTrue("tiro à queima-roupa: apara a arma", temApara(corpoACorpo = false, adjacente = true))
         assertFalse("tiro de longe: sem aparar", temApara(corpoACorpo = false, adjacente = false))
     }
+
+    // Lote 391 — Aparar Desarmado (MB p.376): aparar uma ARMA com as mãos nuas sofre −3, salvo Caratê/Judô.
+    @Test
+    fun `aparar desarmado uma arma sofre -3 salvo Carate ou Judo`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val punho = AtaqueHeroi(rotulo = "Briga", nh = 12, danoExpr = "1d-1", tipo = DanoTipo.CONT, desarmado = true)
+        fun valorApara(arma: AtaqueHeroi, comArma: Boolean) =
+            s.opcoesDefesaHeroi(armaPronta = arma, contraAtaqueCorpoACorpo = true, ataqueComArma = comArma)
+                .first { it.tipo == CombatResolver.TipoDefesa.APARA && !it.recuo }.valorFinal
+        val base = 11 // perfilHeroi().apara
+        assertEquals("vs arma, mãos nuas: −3", base - 3, valorApara(punho, comArma = true))
+        assertEquals("vs ataque desarmado: sem −3", base, valorApara(punho, comArma = false))
+        assertEquals("Caratê/Judô: valor cheio vs arma", base, valorApara(punho.copy(aparaMarcial = true), comArma = true))
+    }
 }
