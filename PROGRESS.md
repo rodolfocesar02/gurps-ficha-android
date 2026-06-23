@@ -3039,6 +3039,14 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 418 — 23 de Junho de 2026
+**Saga combate: CLOSURA DO AUDIT DO Combate.md — 0 tópicos sem marcação (doc-only, branch GURPS-Saga)**
+- Marcados os últimos tópicos não-feitos com status honesto. **Lesões e Defesas Ativas → FEITO** (já estava: −4 atordoado/393 + choque-não-penaliza-defesa/382). **Armas de Arremesso → FEITO (base)** (arremesso = ataque à distância; "não fica preparada após arremessar" deferido por falta de flag thrown-vs-arco).
+- **FORA DO ESCOPO/DEFERIDO (`[—]`, com razão):** Mata-Leão/Chave de Braço/Torção (Martial Arts p.403/404, fora do Básico); Ataques que não Causam Dano (Atribulação/poderes especiais); Aparar com Armas Improvisadas (durabilidade de objeto); Recarregar e Disparar (sem munição, decisão 366); Superpenetração e Cobertura (posicionamento em hexágono); Dano Especial/Acompanhamento/Conjuntos (tipos de dano/modificadores especiais); Segurar (objeto empunhado pelo NPC); Outras Ações / Outras Ações em Combate / Ações Prolongadas Comuns (narrativo/Narrador).
+- **PLACAR FINAL do Combate.md: 70 FEITO [x] · 23 fora-do-escopo/deferido [—] · 0 sem marcação.** Todas as regras de combate codificáveis no modelo abstrato do Saga estão implementadas, build verde nas 2 variantes, testadas. Mudança só de documentação (não compila Kotlin).
+- **PRÓXIMO (combinado): validação no aparelho de TUDO** (tarefa do usuário). NÃO entrar na Fase C antes disso.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 417 — 23 de Junho de 2026
 **Saga combate: Projeção / knockback geral (tópicos `[]` 10/N, MB p.378, branch GURPS-Saga)**
 - `aplicarProjecao(...)`: contusão SEMPRE projeta; corte só se NÃO penetrou a RD; **1m por múltiplo de (ST−2) do dano básico**; o projetado testa DX (−1/m após o 1º) ou cai. Chamado nos dois caminhos (`resolverGolpeHeroi` após acertar o NPC; `npcResolve` após o NPC acertar o herói). Reusa a lógica de knockback do Empurrão (Lote 410, "apenas projeção").

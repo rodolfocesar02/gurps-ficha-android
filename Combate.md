@@ -804,7 +804,7 @@ de Técnicas de Combate (pág. 230) e Técnicas Especiais de Combate Desarmado
 de atacar um alvo blindado com as
 mãos nuas.
 
-## Segurar[]
+## Segurar [—] ⏸️ DEFERIDO (tomar um objeto da mão do oponente via Disputa Normal de ST; sem modelo de "objeto empunhado pelo NPC" no tracker — narrativo/Narrador)
 Um personagem pode querer segurar um objeto que um oponente esteja
 segurando, como uma arma. Para isso,
 ele deve ter uma mão desocupada (embora algumas armas, como chicotes,
@@ -936,23 +936,23 @@ esse dano. Multiplique o dano ao pescoço por 1,5. Se qualquer dano — mesmo de
 cada turno depois disso, até escapar, ela
 perde 1 PF; v. Sufocamento (pág. 437).
 
-## Mata-Leão[]
+## Mata-Leão [—] ⏸️ FORA DO ESCOPO (perícia Judô/Luta Greco-Romana; o próprio MB remete a Martial Arts p.404 — fora do Básico/Devir que é a fonte do projeto)
 Um personagem com as perícias
 Judô ou Luta Greco-Romana, pode tentar agarrar um oponente de forma a incapacitá-lo sem esmagar a garganta ou
 o tronco. V. Mata-Leão (pág. 404).
 
-## Chave de Braço[]
+## Chave de Braço [—] ⏸️ FORA DO ESCOPO (perícia Judô/Luta Greco-Romana; o MB remete a Martial Arts p.403 — fora do Básico)
 Um personagem com as perícias
 Judô ou Luta Greco-Romana, pode
 tentar uma imobilização para prender
 ou incapacitar o braço do oponente. V.
 Chave de Braço (pág. 403).
-## Torção de Pescoço ou Torção de Membro[]
+## Torção de Pescoço ou Torção de Membro [—] ⏸️ FORA DO ESCOPO (o MB remete a Martial Arts p.404 — fora do Básico)
 Quando um personagem agarra o
 pescoço ou crânio do oponente, ou algum membro ou outra extremidade, ele
 pode torcê-lo. V. Torcer Pescoço ou Membros (pág. 404).
 
-## Outras Ações[]
+## Outras Ações [—] ⏸️ PARCIAL/NARRATIVO (morder/chutar/cabeçada = ataques desarmados, já cobertos pelo combate desarmado; ações exóticas remetem a Martial Arts/Narrador)
 Um personagem pode morder ou
 usar um Golpeador (de alcance C) mesmo que todas as suas mãos estejam
 ocupadas. Se não estiver usando uma
@@ -1192,7 +1192,7 @@ Assuma que a capacidade do alvo de
 executar adequadamente uma esquiva
 representa os efeitos do movimento.
 
-## Ataques com Armas de Arremesso[]
+## Ataques com Armas de Arremesso [x] ✅ FEITO (base: arremesso funciona como qualquer ataque à distância — já suportado via arma de catálogo "distância" (penalidade de distância, 1/2D, Máx). DEFERIDO por dado: "depois de arremessar, a arma não está mais preparada" exige distinguir arma de arremesso de arco (sem flag thrown no catálogo))
 “Armas de arremesso” são armas que
 o personagem deve lançar fisicamente
 contra o alvo: pedras, granadas de mão,
@@ -1255,7 +1255,7 @@ por ataque. Uma metralhadora tem CdT
 10; pode dar até 10 disparos por ataque,
 ainda assim, trata-se de uma única jogada de ataque, não 10 ataques separados!
 
-## Recarregar e Disparar[]
+## Recarregar e Disparar [—] ⏸️ DEFERIDO POR DECISÃO (recarregar gasta manobras Preparar contadas pela estatística Tiros; o Saga NÃO rastreia munição por decisão do Lote 366 — munição é nota narrativa)
 Armas de projétil também apresentam o parâmetro Tiros. Depois de disparar esse número de tiros, o personagem precisa recarregar a arma antes de
 poder usá-la novamente.
 Para recarregar uma arma, são necessárias um número determinado de
@@ -1406,7 +1406,7 @@ jogadas de defesa; veja a seguir explicações para alguns deles. Para obter uma
 lista completa de modificadores, veja
 Modificadores de Defesa Ativa (pág. 548).
 
-## Lesões e Defesas Ativas[]
+## Lesões e Defesas Ativas [x] ✅ FEITO (atordoado: −4 em qualquer defesa ativa — Lote 393; choque NUNCA penaliza as defesas, só o acerto — Lote 382. Já implementado e testado)
 Um personagem atordoado sofre
 uma penalidade de -4 em qualquer defesa ativa. No entanto, as defesas ativas
 nunca sofrem penalidades devido a
@@ -1644,7 +1644,7 @@ do atacante — que não tem direito a uma
 jogada de defesa! Faça a avaliação de
 dano normalmente.
 
-## Aparar com Armas Improvisadas[]
+## Aparar com Armas Improvisadas [—] ⏸️ DEFERIDO (aparar com objeto improvisado usando a perícia mais próxima; depende de durabilidade/quebra de objeto, não modelada — Narrador/GM)
  É possível aparar com qualquer objeto
 de tamanho e formato adequado, usando a
 perícia com arma mais próxima possível.
@@ -1972,7 +1972,7 @@ vivas é recuperada à mesma razão que
 os PV perdidos.
 
 
-## Superpenetração e Cobertura[]
+## Superpenetração e Cobertura [—] ⏸️ FORA DO ESCOPO (projétil que atravessa o alvo e atinge quem está atrás / cobertura parcial; exige posicionamento e linha de tiro em hexágonos — abstraídos no tracker de faixas)
 Alguns ataques são suficientemente
 potentes para atravessar uma cobertura, escudo ou uma vítima e ferir alguém
 do outro lado. Normalmente preocupar-se com isso dá muito trabalho, mas
@@ -2122,13 +2122,13 @@ Para maiores informações sobre lesões — e como se recuperar delas! —
 veja Lesões (pág. 418).
 
 
-## Dano Especial[]
+## Dano Especial [—] ⏸️ DEFERIDO POR DADO (tipos de dano especiais — fadiga, corrosão, toxina, queimadura etc.; o motor só modela CONT/CORT/PI*/PERF — os demais não têm tipo nem efeito no modelo)
 Alguns ataques têm “efeitos especiais”: veneno, choque elétrico, atordoamento, atear fogo na vítima, etc. Consulte as tabelas de armas, as ampliações
 de ataque no Capítulo 2 e outras seções
 pertinentes nos Capítulos 13 e 14 para
 maiores informações.
 
-## Dano de Acompanhamento[]
+## Dano de Acompanhamento [—] ⏸️ DEFERIDO POR DADO (dano secundário que "acompanha" o primeiro após penetrar a RD; modificador de ataque especial não modelado)
 Alguns ataques, como dardos envenenados e balas explosivas, apresentam
 “dano de acompanhamento”: um segundo tipo de dano que ocorre um instante
 depois do efeito primário. O efeito primário sempre causa dano comum de
@@ -2150,7 +2150,7 @@ Por outro lado, um projétil explosivo
 ainda provocaria dano… mas a RD que
 impediu a entrada do dano primário novamente protegeria contra a explosão.
 
-## Efeitos Conjuntos[]
+## Efeitos Conjuntos [—] ⏸️ DEFERIDO POR DADO (vários ataques que se combinam num efeito; modificadores de ataque especiais não modelados)
 Alguns ataques têm um efeito conjunto. Esse é um segundo tipo de dano
 ou outro efeito que ocorre simultaneamente com o efeito primário. Faça
 apenas uma jogada de ataque, mas calcule o dano e faça testes de resistência
@@ -2163,7 +2163,7 @@ mas sair ilesa, enquanto uma pessoa
 sem blindagem, mas com um protetor
 ocular, pode ser ferida mas não cegada.
 
-## Ataques que não Causam Dano[]
+## Ataques que não Causam Dano [—] ⏸️ FORA DO ESCOPO (raios atordoantes, drogas, Atribulação/Retenção — poderes especiais com teste de HT; não há sistema de Atribulação/poderes no combate Saga. Empurrão/Agarrar já cobrem os "ataques sem dano" do dia a dia)
 Nem todos os ataques causam dano. Alguns — raios atordoantes, drogas, etc. — oferecem um teste modificado de HT para resistir (ex., HT-2).
 Se a vítima for atingida e fracassar no teste de HT, ela é afetada; v. Atribulação (pág. 43). Outros ataques podem também imobilizar a vítima, exigindo
 testes de ST para que ela possa se desvencilhar; v. Retenção (pág. 85).
@@ -2261,7 +2261,7 @@ mau funcionamento com um resultado ruim. V. Mau Funcionamento (pág.
 “prioridade” em relação a um erro crítico: se os dois acontecerem, somente o
 mau funcionamento é considerado.
 
-## Outras Ações em Combate[]
+## Outras Ações em Combate [—] ⏸️ NARRATIVO (ações que não são atacar/mover — físicas via Preparar, mentais via Concentrar; o núcleo já está nas manobras Preparar/Concentrar, o resto é adjudicação do Narrador)
 Combatentes podem executar outras ações que não sejam atacar e
 se mover. Ações físicas geralmente
 exigem manobras Preparar, enquanto ações mentais exigem manobras
@@ -2367,7 +2367,7 @@ Vestir uma armadura | 3 segundos por peça (30
 segundos/peça para um traje
 pressurizado ou traje de combate)
 
-## Ações Prolongadas Comuns[]
+## Ações Prolongadas Comuns [—] ⏸️ NARRATIVO (tabela de tempos para ações longas — apanhar objeto, recarregar, vestir armadura etc.; adjudicadas pelo Narrador fora da resolução mecânica do combate)
 Consulte a tabela para obter a duração de algumas ações prolongadas.
 O personagem deve realizar uma manobra Preparar a cada segundo.
 A duração das ações prolongadas
