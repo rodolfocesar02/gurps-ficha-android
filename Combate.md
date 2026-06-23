@@ -365,7 +365,7 @@ Movimento: Passo.
 Defesa Ativa: Qualquer. Mas interfere com a concentração como descrito
 acima.
 
-## Preparar [~] ⚠️ PARCIAL OU INCOMPLETO
+## Preparar [x] ✅ FEITO (sacar/empunhar arma — Lote 374; re-empunhar arma desbalanceada despreparada — Lote 398; abrir porta/ativar vantagem/recarregar = narrativo/Narrador ou sem sistema de munição)
 Utilize esta manobra para apanhar
 ou sacar qualquer objeto e prepará-lo
 para uso; ex., puxar uma espada da bainha ou um revólver do coldre, ou recarregar uma arma de fogo. Em alguns casos, uma manobra Preparar também é
@@ -706,7 +706,7 @@ Nesse caso, o ataque irá atingir o alvo, a
 menos que ele obtenha sucesso em uma
 defesa ativa.
 
-## Armas Preparadas [~] ⚠️ PARCIAL OU INCOMPLETO
+## Armas Preparadas [x] ✅ FEITO (desbalanceada fica despreparada após atacar se ST < 1,5× a ST mínima → exige Preparar; arma natural sempre pronta — Lote 398; Martial Arts distingue 'D' de '‡', deferido)
 Uma arma de uma mão está preparada se estiver sendo empunhada em uma
 mão. Uma arma de duas mãos está preparada se estiver sendo empunhada pelas
 duas mãos. Algumas armas são desbalanceadas (como o machado grande) e ficam

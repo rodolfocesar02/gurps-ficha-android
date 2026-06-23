@@ -875,4 +875,31 @@ class CombatSessionTest {
         }
         assertTrue("ser perturbado durante a concentração deve testar Vontade-3", testou)
     }
+
+    // Lote 398 — Armas Preparadas / Preparar (MB p.270): desbalanceada fica despreparada após atacar (ST < 1,5× mín) → Preparar.
+    @Test
+    fun `arma desbalanceada fica despreparada e exige Preparar`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3)) // herói ST 10 < 1,5×12 = 18 → despreparada
+        val machado = AtaqueHeroi("Machado grande", nh = 12, danoExpr = "3d", tipo = DanoTipo.CORT,
+            apararTipo = ApararTipo.DESBALANCEADA, stMinimo = 12)
+        s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("fica despreparada após o golpe", s.armaDespreparada(machado.rotulo))
+        val r = s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("atacar de novo é bloqueado: ${r.texto}", r.texto.contains("despreparada"))
+        s.heroiManobra(Manobra.PREPARAR)
+        assertFalse("Preparar re-empunha a arma", s.armaDespreparada(machado.rotulo))
+    }
+
+    @Test
+    fun `arma desbalanceada nao desprepara se o heroi e forte o bastante`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 1), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi().copy(st = 18), Random(3)) // ST 18 ≥ 1,5×12 = 18
+        val machado = AtaqueHeroi("Machado grande", nh = 12, danoExpr = "3d", tipo = DanoTipo.CORT,
+            apararTipo = ApararTipo.DESBALANCEADA, stMinimo = 12)
+        s.heroiAtaca(machado, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertFalse("ST ≥ 1,5× a mínima não desprepara", s.armaDespreparada(machado.rotulo))
+    }
 }

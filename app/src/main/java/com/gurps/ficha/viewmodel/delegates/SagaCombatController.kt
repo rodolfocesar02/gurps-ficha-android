@@ -126,6 +126,7 @@ class SagaCombatController(
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         if (indice !in ataques.indices || indice == ataqueSelecionado) return
         ataqueSelecionado = indice
+        s.prepararArmaEmpunhada() // Lote 398: sacar/empunhar uma arma re-prepara (a nova arma está pronta)
         val nome = ataques[indice].rotulo.substringBefore(" (").trim()
         if (temSaqueRapido(viewModel.personagem)) {
             s.log += "🤚 Você saca $nome rapidamente (Saque Rápido — ação livre)."
@@ -250,8 +251,20 @@ class SagaCombatController(
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        if (armaDespreparadaBloqueia(ataque)) return // Lote 398: arma despreparada → precisa Preparar antes
         s.heroiAtaca(ataque, alvoId, manobra, local, modo)
         depoisDaAcaoDoHeroi()
+    }
+
+    /** Lote 398: se a arma empunhada ficou despreparada (golpe desbalanceado), avisa e bloqueia o ataque sem gastar o turno. */
+    private fun armaDespreparadaBloqueia(ataque: AtaqueHeroi): Boolean {
+        val s = sessao ?: return false
+        if (s.armaDespreparada(ataque.rotulo)) {
+            s.log += "⚠️ ${ataque.rotulo.substringBefore(" (").trim()} está despreparada — use \"Trocar arma\" (Preparar) antes de atacar."
+            publicarLog(); atualizarEstado()
+            return true
+        }
+        return false
     }
 
     /** Lote 378: Mover e Atacar — desloca-se até o alvo (corpo-a-corpo) e ataca em movimento com a arma empunhada. */
@@ -259,6 +272,7 @@ class SagaCombatController(
         val s = sessao ?: return
         if (!s.combatenteAtual().ehHeroi || s.encerrado) return
         val ataque = ataques.getOrNull(ataqueSelecionado) ?: return
+        if (armaDespreparadaBloqueia(ataque)) return // Lote 398
         s.heroiMoverEAtacar(ataque, alvoId, local)
         depoisDaAcaoDoHeroi()
     }
@@ -273,6 +287,7 @@ class SagaCombatController(
         if (offHandIndex == ataqueSelecionado) return // a 2ª arma precisa ser diferente da empunhada
         val principal = ataques.getOrNull(ataqueSelecionado) ?: return
         val secundaria = ataques.getOrNull(offHandIndex) ?: return
+        if (armaDespreparadaBloqueia(principal)) return // Lote 398
         s.heroiAtaqueDuplo(principal, secundaria, alvoId, local, temAmbidestria(viewModel.personagem))
         depoisDaAcaoDoHeroi()
     }
@@ -560,6 +575,7 @@ class SagaCombatController(
                 recuo = arma.armaRecuo ?: 1,
                 duasMaos = ehDuasMaos(arma),
                 armaDeFogo = modo.contains("fogo"), // Lote 395: arma de fogo → pode firmar ao Apontar (+1)
+                stMinimo = arma.armaStMinimo ?: 0, // Lote 398: ST mínima → desbalanceada fica despreparada se ST < 1,5×
                 temPericia = pericia != null
             ))
         }

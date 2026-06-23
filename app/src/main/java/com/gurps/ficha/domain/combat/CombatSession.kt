@@ -70,6 +70,23 @@ class CombatSession(
     // Concentrar (Lote 397, MB p.344): atividade mental de turno completo; ser forçado a defender/ferido exige Vontade-3.
     private var concentrando = false
 
+    // Armas Preparadas / Preparar (Lote 398, MB p.270/366): arma desbalanceada fica DESPREPARADA após atacar
+    // (a menos que ST ≥ 1,5× a ST mínima); precisa de uma manobra Preparar p/ atacar de novo. Persiste entre turnos.
+    private var armaDespreparadaRotulo: String? = null
+    /** Marca a arma como despreparada após um golpe desbalanceado, se o herói não for forte o bastante (MB p.270). */
+    private fun marcarDespreparoSeNecessario(ataque: AtaqueHeroi) {
+        if (ataque.aDistancia || ataque.apararTipo != ApararTipo.DESBALANCEADA || ataque.stMinimo <= 0) return
+        val limiar = kotlin.math.ceil(1.5 * ataque.stMinimo).toInt() // ST ≥ 1,5× a mínima dispensa o re-preparo
+        if (heroiPerfil.st < limiar) {
+            armaDespreparadaRotulo = ataque.rotulo
+            log += "  └ a arma desbalanceada ficou DESPREPARADA após o golpe — use Preparar para empunhá-la de novo (MB p.270)."
+        }
+    }
+    /** Preparar/sacar re-empunha a arma despreparada (Lote 398). */
+    fun prepararArmaEmpunhada() { armaDespreparadaRotulo = null }
+    /** True se a arma [rotulo] está despreparada (precisa de Preparar antes de atacar). Lote 398. */
+    fun armaDespreparada(rotulo: String): Boolean = armaDespreparadaRotulo == rotulo
+
     /** Início de uma ação do herói: zera as flags do turno anterior (desbalanceada + sem-defesa/sem-aparar + Defesa Total + Disparada). */
     private fun inicioAcaoHeroi() {
         atacouDesbalanceada = false; heroiSemDefesaAtiva = false; heroiSemAparar = false; limparDefesaTotal()
@@ -115,6 +132,11 @@ class CombatSession(
         local: LocalAtaque = LocalAtaque.TORSO,
         ataqueTotalModo: AtaqueTotalModo = AtaqueTotalModo.DETERMINADO
     ): AtaqueResultado {
+        // Arma despreparada (Lote 398, MB p.270): não dá pra atacar até re-empunhá-la com um Preparar.
+        if (ataque.rotulo == armaDespreparadaRotulo) {
+            val t = "⚠️ ${ataque.rotulo.substringBefore(" (").trim()} está despreparada — use Preparar antes de atacar."
+            log += t; return AtaqueResultado(false, false, 0, false, t)
+        }
         inicioAcaoHeroi()
         val alvo = inimigos.firstOrNull { it.id == alvoId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "Alvo inválido ou já fora de combate.").also { log += it.texto }
@@ -123,6 +145,7 @@ class CombatSession(
         limparAvaliar(); limparApontar(); limparFinta() // bônus de Avaliar/Mira consumidos neste ataque
         // Arma desbalanceada: quem atacou com ela não pode aparar até o próximo turno (MB p.270).
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
+        marcarDespreparoSeNecessario(ataque) // Lote 398: desbalanceada fica despreparada se o herói não for forte
         // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
         if (manobra == Manobra.ATAQUE_TOTAL) heroiSemDefesaAtiva = true
         verificarFim()
@@ -157,6 +180,7 @@ class CombatSession(
         val r = resolverGolpeHeroi(ataque, alvo, Manobra.MOVER_E_ATACAR, local, AtaqueTotalModo.DETERMINADO)
         limparAvaliar(); limparApontar(); limparFinta()
         if (!ataque.aDistancia && ataque.apararTipo == ApararTipo.DESBALANCEADA) atacouDesbalanceada = true
+        marcarDespreparoSeNecessario(ataque) // Lote 398
         heroiSemAparar = true // Mover e Atacar: só Esquiva/Bloqueio até o próximo turno (MB p.367).
         verificarFim()
         return r
@@ -198,6 +222,7 @@ class CombatSession(
         // Desbalanceada: se qualquer golpe corpo-a-corpo usou arma "D" (não apara até o próximo turno).
         if ((!principal.aDistancia && principal.apararTipo == ApararTipo.DESBALANCEADA) ||
             (!secundaria.aDistancia && secundaria.apararTipo == ApararTipo.DESBALANCEADA)) atacouDesbalanceada = true
+        marcarDespreparoSeNecessario(principal); marcarDespreparoSeNecessario(secundaria) // Lote 398
         heroiSemDefesaAtiva = true // Ataque Total: sem defesa ativa até o próximo turno (MB p.366).
         verificarFim()
         return resultados
@@ -333,9 +358,13 @@ class CombatSession(
         // Concentrar (Lote 397, MB p.344): marca a concentração; o efeito (magia/psi/perícia IQ) é do Narrador,
         // mas a mecânica de combate é o teste de Vontade-3 ao ser perturbado (em npcResolve).
         if (manobra == Manobra.CONCENTRAR) concentrando = true
+        // Preparar (Lote 398, MB p.270/366): re-empunha uma arma que ficou despreparada após um golpe desbalanceado.
+        val reempunhou = manobra == Manobra.PREPARAR && armaDespreparadaRotulo != null
+        if (manobra == Manobra.PREPARAR) prepararArmaEmpunhada()
         val txt = when (manobra) {
             Manobra.MUDAR_POSTURA -> "🧍 Você muda para ${heroi.postura.rotulo}."
             Manobra.CONCENTRAR -> "🧠 Você se concentra (atividade mental). Se for forçado a defender ou for ferido, teste Vontade-3 para não perder a concentração."
+            Manobra.PREPARAR -> if (reempunhou) "🤚 Você prepara a arma (re-empunha a arma desbalanceada)." else "🤚 Você: Preparar."
             else -> "🛡️ Você: ${manobra.rotulo}."
         }
         log += txt
@@ -1107,6 +1136,7 @@ data class AtaqueHeroi(
     val desarmado: Boolean = false, // Lote 384: ataque desarmado (usa a Tabela de Erro Crítico desarmada).
     val aparaMarcial: Boolean = false, // Lote 391: apara desarmada por Caratê/Judô → sem o −3 vs armas (MB p.376).
     val armaDeFogo: Boolean = false, // Lote 395: arma de fogo → pode "firmar" ao Apontar (+1 Acc, MB p.364).
+    val stMinimo: Int = 0, // Lote 398: ST mínima da arma — desbalanceada fica despreparada se ST < 1,5× isto (MB p.270).
     val temPericia: Boolean = true
 )
 

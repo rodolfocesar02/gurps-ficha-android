@@ -3039,6 +3039,15 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 398 — 23 de Junho de 2026
+**Saga combate: Armas Preparadas / Preparar — desbalanceada despreparada (loop dos 16 parciais 6/16, fecha 2 parciais, MB p.270/366, branch GURPS-Saga)**
+- REGRA (MB p.270): arma desbalanceada ('D') fica **DESPREPARADA após cada ataque** a menos que **ST ≥ 1,5× a ST mínima** da arma; re-preparar = manobra Preparar. `AtaqueHeroi.stMinimo` (← `armaStMinimo` do catálogo); `marcarDespreparoSeNecessario` nos 3 caminhos de ataque corpo-a-corpo; `armaDespreparadaRotulo` (persiste entre turnos, identifica a arma pelo rótulo).
+- BLOQUEIO: `heroiAtaca` recusa se a arma está despreparada; o controller (`armaDespreparadaBloqueia`) avisa **sem gastar o turno** (heroiAtaca/MoverEAtacar/AtaqueDuplo). `heroiManobra(PREPARAR)` e `sacarArma` re-empunham (`prepararArmaEmpunhada`).
+- DEFERIDO: Martial Arts distingue 'D' (desbalanceada) de '‡' (despreparo) — o Básico (fonte do projeto) trata juntos; recarregar = sem sistema de munição (por decisão do Lote 366); abrir porta/ativar vantagem = Narrador.
+- Testes: desbalanceada com ST baixa fica despreparada e bloqueia o 2º ataque; Preparar re-empunha; ST ≥ 1,5× não desprepara. Build 2 variantes + testes verdes.
+- Combate.md: "Preparar" e "Armas Preparadas" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 397 — 23 de Junho de 2026
 **Saga combate: Concentrar — Vontade-3 ao ser perturbado (loop dos 16 parciais 5/16, MB p.344, branch GURPS-Saga)**
 - O EFEITO da concentração (magia/psi/perícia IQ) é do Narrador; o motor de combate modela a **mecânica de interrupção**: `heroiManobra(CONCENTRAR)` marca `concentrando`; em `npcResolve`, se o herói é **forçado a defender** (`defesaTentada`) ou **ferido**, testa **Vontade-3** (`heroiPerfil.vontade - 3`); falha → perde a concentração (recomeça). Vale só no turno (re-declara p/ continuar).
