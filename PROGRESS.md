@@ -3039,6 +3039,13 @@ Tres lotes de regra PURA (domain/combat, sem Android), agrupados num commit para
 - Build completo verde 2 variantes
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 
+### Lote 403 — 23 de Junho de 2026
+**Saga combate: Velocidade e Distância do Alvo (loop dos 16 parciais 11/16, MB p.550, branch GURPS-Saga)**
+- A penalidade de distância já existia; faltava a de **alvo em movimento**: `Combatente.velocidadeAtual` (m percorridos no último Move) é **somado à distância** numa ÚNICA penalidade (`penalidadeDistancia(dist + velocidade)`, MB p.550 — não somar separado). `heroiMove`/MOVER do NPC setam; `inicioAcaoHeroi`/início do `npcResolve` zeram (parado = 0). Vale nas 2 direções (herói atira no NPC; NPC atira no herói).
+- Teste: NPC parado = só "distância 5m"; com velocidade = "Vel/Dist". Build 2 variantes + testes verdes.
+- Combate.md: "Velocidade e Distância do Alvo" → FEITO.
+----------------------------------------------------------------------------------------------------------------------------------------------------
+
 ### Lote 402 — 23 de Junho de 2026
 **Saga combate: Precisão e Disparo com Mira — teto de pontaria (loop dos 16 parciais 10/16, MB p.364, branch GURPS-Saga)**
 - Acc + mira contínua + firmar já existiam; faltava o **teto**: a soma dos bônus de pontaria **não excede 2× a Prec** (MB p.364). Em `resolverGolpeHeroi`, mantém o breakdown (mira (Acc)/mira contínua/firmar) e, se o total passa de `2×Acc`, soma um componente negativo "teto de pontaria (2×Acc)".

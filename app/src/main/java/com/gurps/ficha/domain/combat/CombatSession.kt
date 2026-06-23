@@ -99,6 +99,7 @@ class CombatSession(
         fogoRetencaoArma = null // a cobertura do Fogo de Retenção dura só até a próxima ação do herói (Lote 396)
         concentrando = false // a concentração vale só no turno declarado; o herói re-declara Concentrar p/ continuar (Lote 397)
         aguardarInvestidaArma = null // a guarda da investida dura só até a próxima ação do herói (Lote 399)
+        heroi.velocidadeAtual = 0 // só Mover define a velocidade do herói para a penalidade de Vel/Dist (Lote 403)
     }
 
     val heroi: Combatente get() = encounter.combatentes.first { it.ehHeroi }
@@ -276,8 +277,11 @@ class CombatSession(
                 // Modificador de Tamanho do alvo (MB p.549): alvo grande é mais fácil de acertar, pequeno mais difícil.
                 val mt = alvo.stats?.modificadorTamanho ?: 0
                 if (mt != 0) add(CombatActions.ComponenteMod("tamanho do alvo (MT)", mt))
-                val pen = penalidadeDistancia(dist)
-                if (pen != 0) add(CombatActions.ComponenteMod("distância ${dist}m", pen))
+                // Velocidade e Distância (Lote 403, MB p.550): some a velocidade do alvo à distância e busque UMA penalidade.
+                val velDist = dist + alvo.velocidadeAtual
+                val pen = penalidadeDistancia(velDist)
+                if (pen != 0) add(CombatActions.ComponenteMod(
+                    if (alvo.velocidadeAtual > 0) "Vel/Dist (${dist}m+${alvo.velocidadeAtual}m/s)" else "distância ${dist}m", pen))
                 // Apontar no turno anterior ao mesmo alvo → soma a Precisão (Acc) da arma (MB p.364).
                 if (apontarAlvoId == alvo.id) {
                     val acc = ataque.precisao
@@ -568,6 +572,7 @@ class CombatSession(
         val sprint = if (heroiMoveSeguidos >= 2) heroi.deslocamentoEfetivo / 5 else 0
         val deslocMax = (heroi.deslocamentoEfetivo + sprint).coerceAtLeast(1) // metade se cambaleante (MB p.380)
         val passo = metros.coerceIn(1, deslocMax)
+        heroi.velocidadeAtual = passo // Lote 403: o herói em movimento é mais difícil de alvejar (Vel/Dist)
         val alvos = alvoId?.let { id -> inimigos.filter { it.id == id } } ?: inimigosVivos
         alvos.forEach { encounter.moverEmRelacaoAoHeroi(it.id, if (afastar) passo else -passo) }
         limparAvaliar(); limparApontar(); limparFinta()
@@ -650,6 +655,7 @@ class CombatSession(
     ): AtaqueResultado {
         val npc = inimigos.firstOrNull { it.id == npcId && it.vivo }
             ?: return AtaqueResultado(false, false, 0, false, "NPC fora de combate.")
+        npc.velocidadeAtual = 0 // Lote 403: só Mover redefine a velocidade do NPC (penalidade de Vel/Dist ao ser alvejado)
 
         // Agarrado (Lote 386, MB p.371): o NPC preso gasta o turno tentando se desvencilhar (Disputa Rápida
         // do maior entre ST/DX). Se vencer, solta-se; senão, continua preso. Em ambos os casos, não ataca.
@@ -694,6 +700,7 @@ class CombatSession(
         when (intencao.manobra) {
             Manobra.MOVER -> {
                 val passo = npc.deslocamentoEfetivo.coerceAtLeast(1) // metade se cambaleante (MB p.380)
+                npc.velocidadeAtual = passo // Lote 403: NPC em movimento é mais difícil de alvejar (Vel/Dist)
                 if (intencao.recuar) {
                     encounter.moverEmRelacaoAoHeroi(npc.id, passo)
                     log += "🏃 ${npc.nome} recua ${passo}m (${intencao.motivo})."
@@ -729,8 +736,11 @@ class CombatSession(
                 // Atirando NO herói: soma o MT do herói (alvo) ao acerto (MB p.549).
                 if (heroiPerfil.modificadorTamanho != 0)
                     add(CombatActions.ComponenteMod("tamanho do alvo (MT)", heroiPerfil.modificadorTamanho))
-                val pen = penalidadeDistancia(encounter.distancia(npc))
-                if (pen != 0) add(CombatActions.ComponenteMod("distância", pen))
+                // Velocidade e Distância (Lote 403, MB p.550): o herói em movimento é mais difícil de alvejar.
+                val distH = encounter.distancia(npc)
+                val pen = penalidadeDistancia(distH + heroi.velocidadeAtual)
+                if (pen != 0) add(CombatActions.ComponenteMod(
+                    if (heroi.velocidadeAtual > 0) "Vel/Dist (${distH}m+${heroi.velocidadeAtual}m/s)" else "distância", pen))
             }
         }
         val atk = CombatActions.resolverAtaque(

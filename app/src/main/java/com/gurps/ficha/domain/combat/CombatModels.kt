@@ -113,6 +113,8 @@ data class Combatente(
     var defesasUsadas: DefesasUsadas = DefesasUsadas(),
     /** Lote 382: PV perdidos desde o último turno deste combatente → penalidade de Choque no próximo (MB p.419). */
     var choquePendente: Int = 0,
+    /** Lote 403: metros percorridos no último movimento → penalidade de Velocidade/Distância ao ser alvejado (MB p.550). */
+    var velocidadeAtual: Int = 0,
     /** Stats completos quando é NPC do bestiário; null para o herói (vem da ficha). */
     val stats: NpcStats? = null
 ) {

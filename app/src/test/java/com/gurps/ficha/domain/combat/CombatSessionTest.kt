@@ -963,4 +963,19 @@ class CombatSessionTest {
         val tiro = s.log.last { it.startsWith("🎯") || it.startsWith("⭐") || it.startsWith("💥") }
         assertTrue("aplica o teto de pontaria (2×Acc): $tiro", tiro.contains("teto de pontaria"))
     }
+
+    // Lote 403 — Velocidade e Distância (MB p.550): a velocidade do alvo soma-se à distância para a penalidade do tiro.
+    @Test
+    fun `alvo em movimento soma velocidade a distancia no tiro`() {
+        val g = goblin()
+        val enc = CombatEncounter(listOf(heroi(), g), mapOf("goblin" to 5), seed = 1L)
+        val s = CombatSession(enc, perfilHeroi(), Random(3))
+        val pistola = AtaqueHeroi("Pistola", nh = 14, danoExpr = "2d", tipo = DanoTipo.PI,
+            aDistancia = true, alcance = 100)
+        s.heroiAtaca(pistola, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("parado: só distância", s.log.any { it.contains("distância 5m") })
+        g.velocidadeAtual = 6 // simula um NPC em movimento
+        s.heroiAtaca(pistola, "goblin", Manobra.ATAQUE, LocalAtaque.TORSO)
+        assertTrue("em movimento: Vel/Dist combinada", s.log.any { it.contains("Vel/Dist") })
+    }
 }

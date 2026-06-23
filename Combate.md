@@ -1142,7 +1142,7 @@ personagem ou veículo aparece em sua
 planilha de personagem ou na descrição do veículo. Para outros objetos, use
 a Tabela de Tamanho e Velocidade/Distância (pág. 550).
 
-## Velocidade e Distância do Alvo [~] ⚠️ PARCIAL OU INCOMPLETO
+## Velocidade e Distância do Alvo [x] ✅ FEITO (penalidade de distância já feita; alvo em movimento soma velocidade(m/s)+distância(m) numa única penalidade — Lote 403; herói e NPC rastreiam o quanto se moveram)
 Um alvo distante é mais difícil de
 atingir. Como regra geral, um alvo até 2
 metros de distância está suficientemente próximo para que não haja penalidade para atingi-lo. A 3 metros, há uma
